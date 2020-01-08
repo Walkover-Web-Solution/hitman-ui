@@ -8,7 +8,7 @@ import Home from './components/home'
 // import ProductDetails from './components/productDetails'
 // import NotFound from './components/notFound'
 import './App.css'
-import Collectionts from './components/collection'
+import Collections from './components/collection'
 import Login from './components/login'
 
 class App extends Component {
@@ -19,7 +19,7 @@ class App extends Component {
           <Switch>
             {/* <Route path='/products/:id' component={Products} /> */}
             {/* <Route path='/products' component={Products} /> */}
-            <Route path='/collections' component={Collectionts} />
+            <Route path='/collections' component={Collections} />
             <Route path='/login' component={Login} />
             <Route path='/' component={Home} />
           </Switch>
