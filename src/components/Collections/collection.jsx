@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import NavBar from "./navbar";
+import NavBar from "../navbar";
 import {Link} from "react-router-dom";
 
 class Collections extends Component {

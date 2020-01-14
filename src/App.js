@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import { Route, Switch } from "react-router-dom";
 import "./App.css";
-import Collections from "./components/collection";
 import Home from "./components/home";
 import Login from "./components/login";
-import addCollection from "./components/addCollection";
+import Collections from "./components/Collections/collection";
+import addCollection from "./components/Collections/addCollection";
 
 class App extends Component {
   render() {
