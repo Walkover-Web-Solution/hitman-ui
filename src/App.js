@@ -4,6 +4,7 @@ import "./App.css";
 import Collections from "./components/collection";
 import Home from "./components/home";
 import Login from "./components/login";
+import addCollection from "./components/addCollection";
 
 class App extends Component {
   render() {
@@ -11,6 +12,7 @@ class App extends Component {
       <div>
         <div className="content">
           <Switch>
+            <Route path="/collections/add" component={addCollection} />
             <Route path="/collections" component={Collections} />
             <Route path="/login" component={Login} />
             <Route path="/" component={Home} />
