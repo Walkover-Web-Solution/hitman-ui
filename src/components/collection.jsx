@@ -1,14 +1,13 @@
-import React from "react";
-import NavBar from "./navbar";
+import React from 'react';
+import NavBar from './navbar';
 
 const Collections = ({ match, location }) => {
-  return (
-    <div>
-      <NavBar />
-
-      <h1>Collections</h1>
-    </div>
-  );
+	return (
+		<div>
+			<NavBar />
+			<h1>Collections</h1>
+		</div>
+	);
 };
 
 export default Collections;
