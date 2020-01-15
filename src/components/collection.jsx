@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import NavBar from "../navbar";
+import NavBar from "./navbar";
 import {Link} from "react-router-dom";
 
 class Collections extends Component {
@@ -9,8 +9,9 @@ class Collections extends Component {
     <div>
       <NavBar />
       <h1>Collections</h1>
+
       <button className="btn btn-success btn-lg">
-          <Link to="/collections/add">Add Collection</Link>
+          <Link to="/collections/new">Add Collection</Link>
         </button>
     </div> );
   }
