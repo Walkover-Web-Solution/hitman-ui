@@ -9,7 +9,7 @@ const NavBar = () => {
       </Link>
 
       <div className='collapse navbar-collapse' id='navbarNav'>
-        <NavLink className='nav-link nav-item' to='/login'>
+        <NavLink className='nav-link nav-item' to='/logout'>
           Logout
         </NavLink>
         <NavLink className='nav-link nav-item' to='/collectionVersions'>
