@@ -24,6 +24,8 @@ class CollectionComponent extends Form {
     }
 
      doSubmit(){
+
+        //Post request to Backend
         console.log("Submitted");
         console.log(this.state.data);
      }
