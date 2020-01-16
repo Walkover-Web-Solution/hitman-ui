@@ -1,26 +1,27 @@
-import React, { Component } from "react";
-import { Route, Switch } from "react-router-dom";
-import "./App.css";
-import Home from "./components/home";
-import Login from "./components/login";
-import Collections from "./components/collection";
-import newCollection from "./components/newCollection";
-
+import React, { Component } from 'react'
+import { Route, Switch } from 'react-router-dom'
+import Collections from './components/collection'
+import Home from './components/home'
+import Login from './components/login'
+import Logout from './components/logout'
+import CollectionVersions from './components/collectionVersions'
+import './App.css'
 class App extends Component {
-  render() {
+  render () {
     return (
       <div>
-        <div className="content">
-          <Switch> {/*if no logged in redirect to login page else */}
-            <Route path="/collections/new" component={newCollection} />
-            <Route path="/collections" component={Collections} />
-            <Route path="/login" component={Login} />
-            <Route path="/" component={Home} />
+        <div className='content'>
+          <Switch>
+            <Route path='/collectionVersions' component={CollectionVersions} />
+            <Route path='/collections' component={Collections} />
+            <Route path='/login' component={Login} />
+            <Route path='/logout' component={Logout} />
+            <Route path='/' component={Home} />
           </Switch>
         </div>
       </div>
-    );
+    )
   }
 }
 
-export default App;
+export default App

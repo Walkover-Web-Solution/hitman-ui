@@ -1,24 +1,23 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React from 'react'
+import { Link, NavLink } from 'react-router-dom'
+import CollectionVersions from './collectionVersions'
 const NavBar = () => {
-	return (
-		<nav className="navbar navbar-expand-lg navbar-light bg-light">
-			<Link className="navbar-brand" to="/">
-				<h1>HITMAN</h1>
-			</Link>
-			<button
-				className="navbar-toggler"
-				type="button"
-				data-toggle="collapse"
-				data-target="#navbarSupportedContent"
-				aria-controls="navbarSupportedContent"
-				aria-expanded="false"
-				aria-label="Toggle navigation"
-			>
-				<span className="navbar-toggler-icon" />
-			</button>
-		</nav>
-	);
-};
+  return (
+    <nav className='navbar navbar-expand-lg navbar-light bg-light'>
+      <Link className='navbar-brand' to='#'>
+        HITMAN
+      </Link>
 
-export default NavBar;
+      <div className='collapse navbar-collapse' id='navbarNav'>
+        <NavLink className='nav-link nav-item' to='/logout'>
+          Logout
+        </NavLink>
+        <NavLink className='nav-link nav-item' to='/collectionVersions'>
+          CollectionVersions
+        </NavLink>
+      </div>
+    </nav>
+  )
+}
+
+export default NavBar
