@@ -3,18 +3,19 @@ import { Link } from "react-router-dom";
 import Input from "./common/input";
 import Form from "./common/form";
 import Joi from 'joi-browser';
+import http from '../services/httpService';
 
 class CollectionComponent extends Form {
-
-    state={
-        data: {
-            name: "",
-            website: "",
-            keywords: "",
-            description:""
-        },
-        errors: {}
-    }
+   
+       state={
+            data: {
+                name: "",
+                website: "",
+                keywords: "",
+                description:""
+            },
+            errors: {}
+        }
 
     schema = {
         name: Joi.string().required().label('Username'),
@@ -23,10 +24,11 @@ class CollectionComponent extends Form {
         description: Joi.string().allow(null,'').label('Description')
     }
 
-     doSubmit(){
+     async doSubmit(){
 
         //Post request to Backend
-        console.log("Submitted");
+        //const { data: resp }= await http.post(createApiEndpoint, {this.state.data})
+        // console.log("Submitted");
         console.log(this.state.data);
      }
 
