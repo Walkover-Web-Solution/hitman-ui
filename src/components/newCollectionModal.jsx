@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
-import {Modal,Row,Col,Form,Button,ButtonToolbar} from 'react-bootstrap';
+import { Link } from "react-router-dom";
+import {Modal,Row,Col,Button,ButtonToolbar} from 'react-bootstrap';
 import Input from './common/input'
+import Form from "./common/form";
+import Joi from 'joi-browser';
 
-class NewCollectionModal extends Component {
+class NewCollectionModal extends Form {
 
   state = { 
-    modalShow : false,
     data:{
                 name: "",
                 website: "",
@@ -15,14 +17,20 @@ class NewCollectionModal extends Component {
         errors:{}
    }
 
-
-   handleChange = e => {
-    const data = {...this.state.data};
-    data[e.currentTarget.name] = e.currentTarget.value;
-    
-    this.setState({ data });
+   schema = {
+    name: Joi.string().required().label('Username'),
+    website: Joi.string().required().label('Website'),
+    keywords: Joi.string().required().label('Keywords'),
+    description: Joi.string().allow(null,'').label('Description')
 }
 
+async doSubmit(props){
+
+  //Post request to Backend
+  //const { data: resp }= await http.post(createApiEndpoint, {this.state.data})
+  // console.log("Submitted");
+  console.log(this.state.data);
+}
   render(){
     return (
     <Modal
@@ -37,21 +45,20 @@ class NewCollectionModal extends Component {
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
-      <form >
-        <Input name = "name" label="Name*" onChange={this.handleChange}/>
-        <Input name = 'website' label='Website*' onChange={this.handleChange}/>
-        <Input name = 'keywords' label='Keywords*'  onChange={this.handleChange}/>
-        <Input name = 'description' label='Description'  onChange={this.handleChange}/>
-            
-        {/* <button type="submit" className="btn btn-primary">Submit</button> */}
+      <form onSubmit={this.handleSubmit}>
 
-        </form>
-        <button type="submit" onClick={()=>{window.location = '/collections'}} className="btn btn-primary">Submit</button>
+                {this.renderInput('name','Name*')}
+                {this.renderInput('website','Website*')}
+                {this.renderInput('keywords','Keywords*')}
+                {this.renderInput('description','Description')}
+                
+                {this.renderButton("Submit")}
+                <button className="btn btn-default">
+                <Link to="/collections">Cancel</Link>
+                </button>
+               
+            </form>
       </Modal.Body>
-      <Modal.Footer>
-      
-        <Button onClick={this.props.onHide}>Close</Button>
-      </Modal.Footer>
     </Modal>
   );}
 }

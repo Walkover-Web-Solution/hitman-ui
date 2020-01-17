@@ -1,6 +1,5 @@
 import React from 'react'
 import { Link, NavLink } from 'react-router-dom'
-import CollectionVersions from './collectionVersions'
 const NavBar = () => {
   return (
     <nav className='navbar navbar-expand-lg navbar-light bg-light'>
@@ -11,9 +10,6 @@ const NavBar = () => {
       <div className='collapse navbar-collapse' id='navbarNav'>
         <NavLink className='nav-link nav-item' to='/logout'>
           Logout
-        </NavLink>
-        <NavLink className='nav-link nav-item' to='/collectionVersions'>
-          CollectionVersions
         </NavLink>
       </div>
     </nav>
