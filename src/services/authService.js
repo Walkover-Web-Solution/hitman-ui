@@ -1,7 +1,8 @@
 import jwtDecode from 'jwt-decode'
 import http from './httpService'
+import apiUrl from '../config.json'
 
-const apiEndpoint = '/login'
+const apiEndpoint = 'http://localhost:2000/login'
 const tokenKey = 'token'
 
 http.setJwt(getJwt())

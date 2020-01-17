@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import { Link } from "react-router-dom";
-import {Modal,Row,Col,Button,ButtonToolbar} from 'react-bootstrap';
-import Input from './common/input'
+import { Link, Redirect } from "react-router-dom";
+import {Modal} from 'react-bootstrap';
 import Form from "./common/form";
 import Joi from 'joi-browser';
 
@@ -14,7 +13,8 @@ class NewCollectionModal extends Form {
                 keywords: "",
                 description:""
     },
-        errors:{}
+        errors:{},
+        submittedNewCollection:false
    }
 
    schema = {
@@ -25,13 +25,15 @@ class NewCollectionModal extends Form {
 }
 
 async doSubmit(props){
-
-  //Post request to Backend
-  //const { data: resp }= await http.post(createApiEndpoint, {this.state.data})
-  // console.log("Submitted");
   console.log(this.state.data);
+  this.setState({submittedNewCollection:true})
 }
   render(){
+
+    if(this.state.submittedNewCollection)
+    {return <Redirect to={{pathname:'/collections' ,
+    state:{...this.state.data}}} />}
+
     return (
     <Modal
       {...this.props}
@@ -39,7 +41,7 @@ async doSubmit(props){
       aria-labelledby="contained-modal-title-vcenter"
       centered
     >
-      <Modal.Header closeButton>
+      <Modal.Header >
         <Modal.Title id="contained-modal-title-vcenter">
           Add new Collection
         </Modal.Title>
