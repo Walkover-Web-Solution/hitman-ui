@@ -6,14 +6,15 @@ import Login from './components/login'
 import Logout from './components/logout'
 import CollectionVersions from './components/collectionVersions'
 import './App.css'
+import ProtectedRoute from './components/common/protectedRoute';
 class App extends Component {
   render () {
     return (
       <div>
         <div className='content'>
           <Switch>
-            <Route path='/collectionVersions' component={CollectionVersions} />
-            <Route path='/collections' component={Collections} />
+            <ProtectedRoute path='/collectionVersions' component={CollectionVersions} />
+            <ProtectedRoute path='/collections' component={Collections} />
             <Route path='/login' component={Login} />
             <Route path='/logout' component={Logout} />
             <Route path='/' component={Home} />
