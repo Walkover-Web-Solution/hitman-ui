@@ -1,5 +1,6 @@
 import http from './httpService';
 import { apiUrl } from '../config.json';
+import { getcollections, saveCollection } from './collectionsService';
 
 const apiEndpoint = apiUrl + '/collections';
 
@@ -7,15 +8,15 @@ function collectionUrl(id) {
 	return `${apiEndpoint}/${id}`;
 }
 
-export function getcollections() {
+export function getCollections() {
 	return http.get(apiEndpoint);
 }
 
-export function getcollection(collectionId) {
+export function getCollection(collectionId) {
 	return http.get(collectionUrl(collectionId));
 }
 
-export function savecollection(collection) {
+export function saveCollection(collection) {
 	if (collection._id) {
 		const body = { ...collection };
 		delete body._id;
@@ -25,6 +26,13 @@ export function savecollection(collection) {
 	return http.post(apiEndpoint, collection);
 }
 
-export function deletecollection(collectionId) {
+export function deleteCollection(collectionId) {
 	return http.delete(collectionUrl(collectionId));
 }
+
+export default {
+	getCollections,
+	getCollection,
+	saveCollection,
+	deleteCollection
+};
