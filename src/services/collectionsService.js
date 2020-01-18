@@ -1,6 +1,5 @@
 import http from './httpService';
 import { apiUrl } from '../config.json';
-import { getcollections, saveCollection } from './collectionsService';
 
 const apiEndpoint = apiUrl + '/collections';
 
