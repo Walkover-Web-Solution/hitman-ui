@@ -20,7 +20,7 @@ class Login extends Component {
 
   render () {
     if (auth.getCurrentUser()) return <Redirect to='/collections' />
-    const redirectionUrl = 'http://localhost:3000/login'
+    const redirectionUrl = 'https://hitman-api.herokuapp.com/'
     const socketLoginUrl = `https://viasocket.com/login?token_required=true&redirect_uri=${redirectionUrl}`
 
     const h1style = {
