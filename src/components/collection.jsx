@@ -17,9 +17,9 @@ class Collections extends Component {
 	}
 
 	async handleAdd(newCollection) {
-		this.setState({ posts });
 		const { data: post } = await collections.saveCollection(newCollection);
 		const posts = [ post, ...this.state.posts ];
+		this.setState({ posts });
 	}
 
 	async handleDelete(post) {
