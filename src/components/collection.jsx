@@ -11,31 +11,33 @@ class Collections extends Component {
 	};
 
 	async componentDidMount() {
-		// const { data: posts } = await collections.getCollections();
-		// this.setState({ posts });
+		const { data: posts } = await collections.getCollections();
+		this.setState({ posts });
 		this.props.history.replace({ newCollection: null });
 	}
 
 	async handleAdd(newCollection) {
-		console.log(newCollection);
 		const { data: post } = await collections.saveCollection(newCollection);
 		const posts = [ post, ...this.state.posts ];
-		this.state.posts = posts;
+		this.setState({ posts });
 	}
 
 	async handleDelete(post) {
 		this.props.history.replace({ newCollection: null });
 		const posts = this.state.posts.filter((p) => p.identifier !== post.identifier);
 		this.setState({ posts });
-		await collections.deleteCollection(post);
+		await collections.deleteCollection(post.identifier);
 	}
 
 	handleUpdate(post) {}
 
 	render() {
 		if (this.props.location.newCollection) {
-			this.handleAdd(this.props.location.newCollection);
+			const newCollection = this.props.location.newCollection;
+			this.props.history.replace({ newCollection: null });
+			this.handleAdd(newCollection);
 		}
+
 		return (
 			<div>
 				<NavBar />
@@ -57,19 +59,19 @@ class Collections extends Component {
 					<thead>
 						<tr>
 							<th>Title</th>
-							<th>Edit</th>
+							{/* <th>Edit</th> */}
 							<th>Delete</th>
 						</tr>
 					</thead>
 					<tbody>
 						{this.state.posts.map((post) => (
-							<tr key={post.website}>
+							<tr key={post.identifier}>
 								<td>{post.name}</td>
-								<td>
+								{/* <td>
 									<button className="btn btn-info btn-sm" onClick={() => this.handleUpdate(post)}>
 										Update
 									</button>
-								</td>
+								</td> */}
 								<td>
 									<button className="btn btn-danger btn-sm" onClick={() => this.handleDelete(post)}>
 										Delete

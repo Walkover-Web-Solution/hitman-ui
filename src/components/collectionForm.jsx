@@ -24,7 +24,6 @@ class CollectionForm extends Form {
 	};
 
 	async doSubmit(props) {
-		console.log(this.state.data);
 		this.setState({ submittedNewCollection: true });
 	}
 

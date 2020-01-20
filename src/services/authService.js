@@ -1,17 +1,19 @@
 import jwtDecode from 'jwt-decode';
 import http from './httpService';
+import { apiUrl } from '../config.json';
 
-const apiEndpoint = 'http://localhost:2000/login';
+const apiEndpoint = apiUrl + '/login';
 const tokenKey = 'token';
 
 http.setJwt(getJwt());
 
 export async function login(socketJwt) {
 	//Dummy Token
-	const jwt =
-		'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
-	//const { data: jwt } = await http.post(apiEndpoint, { socketJwt });
+	// const jwt =
+	// 	'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
+	const { data: jwt } = await http.post(apiEndpoint, { socketJwt });
 	localStorage.setItem(tokenKey, jwt);
+	http.setJwt(jwt);
 }
 
 export function loginWithJwt(jwt) {
