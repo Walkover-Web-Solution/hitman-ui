@@ -7,7 +7,8 @@ import collections from '../services/collectionsService';
 
 class Collections extends Component {
 	state = {
-		posts: []
+		posts: [],
+		selectedpost: {}
 	};
 
 	async componentDidMount() {
@@ -17,9 +18,20 @@ class Collections extends Component {
 	}
 
 	async handleAdd(newCollection) {
-		const { data: post } = await collections.saveCollection(newCollection);
-		const posts = [ post, ...this.state.posts ];
-		this.setState({ posts });
+		if (newCollection.identifier) {
+			const index = this.state.posts.findIndex((post) => post.identifier == newCollection.identifier);
+			await collections.saveCollection(newCollection);
+			this.state.posts[index].name = newCollection.name;
+			this.state.posts[index].website = newCollection.website;
+			this.state.posts[index].keyword = newCollection.keyword;
+			this.state.posts[index].description = newCollection.description;
+			const posts = [ ...this.state.posts ];
+			this.setState({ posts });
+		} else {
+			const { data: post } = await collections.saveCollection(newCollection);
+			const posts = [ post, ...this.state.posts ];
+			this.setState({ posts });
+		}
 	}
 
 	async handleDelete(post) {
@@ -29,7 +41,10 @@ class Collections extends Component {
 		await collections.deleteCollection(post.identifier);
 	}
 
-	handleUpdate(post) {}
+	handleUpdate(post) {
+		this.state.selectedpost = post;
+		this.props.history.push(`/collections/${post.name}/edit`);
+	}
 
 	render() {
 		if (this.props.location.newCollection) {
@@ -51,7 +66,20 @@ class Collections extends Component {
 					<Switch>
 						<Route
 							path="/collections/new"
-							render={(props) => <CollectionForm show={true} onHide={() => {}} />}
+							render={(props) => (
+								<CollectionForm show={true} onHide={() => {}} title="Add new Collection" />
+							)}
+						/>
+						<Route
+							path="/collections/:id/edit"
+							render={(props) => (
+								<CollectionForm
+									show={true}
+									onHide={() => {}}
+									title="Edit Collection"
+									posts={this.state.selectedpost}
+								/>
+							)}
 						/>
 					</Switch>
 				</div>
@@ -59,7 +87,7 @@ class Collections extends Component {
 					<thead>
 						<tr>
 							<th>Title</th>
-							{/* <th>Edit</th> */}
+							<th>Edit</th>
 							<th>Delete</th>
 						</tr>
 					</thead>
@@ -67,11 +95,11 @@ class Collections extends Component {
 						{this.state.posts.map((post) => (
 							<tr key={post.identifier}>
 								<td>{post.name}</td>
-								{/* <td>
+								<td>
 									<button className="btn btn-info btn-sm" onClick={() => this.handleUpdate(post)}>
-										Update
+										Edit
 									</button>
-								</td> */}
+								</td>
 								<td>
 									<button className="btn btn-danger btn-sm" onClick={() => this.handleDelete(post)}>
 										Delete

@@ -13,7 +13,8 @@ class CollectionForm extends Form {
 			keyword: ''
 		},
 		errors: {},
-		submittedNewCollection: false
+		redirect: false,
+		editCollection: true
 	};
 
 	schema = {
@@ -24,11 +25,18 @@ class CollectionForm extends Form {
 	};
 
 	async doSubmit(props) {
-		this.setState({ submittedNewCollection: true });
+		this.state.editCollection = true;
+		if (this.props.title == 'Edit Collection') {
+			this.state.data.identifier = this.props.posts.identifier;
+			this.setState({ redirect: true });
+		}
+		if (this.props.title == 'Add new Collection') {
+			this.setState({ redirect: true });
+		}
 	}
 
 	render() {
-		if (this.state.submittedNewCollection) {
+		if (this.state.redirect) {
 			return (
 				<Redirect
 					to={{
@@ -38,10 +46,17 @@ class CollectionForm extends Form {
 				/>
 			);
 		}
+		if (this.props.posts && this.state.editCollection) {
+			this.state.editCollection = false;
+			this.state.data.name = this.props.posts.name;
+			this.state.data.website = this.props.posts.website;
+			this.state.data.description = this.props.posts.description;
+			this.state.data.keyword = this.props.posts.keyword;
+		} else this.state.editCollection = null;
 		return (
 			<Modal {...this.props} size="lg" aria-labelledby="contained-modal-title-vcenter" centered>
 				<Modal.Header>
-					<Modal.Title id="contained-modal-title-vcenter">Add new Collection</Modal.Title>
+					<Modal.Title id="contained-modal-title-vcenter">{this.props.title}</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
 					<form onSubmit={this.handleSubmit}>
@@ -50,9 +65,7 @@ class CollectionForm extends Form {
 						{this.renderInput('keyword', 'Keywords*')}
 						{this.renderInput('description', 'Description')}
 						{this.renderButton('Submit')}
-						<button className="btn btn-default">
-							<Link to="/collections">Cancel</Link>
-						</button>
+						<Link to="/collections">Cancel</Link>
 					</form>
 				</Modal.Body>
 			</Modal>

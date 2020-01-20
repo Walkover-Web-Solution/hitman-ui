@@ -16,10 +16,10 @@ export function getCollection(collectionId) {
 }
 
 export function saveCollection(collection) {
-	if (collection._id) {
+	if (collection.identifier) {
 		const body = { ...collection };
-		delete body._id;
-		return http.put(collectionUrl(collection._id), body);
+		delete body.identifier;
+		return http.put(collectionUrl(collection.identifier), body);
 	}
 
 	return http.post(apiEndpoint, collection);
