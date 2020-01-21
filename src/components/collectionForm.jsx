@@ -27,7 +27,7 @@ class CollectionForm extends Form {
 	async doSubmit(props) {
 		this.state.editCollection = true;
 		if (this.props.title == 'Edit Collection') {
-			this.state.data.identifier = this.props.posts.identifier;
+			this.state.data.identifier = this.props.selectedcollection.identifier;
 			this.setState({ redirect: true });
 		}
 		if (this.props.title == 'Add new Collection') {
@@ -46,12 +46,12 @@ class CollectionForm extends Form {
 				/>
 			);
 		}
-		if (this.props.posts && this.state.editCollection) {
+		if (this.props.selectedcollection && this.state.editCollection) {
 			this.state.editCollection = false;
-			this.state.data.name = this.props.posts.name;
-			this.state.data.website = this.props.posts.website;
-			this.state.data.description = this.props.posts.description;
-			this.state.data.keyword = this.props.posts.keyword;
+			this.state.data.name = this.props.selectedcollection.name;
+			this.state.data.website = this.props.selectedcollection.website;
+			this.state.data.description = this.props.selectedcollection.description;
+			this.state.data.keyword = this.props.selectedcollection.keyword;
 		} else this.state.editCollection = null;
 		return (
 			<Modal {...this.props} size="lg" aria-labelledby="contained-modal-title-vcenter" centered>

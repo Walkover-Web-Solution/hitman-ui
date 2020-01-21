@@ -3,47 +3,49 @@ import { Route, Switch } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import NavBar from './navbar';
 import CollectionForm from './collectionForm';
-import collections from '../services/collectionsService';
+import collectionsservice from '../services/collectionsService';
 
 class Collections extends Component {
 	state = {
-		posts: [],
-		selectedpost: {}
+		collections: [],
+		selectedcollection: {}
 	};
 
 	async componentDidMount() {
-		const { data: posts } = await collections.getCollections();
-		this.setState({ posts });
+		const { data: collections } = await collectionsservice.getCollections();
+		this.setState({ collections });
 		this.props.history.replace({ newCollection: null });
 	}
 
 	async handleAdd(newCollection) {
 		if (newCollection.identifier) {
-			const index = this.state.posts.findIndex((post) => post.identifier == newCollection.identifier);
-			await collections.saveCollection(newCollection);
-			this.state.posts[index].name = newCollection.name;
-			this.state.posts[index].website = newCollection.website;
-			this.state.posts[index].keyword = newCollection.keyword;
-			this.state.posts[index].description = newCollection.description;
-			const posts = [ ...this.state.posts ];
-			this.setState({ posts });
+			const index = this.state.collections.findIndex(
+				(collection) => collection.identifier == newCollection.identifier
+			);
+			await collectionsservice.saveCollection(newCollection);
+			this.state.collections[index].name = newCollection.name;
+			this.state.collections[index].website = newCollection.website;
+			this.state.collections[index].keyword = newCollection.keyword;
+			this.state.collections[index].description = newCollection.description;
+			const collections = [ ...this.state.collections ];
+			this.setState({ collections });
 		} else {
-			const { data: post } = await collections.saveCollection(newCollection);
-			const posts = [ ...this.state.posts, post ];
-			this.setState({ posts });
+			const { data: collection } = await collectionsservice.saveCollection(newCollection);
+			const collections = [ ...this.state.collections, collection ];
+			this.setState({ collections });
 		}
 	}
 
-	async handleDelete(post) {
+	async handleDelete(collection) {
 		this.props.history.replace({ newCollection: null });
-		const posts = this.state.posts.filter((p) => p.identifier !== post.identifier);
-		this.setState({ posts });
-		await collections.deleteCollection(post.identifier);
+		const collections = this.state.collections.filter((c) => c.identifier !== collection.identifier);
+		this.setState({ collections });
+		await collectionsservice.deleteCollection(collection.identifier);
 	}
 
-	handleUpdate(post) {
-		this.state.selectedpost = post;
-		this.props.history.push(`/collections/${post.name}/edit`);
+	handleUpdate(collection) {
+		this.state.selectedcollection = collection;
+		this.props.history.push(`/collections/${collection.name}/edit`);
 	}
 
 	render() {
@@ -57,11 +59,9 @@ class Collections extends Component {
 			<div>
 				<NavBar />
 				<h1>Collections</h1>
-				{
-					<button className="btn btn-success btn-lg">
-						<Link to="/collections/new">Add Collection</Link>
-					</button>
-				}
+				<button className="btn btn-success btn-lg">
+					<Link to="/collections/new">Add Collection</Link>
+				</button>
 				<div className="tabs">
 					<Switch>
 						<Route
@@ -77,7 +77,7 @@ class Collections extends Component {
 									show={true}
 									onHide={() => {}}
 									title="Edit Collection"
-									posts={this.state.selectedpost}
+									selectedcollection={this.state.selectedcollection}
 								/>
 							)}
 						/>
@@ -89,20 +89,36 @@ class Collections extends Component {
 							<th>Title</th>
 							<th>Edit</th>
 							<th>Delete</th>
+							<th>Versions</th>
 						</tr>
 					</thead>
 					<tbody>
-						{this.state.posts.map((post) => (
-							<tr key={post.identifier}>
-								<td>{post.name}</td>
+						{this.state.collections.map((collection) => (
+							<tr key={collection.identifier}>
+								<td>{collection.name}</td>
 								<td>
-									<button className="btn btn-info btn-sm" onClick={() => this.handleUpdate(post)}>
+									<button
+										className="btn btn-info btn-sm"
+										onClick={() => this.handleUpdate(collection)}
+									>
 										Edit
 									</button>
 								</td>
 								<td>
-									<button className="btn btn-danger btn-sm" onClick={() => this.handleDelete(post)}>
+									<button
+										className="btn btn-danger btn-sm"
+										onClick={() => this.handleDelete(collection)}
+									>
 										Delete
+									</button>
+								</td>
+								<td>
+									<button
+										className="btn btn-info btn-sm"
+										onClick={() =>
+											this.props.history.push(`/collections/${collection.identifier}/versions`)}
+									>
+										Versions
 									</button>
 								</td>
 							</tr>

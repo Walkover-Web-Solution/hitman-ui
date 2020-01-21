@@ -9,10 +9,8 @@ import Joi from 'joi-browser';
 class CollectionVersionForm extends Form {
 	state = {
 		data: {
-			name: '',
-			website: '',
-			description: '',
-			keyword: ''
+			number: '',
+			host: ''
 		},
 		errors: {},
 		redirect: false,
@@ -20,19 +18,17 @@ class CollectionVersionForm extends Form {
 	};
 
 	schema = {
-		name: Joi.string().required().label('Username'),
-		website: Joi.string().required().label('Website'),
-		keyword: Joi.string().required().label('Keywords'),
-		description: Joi.string().allow(null, '').label('Description')
+		number: Joi.string().required().label('Version number'),
+		host: Joi.string().required().label('Host')
 	};
 
 	async doSubmit(props) {
 		this.state.editCollectionVersion = true;
-		if (this.props.title == 'Edit CollectionVersion') {
+		if (this.props.title == 'Edit Collection Version') {
 			this.state.data.identifier = this.props.posts.identifier;
 			this.setState({ redirect: true });
 		}
-		if (this.props.title == 'Add new CollectionVersion') {
+		if (this.props.title == 'Add new Collection Version') {
 			this.setState({ redirect: true });
 		}
 	}
@@ -42,7 +38,7 @@ class CollectionVersionForm extends Form {
 			return (
 				<Redirect
 					to={{
-						pathname: '/collections/:id/collectionVersions',
+						pathname: `/collections/${this.props.collectionid}/versions`,
 						newCollectionVersion: { ...this.state.data }
 					}}
 				/>
@@ -62,12 +58,10 @@ class CollectionVersionForm extends Form {
 				</Modal.Header>
 				<Modal.Body>
 					<form onSubmit={this.handleSubmit}>
-						{this.renderInput('name', 'Name*')}
-						{this.renderInput('website', 'Website*')}
-						{this.renderInput('keyword', 'Keywords*')}
-						{this.renderInput('description', 'Description')}
+						{this.renderInput('number', 'Version Number')}
+						{this.renderInput('host', 'Host*')}
 						{this.renderButton('Submit')}
-						<Link to="/collections/:id/collectionVersions">Cancel</Link>
+						<Link to={`/collections/${this.props.collectionid}/versions`}>Cancel</Link>
 					</form>
 				</Modal.Body>
 			</Modal>
