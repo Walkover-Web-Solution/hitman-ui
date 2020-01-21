@@ -29,7 +29,7 @@ class Collections extends Component {
 			this.setState({ posts });
 		} else {
 			const { data: post } = await collections.saveCollection(newCollection);
-			const posts = [ post, ...this.state.posts ];
+			const posts = [ ...this.state.posts, post ];
 			this.setState({ posts });
 		}
 	}
