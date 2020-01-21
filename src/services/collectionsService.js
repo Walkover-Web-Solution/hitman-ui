@@ -16,13 +16,11 @@ export function getCollection(collectionId) {
 }
 
 export function saveCollection(collection) {
-	if (collection.identifier) {
-		const body = { ...collection };
-		delete body.identifier;
-		return http.put(collectionUrl(collection.identifier), body);
-	}
-
 	return http.post(apiEndpoint, collection);
+}
+
+export function updateCollection(collectionId, collection) {
+	return http.put(collectionUrl(collectionId), collection);
 }
 
 export function deleteCollection(collectionId) {
@@ -33,5 +31,6 @@ export default {
 	getCollections,
 	getCollection,
 	saveCollection,
+	updateCollection,
 	deleteCollection
 };

@@ -26,11 +26,11 @@ class CollectionForm extends Form {
 
 	async doSubmit(props) {
 		this.state.editCollection = true;
-		if (this.props.title == 'Edit Collection') {
+		if (this.props.title === 'Edit Collection') {
 			this.state.data.identifier = this.props.selectedcollection.identifier;
 			this.setState({ redirect: true });
 		}
-		if (this.props.title == 'Add new Collection') {
+		if (this.props.title === 'Add new Collection') {
 			this.setState({ redirect: true });
 		}
 	}

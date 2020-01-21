@@ -19,15 +19,15 @@ class Collections extends Component {
 
 	async handleAdd(newCollection) {
 		if (newCollection.identifier) {
+			const body = { ...newCollection };
+			console.log(body);
+			delete body.identifier;
 			const index = this.state.collections.findIndex(
-				(collection) => collection.identifier == newCollection.identifier
+				(collection) => collection.identifier === newCollection.identifier
 			);
-			await collectionsservice.saveCollection(newCollection);
-			this.state.collections[index].name = newCollection.name;
-			this.state.collections[index].website = newCollection.website;
-			this.state.collections[index].keyword = newCollection.keyword;
-			this.state.collections[index].description = newCollection.description;
+			await collectionsservice.updateCollection(newCollection.identifier, body);
 			const collections = [ ...this.state.collections ];
+			collections[index] = body;
 			this.setState({ collections });
 		} else {
 			const { data: collection } = await collectionsservice.saveCollection(newCollection);

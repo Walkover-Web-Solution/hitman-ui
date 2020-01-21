@@ -8,7 +8,8 @@ import CollectionVersionForm from './collectionVersionForm';
 class CollectionVersions extends Component {
 	state = {
 		collectionVersions: [],
-		collectionId: ''
+		collectionId: '',
+		selectedCollectionVersion: {}
 	};
 
 	async componentDidMount() {
@@ -16,10 +17,22 @@ class CollectionVersions extends Component {
 			this.state.collectionId
 		);
 		this.setState({ collectionVersions });
-		// this.props.history.replace({ newCollection: null });
+		this.props.history.replace({ newCollectionVersion: null });
 	}
 
 	async handleAdd(newCollectionVersion) {
+		if (newCollectionVersion.collectionId) {
+			const body = { ...newCollectionVersion };
+			console.log(body);
+			delete body.collectionId;
+			const index = this.state.collectionVersions.findIndex(
+				(cv) => cv.collectionId === newCollectionVersion.collectionId
+			);
+			await collectionversionsservice.updateCollectionVersion(this.state.collectionId, body);
+			const collectionVersions = [ ...this.state.collectionVersions ];
+			collectionVersions[index] = body;
+			this.setState({ collectionVersions });
+		}
 		console.log(newCollectionVersion);
 		const { data: collectionVersion } = await collectionversionsservice.saveCollectionVersion(
 			this.state.collectionId,
@@ -29,9 +42,17 @@ class CollectionVersions extends Component {
 		this.setState({ collectionVersions });
 	}
 
-	async handleDelete(collectionVersion) {}
+	async handleDelete(collectionVersion) {
+		this.props.history.replace({ newCollectionVersion: null });
+		const collectionVersions = this.state.collectionVersions.filter((cv) => cv.number !== collectionVersion.number);
+		this.setState({ collectionVersions });
+		await collectionversionsservice.deleteCollectionVersion(this.state.collectionId, collectionVersion.number);
+	}
 
-	handleUpdate(collectionVersion) {}
+	handleUpdate(collectionVersion) {
+		this.state.selectedCollectionVersion = collectionVersion;
+		this.props.history.push(`/collections/${this.state.collectionId}/versions/${collectionVersion.number}/edit`);
+	}
 
 	render() {
 		this.state.collectionId = this.props.location.pathname.split('/')[2];
@@ -64,13 +85,14 @@ class CollectionVersions extends Component {
 						)}
 					/>
 					<Route
-						path="/collections/:collectionId/versions/edit"
+						path="/collections/:collectionId/versions/:collectioVersionNumber/edit"
 						render={(props) => (
 							<CollectionVersionForm
 								show={true}
 								onHide={() => {}}
-								title="Edit Collection"
-								selectedcollection={this.state.selectedcollection}
+								title="Edit Collection Version"
+								collectionid={this.state.collectionId}
+								selectedcollectionversion={this.state.selectedCollectionVersion}
 							/>
 						)}
 					/>

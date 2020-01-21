@@ -8,7 +8,7 @@ function collectionVersionsUrl(collectionId) {
 }
 
 function collectionVersionUrl(collectionId, collectionVersionNumber) {
-	return `${collectionVersionsUrl(collectionId)}/v${collectionVersionNumber}`;
+	return `${collectionVersionsUrl(collectionId)}/${collectionVersionNumber}`;
 }
 
 export function getCollectionVersions(collectionId) {
@@ -20,21 +20,22 @@ export function getCollectionVersion(collectionId, collectionVersionNumber) {
 }
 
 export function saveCollectionVersion(collectionId, collectionVersion) {
-	// if (collectionVersion._id) {
-	// 	const body = { ...collectionVersion };
-	// 	delete body._id;
-	// 	return http.put(collectionVersionUrl(collectionVersion._id), body);
-	// }
 	return http.post(collectionVersionsUrl(collectionId), collectionVersion);
 }
 
-export function deleteCollectionVersion(collectionId, collectionVersionId) {
-	return http.delete(collectionVersionUrl(collectionId, collectionVersionId));
+export function updateCollectionVersion(collectionId, collectionVersion) {
+	console.log(collectionVersionUrl(collectionId, collectionVersion.number));
+	return http.put(collectionVersionUrl(collectionId, collectionVersion.number), collectionVersion);
+}
+
+export function deleteCollectionVersion(collectionId, collectionVersionNumber) {
+	return http.delete(collectionVersionUrl(collectionId, collectionVersionNumber));
 }
 
 export default {
 	getCollectionVersions,
 	getCollectionVersion,
 	saveCollectionVersion,
+	updateCollectionVersion,
 	deleteCollectionVersion
 };
