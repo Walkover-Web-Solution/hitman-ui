@@ -1,35 +1,37 @@
 import http from './httpService';
+import axios from 'axios';
 import { apiUrl } from '../config.json';
 
-const apiEndpoint = apiUrl + '/collections/:collectionId/collectionVersions';
+const apiEndpoint = apiUrl + '/versions';
 
-function collectionVersionsUrl(collectionId) {
-	return `${apiUrl}/collections/${collectionId}/versions`;
+function collectionVersionUrl(collectionVersionId) {
+	return `${apiEndpoint}/${collectionVersionId}`;
 }
 
-function collectionVersionUrl(collectionId, collectionVersionNumber) {
-	return `${collectionVersionsUrl(collectionId)}/${collectionVersionNumber}`;
+export function setcollectionId(collectionId) {
+	axios.defaults.headers.common['collectionId'] = collectionId;
 }
 
-export function getCollectionVersions(collectionId) {
-	return http.get(collectionVersionsUrl(collectionId));
+export function getCollectionVersions() {
+	return http.get(apiEndpoint);
 }
 
-export function getCollectionVersion(collectionId, collectionVersionNumber) {
-	return http.get(collectionVersionUrl(collectionId, collectionVersionNumber));
+export function getCollectionVersion(collectionVersionId) {
+	return http.get(collectionVersionUrl(collectionVersionId));
 }
 
-export function saveCollectionVersion(collectionId, collectionVersion) {
-	return http.post(collectionVersionsUrl(collectionId), collectionVersion);
+export function saveCollectionVersion(collectionVersion) {
+	console.log(apiEndpoint, collectionVersion);
+	return http.post(apiEndpoint, collectionVersion);
 }
 
-export function updateCollectionVersion(collectionId, collectionVersion) {
-	console.log(collectionVersionUrl(collectionId, collectionVersion.number));
-	return http.put(collectionVersionUrl(collectionId, collectionVersion.number), collectionVersion);
+export function updateCollectionVersion(collectionVersionId, collectionVersion) {
+	console.log(collectionVersionUrl(collectionVersionId));
+	return http.put(collectionVersionUrl(collectionVersionId), collectionVersion);
 }
 
-export function deleteCollectionVersion(collectionId, collectionVersionNumber) {
-	return http.delete(collectionVersionUrl(collectionId, collectionVersionNumber));
+export function deleteCollectionVersion(collectionVersionId) {
+	return http.delete(collectionVersionUrl(collectionVersionId));
 }
 
 export default {
@@ -37,5 +39,6 @@ export default {
 	getCollectionVersion,
 	saveCollectionVersion,
 	updateCollectionVersion,
-	deleteCollectionVersion
+	deleteCollectionVersion,
+	setcollectionId
 };

@@ -25,7 +25,7 @@ class CollectionVersionForm extends Form {
 	async doSubmit(props) {
 		this.state.editCollectionVersion = true;
 		if (this.props.title === 'Edit Collection Version') {
-			this.state.data.collectionId = this.props.selectedcollectionversion.collectionId;
+			this.state.data.id = this.props.selectedcollectionversion.id;
 			this.setState({ redirect: true });
 		}
 		if (this.props.title === 'Add new Collection Version') {

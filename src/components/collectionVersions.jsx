@@ -13,40 +13,32 @@ class CollectionVersions extends Component {
 	};
 
 	async componentDidMount() {
-		const { data: collectionVersions } = await collectionversionsservice.getCollectionVersions(
-			this.state.collectionId
-		);
+		collectionversionsservice.setcollectionId(this.state.collectionId);
+		const { data: collectionVersions } = await collectionversionsservice.getCollectionVersions();
 		this.setState({ collectionVersions });
 		this.props.history.replace({ newCollectionVersion: null });
 	}
 
 	async handleAdd(newCollectionVersion) {
-		if (newCollectionVersion.collectionId) {
+		if (newCollectionVersion.id) {
 			const body = { ...newCollectionVersion };
-			console.log(body);
-			delete body.collectionId;
-			const index = this.state.collectionVersions.findIndex(
-				(cv) => cv.collectionId === newCollectionVersion.collectionId
-			);
-			await collectionversionsservice.updateCollectionVersion(this.state.collectionId, body);
+			delete body.id;
+			const index = this.state.collectionVersions.findIndex((cv) => cv.id === newCollectionVersion.id);
+			await collectionversionsservice.updateCollectionVersion(newCollectionVersion.id, body);
 			const collectionVersions = [ ...this.state.collectionVersions ];
 			collectionVersions[index] = body;
 			this.setState({ collectionVersions });
 		}
-		console.log(newCollectionVersion);
-		const { data: collectionVersion } = await collectionversionsservice.saveCollectionVersion(
-			this.state.collectionId,
-			newCollectionVersion
-		);
+		const { data: collectionVersion } = await collectionversionsservice.saveCollectionVersion(newCollectionVersion);
 		const collectionVersions = [ ...this.state.collectionVersions, collectionVersion ];
 		this.setState({ collectionVersions });
 	}
 
 	async handleDelete(collectionVersion) {
 		this.props.history.replace({ newCollectionVersion: null });
-		const collectionVersions = this.state.collectionVersions.filter((cv) => cv.number !== collectionVersion.number);
+		const collectionVersions = this.state.collectionVersions.filter((cv) => cv.id !== collectionVersion.id);
 		this.setState({ collectionVersions });
-		await collectionversionsservice.deleteCollectionVersion(this.state.collectionId, collectionVersion.number);
+		await collectionversionsservice.deleteCollectionVersion(collectionVersion.id);
 	}
 
 	handleUpdate(collectionVersion) {
@@ -108,7 +100,7 @@ class CollectionVersions extends Component {
 					</thead>
 					<tbody>
 						{this.state.collectionVersions.map((collectionVersion) => (
-							<tr key={collectionVersion.number}>
+							<tr key={collectionVersion.id}>
 								<td>Version-{collectionVersion.number}</td>
 								<td>
 									<button
