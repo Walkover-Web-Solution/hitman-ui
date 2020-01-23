@@ -1,18 +1,20 @@
-import React from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import React from 'react'
+import { Link, NavLink } from 'react-router-dom'
 const NavBar = () => {
-	return (
-		<nav className="navbar navbar-expand-lg navbar-light bg-light">
-			<Link className="navbar-brand" to="#">
-				HITMAN
-			</Link>
-			<div className="collapse navbar-collapse" id="navbarNav">
-				<NavLink className="nav-link nav-item" to="/logout">
-					Logout
-				</NavLink>
-			</div>
-		</nav>
-	);
-};
+  return (
+    <nav className='navbar navbar-light bg-light' style={{ padding: '0' }}>
+      <Link className='navbar-brand' to='#'>
+        HITMAN
+      </Link>
 
-export default NavBar;
+      <NavLink
+        style={{ float: 'right', padding: '20px', fontSize: '20px' }}
+        to='/logout'
+      >
+        Logout
+      </NavLink>
+    </nav>
+  )
+}
+
+export default NavBar
