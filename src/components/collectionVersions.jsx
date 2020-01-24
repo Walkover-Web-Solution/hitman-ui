@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
-import { Route, Switch } from 'react-router-dom';
-import { Link } from 'react-router-dom';
 import collectionversionsservice from '../services/collectionVersionServices';
-import CollectionVersionForm from './collectionVersionForm';
 import './collectionStyle.css';
 import { Accordion, Card, Button, Dropdown, DropdownButton } from 'react-bootstrap';
 
 class CollectionVersions extends Component {
+	state = {};
+
 	async handleAdd(newCollectionVersion) {
 		if (newCollectionVersion.id) {
 			const body = { ...newCollectionVersion };
@@ -35,13 +34,12 @@ class CollectionVersions extends Component {
 	}
 
 	render() {
+		console.log(this.props.collections);
 		return (
 			<div>
-				<link rel="stylesheet" type="text/css" href="collectionStyle.css" />
-
 				{this.props.collections.collectionVersions &&
-					this.props.collections.collectionVersions.map((collectionVersion, index1) => (
-						<Accordion defaultActiveKey="0" key={'c' + collectionVersion.id}>
+					this.props.collections.collectionVersions.map((collectionVersion, index) => (
+						<Accordion defaultActiveKey="0" key={index}>
 							<Card>
 								<Card.Header>
 									<Accordion.Toggle as={Button} variant="link" eventKey="1">

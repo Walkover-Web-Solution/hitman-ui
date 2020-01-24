@@ -116,10 +116,7 @@ class Collections extends Component {
 								</Card.Header>
 								<Accordion.Collapse eventKey="1">
 									<Card.Body>
-										<CollectionVersions
-											collections={this.state.collections[index]}
-											selectedcollection={this.state.selectedcollection}
-										/>
+										<CollectionVersions collections={this.state.collections[index]} />
 									</Card.Body>
 								</Accordion.Collapse>
 							</Card>
