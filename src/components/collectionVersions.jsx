@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import collectionversionsservice from '../services/collectionVersionServices';
-import './collectionStyle.css';
 import { Accordion, Card, Button, Dropdown, DropdownButton } from 'react-bootstrap';
 
 class CollectionVersions extends Component {
