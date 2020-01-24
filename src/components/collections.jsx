@@ -6,11 +6,13 @@ import CollectionForm from './collectionForm';
 import collectionsservice from '../services/collectionsService';
 import collectionversionsservice from '../services/collectionVersionServices';
 import CollectionVersions from './collectionVersions';
+import CollectionVersionForm from './collectionVersionForm';
 
 class Collections extends Component {
 	state = {
 		collections: [],
-		selectedcollection: {}
+		selectedcollection: {},
+		selectedCollectionVersion: {}
 	};
 
 	async fetchVersions(collectionId, index) {
@@ -58,17 +60,68 @@ class Collections extends Component {
 		this.props.history.push(`/collections/${collection.name}/edit`);
 	}
 
+	handleAddVersion(collection) {
+		this.state.selectedcollection = collection;
+		this.props.history.push(`/collections/${collection.name}/versions/new`);
+	}
+
 	render() {
 		if (this.props.location.newCollection) {
 			const newCollection = this.props.location.newCollection;
 			this.props.history.replace({ newCollection: null });
 			this.handleAdd(newCollection);
 		}
+		if (this.props.location.newCollectionVersion) {
+			console.log(this.props.location);
+			const newCollectionVersion = this.props.location.newCollectionVersion;
+			this.props.history.replace({ newCollectionVersion: null });
+			let collections = this.state.collections;
+			const index = collections.findIndex(
+				(collection) => collection.identifier == this.props.location.collectionId
+			);
+			console.log(index);
+			const collectionVersions = [ ...collections[index].collectionVersions, newCollectionVersion ];
+			collections[index].collectionVersions = collectionVersions;
+			this.setState({ collections });
+		}
+
+		console.log(this.props);
+		if (this.props.location.state) {
+			this.state.selectedCollectionVersion = this.props.location.state.selectedCollectionVersion;
+			this.state.selectedcollection.identifier = this.props.location.state.collectionId;
+		}
+
+		// if(this.props.location.collectionid){
+		// 	await collectionversionsservice.updateCollectionVersion(this.props.location.newCollectionVersion.id, newCollectionVersion);
+		// }
 		return (
 			<div>
 				<div className="App-Nav">
 					<div className="tabs">
 						<Switch>
+							<Route
+								path="/collections/:id/versions/new"
+								render={(props) => (
+									<CollectionVersionForm
+										show={true}
+										onHide={() => {}}
+										title="Add new Collection Version"
+										selectedcollection={this.state.selectedcollection}
+									/>
+								)}
+							/>
+							<Route
+								path="/collections/:collectionId/versions/:collectioVersionNumber/edit"
+								render={(props) => (
+									<CollectionVersionForm
+										show={true}
+										onHide={() => {}}
+										title="Edit Collection Version"
+										collectionid={this.state.selectedcollection.identifier}
+										selectedcollectionversion={this.state.selectedCollectionVersion}
+									/>
+								)}
+							/>
 							<Route
 								path="/collections/new"
 								render={(props) => (
@@ -112,11 +165,17 @@ class Collections extends Component {
 										<Dropdown.Item eventKey="2" onClick={() => this.handleDelete(collection)}>
 											Delete
 										</Dropdown.Item>
+										<Dropdown.Item eventKey="2" onClick={() => this.handleAddVersion(collection)}>
+											Add Version
+										</Dropdown.Item>
 									</DropdownButton>
 								</Card.Header>
 								<Accordion.Collapse eventKey="1">
 									<Card.Body>
-										<CollectionVersions collections={this.state.collections[index]} />
+										<CollectionVersions
+											{...this.props}
+											collections={this.state.collections[index]}
+										/>
 									</Card.Body>
 								</Accordion.Collapse>
 							</Card>

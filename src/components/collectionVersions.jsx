@@ -21,19 +21,25 @@ class CollectionVersions extends Component {
 	}
 
 	async handleDelete(collectionVersion) {
-		this.props.history.replace({ newCollectionVersion: null });
-		const collectionVersions = this.state.collectionVersions.filter((cv) => cv.id !== collectionVersion.id);
-		this.setState({ collectionVersions });
+		// this.props.history.replace({ newCollectionVersion: null });
+		const collectionVersions = this.props.collections.collectionVersions.filter(
+			(cv) => cv.id !== collectionVersion.id
+		);
+		// this.setState({ collectionVersions });
+		collectionversionsservice.setcollectionId(this.props.collections.identifier);
 		await collectionversionsservice.deleteCollectionVersion(collectionVersion.id);
 	}
 
 	handleUpdate(collectionVersion) {
-		this.state.selectedCollectionVersion = collectionVersion;
-		this.props.history.push(`/collections/${this.state.collectionId}/versions/${collectionVersion.number}/edit`);
+		console.log(this.props.collections.identifier);
+		// this.state.selectedCollectionVersion = collectionVersion;
+		this.props.history.push({
+			pathname: `/collections/${this.props.collections.identifier}/versions/${collectionVersion.number}/edit`,
+			state: { selectedCollectionVersion: collectionVersion, collectionId: this.props.collections.identifier }
+		});
 	}
 
 	render() {
-		console.log(this.props.collections);
 		return (
 			<div>
 				{this.props.collections.collectionVersions &&
@@ -50,8 +56,18 @@ class CollectionVersions extends Component {
 										id="dropdown-menu-align-right"
 										style={{ float: 'right' }}
 									>
-										<Dropdown.Item eventKey="1">Edit</Dropdown.Item>
-										<Dropdown.Item eventKey="2">Delete</Dropdown.Item>
+										<Dropdown.Item
+											eventKey="1"
+											onClick={() => this.handleUpdate(collectionVersion)}
+										>
+											Edit
+										</Dropdown.Item>
+										<Dropdown.Item
+											eventKey="2"
+											onClick={() => this.handleDelete(collectionVersion)}
+										>
+											Delete
+										</Dropdown.Item>
 									</DropdownButton>
 								</Card.Header>
 								<Accordion.Collapse eventKey="1">

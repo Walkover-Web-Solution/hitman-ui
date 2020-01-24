@@ -54,7 +54,6 @@ class CollectionForm extends Form {
 				/>
 			);
 		}
-		// console.log(this.props.selectedcollection.keyword.split(','));
 		if (this.props.selectedcollection && this.state.editCollection) {
 			this.state.editCollection = false;
 			this.state.data.name = this.props.selectedcollection.name;
