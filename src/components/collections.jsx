@@ -1,110 +1,109 @@
-import React, { Component } from 'react'
-
-import NavBar from './navbar'
-import { Link } from 'react-router-dom'
-
+import React, { Component } from "react";
+import NavBar from "./navbar";
+import { Link } from "react-router-dom";
 import {
   Accordion,
   Card,
   Button,
   Dropdown,
   DropdownButton
-} from 'react-bootstrap'
-import { Route, Switch } from 'react-router-dom'
-import CollectionForm from './collectionForm'
-import collectionsservice from '../services/collectionsService'
-import collectionversionsservice from '../services/collectionVersionServices'
+} from "react-bootstrap";
+import { Route, Switch } from "react-router-dom";
+import CollectionForm from "./collectionForm";
+import collectionsservice from "../services/collectionsService";
+import collectionversionsservice from "../services/collectionVersionServices";
+import CollectionVersions from "./collectionVersions";
 
 class Collections extends Component {
   state = {
     collections: [],
     selectedcollection: {}
-  }
+  };
 
-  async fetchVersions (collectionId, index) {
-    collectionversionsservice.setcollectionId(collectionId)
+  async fetchVersions(collectionId, index) {
+    collectionversionsservice.setcollectionId(collectionId);
     const {
       data: collectionVersions
-    } = await collectionversionsservice.getCollectionVersions()
-    let collections = this.state.collections
-    collections[index].collectionVersions = collectionVersions
-    this.setState({ collections })
+    } = await collectionversionsservice.getCollectionVersions();
+    let collections = this.state.collections;
+    collections[index].collectionVersions = collectionVersions;
+    this.setState({ collections });
   }
 
-  async componentDidMount () {
-    const { data: collections } = await collectionsservice.getCollections()
-    this.setState({ collections })
+  async componentDidMount() {
+    const { data: collections } = await collectionsservice.getCollections();
+    this.setState({ collections });
     this.state.collections.map((collection, index) =>
       this.fetchVersions(collection.identifier, index)
-    )
-    this.props.history.replace({ newCollection: null })
-    console.log(this.state.collections)
+    );
+    this.props.history.replace({ newCollection: null });
+    console.log(this.state.collections);
   }
 
-  async handleAdd (newCollection) {
+  async handleAdd(newCollection) {
     if (newCollection.identifier) {
-      const body = { ...newCollection }
-      console.log(body)
-      delete body.identifier
+      const body = { ...newCollection };
+      console.log(body);
+      delete body.identifier;
       const index = this.state.collections.findIndex(
         collection => collection.identifier === newCollection.identifier
-      )
-      await collectionsservice.updateCollection(newCollection.identifier, body)
-      const collections = [...this.state.collections]
-      collections[index] = body
-      this.setState({ collections })
+      );
+      await collectionsservice.updateCollection(newCollection.identifier, body);
+      const collections = [...this.state.collections];
+      collections[index] = body;
+      this.setState({ collections });
     } else {
       const { data: collection } = await collectionsservice.saveCollection(
         newCollection
-      )
-      const collections = [...this.state.collections, collection]
-      this.setState({ collections })
+      );
+      const collections = [...this.state.collections, collection];
+      this.setState({ collections });
     }
   }
 
-  async handleDelete (collection) {
-    this.props.history.replace({ newCollection: null })
+  async handleDelete(collection) {
+    this.props.history.replace({ newCollection: null });
     const collections = this.state.collections.filter(
       c => c.identifier !== collection.identifier
-    )
-    this.setState({ collections })
-    await collectionsservice.deleteCollection(collection.identifier)
+    );
+    this.setState({ collections });
+    await collectionsservice.deleteCollection(collection.identifier);
   }
 
-  handleUpdate (collection) {
-    this.state.selectedcollection = collection
-    this.props.history.push(`/collections/${collection.name}/edit`)
+  handleUpdate(collection) {
+    this.state.selectedcollection = collection;
+    this.props.history.push(`/collections/${collection.name}/edit`);
   }
 
-  render () {
+  render() {
     if (this.props.location.newCollection) {
-      const newCollection = this.props.location.newCollection
-      this.props.history.replace({ newCollection: null })
-      this.handleAdd(newCollection)
+      const newCollection = this.props.location.newCollection;
+      this.props.history.replace({ newCollection: null });
+      this.handleAdd(newCollection);
     }
     return (
       <div>
-        <div className='App-Nav'>
+        <div className="App-Nav">
           <NavBar />
-          <div className='tabs'>
+          <div className="tabs">
             <Switch>
               <Route
-                path='/collections/new'
+                path="/collections/new"
                 render={props => (
                   <CollectionForm
                     show={true}
                     onHide={() => {}}
-                    title='Add new Collection'
+                    title="Add new Collection"
                   />
                 )}
               />
               <Route
-                path='/collections/:id/edit'
+                path="/collections/:id/edit"
                 render={props => (
                   <CollectionForm
                     show={true}
                     onHide={() => {}}
-                    title='Edit Collection'
+                    title="Edit Collection"
                     selectedcollection={this.state.selectedcollection}
                   />
                 )}
@@ -112,75 +111,45 @@ class Collections extends Component {
             </Switch>
           </div>
         </div>
-        <div className='App-Side'>
-          <button className='btn btn-default btn-lg'>
-            <Link to='/collections/new'>+ New Collection</Link>
+        <div className="App-Side">
+          <button className="btn btn-default btn-lg">
+            <Link to="/collections/new">+ New Collection</Link>
           </button>
           <ul
             style={{
-              listStyleType: 'none',
-              paddingLeft: '0px',
-              paddingRight: '0px',
-              border: '3px solid #d7e9d2',
-              margin: '0px 0px 0px 0px'
+              listStyleType: "none",
+              paddingLeft: "0px",
+              paddingRight: "0px",
+              border: "3px solid #d7e9d2",
+              margin: "0px 0px 0px 0px"
             }}
           >
             {this.state.collections.map((collection, index) => (
               <div>
-                <Accordion defaultActiveKey='0'>
+                <Accordion defaultActiveKey="0">
                   <Card>
                     <Card.Header>
-                      <Accordion.Toggle as={Button} variant='link' eventKey='1'>
+                      <Accordion.Toggle as={Button} variant="link" eventKey="1">
                         {collection.name}
                       </Accordion.Toggle>
                       <DropdownButton
                         alignRight
-                        title=''
-                        id='dropdown-menu-align-right'
-                        style={{ float: 'right' }}
+                        title=""
+                        id="dropdown-menu-align-right"
+                        style={{ float: "right" }}
                       >
-                        <Dropdown.Item eventKey='1' onClick={this.handleUpdate}>
+                        <Dropdown.Item eventKey="1" onClick={this.handleUpdate}>
                           Edit
                         </Dropdown.Item>
-                        <Dropdown.Item eventKey='2'>Delete</Dropdown.Item>
+                        <Dropdown.Item eventKey="2">Delete</Dropdown.Item>
                       </DropdownButton>
                     </Card.Header>
-                    <Accordion.Collapse eventKey='1'>
+                    <Accordion.Collapse eventKey="1">
                       <Card.Body>
-                        {this.state.collections[index].collectionVersions &&
-                          this.state.collections[index].collectionVersions.map(
-                            (collectionVersion, index1) => (
-                              <Accordion defaultActiveKey='0'>
-                                <Card>
-                                  <Card.Header>
-                                    <Accordion.Toggle
-                                      as={Button}
-                                      variant='link'
-                                      eventKey='1'
-                                    >
-                                      {collectionVersion.number}
-                                    </Accordion.Toggle>
-                                    <DropdownButton
-                                      alignRight
-                                      title=''
-                                      id='dropdown-menu-align-right'
-                                      style={{ float: 'right' }}
-                                    >
-                                      <Dropdown.Item eventKey='1'>
-                                        Edit
-                                      </Dropdown.Item>
-                                      <Dropdown.Item eventKey='2'>
-                                        Delete
-                                      </Dropdown.Item>
-                                    </DropdownButton>
-                                  </Card.Header>
-                                  <Accordion.Collapse eventKey='1'>
-                                    <Card.Body>Groups</Card.Body>
-                                  </Accordion.Collapse>
-                                </Card>
-                              </Accordion>
-                            )
-                          )}
+                        <CollectionVersions
+                          collections={this.state.collections[index]}
+                          selectedcollection={this.state.selectedcollection}
+                        />
                       </Card.Body>
                     </Accordion.Collapse>
                   </Card>
@@ -189,11 +158,11 @@ class Collections extends Component {
             ))}
           </ul>
         </div>
-        <div className='App-Main'>
+        <div className="App-Main">
           <h1>Main</h1>
         </div>
       </div>
-    )
+    );
   }
 }
-export default Collections
+export default Collections;
