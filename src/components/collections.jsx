@@ -1,6 +1,5 @@
-import React, { Component } from "react";
-import NavBar from "./navbar";
-import { Link } from "react-router-dom";
+import React, { Component } from 'react'
+import { Link } from 'react-router-dom'
 import {
   Accordion,
   Card,
@@ -83,9 +82,8 @@ class Collections extends Component {
     }
     return (
       <div>
-        <div className="App-Nav">
-          <NavBar />
-          <div className="tabs">
+        <div className='App-Nav'>
+          <div className='tabs'>
             <Switch>
               <Route
                 path="/collections/new"
@@ -111,22 +109,12 @@ class Collections extends Component {
             </Switch>
           </div>
         </div>
-        <div className="App-Side">
-          <button className="btn btn-default btn-lg">
-            <Link to="/collections/new">+ New Collection</Link>
-          </button>
-          <ul
-            style={{
-              listStyleType: "none",
-              paddingLeft: "0px",
-              paddingRight: "0px",
-              border: "3px solid #d7e9d2",
-              margin: "0px 0px 0px 0px"
-            }}
-          >
+        <div className='App-Side'>
+          <button className='btn btn-default btn-lg'>
+            <Link to='/collections/new'>+ New Collection</Link>
+          </button>          
             {this.state.collections.map((collection, index) => (
-              <div>
-                <Accordion defaultActiveKey="0">
+                <Accordion key={collection.identifier}>
                   <Card>
                     <Card.Header>
                       <Accordion.Toggle as={Button} variant="link" eventKey="1">
@@ -153,14 +141,9 @@ class Collections extends Component {
                       </Card.Body>
                     </Accordion.Collapse>
                   </Card>
-                </Accordion>
-              </div>
-            ))}
-          </ul>
-        </div>
-        <div className="App-Main">
-          <h1>Main</h1>
-        </div>
+                </Accordion>              
+            ))} 
+      </div>
       </div>
     );
   }
