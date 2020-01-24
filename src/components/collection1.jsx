@@ -1,13 +1,13 @@
-import React, { Component } from 'react';
+import collectionsservice from '../services/collectionsService';
+import NavBar from './navbar';
 import { Link } from 'react-router-dom';
+import collectionversionsservice from '../services/collectionVersionServices';
 import { Accordion, Card, Button, Dropdown, DropdownButton } from 'react-bootstrap';
+import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 import CollectionForm from './collectionForm';
-import collectionsservice from '../services/collectionsService';
-import collectionversionsservice from '../services/collectionVersionServices';
-import CollectionVersions from './collectionVersions';
 
-class Collections extends Component {
+class Comp extends React.Component {
 	state = {
 		collections: [],
 		selectedcollection: {}
@@ -67,6 +67,7 @@ class Collections extends Component {
 		return (
 			<div>
 				<div className="App-Nav">
+					<NavBar />
 					<div className="tabs">
 						<Switch>
 							<Route
@@ -93,41 +94,82 @@ class Collections extends Component {
 					<button className="btn btn-default btn-lg">
 						<Link to="/collections/new">+ New Collection</Link>
 					</button>
-					{this.state.collections.map((collection, index) => (
-						<Accordion key={collection.identifier}>
-							<Card>
-								<Card.Header>
-									<Accordion.Toggle as={Button} variant="link" eventKey="1">
-										{collection.name}
-									</Accordion.Toggle>
-									<DropdownButton
-										alignRight
-										title=""
-										id="dropdown-menu-align-right"
-										style={{ float: 'right' }}
-									>
-										<Dropdown.Item eventKey="1" onClick={() => this.handleUpdate(collection)}>
-											Edit
-										</Dropdown.Item>
-										<Dropdown.Item eventKey="2" onClick={() => this.handleDelete(collection)}>
-											Delete
-										</Dropdown.Item>
-									</DropdownButton>
-								</Card.Header>
-								<Accordion.Collapse eventKey="1">
-									<Card.Body>
-										<CollectionVersions
-											collections={this.state.collections[index]}
-											selectedcollection={this.state.selectedcollection}
-										/>
-									</Card.Body>
-								</Accordion.Collapse>
-							</Card>
-						</Accordion>
-					))}
+					<ul
+						style={{
+							listStyleType: 'none',
+							paddingLeft: '0px',
+							paddingRight: '0px',
+							border: '3px solid #d7e9d2',
+							margin: '0px 0px 0px 0px'
+						}}
+					>
+						{this.state.collections.map((collection, index) => (
+							<div>
+								<Accordion defaultActiveKey="0">
+									<Card>
+										<Card.Header>
+											<Accordion.Toggle as={Button} variant="link" eventKey="1">
+												{collection.name}
+											</Accordion.Toggle>
+											<DropdownButton
+												alignRight
+												title=""
+												id="dropdown-menu-align-right"
+												style={{ float: 'right' }}
+											>
+												<Dropdown.Item eventKey="1" onClick={this.handleUpdate}>
+													Edit
+												</Dropdown.Item>
+												<Dropdown.Item eventKey="2">Delete</Dropdown.Item>
+											</DropdownButton>
+										</Card.Header>
+										<Accordion.Collapse eventKey="1">
+											<Card.Body>
+												{this.state.collections[index].collectionVersions &&
+													this.state.collections[
+														index
+													].collectionVersions.map((collectionVersion, index1) => (
+														<Accordion defaultActiveKey="0">
+															<Card>
+																<Card.Header>
+																	<Accordion.Toggle
+																		as={Button}
+																		variant="link"
+																		eventKey="1"
+																	>
+																		{collectionVersion.number}
+																	</Accordion.Toggle>
+																	<DropdownButton
+																		alignRight
+																		title=""
+																		id="dropdown-menu-align-right"
+																		style={{ float: 'right' }}
+																	>
+																		<Dropdown.Item eventKey="1">Edit</Dropdown.Item>
+																		<Dropdown.Item eventKey="2">
+																			Delete
+																		</Dropdown.Item>
+																	</DropdownButton>
+																</Card.Header>
+																<Accordion.Collapse eventKey="1">
+																	<Card.Body>Groups</Card.Body>
+																</Accordion.Collapse>
+															</Card>
+														</Accordion>
+													))}
+											</Card.Body>
+										</Accordion.Collapse>
+									</Card>
+								</Accordion>
+							</div>
+						))}
+					</ul>
+				</div>
+				<div className="App-Main">
+					<h1>Main</h1>
 				</div>
 			</div>
 		);
 	}
 }
-export default Collections;
+export default Comp;
