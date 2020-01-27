@@ -22,10 +22,10 @@ class CollectionVersionForm extends Form {
 	};
 
 	async doSubmit(props) {
-		this.state.editCollectionVersion = true;
+		this.state.editCollectionVersion = false;
 		if (this.props.title === 'Edit Collection Version') {
 			this.state.data.id = this.props.selectedcollectionversion.id;
-			this.setState({ redirect: true });
+			this.setState({ redirect: true, editCollectionVersion: true });
 		}
 		if (this.props.title === 'Add new Collection Version') {
 			await collectionversionsservice.saveCollectionVersion(
@@ -37,11 +37,6 @@ class CollectionVersionForm extends Form {
 	}
 
 	render() {
-		if (this.props.selectedcollectionversion && this.state.editCollectionVersion) {
-			this.state.editCollectionVersion = false;
-			this.state.data.number = this.props.selectedcollectionversion.number;
-			this.state.data.host = this.props.selectedcollectionversion.host;
-		} else this.state.editCollectionVersion = false;
 		if (this.state.redirect) {
 			return (
 				<Redirect
@@ -55,6 +50,12 @@ class CollectionVersionForm extends Form {
 				/>
 			);
 		}
+		if (this.props.selectedcollectionversion && this.state.editCollectionVersion) {
+			this.state.editCollectionVersion = false;
+			this.state.data.number = this.props.selectedcollectionversion.number;
+			this.state.data.host = this.props.selectedcollectionversion.host;
+		}
+
 		return (
 			<Modal {...this.props} size="lg" aria-labelledby="contained-modal-title-vcenter" centered>
 				<Modal.Header>

@@ -67,34 +67,41 @@ class Collections extends Component {
 		this.props.history.push(`/collections/${collection.name}/versions/new`);
 	}
 
-	async handleUpdateVersion(newCollectionVersion) {
-		// const body = newCollectionVersion;
-		// const CollectionVersionId = newCollectionVersion.id;
-		// delete body.id;
-		// await collectionVersionServices.updateCollectionVersion(CollectionVersionId, body);
+	async handleUpdateVersion(newCollectionVersion, collectionIdentifier) {
+		const body = newCollectionVersion;
+		const CollectionVersionId = newCollectionVersion.id;
+		delete body.id;
+		var collections = this.state.collections;
+		const index = collections.findIndex((collection) => collection.identifier === collectionIdentifier);
+		const collectionVersions = collections[index].collectionVersions;
+		const index1 = collectionVersions.findIndex(
+			(collectionVersion) => collectionVersion.id === CollectionVersionId
+		);
+		collectionVersions[index1] = body;
+		collections[index].collectionVersions = collectionVersions;
+		this.setState({ collections });
+		await collectionVersionServices.updateCollectionVersion(CollectionVersionId, body);
 	}
 
-	handleDeleteVersion(deletedCollectionVersionid, collectionId) {
-		// var collections = [ ...this.state.collections ];
-		// // const index = collections.findIndex((collection) => collection.identifier === collectionId);
-		// // console.log(index);
-		// // console.log(collections[index].collectionVersions);
-		// // const collectionVersions = collections[index].collectionVersions;
-		// // console.log(collectionVersions);
-		// // const index1 = collectionVersions.findIndex(
-		// // 	(collectionVersion) => collectionVersion.id === deletedCollectionVersionid
-		// // );
-		// // delete collectionVersions[index1];
-		// // collections[index].collectionVersions = collectionVersions;
-		// this.setState({ collections });
+	async handleDeleteVersion(deletedCollectionVersionId, collectionIdentifier) {
+		const collections = [ ...this.state.collections ];
+		const index = collections.findIndex((collection) => collection.identifier === collectionIdentifier);
+		const collectionVersions = collections[index].collectionVersions;
+		const index1 = collectionVersions.findIndex(
+			(collectionVersion) => collectionVersion.id === deletedCollectionVersionId
+		);
+		delete collectionVersions[index1];
+		collections[index].collectionVersions = collectionVersions;
+		this.setState({ collections });
+		await collectionversionsservice.deleteCollectionVersion(deletedCollectionVersionId);
 	}
 
 	render() {
-		if (this.props.location.state && this.props.location.state.deletedCollectionVersionid) {
-			const deletedCollectionVersionid = this.props.location.state.deletedCollectionVersionid;
+		if (this.props.location.state && this.props.location.state.deletedCollectionVersionId) {
+			const deletedCollectionVersionId = this.props.location.state.deletedCollectionVersionId;
+			const collectionIdentifier = this.props.location.state.collectionIdentifier;
 			this.props.history.replace({ state: null });
-			const collectionId = this.props.location.state.collectionId;
-			this.handleDeleteVersion(deletedCollectionVersionid, collectionId);
+			this.handleDeleteVersion(deletedCollectionVersionId, collectionIdentifier);
 		}
 		if (this.props.location.newCollection) {
 			const newCollection = this.props.location.newCollection;
@@ -103,22 +110,24 @@ class Collections extends Component {
 		}
 		if (this.props.location.newCollectionVersion) {
 			const newCollectionVersion = this.props.location.newCollectionVersion;
+			const collectionIdentifier = this.props.location.collectionidentifier;
 			this.props.history.replace({ newCollectionVersion: null });
 			if (newCollectionVersion.id) {
-				this.handleUpdateVersion(newCollectionVersion);
+				this.handleUpdateVersion(newCollectionVersion, collectionIdentifier);
+			} else {
+				var collections = [ ...this.state.collections ];
+				const index = collections.findIndex(
+					(collection) => collection.identifier === this.props.location.collectionidentifier
+				);
+				const collectionVersions = [ ...collections[index].collectionVersions, newCollectionVersion ];
+				collections[index].collectionVersions = collectionVersions;
+				this.setState({ collections });
 			}
-			var collections = [ ...this.state.collections ];
-			const index = collections.findIndex(
-				(collection) => collection.identifier === this.props.location.collectionidentifier
-			);
-			const collectionVersions = [ ...collections[index].collectionVersions, newCollectionVersion ];
-			collections[index].collectionVersions = collectionVersions;
-			this.setState({ collections });
 		}
 
 		if (this.props.location.state) {
-			this.state.selectedCollectionVersion = this.props.location.state.selectedCollectionVersion;
-			this.state.selectedcollection.identifier = this.props.location.state.collectionId;
+			this.state.selectedCollectionVersion = this.props.location.state.editedCollectionVersion;
+			this.state.selectedcollection.identifier = this.props.location.state.collectionIdentifier;
 		}
 		return (
 			<div>

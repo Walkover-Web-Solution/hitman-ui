@@ -21,22 +21,22 @@ class CollectionVersions extends Component {
 	}
 
 	async handleDelete(collectionVersion) {
-		// const collectionVersions = this.props.collections.collectionVersions.filter(
-		// 	(cv) => cv.id !== collectionVersion.id
-		// );
-		// collectionversionsservice.setcollectionId(this.props.collections.identifier);
-		// await collectionversionsservice.deleteCollectionVersion(collectionVersion.id);
-		// this.props.history.push({
-		// 	pathname: '/collections',
-		// 	state: { deletedCollectionVersionid: collectionVersion.id, collectionId: this.props.collections.identifier }
-		// });
+		this.props.history.push({
+			pathname: '/collections',
+			state: {
+				deletedCollectionVersionId: collectionVersion.id,
+				collectionIdentifier: this.props.collections.identifier
+			}
+		});
 	}
 
 	handleUpdate(collectionVersion) {
-		// this.state.selectedCollectionVersion = collectionVersion;
 		this.props.history.push({
 			pathname: `/collections/${this.props.collections.identifier}/versions/${collectionVersion.number}/edit`,
-			state: { selectedCollectionVersion: collectionVersion, collectionId: this.props.collections.identifier }
+			state: {
+				editedCollectionVersion: collectionVersion,
+				collectionIdentifier: this.props.collections.identifier
+			}
 		});
 	}
 

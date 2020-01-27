@@ -21,12 +21,12 @@ export function saveCollectionVersion(collectionId, collectionVersion) {
 	return http.post(collectionVersionsUrl(collectionId), collectionVersion);
 }
 
-export function updateCollectionVersion(collectionId, collectionVersion) {
-	return http.put(collectionVersionUrl(collectionId, collectionVersion.id), collectionVersion);
+export function updateCollectionVersion(collectionVersionNumber, collectionVersion) {
+	return http.put(`${apiUrl}/versions/${collectionVersionNumber}`, collectionVersion);
 }
 
-export function deleteCollectionVersion(collectionId, collectionVersionNumber) {
-	return http.delete(collectionVersionUrl(collectionId, collectionVersionNumber));
+export function deleteCollectionVersion(collectionVersionNumber) {
+	return http.delete(`${apiUrl}/versions/${collectionVersionNumber}`);
 }
 
 export default {
