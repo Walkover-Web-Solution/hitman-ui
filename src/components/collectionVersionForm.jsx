@@ -28,14 +28,15 @@ class CollectionVersionForm extends Form {
 			this.setState({ redirect: true });
 		}
 		if (this.props.title === 'Add new Collection Version') {
-			collectionversionsservice.setcollectionId(this.props.selectedcollection.identifier);
-			await collectionversionsservice.saveCollectionVersion(this.state.data);
+			await collectionversionsservice.saveCollectionVersion(
+				this.props.selectedcollection.identifier,
+				this.state.data
+			);
 			this.setState({ redirect: true });
 		}
 	}
 
 	render() {
-		console.log(this.props);
 		if (this.props.selectedcollectionversion && this.state.editCollectionVersion) {
 			this.state.editCollectionVersion = false;
 			this.state.data.number = this.props.selectedcollectionversion.number;

@@ -21,15 +21,15 @@ class CollectionVersions extends Component {
 	}
 
 	async handleDelete(collectionVersion) {
-		const collectionVersions = this.props.collections.collectionVersions.filter(
-			(cv) => cv.id !== collectionVersion.id
-		);
-		collectionversionsservice.setcollectionId(this.props.collections.identifier);
-		await collectionversionsservice.deleteCollectionVersion(collectionVersion.id);
-		this.props.history.push({
-			pathname: '/collections',
-			state: { deletedCollectionVersionid: collectionVersion.id, collectionId: this.props.collections.identifier }
-		});
+		// const collectionVersions = this.props.collections.collectionVersions.filter(
+		// 	(cv) => cv.id !== collectionVersion.id
+		// );
+		// collectionversionsservice.setcollectionId(this.props.collections.identifier);
+		// await collectionversionsservice.deleteCollectionVersion(collectionVersion.id);
+		// this.props.history.push({
+		// 	pathname: '/collections',
+		// 	state: { deletedCollectionVersionid: collectionVersion.id, collectionId: this.props.collections.identifier }
+		// });
 	}
 
 	handleUpdate(collectionVersion) {
