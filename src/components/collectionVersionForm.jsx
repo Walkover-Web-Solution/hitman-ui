@@ -1,5 +1,3 @@
-//Routing is not done properly
-
 import React from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import { Modal } from 'react-bootstrap';
@@ -24,20 +22,13 @@ class CollectionVersionForm extends Form {
 	};
 
 	async doSubmit(props) {
-		console.log('ho');
 		this.state.editCollectionVersion = true;
 		if (this.props.title === 'Edit Collection Version') {
 			this.state.data.id = this.props.selectedcollectionversion.id;
 			this.setState({ redirect: true });
-			console.log('ho2');
 		}
 		if (this.props.title === 'Add new Collection Version') {
-			console.log('ho1');
-			//
-			console.log(this.props.selectedcollection);
-			console.log(this.props.selectedcollection.identifier);
 			collectionversionsservice.setcollectionId(this.props.selectedcollection.identifier);
-			console.log(this.props.selectedcollection.identifier, this.state.data);
 			await collectionversionsservice.saveCollectionVersion(this.state.data);
 			this.setState({ redirect: true });
 		}
@@ -45,9 +36,6 @@ class CollectionVersionForm extends Form {
 
 	render() {
 		console.log(this.props);
-		if (this.props.location) {
-			console.log(this.props.location.state.selectedCollectionVersion);
-		}
 		if (this.props.selectedcollectionversion && this.state.editCollectionVersion) {
 			this.state.editCollectionVersion = false;
 			this.state.data.number = this.props.selectedcollectionversion.number;
@@ -59,7 +47,9 @@ class CollectionVersionForm extends Form {
 					to={{
 						pathname: `/collections`,
 						newCollectionVersion: { ...this.state.data },
-						collectionId: this.props.collectionid
+						collectionidentifier: this.props.selectedcollection
+							? this.props.selectedcollection.identifier
+							: this.props.collectionidentifier
 					}}
 				/>
 			);

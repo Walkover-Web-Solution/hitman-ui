@@ -21,17 +21,18 @@ class CollectionVersions extends Component {
 	}
 
 	async handleDelete(collectionVersion) {
-		// this.props.history.replace({ newCollectionVersion: null });
 		const collectionVersions = this.props.collections.collectionVersions.filter(
 			(cv) => cv.id !== collectionVersion.id
 		);
-		// this.setState({ collectionVersions });
 		collectionversionsservice.setcollectionId(this.props.collections.identifier);
 		await collectionversionsservice.deleteCollectionVersion(collectionVersion.id);
+		this.props.history.push({
+			pathname: '/collections',
+			state: { deletedCollectionVersionid: collectionVersion.id, collectionId: this.props.collections.identifier }
+		});
 	}
 
 	handleUpdate(collectionVersion) {
-		console.log(this.props.collections.identifier);
 		// this.state.selectedCollectionVersion = collectionVersion;
 		this.props.history.push({
 			pathname: `/collections/${this.props.collections.identifier}/versions/${collectionVersion.number}/edit`,

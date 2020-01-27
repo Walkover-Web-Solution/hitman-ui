@@ -7,12 +7,14 @@ import collectionsservice from '../services/collectionsService';
 import collectionversionsservice from '../services/collectionVersionServices';
 import CollectionVersions from './collectionVersions';
 import CollectionVersionForm from './collectionVersionForm';
+import collectionVersionServices from '../services/collectionVersionServices';
 
 class Collections extends Component {
 	state = {
 		collections: [],
 		selectedcollection: {},
-		selectedCollectionVersion: {}
+		selectedCollectionVersion: {},
+		cdmCalled: false
 	};
 
 	async fetchVersions(collectionId, index) {
@@ -27,6 +29,7 @@ class Collections extends Component {
 		const { data: collections } = await collectionsservice.getCollections();
 		this.setState({ collections });
 		this.state.collections.map((collection, index) => this.fetchVersions(collection.identifier, index));
+		this.state.cdmCalled = true;
 		this.props.history.replace({ newCollection: null });
 	}
 
@@ -37,7 +40,7 @@ class Collections extends Component {
 			const index = this.state.collections.findIndex(
 				(collection) => collection.identifier === newCollection.identifier
 			);
-			await collectionsservice.updateCollection(newCollection.identifier, body);
+			await collectionsservice.updateCollection(newCollection.identifier, { number: 'v31', host: 'localhost' });
 			const collections = [ ...this.state.collections ];
 			collections[index] = body;
 			this.setState({ collections });
@@ -65,35 +68,65 @@ class Collections extends Component {
 		this.props.history.push(`/collections/${collection.name}/versions/new`);
 	}
 
+	async handleUpdateVersion(newCollectionVersion) {
+		console.log(newCollectionVersion);
+		console.log(this.props.collectionId);
+		collectionVersionServices.setcollectionId(this.props.location.collectionidentifier);
+		const body = newCollectionVersion;
+		const CollectionVersionId = newCollectionVersion.id;
+		delete body.id;
+		console.log(CollectionVersionId, body);
+		await collectionVersionServices.updateCollectionVersion(CollectionVersionId, body);
+	}
+
+	handleDeleteVersion(deletedCollectionVersionid, collectionId) {
+		console.log(deletedCollectionVersionid, collectionId);
+		var collections = [ ...this.state.collections ];
+		// const index = collections.findIndex((collection) => collection.identifier === collectionId);
+		// console.log(index);
+		// console.log(collections[index].collectionVersions);
+		// const collectionVersions = collections[index].collectionVersions;
+		// console.log(collectionVersions);
+		// const index1 = collectionVersions.findIndex(
+		// 	(collectionVersion) => collectionVersion.id === deletedCollectionVersionid
+		// );
+		// delete collectionVersions[index1];
+		// collections[index].collectionVersions = collectionVersions;
+		this.setState({ collections });
+	}
+
 	render() {
+		console.log(this.props);
+		if (this.props.location.state && this.props.location.state.deletedCollectionVersionid) {
+			const deletedCollectionVersionid = this.props.location.state.deletedCollectionVersionid;
+			this.props.history.replace({ state: null });
+			const collectionId = this.props.location.state.collectionId;
+			this.handleDeleteVersion(deletedCollectionVersionid, collectionId);
+		}
 		if (this.props.location.newCollection) {
 			const newCollection = this.props.location.newCollection;
 			this.props.history.replace({ newCollection: null });
 			this.handleAdd(newCollection);
 		}
 		if (this.props.location.newCollectionVersion) {
-			console.log(this.props.location);
 			const newCollectionVersion = this.props.location.newCollectionVersion;
 			this.props.history.replace({ newCollectionVersion: null });
-			let collections = this.state.collections;
+			if (newCollectionVersion.id) {
+				this.handleUpdateVersion(newCollectionVersion);
+			}
+			var collections = [ ...this.state.collections ];
 			const index = collections.findIndex(
-				(collection) => collection.identifier == this.props.location.collectionId
+				(collection) => collection.identifier === this.props.location.collectionidentifier
 			);
-			console.log(index);
 			const collectionVersions = [ ...collections[index].collectionVersions, newCollectionVersion ];
 			collections[index].collectionVersions = collectionVersions;
 			this.setState({ collections });
 		}
 
-		console.log(this.props);
 		if (this.props.location.state) {
 			this.state.selectedCollectionVersion = this.props.location.state.selectedCollectionVersion;
 			this.state.selectedcollection.identifier = this.props.location.state.collectionId;
 		}
-
-		// if(this.props.location.collectionid){
-		// 	await collectionversionsservice.updateCollectionVersion(this.props.location.newCollectionVersion.id, newCollectionVersion);
-		// }
 		return (
 			<div>
 				<div className="App-Nav">
@@ -117,7 +150,7 @@ class Collections extends Component {
 										show={true}
 										onHide={() => {}}
 										title="Edit Collection Version"
-										collectionid={this.state.selectedcollection.identifier}
+										collectionidentifier={this.state.selectedcollection.identifier}
 										selectedcollectionversion={this.state.selectedCollectionVersion}
 									/>
 								)}
@@ -165,7 +198,7 @@ class Collections extends Component {
 										<Dropdown.Item eventKey="2" onClick={() => this.handleDelete(collection)}>
 											Delete
 										</Dropdown.Item>
-										<Dropdown.Item eventKey="2" onClick={() => this.handleAddVersion(collection)}>
+										<Dropdown.Item eventKey="3" onClick={() => this.handleAddVersion(collection)}>
 											Add Version
 										</Dropdown.Item>
 									</DropdownButton>
