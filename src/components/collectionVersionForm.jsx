@@ -39,30 +39,29 @@ class CollectionVersionForm extends Form {
       })
     }
     if (this.props.title === 'Add new Collection Version') {
-      await collectionversionsservice.saveCollectionVersion(
-        this.props.selectedcollection.identifier,
+      const {
+        data: newCollectionVersion
+      } = await collectionversionsservice.saveCollectionVersion(
+        this.props.collectionIdentifier,
         this.state.data
       )
       this.props.history.push({
         pathname: `/collections`,
-        state: {
-          newCollectionVersion: { ...this.state.data },
-          collectionidentifier: this.props.selectedcollection
-            ? this.props.selectedcollection.identifier
-            : this.props.collectionidentifier
-        }
+        newCollectionVersion: newCollectionVersion,
+        collectionidentifier: this.props.collectionIdentifier
       })
     }
   }
 
   render () {
+    console.log(this.props)
     if (
-      this.props.selectedcollectionversion &&
+      this.props.editedcollectionversion &&
       this.state.editCollectionVersion
     ) {
       this.state.editCollectionVersion = false
-      this.state.data.number = this.props.selectedcollectionversion.number
-      this.state.data.host = this.props.selectedcollectionversion.host
+      this.state.data.number = this.props.editedcollectionversion.number
+      this.state.data.host = this.props.editedcollectionversion.host
     }
 
     return (

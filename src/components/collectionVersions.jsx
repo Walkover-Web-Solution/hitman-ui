@@ -7,6 +7,7 @@ import {
   Dropdown,
   DropdownButton
 } from 'react-bootstrap'
+import Groups from './groups'
 
 class CollectionVersions extends Component {
   state = {}
@@ -49,22 +50,32 @@ class CollectionVersions extends Component {
   }
 
   handleUpdate (collectionVersion) {
-    console.log(collectionVersion.id)
+    console.log(collectionVersion)
     this.props.history.push({
-      pathname: `/collections/${this.props.collections.identifier}/versions/${collectionVersion.number}/edit`,
-      state: {
-        editedCollectionVersion: collectionVersion,
-        collectionIdentifier: this.props.collections.identifier
-      }
+      pathname: `/collections/${this.props.collectionsIdentifier}/versions/${collectionVersion.number}/edit`,
+      editedCollectionVersion: collectionVersion,
+      collectionIdentifier: this.props.collectionIdentifier
+    })
+  }
+
+  handleAddGroup (versionId, collectionId) {
+    this.props.history.push({
+      pathname: `/collections/${collectionId}/versions/${versionId}/groups/new`,
+      versionId: versionId
     })
   }
 
   render () {
+    // console.log(
+    //   this.props.collection.collectionVersions &&
+    //     this.props.collection.collectionVersions[0].groups
+    // )
     return (
       <div>
-        {this.props.collections.collectionVersions &&
-          this.props.collections.collectionVersions.map(
-            (collectionVersion, index) => (
+        {this.props.versions &&
+          this.props.versions
+            .filter(version => version.collectionId === this.props.collectionId)
+            .map((collectionVersion, index) => (
               <Accordion defaultActiveKey='0' key={collectionVersion.id}>
                 <Card>
                   <Card.Header>
@@ -89,15 +100,32 @@ class CollectionVersions extends Component {
                       >
                         Delete
                       </Dropdown.Item>
+                      <Dropdown.Item
+                        eventKey='3'
+                        onClick={() =>
+                          this.handleAddGroup(
+                            collectionVersion.id,
+                            this.props.collection.identifier
+                          )
+                        }
+                      >
+                        Add Group
+                      </Dropdown.Item>
                     </DropdownButton>
                   </Card.Header>
                   <Accordion.Collapse eventKey='1'>
-                    <Card.Body>Groups</Card.Body>
+                    <Card.Body>
+                      {/* <Groups
+                      {...this.props}
+                      versionId={collectionVersion.id}
+                      collectionId={this.props.collection.identifier}
+                      groups={collectionVersion}
+                    /> */}
+                    </Card.Body>
                   </Accordion.Collapse>
                 </Card>
               </Accordion>
-            )
-          )}
+            ))}
       </div>
     )
   }
