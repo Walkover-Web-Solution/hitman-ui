@@ -30,7 +30,7 @@ class Collections extends Component {
       const {
         data: versions1
       } = await collectionVersionsService.getCollectionVersions(
-        collections[i].identifier
+        collections[i].id
       )
       versions = [...versions, ...versions1]
     }
@@ -54,15 +54,14 @@ class Collections extends Component {
     this.setState({ versions, groups })
   }
 
-  //Add Collection
   async handleAdd (newCollection) {
-    if (newCollection.identifier) {
+    if (newCollection.id) {
       const body = { ...newCollection }
-      delete body.identifier
+      delete body.id
       const index = this.state.collections.findIndex(
-        collection => collection.identifier === newCollection.identifier
+        collection => collection.id === newCollection.id
       )
-      await collectionsService.updateCollection(newCollection.identifier, body)
+      await collectionsService.updateCollection(newCollection.id, body)
       const collections = [...this.state.collections]
       collections[index] = body
       this.setState({ collections })
@@ -75,29 +74,25 @@ class Collections extends Component {
     }
   }
 
-  //Delete Collection
   async handleDelete (collection) {
     this.props.history.replace({ newCollection: null })
     const collections = this.state.collections.filter(
-      c => c.identifier !== collection.identifier
+      c => c.id !== collection.id
     )
     this.setState({ collections })
-    await collectionsService.deleteCollection(collection.identifier)
+    await collectionsService.deleteCollection(collection.id)
   }
 
-  //Update Collection
   handleUpdate (collection) {
     this.state.selectedCollection = collection
     this.props.history.push(`/collections/${collection.name}/edit`)
   }
 
-  //Add Version
   handleAddVersion (collection) {
     this.state.selectedCollection = collection
     this.props.history.push(`/collections/${collection.name}/versions/new`)
   }
 
-  //Delete Version
   async handleDeleteVersion (deletedCollectionVersionId) {
     const versions = this.state.versions.filter(
       v => v.id !== deletedCollectionVersionId
@@ -109,15 +104,42 @@ class Collections extends Component {
   }
 
   async handleAddGroup (versionId, newGroup) {
-    let groups = [...this.state.groups, { ...newGroup, versionId, id: 23 }]
-    console.log(groups)
+    let groups = [...this.state.groups, { ...newGroup, versionId }]
     this.setState({ groups })
     await groupsService.saveGroup(versionId, newGroup)
+  }
+
+  async handleDeleteGroup (deletedGroupId) {
+    const groups = this.state.groups.filter(g => g.id !== deletedGroupId)
+    this.setState({ groups })
+    await groupsService.deleteGroup(deletedGroupId)
+  }
+
+  async handleUpdateGroup (editedGroup, groupId, versionId) {
+    const groups = [
+      ...this.state.groups.filter(g => g.id !== groupId),
+      { ...editedGroup, id: groupId, versionId }
+    ]
+    this.setState({ groups })
+    await groupsService.updateGroup(groupId, editedGroup)
   }
 
   render () {
     console.log(this.state)
     const { location } = this.props
+
+    if (location.editedGroup) {
+      const { editedGroup, groupId, versionId } = location
+      this.props.history.replace({ editedGroup: null })
+      this.handleUpdateGroup(editedGroup, groupId, versionId)
+    }
+
+    if (location.deletedGroupId) {
+      const deletedGroupId = location.deletedGroupId
+      this.props.history.replace({ deletedGroupId: null })
+      this.handleDeleteGroup(deletedGroupId)
+    }
+
     if (location.newGroup) {
       const { versionId, newGroup } = location
       this.props.history.replace({ newGroup: null })
@@ -157,6 +179,19 @@ class Collections extends Component {
           <div className='tabs'>
             <Switch>
               <Route
+                path='/collections/:collectionId/versions/:versionId/groups/:groupId/edit'
+                render={props => (
+                  <GroupForm
+                    {...props}
+                    show={true}
+                    onHide={() => {}}
+                    title='Edit Group'
+                    editGroup={this.props.location.editGroup}
+                    versionId={this.props.location.versionId}
+                  />
+                )}
+              />
+              <Route
                 path='/collections/:collectionId/versions/:versionId/groups/new'
                 render={props => (
                   <GroupForm
@@ -176,9 +211,7 @@ class Collections extends Component {
                     show={true}
                     onHide={() => {}}
                     title='Add new Collection Version'
-                    collectionIdentifier={
-                      this.state.selectedCollection.identifier
-                    }
+                    collectionId={this.state.selectedCollection.id}
                   />
                 )}
               />
@@ -225,7 +258,7 @@ class Collections extends Component {
             <Link to='/collections/new'>+ New Collection</Link>
           </button>
           {this.state.collections.map((collection, index) => (
-            <Accordion key={collection.identifier}>
+            <Accordion key={collection.id}>
               <Card>
                 <Card.Header>
                   <Accordion.Toggle as={Button} variant='link' eventKey='1'>

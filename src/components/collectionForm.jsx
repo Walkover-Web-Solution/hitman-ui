@@ -47,7 +47,7 @@ class CollectionForm extends Form {
     delete body.keyword2
     this.state.editCollection = true
     if (this.props.title === 'Edit Collection') {
-      this.state.data.identifier = this.props.selectedcollection.identifier
+      this.state.data.id = this.props.selectedCollection.id
       this.props.history.push({
         pathname: `/collections`,
         newCollection: { ...this.state.data }
@@ -62,18 +62,18 @@ class CollectionForm extends Form {
   }
 
   render () {
-    if (this.props.selectedcollection && this.state.editCollection) {
+    if (this.props.selectedCollection && this.state.editCollection) {
       this.state.editCollection = false
-      this.state.data.name = this.props.selectedcollection.name
-      this.state.data.website = this.props.selectedcollection.website
-      this.state.data.description = this.props.selectedcollection.description
-      this.state.data.keyword = this.props.selectedcollection.keyword.split(
+      this.state.data.name = this.props.selectedCollection.name
+      this.state.data.website = this.props.selectedCollection.website
+      this.state.data.description = this.props.selectedCollection.description
+      this.state.data.keyword = this.props.selectedCollection.keyword.split(
         ','
       )[0]
-      this.state.data.keyword1 = this.props.selectedcollection.keyword.split(
+      this.state.data.keyword1 = this.props.selectedCollection.keyword.split(
         ','
       )[1]
-      this.state.data.keyword2 = this.props.selectedcollection.keyword.split(
+      this.state.data.keyword2 = this.props.selectedCollection.keyword.split(
         ','
       )[2]
     } else this.state.editCollection = null

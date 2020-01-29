@@ -42,13 +42,13 @@ class CollectionVersionForm extends Form {
       const {
         data: newCollectionVersion
       } = await collectionversionsservice.saveCollectionVersion(
-        this.props.collectionIdentifier,
+        this.props.collectionId,
         this.state.data
       )
       this.props.history.push({
         pathname: `/collections`,
         newCollectionVersion: newCollectionVersion,
-        collectionidentifier: this.props.collectionIdentifier
+        collectionid: this.props.collectionId
       })
     }
   }

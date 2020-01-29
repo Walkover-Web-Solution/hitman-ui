@@ -25,31 +25,32 @@ class GroupForm extends Form {
   }
 
   async doSubmit (props) {
-    // this.state.editCollectionVersion = false
-    // if (this.props.title === 'Edit Group') {
-    //   this.state.data.id = this.props.selectedcollectionversion.id
-    //   this.props.history.push({
-    //     pathname: `/collections`,
-    //     state: {
-    //       newCollectionVersion: { ...this.state.data },
-    //       collectionidentifier: this.props.selectedcollection
-    //         ? this.props.selectedcollection.identifier
-    //         : this.props.collectionidentifier
-    //     }
-    //   })
-    // }
-
     if (this.props.title === 'Add new Group') {
-      console.log(this.state.data)
       this.props.history.push({
         pathname: `/collections`,
         newGroup: this.state.data,
         versionId: parseInt(this.props.location.pathname.split('/')[4])
       })
     }
+
+    if (this.props.title === 'Edit Group') {
+      this.props.history.push({
+        pathname: `/collections`,
+        editedGroup: this.state.data,
+        groupId: this.state.groupId,
+        versionId: this.state.versionId
+      })
+    }
   }
 
   render () {
+    if (this.props.location.editGroup) {
+      this.state.groupId = this.props.location.editGroup.id
+      this.state.versionId = this.props.location.editGroup.versionId
+      this.state.data.name = this.props.location.editGroup.name
+      this.state.data.host = this.props.location.editGroup.host
+      this.props.history.replace({ editGroup: null })
+    }
     return (
       <Modal
         {...this.props}

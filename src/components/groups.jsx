@@ -18,6 +18,20 @@ class Groups extends Component {
     this.setState({ groups })
   }
 
+  handleDelete (group) {
+    this.props.history.push({
+      pathname: '/collections',
+      deletedGroupId: group.id
+    })
+  }
+
+  handleUpdate (group) {
+    this.props.history.push({
+      pathname: `/collections/${this.props.collectionId}/versions/${this.props.versionId}/groups/${group.id}/edit`,
+      editGroup: group
+    })
+  }
+
   render () {
     return (
       <div>
@@ -38,13 +52,13 @@ class Groups extends Component {
                   >
                     <Dropdown.Item
                       eventKey='1'
-                      // onClick={() => this.handleUpdate(collectionVersion)}
+                      onClick={() => this.handleUpdate(group)}
                     >
                       Edit
                     </Dropdown.Item>
                     <Dropdown.Item
                       eventKey='2'
-                      // onClick={() => this.handleDelete(collectionVersion)}
+                      onClick={() => this.handleDelete(group)}
                     >
                       Delete
                     </Dropdown.Item>
