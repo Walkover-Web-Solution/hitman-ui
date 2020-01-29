@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { Modal } from 'react-bootstrap'
 import Form from './common/form'
 import Joi from 'joi-browser'
-import collectionversionsservice from '../services/collectionVersionServices'
+import collectionversionsservice from '../services/collectionVersionsService'
 
 class CollectionVersionForm extends Form {
   state = {
@@ -27,15 +27,16 @@ class CollectionVersionForm extends Form {
   async doSubmit (props) {
     this.state.editCollectionVersion = false
     if (this.props.title === 'Edit Collection Version') {
-      this.state.data.id = this.props.selectedcollectionversion.id
+      const {
+        data: editedCollectionVersion
+      } = await collectionversionsservice.updateCollectionVersion(
+        this.props.location.editCollectionVersion.id,
+        this.state.data
+      )
+      console.log(editedCollectionVersion)
       this.props.history.push({
         pathname: `/collections`,
-        state: {
-          newCollectionVersion: { ...this.state.data },
-          collectionidentifier: this.props.selectedcollection
-            ? this.props.selectedcollection.identifier
-            : this.props.collectionidentifier
-        }
+        editedCollectionVersion: editedCollectionVersion
       })
     }
     if (this.props.title === 'Add new Collection Version') {
@@ -56,12 +57,12 @@ class CollectionVersionForm extends Form {
   render () {
     console.log(this.props)
     if (
-      this.props.editedcollectionversion &&
+      this.props.location.editCollectionVersion &&
       this.state.editCollectionVersion
     ) {
       this.state.editCollectionVersion = false
-      this.state.data.number = this.props.editedcollectionversion.number
-      this.state.data.host = this.props.editedcollectionversion.host
+      this.state.data.number = this.props.location.editCollectionVersion.number
+      this.state.data.host = this.props.location.editCollectionVersion.host
     }
 
     return (

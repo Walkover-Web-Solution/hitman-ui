@@ -50,17 +50,13 @@ class CollectionForm extends Form {
       this.state.data.identifier = this.props.selectedcollection.identifier
       this.props.history.push({
         pathname: `/collections`,
-        state: {
-          newCollection: { ...this.state.data }
-        }
+        newCollection: { ...this.state.data }
       })
     }
     if (this.props.title === 'Add new Collection') {
       this.props.history.push({
         pathname: `/collections`,
-        state: {
-          newCollection: { ...this.state.data }
-        }
+        newCollection: { ...this.state.data }
       })
     }
   }

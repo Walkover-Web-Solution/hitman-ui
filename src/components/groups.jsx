@@ -6,8 +6,7 @@ import {
   Dropdown,
   DropdownButton
 } from 'react-bootstrap'
-import groupsService from '../services/groupService'
-import Collections from './collections'
+import groupsService from '../services/groupsService'
 
 class Groups extends Component {
   state = {
@@ -21,7 +20,6 @@ class Groups extends Component {
   }
 
   render () {
-    console.log()
     return (
       <div>
         {this.state.groups.map(group => (

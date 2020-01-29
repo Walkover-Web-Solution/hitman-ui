@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom'
 import { Modal } from 'react-bootstrap'
 import Form from './common/form'
 import Joi from 'joi-browser'
-import collectionversionsservice from '../services/collectionVersionServices'
-import groupService from '../services/groupService'
+import collectionVersionsService from '../services/collectionVersionsService'
+import groupsService from '../services/groupsService'
 
 class GroupForm extends Form {
   state = {
@@ -39,7 +39,7 @@ class GroupForm extends Form {
     //   })
     // }
     if (this.props.title === 'Add new Group') {
-      await groupService.saveGroup(this.props.versionId, this.state.data)
+      await groupsService.saveGroup(this.props.versionId, this.state.data)
       this.props.history.push({
         pathname: `/collections`,
         newGroup: this.state.data,

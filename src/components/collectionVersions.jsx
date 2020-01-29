@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import collectionversionsservice from '../services/collectionVersionServices'
+import collectionversionsservice from '../services/collectionVersionsService'
 import {
   Accordion,
   Card,
@@ -42,19 +42,14 @@ class CollectionVersions extends Component {
   async handleDelete (collectionVersion) {
     this.props.history.push({
       pathname: '/collections',
-      state: {
-        deletedCollectionVersionId: collectionVersion.id,
-        collectionIdentifier: this.props.collections.identifier
-      }
+      deletedCollectionVersionId: collectionVersion.id
     })
   }
 
   handleUpdate (collectionVersion) {
-    console.log(collectionVersion)
     this.props.history.push({
-      pathname: `/collections/${this.props.collectionsIdentifier}/versions/${collectionVersion.number}/edit`,
-      editedCollectionVersion: collectionVersion,
-      collectionIdentifier: this.props.collectionIdentifier
+      pathname: `/collections/${this.props.collectionId}/versions/${collectionVersion.number}/edit`,
+      editCollectionVersion: collectionVersion
     })
   }
 
@@ -66,10 +61,6 @@ class CollectionVersions extends Component {
   }
 
   render () {
-    // console.log(
-    //   this.props.collection.collectionVersions &&
-    //     this.props.collection.collectionVersions[0].groups
-    // )
     return (
       <div>
         {this.props.versions &&
@@ -115,6 +106,7 @@ class CollectionVersions extends Component {
                   </Card.Header>
                   <Accordion.Collapse eventKey='1'>
                     <Card.Body>
+                      Groups
                       {/* <Groups
                       {...this.props}
                       versionId={collectionVersion.id}

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Route, Switch } from 'react-router-dom'
+import { Switch } from 'react-router-dom'
 import ProtectedRoute from './common/protectedRoute'
 import Collections from './collections'
 class SideBar extends Component {
