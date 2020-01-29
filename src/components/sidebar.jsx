@@ -6,7 +6,7 @@ class SideBar extends Component {
   state = {}
   render () {
     return (
-      <nav className='col-md-2 d-none d-md-block bg-light sidebar'>
+      <nav className='col-md-3 d-none d-md-block bg-light sidebar'>
         <div className='sidebar-sticky'>
           <Switch>
             <ProtectedRoute path='/collections' component={Collections} />

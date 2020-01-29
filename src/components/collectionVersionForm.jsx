@@ -33,7 +33,6 @@ class CollectionVersionForm extends Form {
         this.props.location.editCollectionVersion.id,
         this.state.data
       )
-      console.log(editedCollectionVersion)
       this.props.history.push({
         pathname: `/collections`,
         editedCollectionVersion: editedCollectionVersion
@@ -55,7 +54,6 @@ class CollectionVersionForm extends Form {
   }
 
   render () {
-    console.log(this.props)
     if (
       this.props.location.editCollectionVersion &&
       this.state.editCollectionVersion

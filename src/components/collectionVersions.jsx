@@ -12,33 +12,6 @@ import Groups from './groups'
 class CollectionVersions extends Component {
   state = {}
 
-  async handleAdd (newCollectionVersion) {
-    if (newCollectionVersion.id) {
-      const body = { ...newCollectionVersion }
-      delete body.id
-      const index = this.state.collectionVersions.findIndex(
-        cv => cv.id === newCollectionVersion.id
-      )
-      await collectionversionsservice.updateCollectionVersion(
-        newCollectionVersion.id,
-        body
-      )
-      const collectionVersions = [...this.state.collectionVersions]
-      collectionVersions[index] = body
-      this.setState({ collectionVersions })
-    }
-    const {
-      data: collectionVersion
-    } = await collectionversionsservice.saveCollectionVersion(
-      newCollectionVersion
-    )
-    const collectionVersions = [
-      ...this.state.collectionVersions,
-      collectionVersion
-    ]
-    this.setState({ collectionVersions })
-  }
-
   async handleDelete (collectionVersion) {
     this.props.history.push({
       pathname: '/collections',
@@ -96,7 +69,7 @@ class CollectionVersions extends Component {
                         onClick={() =>
                           this.handleAddGroup(
                             collectionVersion.id,
-                            this.props.collection.identifier
+                            this.props.collectionId
                           )
                         }
                       >
@@ -106,13 +79,10 @@ class CollectionVersions extends Component {
                   </Card.Header>
                   <Accordion.Collapse eventKey='1'>
                     <Card.Body>
-                      Groups
-                      {/* <Groups
-                      {...this.props}
-                      versionId={collectionVersion.id}
-                      collectionId={this.props.collection.identifier}
-                      groups={collectionVersion}
-                    /> */}
+                      <Groups
+                        {...this.props}
+                        versionId={collectionVersion.id}
+                      />
                     </Card.Body>
                   </Accordion.Collapse>
                 </Card>

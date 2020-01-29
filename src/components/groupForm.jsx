@@ -38,28 +38,18 @@ class GroupForm extends Form {
     //     }
     //   })
     // }
+
     if (this.props.title === 'Add new Group') {
-      await groupsService.saveGroup(this.props.versionId, this.state.data)
+      console.log(this.state.data)
       this.props.history.push({
         pathname: `/collections`,
         newGroup: this.state.data,
-        versionId: this.props.location.pathname.split('/')[4],
-        collectionId: this.props.location.pathname.split('/')[2]
+        versionId: parseInt(this.props.location.pathname.split('/')[4])
       })
-      // }
     }
   }
 
   render () {
-    // if (
-    //   this.props.selectedcollectionversion &&
-    //   this.state.editCollectionVersion
-    // ) {
-    //   this.state.editCollectionVersion = false
-    //   this.state.data.number = this.props.selectedcollectionversion.number
-    //   this.state.data.host = this.props.selectedcollectionversion.host
-    // }
-
     return (
       <Modal
         {...this.props}
