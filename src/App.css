@@ -10,3 +10,6 @@
 .main {
 	padding: 48px 0 0;
 }
+.accordion > .card{
+	overflow: inherit !important;
+}
