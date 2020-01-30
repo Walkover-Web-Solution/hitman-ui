@@ -15,12 +15,15 @@ import CollectionVersions from "./collectionVersions";
 import CollectionVersionForm from "./collectionVersionForm";
 import GroupForm from "./groupForm";
 import groupsService from "../services/groupsService";
+import PageForm from "./pageForm";
+import pageService from "../services/pageService";
 
 class Collections extends Component {
   state = {
     collections: [],
     versions: [],
     groups: [],
+    pages: [],
     selectedCollection: {}
   };
 
@@ -30,8 +33,9 @@ class Collections extends Component {
       const {
         data: versions1
       } = await collectionVersionsService.getCollectionVersions(
-        collections[i].id
+        collections[i].identifier
       );
+
       versions = [...versions, ...versions1];
     }
     return versions;
@@ -46,12 +50,23 @@ class Collections extends Component {
     return groups;
   }
 
+  async fetchPagesVersion(versions) {
+    let pages = [];
+    for (let i = 0; i < versions.length; i++) {
+      const version = versions[i];
+      let { data: newPages } = await pageService.getVersionPages(version.id);
+      pages = [...pages, ...newPages];
+    }
+    return pages;
+  }
+
   async componentDidMount() {
     const { data: collections } = await collectionsService.getCollections();
     this.setState({ collections });
     const versions = await this.fetchVersions(collections);
     const groups = await this.fetchGroups(versions);
-    this.setState({ versions, groups });
+    const pages = await this.fetchPagesVersion(versions);
+    this.setState({ versions, groups, pages });
   }
 
   async handleAdd(newCollection) {
@@ -109,6 +124,13 @@ class Collections extends Component {
     await groupsService.saveGroup(versionId, newGroup);
   }
 
+  async handleAddPage(versionId, newPage) {
+    let pages = [...this.state.pages, { ...newPage, versionId, id: 23 }];
+    console.log(pages);
+    this.setState({ pages });
+    await pageService.saveVersionPage(versionId, newPage);
+  }
+
   async handleDeleteGroup(deletedGroupId) {
     const groups = this.state.groups.filter(g => g.id !== deletedGroupId);
     this.setState({ groups });
@@ -124,8 +146,64 @@ class Collections extends Component {
     await groupsService.updateGroup(groupId, editedGroup);
   }
 
+  async handleAddVersionPage(versionId, newPage) {
+    let pages = [...this.state.pages, { ...newPage, versionId, id: 23 }];
+    console.log(pages);
+    this.setState({ pages });
+    await pageService.saveVersionPage(versionId, newPage);
+  }
+  async handleAddGroupPage(versionId, groupId, newPage) {
+    const { data: page } = await pageService.saveGroupPage(
+      versionId,
+      groupId,
+      newPage
+    );
+    let pages = [...this.state.pages, page];
+    console.log("passssssessss", pages);
+    // let pages = [...this.state.pages, newPage];
+    this.setState({ pages });
+  }
+  async handleDeletePage(deletedPageId) {
+    await pageService.deletePage(deletedPageId);
+    const pages = this.state.pages.filter(page => page.id !== deletedPageId);
+    this.setState({ pages });
+  }
+
+  async handleUpdatePage(editedPage, pageId, versionId) {
+    const pages = [
+      ...this.state.pages.filter(page => page.id !== pageId),
+      { ...editedPage, id: pageId, versionId }
+    ];
+    this.setState({ pages });
+    await pageService.updatePage(pageId, editedPage);
+  }
+
   render() {
     const { location } = this.props;
+
+    if (location.editedPage) {
+      const { editedPage, pageId, versionId } = location;
+      this.props.history.replace({ editedPage: null });
+      this.handleUpdatePage(editedPage, pageId, versionId);
+    }
+
+    if (location.newPage && location.groupId) {
+      const { versionId, newPage, groupId } = location;
+
+      this.props.history.replace({ groupId: null, newPage: null });
+
+      this.handleAddGroupPage(versionId, groupId, newPage);
+    } else if (location.newPage) {
+      const { versionId, newPage } = location;
+      this.props.history.replace({ newPage: null });
+      this.handleAddVersionPage(versionId, newPage);
+    }
+
+    if (location.deletedPageId) {
+      const deletedPageId = location.deletedPageId;
+      this.props.history.replace({ deletedPageId: null });
+      this.handleDeletePage(deletedPageId);
+    }
 
     if (location.editedGroup) {
       const { editedGroup, groupId, versionId } = location;
@@ -177,6 +255,42 @@ class Collections extends Component {
         <div className="App-Nav">
           <div className="tabs">
             <Switch>
+              <Route
+                path="/collections/:id/versions/:versionId/groups/:groupId/pages/new"
+                render={props => (
+                  <PageForm
+                    {...props}
+                    show={true}
+                    onHide={() => {}}
+                    title="Add New Page"
+                  />
+                )}
+              />
+              <Route
+                path="/collections/:id/versions/:versionId/pages/:pageId/edit"
+                render={props => (
+                  <PageForm
+                    show={true}
+                    onHide={() => {}}
+                    title="Edit Page"
+                    editPage={this.props.location.editPage}
+                    versionId={this.props.location.versionId}
+                  />
+                )}
+              />
+
+              <Route
+                path="/collections/:id/versions/:versionId/pages/new"
+                render={props => (
+                  <PageForm
+                    {...props}
+                    show={true}
+                    onHide={() => {}}
+                    title="Add New Version Page"
+                    versionId={this.props.location.versionId}
+                  />
+                )}
+              />
               <Route
                 path="/collections/:collectionId/versions/:versionId/groups/:groupId/edit"
                 render={props => (
@@ -296,6 +410,7 @@ class Collections extends Component {
                       collectionId={collection.id}
                       versions={this.state.versions}
                       groups={this.state.groups}
+                      pages={this.state.pages}
                     />
                   </Card.Body>
                 </Accordion.Collapse>

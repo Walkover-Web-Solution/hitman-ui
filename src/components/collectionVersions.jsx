@@ -7,6 +7,7 @@ import {
   DropdownButton
 } from "react-bootstrap";
 import Groups from "./groups";
+import VersionPages from "./pages";
 
 class CollectionVersions extends Component {
   state = {};
@@ -32,7 +33,15 @@ class CollectionVersions extends Component {
     });
   }
 
+  handleAddPage(versionId, collectionId) {
+    this.props.history.push({
+      pathname: `/collections/${collectionId}/versions/${versionId}/pages/new`,
+      versionId: versionId
+    });
+  }
+
   render() {
+    console.log("version pages", this.props);
     return (
       <div>
         {this.props.versions &&
@@ -74,13 +83,35 @@ class CollectionVersions extends Component {
                       >
                         Add Group
                       </Dropdown.Item>
+                      <Dropdown.Item
+                        eventKey="3"
+                        onClick={() =>
+                          this.handleAddPage(
+                            collectionVersion.id,
+                            this.props.collectionId
+                          )
+                        }
+                      >
+                        Add Page
+                      </Dropdown.Item>
                     </DropdownButton>
                   </Card.Header>
                   <Accordion.Collapse eventKey="1">
                     <Card.Body>
                       <Groups
                         {...this.props}
+                        collectionId={collectionVersion.collectionId}
                         versionId={collectionVersion.id}
+                        pages={this.props.pages}
+                      />
+                    </Card.Body>
+                  </Accordion.Collapse>
+                  <Accordion.Collapse eventKey="1">
+                    <Card.Body>
+                      <VersionPages
+                        {...this.props}
+                        versionId={collectionVersion.id}
+                        pages={this.props.pages}
                       />
                     </Card.Body>
                   </Accordion.Collapse>
