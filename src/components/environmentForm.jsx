@@ -18,13 +18,29 @@ class EnvironmentForm extends Form {
   };
 
   async doSubmit(props) {
-    this.props.history.push({
-      pathname: "/collections/environments",
-      newEnvironment: this.state.data
-    });
+    if (this.props.title === "Add new Environment") {
+      this.props.history.push({
+        pathname: "/collections/environments",
+        newEnvironment: this.state.data
+      });
+    }
+
+    if (this.props.title === "Edit Environment") {
+      this.props.history.push({
+        pathname: "/collections/environments/manage",
+        editedEnvironment: this.state.data,
+        environmentid: this.state.environmentId
+      });
+    }
   }
 
   render() {
+    if (this.props.location.editEnvironment) {
+      const { id, name } = this.props.location.editEnvironment;
+      this.state.environmentId = id;
+      this.state.data.name = name;
+      this.props.history.replace({ editEnvironment: null });
+    }
     return (
       <Modal
         {...this.props}
@@ -41,7 +57,7 @@ class EnvironmentForm extends Form {
           <form onSubmit={this.handleSubmit}>
             {this.renderInput("name", "Environment Name*")}
             {this.renderButton("Submit")}
-            <Link to={`/collections/`}>Cancel</Link>
+            <Link to={`/collections/environments/manage`}>Cancel</Link>
           </form>
         </Modal.Body>
       </Modal>

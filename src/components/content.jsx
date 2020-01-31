@@ -10,6 +10,7 @@ import { Route, Switch, Link } from "react-router-dom";
 import EnvironmentForm from "./environmentForm";
 import environmentService from "../services/environmentService";
 import EnvironmentModal from "./environmentModal";
+import EnvironmentVariables from "./environmentVariables";
 
 class Content extends Component {
   state = {
@@ -57,6 +58,28 @@ class Content extends Component {
         <div>
           <Switch>
             <Route
+              path="/collections/environments/variables"
+              render={props => (
+                <EnvironmentVariables
+                  {...props}
+                  show={true}
+                  onHide={() => {}}
+                  environments={this.state.environments}
+                />
+              )}
+            />
+            <Route
+              path="/collections/environments/manage/edit"
+              render={props => (
+                <EnvironmentForm
+                  {...props}
+                  show={true}
+                  onHide={() => {}}
+                  title="Edit Environment"
+                />
+              )}
+            />
+            <Route
               path="/collections/environments/manage"
               render={props => (
                 <EnvironmentModal
@@ -101,8 +124,13 @@ class Content extends Component {
             </Dropdown.Menu>
           </Dropdown>
         </div>
-        <div>
+        <div style={{ textAlign: "left" }}>
           <Link to="/collections/environments/manage">Manage Environments</Link>
+        </div>
+        <div style={{ textAlign: "right" }}>
+          <Link to="/collections/environments/variables">
+            Environment Variables
+          </Link>
         </div>
 
         <div style={{ textAlign: "center" }}>

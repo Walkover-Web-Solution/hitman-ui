@@ -1,34 +1,34 @@
 import http from "./httpService";
-// import { apiUrl } from "../config.json";
+import { apiUrl } from "../config.json";
 
-const apiUrl = "http://localhost:2000";
+// const apiUrl = "http://localhost:2000";
 
-function EnvironmentsUrl() {
+function environmentsUrl() {
   return `${apiUrl}/environments`;
 }
 
-function EnvironmentUrl(EnvironmentId) {
-  //   return `${apiUrl}/Environments/${EnvironmentId}`;
+function environmentUrl(environmentId) {
+  return `${apiUrl}/environments/${environmentId}`;
 }
 
 export function getEnvironments() {
-  return http.get(EnvironmentsUrl());
+  return http.get(environmentsUrl());
 }
 
-export function getEnvironment(EnvironmentId) {
-  //   return http.get(EnvironmentUrl( EnvironmentId));
+export function getEnvironment(environmentId) {
+  return http.get(environmentUrl(environmentId));
 }
 
 export function saveEnvironment(environment) {
-  return http.post(EnvironmentsUrl(), environment);
+  return http.post(environmentsUrl(), environment);
 }
 
-export function updateEnvironment(EnvironmentId, Environment) {
-  //   return http.put(`${EnvironmentUrl(EnvironmentId)}`, Environment);
+export function updateEnvironment(environmentId, environment) {
+  return http.put(`${environmentUrl(environmentId)}`, environment);
 }
 
-export function deleteEnvironment(EnvironmentId) {
-  return http.delete(`${EnvironmentsUrl()}/${EnvironmentId}`);
+export function deleteEnvironment(environmentId) {
+  return http.delete(`${environmentUrl(environmentId)}`);
 }
 
 export default {

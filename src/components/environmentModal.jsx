@@ -9,9 +9,26 @@ class EnvironmentModal extends Component {
     environments: []
   };
 
-  componentDidMount() {
-    const { environments } = this.props;
+  async componentDidMount() {
+    let { environments } = this.props;
     this.setState({ environments });
+    if (this.props.location.editedEnvironment) {
+      const {
+        environmentid: environmentId,
+        editedEnvironment
+      } = this.props.location;
+      this.props.history.replace({ editedEnvironment: null });
+      environments = [
+        ...environments.filter(env => env.id !== environmentId),
+        { id: environmentId, ...editedEnvironment }
+      ];
+      console.log(environments);
+      this.setState({ environments });
+      await environmentService.updateEnvironment(
+        environmentId,
+        editedEnvironment
+      );
+    }
   }
 
   async handleDelete(environmentId) {
@@ -20,6 +37,13 @@ class EnvironmentModal extends Component {
     );
     this.setState({ environments });
     await environmentService.deleteEnvironment(environmentId);
+  }
+
+  handleEdit(environment) {
+    this.props.history.push({
+      pathname: "/collections/environments/manage/edit",
+      editEnvironment: environment
+    });
   }
 
   handleCancel(props) {
@@ -54,7 +78,9 @@ class EnvironmentModal extends Component {
                   ></Dropdown.Toggle>
 
                   <Dropdown.Menu alignRight>
-                    <Dropdown.Item>Edit</Dropdown.Item>
+                    <Dropdown.Item onClick={() => this.handleEdit(environment)}>
+                      Edit
+                    </Dropdown.Item>
 
                     <Dropdown.Item
                       onClick={() => this.handleDelete(environment.id)}
