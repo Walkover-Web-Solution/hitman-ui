@@ -23,6 +23,12 @@ class Pages extends Component {
       editPage: page
     });
   }
+  handleDisplay(page) {
+    this.props.history.push({
+      pathname: `/collections/pages/${page.id}`,
+      page: page
+    });
+  }
 
   render() {
     return (
@@ -38,7 +44,12 @@ class Pages extends Component {
               <Accordion defaultActiveKey="0" key={page.id}>
                 <Card>
                   <Card.Header>
-                    <Accordion.Toggle as={Button} variant="link" eventKey="1">
+                    <Accordion.Toggle
+                      onClick={() => this.handleDisplay(page)}
+                      as={Button}
+                      variant="link"
+                      eventKey="1"
+                    >
                       {page.name}
                     </Accordion.Toggle>
                     <DropdownButton

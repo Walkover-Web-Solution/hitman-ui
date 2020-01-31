@@ -8,16 +8,25 @@ import ProtectedRoute from './components/common/protectedRoute';
 import Main from './components/Main.jsx';
 
 class App extends Component {
-	render() {
-		return (
-			<Switch>
-				<ProtectedRoute path="/collections/" component={Main} />
-				<Route path="/login" component={Login} />
-				<Route path="/logout" component={Logout} />
-				<Route exact path="/" component={Home} />
-			</Switch>
-		);
-	}
+    render() {
+        return ( <
+            Switch >
+            <
+            ProtectedRoute path = "/collections/"
+            component = { Main }
+            /> <
+            Route path = "/login"
+            component = { Login }
+            /> <
+            Route path = "/logout"
+            component = { Logout }
+            /> <
+            Route exact path = "/"
+            component = { Home }
+            /> < /
+            Switch >
+        );
+    }
 }
 
 export default App;

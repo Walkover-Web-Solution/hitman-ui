@@ -17,7 +17,7 @@ import GroupForm from "./groupForm";
 import groupsService from "../services/groupsService";
 import PageForm from "./pageForm";
 import pageService from "../services/pageService";
-
+import Main from "./Main";
 class Collections extends Component {
   state = {
     collections: [],
@@ -258,6 +258,7 @@ class Collections extends Component {
       this.props.history.replace({ newCollection: null });
       this.handleAdd(newCollection);
     }
+    // <h1>{this.props.location.page}</h1>
 
     return (
       <div>
