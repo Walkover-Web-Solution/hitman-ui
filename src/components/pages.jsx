@@ -29,7 +29,6 @@ class Pages extends Component {
       page: page
     });
   }
-
   render() {
     return (
       <div>

@@ -33,7 +33,7 @@ class Collections extends Component {
       const {
         data: versions1
       } = await collectionVersionsService.getCollectionVersions(
-        collections[i].identifier
+        collections[i].id
       );
 
       versions = [...versions, ...versions1];
@@ -104,10 +104,7 @@ class Collections extends Component {
   }
 
   handleAddVersion(collection) {
-    console.log("dsdsdsdsd");
-
     this.state.selectedCollection = collection;
-    console.log("dsdsdsdsd", this.state.selectedCollection);
     this.props.history.push(`/collections/${collection.name}/versions/new`);
   }
 
