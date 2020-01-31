@@ -1,17 +1,24 @@
-import React, { Component } from "react";
+import React, { Component } from 'react'
+import { Redirect } from 'react-router-dom'
 
 class DisplayPage extends Component {
-  state = {};
-  render() {
-    console.log(this.props);
+  state = {}
+  render () {
+    if (!this.props.location.page) {
+      return <Redirect to='/collections' />
+    }
     return (
       <div>
-        <h1>hh111</h1>
-        <h1>{this.props.location.page.id}</h1>
-        <h1>{this.props.location.page.name}</h1>
+        <span>
+          <p>{this.props.location.page.name}</p>
+        </span>
+        <span>
+          <p>{this.props.location.page.contents}</p>
+        </span>
+        <button className='btn btn-primary btn-sm'>Edit page</button>
       </div>
-    );
+    )
   }
 }
 
-export default DisplayPage;
+export default DisplayPage
