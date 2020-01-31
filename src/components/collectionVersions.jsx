@@ -41,7 +41,6 @@ class CollectionVersions extends Component {
   }
 
   render() {
-    console.log("version pages", this.props);
     return (
       <div>
         {this.props.versions &&
@@ -112,6 +111,7 @@ class CollectionVersions extends Component {
                         {...this.props}
                         versionId={collectionVersion.id}
                         pages={this.props.pages}
+                        title={"Version Pages"}
                       />
                     </Card.Body>
                   </Accordion.Collapse>

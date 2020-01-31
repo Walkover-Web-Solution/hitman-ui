@@ -104,7 +104,10 @@ class Collections extends Component {
   }
 
   handleAddVersion(collection) {
+    console.log("dsdsdsdsd");
+
     this.state.selectedCollection = collection;
+    console.log("dsdsdsdsd", this.state.selectedCollection);
     this.props.history.push(`/collections/${collection.name}/versions/new`);
   }
 
@@ -147,10 +150,14 @@ class Collections extends Component {
   }
 
   async handleAddVersionPage(versionId, newPage) {
-    let pages = [...this.state.pages, { ...newPage, versionId, id: 23 }];
+    const { data: Page1 } = await pageService.saveVersionPage(
+      versionId,
+      newPage
+    );
+    // let pages = [...this.state.pages, { ...newPage, versionId, id: 23 }];
+    let pages = [...this.state.pages, { ...Page1 }];
     console.log(pages);
     this.setState({ pages });
-    await pageService.saveVersionPage(versionId, newPage);
   }
   async handleAddGroupPage(versionId, groupId, newPage) {
     const { data: page } = await pageService.saveGroupPage(
@@ -170,12 +177,14 @@ class Collections extends Component {
   }
 
   async handleUpdatePage(editedPage, pageId, versionId) {
+    const { data: editPage } = await pageService.updatePage(pageId, editedPage);
+
     const pages = [
       ...this.state.pages.filter(page => page.id !== pageId),
-      { ...editedPage, id: pageId, versionId }
+      // { ...editedPage, id: pageId, versionId }
+      { ...editPage }
     ];
     this.setState({ pages });
-    await pageService.updatePage(pageId, editedPage);
   }
 
   render() {
@@ -270,6 +279,7 @@ class Collections extends Component {
                 path="/collections/:id/versions/:versionId/pages/:pageId/edit"
                 render={props => (
                   <PageForm
+                    {...props}
                     show={true}
                     onHide={() => {}}
                     title="Edit Page"
@@ -324,7 +334,7 @@ class Collections extends Component {
                     show={true}
                     onHide={() => {}}
                     title="Add new Collection Version"
-                    collectionId={this.state.selectedCollection.id}
+                    collectionId={this.state.selectedCollection.identifier}
                   />
                 )}
               />

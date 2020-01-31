@@ -7,7 +7,7 @@ import {
   DropdownButton
 } from "react-bootstrap";
 import groupsService from "../services/groupsService";
-import VersionPages from "./pages";
+import GroupPages from "./groupPages";
 
 class Groups extends Component {
   state = {
@@ -44,7 +44,6 @@ class Groups extends Component {
   }
 
   render() {
-    console.log("group", this.props);
     return (
       <div>
         {this.props.groups
@@ -90,11 +89,12 @@ class Groups extends Component {
                 </Card.Header>
                 <Accordion.Collapse eventKey="1">
                   <Card.Body>
-                    <VersionPages
+                    <GroupPages
                       {...this.props}
                       versionId={group.versionId}
                       pages={this.props.pages}
                       groupId={group.id}
+                      title={"Group Pages"}
                     />
                   </Card.Body>
                 </Accordion.Collapse>

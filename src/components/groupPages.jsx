@@ -7,7 +7,7 @@ import {
   DropdownButton
 } from "react-bootstrap";
 
-class Pages extends Component {
+class GroupPages extends Component {
   state = {};
 
   async handleDelete(page) {
@@ -31,7 +31,8 @@ class Pages extends Component {
           this.props.pages
             .filter(
               page =>
-                page.versionId === this.props.versionId && page.groupId === null
+                page.versionId === this.props.versionId &&
+                page.groupId === this.props.groupId
             )
 
             .map((page, index) => (
@@ -72,4 +73,4 @@ class Pages extends Component {
   }
 }
 
-export default Pages;
+export default GroupPages;
