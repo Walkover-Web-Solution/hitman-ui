@@ -8,8 +8,8 @@ import { Link } from "react-router-dom";
 class PageForm extends Form {
   state = {
     data: {
-      name: "",
-      contents: ""
+      name: ""
+      // contents: ""
     },
     errors: {}
   };
@@ -17,10 +17,10 @@ class PageForm extends Form {
   schema = {
     name: Joi.string()
       .required()
-      .label("Page name"),
-    contents: Joi.string()
-      .required()
-      .label("Contents")
+      .label("Page name")
+    // contents: Joi.string()
+    //   .required()
+    //   .label("Contents")
   };
 
   async doSubmit(props) {
@@ -33,6 +33,7 @@ class PageForm extends Form {
       });
     }
     if (this.props.title === "Add New Version Page") {
+      console.log("gdhsjjhsgdhsdg");
       this.props.history.push({
         pathname: `/collections`,
         newPage: this.state.data,
@@ -74,7 +75,7 @@ class PageForm extends Form {
         <Modal.Body>
           <form onSubmit={this.handleSubmit}>
             {this.renderInput("name", "Page name")}
-            {this.renderInput("contents", "Contents*")}
+            {/* {this.renderInput("contents", "Contents*")} */}
             {this.renderButton("Submit")}
             <Link to={`/collections`}>Cancel</Link>
           </form>

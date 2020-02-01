@@ -18,6 +18,8 @@ import groupsService from "../services/groupsService";
 import PageForm from "./pageForm";
 import pageService from "../services/pageService";
 import Main from "./Main";
+import { Redirect } from "react-router-dom";
+
 class Collections extends Component {
   state = {
     collections: [],
@@ -119,17 +121,18 @@ class Collections extends Component {
   }
 
   async handleAddGroup(versionId, newGroup) {
-    let groups = [...this.state.groups, { ...newGroup, versionId }];
+    const { data: group } = await groupsService.saveGroup(versionId, newGroup);
+
+    let groups = [...this.state.groups, { ...group }];
     this.setState({ groups });
-    await groupsService.saveGroup(versionId, newGroup);
   }
 
-  async handleAddPage(versionId, newPage) {
-    let pages = [...this.state.pages, { ...newPage, versionId, id: 23 }];
-    console.log(pages);
-    this.setState({ pages });
-    await pageService.saveVersionPage(versionId, newPage);
-  }
+  // async handleAddPage(versionId, newPage) {
+  //   let pages = [...this.state.pages, { ...newPage, versionId, id: 23 }];
+  //   console.log(pages);
+  //   this.setState({ pages });
+  //   await pageService.saveVersionPage(versionId, newPage);
+  // }
 
   async handleDeleteGroup(deletedGroupId) {
     const groups = this.state.groups.filter(g => g.id !== deletedGroupId);
@@ -147,14 +150,17 @@ class Collections extends Component {
   }
 
   async handleAddVersionPage(versionId, newPage) {
-    const { data: Page1 } = await pageService.saveVersionPage(
+    const { data: page } = await pageService.saveVersionPage(
       versionId,
       newPage
     );
-    // let pages = [...this.state.pages, { ...newPage, versionId, id: 23 }];
-    let pages = [...this.state.pages, { ...Page1 }];
-    console.log(pages);
+    let pages = [...this.state.pages, { ...page }];
     this.setState({ pages });
+    let pageId = page.id;
+    this.props.history.push({
+      pathname: `/collections/pages/${pageId}/edit`,
+      page: page
+    });
   }
   async handleAddGroupPage(versionId, groupId, newPage) {
     const { data: page } = await pageService.saveGroupPage(
@@ -166,6 +172,11 @@ class Collections extends Component {
     console.log("passssssessss", pages);
     // let pages = [...this.state.pages, newPage];
     this.setState({ pages });
+    let pageId = page.id;
+    this.props.history.push({
+      pathname: `/collections/pages/${pageId}/edit`,
+      page: page
+    });
   }
   async handleDeletePage(deletedPageId) {
     await pageService.deletePage(deletedPageId);
@@ -203,6 +214,7 @@ class Collections extends Component {
       const { versionId, newPage } = location;
       this.props.history.replace({ newPage: null });
       this.handleAddVersionPage(versionId, newPage);
+      // console.log("new", this.state.pageId);
     }
 
     if (location.deletedPageId) {
@@ -332,7 +344,7 @@ class Collections extends Component {
                     show={true}
                     onHide={() => {}}
                     title="Add new Collection Version"
-                    collectionId={this.state.selectedCollection.identifier}
+                    collectionId={this.state.selectedCollection.id}
                   />
                 )}
               />
