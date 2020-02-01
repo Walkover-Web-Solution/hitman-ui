@@ -22,7 +22,6 @@ class EnvironmentModal extends Component {
         ...environments.filter(env => env.id !== environmentId),
         { id: environmentId, ...editedEnvironment }
       ];
-      console.log(environments);
       this.setState({ environments });
       await environmentService.updateEnvironment(
         environmentId,

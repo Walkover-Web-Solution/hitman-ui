@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Route, Switch, Link } from "react-router-dom";
 import SideBar from "./sidebar";
-import Content from "./content";
+import Environments from "./environments";
 
 class Main extends Component {
   render() {
@@ -37,7 +37,7 @@ class Main extends Component {
                 <h1 className="h2">Dashboard</h1>
               </div>
               <Route>
-                <Content {...this.props} />
+                <Environments {...this.props} />
               </Route>
             </main>
           </div>

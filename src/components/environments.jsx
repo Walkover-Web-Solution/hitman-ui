@@ -11,16 +11,32 @@ import EnvironmentForm from "./environmentForm";
 import environmentService from "../services/environmentService";
 import EnvironmentModal from "./environmentModal";
 import EnvironmentVariables from "./environmentVariables";
+import variablesService from "../services/variablesService";
 
-class Content extends Component {
+class Environments extends Component {
   state = {
     environments: [],
+    variables: [],
     environment: { id: 0, name: "No Environment" }
   };
+
+  async fetchVariables(environments) {
+    let variables = [];
+    for (let i = 0; i < environments.length; i++) {
+      const { data: variables1 } = await variablesService.getVariables(
+        environments[i].id
+      );
+      variables = [...variables, ...variables1];
+    }
+
+    return variables;
+  }
 
   async componentDidMount() {
     const { data: environments } = await environmentService.getEnvironments();
     this.setState({ environments });
+    const variables = await this.fetchVariables(environments);
+    this.setState({ variables });
   }
 
   handleEnv(environment) {
@@ -36,6 +52,11 @@ class Content extends Component {
   }
 
   render() {
+    if (this.props.location.variables) {
+      const { variables } = this.props.location;
+      this.props.history.replace({ variables: null });
+      this.setState({ variables });
+    }
     if (this.props.location.environments) {
       const { environments } = this.props.location;
       this.props.history.replace({ environments: null });
@@ -65,6 +86,7 @@ class Content extends Component {
                   show={true}
                   onHide={() => {}}
                   environments={this.state.environments}
+                  variables={this.state.variables}
                 />
               )}
             />
@@ -125,6 +147,9 @@ class Content extends Component {
           </Dropdown>
         </div>
         <div style={{ textAlign: "left" }}>
+          <button type="button" class="btn btn-link btn-sm btn-block">
+            <i class="fa fa-eye"></i>{" "}
+          </button>
           <Link to="/collections/environments/manage">Manage Environments</Link>
         </div>
         <div style={{ textAlign: "right" }}>
@@ -141,4 +166,4 @@ class Content extends Component {
   }
 }
 
-export default Content;
+export default Environments;

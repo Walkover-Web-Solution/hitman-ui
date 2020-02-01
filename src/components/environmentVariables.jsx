@@ -1,10 +1,57 @@
 import React, { Component } from "react";
-import { Modal, Dropdown, ListGroup } from "react-bootstrap";
+import { Modal, Dropdown, ListGroup, Table } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import Input from "./common/input";
+import Form from "./common/form";
+import Joi from "joi-browser";
 
 class EnvironmentVariables extends Component {
-  state = {};
+  state = {
+    variables: []
+  };
+
+  componentDidMount() {
+    const { variables } = this.props;
+    this.setState({ variables });
+  }
+
+  schema = {
+    name: Joi.string(),
+    host: Joi.string()
+  };
+
+  handleSubmit = e => {
+    e.preventDefault();
+    this.doSubmit();
+  };
+
+  doSubmit() {
+    this.props.history.push({
+      pathname: `/collections/environments`,
+      variables: [...this.state.variables]
+    });
+  }
+
+  handleAdd() {
+    const variables = [
+      ...this.state.variables,
+      { id: "", name: "", initialValue: "", currentValue: "" }
+    ];
+    this.setState({ variables });
+  }
+
+  handleChange = e => {
+    const name = e.currentTarget.name.split(".");
+    const variables = [...this.state.variables];
+    variables[name[0]][name[1]] = e.currentTarget.value;
+    this.setState({ variables });
+  };
+
+  handleDelete(index) {
+    const variables = this.state.variables;
+    variables.splice(index, 1);
+    this.setState({ variables });
+  }
 
   render() {
     return (
@@ -20,6 +67,84 @@ class EnvironmentVariables extends Component {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
+          <form onSubmit={this.handleSubmit}>
+            <Table bordered size="sm">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Variable</th>
+                  <th>Initial Value</th>
+                  <th>Current Value</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {" "}
+                {this.state.variables.map((variable, index) => (
+                  <tr key={index}>
+                    <td>{index}</td>
+                    <td>
+                      <input
+                        name={index + ".name"}
+                        value={variable.name}
+                        onChange={this.handleChange}
+                        type={"text"}
+                        style={{ border: "none" }}
+                        className="form-control"
+                      />
+                    </td>
+                    <td>
+                      {" "}
+                      <input
+                        name={index + ".initialValue"}
+                        value={variable.initialValue}
+                        onChange={this.handleChange}
+                        type={"text"}
+                        className="form-control"
+                        style={{ border: "none" }}
+                      />
+                    </td>
+                    <td>
+                      {" "}
+                      <input
+                        name={index + ".currentValue"}
+                        value={variable.currentValue}
+                        onChange={this.handleChange}
+                        type={"text"}
+                        style={{ border: "none" }}
+                        className="form-control"
+                      />
+                    </td>
+                    <td>
+                      <button
+                        type="button"
+                        class="btn btn-light btn-sm btn-block"
+                        onClick={() => this.handleDelete(index)}
+                      >
+                        x{" "}
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+                <tr>
+                  <td> </td>
+                  <td>
+                    {" "}
+                    <button
+                      type="button"
+                      class="btn btn-link btn-sm btn-block"
+                      onClick={this.handleAdd.bind(this)}
+                    >
+                      + New Variable
+                    </button>
+                  </td>
+                  <td> </td>
+                  <td> </td>
+                </tr>
+              </tbody>
+            </Table>
+            <button className="btn btn-default">Submit</button>
+          </form>
           <Link to={`/collections/environments`}>Cancel</Link>
         </Modal.Body>
       </Modal>
