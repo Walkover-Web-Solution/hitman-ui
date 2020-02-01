@@ -31,7 +31,6 @@ class Pages extends Component {
   }
 
   render() {
-    console.log("page props ", this.props);
     return (
       <div>
         {this.props.pages &&
@@ -85,16 +84,3 @@ class Pages extends Component {
 }
 
 export default Pages;
-
-// if (this.props.location.page && this.props.location.page.groupId === null) {
-//   this.handleAddVersionPage(
-//     this.props.location.page.versionId,
-//     this.props.location.page
-//   );
-// } else {
-//   this.handleAddGroupPage(
-//     this.props.location.page.versionId,
-//     this.props.location.page.groupId,
-//     this.props.location.page
-//   );
-// }

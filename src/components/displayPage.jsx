@@ -5,7 +5,6 @@ class DisplayPage extends Component {
   state = {};
 
   handleEdit(page) {
-    console.log("displayprops", page);
     this.props.history.push({
       pathname: `/collections/pages/${page.id}/edit`,
       page: page

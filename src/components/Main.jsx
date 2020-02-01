@@ -7,31 +7,23 @@ import EditPage from "./editPage";
 import pageService from "../services/pageService";
 
 class Main extends Component {
-  async handleAddVersionPage(versionId, newPage) {
-    console.log("hhhhhhh", versionId, newPage);
-    const { data: page } = await pageService.saveVersionPage(
-      versionId,
-      newPage
-    );
-  }
-
-  async handleAddGroupPage(versionId, groupId, newPage) {
-    const { data: page } = await pageService.saveGroupPage(
-      versionId,
-      groupId,
-      newPage
-    );
+  async handleUpdatePage(editedPage, pageId, versionId) {
+    console.log("pageId", pageId);
+    const { data: editPage } = await pageService.updatePage(pageId, editedPage);
   }
 
   render() {
-    // console.log("ggggggg", this.props.location.data);
     if (this.props.location.data && this.props.location.data.groupId === "") {
-      const data = this.props.location.data;
+      const data = { ...this.props.location.data };
       delete data.pageId;
       delete data.versionId;
       delete data.groupId;
-      console.log("ggggggg", data);
-      this.handleAddVersionPage(this.props.location.data.versionId, data);
+      console.log("ggggggg", this.props.location);
+      this.handleUpdatePage(
+        data,
+        this.props.location.data.pageId,
+        this.props.location.data.versionId
+      );
     } else if (
       this.props.location.data &&
       this.props.location.data.versionId === ""
@@ -43,17 +35,6 @@ class Main extends Component {
       );
     }
 
-    // console.log("hiiiiiii", this.props);
-    // if (this.props.data.groupId === undefined) {
-    //   this.handleAddVersionPage(this.props.data.versionId, this.props.data);
-    // } else {
-    //   this.handleAddGroupPage(
-    //     this.props.data.versionId,
-    //     this.props.data.groupId,
-    //     this.props.data
-    //   );
-    // }
-    console.log("fffff", this.props.location.page);
     return (
       <div>
         <nav className="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">

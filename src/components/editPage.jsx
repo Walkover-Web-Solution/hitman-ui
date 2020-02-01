@@ -39,16 +39,13 @@ class EditPage extends Component {
   };
 
   render() {
-    console.log("edit page", this.props);
+    console.log(this.props.location.page);
     if (this.props.location.page) {
       const { id, versionId, name, contents } = this.props.location.page;
       this.state.data.pageId = id;
       this.state.data.versionId = versionId;
       this.state.data.name = name;
       this.state.data.contents = contents;
-      console.log("new", this.state);
-
-      // this.props.history.replace({ page: null });
     }
     return (
       <form onSubmit={this.handleSubmit}>
