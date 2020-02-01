@@ -12,6 +12,7 @@ import environmentService from "../services/environmentService";
 import EnvironmentModal from "./environmentModal";
 import EnvironmentVariables from "./environmentVariables";
 import variablesService from "../services/variablesService";
+import jQuery from "jquery";
 
 class Environments extends Component {
   state = {
@@ -51,11 +52,75 @@ class Environments extends Component {
     await environmentService.saveEnvironment(environment);
   }
 
+  async handleUpdateVariables(updatedVariables) {
+    const originalVariables = jQuery.extend(true, [], this.state.variables);
+    if (
+      JSON.stringify(originalVariables) !== JSON.stringify(updatedVariables)
+    ) {
+      var deletedIndices = [];
+      var updatedIndices = [];
+      var savedIndices = [];
+      var sameIndices = [];
+      const l1 = originalVariables.length;
+      const l2 = updatedVariables.length;
+      let j = 0;
+
+      for (let i = 0; i < l1; i++) {
+        for (j = 0; j < l2; j++) {
+          if (originalVariables[i].id === updatedVariables[j].id) {
+            if (
+              JSON.stringify(originalVariables[i]) ===
+              JSON.stringify(updatedVariables[j])
+            ) {
+              sameIndices.push(j);
+              break;
+            } else {
+              updatedIndices.push(j);
+              break;
+            }
+          } else {
+          }
+        }
+        if (j === l2) {
+          deletedIndices.push(i);
+        }
+      }
+
+      this.setState({ variables: updatedVariables });
+      for (let i = 0; i < l2; i++) {
+        if (updatedIndices.includes(i)) {
+          const body = updatedVariables[i];
+          const id = body.id;
+          delete body.id;
+          delete body.environmentId;
+
+          const data = await variablesService.updateVariable(id, body);
+        } else if (sameIndices.includes(i)) {
+        } else {
+          const body = updatedVariables[i];
+          delete body.id;
+          delete body.environmentId;
+          const data = await variablesService.saveVariable(
+            this.state.environment.id,
+            body
+          );
+        }
+      }
+      for (let i = 0; i < l1; i++) {
+        if (deletedIndices.includes(i)) {
+          const data = await variablesService.deleteVariable(
+            originalVariables[i].id
+          );
+        }
+      }
+    }
+  }
+
   render() {
-    if (this.props.location.variables) {
-      const { variables } = this.props.location;
-      this.props.history.replace({ variables: null });
-      this.setState({ variables });
+    if (this.props.location.updatedVariables) {
+      const { updatedVariables } = this.props.location;
+      this.props.history.replace({ updatedVariables: null });
+      this.handleUpdateVariables(updatedVariables);
     }
     if (this.props.location.environments) {
       const { environments } = this.props.location;
@@ -85,8 +150,8 @@ class Environments extends Component {
                   {...props}
                   show={true}
                   onHide={() => {}}
-                  environments={this.state.environments}
-                  variables={this.state.variables}
+                  environment={{ ...this.state.environment }}
+                  variables={jQuery.extend(true, [], this.state.variables)}
                 />
               )}
             />

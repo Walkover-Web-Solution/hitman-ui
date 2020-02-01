@@ -7,12 +7,13 @@ import Joi from "joi-browser";
 
 class EnvironmentVariables extends Component {
   state = {
-    variables: []
+    variables: [],
+    environment: {}
   };
 
   componentDidMount() {
-    const { variables } = this.props;
-    this.setState({ variables });
+    const { variables, environment } = this.props;
+    this.setState({ variables, environment });
   }
 
   schema = {
@@ -28,14 +29,20 @@ class EnvironmentVariables extends Component {
   doSubmit() {
     this.props.history.push({
       pathname: `/collections/environments`,
-      variables: [...this.state.variables]
+      updatedVariables: [...this.state.variables]
     });
   }
 
   handleAdd() {
     const variables = [
       ...this.state.variables,
-      { id: "", name: "", initialValue: "", currentValue: "" }
+      {
+        id: "",
+        environmentId: this.state.environment.id,
+        name: "",
+        initialValue: "",
+        currentValue: ""
+      }
     ];
     this.setState({ variables });
   }
@@ -44,6 +51,7 @@ class EnvironmentVariables extends Component {
     const name = e.currentTarget.name.split(".");
     const variables = [...this.state.variables];
     variables[name[0]][name[1]] = e.currentTarget.value;
+    variables[name[0]].environmentId = this.state.environment.id;
     this.setState({ variables });
   };
 
@@ -63,7 +71,7 @@ class EnvironmentVariables extends Component {
       >
         <Modal.Header>
           <Modal.Title id="contained-modal-title-vcenter">
-            <h5>Environment Variables</h5>
+            <h5>{this.state.environment.name}</h5>
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -80,52 +88,54 @@ class EnvironmentVariables extends Component {
 
               <tbody>
                 {" "}
-                {this.state.variables.map((variable, index) => (
-                  <tr key={index}>
-                    <td>{index}</td>
-                    <td>
-                      <input
-                        name={index + ".name"}
-                        value={variable.name}
-                        onChange={this.handleChange}
-                        type={"text"}
-                        style={{ border: "none" }}
-                        className="form-control"
-                      />
-                    </td>
-                    <td>
-                      {" "}
-                      <input
-                        name={index + ".initialValue"}
-                        value={variable.initialValue}
-                        onChange={this.handleChange}
-                        type={"text"}
-                        className="form-control"
-                        style={{ border: "none" }}
-                      />
-                    </td>
-                    <td>
-                      {" "}
-                      <input
-                        name={index + ".currentValue"}
-                        value={variable.currentValue}
-                        onChange={this.handleChange}
-                        type={"text"}
-                        style={{ border: "none" }}
-                        className="form-control"
-                      />
-                    </td>
-                    <td>
-                      <button
-                        type="button"
-                        class="btn btn-light btn-sm btn-block"
-                        onClick={() => this.handleDelete(index)}
-                      >
-                        x{" "}
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                {this.state.variables.map((variable, index) =>
+                  variable.environmentId === this.state.environment.id ? (
+                    <tr key={index}>
+                      <td>{index}</td>
+                      <td>
+                        <input
+                          name={index + ".name"}
+                          value={variable.name}
+                          onChange={this.handleChange}
+                          type={"text"}
+                          style={{ border: "none" }}
+                          className="form-control"
+                        />
+                      </td>
+                      <td>
+                        {" "}
+                        <input
+                          name={index + ".initialValue"}
+                          value={variable.initialValue}
+                          onChange={this.handleChange}
+                          type={"text"}
+                          className="form-control"
+                          style={{ border: "none" }}
+                        />
+                      </td>
+                      <td>
+                        {" "}
+                        <input
+                          name={index + ".currentValue"}
+                          value={variable.currentValue}
+                          onChange={this.handleChange}
+                          type={"text"}
+                          style={{ border: "none" }}
+                          className="form-control"
+                        />
+                      </td>
+                      <td>
+                        <button
+                          type="button"
+                          class="btn btn-light btn-sm btn-block"
+                          onClick={() => this.handleDelete(index)}
+                        >
+                          x{" "}
+                        </button>
+                      </td>
+                    </tr>
+                  ) : null
+                )}
                 <tr>
                   <td> </td>
                   <td>
@@ -133,7 +143,7 @@ class EnvironmentVariables extends Component {
                     <button
                       type="button"
                       class="btn btn-link btn-sm btn-block"
-                      onClick={this.handleAdd.bind(this)}
+                      onClick={() => this.handleAdd()}
                     >
                       + New Variable
                     </button>
