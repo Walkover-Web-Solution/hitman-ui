@@ -25,6 +25,14 @@ class Groups extends Component {
     });
   }
 
+  handleAddPage(groupId, versionId, collectionId) {
+    this.props.history.push({
+      pathname: `/collections/${collectionId}/versions/${versionId}/groups/${groupId}/pages/new`,
+      versionId: versionId,
+      groupId: groupId
+    });
+  }
+
   render() {
     return (
       <div>
@@ -55,8 +63,31 @@ class Groups extends Component {
                     >
                       Delete
                     </Dropdown.Item>
+                    <Dropdown.Item
+                      eventKey="3"
+                      onClick={() =>
+                        this.handleAddPage(
+                          group.id,
+                          group.versionId,
+                          this.props.collectionId
+                        )
+                      }
+                    >
+                      Add Page
+                    </Dropdown.Item>
                   </DropdownButton>
                 </Card.Header>
+                <Accordion.Collapse eventKey="1">
+                  <Card.Body>
+                    <GroupPages
+                      {...this.props}
+                      versionId={group.versionId}
+                      pages={this.props.pages}
+                      groupId={group.id}
+                      title={"Group Pages"}
+                    />
+                  </Card.Body>
+                </Accordion.Collapse>
                 <Accordion.Collapse eventKey="1">
                   <Card.Body>End points</Card.Body>
                 </Accordion.Collapse>
