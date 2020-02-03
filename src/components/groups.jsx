@@ -6,7 +6,7 @@ import {
   Dropdown,
   DropdownButton
 } from "react-bootstrap";
-import groupsService from "../services/groupsService";
+import GroupPages from "./groupPages";
 
 class Groups extends Component {
   state = {};

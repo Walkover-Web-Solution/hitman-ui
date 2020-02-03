@@ -1,7 +1,5 @@
 import http from "./httpService";
-// import { apiUrl } from "../config.json";
-
-const apiUrl = "http://localhost:2000";
+import { apiUrl } from "../config.json";
 
 function variablesUrl(environmentId) {
   return `${apiUrl}/environments/${environmentId}/variables`;
