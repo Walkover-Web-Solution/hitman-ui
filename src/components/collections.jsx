@@ -398,7 +398,16 @@ class Collections extends Component {
                     </Dropdown.Item>
                     <Dropdown.Item
                       eventKey="2"
-                      onClick={() => this.handleDelete(collection)}
+                      onClick={() => {
+                        if (
+                          window.confirm(
+                            "Are you sure you wish to delete this collection?" +
+                              "\n" +
+                              " All your versions, groups, pages and endpoints present in this collection will be deleted."
+                          )
+                        )
+                          this.handleDelete(collection);
+                      }}
                     >
                       Delete
                     </Dropdown.Item>

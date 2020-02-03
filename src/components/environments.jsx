@@ -1,11 +1,5 @@
 import React, { Component } from "react";
-import {
-  Accordion,
-  Card,
-  Button,
-  Dropdown,
-  DropdownButton
-} from "react-bootstrap";
+import { Dropdown } from "react-bootstrap";
 import { Route, Switch, Link } from "react-router-dom";
 import EnvironmentForm from "./environmentForm";
 import environmentService from "../services/environmentService";
@@ -126,12 +120,6 @@ class Environments extends Component {
       const { environments } = this.props.location;
       this.props.history.replace({ environments: null });
       this.setState({ environments });
-    }
-
-    if (this.props.location.deleteEnvironmentId) {
-      const { deleteEnvironmentId } = this.props.location;
-      this.props.history.replace({ deleteEnvironmentId: null });
-      this.handleDelete(deleteEnvironmentId);
     }
 
     if (this.props.location.newEnvironment) {

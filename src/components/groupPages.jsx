@@ -62,7 +62,14 @@ class GroupPages extends Component {
                     >
                       <Dropdown.Item
                         eventKey="2"
-                        onClick={() => this.handleDelete(page)}
+                        onClick={() => {
+                          if (
+                            window.confirm(
+                              "Are you sure you wish to delete this item?"
+                            )
+                          )
+                            this.handleDelete(page);
+                        }}
                       >
                         Delete
                       </Dropdown.Item>

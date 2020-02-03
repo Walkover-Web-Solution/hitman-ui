@@ -82,7 +82,14 @@ class EnvironmentModal extends Component {
                     </Dropdown.Item>
 
                     <Dropdown.Item
-                      onClick={() => this.handleDelete(environment.id)}
+                      onClick={() => {
+                        if (
+                          window.confirm(
+                            "Are you sure you wish to delete this item?"
+                          )
+                        )
+                          this.handleDelete(environment.id);
+                      }}
                     >
                       delete
                     </Dropdown.Item>

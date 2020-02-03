@@ -58,15 +58,16 @@ class Pages extends Component {
                       id="dropdown-menu-align-right"
                       style={{ float: "right" }}
                     >
-                      {/* <Dropdown.Item
-                        eventKey='1'
-                        onClick={() => this.handleUpdate(page)}
-                      >
-                        Edit
-                      </Dropdown.Item> */}
                       <Dropdown.Item
                         eventKey="2"
-                        onClick={() => this.handleDelete(page)}
+                        onClick={() => {
+                          if (
+                            window.confirm(
+                              "Are you sure you wish to delete this item?"
+                            )
+                          )
+                            this.handleDelete(page);
+                        }}
                       >
                         Delete
                       </Dropdown.Item>

@@ -59,7 +59,16 @@ class Groups extends Component {
                     </Dropdown.Item>
                     <Dropdown.Item
                       eventKey="2"
-                      onClick={() => this.handleDelete(group)}
+                      onClick={() => {
+                        if (
+                          window.confirm(
+                            "Are you sure you wish to delete this group? " +
+                              "\n" +
+                              "All your pages and endpoints present in this group will be deleted."
+                          )
+                        )
+                          this.handleDelete(group);
+                      }}
                     >
                       Delete
                     </Dropdown.Item>

@@ -67,7 +67,16 @@ class CollectionVersions extends Component {
                       </Dropdown.Item>
                       <Dropdown.Item
                         eventKey="2"
-                        onClick={() => this.handleDelete(collectionVersion)}
+                        onClick={() => {
+                          if (
+                            window.confirm(
+                              "Are you sure you wish to delete this versions? " +
+                                "\n" +
+                                "All your groups, pages and endpoints present in this version will be deleted."
+                            )
+                          )
+                            this.handleDelete(collectionVersion);
+                        }}
                       >
                         Delete
                       </Dropdown.Item>
