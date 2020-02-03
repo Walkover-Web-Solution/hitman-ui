@@ -1,30 +1,37 @@
-import React, { Component } from "react";
+import React, { Component } from 'react'
 import {
   Accordion,
   Card,
   Button,
   Dropdown,
   DropdownButton
-} from "react-bootstrap";
+} from 'react-bootstrap'
 
 class GroupPages extends Component {
-  state = {};
+  state = {}
 
-  async handleDelete(page) {
+  async handleDelete (page) {
     this.props.history.push({
-      pathname: "/collections",
+      pathname: '/collections',
       deletedPageId: page.id
-    });
+    })
   }
 
-  handleUpdate(page) {
+  handleUpdate (page) {
     this.props.history.push({
       pathname: `/collections/${this.props.collectionId}/versions/${this.props.versionId}/pages/${page.id}/edit`,
       editPage: page
-    });
+    })
   }
 
-  render() {
+  handleDisplay (page) {
+    this.props.history.push({
+      pathname: `/collections/pages/${page.id}`,
+      page: page
+    })
+  }
+
+  render () {
     return (
       <div>
         {this.props.pages &&
@@ -36,41 +43,46 @@ class GroupPages extends Component {
             )
 
             .map((page, index) => (
-              <Accordion defaultActiveKey="0" key={page.id}>
+              <Accordion defaultActiveKey='0' key={page.id}>
                 <Card>
                   <Card.Header>
-                    <Accordion.Toggle as={Button} variant="link" eventKey="1">
+                    <Accordion.Toggle
+                      as={Button}
+                      onClick={() => this.handleDisplay(page)}
+                      variant='link'
+                      eventKey='1'
+                    >
                       {page.name}
                     </Accordion.Toggle>
                     <DropdownButton
                       alignRight
-                      title=""
-                      id="dropdown-menu-align-right"
-                      style={{ float: "right" }}
+                      title=''
+                      id='dropdown-menu-align-right'
+                      style={{ float: 'right' }}
                     >
                       <Dropdown.Item
-                        eventKey="1"
+                        eventKey='1'
                         onClick={() => this.handleUpdate(page)}
                       >
                         Edit
                       </Dropdown.Item>
                       <Dropdown.Item
-                        eventKey="2"
+                        eventKey='2'
                         onClick={() => this.handleDelete(page)}
                       >
                         Delete
                       </Dropdown.Item>
                     </DropdownButton>
                   </Card.Header>
-                  <Accordion.Collapse eventKey="1">
+                  <Accordion.Collapse eventKey='0'>
                     <Card.Body></Card.Body>
                   </Accordion.Collapse>
                 </Card>
               </Accordion>
             ))}
       </div>
-    );
+    )
   }
 }
 
-export default GroupPages;
+export default GroupPages
