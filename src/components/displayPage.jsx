@@ -1,30 +1,29 @@
-import React, { Component } from 'react'
-import { Redirect } from 'react-router-dom'
+import React, { Component } from "react";
+import { Redirect } from "react-router-dom";
 
 class DisplayPage extends Component {
-  state = {}
+  state = {};
 
-  handleEdit (page) {
+  handleEdit(page) {
     this.props.history.push({
       pathname: `/collections/pages/${page.id}/edit`,
       page: page
-    })
+    });
   }
 
-  render () {
-    const { page } = this.props.location
-    // console.log('props', page)
+  render() {
+    const { page } = this.props.location;
 
     if (!page) {
-      return <Redirect to='/collections' />
+      return <Redirect to="/collections" />;
     }
     return (
       <div>
         <button
-          style={{ float: 'right' }}
-          className='btn btn-primary btn-sm'
+          style={{ float: "right" }}
+          className="btn btn-primary btn-sm"
           onClick={() => {
-            this.handleEdit(page)
+            this.handleEdit(page);
           }}
         >
           Edit page
@@ -36,8 +35,8 @@ class DisplayPage extends Component {
           <p>{page.contents}</p>
         </span>
       </div>
-    )
+    );
   }
 }
 
-export default DisplayPage
+export default DisplayPage;

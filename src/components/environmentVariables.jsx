@@ -17,13 +17,11 @@ class EnvironmentVariables extends Component {
   }
 
   handleSubmit = e => {
-    console.log(this.state);
     e.preventDefault();
     this.doSubmit();
   };
 
   doSubmit() {
-    console.log(this.state.variables);
     this.props.history.push({
       pathname: `/collections/environments`,
       updatedVariables: [...this.state.variables]
@@ -51,7 +49,6 @@ class EnvironmentVariables extends Component {
     variables[name[0]][name[1]] = e.currentTarget.value;
     variables[name[0]].environmentId = this.state.environment.id;
     variables[name[0]].id = id;
-    console.log(variables);
     this.setState({ variables });
   };
 
@@ -62,7 +59,6 @@ class EnvironmentVariables extends Component {
   }
 
   render() {
-    console.log(this.state);
     return (
       <Modal
         {...this.props}

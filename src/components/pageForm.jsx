@@ -33,7 +33,6 @@ class PageForm extends Form {
       });
     }
     if (this.props.title === "Add New Version Page") {
-      console.log("gdhsjjhsgdhsdg");
       this.props.history.push({
         pathname: `/collections`,
         newPage: this.state.data,

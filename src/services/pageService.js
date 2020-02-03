@@ -30,8 +30,6 @@ export function saveVersionPage(versionId, page) {
 }
 
 export function saveGroupPage(versionId, groupId, page) {
-  console.log("page", page);
-
   return http.post(groupPagesUrl(groupId), page);
 }
 

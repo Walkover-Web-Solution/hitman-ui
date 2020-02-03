@@ -148,7 +148,7 @@ class Environments extends Component {
               render={props => (
                 <EnvironmentVariables
                   {...props}
-                  show={true}
+                  show={this.state.environment.id}
                   onHide={() => {}}
                   environment={{ ...this.state.environment }}
                   variables={jQuery.extend(true, [], this.state.variables)}
@@ -218,12 +218,14 @@ class Environments extends Component {
           <Link to="/collections/environments/manage">Manage Environments</Link>
         </div>
 
-        <Link
-          to="/collections/environments/variables"
-          style={{ float: "right" }}
-        >
-          Environment Variables
-        </Link>
+        {this.state.environment.id ? (
+          <Link
+            to="/collections/environments/variables"
+            style={{ float: "right" }}
+          >
+            Environment Variables
+          </Link>
+        ) : null}
 
         <div style={{ textAlign: "center" }}>
           <h3>{this.state.environment.name}</h3>
