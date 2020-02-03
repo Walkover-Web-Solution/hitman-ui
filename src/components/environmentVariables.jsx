@@ -79,7 +79,6 @@ class EnvironmentVariables extends Component {
             <Table bordered size="sm">
               <thead>
                 <tr>
-                  <th></th>
                   <th>Variable</th>
                   <th>Initial Value</th>
                   <th>Current Value</th>
@@ -91,7 +90,6 @@ class EnvironmentVariables extends Component {
                 {this.state.variables.map((variable, index) =>
                   variable.environmentId === this.state.environment.id ? (
                     <tr key={index}>
-                      <td>{index}</td>
                       <td>
                         <input
                           name={index + ".name"}
@@ -154,8 +152,13 @@ class EnvironmentVariables extends Component {
               </tbody>
             </Table>
             <button className="btn btn-default">Submit</button>
+            <Link
+              to={`/collections/environments`}
+              style={{ float: "right", padding: "10px 60px 0 0" }}
+            >
+              Cancel
+            </Link>
           </form>
-          <Link to={`/collections/environments`}>Cancel</Link>
         </Modal.Body>
       </Modal>
     );

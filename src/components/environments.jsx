@@ -217,11 +217,13 @@ class Environments extends Component {
           </button>
           <Link to="/collections/environments/manage">Manage Environments</Link>
         </div>
-        <div style={{ textAlign: "right" }}>
-          <Link to="/collections/environments/variables">
-            Environment Variables
-          </Link>
-        </div>
+
+        <Link
+          to="/collections/environments/variables"
+          style={{ float: "right" }}
+        >
+          Environment Variables
+        </Link>
 
         <div style={{ textAlign: "center" }}>
           <h3>{this.state.environment.name}</h3>
