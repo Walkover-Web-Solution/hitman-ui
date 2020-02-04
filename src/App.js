@@ -1,26 +1,23 @@
-import React, { Component } from 'react'
-import { Route, Switch } from 'react-router-dom'
-import Collections from './components/collection'
-import Home from './components/home'
-import Login from './components/login'
-import Logout from './components/logout'
-import './App.css'
-import ProtectedRoute from './components/common/protectedRoute';
+import React, { Component } from "react";
+import { Route, Switch } from "react-router-dom";
+import "./App.css";
+import Home from "./components/home";
+import Login from "./components/login";
+import Logout from "./components/logout";
+import ProtectedRoute from "./components/common/protectedRoute";
+import Main from "./components/Main.jsx";
+
 class App extends Component {
-  render () {
+  render() {
     return (
-      <div>
-        <div className='content'>
-          <Switch>
-            <ProtectedRoute path='/collections' component={Collections} />
-            <Route path='/login' component={Login} />
-            <Route path='/logout' component={Logout} />
-            <Route path='/' component={Home} />
-          </Switch>
-        </div>
-      </div>
-    )
+      <Switch>
+        <ProtectedRoute path="/dashboard/" component={Main} />
+        <Route path="/login" component={Login} />
+        <Route path="/logout" component={Logout} />
+        <Route exact path="/" component={Home} />
+      </Switch>
+    );
   }
 }
 
-export default App
+export default App;
