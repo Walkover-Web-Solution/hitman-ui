@@ -6,7 +6,7 @@ class DisplayPage extends Component {
 
   handleEdit(page) {
     this.props.history.push({
-      pathname: `/collections/pages/${page.id}/edit`,
+      pathname: `/dashboard/collections/pages/${page.id}/edit`,
       page: page
     });
   }
@@ -15,7 +15,7 @@ class DisplayPage extends Component {
     const { page } = this.props.location;
 
     if (!page) {
-      return <Redirect to="/collections" />;
+      return <Redirect to="/dashboard/collections" />;
     }
     return (
       <div>

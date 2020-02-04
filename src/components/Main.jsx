@@ -71,17 +71,17 @@ class Main extends Component {
 
               <Switch>
                 <Route
-                  path="/collections/pages/:pageid/new"
+                  path="/dashboard/collections/pages/:pageid/new"
                   render={props => <EditPage page={this.props.location.page} />}
                 />
                 <Route
-                  path="/collections/pages/:pageid/edit"
+                  path="/dashboard/collections/pages/:pageid/edit"
                   render={props => (
                     <EditPage {...props} page={this.props.location.page} />
                   )}
                 />
                 <Route
-                  path="/collections/pages/:pageid"
+                  path="/dashboard/collections/pages/:pageid"
                   render={props => <DisplayPage {...props} />}
                 />
               </Switch>

@@ -11,7 +11,7 @@ class App extends Component {
   render() {
     return (
       <Switch>
-        <ProtectedRoute path="/collections/" component={Main} />
+        <ProtectedRoute path="/dashboard/" component={Main} />
         <Route path="/login" component={Login} />
         <Route path="/logout" component={Logout} />
         <Route exact path="/" component={Home} />

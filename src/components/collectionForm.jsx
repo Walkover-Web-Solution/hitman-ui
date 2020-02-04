@@ -49,13 +49,13 @@ class CollectionForm extends Form {
     if (this.props.title === "Edit Collection") {
       this.state.data.id = this.props.selectedCollection.id;
       this.props.history.push({
-        pathname: `/collections`,
+        pathname: `/dashboard/collections`,
         newCollection: { ...this.state.data }
       });
     }
     if (this.props.title === "Add new Collection") {
       this.props.history.push({
-        pathname: `/collections`,
+        pathname: `/dashboard/collections`,
         newCollection: { ...this.state.data }
       });
     }
@@ -106,7 +106,7 @@ class CollectionForm extends Form {
             </div>
             {this.renderInput("description", "Description", "textbox")}
             {this.renderButton("Submit")}
-            <Link to="/collections">Cancel</Link>
+            <Link to="/dashboard/collections">Cancel</Link>
           </form>
         </Modal.Body>
       </Modal>

@@ -102,12 +102,14 @@ class Collections extends Component {
 
   handleUpdate(collection) {
     this.state.selectedCollection = collection;
-    this.props.history.push(`/collections/${collection.name}/edit`);
+    this.props.history.push(`/dashboard/collections/${collection.name}/edit`);
   }
 
   handleAddVersion(collection) {
     this.state.selectedCollection = collection;
-    this.props.history.push(`/collections/${collection.name}/versions/new`);
+    this.props.history.push(
+      `/dashboard/collections/${collection.name}/versions/new`
+    );
   }
 
   async handleDeleteVersion(deletedCollectionVersionId) {
@@ -150,7 +152,7 @@ class Collections extends Component {
     this.setState({ pages });
     let pageId = page.id;
     this.props.history.push({
-      pathname: `/collections/pages/${pageId}/edit`,
+      pathname: `/dashboard/collections/pages/${pageId}/edit`,
       page: page
     });
   }
@@ -164,7 +166,7 @@ class Collections extends Component {
     this.setState({ pages });
     let pageId = page.id;
     this.props.history.push({
-      pathname: `/collections/pages/${pageId}/edit`,
+      pathname: `/dashboard/collections/pages/${pageId}/edit`,
       page: page
     });
   }
@@ -262,7 +264,7 @@ class Collections extends Component {
           <div className="tabs">
             <Switch>
               <Route
-                path="/collections/:id/versions/:versionId/groups/:groupId/pages/new"
+                path="/dashboard/collections/:id/versions/:versionId/groups/:groupId/pages/new"
                 render={props => (
                   <PageForm
                     {...props}
@@ -273,7 +275,7 @@ class Collections extends Component {
                 )}
               />
               <Route
-                path="/collections/:id/versions/:versionId/pages/:pageId/edit"
+                path="/dashboard/collections/:id/versions/:versionId/pages/:pageId/edit"
                 render={props => (
                   <PageForm
                     {...props}
@@ -287,7 +289,7 @@ class Collections extends Component {
               />
 
               <Route
-                path="/collections/:id/versions/:versionId/pages/new"
+                path="/dashboard/collections/:id/versions/:versionId/pages/new"
                 render={props => (
                   <PageForm
                     {...props}
@@ -299,7 +301,7 @@ class Collections extends Component {
                 )}
               />
               <Route
-                path="/collections/:collectionId/versions/:versionId/groups/:groupId/edit"
+                path="/dashboard/collections/:collectionId/versions/:versionId/groups/:groupId/edit"
                 render={props => (
                   <GroupForm
                     {...props}
@@ -312,7 +314,7 @@ class Collections extends Component {
                 )}
               />
               <Route
-                path="/collections/:collectionId/versions/:versionId/groups/new"
+                path="/dashboard/collections/:collectionId/versions/:versionId/groups/new"
                 render={props => (
                   <GroupForm
                     {...props}
@@ -324,7 +326,7 @@ class Collections extends Component {
                 )}
               />
               <Route
-                path="/collections/:id/versions/new"
+                path="/dashboard/collections/:id/versions/new"
                 render={props => (
                   <CollectionVersionForm
                     {...props}
@@ -336,7 +338,7 @@ class Collections extends Component {
                 )}
               />
               <Route
-                path="/collections/:collectionId/versions/:versionId/edit"
+                path="/dashboard/collections/:collectionId/versions/:versionId/edit"
                 render={props => (
                   <CollectionVersionForm
                     {...props}
@@ -348,7 +350,7 @@ class Collections extends Component {
                 )}
               />
               <Route
-                path="/collections/new"
+                path="/dashboard/collections/new"
                 render={props => (
                   <CollectionForm
                     {...props}
@@ -359,7 +361,7 @@ class Collections extends Component {
                 )}
               />
               <Route
-                path="/collections/:id/edit"
+                path="/dashboard/collections/:id/edit"
                 render={props => (
                   <CollectionForm
                     {...props}
@@ -375,7 +377,7 @@ class Collections extends Component {
         </div>
         <div className="App-Side">
           <button className="btn btn-default btn-lg">
-            <Link to="/collections/new">+ New Collection</Link>
+            <Link to="/dashboard/collections/new">+ New Collection</Link>
           </button>
           {this.state.collections.map((collection, index) => (
             <Accordion key={collection.id}>

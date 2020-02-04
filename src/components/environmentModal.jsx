@@ -40,14 +40,14 @@ class EnvironmentModal extends Component {
 
   handleEdit(environment) {
     this.props.history.push({
-      pathname: "/collections/environments/manage/edit",
+      pathname: "/dashboard/environments/manage/edit",
       editEnvironment: environment
     });
   }
 
   handleCancel(props) {
     props.history.push({
-      pathname: `/collections/environments`,
+      pathname: `/dashboard/environments`,
       environments: this.state.environments
     });
   }

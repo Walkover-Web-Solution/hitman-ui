@@ -12,20 +12,13 @@ class Pages extends Component {
 
   async handleDelete(page) {
     this.props.history.push({
-      pathname: "/collections",
+      pathname: "/dashboard/collections",
       deletedPageId: page.id
     });
   }
-
-  // handleUpdate(page) {
-  //   this.props.history.push({
-  //     pathname: `/collections/${this.props.collectionId}/versions/${this.props.versionId}/pages/${page.id}/edit`,
-  //     editPage: page
-  //   });
-  // }
   handleDisplay(page) {
     this.props.history.push({
-      pathname: `/collections/pages/${page.id}`,
+      pathname: `/dashboard/collections/pages/${page.id}`,
       page: page
     });
   }

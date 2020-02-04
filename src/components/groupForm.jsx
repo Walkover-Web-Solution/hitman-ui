@@ -24,7 +24,7 @@ class GroupForm extends Form {
   async doSubmit(props) {
     if (this.props.title === "Add new Group") {
       this.props.history.push({
-        pathname: `/collections`,
+        pathname: `/dashboard/collections`,
         newGroup: this.state.data,
         versionId: parseInt(this.props.location.pathname.split("/")[4])
       });
@@ -32,7 +32,7 @@ class GroupForm extends Form {
 
     if (this.props.title === "Edit Group") {
       this.props.history.push({
-        pathname: `/collections`,
+        pathname: `/dashboard/collections`,
         editedGroup: this.state.data,
         groupId: this.state.groupId,
         versionId: this.state.versionId
@@ -66,7 +66,7 @@ class GroupForm extends Form {
             {this.renderInput("name", "Group Name*")}
             {this.renderInput("host", "Host*")}
             {this.renderButton("Submit")}
-            <Link to={`/collections/`}>Cancel</Link>
+            <Link to={`/dashboard/collections/`}>Cancel</Link>
           </form>
         </Modal.Body>
       </Modal>

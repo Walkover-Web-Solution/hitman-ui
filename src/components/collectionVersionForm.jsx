@@ -34,7 +34,7 @@ class CollectionVersionForm extends Form {
         this.state.data
       );
       this.props.history.push({
-        pathname: `/collections`,
+        pathname: `/dashboard/collections`,
         editedCollectionVersion: editedCollectionVersion
       });
     }
@@ -46,7 +46,7 @@ class CollectionVersionForm extends Form {
         this.state.data
       );
       this.props.history.push({
-        pathname: `/collections`,
+        pathname: `/dashboard/collections`,
         newCollectionVersion: newCollectionVersion,
         collectionid: this.props.collectionId
       });
@@ -81,7 +81,7 @@ class CollectionVersionForm extends Form {
             {this.renderInput("number", "Version Number")}
             {this.renderInput("host", "Host*")}
             {this.renderButton("Submit")}
-            <Link to={`/collections/`}>Cancel</Link>
+            <Link to={`/dashboard/collections/`}>Cancel</Link>
           </form>
         </Modal.Body>
       </Modal>

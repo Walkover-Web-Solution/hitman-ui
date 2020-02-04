@@ -20,14 +20,14 @@ class EnvironmentForm extends Form {
   async doSubmit(props) {
     if (this.props.title === "Add new Environment") {
       this.props.history.push({
-        pathname: "/collections/environments",
+        pathname: "/dashboard/environments",
         newEnvironment: this.state.data
       });
     }
 
     if (this.props.title === "Edit Environment") {
       this.props.history.push({
-        pathname: "/collections/environments/manage",
+        pathname: "/dashboard/environments/manage",
         editedEnvironment: this.state.data,
         environmentid: this.state.environmentId
       });
@@ -57,7 +57,7 @@ class EnvironmentForm extends Form {
           <form onSubmit={this.handleSubmit}>
             {this.renderInput("name", "Environment Name*")}
             {this.renderButton("Submit")}
-            <Link to={`/collections/environments/manage`}>Cancel</Link>
+            <Link to={`/dashboard/environments/manage`}>Cancel</Link>
           </form>
         </Modal.Body>
       </Modal>

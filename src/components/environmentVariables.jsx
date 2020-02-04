@@ -23,7 +23,7 @@ class EnvironmentVariables extends Component {
 
   doSubmit() {
     this.props.history.push({
-      pathname: `/collections/environments`,
+      pathname: `/dashboard/environments`,
       updatedVariables: [...this.state.variables]
     });
   }
@@ -149,7 +149,7 @@ class EnvironmentVariables extends Component {
             </Table>
             <button className="btn btn-default">Submit</button>
             <Link
-              to={`/collections/environments`}
+              to={`/dashboard/environments`}
               style={{ float: "right", padding: "10px 60px 0 0" }}
             >
               Cancel

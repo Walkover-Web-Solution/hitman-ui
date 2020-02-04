@@ -13,21 +13,21 @@ class Groups extends Component {
 
   handleDelete(group) {
     this.props.history.push({
-      pathname: "/collections",
+      pathname: "/dashboard/collections",
       deletedGroupId: group.id
     });
   }
 
   handleUpdate(group) {
     this.props.history.push({
-      pathname: `/collections/${this.props.collectionId}/versions/${this.props.versionId}/groups/${group.id}/edit`,
+      pathname: `/dashboard/collections/${this.props.collectionId}/versions/${this.props.versionId}/groups/${group.id}/edit`,
       editGroup: group
     });
   }
 
   handleAddPage(groupId, versionId, collectionId) {
     this.props.history.push({
-      pathname: `/collections/${collectionId}/versions/${versionId}/groups/${groupId}/pages/new`,
+      pathname: `/dashboard/collections/${collectionId}/versions/${versionId}/groups/${groupId}/pages/new`,
       versionId: versionId,
       groupId: groupId
     });

@@ -30,7 +30,7 @@ class EditPage extends Component {
     data.contents = contents;
     this.setState({ data });
     this.props.history.push({
-      pathname: `/collections/`,
+      pathname: `/dashboard/collections/`,
       data: data,
       title: "edit page"
     });

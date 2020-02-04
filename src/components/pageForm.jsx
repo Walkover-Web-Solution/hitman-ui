@@ -26,7 +26,7 @@ class PageForm extends Form {
   async doSubmit(props) {
     if (this.props.title === "Add New Page") {
       this.props.history.push({
-        pathname: `/collections`,
+        pathname: `/dashboard/collections`,
         newPage: this.state.data,
         versionId: parseInt(this.props.location.pathname.split("/")[4]),
         groupId: parseInt(this.props.location.pathname.split("/")[6])
@@ -34,7 +34,7 @@ class PageForm extends Form {
     }
     if (this.props.title === "Add New Version Page") {
       this.props.history.push({
-        pathname: `/collections`,
+        pathname: `/dashboard/collections`,
         newPage: this.state.data,
         versionId: parseInt(this.props.location.pathname.split("/")[4])
       });
@@ -42,7 +42,7 @@ class PageForm extends Form {
 
     if (this.props.title === "Edit Page") {
       this.props.history.push({
-        pathname: `/collections`,
+        pathname: `/dashboard/collections`,
         editedPage: this.state.data,
         pageId: this.state.pageId,
         versionId: this.state.versionId
@@ -76,7 +76,7 @@ class PageForm extends Form {
             {this.renderInput("name", "Page name")}
             {/* {this.renderInput("contents", "Contents*")} */}
             {this.renderButton("Submit")}
-            <Link to={`/collections`}>Cancel</Link>
+            <Link to={`/dashboard/collections`}>Cancel</Link>
           </form>
         </Modal.Body>
       </Modal>

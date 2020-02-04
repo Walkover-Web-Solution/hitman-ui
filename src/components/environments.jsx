@@ -132,7 +132,7 @@ class Environments extends Component {
         <div>
           <Switch>
             <Route
-              path="/collections/environments/variables"
+              path="/dashboard/environments/variables"
               render={props => (
                 <EnvironmentVariables
                   {...props}
@@ -144,7 +144,7 @@ class Environments extends Component {
               )}
             />
             <Route
-              path="/collections/environments/manage/edit"
+              path="/dashboard/environments/manage/edit"
               render={props => (
                 <EnvironmentForm
                   {...props}
@@ -155,7 +155,7 @@ class Environments extends Component {
               )}
             />
             <Route
-              path="/collections/environments/manage"
+              path="/dashboard/environments/manage"
               render={props => (
                 <EnvironmentModal
                   {...props}
@@ -166,7 +166,7 @@ class Environments extends Component {
               )}
             />
             <Route
-              path="/collections/environments/new"
+              path="/dashboard/environments/new"
               render={props => (
                 <EnvironmentForm
                   {...props}
@@ -186,9 +186,7 @@ class Environments extends Component {
 
             <Dropdown.Menu alignRight>
               <Dropdown.Item>
-                <Link to="/collections/environments/new">
-                  + Add Environment
-                </Link>
+                <Link to="/dashboard/environments/new">+ Add Environment</Link>
               </Dropdown.Item>
 
               {this.state.environments.map(environment => (
@@ -203,12 +201,12 @@ class Environments extends Component {
           <button type="button" class="btn btn-link btn-sm btn-block">
             <i class="fa fa-eye"></i>{" "}
           </button>
-          <Link to="/collections/environments/manage">Manage Environments</Link>
+          <Link to="/dashboard/environments/manage">Manage Environments</Link>
         </div>
 
         {this.state.environment.id ? (
           <Link
-            to="/collections/environments/variables"
+            to="/dashboard/environments/variables"
             style={{ float: "right" }}
           >
             Environment Variables

@@ -14,28 +14,28 @@ class CollectionVersions extends Component {
 
   async handleDelete(collectionVersion) {
     this.props.history.push({
-      pathname: "/collections",
+      pathname: "/dashboard/collections",
       deletedCollectionVersionId: collectionVersion.id
     });
   }
 
   handleUpdate(collectionVersion) {
     this.props.history.push({
-      pathname: `/collections/${this.props.collectionId}/versions/${collectionVersion.number}/edit`,
+      pathname: `/dashboard/collections/${this.props.collectionId}/versions/${collectionVersion.number}/edit`,
       editCollectionVersion: collectionVersion
     });
   }
 
   handleAddGroup(versionId, collectionId) {
     this.props.history.push({
-      pathname: `/collections/${collectionId}/versions/${versionId}/groups/new`,
+      pathname: `/dashboard/collections/${collectionId}/versions/${versionId}/groups/new`,
       versionId: versionId
     });
   }
 
   handleAddPage(versionId, collectionId) {
     this.props.history.push({
-      pathname: `/collections/${collectionId}/versions/${versionId}/pages/new`,
+      pathname: `/dashboard/collections/${collectionId}/versions/${versionId}/pages/new`,
       versionId: versionId
     });
   }
