@@ -9,11 +9,7 @@ class SideBar extends Component {
       <nav className="col-md-3 d-none d-md-block bg-light sidebar">
         <div className="sidebar-sticky">
           <Switch>
-            <Collections />
-            {/* <ProtectedRoute
-              path="/dashboard/collections"
-              component={Collections}
-            /> */}
+            <ProtectedRoute path="/dashboard/" component={Collections} />
           </Switch>
         </div>
       </nav>

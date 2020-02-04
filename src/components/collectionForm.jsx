@@ -14,9 +14,7 @@ class CollectionForm extends Form {
       keyword1: "",
       keyword2: ""
     },
-    errors: {},
-    redirect: false,
-    editCollection: true
+    errors: {}
   };
 
   schema = {
@@ -62,21 +60,21 @@ class CollectionForm extends Form {
   }
 
   render() {
-    if (this.props.selectedCollection && this.state.editCollection) {
+    if (this.props.location.editedcollection) {
       const {
         name,
         website,
         description,
         keyword
-      } = this.props.selectedCollection;
-      this.state.editCollection = false;
+      } = this.props.location.editedcollection;
+      this.props.history.push({ editedcollection: null });
       this.state.data.name = name;
       this.state.data.website = website;
       this.state.data.description = description;
       this.state.data.keyword = keyword.split(",")[0];
       this.state.data.keyword1 = keyword.split(",")[1];
       this.state.data.keyword2 = keyword.split(",")[2];
-    } else this.state.editCollection = null;
+    }
     return (
       <Modal
         {...this.props}
