@@ -18,6 +18,8 @@ import groupsService from '../services/groupsService'
 import PageForm from './pageForm'
 import pageService from '../services/pageService'
 import shortId from 'shortid'
+import { toast, ToastContainer } from 'react-toastify'
+
 class Collections extends Component {
   state = {
     collections: [],
@@ -25,6 +27,39 @@ class Collections extends Component {
     groups: [],
     pages: [],
     selectedCollection: {}
+  }
+
+  async fetchVersions (collections) {
+    let versions = []
+    for (let i = 0; i < collections.length; i++) {
+      const {
+        data: versions1
+      } = await collectionVersionsService.getCollectionVersions(
+        collections[i].id
+      )
+
+      versions = [...versions, ...versions1]
+    }
+    return versions
+  }
+
+  async fetchGroups (versions) {
+    let groups = []
+    for (let i = 0; i < versions.length; i++) {
+      const { data: groups1 } = await groupsService.getGroups(versions[i].id)
+      groups = [...groups, ...groups1]
+    }
+    return groups
+  }
+
+  async fetchPagesVersion (versions) {
+    let pages = []
+    for (let i = 0; i < versions.length; i++) {
+      const version = versions[i]
+      let { data: newPages } = await pageService.getVersionPages(version.id)
+      pages = [...pages, ...newPages]
+    }
+    return pages
   }
 
   async componentDidMount () {
@@ -40,7 +75,6 @@ class Collections extends Component {
     newCollection.requestId = shortId.generate()
     const originalCollections = [...this.state.collections]
     const collections = [...this.state.collections, newCollection]
-    console.log({ collections })
     this.setState({ collections })
     try {
       const { data: collection } = await collectionsService.saveCollection(
@@ -50,33 +84,49 @@ class Collections extends Component {
         c => c.requestId === collection.requestId
       )
       collections[index] = collection
-      console.log({ collections })
-      this.setState({ collections })
+      const {
+        data: version
+      } = await collectionVersionsService.getCollectionVersions(collection.id)
+      const versions = [...this.state.versions, ...version]
+      this.setState({ collections, versions })
     } catch (ex) {
-      alert(ex.response.data)
+      toast.error(ex.response.data)
       this.setState({ collections: originalCollections })
     }
   }
 
   async handleDelete (collection) {
-    this.props.history.replace({ newCollection: null })
+    const originalCollections = [...this.state.collections]
     const collections = this.state.collections.filter(
       c => c.id !== collection.id
     )
     this.setState({ collections })
-    await collectionsService.deleteCollection(collection.id)
+    try {
+      await collectionsService.deleteCollection(collection.id)
+    } catch (ex) {
+      toast.error(ex)
+      this.setState({ collections: originalCollections })
+    }
   }
 
   async handleUpdate (editedCollection) {
-    // const body = { ...editedCollection };
-    // delete body.id;
-    // const index = this.state.collections.findIndex(
-    //   collection => collection.id === newCollection.id
-    // );
-    // await collectionsService.updateCollection(newCollection.id, body);
-    // const collections = [...this.state.collections];
-    // collections[index] = newCollection;
-    // this.setState({ collections });
+    console.log('hi')
+    const originalCollections = [...this.state.collections]
+    const body = { ...editedCollection }
+    delete body.id
+    const index = this.state.collections.findIndex(
+      collection => collection.id === editedCollection.id
+    )
+    const collections = [...this.state.collections]
+    collections[index] = editedCollection
+    this.setState({ collections })
+    try {
+      console.log('s', editedCollection.id)
+      await collectionsService.updateCollection(editedCollection.id, body)
+    } catch (ex) {
+      toast.error(ex.response.data)
+      this.setState({ collections: originalCollections })
+    }
   }
 
   handleAddVersion (collection) {
@@ -97,7 +147,6 @@ class Collections extends Component {
   }
 
   async handleAddGroup (versionId, newGroup) {
-    console.log(versionId, newGroup)
     const { data: group } = await groupsService.saveGroup(versionId, newGroup)
     let groups = [...this.state.groups, { ...group }]
     this.setState({ groups })
@@ -157,39 +206,6 @@ class Collections extends Component {
     this.setState({ pages })
   }
 
-  async fetchVersions (collections) {
-    let versions = []
-    for (let i = 0; i < collections.length; i++) {
-      const {
-        data: versions1
-      } = await collectionVersionsService.getCollectionVersions(
-        collections[i].id
-      )
-
-      versions = [...versions, ...versions1]
-    }
-    return versions
-  }
-
-  async fetchGroups (versions) {
-    let groups = []
-    for (let i = 0; i < versions.length; i++) {
-      const { data: groups1 } = await groupsService.getGroups(versions[i].id)
-      groups = [...groups, ...groups1]
-    }
-    return groups
-  }
-
-  async fetchPagesVersion (versions) {
-    let pages = []
-    for (let i = 0; i < versions.length; i++) {
-      const version = versions[i]
-      let { data: newPages } = await pageService.getVersionPages(version.id)
-      pages = [...pages, ...newPages]
-    }
-    return pages
-  }
-
   render () {
     const { location } = this.props
 
@@ -201,9 +217,7 @@ class Collections extends Component {
 
     if (location.newPage && location.groupId) {
       const { versionId, newPage, groupId } = location
-
       this.props.history.replace({ groupId: null, newPage: null })
-
       this.handleAddGroupPage(versionId, groupId, newPage)
     } else if (location.newPage) {
       const { versionId, newPage } = location
@@ -231,7 +245,6 @@ class Collections extends Component {
 
     if (location.newGroup) {
       const { versionId, newGroup } = location
-      console.log(versionId, newGroup)
       this.props.history.replace({ newGroup: null })
       this.handleAddGroup(versionId, newGroup)
     }
@@ -255,6 +268,12 @@ class Collections extends Component {
       this.props.history.replace({ newCollectionVersion: null })
       const versions = [...this.state.versions, newCollectionVersion]
       this.setState({ versions })
+    }
+
+    if (location.editedCollection) {
+      const editedCollection = location.editedCollection
+      this.props.history.replace({ editedCollection: null })
+      this.handleUpdate(editedCollection)
     }
 
     if (location.newCollection) {
@@ -373,7 +392,6 @@ class Collections extends Component {
                     show={true}
                     onHide={() => {}}
                     title='Edit Collection'
-                    selectedCollection={this.state.selectedCollection}
                   />
                 )}
               />
@@ -401,7 +419,7 @@ class Collections extends Component {
                       eventKey='1'
                       onClick={() => {
                         this.props.history.push({
-                          pathname: `/dashboard/collections/${collection.name}/edit`,
+                          pathname: `/dashboard/collections/${collection.id}/edit`,
                           editedcollection: collection
                         })
                       }}
