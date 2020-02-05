@@ -3,13 +3,32 @@ import { Link } from 'react-router-dom'
 import { Modal } from 'react-bootstrap'
 import Form from './common/form'
 import Joi from 'joi-browser'
+import groupsService from '../services/groupsService'
 class GroupForm extends Form {
   state = {
     data: {
       name: '',
       host: ''
     },
+    groupId: '',
+    versionId: '',
     errors: {}
+  }
+
+  async componentDidMount () {
+    let data = {}
+    const groupId = this.props.location.pathname.split('/')[7]
+    const versionId = this.props.location.pathname.split('/')[5]
+    if (this.props.location.editGroup) {
+      const { name, host } = this.props.location.editGroup
+      data = { name, host }
+    } else {
+      const {
+        data: { name, host }
+      } = await groupsService.getGroup(groupId)
+      data = { name, host }
+    }
+    this.setState({ data, groupId, versionId })
   }
 
   schema = {
@@ -21,7 +40,7 @@ class GroupForm extends Form {
       .label('Host')
   }
 
-  async doSubmit (props) {
+  async doSubmit () {
     if (this.props.title === 'Add new Group') {
       this.props.history.push({
         pathname: `/dashboard/collections`,
@@ -33,22 +52,16 @@ class GroupForm extends Form {
     if (this.props.title === 'Edit Group') {
       this.props.history.push({
         pathname: `/dashboard/collections`,
-        editedGroup: this.state.data,
-        groupId: this.state.groupId,
-        versionId: this.state.versionId
+        editedGroup: {
+          ...this.state.data,
+          id: this.state.groupId,
+          versionId: this.state.collectionId
+        }
       })
     }
   }
 
   render () {
-    if (this.props.location.editGroup) {
-      const { id, versionId, name, host } = this.props.location.editGroup
-      this.state.groupId = id
-      this.state.versionId = versionId
-      this.state.data.name = name
-      this.state.data.host = host
-      this.props.history.replace({ editGroup: null })
-    }
     return (
       <Modal
         {...this.props}
