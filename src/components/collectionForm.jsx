@@ -21,7 +21,7 @@ class CollectionForm extends Form {
 
   async componentDidMount () {
     let data = {}
-    let collectionId = ''
+    const collectionId = this.props.location.pathname.split('/')[3]
     if (this.props.location.editedcollection) {
       const {
         name,
@@ -29,7 +29,6 @@ class CollectionForm extends Form {
         description,
         keyword
       } = this.props.location.editedcollection
-      collectionId = this.props.location.editedcollection.id
       data = {
         name,
         website,
@@ -39,7 +38,6 @@ class CollectionForm extends Form {
         keyword2: keyword.split(',')[2]
       }
     } else {
-      collectionId = this.props.location.pathname.split('/')[3]
       const { data: editedCollection } = await collectionsService.getCollection(
         collectionId
       )
@@ -82,12 +80,10 @@ class CollectionForm extends Form {
     body.keyword = body.keyword + ',' + body.keyword1 + ',' + body.keyword2
     delete body.keyword1
     delete body.keyword2
-    this.state.editCollection = true
     if (this.props.title === 'Edit Collection') {
-      this.state.data.id = this.state.collectionId
       this.props.history.push({
         pathname: `/dashboard/collections`,
-        editedCollection: { ...this.state.data }
+        editedCollection: { ...this.state.data, id: this.state.collectionId }
       })
     }
     if (this.props.title === 'Add new Collection') {

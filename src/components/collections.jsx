@@ -25,8 +25,7 @@ class Collections extends Component {
     collections: [],
     versions: [],
     groups: [],
-    pages: [],
-    selectedCollection: {}
+    pages: []
   }
 
   async fetchVersions (collections) {
@@ -110,7 +109,6 @@ class Collections extends Component {
   }
 
   async handleUpdate (editedCollection) {
-    console.log('hi')
     const originalCollections = [...this.state.collections]
     const body = { ...editedCollection }
     delete body.id
@@ -121,7 +119,6 @@ class Collections extends Component {
     collections[index] = editedCollection
     this.setState({ collections })
     try {
-      console.log('s', editedCollection.id)
       await collectionsService.updateCollection(editedCollection.id, body)
     } catch (ex) {
       toast.error(ex.response.data)
@@ -147,24 +144,53 @@ class Collections extends Component {
   }
 
   async handleAddGroup (versionId, newGroup) {
-    const { data: group } = await groupsService.saveGroup(versionId, newGroup)
-    let groups = [...this.state.groups, { ...group }]
+    newGroup.requestId = shortId.generate()
+    const originalGroups = [...this.state.groups]
+    const groups = [...this.state.groups, { ...newGroup, versionId }]
     this.setState({ groups })
+    try {
+      const { data: group } = await groupsService.saveGroup(versionId, newGroup)
+      const index = groups.findIndex(g => g.requestId === group.requestId)
+      groups[index] = group
+      this.setState({ groups })
+    } catch (ex) {
+      toast.error(ex.response.data)
+      this.setState({ groups: originalGroups })
+    }
   }
 
   async handleDeleteGroup (deletedGroupId) {
+    const originalGroups = [...this.state.groups]
     const groups = this.state.groups.filter(g => g.id !== deletedGroupId)
     this.setState({ groups })
-    await groupsService.deleteGroup(deletedGroupId)
+    try {
+      await groupsService.deleteGroup(deletedGroupId)
+    } catch (ex) {
+      toast.error(ex)
+      this.setState({ groups: originalGroups })
+    }
   }
 
-  async handleUpdateGroup (editedGroup, groupId, versionId) {
-    const groups = [
-      ...this.state.groups.filter(g => g.id !== groupId),
-      { ...editedGroup, id: groupId, versionId }
-    ]
+  async handleUpdateGroup (editedGroup) {
+    const originalGroups = [...this.state.groups]
+    const groups = [...this.state.groups]
+    const index = groups.findIndex(g => g.id === editedGroup.id)
+    groups[index] = editedGroup
     this.setState({ groups })
-    await groupsService.updateGroup(groupId, editedGroup)
+    try {
+      const body = { ...editedGroup }
+      delete body.versionId
+      const { data: group } = await groupsService.updateGroup(
+        editedGroup.id,
+        body
+      )
+      const index = groups.findIndex(g => g.id === group.id)
+      groups[index] = group
+      this.setState({ groups })
+    } catch (ex) {
+      toast.error(ex.response.data)
+      this.setState({ groups: originalGroups })
+    }
   }
 
   async handleAddVersionPage (versionId, newPage) {
@@ -232,9 +258,9 @@ class Collections extends Component {
     }
 
     if (location.editedGroup) {
-      const { editedGroup, groupId, versionId } = location
+      const { editedGroup } = location
       this.props.history.replace({ editedGroup: null })
-      this.handleUpdateGroup(editedGroup, groupId, versionId)
+      this.handleUpdateGroup(editedGroup)
     }
 
     if (location.deletedGroupId) {
@@ -332,8 +358,6 @@ class Collections extends Component {
                     show={true}
                     onHide={() => {}}
                     title='Edit Group'
-                    editGroup={this.props.location.editGroup}
-                    versionId={this.props.location.versionId}
                   />
                 )}
               />
@@ -345,7 +369,6 @@ class Collections extends Component {
                     show={true}
                     onHide={() => {}}
                     title='Add new Group'
-                    versionId={this.props.location.versionId}
                   />
                 )}
               />
@@ -357,7 +380,6 @@ class Collections extends Component {
                     show={true}
                     onHide={() => {}}
                     title='Add new Collection Version'
-                    collectionId={this.state.selectedCollection.id}
                   />
                 )}
               />
