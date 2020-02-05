@@ -16,175 +16,19 @@ import CollectionVersionForm from "./collectionVersionForm";
 import GroupForm from "./groupForm";
 import groupsService from "../services/groupsService";
 import PageForm from "./pageForm";
-import EndpointForm from "./endpointForm";
 import pageService from "../services/pageService";
-import shortId from "shortid";
-import endpointService from "../services/endpointService";
+import Main from "./Main";
+import { Redirect } from "react-router-dom";
+
 class Collections extends Component {
   state = {
     collections: [],
     versions: [],
     groups: [],
     pages: [],
-    endpoints: [],
+    endpoints: ["n1", "url1", "reqtype"],
     selectedCollection: {}
   };
-
-  async componentDidMount() {
-    const { data: collections } = await collectionsService.getCollections();
-    this.setState({ collections });
-    const versions = await this.fetchVersions(collections);
-    const groups = await this.fetchGroups(versions);
-    const pages = await this.fetchPagesVersion(versions);
-    const endpoints = await this.fetchEndpoints(groups);
-    this.setState({ versions, groups, pages, endpoints });
-  }
-
-  async handleAdd(newCollection) {
-    newCollection.requestId = shortId.generate();
-    const originalCollections = [...this.state.collections];
-    const collections = [...this.state.collections, newCollection];
-    console.log({ collections });
-    this.setState({ collections });
-    try {
-      const { data: collection } = await collectionsService.saveCollection(
-        newCollection
-      );
-      const index = collections.findIndex(
-        c => c.requestId === collection.requestId
-      );
-      collections[index] = collection;
-      console.log({ collections });
-      this.setState({ collections });
-    } catch (ex) {
-      alert(ex.response.data);
-      this.setState({ collections: originalCollections });
-    }
-  }
-
-  async handleDelete(collection) {
-    this.props.history.replace({ newCollection: null });
-    const collections = this.state.collections.filter(
-      c => c.id !== collection.id
-    );
-    this.setState({ collections });
-    await collectionsService.deleteCollection(collection.id);
-  }
-
-  async handleUpdate(editedCollection) {
-    // const body = { ...editedCollection };
-    // delete body.id;
-    // const index = this.state.collections.findIndex(
-    //   collection => collection.id === newCollection.id
-    // );
-    // await collectionsService.updateCollection(newCollection.id, body);
-    // const collections = [...this.state.collections];
-    // collections[index] = newCollection;
-    // this.setState({ collections });
-  }
-
-  handleAddVersion(collection) {
-    this.state.selectedCollection = collection;
-    this.props.history.push(
-      `/dashboard/collections/${collection.name}/versions/new`
-    );
-  }
-
-  async handleDeleteVersion(deletedCollectionVersionId) {
-    const versions = this.state.versions.filter(
-      v => v.id !== deletedCollectionVersionId
-    );
-    this.setState({ versions });
-    await collectionVersionsService.deleteCollectionVersion(
-      deletedCollectionVersionId
-    );
-  }
-
-  async handleAddGroup(versionId, newGroup) {
-    console.log(versionId, newGroup);
-    const { data: group } = await groupsService.saveGroup(versionId, newGroup);
-    let groups = [...this.state.groups, { ...group }];
-    this.setState({ groups });
-  }
-
-  async handleDeleteGroup(deletedGroupId) {
-    const groups = this.state.groups.filter(g => g.id !== deletedGroupId);
-    this.setState({ groups });
-    await groupsService.deleteGroup(deletedGroupId);
-  }
-
-  async handleUpdateGroup(editedGroup, groupId, versionId) {
-    const groups = [
-      ...this.state.groups.filter(g => g.id !== groupId),
-      { ...editedGroup, id: groupId, versionId }
-    ];
-    this.setState({ groups });
-    await groupsService.updateGroup(groupId, editedGroup);
-  }
-
-  async handleAddVersionPage(versionId, newPage) {
-    const { data: page } = await pageService.saveVersionPage(
-      versionId,
-      newPage
-    );
-    let pages = [...this.state.pages, { ...page }];
-    this.setState({ pages });
-    let pageId = page.id;
-    this.props.history.push({
-      pathname: `/dashboard/collections/pages/${pageId}/edit`,
-      page: page
-    });
-  }
-  async handleAddGroupPage(versionId, groupId, newPage) {
-    const { data: page } = await pageService.saveGroupPage(
-      versionId,
-      groupId,
-      newPage
-    );
-    let pages = [...this.state.pages, page];
-    this.setState({ pages });
-    let pageId = page.id;
-    this.props.history.push({
-      pathname: `/dashboard/collections/pages/${pageId}/edit`,
-      page: page
-    });
-  }
-
-  async handleAddEndpoint(groupId, newEndpoint) {
-    const { data: endpoint } = await endpointService.saveEndpoint(
-      groupId,
-      newEndpoint
-    );
-    let endpoints = [...this.state.endpoints, endpoint];
-    this.setState({ endpoints });
-    // let endpointId = endpoint.id;
-    // this.props.history.push({
-    //   pathname: `/dashboard/collections/pages/${endpointId}/edit`,
-    //   endpoint: endpoint
-    // });
-  }
-  async handleDeletePage(deletePageId) {
-    await pageService.deletePage(deletePageId);
-    const pages = this.state.pages.filter(page => page.id !== deletePageId);
-    this.setState({ pages });
-  }
-
-  async handleDeleteEndpoint(deleteEndpointId) {
-    await endpointService.deleteEndpoint(deleteEndpointId);
-    const endpoints = this.state.endpoints.filter(
-      endpoint => endpoint.id !== deleteEndpointId
-    );
-    this.setState({ endpoints });
-  }
-
-  async handleUpdatePage(editedPage, pageId, versionId) {
-    const { data: editPage } = await pageService.updatePage(pageId, editedPage);
-    const pages = [
-      ...this.state.pages.filter(page => page.id !== pageId),
-      { ...editPage }
-    ];
-    this.setState({ pages });
-  }
 
   async fetchVersions(collections) {
     let versions = [];
@@ -219,32 +63,131 @@ class Collections extends Component {
     return pages;
   }
 
-  async fetchEndpoints(groups) {
-    let endpoints = [];
-    for (let i = 0; i < groups.length; i++) {
-      const group = groups[i];
-      let { data: newEndpoint } = await endpointService.getEndpoints(group.id);
-      endpoints = [...endpoints, ...newEndpoint];
+  async componentDidMount() {
+    const { data: collections } = await collectionsService.getCollections();
+    this.setState({ collections });
+    const versions = await this.fetchVersions(collections);
+    const groups = await this.fetchGroups(versions);
+    const pages = await this.fetchPagesVersion(versions);
+    this.setState({ versions, groups, pages });
+  }
+
+  async handleAdd(newCollection) {
+    if (newCollection.id) {
+      const body = { ...newCollection };
+      delete body.id;
+      const index = this.state.collections.findIndex(
+        collection => collection.id === newCollection.id
+      );
+      await collectionsService.updateCollection(newCollection.id, body);
+      const collections = [...this.state.collections];
+      collections[index] = newCollection;
+      this.setState({ collections });
+    } else {
+      const { data: collection } = await collectionsService.saveCollection(
+        newCollection
+      );
+      const collections = [...this.state.collections, collection];
+      this.setState({ collections });
     }
-    return endpoints;
+  }
+
+  async handleDelete(collection) {
+    this.props.history.replace({ newCollection: null });
+    const collections = this.state.collections.filter(
+      c => c.id !== collection.id
+    );
+    this.setState({ collections });
+    await collectionsService.deleteCollection(collection.id);
+  }
+
+  handleUpdate(collection) {
+    this.state.selectedCollection = collection;
+    this.props.history.push(`/collections/${collection.name}/edit`);
+  }
+
+  handleAddVersion(collection) {
+    this.state.selectedCollection = collection;
+    this.props.history.push(`/collections/${collection.name}/versions/new`);
+  }
+
+  async handleDeleteVersion(deletedCollectionVersionId) {
+    const versions = this.state.versions.filter(
+      v => v.id !== deletedCollectionVersionId
+    );
+    this.setState({ versions });
+    await collectionVersionsService.deleteCollectionVersion(
+      deletedCollectionVersionId
+    );
+  }
+
+  async handleAddGroup(versionId, newGroup) {
+    const { data: group } = await groupsService.saveGroup(versionId, newGroup);
+
+    let groups = [...this.state.groups, { ...group }];
+    this.setState({ groups });
+  }
+  async handleDeleteGroup(deletedGroupId) {
+    const groups = this.state.groups.filter(g => g.id !== deletedGroupId);
+    this.setState({ groups });
+    await groupsService.deleteGroup(deletedGroupId);
+  }
+
+  async handleUpdateGroup(editedGroup, groupId, versionId) {
+    const groups = [
+      ...this.state.groups.filter(g => g.id !== groupId),
+      { ...editedGroup, id: groupId, versionId }
+    ];
+    this.setState({ groups });
+    await groupsService.updateGroup(groupId, editedGroup);
+  }
+
+  async handleAddVersionPage(versionId, newPage) {
+    const { data: page } = await pageService.saveVersionPage(
+      versionId,
+      newPage
+    );
+    let pages = [...this.state.pages, { ...page }];
+    this.setState({ pages });
+    let pageId = page.id;
+    this.props.history.push({
+      pathname: `/collections/pages/${pageId}/edit`,
+      page: page
+    });
+  }
+  async handleAddGroupPage(versionId, groupId, newPage) {
+    const { data: page } = await pageService.saveGroupPage(
+      versionId,
+      groupId,
+      newPage
+    );
+    let pages = [...this.state.pages, page];
+    this.setState({ pages });
+    let pageId = page.id;
+    this.props.history.push({
+      pathname: `/collections/pages/${pageId}/edit`,
+      page: page
+    });
+  }
+  async handleDeletePage(deletedPageId) {
+    await pageService.deletePage(deletedPageId);
+    const pages = this.state.pages.filter(page => page.id !== deletedPageId);
+    this.setState({ pages });
+  }
+
+  async handleUpdatePage(editedPage, pageId, versionId) {
+    const { data: editPage } = await pageService.updatePage(pageId, editedPage);
+
+    const pages = [
+      ...this.state.pages.filter(page => page.id !== pageId),
+      { ...editPage }
+    ];
+    this.setState({ pages });
   }
 
   render() {
     const { location } = this.props;
 
-    if (location.deleteEndpointId) {
-      console.log("Eee");
-      const deleteEndpointId = location.deleteEndpointId;
-      this.props.history.replace({ deleteEndpointId: null });
-      this.handleDeleteEndpoint(deleteEndpointId);
-    }
-
-    if (location.newEndpoint) {
-      const { newEndpoint, groupId } = location;
-      this.props.history.replace({ groupId: null, newPage: null });
-
-      this.handleAddEndpoint(groupId, newEndpoint);
-    }
     if (location.editedPage) {
       const { editedPage, pageId, versionId } = location;
       this.props.history.replace({ editedPage: null });
@@ -263,10 +206,10 @@ class Collections extends Component {
       this.handleAddVersionPage(versionId, newPage);
     }
 
-    if (location.deletePageId) {
-      const deletePageId = location.deletePageId;
+    if (location.deletedPageId) {
+      const deletedPageId = location.deletedPageId;
       this.props.history.replace({ deletedPageId: null });
-      this.handleDeletePage(deletePageId);
+      this.handleDeletePage(deletedPageId);
     }
 
     if (location.editedGroup) {
@@ -283,7 +226,6 @@ class Collections extends Component {
 
     if (location.newGroup) {
       const { versionId, newGroup } = location;
-      console.log(versionId, newGroup);
       this.props.history.replace({ newGroup: null });
       this.handleAddGroup(versionId, newGroup);
     }
@@ -321,18 +263,7 @@ class Collections extends Component {
           <div className="tabs">
             <Switch>
               <Route
-                path="/dashboard/collections/:collectionId/versions/:versionId/groups/:groupId/endpoints/new"
-                render={props => (
-                  <EndpointForm
-                    {...props}
-                    show={true}
-                    onHide={() => {}}
-                    title="Add New Endpoint"
-                  />
-                )}
-              />
-              <Route
-                path="/dashboard/collections/:id/versions/:versionId/groups/:groupId/pages/new"
+                path="/collections/:id/versions/:versionId/groups/:groupId/pages/new"
                 render={props => (
                   <PageForm
                     {...props}
@@ -343,7 +274,7 @@ class Collections extends Component {
                 )}
               />
               <Route
-                path="/dashboard/collections/:id/versions/:versionId/pages/:pageId/edit"
+                path="/collections/:id/versions/:versionId/pages/:pageId/edit"
                 render={props => (
                   <PageForm
                     {...props}
@@ -357,7 +288,7 @@ class Collections extends Component {
               />
 
               <Route
-                path="/dashboard/collections/:id/versions/:versionId/pages/new"
+                path="/collections/:id/versions/:versionId/pages/new"
                 render={props => (
                   <PageForm
                     {...props}
@@ -369,7 +300,7 @@ class Collections extends Component {
                 )}
               />
               <Route
-                path="/dashboard/collections/:collectionId/versions/:versionId/groups/:groupId/edit"
+                path="/collections/:collectionId/versions/:versionId/groups/:groupId/edit"
                 render={props => (
                   <GroupForm
                     {...props}
@@ -382,7 +313,7 @@ class Collections extends Component {
                 )}
               />
               <Route
-                path="/dashboard/collections/:collectionId/versions/:versionId/groups/new"
+                path="/collections/:collectionId/versions/:versionId/groups/new"
                 render={props => (
                   <GroupForm
                     {...props}
@@ -394,7 +325,7 @@ class Collections extends Component {
                 )}
               />
               <Route
-                path="/dashboard/collections/:id/versions/new"
+                path="/collections/:id/versions/new"
                 render={props => (
                   <CollectionVersionForm
                     {...props}
@@ -406,7 +337,7 @@ class Collections extends Component {
                 )}
               />
               <Route
-                path="/dashboard/collections/:collectionId/versions/:versionId/edit"
+                path="/collections/:collectionId/versions/:versionId/edit"
                 render={props => (
                   <CollectionVersionForm
                     {...props}
@@ -418,7 +349,7 @@ class Collections extends Component {
                 )}
               />
               <Route
-                path="/dashboard/collections/new"
+                path="/collections/new"
                 render={props => (
                   <CollectionForm
                     {...props}
@@ -429,7 +360,7 @@ class Collections extends Component {
                 )}
               />
               <Route
-                path="/dashboard/collections/:id/edit"
+                path="/collections/:id/edit"
                 render={props => (
                   <CollectionForm
                     {...props}
@@ -445,10 +376,10 @@ class Collections extends Component {
         </div>
         <div className="App-Side">
           <button className="btn btn-default btn-lg">
-            <Link to="/dashboard/collections/new">+ New Collection</Link>
+            <Link to="/collections/new">+ New Collection</Link>
           </button>
-          {this.state.collections.map(collection => (
-            <Accordion key={collection.id || collection.requestId}>
+          {this.state.collections.map((collection, index) => (
+            <Accordion key={collection.id}>
               <Card>
                 <Card.Header>
                   <Accordion.Toggle as={Button} variant="link" eventKey="1">
@@ -462,27 +393,13 @@ class Collections extends Component {
                   >
                     <Dropdown.Item
                       eventKey="1"
-                      onClick={() => {
-                        this.props.history.push({
-                          pathname: `/dashboard/collections/${collection.name}/edit`,
-                          editedcollection: collection
-                        });
-                      }}
+                      onClick={() => this.handleUpdate(collection)}
                     >
                       Edit
                     </Dropdown.Item>
                     <Dropdown.Item
                       eventKey="2"
-                      onClick={() => {
-                        if (
-                          window.confirm(
-                            "Are you sure you wish to delete this collection?" +
-                              "\n" +
-                              " All your versions, groups, pages and endpoints present in this collection will be deleted."
-                          )
-                        )
-                          this.handleDelete(collection);
-                      }}
+                      onClick={() => this.handleDelete(collection)}
                     >
                       Delete
                     </Dropdown.Item>

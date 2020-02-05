@@ -1,5 +1,7 @@
-import http from "./httpService";
-import { apiUrl } from "../config.json";
+import http from './httpService';
+import axios from 'axios';
+import { apiUrl } from '../config.json';
+import { version } from 'react';
 
 function versionPagesUrl(versionId) {
     return `${apiUrl}/versions/${versionId}/pages`;
@@ -30,6 +32,8 @@ export function saveVersionPage(versionId, page) {
 }
 
 export function saveGroupPage(versionId, groupId, page) {
+    console.log("page", page)
+
     return http.post(groupPagesUrl(groupId), page);
 }
 

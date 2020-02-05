@@ -6,43 +6,35 @@ import {
   Dropdown,
   DropdownButton
 } from "react-bootstrap";
+import groupsService from "../services/groupsService";
 import GroupPages from "./groupPages";
 import Endpoints from "./endpoints";
-
 class Groups extends Component {
   state = {};
 
   handleDelete(group) {
     this.props.history.push({
-      pathname: "/dashboard/collections",
+      pathname: "/collections",
       deletedGroupId: group.id
     });
   }
 
   handleUpdate(group) {
     this.props.history.push({
-      pathname: `/dashboard/collections/${this.props.collectionId}/versions/${this.props.versionId}/groups/${group.id}/edit`,
+      pathname: `/collections/${this.props.collectionId}/versions/${this.props.versionId}/groups/${group.id}/edit`,
       editGroup: group
     });
   }
 
   handleAddPage(groupId, versionId, collectionId) {
     this.props.history.push({
-      pathname: `/dashboard/collections/${collectionId}/versions/${versionId}/groups/${groupId}/pages/new`,
+      pathname: `/collections/${collectionId}/versions/${versionId}/groups/${groupId}/pages/new`,
       versionId: versionId,
       groupId: groupId
     });
   }
 
-  handleAddEndpoint(groupId, versionId, collectionId) {
-    this.props.history.push({
-      pathname: `/dashboard/collections/${collectionId}/versions/${versionId}/groups/${groupId}/endpoints/new`,
-      groupId: groupId
-    });
-  }
-
   render() {
-    console.log("lll", this.props);
     return (
       <div>
         {this.props.groups
@@ -68,16 +60,7 @@ class Groups extends Component {
                     </Dropdown.Item>
                     <Dropdown.Item
                       eventKey="2"
-                      onClick={() => {
-                        if (
-                          window.confirm(
-                            "Are you sure you wish to delete this group? " +
-                              "\n" +
-                              "All your pages and endpoints present in this group will be deleted."
-                          )
-                        )
-                          this.handleDelete(group);
-                      }}
+                      onClick={() => this.handleDelete(group)}
                     >
                       Delete
                     </Dropdown.Item>
@@ -92,18 +75,6 @@ class Groups extends Component {
                       }
                     >
                       Add Page
-                    </Dropdown.Item>
-                    <Dropdown.Item
-                      eventKey="3"
-                      onClick={() =>
-                        this.handleAddEndpoint(
-                          group.id,
-                          group.versionId,
-                          this.props.collectionId
-                        )
-                      }
-                    >
-                      Add Endpoint
                     </Dropdown.Item>
                   </DropdownButton>
                 </Card.Header>
@@ -120,10 +91,7 @@ class Groups extends Component {
                 </Accordion.Collapse>
                 <Accordion.Collapse eventKey="1">
                   <Card.Body>
-                    <Endpoints
-                      {...this.props}
-                      endpoints={this.props.endpoints}
-                    />
+                    <Endpoints endpoints={this.props.endpoints} />
                   </Card.Body>
                 </Accordion.Collapse>
               </Card>

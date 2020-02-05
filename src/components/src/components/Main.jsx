@@ -6,34 +6,45 @@ import DisplayPage from "./displayPage";
 import { Redirect } from "react-router-dom";
 import EditPage from "./editPage";
 import pageService from "../services/pageService";
-import DisplayEndpoint from "./displayEndpoint";
+
 class Main extends Component {
   async handleUpdatePage(editedPage, pageId, versionId) {
     const { data: editPage } = await pageService.updatePage(pageId, editedPage);
   }
 
   render() {
-    if (this.props.location.data && this.props.location.data.groupId === "") {
-      const data = { ...this.props.location.data };
-      delete data.pageId;
-      delete data.versionId;
-      delete data.groupId;
-      this.handleUpdatePage(
-        data,
-        this.props.location.data.pageId,
-        this.props.location.data.versionId
-      );
-    } else if (
-      this.props.location.data &&
-      this.props.location.data.versionId === ""
-    ) {
-      this.handleAddGroupPage(
-        this.props.location.data.versionId,
-        this.props.location.data.groupId,
-        this.props.location.data
-      );
-    }
-
+    // if (this.props.location.title === "edit page") {
+    //   console.log("vvvv", this.props.location.data.pageId);
+    //   return (
+    //     <Redirect
+    //       to={{
+    //         pathname: `/collections/pages/${this.props.location.data.pageId}`,
+    //         state: { ...this.props }
+    //       }}
+    //     />
+    //   );
+    // }
+    // if (this.props.location.data && this.props.location.data.groupId === "") {
+    //   const data = { ...this.props.location.data };
+    //   delete data.pageId;
+    //   delete data.versionId;
+    //   delete data.groupId;
+    //   this.handleUpdatePage(
+    //     data,
+    //     this.props.location.data.pageId,
+    //     this.props.location.data.versionId
+    //   );
+    // } else if (
+    //   this.props.location.data &&
+    //   this.props.location.data.versionId === ""
+    // ) {
+    //   this.handleAddGroupPage(
+    //     this.props.location.data.versionId,
+    //     this.props.location.data.groupId,
+    //     this.props.location.data
+    //   );
+    // }
+    console.log("nq", this.props);
     return (
       <div>
         <nav className="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
@@ -70,22 +81,18 @@ class Main extends Component {
               </div>
 
               <Switch>
-                <Route
-                  path="/dashboard/collections/endpoints/:endpointId"
-                  render={props => <DisplayEndpoint {...props} />}
-                />
-                <Route
-                  path="/dashboard/collections/pages/:pageid/new"
+                {/* <Route
+                  path="/collections/pages/:pageid/new"
                   render={props => <EditPage page={this.props.location.page} />}
-                />
+                /> */}
                 <Route
-                  path="/dashboard/collections/pages/:pageid/edit"
+                  path="/collections/pages/:pageid/edit"
                   render={props => (
                     <EditPage {...props} page={this.props.location.page} />
                   )}
                 />
                 <Route
-                  path="/dashboard/collections/pages/:pageid"
+                  path="/collections/pages/:pageid"
                   render={props => <DisplayPage {...props} />}
                 />
               </Switch>

@@ -14,28 +14,28 @@ class CollectionVersions extends Component {
 
   async handleDelete(collectionVersion) {
     this.props.history.push({
-      pathname: "/dashboard/collections",
+      pathname: "/collections",
       deletedCollectionVersionId: collectionVersion.id
     });
   }
 
   handleUpdate(collectionVersion) {
     this.props.history.push({
-      pathname: `/dashboard/collections/${this.props.collectionId}/versions/${collectionVersion.number}/edit`,
+      pathname: `/collections/${this.props.collectionId}/versions/${collectionVersion.number}/edit`,
       editCollectionVersion: collectionVersion
     });
   }
 
   handleAddGroup(versionId, collectionId) {
     this.props.history.push({
-      pathname: `/dashboard/collections/${collectionId}/versions/${versionId}/groups/new`,
+      pathname: `/collections/${collectionId}/versions/${versionId}/groups/new`,
       versionId: versionId
     });
   }
 
   handleAddPage(versionId, collectionId) {
     this.props.history.push({
-      pathname: `/dashboard/collections/${collectionId}/versions/${versionId}/pages/new`,
+      pathname: `/collections/${collectionId}/versions/${versionId}/pages/new`,
       versionId: versionId
     });
   }
@@ -67,16 +67,7 @@ class CollectionVersions extends Component {
                       </Dropdown.Item>
                       <Dropdown.Item
                         eventKey="2"
-                        onClick={() => {
-                          if (
-                            window.confirm(
-                              "Are you sure you wish to delete this versions? " +
-                                "\n" +
-                                "All your groups, pages and endpoints present in this version will be deleted."
-                            )
-                          )
-                            this.handleDelete(collectionVersion);
-                        }}
+                        onClick={() => this.handleDelete(collectionVersion)}
                       >
                         Delete
                       </Dropdown.Item>
