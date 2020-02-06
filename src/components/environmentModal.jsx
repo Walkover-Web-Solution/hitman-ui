@@ -7,7 +7,13 @@ class EnvironmentModal extends Component {
   }
 
   async componentDidMount () {
-    let { environments } = this.props
+    let environments = []
+    if (this.props.environment) {
+      environments = this.props.environments
+    } else {
+      const { data } = await environmentService.getEnvironments()
+      environments = data
+    }
     this.setState({ environments })
     if (this.props.location.editedEnvironment) {
       const {
@@ -37,7 +43,7 @@ class EnvironmentModal extends Component {
 
   handleEdit (environment) {
     this.props.history.push({
-      pathname: '/dashboard/environments/manage/edit',
+      pathname: `/dashboard/environments/${environment.id}/edit`,
       editEnvironment: environment
     })
   }

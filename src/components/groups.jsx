@@ -11,10 +11,6 @@ import GroupPages from './groupPages'
 class Groups extends Component {
   state = {}
 
-  handleDelete (group) {}
-
-  handleUpdate (group) {}
-
   handleAddPage (groupId, versionId, collectionId) {
     this.props.history.push({
       pathname: `/dashboard/collections/${collectionId}/versions/${versionId}/groups/${groupId}/pages/new`,

@@ -18,7 +18,7 @@ import groupsService from '../services/groupsService'
 import PageForm from './pageForm'
 import pageService from '../services/pageService'
 import shortId from 'shortid'
-import { toast, ToastContainer } from 'react-toastify'
+import { toast } from 'react-toastify'
 
 class Collections extends Component {
   state = {

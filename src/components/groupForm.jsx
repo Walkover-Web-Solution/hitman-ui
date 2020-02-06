@@ -16,6 +16,7 @@ class GroupForm extends Form {
   }
 
   async componentDidMount () {
+    if (this.props.title === 'Add new Group') return
     let data = {}
     const groupId = this.props.location.pathname.split('/')[7]
     const versionId = this.props.location.pathname.split('/')[5]
