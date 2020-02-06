@@ -42,9 +42,9 @@ export function saveEndpoint(groupId, endpoint) {
     return http.post(endpointUrl(groupId), endpoint);
 }
 
-// export function updatePage(pageId, page) {
-//   return http.put(`${apiUrl}/pages/${pageId}`, page);
-// }
+export function updateEndpoint(endpointId, endpoint) {
+    return http.put(`${apiUrl}/endpoints/${endpointId}`, endpoint);
+}
 
 export function deleteEndpoint(endpointId) {
     return http.delete(`${apiUrl}/endpoints/${endpointId}`);
@@ -54,12 +54,6 @@ export default {
     saveEndpoint,
     getEndpoints,
     deleteEndpoint,
-    apiTest
-    //   getVersionPages,
-    //   getGroupPages,
-    //   getPage,
-    //   saveVersionPage,
-    //   saveGroupPage,
-    //   updatePage,
-    //   deletePage
+    apiTest,
+    updateEndpoint
 };

@@ -157,11 +157,12 @@ class Collections extends Component {
     );
     let endpoints = [...this.state.endpoints, endpoint];
     this.setState({ endpoints });
-    // let endpointId = endpoint.id;
-    // this.props.history.push({
-    //   pathname: `/dashboard/collections/pages/${endpointId}/edit`,
-    //   endpoint: endpoint
-    // });
+    let endpointId = endpoint.id;
+    this.props.history.push({
+      pathname: `/dashboard/collections/endpoints/${endpointId}`,
+      endpoint: endpoint,
+      title: "Add New Endpoint"
+    });
   }
   async handleDeletePage(deletePageId) {
     await pageService.deletePage(deletePageId);
