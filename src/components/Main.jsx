@@ -15,26 +15,29 @@ class Main extends Component {
   }
 
   render () {
-    if (this.props.location.data && this.props.location.data.groupId === '') {
-      const data = { ...this.props.location.data }
-      delete data.pageId
-      delete data.versionId
-      delete data.groupId
-      this.handleUpdatePage(
-        data,
-        this.props.location.data.pageId,
-        this.props.location.data.versionId
-      )
-    } else if (
-      this.props.location.data &&
-      this.props.location.data.versionId === ''
-    ) {
-      this.handleAddGroupPage(
-        this.props.location.data.versionId,
-        this.props.location.data.groupId,
-        this.props.location.data
-      )
-    }
+    // if (this.props.title === 'Add New Version Page') {
+
+    // }
+    // if (this.props.location.data && this.props.location.data.groupId === '') {
+    //   const data = { ...this.props.location.data }
+    //   delete data.pageId
+    //   delete data.versionId
+    //   delete data.groupId
+    //   this.handleUpdatePage(
+    //     data,
+    //     this.props.location.data.pageId,
+    //     this.props.location.data.versionId
+    //   )
+    // } else if (
+    //   this.props.location.data &&
+    //   this.props.location.data.versionId === ''
+    // ) {
+    //   this.handleAddGroupPage(
+    //     this.props.location.data.versionId,
+    //     this.props.location.data.groupId,
+    //     this.props.location.data
+    //   )
+    // }
 
     return (
       <div>
@@ -73,15 +76,13 @@ class Main extends Component {
               </div>
 
               <Switch>
-                <Route
+                {/* <Route
                   path='/dashboard/collections/pages/:pageid/new'
                   render={props => <EditPage page={this.props.location.page} />}
-                />
+                /> */}
                 <Route
                   path='/dashboard/collections/pages/:pageid/edit'
-                  render={props => (
-                    <EditPage {...props} page={this.props.location.page} />
-                  )}
+                  render={props => <EditPage {...props} />}
                 />
                 <Route
                   path='/dashboard/collections/pages/:pageid'

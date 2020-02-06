@@ -23,7 +23,7 @@ class PageForm extends Form {
   async doSubmit (props) {
     if (this.props.title === 'Add New Page') {
       this.props.history.push({
-        pathname: `/dashboard/collections`,
+        pathname: `/dashboard/`,
         newPage: this.state.data,
         versionId: parseInt(this.props.location.pathname.split('/')[5]),
         groupId: parseInt(this.props.location.pathname.split('/')[7])
@@ -31,31 +31,16 @@ class PageForm extends Form {
     }
     if (this.props.title === 'Add New Version Page') {
       this.props.history.push({
-        pathname: `/dashboard/collections`,
+        pathname: `/dashboard/`,
         newPage: this.state.data,
         versionId: parseInt(this.props.location.pathname.split('/')[5])
-      })
-    }
-
-    if (this.props.title === 'Edit Page') {
-      this.props.history.push({
-        pathname: `/dashboard/collections`,
-        editedPage: this.state.data,
-        pageId: this.state.pageId,
-        versionId: this.state.versionId
       })
     }
   }
 
   render () {
-    if (this.props.location.editPage) {
-      const { id, versionId, name, contents } = this.props.location.editPage
-      this.state.pageId = id
-      this.state.versionId = versionId
-      this.state.data.name = name
-      this.state.data.contents = contents
-      this.props.history.replace({ editPage: null })
-    }
+    //console.log('page', this.props)
+
     return (
       <Modal
         {...this.props}
