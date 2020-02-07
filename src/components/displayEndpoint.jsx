@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import endpointService from "../services/endpointService";
-import http from "../services/httpService";
 import JSONPretty from "react-json-pretty";
 import { Dropdown } from "react-bootstrap";
 
@@ -15,22 +14,18 @@ class DisplayEndpoint extends Component {
       body: "",
       uri: ""
     },
-    response: {}
+    response: {},
+    endpoint: {}
   };
 
   handleChange = e => {
     let data = { ...this.state.data };
-    console.log("data1", data);
-    // console.log("hhh", api);
     data.uri = e.currentTarget.value;
-    console.log("data2", data);
-    // data.method = e.currentTarget.value;
     this.setState({ data });
   };
 
   handleSubmit = async () => {
-    const api = "http://localhost:2000" + this.uri.current.value;
-    // this.state.data.api = api;
+    const api = this.uri.current.value;
     this.state.data.body = this.body.current.value;
     try {
       if (this.state.data.body != "")
@@ -49,13 +44,12 @@ class DisplayEndpoint extends Component {
   handleSave = async e => {
     const uri = this.uri.current.value;
     const endpoint = {
-      uri: uri,
-      name: this.props.location.endpoint.name,
+      uri,
+      name: this.state.endpoint.name,
       requestType: this.state.data.method
     };
-
     const { data: response } = await endpointService.updateEndpoint(
-      this.props.location.endpoint.id,
+      this.state.endpoint.id,
       endpoint
     );
   };
@@ -64,22 +58,25 @@ class DisplayEndpoint extends Component {
     const response = {};
     let data = { ...this.state.data };
     data.method = method;
-    console.log("setstate", data);
     this.setState({ response, data });
   }
   render() {
-    console.log("endpoint props", this.props);
     if (
       this.props.location.endpoint &&
       this.props.location.title != "Add New Endpoint"
     ) {
-      this.state.data.method = this.props.location.endpoint.requestType;
-      this.state.data.uri = this.props.location.endpoint.uri;
-      this.state.data.name = this.props.location.endpoint.name;
+      let { endpoint } = this.props.location;
+      this.setState({
+        data: {
+          method: endpoint.requestType,
+          uri: endpoint.uri,
+          name: endpoint.name
+        },
+        endpoint
+      });
 
-      // this.props.history.push({ endpoint: null });
+      this.props.history.push({ endpoint: null });
     }
-    console.log("display props", this.props);
 
     return (
       <div>

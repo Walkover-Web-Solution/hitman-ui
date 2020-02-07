@@ -42,7 +42,6 @@ class Groups extends Component {
   }
 
   render() {
-    console.log("lll", this.props);
     return (
       <div>
         {this.props.groups

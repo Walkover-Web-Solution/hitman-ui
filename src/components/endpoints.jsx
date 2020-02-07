@@ -23,7 +23,6 @@ class Endpoints extends Component {
   }
   state = {};
   render() {
-    console.log("yyyy", this.props);
     return (
       <div>
         {this.props.endpoints.map(endpoint => (
@@ -44,12 +43,6 @@ class Endpoints extends Component {
                   id="dropdown-menu-align-right"
                   style={{ float: "right" }}
                 >
-                  <Dropdown.Item
-                    eventKey="1"
-                    // onClick={() => this.handleUpdate(page)}
-                  >
-                    Edit
-                  </Dropdown.Item>
                   <Dropdown.Item
                     eventKey="2"
                     onClick={() => this.handleDelete(endpoint)}
