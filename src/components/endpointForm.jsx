@@ -8,7 +8,6 @@ class Endpoints extends Form {
   state = {
     data: {
       name: ""
-      // contents: ""
     },
     errors: {}
   };
@@ -29,35 +28,34 @@ class Endpoints extends Form {
         title: "Add New Endpoint"
       });
     }
-  }
-  // if (this.props.title === "Add New Version Page") {
-  //   this.props.history.push({
-  //     pathname: `/dashboard/collections`,
-  //     newPage: this.state.data,
-  //     versionId: parseInt(this.props.location.pathname.split("/")[5])
-  //   });
-  // }
 
-  //     if (this.props.title === "Edit Page") {
-  //       this.props.history.push({
-  //         pathname: `/dashboard/collections`,
-  //         editedPage: this.state.data,
-  //         pageId: this.state.pageId,
-  //         versionId: this.state.versionId
-  //       });
-  //     }
-  //   }
+    // if (this.props.title === "Add New Version Page") {
+    //   this.props.history.push({
+    //     pathname: `/dashboard/collections`,
+    //     newPage: this.state.data,
+    //     versionId: parseInt(this.props.location.pathname.split("/")[5])
+    //   });
+    // }
+
+    if (this.props.title == "Edit Endpoint") {
+      this.props.history.push({
+        pathname: `/dashboard/collections`,
+        editedEndpoint: this.state.data,
+        groupId: parseInt(this.props.location.pathname.split("/")[7]),
+        versionId: this.state.versionId
+      });
+    }
+  }
 
   render() {
-    console.log("ending");
-    // if (this.props.location.editPage) {
-    //   const { id, versionId, name, contents } = this.props.location.editPage;
-    //   this.state.pageId = id;
-    //   this.state.versionId = versionId;
-    //   this.state.data.name = name;
-    //   this.state.data.contents = contents;
-    //   this.props.history.replace({ editPage: null });
-    // }
+    if (this.props.location.editEndpoint) {
+      const { name } = this.props.location.editEndpoint;
+      // this.state.pageId = id;
+      // this.state.versionId = versionId;
+      this.state.data.name = name;
+      // this.state.data.contents = contents;
+      this.props.history.replace({ editEndpoint: null });
+    }
     return (
       <Modal
         {...this.props}

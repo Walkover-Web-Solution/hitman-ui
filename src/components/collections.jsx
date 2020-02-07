@@ -101,7 +101,6 @@ class Collections extends Component {
   }
 
   async handleAddGroup(versionId, newGroup) {
-    console.log(versionId, newGroup);
     const { data: group } = await groupsService.saveGroup(versionId, newGroup);
     let groups = [...this.state.groups, { ...group }];
     this.setState({ groups });
@@ -151,19 +150,52 @@ class Collections extends Component {
   }
 
   async handleAddEndpoint(groupId, newEndpoint) {
-    const { data: endpoint } = await endpointService.saveEndpoint(
-      groupId,
-      newEndpoint
-    );
-    let endpoints = [...this.state.endpoints, endpoint];
+    const originalEndpoints = [...this.state.endpoints];
+    newEndpoint.requestId = shortId.generate();
+    const endpoints = [...this.state.endpoints, newEndpoint];
     this.setState({ endpoints });
-    let endpointId = endpoint.id;
+    let endpoint = {};
+    try {
+      const { data } = await endpointService.saveEndpoint(groupId, newEndpoint);
+      endpoint = data;
+      const index = endpoints.findIndex(
+        e => e.requestId === newEndpoint.requestId
+      );
+      endpoints[index] = endpoint;
+      this.setState({ endpoints });
+    } catch (ex) {
+      this.setState({ originalEndpoints });
+    }
+
+    // const groupIndex = this.state.groups.findIndex(g => g.id == groupId);
+    // const host = this.state.groups[groupIndex].host;
+    // this.setState({ host });
+    // if (host == ) {
+    //   const versionIndex = this.state.versions.findIndex(v => g.id == groupId);
+
+    // } else {
+    //   const host = this.state.groups[groupIndex].host;
+    // }
     this.props.history.push({
-      pathname: `/dashboard/collections/endpoints/${endpointId}`,
+      pathname: `/dashboard/collections/endpoints/${endpoint.id}`,
       endpoint: endpoint,
+      groups: this.state.groups,
       title: "Add New Endpoint"
     });
   }
+
+  async handleUpdatePage(editedEndpoint, groupId, versionId) {
+    const { data: editEndpoint } = await endpointService.updatePage(
+      groupId,
+      editedEndpoint
+    );
+    const endpoints = [
+      ...this.state.endpoints.filter(group => group.id !== groupId),
+      { ...editEndpoint }
+    ];
+    this.setState({ endpoints });
+  }
+
   async handleDeletePage(deletePageId) {
     await pageService.deletePage(deletePageId);
     const pages = this.state.pages.filter(page => page.id !== deletePageId);
@@ -233,8 +265,13 @@ class Collections extends Component {
   render() {
     const { location } = this.props;
 
+    if (location.editedEndpoint) {
+      const { editedEndpoint, groupId, versionId } = location;
+      this.props.history.replace({ editedEndpoint: null });
+      this.handleUpdateEndpoint(editedEndpoint, groupId, versionId);
+    }
+
     if (location.deleteEndpointId) {
-      console.log("Eee");
       const deleteEndpointId = location.deleteEndpointId;
       this.props.history.replace({ deleteEndpointId: null });
       this.handleDeleteEndpoint(deleteEndpointId);
@@ -284,7 +321,6 @@ class Collections extends Component {
 
     if (location.newGroup) {
       const { versionId, newGroup } = location;
-      console.log(versionId, newGroup);
       this.props.history.replace({ newGroup: null });
       this.handleAddGroup(versionId, newGroup);
     }
@@ -321,6 +357,17 @@ class Collections extends Component {
         <div className="App-Nav">
           <div className="tabs">
             <Switch>
+              <Route
+                path="/dashboard/collections/:collectionId/versions/:versionId/groups/:groupId/endpoints/:endpointId/edit"
+                render={props => (
+                  <EndpointForm
+                    {...props}
+                    show={true}
+                    onHide={() => {}}
+                    title="Edit Endpoint"
+                  />
+                )}
+              />
               <Route
                 path="/dashboard/collections/:collectionId/versions/:versionId/groups/:groupId/endpoints/new"
                 render={props => (

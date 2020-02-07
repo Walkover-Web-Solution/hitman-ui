@@ -20,7 +20,9 @@ export function getEndpoints(groupId) {
 export function saveEndpoint(groupId, endpoint) {
     return http.post(endpointUrl(groupId), endpoint);
 }
-
+// export function updateEndpointName(groupId, editedEndpoint) {
+//     return http.put(`${apiUrl}/endpoints/${endpointId}`, editedEndpoint);
+// }
 export function updateEndpoint(endpointId, endpoint) {
     return http.put(`${apiUrl}/endpoints/${endpointId}`, endpoint);
 }
@@ -35,4 +37,5 @@ export default {
     deleteEndpoint,
     apiTest,
     updateEndpoint
+    // updateEndpointName
 };

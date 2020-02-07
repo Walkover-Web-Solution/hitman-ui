@@ -112,6 +112,7 @@ class CollectionVersions extends Component {
                         versionId={collectionVersion.id}
                         pages={this.props.pages}
                         endpoints={this.props.endpoints}
+                        groups={this.props.groups}
                       />
                     </Card.Body>
                   </Accordion.Collapse>
