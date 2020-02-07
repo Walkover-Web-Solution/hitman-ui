@@ -1,8 +1,34 @@
 import React, { Component } from 'react'
 import pageService from '../services/pageService'
+import jQuery from 'jquery'
 
 class DisplayPage extends Component {
-  state = {}
+  state = {
+    data: {
+      id: null,
+      versionId: null,
+      groupId: null,
+      name: '',
+      contents: ''
+    }
+  }
+
+  async componentDidMount () {
+    let data = {}
+    if (!this.props.location.page) {
+      const pageId = this.props.location.pathname.split('/')[4]
+      let { data: page } = await pageService.getPage(pageId)
+      const { id, versionId, groupId, name, contents } = page
+      data = {
+        id,
+        versionId,
+        groupId,
+        name,
+        contents
+      }
+      this.setState({ data })
+    }
+  }
 
   handleEdit (page) {
     this.props.history.push({
@@ -11,23 +37,28 @@ class DisplayPage extends Component {
     })
   }
   render () {
-    console.log(this.props.location.page)
+    if (this.props.location.page) {
+      const data = jQuery.extend(true, {}, this.props.location.page)
+      this.setState({ data })
+      this.props.history.push({ page: null })
+    }
+
     return (
       <div>
         <button
           style={{ float: 'right' }}
           className='btn btn-primary btn-sm'
           onClick={() => {
-            this.handleEdit(this.props.location.page)
+            this.handleEdit(this.state.data)
           }}
         >
           Edit page
         </button>
         <span>
-          <p>{this.props.location.page.name}</p>
+          <p>{this.state.data.name}</p>
         </span>
         <span>
-          <p>{this.props.location.page.contents}</p>
+          <p>{this.state.data.contents}</p>
         </span>
       </div>
     )

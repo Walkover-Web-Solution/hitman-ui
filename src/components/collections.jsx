@@ -236,63 +236,56 @@ class Collections extends Component {
   async handleAddVersionPage (versionId, newPage) {
     const { data: page } = await pageService.saveVersionPage(versionId, newPage)
     let pages = [...this.state.pages, { ...page }]
-    this.setState({ pages })
     let pageId = page.id
+    this.setState({ pages })
     this.props.history.push({
       pathname: `/dashboard/collections/pages/${pageId}/edit`,
       page: page
     })
   }
   async handleAddGroupPage (versionId, groupId, newPage) {
-    const { data: page } = await pageService.saveGroupPage(
-      versionId,
-      groupId,
-      newPage
-    )
+    const { data: page } = await pageService.saveGroupPage(groupId, newPage)
     let pages = [...this.state.pages, { ...page }]
-    this.setState({ pages })
     let pageId = page.id
-
-    console.log('handleAddGroupPage', page)
+    this.setState({ pages })
     this.props.history.push({
       pathname: `/dashboard/collections/pages/${pageId}/edit`,
       page: page
     })
   }
   async handleDeletePage (deletedPageId) {
-    await pageService.deletePage(deletedPageId)
+    const originalPages = [...this.state.pages]
     const pages = this.state.pages.filter(page => page.id !== deletedPageId)
     this.setState({ pages })
+    try {
+      await pageService.deletePage(deletedPageId)
+    } catch (ex) {
+      toast.error(ex)
+      this.setState({ pages: originalPages })
+    }
   }
 
-  async handleUpdatePage (editedPage, pageId, versionId) {
+  async handleUpdatePage (editedPage, pageId) {
+    const originalPages = [...this.state.pages]
+    let pages = [...this.state.pages]
+    const index = pages.findIndex(p => p.id === pageId)
+    pages[index] = editedPage
+    this.setState({ pages })
     delete editedPage.pageId
     delete editedPage.versionId
     delete editedPage.groupId
-    const { data: editPage } = await pageService.updatePage(pageId, editedPage)
-    let pages = [...this.state.pages]
-    const index = pages.findIndex(p => p.id === pageId)
-    pages[index] = editPage
-    this.setState({ pages })
+    try {
+      const { data: page } = await pageService.updatePage(pageId, editedPage)
+      const index = pages.findIndex(p => p.id === page.id)
+      pages[index] = page
+      this.setState({ pages })
+    } catch (ex) {
+      toast.error(ex.response.data)
+      this.setState({ pages: originalPages })
+    }
     this.props.history.push({
       pathname: `/dashboard/collections/pages/${pageId}`,
-      page: editPage
-    })
-  }
-
-  async handleUpdateGroupPage (editedPage, pageId, versionId) {
-    delete editedPage.pageId
-    delete editedPage.versionId
-    delete editedPage.groupId
-    const { data: editPage } = await pageService.updatePage(pageId, editedPage)
-    console.log(editPage)
-    let pages = [...this.state.pages]
-    const index = pages.findIndex(p => p.id === pageId)
-    pages[index] = editPage
-    this.setState({ pages })
-    this.props.history.push({
-      pathname: `/dashboard/collections/pages/${pageId}`,
-      page: editPage
+      page: editedPage
     })
   }
 
@@ -314,13 +307,13 @@ class Collections extends Component {
     }
 
     if (location.editedPage && location.groupId) {
-      const { pageId, versionId } = location.editedPage
+      const { id: pageId } = location.editedPage
       this.props.history.replace({ editedPage: null })
-      this.handleUpdateGroupPage(location.editedPage, pageId, versionId)
+      this.handleUpdatePage(location.editedPage, pageId)
     } else if (location.editedPage) {
-      const { pageId, versionId } = location.editedPage
+      const { id: pageId } = location.editedPage
       this.props.history.replace({ editedPage: null })
-      this.handleUpdatePage(location.editedPage, pageId, versionId)
+      this.handleUpdatePage(location.editedPage, pageId)
     }
 
     if (location.deletedPageId) {

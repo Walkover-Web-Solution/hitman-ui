@@ -19,6 +19,7 @@ class GroupForm extends Form {
     let data = {}
     const groupId = this.props.location.pathname.split('/')[7]
     const versionId = this.props.location.pathname.split('/')[5]
+    if (this.props.title === 'Add new Group') return
     if (this.props.location.editGroup) {
       const { name, host } = this.props.location.editGroup
       data = { name, host }
