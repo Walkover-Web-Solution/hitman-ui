@@ -11,11 +11,10 @@ class EnvironmentVariables extends Component {
   }
 
   async componentDidMount () {
-    console.log(this.props)
-    if (this.props.title == 'Add new Environment') return
+    if (this.props.title === 'Add new Environment') return
     let environment = {}
 
-    if (this.props.title == 'Edit Environment') {
+    if (this.props.title === 'Edit Environment') {
       if (this.props.location.environment) {
         environment = { ...this.props.location.environment }
       } else {
@@ -24,7 +23,7 @@ class EnvironmentVariables extends Component {
         environment = data
       }
     }
-    if (this.props.title == 'Environment') {
+    if (this.props.title === 'Environment') {
       if (this.props.environment.variables) {
         environment = { ...this.props.environment }
       } else {
@@ -62,7 +61,7 @@ class EnvironmentVariables extends Component {
         }
       }
     }
-    if (this.props.title == 'Add new Environment') {
+    if (this.props.title === 'Add new Environment') {
       this.props.history.push({
         pathname: `/dashboard/environments`,
         newEnvironment: { ...this.state.environment }
@@ -118,7 +117,6 @@ class EnvironmentVariables extends Component {
   }
 
   render () {
-    console.log('render')
     return (
       <Modal
         {...this.props}
@@ -154,7 +152,7 @@ class EnvironmentVariables extends Component {
 
               <tbody>
                 {this.state.updatedVariableNames.map((variable, index) =>
-                  variable != 'deleted' ? (
+                  variable !== 'deleted' ? (
                     <tr key={index}>
                       <td>
                         <input

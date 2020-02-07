@@ -18,7 +18,7 @@ class Environments extends Component {
     const { data: environments } = await environmentService.getEnvironments()
     this.setState({ environments })
     const environmentId = this.props.location.pathname.split('/')[3]
-    if (this.props.location.pathname.split('/')[4] == 'variables') {
+    if (this.props.location.pathname.split('/')[4] === 'variables') {
       const index = this.state.environments.findIndex(
         e => e.id === environmentId
       )
@@ -29,8 +29,6 @@ class Environments extends Component {
   handleEnv (environment) {
     this.setState({ environment: environment })
   }
-
-  handleEdit (environment) {}
 
   async handleAdd (newEnvironment) {
     newEnvironment.requestId = shortId.generate()
@@ -50,9 +48,6 @@ class Environments extends Component {
       toast.error(ex.response.data)
       this.setState({ environment: originalEnvironment })
     }
-    // const environments = [...this.state.environments, environment]
-    // this.setState({ environments })
-    // await environmentService.saveEnvironment(environment)
   }
 
   async handleUpdateEnvironment (updatedEnvironment) {
@@ -96,19 +91,8 @@ class Environments extends Component {
       this.props.history.replace({ updatedEnvironment: null })
       this.handleUpdateEnvironment(updatedEnvironment)
     }
-    if (this.props.location.updatedEnvironments) {
-      // const { updatedVariables } = this.props.location
-      // this.props.history.replace({ updatedVariables: null })
-      // this.handleUpdateVariables(updatedVariables)
-    }
-    if (this.props.location.deletedEnvironment) {
-      // const { environments } = this.props.location
-      // this.props.history.replace({ environments: null })
-      // this.setState({ environments })
-    }
 
     if (this.props.location.newEnvironment) {
-      console.log(this.props.location.newEnvironment)
       const { newEnvironment } = this.props.location
       this.props.history.replace({ newEnvironment: null })
       this.handleAdd(newEnvironment)

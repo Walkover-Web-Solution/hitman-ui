@@ -2,14 +2,12 @@ import React from 'react'
 import Form from './common/form'
 import { Modal } from 'react-bootstrap'
 import Joi from 'joi-browser'
-import pageService from '../services/pageService'
 import { Link } from 'react-router-dom'
 
 class PageForm extends Form {
   state = {
     data: {
       name: ''
-      // contents: ""
     },
     errors: {}
   }

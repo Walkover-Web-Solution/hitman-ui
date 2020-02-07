@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import { Modal, Dropdown, ListGroup } from 'react-bootstrap'
 import environmentService from '../services/environmentService'
+import { toast } from 'react-toastify'
+import jQuery from 'jquery'
 class EnvironmentModal extends Component {
   state = {
     environments: []
@@ -34,11 +36,21 @@ class EnvironmentModal extends Component {
   }
 
   async handleDelete (environmentId) {
+    const originalEnvironments = jQuery.extend(
+      true,
+      [],
+      this.state.environments
+    )
     const environments = this.state.environments.filter(
-      env => env.id !== environmentId
+      e => e.id !== environmentId
     )
     this.setState({ environments })
-    await environmentService.deleteEnvironment(environmentId)
+    try {
+      await environmentService.deleteEnvironment(environmentId)
+    } catch (ex) {
+      toast.error(ex)
+      this.setState({ environments: originalEnvironments })
+    }
   }
 
   handleEdit (environment) {
