@@ -88,18 +88,20 @@ class Collections extends Component {
   async handleAdd (newCollection) {
     newCollection.requestId = shortId.generate()
     const originalCollections = { ...this.state.collections }
-    let collections = { ...this.state.collections }
+    const collections = { ...this.state.collections }
     const requestId = newCollection.requestId
     collections[requestId] = { ...newCollection }
     this.setState({ collections })
+    console.log(newCollection)
     try {
       const { data: collection } = await collectionsService.saveCollection(
         newCollection
       )
+      // const index = collections.findIndex(
+      //   c => c.requestId === collection.requestId
+      // )
       collections[collection.id] = collection
       delete collections[requestId]
-
-      console.log(collection.id)
       const {
         data: version
       } = await collectionVersionsService.getCollectionVersions(collection.id)
@@ -113,7 +115,10 @@ class Collections extends Component {
 
   async handleDelete (collection) {
     const originalCollections = { ...this.state.collections }
-    const collections = { ...this.state.collections }
+    // const collections = this.state.collections.filter(
+    //   c => c.id !== collection.id
+    // )
+    let collections = { ...this.state.collections }
     delete collections[collection.id]
     this.setState({ collections })
     try {
@@ -125,14 +130,14 @@ class Collections extends Component {
   }
 
   async handleUpdate (editedCollection) {
-    const originalCollections = [...this.state.collections]
+    const originalCollections = { ...this.state.collections }
     const body = { ...editedCollection }
     delete body.id
-    const index = this.state.collections.findIndex(
-      collection => collection.id === editedCollection.id
-    )
-    const collections = [...this.state.collections]
-    collections[index] = editedCollection
+    // const index = this.state.collections.findIndex(
+    //   collection => collection.id === editedCollection.id
+    // )
+    let collections = { ...this.state.collections }
+    collections[editedCollection.id] = editedCollection
     this.setState({ collections })
     try {
       await collectionsService.updateCollection(editedCollection.id, body)
@@ -308,6 +313,7 @@ class Collections extends Component {
   // }
 
   async handleDeletePage (deletedPageId) {
+    console.log(deletedPageId)
     const originalPages = [...this.state.pages]
     const pages = this.state.pages.filter(page => page.id !== deletedPageId)
     this.setState({ pages })
@@ -585,11 +591,11 @@ class Collections extends Component {
             <Link to='/dashboard/collections/new'>+ New Collection</Link>
           </button>
           {Object.keys(this.state.collections).map(collection => (
-            <Accordion>
+            <Accordion key={collection.id || collection.requestId}>
               <Card>
                 <Card.Header>
                   <Accordion.Toggle as={Button} variant='link' eventKey='1'>
-                    {this.state.collections[collection].name}
+                    {this.state.collections[collection]['name']}
                   </Accordion.Toggle>
                   <DropdownButton
                     alignRight
@@ -601,8 +607,8 @@ class Collections extends Component {
                       eventKey='1'
                       onClick={() => {
                         this.props.history.push({
-                          pathname: `/dashboard/collections/${collection.id}/edit`,
-                          editedcollection: collection
+                          pathname: `/dashboard/collections/${this.state.collections[collection].id}/edit`,
+                          editedcollection: this.state.collections[collection]
                         })
                       }}
                     >
@@ -639,7 +645,7 @@ class Collections extends Component {
                   <Card.Body>
                     <CollectionVersions
                       {...this.props}
-                      collection_id={collection}
+                      collection_id={collection.id}
                       versions={this.state.versions}
                       groups={this.state.groups}
                       pages={this.state.pages}
