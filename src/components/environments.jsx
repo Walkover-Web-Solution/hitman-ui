@@ -1,125 +1,95 @@
 import React, { Component } from 'react'
 import { Dropdown } from 'react-bootstrap'
 import { Route, Switch, Link } from 'react-router-dom'
-import EnvironmentForm from './environmentForm'
 import environmentService from '../services/environmentService'
 import EnvironmentModal from './environmentModal'
 import EnvironmentVariables from './environmentVariables'
-import variablesService from '../services/variablesService'
+import { toast } from 'react-toastify'
 import jQuery from 'jquery'
+import shortId from 'shortid'
 
 class Environments extends Component {
   state = {
     environments: [],
-    variables: [],
-    environment: { id: 0, name: 'No Environment' }
-  }
-
-  async fetchVariables (environments) {
-    let variables = []
-    for (let i = 0; i < environments.length; i++) {
-      const { data: variables1 } = await variablesService.getVariables(
-        environments[i].id
-      )
-      variables = [...variables, ...variables1]
-    }
-
-    return variables
+    environment: { id: null, name: 'No Environment' }
   }
 
   async componentDidMount () {
     const { data: environments } = await environmentService.getEnvironments()
     this.setState({ environments })
-    const variables = await this.fetchVariables(environments)
-    this.setState({ variables })
+    const environmentId = this.props.location.pathname.split('/')[3]
+    if (this.props.location.pathname.split('/')[4] === 'variables') {
+      const index = this.state.environments.findIndex(
+        e => e.id === environmentId
+      )
+      this.handleEnv(this.state.environments[index])
+    }
   }
 
   handleEnv (environment) {
     this.setState({ environment: environment })
   }
 
-  handleEdit (environment) {}
-
-  async handleAdd (environment) {
-    const environments = [...this.state.environments, environment]
+  async handleAdd (newEnvironment) {
+    newEnvironment.requestId = shortId.generate()
+    const originalEnvironment = jQuery.extend(true, [], this.state.environment)
+    const environments = [...this.state.environments, newEnvironment]
     this.setState({ environments })
-    await environmentService.saveEnvironment(environment)
+    try {
+      const { data: environment } = await environmentService.saveEnvironment(
+        newEnvironment
+      )
+      const index = environments.findIndex(
+        e => e.requestId === newEnvironment.requestId
+      )
+      environments[index] = environment
+      this.setState({ environments })
+    } catch (ex) {
+      toast.error(ex.response.data)
+      this.setState({ environment: originalEnvironment })
+    }
   }
 
-  async handleUpdateVariables (updatedVariables) {
-    const originalVariables = jQuery.extend(true, [], this.state.variables)
+  async handleUpdateEnvironment (updatedEnvironment) {
     if (
-      JSON.stringify(originalVariables) !== JSON.stringify(updatedVariables)
+      JSON.stringify(this.state.environment) !==
+      JSON.stringify(updatedEnvironment)
     ) {
-      var deletedIndices = []
-      var updatedIndices = []
-      var savedIndices = []
-      var sameIndices = []
-      const l1 = originalVariables.length
-      const l2 = updatedVariables.length
-      let j = 0
-
-      for (let i = 0; i < l1; i++) {
-        for (j = 0; j < l2; j++) {
-          if (originalVariables[i].id === updatedVariables[j].id) {
-            if (
-              JSON.stringify(originalVariables[i]) ===
-              JSON.stringify(updatedVariables[j])
-            ) {
-              sameIndices.push(j)
-              break
-            } else {
-              updatedIndices.push(j)
-              break
-            }
-          } else {
-          }
-        }
-        if (j === l2) {
-          deletedIndices.push(i)
-        }
-      }
-
-      this.setState({ variables: updatedVariables })
-      for (let i = 0; i < l2; i++) {
-        if (updatedIndices.includes(i)) {
-          const body = updatedVariables[i]
-          const id = body.id
-          delete body.id
-          delete body.environmentId
-
-          const data = await variablesService.updateVariable(id, body)
-        } else if (sameIndices.includes(i)) {
-        } else {
-          const body = updatedVariables[i]
-          delete body.id
-          delete body.environmentId
-          const data = await variablesService.saveVariable(
-            this.state.environment.id,
-            body
-          )
-        }
-      }
-      for (let i = 0; i < l1; i++) {
-        if (deletedIndices.includes(i)) {
-          const data = await variablesService.deleteVariable(
-            originalVariables[i].id
-          )
-        }
+      const originalEnvironment = jQuery.extend(
+        true,
+        [],
+        this.state.environment
+      )
+      const environments = [...this.state.environments]
+      const index = environments.findIndex(e => e.id === updatedEnvironment.id)
+      environments[index] = updatedEnvironment
+      this.setState({ environments, environment: updatedEnvironment })
+      try {
+        const body = { ...updatedEnvironment }
+        delete body.id
+        const {
+          data: environment
+        } = await environmentService.updateEnvironment(
+          updatedEnvironment.id,
+          body
+        )
+        const index = environments.findIndex(
+          e => e.id === updatedEnvironment.id
+        )
+        environments[index] = environment
+        this.setState({ environments })
+      } catch (ex) {
+        toast.error(ex.response.data)
+        this.setState({ environment: originalEnvironment })
       }
     }
   }
 
   render () {
-    if (this.props.location.updatedVariables) {
-      const { updatedVariables } = this.props.location
-      this.props.history.replace({ updatedVariables: null })
-      this.handleUpdateVariables(updatedVariables)
-    }
-    if (this.props.location.environments) {
-      const { environments } = this.props.location
-      this.props.history.replace({ environments: null })
-      this.setState({ environments })
+    if (this.props.location.updatedEnvironment) {
+      const { updatedEnvironment } = this.props.location
+      this.props.history.replace({ updatedEnvironment: null })
+      this.handleUpdateEnvironment(updatedEnvironment)
     }
 
     if (this.props.location.newEnvironment) {
@@ -130,23 +100,23 @@ class Environments extends Component {
     return (
       <div>
         <div>
+          <Route
+            path='/dashboard/environments/:environmentId/variables'
+            render={props => (
+              <EnvironmentVariables
+                {...props}
+                show={this.state.environment.id}
+                onHide={() => {}}
+                environment={jQuery.extend(true, [], this.state.environment)}
+                title='Environment'
+              />
+            )}
+          />
           <Switch>
             <Route
-              path='/dashboard/environments/variables'
+              path='/dashboard/environments/:environmentId/edit'
               render={props => (
                 <EnvironmentVariables
-                  {...props}
-                  show={this.state.environment.id}
-                  onHide={() => {}}
-                  environment={{ ...this.state.environment }}
-                  variables={jQuery.extend(true, [], this.state.variables)}
-                />
-              )}
-            />
-            <Route
-              path='/dashboard/environments/manage/edit'
-              render={props => (
-                <EnvironmentForm
                   {...props}
                   show={true}
                   onHide={() => {}}
@@ -168,7 +138,7 @@ class Environments extends Component {
             <Route
               path='/dashboard/environments/new'
               render={props => (
-                <EnvironmentForm
+                <EnvironmentVariables
                   {...props}
                   show={true}
                   onHide={() => {}}
@@ -210,7 +180,7 @@ class Environments extends Component {
 
         {this.state.environment.id ? (
           <Link
-            to='/dashboard/environments/variables'
+            to={`/dashboard/environments/${this.state.environment.id}/variables`}
             style={{ float: 'right' }}
           >
             Environment Variables

@@ -1,102 +1,96 @@
-import React, { Component } from "react";
+import React, { Component } from 'react'
 import {
   Accordion,
   Card,
   Button,
   Dropdown,
   DropdownButton
-} from "react-bootstrap";
-import Groups from "./groups";
-import VersionPages from "./pages";
+} from 'react-bootstrap'
+import Groups from './groups'
+import VersionPages from './pages'
 
 class CollectionVersions extends Component {
-  state = {};
+  state = {}
 
-  async handleDelete(collectionVersion) {
+  async handleDelete (collectionVersion) {
     this.props.history.push({
-      pathname: "/dashboard/collections",
+      pathname: '/dashboard/collections',
       deletedCollectionVersionId: collectionVersion.id
-    });
+    })
   }
 
-  handleUpdate(collectionVersion) {
+  handleUpdate (collectionVersion) {
     this.props.history.push({
-      pathname: `/dashboard/collections/${this.props.collectionId}/versions/${collectionVersion.number}/edit`,
+      pathname: `/dashboard/collections/${this.props.collection_id}/versions/${collectionVersion.id}/edit`,
       editCollectionVersion: collectionVersion
-    });
+    })
   }
 
-  handleAddGroup(versionId, collectionId) {
-    this.props.history.push({
-      pathname: `/dashboard/collections/${collectionId}/versions/${versionId}/groups/new`,
-      versionId: versionId
-    });
-  }
-
-  handleAddPage(versionId, collectionId) {
+  handleAddPage (versionId, collectionId) {
     this.props.history.push({
       pathname: `/dashboard/collections/${collectionId}/versions/${versionId}/pages/new`,
       versionId: versionId
-    });
+    })
   }
 
-  render() {
+  render () {
     return (
       <div>
         {this.props.versions &&
           this.props.versions
-            .filter(version => version.collectionId === this.props.collectionId)
-            .map((collectionVersion, index) => (
-              <Accordion defaultActiveKey="0" key={collectionVersion.id}>
+            .filter(
+              version => version.collectionId === this.props.collection_id
+            )
+            .map(collectionVersion => (
+              <Accordion defaultActiveKey='0' key={collectionVersion.id}>
                 <Card>
                   <Card.Header>
-                    <Accordion.Toggle as={Button} variant="link" eventKey="1">
+                    <Accordion.Toggle as={Button} variant='link' eventKey='1'>
                       {collectionVersion.number}
                     </Accordion.Toggle>
                     <DropdownButton
                       alignRight
-                      title=""
-                      id="dropdown-menu-align-right"
-                      style={{ float: "right" }}
+                      title=''
+                      id='dropdown-menu-align-right'
+                      style={{ float: 'right' }}
                     >
                       <Dropdown.Item
-                        eventKey="1"
+                        eventKey='1'
                         onClick={() => this.handleUpdate(collectionVersion)}
                       >
                         Edit
                       </Dropdown.Item>
                       <Dropdown.Item
-                        eventKey="2"
+                        eventKey='2'
                         onClick={() => {
                           if (
                             window.confirm(
-                              "Are you sure you wish to delete this versions? " +
-                                "\n" +
-                                "All your groups, pages and endpoints present in this version will be deleted."
+                              'Are you sure you wish to delete this versions? ' +
+                                '\n' +
+                                'All your groups, pages and endpoints present in this version will be deleted.'
                             )
                           )
-                            this.handleDelete(collectionVersion);
+                            this.handleDelete(collectionVersion)
                         }}
                       >
                         Delete
                       </Dropdown.Item>
                       <Dropdown.Item
-                        eventKey="3"
-                        onClick={() =>
-                          this.handleAddGroup(
-                            collectionVersion.id,
-                            this.props.collectionId
-                          )
-                        }
+                        eventKey='3'
+                        onClick={() => {
+                          this.props.history.push({
+                            pathname: `/dashboard/collections/${this.props.collection_id}/versions/${collectionVersion.id}/groups/new`
+                          })
+                        }}
                       >
                         Add Group
                       </Dropdown.Item>
                       <Dropdown.Item
-                        eventKey="3"
+                        eventKey='3'
                         onClick={() =>
                           this.handleAddPage(
                             collectionVersion.id,
-                            this.props.collectionId
+                            this.props.collection_id
                           )
                         }
                       >
@@ -104,24 +98,21 @@ class CollectionVersions extends Component {
                       </Dropdown.Item>
                     </DropdownButton>
                   </Card.Header>
-                  <Accordion.Collapse eventKey="1">
+                  <Accordion.Collapse eventKey='1'>
                     <Card.Body>
                       <Groups
                         {...this.props}
-                        collectionId={collectionVersion.collectionId}
-                        versionId={collectionVersion.id}
-                        pages={this.props.pages}
-                        endpoints={this.props.endpoints}
+                        version_id={collectionVersion.id}
                       />
                     </Card.Body>
                   </Accordion.Collapse>
-                  <Accordion.Collapse eventKey="1">
+                  <Accordion.Collapse eventKey='1'>
                     <Card.Body>
                       <VersionPages
                         {...this.props}
                         versionId={collectionVersion.id}
                         pages={this.props.pages}
-                        title={"Version Pages"}
+                        title={'Version Pages'}
                       />
                     </Card.Body>
                   </Accordion.Collapse>
@@ -129,7 +120,7 @@ class CollectionVersions extends Component {
               </Accordion>
             ))}
       </div>
-    );
+    )
   }
 }
-export default CollectionVersions;
+export default CollectionVersions
