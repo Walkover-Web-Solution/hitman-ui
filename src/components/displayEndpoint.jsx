@@ -15,8 +15,14 @@ class DisplayEndpoint extends Component {
       uri: ""
     },
     response: {},
-    endpoint: {}
+    endpoint: {},
+    groups: []
   };
+
+  componentDidMount() {
+    let { endpoint } = this.props.location;
+    this.setState({ endpoint });
+  }
 
   handleChange = e => {
     let data = { ...this.state.data };
@@ -25,14 +31,22 @@ class DisplayEndpoint extends Component {
   };
 
   handleSubmit = async () => {
-    const api = this.uri.current.value;
-    this.state.data.body = this.body.current.value;
-    try {
-      if (this.state.data.body != "")
-        this.state.data.body = JSON.parse(this.state.data.body);
-    } catch (error) {
-      console.log(error);
+    const groupIndex = this.state.groups.findIndex(
+      g => g.id == this.state.endpoint.groupId
+    );
+    const host = this.state.groups[groupIndex].host;
+    const api = host + this.uri.current.value;
+
+    if (this.body.current) {
+      this.state.data.body = this.body.current.value;
+      try {
+        if (this.state.data.body != "")
+          this.state.data.body = JSON.parse(this.state.data.body);
+      } catch (error) {
+        console.log(error);
+      }
     }
+
     const { data: response } = await endpointService.apiTest(
       api,
       this.state.data.method,
@@ -43,11 +57,13 @@ class DisplayEndpoint extends Component {
 
   handleSave = async e => {
     const uri = this.uri.current.value;
+
     const endpoint = {
       uri,
       name: this.state.endpoint.name,
       requestType: this.state.data.method
     };
+    console.log();
     const { data: response } = await endpointService.updateEndpoint(
       this.state.endpoint.id,
       endpoint
@@ -61,6 +77,12 @@ class DisplayEndpoint extends Component {
     this.setState({ response, data });
   }
   render() {
+    if (this.props.location.groups) {
+      this.state.groups = this.props.location.groups.groups;
+    }
+    if (this.props.location.title == "Add New Endpoint") {
+      this.state.groups = this.props.location.groups;
+    }
     if (
       this.props.location.endpoint &&
       this.props.location.title != "Add New Endpoint"
@@ -144,40 +166,16 @@ class DisplayEndpoint extends Component {
             Save
           </button>
         </div>
-        <div>
-          <div class="form-check form-check-inline">
-            <input
-              class="form-check-input"
-              type="radio"
-              name="inlineRadioOptions"
-              id="none"
-              value="none"
-            />
-            <label class="form-check-label" for="none">
-              none
-            </label>
-          </div>
-          <div class="form-check form-check-inline">
-            <input
-              class="form-check-input"
-              type="radio"
-              name="inlineRadioOptions"
-              id="raw"
-              value="raw"
-            />
-            <label class="form-check-label" for="raw">
-              raw
-            </label>
-          </div>
-        </div>
 
-        <textarea
-          class="form-control"
-          ref={this.body}
-          name="body"
-          id="body"
-          rows="8"
-        ></textarea>
+        {this.state.data.method == "POST" || this.state.data.method == "PUT" ? (
+          <textarea
+            class="form-control"
+            ref={this.body}
+            name="body"
+            id="body"
+            rows="8"
+          ></textarea>
+        ) : null}
 
         <JSONPretty
           themeClassName="custom-json-pretty"
