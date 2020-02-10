@@ -25,7 +25,8 @@ class Endpoints extends Form {
         newEndpoint: this.state.data,
         // versionId: parseInt(this.props.location.pathname.split("/")[5]),
         groupId: parseInt(this.props.location.pathname.split("/")[7]),
-        title: "Add New Endpoint"
+        title: "Add New Endpoint",
+        versions: this.props.location.versions
       });
     }
 

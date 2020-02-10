@@ -35,15 +35,15 @@ class DisplayEndpoint extends Component {
     const groupIndex = this.state.groups.findIndex(
       g => g.id == this.state.endpoint.groupId
     );
-    const host = this.state.groups[groupIndex].host;
+    let host = this.state.groups[groupIndex].host;
     if (host == "") {
+      const versionId = this.state.groups[groupIndex].versionId;
       const versionIndex = this.state.versions.findIndex(
-        v => v.id == this.state.endpoint.groupId
+        v => v.id == versionId
       );
-      const host = this.state.versions[groupIndex].host;
+      host = this.state.versions[versionIndex].host;
     }
     const api = host + this.uri.current.value;
-
     if (this.body.current) {
       this.state.data.body = this.body.current.value;
       try {
@@ -64,13 +64,11 @@ class DisplayEndpoint extends Component {
 
   handleSave = async e => {
     const uri = this.uri.current.value;
-
     const endpoint = {
       uri,
       name: this.state.endpoint.name,
       requestType: this.state.data.method
     };
-    console.log();
     const { data: response } = await endpointService.updateEndpoint(
       this.state.endpoint.id,
       endpoint
@@ -84,9 +82,6 @@ class DisplayEndpoint extends Component {
     this.setState({ response, data });
   }
   render() {
-    console.log(this.props.location.groups);
-    console.log(this.props.location.versions);
-
     if (this.props.location.groups) {
       this.state.groups = this.props.location.groups;
     }

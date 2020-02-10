@@ -274,7 +274,7 @@ class Collections extends Component {
     });
   }
 
-  async handleAddEndpoint(groupId, newEndpoint) {
+  async handleAddEndpoint(groupId, newEndpoint, versions) {
     const originalEndpoints = [...this.state.endpoints];
     newEndpoint.requestId = shortId.generate();
     const endpoints = [...this.state.endpoints, newEndpoint];
@@ -295,7 +295,8 @@ class Collections extends Component {
       pathname: `/dashboard/collections/endpoints/${endpoint.id}`,
       endpoint: endpoint,
       groups: this.state.groups,
-      title: "Add New Endpoint"
+      title: "Add New Endpoint",
+      versions: versions
     });
   }
 
@@ -368,7 +369,11 @@ class Collections extends Component {
       const { newEndpoint, groupId } = location;
       this.props.history.replace({ groupId: null, newPage: null });
 
-      this.handleAddEndpoint(groupId, newEndpoint);
+      this.handleAddEndpoint(
+        groupId,
+        newEndpoint,
+        this.props.location.versions
+      );
     }
 
     if (location.newPage && location.groupId) {

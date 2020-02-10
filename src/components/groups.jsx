@@ -20,10 +20,11 @@ class Groups extends Component {
     });
   }
 
-  handleAddEndpoint(groupId, versionId, collectionId) {
+  handleAddEndpoint(groupId, versionId, collectionId, versions) {
     this.props.history.push({
       pathname: `/dashboard/collections/${collectionId}/versions/${versionId}/groups/${groupId}/endpoints/new`,
-      groupId: groupId
+      groupId: groupId,
+      versions: versions
     });
   }
 
@@ -92,7 +93,8 @@ class Groups extends Component {
                         this.handleAddEndpoint(
                           group.id,
                           group.versionId,
-                          this.props.collectionId
+                          this.props.collectionId,
+                          this.props.versions
                         )
                       }
                     >
