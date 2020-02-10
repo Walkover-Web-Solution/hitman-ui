@@ -16,7 +16,8 @@ class DisplayEndpoint extends Component {
     },
     response: {},
     endpoint: {},
-    groups: []
+    groups: [],
+    versions: []
   };
 
   componentDidMount() {
@@ -35,6 +36,12 @@ class DisplayEndpoint extends Component {
       g => g.id == this.state.endpoint.groupId
     );
     const host = this.state.groups[groupIndex].host;
+    if (host == "") {
+      const versionIndex = this.state.versions.findIndex(
+        v => v.id == this.state.endpoint.groupId
+      );
+      const host = this.state.versions[groupIndex].host;
+    }
     const api = host + this.uri.current.value;
 
     if (this.body.current) {
@@ -77,8 +84,14 @@ class DisplayEndpoint extends Component {
     this.setState({ response, data });
   }
   render() {
+    console.log(this.props.location.groups);
+    console.log(this.props.location.versions);
+
     if (this.props.location.groups) {
-      this.state.groups = this.props.location.groups.groups;
+      this.state.groups = this.props.location.groups;
+    }
+    if (this.props.location.versions) {
+      this.state.versions = this.props.location.versions;
     }
     if (this.props.location.title == "Add New Endpoint") {
       this.state.groups = this.props.location.groups;

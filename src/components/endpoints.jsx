@@ -21,11 +21,12 @@ class Endpoints extends Component {
       editEndpoint: endpoint
     });
   }
-  handleDisplay(endpoint, groups) {
+  handleDisplay(endpoint, groups, versions) {
     this.props.history.push({
       pathname: `/dashboard/collections/endpoints/${endpoint.id}`,
       endpoint: endpoint,
-      groups: groups
+      groups: groups,
+      versions: versions
     });
   }
   state = {};
@@ -39,7 +40,13 @@ class Endpoints extends Component {
               <Card>
                 <Card.Header>
                   <Accordion.Toggle
-                    onClick={() => this.handleDisplay(endpoint, this.props)}
+                    onClick={() =>
+                      this.handleDisplay(
+                        endpoint,
+                        this.props.groups,
+                        this.props.versions
+                      )
+                    }
                     as={Button}
                     variant="link"
                     eventKey="1"
