@@ -38,7 +38,8 @@ class GroupForm extends Form {
       .required()
       .label('Group Name'),
     host: Joi.string()
-      .required()
+      .uri()
+      .allow(null, '')
       .label('Host')
   }
 

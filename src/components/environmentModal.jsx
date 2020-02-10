@@ -62,7 +62,7 @@ class EnvironmentModal extends Component {
 
   handleCancel (props) {
     props.history.push({
-      pathname: `/dashboard/environments`,
+      pathname: `/dashboard/`,
       environments: this.state.environments
     })
   }

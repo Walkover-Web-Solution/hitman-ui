@@ -24,7 +24,7 @@ import { toast } from 'react-toastify'
 
 class Collections extends Component {
   state = {
-    collections: [],
+    collections: {},
     versions: [],
     groups: [],
     pages: [],
@@ -33,11 +33,12 @@ class Collections extends Component {
 
   async fetchVersions (collections) {
     let versions = []
-    for (let i = 0; i < collections.length; i++) {
+    const collectionIds = Object.keys(collections)
+    for (let i = 0; i < collectionIds.length; i++) {
       const {
         data: versions1
       } = await collectionVersionsService.getCollectionVersions(
-        collections[i].id
+        collectionIds[i]
       )
 
       versions = [...versions, ...versions1]
@@ -86,17 +87,19 @@ class Collections extends Component {
 
   async handleAdd (newCollection) {
     newCollection.requestId = shortId.generate()
-    const originalCollections = [...this.state.collections]
-    const collections = [...this.state.collections, newCollection]
+    const originalCollections = { ...this.state.collections }
+    let collections = { ...this.state.collections }
+    const requestId = newCollection.requestId
+    collections[requestId] = { ...newCollection }
     this.setState({ collections })
     try {
       const { data: collection } = await collectionsService.saveCollection(
         newCollection
       )
-      const index = collections.findIndex(
-        c => c.requestId === collection.requestId
-      )
-      collections[index] = collection
+      collections[collection.id] = collection
+      delete collections[requestId]
+
+      console.log(collection.id)
       const {
         data: version
       } = await collectionVersionsService.getCollectionVersions(collection.id)
@@ -109,10 +112,9 @@ class Collections extends Component {
   }
 
   async handleDelete (collection) {
-    const originalCollections = [...this.state.collections]
-    const collections = this.state.collections.filter(
-      c => c.id !== collection.id
-    )
+    const originalCollections = { ...this.state.collections }
+    const collections = { ...this.state.collections }
+    delete collections[collection.id]
     this.setState({ collections })
     try {
       await collectionsService.deleteCollection(collection.id)
@@ -582,12 +584,12 @@ class Collections extends Component {
           <button className='btn btn-default btn-lg'>
             <Link to='/dashboard/collections/new'>+ New Collection</Link>
           </button>
-          {this.state.collections.map(collection => (
-            <Accordion key={collection.id || collection.requestId}>
+          {Object.keys(this.state.collections).map(collection => (
+            <Accordion>
               <Card>
                 <Card.Header>
                   <Accordion.Toggle as={Button} variant='link' eventKey='1'>
-                    {collection.name}
+                    {this.state.collections[collection].name}
                   </Accordion.Toggle>
                   <DropdownButton
                     alignRight
@@ -616,7 +618,7 @@ class Collections extends Component {
                               ' All your versions, groups, pages and endpoints present in this collection will be deleted.'
                           )
                         )
-                          this.handleDelete(collection)
+                          this.handleDelete(this.state.collections[collection])
                       }}
                     >
                       Delete
@@ -637,7 +639,7 @@ class Collections extends Component {
                   <Card.Body>
                     <CollectionVersions
                       {...this.props}
-                      collection_id={collection.id}
+                      collection_id={collection}
                       versions={this.state.versions}
                       groups={this.state.groups}
                       pages={this.state.pages}

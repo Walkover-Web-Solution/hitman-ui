@@ -34,6 +34,7 @@ class CollectionVersions extends Component {
   }
 
   render () {
+    console.log(this.props.collection_id, this.props.versions)
     return (
       <div>
         {this.props.versions &&
