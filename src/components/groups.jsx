@@ -33,7 +33,7 @@ class Groups extends Component {
         {this.props.groups
           .filter(g => g.versionId === this.props.version_id)
           .map(group => (
-            <Accordion defaultActiveKey='0' key={group.id}>
+            <Accordion defaultActiveKey='0' key={group.id || group.requestId}>
               <Card>
                 <Card.Header>
                   <Accordion.Toggle as={Button} variant='link' eventKey='1'>

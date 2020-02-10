@@ -186,10 +186,6 @@ class Environments extends Component {
             Environment Variables
           </Link>
         ) : null}
-
-        <div style={{ textAlign: 'center' }}>
-          <h3>{this.state.environment.name}</h3>
-        </div>
       </div>
     )
   }

@@ -1,29 +1,29 @@
-import React, { Component } from "react";
+import React, { Component } from 'react'
 import {
   Accordion,
   Card,
   Button,
   Dropdown,
   DropdownButton
-} from "react-bootstrap";
+} from 'react-bootstrap'
 
 class Pages extends Component {
-  state = {};
+  state = {}
 
-  async handleDelete(page) {
+  async handleDelete (page) {
     this.props.history.push({
-      pathname: "/dashboard/collections",
+      pathname: '/dashboard/collections',
       deletedPageId: page.id
-    });
+    })
   }
-  handleDisplay(page) {
+  handleDisplay (page) {
     this.props.history.push({
       pathname: `/dashboard/collections/pages/${page.id}`,
       page: page
-    });
+    })
   }
 
-  render() {
+  render () {
     return (
       <div>
         {this.props.pages &&
@@ -34,47 +34,47 @@ class Pages extends Component {
             )
 
             .map((page, index) => (
-              <Accordion defaultActiveKey="1" key={page.id}>
+              <Accordion defaultActiveKey='1' key={page.id}>
                 <Card>
                   <Card.Header>
                     <Accordion.Toggle
                       onClick={() => this.handleDisplay(page)}
                       as={Button}
-                      variant="link"
-                      eventKey="1"
+                      variant='link'
+                      eventKey='1'
                     >
                       {page.name}
                     </Accordion.Toggle>
                     <DropdownButton
                       alignRight
-                      title=""
-                      id="dropdown-menu-align-right"
-                      style={{ float: "right" }}
+                      title=''
+                      id='dropdown-menu-align-right'
+                      style={{ float: 'right' }}
                     >
                       <Dropdown.Item
-                        eventKey="2"
+                        eventKey='2'
                         onClick={() => {
                           if (
                             window.confirm(
-                              "Are you sure you wish to delete this item?"
+                              'Are you sure you wish to delete this item?'
                             )
                           )
-                            this.handleDelete(page);
+                            this.handleDelete(page)
                         }}
                       >
                         Delete
                       </Dropdown.Item>
                     </DropdownButton>
                   </Card.Header>
-                  <Accordion.Collapse eventKey="0">
+                  <Accordion.Collapse eventKey='0'>
                     <Card.Body></Card.Body>
                   </Accordion.Collapse>
                 </Card>
               </Accordion>
             ))}
       </div>
-    );
+    )
   }
 }
 
-export default Pages;
+export default Pages

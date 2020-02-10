@@ -1,82 +1,113 @@
-import React, { Component } from "react";
+import React, { Component } from 'react'
+import pageService from '../services/pageService'
 
 class EditPage extends Component {
-  name = React.createRef();
-  contents = React.createRef();
+  name = React.createRef()
+  contents = React.createRef()
 
   state = {
     data: {
-      pageId: "",
-      versionId: "",
-      groupId: "",
-      name: "",
-      contents: ""
+      id: null,
+      versionId: null,
+      groupId: null,
+      name: '',
+      contents: ''
     },
     errors: {}
-  };
+  }
+
+  async componentDidMount () {
+    let data = {}
+    if (this.props.location.page) {
+      const {
+        id,
+        versionId,
+        groupId,
+        name,
+        contents
+      } = this.props.location.page
+
+      data = {
+        id,
+        versionId,
+        groupId,
+        name,
+        contents
+      }
+    } else {
+      const pageId = this.props.location.pathname.split('/')[4]
+      //console.log(pageId)
+      let { data: page } = await pageService.getPage(pageId)
+      //console.log('page', page)
+      const { id, versionId, groupId, name, contents } = page
+      data = {
+        id,
+        versionId,
+        groupId,
+        name,
+        contents
+      }
+    }
+    this.setState({ data })
+  }
 
   handleChange = e => {
-    const data = { ...this.state.data };
-    data[e.currentTarget.name] = e.currentTarget.value;
-    this.setState({ data });
-  };
+    const data = { ...this.state.data }
+    data[e.currentTarget.name] = e.currentTarget.value
+    this.setState({ data })
+  }
 
   handleSubmit = e => {
-    e.preventDefault();
-    const data = { ...this.state.data };
-    const name = this.name.current.value;
-    const contents = this.contents.current.value;
-    data.name = name;
-    data.contents = contents;
-    this.setState({ data });
-    this.props.history.push({
-      pathname: `/dashboard/collections/`,
-      data: data,
-      title: "edit page"
-    });
-  };
-
-  render() {
-    if (this.props.location.page) {
-      const { id, versionId, name, contents } = this.props.location.page;
-      this.state.data.pageId = id;
-      this.state.data.versionId = versionId;
-      this.state.data.name = name;
-      this.state.data.contents = contents;
-      this.props.history.push({ page: null });
+    e.preventDefault()
+    const groupId = this.state.data.groupId
+    if (groupId === null) {
+      this.props.history.push({
+        pathname: `/dashboard/collections`,
+        editedPage: { ...this.state.data }
+      })
+    } else {
+      console.log(this.state.data)
+      this.props.history.push({
+        pathname: `/dashboard/collections`,
+        editedPage: { ...this.state.data },
+        groupId: { ...this.state.data.groupId }
+      })
     }
+  }
+
+  render () {
     return (
       <form onSubmit={this.handleSubmit}>
-        <div class="form-group">
-          <label for="exampleFormControlInput1">Page Name</label>
+        <div className='form-group'>
+          <label htmlFor='exampleFormControlInput1'>Page Name</label>
           <input
             ref={this.name}
-            type="text"
-            name="name"
-            class="form-control"
-            id="name"
+            type='text'
+            name='name'
+            className='form-control'
+            id='name'
             value={this.state.data.name}
             onChange={this.handleChange}
           />
         </div>
-        <div class="form-group">
-          <label for="exampleFormControlTextarea1">Contents</label>
+        <div className='form-group'>
+          <label htmlFor='exampleFormControlTextarea1'>Contents</label>
           <textarea
             ref={this.contents}
-            class="form-control"
-            value={this.state.data.contents}
+            className='form-control'
+            value={this.state.data.contents || ''}
             onChange={this.handleChange}
-            name="contents"
-            id="contents"
-            rows="20"
+            name='contents'
+            id='contents'
+            rows='20'
           />
-          <button type="submit" class="btn btn-primary">
+          <button type='submit' className='btn btn-primary'>
             Submit
           </button>
         </div>
       </form>
-    );
+    )
   }
 }
 
-export default EditPage;
+export default EditPage
