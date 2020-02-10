@@ -1,111 +1,134 @@
-import React, { Component } from "react";
+import React, { Component } from 'react'
 import {
   Accordion,
   Card,
   Button,
   Dropdown,
   DropdownButton
-} from "react-bootstrap";
-import GroupPages from "./groupPages";
+} from 'react-bootstrap'
+import GroupPages from './groupPages'
+import Endpoints from './endpoints'
 
 class Groups extends Component {
-  state = {};
+  state = {}
 
-  handleDelete(group) {
-    this.props.history.push({
-      pathname: "/dashboard/collections",
-      deletedGroupId: group.id
-    });
-  }
-
-  handleUpdate(group) {
-    this.props.history.push({
-      pathname: `/dashboard/collections/${this.props.collectionId}/versions/${this.props.versionId}/groups/${group.id}/edit`,
-      editGroup: group
-    });
-  }
-
-  handleAddPage(groupId, versionId, collectionId) {
+  handleAddPage (groupId, versionId, collectionId) {
     this.props.history.push({
       pathname: `/dashboard/collections/${collectionId}/versions/${versionId}/groups/${groupId}/pages/new`,
       versionId: versionId,
       groupId: groupId
-    });
+    })
   }
 
-  render() {
+  handleAddEndpoint (groupId, versionId, collectionId) {
+    this.props.history.push({
+      pathname: `/dashboard/collections/${collectionId}/versions/${versionId}/groups/${groupId}/endpoints/new`,
+      groupId: groupId
+    })
+  }
+
+  render () {
     return (
       <div>
         {this.props.groups
-          .filter(g => g.versionId === this.props.versionId)
+          .filter(g => g.versionId === this.props.version_id)
           .map(group => (
-            <Accordion defaultActiveKey="0" key={group.id}>
+            <Accordion defaultActiveKey='0' key={group.id || group.requestId}>
               <Card>
                 <Card.Header>
-                  <Accordion.Toggle as={Button} variant="link" eventKey="1">
+                  <Accordion.Toggle as={Button} variant='link' eventKey='1'>
                     {group.name}
                   </Accordion.Toggle>
                   <DropdownButton
                     alignRight
-                    title=""
-                    id="dropdown-menu-align-right"
-                    style={{ float: "right" }}
+                    title=''
+                    id='dropdown-menu-align-right'
+                    style={{ float: 'right' }}
                   >
                     <Dropdown.Item
-                      eventKey="1"
-                      onClick={() => this.handleUpdate(group)}
+                      eventKey='1'
+                      onClick={() => {
+                        this.props.history.push({
+                          pathname: `/dashboard/collections/${this.props.collection_id}/versions/${this.props.version_id}/groups/${group.id}/edit`,
+                          editGroup: group
+                        })
+                      }}
                     >
                       Edit
                     </Dropdown.Item>
                     <Dropdown.Item
-                      eventKey="2"
+                      eventKey='2'
                       onClick={() => {
                         if (
                           window.confirm(
-                            "Are you sure you wish to delete this group? " +
-                              "\n" +
-                              "All your pages and endpoints present in this group will be deleted."
+                            'Are you sure you wish to delete this group? ' +
+                              '\n' +
+                              'All your pages and endpoints present in this group will be deleted.'
                           )
                         )
-                          this.handleDelete(group);
+                          this.props.history.push({
+                            pathname: '/dashboard/collections',
+                            deletedGroupId: group.id
+                          })
                       }}
                     >
                       Delete
                     </Dropdown.Item>
                     <Dropdown.Item
-                      eventKey="3"
+                      eventKey='3'
                       onClick={() =>
                         this.handleAddPage(
+                          group.id,
+                          group.versionId,
+                          this.props.collection_id
+                        )
+                      }
+                    >
+                      Add Page
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                      eventKey='3'
+                      onClick={() =>
+                        this.handleAddEndpoint(
                           group.id,
                           group.versionId,
                           this.props.collectionId
                         )
                       }
                     >
-                      Add Page
+                      Add Endpoint
                     </Dropdown.Item>
                   </DropdownButton>
                 </Card.Header>
-                <Accordion.Collapse eventKey="1">
+                <Accordion.Collapse eventKey='1'>
                   <Card.Body>
                     <GroupPages
                       {...this.props}
                       versionId={group.versionId}
                       pages={this.props.pages}
                       groupId={group.id}
-                      title={"Group Pages"}
+                      title={'Group Pages'}
                     />
                   </Card.Body>
                 </Accordion.Collapse>
-                <Accordion.Collapse eventKey="1">
-                  <Card.Body>End points</Card.Body>
+                <Accordion.Collapse eventKey='1'>
+                  <Card.Body>
+                    <Endpoints
+                      {...this.props}
+                      endpoints={this.props.endpoints}
+                      groupId={group.id}
+                      versionId={group.versionId}
+                      collectionId={this.props.collectionId}
+                      groups={this.props.groups}
+                    />
+                  </Card.Body>
                 </Accordion.Collapse>
               </Card>
             </Accordion>
           ))}
       </div>
-    );
+    )
   }
 }
 
-export default Groups;
+export default Groups
