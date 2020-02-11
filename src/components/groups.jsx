@@ -28,6 +28,12 @@ class Groups extends Component {
   }
 
   render () {
+    console.log(
+      this.props,
+      Object.keys(this.props.groups).filter(
+        gId => this.props.groups[gId].versionId === this.props.version_id
+      )
+    )
     return (
       <div>
         {Object.keys(this.props.groups)
@@ -115,14 +121,14 @@ class Groups extends Component {
                 </Accordion.Collapse>
                 <Accordion.Collapse eventKey='1'>
                   <Card.Body>
-                    <Endpoints
+                    {/* <Endpoints
                       {...this.props}
                       endpoints={this.props.endpoints}
                       groupId={groupId}
                       versionId={this.props.groups[groupId].versionId}
                       collection_id={this.props.collection_id}
                       groups={this.props.groups}
-                    />
+                    /> */}
                   </Card.Body>
                 </Accordion.Collapse>
               </Card>

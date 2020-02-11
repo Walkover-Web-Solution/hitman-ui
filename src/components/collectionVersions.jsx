@@ -37,16 +37,18 @@ class CollectionVersions extends Component {
     return (
       <div>
         {this.props.versions &&
-          this.props.versions
+          Object.keys(this.props.versions)
             .filter(
-              version => version.collectionId === this.props.collection_id
+              versionId =>
+                this.props.versions[versionId].collectionId ===
+                this.props.collection_id
             )
-            .map(collectionVersion => (
-              <Accordion defaultActiveKey='0' key={collectionVersion.id}>
+            .map(versionId => (
+              <Accordion defaultActiveKey='0' key={versionId}>
                 <Card>
                   <Card.Header>
                     <Accordion.Toggle as={Button} variant='link' eventKey='1'>
-                      {collectionVersion.number}
+                      {this.props.versions[versionId].number}
                     </Accordion.Toggle>
                     <DropdownButton
                       alignRight
@@ -56,7 +58,9 @@ class CollectionVersions extends Component {
                     >
                       <Dropdown.Item
                         eventKey='1'
-                        onClick={() => this.handleUpdate(collectionVersion)}
+                        onClick={() =>
+                          this.handleUpdate(this.props.versions[versionId])
+                        }
                       >
                         Edit
                       </Dropdown.Item>
@@ -70,7 +74,7 @@ class CollectionVersions extends Component {
                                 'All your groups, pages and endpoints present in this version will be deleted.'
                             )
                           )
-                            this.handleDelete(collectionVersion)
+                            this.handleDelete(this.props.versions[versionId])
                         }}
                       >
                         Delete
@@ -79,7 +83,7 @@ class CollectionVersions extends Component {
                         eventKey='3'
                         onClick={() => {
                           this.props.history.push({
-                            pathname: `/dashboard/collections/${this.props.collection_id}/versions/${collectionVersion.id}/groups/new`
+                            pathname: `/dashboard/collections/${this.props.collection_id}/versions/${versionId}/groups/new`
                           })
                         }}
                       >
@@ -87,12 +91,12 @@ class CollectionVersions extends Component {
                       </Dropdown.Item>
                       <Dropdown.Item
                         eventKey='3'
-                        onClick={() =>
-                          this.handleAddPage(
-                            collectionVersion.id,
-                            this.props.collection_id
-                          )
-                        }
+                        // onClick={() =>
+                        //   this.handleAddPage(
+                        //     collectionVersion.id,
+                        //     this.props.collection_id
+                        //   )
+                        // }
                       >
                         Add Page
                       </Dropdown.Item>
@@ -102,18 +106,18 @@ class CollectionVersions extends Component {
                     <Card.Body>
                       <Groups
                         {...this.props}
-                        version_id={collectionVersion.id}
+                        version_id={parseInt(versionId)}
                       />
                     </Card.Body>
                   </Accordion.Collapse>
                   <Accordion.Collapse eventKey='1'>
                     <Card.Body>
-                      <VersionPages
+                      {/* <VersionPages
                         {...this.props}
                         versionId={collectionVersion.id}
                         pages={this.props.pages}
                         title={'Version Pages'}
-                      />
+                      /> */}
                     </Card.Body>
                   </Accordion.Collapse>
                 </Card>

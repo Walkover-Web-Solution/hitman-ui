@@ -25,14 +25,14 @@ import { toast } from 'react-toastify'
 class Collections extends Component {
   state = {
     collections: {},
-    versions: [],
+    versions: {},
     groups: {},
-    pages: [],
-    endpoints: []
+    pages: {},
+    endpoints: {}
   }
 
   async fetchVersions (collections) {
-    let versions = []
+    let versions = {}
     const collectionIds = Object.keys(collections)
     for (let i = 0; i < collectionIds.length; i++) {
       const {
@@ -41,18 +41,20 @@ class Collections extends Component {
         collectionIds[i]
       )
 
-      versions = [...versions, ...versions1]
+      versions = { ...versions, ...versions1 }
     }
     return versions
   }
 
   async fetchGroups (versions) {
     let groups = {}
-    for (let i = 0; i < versions.length; i++) {
-      const { data: groups1 } = await groupsService.getGroups(versions[i].id)
+    const versionIds = Object.keys(versions)
+    for (let i = 0; i < versionIds.length; i++) {
+      const { data: groups1 } = await groupsService.getGroups(versionIds[i])
+
       groups = { ...groups, ...groups1 }
-      console.log(groups1)
     }
+    console.log(groups)
     return groups
   }
 
@@ -81,9 +83,10 @@ class Collections extends Component {
     this.setState({ collections })
     const versions = await this.fetchVersions(collections)
     const groups = await this.fetchGroups(versions)
-    const pages = await this.fetchPagesVersion(versions)
-    const endpoints = await this.fetchEndpoints(groups)
-    this.setState({ versions, groups, pages, endpoints })
+    // const pages = await this.fetchPagesVersion(versions)
+    // const endpoints = await this.fetchEndpoints(groups)
+    console.log(versions)
+    this.setState({ versions, groups })
   }
 
   async handleAdd (newCollection) {
@@ -103,7 +106,7 @@ class Collections extends Component {
       const {
         data: version
       } = await collectionVersionsService.getCollectionVersions(collection.id)
-      const versions = [...this.state.versions, ...version]
+      const versions = { ...this.state.versions, ...version }
       this.setState({ collections, versions })
     } catch (ex) {
       toast.error(ex.response.data)
@@ -113,9 +116,6 @@ class Collections extends Component {
 
   async handleDelete (collection) {
     const originalCollections = { ...this.state.collections }
-    // const collections = this.state.collections.filter(
-    //   c => c.id !== collection.id
-    // )
     let collections = { ...this.state.collections }
     delete collections[collection.id]
     this.setState({ collections })
@@ -145,8 +145,10 @@ class Collections extends Component {
   async handleAddVersion (newCollectionVersion, collectionId) {
     newCollectionVersion.requestId = shortId.generate()
 
-    const originalVersions = [...this.state.versions]
-    const versions = [...this.state.versions, newCollectionVersion]
+    const originalVersions = { ...this.state.versions }
+    let versions = { ...this.state.versions }
+    const requestId = newCollectionVersion.requestId
+    versions[requestId] = newCollectionVersion
     this.setState({ versions })
     try {
       const {
@@ -155,10 +157,8 @@ class Collections extends Component {
         collectionId,
         newCollectionVersion
       )
-      const index = versions.findIndex(
-        v => v.requestId === newCollectionVersion.requestId
-      )
-      versions[index] = version
+      versions[version.id] = version
+      delete versions[requestId]
       this.setState({ versions })
     } catch (ex) {
       toast.error(ex.response.data)
@@ -167,10 +167,9 @@ class Collections extends Component {
   }
 
   async handleDeleteVersion (deletedCollectionVersionId) {
-    const originalVersions = [...this.state.versions]
-    const versions = this.state.versions.filter(
-      v => v.id !== deletedCollectionVersionId
-    )
+    const originalVersions = { ...this.state.versions }
+    let versions = { ...this.state.versions }
+    delete versions[deletedCollectionVersionId]
     this.setState({ versions })
     try {
       await collectionVersionsService.deleteCollectionVersion(
@@ -183,13 +182,12 @@ class Collections extends Component {
   }
 
   async handleUpdateVersion (version) {
-    const originalVersions = [...this.state.versions]
+    const originalVersions = { ...this.state.versions }
     const body = { ...version }
     delete body.id
     delete body.collectionId
-    const index = this.state.versions.findIndex(v => v.id === version.id)
-    const versions = [...this.state.versions]
-    versions[index] = version
+    const versions = { ...this.state.versions }
+    versions[version.id] = version
     this.setState({ versions })
     try {
       await collectionVersionsService.updateCollectionVersion(version.id, body)
@@ -231,17 +229,15 @@ class Collections extends Component {
   }
 
   async handleUpdateGroup (editedGroup) {
-    console.log(editedGroup)
     const originalGroups = { ...this.state.groups }
     const groups = { ...this.state.groups }
     groups[editedGroup.id] = editedGroup
-    console.log(groups)
-
     this.setState({ groups })
-    console.log(this.state.groups)
+
     try {
       const body = { ...editedGroup }
       delete body.versionId
+      delete body.id
       const { data: group } = await groupsService.updateGroup(
         editedGroup.id,
         body
@@ -301,7 +297,6 @@ class Collections extends Component {
   }
 
   async handleDeletePage (deletedPageId) {
-    console.log(deletedPageId)
     const originalPages = [...this.state.pages]
     const pages = this.state.pages.filter(page => page.id !== deletedPageId)
     this.setState({ pages })
@@ -640,8 +635,8 @@ class Collections extends Component {
                       collection_id={collectionId}
                       versions={this.state.versions}
                       groups={this.state.groups}
-                      pages={this.state.pages}
-                      endpoints={this.state.endpoints}
+                      // pages={this.state.pages}
+                      // endpoints={this.state.endpoints}
                     />
                   </Card.Body>
                 </Accordion.Collapse>
