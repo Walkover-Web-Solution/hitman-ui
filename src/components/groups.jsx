@@ -1,30 +1,33 @@
-import React, { Component } from 'react'
+import React, { Component } from "react";
 import {
   Accordion,
   Card,
   Button,
   Dropdown,
   DropdownButton
-} from 'react-bootstrap'
-import GroupPages from './groupPages'
-import Endpoints from './endpoints'
+} from "react-bootstrap";
+import GroupPages from "./groupPages";
+import Endpoints from "./endpoints";
 
 class Groups extends Component {
-  state = {}
+  state = {};
 
-  handleAddPage (groupId, versionId, collectionId) {
+  handleAddPage(groupId, versionId, collectionId) {
     this.props.history.push({
       pathname: `/dashboard/collections/${collectionId}/versions/${versionId}/groups/${groupId}/pages/new`,
       versionId: versionId,
       groupId: groupId
-    })
+    });
   }
 
-  handleAddEndpoint (groupId, versionId, collectionId) {
+  handleAddEndpoint(groupId, versionId, collectionId, versions, groups) {
     this.props.history.push({
-      pathname: `/dashboard/collections/${collectionId}/versions/${versionId}/groups/${groupId}/endpoints/new`,
-      groupId: groupId
-    })
+      pathname: `/dashboard/collections/endpoints`,
+      versions: versions,
+      groups: groups,
+      groupId: groupId,
+      title: "Add New Endpoint"
+    });
   }
 
   render () {
@@ -49,12 +52,12 @@ class Groups extends Component {
                   </Accordion.Toggle>
                   <DropdownButton
                     alignRight
-                    title=''
-                    id='dropdown-menu-align-right'
-                    style={{ float: 'right' }}
+                    title=""
+                    id="dropdown-menu-align-right"
+                    style={{ float: "right" }}
                   >
                     <Dropdown.Item
-                      eventKey='1'
+                      eventKey="1"
                       onClick={() => {
                         this.props.history.push({
                           pathname: `/dashboard/collections/${this.props.collection_id}/versions/${this.props.version_id}/groups/${groupId}/edit`,
@@ -65,13 +68,13 @@ class Groups extends Component {
                       Edit
                     </Dropdown.Item>
                     <Dropdown.Item
-                      eventKey='2'
+                      eventKey="2"
                       onClick={() => {
                         if (
                           window.confirm(
-                            'Are you sure you wish to delete this group? ' +
-                              '\n' +
-                              'All your pages and endpoints present in this group will be deleted.'
+                            "Are you sure you wish to delete this group? " +
+                              "\n" +
+                              "All your pages and endpoints present in this group will be deleted."
                           )
                         )
                           this.props.history.push({
@@ -83,7 +86,7 @@ class Groups extends Component {
                       Delete
                     </Dropdown.Item>
                     <Dropdown.Item
-                      eventKey='3'
+                      eventKey="3"
                       onClick={() =>
                         this.handleAddPage(
                           groupId,
@@ -95,12 +98,14 @@ class Groups extends Component {
                       Add Page
                     </Dropdown.Item>
                     <Dropdown.Item
-                      eventKey='3'
+                      eventKey="3"
                       onClick={() =>
                         this.handleAddEndpoint(
-                          groupId,
-                          this.props.groups[groupId].versionId,
-                          this.props.collection_id
+                    groupId,
+this.props.groups[groupId].versionId,
+this.props.collection_id,
+                          this.props.versions,
+                          this.props.groups
                         )
                       }
                     >
@@ -108,7 +113,7 @@ class Groups extends Component {
                     </Dropdown.Item>
                   </DropdownButton>
                 </Card.Header>
-                <Accordion.Collapse eventKey='1'>
+                <Accordion.Collapse eventKey="1">
                   <Card.Body>
                     <GroupPages
                       {...this.props}
@@ -119,24 +124,25 @@ class Groups extends Component {
                     />
                   </Card.Body>
                 </Accordion.Collapse>
-                <Accordion.Collapse eventKey='1'>
+                <Accordion.Collapse eventKey="1">
                   <Card.Body>
-                    {/* <Endpoints
+                    <Endpoints
                       {...this.props}
                       endpoints={this.props.endpoints}
                       groupId={groupId}
                       versionId={this.props.groups[groupId].versionId}
                       collection_id={this.props.collection_id}
                       groups={this.props.groups}
-                    /> */}
+                      versions={this.props.versions}
+                    />
                   </Card.Body>
                 </Accordion.Collapse>
               </Card>
             </Accordion>
           ))}
       </div>
-    )
+    );
   }
 }
 
-export default Groups
+export default Groups;

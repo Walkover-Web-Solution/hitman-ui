@@ -18,43 +18,47 @@ class Main extends Component {
             HITMAN
           </a>
           <input
-            className='form-control form-control-dark w-100'
-            type='text'
-            placeholder='Search'
-            aria-label='Search'
+            className="form-control form-control-dark w-100"
+            type="text"
+            placeholder="Search"
+            aria-label="Search"
           />
-          <ul className='navbar-nav px-3'>
-            <li className='nav-item text-nowrap'>
-              <Link to='/logout'>Sign out</Link>
+          <ul className="navbar-nav px-3">
+            <li className="nav-item text-nowrap">
+              <Link to="/logout">Sign out</Link>
             </li>
           </ul>
         </nav>
-        <div className='container-fluid'>
-          <div className='row'>
+        <div className="container-fluid">
+          <div className="row">
             <Route>
               <SideBar />
             </Route>
 
             <main
-              role='main'
-              className='main col-md-9 ml-sm-auto col-lg-9 px-4'
+              role="main"
+              className="main col-md-9 ml-sm-auto col-lg-9 px-4"
             >
               <Route>
                 <Environments {...this.props} />
               </Route>
-              <div className='d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom'></div>
+              <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"></div>
 
               <Switch>
                 <Route
-                  path='/dashboard/collections/endpoints/:endpointId'
+                  path="/dashboard/collections/endpoints"
                   render={props => <DisplayEndpoint {...props} />}
                 />
                 <Route
-                  path='/dashboard/collections/pages/:pageid/edit'
+                  path="/dashboard/collections/endpoints/:endpointId"
+                  render={props => <DisplayEndpoint {...props} />}
+                />
+                <Route
+                  path="/dashboard/collections/pages/:pageid/edit"
                   render={props => <EditPage {...props} />}
                 />
                 <Route
-                  path='/dashboard/collections/pages/:pageid'
+                  path="/dashboard/collections/pages/:pageid"
                   render={props => <DisplayPage {...props} />}
                 />
               </Switch>
@@ -62,8 +66,8 @@ class Main extends Component {
           </div>
         </div>
       </div>
-    )
+    );
   }
 }
 
-export default Main
+export default Main;

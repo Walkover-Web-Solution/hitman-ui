@@ -1,39 +1,39 @@
-import React, { Component } from 'react'
+import React, { Component } from "react";
 import {
   Accordion,
   Card,
   Button,
   Dropdown,
   DropdownButton
-} from 'react-bootstrap'
-import Groups from './groups'
-import VersionPages from './pages'
+} from "react-bootstrap";
+import Groups from "./groups";
+import VersionPages from "./pages";
 
 class CollectionVersions extends Component {
-  state = {}
+  state = {};
 
-  async handleDelete (collectionVersion) {
+  async handleDelete(collectionVersion) {
     this.props.history.push({
-      pathname: '/dashboard/collections',
+      pathname: "/dashboard/collections",
       deletedCollectionVersionId: collectionVersion.id
-    })
+    });
   }
 
-  handleUpdate (collectionVersion) {
+  handleUpdate(collectionVersion) {
     this.props.history.push({
       pathname: `/dashboard/collections/${this.props.collection_id}/versions/${collectionVersion.id}/edit`,
       editCollectionVersion: collectionVersion
-    })
+    });
   }
 
-  handleAddPage (versionId, collectionId) {
+  handleAddPage(versionId, collectionId) {
     this.props.history.push({
       pathname: `/dashboard/collections/${collectionId}/versions/${versionId}/pages/new`,
       versionId: versionId
-    })
+    });
   }
 
-  render () {
+  render() {
     return (
       <div>
         {this.props.versions &&
@@ -52,9 +52,9 @@ class CollectionVersions extends Component {
                     </Accordion.Toggle>
                     <DropdownButton
                       alignRight
-                      title=''
-                      id='dropdown-menu-align-right'
-                      style={{ float: 'right' }}
+                      title=""
+                      id="dropdown-menu-align-right"
+                      style={{ float: "right" }}
                     >
                       <Dropdown.Item
                         eventKey='1'
@@ -65,13 +65,13 @@ class CollectionVersions extends Component {
                         Edit
                       </Dropdown.Item>
                       <Dropdown.Item
-                        eventKey='2'
+                        eventKey="2"
                         onClick={() => {
                           if (
                             window.confirm(
-                              'Are you sure you wish to delete this versions? ' +
-                                '\n' +
-                                'All your groups, pages and endpoints present in this version will be deleted.'
+                              "Are you sure you wish to delete this versions? " +
+                                "\n" +
+                                "All your groups, pages and endpoints present in this version will be deleted."
                             )
                           )
                             this.handleDelete(this.props.versions[versionId])
@@ -80,7 +80,7 @@ class CollectionVersions extends Component {
                         Delete
                       </Dropdown.Item>
                       <Dropdown.Item
-                        eventKey='3'
+                        eventKey="3"
                         onClick={() => {
                           this.props.history.push({
                             pathname: `/dashboard/collections/${this.props.collection_id}/versions/${versionId}/groups/new`
@@ -102,7 +102,7 @@ class CollectionVersions extends Component {
                       </Dropdown.Item>
                     </DropdownButton>
                   </Card.Header>
-                  <Accordion.Collapse eventKey='1'>
+                  <Accordion.Collapse eventKey="1">
                     <Card.Body>
                       <Groups
                         {...this.props}
@@ -110,7 +110,7 @@ class CollectionVersions extends Component {
                       />
                     </Card.Body>
                   </Accordion.Collapse>
-                  <Accordion.Collapse eventKey='1'>
+                  <Accordion.Collapse eventKey="1">
                     <Card.Body>
                       {/* <VersionPages
                         {...this.props}
@@ -124,7 +124,7 @@ class CollectionVersions extends Component {
               </Accordion>
             ))}
       </div>
-    )
+    );
   }
 }
-export default CollectionVersions
+export default CollectionVersions;
