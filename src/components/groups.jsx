@@ -28,12 +28,6 @@ class Groups extends Component {
   }
 
   render () {
-    console.log(
-      this.props,
-      Object.keys(this.props.groups).filter(
-        gId => this.props.groups[gId].versionId === this.props.version_id
-      )
-    )
     return (
       <div>
         {Object.keys(this.props.groups)

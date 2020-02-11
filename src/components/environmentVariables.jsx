@@ -15,8 +15,8 @@ class EnvironmentVariables extends Component {
     let environment = {}
 
     if (this.props.title === 'Edit Environment') {
-      if (this.props.location.environment) {
-        environment = { ...this.props.location.environment }
+      if (this.props.location.editEnvironment) {
+        environment = { ...this.props.location.editEnvironment }
       } else {
         const environmentId = this.props.location.pathname.split('/')[3]
         const { data } = await environmentService.getEnvironment(environmentId)

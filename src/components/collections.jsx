@@ -54,7 +54,6 @@ class Collections extends Component {
 
       groups = { ...groups, ...groups1 }
     }
-    console.log(groups)
     return groups
   }
 
@@ -85,7 +84,6 @@ class Collections extends Component {
     const groups = await this.fetchGroups(versions)
     // const pages = await this.fetchPagesVersion(versions)
     // const endpoints = await this.fetchEndpoints(groups)
-    console.log(versions)
     this.setState({ versions, groups })
   }
 
@@ -96,7 +94,6 @@ class Collections extends Component {
     const requestId = newCollection.requestId
     collections[requestId] = { ...newCollection }
     this.setState({ collections })
-    console.log(newCollection)
     try {
       const { data: collection } = await collectionsService.saveCollection(
         newCollection
@@ -540,7 +537,6 @@ class Collections extends Component {
                     show={true}
                     onHide={() => {}}
                     title='Edit Collection Version'
-                    editCollectionVersion={this.props.editCollectionVersion}
                   />
                 )}
               />
