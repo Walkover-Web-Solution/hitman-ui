@@ -26,7 +26,7 @@ class Collections extends Component {
   state = {
     collections: {},
     versions: [],
-    groups: [],
+    groups: {},
     pages: [],
     endpoints: []
   }
@@ -47,10 +47,11 @@ class Collections extends Component {
   }
 
   async fetchGroups (versions) {
-    let groups = []
+    let groups = {}
     for (let i = 0; i < versions.length; i++) {
       const { data: groups1 } = await groupsService.getGroups(versions[i].id)
-      groups = [...groups, ...groups1]
+      groups = { ...groups, ...groups1 }
+      console.log(groups1)
     }
     return groups
   }
@@ -98,8 +99,6 @@ class Collections extends Component {
       )
       collections[collection.id] = collection
       delete collections[requestId]
-
-      console.log(collection.id)
       const {
         data: version
       } = await collectionVersionsService.getCollectionVersions(collection.id)
@@ -125,14 +124,11 @@ class Collections extends Component {
   }
 
   async handleUpdate (editedCollection) {
-    const originalCollections = [...this.state.collections]
+    const originalCollections = { ...this.state.collections }
     const body = { ...editedCollection }
     delete body.id
-    const index = this.state.collections.findIndex(
-      collection => collection.id === editedCollection.id
-    )
-    const collections = [...this.state.collections]
-    collections[index] = editedCollection
+    const collections = { ...this.state.collections }
+    collections[editedCollection.id] = editedCollection
     this.setState({ collections })
     try {
       await collectionsService.updateCollection(editedCollection.id, body)
@@ -201,23 +197,26 @@ class Collections extends Component {
 
   async handleAddGroup (versionId, newGroup) {
     newGroup.requestId = shortId.generate()
-    const originalGroups = [...this.state.groups]
-    const groups = [...this.state.groups, { ...newGroup, versionId }]
+    const requestId = newGroup.requestId
+    const originalGroups = { ...this.state.groups }
+    const groups = { ...this.state.groups }
+    groups[newGroup.requestId] = { ...newGroup, versionId }
     this.setState({ groups })
     try {
       const { data: group } = await groupsService.saveGroup(versionId, newGroup)
-      const index = groups.findIndex(g => g.requestId === group.requestId)
-      groups[index] = group
+      groups[group.id] = group
+      delete groups[requestId]
       this.setState({ groups })
     } catch (ex) {
-      toast.error(ex.response.data)
+      toast.error(ex)
       this.setState({ groups: originalGroups })
     }
   }
 
   async handleDeleteGroup (deletedGroupId) {
-    const originalGroups = [...this.state.groups]
-    const groups = this.state.groups.filter(g => g.id !== deletedGroupId)
+    const originalGroups = { ...this.state.groups }
+    const groups = { ...this.state.groups }
+    delete groups[deletedGroupId]
     this.setState({ groups })
     try {
       await groupsService.deleteGroup(deletedGroupId)
@@ -228,11 +227,14 @@ class Collections extends Component {
   }
 
   async handleUpdateGroup (editedGroup) {
-    const originalGroups = [...this.state.groups]
-    const groups = [...this.state.groups]
-    const index = groups.findIndex(g => g.id === editedGroup.id)
-    groups[index] = editedGroup
+    console.log(editedGroup)
+    const originalGroups = { ...this.state.groups }
+    const groups = { ...this.state.groups }
+    groups[editedGroup.id] = editedGroup
+    console.log(groups)
+
     this.setState({ groups })
+    console.log(this.state.groups)
     try {
       const body = { ...editedGroup }
       delete body.versionId
@@ -240,8 +242,7 @@ class Collections extends Component {
         editedGroup.id,
         body
       )
-      const index = groups.findIndex(g => g.id === group.id)
-      groups[index] = group
+      groups[editedGroup.id] = group
       this.setState({ groups })
     } catch (ex) {
       toast.error(ex.response.data)
@@ -294,18 +295,6 @@ class Collections extends Component {
       title: 'Add New Endpoint'
     })
   }
-
-  // async handleUpdatePage(editedEndpoint, groupId, versionId) {
-  //   const { data: editEndpoint } = await endpointService.updatePage(
-  //     groupId,
-  //     editedEndpoint
-  //   );
-  //   const endpoints = [
-  //     ...this.state.endpoints.filter(group => group.id !== groupId),
-  //     { ...editEndpoint }
-  //   ];
-  //   this.setState({ endpoints });
-  // }
 
   async handleDeletePage (deletedPageId) {
     const originalPages = [...this.state.pages]
@@ -584,12 +573,12 @@ class Collections extends Component {
           <button className='btn btn-default btn-lg'>
             <Link to='/dashboard/collections/new'>+ New Collection</Link>
           </button>
-          {Object.keys(this.state.collections).map(collection => (
-            <Accordion>
+          {Object.keys(this.state.collections).map(collectionId => (
+            <Accordion key={collectionId}>
               <Card>
                 <Card.Header>
                   <Accordion.Toggle as={Button} variant='link' eventKey='1'>
-                    {this.state.collections[collection].name}
+                    {this.state.collections[collectionId].name}
                   </Accordion.Toggle>
                   <DropdownButton
                     alignRight
@@ -601,8 +590,10 @@ class Collections extends Component {
                       eventKey='1'
                       onClick={() => {
                         this.props.history.push({
-                          pathname: `/dashboard/collections/${collection.id}/edit`,
-                          editedcollection: collection
+                          pathname: `/dashboard/collections/${collectionId}/edit`,
+                          edited_collection: this.state.collections[
+                            collectionId
+                          ]
                         })
                       }}
                     >
@@ -618,7 +609,9 @@ class Collections extends Component {
                               ' All your versions, groups, pages and endpoints present in this collection will be deleted.'
                           )
                         )
-                          this.handleDelete(this.state.collections[collection])
+                          this.handleDelete(
+                            this.state.collections[collectionId]
+                          )
                       }}
                     >
                       Delete
@@ -627,7 +620,7 @@ class Collections extends Component {
                       eventKey='3'
                       onClick={() => {
                         this.props.history.push({
-                          pathname: `/dashboard/collections/${collection.id}/versions/new`
+                          pathname: `/dashboard/collections/${collectionId}/versions/new`
                         })
                       }}
                     >
@@ -639,7 +632,7 @@ class Collections extends Component {
                   <Card.Body>
                     <CollectionVersions
                       {...this.props}
-                      collection_id={collection}
+                      collection_id={collectionId}
                       versions={this.state.versions}
                       groups={this.state.groups}
                       pages={this.state.pages}

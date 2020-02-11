@@ -53,12 +53,13 @@ class GroupForm extends Form {
     }
 
     if (this.props.title === 'Edit Group') {
+      console.log(this.state.versionId)
       this.props.history.push({
         pathname: `/dashboard/collections`,
         editedGroup: {
           ...this.state.data,
           id: this.state.groupId,
-          versionId: this.state.collectionId
+          versionId: parseInt(this.props.location.pathname.split('/')[5])
         }
       })
     }

@@ -23,13 +23,13 @@ class CollectionForm extends Form {
     if (this.props.title === 'Add new Collection') return
     let data = {}
     const collectionId = this.props.location.pathname.split('/')[3]
-    if (this.props.location.editedcollection) {
+    if (this.props.location.edited_collection) {
       const {
         name,
         website,
         description,
         keyword
-      } = this.props.location.editedcollection
+      } = this.props.location.edited_collection
       data = {
         name,
         website,

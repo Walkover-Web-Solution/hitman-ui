@@ -37,8 +37,6 @@ class PageForm extends Form {
   }
 
   render () {
-    //console.log('page', this.props)
-
     return (
       <Modal
         {...this.props}
