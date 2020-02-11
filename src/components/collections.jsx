@@ -296,7 +296,8 @@ class Collections extends Component {
       endpoint: endpoint,
       groups: this.state.groups,
       title: "update endpoint",
-      versions: versions
+      versions: versions,
+      groupId: groupId
     });
   }
 

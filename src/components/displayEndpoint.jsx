@@ -34,7 +34,7 @@ class DisplayEndpoint extends Component {
     this.setState({ data });
   };
 
-  handleSubmit = async () => {
+  handleSend = async () => {
     let host = "";
     if (this.state.endpoint) {
       const groupIndex = this.state.groups.findIndex(
@@ -48,12 +48,9 @@ class DisplayEndpoint extends Component {
         );
         host = this.state.versions[versionIndex].host;
       }
-    } else if (
-      this.props.location.groupId &&
-      this.state.endpoint == undefined
-    ) {
+    } else if (this.state.groupId && this.state.endpoint == undefined) {
       const groupIndex = this.state.groups.findIndex(
-        g => g.id == this.props.location.groupId
+        g => g.id == this.state.groupId
       );
       host = this.state.groups[groupIndex].host;
       if (host == "") {
@@ -66,6 +63,7 @@ class DisplayEndpoint extends Component {
     }
 
     const api = host + this.uri.current.value;
+    console.log("api", api);
     if (this.body.current) {
       this.state.data.body = this.body.current.value;
       try {
@@ -84,7 +82,7 @@ class DisplayEndpoint extends Component {
     this.setState({ response });
   };
 
-  handleAddEndpoint = async e => {
+  handleSave = async e => {
     const name = this.name.current.value;
     const uri = this.uri.current.value;
     const endpoint = {
@@ -107,22 +105,6 @@ class DisplayEndpoint extends Component {
         endpoint
       );
     }
-    // if (this.state.title == "Add New Endpoint") {
-    //   console.log("addd", this.state.title);
-
-    //   const { data } = await endpointService.saveEndpoint(
-    //     this.state.groupId,
-    //     endpoint
-    //   );
-    //   this.state.title = "update";
-    // } else if ((this.state.title = "update")) {
-    //   console.log("updat", this.state.title);
-
-    //   const { data: response } = await endpointService.updateEndpoint(
-    //     this.state.endpoint.id,
-    //     endpoint
-    //   );
-    // }
   };
 
   setMethod(method) {
@@ -243,7 +225,7 @@ class DisplayEndpoint extends Component {
             class="btn btn-outline-secondary"
             type="submit"
             id="button-addon2"
-            onClick={() => this.handleSubmit()}
+            onClick={() => this.handleSend()}
           >
             Send
           </button>
@@ -251,7 +233,7 @@ class DisplayEndpoint extends Component {
             class="btn btn-outline-secondary"
             type="button"
             id="button-addon2"
-            onClick={() => this.handleAddEndpoint()}
+            onClick={() => this.handleSave()}
           >
             Save
           </button>
