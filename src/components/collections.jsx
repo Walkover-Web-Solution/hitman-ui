@@ -89,10 +89,11 @@ class Collections extends Component {
   async handleAdd (newCollection) {
     newCollection.requestId = shortId.generate()
     const originalCollections = { ...this.state.collections }
-    let collections = { ...this.state.collections }
+    const collections = { ...this.state.collections }
     const requestId = newCollection.requestId
     collections[requestId] = { ...newCollection }
     this.setState({ collections })
+    console.log(newCollection)
     try {
       const { data: collection } = await collectionsService.saveCollection(
         newCollection
@@ -112,7 +113,10 @@ class Collections extends Component {
 
   async handleDelete (collection) {
     const originalCollections = { ...this.state.collections }
-    const collections = { ...this.state.collections }
+    // const collections = this.state.collections.filter(
+    //   c => c.id !== collection.id
+    // )
+    let collections = { ...this.state.collections }
     delete collections[collection.id]
     this.setState({ collections })
     try {
@@ -297,6 +301,7 @@ class Collections extends Component {
   }
 
   async handleDeletePage (deletedPageId) {
+    console.log(deletedPageId)
     const originalPages = [...this.state.pages]
     const pages = this.state.pages.filter(page => page.id !== deletedPageId)
     this.setState({ pages })

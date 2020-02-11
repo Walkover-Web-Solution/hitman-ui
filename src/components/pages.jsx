@@ -11,9 +11,10 @@ class Pages extends Component {
   state = {}
 
   async handleDelete (page) {
+    console.log(page.id)
     this.props.history.push({
       pathname: '/dashboard/collections',
-      deletedPageId: page.id
+      deletePageId: page.id
     })
   }
   handleDisplay (page) {
