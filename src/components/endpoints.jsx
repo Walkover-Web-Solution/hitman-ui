@@ -24,7 +24,7 @@ class Endpoints extends Component {
   handleDisplay(endpoint, groups, versions) {
     this.props.history.push({
       pathname: `/dashboard/collections/endpoints/${endpoint.id}`,
-      title: "display endpoint",
+      title: "update endpoint",
       endpoint: endpoint,
       groups: groups,
       versions: versions

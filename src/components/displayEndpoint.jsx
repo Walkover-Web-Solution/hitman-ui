@@ -30,7 +30,6 @@ class DisplayEndpoint extends Component {
 
   handleChange = e => {
     let data = { ...this.state.data };
-    console.log(e.currentTarget.name, e.currentTarget.value);
     data[e.currentTarget.name] = e.currentTarget.value;
     this.setState({ data });
   };
@@ -85,32 +84,6 @@ class DisplayEndpoint extends Component {
     this.setState({ response });
   };
 
-  // async handleAddEndpoint(groupId, newEndpoint, versions) {
-  //   const originalEndpoints = [...this.state.endpoints];
-  //   newEndpoint.requestId = shortId.generate();
-  //   const endpoints = [...this.state.endpoints, newEndpoint];
-  //   this.setState({ endpoints });
-  //   let endpoint = {};
-  //   try {
-  //     const { data } = await endpointService.saveEndpoint(groupId, newEndpoint);
-  //     endpoint = data;
-  //     const index = endpoints.findIndex(
-  //       e => e.requestId === newEndpoint.requestId
-  //     );
-  //     endpoints[index] = endpoint;
-  //     this.setState({ endpoints });
-  //   } catch (ex) {
-  //     this.setState({ originalEndpoints });
-  //   }
-  //   this.props.history.push({
-  //     pathname: `/dashboard/collections/endpoints/${endpoint.id}`,
-  //     endpoint: endpoint,
-  //     groups: this.state.groups,
-  //     title: "Add New Endpoint",
-  //     versions: versions
-  //   });
-  // }
-
   handleAddEndpoint = async e => {
     const name = this.name.current.value;
     const uri = this.uri.current.value;
@@ -119,29 +92,37 @@ class DisplayEndpoint extends Component {
       name: name,
       requestType: this.state.data.method
     };
-    this.props.history.push({
-      pathname: `/dashboard/collections`,
-      title: "Add New Endpoint",
-      endpoint: endpoint,
-      groupId: this.state.groupId,
-      versions: this.state.versions
-    });
+    console.log("title", this.state.title);
     if (this.state.title == "Add New Endpoint") {
-      console.log("addd", this.state.title);
-
-      const { data } = await endpointService.saveEndpoint(
-        this.state.groupId,
-        endpoint
-      );
-      this.state.title = "update";
-    } else if ((this.state.title = "update")) {
-      console.log("updat", this.state.title);
-
+      this.props.history.push({
+        pathname: `/dashboard/collections`,
+        title: "Add Endpoint",
+        endpoint: endpoint,
+        groupId: this.state.groupId,
+        versions: this.state.versions
+      });
+    } else if (this.state.title == "update endpoint") {
       const { data: response } = await endpointService.updateEndpoint(
         this.state.endpoint.id,
         endpoint
       );
     }
+    // if (this.state.title == "Add New Endpoint") {
+    //   console.log("addd", this.state.title);
+
+    //   const { data } = await endpointService.saveEndpoint(
+    //     this.state.groupId,
+    //     endpoint
+    //   );
+    //   this.state.title = "update";
+    // } else if ((this.state.title = "update")) {
+    //   console.log("updat", this.state.title);
+
+    //   const { data: response } = await endpointService.updateEndpoint(
+    //     this.state.endpoint.id,
+    //     endpoint
+    //   );
+    // }
   };
 
   setMethod(method) {
@@ -151,7 +132,6 @@ class DisplayEndpoint extends Component {
     this.setState({ response, data });
   }
   render() {
-    console.log("this", this.props.location);
     if (this.props.location.groups) {
       this.state.groups = this.props.location.groups;
     }
@@ -163,7 +143,6 @@ class DisplayEndpoint extends Component {
         uri: ""
       };
       const response = "";
-      console.log("data", data);
       this.state.data = data;
       this.state.response = response;
       this.state.groupId = this.props.location.groupId;
@@ -174,14 +153,11 @@ class DisplayEndpoint extends Component {
     if (this.props.location.versions) {
       this.state.versions = this.props.location.versions;
     }
-    // if (this.props.location.title == "Add New Endpoint") {
-    //   this.state.groups = this.props.location.groups;
-    // }
+
     if (
-      this.props.location.title == "display endpoint" &&
+      this.props.location.title == "update endpoint" &&
       this.props.location.endpoint
     ) {
-      console.log("display");
       let { endpoint } = this.props.location;
       this.setState({
         data: {
@@ -189,7 +165,8 @@ class DisplayEndpoint extends Component {
           uri: endpoint.uri,
           name: endpoint.name
         },
-        endpoint
+        endpoint,
+        title: "update endpoint"
       });
 
       this.props.history.push({ endpoint: null });
