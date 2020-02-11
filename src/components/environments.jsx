@@ -10,7 +10,7 @@ import shortId from 'shortid'
 
 class Environments extends Component {
   state = {
-    environments: [],
+    environments: {},
     environmentId: null
   }
 

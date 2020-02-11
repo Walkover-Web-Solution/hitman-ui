@@ -90,13 +90,13 @@ class Groups extends Component {
                     </Dropdown.Item>
                     <Dropdown.Item
                       eventKey='3'
-                      onClick={() =>
-                        this.handleAddEndpoint(
-                          groupId,
-                          this.props.groups[groupId].versionId,
-                          this.props.collection_id
-                        )
-                      }
+                      // onClick={() =>
+                      //   this.handleAddEndpoint(
+                      //     groupId,
+                      //     this.props.groups[groupId].versionId,
+                      //     this.props.collection_id
+                      //   )
+                      // }
                     >
                       Add Endpoint
                     </Dropdown.Item>
@@ -107,9 +107,7 @@ class Groups extends Component {
                     <GroupPages
                       {...this.props}
                       version_id={this.props.groups[groupId].versionId}
-                      pages={this.props.pages}
-                      group_id={groupId}
-                      title={'Group Pages'}
+                      group_id={parseInt(groupId)}
                     />
                   </Card.Body>
                 </Accordion.Collapse>

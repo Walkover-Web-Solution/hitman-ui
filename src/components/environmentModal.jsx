@@ -10,7 +10,7 @@ class EnvironmentModal extends Component {
 
   async componentDidMount () {
     let environments = {}
-    if (this.props.environments) {
+    if (Object.keys(this.props.environments).length) {
       environments = { ...this.props.environments }
     } else {
       const { data } = await environmentService.getEnvironments()

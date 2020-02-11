@@ -7,7 +7,7 @@ import {
   DropdownButton
 } from 'react-bootstrap'
 import Groups from './groups'
-import VersionPages from './pages'
+import Pages from './pages'
 
 class CollectionVersions extends Component {
   state = {}
@@ -91,12 +91,12 @@ class CollectionVersions extends Component {
                       </Dropdown.Item>
                       <Dropdown.Item
                         eventKey='3'
-                        // onClick={() =>
-                        //   this.handleAddPage(
-                        //     collectionVersion.id,
-                        //     this.props.collection_id
-                        //   )
-                        // }
+                        onClick={() =>
+                          this.handleAddPage(
+                            versionId,
+                            this.props.collection_id
+                          )
+                        }
                       >
                         Add Page
                       </Dropdown.Item>
@@ -112,12 +112,7 @@ class CollectionVersions extends Component {
                   </Accordion.Collapse>
                   <Accordion.Collapse eventKey='1'>
                     <Card.Body>
-                      {/* <VersionPages
-                        {...this.props}
-                        versionId={collectionVersion.id}
-                        pages={this.props.pages}
-                        title={'Version Pages'}
-                      /> */}
+                      <Pages {...this.props} version_id={parseInt(versionId)} />
                     </Card.Body>
                   </Accordion.Collapse>
                 </Card>

@@ -27,23 +27,26 @@ class Pages extends Component {
     return (
       <div>
         {this.props.pages &&
-          this.props.pages
+          Object.keys(this.props.pages)
             .filter(
-              page =>
-                page.versionId === this.props.versionId && page.groupId === null
+              pageId =>
+                this.props.pages[pageId].versionId === this.props.version_id &&
+                this.props.pages[pageId].groupId === null
             )
 
-            .map((page, index) => (
-              <Accordion defaultActiveKey='1' key={page.id}>
+            .map(pageId => (
+              <Accordion defaultActiveKey='1' key={pageId}>
                 <Card>
                   <Card.Header>
                     <Accordion.Toggle
-                      onClick={() => this.handleDisplay(page)}
+                      onClick={() =>
+                        this.handleDisplay(this.props.pages[pageId])
+                      }
                       as={Button}
                       variant='link'
                       eventKey='1'
                     >
-                      {page.name}
+                      {this.props.pages[pageId].name}
                     </Accordion.Toggle>
                     <DropdownButton
                       alignRight
@@ -59,7 +62,7 @@ class Pages extends Component {
                               'Are you sure you wish to delete this item?'
                             )
                           )
-                            this.handleDelete(page)
+                            this.handleDelete(this.props.pages[pageId])
                         }}
                       >
                         Delete
