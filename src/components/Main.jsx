@@ -52,6 +52,10 @@ class Main extends Component {
 
               <Switch>
                 <Route
+                  path="/dashboard/collections/endpoints"
+                  render={props => <DisplayEndpoint {...props} />}
+                />
+                <Route
                   path="/dashboard/collections/endpoints/:endpointId"
                   render={props => <DisplayEndpoint {...props} />}
                 />

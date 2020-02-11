@@ -104,6 +104,7 @@ class CollectionVersions extends Component {
                         {...this.props}
                         version_id={collectionVersion.id}
                         versions={this.props.versions}
+                        groups={this.props.groups}
                       />
                     </Card.Body>
                   </Accordion.Collapse>

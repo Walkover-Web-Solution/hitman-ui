@@ -365,15 +365,15 @@ class Collections extends Component {
       this.handleDeleteEndpoint(deleteEndpointId);
     }
 
-    if (location.newEndpoint) {
-      const { newEndpoint, groupId } = location;
-      this.props.history.replace({ groupId: null, newPage: null });
+    if (location.title == "Add New Endpoint") {
+      const { endpoint, groupId } = location;
+      this.props.history.replace({
+        title: null,
+        groupId: null,
+        endpoint: null
+      });
 
-      this.handleAddEndpoint(
-        groupId,
-        newEndpoint,
-        this.props.location.versions
-      );
+      this.handleAddEndpoint(groupId, endpoint, this.props.location.versions);
     }
 
     if (location.newPage && location.groupId) {
