@@ -292,8 +292,9 @@ class Collections extends Component {
       pathname: `/dashboard/collections/endpoints/${endpoint.id}`,
       endpoint: endpoint,
       groups: this.state.groups,
-      title: "Add New Endpoint",
-      versions: versions
+      title: "update endpoint",
+      versions: versions,
+      groupId: groupId
     });
   }
 
@@ -338,7 +339,6 @@ class Collections extends Component {
 
   render() {
     const { location } = this.props;
-
     if (location.editedEndpoint) {
       const { editedEndpoint, groupId, versionId } = location;
       this.props.history.replace({ editedEndpoint: null });
@@ -351,7 +351,7 @@ class Collections extends Component {
       this.handleDeleteEndpoint(deleteEndpointId);
     }
 
-    if (location.title == "Add New Endpoint") {
+    if (location.title == "Add Endpoint") {
       const { endpoint, groupId } = location;
       this.props.history.replace({
         title: null,
