@@ -12,7 +12,7 @@ class DisplayEndpoint extends Component {
     data: {
       name: "",
       method: "GET",
-      body: "",
+      body: {},
       uri: ""
     },
     response: {},
@@ -34,7 +34,7 @@ class DisplayEndpoint extends Component {
     this.setState({ data });
   };
 
-  handleSubmit = async () => {
+  handleSend = async () => {
     let host = "";
     if (this.state.endpoint) {
       const groupIndex = this.state.groups.findIndex(
@@ -66,15 +66,19 @@ class DisplayEndpoint extends Component {
     }
 
     const api = host + this.uri.current.value;
-    if (this.body.current) {
-      this.state.data.body = this.body.current.value;
-      try {
-        if (this.state.data.body != "")
-          this.state.data.body = JSON.parse(this.state.data.body);
-      } catch (error) {
-        console.log(error);
+    let body ={};
+    if(this.state.data.method == "POST" || this.state.data.method == "PUT"  )
+      body = this.body.current.value
+    console.log('body',body);
+    try {
+        //if (typeof body != 'object' && )
+          this.state.data.body = JSON.parse(body);
+        //else
+         // this.state.data.body = body;  
+        } 
+        catch (error) {
+          console.log(error); 
       }
-    }
 
     const { data: response } = await endpointService.apiTest(
       api,
@@ -84,15 +88,20 @@ class DisplayEndpoint extends Component {
     this.setState({ response });
   };
 
-  handleAddEndpoint = async e => {
+  handleSave = async e => {
+    let body ={};
+    if(this.state.data.method == "POST" || this.state.data.method == "PUT"  )
+      body = JSON.parse(this.body.current.value);
+     console.log('sfdfdf',body);  
     const name = this.name.current.value;
     const uri = this.uri.current.value;
     const endpoint = {
       uri,
       name: name,
-      requestType: this.state.data.method
+      requestType: this.state.data.method,
+      body :body
     };
-    console.log("title", this.state.title);
+    console.log('endpoint',endpoint);
     if (this.state.title == "Add New Endpoint") {
       this.props.history.push({
         pathname: `/dashboard/collections`,
@@ -102,27 +111,12 @@ class DisplayEndpoint extends Component {
         versions: this.state.versions
       });
     } else if (this.state.title == "update endpoint") {
+      console.log('update endpoint');
       const { data: response } = await endpointService.updateEndpoint(
         this.state.endpoint.id,
         endpoint
       );
     }
-    // if (this.state.title == "Add New Endpoint") {
-    //   console.log("addd", this.state.title);
-
-    //   const { data } = await endpointService.saveEndpoint(
-    //     this.state.groupId,
-    //     endpoint
-    //   );
-    //   this.state.title = "update";
-    // } else if ((this.state.title = "update")) {
-    //   console.log("updat", this.state.title);
-
-    //   const { data: response } = await endpointService.updateEndpoint(
-    //     this.state.endpoint.id,
-    //     endpoint
-    //   );
-    // }
   };
 
   setMethod(method) {
@@ -243,7 +237,7 @@ class DisplayEndpoint extends Component {
             class="btn btn-outline-secondary"
             type="submit"
             id="button-addon2"
-            onClick={() => this.handleSubmit()}
+            onClick={() => this.handleSend()}
           >
             Send
           </button>
@@ -251,7 +245,7 @@ class DisplayEndpoint extends Component {
             class="btn btn-outline-secondary"
             type="button"
             id="button-addon2"
-            onClick={() => this.handleAddEndpoint()}
+            onClick={() => this.handleSave()}
           >
             Save
           </button>
