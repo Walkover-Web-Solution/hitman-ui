@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import endpointService from '../services/endpointService'
 import JSONPretty from 'react-json-pretty'
 import { Dropdown } from 'react-bootstrap'
+import { toast } from 'react-toastify';
 
 class DisplayEndpoint extends Component {
   uri = React.createRef();
@@ -43,7 +44,7 @@ class DisplayEndpoint extends Component {
         const versionId = this.state.groups[this.state.endpoint.groupId].versionId;
         host = this.state.versions[versionId].host;
       }
-    } else if (this.state.groupId && this.state.endpoint == undefined) {
+    } else if (this.state.groupId && !Object.keys(this.state.endpoint).length) {
       host = this.state.groups[this.state.groupId].host;
       if (host == "") {
         const versionId = this.state.groups[this.state.groupId].versionId;
@@ -57,15 +58,15 @@ class DisplayEndpoint extends Component {
     console.log("host", host);
     const api = host + this.uri.current.value;
     let body ={};
-    if(this.state.data.method == "POST" || this.state.data.method == "PUT"  )
+    if(this.state.data.method == "POST" || this.state.data.method == "PUT"  ){
       body = this.body.current.value
-    console.log('body',body);
-    try {
-          this.state.data.body = JSON.parse(body);
-        } 
-        catch (error) {
-          console.log(error); 
+      try{
+        this.state.data.body = JSON.parse(body);
       }
+      catch{
+        toast.error("In POST and PUT body cannot be empty")
+      }
+  } 
 
     const { data: response } = await endpointService.apiTest(
       api,
@@ -79,8 +80,6 @@ class DisplayEndpoint extends Component {
     let body ={};
     if(this.state.data.method == "POST" || this.state.data.method == "PUT"  )
       body = JSON.parse(this.body.current.value);
-    // const name = this.name.current.value;
-    // const uri = this.uri.current.value;
     const endpoint = {
       uri:this.uri.current.value,
       name: this.name.current.value,
@@ -247,6 +246,7 @@ class DisplayEndpoint extends Component {
             name='body'
             id='body'
             rows='8'
+            
           ></textarea>
         ) : null}
 
