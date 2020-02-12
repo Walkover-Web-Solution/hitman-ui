@@ -54,16 +54,15 @@ class DisplayEndpoint extends Component {
   handleSend = async () => {
     const host = this.findHost();
     const api = host + this.uri.current.value;
-    let body ={};
-    if(this.state.data.method == "POST" || this.state.data.method == "PUT"  ){
-      body = this.body.current.value
-      try{
+    let body = {};
+    if (this.state.data.method == "POST" || this.state.data.method == "PUT") {
+      body = this.body.current.value;
+      try {
         this.state.data.body = JSON.parse(body);
+      } catch {
+        toast.error("In POST and PUT body cannot be empty");
       }
-      catch{
-        toast.error("In POST and PUT body cannot be empty")
-      }
-  } 
+    }
 
     const { data: response } = await endpointService.apiTest(
       api,
@@ -133,16 +132,17 @@ class DisplayEndpoint extends Component {
       this.props.location.endpoint
     ) {
       let endpoint = { ...this.props.location.endpoint };
+
       this.setState({
         data: {
           method: endpoint.requestType,
           uri: endpoint.uri,
-          name: endpoint.name
+          name: endpoint.name,
+          body: JSON.stringify(endpoint.body, null, 4)
         },
         title: "update endpoint"
       });
       this.state.endpoint = endpoint;
-
       this.props.history.push({ endpoint: null });
     }
 
@@ -236,16 +236,86 @@ class DisplayEndpoint extends Component {
             Save
           </button>
         </div>
-
-        {this.state.data.method == "POST" || this.state.data.method == "PUT" ? (
+        <div>
+          <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+            <li class="nav-item">
+              <a
+                class="nav-link active"
+                id="pills-params-tab"
+                data-toggle="pill"
+                href="#pills-home"
+                role="tab"
+                aria-controls="pills-home"
+                aria-selected="true"
+              >
+                Params
+              </a>
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link"
+                id="pills-headers-tab"
+                data-toggle="pill"
+                href="#pills-profile"
+                role="tab"
+                aria-controls="pills-profile"
+                aria-selected="false"
+              >
+                Headers
+              </a>
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link"
+                id="pills-body-tab"
+                data-toggle="pill"
+                href="#pills-contact"
+                role="tab"
+                aria-controls="pills-contact"
+                aria-selected="false"
+              >
+                Body
+              </a>
+            </li>
+          </ul>
+          <div class="tab-content" id="pills-tabContent">
+            <div
+              class="tab-pane fade show active"
+              id="pills-home"
+              role="tabpanel"
+              aria-labelledby="pills-params-tab"
+            >
+              ...
+            </div>
+            <div
+              class="tab-pane fade"
+              id="pills-profile"
+              role="tabpanel"
+              aria-labelledby="pills-headers-tab"
+            >
+              ...
+            </div>
+            <div
+              class="tab-pane fade"
+              id="pills-contact"
+              role="tabpanel"
+              aria-labelledby="pills-body-tab"
+            >
           <textarea
             class="form-control"
             ref={this.body}
             name="body"
             id="body"
             rows="8"
+            name="body"
+            onChange={this.handleChange}
+            value={this.state.data.body}
           ></textarea>
-        ) : null}
+       
+            </div>
+          </div>
+        </div>
+       
 
         <JSONPretty
           themeClassName="custom-json-pretty"
