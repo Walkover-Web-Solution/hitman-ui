@@ -31,12 +31,6 @@ class Groups extends Component {
   }
 
   render () {
-    console.log(
-      this.props,
-      Object.keys(this.props.groups).filter(
-        gId => this.props.groups[gId].versionId === this.props.version_id
-      )
-    )
     return (
       <div>
         {Object.keys(this.props.groups)
@@ -101,11 +95,11 @@ class Groups extends Component {
                       eventKey="3"
                       onClick={() =>
                         this.handleAddEndpoint(
-                    groupId,
-this.props.groups[groupId].versionId,
-this.props.collection_id,
-                          this.props.versions,
-                          this.props.groups
+                        groupId,
+                        this.props.groups[groupId].versionId,
+                        this.props.collection_id,
+                        this.props.versions,
+                        this.props.groups
                         )
                       }
                     >
@@ -118,9 +112,7 @@ this.props.collection_id,
                     <GroupPages
                       {...this.props}
                       version_id={this.props.groups[groupId].versionId}
-                      pages={this.props.pages}
-                      group_id={groupId}
-                      title={'Group Pages'}
+                      group_id={parseInt(groupId)}
                     />
                   </Card.Body>
                 </Accordion.Collapse>

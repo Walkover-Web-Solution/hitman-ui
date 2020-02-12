@@ -12,9 +12,9 @@ class GroupPages extends Component {
 
   async handleDelete(page) {
     this.props.history.push({
-      pathname: "/dashboard/collections",
+      pathname: '/dashboard/collections',
       deletePageId: page.id
-    });
+    })
   }
 
   handleUpdate(page) {
@@ -35,24 +35,26 @@ class GroupPages extends Component {
     return (
       <div>
         {this.props.pages &&
-          this.props.pages
+          Object.keys(this.props.pages)
             .filter(
-              page =>
-                page.versionId === this.props.versionId &&
-                page.groupId === this.props.groupId
+              pageId =>
+                this.props.pages[pageId].versionId === this.props.version_id &&
+                this.props.pages[pageId].groupId === this.props.group_id
             )
 
-            .map((page, index) => (
-              <Accordion defaultActiveKey="0" key={page.id}>
+            .map(pageId => (
+              <Accordion defaultActiveKey='0' key={pageId}>
                 <Card>
                   <Card.Header>
                     <Accordion.Toggle
                       as={Button}
-                      onClick={() => this.handleDisplay(page)}
-                      variant="link"
-                      eventKey="1"
+                      onClick={() =>
+                        this.handleDisplay(this.props.pages[pageId])
+                      }
+                      variant='link'
+                      eventKey='1'
                     >
-                      {page.name}
+                      {this.props.pages[pageId].name}
                     </Accordion.Toggle>
                     <DropdownButton
                       alignRight
@@ -68,7 +70,7 @@ class GroupPages extends Component {
                               "Are you sure you wish to delete this item?"
                             )
                           )
-                            this.handleDelete(page);
+                            this.handleDelete(this.props.pages[pageId])
                         }}
                       >
                         Delete

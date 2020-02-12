@@ -57,12 +57,13 @@ class Collections extends Component {
     return groups
   }
 
-  async fetchPagesVersion(versions) {
-    let pages = [];
-    for (let i = 0; i < versions.length; i++) {
-      const version = versions[i];
-      let { data: newPages } = await pageService.getVersionPages(version.id);
-      pages = [...pages, ...newPages];
+  async fetchPagesVersion (versions) {
+    let pages = {}
+    const versionIds = Object.keys(versions)
+    for (let i = 0; i < versionIds.length; i++) {
+      const version = versions[i]
+      let { data: newPages } = await pageService.getVersionPages(versionIds[i])
+      pages = { ...pages, ...newPages }
     }
     return pages;
   }
@@ -82,10 +83,9 @@ class Collections extends Component {
     this.setState({ collections })
     const versions = await this.fetchVersions(collections)
     const groups = await this.fetchGroups(versions)
-    // const pages = await this.fetchPagesVersion(versions)
+    const pages = await this.fetchPagesVersion(versions)
     // const endpoints = await this.fetchEndpoints(groups)
-    console.log(versions)
-    this.setState({ versions, groups })
+    this.setState({ versions, groups, pages })
   }
 
   async handleAdd (newCollection) {
@@ -95,7 +95,6 @@ class Collections extends Component {
     const requestId = newCollection.requestId
     collections[requestId] = { ...newCollection }
     this.setState({ collections })
-    console.log(newCollection)
     try {
       const { data: collection } = await collectionsService.saveCollection(
         newCollection
@@ -249,24 +248,23 @@ class Collections extends Component {
     }
   }
 
-  async handleAddVersionPage(versionId, newPage) {
-    const { data: page } = await pageService.saveVersionPage(
-      versionId,
-      newPage
-    );
-    let pages = [...this.state.pages, { ...page }];
-    let pageId = page.id;
-    this.setState({ pages });
+  async handleAddVersionPage (versionId, newPage) {
+    const { data: page } = await pageService.saveVersionPage(versionId, newPage)
+    let pages = { ...this.state.pages }
+    pages[page.id] = page
+    let pageId = page.id
+    this.setState({ pages })
     this.props.history.push({
       pathname: `/dashboard/collections/pages/${pageId}/edit`,
       page: page
     });
   }
-  async handleAddGroupPage(versionId, groupId, newPage) {
-    const { data: page } = await pageService.saveGroupPage(groupId, newPage);
-    let pages = [...this.state.pages, { ...page }];
-    let pageId = page.id;
-    this.setState({ pages });
+  async handleAddGroupPage (versionId, groupId, newPage) {
+    const { data: page } = await pageService.saveGroupPage(groupId, newPage)
+    let pages = { ...this.state.pages }
+    pages[page.id] = page
+    let pageId = page.id
+    this.setState({ pages })
     this.props.history.push({
       pathname: `/dashboard/collections/pages/${pageId}/edit`,
       page: page
@@ -300,8 +298,10 @@ class Collections extends Component {
   }
 
   async handleDeletePage (deletedPageId) {
-    const originalPages = [...this.state.pages]
-    const pages = this.state.pages.filter(page => page.id !== deletedPageId)
+    const originalPages = { ...this.state.pages }
+    let pages = { ...this.state.pages }
+    //const pages = this.state.pages.filter(page => page.id !== deletedPageId)
+    delete pages[deletedPageId]
     this.setState({ pages })
     try {
       await pageService.deletePage(deletedPageId);
@@ -319,12 +319,11 @@ class Collections extends Component {
     this.setState({ endpoints });
   }
 
-  async handleUpdatePage(editedPage, pageId) {
-    const originalPages = [...this.state.pages];
-    let pages = [...this.state.pages];
-    const index = pages.findIndex(p => p.id === pageId);
-    pages[index] = editedPage;
-    this.setState({ pages });
+  async handleUpdatePage (editedPage, pageId) {
+    const originalPages = { ...this.state.pages }
+    let pages = { ...this.state.pages }
+    pages[pageId] = editedPage
+    this.setState({ pages })
     try {
       await pageService.updatePage(pageId, editedPage);
     } catch (ex) {
@@ -546,8 +545,7 @@ class Collections extends Component {
                     {...props}
                     show={true}
                     onHide={() => {}}
-                    title="Edit Collection Version"
-                    editCollectionVersion={this.props.editCollectionVersion}
+                    title='Edit Collection Version'
                   />
                 )}
               />
@@ -642,7 +640,7 @@ class Collections extends Component {
                       collection_id={collectionId}
                       versions={this.state.versions}
                       groups={this.state.groups}
-                      // pages={this.state.pages}
+                      pages={this.state.pages}
                       // endpoints={this.state.endpoints}
                     />
                   </Card.Body>
