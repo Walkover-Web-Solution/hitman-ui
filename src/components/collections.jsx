@@ -61,7 +61,6 @@ class Collections extends Component {
     let pages = {}
     const versionIds = Object.keys(versions)
     for (let i = 0; i < versionIds.length; i++) {
-      const version = versions[i]
       let { data: newPages } = await pageService.getVersionPages(versionIds[i])
       pages = { ...pages, ...newPages }
     }
@@ -82,12 +81,10 @@ class Collections extends Component {
     const { data: collections } = await collectionsService.getCollections()
     this.setState({ collections })
     const versions = await this.fetchVersions(collections)
-    console.log(versions)
     const groups = await this.fetchGroups(versions)
     const pages = await this.fetchPagesVersion(versions)
     const endpoints = await this.fetchEndpoints(groups)
-    console.log(versions, groups, pages )
-    this.setState({ versions, groups, pages })
+    this.setState({ versions, groups, pages,endpoints })
   }
 
   async handleAdd (newCollection) {

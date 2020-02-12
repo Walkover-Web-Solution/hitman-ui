@@ -120,7 +120,7 @@ class Groups extends Component {
                   <Card.Body>
                     <Endpoints
                       {...this.props}
-                      group_id={groupId}
+                      group_id={parseInt(groupId)}
                     />
                   </Card.Body>
                 </Accordion.Collapse>
