@@ -15,8 +15,8 @@ class EnvironmentVariables extends Component {
     let environment = {}
 
     if (this.props.title === 'Edit Environment') {
-      if (this.props.location.environment) {
-        environment = { ...this.props.location.environment }
+      if (this.props.location.editEnvironment) {
+        environment = { ...this.props.location.editEnvironment }
       } else {
         const environmentId = this.props.location.pathname.split('/')[3]
         const { data } = await environmentService.getEnvironment(environmentId)
@@ -63,12 +63,12 @@ class EnvironmentVariables extends Component {
     }
     if (this.props.title === 'Add new Environment') {
       this.props.history.push({
-        pathname: `/dashboard/environments`,
+        pathname: `/dashboard`,
         newEnvironment: { ...this.state.environment }
       })
     } else {
       this.props.history.push({
-        pathname: `/dashboard/environments`,
+        pathname: `/dashboard`,
         updatedEnvironment: { ...this.state.environment }
       })
     }
@@ -225,7 +225,7 @@ class EnvironmentVariables extends Component {
             </Table>
             <button className='btn btn-default'>Submit</button>
             <Link
-              to={`/dashboard/environments`}
+              to={`/dashboard/`}
               style={{ float: 'right', padding: '10px 60px 0 0' }}
             >
               Cancel

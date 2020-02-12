@@ -5,9 +5,9 @@ import {
   Button,
   Dropdown,
   DropdownButton
-} from "react-bootstrap";
-import Groups from "./groups";
-import VersionPages from "./pages";
+} from 'react-bootstrap'
+import Groups from './groups'
+import Pages from './pages'
 
 class CollectionVersions extends Component {
   state = {};
@@ -37,16 +37,18 @@ class CollectionVersions extends Component {
     return (
       <div>
         {this.props.versions &&
-          this.props.versions
+          Object.keys(this.props.versions)
             .filter(
-              version => version.collectionId === this.props.collection_id
+              versionId =>
+                this.props.versions[versionId].collectionId ===
+                this.props.collection_id
             )
-            .map(collectionVersion => (
-              <Accordion defaultActiveKey="0" key={collectionVersion.id}>
+            .map(versionId => (
+              <Accordion defaultActiveKey='0' key={versionId}>
                 <Card>
                   <Card.Header>
-                    <Accordion.Toggle as={Button} variant="link" eventKey="1">
-                      {collectionVersion.number}
+                    <Accordion.Toggle as={Button} variant='link' eventKey='1'>
+                      {this.props.versions[versionId].number}
                     </Accordion.Toggle>
                     <DropdownButton
                       alignRight
@@ -55,8 +57,10 @@ class CollectionVersions extends Component {
                       style={{ float: "right" }}
                     >
                       <Dropdown.Item
-                        eventKey="1"
-                        onClick={() => this.handleUpdate(collectionVersion)}
+                        eventKey='1'
+                        onClick={() =>
+                          this.handleUpdate(this.props.versions[versionId])
+                        }
                       >
                         Edit
                       </Dropdown.Item>
@@ -70,7 +74,7 @@ class CollectionVersions extends Component {
                                 "All your groups, pages and endpoints present in this version will be deleted."
                             )
                           )
-                            this.handleDelete(collectionVersion);
+                            this.handleDelete(this.props.versions[versionId])
                         }}
                       >
                         Delete
@@ -79,17 +83,17 @@ class CollectionVersions extends Component {
                         eventKey="3"
                         onClick={() => {
                           this.props.history.push({
-                            pathname: `/dashboard/collections/${this.props.collection_id}/versions/${collectionVersion.id}/groups/new`
-                          });
+                            pathname: `/dashboard/collections/${this.props.collection_id}/versions/${versionId}/groups/new`
+                          })
                         }}
                       >
                         Add Group
                       </Dropdown.Item>
                       <Dropdown.Item
-                        eventKey="3"
+                        eventKey='3'
                         onClick={() =>
                           this.handleAddPage(
-                            collectionVersion.id,
+                            versionId,
                             this.props.collection_id
                           )
                         }
@@ -102,20 +106,13 @@ class CollectionVersions extends Component {
                     <Card.Body>
                       <Groups
                         {...this.props}
-                        version_id={collectionVersion.id}
-                        versions={this.props.versions}
-                        groups={this.props.groups}
+                        version_id={parseInt(versionId)}
                       />
                     </Card.Body>
                   </Accordion.Collapse>
                   <Accordion.Collapse eventKey="1">
                     <Card.Body>
-                      <VersionPages
-                        {...this.props}
-                        versionId={collectionVersion.id}
-                        pages={this.props.pages}
-                        title={"Version Pages"}
-                      />
+                      <Pages {...this.props} version_id={parseInt(versionId)} />
                     </Card.Body>
                   </Accordion.Collapse>
                 </Card>

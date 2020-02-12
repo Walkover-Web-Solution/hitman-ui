@@ -30,17 +30,19 @@ class Groups extends Component {
     });
   }
 
-  render() {
+  render () {
     return (
       <div>
-        {this.props.groups
-          .filter(g => g.versionId === this.props.version_id)
-          .map(group => (
-            <Accordion defaultActiveKey="0" key={group.id || group.requestId}>
+        {Object.keys(this.props.groups)
+          .filter(
+            gId => this.props.groups[gId].versionId === this.props.version_id
+          )
+          .map(groupId => (
+            <Accordion defaultActiveKey='0' key={groupId}>
               <Card>
                 <Card.Header>
-                  <Accordion.Toggle as={Button} variant="link" eventKey="1">
-                    {group.name}
+                  <Accordion.Toggle as={Button} variant='link' eventKey='1'>
+                    {this.props.groups[groupId].name}
                   </Accordion.Toggle>
                   <DropdownButton
                     alignRight
@@ -52,9 +54,9 @@ class Groups extends Component {
                       eventKey="1"
                       onClick={() => {
                         this.props.history.push({
-                          pathname: `/dashboard/collections/${this.props.collection_id}/versions/${this.props.version_id}/groups/${group.id}/edit`,
-                          editGroup: group
-                        });
+                          pathname: `/dashboard/collections/${this.props.collection_id}/versions/${this.props.version_id}/groups/${groupId}/edit`,
+                          editGroup: this.props.groups[groupId]
+                        })
                       }}
                     >
                       Edit
@@ -70,9 +72,9 @@ class Groups extends Component {
                           )
                         )
                           this.props.history.push({
-                            pathname: "/dashboard/collections",
-                            deletedGroupId: group.id
-                          });
+                            pathname: '/dashboard/collections',
+                            deletedGroupId: groupId
+                          })
                       }}
                     >
                       Delete
@@ -81,8 +83,8 @@ class Groups extends Component {
                       eventKey="3"
                       onClick={() =>
                         this.handleAddPage(
-                          group.id,
-                          group.versionId,
+                          groupId,
+                          this.props.groups[groupId].versionId,
                           this.props.collection_id
                         )
                       }
@@ -93,11 +95,11 @@ class Groups extends Component {
                       eventKey="3"
                       onClick={() =>
                         this.handleAddEndpoint(
-                          group.id,
-                          group.versionId,
-                          this.props.collectionId,
-                          this.props.versions,
-                          this.props.groups
+                        groupId,
+                        this.props.groups[groupId].versionId,
+                        this.props.collection_id,
+                        this.props.versions,
+                        this.props.groups
                         )
                       }
                     >
@@ -109,10 +111,8 @@ class Groups extends Component {
                   <Card.Body>
                     <GroupPages
                       {...this.props}
-                      versionId={group.versionId}
-                      pages={this.props.pages}
-                      groupId={group.id}
-                      title={"Group Pages"}
+                      version_id={this.props.groups[groupId].versionId}
+                      group_id={parseInt(groupId)}
                     />
                   </Card.Body>
                 </Accordion.Collapse>
@@ -121,9 +121,9 @@ class Groups extends Component {
                     <Endpoints
                       {...this.props}
                       endpoints={this.props.endpoints}
-                      groupId={group.id}
-                      versionId={group.versionId}
-                      collectionId={this.props.collectionId}
+                      groupId={groupId}
+                      versionId={this.props.groups[groupId].versionId}
+                      collection_id={this.props.collection_id}
                       groups={this.props.groups}
                       versions={this.props.versions}
                     />

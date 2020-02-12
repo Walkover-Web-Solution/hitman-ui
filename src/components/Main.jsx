@@ -1,27 +1,21 @@
-import React, { Component } from "react";
-import { Route, Switch, Link } from "react-router-dom";
-import SideBar from "./sidebar";
-import Environments from "./environments";
-import DisplayPage from "./displayPage";
-import EditPage from "./editPage";
-import pageService from "../services/pageService";
-import { Redirect } from "react-router-dom";
-import DisplayEndpoint from "./displayEndpoint";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import React, { Component } from 'react'
+import { Route, Switch, Link } from 'react-router-dom'
+import SideBar from './sidebar'
+import Environments from './environments'
+import DisplayPage from './displayPage'
+import EditPage from './editPage'
+import DisplayEndpoint from './displayEndpoint'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 class Main extends Component {
-  async handleUpdatePage(editedPage, pageId, versionId) {
-    const { data: editPage } = await pageService.updatePage(pageId, editedPage);
-  }
-
-  render() {
+  render () {
     return (
       <div>
         <ToastContainer />
-        <nav className="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
-          <a className="navbar-brand col-sm-3 col-md-2 mr-0" href="/">
-            Company name
+        <nav className='navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow'>
+          <a className='navbar-brand col-sm-3 col-md-2 mr-0' href='/'>
+            HITMAN
           </a>
           <input
             className="form-control form-control-dark w-100"

@@ -39,9 +39,9 @@ class GroupForm extends Form {
       .label("Group Name"),
     host: Joi.string()
       .uri()
-      .allow(null, "")
-      .label("Host")
-  };
+      .allow(null, '')
+      .label('Host')
+  }
 
   async doSubmit() {
     if (this.props.title === "Add new Group") {
@@ -52,13 +52,13 @@ class GroupForm extends Form {
       });
     }
 
-    if (this.props.title === "Edit Group") {
+    if (this.props.title === 'Edit Group') {
       this.props.history.push({
         pathname: `/dashboard/collections`,
         editedGroup: {
           ...this.state.data,
           id: this.state.groupId,
-          versionId: this.state.collectionId
+          versionId: parseInt(this.props.location.pathname.split('/')[5])
         }
       });
     }

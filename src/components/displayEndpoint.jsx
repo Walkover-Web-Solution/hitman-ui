@@ -1,7 +1,7 @@
-import React, { Component } from "react";
-import endpointService from "../services/endpointService";
-import JSONPretty from "react-json-pretty";
-import { Dropdown } from "react-bootstrap";
+import React, { Component } from 'react'
+import endpointService from '../services/endpointService'
+import JSONPretty from 'react-json-pretty'
+import { Dropdown } from 'react-bootstrap'
 
 class DisplayEndpoint extends Component {
   uri = React.createRef();
@@ -12,7 +12,7 @@ class DisplayEndpoint extends Component {
     data: {
       name: "",
       method: "GET",
-      body: "",
+      body: {},
       uri: "",
       host: ""
     },
@@ -71,33 +71,45 @@ class DisplayEndpoint extends Component {
     const host = this.findHost();
     console.log("host", host);
     const api = host + this.uri.current.value;
-    console.log("api", api);
-    if (this.body.current) {
-      this.state.data.body = this.body.current.value;
-      try {
-        if (this.state.data.body != "")
-          this.state.data.body = JSON.parse(this.state.data.body);
-      } catch (error) {
-        console.log(error);
+    let body ={};
+    if(this.state.data.method == "POST" || this.state.data.method == "PUT"  )
+      body = this.body.current.value
+    console.log('body',body);
+    try {
+        //if (typeof body != 'object' && )
+          this.state.data.body = JSON.parse(body);
+        //else
+         // this.state.data.body = body;  
+        } 
+        catch (error) {
+          console.log(error); 
       }
-    }
 
     const { data: response } = await endpointService.apiTest(
       api,
       this.state.data.method,
       this.state.data.body
-    );
-    this.setState({ response });
-  };
+    )
+    this.setState({ response })
+  }
 
   handleSave = async e => {
+    let body ={};
+    if(this.state.data.method == "POST" || this.state.data.method == "PUT"  )
+      body = JSON.parse(this.body.current.value);
+     console.log('sfdfdf',body);  
     const name = this.name.current.value;
     const uri = this.uri.current.value;
     const endpoint = {
       uri,
       name: name,
-      requestType: this.state.data.method
+      requestType: this.state.data.method,
+      body :body
     };
+<<<<<<< HEAD
+=======
+    console.log('endpoint',endpoint);
+>>>>>>> fb23a5cf61c773f3a86d51dbbfc3ca7be3008157
     if (this.state.title == "Add New Endpoint") {
       this.props.history.push({
         pathname: `/dashboard/collections`,
@@ -107,6 +119,7 @@ class DisplayEndpoint extends Component {
         versions: this.state.versions
       });
     } else if (this.state.title == "update endpoint") {
+      console.log('update endpoint');
       const { data: response } = await endpointService.updateEndpoint(
         this.state.endpoint.id,
         endpoint
@@ -158,7 +171,12 @@ class DisplayEndpoint extends Component {
         title: "update endpoint"
       });
       this.state.endpoint = endpoint;
+<<<<<<< HEAD
       this.props.history.push({ endpoint: null });
+=======
+
+      this.props.history.push({ endpoint: null })
+>>>>>>> fb23a5cf61c773f3a86d51dbbfc3ca7be3008157
     }
 
     return (
@@ -192,17 +210,17 @@ class DisplayEndpoint extends Component {
                     </Dropdown.Toggle>
 
                     <Dropdown.Menu alignRight>
-                      <Dropdown.Item onClick={() => this.setMethod("GET")}>
+                      <Dropdown.Item onClick={() => this.setMethod('GET')}>
                         GET
                       </Dropdown.Item>
-                      <Dropdown.Item onClick={() => this.setMethod("POST")}>
+                      <Dropdown.Item onClick={() => this.setMethod('POST')}>
                         POST
                       </Dropdown.Item>
-                      <Dropdown.Item onClick={() => this.setMethod("PUT")}>
+                      <Dropdown.Item onClick={() => this.setMethod('PUT')}>
                         PUT
                       </Dropdown.Item>
 
-                      <Dropdown.Item onClick={() => this.setMethod("DELETE")}>
+                      <Dropdown.Item onClick={() => this.setMethod('DELETE')}>
                         DELETE
                       </Dropdown.Item>
                     </Dropdown.Menu>
@@ -211,9 +229,9 @@ class DisplayEndpoint extends Component {
               </div>
             </span>
             <span
-              class="form-control form-control-lg"
-              class="input-group-text"
-              id="basic-addon3"
+              class='form-control form-control-lg'
+              class='input-group-text'
+              id='basic-addon3'
             >
               <input
                 ref={this.host}
@@ -226,12 +244,12 @@ class DisplayEndpoint extends Component {
           </div>
           <input
             ref={this.uri}
-            type="text"
+            type='text'
             value={this.state.data.uri}
-            name="uri"
-            class="form-control form-control-lg"
-            id="basic-url"
-            aria-describedby="basic-addon3"
+            name='uri'
+            class='form-control form-control-lg'
+            id='basic-url'
+            aria-describedby='basic-addon3'
             onChange={this.handleChange}
           />
           <button
@@ -252,23 +270,23 @@ class DisplayEndpoint extends Component {
           </button>
         </div>
 
-        {this.state.data.method == "POST" || this.state.data.method == "PUT" ? (
+        {this.state.data.method == 'POST' || this.state.data.method == 'PUT' ? (
           <textarea
-            class="form-control"
+            class='form-control'
             ref={this.body}
-            name="body"
-            id="body"
-            rows="8"
+            name='body'
+            id='body'
+            rows='8'
           ></textarea>
         ) : null}
 
         <JSONPretty
-          themeClassName="custom-json-pretty"
+          themeClassName='custom-json-pretty'
           data={this.state.response}
         />
       </div>
-    );
+    )
   }
 }
 
-export default DisplayEndpoint;
+export default DisplayEndpoint

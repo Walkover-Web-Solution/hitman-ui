@@ -36,9 +36,7 @@ class EditPage extends Component {
       }
     } else {
       const pageId = this.props.location.pathname.split('/')[4]
-      //console.log(pageId)
       let { data: page } = await pageService.getPage(pageId)
-      //console.log('page', page)
       const { id, versionId, groupId, name, contents } = page
       data = {
         id,
@@ -66,7 +64,6 @@ class EditPage extends Component {
         editedPage: { ...this.state.data }
       })
     } else {
-      console.log(this.state.data)
       this.props.history.push({
         pathname: `/dashboard/collections`,
         editedPage: { ...this.state.data },
