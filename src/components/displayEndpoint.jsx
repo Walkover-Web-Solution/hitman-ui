@@ -40,28 +40,22 @@ class DisplayEndpoint extends Component {
     if (this.state.data.host) {
       return this.state.data.host;
     } else if (Object.keys(this.state.endpoint).length) {
-      const groupIndex = this.state.groups.findIndex(
-        g => g.id == this.state.endpoint.groupId
-      );
-      host = this.state.groups[groupIndex].host;
+      host = this.state.groups[this.state.endpoint.groupId].host;
       if (host == "") {
-        const versionId = this.state.groups[groupIndex].versionId;
-        const versionIndex = this.state.versions.findIndex(
-          v => v.id == versionId
-        );
-        host = this.state.versions[versionIndex].host;
+        const versionId = this.state.groups[this.state.endpoint.groupId]
+          .versionId;
+        host = this.state.versions[versionId].host;
       }
-    } else if (this.state.groupId && !Object.keys(this.state.endpoint).length) {
-      const groupIndex = this.state.groups.findIndex(
-        g => g.id == this.state.groupId
-      );
-      host = this.state.groups[groupIndex].host;
+      //  if (Object.keys(this.state.endpoint).length) {
+      //   const groupIndex = this.state.groups.findIndex(
+      //     g => g.id == this.state.endpoint.groupId
+      //   );
+      //   host = this.state.groups[groupIndex].host;
+    } else if (this.state.groupId && this.state.endpoint == undefined) {
+      host = this.state.groups[this.state.groupId].host;
       if (host == "") {
-        const versionId = this.state.groups[groupIndex].versionId;
-        const versionIndex = this.state.versions.findIndex(
-          v => v.id == versionId
-        );
-        host = this.state.versions[versionIndex].host;
+        const versionId = this.state.groups[this.state.groupId].versionId;
+        host = this.state.versions[versionId].host;
       }
     }
     return host;
@@ -75,10 +69,7 @@ class DisplayEndpoint extends Component {
       body = this.body.current.value;
     console.log("body", body);
     try {
-      //if (typeof body != 'object' && )
       this.state.data.body = JSON.parse(body);
-      //else
-      // this.state.data.body = body;
     } catch (error) {
       console.log(error);
     }
@@ -95,12 +86,10 @@ class DisplayEndpoint extends Component {
     let body = {};
     if (this.state.data.method == "POST" || this.state.data.method == "PUT")
       body = JSON.parse(this.body.current.value);
-    console.log("sfdfdf", body);
-    const name = this.name.current.value;
-    const uri = this.uri.current.value;
+
     const endpoint = {
-      uri,
-      name: name,
+      uri: this.uri.current.value,
+      name: this.name.current.value,
       requestType: this.state.data.method,
       body: body
     };
@@ -114,7 +103,6 @@ class DisplayEndpoint extends Component {
         versions: this.state.versions
       });
     } else if (this.state.title == "update endpoint") {
-      console.log("update endpoint");
       const { data: response } = await endpointService.updateEndpoint(
         this.state.endpoint.id,
         endpoint

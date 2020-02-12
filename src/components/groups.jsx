@@ -120,12 +120,7 @@ class Groups extends Component {
                   <Card.Body>
                     <Endpoints
                       {...this.props}
-                      endpoints={this.props.endpoints}
-                      groupId={groupId}
-                      versionId={this.props.groups[groupId].versionId}
-                      collection_id={this.props.collection_id}
-                      groups={this.props.groups}
-                      versions={this.props.versions}
+                      group_id={groupId}
                     />
                   </Card.Body>
                 </Accordion.Collapse>
