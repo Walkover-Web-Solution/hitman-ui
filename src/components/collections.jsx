@@ -61,14 +61,8 @@ class Collections extends Component {
     let pages = {};
     const versionIds = Object.keys(versions);
     for (let i = 0; i < versionIds.length; i++) {
-<<<<<<< HEAD
-      const version = versions[i];
       let { data: newPages } = await pageService.getVersionPages(versionIds[i]);
       pages = { ...pages, ...newPages };
-=======
-      let { data: newPages } = await pageService.getVersionPages(versionIds[i])
-      pages = { ...pages, ...newPages }
->>>>>>> cf44bff257b5f06ae42e2815c4c82e1d7656576d
     }
     return pages;
   }
@@ -85,27 +79,14 @@ class Collections extends Component {
     return endpoints;
   }
 
-<<<<<<< HEAD
   async componentDidMount() {
     const { data: collections } = await collectionsService.getCollections();
     this.setState({ collections });
     const versions = await this.fetchVersions(collections);
-    console.log(versions);
     const groups = await this.fetchGroups(versions);
     const pages = await this.fetchPagesVersion(versions);
     const endpoints = await this.fetchEndpoints(groups);
-    console.log(versions, groups, pages);
     this.setState({ versions, groups, pages, endpoints });
-=======
-  async componentDidMount () {
-    const { data: collections } = await collectionsService.getCollections()
-    this.setState({ collections })
-    const versions = await this.fetchVersions(collections)
-    const groups = await this.fetchGroups(versions)
-    const pages = await this.fetchPagesVersion(versions)
-    const endpoints = await this.fetchEndpoints(groups)
-    this.setState({ versions, groups, pages,endpoints })
->>>>>>> cf44bff257b5f06ae42e2815c4c82e1d7656576d
   }
 
   async handleAdd(newCollection) {
