@@ -13,7 +13,8 @@ class DisplayEndpoint extends Component {
       name: "",
       method: "GET",
       body: "",
-      uri: ""
+      uri: "",
+      host: ""
     },
     response: {},
     endpoint: {},
@@ -23,18 +24,20 @@ class DisplayEndpoint extends Component {
     title: ""
   };
 
-  componentDidMount() {
-    let { endpoint } = this.props.location;
-    this.setState({ endpoint });
-  }
+  // componentDidMount() {
+  //   let { endpoint } = this.props.location;
+  //   this.setState({ endpoint });
+  // }
 
   handleChange = e => {
     let data = { ...this.state.data };
+    console.log(e.currentTarget.name, e.currentTarget.value);
     data[e.currentTarget.name] = e.currentTarget.value;
+    console.log(data);
     this.setState({ data });
   };
 
-  handleSend = async () => {
+  findHost() {
     let host = "";
     if (this.state.endpoint) {
       const groupIndex = this.state.groups.findIndex(
@@ -61,7 +64,11 @@ class DisplayEndpoint extends Component {
         host = this.state.versions[versionIndex].host;
       }
     }
-
+    return host;
+  }
+  handleSend = async () => {
+    const host = this.findHost();
+    console.log("host", host);
     const api = host + this.uri.current.value;
     console.log("api", api);
     if (this.body.current) {
@@ -140,16 +147,16 @@ class DisplayEndpoint extends Component {
       this.props.location.title == "update endpoint" &&
       this.props.location.endpoint
     ) {
-      let { endpoint } = this.props.location;
+      let endpoint = { ...this.props.location.endpoint };
       this.setState({
         data: {
           method: endpoint.requestType,
           uri: endpoint.uri,
           name: endpoint.name
         },
-        endpoint,
         title: "update endpoint"
       });
+      this.state.endpoint = endpoint;
 
       this.props.history.push({ endpoint: null });
     }
@@ -208,7 +215,11 @@ class DisplayEndpoint extends Component {
               class="input-group-text"
               id="basic-addon3"
             >
-              BASE_URL
+              <input
+                name="host"
+                onChange={this.handleChange}
+                value={this.findHost()}
+              />
             </span>
           </div>
           <input
