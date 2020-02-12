@@ -33,16 +33,16 @@ class Endpoints extends Component {
   render () {
     return (
       <div>
-        {this.props.endpoints
-          .filter(endpoint => endpoint.groupId === this.props.groupId)
-          .map(endpoint => (
-            <Accordion defaultActiveKey='1'>
+        {Object.keys(this.props.endpoints)
+          .filter(eId => this.props.endpoints[eId].groupId === this.props.group_id)
+          .map(endpointId => (
+            <Accordion defaultActiveKey='1'key={endpointId} >
               <Card>
                 <Card.Header>
                   <Accordion.Toggle
                     onClick={() =>
                       this.handleDisplay(
-                        endpoint,
+                        this.props.endpoints[endpointId],
                         this.props.groups,
                         this.props.versions
                       )
@@ -51,7 +51,7 @@ class Endpoints extends Component {
                     variant='link'
                     eventKey='1'
                   >
-                    {endpoint.name}
+                    {this.props.endpoints[endpointId].name}
                   </Accordion.Toggle>
                   <DropdownButton
                     alignRight
@@ -59,15 +59,9 @@ class Endpoints extends Component {
                     id='dropdown-menu-align-right'
                     style={{ float: 'right' }}
                   >
-                    {/* <Dropdown.Item
-                      eventKey="1"
-                      onClick={() => this.handleUpdate(endpoint)}
-                    >
-                      Edit
-                    </Dropdown.Item> */}
                     <Dropdown.Item
                       eventKey='2'
-                      onClick={() => this.handleDelete(endpoint)}
+                      onClick={() => this.handleDelete(this.props.endpoints[endpointId])}
                     >
                       Delete
                     </Dropdown.Item>

@@ -69,11 +69,11 @@ class Collections extends Component {
   }
 
   async fetchEndpoints(groups) {
-    let endpoints = [];
-    for (let i = 0; i < groups.length; i++) {
-      const group = groups[i];
-      let { data: newEndpoint } = await endpointService.getEndpoints(group.id);
-      endpoints = [...endpoints, ...newEndpoint];
+    let endpoints = {};
+    const groupIds = Object.keys(groups)
+    for (let i = 0; i < groupIds.length; i++) {
+      let { data: newEndpoint } = await endpointService.getEndpoints(groupIds[i]);
+      endpoints = {...endpoints, ...newEndpoint};
     }
     return endpoints;
   }
@@ -82,9 +82,11 @@ class Collections extends Component {
     const { data: collections } = await collectionsService.getCollections()
     this.setState({ collections })
     const versions = await this.fetchVersions(collections)
+    console.log(versions)
     const groups = await this.fetchGroups(versions)
     const pages = await this.fetchPagesVersion(versions)
-    // const endpoints = await this.fetchEndpoints(groups)
+    const endpoints = await this.fetchEndpoints(groups)
+    console.log(versions, groups, pages )
     this.setState({ versions, groups, pages })
   }
 
@@ -272,18 +274,17 @@ class Collections extends Component {
   }
 
   async handleAddEndpoint(groupId, newEndpoint, versions) {
-    const originalEndpoints = [...this.state.endpoints];
+    const originalEndpoints = {...this.state.endpoints};
     newEndpoint.requestId = shortId.generate();
-    const endpoints = [...this.state.endpoints, newEndpoint];
+    const requestId = newEndpoint.requestId
+    const endpoints = {...this.state.endpoints};
+    endpoints[requestId] = newEndpoint
     this.setState({ endpoints });
     let endpoint = {};
     try {
-      const { data } = await endpointService.saveEndpoint(groupId, newEndpoint);
-      endpoint = data;
-      const index = endpoints.findIndex(
-        e => e.requestId === newEndpoint.requestId
-      );
-      endpoints[index] = endpoint;
+      const { data: endpoint } = await endpointService.saveEndpoint(groupId, newEndpoint)
+      endpoints[endpoint.id] = endpoint;
+      delete endpoints.requestId
       this.setState({ endpoints });
     } catch (ex) {
       this.setState({ originalEndpoints });
@@ -301,7 +302,6 @@ class Collections extends Component {
   async handleDeletePage (deletedPageId) {
     const originalPages = { ...this.state.pages }
     let pages = { ...this.state.pages }
-    //const pages = this.state.pages.filter(page => page.id !== deletedPageId)
     delete pages[deletedPageId]
     this.setState({ pages })
     try {
@@ -641,7 +641,7 @@ class Collections extends Component {
                       versions={this.state.versions}
                       groups={this.state.groups}
                       pages={this.state.pages}
-                      // endpoints={this.state.endpoints}
+                      endpoints={this.state.endpoints}
                     />
                   </Card.Body>
                 </Accordion.Collapse>
