@@ -118,7 +118,14 @@ class Groups extends Component {
                 </Accordion.Collapse>
                 <Accordion.Collapse eventKey="1">
                   <Card.Body>
+<<<<<<< HEAD
                     <Endpoints {...this.props} group_id={parseInt(groupId)} />
+=======
+                    <Endpoints
+                      {...this.props}
+                      group_id={parseInt(groupId)}
+                    />
+>>>>>>> cf44bff257b5f06ae42e2815c4c82e1d7656576d
                   </Card.Body>
                 </Accordion.Collapse>
               </Card>
