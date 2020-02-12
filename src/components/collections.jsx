@@ -287,16 +287,16 @@ class Collections extends Component {
     this.setState({ endpoints });
     let endpoint = {};
     try {
-      const { data: endpoint } = await endpointService.saveEndpoint(
-        groupId,
-        newEndpoint
-      );
+      const { data } = await endpointService.saveEndpoint(groupId, newEndpoint);
+      endpoint = data;
       endpoints[endpoint.id] = endpoint;
       delete endpoints.requestId;
       this.setState({ endpoints });
     } catch (ex) {
+      console.log("collection catch");
       this.setState({ originalEndpoints });
     }
+    console.log("endpoint", endpoint);
     this.props.history.push({
       pathname: `/dashboard/collections/endpoints/${endpoint.id}`,
       endpoint: endpoint,
@@ -321,11 +321,16 @@ class Collections extends Component {
   }
 
   async handleDeleteEndpoint(deleteEndpointId) {
-    await endpointService.deleteEndpoint(deleteEndpointId);
-    const endpoints = this.state.endpoints.filter(
-      endpoint => endpoint.id !== deleteEndpointId
-    );
+    const originalEndpoints = { ...this.state.endpoints };
+    const endpoints = { ...this.state.endpoints };
+    delete endpoints[deleteEndpointId];
     this.setState({ endpoints });
+    try {
+      await endpointService.deleteEndpoint(deleteEndpointId);
+    } catch (ex) {
+      toast.error(ex);
+      this.setState({ originalEndpoints });
+    }
   }
 
   async handleUpdatePage(editedPage, pageId) {

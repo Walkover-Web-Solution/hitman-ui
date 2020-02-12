@@ -24,11 +24,6 @@ class DisplayEndpoint extends Component {
     title: ""
   };
 
-  // componentDidMount() {
-  //   let { endpoint } = this.props.location;
-  //   this.setState({ endpoint });
-  // }
-
   handleChange = e => {
     let data = { ...this.state.data };
     data[e.currentTarget.name] = e.currentTarget.value;
@@ -36,30 +31,17 @@ class DisplayEndpoint extends Component {
   };
 
   findHost() {
-    console.log("not host");
-
     let host = "";
     if (this.state.data.host) {
-      console.log("not host");
-
       return this.state.data.host;
     } else if (Object.keys(this.state.endpoint).length) {
-      console.log("not host");
-
       host = this.state.groups[this.state.endpoint.groupId].host;
       if (host == "") {
         const versionId = this.state.groups[this.state.endpoint.groupId]
           .versionId;
         host = this.state.versions[versionId].host;
       }
-      //  if (Object.keys(this.state.endpoint).length) {
-      //   const groupIndex = this.state.groups.findIndex(
-      //     g => g.id == this.state.endpoint.groupId
-      //   );
-      //   host = this.state.groups[groupIndex].host;
-    } else if (this.state.groupId && this.state.endpoint == undefined) {
-      console.log("not host");
-
+    } else if (this.state.groupId && !Object.keys(this.state.endpoint).length) {
       host = this.state.groups[this.state.groupId].host;
       if (host == "") {
         const versionId = this.state.groups[this.state.groupId].versionId;
@@ -70,18 +52,15 @@ class DisplayEndpoint extends Component {
   }
   handleSend = async () => {
     const host = this.findHost();
-    console.log("host", host);
     const api = host + this.uri.current.value;
     let body = {};
     if (this.state.data.method == "POST" || this.state.data.method == "PUT")
       body = this.body.current.value;
-    console.log("body", body);
     try {
       this.state.data.body = JSON.parse(body);
     } catch (error) {
       console.log(error);
     }
-
     const { data: response } = await endpointService.apiTest(
       api,
       this.state.data.method,
@@ -94,14 +73,12 @@ class DisplayEndpoint extends Component {
     let body = {};
     if (this.state.data.method == "POST" || this.state.data.method == "PUT")
       body = JSON.parse(this.body.current.value);
-
     const endpoint = {
       uri: this.uri.current.value,
       name: this.name.current.value,
       requestType: this.state.data.method,
       body: body
     };
-    console.log("endpoint", endpoint);
     if (this.state.title == "Add New Endpoint") {
       this.props.history.push({
         pathname: `/dashboard/collections`,
@@ -123,7 +100,6 @@ class DisplayEndpoint extends Component {
     let data = { ...this.state.data };
     data.method = method;
     this.setState({ response, data });
-    console.log("data", this.state.data);
   }
   render() {
     if (this.props.location.groups) {
