@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import endpointService from "../services/endpointService";
 import JSONPretty from "react-json-pretty";
 import { Dropdown } from "react-bootstrap";
+import { toast } from "react-toastify";
 
 class DisplayEndpoint extends Component {
   uri = React.createRef();
