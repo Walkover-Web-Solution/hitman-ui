@@ -29,96 +29,98 @@ class Collections extends Component {
     groups: {},
     pages: {},
     endpoints: {}
-  }
+  };
 
-  async fetchVersions (collections) {
-    let versions = {}
-    const collectionIds = Object.keys(collections)
+  async fetchVersions(collections) {
+    let versions = {};
+    const collectionIds = Object.keys(collections);
     for (let i = 0; i < collectionIds.length; i++) {
       const {
         data: versions1
       } = await collectionVersionsService.getCollectionVersions(
         collectionIds[i]
-      )
+      );
 
-      versions = { ...versions, ...versions1 }
+      versions = { ...versions, ...versions1 };
     }
     return versions;
   }
 
-  async fetchGroups (versions) {
-    let groups = {}
-    const versionIds = Object.keys(versions)
+  async fetchGroups(versions) {
+    let groups = {};
+    const versionIds = Object.keys(versions);
     for (let i = 0; i < versionIds.length; i++) {
-      const { data: groups1 } = await groupsService.getGroups(versionIds[i])
+      const { data: groups1 } = await groupsService.getGroups(versionIds[i]);
 
-      groups = { ...groups, ...groups1 }
+      groups = { ...groups, ...groups1 };
     }
-    return groups
+    return groups;
   }
 
-  async fetchPagesVersion (versions) {
-    let pages = {}
-    const versionIds = Object.keys(versions)
+  async fetchPagesVersion(versions) {
+    let pages = {};
+    const versionIds = Object.keys(versions);
     for (let i = 0; i < versionIds.length; i++) {
-      const version = versions[i]
-      let { data: newPages } = await pageService.getVersionPages(versionIds[i])
-      pages = { ...pages, ...newPages }
+      const version = versions[i];
+      let { data: newPages } = await pageService.getVersionPages(versionIds[i]);
+      pages = { ...pages, ...newPages };
     }
     return pages;
   }
 
   async fetchEndpoints(groups) {
     let endpoints = {};
-    const groupIds = Object.keys(groups)
+    const groupIds = Object.keys(groups);
     for (let i = 0; i < groupIds.length; i++) {
-      let { data: newEndpoint } = await endpointService.getEndpoints(groupIds[i]);
-      endpoints = {...endpoints, ...newEndpoint};
+      let { data: newEndpoint } = await endpointService.getEndpoints(
+        groupIds[i]
+      );
+      endpoints = { ...endpoints, ...newEndpoint };
     }
     return endpoints;
   }
 
-  async componentDidMount () {
-    const { data: collections } = await collectionsService.getCollections()
-    this.setState({ collections })
-    const versions = await this.fetchVersions(collections)
-    console.log(versions)
-    const groups = await this.fetchGroups(versions)
-    const pages = await this.fetchPagesVersion(versions)
-    const endpoints = await this.fetchEndpoints(groups)
-    console.log(versions, groups, pages )
-    this.setState({ versions, groups, pages })
+  async componentDidMount() {
+    const { data: collections } = await collectionsService.getCollections();
+    this.setState({ collections });
+    const versions = await this.fetchVersions(collections);
+    console.log(versions);
+    const groups = await this.fetchGroups(versions);
+    const pages = await this.fetchPagesVersion(versions);
+    const endpoints = await this.fetchEndpoints(groups);
+    console.log(versions, groups, pages);
+    this.setState({ versions, groups, pages, endpoints });
   }
 
-  async handleAdd (newCollection) {
-    newCollection.requestId = shortId.generate()
-    const originalCollections = { ...this.state.collections }
-    const collections = { ...this.state.collections }
-    const requestId = newCollection.requestId
-    collections[requestId] = { ...newCollection }
-    this.setState({ collections })
+  async handleAdd(newCollection) {
+    newCollection.requestId = shortId.generate();
+    const originalCollections = { ...this.state.collections };
+    const collections = { ...this.state.collections };
+    const requestId = newCollection.requestId;
+    collections[requestId] = { ...newCollection };
+    this.setState({ collections });
     try {
       const { data: collection } = await collectionsService.saveCollection(
         newCollection
-      )
-      collections[collection.id] = collection
-      delete collections[requestId]
+      );
+      collections[collection.id] = collection;
+      delete collections[requestId];
       const {
         data: version
-      } = await collectionVersionsService.getCollectionVersions(collection.id)
-      const versions = { ...this.state.versions, ...version }
-      this.setState({ collections, versions })
+      } = await collectionVersionsService.getCollectionVersions(collection.id);
+      const versions = { ...this.state.versions, ...version };
+      this.setState({ collections, versions });
     } catch (ex) {
       toast.error(ex.response.data);
       this.setState({ collections: originalCollections });
     }
   }
 
-  async handleDelete (collection) {
-    const originalCollections = { ...this.state.collections }
-    let collections = { ...this.state.collections }
-    delete collections[collection.id]
-    this.setState({ collections })
+  async handleDelete(collection) {
+    const originalCollections = { ...this.state.collections };
+    let collections = { ...this.state.collections };
+    delete collections[collection.id];
+    this.setState({ collections });
     try {
       await collectionsService.deleteCollection(collection.id);
     } catch (ex) {
@@ -127,13 +129,13 @@ class Collections extends Component {
     }
   }
 
-  async handleUpdate (editedCollection) {
-    const originalCollections = { ...this.state.collections }
-    const body = { ...editedCollection }
-    delete body.id
-    const collections = { ...this.state.collections }
-    collections[editedCollection.id] = editedCollection
-    this.setState({ collections })
+  async handleUpdate(editedCollection) {
+    const originalCollections = { ...this.state.collections };
+    const body = { ...editedCollection };
+    delete body.id;
+    const collections = { ...this.state.collections };
+    collections[editedCollection.id] = editedCollection;
+    this.setState({ collections });
     try {
       await collectionsService.updateCollection(editedCollection.id, body);
     } catch (ex) {
@@ -145,32 +147,32 @@ class Collections extends Component {
   async handleAddVersion(newCollectionVersion, collectionId) {
     newCollectionVersion.requestId = shortId.generate();
 
-    const originalVersions = { ...this.state.versions }
-    let versions = { ...this.state.versions }
-    const requestId = newCollectionVersion.requestId
-    versions[requestId] = newCollectionVersion
-    this.setState({ versions })
+    const originalVersions = { ...this.state.versions };
+    let versions = { ...this.state.versions };
+    const requestId = newCollectionVersion.requestId;
+    versions[requestId] = newCollectionVersion;
+    this.setState({ versions });
     try {
       const {
         data: version
       } = await collectionVersionsService.saveCollectionVersion(
         collectionId,
         newCollectionVersion
-      )
-      versions[version.id] = version
-      delete versions[requestId]
-      this.setState({ versions })
+      );
+      versions[version.id] = version;
+      delete versions[requestId];
+      this.setState({ versions });
     } catch (ex) {
       toast.error(ex.response.data);
       this.setState({ versions: originalVersions });
     }
   }
 
-  async handleDeleteVersion (deletedCollectionVersionId) {
-    const originalVersions = { ...this.state.versions }
-    let versions = { ...this.state.versions }
-    delete versions[deletedCollectionVersionId]
-    this.setState({ versions })
+  async handleDeleteVersion(deletedCollectionVersionId) {
+    const originalVersions = { ...this.state.versions };
+    let versions = { ...this.state.versions };
+    delete versions[deletedCollectionVersionId];
+    this.setState({ versions });
     try {
       await collectionVersionsService.deleteCollectionVersion(
         deletedCollectionVersionId
@@ -181,14 +183,14 @@ class Collections extends Component {
     }
   }
 
-  async handleUpdateVersion (version) {
-    const originalVersions = { ...this.state.versions }
-    const body = { ...version }
-    delete body.id
-    delete body.collectionId
-    const versions = { ...this.state.versions }
-    versions[version.id] = version
-    this.setState({ versions })
+  async handleUpdateVersion(version) {
+    const originalVersions = { ...this.state.versions };
+    const body = { ...version };
+    delete body.id;
+    delete body.collectionId;
+    const versions = { ...this.state.versions };
+    versions[version.id] = version;
+    this.setState({ versions });
     try {
       await collectionVersionsService.updateCollectionVersion(version.id, body);
     } catch (ex) {
@@ -197,29 +199,32 @@ class Collections extends Component {
     }
   }
 
-  async handleAddGroup (versionId, newGroup) {
-    newGroup.requestId = shortId.generate()
-    const requestId = newGroup.requestId
-    const originalGroups = { ...this.state.groups }
-    const groups = { ...this.state.groups }
-    groups[newGroup.requestId] = { ...newGroup, versionId }
-    this.setState({ groups })
+  async handleAddGroup(versionId, newGroup) {
+    newGroup.requestId = shortId.generate();
+    const requestId = newGroup.requestId;
+    const originalGroups = { ...this.state.groups };
+    const groups = { ...this.state.groups };
+    groups[newGroup.requestId] = { ...newGroup, versionId };
+    this.setState({ groups });
     try {
-      const { data: group } = await groupsService.saveGroup(versionId, newGroup)
-      groups[group.id] = group
-      delete groups[requestId]
-      this.setState({ groups })
+      const { data: group } = await groupsService.saveGroup(
+        versionId,
+        newGroup
+      );
+      groups[group.id] = group;
+      delete groups[requestId];
+      this.setState({ groups });
     } catch (ex) {
-      toast.error(ex)
-      this.setState({ groups: originalGroups })
+      toast.error(ex);
+      this.setState({ groups: originalGroups });
     }
   }
 
-  async handleDeleteGroup (deletedGroupId) {
-    const originalGroups = { ...this.state.groups }
-    const groups = { ...this.state.groups }
-    delete groups[deletedGroupId]
-    this.setState({ groups })
+  async handleDeleteGroup(deletedGroupId) {
+    const originalGroups = { ...this.state.groups };
+    const groups = { ...this.state.groups };
+    delete groups[deletedGroupId];
+    this.setState({ groups });
     try {
       await groupsService.deleteGroup(deletedGroupId);
     } catch (ex) {
@@ -228,45 +233,48 @@ class Collections extends Component {
     }
   }
 
-  async handleUpdateGroup (editedGroup) {
-    const originalGroups = { ...this.state.groups }
-    const groups = { ...this.state.groups }
-    groups[editedGroup.id] = editedGroup
-    this.setState({ groups })
+  async handleUpdateGroup(editedGroup) {
+    const originalGroups = { ...this.state.groups };
+    const groups = { ...this.state.groups };
+    groups[editedGroup.id] = editedGroup;
+    this.setState({ groups });
 
     try {
-      const body = { ...editedGroup }
-      delete body.versionId
-      delete body.id
+      const body = { ...editedGroup };
+      delete body.versionId;
+      delete body.id;
       const { data: group } = await groupsService.updateGroup(
         editedGroup.id,
         body
-      )
-      groups[editedGroup.id] = group
-      this.setState({ groups })
+      );
+      groups[editedGroup.id] = group;
+      this.setState({ groups });
     } catch (ex) {
       toast.error(ex.response.data);
       this.setState({ groups: originalGroups });
     }
   }
 
-  async handleAddVersionPage (versionId, newPage) {
-    const { data: page } = await pageService.saveVersionPage(versionId, newPage)
-    let pages = { ...this.state.pages }
-    pages[page.id] = page
-    let pageId = page.id
-    this.setState({ pages })
+  async handleAddVersionPage(versionId, newPage) {
+    const { data: page } = await pageService.saveVersionPage(
+      versionId,
+      newPage
+    );
+    let pages = { ...this.state.pages };
+    pages[page.id] = page;
+    let pageId = page.id;
+    this.setState({ pages });
     this.props.history.push({
       pathname: `/dashboard/collections/pages/${pageId}/edit`,
       page: page
     });
   }
-  async handleAddGroupPage (versionId, groupId, newPage) {
-    const { data: page } = await pageService.saveGroupPage(groupId, newPage)
-    let pages = { ...this.state.pages }
-    pages[page.id] = page
-    let pageId = page.id
-    this.setState({ pages })
+  async handleAddGroupPage(versionId, groupId, newPage) {
+    const { data: page } = await pageService.saveGroupPage(groupId, newPage);
+    let pages = { ...this.state.pages };
+    pages[page.id] = page;
+    let pageId = page.id;
+    this.setState({ pages });
     this.props.history.push({
       pathname: `/dashboard/collections/pages/${pageId}/edit`,
       page: page
@@ -274,17 +282,20 @@ class Collections extends Component {
   }
 
   async handleAddEndpoint(groupId, newEndpoint, versions) {
-    const originalEndpoints = {...this.state.endpoints};
+    const originalEndpoints = { ...this.state.endpoints };
     newEndpoint.requestId = shortId.generate();
-    const requestId = newEndpoint.requestId
-    const endpoints = {...this.state.endpoints};
-    endpoints[requestId] = newEndpoint
+    const requestId = newEndpoint.requestId;
+    const endpoints = { ...this.state.endpoints };
+    endpoints[requestId] = newEndpoint;
     this.setState({ endpoints });
     let endpoint = {};
     try {
-      const { data: endpoint } = await endpointService.saveEndpoint(groupId, newEndpoint)
+      const { data: endpoint } = await endpointService.saveEndpoint(
+        groupId,
+        newEndpoint
+      );
       endpoints[endpoint.id] = endpoint;
-      delete endpoints.requestId
+      delete endpoints.requestId;
       this.setState({ endpoints });
     } catch (ex) {
       this.setState({ originalEndpoints });
@@ -299,11 +310,11 @@ class Collections extends Component {
     });
   }
 
-  async handleDeletePage (deletedPageId) {
-    const originalPages = { ...this.state.pages }
-    let pages = { ...this.state.pages }
-    delete pages[deletedPageId]
-    this.setState({ pages })
+  async handleDeletePage(deletedPageId) {
+    const originalPages = { ...this.state.pages };
+    let pages = { ...this.state.pages };
+    delete pages[deletedPageId];
+    this.setState({ pages });
     try {
       await pageService.deletePage(deletedPageId);
     } catch (ex) {
@@ -320,11 +331,11 @@ class Collections extends Component {
     this.setState({ endpoints });
   }
 
-  async handleUpdatePage (editedPage, pageId) {
-    const originalPages = { ...this.state.pages }
-    let pages = { ...this.state.pages }
-    pages[pageId] = editedPage
-    this.setState({ pages })
+  async handleUpdatePage(editedPage, pageId) {
+    const originalPages = { ...this.state.pages };
+    let pages = { ...this.state.pages };
+    pages[pageId] = editedPage;
+    this.setState({ pages });
     try {
       await pageService.updatePage(pageId, editedPage);
     } catch (ex) {
@@ -545,7 +556,7 @@ class Collections extends Component {
                     {...props}
                     show={true}
                     onHide={() => {}}
-                    title='Edit Collection Version'
+                    title="Edit Collection Version"
                   />
                 )}
               />
@@ -582,7 +593,7 @@ class Collections extends Component {
             <Accordion key={collectionId}>
               <Card>
                 <Card.Header>
-                  <Accordion.Toggle as={Button} variant='link' eventKey='1'>
+                  <Accordion.Toggle as={Button} variant="link" eventKey="1">
                     {this.state.collections[collectionId].name}
                   </Accordion.Toggle>
                   <DropdownButton
@@ -599,7 +610,7 @@ class Collections extends Component {
                           edited_collection: this.state.collections[
                             collectionId
                           ]
-                        })
+                        });
                       }}
                     >
                       Edit
@@ -616,7 +627,7 @@ class Collections extends Component {
                         )
                           this.handleDelete(
                             this.state.collections[collectionId]
-                          )
+                          );
                       }}
                     >
                       Delete
@@ -626,7 +637,7 @@ class Collections extends Component {
                       onClick={() => {
                         this.props.history.push({
                           pathname: `/dashboard/collections/${collectionId}/versions/new`
-                        })
+                        });
                       }}
                     >
                       Add Version

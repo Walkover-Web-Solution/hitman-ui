@@ -30,7 +30,7 @@ class Groups extends Component {
     });
   }
 
-  render () {
+  render() {
     return (
       <div>
         {Object.keys(this.props.groups)
@@ -38,10 +38,10 @@ class Groups extends Component {
             gId => this.props.groups[gId].versionId === this.props.version_id
           )
           .map(groupId => (
-            <Accordion defaultActiveKey='0' key={groupId}>
+            <Accordion defaultActiveKey="0" key={groupId}>
               <Card>
                 <Card.Header>
-                  <Accordion.Toggle as={Button} variant='link' eventKey='1'>
+                  <Accordion.Toggle as={Button} variant="link" eventKey="1">
                     {this.props.groups[groupId].name}
                   </Accordion.Toggle>
                   <DropdownButton
@@ -56,7 +56,7 @@ class Groups extends Component {
                         this.props.history.push({
                           pathname: `/dashboard/collections/${this.props.collection_id}/versions/${this.props.version_id}/groups/${groupId}/edit`,
                           editGroup: this.props.groups[groupId]
-                        })
+                        });
                       }}
                     >
                       Edit
@@ -72,9 +72,9 @@ class Groups extends Component {
                           )
                         )
                           this.props.history.push({
-                            pathname: '/dashboard/collections',
+                            pathname: "/dashboard/collections",
                             deletedGroupId: groupId
-                          })
+                          });
                       }}
                     >
                       Delete
@@ -95,11 +95,11 @@ class Groups extends Component {
                       eventKey="3"
                       onClick={() =>
                         this.handleAddEndpoint(
-                        groupId,
-                        this.props.groups[groupId].versionId,
-                        this.props.collection_id,
-                        this.props.versions,
-                        this.props.groups
+                          groupId,
+                          this.props.groups[groupId].versionId,
+                          this.props.collection_id,
+                          this.props.versions,
+                          this.props.groups
                         )
                       }
                     >
@@ -118,10 +118,7 @@ class Groups extends Component {
                 </Accordion.Collapse>
                 <Accordion.Collapse eventKey="1">
                   <Card.Body>
-                    <Endpoints
-                      {...this.props}
-                      group_id={groupId}
-                    />
+                    <Endpoints {...this.props} group_id={parseInt(groupId)} />
                   </Card.Body>
                 </Accordion.Collapse>
               </Card>

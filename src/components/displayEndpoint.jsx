@@ -36,10 +36,16 @@ class DisplayEndpoint extends Component {
   };
 
   findHost() {
+    console.log("not host");
+
     let host = "";
     if (this.state.data.host) {
+      console.log("not host");
+
       return this.state.data.host;
     } else if (Object.keys(this.state.endpoint).length) {
+      console.log("not host");
+
       host = this.state.groups[this.state.endpoint.groupId].host;
       if (host == "") {
         const versionId = this.state.groups[this.state.endpoint.groupId]
@@ -52,6 +58,8 @@ class DisplayEndpoint extends Component {
       //   );
       //   host = this.state.groups[groupIndex].host;
     } else if (this.state.groupId && this.state.endpoint == undefined) {
+      console.log("not host");
+
       host = this.state.groups[this.state.groupId].host;
       if (host == "") {
         const versionId = this.state.groups[this.state.groupId].versionId;
