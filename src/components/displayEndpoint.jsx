@@ -1,8 +1,7 @@
-import React, { Component } from 'react'
-import endpointService from '../services/endpointService'
-import JSONPretty from 'react-json-pretty'
-import { Dropdown } from 'react-bootstrap'
-import { toast } from 'react-toastify';
+import React, { Component } from "react";
+import endpointService from "../services/endpointService";
+import JSONPretty from "react-json-pretty";
+import { Dropdown } from "react-bootstrap";
 
 class DisplayEndpoint extends Component {
   uri = React.createRef();
@@ -25,11 +24,6 @@ class DisplayEndpoint extends Component {
     title: ""
   };
 
-  // componentDidMount() {
-  //   let { endpoint } = this.props.location;
-  //   this.setState({ endpoint });
-  // }
-
   handleChange = e => {
     let data = { ...this.state.data };
     data[e.currentTarget.name] = e.currentTarget.value;
@@ -38,10 +32,13 @@ class DisplayEndpoint extends Component {
 
   findHost() {
     let host = "";
-    if (Object.keys(this.state.endpoint).length) {
+    if (this.state.data.host) {
+      return this.state.data.host;
+    } else if (Object.keys(this.state.endpoint).length) {
       host = this.state.groups[this.state.endpoint.groupId].host;
       if (host == "") {
-        const versionId = this.state.groups[this.state.endpoint.groupId].versionId;
+        const versionId = this.state.groups[this.state.endpoint.groupId]
+          .versionId;
         host = this.state.versions[versionId].host;
       }
     } else if (this.state.groupId && !Object.keys(this.state.endpoint).length) {
@@ -55,7 +52,6 @@ class DisplayEndpoint extends Component {
   }
   handleSend = async () => {
     const host = this.findHost();
-    console.log("host", host);
     const api = host + this.uri.current.value;
     let body ={};
     if(this.state.data.method == "POST" || this.state.data.method == "PUT"  ){
@@ -72,21 +68,20 @@ class DisplayEndpoint extends Component {
       api,
       this.state.data.method,
       this.state.data.body
-    )
-    this.setState({ response })
-  }
+    );
+    this.setState({ response });
+  };
 
   handleSave = async e => {
-    let body ={};
-    if(this.state.data.method == "POST" || this.state.data.method == "PUT"  )
+    let body = {};
+    if (this.state.data.method == "POST" || this.state.data.method == "PUT")
       body = JSON.parse(this.body.current.value);
     const endpoint = {
-      uri:this.uri.current.value,
+      uri: this.uri.current.value,
       name: this.name.current.value,
       requestType: this.state.data.method,
-      body :body
+      body: body
     };
-    console.log('endpoint',endpoint);
     if (this.state.title == "Add New Endpoint") {
       this.props.history.push({
         pathname: `/dashboard/collections`,
@@ -147,7 +142,7 @@ class DisplayEndpoint extends Component {
       });
       this.state.endpoint = endpoint;
 
-      this.props.history.push({ endpoint: null })
+      this.props.history.push({ endpoint: null });
     }
 
     return (
@@ -181,17 +176,17 @@ class DisplayEndpoint extends Component {
                     </Dropdown.Toggle>
 
                     <Dropdown.Menu alignRight>
-                      <Dropdown.Item onClick={() => this.setMethod('GET')}>
+                      <Dropdown.Item onClick={() => this.setMethod("GET")}>
                         GET
                       </Dropdown.Item>
-                      <Dropdown.Item onClick={() => this.setMethod('POST')}>
+                      <Dropdown.Item onClick={() => this.setMethod("POST")}>
                         POST
                       </Dropdown.Item>
-                      <Dropdown.Item onClick={() => this.setMethod('PUT')}>
+                      <Dropdown.Item onClick={() => this.setMethod("PUT")}>
                         PUT
                       </Dropdown.Item>
 
-                      <Dropdown.Item onClick={() => this.setMethod('DELETE')}>
+                      <Dropdown.Item onClick={() => this.setMethod("DELETE")}>
                         DELETE
                       </Dropdown.Item>
                     </Dropdown.Menu>
@@ -200,11 +195,13 @@ class DisplayEndpoint extends Component {
               </div>
             </span>
             <span
-              class='form-control form-control-lg'
-              class='input-group-text'
-              id='basic-addon3'
+              class="form-control form-control-lg"
+              class="input-group-text"
+              id="basic-addon3"
             >
               <input
+                ref={this.host}
+                type="text"
                 name="host"
                 onChange={this.handleChange}
                 value={this.findHost()}
@@ -213,12 +210,12 @@ class DisplayEndpoint extends Component {
           </div>
           <input
             ref={this.uri}
-            type='text'
+            type="text"
             value={this.state.data.uri}
-            name='uri'
-            class='form-control form-control-lg'
-            id='basic-url'
-            aria-describedby='basic-addon3'
+            name="uri"
+            class="form-control form-control-lg"
+            id="basic-url"
+            aria-describedby="basic-addon3"
             onChange={this.handleChange}
           />
           <button
@@ -239,24 +236,23 @@ class DisplayEndpoint extends Component {
           </button>
         </div>
 
-        {this.state.data.method == 'POST' || this.state.data.method == 'PUT' ? (
+        {this.state.data.method == "POST" || this.state.data.method == "PUT" ? (
           <textarea
-            class='form-control'
+            class="form-control"
             ref={this.body}
-            name='body'
-            id='body'
-            rows='8'
-            
+            name="body"
+            id="body"
+            rows="8"
           ></textarea>
         ) : null}
 
         <JSONPretty
-          themeClassName='custom-json-pretty'
+          themeClassName="custom-json-pretty"
           data={this.state.response}
         />
       </div>
-    )
+    );
   }
 }
 
-export default DisplayEndpoint
+export default DisplayEndpoint;
