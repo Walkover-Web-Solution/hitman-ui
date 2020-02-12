@@ -124,6 +124,7 @@ class Collections extends Component {
       toast.error(ex);
       this.setState({ collections: originalCollections });
     }
+    this.props.history.push("/dashboard/collections");
   }
 
   async handleUpdate(editedCollection) {

@@ -22,8 +22,23 @@ class DisplayEndpoint extends Component {
     groups: [],
     versions: [],
     groupId: "",
-    title: ""
+    title: "",
+    flagResponse: false
   };
+
+  // componentDidMount() {
+  //   let data = {}
+  //   if (!this.props.location.endpoint) {
+  //     const endpointId = this.props.location.pathname.split('/')[4]
+  //     console.log(endpointId)
+  //     let { data: endpoint } = await endpointService.getEndpoint(endpointId)
+  //     const {  name,method,uri,host } = endpoint
+  //     data = {
+  //       name,method,uri,host
+  //     }
+  //     this.setState({ data })
+  //   }
+  // }
 
   handleChange = e => {
     let data = { ...this.state.data };
@@ -52,6 +67,7 @@ class DisplayEndpoint extends Component {
     return host;
   }
   handleSend = async () => {
+    this.state.flagResponse = true;
     const host = this.findHost();
     const api = host + this.uri.current.value;
     let body = {};
@@ -197,13 +213,19 @@ class DisplayEndpoint extends Component {
             </span>
             <span
               class="form-control form-control-lg"
-              class="input-group-text"
+              class="input-group-text d-flex p-0"
               id="basic-addon3"
             >
               <input
                 ref={this.host}
                 type="text"
                 name="host"
+                className="form-group h-100 m-0"
+                style={{
+                  border: "none",
+                  borderRadius: 0,
+                  backgroundColor: "#F8F9F9"
+                }}
                 onChange={this.handleChange}
                 value={this.findHost()}
               />
@@ -214,27 +236,29 @@ class DisplayEndpoint extends Component {
             type="text"
             value={this.state.data.uri}
             name="uri"
-            class="form-control form-control-lg"
+            class="form-control form-control-lg h-auto"
             id="basic-url"
             aria-describedby="basic-addon3"
             onChange={this.handleChange}
           />
-          <button
-            class="btn btn-outline-secondary"
-            type="submit"
-            id="button-addon2"
-            onClick={() => this.handleSend()}
-          >
-            Send
-          </button>
-          <button
-            class="btn btn-outline-secondary"
-            type="button"
-            id="button-addon2"
-            onClick={() => this.handleSave()}
-          >
-            Save
-          </button>
+          <div className="d-flex">
+            <button
+              class="btn btn-secondary ml-3"
+              type="submit"
+              id="button-addon2"
+              onClick={() => this.handleSend()}
+            >
+              Send
+            </button>
+            <button
+              class="btn btn-secondary ml-3"
+              type="button"
+              id="button-addon2"
+              onClick={() => this.handleSave()}
+            >
+              Save
+            </button>
+          </div>
         </div>
         <div>
           <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
@@ -317,10 +341,12 @@ class DisplayEndpoint extends Component {
         </div>
        
 
-        <JSONPretty
-          themeClassName="custom-json-pretty"
-          data={this.state.response}
-        />
+        {this.state.flagResponse == true ? (
+          <JSONPretty
+            themeClassName="custom-json-pretty"
+            data={this.state.response}
+          />
+        ) : null}
       </div>
     );
   }
