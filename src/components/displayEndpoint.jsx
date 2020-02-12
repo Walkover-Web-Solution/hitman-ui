@@ -31,15 +31,15 @@ class DisplayEndpoint extends Component {
 
   handleChange = e => {
     let data = { ...this.state.data };
-    console.log(e.currentTarget.name, e.currentTarget.value);
     data[e.currentTarget.name] = e.currentTarget.value;
-    console.log(data);
     this.setState({ data });
   };
 
   findHost() {
     let host = "";
-    if (this.state.endpoint) {
+    if (this.state.data.host) {
+      return this.state.data.host;
+    } else if (this.state.endpoint) {
       const groupIndex = this.state.groups.findIndex(
         g => g.id == this.state.endpoint.groupId
       );
@@ -97,7 +97,6 @@ class DisplayEndpoint extends Component {
       name: name,
       requestType: this.state.data.method
     };
-    console.log("title", this.state.title);
     if (this.state.title == "Add New Endpoint") {
       this.props.history.push({
         pathname: `/dashboard/collections`,
@@ -119,6 +118,7 @@ class DisplayEndpoint extends Component {
     let data = { ...this.state.data };
     data.method = method;
     this.setState({ response, data });
+    console.log("data", this.state.data);
   }
   render() {
     if (this.props.location.groups) {
@@ -157,7 +157,6 @@ class DisplayEndpoint extends Component {
         title: "update endpoint"
       });
       this.state.endpoint = endpoint;
-
       this.props.history.push({ endpoint: null });
     }
 
@@ -216,6 +215,8 @@ class DisplayEndpoint extends Component {
               id="basic-addon3"
             >
               <input
+                ref={this.host}
+                type="text"
                 name="host"
                 onChange={this.handleChange}
                 value={this.findHost()}
