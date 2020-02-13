@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import endpointService from "../services/endpointService";
 import JSONPretty from "react-json-pretty";
-import { Dropdown } from "react-bootstrap";
+import { Dropdown, Table } from "react-bootstrap";
 import { toast } from "react-toastify";
 
 class DisplayEndpoint extends Component {
@@ -23,22 +23,18 @@ class DisplayEndpoint extends Component {
     versions: [],
     groupId: "",
     title: "",
-    flagResponse: false
+    flagResponse: false,
+
+    headersData: {},
+    originalHeadersKeys: [],
+    updatedHeadersKeys: [],
+
+    paramsData: {},
+    originalParamsKeys: [],
+    updatedParamsKeys: []
   };
 
-  // componentDidMount() {
-  //   let data = {}
-  //   if (!this.props.location.endpoint) {
-  //     const endpointId = this.props.location.pathname.split('/')[4]
-  //     console.log(endpointId)
-  //     let { data: endpoint } = await endpointService.getEndpoint(endpointId)
-  //     const {  name,method,uri,host } = endpoint
-  //     data = {
-  //       name,method,uri,host
-  //     }
-  //     this.setState({ data })
-  //   }
-  // }
+  componentDidMount() {}
 
   handleChange = e => {
     let data = { ...this.state.data };
@@ -92,12 +88,19 @@ class DisplayEndpoint extends Component {
     let body = {};
     if (this.state.data.method == "POST" || this.state.data.method == "PUT")
       body = JSON.parse(this.body.current.value);
+
+    const headersData = this.doSubmitHeader();
+    const paramsData = this.doSubmitParam();
+
     const endpoint = {
       uri: this.uri.current.value,
       name: this.name.current.value,
       requestType: this.state.data.method,
-      body: body
+      body: body,
+      headers: headersData,
+      params: paramsData
     };
+    console.log(endpoint);
     if (this.state.title == "Add New Endpoint") {
       this.props.history.push({
         pathname: `/dashboard/collections`,
@@ -120,7 +123,158 @@ class DisplayEndpoint extends Component {
     data.method = method;
     this.setState({ response, data });
   }
+
+  handleAddParam() {
+    let paramsData = { ...this.state.paramsData };
+    const len = this.state.originalParamsKeys.length;
+    let originalParamsKeys = [...this.state.originalParamsKeys, len.toString()];
+    let updatedParamsKeys = [...this.state.updatedParamsKeys, ""];
+    paramsData[len.toString()] = {
+      key: "",
+      value: "",
+      description: ""
+    };
+    this.setState({ paramsData, originalParamsKeys, updatedParamsKeys });
+  }
+
+  handleDeleteParam(index) {
+    const updatedParamsKeys = this.state.updatedParamsKeys;
+    updatedParamsKeys[index] = "deleted";
+    this.setState({ updatedParamsKeys });
+  }
+
+  handleChangeParam = e => {
+    const name = e.currentTarget.name.split(".");
+    console.log(name);
+    const originalParamsKeys = [...this.state.originalParamsKeys];
+    const updatedParamsKeys = [...this.state.updatedParamsKeys];
+    if (name[1] === "key") {
+      updatedParamsKeys[name[0]] = e.currentTarget.value;
+      let paramsData = { ...this.state.paramsData };
+      console.log(paramsData);
+      paramsData[originalParamsKeys[name[0]]][name[1]] = e.currentTarget.value;
+      console.log(paramsData);
+      console.log("updatedParamsKeys", updatedParamsKeys);
+      this.setState({ updatedParamsKeys });
+      this.setState({ paramsData });
+    } else {
+      let paramsData = { ...this.state.paramsData };
+      paramsData[originalParamsKeys[name[0]]][name[1]] = e.currentTarget.value;
+      this.setState({ paramsData });
+      // this.setState({paramsData[
+      //   this.state.originalParamsKeys[index]
+      // ]})
+    }
+  };
+
+  doSubmitParam() {
+    let paramsData = { ...this.state.paramsData };
+    let originalParamsKeys = [...this.state.originalParamsKeys];
+    let updatedParamsKeys = [...this.state.updatedParamsKeys];
+
+    for (let i = 0; i < updatedParamsKeys.length; i++) {
+      if (updatedParamsKeys[i] !== originalParamsKeys[i]) {
+        if (updatedParamsKeys[i] === "deleted") {
+          delete paramsData[originalParamsKeys[i]];
+        } else {
+          paramsData[updatedParamsKeys[i]] = paramsData[originalParamsKeys[i]];
+          paramsData[updatedParamsKeys[i]].key = updatedParamsKeys[i];
+          delete paramsData[originalParamsKeys[i]];
+        }
+      }
+    }
+    return paramsData;
+  }
+
+  handleAddHeader() {
+    let headersData = { ...this.state.headersData };
+    const len = this.state.originalHeadersKeys.length;
+    let originalHeadersKeys = [
+      ...this.state.originalHeadersKeys,
+      len.toString()
+    ];
+    let updatedHeadersKeys = [...this.state.updatedHeadersKeys, ""];
+    headersData[len.toString()] = {
+      key: "",
+      value: "",
+      description: ""
+    };
+    this.setState({ headersData, originalHeadersKeys, updatedHeadersKeys });
+  }
+
+  handleDeleteHeader(index) {
+    const updatedHeadersKeys = this.state.updatedHeadersKeys;
+    updatedHeadersKeys[index] = "deleted";
+    this.setState({ updatedHeadersKeys });
+  }
+
+  handleChangeHeader = e => {
+    const name = e.currentTarget.name.split(".");
+    console.log(name);
+    const originalHeadersKeys = [...this.state.originalHeadersKeys];
+    const updatedHeadersKeys = [...this.state.updatedHeadersKeys];
+    if (name[1] === "key") {
+      updatedHeadersKeys[name[0]] = e.currentTarget.value;
+      this.setState({ updatedHeadersKeys });
+    } else {
+      let headersData = { ...this.state.headersData };
+      headersData[originalHeadersKeys[name[0]]][name[1]] =
+        e.currentTarget.value;
+      this.setState({ headersData });
+    }
+  };
+
+  doSubmitHeader() {
+    let headersData = { ...this.state.headersData };
+    let originalHeadersKeys = [...this.state.originalHeadersKeys];
+    let updatedHeadersKeys = [...this.state.updatedHeadersKeys];
+
+    for (let i = 0; i < updatedHeadersKeys.length; i++) {
+      if (updatedHeadersKeys[i] !== originalHeadersKeys[i]) {
+        if (updatedHeadersKeys[i] === "deleted") {
+          delete headersData[originalHeadersKeys[i]];
+        } else {
+          headersData[updatedHeadersKeys[i]] =
+            headersData[originalHeadersKeys[i]];
+          headersData[updatedHeadersKeys[i]].key = updatedHeadersKeys[i];
+          delete headersData[originalHeadersKeys[i]];
+        }
+      }
+    }
+    return headersData;
+  }
+
   render() {
+    if (this.props.location.endpoint) {
+      console.log("params");
+
+      let paramsData = { ...this.props.location.endpoint.params };
+      console.log("paramsData", paramsData);
+
+      const originalParamsKeys = Object.keys(paramsData);
+      const updatedParamsKeys = Object.keys(paramsData);
+      this.setState({
+        paramsData,
+        originalParamsKeys,
+        updatedParamsKeys
+      });
+      this.props.history.push({ endpoint: null });
+      console.log("this.props.location.endpoint", this.props.location.endpoint);
+    }
+    if (this.props.location.endpoint) {
+      console.log("header");
+
+      let headersData = { ...this.props.location.endpoint.headers };
+      const originalHeadersKeys = Object.keys(headersData);
+      const updatedHeadersKeys = Object.keys(headersData);
+      this.setState({
+        headersData,
+        originalHeadersKeys,
+        updatedHeadersKeys
+      });
+      this.props.history.push({ endpoint: null });
+      console.log("this.props.location.endpoint", this.props.location.endpoint);
+    }
     if (this.props.location.groups) {
       this.state.groups = this.props.location.groups;
     }
@@ -136,6 +290,10 @@ class DisplayEndpoint extends Component {
       this.state.response = response;
       this.state.groupId = this.props.location.groupId;
       this.state.title = this.props.location.title;
+      this.state.endpoint = {};
+      this.state.headersData = {};
+      this.state.originalHeadersKeys = Object.keys(this.state.headersData);
+      this.state.updatedHeadersKeys = Object.keys(this.state.headersData);
       this.props.history.push({ groups: null });
     }
 
@@ -147,6 +305,9 @@ class DisplayEndpoint extends Component {
       this.props.location.title == "update endpoint" &&
       this.props.location.endpoint
     ) {
+      console.log("hiiii");
+      console.log("this.props.location.endpoint", this.props.location.endpoint);
+
       let endpoint = { ...this.props.location.endpoint };
 
       this.setState({
@@ -309,7 +470,90 @@ class DisplayEndpoint extends Component {
               role="tabpanel"
               aria-labelledby="pills-params-tab"
             >
-              ...
+              <Table bordered size="sm">
+                <thead>
+                  <tr>
+                    <th>KEY</th>
+                    <th>VALUE</th>
+                    <th>DESCRIPTION</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {this.state.updatedParamsKeys.map((params, index) =>
+                    params !== "deleted" ? (
+                      <tr key={index}>
+                        <td>
+                          <input
+                            name={index + ".key"}
+                            value={
+                              this.state.paramsData[
+                                this.state.originalParamsKeys[index]
+                              ].key
+                            }
+                            onChange={this.handleChangeParam}
+                            type={"text"}
+                            className="form-control"
+                            style={{ border: "none" }}
+                          />
+                        </td>
+                        <td>
+                          <input
+                            name={index + ".value"}
+                            value={
+                              this.state.paramsData[
+                                this.state.originalParamsKeys[index]
+                              ].value
+                            }
+                            onChange={this.handleChangeParam}
+                            type={"text"}
+                            className="form-control"
+                            style={{ border: "none" }}
+                          />
+                        </td>
+                        <td>
+                          <input
+                            name={index + ".description"}
+                            value={
+                              this.state.paramsData[
+                                this.state.originalParamsKeys[index]
+                              ].description
+                            }
+                            onChange={this.handleChangeParam}
+                            type={"text"}
+                            style={{ border: "none" }}
+                            className="form-control"
+                          />
+                        </td>
+                        <td>
+                          <button
+                            type="button"
+                            class="btn btn-light btn-sm btn-block"
+                            onClick={() => this.handleDeleteParam(index)}
+                          >
+                            x
+                          </button>
+                        </td>
+                      </tr>
+                    ) : null
+                  )}
+                  <tr>
+                    <td> </td>
+                    <td>
+                      {" "}
+                      <button
+                        type="button"
+                        class="btn btn-link btn-sm btn-block"
+                        onClick={() => this.handleAddParam()}
+                      >
+                        + New Param
+                      </button>
+                    </td>
+                    <td> </td>
+                    <td> </td>
+                  </tr>
+                </tbody>
+              </Table>
             </div>
             <div
               class="tab-pane fade"
@@ -317,7 +561,88 @@ class DisplayEndpoint extends Component {
               role="tabpanel"
               aria-labelledby="pills-headers-tab"
             >
-              ...
+              <div>
+                <Table bordered size="sm">
+                  <thead>
+                    <tr>
+                      <th>KEY</th>
+                      <th>VALUE</th>
+                      <th>DESCRIPTION</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    {this.state.updatedHeadersKeys.map((header, index) =>
+                      header !== "deleted" ? (
+                        <tr key={index}>
+                          <td>
+                            <input
+                              name={index + ".key"}
+                              value={header}
+                              onChange={this.handleChangeHeader}
+                              type={"text"}
+                              className="form-control"
+                              style={{ border: "none" }}
+                            />
+                          </td>
+                          <td>
+                            <input
+                              name={index + ".value"}
+                              value={
+                                this.state.headersData[
+                                  this.state.originalHeadersKeys[index]
+                                ].value
+                              }
+                              onChange={this.handleChangeHeader}
+                              type={"text"}
+                              className="form-control"
+                              style={{ border: "none" }}
+                            />
+                          </td>
+                          <td>
+                            <input
+                              name={index + ".description"}
+                              value={
+                                this.state.headersData[
+                                  this.state.originalHeadersKeys[index]
+                                ].description
+                              }
+                              onChange={this.handleChangeHeader}
+                              type={"text"}
+                              style={{ border: "none" }}
+                              className="form-control"
+                            />
+                          </td>
+                          <td>
+                            <button
+                              type="button"
+                              class="btn btn-light btn-sm btn-block"
+                              onClick={() => this.handleDeleteparam(index)}
+                            >
+                              x
+                            </button>
+                          </td>
+                        </tr>
+                      ) : null
+                    )}
+                    <tr>
+                      <td> </td>
+                      <td>
+                        {" "}
+                        <button
+                          type="button"
+                          class="btn btn-link btn-sm btn-block"
+                          onClick={() => this.handleAddHeader()}
+                        >
+                          + New Header
+                        </button>
+                      </td>
+                      <td> </td>
+                      <td> </td>
+                    </tr>
+                  </tbody>
+                </Table>
+              </div>
             </div>
             <div
               class="tab-pane fade"
@@ -325,21 +650,19 @@ class DisplayEndpoint extends Component {
               role="tabpanel"
               aria-labelledby="pills-body-tab"
             >
-          <textarea
-            class="form-control"
-            ref={this.body}
-            name="body"
-            id="body"
-            rows="8"
-            name="body"
-            onChange={this.handleChange}
-            value={this.state.data.body}
-          ></textarea>
-       
+              <textarea
+                class="form-control"
+                ref={this.body}
+                name="body"
+                id="body"
+                rows="8"
+                name="body"
+                onChange={this.handleChange}
+                value={this.state.data.body}
+              ></textarea>
             </div>
           </div>
         </div>
-       
 
         {this.state.flagResponse == true ? (
           <JSONPretty
