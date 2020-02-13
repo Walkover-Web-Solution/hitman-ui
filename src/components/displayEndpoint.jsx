@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import endpointService from "../services/endpointService";
 import JSONPretty from "react-json-pretty";
-import { Dropdown } from "react-bootstrap";
+import { Dropdown, Table } from "react-bootstrap";
 import { toast } from "react-toastify";
 
 class DisplayEndpoint extends Component {
@@ -23,22 +23,12 @@ class DisplayEndpoint extends Component {
     versions: [],
     groupId: "",
     title: "",
-    flagResponse: false
-  };
+    flagResponse: false,
 
-  // componentDidMount() {
-  //   let data = {}
-  //   if (!this.props.location.endpoint) {
-  //     const endpointId = this.props.location.pathname.split('/')[4]
-  //     console.log(endpointId)
-  //     let { data: endpoint } = await endpointService.getEndpoint(endpointId)
-  //     const {  name,method,uri,host } = endpoint
-  //     data = {
-  //       name,method,uri,host
-  //     }
-  //     this.setState({ data })
-  //   }
-  // }
+    headersData: {},
+    originalHeadersKeys: [],
+    updatedHeadersKeys: []
+  };
 
   handleChange = e => {
     let data = { ...this.state.data };
@@ -92,12 +82,16 @@ class DisplayEndpoint extends Component {
     let body = {};
     if (this.state.data.method == "POST" || this.state.data.method == "PUT")
       body = JSON.parse(this.body.current.value);
+
+    const headersData = this.doSubmitHeader();
     const endpoint = {
       uri: this.uri.current.value,
       name: this.name.current.value,
       requestType: this.state.data.method,
-      body: body
+      body: body,
+      headers: headersData
     };
+
     if (this.state.title == "Add New Endpoint") {
       this.props.history.push({
         pathname: `/dashboard/collections`,
@@ -120,7 +114,87 @@ class DisplayEndpoint extends Component {
     data.method = method;
     this.setState({ response, data });
   }
+
+  handleAddHeader() {
+    let headersData = { ...this.state.headersData };
+    const len = this.state.originalHeadersKeys.length;
+    let originalHeadersKeys = [
+      ...this.state.originalHeadersKeys,
+      len.toString()
+    ];
+    let updatedHeadersKeys = [...this.state.updatedHeadersKeys, ""];
+    headersData[len.toString()] = {
+      key: "",
+      value: "",
+      description: ""
+    };
+    this.setState({ headersData, originalHeadersKeys, updatedHeadersKeys });
+  }
+
+  handleDeleteHeader(index) {
+    const updatedHeadersKeys = this.state.updatedHeadersKeys;
+    updatedHeadersKeys[index] = "deleted";
+    this.setState({ updatedHeadersKeys });
+  }
+
+  handleChangeHeader = e => {
+    const name = e.currentTarget.name.split(".");
+    const originalHeadersKeys = [...this.state.originalHeadersKeys];
+    const updatedHeadersKeys = [...this.state.updatedHeadersKeys];
+    if (name[1] === "key") {
+      updatedHeadersKeys[name[0]] = e.currentTarget.value;
+      let headersData = { ...this.state.headersData };
+      headersData[originalHeadersKeys[name[0]]][name[1]] = e.currentTarget.value;
+      this.setState({ headersData ,updatedHeadersKeys});
+    } else {
+      let headersData = { ...this.state.headersData };
+      headersData[originalHeadersKeys[name[0]]][name[1]] =
+        e.currentTarget.value;
+      this.setState({ headersData });
+      console.log('this.state',this.state);
+    
+    }
+  };
+
+  doSubmitHeader() {
+    let headersData = { ...this.state.headersData };
+    let originalHeadersKeys = [...this.state.originalHeadersKeys];
+    let updatedHeadersKeys = [...this.state.updatedHeadersKeys];
+
+    for (let i = 0; i < updatedHeadersKeys.length; i++) {
+      if (updatedHeadersKeys[i] !== originalHeadersKeys[i]) {
+        if (updatedHeadersKeys[i] === "deleted") {
+          delete headersData[originalHeadersKeys[i]];
+        } else {
+          headersData[updatedHeadersKeys[i]] =
+          headersData[originalHeadersKeys[i]];
+
+          headersData[updatedHeadersKeys[i]].key = updatedHeadersKeys[i];
+          
+          delete headersData[originalHeadersKeys[i]];
+        }
+      }
+    }
+    console.log('headersData',headersData)
+
+    return headersData;
+  }
+
   render() {
+    console.log('props',this.props)
+    console.log('state',this.state)
+    
+    if (this.props.location.endpoint) {
+      let headersData = { ...this.props.location.endpoint.headers };
+      const originalHeadersKeys = Object.keys(headersData);
+      const updatedHeadersKeys = Object.keys(headersData);
+      this.setState({
+        headersData,
+        originalHeadersKeys,
+        updatedHeadersKeys
+      });
+      this.props.history.push({ endpoint: null });
+    }
     if (this.props.location.groups) {
       this.state.groups = this.props.location.groups;
     }
@@ -136,6 +210,10 @@ class DisplayEndpoint extends Component {
       this.state.response = response;
       this.state.groupId = this.props.location.groupId;
       this.state.title = this.props.location.title;
+      this.state.endpoint = {};
+      this.state.headersData = {};
+      this.state.originalHeadersKeys = Object.keys(this.state.headersData);
+      this.state.updatedHeadersKeys = Object.keys(this.state.headersData);
       this.props.history.push({ groups: null });
     }
 
@@ -317,7 +395,90 @@ class DisplayEndpoint extends Component {
               role="tabpanel"
               aria-labelledby="pills-headers-tab"
             >
-              ...
+              <div>
+                <Table bordered size="sm">
+                  <thead>
+                    <tr>
+                      <th>KEY</th>
+                      <th>VALUE</th>
+                      <th>DESCRIPTION</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    {this.state.updatedHeadersKeys.map((header, index) =>
+                      header !== "deleted" ? (
+                        <tr key={index}>
+                          <td>
+                            <input
+                              name={index + ".key"}
+                              value={this.state.headersData[
+                                this.state.originalHeadersKeys[index]
+                              ].key}
+                              onChange={this.handleChangeHeader}
+                              type={"text"}
+                              className="form-control"
+                              style={{ border: "none" }}
+                            />
+                          </td>
+                          <td>
+                            <input
+                              name={index + ".value"}
+                              value={
+                                this.state.headersData[
+                                  this.state.originalHeadersKeys[index]
+                                ].value
+                              }
+                              onChange={this.handleChangeHeader}
+                              type={"text"}
+                              className="form-control"
+                              style={{ border: "none" }}
+                            />
+                          </td>
+                          <td>
+                            <input
+                              name={index + ".description"}
+                              value={
+                                this.state.headersData[
+                                  this.state.originalHeadersKeys[index]
+                                ].description
+                              }
+                              onChange={this.handleChangeHeader}
+                              type={"text"}
+                              style={{ border: "none" }}
+                              className="form-control"
+                            />
+                          </td>
+                          <td>
+                            <button
+                              type="button"
+                              class="btn btn-light btn-sm btn-block"
+                              onClick={() => this.handleDeleteHeader(index)}
+                            >
+                              x
+                            </button>
+                          </td>
+                        </tr>
+                      ) : null
+                    )}
+                    <tr>
+                      <td> </td>
+                      <td>
+                        {" "}
+                        <button
+                          type="button"
+                          class="btn btn-link btn-sm btn-block"
+                          onClick={() => this.handleAddHeader()}
+                        >
+                          + New Header
+                        </button>
+                      </td>
+                      <td> </td>
+                      <td> </td>
+                    </tr>
+                  </tbody>
+                </Table>
+              </div>
             </div>
             <div
               class="tab-pane fade"
@@ -325,21 +486,19 @@ class DisplayEndpoint extends Component {
               role="tabpanel"
               aria-labelledby="pills-body-tab"
             >
-          <textarea
-            class="form-control"
-            ref={this.body}
-            name="body"
-            id="body"
-            rows="8"
-            name="body"
-            onChange={this.handleChange}
-            value={this.state.data.body}
-          ></textarea>
-       
+              <textarea
+                class="form-control"
+                ref={this.body}
+                name="body"
+                id="body"
+                rows="8"
+                name="body"
+                onChange={this.handleChange}
+                value={this.state.data.body}
+              ></textarea>
             </div>
           </div>
         </div>
-       
 
         {this.state.flagResponse == true ? (
           <JSONPretty

@@ -97,6 +97,7 @@ class EnvironmentVariables extends Component {
 
   handleChange = e => {
     const name = e.currentTarget.name.split('.')
+    console.log(name)
     const originalVariableNames = [...this.state.originalVariableNames]
     const updatedVariableNames = [...this.state.updatedVariableNames]
     if (name[1] === 'name') {
@@ -134,7 +135,7 @@ class EnvironmentVariables extends Component {
                   value={this.state.environment.name}
                   onChange={this.handleChangeEnv}
                   type={'text'}
-                  style={{ border: 'none' }}
+                  style={{ border: '1px solid black' }}
                   className='form-control'
                 />
               </h5>
