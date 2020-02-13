@@ -100,7 +100,6 @@ class DisplayEndpoint extends Component {
       headers: headersData,
       params: paramsData
     };
-    console.log(endpoint);
     if (this.state.title == "Add New Endpoint") {
       this.props.history.push({
         pathname: `/dashboard/collections`,
@@ -210,12 +209,14 @@ class DisplayEndpoint extends Component {
 
   handleChangeHeader = e => {
     const name = e.currentTarget.name.split(".");
-    console.log(name);
     const originalHeadersKeys = [...this.state.originalHeadersKeys];
     const updatedHeadersKeys = [...this.state.updatedHeadersKeys];
     if (name[1] === "key") {
       updatedHeadersKeys[name[0]] = e.currentTarget.value;
-      this.setState({ updatedHeadersKeys });
+      let headersData = { ...this.state.headersData };
+      headersData[originalHeadersKeys[name[0]]][name[1]] =
+        e.currentTarget.value;
+      this.setState({ headersData, updatedHeadersKeys });
     } else {
       let headersData = { ...this.state.headersData };
       headersData[originalHeadersKeys[name[0]]][name[1]] =
@@ -273,7 +274,6 @@ class DisplayEndpoint extends Component {
         updatedHeadersKeys
       });
       this.props.history.push({ endpoint: null });
-      console.log("this.props.location.endpoint", this.props.location.endpoint);
     }
     if (this.props.location.groups) {
       this.state.groups = this.props.location.groups;
@@ -578,7 +578,11 @@ class DisplayEndpoint extends Component {
                           <td>
                             <input
                               name={index + ".key"}
-                              value={header}
+                              value={
+                                this.state.headersData[
+                                  this.state.originalHeadersKeys[index]
+                                ].key
+                              }
                               onChange={this.handleChangeHeader}
                               type={"text"}
                               className="form-control"
@@ -617,7 +621,7 @@ class DisplayEndpoint extends Component {
                             <button
                               type="button"
                               class="btn btn-light btn-sm btn-block"
-                              onClick={() => this.handleDeleteparam(index)}
+                              onClick={() => this.handleDeleteHeader(index)}
                             >
                               x
                             </button>
