@@ -134,7 +134,7 @@ class EnvironmentVariables extends Component {
                   value={this.state.environment.name}
                   onChange={this.handleChangeEnv}
                   type={'text'}
-                  style={{ border: 'none' }}
+                  style={{ border: '1px  grey' }}
                   className='form-control'
                 />
               </h5>

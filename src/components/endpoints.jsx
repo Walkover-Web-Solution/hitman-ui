@@ -16,7 +16,7 @@ class Endpoints extends Component {
   }
   handleUpdate (endpoint) {
     this.props.history.push({
-      pathname: `/dashboard/collections/${this.props.collectionId}/versions/${this.props.versionId}/groups/${this.props.groupId}/endpoints/${endpoint.id}/edit`,
+      pathname: `/dashboard/collections/${this.props.collection_id}/versions/${this.props.version_id}/groups/${this.props.group_id}/endpoints/${endpoint.id}/edit`,
       editEndpoint: endpoint
     })
   }
@@ -31,19 +31,26 @@ class Endpoints extends Component {
   render () {
     return (
       <div>
-        {this.props.endpoints
-          .filter(endpoint => endpoint.groupId === this.props.groupId)
-          .map(endpoint => (
+        {Object.keys(this.props.endpoints)
+          .filter(
+            eId => this.props.endpoints[eId].groupId === this.props.group_id
+          )
+          .map(endpointId => (
             <Accordion defaultActiveKey='1'>
               <Card>
                 <Card.Header>
                   <Accordion.Toggle
-                    onClick={() => this.handleDisplay(endpoint, this.props)}
+                    onClick={() =>
+                      this.handleDisplay(
+                        this.props.endpoints[endpointId],
+                        this.props.groups
+                      )
+                    }
                     as={Button}
                     variant='link'
                     eventKey='1'
                   >
-                    {endpoint.name}
+                    {this.props.endpoints[endpointId].name}
                   </Accordion.Toggle>
                   <DropdownButton
                     alignRight
@@ -51,15 +58,9 @@ class Endpoints extends Component {
                     id='dropdown-menu-align-right'
                     style={{ float: 'right' }}
                   >
-                    {/* <Dropdown.Item
-                      eventKey="1"
-                      onClick={() => this.handleUpdate(endpoint)}
-                    >
-                      Edit
-                    </Dropdown.Item> */}
                     <Dropdown.Item
                       eventKey='2'
-                      onClick={() => this.handleDelete(endpoint)}
+                      // onClick={() => this.handleDelete(endpoint)}
                     >
                       Delete
                     </Dropdown.Item>

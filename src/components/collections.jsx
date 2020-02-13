@@ -28,7 +28,8 @@ class Collections extends Component {
     versions: {},
     groups: {},
     pages: {},
-    endpoints: {}
+    endpoints: {},
+    collectionIds: []
   }
 
   async fetchVersions (collections) {
@@ -57,11 +58,10 @@ class Collections extends Component {
     return groups
   }
 
-  async fetchPagesVersion (versions) {
+  async fetchPages (versions) {
     let pages = {}
     const versionIds = Object.keys(versions)
     for (let i = 0; i < versionIds.length; i++) {
-      const version = versions[i]
       let { data: newPages } = await pageService.getVersionPages(versionIds[i])
       pages = { ...pages, ...newPages }
     }
@@ -69,11 +69,13 @@ class Collections extends Component {
   }
 
   async fetchEndpoints (groups) {
-    let endpoints = []
-    for (let i = 0; i < groups.length; i++) {
-      const group = groups[i]
-      let { data: newEndpoint } = await endpointService.getEndpoints(group.id)
-      endpoints = [...endpoints, ...newEndpoint]
+    let endpoints = {}
+    const groupIds = Object.keys(groups)
+    for (let i = 0; i < groupIds.length; i++) {
+      let { data: newEndpoints } = await endpointService.getEndpoints(
+        groupIds[i]
+      )
+      endpoints = { ...endpoints, ...newEndpoints }
     }
     return endpoints
   }
@@ -83,14 +85,16 @@ class Collections extends Component {
     this.setState({ collections })
     const versions = await this.fetchVersions(collections)
     const groups = await this.fetchGroups(versions)
-    const pages = await this.fetchPagesVersion(versions)
-    // const endpoints = await this.fetchEndpoints(groups)
-    this.setState({ versions, groups, pages })
+    const pages = await this.fetchPages(versions)
+    const endpoints = await this.fetchEndpoints(groups)
+    const collectionIds = Object.keys(this.state.collections)
+    this.setState({ versions, groups, pages, endpoints, collectionIds })
   }
 
   async handleAdd (newCollection) {
     newCollection.requestId = shortId.generate()
     const originalCollections = { ...this.state.collections }
+    const originalCollectionIds = { ...this.state.collectionIds }
     const collections = { ...this.state.collections }
     const requestId = newCollection.requestId
     collections[requestId] = { ...newCollection }
@@ -105,23 +109,34 @@ class Collections extends Component {
         data: version
       } = await collectionVersionsService.getCollectionVersions(collection.id)
       const versions = { ...this.state.versions, ...version }
-      this.setState({ collections, versions })
+      const collectionIds = [...this.state.collectionIds, collection.id]
+      this.setState({ collections, versions, collectionIds })
     } catch (ex) {
       toast.error(ex.response.data)
-      this.setState({ collections: originalCollections })
+      this.setState({
+        collections: originalCollections,
+        collectionIds: originalCollectionIds
+      })
     }
   }
 
   async handleDelete (collection) {
     const originalCollections = { ...this.state.collections }
+    const originalCollectionIds = { ...this.state.collectionIds }
     let collections = { ...this.state.collections }
+    const collectionIds = this.state.collectionIds.filter(
+      cId => cId != collection.id
+    )
     delete collections[collection.id]
-    this.setState({ collections })
+    this.setState({ collections, collectionIds })
     try {
       await collectionsService.deleteCollection(collection.id)
     } catch (ex) {
       toast.error(ex)
-      this.setState({ collections: originalCollections })
+      this.setState({
+        collections: originalCollections,
+        collectionIds: originalCollectionIds
+      })
     }
   }
 
@@ -299,7 +314,6 @@ class Collections extends Component {
   async handleDeletePage (deletedPageId) {
     const originalPages = { ...this.state.pages }
     let pages = { ...this.state.pages }
-    //const pages = this.state.pages.filter(page => page.id !== deletedPageId)
     delete pages[deletedPageId]
     this.setState({ pages })
     try {
@@ -321,7 +335,6 @@ class Collections extends Component {
   async handleUpdatePage (editedPage, pageId) {
     const originalPages = { ...this.state.pages }
     let pages = { ...this.state.pages }
-    //const index = pages.findIndex(p => p.id === pageId)
     pages[pageId] = editedPage
     this.setState({ pages })
     try {
@@ -335,6 +348,24 @@ class Collections extends Component {
       page: editedPage
     })
   }
+
+  onDragStart = (e, index) => {
+    this.draggedItem = this.state.collectionIds[index]
+  }
+
+  onDragOver = (e, index) => {
+    e.preventDefault()
+    const draggedOverItem = this.state.collectionIds[index]
+    if (this.draggedItem === draggedOverItem) {
+      return
+    }
+    let collectionIds = this.state.collectionIds.filter(
+      item => item !== this.draggedItem
+    )
+    collectionIds.splice(index, 0, this.draggedItem)
+    this.setState({ collectionIds })
+  }
+  onDragEnd = () => {}
 
   render () {
     const { location } = this.props
@@ -574,8 +605,14 @@ class Collections extends Component {
           <button className='btn btn-default btn-lg'>
             <Link to='/dashboard/collections/new'>+ New Collection</Link>
           </button>
-          {Object.keys(this.state.collections).map(collectionId => (
-            <Accordion key={collectionId}>
+          {this.state.collectionIds.map((collectionId, index) => (
+            <Accordion
+              key={collectionId}
+              draggable
+              onDragOver={e => this.onDragOver(e, index)}
+              onDragStart={e => this.onDragStart(e, index)}
+              onDragEnd={this.onDragEnd}
+            >
               <Card>
                 <Card.Header>
                   <Accordion.Toggle as={Button} variant='link' eventKey='1'>
@@ -637,7 +674,7 @@ class Collections extends Component {
                       versions={this.state.versions}
                       groups={this.state.groups}
                       pages={this.state.pages}
-                      // endpoints={this.state.endpoints}
+                      endpoints={this.state.endpoints}
                     />
                   </Card.Body>
                 </Accordion.Collapse>
