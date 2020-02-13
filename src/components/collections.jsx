@@ -294,10 +294,8 @@ class Collections extends Component {
       delete endpoints.requestId;
       this.setState({ endpoints });
     } catch (ex) {
-      console.log("collection catch");
       this.setState({ originalEndpoints });
     }
-    console.log("endpoint", endpoint);
     this.props.history.push({
       pathname: `/dashboard/collections/endpoints/${endpoint.id}`,
       endpoint: endpoint,

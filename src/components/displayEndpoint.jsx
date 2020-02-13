@@ -144,25 +144,18 @@ class DisplayEndpoint extends Component {
 
   handleChangeParam = e => {
     const name = e.currentTarget.name.split(".");
-    console.log(name);
     const originalParamsKeys = [...this.state.originalParamsKeys];
     const updatedParamsKeys = [...this.state.updatedParamsKeys];
     if (name[1] === "key") {
       updatedParamsKeys[name[0]] = e.currentTarget.value;
       let paramsData = { ...this.state.paramsData };
-      console.log(paramsData);
       paramsData[originalParamsKeys[name[0]]][name[1]] = e.currentTarget.value;
-      console.log(paramsData);
-      console.log("updatedParamsKeys", updatedParamsKeys);
       this.setState({ updatedParamsKeys });
       this.setState({ paramsData });
     } else {
       let paramsData = { ...this.state.paramsData };
       paramsData[originalParamsKeys[name[0]]][name[1]] = e.currentTarget.value;
       this.setState({ paramsData });
-      // this.setState({paramsData[
-      //   this.state.originalParamsKeys[index]
-      // ]})
     }
   };
 
@@ -246,12 +239,10 @@ class DisplayEndpoint extends Component {
   }
 
   render() {
+    console.log("this.props", this.props);
+    console.log("this.state", this.state);
     if (this.props.location.endpoint) {
-      console.log("params");
-
       let paramsData = { ...this.props.location.endpoint.params };
-      console.log("paramsData", paramsData);
-
       const originalParamsKeys = Object.keys(paramsData);
       const updatedParamsKeys = Object.keys(paramsData);
       this.setState({
@@ -260,11 +251,8 @@ class DisplayEndpoint extends Component {
         updatedParamsKeys
       });
       this.props.history.push({ endpoint: null });
-      console.log("this.props.location.endpoint", this.props.location.endpoint);
     }
     if (this.props.location.endpoint) {
-      console.log("header");
-
       let headersData = { ...this.props.location.endpoint.headers };
       const originalHeadersKeys = Object.keys(headersData);
       const updatedHeadersKeys = Object.keys(headersData);
@@ -292,8 +280,11 @@ class DisplayEndpoint extends Component {
       this.state.title = this.props.location.title;
       this.state.endpoint = {};
       this.state.headersData = {};
+      this.state.paramsData = {};
       this.state.originalHeadersKeys = Object.keys(this.state.headersData);
       this.state.updatedHeadersKeys = Object.keys(this.state.headersData);
+      this.state.originalParamsKeys = Object.keys(this.state.paramsData);
+      this.state.updatedParamsKeys = Object.keys(this.state.paramsData);
       this.props.history.push({ groups: null });
     }
 
@@ -305,9 +296,6 @@ class DisplayEndpoint extends Component {
       this.props.location.title == "update endpoint" &&
       this.props.location.endpoint
     ) {
-      console.log("hiiii");
-      console.log("this.props.location.endpoint", this.props.location.endpoint);
-
       let endpoint = { ...this.props.location.endpoint };
 
       this.setState({
