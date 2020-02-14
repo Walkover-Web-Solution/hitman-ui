@@ -26,7 +26,8 @@ class Groups extends Component {
       versions: versions,
       groups: groups,
       groupId: groupId,
-      title: "Add New Endpoint"
+      title: "Add New Endpoint",
+      groupFlag: true
     });
   }
 

@@ -47,12 +47,6 @@ class DisplayEndpoint extends Component {
     data[e.currentTarget.name] = e.currentTarget.value;
     if (e.currentTarget.name === "updatedUri") {
       data.uri = e.currentTarget.value;
-      let updatedUri = e.currentTarget.value;
-      // for(i=0;i<updatedUri.length;i++){
-      //   if(updatedUri[i]==="?"){
-
-      //   }
-      // }
     }
     this.setState({ data });
   };
@@ -189,7 +183,6 @@ class DisplayEndpoint extends Component {
     if (name[1] === "key") {
       updatedParamsKeys[name[0]] = e.currentTarget.value;
       keys[name[0]] = e.currentTarget.value;
-      this.state.keys = keys;
       this.handleUpdateUri(keys, values, e);
       let paramsData = { ...this.state.paramsData };
       paramsData[originalParamsKeys[name[0]]][name[1]] = e.currentTarget.value;
@@ -202,7 +195,6 @@ class DisplayEndpoint extends Component {
       paramsData[originalParamsKeys[name[0]]][name[1]] = e.currentTarget.value;
       if (name[1] === "value") {
         values[name[0]] = e.currentTarget.value;
-        this.state.values = values;
         this.handleUpdateUri(keys, values);
       }
       this.setState({ paramsData });
@@ -396,13 +388,7 @@ class DisplayEndpoint extends Component {
       this.props.location.title == "update endpoint" &&
       this.props.location.endpoint
     ) {
-      console.log("this.props.location.endpoint", this.props.location.endpoint);
       let endpoint = { ...this.props.location.endpoint };
-      let values = [];
-      Object.keys(this.props.location.endpoint.params).map(param => {
-        values.push(this.props.location.endpoint.params[param].value);
-      });
-      console.log("values", values);
       this.setState({
         data: {
           method: endpoint.requestType,
@@ -411,11 +397,11 @@ class DisplayEndpoint extends Component {
           name: endpoint.name,
           body: JSON.stringify(endpoint.body, null, 4)
         },
-        title: "update endpoint"
+        title: "update endpoint",
+        keys: [],
+        values: []
       });
       this.state.endpoint = endpoint;
-      this.state.values = values;
-      this.state.keys = Object.keys(this.props.location.endpoint.params);
       this.props.history.push({ endpoint: null });
     }
 
@@ -582,12 +568,11 @@ class DisplayEndpoint extends Component {
                         <td>
                           <input
                             name={index + ".key"}
-                            value={this.state.keys[index]}
-                            // {
-                            //   this.state.paramsData[
-                            //     this.state.originalParamsKeys[index]
-                            //   ].key
-                            // }
+                            value={
+                              this.state.paramsData[
+                                this.state.originalParamsKeys[index]
+                              ].key
+                            }
                             onChange={this.handleChangeParam}
                             type={"text"}
                             className="form-control"
@@ -597,11 +582,11 @@ class DisplayEndpoint extends Component {
                         <td>
                           <input
                             name={index + ".value"}
-                            value={this.state.values[index]}
-                            // this.state.paramsData[
-                            //   this.state.originalParamsKeys[index]
-                            // ].value
-                            // }
+                            value={
+                              this.state.paramsData[
+                                this.state.originalParamsKeys[index]
+                              ].value
+                            }
                             onChange={this.handleChangeParam}
                             type={"text"}
                             className="form-control"

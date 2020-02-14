@@ -1,24 +1,24 @@
-import React, { Component } from 'react'
+import React, { Component } from "react";
 import {
   Accordion,
   Card,
   Button,
   Dropdown,
   DropdownButton
-} from 'react-bootstrap'
+} from "react-bootstrap";
 
 class Endpoints extends Component {
-  handleDelete (endpoint) {
+  handleDelete(endpoint) {
     this.props.history.push({
-      pathname: '/dashboard/collections',
+      pathname: "/dashboard/collections",
       deleteEndpointId: endpoint.id
-    })
+    });
   }
-  handleUpdate (endpoint) {
+  handleUpdate(endpoint) {
     this.props.history.push({
       pathname: `/dashboard/collections/${this.props.collectionId}/versions/${this.props.versionId}/groups/${this.props.groupId}/endpoints/${endpoint.id}/edit`,
       editEndpoint: endpoint
-    })
+    });
   }
   handleDisplay(endpoint, groups, versions) {
     this.props.history.push({
@@ -26,17 +26,20 @@ class Endpoints extends Component {
       title: "update endpoint",
       endpoint: endpoint,
       groups: groups,
-      versions: versions
+      versions: versions,
+      endpointFlag: true
     });
   }
-  state = {}
-  render () {
+  state = {};
+  render() {
     return (
       <div>
         {Object.keys(this.props.endpoints)
-          .filter(eId => this.props.endpoints[eId].groupId === this.props.group_id)
+          .filter(
+            eId => this.props.endpoints[eId].groupId === this.props.group_id
+          )
           .map(endpointId => (
-            <Accordion defaultActiveKey='1'key={endpointId} >
+            <Accordion defaultActiveKey="1" key={endpointId}>
               <Card>
                 <Card.Header>
                   <Accordion.Toggle
@@ -48,34 +51,36 @@ class Endpoints extends Component {
                       )
                     }
                     as={Button}
-                    variant='link'
-                    eventKey='1'
+                    variant="link"
+                    eventKey="1"
                   >
                     {this.props.endpoints[endpointId].name}
                   </Accordion.Toggle>
                   <DropdownButton
                     alignRight
-                    title=''
-                    id='dropdown-menu-align-right'
-                    style={{ float: 'right' }}
+                    title=""
+                    id="dropdown-menu-align-right"
+                    style={{ float: "right" }}
                   >
                     <Dropdown.Item
-                      eventKey='2'
-                      onClick={() => this.handleDelete(this.props.endpoints[endpointId])}
+                      eventKey="2"
+                      onClick={() =>
+                        this.handleDelete(this.props.endpoints[endpointId])
+                      }
                     >
                       Delete
                     </Dropdown.Item>
                   </DropdownButton>
                 </Card.Header>
-                <Accordion.Collapse eventKey='0'>
+                <Accordion.Collapse eventKey="0">
                   <Card.Body></Card.Body>
                 </Accordion.Collapse>
               </Card>
             </Accordion>
           ))}
       </div>
-    )
+    );
   }
 }
 
-export default Endpoints
+export default Endpoints;
