@@ -8,9 +8,44 @@ import {
 } from 'react-bootstrap'
 import Groups from './groups'
 import Pages from './pages'
+import Collections from './collections'
+import CollectionVersionForm from './collectionVersionForm'
 
 class CollectionVersions extends Component {
-  state = {}
+  state = {
+    versionIds: []
+  }
+
+  componentDidMount () {
+    const versionIds = this.props.version_ids
+    this.setState({ versionIds })
+  }
+
+  onDragStart = (e, versionId) => {
+    this.draggedItem = versionId
+  }
+
+  onDragOver = (e, versionId) => {
+    e.preventDefault()
+    this.draggedOverItem = versionId
+  }
+
+  async onDragEnd (e, props) {
+    console.log(this.draggedItem, this.draggedOverItem)
+    if (this.draggedItem === this.draggedOverItem) {
+      return
+    }
+    let versionIds = this.state.versionIds.filter(
+      item => item !== this.draggedItem
+    )
+    const index = this.state.versionIds.findIndex(
+      vId => vId === this.draggedOverItem
+    )
+    versionIds.splice(index, 0, this.draggedItem)
+    await this.setState({ versionIds })
+    console.log(this.state.versionIds)
+    this.props.set_vid(this.state.versionIds)
+  }
 
   async handleDelete (collectionVersion) {
     this.props.history.push({
@@ -37,14 +72,22 @@ class CollectionVersions extends Component {
     return (
       <div>
         {this.props.versions &&
-          Object.keys(this.props.versions)
+          this.props.version_ids &&
+          this.props.version_ids
             .filter(
               versionId =>
                 this.props.versions[versionId].collectionId ===
                 this.props.collection_id
             )
             .map(versionId => (
-              <Accordion defaultActiveKey='0' key={versionId}>
+              <Accordion
+                defaultActiveKey='0'
+                key={versionId}
+                draggable
+                onDragOver={e => this.onDragOver(e, versionId)}
+                onDragStart={e => this.onDragStart(e, versionId)}
+                onDragEnd={e => this.onDragEnd(e, versionId, this.props)}
+              >
                 <Card>
                   <Card.Header>
                     <Accordion.Toggle as={Button} variant='link' eventKey='1'>
@@ -69,7 +112,7 @@ class CollectionVersions extends Component {
                         onClick={() => {
                           if (
                             window.confirm(
-                              'Are you sure you wish to delete this versions? ' +
+                              'Are you sure you want to delete this versions? ' +
                                 '\n' +
                                 'All your groups, pages and endpoints present in this version will be deleted.'
                             )

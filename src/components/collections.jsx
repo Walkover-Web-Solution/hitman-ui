@@ -29,9 +29,14 @@ class Collections extends Component {
     groups: {},
     pages: {},
     endpoints: {},
-    collectionIds: []
+    collectionIds: [],
+    versionIds: []
   }
 
+  constructor (props) {
+    super(props)
+    this.vid = React.createRef()
+  }
   async fetchVersions (collections) {
     let versions = {}
     const collectionIds = Object.keys(collections)
@@ -88,13 +93,25 @@ class Collections extends Component {
     const pages = await this.fetchPages(versions)
     const endpoints = await this.fetchEndpoints(groups)
     const collectionIds = Object.keys(this.state.collections)
-    this.setState({ versions, groups, pages, endpoints, collectionIds })
+    const versionIds = Object.keys(versions)
+    this.setState({
+      versions,
+      groups,
+      pages,
+      endpoints,
+      collectionIds,
+      versionIds
+    })
+  }
+
+  setVersionIds (versionIds) {
+    this.setState({ versionIds })
   }
 
   async handleAdd (newCollection) {
     newCollection.requestId = shortId.generate()
     const originalCollections = { ...this.state.collections }
-    const originalCollectionIds = { ...this.state.collectionIds }
+    const originalCollectionIds = [...this.state.collectionIds]
     const collections = { ...this.state.collections }
     const requestId = newCollection.requestId
     collections[requestId] = { ...newCollection }
@@ -122,10 +139,10 @@ class Collections extends Component {
 
   async handleDelete (collection) {
     const originalCollections = { ...this.state.collections }
-    const originalCollectionIds = { ...this.state.collectionIds }
+    const originalCollectionIds = [...this.state.collectionIds]
     let collections = { ...this.state.collections }
     const collectionIds = this.state.collectionIds.filter(
-      cId => cId != collection.id
+      cId => cId !== collection.id
     )
     delete collections[collection.id]
     this.setState({ collections, collectionIds })
@@ -157,11 +174,11 @@ class Collections extends Component {
 
   async handleAddVersion (newCollectionVersion, collectionId) {
     newCollectionVersion.requestId = shortId.generate()
-
     const originalVersions = { ...this.state.versions }
+    const originalVersionIds = { ...this.state.versionIds }
     let versions = { ...this.state.versions }
     const requestId = newCollectionVersion.requestId
-    versions[requestId] = newCollectionVersion
+    versions[requestId] = { ...newCollectionVersion, collectionId }
     this.setState({ versions })
     try {
       const {
@@ -172,18 +189,26 @@ class Collections extends Component {
       )
       versions[version.id] = version
       delete versions[requestId]
-      this.setState({ versions })
+      const versionIds = [...this.state.versionIds, version.id.toString()]
+      this.setState({ versions, versionIds })
     } catch (ex) {
-      toast.error(ex.response.data)
-      this.setState({ versions: originalVersions })
+      toast.error(ex)
+      this.setState({
+        versions: originalVersions,
+        versionIds: originalVersionIds
+      })
     }
   }
 
   async handleDeleteVersion (deletedCollectionVersionId) {
     const originalVersions = { ...this.state.versions }
+    const originalVersionIds = { ...this.state.versionIds }
     let versions = { ...this.state.versions }
     delete versions[deletedCollectionVersionId]
-    this.setState({ versions })
+    const versionIds = this.state.versionIds.filter(
+      vId => vId !== deletedCollectionVersionId.toString()
+    )
+    await this.setState({ versions, versionIds })
     try {
       await collectionVersionsService.deleteCollectionVersion(
         deletedCollectionVersionId
@@ -365,8 +390,6 @@ class Collections extends Component {
     collectionIds.splice(index, 0, this.draggedItem)
     this.setState({ collectionIds })
   }
-  onDragEnd = () => {}
-
   render () {
     const { location } = this.props
 
@@ -602,7 +625,10 @@ class Collections extends Component {
           </div>
         </div>
         <div className='App-Side'>
-          <button className='btn btn-default btn-lg'>
+          <button
+            className='btn btn-default btn-lg'
+            onClick={() => this.setState({ test: 'Fhhf' })}
+          >
             <Link to='/dashboard/collections/new'>+ New Collection</Link>
           </button>
           {this.state.collectionIds.map((collectionId, index) => (
@@ -675,6 +701,9 @@ class Collections extends Component {
                       groups={this.state.groups}
                       pages={this.state.pages}
                       endpoints={this.state.endpoints}
+                      version_ids={this.state.versionIds}
+                      set_vid={this.setVersionIds.bind(this)}
+                      ref={this.vid}
                     />
                   </Card.Body>
                 </Accordion.Collapse>
