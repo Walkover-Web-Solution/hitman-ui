@@ -3,6 +3,7 @@ import endpointService from "../services/endpointService";
 import JSONPretty from "react-json-pretty";
 import { Dropdown, Table } from "react-bootstrap";
 import { toast } from "react-toastify";
+const status = require('http-status');
 
 class DisplayEndpoint extends Component {
   uri = React.createRef();
@@ -63,7 +64,8 @@ class DisplayEndpoint extends Component {
   handleSend = async () => {
     const headersData = this.doSubmitHeader();
     const paramsData = this.doSubmitParam();
-   await this.setState({headersData})
+   await this.setState({headersData ,paramsData})
+   
     console.log("this.state",this.state.headersData)
     this.state.flagResponse = true;
     const host = this.findHost();
@@ -92,22 +94,14 @@ class DisplayEndpoint extends Component {
       this.state.data.body,
       headerJson
     );
-    console.log('response try',responseJson);
-    const {data:response} = responseJson;
+    console.log('response',responseJson);
+    const response = {...responseJson};
        if(responseJson.status == 200)
-        this.setState({ response });
-    // else{
-    //   const err = responseJson.statusText;
-    //   this.setState({ err })
-    //  } 
+        this.setState({ response }); 
     } 
     catch(error){
-      // const err = responseJson.statusText;
-     let response = "Error :"+ error.response.status+" "+error.response.data ;
+      let response = { status:error.response.status ,data :error.response.data };
       this.setState({ response })
-     
-      console.log('response catch',error.response.data);
-    
     };
   }
 
@@ -126,6 +120,7 @@ class DisplayEndpoint extends Component {
       headers: headersData,
       params: paramsData
     };
+
     if (this.state.title == "Add New Endpoint") {
       this.props.history.push({
         pathname: `/dashboard/collections`,
@@ -201,6 +196,14 @@ class DisplayEndpoint extends Component {
         }
       }
     }
+
+    if(paramsData[""])
+    delete paramsData[""]
+    updatedParamsKeys = updatedParamsKeys.filter(k=>k!="")
+    originalParamsKeys = [...updatedParamsKeys]
+    const endpoint = {...this.state.endpoint}
+    endpoint.headers = {...paramsData}
+    this.setState({originalParamsKeys,updatedParamsKeys,endpoint,paramsData})
     return paramsData;
   }
 
@@ -258,6 +261,10 @@ class DisplayEndpoint extends Component {
         }
       }
     }
+   
+        if(headersData[""])
+    delete headersData[""]
+    updatedHeadersKeys = updatedHeadersKeys.filter(k=>k!="")
     originalHeadersKeys = [...updatedHeadersKeys]
     const endpoint = {...this.state.endpoint}
     endpoint.headers = {...headersData}
@@ -266,7 +273,6 @@ class DisplayEndpoint extends Component {
   }
 
   render() {
-    //console.log(this.state)
     // console.log("this.props", this.props);
     // console.log("this.state", this.state);
     if (this.props.location.endpoint) {
@@ -683,10 +689,16 @@ class DisplayEndpoint extends Component {
             </div>
           </div>
         </div>
-        <div class="alert alert-secondary" role="alert">
-  A simple secondary alert—check it out!
-</div>
-        {this.state.flagResponse == true ? (
+        {  this.state.response.status  ?  (
+            this.state.response.status ==200?(
+            <div class="alert alert-success" role="alert" >Status : {this.state.response.status +" "+ this.state.response.statusText}
+            </div>) :
+            <div class="alert alert-danger" role="alert" >Status :{this.state.response.status+" "+ status[this.state.response.status]}</div>
+       ) : null }
+        
+                            
+
+        { this.state.flagResponse == true ? (
           // <JSONPretty
           //   themeClassName="custom-json-pretty"
           //   data={this.state.response}
@@ -694,7 +706,7 @@ class DisplayEndpoint extends Component {
           <textarea
           class="form-control"
             rows="15"
-            value = {JSON.stringify(this.state.response, null, 4)}
+            value = {JSON.stringify(this.state.response.data, null, 4)}
           ></textarea>
         ) : null}
       </div>
