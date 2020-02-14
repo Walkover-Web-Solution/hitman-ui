@@ -84,17 +84,32 @@ class DisplayEndpoint extends Component {
       {       
          headerJson[headersData[header].key]= headersData[header].value
       });
-    
-     const responseJson = await endpointService.apiTest(
+      let responseJson= {}
+    try{
+     responseJson = await endpointService.apiTest(
       api,
       this.state.data.method,
       this.state.data.body,
       headerJson
     );
-    console.log('response',responseJson);
+    console.log('response try',responseJson);
     const {data:response} = responseJson;
-    this.setState({ response });
-      };
+       if(responseJson.status == 200)
+        this.setState({ response });
+    // else{
+    //   const err = responseJson.statusText;
+    //   this.setState({ err })
+    //  } 
+    } 
+    catch(error){
+      // const err = responseJson.statusText;
+     let response = "Error :"+ error.response.status+" "+error.response.data ;
+      this.setState({ response })
+     
+      console.log('response catch',error.response.data);
+    
+    };
+  }
 
   handleSave = async e => {
     let body = {};
@@ -668,12 +683,19 @@ class DisplayEndpoint extends Component {
             </div>
           </div>
         </div>
-
+        <div class="alert alert-secondary" role="alert">
+  A simple secondary alert—check it out!
+</div>
         {this.state.flagResponse == true ? (
-          <JSONPretty
-            themeClassName="custom-json-pretty"
-            data={this.state.response}
-          />
+          // <JSONPretty
+          //   themeClassName="custom-json-pretty"
+          //   data={this.state.response}
+          // />
+          <textarea
+          class="form-control"
+            rows="15"
+            value = {JSON.stringify(this.state.response, null, 4)}
+          ></textarea>
         ) : null}
       </div>
     );
