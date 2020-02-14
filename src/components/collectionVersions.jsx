@@ -30,8 +30,7 @@ class CollectionVersions extends Component {
     this.draggedOverItem = versionId
   }
 
-  async onDragEnd (e, props) {
-    console.log(this.draggedItem, this.draggedOverItem)
+  async onDragEnd (e) {
     if (this.draggedItem === this.draggedOverItem) {
       return
     }
@@ -43,8 +42,7 @@ class CollectionVersions extends Component {
     )
     versionIds.splice(index, 0, this.draggedItem)
     await this.setState({ versionIds })
-    console.log(this.state.versionIds)
-    this.props.set_vid(this.state.versionIds)
+    this.props.set_version_id(this.state.versionIds)
   }
 
   async handleDelete (collectionVersion) {
@@ -86,7 +84,7 @@ class CollectionVersions extends Component {
                 draggable
                 onDragOver={e => this.onDragOver(e, versionId)}
                 onDragStart={e => this.onDragStart(e, versionId)}
-                onDragEnd={e => this.onDragEnd(e, versionId, this.props)}
+                onDragEnd={e => this.onDragEnd(e, versionId)}
               >
                 <Card>
                   <Card.Header>

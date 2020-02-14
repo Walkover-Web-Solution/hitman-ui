@@ -33,10 +33,6 @@ class Collections extends Component {
     versionIds: []
   }
 
-  constructor (props) {
-    super(props)
-    this.vid = React.createRef()
-  }
   async fetchVersions (collections) {
     let versions = {}
     const collectionIds = Object.keys(collections)
@@ -94,18 +90,24 @@ class Collections extends Component {
     const endpoints = await this.fetchEndpoints(groups)
     const collectionIds = Object.keys(this.state.collections)
     const versionIds = Object.keys(versions)
+    const groupIds = Object.keys(groups)
     this.setState({
       versions,
       groups,
       pages,
       endpoints,
       collectionIds,
-      versionIds
+      versionIds,
+      groupIds
     })
   }
 
   setVersionIds (versionIds) {
     this.setState({ versionIds })
+  }
+
+  setGroupIds (groupIds) {
+    this.setState({ groupIds })
   }
 
   async handleAdd (newCollection) {
@@ -238,6 +240,7 @@ class Collections extends Component {
   async handleAddGroup (versionId, newGroup) {
     newGroup.requestId = shortId.generate()
     const requestId = newGroup.requestId
+    const originalGroupIds = { ...this.state.groupIds }
     const originalGroups = { ...this.state.groups }
     const groups = { ...this.state.groups }
     groups[newGroup.requestId] = { ...newGroup, versionId }
@@ -246,23 +249,28 @@ class Collections extends Component {
       const { data: group } = await groupsService.saveGroup(versionId, newGroup)
       groups[group.id] = group
       delete groups[requestId]
-      this.setState({ groups })
+      const groupIds = [...this.state.groupIds, group.id.toString()]
+      this.setState({ groups, groupIds })
     } catch (ex) {
       toast.error(ex)
-      this.setState({ groups: originalGroups })
+      this.setState({ groups: originalGroups, groupIds: originalGroupIds })
     }
   }
 
   async handleDeleteGroup (deletedGroupId) {
     const originalGroups = { ...this.state.groups }
+    const originalGroupIds = { ...this.state.groupIds }
     const groups = { ...this.state.groups }
     delete groups[deletedGroupId]
-    this.setState({ groups })
+    const groupIds = this.state.groupIds.filter(
+      gId => gId !== deletedGroupId.toString()
+    )
+    this.setState({ groups, groupIds })
     try {
       await groupsService.deleteGroup(deletedGroupId)
     } catch (ex) {
       toast.error(ex)
-      this.setState({ groups: originalGroups })
+      this.setState({ groups: originalGroups, groupIds: originalGroupIds })
     }
   }
 
@@ -702,8 +710,9 @@ class Collections extends Component {
                       pages={this.state.pages}
                       endpoints={this.state.endpoints}
                       version_ids={this.state.versionIds}
-                      set_vid={this.setVersionIds.bind(this)}
-                      ref={this.vid}
+                      group_ids={this.state.groupIds}
+                      set_version_id={this.setVersionIds.bind(this)}
+                      set_group_id={this.setGroupIds.bind(this)}
                     />
                   </Card.Body>
                 </Accordion.Collapse>
