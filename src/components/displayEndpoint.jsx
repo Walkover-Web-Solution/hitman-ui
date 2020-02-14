@@ -34,8 +34,6 @@ class DisplayEndpoint extends Component {
     updatedParamsKeys: []
   };
 
-  componentDidMount() {}
-
   handleChange = e => {
     let data = { ...this.state.data };
     data[e.currentTarget.name] = e.currentTarget.value;
@@ -63,6 +61,10 @@ class DisplayEndpoint extends Component {
     return host;
   }
   handleSend = async () => {
+    const headersData = this.doSubmitHeader();
+    const paramsData = this.doSubmitParam();
+   await this.setState({headersData})
+    console.log("this.state",this.state.headersData)
     this.state.flagResponse = true;
     const host = this.findHost();
     const api = host + this.uri.current.value;
@@ -76,13 +78,23 @@ class DisplayEndpoint extends Component {
       }
     }
 
-    const { data: response } = await endpointService.apiTest(
+    let headerJson = {} 
+
+    Object.keys(headersData).map(header =>
+      {       
+         headerJson[headersData[header].key]= headersData[header].value
+      });
+    
+     const responseJson = await endpointService.apiTest(
       api,
       this.state.data.method,
-      this.state.data.body
+      this.state.data.body,
+      headerJson
     );
+    console.log('response',responseJson);
+    const {data:response} = responseJson;
     this.setState({ response });
-  };
+      };
 
   handleSave = async e => {
     let body = {};
@@ -91,7 +103,6 @@ class DisplayEndpoint extends Component {
 
     const headersData = this.doSubmitHeader();
     const paramsData = this.doSubmitParam();
-
     const endpoint = {
       uri: this.uri.current.value,
       name: this.name.current.value,
@@ -206,16 +217,13 @@ class DisplayEndpoint extends Component {
     const updatedHeadersKeys = [...this.state.updatedHeadersKeys];
     if (name[1] === "key") {
       updatedHeadersKeys[name[0]] = e.currentTarget.value;
+    }
+
       let headersData = { ...this.state.headersData };
       headersData[originalHeadersKeys[name[0]]][name[1]] =
         e.currentTarget.value;
       this.setState({ headersData, updatedHeadersKeys });
-    } else {
-      let headersData = { ...this.state.headersData };
-      headersData[originalHeadersKeys[name[0]]][name[1]] =
-        e.currentTarget.value;
-      this.setState({ headersData });
-    }
+
   };
 
   doSubmitHeader() {
@@ -235,12 +243,17 @@ class DisplayEndpoint extends Component {
         }
       }
     }
+    originalHeadersKeys = [...updatedHeadersKeys]
+    const endpoint = {...this.state.endpoint}
+    endpoint.headers = {...headersData}
+    this.setState({originalHeadersKeys,updatedHeadersKeys,endpoint,headersData})
     return headersData;
   }
 
   render() {
-    console.log("this.props", this.props);
-    console.log("this.state", this.state);
+    //console.log(this.state)
+    // console.log("this.props", this.props);
+    // console.log("this.state", this.state);
     if (this.props.location.endpoint) {
       let paramsData = { ...this.props.location.endpoint.params };
       const originalParamsKeys = Object.keys(paramsData);
