@@ -20,6 +20,8 @@ class DisplayEndpoint extends Component {
       updatedUri: "",
       host: ""
     },
+    startTime:"",
+    timeElapsed:"",
     response: {},
     endpoint: {},
     groups: [],
@@ -72,6 +74,8 @@ class DisplayEndpoint extends Component {
     return host;
   }
   handleSend = async () => {
+    let startTime = new Date().getTime();
+    this.setState({startTime});
     let response ={};
     const headersData = this.doSubmitHeader();
     const paramsData = this.doSubmitParam();
@@ -107,6 +111,8 @@ class DisplayEndpoint extends Component {
       console.log("response", responseJson);
       const response = { ...responseJson };
       if (responseJson.status == 200) this.setState({ response });
+      this.responseTime();
+
     } catch (error) {
       if(error.response){
       let response = {
@@ -317,6 +323,11 @@ class DisplayEndpoint extends Component {
     });
     return headersData;
   }
+
+  responseTime(){
+    let timeElapsed=new Date().getTime()-this.state.startTime;
+    this.setState({timeElapsed});
+ }
 
   render() {
     // console.log("this.props", this.props);
@@ -741,12 +752,15 @@ class DisplayEndpoint extends Component {
         </div>
         {this.state.response.status ? (
           this.state.response.status == 200 ? (
+            <div>
             <div class="alert alert-success" role="alert">
               Status :{" "}
-              {this.state.response.status +
-                " " +
-                this.state.response.statusText}
-            </div>
+              {this.state.response.status +" " +this.state.response.statusText}
+            <div  style = {{float:"right" } } >
+            Time:{this.state.timeElapsed}ms
+          </div>
+           </div>
+          </div>
           ) : (
             <div class="alert alert-danger" role="alert">
               Status :
