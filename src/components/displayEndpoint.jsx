@@ -3,7 +3,8 @@ import endpointService from "../services/endpointService";
 import JSONPretty from "react-json-pretty";
 import { Dropdown, Table } from "react-bootstrap";
 import { toast } from "react-toastify";
-const status = require('http-status');
+const status = require("http-status");
+var JSONPrettyMon = require("react-json-pretty/dist/monikai");
 
 class DisplayEndpoint extends Component {
   uri = React.createRef();
@@ -40,61 +41,43 @@ class DisplayEndpoint extends Component {
     values: []
   };
 
-<<<<<<< HEAD
-  // componentDidMount() {}
-
-=======
->>>>>>> 0935fdcd3a9aaf0df704f7fc40e4b08d424ca762
   handleChange = e => {
-    console.log("change");
     let data = { ...this.state.data };
     data[e.currentTarget.name] = e.currentTarget.value;
     if (e.currentTarget.name === "updatedUri") {
       data.uri = e.currentTarget.value;
       let updatedUri = e.currentTarget.value;
-      // for(i=0;i<updatedUri.length;i++){
-      //   if(updatedUri[i]==="?"){
-
-      //   }
-      // }
     }
     this.setState({ data });
   };
 
   findHost() {
-    console.log("host");
     let host = "";
-    console.log("Object.keys(this.state.endpoint).length", this.state.endpoint);
     if (this.state.data.host) {
-      console.log("host here");
-
       return this.state.data.host;
-    } else if (Object.keys(this.state.endpoint).length) {
-      console.log("host group");
-
+    } else if (Object.keys(this.state.endpoint).length && this.state.title == "update endpoint") {
       host = this.state.groups[this.state.endpoint.groupId].host;
       if (host == "") {
         const versionId = this.state.groups[this.state.endpoint.groupId]
           .versionId;
         host = this.state.versions[versionId].host;
       }
-      console.log("host value", host);
-    } else if (this.state.groupId && !Object.keys(this.state.endpoint).length) {
+    } else if (this.state.groupId ) {
       host = this.state.groups[this.state.groupId].host;
       if (host == "") {
         const versionId = this.state.groups[this.state.groupId].versionId;
         host = this.state.versions[versionId].host;
       }
     }
-    console.log("host value", host);
     return host;
   }
   handleSend = async () => {
+    let response ={};
     const headersData = this.doSubmitHeader();
     const paramsData = this.doSubmitParam();
-   await this.setState({headersData ,paramsData})
-   
-    console.log("this.state",this.state.headersData)
+    await this.setState({ headersData, paramsData ,response});
+
+    console.log("this.state", this.state);
     this.state.flagResponse = true;
     const host = this.findHost();
     const api = host + this.uri.current.value;
@@ -108,30 +91,32 @@ class DisplayEndpoint extends Component {
       }
     }
 
-    let headerJson = {} 
+    let headerJson = {};
 
-    Object.keys(headersData).map(header =>
-      {       
-         headerJson[headersData[header].key]= headersData[header].value
-      });
-      let responseJson= {}
-    try{
-     responseJson = await endpointService.apiTest(
-      api,
-      this.state.data.method,
-      this.state.data.body,
-      headerJson
-    );
-    console.log('response',responseJson);
-    const response = {...responseJson};
-       if(responseJson.status == 200)
-        this.setState({ response }); 
-    } 
-    catch(error){
-      let response = { status:error.response.status ,data :error.response.data };
-      this.setState({ response })
-    };
+    Object.keys(headersData).map(header => {
+      headerJson[headersData[header].key] = headersData[header].value;
+    });
+    let responseJson = {};
+    try {
+      responseJson = await endpointService.apiTest(
+        api,
+        this.state.data.method,
+        this.state.data.body,
+        headerJson
+      );
+      console.log("response", responseJson);
+      const response = { ...responseJson };
+      if (responseJson.status == 200) this.setState({ response });
+    } catch (error) {
+      if(error.response){
+      let response = {
+        status: error.response.status,
+        data: error.response.data
+      };
+      this.setState({ response });
+    }
   }
+  };
 
   handleSave = async e => {
     let body = {};
@@ -252,13 +237,17 @@ class DisplayEndpoint extends Component {
       }
     }
 
-    if(paramsData[""])
-    delete paramsData[""]
-    updatedParamsKeys = updatedParamsKeys.filter(k=>k!="")
-    originalParamsKeys = [...updatedParamsKeys]
-    const endpoint = {...this.state.endpoint}
-    endpoint.headers = {...paramsData}
-    this.setState({originalParamsKeys,updatedParamsKeys,endpoint,paramsData})
+    if (paramsData[""]) delete paramsData[""];
+    updatedParamsKeys = updatedParamsKeys.filter(k => k != "");
+    originalParamsKeys = [...updatedParamsKeys];
+    const endpoint = { ...this.state.endpoint };
+    endpoint.params = { ...paramsData };
+    this.setState({
+      originalParamsKeys,
+      updatedParamsKeys,
+      endpoint,
+      paramsData
+    });
     return paramsData;
   }
 
@@ -292,11 +281,9 @@ class DisplayEndpoint extends Component {
       updatedHeadersKeys[name[0]] = e.currentTarget.value;
     }
 
-      let headersData = { ...this.state.headersData };
-      headersData[originalHeadersKeys[name[0]]][name[1]] =
-        e.currentTarget.value;
-      this.setState({ headersData, updatedHeadersKeys });
-
+    let headersData = { ...this.state.headersData };
+    headersData[originalHeadersKeys[name[0]]][name[1]] = e.currentTarget.value;
+    this.setState({ headersData, updatedHeadersKeys });
   };
 
   doSubmitHeader() {
@@ -316,70 +303,24 @@ class DisplayEndpoint extends Component {
         }
       }
     }
-   
-        if(headersData[""])
-    delete headersData[""]
-    updatedHeadersKeys = updatedHeadersKeys.filter(k=>k!="")
-    originalHeadersKeys = [...updatedHeadersKeys]
-    const endpoint = {...this.state.endpoint}
-    endpoint.headers = {...headersData}
-    this.setState({originalHeadersKeys,updatedHeadersKeys,endpoint,headersData})
+
+    if (headersData[""]) delete headersData[""];
+    updatedHeadersKeys = updatedHeadersKeys.filter(k => k != "");
+    originalHeadersKeys = [...updatedHeadersKeys];
+    const endpoint = { ...this.state.endpoint };
+    endpoint.headers = { ...headersData };
+    this.setState({
+      originalHeadersKeys,
+      updatedHeadersKeys,
+      endpoint,
+      headersData
+    });
     return headersData;
   }
-  // handleState() {
-  //   console.log("handleState");
-  //   // this.props.history.push({ endpointFlag: null, groupFlag: null });
-  //   console.log("handleState", this.props);
 
-  //   this.setState({
-  //     data: {
-  //       name: "",
-  //       method: "GET",
-  //       body: {},
-  //       uri: "",
-  //       updatedUri: "",
-
-  //       host: ""
-  //     },
-  //     response: {},
-  //     endpoint: {},
-  //     groups: [],
-  //     versions: [],
-  //     groupId: "",
-  //     title: "",
-  //     flagResponse: false,
-
-  //     headersData: {},
-  //     originalHeadersKeys: [],
-  //     updatedHeadersKeys: [],
-
-  //     paramsData: {},
-  //     originalParamsKeys: [],
-  //     updatedParamsKeys: [],
-  //     originalValue: "",
-  //     updatedValue: "",
-  //     endpointFlag: false,
-  //     groupFlag: false
-  //   });
-  //   console.log(this.props);
-  // }
   render() {
-<<<<<<< HEAD
-    // const { endpointFlag, groupFlag } = this.props.location;
-    // this.state.endpointFlag = endpointFlag;
-    // this.state.groupFlag = groupFlag;
-
-    // if (endpointFlag === "true" || groupFlag === "true") {
-    //   this.state.endpointFlag = endpointFlag;
-    //   this.state.groupFlag = groupFlag;
-    //   console.log("in state");
-    //   this.handleState(this.state.endpointFlag, this.state.groupFlag);
-    // }
-
-=======
     // console.log("this.props", this.props);
     // console.log("this.state", this.state);
->>>>>>> 0935fdcd3a9aaf0df704f7fc40e4b08d424ca762
     if (this.props.location.endpoint) {
       let paramsData = { ...this.props.location.endpoint.params };
       const originalParamsKeys = Object.keys(paramsData);
@@ -440,13 +381,11 @@ class DisplayEndpoint extends Component {
       this.props.location.title == "update endpoint" &&
       this.props.location.endpoint
     ) {
-      console.log("this.props.location.endpoint", this.props.location.endpoint);
       let endpoint = { ...this.props.location.endpoint };
-      let values = [];
+      let values = [];      
       Object.keys(this.props.location.endpoint.params).map(param => {
         values.push(this.props.location.endpoint.params[param].value);
       });
-      console.log("values", values);
       this.setState({
         data: {
           method: endpoint.requestType,
@@ -455,7 +394,8 @@ class DisplayEndpoint extends Component {
           name: endpoint.name,
           body: JSON.stringify(endpoint.body, null, 4)
         },
-        title: "update endpoint"
+        title: "update endpoint",
+        response:{}
       });
       this.state.endpoint = endpoint;
       this.state.values = values;
@@ -627,11 +567,6 @@ class DisplayEndpoint extends Component {
                           <input
                             name={index + ".key"}
                             value={this.state.keys[index]}
-                            // {
-                            //   this.state.paramsData[
-                            //     this.state.originalParamsKeys[index]
-                            //   ].key
-                            // }
                             onChange={this.handleChangeParam}
                             type={"text"}
                             className="form-control"
@@ -642,10 +577,6 @@ class DisplayEndpoint extends Component {
                           <input
                             name={index + ".value"}
                             value={this.state.values[index]}
-                            // this.state.paramsData[
-                            //   this.state.originalParamsKeys[index]
-                            // ].value
-                            // }
                             onChange={this.handleChangeParam}
                             type={"text"}
                             className="form-control"
@@ -808,25 +739,26 @@ class DisplayEndpoint extends Component {
             </div>
           </div>
         </div>
-        {  this.state.response.status  ?  (
-            this.state.response.status ==200?(
-            <div class="alert alert-success" role="alert" >Status : {this.state.response.status +" "+ this.state.response.statusText}
-            </div>) :
-            <div class="alert alert-danger" role="alert" >Status :{this.state.response.status+" "+ status[this.state.response.status]}</div>
-       ) : null }
-        
-                            
+        {this.state.response.status ? (
+          this.state.response.status == 200 ? (
+            <div class="alert alert-success" role="alert">
+              Status :{" "}
+              {this.state.response.status +
+                " " +
+                this.state.response.statusText}
+            </div>
+          ) : (
+            <div class="alert alert-danger" role="alert">
+              Status :
+              {this.state.response.status +
+                " " +
+                status[this.state.response.status]}
+            </div>
+          )
+        ) : null}
 
-        { this.state.flagResponse == true ? (
-          // <JSONPretty
-          //   themeClassName="custom-json-pretty"
-          //   data={this.state.response}
-          // />
-          <textarea
-          class="form-control"
-            rows="15"
-            value = {JSON.stringify(this.state.response.data, null, 4)}
-          ></textarea>
+        {this.state.flagResponse == true ? (
+          <JSONPretty theme={JSONPrettyMon} data={this.state.response.data} />
         ) : null}
       </div>
     );
