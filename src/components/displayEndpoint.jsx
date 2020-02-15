@@ -35,8 +35,6 @@ class DisplayEndpoint extends Component {
     paramsData: {},
     originalParamsKeys: [],
     updatedParamsKeys: [],
-    // originalValue: "",
-    // updatedValue: "",
     keys: [],
     values: []
   };
@@ -47,6 +45,18 @@ class DisplayEndpoint extends Component {
     if (e.currentTarget.name === "updatedUri") {
       data.uri = e.currentTarget.value;
       let updatedUri = e.currentTarget.value;
+      let keys = [];
+      let values = [];
+      updatedUri = updatedUri.split("?")[1];
+      let arr = updatedUri.split(/[&=]/);
+      for (let i = 0; i < arr.length; i++) {
+        if (i % 2 == 0) {
+          keys.push(arr[i]);
+        } else {
+          values.push(arr[i]);
+        }
+      }
+      this.setState({ keys, values });
     }
     this.setState({ data });
   };
@@ -65,9 +75,6 @@ class DisplayEndpoint extends Component {
           .versionId;
         host = this.state.versions[versionId].host;
       }
-      console.log("host value", host);
-      // } else if (this.state.groupId && !Object.keys(this.state.endpoint).length) {
-      console.log("Add host new");
     } else if (this.state.groupId) {
       host = this.state.groups[this.state.groupId].host;
       if (host == "") {
@@ -82,8 +89,6 @@ class DisplayEndpoint extends Component {
     const headersData = this.doSubmitHeader();
     const paramsData = this.doSubmitParam();
     await this.setState({ headersData, paramsData, response });
-
-    console.log("this.state", this.state);
     this.state.flagResponse = true;
     const host = this.findHost();
     const api = host + this.uri.current.value;
@@ -96,9 +101,7 @@ class DisplayEndpoint extends Component {
         toast.error("In POST and PUT body cannot be empty");
       }
     }
-
     let headerJson = {};
-
     Object.keys(headersData).map(header => {
       headerJson[headersData[header].key] = headersData[header].value;
     });
@@ -110,7 +113,6 @@ class DisplayEndpoint extends Component {
         this.state.data.body,
         headerJson
       );
-      console.log("response", responseJson);
       const response = { ...responseJson };
       if (responseJson.status == 200) this.setState({ response });
     } catch (error) {
@@ -238,26 +240,6 @@ class DisplayEndpoint extends Component {
     this.state.data.updatedUri = updatedUri;
   }
 
-  // if (i == 0) {
-  //   updatedUri = originalUri + "?" + keys[i] + "=" + values[i];
-  //   originalUri = updatedUri;
-  // } else {
-  //   updatedUri = originalUri + "&" + keys[i] + "=" + values[i];
-  //   originalUri = updatedUri;
-  // }
-
-  // else if (this.state.title === "update endpoint") {
-  //   for (let i = 0; i < keys.length; i++) {
-  //     if (i == 0) {
-  //       updatedUri = originalUri[0] + "?" + keys[i] + "=" + values[i];
-  //       originalUri = updatedUri;
-  //     } else {
-  //       updatedUri = originalUri + "&" + keys[i] + "=" + values[i];
-  //       originalUri = updatedUri;
-  //     }
-  //   }
-  // }
-
   handleChangeParam = e => {
     const name = e.currentTarget.name.split(".");
     const originalParamsKeys = [...this.state.originalParamsKeys];
@@ -303,7 +285,6 @@ class DisplayEndpoint extends Component {
         }
       }
     }
-
     if (paramsData[""]) delete paramsData[""];
     updatedParamsKeys = updatedParamsKeys.filter(k => k != "");
     originalParamsKeys = [...updatedParamsKeys];
@@ -386,19 +367,6 @@ class DisplayEndpoint extends Component {
   }
 
   render() {
-    // const { endpointFlag, groupFlag } = this.props.location;
-    // this.state.endpointFlag = endpointFlag;
-    // this.state.groupFlag = groupFlag;
-
-    // if (endpointFlag === "true" || groupFlag === "true") {
-    //   this.state.endpointFlag = endpointFlag;
-    //   this.state.groupFlag = groupFlag;
-    //   console.log("in state");
-    //   this.handleState(this.state.endpointFlag, this.state.groupFlag);
-    // }
-
-    // console.log("this.props", this.props);
-    // console.log("this.state", this.state);
     if (this.props.location.endpoint) {
       let paramsData = { ...this.props.location.endpoint.params };
       const originalParamsKeys = Object.keys(paramsData);
@@ -425,7 +393,6 @@ class DisplayEndpoint extends Component {
       this.state.groups = this.props.location.groups;
     }
     if (this.props.location.title == "Add New Endpoint") {
-      console.log("Add New Endpoint");
       const data = {
         name: "",
         method: "GET",
