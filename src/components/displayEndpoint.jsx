@@ -224,8 +224,6 @@ class DisplayEndpoint extends Component {
         }
       }
     } else if (this.state.title === "update endpoint") {
-      console.log("update end");
-
       originalUri = originalUri.split("?")[0];
       for (let i = 0; i < keys.length; i++) {
         if (i == 0) {

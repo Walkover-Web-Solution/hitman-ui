@@ -23,20 +23,11 @@ class Endpoints extends Form {
       this.props.history.push({
         pathname: `/dashboard/collections`,
         newEndpoint: this.state.data,
-        // versionId: parseInt(this.props.location.pathname.split("/")[5]),
         groupId: parseInt(this.props.location.pathname.split("/")[7]),
         title: "Add New Endpoint",
         versions: this.props.location.versions
       });
     }
-
-    // if (this.props.title === "Add New Version Page") {
-    //   this.props.history.push({
-    //     pathname: `/dashboard/collections`,
-    //     newPage: this.state.data,
-    //     versionId: parseInt(this.props.location.pathname.split("/")[5])
-    //   });
-    // }
 
     if (this.props.title == "Edit Endpoint") {
       this.props.history.push({
@@ -51,10 +42,7 @@ class Endpoints extends Form {
   render() {
     if (this.props.location.editEndpoint) {
       const { name } = this.props.location.editEndpoint;
-      // this.state.pageId = id;
-      // this.state.versionId = versionId;
       this.state.data.name = name;
-      // this.state.data.contents = contents;
       this.props.history.replace({ editEndpoint: null });
     }
     return (

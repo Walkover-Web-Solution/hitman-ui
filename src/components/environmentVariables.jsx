@@ -97,7 +97,6 @@ class EnvironmentVariables extends Component {
 
   handleChange = e => {
     const name = e.currentTarget.name.split(".");
-    console.log(name);
     const originalVariableNames = [...this.state.originalVariableNames];
     const updatedVariableNames = [...this.state.updatedVariableNames];
     if (name[1] === "name") {
