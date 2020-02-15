@@ -49,16 +49,23 @@ class DisplayEndpoint extends Component {
       let updatedUri = e.currentTarget.value;
       let keys = [];
       let values = [];
-      updatedUri = updatedUri.split("?")[1];
-      let arr = updatedUri.split(/[&=]/);
-      for (let i = 0; i < arr.length; i++) {
-        if (i % 2 == 0) {
-          keys.push(arr[i]);
-        } else {
-          values.push(arr[i]);
-        }
+      let lastCharacter =
+        e.currentTarget.value[e.currentTarget.value.length - 1];
+      if (lastCharacter === "&" || lastCharacter === "?") {
+        this.handleAddParam();
       }
-      this.setState({ keys, values });
+      updatedUri = updatedUri.split("?")[1];
+      if (updatedUri) {
+        let arr = updatedUri.split(/[&=]/);
+        for (let i = 0; i < arr.length; i++) {
+          if (i % 2 == 0) {
+            keys.push(arr[i]);
+          } else {
+            values.push(arr[i]);
+          }
+        }
+        this.setState({ keys, values });
+      }
     }
     this.setState({ data });
   };
