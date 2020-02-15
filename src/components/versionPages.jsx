@@ -4,16 +4,48 @@ import {
   Card,
   Button,
   Dropdown,
-  DropdownButton
+  DropdownButton,
+  ListGroup
 } from 'react-bootstrap'
 
 class Pages extends Component {
-  state = {}
+  state = {
+    pageIds: []
+  }
 
-  async handleDelete (page) {
+  componentDidMount () {
+    const pageIds = this.props.page_ids
+    this.setState({ pageIds })
+  }
+
+  onDragStart = (e, pageId) => {
+    this.draggedItem = pageId
+  }
+
+  onDragOver = (e, pageId) => {
+    e.preventDefault()
+    this.draggedOverItem = pageId
+  }
+
+  async onDragEnd (e) {
+    console.log(this.draggedItem, this.draggedOverItem)
+    if (this.draggedItem === this.draggedOverItem) {
+      return
+    }
+    let pageIds = this.state.pageIds.filter(item => item !== this.draggedItem)
+    const index = this.state.pageIds.findIndex(
+      vId => vId === this.draggedOverItem
+    )
+    pageIds.splice(index, 0, this.draggedItem)
+    await this.setState({ pageIds })
+    this.props.set_page_id(this.state.pageIds)
+  }
+
+  handleDelete (pageId) {
+    console.log('sf', pageId)
     this.props.history.push({
       pathname: '/dashboard/collections',
-      deletePageId: page.id
+      deletePageId: pageId
     })
   }
   handleDisplay (page) {
@@ -24,25 +56,32 @@ class Pages extends Component {
   }
 
   render () {
+    console.log(this.props.page_ids)
     return (
       <div>
         {this.props.pages &&
-          Object.keys(this.props.pages)
+          this.props.page_ids
             .filter(
               pageId =>
                 this.props.pages[pageId].versionId === this.props.version_id &&
                 this.props.pages[pageId].groupId === null
             )
-
             .map(pageId => (
-              <Accordion defaultActiveKey='1' key={pageId}>
+              <Accordion
+                defaultActiveKey='0'
+                key={pageId}
+                draggable
+                onDragOver={e => this.onDragOver(e, pageId)}
+                onDragStart={e => this.onDragStart(e, pageId)}
+                onDragEnd={e => this.onDragEnd(e, pageId)}
+              >
                 <Card>
                   <Card.Header>
                     <Accordion.Toggle
+                      as={Button}
                       onClick={() =>
                         this.handleDisplay(this.props.pages[pageId])
                       }
-                      as={Button}
                       variant='link'
                       eventKey='1'
                     >
@@ -62,16 +101,13 @@ class Pages extends Component {
                               'Are you sure you wish to delete this item?'
                             )
                           )
-                            this.handleDelete(this.props.pages[pageId])
+                            this.handleDelete(pageId)
                         }}
                       >
                         Delete
                       </Dropdown.Item>
                     </DropdownButton>
                   </Card.Header>
-                  <Accordion.Collapse eventKey='0'>
-                    <Card.Body></Card.Body>
-                  </Accordion.Collapse>
                 </Card>
               </Accordion>
             ))}

@@ -7,9 +7,7 @@ import {
   DropdownButton
 } from 'react-bootstrap'
 import Groups from './groups'
-import Pages from './pages'
-import Collections from './collections'
-import CollectionVersionForm from './collectionVersionForm'
+import Pages from './versionPages'
 
 class CollectionVersions extends Component {
   state = {
@@ -149,10 +147,6 @@ class CollectionVersions extends Component {
                         {...this.props}
                         version_id={parseInt(versionId)}
                       />
-                    </Card.Body>
-                  </Accordion.Collapse>
-                  <Accordion.Collapse eventKey='1'>
-                    <Card.Body>
                       <Pages {...this.props} version_id={parseInt(versionId)} />
                     </Card.Body>
                   </Accordion.Collapse>
