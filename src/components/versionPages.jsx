@@ -4,8 +4,7 @@ import {
   Card,
   Button,
   Dropdown,
-  DropdownButton,
-  ListGroup
+  DropdownButton
 } from 'react-bootstrap'
 
 class Pages extends Component {
@@ -21,7 +20,6 @@ class Pages extends Component {
   }
 
   async onDragEnd (e) {
-    console.log(this.draggedItem, this.draggedOverItem)
     if (this.draggedItem === this.draggedOverItem) {
       return
     }
@@ -34,7 +32,6 @@ class Pages extends Component {
   }
 
   handleDelete (pageId) {
-    console.log('sf', pageId)
     this.props.history.push({
       pathname: '/dashboard/collections',
       deletePageId: pageId

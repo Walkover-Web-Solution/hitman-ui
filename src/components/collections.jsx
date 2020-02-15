@@ -166,6 +166,7 @@ class Collections extends Component {
         collectionIds: originalCollectionIds
       })
     }
+    this.props.history.push('/dashboard/collections')
   }
 
   async handleUpdate (editedCollection) {
@@ -393,19 +394,19 @@ class Collections extends Component {
     })
   }
 
-  async handleAddEndpoint (groupId, newEndpoint) {
-    const originalEndpoints = [...this.state.endpoints]
+  async handleAddEndpoint (groupId, newEndpoint, versions) {
+    const originalEndpoints = { ...this.state.endpoints }
     newEndpoint.requestId = shortId.generate()
-    const endpoints = [...this.state.endpoints, newEndpoint]
+    const requestId = newEndpoint.requestId
+    const endpoints = { ...this.state.endpoints }
+    endpoints[requestId] = newEndpoint
     this.setState({ endpoints })
     let endpoint = {}
     try {
       const { data } = await endpointService.saveEndpoint(groupId, newEndpoint)
       endpoint = data
-      const index = endpoints.findIndex(
-        e => e.requestId === newEndpoint.requestId
-      )
-      endpoints[index] = endpoint
+      endpoints[endpoint.id] = endpoint
+      delete endpoints.requestId
       this.setState({ endpoints })
     } catch (ex) {
       this.setState({ originalEndpoints })
@@ -414,7 +415,9 @@ class Collections extends Component {
       pathname: `/dashboard/collections/endpoints/${endpoint.id}`,
       endpoint: endpoint,
       groups: this.state.groups,
-      title: 'Add New Endpoint'
+      title: 'update endpoint',
+      versions: versions,
+      groupId: groupId
     })
   }
 
@@ -443,7 +446,6 @@ class Collections extends Component {
     this.setState({ collectionIds })
   }
   render () {
-    console.log(this.state.versionIds)
     const { location } = this.props
 
     if (location.editedEndpoint) {
@@ -458,11 +460,15 @@ class Collections extends Component {
       this.handleDeleteEndpoint(deleteEndpointId)
     }
 
-    if (location.newEndpoint) {
-      const { newEndpoint, groupId } = location
-      this.props.history.replace({ groupId: null, newPage: null })
+    if (location.title === 'Add Endpoint') {
+      const { endpoint, groupId } = location
+      this.props.history.replace({
+        title: null,
+        groupId: null,
+        endpoint: null
+      })
 
-      this.handleAddEndpoint(groupId, newEndpoint)
+      this.handleAddEndpoint(groupId, endpoint, this.props.location.versions)
     }
 
     if (location.newPage && location.groupId) {

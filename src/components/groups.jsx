@@ -43,10 +43,14 @@ class Groups extends Component {
     })
   }
 
-  handleAddEndpoint (groupId, versionId, collectionId) {
+  handleAddEndpoint (groupId, versionId, collectionId, versions, groups) {
     this.props.history.push({
-      pathname: `/dashboard/collections/${collectionId}/versions/${versionId}/groups/${groupId}/endpoints/new`,
-      groupId: groupId
+      pathname: `/dashboard/collections/endpoints`,
+      versions: versions,
+      groups: groups,
+      groupId: groupId,
+      title: 'Add New Endpoint',
+      groupFlag: true
     })
   }
 
@@ -126,7 +130,9 @@ class Groups extends Component {
                           this.handleAddEndpoint(
                             groupId,
                             this.props.groups[groupId].versionId,
-                            this.props.collection_id
+                            this.props.collection_id,
+                            this.props.versions,
+                            this.props.groups
                           )
                         }
                       >

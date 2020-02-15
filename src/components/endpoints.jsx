@@ -20,11 +20,14 @@ class Endpoints extends Component {
       editEndpoint: endpoint
     })
   }
-  handleDisplay (endpoint, groups) {
+  handleDisplay (endpoint, groups, versions) {
     this.props.history.push({
       pathname: `/dashboard/collections/endpoints/${endpoint.id}`,
+      title: 'update endpoint',
       endpoint: endpoint,
-      groups: groups
+      groups: groups,
+      versions: versions,
+      endpointFlag: true
     })
   }
   state = {}
@@ -36,14 +39,15 @@ class Endpoints extends Component {
             eId => this.props.endpoints[eId].groupId === this.props.group_id
           )
           .map(endpointId => (
-            <Accordion defaultActiveKey='1'>
+            <Accordion defaultActiveKey='1' key={endpointId}>
               <Card>
                 <Card.Header>
                   <Accordion.Toggle
                     onClick={() =>
                       this.handleDisplay(
                         this.props.endpoints[endpointId],
-                        this.props.groups
+                        this.props.groups,
+                        this.props.versions
                       )
                     }
                     as={Button}
@@ -60,7 +64,9 @@ class Endpoints extends Component {
                   >
                     <Dropdown.Item
                       eventKey='2'
-                      // onClick={() => this.handleDelete(endpoint)}
+                      onClick={() =>
+                        this.handleDelete(this.props.endpoints[endpointId])
+                      }
                     >
                       Delete
                     </Dropdown.Item>

@@ -5,17 +5,23 @@ function endpointUrl(groupId) {
     return `${apiUrl}/groups/${groupId}/endpoints`;
 }
 
-export function apiTest(api, method, body) {
+export function apiTest(api, method, body,headers) {
     return http.request({
         url: api,
         method: method,
-        data: body
+        data: body,
+        headers: headers
     });
 }
 
 export function getEndpoints(groupId) {
     return http.get(endpointUrl(groupId));
 }
+
+export function getEndpoint(endpointId) {
+    return http.get(`${apiUrl}/endpoints/${endpointId}`);
+}
+
 
 export function saveEndpoint(groupId, endpoint) {
     return http.post(endpointUrl(groupId), endpoint);
@@ -36,6 +42,7 @@ export default {
     getEndpoints,
     deleteEndpoint,
     apiTest,
-    updateEndpoint
+    updateEndpoint,
+    getEndpoint
     // updateEndpointName
 };

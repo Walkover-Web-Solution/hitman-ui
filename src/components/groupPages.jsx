@@ -20,7 +20,6 @@ class GroupPages extends Component {
   }
 
   async onDragEnd (e) {
-    console.log(this.draggedItem, this.draggedOverItem)
     if (this.draggedItem === this.draggedOverItem) {
       return
     }

@@ -5,6 +5,7 @@
     "dependencies": {
         "axios": "^0.19.1",
         "bootstrap": "^4.4.1",
+        "http-status": "^1.4.2",
         "joi-browser": "^13.4.0",
         "jquery": "^3.4.1",
         "jwt-decode": "^2.2.0",
