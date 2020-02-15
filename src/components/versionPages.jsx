@@ -11,11 +11,6 @@ import {
 class Pages extends Component {
   state = {}
 
-  componentDidMount () {
-    const pageIds = this.props.page_ids
-    this.setState({ pageIds })
-  }
-
   onDragStart = (e, pageId) => {
     this.draggedItem = pageId
   }
@@ -64,7 +59,7 @@ class Pages extends Component {
             )
             .map(pageId => (
               <Accordion
-                defaultActiveKey='0'
+                defaultActiveKey='1'
                 key={pageId}
                 draggable
                 onDragOver={e => this.onDragOver(e, pageId)}

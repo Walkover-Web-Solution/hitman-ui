@@ -443,7 +443,7 @@ class Collections extends Component {
     this.setState({ collectionIds })
   }
   render () {
-    console.log(this.state.pageIds)
+    console.log(this.state.versionIds)
     const { location } = this.props
 
     if (location.editedEndpoint) {
@@ -701,7 +701,7 @@ class Collections extends Component {
                     style={{ float: 'right' }}
                   >
                     <Dropdown.Item
-                      eventKey='1'
+                      // eventKey='1'
                       onClick={() => {
                         this.props.history.push({
                           pathname: `/dashboard/collections/${collectionId}/edit`,
@@ -714,7 +714,7 @@ class Collections extends Component {
                       Edit
                     </Dropdown.Item>
                     <Dropdown.Item
-                      eventKey='2'
+                      eventKey='0'
                       onClick={() => {
                         if (
                           window.confirm(

@@ -10,14 +10,7 @@ import GroupPages from './groupPages'
 import Endpoints from './endpoints'
 
 class Groups extends Component {
-  state = {
-    groupIds: []
-  }
-
-  componentDidMount () {
-    const groupIds = this.props.group_ids
-    this.setState({ groupIds })
-  }
+  state = {}
 
   onDragStart = (e, groupId) => {
     this.draggedItem = groupId
@@ -32,13 +25,14 @@ class Groups extends Component {
     if (this.draggedItem === this.draggedOverItem) {
       return
     }
-    let groupIds = this.state.groupIds.filter(item => item !== this.draggedItem)
-    const index = this.state.groupIds.findIndex(
+    let groupIds = this.props.group_ids.filter(
+      item => item !== this.draggedItem
+    )
+    const index = this.props.group_ids.findIndex(
       vId => vId === this.draggedOverItem
     )
     groupIds.splice(index, 0, this.draggedItem)
-    await this.setState({ groupIds })
-    this.props.set_group_id(this.state.groupIds)
+    this.props.set_group_id(groupIds)
   }
 
   handleAddPage (groupId, versionId, collectionId) {
@@ -128,13 +122,13 @@ class Groups extends Component {
                       </Dropdown.Item>
                       <Dropdown.Item
                         eventKey='3'
-                        // onClick={() =>
-                        //   this.handleAddEndpoint(
-                        //     groupId,
-                        //     this.props.groups[groupId].versionId,
-                        //     this.props.collection_id
-                        //   )
-                        // }
+                        onClick={() =>
+                          this.handleAddEndpoint(
+                            groupId,
+                            this.props.groups[groupId].versionId,
+                            this.props.collection_id
+                          )
+                        }
                       >
                         Add Endpoint
                       </Dropdown.Item>

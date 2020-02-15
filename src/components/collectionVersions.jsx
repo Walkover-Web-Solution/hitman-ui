@@ -10,14 +10,7 @@ import Groups from './groups'
 import Pages from './versionPages'
 
 class CollectionVersions extends Component {
-  state = {
-    versionIds: []
-  }
-
-  componentDidMount () {
-    const versionIds = this.props.version_ids
-    this.setState({ versionIds })
-  }
+  state = {}
 
   onDragStart = (e, versionId) => {
     this.draggedItem = versionId
@@ -32,15 +25,14 @@ class CollectionVersions extends Component {
     if (this.draggedItem === this.draggedOverItem) {
       return
     }
-    let versionIds = this.state.versionIds.filter(
+    let versionIds = this.props.version_ids.filter(
       item => item !== this.draggedItem
     )
-    const index = this.state.versionIds.findIndex(
+    const index = this.props.version_ids.findIndex(
       vId => vId === this.draggedOverItem
     )
     versionIds.splice(index, 0, this.draggedItem)
-    await this.setState({ versionIds })
-    this.props.set_version_id(this.state.versionIds)
+    this.props.set_version_id(versionIds)
   }
 
   async handleDelete (collectionVersion) {
