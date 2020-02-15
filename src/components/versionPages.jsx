@@ -9,9 +9,7 @@ import {
 } from 'react-bootstrap'
 
 class Pages extends Component {
-  state = {
-    pageIds: []
-  }
+  state = {}
 
   componentDidMount () {
     const pageIds = this.props.page_ids
@@ -32,13 +30,12 @@ class Pages extends Component {
     if (this.draggedItem === this.draggedOverItem) {
       return
     }
-    let pageIds = this.state.pageIds.filter(item => item !== this.draggedItem)
-    const index = this.state.pageIds.findIndex(
+    let pageIds = this.props.page_ids.filter(item => item !== this.draggedItem)
+    const index = this.props.page_ids.findIndex(
       vId => vId === this.draggedOverItem
     )
     pageIds.splice(index, 0, this.draggedItem)
-    await this.setState({ pageIds })
-    this.props.set_page_id(this.state.pageIds)
+    this.props.set_page_id(pageIds)
   }
 
   handleDelete (pageId) {
@@ -56,7 +53,6 @@ class Pages extends Component {
   }
 
   render () {
-    console.log(this.props.page_ids)
     return (
       <div>
         {this.props.pages &&

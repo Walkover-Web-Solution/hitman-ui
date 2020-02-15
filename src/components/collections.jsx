@@ -94,7 +94,6 @@ class Collections extends Component {
     const versionIds = Object.keys(versions)
     const groupIds = Object.keys(groups)
     const pageIds = Object.keys(pages)
-    console.log(pages)
     this.setState({
       versions,
       groups,
@@ -116,7 +115,6 @@ class Collections extends Component {
   }
 
   setPageIds (pageIds) {
-    console.log(pageIds)
     this.setState({ pageIds })
   }
 
@@ -142,7 +140,6 @@ class Collections extends Component {
       const collectionIds = [...this.state.collectionIds, collection.id]
       this.setState({ collections, versions, collectionIds, versionIds })
     } catch (ex) {
-      console.log(ex)
       toast.error(ex)
       this.setState({
         collections: originalCollections,
@@ -339,19 +336,30 @@ class Collections extends Component {
   }
 
   async handleAddGroupPage (versionId, groupId, newPage) {
-    const { data: page } = await pageService.saveGroupPage(groupId, newPage)
+    newPage.requestId = shortId.generate()
+    const requestId = newPage.requestId
+    const originalPageIds = [...this.state.pageIds]
+    const originalPages = { ...this.state.pages }
     let pages = { ...this.state.pages }
-    pages[page.id] = page
-    let pageId = page.id
+    pages[requestId] = { ...newPage, versionId }
     this.setState({ pages })
-    this.props.history.push({
-      pathname: `/dashboard/collections/pages/${pageId}/edit`,
-      page: page
-    })
+    try {
+      const { data: page } = await pageService.saveGroupPage(groupId, newPage)
+      pages[page.id] = page
+      delete pages[requestId]
+      const pageIds = [...this.state.pageIds, page.id.toString()]
+      this.setState({ pages, pageIds })
+      this.props.history.push({
+        pathname: `/dashboard/collections/pages/${page.id}/edit`,
+        page: page
+      })
+    } catch (ex) {
+      toast.error(ex)
+      this.setState({ pages: originalPages, pageIds: originalPageIds })
+    }
   }
 
   async handleDeletePage (deletedPageId) {
-    console.log()
     const originalPages = { ...this.state.pages }
     const originalPageIds = [...this.state.pageIds]
     let pages = { ...this.state.pages }
@@ -359,7 +367,6 @@ class Collections extends Component {
     const pageIds = this.state.pageIds.filter(
       pId => pId !== deletedPageId.toString()
     )
-    console.log(pageIds, this.state.pageIds, deletedPageId.toString())
     this.setState({ pages, pageIds })
     try {
       await pageService.deletePage(deletedPageId)
@@ -436,7 +443,7 @@ class Collections extends Component {
     this.setState({ collectionIds })
   }
   render () {
-    console.log(this.props.location.deletedPageId, this.state.pageIds)
+    console.log(this.state.pageIds)
     const { location } = this.props
 
     if (location.editedEndpoint) {
@@ -483,7 +490,6 @@ class Collections extends Component {
     }
 
     if (location.deletePageId) {
-      console.log(location.deletePageId)
       const deletePageId = location.deletePageId
       this.props.history.replace({ deletedPageId: null })
       this.handleDeletePage(deletePageId)

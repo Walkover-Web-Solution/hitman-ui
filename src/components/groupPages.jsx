@@ -10,10 +10,37 @@ import {
 class GroupPages extends Component {
   state = {}
 
-  async handleDelete (page) {
+  componentDidMount () {
+    const pageIds = this.props.page_ids
+    this.setState({ pageIds })
+  }
+
+  onDragStart = (e, pageId) => {
+    this.draggedItem = pageId
+  }
+
+  onDragOver = (e, pageId) => {
+    e.preventDefault()
+    this.draggedOverItem = pageId
+  }
+
+  async onDragEnd (e) {
+    console.log(this.draggedItem, this.draggedOverItem)
+    if (this.draggedItem === this.draggedOverItem) {
+      return
+    }
+    let pageIds = this.props.page_ids.filter(item => item !== this.draggedItem)
+    const index = this.props.page_ids.findIndex(
+      vId => vId === this.draggedOverItem
+    )
+    pageIds.splice(index, 0, this.draggedItem)
+    this.props.set_page_id(pageIds)
+  }
+
+  async handleDelete (deletePageId) {
     this.props.history.push({
       pathname: '/dashboard/collections',
-      deletePageId: page.id
+      deletePageId: deletePageId
     })
   }
 
@@ -35,7 +62,7 @@ class GroupPages extends Component {
     return (
       <div>
         {this.props.pages &&
-          Object.keys(this.props.pages)
+          this.props.page_ids
             .filter(
               pageId =>
                 this.props.pages[pageId].versionId === this.props.version_id &&
@@ -43,7 +70,14 @@ class GroupPages extends Component {
             )
 
             .map(pageId => (
-              <Accordion defaultActiveKey='0' key={pageId}>
+              <Accordion
+                defaultActiveKey='0'
+                key={pageId}
+                draggable
+                onDragOver={e => this.onDragOver(e, pageId)}
+                onDragStart={e => this.onDragStart(e, pageId)}
+                onDragEnd={e => this.onDragEnd(e, pageId)}
+              >
                 <Card>
                   <Card.Header>
                     <Accordion.Toggle
@@ -70,7 +104,7 @@ class GroupPages extends Component {
                               'Are you sure you wish to delete this item?'
                             )
                           )
-                            this.handleDelete(this.props.pages[pageId])
+                            this.handleDelete(pageId)
                         }}
                       >
                         Delete
