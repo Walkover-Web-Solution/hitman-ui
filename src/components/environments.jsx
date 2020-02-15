@@ -42,7 +42,7 @@ class Environments extends Component {
       delete environments[requestId]
       this.setState({ environments })
     } catch (ex) {
-      toast.error(ex.response.data)
+      toast.error(ex.response ? ex.response.data : 'Something went wrong')
       this.setState({ environment: originalEnvironment })
     }
   }
@@ -72,7 +72,7 @@ class Environments extends Component {
         environments[updatedEnvironment.id] = environment
         this.setState({ environments })
       } catch (ex) {
-        toast.error(ex.response.data)
+        toast.error(ex.response ? ex.response.data : 'Something went wrong')
         this.setState({ environment: originalEnvironment })
       }
     }

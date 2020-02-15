@@ -22,7 +22,7 @@ class CollectionVersionForm extends Form {
       .label('Version number'),
     host: Joi.string()
       .uri()
-      .allow(null, '')
+      .required()
       .label('Host')
   }
 
