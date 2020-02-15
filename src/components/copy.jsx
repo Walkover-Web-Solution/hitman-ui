@@ -762,3 +762,56 @@ class DisplayEndpoint extends Component {
 }
 
 export default DisplayEndpoint;
+
+
+
+
+else if (this.state.title === "update endpoint") {
+  originalUri = originalUri.split("?");
+  for (let i = 0; i < keys.length; i++) {
+    if (i == 0) {
+      updatedUri = originalUri[0] + "?" + keys[i] + "=" + values[i];
+      originalUri = updatedUri;
+    } else {
+      updatedUri = originalUri + "&" + keys[i] + "=" + values[i];
+      originalUri = updatedUri;
+    }
+  }
+}
+
+
+else if (this.state.title === "update endpoint") {
+  console.log("update end");
+
+  originalUri = originalUri.split("?")[0];
+  for (let i = 0; i < keys.length; i++) {
+    if (i == 0) {
+      if (keys[i].length === 0) {
+        updatedUri = originalUri.substring(0, originalUri.length - 1);
+      } else {
+        updatedUri = originalUri + "?" + keys[i] + "=" + values[i];
+        originalUri = updatedUri;
+      }
+    } else {
+      if (keys[i].length === 0) {
+        originalUri = originalUri.substring(0, originalUri.length - 1);
+      } else {
+        if (originalUri.split("?")[1]) {
+          updatedUri = originalUri + "&" + keys[i] + "=" + values[i];
+          originalUri = updatedUri;
+        } else {
+          updatedUri = originalUri + "?" + keys[i] + "=" + values[i];
+          originalUri = updatedUri;
+        }
+      }
+      // if (i == 0) {
+      //   updatedUri = originalUri + "?" + keys[i] + "=" + values[i];
+      //   originalUri = updatedUri;
+      // } else {
+      //   updatedUri = originalUri + "&" + keys[i] + "=" + values[i];
+      //   originalUri = updatedUri;
+      // }
+    }
+  }
+  this.state.data.updatedUri = updatedUri;
+}
