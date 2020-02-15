@@ -20,8 +20,8 @@ class DisplayEndpoint extends Component {
       updatedUri: "",
       host: ""
     },
-    startTime:"",
-    timeElapsed:"",
+    startTime: "",
+    timeElapsed: "",
     response: {},
     endpoint: {},
     groups: [],
@@ -49,6 +49,7 @@ class DisplayEndpoint extends Component {
       let updatedUri = e.currentTarget.value;
       let keys = [];
       let values = [];
+      let paramsData = [];
       let lastCharacter =
         e.currentTarget.value[e.currentTarget.value.length - 1];
       if (lastCharacter === "&" || lastCharacter === "?") {
@@ -95,8 +96,8 @@ class DisplayEndpoint extends Component {
   }
   handleSend = async () => {
     let startTime = new Date().getTime();
-    this.setState({startTime});
-    let response ={};
+    this.setState({ startTime });
+    let response = {};
     const headersData = this.doSubmitHeader();
     const paramsData = this.doSubmitParam();
     await this.setState({ headersData, paramsData, response });
@@ -127,7 +128,6 @@ class DisplayEndpoint extends Component {
       const response = { ...responseJson };
       if (responseJson.status == 200) this.setState({ response });
       this.responseTime();
-
     } catch (error) {
       if (error.response) {
         let response = {
@@ -194,6 +194,18 @@ class DisplayEndpoint extends Component {
   handleDeleteParam(index) {
     const updatedParamsKeys = this.state.updatedParamsKeys;
     updatedParamsKeys[index] = "deleted";
+    let keys = [];
+    let values = [];
+    for (let i = 0; i < this.state.keys.length; i++) {
+      if (i === index) {
+        continue;
+      }
+      keys.push(this.state.keys[i]);
+      values.push(this.state.values[i]);
+    }
+    this.state.keys = keys;
+    this.state.values = values;
+    this.handleUpdateUri(keys, values);
     this.setState({ updatedParamsKeys });
   }
 
@@ -225,6 +237,9 @@ class DisplayEndpoint extends Component {
       }
     } else if (this.state.title === "update endpoint") {
       originalUri = originalUri.split("?")[0];
+      if (keys.length === 0) {
+        updatedUri = originalUri.substring(0, originalUri.length - 1);
+      }
       for (let i = 0; i < keys.length; i++) {
         if (i == 0) {
           if (keys[i].length === 0) {
@@ -377,10 +392,10 @@ class DisplayEndpoint extends Component {
     return headersData;
   }
 
-  responseTime(){
-    let timeElapsed=new Date().getTime()-this.state.startTime;
-    this.setState({timeElapsed});
- }
+  responseTime() {
+    let timeElapsed = new Date().getTime() - this.state.startTime;
+    this.setState({ timeElapsed });
+  }
 
   render() {
     if (this.props.location.endpoint) {
@@ -803,14 +818,16 @@ class DisplayEndpoint extends Component {
         {this.state.response.status ? (
           this.state.response.status == 200 ? (
             <div>
-            <div class="alert alert-success" role="alert">
-              Status :{" "}
-              {this.state.response.status +" " +this.state.response.statusText}
-            <div  style = {{float:"right" } } >
-            Time:{this.state.timeElapsed}ms
-          </div>
-           </div>
-          </div>
+              <div class="alert alert-success" role="alert">
+                Status :{" "}
+                {this.state.response.status +
+                  " " +
+                  this.state.response.statusText}
+                <div style={{ float: "right" }}>
+                  Time:{this.state.timeElapsed}ms
+                </div>
+              </div>
+            </div>
           ) : (
             <div class="alert alert-danger" role="alert">
               Status :
