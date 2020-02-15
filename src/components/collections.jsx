@@ -159,7 +159,8 @@ class Collections extends Component {
     delete collections[collection.id]
     this.setState({ collections, collectionIds })
     try {
-      await collectionsService.deleteCollection('collection.id')
+      await collectionsService.deleteCollection(collection.id)
+      this.props.history.push('/dashboard/collections')
     } catch (ex) {
       toast.error(ex.response ? ex.response.data : 'Something went wrong')
       this.setState({
@@ -167,7 +168,6 @@ class Collections extends Component {
         collectionIds: originalCollectionIds
       })
     }
-    this.props.history.push('/dashboard/collections')
   }
 
   async handleUpdate (editedCollection) {
@@ -385,14 +385,14 @@ class Collections extends Component {
     this.setState({ pages })
     try {
       await pageService.updatePage(pageId, editedPage)
+      this.props.history.push({
+        pathname: `/dashboard/collections/pages/${pageId}`,
+        page: editedPage
+      })
     } catch (ex) {
       toast.error(ex.response ? ex.response.data : 'Something went wrong')
       this.setState({ pages: originalPages })
     }
-    this.props.history.push({
-      pathname: `/dashboard/collections/pages/${pageId}`,
-      page: editedPage
-    })
   }
 
   async handleAddEndpoint (groupId, newEndpoint, versions) {
@@ -409,24 +409,23 @@ class Collections extends Component {
       endpoints[endpoint.id] = endpoint
       delete endpoints.requestId
       this.setState({ endpoints })
+      this.props.history.push({
+        pathname: `/dashboard/collections/endpoints/${endpoint.id}`,
+        endpoint: endpoint,
+        groups: this.state.groups,
+        title: 'update endpoint',
+        versions: versions,
+        groupId: groupId
+      })
     } catch (ex) {
       this.setState({ originalEndpoints })
     }
-    this.props.history.push({
-      pathname: `/dashboard/collections/endpoints/${endpoint.id}`,
-      endpoint: endpoint,
-      groups: this.state.groups,
-      title: 'update endpoint',
-      versions: versions,
-      groupId: groupId
-    })
   }
 
   async handleDeleteEndpoint (deleteEndpointId) {
     await endpointService.deleteEndpoint(deleteEndpointId)
-    const endpoints = this.state.endpoints.filter(
-      endpoint => endpoint.id !== deleteEndpointId
-    )
+    const endpoints = { ...this.state.endpoints }
+    delete endpoints[deleteEndpointId]
     this.setState({ endpoints })
   }
 
