@@ -21,6 +21,7 @@ import EndpointForm from './endpointForm'
 import endpointService from '../services/endpointService'
 import shortId from 'shortid'
 import { toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 class Collections extends Component {
   state = {
@@ -140,7 +141,7 @@ class Collections extends Component {
       const collectionIds = [...this.state.collectionIds, collection.id]
       this.setState({ collections, versions, collectionIds, versionIds })
     } catch (ex) {
-      toast.error(ex)
+      toast.error(ex.response ? ex.response.data : 'Something went wrong')
       this.setState({
         collections: originalCollections,
         collectionIds: originalCollectionIds
@@ -159,14 +160,14 @@ class Collections extends Component {
     this.setState({ collections, collectionIds })
     try {
       await collectionsService.deleteCollection(collection.id)
+      this.props.history.push('/dashboard/collections')
     } catch (ex) {
-      toast.error(ex)
+      toast.error(ex.response ? ex.response.data : 'Something went wrong')
       this.setState({
         collections: originalCollections,
         collectionIds: originalCollectionIds
       })
     }
-    this.props.history.push('/dashboard/collections')
   }
 
   async handleUpdate (editedCollection) {
@@ -179,7 +180,7 @@ class Collections extends Component {
     try {
       await collectionsService.updateCollection(editedCollection.id, body)
     } catch (ex) {
-      toast.error(ex.response.data)
+      toast.error(ex.response ? ex.response.data : 'Something went wrong')
       this.setState({ collections: originalCollections })
     }
   }
@@ -187,7 +188,7 @@ class Collections extends Component {
   async handleAddVersion (newCollectionVersion, collectionId) {
     newCollectionVersion.requestId = shortId.generate()
     const originalVersions = { ...this.state.versions }
-    const originalVersionIds = { ...this.state.versionIds }
+    const originalVersionIds = [...this.state.versionIds]
     let versions = { ...this.state.versions }
     const requestId = newCollectionVersion.requestId
     versions[requestId] = { ...newCollectionVersion, collectionId }
@@ -204,7 +205,7 @@ class Collections extends Component {
       const versionIds = [...this.state.versionIds, version.id.toString()]
       this.setState({ versions, versionIds })
     } catch (ex) {
-      toast.error(ex)
+      toast.error(ex.response ? ex.response.data : 'Something went wrong')
       this.setState({
         versions: originalVersions,
         versionIds: originalVersionIds
@@ -214,7 +215,7 @@ class Collections extends Component {
 
   async handleDeleteVersion (deletedCollectionVersionId) {
     const originalVersions = { ...this.state.versions }
-    const originalVersionIds = { ...this.state.versionIds }
+    const originalVersionIds = [...this.state.versionIds]
     let versions = { ...this.state.versions }
     delete versions[deletedCollectionVersionId]
     const versionIds = this.state.versionIds.filter(
@@ -226,7 +227,7 @@ class Collections extends Component {
         deletedCollectionVersionId
       )
     } catch (ex) {
-      toast.error(ex)
+      toast.error(ex.response ? ex.response.data : 'Something went wrong')
       this.setState({
         versions: originalVersions,
         versionIds: originalVersionIds
@@ -245,7 +246,7 @@ class Collections extends Component {
     try {
       await collectionVersionsService.updateCollectionVersion(version.id, body)
     } catch (ex) {
-      toast.error(ex.response.data)
+      toast.error(ex.response ? ex.response.data : 'Something went wrong')
       this.setState({ versions: originalVersions })
     }
   }
@@ -253,7 +254,7 @@ class Collections extends Component {
   async handleAddGroup (versionId, newGroup) {
     newGroup.requestId = shortId.generate()
     const requestId = newGroup.requestId
-    const originalGroupIds = { ...this.state.groupIds }
+    const originalGroupIds = [...this.state.groupIds]
     const originalGroups = { ...this.state.groups }
     const groups = { ...this.state.groups }
     groups[newGroup.requestId] = { ...newGroup, versionId }
@@ -265,14 +266,14 @@ class Collections extends Component {
       const groupIds = [...this.state.groupIds, group.id.toString()]
       this.setState({ groups, groupIds })
     } catch (ex) {
-      toast.error(ex)
+      toast.error(ex.response ? ex.response.data : 'Something went wrong')
       this.setState({ groups: originalGroups, groupIds: originalGroupIds })
     }
   }
 
   async handleDeleteGroup (deletedGroupId) {
     const originalGroups = { ...this.state.groups }
-    const originalGroupIds = { ...this.state.groupIds }
+    const originalGroupIds = [...this.state.groupIds]
     const groups = { ...this.state.groups }
     delete groups[deletedGroupId]
     const groupIds = this.state.groupIds.filter(
@@ -282,7 +283,7 @@ class Collections extends Component {
     try {
       await groupsService.deleteGroup(deletedGroupId)
     } catch (ex) {
-      toast.error(ex)
+      toast.error(ex.response ? ex.response.data : 'Something went wrong')
       this.setState({ groups: originalGroups, groupIds: originalGroupIds })
     }
   }
@@ -304,7 +305,7 @@ class Collections extends Component {
       groups[editedGroup.id] = group
       this.setState({ groups })
     } catch (ex) {
-      toast.error(ex.response.data)
+      toast.error(ex.response ? ex.response.data : 'Something went wrong')
       this.setState({ groups: originalGroups })
     }
   }
@@ -331,7 +332,7 @@ class Collections extends Component {
         page: page
       })
     } catch (ex) {
-      toast.error(ex)
+      toast.error(ex.response ? ex.response.data : 'Something went wrong')
       this.setState({ pages: originalPages, pageIds: originalPageIds })
     }
   }
@@ -355,7 +356,7 @@ class Collections extends Component {
         page: page
       })
     } catch (ex) {
-      toast.error(ex)
+      toast.error(ex.response ? ex.response.data : 'Something went wrong')
       this.setState({ pages: originalPages, pageIds: originalPageIds })
     }
   }
@@ -372,7 +373,7 @@ class Collections extends Component {
     try {
       await pageService.deletePage(deletedPageId)
     } catch (ex) {
-      toast.error(ex)
+      toast.error(ex.response ? ex.response.data : 'Something went wrong')
       this.setState({ pages: originalPages, pageIds: originalPageIds })
     }
   }
@@ -384,14 +385,14 @@ class Collections extends Component {
     this.setState({ pages })
     try {
       await pageService.updatePage(pageId, editedPage)
+      this.props.history.push({
+        pathname: `/dashboard/collections/pages/${pageId}`,
+        page: editedPage
+      })
     } catch (ex) {
-      toast.error(ex.response.data)
+      toast.error(ex.response ? ex.response.data : 'Something went wrong')
       this.setState({ pages: originalPages })
     }
-    this.props.history.push({
-      pathname: `/dashboard/collections/pages/${pageId}`,
-      page: editedPage
-    })
   }
 
   async handleAddEndpoint (groupId, newEndpoint, versions) {
@@ -408,24 +409,23 @@ class Collections extends Component {
       endpoints[endpoint.id] = endpoint
       delete endpoints.requestId
       this.setState({ endpoints })
+      this.props.history.push({
+        pathname: `/dashboard/collections/endpoints/${endpoint.id}`,
+        endpoint: endpoint,
+        groups: this.state.groups,
+        title: 'update endpoint',
+        versions: versions,
+        groupId: groupId
+      })
     } catch (ex) {
       this.setState({ originalEndpoints })
     }
-    this.props.history.push({
-      pathname: `/dashboard/collections/endpoints/${endpoint.id}`,
-      endpoint: endpoint,
-      groups: this.state.groups,
-      title: 'update endpoint',
-      versions: versions,
-      groupId: groupId
-    })
   }
 
   async handleDeleteEndpoint (deleteEndpointId) {
     await endpointService.deleteEndpoint(deleteEndpointId)
-    const endpoints = this.state.endpoints.filter(
-      endpoint => endpoint.id !== deleteEndpointId
-    )
+    const endpoints = { ...this.state.endpoints }
+    delete endpoints[deleteEndpointId]
     this.setState({ endpoints })
   }
 

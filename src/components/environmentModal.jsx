@@ -47,7 +47,7 @@ class EnvironmentModal extends Component {
     try {
       await environmentService.deleteEnvironment(environmentId)
     } catch (ex) {
-      toast.error(ex)
+      toast.error(ex.response ? ex.response.data : 'Something went wrong')
       this.setState({ environments: originalEnvironments })
     }
   }
