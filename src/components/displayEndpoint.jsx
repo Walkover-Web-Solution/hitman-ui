@@ -102,16 +102,25 @@ class DisplayEndpoint extends Component {
     await this.setState({ headersData, paramsData, response })
     this.state.flagResponse = true
     const host = this.findHost()
-    const api = host + this.uri.current.value
-    let body = {}
-    if (this.state.data.method === 'POST' || this.state.data.method === 'PUT') {
-      body = this.body.current.value
-      try {
-        this.state.data.body = JSON.parse(body)
-      } catch {
-        toast.error('In POST and PUT body cannot be empty')
+    const api = host + this.uri.current.value;
+    let {method ,uri , updatedUri ,name ,body} = this.state.data;
+    if (method === 'POST' || method === 'PUT') {
+        try {
+        body = JSON.parse(this.body.current.value )
+        this.setState({
+          data: {
+          method,
+          uri,
+          updatedUri,
+          name,
+          body: JSON.stringify(body, null, 4)
+          }
+      })
+      }catch {
+        toast.error('Invalid Body')
       }
     }
+
     let headerJson = {}
     Object.keys(headersData).map(header => {
       headerJson[headersData[header].key] = headersData[header].value
@@ -120,8 +129,8 @@ class DisplayEndpoint extends Component {
     try {
       responseJson = await endpointService.apiTest(
         api,
-        this.state.data.method,
-        this.state.data.body,
+        method,
+        body,
         headerJson
       )
       const response = { ...responseJson }
@@ -135,13 +144,18 @@ class DisplayEndpoint extends Component {
         }
         this.setState({ response })
       }
+     
     }
   }
 
   handleSave = async e => {
     let body = {}
     if (this.state.data.method === 'POST' || this.state.data.method === 'PUT')
-      body = JSON.parse(this.body.current.value)
+      try {
+        body = JSON.parse(this.body.current.value)
+      } catch {
+        toast.error('Invalid Body')
+      }
 
     const headersData = this.doSubmitHeader()
     const paramsData = this.doSubmitParam()
@@ -151,10 +165,13 @@ class DisplayEndpoint extends Component {
       requestType: this.state.data.method,
       body: body,
       headers: headersData,
-      params: paramsData
+      params: paramsData,
     }
 
-    if (this.state.title === 'Add New Endpoint') {
+    if(endpoint.name == "" || endpoint.uri == "")
+      toast.error("Please Enter all the fields");
+
+      else if (this.state.title === 'Add New Endpoint') {
       this.props.history.push({
         pathname: `/dashboard/collections`,
         title: 'Add Endpoint',
@@ -166,6 +183,7 @@ class DisplayEndpoint extends Component {
       await endpointService.updateEndpoint(this.state.endpoint.id, endpoint)
     }
   }
+  
 
   setMethod (method) {
     const response = {}
@@ -383,27 +401,17 @@ class DisplayEndpoint extends Component {
       let paramsData = { ...this.props.location.endpoint.params }
       const originalParamsKeys = Object.keys(paramsData)
       const updatedParamsKeys = Object.keys(paramsData)
-      this.setState({
-        paramsData,
-        originalParamsKeys,
-        updatedParamsKeys
-      })
-      this.props.history.push({ endpoint: null })
-    }
-    if (this.props.location.endpoint) {
       let headersData = { ...this.props.location.endpoint.headers }
       const originalHeadersKeys = Object.keys(headersData)
       const updatedHeadersKeys = Object.keys(headersData)
-      this.setState({
-        headersData,
-        originalHeadersKeys,
-        updatedHeadersKeys
-      })
+      this.setState({paramsData,originalParamsKeys,updatedParamsKeys,headersData,originalHeadersKeys,updatedHeadersKeys})
       this.props.history.push({ endpoint: null })
     }
+  
     if (this.props.location.groups) {
       this.state.groups = this.props.location.groups
     }
+    
     if (this.props.location.title === 'Add New Endpoint') {
       const data = {
         name: '',
@@ -443,6 +451,7 @@ class DisplayEndpoint extends Component {
       Object.keys(this.props.location.endpoint.params).map(param => {
         values.push(this.props.location.endpoint.params[param].value)
       })
+    
       this.setState({
         data: {
           method: endpoint.requestType,
