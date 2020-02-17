@@ -151,7 +151,11 @@ class CollectionVersions extends Component {
                         version_id={parseInt(versionId)}
                         version_dnd={this.versionDnD.bind(this)}
                       />
-                      <Pages {...this.props} version_id={parseInt(versionId)} />
+                      <Pages
+                        {...this.props}
+                        version_id={parseInt(versionId)}
+                        version_dnd={this.versionDnD.bind(this)}
+                      />
                     </Card.Body>
                   </Accordion.Collapse>
                 </Card>
