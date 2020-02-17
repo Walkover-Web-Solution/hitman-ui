@@ -97,6 +97,7 @@ class Collections extends Component {
     const groupIds = Object.keys(groups)
     const pageIds = Object.keys(pages)
     this.setState({
+      collections,
       versions,
       groups,
       pages,
@@ -566,12 +567,7 @@ class Collections extends Component {
               <Route
                 path='/dashboard/collections/:collectionId/versions/:versionId/groups/:groupId/endpoints/:endpointId/edit'
                 render={props => (
-                  <EndpointForm
-                    {...props}
-                    show={true}
-                    onHide={() => {}}
-                    title='Edit Endpoint'
-                  />
+                  <EndpointForm {...props} show={true} title='Edit Endpoint' />
                 )}
               />
               <Route
@@ -580,7 +576,6 @@ class Collections extends Component {
                   <EndpointForm
                     {...props}
                     show={true}
-                    onHide={() => {}}
                     title='Add New Endpoint'
                   />
                 )}
@@ -591,7 +586,11 @@ class Collections extends Component {
                   <PageForm
                     {...props}
                     show={true}
-                    onHide={() => {}}
+                    onHide={() => {
+                      this.props.history.push({
+                        pathname: '/dashboard/collections'
+                      })
+                    }}
                     title='Add new Group Page'
                   />
                 )}
@@ -602,7 +601,6 @@ class Collections extends Component {
                   <PageForm
                     {...props}
                     show={true}
-                    onHide={() => {}}
                     title='Edit Page'
                     editPage={this.props.location.editPage}
                     versionId={this.props.location.versionId}
@@ -616,7 +614,11 @@ class Collections extends Component {
                   <PageForm
                     {...props}
                     show={true}
-                    onHide={() => {}}
+                    onHide={() => {
+                      this.props.history.push({
+                        pathname: '/dashboard/collections'
+                      })
+                    }}
                     title='Add New Version Page'
                     versionId={this.props.location.versionId}
                   />
@@ -628,7 +630,11 @@ class Collections extends Component {
                   <GroupForm
                     {...props}
                     show={true}
-                    onHide={() => {}}
+                    onHide={() => {
+                      this.props.history.push({
+                        pathname: '/dashboard/collections'
+                      })
+                    }}
                     title='Edit Group'
                   />
                 )}
@@ -639,7 +645,11 @@ class Collections extends Component {
                   <GroupForm
                     {...props}
                     show={true}
-                    onHide={() => {}}
+                    onHide={() => {
+                      this.props.history.push({
+                        pathname: '/dashboard/collections'
+                      })
+                    }}
                     title='Add new Group'
                   />
                 )}
@@ -650,7 +660,11 @@ class Collections extends Component {
                   <CollectionVersionForm
                     {...props}
                     show={true}
-                    onHide={() => {}}
+                    onHide={() => {
+                      this.props.history.push({
+                        pathname: '/dashboard/collections'
+                      })
+                    }}
                     title='Add new Collection Version'
                   />
                 )}
@@ -661,7 +675,11 @@ class Collections extends Component {
                   <CollectionVersionForm
                     {...props}
                     show={true}
-                    onHide={() => {}}
+                    onHide={() => {
+                      this.props.history.push({
+                        pathname: '/dashboard/collections'
+                      })
+                    }}
                     title='Edit Collection Version'
                   />
                 )}
@@ -672,7 +690,11 @@ class Collections extends Component {
                   <CollectionForm
                     {...props}
                     show={true}
-                    onHide={() => {}}
+                    onHide={() => {
+                      this.props.history.push({
+                        pathname: '/dashboard/collections'
+                      })
+                    }}
                     title='Add new Collection'
                   />
                 )}
@@ -683,7 +705,11 @@ class Collections extends Component {
                   <CollectionForm
                     {...props}
                     show={true}
-                    onHide={() => {}}
+                    onHide={() => {
+                      this.props.history.push({
+                        pathname: '/dashboard/collections'
+                      })
+                    }}
                     title='Edit Collection'
                   />
                 )}
@@ -696,7 +722,7 @@ class Collections extends Component {
             <Link to='/dashboard/collections/new'>+ New Collection</Link>
           </button>
           {this.state.collectionIds.map((collectionId, index) => (
-            <Accordion>
+            <Accordion key={collectionId}>
               <Card>
                 <Card.Header
                   draggable={this.state.collectionDnDFlag}
@@ -704,12 +730,7 @@ class Collections extends Component {
                   onDragStart={e => this.onDragStart(e, index)}
                   onDragEnd={this.onDragEnd}
                 >
-                  <Accordion.Toggle
-                    as={Button}
-                    variant='link'
-                    eventKey='1'
-                    key={collectionId}
-                  >
+                  <Accordion.Toggle as={Button} variant='link' eventKey='1'>
                     {this.state.collections[collectionId].name}
                   </Accordion.Toggle>
                   <DropdownButton
@@ -719,7 +740,7 @@ class Collections extends Component {
                     style={{ float: 'right' }}
                   >
                     <Dropdown.Item
-                      // eventKey='1'
+                      eventKey='1'
                       onClick={() => {
                         this.props.history.push({
                           pathname: `/dashboard/collections/${collectionId}/edit`,
