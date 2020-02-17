@@ -13,6 +13,7 @@ class Groups extends Component {
   state = {}
 
   onDragStart = (e, groupId) => {
+    this.props.version_dnd(false)
     this.draggedItem = groupId
   }
 
@@ -22,6 +23,7 @@ class Groups extends Component {
   }
 
   async onDragEnd (e, props) {
+    this.props.version_dnd(true)
     if (this.draggedItem === this.draggedOverItem) {
       return
     }
@@ -64,16 +66,14 @@ class Groups extends Component {
               gId => this.props.groups[gId].versionId === this.props.version_id
             )
             .map(groupId => (
-              <Accordion
-                defaultActiveKey='0'
-                key={groupId}
-                draggable
-                onDragOver={e => this.onDragOver(e, groupId)}
-                onDragStart={e => this.onDragStart(e, groupId)}
-                onDragEnd={e => this.onDragEnd(e, groupId, this.props)}
-              >
+              <Accordion defaultActiveKey='0' key={groupId}>
                 <Card>
-                  <Card.Header>
+                  <Card.Header
+                    draggable
+                    onDragOver={e => this.onDragOver(e, groupId)}
+                    onDragStart={e => this.onDragStart(e, groupId)}
+                    onDragEnd={e => this.onDragEnd(e, groupId, this.props)}
+                  >
                     <Accordion.Toggle as={Button} variant='link' eventKey='1'>
                       {this.props.groups[groupId].name}
                     </Accordion.Toggle>

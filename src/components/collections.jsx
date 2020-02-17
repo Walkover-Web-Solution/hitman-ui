@@ -33,7 +33,8 @@ class Collections extends Component {
     collectionIds: [],
     versionIds: [],
     groupIds: [],
-    pageIds: []
+    pageIds: [],
+    collectionDnDFlag: true
   }
 
   async fetchVersions (collections) {
@@ -105,6 +106,10 @@ class Collections extends Component {
       groupIds,
       pageIds
     })
+  }
+
+  collectionDnD (collectionDnDFlag) {
+    this.setState({ collectionDnDFlag })
   }
 
   setVersionIds (versionIds) {
@@ -430,10 +435,13 @@ class Collections extends Component {
   }
 
   onDragStart = (e, index) => {
+    if (!this.state.collectionDnDFlag) return
+
     this.draggedItem = this.state.collectionIds[index]
   }
 
   onDragOver = (e, index) => {
+    if (!this.state.collectionDnDFlag) return
     e.preventDefault()
     const draggedOverItem = this.state.collectionIds[index]
     if (this.draggedItem === draggedOverItem) {
@@ -688,16 +696,20 @@ class Collections extends Component {
             <Link to='/dashboard/collections/new'>+ New Collection</Link>
           </button>
           {this.state.collectionIds.map((collectionId, index) => (
-            <Accordion
-              key={collectionId}
-              draggable
-              onDragOver={e => this.onDragOver(e, index)}
-              onDragStart={e => this.onDragStart(e, index)}
-              onDragEnd={this.onDragEnd}
-            >
+            <Accordion>
               <Card>
-                <Card.Header>
-                  <Accordion.Toggle as={Button} variant='link' eventKey='1'>
+                <Card.Header
+                  draggable={this.state.collectionDnDFlag}
+                  onDragOver={e => this.onDragOver(e, index)}
+                  onDragStart={e => this.onDragStart(e, index)}
+                  onDragEnd={this.onDragEnd}
+                >
+                  <Accordion.Toggle
+                    as={Button}
+                    variant='link'
+                    eventKey='1'
+                    key={collectionId}
+                  >
                     {this.state.collections[collectionId].name}
                   </Accordion.Toggle>
                   <DropdownButton
@@ -763,6 +775,7 @@ class Collections extends Component {
                       set_version_id={this.setVersionIds.bind(this)}
                       set_group_id={this.setGroupIds.bind(this)}
                       set_page_id={this.setPageIds.bind(this)}
+                      collection_dnd={this.collectionDnD.bind(this)}
                     />
                   </Card.Body>
                 </Accordion.Collapse>
