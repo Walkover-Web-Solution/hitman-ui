@@ -421,6 +421,7 @@ class DisplayEndpoint extends Component {
     }
     if (this.props.location.title === "Add New Endpoint") {
       const data = {
+<<<<<<< HEAD
         name: "",
         method: "GET",
         body: "",
@@ -456,6 +457,30 @@ class DisplayEndpoint extends Component {
       });
 
       this.props.history.push({ groups: null });
+=======
+        name: '',
+        method: 'GET',
+        body: '',
+        uri: ''
+      }
+      const response = {}
+      this.state.data = data
+      this.state.response = response
+      this.state.groupId = this.props.location.groupId
+      this.state.title = this.props.location.title
+      this.state.endpoint = {}
+      this.state.headersData = {}
+      this.state.paramsData = {}
+      this.state.data.uri = ''
+      this.state.data.updatedUri = ''
+      this.state.keys = []
+      this.state.values = []
+      this.state.originalHeadersKeys = Object.keys(this.state.headersData)
+      this.state.updatedHeadersKeys = Object.keys(this.state.headersData)
+      this.state.originalParamsKeys = Object.keys(this.state.paramsData)
+      this.state.updatedParamsKeys = Object.keys(this.state.paramsData)
+      this.props.history.push({ groups: null })
+>>>>>>> 89ca5e7910aa7e7e1da74c1546645e445ad41ae0
     }
 
     if (this.props.location.versions) {
