@@ -10,19 +10,29 @@ import GroupPages from './groupPages'
 import Endpoints from './endpoints'
 
 class Groups extends Component {
-  state = {}
+  state = {
+    groupDnDFlag: true
+  }
+
+  groupDnD (groupDnDFlag) {
+    this.props.version_dnd(groupDnDFlag)
+    this.setState({ groupDnDFlag })
+  }
 
   onDragStart = (e, groupId) => {
+    if (!this.state.groupDnDFlag) return
     this.props.version_dnd(false)
     this.draggedItem = groupId
   }
 
   onDragOver = (e, groupId) => {
+    if (!this.state.groupDnDFlag) return
     e.preventDefault()
     this.draggedOverItem = groupId
   }
 
   async onDragEnd (e, props) {
+    if (!this.state.groupDnDFlag) return
     this.props.version_dnd(true)
     if (this.draggedItem === this.draggedOverItem) {
       return
@@ -146,6 +156,7 @@ class Groups extends Component {
                         {...this.props}
                         version_id={this.props.groups[groupId].versionId}
                         group_id={parseInt(groupId)}
+                        group_dnd={this.groupDnD.bind(this)}
                       />
                     </Card.Body>
                   </Accordion.Collapse>
