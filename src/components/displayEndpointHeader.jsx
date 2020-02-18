@@ -2,14 +2,30 @@ import React, { Component } from 'react'
 import { Modal, Table } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 class EndpointHeaders extends Component {
-    state = {    headersData: {}
+    state = {    headersData: {},
+                 originalHeadersKeys:[],
+                 updatedHeadersKeys:[]
    
 }
+async componentDidMount () {
+    let headersData={...this.state.headersData};
+    const originalHeadersKeys = Object.keys(headersData)
+    const updatedHeadersKeys = Object.keys(environment)
+    this.setState({
+      headersData,
+      originalHeadersKeys,
+      updatedHeadersKeys
+    })
+  }
 
 handleAdd () {
-    let headersData = [ ...this.state.headersData ,""]
+    let headersData = [ ...this.state.headersData ,"key"]
    
     this.setState(headersData)
+  }
+  handleDelete(index){
+      const headersData=this.state.headersData
+      
   }
     render() { 
         this.props.call_data("dasdfsdf ta");

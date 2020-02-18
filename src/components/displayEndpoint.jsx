@@ -22,7 +22,8 @@ class DisplayEndpoint extends Component {
       body: {},
       uri: "",
       updatedUri: "",
-      host: ""
+      host: "",
+      
     },
     startTime: "",
     timeElapsed: "",
@@ -34,8 +35,9 @@ class DisplayEndpoint extends Component {
     title: "",
     flagResponse: false,
     rawResponse: false,
-    prettyResponse:true,
+    prettyResponse:false,
     previewResponse:false,
+    flagInvalidResponse:true,
     responseString:'',
     copied:false,
     headersData: {},
@@ -103,7 +105,8 @@ class DisplayEndpoint extends Component {
   }
   handleSend = async () => {
     let startTime = new Date().getTime()
-    this.setState({ startTime })
+    let prettyResponse=true
+    this.setState({ startTime,prettyResponse })
     let response = {}
     const headersData = this.doSubmitHeader()
     const paramsData = this.doSubmitParam()
@@ -152,8 +155,14 @@ class DisplayEndpoint extends Component {
         };
         this.setState({ response });
       }
+      else
+      {
+        let flagInvalidResponse=false;
+        this.setState({flagInvalidResponse})
+      }
      
     }
+
   };
 
   handleSave = async e => {
@@ -442,6 +451,9 @@ class DisplayEndpoint extends Component {
 
   render() {
     if (this.props.location.endpoint) {
+      this.state.prettyResponse=false
+      this.state.rawResponse=false
+      this.state.previewResponse=false
       let paramsData = { ...this.props.location.endpoint.params }
       const originalParamsKeys = Object.keys(paramsData)
       const updatedParamsKeys = Object.keys(paramsData)
@@ -872,7 +884,8 @@ class DisplayEndpoint extends Component {
           )
         ) : null}
 
-        {this.state.flagResponse === true ? (
+        {this.state.flagResponse === true && this.state.flagInvalidResponse &&
+        (this.state.prettyResponse===true || this.state.rawResponse===true ||this.state.previewResponse===true )? (
           <div>
            <div><Navbar bg="primary" variant="dark">
            <Navbar.Brand href="#home"></Navbar.Brand>
@@ -882,11 +895,6 @@ class DisplayEndpoint extends Component {
              <Nav.Link onClick={this.previewDataResponse.bind(this)}>Preview</Nav.Link>
               
            </Nav>
-          
-           {/* <CopyToClipboard text={this.state.responseString} style={{ float: 'right',height:'30px',width:'50px' ,borderRadius: '8px'}}
-          onCopy={() => this.setState({copied: true})}>
-          <button>copy</button>
-         </CopyToClipboard> */}
          </Navbar></div>
          
          { this.state.prettyResponse===true?(<div><JSONPretty theme={JSONPrettyMon} data={this.state.response.data} /></div>):null}
@@ -894,6 +902,7 @@ class DisplayEndpoint extends Component {
         whiteSpace:'normal'}}>{this.state.responseString}</div>):null}
            { this.state.previewResponse===true?(<div style={{display:'block',
         whiteSpace:'normal' }}>feature coming soon</div>):null}  
+         {/* {this.state.prettyResponse=false,this.state.rawResponse=false,this.state.previewResponse=false} */}
           </div>
         ) : null}
       </div>
