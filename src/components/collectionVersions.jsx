@@ -10,18 +10,30 @@ import Groups from './groups'
 import Pages from './versionPages'
 
 class CollectionVersions extends Component {
-  state = {}
+  state = {
+    versionDnDFlag: true
+  }
+
+  versionDnD (versionDnDFlag) {
+    this.props.collection_dnd(versionDnDFlag)
+    this.setState({ versionDnDFlag })
+  }
 
   onDragStart = (e, versionId) => {
+    if (!this.state.versionDnDFlag) return
+    this.props.collection_dnd(false)
     this.draggedItem = versionId
   }
 
   onDragOver = (e, versionId) => {
+    if (!this.state.versionDnDFlag) return
     e.preventDefault()
     this.draggedOverItem = versionId
   }
 
   async onDragEnd (e) {
+    if (!this.state.versionDnDFlag) return
+    this.props.collection_dnd(true)
     if (this.draggedItem === this.draggedOverItem) {
       return
     }
@@ -32,6 +44,7 @@ class CollectionVersions extends Component {
       vId => vId === this.draggedOverItem
     )
     versionIds.splice(index, 0, this.draggedItem)
+
     this.props.set_version_id(versionIds)
   }
 
@@ -68,16 +81,14 @@ class CollectionVersions extends Component {
                 this.props.collection_id
             )
             .map(versionId => (
-              <Accordion
-                defaultActiveKey='0'
-                key={versionId}
-                draggable
-                onDragOver={e => this.onDragOver(e, versionId)}
-                onDragStart={e => this.onDragStart(e, versionId)}
-                onDragEnd={e => this.onDragEnd(e, versionId)}
-              >
+              <Accordion defaultActiveKey='0' key={versionId}>
                 <Card>
-                  <Card.Header>
+                  <Card.Header
+                    draggable={this.state.versionDnDFlag}
+                    onDragOver={e => this.onDragOver(e, versionId)}
+                    onDragStart={e => this.onDragStart(e, versionId)}
+                    onDragEnd={e => this.onDragEnd(e, versionId)}
+                  >
                     <Accordion.Toggle as={Button} variant='link' eventKey='1'>
                       {this.props.versions[versionId].number}
                     </Accordion.Toggle>
@@ -138,8 +149,13 @@ class CollectionVersions extends Component {
                       <Groups
                         {...this.props}
                         version_id={parseInt(versionId)}
+                        version_dnd={this.versionDnD.bind(this)}
                       />
-                      <Pages {...this.props} version_id={parseInt(versionId)} />
+                      <Pages
+                        {...this.props}
+                        version_id={parseInt(versionId)}
+                        version_dnd={this.versionDnD.bind(this)}
+                      />
                     </Card.Body>
                   </Accordion.Collapse>
                 </Card>

@@ -103,7 +103,7 @@ class CollectionForm extends Form {
         aria-labelledby='contained-modal-title-vcenter'
         centered
       >
-        <Modal.Header>
+        <Modal.Header closeButton>
           <Modal.Title id='contained-modal-title-vcenter'>
             {this.props.title}
           </Modal.Title>
