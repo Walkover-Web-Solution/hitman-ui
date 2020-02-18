@@ -14,12 +14,22 @@ class Endpoints extends Component {
       deleteEndpointId: endpoint.id
     })
   }
+
+handleDuplicate(endpoint){
+  this.props.history.push({
+    pathname: '/dashboard/collections',
+    duplicateEndpoint:endpoint,
+
+  })
+}
+
   handleUpdate (endpoint) {
     this.props.history.push({
       pathname: `/dashboard/collections/${this.props.collection_id}/versions/${this.props.version_id}/groups/${this.props.group_id}/endpoints/${endpoint.id}/edit`,
       editEndpoint: endpoint
     })
   }
+  
   handleDisplay (endpoint, groups, versions) {
     this.props.history.push({
       pathname: `/dashboard/collections/endpoints/${endpoint.id}`,
@@ -69,6 +79,14 @@ class Endpoints extends Component {
                       }
                     >
                       Delete
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                      eventKey='3'
+                      onClick={() =>
+                         this.handleDuplicate(this.props.endpoints[endpointId])
+                     }
+                    >
+                      Duplicate
                     </Dropdown.Item>
                   </DropdownButton>
                 </Card.Header>

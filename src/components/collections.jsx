@@ -97,7 +97,6 @@ class Collections extends Component {
     const groupIds = Object.keys(groups)
     const pageIds = Object.keys(pages)
     this.setState({
-      collections,
       versions,
       groups,
       pages,
@@ -446,6 +445,52 @@ class Collections extends Component {
     this.setState({ endpoints })
   }
 
+async handleDuplicateEndpoint(endpointCopy)
+ {
+   
+   let originalEndpoints = {...this.state.endpoints}
+//   let newEndpoint = {...endpointCopy}
+//   newEndpoint.requestId = shortId.generate();
+//   const requestId = newEndpoint.requestId
+
+   const endpoints = { ...this.state.endpoints }
+//   endpoints[requestId] = newEndpoint;
+//   this.setState({ endpoints })
+   let endpoint = {}
+
+  try {
+    const { data } =  await endpointService.duplicateEndpoint(endpointCopy.id);
+    endpoint = data
+    endpoints[endpoint.id] = endpoint
+    //console.log(endpoint)
+   // delete endpoints.requestId
+    this.setState({ endpoints })
+  } catch (ex) {
+    toast.error(ex.response ? ex.response.data : 'Something went wrong')
+    this.setState({ originalEndpoints })
+  }
+}
+
+async handleDuplicateGroup(groupCopy){
+  let originalGroup = {...this.state.groups}
+   const groups = { ...this.state.groups }
+   let group = {}
+    let endpoints ={}
+  try {
+    const { data } =  await groupsService.duplicateGroup(groupCopy.id);
+    endpoints = {...this.state.endpoints, ...data.endpoints}
+
+    group = data.groups;
+    groups[group.id] = group
+    const groupIds = [...this.state.groupIds, group.id.toString()]
+      this.setState({ groups, groupIds ,endpoints })
+  } catch (ex) {
+    toast.error(ex.response ? ex.response.data : 'Something went wrong')
+    this.setState({ originalGroup })
+  }
+ 
+}
+
   onDragStart = (e, index) => {
     if (!this.state.collectionDnDFlag) return
 
@@ -480,6 +525,12 @@ class Collections extends Component {
       this.handleDeleteEndpoint(deleteEndpointId)
     }
 
+    if (location.duplicateEndpoint) {
+      const duplicateEndpoint = location.duplicateEndpoint
+      this.props.history.replace({ duplicateEndpoint: null })
+      this.handleDuplicateEndpoint(duplicateEndpoint)
+    }
+
     if (location.title === 'Add Endpoint') {
       const { endpoint, groupId } = location
       this.props.history.replace({
@@ -487,7 +538,6 @@ class Collections extends Component {
         groupId: null,
         endpoint: null
       })
-
       this.handleAddEndpoint(groupId, endpoint, this.props.location.versions)
     }
 
@@ -499,7 +549,8 @@ class Collections extends Component {
         newPage: null
       })
       this.handleAddGroupPage(versionId, groupId, newPage)
-    } else if (location.newPage) {
+    }
+    else if (location.newPage) {
       const { versionId, newPage } = location
       this.props.history.replace({ newPage: null })
       this.handleAddVersionPage(versionId, newPage)
@@ -533,6 +584,12 @@ class Collections extends Component {
       this.handleDeleteGroup(deletedGroupId)
     }
 
+    if(location.duplicateGroup){
+      const duplicateGroup = location.duplicateGroup
+      this.props.history.replace({ duplicateGroup: null })
+      this.handleDuplicateGroup(duplicateGroup)
+    }
+  
     if (location.newGroup) {
       const { versionId, newGroup } = location
       this.props.history.replace({ newGroup: null })

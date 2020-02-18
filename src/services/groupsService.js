@@ -29,10 +29,16 @@ export function deleteGroup(GroupId) {
   return http.delete(`${GroupUrl(GroupId)}`);
 }
 
+export function duplicateGroup(groupId) {
+  return http.post( `${apiUrl}/duplicateGroups/${groupId}` );
+}
+
 export default {
   getGroups,
   getGroup,
   saveGroup,
   updateGroup,
-  deleteGroup
+  deleteGroup,
+  duplicateGroup
+  
 };
