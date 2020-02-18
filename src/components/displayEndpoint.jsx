@@ -37,7 +37,7 @@ class DisplayEndpoint extends Component {
     prettyResponse:true,
     previewResponse:false,
     responseString:'',
-
+    copied:false,
     headersData: {},
     originalHeadersKeys: [],
     updatedHeadersKeys: [],
@@ -396,7 +396,8 @@ class DisplayEndpoint extends Component {
     let rawResponse=false
     let previewResponse=false
     let prettyResponse=true
-    this.setState({ rawResponse,previewResponse,prettyResponse })
+    let responseString=JSON.stringify(this.state.response)
+    this.setState({ rawResponse,previewResponse,prettyResponse,responseString })
    }
    previewDataResponse(){
     let rawResponse=false
@@ -855,11 +856,15 @@ class DisplayEndpoint extends Component {
              <Nav.Link onClick={this.prettyDataResponse.bind(this)} >Pretty</Nav.Link>
              <Nav.Link onClick={this.rawDataResponse.bind(this)}>Raw</Nav.Link>
              <Nav.Link onClick={this.previewDataResponse.bind(this)}>Preview</Nav.Link>
-             {/* <CopyToClipboard text={this.state.response} style={{ float: 'right' }}>
-           <p className="copy-clipboard" style={{ float: 'right' }}>Copy to clipboard</p>
-           </CopyToClipboard> */}
+              
            </Nav>
-           
+           {/* <CopyToClipboard text={this.state.response} style={{ float: 'right' }}>
+           <p className="copy-clipboard" style={{ float: 'right' }}>Copy</p>
+           </CopyToClipboard> */}
+           <CopyToClipboard text={this.state.responseString} style={{ float: 'right' }}
+          onCopy={() => this.setState({copied: true})}>
+          <button></button>
+         </CopyToClipboard>
          </Navbar></div>
          
          { this.state.prettyResponse===true?(<div><JSONPretty theme={JSONPrettyMon} data={this.state.response.data} /></div>):null}
