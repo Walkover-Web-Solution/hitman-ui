@@ -873,13 +873,11 @@ class DisplayEndpoint extends Component {
              <Nav.Link onClick={this.previewDataResponse.bind(this)}>Preview</Nav.Link>
               
            </Nav>
-           {/* <CopyToClipboard text={this.state.response} style={{ float: 'right' }}>
-           <p className="copy-clipboard" style={{ float: 'right' }}>Copy</p>
-           </CopyToClipboard> */}
-           <CopyToClipboard text={this.state.responseString} style={{ float: 'right' }}
+          
+           {/* <CopyToClipboard text={this.state.responseString} style={{ float: 'right',height:'30px',width:'50px' ,borderRadius: '8px'}}
           onCopy={() => this.setState({copied: true})}>
-          <button></button>
-         </CopyToClipboard>
+          <button>copy</button>
+         </CopyToClipboard> */}
          </Navbar></div>
          
          { this.state.prettyResponse===true?(<div><JSONPretty theme={JSONPrettyMon} data={this.state.response.data} /></div>):null}
