@@ -1,10 +1,14 @@
-import React, { Component } from "react";
-import endpointService from "../services/endpointService";
-import JSONPretty from "react-json-pretty";
-import { Dropdown, Table } from "react-bootstrap";
-import { toast } from "react-toastify";
-const status = require("http-status");
-var JSONPrettyMon = require("react-json-pretty/dist/monikai");
+import React, { Component } from 'react'
+import endpointService from '../services/endpointService'
+import JSONPretty from 'react-json-pretty'
+import { Dropdown, Table } from 'react-bootstrap'
+import Navbar from 'react-bootstrap/Navbar'
+import Nav from 'react-bootstrap/Nav'
+import { toast } from 'react-toastify'
+import {CopyToClipboard} from 'react-copy-to-clipboard';
+const status = require('http-status')
+var JSONPrettyMon = require('react-json-pretty/dist/monikai')
+
 
 class DisplayEndpoint extends Component {
   uri = React.createRef();
@@ -29,7 +33,11 @@ class DisplayEndpoint extends Component {
     groupId: "",
     title: "",
     flagResponse: false,
-
+    rawResponse: false,
+    prettyResponse:true,
+    previewResponse:false,
+    responseString:'',
+    copied:false,
     headersData: {},
     originalHeadersKeys: [],
     updatedHeadersKeys: [],
@@ -411,6 +419,26 @@ class DisplayEndpoint extends Component {
     let timeElapsed = new Date().getTime() - this.state.startTime;
     this.setState({ timeElapsed });
   }
+  rawDataResponse(){
+   let rawResponse=true
+   let previewResponse=false
+   let prettyResponse=false
+   let responseString=JSON.stringify(this.state.response)
+   this.setState({ rawResponse,previewResponse,prettyResponse ,responseString})
+  }
+  prettyDataResponse(){
+    let rawResponse=false
+    let previewResponse=false
+    let prettyResponse=true
+    let responseString=JSON.stringify(this.state.response)
+    this.setState({ rawResponse,previewResponse,prettyResponse,responseString })
+   }
+   previewDataResponse(){
+    let rawResponse=false
+    let previewResponse=true
+    let prettyResponse=false
+    this.setState({ rawResponse,previewResponse,prettyResponse })
+   }
 
   render() {
     if (this.props.location.endpoint) {
@@ -845,7 +873,28 @@ class DisplayEndpoint extends Component {
         ) : null}
 
         {this.state.flagResponse === true ? (
-          <JSONPretty theme={JSONPrettyMon} data={this.state.response.data} />
+          <div>
+           <div><Navbar bg="primary" variant="dark">
+           <Navbar.Brand href="#home"></Navbar.Brand>
+           <Nav className="mr-auto">
+             <Nav.Link onClick={this.prettyDataResponse.bind(this)} >Pretty</Nav.Link>
+             <Nav.Link onClick={this.rawDataResponse.bind(this)}>Raw</Nav.Link>
+             <Nav.Link onClick={this.previewDataResponse.bind(this)}>Preview</Nav.Link>
+              
+           </Nav>
+          
+           {/* <CopyToClipboard text={this.state.responseString} style={{ float: 'right',height:'30px',width:'50px' ,borderRadius: '8px'}}
+          onCopy={() => this.setState({copied: true})}>
+          <button>copy</button>
+         </CopyToClipboard> */}
+         </Navbar></div>
+         
+         { this.state.prettyResponse===true?(<div><JSONPretty theme={JSONPrettyMon} data={this.state.response.data} /></div>):null}
+         { this.state.rawResponse===true?(<div style={{display:'block',
+        whiteSpace:'normal'}}>{this.state.responseString}</div>):null}
+           { this.state.previewResponse===true?(<div style={{display:'block',
+        whiteSpace:'normal' }}>feature coming soon</div>):null}  
+          </div>
         ) : null}
       </div>
     );
