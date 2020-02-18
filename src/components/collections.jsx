@@ -424,7 +424,18 @@ class Collections extends Component {
         groupId: groupId
       })
     } catch (ex) {
+      this.props.history.push({
+        pathname: '/dashboard/collections/endpoints',
+        endpoint: endpoint,
+        versions: versions,
+        groupId: groupId,
+        title: 'Add New Endpoint',
+        groups: this.state.groups,
+      })
+      toast.error(ex.response ? ex.response.data : 'Something went wrong')
       this.setState({ originalEndpoints })
+     
+     
     }
   }
 

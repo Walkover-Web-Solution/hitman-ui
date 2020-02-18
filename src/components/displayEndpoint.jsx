@@ -2,8 +2,10 @@ import React, { Component } from 'react'
 import endpointService from '../services/endpointService'
 import JSONPretty from 'react-json-pretty'
 import { Dropdown, Table } from 'react-bootstrap'
+import Navbar from 'react-bootstrap/Navbar'
+import Nav from 'react-bootstrap/Nav'
 import { toast } from 'react-toastify'
-
+// import { CopyToClipboard } from 'react-copy-to-clipboard'
 const status = require('http-status')
 var JSONPrettyMon = require('react-json-pretty/dist/monikai')
 
@@ -30,7 +32,12 @@ class DisplayEndpoint extends Component {
     groupId: '',
     title: '',
     flagResponse: false,
-
+    rawResponse: false,
+    prettyResponse: false,
+    previewResponse: false,
+    flagInvalidResponse: true,
+    responseString: '',
+    copied: false,
     headersData: {},
     originalHeadersKeys: [],
     updatedHeadersKeys: [],
@@ -98,7 +105,10 @@ class DisplayEndpoint extends Component {
   finalUrl (api) {
     let regex = /{{(\w+)}}/g
     let match = regex.exec(api)
+
     let variables = []
+    console.log(match)
+    if (match === null) return api
     do {
       variables.push(match[1])
     } while ((match = regex.exec(api)) !== null)
@@ -114,7 +124,8 @@ class DisplayEndpoint extends Component {
 
   handleSend = async () => {
     let startTime = new Date().getTime()
-    this.setState({ startTime })
+    let prettyResponse = true
+    this.setState({ startTime, prettyResponse })
     let response = {}
     const headersData = this.doSubmitHeader()
     const paramsData = this.doSubmitParam()
@@ -123,15 +134,24 @@ class DisplayEndpoint extends Component {
     const host = this.findHost()
     let api = host + this.uri.current.value
     api = this.finalUrl(api)
-    let body = {}
-    if (this.state.data.method === 'POST' || this.state.data.method === 'PUT') {
-      body = this.body.current.value
+    let { method, uri, updatedUri, name, body } = this.state.data
+    if (method === 'POST' || method === 'PUT') {
       try {
-        this.state.data.body = JSON.parse(body)
+        body = JSON.parse(this.body.current.value)
+        this.setState({
+          data: {
+            method,
+            uri,
+            updatedUri,
+            name,
+            body: JSON.stringify(body, null, 4)
+          }
+        })
       } catch {
-        toast.error('In POST and PUT body cannot be empty')
+        toast.error('Invalid Body')
       }
     }
+
     let headerJson = {}
     Object.keys(headersData).map(header => {
       headerJson[headersData[header].key] = headersData[header].value
@@ -140,8 +160,8 @@ class DisplayEndpoint extends Component {
     try {
       responseJson = await endpointService.apiTest(
         api,
-        this.state.data.method,
-        this.state.data.body,
+        method,
+        body,
         headerJson
       )
       const response = { ...responseJson }
@@ -154,6 +174,9 @@ class DisplayEndpoint extends Component {
           data: error.response.data
         }
         this.setState({ response })
+      } else {
+        let flagInvalidResponse = false
+        this.setState({ flagInvalidResponse })
       }
     }
   }
@@ -161,7 +184,11 @@ class DisplayEndpoint extends Component {
   handleSave = async e => {
     let body = {}
     if (this.state.data.method === 'POST' || this.state.data.method === 'PUT')
-      body = JSON.parse(this.body.current.value)
+      try {
+        body = JSON.parse(this.body.current.value)
+      } catch {
+        toast.error('Invalid Body')
+      }
 
     const headersData = this.doSubmitHeader()
     const paramsData = this.doSubmitParam()
@@ -174,7 +201,9 @@ class DisplayEndpoint extends Component {
       params: paramsData
     }
 
-    if (this.state.title === 'Add New Endpoint') {
+    if (endpoint.name == '' || endpoint.uri == '')
+      toast.error('Please Enter all the fields')
+    else if (this.state.title === 'Add New Endpoint') {
       this.props.history.push({
         pathname: `/dashboard/collections`,
         title: 'Add Endpoint',
@@ -413,6 +442,36 @@ class DisplayEndpoint extends Component {
     let timeElapsed = new Date().getTime() - this.state.startTime
     this.setState({ timeElapsed })
   }
+  rawDataResponse () {
+    let rawResponse = true
+    let previewResponse = false
+    let prettyResponse = false
+    let responseString = JSON.stringify(this.state.response)
+    this.setState({
+      rawResponse,
+      previewResponse,
+      prettyResponse,
+      responseString
+    })
+  }
+  prettyDataResponse () {
+    let rawResponse = false
+    let previewResponse = false
+    let prettyResponse = true
+    let responseString = JSON.stringify(this.state.response)
+    this.setState({
+      rawResponse,
+      previewResponse,
+      prettyResponse,
+      responseString
+    })
+  }
+  previewDataResponse () {
+    let rawResponse = false
+    let previewResponse = true
+    let prettyResponse = false
+    this.setState({ rawResponse, previewResponse, prettyResponse })
+  }
 
   render () {
     if (this.props.location.getEnvironment) {
@@ -420,30 +479,30 @@ class DisplayEndpoint extends Component {
     }
 
     if (this.props.location.endpoint) {
+      this.state.prettyResponse = false
+      this.state.rawResponse = false
+      this.state.previewResponse = false
       let paramsData = { ...this.props.location.endpoint.params }
       const originalParamsKeys = Object.keys(paramsData)
       const updatedParamsKeys = Object.keys(paramsData)
-      this.setState({
-        paramsData,
-        originalParamsKeys,
-        updatedParamsKeys
-      })
-      this.props.history.push({ endpoint: null })
-    }
-    if (this.props.location.endpoint) {
       let headersData = { ...this.props.location.endpoint.headers }
       const originalHeadersKeys = Object.keys(headersData)
       const updatedHeadersKeys = Object.keys(headersData)
       this.setState({
+        paramsData,
+        originalParamsKeys,
+        updatedParamsKeys,
         headersData,
         originalHeadersKeys,
         updatedHeadersKeys
       })
       this.props.history.push({ endpoint: null })
     }
+
     if (this.props.location.groups) {
       this.state.groups = this.props.location.groups
     }
+
     if (this.props.location.title === 'Add New Endpoint') {
       const data = {
         name: '',
@@ -483,6 +542,7 @@ class DisplayEndpoint extends Component {
       Object.keys(this.props.location.endpoint.params).map(param => {
         values.push(this.props.location.endpoint.params[param].value)
       })
+
       this.setState({
         data: {
           method: endpoint.requestType,
@@ -859,8 +919,48 @@ class DisplayEndpoint extends Component {
           )
         ) : null}
 
-        {this.state.flagResponse === true ? (
-          <JSONPretty theme={JSONPrettyMon} data={this.state.response.data} />
+        {this.state.flagResponse === true &&
+        (this.state.prettyResponse === true ||
+          this.state.rawResponse === true ||
+          this.state.previewResponse === true) ? (
+          <div>
+            <div>
+              <Navbar bg='primary' variant='dark'>
+                <Navbar.Brand href='#home'></Navbar.Brand>
+                <Nav className='mr-auto'>
+                  <Nav.Link onClick={this.prettyDataResponse.bind(this)}>
+                    Pretty
+                  </Nav.Link>
+                  <Nav.Link onClick={this.rawDataResponse.bind(this)}>
+                    Raw
+                  </Nav.Link>
+                  <Nav.Link onClick={this.previewDataResponse.bind(this)}>
+                    Preview
+                  </Nav.Link>
+                </Nav>
+              </Navbar>
+            </div>
+
+            {this.state.prettyResponse === true ? (
+              <div>
+                <JSONPretty
+                  theme={JSONPrettyMon}
+                  data={this.state.response.data}
+                />
+              </div>
+            ) : null}
+            {this.state.rawResponse === true ? (
+              <div style={{ display: 'block', whiteSpace: 'normal' }}>
+                {this.state.responseString}
+              </div>
+            ) : null}
+            {this.state.previewResponse === true ? (
+              <div style={{ display: 'block', whiteSpace: 'normal' }}>
+                feature coming soon
+              </div>
+            ) : null}
+            {/* {this.state.prettyResponse=false,this.state.rawResponse=false,this.state.previewResponse=false} */}
+          </div>
         ) : null}
       </div>
     )
