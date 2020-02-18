@@ -24,6 +24,7 @@ class Environments extends Component {
   }
 
   handleEnv (environmentId) {
+    this.props.set_environment(this.state.environments[environmentId])
     this.setState({ environmentId })
   }
 

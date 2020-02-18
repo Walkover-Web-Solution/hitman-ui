@@ -1,20 +1,26 @@
-import React, { Component } from "react";
-import { Switch } from "react-router-dom";
-import ProtectedRoute from "./common/protectedRoute";
-import Collections from "./collections";
+import React, { Component } from 'react'
+import { Switch } from 'react-router-dom'
+import ProtectedRoute from './common/protectedRoute'
+import Collections from './collections'
 class SideBar extends Component {
-  state = {};
-  render() {
+  state = {}
+  render () {
     return (
-      <nav className="col-md-3 d-none d-md-block bg-light sidebar">
-        <div className="sidebar-sticky">
+      <nav
+        className='col-md-3 d-none d-md-block bg-light sidebar'
+        style={{ overflowY: 'scroll' }}
+      >
+        <div className='sidebar-sticky'>
           <Switch>
-            <ProtectedRoute path="/dashboard/" component={Collections} />
+            <ProtectedRoute
+              path='/dashboard/'
+              render={props => <Collections {...this.props} />}
+            />
           </Switch>
         </div>
       </nav>
-    );
+    )
   }
 }
 
-export default SideBar;
+export default SideBar

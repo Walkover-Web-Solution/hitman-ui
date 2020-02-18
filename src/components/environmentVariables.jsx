@@ -117,7 +117,6 @@ class EnvironmentVariables extends Component {
   }
 
   render () {
-    console.log('props', this.props)
     return (
       <Modal
         {...this.props}
@@ -198,7 +197,7 @@ class EnvironmentVariables extends Component {
                       <td>
                         <button
                           type='button'
-                          class='btn btn-light btn-sm btn-block'
+                          className='btn btn-light btn-sm btn-block'
                           onClick={() => this.handleDelete(index)}
                         >
                           x{' '}
@@ -213,7 +212,7 @@ class EnvironmentVariables extends Component {
                     {' '}
                     <button
                       type='button'
-                      class='btn btn-link btn-sm btn-block'
+                      className='btn btn-link btn-sm btn-block'
                       onClick={() => this.handleAdd()}
                     >
                       + New Variable

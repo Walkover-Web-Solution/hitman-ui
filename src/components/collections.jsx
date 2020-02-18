@@ -430,12 +430,10 @@ class Collections extends Component {
         versions: versions,
         groupId: groupId,
         title: 'Add New Endpoint',
-        groups: this.state.groups,
+        groups: this.state.groups
       })
       toast.error(ex.response ? ex.response.data : 'Something went wrong')
       this.setState({ originalEndpoints })
-     
-     
     }
   }
 
