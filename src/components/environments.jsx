@@ -93,26 +93,38 @@ class Environments extends Component {
     return (
       <div>
         <div>
-          <Route
-            path='/dashboard/environments/:environmentId/variables'
-            render={props => (
-              <EnvironmentVariables
-                {...props}
-                show={this.state.environmentId}
-                onHide={() => {}}
-                environment={jQuery.extend(true, {}, this.state.environment)}
-                title='Environment'
-              />
-            )}
-          />
           <Switch>
+            <Route
+              path='/dashboard/environments/:environmentId/variables'
+              render={props => (
+                <EnvironmentVariables
+                  {...props}
+                  show={this.state.environmentId}
+                  onHide={() => {
+                    this.props.history.push({
+                      pathname: '/dashboard'
+                    })
+                  }}
+                  environment={jQuery.extend(
+                    true,
+                    {},
+                    this.state.environments[this.state.environmentId]
+                  )}
+                  title='Environment'
+                />
+              )}
+            />
             <Route
               path='/dashboard/environments/:environmentId/edit'
               render={props => (
                 <EnvironmentVariables
                   {...props}
                   show={true}
-                  onHide={() => {}}
+                  onHide={() => {
+                    this.props.history.push({
+                      pathname: '/dashboard'
+                    })
+                  }}
                   title='Edit Environment'
                 />
               )}
@@ -123,7 +135,11 @@ class Environments extends Component {
                 <EnvironmentModal
                   {...props}
                   show={true}
-                  onHide={() => {}}
+                  onHide={() => {
+                    this.props.history.push({
+                      pathname: '/dashboard'
+                    })
+                  }}
                   environments={this.state.environments}
                 />
               )}
@@ -134,7 +150,11 @@ class Environments extends Component {
                 <EnvironmentVariables
                   {...props}
                   show={true}
-                  onHide={() => {}}
+                  onHide={() => {
+                    this.props.history.push({
+                      pathname: '/dashboard'
+                    })
+                  }}
                   title='Add new Environment'
                 />
               )}

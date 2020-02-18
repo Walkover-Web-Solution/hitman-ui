@@ -117,6 +117,7 @@ class EnvironmentVariables extends Component {
   }
 
   render () {
+    console.log('props', this.props)
     return (
       <Modal
         {...this.props}

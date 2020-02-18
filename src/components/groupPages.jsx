@@ -11,6 +11,7 @@ class GroupPages extends Component {
   state = {}
 
   onDragStart = (e, pageId) => {
+    this.props.group_dnd(false)
     this.draggedItem = pageId
   }
 
@@ -20,6 +21,7 @@ class GroupPages extends Component {
   }
 
   async onDragEnd (e) {
+    this.props.group_dnd(true)
     if (this.draggedItem === this.draggedOverItem) {
       return
     }

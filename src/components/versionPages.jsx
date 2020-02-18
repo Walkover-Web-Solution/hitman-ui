@@ -11,6 +11,7 @@ class Pages extends Component {
   state = {}
 
   onDragStart = (e, pageId) => {
+    this.props.version_dnd(false)
     this.draggedItem = pageId
   }
 
@@ -20,6 +21,7 @@ class Pages extends Component {
   }
 
   async onDragEnd (e) {
+    this.props.version_dnd(true)
     if (this.draggedItem === this.draggedOverItem) {
       return
     }
@@ -64,7 +66,12 @@ class Pages extends Component {
                 onDragEnd={e => this.onDragEnd(e, pageId)}
               >
                 <Card>
-                  <Card.Header>
+                  <Card.Header
+                    draggable
+                    onDragOver={e => this.onDragOver(e, pageId)}
+                    onDragStart={e => this.onDragStart(e, pageId)}
+                    onDragEnd={e => this.onDragEnd(e, pageId)}
+                  >
                     <Accordion.Toggle
                       as={Button}
                       onClick={() =>
