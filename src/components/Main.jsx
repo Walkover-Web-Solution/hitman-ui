@@ -19,7 +19,6 @@ class Main extends Component {
   getEnvironment () {
     return this.state.currentEnvironment
   }
-
   render () {
     return (
       <div>
@@ -49,10 +48,9 @@ class Main extends Component {
               />
             </Route>
             <ToastContainer />
-
             <main
               role='main'
-              className='main col-md-9 ml-sm-auto col-lg-9 px-4'
+              className='main col-md-9 ml-sm-auto col-lg-9 px-4 '
             >
               <Route>
                 <Environments

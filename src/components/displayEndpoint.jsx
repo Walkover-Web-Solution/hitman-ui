@@ -5,7 +5,6 @@ import { Dropdown, Table } from 'react-bootstrap'
 import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
 import { toast } from 'react-toastify'
-import { CopyToClipboard } from 'react-copy-to-clipboard'
 const status = require('http-status')
 var JSONPrettyMon = require('react-json-pretty/dist/monikai')
 
@@ -106,17 +105,22 @@ class DisplayEndpoint extends Component {
     const regexp = /{{(\w+)}}/g
     let match = regexp.exec(api)
     let variables = []
+    if (match === null) return api
     do {
       variables.push(match[1])
     } while ((match = regexp.exec(api)) !== null)
     for (let i = 0; i < variables.length; i++) {
       console.log(variables[i], this.state.environment.variables)
-      api = api.replace(
-        `{{${variables[i]}}}`,
+      if (
+        this.state.environment.variables[variables[i]] &&
         this.state.environment.variables[variables[i]].initialValue
-      )
+      ) {
+        api = api.replace(
+          `{{${variables[i]}}}`,
+          this.state.environment.variables[variables[i]].initialValue
+        )
+      }
     }
-    console.log(api)
     return api
   }
 
@@ -471,10 +475,8 @@ class DisplayEndpoint extends Component {
   }
 
   render () {
-    console.log(this.props)
     if (this.props.location.getEnvironment) {
       this.state.environment = this.props.location.getEnvironment()
-      console.log(this.state.environment)
     }
 
     if (this.props.location.endpoint) {
@@ -919,7 +921,6 @@ class DisplayEndpoint extends Component {
         ) : null}
 
         {this.state.flagResponse === true &&
-        this.state.flagInvalidResponse &&
         (this.state.prettyResponse === true ||
           this.state.rawResponse === true ||
           this.state.previewResponse === true) ? (
