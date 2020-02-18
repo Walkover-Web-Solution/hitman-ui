@@ -27,7 +27,8 @@ class Endpoints extends Component {
       endpoint: endpoint,
       groups: groups,
       versions: versions,
-      endpointFlag: true
+      endpointFlag: true,
+      getEnvironment: this.props.get_environment
     })
   }
   state = {}

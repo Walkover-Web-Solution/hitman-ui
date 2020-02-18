@@ -9,6 +9,16 @@ import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
 class Main extends Component {
+  state = {
+    currentEnvironment: { id: null, name: 'No Environment' }
+  }
+  setEnvironment (environment) {
+    this.setState({ currentEnvironment: environment })
+  }
+
+  getEnvironment () {
+    return this.state.currentEnvironment
+  }
   render () {
     return (
       <div>
@@ -32,16 +42,21 @@ class Main extends Component {
         <div className='container-fluid'>
           <div className='row'>
             <Route>
-              <SideBar />
+              <SideBar
+                {...this.props}
+                get_environment={this.getEnvironment.bind(this)}
+              />
             </Route>
             <ToastContainer />
-
             <main
               role='main'
-              className='main col-md-9 ml-sm-auto col-lg-9 px-4'
+              className='main col-md-9 ml-sm-auto col-lg-9 px-4 '
             >
               <Route>
-                <Environments {...this.props} />
+                <Environments
+                  {...this.props}
+                  set_environment={this.setEnvironment.bind(this)}
+                />
               </Route>
               <div className='d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom'></div>
               <ToastContainer />

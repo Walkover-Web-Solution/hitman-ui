@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Modal, Table } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import environmentService from '../services/environmentService'
+import './environmentVariables.css'
 
 class EnvironmentVariables extends Component {
   state = {
@@ -134,7 +135,7 @@ class EnvironmentVariables extends Component {
                   value={this.state.environment.name}
                   onChange={this.handleChangeEnv}
                   type={'text'}
-                  style={{ border: '1px  grey' }}
+                  size='100'
                   className='form-control'
                 />
               </h5>
@@ -197,7 +198,7 @@ class EnvironmentVariables extends Component {
                       <td>
                         <button
                           type='button'
-                          class='btn btn-light btn-sm btn-block'
+                          className='btn btn-light btn-sm btn-block'
                           onClick={() => this.handleDelete(index)}
                         >
                           x{' '}
@@ -212,7 +213,7 @@ class EnvironmentVariables extends Component {
                     {' '}
                     <button
                       type='button'
-                      class='btn btn-link btn-sm btn-block'
+                      className='btn btn-link btn-sm btn-block'
                       onClick={() => this.handleAdd()}
                     >
                       + New Variable

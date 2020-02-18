@@ -10,18 +10,30 @@ import GroupPages from './groupPages'
 import Endpoints from './endpoints'
 
 class Groups extends Component {
-  state = {}
+  state = {
+    groupDnDFlag: true
+  }
+
+  groupDnD (groupDnDFlag) {
+    this.props.version_dnd(groupDnDFlag)
+    this.setState({ groupDnDFlag })
+  }
 
   onDragStart = (e, groupId) => {
+    if (!this.state.groupDnDFlag) return
+    this.props.version_dnd(false)
     this.draggedItem = groupId
   }
 
   onDragOver = (e, groupId) => {
+    if (!this.state.groupDnDFlag) return
     e.preventDefault()
     this.draggedOverItem = groupId
   }
 
   async onDragEnd (e, props) {
+    if (!this.state.groupDnDFlag) return
+    this.props.version_dnd(true)
     if (this.draggedItem === this.draggedOverItem) {
       return
     }
@@ -64,16 +76,14 @@ class Groups extends Component {
               gId => this.props.groups[gId].versionId === this.props.version_id
             )
             .map(groupId => (
-              <Accordion
-                defaultActiveKey='0'
-                key={groupId}
-                draggable
-                onDragOver={e => this.onDragOver(e, groupId)}
-                onDragStart={e => this.onDragStart(e, groupId)}
-                onDragEnd={e => this.onDragEnd(e, groupId, this.props)}
-              >
+              <Accordion defaultActiveKey='0' key={groupId}>
                 <Card>
-                  <Card.Header>
+                  <Card.Header
+                    draggable
+                    onDragOver={e => this.onDragOver(e, groupId)}
+                    onDragStart={e => this.onDragStart(e, groupId)}
+                    onDragEnd={e => this.onDragEnd(e, groupId, this.props)}
+                  >
                     <Accordion.Toggle as={Button} variant='link' eventKey='1'>
                       {this.props.groups[groupId].name}
                     </Accordion.Toggle>
@@ -146,6 +156,7 @@ class Groups extends Component {
                         {...this.props}
                         version_id={this.props.groups[groupId].versionId}
                         group_id={parseInt(groupId)}
+                        group_dnd={this.groupDnD.bind(this)}
                       />
                     </Card.Body>
                   </Accordion.Collapse>

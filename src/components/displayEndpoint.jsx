@@ -248,6 +248,7 @@ class DisplayEndpoint extends Component {
       params: paramsData
     };
 
+    this.setState({ endpoint });
     if (this.state.title === "Add New Endpoint") {
       this.props.history.push({
         pathname: `/dashboard/collections`,
