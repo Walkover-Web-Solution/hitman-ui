@@ -162,7 +162,11 @@ class Groups extends Component {
                   </Accordion.Collapse>
                   <Accordion.Collapse eventKey='1'>
                     <Card.Body>
-                      <Endpoints {...this.props} group_id={parseInt(groupId)} />
+                      <Endpoints
+                        {...this.props}
+                        group_id={parseInt(groupId)}
+                        group_dnd={this.groupDnD.bind(this)}
+                      />
                     </Card.Body>
                   </Accordion.Collapse>
                 </Card>

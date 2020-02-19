@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import endpointService from "../services/endpointService";
 import JSONPretty from "react-json-pretty";
 import { Dropdown, Table } from "react-bootstrap";
+import { CopyToClipboard } from "react-copy-to-clipboard";
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
 import { toast } from "react-toastify";
@@ -1013,6 +1014,13 @@ class DisplayEndpoint extends Component {
                     Preview
                   </Nav.Link>
                 </Nav>
+                <CopyToClipboard
+                  text={JSON.stringify(this.state.response.data)}
+                  onCopy={() => this.setState({ copied: true })}
+                  style={{ float: "right", borderRadius: "12px" }}
+                >
+                  <button style={{ borderRadius: "12px" }}>Copy</button>
+                </CopyToClipboard>
               </Navbar>
             </div>
 
