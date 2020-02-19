@@ -476,19 +476,39 @@ async handleDuplicateGroup(groupCopy){
    const groups = { ...this.state.groups }
    let group = {}
     let endpoints ={}
+    let pages ={}
   try {
     const { data } =  await groupsService.duplicateGroup(groupCopy.id);
     endpoints = {...this.state.endpoints, ...data.endpoints}
-
+    pages = {...this.state.pages, ...data.pages}
     group = data.groups;
-    groups[group.id] = group
+    groups[group.id] = group 
     const groupIds = [...this.state.groupIds, group.id.toString()]
-      this.setState({ groups, groupIds ,endpoints })
+    const pageIds = [...this.state.pageIds, ...Object.keys(data.pages)]
+      this.setState({ groups, groupIds ,endpoints ,pages ,pageIds})
   } catch (ex) {
     toast.error(ex.response ? ex.response.data : 'Something went wrong')
     this.setState({ originalGroup })
   }
  
+}
+
+async handleDuplicatePage(pageCopy)
+{
+  let orignalPage = {...this.state.pages}
+   let pages = { ...this.state.pages }
+   let page = {}
+     try {
+    const { data } =  await pageService.duplicatePage(pageCopy.id);
+    page = data;
+    pages[page.id] = page 
+    const pageIds = [...this.state.pageIds, page.id.toString()]
+    this.setState({ pages ,pageIds})
+  } catch (ex) {
+    console.log(ex)
+    toast.error(ex.response ? ex.response.data : 'Something went wrong')
+    this.setState({ orignalPage })
+}
 }
 
   onDragStart = (e, index) => {
@@ -570,6 +590,13 @@ async handleDuplicateGroup(groupCopy){
       const deletePageId = location.deletePageId
       this.props.history.replace({ deletedPageId: null })
       this.handleDeletePage(deletePageId)
+    }
+
+    if(location.duplicatePage)
+    {
+      const duplicatePage = location.duplicatePage
+      this.props.history.replace({ duplicatePage: null })
+      this.handleDuplicatePage(duplicatePage)
     }
 
     if (location.editedGroup) {

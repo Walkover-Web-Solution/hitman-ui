@@ -54,6 +54,15 @@ class GroupPages extends Component {
     })
   }
 
+  handleDuplicate(page)
+  {
+    this.props.history.push({
+      pathname: '/dashboard/collections',
+      duplicatePage:page,
+  
+    })
+  }
+
   render () {
     return (
       <div>
@@ -104,6 +113,15 @@ class GroupPages extends Component {
                         }}
                       >
                         Delete
+                      </Dropdown.Item>
+
+                      <Dropdown.Item
+                        eventKey='2'
+                        onClick={() => {
+                            this.handleDuplicate(this.props.pages[pageId])
+                        }}
+                      >
+                        Duplicate
                       </Dropdown.Item>
                     </DropdownButton>
                   </Card.Header>
