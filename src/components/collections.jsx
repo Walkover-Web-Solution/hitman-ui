@@ -471,6 +471,25 @@ async handleDuplicateEndpoint(endpointCopy)
   }
 }
 
+async handleDuplicatePage(pageCopy)
+{
+  let orignalPage = {...this.state.pages}
+   let pages = { ...this.state.pages }
+   let page = {}
+     try {
+    const { data } =  await pageService.duplicatePage(pageCopy.id);
+    page = data;
+    pages[page.id] = page 
+    const pageIds = [...this.state.pageIds, page.id.toString()]
+    this.setState({ pages ,pageIds})
+  } catch (ex) {
+    console.log(ex)
+    toast.error(ex.response ? ex.response.data : 'Something went wrong')
+    this.setState({ orignalPage })
+}
+}
+
+
 async handleDuplicateGroup(groupCopy){
   let originalGroup = {...this.state.groups}
    const groups = { ...this.state.groups }
@@ -490,26 +509,31 @@ async handleDuplicateGroup(groupCopy){
     toast.error(ex.response ? ex.response.data : 'Something went wrong')
     this.setState({ originalGroup })
   }
+}
+
+async handleDuplicateVersion(versionCopy){
+  let orignalVersion = {...this.state.versions}
+   const versions = { ...this.state.versions }
+   let version = {}
+   // let endpoints ={}
+   // let pages ={}
+  try {
+    const { data } =  await collectionVersionsService.duplicateVersion(versionCopy.id);
+   // endpoints = {...this.state.endpoints, ...data.endpoints}
+  //  pages = {...this.state.pages, ...data.pages}
+    console.log('data',data);
+    // version = data;
+    // versions[version.id] = version 
+    // const groupIds = [...this.state.groupIds, group.id.toString()]
+    // const pageIds = [...this.state.pageIds, ...Object.keys(data.pages)]
+    //   this.setState({ versions, groupIds ,endpoints ,pages ,pageIds})
+  } catch (ex) {
+    toast.error(ex.response ? ex.response.data : 'Something went wrong')
+    this.setState({ orignalVersion })
+  }
  
 }
 
-async handleDuplicatePage(pageCopy)
-{
-  let orignalPage = {...this.state.pages}
-   let pages = { ...this.state.pages }
-   let page = {}
-     try {
-    const { data } =  await pageService.duplicatePage(pageCopy.id);
-    page = data;
-    pages[page.id] = page 
-    const pageIds = [...this.state.pageIds, page.id.toString()]
-    this.setState({ pages ,pageIds})
-  } catch (ex) {
-    console.log(ex)
-    toast.error(ex.response ? ex.response.data : 'Something went wrong')
-    this.setState({ orignalPage })
-}
-}
 
   onDragStart = (e, index) => {
     if (!this.state.collectionDnDFlag) return
@@ -642,6 +666,13 @@ async handleDuplicatePage(pageCopy)
       this.handleAddVersion(newCollectionVersion, collectionId)
     }
 
+    if(location.duplicateVersion)
+    {
+      const duplicateVersion = location.duplicateVersion
+      this.props.history.replace({ duplicateVersion: null })
+      this.handleDuplicateVersion(duplicateVersion)
+    }
+
     if (location.editedCollection) {
       const editedCollection = location.editedCollection
       this.props.history.replace({ editedCollection: null })
@@ -653,6 +684,7 @@ async handleDuplicatePage(pageCopy)
       this.props.history.replace({ newCollection: null })
       this.handleAdd(newCollection)
     }
+
 
     return (
       <div>

@@ -29,10 +29,15 @@ export function deleteCollectionVersion(versionId) {
 	return http.delete(`${apiUrl}/versions/${versionId}`);
 }
 
+export function duplicateVersion(versionId) {
+    return http.post( `${apiUrl}/duplicateVersions/${versionId}` );
+}
+
 export default {
 	getCollectionVersions,
 	getCollectionVersion,
 	saveCollectionVersion,
 	updateCollectionVersion,
-	deleteCollectionVersion
+	deleteCollectionVersion,
+	duplicateVersion
 };
