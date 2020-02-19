@@ -34,6 +34,7 @@ class Collections extends Component {
     versionIds: [],
     groupIds: [],
     pageIds: [],
+    endpointIds: [],
     collectionDnDFlag: true
   }
 
@@ -87,25 +88,25 @@ class Collections extends Component {
 
   async componentDidMount () {
     const { data: collections } = await collectionsService.getCollections()
-    this.setState({ collections })
+    const collectionIds = Object.keys(collections)
+    this.setState({ collections, collectionIds })
     const versions = await this.fetchVersions(collections)
     const groups = await this.fetchGroups(versions)
     const pages = await this.fetchPages(versions)
     const endpoints = await this.fetchEndpoints(groups)
-    const collectionIds = Object.keys(this.state.collections)
     const versionIds = Object.keys(versions)
     const groupIds = Object.keys(groups)
     const pageIds = Object.keys(pages)
+    const endpointIds = Object.keys(endpoints)
     this.setState({
-      collections,
       versions,
       groups,
       pages,
       endpoints,
-      collectionIds,
       versionIds,
       groupIds,
-      pageIds
+      pageIds,
+      endpointIds
     })
   }
 
@@ -125,6 +126,9 @@ class Collections extends Component {
     this.setState({ pageIds })
   }
 
+  setEndpointIds (endpointIds) {
+    this.setState({ endpointIds })
+  }
   async handleAdd (newCollection) {
     newCollection.requestId = shortId.generate()
     const originalCollections = { ...this.state.collections }
@@ -802,7 +806,9 @@ class Collections extends Component {
                       version_ids={this.state.versionIds}
                       group_ids={this.state.groupIds}
                       page_ids={this.state.pageIds}
+                      endpoint_ids={this.state.endpointIds}
                       set_version_id={this.setVersionIds.bind(this)}
+                      set_endpoint_id={this.setEndpointIds.bind(this)}
                       set_group_id={this.setGroupIds.bind(this)}
                       set_page_id={this.setPageIds.bind(this)}
                       collection_dnd={this.collectionDnD.bind(this)}
