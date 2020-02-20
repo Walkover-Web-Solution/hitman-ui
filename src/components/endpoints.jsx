@@ -46,11 +46,12 @@ class Endpoints extends Component {
       editEndpoint: endpoint
     })
   }
-  handleDisplay (endpoint, groups, versions) {
+  handleDisplay (endpoint, groups, versions, groupId) {
     this.props.history.push({
       pathname: `/dashboard/collections/endpoints/${endpoint.id}`,
       title: 'update endpoint',
       endpoint: endpoint,
+      groupId: groupId,
       groups: groups,
       versions: versions,
       endpointFlag: true
@@ -78,7 +79,8 @@ class Endpoints extends Component {
                         this.handleDisplay(
                           this.props.endpoints[endpointId],
                           this.props.groups,
-                          this.props.versions
+                          this.props.versions,
+                          this.props.group_id
                         )
                       }
                       as={Button}
