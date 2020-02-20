@@ -445,7 +445,6 @@ class Collections extends Component {
   }
 
   async updateEndpoint(endpointId, groupId, newEndpoint, versions) {
-    console.log("updtae function");
     let currentEndpoint = { ...newEndpoint };
     delete currentEndpoint.groupId;
     try {
@@ -453,9 +452,7 @@ class Collections extends Component {
       endpoint.groupId = groupId;
       endpoint.id = endpointId;
       let endpoints = { ...this.state.endpoints };
-      console.log("endpoints", endpoints);
       endpoints[endpointId] = endpoint;
-      console.log("endpoints", endpoints);
 
       await endpointService.updateEndpoint(endpointId, currentEndpoint);
       this.props.history.push({
