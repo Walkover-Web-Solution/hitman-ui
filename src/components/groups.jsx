@@ -14,7 +14,7 @@ class Groups extends Component {
     groupDnDFlag: true
   }
 
-  groupDnD (groupDnDFlag) {
+  groupDnD(groupDnDFlag) {
     this.props.version_dnd(groupDnDFlag)
     this.setState({ groupDnDFlag })
   }
@@ -31,7 +31,7 @@ class Groups extends Component {
     this.draggedOverItem = groupId
   }
 
-  async onDragEnd (e, props) {
+  async onDragEnd(e, props) {
     if (!this.state.groupDnDFlag) return
     this.props.version_dnd(true)
     if (this.draggedItem === this.draggedOverItem) {
@@ -47,7 +47,7 @@ class Groups extends Component {
     this.props.set_group_id(groupIds)
   }
 
-  handleAddPage (groupId, versionId, collectionId) {
+  handleAddPage(groupId, versionId, collectionId) {
     this.props.history.push({
       pathname: `/dashboard/collections/${collectionId}/versions/${versionId}/groups/${groupId}/pages/new`,
       versionId: versionId,
@@ -55,7 +55,7 @@ class Groups extends Component {
     })
   }
 
-  handleAddEndpoint (groupId, versionId, collectionId, versions, groups) {
+  handleAddEndpoint(groupId, versionId, collectionId, versions, groups) {
     this.props.history.push({
       pathname: `/dashboard/collections/endpoints`,
       versions: versions,
@@ -66,7 +66,7 @@ class Groups extends Component {
     })
   }
 
-  render () {
+  render() {
     return (
       <div>
         {this.props.groups &&
@@ -110,8 +110,8 @@ class Groups extends Component {
                           if (
                             window.confirm(
                               'Are you sure you wish to delete this group? ' +
-                                '\n' +
-                                'All your pages and endpoints present in this group will be deleted.'
+                              '\n' +
+                              'All your pages and endpoints present in this group will be deleted.'
                             )
                           )
                             this.props.history.push({
@@ -165,6 +165,7 @@ class Groups extends Component {
                       <Endpoints
                         {...this.props}
                         group_id={parseInt(groupId)}
+                        endpoints_order={this.props.groups[groupId].endpointsOrder}
                         group_dnd={this.groupDnD.bind(this)}
                       />
                     </Card.Body>

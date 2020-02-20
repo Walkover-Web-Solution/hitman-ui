@@ -20,33 +20,34 @@ class Endpoints extends Component {
     this.draggedOverItem = eId
   }
 
-  async onDragEnd (e, props) {
+  async onDragEnd(e, props) {
     this.props.group_dnd(true)
     if (this.draggedItem === this.draggedOverItem) {
       return
     }
-    let endpointIds = this.props.endpoint_ids.filter(
+    let endpointIds = this.props.endpoints_order.filter(
       item => item !== this.draggedItem
     )
-    const index = this.props.endpoint_ids.findIndex(
+    const index = this.props.endpoints_order.findIndex(
       eId => eId === this.draggedOverItem
     )
     endpointIds.splice(index, 0, this.draggedItem)
-    this.props.set_endpoint_id(endpointIds)
+    this.props.set_endpoint_id(this.props.group_id, endpointIds)
   }
-  handleDelete (endpoint) {
+  handleDelete(endpoint) {
     this.props.history.push({
       pathname: '/dashboard/collections',
-      deleteEndpointId: endpoint.id
+      deleteEndpointId: endpoint.id,
+      groupId: this.props.group_id
     })
   }
-  handleUpdate (endpoint) {
+  handleUpdate(endpoint) {
     this.props.history.push({
       pathname: `/dashboard/collections/${this.props.collection_id}/versions/${this.props.version_id}/groups/${this.props.group_id}/endpoints/${endpoint.id}/edit`,
       editEndpoint: endpoint
     })
   }
-  handleDisplay (endpoint, groups, versions, groupId) {
+  handleDisplay(endpoint, groups, versions, groupId) {
     this.props.history.push({
       pathname: `/dashboard/collections/endpoints/${endpoint.id}`,
       title: 'update endpoint',
@@ -57,11 +58,11 @@ class Endpoints extends Component {
       endpointFlag: true
     })
   }
-  render () {
+  render() {
     return (
       <div>
         {this.props.endpoints &&
-          this.props.endpoint_ids
+          this.props.endpoints_order
             .filter(
               eId => this.props.endpoints[eId].groupId === this.props.group_id
             )
@@ -111,10 +112,6 @@ class Endpoints extends Component {
                 </Card>
               </Accordion>
             ))}
-        {/* {this.props.location.pathname.split('/')[3] == 'endpoint' &&
-        this.props.location.pathname.split('/')[4] ? (
-          <Redirect to='/dashboard/collections' />
-        ) : null} */}
       </div>
     )
   }

@@ -95,7 +95,7 @@ class DisplayEndpoint extends Component {
     this.setState({ data })
   }
 
-  findHost () {
+  findHost() {
     let host = ''
     if (this.state.onChangeFlag === true) {
       return this.state.data.host
@@ -119,7 +119,7 @@ class DisplayEndpoint extends Component {
     return host
   }
 
-  finalUrl (api) {
+  finalUrl(api) {
     const regexp = /{{(\w+)}}/g
     let match = regexp.exec(api)
     let variables = []
@@ -240,17 +240,17 @@ class DisplayEndpoint extends Component {
       })
     }
   }
-  setHost () {
+  setHost() {
     this.state.hostFlag = true
   }
-  setMethod (method) {
+  setMethod(method) {
     const response = {}
     let data = { ...this.state.data }
     data.method = method
     this.setState({ response, data })
   }
 
-  async handleAddParam () {
+  async handleAddParam() {
     let paramsData = { ...this.state.paramsData }
     const len = this.state.originalParamsKeys.length
     let originalParamsKeys = [...this.state.originalParamsKeys, len.toString()]
@@ -266,7 +266,7 @@ class DisplayEndpoint extends Component {
     this.setState({ updatedParamsKeys })
   }
 
-  handleDeleteParam (index) {
+  handleDeleteParam(index) {
     const updatedParamsKeys = this.state.updatedParamsKeys
     updatedParamsKeys[index] = 'deleted'
     let keys = []
@@ -284,7 +284,7 @@ class DisplayEndpoint extends Component {
     this.setState({ updatedParamsKeys })
   }
 
-  handleUpdateUri (keys, values) {
+  handleUpdateUri(keys, values) {
     let originalUri = this.state.data.uri.split('?')[0] //Possible mistake
     let updatedUri = this.state.data.updatedUri
 
@@ -371,7 +371,7 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  doSubmitParam () {
+  doSubmitParam() {
     let paramsData = { ...this.state.paramsData }
     let originalParamsKeys = [...this.state.originalParamsKeys]
     let newOriginalParamsKeys = []
@@ -409,7 +409,7 @@ class DisplayEndpoint extends Component {
     return paramsData
   }
 
-  handleAddHeader () {
+  handleAddHeader() {
     let headersData = { ...this.state.headersData }
     const len = this.state.originalHeadersKeys.length
     let originalHeadersKeys = [
@@ -425,7 +425,7 @@ class DisplayEndpoint extends Component {
     this.setState({ headersData, originalHeadersKeys, updatedHeadersKeys })
   }
 
-  handleDeleteHeader (index) {
+  handleDeleteHeader(index) {
     const updatedHeadersKeys = this.state.updatedHeadersKeys
     updatedHeadersKeys[index] = 'deleted'
     this.setState({ updatedHeadersKeys })
@@ -444,7 +444,7 @@ class DisplayEndpoint extends Component {
     this.setState({ headersData, updatedHeadersKeys })
   }
 
-  doSubmitHeader () {
+  doSubmitHeader() {
     let headersData = { ...this.state.headersData }
     let originalHeadersKeys = [...this.state.originalHeadersKeys]
     let updatedHeadersKeys = [...this.state.updatedHeadersKeys]
@@ -476,11 +476,11 @@ class DisplayEndpoint extends Component {
     return headersData
   }
 
-  responseTime () {
+  responseTime() {
     let timeElapsed = new Date().getTime() - this.state.startTime
     this.setState({ timeElapsed })
   }
-  rawDataResponse () {
+  rawDataResponse() {
     let rawResponse = true
     let previewResponse = false
     let prettyResponse = false
@@ -492,7 +492,7 @@ class DisplayEndpoint extends Component {
       responseString
     })
   }
-  prettyDataResponse () {
+  prettyDataResponse() {
     let rawResponse = false
     let previewResponse = false
     let prettyResponse = true
@@ -504,14 +504,14 @@ class DisplayEndpoint extends Component {
       responseString
     })
   }
-  previewDataResponse () {
+  previewDataResponse() {
     let rawResponse = false
     let previewResponse = true
     let prettyResponse = false
     this.setState({ rawResponse, previewResponse, prettyResponse })
   }
 
-  render () {
+  render() {
     if (this.props.location.endpoint) {
       this.state.prettyResponse = false
       this.state.rawResponse = false
@@ -796,8 +796,8 @@ class DisplayEndpoint extends Component {
                                 this.state.originalParamsKeys[index]
                               ]
                                 ? this.state.paramsData[
-                                    this.state.originalParamsKeys[index]
-                                  ].description
+                                  this.state.originalParamsKeys[index]
+                                ].description
                                 : ''
                             }
                             onChange={this.handleChangeParam}
@@ -962,64 +962,64 @@ class DisplayEndpoint extends Component {
               </div>
             </div>
           ) : (
-            <div className='alert alert-danger' role='alert'>
-              Status :
+              <div className='alert alert-danger' role='alert'>
+                Status :
               {this.state.response.status +
-                ' ' +
-                status[this.state.response.status]}
-            </div>
-          )
+                  ' ' +
+                  status[this.state.response.status]}
+              </div>
+            )
         ) : null}
 
         {this.state.flagResponse === true &&
-        (this.state.prettyResponse === true ||
-          this.state.rawResponse === true ||
-          this.state.previewResponse === true) ? (
-          <div>
+          (this.state.prettyResponse === true ||
+            this.state.rawResponse === true ||
+            this.state.previewResponse === true) ? (
             <div>
-              <Navbar bg='primary' variant='dark'>
-                <Navbar.Brand href='#home'></Navbar.Brand>
-                <Nav className='mr-auto'>
-                  <Nav.Link onClick={this.prettyDataResponse.bind(this)}>
-                    Pretty
-                  </Nav.Link>
-                  <Nav.Link onClick={this.rawDataResponse.bind(this)}>
-                    Raw
-                  </Nav.Link>
-                  <Nav.Link onClick={this.previewDataResponse.bind(this)}>
-                    Preview
-                  </Nav.Link>
-                </Nav>
-                <CopyToClipboard
-                  text={JSON.stringify(this.state.response.data)}
-                  onCopy={() => this.setState({ copied: true })}
-                  style={{ float: 'right', borderRadius: '12px' }}
-                >
-                  <button style={{ borderRadius: '12px' }}>Copy</button>
-                </CopyToClipboard>
-              </Navbar>
-            </div>
-
-            {this.state.prettyResponse === true ? (
               <div>
-                <JSONPretty
-                  theme={JSONPrettyMon}
-                  data={this.state.response.data}
-                />
+                <Navbar bg='primary' variant='dark'>
+                  <Navbar.Brand href='#home'></Navbar.Brand>
+                  <Nav className='mr-auto'>
+                    <Nav.Link onClick={this.prettyDataResponse.bind(this)}>
+                      Pretty
+                  </Nav.Link>
+                    <Nav.Link onClick={this.rawDataResponse.bind(this)}>
+                      Raw
+                  </Nav.Link>
+                    <Nav.Link onClick={this.previewDataResponse.bind(this)}>
+                      Preview
+                  </Nav.Link>
+                  </Nav>
+                  <CopyToClipboard
+                    text={JSON.stringify(this.state.response.data)}
+                    onCopy={() => this.setState({ copied: true })}
+                    style={{ float: 'right', borderRadius: '12px' }}
+                  >
+                    <button style={{ borderRadius: '12px' }}>Copy</button>
+                  </CopyToClipboard>
+                </Navbar>
               </div>
-            ) : null}
-            {this.state.rawResponse === true ? (
-              <div style={{ display: 'block', whiteSpace: 'normal' }}>
-                {this.state.responseString}
+
+              {this.state.prettyResponse === true ? (
+                <div>
+                  <JSONPretty
+                    theme={JSONPrettyMon}
+                    data={this.state.response.data}
+                  />
+                </div>
+              ) : null}
+              {this.state.rawResponse === true ? (
+                <div style={{ display: 'block', whiteSpace: 'normal' }}>
+                  {this.state.responseString}
+                </div>
+              ) : null}
+              {this.state.previewResponse === true ? (
+                <div style={{ display: 'block', whiteSpace: 'normal' }}>
+                  feature coming soon
               </div>
-            ) : null}
-            {this.state.previewResponse === true ? (
-              <div style={{ display: 'block', whiteSpace: 'normal' }}>
-                feature coming soon
-              </div>
-            ) : null}
-          </div>
-        ) : null}
+              ) : null}
+            </div>
+          ) : null}
       </div>
     )
   }

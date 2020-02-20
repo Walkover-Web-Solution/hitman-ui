@@ -34,7 +34,6 @@ class Collections extends Component {
     versionIds: [],
     groupIds: [],
     pageIds: [],
-    endpointIds: [],
     collectionDnDFlag: true
   };
 
@@ -58,7 +57,6 @@ class Collections extends Component {
     const versionIds = Object.keys(versions);
     for (let i = 0; i < versionIds.length; i++) {
       const { data: groups1 } = await groupsService.getGroups(versionIds[i]);
-
       groups = { ...groups, ...groups1 };
     }
     return groups;
@@ -97,7 +95,6 @@ class Collections extends Component {
     const versionIds = Object.keys(versions);
     const groupIds = Object.keys(groups);
     const pageIds = Object.keys(pages);
-    const endpointIds = Object.keys(endpoints);
     this.setState({
       versions,
       groups,
@@ -105,8 +102,7 @@ class Collections extends Component {
       endpoints,
       versionIds,
       groupIds,
-      pageIds,
-      endpointIds
+      pageIds
     });
   }
 
@@ -126,8 +122,10 @@ class Collections extends Component {
     this.setState({ pageIds });
   }
 
-  setEndpointIds(endpointIds) {
-    this.setState({ endpointIds });
+  setEndpointIds(groupId, endpointsOrder) {
+    const groups = { ...this.state.groups }
+    groups[groupId].endpointsOrder = endpointsOrder
+    this.setState({ groups });
   }
   async handleAdd(newCollection) {
     newCollection.requestId = shortId.generate();
@@ -263,6 +261,7 @@ class Collections extends Component {
 
   async handleAddGroup(versionId, newGroup) {
     newGroup.requestId = shortId.generate();
+    newGroup.endpointsOrder = []
     const requestId = newGroup.requestId;
     const originalGroupIds = [...this.state.groupIds];
     const originalGroups = { ...this.state.groups };
@@ -410,9 +409,11 @@ class Collections extends Component {
 
   async handleAddEndpoint(groupId, newEndpoint, versions) {
     const originalEndpoints = { ...this.state.endpoints };
+    const originalGroups = { ...this.state.groups }
     newEndpoint.requestId = shortId.generate();
     const requestId = newEndpoint.requestId;
     const endpoints = { ...this.state.endpoints };
+    const groups = { ...this.state.groups };
     endpoints[requestId] = newEndpoint;
     this.setState({ endpoints });
     let endpoint = {};
@@ -421,7 +422,8 @@ class Collections extends Component {
       endpoint = data;
       endpoints[endpoint.id] = endpoint;
       delete endpoints.requestId;
-      this.setState({ endpoints });
+      groups[groupId].endpointsOrder.push(endpoint.id.toString())
+      this.setState({ endpoints, groups });
       this.props.history.push({
         pathname: `/dashboard/collections/endpoints/${endpoint.id}`,
         endpoint: endpoint,
@@ -440,7 +442,7 @@ class Collections extends Component {
         groups: this.state.groups
       });
       toast.error(ex.response ? ex.response.data : "Something went wrong");
-      this.setState({ originalEndpoints });
+      this.setState({ endpoints: originalEndpoints });
     }
   }
 
@@ -465,17 +467,27 @@ class Collections extends Component {
       });
       this.setState({ endpoints });
     } catch (ex) {
-      console.log("error");
       // toast.error(ex.response ? ex.response.data : "Something went wrong");
       // this.setState({ originalEndpoints });
     }
   }
 
-  async handleDeleteEndpoint(deleteEndpointId) {
-    await endpointService.deleteEndpoint(deleteEndpointId);
+  async handleDeleteEndpoint(deletedEndpointId, groupId) {
+    const originalEndpoints = { ...this.state.endpoints };
+    const originalGroups = { ...this.state.groups };
     const endpoints = { ...this.state.endpoints };
-    delete endpoints[deleteEndpointId];
-    this.setState({ endpoints });
+    const groups = { ...this.state.groups };
+    delete endpoints[deletedEndpointId];
+    groups[groupId].endpointsOrder = groups[groupId].endpointsOrder.filter(
+      eId => eId !== deletedEndpointId.toString()
+    );
+    this.setState({ endpoints, groups });
+    try {
+      await endpointService.deleteEndpoint(deletedEndpointId);
+    } catch (ex) {
+      toast.error(ex.response ? ex.response.data : "Something went wrong");
+      this.setState({ endpoints: originalEndpoints, groups: originalGroups });
+    }
   }
 
   onDragStart = (e, index) => {
@@ -508,8 +520,9 @@ class Collections extends Component {
 
     if (location.deleteEndpointId) {
       const deleteEndpointId = location.deleteEndpointId;
+      const groupId = location.groupId;
       this.props.history.replace({ deleteEndpointId: null });
-      this.handleDeleteEndpoint(deleteEndpointId);
+      this.handleDeleteEndpoint(deleteEndpointId, groupId);
     }
 
     if (location.title === "Add Endpoint") {
@@ -622,22 +635,6 @@ class Collections extends Component {
         <div className="App-Nav">
           <div className="tabs">
             <Switch>
-              <Route
-                path="/dashboard/collections/:collectionId/versions/:versionId/groups/:groupId/endpoints/:endpointId/edit"
-                render={props => (
-                  <EndpointForm {...props} show={true} title="Edit Endpoint" />
-                )}
-              />
-              <Route
-                path="/dashboard/collections/:collectionId/versions/:versionId/groups/:groupId/endpoints/new"
-                render={props => (
-                  <EndpointForm
-                    {...props}
-                    show={true}
-                    title="Add New Endpoint"
-                  />
-                )}
-              />
               <Route
                 path="/dashboard/collections/:id/versions/:versionId/groups/:groupId/pages/new"
                 render={props => (
@@ -816,8 +813,8 @@ class Collections extends Component {
                         if (
                           window.confirm(
                             "Are you sure you wish to delete this collection?" +
-                              "\n" +
-                              " All your versions, groups, pages and endpoints present in this collection will be deleted."
+                            "\n" +
+                            " All your versions, groups, pages and endpoints present in this collection will be deleted."
                           )
                         )
                           this.handleDelete(
