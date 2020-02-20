@@ -389,12 +389,17 @@ class Collections extends Component {
   }
 
   async handleUpdatePage (editedPage, pageId) {
+    let editPage = { ...editedPage }
+    delete editPage.id
+    delete editPage.versionId
+    delete editPage.groupId
+    console.log(editPage, editedPage)
     const originalPages = { ...this.state.pages }
     let pages = { ...this.state.pages }
     pages[pageId] = editedPage
     this.setState({ pages })
     try {
-      await pageService.updatePage(pageId, editedPage)
+      await pageService.updatePage(pageId, editPage)
       this.props.history.push({
         pathname: `/dashboard/collections/pages/${pageId}`,
         page: editedPage
