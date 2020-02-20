@@ -463,7 +463,7 @@ async handleDuplicateEndpoint(endpointCopy)
 
 async handleDuplicatePage(pageCopy)
 {
-  let orignalPage = {...this.state.pages}
+  let originalPage = {...this.state.pages}
    let pages = { ...this.state.pages }
    let page = {}
      try {
@@ -475,7 +475,7 @@ async handleDuplicatePage(pageCopy)
   } catch (ex) {
     console.log(ex)
     toast.error(ex.response ? ex.response.data : 'Something went wrong')
-    this.setState({ orignalPage })
+    this.setState({ originalPage })
 }
 }
 
@@ -523,8 +523,36 @@ async handleDuplicateVersion(versionCopy){
     toast.error(ex.response ? ex.response.data : 'Something went wrong')
     this.setState({ orignalVersion })
   }
+}
+
+async handleDuplicateCollection(collectionCopy){
+  let originalCollection = {...this.state.collections}
+  let collections = { ...this.state.collections }
+  let versions= {}
+  let endpoints ={}
+  let pages ={}
+  let groups ={}
+  let collection ={}
+  try {
+    const { data } =  await collectionsService.duplicateCollection(collectionCopy.id);
+    collection = data.collection;
+    collections[collection.id] = collection 
+    versions = {...this.state.versions ,...data.versions}
+    groups= {...this.state.groups ,...data.groups}
+    endpoints = {...this.state.endpoints, ...data.endpoints}
+    pages = {...this.state.pages, ...data.pages}
+    const collectionIds = [...this.state.collectionIds, collection.id.toString()]
+    const versionIds = [...this.state.versionIds, ...Object.keys(data.versions)]
+    const groupIds = [...this.state.groupIds, ...Object.keys(data.groups)]
+    const pageIds = [...this.state.pageIds, ...Object.keys(data.pages)]
+    this.setState({ collections ,collectionIds, versions,versionIds , groups, groupIds ,endpoints ,pages ,pageIds})
+  } catch (ex) {
+    toast.error(ex.response ? ex.response.data : 'Something went wrong')
+    this.setState({ originalCollection })
+  }
  
 }
+
 
   onDragStart = (e, index) => {
     if (!this.state.collectionDnDFlag) return
@@ -896,6 +924,13 @@ async handleDuplicateVersion(versionCopy){
                       }}
                     >
                       Add Version
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                      eventKey='3'
+                      onClick={() => this.handleDuplicateCollection(this.state.collections[collectionId])
+                      }
+                    >
+                    Duplicate
                     </Dropdown.Item>
                   </DropdownButton>
                 </Card.Header>
