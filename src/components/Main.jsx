@@ -16,9 +16,6 @@ class Main extends Component {
     this.setState({ currentEnvironment: environment })
   }
 
-  getEnvironment () {
-    return this.state.currentEnvironment
-  }
   render () {
     return (
       <div>
@@ -42,10 +39,7 @@ class Main extends Component {
         <div className='container-fluid'>
           <div className='row'>
             <Route>
-              <SideBar
-                {...this.props}
-                get_environment={this.getEnvironment.bind(this)}
-              />
+              <SideBar {...this.props} />
             </Route>
             <ToastContainer />
             <main
@@ -65,7 +59,12 @@ class Main extends Component {
               <Switch>
                 <Route
                   path='/dashboard/collections/endpoints'
-                  render={props => <DisplayEndpoint {...props} />}
+                  render={props => (
+                    <DisplayEndpoint
+                      {...props}
+                      environment={this.state.currentEnvironment}
+                    />
+                  )}
                 />
                 <Route
                   path='/dashboard/collections/endpoints/:endpointId'

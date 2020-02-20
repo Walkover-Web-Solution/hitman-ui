@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import endpointService from '../services/endpointService'
 import JSONPretty from 'react-json-pretty'
 import { Dropdown, Table } from 'react-bootstrap'
-import {CopyToClipboard} from 'react-copy-to-clipboard';
+import { CopyToClipboard } from 'react-copy-to-clipboard'
 import Navbar from 'react-bootstrap/Navbar'
 import Nav from 'react-bootstrap/Nav'
 import { toast } from 'react-toastify'
@@ -31,7 +31,7 @@ class DisplayEndpoint extends Component {
     versions: [],
     groupId: '',
     title: '',
-    copied:false,
+    copied: false,
     flagResponse: false,
     rawResponse: false,
     prettyResponse: false,
@@ -42,7 +42,6 @@ class DisplayEndpoint extends Component {
     headersData: {},
     originalHeadersKeys: [],
     updatedHeadersKeys: [],
-
     paramsData: {},
     originalParamsKeys: [],
     updatedParamsKeys: [],
@@ -112,14 +111,13 @@ class DisplayEndpoint extends Component {
       variables.push(match[1])
     } while ((match = regexp.exec(api)) !== null)
     for (let i = 0; i < variables.length; i++) {
-      console.log(variables[i], this.state.environment.variables)
       if (
-        this.state.environment.variables[variables[i]] &&
-        this.state.environment.variables[variables[i]].initialValue
+        this.props.environment.variables[variables[i]] &&
+        this.props.environment.variables[variables[i]].initialValue
       ) {
         api = api.replace(
           `{{${variables[i]}}}`,
-          this.state.environment.variables[variables[i]].initialValue
+          this.props.environment.variables[variables[i]].initialValue
         )
       }
     }
@@ -193,7 +191,6 @@ class DisplayEndpoint extends Component {
       } catch {
         toast.error('Invalid Body')
       }
-
     const headersData = this.doSubmitHeader()
     const paramsData = this.doSubmitParam()
     const endpoint = {
@@ -477,10 +474,6 @@ class DisplayEndpoint extends Component {
   }
 
   render () {
-    if (this.props.location.getEnvironment) {
-      this.state.environment = this.props.location.getEnvironment()
-    }
-
     if (this.props.location.endpoint) {
       this.state.prettyResponse = false
       this.state.rawResponse = false
@@ -941,8 +934,12 @@ class DisplayEndpoint extends Component {
                     Preview
                   </Nav.Link>
                 </Nav>
-                <CopyToClipboard text={JSON.stringify(this.state.response.data)}  onCopy={() => this.setState({copied: true})}  style={{float:'right',borderRadius:'12px'}}>
-                <button style={{borderRadius:'12px'}}>Copy</button>
+                <CopyToClipboard
+                  text={JSON.stringify(this.state.response.data)}
+                  onCopy={() => this.setState({ copied: true })}
+                  style={{ float: 'right', borderRadius: '12px' }}
+                >
+                  <button style={{ borderRadius: '12px' }}>Copy</button>
                 </CopyToClipboard>
               </Navbar>
             </div>

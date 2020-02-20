@@ -21,7 +21,7 @@ class Endpoints extends Component {
   }
 
   async onDragEnd (e, props) {
-    this.props.version_dnd(true)
+    this.props.group_dnd(true)
     if (this.draggedItem === this.draggedOverItem) {
       return
     }
@@ -53,8 +53,7 @@ class Endpoints extends Component {
       endpoint: endpoint,
       groups: groups,
       versions: versions,
-      endpointFlag: true,
-      getEnvironment: this.props.get_environment
+      endpointFlag: true
     })
   }
   render () {
@@ -110,6 +109,10 @@ class Endpoints extends Component {
                 </Card>
               </Accordion>
             ))}
+        {/* {this.props.location.pathname.split('/')[3] == 'endpoint' &&
+        this.props.location.pathname.split('/')[4] ? (
+          <Redirect to='/dashboard/collections' />
+        ) : null} */}
       </div>
     )
   }
