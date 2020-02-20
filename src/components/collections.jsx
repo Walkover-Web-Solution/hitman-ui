@@ -433,8 +433,6 @@ class Collections extends Component {
       })
       toast.error(ex.response ? ex.response.data : 'Something went wrong')
       this.setState({ originalEndpoints })
-     
-     
     }
   }
 
@@ -449,21 +447,13 @@ async handleDuplicateEndpoint(endpointCopy)
  {
    
    let originalEndpoints = {...this.state.endpoints}
-//   let newEndpoint = {...endpointCopy}
-//   newEndpoint.requestId = shortId.generate();
-//   const requestId = newEndpoint.requestId
-
    const endpoints = { ...this.state.endpoints }
-//   endpoints[requestId] = newEndpoint;
-//   this.setState({ endpoints })
    let endpoint = {}
 
   try {
     const { data } =  await endpointService.duplicateEndpoint(endpointCopy.id);
     endpoint = data
     endpoints[endpoint.id] = endpoint
-    //console.log(endpoint)
-   // delete endpoints.requestId
     this.setState({ endpoints })
   } catch (ex) {
     toast.error(ex.response ? ex.response.data : 'Something went wrong')
@@ -513,27 +503,28 @@ async handleDuplicateGroup(groupCopy){
 
 async handleDuplicateVersion(versionCopy){
   let orignalVersion = {...this.state.versions}
-   const versions = { ...this.state.versions }
-   let version = {}
-   // let endpoints ={}
-   // let pages ={}
+  let versions = { ...this.state.versions }
+  let version= {}
+  let endpoints ={}
+  let pages ={}
+  let groups ={}
   try {
     const { data } =  await collectionVersionsService.duplicateVersion(versionCopy.id);
-   // endpoints = {...this.state.endpoints, ...data.endpoints}
-  //  pages = {...this.state.pages, ...data.pages}
-    console.log('data',data);
-    // version = data;
-    // versions[version.id] = version 
-    // const groupIds = [...this.state.groupIds, group.id.toString()]
-    // const pageIds = [...this.state.pageIds, ...Object.keys(data.pages)]
-    //   this.setState({ versions, groupIds ,endpoints ,pages ,pageIds})
+    version = data.version;
+    versions[version.id] = version 
+    groups= {...this.state.groups ,...data.groups}
+    endpoints = {...this.state.endpoints, ...data.endpoints}
+    pages = {...this.state.pages, ...data.pages}
+    const versionIds = [...this.state.versionIds, version.id.toString()]
+    const groupIds = [...this.state.groupIds, ...Object.keys(data.groups)]
+    const pageIds = [...this.state.pageIds, ...Object.keys(data.pages)]
+    this.setState({ versions , versionIds , groups, groupIds ,endpoints ,pages ,pageIds})
   } catch (ex) {
     toast.error(ex.response ? ex.response.data : 'Something went wrong')
     this.setState({ orignalVersion })
   }
  
 }
-
 
   onDragStart = (e, index) => {
     if (!this.state.collectionDnDFlag) return

@@ -75,7 +75,6 @@ class Groups extends Component {
   }
 
   render () {
-  
     return (
       <div>
         {this.props.groups &&
