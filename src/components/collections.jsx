@@ -509,6 +509,7 @@ class Collections extends Component {
 
     try {
       const { data } = await endpointService.duplicateEndpoint(endpointCopy.id);
+      console.log('data',data);
       let endpoint = data
       endpoints[endpoint.id] = endpoint
       groups[endpoint.groupId].endpointsOrder.push(endpoint.id.toString())

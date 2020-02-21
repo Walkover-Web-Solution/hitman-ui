@@ -68,7 +68,6 @@ class Endpoints extends Component {
     })
   }
   render() {
-    console.log(this.props.endpoints,this.props.endpoints_order)
     return (
       <div>
         {this.props.endpoints &&
