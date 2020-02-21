@@ -164,12 +164,12 @@ class CollectionVersions extends Component {
                     <Card.Body>
                       <Groups
                         {...this.props}
-                        version_id={parseInt(versionId)}
+                        version_id={versionId}
                         version_dnd={this.versionDnD.bind(this)}
                       />
                       <Pages
                         {...this.props}
-                        version_id={parseInt(versionId)}
+                        version_id={versionId}
                         version_dnd={this.versionDnD.bind(this)}
                       />
                     </Card.Body>

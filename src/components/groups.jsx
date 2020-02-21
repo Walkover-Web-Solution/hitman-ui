@@ -170,7 +170,7 @@ class Groups extends Component {
                       <GroupPages
                         {...this.props}
                         version_id={this.props.groups[groupId].versionId}
-                        group_id={parseInt(groupId)}
+                        group_id={groupId}
                         group_dnd={this.groupDnD.bind(this)}
                       />
                     </Card.Body>
@@ -179,7 +179,7 @@ class Groups extends Component {
                     <Card.Body>
                       <Endpoints
                         {...this.props}
-                        group_id={parseInt(groupId)}
+                        group_id={groupId}
                         endpoints_order={this.props.groups[groupId].endpointsOrder}
                         group_dnd={this.groupDnD.bind(this)}
                       />
