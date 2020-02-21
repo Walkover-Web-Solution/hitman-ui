@@ -6,22 +6,21 @@ import {
   Button,
   Dropdown,
   DropdownButton
-} from 'react-bootstrap'
-import { Route, Switch } from 'react-router-dom'
-import CollectionForm from './collectionForm'
-import collectionsService from '../services/collectionsService'
-import collectionVersionsService from '../services/collectionVersionsService'
-import CollectionVersions from './collectionVersions'
-import CollectionVersionForm from './collectionVersionForm'
-import GroupForm from './groupForm'
-import groupsService from '../services/groupsService'
-import PageForm from './pageForm'
-import pageService from '../services/pageService'
-import EndpointForm from './endpointForm'
-import endpointService from '../services/endpointService'
-import shortId from 'shortid'
-import { toast } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
+} from "react-bootstrap";
+import { Route, Switch } from "react-router-dom";
+import CollectionForm from "./collectionForm";
+import collectionsService from "../services/collectionsService";
+import collectionVersionsService from "../services/collectionVersionsService";
+import CollectionVersions from "./collectionVersions";
+import CollectionVersionForm from "./collectionVersionForm";
+import GroupForm from "./groupForm";
+import groupsService from "../services/groupsService";
+import PageForm from "./pageForm";
+import pageService from "../services/pageService";
+import endpointService from "../services/endpointService";
+import shortId from "shortid";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 class Collections extends Component {
   state = {
@@ -34,11 +33,10 @@ class Collections extends Component {
     versionIds: [],
     groupIds: [],
     pageIds: [],
-    endpointIds: [],
     collectionDnDFlag: true
   }
 
-  async fetchVersions (collections) {
+  async fetchVersions(collections) {
     let versions = {}
     const collectionIds = Object.keys(collections)
     for (let i = 0; i < collectionIds.length; i++) {
@@ -53,18 +51,17 @@ class Collections extends Component {
     return versions
   }
 
-  async fetchGroups (versions) {
+  async fetchGroups(versions) {
     let groups = {}
     const versionIds = Object.keys(versions)
     for (let i = 0; i < versionIds.length; i++) {
-      const { data: groups1 } = await groupsService.getGroups(versionIds[i])
-
-      groups = { ...groups, ...groups1 }
+      const { data: groups1 } = await groupsService.getGroups(versionIds[i]);
+      groups = { ...groups, ...groups1 };
     }
     return groups
   }
 
-  async fetchPages (versions) {
+  async fetchPages(versions) {
     let pages = {}
     const versionIds = Object.keys(versions)
     for (let i = 0; i < versionIds.length; i++) {
@@ -74,30 +71,29 @@ class Collections extends Component {
     return pages
   }
 
-  async fetchEndpoints (groups) {
+  async fetchEndpoints(groups) {
     let endpoints = {}
     const groupIds = Object.keys(groups)
     for (let i = 0; i < groupIds.length; i++) {
       let { data: newEndpoints } = await endpointService.getEndpoints(
         groupIds[i]
-      )
-      endpoints = { ...endpoints, ...newEndpoints }
+      );
+      endpoints = { ...endpoints, ...newEndpoints };
     }
-    return endpoints
+    return endpoints;
   }
 
-  async componentDidMount () {
-    const { data: collections } = await collectionsService.getCollections()
-    const collectionIds = Object.keys(collections)
-    this.setState({ collections, collectionIds })
-    const versions = await this.fetchVersions(collections)
-    const groups = await this.fetchGroups(versions)
-    const pages = await this.fetchPages(versions)
-    const endpoints = await this.fetchEndpoints(groups)
-    const versionIds = Object.keys(versions)
-    const groupIds = Object.keys(groups)
-    const pageIds = Object.keys(pages)
-    const endpointIds = Object.keys(endpoints)
+  async componentDidMount() {
+    const { data: collections } = await collectionsService.getCollections();
+    const collectionIds = Object.keys(collections);
+    this.setState({ collections, collectionIds });
+    const versions = await this.fetchVersions(collections);
+    const groups = await this.fetchGroups(versions);
+    const pages = await this.fetchPages(versions);
+    const endpoints = await this.fetchEndpoints(groups);
+    const versionIds = Object.keys(versions);
+    const groupIds = Object.keys(groups);
+    const pageIds = Object.keys(pages);
     this.setState({
       versions,
       groups,
@@ -105,31 +101,40 @@ class Collections extends Component {
       endpoints,
       versionIds,
       groupIds,
-      pageIds,
-      endpointIds
-    })
+      pageIds
+    });
   }
 
-  collectionDnD (collectionDnDFlag) {
+  collectionDnD(collectionDnDFlag) {
     this.setState({ collectionDnDFlag })
   }
 
-  setVersionIds (versionIds) {
+  setVersionIds(versionIds) {
     this.setState({ versionIds })
   }
 
-  setGroupIds (groupIds) {
+  setGroupIds(groupIds) {
     this.setState({ groupIds })
   }
 
-  setPageIds (pageIds) {
+  setPageIds(pageIds) {
     this.setState({ pageIds })
   }
 
-  setEndpointIds (endpointIds) {
-    this.setState({ endpointIds })
+  async setEndpointIds(groupId, endpointsOrder) {
+    const groups = { ...this.state.groups }
+    groups[groupId].endpointsOrder = endpointsOrder
+    this.setState({ groups });
+    const { name, host } = groups[groupId]
+    const group = { name, host, endpointsOrder }
+    try {
+      await groupsService.updateGroup(groupId, group)
+    }
+    catch (e) {
+      toast.error(e)
+    }
   }
-  async handleAdd (newCollection) {
+  async handleAdd(newCollection) {
     newCollection.requestId = shortId.generate()
     const originalCollections = { ...this.state.collections }
     const originalCollectionIds = [...this.state.collectionIds]
@@ -159,7 +164,7 @@ class Collections extends Component {
     }
   }
 
-  async handleDelete (collection) {
+  async handleDelete(collection) {
     const originalCollections = { ...this.state.collections }
     const originalCollectionIds = [...this.state.collectionIds]
     let collections = { ...this.state.collections }
@@ -180,7 +185,7 @@ class Collections extends Component {
     }
   }
 
-  async handleUpdate (editedCollection) {
+  async handleUpdate(editedCollection) {
     const originalCollections = { ...this.state.collections }
     const body = { ...editedCollection }
     delete body.id
@@ -195,7 +200,7 @@ class Collections extends Component {
     }
   }
 
-  async handleAddVersion (newCollectionVersion, collectionId) {
+  async handleAddVersion(newCollectionVersion, collectionId) {
     newCollectionVersion.requestId = shortId.generate()
     const originalVersions = { ...this.state.versions }
     const originalVersionIds = [...this.state.versionIds]
@@ -223,7 +228,7 @@ class Collections extends Component {
     }
   }
 
-  async handleDeleteVersion (deletedCollectionVersionId) {
+  async handleDeleteVersion(deletedCollectionVersionId) {
     const originalVersions = { ...this.state.versions }
     const originalVersionIds = [...this.state.versionIds]
     let versions = { ...this.state.versions }
@@ -245,7 +250,7 @@ class Collections extends Component {
     }
   }
 
-  async handleUpdateVersion (version) {
+  async handleUpdateVersion(version) {
     const originalVersions = { ...this.state.versions }
     const body = { ...version }
     delete body.id
@@ -261,14 +266,15 @@ class Collections extends Component {
     }
   }
 
-  async handleAddGroup (versionId, newGroup) {
-    newGroup.requestId = shortId.generate()
-    const requestId = newGroup.requestId
-    const originalGroupIds = [...this.state.groupIds]
-    const originalGroups = { ...this.state.groups }
-    const groups = { ...this.state.groups }
-    groups[newGroup.requestId] = { ...newGroup, versionId }
-    this.setState({ groups })
+  async handleAddGroup(versionId, newGroup) {
+    newGroup.requestId = shortId.generate();
+    newGroup.endpointsOrder = []
+    const requestId = newGroup.requestId;
+    const originalGroupIds = [...this.state.groupIds];
+    const originalGroups = { ...this.state.groups };
+    const groups = { ...this.state.groups };
+    groups[newGroup.requestId] = { ...newGroup, versionId };
+    this.setState({ groups });
     try {
       const { data: group } = await groupsService.saveGroup(versionId, newGroup)
       groups[group.id] = group
@@ -281,7 +287,7 @@ class Collections extends Component {
     }
   }
 
-  async handleDeleteGroup (deletedGroupId) {
+  async handleDeleteGroup(deletedGroupId) {
     const originalGroups = { ...this.state.groups }
     const originalGroupIds = [...this.state.groupIds]
     const groups = { ...this.state.groups }
@@ -298,11 +304,12 @@ class Collections extends Component {
     }
   }
 
-  async handleUpdateGroup (editedGroup) {
-    const originalGroups = { ...this.state.groups }
-    const groups = { ...this.state.groups }
-    groups[editedGroup.id] = editedGroup
-    this.setState({ groups })
+  async handleUpdateGroup(editedGroup) {
+    editedGroup.endpointsOrder = this.state.groups[editedGroup.id].endpointsOrder
+    const originalGroups = { ...this.state.groups };
+    const groups = { ...this.state.groups };
+    groups[editedGroup.id] = editedGroup;
+    this.setState({ groups });
 
     try {
       const body = { ...editedGroup }
@@ -320,7 +327,7 @@ class Collections extends Component {
     }
   }
 
-  async handleAddVersionPage (versionId, newPage) {
+  async handleAddVersionPage(versionId, newPage) {
     newPage.requestId = shortId.generate()
     const requestId = newPage.requestId
     const originalPageIds = [...this.state.pageIds]
@@ -347,7 +354,7 @@ class Collections extends Component {
     }
   }
 
-  async handleAddGroupPage (versionId, groupId, newPage) {
+  async handleAddGroupPage(versionId, groupId, newPage) {
     newPage.requestId = shortId.generate()
     const requestId = newPage.requestId
     const originalPageIds = [...this.state.pageIds]
@@ -371,7 +378,7 @@ class Collections extends Component {
     }
   }
 
-  async handleDeletePage (deletedPageId) {
+  async handleDeletePage(deletedPageId) {
     const originalPages = { ...this.state.pages }
     const originalPageIds = [...this.state.pageIds]
     let pages = { ...this.state.pages }
@@ -388,12 +395,11 @@ class Collections extends Component {
     }
   }
 
-  async handleUpdatePage (editedPage, pageId) {
+  async handleUpdatePage(editedPage, pageId) {
     let editPage = { ...editedPage }
     delete editPage.id
     delete editPage.versionId
     delete editPage.groupId
-    console.log(editPage, editedPage)
     const originalPages = { ...this.state.pages }
     let pages = { ...this.state.pages }
     pages[pageId] = editedPage
@@ -410,22 +416,23 @@ class Collections extends Component {
     }
   }
 
-  async handleAddEndpoint (groupId, newEndpoint, versions) {
-    console.log(newEndpoint)
-    const originalEndpoints = { ...this.state.endpoints }
-    newEndpoint.requestId = shortId.generate()
-    const requestId = newEndpoint.requestId
-    const endpoints = { ...this.state.endpoints }
-    endpoints[requestId] = newEndpoint
-    this.setState({ endpoints })
-    let endpoint = {}
+  async handleAddEndpoint(groupId, newEndpoint, versions) {
+    const originalEndpoints = { ...this.state.endpoints };
+    const originalGroups = { ...this.state.groups }
+    newEndpoint.requestId = shortId.generate();
+    const requestId = newEndpoint.requestId;
+    const endpoints = { ...this.state.endpoints };
+    const groups = { ...this.state.groups };
+    endpoints[requestId] = newEndpoint;
+    this.setState({ endpoints });
+    let endpoint = {};
     try {
-      const { data } = await endpointService.saveEndpoint(groupId, newEndpoint)
-      endpoint = data
-      endpoints[endpoint.id] = endpoint
-      delete endpoints.requestId
-      console.log(endpoints)
-      this.setState({ endpoints })
+      const { data } = await endpointService.saveEndpoint(groupId, newEndpoint);
+      endpoint = data;
+      endpoints[endpoint.id] = endpoint;
+      delete endpoints.requestId;
+      groups[groupId].endpointsOrder.push(endpoint.id.toString())
+      this.setState({ endpoints, groups });
       this.props.history.push({
         pathname: `/dashboard/collections/endpoints/${endpoint.id}`,
         endpoint: endpoint,
@@ -442,15 +449,16 @@ class Collections extends Component {
         groupId: groupId,
         title: 'Add New Endpoint',
         groups: this.state.groups
-      })
-      toast.error(ex.response ? ex.response.data : 'Something went wrong')
-      this.setState({ originalEndpoints })
+      });
+      toast.error(ex.response ? ex.response.data : "Something went wrong");
+      this.setState({ endpoints: originalEndpoints });
     }
   }
 
-  async updateEndpoint (endpointId, groupId, newEndpoint, versions) {
-    let currentEndpoint = { ...newEndpoint }
-    delete currentEndpoint.groupId
+  async updateEndpoint(endpointId, groupId, newEndpoint, versions) {
+    const originalEndpoints = { ...this.state.endpoints };
+    let currentEndpoint = { ...newEndpoint };
+    delete currentEndpoint.groupId;
     try {
       let endpoint = newEndpoint
       endpoint.groupId = groupId
@@ -469,140 +477,137 @@ class Collections extends Component {
       })
       this.setState({ endpoints })
     } catch (ex) {
-      console.log('error')
-      // toast.error(ex.response ? ex.response.data : "Something went wrong");
-      // this.setState({ originalEndpoints });
+      toast.error(ex.response ? ex.response.data : "Something went wrong");
+      this.setState({ endpoints: originalEndpoints });
     }
   }
 
-  async handleDeleteEndpoint (deleteEndpointId) {
-    const endpoints = { ...this.state.endpoints }
-    const originalEndpoints = { ...this.state.endpoints }
-    const originalEndpointIds = { ...this.state.endpointIds }
-    delete endpoints[deleteEndpointId]
-    const endpointIds = this.state.endpointIds.filter(
-      eId => eId !== deleteEndpointId.toString()
-    )
-    this.setState({ endpoints, endpointIds })
+  async handleDeleteEndpoint(deletedEndpointId, groupId) {
+    const originalEndpoints = { ...this.state.endpoints };
+    const originalGroups = { ...this.state.groups };
+    const endpoints = { ...this.state.endpoints };
+    const groups = { ...this.state.groups };
+    delete endpoints[deletedEndpointId];
+    groups[groupId].endpointsOrder = groups[groupId].endpointsOrder.filter(
+      eId => eId !== deletedEndpointId.toString()
+    );
+    this.setState({ endpoints, groups });
     try {
-      await endpointService.deleteEndpoint(deleteEndpointId)
+      await endpointService.deleteEndpoint(deletedEndpointId);
+    } catch (ex) {
+      toast.error(ex.response ? ex.response.data : "Something went wrong");
+      this.setState({ endpoints: originalEndpoints, groups: originalGroups });
+    }
+  }
+
+  async handleDuplicateEndpoint(endpointCopy) {
+
+    let originalEndpoints = { ...this.state.endpoints }
+    let endpoints = { ...this.state.endpoints }
+    let originalGroups = { ...this.state.groups }
+    let groups = { ...this.state.groups }
+
+    try {
+      const { data } = await endpointService.duplicateEndpoint(endpointCopy.id);
+      let endpoint = data
+      endpoints[endpoint.id] = endpoint
+      groups[endpoint.groupId].endpointsOrder.push(endpoint.id.toString())
+      this.setState({ endpoints, groups })
     } catch (ex) {
       toast.error(ex.response ? ex.response.data : 'Something went wrong')
-      this.setState({ originalEndpoints, originalEndpointIds })
+      this.setState({ endpoints: originalEndpoints, groups: originalGroups })
     }
   }
 
-async handleDuplicateEndpoint(endpointCopy)
- {
-   
-   let originalEndpoints = {...this.state.endpoints}
-   let endpoints = { ...this.state.endpoints }
-
-  try {
-    const { data } =  await endpointService.duplicateEndpoint(endpointCopy.id);
-    console.log('data',data);
-    let endpoint = data
-    endpoints[endpoint.id] = endpoint
-    console.log('endpoints',endpoints)
-    const endpointIds = [...this.state.endpointIds, endpoint.id.toString()]
-    this.setState({ endpoints ,endpointIds})
-  } catch (ex) {
-    toast.error(ex.response ? ex.response.data : 'Something went wrong')
-    this.setState({ originalEndpoints })
+  async handleDuplicatePage(pageCopy) {
+    let originalPage = { ...this.state.pages }
+    let pages = { ...this.state.pages }
+    let page = {}
+    try {
+      const { data } = await pageService.duplicatePage(pageCopy.id);
+      page = data;
+      pages[page.id] = page
+      const pageIds = [...this.state.pageIds, page.id.toString()]
+      this.setState({ pages, pageIds })
+    } catch (ex) {
+      toast.error(ex.response ? ex.response.data : 'Something went wrong')
+      this.setState({ originalPage })
+    }
   }
-}
-
-async handleDuplicatePage(pageCopy)
-{
-  let originalPage = {...this.state.pages}
-   let pages = { ...this.state.pages }
-   let page = {}
-     try {
-    const { data } =  await pageService.duplicatePage(pageCopy.id);
-    page = data;
-    pages[page.id] = page 
-    const pageIds = [...this.state.pageIds, page.id.toString()]
-    this.setState({ pages ,pageIds})
-  } catch (ex) {
-    console.log(ex)
-    toast.error(ex.response ? ex.response.data : 'Something went wrong')
-    this.setState({ originalPage })
-}
-}
 
 
-async handleDuplicateGroup(groupCopy){
-  let originalGroup = {...this.state.groups}
-   let groups = { ...this.state.groups }
-   let group = {}
-    let endpoints ={}
-    let pages ={}
-  try {
-    const { data } =  await groupsService.duplicateGroup(groupCopy.id);
-    endpoints = {...this.state.endpoints, ...data.endpoints}
-    pages = {...this.state.pages, ...data.pages}
-    group = data.groups;
-    groups[group.id] = group 
-    const groupIds = [...this.state.groupIds, group.id.toString()]
-    const pageIds = [...this.state.pageIds, ...Object.keys(data.pages)]
-      this.setState({ groups, groupIds ,endpoints ,pages ,pageIds})
-  } catch (ex) {
-    toast.error(ex.response ? ex.response.data : 'Something went wrong')
-    this.setState({ originalGroup })
+  async handleDuplicateGroup(groupCopy) {
+    let originalGroup = { ...this.state.groups }
+    let groups = { ...this.state.groups }
+    let group = {}
+    let endpoints = {}
+    let pages = {}
+    try {
+      const { data } = await groupsService.duplicateGroup(groupCopy.id);
+      endpoints = { ...this.state.endpoints, ...data.endpoints }
+      pages = { ...this.state.pages, ...data.pages }
+      group = data.groups;
+      groups[group.id] = group
+      const groupIds = [...this.state.groupIds, group.id.toString()]
+      const pageIds = [...this.state.pageIds, ...Object.keys(data.pages)]
+      this.setState({ groups, groupIds, endpoints, pages, pageIds })
+    } catch (ex) {
+      toast.error(ex.response ? ex.response.data : 'Something went wrong')
+      this.setState({ originalGroup })
+    }
   }
-}
 
-async handleDuplicateVersion(versionCopy){
-  let orignalVersion = {...this.state.versions}
-  let versions = { ...this.state.versions }
-  let version= {}
-  let endpoints ={}
-  let pages ={}
-  let groups ={}
-  try {
-    const { data } =  await collectionVersionsService.duplicateVersion(versionCopy.id);
-    version = data.version;
-    versions[version.id] = version 
-    groups= {...this.state.groups ,...data.groups}
-    endpoints = {...this.state.endpoints, ...data.endpoints}
-    pages = {...this.state.pages, ...data.pages}
-    const versionIds = [...this.state.versionIds, version.id.toString()]
-    const groupIds = [...this.state.groupIds, ...Object.keys(data.groups)]
-    const pageIds = [...this.state.pageIds, ...Object.keys(data.pages)]
-    this.setState({ versions , versionIds , groups, groupIds ,endpoints ,pages ,pageIds})
-  } catch (ex) {
-    toast.error(ex.response ? ex.response.data : 'Something went wrong')
-    this.setState({ orignalVersion })
+  async handleDuplicateVersion(versionCopy) {
+    let orignalVersion = { ...this.state.versions }
+    let versions = { ...this.state.versions }
+    let version = {}
+    let endpoints = {}
+    let pages = {}
+    let groups = {}
+    try {
+      const { data } = await collectionVersionsService.duplicateVersion(versionCopy.id);
+      version = data.version;
+      versions[version.id] = version
+      groups = { ...this.state.groups, ...data.groups }
+      endpoints = { ...this.state.endpoints, ...data.endpoints }
+      pages = { ...this.state.pages, ...data.pages }
+      const versionIds = [...this.state.versionIds, version.id.toString()]
+      const groupIds = [...this.state.groupIds, ...Object.keys(data.groups)]
+      const pageIds = [...this.state.pageIds, ...Object.keys(data.pages)]
+      this.setState({ versions, versionIds, groups, groupIds, endpoints, pages, pageIds })
+    } catch (ex) {
+      toast.error(ex.response ? ex.response.data : 'Something went wrong')
+      this.setState({ orignalVersion })
+    }
   }
-}
 
-async handleDuplicateCollection(collectionCopy){
-  let originalCollection = {...this.state.collections}
-  let collections = { ...this.state.collections }
-  let versions= {}
-  let endpoints ={}
-  let pages ={}
-  let groups ={}
-  let collection ={}
-  try {
-    const { data } =  await collectionsService.duplicateCollection(collectionCopy.id);
-    collection = data.collection;
-    collections[collection.id] = collection 
-    versions = {...this.state.versions ,...data.versions}
-    groups= {...this.state.groups ,...data.groups}
-    endpoints = {...this.state.endpoints, ...data.endpoints}
-    pages = {...this.state.pages, ...data.pages}
-    const collectionIds = [...this.state.collectionIds, collection.id.toString()]
-    const versionIds = [...this.state.versionIds, ...Object.keys(data.versions)]
-    const groupIds = [...this.state.groupIds, ...Object.keys(data.groups)]
-    const pageIds = [...this.state.pageIds, ...Object.keys(data.pages)]
-    this.setState({ collections ,collectionIds, versions,versionIds , groups, groupIds ,endpoints ,pages ,pageIds})
-  } catch (ex) {
-    toast.error(ex.response ? ex.response.data : 'Something went wrong')
-    this.setState({ originalCollection })
+  async handleDuplicateCollection(collectionCopy) {
+    let originalCollection = { ...this.state.collections }
+    let collections = { ...this.state.collections }
+    let versions = {}
+    let endpoints = {}
+    let pages = {}
+    let groups = {}
+    let collection = {}
+    try {
+      const { data } = await collectionsService.duplicateCollection(collectionCopy.id);
+      collection = data.collection;
+      collections[collection.id] = collection
+      versions = { ...this.state.versions, ...data.versions }
+      groups = { ...this.state.groups, ...data.groups }
+      endpoints = { ...this.state.endpoints, ...data.endpoints }
+      pages = { ...this.state.pages, ...data.pages }
+      const collectionIds = [...this.state.collectionIds, collection.id.toString()]
+      const versionIds = [...this.state.versionIds, ...Object.keys(data.versions)]
+      const groupIds = [...this.state.groupIds, ...Object.keys(data.groups)]
+      const pageIds = [...this.state.pageIds, ...Object.keys(data.pages)]
+      this.setState({ collections, collectionIds, versions, versionIds, groups, groupIds, endpoints, pages, pageIds })
+    } catch (ex) {
+      toast.error(ex.response ? ex.response.data : 'Something went wrong')
+      this.setState({ originalCollection })
+    }
+
   }
- 
-}
 
 
   onDragStart = (e, index) => {
@@ -624,7 +629,7 @@ async handleDuplicateCollection(collectionCopy){
     collectionIds.splice(index, 0, this.draggedItem)
     this.setState({ collectionIds })
   }
-  render () {
+  render() {
     const { location } = this.props
 
     if (location.editedEndpoint) {
@@ -634,9 +639,10 @@ async handleDuplicateCollection(collectionCopy){
     }
 
     if (location.deleteEndpointId) {
-      const deleteEndpointId = location.deleteEndpointId
-      this.props.history.replace({ deleteEndpointId: null })
-      this.handleDeleteEndpoint(deleteEndpointId)
+      const deleteEndpointId = location.deleteEndpointId;
+      const groupId = location.groupId;
+      this.props.history.replace({ deleteEndpointId: null });
+      this.handleDeleteEndpoint(deleteEndpointId, groupId);
     }
 
     if (location.duplicateEndpoint) {
@@ -702,8 +708,7 @@ async handleDuplicateCollection(collectionCopy){
       this.handleDeletePage(deletePageId)
     }
 
-    if(location.duplicatePage)
-    {
+    if (location.duplicatePage) {
       const duplicatePage = location.duplicatePage
       this.props.history.replace({ duplicatePage: null })
       this.handleDuplicatePage(duplicatePage)
@@ -721,12 +726,12 @@ async handleDuplicateCollection(collectionCopy){
       this.handleDeleteGroup(deletedGroupId)
     }
 
-    if(location.duplicateGroup){
+    if (location.duplicateGroup) {
       const duplicateGroup = location.duplicateGroup
       this.props.history.replace({ duplicateGroup: null })
       this.handleDuplicateGroup(duplicateGroup)
     }
-  
+
     if (location.newGroup) {
       const { versionId, newGroup } = location
       this.props.history.replace({ newGroup: null })
@@ -752,8 +757,7 @@ async handleDuplicateCollection(collectionCopy){
       this.handleAddVersion(newCollectionVersion, collectionId)
     }
 
-    if(location.duplicateVersion)
-    {
+    if (location.duplicateVersion) {
       const duplicateVersion = location.duplicateVersion
       this.props.history.replace({ duplicateVersion: null })
       this.handleDuplicateVersion(duplicateVersion)
@@ -778,23 +782,7 @@ async handleDuplicateCollection(collectionCopy){
           <div className='tabs'>
             <Switch>
               <Route
-                path='/dashboard/collections/:collectionId/versions/:versionId/groups/:groupId/endpoints/:endpointId/edit'
-                render={props => (
-                  <EndpointForm {...props} show={true} title='Edit Endpoint' />
-                )}
-              />
-              <Route
-                path='/dashboard/collections/:collectionId/versions/:versionId/groups/:groupId/endpoints/new'
-                render={props => (
-                  <EndpointForm
-                    {...props}
-                    show={true}
-                    title='Add New Endpoint'
-                  />
-                )}
-              />
-              <Route
-                path='/dashboard/collections/:id/versions/:versionId/groups/:groupId/pages/new'
+                path="/dashboard/collections/:id/versions/:versionId/groups/:groupId/pages/new"
                 render={props => (
                   <PageForm
                     {...props}
@@ -970,9 +958,9 @@ async handleDuplicateCollection(collectionCopy){
                       onClick={() => {
                         if (
                           window.confirm(
-                            'Are you sure you wish to delete this collection?' +
-                              '\n' +
-                              ' All your versions, groups, pages and endpoints present in this collection will be deleted.'
+                            "Are you sure you wish to delete this collection?" +
+                            "\n" +
+                            " All your versions, groups, pages and endpoints present in this collection will be deleted."
                           )
                         )
                           this.handleDelete(
@@ -997,7 +985,7 @@ async handleDuplicateCollection(collectionCopy){
                       onClick={() => this.handleDuplicateCollection(this.state.collections[collectionId])
                       }
                     >
-                    Duplicate
+                      Duplicate
                     </Dropdown.Item>
                   </DropdownButton>
                 </Card.Header>
@@ -1013,7 +1001,6 @@ async handleDuplicateCollection(collectionCopy){
                       version_ids={this.state.versionIds}
                       group_ids={this.state.groupIds}
                       page_ids={this.state.pageIds}
-                      endpoint_ids={this.state.endpointIds}
                       set_version_id={this.setVersionIds.bind(this)}
                       set_endpoint_id={this.setEndpointIds.bind(this)}
                       set_group_id={this.setGroupIds.bind(this)}
