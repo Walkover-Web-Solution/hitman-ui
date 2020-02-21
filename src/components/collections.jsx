@@ -17,7 +17,6 @@ import GroupForm from "./groupForm";
 import groupsService from "../services/groupsService";
 import PageForm from "./pageForm";
 import pageService from "../services/pageService";
-import EndpointForm from "./endpointForm";
 import endpointService from "../services/endpointService";
 import shortId from "shortid";
 import { toast } from "react-toastify";
@@ -309,8 +308,10 @@ class Collections extends Component {
   }
 
   async handleUpdateGroup(editedGroup) {
+    editedGroup.endpointsOrder = this.state.groups[editedGroup.id].endpointsOrder
     const originalGroups = { ...this.state.groups };
     const groups = { ...this.state.groups };
+    console.log(editedGroup)
     groups[editedGroup.id] = editedGroup;
     this.setState({ groups });
 
