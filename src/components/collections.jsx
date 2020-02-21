@@ -409,14 +409,18 @@ class Collections extends Component {
   }
 
   async handleAddEndpoint(groupId, newEndpoint, versions) {
+    console.log("adddddd");
     const originalEndpoints = { ...this.state.endpoints };
     newEndpoint.requestId = shortId.generate();
     const requestId = newEndpoint.requestId;
     const endpoints = { ...this.state.endpoints };
     endpoints[requestId] = newEndpoint;
+    newEndpoint.groupId = groupId;
+
     this.setState({ endpoints });
     let endpoint = {};
     try {
+      delete newEndpoint.groupId;
       const { data } = await endpointService.saveEndpoint(groupId, newEndpoint);
       endpoint = data;
       endpoints[endpoint.id] = endpoint;
@@ -453,6 +457,7 @@ class Collections extends Component {
       endpoint.id = endpointId;
       let endpoints = { ...this.state.endpoints };
       endpoints[endpointId] = endpoint;
+      this.setState({ endpoints });
 
       await endpointService.updateEndpoint(endpointId, currentEndpoint);
       this.props.history.push({
@@ -463,7 +468,6 @@ class Collections extends Component {
         title: "update endpoint",
         groups: this.state.groups
       });
-      this.setState({ endpoints });
     } catch (ex) {
       console.log("error");
       // toast.error(ex.response ? ex.response.data : "Something went wrong");
@@ -472,10 +476,13 @@ class Collections extends Component {
   }
 
   async handleDeleteEndpoint(deleteEndpointId) {
-    await endpointService.deleteEndpoint(deleteEndpointId);
     const endpoints = { ...this.state.endpoints };
+    const endpointIds = this.state.endpointIds.filter(
+      eId => eId !== deleteEndpointId.toString()
+    );
     delete endpoints[deleteEndpointId];
-    this.setState({ endpoints });
+    this.setState({ endpoints, endpointIds });
+    await endpointService.deleteEndpoint(deleteEndpointId);
   }
 
   onDragStart = (e, index) => {
