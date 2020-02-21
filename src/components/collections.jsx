@@ -400,7 +400,6 @@ class Collections extends Component {
     delete editPage.id
     delete editPage.versionId
     delete editPage.groupId
-    console.log(editPage, editedPage)
     const originalPages = { ...this.state.pages }
     let pages = { ...this.state.pages }
     pages[pageId] = editedPage
@@ -505,18 +504,18 @@ class Collections extends Component {
 
     let originalEndpoints = { ...this.state.endpoints }
     let endpoints = { ...this.state.endpoints }
+    let originalGroups = { ...this.state.groups }
+    let groups = { ...this.state.groups }
 
     try {
       const { data } = await endpointService.duplicateEndpoint(endpointCopy.id);
-      console.log('data', data);
       let endpoint = data
       endpoints[endpoint.id] = endpoint
-      console.log('endpoints', endpoints)
-      const endpointIds = [...this.state.endpointIds, endpoint.id.toString()]
-      this.setState({ endpoints, endpointIds })
+      groups[endpoint.groupId].endpointsOrder.push(endpoint.id.toString())
+      this.setState({ endpoints, groups })
     } catch (ex) {
       toast.error(ex.response ? ex.response.data : 'Something went wrong')
-      this.setState({ originalEndpoints })
+      this.setState({ endpoints: originalEndpoints, groups: originalGroups })
     }
   }
 
@@ -531,7 +530,6 @@ class Collections extends Component {
       const pageIds = [...this.state.pageIds, page.id.toString()]
       this.setState({ pages, pageIds })
     } catch (ex) {
-      console.log(ex)
       toast.error(ex.response ? ex.response.data : 'Something went wrong')
       this.setState({ originalPage })
     }
