@@ -66,6 +66,14 @@ class Groups extends Component {
     })
   }
 
+  handleDuplicate(group) {
+    this.props.history.push({
+      pathname: '/dashboard/collections',
+      duplicateGroup: group,
+
+    })
+  }
+
   render() {
     return (
       <div>
@@ -148,6 +156,13 @@ class Groups extends Component {
                       >
                         Add Endpoint
                       </Dropdown.Item>
+                      <Dropdown.Item
+                        onClick={() =>
+                          this.handleDuplicate(this.props.groups[groupId])
+                        }
+                      >
+                        Duplicate
+                    </Dropdown.Item>
                     </DropdownButton>
                   </Card.Header>
                   <Accordion.Collapse eventKey='1'>
