@@ -496,14 +496,16 @@ async handleDuplicateEndpoint(endpointCopy)
  {
    
    let originalEndpoints = {...this.state.endpoints}
-   const endpoints = { ...this.state.endpoints }
-   let endpoint = {}
+   let endpoints = { ...this.state.endpoints }
 
   try {
     const { data } =  await endpointService.duplicateEndpoint(endpointCopy.id);
-    endpoint = data
+    console.log('data',data);
+    let endpoint = data
     endpoints[endpoint.id] = endpoint
-    this.setState({ endpoints })
+    console.log('endpoints',endpoints)
+    const endpointIds = [...this.state.endpointIds, endpoint.id.toString()]
+    this.setState({ endpoints ,endpointIds})
   } catch (ex) {
     toast.error(ex.response ? ex.response.data : 'Something went wrong')
     this.setState({ originalEndpoints })
@@ -531,7 +533,7 @@ async handleDuplicatePage(pageCopy)
 
 async handleDuplicateGroup(groupCopy){
   let originalGroup = {...this.state.groups}
-   const groups = { ...this.state.groups }
+   let groups = { ...this.state.groups }
    let group = {}
     let endpoints ={}
     let pages ={}
