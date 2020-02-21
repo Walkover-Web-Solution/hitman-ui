@@ -492,6 +492,117 @@ class Collections extends Component {
     }
   }
 
+async handleDuplicateEndpoint(endpointCopy)
+ {
+   
+   let originalEndpoints = {...this.state.endpoints}
+   const endpoints = { ...this.state.endpoints }
+   let endpoint = {}
+
+  try {
+    const { data } =  await endpointService.duplicateEndpoint(endpointCopy.id);
+    endpoint = data
+    endpoints[endpoint.id] = endpoint
+    this.setState({ endpoints })
+  } catch (ex) {
+    toast.error(ex.response ? ex.response.data : 'Something went wrong')
+    this.setState({ originalEndpoints })
+  }
+}
+
+async handleDuplicatePage(pageCopy)
+{
+  let originalPage = {...this.state.pages}
+   let pages = { ...this.state.pages }
+   let page = {}
+     try {
+    const { data } =  await pageService.duplicatePage(pageCopy.id);
+    page = data;
+    pages[page.id] = page 
+    const pageIds = [...this.state.pageIds, page.id.toString()]
+    this.setState({ pages ,pageIds})
+  } catch (ex) {
+    console.log(ex)
+    toast.error(ex.response ? ex.response.data : 'Something went wrong')
+    this.setState({ originalPage })
+}
+}
+
+
+async handleDuplicateGroup(groupCopy){
+  let originalGroup = {...this.state.groups}
+   const groups = { ...this.state.groups }
+   let group = {}
+    let endpoints ={}
+    let pages ={}
+  try {
+    const { data } =  await groupsService.duplicateGroup(groupCopy.id);
+    endpoints = {...this.state.endpoints, ...data.endpoints}
+    pages = {...this.state.pages, ...data.pages}
+    group = data.groups;
+    groups[group.id] = group 
+    const groupIds = [...this.state.groupIds, group.id.toString()]
+    const pageIds = [...this.state.pageIds, ...Object.keys(data.pages)]
+      this.setState({ groups, groupIds ,endpoints ,pages ,pageIds})
+  } catch (ex) {
+    toast.error(ex.response ? ex.response.data : 'Something went wrong')
+    this.setState({ originalGroup })
+  }
+}
+
+async handleDuplicateVersion(versionCopy){
+  let orignalVersion = {...this.state.versions}
+  let versions = { ...this.state.versions }
+  let version= {}
+  let endpoints ={}
+  let pages ={}
+  let groups ={}
+  try {
+    const { data } =  await collectionVersionsService.duplicateVersion(versionCopy.id);
+    version = data.version;
+    versions[version.id] = version 
+    groups= {...this.state.groups ,...data.groups}
+    endpoints = {...this.state.endpoints, ...data.endpoints}
+    pages = {...this.state.pages, ...data.pages}
+    const versionIds = [...this.state.versionIds, version.id.toString()]
+    const groupIds = [...this.state.groupIds, ...Object.keys(data.groups)]
+    const pageIds = [...this.state.pageIds, ...Object.keys(data.pages)]
+    this.setState({ versions , versionIds , groups, groupIds ,endpoints ,pages ,pageIds})
+  } catch (ex) {
+    toast.error(ex.response ? ex.response.data : 'Something went wrong')
+    this.setState({ orignalVersion })
+  }
+}
+
+async handleDuplicateCollection(collectionCopy){
+  let originalCollection = {...this.state.collections}
+  let collections = { ...this.state.collections }
+  let versions= {}
+  let endpoints ={}
+  let pages ={}
+  let groups ={}
+  let collection ={}
+  try {
+    const { data } =  await collectionsService.duplicateCollection(collectionCopy.id);
+    collection = data.collection;
+    collections[collection.id] = collection 
+    versions = {...this.state.versions ,...data.versions}
+    groups= {...this.state.groups ,...data.groups}
+    endpoints = {...this.state.endpoints, ...data.endpoints}
+    pages = {...this.state.pages, ...data.pages}
+    const collectionIds = [...this.state.collectionIds, collection.id.toString()]
+    const versionIds = [...this.state.versionIds, ...Object.keys(data.versions)]
+    const groupIds = [...this.state.groupIds, ...Object.keys(data.groups)]
+    const pageIds = [...this.state.pageIds, ...Object.keys(data.pages)]
+    this.setState({ collections ,collectionIds, versions,versionIds , groups, groupIds ,endpoints ,pages ,pageIds})
+  } catch (ex) {
+    toast.error(ex.response ? ex.response.data : 'Something went wrong')
+    this.setState({ originalCollection })
+  }
+ 
+}
+
+
   onDragStart = (e, index) => {
     if (!this.state.collectionDnDFlag) return
 
@@ -524,6 +635,12 @@ class Collections extends Component {
       const deleteEndpointId = location.deleteEndpointId
       this.props.history.replace({ deleteEndpointId: null })
       this.handleDeleteEndpoint(deleteEndpointId)
+    }
+
+    if (location.duplicateEndpoint) {
+      const duplicateEndpoint = location.duplicateEndpoint
+      this.props.history.replace({ duplicateEndpoint: null })
+      this.handleDuplicateEndpoint(duplicateEndpoint)
     }
 
     if (location.title === 'Add Endpoint') {
@@ -560,7 +677,8 @@ class Collections extends Component {
         newPage: null
       })
       this.handleAddGroupPage(versionId, groupId, newPage)
-    } else if (location.newPage) {
+    }
+    else if (location.newPage) {
       const { versionId, newPage } = location
       this.props.history.replace({ newPage: null })
       this.handleAddVersionPage(versionId, newPage)
@@ -582,6 +700,13 @@ class Collections extends Component {
       this.handleDeletePage(deletePageId)
     }
 
+    if(location.duplicatePage)
+    {
+      const duplicatePage = location.duplicatePage
+      this.props.history.replace({ duplicatePage: null })
+      this.handleDuplicatePage(duplicatePage)
+    }
+
     if (location.editedGroup) {
       const { editedGroup } = location
       this.props.history.replace({ editedGroup: null })
@@ -594,6 +719,12 @@ class Collections extends Component {
       this.handleDeleteGroup(deletedGroupId)
     }
 
+    if(location.duplicateGroup){
+      const duplicateGroup = location.duplicateGroup
+      this.props.history.replace({ duplicateGroup: null })
+      this.handleDuplicateGroup(duplicateGroup)
+    }
+  
     if (location.newGroup) {
       const { versionId, newGroup } = location
       this.props.history.replace({ newGroup: null })
@@ -619,6 +750,13 @@ class Collections extends Component {
       this.handleAddVersion(newCollectionVersion, collectionId)
     }
 
+    if(location.duplicateVersion)
+    {
+      const duplicateVersion = location.duplicateVersion
+      this.props.history.replace({ duplicateVersion: null })
+      this.handleDuplicateVersion(duplicateVersion)
+    }
+
     if (location.editedCollection) {
       const editedCollection = location.editedCollection
       this.props.history.replace({ editedCollection: null })
@@ -630,6 +768,7 @@ class Collections extends Component {
       this.props.history.replace({ newCollection: null })
       this.handleAdd(newCollection)
     }
+
 
     return (
       <div>
@@ -850,6 +989,13 @@ class Collections extends Component {
                       }}
                     >
                       Add Version
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                      eventKey='3'
+                      onClick={() => this.handleDuplicateCollection(this.state.collections[collectionId])
+                      }
+                    >
+                    Duplicate
                     </Dropdown.Item>
                   </DropdownButton>
                 </Card.Header>

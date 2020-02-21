@@ -41,6 +41,10 @@ export function deletePage(pageId) {
 	return http.delete(`${apiUrl}/pages/${pageId}`);
 }
 
+export function duplicatePage(pageId) {
+    return http.post( `${apiUrl}/duplicatePages/${pageId}` );
+}
+
 export default {
 	getVersionPages,
 	getGroupPages,
@@ -48,5 +52,6 @@ export default {
 	saveVersionPage,
 	saveGroupPage,
 	updatePage,
-	deletePage
+	deletePage,
+	duplicatePage
 };

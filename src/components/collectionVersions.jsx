@@ -69,6 +69,14 @@ class CollectionVersions extends Component {
     })
   }
 
+  handleDuplicate(version)
+  {
+    this.props.history.push({
+      pathname: '/dashboard/collections',
+      duplicateVersion:version,
+    })
+  }
+
   render () {
     return (
       <div>
@@ -141,6 +149,14 @@ class CollectionVersions extends Component {
                         }
                       >
                         Add Page
+                      </Dropdown.Item>
+                      <Dropdown.Item
+                        eventKey='2'
+                        onClick={() => {
+                            this.handleDuplicate(this.props.versions[versionId])
+                        }}
+                      >
+                        Duplicate
                       </Dropdown.Item>
                     </DropdownButton>
                   </Card.Header>

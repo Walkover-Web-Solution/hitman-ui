@@ -40,6 +40,15 @@ class Endpoints extends Component {
       deleteEndpointId: endpoint.id
     })
   }
+
+handleDuplicate(endpoint){
+  this.props.history.push({
+    pathname: '/dashboard/collections',
+    duplicateEndpoint:endpoint,
+
+  })
+}
+
   handleUpdate (endpoint) {
     this.props.history.push({
       pathname: `/dashboard/collections/${this.props.collection_id}/versions/${this.props.version_id}/groups/${this.props.group_id}/endpoints/${endpoint.id}/edit`,
@@ -103,18 +112,22 @@ class Endpoints extends Component {
                       >
                         Delete
                       </Dropdown.Item>
-                    </DropdownButton>
-                  </Card.Header>
-                  <Accordion.Collapse eventKey='0'>
-                    <Card.Body></Card.Body>
-                  </Accordion.Collapse>
-                </Card>
-              </Accordion>
-            ))}
-        {/* {this.props.location.pathname.split('/')[3] == 'endpoint' &&
-        this.props.location.pathname.split('/')[4] ? (
-          <Redirect to='/dashboard/collections' />
-        ) : null} */}
+                    <Dropdown.Item
+                      eventKey='3'
+                      onClick={() =>
+                         this.handleDuplicate(this.props.endpoints[endpointId])
+                     }
+                    >
+                      Duplicate
+                    </Dropdown.Item>
+                  </DropdownButton>
+                </Card.Header>
+                <Accordion.Collapse eventKey='0'>
+                  <Card.Body></Card.Body>
+                </Accordion.Collapse>
+              </Card>
+            </Accordion>
+          ))}
       </div>
     )
   }
