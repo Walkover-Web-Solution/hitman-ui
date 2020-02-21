@@ -122,10 +122,18 @@ class Collections extends Component {
     this.setState({ pageIds });
   }
 
-  setEndpointIds(groupId, endpointsOrder) {
+  async setEndpointIds(groupId, endpointsOrder) {
     const groups = { ...this.state.groups }
     groups[groupId].endpointsOrder = endpointsOrder
     this.setState({ groups });
+    const { name, host } = groups[groupId]
+    const group = { name, host, endpointsOrder }
+    try {
+      await groupsService.updateGroup(groupId, group)
+    }
+    catch (e) {
+      toast.error(e)
+    }
   }
   async handleAdd(newCollection) {
     newCollection.requestId = shortId.generate();
@@ -447,6 +455,7 @@ class Collections extends Component {
   }
 
   async updateEndpoint(endpointId, groupId, newEndpoint, versions) {
+    const originalEndpoints = { ...this.state.endpoints };
     let currentEndpoint = { ...newEndpoint };
     delete currentEndpoint.groupId;
     try {
@@ -467,8 +476,8 @@ class Collections extends Component {
       });
       this.setState({ endpoints });
     } catch (ex) {
-      // toast.error(ex.response ? ex.response.data : "Something went wrong");
-      // this.setState({ originalEndpoints });
+      toast.error(ex.response ? ex.response.data : "Something went wrong");
+      this.setState({ endpoints: originalEndpoints });
     }
   }
 
@@ -848,7 +857,6 @@ class Collections extends Component {
                       version_ids={this.state.versionIds}
                       group_ids={this.state.groupIds}
                       page_ids={this.state.pageIds}
-                      endpoint_ids={this.state.endpointIds}
                       set_version_id={this.setVersionIds.bind(this)}
                       set_endpoint_id={this.setEndpointIds.bind(this)}
                       set_group_id={this.setGroupIds.bind(this)}

@@ -12,11 +12,11 @@ class Main extends Component {
   state = {
     currentEnvironment: { id: null, name: 'No Environment' }
   }
-  setEnvironment (environment) {
+  setEnvironment(environment) {
     this.setState({ currentEnvironment: environment })
   }
 
-  render () {
+  render() {
     return (
       <div>
         <ToastContainer />
@@ -54,8 +54,6 @@ class Main extends Component {
               </Route>
               <div className='d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom'></div>
               <ToastContainer />
-              <ToastContainer />
-
               <Switch>
                 <Route
                   path='/dashboard/collections/endpoints'
