@@ -27,10 +27,15 @@ export function deleteCollection(collectionId) {
     return http.delete(collectionUrl(collectionId));
 }
 
+export function duplicateCollection(collectionId) {
+    return http.post( `${apiUrl}/duplicateCollections/${collectionId}` );
+}
+
 export default {
     getCollections,
     getCollection,
     saveCollection,
     updateCollection,
-    deleteCollection
+    deleteCollection,
+    duplicateCollection
 };

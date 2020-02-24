@@ -1,80 +1,134 @@
-import React, { Component } from "react";
+import React, { Component } from 'react'
 import {
   Accordion,
   Card,
   Button,
   Dropdown,
   DropdownButton
-} from "react-bootstrap";
+} from 'react-bootstrap'
 
 class Endpoints extends Component {
+  state = {}
+
+  onDragStart = (e, eId) => {
+    this.props.group_dnd(false)
+    this.draggedItem = eId
+  }
+
+  onDragOver = (e, eId) => {
+    e.preventDefault()
+    this.draggedOverItem = eId
+  }
+
+  async onDragEnd(e, props) {
+    this.props.group_dnd(true)
+    if (this.draggedItem === this.draggedOverItem) {
+      return
+    }
+    let endpointIds = this.props.endpoints_order.filter(
+      item => item !== this.draggedItem
+    )
+    const index = this.props.endpoints_order.findIndex(
+      eId => eId === this.draggedOverItem
+    )
+    endpointIds.splice(index, 0, this.draggedItem)
+    this.props.set_endpoint_id(this.props.group_id, endpointIds)
+  }
   handleDelete(endpoint) {
     this.props.history.push({
-      pathname: "/dashboard/collections",
-      deleteEndpointId: endpoint.id
-    });
+      pathname: '/dashboard/collections',
+      deleteEndpointId: endpoint.id,
+      groupId: this.props.group_id
+    })
   }
-  handleUpdate(endpoint) {
-    console.log("dfg");
+
+  handleDuplicate(endpoint) {
     this.props.history.push({
-      pathname: `/dashboard/collections/${this.props.collectionId}/versions/${this.props.versionId}/groups/${this.props.groupId}/endpoints/${endpoint.id}/edit`,
-      editEndpoint: endpoint
-    });
+      pathname: '/dashboard/collections',
+      duplicateEndpoint: endpoint,
+
+    })
   }
-  handleDisplay(endpoint, groups) {
+
+  handleUpdate(endpoint) {
+    this.props.history.push({
+      pathname: `/dashboard/collections/${this.props.collection_id}/versions/${this.props.version_id}/groups/${this.props.group_id}/endpoints/${endpoint.id}/edit`,
+      editEndpoint: endpoint
+    })
+  }
+  handleDisplay(endpoint, groups, versions, groupId) {
     this.props.history.push({
       pathname: `/dashboard/collections/endpoints/${endpoint.id}`,
+      title: 'update endpoint',
       endpoint: endpoint,
-      groups: groups
-    });
+      groupId: groupId,
+      groups: groups,
+      versions: versions,
+      endpointFlag: true
+    })
   }
-  state = {};
   render() {
     return (
       <div>
-        {this.props.endpoints
-          .filter(endpoint => endpoint.groupId === this.props.groupId)
-          .map(endpoint => (
-            <Accordion defaultActiveKey="1">
-              <Card>
-                <Card.Header>
-                  <Accordion.Toggle
-                    onClick={() => this.handleDisplay(endpoint, this.props)}
-                    as={Button}
-                    variant="link"
-                    eventKey="1"
+        {this.props.endpoints &&
+          this.props.endpoints_order
+            .filter(
+              eId => this.props.endpoints[eId].groupId === this.props.group_id
+            )
+            .map(endpointId => (
+              <Accordion defaultActiveKey='1' key={endpointId}>
+                <Card>
+                  <Card.Header
+                    draggable
+                    onDragOver={e => this.onDragOver(e, endpointId)}
+                    onDragStart={e => this.onDragStart(e, endpointId)}
+                    onDragEnd={e => this.onDragEnd(e, endpointId, this.props)}
                   >
-                    {endpoint.name}
-                  </Accordion.Toggle>
-                  <DropdownButton
-                    alignRight
-                    title=""
-                    id="dropdown-menu-align-right"
-                    style={{ float: "right" }}
-                  >
-                    {/* <Dropdown.Item
-                      eventKey="1"
-                      onClick={() => this.handleUpdate(endpoint)}
+                    <Accordion.Toggle
+                      onClick={() =>
+                        this.handleDisplay(
+                          this.props.endpoints[endpointId],
+                          this.props.groups,
+                          this.props.versions,
+                          this.props.group_id
+                        )
+                      }
+                      as={Button}
+                      variant='link'
+                      eventKey='1'
                     >
-                      Edit
-                    </Dropdown.Item> */}
-                    <Dropdown.Item
-                      eventKey="2"
-                      onClick={() => this.handleDelete(endpoint)}
+                      {this.props.endpoints[endpointId].name}
+                    </Accordion.Toggle>
+                    <DropdownButton
+                      alignRight
+                      title=''
+                      id='dropdown-menu-align-right'
+                      style={{ float: 'right' }}
                     >
-                      Delete
+                      <Dropdown.Item
+                        eventKey='2'
+                        onClick={() =>
+                          this.handleDelete(this.props.endpoints[endpointId])
+                        }
+                      >
+                        Delete
+                      </Dropdown.Item>
+                      <Dropdown.Item
+                        eventKey='3'
+                        onClick={() =>
+                          this.handleDuplicate(this.props.endpoints[endpointId])
+                        }
+                      >
+                        Duplicate
                     </Dropdown.Item>
-                  </DropdownButton>
-                </Card.Header>
-                <Accordion.Collapse eventKey="0">
-                  <Card.Body></Card.Body>
-                </Accordion.Collapse>
-              </Card>
-            </Accordion>
-          ))}
+                    </DropdownButton>
+                  </Card.Header>
+                </Card>
+              </Accordion>
+            ))}
       </div>
-    );
+    )
   }
 }
 
-export default Endpoints;
+export default Endpoints

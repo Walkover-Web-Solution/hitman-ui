@@ -7,11 +7,11 @@ import {
   DropdownButton
 } from "react-bootstrap";
 
-class GroupPages extends Component {
+class Pages extends Component {
   state = {};
 
   onDragStart = (e, pageId) => {
-    this.props.group_dnd(false);
+    this.props.version_dnd(false);
     this.draggedItem = pageId;
   };
 
@@ -21,7 +21,7 @@ class GroupPages extends Component {
   };
 
   async onDragEnd(e) {
-    this.props.group_dnd(true);
+    this.props.version_dnd(true);
     if (this.draggedItem === this.draggedOverItem) {
       return;
     }
@@ -33,20 +33,12 @@ class GroupPages extends Component {
     this.props.set_page_id(pageIds);
   }
 
-  async handleDelete(page) {
+  handleDelete(pageId) {
     this.props.history.push({
       pathname: "/dashboard/collections",
-      deletePageId: page.id
+      deletePageId: pageId
     });
   }
-
-  handleUpdate(page) {
-    this.props.history.push({
-      pathname: `/dashboard/collections/${this.props.collection_id}/versions/${this.props.versionId}/pages/${page.id}/edit`,
-      editPage: page
-    });
-  }
-
   handleDisplay(page) {
     this.props.history.push({
       pathname: `/dashboard/collections/pages/${page.id}`,
@@ -69,13 +61,24 @@ class GroupPages extends Component {
             .filter(
               pageId =>
                 this.props.pages[pageId].versionId === this.props.version_id &&
-                this.props.pages[pageId].groupId === this.props.group_id
+                this.props.pages[pageId].groupId === null
             )
-
             .map(pageId => (
-              <Accordion defaultActiveKey="0" key={pageId}>
+              <Accordion
+                defaultActiveKey="1"
+                key={pageId}
+                draggable
+                onDragOver={e => this.onDragOver(e, pageId)}
+                onDragStart={e => this.onDragStart(e, pageId)}
+                onDragEnd={e => this.onDragEnd(e, pageId)}
+              >
                 <Card>
-                  <Card.Header>
+                  <Card.Header
+                    draggable
+                    onDragOver={e => this.onDragOver(e, pageId)}
+                    onDragStart={e => this.onDragStart(e, pageId)}
+                    onDragEnd={e => this.onDragEnd(e, pageId)}
+                  >
                     <Accordion.Toggle
                       as={Button}
                       onClick={() =>
@@ -100,12 +103,11 @@ class GroupPages extends Component {
                               "Are you sure you wish to delete this item?"
                             )
                           )
-                            this.handleDelete(this.props.pages[pageId]);
+                            this.handleDelete(pageId);
                         }}
                       >
                         Delete
                       </Dropdown.Item>
-
                       <Dropdown.Item
                         eventKey='2'
                         onClick={() => {
@@ -116,9 +118,6 @@ class GroupPages extends Component {
                       </Dropdown.Item>
                     </DropdownButton>
                   </Card.Header>
-                  <Accordion.Collapse eventKey="0">
-                    <Card.Body></Card.Body>
-                  </Accordion.Collapse>
                 </Card>
               </Accordion>
             ))}
@@ -127,4 +126,4 @@ class GroupPages extends Component {
   }
 }
 
-export default GroupPages;
+export default Pages;

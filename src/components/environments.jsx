@@ -10,8 +10,8 @@ import shortId from 'shortid'
 
 class Environments extends Component {
   state = {
-    environments: [],
-    environment: { id: null, name: 'No Environment' }
+    environments: {},
+    environmentId: null
   }
 
   async componentDidMount () {
@@ -19,51 +19,48 @@ class Environments extends Component {
     this.setState({ environments })
     const environmentId = this.props.location.pathname.split('/')[3]
     if (this.props.location.pathname.split('/')[4] === 'variables') {
-      const index = this.state.environments.findIndex(
-        e => e.id === environmentId
-      )
-      this.handleEnv(this.state.environments[index])
+      this.handleEnv(environmentId)
     }
   }
 
-  handleEnv (environment) {
-    this.setState({ environment: environment })
+  handleEnv (environmentId) {
+    this.props.set_environment(this.state.environments[environmentId])
+    this.setState({ environmentId })
   }
 
   async handleAdd (newEnvironment) {
     newEnvironment.requestId = shortId.generate()
-    const originalEnvironment = jQuery.extend(true, [], this.state.environment)
-    const environments = [...this.state.environments, newEnvironment]
+    const requestId = newEnvironment.requestId
+    const originalEnvironment = jQuery.extend(true, {}, this.state.environment)
+    const environments = { ...this.state.environments }
+    environments[requestId] = newEnvironment
     this.setState({ environments })
     try {
       const { data: environment } = await environmentService.saveEnvironment(
         newEnvironment
       )
-      const index = environments.findIndex(
-        e => e.requestId === newEnvironment.requestId
-      )
-      environments[index] = environment
+      environments[environment.id] = environment
+      delete environments[requestId]
       this.setState({ environments })
     } catch (ex) {
-      toast.error(ex.response.data)
+      toast.error(ex.response ? ex.response.data : 'Something went wrong')
       this.setState({ environment: originalEnvironment })
     }
   }
 
   async handleUpdateEnvironment (updatedEnvironment) {
     if (
-      JSON.stringify(this.state.environment) !==
+      JSON.stringify(this.state.environments[this.state.environmentId]) !==
       JSON.stringify(updatedEnvironment)
     ) {
       const originalEnvironment = jQuery.extend(
         true,
-        [],
+        {},
         this.state.environment
       )
-      const environments = [...this.state.environments]
-      const index = environments.findIndex(e => e.id === updatedEnvironment.id)
-      environments[index] = updatedEnvironment
-      this.setState({ environments, environment: updatedEnvironment })
+      const environments = { ...this.state.environments }
+      environments[updatedEnvironment.id] = updatedEnvironment
+      this.setState({ environments })
       try {
         const body = { ...updatedEnvironment }
         delete body.id
@@ -73,13 +70,10 @@ class Environments extends Component {
           updatedEnvironment.id,
           body
         )
-        const index = environments.findIndex(
-          e => e.id === updatedEnvironment.id
-        )
-        environments[index] = environment
+        environments[updatedEnvironment.id] = environment
         this.setState({ environments })
       } catch (ex) {
-        toast.error(ex.response.data)
+        toast.error(ex.response ? ex.response.data : 'Something went wrong')
         this.setState({ environment: originalEnvironment })
       }
     }
@@ -100,26 +94,38 @@ class Environments extends Component {
     return (
       <div>
         <div>
-          <Route
-            path='/dashboard/environments/:environmentId/variables'
-            render={props => (
-              <EnvironmentVariables
-                {...props}
-                show={this.state.environment.id}
-                onHide={() => {}}
-                environment={jQuery.extend(true, [], this.state.environment)}
-                title='Environment'
-              />
-            )}
-          />
           <Switch>
+            <Route
+              path='/dashboard/environments/:environmentId/variables'
+              render={props => (
+                <EnvironmentVariables
+                  {...props}
+                  show={this.state.environmentId}
+                  onHide={() => {
+                    this.props.history.push({
+                      pathname: '/dashboard'
+                    })
+                  }}
+                  environment={jQuery.extend(
+                    true,
+                    {},
+                    this.state.environments[this.state.environmentId]
+                  )}
+                  title='Environment'
+                />
+              )}
+            />
             <Route
               path='/dashboard/environments/:environmentId/edit'
               render={props => (
                 <EnvironmentVariables
                   {...props}
                   show={true}
-                  onHide={() => {}}
+                  onHide={() => {
+                    this.props.history.push({
+                      pathname: '/dashboard'
+                    })
+                  }}
                   title='Edit Environment'
                 />
               )}
@@ -130,7 +136,11 @@ class Environments extends Component {
                 <EnvironmentModal
                   {...props}
                   show={true}
-                  onHide={() => {}}
+                  onHide={() => {
+                    this.props.history.push({
+                      pathname: '/dashboard'
+                    })
+                  }}
                   environments={this.state.environments}
                 />
               )}
@@ -141,7 +151,11 @@ class Environments extends Component {
                 <EnvironmentVariables
                   {...props}
                   show={true}
-                  onHide={() => {}}
+                  onHide={() => {
+                    this.props.history.push({
+                      pathname: '/dashboard'
+                    })
+                  }}
                   title='Add new Environment'
                 />
               )}
@@ -151,7 +165,8 @@ class Environments extends Component {
         <div className='Environment Dropdown'>
           <Dropdown className='float-right'>
             <Dropdown.Toggle variant='default' id='dropdown-basic'>
-              {this.state.environment.name}
+              {this.state.environments[this.state.environmentId] &&
+                this.state.environments[this.state.environmentId].name}
             </Dropdown.Toggle>
 
             <Dropdown.Menu alignRight>
@@ -159,12 +174,12 @@ class Environments extends Component {
                 <Link to='/dashboard/environments/new'>+ Add Environment</Link>
               </Dropdown.Item>
 
-              {this.state.environments.map(environment => (
+              {Object.keys(this.state.environments).map(environmentId => (
                 <Dropdown.Item
-                  onClick={() => this.handleEnv(environment)}
-                  key={environment.id}
+                  onClick={() => this.handleEnv(environmentId)}
+                  key={environmentId}
                 >
-                  {environment.name}
+                  {this.state.environments[environmentId].name}
                 </Dropdown.Item>
               ))}
             </Dropdown.Menu>
@@ -178,9 +193,9 @@ class Environments extends Component {
           <Link to='/dashboard/environments/manage'>Manage Environments</Link>
         </div>
 
-        {this.state.environment.id ? (
+        {this.state.environmentId ? (
           <Link
-            to={`/dashboard/environments/${this.state.environment.id}/variables`}
+            to={`/dashboard/environments/${this.state.environmentId}/variables`}
             style={{ float: 'right' }}
           >
             Environment Variables

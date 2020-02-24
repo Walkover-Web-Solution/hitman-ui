@@ -19,7 +19,7 @@ class PageForm extends Form {
   }
 
   async doSubmit (props) {
-    if (this.props.title === 'Add New Page') {
+    if (this.props.title === 'Add new Group Page') {
       this.props.history.push({
         pathname: `/dashboard/`,
         newPage: this.state.data,
@@ -37,8 +37,6 @@ class PageForm extends Form {
   }
 
   render () {
-    //console.log('page', this.props)
-
     return (
       <Modal
         {...this.props}

@@ -5,13 +5,13 @@ import { toast } from 'react-toastify'
 import jQuery from 'jquery'
 class EnvironmentModal extends Component {
   state = {
-    environments: []
+    environments: {}
   }
 
   async componentDidMount () {
-    let environments = []
-    if (this.props.environment) {
-      environments = this.props.environments
+    let environments = {}
+    if (Object.keys(this.props.environments).length) {
+      environments = { ...this.props.environments }
     } else {
       const { data } = await environmentService.getEnvironments()
       environments = data
@@ -38,17 +38,16 @@ class EnvironmentModal extends Component {
   async handleDelete (environmentId) {
     const originalEnvironments = jQuery.extend(
       true,
-      [],
+      {},
       this.state.environments
     )
-    const environments = this.state.environments.filter(
-      e => e.id !== environmentId
-    )
+    const environments = { ...this.state.environments }
+    delete environments[environmentId]
     this.setState({ environments })
     try {
       await environmentService.deleteEnvironment(environmentId)
     } catch (ex) {
-      toast.error(ex)
+      toast.error(ex.response ? ex.response.data : 'Something went wrong')
       this.setState({ environments: originalEnvironments })
     }
   }
@@ -62,7 +61,7 @@ class EnvironmentModal extends Component {
 
   handleCancel (props) {
     props.history.push({
-      pathname: `/dashboard/environments`,
+      pathname: `/dashboard/`,
       environments: this.state.environments
     })
   }
@@ -82,9 +81,9 @@ class EnvironmentModal extends Component {
         </Modal.Header>
         <Modal.Body>
           <ListGroup>
-            {this.state.environments.map(environment => (
-              <ListGroup.Item key={environment.id}>
-                {environment.name}
+            {Object.keys(this.state.environments).map(environmentId => (
+              <ListGroup.Item key={environmentId}>
+                {this.state.environments[environmentId].name}
                 <Dropdown className='float-right'>
                   <Dropdown.Toggle
                     variant='default'
@@ -92,7 +91,11 @@ class EnvironmentModal extends Component {
                   ></Dropdown.Toggle>
 
                   <Dropdown.Menu alignRight>
-                    <Dropdown.Item onClick={() => this.handleEdit(environment)}>
+                    <Dropdown.Item
+                      onClick={() =>
+                        this.handleEdit(this.state.environments[environmentId])
+                      }
+                    >
                       Edit
                     </Dropdown.Item>
 
@@ -103,7 +106,7 @@ class EnvironmentModal extends Component {
                             'Are you sure you wish to delete this environment?'
                           )
                         )
-                          this.handleDelete(environment.id)
+                          this.handleDelete(environmentId)
                       }}
                     >
                       delete
