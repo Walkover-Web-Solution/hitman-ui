@@ -14,6 +14,7 @@ import collectionVersionsService from "../services/collectionVersionsService";
 import CollectionVersions from "./collectionVersions";
 import CollectionVersionForm from "./collectionVersionForm";
 import GroupForm from "./groupForm";
+import ShareVersionForm from "./shareVersionForm"
 import groupsService from "../services/groupsService";
 import PageForm from "./pageForm";
 import pageService from "../services/pageService";
@@ -934,6 +935,21 @@ class Collections extends Component {
                       })
                     }}
                     title='Edit Collection'
+                  />
+                )}
+              />
+                <Route
+                path='/dashboard/collections/:collectionId/versions/:versionId/share'
+                render={props => (
+                  <ShareVersionForm
+                    {...props}
+                    show={true}
+                    onHide={() => {
+                      this.props.history.push({
+                        pathname: '/dashboard/collections'
+                      })
+                    }}
+                    title='Share Version'
                   />
                 )}
               />
