@@ -105,8 +105,7 @@ class DisplayEndpoint extends Component {
     ) {
       host = this.state.groups[this.state.groupId].host
       if (host === '') {
-        const versionId = this.state.groups[this.state.endpoint.groupId]
-          .versionId
+        const versionId = this.state.groups[this.state.endpoint.groupId].versionId
         host = this.state.versions[versionId].host
       }
     } else if (this.state.groupId) {
@@ -552,7 +551,7 @@ class DisplayEndpoint extends Component {
         response: {},
         endpoint: {},
         groups: this.props.location.groups,
-        versions: [],
+        versions:this.props.location.versions,
         groupId: this.props.location.groupId,
         title: this.props.location.title,
         onChangeFlag: false,

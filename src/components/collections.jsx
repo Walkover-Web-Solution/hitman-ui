@@ -630,7 +630,10 @@ class Collections extends Component {
     collectionIds.splice(index, 0, this.draggedItem)
     this.setState({ collectionIds })
   }
+
+
   render() {
+    console.log('this.state',this.state.pages)
     const { location } = this.props
 
     if (location.editedEndpoint) {
