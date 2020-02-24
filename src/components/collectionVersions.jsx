@@ -90,7 +90,11 @@ class CollectionVersions extends Component {
             .map(versionId => (
               <Accordion defaultActiveKey="0" key={versionId}>
                 <Card>
-                  <Card.Header>
+                  <Card.Header
+                    draggable={this.state.versionDnDFlag}
+                    onDragOver={e => this.onDragOver(e, versionId)}
+                    onDragStart={e => this.onDragStart(e, versionId)}
+                    onDragEnd={e => this.onDragEnd(e, versionId)}>
                     <Accordion.Toggle as={Button} variant="link" eventKey="1">
                       {this.props.versions[versionId].number}
                     </Accordion.Toggle>

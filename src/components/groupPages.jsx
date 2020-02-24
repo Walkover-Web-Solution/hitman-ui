@@ -75,7 +75,11 @@ class GroupPages extends Component {
             .map(pageId => (
               <Accordion defaultActiveKey="0" key={pageId}>
                 <Card>
-                  <Card.Header>
+                  <Card.Header
+                    draggable
+                    onDragOver={e => this.onDragOver(e, pageId)}
+                    onDragStart={e => this.onDragStart(e, pageId)}
+                    onDragEnd={e => this.onDragEnd(e, pageId)}>
                     <Accordion.Toggle
                       as={Button}
                       onClick={() =>

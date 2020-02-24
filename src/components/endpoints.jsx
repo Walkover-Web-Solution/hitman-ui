@@ -13,6 +13,7 @@ class Endpoints extends Component {
   onDragStart = (e, eId) => {
     this.props.group_dnd(false)
     this.draggedItem = eId
+    this.props.set_dnd(eId, this.props.group_id)
   }
 
   onDragOver = (e, eId) => {
@@ -23,6 +24,7 @@ class Endpoints extends Component {
   async onDragEnd(e, props) {
     this.props.group_dnd(true)
     if (this.draggedItem === this.draggedOverItem) {
+      this.draggedItem = null
       return
     }
     let endpointIds = this.props.endpoints_order.filter(
@@ -33,7 +35,17 @@ class Endpoints extends Component {
     )
     endpointIds.splice(index, 0, this.draggedItem)
     this.props.set_endpoint_id(this.props.group_id, endpointIds)
+    this.draggedItem = null;
   }
+
+  onDrop = (e, eId) => {
+    e.preventDefault()
+    if (!this.draggedItem) {
+      this.props.get_dnd(eId, this.props.group_id)
+    }
+    // this.draggedItem = null
+  }
+
   handleDelete(endpoint) {
     this.props.history.push({
       pathname: '/dashboard/collections',
@@ -68,66 +80,79 @@ class Endpoints extends Component {
     })
   }
   render() {
-    return (
-      <div>
-        {this.props.endpoints &&
-          this.props.endpoints_order
-            .filter(
-              eId => this.props.endpoints[eId].groupId === this.props.group_id
-            )
-            .map(endpointId => (
-              <Accordion defaultActiveKey='1' key={endpointId}>
-                <Card>
-                  <Card.Header
-                    draggable
-                    onDragOver={e => this.onDragOver(e, endpointId)}
-                    onDragStart={e => this.onDragStart(e, endpointId)}
-                    onDragEnd={e => this.onDragEnd(e, endpointId, this.props)}
-                  >
-                    <Accordion.Toggle
-                      onClick={() =>
-                        this.handleDisplay(
-                          this.props.endpoints[endpointId],
-                          this.props.groups,
-                          this.props.versions,
-                          this.props.group_id
-                        )
-                      }
-                      as={Button}
-                      variant='link'
-                      eventKey='1'
+    console.log(this.props.groups[this.props.group_id].name, this.props.endpoints_order)
+    if (this.props.endpoints_order.length == 0) {
+      console.log("empty")
+      return (<div>
+        <h5>
+          This group is empty
+        </h5>
+      </div>)
+    }
+    else {
+      console.log("not empty")
+      return (
+        <div>
+          {this.props.endpoints &&
+            this.props.endpoints_order
+              .filter(
+                eId => this.props.endpoints[eId].groupId === this.props.group_id
+              )
+              .map(endpointId => (
+                <Accordion defaultActiveKey='1' key={endpointId}>
+                  <Card>
+                    <Card.Header
+                      draggable
+                      onDragOver={e => this.onDragOver(e, endpointId)}
+                      onDragStart={e => this.onDragStart(e, endpointId)}
+                      onDragEnd={e => this.onDragEnd(e, endpointId, this.props)}
+                      onDrop={e => this.onDrop(e, endpointId, this.props)}
                     >
-                      {this.props.endpoints[endpointId].name}
-                    </Accordion.Toggle>
-                    <DropdownButton
-                      alignRight
-                      title=''
-                      id='dropdown-menu-align-right'
-                      style={{ float: 'right' }}
-                    >
-                      <Dropdown.Item
-                        eventKey='2'
+                      <Accordion.Toggle
                         onClick={() =>
-                          this.handleDelete(this.props.endpoints[endpointId])
+                          this.handleDisplay(
+                            this.props.endpoints[endpointId],
+                            this.props.groups,
+                            this.props.versions,
+                            this.props.group_id
+                          )
                         }
+                        as={Button}
+                        variant='link'
+                        eventKey='1'
                       >
-                        Delete
+                        {this.props.endpoints[endpointId].name}
+                      </Accordion.Toggle>
+                      <DropdownButton
+                        alignRight
+                        title=''
+                        id='dropdown-menu-align-right'
+                        style={{ float: 'right' }}
+                      >
+                        <Dropdown.Item
+                          eventKey='2'
+                          onClick={() =>
+                            this.handleDelete(this.props.endpoints[endpointId])
+                          }
+                        >
+                          Delete
                       </Dropdown.Item>
-                      <Dropdown.Item
-                        eventKey='3'
-                        onClick={() =>
-                          this.handleDuplicate(this.props.endpoints[endpointId])
-                        }
-                      >
-                        Duplicate
+                        <Dropdown.Item
+                          eventKey='3'
+                          onClick={() =>
+                            this.handleDuplicate(this.props.endpoints[endpointId])
+                          }
+                        >
+                          Duplicate
                     </Dropdown.Item>
-                    </DropdownButton>
-                  </Card.Header>
-                </Card>
-              </Accordion>
-            ))}
-      </div>
-    )
+                      </DropdownButton>
+                    </Card.Header>
+                  </Card>
+                </Accordion>
+              ))}
+        </div>
+      )
+    }
   }
 }
 
