@@ -62,21 +62,31 @@ class DisplayEndpoint extends Component {
     if (e.currentTarget.name === "updatedUri") {
       let keys = [];
       let values = [];
+      let description = [];
       let originalParamsKeys = [];
       let updatedUri = e.currentTarget.value.split("?")[1];
       let result = URI.parseQuery(updatedUri);
-
+      if (Object.keys(result).length === 0) {
+        this.setState({ updatedParamsKeys: keys });
+      }
       for (let i = 0; i < Object.keys(result).length; i++) {
         keys.push(Object.keys(result)[i]);
+        if (this.state.keys[i] === keys[i]) {
+          description[i] = this.state.description[i];
+        } else {
+          description[i] = "";
+        }
         this.state.updatedParamsKeys = keys;
+        this.state.description = description;
       }
       for (let i = 0; i < keys.length; i++) {
         values.push(result[keys[i]]);
+        description[i] = this.state.description[i];
       }
       for (let i = 0; i < keys.length; i++) {
         originalParamsKeys.push(i);
       }
-      this.setState({ keys, values });
+      this.setState({ keys, values, description });
       this.state.originalParamsKeys = originalParamsKeys;
       this.state.paramsData = this.makeParamsData(values);
     }
@@ -93,7 +103,7 @@ class DisplayEndpoint extends Component {
     }
     for (let i = 0; i < keys.length; i++) {
       paramsMetaData[originalParamsKeys[i]] = {
-        description: ""
+        description: this.state.description[i]
       };
     }
     this.setState({ paramsMetaData });
@@ -324,7 +334,6 @@ class DisplayEndpoint extends Component {
       if (values[i]) {
         parts[keys[i]] = values[i].toString();
       } else {
-        // values[i] = "";
         if (keys[i]) {
           parts[keys[i]] = values[i];
         }
