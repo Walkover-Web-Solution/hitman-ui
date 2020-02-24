@@ -14,21 +14,22 @@ class Environments extends Component {
     environmentId: null
   }
 
-  async componentDidMount () {
+  async componentDidMount() {
     const { data: environments } = await environmentService.getEnvironments()
     this.setState({ environments })
     const environmentId = this.props.location.pathname.split('/')[3]
     if (this.props.location.pathname.split('/')[4] === 'variables') {
-      this.handleEnv(environmentId)
+      this.handleEnv(environments[environmentId])
     }
   }
 
-  handleEnv (environmentId) {
-    this.props.set_environment(this.state.environments[environmentId])
-    this.setState({ environmentId })
+  handleEnv(environment) {
+    this.props.set_environment(environment)
+    console.log(environment)
+    this.setState({ environmentId: environment.id })
   }
 
-  async handleAdd (newEnvironment) {
+  async handleAdd(newEnvironment) {
     newEnvironment.requestId = shortId.generate()
     const requestId = newEnvironment.requestId
     const originalEnvironment = jQuery.extend(true, {}, this.state.environment)
@@ -48,7 +49,7 @@ class Environments extends Component {
     }
   }
 
-  async handleUpdateEnvironment (updatedEnvironment) {
+  async handleUpdateEnvironment(updatedEnvironment) {
     if (
       JSON.stringify(this.state.environments[this.state.environmentId]) !==
       JSON.stringify(updatedEnvironment)
@@ -60,6 +61,7 @@ class Environments extends Component {
       )
       const environments = { ...this.state.environments }
       environments[updatedEnvironment.id] = updatedEnvironment
+      this.handleEnv(updatedEnvironment)
       this.setState({ environments })
       try {
         const body = { ...updatedEnvironment }
@@ -74,12 +76,13 @@ class Environments extends Component {
         this.setState({ environments })
       } catch (ex) {
         toast.error(ex.response ? ex.response.data : 'Something went wrong')
+        this.handleEnv(originalEnvironment)
         this.setState({ environment: originalEnvironment })
       }
     }
   }
 
-  render () {
+  render() {
     if (this.props.location.updatedEnvironment) {
       const { updatedEnvironment } = this.props.location
       this.props.history.replace({ updatedEnvironment: null })
@@ -176,7 +179,7 @@ class Environments extends Component {
 
               {Object.keys(this.state.environments).map(environmentId => (
                 <Dropdown.Item
-                  onClick={() => this.handleEnv(environmentId)}
+                  onClick={() => this.handleEnv(this.state.environments[environmentId])}
                   key={environmentId}
                 >
                   {this.state.environments[environmentId].name}

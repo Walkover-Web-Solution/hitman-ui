@@ -129,20 +129,37 @@ class DisplayEndpoint extends Component {
     let match = regexp.exec(api)
     let variables = []
     if (match === null) return api
+    if (!this.props.environment.variables) {
+      return api.replace(regexp, "")
+    }
     do {
       variables.push(match[1])
     } while ((match = regexp.exec(api)) !== null)
     for (let i = 0; i < variables.length; i++) {
-      if (
-        this.props.environment.variables[variables[i]] &&
-        this.props.environment.variables[variables[i]].initialValue
-      ) {
+      if (!this.props.environment.variables[variables[i]]) {
+        api = api.replace(
+          `{{${variables[i]}}}`,
+          ""
+        );
+      }
+      else if (this.props.environment.variables[variables[i]].currentValue) {
+        api = api.replace(
+          `{{${variables[i]}}}`,
+          this.props.environment.variables[variables[i]].currentValue
+        );
+      }
+      else if (this.props.environment.variables[variables[i]].initialValue) {
         api = api.replace(
           `{{${variables[i]}}}`,
           this.props.environment.variables[variables[i]].initialValue
         );
       }
+      else {
+        api = api.replace(`{{${variables[i]}}}`, "")
+      }
+
     }
+    console.log(this.props.environment, api)
     return api
   }
 
