@@ -287,8 +287,10 @@ class DisplayEndpoint extends Component {
 
     this.state.keys = keys;
     this.state.values = values;
+    this.state.updatedParamsKeys = updatedParamsKeys;
+
     this.handleUpdateUri(keys, values);
-    this.setState({ updatedParamsKeys });
+    // this.setState({ updatedParamsKeys });
   }
 
   handleUpdateUri(keys, values) {
@@ -391,9 +393,10 @@ class DisplayEndpoint extends Component {
       }
     }
     if (paramsData[""]) delete paramsData[""];
-    updatedParamsKeys = updatedParamsKeys.filter(k => k !== "");
+    updatedParamsKeys = updatedParamsKeys.filter(
+      k => k !== "" && k !== "deleted"
+    );
     originalParamsKeys = [...updatedParamsKeys];
-
     let params = {};
     for (let i = 0; i < updatedParamsKeys.length; i++) {
       params[updatedParamsKeys[i]] = {
