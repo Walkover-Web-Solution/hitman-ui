@@ -1,52 +1,59 @@
-import React, { Component } from 'react'
+import React, { Component } from "react";
 import {
   Accordion,
   Card,
   Button,
   Dropdown,
   DropdownButton
-} from 'react-bootstrap'
+} from "react-bootstrap";
 
 class Pages extends Component {
-  state = {}
+  state = {};
 
   onDragStart = (e, pageId) => {
-    this.props.version_dnd(false)
-    this.draggedItem = pageId
-  }
+    this.props.version_dnd(false);
+    this.draggedItem = pageId;
+  };
 
   onDragOver = (e, pageId) => {
-    e.preventDefault()
-    this.draggedOverItem = pageId
-  }
+    e.preventDefault();
+    this.draggedOverItem = pageId;
+  };
 
-  async onDragEnd (e) {
-    this.props.version_dnd(true)
+  async onDragEnd(e) {
+    this.props.version_dnd(true);
     if (this.draggedItem === this.draggedOverItem) {
-      return
+      return;
     }
-    let pageIds = this.props.page_ids.filter(item => item !== this.draggedItem)
+    let pageIds = this.props.page_ids.filter(item => item !== this.draggedItem);
     const index = this.props.page_ids.findIndex(
       vId => vId === this.draggedOverItem
-    )
-    pageIds.splice(index, 0, this.draggedItem)
-    this.props.set_page_id(pageIds)
+    );
+    pageIds.splice(index, 0, this.draggedItem);
+    this.props.set_page_id(pageIds);
   }
 
-  handleDelete (pageId) {
+  handleDelete(pageId) {
     this.props.history.push({
-      pathname: '/dashboard/collections',
+      pathname: "/dashboard/collections",
       deletePageId: pageId
-    })
+    });
   }
-  handleDisplay (page) {
+  handleDisplay(page) {
     this.props.history.push({
       pathname: `/dashboard/collections/pages/${page.id}`,
       page: page
-    })
+    });
   }
 
-  render () {
+  handleDuplicate(page) {
+    this.props.history.push({
+      pathname: "/dashboard/collections",
+      duplicatePage: page
+    });
+  }
+
+  render() {
     return (
       <div>
         {this.props.pages &&
@@ -58,7 +65,7 @@ class Pages extends Component {
             )
             .map(pageId => (
               <Accordion
-                defaultActiveKey='1'
+                defaultActiveKey="1"
                 key={pageId}
                 draggable
                 onDragOver={e => this.onDragOver(e, pageId)}
@@ -77,29 +84,37 @@ class Pages extends Component {
                       onClick={() =>
                         this.handleDisplay(this.props.pages[pageId])
                       }
-                      variant='link'
-                      eventKey='1'
+                      variant="link"
+                      eventKey="1"
                     >
                       {this.props.pages[pageId].name}
                     </Accordion.Toggle>
                     <DropdownButton
                       alignRight
-                      title=''
-                      id='dropdown-menu-align-right'
-                      style={{ float: 'right' }}
+                      title=""
+                      id="dropdown-menu-align-right"
+                      style={{ float: "right" }}
                     >
                       <Dropdown.Item
-                        eventKey='2'
+                        eventKey="2"
                         onClick={() => {
                           if (
                             window.confirm(
-                              'Are you sure you wish to delete this item?'
+                              "Are you sure you wish to delete this item?"
                             )
                           )
-                            this.handleDelete(pageId)
+                            this.handleDelete(pageId);
                         }}
                       >
                         Delete
+                      </Dropdown.Item>
+                      <Dropdown.Item
+                        eventKey="2"
+                        onClick={() => {
+                          this.handleDuplicate(this.props.pages[pageId]);
+                        }}
+                      >
+                        Duplicate
                       </Dropdown.Item>
                     </DropdownButton>
                   </Card.Header>
@@ -107,8 +122,8 @@ class Pages extends Component {
               </Accordion>
             ))}
       </div>
-    )
+    );
   }
 }
 
-export default Pages
+export default Pages;

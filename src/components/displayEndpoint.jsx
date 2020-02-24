@@ -43,7 +43,6 @@ class DisplayEndpoint extends Component {
     headersData: {},
     originalHeadersKeys: [],
     updatedHeadersKeys: [],
-
     paramsData: {},
     paramsMetaData: {},
     originalParamsKeys: [],
@@ -134,12 +133,12 @@ class DisplayEndpoint extends Component {
     } while ((match = regexp.exec(api)) !== null);
     for (let i = 0; i < variables.length; i++) {
       if (
-        this.state.environment.variables[variables[i]] &&
-        this.state.environment.variables[variables[i]].initialValue
+        this.props.environment.variables[variables[i]] &&
+        this.props.environment.variables[variables[i]].initialValue
       ) {
         api = api.replace(
           `{{${variables[i]}}}`,
-          this.state.environment.variables[variables[i]].initialValue
+          this.props.environment.variables[variables[i]].initialValue
         );
       }
     }
@@ -152,8 +151,8 @@ class DisplayEndpoint extends Component {
     this.setState({ startTime, prettyResponse });
     let response = {};
     const headersData = this.doSubmitHeader();
-    const paramsData = this.doSubmitParam();
-    await this.setState({ headersData, paramsData, response });
+    // const paramsData = this.doSubmitParam();
+    await this.setState({ headersData, response });
     this.state.flagResponse = true;
     const host = this.findHost();
     let api = host + this.uri.current.value;
@@ -213,14 +212,8 @@ class DisplayEndpoint extends Component {
       } catch {
         toast.error("Invalid Body");
       }
-    let params = {};
     const headersData = this.doSubmitHeader();
-    // if (this.state.uriParamFlag === false) {
-    params = this.doSubmitParam();
-    // } else {
-    // paramsData = this.state.paramsData;
-    // }
-
+    const params = this.doSubmitParam();
     const endpoint = {
       uri: this.uri.current.value,
       name: this.name.current.value,
@@ -229,7 +222,6 @@ class DisplayEndpoint extends Component {
       headers: headersData,
       params: params
     };
-
     if (endpoint.name == "" || endpoint.uri == "")
       toast.error("Please Enter all the fields");
     else if (this.state.title === "Add New Endpoint") {
@@ -375,6 +367,7 @@ class DisplayEndpoint extends Component {
     let originalParamsKeys = [...this.state.originalParamsKeys];
     let newOriginalParamsKeys = [];
     let updatedParamsKeys = [...this.state.updatedParamsKeys];
+
     for (let i = 0; i < originalParamsKeys.length; i++) {
       if (originalParamsKeys[i] === "") {
         delete paramsData[originalParamsKeys[i]];
@@ -600,16 +593,33 @@ class DisplayEndpoint extends Component {
       this.props.location.endpoint
     ) {
       let endpoint = { ...this.props.location.endpoint };
+      //To fetch Values array
       let values = [];
       Object.keys(this.props.location.endpoint.params).map(param => {
         values.push(this.props.location.endpoint.params[param].value);
       });
+      //To fetch Description Object
       let description = [];
       Object.keys(this.props.location.endpoint.params).map(param => {
         description.push(
           this.props.location.endpoint.params[param].description
         );
       });
+      //To fetch ParamsData from Params
+      let paramsData = {};
+      for (
+        let i = 0;
+        i < Object.keys(this.props.location.endpoint.params).length;
+        i++
+      ) {
+        paramsData[
+          Object.keys(this.props.location.endpoint.params)[i]
+        ] = this.props.location.endpoint.params[
+          Object.keys(this.props.location.endpoint.params)[i]
+        ].value;
+      }
+      //To fetch ParamsMetaData from Params
+
       let paramsMetaData = {};
       for (
         let i = 0;
@@ -638,10 +648,12 @@ class DisplayEndpoint extends Component {
         groupId: this.props.location.groupId,
         onChangeFlag: false,
         description: description,
-        paramsMetaData: paramsMetaData
+        paramsMetaData: paramsMetaData,
+        paramsData: paramsData
       });
       this.state.endpoint = endpoint;
       this.state.values = values;
+
       this.state.keys = Object.keys(this.props.location.endpoint.params);
       this.props.history.push({ endpoint: null });
     }
@@ -831,18 +843,6 @@ class DisplayEndpoint extends Component {
                           <input
                             name={index + ".description"}
                             value={this.state.description[index]}
-                            //   this.state.paramsMetaData[this.state.keys[index]]
-                            //     .description
-                            // }
-                            //{this.state.description[index]}
-                            // this.state.paramsData[
-                            //   this.state.originalParamsKeys[index]
-                            // ]
-                            //   ? this.state.paramsData[
-                            //       this.state.originalParamsKeys[index]
-                            //     ].description
-                            //   : ""
-                            // }
                             onChange={this.handleChangeParam}
                             type={"text"}
                             style={{ border: "none" }}

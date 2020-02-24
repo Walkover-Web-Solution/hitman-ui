@@ -21,25 +21,34 @@ class Endpoints extends Component {
   };
 
   async onDragEnd(e, props) {
-    this.props.version_dnd(true);
+    this.props.group_dnd(true);
     if (this.draggedItem === this.draggedOverItem) {
       return;
     }
-    let endpointIds = this.props.endpoint_ids.filter(
+    let endpointIds = this.props.endpoints_order.filter(
       item => item !== this.draggedItem
     );
-    const index = this.props.endpoint_ids.findIndex(
+    const index = this.props.endpoints_order.findIndex(
       eId => eId === this.draggedOverItem
     );
     endpointIds.splice(index, 0, this.draggedItem);
-    this.props.set_endpoint_id(endpointIds);
+    this.props.set_endpoint_id(this.props.group_id, endpointIds);
   }
   handleDelete(endpoint) {
     this.props.history.push({
       pathname: "/dashboard/collections",
-      deleteEndpointId: endpoint.id
+      deleteEndpointId: endpoint.id,
+      groupId: this.props.group_id
     });
   }
+
+  handleDuplicate(endpoint) {
+    this.props.history.push({
+      pathname: "/dashboard/collections",
+      duplicateEndpoint: endpoint
+    });
+  }
+
   handleUpdate(endpoint) {
     this.props.history.push({
       pathname: `/dashboard/collections/${this.props.collection_id}/versions/${this.props.version_id}/groups/${this.props.group_id}/endpoints/${endpoint.id}/edit`,
@@ -62,7 +71,7 @@ class Endpoints extends Component {
     return (
       <div>
         {this.props.endpoints &&
-          this.props.endpoint_ids
+          this.props.endpoints_order
             .filter(
               eId => this.props.endpoints[eId].groupId === this.props.group_id
             )
@@ -104,11 +113,16 @@ class Endpoints extends Component {
                       >
                         Delete
                       </Dropdown.Item>
+                      <Dropdown.Item
+                        eventKey="3"
+                        onClick={() =>
+                          this.handleDuplicate(this.props.endpoints[endpointId])
+                        }
+                      >
+                        Duplicate
+                      </Dropdown.Item>
                     </DropdownButton>
                   </Card.Header>
-                  <Accordion.Collapse eventKey="0">
-                    <Card.Body></Card.Body>
-                  </Accordion.Collapse>
                 </Card>
               </Accordion>
             ))}

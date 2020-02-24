@@ -37,12 +37,17 @@ export function deleteEndpoint(endpointId) {
     return http.delete(`${apiUrl}/endpoints/${endpointId}`);
 }
 
+
+export function duplicateEndpoint(endpointId) {
+    return http.post( `${apiUrl}/duplicateEndpoints/${endpointId}` );
+}
+
 export default {
     saveEndpoint,
     getEndpoints,
     deleteEndpoint,
     apiTest,
     updateEndpoint,
-    getEndpoint
-    // updateEndpointName
+    getEndpoint,
+    duplicateEndpoint
 };
