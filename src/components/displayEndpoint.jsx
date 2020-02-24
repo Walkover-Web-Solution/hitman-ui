@@ -65,6 +65,7 @@ class DisplayEndpoint extends Component {
       let originalParamsKeys = [];
       let updatedUri = e.currentTarget.value.split("?")[1];
       let result = URI.parseQuery(updatedUri);
+
       for (let i = 0; i < Object.keys(result).length; i++) {
         keys.push(Object.keys(result)[i]);
         this.state.updatedParamsKeys = keys;
@@ -558,7 +559,7 @@ class DisplayEndpoint extends Component {
         response: {},
         endpoint: {},
         groups: this.props.location.groups,
-        versions: [],
+        versions: this.props.location.versions,
         groupId: this.props.location.groupId,
         title: this.props.location.title,
         onChangeFlag: false,
