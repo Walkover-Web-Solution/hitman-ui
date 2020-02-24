@@ -417,6 +417,7 @@ class Collections extends Component {
   }
 
   async handleAddEndpoint(groupId, newEndpoint, versions) {
+    console.log("adddddd");
     const originalEndpoints = { ...this.state.endpoints };
     const originalGroups = { ...this.state.groups }
     newEndpoint.requestId = shortId.generate();
@@ -424,9 +425,12 @@ class Collections extends Component {
     const endpoints = { ...this.state.endpoints };
     const groups = { ...this.state.groups };
     endpoints[requestId] = newEndpoint;
+    newEndpoint.groupId = groupId;
+
     this.setState({ endpoints });
     let endpoint = {};
     try {
+      delete newEndpoint.groupId;
       const { data } = await endpointService.saveEndpoint(groupId, newEndpoint);
       endpoint = data;
       endpoints[endpoint.id] = endpoint;
@@ -714,6 +718,12 @@ class Collections extends Component {
       this.handleDuplicatePage(duplicatePage)
     }
 
+    if (location.duplicatePage) {
+      const duplicatePage = location.duplicatePage;
+      this.props.history.replace({ duplicatePage: null });
+      this.handleDuplicatePage(duplicatePage);
+    }
+
     if (location.editedGroup) {
       const { editedGroup } = location
       this.props.history.replace({ editedGroup: null })
@@ -730,6 +740,12 @@ class Collections extends Component {
       const duplicateGroup = location.duplicateGroup
       this.props.history.replace({ duplicateGroup: null })
       this.handleDuplicateGroup(duplicateGroup)
+    }
+
+    if (location.duplicateGroup) {
+      const duplicateGroup = location.duplicateGroup;
+      this.props.history.replace({ duplicateGroup: null });
+      this.handleDuplicateGroup(duplicateGroup);
     }
 
     if (location.newGroup) {
@@ -761,6 +777,12 @@ class Collections extends Component {
       const duplicateVersion = location.duplicateVersion
       this.props.history.replace({ duplicateVersion: null })
       this.handleDuplicateVersion(duplicateVersion)
+    }
+
+    if (location.duplicateVersion) {
+      const duplicateVersion = location.duplicateVersion;
+      this.props.history.replace({ duplicateVersion: null });
+      this.handleDuplicateVersion(duplicateVersion);
     }
 
     if (location.editedCollection) {
