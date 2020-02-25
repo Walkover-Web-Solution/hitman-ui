@@ -1,79 +1,79 @@
-import React, { Component } from 'react'
+import React, { Component } from "react";
 import {
   Accordion,
   Card,
   Button,
   Dropdown,
   DropdownButton
-} from 'react-bootstrap'
-import Groups from './groups'
-import Pages from './versionPages'
+} from "react-bootstrap";
+import Groups from "./groups";
+import VersionPages from "./versionPages";
 
 class CollectionVersions extends Component {
   state = {
     versionDnDFlag: true
-  }
+  };
 
-  versionDnD (versionDnDFlag) {
-    this.props.collection_dnd(versionDnDFlag)
-    this.setState({ versionDnDFlag })
+  versionDnD(versionDnDFlag) {
+    this.props.collection_dnd(versionDnDFlag);
+    this.setState({ versionDnDFlag });
   }
 
   onDragStart = (e, versionId) => {
-    if (!this.state.versionDnDFlag) return
-    this.props.collection_dnd(false)
-    this.draggedItem = versionId
-  }
+    if (!this.state.versionDnDFlag) return;
+    this.props.collection_dnd(false);
+    this.draggedItem = versionId;
+  };
 
   onDragOver = (e, versionId) => {
-    if (!this.state.versionDnDFlag) return
-    e.preventDefault()
-    this.draggedOverItem = versionId
-  }
+    if (!this.state.versionDnDFlag) return;
+    e.preventDefault();
+    this.draggedOverItem = versionId;
+  };
 
-  async onDragEnd (e) {
-    if (!this.state.versionDnDFlag) return
-    this.props.collection_dnd(true)
+  async onDragEnd(e) {
+    if (!this.state.versionDnDFlag) return;
+    this.props.collection_dnd(true);
     if (this.draggedItem === this.draggedOverItem) {
-      return
+      return;
     }
     let versionIds = this.props.version_ids.filter(
       item => item !== this.draggedItem
-    )
+    );
     const index = this.props.version_ids.findIndex(
       vId => vId === this.draggedOverItem
-    )
-    versionIds.splice(index, 0, this.draggedItem)
+    );
+    versionIds.splice(index, 0, this.draggedItem);
 
-    this.props.set_version_id(versionIds)
+    this.props.set_version_id(versionIds);
   }
 
-  async handleDelete (collectionVersion) {
+  async handleDelete(collectionVersion) {
     this.props.history.push({
-      pathname: '/dashboard/collections',
+      pathname: "/dashboard/collections",
       deletedCollectionVersionId: collectionVersion.id
-    })
+    });
   }
 
-  handleUpdate (collectionVersion) {
+  handleUpdate(collectionVersion) {
     this.props.history.push({
       pathname: `/dashboard/collections/${this.props.collection_id}/versions/${collectionVersion.id}/edit`,
       editCollectionVersion: collectionVersion
-    })
+    });
   }
 
-  handleAddPage (versionId, collectionId) {
+  handleAddPage(versionId, collectionId) {
     this.props.history.push({
       pathname: `/dashboard/collections/${collectionId}/versions/${versionId}/pages/new`,
       versionId: versionId
-    })
+    });
   }
 
   handleDuplicate(version)
   {
     this.props.history.push({
       pathname: '/dashboard/collections',
-      duplicateVersion:version,
+      duplicateVersion:version
     })
   }
 
@@ -102,9 +102,9 @@ class CollectionVersions extends Component {
                     </Accordion.Toggle>
                     <DropdownButton
                       alignRight
-                      title=''
-                      id='dropdown-menu-align-right'
-                      style={{ float: 'right' }}
+                      title=""
+                      id="dropdown-menu-align-right"
+                      style={{ float: "right" }}
                     >
                       <Dropdown.Item
                         eventKey='1'
@@ -115,7 +115,7 @@ class CollectionVersions extends Component {
                         Edit
                       </Dropdown.Item>
                       <Dropdown.Item
-                        eventKey='2'
+                        eventKey="2"
                         onClick={() => {
                           if (
                             window.confirm(
@@ -130,7 +130,7 @@ class CollectionVersions extends Component {
                         Delete
                       </Dropdown.Item>
                       <Dropdown.Item
-                        eventKey='3'
+                        eventKey="3"
                         onClick={() => {
                           this.props.history.push({
                             pathname: `/dashboard/collections/${this.props.collection_id}/versions/${versionId}/groups/new`
@@ -140,7 +140,7 @@ class CollectionVersions extends Component {
                         Add Group
                       </Dropdown.Item>
                       <Dropdown.Item
-                        eventKey='3'
+                        eventKey="3"
                         onClick={() =>
                           this.handleAddPage(
                             versionId,
@@ -160,16 +160,16 @@ class CollectionVersions extends Component {
                       </Dropdown.Item>
                     </DropdownButton>
                   </Card.Header>
-                  <Accordion.Collapse eventKey='1'>
+                  <Accordion.Collapse eventKey="1">
                     <Card.Body>
                       <Groups
                         {...this.props}
-                        version_id={versionId}
+                        version_id={parseInt(versionId)}
                         version_dnd={this.versionDnD.bind(this)}
                       />
-                      <Pages
+                      <VersionPages
                         {...this.props}
-                        version_id={versionId}
+                        version_id={parseInt(versionId)}
                         version_dnd={this.versionDnD.bind(this)}
                       />
                     </Card.Body>
@@ -178,7 +178,7 @@ class CollectionVersions extends Component {
               </Accordion>
             ))}
       </div>
-    )
+    );
   }
 }
-export default CollectionVersions
+export default CollectionVersions;

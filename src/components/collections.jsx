@@ -424,9 +424,12 @@ class Collections extends Component {
     const endpoints = { ...this.state.endpoints };
     const groups = { ...this.state.groups };
     endpoints[requestId] = newEndpoint;
+    newEndpoint.groupId = groupId;
+
     this.setState({ endpoints });
     let endpoint = {};
     try {
+      delete newEndpoint.groupId;
       const { data } = await endpointService.saveEndpoint(groupId, newEndpoint);
       endpoint = data;
       endpoints[endpoint.id] = endpoint;
@@ -509,7 +512,6 @@ class Collections extends Component {
 
     try {
       const { data } = await endpointService.duplicateEndpoint(endpointCopy.id);
-      console.log('data',data);
       let endpoint = data
       endpoints[endpoint.id] = endpoint
       groups[endpoint.groupId].endpointsOrder.push(endpoint.id.toString())
@@ -630,8 +632,7 @@ class Collections extends Component {
     collectionIds.splice(index, 0, this.draggedItem)
     this.setState({ collectionIds })
   }
-
-
+  
   render() {
     const { location } = this.props
 
