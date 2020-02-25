@@ -110,87 +110,80 @@ class DisplayEndpoint extends Component {
 		return paramsData;
 	}
 
-  findHost() {
-    let host = "";
-    if (this.state.onChangeFlag === true) {
-      this.state.onChangeFlag = false;
-      return this.state.data.host;
-    } else if (
-      Object.keys(this.state.endpoint).length &&
-      this.state.title === "update endpoint"
-    ) {
-      host = this.state.groups[this.state.groupId].host;
-      if (host === "") {
-        const versionId = this.state.groups[this.state.endpoint.groupId]
-          .versionId;
-        host = this.state.versions[versionId].host;
-      }
-    } else if (this.state.groupId) {
-      host = this.state.groups[this.state.groupId].host;
-      if (host === "") {
-        const versionId = this.state.groups[this.state.groupId].versionId;
-        host = this.state.versions[versionId].host;
-      }
-    }
-    return host;
-  }
+	findHost() {
+		let host = "";
+		if (this.initialHost === false) {
+			return this.state.data.host;
+		} else if (
+			Object.keys(this.state.endpoint).length &&
+			this.state.title === "update endpoint"
+		) {
+			this.HostDropdown("Group")
+		} else if (this.state.groupId) {
+			this.HostDropdown("Version")
+		}
+		return host;
+	}
 
-  groupHostDropdown() {
-    let host = "";
-    if (
-      Object.keys(this.state.endpoint).length &&
-      this.state.title === "update endpoint"
-    ) {
-      host = this.state.groups[this.state.groupId].host;
-    } else if (this.state.groupId) {
-      host = this.state.groups[this.state.groupId].host;
-    }
-    this.state.data.host = host;
-    this.setState({ onChangeFlag: true });
-    this.findHost();
-    return host;
-  }
-  versionHostDropdown(hostValue) {
-    console.log("versionhost");
-    let host = "";
-    if (
-      Object.keys(this.state.endpoint).length &&
-      this.state.title === "update endpoint"
-    ) {
-      const versionId = this.state.groups[this.state.endpoint.groupId]
-        .versionId;
-      host = this.state.versions[versionId].host;
-    } else if (this.state.groupId) {
-      const versionId = this.state.groups[this.state.groupId].versionId;
-      host = this.state.versions[versionId].host;
-    }
-    this.state.data.host = host;
-    this.setState({ onChangeFlag: true });
-    this.findHost();
-    return host;
-  }
+	initialHost = true
+	customHost = false
 
-  finalUrl(api) {
-    const regexp = /{{(\w+)}}/g;
-    let match = regexp.exec(api);
-    let variables = [];
-    if (match === null) return api;
-    do {
-      variables.push(match[1]);
-    } while ((match = regexp.exec(api)) !== null);
-    for (let i = 0; i < variables.length; i++) {
-      if (
-        this.props.environment.variables[variables[i]] &&
-        this.props.environment.variables[variables[i]].initialValue
-      ) {
-        api = api.replace(
-          `{{${variables[i]}}}`,
-          this.props.environment.variables[variables[i]].initialValue
-        );
-      }
-    }
-    return api;
-  }
+	HostDropdown(key) {
+		this.initialHost = false
+		let host = "";
+		if (key === "Group") {
+			if (
+				Object.keys(this.state.endpoint).length &&
+				this.state.title === "update endpoint"
+			) {
+				host = this.state.groups[this.state.groupId].host;
+			} else if (this.state.groupId) {
+				host = this.state.groups[this.state.groupId].host;
+			}
+		}
+		if (key === "Version") {
+			if (
+				Object.keys(this.state.endpoint).length &&
+				this.state.title === "update endpoint"
+			) {
+				const versionId = this.state.groups[this.state.endpoint.groupId]
+					.versionId;
+				host = this.state.versions[versionId].host;
+			} else if (this.state.groupId) {
+				const versionId = this.state.groups[this.state.groupId].versionId;
+				host = this.state.versions[versionId].host;
+			}
+		} else if (key === "Custom") {
+			this.customHost = true
+		}
+		let data = { ...this.state.data }
+		data.host = host
+		this.setState({ data })
+		this.findHost();
+		return host;
+	}
+
+	finalUrl(api) {
+		const regexp = /{{(\w+)}}/g;
+		let match = regexp.exec(api);
+		let variables = [];
+		if (match === null) return api;
+		do {
+			variables.push(match[1]);
+		} while ((match = regexp.exec(api)) !== null);
+		for (let i = 0; i < variables.length; i++) {
+			if (
+				this.props.environment.variables[variables[i]] &&
+				this.props.environment.variables[variables[i]].initialValue
+			) {
+				api = api.replace(
+					`{{${variables[i]}}}`,
+					this.props.environment.variables[variables[i]].initialValue
+				);
+			}
+		}
+		return api;
+	}
 
 	handleSend = async () => {
 		let startTime = new Date().getTime();
@@ -198,7 +191,6 @@ class DisplayEndpoint extends Component {
 		this.setState({ startTime, prettyResponse });
 		let response = {};
 		const headersData = this.doSubmitHeader();
-		// const paramsData = this.doSubmitParam();
 		await this.setState({ headersData, response });
 		this.state.flagResponse = true;
 		const host = this.findHost();
@@ -246,63 +238,60 @@ class DisplayEndpoint extends Component {
 		}
 	};
 
-  handleSave = async e => {
-    let body = {};
-    if (this.state.data.method === "POST" || this.state.data.method === "PUT")
-      try {
-        body = JSON.parse(this.body.current.value);
-      } catch {
-        toast.error("Invalid Body");
-      }
-    const headersData = this.doSubmitHeader();
-    const params = this.doSubmitParam();
-    const endpoint = {
-      uri: this.uri.current.value,
-      name: this.name.current.value,
-      requestType: this.state.data.method,
-      body: body,
-      headers: headersData,
-      params: params
-    };
-    if (endpoint.name == "" || endpoint.uri == "")
-      toast.error("Please Enter all the fields");
-    else if (this.state.title === "Add New Endpoint") {
-      this.props.history.push({
-        pathname: `/dashboard/collections`,
-        title: "Add Endpoint",
-        endpoint: endpoint,
-        groupId: this.state.groupId,
-        versions: this.state.versions
-      });
-    } else if (this.state.title === "update endpoint") {
-      this.props.history.push({
-        pathname: `/dashboard/collections`,
-        title: "update Endpoint",
-        endpoint: endpoint,
-        groupId: this.state.groupId,
-        versions: this.state.versions,
-        endpointId: this.state.endpoint.id
-      });
-    }
-  };
-  setHost() {
-    this.findHost();
-    this.setState({ onChangeFlag: true });
-  }
-  setMethod(method) {
-    const response = {};
-    let data = { ...this.state.data };
-    data.method = method;
-    this.setState({ response, data });
-  }
+	handleSave = async e => {
+		let body = {};
+		if (this.state.data.method === "POST" || this.state.data.method === "PUT")
+			try {
+				body = JSON.parse(this.body.current.value);
+			} catch {
+				toast.error("Invalid Body");
+			}
+		const headersData = this.doSubmitHeader();
+		const params = this.doSubmitParam();
+		const endpoint = {
+			uri: this.uri.current.value,
+			name: this.name.current.value,
+			requestType: this.state.data.method,
+			body: body,
+			headers: headersData,
+			params: params
+		};
+		if (endpoint.name == "" || endpoint.uri == "")
+			toast.error("Please Enter all the fields");
+		else if (this.state.title === "Add New Endpoint") {
+			this.props.history.push({
+				pathname: `/dashboard/collections`,
+				title: "Add Endpoint",
+				endpoint: endpoint,
+				groupId: this.state.groupId,
+				versions: this.state.versions
+			});
+		} else if (this.state.title === "update endpoint") {
+			this.props.history.push({
+				pathname: `/dashboard/collections`,
+				title: "update Endpoint",
+				endpoint: endpoint,
+				groupId: this.state.groupId,
+				versions: this.state.versions,
+				endpointId: this.state.endpoint.id
+			});
+		}
+	};
+
+	setMethod(method) {
+		const response = {};
+		let data = { ...this.state.data };
+		data.method = method;
+		this.setState({ response, data });
+	}
 
 	async handleAddParam() {
 		let paramsData = { ...this.state.paramsData };
 		let paramsMetaData = { ...this.state.paramsMetaData };
 
 		const len = this.state.originalParamsKeys.length;
-		let originalParamsKeys = [ ...this.state.originalParamsKeys, len.toString() ];
-		let updatedParamsKeys = [ ...this.state.updatedParamsKeys, '' ];
+		let originalParamsKeys = [...this.state.originalParamsKeys, len.toString()];
+		let updatedParamsKeys = [...this.state.updatedParamsKeys, ''];
 		paramsData[len.toString()] = '';
 		paramsMetaData[len.toString()] = {
 			description: ''
@@ -332,7 +321,6 @@ class DisplayEndpoint extends Component {
 		this.state.updatedParamsKeys = updatedParamsKeys;
 
 		this.handleUpdateUri(keys, values);
-		// this.setState({ updatedParamsKeys });
 	}
 
 	handleUpdateUri(keys, values) {
@@ -374,8 +362,8 @@ class DisplayEndpoint extends Component {
 		let description = this.state.description;
 		let paramsData = { ...this.state.paramsData };
 		let paramsMetaData = { ...this.state.paramsMetaData };
-		const originalParamsKeys = [ ...this.state.originalParamsKeys ];
-		const updatedParamsKeys = [ ...this.state.updatedParamsKeys ];
+		const originalParamsKeys = [...this.state.originalParamsKeys];
+		const updatedParamsKeys = [...this.state.updatedParamsKeys];
 		if (name[1] === 'key') {
 			updatedParamsKeys[name[0]] = e.currentTarget.value;
 			keys[name[0]] = e.currentTarget.value;
@@ -407,9 +395,9 @@ class DisplayEndpoint extends Component {
 	doSubmitParam() {
 		let paramsData = { ...this.state.paramsData };
 		let paramsMetaData = { ...this.state.paramsMetaData };
-		let originalParamsKeys = [ ...this.state.originalParamsKeys ];
+		let originalParamsKeys = [...this.state.originalParamsKeys];
 		let newOriginalParamsKeys = [];
-		let updatedParamsKeys = [ ...this.state.updatedParamsKeys ];
+		let updatedParamsKeys = [...this.state.updatedParamsKeys];
 
 		for (let i = 0; i < originalParamsKeys.length; i++) {
 			if (originalParamsKeys[i] === '') {
@@ -433,7 +421,7 @@ class DisplayEndpoint extends Component {
 		}
 		if (paramsData['']) delete paramsData[''];
 		updatedParamsKeys = updatedParamsKeys.filter((k) => k !== '' && k !== 'deleted');
-		originalParamsKeys = [ ...updatedParamsKeys ];
+		originalParamsKeys = [...updatedParamsKeys];
 		let params = {};
 		for (let i = 0; i < updatedParamsKeys.length; i++) {
 			params[updatedParamsKeys[i]] = {
@@ -457,8 +445,8 @@ class DisplayEndpoint extends Component {
 	handleAddHeader() {
 		let headersData = { ...this.state.headersData };
 		const len = this.state.originalHeadersKeys.length;
-		let originalHeadersKeys = [ ...this.state.originalHeadersKeys, len.toString() ];
-		let updatedHeadersKeys = [ ...this.state.updatedHeadersKeys, '' ];
+		let originalHeadersKeys = [...this.state.originalHeadersKeys, len.toString()];
+		let updatedHeadersKeys = [...this.state.updatedHeadersKeys, ''];
 		headersData[len.toString()] = {
 			key: '',
 			value: '',
@@ -474,8 +462,8 @@ class DisplayEndpoint extends Component {
 
 	handleChangeHeader = (e) => {
 		const name = e.currentTarget.name.split('.');
-		const originalHeadersKeys = [ ...this.state.originalHeadersKeys ];
-		const updatedHeadersKeys = [ ...this.state.updatedHeadersKeys ];
+		const originalHeadersKeys = [...this.state.originalHeadersKeys];
+		const updatedHeadersKeys = [...this.state.updatedHeadersKeys];
 		if (name[1] === 'key') {
 			updatedHeadersKeys[name[0]] = e.currentTarget.value;
 		}
@@ -487,8 +475,8 @@ class DisplayEndpoint extends Component {
 
 	doSubmitHeader() {
 		let headersData = { ...this.state.headersData };
-		let originalHeadersKeys = [ ...this.state.originalHeadersKeys ];
-		let updatedHeadersKeys = [ ...this.state.updatedHeadersKeys ];
+		let originalHeadersKeys = [...this.state.originalHeadersKeys];
+		let updatedHeadersKeys = [...this.state.updatedHeadersKeys];
 
 		for (let i = 0; i < updatedHeadersKeys.length; i++) {
 			if (updatedHeadersKeys[i] !== originalHeadersKeys[i]) {
@@ -504,7 +492,7 @@ class DisplayEndpoint extends Component {
 
 		if (headersData['']) delete headersData[''];
 		updatedHeadersKeys = updatedHeadersKeys.filter((k) => k !== '');
-		originalHeadersKeys = [ ...updatedHeadersKeys ];
+		originalHeadersKeys = [...updatedHeadersKeys];
 		const endpoint = { ...this.state.endpoint };
 		endpoint.headers = { ...headersData };
 		this.setState({
@@ -551,6 +539,12 @@ class DisplayEndpoint extends Component {
 		this.setState({ rawResponse, previewResponse, prettyResponse });
 	}
 
+	dropdownHost = {
+		Group: "",
+		Version: "",
+		Custom: ""
+	}
+
 	render() {
 		if (this.props.location.endpoint) {
 			this.state.prettyResponse = false;
@@ -573,10 +567,6 @@ class DisplayEndpoint extends Component {
 			this.props.history.push({ endpoint: null });
 		}
 
-		if (this.props.location.groups) {
-			this.state.groups = this.props.location.groups;
-		}
-
 		if (this.props.location.title === 'Add New Endpoint') {
 			this.setState({
 				data: {
@@ -596,6 +586,7 @@ class DisplayEndpoint extends Component {
 				groupId: this.props.location.groupId,
 				title: this.props.location.title,
 				onChangeFlag: false,
+				dropdownInputFlag: false,
 				flagResponse: false,
 				rawResponse: false,
 				prettyResponse: false,
@@ -618,22 +609,21 @@ class DisplayEndpoint extends Component {
 			this.props.history.push({ groups: null });
 		}
 
-		if (this.props.location.versions) {
-			this.state.versions = this.props.location.versions;
-		}
-
 		if (this.props.location.title === 'update endpoint' && this.props.location.endpoint) {
 			let endpoint = { ...this.props.location.endpoint };
+
 			//To fetch Values array
 			let values = [];
 			Object.keys(this.props.location.endpoint.params).map((param) => {
 				values.push(this.props.location.endpoint.params[param].value);
 			});
+
 			//To fetch Description Object
 			let description = [];
 			Object.keys(this.props.location.endpoint.params).map((param) => {
 				description.push(this.props.location.endpoint.params[param].description);
 			});
+
 			//To fetch ParamsData from Params
 			let paramsData = {};
 			for (let i = 0; i < Object.keys(this.props.location.endpoint.params).length; i++) {
@@ -641,8 +631,8 @@ class DisplayEndpoint extends Component {
 					Object.keys(this.props.location.endpoint.params)[i]
 				].value;
 			}
-			//To fetch ParamsMetaData from Params
 
+			//To fetch ParamsMetaData from Params
 			let paramsMetaData = {};
 			for (let i = 0; i < Object.keys(this.props.location.endpoint.params).length; i++) {
 				paramsMetaData[Object.keys(this.props.location.endpoint.params)[i]] = {
@@ -668,7 +658,11 @@ class DisplayEndpoint extends Component {
 				onChangeFlag: false,
 				description: description,
 				paramsMetaData: paramsMetaData,
-				paramsData: paramsData
+				paramsData: paramsData,
+				versions: this.props.location.versions,
+				groups: this.props.location.groups
+
+
 			});
 			this.state.endpoint = endpoint;
 			this.state.values = values;
@@ -720,29 +714,45 @@ class DisplayEndpoint extends Component {
 								</div>
 							</div>
 						</span>
-						<div className="dropdown">
-              <div className="Environment Dropdown">
-                <Dropdown className="float-light">
-                  <Dropdown.Toggle variant="default" id="dropdown-basic">
-                    {this.findHost()}
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu alignRight>
-                    <Dropdown.Item onClick={() => this.groupHostDropdown()}>
-                      Group Base_URL
-                    </Dropdown.Item>
-                    <Dropdown.Item onClick={() => this.versionHostDropdown()}>
-                      Version Base_URL
-                    </Dropdown.Item>
-                    <Dropdown.Item
-                    // onClick={() => this.hostDropdown()}
-                    >
-                      Manually Enter Base_URL
-                      {/* {this.versionHostDropdown()} */}
-                    </Dropdown.Item>
-                  </Dropdown.Menu>
-                </Dropdown>
-              </div>
-            </div>
+						{this.customHost === false ? (
+							<div className="dropdown">
+								<div className="Environment Dropdown">
+									<Dropdown className="float-light">
+										<Dropdown.Toggle variant="default" id="dropdown-basic">
+											{this.findHost()}
+										</Dropdown.Toggle>
+										<Dropdown.Menu alignRight>
+											{Object.keys(this.dropdownHost).map(key => (
+												<Dropdown.Item key={key}
+													onClick={() => this.HostDropdown(key)}
+												>
+													{key} Base_URL
+								   </Dropdown.Item>
+											))}
+										</Dropdown.Menu>
+									</Dropdown>
+								</div>
+							</div>
+						) :
+							<span
+								className='form-control form-control-lg'
+								className='input-group-text d-flex p-0'
+								id='basic-addon3'
+							>
+								<input
+									type='text'
+									name='host'
+									className='form-group h-100 m-0'
+									style={{
+										border: 'none',
+										borderRadius: 0,
+										backgroundColor: '#F8F9F9'
+									}}
+								/>
+							</span>
+						}
+
+
 					</div>
 					<input
 						ref={this.uri}
@@ -1018,48 +1028,48 @@ class DisplayEndpoint extends Component {
 						</div>
 					</div>
 				) : (
-					<div className="alert alert-danger" role="alert">
-						Status :
+						<div className="alert alert-danger" role="alert">
+							Status :
 						{this.state.response.status + ' ' + status[this.state.response.status]}
-					</div>
-				) : null}
+						</div>
+					) : null}
 
 				{this.state.flagResponse === true &&
-				(this.state.prettyResponse === true ||
-					this.state.rawResponse === true ||
-					this.state.previewResponse === true) ? (
-					<div>
+					(this.state.prettyResponse === true ||
+						this.state.rawResponse === true ||
+						this.state.previewResponse === true) ? (
 						<div>
-							<Navbar bg="primary" variant="dark">
-								<Navbar.Brand href="#home" />
-								<Nav className="mr-auto">
-									<Nav.Link onClick={this.prettyDataResponse.bind(this)}>Pretty</Nav.Link>
-									<Nav.Link onClick={this.rawDataResponse.bind(this)}>Raw</Nav.Link>
-									<Nav.Link onClick={this.previewDataResponse.bind(this)}>Preview</Nav.Link>
-								</Nav>
-								<CopyToClipboard
-									text={JSON.stringify(this.state.response.data)}
-									onCopy={() => this.setState({ copied: true })}
-									style={{ float: 'right', borderRadius: '12px' }}
-								>
-									<button style={{ borderRadius: '12px' }}>Copy</button>
-								</CopyToClipboard>
-							</Navbar>
-						</div>
-
-						{this.state.prettyResponse === true ? (
 							<div>
-								<JSONPretty theme={JSONPrettyMon} data={this.state.response.data} />
+								<Navbar bg="primary" variant="dark">
+									<Navbar.Brand href="#home" />
+									<Nav className="mr-auto">
+										<Nav.Link onClick={this.prettyDataResponse.bind(this)}>Pretty</Nav.Link>
+										<Nav.Link onClick={this.rawDataResponse.bind(this)}>Raw</Nav.Link>
+										<Nav.Link onClick={this.previewDataResponse.bind(this)}>Preview</Nav.Link>
+									</Nav>
+									<CopyToClipboard
+										text={JSON.stringify(this.state.response.data)}
+										onCopy={() => this.setState({ copied: true })}
+										style={{ float: 'right', borderRadius: '12px' }}
+									>
+										<button style={{ borderRadius: '12px' }}>Copy</button>
+									</CopyToClipboard>
+								</Navbar>
 							</div>
-						) : null}
-						{this.state.rawResponse === true ? (
-							<div style={{ display: 'block', whiteSpace: 'normal' }}>{this.state.responseString}</div>
-						) : null}
-						{this.state.previewResponse === true ? (
-							<div style={{ display: 'block', whiteSpace: 'normal' }}>feature coming soon</div>
-						) : null}
-					</div>
-				) : null}
+
+							{this.state.prettyResponse === true ? (
+								<div>
+									<JSONPretty theme={JSONPrettyMon} data={this.state.response.data} />
+								</div>
+							) : null}
+							{this.state.rawResponse === true ? (
+								<div style={{ display: 'block', whiteSpace: 'normal' }}>{this.state.responseString}</div>
+							) : null}
+							{this.state.previewResponse === true ? (
+								<div style={{ display: 'block', whiteSpace: 'normal' }}>feature coming soon</div>
+							) : null}
+						</div>
+					) : null}
 			</div>
 		);
 	}
