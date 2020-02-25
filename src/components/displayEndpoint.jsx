@@ -113,6 +113,7 @@ class DisplayEndpoint extends Component {
   findHost() {
     let host = "";
     if (this.state.onChangeFlag === true) {
+      this.state.onChangeFlag = false;
       return this.state.data.host;
     } else if (
       Object.keys(this.state.endpoint).length &&
@@ -131,6 +132,41 @@ class DisplayEndpoint extends Component {
         host = this.state.versions[versionId].host;
       }
     }
+    return host;
+  }
+
+  groupHostDropdown() {
+    let host = "";
+    if (
+      Object.keys(this.state.endpoint).length &&
+      this.state.title === "update endpoint"
+    ) {
+      host = this.state.groups[this.state.groupId].host;
+    } else if (this.state.groupId) {
+      host = this.state.groups[this.state.groupId].host;
+    }
+    this.state.data.host = host;
+    this.setState({ onChangeFlag: true });
+    this.findHost();
+    return host;
+  }
+  versionHostDropdown(hostValue) {
+    console.log("versionhost");
+    let host = "";
+    if (
+      Object.keys(this.state.endpoint).length &&
+      this.state.title === "update endpoint"
+    ) {
+      const versionId = this.state.groups[this.state.endpoint.groupId]
+        .versionId;
+      host = this.state.versions[versionId].host;
+    } else if (this.state.groupId) {
+      const versionId = this.state.groups[this.state.groupId].versionId;
+      host = this.state.versions[versionId].host;
+    }
+    this.state.data.host = host;
+    this.setState({ onChangeFlag: true });
+    this.findHost();
     return host;
   }
 
@@ -255,7 +291,8 @@ class DisplayEndpoint extends Component {
     }
   };
   setHost() {
-    this.state.hostFlag = true;
+    this.findHost();
+    this.setState({ onChangeFlag: true });
   }
   setMethod(method) {
     const response = {};
@@ -720,7 +757,32 @@ class DisplayEndpoint extends Component {
                 </div>
               </div>
             </span>
-            <span
+
+            <div className="dropdown">
+              <div className="Environment Dropdown">
+                <Dropdown className="float-light">
+                  <Dropdown.Toggle variant="default" id="dropdown-basic">
+                    {this.findHost()}
+                  </Dropdown.Toggle>
+                  <Dropdown.Menu alignRight>
+                    <Dropdown.Item onClick={() => this.groupHostDropdown()}>
+                      Group Base_URL
+                    </Dropdown.Item>
+                    <Dropdown.Item onClick={() => this.versionHostDropdown()}>
+                      Version Base_URL
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                    // onClick={() => this.hostDropdown()}
+                    >
+                      Manually Enter Base_URL
+                      {/* {this.versionHostDropdown()} */}
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
+              </div>
+            </div>
+
+            {/* <span
               className="form-control form-control-lg"
               className="input-group-text d-flex p-0"
               id="basic-addon3"
@@ -738,7 +800,7 @@ class DisplayEndpoint extends Component {
                 value={this.findHost()}
                 onChange={this.handleChange}
               />
-            </span>
+            </span> */}
           </div>
           <input
             ref={this.uri}
