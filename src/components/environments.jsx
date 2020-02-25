@@ -25,7 +25,6 @@ class Environments extends Component {
 
   handleEnv(environment) {
     this.props.set_environment(environment)
-    console.log(environment)
     this.setState({ environmentId: environment.id })
   }
 

@@ -135,15 +135,23 @@ class Collections extends Component {
   }
 
   async dndMoveEndpoint(endpointId, sourceGroupId, destinationGroupId) {
-    console.log(`move ${endpointId} from ${sourceGroupId} to  ${destinationGroupId}`)
     const groups = { ...this.state.groups }
-    // const destinationGroup = this.state.groups[destinationGroupId]
     const endpoints = { ...this.state.endpoints }
-    endpoints[endpointId].groupId = destinationGroupId
+    const originalEndpoints = { ...this.state.endpoints }
+    const originalGroups = { ...this.state.groups }
+    const endpoint = endpoints[endpointId]
+    endpoint.groupId = parseInt(destinationGroupId)
+    endpoints[endpointId] = endpoint
     groups[sourceGroupId].endpointsOrder = groups[sourceGroupId].endpointsOrder.filter(gId => gId !== endpointId.toString())
     groups[destinationGroupId].endpointsOrder.push(endpointId)
-    console.log(groups)
     this.setState({ endpoints, groups })
+    try {
+      await endpointService.updateEndpoint(endpointId, endpoint)
+    }
+    catch (error) {
+      console.log(error, originalEndpoints, originalGroups)
+      this.setState({ endpoints: originalEndpoints, groups: originalGroups })
+    }
   }
   async handleAdd(newCollection) {
     newCollection.requestId = shortId.generate()
@@ -428,7 +436,6 @@ class Collections extends Component {
   }
 
   async handleAddEndpoint(groupId, newEndpoint, versions) {
-    console.log("adddddd");
     const originalEndpoints = { ...this.state.endpoints };
     const originalGroups = { ...this.state.groups }
     newEndpoint.requestId = shortId.generate();

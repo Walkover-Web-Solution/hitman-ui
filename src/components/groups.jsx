@@ -16,13 +16,12 @@ class Groups extends Component {
 
   setDnD(draggedEndpoint, groupId) {
     this.draggedEndpoint = draggedEndpoint;
-    this.sourceGroup = groupId
-    console.log("1", this.draggedEndpoint)
+    this.sourceGroupId = groupId
   }
 
   getDnD(draggedOverEndpoint, destinationGroupId) {
     this.draggedOverEndpoint = draggedOverEndpoint;
-    this.props.dnd_move_endpoint(this.draggedEndpoint, this.sourceGroup, destinationGroupId)
+    this.props.dnd_move_endpoint(this.draggedEndpoint, this.sourceGroupId, destinationGroupId)
   }
 
   groupDnD(groupDnDFlag) {
@@ -58,8 +57,11 @@ class Groups extends Component {
     this.props.set_group_id(groupIds);
   }
 
-  onDrop(groupId, props) {
-    console.log(groupId)
+  onDrop(destinationGroupId, props) {
+    if (!this.draggedItem) {
+      // console.log(`move ${this.draggedEndpoint}, from ${this.sourceGroupId} to ${destinationGroupId}`)
+      this.props.dnd_move_endpoint(this.draggedEndpoint, this.sourceGroupId, destinationGroupId)
+    }
   }
 
   handleAddPage(groupId, versionId, collectionId) {
@@ -189,10 +191,10 @@ class Groups extends Component {
                         group_id={parseInt(groupId)}
                         group_dnd={this.groupDnD.bind(this)}
                       />
-                    </Card.Body>
+                      {/* </Card.Body>
                   </Accordion.Collapse>
                   <Accordion.Collapse eventKey="1">
-                    <Card.Body>
+                    <Card.Body> */}
                       <Endpoints
                         {...this.props}
                         group_id={parseInt(groupId)}

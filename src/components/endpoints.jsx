@@ -4,7 +4,8 @@ import {
   Card,
   Button,
   Dropdown,
-  DropdownButton
+  DropdownButton,
+  Table
 } from 'react-bootstrap'
 
 class Endpoints extends Component {
@@ -80,17 +81,34 @@ class Endpoints extends Component {
     })
   }
   render() {
-    console.log(this.props.groups[this.props.group_id].name, this.props.endpoints_order)
     if (this.props.endpoints_order.length == 0) {
-      console.log("empty")
-      return (<div>
-        <h5>
-          This group is empty
-        </h5>
-      </div>)
+      return (
+        // <Accordion
+        //   draggable
+        // onDragOver={e => this.onDragOver(e)}
+        // onDragStart={e => this.onDragStart(e)}
+        // onDragEnd={e => this.onDragEnd(e, this.props)}
+        // onDrop={e => { console.log("this.onDrop(e, this.props)") }}>
+        // <Card>
+        //     <Accordion.Toggle as={text}>
+        //       This group is empty
+        //   </Accordion.Toggle>
+        //   </Card>
+        // </Accordion>
+        <Table striped bordered hover size="sm" onDragOver={e => this.onDragOver(e)}
+          onDragStart={e => this.onDragStart(e)}
+          onDragEnd={e => this.onDragEnd(e, this.props)}
+          onDrop={e => { console.log("dropped on empty group") }}>
+          <thead>
+            <tr>
+              <th>This group is empty</th>
+
+            </tr>
+          </thead>
+
+        </Table>)
     }
     else {
-      console.log("not empty")
       return (
         <div>
           {this.props.endpoints &&

@@ -169,7 +169,6 @@ class DisplayEndpoint extends Component {
       }
 
     }
-    console.log(this.props.environment, api)
     return api
   }
 
