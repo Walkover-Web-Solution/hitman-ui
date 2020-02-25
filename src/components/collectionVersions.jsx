@@ -81,7 +81,7 @@ class CollectionVersions extends Component {
     //   pathname: '/dashboard/collections',
     //   shareVersion:version,
     // })
-    console.log("shareIdentifier",version.shareIdentifier)
+    console.log("shareIdentifier",version)
     this.handleShareVersion(version.shareIdentifier,version.collectionId,version.id)
   }
   handleShareVersion(shareIdentifier,collectionId,versionId){

@@ -42,7 +42,7 @@ class ShareVersionForm extends Form {
   }
 
   render () {
-    console.log("hello",this.props.location.shareIdentifier)
+    console.log("ll",this.props.location.shareIdentifier)
     return (
     
       <Modal
