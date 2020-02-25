@@ -15,12 +15,14 @@ class ShareVersionForm extends Form {
   }
 
   componentDidMount() {
+    console.log("shareIdentifier",this.props.location.shareIdentifier)
       if(this.props.location.shareIdentifier){
-
+                console.log("shareIdentifier")
                 let  data = {}
                 const {shareIdentifier} = this.props.location 
                 const shareVersionLink = apiUrl + "/share/" + shareIdentifier
                 data = {shareVersionLink}
+                console.log("data",data)
                 this.setState({data})
       }
   }
@@ -32,17 +34,15 @@ class ShareVersionForm extends Form {
   }
 
   async doSubmit (props) {
+      const shareVersionLink=this.state.data.shareVersionLink;
     if (this.props.title === 'Share Version') {
       this.props.history.push({
-        // pathname: `/dashboard/`,
-        // newPage: this.state.data,
-        // versionId: parseInt(this.props.location.pathname.split('/')[5]),
-        // groupId: parseInt(this.props.location.pathname.split('/')[7])
       })
     }
   }
 
   render () {
+    console.log("hello",this.props.location.shareIdentifier)
     return (
     
       <Modal
