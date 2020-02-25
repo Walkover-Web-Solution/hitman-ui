@@ -140,7 +140,7 @@ class Collections extends Component {
     const originalEndpoints = { ...this.state.endpoints }
     const originalGroups = { ...this.state.groups }
     const endpoint = endpoints[endpointId]
-    endpoint.groupId = parseInt(destinationGroupId)
+    endpoint.groupId = destinationGroupId
     endpoints[endpointId] = endpoint
     groups[sourceGroupId].endpointsOrder = groups[sourceGroupId].endpointsOrder.filter(gId => gId !== endpointId.toString())
     groups[destinationGroupId].endpointsOrder.push(endpointId)
@@ -651,6 +651,7 @@ class Collections extends Component {
     collectionIds.splice(index, 0, this.draggedItem)
     this.setState({ collectionIds })
   }
+
   render() {
     const { location } = this.props
 
@@ -736,12 +737,6 @@ class Collections extends Component {
       this.handleDuplicatePage(duplicatePage)
     }
 
-    if (location.duplicatePage) {
-      const duplicatePage = location.duplicatePage;
-      this.props.history.replace({ duplicatePage: null });
-      this.handleDuplicatePage(duplicatePage);
-    }
-
     if (location.editedGroup) {
       const { editedGroup } = location
       this.props.history.replace({ editedGroup: null })
@@ -758,12 +753,6 @@ class Collections extends Component {
       const duplicateGroup = location.duplicateGroup
       this.props.history.replace({ duplicateGroup: null })
       this.handleDuplicateGroup(duplicateGroup)
-    }
-
-    if (location.duplicateGroup) {
-      const duplicateGroup = location.duplicateGroup;
-      this.props.history.replace({ duplicateGroup: null });
-      this.handleDuplicateGroup(duplicateGroup);
     }
 
     if (location.newGroup) {
@@ -795,12 +784,6 @@ class Collections extends Component {
       const duplicateVersion = location.duplicateVersion
       this.props.history.replace({ duplicateVersion: null })
       this.handleDuplicateVersion(duplicateVersion)
-    }
-
-    if (location.duplicateVersion) {
-      const duplicateVersion = location.duplicateVersion;
-      this.props.history.replace({ duplicateVersion: null });
-      this.handleDuplicateVersion(duplicateVersion);
     }
 
     if (location.editedCollection) {
