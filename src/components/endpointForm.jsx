@@ -23,7 +23,7 @@ class Endpoints extends Form {
       this.props.history.push({
         pathname: `/dashboard/collections`,
         newEndpoint: this.state.data,
-        groupId: parseInt(this.props.location.pathname.split('/')[7]),
+        groupId: this.props.location.pathname.split('/')[7],
         title: 'Add New Endpoint',
         versions: this.props.location.versions
       })
@@ -33,7 +33,7 @@ class Endpoints extends Form {
       this.props.history.push({
         pathname: `/dashboard/collections`,
         editedEndpoint: this.state.data,
-        groupId: parseInt(this.props.location.pathname.split('/')[7]),
+        groupId: this.props.location.pathname.split('/')[7],
         versionId: this.state.versionId
       })
     }

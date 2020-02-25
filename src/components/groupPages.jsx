@@ -73,7 +73,14 @@ class GroupPages extends Component {
             )
 
             .map(pageId => (
-              <Accordion defaultActiveKey="0" key={pageId}>
+              <Accordion
+                defaultActiveKey='1'
+                key={pageId}
+                draggable
+                onDragOver={e => this.onDragOver(e, pageId)}
+                onDragStart={e => this.onDragStart(e, pageId)}
+                onDragEnd={e => this.onDragEnd(e, pageId)}
+              >
                 <Card>
                   <Card.Header
                     draggable
