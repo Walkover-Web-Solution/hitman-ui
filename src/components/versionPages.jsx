@@ -109,9 +109,9 @@ class Pages extends Component {
                         Delete
                       </Dropdown.Item>
                       <Dropdown.Item
-                        eventKey="2"
+                        eventKey='2'
                         onClick={() => {
-                          this.handleDuplicate(this.props.pages[pageId]);
+                          this.handleDuplicate(this.props.pages[pageId])
                         }}
                       >
                         Duplicate

@@ -29,7 +29,7 @@ class CollectionVersionForm extends Form {
   async componentDidMount () {
     let data = {}
     const collectionId = this.props.location.pathname.split('/')[3]
-    const versionId = parseInt(this.props.location.pathname.split('/')[5])
+    const versionId = this.props.location.pathname.split('/')[5]
     if (this.props.title === 'Add new Collection Version') return
     if (this.props.location.editCollectionVersion) {
       const { number, host } = this.props.location.editCollectionVersion
@@ -50,10 +50,11 @@ class CollectionVersionForm extends Form {
     this.setState({ data, versionId, collectionId })
   }
 
-  async doSubmit (props) {
+  async doSubmit () {
     if (this.props.title === 'Edit Collection Version') {
       this.state.data.id = this.state.versionId
       this.state.data.collectionId = this.state.collectionId
+
       this.props.history.push({
         pathname: `/dashboard/collections`,
         editedCollectionVersion: { ...this.state.data }

@@ -48,7 +48,7 @@ class GroupForm extends Form {
       this.props.history.push({
         pathname: `/dashboard/collections`,
         newGroup: this.state.data,
-        versionId: parseInt(this.props.location.pathname.split("/")[5])
+        versionId: this.props.location.pathname.split("/")[5]
       });
     }
 
@@ -58,7 +58,7 @@ class GroupForm extends Form {
         editedGroup: {
           ...this.state.data,
           id: this.state.groupId,
-          versionId: parseInt(this.props.location.pathname.split("/")[5])
+          versionId: this.props.location.pathname.split("/")[5]
         }
       });
     }

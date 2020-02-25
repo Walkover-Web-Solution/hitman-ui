@@ -14,25 +14,35 @@ class Groups extends Component {
     groupDnDFlag: true
   };
 
+  setDnD(draggedEndpoint, groupId) {
+    this.draggedEndpoint = draggedEndpoint;
+    this.sourceGroupId = groupId;
+  }
+
+  getDnD(destinationGroupId) {
+    this.props.dnd_move_endpoint(
+      this.draggedEndpoint,
+      this.sourceGroupId,
+      destinationGroupId
+    );
+  }
+
   groupDnD(groupDnDFlag) {
     this.props.version_dnd(groupDnDFlag);
     this.setState({ groupDnDFlag });
   }
 
   onDragStart = (e, groupId) => {
-    if (!this.state.groupDnDFlag) return;
     this.props.version_dnd(false);
     this.draggedItem = groupId;
   };
 
   onDragOver = (e, groupId) => {
-    if (!this.state.groupDnDFlag) return;
     e.preventDefault();
     this.draggedOverItem = groupId;
   };
 
   async onDragEnd(e, props) {
-    if (!this.state.groupDnDFlag) return;
     this.props.version_dnd(true);
     if (this.draggedItem === this.draggedOverItem) {
       return;
@@ -45,6 +55,17 @@ class Groups extends Component {
     );
     groupIds.splice(index, 0, this.draggedItem);
     this.props.set_group_id(groupIds);
+  }
+
+  onDrop(destinationGroupId, props) {
+    if (!this.draggedItem) {
+      // console.log(`move ${this.draggedEndpoint}, from ${this.sourceGroupId} to ${destinationGroupId}`)
+      this.props.dnd_move_endpoint(
+        this.draggedEndpoint,
+        this.sourceGroupId,
+        destinationGroupId
+      );
+    }
   }
 
   handleAddPage(groupId, versionId, collectionId) {
@@ -90,6 +111,7 @@ class Groups extends Component {
                     onDragOver={e => this.onDragOver(e, groupId)}
                     onDragStart={e => this.onDragStart(e, groupId)}
                     onDragEnd={e => this.onDragEnd(e, groupId, this.props)}
+                    onDrop={e => this.onDrop(groupId, this.props)}
                   >
                     <Accordion.Toggle as={Button} variant="link" eventKey="1">
                       {this.props.groups[groupId].name}
@@ -169,20 +191,22 @@ class Groups extends Component {
                       <GroupPages
                         {...this.props}
                         version_id={this.props.groups[groupId].versionId}
-                        group_id={parseInt(groupId)}
+                        group_id={groupId}
                         group_dnd={this.groupDnD.bind(this)}
                       />
-                    </Card.Body>
+                      {/* </Card.Body>
                   </Accordion.Collapse>
                   <Accordion.Collapse eventKey="1">
-                    <Card.Body>
+                    <Card.Body> */}
                       <Endpoints
                         {...this.props}
-                        group_id={parseInt(groupId)}
+                        group_id={groupId}
                         endpoints_order={
                           this.props.groups[groupId].endpointsOrder
                         }
                         group_dnd={this.groupDnD.bind(this)}
+                        set_dnd={this.setDnD.bind(this)}
+                        get_dnd={this.getDnD.bind(this)}
                       />
                     </Card.Body>
                   </Accordion.Collapse>

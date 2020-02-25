@@ -88,10 +88,15 @@ class CollectionVersions extends Component {
                 this.props.collection_id
             )
             .map(versionId => (
-              <Accordion defaultActiveKey="0" key={versionId}>
+              <Accordion defaultActiveKey='0' key={versionId}>
                 <Card>
-                  <Card.Header>
-                    <Accordion.Toggle as={Button} variant="link" eventKey="1">
+                  <Card.Header
+                    draggable={this.state.versionDnDFlag}
+                    onDragOver={e => this.onDragOver(e, versionId)}
+                    onDragStart={e => this.onDragStart(e, versionId)}
+                    onDragEnd={e => this.onDragEnd(e, versionId)}
+                  >
+                    <Accordion.Toggle as={Button} variant='link' eventKey='1'>
                       {this.props.versions[versionId].number}
                     </Accordion.Toggle>
                     <DropdownButton
@@ -101,7 +106,7 @@ class CollectionVersions extends Component {
                       style={{ float: "right" }}
                     >
                       <Dropdown.Item
-                        eventKey="1"
+                        eventKey='1'
                         onClick={() =>
                           this.handleUpdate(this.props.versions[versionId])
                         }
@@ -113,12 +118,12 @@ class CollectionVersions extends Component {
                         onClick={() => {
                           if (
                             window.confirm(
-                              "Are you sure you want to delete this versions? " +
-                                "\n" +
-                                "All your groups, pages and endpoints present in this version will be deleted."
+                              'Are you sure you want to delete this versions? ' +
+                              '\n' +
+                              'All your groups, pages and endpoints present in this version will be deleted.'
                             )
                           )
-                            this.handleDelete(this.props.versions[versionId]);
+                            this.handleDelete(this.props.versions[versionId])
                         }}
                       >
                         Delete
@@ -128,7 +133,7 @@ class CollectionVersions extends Component {
                         onClick={() => {
                           this.props.history.push({
                             pathname: `/dashboard/collections/${this.props.collection_id}/versions/${versionId}/groups/new`
-                          });
+                          })
                         }}
                       >
                         Add Group
@@ -145,9 +150,9 @@ class CollectionVersions extends Component {
                         Add Page
                       </Dropdown.Item>
                       <Dropdown.Item
-                        eventKey="2"
+                        eventKey='2'
                         onClick={() => {
-                          this.handleDuplicate(this.props.versions[versionId]);
+                          this.handleDuplicate(this.props.versions[versionId])
                         }}
                       >
                         Duplicate
@@ -158,12 +163,12 @@ class CollectionVersions extends Component {
                     <Card.Body>
                       <Groups
                         {...this.props}
-                        version_id={parseInt(versionId)}
+                        version_id={versionId}
                         version_dnd={this.versionDnD.bind(this)}
                       />
                       <VersionPages
                         {...this.props}
-                        version_id={parseInt(versionId)}
+                        version_id={versionId}
                         version_dnd={this.versionDnD.bind(this)}
                       />
                     </Card.Body>

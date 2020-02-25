@@ -45,7 +45,6 @@ class Collections extends Component {
       } = await collectionVersionsService.getCollectionVersions(
         collectionIds[i]
       );
-
       versions = { ...versions, ...versions1 };
     }
     return versions;
@@ -131,6 +130,28 @@ class Collections extends Component {
       await groupsService.updateGroup(groupId, group);
     } catch (e) {
       toast.error(e);
+    }
+  }
+
+  async dndMoveEndpoint(endpointId, sourceGroupId, destinationGroupId) {
+    const groups = { ...this.state.groups };
+    const endpoints = { ...this.state.endpoints };
+    const originalEndpoints = { ...this.state.endpoints };
+    const originalGroups = { ...this.state.groups };
+    const endpoint = endpoints[endpointId];
+    endpoint.groupId = destinationGroupId;
+    endpoints[endpointId] = endpoint;
+    groups[sourceGroupId].endpointsOrder = groups[
+      sourceGroupId
+    ].endpointsOrder.filter(gId => gId !== endpointId.toString());
+    groups[destinationGroupId].endpointsOrder.push(endpointId);
+    this.setState({ endpoints, groups });
+    try {
+      delete endpoint.id;
+      await endpointService.updateEndpoint(endpointId, endpoint);
+    } catch (error) {
+      console.log(error, originalEndpoints, originalGroups);
+      this.setState({ endpoints: originalEndpoints, groups: originalGroups });
     }
   }
   async handleAdd(newCollection) {
@@ -421,7 +442,6 @@ class Collections extends Component {
   }
 
   async handleAddEndpoint(groupId, newEndpoint, versions) {
-    console.log("adddddd");
     const originalEndpoints = { ...this.state.endpoints };
     const originalGroups = { ...this.state.groups };
     newEndpoint.requestId = shortId.generate();
@@ -661,6 +681,7 @@ class Collections extends Component {
     collectionIds.splice(index, 0, this.draggedItem);
     this.setState({ collectionIds });
   };
+
   render() {
     const { location } = this.props;
 
@@ -1039,6 +1060,7 @@ class Collections extends Component {
                       set_group_id={this.setGroupIds.bind(this)}
                       set_page_id={this.setPageIds.bind(this)}
                       collection_dnd={this.collectionDnD.bind(this)}
+                      dnd_move_endpoint={this.dndMoveEndpoint.bind(this)}
                     />
                   </Card.Body>
                 </Accordion.Collapse>

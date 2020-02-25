@@ -73,9 +73,20 @@ class GroupPages extends Component {
             )
 
             .map(pageId => (
-              <Accordion defaultActiveKey="0" key={pageId}>
+              <Accordion
+                defaultActiveKey='1'
+                key={pageId}
+                draggable
+                onDragOver={e => this.onDragOver(e, pageId)}
+                onDragStart={e => this.onDragStart(e, pageId)}
+                onDragEnd={e => this.onDragEnd(e, pageId)}
+              >
                 <Card>
-                  <Card.Header>
+                  <Card.Header
+                    draggable
+                    onDragOver={e => this.onDragOver(e, pageId)}
+                    onDragStart={e => this.onDragStart(e, pageId)}
+                    onDragEnd={e => this.onDragEnd(e, pageId)}>
                     <Accordion.Toggle
                       as={Button}
                       onClick={() =>
@@ -107,9 +118,9 @@ class GroupPages extends Component {
                       </Dropdown.Item>
 
                       <Dropdown.Item
-                        eventKey="2"
+                        eventKey='2'
                         onClick={() => {
-                          this.handleDuplicate(this.props.pages[pageId]);
+                          this.handleDuplicate(this.props.pages[pageId])
                         }}
                       >
                         Duplicate
