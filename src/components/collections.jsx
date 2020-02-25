@@ -633,7 +633,6 @@ class Collections extends Component {
 
 
   render() {
-    console.log('this.state',this.state.pages)
     const { location } = this.props
 
     if (location.editedEndpoint) {
