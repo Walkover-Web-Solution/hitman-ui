@@ -15,6 +15,7 @@ import CollectionVersions from "./collectionVersions";
 import CollectionVersionForm from "./collectionVersionForm";
 import GroupForm from "./groupForm";
 import ShareVersionForm from "./shareVersionForm"
+import ImportVersionForm from "./importVersionForm"
 import groupsService from "../services/groupsService";
 import PageForm from "./pageForm";
 import pageService from "../services/pageService";
@@ -284,6 +285,15 @@ class Collections extends Component {
     } catch (ex) {
       toast.error(ex.response ? ex.response.data : "Something went wrong");
       this.setState({ versions: originalVersions });
+    }
+  }
+  async handleImportVersion(importLink,shareIdentifier)
+  {        console.log("shareVersionData")
+    try { console.log("shareVersionData")
+     const shareVersionData= await collectionVersionsService.importCollectionVersion(importLink,shareIdentifier);
+     console.log("shareVersionData",shareVersionData)
+    } catch (ex) {
+      toast.error(ex.response ? ex.response.data : "Something went wrong,can't import version");
     }
   }
 
@@ -815,6 +825,15 @@ class Collections extends Component {
       this.props.history.replace({ duplicateVersion: null });
       this.handleDuplicateVersion(duplicateVersion);
     }
+    if (location.importVersionLink) {
+      let importLink = location.importVersionLink;
+      importLink=importLink.shareVersionLink;
+      let shareIdentifier=importLink.split('/')[4];
+      this.props.history.replace({ importVersionLink: null });
+      console.log("sdf",importLink,shareIdentifier);
+      this.handleImportVersion(importLink,shareIdentifier);
+    }
+
 
     if (location.editedCollection) {
       const editedCollection = location.editedCollection;
@@ -953,6 +972,21 @@ class Collections extends Component {
                 )}
               />
               <Route
+                path="/dashboard/versions/import"
+                render={props => (
+                  <ImportVersionForm
+                    {...props}
+                    show={true}
+                    onHide={() => {
+                      this.props.history.push({
+                        pathname: "/dashboard/collections"
+                      });
+                    }}
+                    title="Import Version"
+                  />
+                )}
+              />
+              <Route
                 path="/dashboard/collections/:id/edit"
                 render={props => (
                   <CollectionForm
@@ -1056,6 +1090,16 @@ class Collections extends Component {
                       }
                     >
                       Duplicate
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                      eventKey="3"
+                      onClick={() => {
+                        this.props.history.push({
+                          pathname: `/dashboard/versions/import`
+                        });
+                      }}
+                    >
+                      Import Version
                     </Dropdown.Item>
                   </DropdownButton>
                 </Card.Header>

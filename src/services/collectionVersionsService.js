@@ -32,6 +32,9 @@ export function deleteCollectionVersion(versionId) {
 export function duplicateVersion(versionId) {
     return http.post( `${apiUrl}/duplicateVersions/${versionId}` );
 }
+export function importCollectionVersion(importLink,shareIdentifier){
+	return http.get(`${apiUrl}/share/${shareIdentifier}`);
+}
 
 export default {
 	getCollectionVersions,

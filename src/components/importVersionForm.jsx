@@ -15,14 +15,7 @@ class ShareVersionForm extends Form {
   }
 
   componentDidMount() {
-
       if(this.props.location.shareIdentifier){
-                console.log("shareIdentifier")
-                let  data = {}
-                const {shareIdentifier} = this.props.location 
-                const shareVersionLink = apiUrl + "/share/" + shareIdentifier
-                data = {shareVersionLink}
-                this.setState({data})
       }
   }
 
@@ -33,17 +26,17 @@ class ShareVersionForm extends Form {
   }
 
   async doSubmit (props) {
-      const shareVersionLink=this.state.data.shareVersionLink;
-    if (this.props.title === 'Share Version') {
+    if (this.props.title === 'Import Version') {
       this.props.history.push({
+        pathname: `/dashboard/`,
+        importVersionLink:{...this.state.data}
       })
     }
   }
 
   render () {
     return (
-    
-      <Modal
+     <Modal
         {...this.props}
         size='lg'
         aria-labelledby='contained-modal-title-vcenter'
@@ -59,13 +52,7 @@ class ShareVersionForm extends Form {
             {this.renderInput('shareVersionLink', 'Public Link') }
             {<div name='shareVersionLink' label='Public Link'>
                 </div>}
-            { <CopyToClipboard
-                  text={JSON.stringify(this.state.data.shareVersionLink)}
-                  onCopy={() => this.setState({ copied: true })}
-                  style={{ float: 'right', borderRadius: '12px' }}
-                >
-                  <button style={{ borderRadius: '12px' }}>Copy</button>
-                </CopyToClipboard>}
+            {this.renderButton('Submit')}
             <Link to={`/dashboard/collections`}>Cancel</Link>
           </form>
         </Modal.Body>
