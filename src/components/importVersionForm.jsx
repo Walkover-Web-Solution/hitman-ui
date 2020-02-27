@@ -31,7 +31,7 @@ class ShareVersionForm extends Form {
         this.props.history.push({
             pathname: `/dashboard/collections`,
             importVersionLink:{...this.state.data},
-          //  collectionId:this.props.location.pathname.split('/')[2]
+           collectionId:this.props.location.pathname.split('/')[2]
         })
     }
   }

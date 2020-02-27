@@ -287,12 +287,18 @@ class Collections extends Component {
       this.setState({ versions: originalVersions });
     }
   }
-  async handleImportVersion(importLink,shareIdentifier)
-  {  try { 
+  async handleImportVersion(importLink,shareIdentifier,collectionId)
+  {  let versions = { ...this.state.versions };
+     try { 
      const {data}= await collectionVersionsService.exportCollectionVersion(importLink,shareIdentifier);
-    const importVersion=await collectionVersionsService.importCollectionVersion(importLink,shareIdentifier,data);
+     data.collectionId=collectionId;
+     const {
+      data: version
+    }=await collectionVersionsService.importCollectionVersion(importLink,shareIdentifier,data);
+    versions[version.id] = version;
+    const versionIds = [...this.state.versionIds, version.id.toString()];
+    this.setState({ versions, versionIds });
      console.log("shareVersionData",data);
-     console.log("share",importVersion);
     } catch (ex) {
       toast.error(ex.response ? ex.response.data : "Something went wrong,can't import version");
     }
@@ -828,12 +834,11 @@ class Collections extends Component {
     }
     if (location.importVersionLink) {
       let importLink = location.importVersionLink;
+      let collectionId=location.collectionId;
       importLink=importLink.shareVersionLink;
       let shareIdentifier=importLink.split('/')[4];
       this.props.history.replace({ importVersionLink: null });
-      console.log("sdf",importLink,shareIdentifier);
-      console.log("abc");
-      this.handleImportVersion(importLink,shareIdentifier);
+      this.handleImportVersion(importLink,shareIdentifier,collectionId);
     }
 
 
@@ -974,7 +979,7 @@ class Collections extends Component {
                 )}
               />
               <Route
-                path="/dashboard/versions/import"
+                path="/dashboard/:collectionId/versions/import"
                 render={props => (
                   <ImportVersionForm
                     {...props}
@@ -1097,7 +1102,7 @@ class Collections extends Component {
                       eventKey="3"
                       onClick={() => {
                         this.props.history.push({
-                          pathname: `/dashboard/versions/import`,
+                          pathname: `/dashboard/${collectionId}/versions/import`,
                           importCollection: this.state.collections[collectionId]
                         });
                       }}
