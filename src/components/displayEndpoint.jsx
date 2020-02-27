@@ -6,6 +6,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import { toast } from 'react-toastify';
+import '../editableDropdown.css';
 const status = require('http-status');
 var JSONPrettyMon = require('react-json-pretty/dist/monikai');
 var URI = require('urijs');
@@ -25,12 +26,13 @@ class DisplayEndpoint extends Component {
 			updatedUri: '',
 			host: ''
 		},
+		environment: {},
 		startTime: '',
 		timeElapsed: '',
 		response: {},
 		endpoint: {},
-		groups: [],
-		versions: [],
+		groups: {},
+		versions: {},
 		groupId: '',
 		title: '',
 		onChangeFlag: false,
@@ -112,25 +114,70 @@ class DisplayEndpoint extends Component {
 
 	findHost() {
 		let host = "";
-		if (this.initialHost === false) {
-			return this.state.data.host;
-		} else if (
-			Object.keys(this.state.endpoint).length &&
-			this.state.title === "update endpoint"
-		) {
-			this.HostDropdown("Group")
-		} else if (this.state.groupId) {
-			this.HostDropdown("Version")
+		host = this.fetchDropdown("Variable");
+		if (host === "") {
+			host = this.fetchDropdown("Group");
+			if (host === "") {
+				host = this.fetchDropdown("Version");
+			}
 		}
+		let data = { ...this.state.data }
+		data.host = host
+		this.setState({ data })
 		return host;
 	}
+
+	// findHost() {
+	// 	let host = "";
+	//   if (this.state.onChangeFlag === true) {
+	// 	this.state.onChangeFlag = false;
+	// 	return this.state.data.host;
+	//   }
+	//   else if (
+	// 	Object.keys(this.state.endpoint).length &&
+	// 	this.state.title === "update endpoint"
+	//   ) {
+	// 	  if(this.state.environment.id != null && this.state.environment.variables["BASE_URL"]){
+	// 		  host = this.state.environment.variables['BASE_URL'].currentValue;
+	// 	  }
+	// 	  if(host=== "")
+	// 	  host = this.state.groups[this.state.groupId].host;
+	// 	  if (host === "") {
+	// 	  const versionId = this.state.groups[this.state.endpoint.groupId]
+	// 		.versionId;
+	// 	  host = this.state.versions[versionId].host;
+	// 	}
+	//   } else if(this.state.environment.id != null && this.state.environment.variables["BASE_URL"])
+	//   {
+	// 	  host = this.state.environment.variables['BASE_URL'].currentValue;
+	//   }
+	//   else if (this.state.groupId) {
+	// 	host = this.state.groups[this.state.groupId].host;
+	// 	if (host === "") {
+	// 	  const versionId = this.state.groups[this.state.groupId].versionId;
+	// 	  host = this.state.versions[versionId].host;
+	// 	}
+	//   }
+	//   return host;
+	// }
+
 
 	initialHost = true
 	customHost = false
 
-	HostDropdown(key) {
-		this.initialHost = false
+	fetchDropdown(key) {
+		console.log("hostttttd")
 		let host = "";
+		if (key === "Variable") {
+			if (
+				Object.keys(this.state.endpoint).length &&
+				this.state.title === "update endpoint"
+			) {
+				if (this.state.environment.id != null && this.state.environment.variables["BASE_URL"]) {
+					host = this.state.environment.variables['BASE_URL'].currentValue;
+				}
+			}
+		}
 		if (key === "Group") {
 			if (
 				Object.keys(this.state.endpoint).length &&
@@ -153,13 +200,12 @@ class DisplayEndpoint extends Component {
 				const versionId = this.state.groups[this.state.groupId].versionId;
 				host = this.state.versions[versionId].host;
 			}
-		} else if (key === "Custom") {
+		}
+		if (key === "Custom") {
 			this.customHost = true
 		}
-		let data = { ...this.state.data }
-		data.host = host
-		this.setState({ data })
-		this.findHost();
+		this.state.data.host = host
+		console.log(key, host)
 		return host;
 	}
 
@@ -538,55 +584,87 @@ class DisplayEndpoint extends Component {
 		let prettyResponse = false;
 		this.setState({ rawResponse, previewResponse, prettyResponse });
 	}
-
+	fillDropdownValue() {
+		this.dropdownHost["Variable"] = this.fetchDropdown("Variable")
+		this.dropdownHost["Group"] = this.fetchDropdown("Group")
+		this.dropdownHost["Version"] = this.fetchDropdown("Version")
+	}
 	dropdownHost = {
+		Variable: "",
 		Group: "",
 		Version: "",
-		Custom: ""
+		Custom: "Custom"
+	}
+
+	setDropdownValue(key) {
+		console.log("key", key)
+		let data = { ...this.state.data }
+		if (key === "Custom") {
+			data.host = ""
+		} else {
+			data.host = this.dropdownHost[key]
+		}
+		this.setState({ data })
+	}
+	handleDropdownChange = (e) => {
+		let data = { ...this.state.data };
+		data[e.currentTarget.name] = e.currentTarget.value;
+		data.host = e.currentTarget.value;
+		this.setState({ data })
 	}
 
 	render() {
-		if (this.props.location.endpoint) {
-			this.state.prettyResponse = false;
-			this.state.rawResponse = false;
-			this.state.previewResponse = false;
-			let paramsData = { ...this.props.location.endpoint.params };
-			const originalParamsKeys = Object.keys(paramsData);
-			const updatedParamsKeys = Object.keys(paramsData);
-			let headersData = { ...this.props.location.endpoint.headers };
-			const originalHeadersKeys = Object.keys(headersData);
-			const updatedHeadersKeys = Object.keys(headersData);
-			this.setState({
-				paramsData,
-				originalParamsKeys,
-				updatedParamsKeys,
-				headersData,
-				originalHeadersKeys,
-				updatedHeadersKeys
-			});
-			this.props.history.push({ endpoint: null });
+		if (this.props.environment) {
+			this.state.environment = this.props.environment;
 		}
 
+		// if (this.props.location.endpoint) {
+		// 	console.log("endpoint")
+		// 	this.state.prettyResponse = false;
+		// 	this.state.rawResponse = false;
+		// 	this.state.previewResponse = false;
+		// 	let paramsData = { ...this.props.location.endpoint.params };
+		// 	const originalParamsKeys = Object.keys(paramsData);
+		// 	const updatedParamsKeys = Object.keys(paramsData);
+		// 	let headersData = { ...this.props.location.endpoint.headers };
+		// 	const originalHeadersKeys = Object.keys(headersData);
+		// 	const updatedHeadersKeys = Object.keys(headersData);
+		// 	this.setState({
+		// 		paramsData,
+		// 		originalParamsKeys,
+		// 		updatedParamsKeys,
+		// 		headersData,
+		// 		originalHeadersKeys,
+		// 		updatedHeadersKeys
+		// 	});
+		// 	this.props.history.push({ endpoint: null });
+		// }
+
 		if (this.props.location.title === 'Add New Endpoint') {
+			this.state.groupId = this.props.location.groupId
+			this.state.groups = this.props.location.groups
+			this.state.versions = this.props.location.versions
+			this.fillDropdownValue()
+
 			this.setState({
-				data: {
-					name: '',
-					method: 'GET',
-					body: {},
-					uri: '',
-					updatedUri: '',
-					host: ''
-				},
+				// data: {
+				// 	name: '',
+				// 	method: 'GET',
+				// 	body: {},
+				// 	uri: '',
+				// 	updatedUri: '',
+				// 	host: ''
+				// },
 				startTime: '',
 				timeElapsed: '',
 				response: {},
 				endpoint: {},
-				groups: this.props.location.groups,
-				versions: this.props.location.versions,
-				groupId: this.props.location.groupId,
+				// groups: this.props.location.groups,
+				// versions: this.props.location.versions,
+				// groupId: this.props.location.groupId,
 				title: this.props.location.title,
 				onChangeFlag: false,
-				dropdownInputFlag: false,
+				// dropdownInputFlag: false,
 				flagResponse: false,
 				rawResponse: false,
 				prettyResponse: false,
@@ -597,7 +675,6 @@ class DisplayEndpoint extends Component {
 				headersData: {},
 				originalHeadersKeys: [],
 				updatedHeadersKeys: [],
-
 				paramsData: {},
 				paramsMetaData: {},
 				originalParamsKeys: [],
@@ -606,7 +683,20 @@ class DisplayEndpoint extends Component {
 				values: [],
 				description: []
 			});
+			let data = {
+				name: '',
+				method: 'GET',
+				body: {},
+				uri: '',
+				updatedUri: '',
+				host: ''
+			}
+			// this.state.data = data
+
 			this.props.history.push({ groups: null });
+			data = { ...this.state.data }
+			data.host = this.findHost()
+			this.setState({ data })
 		}
 
 		if (this.props.location.title === 'update endpoint' && this.props.location.endpoint) {
@@ -644,33 +734,63 @@ class DisplayEndpoint extends Component {
 					Object.keys(this.props.location.endpoint.params)[i]
 				].description;
 			}
+
+			this.state.prettyResponse = false;
+			this.state.rawResponse = false;
+			this.state.previewResponse = false;
+			const originalParamsKeys = Object.keys(paramsData);
+			const updatedParamsKeys = Object.keys(paramsData);
+			let headersData = { ...this.props.location.endpoint.headers };
+			const originalHeadersKeys = Object.keys(headersData);
+			const updatedHeadersKeys = Object.keys(headersData);
+			this.state.groupId = this.props.location.groupId
+			this.state.groups = this.props.location.groups
+			this.state.versions = this.props.location.versions
+			this.state.title = 'update endpoint'
+			this.state.endpoint = endpoint;
+			this.state.values = values;
+			this.state.keys = Object.keys(this.props.location.endpoint.params);
+			this.fillDropdownValue()
+
+
+
 			this.setState({
-				data: {
-					method: endpoint.requestType,
-					uri: endpoint.uri,
-					updatedUri: endpoint.uri,
-					name: endpoint.name,
-					body: JSON.stringify(endpoint.body, null, 4)
-				},
-				title: 'update endpoint',
+				// data: {
+				// 	method: endpoint.requestType,
+				// 	uri: endpoint.uri,
+				// 	updatedUri: endpoint.uri,
+				// 	name: endpoint.name,
+				// 	body: JSON.stringify(endpoint.body, null, 4),
+				// 	host: ''
+				// },
+				// title: 'update endpoint',
 				response: {},
-				groupId: this.props.location.groupId,
+				// groupId: this.props.location.groupId,
 				onChangeFlag: false,
 				description: description,
 				paramsMetaData: paramsMetaData,
 				paramsData: paramsData,
-				versions: this.props.location.versions,
-				groups: this.props.location.groups
-
-
+				// versions: this.props.location.versions,
+				// groups: this.props.location.groups,
+				originalParamsKeys,
+				updatedParamsKeys,
+				headersData,
+				originalHeadersKeys,
+				updatedHeadersKeys
 			});
-			this.state.endpoint = endpoint;
-			this.state.values = values;
 
-			this.state.keys = Object.keys(this.props.location.endpoint.params);
+			let data = {
+				method: endpoint.requestType,
+				uri: endpoint.uri,
+				updatedUri: endpoint.uri,
+				name: endpoint.name,
+				body: JSON.stringify(endpoint.body, null, 4),
+				host: ''
+			}
+			data.host = this.findHost()
+			this.setState({ data })
 			this.props.history.push({ endpoint: null });
 		}
-
 		return (
 			<div>
 				<div className="input-group flex-nowrap">
@@ -705,7 +825,6 @@ class DisplayEndpoint extends Component {
 											<Dropdown.Item onClick={() => this.setMethod('GET')}>GET</Dropdown.Item>
 											<Dropdown.Item onClick={() => this.setMethod('POST')}>POST</Dropdown.Item>
 											<Dropdown.Item onClick={() => this.setMethod('PUT')}>PUT</Dropdown.Item>
-
 											<Dropdown.Item onClick={() => this.setMethod('DELETE')}>
 												DELETE
 											</Dropdown.Item>
@@ -714,44 +833,18 @@ class DisplayEndpoint extends Component {
 								</div>
 							</div>
 						</span>
-						{this.customHost === false ? (
-							<div className="dropdown">
-								<div className="Environment Dropdown">
-									<Dropdown className="float-light">
-										<Dropdown.Toggle variant="default" id="dropdown-basic">
-											{this.findHost()}
-										</Dropdown.Toggle>
-										<Dropdown.Menu alignRight>
-											{Object.keys(this.dropdownHost).map(key => (
-												<Dropdown.Item key={key}
-													onClick={() => this.HostDropdown(key)}
-												>
-													{key} Base_URL
-								   </Dropdown.Item>
-											))}
-										</Dropdown.Menu>
-									</Dropdown>
-								</div>
-							</div>
-						) :
-							<span
-								className='form-control form-control-lg'
-								className='input-group-text d-flex p-0'
-								id='basic-addon3'
-							>
-								<input
-									type='text'
-									name='host'
-									className='form-group h-100 m-0'
-									style={{
-										border: 'none',
-										borderRadius: 0,
-										backgroundColor: '#F8F9F9'
-									}}
-								/>
-							</span>
-						}
 
+						<div className="editableDropdown">
+							<input type="text" value={this.state.data.host} onChange={this.handleDropdownChange} />
+							<select id="selectBox" onChange={() => this.setDropdownValue((document.getElementById("selectBox")).
+								options[(document.getElementById("selectBox")).selectedIndex].value)} >
+								{Object.keys(this.dropdownHost).map(key => (
+									this.dropdownHost[key] !== "" ? (
+										<option value={key} key={key} >{key} Base_URL</option>
+									) : null
+								))}
+							</select>
+						</div>
 
 					</div>
 					<input
