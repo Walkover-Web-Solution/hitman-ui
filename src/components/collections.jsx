@@ -21,8 +21,20 @@ import endpointService from "../services/endpointService";
 import shortId from "shortid";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { connect } from "react-redux";
+import { addCollection } from "../actions/index";
+import store from "../store/index";
 
-class Collections extends Component {
+const mapStateToProps = state => {
+  return { collections: state.collections };
+};
+
+function mapDispatchToProps(dispatch) {
+  return {
+    addCollection: collection => dispatch(addCollection(collection))
+  };
+}
+class CollectionsComponent extends Component {
   state = {
     collections: {},
     versions: {},
@@ -83,25 +95,32 @@ class Collections extends Component {
   }
 
   async componentDidMount() {
-    const { data: collections } = await collectionsService.getCollections();
-    const collectionIds = Object.keys(collections);
-    this.setState({ collections, collectionIds });
-    const versions = await this.fetchVersions(collections);
-    const groups = await this.fetchGroups(versions);
-    const pages = await this.fetchPages(versions);
-    const endpoints = await this.fetchEndpoints(groups);
-    const versionIds = Object.keys(versions);
-    const groupIds = Object.keys(groups);
-    const pageIds = Object.keys(pages);
-    this.setState({
-      versions,
-      groups,
-      pages,
-      endpoints,
-      versionIds,
-      groupIds,
-      pageIds
-    });
+    console.log(store.getState());
+
+    // const { data: collections } = await collectionsService.getCollections();
+    store.dispatch(addCollection());
+    store.subscribe(() => console.log(store.getState()));
+
+    console.log(store.getState());
+
+    // const collectionIds = Object.keys(collections);
+    // this.setState({ collections, collectionIds });
+    // const versions = await this.fetchVersions(collections);
+    // const groups = await this.fetchGroups(versions);
+    // const pages = await this.fetchPages(versions);
+    // const endpoints = await this.fetchEndpoints(groups);
+    // const versionIds = Object.keys(versions);
+    // const groupIds = Object.keys(groups);
+    // const pageIds = Object.keys(pages);
+    // this.setState({
+    //   versions,
+    //   groups,
+    //   pages,
+    //   endpoints,
+    //   versionIds,
+    //   groupIds,
+    //   pageIds
+    // });
   }
 
   collectionDnD(collectionDnDFlag) {
@@ -1072,4 +1091,5 @@ class Collections extends Component {
     );
   }
 }
+const Collections = connect(null, mapDispatchToProps)(CollectionsComponent);
 export default Collections;

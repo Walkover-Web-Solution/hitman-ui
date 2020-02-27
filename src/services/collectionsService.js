@@ -4,38 +4,39 @@ import { apiUrl } from "../config.json";
 const apiEndpoint = apiUrl + "/collections";
 
 function collectionUrl(id) {
-    return `${apiEndpoint}/${id}`;
+  return `${apiEndpoint}/${id}`;
 }
 
 export function getCollections() {
-    return http.get(apiEndpoint);
+  return http.get(apiEndpoint);
 }
 
 export function getCollection(collectionId) {
-    return http.get(collectionUrl(collectionId));
+  return http.get(collectionUrl(collectionId));
 }
 
 export function saveCollection(collection) {
-    return http.post(apiEndpoint, collection);
+  return http.post(apiEndpoint, collection);
 }
 
 export function updateCollection(collectionId, collection) {
-    return http.put(collectionUrl(collectionId), collection);
+  return http.put(collectionUrl(collectionId), collection);
 }
 
 export function deleteCollection(collectionId) {
-    return http.delete(collectionUrl(collectionId));
+  return http.delete(collectionUrl(collectionId));
 }
 
 export function duplicateCollection(collectionId) {
-    return http.post( `${apiUrl}/duplicateCollections/${collectionId}` );
+  return http.post(`${apiUrl}/duplicateCollections/${collectionId}`);
 }
 
 export default {
-    getCollections,
-    getCollection,
-    saveCollection,
-    updateCollection,
-    deleteCollection,
-    duplicateCollection
+  apiEndpoint,
+  getCollections,
+  getCollection,
+  saveCollection,
+  updateCollection,
+  deleteCollection,
+  duplicateCollection
 };
