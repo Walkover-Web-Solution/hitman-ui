@@ -32,8 +32,11 @@ export function deleteCollectionVersion(versionId) {
 export function duplicateVersion(versionId) {
     return http.post( `${apiUrl}/duplicateVersions/${versionId}` );
 }
-export function importCollectionVersion(importLink,shareIdentifier){
-	return http.get(`${apiUrl}/share/${shareIdentifier}`);
+export function exportCollectionVersion(importLink,shareIdentifier){
+	return http.get(`${importLink}`);
+}
+export function importCollectionVersion(importLink,shareIdentifier,data){
+	return http.post(`${apiUrl}/share/${shareIdentifier}/import`,data);
 }
 
 export default {
@@ -42,5 +45,7 @@ export default {
 	saveCollectionVersion,
 	updateCollectionVersion,
 	deleteCollectionVersion,
-	duplicateVersion
+	duplicateVersion,
+	importCollectionVersion,
+	exportCollectionVersion
 };

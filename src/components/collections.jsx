@@ -288,10 +288,11 @@ class Collections extends Component {
     }
   }
   async handleImportVersion(importLink,shareIdentifier)
-  {        console.log("shareVersionData")
-    try { console.log("shareVersionData")
-     const shareVersionData= await collectionVersionsService.importCollectionVersion(importLink,shareIdentifier);
-     console.log("shareVersionData",shareVersionData)
+  {  try { 
+     const {data}= await collectionVersionsService.exportCollectionVersion(importLink,shareIdentifier)
+     const importVersion=await collectionVersionsService.importCollectionVersion(importLink,shareIdentifier,data)
+     console.log("shareVersionData",data,importVersion)
+     console.log("share",importVersion)
     } catch (ex) {
       toast.error(ex.response ? ex.response.data : "Something went wrong,can't import version");
     }
