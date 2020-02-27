@@ -1010,8 +1010,8 @@ class Collections extends Component {
                         if (
                           window.confirm(
                             "Are you sure you wish to delete this collection?" +
-                              "\n" +
-                              " All your versions, groups, pages and endpoints present in this collection will be deleted."
+                            "\n" +
+                            " All your versions, groups, pages and endpoints present in this collection will be deleted."
                           )
                         )
                           this.handleDelete(

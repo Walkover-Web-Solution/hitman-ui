@@ -35,6 +35,7 @@ class DisplayEndpoint extends Component {
 		versions: {},
 		groupId: '',
 		title: '',
+		selectedHost: "",
 		onChangeFlag: false,
 		flagResponse: false,
 		rawResponse: false,
@@ -53,6 +54,8 @@ class DisplayEndpoint extends Component {
 		values: [],
 		description: []
 	};
+
+	host = ""
 
 	handleChange = (e) => {
 		let data = { ...this.state.data };
@@ -112,13 +115,13 @@ class DisplayEndpoint extends Component {
 		return paramsData;
 	}
 
-	findHost() {
+	findHost(hostJson) {
 		let host = "";
-		host = this.fetchDropdown("Variable");
+		host = hostJson.variableHost
 		if (host === "") {
-			host = this.fetchDropdown("Group");
+			host = hostJson.groupHost
 			if (host === "") {
-				host = this.fetchDropdown("Version");
+				host = hostJson.versionHost
 			}
 		}
 		let data = { ...this.state.data }
@@ -127,46 +130,10 @@ class DisplayEndpoint extends Component {
 		return host;
 	}
 
-	// findHost() {
-	// 	let host = "";
-	//   if (this.state.onChangeFlag === true) {
-	// 	this.state.onChangeFlag = false;
-	// 	return this.state.data.host;
-	//   }
-	//   else if (
-	// 	Object.keys(this.state.endpoint).length &&
-	// 	this.state.title === "update endpoint"
-	//   ) {
-	// 	  if(this.state.environment.id != null && this.state.environment.variables["BASE_URL"]){
-	// 		  host = this.state.environment.variables['BASE_URL'].currentValue;
-	// 	  }
-	// 	  if(host=== "")
-	// 	  host = this.state.groups[this.state.groupId].host;
-	// 	  if (host === "") {
-	// 	  const versionId = this.state.groups[this.state.endpoint.groupId]
-	// 		.versionId;
-	// 	  host = this.state.versions[versionId].host;
-	// 	}
-	//   } else if(this.state.environment.id != null && this.state.environment.variables["BASE_URL"])
-	//   {
-	// 	  host = this.state.environment.variables['BASE_URL'].currentValue;
-	//   }
-	//   else if (this.state.groupId) {
-	// 	host = this.state.groups[this.state.groupId].host;
-	// 	if (host === "") {
-	// 	  const versionId = this.state.groups[this.state.groupId].versionId;
-	// 	  host = this.state.versions[versionId].host;
-	// 	}
-	//   }
-	//   return host;
-	// }
-
-
 	initialHost = true
 	customHost = false
 
 	fetchDropdown(key) {
-		console.log("hostttttd")
 		let host = "";
 		if (key === "Variable") {
 			if (
@@ -205,7 +172,6 @@ class DisplayEndpoint extends Component {
 			this.customHost = true
 		}
 		this.state.data.host = host
-		console.log(key, host)
 		return host;
 	}
 
@@ -239,7 +205,7 @@ class DisplayEndpoint extends Component {
 		const headersData = this.doSubmitHeader();
 		await this.setState({ headersData, response });
 		this.state.flagResponse = true;
-		const host = this.findHost();
+		const host = this.state.data.host;
 		let api = host + this.uri.current.value;
 		api = this.finalUrl(api);
 		let { method, uri, updatedUri, name, body } = this.state.data;
@@ -369,36 +335,97 @@ class DisplayEndpoint extends Component {
 		this.handleUpdateUri(keys, values);
 	}
 
+
 	handleUpdateUri(keys, values) {
-		if (keys.length === 0) {
-			let updatedUri = this.state.data.updatedUri.split('?')[0];
-			let data = { ...this.state.data };
-			data.updatedUri = updatedUri;
-			this.setState({ data });
-			return;
-		}
-		let originalUri = this.state.data.uri.split('?')[0] + '?';
-		let parts = {};
-		for (let i = 0; i < keys.length; i++) {
-			if (values[i]) {
-				parts[keys[i]] = values[i].toString();
-			} else {
-				if (keys[i]) {
-					parts[keys[i]] = values[i];
+		let originalUri = this.state.data.uri.split("?")[0]; //Possible mistake
+		let updatedUri = this.state.data.updatedUri;
+
+		if (this.state.title === "Add New Endpoint") {
+			for (let i = 0; i < keys.length; i++) {
+				if (i === 0) {
+					if (keys[i].length === 0) {
+						updatedUri = originalUri.substring(0, originalUri.length - 1);
+					} else {
+						updatedUri = originalUri + "?" + keys[i] + "=" + values[i];
+						originalUri = updatedUri;
+					}
+				} else {
+					if (keys[i].length === 0) {
+						originalUri = originalUri.substring(0, originalUri.length - 1);
+					} else {
+						if (originalUri.split("?")[1]) {
+							updatedUri = originalUri + "&" + keys[i] + "=" + values[i];
+							originalUri = updatedUri;
+						} else {
+							updatedUri = originalUri + "?" + keys[i] + "=" + values[i];
+							originalUri = updatedUri;
+						}
+					}
+				}
+			}
+		} else if (this.state.title === "update endpoint") {
+			originalUri = originalUri.split("?")[0];
+			if (keys.length === 0) {
+				updatedUri = originalUri;
+			}
+			for (let i = 0; i < keys.length; i++) {
+				if (i === 0) {
+					if (keys[i].length === 0) {
+						updatedUri = originalUri.substring(0, originalUri.length - 1);
+					} else {
+						updatedUri = originalUri + "?" + keys[i] + "=" + values[i];
+						originalUri = updatedUri;
+					}
+				} else {
+					if (keys[i].length === 0) {
+						originalUri = originalUri.substring(0, originalUri.length - 1);
+					} else {
+						if (originalUri.split("?")[1]) {
+							updatedUri = originalUri + "&" + keys[i] + "=" + values[i];
+							originalUri = updatedUri;
+						} else {
+							updatedUri = originalUri + "?" + keys[i] + "=" + values[i];
+							originalUri = updatedUri;
+						}
+					}
 				}
 			}
 		}
-		for (let i = 0; i < Object.keys(parts).length; i++) {
-			if (!values[i] || values.length === 0) {
-				values[i] = '';
-			}
-		}
-		let updatedUri = URI.buildQuery(parts);
-		updatedUri = originalUri + updatedUri;
-		let data = { ...this.state.data };
-		data.updatedUri = updatedUri;
-		this.setState({ data });
+		this.state.data.updatedUri = updatedUri;
 	}
+
+
+
+	// handleUpdateUri(keys, values) {
+	// 	if (keys.length === 0) {
+	// 		let updatedUri = this.state.data.updatedUri.split('?')[0];
+	// 		let data = { ...this.state.data };
+	// 		data.updatedUri = updatedUri;
+	// 		this.setState({ data });
+	// 		return;
+	// 	}
+	// 	let originalUri = this.state.data.uri.split('?')[0] + '?';
+	// 	let parts = {};
+	// 	for (let i = 0; i < keys.length; i++) {
+	// 		if (values[i]) {
+	// 			parts[keys[i]] = values[i].toString();
+	// 		} else {
+	// 			if (keys[i]) {
+	// 				parts[keys[i]] = values[i];
+	// 			}
+	// 		}
+	// 	}
+	// 	for (let i = 0; i < Object.keys(parts).length; i++) {
+	// 		if (!values[i] || values.length === 0) {
+	// 			values[i] = '';
+	// 		}
+	// 	}
+	// 	let updatedUri = URI.buildQuery(parts);
+	// 	updatedUri = originalUri + updatedUri;
+	// 	let data = { ...this.state.data };
+	// 	data.updatedUri = updatedUri;
+	// 	this.setState({ data });
+	// }
 
 	handleChangeParam = (e) => {
 		const name = e.currentTarget.name.split('.');
@@ -584,27 +611,31 @@ class DisplayEndpoint extends Component {
 		let prettyResponse = false;
 		this.setState({ rawResponse, previewResponse, prettyResponse });
 	}
-	fillDropdownValue() {
-		this.dropdownHost["Variable"] = this.fetchDropdown("Variable")
-		this.dropdownHost["Group"] = this.fetchDropdown("Group")
-		this.dropdownHost["Version"] = this.fetchDropdown("Version")
+	fillDropdownValue(hostJson) {
+		this.dropdownHost["variable"].value = hostJson.variableHost
+		this.dropdownHost["group"].value = hostJson.groupHost
+		this.dropdownHost["version"].value = hostJson.versionHost
 	}
 	dropdownHost = {
-		Variable: "",
-		Group: "",
-		Version: "",
-		Custom: "Custom"
+		variable: { name: "Variable", value: "" },
+		group: { name: "Group", value: "" },
+		version: { name: "Version", value: "" },
+		custom: { name: "Custom", value: "custom" }
 	}
 
 	setDropdownValue(key) {
-		console.log("key", key)
-		let data = { ...this.state.data }
-		if (key === "Custom") {
-			data.host = ""
+		let host = ""
+		if (key === "custom") {
+			host = "custom"
 		} else {
-			data.host = this.dropdownHost[key]
+			host = this.dropdownHost[key].value
 		}
-		this.setState({ data })
+		let data = { ...this.state.data }
+		data.host = host
+		this.setState({
+			selectedHost: key, data
+		})
+
 	}
 	handleDropdownChange = (e) => {
 		let data = { ...this.state.data };
@@ -613,58 +644,85 @@ class DisplayEndpoint extends Component {
 		this.setState({ data })
 	}
 
-	render() {
-		if (this.props.environment) {
-			this.state.environment = this.props.environment;
+	fetchHosts(location, environment) {
+		let variableHost = ""
+		if (environment.variables) {
+			variableHost = environment.variables.BASE_URL.currentValue
 		}
+		const { groupId, groups, versions } = location;
+		const { versionId, host: groupHost } = groups[groupId];
+		const { host: versionHost } = versions[versionId];
+		let hostJson = {
+			variableHost,
+			groupHost,
+			versionHost
+		}
+		return hostJson
+	}
+	fetchValues(params) {
+		let values = []
+		Object.keys(params).map((param) => {
+			values.push(params[param].value);
+		});
+		return values
+	}
 
-		// if (this.props.location.endpoint) {
-		// 	console.log("endpoint")
-		// 	this.state.prettyResponse = false;
-		// 	this.state.rawResponse = false;
-		// 	this.state.previewResponse = false;
-		// 	let paramsData = { ...this.props.location.endpoint.params };
-		// 	const originalParamsKeys = Object.keys(paramsData);
-		// 	const updatedParamsKeys = Object.keys(paramsData);
-		// 	let headersData = { ...this.props.location.endpoint.headers };
-		// 	const originalHeadersKeys = Object.keys(headersData);
-		// 	const updatedHeadersKeys = Object.keys(headersData);
-		// 	this.setState({
-		// 		paramsData,
-		// 		originalParamsKeys,
-		// 		updatedParamsKeys,
-		// 		headersData,
-		// 		originalHeadersKeys,
-		// 		updatedHeadersKeys
-		// 	});
-		// 	this.props.history.push({ endpoint: null });
-		// }
+	fetchDescriptions(params) {
+		let descriptions = []
+		Object.keys(params).map((param) => {
+			descriptions.push(params[param].description);
+		});
+		return descriptions
+	}
+	fetchParamsData(params) {
+		let paramsData = {}
+		for (let i = 0; i < Object.keys(this.props.location.endpoint.params).length; i++) {
+			paramsData[Object.keys(this.props.location.endpoint.params)[i]] = this.props.location.endpoint.params[
+				Object.keys(this.props.location.endpoint.params)[i]
+			].value;
+		}
+		return paramsData
+	}
+	fetchParamsMetaData() {
+		let paramsMetaData = {}
+		for (let i = 0; i < Object.keys(this.props.location.endpoint.params).length; i++) {
+			paramsMetaData[Object.keys(this.props.location.endpoint.params)[i]] = {
+				description: ''
+			};
+			paramsMetaData[
+				Object.keys(this.props.location.endpoint.params)[i]
+			].description = this.props.location.endpoint.params[
+				Object.keys(this.props.location.endpoint.params)[i]
+			].description;
+		}
+		return paramsMetaData
+	}
+
+	render() {
 
 		if (this.props.location.title === 'Add New Endpoint') {
-			this.state.groupId = this.props.location.groupId
-			this.state.groups = this.props.location.groups
-			this.state.versions = this.props.location.versions
-			this.fillDropdownValue()
-
+			const hostJson = this.fetchHosts(this.props.location, this.props.environment)
+			this.fillDropdownValue(hostJson);
+			this.host = this.findHost(hostJson)
 			this.setState({
-				// data: {
-				// 	name: '',
-				// 	method: 'GET',
-				// 	body: {},
-				// 	uri: '',
-				// 	updatedUri: '',
-				// 	host: ''
-				// },
+				data: {
+					name: '',
+					method: 'GET',
+					body: {},
+					uri: '',
+					updatedUri: '',
+					host: this.host
+				},
 				startTime: '',
 				timeElapsed: '',
 				response: {},
 				endpoint: {},
-				// groups: this.props.location.groups,
-				// versions: this.props.location.versions,
-				// groupId: this.props.location.groupId,
+				groups: this.props.location.groups,
+				versions: this.props.location.versions,
+				groupId: this.props.location.groupId,
 				title: this.props.location.title,
+				selectedHost: "",
 				onChangeFlag: false,
-				// dropdownInputFlag: false,
 				flagResponse: false,
 				rawResponse: false,
 				prettyResponse: false,
@@ -683,57 +741,27 @@ class DisplayEndpoint extends Component {
 				values: [],
 				description: []
 			});
-			let data = {
-				name: '',
-				method: 'GET',
-				body: {},
-				uri: '',
-				updatedUri: '',
-				host: ''
-			}
-			// this.state.data = data
-
 			this.props.history.push({ groups: null });
-			data = { ...this.state.data }
-			data.host = this.findHost()
-			this.setState({ data })
 		}
 
 		if (this.props.location.title === 'update endpoint' && this.props.location.endpoint) {
 			let endpoint = { ...this.props.location.endpoint };
+			const hostJson = this.fetchHosts(this.props.location, this.props.environment)
+			this.fillDropdownValue(hostJson);
+			this.host = this.findHost(hostJson)
 
 			//To fetch Values array
-			let values = [];
-			Object.keys(this.props.location.endpoint.params).map((param) => {
-				values.push(this.props.location.endpoint.params[param].value);
-			});
+			let values = this.fetchValues(this.props.location.endpoint.params)
 
-			//To fetch Description Object
-			let description = [];
-			Object.keys(this.props.location.endpoint.params).map((param) => {
-				description.push(this.props.location.endpoint.params[param].description);
-			});
+			//To fetch Descriptions Object
+			let description = this.fetchDescriptions(this.props.location.endpoint.params)
+
 
 			//To fetch ParamsData from Params
-			let paramsData = {};
-			for (let i = 0; i < Object.keys(this.props.location.endpoint.params).length; i++) {
-				paramsData[Object.keys(this.props.location.endpoint.params)[i]] = this.props.location.endpoint.params[
-					Object.keys(this.props.location.endpoint.params)[i]
-				].value;
-			}
+			let paramsData = this.fetchParamsData()
 
 			//To fetch ParamsMetaData from Params
-			let paramsMetaData = {};
-			for (let i = 0; i < Object.keys(this.props.location.endpoint.params).length; i++) {
-				paramsMetaData[Object.keys(this.props.location.endpoint.params)[i]] = {
-					description: ''
-				};
-				paramsMetaData[
-					Object.keys(this.props.location.endpoint.params)[i]
-				].description = this.props.location.endpoint.params[
-					Object.keys(this.props.location.endpoint.params)[i]
-				].description;
-			}
+			let paramsMetaData = this.fetchParamsMetaData(this.props.location.endpoint.params)
 
 			this.state.prettyResponse = false;
 			this.state.rawResponse = false;
@@ -743,35 +771,28 @@ class DisplayEndpoint extends Component {
 			let headersData = { ...this.props.location.endpoint.headers };
 			const originalHeadersKeys = Object.keys(headersData);
 			const updatedHeadersKeys = Object.keys(headersData);
-			this.state.groupId = this.props.location.groupId
-			this.state.groups = this.props.location.groups
-			this.state.versions = this.props.location.versions
-			this.state.title = 'update endpoint'
 			this.state.endpoint = endpoint;
 			this.state.values = values;
 			this.state.keys = Object.keys(this.props.location.endpoint.params);
-			this.fillDropdownValue()
-
-
-
 			this.setState({
-				// data: {
-				// 	method: endpoint.requestType,
-				// 	uri: endpoint.uri,
-				// 	updatedUri: endpoint.uri,
-				// 	name: endpoint.name,
-				// 	body: JSON.stringify(endpoint.body, null, 4),
-				// 	host: ''
-				// },
-				// title: 'update endpoint',
+				data: {
+					method: endpoint.requestType,
+					uri: endpoint.uri,
+					updatedUri: endpoint.uri,
+					name: endpoint.name,
+					body: JSON.stringify(endpoint.body, null, 4),
+					host: this.host
+				},
+				title: 'update endpoint',
 				response: {},
-				// groupId: this.props.location.groupId,
+				groupId: this.props.location.groupId,
 				onChangeFlag: false,
 				description: description,
+				selectedHost: "",
 				paramsMetaData: paramsMetaData,
 				paramsData: paramsData,
-				// versions: this.props.location.versions,
-				// groups: this.props.location.groups,
+				versions: this.props.location.versions,
+				groups: this.props.location.groups,
 				originalParamsKeys,
 				updatedParamsKeys,
 				headersData,
@@ -779,16 +800,6 @@ class DisplayEndpoint extends Component {
 				updatedHeadersKeys
 			});
 
-			let data = {
-				method: endpoint.requestType,
-				uri: endpoint.uri,
-				updatedUri: endpoint.uri,
-				name: endpoint.name,
-				body: JSON.stringify(endpoint.body, null, 4),
-				host: ''
-			}
-			data.host = this.findHost()
-			this.setState({ data })
 			this.props.history.push({ endpoint: null });
 		}
 		return (
@@ -835,12 +846,16 @@ class DisplayEndpoint extends Component {
 						</span>
 
 						<div className="editableDropdown">
-							<input type="text" value={this.state.data.host} onChange={this.handleDropdownChange} />
-							<select id="selectBox" onChange={() => this.setDropdownValue((document.getElementById("selectBox")).
-								options[(document.getElementById("selectBox")).selectedIndex].value)} >
+							<input type="text" value={this.state.data.host} onChange={this.handleDropdownChange} disabled={this.state.selectedHost !== "custom"}
+							/>
+							<select id="selectBox" onChange={() => this.setDropdownValue(
+								document.getElementById("selectBox").
+									options[(document.getElementById("selectBox")).selectedIndex].value)
+
+							} >
 								{Object.keys(this.dropdownHost).map(key => (
-									this.dropdownHost[key] !== "" ? (
-										<option value={key} key={key} >{key} Base_URL</option>
+									this.dropdownHost[key].value !== "" ? (
+										<option value={key} key={key} >{this.dropdownHost[key].name} Base_URL</option>
 									) : null
 								))}
 							</select>
@@ -1113,57 +1128,61 @@ class DisplayEndpoint extends Component {
 						</div>
 					</div>
 				</div>
-				{this.state.response.status ? this.state.response.status === 200 ? (
-					<div>
-						<div className="alert alert-success" role="alert">
-							Status : {this.state.response.status + ' ' + this.state.response.statusText}
-							<div style={{ float: 'right' }}>Time:{this.state.timeElapsed}ms</div>
-						</div>
-					</div>
-				) : (
-						<div className="alert alert-danger" role="alert">
-							Status :
-						{this.state.response.status + ' ' + status[this.state.response.status]}
-						</div>
-					) : null}
-
-				{this.state.flagResponse === true &&
-					(this.state.prettyResponse === true ||
-						this.state.rawResponse === true ||
-						this.state.previewResponse === true) ? (
+				{
+					this.state.response.status ? this.state.response.status === 200 ? (
 						<div>
-							<div>
-								<Navbar bg="primary" variant="dark">
-									<Navbar.Brand href="#home" />
-									<Nav className="mr-auto">
-										<Nav.Link onClick={this.prettyDataResponse.bind(this)}>Pretty</Nav.Link>
-										<Nav.Link onClick={this.rawDataResponse.bind(this)}>Raw</Nav.Link>
-										<Nav.Link onClick={this.previewDataResponse.bind(this)}>Preview</Nav.Link>
-									</Nav>
-									<CopyToClipboard
-										text={JSON.stringify(this.state.response.data)}
-										onCopy={() => this.setState({ copied: true })}
-										style={{ float: 'right', borderRadius: '12px' }}
-									>
-										<button style={{ borderRadius: '12px' }}>Copy</button>
-									</CopyToClipboard>
-								</Navbar>
+							<div className="alert alert-success" role="alert">
+								Status : {this.state.response.status + ' ' + this.state.response.statusText}
+								<div style={{ float: 'right' }}>Time:{this.state.timeElapsed}ms</div>
 							</div>
-
-							{this.state.prettyResponse === true ? (
-								<div>
-									<JSONPretty theme={JSONPrettyMon} data={this.state.response.data} />
-								</div>
-							) : null}
-							{this.state.rawResponse === true ? (
-								<div style={{ display: 'block', whiteSpace: 'normal' }}>{this.state.responseString}</div>
-							) : null}
-							{this.state.previewResponse === true ? (
-								<div style={{ display: 'block', whiteSpace: 'normal' }}>feature coming soon</div>
-							) : null}
 						</div>
-					) : null}
-			</div>
+					) : (
+							<div className="alert alert-danger" role="alert">
+								Status :
+						{this.state.response.status + ' ' + status[this.state.response.status]}
+							</div>
+						) : null
+				}
+
+				{
+					this.state.flagResponse === true &&
+						(this.state.prettyResponse === true ||
+							this.state.rawResponse === true ||
+							this.state.previewResponse === true) ? (
+							<div>
+								<div>
+									<Navbar bg="primary" variant="dark">
+										<Navbar.Brand href="#home" />
+										<Nav className="mr-auto">
+											<Nav.Link onClick={this.prettyDataResponse.bind(this)}>Pretty</Nav.Link>
+											<Nav.Link onClick={this.rawDataResponse.bind(this)}>Raw</Nav.Link>
+											<Nav.Link onClick={this.previewDataResponse.bind(this)}>Preview</Nav.Link>
+										</Nav>
+										<CopyToClipboard
+											text={JSON.stringify(this.state.response.data)}
+											onCopy={() => this.setState({ copied: true })}
+											style={{ float: 'right', borderRadius: '12px' }}
+										>
+											<button style={{ borderRadius: '12px' }}>Copy</button>
+										</CopyToClipboard>
+									</Navbar>
+								</div>
+
+								{this.state.prettyResponse === true ? (
+									<div>
+										<JSONPretty theme={JSONPrettyMon} data={this.state.response.data} />
+									</div>
+								) : null}
+								{this.state.rawResponse === true ? (
+									<div style={{ display: 'block', whiteSpace: 'normal' }}>{this.state.responseString}</div>
+								) : null}
+								{this.state.previewResponse === true ? (
+									<div style={{ display: 'block', whiteSpace: 'normal' }}>feature coming soon</div>
+								) : null}
+							</div>
+						) : null
+				}
+			</div >
 		);
 	}
 }
