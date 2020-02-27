@@ -26,13 +26,16 @@ class ShareVersionForm extends Form {
   }
 
   async doSubmit (props) {
+      console.log("collectionId")
     if (this.props.title === 'Import Version') {
-      this.props.history.push({
-        pathname: `/dashboard/`,
-        importVersionLink:{...this.state.data}
-      })
+        this.props.history.push({
+            pathname: `/dashboard/collections`,
+            importVersionLink:{...this.state.data},
+          //  collectionId:this.props.location.pathname.split('/')[2]
+        })
     }
   }
+
 
   render () {
     return (

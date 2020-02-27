@@ -289,10 +289,10 @@ class Collections extends Component {
   }
   async handleImportVersion(importLink,shareIdentifier)
   {  try { 
-     const {data}= await collectionVersionsService.exportCollectionVersion(importLink,shareIdentifier)
-     const importVersion=await collectionVersionsService.importCollectionVersion(importLink,shareIdentifier,data)
-     console.log("shareVersionData",data,importVersion)
-     console.log("share",importVersion)
+     const {data}= await collectionVersionsService.exportCollectionVersion(importLink,shareIdentifier);
+    const importVersion=await collectionVersionsService.importCollectionVersion(importLink,shareIdentifier,data);
+     console.log("shareVersionData",data);
+     console.log("share",importVersion);
     } catch (ex) {
       toast.error(ex.response ? ex.response.data : "Something went wrong,can't import version");
     }
@@ -832,6 +832,7 @@ class Collections extends Component {
       let shareIdentifier=importLink.split('/')[4];
       this.props.history.replace({ importVersionLink: null });
       console.log("sdf",importLink,shareIdentifier);
+      console.log("abc");
       this.handleImportVersion(importLink,shareIdentifier);
     }
 
@@ -1096,7 +1097,8 @@ class Collections extends Component {
                       eventKey="3"
                       onClick={() => {
                         this.props.history.push({
-                          pathname: `/dashboard/versions/import`
+                          pathname: `/dashboard/versions/import`,
+                          importCollection: this.state.collections[collectionId]
                         });
                       }}
                     >
