@@ -177,7 +177,6 @@ class DisplayEndpoint extends Component {
         delete json[keys[i]];
       }
     }
-    console.log(json);
     return json;
   }
   finalUrl(api) {

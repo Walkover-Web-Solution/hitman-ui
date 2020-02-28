@@ -150,7 +150,6 @@ class Collections extends Component {
       delete endpoint.id;
       await endpointService.updateEndpoint(endpointId, endpoint);
     } catch (error) {
-      console.log(error, originalEndpoints, originalGroups);
       this.setState({ endpoints: originalEndpoints, groups: originalGroups });
     }
   }

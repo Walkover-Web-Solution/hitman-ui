@@ -59,7 +59,6 @@ class Groups extends Component {
 
   onDrop(destinationGroupId, props) {
     if (!this.draggedItem) {
-      // console.log(`move ${this.draggedEndpoint}, from ${this.sourceGroupId} to ${destinationGroupId}`)
       this.props.dnd_move_endpoint(
         this.draggedEndpoint,
         this.sourceGroupId,
