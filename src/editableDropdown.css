@@ -1,0 +1,18 @@
+.editableDropdown {
+    position: relative;
+    width: 280px;
+}
+
+.editableDropdown select {
+    width: 100%;
+}
+
+.editableDropdown > * {
+    box-sizing: border-box;
+    height: 3.2em;
+}
+
+.editableDropdown input {
+    position: absolute;
+    width: calc(100% - 20px);
+}

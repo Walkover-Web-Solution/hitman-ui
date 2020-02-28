@@ -151,7 +151,6 @@ class Collections extends Component {
       delete endpoint.id;
       await endpointService.updateEndpoint(endpointId, endpoint);
     } catch (error) {
-      console.log(error, originalEndpoints, originalGroups);
       this.setState({ endpoints: originalEndpoints, groups: originalGroups });
     }
   }
@@ -1026,8 +1025,8 @@ class Collections extends Component {
                         if (
                           window.confirm(
                             "Are you sure you wish to delete this collection?" +
-                              "\n" +
-                              " All your versions, groups, pages and endpoints present in this collection will be deleted."
+                            "\n" +
+                            " All your versions, groups, pages and endpoints present in this collection will be deleted."
                           )
                         )
                           this.handleDelete(

@@ -59,7 +59,6 @@ class Groups extends Component {
 
   onDrop(destinationGroupId, props) {
     if (!this.draggedItem) {
-      // console.log(`move ${this.draggedEndpoint}, from ${this.sourceGroupId} to ${destinationGroupId}`)
       this.props.dnd_move_endpoint(
         this.draggedEndpoint,
         this.sourceGroupId,
@@ -139,8 +138,8 @@ class Groups extends Component {
                           if (
                             window.confirm(
                               "Are you sure you wish to delete this group? " +
-                                "\n" +
-                                "All your pages and endpoints present in this group will be deleted."
+                              "\n" +
+                              "All your pages and endpoints present in this group will be deleted."
                             )
                           )
                             this.props.history.push({
