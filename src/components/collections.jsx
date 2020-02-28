@@ -295,9 +295,10 @@ class Collections extends Component {
      const {
       data: version
     }=await collectionVersionsService.importCollectionVersion(importLink,shareIdentifier,data);
-    versions[version.id] = version;
-    const versionIds = [...this.state.versionIds, version.id.toString()];
-    this.setState({ versions, versionIds });
+    console.log("11111")
+   // versions[version.id] = version;
+    // const versionIds = [...this.state.versionIds, version.id.toString()];
+    // this.setState({ versions, versionIds });
      console.log("shareVersionData",data);
     } catch (ex) {
       toast.error(ex.response ? ex.response.data : "Something went wrong,can't import version");
