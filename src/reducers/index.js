@@ -1,13 +1,13 @@
-import { ADD_COLLECTION } from "../constants/action-types";
+import { GET_COLLECTIONS } from "../constants/action-types";
 
 const initialState = {
   collections: {}
 };
 
 function rootReducer(state = initialState, action) {
-  if (action.type === ADD_COLLECTION) {
+  if (action.type === GET_COLLECTIONS) {
     return Object.assign({}, state, {
-      collections: { ...state.collections, ...action.payload }
+      collections: action.collections
     });
   }
   return state;

@@ -22,7 +22,7 @@ import shortId from "shortid";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { connect } from "react-redux";
-import { addCollection } from "../actions/index";
+import { addCollection } from "../actions/collectionsActions";
 import store from "../store/index";
 
 const mapStateToProps = state => {
@@ -45,7 +45,8 @@ class CollectionsComponent extends Component {
     versionIds: [],
     groupIds: [],
     pageIds: [],
-    collectionDnDFlag: true
+    collectionDnDFlag: true,
+    showCollectionForm: false
   };
 
   async fetchVersions(collections) {
@@ -95,32 +96,30 @@ class CollectionsComponent extends Component {
   }
 
   async componentDidMount() {
-    console.log(store.getState());
-
-    // const { data: collections } = await collectionsService.getCollections();
     store.dispatch(addCollection());
-    store.subscribe(() => console.log(store.getState()));
-
-    console.log(store.getState());
-
     // const collectionIds = Object.keys(collections);
     // this.setState({ collections, collectionIds });
-    // const versions = await this.fetchVersions(collections);
-    // const groups = await this.fetchGroups(versions);
-    // const pages = await this.fetchPages(versions);
-    // const endpoints = await this.fetchEndpoints(groups);
-    // const versionIds = Object.keys(versions);
-    // const groupIds = Object.keys(groups);
-    // const pageIds = Object.keys(pages);
-    // this.setState({
-    //   versions,
-    //   groups,
-    //   pages,
-    //   endpoints,
-    //   versionIds,
-    //   groupIds,
-    //   pageIds
-    // });
+    const collections = store.getState();
+    const versions = await this.fetchVersions(collections);
+    const groups = await this.fetchGroups(versions);
+    const pages = await this.fetchPages(versions);
+    const endpoints = await this.fetchEndpoints(groups);
+    const versionIds = Object.keys(versions);
+    const groupIds = Object.keys(groups);
+    const pageIds = Object.keys(pages);
+    this.setState({
+      versions,
+      groups,
+      pages,
+      endpoints,
+      versionIds,
+      groupIds,
+      pageIds
+    });
+  }
+
+  closeCollectionForm() {
+    this.setState({ showCollectionForm: false });
   }
 
   collectionDnD(collectionDnDFlag) {
@@ -174,6 +173,7 @@ class CollectionsComponent extends Component {
     }
   }
   async handleAdd(newCollection) {
+    console.log(newCollection);
     newCollection.requestId = shortId.generate();
     const originalCollections = { ...this.state.collections };
     const originalCollectionIds = [...this.state.collectionIds];
@@ -846,10 +846,25 @@ class CollectionsComponent extends Component {
       this.handleAdd(newCollection);
     }
 
+    console.log(this.state);
     return (
       <div>
         <div className="App-Nav">
           <div className="tabs">
+            <CollectionForm
+              {...this.props}
+              show={this.state.showCollectionForm}
+              onHide={
+                () => this.closeCollectionForm()
+                //   () => {
+                //   this.props.history.push({
+                //     pathname: "/dashboard/collections"
+                //   });
+                // }
+              }
+              title="Add new Collection"
+              add_new_collection={this.handleAdd.bind(this)}
+            />
             <Switch>
               <Route
                 path="/dashboard/collections/:id/versions/:versionId/groups/:groupId/pages/new"
@@ -955,7 +970,7 @@ class CollectionsComponent extends Component {
                   />
                 )}
               />
-              <Route
+              {/* <Route
                 path="/dashboard/collections/new"
                 render={props => (
                   <CollectionForm
@@ -969,7 +984,7 @@ class CollectionsComponent extends Component {
                     title="Add new Collection"
                   />
                 )}
-              />
+              /> */}
               <Route
                 path="/dashboard/collections/:id/edit"
                 render={props => (
@@ -989,20 +1004,18 @@ class CollectionsComponent extends Component {
           </div>
         </div>
         <div className="App-Side">
-          <button className="btn btn-default btn-lg">
-            <Link to="/dashboard/collections/new">+ New Collection</Link>
+          <button
+            className="btn btn-default btn-lg"
+            onClick={() => this.setState({ showCollectionForm: true })}
+          >
+            + New Collection
           </button>
-          {this.state.collectionIds.map((collectionId, index) => (
+          {Object.keys(this.props.collections).map((collectionId, index) => (
             <Accordion key={collectionId}>
               <Card>
-                <Card.Header
-                  draggable={this.state.collectionDnDFlag}
-                  onDragOver={e => this.onDragOver(e, index)}
-                  onDragStart={e => this.onDragStart(e, index)}
-                  onDragEnd={this.onDragEnd}
-                >
+                <Card.Header>
                   <Accordion.Toggle as={Button} variant="link" eventKey="1">
-                    {this.state.collections[collectionId].name}
+                    {this.props.collections[collectionId].name}
                   </Accordion.Toggle>
                   <DropdownButton
                     alignRight
@@ -1015,7 +1028,7 @@ class CollectionsComponent extends Component {
                       onClick={() => {
                         this.props.history.push({
                           pathname: `/dashboard/collections/${collectionId}/edit`,
-                          edited_collection: this.state.collections[
+                          edited_collection: this.props.collections[
                             collectionId
                           ]
                         });
@@ -1034,7 +1047,7 @@ class CollectionsComponent extends Component {
                           )
                         )
                           this.handleDelete(
-                            this.state.collections[collectionId]
+                            this.props.collections[collectionId]
                           );
                       }}
                     >
@@ -1054,7 +1067,7 @@ class CollectionsComponent extends Component {
                       eventKey="3"
                       onClick={() =>
                         this.handleDuplicateCollection(
-                          this.state.collections[collectionId]
+                          this.props.collections[collectionId]
                         )
                       }
                     >
@@ -1091,5 +1104,8 @@ class CollectionsComponent extends Component {
     );
   }
 }
-const Collections = connect(null, mapDispatchToProps)(CollectionsComponent);
+const Collections = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(CollectionsComponent);
 export default Collections;

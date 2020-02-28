@@ -1,1 +1,1 @@
-export const ADD_COLLECTION = "ADD_COLLECTION";
+export const GET_COLLECTIONS = "GET_COLLECTIONS";
