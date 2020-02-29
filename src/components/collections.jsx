@@ -22,8 +22,7 @@ import shortId from "shortid";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { connect } from "react-redux";
-import { addCollection } from "../actions/collectionsActions";
-import store from "../store/index";
+import { fetchCollections, addCollection } from "../actions/collectionsActions";
 
 const mapStateToProps = state => {
   return { collections: state.collections };
@@ -31,7 +30,8 @@ const mapStateToProps = state => {
 
 function mapDispatchToProps(dispatch) {
   return {
-    addCollection: collection => dispatch(addCollection(collection))
+    fetchCollections: collection => dispatch(fetchCollections(collection)),
+    addCollection: newCollection => dispatch(addCollection(newCollection))
   };
 }
 class CollectionsComponent extends Component {
@@ -96,26 +96,26 @@ class CollectionsComponent extends Component {
   }
 
   async componentDidMount() {
-    store.dispatch(addCollection());
+    this.props.fetchCollections();
     // const collectionIds = Object.keys(collections);
     // this.setState({ collections, collectionIds });
-    const collections = store.getState();
-    const versions = await this.fetchVersions(collections);
-    const groups = await this.fetchGroups(versions);
-    const pages = await this.fetchPages(versions);
-    const endpoints = await this.fetchEndpoints(groups);
-    const versionIds = Object.keys(versions);
-    const groupIds = Object.keys(groups);
-    const pageIds = Object.keys(pages);
-    this.setState({
-      versions,
-      groups,
-      pages,
-      endpoints,
-      versionIds,
-      groupIds,
-      pageIds
-    });
+    // const collections = store.getState();
+    // const versions = await this.fetchVersions(collections);
+    // const groups = await this.fetchGroups(versions);
+    // const pages = await this.fetchPages(versions);
+    // const endpoints = await this.fetchEndpoints(groups);
+    // const versionIds = Object.keys(versions);
+    // const groupIds = Object.keys(groups);
+    // const pageIds = Object.keys(pages);
+    // this.setState({
+    //   versions,
+    //   groups,
+    //   pages,
+    //   endpoints,
+    //   versionIds,
+    //   groupIds,
+    //   pageIds
+    // });
   }
 
   closeCollectionForm() {
@@ -171,35 +171,35 @@ class CollectionsComponent extends Component {
       this.setState({ endpoints: originalEndpoints, groups: originalGroups });
     }
   }
-  async handleAdd(newCollection) {
-    console.log(newCollection);
+  async handleAddCollection(newCollection) {
     newCollection.requestId = shortId.generate();
-    const originalCollections = { ...this.state.collections };
-    const originalCollectionIds = [...this.state.collectionIds];
-    const collections = { ...this.state.collections };
-    const requestId = newCollection.requestId;
-    collections[requestId] = { ...newCollection };
-    this.setState({ collections });
-    try {
-      const { data: collection } = await collectionsService.saveCollection(
-        newCollection
-      );
-      collections[collection.id] = collection;
-      delete collections[requestId];
-      const {
-        data: version
-      } = await collectionVersionsService.getCollectionVersions(collection.id);
-      const versions = { ...this.state.versions, ...version };
-      const versionIds = [...this.state.versionIds, Object.keys(version)[0]];
-      const collectionIds = [...this.state.collectionIds, collection.id];
-      this.setState({ collections, versions, collectionIds, versionIds });
-    } catch (ex) {
-      toast.error(ex.response ? ex.response.data : "Something went wrong");
-      this.setState({
-        collections: originalCollections,
-        collectionIds: originalCollectionIds
-      });
-    }
+    this.props.addCollection(newCollection);
+    // const originalCollections = { ...this.state.collections };
+    // const originalCollectionIds = [...this.state.collectionIds];
+    // const collections = { ...this.state.collections };
+    // const requestId = newCollection.requestId;
+    // collections[requestId] = { ...newCollection };
+    // this.setState({ collections });
+    // try {
+    //   const { data: collection } = await collectionsService.saveCollection(
+    //     newCollection
+    //   );
+    //   collections[collection.id] = collection;
+    //   delete collections[requestId];
+    //   const {
+    //     data: version
+    //   } = await collectionVersionsService.getCollectionVersions(collection.id);
+    //   const versions = { ...this.state.versions, ...version };
+    //   const versionIds = [...this.state.versionIds, Object.keys(version)[0]];
+    //   const collectionIds = [...this.state.collectionIds, collection.id];
+    //   this.setState({ collections, versions, collectionIds, versionIds });
+    // } catch (ex) {
+    //   toast.error(ex.response ? ex.response.data : "Something went wrong");
+    //   this.setState({
+    //     collections: originalCollections,
+    //     collectionIds: originalCollectionIds
+    //   });
+    // }
   }
 
   async handleDelete(collection) {
@@ -842,10 +842,9 @@ class CollectionsComponent extends Component {
     if (location.newCollection) {
       const newCollection = location.newCollection;
       this.props.history.replace({ newCollection: null });
-      this.handleAdd(newCollection);
+      this.handleAddCollection(newCollection);
     }
 
-    console.log(this.state);
     return (
       <div>
         <div className="App-Nav">
@@ -853,16 +852,9 @@ class CollectionsComponent extends Component {
             <CollectionForm
               {...this.props}
               show={this.state.showCollectionForm}
-              onHide={
-                () => this.closeCollectionForm()
-                //   () => {
-                //   this.props.history.push({
-                //     pathname: "/dashboard/collections"
-                //   });
-                // }
-              }
+              onHide={() => this.closeCollectionForm()}
               title="Add new Collection"
-              add_new_collection={this.handleAdd.bind(this)}
+              add_new_collection={this.handleAddCollection.bind(this)}
             />
             <Switch>
               <Route

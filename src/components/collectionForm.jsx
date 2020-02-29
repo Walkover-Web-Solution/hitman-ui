@@ -21,7 +21,6 @@ class CollectionForm extends Form {
   };
 
   async componentDidMount() {
-    console.log("opened");
     this.setState({ show: this.props.show });
     if (this.props.title === "Add new Collection") return;
     let data = {};
@@ -91,7 +90,6 @@ class CollectionForm extends Form {
       });
     }
     if (this.props.title === "Add new Collection") {
-      console.log(this);
       this.props.onHide();
       this.props.add_new_collection({ ...this.state.data });
     }
@@ -101,11 +99,6 @@ class CollectionForm extends Form {
     return (
       <Modal
         {...this.props}
-        // show={this.state.show}
-        // onHide={() => {
-        //   this.setState({ show: false });
-        //   console.log(this.state.show);
-        // }}
         size="lg"
         aria-labelledby="contained-modal-title-vcenter"
         centered

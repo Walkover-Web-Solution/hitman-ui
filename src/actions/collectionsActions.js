@@ -1,18 +1,33 @@
-import { GET_COLLECTIONS } from "../constants/action-types";
 import collectionsService from "../services/collectionsService";
 
-export function addCollection() {
-  console.log("called action");
+export function fetchCollections() {
+  console.log("called fetchCollections action");
   return function(dispatch) {
     return collectionsService
       .getCollections()
       .then(response => response.data)
       .then(collections => {
-        dispatch({ type: GET_COLLECTIONS, collections });
+        dispatch(fetchCollectionsAction(collections));
       });
   };
 }
 
-export function addCollectionAction(payload) {
-  return { type: GET_COLLECTIONS, payload };
+export function fetchCollectionsAction(collections) {
+  return { type: "FETCH_COLLECTIONS", collections };
+}
+
+export function addCollection(newCollection) {
+  console.log("called addCollection action");
+  return function(dispatch) {
+    return collectionsService
+      .saveCollection(newCollection)
+      .then(response => response.data)
+      .then(newCollection => {
+        dispatch(addCollectionAction(newCollection));
+      });
+  };
+}
+
+export function addCollectionAction(newCollection) {
+  return { type: "ADD_COLLECTION", newCollection };
 }
