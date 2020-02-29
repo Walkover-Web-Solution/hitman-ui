@@ -22,18 +22,16 @@ import shortId from "shortid";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { connect } from "react-redux";
-import { fetchCollections, addCollection } from "../actions/collectionsActions";
+import {
+  fetchCollections,
+  addCollection,
+  getData
+} from "../actions/collectionsActions";
 
 const mapStateToProps = state => {
   return { collections: state.collections };
 };
 
-function mapDispatchToProps(dispatch) {
-  return {
-    fetchCollections: collection => dispatch(fetchCollections(collection)),
-    addCollection: newCollection => dispatch(addCollection(newCollection))
-  };
-}
 class CollectionsComponent extends Component {
   state = {
     collections: {},
@@ -96,7 +94,7 @@ class CollectionsComponent extends Component {
   }
 
   async componentDidMount() {
-    this.props.fetchCollections();
+    this.props.getData();
     // const collectionIds = Object.keys(collections);
     // this.setState({ collections, collectionIds });
     // const collections = store.getState();
@@ -1033,8 +1031,8 @@ class CollectionsComponent extends Component {
                         if (
                           window.confirm(
                             "Are you sure you wish to delete this collection?" +
-                            "\n" +
-                            " All your versions, groups, pages and endpoints present in this collection will be deleted."
+                              "\n" +
+                              " All your versions, groups, pages and endpoints present in this collection will be deleted."
                           )
                         )
                           this.handleDelete(
@@ -1095,8 +1093,9 @@ class CollectionsComponent extends Component {
     );
   }
 }
-const Collections = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(CollectionsComponent);
+const Collections = connect(mapStateToProps, {
+  fetchCollections,
+  addCollection,
+  getData
+})(CollectionsComponent);
 export default Collections;
