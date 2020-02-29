@@ -1,5 +1,5 @@
-import http from "./httpService";
-import { apiUrl } from "../config.json";
+import http from "../../services/httpService";
+import { apiUrl } from "../../config.json";
 
 // const apiUrl = "http://localhost:2000";
 

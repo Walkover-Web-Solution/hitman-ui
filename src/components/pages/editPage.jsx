@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import pageService from "../services/pageService";
+import pageService from "./pageService";
 
 class EditPage extends Component {
   name = React.createRef();

@@ -1,9 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Modal } from "react-bootstrap";
-import Form from "./common/form";
 import Joi from "joi-browser";
-import groupsService from "../services/groupsService";
+import Form from "../common/form";
+import groupsService from "./groupsService";
 class GroupForm extends Form {
   state = {
     data: {

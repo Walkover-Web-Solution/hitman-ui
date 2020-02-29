@@ -8,20 +8,20 @@ import {
   DropdownButton
 } from "react-bootstrap";
 import { Route, Switch } from "react-router-dom";
-import CollectionForm from "./collectionForm";
-import collectionsService from "../services/collectionsService";
-import collectionVersionsService from "../services/collectionVersionsService";
-import CollectionVersions from "./collectionVersions";
-import CollectionVersionForm from "./collectionVersionForm";
-import GroupForm from "./groupForm";
-import ShareVersionForm from "./shareVersionForm"
-import ImportVersionForm from "./importVersionForm"
-import groupsService from "../services/groupsService";
-import PageForm from "./pageForm";
-import pageService from "../services/pageService";
-import endpointService from "../services/endpointService";
 import shortId from "shortid";
 import { toast } from "react-toastify";
+import CollectionForm from "./collectionForm";
+import collectionsService from "./collectionsService";
+import collectionVersionsService from "../collectionVersions/collectionVersionsService";
+import CollectionVersions from "../collectionVersions/collectionVersions";
+import CollectionVersionForm from "../collectionVersions/collectionVersionForm";
+import GroupForm from "../groups/groupForm";
+import groupsService from "../groups/groupsService";
+import PageForm from "../pages/pageForm";
+import pageService from "../pages/pageService";
+import endpointService from "../endpoints/endpointService";
+import ShareVersionForm from "../collectionVersions/shareVersionForm";
+import ImportVersionForm from "../collectionVersions/importVersionForm";
 import "react-toastify/dist/ReactToastify.css";
 
 class Collections extends Component {
@@ -286,26 +286,33 @@ class Collections extends Component {
       this.setState({ versions: originalVersions });
     }
   }
-  async handleImportVersion(importLink,shareIdentifier,collectionId)
-  { let orignalVersion = { ...this.state.versions }; 
+  async handleImportVersion(importLink, shareIdentifier, collectionId) {
+    let orignalVersion = { ...this.state.versions };
     let versions = { ...this.state.versions };
     let version = {};
     let endpoints = {};
     let pages = {};
     let groups = {};
-     try { 
-     let {data}= await collectionVersionsService.exportCollectionVersion(importLink,shareIdentifier);
-     data.collectionId=collectionId;
-     let importVersion=await collectionVersionsService.importCollectionVersion(importLink,shareIdentifier,data);
-     data=importVersion.data;
-    version = data.version;
+    try {
+      let { data } = await collectionVersionsService.exportCollectionVersion(
+        importLink,
+        shareIdentifier
+      );
+      data.collectionId = collectionId;
+      let importVersion = await collectionVersionsService.importCollectionVersion(
+        importLink,
+        shareIdentifier,
+        data
+      );
+      data = importVersion.data;
+      version = data.version;
       versions[version.id] = version;
       groups = { ...this.state.groups, ...data.groups };
       endpoints = { ...this.state.endpoints, ...data.endpoints };
       pages = { ...this.state.pages, ...data.pages };
       const versionIds = [...this.state.versionIds, version.id.toString()];
       const groupIds = [...this.state.groupIds, ...Object.keys(data.groups)];
-      const pageIds = [...this.state.pageIds, ...Object.keys(data.pages)]
+      const pageIds = [...this.state.pageIds, ...Object.keys(data.pages)];
       this.setState({
         versions,
         versionIds,
@@ -316,7 +323,11 @@ class Collections extends Component {
         pageIds
       });
     } catch (ex) {
-      toast.error(ex.response ? ex.response.data : "Something went wrong,can't import version");
+      toast.error(
+        ex.response
+          ? ex.response.data
+          : "Something went wrong,can't import version"
+      );
     }
   }
 
@@ -850,13 +861,12 @@ class Collections extends Component {
     }
     if (location.importVersionLink) {
       let importLink = location.importVersionLink;
-      let collectionId=location.collectionId;
-      importLink=importLink.shareVersionLink;
-      let shareIdentifier=importLink.split('/')[4];
+      let collectionId = location.collectionId;
+      importLink = importLink.shareVersionLink;
+      let shareIdentifier = importLink.split("/")[4];
       this.props.history.replace({ importVersionLink: null });
-      this.handleImportVersion(importLink,shareIdentifier,collectionId);
+      this.handleImportVersion(importLink, shareIdentifier, collectionId);
     }
-
 
     if (location.editedCollection) {
       const editedCollection = location.editedCollection;
@@ -1024,18 +1034,18 @@ class Collections extends Component {
                   />
                 )}
               />
-                <Route
-                path='/dashboard/collections/:collectionId/versions/:versionId/share'
+              <Route
+                path="/dashboard/collections/:collectionId/versions/:versionId/share"
                 render={props => (
                   <ShareVersionForm
                     {...props}
                     show={true}
                     onHide={() => {
                       this.props.history.push({
-                        pathname: '/dashboard/collections'
-                      })
+                        pathname: "/dashboard/collections"
+                      });
                     }}
-                    title='Share Version'
+                    title="Share Version"
                   />
                 )}
               />
@@ -1083,8 +1093,8 @@ class Collections extends Component {
                         if (
                           window.confirm(
                             "Are you sure you wish to delete this collection?" +
-                            "\n" +
-                            " All your versions, groups, pages and endpoints present in this collection will be deleted."
+                              "\n" +
+                              " All your versions, groups, pages and endpoints present in this collection will be deleted."
                           )
                         )
                           this.handleDelete(
