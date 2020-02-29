@@ -75,6 +75,22 @@ class CollectionVersions extends Component {
       duplicateVersion: version
     });
   }
+  handleShare(version)
+  {
+    // this.props.history.push({
+    //   pathname: '/dashboard/collections',
+    //   shareVersion:version,
+    // })
+    console.log("shareIdentifier",version)
+    this.handleShareVersion(version.shareIdentifier,version.collectionId,version.id)
+  }
+  handleShareVersion(shareIdentifier,collectionId,versionId){
+    console.log("shareIdentifier",shareIdentifier)
+    this.props.history.push({
+      pathname: `/dashboard/collections/${collectionId}/versions/${versionId}/share`,
+     shareIdentifier:shareIdentifier
+    })
+  }
 
   render() {
     return (
@@ -156,6 +172,14 @@ class CollectionVersions extends Component {
                         }}
                       >
                         Duplicate
+                      </Dropdown.Item>
+                      <Dropdown.Item
+                        eventKey='3'
+                        onClick={() => {
+                            this.handleShare(this.props.versions[versionId])
+                        }}
+                      >
+                       Share
                       </Dropdown.Item>
                     </DropdownButton>
                   </Card.Header>
