@@ -80,7 +80,6 @@ class Endpoints extends Component {
     });
   }
   render() {
-    console.log(this.props.endpoints,this.props.endpoints_order)
     if (this.props.endpoints_order.length == 0) {
       return (
         <Table

@@ -613,6 +613,7 @@ class Collections extends Component {
       const { data } = await collectionVersionsService.duplicateVersion(
         versionCopy.id
       );
+      console.log("duplicate version",data);
       version = data.version;
       versions[version.id] = version;
       groups = { ...this.state.groups, ...data.groups };
