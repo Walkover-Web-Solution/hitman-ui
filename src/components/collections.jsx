@@ -299,7 +299,6 @@ class Collections extends Component {
      data.collectionId=collectionId;
      let importVersion=await collectionVersionsService.importCollectionVersion(importLink,shareIdentifier,data);
      data=importVersion.data;
-    console.log("11111",data);
     version = data.version;
       versions[version.id] = version;
       groups = { ...this.state.groups, ...data.groups };
@@ -308,7 +307,6 @@ class Collections extends Component {
       const versionIds = [...this.state.versionIds, version.id.toString()];
       const groupIds = [...this.state.groupIds, ...Object.keys(data.groups)];
       const pageIds = [...this.state.pageIds, ...Object.keys(data.pages)]
-    console.log("222",data);
       this.setState({
         versions,
         versionIds,
@@ -318,10 +316,8 @@ class Collections extends Component {
         pages,
         pageIds
       });
-      console.log("333",data);
     } catch (ex) {
-      console.log("error",ex);
-      //toast.error(ex.response ? ex.response.data : "Something went wrong,can't import version");
+      toast.error(ex.response ? ex.response.data : "Something went wrong,can't import version");
     }
   }
 
@@ -633,7 +629,6 @@ class Collections extends Component {
       const { data } = await collectionVersionsService.duplicateVersion(
         versionCopy.id
       );
-      console.log("duplicate version",data)
       version = data.version;
       versions[version.id] = version;
       groups = { ...this.state.groups, ...data.groups };

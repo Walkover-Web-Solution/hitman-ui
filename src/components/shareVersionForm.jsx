@@ -16,8 +16,7 @@ class ShareVersionForm extends Form {
 
   componentDidMount() {
 
-      if(this.props.location.shareIdentifier){
-                console.log("shareIdentifier")
+      if(this.props.location.shareIdentifier){  
                 let  data = {}
                 const {shareIdentifier} = this.props.location 
                 const shareVersionLink = apiUrl + "/share/" + shareIdentifier
