@@ -288,20 +288,40 @@ class Collections extends Component {
     }
   }
   async handleImportVersion(importLink,shareIdentifier,collectionId)
-  {  let versions = { ...this.state.versions };
+  { let orignalVersion = { ...this.state.versions }; 
+    let versions = { ...this.state.versions };
+    let version = {};
+    let endpoints = {};
+    let pages = {};
+    let groups = {};
      try { 
-     const {data}= await collectionVersionsService.exportCollectionVersion(importLink,shareIdentifier);
+     let {data}= await collectionVersionsService.exportCollectionVersion(importLink,shareIdentifier);
      data.collectionId=collectionId;
-     const {
-      data: version
-    }=await collectionVersionsService.importCollectionVersion(importLink,shareIdentifier,data);
-    console.log("11111")
-   // versions[version.id] = version;
-    // const versionIds = [...this.state.versionIds, version.id.toString()];
-    // this.setState({ versions, versionIds });
-     console.log("shareVersionData",data);
+     let importVersion=await collectionVersionsService.importCollectionVersion(importLink,shareIdentifier,data);
+     data=importVersion.data;
+    console.log("11111",data);
+    version = data.version;
+      versions[version.id] = version;
+      groups = { ...this.state.groups, ...data.groups };
+      endpoints = { ...this.state.endpoints, ...data.endpoints };
+      pages = { ...this.state.pages, ...data.pages };
+      const versionIds = [...this.state.versionIds, version.id.toString()];
+      const groupIds = [...this.state.groupIds, ...Object.keys(data.groups)];
+      const pageIds = [...this.state.pageIds, ...Object.keys(data.pages)]
+    console.log("222",data);
+      this.setState({
+        versions,
+        versionIds,
+        groups,
+        groupIds,
+        endpoints,
+        pages,
+        pageIds
+      });
+      console.log("333",data);
     } catch (ex) {
-      toast.error(ex.response ? ex.response.data : "Something went wrong,can't import version");
+      console.log("error",ex);
+      //toast.error(ex.response ? ex.response.data : "Something went wrong,can't import version");
     }
   }
 
@@ -613,7 +633,7 @@ class Collections extends Component {
       const { data } = await collectionVersionsService.duplicateVersion(
         versionCopy.id
       );
-      console.log("duplicate version",data);
+      console.log("duplicate version",data)
       version = data.version;
       versions[version.id] = version;
       groups = { ...this.state.groups, ...data.groups };
