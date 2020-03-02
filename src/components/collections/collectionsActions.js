@@ -102,10 +102,3 @@ export const updateCollectionFailure = (error,originalCollection) => {
     originalCollection
   };
 };
-
-// export const collectionsFailure = error => {
-//   return {
-//     type: COLLECTIONS_REQUEST_FAILURE,
-//     payload: error
-//   };
-// };
