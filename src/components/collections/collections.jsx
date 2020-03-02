@@ -34,11 +34,13 @@ const mapStateToProps = state => {
   return { collections: state.collections };
 };
 
-const mapDispatchToProps = state => {
+const mapDispatchToProps = dispatch => {
   return {
-    fetchCollections,
-    addCollection,
-    updateCollection
+    fetchCollections: () => dispatch(fetchCollections()),
+    // fetchCollections,
+    addCollection: newCollection => dispatch(addCollection(newCollection)),
+    updateCollection: editedCollection =>
+      dispatch(updateCollection(editedCollection))
   };
 };
 
@@ -106,7 +108,9 @@ class CollectionsComponent extends Component {
   }
 
   async componentDidMount() {
+    console.log(this.props);
     this.props.fetchCollections();
+    console.log(this.props.collections);
     // const collectionIds = Object.keys(collections);
     // this.setState({ collections, collectionIds });
     // const collections = store.getState();
