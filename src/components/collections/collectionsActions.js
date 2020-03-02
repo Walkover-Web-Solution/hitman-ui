@@ -1,113 +1,111 @@
-import collectionsService from "./collectionsService";
+import collectionsService from "../collections/collectionsService";
+import collectionsActionTypes from "./collectionsActionTypes";
+import store from '../../store/store'
 
 export const fetchCollections = () => {
   return dispatch => {
-    console.log("fetchCollections");
-    dispatch(fetchCollectionsRequest());
     collectionsService
       .getCollections()
       .then(response => {
-        const collections = response.data;
-        dispatch(fetchCollectionsSuccess(collections));
+        dispatch(fetchCollectionsSuccess(response.data));
       })
       .catch(error => {
-        dispatch(fetchCollectionsFailure(error.message));
+        dispatch(fetchCollectionsFailure(error.response.data));
       });
-  };
-};
-
-export const fetchCollectionsRequest = () => {
-  return {
-    type: "FETCH_COLLECTIONS_REQUEST"
   };
 };
 
 export const fetchCollectionsSuccess = collections => {
   return {
-    type: "FETCH_COLLECTIONS_SUCCESS",
-    payload: collections
+    type: collectionsActionTypes.FETCH_COLLECTIONS_SUCCESS,
+     collections
   };
 };
 
 export const fetchCollectionsFailure = error => {
   return {
-    type: "FETCH_COLLECTIONS_FAILURE",
-    payload: error
+    type: collectionsActionTypes.FETCH_COLLECTIONS_FAILURE,
+    error
   };
 };
 
-export const addCollection = collection => {
+export const addCollection = newCollection => {
   return dispatch => {
-    dispatch(addCollectionRequest());
+    dispatch(addCollectionRequest(newCollection));
     collectionsService
-      .saveCollection(collection)
+      .saveCollection(newCollection)
       .then(response => {
-        const collection = response.data;
-        dispatch(addCollectionSuccess(collection));
+        dispatch(addCollectionSuccess(response.data,newCollection));
       })
       .catch(error => {
-        dispatch(addCollectionFailure(error.message));
+        dispatch(addCollectionFailure(error.response.data,newCollection));
       });
   };
 };
 
-export const addCollectionRequest = () => {
+export const addCollectionRequest = newCollection => {
   return {
-    type: " ADD_COLLECTION_REQUEST"
+    type: collectionsActionTypes.ADD_COLLECTION_REQUEST,
+    newCollection
   };
 };
 
-export const addCollectionSuccess = collection => {
+export const addCollectionSuccess = (response) => {
   return {
-    type: "ADD_COLLECTION_SUCCESS",
-    payload: collection
+    type: collectionsActionTypes.ADD_COLLECTION_SUCCESS,
+    response
   };
 };
 
-export const addCollectionFailure = error => {
+export const addCollectionFailure= (error,newCollection) => {
   return {
-    type: "ADD_COLLECTION_FAILURE",
-    payload: error
+    type: collectionsActionTypes.ADD_COLLECTION_FAILURE,
+    newCollection,
+    error
   };
 };
 
 export const updateCollection = editedCollection => {
   return dispatch => {
-    const { id, name, website, description, keyword } = editedCollection;
-    const data = { name, website, description, keyword };
-    dispatch(updateCollectionRequest());
+    const originalCollection = store.getState().collections[editedCollection.id]
+    dispatch(updateCollectionRequest(editedCollection));
+    const id =editedCollection.id;
+    delete editedCollection.id;
     collectionsService
-      .updateCollection(id, data)
-      .then(response => {
-        const collection = response.data;
-        dispatch(updateCollectionSuccess(collection));
+      .updateCollection(id, editedCollection)
+      .then( () => {
+        dispatch(updateCollectionSuccess());
       })
       .catch(error => {
-        dispatch(updateCollectionFailure(error.message));
+        dispatch(updateCollectionFailure(error.response.data,originalCollection));
       });
   };
 };
 
-export const updateCollectionRequest = () => {
+export const updateCollectionRequest = editedCollection => {
   return {
-    type: " UPDATE_COLLECTION_REQUEST"
+    type: collectionsActionTypes.UPDATE_COLLECTION_REQUEST,
+    editedCollection
   };
 };
 
-export const updateCollectionSuccess = collection => {
+export const updateCollectionSuccess = () => {
   return {
-    type: "UPDATE_COLLECTION_SUCCESS",
-    payload: collection
+    type:collectionsActionTypes.UPDATE_COLLECTION_SUCCESS
   };
 };
 
-export const updateCollectionFailure = error => {
+export const updateCollectionFailure = (error,originalCollection) => {
   return {
-    type: "UPDATE_COLLECTION_FAILURE",
-    payload: error
+    type:collectionsActionTypes.UPDATE_COLLECTION_FAILURE,
+    error,
+    originalCollection
   };
 };
 
-// export function updateCollectionAction(editedCollection) {
-//   return { type: "EDIT_COLLECTION", editedCollection };
-// }
+// export const collectionsFailure = error => {
+//   return {
+//     type: COLLECTIONS_REQUEST_FAILURE,
+//     payload: error
+//   };
+// };

@@ -1,70 +1,56 @@
+import collectionsActionTypes from "./collectionsActionTypes";
+import { toast } from "react-toastify";
+
 const initialState = {
-  loading: false,
-  collections: {},
-  error: ""
+  collections: {}
 };
 
 function collectionsReducer(state = initialState, action) {
+  let collections = {}
   switch (action.type) {
-    case "FETCH_COLLECTIONS_REQUEST":
+
+    case collectionsActionTypes.FETCH_COLLECTIONS_SUCCESS:
       return {
-        ...state,
-        loading: true
+        collections:{...action.collections}
       };
-    case "FETCH_COLLECTIONS_SUCCESS":
+      
+    case collectionsActionTypes.FETCH_COLLECTIONS_FAILURE:
+      toast.error(action.error)  
+      return state;
+
+    case collectionsActionTypes.ADD_COLLECTION_REQUEST:
       return {
-        loading: false,
-        collections: action.payload,
-        error: ""
-      };
-    case "FETCH_COLLECTIONS_FAILURE":
-      return {
-        loading: false,
-        collections: {},
-        error: action.payload
+        collections:{...state.collections,[action.newCollection.requestId] : action.newCollection}
       };
 
-    case "ADD_COLLECTION_REQUEST":
+    case collectionsActionTypes.ADD_COLLECTION_SUCCESS:
+       collections = {...state.collections}
+      delete collections[action.response.requestId];
+      collections[action.response.id] = action.response
       return {
-        ...state,
-        loading: true
-      };
-    case "ADD_COLLECTION_SUCCESS":
-      return {
-        loading: false,
-        collections: {
-          ...state.collections,
-          [action.payload.id]: action.payload
-        },
-        error: ""
+        collections
       };
 
-    case "ADD_COLLECTION_FAILURE":
+    case collectionsActionTypes.ADD_COLLECTION_FAILURE:
+      toast.error(action.error)
+      collections = {...state.collections}
+      delete collections[action.newCollection.requestId];
       return {
-        loading: false,
-        collections: { ...state.collections },
-        error: action.payload
+        collections
       };
 
-    case "UPDATE_COLLECTION_REQUEST":
+    case collectionsActionTypes.UPDATE_COLLECTION_REQUEST:
       return {
-        ...state,
-        loading: true
+        collections:{...state.collections,[action.editedCollection.id]:action.editedCollection}
       };
-    case "UPDATE_COLLECTION_SUCCESS":
+
+    case collectionsActionTypes.UPDATE_COLLECTION_SUCCESS:
+      return state;
+
+    case collectionsActionTypes.UPDATE_COLLECTION_FAILURE:
+      toast.error(action.error);  
       return {
-        loading: false,
-        collections: {
-          ...state.collections,
-          [action.payload.id]: action.payload
-        },
-        error: ""
-      };
-    case "UPDATE_COLLECTION_FAILURE":
-      return {
-        loading: false,
-        collections: { ...state.collections },
-        error: action.payload
+        collections: {...state.collections, [action.originalCollection.id]: action.originalCollection}
       };
 
     default:

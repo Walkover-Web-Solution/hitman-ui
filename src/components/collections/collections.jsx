@@ -31,16 +31,15 @@ import {
 } from "./collectionsActions";
 
 const mapStateToProps = state => {
+  console.log('jhj',state)
   return { collections: state.collections };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
     fetchCollections: () => dispatch(fetchCollections()),
-    // fetchCollections,
     addCollection: newCollection => dispatch(addCollection(newCollection)),
-    updateCollection: editedCollection =>
-      dispatch(updateCollection(editedCollection))
+    updateCollection: editedCollection => dispatch(updateCollection(editedCollection))
   };
 };
 
@@ -110,7 +109,6 @@ class CollectionsComponent extends Component {
   async componentDidMount() {
     console.log(this.props);
     this.props.fetchCollections();
-    console.log(this.props.collections);
     // const collectionIds = Object.keys(collections);
     // this.setState({ collections, collectionIds });
     // const collections = store.getState();
@@ -1200,8 +1198,5 @@ class CollectionsComponent extends Component {
     );
   }
 }
-const Collections = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(CollectionsComponent);
-export default Collections;
+
+export default connect(mapStateToProps,mapDispatchToProps)(CollectionsComponent)

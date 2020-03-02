@@ -3,7 +3,7 @@ import { Route, Switch, Link } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import SideBar from "./sidebar";
-import Environments from "./environment/environments";
+import Environments from "./environments/environments";
 import DisplayPage from "./pages/displayPage";
 import EditPage from "./pages/editPage";
 import DisplayEndpoint from "./endpoints/displayEndpoint";
