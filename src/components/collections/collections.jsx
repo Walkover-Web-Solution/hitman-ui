@@ -8,25 +8,23 @@ import {
   DropdownButton
 } from "react-bootstrap";
 import { Route, Switch } from "react-router-dom";
-import CollectionForm from "./collectionForm";
-import collectionsService from "../services/collectionsService";
-import collectionVersionsService from "../services/collectionVersionsService";
-import CollectionVersions from "./collectionVersions";
-import CollectionVersionForm from "./collectionVersionForm";
-import GroupForm from "./groupForm";
-import groupsService from "../services/groupsService";
-import PageForm from "./pageForm";
-import pageService from "../services/pageService";
-import endpointService from "../services/endpointService";
 import shortId from "shortid";
 import { toast } from "react-toastify";
+import CollectionForm from "./collectionForm";
+import collectionsService from "./collectionsService";
+import collectionVersionsService from "../collectionVersions/collectionVersionsService";
+import CollectionVersions from "../collectionVersions/collectionVersions";
+import CollectionVersionForm from "../collectionVersions/collectionVersionForm";
+import GroupForm from "../groups/groupForm";
+import groupsService from "../groups/groupsService";
+import PageForm from "../pages/pageForm";
+import pageService from "../pages/pageService";
+import endpointService from "../endpoints/endpointService";
+import ShareVersionForm from "../collectionVersions/shareVersionForm";
+import ImportVersionForm from "../collectionVersions/importVersionForm";
 import "react-toastify/dist/ReactToastify.css";
 import { connect } from "react-redux";
-import {
-  fetchCollections,
-  addCollection,
-  getData
-} from "../actions/collectionsActions";
+import { fetchCollections, addCollection, getData } from "./collectionsActions";
 
 const mapStateToProps = state => {
   return { collections: state.collections };
@@ -95,6 +93,7 @@ class CollectionsComponent extends Component {
 
   async componentDidMount() {
     this.props.getData();
+    console.log(this.props.collections);
     // const collectionIds = Object.keys(collections);
     // this.setState({ collections, collectionIds });
     // const collections = store.getState();
@@ -299,6 +298,50 @@ class CollectionsComponent extends Component {
     } catch (ex) {
       toast.error(ex.response ? ex.response.data : "Something went wrong");
       this.setState({ versions: originalVersions });
+    }
+  }
+  async handleImportVersion(importLink, shareIdentifier, collectionId) {
+    let orignalVersion = { ...this.state.versions };
+    let versions = { ...this.state.versions };
+    let version = {};
+    let endpoints = {};
+    let pages = {};
+    let groups = {};
+    try {
+      let { data } = await collectionVersionsService.exportCollectionVersion(
+        importLink,
+        shareIdentifier
+      );
+      data.collectionId = collectionId;
+      let importVersion = await collectionVersionsService.importCollectionVersion(
+        importLink,
+        shareIdentifier,
+        data
+      );
+      data = importVersion.data;
+      version = data.version;
+      versions[version.id] = version;
+      groups = { ...this.state.groups, ...data.groups };
+      endpoints = { ...this.state.endpoints, ...data.endpoints };
+      pages = { ...this.state.pages, ...data.pages };
+      const versionIds = [...this.state.versionIds, version.id.toString()];
+      const groupIds = [...this.state.groupIds, ...Object.keys(data.groups)];
+      const pageIds = [...this.state.pageIds, ...Object.keys(data.pages)];
+      this.setState({
+        versions,
+        versionIds,
+        groups,
+        groupIds,
+        endpoints,
+        pages,
+        pageIds
+      });
+    } catch (ex) {
+      toast.error(
+        ex.response
+          ? ex.response.data
+          : "Something went wrong,can't import version"
+      );
     }
   }
 
@@ -830,6 +873,14 @@ class CollectionsComponent extends Component {
       this.props.history.replace({ duplicateVersion: null });
       this.handleDuplicateVersion(duplicateVersion);
     }
+    if (location.importVersionLink) {
+      let importLink = location.importVersionLink;
+      let collectionId = location.collectionId;
+      importLink = importLink.shareVersionLink;
+      let shareIdentifier = importLink.split("/")[4];
+      this.props.history.replace({ importVersionLink: null });
+      this.handleImportVersion(importLink, shareIdentifier, collectionId);
+    }
 
     if (location.editedCollection) {
       const editedCollection = location.editedCollection;
@@ -975,6 +1026,21 @@ class CollectionsComponent extends Component {
                 )}
               /> */}
               <Route
+                path="/dashboard/:collectionId/versions/import"
+                render={props => (
+                  <ImportVersionForm
+                    {...props}
+                    show={true}
+                    onHide={() => {
+                      this.props.history.push({
+                        pathname: "/dashboard/collections"
+                      });
+                    }}
+                    title="Import Version"
+                  />
+                )}
+              />
+              <Route
                 path="/dashboard/collections/:id/edit"
                 render={props => (
                   <CollectionForm
@@ -986,6 +1052,21 @@ class CollectionsComponent extends Component {
                       });
                     }}
                     title="Edit Collection"
+                  />
+                )}
+              />
+              <Route
+                path="/dashboard/collections/:collectionId/versions/:versionId/share"
+                render={props => (
+                  <ShareVersionForm
+                    {...props}
+                    show={true}
+                    onHide={() => {
+                      this.props.history.push({
+                        pathname: "/dashboard/collections"
+                      });
+                    }}
+                    title="Share Version"
                   />
                 )}
               />
@@ -1061,6 +1142,17 @@ class CollectionsComponent extends Component {
                       }
                     >
                       Duplicate
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                      eventKey="3"
+                      onClick={() => {
+                        this.props.history.push({
+                          pathname: `/dashboard/${collectionId}/versions/import`,
+                          importCollection: this.state.collections[collectionId]
+                        });
+                      }}
+                    >
+                      Import Version
                     </Dropdown.Item>
                   </DropdownButton>
                 </Card.Header>

@@ -1,12 +1,12 @@
 import React, { Component } from "react";
 import { Route, Switch, Link } from "react-router-dom";
-import SideBar from "./sidebar";
-import Environments from "./environments";
-import DisplayPage from "./displayPage";
-import EditPage from "./editPage";
-import DisplayEndpoint from "./displayEndpoint";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import SideBar from "./sidebar";
+import Environments from "./environment/environments";
+import DisplayPage from "./pages/displayPage";
+import EditPage from "./pages/editPage";
+import DisplayEndpoint from "./endpoints/displayEndpoint";
 
 class Main extends Component {
   state = {

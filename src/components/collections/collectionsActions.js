@@ -1,5 +1,3 @@
-import collectionsService from "../services/collectionsService";
-
 // export function fetchCollections() {
 //   console.log("called fetchCollections action");
 //   return function(dispatch) {

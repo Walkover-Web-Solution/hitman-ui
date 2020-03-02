@@ -1,5 +1,5 @@
 import { takeEvery, call, put } from "redux-saga/effects";
-import collectionsService from "../services/collectionsService";
+import collectionsService from "../components/collections/collectionsService";
 
 export default function* watcherSaga() {
   console.log("watcher saga called");
