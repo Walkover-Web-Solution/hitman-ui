@@ -24,7 +24,7 @@ import ShareVersionForm from "../collectionVersions/shareVersionForm";
 import ImportVersionForm from "../collectionVersions/importVersionForm";
 import "react-toastify/dist/ReactToastify.css";
 import { connect } from "react-redux";
-import { fetchCollections, addCollection, getData } from "./collectionsActions";
+import { fetchCollections, addCollection } from "./collectionsActions";
 
 const mapStateToProps = state => {
   return { collections: state.collections };
@@ -92,8 +92,7 @@ class CollectionsComponent extends Component {
   }
 
   async componentDidMount() {
-    this.props.getData();
-    console.log(this.props.collections);
+    this.props.fetchCollections();
     // const collectionIds = Object.keys(collections);
     // this.setState({ collections, collectionIds });
     // const collections = store.getState();
@@ -1187,7 +1186,6 @@ class CollectionsComponent extends Component {
 }
 const Collections = connect(mapStateToProps, {
   fetchCollections,
-  addCollection,
-  getData
+  addCollection
 })(CollectionsComponent);
 export default Collections;

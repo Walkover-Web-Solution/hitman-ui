@@ -91,6 +91,16 @@ class CollectionForm extends Form {
     if (this.props.title === "Add new Collection") {
       this.props.onHide();
       this.props.add_new_collection({ ...this.state.data });
+      this.setState({
+        data: {
+          name: "",
+          website: "",
+          description: "",
+          keyword: "",
+          keyword1: "",
+          keyword2: ""
+        }
+      });
     }
   }
 
