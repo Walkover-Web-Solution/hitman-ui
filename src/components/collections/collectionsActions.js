@@ -31,7 +31,6 @@ export function addCollectionAction(newCollection) {
 }
 
 export function updateCollection(editedCollection) {
-  console.log(editedCollection);
   return function(dispatch) {
     return collectionsService
       .updateCollection(editedCollection.id, {

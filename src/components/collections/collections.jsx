@@ -34,6 +34,14 @@ const mapStateToProps = state => {
   return { collections: state.collections };
 };
 
+const mapDispatchToProps = state => {
+  return {
+    fetchCollections,
+    addCollection,
+    updateCollection
+  };
+};
+
 class CollectionsComponent extends Component {
   state = {
     collections: {},
@@ -1188,9 +1196,8 @@ class CollectionsComponent extends Component {
     );
   }
 }
-const Collections = connect(mapStateToProps, {
-  fetchCollections,
-  addCollection,
-  updateCollection
-})(CollectionsComponent);
+const Collections = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(CollectionsComponent);
 export default Collections;
