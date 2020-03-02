@@ -27,11 +27,11 @@ import { connect } from "react-redux";
 import {
   fetchCollections,
   addCollection,
-  updateCollection
+  updateCollection,
+  deleteCollection
 } from "./collectionsActions";
 
 const mapStateToProps = state => {
-  console.log('jhj',state)
   return { collections: state.collections };
 };
 
@@ -39,7 +39,8 @@ const mapDispatchToProps = dispatch => {
   return {
     fetchCollections: () => dispatch(fetchCollections()),
     addCollection: newCollection => dispatch(addCollection(newCollection)),
-    updateCollection: editedCollection => dispatch(updateCollection(editedCollection))
+    updateCollection: editedCollection => dispatch(updateCollection(editedCollection)),
+    deleteCollection:collection => dispatch(deleteCollection(collection))
   };
 };
 
@@ -59,6 +60,11 @@ class CollectionsComponent extends Component {
     collectionFormName: "",
     selectedCollection: {}
   };
+
+  async componentDidMount() {
+    console.log(this.props);
+    this.props.fetchCollections();
+  }
 
   async fetchVersions(collections) {
     let versions = {};
@@ -106,29 +112,7 @@ class CollectionsComponent extends Component {
     return endpoints;
   }
 
-  async componentDidMount() {
-    console.log(this.props);
-    this.props.fetchCollections();
-    // const collectionIds = Object.keys(collections);
-    // this.setState({ collections, collectionIds });
-    // const collections = store.getState();
-    // const versions = await this.fetchVersions(collections);
-    // const groups = await this.fetchGroups(versions);
-    // const pages = await this.fetchPages(versions);
-    // const endpoints = await this.fetchEndpoints(groups);
-    // const versionIds = Object.keys(versions);
-    // const groupIds = Object.keys(groups);
-    // const pageIds = Object.keys(pages);
-    // this.setState({
-    //   versions,
-    //   groups,
-    //   pages,
-    //   endpoints,
-    //   versionIds,
-    //   groupIds,
-    //   pageIds
-    // });
-  }
+  
 
   closeCollectionForm() {
     this.setState({ showCollectionForm: false });
@@ -184,73 +168,16 @@ class CollectionsComponent extends Component {
     }
   }
   async handleAddCollection(newCollection) {
-    console.log(newCollection);
     newCollection.requestId = shortId.generate();
     this.props.addCollection(newCollection);
-    // const originalCollections = { ...this.state.collections };
-    // const originalCollectionIds = [...this.state.collectionIds];
-    // const collections = { ...this.state.collections };
-    // const requestId = newCollection.requestId;
-    // collections[requestId] = { ...newCollection };
-    // this.setState({ collections });
-    // try {
-    //   const { data: collection } = await collectionsService.saveCollection(
-    //     newCollection
-    //   );
-    //   collections[collection.id] = collection;
-    //   delete collections[requestId];
-    //   const {
-    //     data: version
-    //   } = await collectionVersionsService.getCollectionVersions(collection.id);
-    //   const versions = { ...this.state.versions, ...version };
-    //   const versionIds = [...this.state.versionIds, Object.keys(version)[0]];
-    //   const collectionIds = [...this.state.collectionIds, collection.id];
-    //   this.setState({ collections, versions, collectionIds, versionIds });
-    // } catch (ex) {
-    //   toast.error(ex.response ? ex.response.data : "Something went wrong");
-    //   this.setState({
-    //     collections: originalCollections,
-    //     collectionIds: originalCollectionIds
-    //   });
-    // }
   }
 
   async handleDelete(collection) {
-    const originalCollections = { ...this.state.collections };
-    const originalCollectionIds = [...this.state.collectionIds];
-    let collections = { ...this.state.collections };
-    const collectionIds = this.state.collectionIds.filter(
-      cId => cId !== collection.id
-    );
-    delete collections[collection.id];
-    this.setState({ collections, collectionIds });
-    try {
-      await collectionsService.deleteCollection(collection.id);
-      this.props.history.push("/dashboard/collections");
-    } catch (ex) {
-      toast.error(ex.response ? ex.response.data : "Something went wrong");
-      this.setState({
-        collections: originalCollections,
-        collectionIds: originalCollectionIds
-      });
-    }
+    this.props.deleteCollection(collection)
   }
 
   async handleUpdateCollection(editedCollection) {
     this.props.updateCollection(editedCollection);
-
-    // const originalCollections = { ...this.state.collections };
-    // const body = { ...editedCollection };
-    // delete body.id;
-    // const collections = { ...this.state.collections };
-    // collections[editedCollection.id] = editedCollection;
-    // this.setState({ collections });
-    // try {
-    //   await collectionsService.updateCollection(editedCollection.id, body);
-    // } catch (ex) {
-    //   toast.error(ex.response ? ex.response.data : "Something went wrong");
-    //   this.setState({ collections: originalCollections });
-    // }
   }
 
   async handleAddVersion(newCollectionVersion, collectionId) {

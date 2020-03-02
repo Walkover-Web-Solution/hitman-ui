@@ -22,7 +22,6 @@ class CollectionForm extends Form {
 
   async componentDidMount() {
     if (!this.props.show || this.props.title === "Add new Collection") return;
-    console.log(this.props.edited_collection);
     let data = {};
     const collectionId = this.props.edited_collection.id;
     if (this.props.edited_collection) {
@@ -121,7 +120,6 @@ class CollectionForm extends Form {
   }
 
   render() {
-    console.log(this.props.show);
     return (
       <Modal
         {...this.props}
