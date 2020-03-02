@@ -45,8 +45,8 @@ class Form extends Component {
 		);
 	}
 
-	renderButton(label) {
-		return <button className="btn btn-default">{label}</button>;
+	renderButton(label,style) {
+		return <button className="btn btn-default" style={{ float: style, borderRadius: '12px' }}>{label}</button>;
 	}
 }
 

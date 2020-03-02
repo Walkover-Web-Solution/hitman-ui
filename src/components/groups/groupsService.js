@@ -1,5 +1,5 @@
-import http from "./httpService";
-import { apiUrl } from "../config.json";
+import http from "../../services/httpService";
+import { apiUrl } from "../../config.json";
 
 function GroupsUrl(versionId) {
   return `${apiUrl}/versions/${versionId}/groups`;
@@ -30,7 +30,7 @@ export function deleteGroup(GroupId) {
 }
 
 export function duplicateGroup(groupId) {
-  return http.post( `${apiUrl}/duplicateGroups/${groupId}` );
+  return http.post(`${apiUrl}/duplicateGroups/${groupId}`);
 }
 
 export default {
@@ -40,5 +40,4 @@ export default {
   updateGroup,
   deleteGroup,
   duplicateGroup
-  
 };
