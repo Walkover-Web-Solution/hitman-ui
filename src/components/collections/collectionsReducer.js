@@ -19,6 +19,17 @@ function collectionsReducer(state = initialState, action) {
       }
     );
   }
+  if (action.type === "EDIT_COLLECTION") {
+    return Object.assign(
+      {},
+      {
+        collections: {
+          ...state.collections,
+          [action.editedCollection.id]: action.editedCollection
+        }
+      }
+    );
+  }
   return state;
 }
 

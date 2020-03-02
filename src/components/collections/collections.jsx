@@ -24,7 +24,11 @@ import ShareVersionForm from "../collectionVersions/shareVersionForm";
 import ImportVersionForm from "../collectionVersions/importVersionForm";
 import "react-toastify/dist/ReactToastify.css";
 import { connect } from "react-redux";
-import { fetchCollections, addCollection } from "./collectionsActions";
+import {
+  fetchCollections,
+  addCollection,
+  updateCollection
+} from "./collectionsActions";
 
 const mapStateToProps = state => {
   return { collections: state.collections };
@@ -42,7 +46,9 @@ class CollectionsComponent extends Component {
     groupIds: [],
     pageIds: [],
     collectionDnDFlag: true,
-    showCollectionForm: false
+    showCollectionForm: false,
+    collectionFormName: "",
+    selectedCollection: {}
   };
 
   async fetchVersions(collections) {
@@ -168,6 +174,7 @@ class CollectionsComponent extends Component {
     }
   }
   async handleAddCollection(newCollection) {
+    console.log(newCollection);
     newCollection.requestId = shortId.generate();
     this.props.addCollection(newCollection);
     // const originalCollections = { ...this.state.collections };
@@ -219,19 +226,21 @@ class CollectionsComponent extends Component {
     }
   }
 
-  async handleUpdate(editedCollection) {
-    const originalCollections = { ...this.state.collections };
-    const body = { ...editedCollection };
-    delete body.id;
-    const collections = { ...this.state.collections };
-    collections[editedCollection.id] = editedCollection;
-    this.setState({ collections });
-    try {
-      await collectionsService.updateCollection(editedCollection.id, body);
-    } catch (ex) {
-      toast.error(ex.response ? ex.response.data : "Something went wrong");
-      this.setState({ collections: originalCollections });
-    }
+  async handleUpdateCollection(editedCollection) {
+    this.props.updateCollection(editedCollection);
+
+    // const originalCollections = { ...this.state.collections };
+    // const body = { ...editedCollection };
+    // delete body.id;
+    // const collections = { ...this.state.collections };
+    // collections[editedCollection.id] = editedCollection;
+    // this.setState({ collections });
+    // try {
+    //   await collectionsService.updateCollection(editedCollection.id, body);
+    // } catch (ex) {
+    //   toast.error(ex.response ? ex.response.data : "Something went wrong");
+    //   this.setState({ collections: originalCollections });
+    // }
   }
 
   async handleAddVersion(newCollectionVersion, collectionId) {
@@ -897,13 +906,17 @@ class CollectionsComponent extends Component {
       <div>
         <div className="App-Nav">
           <div className="tabs">
-            <CollectionForm
-              {...this.props}
-              show={this.state.showCollectionForm}
-              onHide={() => this.closeCollectionForm()}
-              title="Add new Collection"
-              add_new_collection={this.handleAddCollection.bind(this)}
-            />
+            {this.state.showCollectionForm && (
+              <CollectionForm
+                {...this.props}
+                show={this.state.showCollectionForm}
+                onHide={() => this.closeCollectionForm()}
+                title={this.state.collectionFormName}
+                add_new_collection={this.handleAddCollection.bind(this)}
+                edited_collection={this.state.selectedCollection}
+                edit_collection={this.handleUpdateCollection.bind(this)}
+              />
+            )}
             <Switch>
               <Route
                 path="/dashboard/collections/:id/versions/:versionId/groups/:groupId/pages/new"
@@ -1009,21 +1022,6 @@ class CollectionsComponent extends Component {
                   />
                 )}
               />
-              {/* <Route
-                path="/dashboard/collections/new"
-                render={props => (
-                  <CollectionForm
-                    {...props}
-                    show={true}
-                    onHide={() => {
-                      this.props.history.push({
-                        pathname: "/dashboard/collections"
-                      });
-                    }}
-                    title="Add new Collection"
-                  />
-                )}
-              /> */}
               <Route
                 path="/dashboard/:collectionId/versions/import"
                 render={props => (
@@ -1075,7 +1073,12 @@ class CollectionsComponent extends Component {
         <div className="App-Side">
           <button
             className="btn btn-default btn-lg"
-            onClick={() => this.setState({ showCollectionForm: true })}
+            onClick={() =>
+              this.setState({
+                showCollectionForm: true,
+                collectionFormName: "Add new Collection"
+              })
+            }
           >
             + New Collection
           </button>
@@ -1095,11 +1098,12 @@ class CollectionsComponent extends Component {
                     <Dropdown.Item
                       eventKey="1"
                       onClick={() => {
-                        this.props.history.push({
-                          pathname: `/dashboard/collections/${collectionId}/edit`,
-                          edited_collection: this.props.collections[
-                            collectionId
-                          ]
+                        this.setState({
+                          showCollectionForm: true,
+                          collectionFormName: "Edit Collection",
+                          selectedCollection: {
+                            ...this.props.collections[collectionId]
+                          }
                         });
                       }}
                     >
@@ -1186,6 +1190,7 @@ class CollectionsComponent extends Component {
 }
 const Collections = connect(mapStateToProps, {
   fetchCollections,
-  addCollection
+  addCollection,
+  updateCollection
 })(CollectionsComponent);
 export default Collections;

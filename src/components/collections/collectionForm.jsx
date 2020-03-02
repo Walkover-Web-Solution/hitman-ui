@@ -21,16 +21,17 @@ class CollectionForm extends Form {
   };
 
   async componentDidMount() {
-    if (this.props.title === "Add new Collection") return;
+    if (!this.props.show || this.props.title === "Add new Collection") return;
+    console.log(this.props.edited_collection);
     let data = {};
-    const collectionId = this.props.location.pathname.split("/")[3];
-    if (this.props.location.edited_collection) {
+    const collectionId = this.props.edited_collection.id;
+    if (this.props.edited_collection) {
       const {
         name,
         website,
         description,
         keyword
-      } = this.props.location.edited_collection;
+      } = this.props.edited_collection;
       data = {
         name,
         website,
@@ -83,10 +84,25 @@ class CollectionForm extends Form {
     delete body.keyword1;
     delete body.keyword2;
     if (this.props.title === "Edit Collection") {
-      this.props.history.push({
-        pathname: `/dashboard/collections`,
-        editedCollection: { ...this.state.data, id: this.state.collectionId }
+      this.props.onHide();
+      this.props.edit_collection({
+        ...this.state.data,
+        id: this.state.collectionId
       });
+      this.setState({
+        data: {
+          name: "",
+          website: "",
+          description: "",
+          keyword: "",
+          keyword1: "",
+          keyword2: ""
+        }
+      });
+      // this.props.history.push({
+      //   pathname: `/dashboard/collections`,
+      //   editedCollection: { ...this.state.data, id: this.state.collectionId }
+      // });
     }
     if (this.props.title === "Add new Collection") {
       this.props.onHide();
@@ -105,6 +121,7 @@ class CollectionForm extends Form {
   }
 
   render() {
+    console.log(this.props.show);
     return (
       <Modal
         {...this.props}

@@ -29,3 +29,24 @@ export function addCollection(newCollection) {
 export function addCollectionAction(newCollection) {
   return { type: "ADD_COLLECTION", newCollection };
 }
+
+export function updateCollection(editedCollection) {
+  console.log(editedCollection);
+  return function(dispatch) {
+    return collectionsService
+      .updateCollection(editedCollection.id, {
+        name: editedCollection.name,
+        website: editedCollection.website,
+        description: editedCollection.description,
+        keyword: editedCollection.keyword
+      })
+      .then(response => response.data)
+      .then(editedCollection => {
+        dispatch(updateCollectionAction(editedCollection));
+      });
+  };
+}
+
+export function updateCollectionAction(editedCollection) {
+  return { type: "EDIT_COLLECTION", editedCollection };
+}
