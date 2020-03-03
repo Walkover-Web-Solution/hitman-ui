@@ -1138,7 +1138,7 @@ class CollectionsComponent extends Component {
                     <CollectionVersions
                       {...this.props}
                       collection_id={collectionId}
-                      versions={this.state.versions}
+                      versions={this.props.versions}
                       groups={this.state.groups}
                       pages={this.state.pages}
                       endpoints={this.state.endpoints}
