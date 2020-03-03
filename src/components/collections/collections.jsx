@@ -30,7 +30,10 @@ import {
   updateCollection,
   deleteCollection
 } from "./collectionsActions";
-import { fetchVersions } from "../collectionVersions/collectionVersionsActions";
+import {
+  fetchVersions,
+  addVersion
+} from "../collectionVersions/collectionVersionsActions";
 
 const mapStateToProps = state => {
   return {
@@ -46,7 +49,9 @@ const mapDispatchToProps = dispatch => {
     updateCollection: editedCollection =>
       dispatch(updateCollection(editedCollection)),
     deleteCollection: collection => dispatch(deleteCollection(collection)),
-    fetchVersions: collections => dispatch(fetchVersions(collections))
+    fetchVersions: () => dispatch(fetchVersions()),
+    addVersion: newCollectionVersion =>
+      dispatch(addVersion(newCollectionVersion))
   };
 };
 
@@ -116,10 +121,9 @@ class CollectionsComponent extends Component {
   async componentDidMount() {
     console.log(this.props);
     await this.props.fetchCollections();
-    // while(this.props)
     console.log(this.props.collections);
     let collections = this.props.collections;
-    await this.props.fetchVersions(collections);
+    await this.props.fetchVersions();
     console.log(this.props.versions);
 
     // const collectionIds = Object.keys(collections);
@@ -210,32 +214,35 @@ class CollectionsComponent extends Component {
   }
 
   async handleAddVersion(newCollectionVersion, collectionId) {
-    console.log("handleAddVersion");
     newCollectionVersion.requestId = shortId.generate();
-    const originalVersions = { ...this.state.versions };
-    const originalVersionIds = [...this.state.versionIds];
-    let versions = { ...this.state.versions };
-    const requestId = newCollectionVersion.requestId;
-    versions[requestId] = { ...newCollectionVersion, collectionId };
-    this.setState({ versions });
-    try {
-      const {
-        data: version
-      } = await collectionVersionsService.saveCollectionVersion(
-        collectionId,
-        newCollectionVersion
-      );
-      versions[version.id] = version;
-      delete versions[requestId];
-      const versionIds = [...this.state.versionIds, version.id.toString()];
-      this.setState({ versions, versionIds });
-    } catch (ex) {
-      toast.error(ex.response ? ex.response.data : "Something went wrong");
-      this.setState({
-        versions: originalVersions,
-        versionIds: originalVersionIds
-      });
-    }
+    console.log("add version");
+    this.props.addVersion(newCollectionVersion);
+
+    // newCollectionVersion.requestId = shortId.generate();
+    // const originalVersions = { ...this.state.versions };
+    // const originalVersionIds = [...this.state.versionIds];
+    // let versions = { ...this.state.versions };
+    // const requestId = newCollectionVersion.requestId;
+    // versions[requestId] = { ...newCollectionVersion, collectionId };
+    // this.setState({ versions });
+    // try {
+    //   const {
+    //     data: version
+    //   } = await collectionVersionsService.saveCollectionVersion(
+    //     collectionId,
+    //     newCollectionVersion
+    //   );
+    //   versions[version.id] = version;
+    //   delete versions[requestId];
+    //   const versionIds = [...this.state.versionIds, version.id.toString()];
+    //   this.setState({ versions, versionIds });
+    // } catch (ex) {
+    //   toast.error(ex.response ? ex.response.data : "Something went wrong");
+    //   this.setState({
+    //     versions: originalVersions,
+    //     versionIds: originalVersionIds
+    //   });
+    // }
   }
 
   async handleDeleteVersion(deletedCollectionVersionId) {

@@ -35,7 +35,7 @@ export const addCollection = newCollection => {
         collectionsService
             .saveCollection(newCollection)
             .then(response => {
-                dispatch(addCollectionSuccess(response.data, newCollection));
+                dispatch(addCollectionSuccess(response.data));
             })
             .catch(error => {
                 dispatch(addCollectionFailure(error.response.data, newCollection));
