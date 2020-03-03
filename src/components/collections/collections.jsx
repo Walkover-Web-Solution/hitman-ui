@@ -30,7 +30,7 @@ import {
   updateCollection,
   deleteCollection
 } from "./collectionsActions";
-import { fetchVersions } from '../collectionVersions/collectionVersionsActions'
+import { fetchVersions } from "../collectionVersions/collectionVersionsActions";
 
 const mapStateToProps = state => {
   return {
@@ -43,7 +43,8 @@ const mapDispatchToProps = dispatch => {
   return {
     fetchCollections: () => dispatch(fetchCollections()),
     addCollection: newCollection => dispatch(addCollection(newCollection)),
-    updateCollection: editedCollection => dispatch(updateCollection(editedCollection)),
+    updateCollection: editedCollection =>
+      dispatch(updateCollection(editedCollection)),
     deleteCollection: collection => dispatch(deleteCollection(collection)),
     fetchVersions: collections => dispatch(fetchVersions(collections))
   };
@@ -65,11 +66,6 @@ class CollectionsComponent extends Component {
     collectionFormName: "",
     selectedCollection: {}
   };
-
-  async componentDidMount() {
-    console.log(this.props);
-    this.props.fetchCollections();
-  }
 
   async fetchVersions(collections) {
     let versions = {};
@@ -120,8 +116,9 @@ class CollectionsComponent extends Component {
   async componentDidMount() {
     console.log(this.props);
     await this.props.fetchCollections();
+    // while(this.props)
     console.log(this.props.collections);
-    let collections = this.props.collections
+    let collections = this.props.collections;
     await this.props.fetchVersions(collections);
     console.log(this.props.versions);
 
@@ -205,7 +202,7 @@ class CollectionsComponent extends Component {
   }
 
   async handleDelete(collection) {
-    this.props.deleteCollection(collection)
+    this.props.deleteCollection(collection);
   }
 
   async handleUpdateCollection(editedCollection) {
@@ -213,7 +210,7 @@ class CollectionsComponent extends Component {
   }
 
   async handleAddVersion(newCollectionVersion, collectionId) {
-    console.log("handleAddVersion")
+    console.log("handleAddVersion");
     newCollectionVersion.requestId = shortId.generate();
     const originalVersions = { ...this.state.versions };
     const originalVersionIds = [...this.state.versionIds];
@@ -1085,8 +1082,8 @@ class CollectionsComponent extends Component {
                         if (
                           window.confirm(
                             "Are you sure you wish to delete this collection?" +
-                            "\n" +
-                            " All your versions, groups, pages and endpoints present in this collection will be deleted."
+                              "\n" +
+                              " All your versions, groups, pages and endpoints present in this collection will be deleted."
                           )
                         )
                           this.handleDelete(
@@ -1159,4 +1156,7 @@ class CollectionsComponent extends Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(CollectionsComponent)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(CollectionsComponent);

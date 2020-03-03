@@ -1,32 +1,28 @@
+import versionActionTypes from "./collectionVersionsActionTypes";
+
 const initialState = {
-    loading: false,
-    versions: {},
-    error: ""
+  versions: {}
 };
 
 function versionsReducer(state = initialState, action) {
-    switch (action.type) {
-        case "FETCH_VERSIONS_REQUEST":
-            return {
-                ...state,
-                loading: true
-            };
-        case "FETCH_VERSIONS_SUCCESS":
-            return {
-                loading: false,
-                versions: action.payload,
-                error: ""
-            };
-        case "FETCH_VERSIONS_FAILURE":
-            return {
-                loading: false,
-                versions: {},
-                error: action.payload
-            };
+  switch (action.type) {
+    // case "FETCH_VERSIONS_REQUEST":
+    //     return {
+    //         ...state,
+    //         loading: true
+    //     };
+    case versionActionTypes.FETCH_VERSIONS_SUCCESS:
+      return {
+        versions: action.payload
+      };
+    case versionActionTypes.FETCH_VERSIONS_FAILURE:
+      return {
+        versions: {}
+      };
 
-        default:
-            return state;
-    }
+    default:
+      return state;
+  }
 }
 
 export default versionsReducer;
