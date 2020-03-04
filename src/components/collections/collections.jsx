@@ -88,7 +88,6 @@ class CollectionsComponent extends Component {
   }
 
   async fetchVersions(collections) {
-    console.log(collections);
     let versions = {};
     const collectionIds = Object.keys(collections);
     for (let i = 0; i < collectionIds.length; i++) {
@@ -465,48 +464,6 @@ class CollectionsComponent extends Component {
     }
   }
 
-  async handleAddEndpoint(groupId, newEndpoint, versions) {
-    const originalEndpoints = { ...this.state.endpoints };
-    const originalGroups = { ...this.state.groups };
-    newEndpoint.requestId = shortId.generate();
-    const requestId = newEndpoint.requestId;
-    const endpoints = { ...this.state.endpoints };
-    const groups = { ...this.state.groups };
-    endpoints[requestId] = newEndpoint;
-    newEndpoint.groupId = groupId;
-
-    this.setState({ endpoints });
-    let endpoint = {};
-    try {
-      delete newEndpoint.groupId;
-      const { data } = await endpointService.saveEndpoint(groupId, newEndpoint);
-      endpoint = data;
-      endpoints[endpoint.id] = endpoint;
-      delete endpoints.requestId;
-      groups[groupId].endpointsOrder.push(endpoint.id.toString());
-      this.setState({ endpoints, groups });
-      this.props.history.push({
-        pathname: `/dashboard/collections/endpoints/${endpoint.id}`,
-        endpoint: endpoint,
-        groups: this.state.groups,
-        title: "update endpoint",
-        versions: versions,
-        groupId: groupId
-      });
-    } catch (ex) {
-      this.props.history.push({
-        pathname: "/dashboard/collections/endpoints",
-        endpoint: endpoint,
-        versions: versions,
-        groupId: groupId,
-        title: "Add New Endpoint",
-        groups: this.state.groups
-      });
-      toast.error(ex.response ? ex.response.data : "Something went wrong");
-      this.setState({ endpoints: originalEndpoints });
-    }
-  }
-
   async updateEndpoint(endpointId, groupId, newEndpoint, versions) {
     const originalEndpoints = { ...this.state.endpoints };
     let currentEndpoint = { ...newEndpoint };
@@ -726,16 +683,6 @@ class CollectionsComponent extends Component {
       const duplicateEndpoint = location.duplicateEndpoint;
       this.props.history.replace({ duplicateEndpoint: null });
       this.handleDuplicateEndpoint(duplicateEndpoint);
-    }
-
-    if (location.title === "Add Endpoint") {
-      const { endpoint, groupId } = location;
-      this.props.history.replace({
-        title: null,
-        groupId: null,
-        endpoint: null
-      });
-      this.handleAddEndpoint(groupId, endpoint, this.props.location.versions);
     }
 
     if (location.title === "update Endpoint") {
@@ -1124,7 +1071,6 @@ class CollectionsComponent extends Component {
                       versions={this.state.versions}
                       groups={this.state.groups}
                       pages={this.state.pages}
-                      endpoints={this.state.endpoints}
                       version_ids={this.state.versionIds}
                       group_ids={this.state.groupIds}
                       page_ids={this.state.pageIds}

@@ -7,6 +7,18 @@ import {
   DropdownButton,
   Table
 } from "react-bootstrap";
+import { deleteEndpoint } from "./endpointsActions";
+import { connect } from "react-redux";
+const mapStateToProps = state => {
+  return { endpoints: state.endpoints };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    deleteEndpoint: deleteEndpointId =>
+      dispatch(deleteEndpoint(deleteEndpointId))
+  };
+};
 
 class Endpoints extends Component {
   state = {};
@@ -44,14 +56,12 @@ class Endpoints extends Component {
     if (!this.draggedItem) {
       this.props.get_dnd(this.props.group_id);
     }
-    // this.draggedItem = null
   };
 
   handleDelete(endpoint) {
+    this.props.deleteEndpoint(endpoint);
     this.props.history.push({
-      pathname: "/dashboard/collections",
-      deleteEndpointId: endpoint.id,
-      groupId: this.props.group_id
+      pathname: "/dashboard/collections"
     });
   }
 
@@ -102,69 +112,66 @@ class Endpoints extends Component {
     } else {
       return (
         <div>
-          {this.props.endpoints &&
-            this.props.endpoints_order
-              .filter(
-                eId => this.props.endpoints[eId].groupId === this.props.group_id
-              )
-              .map(endpointId => (
-                <Accordion defaultActiveKey="1" key={endpointId}>
-                  <Card>
-                    <Card.Header
-                      draggable
-                      onDragOver={e => this.onDragOver(e, endpointId)}
-                      onDragStart={e => this.onDragStart(e, endpointId)}
-                      onDragEnd={e => this.onDragEnd(e, endpointId, this.props)}
-                      onDrop={e => this.onDrop(e)}
+          {Object.keys(this.props.endpoints)
+            .filter(
+              eId => this.props.endpoints[eId].groupId === this.props.group_id
+            )
+            .map(endpointId => (
+              <Accordion defaultActiveKey="1" key={endpointId}>
+                <Card>
+                  <Card.Header
+                    draggable
+                    onDragOver={e => this.onDragOver(e, endpointId)}
+                    onDragStart={e => this.onDragStart(e, endpointId)}
+                    onDragEnd={e => this.onDragEnd(e, endpointId, this.props)}
+                    onDrop={e => this.onDrop(e)}
+                  >
+                    <Accordion.Toggle
+                      onClick={() =>
+                        this.handleDisplay(
+                          this.props.endpoints[endpointId],
+                          this.props.groups,
+                          this.props.versions,
+                          this.props.group_id
+                        )
+                      }
+                      as={Button}
+                      variant="link"
+                      eventKey="1"
                     >
-                      <Accordion.Toggle
+                      {this.props.endpoints[endpointId].name}
+                    </Accordion.Toggle>
+                    <DropdownButton
+                      alignRight
+                      title=""
+                      id="dropdown-menu-align-right"
+                      style={{ float: "right" }}
+                    >
+                      <Dropdown.Item
+                        eventKey="2"
                         onClick={() =>
-                          this.handleDisplay(
-                            this.props.endpoints[endpointId],
-                            this.props.groups,
-                            this.props.versions,
-                            this.props.group_id
-                          )
+                          this.handleDelete(this.props.endpoints[endpointId])
                         }
-                        as={Button}
-                        variant="link"
-                        eventKey="1"
                       >
-                        {this.props.endpoints[endpointId].name}
-                      </Accordion.Toggle>
-                      <DropdownButton
-                        alignRight
-                        title=""
-                        id="dropdown-menu-align-right"
-                        style={{ float: "right" }}
+                        Delete
+                      </Dropdown.Item>
+                      <Dropdown.Item
+                        eventKey="3"
+                        onClick={() =>
+                          this.handleDuplicate(this.props.endpoints[endpointId])
+                        }
                       >
-                        <Dropdown.Item
-                          eventKey="2"
-                          onClick={() =>
-                            this.handleDelete(this.props.endpoints[endpointId])
-                          }
-                        >
-                          Delete
-                        </Dropdown.Item>
-                        <Dropdown.Item
-                          eventKey="3"
-                          onClick={() =>
-                            this.handleDuplicate(
-                              this.props.endpoints[endpointId]
-                            )
-                          }
-                        >
-                          Duplicate
-                        </Dropdown.Item>
-                      </DropdownButton>
-                    </Card.Header>
-                  </Card>
-                </Accordion>
-              ))}
+                        Duplicate
+                      </Dropdown.Item>
+                    </DropdownButton>
+                  </Card.Header>
+                </Card>
+              </Accordion>
+            ))}
         </div>
       );
     }
   }
 }
 
-export default Endpoints;
+export default connect(mapStateToProps, mapDispatchToProps)(Endpoints);

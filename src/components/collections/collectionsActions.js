@@ -10,7 +10,9 @@ export const fetchCollections = () => {
         dispatch(fetchCollectionsSuccess(response.data));
       })
       .catch(error => {
-        dispatch(fetchCollectionsFailure(error.response.data));
+        dispatch(
+          fetchCollectionsFailure(error.response ? error.response.data : error)
+        );
       });
   };
 };
