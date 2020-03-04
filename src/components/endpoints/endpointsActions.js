@@ -3,7 +3,6 @@ import endpointsActionTypes from "./endpointsActionTypes";
 import store from "../../store/store";
 
 export const fetchEndpoints = () => {
-  console.log("called");
   return dispatch => {
     endpointService
       .getAllEndpoints()
@@ -11,7 +10,40 @@ export const fetchEndpoints = () => {
         dispatch(fetchEndpointsSuccess(response.data));
       })
       .catch(error => {
-        dispatch(fetchEndpointsFailure(error.response.data));
+        dispatch(
+          fetchEndpointsFailure(error.response ? error.response.data : error)
+        );
+      });
+  };
+};
+
+export const addEndpoint = (newEndpoint, groupId) => {
+  return dispatch => {
+    dispatch(addEndpointRequest(newEndpoint));
+    endpointService
+      .saveEndpoint(groupId, newEndpoint)
+      .then(response => {
+        dispatch(addEndpointSuccess(response.data, newEndpoint));
+      })
+      .catch(error => {
+        dispatch(addEndpointFailure(error.response.data, newEndpoint));
+      });
+  };
+};
+
+export const updateEndpoint = editedEndpoint => {
+  return dispatch => {
+    const originalEndpoint = store.getState().endpoints[editedEndpoint.id];
+    dispatch(updateEndpointRequest(editedEndpoint));
+    const id = editedEndpoint.id;
+    delete editedEndpoint.id;
+    endpointService
+      .updateEndpoint(id, editedEndpoint)
+      .then(response => {
+        dispatch(updateEndpointSuccess(response.data));
+      })
+      .catch(error => {
+        dispatch(updateEndpointFailure(error.response.data, originalEndpoint));
       });
   };
 };
@@ -30,115 +62,81 @@ export const fetchEndpointsFailure = error => {
   };
 };
 
-// export const addCollection = newCollection => {
-//   return dispatch => {
-//     dispatch(addCollectionRequest(newCollection));
-//     collectionsService
-//       .saveCollection(newCollection)
-//       .then(response => {
-//         dispatch(addCollectionSuccess(response.data, newCollection));
-//       })
-//       .catch(error => {
-//         dispatch(addCollectionFailure(error.response.data, newCollection));
-//       });
-//   };
-// };
+export const addEndpointRequest = newEndpoint => {
+  return {
+    type: endpointsActionTypes.ADD_ENDPOINT_REQUEST,
+    newEndpoint
+  };
+};
 
-// export const addCollectionRequest = newCollection => {
-//   return {
-//     type: collectionsActionTypes.ADD_COLLECTION_REQUEST,
-//     newCollection
-//   };
-// };
+export const addEndpointSuccess = response => {
+  return {
+    type: endpointsActionTypes.ADD_ENDPOINT_SUCCESS,
+    response
+  };
+};
 
-// export const addCollectionSuccess = response => {
-//   return {
-//     type: collectionsActionTypes.ADD_COLLECTION_SUCCESS,
-//     response
-//   };
-// };
+export const addEndpointFailure = (error, newEndpoint) => {
+  return {
+    type: endpointsActionTypes.ADD_ENDPOINT_FAILURE,
+    newEndpoint,
+    error
+  };
+};
 
-// export const addCollectionFailure = (error, newCollection) => {
-//   return {
-//     type: collectionsActionTypes.ADD_COLLECTION_FAILURE,
-//     newCollection,
-//     error
-//   };
-// };
+export const updateEndpointRequest = editedEndpoint => {
+  return {
+    type: endpointsActionTypes.UPDATE_ENDPOINT_REQUEST,
+    editedEndpoint
+  };
+};
 
-// export const updateCollection = editedCollection => {
-//   return dispatch => {
-//     const originalCollection = store.getState().collections[
-//       editedCollection.id
-//     ];
-//     dispatch(updateCollectionRequest(editedCollection));
-//     const id = editedCollection.id;
-//     delete editedCollection.id;
-//     collectionsService
-//       .updateCollection(id, editedCollection)
-//       .then(() => {
-//         dispatch(updateCollectionSuccess());
-//       })
-//       .catch(error => {
-//         dispatch(
-//           updateCollectionFailure(error.response.data, originalCollection)
-//         );
-//       });
-//   };
-// };
+export const updateEndpointSuccess = response => {
+  return {
+    type: endpointsActionTypes.UPDATE_ENDPOINT_SUCCESS,
+    response
+  };
+};
 
-// export const updateCollectionRequest = editedCollection => {
-//   return {
-//     type: collectionsActionTypes.UPDATE_COLLECTION_REQUEST,
-//     editedCollection
-//   };
-// };
+export const updateEndpointFailure = (error, originalEndpoint) => {
+  return {
+    type: endpointsActionTypes.UPDATE_ENDPOINT_FAILURE,
+    error,
+    originalEndpoint
+  };
+};
 
-// export const updateCollectionSuccess = () => {
-//   return {
-//     type: collectionsActionTypes.UPDATE_COLLECTION_SUCCESS
-//   };
-// };
+export const deleteEndpoint = endpoint => {
+  return dispatch => {
+    dispatch(deleteEndpointRequest(endpoint));
+    endpointService
+      .deleteEndpoint(endpoint.id)
+      .then(() => {
+        dispatch(deleteEndpointSuccess());
+      })
+      .catch(error => {
+        dispatch(deleteEndpointFailure(error.response, endpoint));
+      });
+  };
+};
 
-// export const updateCollectionFailure = (error, originalCollection) => {
-//   return {
-//     type: collectionsActionTypes.UPDATE_COLLECTION_FAILURE,
-//     error,
-//     originalCollection
-//   };
-// };
+export const deleteEndpointRequest = endpoint => {
+  return {
+    type: endpointsActionTypes.DELETE_ENDPOINT_REQUEST,
+    endpoint
+  };
+};
 
-// export const deleteCollection = collection => {
-//   return dispatch => {
-//     dispatch(deleteCollectionRequest(collection));
-//     collectionsService
-//       .deleteCollection(collection.id)
-//       .then(() => {
-//         dispatch(deleteCollectionSuccess());
-//       })
-//       .catch(error => {
-//         dispatch(deleteCollectionFailure(error.response, collection));
-//       });
-//   };
-// };
+export const deleteEndpointSuccess = () => {
+  return {
+    type: endpointsActionTypes.DELETE_ENDPOINT_SUCCESS
+  };
+};
 
-// export const deleteCollectionRequest = collection => {
-//   return {
-//     type: collectionsActionTypes.DELETE_COLLECTION_REQUEST,
-//     collection
-//   };
-// };
-
-// export const deleteCollectionSuccess = () => {
-//   return {
-//     type: collectionsActionTypes.DELETE_COLLECTION_SUCCESS
-//   };
-// };
-
-// export const deleteCollectionFailure = (error, collection) => {
-//   return {
-//     type: collectionsActionTypes.DELETE_COLLECTION_FAILURE,
-//     error,
-//     collection
-//   };
-// };
+export const deleteEndpointFailure = (error, endpoint) => {
+  return {
+    type: endpointsActionTypes.DELETE_ENDPOINT_FAILURE,
+    error,
+    endpoint
+  };
+};

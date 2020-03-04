@@ -6,7 +6,6 @@ const initialState = {
 };
 
 function endpointsReducer(state = initialState, action) {
-  console.log("reducer", state, action);
   let endpoints = {};
   switch (action.type) {
     case endpointsActionTypes.FETCH_ENDPOINTS_SUCCESS:
@@ -16,69 +15,58 @@ function endpointsReducer(state = initialState, action) {
       toast.error(action.error);
       return state;
 
-    // case endpointsActionTypes.ADD_ENDPOINT_REQUEST:
-    //   return {
-    //     collections: {
-    //       ...state.collections,
-    //       [action.newCollection.requestId]: action.newCollection
-    //     }
-    //   };
+    case endpointsActionTypes.ADD_ENDPOINT_REQUEST:
+      return {
+        ...state,
+        [action.newEndpoint.requestId]: action.newEndpoint
+      };
 
-    // case endpointsActionTypes.ADD_ENDPOINT_SUCCESS:
-    //   collections = { ...state.collections };
-    //   delete collections[action.response.requestId];
-    //   collections[action.response.id] = action.response;
-    //   return {
-    //     collections
-    //   };
+    case endpointsActionTypes.ADD_ENDPOINT_SUCCESS:
+      endpoints = { ...state };
+      delete endpoints[action.response.requestId];
+      endpoints[action.response.id] = action.response;
+      return endpoints;
 
-    // case endpointsActionTypes.ADD_ENDPOINT_FAILURE:
-    //   toast.error(action.error);
-    //   collections = { ...state.collections };
-    //   delete collections[action.newCollection.requestId];
-    //   return {
-    //     collections
-    //   };
+    case endpointsActionTypes.ADD_ENDPOINT_FAILURE:
+      toast.error(action.error);
+      endpoints = { ...state };
+      delete endpoints[action.newEndpoint.requestId];
+      return endpoints;
 
-    // case endpointsActionTypes.UPDATE_ENDPOINT_REQUEST:
-    //   return {
-    //     collections: {
-    //       ...state.collections,
-    //       [action.editedCollection.id]: action.editedCollection
-    //     }
-    //   };
+    case endpointsActionTypes.UPDATE_ENDPOINT_REQUEST:
+      return {
+        ...state,
+        [action.editedEndpoint.id]: action.editedEndpoint
+      };
 
-    // case endpointsActionTypes.UPDATE_ENDPOINT_SUCCESS:
-    //   return state;
+    case endpointsActionTypes.UPDATE_ENDPOINT_SUCCESS:
+      return {
+        ...state,
+        [action.response.id]: action.response
+      };
 
-    // case endpointsActionTypes.UPDATE_ENDPOINT_FAILURE:
-    //   toast.error(action.error);
-    //   return {
-    //     collections: {
-    //       ...state.collections,
-    //       [action.originalCollection.id]: action.originalCollection
-    //     }
-    //   };
+    case endpointsActionTypes.UPDATE_ENDPOINT_FAILURE:
+      toast.error(action.error);
+      return {
+        ...state,
+        [action.originalEndpoint.id]: action.originalEndpoint
+      };
 
-    // case endpointsActionTypes.DELETE_ENDPOINT_REQUEST:
-    //   collections = { ...state.collections };
-    //   delete collections[action.collection.id];
-    //   return {
-    //     collections
-    //   };
+    case endpointsActionTypes.DELETE_ENDPOINT_REQUEST:
+      endpoints = { ...state };
+      delete endpoints[action.endpoint.id];
+      return endpoints;
 
-    // case endpointsActionTypes.DELETE_ENDPOINT_SUCCESS:
-    //   return state;
+    case endpointsActionTypes.DELETE_ENDPOINT_SUCCESS:
+      return state;
 
-    // case endpointsActionTypes.DELETE_ENDPOINT_FAILURE:
-    //   toast.error(action.error.data);
-    //   if (action.error.status === 404) return state;
-    //   return {
-    //     collections: {
-    //       ...state.collections,
-    //       [action.collection.id]: action.collection
-    //     }
-    //   };
+    case endpointsActionTypes.DELETE_ENDPOINT_FAILURE:
+      toast.error(action.error.data);
+      if (action.error.status === 404) return state;
+      return {
+        ...state,
+        [action.endpoint.id]: action.endpoint
+      };
 
     default:
       return state;
