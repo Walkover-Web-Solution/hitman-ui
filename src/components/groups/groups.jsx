@@ -148,8 +148,6 @@ class Groups extends Component {
                             this.props.history.push({
                               pathname: "/dashboard/collections",
                               deletedGroupId: groupId,
-                              
-
                             });
                         }}
                       >
