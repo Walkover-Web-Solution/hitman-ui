@@ -69,73 +69,42 @@ export const updatePageFailure = (error, originalPage) => {
     };
 };
 
-// export const addVersion = (newPage, collectionId) => {
-//     return dispatch => {
-//         dispatch(addVersionRequest(newPage));
-//         pagesService
-//             .saveCollectionVersion(collectionId, newPage)
-//             .then(response => {
-//                 dispatch(addVersionSuccess(response.data));
-//             })
-//             .catch(error => {
-//                 dispatch(addVersionFailure(error.response.data, newPage));
-//             });
-//     };
-// };
+export const addPage = (versionId, newPage) => {
+    return dispatch => {
+        dispatch(addPageRequest(versionId, newPage));
+        delete newPage.groupId;
+        delete newPage.versionId;
+        pagesService
+            .saveVersionPage(versionId, newPage)
+            .then(response => {
+                dispatch(addPageSuccess(response.data));
+            })
+            .catch(error => {
+                dispatch(addPageFailure(error.response.data, newPage));
+            });
+    };
+};
 
-// export const addVersionRequest = newVersion => {
-//     return {
-//         type: pagesActionTypes.ADD_PAGE_REQUEST,
-//         newVersion
-//     };
-// };
+export const addPageRequest = (versionId, newPage) => {
+    return {
+        type: pagesActionTypes.ADD_PAGE_REQUEST,
+        versionId,
+        newPage
+    };
+};
 
-// export const addVersionSuccess = response => {
-//     return {
-//         type: pagesActionTypes.ADD_PAGE_SUCCESS,
-//         response
-//     };
-// };
+export const addPageSuccess = response => {
+    return {
+        type: pagesActionTypes.ADD_PAGE_SUCCESS,
+        response
+    };
+};
 
-// export const addVersionFailure = (error, newVersion) => {
-//     return {
-//         type: pagesActionTypes.ADD_PAGE_FAILURE,
-//         newVersion,
-//         error
-//     };
-// };
+export const addPageFailure = (error, newPage) => {
+    return {
+        type: pagesActionTypes.ADD_PAGE_FAILURE,
+        newPage,
+        error
+    };
+};
 
-// export const deleteVersion = version => {
-//     return dispatch => {
-//         dispatch(deleteVersionRequest(version));
-//         pagesService
-//             .deleteCollectionVersion(version.id)
-//             .then(() => {
-//                 dispatch(deleteVersionSuccess());
-//             })
-//             .catch(error => {
-//                 dispatch(deleteVersionFailure(error.response, version));
-//             });
-//     };
-// };
-
-// export const deleteVersionRequest = version => {
-//     return {
-//         type: pagesActionTypes.DELETE_PAGE_REQUEST,
-//         version
-//     };
-// };
-
-// export const deleteVersionSuccess = () => {
-//     return {
-//         type: pagesActionTypes.DELETE_PAGE_SUCCESS
-//     };
-// };
-
-// export const deleteVersionFailure = (error, version) => {
-//     return {
-//         type: pagesActionTypes.DELETE_PAGE_FAILURE,
-//         error,
-//         version
-//     };
-// };

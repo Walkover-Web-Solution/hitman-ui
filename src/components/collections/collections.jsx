@@ -39,7 +39,7 @@ import {
   deleteVersion
 } from "../collectionVersions/collectionVersionsActions";
 
-import { fetchPages } from "../pages/pagesActions";
+import { fetchPages, addPage } from "../pages/pagesActions";
 
 const mapStateToProps = state => {
   return {
@@ -64,7 +64,8 @@ const mapDispatchToProps = dispatch => {
       dispatch(addVersion(newCollectionVersion, collectionId)),
     updateVersion: editedVersion => dispatch(updateVersion(editedVersion)),
     deleteVersion: version => dispatch(deleteVersion(version)),
-    fetchPages: () => dispatch(fetchPages())
+    fetchPages: () => dispatch(fetchPages()),
+    addPage: (versionId, newPage) => dispatch(addPage(versionId, newPage))
   };
 };
 
@@ -273,29 +274,31 @@ class CollectionsComponent extends Component {
 
   async handleAddVersionPage(versionId, newPage) {
     newPage.requestId = shortId.generate();
-    const requestId = newPage.requestId;
-    const originalPageIds = [...this.state.pageIds];
-    const originalPages = { ...this.state.pages };
-    let pages = { ...this.state.pages };
-    pages[requestId] = { ...newPage, versionId };
-    this.setState({ pages });
-    try {
-      const { data: page } = await pageService.saveVersionPage(
-        versionId,
-        newPage
-      );
-      pages[page.id] = page;
-      delete pages[requestId];
-      const pageIds = [...this.state.pageIds, page.id.toString()];
-      this.setState({ pages, pageIds });
-      this.props.history.push({
-        pathname: `/dashboard/collections/pages/${page.id}/edit`,
-        page: page
-      });
-    } catch (ex) {
-      toast.error(ex.response ? ex.response.data : "Something went wrong");
-      this.setState({ pages: originalPages, pageIds: originalPageIds });
-    }
+    this.props.addPage(versionId, newPage);
+    // newPage.requestId = shortId.generate();
+    // const requestId = newPage.requestId;
+    // const originalPageIds = [...this.state.pageIds];
+    // const originalPages = { ...this.state.pages };
+    // let pages = { ...this.state.pages };
+    // pages[requestId] = { ...newPage, versionId };
+    // this.setState({ pages });
+    // try {
+    //   const { data: page } = await pageService.saveVersionPage(
+    //     versionId,
+    //     newPage
+    //   );
+    //   pages[page.id] = page;
+    //   delete pages[requestId];
+    //   const pageIds = [...this.state.pageIds, page.id.toString()];
+    //   this.setState({ pages, pageIds });
+    //   this.props.history.push({
+    //     pathname: `/dashboard/collections/pages/${page.id}/edit`,
+    //     page: page
+    //   });
+    // } catch (ex) {
+    //   toast.error(ex.response ? ex.response.data : "Something went wrong");
+    //   this.setState({ pages: originalPages, pageIds: originalPageIds });
+    // }
   }
 
   async handleAddGroupPage(versionId, groupId, newPage) {
