@@ -30,6 +30,9 @@ import {
   updateCollection,
   deleteCollection
 } from "./collectionsActions";
+import {
+  fetchGroups
+} from "../groups/groupsActions";
 
 const mapStateToProps = state => {
   return { collections: state.collections };
@@ -64,6 +67,7 @@ class CollectionsComponent extends Component {
   async componentDidMount() {
     console.log(this.props);
     this.props.fetchCollections();
+     this.props.fetchGroups();
   }
 
   async fetchVersions(collections) {

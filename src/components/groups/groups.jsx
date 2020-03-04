@@ -9,6 +9,10 @@ import {
 import GroupPages from "../pages/groupPages";
 import Endpoints from "../endpoints/endpoints";
 
+const mapStateToProps = state => {
+  return { groups: state.groups };
+};
+
 class Groups extends Component {
   state = {
     groupDnDFlag: true
@@ -96,9 +100,7 @@ class Groups extends Component {
   render() {
     return (
       <div>
-        {this.props.groups &&
-          this.props.group_ids &&
-          this.props.group_ids
+        {Object.keys(this.props.groups)
             .filter(
               gId => this.props.groups[gId].versionId === this.props.version_id
             )
