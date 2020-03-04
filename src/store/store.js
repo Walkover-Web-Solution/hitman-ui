@@ -1,11 +1,17 @@
 import { createStore, applyMiddleware, compose, combineReducers } from "redux";
-import rootReducer from "../components/collections/collectionsReducer";
+import collectionsReducer from "../components/collections/collectionsReducer";
+import endpointsReducer from "../components/endpoints/endpointsReducer";
+import groupsReducer from "../components/groups/groupsReducer";
 import thunk from "redux-thunk";
 import { logger } from "redux-logger";
 
 const storeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
-// const rootReducer = combineReducers({ collectionsReducer });
+const rootReducer = combineReducers({
+  collections: collectionsReducer,
+  groups: groupsReducer,
+  endpoints: endpointsReducer
+});
 const store = createStore(
   rootReducer,
   storeEnhancers(applyMiddleware(thunk, logger))

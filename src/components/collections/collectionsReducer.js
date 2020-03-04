@@ -9,9 +9,7 @@ function collectionsReducer(state = initialState, action) {
   let collections = {};
   switch (action.type) {
     case collectionsActionTypes.FETCH_COLLECTIONS_SUCCESS:
-      return {
-        collections: { ...action.collections }
-      };
+      return { ...action.collections };
 
     case collectionsActionTypes.FETCH_COLLECTIONS_FAILURE:
       toast.error(action.error);
@@ -19,34 +17,26 @@ function collectionsReducer(state = initialState, action) {
 
     case collectionsActionTypes.ADD_COLLECTION_REQUEST:
       return {
-        collections: {
-          ...state.collections,
-          [action.newCollection.requestId]: action.newCollection
-        }
+        ...state.collections,
+        [action.newCollection.requestId]: action.newCollection
       };
 
     case collectionsActionTypes.ADD_COLLECTION_SUCCESS:
       collections = { ...state.collections };
       delete collections[action.response.requestId];
       collections[action.response.id] = action.response;
-      return {
-        collections
-      };
+      return collections;
 
     case collectionsActionTypes.ADD_COLLECTION_FAILURE:
       toast.error(action.error);
       collections = { ...state.collections };
       delete collections[action.newCollection.requestId];
-      return {
-        collections
-      };
+      return collections;
 
     case collectionsActionTypes.UPDATE_COLLECTION_REQUEST:
       return {
-        collections: {
-          ...state.collections,
-          [action.editedCollection.id]: action.editedCollection
-        }
+        ...state.collections,
+        [action.editedCollection.id]: action.editedCollection
       };
 
     case collectionsActionTypes.UPDATE_COLLECTION_SUCCESS:
@@ -55,18 +45,14 @@ function collectionsReducer(state = initialState, action) {
     case collectionsActionTypes.UPDATE_COLLECTION_FAILURE:
       toast.error(action.error);
       return {
-        collections: {
-          ...state.collections,
-          [action.originalCollection.id]: action.originalCollection
-        }
+        ...state.collections,
+        [action.originalCollection.id]: action.originalCollection
       };
 
     case collectionsActionTypes.DELETE_COLLECTION_REQUEST:
       collections = { ...state.collections };
       delete collections[action.collection.id];
-      return {
-        collections
-      };
+      return collections;
 
     case collectionsActionTypes.DELETE_COLLECTION_SUCCESS:
       return state;
@@ -75,10 +61,8 @@ function collectionsReducer(state = initialState, action) {
       toast.error(action.error.data);
       if (action.error.status === 404) return state;
       return {
-        collections: {
-          ...state.collections,
-          [action.collection.id]: action.collection
-        }
+        ...state.collections,
+        [action.collection.id]: action.collection
       };
 
     default:

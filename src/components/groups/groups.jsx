@@ -8,6 +8,7 @@ import {
 } from "react-bootstrap";
 import GroupPages from "../pages/groupPages";
 import Endpoints from "../endpoints/endpoints";
+import { connect } from "react-redux";
 
 const mapStateToProps = state => {
   return { groups: state.groups };
@@ -219,4 +220,7 @@ class Groups extends Component {
   }
 }
 
-export default Groups;
+
+export default connect(
+  mapStateToProps
+)(Groups);

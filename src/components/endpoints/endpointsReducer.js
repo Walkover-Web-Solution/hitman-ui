@@ -1,22 +1,22 @@
-import groupsActionTypes from "./groupsActionTypes";
+import endpointsActionTypes from "./endpointsActionTypes";
 import { toast } from "react-toastify";
 
 const initialState = {
-  groups: {}
+  endpoints: {}
 };
 
-function groupsReducer(state = initialState, action) {
-  let groups = {};
+function endpointsReducer(state = initialState, action) {
+  console.log("reducer", state, action);
+  let endpoints = {};
   switch (action.type) {
-    case groupsActionTypes.FETCH_GROUPS_SUCCESS:
-      return { ...action.groups }
-      
+    case endpointsActionTypes.FETCH_ENDPOINTS_SUCCESS:
+      return { ...action.endpoints };
 
-    case groupsActionTypes.FETCH_GROUPS_FAILURE:
+    case endpointsActionTypes.FETCH_ENDPOINTS_FAILURE:
       toast.error(action.error);
       return state;
 
-    // case collectionsActionTypes.ADD_COLLECTION_REQUEST:
+    // case endpointsActionTypes.ADD_ENDPOINT_REQUEST:
     //   return {
     //     collections: {
     //       ...state.collections,
@@ -24,7 +24,7 @@ function groupsReducer(state = initialState, action) {
     //     }
     //   };
 
-    // case collectionsActionTypes.ADD_COLLECTION_SUCCESS:
+    // case endpointsActionTypes.ADD_ENDPOINT_SUCCESS:
     //   collections = { ...state.collections };
     //   delete collections[action.response.requestId];
     //   collections[action.response.id] = action.response;
@@ -32,7 +32,7 @@ function groupsReducer(state = initialState, action) {
     //     collections
     //   };
 
-    // case collectionsActionTypes.ADD_COLLECTION_FAILURE:
+    // case endpointsActionTypes.ADD_ENDPOINT_FAILURE:
     //   toast.error(action.error);
     //   collections = { ...state.collections };
     //   delete collections[action.newCollection.requestId];
@@ -40,7 +40,7 @@ function groupsReducer(state = initialState, action) {
     //     collections
     //   };
 
-    // case collectionsActionTypes.UPDATE_COLLECTION_REQUEST:
+    // case endpointsActionTypes.UPDATE_ENDPOINT_REQUEST:
     //   return {
     //     collections: {
     //       ...state.collections,
@@ -48,10 +48,10 @@ function groupsReducer(state = initialState, action) {
     //     }
     //   };
 
-    // case collectionsActionTypes.UPDATE_COLLECTION_SUCCESS:
+    // case endpointsActionTypes.UPDATE_ENDPOINT_SUCCESS:
     //   return state;
 
-    // case collectionsActionTypes.UPDATE_COLLECTION_FAILURE:
+    // case endpointsActionTypes.UPDATE_ENDPOINT_FAILURE:
     //   toast.error(action.error);
     //   return {
     //     collections: {
@@ -60,17 +60,17 @@ function groupsReducer(state = initialState, action) {
     //     }
     //   };
 
-    // case collectionsActionTypes.DELETE_COLLECTION_REQUEST:
+    // case endpointsActionTypes.DELETE_ENDPOINT_REQUEST:
     //   collections = { ...state.collections };
     //   delete collections[action.collection.id];
     //   return {
     //     collections
     //   };
 
-    // case collectionsActionTypes.DELETE_COLLECTION_SUCCESS:
+    // case endpointsActionTypes.DELETE_ENDPOINT_SUCCESS:
     //   return state;
 
-    // case collectionsActionTypes.DELETE_COLLECTION_FAILURE:
+    // case endpointsActionTypes.DELETE_ENDPOINT_FAILURE:
     //   toast.error(action.error.data);
     //   if (action.error.status === 404) return state;
     //   return {
@@ -85,4 +85,4 @@ function groupsReducer(state = initialState, action) {
   }
 }
 
-export default groupsReducer;
+export default endpointsReducer;
