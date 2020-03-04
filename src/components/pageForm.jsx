@@ -23,15 +23,15 @@ class PageForm extends Form {
       this.props.history.push({
         pathname: `/dashboard/`,
         newPage: this.state.data,
-        versionId: parseInt(this.props.location.pathname.split('/')[5]),
-        groupId: parseInt(this.props.location.pathname.split('/')[7])
+        versionId: this.props.location.pathname.split('/')[5],
+        groupId:this.props.location.pathname.split('/')[7]
       })
     }
     if (this.props.title === 'Add New Version Page') {
       this.props.history.push({
         pathname: `/dashboard/`,
         newPage: this.state.data,
-        versionId: parseInt(this.props.location.pathname.split('/')[5])
+        versionId: this.props.location.pathname.split('/')[5]
       })
     }
   }
