@@ -30,6 +30,7 @@ import {
   updateCollection,
   deleteCollection
 } from "./collectionsActions";
+import { fetchEndpoints } from "../endpoints/endpointsActions";
 
 const mapStateToProps = state => {
   return { collections: state.collections };
@@ -39,8 +40,10 @@ const mapDispatchToProps = dispatch => {
   return {
     fetchCollections: () => dispatch(fetchCollections()),
     addCollection: newCollection => dispatch(addCollection(newCollection)),
-    updateCollection: editedCollection => dispatch(updateCollection(editedCollection)),
-    deleteCollection:collection => dispatch(deleteCollection(collection))
+    updateCollection: editedCollection =>
+      dispatch(updateCollection(editedCollection)),
+    deleteCollection: collection => dispatch(deleteCollection(collection)),
+    fetchEndpoints: () => dispatch(fetchEndpoints())
   };
 };
 
@@ -62,11 +65,30 @@ class CollectionsComponent extends Component {
   };
 
   async componentDidMount() {
-    console.log(this.props);
     this.props.fetchCollections();
+    this.props.fetchEndpoints();
+    const { data: collections } = await collectionsService.getCollections();
+    this.setState({ collections });
+    const versions = await this.fetchVersions(collections);
+    const groups = await this.fetchGroups(versions);
+    const pages = await this.fetchPages(versions);
+    const endpoints = await this.fetchEndpoints(groups);
+    const versionIds = Object.keys(versions);
+    const groupIds = Object.keys(groups);
+    const pageIds = Object.keys(pages);
+    this.setState({
+      versions,
+      groups,
+      pages,
+      endpoints,
+      versionIds,
+      groupIds,
+      pageIds
+    });
   }
 
   async fetchVersions(collections) {
+    console.log(collections);
     let versions = {};
     const collectionIds = Object.keys(collections);
     for (let i = 0; i < collectionIds.length; i++) {
@@ -111,8 +133,6 @@ class CollectionsComponent extends Component {
     }
     return endpoints;
   }
-
-  
 
   closeCollectionForm() {
     this.setState({ showCollectionForm: false });
@@ -173,7 +193,7 @@ class CollectionsComponent extends Component {
   }
 
   async handleDelete(collection) {
-    this.props.deleteCollection(collection)
+    this.props.deleteCollection(collection);
   }
 
   async handleUpdateCollection(editedCollection) {
@@ -1126,4 +1146,7 @@ class CollectionsComponent extends Component {
   }
 }
 
-export default connect(mapStateToProps,mapDispatchToProps)(CollectionsComponent)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(CollectionsComponent);

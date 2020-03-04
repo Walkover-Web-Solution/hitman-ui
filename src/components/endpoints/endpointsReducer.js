@@ -1,89 +1,88 @@
-import collectionsActionTypes from "./collectionsActionTypes";
+import endpointsActionTypes from "./endpointsActionTypes";
 import { toast } from "react-toastify";
 
 const initialState = {
-  collections: {}
+  endpoints: {}
 };
 
-function collectionsReducer(state = initialState, action) {
-  let collections = {};
+function endpointsReducer(state = initialState, action) {
+  console.log("reducer", state, action);
+  let endpoints = {};
   switch (action.type) {
-    case collectionsActionTypes.FETCH_COLLECTIONS_SUCCESS:
-      return {
-        collections: { ...action.collections }
-      };
+    case endpointsActionTypes.FETCH_ENDPOINTS_SUCCESS:
+      return { ...action.endpoints };
 
-    case collectionsActionTypes.FETCH_COLLECTIONS_FAILURE:
+    case endpointsActionTypes.FETCH_ENDPOINTS_FAILURE:
       toast.error(action.error);
       return state;
 
-    case collectionsActionTypes.ADD_COLLECTION_REQUEST:
-      return {
-        collections: {
-          ...state.collections,
-          [action.newCollection.requestId]: action.newCollection
-        }
-      };
+    // case endpointsActionTypes.ADD_ENDPOINT_REQUEST:
+    //   return {
+    //     collections: {
+    //       ...state.collections,
+    //       [action.newCollection.requestId]: action.newCollection
+    //     }
+    //   };
 
-    case collectionsActionTypes.ADD_COLLECTION_SUCCESS:
-      collections = { ...state.collections };
-      delete collections[action.response.requestId];
-      collections[action.response.id] = action.response;
-      return {
-        collections
-      };
+    // case endpointsActionTypes.ADD_ENDPOINT_SUCCESS:
+    //   collections = { ...state.collections };
+    //   delete collections[action.response.requestId];
+    //   collections[action.response.id] = action.response;
+    //   return {
+    //     collections
+    //   };
 
-    case collectionsActionTypes.ADD_COLLECTION_FAILURE:
-      toast.error(action.error);
-      collections = { ...state.collections };
-      delete collections[action.newCollection.requestId];
-      return {
-        collections
-      };
+    // case endpointsActionTypes.ADD_ENDPOINT_FAILURE:
+    //   toast.error(action.error);
+    //   collections = { ...state.collections };
+    //   delete collections[action.newCollection.requestId];
+    //   return {
+    //     collections
+    //   };
 
-    case collectionsActionTypes.UPDATE_COLLECTION_REQUEST:
-      return {
-        collections: {
-          ...state.collections,
-          [action.editedCollection.id]: action.editedCollection
-        }
-      };
+    // case endpointsActionTypes.UPDATE_ENDPOINT_REQUEST:
+    //   return {
+    //     collections: {
+    //       ...state.collections,
+    //       [action.editedCollection.id]: action.editedCollection
+    //     }
+    //   };
 
-    case collectionsActionTypes.UPDATE_COLLECTION_SUCCESS:
-      return state;
+    // case endpointsActionTypes.UPDATE_ENDPOINT_SUCCESS:
+    //   return state;
 
-    case collectionsActionTypes.UPDATE_COLLECTION_FAILURE:
-      toast.error(action.error);
-      return {
-        collections: {
-          ...state.collections,
-          [action.originalCollection.id]: action.originalCollection
-        }
-      };
+    // case endpointsActionTypes.UPDATE_ENDPOINT_FAILURE:
+    //   toast.error(action.error);
+    //   return {
+    //     collections: {
+    //       ...state.collections,
+    //       [action.originalCollection.id]: action.originalCollection
+    //     }
+    //   };
 
-    case collectionsActionTypes.DELETE_COLLECTION_REQUEST:
-      collections = { ...state.collections };
-      delete collections[action.collection.id];
-      return {
-        collections
-      };
+    // case endpointsActionTypes.DELETE_ENDPOINT_REQUEST:
+    //   collections = { ...state.collections };
+    //   delete collections[action.collection.id];
+    //   return {
+    //     collections
+    //   };
 
-    case collectionsActionTypes.DELETE_COLLECTION_SUCCESS:
-      return state;
+    // case endpointsActionTypes.DELETE_ENDPOINT_SUCCESS:
+    //   return state;
 
-    case collectionsActionTypes.DELETE_COLLECTION_FAILURE:
-      toast.error(action.error.data);
-      if (action.error.status === 404) return state;
-      return {
-        collections: {
-          ...state.collections,
-          [action.collection.id]: action.collection
-        }
-      };
+    // case endpointsActionTypes.DELETE_ENDPOINT_FAILURE:
+    //   toast.error(action.error.data);
+    //   if (action.error.status === 404) return state;
+    //   return {
+    //     collections: {
+    //       ...state.collections,
+    //       [action.collection.id]: action.collection
+    //     }
+    //   };
 
     default:
       return state;
   }
 }
 
-export default collectionsReducer;
+export default endpointsReducer;
