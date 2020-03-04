@@ -4,6 +4,20 @@ import { Modal } from "react-bootstrap";
 import Joi from "joi-browser";
 import Form from "../common/form";
 import groupsService from "./groupsService";
+import {addGroup ,
+  updateGroup
+} from "../groups/groupsActions";
+import { connect } from "react-redux";
+import shortid from "shortid";
+
+const mapDispatchToProps = dispatch => {
+  return {
+    addGroup:(versionId,group) => dispatch(addGroup(versionId,group)),
+    updateGroup:(group) => dispatch(updateGroup(group)),
+  };
+};
+
+
 class GroupForm extends Form {
   state = {
     data: {
@@ -20,17 +34,18 @@ class GroupForm extends Form {
     let data = {};
     const groupId = this.props.location.pathname.split("/")[7];
     const versionId = this.props.location.pathname.split("/")[5];
-    if (this.props.title === "Add new Group") return;
+    let endpointsOrder = [];
     if (this.props.location.editGroup) {
+      endpointsOrder = this.props.location.editGroup.endpointsOrder;
       const { name, host } = this.props.location.editGroup;
-      data = { name, host };
+      data = { name, host};
     } else {
       const {
         data: { name, host }
       } = await groupsService.getGroup(groupId);
       data = { name, host };
     }
-    this.setState({ data, groupId, versionId });
+    this.setState({ data, groupId, versionId, endpointsOrder });
   }
 
   schema = {
@@ -45,21 +60,20 @@ class GroupForm extends Form {
 
   async doSubmit() {
     if (this.props.title === "Add new Group") {
+      const versionId= this.props.location.pathname.split("/")[5]
+      const newGroup ={...this.state.data,endpointsOrder:[],requestId:shortid.generate()}
+      this.props.addGroup(versionId,newGroup);
       this.props.history.push({
         pathname: `/dashboard/collections`,
-        newGroup: this.state.data,
-        versionId: this.props.location.pathname.split("/")[5]
       });
     }
 
     if (this.props.title === "Edit Group") {
-      this.props.history.push({
-        pathname: `/dashboard/collections`,
-        editedGroup: {
-          ...this.state.data,
-          id: this.state.groupId,
-          versionId: this.props.location.pathname.split("/")[5]
+      const  editedGroup= {...this.state.data,id: this.state.groupId,endpointsOrder: this.state.endpointsOrder
         }
+        this.props.updateGroup(editedGroup);
+      this.props.history.push({
+        pathname: `/dashboard/collections` 
       });
     }
   }
@@ -90,4 +104,7 @@ class GroupForm extends Form {
   }
 }
 
-export default GroupForm;
+export default connect(
+  null,mapDispatchToProps
+)(GroupForm);
+
