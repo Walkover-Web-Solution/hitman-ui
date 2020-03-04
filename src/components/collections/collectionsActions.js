@@ -3,16 +3,18 @@ import collectionsActionTypes from "./collectionsActionTypes";
 import store from "../../store/store";
 
 export const fetchCollections = () => {
-    return dispatch => {
-        collectionsService
-            .getCollections()
-            .then(response => {
-                dispatch(fetchCollectionsSuccess(response.data));
-            })
-            .catch(error => {
-                dispatch(fetchCollectionsFailure(error.response.data));
-            });
-    };
+  return dispatch => {
+    collectionsService
+      .getCollections()
+      .then(response => {
+        dispatch(fetchCollectionsSuccess(response.data));
+      })
+      .catch(error => {
+        dispatch(
+          fetchCollectionsFailure(error.response ? error.response.data : error)
+        );
+      });
+  };
 };
 
 export const fetchCollectionsSuccess = collections => {

@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
+
 import {
   Accordion,
   Card,
@@ -59,9 +61,6 @@ class Pages extends Component {
   }
 
   render() {
-    console.log(this.props.pages);
-    console.log(Object.keys(this.props.pages));
-    console.log(this.props.version_id);
     return (
       <div>
         {this.props.pages &&
@@ -133,5 +132,4 @@ class Pages extends Component {
     );
   }
 }
-
-export default Pages;
+export default connect(mapStateToProps)(Pages);

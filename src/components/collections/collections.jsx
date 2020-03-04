@@ -30,12 +30,15 @@ import {
   updateCollection,
   deleteCollection
 } from "./collectionsActions";
+import { fetchGroups, deleteGroup } from "../groups/groupsActions";
+import { fetchEndpoints } from "../endpoints/endpointsActions";
 import {
   fetchVersions,
   addVersion,
   updateVersion,
   deleteVersion
 } from "../collectionVersions/collectionVersionsActions";
+
 import { fetchPages } from "../pages/pagesActions";
 
 const mapStateToProps = state => {
@@ -53,6 +56,9 @@ const mapDispatchToProps = dispatch => {
     updateCollection: editedCollection =>
       dispatch(updateCollection(editedCollection)),
     deleteCollection: collection => dispatch(deleteCollection(collection)),
+    fetchGroups: () => dispatch(fetchGroups()),
+    deleteGroup: groupId => dispatch(deleteGroup(groupId)),
+    fetchEndpoints: () => dispatch(fetchEndpoints()),
     fetchVersions: () => dispatch(fetchVersions()),
     addVersion: (newCollectionVersion, collectionId) =>
       dispatch(addVersion(newCollectionVersion, collectionId)),
@@ -79,18 +85,30 @@ class CollectionsComponent extends Component {
     selectedCollection: {}
   };
 
-  async fetchVersions(collections) {
-    let versions = {};
-    const collectionIds = Object.keys(collections);
-    for (let i = 0; i < collectionIds.length; i++) {
-      const {
-        data: versions1
-      } = await collectionVersionsService.getCollectionVersions(
-        collectionIds[i]
-      );
-      versions = { ...versions, ...versions1 };
-    }
-    return versions;
+  async componentDidMount() {
+    this.props.fetchCollections();
+    this.props.fetchGroups();
+    this.props.fetchEndpoints();
+    this.props.fetchVersions();
+    this.props.fetchPages();
+    // const { data: collections } = await collectionsService.getCollections();
+    //   this.setState({ collections });
+    //   const versions = await this.fetchVersions(collections);
+    //   const groups = await this.fetchGroups(versions);
+    //   const pages = await this.fetchPages(versions);
+    //   const endpoints = await this.fetchEndpoints(groups);
+    //   const versionIds = Object.keys(versions);
+    //   const groupIds = Object.keys(groups);
+    //   const pageIds = Object.keys(pages);
+    //   this.setState({
+    //     versions,
+    //     groups,
+    //     pages,
+    //     endpoints,
+    //     versionIds,
+    //     groupIds,
+    //     pageIds
+    //   });
   }
 
   async fetchGroups(versions) {
@@ -123,31 +141,6 @@ class CollectionsComponent extends Component {
       endpoints = { ...endpoints, ...newEndpoints };
     }
     return endpoints;
-  }
-
-  async componentDidMount() {
-    await this.props.fetchCollections();
-    await this.props.fetchVersions();
-    await this.props.fetchPages();
-    // const collectionIds = Object.keys(collections);
-    // this.setState({ collections, collectionIds });
-    // const collections = store.getState();
-    // const versions = await this.fetchVersions(collections);
-    // const groups = await this.fetchGroups(versions);
-    // const pages = await this.fetchPages(versions);
-    // const endpoints = await this.fetchEndpoints(groups);
-    // const versionIds = Object.keys(versions);
-    // const groupIds = Object.keys(groups);
-    // const pageIds = Object.keys(pages);
-    // this.setState({
-    //   versions,
-    //   groups,
-    //   pages,
-    //   endpoints,
-    //   versionIds,
-    //   groupIds,
-    //   pageIds
-    // });
   }
 
   closeCollectionForm() {
@@ -219,75 +212,16 @@ class CollectionsComponent extends Component {
   async handleAddVersion(newCollectionVersion, collectionId) {
     newCollectionVersion.requestId = shortId.generate();
     this.props.addVersion(newCollectionVersion, collectionId);
-
-    // newCollectionVersion.requestId = shortId.generate();
-    // const originalVersions = { ...this.state.versions };
-    // const originalVersionIds = [...this.state.versionIds];
-    // let versions = { ...this.state.versions };
-    // const requestId = newCollectionVersion.requestId;
-    // versions[requestId] = { ...newCollectionVersion, collectionId };
-    // this.setState({ versions });
-    // try {
-    //   const {
-    //     data: version
-    //   } = await collectionVersionsService.saveCollectionVersion(
-    //     collectionId,
-    //     newCollectionVersion
-    //   );
-    //   versions[version.id] = version;
-    //   delete versions[requestId];
-    //   const versionIds = [...this.state.versionIds, version.id.toString()];
-    //   this.setState({ versions, versionIds });
-    // } catch (ex) {
-    //   toast.error(ex.response ? ex.response.data : "Something went wrong");
-    //   this.setState({
-    //     versions: originalVersions,
-    //     versionIds: originalVersionIds
-    //   });
-    // }
   }
 
   async handleDeleteVersion(collectionVersion) {
     this.props.deleteVersion(collectionVersion);
-
-    // const originalVersions = { ...this.state.versions };
-    // const originalVersionIds = [...this.state.versionIds];
-    // let versions = { ...this.state.versions };
-    // delete versions[deletedCollectionVersionId];
-    // const versionIds = this.state.versionIds.filter(
-    //   vId => vId !== deletedCollectionVersionId.toString()
-    // );
-    // await this.setState({ versions, versionIds });
-    // try {
-    //   await collectionVersionsService.deleteCollectionVersion(
-    //     deletedCollectionVersionId
-    //   );
-    // } catch (ex) {
-    //   toast.error(ex.response ? ex.response.data : "Something went wrong");
-    //   this.setState({
-    //     versions: originalVersions,
-    //     versionIds: originalVersionIds
-    //   });
-    // }
   }
 
   async handleUpdateVersion(version) {
     this.props.updateVersion(version);
-
-    // const originalVersions = { ...this.state.versions };
-    // const body = { ...version };
-    // delete body.id;
-    // delete body.collectionId;
-    // const versions = { ...this.state.versions };
-    // versions[version.id] = version;
-    // this.setState({ versions });
-    // try {
-    //   await collectionVersionsService.updateCollectionVersion(version.id, body);
-    // } catch (ex) {
-    //   toast.error(ex.response ? ex.response.data : "Something went wrong");
-    //   this.setState({ versions: originalVersions });
-    // }
   }
+
   async handleImportVersion(importLink, shareIdentifier, collectionId) {
     let orignalVersion = { ...this.state.versions };
     let versions = { ...this.state.versions };
@@ -333,70 +267,8 @@ class CollectionsComponent extends Component {
     }
   }
 
-  async handleAddGroup(versionId, newGroup) {
-    newGroup.requestId = shortId.generate();
-    newGroup.endpointsOrder = [];
-    const requestId = newGroup.requestId;
-    const originalGroupIds = [...this.state.groupIds];
-    const originalGroups = { ...this.state.groups };
-    const groups = { ...this.state.groups };
-    groups[newGroup.requestId] = { ...newGroup, versionId };
-    this.setState({ groups });
-    try {
-      const { data: group } = await groupsService.saveGroup(
-        versionId,
-        newGroup
-      );
-      groups[group.id] = group;
-      delete groups[requestId];
-      const groupIds = [...this.state.groupIds, group.id.toString()];
-      this.setState({ groups, groupIds });
-    } catch (ex) {
-      toast.error(ex.response ? ex.response.data : "Something went wrong");
-      this.setState({ groups: originalGroups, groupIds: originalGroupIds });
-    }
-  }
-
   async handleDeleteGroup(deletedGroupId) {
-    const originalGroups = { ...this.state.groups };
-    const originalGroupIds = [...this.state.groupIds];
-    const groups = { ...this.state.groups };
-    delete groups[deletedGroupId];
-    const groupIds = this.state.groupIds.filter(
-      gId => gId !== deletedGroupId.toString()
-    );
-    this.setState({ groups, groupIds });
-    try {
-      await groupsService.deleteGroup(deletedGroupId);
-    } catch (ex) {
-      toast.error(ex.response ? ex.response.data : "Something went wrong");
-      this.setState({ groups: originalGroups, groupIds: originalGroupIds });
-    }
-  }
-
-  async handleUpdateGroup(editedGroup) {
-    editedGroup.endpointsOrder = this.state.groups[
-      editedGroup.id
-    ].endpointsOrder;
-    const originalGroups = { ...this.state.groups };
-    const groups = { ...this.state.groups };
-    groups[editedGroup.id] = editedGroup;
-    this.setState({ groups });
-
-    try {
-      const body = { ...editedGroup };
-      delete body.versionId;
-      delete body.id;
-      const { data: group } = await groupsService.updateGroup(
-        editedGroup.id,
-        body
-      );
-      groups[editedGroup.id] = group;
-      this.setState({ groups });
-    } catch (ex) {
-      toast.error(ex.response ? ex.response.data : "Something went wrong");
-      this.setState({ groups: originalGroups });
-    }
+    this.props.deleteGroup(deletedGroupId);
   }
 
   async handleAddVersionPage(versionId, newPage) {
@@ -485,48 +357,6 @@ class CollectionsComponent extends Component {
     } catch (ex) {
       toast.error(ex.response ? ex.response.data : "Something went wrong");
       this.setState({ pages: originalPages });
-    }
-  }
-
-  async handleAddEndpoint(groupId, newEndpoint, versions) {
-    const originalEndpoints = { ...this.state.endpoints };
-    const originalGroups = { ...this.state.groups };
-    newEndpoint.requestId = shortId.generate();
-    const requestId = newEndpoint.requestId;
-    const endpoints = { ...this.state.endpoints };
-    const groups = { ...this.state.groups };
-    endpoints[requestId] = newEndpoint;
-    newEndpoint.groupId = groupId;
-
-    this.setState({ endpoints });
-    let endpoint = {};
-    try {
-      delete newEndpoint.groupId;
-      const { data } = await endpointService.saveEndpoint(groupId, newEndpoint);
-      endpoint = data;
-      endpoints[endpoint.id] = endpoint;
-      delete endpoints.requestId;
-      groups[groupId].endpointsOrder.push(endpoint.id.toString());
-      this.setState({ endpoints, groups });
-      this.props.history.push({
-        pathname: `/dashboard/collections/endpoints/${endpoint.id}`,
-        endpoint: endpoint,
-        groups: this.state.groups,
-        title: "update endpoint",
-        versions: versions,
-        groupId: groupId
-      });
-    } catch (ex) {
-      this.props.history.push({
-        pathname: "/dashboard/collections/endpoints",
-        endpoint: endpoint,
-        versions: versions,
-        groupId: groupId,
-        title: "Add New Endpoint",
-        groups: this.state.groups
-      });
-      toast.error(ex.response ? ex.response.data : "Something went wrong");
-      this.setState({ endpoints: originalEndpoints });
     }
   }
 
@@ -749,16 +579,6 @@ class CollectionsComponent extends Component {
       const duplicateEndpoint = location.duplicateEndpoint;
       this.props.history.replace({ duplicateEndpoint: null });
       this.handleDuplicateEndpoint(duplicateEndpoint);
-    }
-
-    if (location.title === "Add Endpoint") {
-      const { endpoint, groupId } = location;
-      this.props.history.replace({
-        title: null,
-        groupId: null,
-        endpoint: null
-      });
-      this.handleAddEndpoint(groupId, endpoint, this.props.location.versions);
     }
 
     if (location.title === "update Endpoint") {
@@ -1143,13 +963,12 @@ class CollectionsComponent extends Component {
                     <CollectionVersions
                       {...this.props}
                       collection_id={collectionId}
-                      // versions={this.props.versions}
-                      // groups={this.props.groups}
-                      // pages={this.props.pages}
-                      // endpoints={this.props.endpoints}
-                      // version_ids={this.props.versionIds}
-                      // group_ids={this.props.groupIds}
-                      // page_ids={this.props.pageIds}
+                      // versions={this.state.versions}
+                      // groups={this.state.groups}
+                      // pages={this.state.pages}
+                      // version_ids={this.state.versionIds}
+                      // group_ids={this.state.groupIds}
+                      // page_ids={this.state.pageIds}
                       // set_version_id={this.setVersionIds.bind(this)}
                       // set_endpoint_id={this.setEndpointIds.bind(this)}
                       // set_group_id={this.setGroupIds.bind(this)}

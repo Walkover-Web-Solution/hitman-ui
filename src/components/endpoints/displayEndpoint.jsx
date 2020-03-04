@@ -6,10 +6,21 @@ import { CopyToClipboard } from "react-copy-to-clipboard";
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
 import { toast } from "react-toastify";
+import { connect } from "react-redux";
 import "../../css/editableDropdown.css";
+import { addEndpoint, updateEndpoint } from "./endpointsActions";
+import shortId from "shortid";
 const status = require("http-status");
 var JSONPrettyMon = require("react-json-pretty/dist/monikai");
 var URI = require("urijs");
+
+const mapDispatchToProps = dispatch => {
+  return {
+    addEndpoint: (newEndpoint, groupId) =>
+      dispatch(addEndpoint(newEndpoint, groupId)),
+    updateEndpoint: editedEndpoint => dispatch(updateEndpoint(editedEndpoint))
+  };
+};
 
 class DisplayEndpoint extends Component {
   uri = React.createRef();
@@ -251,22 +262,10 @@ class DisplayEndpoint extends Component {
     if (endpoint.name == "" || endpoint.uri == "")
       toast.error("Please Enter all the fields");
     else if (this.state.title === "Add New Endpoint") {
-      this.props.history.push({
-        pathname: `/dashboard/collections`,
-        title: "Add Endpoint",
-        endpoint: endpoint,
-        groupId: this.state.groupId,
-        versions: this.state.versions
-      });
+      endpoint.requestId = shortId.generate();
+      this.props.addEndpoint(endpoint, this.state.groupId);
     } else if (this.state.title === "update endpoint") {
-      this.props.history.push({
-        pathname: `/dashboard/collections`,
-        title: "update Endpoint",
-        endpoint: endpoint,
-        groupId: this.state.groupId,
-        versions: this.state.versions,
-        endpointId: this.state.endpoint.id
-      });
+      this.props.updateEndpoint({ ...endpoint, id: this.state.endpoint.id });
     }
   };
 
@@ -1136,4 +1135,4 @@ class DisplayEndpoint extends Component {
   }
 }
 
-export default DisplayEndpoint;
+export default connect(null, mapDispatchToProps)(DisplayEndpoint);

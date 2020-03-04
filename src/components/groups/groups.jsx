@@ -8,6 +8,11 @@ import {
 } from "react-bootstrap";
 import GroupPages from "../pages/groupPages";
 import Endpoints from "../endpoints/endpoints";
+import { connect } from "react-redux";
+
+const mapStateToProps = state => {
+  return { groups: state.groups };
+};
 
 class Groups extends Component {
   state = {
@@ -92,13 +97,11 @@ class Groups extends Component {
       duplicateGroup: group
     });
   }
-
+  
   render() {
     return (
       <div>
-        {this.props.groups &&
-          this.props.group_ids &&
-          this.props.group_ids
+        {Object.keys(this.props.groups)
             .filter(
               gId => this.props.groups[gId].versionId === this.props.version_id
             )
@@ -144,7 +147,7 @@ class Groups extends Component {
                           )
                             this.props.history.push({
                               pathname: "/dashboard/collections",
-                              deletedGroupId: groupId
+                              deletedGroupId: groupId,
                             });
                         }}
                       >
@@ -193,10 +196,6 @@ class Groups extends Component {
                         group_id={groupId}
                         group_dnd={this.groupDnD.bind(this)}
                       />
-                      {/* </Card.Body>
-                  </Accordion.Collapse>
-                  <Accordion.Collapse eventKey="1">
-                    <Card.Body> */}
                       <Endpoints
                         {...this.props}
                         group_id={groupId}
@@ -217,4 +216,7 @@ class Groups extends Component {
   }
 }
 
-export default Groups;
+
+export default connect(
+  mapStateToProps
+)(Groups);

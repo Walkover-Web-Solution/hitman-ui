@@ -98,10 +98,6 @@ class CollectionForm extends Form {
           keyword2: ""
         }
       });
-      // this.props.history.push({
-      //   pathname: `/dashboard/collections`,
-      //   editedCollection: { ...this.state.data, id: this.state.collectionId }
-      // });
     }
     if (this.props.title === "Add new Collection") {
       this.props.onHide();
