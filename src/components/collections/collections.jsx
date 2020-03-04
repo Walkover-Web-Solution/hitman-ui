@@ -33,12 +33,13 @@ import {
 import {
   fetchVersions,
   addVersion,
-  updateVersion
+  updateVersion,
+  deleteVersion
 } from "../collectionVersions/collectionVersionsActions";
 
 const mapStateToProps = state => {
   return {
-    collections: state.collections.collections,
+    collections: state.collections,
     versions: state.versions.versions
   };
 };
@@ -53,7 +54,8 @@ const mapDispatchToProps = dispatch => {
     fetchVersions: () => dispatch(fetchVersions()),
     addVersion: newCollectionVersion =>
       dispatch(addVersion(newCollectionVersion)),
-    updateVersion: editedVersion => dispatch(updateVersion(editedVersion))
+    updateVersion: editedVersion => dispatch(updateVersion(editedVersion)),
+    deleteVersion: version => dispatch(deleteVersion(version))
   };
 };
 
@@ -122,7 +124,6 @@ class CollectionsComponent extends Component {
 
   async componentDidMount() {
     await this.props.fetchCollections();
-    let collections = this.props.collections;
     await this.props.fetchVersions();
 
     // const collectionIds = Object.keys(collections);
@@ -243,26 +244,28 @@ class CollectionsComponent extends Component {
     // }
   }
 
-  async handleDeleteVersion(deletedCollectionVersionId) {
-    const originalVersions = { ...this.state.versions };
-    const originalVersionIds = [...this.state.versionIds];
-    let versions = { ...this.state.versions };
-    delete versions[deletedCollectionVersionId];
-    const versionIds = this.state.versionIds.filter(
-      vId => vId !== deletedCollectionVersionId.toString()
-    );
-    await this.setState({ versions, versionIds });
-    try {
-      await collectionVersionsService.deleteCollectionVersion(
-        deletedCollectionVersionId
-      );
-    } catch (ex) {
-      toast.error(ex.response ? ex.response.data : "Something went wrong");
-      this.setState({
-        versions: originalVersions,
-        versionIds: originalVersionIds
-      });
-    }
+  async handleDeleteVersion(collectionVersion) {
+    this.props.deleteVersion(collectionVersion);
+
+    // const originalVersions = { ...this.state.versions };
+    // const originalVersionIds = [...this.state.versionIds];
+    // let versions = { ...this.state.versions };
+    // delete versions[deletedCollectionVersionId];
+    // const versionIds = this.state.versionIds.filter(
+    //   vId => vId !== deletedCollectionVersionId.toString()
+    // );
+    // await this.setState({ versions, versionIds });
+    // try {
+    //   await collectionVersionsService.deleteCollectionVersion(
+    //     deletedCollectionVersionId
+    //   );
+    // } catch (ex) {
+    //   toast.error(ex.response ? ex.response.data : "Something went wrong");
+    //   this.setState({
+    //     versions: originalVersions,
+    //     versionIds: originalVersionIds
+    //   });
+    // }
   }
 
   async handleUpdateVersion(version) {
@@ -831,10 +834,10 @@ class CollectionsComponent extends Component {
       this.handleAddGroup(versionId, newGroup);
     }
 
-    if (location.deletedCollectionVersionId) {
-      const deletedCollectionVersionId = location.deletedCollectionVersionId;
-      this.props.history.replace({ deletedCollectionVersionId: null });
-      this.handleDeleteVersion(deletedCollectionVersionId);
+    if (location.collectionVersion) {
+      const collectionVersion = location.collectionVersion;
+      this.props.history.replace({ collectionVersion: null });
+      this.handleDeleteVersion(collectionVersion);
     }
 
     if (location.editedCollectionVersion) {

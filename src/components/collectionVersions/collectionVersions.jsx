@@ -51,7 +51,7 @@ class CollectionVersions extends Component {
   async handleDelete(collectionVersion) {
     this.props.history.push({
       pathname: "/dashboard/collections",
-      deletedCollectionVersionId: collectionVersion.id
+      collectionVersion: collectionVersion
     });
   }
 
