@@ -7,6 +7,11 @@ import {
   DropdownButton
 } from "react-bootstrap";
 
+const mapStateToProps = state => {
+  return {
+    pages: state.pages
+  };
+};
 class Pages extends Component {
   state = {};
 
@@ -54,10 +59,13 @@ class Pages extends Component {
   }
 
   render() {
+    console.log(this.props.pages);
+    console.log(Object.keys(this.props.pages));
+    console.log(this.props.version_id);
     return (
       <div>
         {this.props.pages &&
-          this.props.page_ids
+          Object.keys(this.props.pages)
             .filter(
               pageId =>
                 this.props.pages[pageId].versionId === this.props.version_id &&
@@ -109,9 +117,9 @@ class Pages extends Component {
                         Delete
                       </Dropdown.Item>
                       <Dropdown.Item
-                        eventKey='2'
+                        eventKey="2"
                         onClick={() => {
-                          this.handleDuplicate(this.props.pages[pageId])
+                          this.handleDuplicate(this.props.pages[pageId]);
                         }}
                       >
                         Duplicate

@@ -41,7 +41,8 @@ import { fetchPages } from "../pages/pagesActions";
 const mapStateToProps = state => {
   return {
     collections: state.collections,
-    versions: state.versions
+    versions: state.versions,
+    pages: state.pages
   };
 };
 
