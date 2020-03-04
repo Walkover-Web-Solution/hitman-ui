@@ -36,6 +36,7 @@ import {
   updateVersion,
   deleteVersion
 } from "../collectionVersions/collectionVersionsActions";
+import { fetchPages } from "../pages/pagesActions";
 
 const mapStateToProps = state => {
   return {
@@ -55,7 +56,8 @@ const mapDispatchToProps = dispatch => {
     addVersion: (newCollectionVersion, collectionId) =>
       dispatch(addVersion(newCollectionVersion, collectionId)),
     updateVersion: editedVersion => dispatch(updateVersion(editedVersion)),
-    deleteVersion: version => dispatch(deleteVersion(version))
+    deleteVersion: version => dispatch(deleteVersion(version)),
+    fetchPages: () => dispatch(fetchPages())
   };
 };
 
@@ -125,6 +127,7 @@ class CollectionsComponent extends Component {
   async componentDidMount() {
     await this.props.fetchCollections();
     await this.props.fetchVersions();
+    await this.props.fetchPages();
     // const collectionIds = Object.keys(collections);
     // this.setState({ collections, collectionIds });
     // const collections = store.getState();
