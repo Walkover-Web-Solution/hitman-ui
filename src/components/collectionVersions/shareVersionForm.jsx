@@ -31,10 +31,6 @@ class ShareVersionForm extends Form {
   };
 
   async doSubmit(props) {
-    const shareVersionLink = this.state.data.shareVersionLink;
-    if (this.props.title === "Share Version") {
-      this.props.history.push({});
-    }
   }
 
   render() {
@@ -56,7 +52,7 @@ class ShareVersionForm extends Form {
             {<div name="shareVersionLink" label="Public Link"></div>}
             {
               <CopyToClipboard
-                text={JSON.stringify(this.state.data.shareVersionLink)}
+                text={JSON.stringify(this.state.data.shareVersionLink).replace(/['"]+/g, '')}
                 onCopy={() => this.setState({ copied: true })}
                 style={{ float: "right", borderRadius: "12px" }}
               >
