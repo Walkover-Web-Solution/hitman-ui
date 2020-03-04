@@ -40,7 +40,7 @@ import {
 const mapStateToProps = state => {
   return {
     collections: state.collections,
-    versions: state.versions.versions
+    versions: state.versions
   };
 };
 
@@ -125,7 +125,6 @@ class CollectionsComponent extends Component {
   async componentDidMount() {
     await this.props.fetchCollections();
     await this.props.fetchVersions();
-
     // const collectionIds = Object.keys(collections);
     // this.setState({ collections, collectionIds });
     // const collections = store.getState();
@@ -878,7 +877,6 @@ class CollectionsComponent extends Component {
       this.props.history.replace({ newCollection: null });
       this.handleAddCollection(newCollection);
     }
-
     return (
       <div>
         <div className="App-Nav">
@@ -1141,19 +1139,19 @@ class CollectionsComponent extends Component {
                     <CollectionVersions
                       {...this.props}
                       collection_id={collectionId}
-                      versions={this.props.versions}
-                      groups={this.state.groups}
-                      pages={this.state.pages}
-                      endpoints={this.state.endpoints}
-                      version_ids={this.state.versionIds}
-                      group_ids={this.state.groupIds}
-                      page_ids={this.state.pageIds}
-                      set_version_id={this.setVersionIds.bind(this)}
-                      set_endpoint_id={this.setEndpointIds.bind(this)}
-                      set_group_id={this.setGroupIds.bind(this)}
-                      set_page_id={this.setPageIds.bind(this)}
-                      collection_dnd={this.collectionDnD.bind(this)}
-                      dnd_move_endpoint={this.dndMoveEndpoint.bind(this)}
+                      // versions={this.props.versions}
+                      // groups={this.props.groups}
+                      // pages={this.props.pages}
+                      // endpoints={this.props.endpoints}
+                      // version_ids={this.props.versionIds}
+                      // group_ids={this.props.groupIds}
+                      // page_ids={this.props.pageIds}
+                      // set_version_id={this.setVersionIds.bind(this)}
+                      // set_endpoint_id={this.setEndpointIds.bind(this)}
+                      // set_group_id={this.setGroupIds.bind(this)}
+                      // set_page_id={this.setPageIds.bind(this)}
+                      // collection_dnd={this.collectionDnD.bind(this)}
+                      // dnd_move_endpoint={this.dndMoveEndpoint.bind(this)}
                     />
                   </Card.Body>
                 </Accordion.Collapse>
