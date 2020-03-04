@@ -52,8 +52,8 @@ const mapDispatchToProps = dispatch => {
       dispatch(updateCollection(editedCollection)),
     deleteCollection: collection => dispatch(deleteCollection(collection)),
     fetchVersions: () => dispatch(fetchVersions()),
-    addVersion: newCollectionVersion =>
-      dispatch(addVersion(newCollectionVersion)),
+    addVersion: (newCollectionVersion, collectionId) =>
+      dispatch(addVersion(newCollectionVersion, collectionId)),
     updateVersion: editedVersion => dispatch(updateVersion(editedVersion)),
     deleteVersion: version => dispatch(deleteVersion(version))
   };
@@ -214,7 +214,7 @@ class CollectionsComponent extends Component {
 
   async handleAddVersion(newCollectionVersion, collectionId) {
     newCollectionVersion.requestId = shortId.generate();
-    this.props.addVersion(newCollectionVersion);
+    this.props.addVersion(newCollectionVersion, collectionId);
 
     // newCollectionVersion.requestId = shortId.generate();
     // const originalVersions = { ...this.state.versions };
