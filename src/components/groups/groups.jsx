@@ -97,7 +97,7 @@ class Groups extends Component {
       duplicateGroup: group
     });
   }
-
+  
   render() {
     return (
       <div>
@@ -147,7 +147,9 @@ class Groups extends Component {
                           )
                             this.props.history.push({
                               pathname: "/dashboard/collections",
-                              deletedGroupId: groupId
+                              deletedGroupId: groupId,
+                              
+
                             });
                         }}
                       >
@@ -196,10 +198,6 @@ class Groups extends Component {
                         group_id={groupId}
                         group_dnd={this.groupDnD.bind(this)}
                       />
-                      {/* </Card.Body>
-                  </Accordion.Collapse>
-                  <Accordion.Collapse eventKey="1">
-                    <Card.Body> */}
                       <Endpoints
                         {...this.props}
                         group_id={groupId}

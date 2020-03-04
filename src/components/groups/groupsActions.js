@@ -1,5 +1,6 @@
 import groupsActionTypes from "./groupsActionTypes";
 import groupsService from "../groups/groupsService";
+import shortId from "shortid";
 import store from "../../store/store";
 
 
@@ -11,7 +12,7 @@ export const fetchGroups = () => {
         dispatch(fetchGroupsSuccess(response.data));
       })
       .catch(error => {
-        dispatch(fetchGroupsFailure(error.response.data));
+        dispatch(fetchGroupsFailure(error.response?error.response.data:error));
       });
   };
 };
@@ -30,115 +31,117 @@ export const fetchGroupsFailure = error => {
   };
 };
 
-// export const addCollection = newCollection => {
-//   return dispatch => {
-//     dispatch(addCollectionRequest(newCollection));
-//     collectionsService
-//       .saveCollection(newCollection)
-//       .then(response => {
-//         dispatch(addCollectionSuccess(response.data, newCollection));
-//       })
-//       .catch(error => {
-//         dispatch(addCollectionFailure(error.response.data, newCollection));
-//       });
-//   };
-// };
+export const addGroup = (versionId,newGroup) => {
+  return dispatch => {
+    dispatch(addGroupRequest(newGroup));
+    groupsService
+      .saveGroup(versionId,newGroup)
+      .then(response => {
+        dispatch(addGroupSuccess(response.data));
+      })
+      .catch(error => {
+        dispatch(addGroupFailure(error.response?error.response.data:error, newGroup));
+      });
+  };
+};
 
-// export const addCollectionRequest = newCollection => {
-//   return {
-//     type: collectionsActionTypes.ADD_COLLECTION_REQUEST,
-//     newCollection
-//   };
-// };
+export const addGroupRequest = newGroup => {
+  return {
+    type: groupsActionTypes.ADD_GROUP_REQUEST,
+    newGroup
+  };
+};
 
-// export const addCollectionSuccess = response => {
-//   return {
-//     type: collectionsActionTypes.ADD_COLLECTION_SUCCESS,
-//     response
-//   };
-// };
+export const addGroupSuccess = response => {
+  return {
+    type: groupsActionTypes.ADD_GROUP_SUCCESS,
+    response
+  };
+};
 
-// export const addCollectionFailure = (error, newCollection) => {
-//   return {
-//     type: collectionsActionTypes.ADD_COLLECTION_FAILURE,
-//     newCollection,
-//     error
-//   };
-// };
+export const addGroupFailure = (error, newGroup) => {
+  return {
+    type: groupsActionTypes.ADD_GROUP_FAILURE,
+    newGroup,
+    error
+  };
+};
 
-// export const updateCollection = editedCollection => {
-//   return dispatch => {
-//     const originalCollection = store.getState().collections[
-//       editedCollection.id
-//     ];
-//     dispatch(updateCollectionRequest(editedCollection));
-//     const id = editedCollection.id;
-//     delete editedCollection.id;
-//     collectionsService
-//       .updateCollection(id, editedCollection)
-//       .then(() => {
-//         dispatch(updateCollectionSuccess());
-//       })
-//       .catch(error => {
-//         dispatch(
-//           updateCollectionFailure(error.response.data, originalCollection)
-//         );
-//       });
-//   };
-// };
 
-// export const updateCollectionRequest = editedCollection => {
-//   return {
-//     type: collectionsActionTypes.UPDATE_COLLECTION_REQUEST,
-//     editedCollection
-//   };
-// };
+export const updateGroup = editedGroup => {
+  return dispatch => {
+    const originalGroup = store.getState().groups[
+      editedGroup.id
+    ];
+    dispatch(updateGroupRequest(editedGroup));
+    const id = editedGroup.id;
+    delete editedGroup.id;
+    groupsService
+      .updateGroup(id, editedGroup)
+      .then((response) => {
+        dispatch(updateGroupSuccess(response.data));
+      })
+      .catch(error => {
+        dispatch(
+          updateGroupFailure(error.response?error.response.data:error, originalGroup)
+        );
+      });
+  };
+};
 
-// export const updateCollectionSuccess = () => {
-//   return {
-//     type: collectionsActionTypes.UPDATE_COLLECTION_SUCCESS
-//   };
-// };
+export const updateGroupRequest = editedGroup => {
+  return {
+    type: groupsActionTypes.UPDATE_GROUP_REQUEST,
+    editedGroup
+  };
+};
 
-// export const updateCollectionFailure = (error, originalCollection) => {
-//   return {
-//     type: collectionsActionTypes.UPDATE_COLLECTION_FAILURE,
-//     error,
-//     originalCollection
-//   };
-// };
+export const updateGroupSuccess = (response) => {
+  return {
+    type: groupsActionTypes.UPDATE_GROUP_SUCCESS,
+    response
+  };
+};
 
-// export const deleteCollection = collection => {
-//   return dispatch => {
-//     dispatch(deleteCollectionRequest(collection));
-//     collectionsService
-//       .deleteCollection(collection.id)
-//       .then(() => {
-//         dispatch(deleteCollectionSuccess());
-//       })
-//       .catch(error => {
-//         dispatch(deleteCollectionFailure(error.response, collection));
-//       });
-//   };
-// };
+export const updateGroupFailure = (error, originalGroup) => {
+  return {
+    type: groupsActionTypes.UPDATE_GROUP_FAILURE,
+    error,
+    originalGroup
+  };
+};
 
-// export const deleteCollectionRequest = collection => {
-//   return {
-//     type: collectionsActionTypes.DELETE_COLLECTION_REQUEST,
-//     collection
-//   };
-// };
+export const deleteGroup = group => {
+  return dispatch => {
+    dispatch(deleteGroupRequest(group));
+    groupsService
+      .deleteGroup(group.id)
+      .then(() => {
+        dispatch(deleteGroupSuccess());
+      })
+      .catch(error => {
+        dispatch(deleteGroupFailure(error.response?error.response.data:error, group));
+      });
+  };
+};
 
-// export const deleteCollectionSuccess = () => {
-//   return {
-//     type: collectionsActionTypes.DELETE_COLLECTION_SUCCESS
-//   };
-// };
+export const deleteGroupRequest = group => {
+  return {
+    type: groupsActionTypes.DELETE_GROUP_REQUEST,
+    group
+  };
+};
 
-// export const deleteCollectionFailure = (error, collection) => {
-//   return {
-//     type: collectionsActionTypes.DELETE_COLLECTION_FAILURE,
-//     error,
-//     collection
-//   };
-// };
+export const deleteGroupSuccess = () => {
+  return {
+    type:groupsActionTypes.DELETE_GROUP_SUCCESS
+  };
+};
+
+export const deleteGroupFailure = (error, group) => {
+  return {
+    type:groupsActionTypes.DELETE_GROUP_FAILURE,
+    error,
+    group
+  };
+};

@@ -11,75 +11,63 @@ function groupsReducer(state = initialState, action) {
     case groupsActionTypes.FETCH_GROUPS_SUCCESS:
       return { ...action.groups }
       
-
     case groupsActionTypes.FETCH_GROUPS_FAILURE:
       toast.error(action.error);
       return state;
 
-    // case collectionsActionTypes.ADD_COLLECTION_REQUEST:
-    //   return {
-    //     collections: {
-    //       ...state.collections,
-    //       [action.newCollection.requestId]: action.newCollection
-    //     }
-    //   };
+    case groupsActionTypes.ADD_GROUP_REQUEST:
+      return {
+        ...state,
+        [action.newGroup.requestId]: action.newGroup
+    }
 
-    // case collectionsActionTypes.ADD_COLLECTION_SUCCESS:
-    //   collections = { ...state.collections };
-    //   delete collections[action.response.requestId];
-    //   collections[action.response.id] = action.response;
-    //   return {
-    //     collections
-    //   };
+    case groupsActionTypes.ADD_GROUP_SUCCESS:
+      groups = { ...state };
+      delete groups[action.response.requestId];
+      groups[action.response.id] = action.response;
+      return groups;
 
-    // case collectionsActionTypes.ADD_COLLECTION_FAILURE:
-    //   toast.error(action.error);
-    //   collections = { ...state.collections };
-    //   delete collections[action.newCollection.requestId];
-    //   return {
-    //     collections
-    //   };
+    case groupsActionTypes.ADD_GROUP_FAILURE:
+      toast.error(action.error);
+      groups = { ...state };
+      delete groups[action.newGroup.requestId];
+      return groups;
 
-    // case collectionsActionTypes.UPDATE_COLLECTION_REQUEST:
-    //   return {
-    //     collections: {
-    //       ...state.collections,
-    //       [action.editedCollection.id]: action.editedCollection
-    //     }
-    //   };
+      case groupsActionTypes.UPDATE_GROUP_REQUEST:
+      return {
+          ...state,
+          [action.editedGroup.id]: action.editedGroup
+      };
 
-    // case collectionsActionTypes.UPDATE_COLLECTION_SUCCESS:
-    //   return state;
+    case groupsActionTypes.UPDATE_GROUP_SUCCESS:
+      return {
+        ...state,
+        [action.response.id]: action.response
+    };
 
-    // case collectionsActionTypes.UPDATE_COLLECTION_FAILURE:
-    //   toast.error(action.error);
-    //   return {
-    //     collections: {
-    //       ...state.collections,
-    //       [action.originalCollection.id]: action.originalCollection
-    //     }
-    //   };
+    case groupsActionTypes.UPDATE_GROUP_FAILURE:
+      toast.error(action.error);
+      return {
+          ...state,
+          [action.originalGroup.id]: action.originalGroup
+      };
 
-    // case collectionsActionTypes.DELETE_COLLECTION_REQUEST:
-    //   collections = { ...state.collections };
-    //   delete collections[action.collection.id];
-    //   return {
-    //     collections
-    //   };
+    case groupsActionTypes.DELETE_GROUP_REQUEST:
+      groups = { ...state};
+      delete groups[action.group.id];
+      return groups;
 
-    // case collectionsActionTypes.DELETE_COLLECTION_SUCCESS:
-    //   return state;
+    case groupsActionTypes.DELETE_GROUP_SUCCESS:
+      return state;
 
-    // case collectionsActionTypes.DELETE_COLLECTION_FAILURE:
-    //   toast.error(action.error.data);
-    //   if (action.error.status === 404) return state;
-    //   return {
-    //     collections: {
-    //       ...state.collections,
-    //       [action.collection.id]: action.collection
-    //     }
-    //   };
-
+    case groupsActionTypes.DELETE_GROUP_FAILURE:
+      toast.error(action.error.data);
+      if (action.error.status === 404) return state;
+      return {
+          ...state,
+          [action.group.id]: action.group
+        }
+    
     default:
       return state;
   }

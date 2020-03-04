@@ -31,7 +31,8 @@ import {
   deleteCollection
 } from "./collectionsActions";
 import {
-  fetchGroups
+  fetchGroups,
+  deleteGroup
 } from "../groups/groupsActions";
 import { fetchEndpoints } from "../endpoints/endpointsActions";
 
@@ -43,10 +44,10 @@ const mapDispatchToProps = dispatch => {
   return {
     fetchCollections: () => dispatch(fetchCollections()),
     addCollection: newCollection => dispatch(addCollection(newCollection)),
-    updateCollection: editedCollection =>
-      dispatch(updateCollection(editedCollection)),
+    updateCollection: editedCollection =>dispatch(updateCollection(editedCollection)),
     deleteCollection: collection => dispatch(deleteCollection(collection)),
     fetchGroups: () => dispatch(fetchGroups()),
+    deleteGroup:(groupId) => dispatch(deleteGroup(groupId)),
     fetchEndpoints: () => dispatch(fetchEndpoints())
   };
 };
@@ -93,7 +94,6 @@ class CollectionsComponent extends Component {
   }
 
   async fetchVersions(collections) {
-    console.log(collections);
     let versions = {};
     const collectionIds = Object.keys(collections);
     for (let i = 0; i < collectionIds.length; i++) {
@@ -315,71 +315,10 @@ class CollectionsComponent extends Component {
     }
   }
 
-  async handleAddGroup(versionId, newGroup) {
-    newGroup.requestId = shortId.generate();
-    newGroup.endpointsOrder = [];
-    const requestId = newGroup.requestId;
-    const originalGroupIds = [...this.state.groupIds];
-    const originalGroups = { ...this.state.groups };
-    const groups = { ...this.state.groups };
-    groups[newGroup.requestId] = { ...newGroup, versionId };
-    this.setState({ groups });
-    try {
-      const { data: group } = await groupsService.saveGroup(
-        versionId,
-        newGroup
-      );
-      groups[group.id] = group;
-      delete groups[requestId];
-      const groupIds = [...this.state.groupIds, group.id.toString()];
-      this.setState({ groups, groupIds });
-    } catch (ex) {
-      toast.error(ex.response ? ex.response.data : "Something went wrong");
-      this.setState({ groups: originalGroups, groupIds: originalGroupIds });
-    }
-  }
+   async handleDeleteGroup(deletedGroupId) {
+    this.props.deleteGroup(deletedGroupId);
+ }
 
-  async handleDeleteGroup(deletedGroupId) {
-    const originalGroups = { ...this.state.groups };
-    const originalGroupIds = [...this.state.groupIds];
-    const groups = { ...this.state.groups };
-    delete groups[deletedGroupId];
-    const groupIds = this.state.groupIds.filter(
-      gId => gId !== deletedGroupId.toString()
-    );
-    this.setState({ groups, groupIds });
-    try {
-      await groupsService.deleteGroup(deletedGroupId);
-    } catch (ex) {
-      toast.error(ex.response ? ex.response.data : "Something went wrong");
-      this.setState({ groups: originalGroups, groupIds: originalGroupIds });
-    }
-  }
-
-  async handleUpdateGroup(editedGroup) {
-    editedGroup.endpointsOrder = this.state.groups[
-      editedGroup.id
-    ].endpointsOrder;
-    const originalGroups = { ...this.state.groups };
-    const groups = { ...this.state.groups };
-    groups[editedGroup.id] = editedGroup;
-    this.setState({ groups });
-
-    try {
-      const body = { ...editedGroup };
-      delete body.versionId;
-      delete body.id;
-      const { data: group } = await groupsService.updateGroup(
-        editedGroup.id,
-        body
-      );
-      groups[editedGroup.id] = group;
-      this.setState({ groups });
-    } catch (ex) {
-      toast.error(ex.response ? ex.response.data : "Something went wrong");
-      this.setState({ groups: originalGroups });
-    }
-  }
 
   async handleAddVersionPage(versionId, newPage) {
     newPage.requestId = shortId.generate();
