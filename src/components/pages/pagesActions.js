@@ -29,7 +29,7 @@ export const fetchPagesFailure = error => {
         error
     };
 };
-export const updatePage = editedPage => {
+export const updatePage = (history, editedPage) => {
     let newPage = {...editedPage };
     delete newPage.id;
     delete newPage.versionId;
@@ -41,6 +41,7 @@ export const updatePage = editedPage => {
             .updatePage(editedPage.id, newPage)
             .then(response => {
                 dispatch(updatePageSuccess(response.data));
+                history.push(`/dashboard/collections/pages/${response.data.id}`);
             })
             .catch(error => {
                 dispatch(updatePageFailure(error.response.data, originalPage));
@@ -111,7 +112,7 @@ export const addPageFailure = (error, newPage) => {
 };
 //
 
-export const addGroupPage = (versionId, groupId, newPage) => {
+export const addGroupPage = (history, versionId, groupId, newPage) => {
     return dispatch => {
         dispatch(addGroupPageRequest(versionId, groupId, newPage));
         delete newPage.groupId;
@@ -120,6 +121,7 @@ export const addGroupPage = (versionId, groupId, newPage) => {
             .saveGroupPage(groupId, newPage)
             .then(response => {
                 dispatch(addGroupPageSuccess(response.data));
+                history.push(`/dashboard/collections/pages/${response.data.id}/edit`);
             })
             .catch(error => {
                 dispatch(addGroupPageFailure(error.response.data, newPage));

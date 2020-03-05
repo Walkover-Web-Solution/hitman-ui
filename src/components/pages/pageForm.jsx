@@ -4,7 +4,6 @@ import Joi from "joi-browser";
 import { Link } from "react-router-dom";
 import Form from "../common/form";
 import { connect } from "react-redux";
-import pagesService from "./pageService";
 import { addPage, addGroupPage } from "../pages/pagesActions";
 import shortid from "shortid";
 import { withRouter } from "react-router-dom";
@@ -14,7 +13,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     addPage: (versionId, newPage) =>
       dispatch(addPage(ownProps.history, versionId, newPage)),
     addGroupPage: (versionId, groupId, newPage) =>
-      dispatch(addGroupPage(versionId, groupId, newPage))
+      dispatch(addGroupPage(ownProps.history, versionId, groupId, newPage))
   };
 };
 
@@ -39,9 +38,6 @@ class PageForm extends Form {
       this.props.addGroupPage(versionId, groupId, newPage);
       this.props.history.push({
         pathname: `/dashboard/`
-        // newPage: this.state.data,
-        // versionId: this.props.location.pathname.split("/")[5],
-        // groupId: this.props.location.pathname.split("/")[7]
       });
     }
     if (this.props.title === "Add New Version Page") {
@@ -50,8 +46,6 @@ class PageForm extends Form {
       this.props.addPage(versionId, newPage);
       this.props.history.push({
         pathname: `/dashboard/`
-        // newPage: this.state.data,
-        // versionId: this.props.location.pathname.split("/")[5]
       });
     }
   }
