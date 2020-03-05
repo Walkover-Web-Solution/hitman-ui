@@ -283,11 +283,6 @@ class CollectionsComponent extends Component {
     }
   }
 
-   async handleDeleteGroup(deletedGroupId) {
-    this.props.deleteGroup(deletedGroupId);
- }
-
-
   async handleAddVersionPage(versionId, newPage) {
     newPage.requestId = shortId.generate();
     const requestId = newPage.requestId;
@@ -650,28 +645,10 @@ class CollectionsComponent extends Component {
       this.handleDuplicatePage(duplicatePage);
     }
 
-    if (location.editedGroup) {
-      const { editedGroup } = location;
-      this.props.history.replace({ editedGroup: null });
-      this.handleUpdateGroup(editedGroup);
-    }
-
-    if (location.deletedGroupId) {
-      const deletedGroupId = location.deletedGroupId;
-      this.props.history.replace({ deletedGroupId: null });
-      this.handleDeleteGroup(deletedGroupId);
-    }
-
     if (location.duplicateGroup) {
       const duplicateGroup = location.duplicateGroup;
       this.props.history.replace({ duplicateGroup: null });
       this.handleDuplicateGroup(duplicateGroup);
-    }
-
-    if (location.newGroup) {
-      const { versionId, newGroup } = location;
-      this.props.history.replace({ newGroup: null });
-      this.handleAddGroup(versionId, newGroup);
     }
 
     if (location.collectionVersion) {

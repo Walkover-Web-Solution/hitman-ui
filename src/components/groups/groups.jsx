@@ -9,9 +9,16 @@ import {
 import GroupPages from "../pages/groupPages";
 import Endpoints from "../endpoints/endpoints";
 import { connect } from "react-redux";
+import {deleteGroup} from "../groups/groupsActions";
 
 const mapStateToProps = state => {
   return { groups: state.groups };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    deleteGroup:(group) => dispatch(deleteGroup(group))
+  };
 };
 
 class Groups extends Component {
@@ -98,6 +105,22 @@ class Groups extends Component {
     });
   }
   
+handleDelete(group)
+{
+    const confirm = window.confirm(
+      "Are you sure you wish to delete this group? " +
+        "\n" +
+        "All your pages and endpoints present in this group will be deleted."
+    ) 
+    if (confirm)
+    {
+      this.props.deleteGroup(group);
+      this.props.history.push({
+      pathname: "/dashboard/collections",
+      });
+    }
+}
+
   render() {
     return (
       <div>
@@ -137,19 +160,7 @@ class Groups extends Component {
                       </Dropdown.Item>
                       <Dropdown.Item
                         eventKey="2"
-                        onClick={() => {
-                          if (
-                            window.confirm(
-                              "Are you sure you wish to delete this group? " +
-                                "\n" +
-                                "All your pages and endpoints present in this group will be deleted."
-                            )
-                          )
-                            this.props.history.push({
-                              pathname: "/dashboard/collections",
-                              deletedGroupId: groupId,
-                            });
-                        }}
+                        onClick={() => this.handleDelete(this.props.groups[groupId])}
                       >
                         Delete
                       </Dropdown.Item>
@@ -218,5 +229,5 @@ class Groups extends Component {
 
 
 export default connect(
-  mapStateToProps
+  mapStateToProps,mapDispatchToProps
 )(Groups);
