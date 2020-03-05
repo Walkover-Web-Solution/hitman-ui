@@ -8,10 +8,17 @@ import {
   Dropdown,
   DropdownButton
 } from "react-bootstrap";
+import { deletePage } from "./pagesActions";
 
 const mapStateToProps = state => {
   return {
     pages: state.pages
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    deletePage: page => dispatch(deletePage(page))
   };
 };
 class Pages extends Component {
@@ -40,10 +47,11 @@ class Pages extends Component {
     this.props.set_page_id(pageIds);
   }
 
-  handleDelete(pageId) {
+  handleDelete(page) {
+    this.props.deletePage(page);
     this.props.history.push({
-      pathname: "/dashboard/collections",
-      deletePageId: pageId
+      pathname: "/dashboard/collections"
+      // deletePage: page
     });
   }
   handleDisplay(page) {
@@ -61,6 +69,7 @@ class Pages extends Component {
   }
 
   render() {
+    console.log("this.props.pages", this.props.pages);
     return (
       <div>
         {this.props.pages &&
@@ -110,7 +119,7 @@ class Pages extends Component {
                               "Are you sure you wish to delete this item?"
                             )
                           )
-                            this.handleDelete(pageId);
+                            this.handleDelete(this.props.pages[pageId]);
                         }}
                       >
                         Delete
@@ -132,4 +141,4 @@ class Pages extends Component {
     );
   }
 }
-export default connect(mapStateToProps)(Pages);
+export default connect(mapStateToProps, mapDispatchToProps)(Pages);

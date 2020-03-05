@@ -1,6 +1,7 @@
 import pagesService from "./pageService";
 import pagesActionTypes from "./pagesActionTypes";
 import store from "../../store/store";
+import { push } from "react-router-redux";
 
 export const fetchPages = () => {
     return dispatch => {
@@ -30,16 +31,18 @@ export const fetchPagesFailure = error => {
     };
 };
 export const updatePage = editedPage => {
+    let newPage = {...editedPage };
+    delete newPage.id;
+    delete newPage.versionId;
+    delete newPage.groupId;
     return dispatch => {
         const originalPage = store.getState().pages[editedPage.id];
         dispatch(updatePageRequest(editedPage));
-        const id = editedPage.id;
-        // delete editedPage.id;
-        // delete editedPage.collectionId;
         pagesService
-            .updatePage(id, editedPage)
+            .updatePage(editedPage.id, newPage)
             .then(response => {
                 dispatch(updatePageSuccess(response.data));
+                dispatch(push("/dashboard"));
             })
             .catch(error => {
                 dispatch(updatePageFailure(error.response.data, originalPage));
@@ -47,10 +50,10 @@ export const updatePage = editedPage => {
     };
 };
 
-export const updatePageRequest = editedVersion => {
+export const updatePageRequest = editedPage => {
     return {
         type: pagesActionTypes.UPDATE_PAGE_REQUEST,
-        editedVersion
+        editedPage
     };
 };
 
@@ -107,4 +110,79 @@ export const addPageFailure = (error, newPage) => {
         error
     };
 };
+//
 
+export const addGroupPage = (versionId, groupId, newPage) => {
+  return dispatch => {
+    dispatch(addGroupPageRequest(versionId, groupId, newPage));
+    delete newPage.groupId;
+    delete newPage.versionId;
+    pagesService
+      .saveGroupPage(groupId, newPage)
+      .then(response => {
+        dispatch(addGroupPageSuccess(response.data));
+      })
+      .catch(error => {
+        dispatch(addGroupPageFailure(error.response.data, newPage));
+      });
+  };
+};
+
+export const addGroupPageRequest = (versionId, groupId, newPage) => {
+  return {
+    type: pagesActionTypes.ADD_GROUP_PAGE_REQUEST,
+    versionId,
+    groupId,
+    newPage
+  };
+};
+
+export const addGroupPageSuccess = response => {
+  return {
+    type: pagesActionTypes.ADD_GROUP_PAGE_SUCCESS,
+    response
+  };
+};
+
+export const addGroupPageFailure = (error, newPage) => {
+  return {
+    type: pagesActionTypes.ADD_GROUP_PAGE_FAILURE,
+    newPage,
+    error
+  };
+};
+//
+export const deletePage = page => {
+    return dispatch => {
+        dispatch(deletePageRequest(page));
+        pagesService
+            .deletePage(page.id)
+            .then(() => {
+                dispatch(deletePageSuccess());
+            })
+            .catch(error => {
+                dispatch(deletePageFailure(error.response, page));
+            });
+    };
+};
+
+export const deletePageRequest = page => {
+    return {
+        type: pagesActionTypes.DELETE_PAGE_REQUEST,
+        page
+    };
+};
+
+export const deletePageSuccess = () => {
+    return {
+        type: pagesActionTypes.DELETE_PAGE_SUCCESS
+    };
+};
+
+export const deletePageFailure = (error, page) => {
+    return {
+        type: pagesActionTypes.DELETE_PAGE_FAILURE,
+        error,
+        page
+    };
+};
