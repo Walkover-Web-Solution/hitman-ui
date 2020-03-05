@@ -7,9 +7,12 @@ import { connect } from "react-redux";
 import pagesService from "./pageService";
 import { addPage, addGroupPage } from "../pages/pagesActions";
 import shortid from "shortid";
-const mapDispatchToProps = dispatch => {
+import { withRouter } from "react-router-dom";
+
+const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    addPage: (versionId, newPage) => dispatch(addPage(versionId, newPage)),
+    addPage: (versionId, newPage) =>
+      dispatch(addPage(ownProps.history, versionId, newPage)),
     addGroupPage: (versionId, groupId, newPage) =>
       dispatch(addGroupPage(versionId, groupId, newPage))
   };
@@ -54,8 +57,6 @@ class PageForm extends Form {
   }
 
   render() {
-    // console.log("this.props.groupId", this.props.groupId);
-
     return (
       <Modal
         {...this.props}
@@ -80,5 +81,5 @@ class PageForm extends Form {
   }
 }
 
-export default connect(null, mapDispatchToProps)(PageForm);
+export default withRouter(connect(null, mapDispatchToProps)(PageForm));
 // export default PageForm;

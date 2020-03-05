@@ -76,10 +76,9 @@ class CollectionVersionForm extends Form {
       });
     }
     if (this.props.title === "Add new Collection Version") {
-      console.log("Add new Collection Version", this.props);
-      const collectionId = this.props.collectionId;
-      const newVersion = { ...this.state.data, request: shortid.generate() };
-      this.props.addVersion(collectionId, newVersion);
+      const collectionId = this.props.location.collectionId;
+      const newVersion = { ...this.state.data, requestId: shortid.generate() };
+      this.props.addVersion(newVersion, collectionId);
       this.props.history.push({
         pathname: `/dashboard/collections`
       });

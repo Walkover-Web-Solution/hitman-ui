@@ -337,20 +337,8 @@ class CollectionsComponent extends Component {
   // }
 
   async handleUpdatePage(editedPage, pageId) {
-    console.log("UPADTEPAGE");
     this.props.updatePage(editedPage, pageId);
-    console.log("this.props.pages", this.props.pages);
-    // console.log(
-    //   "this.props.pages[editedPage.versionId].redirect",
-    //   this.props.pages[editedPage.versionId].redirect
-    // );
-    // if (this.props.pages[editedPage.versionId].redirect === true) {
-    //   console.log("redirect true");
-    //   this.props.history.push({
-    //     pathname: `/dashboard/collections/pages`
-    //     // page: page
-    //   });
-    // }
+
     // let editPage = { ...editedPage };
     // delete editPage.id;
     // delete editPage.versionId;

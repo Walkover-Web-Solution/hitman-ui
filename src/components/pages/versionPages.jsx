@@ -69,7 +69,6 @@ class Pages extends Component {
   }
 
   render() {
-    console.log("this.props.pages", this.props.pages);
     return (
       <div>
         {this.props.pages &&
