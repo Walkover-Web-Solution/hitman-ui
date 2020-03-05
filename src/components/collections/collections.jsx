@@ -39,7 +39,7 @@ import {
   deleteVersion
 } from "../collectionVersions/collectionVersionsActions";
 
-import { fetchPages, addPage } from "../pages/pagesActions";
+import { fetchPages, addPage, deletePage } from "../pages/pagesActions";
 
 const mapStateToProps = state => {
   return {
@@ -65,7 +65,8 @@ const mapDispatchToProps = dispatch => {
     updateVersion: editedVersion => dispatch(updateVersion(editedVersion)),
     deleteVersion: version => dispatch(deleteVersion(version)),
     fetchPages: () => dispatch(fetchPages()),
-    addPage: (versionId, newPage) => dispatch(addPage(versionId, newPage))
+    addPage: (versionId, newPage) => dispatch(addPage(versionId, newPage)),
+    deletePage: page => dispatch(deletePage(page))
   };
 };
 
@@ -325,21 +326,22 @@ class CollectionsComponent extends Component {
     }
   }
 
-  async handleDeletePage(deletedPageId) {
-    const originalPages = { ...this.state.pages };
-    const originalPageIds = [...this.state.pageIds];
-    let pages = { ...this.state.pages };
-    delete pages[deletedPageId];
-    const pageIds = this.state.pageIds.filter(
-      pId => pId !== deletedPageId.toString()
-    );
-    this.setState({ pages, pageIds });
-    try {
-      await pageService.deletePage(deletedPageId);
-    } catch (ex) {
-      toast.error(ex.response ? ex.response.data : "Something went wrong");
-      this.setState({ pages: originalPages, pageIds: originalPageIds });
-    }
+  async handleDeletePage(deletedPage) {
+    this.props.deletePage(deletedPage);
+    // const originalPages = { ...this.state.pages };
+    // const originalPageIds = [...this.state.pageIds];
+    // let pages = { ...this.state.pages };
+    // delete pages[deletedPageId];
+    // const pageIds = this.state.pageIds.filter(
+    //   pId => pId !== deletedPageId.toString()
+    // );
+    // this.setState({ pages, pageIds });
+    // try {
+    //   await pageService.deletePage(deletedPageId);
+    // } catch (ex) {
+    //   toast.error(ex.response ? ex.response.data : "Something went wrong");
+    //   this.setState({ pages: originalPages, pageIds: originalPageIds });
+    // }
   }
 
   async handleUpdatePage(editedPage, pageId) {
@@ -624,10 +626,10 @@ class CollectionsComponent extends Component {
       this.handleUpdatePage(location.editedPage, pageId);
     }
 
-    if (location.deletePageId) {
-      const deletePageId = location.deletePageId;
-      this.props.history.replace({ deletedPageId: null });
-      this.handleDeletePage(deletePageId);
+    if (location.deletePage) {
+      const deletePage = location.deletePage;
+      this.props.history.replace({ deletedPage: null });
+      this.handleDeletePage(deletePage);
     }
 
     if (location.duplicatePage) {

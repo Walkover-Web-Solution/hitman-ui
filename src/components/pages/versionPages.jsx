@@ -40,10 +40,10 @@ class Pages extends Component {
     this.props.set_page_id(pageIds);
   }
 
-  handleDelete(pageId) {
+  handleDelete(page) {
     this.props.history.push({
       pathname: "/dashboard/collections",
-      deletePageId: pageId
+      deletePage: page
     });
   }
   handleDisplay(page) {
@@ -110,7 +110,7 @@ class Pages extends Component {
                               "Are you sure you wish to delete this item?"
                             )
                           )
-                            this.handleDelete(pageId);
+                            this.handleDelete(this.props.pages[pageId]);
                         }}
                       >
                         Delete

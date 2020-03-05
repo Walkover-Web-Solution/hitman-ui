@@ -43,7 +43,7 @@ class GroupPages extends Component {
   async handleDelete(page) {
     this.props.history.push({
       pathname: "/dashboard/collections",
-      deletePageId: page.id
+      deletePage: page
     });
   }
 

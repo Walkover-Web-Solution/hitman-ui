@@ -97,7 +97,6 @@ class CollectionVersions extends Component {
   }
 
   render() {
-    console.log(this.props.collection_id);
     return (
       <div>
         {this.props.versions &&
