@@ -110,7 +110,48 @@ export const addPageFailure = (error, newPage) => {
         error
     };
 };
+//
 
+export const addGroupPage = (versionId, groupId, newPage) => {
+  return dispatch => {
+    dispatch(addGroupPageRequest(versionId, groupId, newPage));
+    delete newPage.groupId;
+    delete newPage.versionId;
+    pagesService
+      .saveGroupPage(groupId, newPage)
+      .then(response => {
+        dispatch(addGroupPageSuccess(response.data));
+      })
+      .catch(error => {
+        dispatch(addGroupPageFailure(error.response.data, newPage));
+      });
+  };
+};
+
+export const addGroupPageRequest = (versionId, groupId, newPage) => {
+  return {
+    type: pagesActionTypes.ADD_GROUP_PAGE_REQUEST,
+    versionId,
+    groupId,
+    newPage
+  };
+};
+
+export const addGroupPageSuccess = response => {
+  return {
+    type: pagesActionTypes.ADD_GROUP_PAGE_SUCCESS,
+    response
+  };
+};
+
+export const addGroupPageFailure = (error, newPage) => {
+  return {
+    type: pagesActionTypes.ADD_GROUP_PAGE_FAILURE,
+    newPage,
+    error
+  };
+};
+//
 export const deletePage = page => {
     return dispatch => {
         dispatch(deletePageRequest(page));

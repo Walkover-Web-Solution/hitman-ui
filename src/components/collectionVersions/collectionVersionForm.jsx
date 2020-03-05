@@ -4,7 +4,21 @@ import { Modal } from "react-bootstrap";
 import Joi from "joi-browser";
 import Form from "../common/form";
 import collectionVersionsService from "./collectionVersionsService";
+import { connect } from "react-redux";
+import {
+  addVersion,
+  updateVersion
+} from "../collectionVersions/collectionVersionsActions";
 
+import shortid from "shortid";
+
+const mapDispatchToProps = dispatch => {
+  return {
+    addVersion: (newCollectionVersion, collectionId) =>
+      dispatch(addVersion(newCollectionVersion, collectionId)),
+    updateVersion: editedVersion => dispatch(updateVersion(editedVersion))
+  };
+};
 class CollectionVersionForm extends Form {
   state = {
     data: {
@@ -52,19 +66,22 @@ class CollectionVersionForm extends Form {
 
   async doSubmit() {
     if (this.props.title === "Edit Collection Version") {
-      this.state.data.id = this.state.versionId;
-      this.state.data.collectionId = this.state.collectionId;
-
+      const id = this.props.location.editCollectionVersion.id;
+      const collectionId = this.props.location.editCollectionVersion
+        .collectionId;
+      const editedCollectionVersion = { ...this.state.data, collectionId, id };
+      this.props.updateVersion(editedCollectionVersion);
       this.props.history.push({
-        pathname: `/dashboard/collections`,
-        editedCollectionVersion: { ...this.state.data }
+        pathname: `/dashboard/collections`
       });
     }
     if (this.props.title === "Add new Collection Version") {
+      console.log("Add new Collection Version", this.props);
+      const collectionId = this.props.collectionId;
+      const newVersion = { ...this.state.data, request: shortid.generate() };
+      this.props.addVersion(collectionId, newVersion);
       this.props.history.push({
-        pathname: `/dashboard/collections`,
-        newCollectionVersion: { ...this.state.data },
-        collectionId: this.props.location.pathname.split("/")[3]
+        pathname: `/dashboard/collections`
       });
     }
   }
@@ -95,4 +112,5 @@ class CollectionVersionForm extends Form {
   }
 }
 
-export default CollectionVersionForm;
+export default connect(null, mapDispatchToProps)(CollectionVersionForm);
+//export default CollectionVersionForm;

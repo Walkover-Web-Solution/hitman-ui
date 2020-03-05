@@ -32,19 +32,9 @@ import {
 } from "./collectionsActions";
 import { fetchGroups, deleteGroup } from "../groups/groupsActions";
 import { fetchEndpoints } from "../endpoints/endpointsActions";
-import {
-  fetchVersions,
-  addVersion,
-  updateVersion,
-  deleteVersion
-} from "../collectionVersions/collectionVersionsActions";
+import { fetchVersions } from "../collectionVersions/collectionVersionsActions";
 
-import {
-  fetchPages,
-  addPage,
-  deletePage,
-  updatePage
-} from "../pages/pagesActions";
+import { fetchPages, updatePage } from "../pages/pagesActions";
 
 const mapStateToProps = state => {
   return {
@@ -65,13 +55,7 @@ const mapDispatchToProps = dispatch => {
     deleteGroup: groupId => dispatch(deleteGroup(groupId)),
     fetchEndpoints: () => dispatch(fetchEndpoints()),
     fetchVersions: () => dispatch(fetchVersions()),
-    addVersion: (newCollectionVersion, collectionId) =>
-      dispatch(addVersion(newCollectionVersion, collectionId)),
-    updateVersion: editedVersion => dispatch(updateVersion(editedVersion)),
-    deleteVersion: version => dispatch(deleteVersion(version)),
     fetchPages: () => dispatch(fetchPages()),
-    addPage: (versionId, newPage) => dispatch(addPage(versionId, newPage)),
-    deletePage: page => dispatch(deletePage(page)),
     updatePage: (editedPage, pageId) => dispatch(updatePage(editedPage, pageId))
   };
 };
@@ -217,18 +201,18 @@ class CollectionsComponent extends Component {
     this.props.updateCollection(editedCollection);
   }
 
-  async handleAddVersion(newCollectionVersion, collectionId) {
-    newCollectionVersion.requestId = shortId.generate();
-    this.props.addVersion(newCollectionVersion, collectionId);
-  }
+  // async handleAddVersion(newCollectionVersion, collectionId) {
+  //   newCollectionVersion.requestId = shortId.generate();
+  //   this.props.addVersion(newCollectionVersion, collectionId);
+  // }
 
-  async handleDeleteVersion(collectionVersion) {
-    this.props.deleteVersion(collectionVersion);
-  }
+  // async handleDeleteVersion(collectionVersion) {
+  //   this.props.deleteVersion(collectionVersion);
+  // }
 
-  async handleUpdateVersion(version) {
-    this.props.updateVersion(version);
-  }
+  // async handleUpdateVersion(version) {
+  //   this.props.updateVersion(version);
+  // }
 
   async handleImportVersion(importLink, shareIdentifier, collectionId) {
     let orignalVersion = { ...this.state.versions };
@@ -279,77 +263,78 @@ class CollectionsComponent extends Component {
     this.props.deleteGroup(deletedGroupId);
   }
 
-  async handleAddVersionPage(versionId, newPage) {
-    newPage.requestId = shortId.generate();
-    this.props.addPage(versionId, newPage);
+  // async handleAddVersionPage(versionId, newPage) {
+  //   newPage.requestId = shortId.generate();
+  //   this.props.addPage(versionId, newPage);
+  // newPage.requestId = shortId.generate();
+  // const requestId = newPage.requestId;
+  // const originalPageIds = [...this.state.pageIds];
+  // const originalPages = { ...this.state.pages };
+  // let pages = { ...this.state.pages };
+  // pages[requestId] = { ...newPage, versionId };
+  // this.setState({ pages });
+  // try {
+  //   const { data: page } = await pageService.saveVersionPage(
+  //     versionId,
+  //     newPage
+  //   );
+  //   pages[page.id] = page;
+  //   delete pages[requestId];
+  //   const pageIds = [...this.state.pageIds, page.id.toString()];
+  //   this.setState({ pages, pageIds });
+  //   this.props.history.push({
+  //     pathname: `/dashboard/collections/pages/${page.id}/edit`,
+  //     page: page
+  //   });
+  // } catch (ex) {
+  //   toast.error(ex.response ? ex.response.data : "Something went wrong");
+  //   this.setState({ pages: originalPages, pageIds: originalPageIds });
+  // }
+  // }
 
-    // newPage.requestId = shortId.generate();
-    // const requestId = newPage.requestId;
-    // const originalPageIds = [...this.state.pageIds];
-    // const originalPages = { ...this.state.pages };
-    // let pages = { ...this.state.pages };
-    // pages[requestId] = { ...newPage, versionId };
-    // this.setState({ pages });
-    // try {
-    //   const { data: page } = await pageService.saveVersionPage(
-    //     versionId,
-    //     newPage
-    //   );
-    //   pages[page.id] = page;
-    //   delete pages[requestId];
-    //   const pageIds = [...this.state.pageIds, page.id.toString()];
-    //   this.setState({ pages, pageIds });
-    //   this.props.history.push({
-    //     pathname: `/dashboard/collections/pages/${page.id}/edit`,
-    //     page: page
-    //   });
-    // } catch (ex) {
-    //   toast.error(ex.response ? ex.response.data : "Something went wrong");
-    //   this.setState({ pages: originalPages, pageIds: originalPageIds });
-    // }
-  }
+  // async handleAddGroupPage(versionId, groupId, newPage) {
+  //   newPage.requestId = shortId.generate();
+  //   this.props.addGroupPage(versionId, groupId, newPage);
+  // newPage.requestId = shortId.generate();
+  // const requestId = newPage.requestId;
+  // const originalPageIds = [...this.state.pageIds];
+  // const originalPages = { ...this.state.pages };
+  // let pages = { ...this.state.pages };
+  // pages[requestId] = { ...newPage, versionId };
+  // this.setState({ pages });
+  // try {
+  //   const { data: page } = await pageService.saveGroupPage(groupId, newPage);
+  //   pages[page.id] = page;
+  //   delete pages[requestId];
+  //   const pageIds = [...this.state.pageIds, page.id.toString()];
+  //   this.setState({ pages, pageIds });
+  //   this.props.history.push({
+  //     pathname: `/dashboard/collections/pages/${page.id}/edit`,
+  //     page: page
+  //   });
+  // } catch (ex) {
+  //   toast.error(ex.response ? ex.response.data : "Something went wrong");
+  //   this.setState({ pages: originalPages, pageIds: originalPageIds });
+  // }
+  // }
 
-  async handleAddGroupPage(versionId, groupId, newPage) {
-    newPage.requestId = shortId.generate();
-    const requestId = newPage.requestId;
-    const originalPageIds = [...this.state.pageIds];
-    const originalPages = { ...this.state.pages };
-    let pages = { ...this.state.pages };
-    pages[requestId] = { ...newPage, versionId };
-    this.setState({ pages });
-    try {
-      const { data: page } = await pageService.saveGroupPage(groupId, newPage);
-      pages[page.id] = page;
-      delete pages[requestId];
-      const pageIds = [...this.state.pageIds, page.id.toString()];
-      this.setState({ pages, pageIds });
-      this.props.history.push({
-        pathname: `/dashboard/collections/pages/${page.id}/edit`,
-        page: page
-      });
-    } catch (ex) {
-      toast.error(ex.response ? ex.response.data : "Something went wrong");
-      this.setState({ pages: originalPages, pageIds: originalPageIds });
-    }
-  }
-
-  async handleDeletePage(deletedPage) {
-    this.props.deletePage(deletedPage);
-    // const originalPages = { ...this.state.pages };
-    // const originalPageIds = [...this.state.pageIds];
-    // let pages = { ...this.state.pages };
-    // delete pages[deletedPageId];
-    // const pageIds = this.state.pageIds.filter(
-    //   pId => pId !== deletedPageId.toString()
-    // );
-    // this.setState({ pages, pageIds });
-    // try {
-    //   await pageService.deletePage(deletedPageId);
-    // } catch (ex) {
-    //   toast.error(ex.response ? ex.response.data : "Something went wrong");
-    //   this.setState({ pages: originalPages, pageIds: originalPageIds });
-    // }
-  }
+  // async handleDeletePage(deletedPage) {
+  //   this.props.deletePage(deletedPage);
+  // const originalPages = { ...this.state.pages };
+  // const originalPageIds = [...this.state.pageIds];
+  // let pages = { ...this.state.pages };
+  // delete pages[deletedPageId];
+  // const pageIds = this.state.pageIds.filter(
+  //   pId => pId !== deletedPageId.toString()
+  // );
+  // this.setState({ pages, pageIds });
+  // try {
+  //   await pageService.deletePage(deletedPageId);
+  // } catch (ex) {
+  //   toast.error(ex.response ? ex.response.data : "Something went wrong");
+  //   this.setState({ pages: originalPages, pageIds: originalPageIds });
+  // }
+  // }
 
   async handleUpdatePage(editedPage, pageId) {
     console.log("UPADTEPAGE");
@@ -623,19 +608,19 @@ class CollectionsComponent extends Component {
       );
     }
 
-    if (location.newPage && location.groupId) {
-      const { versionId, newPage, groupId } = location;
-      this.props.history.replace({
-        versionId: null,
-        groupId: null,
-        newPage: null
-      });
-      this.handleAddGroupPage(versionId, groupId, newPage);
-    } else if (location.newPage) {
-      const { versionId, newPage } = location;
-      this.props.history.replace({ newPage: null });
-      this.handleAddVersionPage(versionId, newPage);
-    }
+    // if (location.newPage && location.groupId) {
+    //   const { versionId, newPage, groupId } = location;
+    //   this.props.history.replace({
+    //     versionId: null,
+    //     groupId: null,
+    //     newPage: null
+    //   });
+    //   this.handleAddGroupPage(versionId, groupId, newPage);
+    // } else if (location.newPage) {
+    //   const { versionId, newPage } = location;
+    //   this.props.history.replace({ newPage: null });
+    //   this.handleAddVersionPage(versionId, newPage);
+    // }
 
     if (location.editedPage && location.groupId) {
       const { id: pageId } = location.editedPage;
@@ -647,11 +632,11 @@ class CollectionsComponent extends Component {
       this.handleUpdatePage(location.editedPage, pageId);
     }
 
-    if (location.deletePage) {
-      const deletePage = location.deletePage;
-      this.props.history.replace({ deletedPage: null });
-      this.handleDeletePage(deletePage);
-    }
+    // if (location.deletePage) {
+    //   const deletePage = location.deletePage;
+    //   this.props.history.replace({ deletedPage: null });
+    //   this.handleDeletePage(deletePage);
+    // }
 
     if (location.duplicatePage) {
       const duplicatePage = location.duplicatePage;
@@ -683,24 +668,24 @@ class CollectionsComponent extends Component {
       this.handleAddGroup(versionId, newGroup);
     }
 
-    if (location.collectionVersion) {
-      const collectionVersion = location.collectionVersion;
-      this.props.history.replace({ collectionVersion: null });
-      this.handleDeleteVersion(collectionVersion);
-    }
+    // if (location.collectionVersion) {
+    //   const collectionVersion = location.collectionVersion;
+    //   this.props.history.replace({ collectionVersion: null });
+    //   this.handleDeleteVersion(collectionVersion);
+    // }
 
-    if (location.editedCollectionVersion) {
-      const version = location.editedCollectionVersion;
-      this.props.history.replace({ editedCollectionVersion: null });
-      this.handleUpdateVersion(version);
-    }
+    // if (location.editedCollectionVersion) {
+    //   const version = location.editedCollectionVersion;
+    //   this.props.history.replace({ editedCollectionVersion: null });
+    //   this.handleUpdateVersion(version);
+    // }
 
-    if (location.newCollectionVersion) {
-      const newCollectionVersion = location.newCollectionVersion;
-      const collectionId = location.collectionId;
-      this.props.history.replace({ newCollectionVersion: null });
-      this.handleAddVersion(newCollectionVersion, collectionId);
-    }
+    // if (location.newCollectionVersion) {
+    //   const newCollectionVersion = location.newCollectionVersion;
+    //   const collectionId = location.collectionId;
+    //   this.props.history.replace({ newCollectionVersion: null });
+    //   this.handleAddVersion(newCollectionVersion, collectionId);
+    // }
 
     if (location.duplicateVersion) {
       const duplicateVersion = location.duplicateVersion;
@@ -755,6 +740,8 @@ class CollectionsComponent extends Component {
                       });
                     }}
                     title="Add new Group Page"
+                    versionId={this.props.location.versionId}
+                    groupId={this.props.location.groupId}
                   />
                 )}
               />
@@ -955,7 +942,8 @@ class CollectionsComponent extends Component {
                       eventKey="3"
                       onClick={() => {
                         this.props.history.push({
-                          pathname: `/dashboard/collections/${collectionId}/versions/new`
+                          pathname: `/dashboard/collections/${collectionId}/versions/new`,
+                          collectionId
                         });
                       }}
                     >

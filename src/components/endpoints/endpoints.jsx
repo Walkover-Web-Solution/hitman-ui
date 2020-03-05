@@ -9,6 +9,7 @@ import {
 } from "react-bootstrap";
 import { deleteEndpoint } from "./endpointsActions";
 import { connect } from "react-redux";
+
 const mapStateToProps = state => {
   return { endpoints: state.endpoints };
 };

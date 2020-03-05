@@ -9,10 +9,17 @@ import {
 import Groups from "../groups/groups";
 import VersionPages from "../pages/versionPages";
 import { connect } from "react-redux";
+import { deleteVersion } from "../collectionVersions/collectionVersionsActions";
 
 const mapStateToProps = state => {
   return {
     versions: state.versions
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    deleteVersion: version => dispatch(deleteVersion(version))
   };
 };
 
@@ -56,9 +63,9 @@ class CollectionVersions extends Component {
   }
 
   async handleDelete(collectionVersion) {
+    this.props.deleteVersion(collectionVersion);
     this.props.history.push({
-      pathname: "/dashboard/collections",
-      collectionVersion: collectionVersion
+      pathname: "/dashboard/collections"
     });
   }
 
@@ -209,4 +216,4 @@ class CollectionVersions extends Component {
   }
 }
 
-export default connect(mapStateToProps)(CollectionVersions);
+export default connect(mapStateToProps, mapDispatchToProps)(CollectionVersions);
