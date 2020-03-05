@@ -39,7 +39,12 @@ import {
   deleteVersion
 } from "../collectionVersions/collectionVersionsActions";
 
-import { fetchPages, addPage, deletePage } from "../pages/pagesActions";
+import {
+  fetchPages,
+  addPage,
+  deletePage,
+  updatePage
+} from "../pages/pagesActions";
 
 const mapStateToProps = state => {
   return {
@@ -66,7 +71,8 @@ const mapDispatchToProps = dispatch => {
     deleteVersion: version => dispatch(deleteVersion(version)),
     fetchPages: () => dispatch(fetchPages()),
     addPage: (versionId, newPage) => dispatch(addPage(versionId, newPage)),
-    deletePage: page => dispatch(deletePage(page))
+    deletePage: page => dispatch(deletePage(page)),
+    updatePage: (editedPage, pageId) => dispatch(updatePage(editedPage, pageId))
   };
 };
 
@@ -276,6 +282,7 @@ class CollectionsComponent extends Component {
   async handleAddVersionPage(versionId, newPage) {
     newPage.requestId = shortId.generate();
     this.props.addPage(versionId, newPage);
+
     // newPage.requestId = shortId.generate();
     // const requestId = newPage.requestId;
     // const originalPageIds = [...this.state.pageIds];
@@ -345,24 +352,38 @@ class CollectionsComponent extends Component {
   }
 
   async handleUpdatePage(editedPage, pageId) {
-    let editPage = { ...editedPage };
-    delete editPage.id;
-    delete editPage.versionId;
-    delete editPage.groupId;
-    const originalPages = { ...this.state.pages };
-    let pages = { ...this.state.pages };
-    pages[pageId] = editedPage;
-    this.setState({ pages });
-    try {
-      await pageService.updatePage(pageId, editPage);
-      this.props.history.push({
-        pathname: `/dashboard/collections/pages/${pageId}`,
-        page: editedPage
-      });
-    } catch (ex) {
-      toast.error(ex.response ? ex.response.data : "Something went wrong");
-      this.setState({ pages: originalPages });
-    }
+    console.log("UPADTEPAGE");
+    this.props.updatePage(editedPage, pageId);
+    console.log("this.props.pages", this.props.pages);
+    // console.log(
+    //   "this.props.pages[editedPage.versionId].redirect",
+    //   this.props.pages[editedPage.versionId].redirect
+    // );
+    // if (this.props.pages[editedPage.versionId].redirect === true) {
+    //   console.log("redirect true");
+    //   this.props.history.push({
+    //     pathname: `/dashboard/collections/pages`
+    //     // page: page
+    //   });
+    // }
+    // let editPage = { ...editedPage };
+    // delete editPage.id;
+    // delete editPage.versionId;
+    // delete editPage.groupId;
+    // const originalPages = { ...this.state.pages };
+    // let pages = { ...this.state.pages };
+    // pages[pageId] = editedPage;
+    // this.setState({ pages });
+    // try {
+    //   await pageService.updatePage(pageId, editPage);
+    //   this.props.history.push({
+    //     pathname: `/dashboard/collections/pages/${pageId}`,
+    //     page: editedPage
+    //   });
+    // } catch (ex) {
+    //   toast.error(ex.response ? ex.response.data : "Something went wrong");
+    //   this.setState({ pages: originalPages });
+    // }
   }
 
   async updateEndpoint(endpointId, groupId, newEndpoint, versions) {
