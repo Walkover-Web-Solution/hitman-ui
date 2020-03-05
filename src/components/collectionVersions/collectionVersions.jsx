@@ -16,10 +16,6 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
-  return {};
-};
-
 class CollectionVersions extends Component {
   state = {
     versionDnDFlag: true
@@ -101,6 +97,7 @@ class CollectionVersions extends Component {
   }
 
   render() {
+    console.log(this.props.collection_id);
     return (
       <div>
         {this.props.versions &&
@@ -213,4 +210,4 @@ class CollectionVersions extends Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(CollectionVersions);
+export default connect(mapStateToProps)(CollectionVersions);

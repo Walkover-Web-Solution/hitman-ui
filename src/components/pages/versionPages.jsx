@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
+
 import {
   Accordion,
   Card,
@@ -7,6 +9,11 @@ import {
   DropdownButton
 } from "react-bootstrap";
 
+const mapStateToProps = state => {
+  return {
+    pages: state.pages
+  };
+};
 class Pages extends Component {
   state = {};
 
@@ -57,7 +64,7 @@ class Pages extends Component {
     return (
       <div>
         {this.props.pages &&
-          this.props.page_ids
+          Object.keys(this.props.pages)
             .filter(
               pageId =>
                 this.props.pages[pageId].versionId === this.props.version_id &&
@@ -109,9 +116,9 @@ class Pages extends Component {
                         Delete
                       </Dropdown.Item>
                       <Dropdown.Item
-                        eventKey='2'
+                        eventKey="2"
                         onClick={() => {
-                          this.handleDuplicate(this.props.pages[pageId])
+                          this.handleDuplicate(this.props.pages[pageId]);
                         }}
                       >
                         Duplicate
@@ -125,5 +132,4 @@ class Pages extends Component {
     );
   }
 }
-
-export default Pages;
+export default connect(mapStateToProps)(Pages);

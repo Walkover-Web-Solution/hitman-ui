@@ -4,15 +4,17 @@ import endpointsReducer from "../components/endpoints/endpointsReducer";
 import groupsReducer from "../components/groups/groupsReducer";
 import thunk from "redux-thunk";
 import { logger } from "redux-logger";
-import versionsReducer from '../components/collectionVersions/collectionVersionsReducer';
+import versionsReducer from "../components/collectionVersions/collectionVersionsReducer";
+import pagesReducer from "../components/pages/pagesReducer";
 
 const storeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 const rootReducer = combineReducers({
-  collections: collectionsReducer,
-  versions: versionsReducer,
-  groups: groupsReducer,
-  endpoints: endpointsReducer
+    collections: collectionsReducer,
+    versions: versionsReducer,
+    groups: groupsReducer,
+    pages: pagesReducer,
+    endpoints: endpointsReducer
 });
 const store = createStore(
     rootReducer,

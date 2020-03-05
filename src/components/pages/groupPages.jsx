@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
+
 import {
   Accordion,
   Card,
@@ -7,6 +9,11 @@ import {
   DropdownButton
 } from "react-bootstrap";
 
+const mapStateToProps = state => {
+  return {
+    pages: state.pages
+  };
+};
 class GroupPages extends Component {
   state = {};
 
@@ -65,7 +72,7 @@ class GroupPages extends Component {
     return (
       <div>
         {this.props.pages &&
-          this.props.page_ids
+          Object.keys(this.props.pages)
             .filter(
               pageId =>
                 this.props.pages[pageId].versionId === this.props.version_id &&
@@ -74,7 +81,7 @@ class GroupPages extends Component {
 
             .map(pageId => (
               <Accordion
-                defaultActiveKey='1'
+                defaultActiveKey="1"
                 key={pageId}
                 draggable
                 onDragOver={e => this.onDragOver(e, pageId)}
@@ -86,7 +93,8 @@ class GroupPages extends Component {
                     draggable
                     onDragOver={e => this.onDragOver(e, pageId)}
                     onDragStart={e => this.onDragStart(e, pageId)}
-                    onDragEnd={e => this.onDragEnd(e, pageId)}>
+                    onDragEnd={e => this.onDragEnd(e, pageId)}
+                  >
                     <Accordion.Toggle
                       as={Button}
                       onClick={() =>
@@ -118,9 +126,9 @@ class GroupPages extends Component {
                       </Dropdown.Item>
 
                       <Dropdown.Item
-                        eventKey='2'
+                        eventKey="2"
                         onClick={() => {
-                          this.handleDuplicate(this.props.pages[pageId])
+                          this.handleDuplicate(this.props.pages[pageId]);
                         }}
                       >
                         Duplicate
@@ -138,4 +146,4 @@ class GroupPages extends Component {
   }
 }
 
-export default GroupPages;
+export default connect(mapStateToProps)(GroupPages);
