@@ -7,6 +7,30 @@ import EnvironmentVariables from "./environmentVariables";
 import { toast } from "react-toastify";
 import jQuery from "jquery";
 import shortId from "shortid";
+import { connect } from "react-redux";
+import {
+  fetchEnvironments,
+  addEnvironment,
+  updateEnvironment,
+  deleteEnvironment
+} from "./environmentsActions";
+
+const mapStateToProps = state => {
+  return {
+    environments: state.environments
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    fetchEnvironments: () => dispatch(fetchEnvironments()),
+    addEnvironment: newEnvironment => dispatch(addEnvironment(newEnvironment)),
+    updateEnvironment: editedEnvironment =>
+      dispatch(updateEnvironment(editedEnvironment)),
+    deleteEnvironment: deletedEnvironment =>
+      dispatch(deleteEnvironment(deletedEnvironment))
+  };
+};
 
 class Environments extends Component {
   state = {
@@ -15,6 +39,8 @@ class Environments extends Component {
   };
 
   async componentDidMount() {
+    this.props.fetchEnvironments();
+    console.log("fetch environments");
     const { data: environments } = await environmentService.getEnvironments();
     this.setState({ environments });
     const environmentId = this.props.location.pathname.split("/")[3];
@@ -30,22 +56,23 @@ class Environments extends Component {
 
   async handleAdd(newEnvironment) {
     newEnvironment.requestId = shortId.generate();
-    const requestId = newEnvironment.requestId;
-    const originalEnvironment = jQuery.extend(true, {}, this.state.environment);
-    const environments = { ...this.state.environments };
-    environments[requestId] = newEnvironment;
-    this.setState({ environments });
-    try {
-      const { data: environment } = await environmentService.saveEnvironment(
-        newEnvironment
-      );
-      environments[environment.id] = environment;
-      delete environments[requestId];
-      this.setState({ environments });
-    } catch (ex) {
-      toast.error(ex.response ? ex.response.data : "Something went wrong");
-      this.setState({ environment: originalEnvironment });
-    }
+    this.props.addEnvironment(newEnvironment);
+    // const requestId = newEnvironment.requestId;
+    // const originalEnvironment = jQuery.extend(true, {}, this.state.environment);
+    // const environments = { ...this.state.environments };
+    // environments[requestId] = newEnvironment;
+    // this.setState({ environments });
+    // try {
+    //   const { data: environment } = await environmentService.saveEnvironment(
+    //     newEnvironment
+    //   );
+    //   environments[environment.id] = environment;
+    //   delete environments[requestId];
+    //   this.setState({ environments });
+    // } catch (ex) {
+    //   toast.error(ex.response ? ex.response.data : "Something went wrong");
+    //   this.setState({ environment: originalEnvironment });
+    // }
   }
 
   async handleUpdateEnvironment(updatedEnvironment) {
@@ -58,26 +85,27 @@ class Environments extends Component {
         {},
         this.state.environment
       );
+      this.props.updateEnvironment(updatedEnvironment);
       const environments = { ...this.state.environments };
       environments[updatedEnvironment.id] = updatedEnvironment;
       this.handleEnv(updatedEnvironment);
       this.setState({ environments });
-      try {
-        const body = { ...updatedEnvironment };
-        delete body.id;
-        const {
-          data: environment
-        } = await environmentService.updateEnvironment(
-          updatedEnvironment.id,
-          body
-        );
-        environments[updatedEnvironment.id] = environment;
-        this.setState({ environments });
-      } catch (ex) {
-        toast.error(ex.response ? ex.response.data : "Something went wrong");
-        this.handleEnv(originalEnvironment);
-        this.setState({ environment: originalEnvironment });
-      }
+      // try {
+      //   const body = { ...updatedEnvironment };
+      //   delete body.id;
+      //   const {
+      //     data: environment
+      //   } = await environmentService.updateEnvironment(
+      //     updatedEnvironment.id,
+      //     body
+      //   );
+      //   environments[updatedEnvironment.id] = environment;
+      //   this.setState({ environments });
+      // } catch (ex) {
+      //   toast.error(ex.response ? ex.response.data : "Something went wrong");
+      //   this.handleEnv(originalEnvironment);
+      //   this.setState({ environment: originalEnvironment });
+      // }
     }
   }
 
@@ -207,4 +235,4 @@ class Environments extends Component {
   }
 }
 
-export default Environments;
+export default connect(mapStateToProps, mapDispatchToProps)(Environments);
