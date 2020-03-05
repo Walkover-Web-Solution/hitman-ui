@@ -109,6 +109,15 @@ class CollectionVersions extends Component {
   render() {
     return (
       <div>
+         { this.state.showVersionForm.share &&(
+              <ShareVersionForm
+              show={this.state.showVersionForm.share}
+              onHide={() => this.closeVersionForm()}
+              title={this.state.versionFormName}
+              selectedVersion={this.state.selectedVersion}
+
+              />
+            )}
         {this.props.versions &&
           Object.keys(this.props.versions) &&
           Object.keys(this.props.versions)
