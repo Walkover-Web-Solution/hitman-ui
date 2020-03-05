@@ -112,4 +112,3 @@ class CollectionVersionForm extends Form {
 }
 
 export default connect(null, mapDispatchToProps)(CollectionVersionForm);
-//export default CollectionVersionForm;

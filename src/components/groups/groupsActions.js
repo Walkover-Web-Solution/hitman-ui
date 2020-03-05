@@ -1,8 +1,6 @@
-import groupsActionTypes from "./groupsActionTypes";
-import groupsService from "../groups/groupsService";
-import shortId from "shortid";
 import store from "../../store/store";
-
+import groupsService from "../groups/groupsService";
+import groupsActionTypes from "./groupsActionTypes";
 
 export const fetchGroups = () => {
   return dispatch => {
@@ -12,7 +10,9 @@ export const fetchGroups = () => {
         dispatch(fetchGroupsSuccess(response.data));
       })
       .catch(error => {
-        dispatch(fetchGroupsFailure(error.response?error.response.data:error));
+        dispatch(
+          fetchGroupsFailure(error.response ? error.response.data : error)
+        );
       });
   };
 };
@@ -31,16 +31,21 @@ export const fetchGroupsFailure = error => {
   };
 };
 
-export const addGroup = (versionId,newGroup) => {
+export const addGroup = (versionId, newGroup) => {
   return dispatch => {
     dispatch(addGroupRequest(newGroup));
     groupsService
-      .saveGroup(versionId,newGroup)
+      .saveGroup(versionId, newGroup)
       .then(response => {
         dispatch(addGroupSuccess(response.data));
       })
       .catch(error => {
-        dispatch(addGroupFailure(error.response?error.response.data:error, newGroup));
+        dispatch(
+          addGroupFailure(
+            error.response ? error.response.data : error,
+            newGroup
+          )
+        );
       });
   };
 };
@@ -67,23 +72,23 @@ export const addGroupFailure = (error, newGroup) => {
   };
 };
 
-
 export const updateGroup = editedGroup => {
   return dispatch => {
-    const originalGroup = store.getState().groups[
-      editedGroup.id
-    ];
+    const originalGroup = store.getState().groups[editedGroup.id];
     dispatch(updateGroupRequest(editedGroup));
     const id = editedGroup.id;
     delete editedGroup.id;
     groupsService
       .updateGroup(id, editedGroup)
-      .then((response) => {
+      .then(response => {
         dispatch(updateGroupSuccess(response.data));
       })
       .catch(error => {
         dispatch(
-          updateGroupFailure(error.response?error.response.data:error, originalGroup)
+          updateGroupFailure(
+            error.response ? error.response.data : error,
+            originalGroup
+          )
         );
       });
   };
@@ -96,7 +101,7 @@ export const updateGroupRequest = editedGroup => {
   };
 };
 
-export const updateGroupSuccess = (response) => {
+export const updateGroupSuccess = response => {
   return {
     type: groupsActionTypes.UPDATE_GROUP_SUCCESS,
     response
@@ -120,7 +125,12 @@ export const deleteGroup = group => {
         dispatch(deleteGroupSuccess());
       })
       .catch(error => {
-        dispatch(deleteGroupFailure(error.response?error.response.data:error, group));
+        dispatch(
+          deleteGroupFailure(
+            error.response ? error.response.data : error,
+            group
+          )
+        );
       });
   };
 };
@@ -134,13 +144,13 @@ export const deleteGroupRequest = group => {
 
 export const deleteGroupSuccess = () => {
   return {
-    type:groupsActionTypes.DELETE_GROUP_SUCCESS
+    type: groupsActionTypes.DELETE_GROUP_SUCCESS
   };
 };
 
 export const deleteGroupFailure = (error, group) => {
   return {
-    type:groupsActionTypes.DELETE_GROUP_FAILURE,
+    type: groupsActionTypes.DELETE_GROUP_FAILURE,
     error,
     group
   };

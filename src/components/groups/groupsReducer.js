@@ -9,8 +9,8 @@ function groupsReducer(state = initialState, action) {
   let groups = {};
   switch (action.type) {
     case groupsActionTypes.FETCH_GROUPS_SUCCESS:
-      return { ...action.groups }
-      
+      return { ...action.groups };
+
     case groupsActionTypes.FETCH_GROUPS_FAILURE:
       toast.error(action.error);
       return state;
@@ -19,7 +19,7 @@ function groupsReducer(state = initialState, action) {
       return {
         ...state,
         [action.newGroup.requestId]: action.newGroup
-    }
+      };
 
     case groupsActionTypes.ADD_GROUP_SUCCESS:
       groups = { ...state };
@@ -33,27 +33,27 @@ function groupsReducer(state = initialState, action) {
       delete groups[action.newGroup.requestId];
       return groups;
 
-      case groupsActionTypes.UPDATE_GROUP_REQUEST:
+    case groupsActionTypes.UPDATE_GROUP_REQUEST:
       return {
-          ...state,
-          [action.editedGroup.id]: action.editedGroup
+        ...state,
+        [action.editedGroup.id]: action.editedGroup
       };
 
     case groupsActionTypes.UPDATE_GROUP_SUCCESS:
       return {
         ...state,
         [action.response.id]: action.response
-    };
+      };
 
     case groupsActionTypes.UPDATE_GROUP_FAILURE:
       toast.error(action.error);
       return {
-          ...state,
-          [action.originalGroup.id]: action.originalGroup
+        ...state,
+        [action.originalGroup.id]: action.originalGroup
       };
 
     case groupsActionTypes.DELETE_GROUP_REQUEST:
-      groups = { ...state};
+      groups = { ...state };
       delete groups[action.group.id];
       return groups;
 
@@ -64,10 +64,10 @@ function groupsReducer(state = initialState, action) {
       toast.error(action.error.data);
       if (action.error.status === 404) return state;
       return {
-          ...state,
-          [action.group.id]: action.group
-        }
-    
+        ...state,
+        [action.group.id]: action.group
+      };
+
     default:
       return state;
   }

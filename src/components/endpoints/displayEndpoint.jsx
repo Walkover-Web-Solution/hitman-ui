@@ -176,6 +176,55 @@ class DisplayEndpoint extends Component {
     return json;
   }
 
+parseBody(data)
+{
+  let { method, body } = data;
+  if (method === "POST" || method === "PUT") {
+    try {
+      body = JSON.parse(this.body.current.value);
+      return body;
+    } catch (error) {
+      toast.error("Invalid Body");
+      return body;
+    }
+  }
+  return {};
+}
+
+handleErrorResponse(error)
+{
+  if (error.response) {
+    let response = {
+      status: error.response.status,
+      data: error.response.data
+    };
+    this.setState({ response });
+  } else {
+    let flagInvalidResponse = false;
+    this.setState({ flagInvalidResponse });
+  }
+}
+
+async handleApiCall(api,body,headerJson){
+  let responseJson = {};
+  try {
+    let header = this.replaceVariablesInJson(headerJson);
+    responseJson = await endpointService.apiTest(
+      api,
+      this.state.data.method,
+      body,
+      header
+    );
+    const response = { ...responseJson };
+    
+    if (responseJson.status === 200) this.setState({ response });
+    this.responseTime();
+  } 
+  catch (error) {
+    this.handleErrorResponse(error);
+  }
+}
+
   handleSend = async () => {
     let startTime = new Date().getTime();
     let prettyResponse = true;
@@ -187,63 +236,17 @@ class DisplayEndpoint extends Component {
     const host = this.state.data.host;
     let api = host + this.uri.current.value;
     api = this.replaceVariables(api);
-    let { method, uri, updatedUri, name, body } = this.state.data;
-    if (method === "POST" || method === "PUT") {
-      try {
-        body = JSON.parse(this.body.current.value);
-        this.setState({
-          data: {
-            method,
-            uri,
-            updatedUri,
-            name,
-            body: JSON.stringify(body, null, 4)
-          }
-        });
-      } catch (error) {
-        toast.error("Invalid Body");
-      }
-    }
-
+    let body = this.parseBody(this.state.data);
     let headerJson = {};
     Object.keys(headersData).map(header => {
       headerJson[headersData[header].key] = headersData[header].value;
     });
-    let responseJson = {};
-    try {
-      headerJson = this.replaceVariablesInJson(headerJson);
 
-      responseJson = await endpointService.apiTest(
-        api,
-        method,
-        body,
-        headerJson
-      );
-      const response = { ...responseJson };
-      if (responseJson.status === 200) this.setState({ response });
-      this.responseTime();
-    } catch (error) {
-      if (error.response) {
-        let response = {
-          status: error.response.status,
-          data: error.response.data
-        };
-        this.setState({ response });
-      } else {
-        let flagInvalidResponse = false;
-        this.setState({ flagInvalidResponse });
-      }
-    }
+    this.handleApiCall(api,body,headerJson);
   };
 
   handleSave = async e => {
-    let body = {};
-    if (this.state.data.method === "POST" || this.state.data.method === "PUT")
-      try {
-        body = JSON.parse(this.body.current.value);
-      } catch {
-        toast.error("Invalid Body");
-      }
+    let body = this.parseBody(this.state.data);
     const headersData = this.doSubmitHeader();
     const updatedParams = this.doSubmitParam();
     const endpoint = {
@@ -292,7 +295,6 @@ class DisplayEndpoint extends Component {
       description: ""
     };
     this.state.originalParams = originalParams;
-
     this.state.paramsData = paramsData;
     this.state.paramsMetaData = paramsMetaData;
     this.setState({ originalParams });
@@ -632,7 +634,7 @@ class DisplayEndpoint extends Component {
         data: {
           name: "",
           method: "GET",
-          body: {},
+          body:  JSON.stringify({}, null, 4),
           uri: "",
           updatedUri: "",
           host: this.host

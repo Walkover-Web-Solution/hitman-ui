@@ -4,6 +4,7 @@ import { Modal } from "react-bootstrap";
 import Joi from "joi-browser";
 import collectionsService from "./collectionsService";
 import Form from "../common/form";
+import shortid from "shortid";
 
 class CollectionForm extends Form {
   state = {
@@ -84,7 +85,7 @@ class CollectionForm extends Form {
     delete body.keyword2;
     if (this.props.title === "Edit Collection") {
       this.props.onHide();
-      this.props.edit_collection({
+      this.props.updateCollection({
         ...this.state.data,
         id: this.state.collectionId
       });
@@ -101,7 +102,8 @@ class CollectionForm extends Form {
     }
     if (this.props.title === "Add new Collection") {
       this.props.onHide();
-      this.props.add_new_collection({ ...this.state.data });
+      const requestId = shortid.generate();
+      this.props.addCollection({ ...this.state.data, requestId });
       this.setState({
         data: {
           name: "",
