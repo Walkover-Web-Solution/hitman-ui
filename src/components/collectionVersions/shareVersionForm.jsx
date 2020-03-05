@@ -31,10 +31,6 @@ class ShareVersionForm extends Form {
   };
 
   async doSubmit(props) {
-    const shareVersionLink = this.state.data.shareVersionLink;
-    if (this.props.title === "Share Version") {
-      this.props.history.push({});
-    }
   }
 
   render() {
@@ -63,7 +59,7 @@ class ShareVersionForm extends Form {
                 <button style={{ borderRadius: "12px" }}>Copy</button>
               </CopyToClipboard>
             }
-            <button >cancel</button>
+             <button onClick = {this.props.onHide}>Cancel</button>
           </form>
         </Modal.Body>
       </Modal>

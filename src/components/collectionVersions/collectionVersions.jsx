@@ -10,6 +10,7 @@ import Groups from "../groups/groups";
 import VersionPages from "../pages/versionPages";
 import { connect } from "react-redux";
 import { deleteVersion } from "../collectionVersions/collectionVersionsActions";
+import ShareVersionForm from "../collectionVersions/shareVersionForm";
 
 const mapStateToProps = state => {
   return {
@@ -29,7 +30,7 @@ class CollectionVersions extends Component {
     showShareVersionForm:false,
     versionFormName: "",
     selectedVersion: {},
-    showVersionForm:{addGroup:false,addPage:false,share:false,edit:false}
+    showVersionForm:{add:false,share:false,edit:false}
     };
 
   versionDnD(versionDnDFlag) {
@@ -104,6 +105,11 @@ class CollectionVersions extends Component {
       pathname: `/dashboard/collections/${collectionId}/versions/${versionId}/share`,
       shareIdentifier: shareIdentifier
     });
+  }
+  closeVersionForm(){
+    let share=false;
+    let showVersionForm={share};
+    this.setState({showVersionForm});
   }
 
   render() {
