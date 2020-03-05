@@ -25,8 +25,12 @@ const mapDispatchToProps = dispatch => {
 
 class CollectionVersions extends Component {
   state = {
-    versionDnDFlag: true
-  };
+    versionDnDFlag: true,
+    showShareVersionForm:false,
+    versionFormName: "",
+    selectedVersion: {},
+    showVersionForm:{addGroup:false,addPage:false,share:false,edit:false}
+    };
 
   versionDnD(versionDnDFlag) {
     this.setState({ versionDnDFlag });
@@ -186,8 +190,16 @@ class CollectionVersions extends Component {
                       <Dropdown.Item
                         eventKey="3"
                         onClick={() => {
-                          this.handleShare(this.props.versions[versionId]);
-                        }}
+                          let share=true;
+                          let showVersionForm={share};
+                          this.setState({
+                          showVersionForm,
+                          versionFormName: "Share Version",
+                          selectedVersion: {
+                          ...this.props.versions[versionId]
+                          }
+                          });
+                          }}
                       >
                         Share
                       </Dropdown.Item>
