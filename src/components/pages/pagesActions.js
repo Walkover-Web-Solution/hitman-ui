@@ -215,3 +215,31 @@ export const duplicatePageFailure = (error, page) => {
     page
   };
 };
+
+export const updateState = pages => {
+  return dispatch => {
+    try {
+      dispatch(updateStateSuccess(pages));
+    } catch (error) {
+      dispatch(updateStateFailure(error));
+    }
+  };
+};
+
+export const updateStateSuccess = pages => {
+  return {
+    type: pagesActionTypes.UPDATE_STATE_SUCCESS,
+    pages
+  };
+};
+
+export const updateStateFailure = error => {
+  return {
+    type: pagesActionTypes.UPDATE_STATE_FAILURE,
+    error
+  };
+};
+
+export default {
+  updateState
+};

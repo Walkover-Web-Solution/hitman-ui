@@ -88,17 +88,29 @@ function pagesReducer(state = initialState, action) {
         [action.page.id]: action.page
       };
 
-    // case pagesActionTypes.DELETE_PAGE_REQUEST:
-    //         pages = {...state };
-    //         delete pages[action.page.id];
-    //         return pages;
-
     case pagesActionTypes.DUPLICATE_PAGE_SUCCESS:
       pages = { ...state };
       pages[action.response.id] = action.response;
       return pages;
 
     case pagesActionTypes.DUPLICATE_PAGE_FAILURE:
+      toast.error(action.error);
+      pages = { ...state };
+      return pages;
+
+    case pagesActionTypes.UPDATE_STATE_SUCCESS:
+      pages = { ...state };
+      const newPages = { ...action.pages };
+      const newPageIds = Object.keys(newPages);
+      for (let i = 0; i < newPageIds.length; i++) {
+        pages = {
+          ...pages,
+          [newPageIds[i]]: newPages[newPageIds[i]]
+        };
+      }
+      return pages;
+
+    case pagesActionTypes.UPDATE_STATE_FAILURE:
       toast.error(action.error);
       pages = { ...state };
       return pages;

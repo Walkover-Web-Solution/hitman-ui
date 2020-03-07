@@ -169,3 +169,31 @@ export const duplicateEndpointFailure = (error, endpoint) => {
     endpoint
   };
 };
+
+export const updateState = endpoints => {
+  return dispatch => {
+    try {
+      dispatch(updateStateSuccess(endpoints));
+    } catch (error) {
+      dispatch(updateStateFailure(error));
+    }
+  };
+};
+
+export const updateStateSuccess = endpoints => {
+  return {
+    type: endpointsActionTypes.UPDATE_STATE_SUCCESS,
+    endpoints
+  };
+};
+
+export const updateStateFailure = error => {
+  return {
+    type: endpointsActionTypes.UPDATE_STATE_FAILURE,
+    error
+  };
+};
+
+export default {
+  updateState
+};

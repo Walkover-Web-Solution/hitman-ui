@@ -68,6 +68,16 @@ function groupsReducer(state = initialState, action) {
         [action.group.id]: action.group
       };
 
+    case groupsActionTypes.DUPLICATE_GROUP_SUCCESS:
+      groups = { ...state };
+      const group = action.response.groups;
+      groups = { ...groups, [group.id]: group };
+      return groups;
+
+    case groupsActionTypes.DUPLICATE_GROUP_FAILURE:
+      toast.error(action.error);
+      return state;
+
     default:
       return state;
   }

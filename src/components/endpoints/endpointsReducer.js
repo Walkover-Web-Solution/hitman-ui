@@ -78,6 +78,23 @@ function endpointsReducer(state = initialState, action) {
       endpoints = { ...state };
       return endpoints;
 
+    case endpointsActionTypes.UPDATE_STATE_SUCCESS:
+      endpoints = { ...state };
+      const newEndpoints = { ...action.endpoints };
+      const newEndpointIds = Object.keys(newEndpoints);
+      for (let i = 0; i < newEndpointIds.length; i++) {
+        endpoints = {
+          ...endpoints,
+          [newEndpointIds[i]]: newEndpoints[newEndpointIds[i]]
+        };
+      }
+      return endpoints;
+
+    case endpointsActionTypes.UPDATE_STATE_FAILURE:
+      toast.error(action.error);
+      endpoints = { ...state };
+      return endpoints;
+
     default:
       return state;
   }
