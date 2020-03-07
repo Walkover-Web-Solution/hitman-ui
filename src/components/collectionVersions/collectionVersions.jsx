@@ -11,6 +11,8 @@ import VersionPages from "../pages/versionPages";
 import { connect } from "react-redux";
 import { deleteVersion } from "../collectionVersions/collectionVersionsActions";
 import ShareVersionForm from "../collectionVersions/shareVersionForm";
+import GroupForm from "../groups/groupForm";
+import { withRouter } from 'react-router-dom';
 
 const mapStateToProps = state => {
   return {
@@ -30,7 +32,7 @@ class CollectionVersions extends Component {
     showShareVersionForm:false,
     versionFormName: "",
     selectedVersion: {},
-    showVersionForm:{add:false,share:false,edit:false}
+    showVersionForm:{addGroup:false,addPage:false,share:false,edit:false}
     };
 
   versionDnD(versionDnDFlag) {
@@ -72,6 +74,12 @@ class CollectionVersions extends Component {
       pathname: "/dashboard/collections"
     });
   }
+  closeVersionForm() {
+    let share=false;
+    let addGroup=false
+    let showVersionForm={share,addGroup};
+    this.setState({ showVersionForm});
+    }
 
   handleUpdate(collectionVersion) {
     this.props.history.push({
@@ -124,6 +132,14 @@ class CollectionVersions extends Component {
 
               />
             )}
+            { this.state.showVersionForm.addGroup &&(
+          <GroupForm
+          show={this.state.showVersionForm.addGroup}
+          onHide={() => this.closeVersionForm()}
+          title={this.state.versionFormName}
+         selectedVersion={this.state.selectedVersion}
+        />
+        )}
         {this.props.versions &&
           Object.keys(this.props.versions) &&
           Object.keys(this.props.versions)
@@ -176,10 +192,16 @@ class CollectionVersions extends Component {
                       <Dropdown.Item
                         eventKey="3"
                         onClick={() => {
-                          this.props.history.push({
-                            pathname: `/dashboard/collections/${this.props.collection_id}/versions/${versionId}/groups/new`
+                          let addGroup=true;
+                          let showVersionForm={addGroup};
+                          this.setState({
+                          showVersionForm,
+                          versionFormName: "Add new Group",
+                          selectedVersion: {
+                          ...this.props.versions[versionId]
+                          }
                           });
-                        }}
+                          }}
                       >
                         Add Group
                       </Dropdown.Item>
@@ -242,4 +264,4 @@ class CollectionVersions extends Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(CollectionVersions);
+export default withRouter(connect(mapStateToProps)(CollectionVersions));

@@ -54,27 +54,22 @@ class GroupForm extends Form {
 
   async doSubmit() {
     if (this.props.title === "Add new Group") {
-      const versionId = this.props.location.pathname.split("/")[5];
-      const newGroup = {
-        ...this.state.data,
-        endpointsOrder: [],
-        requestId: shortid.generate()
-      };
-      this.props.addGroup(versionId, newGroup);
-      this.props.history.push({
-        pathname: `/dashboard/collections`
-      });
+      console.log("selected Version",this.props.selectedVersion);
+      const versionId=this.props.selectedVersion.id
+      const newGroup ={...this.state.data,endpointsOrder:[],requestId:shortid.generate()}
+      this.props.addGroup(versionId,newGroup);
+      console.log("path",this.props);
+      // this.props.history.push({
+      //   pathname: `/dashboard/collections`,
+      // });
     }
 
     if (this.props.title === "Edit Group") {
-      const editedGroup = {
-        ...this.state.data,
-        id: this.state.groupId,
-        endpointsOrder: this.state.endpointsOrder
-      };
-      this.props.updateGroup(editedGroup);
+      const  editedGroup= {...this.state.data,id: this.state.groupId,endpointsOrder: this.state.endpointsOrder
+        }
+        this.props.updateGroup(editedGroup);
       this.props.history.push({
-        pathname: `/dashboard/collections`
+        pathname: `/dashboard/collections` 
       });
     }
   }
