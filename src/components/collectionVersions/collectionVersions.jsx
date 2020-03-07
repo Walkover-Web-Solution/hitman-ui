@@ -10,6 +10,9 @@ import Groups from "../groups/groups";
 import VersionPages from "../pages/versionPages";
 import { connect } from "react-redux";
 import { deleteVersion } from "../collectionVersions/collectionVersionsActions";
+import ShareVersionForm from "../collectionVersions/shareVersionForm";
+import GroupForm from "../groups/groupForm";
+import { withRouter } from 'react-router-dom';
 
 const mapStateToProps = state => {
   return {
@@ -25,8 +28,12 @@ const mapDispatchToProps = dispatch => {
 
 class CollectionVersions extends Component {
   state = {
-    versionDnDFlag: true
-  };
+    versionDnDFlag: true,
+    showShareVersionForm:false,
+    versionFormName: "",
+    selectedVersion: {},
+    showVersionForm:{addGroup:false,addPage:false,share:false,edit:false}
+    };
 
   versionDnD(versionDnDFlag) {
     this.setState({ versionDnDFlag });
@@ -67,6 +74,12 @@ class CollectionVersions extends Component {
       pathname: "/dashboard/collections"
     });
   }
+  closeVersionForm() {
+    let share=false;
+    let addGroup=false
+    let showVersionForm={share,addGroup};
+    this.setState({ showVersionForm});
+    }
 
   handleUpdate(collectionVersion) {
     this.props.history.push({
@@ -101,10 +114,32 @@ class CollectionVersions extends Component {
       shareIdentifier: shareIdentifier
     });
   }
+  closeVersionForm(){
+    let share=false;
+    let showVersionForm={share};
+    this.setState({showVersionForm});
+  }
 
   render() {
     return (
       <div>
+         { this.state.showVersionForm.share &&(
+              <ShareVersionForm
+              show={this.state.showVersionForm.share}
+              onHide={() => this.closeVersionForm()}
+              title={this.state.versionFormName}
+              selectedVersion={this.state.selectedVersion}
+
+              />
+            )}
+            { this.state.showVersionForm.addGroup &&(
+          <GroupForm
+          show={this.state.showVersionForm.addGroup}
+          onHide={() => this.closeVersionForm()}
+          title={this.state.versionFormName}
+         selectedVersion={this.state.selectedVersion}
+        />
+        )}
         {this.props.versions &&
           Object.keys(this.props.versions) &&
           Object.keys(this.props.versions)
@@ -157,10 +192,16 @@ class CollectionVersions extends Component {
                       <Dropdown.Item
                         eventKey="3"
                         onClick={() => {
-                          this.props.history.push({
-                            pathname: `/dashboard/collections/${this.props.collection_id}/versions/${versionId}/groups/new`
+                          let addGroup=true;
+                          let showVersionForm={addGroup};
+                          this.setState({
+                          showVersionForm,
+                          versionFormName: "Add new Group",
+                          selectedVersion: {
+                          ...this.props.versions[versionId]
+                          }
                           });
-                        }}
+                          }}
                       >
                         Add Group
                       </Dropdown.Item>
@@ -186,8 +227,16 @@ class CollectionVersions extends Component {
                       <Dropdown.Item
                         eventKey="3"
                         onClick={() => {
-                          this.handleShare(this.props.versions[versionId]);
-                        }}
+                          let share=true;
+                          let showVersionForm={share};
+                          this.setState({
+                          showVersionForm,
+                          versionFormName: "Share Version",
+                          selectedVersion: {
+                          ...this.props.versions[versionId]
+                          }
+                          });
+                          }}
                       >
                         Share
                       </Dropdown.Item>
@@ -215,4 +264,4 @@ class CollectionVersions extends Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(CollectionVersions);
+export default withRouter(connect(mapStateToProps)(CollectionVersions));

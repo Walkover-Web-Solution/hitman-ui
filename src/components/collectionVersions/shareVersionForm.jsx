@@ -15,14 +15,14 @@ class ShareVersionForm extends Form {
   };
 
   componentDidMount() {
-    if (this.props.location.shareIdentifier) {
-      let data = {};
-      const { shareIdentifier } = this.props.location;
-      const shareVersionLink = apiUrl + "/share/" + shareIdentifier;
-      data = { shareVersionLink };
-      this.setState({ data });
+    if (this.props.selectedVersion) {
+    let data = {};
+    const shareVersionLink = apiUrl + "/share/" + this.props.selectedVersion.shareIdentifier;
+    data = { shareVersionLink };
+    this.setState({ data });
     }
-  }
+    console.log("selected_version",this.props.selectedVersion.shareIdentifier);
+    }
 
   schema = {
     shareVersionLink: Joi.string()
@@ -31,10 +31,6 @@ class ShareVersionForm extends Form {
   };
 
   async doSubmit(props) {
-    const shareVersionLink = this.state.data.shareVersionLink;
-    if (this.props.title === "Share Version") {
-      this.props.history.push({});
-    }
   }
 
   render() {
@@ -63,7 +59,7 @@ class ShareVersionForm extends Form {
                 <button style={{ borderRadius: "12px" }}>Copy</button>
               </CopyToClipboard>
             }
-            <Link to={`/dashboard/collections`}>Cancel</Link>
+             <button onClick = {this.props.onHide}>Cancel</button>
           </form>
         </Modal.Body>
       </Modal>

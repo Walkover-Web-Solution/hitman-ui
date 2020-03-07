@@ -54,27 +54,18 @@ class GroupForm extends Form {
 
   async doSubmit() {
     if (this.props.title === "Add new Group") {
-      const versionId = this.props.location.pathname.split("/")[5];
-      const newGroup = {
-        ...this.state.data,
-        endpointsOrder: [],
-        requestId: shortid.generate()
-      };
-      this.props.addGroup(versionId, newGroup);
-      this.props.history.push({
-        pathname: `/dashboard/collections`
-      });
+       this.props.onHide();
+      const versionId=this.props.selectedVersion.id
+      const newGroup ={...this.state.data,endpointsOrder:[],requestId:shortid.generate()}
+      this.props.addGroup(versionId,newGroup);
     }
 
     if (this.props.title === "Edit Group") {
-      const editedGroup = {
-        ...this.state.data,
-        id: this.state.groupId,
-        endpointsOrder: this.state.endpointsOrder
-      };
-      this.props.updateGroup(editedGroup);
+      const  editedGroup= {...this.state.data,id: this.state.groupId,endpointsOrder: this.state.endpointsOrder
+        }
+        this.props.updateGroup(editedGroup);
       this.props.history.push({
-        pathname: `/dashboard/collections`
+        pathname: `/dashboard/collections` 
       });
     }
   }
@@ -97,7 +88,7 @@ class GroupForm extends Form {
             {this.renderInput("name", "Group Name*")}
             {this.renderInput("host", "Host")}
             {this.renderButton("Submit")}
-            <Link to={`/dashboard/collections/`}>Cancel</Link>
+            <button onClick = {this.props.onHide}>Cancel</button>
           </form>
         </Modal.Body>
       </Modal>
