@@ -140,3 +140,32 @@ export const deleteEndpointFailure = (error, endpoint) => {
     endpoint
   };
 };
+
+export const duplicateEndpoint = endpoint => {
+  console.log("duplicateEndpoint");
+  return dispatch => {
+    endpointService
+      .duplicateEndpoint(endpoint.id)
+      .then(response => {
+        dispatch(duplicateEndpointSuccess(response.data));
+      })
+      .catch(error => {
+        dispatch(duplicateEndpointFailure(error.response, endpoint));
+      });
+  };
+};
+
+export const duplicateEndpointSuccess = response => {
+  return {
+    type: endpointsActionTypes.DUPLICATE_ENDPOINT_SUCCESS,
+    response
+  };
+};
+
+export const duplicateEndpointFailure = (error, endpoint) => {
+  return {
+    type: endpointsActionTypes.DUPLICATE_ENDPOINT_FAILURE,
+    error,
+    endpoint
+  };
+};

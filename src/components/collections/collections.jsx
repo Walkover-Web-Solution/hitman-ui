@@ -185,40 +185,6 @@ class CollectionsComponent extends Component {
     this.props.updatePage(editedPage, pageId);
   }
 
-  async handleDuplicateEndpoint(endpointCopy) {
-    let originalEndpoints = { ...this.state.endpoints };
-    let endpoints = { ...this.state.endpoints };
-    let originalGroups = { ...this.state.groups };
-    let groups = { ...this.state.groups };
-
-    try {
-      const { data } = await endpointService.duplicateEndpoint(endpointCopy.id);
-      let endpoint = data;
-      endpoints[endpoint.id] = endpoint;
-      groups[endpoint.groupId].endpointsOrder.push(endpoint.id.toString());
-      this.setState({ endpoints, groups });
-    } catch (ex) {
-      toast.error(ex.response ? ex.response.data : "Something went wrong");
-      this.setState({ endpoints: originalEndpoints, groups: originalGroups });
-    }
-  }
-
-  async handleDuplicatePage(pageCopy) {
-    let originalPage = { ...this.state.pages };
-    let pages = { ...this.state.pages };
-    let page = {};
-    try {
-      const { data } = await pageService.duplicatePage(pageCopy.id);
-      page = data;
-      pages[page.id] = page;
-      const pageIds = [...this.state.pageIds, page.id.toString()];
-      this.setState({ pages, pageIds });
-    } catch (ex) {
-      toast.error(ex.response ? ex.response.data : "Something went wrong");
-      this.setState({ originalPage });
-    }
-  }
-
   async handleDuplicateGroup(groupCopy) {
     let originalGroup = { ...this.state.groups };
     let groups = { ...this.state.groups };
@@ -322,12 +288,6 @@ class CollectionsComponent extends Component {
   render() {
     const { location } = this.props;
 
-    if (location.duplicateEndpoint) {
-      const duplicateEndpoint = location.duplicateEndpoint;
-      this.props.history.replace({ duplicateEndpoint: null });
-      this.handleDuplicateEndpoint(duplicateEndpoint);
-    }
-
     if (location.editedPage && location.groupId) {
       const { id: pageId } = location.editedPage;
       this.props.history.replace({ editedPage: null });
@@ -336,12 +296,6 @@ class CollectionsComponent extends Component {
       const { id: pageId } = location.editedPage;
       this.props.history.replace({ editedPage: null });
       this.handleUpdatePage(location.editedPage, pageId);
-    }
-
-    if (location.duplicatePage) {
-      const duplicatePage = location.duplicatePage;
-      this.props.history.replace({ duplicatePage: null });
-      this.handleDuplicatePage(duplicatePage);
     }
 
     if (location.duplicateGroup) {

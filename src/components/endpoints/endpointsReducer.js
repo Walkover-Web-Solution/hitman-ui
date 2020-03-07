@@ -68,6 +68,16 @@ function endpointsReducer(state = initialState, action) {
         [action.endpoint.id]: action.endpoint
       };
 
+    case endpointsActionTypes.DUPLICATE_ENDPOINT_SUCCESS:
+      endpoints = { ...state };
+      endpoints[action.response.id] = action.response;
+      return endpoints;
+
+    case endpointsActionTypes.DUPLICATE_ENDPOINT_FAILURE:
+      toast.error(action.error);
+      endpoints = { ...state };
+      return endpoints;
+
     default:
       return state;
   }
