@@ -80,7 +80,6 @@ class Groups extends Component {
   }
 
   handleAddPage(groupId, versionId, collectionId) {
-    console.log(groupId);
     this.props.history.push({
       pathname: `/dashboard/collections/${collectionId}/versions/${versionId}/groups/${groupId}/pages/new`,
       versionId: versionId,

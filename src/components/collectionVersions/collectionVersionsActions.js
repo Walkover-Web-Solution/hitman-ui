@@ -70,7 +70,6 @@ export const updateVersionFailure = (error, originalVersion) => {
 };
 
 export const addVersion = (newVersion, collectionId) => {
-  console.log("1111", newVersion, collectionId);
   return dispatch => {
     dispatch(addVersionRequest(newVersion));
     collectionVersionsService

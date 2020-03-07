@@ -1,23 +1,20 @@
 import React, { Component } from "react";
 import { Dropdown } from "react-bootstrap";
-import { Route, Switch, Link } from "react-router-dom";
-import environmentService from "./environmentService";
 import EnvironmentModal from "./environmentModal";
 import EnvironmentVariables from "./environmentVariables";
-import { toast } from "react-toastify";
-import jQuery from "jquery";
 import shortId from "shortid";
 import { connect } from "react-redux";
 import {
   fetchEnvironments,
   addEnvironment,
   updateEnvironment,
-  deleteEnvironment
+  deleteEnvironment,
+  setEnvironmentId
 } from "./environmentsActions";
 
 const mapStateToProps = state => {
   return {
-    environments: state.environments
+    environment: state.environment
   };
 };
 
@@ -28,208 +25,128 @@ const mapDispatchToProps = dispatch => {
     updateEnvironment: editedEnvironment =>
       dispatch(updateEnvironment(editedEnvironment)),
     deleteEnvironment: deletedEnvironment =>
-      dispatch(deleteEnvironment(deletedEnvironment))
+      dispatch(deleteEnvironment(deletedEnvironment)),
+    setEnvironmentId: environmentId => dispatch(setEnvironmentId(environmentId))
   };
 };
 
 class Environments extends Component {
   state = {
-    environments: {},
-    environmentId: null
+    currentEnvironmentId: null,
+    environmentFormName: null,
+    showEnvironmentForm: false,
+    showEnvironmentModal: false,
+    environmentToBeEdited: {}
   };
 
   async componentDidMount() {
     this.props.fetchEnvironments();
-    console.log("fetch environments");
-    const { data: environments } = await environmentService.getEnvironments();
-    this.setState({ environments });
-    const environmentId = this.props.location.pathname.split("/")[3];
-    if (this.props.location.pathname.split("/")[4] === "variables") {
-      this.handleEnv(environments[environmentId]);
-    }
   }
 
-  handleEnv(environment) {
-    this.props.set_environment(environment);
-    this.setState({ environmentId: environment.id });
+  handleEnvironmentModal(environmentFormName, environmentToBeEdited) {
+    this.setState({
+      environmentFormName,
+      environmentToBeEdited
+    });
+  }
+  handleEnv(environmentId) {
+    this.props.setEnvironmentId(environmentId);
+    this.setState({ currentEnvironmentId: environmentId });
   }
 
   async handleAdd(newEnvironment) {
     newEnvironment.requestId = shortId.generate();
     this.props.addEnvironment(newEnvironment);
-    // const requestId = newEnvironment.requestId;
-    // const originalEnvironment = jQuery.extend(true, {}, this.state.environment);
-    // const environments = { ...this.state.environments };
-    // environments[requestId] = newEnvironment;
-    // this.setState({ environments });
-    // try {
-    //   const { data: environment } = await environmentService.saveEnvironment(
-    //     newEnvironment
-    //   );
-    //   environments[environment.id] = environment;
-    //   delete environments[requestId];
-    //   this.setState({ environments });
-    // } catch (ex) {
-    //   toast.error(ex.response ? ex.response.data : "Something went wrong");
-    //   this.setState({ environment: originalEnvironment });
-    // }
-  }
-
-  async handleUpdateEnvironment(updatedEnvironment) {
-    if (
-      JSON.stringify(this.state.environments[this.state.environmentId]) !==
-      JSON.stringify(updatedEnvironment)
-    ) {
-      const originalEnvironment = jQuery.extend(
-        true,
-        {},
-        this.state.environment
-      );
-      this.props.updateEnvironment(updatedEnvironment);
-      const environments = { ...this.state.environments };
-      environments[updatedEnvironment.id] = updatedEnvironment;
-      this.handleEnv(updatedEnvironment);
-      this.setState({ environments });
-      // try {
-      //   const body = { ...updatedEnvironment };
-      //   delete body.id;
-      //   const {
-      //     data: environment
-      //   } = await environmentService.updateEnvironment(
-      //     updatedEnvironment.id,
-      //     body
-      //   );
-      //   environments[updatedEnvironment.id] = environment;
-      //   this.setState({ environments });
-      // } catch (ex) {
-      //   toast.error(ex.response ? ex.response.data : "Something went wrong");
-      //   this.handleEnv(originalEnvironment);
-      //   this.setState({ environment: originalEnvironment });
-      // }
-    }
   }
 
   render() {
-    if (this.props.location.updatedEnvironment) {
-      const { updatedEnvironment } = this.props.location;
-      this.props.history.replace({ updatedEnvironment: null });
-      this.handleUpdateEnvironment(updatedEnvironment);
-    }
+    // if (this.props.location.updatedEnvironment) {
+    //   const { updatedEnvironment } = this.props.location;
+    //   this.props.history.replace({ updatedEnvironment: null });
+    //   this.handleUpdateEnvironment(updatedEnvironment);
+    // }
 
-    if (this.props.location.newEnvironment) {
-      const { newEnvironment } = this.props.location;
-      this.props.history.replace({ newEnvironment: null });
-      this.handleAdd(newEnvironment);
-    }
+    // if (this.props.location.newEnvironment) {
+    //   const { newEnvironment } = this.props.location;
+    //   this.props.history.replace({ newEnvironment: null });
+    //   this.handleAdd(newEnvironment);
+    // }
+    console.log(this.state);
     return (
       <div>
         <div>
-          <Switch>
-            <Route
-              path="/dashboard/environments/:environmentId/variables"
-              render={props => (
-                <EnvironmentVariables
-                  {...props}
-                  show={this.state.environmentId}
-                  onHide={() => {
-                    this.props.history.push({
-                      pathname: "/dashboard"
-                    });
-                  }}
-                  environment={jQuery.extend(
-                    true,
-                    {},
-                    this.state.environments[this.state.environmentId]
-                  )}
-                  title="Environment"
-                />
-              )}
+          {(this.state.environmentFormName === "Add new Environment" ||
+            this.state.environmentFormName === "Edit Environment") && (
+            <EnvironmentVariables
+              {...this.props}
+              show={true}
+              onHide={() => this.handleEnvironmentModal()}
+              environment={this.state.environmentToBeEdited}
+              title={this.state.environmentFormName}
             />
-            <Route
-              path="/dashboard/environments/:environmentId/edit"
-              render={props => (
-                <EnvironmentVariables
-                  {...props}
-                  show={true}
-                  onHide={() => {
-                    this.props.history.push({
-                      pathname: "/dashboard"
-                    });
-                  }}
-                  title="Edit Environment"
-                />
-              )}
+          )}
+          {this.state.environmentFormName === "Environment modal" && (
+            <EnvironmentModal
+              {...this.props}
+              show={true}
+              onHide={() => this.handleEnvironmentModal()}
+              handle_environment_modal={this.handleEnvironmentModal.bind(this)}
             />
-            <Route
-              path="/dashboard/environments/manage"
-              render={props => (
-                <EnvironmentModal
-                  {...props}
-                  show={true}
-                  onHide={() => {
-                    this.props.history.push({
-                      pathname: "/dashboard"
-                    });
-                  }}
-                  environments={this.state.environments}
-                />
-              )}
-            />
-            <Route
-              path="/dashboard/environments/new"
-              render={props => (
-                <EnvironmentVariables
-                  {...props}
-                  show={true}
-                  onHide={() => {
-                    this.props.history.push({
-                      pathname: "/dashboard"
-                    });
-                  }}
-                  title="Add new Environment"
-                />
-              )}
-            />
-          </Switch>
+          )}
+        </div>
+        <div style={{ textAlign: "left" }}>
+          <button
+            className="btn btn-default"
+            onClick={() => this.handleEnvironmentModal("Environment modal")}
+            style={{ float: "right" }}
+          >
+            Manage
+          </button>
         </div>
         <div className="Environment Dropdown">
           <Dropdown className="float-right">
             <Dropdown.Toggle variant="default" id="dropdown-basic">
-              {this.state.environments[this.state.environmentId] &&
-                this.state.environments[this.state.environmentId].name}
+              {this.props.environment.environments[
+                this.props.environment.currentEnvironmentId
+              ] &&
+                this.props.environment.environments[
+                  this.props.environment.currentEnvironmentId
+                ].name}
             </Dropdown.Toggle>
 
             <Dropdown.Menu alignRight>
-              <Dropdown.Item>
-                <Link to="/dashboard/environments/new">+ Add Environment</Link>
-              </Dropdown.Item>
+              <button
+                className="btn btn-default"
+                onClick={() =>
+                  this.handleEnvironmentModal("Add new Environment")
+                }
+              >
+                + Add Environment
+              </button>
 
-              {Object.keys(this.state.environments).map(environmentId => (
-                <Dropdown.Item
-                  onClick={() =>
-                    this.handleEnv(this.state.environments[environmentId])
-                  }
-                  key={environmentId}
-                >
-                  {this.state.environments[environmentId].name}
-                </Dropdown.Item>
-              ))}
+              {Object.keys(this.props.environment.environments).map(
+                environmentId => (
+                  <Dropdown.Item
+                    onClick={() => this.handleEnv(environmentId)}
+                    key={environmentId}
+                  >
+                    {this.props.environment.environments[environmentId].name}
+                  </Dropdown.Item>
+                )
+              )}
             </Dropdown.Menu>
           </Dropdown>
         </div>
-        <div style={{ textAlign: "left" }}>
-          <button type="button" className="btn btn-link btn-sm btn-block" />
-          <Link to="/dashboard/environments/manage">Manage Environments</Link>
-        </div>
 
-        {this.state.environmentId ? (
-          <Link
-            to={`/dashboard/environments/${this.state.environmentId}/variables`}
+        {/* {this.state.currentEnvironmentId && (
+          <button
+            className="btn btn-default"
             style={{ float: "right" }}
+            onClick={() => this.handleEnvironmentModal("Edit Environment")}
           >
             Environment Variables
-          </Link>
-        ) : null}
+          </button>
+        )} */}
       </div>
     );
   }

@@ -54,8 +54,6 @@ class PageForm extends Form {
   }
 
   render() {
-    // console.log("this.props.groupId", this.props.groupId);
-
     return (
       <Modal
         {...this.props}
