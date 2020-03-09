@@ -68,6 +68,33 @@ function groupsReducer(state = initialState, action) {
         [action.group.id]: action.group
       };
 
+    case groupsActionTypes.DUPLICATE_GROUP_SUCCESS:
+      groups = { ...state };
+      const group = action.response.groups;
+      groups = { ...groups, [group.id]: group };
+      return groups;
+
+    case groupsActionTypes.DUPLICATE_GROUP_FAILURE:
+      toast.error(action.error);
+      return state;
+
+    case groupsActionTypes.UPDATE_STATE_SUCCESS:
+      groups = { ...state };
+      const newGroups = { ...action.groups };
+      const newGroupIds = Object.keys(newGroups);
+      for (let i = 0; i < newGroupIds.length; i++) {
+        groups = {
+          ...groups,
+          [newGroupIds[i]]: newGroups[newGroupIds[i]]
+        };
+      }
+      return groups;
+
+    case groupsActionTypes.UPDATE_STATE_FAILURE:
+      toast.error(action.error);
+      groups = { ...state };
+      return groups;
+
     default:
       return state;
   }

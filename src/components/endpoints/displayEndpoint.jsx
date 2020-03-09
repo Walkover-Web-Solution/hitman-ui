@@ -225,7 +225,6 @@ class DisplayEndpoint extends Component {
     this.setState({ startTime, prettyResponse });
     let response = {};
     const headersData = this.doSubmitHeader();
-    console.log("eader", headersData);
     this.setState({ response });
     this.state.flagResponse = true;
     const host = this.state.data.host;
@@ -267,14 +266,8 @@ class DisplayEndpoint extends Component {
     }
   };
 
-  handleUpdateHeader(originalHeaders) {
-    this.setState({ originalHeaders });
-  }
-
   doSubmitHeader() {
-    console.log("oh2", this.state.originalHeaders);
     let originalHeaders = [...this.state.originalHeaders];
-    console.log("oh2", originalHeaders);
     let updatedHeaders = {};
     for (let i = 0; i < originalHeaders.length; i++) {
       if (originalHeaders[i].key === "") {
@@ -290,7 +283,7 @@ class DisplayEndpoint extends Component {
     const endpoint = { ...this.state.endpoint };
     endpoint.headers = { ...updatedHeaders };
     this.setState({
-      //  updatedHeaders: originalHeaders,
+      originalHeaders,
       endpoint
     });
     return updatedHeaders;
@@ -301,6 +294,10 @@ class DisplayEndpoint extends Component {
     let data = { ...this.state.data };
     data.method = method;
     this.setState({ response, data });
+  }
+
+  handleUpdateHeader(originalHeaders) {
+    this.setState({ originalHeaders });
   }
 
   propsFromChild(name, value) {
@@ -366,36 +363,31 @@ class DisplayEndpoint extends Component {
   }
 
   rawDataResponse() {
-    let rawResponse = true;
-    let previewResponse = false;
-    let prettyResponse = false;
-    let responseString = JSON.stringify(this.state.response);
     this.setState({
-      rawResponse,
-      previewResponse,
-      prettyResponse,
-      responseString
+      rawResponse: true,
+      previewResponse: false,
+      prettyResponse: false,
+      responseString: JSON.stringify(this.state.response)
     });
   }
 
   prettyDataResponse() {
-    let rawResponse = false;
-    let previewResponse = false;
-    let prettyResponse = true;
-    let responseString = JSON.stringify(this.state.response);
     this.setState({
-      rawResponse,
-      previewResponse,
-      prettyResponse,
-      responseString
+      rawResponse: false,
+      previewResponse: false,
+      prettyResponse: true,
+      responseString: JSON.stringify(this.state.response)
     });
   }
+
   previewDataResponse() {
-    let rawResponse = false;
-    let previewResponse = true;
-    let prettyResponse = false;
-    this.setState({ rawResponse, previewResponse, prettyResponse });
+    this.setState({
+      rawResponse: false,
+      previewResponse: true,
+      prettyResponse: false
+    });
   }
+
   fillDropdownValue(hostJson) {
     this.dropdownHost["variable"].value = hostJson.variableHost;
     this.dropdownHost["group"].value = hostJson.groupHost;
@@ -424,6 +416,7 @@ class DisplayEndpoint extends Component {
       data
     });
   }
+
   handleDropdownChange = e => {
     let data = { ...this.state.data };
     data[e.currentTarget.name] = e.currentTarget.value;
@@ -460,7 +453,6 @@ class DisplayEndpoint extends Component {
   }
 
   render() {
-    console.log(this.props);
     if (this.props.location.title === "Add New Endpoint") {
       this.customHost = false;
       const hostJson = this.fetchHosts(
@@ -706,11 +698,7 @@ class DisplayEndpoint extends Component {
             >
               <ParamsComponent
                 {...this.props}
-                paramsFlag={this.paramsFlag}
-                title={this.state.title}
                 originalParams={this.state.originalParams}
-                data={this.state.data}
-                endpoint={this.state.endpoint}
                 props_from_parent={this.propsFromChild.bind(this)}
               />
             </div>

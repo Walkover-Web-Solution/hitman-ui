@@ -1,6 +1,9 @@
 import collectionVersionsService from "./collectionVersionsService";
 import versionActionTypes from "./collectionVersionsActionTypes";
 import store from "../../store/store";
+import groupsActions from "../groups/groupsActions";
+import endpointsActions from "../endpoints/endpointsActions";
+import pagesActions from "../pages/pagesActions";
 
 export const fetchAllVersions = () => {
   return dispatch => {
@@ -151,4 +154,66 @@ export const deleteVersionFailure = (error, version) => {
     error,
     version
   };
+};
+
+export const duplicateVersion = version => {
+  return dispatch => {
+    collectionVersionsService
+      .duplicateVersion(version.id)
+      .then(response => {
+        const endpoints = response.data.endpoints;
+        const pages = response.data.pages;
+        const groups = response.data.groups;
+        dispatch(groupsActions.updateState(groups));
+        dispatch(endpointsActions.updateState(endpoints));
+        dispatch(pagesActions.updateState(pages));
+        dispatch(duplicateVersionSuccess(response.data));
+      })
+      .catch(error => {
+        dispatch(duplicateVersionFailure(error.response, version));
+      });
+  };
+};
+
+export const duplicateVersionSuccess = response => {
+  return {
+    type: versionActionTypes.DUPLICATE_VERSION_SUCCESS,
+    response
+  };
+};
+
+export const duplicateVersionFailure = (error, version) => {
+  return {
+    type: versionActionTypes.DUPLICATE_VERSION_FAILURE,
+    error,
+    version
+  };
+};
+
+export const updateState = versions => {
+  return dispatch => {
+    try {
+      dispatch(updateStateSuccess(versions));
+    } catch (error) {
+      dispatch(updateStateFailure(error));
+    }
+  };
+};
+
+export const updateStateSuccess = versions => {
+  return {
+    type: versionActionTypes.UPDATE_STATE_SUCCESS,
+    versions
+  };
+};
+
+export const updateStateFailure = error => {
+  return {
+    type: versionActionTypes.UPDATE_STATE_FAILURE,
+    error
+  };
+};
+
+export default {
+  updateState
 };

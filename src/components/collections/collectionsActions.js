@@ -2,6 +2,10 @@ import collectionsService from "../collections/collectionsService";
 import collectionsActionTypes from "./collectionsActionTypes";
 import store from "../../store/store";
 import { fetchVersions } from "../collectionVersions/collectionVersionsActions";
+import groupsActions from "../groups/groupsActions";
+import endpointsActions from "../endpoints/endpointsActions";
+import pagesActions from "../pages/pagesActions";
+import versionsActions from "../collectionVersions/collectionVersionsActions";
 
 export const fetchCollections = () => {
   return dispatch => {
@@ -141,6 +145,42 @@ export const deleteCollectionSuccess = () => {
 export const deleteCollectionFailure = (error, collection) => {
   return {
     type: collectionsActionTypes.DELETE_COLLECTION_FAILURE,
+    error,
+    collection
+  };
+};
+
+export const duplicateCollection = collection => {
+  return dispatch => {
+    collectionsService
+      .duplicateCollection(collection.id)
+      .then(response => {
+        const endpoints = response.data.endpoints;
+        const pages = response.data.pages;
+        const groups = response.data.groups;
+        const versions = response.data.versions;
+        dispatch(versionsActions.updateState(versions));
+        dispatch(groupsActions.updateState(groups));
+        dispatch(endpointsActions.updateState(endpoints));
+        dispatch(pagesActions.updateState(pages));
+        dispatch(duplicateCollectionSuccess(response.data));
+      })
+      .catch(error => {
+        dispatch(duplicateCollectionFailure(error.response, collection));
+      });
+  };
+};
+
+export const duplicateCollectionSuccess = response => {
+  return {
+    type: collectionsActionTypes.DUPLICATE_COLLECTION_SUCCESS,
+    response
+  };
+};
+
+export const duplicateCollectionFailure = (error, collection) => {
+  return {
+    type: collectionsActionTypes.DUPLICATE_COLLECTION_FAILURE,
     error,
     collection
   };

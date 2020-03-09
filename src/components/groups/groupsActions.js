@@ -2,6 +2,9 @@ import store from "../../store/store";
 import groupsService from "../groups/groupsService";
 import groupsActionTypes from "./groupsActionTypes";
 
+import endpointsActions from "../endpoints/endpointsActions";
+import pagesActions from "../pages/pagesActions";
+
 export const fetchGroups = () => {
   return dispatch => {
     groupsService
@@ -155,4 +158,64 @@ export const deleteGroupFailure = (error, group) => {
     error,
     group
   };
+};
+
+export const duplicateGroup = group => {
+  return dispatch => {
+    groupsService
+      .duplicateGroup(group.id)
+      .then(response => {
+        const endpoints = response.data.endpoints;
+        const pages = response.data.pages;
+        dispatch(endpointsActions.updateState(endpoints));
+        dispatch(pagesActions.updateState(pages));
+        dispatch(duplicateGroupSuccess(response.data));
+      })
+      .catch(error => {
+        dispatch(duplicateGroupFailure(error.response, group));
+      });
+  };
+};
+
+export const duplicateGroupSuccess = response => {
+  return {
+    type: groupsActionTypes.DUPLICATE_GROUP_SUCCESS,
+    response
+  };
+};
+
+export const duplicateGroupFailure = (error, group) => {
+  return {
+    type: groupsActionTypes.DUPLICATE_GROUP_FAILURE,
+    error,
+    group
+  };
+};
+
+export const updateState = groups => {
+  return dispatch => {
+    try {
+      dispatch(updateStateSuccess(groups));
+    } catch (error) {
+      dispatch(updateStateFailure(error));
+    }
+  };
+};
+
+export const updateStateSuccess = groups => {
+  return {
+    type: groupsActionTypes.UPDATE_STATE_SUCCESS,
+    groups
+  };
+};
+
+export const updateStateFailure = error => {
+  return {
+    type: groupsActionTypes.UPDATE_STATE_FAILURE,
+    error
+  };
+};
+
+export default {
+  updateState
 };

@@ -9,7 +9,10 @@ import {
 import Groups from "../groups/groups";
 import VersionPages from "../pages/versionPages";
 import { connect } from "react-redux";
-import { deleteVersion } from "../collectionVersions/collectionVersionsActions";
+import {
+  deleteVersion,
+  duplicateVersion
+} from "../collectionVersions/collectionVersionsActions";
 import ShareVersionForm from "../collectionVersions/shareVersionForm";
 import GroupForm from "../groups/groupForm";
 import { withRouter } from "react-router-dom";
@@ -23,7 +26,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    deleteVersion: version => dispatch(deleteVersion(version))
+    deleteVersion: version => dispatch(deleteVersion(version)),
+    duplicateVersion: version => dispatch(duplicateVersion(version))
   };
 };
 
@@ -68,9 +72,10 @@ class CollectionVersions extends Component {
   }
 
   handleDuplicate(version) {
+    this.props.duplicateVersion(version);
     this.props.history.push({
-      pathname: "/dashboard/collections",
-      duplicateVersion: version
+      pathname: "/dashboard/collections"
+      // duplicateVersion: version
     });
   }
   handleShare(version) {

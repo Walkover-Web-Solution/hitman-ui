@@ -186,3 +186,59 @@ export const deletePageFailure = (error, page) => {
     page
   };
 };
+
+export const duplicatePage = page => {
+  return dispatch => {
+    pagesService
+      .duplicatePage(page.id)
+      .then(response => {
+        dispatch(duplicatePageSuccess(response.data));
+      })
+      .catch(error => {
+        dispatch(duplicatePageFailure(error.response, page));
+      });
+  };
+};
+
+export const duplicatePageSuccess = response => {
+  return {
+    type: pagesActionTypes.DUPLICATE_PAGE_SUCCESS,
+    response
+  };
+};
+
+export const duplicatePageFailure = (error, page) => {
+  return {
+    type: pagesActionTypes.DUPLICATE_PAGE_FAILURE,
+    error,
+    page
+  };
+};
+
+export const updateState = pages => {
+  return dispatch => {
+    try {
+      dispatch(updateStateSuccess(pages));
+    } catch (error) {
+      dispatch(updateStateFailure(error));
+    }
+  };
+};
+
+export const updateStateSuccess = pages => {
+  return {
+    type: pagesActionTypes.UPDATE_STATE_SUCCESS,
+    pages
+  };
+};
+
+export const updateStateFailure = error => {
+  return {
+    type: pagesActionTypes.UPDATE_STATE_FAILURE,
+    error
+  };
+};
+
+export default {
+  updateState
+};

@@ -63,7 +63,6 @@ class EnvironmentVariables extends Component {
         {},
         this.props.environment
       );
-
       if (
         JSON.stringify(originalEnvironment) !==
         JSON.stringify(updatedEnvironment)

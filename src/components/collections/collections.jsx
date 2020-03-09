@@ -26,13 +26,14 @@ import {
   fetchCollections,
   addCollection,
   updateCollection,
-  deleteCollection
+  deleteCollection,
+  duplicateCollection
 } from "./collectionsActions";
 import { fetchGroups, deleteGroup } from "../groups/groupsActions";
 import { fetchEndpoints } from "../endpoints/endpointsActions";
 import { fetchAllVersions } from "../collectionVersions/collectionVersionsActions";
 
-import { fetchPages, updatePage } from "../pages/pagesActions";
+import { fetchPages } from "../pages/pagesActions";
 import { withRouter } from "react-router-dom";
 
 const mapStateToProps = state => {
@@ -54,9 +55,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     updateCollection: editedCollection =>
       dispatch(updateCollection(editedCollection)),
     deleteCollection: collection => dispatch(deleteCollection(collection)),
-    deleteGroup: groupId => dispatch(deleteGroup(groupId)),
-    updatePage: (editedPage, pageId) =>
-      dispatch(updatePage(ownProps.history, editedPage, pageId))
+    duplicateCollection: collection =>
+      dispatch(duplicateCollection(collection)),
+    deleteGroup: groupId => dispatch(deleteGroup(groupId))
   };
 };
 
@@ -179,180 +180,13 @@ class CollectionsComponent extends Component {
     this.props.addPage(versionId, newPage);
   }
 
-  async handleUpdatePage(editedPage, pageId) {
-    this.props.updatePage(editedPage, pageId);
-  }
-
-  async handleDuplicateEndpoint(endpointCopy) {
-    let originalEndpoints = { ...this.state.endpoints };
-    let endpoints = { ...this.state.endpoints };
-    let originalGroups = { ...this.state.groups };
-    let groups = { ...this.state.groups };
-
-    try {
-      const { data } = await endpointService.duplicateEndpoint(endpointCopy.id);
-      let endpoint = data;
-      endpoints[endpoint.id] = endpoint;
-      groups[endpoint.groupId].endpointsOrder.push(endpoint.id.toString());
-      this.setState({ endpoints, groups });
-    } catch (ex) {
-      toast.error(ex.response ? ex.response.data : "Something went wrong");
-      this.setState({ endpoints: originalEndpoints, groups: originalGroups });
-    }
-  }
-
-  async handleDuplicatePage(pageCopy) {
-    let originalPage = { ...this.state.pages };
-    let pages = { ...this.state.pages };
-    let page = {};
-    try {
-      const { data } = await pageService.duplicatePage(pageCopy.id);
-      page = data;
-      pages[page.id] = page;
-      const pageIds = [...this.state.pageIds, page.id.toString()];
-      this.setState({ pages, pageIds });
-    } catch (ex) {
-      toast.error(ex.response ? ex.response.data : "Something went wrong");
-      this.setState({ originalPage });
-    }
-  }
-
-  async handleDuplicateGroup(groupCopy) {
-    let originalGroup = { ...this.state.groups };
-    let groups = { ...this.state.groups };
-    let group = {};
-    let endpoints = {};
-    let pages = {};
-    try {
-      const { data } = await groupsService.duplicateGroup(groupCopy.id);
-      endpoints = { ...this.state.endpoints, ...data.endpoints };
-      pages = { ...this.state.pages, ...data.pages };
-      group = data.groups;
-      groups[group.id] = group;
-      const groupIds = [...this.state.groupIds, group.id.toString()];
-      const pageIds = [...this.state.pageIds, ...Object.keys(data.pages)];
-      this.setState({ groups, groupIds, endpoints, pages, pageIds });
-    } catch (ex) {
-      toast.error(ex.response ? ex.response.data : "Something went wrong");
-      this.setState({ originalGroup });
-    }
-  }
-
-  async handleDuplicateVersion(versionCopy) {
-    let orignalVersion = { ...this.state.versions };
-    let versions = { ...this.state.versions };
-    let version = {};
-    let endpoints = {};
-    let pages = {};
-    let groups = {};
-    try {
-      const { data } = await collectionVersionsService.duplicateVersion(
-        versionCopy.id
-      );
-      version = data.version;
-      versions[version.id] = version;
-      groups = { ...this.state.groups, ...data.groups };
-      endpoints = { ...this.state.endpoints, ...data.endpoints };
-      pages = { ...this.state.pages, ...data.pages };
-      const versionIds = [...this.state.versionIds, version.id.toString()];
-      const groupIds = [...this.state.groupIds, ...Object.keys(data.groups)];
-      const pageIds = [...this.state.pageIds, ...Object.keys(data.pages)];
-      this.setState({
-        versions,
-        versionIds,
-        groups,
-        groupIds,
-        endpoints,
-        pages,
-        pageIds
-      });
-    } catch (ex) {
-      toast.error(ex.response ? ex.response.data : "Something went wrong");
-      this.setState({ orignalVersion });
-    }
-  }
-
   async handleDuplicateCollection(collectionCopy) {
-    let originalCollection = { ...this.state.collections };
-    let collections = { ...this.state.collections };
-    let versions = {};
-    let endpoints = {};
-    let pages = {};
-    let groups = {};
-    let collection = {};
-    try {
-      const { data } = await collectionsService.duplicateCollection(
-        collectionCopy.id
-      );
-      collection = data.collection;
-      collections[collection.id] = collection;
-      versions = { ...this.state.versions, ...data.versions };
-      groups = { ...this.state.groups, ...data.groups };
-      endpoints = { ...this.state.endpoints, ...data.endpoints };
-      pages = { ...this.state.pages, ...data.pages };
-      const collectionIds = [
-        ...this.state.collectionIds,
-        collection.id.toString()
-      ];
-      const versionIds = [
-        ...this.state.versionIds,
-        ...Object.keys(data.versions)
-      ];
-      const groupIds = [...this.state.groupIds, ...Object.keys(data.groups)];
-      const pageIds = [...this.state.pageIds, ...Object.keys(data.pages)];
-      this.setState({
-        collections,
-        collectionIds,
-        versions,
-        versionIds,
-        groups,
-        groupIds,
-        endpoints,
-        pages,
-        pageIds
-      });
-    } catch (ex) {
-      toast.error(ex.response ? ex.response.data : "Something went wrong");
-      this.setState({ originalCollection });
-    }
+    this.props.duplicateCollection(collectionCopy);
   }
 
   render() {
     const { location } = this.props;
 
-    if (location.duplicateEndpoint) {
-      const duplicateEndpoint = location.duplicateEndpoint;
-      this.props.history.replace({ duplicateEndpoint: null });
-      this.handleDuplicateEndpoint(duplicateEndpoint);
-    }
-
-    if (location.editedPage && location.groupId) {
-      const { id: pageId } = location.editedPage;
-      this.props.history.replace({ editedPage: null });
-      this.handleUpdatePage(location.editedPage, pageId);
-    } else if (location.editedPage) {
-      const { id: pageId } = location.editedPage;
-      this.props.history.replace({ editedPage: null });
-      this.handleUpdatePage(location.editedPage, pageId);
-    }
-
-    if (location.duplicatePage) {
-      const duplicatePage = location.duplicatePage;
-      this.props.history.replace({ duplicatePage: null });
-      this.handleDuplicatePage(duplicatePage);
-    }
-
-    if (location.duplicateGroup) {
-      const duplicateGroup = location.duplicateGroup;
-      this.props.history.replace({ duplicateGroup: null });
-      this.handleDuplicateGroup(duplicateGroup);
-    }
-
-    if (location.duplicateVersion) {
-      const duplicateVersion = location.duplicateVersion;
-      this.props.history.replace({ duplicateVersion: null });
-      this.handleDuplicateVersion(duplicateVersion);
-    }
     if (location.importVersionLink) {
       let importLink = location.importVersionLink;
       let collectionId = location.collectionId;
