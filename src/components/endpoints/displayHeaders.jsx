@@ -49,7 +49,7 @@ class DisplayHeaders extends Component {
   };
 
   render() {
-    if (this.props.location.title == "Add New Endpoint")
+    if (this.props.location.title === "Add New Endpoint")
       this.setState({ originalHeaders: [] });
 
     if (this.props.location.endpoint && this.props.location.endpoint.headers) {
