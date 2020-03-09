@@ -9,7 +9,7 @@ import {
 import GroupPages from "../pages/groupPages";
 import Endpoints from "../endpoints/endpoints";
 import { connect } from "react-redux";
-import { deleteGroup } from "../groups/groupsActions";
+import { deleteGroup, duplicateGroup } from "../groups/groupsActions";
 
 const mapStateToProps = state => {
   return { groups: state.groups };
@@ -17,7 +17,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    deleteGroup: group => dispatch(deleteGroup(group))
+    deleteGroup: group => dispatch(deleteGroup(group)),
+    duplicateGroup: group => dispatch(duplicateGroup(group))
   };
 };
 
@@ -99,9 +100,10 @@ class Groups extends Component {
   }
 
   handleDuplicate(group) {
+    this.props.duplicateGroup(group);
     this.props.history.push({
-      pathname: "/dashboard/collections",
-      duplicateGroup: group
+      pathname: "/dashboard/collections"
+      // duplicateGroup: group
     });
   }
 

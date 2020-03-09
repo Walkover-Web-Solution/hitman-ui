@@ -142,7 +142,6 @@ export const deleteEndpointFailure = (error, endpoint) => {
 };
 
 export const duplicateEndpoint = endpoint => {
-  console.log("duplicateEndpoint");
   return dispatch => {
     endpointService
       .duplicateEndpoint(endpoint.id)

@@ -9,7 +9,10 @@ import {
 import Groups from "../groups/groups";
 import VersionPages from "../pages/versionPages";
 import { connect } from "react-redux";
-import { deleteVersion } from "../collectionVersions/collectionVersionsActions";
+import {
+  deleteVersion,
+  duplicateVersion
+} from "../collectionVersions/collectionVersionsActions";
 import ShareVersionForm from "../collectionVersions/shareVersionForm";
 
 const mapStateToProps = state => {
@@ -20,18 +23,19 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    deleteVersion: version => dispatch(deleteVersion(version))
+    deleteVersion: version => dispatch(deleteVersion(version)),
+    duplicateVersion: version => dispatch(duplicateVersion(version))
   };
 };
 
 class CollectionVersions extends Component {
   state = {
     versionDnDFlag: true,
-    showShareVersionForm:false,
+    showShareVersionForm: false,
     versionFormName: "",
     selectedVersion: {},
-    showVersionForm:{add:false,share:false,edit:false}
-    };
+    showVersionForm: { add: false, share: false, edit: false }
+  };
 
   versionDnD(versionDnDFlag) {
     this.setState({ versionDnDFlag });
@@ -88,9 +92,10 @@ class CollectionVersions extends Component {
   }
 
   handleDuplicate(version) {
+    this.props.duplicateVersion(version);
     this.props.history.push({
-      pathname: "/dashboard/collections",
-      duplicateVersion: version
+      pathname: "/dashboard/collections"
+      // duplicateVersion: version
     });
   }
   handleShare(version) {
@@ -106,24 +111,23 @@ class CollectionVersions extends Component {
       shareIdentifier: shareIdentifier
     });
   }
-  closeVersionForm(){
-    let share=false;
-    let showVersionForm={share};
-    this.setState({showVersionForm});
+  closeVersionForm() {
+    let share = false;
+    let showVersionForm = { share };
+    this.setState({ showVersionForm });
   }
 
   render() {
     return (
       <div>
-         { this.state.showVersionForm.share &&(
-              <ShareVersionForm
-              show={this.state.showVersionForm.share}
-              onHide={() => this.closeVersionForm()}
-              title={this.state.versionFormName}
-              selectedVersion={this.state.selectedVersion}
-
-              />
-            )}
+        {this.state.showVersionForm.share && (
+          <ShareVersionForm
+            show={this.state.showVersionForm.share}
+            onHide={() => this.closeVersionForm()}
+            title={this.state.versionFormName}
+            selectedVersion={this.state.selectedVersion}
+          />
+        )}
         {this.props.versions &&
           Object.keys(this.props.versions) &&
           Object.keys(this.props.versions)
@@ -205,16 +209,16 @@ class CollectionVersions extends Component {
                       <Dropdown.Item
                         eventKey="3"
                         onClick={() => {
-                          let share=true;
-                          let showVersionForm={share};
+                          let share = true;
+                          let showVersionForm = { share };
                           this.setState({
-                          showVersionForm,
-                          versionFormName: "Share Version",
-                          selectedVersion: {
-                          ...this.props.versions[versionId]
-                          }
+                            showVersionForm,
+                            versionFormName: "Share Version",
+                            selectedVersion: {
+                              ...this.props.versions[versionId]
+                            }
                           });
-                          }}
+                        }}
                       >
                         Share
                       </Dropdown.Item>

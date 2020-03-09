@@ -190,3 +190,31 @@ export const duplicateGroupFailure = (error, group) => {
     group
   };
 };
+
+export const updateState = groups => {
+  return dispatch => {
+    try {
+      dispatch(updateStateSuccess(groups));
+    } catch (error) {
+      dispatch(updateStateFailure(error));
+    }
+  };
+};
+
+export const updateStateSuccess = groups => {
+  return {
+    type: groupsActionTypes.UPDATE_STATE_SUCCESS,
+    groups
+  };
+};
+
+export const updateStateFailure = error => {
+  return {
+    type: groupsActionTypes.UPDATE_STATE_FAILURE,
+    error
+  };
+};
+
+export default {
+  updateState
+};

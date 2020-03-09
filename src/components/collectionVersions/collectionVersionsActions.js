@@ -1,6 +1,9 @@
 import collectionVersionsService from "./collectionVersionsService";
 import versionActionTypes from "./collectionVersionsActionTypes";
 import store from "../../store/store";
+import groupsActions from "../groups/groupsActions";
+import endpointsActions from "../endpoints/endpointsActions";
+import pagesActions from "../pages/pagesActions";
 
 export const fetchVersions = () => {
   return dispatch => {
@@ -70,7 +73,6 @@ export const updateVersionFailure = (error, originalVersion) => {
 };
 
 export const addVersion = (newVersion, collectionId) => {
-  console.log("1111", newVersion, collectionId);
   return dispatch => {
     dispatch(addVersionRequest(newVersion));
     collectionVersionsService
@@ -136,6 +138,40 @@ export const deleteVersionSuccess = () => {
 export const deleteVersionFailure = (error, version) => {
   return {
     type: versionActionTypes.DELETE_VERSION_FAILURE,
+    error,
+    version
+  };
+};
+
+export const duplicateVersion = version => {
+  return dispatch => {
+    collectionVersionsService
+      .duplicateVersion(version.id)
+      .then(response => {
+        const endpoints = response.data.endpoints;
+        const pages = response.data.pages;
+        const groups = response.data.groups;
+        dispatch(groupsActions.updateState(groups));
+        dispatch(endpointsActions.updateState(endpoints));
+        dispatch(pagesActions.updateState(pages));
+        dispatch(duplicateVersionSuccess(response.data));
+      })
+      .catch(error => {
+        dispatch(duplicateVersionFailure(error.response, version));
+      });
+  };
+};
+
+export const duplicateVersionSuccess = response => {
+  return {
+    type: versionActionTypes.DUPLICATE_VERSION_SUCCESS,
+    response
+  };
+};
+
+export const duplicateVersionFailure = (error, version) => {
+  return {
+    type: versionActionTypes.DUPLICATE_VERSION_FAILURE,
     error,
     version
   };

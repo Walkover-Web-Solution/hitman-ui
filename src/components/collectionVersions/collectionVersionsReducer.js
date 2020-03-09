@@ -68,6 +68,15 @@ function versionsReducer(state = initialState, action) {
         ...state,
         [action.version.id]: action.version
       };
+    case versionActionTypes.DUPLICATE_VERSION_SUCCESS:
+      versions = { ...state };
+      const version = action.response.version;
+      versions = { ...versions, [version.id]: version };
+      return versions;
+
+    case versionActionTypes.DUPLICATE_VERSION_FAILURE:
+      toast.error(action.error);
+      return state;
 
     default:
       return state;

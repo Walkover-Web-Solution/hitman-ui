@@ -40,7 +40,6 @@ class Environments extends Component {
 
   async componentDidMount() {
     this.props.fetchEnvironments();
-    console.log("fetch environments");
     const { data: environments } = await environmentService.getEnvironments();
     this.setState({ environments });
     const environmentId = this.props.location.pathname.split("/")[3];
