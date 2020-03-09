@@ -71,7 +71,6 @@ class Environments extends Component {
     //   this.props.history.replace({ newEnvironment: null });
     //   this.handleAdd(newEnvironment);
     // }
-    console.log(this.state);
     return (
       <div>
         <div>

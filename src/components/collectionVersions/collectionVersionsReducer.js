@@ -78,6 +78,23 @@ function versionsReducer(state = initialState, action) {
       toast.error(action.error);
       return state;
 
+    case versionActionTypes.UPDATE_STATE_SUCCESS:
+      versions = { ...state };
+      const newVersions = { ...action.versions };
+      const newVersionIds = Object.keys(newVersions);
+      for (let i = 0; i < newVersionIds.length; i++) {
+        versions = {
+          ...versions,
+          [newVersionIds[i]]: newVersions[newVersionIds[i]]
+        };
+      }
+      return versions;
+
+    case versionActionTypes.UPDATE_STATE_FAILURE:
+      toast.error(action.error);
+      versions = { ...state };
+      return versions;
+
     default:
       return state;
   }

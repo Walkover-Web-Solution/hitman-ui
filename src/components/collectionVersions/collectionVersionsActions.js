@@ -176,3 +176,31 @@ export const duplicateVersionFailure = (error, version) => {
     version
   };
 };
+
+export const updateState = versions => {
+  return dispatch => {
+    try {
+      dispatch(updateStateSuccess(versions));
+    } catch (error) {
+      dispatch(updateStateFailure(error));
+    }
+  };
+};
+
+export const updateStateSuccess = versions => {
+  return {
+    type: versionActionTypes.UPDATE_STATE_SUCCESS,
+    versions
+  };
+};
+
+export const updateStateFailure = error => {
+  return {
+    type: versionActionTypes.UPDATE_STATE_FAILURE,
+    error
+  };
+};
+
+export default {
+  updateState
+};

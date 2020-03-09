@@ -17,7 +17,6 @@ class EnvironmentVariables extends Component {
     if (this.props.title === "Add new Environment") return;
     let environment = {};
     environment = jQuery.extend(true, {}, this.props.environment);
-    console.log(environment, this.props.environment);
     const originalVariableNames = Object.keys(environment.variables);
     const updatedVariableNames = Object.keys(environment.variables);
     this.setState({
@@ -64,8 +63,6 @@ class EnvironmentVariables extends Component {
         {},
         this.props.environment
       );
-
-      console.log(originalEnvironment, updatedEnvironment);
       if (
         JSON.stringify(originalEnvironment) !==
         JSON.stringify(updatedEnvironment)

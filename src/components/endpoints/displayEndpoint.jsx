@@ -225,7 +225,6 @@ class DisplayEndpoint extends Component {
     this.setState({ startTime, prettyResponse });
     let response = {};
     const headersData = this.doSubmitHeader();
-    console.log("eader", headersData);
     this.setState({ response });
     this.state.flagResponse = true;
     const host = this.state.data.host;
@@ -272,9 +271,7 @@ class DisplayEndpoint extends Component {
   }
 
   doSubmitHeader() {
-    console.log("oh2", this.state.originalHeaders);
     let originalHeaders = [...this.state.originalHeaders];
-    console.log("oh2", originalHeaders);
     let updatedHeaders = {};
     for (let i = 0; i < originalHeaders.length; i++) {
       if (originalHeaders[i].key === "") {
@@ -460,7 +457,6 @@ class DisplayEndpoint extends Component {
   }
 
   render() {
-    console.log(this.props);
     if (this.props.location.title === "Add New Endpoint") {
       this.customHost = false;
       const hostJson = this.fetchHosts(

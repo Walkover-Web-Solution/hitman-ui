@@ -28,7 +28,8 @@ import {
   fetchCollections,
   addCollection,
   updateCollection,
-  deleteCollection
+  deleteCollection,
+  duplicateCollection
 } from "./collectionsActions";
 import { fetchGroups, deleteGroup } from "../groups/groupsActions";
 import { fetchEndpoints } from "../endpoints/endpointsActions";
@@ -56,6 +57,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     updateCollection: editedCollection =>
       dispatch(updateCollection(editedCollection)),
     deleteCollection: collection => dispatch(deleteCollection(collection)),
+    duplicateCollection: collection =>
+      dispatch(duplicateCollection(collection)),
     deleteGroup: groupId => dispatch(deleteGroup(groupId)),
     updatePage: (editedPage, pageId) =>
       dispatch(updatePage(ownProps.history, editedPage, pageId))
@@ -186,48 +189,7 @@ class CollectionsComponent extends Component {
   }
 
   async handleDuplicateCollection(collectionCopy) {
-    let originalCollection = { ...this.state.collections };
-    let collections = { ...this.state.collections };
-    let versions = {};
-    let endpoints = {};
-    let pages = {};
-    let groups = {};
-    let collection = {};
-    try {
-      const { data } = await collectionsService.duplicateCollection(
-        collectionCopy.id
-      );
-      collection = data.collection;
-      collections[collection.id] = collection;
-      versions = { ...this.state.versions, ...data.versions };
-      groups = { ...this.state.groups, ...data.groups };
-      endpoints = { ...this.state.endpoints, ...data.endpoints };
-      pages = { ...this.state.pages, ...data.pages };
-      const collectionIds = [
-        ...this.state.collectionIds,
-        collection.id.toString()
-      ];
-      const versionIds = [
-        ...this.state.versionIds,
-        ...Object.keys(data.versions)
-      ];
-      const groupIds = [...this.state.groupIds, ...Object.keys(data.groups)];
-      const pageIds = [...this.state.pageIds, ...Object.keys(data.pages)];
-      this.setState({
-        collections,
-        collectionIds,
-        versions,
-        versionIds,
-        groups,
-        groupIds,
-        endpoints,
-        pages,
-        pageIds
-      });
-    } catch (ex) {
-      toast.error(ex.response ? ex.response.data : "Something went wrong");
-      this.setState({ originalCollection });
-    }
+    this.props.duplicateCollection(collectionCopy);
   }
 
   render() {

@@ -49,9 +49,6 @@ class DisplayHeaders extends Component {
   };
 
   render() {
-    console.log("props", this.props);
-    console.log("state", this.state);
-
     if (this.props.location.title == "Add New Endpoint")
       this.setState({ originalHeaders: [] });
 

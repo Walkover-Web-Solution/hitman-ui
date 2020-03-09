@@ -65,6 +65,16 @@ function collectionsReducer(state = initialState, action) {
         [action.collection.id]: action.collection
       };
 
+    case collectionsActionTypes.DUPLICATE_COLLECTION_SUCCESS:
+      collections = { ...state };
+      const collection = action.response.collection;
+      collections = { ...collections, [collection.id]: collection };
+      return collections;
+
+    case collectionsActionTypes.DUPLICATE_COLLECTION_FAILURE:
+      toast.error(action.error);
+      return state;
+
     default:
       return state;
   }
