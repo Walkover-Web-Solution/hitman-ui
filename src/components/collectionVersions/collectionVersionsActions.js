@@ -19,7 +19,6 @@ export const fetchAllVersions = () => {
   };
 };
 export const fetchVersions = collectionId => {
-  console.log(collectionId);
   return dispatch => {
     collectionVersionsService
       .getCollectionVersions(collectionId)

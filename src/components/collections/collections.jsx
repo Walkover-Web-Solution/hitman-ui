@@ -1,40 +1,34 @@
 import React, { Component } from "react";
 import {
   Accordion,
-  Card,
   Button,
+  Card,
   Dropdown,
   DropdownButton
 } from "react-bootstrap";
-import { Route, Switch } from "react-router-dom";
-import shortId from "shortid";
-import { toast } from "react-toastify";
-import CollectionForm from "./collectionForm";
-import collectionsService from "./collectionsService";
-import collectionVersionsService from "../collectionVersions/collectionVersionsService";
-import CollectionVersions from "../collectionVersions/collectionVersions";
-import CollectionVersionForm from "../collectionVersions/collectionVersionForm";
-import groupsService from "../groups/groupsService";
-import PageForm from "../pages/pageForm";
-import pageService from "../pages/pageService";
-import endpointService from "../endpoints/endpointService";
-import ShareVersionForm from "../collectionVersions/shareVersionForm";
-import ImportVersionForm from "../collectionVersions/importVersionForm";
-import "react-toastify/dist/ReactToastify.css";
 import { connect } from "react-redux";
-import {
-  fetchCollections,
-  addCollection,
-  updateCollection,
-  deleteCollection,
-  duplicateCollection
-} from "./collectionsActions";
-import { fetchGroups, deleteGroup } from "../groups/groupsActions";
-import { fetchEndpoints } from "../endpoints/endpointsActions";
+import { Route, Switch, withRouter } from "react-router-dom";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import shortId from "shortid";
+import CollectionVersionForm from "../collectionVersions/collectionVersionForm";
+import CollectionVersions from "../collectionVersions/collectionVersions";
 import { fetchAllVersions } from "../collectionVersions/collectionVersionsActions";
-
+import collectionVersionsService from "../collectionVersions/collectionVersionsService";
+import ImportVersionForm from "../collectionVersions/importVersionForm";
+import ShareVersionForm from "../collectionVersions/shareVersionForm";
+import { fetchEndpoints } from "../endpoints/endpointsActions";
+import { deleteGroup, fetchGroups } from "../groups/groupsActions";
+import PageForm from "../pages/pageForm";
 import { fetchPages } from "../pages/pagesActions";
-import { withRouter } from "react-router-dom";
+import CollectionForm from "./collectionForm";
+import {
+  addCollection,
+  deleteCollection,
+  duplicateCollection,
+  fetchCollections,
+  updateCollection
+} from "./collectionsActions";
 
 const mapStateToProps = state => {
   return {
@@ -44,7 +38,7 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = (dispatch, ownProps) => {
+const mapDispatchToProps = dispatch => {
   return {
     fetchCollections: () => dispatch(fetchCollections()),
     fetchAllVersions: () => dispatch(fetchAllVersions()),
