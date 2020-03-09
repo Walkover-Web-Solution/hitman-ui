@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import endpointService from "./endpointService";
 import JSONPretty from "react-json-pretty";
-import { Dropdown, Table } from "react-bootstrap";
+import { Dropdown } from "react-bootstrap";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
@@ -256,7 +256,7 @@ class DisplayEndpoint extends Component {
     } else {
       endpoint.BASE_URL = null;
     }
-    if (endpoint.name == "" || endpoint.uri == "")
+    if (endpoint.name === "" || endpoint.uri === "")
       toast.error("Please Enter all the fields");
     else if (this.state.title === "Add New Endpoint") {
       endpoint.requestId = shortId.generate();
@@ -398,6 +398,13 @@ class DisplayEndpoint extends Component {
     group: { name: "Group", value: "" },
     version: { name: "Version", value: "" },
     custom: { name: "Custom", value: "custom" }
+  };
+
+  dropdownRequestType = {
+    get: { name: "GET" },
+    post: { name: "POST" },
+    put: { name: "PUT" },
+    delete: { name: "DELETE" }
   };
 
   setDropdownValue(key) {
@@ -571,18 +578,15 @@ class DisplayEndpoint extends Component {
                     </Dropdown.Toggle>
 
                     <Dropdown.Menu alignRight>
-                      <Dropdown.Item onClick={() => this.setMethod("GET")}>
-                        GET
-                      </Dropdown.Item>
-                      <Dropdown.Item onClick={() => this.setMethod("POST")}>
-                        POST
-                      </Dropdown.Item>
-                      <Dropdown.Item onClick={() => this.setMethod("PUT")}>
-                        PUT
-                      </Dropdown.Item>
-                      <Dropdown.Item onClick={() => this.setMethod("DELETE")}>
-                        DELETE
-                      </Dropdown.Item>
+                      {Object.keys(this.dropdownRequestType).map(key => (
+                        <Dropdown.Item
+                          onClick={() =>
+                            this.setMethod(this.dropdownRequestType[key].name)
+                          }
+                        >
+                          {this.dropdownRequestType[key].name}
+                        </Dropdown.Item>
+                      ))}
                     </Dropdown.Menu>
                   </Dropdown>
                 </div>
@@ -727,7 +731,6 @@ class DisplayEndpoint extends Component {
                 name="body"
                 id="body"
                 rows="8"
-                name="body"
                 onChange={this.handleChange}
                 value={this.state.data.body}
               />
