@@ -698,11 +698,7 @@ class DisplayEndpoint extends Component {
             >
               <ParamsComponent
                 {...this.props}
-                paramsFlag={this.paramsFlag}
-                title={this.state.title}
                 originalParams={this.state.originalParams}
-                data={this.state.data}
-                endpoint={this.state.endpoint}
                 props_from_parent={this.propsFromChild.bind(this)}
               />
             </div>
