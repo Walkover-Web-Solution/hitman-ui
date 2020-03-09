@@ -1,7 +1,6 @@
 import pagesService from "./pageService";
 import pagesActionTypes from "./pagesActionTypes";
 import store from "../../store/store";
-import { push } from "react-router-redux";
 
 export const fetchPages = () => {
   return dispatch => {
@@ -30,7 +29,7 @@ export const fetchPagesFailure = error => {
     error
   };
 };
-export const updatePage = editedPage => {
+export const updatePage = (history, editedPage) => {
   let newPage = { ...editedPage };
   delete newPage.id;
   delete newPage.versionId;
@@ -42,7 +41,7 @@ export const updatePage = editedPage => {
       .updatePage(editedPage.id, newPage)
       .then(response => {
         dispatch(updatePageSuccess(response.data));
-        dispatch(push("/dashboard"));
+        history.push(`/dashboard/collections/pages/${response.data.id}`);
       })
       .catch(error => {
         dispatch(updatePageFailure(error.response.data, originalPage));
@@ -72,7 +71,7 @@ export const updatePageFailure = (error, originalPage) => {
   };
 };
 
-export const addPage = (versionId, newPage) => {
+export const addPage = (history, versionId, newPage) => {
   return dispatch => {
     dispatch(addPageRequest(versionId, newPage));
     delete newPage.groupId;
@@ -81,6 +80,7 @@ export const addPage = (versionId, newPage) => {
       .saveVersionPage(versionId, newPage)
       .then(response => {
         dispatch(addPageSuccess(response.data));
+        history.push(`/dashboard/collections/pages/${response.data.id}/edit`);
       })
       .catch(error => {
         dispatch(addPageFailure(error.response.data, newPage));
@@ -111,7 +111,7 @@ export const addPageFailure = (error, newPage) => {
   };
 };
 
-export const addGroupPage = (versionId, groupId, newPage) => {
+export const addGroupPage = (history, versionId, groupId, newPage) => {
   return dispatch => {
     dispatch(addGroupPageRequest(versionId, groupId, newPage));
     delete newPage.groupId;
@@ -120,6 +120,7 @@ export const addGroupPage = (versionId, groupId, newPage) => {
       .saveGroupPage(groupId, newPage)
       .then(response => {
         dispatch(addGroupPageSuccess(response.data));
+        history.push(`/dashboard/collections/pages/${response.data.id}/edit`);
       })
       .catch(error => {
         dispatch(addGroupPageFailure(error.response.data, newPage));

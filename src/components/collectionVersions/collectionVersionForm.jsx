@@ -1,9 +1,7 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import { Modal } from "react-bootstrap";
 import Joi from "joi-browser";
 import Form from "../common/form";
-import collectionVersionsService from "./collectionVersionsService";
 import { connect } from "react-redux";
 import {
   addVersion,

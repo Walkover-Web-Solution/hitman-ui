@@ -34,6 +34,7 @@ import { fetchEndpoints } from "../endpoints/endpointsActions";
 import { fetchVersions } from "../collectionVersions/collectionVersionsActions";
 
 import { fetchPages, updatePage } from "../pages/pagesActions";
+import { withRouter } from "react-router-dom";
 
 const mapStateToProps = state => {
   return {
@@ -43,7 +44,7 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     fetchCollections: () => dispatch(fetchCollections()),
     fetchVersions: () => dispatch(fetchVersions()),
@@ -55,7 +56,8 @@ const mapDispatchToProps = dispatch => {
       dispatch(updateCollection(editedCollection)),
     deleteCollection: collection => dispatch(deleteCollection(collection)),
     deleteGroup: groupId => dispatch(deleteGroup(groupId)),
-    updatePage: (editedPage, pageId) => dispatch(updatePage(editedPage, pageId))
+    updatePage: (editedPage, pageId) =>
+      dispatch(updatePage(ownProps.history, editedPage, pageId))
   };
 };
 
@@ -649,7 +651,6 @@ class CollectionsComponent extends Component {
   }
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(CollectionsComponent);
+export default withRouter(
+  connect(mapStateToProps, mapDispatchToProps)(CollectionsComponent)
+);

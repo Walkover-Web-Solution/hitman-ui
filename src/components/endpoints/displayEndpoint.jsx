@@ -10,6 +10,8 @@ import { connect } from "react-redux";
 import "../../css/editableDropdown.css";
 import { addEndpoint, updateEndpoint } from "./endpointsActions";
 import shortId from "shortid";
+import DisplayHeaders from "./displayHeaders";
+import ParamsComponent from "./displayParams";
 const status = require("http-status");
 var JSONPrettyMon = require("react-json-pretty/dist/monikai");
 var URI = require("urijs");
@@ -55,14 +57,9 @@ class DisplayEndpoint extends Component {
     previewResponse: false,
     flagInvalidResponse: true,
     responseString: "",
-    headersData: {},
-    originalHeadersKeys: [],
-    updatedHeadersKeys: [],
-    paramsData: {},
-    paramsMetaData: {},
+    originalHeaders: [],
     originalParams: []
   };
-
   handleChange = e => {
     let data = { ...this.state.data };
     if (e.currentTarget.name === "host") {
@@ -176,54 +173,51 @@ class DisplayEndpoint extends Component {
     return json;
   }
 
-parseBody(data)
-{
-  let { method, body } = data;
-  if (method === "POST" || method === "PUT") {
-    try {
-      body = JSON.parse(this.body.current.value);
-      return body;
-    } catch (error) {
-      toast.error("Invalid Body");
-      return body;
+  parseBody(data) {
+    let { method, body } = data;
+    if (method === "POST" || method === "PUT") {
+      try {
+        body = JSON.parse(this.body.current.value);
+        return body;
+      } catch (error) {
+        toast.error("Invalid Body");
+        return body;
+      }
+    }
+    return {};
+  }
+
+  handleErrorResponse(error) {
+    if (error.response) {
+      let response = {
+        status: error.response.status,
+        data: error.response.data
+      };
+      this.setState({ response });
+    } else {
+      let flagInvalidResponse = false;
+      this.setState({ flagInvalidResponse });
     }
   }
-  return {};
-}
 
-handleErrorResponse(error)
-{
-  if (error.response) {
-    let response = {
-      status: error.response.status,
-      data: error.response.data
-    };
-    this.setState({ response });
-  } else {
-    let flagInvalidResponse = false;
-    this.setState({ flagInvalidResponse });
-  }
-}
+  async handleApiCall(api, body, headerJson) {
+    let responseJson = {};
+    try {
+      let header = this.replaceVariablesInJson(headerJson);
+      responseJson = await endpointService.apiTest(
+        api,
+        this.state.data.method,
+        body,
+        header
+      );
+      const response = { ...responseJson };
 
-async handleApiCall(api,body,headerJson){
-  let responseJson = {};
-  try {
-    let header = this.replaceVariablesInJson(headerJson);
-    responseJson = await endpointService.apiTest(
-      api,
-      this.state.data.method,
-      body,
-      header
-    );
-    const response = { ...responseJson };
-    
-    if (responseJson.status === 200) this.setState({ response });
-    this.responseTime();
-  } 
-  catch (error) {
-    this.handleErrorResponse(error);
+      if (responseJson.status === 200) this.setState({ response });
+      this.responseTime();
+    } catch (error) {
+      this.handleErrorResponse(error);
+    }
   }
-}
 
   handleSend = async () => {
     let startTime = new Date().getTime();
@@ -231,7 +225,8 @@ async handleApiCall(api,body,headerJson){
     this.setState({ startTime, prettyResponse });
     let response = {};
     const headersData = this.doSubmitHeader();
-    await this.setState({ headersData, response });
+    console.log("eader", headersData);
+    this.setState({ response });
     this.state.flagResponse = true;
     const host = this.state.data.host;
     let api = host + this.uri.current.value;
@@ -242,7 +237,7 @@ async handleApiCall(api,body,headerJson){
       headerJson[headersData[header].key] = headersData[header].value;
     });
 
-    this.handleApiCall(api,body,headerJson);
+    this.handleApiCall(api, body, headerJson);
   };
 
   handleSave = async e => {
@@ -272,6 +267,35 @@ async handleApiCall(api,body,headerJson){
     }
   };
 
+  handleUpdateHeader(originalHeaders) {
+    this.setState({ originalHeaders });
+  }
+
+  doSubmitHeader() {
+    console.log("oh2", this.state.originalHeaders);
+    let originalHeaders = [...this.state.originalHeaders];
+    console.log("oh2", originalHeaders);
+    let updatedHeaders = {};
+    for (let i = 0; i < originalHeaders.length; i++) {
+      if (originalHeaders[i].key === "") {
+        continue;
+      } else {
+        updatedHeaders[originalHeaders[i].key] = {
+          key: originalHeaders[i].key,
+          value: originalHeaders[i].value,
+          description: originalHeaders[i].description
+        };
+      }
+    }
+    const endpoint = { ...this.state.endpoint };
+    endpoint.headers = { ...updatedHeaders };
+    this.setState({
+      //  updatedHeaders: originalHeaders,
+      endpoint
+    });
+    return updatedHeaders;
+  }
+
   setMethod(method) {
     const response = {};
     let data = { ...this.state.data };
@@ -279,45 +303,17 @@ async handleApiCall(api,body,headerJson){
     this.setState({ response, data });
   }
 
-  async handleAddParam() {
-    let paramsData = { ...this.state.paramsData };
-    let paramsMetaData = { ...this.state.paramsMetaData };
-
-    const len = this.state.originalParams.length;
-    let originalParams = [...this.state.originalParams, len.toString()];
-    originalParams[[len.toString()]] = {
-      key: "",
-      value: "",
-      description: ""
-    };
-    paramsData[len.toString()] = "";
-    paramsMetaData[len.toString()] = {
-      description: ""
-    };
-    this.state.originalParams = originalParams;
-    this.state.paramsData = paramsData;
-    this.state.paramsMetaData = paramsMetaData;
-    this.setState({ originalParams });
-  }
-
-  handleDeleteParam(index) {
-    let originalParams = this.state.originalParams;
-    let neworiginalParams = [];
-    for (let i = 0; i < originalParams.length; i++) {
-      if (i === index) {
-        continue;
-      }
-      neworiginalParams.push(this.state.originalParams[i]);
+  propsFromChild(name, value) {
+    if (name === "originalParams") {
+      this.handleUpdateUri(value);
+      this.setState({ originalParams: value });
     }
-    originalParams = neworiginalParams;
-    this.setState({ originalParams });
-    this.handleUpdateUri(originalParams);
+    if (name === "handleAddParam") {
+      this.setState({ originalParams: value });
+    }
   }
 
   handleUpdateUri(originalParams) {
-    let originalUri = this.state.data.uri.split("?")[0];
-    let updatedUri = this.state.data.updatedUri;
-
     if (originalParams.length === 0) {
       let updatedUri = this.state.data.updatedUri.split("?")[0];
       let data = { ...this.state.data };
@@ -325,117 +321,22 @@ async handleApiCall(api,body,headerJson){
       this.setState({ data });
       return;
     }
-
-    if (this.state.title === "Add New Endpoint") {
-      for (let i = 0; i < originalParams.length; i++) {
-        if (i === 0) {
-          if (originalParams[i].key.length === 0) {
-            updatedUri = originalUri.substring(0, originalUri.length - 1);
-          } else {
-            updatedUri =
-              originalUri +
-              "?" +
-              originalParams[i].key +
-              "=" +
-              originalParams[i].value;
-            originalUri = updatedUri;
-          }
-        } else {
-          if (originalParams[i].key.length === 0) {
-            originalUri = originalUri.substring(0, originalUri.length - 1);
-          } else {
-            if (originalUri.split("?")[1]) {
-              updatedUri =
-                originalUri +
-                "&" +
-                originalParams[i].key +
-                "=" +
-                originalParams[i].value;
-              originalUri = updatedUri;
-            } else {
-              updatedUri =
-                originalUri +
-                "?" +
-                originalParams[i].key +
-                "=" +
-                originalParams[i].value;
-              originalUri = updatedUri;
-            }
-          }
-        }
-      }
-    } else if (this.state.title === "update endpoint") {
-      originalUri = originalUri.split("?")[0];
-      if (originalParams.length === 0) {
-        updatedUri = originalUri;
-      }
-      for (let i = 0; i < originalParams.length; i++) {
-        if (i === 0) {
-          if (originalParams[i].key.length === 0) {
-            updatedUri = originalUri.substring(0, originalUri.length - 1);
-          } else {
-            updatedUri =
-              originalUri +
-              "?" +
-              originalParams[i].key +
-              "=" +
-              originalParams[i].value;
-            originalUri = updatedUri;
-          }
-        } else {
-          if (originalParams[i].key.length === 0) {
-            originalUri = originalUri.substring(0, originalUri.length - 1);
-          } else {
-            if (originalUri.split("?")[1]) {
-              updatedUri =
-                originalUri +
-                "&" +
-                originalParams[i].key +
-                "=" +
-                originalParams[i].value;
-              originalUri = updatedUri;
-            } else {
-              updatedUri =
-                originalUri +
-                "?" +
-                originalParams[i].key +
-                "=" +
-                originalParams[i].value;
-              originalUri = updatedUri;
-            }
-          }
-        }
-      }
+    let originalUri = this.state.data.uri.split("?")[0] + "?";
+    let parts = {};
+    for (let i = 0; i < originalParams.length; i++) {
+      if (originalParams[i].key.length !== 0)
+        parts[originalParams[i].key] = originalParams[i].value;
     }
+    let updatedUri = URI.buildQuery(parts);
+    updatedUri = originalUri + URI.decode(updatedUri);
     let data = { ...this.state.data };
-    data.updatedUri = updatedUri;
+    if (Object.keys(parts).length === 0) {
+      data.updatedUri = updatedUri.split("?")[0];
+    } else {
+      data.updatedUri = updatedUri;
+    }
     this.setState({ data });
   }
-
-  handleChangeParam = e => {
-    const name = e.currentTarget.name.split(".");
-    this.state.uriParamFlag = false;
-    let paramsData = { ...this.state.paramsData };
-    let paramsMetaData = { ...this.state.paramsMetaData };
-    const originalParams = [...this.state.originalParams];
-    if (name[1] === "key") {
-      originalParams[name[0]].key = e.currentTarget.value;
-      if (originalParams[name[0]].key.length === 0) {
-        this.handleDeleteParam(name[0]);
-      }
-      this.handleUpdateUri(originalParams);
-    }
-    if (name[1] === "value") {
-      originalParams[name[0]].value = e.currentTarget.value;
-      this.handleUpdateUri(originalParams);
-    }
-    if (name[1] === "description") {
-      originalParams[name[0]].description = e.currentTarget.value;
-    }
-    this.setState({
-      originalParams
-    });
-  };
 
   doSubmitParam() {
     let originalParams = [...this.state.originalParams];
@@ -459,76 +360,11 @@ async handleApiCall(api,body,headerJson){
     return updatedParams;
   }
 
-  handleAddHeader() {
-    let headersData = { ...this.state.headersData };
-    const len = this.state.originalHeadersKeys.length;
-    let originalHeadersKeys = [
-      ...this.state.originalHeadersKeys,
-      len.toString()
-    ];
-    let updatedHeadersKeys = [...this.state.updatedHeadersKeys, ""];
-    headersData[len.toString()] = {
-      key: "",
-      value: "",
-      description: ""
-    };
-    this.setState({ headersData, originalHeadersKeys, updatedHeadersKeys });
-  }
-  handleDeleteHeader(index) {
-    const updatedHeadersKeys = this.state.updatedHeadersKeys;
-    updatedHeadersKeys[index] = "deleted";
-    this.setState({ updatedHeadersKeys });
-  }
-
-  handleChangeHeader = e => {
-    const name = e.currentTarget.name.split(".");
-    const originalHeadersKeys = [...this.state.originalHeadersKeys];
-    const updatedHeadersKeys = [...this.state.updatedHeadersKeys];
-    if (name[1] === "key") {
-      updatedHeadersKeys[name[0]] = e.currentTarget.value;
-    }
-
-    let headersData = { ...this.state.headersData };
-    headersData[originalHeadersKeys[name[0]]][name[1]] = e.currentTarget.value;
-    this.setState({ headersData, updatedHeadersKeys });
-  };
-
-  doSubmitHeader() {
-    let headersData = { ...this.state.headersData };
-    let originalHeadersKeys = [...this.state.originalHeadersKeys];
-    let updatedHeadersKeys = [...this.state.updatedHeadersKeys];
-
-    for (let i = 0; i < updatedHeadersKeys.length; i++) {
-      if (updatedHeadersKeys[i] !== originalHeadersKeys[i]) {
-        if (updatedHeadersKeys[i] === "deleted") {
-          delete headersData[originalHeadersKeys[i]];
-        } else {
-          headersData[updatedHeadersKeys[i]] =
-            headersData[originalHeadersKeys[i]];
-          headersData[updatedHeadersKeys[i]].key = updatedHeadersKeys[i];
-          delete headersData[originalHeadersKeys[i]];
-        }
-      }
-    }
-
-    if (headersData[""]) delete headersData[""];
-    updatedHeadersKeys = updatedHeadersKeys.filter(k => k !== "");
-    originalHeadersKeys = [...updatedHeadersKeys];
-    const endpoint = { ...this.state.endpoint };
-    endpoint.headers = { ...headersData };
-    this.setState({
-      originalHeadersKeys,
-      updatedHeadersKeys,
-      endpoint,
-      headersData
-    });
-    return headersData;
-  }
-
   responseTime() {
     let timeElapsed = new Date().getTime() - this.state.startTime;
     this.setState({ timeElapsed });
   }
+
   rawDataResponse() {
     let rawResponse = true;
     let previewResponse = false;
@@ -541,6 +377,7 @@ async handleApiCall(api,body,headerJson){
       responseString
     });
   }
+
   prettyDataResponse() {
     let rawResponse = false;
     let previewResponse = false;
@@ -621,7 +458,9 @@ async handleApiCall(api,body,headerJson){
     }
     return originalParams;
   }
+
   render() {
+    console.log(this.props);
     if (this.props.location.title === "Add New Endpoint") {
       this.customHost = false;
       const hostJson = this.fetchHosts(
@@ -634,7 +473,7 @@ async handleApiCall(api,body,headerJson){
         data: {
           name: "",
           method: "GET",
-          body:  JSON.stringify({}, null, 4),
+          body: JSON.stringify({}, null, 4),
           uri: "",
           updatedUri: "",
           host: this.host
@@ -656,9 +495,7 @@ async handleApiCall(api,body,headerJson){
         flagInvalidResponse: true,
         responseString: "",
         copied: false,
-        headersData: {},
-        originalHeadersKeys: [],
-        updatedHeadersKeys: [],
+        originalHeaders: [],
         originalParams: []
       });
       this.props.history.push({ groups: null });
@@ -691,10 +528,6 @@ async handleApiCall(api,body,headerJson){
       this.state.prettyResponse = false;
       this.state.rawResponse = false;
       this.state.previewResponse = false;
-
-      let headersData = { ...this.props.location.endpoint.headers };
-      const originalHeadersKeys = Object.keys(headersData);
-      const updatedHeadersKeys = Object.keys(headersData);
       this.state.endpoint = endpoint;
       this.setState({
         data: {
@@ -711,10 +544,7 @@ async handleApiCall(api,body,headerJson){
         onChangeFlag: false,
         versions: this.props.location.versions,
         groups: this.props.location.groups,
-        originalParams,
-        headersData,
-        originalHeadersKeys,
-        updatedHeadersKeys
+        originalParams
       });
       this.props.history.push({ endpoint: null });
     }
@@ -874,79 +704,15 @@ async handleApiCall(api,body,headerJson){
               role="tabpanel"
               aria-labelledby="pills-params-tab"
             >
-              <Table bordered size="sm">
-                <thead>
-                  <tr>
-                    <th>KEY</th>
-                    <th>VALUE</th>
-                    <th>DESCRIPTION</th>
-                  </tr>
-                </thead>
-
-                <tbody>
-                  {this.state.originalParams.map((params, index) =>
-                    params !== "deleted" ? (
-                      <tr key={index}>
-                        <td>
-                          <input
-                            name={index + ".key"}
-                            ref={this.paramKey}
-                            value={this.state.originalParams[index].key}
-                            onChange={this.handleChangeParam}
-                            type={"text"}
-                            className="form-control"
-                            style={{ border: "none" }}
-                          />
-                        </td>
-                        <td>
-                          <input
-                            name={index + ".value"}
-                            value={this.state.originalParams[index].value}
-                            onChange={this.handleChangeParam}
-                            type={"text"}
-                            className="form-control"
-                            style={{ border: "none" }}
-                          />
-                        </td>
-                        <td>
-                          <input
-                            name={index + ".description"}
-                            value={this.state.originalParams[index].description}
-                            onChange={this.handleChangeParam}
-                            type={"text"}
-                            style={{ border: "none" }}
-                            className="form-control"
-                          />
-                        </td>
-                        <td>
-                          <button
-                            type="button"
-                            className="btn btn-light btn-sm btn-block"
-                            onClick={() => this.handleDeleteParam(index)}
-                          >
-                            x
-                          </button>
-                        </td>
-                      </tr>
-                    ) : null
-                  )}
-                  <tr>
-                    <td> </td>
-                    <td>
-                      {" "}
-                      <button
-                        type="button"
-                        className="btn btn-link btn-sm btn-block"
-                        onClick={() => this.handleAddParam()}
-                      >
-                        + New Param
-                      </button>
-                    </td>
-                    <td> </td>
-                    <td> </td>
-                  </tr>
-                </tbody>
-              </Table>
+              <ParamsComponent
+                {...this.props}
+                paramsFlag={this.paramsFlag}
+                title={this.state.title}
+                originalParams={this.state.originalParams}
+                data={this.state.data}
+                endpoint={this.state.endpoint}
+                props_from_parent={this.propsFromChild.bind(this)}
+              />
             </div>
             <div
               className="tab-pane fade"
@@ -955,90 +721,10 @@ async handleApiCall(api,body,headerJson){
               aria-labelledby="pills-headers-tab"
             >
               <div>
-                <Table bordered size="sm">
-                  <thead>
-                    <tr>
-                      <th>KEY</th>
-                      <th>VALUE</th>
-                      <th>DESCRIPTION</th>
-                    </tr>
-                  </thead>
-
-                  <tbody>
-                    {this.state.updatedHeadersKeys.map((header, index) =>
-                      header !== "deleted" ? (
-                        <tr key={index}>
-                          <td>
-                            <input
-                              name={index + ".key"}
-                              value={
-                                this.state.headersData[
-                                  this.state.originalHeadersKeys[index]
-                                ].key
-                              }
-                              onChange={this.handleChangeHeader}
-                              type={"text"}
-                              className="form-control"
-                              style={{ border: "none" }}
-                            />
-                          </td>
-                          <td>
-                            <input
-                              name={index + ".value"}
-                              value={
-                                this.state.headersData[
-                                  this.state.originalHeadersKeys[index]
-                                ].value
-                              }
-                              onChange={this.handleChangeHeader}
-                              type={"text"}
-                              className="form-control"
-                              style={{ border: "none" }}
-                            />
-                          </td>
-                          <td>
-                            <input
-                              name={index + ".description"}
-                              value={
-                                this.state.headersData[
-                                  this.state.originalHeadersKeys[index]
-                                ].description
-                              }
-                              onChange={this.handleChangeHeader}
-                              type={"text"}
-                              style={{ border: "none" }}
-                              className="form-control"
-                            />
-                          </td>
-                          <td>
-                            <button
-                              type="button"
-                              className="btn btn-light btn-sm btn-block"
-                              onClick={() => this.handleDeleteHeader(index)}
-                            >
-                              x
-                            </button>
-                          </td>
-                        </tr>
-                      ) : null
-                    )}
-                    <tr>
-                      <td> </td>
-                      <td>
-                        {" "}
-                        <button
-                          type="button"
-                          className="btn btn-link btn-sm btn-block"
-                          onClick={() => this.handleAddHeader()}
-                        >
-                          + New Header
-                        </button>
-                      </td>
-                      <td> </td>
-                      <td> </td>
-                    </tr>
-                  </tbody>
-                </Table>
+                <DisplayHeaders
+                  {...this.props}
+                  handle_update_headers={this.handleUpdateHeader.bind(this)}
+                />
               </div>
             </div>
             <div
