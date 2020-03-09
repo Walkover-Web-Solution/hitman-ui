@@ -375,6 +375,17 @@ class CollectionsComponent extends Component {
                 edited_collection={this.state.selectedCollection}
               />
             )}
+            {this.state.showVersionForm && (
+              <CollectionVersionForm
+                {...this.props}
+                show={true}
+                onHide={() => {
+                  this.setState({ showVersionForm: false });
+                }}
+                collection_id={this.state.selectedCollection.id}
+                title="Add new Collection Version"
+              />
+            )}
             <Switch>
               <Route
                 path="/dashboard/collections/:id/versions/:versionId/groups/:groupId/pages/new"
@@ -452,7 +463,7 @@ class CollectionsComponent extends Component {
                   />
                 )}
               />
-              <Route
+              {/* <Route
                 path="/dashboard/collections/:id/versions/new"
                 render={props => (
                   <CollectionVersionForm
@@ -466,7 +477,7 @@ class CollectionsComponent extends Component {
                     title="Add new Collection Version"
                   />
                 )}
-              />
+              /> */}
               <Route
                 path="/dashboard/collections/:collectionId/versions/:versionId/edit"
                 render={props => (
@@ -589,9 +600,11 @@ class CollectionsComponent extends Component {
                     <Dropdown.Item
                       eventKey="3"
                       onClick={() => {
-                        this.props.history.push({
-                          pathname: `/dashboard/collections/${collectionId}/versions/new`,
-                          collectionId
+                        this.setState({
+                          showVersionForm: true,
+                          selectedCollection: {
+                            ...this.props.collections[collectionId]
+                          }
                         });
                       }}
                     >

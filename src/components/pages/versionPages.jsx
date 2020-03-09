@@ -51,7 +51,6 @@ class Pages extends Component {
     this.props.deletePage(page);
     this.props.history.push({
       pathname: "/dashboard/collections"
-      // deletePage: page
     });
   }
   handleDisplay(page) {

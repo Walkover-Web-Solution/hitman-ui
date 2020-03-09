@@ -16,13 +16,13 @@ class ShareVersionForm extends Form {
 
   componentDidMount() {
     if (this.props.selectedVersion) {
-    let data = {};
-    const shareVersionLink = apiUrl + "/share/" + this.props.selectedVersion.shareIdentifier;
-    data = { shareVersionLink };
-    this.setState({ data });
+      let data = {};
+      const shareVersionLink =
+        apiUrl + "/share/" + this.props.selectedVersion.shareIdentifier;
+      data = { shareVersionLink };
+      this.setState({ data });
     }
-    console.log("selected_version",this.props.selectedVersion.shareIdentifier);
-    }
+  }
 
   schema = {
     shareVersionLink: Joi.string()
@@ -30,8 +30,7 @@ class ShareVersionForm extends Form {
       .label("Public Link")
   };
 
-  async doSubmit(props) {
-  }
+  async doSubmit(props) {}
 
   render() {
     return (
@@ -59,7 +58,7 @@ class ShareVersionForm extends Form {
                 <button style={{ borderRadius: "12px" }}>Copy</button>
               </CopyToClipboard>
             }
-             <button onClick = {this.props.onHide}>Cancel</button>
+            <button onClick={this.props.onHide}>Cancel</button>
           </form>
         </Modal.Body>
       </Modal>

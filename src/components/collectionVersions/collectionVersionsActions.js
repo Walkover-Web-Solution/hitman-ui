@@ -33,11 +33,9 @@ export const updateVersion = editedVersion => {
   return dispatch => {
     const originalVersion = store.getState().versions[editedVersion.id];
     dispatch(updateVersionRequest(editedVersion));
-    const id = editedVersion.id;
-    delete editedVersion.id;
-    delete editedVersion.collectionId;
+    const { number, host, id } = editedVersion;
     collectionVersionsService
-      .updateCollectionVersion(id, editedVersion)
+      .updateCollectionVersion(id, { number, host })
       .then(response => {
         dispatch(updateVersionSuccess(response.data));
       })

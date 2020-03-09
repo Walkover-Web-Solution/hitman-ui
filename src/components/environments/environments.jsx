@@ -60,18 +60,6 @@ class Environments extends Component {
   }
 
   render() {
-    // if (this.props.location.updatedEnvironment) {
-    //   const { updatedEnvironment } = this.props.location;
-    //   this.props.history.replace({ updatedEnvironment: null });
-    //   this.handleUpdateEnvironment(updatedEnvironment);
-    // }
-
-    // if (this.props.location.newEnvironment) {
-    //   const { newEnvironment } = this.props.location;
-    //   this.props.history.replace({ newEnvironment: null });
-    //   this.handleAdd(newEnvironment);
-    // }
-    console.log(this.state);
     return (
       <div>
         <div>
