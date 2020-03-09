@@ -389,7 +389,6 @@ class DisplayEndpoint extends Component {
   }
 
   fillDropdownValue(hostJson) {
-    console.log(hostJson);
     this.dropdownHost["variable"].value = hostJson.variableHost;
     this.dropdownHost["group"].value = hostJson.groupHost;
     this.dropdownHost["version"].value = hostJson.versionHost;
@@ -402,7 +401,6 @@ class DisplayEndpoint extends Component {
   };
 
   setDropdownValue(key) {
-    console.log("set dropdown", key);
     let host = "";
     if (key === "custom") {
       host = "";
@@ -455,9 +453,6 @@ class DisplayEndpoint extends Component {
   }
 
   render() {
-    console.log("props", this.props);
-    console.log("state", this.state);
-
     if (this.props.location.title === "Add New Endpoint") {
       this.customHost = false;
       const hostJson = this.fetchHosts(
@@ -703,11 +698,7 @@ class DisplayEndpoint extends Component {
             >
               <ParamsComponent
                 {...this.props}
-                paramsFlag={this.paramsFlag}
-                title={this.state.title}
                 originalParams={this.state.originalParams}
-                data={this.state.data}
-                endpoint={this.state.endpoint}
                 props_from_parent={this.propsFromChild.bind(this)}
               />
             </div>
