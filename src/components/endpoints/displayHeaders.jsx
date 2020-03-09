@@ -54,7 +54,7 @@ class DisplayHeaders extends Component {
 
     if (this.props.location.endpoint && this.props.location.endpoint.headers) {
       const originalHeaders = [];
-      Object.keys(this.props.location.endpoint.headers).map(h => {
+      Object.keys(this.props.location.endpoint.headers).forEach(h => {
         originalHeaders.push(this.props.location.endpoint.headers[h]);
       });
       this.setState({ originalHeaders });

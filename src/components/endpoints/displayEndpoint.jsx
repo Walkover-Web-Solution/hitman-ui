@@ -221,7 +221,7 @@ class DisplayEndpoint extends Component {
     api = this.replaceVariables(api);
     let body = this.parseBody(this.state.data);
     let headerJson = {};
-    Object.keys(headersData).map(header => {
+    Object.keys(headersData).forEach(header => {
       headerJson[headersData[header].key] = headersData[header].value;
     });
 
@@ -492,7 +492,8 @@ class DisplayEndpoint extends Component {
         versions: this.props.location.versions,
         groups: this.props.location.groups,
         originalParams,
-        endpoint
+        endpoint,
+        flagResponse: false
       });
       this.props.history.push({ endpoint: null });
     }

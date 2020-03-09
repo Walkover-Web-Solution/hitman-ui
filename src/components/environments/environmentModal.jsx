@@ -76,7 +76,6 @@ class EnvironmentModal extends Component {
                     {this.props.environment.environments[environmentId].name}
                   </ListGroup.Item>
                   <button
-                    style={{ width: "10%", float: "right", textAlign: "right" }}
                     className="btn btn-default"
                     onClick={() => {
                       if (
@@ -96,6 +95,7 @@ class EnvironmentModal extends Component {
               )
             )}
           </ListGroup>
+          <br />
           <button onClick={() => this.handleCancel(this.props)}>Cancel</button>
         </Modal.Body>
       </Modal>
