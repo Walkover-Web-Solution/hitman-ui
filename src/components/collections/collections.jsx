@@ -35,7 +35,7 @@ import { fetchGroups, deleteGroup } from "../groups/groupsActions";
 import { fetchEndpoints } from "../endpoints/endpointsActions";
 import { fetchVersions } from "../collectionVersions/collectionVersionsActions";
 
-import { fetchPages, updatePage } from "../pages/pagesActions";
+import { fetchPages } from "../pages/pagesActions";
 import { withRouter } from "react-router-dom";
 
 const mapStateToProps = state => {
@@ -59,9 +59,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     deleteCollection: collection => dispatch(deleteCollection(collection)),
     duplicateCollection: collection =>
       dispatch(duplicateCollection(collection)),
-    deleteGroup: groupId => dispatch(deleteGroup(groupId)),
-    updatePage: (editedPage, pageId) =>
-      dispatch(updatePage(ownProps.history, editedPage, pageId))
+    deleteGroup: groupId => dispatch(deleteGroup(groupId))
   };
 };
 
@@ -184,26 +182,12 @@ class CollectionsComponent extends Component {
     this.props.addPage(versionId, newPage);
   }
 
-  async handleUpdatePage(editedPage, pageId) {
-    this.props.updatePage(editedPage, pageId);
-  }
-
   async handleDuplicateCollection(collectionCopy) {
     this.props.duplicateCollection(collectionCopy);
   }
 
   render() {
     const { location } = this.props;
-
-    if (location.editedPage && location.groupId) {
-      const { id: pageId } = location.editedPage;
-      this.props.history.replace({ editedPage: null });
-      this.handleUpdatePage(location.editedPage, pageId);
-    } else if (location.editedPage) {
-      const { id: pageId } = location.editedPage;
-      this.props.history.replace({ editedPage: null });
-      this.handleUpdatePage(location.editedPage, pageId);
-    }
 
     if (location.importVersionLink) {
       let importLink = location.importVersionLink;
