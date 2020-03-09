@@ -125,16 +125,6 @@ class Environments extends Component {
             </Dropdown.Menu>
           </Dropdown>
         </div>
-
-        {/* {this.state.currentEnvironmentId && (
-          <button
-            className="btn btn-default"
-            style={{ float: "right" }}
-            onClick={() => this.handleEnvironmentModal("Edit Environment")}
-          >
-            Environment Variables
-          </button>
-        )} */}
       </div>
     );
   }

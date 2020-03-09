@@ -10,7 +10,7 @@ function versionsReducer(state = initialState, action) {
 
   switch (action.type) {
     case versionActionTypes.FETCH_VERSIONS_SUCCESS:
-      return { ...action.versions };
+      return { ...state, ...action.versions };
 
     case versionActionTypes.FETCH_VERSIONS_FAILURE:
       toast.error(action.error);

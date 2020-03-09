@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
 import {
   Accordion,
   Card,
@@ -31,7 +30,7 @@ import {
 } from "./collectionsActions";
 import { fetchGroups, deleteGroup } from "../groups/groupsActions";
 import { fetchEndpoints } from "../endpoints/endpointsActions";
-import { fetchVersions } from "../collectionVersions/collectionVersionsActions";
+import { fetchAllVersions } from "../collectionVersions/collectionVersionsActions";
 
 import { fetchPages, updatePage } from "../pages/pagesActions";
 import { withRouter } from "react-router-dom";
@@ -47,7 +46,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     fetchCollections: () => dispatch(fetchCollections()),
-    fetchVersions: () => dispatch(fetchVersions()),
+    fetchAllVersions: () => dispatch(fetchAllVersions()),
     fetchGroups: () => dispatch(fetchGroups()),
     fetchEndpoints: () => dispatch(fetchEndpoints()),
     fetchPages: () => dispatch(fetchPages()),
@@ -70,7 +69,7 @@ class CollectionsComponent extends Component {
 
   async componentDidMount() {
     this.props.fetchCollections();
-    this.props.fetchVersions();
+    this.props.fetchAllVersions();
     this.props.fetchGroups();
     this.props.fetchEndpoints();
     this.props.fetchPages();
@@ -434,66 +433,6 @@ class CollectionsComponent extends Component {
                   />
                 )}
               />
-              {/* <Route
-                path="/dashboard/collections/:collectionId/versions/:versionId/groups/:groupId/edit"
-                render={props => (
-                  <GroupForm
-                    {...props}
-                    show={true}
-                    onHide={() => {
-                      this.props.history.push({
-                        pathname: "/dashboard/collections"
-                      });
-                    }}
-                    title="Edit Group"
-                  />
-                )}
-              /> */}
-              {/* <Route
-                path="/dashboard/collections/:collectionId/versions/:versionId/groups/new"
-                render={props => (
-                  <GroupForm
-                    {...props}
-                    show={true}
-                    onHide={() => {
-                      this.props.history.push({
-                        pathname: "/dashboard/collections"
-                      });
-                    }}
-                    title="Add new Group"
-                  />
-                )}
-              /> */}
-              {/* <Route
-                path="/dashboard/collections/:id/versions/new"
-                render={props => (
-                  <CollectionVersionForm
-                    {...props}
-                    show={true}
-                    onHide={() => {
-                      this.props.history.push({
-                        pathname: "/dashboard/collections"
-                      });
-                    }}
-                    title="Add new Collection Version"
-                  />
-                )}
-              /> */}
-              <Route
-                path="/dashboard/collections/:collectionId/versions/:versionId/edit"
-                render={props => (
-                  <CollectionVersionForm
-                    {...props}
-                    show={true}
-                    onHide={() => {
-                      this.props.history.push({
-                        pathname: "/dashboard/collections"
-                      });
-                    }}
-                    title="Edit Collection Version"
-                  />
-                )}
-              />
               <Route
                 path="/dashboard/:collectionId/versions/import"
                 render={props => (
@@ -506,21 +445,6 @@ class CollectionsComponent extends Component {
                       });
                     }}
                     title="Import Version"
-                  />
-                )}
-              />
-              <Route
-                path="/dashboard/collections/:id/edit"
-                render={props => (
-                  <CollectionForm
-                    {...props}
-                    show={true}
-                    onHide={() => {
-                      this.props.history.push({
-                        pathname: "/dashboard/collections"
-                      });
-                    }}
-                    title="Edit Collection"
                   />
                 )}
               />

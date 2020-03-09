@@ -63,42 +63,36 @@ class EnvironmentModal extends Component {
           <ListGroup>
             {Object.keys(this.props.environment.environments).map(
               environmentId => (
-                <ListGroup.Item key={environmentId}>
-                  {this.props.environment.environments[environmentId].name}
-                  <Dropdown className="float-right">
-                    <Dropdown.Toggle
-                      variant="default"
-                      id="dropdown-basic"
-                    ></Dropdown.Toggle>
-
-                    <Dropdown.Menu alignRight>
-                      <Dropdown.Item
-                        onClick={() =>
-                          this.handleEdit(
-                            this.props.environment.environments[environmentId]
-                          )
-                        }
-                      >
-                        Edit
-                      </Dropdown.Item>
-
-                      <Dropdown.Item
-                        onClick={() => {
-                          if (
-                            window.confirm(
-                              "Are you sure you wish to delete this environment?"
-                            )
-                          )
-                            this.handleDelete(
-                              this.props.environment.environments[environmentId]
-                            );
-                        }}
-                      >
-                        delete
-                      </Dropdown.Item>
-                    </Dropdown.Menu>
-                  </Dropdown>
-                </ListGroup.Item>
+                <div>
+                  <ListGroup.Item
+                    style={{ width: "95%", float: "left" }}
+                    key={environmentId}
+                    onClick={() =>
+                      this.handleEdit(
+                        this.props.environment.environments[environmentId]
+                      )
+                    }
+                  >
+                    {this.props.environment.environments[environmentId].name}
+                  </ListGroup.Item>
+                  <button
+                    style={{ width: "10%", float: "right", textAlign: "right" }}
+                    className="btn btn-default"
+                    onClick={() => {
+                      if (
+                        window.confirm(
+                          "Are you sure you wish to delete this environment?"
+                        )
+                      )
+                        this.handleDelete(
+                          this.props.environment.environments[environmentId]
+                        );
+                    }}
+                    style={{ float: "right" }}
+                  >
+                    X
+                  </button>
+                </div>
               )
             )}
           </ListGroup>

@@ -2,10 +2,24 @@ import collectionVersionsService from "./collectionVersionsService";
 import versionActionTypes from "./collectionVersionsActionTypes";
 import store from "../../store/store";
 
-export const fetchVersions = () => {
+export const fetchAllVersions = () => {
   return dispatch => {
     collectionVersionsService
       .getAllCollectionVersions()
+      .then(response => {
+        const versions = response.data;
+        dispatch(fetchVersionsSuccess(versions));
+      })
+      .catch(error => {
+        dispatch(fetchVersionsFailure(error.message));
+      });
+  };
+};
+export const fetchVersions = collectionId => {
+  console.log(collectionId);
+  return dispatch => {
+    collectionVersionsService
+      .getCollectionVersions(collectionId)
       .then(response => {
         const versions = response.data;
         dispatch(fetchVersionsSuccess(versions));
@@ -29,6 +43,7 @@ export const fetchVersionsFailure = error => {
     error
   };
 };
+
 export const updateVersion = editedVersion => {
   return dispatch => {
     const originalVersion = store.getState().versions[editedVersion.id];
