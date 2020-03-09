@@ -15,7 +15,6 @@ import collectionsService from "./collectionsService";
 import collectionVersionsService from "../collectionVersions/collectionVersionsService";
 import CollectionVersions from "../collectionVersions/collectionVersions";
 import CollectionVersionForm from "../collectionVersions/collectionVersionForm";
-import GroupForm from "../groups/groupForm";
 import groupsService from "../groups/groupsService";
 import PageForm from "../pages/pageForm";
 import pageService from "../pages/pageService";
@@ -433,7 +432,7 @@ class CollectionsComponent extends Component {
                   />
                 )}
               />
-              <Route
+              {/* <Route
                 path="/dashboard/collections/:collectionId/versions/:versionId/groups/:groupId/edit"
                 render={props => (
                   <GroupForm
@@ -447,8 +446,8 @@ class CollectionsComponent extends Component {
                     title="Edit Group"
                   />
                 )}
-              />
-              <Route
+              /> */}
+              {/* <Route
                 path="/dashboard/collections/:collectionId/versions/:versionId/groups/new"
                 render={props => (
                   <GroupForm
@@ -462,7 +461,7 @@ class CollectionsComponent extends Component {
                     title="Add new Group"
                   />
                 )}
-              />
+              /> */}
               {/* <Route
                 path="/dashboard/collections/:id/versions/new"
                 render={props => (

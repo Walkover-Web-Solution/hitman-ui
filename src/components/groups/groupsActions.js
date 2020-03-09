@@ -78,8 +78,9 @@ export const updateGroup = editedGroup => {
     dispatch(updateGroupRequest(editedGroup));
     const id = editedGroup.id;
     delete editedGroup.id;
+    const { name, host, endpointsOrder } = editedGroup;
     groupsService
-      .updateGroup(id, editedGroup)
+      .updateGroup(id, { name, host, endpointsOrder })
       .then(response => {
         dispatch(updateGroupSuccess(response.data));
       })
