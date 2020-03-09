@@ -5,6 +5,14 @@ import groupsActionTypes from "./groupsActionTypes";
 import endpointsActions from "../endpoints/endpointsActions";
 import pagesActions from "../pages/pagesActions";
 
+export const moveEndpoint = (endpointId, sourceGroupId, destinationGroupId) => {
+  return {
+    type: groupsActionTypes.MOVE_ENDPOINT,
+    endpointId,
+    sourceGroupId,
+    destinationGroupId
+  };
+};
 export const fetchGroups = () => {
   return dispatch => {
     groupsService

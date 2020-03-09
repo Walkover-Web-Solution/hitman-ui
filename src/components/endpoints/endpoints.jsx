@@ -25,9 +25,9 @@ class Endpoints extends Component {
   state = {};
 
   onDragStart = (e, eId) => {
-    this.props.group_dnd(false);
+    // this.props.group_dnd(false);
     this.draggedItem = eId;
-    this.props.set_dnd(eId, this.props.group_id);
+    this.props.set_source_group_id(eId, this.props.group_id);
   };
 
   onDragOver = (e, eId) => {
@@ -35,27 +35,42 @@ class Endpoints extends Component {
     this.draggedOverItem = eId;
   };
 
-  async onDragEnd(e, props) {
-    this.props.group_dnd(true);
-    if (this.draggedItem === this.draggedOverItem) {
-      this.draggedItem = null;
-      return;
-    }
-    let endpointIds = this.props.endpoints_order.filter(
-      item => item !== this.draggedItem
-    );
-    const index = this.props.endpoints_order.findIndex(
-      eId => eId === this.draggedOverItem
-    );
-    endpointIds.splice(index, 0, this.draggedItem);
-    this.props.set_endpoint_id(this.props.group_id, endpointIds);
-    this.draggedItem = null;
-  }
+  // async onDragEnd(e, props) {
+  // this.props.group_dnd(true);
+  // if (this.draggedItem === this.draggedOverItem) {
+  //   this.draggedItem = null;
+  //   return;
+  // }
+  // let endpointIds = this.props.endpoints_order.filter(
+  //   item => item !== this.draggedItem
+  // );
+  // const index = this.props.endpoints_order.findIndex(
+  //   eId => eId === droppedOnItem
+  // );
+  // endpointIds.splice(index, 0, this.draggedItem);
+  // this.props.set_endpoint_id(this.props.group_id, endpointIds);
+  // this.draggedItem = null;
+  // }
 
-  onDrop = e => {
+  onDrop = (e, droppedOnItem) => {
     e.preventDefault();
     if (!this.draggedItem) {
-      this.props.get_dnd(this.props.group_id);
+      this.props.set_destination_group_id(this.props.group_id);
+    } else {
+      if (this.draggedItem === droppedOnItem) {
+        this.draggedItem = null;
+        return;
+      }
+      let endpointIds = this.props.endpoints_order.filter(
+        item => item !== this.draggedItem
+      );
+      const index = this.props.endpoints_order.findIndex(
+        eId => eId === droppedOnItem
+      );
+      endpointIds.splice(index, 0, this.draggedItem);
+      console.log(endpointIds);
+      // this.props.setEndpointIds(this.props.group_id, endpointIds);
+      this.draggedItem = null;
     }
   };
 
@@ -92,26 +107,27 @@ class Endpoints extends Component {
     });
   }
   render() {
-    if (this.props.endpoints_order.length == 0) {
-      return (
-        <Table
-          striped
-          bordered
-          hover
-          size="sm"
-          onDragOver={e => this.onDragOver(e)}
-          onDragStart={e => this.onDragStart(e)}
-          onDragEnd={e => this.onDragEnd(e, this.props)}
-          onDrop={e => this.onDrop(e)}
-        >
-          <thead>
-            <tr>
-              <th>This group is empty</th>
-            </tr>
-          </thead>
-        </Table>
-      );
-    } else {
+    // if (this.props.endpoints_order.length == 0) {
+    //   return (
+    //     <Table
+    //       striped
+    //       bordered
+    //       hover
+    //       size="sm"
+    //       onDragOver={e => this.onDragOver(e)}
+    //       onDragStart={e => this.onDragStart(e)}
+    //       onDragEnd={e => this.onDragEnd(e, this.props)}
+    //       onDrop={e => this.onDrop(e)}
+    //     >
+    //       <thead>
+    //         <tr>
+    //           <th>This group is empty</th>
+    //         </tr>
+    //       </thead>
+    //     </Table>
+    //   );
+    // } else
+    {
       return (
         <div>
           {Object.keys(this.props.endpoints)

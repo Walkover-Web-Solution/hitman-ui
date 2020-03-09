@@ -8,6 +8,15 @@ const initialState = {
 function groupsReducer(state = initialState, action) {
   let groups = {};
   switch (action.type) {
+    case groupsActionTypes.MOVE_ENDPOINT:
+      groups = { ...state };
+      console.log(action, groups);
+      groups[action.sourceGroupId].endpointsOrder.filter(
+        eId => eId !== action.endpointId
+      );
+      groups[action.destinationGroupId].endpointsOrder.push(action.endpointId);
+      return groups;
+
     case groupsActionTypes.FETCH_GROUPS_SUCCESS:
       return { ...action.groups };
 

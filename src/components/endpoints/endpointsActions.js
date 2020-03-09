@@ -1,5 +1,6 @@
 import endpointService from "../endpoints/endpointService";
 import endpointsActionTypes from "./endpointsActionTypes";
+import { moveEndpoint } from "../groups/groupsActions";
 import store from "../../store/store";
 
 export const fetchEndpoints = () => {
@@ -195,4 +196,29 @@ export const updateStateFailure = error => {
 
 export default {
   updateState
+};
+export const dndMoveEndpoint = (
+  endpointId,
+  sourceGroupId,
+  destinationGroupId
+) => {
+  return dispatch => {
+    // const originalEndpoint = store.getState().endpoints[editedEndpoint.id];
+    dispatch(moveEndpoint(endpointId, sourceGroupId, destinationGroupId));
+    const endpoint = store.getState().endpoints[endpointId];
+    console.log(endpoint);
+    endpoint.groupId = destinationGroupId;
+    console.log(endpoint);
+    dispatch(updateEndpoint(endpoint));
+    // const id = editedEndpoint.id;
+    // delete editedEndpoint.id;
+    // endpointService
+    //   .updateEndpoint(id, editedEndpoint)
+    //   .then(response => {
+    //     dispatch(updateEndpointSuccess(response.data));
+    //   })
+    //   .catch(error => {
+    //     dispatch(updateEndpointFailure(error.response.data, originalEndpoint));
+    //   });
+  };
 };

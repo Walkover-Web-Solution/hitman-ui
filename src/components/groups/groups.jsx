@@ -11,6 +11,7 @@ import GroupForm from "../groups/groupForm";
 import Endpoints from "../endpoints/endpoints";
 import { connect } from "react-redux";
 import { deleteGroup, duplicateGroup } from "../groups/groupsActions";
+import { dndMoveEndpoint } from "../endpoints/endpointsActions";
 
 const mapStateToProps = state => {
   return { groups: state.groups };
@@ -19,21 +20,21 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     deleteGroup: group => dispatch(deleteGroup(group)),
-    duplicateGroup: group => dispatch(duplicateGroup(group))
+    duplicateGroup: group => dispatch(duplicateGroup(group)),
+    moveEndpoint: (endpointId, sourceGroupId, destinationGroupId) =>
+      dispatch(dndMoveEndpoint(endpointId, sourceGroupId, destinationGroupId))
   };
 };
 
 class Groups extends Component {
-  state = {
-    groupDnDFlag: true
-  };
+  state = {};
 
-  setDnD(draggedEndpoint, groupId) {
+  setSourceGroupId(draggedEndpoint, groupId) {
     this.draggedEndpoint = draggedEndpoint;
     this.sourceGroupId = groupId;
   }
 
-  getDnD(destinationGroupId) {
+  setDestinationGroupId(destinationGroupId) {
     this.props.dnd_move_endpoint(
       this.draggedEndpoint,
       this.sourceGroupId,
@@ -41,44 +42,20 @@ class Groups extends Component {
     );
   }
 
-  groupDnD(groupDnDFlag) {
-    this.props.version_dnd(groupDnDFlag);
-    this.setState({ groupDnDFlag });
-  }
-
-  onDragStart = (e, groupId) => {
-    this.props.version_dnd(false);
-    this.draggedItem = groupId;
-  };
-
-  onDragOver = (e, groupId) => {
-    e.preventDefault();
-    this.draggedOverItem = groupId;
-  };
-
-  async onDragEnd(e, props) {
-    this.props.version_dnd(true);
-    if (this.draggedItem === this.draggedOverItem) {
-      return;
-    }
-    let groupIds = this.props.group_ids.filter(
-      item => item !== this.draggedItem
+  dndMoveEndpoint(endpointId, sourceGroupId, destinationGroupId) {
+    console.log(
+      endpointId,
+      this.props.groups[sourceGroupId],
+      this.props.groups[destinationGroupId]
     );
-    const index = this.props.group_ids.findIndex(
-      vId => vId === this.draggedOverItem
-    );
-    groupIds.splice(index, 0, this.draggedItem);
-    this.props.set_group_id(groupIds);
+    this.props.moveEndpoint(endpointId, sourceGroupId, destinationGroupId);
   }
-
   onDrop(destinationGroupId, props) {
-    if (!this.draggedItem) {
-      this.props.dnd_move_endpoint(
-        this.draggedEndpoint,
-        this.sourceGroupId,
-        destinationGroupId
-      );
-    }
+    this.dndMoveEndpoint(
+      this.draggedEndpoint,
+      this.sourceGroupId,
+      destinationGroupId
+    );
   }
 
   handleAddPage(groupId, versionId, collectionId) {
@@ -146,10 +123,7 @@ class Groups extends Component {
             <Accordion defaultActiveKey="0" key={groupId}>
               <Card>
                 <Card.Header
-                  draggable
-                  onDragOver={e => this.onDragOver(e, groupId)}
-                  onDragStart={e => this.onDragStart(e, groupId)}
-                  onDragEnd={e => this.onDragEnd(e, groupId, this.props)}
+                  onDragOver={e => e.preventDefault()}
                   onDrop={e => this.onDrop(groupId, this.props)}
                 >
                   <Accordion.Toggle as={Button} variant="link" eventKey="1">
@@ -221,7 +195,6 @@ class Groups extends Component {
                       {...this.props}
                       version_id={this.props.groups[groupId].versionId}
                       group_id={groupId}
-                      group_dnd={this.groupDnD.bind(this)}
                     />
                     <Endpoints
                       {...this.props}
@@ -229,9 +202,10 @@ class Groups extends Component {
                       endpoints_order={
                         this.props.groups[groupId].endpointsOrder
                       }
-                      group_dnd={this.groupDnD.bind(this)}
-                      set_dnd={this.setDnD.bind(this)}
-                      get_dnd={this.getDnD.bind(this)}
+                      set_source_group_id={this.setSourceGroupId.bind(this)}
+                      set_destination_group_id={this.setDestinationGroupId.bind(
+                        this
+                      )}
                     />
                   </Card.Body>
                 </Accordion.Collapse>
