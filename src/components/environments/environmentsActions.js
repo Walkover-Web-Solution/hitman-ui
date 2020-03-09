@@ -33,7 +33,7 @@ export const addEnvironment = newEnvironment => {
 
 export const updateEnvironment = editedEnvironment => {
   return dispatch => {
-    const originalEnvironment = store.getState().environments[
+    const originalEnvironment = store.getState().environment.environments[
       editedEnvironment.id
     ];
     dispatch(updateEnvironmentRequest(editedEnvironment));
@@ -63,6 +63,13 @@ export const deleteEnvironment = environment => {
       .catch(error => {
         dispatch(deleteEnvironmentFailure(error.response, environment));
       });
+  };
+};
+
+export const setEnvironmentId = currentEnvironmentId => {
+  return {
+    type: environmentsActionTypes.SET_ENVIRONMENT_ID,
+    currentEnvironmentId
   };
 };
 

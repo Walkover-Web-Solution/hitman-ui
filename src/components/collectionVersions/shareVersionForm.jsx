@@ -29,6 +29,8 @@ class ShareVersionForm extends Form {
       .label("Public Link")
   };
 
+  async doSubmit(props) {}
+
   render() {
     return (
       <Modal

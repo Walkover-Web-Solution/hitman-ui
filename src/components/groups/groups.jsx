@@ -7,9 +7,10 @@ import {
   DropdownButton
 } from "react-bootstrap";
 import GroupPages from "../pages/groupPages";
+import GroupForm from "../groups/groupForm";
 import Endpoints from "../endpoints/endpoints";
 import { connect } from "react-redux";
-import { deleteGroup } from "../groups/groupsActions";
+import { deleteGroup, duplicateGroup } from "../groups/groupsActions";
 
 const mapStateToProps = state => {
   return { groups: state.groups };
@@ -17,7 +18,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    deleteGroup: group => dispatch(deleteGroup(group))
+    deleteGroup: group => dispatch(deleteGroup(group)),
+    duplicateGroup: group => dispatch(duplicateGroup(group))
   };
 };
 
@@ -99,9 +101,10 @@ class Groups extends Component {
   }
 
   handleDuplicate(group) {
+    this.props.duplicateGroup(group);
     this.props.history.push({
-      pathname: "/dashboard/collections",
-      duplicateGroup: group
+      pathname: "/dashboard/collections"
+      // duplicateGroup: group
     });
   }
 
@@ -122,6 +125,19 @@ class Groups extends Component {
   render() {
     return (
       <div>
+        <div>
+          {this.state.showGroupForm && (
+            <GroupForm
+              {...this.props}
+              show={true}
+              onHide={() => {
+                this.setState({ showGroupForm: false });
+              }}
+              selected_group={this.state.selectedGroup}
+              title="Edit Group"
+            />
+          )}
+        </div>
         {Object.keys(this.props.groups)
           .filter(
             gId => this.props.groups[gId].versionId === this.props.version_id
@@ -148,9 +164,9 @@ class Groups extends Component {
                     <Dropdown.Item
                       eventKey="1"
                       onClick={() => {
-                        this.props.history.push({
-                          pathname: `/dashboard/collections/${this.props.collection_id}/versions/${this.props.version_id}/groups/${groupId}/edit`,
-                          editGroup: this.props.groups[groupId]
+                        this.setState({
+                          showGroupForm: true,
+                          selectedGroup: this.props.groups[groupId]
                         });
                       }}
                     >

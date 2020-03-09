@@ -1,5 +1,15 @@
 import React, { Component } from "react";
 import pageService from "./pageService";
+import { updatePage } from "../pages/pagesActions";
+import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
+
+const mapDispatchToProps = (dispatch, ownProps) => {
+  return {
+    updatePage: (editedPage, pageId) =>
+      dispatch(updatePage(ownProps.history, editedPage, pageId))
+  };
+};
 
 class EditPage extends Component {
   name = React.createRef();
@@ -58,16 +68,21 @@ class EditPage extends Component {
   handleSubmit = e => {
     e.preventDefault();
     const groupId = this.state.data.groupId;
+
     if (groupId === null) {
+      const editedPage = { ...this.state.data };
+      this.props.updatePage(editedPage, editedPage.id);
       this.props.history.push({
-        pathname: `/dashboard/collections`,
-        editedPage: { ...this.state.data }
+        pathname: `/dashboard/collections`
+        // editedPage: { ...this.state.data }
       });
     } else {
+      const editedPage = { ...this.state.data };
+      this.props.updatePage(editedPage, editedPage.id);
       this.props.history.push({
-        pathname: `/dashboard/collections`,
-        editedPage: { ...this.state.data },
-        groupId: { ...this.state.data.groupId }
+        pathname: `/dashboard/collections`
+        // editedPage: { ...this.state.data },
+        // groupId: { ...this.state.data.groupId }
       });
     }
   };
@@ -107,4 +122,4 @@ class EditPage extends Component {
   }
 }
 
-export default EditPage;
+export default withRouter(connect(null, mapDispatchToProps)(EditPage));

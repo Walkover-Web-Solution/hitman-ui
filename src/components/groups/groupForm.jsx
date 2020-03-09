@@ -26,20 +26,13 @@ class GroupForm extends Form {
   async componentDidMount() {
     if (this.props.title === "Add new Group") return;
     let data = {};
-    const groupId = this.props.location.pathname.split("/")[7];
-    const versionId = this.props.location.pathname.split("/")[5];
-    let endpointsOrder = [];
-    if (this.props.location.editGroup) {
-      endpointsOrder = this.props.location.editGroup.endpointsOrder;
-      const { name, host } = this.props.location.editGroup;
-      data = { name, host };
-    } else {
-      const {
-        data: { name, host }
-      } = await groupsService.getGroup(groupId);
+    // const groupId = this.props.location.pathname.split("/")[7];
+    // const versionId = this.props.location.pathname.split("/")[5];
+    if (this.props.selected_group) {
+      const { name, host } = this.props.selected_group;
       data = { name, host };
     }
-    this.setState({ data, groupId, versionId, endpointsOrder });
+    this.setState({ data });
   }
 
   schema = {
@@ -53,29 +46,28 @@ class GroupForm extends Form {
   };
 
   async doSubmit() {
+    this.props.onHide();
     if (this.props.title === "Add new Group") {
-      const versionId = this.props.location.pathname.split("/")[5];
+      const versionId = this.props.selectedVersion.id;
       const newGroup = {
         ...this.state.data,
         endpointsOrder: [],
         requestId: shortid.generate()
       };
       this.props.addGroup(versionId, newGroup);
-      this.props.history.push({
-        pathname: `/dashboard/collections`
-      });
     }
 
     if (this.props.title === "Edit Group") {
       const editedGroup = {
         ...this.state.data,
-        id: this.state.groupId,
-        endpointsOrder: this.state.endpointsOrder
+        id: this.props.selected_group.id,
+        endpointsOrder: this.props.selected_group.endpointsOrder,
+        versionId: this.props.selected_group.versionId
       };
       this.props.updateGroup(editedGroup);
-      this.props.history.push({
-        pathname: `/dashboard/collections`
-      });
+      // this.props.history.push({
+      //   pathname: `/dashboard/collections`
+      // });
     }
   }
 
@@ -97,7 +89,9 @@ class GroupForm extends Form {
             {this.renderInput("name", "Group Name*")}
             {this.renderInput("host", "Host")}
             {this.renderButton("Submit")}
-            <Link to={`/dashboard/collections/`}>Cancel</Link>
+            <button className="btn btn-default" onClick={this.props.onHide}>
+              Cancel
+            </button>
           </form>
         </Modal.Body>
       </Modal>

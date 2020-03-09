@@ -7,7 +7,7 @@ import {
   DropdownButton,
   Table
 } from "react-bootstrap";
-import { deleteEndpoint } from "./endpointsActions";
+import { deleteEndpoint, duplicateEndpoint } from "./endpointsActions";
 import { connect } from "react-redux";
 
 const mapStateToProps = state => {
@@ -16,8 +16,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    deleteEndpoint: deleteEndpointId =>
-      dispatch(deleteEndpoint(deleteEndpointId))
+    deleteEndpoint: endpoint => dispatch(deleteEndpoint(endpoint)),
+    duplicateEndpoint: endpoint => dispatch(duplicateEndpoint(endpoint))
   };
 };
 
@@ -67,9 +67,10 @@ class Endpoints extends Component {
   }
 
   handleDuplicate(endpoint) {
+    this.props.duplicateEndpoint(endpoint);
     this.props.history.push({
-      pathname: "/dashboard/collections",
-      duplicateEndpoint: endpoint
+      pathname: "/dashboard/collections"
+      //duplicateEndpoint: endpoint
     });
   }
 

@@ -1,11 +1,28 @@
 import collectionVersionsService from "./collectionVersionsService";
 import versionActionTypes from "./collectionVersionsActionTypes";
 import store from "../../store/store";
+import groupsActions from "../groups/groupsActions";
+import endpointsActions from "../endpoints/endpointsActions";
+import pagesActions from "../pages/pagesActions";
 
-export const fetchVersions = () => {
+export const fetchAllVersions = () => {
   return dispatch => {
     collectionVersionsService
       .getAllCollectionVersions()
+      .then(response => {
+        const versions = response.data;
+        dispatch(fetchVersionsSuccess(versions));
+      })
+      .catch(error => {
+        dispatch(fetchVersionsFailure(error.message));
+      });
+  };
+};
+export const fetchVersions = collectionId => {
+  console.log(collectionId);
+  return dispatch => {
+    collectionVersionsService
+      .getCollectionVersions(collectionId)
       .then(response => {
         const versions = response.data;
         dispatch(fetchVersionsSuccess(versions));
@@ -34,11 +51,9 @@ export const updateVersion = editedVersion => {
   return dispatch => {
     const originalVersion = store.getState().versions[editedVersion.id];
     dispatch(updateVersionRequest(editedVersion));
-    const id = editedVersion.id;
-    delete editedVersion.id;
-    delete editedVersion.collectionId;
+    const { number, host, id } = editedVersion;
     collectionVersionsService
-      .updateCollectionVersion(id, editedVersion)
+      .updateCollectionVersion(id, { number, host })
       .then(response => {
         dispatch(updateVersionSuccess(response.data));
       })
@@ -139,4 +154,66 @@ export const deleteVersionFailure = (error, version) => {
     error,
     version
   };
+};
+
+export const duplicateVersion = version => {
+  return dispatch => {
+    collectionVersionsService
+      .duplicateVersion(version.id)
+      .then(response => {
+        const endpoints = response.data.endpoints;
+        const pages = response.data.pages;
+        const groups = response.data.groups;
+        dispatch(groupsActions.updateState(groups));
+        dispatch(endpointsActions.updateState(endpoints));
+        dispatch(pagesActions.updateState(pages));
+        dispatch(duplicateVersionSuccess(response.data));
+      })
+      .catch(error => {
+        dispatch(duplicateVersionFailure(error.response, version));
+      });
+  };
+};
+
+export const duplicateVersionSuccess = response => {
+  return {
+    type: versionActionTypes.DUPLICATE_VERSION_SUCCESS,
+    response
+  };
+};
+
+export const duplicateVersionFailure = (error, version) => {
+  return {
+    type: versionActionTypes.DUPLICATE_VERSION_FAILURE,
+    error,
+    version
+  };
+};
+
+export const updateState = versions => {
+  return dispatch => {
+    try {
+      dispatch(updateStateSuccess(versions));
+    } catch (error) {
+      dispatch(updateStateFailure(error));
+    }
+  };
+};
+
+export const updateStateSuccess = versions => {
+  return {
+    type: versionActionTypes.UPDATE_STATE_SUCCESS,
+    versions
+  };
+};
+
+export const updateStateFailure = error => {
+  return {
+    type: versionActionTypes.UPDATE_STATE_FAILURE,
+    error
+  };
+};
+
+export default {
+  updateState
 };

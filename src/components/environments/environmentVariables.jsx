@@ -2,7 +2,9 @@ import React, { Component } from "react";
 import { Modal, Table } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import environmentService from "./environmentService";
+import shortId from "shortid";
 import "../../css/environmentVariables.css";
+import jQuery from "jquery";
 
 class EnvironmentVariables extends Component {
   state = {
@@ -14,25 +16,7 @@ class EnvironmentVariables extends Component {
   async componentDidMount() {
     if (this.props.title === "Add new Environment") return;
     let environment = {};
-
-    if (this.props.title === "Edit Environment") {
-      if (this.props.location.editEnvironment) {
-        environment = { ...this.props.location.editEnvironment };
-      } else {
-        const environmentId = this.props.location.pathname.split("/")[3];
-        const { data } = await environmentService.getEnvironment(environmentId);
-        environment = data;
-      }
-    }
-    if (this.props.title === "Environment") {
-      if (this.props.environment.variables) {
-        environment = { ...this.props.environment };
-      } else {
-        const environmentId = this.props.location.pathname.split("/")[3];
-        const { data } = await environmentService.getEnvironment(environmentId);
-        environment = data;
-      }
-    }
+    environment = jQuery.extend(true, {}, this.props.environment);
     const originalVariableNames = Object.keys(environment.variables);
     const updatedVariableNames = Object.keys(environment.variables);
     this.setState({
@@ -48,6 +32,7 @@ class EnvironmentVariables extends Component {
   };
 
   doSubmit() {
+    this.props.onHide();
     let environment = { ...this.state.environment };
     let originalVariableNames = [...this.state.originalVariableNames];
     let updatedVariableNames = [...this.state.updatedVariableNames];
@@ -63,15 +48,30 @@ class EnvironmentVariables extends Component {
       }
     }
     if (this.props.title === "Add new Environment") {
-      this.props.history.push({
-        pathname: `/dashboard`,
-        newEnvironment: { ...this.state.environment }
+      this.props.onHide();
+      const requestId = shortId.generate();
+      this.props.addEnvironment({ ...this.state.environment, requestId });
+      this.setState({
+        environment: { name: "", variables: {} },
+        originalVariableNames: [],
+        updatedVariableNames: []
       });
     } else {
-      this.props.history.push({
-        pathname: `/dashboard`,
-        updatedEnvironment: { ...this.state.environment }
-      });
+      const updatedEnvironment = { ...this.state.environment };
+      const originalEnvironment = jQuery.extend(
+        true,
+        {},
+        this.props.environment
+      );
+      if (
+        JSON.stringify(originalEnvironment) !==
+        JSON.stringify(updatedEnvironment)
+      ) {
+        if (updatedEnvironment.requestId) delete updatedEnvironment.requestId;
+        this.props.updateEnvironment({
+          ...updatedEnvironment
+        });
+      }
     }
   }
 
@@ -224,13 +224,10 @@ class EnvironmentVariables extends Component {
                 </tr>
               </tbody>
             </Table>
-            <button className="btn btn-default">Submit</button>
-            <Link
-              to={`/dashboard/`}
-              style={{ float: "right", padding: "10px 60px 0 0" }}
-            >
+            <button className="btn btn-primary">Submit</button>
+            <button className="btn btn-danger" onClick={this.props.onHide}>
               Cancel
-            </Link>
+            </button>
           </Modal.Body>
         </form>
       </Modal>

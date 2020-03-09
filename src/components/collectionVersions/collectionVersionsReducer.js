@@ -10,7 +10,7 @@ function versionsReducer(state = initialState, action) {
 
   switch (action.type) {
     case versionActionTypes.FETCH_VERSIONS_SUCCESS:
-      return { ...action.versions };
+      return { ...state, ...action.versions };
 
     case versionActionTypes.FETCH_VERSIONS_FAILURE:
       toast.error(action.error);
@@ -68,6 +68,32 @@ function versionsReducer(state = initialState, action) {
         ...state,
         [action.version.id]: action.version
       };
+    case versionActionTypes.DUPLICATE_VERSION_SUCCESS:
+      versions = { ...state };
+      const version = action.response.version;
+      versions = { ...versions, [version.id]: version };
+      return versions;
+
+    case versionActionTypes.DUPLICATE_VERSION_FAILURE:
+      toast.error(action.error);
+      return state;
+
+    case versionActionTypes.UPDATE_STATE_SUCCESS:
+      versions = { ...state };
+      const newVersions = { ...action.versions };
+      const newVersionIds = Object.keys(newVersions);
+      for (let i = 0; i < newVersionIds.length; i++) {
+        versions = {
+          ...versions,
+          [newVersionIds[i]]: newVersions[newVersionIds[i]]
+        };
+      }
+      return versions;
+
+    case versionActionTypes.UPDATE_STATE_FAILURE:
+      toast.error(action.error);
+      versions = { ...state };
+      return versions;
 
     default:
       return state;

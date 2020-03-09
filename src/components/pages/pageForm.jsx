@@ -76,4 +76,3 @@ class PageForm extends Form {
 }
 
 export default withRouter(connect(null, mapDispatchToProps)(PageForm));
-// export default PageForm;

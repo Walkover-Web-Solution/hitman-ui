@@ -2,14 +2,24 @@ import environmentsActionTypes from "./environmentsActionTypes";
 import { toast } from "react-toastify";
 
 const initialState = {
-  environments: {}
+  environments: {},
+  currentEnvironmentId: ""
 };
 
 function environmentsReducer(state = initialState, action) {
   let environments = {};
   switch (action.type) {
+    case environmentsActionTypes.SET_ENVIRONMENT_ID:
+      return {
+        ...state,
+        currentEnvironmentId: action.currentEnvironmentId
+      };
+
     case environmentsActionTypes.FETCH_ENVIRONMENTS_SUCCESS:
-      return { ...action.environments };
+      return {
+        ...state,
+        environments: { ...state.environments, ...action.environments }
+      };
 
     case environmentsActionTypes.FETCH_ENVIRONMENTS_FAILURE:
       toast.error(action.error);
@@ -18,44 +28,56 @@ function environmentsReducer(state = initialState, action) {
     case environmentsActionTypes.ADD_ENVIRONMENT_REQUEST:
       return {
         ...state,
-        [action.newEnvironment.requestId]: action.newEnvironment
+        environments: {
+          ...state.environments,
+          [action.newEnvironment.requestId]: action.newEnvironment
+        }
       };
 
     case environmentsActionTypes.ADD_ENVIRONMENT_SUCCESS:
-      environments = { ...state };
+      environments = { ...state.environments };
       delete environments[action.response.requestId];
       environments[action.response.id] = action.response;
-      return environments;
+      return { ...state, environments };
 
     case environmentsActionTypes.ADD_ENVIRONMENT_FAILURE:
       toast.error(action.error);
-      environments = { ...state };
+      environments = { ...state.environments };
       delete environments[action.newEnvironment.requestId];
-      return environments;
+      return { ...state, environments };
 
     case environmentsActionTypes.UPDATE_ENVIRONMENT_REQUEST:
       return {
         ...state,
-        [action.editedEnvironment.id]: action.editedEnvironment
+        environments: {
+          ...state.environments,
+          [action.editedEnvironment.id]: action.editedEnvironment
+        }
       };
 
     case environmentsActionTypes.UPDATE_ENVIRONMENT_SUCCESS:
       return {
         ...state,
-        [action.response.id]: action.response
+        environments: {
+          ...state.environments,
+          [action.response.id]: action.response
+        }
       };
 
     case environmentsActionTypes.UPDATE_ENVIRONMENT_FAILURE:
       toast.error(action.error);
       return {
         ...state,
-        [action.originalEnvironment.id]: action.originalEnvironment
+        environments: {
+          ...state.environments,
+          [action.originalEnvironment.id]: action.originalEnvironment
+        }
       };
 
     case environmentsActionTypes.DELETE_ENVIRONMENT_REQUEST:
-      environments = { ...state };
+      environments = { ...state.environments };
       delete environments[action.environment.id];
-      return environments;
+      return { ...state, environments };
 
     case environmentsActionTypes.DELETE_ENVIRONMENT_SUCCESS:
       return state;
@@ -65,7 +87,10 @@ function environmentsReducer(state = initialState, action) {
       if (action.error.status === 404) return state;
       return {
         ...state,
-        [action.environment.id]: action.environment
+        environments: {
+          ...state.environments,
+          [action.environment.id]: action.environment
+        }
       };
 
     default:

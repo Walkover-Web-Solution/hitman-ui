@@ -16,7 +16,7 @@ const rootReducer = combineReducers({
   groups: groupsReducer,
   pages: pagesReducer,
   endpoints: endpointsReducer,
-  environments: environmentsReducer
+  environment: environmentsReducer
 });
 const store = createStore(
   rootReducer,

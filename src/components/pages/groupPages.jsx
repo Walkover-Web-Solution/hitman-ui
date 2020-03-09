@@ -8,7 +8,7 @@ import {
   Dropdown,
   DropdownButton
 } from "react-bootstrap";
-import { deletePage } from "./pagesActions";
+import { deletePage, duplicatePage } from "./pagesActions";
 
 const mapStateToProps = state => {
   return {
@@ -17,7 +17,8 @@ const mapStateToProps = state => {
 };
 const mapDispatchToProps = dispatch => {
   return {
-    deletePage: page => dispatch(deletePage(page))
+    deletePage: page => dispatch(deletePage(page)),
+    duplicatePage: page => dispatch(duplicatePage(page))
   };
 };
 
@@ -51,7 +52,6 @@ class GroupPages extends Component {
     this.props.deletePage(page);
     this.props.history.push({
       pathname: "/dashboard/collections"
-      // deletePage: page
     });
   }
 
@@ -70,9 +70,10 @@ class GroupPages extends Component {
   }
 
   handleDuplicate(page) {
+    this.props.duplicatePage(page);
     this.props.history.push({
-      pathname: "/dashboard/collections",
-      duplicatePage: page
+      pathname: "/dashboard/collections"
+      // duplicatePage: page
     });
   }
 

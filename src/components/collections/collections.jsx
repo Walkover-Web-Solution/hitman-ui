@@ -14,7 +14,6 @@ import collectionsService from "./collectionsService";
 import collectionVersionsService from "../collectionVersions/collectionVersionsService";
 import CollectionVersions from "../collectionVersions/collectionVersions";
 import CollectionVersionForm from "../collectionVersions/collectionVersionForm";
-import GroupForm from "../groups/groupForm";
 import groupsService from "../groups/groupsService";
 import PageForm from "../pages/pageForm";
 import pageService from "../pages/pageService";
@@ -27,13 +26,14 @@ import {
   fetchCollections,
   addCollection,
   updateCollection,
-  deleteCollection
+  deleteCollection,
+  duplicateCollection
 } from "./collectionsActions";
 import { fetchGroups, deleteGroup } from "../groups/groupsActions";
 import { fetchEndpoints } from "../endpoints/endpointsActions";
-import { fetchVersions } from "../collectionVersions/collectionVersionsActions";
+import { fetchAllVersions } from "../collectionVersions/collectionVersionsActions";
 
-import { fetchPages, updatePage } from "../pages/pagesActions";
+import { fetchPages } from "../pages/pagesActions";
 import { withRouter } from "react-router-dom";
 
 const mapStateToProps = state => {
@@ -47,7 +47,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     fetchCollections: () => dispatch(fetchCollections()),
-    fetchVersions: () => dispatch(fetchVersions()),
+    fetchAllVersions: () => dispatch(fetchAllVersions()),
     fetchGroups: () => dispatch(fetchGroups()),
     fetchEndpoints: () => dispatch(fetchEndpoints()),
     fetchPages: () => dispatch(fetchPages()),
@@ -55,9 +55,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     updateCollection: editedCollection =>
       dispatch(updateCollection(editedCollection)),
     deleteCollection: collection => dispatch(deleteCollection(collection)),
-    deleteGroup: groupId => dispatch(deleteGroup(groupId)),
-    updatePage: (editedPage, pageId) =>
-      dispatch(updatePage(ownProps.history, editedPage, pageId))
+    duplicateCollection: collection =>
+      dispatch(duplicateCollection(collection)),
+    deleteGroup: groupId => dispatch(deleteGroup(groupId))
   };
 };
 
@@ -70,7 +70,7 @@ class CollectionsComponent extends Component {
 
   async componentDidMount() {
     this.props.fetchCollections();
-    this.props.fetchVersions();
+    this.props.fetchAllVersions();
     this.props.fetchGroups();
     this.props.fetchEndpoints();
     this.props.fetchPages();
@@ -80,39 +80,39 @@ class CollectionsComponent extends Component {
     this.setState({ showCollectionForm: false });
   }
 
-  async setEndpointIds(groupId, endpointsOrder) {
-    const groups = { ...this.state.groups };
-    groups[groupId].endpointsOrder = endpointsOrder;
-    this.setState({ groups });
-    const { name, host } = groups[groupId];
-    const group = { name, host, endpointsOrder };
-    try {
-      await groupsService.updateGroup(groupId, group);
-    } catch (e) {
-      toast.error(e);
-    }
-  }
+  // async setEndpointIds(groupId, endpointsOrder) {
+  //   const groups = { ...this.state.groups };
+  //   groups[groupId].endpointsOrder = endpointsOrder;
+  //   this.setState({ groups });
+  //   const { name, host } = groups[groupId];
+  //   const group = { name, host, endpointsOrder };
+  //   try {
+  //     await groupsService.updateGroup(groupId, group);
+  //   } catch (e) {
+  //     toast.error(e);
+  //   }
+  // }
 
-  async dndMoveEndpoint(endpointId, sourceGroupId, destinationGroupId) {
-    const groups = { ...this.state.groups };
-    const endpoints = { ...this.state.endpoints };
-    const originalEndpoints = { ...this.state.endpoints };
-    const originalGroups = { ...this.state.groups };
-    const endpoint = endpoints[endpointId];
-    endpoint.groupId = destinationGroupId;
-    endpoints[endpointId] = endpoint;
-    groups[sourceGroupId].endpointsOrder = groups[
-      sourceGroupId
-    ].endpointsOrder.filter(gId => gId !== endpointId.toString());
-    groups[destinationGroupId].endpointsOrder.push(endpointId);
-    this.setState({ endpoints, groups });
-    try {
-      delete endpoint.id;
-      await endpointService.updateEndpoint(endpointId, endpoint);
-    } catch (error) {
-      this.setState({ endpoints: originalEndpoints, groups: originalGroups });
-    }
-  }
+  // async dndMoveEndpoint(endpointId, sourceGroupId, destinationGroupId) {
+  //   const groups = { ...this.state.groups };
+  //   const endpoints = { ...this.state.endpoints };
+  //   const originalEndpoints = { ...this.state.endpoints };
+  //   const originalGroups = { ...this.state.groups };
+  //   const endpoint = endpoints[endpointId];
+  //   endpoint.groupId = destinationGroupId;
+  //   endpoints[endpointId] = endpoint;
+  //   groups[sourceGroupId].endpointsOrder = groups[
+  //     sourceGroupId
+  //   ].endpointsOrder.filter(gId => gId !== endpointId.toString());
+  //   groups[destinationGroupId].endpointsOrder.push(endpointId);
+  //   this.setState({ endpoints, groups });
+  //   try {
+  //     delete endpoint.id;
+  //     await endpointService.updateEndpoint(endpointId, endpoint);
+  //   } catch (error) {
+  //     this.setState({ endpoints: originalEndpoints, groups: originalGroups });
+  //   }
+  // }
   async handleAddCollection(newCollection) {
     newCollection.requestId = shortId.generate();
     this.props.addCollection(newCollection);
@@ -179,180 +179,13 @@ class CollectionsComponent extends Component {
     this.props.addPage(versionId, newPage);
   }
 
-  async handleUpdatePage(editedPage, pageId) {
-    this.props.updatePage(editedPage, pageId);
-  }
-
-  async handleDuplicateEndpoint(endpointCopy) {
-    let originalEndpoints = { ...this.state.endpoints };
-    let endpoints = { ...this.state.endpoints };
-    let originalGroups = { ...this.state.groups };
-    let groups = { ...this.state.groups };
-
-    try {
-      const { data } = await endpointService.duplicateEndpoint(endpointCopy.id);
-      let endpoint = data;
-      endpoints[endpoint.id] = endpoint;
-      groups[endpoint.groupId].endpointsOrder.push(endpoint.id.toString());
-      this.setState({ endpoints, groups });
-    } catch (ex) {
-      toast.error(ex.response ? ex.response.data : "Something went wrong");
-      this.setState({ endpoints: originalEndpoints, groups: originalGroups });
-    }
-  }
-
-  async handleDuplicatePage(pageCopy) {
-    let originalPage = { ...this.state.pages };
-    let pages = { ...this.state.pages };
-    let page = {};
-    try {
-      const { data } = await pageService.duplicatePage(pageCopy.id);
-      page = data;
-      pages[page.id] = page;
-      const pageIds = [...this.state.pageIds, page.id.toString()];
-      this.setState({ pages, pageIds });
-    } catch (ex) {
-      toast.error(ex.response ? ex.response.data : "Something went wrong");
-      this.setState({ originalPage });
-    }
-  }
-
-  async handleDuplicateGroup(groupCopy) {
-    let originalGroup = { ...this.state.groups };
-    let groups = { ...this.state.groups };
-    let group = {};
-    let endpoints = {};
-    let pages = {};
-    try {
-      const { data } = await groupsService.duplicateGroup(groupCopy.id);
-      endpoints = { ...this.state.endpoints, ...data.endpoints };
-      pages = { ...this.state.pages, ...data.pages };
-      group = data.groups;
-      groups[group.id] = group;
-      const groupIds = [...this.state.groupIds, group.id.toString()];
-      const pageIds = [...this.state.pageIds, ...Object.keys(data.pages)];
-      this.setState({ groups, groupIds, endpoints, pages, pageIds });
-    } catch (ex) {
-      toast.error(ex.response ? ex.response.data : "Something went wrong");
-      this.setState({ originalGroup });
-    }
-  }
-
-  async handleDuplicateVersion(versionCopy) {
-    let orignalVersion = { ...this.state.versions };
-    let versions = { ...this.state.versions };
-    let version = {};
-    let endpoints = {};
-    let pages = {};
-    let groups = {};
-    try {
-      const { data } = await collectionVersionsService.duplicateVersion(
-        versionCopy.id
-      );
-      version = data.version;
-      versions[version.id] = version;
-      groups = { ...this.state.groups, ...data.groups };
-      endpoints = { ...this.state.endpoints, ...data.endpoints };
-      pages = { ...this.state.pages, ...data.pages };
-      const versionIds = [...this.state.versionIds, version.id.toString()];
-      const groupIds = [...this.state.groupIds, ...Object.keys(data.groups)];
-      const pageIds = [...this.state.pageIds, ...Object.keys(data.pages)];
-      this.setState({
-        versions,
-        versionIds,
-        groups,
-        groupIds,
-        endpoints,
-        pages,
-        pageIds
-      });
-    } catch (ex) {
-      toast.error(ex.response ? ex.response.data : "Something went wrong");
-      this.setState({ orignalVersion });
-    }
-  }
-
   async handleDuplicateCollection(collectionCopy) {
-    let originalCollection = { ...this.state.collections };
-    let collections = { ...this.state.collections };
-    let versions = {};
-    let endpoints = {};
-    let pages = {};
-    let groups = {};
-    let collection = {};
-    try {
-      const { data } = await collectionsService.duplicateCollection(
-        collectionCopy.id
-      );
-      collection = data.collection;
-      collections[collection.id] = collection;
-      versions = { ...this.state.versions, ...data.versions };
-      groups = { ...this.state.groups, ...data.groups };
-      endpoints = { ...this.state.endpoints, ...data.endpoints };
-      pages = { ...this.state.pages, ...data.pages };
-      const collectionIds = [
-        ...this.state.collectionIds,
-        collection.id.toString()
-      ];
-      const versionIds = [
-        ...this.state.versionIds,
-        ...Object.keys(data.versions)
-      ];
-      const groupIds = [...this.state.groupIds, ...Object.keys(data.groups)];
-      const pageIds = [...this.state.pageIds, ...Object.keys(data.pages)];
-      this.setState({
-        collections,
-        collectionIds,
-        versions,
-        versionIds,
-        groups,
-        groupIds,
-        endpoints,
-        pages,
-        pageIds
-      });
-    } catch (ex) {
-      toast.error(ex.response ? ex.response.data : "Something went wrong");
-      this.setState({ originalCollection });
-    }
+    this.props.duplicateCollection(collectionCopy);
   }
 
   render() {
     const { location } = this.props;
 
-    if (location.duplicateEndpoint) {
-      const duplicateEndpoint = location.duplicateEndpoint;
-      this.props.history.replace({ duplicateEndpoint: null });
-      this.handleDuplicateEndpoint(duplicateEndpoint);
-    }
-
-    if (location.editedPage && location.groupId) {
-      const { id: pageId } = location.editedPage;
-      this.props.history.replace({ editedPage: null });
-      this.handleUpdatePage(location.editedPage, pageId);
-    } else if (location.editedPage) {
-      const { id: pageId } = location.editedPage;
-      this.props.history.replace({ editedPage: null });
-      this.handleUpdatePage(location.editedPage, pageId);
-    }
-
-    if (location.duplicatePage) {
-      const duplicatePage = location.duplicatePage;
-      this.props.history.replace({ duplicatePage: null });
-      this.handleDuplicatePage(duplicatePage);
-    }
-
-    if (location.duplicateGroup) {
-      const duplicateGroup = location.duplicateGroup;
-      this.props.history.replace({ duplicateGroup: null });
-      this.handleDuplicateGroup(duplicateGroup);
-    }
-
-    if (location.duplicateVersion) {
-      const duplicateVersion = location.duplicateVersion;
-      this.props.history.replace({ duplicateVersion: null });
-      this.handleDuplicateVersion(duplicateVersion);
-    }
     if (location.importVersionLink) {
       let importLink = location.importVersionLink;
       let collectionId = location.collectionId;
@@ -373,6 +206,17 @@ class CollectionsComponent extends Component {
                 onHide={() => this.closeCollectionForm()}
                 title={this.state.collectionFormName}
                 edited_collection={this.state.selectedCollection}
+              />
+            )}
+            {this.state.showVersionForm && (
+              <CollectionVersionForm
+                {...this.props}
+                show={true}
+                onHide={() => {
+                  this.setState({ showVersionForm: false });
+                }}
+                collection_id={this.state.selectedCollection.id}
+                title="Add new Collection Version"
               />
             )}
             <Switch>
@@ -423,66 +267,6 @@ class CollectionsComponent extends Component {
                 )}
               />
               <Route
-                path="/dashboard/collections/:collectionId/versions/:versionId/groups/:groupId/edit"
-                render={props => (
-                  <GroupForm
-                    {...props}
-                    show={true}
-                    onHide={() => {
-                      this.props.history.push({
-                        pathname: "/dashboard/collections"
-                      });
-                    }}
-                    title="Edit Group"
-                  />
-                )}
-              />
-              <Route
-                path="/dashboard/collections/:collectionId/versions/:versionId/groups/new"
-                render={props => (
-                  <GroupForm
-                    {...props}
-                    show={true}
-                    onHide={() => {
-                      this.props.history.push({
-                        pathname: "/dashboard/collections"
-                      });
-                    }}
-                    title="Add new Group"
-                  />
-                )}
-              />
-              <Route
-                path="/dashboard/collections/:id/versions/new"
-                render={props => (
-                  <CollectionVersionForm
-                    {...props}
-                    show={true}
-                    onHide={() => {
-                      this.props.history.push({
-                        pathname: "/dashboard/collections"
-                      });
-                    }}
-                    title="Add new Collection Version"
-                  />
-                )}
-              />
-              <Route
-                path="/dashboard/collections/:collectionId/versions/:versionId/edit"
-                render={props => (
-                  <CollectionVersionForm
-                    {...props}
-                    show={true}
-                    onHide={() => {
-                      this.props.history.push({
-                        pathname: "/dashboard/collections"
-                      });
-                    }}
-                    title="Edit Collection Version"
-                  />
-                )}
-              />
-              <Route
                 path="/dashboard/:collectionId/versions/import"
                 render={props => (
                   <ImportVersionForm
@@ -494,21 +278,6 @@ class CollectionsComponent extends Component {
                       });
                     }}
                     title="Import Version"
-                  />
-                )}
-              />
-              <Route
-                path="/dashboard/collections/:id/edit"
-                render={props => (
-                  <CollectionForm
-                    {...props}
-                    show={true}
-                    onHide={() => {
-                      this.props.history.push({
-                        pathname: "/dashboard/collections"
-                      });
-                    }}
-                    title="Edit Collection"
                   />
                 )}
               />
@@ -589,9 +358,11 @@ class CollectionsComponent extends Component {
                     <Dropdown.Item
                       eventKey="3"
                       onClick={() => {
-                        this.props.history.push({
-                          pathname: `/dashboard/collections/${collectionId}/versions/new`,
-                          collectionId
+                        this.setState({
+                          showVersionForm: true,
+                          selectedCollection: {
+                            ...this.props.collections[collectionId]
+                          }
                         });
                       }}
                     >

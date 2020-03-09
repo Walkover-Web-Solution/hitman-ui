@@ -146,13 +146,13 @@ class CollectionForm extends Form {
             </div>
             {this.renderInput("description", "Description", "textbox")}
             {this.renderButton("Submit")}
+            <button
+              className="btn btn-default"
+              onClick={() => this.props.onHide()}
+            >
+              Cancel
+            </button>
           </form>
-          <button
-            onClick={() => this.props.onHide()}
-            style={{ float: "right" }}
-          >
-            Cancel
-          </button>
         </Modal.Body>
       </Modal>
     );

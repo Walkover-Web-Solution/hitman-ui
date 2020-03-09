@@ -140,3 +140,59 @@ export const deleteEndpointFailure = (error, endpoint) => {
     endpoint
   };
 };
+
+export const duplicateEndpoint = endpoint => {
+  return dispatch => {
+    endpointService
+      .duplicateEndpoint(endpoint.id)
+      .then(response => {
+        dispatch(duplicateEndpointSuccess(response.data));
+      })
+      .catch(error => {
+        dispatch(duplicateEndpointFailure(error.response, endpoint));
+      });
+  };
+};
+
+export const duplicateEndpointSuccess = response => {
+  return {
+    type: endpointsActionTypes.DUPLICATE_ENDPOINT_SUCCESS,
+    response
+  };
+};
+
+export const duplicateEndpointFailure = (error, endpoint) => {
+  return {
+    type: endpointsActionTypes.DUPLICATE_ENDPOINT_FAILURE,
+    error,
+    endpoint
+  };
+};
+
+export const updateState = endpoints => {
+  return dispatch => {
+    try {
+      dispatch(updateStateSuccess(endpoints));
+    } catch (error) {
+      dispatch(updateStateFailure(error));
+    }
+  };
+};
+
+export const updateStateSuccess = endpoints => {
+  return {
+    type: endpointsActionTypes.UPDATE_STATE_SUCCESS,
+    endpoints
+  };
+};
+
+export const updateStateFailure = error => {
+  return {
+    type: endpointsActionTypes.UPDATE_STATE_FAILURE,
+    error
+  };
+};
+
+export default {
+  updateState
+};

@@ -1,9 +1,7 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import { Modal } from "react-bootstrap";
 import Joi from "joi-browser";
 import Form from "../common/form";
-import collectionVersionsService from "./collectionVersionsService";
 import { connect } from "react-redux";
 import {
   addVersion,
@@ -39,36 +37,29 @@ class CollectionVersionForm extends Form {
 
   async componentDidMount() {
     let data = {};
-    const collectionId = this.props.location.pathname.split("/")[3];
-    const versionId = this.props.location.pathname.split("/")[5];
+    const collectionId = "";
+    let versionId = "";
     if (this.props.title === "Add new Collection Version") return;
-    if (this.props.location.editCollectionVersion) {
-      const { number, host } = this.props.location.editCollectionVersion;
+    if (this.props.selected_version) {
+      const { number, host, id } = this.props.selected_version;
       data = {
         number,
         host
       };
-    } else {
-      const {
-        data: editedCollectionVersion
-      } = await collectionVersionsService.getCollectionVersion(versionId);
-      const { number, host } = editedCollectionVersion;
-      data = {
-        number,
-        host
-      };
+      versionId = id;
     }
     this.setState({ data, versionId, collectionId });
   }
 
   async doSubmit() {
+    this.props.onHide();
     if (this.props.title === "Edit Collection Version") {
-      const { id, collectionId } = this.props.location.editCollectionVersion;
+      const { id, collectionId } = this.props.selected_version;
       const editedCollectionVersion = { ...this.state.data, collectionId, id };
       this.props.updateVersion(editedCollectionVersion);
     }
     if (this.props.title === "Add new Collection Version") {
-      const collectionId = this.props.location.collectionId;
+      const collectionId = this.props.collection_id;
       const newVersion = { ...this.state.data, requestId: shortid.generate() };
       this.props.addVersion(newVersion, collectionId);
     }
@@ -95,7 +86,9 @@ class CollectionVersionForm extends Form {
             {this.renderInput("number", "Version Number")}
             {this.renderInput("host", "Host*")}
             {this.renderButton("Submit")}
-            <Link to={`/dashboard/collections/`}>Cancel</Link>
+            <button className="btn btn-default" onClick={this.props.onHide}>
+              Cancel
+            </button>
           </form>
         </Modal.Body>
       </Modal>
