@@ -81,39 +81,39 @@ class CollectionsComponent extends Component {
     this.setState({ showCollectionForm: false });
   }
 
-  async setEndpointIds(groupId, endpointsOrder) {
-    const groups = { ...this.state.groups };
-    groups[groupId].endpointsOrder = endpointsOrder;
-    this.setState({ groups });
-    const { name, host } = groups[groupId];
-    const group = { name, host, endpointsOrder };
-    try {
-      await groupsService.updateGroup(groupId, group);
-    } catch (e) {
-      toast.error(e);
-    }
-  }
+  // async setEndpointIds(groupId, endpointsOrder) {
+  //   const groups = { ...this.state.groups };
+  //   groups[groupId].endpointsOrder = endpointsOrder;
+  //   this.setState({ groups });
+  //   const { name, host } = groups[groupId];
+  //   const group = { name, host, endpointsOrder };
+  //   try {
+  //     await groupsService.updateGroup(groupId, group);
+  //   } catch (e) {
+  //     toast.error(e);
+  //   }
+  // }
 
-  async dndMoveEndpoint(endpointId, sourceGroupId, destinationGroupId) {
-    const groups = { ...this.state.groups };
-    const endpoints = { ...this.state.endpoints };
-    const originalEndpoints = { ...this.state.endpoints };
-    const originalGroups = { ...this.state.groups };
-    const endpoint = endpoints[endpointId];
-    endpoint.groupId = destinationGroupId;
-    endpoints[endpointId] = endpoint;
-    groups[sourceGroupId].endpointsOrder = groups[
-      sourceGroupId
-    ].endpointsOrder.filter(gId => gId !== endpointId.toString());
-    groups[destinationGroupId].endpointsOrder.push(endpointId);
-    this.setState({ endpoints, groups });
-    try {
-      delete endpoint.id;
-      await endpointService.updateEndpoint(endpointId, endpoint);
-    } catch (error) {
-      this.setState({ endpoints: originalEndpoints, groups: originalGroups });
-    }
-  }
+  // async dndMoveEndpoint(endpointId, sourceGroupId, destinationGroupId) {
+  //   const groups = { ...this.state.groups };
+  //   const endpoints = { ...this.state.endpoints };
+  //   const originalEndpoints = { ...this.state.endpoints };
+  //   const originalGroups = { ...this.state.groups };
+  //   const endpoint = endpoints[endpointId];
+  //   endpoint.groupId = destinationGroupId;
+  //   endpoints[endpointId] = endpoint;
+  //   groups[sourceGroupId].endpointsOrder = groups[
+  //     sourceGroupId
+  //   ].endpointsOrder.filter(gId => gId !== endpointId.toString());
+  //   groups[destinationGroupId].endpointsOrder.push(endpointId);
+  //   this.setState({ endpoints, groups });
+  //   try {
+  //     delete endpoint.id;
+  //     await endpointService.updateEndpoint(endpointId, endpoint);
+  //   } catch (error) {
+  //     this.setState({ endpoints: originalEndpoints, groups: originalGroups });
+  //   }
+  // }
   async handleAddCollection(newCollection) {
     newCollection.requestId = shortId.generate();
     this.props.addCollection(newCollection);
