@@ -524,10 +524,6 @@ class DisplayEndpoint extends Component {
         this.props.location.endpoint.params
       );
 
-      this.state.prettyResponse = false;
-      this.state.rawResponse = false;
-      this.state.previewResponse = false;
-      this.state.endpoint = endpoint;
       this.setState({
         data: {
           method: endpoint.requestType,
@@ -543,7 +539,11 @@ class DisplayEndpoint extends Component {
         onChangeFlag: false,
         versions: this.props.location.versions,
         groups: this.props.location.groups,
-        originalParams
+        originalParams,
+        prettyResponse: false,
+        rawResponse: false,
+        previewResponse: false,
+        endpoint
       });
       this.props.history.push({ endpoint: null });
     }
