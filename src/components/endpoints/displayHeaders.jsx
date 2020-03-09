@@ -61,7 +61,6 @@ class DisplayHeaders extends Component {
       this.props.handle_update_headers(originalHeaders);
       this.props.history.push({ endpoint: null });
     }
-    console.log(this.state.originalHeaders);
     return (
       <div>
         <GenericTable

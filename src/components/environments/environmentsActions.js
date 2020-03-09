@@ -110,7 +110,6 @@ export const updateEnvironmentRequest = editedEnvironment => {
 };
 
 export const updateEnvironmentSuccess = response => {
-  console.log(response);
   return {
     type: environmentsActionTypes.UPDATE_ENVIRONMENT_SUCCESS,
     response

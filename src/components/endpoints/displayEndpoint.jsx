@@ -1,17 +1,17 @@
 import React, { Component } from "react";
-import endpointService from "./endpointService";
-import JSONPretty from "react-json-pretty";
-import { Dropdown, Table } from "react-bootstrap";
-import { CopyToClipboard } from "react-copy-to-clipboard";
-import Navbar from "react-bootstrap/Navbar";
+import { Dropdown } from "react-bootstrap";
 import Nav from "react-bootstrap/Nav";
-import { toast } from "react-toastify";
+import Navbar from "react-bootstrap/Navbar";
+import { CopyToClipboard } from "react-copy-to-clipboard";
+import JSONPretty from "react-json-pretty";
 import { connect } from "react-redux";
-import "../../css/editableDropdown.css";
-import { addEndpoint, updateEndpoint } from "./endpointsActions";
+import { toast } from "react-toastify";
 import shortId from "shortid";
+import "../../css/editableDropdown.css";
 import DisplayHeaders from "./displayHeaders";
 import ParamsComponent from "./displayParams";
+import { addEndpoint, updateEndpoint } from "./endpointsActions";
+import endpointService from "./endpointService";
 const status = require("http-status");
 var JSONPrettyMon = require("react-json-pretty/dist/monikai");
 var URI = require("urijs");
@@ -389,7 +389,6 @@ class DisplayEndpoint extends Component {
   }
 
   fillDropdownValue(hostJson) {
-    console.log(hostJson);
     this.dropdownHost["variable"].value = hostJson.variableHost;
     this.dropdownHost["group"].value = hostJson.groupHost;
     this.dropdownHost["version"].value = hostJson.versionHost;
@@ -402,7 +401,6 @@ class DisplayEndpoint extends Component {
   };
 
   setDropdownValue(key) {
-    console.log("set dropdown", key);
     let host = "";
     if (key === "custom") {
       host = "";
@@ -455,9 +453,6 @@ class DisplayEndpoint extends Component {
   }
 
   render() {
-    console.log("props", this.props);
-    console.log("state", this.state);
-
     if (this.props.location.title === "Add New Endpoint") {
       this.customHost = false;
       const hostJson = this.fetchHosts(
