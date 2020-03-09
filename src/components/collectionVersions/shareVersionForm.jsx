@@ -1,7 +1,6 @@
 import React from "react";
 import { Modal } from "react-bootstrap";
 import Joi from "joi-browser";
-import { Link } from "react-router-dom";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { apiUrl } from "../../config.json";
 import Form from "../common/form";
@@ -29,8 +28,6 @@ class ShareVersionForm extends Form {
       .required()
       .label("Public Link")
   };
-
-  async doSubmit(props) {}
 
   render() {
     return (

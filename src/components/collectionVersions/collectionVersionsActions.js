@@ -29,6 +29,7 @@ export const fetchVersionsFailure = error => {
     error
   };
 };
+
 export const updateVersion = editedVersion => {
   return dispatch => {
     const originalVersion = store.getState().versions[editedVersion.id];

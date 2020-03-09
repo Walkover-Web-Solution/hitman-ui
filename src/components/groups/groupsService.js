@@ -29,8 +29,8 @@ export function deleteGroup(GroupId) {
   return http.delete(`${GroupUrl(GroupId)}`);
 }
 
-export function getAllGroups(){
-  return http.get(`${apiUrl}/groups`)
+export function getAllGroups() {
+  return http.get(`${apiUrl}/groups`);
 }
 
 export function duplicateGroup(groupId) {

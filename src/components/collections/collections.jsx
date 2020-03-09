@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
 import {
   Accordion,
   Card,
@@ -128,7 +127,6 @@ class CollectionsComponent extends Component {
   }
 
   async handleImportVersion(importLink, shareIdentifier, collectionId) {
-    let orignalVersion = { ...this.state.versions };
     let versions = { ...this.state.versions };
     let version = {};
     let endpoints = {};

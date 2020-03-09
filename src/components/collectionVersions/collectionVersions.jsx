@@ -27,11 +27,11 @@ const mapDispatchToProps = dispatch => {
 class CollectionVersions extends Component {
   state = {
     versionDnDFlag: true,
-    showShareVersionForm:false,
+    showShareVersionForm: false,
     versionFormName: "",
     selectedVersion: {},
-    showVersionForm:{add:false,share:false,edit:false}
-    };
+    showVersionForm: { add: false, share: false, edit: false }
+  };
 
   versionDnD(versionDnDFlag) {
     this.setState({ versionDnDFlag });
@@ -67,10 +67,17 @@ class CollectionVersions extends Component {
   }
 
   async handleDelete(collectionVersion) {
-    this.props.deleteVersion(collectionVersion);
-    this.props.history.push({
-      pathname: "/dashboard/collections"
-    });
+    const confirm = window.confirm(
+      "Are you sure you want to delete this versions? " +
+        "\n" +
+        "All your groups, pages and endpoints present in this version will be deleted."
+    );
+    if (confirm) {
+      this.props.deleteVersion(collectionVersion);
+      this.props.history.push({
+        pathname: "/dashboard/collections"
+      });
+    }
   }
 
   handleUpdate(collectionVersion) {
@@ -93,37 +100,31 @@ class CollectionVersions extends Component {
       duplicateVersion: version
     });
   }
+
   handleShare(version) {
-    this.handleShareVersion(
-      version.shareIdentifier,
-      version.collectionId,
-      version.id
-    );
-  }
-  handleShareVersion(shareIdentifier, collectionId, versionId) {
     this.props.history.push({
-      pathname: `/dashboard/collections/${collectionId}/versions/${versionId}/share`,
-      shareIdentifier: shareIdentifier
+      pathname: `/dashboard/collections/${version.collectionId}/versions/${version.id}/share`,
+      shareIdentifier: version.shareIdentifier
     });
   }
-  closeVersionForm(){
-    let share=false;
-    let showVersionForm={share};
-    this.setState({showVersionForm});
+
+  closeVersionForm() {
+    let share = false;
+    let showVersionForm = { share };
+    this.setState({ showVersionForm });
   }
 
   render() {
     return (
       <div>
-         { this.state.showVersionForm.share &&(
-              <ShareVersionForm
-              show={this.state.showVersionForm.share}
-              onHide={() => this.closeVersionForm()}
-              title={this.state.versionFormName}
-              selectedVersion={this.state.selectedVersion}
-
-              />
-            )}
+        {this.state.showVersionForm.share && (
+          <ShareVersionForm
+            show={this.state.showVersionForm.share}
+            onHide={() => this.closeVersionForm()}
+            title={this.state.versionFormName}
+            selectedVersion={this.state.selectedVersion}
+          />
+        )}
         {this.props.versions &&
           Object.keys(this.props.versions) &&
           Object.keys(this.props.versions)
@@ -160,16 +161,9 @@ class CollectionVersions extends Component {
                       </Dropdown.Item>
                       <Dropdown.Item
                         eventKey="2"
-                        onClick={() => {
-                          if (
-                            window.confirm(
-                              "Are you sure you want to delete this versions? " +
-                                "\n" +
-                                "All your groups, pages and endpoints present in this version will be deleted."
-                            )
-                          )
-                            this.handleDelete(this.props.versions[versionId]);
-                        }}
+                        onClick={() =>
+                          this.handleDelete(this.props.versions[versionId])
+                        }
                       >
                         Delete
                       </Dropdown.Item>
@@ -205,16 +199,8 @@ class CollectionVersions extends Component {
                       <Dropdown.Item
                         eventKey="3"
                         onClick={() => {
-                          let share=true;
-                          let showVersionForm={share};
-                          this.setState({
-                          showVersionForm,
-                          versionFormName: "Share Version",
-                          selectedVersion: {
-                          ...this.props.versions[versionId]
-                          }
-                          });
-                          }}
+                          this.handleShare(this.props.versions[versionId]);
+                        }}
                       >
                         Share
                       </Dropdown.Item>

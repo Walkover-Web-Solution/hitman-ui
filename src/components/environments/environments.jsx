@@ -4,7 +4,6 @@ import { Route, Switch, Link } from "react-router-dom";
 import environmentService from "./environmentService";
 import EnvironmentModal from "./environmentModal";
 import EnvironmentVariables from "./environmentVariables";
-import { toast } from "react-toastify";
 import jQuery from "jquery";
 import shortId from "shortid";
 import { connect } from "react-redux";
