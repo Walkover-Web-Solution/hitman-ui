@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Table } from "react-bootstrap";
+import GenericTable from "./table";
 
 class ParamsComponent extends Component {
   state = {};
@@ -50,80 +50,15 @@ class ParamsComponent extends Component {
   render() {
     this.originalParams = this.props.originalParams;
     return (
-      <Table bordered size="sm">
-        {" "}
-        <thead>
-          {" "}
-          <tr>
-            <th>KEY</th>
-            <th>VALUE</th>
-            <th>DESCRIPTION</th>{" "}
-          </tr>{" "}
-        </thead>
-        <tbody>
-          {this.originalParams.map((params, index) =>
-            params !== "deleted" ? (
-              <tr key={index}>
-                <td>
-                  <input
-                    name={index + ".key"}
-                    ref={this.paramKey}
-                    value={this.originalParams[index].key}
-                    onChange={this.handleChangeParam}
-                    type={"text"}
-                    className="form-control"
-                    style={{ border: "none" }}
-                  />
-                </td>
-                <td>
-                  <input
-                    name={index + ".value"}
-                    value={this.originalParams[index].value}
-                    onChange={this.handleChangeParam}
-                    type={"text"}
-                    className="form-control"
-                    style={{ border: "none" }}
-                  />
-                </td>
-                <td>
-                  <input
-                    name={index + ".description"}
-                    value={this.originalParams[index].description}
-                    onChange={this.handleChangeParam}
-                    type={"text"}
-                    style={{ border: "none" }}
-                    className="form-control"
-                  />
-                </td>
-                <td>
-                  <button
-                    type="button"
-                    className="btn btn-light btn-sm btn-block"
-                    onClick={() => this.handleDeleteParam(index)}
-                  >
-                    x
-                  </button>
-                </td>
-              </tr>
-            ) : null
-          )}
-          <tr>
-            <td> </td>
-            <td>
-              {" "}
-              <button
-                type="button"
-                className="btn btn-link btn-sm btn-block"
-                onClick={() => this.handleAddParam()}
-              >
-                + New Param
-              </button>
-            </td>
-            <td> </td>
-            <td> </td>
-          </tr>
-        </tbody>
-      </Table>
+      <div>
+        <GenericTable
+          title="Add Params"
+          dataArray={this.originalParams}
+          handleDelete={this.handleDeleteParam.bind(this)}
+          handleAdd={this.handleAddParam.bind(this)}
+          handleChange={this.handleChangeParam.bind(this)}
+        ></GenericTable>
+      </div>
     );
   }
 }

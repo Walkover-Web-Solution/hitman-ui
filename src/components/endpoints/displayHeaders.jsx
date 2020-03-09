@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Table } from "react-bootstrap";
+import GenericTable from "./table";
 
 class DisplayHeaders extends Component {
   state = {
@@ -61,78 +61,16 @@ class DisplayHeaders extends Component {
       this.props.handle_update_headers(originalHeaders);
       this.props.history.push({ endpoint: null });
     }
+    console.log(this.state.originalHeaders);
     return (
       <div>
-        <Table bordered size="sm">
-          <thead>
-            <tr>
-              <th>KEY</th>
-              <th>VALUE</th>
-              <th>DESCRIPTION</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {this.state.originalHeaders.map((header, index) => (
-              <tr key={index}>
-                <td>
-                  <input
-                    name={index + ".key"}
-                    value={this.state.originalHeaders[index].key}
-                    onChange={this.handleChangeHeader}
-                    type={"text"}
-                    className="form-control"
-                    style={{ border: "none" }}
-                  />
-                </td>
-                <td>
-                  <input
-                    name={index + ".value"}
-                    value={this.state.originalHeaders[index].value}
-                    onChange={this.handleChangeHeader}
-                    type={"text"}
-                    className="form-control"
-                    style={{ border: "none" }}
-                  />
-                </td>
-                <td>
-                  <input
-                    name={index + ".description"}
-                    value={this.state.originalHeaders[index].description}
-                    onChange={this.handleChangeHeader}
-                    type={"text"}
-                    style={{ border: "none" }}
-                    className="form-control"
-                  />
-                </td>
-                <td>
-                  <button
-                    type="button"
-                    className="btn btn-light btn-sm btn-block"
-                    onClick={() => this.handleDeleteHeader(index)}
-                  >
-                    x
-                  </button>
-                </td>
-              </tr>
-            ))}
-            <tr>
-              <td> </td>
-              <td>
-                {" "}
-                <button
-                  type="button"
-                  className="btn btn-link btn-sm btn-block"
-                  onClick={() => this.handleAddHeader()}
-                >
-                  + New Header
-                </button>
-              </td>
-              <td> </td>
-              <td> </td>
-            </tr>
-          </tbody>
-        </Table>
+        <GenericTable
+          title="Add Header"
+          dataArray={this.state.originalHeaders}
+          handleDelete={this.handleDeleteHeader.bind(this)}
+          handleAdd={this.handleAddHeader.bind(this)}
+          handleChange={this.handleChangeHeader.bind(this)}
+        ></GenericTable>
       </div>
     );
   }
