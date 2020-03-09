@@ -55,22 +55,6 @@ class Environments extends Component {
   async handleAdd(newEnvironment) {
     newEnvironment.requestId = shortId.generate();
     this.props.addEnvironment(newEnvironment);
-    // const requestId = newEnvironment.requestId;
-    // const originalEnvironment = jQuery.extend(true, {}, this.state.environment);
-    // const environments = { ...this.state.environments };
-    // environments[requestId] = newEnvironment;
-    // this.setState({ environments });
-    // try {
-    //   const { data: environment } = await environmentService.saveEnvironment(
-    //     newEnvironment
-    //   );
-    //   environments[environment.id] = environment;
-    //   delete environments[requestId];
-    //   this.setState({ environments });
-    // } catch (ex) {
-    //   toast.error(ex.response ? ex.response.data : "Something went wrong");
-    //   this.setState({ environment: originalEnvironment });
-    // }
   }
 
   async handleUpdateEnvironment(updatedEnvironment) {

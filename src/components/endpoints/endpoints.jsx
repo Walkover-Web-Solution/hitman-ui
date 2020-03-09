@@ -91,7 +91,7 @@ class Endpoints extends Component {
     });
   }
   render() {
-    if (this.props.endpoints_order.length == 0) {
+    if (this.props.endpoints_order.length === 0) {
       return (
         <Table
           striped
