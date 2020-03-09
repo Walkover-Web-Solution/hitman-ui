@@ -505,7 +505,7 @@ class DisplayEndpoint extends Component {
       this.props.location.endpoint
     ) {
       this.BASE_URL = this.props.location.endpoint.BASE_URL;
-      if (this.props.location.endpoint.BASE_URL) {
+      if (this.props.location.endpoint.BASE_URL !== null) {
         this.setDropdownValue("custom");
       } else {
         this.state.selectedHost = "";
@@ -576,7 +576,6 @@ class DisplayEndpoint extends Component {
                     <Dropdown.Toggle variant="default" id="dropdown-basic">
                       {this.state.data.method}
                     </Dropdown.Toggle>
-
                     <Dropdown.Menu alignRight>
                       {Object.keys(this.dropdownRequestType).map(key => (
                         <Dropdown.Item

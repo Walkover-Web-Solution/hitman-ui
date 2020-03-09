@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Modal, Dropdown, ListGroup } from "react-bootstrap";
+import { ListGroup, Modal } from "react-bootstrap";
 import environmentService from "./environmentService";
 
 class EnvironmentModal extends Component {

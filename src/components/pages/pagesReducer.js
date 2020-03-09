@@ -7,7 +7,6 @@ const initialState = {
 
 function pagesReducer(state = initialState, action) {
   let pages = {};
-  let editPage = {};
 
   switch (action.type) {
     case pagesActionTypes.FETCH_PAGES_SUCCESS:
