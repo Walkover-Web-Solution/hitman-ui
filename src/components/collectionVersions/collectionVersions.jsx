@@ -76,7 +76,6 @@ class CollectionVersions extends Component {
     this.props.duplicateVersion(version);
     this.props.history.push({
       pathname: "/dashboard/collections"
-      // duplicateVersion: version
     });
   }
 
