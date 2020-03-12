@@ -9,7 +9,16 @@ import ParamsComponent from "./displayParams";
 import DisplayResponse from "./displayResponse";
 import { addEndpoint, updateEndpoint } from "./endpointsActions";
 import endpointService from "./endpointService";
+import store from "../../store/store";
 var URI = require("urijs");
+
+const mapStateToProps = state => {
+  return {
+    groups: state.groups,
+    versions: state.versions,
+    endpoints: state.endpoints
+  };
+};
 
 const mapDispatchToProps = dispatch => {
   return {
@@ -50,6 +59,67 @@ class DisplayEndpoint extends Component {
     originalHeaders: [],
     originalParams: []
   };
+
+  async componentDidMount() {
+    let endpoint = {};
+    let originalParams = {};
+    let originalHeaders = [];
+    let props = {};
+    if (!this.props.location.title) {
+      store.subscribe(() => {
+        const endpointId = this.props.location.pathname.split("/")[4];
+        const { endpoints } = store.getState();
+        const { groups } = store.getState();
+        const { versions } = store.getState();
+        if (
+          Object.keys(groups).length !== 1 &&
+          Object.keys(versions).length !== 1 &&
+          Object.keys(endpoints).length !== 1
+        ) {
+          endpoint = endpoints[endpointId];
+          const groupId = endpoints[endpointId].groupId;
+          console.log(groupId);
+          //To fetch originalParams from Params
+          originalParams = this.fetchoriginalParams(endpoint.params);
+
+          //To fetch originalHeaders from Headers
+          Object.keys(endpoint.headers).forEach(h => {
+            originalHeaders.push(endpoint.headers[h]);
+          });
+
+          this.BASE_URL = endpoint.BASE_URL;
+          if (endpoint.BASE_URL !== null) {
+            this.setDropdownValue("custom");
+          } else {
+            this.state.selectedHost = "";
+            this.customHost = false;
+          }
+
+          let props = { ...this.props, groupId: groupId };
+          const hostJson = this.fetchHosts(props, this.props.environment);
+          this.fillDropdownValue(hostJson);
+          this.host = this.findHost(hostJson);
+          this.setState({
+            data: {
+              method: endpoint.requestType,
+              uri: endpoint.uri,
+              updatedUri: endpoint.uri,
+              name: endpoint.name,
+              body: JSON.stringify(endpoint.body, null, 4),
+              host: this.host
+            },
+            originalParams,
+            originalHeaders,
+            endpoint,
+            groups,
+            groupId,
+            versions,
+            title: "update endpoint"
+          });
+        }
+      });
+    }
+  }
 
   handleChange = e => {
     let data = { ...this.state.data };
@@ -229,6 +299,7 @@ class DisplayEndpoint extends Component {
   };
 
   handleSave = async e => {
+    console.log("Save");
     let body = this.parseBody(this.state.data);
     const headersData = this.doSubmitHeader();
     const updatedParams = this.doSubmitParam();
@@ -251,6 +322,7 @@ class DisplayEndpoint extends Component {
       endpoint.requestId = shortId.generate();
       this.props.addEndpoint(endpoint, this.state.groupId);
     } else if (this.state.title === "update endpoint") {
+      console.log("upadte save");
       this.props.updateEndpoint({ ...endpoint, id: this.state.endpoint.id });
     }
   };
@@ -394,7 +466,12 @@ class DisplayEndpoint extends Component {
     if (environment.variables && environment.variables.BASE_URL) {
       variableHost = environment.variables.BASE_URL.currentValue;
     }
+    console.log("location", location);
+    console.log(location);
     const { groupId, groups, versions } = location;
+    console.log(groups);
+    console.log(groupId);
+    console.log(groups[groupId]);
     const { versionId, host: groupHost } = groups[groupId];
     const { host: versionHost } = versions[versionId];
     let hostJson = {
@@ -406,6 +483,7 @@ class DisplayEndpoint extends Component {
   }
 
   fetchoriginalParams(params) {
+    console.log(params);
     let originalParams = [];
     for (let i = 0; i < Object.keys(params).length; i++) {
       originalParams[i] = {
@@ -476,6 +554,11 @@ class DisplayEndpoint extends Component {
         this.props.location.endpoint.params
       );
 
+      //To fetch originalHeaders from Headers
+      const originalHeaders = [];
+      Object.keys(endpoint.headers).forEach(h => {
+        originalHeaders.push(endpoint.headers[h]);
+      });
       this.setState({
         data: {
           method: endpoint.requestType,
@@ -492,6 +575,7 @@ class DisplayEndpoint extends Component {
         versions: this.props.location.versions,
         groups: this.props.location.groups,
         originalParams,
+        originalHeaders,
         endpoint,
         flagResponse: false
       });
@@ -664,6 +748,7 @@ class DisplayEndpoint extends Component {
               <div>
                 <DisplayHeaders
                   {...this.props}
+                  originalHeaders={this.state.originalHeaders}
                   handle_update_headers={this.handleUpdateHeader.bind(this)}
                 />
               </div>
@@ -698,4 +783,4 @@ class DisplayEndpoint extends Component {
   }
 }
 
-export default connect(null, mapDispatchToProps)(DisplayEndpoint);
+export default connect(mapStateToProps, mapDispatchToProps)(DisplayEndpoint);
