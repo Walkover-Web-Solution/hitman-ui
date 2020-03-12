@@ -1,12 +1,10 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import { Modal } from "react-bootstrap";
 import Joi from "joi-browser";
-import Form from "../common/form";
-import groupsService from "./groupsService";
-import { addGroup, updateGroup } from "../groups/groupsActions";
+import React from "react";
+import { Modal } from "react-bootstrap";
 import { connect } from "react-redux";
 import shortid from "shortid";
+import Form from "../common/form";
+import { addGroup, updateGroup } from "../groups/groupsActions";
 
 const mapDispatchToProps = dispatch => {
   return {

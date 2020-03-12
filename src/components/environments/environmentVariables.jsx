@@ -1,10 +1,8 @@
+import jQuery from "jquery";
 import React, { Component } from "react";
 import { Modal, Table } from "react-bootstrap";
-import { Link } from "react-router-dom";
-import environmentService from "./environmentService";
 import shortId from "shortid";
 import "../../css/environmentVariables.css";
-import jQuery from "jquery";
 
 class EnvironmentVariables extends Component {
   state = {

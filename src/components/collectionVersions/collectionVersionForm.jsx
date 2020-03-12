@@ -19,10 +19,7 @@ const mapDispatchToProps = dispatch => {
 };
 class CollectionVersionForm extends Form {
   state = {
-    data: {
-      number: "",
-      host: ""
-    },
+    data: { number: "", host: "" },
     errors: {},
     versionId: null,
     collectionId: ""
@@ -57,8 +54,7 @@ class CollectionVersionForm extends Form {
   async doSubmit() {
     this.props.onHide();
     if (this.props.title === "Edit Collection Version") {
-      const id = this.props.selected_version.id;
-      const collectionId = this.props.selected_version.collectionId;
+      const { id, collectionId } = this.props.selected_version;
       const editedCollectionVersion = { ...this.state.data, collectionId, id };
       this.props.updateVersion(editedCollectionVersion);
     }
@@ -67,6 +63,9 @@ class CollectionVersionForm extends Form {
       const newVersion = { ...this.state.data, requestId: shortid.generate() };
       this.props.addVersion(newVersion, collectionId);
     }
+    this.props.history.push({
+      pathname: `/dashboard/collections`
+    });
   }
 
   render() {

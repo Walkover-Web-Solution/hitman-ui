@@ -45,16 +45,17 @@ class CollectionVersions extends Component {
   };
 
   async handleDelete(collectionVersion) {
-    this.props.deleteVersion(collectionVersion);
-    this.props.history.push({
-      pathname: "/dashboard/collections"
-    });
-  }
-  closeVersionForm() {
-    let share = false;
-    let addGroup = false;
-    let showVersionForm = { share, addGroup };
-    this.setState({ showVersionForm });
+    const confirm = window.confirm(
+      "Are you sure you want to delete this versions? " +
+        "\n" +
+        "All your groups, pages and endpoints present in this version will be deleted."
+    );
+    if (confirm) {
+      this.props.deleteVersion(collectionVersion);
+      this.props.history.push({
+        pathname: "/dashboard/collections"
+      });
+    }
   }
 
   handleUpdate(collectionVersion) {
@@ -75,9 +76,9 @@ class CollectionVersions extends Component {
     this.props.duplicateVersion(version);
     this.props.history.push({
       pathname: "/dashboard/collections"
-      // duplicateVersion: version
     });
   }
+
   handleShare(version) {
     this.handleShareVersion(
       version.shareIdentifier,
@@ -91,12 +92,13 @@ class CollectionVersions extends Component {
       shareIdentifier: shareIdentifier
     });
   }
+
   closeVersionForm() {
     let share = false;
-    let showVersionForm = { share };
+    let addGroup = false;
+    let showVersionForm = { share, addGroup };
     this.setState({ showVersionForm });
   }
-
   render() {
     return (
       <div>
@@ -161,16 +163,9 @@ class CollectionVersions extends Component {
                       </Dropdown.Item>
                       <Dropdown.Item
                         eventKey="2"
-                        onClick={() => {
-                          if (
-                            window.confirm(
-                              "Are you sure you want to delete this versions? " +
-                                "\n" +
-                                "All your groups, pages and endpoints present in this version will be deleted."
-                            )
-                          )
-                            this.handleDelete(this.props.versions[versionId]);
-                        }}
+                        onClick={() =>
+                          this.handleDelete(this.props.versions[versionId])
+                        }
                       >
                         Delete
                       </Dropdown.Item>
@@ -241,4 +236,6 @@ class CollectionVersions extends Component {
   }
 }
 
-export default withRouter(connect(mapStateToProps)(CollectionVersions));
+export default withRouter(
+  connect(mapStateToProps, mapDispatchToProps)(CollectionVersions)
+);

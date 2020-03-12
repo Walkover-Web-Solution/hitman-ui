@@ -49,19 +49,18 @@ class DisplayHeaders extends Component {
   };
 
   render() {
-    if (this.props.location.title == "Add New Endpoint")
+    if (this.props.location.title === "Add New Endpoint")
       this.setState({ originalHeaders: [] });
 
     if (this.props.location.endpoint && this.props.location.endpoint.headers) {
       const originalHeaders = [];
-      Object.keys(this.props.location.endpoint.headers).map(h => {
+      Object.keys(this.props.location.endpoint.headers).forEach(h => {
         originalHeaders.push(this.props.location.endpoint.headers[h]);
       });
       this.setState({ originalHeaders });
       this.props.handle_update_headers(originalHeaders);
       this.props.history.push({ endpoint: null });
     }
-    console.log(this.state.originalHeaders);
     return (
       <div>
         <GenericTable
