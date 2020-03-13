@@ -18,7 +18,10 @@ const mapStateToProps = state => {
   return {
     groups: state.groups,
     versions: state.versions,
-    endpoints: state.endpoints
+    endpoints: state.endpoints,
+    environment: state.environment.environments[
+      state.environment.currentEnvironmentId
+    ] || { id: null, name: "No Environment" }
   };
 };
 
@@ -499,6 +502,7 @@ class DisplayEndpoint extends Component {
   }
 
   render() {
+    console.log(this.props.environment);
     if (this.props.location.title === "Add New Endpoint") {
       this.customHost = false;
       const hostJson = this.fetchHosts(

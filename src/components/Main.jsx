@@ -89,15 +89,14 @@ class Main extends Component {
                 <Route
                   path="/dashboard/endpoints"
                   render={props => (
-                    <DisplayEndpoint
-                      {...props}
-                      environment={this.state.currentEnvironment}
-                    />
+                    <DisplayEndpoint {...props} environment={{}} />
                   )}
                 />
                 <Route
                   path="/dashboard/endpoints/:endpointId"
-                  render={props => <DisplayEndpoint {...props} />}
+                  render={props => (
+                    <DisplayEndpoint {...props} environment={{}} />
+                  )}
                 />
                 <Route
                   path="/dashboard/pages/:pageid/edit"

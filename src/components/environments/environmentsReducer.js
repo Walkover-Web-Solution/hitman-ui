@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 
 const initialState = {
   environments: {},
-  currentEnvironmentId: ""
+  currentEnvironmentId: null
 };
 
 function environmentsReducer(state = initialState, action) {
