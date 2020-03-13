@@ -67,7 +67,7 @@ class PageForm extends Form {
           <form onSubmit={this.handleSubmit}>
             {this.renderInput("name", "Page name")}
             {this.renderButton("Submit")}
-            <Link to={`/dashboard/collections`}>Cancel</Link>
+            <Link to={`/dashboard`}>Cancel</Link>
           </form>
         </Modal.Body>
       </Modal>

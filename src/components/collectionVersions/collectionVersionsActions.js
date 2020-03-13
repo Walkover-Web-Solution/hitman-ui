@@ -11,38 +11,37 @@ export const fetchAllVersions = () => {
       .getAllCollectionVersions()
       .then(response => {
         const versions = response.data;
-        dispatch(fetchVersionsSuccess(versions));
+        dispatch(onVersionsFetched(versions));
       })
       .catch(error => {
-        dispatch(fetchVersionsFailure(error.message));
+        dispatch(onVersionsFetchedError(error.message));
       });
   };
 };
 export const fetchVersions = collectionId => {
-  console.log(collectionId);
   return dispatch => {
     collectionVersionsService
       .getCollectionVersions(collectionId)
       .then(response => {
         const versions = response.data;
-        dispatch(fetchVersionsSuccess(versions));
+        dispatch(onVersionsFetched(versions));
       })
       .catch(error => {
-        dispatch(fetchVersionsFailure(error.message));
+        dispatch(onVersionsFetchedError(error.message));
       });
   };
 };
 
-export const fetchVersionsSuccess = versions => {
+export const onVersionsFetched = versions => {
   return {
-    type: versionActionTypes.FETCH_VERSIONS_SUCCESS,
+    type: versionActionTypes.ON_VERSIONS_FETCHED,
     versions
   };
 };
 
-export const fetchVersionsFailure = error => {
+export const onVersionsFetchedError = error => {
   return {
-    type: versionActionTypes.FETCH_VERSIONS_FAILURE,
+    type: versionActionTypes.ON_VERSIONS_FETCHED_ERROR,
     error
   };
 };
@@ -55,10 +54,10 @@ export const updateVersion = editedVersion => {
     collectionVersionsService
       .updateCollectionVersion(id, { number, host })
       .then(response => {
-        dispatch(updateVersionSuccess(response.data));
+        dispatch(onVersionUpdated(response.data));
       })
       .catch(error => {
-        dispatch(updateVersionFailure(error.response.data, originalVersion));
+        dispatch(onVersionUpdatedError(error.response.data, originalVersion));
       });
   };
 };
@@ -70,16 +69,16 @@ export const updateVersionRequest = editedVersion => {
   };
 };
 
-export const updateVersionSuccess = response => {
+export const onVersionUpdated = response => {
   return {
-    type: versionActionTypes.UPDATE_VERSION_SUCCESS,
+    type: versionActionTypes.ON_VERSION_UPDATED,
     response
   };
 };
 
-export const updateVersionFailure = (error, originalVersion) => {
+export const onVersionUpdatedError = (error, originalVersion) => {
   return {
-    type: versionActionTypes.UPDATE_VERSION_FAILURE,
+    type: versionActionTypes.ON_VERSION_UPDATED_ERROR,
     error,
     originalVersion
   };
@@ -91,10 +90,10 @@ export const addVersion = (newVersion, collectionId) => {
     collectionVersionsService
       .saveCollectionVersion(collectionId, newVersion)
       .then(response => {
-        dispatch(addVersionSuccess(response.data));
+        dispatch(onVersionAdded(response.data));
       })
       .catch(error => {
-        dispatch(addVersionFailure(error.response.data, newVersion));
+        dispatch(onVersionAddedError(error.response.data, newVersion));
       });
   };
 };
@@ -106,16 +105,16 @@ export const addVersionRequest = newVersion => {
   };
 };
 
-export const addVersionSuccess = response => {
+export const onVersionAdded = response => {
   return {
-    type: versionActionTypes.ADD_VERSION_SUCCESS,
+    type: versionActionTypes.ON_VERSION_ADDED,
     response
   };
 };
 
-export const addVersionFailure = (error, newVersion) => {
+export const onVersionAddedError = (error, newVersion) => {
   return {
-    type: versionActionTypes.ADD_VERSION_FAILURE,
+    type: versionActionTypes.ON_VERSION_ADDED_ERROR,
     newVersion,
     error
   };
@@ -127,10 +126,10 @@ export const deleteVersion = version => {
     collectionVersionsService
       .deleteCollectionVersion(version.id)
       .then(() => {
-        dispatch(deleteVersionSuccess());
+        dispatch(onVersionDeleted());
       })
       .catch(error => {
-        dispatch(deleteVersionFailure(error.response, version));
+        dispatch(onVersionDeletedError(error.response, version));
       });
   };
 };
@@ -142,15 +141,15 @@ export const deleteVersionRequest = version => {
   };
 };
 
-export const deleteVersionSuccess = () => {
+export const onVersionDeleted = () => {
   return {
-    type: versionActionTypes.DELETE_VERSION_SUCCESS
+    type: versionActionTypes.ON_VERSION_DELETED
   };
 };
 
-export const deleteVersionFailure = (error, version) => {
+export const onVersionDeletedError = (error, version) => {
   return {
-    type: versionActionTypes.DELETE_VERSION_FAILURE,
+    type: versionActionTypes.ON_VERSION_DELETED_ERROR,
     error,
     version
   };
@@ -167,24 +166,24 @@ export const duplicateVersion = version => {
         dispatch(groupsActions.updateState(groups));
         dispatch(endpointsActions.updateState(endpoints));
         dispatch(pagesActions.updateState(pages));
-        dispatch(duplicateVersionSuccess(response.data));
+        dispatch(onVersionDuplicated(response.data));
       })
       .catch(error => {
-        dispatch(duplicateVersionFailure(error.response, version));
+        dispatch(onVersionDuplicatedError(error.response, version));
       });
   };
 };
 
-export const duplicateVersionSuccess = response => {
+export const onVersionDuplicated = response => {
   return {
-    type: versionActionTypes.DUPLICATE_VERSION_SUCCESS,
+    type: versionActionTypes.ON_VERSION_DUPLICATED,
     response
   };
 };
 
-export const duplicateVersionFailure = (error, version) => {
+export const onVersionDuplicatedError = (error, version) => {
   return {
-    type: versionActionTypes.DUPLICATE_VERSION_FAILURE,
+    type: versionActionTypes.ON_VERSION_DUPLICATED_ERROR,
     error,
     version
   };

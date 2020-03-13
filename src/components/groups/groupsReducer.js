@@ -8,10 +8,10 @@ const initialState = {
 function groupsReducer(state = initialState, action) {
   let groups = {};
   switch (action.type) {
-    case groupsActionTypes.FETCH_GROUPS_SUCCESS:
+    case groupsActionTypes.ON_GROUPS_FETCHED:
       return { ...action.groups };
 
-    case groupsActionTypes.FETCH_GROUPS_FAILURE:
+    case groupsActionTypes.ON_GROUPS_FETCHED_ERROR:
       toast.error(action.error);
       return state;
 
@@ -21,13 +21,13 @@ function groupsReducer(state = initialState, action) {
         [action.newGroup.requestId]: action.newGroup
       };
 
-    case groupsActionTypes.ADD_GROUP_SUCCESS:
+    case groupsActionTypes.ON_GROUP_ADDED:
       groups = { ...state };
       delete groups[action.response.requestId];
       groups[action.response.id] = action.response;
       return groups;
 
-    case groupsActionTypes.ADD_GROUP_FAILURE:
+    case groupsActionTypes.ON_GROUP_ADDED_ERROR:
       toast.error(action.error);
       groups = { ...state };
       delete groups[action.newGroup.requestId];
@@ -39,13 +39,13 @@ function groupsReducer(state = initialState, action) {
         [action.editedGroup.id]: action.editedGroup
       };
 
-    case groupsActionTypes.UPDATE_GROUP_SUCCESS:
+    case groupsActionTypes.ON_GROUP_UPDATED:
       return {
         ...state,
         [action.response.id]: action.response
       };
 
-    case groupsActionTypes.UPDATE_GROUP_FAILURE:
+    case groupsActionTypes.ON_GROUP_UPDATED_ERROR:
       toast.error(action.error);
       return {
         ...state,
@@ -57,10 +57,10 @@ function groupsReducer(state = initialState, action) {
       delete groups[action.group.id];
       return groups;
 
-    case groupsActionTypes.DELETE_GROUP_SUCCESS:
+    case groupsActionTypes.ON_GROUP_DELETED:
       return state;
 
-    case groupsActionTypes.DELETE_GROUP_FAILURE:
+    case groupsActionTypes.ON_GROUP_DELETED:
       toast.error(action.error.data);
       if (action.error.status === 404) return state;
       return {
@@ -68,13 +68,13 @@ function groupsReducer(state = initialState, action) {
         [action.group.id]: action.group
       };
 
-    case groupsActionTypes.DUPLICATE_GROUP_SUCCESS:
+    case groupsActionTypes.ON_GROUP_DUPLICATED:
       groups = { ...state };
       const group = action.response.groups;
       groups = { ...groups, [group.id]: group };
       return groups;
 
-    case groupsActionTypes.DUPLICATE_GROUP_FAILURE:
+    case groupsActionTypes.ON_GROUP_DUPLICATED_ERROR:
       toast.error(action.error);
       return state;
 

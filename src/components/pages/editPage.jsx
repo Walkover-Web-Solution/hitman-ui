@@ -3,6 +3,7 @@ import pageService from "./pageService";
 import { updatePage } from "../pages/pagesActions";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
+import store from "../../store/store";
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
@@ -28,6 +29,7 @@ class EditPage extends Component {
 
   async componentDidMount() {
     let data = {};
+    // let page = {};
     if (this.props.location.page) {
       const {
         id,
@@ -44,8 +46,25 @@ class EditPage extends Component {
         name,
         contents
       };
+      this.setState({ data });
     } else {
-      const pageId = this.props.location.pathname.split("/")[4];
+      const pageId = this.props.location.pathname.split("/")[3];
+
+      // store.subscribe(() => {
+      //   const { pages } = store.getState();
+      //   page = pages[pageId];
+      //   if (page) {
+      //     const { id, versionId, groupId, name, contents } = page;
+      //     data = {
+      //       id,
+      //       versionId,
+      //       groupId,
+      //       name,
+      //       contents
+      //     };
+      //     this.setState({ data });
+      //   }
+      // });
       let { data: page } = await pageService.getPage(pageId);
       const { id, versionId, groupId, name, contents } = page;
       data = {
@@ -58,7 +77,6 @@ class EditPage extends Component {
     }
     this.setState({ data });
   }
-
   handleChange = e => {
     const data = { ...this.state.data };
     data[e.currentTarget.name] = e.currentTarget.value;
@@ -73,14 +91,14 @@ class EditPage extends Component {
       const editedPage = { ...this.state.data };
       this.props.updatePage(editedPage, editedPage.id);
       this.props.history.push({
-        pathname: `/dashboard/collections`
+        pathname: `/dashboard`
         // editedPage: { ...this.state.data }
       });
     } else {
       const editedPage = { ...this.state.data };
       this.props.updatePage(editedPage, editedPage.id);
       this.props.history.push({
-        pathname: `/dashboard/collections`
+        pathname: `/dashboard`
         // editedPage: { ...this.state.data },
         // groupId: { ...this.state.data.groupId }
       });

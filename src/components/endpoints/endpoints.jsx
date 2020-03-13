@@ -62,27 +62,27 @@ class Endpoints extends Component {
   handleDelete(endpoint) {
     this.props.deleteEndpoint(endpoint);
     this.props.history.push({
-      pathname: "/dashboard/collections"
+      pathname: "/dashboard"
     });
   }
 
   handleDuplicate(endpoint) {
     this.props.duplicateEndpoint(endpoint);
     this.props.history.push({
-      pathname: "/dashboard/collections"
+      pathname: "/dashboard"
       //duplicateEndpoint: endpoint
     });
   }
 
   handleUpdate(endpoint) {
     this.props.history.push({
-      pathname: `/dashboard/collections/${this.props.collection_id}/versions/${this.props.version_id}/groups/${this.props.group_id}/endpoints/${endpoint.id}/edit`,
+      pathname: `/dashboard/${this.props.collection_id}/versions/${this.props.version_id}/groups/${this.props.group_id}/endpoints/${endpoint.id}/edit`,
       editEndpoint: endpoint
     });
   }
   handleDisplay(endpoint, groups, versions, groupId) {
     this.props.history.push({
-      pathname: `/dashboard/collections/endpoints/${endpoint.id}`,
+      pathname: `/dashboard/endpoints/${endpoint.id}`,
       title: "update endpoint",
       endpoint: endpoint,
       groupId: groupId,

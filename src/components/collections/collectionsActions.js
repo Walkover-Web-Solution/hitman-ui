@@ -12,26 +12,28 @@ export const fetchCollections = () => {
     collectionsService
       .getCollections()
       .then(response => {
-        dispatch(fetchCollectionsSuccess(response.data));
+        dispatch(onCollectionsFetched(response.data));
       })
       .catch(error => {
         dispatch(
-          fetchCollectionsFailure(error.response ? error.response.data : error)
+          onCollectionsFetchedError(
+            error.response ? error.response.data : error
+          )
         );
       });
   };
 };
 
-export const fetchCollectionsSuccess = collections => {
+export const onCollectionsFetched = collections => {
   return {
-    type: collectionsActionTypes.FETCH_COLLECTIONS_SUCCESS,
+    type: collectionsActionTypes.ON_COLLECTIONS_FETCHED,
     collections
   };
 };
 
-export const fetchCollectionsFailure = error => {
+export const onCollectionsFetchedError = error => {
   return {
-    type: collectionsActionTypes.FETCH_COLLECTIONS_FAILURE,
+    type: collectionsActionTypes.ON_COLLECTIONS_FETCHED_ERROR,
     error
   };
 };
@@ -42,11 +44,11 @@ export const addCollection = newCollection => {
     collectionsService
       .saveCollection(newCollection)
       .then(response => {
-        dispatch(addCollectionSuccess(response.data));
+        dispatch(onCollectionAdded(response.data));
         dispatch(fetchVersions(response.data.id));
       })
       .catch(error => {
-        dispatch(addCollectionFailure(error.response.data, newCollection));
+        dispatch(onCollectionAddedError(error.response.data, newCollection));
       });
   };
 };
@@ -58,16 +60,16 @@ export const addCollectionRequest = newCollection => {
   };
 };
 
-export const addCollectionSuccess = response => {
+export const onCollectionAdded = response => {
   return {
-    type: collectionsActionTypes.ADD_COLLECTION_SUCCESS,
+    type: collectionsActionTypes.ON_COLLECTION_ADDED,
     response
   };
 };
 
-export const addCollectionFailure = (error, newCollection) => {
+export const onCollectionAddedError = (error, newCollection) => {
   return {
-    type: collectionsActionTypes.ADD_COLLECTION_FAILURE,
+    type: collectionsActionTypes.ON_COLLECTION_ADDED_ERROR,
     newCollection,
     error
   };
@@ -84,11 +86,11 @@ export const updateCollection = editedCollection => {
     collectionsService
       .updateCollection(id, editedCollection)
       .then(() => {
-        dispatch(updateCollectionSuccess());
+        dispatch(onCollectionUpdated());
       })
       .catch(error => {
         dispatch(
-          updateCollectionFailure(error.response.data, originalCollection)
+          onCollectionUpdatedError(error.response.data, originalCollection)
         );
       });
   };
@@ -101,15 +103,15 @@ export const updateCollectionRequest = editedCollection => {
   };
 };
 
-export const updateCollectionSuccess = () => {
+export const onCollectionUpdated = () => {
   return {
-    type: collectionsActionTypes.UPDATE_COLLECTION_SUCCESS
+    type: collectionsActionTypes.ON_COLLECTION_UPDATED
   };
 };
 
-export const updateCollectionFailure = (error, originalCollection) => {
+export const onCollectionUpdatedError = (error, originalCollection) => {
   return {
-    type: collectionsActionTypes.UPDATE_COLLECTION_FAILURE,
+    type: collectionsActionTypes.ON_COLLECTION_UPDATED_ERROR,
     error,
     originalCollection
   };
@@ -121,10 +123,10 @@ export const deleteCollection = collection => {
     collectionsService
       .deleteCollection(collection.id)
       .then(() => {
-        dispatch(deleteCollectionSuccess());
+        dispatch(onCollectionDeleted());
       })
       .catch(error => {
-        dispatch(deleteCollectionFailure(error.response, collection));
+        dispatch(onCollectionDeletedError(error.response, collection));
       });
   };
 };
@@ -136,15 +138,15 @@ export const deleteCollectionRequest = collection => {
   };
 };
 
-export const deleteCollectionSuccess = () => {
+export const onCollectionDeleted = () => {
   return {
-    type: collectionsActionTypes.DELETE_COLLECTION_SUCCESS
+    type: collectionsActionTypes.ON_COLLECTION_DELETED
   };
 };
 
-export const deleteCollectionFailure = (error, collection) => {
+export const onCollectionDeletedError = (error, collection) => {
   return {
-    type: collectionsActionTypes.DELETE_COLLECTION_FAILURE,
+    type: collectionsActionTypes.ON_COLLECTION_DELETED_ERROR,
     error,
     collection
   };
@@ -163,24 +165,24 @@ export const duplicateCollection = collection => {
         dispatch(groupsActions.updateState(groups));
         dispatch(endpointsActions.updateState(endpoints));
         dispatch(pagesActions.updateState(pages));
-        dispatch(duplicateCollectionSuccess(response.data));
+        dispatch(onCollectionDuplicated(response.data));
       })
       .catch(error => {
-        dispatch(duplicateCollectionFailure(error.response, collection));
+        dispatch(onCollectionDuplicatedError(error.response, collection));
       });
   };
 };
 
-export const duplicateCollectionSuccess = response => {
+export const onCollectionDuplicated = response => {
   return {
-    type: collectionsActionTypes.DUPLICATE_COLLECTION_SUCCESS,
+    type: collectionsActionTypes.ON_COLLECTION_DUPLICATED,
     response
   };
 };
 
-export const duplicateCollectionFailure = (error, collection) => {
+export const onCollectionDuplicatedError = (error, collection) => {
   return {
-    type: collectionsActionTypes.DUPLICATE_COLLECTION_FAILURE,
+    type: collectionsActionTypes.ON_COLLECTION_DUPLICATED_ERROR,
     error,
     collection
   };

@@ -10,26 +10,26 @@ export const fetchGroups = () => {
     groupsService
       .getAllGroups()
       .then(response => {
-        dispatch(fetchGroupsSuccess(response.data));
+        dispatch(onGroupsFetched(response.data));
       })
       .catch(error => {
         dispatch(
-          fetchGroupsFailure(error.response ? error.response.data : error)
+          onGroupsFetchedError(error.response ? error.response.data : error)
         );
       });
   };
 };
 
-export const fetchGroupsSuccess = groups => {
+export const onGroupsFetched = groups => {
   return {
-    type: groupsActionTypes.FETCH_GROUPS_SUCCESS,
+    type: groupsActionTypes.ON_GROUPS_FETCHED,
     groups
   };
 };
 
-export const fetchGroupsFailure = error => {
+export const onGroupsFetchedError = error => {
   return {
-    type: groupsActionTypes.FETCH_GROUPS_FAILURE,
+    type: groupsActionTypes.ON_GROUPS_FETCHED_ERROR,
     error
   };
 };
@@ -40,11 +40,11 @@ export const addGroup = (versionId, newGroup) => {
     groupsService
       .saveGroup(versionId, newGroup)
       .then(response => {
-        dispatch(addGroupSuccess(response.data));
+        dispatch(onGroupAdded(response.data));
       })
       .catch(error => {
         dispatch(
-          addGroupFailure(
+          onGroupAddedError(
             error.response ? error.response.data : error,
             newGroup
           )
@@ -60,16 +60,16 @@ export const addGroupRequest = newGroup => {
   };
 };
 
-export const addGroupSuccess = response => {
+export const onGroupAdded = response => {
   return {
-    type: groupsActionTypes.ADD_GROUP_SUCCESS,
+    type: groupsActionTypes.ON_GROUP_ADDED,
     response
   };
 };
 
-export const addGroupFailure = (error, newGroup) => {
+export const onGroupAddedError = (error, newGroup) => {
   return {
-    type: groupsActionTypes.ADD_GROUP_FAILURE,
+    type: groupsActionTypes.ON_GROUP_ADDED_ERROR,
     newGroup,
     error
   };
@@ -85,11 +85,11 @@ export const updateGroup = editedGroup => {
     groupsService
       .updateGroup(id, { name, host, endpointsOrder })
       .then(response => {
-        dispatch(updateGroupSuccess(response.data));
+        dispatch(onGroupUpdated(response.data));
       })
       .catch(error => {
         dispatch(
-          updateGroupFailure(
+          onGroupUpdatedError(
             error.response ? error.response.data : error,
             originalGroup
           )
@@ -105,16 +105,16 @@ export const updateGroupRequest = editedGroup => {
   };
 };
 
-export const updateGroupSuccess = response => {
+export const onGroupUpdated = response => {
   return {
-    type: groupsActionTypes.UPDATE_GROUP_SUCCESS,
+    type: groupsActionTypes.ON_GROUP_UPDATED,
     response
   };
 };
 
-export const updateGroupFailure = (error, originalGroup) => {
+export const onGroupUpdatedError = (error, originalGroup) => {
   return {
-    type: groupsActionTypes.UPDATE_GROUP_FAILURE,
+    type: groupsActionTypes.ON_GROUP_UPDATED_ERROR,
     error,
     originalGroup
   };
@@ -126,11 +126,11 @@ export const deleteGroup = group => {
     groupsService
       .deleteGroup(group.id)
       .then(() => {
-        dispatch(deleteGroupSuccess());
+        dispatch(onGroupDeleted());
       })
       .catch(error => {
         dispatch(
-          deleteGroupFailure(
+          onGroupDeletedError(
             error.response ? error.response.data : error,
             group
           )
@@ -146,15 +146,15 @@ export const deleteGroupRequest = group => {
   };
 };
 
-export const deleteGroupSuccess = () => {
+export const onGroupDeleted = () => {
   return {
-    type: groupsActionTypes.DELETE_GROUP_SUCCESS
+    type: groupsActionTypes.ON_GROUP_DELETED
   };
 };
 
-export const deleteGroupFailure = (error, group) => {
+export const onGroupDeletedError = (error, group) => {
   return {
-    type: groupsActionTypes.DELETE_GROUP_FAILURE,
+    type: groupsActionTypes.ON_GROUP_DELETED_ERROR,
     error,
     group
   };
@@ -169,24 +169,24 @@ export const duplicateGroup = group => {
         const pages = response.data.pages;
         dispatch(endpointsActions.updateState(endpoints));
         dispatch(pagesActions.updateState(pages));
-        dispatch(duplicateGroupSuccess(response.data));
+        dispatch(onGroupDuplicated(response.data));
       })
       .catch(error => {
-        dispatch(duplicateGroupFailure(error.response, group));
+        dispatch(onGroupDuplicatedError(error.response, group));
       });
   };
 };
 
-export const duplicateGroupSuccess = response => {
+export const onGroupDuplicated = response => {
   return {
-    type: groupsActionTypes.DUPLICATE_GROUP_SUCCESS,
+    type: groupsActionTypes.ON_GROUP_DUPLICATED,
     response
   };
 };
 
-export const duplicateGroupFailure = (error, group) => {
+export const onGroupDuplicatedError = (error, group) => {
   return {
-    type: groupsActionTypes.DUPLICATE_GROUP_FAILURE,
+    type: groupsActionTypes.ON_GROUP_DUPLICATED_ERROR,
     error,
     group
   };

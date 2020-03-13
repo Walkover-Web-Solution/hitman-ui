@@ -39,19 +39,6 @@ class CollectionForm extends Form {
         keyword1: keyword.split(",")[1],
         keyword2: keyword.split(",")[2]
       };
-    } else {
-      const { data: editedCollection } = await collectionsService.getCollection(
-        collectionId
-      );
-      const { name, website, description, keyword } = editedCollection;
-      data = {
-        name,
-        website,
-        description,
-        keyword: keyword.split(",")[0],
-        keyword1: keyword.split(",")[1],
-        keyword2: keyword.split(",")[2]
-      };
     }
     this.setState({ data, collectionId });
   }
@@ -77,42 +64,50 @@ class CollectionForm extends Form {
       .label("Description")
   };
 
+  async onEditCollectionSubmit() {
+    this.props.onHide();
+    this.props.updateCollection({
+      ...this.state.data,
+      id: this.state.collectionId
+    });
+    this.setState({
+      data: {
+        name: "",
+        website: "",
+        description: "",
+        keyword: "",
+        keyword1: "",
+        keyword2: ""
+      }
+    });
+  }
+
+  async onAddCollectionSubmit() {
+    this.props.onHide();
+    const requestId = shortid.generate();
+    this.props.addCollection({ ...this.state.data, requestId });
+    this.setState({
+      data: {
+        name: "",
+        website: "",
+        description: "",
+        keyword: "",
+        keyword1: "",
+        keyword2: ""
+      }
+    });
+  }
+
   async doSubmit() {
     var body = this.state.data;
     body.keyword = body.keyword + "," + body.keyword1 + "," + body.keyword2;
     delete body.keyword1;
     delete body.keyword2;
     if (this.props.title === "Edit Collection") {
-      this.props.onHide();
-      this.props.updateCollection({
-        ...this.state.data,
-        id: this.state.collectionId
-      });
-      this.setState({
-        data: {
-          name: "",
-          website: "",
-          description: "",
-          keyword: "",
-          keyword1: "",
-          keyword2: ""
-        }
-      });
+      this.onEditCollectionSubmit();
     }
     if (this.props.title === "Add new Collection") {
-      this.props.onHide();
-      const requestId = shortid.generate();
-      this.props.addCollection({ ...this.state.data, requestId });
-      this.setState({
-        data: {
-          name: "",
-          website: "",
-          description: "",
-          keyword: "",
-          keyword1: "",
-          keyword2: ""
-        }
-      });
+      this.onAddCollectionSubmit();
     }
   }
 

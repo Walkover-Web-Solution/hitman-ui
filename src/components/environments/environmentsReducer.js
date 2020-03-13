@@ -15,13 +15,13 @@ function environmentsReducer(state = initialState, action) {
         currentEnvironmentId: action.currentEnvironmentId
       };
 
-    case environmentsActionTypes.FETCH_ENVIRONMENTS_SUCCESS:
+    case environmentsActionTypes.ON_ENVIRONMENTS_FETCHED:
       return {
         ...state,
         environments: { ...state.environments, ...action.environments }
       };
 
-    case environmentsActionTypes.FETCH_ENVIRONMENTS_FAILURE:
+    case environmentsActionTypes.ON_ENVIRONMENTS_FETCHED_ERROR:
       toast.error(action.error);
       return state;
 
@@ -34,13 +34,13 @@ function environmentsReducer(state = initialState, action) {
         }
       };
 
-    case environmentsActionTypes.ADD_ENVIRONMENT_SUCCESS:
+    case environmentsActionTypes.ON_ENVIRONMENT_ADDED:
       environments = { ...state.environments };
       delete environments[action.response.requestId];
       environments[action.response.id] = action.response;
       return { ...state, environments };
 
-    case environmentsActionTypes.ADD_ENVIRONMENT_FAILURE:
+    case environmentsActionTypes.ON_ENVIRONMENT_ADDED_ERROR:
       toast.error(action.error);
       environments = { ...state.environments };
       delete environments[action.newEnvironment.requestId];
@@ -55,7 +55,7 @@ function environmentsReducer(state = initialState, action) {
         }
       };
 
-    case environmentsActionTypes.UPDATE_ENVIRONMENT_SUCCESS:
+    case environmentsActionTypes.ON_ENVIRONMENT_UPDATED:
       return {
         ...state,
         environments: {
@@ -64,7 +64,7 @@ function environmentsReducer(state = initialState, action) {
         }
       };
 
-    case environmentsActionTypes.UPDATE_ENVIRONMENT_FAILURE:
+    case environmentsActionTypes.ON_ENVIRONMENT_UPDATED_ERROR:
       toast.error(action.error);
       return {
         ...state,
@@ -79,10 +79,10 @@ function environmentsReducer(state = initialState, action) {
       delete environments[action.environment.id];
       return { ...state, environments };
 
-    case environmentsActionTypes.DELETE_ENVIRONMENT_SUCCESS:
+    case environmentsActionTypes.ON_ENVIRONMENT_DELETED:
       return state;
 
-    case environmentsActionTypes.DELETE_ENVIRONMENT_FAILURE:
+    case environmentsActionTypes.ON_ENVIRONMENT_DELETED_ERROR:
       toast.error(action.error.data);
       if (action.error.status === 404) return state;
       return {

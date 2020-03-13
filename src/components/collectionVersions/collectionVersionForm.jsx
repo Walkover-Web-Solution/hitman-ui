@@ -64,7 +64,7 @@ class CollectionVersionForm extends Form {
       this.props.addVersion(newVersion, collectionId);
     }
     this.props.history.push({
-      pathname: `/dashboard/collections`
+      pathname: `/dashboard`
     });
   }
 

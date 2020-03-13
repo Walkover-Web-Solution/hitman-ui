@@ -64,7 +64,7 @@ class GroupForm extends Form {
       };
       this.props.updateGroup(editedGroup);
       // this.props.history.push({
-      //   pathname: `/dashboard/collections`
+      //   pathname: `/dashboard/`
       // });
     }
   }
