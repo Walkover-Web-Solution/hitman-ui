@@ -64,21 +64,23 @@ class DisplayEndpoint extends Component {
     let endpoint = {};
     let originalParams = {};
     let originalHeaders = [];
-    let props = {};
     if (!this.props.location.title) {
       store.subscribe(() => {
         const endpointId = this.props.location.pathname.split("/")[4];
+
         const { endpoints } = store.getState();
         const { groups } = store.getState();
         const { versions } = store.getState();
+
         if (
-          Object.keys(groups).length !== 1 &&
-          Object.keys(versions).length !== 1 &&
-          Object.keys(endpoints).length !== 1
+          Object.keys(groups).length !== 0 &&
+          Object.keys(versions).length !== 0 &&
+          Object.keys(endpoints).length !== 0 &&
+          endpointId
         ) {
           endpoint = endpoints[endpointId];
           const groupId = endpoints[endpointId].groupId;
-          console.log(groupId);
+
           //To fetch originalParams from Params
           originalParams = this.fetchoriginalParams(endpoint.params);
 
@@ -299,7 +301,6 @@ class DisplayEndpoint extends Component {
   };
 
   handleSave = async e => {
-    console.log("Save");
     let body = this.parseBody(this.state.data);
     const headersData = this.doSubmitHeader();
     const updatedParams = this.doSubmitParam();
@@ -322,8 +323,11 @@ class DisplayEndpoint extends Component {
       endpoint.requestId = shortId.generate();
       this.props.addEndpoint(endpoint, this.state.groupId);
     } else if (this.state.title === "update endpoint") {
-      console.log("upadte save");
-      this.props.updateEndpoint({ ...endpoint, id: this.state.endpoint.id });
+      this.props.updateEndpoint({
+        ...endpoint,
+        id: this.state.endpoint.id,
+        groupId: this.state.groupId
+      });
     }
   };
 
@@ -466,12 +470,7 @@ class DisplayEndpoint extends Component {
     if (environment.variables && environment.variables.BASE_URL) {
       variableHost = environment.variables.BASE_URL.currentValue;
     }
-    console.log("location", location);
-    console.log(location);
     const { groupId, groups, versions } = location;
-    console.log(groups);
-    console.log(groupId);
-    console.log(groups[groupId]);
     const { versionId, host: groupHost } = groups[groupId];
     const { host: versionHost } = versions[versionId];
     let hostJson = {
@@ -483,7 +482,6 @@ class DisplayEndpoint extends Component {
   }
 
   fetchoriginalParams(params) {
-    console.log(params);
     let originalParams = [];
     for (let i = 0; i < Object.keys(params).length; i++) {
       originalParams[i] = {

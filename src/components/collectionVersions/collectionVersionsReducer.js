@@ -1,16 +1,14 @@
 import versionActionTypes from "./collectionVersionsActionTypes";
 import { toast } from "react-toastify";
 
-const initialState = {
-  versions: {}
-};
+const initialState = {};
 
 function versionsReducer(state = initialState, action) {
   let versions = {};
 
   switch (action.type) {
     case versionActionTypes.FETCH_VERSIONS_SUCCESS:
-      return { ...state, ...action.versions };
+      return { ...action.versions };
 
     case versionActionTypes.FETCH_VERSIONS_FAILURE:
       toast.error(action.error);

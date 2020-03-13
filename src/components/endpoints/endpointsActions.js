@@ -37,6 +37,7 @@ export const updateEndpoint = editedEndpoint => {
     dispatch(updateEndpointRequest(editedEndpoint));
     const id = editedEndpoint.id;
     delete editedEndpoint.id;
+    delete editedEndpoint.groupId;
     endpointService
       .updateEndpoint(id, editedEndpoint)
       .then(response => {

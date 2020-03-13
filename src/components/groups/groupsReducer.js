@@ -1,9 +1,7 @@
 import groupsActionTypes from "./groupsActionTypes";
 import { toast } from "react-toastify";
 
-const initialState = {
-  groups: {}
-};
+const initialState = {};
 
 function groupsReducer(state = initialState, action) {
   let groups = {};
