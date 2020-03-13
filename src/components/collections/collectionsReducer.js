@@ -69,10 +69,6 @@ function collectionsReducer(state = initialState, action) {
       collections = { ...collections, [collection.id]: collection };
       return collections;
 
-    case collectionsActionTypes.ON_COLLECTION_DUPLICATED_ERROR:
-      toast.error(action.error);
-      return state;
-
     default:
       return state;
   }

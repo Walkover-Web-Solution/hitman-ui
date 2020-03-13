@@ -1,6 +1,8 @@
 import groupsActionTypes from "./groupsActionTypes";
 import endpointsActionTypes from "../endpoints/endpointsActionTypes";
 import { toast } from "react-toastify";
+import versionActionTypes from "../collectionVersions/collectionVersionsActionTypes";
+import collectionActionTypes from "../collections/collectionsActionTypes";
 
 const initialState = {};
 
@@ -86,27 +88,11 @@ function groupsReducer(state = initialState, action) {
       groups = { ...groups, [group.id]: group };
       return groups;
 
-    case groupsActionTypes.ON_GROUP_DUPLICATED_ERROR:
-      toast.error(action.error);
-      return state;
+    case versionActionTypes.ON_VERSION_DUPLICATED:
+      return { ...state, ...action.response.groups };
 
-    case groupsActionTypes.UPDATE_STATE_SUCCESS:
-      groups = { ...state };
-      const newGroups = { ...action.groups };
-      const newGroupIds = Object.keys(newGroups);
-      for (let i = 0; i < newGroupIds.length; i++) {
-        groups = {
-          ...groups,
-          [newGroupIds[i]]: newGroups[newGroupIds[i]]
-        };
-      }
-      return groups;
-
-    case groupsActionTypes.UPDATE_STATE_FAILURE:
-      toast.error(action.error);
-      groups = { ...state };
-      return groups;
-
+    case collectionActionTypes.ON_COLLECTION_DUPLICATED:
+      return { ...state, ...action.response.groups };
     default:
       return state;
   }

@@ -3,6 +3,7 @@ import groupsService from "../groups/groupsService";
 import groupsActionTypes from "./groupsActionTypes";
 import endpointsActions from "../endpoints/endpointsActions";
 import pagesActions from "../pages/pagesActions";
+import { toast } from "react-toastify";
 
 export const setEndpointIds = (endpointsOrder, groupId) => {
   const group = store.getState().groups[groupId];
@@ -170,14 +171,10 @@ export const duplicateGroup = group => {
     groupsService
       .duplicateGroup(group.id)
       .then(response => {
-        const endpoints = response.data.endpoints;
-        const pages = response.data.pages;
-        dispatch(endpointsActions.updateState(endpoints));
-        dispatch(pagesActions.updateState(pages));
         dispatch(onGroupDuplicated(response.data));
       })
       .catch(error => {
-        dispatch(onGroupDuplicatedError(error.response, group));
+        toast.error(error);
       });
   };
 };
@@ -187,40 +184,4 @@ export const onGroupDuplicated = response => {
     type: groupsActionTypes.ON_GROUP_DUPLICATED,
     response
   };
-};
-
-export const onGroupDuplicatedError = (error, group) => {
-  return {
-    type: groupsActionTypes.ON_GROUP_DUPLICATED_ERROR,
-    error,
-    group
-  };
-};
-
-export const updateState = groups => {
-  return dispatch => {
-    try {
-      dispatch(updateStateSuccess(groups));
-    } catch (error) {
-      dispatch(updateStateFailure(error));
-    }
-  };
-};
-
-export const updateStateSuccess = groups => {
-  return {
-    type: groupsActionTypes.UPDATE_STATE_SUCCESS,
-    groups
-  };
-};
-
-export const updateStateFailure = error => {
-  return {
-    type: groupsActionTypes.UPDATE_STATE_FAILURE,
-    error
-  };
-};
-
-export default {
-  updateState
 };

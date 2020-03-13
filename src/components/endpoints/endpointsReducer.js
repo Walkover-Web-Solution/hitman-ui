@@ -1,5 +1,8 @@
 import endpointsActionTypes from "./endpointsActionTypes";
 import { toast } from "react-toastify";
+import groupsActionTypes from "../groups/groupsActionTypes";
+import versionActionTypes from "../collectionVersions/collectionVersionsActionTypes";
+import collectionActionTypes from "../collections/collectionsActionTypes";
 
 const initialState = {};
 
@@ -72,33 +75,17 @@ function endpointsReducer(state = initialState, action) {
       };
 
     case endpointsActionTypes.ON_ENDPOINT_DUPLICATED:
-      console.log(state, action, {
-        ...state,
-        [action.response.id]: action.response
-      });
       return { ...state, [action.response.id]: action.response };
 
-    case endpointsActionTypes.ON_ENDPOINT_DUPLICATED_ERROR:
-      toast.error(action.error);
-      endpoints = { ...state };
-      return endpoints;
+    case groupsActionTypes.ON_GROUP_DUPLICATED:
+      endpoints = { ...state, ...action.response.endpoints };
+      return { ...state, ...action.response.endpoints };
 
-    case endpointsActionTypes.UPDATE_STATE_SUCCESS:
-      endpoints = { ...state };
-      const newEndpoints = { ...action.endpoints };
-      const newEndpointIds = Object.keys(newEndpoints);
-      for (let i = 0; i < newEndpointIds.length; i++) {
-        endpoints = {
-          ...endpoints,
-          [newEndpointIds[i]]: newEndpoints[newEndpointIds[i]]
-        };
-      }
-      return endpoints;
+    case versionActionTypes.ON_VERSION_DUPLICATED:
+      return { ...state, ...action.response.endpoints };
 
-    case endpointsActionTypes.UPDATE_STATE_FAILURE:
-      toast.error(action.error);
-      endpoints = { ...state };
-      return endpoints;
+    case collectionActionTypes.ON_COLLECTION_DUPLICATED:
+      return { ...state, ...action.response.endpoints };
 
     default:
       return state;

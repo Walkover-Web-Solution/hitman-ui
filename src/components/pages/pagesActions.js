@@ -1,6 +1,7 @@
 import pagesService from "./pageService";
 import pagesActionTypes from "./pagesActionTypes";
 import store from "../../store/store";
+import { toast } from "react-toastify";
 
 export const fetchPages = () => {
   return dispatch => {
@@ -210,7 +211,7 @@ export const duplicatePage = page => {
         dispatch(onPageDuplicated(response.data));
       })
       .catch(error => {
-        dispatch(onPageDuplicatedError(error.response, page));
+        toast.error(error);
       });
   };
 };
@@ -220,40 +221,4 @@ export const onPageDuplicated = response => {
     type: pagesActionTypes.ON_PAGE_DUPLICATED,
     response
   };
-};
-
-export const onPageDuplicatedError = (error, page) => {
-  return {
-    type: pagesActionTypes.ON_PAGE_DUPLICATED_ERROR,
-    error,
-    page
-  };
-};
-
-export const updateState = pages => {
-  return dispatch => {
-    try {
-      dispatch(updateStateSuccess(pages));
-    } catch (error) {
-      dispatch(updateStateFailure(error));
-    }
-  };
-};
-
-export const updateStateSuccess = pages => {
-  return {
-    type: pagesActionTypes.UPDATE_STATE_SUCCESS,
-    pages
-  };
-};
-
-export const updateStateFailure = error => {
-  return {
-    type: pagesActionTypes.UPDATE_STATE_FAILURE,
-    error
-  };
-};
-
-export default {
-  updateState
 };

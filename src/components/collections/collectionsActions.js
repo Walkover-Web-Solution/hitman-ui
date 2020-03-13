@@ -1,11 +1,7 @@
 import collectionsService from "../collections/collectionsService";
 import collectionsActionTypes from "./collectionsActionTypes";
 import store from "../../store/store";
-import { fetchVersions } from "../collectionVersions/collectionVersionsActions";
-import groupsActions from "../groups/groupsActions";
-import endpointsActions from "../endpoints/endpointsActions";
-import pagesActions from "../pages/pagesActions";
-import versionsActions from "../collectionVersions/collectionVersionsActions";
+import { toast } from "react-toastify";
 
 export const fetchCollections = () => {
   return dispatch => {
@@ -45,7 +41,6 @@ export const addCollection = newCollection => {
       .saveCollection(newCollection)
       .then(response => {
         dispatch(onCollectionAdded(response.data));
-        // dispatch(fetchVersions(response.data.id));
       })
       .catch(error => {
         dispatch(
@@ -161,23 +156,14 @@ export const onCollectionDeletedError = (error, collection) => {
 };
 
 export const duplicateCollection = collection => {
-  console.log(collection);
   return dispatch => {
     collectionsService
       .duplicateCollection(collection.id)
       .then(response => {
-        const endpoints = response.data.endpoints;
-        const pages = response.data.pages;
-        const groups = response.data.groups;
-        const versions = response.data.versions;
-        dispatch(versionsActions.updateState(versions));
-        dispatch(groupsActions.updateState(groups));
-        dispatch(endpointsActions.updateState(endpoints));
-        dispatch(pagesActions.updateState(pages));
         dispatch(onCollectionDuplicated(response.data));
       })
       .catch(error => {
-        dispatch(onCollectionDuplicatedError(error.response, collection));
+        toast.error(error);
       });
   };
 };
@@ -186,13 +172,5 @@ export const onCollectionDuplicated = response => {
   return {
     type: collectionsActionTypes.ON_COLLECTION_DUPLICATED,
     response
-  };
-};
-
-export const onCollectionDuplicatedError = (error, collection) => {
-  return {
-    type: collectionsActionTypes.ON_COLLECTION_DUPLICATED_ERROR,
-    error,
-    collection
   };
 };

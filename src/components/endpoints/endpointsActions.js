@@ -2,6 +2,7 @@ import endpointService from "./endpointService";
 import endpointsActionTypes from "./endpointsActionTypes";
 import { setEndpointIds } from "../groups/groupsActions";
 import store from "../../store/store";
+import { toast } from "react-toastify";
 
 export const addEndpoint = (history, newEndpoint, groupId) => {
   return dispatch => {
@@ -90,7 +91,8 @@ export const duplicateEndpoint = endpoint => {
         dispatch(onEndpointDuplicated(response.data));
       })
       .catch(error => {
-        dispatch(onEndpointDuplicatedError(error.response, endpoint));
+        toast.error(error);
+        // dispatch(onEndpointDuplicatedError(error.response, endpoint));
       });
   };
 };
@@ -213,40 +215,4 @@ export const onEndpointDuplicated = response => {
     type: endpointsActionTypes.ON_ENDPOINT_DUPLICATED,
     response
   };
-};
-
-export const onEndpointDuplicatedError = (error, endpoint) => {
-  return {
-    type: endpointsActionTypes.ON_ENDPOINT_DUPLICATED_ERROR,
-    error,
-    endpoint
-  };
-};
-
-export const updateState = endpoints => {
-  return dispatch => {
-    try {
-      dispatch(updateStateSuccess(endpoints));
-    } catch (error) {
-      dispatch(updateStateFailure(error));
-    }
-  };
-};
-
-export const updateStateSuccess = endpoints => {
-  return {
-    type: endpointsActionTypes.UPDATE_STATE_SUCCESS,
-    endpoints
-  };
-};
-
-export const updateStateFailure = error => {
-  return {
-    type: endpointsActionTypes.UPDATE_STATE_FAILURE,
-    error
-  };
-};
-
-export default {
-  updateState
 };

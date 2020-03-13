@@ -1,5 +1,8 @@
 import pagesActionTypes from "./pagesActionTypes";
 import { toast } from "react-toastify";
+import groupsActionTypes from "../groups/groupsActionTypes";
+import versionActionTypes from "../collectionVersions/collectionVersionsActionTypes";
+import collectionActionTypes from "../collections/collectionsActionTypes";
 
 const initialState = {};
 
@@ -91,27 +94,15 @@ function pagesReducer(state = initialState, action) {
       pages[action.response.id] = action.response;
       return pages;
 
-    case pagesActionTypes.ON_PAGE_DUPLICATED_ERROR:
-      toast.error(action.error);
-      pages = { ...state };
-      return pages;
+    case groupsActionTypes.ON_GROUP_DUPLICATED:
+      return { ...state, ...action.response.pages };
 
-    case pagesActionTypes.UPDATE_STATE_SUCCESS:
-      pages = { ...state };
-      const newPages = { ...action.pages };
-      const newPageIds = Object.keys(newPages);
-      for (let i = 0; i < newPageIds.length; i++) {
-        pages = {
-          ...pages,
-          [newPageIds[i]]: newPages[newPageIds[i]]
-        };
-      }
-      return pages;
+    case versionActionTypes.ON_VERSION_DUPLICATED:
+      return { ...state, ...action.response.pages };
 
-    case pagesActionTypes.UPDATE_STATE_FAILURE:
-      toast.error(action.error);
-      pages = { ...state };
-      return pages;
+    case collectionActionTypes.ON_COLLECTION_DUPLICATED:
+      return { ...state, ...action.response.pages };
+
     default:
       return state;
   }
