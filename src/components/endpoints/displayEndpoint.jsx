@@ -4,9 +4,8 @@ import { connect } from "react-redux";
 import { toast } from "react-toastify";
 import shortId from "shortid";
 import "../../css/editableDropdown.css";
-import DisplayHeaders from "./displayHeaders";
-import ParamsComponent from "./displayParams";
 import DisplayResponse from "./displayResponse";
+import GenericTable from "./genericTable";
 import { addEndpoint, updateEndpoint } from "./endpointsActions";
 import endpointService from "./endpointService";
 import store from "../../store/store";
@@ -365,10 +364,6 @@ class DisplayEndpoint extends Component {
     data.method = method;
     this.setState({ response, data });
   }
-
-  // handleUpdateHeader(originalHeaders) {
-  //   this.setState({ originalHeaders });
-  // }
 
   propsFromChild(name, value) {
     if (name === "originalParams") {
@@ -740,11 +735,12 @@ class DisplayEndpoint extends Component {
               role="tabpanel"
               aria-labelledby="pills-params-tab"
             >
-              <ParamsComponent
+              <GenericTable
                 {...this.props}
-                originalParams={this.state.originalParams}
+                title="Add Params"
+                dataArray={this.state.originalParams}
                 props_from_parent={this.propsFromChild.bind(this)}
-              />
+              ></GenericTable>
             </div>
             <div
               className="tab-pane fade"
@@ -753,11 +749,12 @@ class DisplayEndpoint extends Component {
               aria-labelledby="pills-headers-tab"
             >
               <div>
-                <DisplayHeaders
+                <GenericTable
                   {...this.props}
-                  originalHeaders={this.state.originalHeaders}
+                  title="Add Headers"
+                  dataArray={this.state.originalHeaders}
                   props_from_parent={this.propsFromChild.bind(this)}
-                />
+                ></GenericTable>
               </div>
             </div>
             <div

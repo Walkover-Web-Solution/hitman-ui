@@ -4,23 +4,26 @@ import { Table } from "react-bootstrap";
 class GenericTable extends Component {
   state = {};
 
-  // handleChange() {
-  //   const { name, value, description } = this.props;
-  //   const originalParams = [...this.originalParams];
-  //   if (name[1] === "key") {
-  //     originalParams[name[0]].key = value;
-  //     if (originalParams[name[0]].key.length === 0) {
-  //       this.handleDeleteParam(name[0]);
-  //     }
-  //   }
-  //   if (name[1] === "value") {
-  //     originalParams[name[0]].value = value;
-  //   }
-  //   if (name[1] === "description") {
-  //     originalParams[name[0]].description = .description;
-  //   }
-  //   this.props.props_from_parent("originalParams", originalParams);
-  // }
+  handleChange = e => {
+    const { dataArray, title } = this.props;
+    const name = e.currentTarget.name.split(".");
+    if (name[1] === "key") {
+      dataArray[name[0]].key = e.currentTarget.value;
+      if (title === "Add Params" && dataArray[name[0]].key.length === 0) {
+        dataArray.splice(name[0]);
+      }
+    }
+    if (name[1] === "value") {
+      dataArray[name[0]].value = e.currentTarget.value;
+    }
+    if (name[1] === "description") {
+      dataArray[name[0]].description = e.currentTarget.value;
+    }
+    if (title === "Add Headers")
+      this.props.props_from_parent("originalHeaders", dataArray);
+    if (title === "Add Params")
+      this.props.props_from_parent("originalParams", dataArray);
+  };
 
   handleAdd(dataArray, title) {
     const len = dataArray.length;
@@ -70,7 +73,7 @@ class GenericTable extends Component {
                   <input
                     name={index + ".key"}
                     value={dataArray[index].key}
-                    onChange={this.props.handleChange}
+                    onChange={this.handleChange}
                     type={"text"}
                     className="form-control"
                     style={{ border: "none" }}
@@ -80,7 +83,7 @@ class GenericTable extends Component {
                   <input
                     name={index + ".value"}
                     value={dataArray[index].value}
-                    onChange={this.props.handleChange}
+                    onChange={this.handleChange}
                     type={"text"}
                     className="form-control"
                     style={{ border: "none" }}
@@ -90,7 +93,7 @@ class GenericTable extends Component {
                   <input
                     name={index + ".description"}
                     value={dataArray[index].description}
-                    onChange={this.props.handleChange}
+                    onChange={this.handleChange}
                     type={"text"}
                     style={{ border: "none" }}
                     className="form-control"
