@@ -92,15 +92,12 @@ class EditPage extends Component {
       this.props.updatePage(editedPage, editedPage.id);
       this.props.history.push({
         pathname: `/dashboard`
-        // editedPage: { ...this.state.data }
       });
     } else {
       const editedPage = { ...this.state.data };
       this.props.updatePage(editedPage, editedPage.id);
       this.props.history.push({
         pathname: `/dashboard`
-        // editedPage: { ...this.state.data },
-        // groupId: { ...this.state.data.groupId }
       });
     }
   };

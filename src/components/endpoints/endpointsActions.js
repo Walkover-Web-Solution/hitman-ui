@@ -1,6 +1,29 @@
-import endpointService from "../endpoints/endpointService";
+import endpointService from "./endpointService";
 import endpointsActionTypes from "./endpointsActionTypes";
+import { setEndpointIds } from "../groups/groupsActions";
 import store from "../../store/store";
+
+export const addEndpoint = (newEndpoint, groupId) => {
+  return dispatch => {
+    dispatch(addEndpointRequest({ ...newEndpoint, groupId }));
+    endpointService
+      .saveEndpoint(groupId, newEndpoint)
+      .then(response => {
+        dispatch(onEndpointAdded(response.data, newEndpoint));
+        let endpointsOrder = store.getState().groups[groupId].endpointsOrder;
+        endpointsOrder.push(response.data.id);
+        dispatch(setEndpointIds(endpointsOrder, groupId));
+      })
+      .catch(error => {
+        dispatch(
+          onEndpointAddedError(
+            error.response ? error.response.data : error,
+            newEndpoint
+          )
+        );
+      });
+  };
+};
 
 export const fetchEndpoints = () => {
   return dispatch => {
@@ -17,34 +40,91 @@ export const fetchEndpoints = () => {
   };
 };
 
-export const addEndpoint = (newEndpoint, groupId) => {
-  return dispatch => {
-    dispatch(addEndpointRequest(newEndpoint));
-    endpointService
-      .saveEndpoint(groupId, newEndpoint)
-      .then(response => {
-        dispatch(onEndpointAdded(response.data, newEndpoint));
-      })
-      .catch(error => {
-        dispatch(onEndpointAddedError(error.response.data, newEndpoint));
-      });
-  };
-};
-
 export const updateEndpoint = editedEndpoint => {
   return dispatch => {
     const originalEndpoint = store.getState().endpoints[editedEndpoint.id];
     dispatch(updateEndpointRequest(editedEndpoint));
     const id = editedEndpoint.id;
     delete editedEndpoint.id;
+    delete editedEndpoint.groupId;
     endpointService
       .updateEndpoint(id, editedEndpoint)
       .then(response => {
         dispatch(onEndpointUpdated(response.data));
       })
       .catch(error => {
-        dispatch(onEndpointUpdatedError(error.response.data, originalEndpoint));
+        dispatch(
+          onEndpointUpdatedError(
+            error.response ? error.response.data : error,
+            originalEndpoint
+          )
+        );
       });
+  };
+};
+
+export const deleteEndpoint = endpoint => {
+  return dispatch => {
+    dispatch(deleteEndpointRequest(endpoint));
+    let endpointsOrder = store.getState().groups[endpoint.groupId]
+      .endpointsOrder;
+    endpointsOrder = endpointsOrder.filter(eId => eId !== endpoint.id);
+    dispatch(setEndpointIds(endpointsOrder, endpoint.groupId));
+    endpointService
+      .deleteEndpoint(endpoint.id)
+      .then(() => {
+        dispatch(onEndpointDeleted());
+      })
+      .catch(error => {
+        dispatch(onEndpointDeletedError(error.response, endpoint));
+      });
+  };
+};
+
+export const duplicateEndpoint = endpoint => {
+  return dispatch => {
+    endpointService
+      .duplicateEndpoint(endpoint.id)
+      .then(response => {
+        dispatch(onEndpointDuplicated(response.data));
+      })
+      .catch(error => {
+        dispatch(onEndpointDuplicatedError(error.response, endpoint));
+      });
+  };
+};
+
+export const moveEndpoint = (endpointId, sourceGroupId, destinationGroupId) => {
+  return dispatch => {
+    dispatch(
+      moveEndpointRequest(endpointId, sourceGroupId, destinationGroupId)
+    );
+
+    endpointService
+      .moveEndpoint(endpointId, { groupId: destinationGroupId })
+      .then(response => {
+        dispatch(moveEndpointSuccess(response.data));
+      });
+  };
+};
+
+export const moveEndpointRequest = (
+  endpointId,
+  sourceGroupId,
+  destinationGroupId
+) => {
+  return {
+    type: endpointsActionTypes.MOVE_ENDPOINT_REQUEST,
+    endpointId,
+    sourceGroupId,
+    destinationGroupId
+  };
+};
+
+export const moveEndpointSuccess = response => {
+  return {
+    type: endpointsActionTypes.MOVE_ENDPOINT_SUCCESS,
+    response
   };
 };
 
@@ -106,20 +186,6 @@ export const onEndpointUpdatedError = (error, originalEndpoint) => {
   };
 };
 
-export const deleteEndpoint = endpoint => {
-  return dispatch => {
-    dispatch(deleteEndpointRequest(endpoint));
-    endpointService
-      .deleteEndpoint(endpoint.id)
-      .then(() => {
-        dispatch(onEndpointDeleted());
-      })
-      .catch(error => {
-        dispatch(onEndpointDeletedError(error.response, endpoint));
-      });
-  };
-};
-
 export const deleteEndpointRequest = endpoint => {
   return {
     type: endpointsActionTypes.DELETE_ENDPOINT_REQUEST,
@@ -138,19 +204,6 @@ export const onEndpointDeletedError = (error, endpoint) => {
     type: endpointsActionTypes.ON_ENDPOINT_DELETED_ERROR,
     error,
     endpoint
-  };
-};
-
-export const duplicateEndpoint = endpoint => {
-  return dispatch => {
-    endpointService
-      .duplicateEndpoint(endpoint.id)
-      .then(response => {
-        dispatch(onEndpointDuplicated(response.data));
-      })
-      .catch(error => {
-        dispatch(onEndpointDuplicatedError(error.response, endpoint));
-      });
   };
 };
 

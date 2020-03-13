@@ -28,7 +28,12 @@ export const addEnvironment = newEnvironment => {
         dispatch(OnEnvironmentAdded(response.data, newEnvironment));
       })
       .catch(error => {
-        dispatch(OnEnvironmentAddedError(error.response.data, newEnvironment));
+        dispatch(
+          OnEnvironmentAddedError(
+            error.response ? error.response.data : error,
+            newEnvironment
+          )
+        );
       });
   };
 };
@@ -48,7 +53,10 @@ export const updateEnvironment = editedEnvironment => {
       })
       .catch(error => {
         dispatch(
-          OnEnvironmentUpdatedError(error.response.data, originalEnvironment)
+          OnEnvironmentUpdatedError(
+            error.response ? error.response.data : error,
+            originalEnvironment
+          )
         );
       });
   };

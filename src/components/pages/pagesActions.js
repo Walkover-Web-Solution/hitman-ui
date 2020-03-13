@@ -44,7 +44,12 @@ export const updatePage = (history, editedPage) => {
         history.push(`/dashboard/pages/${response.data.id}`);
       })
       .catch(error => {
-        dispatch(onPageUpdatedError(error.response.data, originalPage));
+        dispatch(
+          onPageUpdatedError(
+            error.response ? error.response.data : error,
+            originalPage
+          )
+        );
       });
   };
 };
@@ -83,7 +88,12 @@ export const addPage = (history, versionId, newPage) => {
         history.push(`/dashboard/pages/${response.data.id}/edit`);
       })
       .catch(error => {
-        dispatch(onPageAddedError(error.response.data, newPage));
+        dispatch(
+          onPageAddedError(
+            error.response ? error.response.data : error,
+            newPage
+          )
+        );
       });
   };
 };
@@ -123,7 +133,12 @@ export const addGroupPage = (history, versionId, groupId, newPage) => {
         history.push(`/dashboard/pages/${response.data.id}/edit`);
       })
       .catch(error => {
-        dispatch(onGroupPageAddedError(error.response.data, newPage));
+        dispatch(
+          onGroupPageAddedError(
+            error.response ? error.response.data : error,
+            newPage
+          )
+        );
       });
   };
 };

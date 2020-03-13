@@ -25,29 +25,6 @@ const mapDispatchToProps = dispatch => {
 class GroupPages extends Component {
   state = {};
 
-  onDragStart = (e, pageId) => {
-    this.props.group_dnd(false);
-    this.draggedItem = pageId;
-  };
-
-  onDragOver = (e, pageId) => {
-    e.preventDefault();
-    this.draggedOverItem = pageId;
-  };
-
-  async onDragEnd(e) {
-    this.props.group_dnd(true);
-    if (this.draggedItem === this.draggedOverItem) {
-      return;
-    }
-    let pageIds = this.props.page_ids.filter(item => item !== this.draggedItem);
-    const index = this.props.page_ids.findIndex(
-      vId => vId === this.draggedOverItem
-    );
-    pageIds.splice(index, 0, this.draggedItem);
-    this.props.set_page_id(pageIds);
-  }
-
   async handleDelete(page) {
     this.props.deletePage(page);
     this.props.history.push({
@@ -73,7 +50,6 @@ class GroupPages extends Component {
     this.props.duplicatePage(page);
     this.props.history.push({
       pathname: "/dashboard"
-      // duplicatePage: page
     });
   }
 
@@ -89,21 +65,9 @@ class GroupPages extends Component {
             )
 
             .map(pageId => (
-              <Accordion
-                defaultActiveKey="1"
-                key={pageId}
-                draggable
-                onDragOver={e => this.onDragOver(e, pageId)}
-                onDragStart={e => this.onDragStart(e, pageId)}
-                onDragEnd={e => this.onDragEnd(e, pageId)}
-              >
+              <Accordion defaultActiveKey="1" key={pageId}>
                 <Card>
-                  <Card.Header
-                    draggable
-                    onDragOver={e => this.onDragOver(e, pageId)}
-                    onDragStart={e => this.onDragStart(e, pageId)}
-                    onDragEnd={e => this.onDragEnd(e, pageId)}
-                  >
+                  <Card.Header>
                     <Accordion.Toggle
                       as={Button}
                       onClick={() =>

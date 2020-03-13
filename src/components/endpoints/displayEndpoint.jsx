@@ -1,20 +1,24 @@
 import React, { Component } from "react";
 import { Dropdown } from "react-bootstrap";
-import Nav from "react-bootstrap/Nav";
-import Navbar from "react-bootstrap/Navbar";
-import { CopyToClipboard } from "react-copy-to-clipboard";
-import JSONPretty from "react-json-pretty";
 import { connect } from "react-redux";
 import { toast } from "react-toastify";
 import shortId from "shortid";
 import "../../css/editableDropdown.css";
 import DisplayHeaders from "./displayHeaders";
 import ParamsComponent from "./displayParams";
+import DisplayResponse from "./displayResponse";
 import { addEndpoint, updateEndpoint } from "./endpointsActions";
 import endpointService from "./endpointService";
-const status = require("http-status");
-var JSONPrettyMon = require("react-json-pretty/dist/monikai");
+import store from "../../store/store";
 var URI = require("urijs");
+
+const mapStateToProps = state => {
+  return {
+    groups: state.groups,
+    versions: state.versions,
+    endpoints: state.endpoints
+  };
+};
 
 const mapDispatchToProps = dispatch => {
   return {
@@ -52,14 +56,73 @@ class DisplayEndpoint extends Component {
     selectedHost: "",
     onChangeFlag: false,
     flagResponse: false,
-    rawResponse: false,
-    prettyResponse: false,
-    previewResponse: false,
-    flagInvalidResponse: true,
-    responseString: "",
     originalHeaders: [],
     originalParams: []
   };
+
+  async componentDidMount() {
+    let endpoint = {};
+    let originalParams = {};
+    let originalHeaders = [];
+    if (!this.props.location.title) {
+      store.subscribe(() => {
+        const endpointId = this.props.location.pathname.split("/")[4];
+
+        const { endpoints } = store.getState();
+        const { groups } = store.getState();
+        const { versions } = store.getState();
+
+        if (
+          Object.keys(groups).length !== 0 &&
+          Object.keys(versions).length !== 0 &&
+          Object.keys(endpoints).length !== 0 &&
+          endpointId
+        ) {
+          endpoint = endpoints[endpointId];
+          const groupId = endpoints[endpointId].groupId;
+
+          //To fetch originalParams from Params
+          originalParams = this.fetchoriginalParams(endpoint.params);
+
+          //To fetch originalHeaders from Headers
+          Object.keys(endpoint.headers).forEach(h => {
+            originalHeaders.push(endpoint.headers[h]);
+          });
+
+          this.BASE_URL = endpoint.BASE_URL;
+          if (endpoint.BASE_URL !== null) {
+            this.setDropdownValue("custom");
+          } else {
+            this.state.selectedHost = "";
+            this.customHost = false;
+          }
+
+          let props = { ...this.props, groupId: groupId };
+          const hostJson = this.fetchHosts(props, this.props.environment);
+          this.fillDropdownValue(hostJson);
+          this.host = this.findHost(hostJson);
+          this.setState({
+            data: {
+              method: endpoint.requestType,
+              uri: endpoint.uri,
+              updatedUri: endpoint.uri,
+              name: endpoint.name,
+              body: JSON.stringify(endpoint.body, null, 4),
+              host: this.host
+            },
+            originalParams,
+            originalHeaders,
+            endpoint,
+            groups,
+            groupId,
+            versions,
+            title: "update endpoint"
+          });
+        }
+      });
+    }
+  }
+
   handleChange = e => {
     let data = { ...this.state.data };
     if (e.currentTarget.name === "host") {
@@ -191,12 +254,11 @@ class DisplayEndpoint extends Component {
     if (error.response) {
       let response = {
         status: error.response.status,
-        data: error.response.data
+        data: error.response ? error.response.data : error
       };
-      this.setState({ response });
+      this.setState({ response, flagResponse: true });
     } else {
-      let flagInvalidResponse = false;
-      this.setState({ flagInvalidResponse });
+      this.setState({ flagResponse: false });
     }
   }
 
@@ -212,8 +274,10 @@ class DisplayEndpoint extends Component {
       );
       const response = { ...responseJson };
 
-      if (responseJson.status === 200) this.setState({ response });
-      this.responseTime();
+      if (responseJson.status === 200) {
+        let timeElapsed = new Date().getTime() - this.state.startTime;
+        this.setState({ response, timeElapsed, flagResponse: true });
+      }
     } catch (error) {
       this.handleErrorResponse(error);
     }
@@ -221,18 +285,15 @@ class DisplayEndpoint extends Component {
 
   handleSend = async () => {
     let startTime = new Date().getTime();
-    let prettyResponse = true;
-    this.setState({ startTime, prettyResponse });
     let response = {};
+    this.setState({ startTime, response });
     const headersData = this.doSubmitHeader();
-    this.setState({ response });
-    this.state.flagResponse = true;
     const host = this.state.data.host;
     let api = host + this.uri.current.value;
     api = this.replaceVariables(api);
     let body = this.parseBody(this.state.data);
     let headerJson = {};
-    Object.keys(headersData).map(header => {
+    Object.keys(headersData).forEach(header => {
       headerJson[headersData[header].key] = headersData[header].value;
     });
 
@@ -262,7 +323,11 @@ class DisplayEndpoint extends Component {
       endpoint.requestId = shortId.generate();
       this.props.addEndpoint(endpoint, this.state.groupId);
     } else if (this.state.title === "update endpoint") {
-      this.props.updateEndpoint({ ...endpoint, id: this.state.endpoint.id });
+      this.props.updateEndpoint({
+        ...endpoint,
+        id: this.state.endpoint.id,
+        groupId: this.state.groupId
+      });
     }
   };
 
@@ -355,37 +420,6 @@ class DisplayEndpoint extends Component {
       endpoint
     });
     return updatedParams;
-  }
-
-  responseTime() {
-    let timeElapsed = new Date().getTime() - this.state.startTime;
-    this.setState({ timeElapsed });
-  }
-
-  rawDataResponse() {
-    this.setState({
-      rawResponse: true,
-      previewResponse: false,
-      prettyResponse: false,
-      responseString: JSON.stringify(this.state.response)
-    });
-  }
-
-  prettyDataResponse() {
-    this.setState({
-      rawResponse: false,
-      previewResponse: false,
-      prettyResponse: true,
-      responseString: JSON.stringify(this.state.response)
-    });
-  }
-
-  previewDataResponse() {
-    this.setState({
-      rawResponse: false,
-      previewResponse: true,
-      prettyResponse: false
-    });
   }
 
   fillDropdownValue(hostJson) {
@@ -488,12 +522,6 @@ class DisplayEndpoint extends Component {
         selectedHost: "",
         onChangeFlag: false,
         flagResponse: false,
-        rawResponse: false,
-        prettyResponse: false,
-        previewResponse: false,
-        flagInvalidResponse: true,
-        responseString: "",
-        copied: false,
         originalHeaders: [],
         originalParams: []
       });
@@ -524,6 +552,11 @@ class DisplayEndpoint extends Component {
         this.props.location.endpoint.params
       );
 
+      //To fetch originalHeaders from Headers
+      const originalHeaders = [];
+      Object.keys(endpoint.headers).forEach(h => {
+        originalHeaders.push(endpoint.headers[h]);
+      });
       this.setState({
         data: {
           method: endpoint.requestType,
@@ -540,10 +573,9 @@ class DisplayEndpoint extends Component {
         versions: this.props.location.versions,
         groups: this.props.location.groups,
         originalParams,
-        prettyResponse: false,
-        rawResponse: false,
-        previewResponse: false,
-        endpoint
+        originalHeaders,
+        endpoint,
+        flagResponse: false
       });
       this.props.history.push({ endpoint: null });
     }
@@ -714,6 +746,7 @@ class DisplayEndpoint extends Component {
               <div>
                 <DisplayHeaders
                   {...this.props}
+                  originalHeaders={this.state.originalHeaders}
                   handle_update_headers={this.handleUpdateHeader.bind(this)}
                 />
               </div>
@@ -736,81 +769,16 @@ class DisplayEndpoint extends Component {
             </div>
           </div>
         </div>
-        {this.state.response.status ? (
-          this.state.response.status === 200 ? (
-            <div>
-              <div className="alert alert-success" role="alert">
-                Status :{" "}
-                {this.state.response.status +
-                  " " +
-                  this.state.response.statusText}
-                <div style={{ float: "right" }}>
-                  Time:{this.state.timeElapsed}ms
-                </div>
-              </div>
-            </div>
-          ) : (
-            <div className="alert alert-danger" role="alert">
-              Status :
-              {this.state.response.status +
-                " " +
-                status[this.state.response.status]}
-            </div>
-          )
-        ) : null}
-
-        {this.state.flagResponse === true &&
-        (this.state.prettyResponse === true ||
-          this.state.rawResponse === true ||
-          this.state.previewResponse === true) ? (
-          <div>
-            <div>
-              <Navbar bg="primary" variant="dark">
-                <Navbar.Brand href="#home" />
-                <Nav className="mr-auto">
-                  <Nav.Link onClick={this.prettyDataResponse.bind(this)}>
-                    Pretty
-                  </Nav.Link>
-                  <Nav.Link onClick={this.rawDataResponse.bind(this)}>
-                    Raw
-                  </Nav.Link>
-                  <Nav.Link onClick={this.previewDataResponse.bind(this)}>
-                    Preview
-                  </Nav.Link>
-                </Nav>
-                <CopyToClipboard
-                  text={JSON.stringify(this.state.response.data)}
-                  onCopy={() => this.setState({ copied: true })}
-                  style={{ float: "right", borderRadius: "12px" }}
-                >
-                  <button style={{ borderRadius: "12px" }}>Copy</button>
-                </CopyToClipboard>
-              </Navbar>
-            </div>
-
-            {this.state.prettyResponse === true ? (
-              <div>
-                <JSONPretty
-                  theme={JSONPrettyMon}
-                  data={this.state.response.data}
-                />
-              </div>
-            ) : null}
-            {this.state.rawResponse === true ? (
-              <div style={{ display: "block", whiteSpace: "normal" }}>
-                {this.state.responseString}
-              </div>
-            ) : null}
-            {this.state.previewResponse === true ? (
-              <div style={{ display: "block", whiteSpace: "normal" }}>
-                feature coming soon
-              </div>
-            ) : null}
-          </div>
-        ) : null}
+        <div>
+          <DisplayResponse
+            timeElapsed={this.state.timeElapsed}
+            response={this.state.response}
+            flagResponse={this.state.flagResponse}
+          ></DisplayResponse>
+        </div>
       </div>
     );
   }
 }
 
-export default connect(null, mapDispatchToProps)(DisplayEndpoint);
+export default connect(mapStateToProps, mapDispatchToProps)(DisplayEndpoint);

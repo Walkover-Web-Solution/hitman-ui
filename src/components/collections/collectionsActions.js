@@ -45,10 +45,15 @@ export const addCollection = newCollection => {
       .saveCollection(newCollection)
       .then(response => {
         dispatch(onCollectionAdded(response.data));
-        dispatch(fetchVersions(response.data.id));
+        // dispatch(fetchVersions(response.data.id));
       })
       .catch(error => {
-        dispatch(onCollectionAddedError(error.response.data, newCollection));
+        dispatch(
+          onCollectionAddedError(
+            error.response ? error.response.data : error,
+            newCollection
+          )
+        );
       });
   };
 };
@@ -80,7 +85,7 @@ export const updateCollection = editedCollection => {
     const originalCollection = store.getState().collections[
       editedCollection.id
     ];
-    dispatch(updateCollectionRequest(editedCollection));
+    dispatch(updateCollectionRequest({ ...editedCollection }));
     const id = editedCollection.id;
     delete editedCollection.id;
     collectionsService
@@ -90,7 +95,10 @@ export const updateCollection = editedCollection => {
       })
       .catch(error => {
         dispatch(
-          onCollectionUpdatedError(error.response.data, originalCollection)
+          onCollectionUpdatedError(
+            error.response ? error.response.data : error,
+            originalCollection
+          )
         );
       });
   };
@@ -153,6 +161,7 @@ export const onCollectionDeletedError = (error, collection) => {
 };
 
 export const duplicateCollection = collection => {
+  console.log(collection);
   return dispatch => {
     collectionsService
       .duplicateCollection(collection.id)

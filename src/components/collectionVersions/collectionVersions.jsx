@@ -57,12 +57,6 @@ class CollectionVersions extends Component {
       });
     }
   }
-  closeVersionForm() {
-    let share = false;
-    let addGroup = false;
-    let showVersionForm = { share, addGroup };
-    this.setState({ showVersionForm });
-  }
 
   handleUpdate(collectionVersion) {
     this.props.history.push({
@@ -82,7 +76,6 @@ class CollectionVersions extends Component {
     this.props.duplicateVersion(version);
     this.props.history.push({
       pathname: "/dashboard"
-      // duplicateVersion: version
     });
   }
 
@@ -102,10 +95,10 @@ class CollectionVersions extends Component {
 
   closeVersionForm() {
     let share = false;
-    let showVersionForm = { share };
+    let addGroup = false;
+    let showVersionForm = { share, addGroup };
     this.setState({ showVersionForm });
   }
-
   render() {
     return (
       <div>

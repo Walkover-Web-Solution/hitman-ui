@@ -57,7 +57,12 @@ export const updateVersion = editedVersion => {
         dispatch(onVersionUpdated(response.data));
       })
       .catch(error => {
-        dispatch(onVersionUpdatedError(error.response.data, originalVersion));
+        dispatch(
+          onVersionUpdatedError(
+            error.response ? error.response.data : error,
+            originalVersion
+          )
+        );
       });
   };
 };
@@ -93,7 +98,12 @@ export const addVersion = (newVersion, collectionId) => {
         dispatch(onVersionAdded(response.data));
       })
       .catch(error => {
-        dispatch(onVersionAddedError(error.response.data, newVersion));
+        dispatch(
+          onVersionAddedError(
+            error.response ? error.response.data : error,
+            newVersion
+          )
+        );
       });
   };
 };

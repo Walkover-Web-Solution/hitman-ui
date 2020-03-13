@@ -1,13 +1,16 @@
 import endpointsActionTypes from "./endpointsActionTypes";
 import { toast } from "react-toastify";
 
-const initialState = {
-  endpoints: {}
-};
+const initialState = {};
 
 function endpointsReducer(state = initialState, action) {
   let endpoints = {};
   switch (action.type) {
+    case endpointsActionTypes.MOVE_ENDPOINT_REQUEST:
+      endpoints = { ...state };
+      endpoints[action.endpointId].groupId = action.destinationGroupId;
+      return endpoints;
+
     case endpointsActionTypes.ON_ENDPOINTS_FETCHED:
       return { ...action.endpoints };
 

@@ -1,12 +1,21 @@
 import React, { Component } from "react";
-import { Route, Switch, Link } from "react-router-dom";
+import { connect } from "react-redux";
+import { Link, Route, Switch } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import SideBar from "./sidebar";
+import DisplayEndpoint from "./endpoints/displayEndpoint";
+import { moveEndpoint } from "./endpoints/endpointsActions";
 import Environments from "./environments/environments";
 import DisplayPage from "./pages/displayPage";
 import EditPage from "./pages/editPage";
-import DisplayEndpoint from "./endpoints/displayEndpoint";
+import SideBar from "./sidebar";
+
+const mapDispatchToProps = dispatch => {
+  return {
+    moveEndpoint: (endpointId, sourceGroupId, destinationGroupId) =>
+      dispatch(moveEndpoint(endpointId, sourceGroupId, destinationGroupId))
+  };
+};
 
 class Main extends Component {
   state = {
@@ -14,6 +23,24 @@ class Main extends Component {
   };
   setEnvironment(environment) {
     this.setState({ currentEnvironment: environment });
+  }
+
+  setSourceGroupId(draggedEndpoint, groupId) {
+    this.draggedEndpoint = draggedEndpoint;
+    this.sourceGroupId = groupId;
+  }
+
+  setDestinationGroupId(destinationGroupId) {
+    this.dndMoveEndpoint(
+      this.draggedEndpoint,
+      this.sourceGroupId,
+      destinationGroupId
+    );
+  }
+
+  dndMoveEndpoint(endpointId, sourceGroupId, destinationGroupId) {
+    if (sourceGroupId !== destinationGroupId)
+      this.props.moveEndpoint(endpointId, sourceGroupId, destinationGroupId);
   }
 
   render() {
@@ -39,7 +66,11 @@ class Main extends Component {
         <div className="container-fluid">
           <div className="row">
             <Route>
-              <SideBar {...this.props} />
+              <SideBar
+                {...this.props}
+                set_source_group_id={this.setSourceGroupId.bind(this)}
+                set_destination_group_id={this.setDestinationGroupId.bind(this)}
+              />
             </Route>
             <ToastContainer />
             <main
@@ -85,4 +116,4 @@ class Main extends Component {
   }
 }
 
-export default Main;
+export default connect(null, mapDispatchToProps)(Main);

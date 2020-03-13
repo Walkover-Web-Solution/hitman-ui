@@ -26,7 +26,6 @@ class Pages extends Component {
   state = {};
 
   onDragStart = (e, pageId) => {
-    this.props.version_dnd(false);
     this.draggedItem = pageId;
   };
 
@@ -36,7 +35,6 @@ class Pages extends Component {
   };
 
   async onDragEnd(e) {
-    this.props.version_dnd(true);
     if (this.draggedItem === this.draggedOverItem) {
       return;
     }
@@ -65,7 +63,6 @@ class Pages extends Component {
     this.props.duplicatePage(page);
     this.props.history.push({
       pathname: "/dashboard"
-      // duplicatePage: page
     });
   }
 

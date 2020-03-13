@@ -9,8 +9,8 @@ import {
 import GroupPages from "../pages/groupPages";
 import GroupForm from "../groups/groupForm";
 import Endpoints from "../endpoints/endpoints";
-import { connect } from "react-redux";
 import { deleteGroup, duplicateGroup } from "../groups/groupsActions";
+import { connect } from "react-redux";
 
 const mapStateToProps = state => {
   return { groups: state.groups };
@@ -24,61 +24,10 @@ const mapDispatchToProps = dispatch => {
 };
 
 class Groups extends Component {
-  state = {
-    groupDnDFlag: true
-  };
+  state = {};
 
-  setDnD(draggedEndpoint, groupId) {
-    this.draggedEndpoint = draggedEndpoint;
-    this.sourceGroupId = groupId;
-  }
-
-  getDnD(destinationGroupId) {
-    this.props.dnd_move_endpoint(
-      this.draggedEndpoint,
-      this.sourceGroupId,
-      destinationGroupId
-    );
-  }
-
-  groupDnD(groupDnDFlag) {
-    this.props.version_dnd(groupDnDFlag);
-    this.setState({ groupDnDFlag });
-  }
-
-  onDragStart = (e, groupId) => {
-    this.props.version_dnd(false);
-    this.draggedItem = groupId;
-  };
-
-  onDragOver = (e, groupId) => {
-    e.preventDefault();
-    this.draggedOverItem = groupId;
-  };
-
-  async onDragEnd(e, props) {
-    this.props.version_dnd(true);
-    if (this.draggedItem === this.draggedOverItem) {
-      return;
-    }
-    let groupIds = this.props.group_ids.filter(
-      item => item !== this.draggedItem
-    );
-    const index = this.props.group_ids.findIndex(
-      vId => vId === this.draggedOverItem
-    );
-    groupIds.splice(index, 0, this.draggedItem);
-    this.props.set_group_id(groupIds);
-  }
-
-  onDrop(destinationGroupId, props) {
-    if (!this.draggedItem) {
-      this.props.dnd_move_endpoint(
-        this.draggedEndpoint,
-        this.sourceGroupId,
-        destinationGroupId
-      );
-    }
+  onDrop(destinationGroupId) {
+    this.props.set_destination_group_id(destinationGroupId);
   }
 
   handleAddPage(groupId, versionId, collectionId) {
@@ -89,7 +38,7 @@ class Groups extends Component {
     });
   }
 
-  handleAddEndpoint(groupId, versionId, collectionId, versions, groups) {
+  handleAddEndpoint(groupId, versions, groups) {
     this.props.history.push({
       pathname: `/dashboard/endpoints`,
       versions: versions,
@@ -104,7 +53,6 @@ class Groups extends Component {
     this.props.duplicateGroup(group);
     this.props.history.push({
       pathname: "/dashboard"
-      // duplicateGroup: group
     });
   }
 
@@ -146,11 +94,8 @@ class Groups extends Component {
             <Accordion defaultActiveKey="0" key={groupId}>
               <Card>
                 <Card.Header
-                  draggable
-                  onDragOver={e => this.onDragOver(e, groupId)}
-                  onDragStart={e => this.onDragStart(e, groupId)}
-                  onDragEnd={e => this.onDragEnd(e, groupId, this.props)}
-                  onDrop={e => this.onDrop(groupId, this.props)}
+                  onDragOver={e => e.preventDefault()}
+                  onDrop={e => this.onDrop(groupId)}
                 >
                   <Accordion.Toggle as={Button} variant="link" eventKey="1">
                     {this.props.groups[groupId].name}
@@ -197,8 +142,6 @@ class Groups extends Component {
                       onClick={() =>
                         this.handleAddEndpoint(
                           groupId,
-                          this.props.groups[groupId].versionId,
-                          this.props.collection_id,
                           this.props.versions,
                           this.props.groups
                         )
@@ -221,7 +164,6 @@ class Groups extends Component {
                       {...this.props}
                       version_id={this.props.groups[groupId].versionId}
                       group_id={groupId}
-                      group_dnd={this.groupDnD.bind(this)}
                     />
                     <Endpoints
                       {...this.props}
@@ -229,9 +171,6 @@ class Groups extends Component {
                       endpoints_order={
                         this.props.groups[groupId].endpointsOrder
                       }
-                      group_dnd={this.groupDnD.bind(this)}
-                      set_dnd={this.setDnD.bind(this)}
-                      get_dnd={this.getDnD.bind(this)}
                     />
                   </Card.Body>
                 </Accordion.Collapse>

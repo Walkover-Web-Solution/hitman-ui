@@ -1,9 +1,7 @@
 import pagesActionTypes from "./pagesActionTypes";
 import { toast } from "react-toastify";
 
-const initialState = {
-  pages: {}
-};
+const initialState = {};
 
 function pagesReducer(state = initialState, action) {
   let pages = {};
