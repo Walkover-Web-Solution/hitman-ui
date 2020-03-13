@@ -7,10 +7,10 @@ function pagesReducer(state = initialState, action) {
   let pages = {};
 
   switch (action.type) {
-    case pagesActionTypes.FETCH_PAGES_SUCCESS:
+    case pagesActionTypes.ON_PAGES_FETCHED:
       return { ...action.pages };
 
-    case pagesActionTypes.FETCH_PAGES_FAILURE:
+    case pagesActionTypes.ON_PAGES_FETCHED_ERROR:
       toast.error(action.error);
       return state;
 
@@ -21,34 +21,35 @@ function pagesReducer(state = initialState, action) {
         ...state,
         [action.newPage.requestId]: action.newPage
       };
-    case pagesActionTypes.ADD_PAGE_SUCCESS:
+    case pagesActionTypes.ON_PAGE_ADDED:
       pages = { ...state };
       delete pages[action.response.requestId];
       delete action.response.requestId;
       pages[action.response.id] = action.response;
       return pages;
 
-    case pagesActionTypes.ADD_PAGE_FAILURE:
+    case pagesActionTypes.ON_PAGE_ADDED_ERROR:
       toast.error(action.error);
       pages = { ...state };
       delete pages[action.newPage.requestId];
       return pages;
 
     case pagesActionTypes.ADD_GROUP_PAGE_REQUEST:
-      action.newPage.groupId = null;
+      action.newPage.groupId = action.groupId;
       action.newPage.versionId = action.versionId;
+
       return {
         ...state,
         [action.newPage.requestId]: action.newPage
       };
-    case pagesActionTypes.ADD_GROUP_PAGE_SUCCESS:
+    case pagesActionTypes.ON_GROUP_PAGE_ADDED:
       pages = { ...state };
       delete pages[action.response.requestId];
       delete action.response.requestId;
       pages[action.response.id] = action.response;
       return pages;
 
-    case pagesActionTypes.ADD_GROUP_PAGE_FAILURE:
+    case pagesActionTypes.ON_GROUP_PAGE_ADDED_ERROR:
       toast.error(action.error);
       pages = { ...state };
       delete pages[action.newPage.requestId];
@@ -59,10 +60,10 @@ function pagesReducer(state = initialState, action) {
         ...state,
         [action.editedPage.id]: action.editedPage
       };
-    case pagesActionTypes.UPDATE_PAGE_SUCCESS:
+    case pagesActionTypes.ON_PAGE_UPDATED:
       return state;
 
-    case pagesActionTypes.UPDATE_PAGE_FAILURE:
+    case pagesActionTypes.ON_PAGE_UPDATED_ERROR:
       toast.error(action.error);
       return {
         ...state,
@@ -74,10 +75,10 @@ function pagesReducer(state = initialState, action) {
       delete pages[action.page.id];
       return pages;
 
-    case pagesActionTypes.DELETE_PAGE_SUCCESS:
+    case pagesActionTypes.ON_PAGE_DELETED:
       return state;
 
-    case pagesActionTypes.DELETE_PAGE_FAILURE:
+    case pagesActionTypes.ON_PAGE_DELETED_ERROR:
       toast.error(action.error.data);
       if (action.error.status === 404) return state;
       return {
@@ -85,12 +86,12 @@ function pagesReducer(state = initialState, action) {
         [action.page.id]: action.page
       };
 
-    case pagesActionTypes.DUPLICATE_PAGE_SUCCESS:
+    case pagesActionTypes.ON_PAGE_DUPLICATED:
       pages = { ...state };
       pages[action.response.id] = action.response;
       return pages;
 
-    case pagesActionTypes.DUPLICATE_PAGE_FAILURE:
+    case pagesActionTypes.ON_PAGE_DUPLICATED_ERROR:
       toast.error(action.error);
       pages = { ...state };
       return pages;
@@ -117,3 +118,5 @@ function pagesReducer(state = initialState, action) {
 }
 
 export default pagesReducer;
+
+export const selectPageOfId = (state, id) => state[id];

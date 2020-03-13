@@ -7,11 +7,13 @@ export const fetchEnvironments = () => {
     environmentService
       .getEnvironments()
       .then(response => {
-        dispatch(fetchEnvironmentsSuccess(response.data));
+        dispatch(OnEnvironmentsFetched(response.data));
       })
       .catch(error => {
         dispatch(
-          fetchEnvironmentsFailure(error.response ? error.response.data : error)
+          OnEnvironmentsFetchedError(
+            error.response ? error.response.data : error
+          )
         );
       });
   };
@@ -23,10 +25,15 @@ export const addEnvironment = newEnvironment => {
     environmentService
       .saveEnvironment(newEnvironment)
       .then(response => {
-        dispatch(addEnvironmentSuccess(response.data, newEnvironment));
+        dispatch(OnEnvironmentAdded(response.data, newEnvironment));
       })
       .catch(error => {
-        dispatch(addEnvironmentFailure(error.response.data, newEnvironment));
+        dispatch(
+          OnEnvironmentAddedError(
+            error.response ? error.response.data : error,
+            newEnvironment
+          )
+        );
       });
   };
 };
@@ -42,11 +49,14 @@ export const updateEnvironment = editedEnvironment => {
     environmentService
       .updateEnvironment(id, editedEnvironment)
       .then(response => {
-        dispatch(updateEnvironmentSuccess(response.data));
+        dispatch(OnEnvironmentUpdated(response.data));
       })
       .catch(error => {
         dispatch(
-          updateEnvironmentFailure(error.response.data, originalEnvironment)
+          OnEnvironmentUpdatedError(
+            error.response ? error.response.data : error,
+            originalEnvironment
+          )
         );
       });
   };
@@ -58,10 +68,10 @@ export const deleteEnvironment = environment => {
     environmentService
       .deleteEnvironment(environment.id)
       .then(() => {
-        dispatch(deleteEnvironmentSuccess());
+        dispatch(OnEnvironmentDeleted());
       })
       .catch(error => {
-        dispatch(deleteEnvironmentFailure(error.response, environment));
+        dispatch(OnEnvironmentDeletedError(error.response, environment));
       });
   };
 };
@@ -73,16 +83,16 @@ export const setEnvironmentId = currentEnvironmentId => {
   };
 };
 
-export const fetchEnvironmentsSuccess = environments => {
+export const OnEnvironmentsFetched = environments => {
   return {
-    type: environmentsActionTypes.FETCH_ENVIRONMENTS_SUCCESS,
+    type: environmentsActionTypes.ON_ENVIRONMENTS_FETCHED,
     environments
   };
 };
 
-export const fetchEnvironmentsFailure = error => {
+export const OnEnvironmentsFetchedError = error => {
   return {
-    type: environmentsActionTypes.FETCH_ENVIRONMENTS_FAILURE,
+    type: environmentsActionTypes.ON_ENVIRONMENTS_FETCHED_ERROR,
     error
   };
 };
@@ -94,16 +104,16 @@ export const addEnvironmentRequest = newEnvironment => {
   };
 };
 
-export const addEnvironmentSuccess = response => {
+export const OnEnvironmentAdded = response => {
   return {
-    type: environmentsActionTypes.ADD_ENVIRONMENT_SUCCESS,
+    type: environmentsActionTypes.ON_ENVIRONMENT_ADDED,
     response
   };
 };
 
-export const addEnvironmentFailure = (error, newEnvironment) => {
+export const OnEnvironmentAddedError = (error, newEnvironment) => {
   return {
-    type: environmentsActionTypes.ADD_ENVIRONMENT_FAILURE,
+    type: environmentsActionTypes.ON_ENVIRONMENT_ADDED_ERROR,
     newEnvironment,
     error
   };
@@ -116,16 +126,16 @@ export const updateEnvironmentRequest = editedEnvironment => {
   };
 };
 
-export const updateEnvironmentSuccess = response => {
+export const OnEnvironmentUpdated = response => {
   return {
-    type: environmentsActionTypes.UPDATE_ENVIRONMENT_SUCCESS,
+    type: environmentsActionTypes.ON_ENVIRONMENT_UPDATED,
     response
   };
 };
 
-export const updateEnvironmentFailure = (error, originalEnvironment) => {
+export const OnEnvironmentUpdatedError = (error, originalEnvironment) => {
   return {
-    type: environmentsActionTypes.UPDATE_ENVIRONMENT_FAILURE,
+    type: environmentsActionTypes.ON_ENVIRONMENT_UPDATED_ERROR,
     error,
     originalEnvironment
   };
@@ -138,15 +148,15 @@ export const deleteEnvironmentRequest = environment => {
   };
 };
 
-export const deleteEnvironmentSuccess = () => {
+export const OnEnvironmentDeleted = () => {
   return {
-    type: environmentsActionTypes.DELETE_ENVIRONMENT_SUCCESS
+    type: environmentsActionTypes.ON_ENVIRONMENT_DELETED
   };
 };
 
-export const deleteEnvironmentFailure = (error, environment) => {
+export const OnEnvironmentDeletedError = (error, environment) => {
   return {
-    type: environmentsActionTypes.DELETE_ENVIRONMENT_FAILURE,
+    type: environmentsActionTypes.ON_ENVIRONMENT_DELETED_ERROR,
     error,
     environment
   };

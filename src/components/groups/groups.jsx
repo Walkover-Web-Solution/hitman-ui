@@ -32,7 +32,7 @@ class Groups extends Component {
 
   handleAddPage(groupId, versionId, collectionId) {
     this.props.history.push({
-      pathname: `/dashboard/collections/${collectionId}/versions/${versionId}/groups/${groupId}/pages/new`,
+      pathname: `/dashboard/${collectionId}/versions/${versionId}/groups/${groupId}/pages/new`,
       versionId: versionId,
       groupId: groupId
     });
@@ -40,7 +40,7 @@ class Groups extends Component {
 
   handleAddEndpoint(groupId, versions, groups) {
     this.props.history.push({
-      pathname: `/dashboard/collections/endpoints`,
+      pathname: `/dashboard/endpoints`,
       versions: versions,
       groups: groups,
       groupId: groupId,
@@ -52,7 +52,7 @@ class Groups extends Component {
   handleDuplicate(group) {
     this.props.duplicateGroup(group);
     this.props.history.push({
-      pathname: "/dashboard/collections"
+      pathname: "/dashboard"
     });
   }
 
@@ -65,7 +65,7 @@ class Groups extends Component {
     if (confirm) {
       this.props.deleteGroup(group);
       this.props.history.push({
-        pathname: "/dashboard/collections"
+        pathname: "/dashboard"
       });
     }
   }
@@ -126,7 +126,7 @@ class Groups extends Component {
                       Delete
                     </Dropdown.Item>
                     <Dropdown.Item
-                      eventKey="3"
+                      eventKey="1"
                       onClick={() =>
                         this.handleAddPage(
                           groupId,

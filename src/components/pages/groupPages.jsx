@@ -28,20 +28,20 @@ class GroupPages extends Component {
   async handleDelete(page) {
     this.props.deletePage(page);
     this.props.history.push({
-      pathname: "/dashboard/collections"
+      pathname: "/dashboard"
     });
   }
 
   handleUpdate(page) {
     this.props.history.push({
-      pathname: `/dashboard/collections/${this.props.collection_id}/versions/${this.props.versionId}/pages/${page.id}/edit`,
+      pathname: `/dashboard/${this.props.collection_id}/versions/${this.props.versionId}/pages/${page.id}/edit`,
       editPage: page
     });
   }
 
   handleDisplay(page) {
     this.props.history.push({
-      pathname: `/dashboard/collections/pages/${page.id}`,
+      pathname: `/dashboard/pages/${page.id}`,
       page: page
     });
   }
@@ -49,7 +49,7 @@ class GroupPages extends Component {
   handleDuplicate(page) {
     this.props.duplicatePage(page);
     this.props.history.push({
-      pathname: "/dashboard/collections"
+      pathname: "/dashboard"
     });
   }
 

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import pageService from "./pageService";
 import jQuery from "jquery";
+import store from "../../store/store";
 
 class DisplayPage extends Component {
   state = {
@@ -15,8 +16,26 @@ class DisplayPage extends Component {
 
   async componentDidMount() {
     let data = {};
+    // let page = {};
+    console.log("this.props", this.props);
     if (!this.props.location.page) {
-      const pageId = this.props.location.pathname.split("/")[4];
+      const pageId = this.props.location.pathname.split("/")[3];
+      // store.subscribe(() => {
+      //   const { pages } = store.getState();
+      //   page = pages[pageId];
+      //   if (page) {
+      //     const { id, versionId, groupId, name, contents } = page;
+      //     data = {
+      //       id,
+      //       versionId,
+      //       groupId,
+      //       name,
+      //       contents
+      //     };
+      //   }
+      //   this.setState({ data });
+      // });
+
       let { data: page } = await pageService.getPage(pageId);
       const { id, versionId, groupId, name, contents } = page;
       data = {
@@ -32,7 +51,7 @@ class DisplayPage extends Component {
 
   handleEdit(page) {
     this.props.history.push({
-      pathname: `/dashboard/collections/pages/${page.id}/edit`,
+      pathname: `/dashboard/pages/${page.id}/edit`,
       page: page
     });
   }

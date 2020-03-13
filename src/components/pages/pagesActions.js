@@ -8,24 +8,24 @@ export const fetchPages = () => {
       .getAllPages()
       .then(response => {
         const pages = response.data;
-        dispatch(fetchPagesSuccess(pages));
+        dispatch(onPagesFetched(pages));
       })
       .catch(error => {
-        dispatch(fetchPagesFailure(error.message));
+        dispatch(onPagesFetchedError(error.message));
       });
   };
 };
 
-export const fetchPagesSuccess = pages => {
+export const onPagesFetched = pages => {
   return {
-    type: pagesActionTypes.FETCH_PAGES_SUCCESS,
+    type: pagesActionTypes.ON_PAGES_FETCHED,
     pages
   };
 };
 
-export const fetchPagesFailure = error => {
+export const onPagesFetchedError = error => {
   return {
-    type: pagesActionTypes.FETCH_PAGES_FAILURE,
+    type: pagesActionTypes.ON_PAGES_FETCHED_ERROR,
     error
   };
 };
@@ -40,11 +40,16 @@ export const updatePage = (history, editedPage) => {
     pagesService
       .updatePage(editedPage.id, newPage)
       .then(response => {
-        dispatch(updatePageSuccess(response.data));
-        history.push(`/dashboard/collections/pages/${response.data.id}`);
+        dispatch(onPageUpdated(response.data));
+        history.push(`/dashboard/pages/${response.data.id}`);
       })
       .catch(error => {
-        dispatch(updatePageFailure(error.response.data, originalPage));
+        dispatch(
+          onPageUpdatedError(
+            error.response ? error.response.data : error,
+            originalPage
+          )
+        );
       });
   };
 };
@@ -56,16 +61,16 @@ export const updatePageRequest = editedPage => {
   };
 };
 
-export const updatePageSuccess = response => {
+export const onPageUpdated = response => {
   return {
-    type: pagesActionTypes.UPDATE_PAGE_SUCCESS,
+    type: pagesActionTypes.ON_PAGE_UPDATED,
     response
   };
 };
 
-export const updatePageFailure = (error, originalPage) => {
+export const onPageUpdatedError = (error, originalPage) => {
   return {
-    type: pagesActionTypes.UPDATE_PAGE_FAILURE,
+    type: pagesActionTypes.ON_PAGE_UPDATED_ERROR,
     error,
     originalPage
   };
@@ -79,11 +84,16 @@ export const addPage = (history, versionId, newPage) => {
     pagesService
       .saveVersionPage(versionId, newPage)
       .then(response => {
-        dispatch(addPageSuccess(response.data));
-        history.push(`/dashboard/collections/pages/${response.data.id}/edit`);
+        dispatch(onPageAdded(response.data));
+        history.push(`/dashboard/pages/${response.data.id}/edit`);
       })
       .catch(error => {
-        dispatch(addPageFailure(error.response.data, newPage));
+        dispatch(
+          onPageAddedError(
+            error.response ? error.response.data : error,
+            newPage
+          )
+        );
       });
   };
 };
@@ -96,16 +106,16 @@ export const addPageRequest = (versionId, newPage) => {
   };
 };
 
-export const addPageSuccess = response => {
+export const onPageAdded = response => {
   return {
-    type: pagesActionTypes.ADD_PAGE_SUCCESS,
+    type: pagesActionTypes.ON_PAGE_ADDED,
     response
   };
 };
 
-export const addPageFailure = (error, newPage) => {
+export const onPageAddedError = (error, newPage) => {
   return {
-    type: pagesActionTypes.ADD_PAGE_FAILURE,
+    type: pagesActionTypes.ON_PAGE_ADDED_ERROR,
     newPage,
     error
   };
@@ -119,11 +129,16 @@ export const addGroupPage = (history, versionId, groupId, newPage) => {
     pagesService
       .saveGroupPage(groupId, newPage)
       .then(response => {
-        dispatch(addGroupPageSuccess(response.data));
-        history.push(`/dashboard/collections/pages/${response.data.id}/edit`);
+        dispatch(onGroupPageAdded(response.data));
+        history.push(`/dashboard/pages/${response.data.id}/edit`);
       })
       .catch(error => {
-        dispatch(addGroupPageFailure(error.response.data, newPage));
+        dispatch(
+          onGroupPageAddedError(
+            error.response ? error.response.data : error,
+            newPage
+          )
+        );
       });
   };
 };
@@ -137,16 +152,16 @@ export const addGroupPageRequest = (versionId, groupId, newPage) => {
   };
 };
 
-export const addGroupPageSuccess = response => {
+export const onGroupPageAdded = response => {
   return {
-    type: pagesActionTypes.ADD_GROUP_PAGE_SUCCESS,
+    type: pagesActionTypes.ON_GROUP_PAGE_ADDED,
     response
   };
 };
 
-export const addGroupPageFailure = (error, newPage) => {
+export const onGroupPageAddedError = (error, newPage) => {
   return {
-    type: pagesActionTypes.ADD_GROUP_PAGE_FAILURE,
+    type: pagesActionTypes.ON_GROUP_PAGE_ADDED_ERROR,
     newPage,
     error
   };
@@ -158,10 +173,10 @@ export const deletePage = page => {
     pagesService
       .deletePage(page.id)
       .then(() => {
-        dispatch(deletePageSuccess());
+        dispatch(onPageDeleted());
       })
       .catch(error => {
-        dispatch(deletePageFailure(error.response, page));
+        dispatch(onPageDeletedError(error.response, page));
       });
   };
 };
@@ -173,15 +188,15 @@ export const deletePageRequest = page => {
   };
 };
 
-export const deletePageSuccess = () => {
+export const onPageDeleted = () => {
   return {
-    type: pagesActionTypes.DELETE_PAGE_SUCCESS
+    type: pagesActionTypes.ON_PAGE_DELETED
   };
 };
 
-export const deletePageFailure = (error, page) => {
+export const onPageDeletedError = (error, page) => {
   return {
-    type: pagesActionTypes.DELETE_PAGE_FAILURE,
+    type: pagesActionTypes.ON_PAGE_DELETED_ERROR,
     error,
     page
   };
@@ -192,24 +207,24 @@ export const duplicatePage = page => {
     pagesService
       .duplicatePage(page.id)
       .then(response => {
-        dispatch(duplicatePageSuccess(response.data));
+        dispatch(onPageDuplicated(response.data));
       })
       .catch(error => {
-        dispatch(duplicatePageFailure(error.response, page));
+        dispatch(onPageDuplicatedError(error.response, page));
       });
   };
 };
 
-export const duplicatePageSuccess = response => {
+export const onPageDuplicated = response => {
   return {
-    type: pagesActionTypes.DUPLICATE_PAGE_SUCCESS,
+    type: pagesActionTypes.ON_PAGE_DUPLICATED,
     response
   };
 };
 
-export const duplicatePageFailure = (error, page) => {
+export const onPageDuplicatedError = (error, page) => {
   return {
-    type: pagesActionTypes.DUPLICATE_PAGE_FAILURE,
+    type: pagesActionTypes.ON_PAGE_DUPLICATED_ERROR,
     error,
     page
   };

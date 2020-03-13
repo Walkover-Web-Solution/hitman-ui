@@ -26,7 +26,7 @@ class ShareVersionForm extends Form {
   async doSubmit(props) {
     if (this.props.title === "Import Version") {
       this.props.history.push({
-        pathname: `/dashboard/collections`,
+        pathname: `/dashboard`,
         importVersionLink: { ...this.state.data },
         collectionId: this.props.location.pathname.split("/")[2]
       });
@@ -51,7 +51,7 @@ class ShareVersionForm extends Form {
             {this.renderInput("shareVersionLink", "Public Link")}
             {<div name="shareVersionLink" label="Public Link"></div>}
             {this.renderButton("Submit", "right")}
-            <Link to={`/dashboard/collections`}>Cancel</Link>
+            <Link to={`/dashboard`}>Cancel</Link>
           </form>
         </Modal.Body>
       </Modal>

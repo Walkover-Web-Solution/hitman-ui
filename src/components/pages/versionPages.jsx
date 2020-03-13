@@ -49,12 +49,12 @@ class Pages extends Component {
   handleDelete(page) {
     this.props.deletePage(page);
     this.props.history.push({
-      pathname: "/dashboard/collections"
+      pathname: "/dashboard"
     });
   }
   handleDisplay(page) {
     this.props.history.push({
-      pathname: `/dashboard/collections/pages/${page.id}`,
+      pathname: `/dashboard/pages/${page.id}`,
       page: page
     });
   }
@@ -62,7 +62,7 @@ class Pages extends Component {
   handleDuplicate(page) {
     this.props.duplicatePage(page);
     this.props.history.push({
-      pathname: "/dashboard/collections"
+      pathname: "/dashboard"
     });
   }
 

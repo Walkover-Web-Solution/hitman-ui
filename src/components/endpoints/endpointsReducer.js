@@ -10,10 +10,11 @@ function endpointsReducer(state = initialState, action) {
       endpoints = { ...state };
       endpoints[action.endpointId].groupId = action.destinationGroupId;
       return endpoints;
-    case endpointsActionTypes.FETCH_ENDPOINTS_SUCCESS:
+
+    case endpointsActionTypes.ON_ENDPOINTS_FETCHED:
       return { ...action.endpoints };
 
-    case endpointsActionTypes.FETCH_ENDPOINTS_FAILURE:
+    case endpointsActionTypes.ON_ENDPOINTS_FETCHED_ERROR:
       toast.error(action.error);
       return state;
 
@@ -23,13 +24,13 @@ function endpointsReducer(state = initialState, action) {
         [action.newEndpoint.requestId]: action.newEndpoint
       };
 
-    case endpointsActionTypes.ADD_ENDPOINT_SUCCESS:
+    case endpointsActionTypes.ON_ENDPOINT_ADDED:
       endpoints = { ...state };
       delete endpoints[action.response.requestId];
       endpoints[action.response.id] = action.response;
       return endpoints;
 
-    case endpointsActionTypes.ADD_ENDPOINT_FAILURE:
+    case endpointsActionTypes.ON_ENDPOINT_ADDED_ERROR:
       toast.error(action.error);
       endpoints = { ...state };
       delete endpoints[action.newEndpoint.requestId];
@@ -41,13 +42,13 @@ function endpointsReducer(state = initialState, action) {
         [action.editedEndpoint.id]: action.editedEndpoint
       };
 
-    case endpointsActionTypes.UPDATE_ENDPOINT_SUCCESS:
+    case endpointsActionTypes.ON_ENDPOINT_UPDATED:
       return {
         ...state,
         [action.response.id]: action.response
       };
 
-    case endpointsActionTypes.UPDATE_ENDPOINT_FAILURE:
+    case endpointsActionTypes.ON_ENDPOINT_UPDATED_ERROR:
       toast.error(action.error);
       return {
         ...state,
@@ -59,10 +60,10 @@ function endpointsReducer(state = initialState, action) {
       delete endpoints[action.endpoint.id];
       return endpoints;
 
-    case endpointsActionTypes.DELETE_ENDPOINT_SUCCESS:
+    case endpointsActionTypes.ON_ENDPOINT_DELETED:
       return state;
 
-    case endpointsActionTypes.DELETE_ENDPOINT_FAILURE:
+    case endpointsActionTypes.ON_ENDPOINT_DELETED_ERROR:
       toast.error(action.error.data);
       if (action.error.status === 404) return state;
       return {
@@ -70,12 +71,14 @@ function endpointsReducer(state = initialState, action) {
         [action.endpoint.id]: action.endpoint
       };
 
-    case endpointsActionTypes.DUPLICATE_ENDPOINT_SUCCESS:
-      endpoints = { ...state };
-      endpoints[action.response.id] = action.response;
-      return endpoints;
+    case endpointsActionTypes.ON_ENDPOINT_DUPLICATED:
+      console.log(state, action, {
+        ...state,
+        [action.response.id]: action.response
+      });
+      return { ...state, [action.response.id]: action.response };
 
-    case endpointsActionTypes.DUPLICATE_ENDPOINT_FAILURE:
+    case endpointsActionTypes.ON_ENDPOINT_DUPLICATED_ERROR:
       toast.error(action.error);
       endpoints = { ...state };
       return endpoints;

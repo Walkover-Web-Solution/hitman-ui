@@ -70,7 +70,7 @@ class DisplayEndpoint extends Component {
 
     if (!this.props.location.title) {
       store.subscribe(() => {
-        const endpointId = this.props.location.pathname.split("/")[4];
+        const endpointId = this.props.location.pathname.split("/")[3];
         const { endpoints } = store.getState();
         const { groups } = store.getState();
         const { versions } = store.getState();

@@ -50,9 +50,7 @@ const mapDispatchToProps = dispatch => {
     updateCollection: editedCollection =>
       dispatch(updateCollection(editedCollection)),
     deleteCollection: collection => dispatch(deleteCollection(collection)),
-    duplicateCollection: collection =>
-      dispatch(duplicateCollection(collection)),
-    deleteGroup: groupId => dispatch(deleteGroup(groupId))
+    duplicateCollection: collection => dispatch(duplicateCollection(collection))
   };
 };
 
@@ -167,6 +165,144 @@ class CollectionsComponent extends Component {
     this.props.duplicateCollection(collectionCopy);
   }
 
+  showAddCollectionForm() {
+    return (
+      this.state.showVersionForm && (
+        <CollectionVersionForm
+          {...this.props}
+          show={true}
+          onHide={() => {
+            this.setState({ showVersionForm: false });
+          }}
+          collection_id={this.state.selectedCollection.id}
+          title="Add new Collection Version"
+        />
+      )
+    );
+  }
+
+  openAddCollectionForm() {
+    this.setState({
+      showCollectionForm: true,
+      collectionFormName: "Add new Collection"
+    });
+  }
+
+  showEditCollectionForm() {
+    return (
+      this.state.showCollectionForm && (
+        <CollectionForm
+          {...this.props}
+          show={this.state.showCollectionForm}
+          onHide={() => this.closeCollectionForm()}
+          title={this.state.collectionFormName}
+          edited_collection={this.state.selectedCollection}
+        />
+      )
+    );
+  }
+  openEditCollectionForm(collectionId) {
+    this.setState({
+      showCollectionForm: true,
+      collectionFormName: "Edit Collection",
+      selectedCollection: {
+        ...this.props.collections[collectionId]
+      }
+    });
+  }
+
+  openAddVersionForm(collectionId) {
+    this.setState({
+      showVersionForm: true,
+      selectedCollection: {
+        ...this.props.collections[collectionId]
+      }
+    });
+  }
+
+  routeToAddNewGroupPage() {
+    return (
+      <Route
+        path="/dashboard/:id/versions/:versionId/groups/:groupId/pages/new"
+        render={props => (
+          <PageForm
+            {...props}
+            show={true}
+            onHide={() => {
+              this.props.history.push({
+                pathname: "/dashboard"
+              });
+            }}
+            title="Add new Group Page"
+            versionId={this.props.location.versionId}
+            groupId={this.props.location.groupId}
+          />
+        )}
+      />
+    );
+  }
+
+  routeToAddNewVersionPage() {
+    return (
+      <Route
+        path="/dashboard/:id/versions/:versionId/pages/new"
+        render={props => (
+          <PageForm
+            {...props}
+            show={true}
+            onHide={() => {
+              this.props.history.push({
+                pathname: "/dashboard"
+              });
+            }}
+            title="Add New Version Page"
+            versionId={this.props.location.versionId}
+          />
+        )}
+      />
+    );
+  }
+
+  routeToImportVersionForm() {
+    return (
+      <Route
+        path="/dashboard/:collectionId/versions/import"
+        render={props => (
+          <ImportVersionForm
+            {...props}
+            show={true}
+            onHide={() => {
+              this.props.history.push({
+                pathname: "/dashboard"
+              });
+            }}
+            title="Import Version"
+          />
+        )}
+      />
+    );
+  }
+
+  routeToShareVersionForm() {
+    return (
+      <Route
+        path="/dashboard/:collectionId/versions/:versionId/share"
+        render={props => (
+          <ShareVersionForm
+            {...props}
+            show={true}
+            onHide={() => {
+              this.props.history.push({
+                pathname: "/dashboard"
+              });
+            }}
+            title="Share Version"
+          />
+        )}
+      />
+    );
+  }
+
   render() {
     const { location } = this.props;
 
@@ -183,115 +319,20 @@ class CollectionsComponent extends Component {
       <div>
         <div className="App-Nav">
           <div className="tabs">
-            {this.state.showCollectionForm && (
-              <CollectionForm
-                {...this.props}
-                show={this.state.showCollectionForm}
-                onHide={() => this.closeCollectionForm()}
-                title={this.state.collectionFormName}
-                edited_collection={this.state.selectedCollection}
-              />
-            )}
-            {this.state.showVersionForm && (
-              <CollectionVersionForm
-                {...this.props}
-                show={true}
-                onHide={() => {
-                  this.setState({ showVersionForm: false });
-                }}
-                collection_id={this.state.selectedCollection.id}
-                title="Add new Collection Version"
-              />
-            )}
+            {this.showAddCollectionForm()}
+            {this.showEditCollectionForm()}
             <Switch>
-              <Route
-                path="/dashboard/collections/:id/versions/:versionId/groups/:groupId/pages/new"
-                render={props => (
-                  <PageForm
-                    {...props}
-                    show={true}
-                    onHide={() => {
-                      this.props.history.push({
-                        pathname: "/dashboard/collections"
-                      });
-                    }}
-                    title="Add new Group Page"
-                    versionId={this.props.location.versionId}
-                    groupId={this.props.location.groupId}
-                  />
-                )}
-              />
-              <Route
-                path="/dashboard/collections/:id/versions/:versionId/pages/:pageId/edit"
-                render={props => (
-                  <PageForm
-                    {...props}
-                    show={true}
-                    title="Edit Page"
-                    editPage={this.props.location.editPage}
-                    versionId={this.props.location.versionId}
-                  />
-                )}
-              />
-
-              <Route
-                path="/dashboard/collections/:id/versions/:versionId/pages/new"
-                render={props => (
-                  <PageForm
-                    {...props}
-                    show={true}
-                    onHide={() => {
-                      this.props.history.push({
-                        pathname: "/dashboard/collections"
-                      });
-                    }}
-                    title="Add New Version Page"
-                    versionId={this.props.location.versionId}
-                  />
-                )}
-              />
-              <Route
-                path="/dashboard/:collectionId/versions/import"
-                render={props => (
-                  <ImportVersionForm
-                    {...props}
-                    show={true}
-                    onHide={() => {
-                      this.props.history.push({
-                        pathname: "/dashboard/collections"
-                      });
-                    }}
-                    title="Import Version"
-                  />
-                )}
-              />
-              <Route
-                path="/dashboard/collections/:collectionId/versions/:versionId/share"
-                render={props => (
-                  <ShareVersionForm
-                    {...props}
-                    show={true}
-                    onHide={() => {
-                      this.props.history.push({
-                        pathname: "/dashboard/collections"
-                      });
-                    }}
-                    title="Share Version"
-                  />
-                )}
-              />
+              {this.routeToAddNewGroupPage()}
+              {this.routeToAddNewVersionPage()}
+              {this.routeToImportVersionForm()}
+              {this.routeToShareVersionForm()}
             </Switch>
           </div>
         </div>
         <div className="App-Side">
           <button
             className="btn btn-default btn-lg"
-            onClick={() =>
-              this.setState({
-                showCollectionForm: true,
-                collectionFormName: "Add new Collection"
-              })
-            }
+            onClick={() => this.openAddCollectionForm()}
           >
             + New Collection
           </button>
@@ -310,15 +351,7 @@ class CollectionsComponent extends Component {
                   >
                     <Dropdown.Item
                       eventKey="1"
-                      onClick={() => {
-                        this.setState({
-                          showCollectionForm: true,
-                          collectionFormName: "Edit Collection",
-                          selectedCollection: {
-                            ...this.props.collections[collectionId]
-                          }
-                        });
-                      }}
+                      onClick={() => this.openEditCollectionForm(collectionId)}
                     >
                       Edit
                     </Dropdown.Item>
@@ -341,14 +374,7 @@ class CollectionsComponent extends Component {
                     </Dropdown.Item>
                     <Dropdown.Item
                       eventKey="3"
-                      onClick={() => {
-                        this.setState({
-                          showVersionForm: true,
-                          selectedCollection: {
-                            ...this.props.collections[collectionId]
-                          }
-                        });
-                      }}
+                      onClick={() => this.openAddVersionForm(collectionId)}
                     >
                       Add Version
                     </Dropdown.Item>

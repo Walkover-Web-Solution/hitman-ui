@@ -87,7 +87,7 @@ class Main extends Component {
               <ToastContainer />
               <Switch>
                 <Route
-                  path="/dashboard/collections/endpoints"
+                  path="/dashboard/endpoints"
                   render={props => (
                     <DisplayEndpoint
                       {...props}
@@ -96,15 +96,15 @@ class Main extends Component {
                   )}
                 />
                 <Route
-                  path="/dashboard/collections/endpoints/:endpointId"
+                  path="/dashboard/endpoints/:endpointId"
                   render={props => <DisplayEndpoint {...props} />}
                 />
                 <Route
-                  path="/dashboard/collections/pages/:pageid/edit"
+                  path="/dashboard/pages/:pageid/edit"
                   render={props => <EditPage {...props} />}
                 />
                 <Route
-                  path="/dashboard/collections/pages/:pageid"
+                  path="/dashboard/pages/:pageid"
                   render={props => <DisplayPage {...props} />}
                 />
               </Switch>

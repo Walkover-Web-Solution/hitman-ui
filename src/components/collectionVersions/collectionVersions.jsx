@@ -53,21 +53,21 @@ class CollectionVersions extends Component {
     if (confirm) {
       this.props.deleteVersion(collectionVersion);
       this.props.history.push({
-        pathname: "/dashboard/collections"
+        pathname: "/dashboard"
       });
     }
   }
 
   handleUpdate(collectionVersion) {
     this.props.history.push({
-      pathname: `/dashboard/collections/${this.props.collection_id}/versions/${collectionVersion.id}/edit`,
+      pathname: `/dashboard/${this.props.collection_id}/versions/${collectionVersion.id}/edit`,
       editCollectionVersion: collectionVersion
     });
   }
 
   handleAddPage(versionId, collectionId) {
     this.props.history.push({
-      pathname: `/dashboard/collections/${collectionId}/versions/${versionId}/pages/new`,
+      pathname: `/dashboard/${collectionId}/versions/${versionId}/pages/new`,
       versionId: versionId
     });
   }
@@ -75,7 +75,7 @@ class CollectionVersions extends Component {
   handleDuplicate(version) {
     this.props.duplicateVersion(version);
     this.props.history.push({
-      pathname: "/dashboard/collections"
+      pathname: "/dashboard"
     });
   }
 
@@ -88,7 +88,7 @@ class CollectionVersions extends Component {
   }
   handleShareVersion(shareIdentifier, collectionId, versionId) {
     this.props.history.push({
-      pathname: `/dashboard/collections/${collectionId}/versions/${versionId}/share`,
+      pathname: `/dashboard/${collectionId}/versions/${versionId}/share`,
       shareIdentifier: shareIdentifier
     });
   }
