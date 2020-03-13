@@ -7,7 +7,7 @@ function endpointsReducer(state = initialState, action) {
   let endpoints = {};
   switch (action.type) {
     case endpointsActionTypes.MOVE_ENDPOINT_REQUEST:
-      let endpoints = { ...state };
+      endpoints = { ...state };
       endpoints[action.endpointId].groupId = action.destinationGroupId;
       return endpoints;
     case endpointsActionTypes.FETCH_ENDPOINTS_SUCCESS:

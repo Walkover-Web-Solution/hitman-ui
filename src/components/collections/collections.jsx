@@ -163,6 +163,7 @@ class CollectionsComponent extends Component {
   }
 
   async handleDuplicateCollection(collectionCopy) {
+    console.log(collectionCopy);
     this.props.duplicateCollection(collectionCopy);
   }
 
