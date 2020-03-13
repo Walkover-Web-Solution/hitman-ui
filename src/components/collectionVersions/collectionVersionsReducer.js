@@ -1,9 +1,7 @@
 import versionActionTypes from "./collectionVersionsActionTypes";
 import { toast } from "react-toastify";
 
-const initialState = {
-  versions: {}
-};
+const initialState = {};
 
 function versionsReducer(state = initialState, action) {
   let versions = {};

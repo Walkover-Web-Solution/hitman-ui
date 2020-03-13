@@ -29,5 +29,6 @@ export default {
   put: axios.put,
   delete: axios.delete,
   request: axios.request,
+  patch: axios.patch,
   setJwt
 };

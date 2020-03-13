@@ -9,9 +9,8 @@ import {
 import GroupPages from "../pages/groupPages";
 import GroupForm from "../groups/groupForm";
 import Endpoints from "../endpoints/endpoints";
-import { connect } from "react-redux";
 import { deleteGroup, duplicateGroup } from "../groups/groupsActions";
-import { dndMoveEndpoint } from "../endpoints/endpointsActions";
+import { connect } from "react-redux";
 
 const mapStateToProps = state => {
   return { groups: state.groups };
@@ -20,42 +19,15 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     deleteGroup: group => dispatch(deleteGroup(group)),
-    duplicateGroup: group => dispatch(duplicateGroup(group)),
-    moveEndpoint: (endpointId, sourceGroupId, destinationGroupId) =>
-      dispatch(dndMoveEndpoint(endpointId, sourceGroupId, destinationGroupId))
+    duplicateGroup: group => dispatch(duplicateGroup(group))
   };
 };
 
 class Groups extends Component {
   state = {};
 
-  setSourceGroupId(draggedEndpoint, groupId) {
-    this.draggedEndpoint = draggedEndpoint;
-    this.sourceGroupId = groupId;
-  }
-
-  setDestinationGroupId(destinationGroupId) {
-    this.props.dnd_move_endpoint(
-      this.draggedEndpoint,
-      this.sourceGroupId,
-      destinationGroupId
-    );
-  }
-
-  dndMoveEndpoint(endpointId, sourceGroupId, destinationGroupId) {
-    console.log(
-      endpointId,
-      this.props.groups[sourceGroupId],
-      this.props.groups[destinationGroupId]
-    );
-    this.props.moveEndpoint(endpointId, sourceGroupId, destinationGroupId);
-  }
-  onDrop(destinationGroupId, props) {
-    this.dndMoveEndpoint(
-      this.draggedEndpoint,
-      this.sourceGroupId,
-      destinationGroupId
-    );
+  onDrop(destinationGroupId) {
+    this.props.set_destination_group_id(destinationGroupId);
   }
 
   handleAddPage(groupId, versionId, collectionId) {
@@ -66,7 +38,7 @@ class Groups extends Component {
     });
   }
 
-  handleAddEndpoint(groupId, versionId, collectionId, versions, groups) {
+  handleAddEndpoint(groupId, versions, groups) {
     this.props.history.push({
       pathname: `/dashboard/collections/endpoints`,
       versions: versions,
@@ -81,7 +53,6 @@ class Groups extends Component {
     this.props.duplicateGroup(group);
     this.props.history.push({
       pathname: "/dashboard/collections"
-      // duplicateGroup: group
     });
   }
 
@@ -124,7 +95,7 @@ class Groups extends Component {
               <Card>
                 <Card.Header
                   onDragOver={e => e.preventDefault()}
-                  onDrop={e => this.onDrop(groupId, this.props)}
+                  onDrop={e => this.onDrop(groupId)}
                 >
                   <Accordion.Toggle as={Button} variant="link" eventKey="1">
                     {this.props.groups[groupId].name}
@@ -171,8 +142,6 @@ class Groups extends Component {
                       onClick={() =>
                         this.handleAddEndpoint(
                           groupId,
-                          this.props.groups[groupId].versionId,
-                          this.props.collection_id,
                           this.props.versions,
                           this.props.groups
                         )
@@ -202,10 +171,6 @@ class Groups extends Component {
                       endpoints_order={
                         this.props.groups[groupId].endpointsOrder
                       }
-                      set_source_group_id={this.setSourceGroupId.bind(this)}
-                      set_destination_group_id={this.setDestinationGroupId.bind(
-                        this
-                      )}
                     />
                   </Card.Body>
                 </Accordion.Collapse>

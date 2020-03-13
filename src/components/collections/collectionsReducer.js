@@ -1,9 +1,7 @@
 import collectionsActionTypes from "./collectionsActionTypes";
 import { toast } from "react-toastify";
 
-const initialState = {
-  collections: {}
-};
+const initialState = {};
 
 function collectionsReducer(state = initialState, action) {
   let collections = {};

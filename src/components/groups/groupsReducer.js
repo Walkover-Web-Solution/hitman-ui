@@ -1,19 +1,17 @@
 import groupsActionTypes from "./groupsActionTypes";
+import endpointsActionTypes from "../endpoints/endpointsActionTypes";
 import { toast } from "react-toastify";
 
-const initialState = {
-  groups: {}
-};
+const initialState = {};
 
 function groupsReducer(state = initialState, action) {
   let groups = {};
   switch (action.type) {
-    case groupsActionTypes.MOVE_ENDPOINT:
+    case endpointsActionTypes.MOVE_ENDPOINT_REQUEST:
       groups = { ...state };
-      console.log(action, groups);
-      groups[action.sourceGroupId].endpointsOrder.filter(
-        eId => eId !== action.endpointId
-      );
+      groups[action.sourceGroupId].endpointsOrder = groups[
+        action.sourceGroupId
+      ].endpointsOrder.filter(eId => eId !== action.endpointId);
       groups[action.destinationGroupId].endpointsOrder.push(action.endpointId);
       return groups;
 

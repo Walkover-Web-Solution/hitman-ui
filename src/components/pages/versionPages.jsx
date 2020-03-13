@@ -63,7 +63,6 @@ class Pages extends Component {
     this.props.duplicatePage(page);
     this.props.history.push({
       pathname: "/dashboard/collections"
-      // duplicatePage: page
     });
   }
 

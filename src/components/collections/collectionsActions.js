@@ -78,7 +78,7 @@ export const updateCollection = editedCollection => {
     const originalCollection = store.getState().collections[
       editedCollection.id
     ];
-    dispatch(updateCollectionRequest(editedCollection));
+    dispatch(updateCollectionRequest({ ...editedCollection }));
     const id = editedCollection.id;
     delete editedCollection.id;
     collectionsService

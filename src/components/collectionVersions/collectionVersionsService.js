@@ -5,10 +5,6 @@ function collectionVersionsUrl(collectionId) {
   return `${apiUrl}/collections/${collectionId}/versions`;
 }
 
-// function collectionVersionUrl(collectionId, versionId) {
-//     return `${collectionVersionsUrl(collectionId)}/${versionId}`;
-// }
-
 export function getCollectionVersions(collectionId) {
   return http.get(collectionVersionsUrl(collectionId));
 }

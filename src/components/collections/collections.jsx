@@ -11,17 +11,18 @@ import { Route, Switch, withRouter } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import shortId from "shortid";
-import CollectionVersionForm from "../collectionVersions/collectionVersionForm";
 import CollectionVersions from "../collectionVersions/collectionVersions";
-import { fetchAllVersions } from "../collectionVersions/collectionVersionsActions";
-import collectionVersionsService from "../collectionVersions/collectionVersionsService";
+import CollectionVersionForm from "../collectionVersions/collectionVersionForm";
 import ImportVersionForm from "../collectionVersions/importVersionForm";
 import ShareVersionForm from "../collectionVersions/shareVersionForm";
+import CollectionForm from "./collectionForm";
+import PageForm from "../pages/pageForm";
+import collectionVersionsService from "../collectionVersions/collectionVersionsService";
+import endpointService from "../endpoints/endpointService";
+import { fetchAllVersions } from "../collectionVersions/collectionVersionsActions";
 import { fetchEndpoints } from "../endpoints/endpointsActions";
 import { deleteGroup, fetchGroups } from "../groups/groupsActions";
-import PageForm from "../pages/pageForm";
 import { fetchPages } from "../pages/pagesActions";
-import CollectionForm from "./collectionForm";
 import {
   addCollection,
   deleteCollection,
@@ -73,19 +74,6 @@ class CollectionsComponent extends Component {
   closeCollectionForm() {
     this.setState({ showCollectionForm: false });
   }
-
-  // async setEndpointIds(groupId, endpointsOrder) {
-  //   const groups = { ...this.state.groups };
-  //   groups[groupId].endpointsOrder = endpointsOrder;
-  //   this.setState({ groups });
-  //   const { name, host } = groups[groupId];
-  //   const group = { name, host, endpointsOrder };
-  //   try {
-  //     await groupsService.updateGroup(groupId, group);
-  //   } catch (e) {
-  //     toast.error(e);
-  //   }
-  // }
 
   async dndMoveEndpoint(endpointId, sourceGroupId, destinationGroupId) {
     const groups = { ...this.state.groups };
