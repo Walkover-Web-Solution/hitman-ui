@@ -1,9 +1,14 @@
 import store from "../../store/store";
 import groupsService from "../groups/groupsService";
 import groupsActionTypes from "./groupsActionTypes";
-
 import endpointsActions from "../endpoints/endpointsActions";
 import pagesActions from "../pages/pagesActions";
+
+export const setEndpointIds = (endpointsOrder, groupId) => {
+  const group = store.getState().groups[groupId];
+  group.endpointsOrder = endpointsOrder;
+  return dispatch => dispatch(updateGroup(group));
+};
 
 export const fetchGroups = () => {
   return dispatch => {

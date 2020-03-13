@@ -1,4 +1,5 @@
 import versionActionTypes from "./collectionVersionsActionTypes";
+import collectionsActionTypes from "../collections/collectionsActionTypes";
 import { toast } from "react-toastify";
 
 const initialState = {};
@@ -7,6 +8,11 @@ function versionsReducer(state = initialState, action) {
   let versions = {};
 
   switch (action.type) {
+    case collectionsActionTypes.ADD_COLLECTION_SUCCESS:
+      return {
+        ...state,
+        [action.response.version.id]: action.response.version
+      };
     case versionActionTypes.FETCH_VERSIONS_SUCCESS:
       return { ...action.versions };
 

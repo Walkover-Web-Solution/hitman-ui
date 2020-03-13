@@ -24,8 +24,6 @@ class GroupForm extends Form {
   async componentDidMount() {
     if (this.props.title === "Add new Group") return;
     let data = {};
-    // const groupId = this.props.location.pathname.split("/")[7];
-    // const versionId = this.props.location.pathname.split("/")[5];
     if (this.props.selected_group) {
       const { name, host } = this.props.selected_group;
       data = { name, host };
@@ -63,9 +61,6 @@ class GroupForm extends Form {
         versionId: this.props.selected_group.versionId
       };
       this.props.updateGroup(editedGroup);
-      // this.props.history.push({
-      //   pathname: `/dashboard/collections`
-      // });
     }
   }
 

@@ -4,20 +4,22 @@ import {
   Card,
   Button,
   Dropdown,
-  DropdownButton,
-  Table
+  DropdownButton
 } from "react-bootstrap";
 import { deleteEndpoint, duplicateEndpoint } from "./endpointsActions";
 import { connect } from "react-redux";
+import { setEndpointIds } from "../groups/groupsActions";
 
 const mapStateToProps = state => {
-  return { endpoints: state.endpoints };
+  return { endpoints: state.endpoints, groups: state.groups };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
     deleteEndpoint: endpoint => dispatch(deleteEndpoint(endpoint)),
-    duplicateEndpoint: endpoint => dispatch(duplicateEndpoint(endpoint))
+    duplicateEndpoint: endpoint => dispatch(duplicateEndpoint(endpoint)),
+    setEndpointIds: (endpointsOrder, groupId) =>
+      dispatch(setEndpointIds(endpointsOrder, groupId))
   };
 };
 
@@ -25,37 +27,30 @@ class Endpoints extends Component {
   state = {};
 
   onDragStart = (e, eId) => {
-    this.props.group_dnd(false);
     this.draggedItem = eId;
-    this.props.set_dnd(eId, this.props.group_id);
+    this.props.set_source_group_id(eId, this.props.group_id);
   };
 
   onDragOver = (e, eId) => {
     e.preventDefault();
-    this.draggedOverItem = eId;
   };
-
-  async onDragEnd(e, props) {
-    this.props.group_dnd(true);
-    if (this.draggedItem === this.draggedOverItem) {
-      this.draggedItem = null;
-      return;
-    }
-    let endpointIds = this.props.endpoints_order.filter(
-      item => item !== this.draggedItem
-    );
-    const index = this.props.endpoints_order.findIndex(
-      eId => eId === this.draggedOverItem
-    );
-    endpointIds.splice(index, 0, this.draggedItem);
-    this.props.set_endpoint_id(this.props.group_id, endpointIds);
-    this.draggedItem = null;
-  }
-
-  onDrop = e => {
+  onDrop = (e, droppedOnItem) => {
     e.preventDefault();
     if (!this.draggedItem) {
-      this.props.get_dnd(this.props.group_id);
+    } else {
+      if (this.draggedItem === droppedOnItem) {
+        this.draggedItem = null;
+        return;
+      }
+      let endpointIds = this.props.endpoints_order.filter(
+        item => item !== this.draggedItem
+      );
+      const index = this.props.endpoints_order.findIndex(
+        eId => eId === droppedOnItem
+      );
+      endpointIds.splice(index, 0, this.draggedItem);
+      this.props.setEndpointIds(endpointIds, this.props.group_id);
+      this.draggedItem = null;
     }
   };
 
@@ -70,7 +65,6 @@ class Endpoints extends Component {
     this.props.duplicateEndpoint(endpoint);
     this.props.history.push({
       pathname: "/dashboard/collections"
-      //duplicateEndpoint: endpoint
     });
   }
 
@@ -92,29 +86,10 @@ class Endpoints extends Component {
     });
   }
   render() {
-    if (this.props.endpoints_order.length === 0) {
-      return (
-        <Table
-          striped
-          bordered
-          hover
-          size="sm"
-          onDragOver={e => this.onDragOver(e)}
-          onDragStart={e => this.onDragStart(e)}
-          onDragEnd={e => this.onDragEnd(e, this.props)}
-          onDrop={e => this.onDrop(e)}
-        >
-          <thead>
-            <tr>
-              <th>This group is empty</th>
-            </tr>
-          </thead>
-        </Table>
-      );
-    } else {
-      return (
-        <div>
-          {Object.keys(this.props.endpoints)
+    return (
+      <div>
+        {Object.keys(this.props.endpoints).length !== 0 &&
+          this.props.endpoints_order
             .filter(
               eId => this.props.endpoints[eId].groupId === this.props.group_id
             )
@@ -125,7 +100,6 @@ class Endpoints extends Component {
                     draggable
                     onDragOver={e => this.onDragOver(e, endpointId)}
                     onDragStart={e => this.onDragStart(e, endpointId)}
-                    onDragEnd={e => this.onDragEnd(e, endpointId, this.props)}
                     onDrop={e => this.onDrop(e)}
                   >
                     <Accordion.Toggle
@@ -170,9 +144,8 @@ class Endpoints extends Component {
                 </Card>
               </Accordion>
             ))}
-        </div>
-      );
-    }
+      </div>
+    );
   }
 }
 

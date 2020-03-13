@@ -43,7 +43,7 @@ export const addCollection = newCollection => {
       .saveCollection(newCollection)
       .then(response => {
         dispatch(addCollectionSuccess(response.data));
-        dispatch(fetchVersions(response.data.id));
+        // dispatch(fetchVersions(response.data.id));
       })
       .catch(error => {
         dispatch(addCollectionFailure(error.response.data, newCollection));
@@ -78,7 +78,7 @@ export const updateCollection = editedCollection => {
     const originalCollection = store.getState().collections[
       editedCollection.id
     ];
-    dispatch(updateCollectionRequest(editedCollection));
+    dispatch(updateCollectionRequest({ ...editedCollection }));
     const id = editedCollection.id;
     delete editedCollection.id;
     collectionsService
@@ -151,6 +151,7 @@ export const deleteCollectionFailure = (error, collection) => {
 };
 
 export const duplicateCollection = collection => {
+  console.log(collection);
   return dispatch => {
     collectionsService
       .duplicateCollection(collection.id)
