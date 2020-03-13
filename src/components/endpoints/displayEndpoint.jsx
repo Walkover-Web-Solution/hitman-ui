@@ -10,6 +10,8 @@ import DisplayResponse from "./displayResponse";
 import { addEndpoint, updateEndpoint } from "./endpointsActions";
 import endpointService from "./endpointService";
 import store from "../../store/store";
+import { withRouter } from "react-router-dom";
+
 var URI = require("urijs");
 
 const mapStateToProps = state => {
@@ -20,10 +22,10 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     addEndpoint: (newEndpoint, groupId) =>
-      dispatch(addEndpoint(newEndpoint, groupId)),
+      dispatch(addEndpoint(ownProps.history, newEndpoint, groupId)),
     updateEndpoint: editedEndpoint => dispatch(updateEndpoint(editedEndpoint))
   };
 };
@@ -64,10 +66,11 @@ class DisplayEndpoint extends Component {
     let endpoint = {};
     let originalParams = {};
     let originalHeaders = [];
+    let flag = 0;
+
     if (!this.props.location.title) {
       store.subscribe(() => {
-        const endpointId = this.props.location.pathname.split("/")[4];
-
+        const endpointId = this.props.location.pathname.split("/")[3];
         const { endpoints } = store.getState();
         const { groups } = store.getState();
         const { versions } = store.getState();
@@ -76,8 +79,10 @@ class DisplayEndpoint extends Component {
           Object.keys(groups).length !== 0 &&
           Object.keys(versions).length !== 0 &&
           Object.keys(endpoints).length !== 0 &&
-          endpointId
+          endpointId &&
+          flag === 0
         ) {
+          flag = 1;
           endpoint = endpoints[endpointId];
           const groupId = endpoints[endpointId].groupId;
 
@@ -254,7 +259,7 @@ class DisplayEndpoint extends Component {
     if (error.response) {
       let response = {
         status: error.response.status,
-        data: error.response ? error.response.data : error
+        data: error.response.data
       };
       this.setState({ response, flagResponse: true });
     } else {
@@ -781,4 +786,6 @@ class DisplayEndpoint extends Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(DisplayEndpoint);
+export default withRouter(
+  connect(mapStateToProps, mapDispatchToProps)(DisplayEndpoint)
+);

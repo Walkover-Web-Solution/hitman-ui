@@ -72,9 +72,11 @@ function endpointsReducer(state = initialState, action) {
       };
 
     case endpointsActionTypes.ON_ENDPOINT_DUPLICATED:
-      endpoints = { ...state };
-      endpoints[action.response.id] = action.response;
-      return endpoints;
+      console.log(state, action, {
+        ...state,
+        [action.response.id]: action.response
+      });
+      return { ...state, [action.response.id]: action.response };
 
     case endpointsActionTypes.ON_ENDPOINT_DUPLICATED_ERROR:
       toast.error(action.error);

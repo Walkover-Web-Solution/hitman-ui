@@ -7,6 +7,11 @@ const initialState = {};
 function groupsReducer(state = initialState, action) {
   let groups = {};
   switch (action.type) {
+    case endpointsActionTypes.ON_ENDPOINT_DUPLICATED:
+      groups = { ...state };
+      groups[action.response.groupId].endpointsOrder.push(action.response.id);
+      return groups;
+
     case endpointsActionTypes.MOVE_ENDPOINT_REQUEST:
       groups = { ...state };
       groups[action.sourceGroupId].endpointsOrder = groups[
