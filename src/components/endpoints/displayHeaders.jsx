@@ -1,38 +1,13 @@
 import React, { Component } from "react";
-import GenericTable from "./table";
+import GenericTable from "./genericTable";
 
 class DisplayHeaders extends Component {
   state = {};
 
-  handleAddHeader() {
-    const len = this.props.originalHeaders.length;
-    let originalHeaders = [...this.originalHeaders];
-    originalHeaders[len.toString()] = {
-      key: "",
-      value: "",
-      description: ""
-    };
-    this.originalHeaders = originalHeaders;
-    this.props.handle_update_headers(originalHeaders);
-  }
-
-  handleDeleteHeader(index) {
-    let originalHeaders = this.props.originalHeaders;
-    let neworiginalHeaders = [];
-    for (let i = 0; i < originalHeaders.length; i++) {
-      if (i === index) {
-        continue;
-      }
-      neworiginalHeaders.push(this.props.originalHeaders[i]);
-    }
-    originalHeaders = neworiginalHeaders;
-    this.originalHeaders = originalHeaders;
-    this.props.handle_update_headers(originalHeaders);
-  }
-
   handleChangeHeader = e => {
     const name = e.currentTarget.name.split(".");
-    const originalHeaders = [...this.props.originalHeaders];
+
+    const originalHeaders = [...this.originalHeaders];
     if (name[1] === "key") {
       originalHeaders[name[0]].key = e.currentTarget.value;
     }
@@ -43,7 +18,7 @@ class DisplayHeaders extends Component {
       originalHeaders[name[0]].description = e.currentTarget.value;
     }
     this.originalHeaders = originalHeaders;
-    this.props.handle_update_headers(originalHeaders);
+    this.props.props_from_parent("originalHeaders", originalHeaders);
   };
 
   render() {
@@ -51,11 +26,10 @@ class DisplayHeaders extends Component {
     return (
       <div>
         <GenericTable
-          title="Add Header"
-          dataArray={this.props.originalHeaders}
-          handleDelete={this.handleDeleteHeader.bind(this)}
-          handleAdd={this.handleAddHeader.bind(this)}
+          {...this.props}
           handleChange={this.handleChangeHeader.bind(this)}
+          title="Add Headers"
+          dataArray={this.originalHeaders}
         ></GenericTable>
       </div>
     );

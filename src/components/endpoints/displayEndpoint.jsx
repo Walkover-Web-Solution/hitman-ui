@@ -366,9 +366,9 @@ class DisplayEndpoint extends Component {
     this.setState({ response, data });
   }
 
-  handleUpdateHeader(originalHeaders) {
-    this.setState({ originalHeaders });
-  }
+  // handleUpdateHeader(originalHeaders) {
+  //   this.setState({ originalHeaders });
+  // }
 
   propsFromChild(name, value) {
     if (name === "originalParams") {
@@ -377,6 +377,10 @@ class DisplayEndpoint extends Component {
     }
     if (name === "handleAddParam") {
       this.setState({ originalParams: value });
+    }
+
+    if (name === "originalHeaders") {
+      this.setState({ originalHeaders: value });
     }
   }
 
@@ -752,7 +756,7 @@ class DisplayEndpoint extends Component {
                 <DisplayHeaders
                   {...this.props}
                   originalHeaders={this.state.originalHeaders}
-                  handle_update_headers={this.handleUpdateHeader.bind(this)}
+                  props_from_parent={this.propsFromChild.bind(this)}
                 />
               </div>
             </div>

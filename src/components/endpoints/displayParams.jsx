@@ -1,33 +1,8 @@
 import React, { Component } from "react";
-import GenericTable from "./table";
+import GenericTable from "./genericTable";
 
 class ParamsComponent extends Component {
   state = {};
-
-  handleDeleteParam(index) {
-    let originalParams = this.originalParams;
-    let neworiginalParams = [];
-    for (let i = 0; i < originalParams.length; i++) {
-      if (i === index) {
-        continue;
-      }
-      neworiginalParams.push(this.originalParams[i]);
-    }
-    originalParams = neworiginalParams;
-    this.props.props_from_parent("originalParams", originalParams);
-  }
-
-  async handleAddParam() {
-    const len = this.originalParams.length;
-    let originalParams = [...this.originalParams, len.toString()];
-    originalParams[[len.toString()]] = {
-      key: "",
-      value: "",
-      description: ""
-    };
-    this.originalParams = originalParams;
-    this.props.props_from_parent("handleAddParam", originalParams);
-  }
 
   handleChangeParam = e => {
     const name = e.currentTarget.name.split(".");
@@ -52,11 +27,10 @@ class ParamsComponent extends Component {
     return (
       <div>
         <GenericTable
+          {...this.props}
+          handleChange={this.handleChangeParam.bind(this)}
           title="Add Params"
           dataArray={this.originalParams}
-          handleDelete={this.handleDeleteParam.bind(this)}
-          handleAdd={this.handleAddParam.bind(this)}
-          handleChange={this.handleChangeParam.bind(this)}
         ></GenericTable>
       </div>
     );
