@@ -17,13 +17,14 @@ export const fetchEndpoints = () => {
   };
 };
 
-export const addEndpoint = (newEndpoint, groupId) => {
+export const addEndpoint = (history, newEndpoint, groupId) => {
   return dispatch => {
     dispatch(addEndpointRequest(newEndpoint));
     endpointService
       .saveEndpoint(groupId, newEndpoint)
       .then(response => {
         dispatch(addEndpointSuccess(response.data, newEndpoint));
+        history.push(`/dashboard/collections/endpoints/${response.data.id}`);
       })
       .catch(error => {
         dispatch(addEndpointFailure(error.response.data, newEndpoint));

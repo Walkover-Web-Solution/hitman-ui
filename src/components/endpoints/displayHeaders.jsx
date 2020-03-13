@@ -6,7 +6,7 @@ class DisplayHeaders extends Component {
 
   handleAddHeader() {
     const len = this.props.originalHeaders.length;
-    let originalHeaders = [...this.state.originalHeaders];
+    let originalHeaders = [...this.originalHeaders];
     originalHeaders[len.toString()] = {
       key: "",
       value: "",
