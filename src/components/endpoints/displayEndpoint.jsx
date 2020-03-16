@@ -63,7 +63,7 @@ class DisplayEndpoint extends Component {
 
   async componentDidMount() {
     let endpoint = {};
-    let originalParams = {};
+    let originalParams = [];
     let originalHeaders = [];
     let flag = 0;
 
@@ -97,6 +97,7 @@ class DisplayEndpoint extends Component {
         originalParams = this.fetchoriginalParams(endpoint.params);
 
         //To fetch originalHeaders from Headers
+        originalHeaders = [];
         Object.keys(endpoint.headers).forEach(h => {
           originalHeaders.push(endpoint.headers[h]);
         });
@@ -133,7 +134,6 @@ class DisplayEndpoint extends Component {
       }
     }
   }
-
   handleChange = e => {
     let data = { ...this.state.data };
     if (e.currentTarget.name === "host") {
@@ -345,10 +345,12 @@ class DisplayEndpoint extends Component {
   doSubmitHeader() {
     let originalHeaders = [...this.state.originalHeaders];
     let updatedHeaders = {};
+    let updatedHeadersArray = [];
     for (let i = 0; i < originalHeaders.length; i++) {
       if (originalHeaders[i].key === "") {
         continue;
       } else {
+        updatedHeadersArray.push(originalHeaders[i]);
         updatedHeaders[originalHeaders[i].key] = {
           key: originalHeaders[i].key,
           value: originalHeaders[i].value,
@@ -359,7 +361,7 @@ class DisplayEndpoint extends Component {
     const endpoint = { ...this.state.endpoint };
     endpoint.headers = { ...updatedHeaders };
     this.setState({
-      originalHeaders,
+      originalHeaders: updatedHeadersArray,
       endpoint
     });
     return updatedHeaders;

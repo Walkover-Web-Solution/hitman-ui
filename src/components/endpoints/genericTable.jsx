@@ -10,7 +10,7 @@ class GenericTable extends Component {
     if (name[1] === "key") {
       dataArray[name[0]].key = e.currentTarget.value;
       if (title === "Add Params" && dataArray[name[0]].key.length === 0) {
-        dataArray.splice(name[0]);
+        this.handleDelete(dataArray, name[0], title);
       }
     }
     if (name[1] === "value") {
