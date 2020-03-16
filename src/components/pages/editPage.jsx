@@ -27,9 +27,25 @@ class EditPage extends Component {
     errors: {}
   };
 
+  fetchPage(pageId) {
+    let data = {};
+    const { pages } = store.getState();
+    let page = pages[pageId];
+    if (page) {
+      const { id, versionId, groupId, name, contents } = page;
+      data = {
+        id,
+        versionId,
+        groupId,
+        name,
+        contents
+      };
+      this.setState({ data });
+    }
+  }
+
   async componentDidMount() {
     let data = {};
-    // let page = {};
     if (this.props.location.page) {
       const {
         id,
@@ -49,34 +65,13 @@ class EditPage extends Component {
       this.setState({ data });
     } else {
       const pageId = this.props.location.pathname.split("/")[3];
-
-      // store.subscribe(() => {
-      //   const { pages } = store.getState();
-      //   page = pages[pageId];
-      //   if (page) {
-      //     const { id, versionId, groupId, name, contents } = page;
-      //     data = {
-      //       id,
-      //       versionId,
-      //       groupId,
-      //       name,
-      //       contents
-      //     };
-      //     this.setState({ data });
-      //   }
-      // });
-      let { data: page } = await pageService.getPage(pageId);
-      const { id, versionId, groupId, name, contents } = page;
-      data = {
-        id,
-        versionId,
-        groupId,
-        name,
-        contents
-      };
+      this.fetchPage(pageId);
+      store.subscribe(() => {
+        this.fetchPage(pageId);
+      });
     }
-    this.setState({ data });
   }
+
   handleChange = e => {
     const data = { ...this.state.data };
     data[e.currentTarget.name] = e.currentTarget.value;

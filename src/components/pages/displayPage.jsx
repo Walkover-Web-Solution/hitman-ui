@@ -14,29 +14,11 @@ class DisplayPage extends Component {
     }
   };
 
-  async componentDidMount() {
+  fetchPage(pageId) {
     let data = {};
-    // let page = {};
-    console.log("this.props", this.props);
-    if (!this.props.location.page) {
-      const pageId = this.props.location.pathname.split("/")[3];
-      // store.subscribe(() => {
-      //   const { pages } = store.getState();
-      //   page = pages[pageId];
-      //   if (page) {
-      //     const { id, versionId, groupId, name, contents } = page;
-      //     data = {
-      //       id,
-      //       versionId,
-      //       groupId,
-      //       name,
-      //       contents
-      //     };
-      //   }
-      //   this.setState({ data });
-      // });
-
-      let { data: page } = await pageService.getPage(pageId);
+    const { pages } = store.getState();
+    let page = pages[pageId];
+    if (page) {
       const { id, versionId, groupId, name, contents } = page;
       data = {
         id,
@@ -46,6 +28,16 @@ class DisplayPage extends Component {
         contents
       };
       this.setState({ data });
+    }
+  }
+
+  async componentDidMount() {
+    if (!this.props.location.page) {
+      const pageId = this.props.location.pathname.split("/")[3];
+      this.fetchPage(pageId);
+      store.subscribe(() => {
+        this.fetchPage(pageId);
+      });
     }
   }
 
