@@ -70,9 +70,10 @@ class GroupPages extends Component {
                   <Card.Header>
                     <Accordion.Toggle
                       as={Button}
-                      onClick={() =>
-                        this.handleDisplay(this.props.pages[pageId])
-                      }
+                      onClick={() => {
+                        const page = this.props.pages[pageId];
+                        this.handleDisplay(page);
+                      }}
                       variant="link"
                       eventKey="1"
                     >
@@ -92,7 +93,7 @@ class GroupPages extends Component {
                               "Are you sure you wish to delete this item?"
                             )
                           )
-                            this.handleDelete(this.props.pages[pageId]);
+                            this.handleDelete(pageId);
                         }}
                       >
                         Delete

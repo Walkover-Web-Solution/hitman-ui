@@ -94,9 +94,10 @@ class Pages extends Component {
                   >
                     <Accordion.Toggle
                       as={Button}
-                      onClick={() =>
-                        this.handleDisplay(this.props.pages[pageId])
-                      }
+                      onClick={() => {
+                        const page = this.props.pages[pageId];
+                        this.handleDisplay(page);
+                      }}
                       variant="link"
                       eventKey="1"
                     >
