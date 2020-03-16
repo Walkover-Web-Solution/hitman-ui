@@ -10,7 +10,7 @@ import {
   updateEnvironment,
   deleteEnvironment,
   setEnvironmentId
-} from "./environmentsActions";
+} from "./redux/environmentsActions";
 
 const mapStateToProps = state => {
   return {

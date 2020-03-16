@@ -9,7 +9,7 @@ import {
 import GroupPages from "../pages/groupPages";
 import GroupForm from "../groups/groupForm";
 import Endpoints from "../endpoints/endpoints";
-import { deleteGroup, duplicateGroup } from "../groups/groupsActions";
+import { deleteGroup, duplicateGroup } from "../groups/redux/groupsActions";
 import { connect } from "react-redux";
 
 const mapStateToProps = state => {

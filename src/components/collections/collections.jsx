@@ -19,17 +19,17 @@ import CollectionForm from "./collectionForm";
 import PageForm from "../pages/pageForm";
 import collectionVersionsService from "../collectionVersions/collectionVersionsService";
 import endpointService from "../endpoints/endpointService";
-import { fetchAllVersions } from "../collectionVersions/collectionVersionsActions";
-import { fetchEndpoints } from "../endpoints/endpointsActions";
-import { deleteGroup, fetchGroups } from "../groups/groupsActions";
-import { fetchPages } from "../pages/pagesActions";
+import { fetchAllVersions } from "../collectionVersions/redux/collectionVersionsActions";
+import { fetchEndpoints } from "../endpoints/redux/endpointsActions";
+import { fetchGroups } from "../groups/redux/groupsActions";
+import { fetchPages } from "../pages/redux/pagesActions";
 import {
   addCollection,
   deleteCollection,
   duplicateCollection,
   fetchCollections,
   updateCollection
-} from "./collectionsActions";
+} from "./redux/collectionsActions";
 
 const mapStateToProps = state => {
   return {
@@ -161,7 +161,6 @@ class CollectionsComponent extends Component {
   }
 
   async handleDuplicateCollection(collectionCopy) {
-    console.log(collectionCopy);
     this.props.duplicateCollection(collectionCopy);
   }
 

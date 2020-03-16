@@ -1,6 +1,6 @@
-import environmentService from "../environments/environmentService";
+import environmentService from "../environmentService";
 import environmentsActionTypes from "./environmentsActionTypes";
-import store from "../../store/store";
+import store from "../../../store/store";
 
 export const fetchEnvironments = () => {
   return dispatch => {

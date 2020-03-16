@@ -4,7 +4,7 @@ import { Link, Route, Switch } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import DisplayEndpoint from "./endpoints/displayEndpoint";
-import { moveEndpoint } from "./endpoints/endpointsActions";
+import { moveEndpoint } from "./endpoints/redux/endpointsActions";
 import Environments from "./environments/environments";
 import DisplayPage from "./pages/displayPage";
 import EditPage from "./pages/editPage";

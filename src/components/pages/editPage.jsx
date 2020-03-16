@@ -1,6 +1,5 @@
 import React, { Component } from "react";
-import pageService from "./pageService";
-import { updatePage } from "../pages/pagesActions";
+import { updatePage } from "../pages/redux/pagesActions";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import store from "../../store/store";

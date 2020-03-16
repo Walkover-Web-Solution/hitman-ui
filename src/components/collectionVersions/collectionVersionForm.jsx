@@ -6,7 +6,7 @@ import { connect } from "react-redux";
 import {
   addVersion,
   updateVersion
-} from "../collectionVersions/collectionVersionsActions";
+} from "../collectionVersions/redux/collectionVersionsActions";
 
 import shortid from "shortid";
 

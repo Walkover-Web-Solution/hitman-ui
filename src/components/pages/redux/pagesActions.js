@@ -1,6 +1,6 @@
-import pagesService from "./pageService";
+import pagesService from "../pageService";
 import pagesActionTypes from "./pagesActionTypes";
-import store from "../../store/store";
+import store from "../../../store/store";
 import { toast } from "react-toastify";
 
 export const fetchPages = () => {

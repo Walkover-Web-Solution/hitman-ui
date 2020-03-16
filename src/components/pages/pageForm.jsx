@@ -4,7 +4,7 @@ import Joi from "joi-browser";
 import { Link } from "react-router-dom";
 import Form from "../common/form";
 import { connect } from "react-redux";
-import { addPage, addGroupPage } from "../pages/pagesActions";
+import { addPage, addGroupPage } from "../pages/redux/pagesActions";
 import shortid from "shortid";
 import { withRouter } from "react-router-dom";
 

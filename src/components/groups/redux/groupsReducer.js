@@ -1,8 +1,8 @@
 import groupsActionTypes from "./groupsActionTypes";
-import endpointsActionTypes from "../endpoints/endpointsActionTypes";
+import endpointsActionTypes from "../../endpoints/redux/endpointsActionTypes";
 import { toast } from "react-toastify";
-import versionActionTypes from "../collectionVersions/collectionVersionsActionTypes";
-import collectionActionTypes from "../collections/collectionsActionTypes";
+import versionActionTypes from "../../collectionVersions/redux/collectionVersionsActionTypes";
+import collectionActionTypes from "../../collections/redux/collectionsActionTypes";
 
 const initialState = {};
 
@@ -74,7 +74,7 @@ function groupsReducer(state = initialState, action) {
     case groupsActionTypes.ON_GROUP_DELETED:
       return state;
 
-    case groupsActionTypes.ON_GROUP_DELETED:
+    case groupsActionTypes.ON_GROUP_DELETED_ERROR:
       toast.error(action.error.data);
       if (action.error.status === 404) return state;
       return {

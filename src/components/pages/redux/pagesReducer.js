@@ -1,8 +1,8 @@
 import pagesActionTypes from "./pagesActionTypes";
 import { toast } from "react-toastify";
-import groupsActionTypes from "../groups/groupsActionTypes";
-import versionActionTypes from "../collectionVersions/collectionVersionsActionTypes";
-import collectionActionTypes from "../collections/collectionsActionTypes";
+import groupsActionTypes from "../../groups/redux/groupsActionTypes";
+import versionActionTypes from "../../collectionVersions/redux/collectionVersionsActionTypes";
+import collectionActionTypes from "../../collections/redux/collectionsActionTypes";
 
 const initialState = {};
 

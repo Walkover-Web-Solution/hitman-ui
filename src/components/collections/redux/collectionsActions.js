@@ -1,6 +1,6 @@
-import collectionsService from "../collections/collectionsService";
+import collectionsService from "../collectionsService";
 import collectionsActionTypes from "./collectionsActionTypes";
-import store from "../../store/store";
+import store from "../../../store/store";
 import { toast } from "react-toastify";
 
 export const fetchCollections = () => {

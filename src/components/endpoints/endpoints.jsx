@@ -6,9 +6,9 @@ import {
   Dropdown,
   DropdownButton
 } from "react-bootstrap";
-import { deleteEndpoint, duplicateEndpoint } from "./endpointsActions";
+import { deleteEndpoint, duplicateEndpoint } from "./redux/endpointsActions";
 import { connect } from "react-redux";
-import { setEndpointIds } from "../groups/groupsActions";
+import { setEndpointIds } from "../groups/redux/groupsActions";
 
 const mapStateToProps = state => {
   return { endpoints: state.endpoints, groups: state.groups };

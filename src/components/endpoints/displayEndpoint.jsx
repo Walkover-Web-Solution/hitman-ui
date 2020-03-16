@@ -6,7 +6,7 @@ import shortId from "shortid";
 import "../../css/editableDropdown.css";
 import DisplayResponse from "./displayResponse";
 import GenericTable from "./genericTable";
-import { addEndpoint, updateEndpoint } from "./endpointsActions";
+import { addEndpoint, updateEndpoint } from "./redux/endpointsActions";
 import endpointService from "./endpointService";
 import store from "../../store/store";
 import { withRouter } from "react-router-dom";
@@ -69,72 +69,71 @@ class DisplayEndpoint extends Component {
     let originalParams = [];
     let originalHeaders = [];
     let flag = 0;
-
     if (!this.props.location.title) {
       this.fetchEndpoint(endpoint, originalParams, originalHeaders, flag);
       store.subscribe(() => {
-        this.fetchEndpoint(endpoint, originalParams, originalHeaders, flag);
+        if (!this.props.location.title && !this.state.title) {
+          this.fetchEndpoint(endpoint, originalParams, originalHeaders, flag);
+        }
       });
     }
   }
 
   fetchEndpoint(endpoint, originalParams, originalHeaders, flag) {
-    {
-      const endpointId = this.props.location.pathname.split("/")[3];
-      const { endpoints } = store.getState();
-      const { groups } = store.getState();
-      const { versions } = store.getState();
+    const endpointId = this.props.location.pathname.split("/")[3];
+    const { endpoints } = store.getState();
+    const { groups } = store.getState();
+    const { versions } = store.getState();
 
-      if (
-        Object.keys(groups).length !== 0 &&
-        Object.keys(versions).length !== 0 &&
-        Object.keys(endpoints).length !== 0 &&
-        endpointId &&
-        flag === 0
-      ) {
-        flag = 1;
-        endpoint = endpoints[endpointId];
-        const groupId = endpoints[endpointId].groupId;
+    if (
+      Object.keys(groups).length !== 0 &&
+      Object.keys(versions).length !== 0 &&
+      Object.keys(endpoints).length !== 0 &&
+      endpointId &&
+      flag === 0
+    ) {
+      flag = 1;
+      endpoint = endpoints[endpointId];
+      const groupId = endpoints[endpointId].groupId;
 
-        //To fetch originalParams from Params
-        originalParams = this.fetchoriginalParams(endpoint.params);
+      //To fetch originalParams from Params
+      originalParams = this.fetchoriginalParams(endpoint.params);
 
-        //To fetch originalHeaders from Headers
-        originalHeaders = [];
-        Object.keys(endpoint.headers).forEach(h => {
-          originalHeaders.push(endpoint.headers[h]);
-        });
+      //To fetch originalHeaders from Headers
+      originalHeaders = [];
+      Object.keys(endpoint.headers).forEach(h => {
+        originalHeaders.push(endpoint.headers[h]);
+      });
 
-        this.BASE_URL = endpoint.BASE_URL;
-        if (endpoint.BASE_URL !== null) {
-          this.setDropdownValue("custom");
-        } else {
-          this.state.selectedHost = "";
-          this.customHost = false;
-        }
-
-        let props = { ...this.props, groupId: groupId };
-        const hostJson = this.fetchHosts(props, this.props.environment);
-        this.fillDropdownValue(hostJson);
-        this.host = this.findHost(hostJson);
-        this.setState({
-          data: {
-            method: endpoint.requestType,
-            uri: endpoint.uri,
-            updatedUri: endpoint.uri,
-            name: endpoint.name,
-            body: JSON.stringify(endpoint.body, null, 4),
-            host: this.host
-          },
-          originalParams,
-          originalHeaders,
-          endpoint,
-          groups,
-          groupId,
-          versions,
-          title: "update endpoint"
-        });
+      this.BASE_URL = endpoint.BASE_URL;
+      if (endpoint.BASE_URL !== null) {
+        this.setDropdownValue("custom");
+      } else {
+        this.state.selectedHost = "";
+        this.customHost = false;
       }
+
+      let props = { ...this.props, groupId: groupId };
+      const hostJson = this.fetchHosts(props, this.props.environment);
+      this.fillDropdownValue(hostJson);
+      this.host = this.findHost(hostJson);
+      this.setState({
+        data: {
+          method: endpoint.requestType,
+          uri: endpoint.uri,
+          updatedUri: endpoint.uri,
+          name: endpoint.name,
+          body: JSON.stringify(endpoint.body, null, 4),
+          host: this.host
+        },
+        originalParams,
+        originalHeaders,
+        endpoint,
+        groups,
+        groupId,
+        versions,
+        title: "update endpoint"
+      });
     }
   }
   handleChange = e => {
@@ -510,7 +509,6 @@ class DisplayEndpoint extends Component {
   }
 
   render() {
-    console.log(this.props.environment);
     if (this.props.location.title === "Add New Endpoint") {
       this.customHost = false;
       const hostJson = this.fetchHosts(

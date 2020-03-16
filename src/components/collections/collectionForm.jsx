@@ -1,7 +1,6 @@
 import React from "react";
 import { Modal } from "react-bootstrap";
 import Joi from "joi-browser";
-import collectionsService from "./collectionsService";
 import Form from "../common/form";
 import shortid from "shortid";
 

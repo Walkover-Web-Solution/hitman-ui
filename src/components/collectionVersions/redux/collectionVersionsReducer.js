@@ -1,7 +1,7 @@
 import versionActionTypes from "./collectionVersionsActionTypes";
-import collectionsActionTypes from "../collections/collectionsActionTypes";
+import collectionsActionTypes from "../../collections/redux/collectionsActionTypes";
 import { toast } from "react-toastify";
-import collectionActionTypes from "../collections/collectionsActionTypes";
+import collectionActionTypes from "../../collections/redux/collectionsActionTypes";
 
 const initialState = {};
 

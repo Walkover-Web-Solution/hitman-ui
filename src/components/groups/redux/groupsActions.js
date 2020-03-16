@@ -1,8 +1,6 @@
-import store from "../../store/store";
-import groupsService from "../groups/groupsService";
+import store from "../../../store/store";
+import groupsService from "../groupsService";
 import groupsActionTypes from "./groupsActionTypes";
-import endpointsActions from "../endpoints/endpointsActions";
-import pagesActions from "../pages/pagesActions";
 import { toast } from "react-toastify";
 
 export const setEndpointIds = (endpointsOrder, groupId) => {

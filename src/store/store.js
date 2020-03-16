@@ -1,10 +1,10 @@
 import { createStore, applyMiddleware, compose, combineReducers } from "redux";
-import collectionsReducer from "../components/collections/collectionsReducer";
-import versionsReducer from "../components/collectionVersions/collectionVersionsReducer";
-import groupsReducer from "../components/groups/groupsReducer";
-import pagesReducer from "../components/pages/pagesReducer";
-import endpointsReducer from "../components/endpoints/endpointsReducer";
-import environmentsReducer from "../components/environments/environmentsReducer";
+import collectionsReducer from "../components/collections/redux/collectionsReducer";
+import versionsReducer from "../components/collectionVersions/redux/collectionVersionsReducer";
+import groupsReducer from "../components/groups/redux/groupsReducer";
+import pagesReducer from "../components/pages/redux/pagesReducer";
+import endpointsReducer from "../components/endpoints/redux/endpointsReducer";
+import environmentsReducer from "../components/environments/redux/environmentsReducer";
 import thunk from "redux-thunk";
 import { logger } from "redux-logger";
 

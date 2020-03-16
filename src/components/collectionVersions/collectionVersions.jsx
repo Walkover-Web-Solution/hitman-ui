@@ -12,7 +12,7 @@ import { connect } from "react-redux";
 import {
   deleteVersion,
   duplicateVersion
-} from "../collectionVersions/collectionVersionsActions";
+} from "../collectionVersions/redux/collectionVersionsActions";
 import ShareVersionForm from "../collectionVersions/shareVersionForm";
 import GroupForm from "../groups/groupForm";
 import { withRouter } from "react-router-dom";

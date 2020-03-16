@@ -1,7 +1,7 @@
-import endpointService from "./endpointService";
+import endpointService from "../endpointService";
 import endpointsActionTypes from "./endpointsActionTypes";
-import { setEndpointIds } from "../groups/groupsActions";
-import store from "../../store/store";
+import { setEndpointIds } from "../../groups/redux/groupsActions";
+import store from "../../../store/store";
 import { toast } from "react-toastify";
 
 export const addEndpoint = (history, newEndpoint, groupId) => {

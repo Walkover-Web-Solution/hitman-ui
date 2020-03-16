@@ -1,6 +1,6 @@
-import collectionVersionsService from "./collectionVersionsService";
+import collectionVersionsService from "../collectionVersionsService";
 import versionActionTypes from "./collectionVersionsActionTypes";
-import store from "../../store/store";
+import store from "../../../store/store";
 import { toast } from "react-toastify";
 
 export const fetchAllVersions = () => {

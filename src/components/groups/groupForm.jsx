@@ -4,7 +4,7 @@ import { Modal } from "react-bootstrap";
 import { connect } from "react-redux";
 import shortid from "shortid";
 import Form from "../common/form";
-import { addGroup, updateGroup } from "../groups/groupsActions";
+import { addGroup, updateGroup } from "../groups/redux/groupsActions";
 
 const mapDispatchToProps = dispatch => {
   return {

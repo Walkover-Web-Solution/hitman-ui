@@ -8,7 +8,7 @@ import {
   Dropdown,
   DropdownButton
 } from "react-bootstrap";
-import { deletePage, duplicatePage } from "./pagesActions";
+import { deletePage, duplicatePage } from "./redux/pagesActions";
 
 const mapStateToProps = state => {
   return {
