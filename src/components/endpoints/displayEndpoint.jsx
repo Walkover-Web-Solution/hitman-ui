@@ -4,9 +4,8 @@ import { connect } from "react-redux";
 import { toast } from "react-toastify";
 import shortId from "shortid";
 import "../../css/editableDropdown.css";
-import DisplayHeaders from "./displayHeaders";
-import ParamsComponent from "./displayParams";
 import DisplayResponse from "./displayResponse";
+import GenericTable from "./genericTable";
 import { addEndpoint, updateEndpoint } from "./endpointsActions";
 import endpointService from "./endpointService";
 import store from "../../store/store";
@@ -67,70 +66,77 @@ class DisplayEndpoint extends Component {
 
   async componentDidMount() {
     let endpoint = {};
-    let originalParams = {};
+    let originalParams = [];
     let originalHeaders = [];
     let flag = 0;
 
     if (!this.props.location.title) {
+      this.fetchEndpoint(endpoint, originalParams, originalHeaders, flag);
       store.subscribe(() => {
-        const endpointId = this.props.location.pathname.split("/")[3];
-        const { endpoints } = store.getState();
-        const { groups } = store.getState();
-        const { versions } = store.getState();
-
-        if (
-          Object.keys(groups).length !== 0 &&
-          Object.keys(versions).length !== 0 &&
-          Object.keys(endpoints).length !== 0 &&
-          endpointId &&
-          flag === 0
-        ) {
-          flag = 1;
-          endpoint = endpoints[endpointId];
-          const groupId = endpoints[endpointId].groupId;
-
-          //To fetch originalParams from Params
-          originalParams = this.fetchoriginalParams(endpoint.params);
-
-          //To fetch originalHeaders from Headers
-          Object.keys(endpoint.headers).forEach(h => {
-            originalHeaders.push(endpoint.headers[h]);
-          });
-
-          this.BASE_URL = endpoint.BASE_URL;
-          if (endpoint.BASE_URL !== null) {
-            this.setDropdownValue("custom");
-          } else {
-            this.state.selectedHost = "";
-            this.customHost = false;
-          }
-
-          let props = { ...this.props, groupId: groupId };
-          const hostJson = this.fetchHosts(props, this.props.environment);
-          this.fillDropdownValue(hostJson);
-          this.host = this.findHost(hostJson);
-          this.setState({
-            data: {
-              method: endpoint.requestType,
-              uri: endpoint.uri,
-              updatedUri: endpoint.uri,
-              name: endpoint.name,
-              body: JSON.stringify(endpoint.body, null, 4),
-              host: this.host
-            },
-            originalParams,
-            originalHeaders,
-            endpoint,
-            groups,
-            groupId,
-            versions,
-            title: "update endpoint"
-          });
-        }
+        this.fetchEndpoint(endpoint, originalParams, originalHeaders, flag);
       });
     }
   }
 
+  fetchEndpoint(endpoint, originalParams, originalHeaders, flag) {
+    {
+      const endpointId = this.props.location.pathname.split("/")[3];
+      const { endpoints } = store.getState();
+      const { groups } = store.getState();
+      const { versions } = store.getState();
+
+      if (
+        Object.keys(groups).length !== 0 &&
+        Object.keys(versions).length !== 0 &&
+        Object.keys(endpoints).length !== 0 &&
+        endpointId &&
+        flag === 0
+      ) {
+        flag = 1;
+        endpoint = endpoints[endpointId];
+        const groupId = endpoints[endpointId].groupId;
+
+        //To fetch originalParams from Params
+        originalParams = this.fetchoriginalParams(endpoint.params);
+
+        //To fetch originalHeaders from Headers
+        originalHeaders = [];
+        Object.keys(endpoint.headers).forEach(h => {
+          originalHeaders.push(endpoint.headers[h]);
+        });
+
+        this.BASE_URL = endpoint.BASE_URL;
+        if (endpoint.BASE_URL !== null) {
+          this.setDropdownValue("custom");
+        } else {
+          this.state.selectedHost = "";
+          this.customHost = false;
+        }
+
+        let props = { ...this.props, groupId: groupId };
+        const hostJson = this.fetchHosts(props, this.props.environment);
+        this.fillDropdownValue(hostJson);
+        this.host = this.findHost(hostJson);
+        this.setState({
+          data: {
+            method: endpoint.requestType,
+            uri: endpoint.uri,
+            updatedUri: endpoint.uri,
+            name: endpoint.name,
+            body: JSON.stringify(endpoint.body, null, 4),
+            host: this.host
+          },
+          originalParams,
+          originalHeaders,
+          endpoint,
+          groups,
+          groupId,
+          versions,
+          title: "update endpoint"
+        });
+      }
+    }
+  }
   handleChange = e => {
     let data = { ...this.state.data };
     if (e.currentTarget.name === "host") {
@@ -342,10 +348,12 @@ class DisplayEndpoint extends Component {
   doSubmitHeader() {
     let originalHeaders = [...this.state.originalHeaders];
     let updatedHeaders = {};
+    let updatedHeadersArray = [];
     for (let i = 0; i < originalHeaders.length; i++) {
       if (originalHeaders[i].key === "") {
         continue;
       } else {
+        updatedHeadersArray.push(originalHeaders[i]);
         updatedHeaders[originalHeaders[i].key] = {
           key: originalHeaders[i].key,
           value: originalHeaders[i].value,
@@ -356,7 +364,7 @@ class DisplayEndpoint extends Component {
     const endpoint = { ...this.state.endpoint };
     endpoint.headers = { ...updatedHeaders };
     this.setState({
-      originalHeaders,
+      originalHeaders: updatedHeadersArray,
       endpoint
     });
     return updatedHeaders;
@@ -369,10 +377,6 @@ class DisplayEndpoint extends Component {
     this.setState({ response, data });
   }
 
-  handleUpdateHeader(originalHeaders) {
-    this.setState({ originalHeaders });
-  }
-
   propsFromChild(name, value) {
     if (name === "originalParams") {
       this.handleUpdateUri(value);
@@ -380,6 +384,10 @@ class DisplayEndpoint extends Component {
     }
     if (name === "handleAddParam") {
       this.setState({ originalParams: value });
+    }
+
+    if (name === "originalHeaders") {
+      this.setState({ originalHeaders: value });
     }
   }
 
@@ -740,11 +748,12 @@ class DisplayEndpoint extends Component {
               role="tabpanel"
               aria-labelledby="pills-params-tab"
             >
-              <ParamsComponent
+              <GenericTable
                 {...this.props}
-                originalParams={this.state.originalParams}
+                title="Add Params"
+                dataArray={this.state.originalParams}
                 props_from_parent={this.propsFromChild.bind(this)}
-              />
+              ></GenericTable>
             </div>
             <div
               className="tab-pane fade"
@@ -753,11 +762,12 @@ class DisplayEndpoint extends Component {
               aria-labelledby="pills-headers-tab"
             >
               <div>
-                <DisplayHeaders
+                <GenericTable
                   {...this.props}
-                  originalHeaders={this.state.originalHeaders}
-                  handle_update_headers={this.handleUpdateHeader.bind(this)}
-                />
+                  title="Add Headers"
+                  dataArray={this.state.originalHeaders}
+                  props_from_parent={this.propsFromChild.bind(this)}
+                ></GenericTable>
               </div>
             </div>
             <div
