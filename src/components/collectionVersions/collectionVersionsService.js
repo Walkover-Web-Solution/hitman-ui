@@ -5,12 +5,12 @@ function collectionVersionsUrl(collectionId) {
   return `${apiUrl}/collections/${collectionId}/versions`;
 }
 
-function collectionVersionUrl(collectionId, versionId) {
-  return `${collectionVersionsUrl(collectionId)}/${versionId}`;
-}
-
 export function getCollectionVersions(collectionId) {
   return http.get(collectionVersionsUrl(collectionId));
+}
+
+export function getAllCollectionVersions() {
+  return http.get(`${apiUrl}/versions`);
 }
 
 export function getCollectionVersion(versionId) {
@@ -47,5 +47,6 @@ export default {
   deleteCollectionVersion,
   duplicateVersion,
   importCollectionVersion,
-  exportCollectionVersion
+  exportCollectionVersion,
+  getAllCollectionVersions
 };

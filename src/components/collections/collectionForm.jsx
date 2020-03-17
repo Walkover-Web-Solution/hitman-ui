@@ -1,9 +1,8 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import { Modal } from "react-bootstrap";
 import Joi from "joi-browser";
-import collectionsService from "./collectionsService";
 import Form from "../common/form";
+import shortid from "shortid";
 
 class CollectionForm extends Form {
   state = {
@@ -39,19 +38,6 @@ class CollectionForm extends Form {
         keyword1: keyword.split(",")[1],
         keyword2: keyword.split(",")[2]
       };
-    } else {
-      const { data: editedCollection } = await collectionsService.getCollection(
-        collectionId
-      );
-      const { name, website, description, keyword } = editedCollection;
-      data = {
-        name,
-        website,
-        description,
-        keyword: keyword.split(",")[0],
-        keyword1: keyword.split(",")[1],
-        keyword2: keyword.split(",")[2]
-      };
     }
     this.setState({ data, collectionId });
   }
@@ -77,45 +63,50 @@ class CollectionForm extends Form {
       .label("Description")
   };
 
+  async onEditCollectionSubmit() {
+    this.props.onHide();
+    this.props.updateCollection({
+      ...this.state.data,
+      id: this.state.collectionId
+    });
+    this.setState({
+      data: {
+        name: "",
+        website: "",
+        description: "",
+        keyword: "",
+        keyword1: "",
+        keyword2: ""
+      }
+    });
+  }
+
+  async onAddCollectionSubmit() {
+    this.props.onHide();
+    const requestId = shortid.generate();
+    this.props.addCollection({ ...this.state.data, requestId });
+    this.setState({
+      data: {
+        name: "",
+        website: "",
+        description: "",
+        keyword: "",
+        keyword1: "",
+        keyword2: ""
+      }
+    });
+  }
+
   async doSubmit() {
     var body = this.state.data;
     body.keyword = body.keyword + "," + body.keyword1 + "," + body.keyword2;
     delete body.keyword1;
     delete body.keyword2;
     if (this.props.title === "Edit Collection") {
-      this.props.onHide();
-      this.props.edit_collection({
-        ...this.state.data,
-        id: this.state.collectionId
-      });
-      this.setState({
-        data: {
-          name: "",
-          website: "",
-          description: "",
-          keyword: "",
-          keyword1: "",
-          keyword2: ""
-        }
-      });
-      // this.props.history.push({
-      //   pathname: `/dashboard/collections`,
-      //   editedCollection: { ...this.state.data, id: this.state.collectionId }
-      // });
+      this.onEditCollectionSubmit();
     }
     if (this.props.title === "Add new Collection") {
-      this.props.onHide();
-      this.props.add_new_collection({ ...this.state.data });
-      this.setState({
-        data: {
-          name: "",
-          website: "",
-          description: "",
-          keyword: "",
-          keyword1: "",
-          keyword2: ""
-        }
-      });
+      this.onAddCollectionSubmit();
     }
   }
 
@@ -149,13 +140,13 @@ class CollectionForm extends Form {
             </div>
             {this.renderInput("description", "Description", "textbox")}
             {this.renderButton("Submit")}
+            <button
+              className="btn btn-default"
+              onClick={() => this.props.onHide()}
+            >
+              Cancel
+            </button>
           </form>
-          <button
-            onClick={() => this.props.onHide()}
-            style={{ float: "right" }}
-          >
-            Cancel
-          </button>
         </Modal.Body>
       </Modal>
     );

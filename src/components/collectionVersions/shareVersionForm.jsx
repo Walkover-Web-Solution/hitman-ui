@@ -1,7 +1,6 @@
 import React from "react";
 import { Modal } from "react-bootstrap";
 import Joi from "joi-browser";
-import { Link } from "react-router-dom";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { apiUrl } from "../../config.json";
 import Form from "../common/form";
@@ -30,9 +29,7 @@ class ShareVersionForm extends Form {
       .label("Public Link")
   };
 
-  async doSubmit(props) {
-  }
-
+  async doSubmit(props) {}
   render() {
     return (
       <Modal
@@ -52,19 +49,21 @@ class ShareVersionForm extends Form {
             {<div name="shareVersionLink" label="Public Link"></div>}
             {
               <CopyToClipboard
-                text={JSON.stringify(this.state.data.shareVersionLink).replace(/['"]+/g, '')}
+                text={JSON.stringify(this.state.data.shareVersionLink).replace(
+                  /['"]+/g,
+                  ""
+                )}
                 onCopy={() => this.setState({ copied: true })}
                 style={{ float: "right", borderRadius: "12px" }}
               >
                 <button style={{ borderRadius: "12px" }}>Copy</button>
               </CopyToClipboard>
             }
-            <Link to={`/dashboard/collections`}>Cancel</Link>
+            <button onClick={this.props.onHide}>Cancel</button>
           </form>
         </Modal.Body>
       </Modal>
     );
   }
 }
-
 export default ShareVersionForm;

@@ -1,8 +1,6 @@
 import http from "../../services/httpService";
 import { apiUrl } from "../../config.json";
 
-// const apiUrl = "http://localhost:2000";
-
 function environmentsUrl() {
   return `${apiUrl}/environments`;
 }

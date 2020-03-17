@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import pageService from "./pageService";
 import jQuery from "jquery";
+import store from "../../store/store";
 
 class DisplayPage extends Component {
   state = {
@@ -13,11 +13,11 @@ class DisplayPage extends Component {
     }
   };
 
-  async componentDidMount() {
+  fetchPage(pageId) {
     let data = {};
-    if (!this.props.location.page) {
-      const pageId = this.props.location.pathname.split("/")[4];
-      let { data: page } = await pageService.getPage(pageId);
+    const { pages } = store.getState();
+    let page = pages[pageId];
+    if (page) {
       const { id, versionId, groupId, name, contents } = page;
       data = {
         id,
@@ -30,9 +30,19 @@ class DisplayPage extends Component {
     }
   }
 
+  async componentDidMount() {
+    if (!this.props.location.page) {
+      const pageId = this.props.location.pathname.split("/")[3];
+      this.fetchPage(pageId);
+      store.subscribe(() => {
+        this.fetchPage(pageId);
+      });
+    }
+  }
+
   handleEdit(page) {
     this.props.history.push({
-      pathname: `/dashboard/collections/pages/${page.id}/edit`,
+      pathname: `/dashboard/pages/${page.id}/edit`,
       page: page
     });
   }

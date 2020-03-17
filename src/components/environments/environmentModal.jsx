@@ -1,8 +1,7 @@
 import React, { Component } from "react";
-import { Modal, Dropdown, ListGroup } from "react-bootstrap";
+import { ListGroup, Modal } from "react-bootstrap";
 import environmentService from "./environmentService";
-import { toast } from "react-toastify";
-import jQuery from "jquery";
+
 class EnvironmentModal extends Component {
   state = {
     environments: {}
@@ -10,8 +9,8 @@ class EnvironmentModal extends Component {
 
   async componentDidMount() {
     let environments = {};
-    if (Object.keys(this.props.environments).length) {
-      environments = { ...this.props.environments };
+    if (Object.keys(this.props.environment.environments).length) {
+      environments = { ...this.props.environment.environments };
     } else {
       const { data } = await environmentService.getEnvironments();
       environments = data;
@@ -35,35 +34,16 @@ class EnvironmentModal extends Component {
     }
   }
 
-  async handleDelete(environmentId) {
-    const originalEnvironments = jQuery.extend(
-      true,
-      {},
-      this.state.environments
-    );
-    const environments = { ...this.state.environments };
-    delete environments[environmentId];
-    this.setState({ environments });
-    try {
-      await environmentService.deleteEnvironment(environmentId);
-    } catch (ex) {
-      toast.error(ex.response ? ex.response.data : "Something went wrong");
-      this.setState({ environments: originalEnvironments });
-    }
+  async handleDelete(environment) {
+    this.props.deleteEnvironment(environment);
   }
 
   handleEdit(environment) {
-    this.props.history.push({
-      pathname: `/dashboard/environments/${environment.id}/edit`,
-      editEnvironment: environment
-    });
+    this.props.handle_environment_modal("Edit Environment", environment);
   }
 
   handleCancel(props) {
-    props.history.push({
-      pathname: `/dashboard/`,
-      environments: this.state.environments
-    });
+    this.props.onHide();
   }
 
   render() {
@@ -81,41 +61,41 @@ class EnvironmentModal extends Component {
         </Modal.Header>
         <Modal.Body>
           <ListGroup>
-            {Object.keys(this.state.environments).map(environmentId => (
-              <ListGroup.Item key={environmentId}>
-                {this.state.environments[environmentId].name}
-                <Dropdown className="float-right">
-                  <Dropdown.Toggle
-                    variant="default"
-                    id="dropdown-basic"
-                  ></Dropdown.Toggle>
-
-                  <Dropdown.Menu alignRight>
-                    <Dropdown.Item
-                      onClick={() =>
-                        this.handleEdit(this.state.environments[environmentId])
-                      }
-                    >
-                      Edit
-                    </Dropdown.Item>
-
-                    <Dropdown.Item
-                      onClick={() => {
-                        if (
-                          window.confirm(
-                            "Are you sure you wish to delete this environment?"
-                          )
+            {Object.keys(this.props.environment.environments).map(
+              environmentId => (
+                <div>
+                  <ListGroup.Item
+                    style={{ width: "95%", float: "left" }}
+                    key={environmentId}
+                    onClick={() =>
+                      this.handleEdit(
+                        this.props.environment.environments[environmentId]
+                      )
+                    }
+                  >
+                    {this.props.environment.environments[environmentId].name}
+                  </ListGroup.Item>
+                  <button
+                    className="btn btn-default"
+                    onClick={() => {
+                      if (
+                        window.confirm(
+                          "Are you sure you wish to delete this environment?"
                         )
-                          this.handleDelete(environmentId);
-                      }}
-                    >
-                      delete
-                    </Dropdown.Item>
-                  </Dropdown.Menu>
-                </Dropdown>
-              </ListGroup.Item>
-            ))}
+                      )
+                        this.handleDelete(
+                          this.props.environment.environments[environmentId]
+                        );
+                    }}
+                    style={{ float: "right" }}
+                  >
+                    X
+                  </button>
+                </div>
+              )
+            )}
           </ListGroup>
+          <br />
           <button onClick={() => this.handleCancel(this.props)}>Cancel</button>
         </Modal.Body>
       </Modal>

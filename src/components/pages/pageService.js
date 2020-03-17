@@ -13,6 +13,13 @@ function pageUrl(pageId) {
   return `${apiUrl}/pages/${pageId}`;
 }
 
+function getAllPagesUrl() {
+  return `${apiUrl}/pages`;
+}
+export function getAllPages() {
+  return http.get(getAllPagesUrl());
+}
+
 export function getVersionPages(versionId) {
   return http.get(versionPagesUrl(versionId));
 }
@@ -53,5 +60,6 @@ export default {
   saveGroupPage,
   updatePage,
   deletePage,
-  duplicatePage
+  duplicatePage,
+  getAllPages
 };
