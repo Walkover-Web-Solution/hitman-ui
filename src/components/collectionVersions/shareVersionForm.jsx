@@ -14,10 +14,10 @@ class ShareVersionForm extends Form {
   };
 
   componentDidMount() {
-    if (this.props.location.shareIdentifier) {
+    if (this.props.selectedVersion) {
       let data = {};
-      const { shareIdentifier } = this.props.location;
-      const shareVersionLink = apiUrl + "/share/" + shareIdentifier;
+      const shareVersionLink =
+        apiUrl + "/share/" + this.props.selectedVersion.shareIdentifier;
       data = { shareVersionLink };
       this.setState({ data });
     }
@@ -30,6 +30,7 @@ class ShareVersionForm extends Form {
   };
 
   async doSubmit(props) {}
+
   render() {
     return (
       <Modal
@@ -53,7 +54,7 @@ class ShareVersionForm extends Form {
                   /['"]+/g,
                   ""
                 )}
-                onCopy={() => this.setState({ copied: true })}
+                onCopy={() => this.props.onHide()}
                 style={{ float: "right", borderRadius: "12px" }}
               >
                 <button style={{ borderRadius: "12px" }}>Copy</button>
@@ -66,4 +67,5 @@ class ShareVersionForm extends Form {
     );
   }
 }
+
 export default ShareVersionForm;

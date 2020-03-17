@@ -86,6 +86,9 @@ function endpointsReducer(state = initialState, action) {
 
     case collectionActionTypes.ON_COLLECTION_DUPLICATED:
       return { ...state, ...action.response.endpoints };
+    
+    case versionActionTypes.IMPORT_VERSION:
+      return {...state,...action.response.endpoints}  
 
     default:
       return state;

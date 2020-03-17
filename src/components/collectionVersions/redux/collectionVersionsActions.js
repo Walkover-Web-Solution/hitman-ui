@@ -182,3 +182,34 @@ export const onVersionDuplicated = response => {
     response
   };
 };
+export const importVersion = (importLink, shareIdentifier, collectionId) => {
+  return dispatch => {
+    collectionVersionsService.exportCollectionVersion(
+      importLink,
+      shareIdentifier
+    ).then((response)=>{
+      response.data.collectionId = collectionId;
+      collectionVersionsService.importCollectionVersion(
+      importLink,
+      shareIdentifier,
+      response.data
+    ).then(response=>{
+      // console.log(response)
+        dispatch(saveImportedVersion(response.data));
+      })})
+      .catch(error => {
+        dispatch(
+          onVersionsFetchedError(
+            error.response ? error.response.data : error
+          )
+        );
+      });
+  };
+};
+
+export const saveImportedVersion = response =>{
+  return {
+    type: versionActionTypes.IMPORT_VERSION,
+    response
+  }
+}
