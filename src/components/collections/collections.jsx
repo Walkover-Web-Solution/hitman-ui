@@ -120,7 +120,7 @@ class CollectionsComponent extends Component {
     this.props.duplicateCollection(collectionCopy);
   }
 
-  showAddCollectionForm() {
+  showAddVersionForm() {
     return (
       this.state.showVersionForm && (
         <CollectionVersionForm
@@ -285,7 +285,7 @@ class CollectionsComponent extends Component {
       <div>
         <div className="App-Nav">
           <div className="tabs">
-            {this.showAddCollectionForm()}
+            {this.showAddVersionForm()}
             {this.showEditCollectionForm()}
             {this.showImportVersionForm()}
             <Switch>
