@@ -103,6 +103,9 @@ function pagesReducer(state = initialState, action) {
     case collectionActionTypes.ON_COLLECTION_DUPLICATED:
       return { ...state, ...action.response.pages };
 
+    case versionActionTypes.IMPORT_VERSION:
+        return {...state,...action.response.pages}  
+
     default:
       return state;
   }

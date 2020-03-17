@@ -83,6 +83,9 @@ function versionsReducer(state = initialState, action) {
     case collectionActionTypes.ON_COLLECTION_DUPLICATED:
       return { ...state, ...action.response.versions };
 
+    case versionActionTypes.IMPORT_VERSION:
+        return {...state,[action.response.version.id]:action.response.version}  
+
     default:
       return state;
   }

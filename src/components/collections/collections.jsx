@@ -70,7 +70,7 @@ class CollectionsComponent extends Component {
   }
 
   closeCollectionForm() {
-    this.setState({ showCollectionForm: false });
+    this.setState({ showCollectionForm: false,showImportVersionForm:false });
   }
 
   async dndMoveEndpoint(endpointId, sourceGroupId, destinationGroupId) {
@@ -218,6 +218,28 @@ class CollectionsComponent extends Component {
       }
     });
   }
+  openImportVersionForm(collectionId){
+    this.setState({
+      showImportVersionForm: true,
+      collectionFormName: "Import Version",
+      selectedCollection: {
+        ...this.props.collections[collectionId]
+      }
+    });
+  }
+  showImportVersionForm(){
+    return (
+      this.state.showImportVersionForm && (
+        <ImportVersionForm
+        {...this.props}
+        show={this.state.showImportVersionForm}
+        onHide={() => this.closeCollectionForm()}
+        title={this.state.collectionFormName}
+        selected_collection={this.state.selectedCollection}
+        /> 
+        )
+    );
+  }
 
   routeToAddNewGroupPage() {
     return (
@@ -303,23 +325,13 @@ class CollectionsComponent extends Component {
   }
 
   render() {
-    const { location } = this.props;
-
-    if (location.importVersionLink) {
-      let importLink = location.importVersionLink;
-      let collectionId = location.collectionId;
-      importLink = importLink.shareVersionLink;
-      let shareIdentifier = importLink.split("/")[4];
-      this.props.history.replace({ importVersionLink: null });
-      this.handleImportVersion(importLink, shareIdentifier, collectionId);
-    }
-
     return (
       <div>
         <div className="App-Nav">
           <div className="tabs">
             {this.showAddVersionForm()}
             {this.showEditCollectionForm()}
+            {this.showImportVersionForm()}
             <Switch>
               {this.routeToAddNewGroupPage()}
               {this.routeToAddNewVersionPage()}
@@ -389,12 +401,7 @@ class CollectionsComponent extends Component {
                     </Dropdown.Item>
                     <Dropdown.Item
                       eventKey="3"
-                      onClick={() => {
-                        this.props.history.push({
-                          pathname: `/dashboard/${collectionId}/versions/import`,
-                          importCollection: this.state.collections[collectionId]
-                        });
-                      }}
+                      onClick={() => this.openImportVersionForm(collectionId)}
                     >
                       Import Version
                     </Dropdown.Item>
