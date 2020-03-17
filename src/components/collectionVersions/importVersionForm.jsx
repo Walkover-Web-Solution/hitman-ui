@@ -61,7 +61,9 @@ class ShareVersionForm extends Form {
             {this.renderInput("shareVersionLink", "Public Link")}
             {<div name="shareVersionLink" label="Public Link"></div>}
             {this.renderButton("Submit", "right")}
-            <button onClick={this.props.onHide}>Cancel</button>
+            <button className="btn btn-default" onClick={this.props.onHide}>
+              Cancel
+            </button>
           </form>
         </Modal.Body>
       </Modal>

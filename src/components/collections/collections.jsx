@@ -107,50 +107,6 @@ class CollectionsComponent extends Component {
     this.props.updateCollection(editedCollection);
   }
 
-  async handleImportVersion(importLink, shareIdentifier, collectionId) {
-    let versions = { ...this.state.versions };
-    let version = {};
-    let endpoints = {};
-    let pages = {};
-    let groups = {};
-    try {
-      let { data } = await collectionVersionsService.exportCollectionVersion(
-        importLink,
-        shareIdentifier
-      );
-      data.collectionId = collectionId;
-      let importVersion = await collectionVersionsService.importCollectionVersion(
-        importLink,
-        shareIdentifier,
-        data
-      );
-      data = importVersion.data;
-      version = data.version;
-      versions[version.id] = version;
-      groups = { ...this.state.groups, ...data.groups };
-      endpoints = { ...this.state.endpoints, ...data.endpoints };
-      pages = { ...this.state.pages, ...data.pages };
-      const versionIds = [...this.state.versionIds, version.id.toString()];
-      const groupIds = [...this.state.groupIds, ...Object.keys(data.groups)];
-      const pageIds = [...this.state.pageIds, ...Object.keys(data.pages)];
-      this.setState({
-        versions,
-        versionIds,
-        groups,
-        groupIds,
-        endpoints,
-        pages,
-        pageIds
-      });
-    } catch (ex) {
-      toast.error(
-        ex.response
-          ? ex.response.data
-          : "Something went wrong,can't import version"
-      );
-    }
-  }
-
   async handleDeleteGroup(deletedGroupId) {
     this.props.deleteGroup(deletedGroupId);
   }
