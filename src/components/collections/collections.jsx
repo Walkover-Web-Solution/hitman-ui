@@ -398,6 +398,17 @@ class CollectionsComponent extends Component {
                     >
                       Import Version
                     </Dropdown.Item>
+                    <Dropdown.Item
+                      eventKey="3"
+                      onClick={() => {
+                        this.props.history.push({
+                          pathname: `/dashboard/${collectionId}/versions/import`,
+                          importCollection: this.state.collections[collectionId]
+                        });
+                      }}
+                    >
+                      Share
+                    </Dropdown.Item>
                   </DropdownButton>
                 </Card.Header>
                 <Accordion.Collapse eventKey="1">
