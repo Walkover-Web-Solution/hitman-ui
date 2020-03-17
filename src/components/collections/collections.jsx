@@ -23,12 +23,14 @@ import { fetchAllVersions } from "../collectionVersions/redux/collectionVersions
 import { fetchEndpoints } from "../endpoints/redux/endpointsActions";
 import { fetchGroups } from "../groups/redux/groupsActions";
 import { fetchPages } from "../pages/redux/pagesActions";
+import ShareCollectionForm from "./shareCollectionForm";
 import {
   addCollection,
   deleteCollection,
   duplicateCollection,
   fetchCollections,
-  updateCollection
+  updateCollection,
+  shareCollection
 } from "./redux/collectionsActions";
 
 const mapStateToProps = state => {
@@ -47,6 +49,8 @@ const mapDispatchToProps = dispatch => {
     fetchEndpoints: () => dispatch(fetchEndpoints()),
     fetchPages: () => dispatch(fetchPages()),
     addCollection: newCollection => dispatch(addCollection(newCollection)),
+    shareCollection: sharedCollection =>
+      dispatch(shareCollection(sharedCollection)),
     updateCollection: editedCollection =>
       dispatch(updateCollection(editedCollection)),
     deleteCollection: collection => dispatch(deleteCollection(collection)),
@@ -179,7 +183,30 @@ class CollectionsComponent extends Component {
       )
     );
   }
-
+  showShareCollectionForm() {
+    return (
+      this.state.showCollectionShareForm && (
+        <ShareCollectionForm
+          {...this.props}
+          show={true}
+          onHide={() => {
+            this.setState({ showCollectionShareForm: false });
+          }}
+          team_id={this.state.selectedCollection.teamId}
+          title="Share Collection"
+        />
+      )
+    );
+  }
+  shareCollection(collectionId) {
+    this.setState({
+      showCollectionShareForm: true,
+      selectedCollection: {
+        ...this.props.collections[collectionId]
+      },
+      collectionFormName: "Share Collection"
+    });
+  }
   openAddCollectionForm() {
     this.setState({
       showCollectionForm: true,
@@ -320,6 +347,8 @@ class CollectionsComponent extends Component {
           <div className="tabs">
             {this.showAddCollectionForm()}
             {this.showEditCollectionForm()}
+            {this.showShareCollectionForm()}
+
             <Switch>
               {this.routeToAddNewGroupPage()}
               {this.routeToAddNewVersionPage()}
@@ -401,10 +430,7 @@ class CollectionsComponent extends Component {
                     <Dropdown.Item
                       eventKey="3"
                       onClick={() => {
-                        this.props.history.push({
-                          pathname: `/dashboard/${collectionId}/versions/import`,
-                          importCollection: this.state.collections[collectionId]
-                        });
+                        this.shareCollection(collectionId);
                       }}
                     >
                       Share

@@ -174,3 +174,35 @@ export const onCollectionDuplicated = response => {
     response
   };
 };
+export const shareCollection = sharedCollection => {
+  return dispatch => {
+    collectionsService
+      .shareCollection(sharedCollection)
+      .then(response => {
+        dispatch(onCollectionShared(response.data));
+      })
+      .catch(error => {
+        dispatch(
+          onCollectionSharedError(
+            error.response ? error.response.data : error,
+            sharedCollection
+          )
+        );
+      });
+  };
+};
+
+export const onCollectionShared = response => {
+  return {
+    type: collectionsActionTypes.ON_COLLECTION_SHARED,
+    response
+  };
+};
+
+export const onCollectionSharedError = (error, sharedCollection) => {
+  return {
+    type: collectionsActionTypes.ON_COLLECTION_SHARED_ERROR,
+    sharedCollection,
+    error
+  };
+};

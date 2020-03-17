@@ -15,6 +15,9 @@ export function getCollection(collectionId) {
   return http.get(collectionUrl(collectionId));
 }
 
+export function shareCollection(sharedCollection) {
+  return http.post(apiUrl + "/teams", sharedCollection);
+}
 export function saveCollection(collection) {
   return http.post(apiEndpoint, collection);
 }
@@ -37,5 +40,6 @@ export default {
   saveCollection,
   updateCollection,
   deleteCollection,
-  duplicateCollection
+  duplicateCollection,
+  shareCollection
 };
