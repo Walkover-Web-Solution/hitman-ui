@@ -17,6 +17,13 @@
   padding: 48px 0 0;
   flex-grow: 2;
 }
+
 .accordion > .card {
   overflow: inherit !important;
+}
+
+body {
+  margin: 0;
+  padding: 0px;
+  font-family: sans-serif;
 }
