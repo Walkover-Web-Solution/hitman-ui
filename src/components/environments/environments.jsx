@@ -88,7 +88,18 @@ class Environments extends Component {
             onClick={() => this.handleEnvironmentModal("Environment modal")}
             style={{ float: "right" }}
           >
-            Manage
+            <i>
+              <svg width="20" height="20">
+                <circle
+                  cx="10"
+                  cy="10"
+                  r="10"
+                  stroke="black"
+                  stroke-width=".4"
+                  fill="grey"
+                />
+              </svg>
+            </i>
           </button>
         </div>
         <div className="Environment Dropdown">

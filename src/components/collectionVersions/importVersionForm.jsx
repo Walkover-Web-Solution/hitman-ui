@@ -4,13 +4,12 @@ import { Modal } from "react-bootstrap";
 import Joi from "joi-browser";
 import Form from "../common/form";
 import { connect } from "react-redux";
-import {
-  importVersion
-} from "../collectionVersions/redux/collectionVersionsActions";
+import { importVersion } from "../collectionVersions/redux/collectionVersionsActions";
 
 const mapDispatchToProps = dispatch => {
   return {
-    importVersion: (importLink, shareIdentifier, collectionId) => dispatch(importVersion(importLink, shareIdentifier, collectionId))
+    importVersion: (importLink, shareIdentifier, collectionId) =>
+      dispatch(importVersion(importLink, shareIdentifier, collectionId))
   };
 };
 class ShareVersionForm extends Form {
@@ -35,10 +34,9 @@ class ShareVersionForm extends Form {
   async doSubmit(props) {
     if (this.props.title === "Import Version") {
       this.props.onHide();
-      const collectionId= this.props.selected_collection.id;
-      const importLink=this.state.data.shareVersionLink;
+      const collectionId = this.props.selected_collection.id;
+      const importLink = this.state.data.shareVersionLink;
       let shareIdentifier = importLink.split("/")[4];
-      console.log("hello",importLink, shareIdentifier, collectionId);
       this.props.importVersion(importLink, shareIdentifier, collectionId);
     }
   }

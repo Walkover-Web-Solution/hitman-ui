@@ -3,7 +3,7 @@ import { Dropdown } from "react-bootstrap";
 import { connect } from "react-redux";
 import { toast } from "react-toastify";
 import shortId from "shortid";
-import "../../css/editableDropdown.css";
+import "../../styles/editableDropdown.scss";
 import DisplayResponse from "./displayResponse";
 import GenericTable from "./genericTable";
 import { addEndpoint, updateEndpoint } from "./redux/endpointsActions";

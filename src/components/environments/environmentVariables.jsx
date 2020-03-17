@@ -2,7 +2,7 @@ import jQuery from "jquery";
 import React, { Component } from "react";
 import { Modal, Table } from "react-bootstrap";
 import shortId from "shortid";
-import "../../css/environmentVariables.css";
+import "../../styles/environmentVariables.scss";
 
 class EnvironmentVariables extends Component {
   state = {
