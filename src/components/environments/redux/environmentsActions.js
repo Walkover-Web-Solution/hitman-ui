@@ -1,10 +1,10 @@
-import environmentService from "../environmentService";
+import environmentsApiService from "../environmentsApiService";
 import environmentsActionTypes from "./environmentsActionTypes";
 import store from "../../../store/store";
 
 export const fetchEnvironments = () => {
   return dispatch => {
-    environmentService
+    environmentsApiService
       .getEnvironments()
       .then(response => {
         dispatch(OnEnvironmentsFetched(response.data));
@@ -22,7 +22,7 @@ export const fetchEnvironments = () => {
 export const addEnvironment = newEnvironment => {
   return dispatch => {
     dispatch(addEnvironmentRequest(newEnvironment));
-    environmentService
+    environmentsApiService
       .saveEnvironment(newEnvironment)
       .then(response => {
         dispatch(OnEnvironmentAdded(response.data, newEnvironment));
@@ -46,7 +46,7 @@ export const updateEnvironment = editedEnvironment => {
     dispatch(updateEnvironmentRequest(editedEnvironment));
     const id = editedEnvironment.id;
     delete editedEnvironment.id;
-    environmentService
+    environmentsApiService
       .updateEnvironment(id, editedEnvironment)
       .then(response => {
         dispatch(OnEnvironmentUpdated(response.data));
@@ -65,7 +65,7 @@ export const updateEnvironment = editedEnvironment => {
 export const deleteEnvironment = environment => {
   return dispatch => {
     dispatch(deleteEnvironmentRequest(environment));
-    environmentService
+    environmentsApiService
       .deleteEnvironment(environment.id)
       .then(() => {
         dispatch(OnEnvironmentDeleted());
