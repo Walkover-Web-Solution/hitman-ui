@@ -5,6 +5,7 @@ import groupsReducer from "../components/groups/redux/groupsReducer";
 import pagesReducer from "../components/pages/redux/pagesReducer";
 import endpointsReducer from "../components/endpoints/redux/endpointsReducer";
 import environmentsReducer from "../components/environments/redux/environmentsReducer";
+import teamsReducer from "../components/team/redux/teamsReducer";
 import thunk from "redux-thunk";
 import { logger } from "redux-logger";
 
@@ -16,7 +17,8 @@ const rootReducer = combineReducers({
   groups: groupsReducer,
   pages: pagesReducer,
   endpoints: endpointsReducer,
-  environment: environmentsReducer
+  environment: environmentsReducer,
+  team: teamsReducer
 });
 const store = createStore(
   rootReducer,

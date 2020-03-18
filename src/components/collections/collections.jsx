@@ -29,9 +29,14 @@ import {
   deleteCollection,
   duplicateCollection,
   fetchCollections,
-  updateCollection,
-  shareCollection
+  updateCollection
 } from "./redux/collectionsActions";
+
+import {
+  shareCollection,
+  fetchAllUsersOfTeam,
+  deleteUserFromTeam
+} from "../team/redux/teamsActions";
 
 const mapStateToProps = state => {
   return {
@@ -54,7 +59,11 @@ const mapDispatchToProps = dispatch => {
     updateCollection: editedCollection =>
       dispatch(updateCollection(editedCollection)),
     deleteCollection: collection => dispatch(deleteCollection(collection)),
-    duplicateCollection: collection => dispatch(duplicateCollection(collection))
+    duplicateCollection: collection =>
+      dispatch(duplicateCollection(collection)),
+    fetchAllUsersOfTeam: teamIdentifier =>
+      dispatch(fetchAllUsersOfTeam(teamIdentifier)),
+    deleteUserFromTeam: teamData => dispatch(deleteUserFromTeam(teamData))
   };
 };
 

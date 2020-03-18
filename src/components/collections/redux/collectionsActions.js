@@ -174,35 +174,3 @@ export const onCollectionDuplicated = response => {
     response
   };
 };
-export const shareCollection = teamMemberData => {
-  return dispatch => {
-    collectionsService
-      .shareCollection(teamMemberData)
-      .then(response => {
-        dispatch(onCollectionShared(response.data));
-      })
-      .catch(error => {
-        dispatch(
-          onCollectionSharedError(
-            error.response ? error.response.data : error,
-            teamMemberData
-          )
-        );
-      });
-  };
-};
-
-export const onCollectionShared = response => {
-  return {
-    type: collectionsActionTypes.ON_COLLECTION_SHARED,
-    response
-  };
-};
-
-export const onCollectionSharedError = (error, teamMemberData) => {
-  return {
-    type: collectionsActionTypes.ON_COLLECTION_SHARED_ERROR,
-    teamMemberData,
-    error
-  };
-};

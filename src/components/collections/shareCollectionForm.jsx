@@ -1,9 +1,22 @@
-import React, { Component } from "react";
-// import Form from "../common/form";
-import { Modal, Dropdown, Button, InputGroup } from "react-bootstrap";
 import Joi from "joi-browser";
-import { ReactMultiEmail, isEmail } from "react-multi-email";
+import { Component, default as React } from "react";
+// import Form from "../common/form";
+import {
+  Button,
+  Dropdown,
+  InputGroup,
+  ListGroup,
+  Modal
+} from "react-bootstrap";
+import { isEmail, ReactMultiEmail } from "react-multi-email";
 import "react-multi-email/style.css";
+import { connect } from "react-redux";
+
+const mapStateToProps = state => {
+  return {
+    team: state.team
+  };
+};
 
 class ShareCollectionForm extends Component {
   state = {
@@ -13,6 +26,10 @@ class ShareCollectionForm extends Component {
     errors: {},
     teamMembers: []
   };
+
+  async componentDidMount() {
+    this.props.fetchAllUsersOfTeam(this.props.team_id);
+  }
 
   schema = {
     email: Joi.string()
@@ -45,9 +62,11 @@ class ShareCollectionForm extends Component {
       errors: {}
     });
   }
-  validate(teamMembers) {
+  validate(teamMember) {
     // delete teamMembers;
-    const errors = Joi.validate(teamMembers, this.schema, {
+    console.log("teamMember", teamMember);
+
+    const errors = Joi.validate(teamMember, this.schema, {
       abortEarly: false
     });
     console.log("errors", errors);
@@ -61,7 +80,7 @@ class ShareCollectionForm extends Component {
       role: this.state.data.role,
       teamIdentifier: this.props.team_id
     };
-    this.validate(teamMembers);
+    this.validate(teamMembers[len.toString()]);
 
     console.log(teamMembers);
     this.setState({ teamMembers });
@@ -70,6 +89,11 @@ class ShareCollectionForm extends Component {
   async doSubmit() {
     this.onShareCollectionSubmit(this.state.teamMembers);
   }
+
+  handleDelete(teamId, email) {
+    this.props.deleteUserFromTeam({ teamIdentifier: teamId, email });
+  }
+
   render() {
     const { emails } = this.state;
     return (
@@ -92,13 +116,12 @@ class ShareCollectionForm extends Component {
                   name="email"
                   placeholder="Email-id"
                   emails={emails}
-                  ref={this.email}
                   onChange={_emails => {
                     this.emails = _emails;
                   }}
-                  validateEmail={email => {
-                    return isEmail(email);
-                  }}
+                  // validateEmail={email => {
+                  //   return isEmail(email);
+                  // }}
                   getLabel={(email, index, removeEmail) => {
                     return (
                       <div data-tag key={index}>
@@ -134,11 +157,45 @@ class ShareCollectionForm extends Component {
                 </InputGroup.Append>
               </InputGroup>
             </div>
-            {/* <div>
-              {this.state.teamMembers.map(member => (
-                <div>{member.email} </div>
+            <br />
+            <ListGroup>
+              {Object.keys(this.props.team).map(teamId => (
+                <div>
+                  <ListGroup.Item
+                    style={{ width: "50%", float: "left" }}
+                    key={1}
+                  >
+                    {this.props.team[teamId].email}
+                  </ListGroup.Item>
+
+                  <ListGroup.Item
+                    style={{ width: "40%", float: "left" }}
+                    key={2}
+                  >
+                    {this.props.team[teamId].role}
+                  </ListGroup.Item>
+
+                  <button
+                    className="btn btn-default"
+                    onClick={() => {
+                      if (
+                        window.confirm(
+                          "Are you sure you want to remove member from the team?"
+                        )
+                      )
+                        this.handleDelete(
+                          this.props.team_id,
+                          this.props.team[teamId].email
+                        );
+                    }}
+                    style={{ float: "right" }}
+                  >
+                    X
+                  </button>
+                </div>
               ))}
-            </div> */}
+            </ListGroup>
+
             <button className="btn btn-default" onClick={() => this.doSubmit()}>
               Share
             </button>
@@ -155,4 +212,4 @@ class ShareCollectionForm extends Component {
   }
 }
 
-export default ShareCollectionForm;
+export default connect(mapStateToProps, null)(ShareCollectionForm);
