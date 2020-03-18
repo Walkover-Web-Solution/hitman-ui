@@ -64,6 +64,7 @@ export const onFetchAllUsersError = error => {
 };
 
 export const deleteUserFromTeam = teamData => {
+  console.log(teamData);
   return dispatch => {
     collectionsService
       .deleteUserOfTeam(teamData)

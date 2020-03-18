@@ -5,6 +5,7 @@ import { Button, Dropdown, InputGroup, Modal } from "react-bootstrap";
 import { isEmail, ReactMultiEmail } from "react-multi-email";
 import "react-multi-email/style.css";
 import { connect } from "react-redux";
+import store from "../../store/store";
 
 const mapStateToProps = state => {
   return {
@@ -16,11 +17,19 @@ class ShareCollectionForm extends Component {
   state = {
     data: {
       role: "Collaborator"
-    }
+    },
+    emails: []
   };
 
   async componentDidMount() {
     this.props.fetchAllUsersOfTeam(this.props.team_id);
+    this.flag = 0;
+    store.subscribe(() => {
+      if (this.flag === 0) {
+        this.flag = 1;
+        this.props.fetchAllUsersOfTeam(this.props.team_id);
+      }
+    });
   }
 
   dropdownRole = {
@@ -36,21 +45,22 @@ class ShareCollectionForm extends Component {
     });
   }
   async onShareCollectionSubmit(teamMemberData) {
-    this.props.onHide();
+    this.flag = 0;
     this.props.shareCollection(teamMemberData);
     this.setState({
       data: {
         role: "Collaborator"
-      }
+      },
+      emails: []
     });
   }
 
   addMember() {
     let teamMembers = [];
-    if (this.emails !== undefined) {
-      for (let i = 0; i < this.emails.length; i++) {
+    if (this.state.emails !== undefined) {
+      for (let i = 0; i < this.state.emails.length; i++) {
         teamMembers[i] = {
-          email: this.emails[i],
+          email: this.state.emails[i],
           role: this.state.data.role,
           teamIdentifier: this.props.team_id
         };
@@ -60,7 +70,8 @@ class ShareCollectionForm extends Component {
     return teamMembers;
   }
 
-  async doSubmit() {
+  async doSubmit(e) {
+    e.preventDefault();
     const teamMembers = this.addMember();
     this.onShareCollectionSubmit(teamMembers);
   }
@@ -86,7 +97,7 @@ class ShareCollectionForm extends Component {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <form>
+          <form onSubmit={this.doSubmit.bind(this)}>
             <div className="row">
               <InputGroup>
                 <ReactMultiEmail
@@ -94,7 +105,7 @@ class ShareCollectionForm extends Component {
                   placeholder="Email-id"
                   emails={emails}
                   onChange={_emails => {
-                    this.emails = _emails;
+                    this.state.emails = _emails;
                   }}
                   validateEmail={email => {
                     return isEmail(email);
@@ -168,9 +179,7 @@ class ShareCollectionForm extends Component {
               ))}
             </table>
             <div style={{ float: "right" }}>Total Members: {count}</div>
-            <button className="btn btn-default" onClick={() => this.doSubmit()}>
-              Share1
-            </button>
+            <button className="btn btn-default">Share1</button>
             <button
               className="btn btn-default"
               onClick={() => this.props.onHide()}
