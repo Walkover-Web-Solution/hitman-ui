@@ -14,12 +14,12 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import shortId from "shortid";
 import CollectionVersions from "../collectionVersions/collectionVersions";
-import CollectionVersionForm from "../collectionVersions/collectionVersionForm";
 import ImportVersionForm from "../collectionVersions/importVersionForm";
 import ShareVersionForm from "../collectionVersions/shareVersionForm";
-import CollectionForm from "./collectionForm";
 import PageForm from "../pages/pageForm";
+import collectionVersionsApiService from "../collectionVersions/collectionVersionsApiService";
 import collectionVersionsService from "../collectionVersions/collectionVersionsService";
+import collectionsService from "./collectionsService";
 import endpointService from "../endpoints/endpointService";
 import { fetchAllVersions } from "../collectionVersions/redux/collectionVersionsActions";
 import { fetchEndpoints } from "../endpoints/redux/endpointsActions";
@@ -27,10 +27,10 @@ import { fetchGroups } from "../groups/redux/groupsActions";
 import { fetchPages } from "../pages/redux/pagesActions";
 import {
   addCollection,
+  updateCollection,
   deleteCollection,
   duplicateCollection,
-  fetchCollections,
-  updateCollection
+  fetchCollections
 } from "./redux/collectionsActions";
 import { relative } from "joi-browser";
 
@@ -117,12 +117,12 @@ class CollectionsComponent extends Component {
     let pages = {};
     let groups = {};
     try {
-      let { data } = await collectionVersionsService.exportCollectionVersion(
+      let { data } = await collectionVersionsApiService.exportCollectionVersion(
         importLink,
         shareIdentifier
       );
       data.collectionId = collectionId;
-      let importVersion = await collectionVersionsService.importCollectionVersion(
+      let importVersion = await collectionVersionsApiService.importCollectionVersion(
         importLink,
         shareIdentifier,
         data
@@ -167,22 +167,6 @@ class CollectionsComponent extends Component {
     this.props.duplicateCollection(collectionCopy);
   }
 
-  showAddVersionForm() {
-    return (
-      this.state.showVersionForm && (
-        <CollectionVersionForm
-          {...this.props}
-          show={true}
-          onHide={() => {
-            this.setState({ showVersionForm: false });
-          }}
-          collection_id={this.state.selectedCollection.id}
-          title="Add new Collection Version"
-        />
-      )
-    );
-  }
-
   openAddCollectionForm() {
     this.setState({
       showCollectionForm: true,
@@ -190,19 +174,19 @@ class CollectionsComponent extends Component {
     });
   }
 
-  showEditCollectionForm() {
-    return (
-      this.state.showCollectionForm && (
-        <CollectionForm
-          {...this.props}
-          show={this.state.showCollectionForm}
-          onHide={() => this.closeCollectionForm()}
-          title={this.state.collectionFormName}
-          edited_collection={this.state.selectedCollection}
-        />
-      )
-    );
-  }
+  // showCollectionForm() {
+  //   return (
+  //     this.state.showCollectionForm && (
+  //       <CollectionForm
+  //         {...this.props}
+  //         show={this.state.showCollectionForm}
+  //         onHide={() => this.closeCollectionForm()}
+  //         title={this.state.collectionFormName}
+  //         edited_collection={this.state.selectedCollection}
+  //       />
+  //     )
+  //   );
+  // }
   openEditCollectionForm(collectionId) {
     this.setState({
       showCollectionForm: true,
@@ -327,13 +311,29 @@ class CollectionsComponent extends Component {
     );
   }
 
+  closeVersionForm() {
+    this.setState({ showVersionForm: false });
+  }
+
   render() {
     return (
       <div>
         <div className="App-Nav">
           <div className="tabs">
-            {this.showAddVersionForm()}
-            {this.showEditCollectionForm()}
+            {this.state.showVersionForm &&
+              collectionVersionsService.showVersionForm(
+                this.props,
+                this.closeVersionForm.bind(this),
+                this.state.selectedCollection.id,
+                "Add new Collection Version"
+              )}
+            {this.state.showCollectionForm &&
+              collectionsService.showCollectionForm(
+                this.props,
+                this.closeCollectionForm.bind(this),
+                this.state.collectionFormName,
+                this.state.selectedCollection
+              )}
             {this.showImportVersionForm()}
             <Switch>
               {this.routeToAddNewGroupPage()}

@@ -24,7 +24,9 @@ const mapDispatchToProps = dispatch => {
 };
 
 class Groups extends Component {
-  state = {};
+  state = {
+    showGroupForm: false
+  };
 
   onDrop(destinationGroupId) {
     this.props.set_destination_group_id(destinationGroupId);

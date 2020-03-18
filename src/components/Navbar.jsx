@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import "./styles.scss";
+import collectionsService from "./collections/collectionsService";
 
 class Navbar extends Component {
   state = {};
@@ -10,6 +11,12 @@ class Navbar extends Component {
         className="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow"
         style={{ padding: "10px", borderRadius: "2px", border: "10px" }}
       >
+        {this.state.showCollectionForm &&
+          collectionsService.showCollectionForm(
+            this.props,
+            (() => this.setState({ showCollectionForm: false })).bind(this),
+            "Add new Collection"
+          )}
         <div className="btn-group" style={{ backgroundColor: "tomato" }}>
           <button type="button" className="btn">
             <i className="fas fa-plus-square" style={{ margin: "5px" }}></i>
@@ -25,18 +32,29 @@ class Navbar extends Component {
             <span className="sr-only">Toggle Dropdown</span>
           </button>
           <div className="dropdown-menu">
-            <a className="dropdown-item" href="#">
+            <li
+              className="dropdown-item"
+              onClick={() => console.log("Endpoint")}
+            >
               <i className="fas fa-share-square" style={{ margin: "5px" }}></i>{" "}
-              Request
-            </a>
-            <a className="dropdown-item" href="#">
+              Endpoint
+            </li>
+            <li
+              className="dropdown-item"
+              onClick={() => {
+                this.setState({ showCollectionForm: true });
+              }}
+            >
               <i className="fas fa-folder-open" style={{ margin: "5px" }}></i>
               Collection
-            </a>
-            <a className="dropdown-item" href="#">
+            </li>
+            <li
+              className="dropdown-item"
+              onClick={() => console.log("Environment")}
+            >
               <i className="fas fa-border-none" style={{ margin: "5px" }}></i>
               Environment
-            </a>
+            </li>
           </div>
         </div>
 

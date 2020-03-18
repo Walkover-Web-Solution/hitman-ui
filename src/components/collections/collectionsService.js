@@ -1,41 +1,18 @@
-import http from "../../services/httpService";
-import { apiUrl } from "../../config.json";
+import React, { Component } from "react";
+import CollectionForm from "./collectionForm";
 
-const apiEndpoint = apiUrl + "/collections";
-
-function collectionUrl(id) {
-  return `${apiEndpoint}/${id}`;
-}
-
-export function getCollections() {
-  return http.get(apiEndpoint);
-}
-
-export function getCollection(collectionId) {
-  return http.get(collectionUrl(collectionId));
-}
-
-export function saveCollection(collection) {
-  return http.post(apiEndpoint, collection);
-}
-
-export function updateCollection(collectionId, collection) {
-  return http.put(collectionUrl(collectionId), collection);
-}
-
-export function deleteCollection(collectionId) {
-  return http.delete(collectionUrl(collectionId));
-}
-
-export function duplicateCollection(collectionId) {
-  return http.post(`${apiUrl}/duplicateCollections/${collectionId}`);
+function showCollectionForm(props, onHide, title, selectedCollection) {
+  return (
+    <CollectionForm
+      {...props}
+      show={true}
+      onHide={onHide}
+      title={title}
+      edited_collection={selectedCollection}
+    />
+  );
 }
 
 export default {
-  getCollections,
-  getCollection,
-  saveCollection,
-  updateCollection,
-  deleteCollection,
-  duplicateCollection
+  showCollectionForm
 };

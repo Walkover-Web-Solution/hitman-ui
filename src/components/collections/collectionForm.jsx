@@ -3,6 +3,16 @@ import { Modal } from "react-bootstrap";
 import Joi from "joi-browser";
 import Form from "../common/form";
 import shortid from "shortid";
+import { connect } from "react-redux";
+import { addCollection, updateCollection } from "./redux/collectionsActions";
+
+const mapDispatchToProps = dispatch => {
+  return {
+    addCollection: newCollection => dispatch(addCollection(newCollection)),
+    updateCollection: editedCollection =>
+      dispatch(updateCollection(editedCollection))
+  };
+};
 
 class CollectionForm extends Form {
   state = {
@@ -153,4 +163,4 @@ class CollectionForm extends Form {
   }
 }
 
-export default CollectionForm;
+export default connect(null, mapDispatchToProps)(CollectionForm);

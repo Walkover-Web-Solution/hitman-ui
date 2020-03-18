@@ -1,11 +1,11 @@
-import collectionVersionsService from "../collectionVersionsService";
+import collectionVersionsApiService from "../collectionVersionsApiService";
 import versionActionTypes from "./collectionVersionsActionTypes";
 import store from "../../../store/store";
 import { toast } from "react-toastify";
 
 export const fetchAllVersions = () => {
   return dispatch => {
-    collectionVersionsService
+    collectionVersionsApiService
       .getAllCollectionVersions()
       .then(response => {
         const versions = response.data;
@@ -18,7 +18,7 @@ export const fetchAllVersions = () => {
 };
 export const fetchVersions = collectionId => {
   return dispatch => {
-    collectionVersionsService
+    collectionVersionsApiService
       .getCollectionVersions(collectionId)
       .then(response => {
         const versions = response.data;
@@ -49,7 +49,7 @@ export const updateVersion = editedVersion => {
     const originalVersion = store.getState().versions[editedVersion.id];
     dispatch(updateVersionRequest(editedVersion));
     const { number, host, id } = editedVersion;
-    collectionVersionsService
+    collectionVersionsApiService
       .updateCollectionVersion(id, { number, host })
       .then(response => {
         dispatch(onVersionUpdated(response.data));
@@ -90,7 +90,7 @@ export const onVersionUpdatedError = (error, originalVersion) => {
 export const addVersion = (newVersion, collectionId) => {
   return dispatch => {
     dispatch(addVersionRequest(newVersion));
-    collectionVersionsService
+    collectionVersionsApiService
       .saveCollectionVersion(collectionId, newVersion)
       .then(response => {
         dispatch(onVersionAdded(response.data));
@@ -131,7 +131,7 @@ export const onVersionAddedError = (error, newVersion) => {
 export const deleteVersion = version => {
   return dispatch => {
     dispatch(deleteVersionRequest(version));
-    collectionVersionsService
+    collectionVersionsApiService
       .deleteCollectionVersion(version.id)
       .then(() => {
         dispatch(onVersionDeleted());
@@ -165,7 +165,7 @@ export const onVersionDeletedError = (error, version) => {
 
 export const duplicateVersion = version => {
   return dispatch => {
-    collectionVersionsService
+    collectionVersionsApiService
       .duplicateVersion(version.id)
       .then(response => {
         dispatch(onVersionDuplicated(response.data));
@@ -184,11 +184,11 @@ export const onVersionDuplicated = response => {
 };
 export const importVersion = (importLink, shareIdentifier, collectionId) => {
   return dispatch => {
-    collectionVersionsService
+    collectionVersionsApiService
       .exportCollectionVersion(importLink, shareIdentifier)
       .then(response => {
         response.data.collectionId = collectionId;
-        collectionVersionsService
+        collectionVersionsApiService
           .importCollectionVersion(importLink, shareIdentifier, response.data)
           .then(response => {
             dispatch(saveImportedVersion(response.data));
