@@ -49,8 +49,8 @@ const mapDispatchToProps = dispatch => {
     fetchEndpoints: () => dispatch(fetchEndpoints()),
     fetchPages: () => dispatch(fetchPages()),
     addCollection: newCollection => dispatch(addCollection(newCollection)),
-    shareCollection: sharedCollection =>
-      dispatch(shareCollection(sharedCollection)),
+    shareCollection: teamMemberData =>
+      dispatch(shareCollection(teamMemberData)),
     updateCollection: editedCollection =>
       dispatch(updateCollection(editedCollection)),
     deleteCollection: collection => dispatch(deleteCollection(collection)),

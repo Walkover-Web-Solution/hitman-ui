@@ -174,10 +174,10 @@ export const onCollectionDuplicated = response => {
     response
   };
 };
-export const shareCollection = sharedCollection => {
+export const shareCollection = teamMemberData => {
   return dispatch => {
     collectionsService
-      .shareCollection(sharedCollection)
+      .shareCollection(teamMemberData)
       .then(response => {
         dispatch(onCollectionShared(response.data));
       })
@@ -185,7 +185,7 @@ export const shareCollection = sharedCollection => {
         dispatch(
           onCollectionSharedError(
             error.response ? error.response.data : error,
-            sharedCollection
+            teamMemberData
           )
         );
       });
@@ -199,10 +199,10 @@ export const onCollectionShared = response => {
   };
 };
 
-export const onCollectionSharedError = (error, sharedCollection) => {
+export const onCollectionSharedError = (error, teamMemberData) => {
   return {
     type: collectionsActionTypes.ON_COLLECTION_SHARED_ERROR,
-    sharedCollection,
+    teamMemberData,
     error
   };
 };
