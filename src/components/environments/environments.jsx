@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Dropdown } from "react-bootstrap";
 import EnvironmentModal from "./environmentModal";
-import EnvironmentVariables from "./environmentVariables";
+import environmentsService from "./environmentsService.js";
 import shortId from "shortid";
 import { connect } from "react-redux";
 import {
@@ -64,15 +64,13 @@ class Environments extends Component {
       <div>
         <div>
           {(this.state.environmentFormName === "Add new Environment" ||
-            this.state.environmentFormName === "Edit Environment") && (
-            <EnvironmentVariables
-              {...this.props}
-              show={true}
-              onHide={() => this.handleEnvironmentModal()}
-              environment={this.state.environmentToBeEdited}
-              title={this.state.environmentFormName}
-            />
-          )}
+            this.state.environmentFormName === "Edit Environment") &&
+            environmentsService.showEnvironmentForm(
+              this.props,
+              this.handleEnvironmentModal.bind(this),
+              this.state.environmentFormName,
+              this.state.environmentToBeEdited
+            )}
           {this.state.environmentFormName === "Environment modal" && (
             <EnvironmentModal
               {...this.props}

@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import "./styles.scss";
 import collectionsService from "./collections/collectionsService";
+import environmentsService from "./environments/environmentsService";
 
 class Navbar extends Component {
   state = {};
@@ -16,6 +17,12 @@ class Navbar extends Component {
             this.props,
             (() => this.setState({ showCollectionForm: false })).bind(this),
             "Add new Collection"
+          )}
+        {this.state.showEnvironmentForm &&
+          environmentsService.showEnvironmentForm(
+            this.props,
+            (() => this.setState({ showEnvironmentForm: false })).bind(this),
+            "Add new Environment"
           )}
         <div className="btn-group" style={{ backgroundColor: "tomato" }}>
           <button type="button" className="btn">
@@ -50,7 +57,7 @@ class Navbar extends Component {
             </li>
             <li
               className="dropdown-item"
-              onClick={() => console.log("Environment")}
+              onClick={() => this.setState({ showEnvironmentForm: true })}
             >
               <i className="fas fa-border-none" style={{ margin: "5px" }}></i>
               Environment
