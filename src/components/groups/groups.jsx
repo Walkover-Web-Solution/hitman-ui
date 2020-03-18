@@ -82,13 +82,11 @@ class Groups extends Component {
     this.setState({ showGroupForm });
   }
   showEditGroupForm(){
-    return(this.state.showGroupForm && (
+    return(this.state.showGroupForm.edit && (
       <GroupForm
         {...this.props}
-        show={false}
-        onHide={() => {
-          this.setState({ showGroupForm: false });
-        }}
+        show={this.state.showGroupForm.edit}
+        onHide={() => this.closeGroupForm()}
         selected_group={this.state.selectedGroup}
         title="Edit Group"
       />
@@ -141,8 +139,10 @@ class Groups extends Component {
                     <Dropdown.Item
                       eventKey="1"
                       onClick={() => {
+                        let edit = true;
+                        let showGroupForm = { edit };
                         this.setState({
-                          showGroupForm: true,
+                          showGroupForm,
                           selectedGroup: this.props.groups[groupId]
                         });
                       }}

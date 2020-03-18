@@ -24,6 +24,7 @@ class GroupForm extends Form {
   async componentDidMount() {
     if (this.props.title === "Add new Group") return;
     let data = {};
+   console.log("hello");
     if (this.props.selected_group) {
       const { name, host } = this.props.selected_group;
       data = { name, host };
@@ -65,6 +66,7 @@ class GroupForm extends Form {
   }
 
   render() {
+    console.log("Hello")
     return (
       <Modal
         {...this.props}
