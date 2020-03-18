@@ -11,19 +11,23 @@ import { Route, Switch, withRouter } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import shortId from "shortid";
-import CollectionVersions from "../collectionVersions/collectionVersions";
 import CollectionVersionForm from "../collectionVersions/collectionVersionForm";
+import CollectionVersions from "../collectionVersions/collectionVersions";
+import collectionVersionsService from "../collectionVersions/collectionVersionsService";
+import endpointService from "../endpoints/endpointService";
 import ImportVersionForm from "../collectionVersions/importVersionForm";
 import ShareVersionForm from "../collectionVersions/shareVersionForm";
 import CollectionForm from "./collectionForm";
 import PageForm from "../pages/pageForm";
-import collectionVersionsService from "../collectionVersions/collectionVersionsService";
-import endpointService from "../endpoints/endpointService";
 import { fetchAllVersions } from "../collectionVersions/redux/collectionVersionsActions";
 import { fetchEndpoints } from "../endpoints/redux/endpointsActions";
 import { fetchGroups } from "../groups/redux/groupsActions";
 import { fetchPages } from "../pages/redux/pagesActions";
-import ShareCollectionForm from "./shareCollectionForm";
+import {
+  deleteUserFromTeam,
+  fetchAllUsersOfTeam,
+  shareCollection
+} from "../team/redux/teamsActions";
 import {
   addCollection,
   deleteCollection,
@@ -31,12 +35,7 @@ import {
   fetchCollections,
   updateCollection
 } from "./redux/collectionsActions";
-
-import {
-  shareCollection,
-  fetchAllUsersOfTeam,
-  deleteUserFromTeam
-} from "../team/redux/teamsActions";
+import ShareCollectionForm from "./shareCollectionForm";
 
 const mapStateToProps = state => {
   return {

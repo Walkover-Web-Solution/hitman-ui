@@ -62,11 +62,13 @@ class ShareCollectionForm extends Form {
   }
 
   handleDelete(teamId, email) {
+    console.log("in delete");
     this.props.deleteUserFromTeam({ teamIdentifier: teamId, email });
   }
 
   render() {
-    console.log("render", this.props);
+    let count = Object.keys(this.props.team).length;
+    let serialNo = 1;
     return (
       <Modal
         {...this.props}
@@ -101,43 +103,41 @@ class ShareCollectionForm extends Form {
               </div>
             </div>
             <br />
-            <ListGroup>
+            <table class="table table-striped">
+              <thead class="thead-dark">
+                <tr>
+                  <th scope="col"></th>
+                  <th scope="col">User</th>
+                  <th scope="col">Role</th>
+                  <th scope="col"></th>
+                </tr>
+              </thead>
               {Object.keys(this.props.team).map(teamId => (
-                <div>
-                  <ListGroup.Item
-                    style={{ width: "50%", float: "left" }}
-                    key={1}
-                  >
-                    {this.props.team[teamId].email}
-                  </ListGroup.Item>
-
-                  <ListGroup.Item
-                    style={{ width: "40%", float: "left" }}
-                    key={2}
-                  >
-                    {this.props.team[teamId].role}
-                  </ListGroup.Item>
-
-                  <button
-                    className="btn btn-default"
-                    onClick={() => {
-                      if (
-                        window.confirm(
-                          "Are you sure you want to remove member from the team?"
+                <tbody>
+                  <tr>
+                    <th scope="row">{serialNo++}</th>
+                    <td>{this.props.team[teamId].email}</td>
+                    <td> {this.props.team[teamId].role}</td>
+                    <button
+                      className="btn btn-default"
+                      onClick={() => {
+                        if (
+                          window.confirm(
+                            "Are you sure you want to remove member from the team?"
+                          )
                         )
-                      )
-                        this.handleDelete(
-                          this.props.team_id,
-                          this.props.team[teamId].email
-                        );
-                    }}
-                    style={{ float: "right" }}
-                  >
-                    X
-                  </button>
-                </div>
+                          this.handleDelete(
+                            this.props.team_id,
+                            this.props.team[teamId].email
+                          );
+                      }}
+                    >
+                      X
+                    </button>
+                  </tr>
+                </tbody>
               ))}
-            </ListGroup>
+            </table>
 
             {this.renderButton("Share")}
             <button
