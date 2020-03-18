@@ -1,7 +1,14 @@
-import React from "react";
-import Form from "../common/form";
-import { Modal, Dropdown } from "react-bootstrap";
 import Joi from "joi-browser";
+import React from "react";
+import { Dropdown, ListGroup, Modal } from "react-bootstrap";
+import Form from "../common/form";
+import { connect } from "react-redux";
+
+const mapStateToProps = state => {
+  return {
+    team: state.team
+  };
+};
 
 class ShareCollectionForm extends Form {
   state = {
@@ -11,6 +18,10 @@ class ShareCollectionForm extends Form {
     errors: {},
     role: null
   };
+
+  async componentDidMount() {
+    this.props.fetchAllUsersOfTeam(this.props.team_id);
+  }
 
   schema = {
     email: Joi.string()
@@ -22,14 +33,15 @@ class ShareCollectionForm extends Form {
     admin: { name: "Admin" },
     collaborator: { name: "Collaborator" }
   };
+
   setDropdownRole(key) {
     const role = this.dropdownRole[key].name;
     this.setState({
       role
     });
   }
+
   async onShareCollectionSubmit(teamMember) {
-    console.log(this.props);
     this.props.onHide();
     this.props.shareCollection(teamMember);
     this.setState({
@@ -41,27 +53,20 @@ class ShareCollectionForm extends Form {
     });
   }
   async doSubmit() {
-    console.log("submit");
     const teamMember = {
       email: this.state.data.email,
       role: this.state.role,
-      teamId: this.props.team_id
+      teamIdentifier: this.props.team_id
     };
     this.onShareCollectionSubmit(teamMember);
-
-    // body.keyword = body.keyword + "," + body.keyword1 + "," + body.keyword2;
-    // delete body.keyword1;
-    // delete body.keyword2;
-    // if (this.props.title === "Edit Collection") {
-    //   this.onEditCollectionSubmit();
-    // }
-    // if (this.props.title === "Add new Collection") {
-    //   this.onAddCollectionSubmit();
-    // }
   }
-  render() {
-    console.log(this.props);
 
+  handleDelete(teamId, email) {
+    this.props.deleteUserFromTeam({ teamIdentifier: teamId, email });
+  }
+
+  render() {
+    console.log("render", this.props);
     return (
       <Modal
         {...this.props}
@@ -95,7 +100,44 @@ class ShareCollectionForm extends Form {
                 </Dropdown>{" "}
               </div>
             </div>
-            {/* {this.renderDropdown()} */}
+            <br />
+            <ListGroup>
+              {Object.keys(this.props.team).map(teamId => (
+                <div>
+                  <ListGroup.Item
+                    style={{ width: "50%", float: "left" }}
+                    key={1}
+                  >
+                    {this.props.team[teamId].email}
+                  </ListGroup.Item>
+
+                  <ListGroup.Item
+                    style={{ width: "40%", float: "left" }}
+                    key={2}
+                  >
+                    {this.props.team[teamId].role}
+                  </ListGroup.Item>
+
+                  <button
+                    className="btn btn-default"
+                    onClick={() => {
+                      if (
+                        window.confirm(
+                          "Are you sure you want to remove member from the team?"
+                        )
+                      )
+                        this.handleDelete(
+                          this.props.team_id,
+                          this.props.team[teamId].email
+                        );
+                    }}
+                    style={{ float: "right" }}
+                  >
+                    X
+                  </button>
+                </div>
+              ))}
+            </ListGroup>
 
             {this.renderButton("Share")}
             <button
@@ -111,4 +153,4 @@ class ShareCollectionForm extends Form {
   }
 }
 
-export default ShareCollectionForm;
+export default connect(mapStateToProps, null)(ShareCollectionForm);
