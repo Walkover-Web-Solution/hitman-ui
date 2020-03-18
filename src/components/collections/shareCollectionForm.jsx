@@ -46,17 +46,20 @@ class ShareCollectionForm extends Component {
   }
 
   addMember() {
-    let teamMembers = {};
-    for (let i = 0; i < this.emails.length; i++) {
-      teamMembers[i] = {
-        email: this.emails[i],
-        role: this.state.data.role,
-        teamIdentifier: this.props.team_id
-      };
+    let teamMembers = [];
+    if (this.emails !== undefined) {
+      for (let i = 0; i < this.emails.length; i++) {
+        teamMembers[i] = {
+          email: this.emails[i],
+          role: this.state.data.role,
+          teamIdentifier: this.props.team_id
+        };
+      }
     }
-    this.setState({ teamMembers });
+
     return teamMembers;
   }
+
   async doSubmit() {
     const teamMembers = this.addMember();
     this.onShareCollectionSubmit(teamMembers);
@@ -83,7 +86,7 @@ class ShareCollectionForm extends Component {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <form onSubmit={this.handleSubmit}>
+          <form>
             <div className="row">
               <InputGroup>
                 <ReactMultiEmail
@@ -132,7 +135,7 @@ class ShareCollectionForm extends Component {
             <table class="table table-striped">
               <thead class="thead-dark">
                 <tr>
-                  <th scope="col"></th>
+                  <th scope="col">S No.</th>
                   <th scope="col">User</th>
                   <th scope="col">Role</th>
                   <th scope="col"></th>
@@ -164,8 +167,9 @@ class ShareCollectionForm extends Component {
                 </tbody>
               ))}
             </table>
+            <div style={{ float: "right" }}>Total Members: {count}</div>
             <button className="btn btn-default" onClick={() => this.doSubmit()}>
-              Share
+              Share1
             </button>
             <button
               className="btn btn-default"
