@@ -93,6 +93,37 @@ class CollectionVersions extends Component {
         )
     );
   }
+  openShareVersionForm(version){
+    let showVersionForm = { share:true};
+    this.setState({
+      showVersionForm,
+      versionFormName: "Share Version",
+      selectedVersion:version
+    });
+  }
+  openAddVersionPageForm(version){
+    let showVersionForm = { addPage :true};
+    this.setState({
+      showVersionForm,
+      versionFormName: "Add New Version Page",
+      selectedVersion:version
+    });
+  }
+  openAddGroupForm(version){
+    let showVersionForm = { addGroup:true };
+    this.setState({
+      showVersionForm,
+      versionFormName: "Add new Group",
+      selectedVersion:version
+    });
+  }
+  openEditVersionForm(version){
+    this.setState({
+      showCollectionForm: true,
+      selectedVersion: version
+    })
+
+  }
   showShareVersionForm(){
     return(this.state.showVersionForm.share && (
       <ShareVersionForm
@@ -128,10 +159,7 @@ class CollectionVersions extends Component {
   }
 
   closeVersionForm() {
-    let share = false;
-    let addGroup = false;
-    let addPage=false;
-    let showVersionForm = { share, addGroup,addPage };
+    let showVersionForm = { share:false, addGroup:false,addPage :false};
     this.setState({ showVersionForm });
   }
   render() {
@@ -164,12 +192,7 @@ class CollectionVersions extends Component {
                     >
                       <Dropdown.Item
                         eventKey="1"
-                        onClick={() =>
-                          this.setState({
-                            showCollectionForm: true,
-                            selectedVersion: this.props.versions[versionId]
-                          })
-                        }
+                        onClick={() => this.openEditVersionForm(this.props.versions[versionId])}
                       >
                         Edit
                       </Dropdown.Item>
@@ -183,33 +206,13 @@ class CollectionVersions extends Component {
                       </Dropdown.Item>
                       <Dropdown.Item
                         eventKey="3"
-                        onClick={() => {
-                          let addGroup = true;
-                          let showVersionForm = { addGroup };
-                          this.setState({
-                            showVersionForm,
-                            versionFormName: "Add new Group",
-                            selectedVersion: {
-                              ...this.props.versions[versionId]
-                            }
-                          });
-                        }}
+                        onClick={() => this.openAddGroupForm(this.props.versions[versionId])}
                       >
                         Add Group
                       </Dropdown.Item>
                       <Dropdown.Item
                         eventKey="3"
-                        onClick={() => {
-                          let addPage = true;
-                          let showVersionForm = { addPage };
-                          this.setState({
-                            showVersionForm,
-                            versionFormName: "Add New Version Page",
-                            selectedVersion: {
-                              ...this.props.versions[versionId]
-                            }
-                          });
-                        }}
+                        onClick={() => this.openAddVersionPageForm(this.props.versions[versionId])}
                       >
                         Add Page
                       </Dropdown.Item>
@@ -223,17 +226,7 @@ class CollectionVersions extends Component {
                       </Dropdown.Item>
                       <Dropdown.Item
                         eventKey="3"
-                        onClick={() => {
-                          let share = true;
-                          let showVersionForm = { share };
-                          this.setState({
-                            showVersionForm,
-                            versionFormName: "Share Version",
-                            selectedVersion: {
-                              ...this.props.versions[versionId]
-                            }
-                          });
-                        }}
+                        onClick={() => this.openShareVersionForm(this.props.versions[versionId])}
                       >
                         Share
                       </Dropdown.Item>
