@@ -15,8 +15,8 @@ export function getCollection(collectionId) {
   return http.get(collectionUrl(collectionId));
 }
 
-export function shareCollection(sharedCollection) {
-  return http.post(apiUrl + "/teams", sharedCollection);
+export function shareCollection(teamMemberData) {
+  return http.post(apiUrl + "/teams", teamMemberData);
 }
 
 export function saveCollection(collection) {
