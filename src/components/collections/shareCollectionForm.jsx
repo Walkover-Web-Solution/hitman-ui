@@ -2,7 +2,7 @@ import Joi from "joi-browser";
 import { Component, default as React } from "react";
 // import Form from "../common/form";
 import { Button, Dropdown, InputGroup, Modal } from "react-bootstrap";
-import { ReactMultiEmail } from "react-multi-email";
+import { isEmail, ReactMultiEmail } from "react-multi-email";
 import "react-multi-email/style.css";
 import { connect } from "react-redux";
 
@@ -15,23 +15,13 @@ const mapStateToProps = state => {
 class ShareCollectionForm extends Component {
   state = {
     data: {
-      role: null
-    },
-    errors: {},
-    teamMembers: []
+      role: "Collaborator"
+    }
   };
 
   async componentDidMount() {
     this.props.fetchAllUsersOfTeam(this.props.team_id);
   }
-
-  schema = {
-    email: Joi.string()
-      .required()
-      .label("email"),
-    role: Joi.string().optional(),
-    teamIdentifier: Joi.string()
-  };
 
   dropdownRole = {
     admin: { name: "Admin" },
@@ -50,37 +40,27 @@ class ShareCollectionForm extends Component {
     this.props.shareCollection(teamMemberData);
     this.setState({
       data: {
-        email: "",
-        role: null
-      },
-      errors: {}
+        role: "Collaborator"
+      }
     });
-  }
-  validate(teamMember) {
-    const errors = Joi.validate(teamMember, this.schema, {
-      abortEarly: false
-    });
-    console.log("errors", errors);
   }
 
   addMember() {
-    let teamMembers = this.state.teamMembers;
-    const len = teamMembers.length;
-    teamMembers[len.toString()] = {
-      email: this.emails[len.toString()],
-      role: this.state.data.role,
-      teamIdentifier: this.props.team_id
-    };
-    this.validate(teamMembers[len.toString()]);
-
-    console.log(teamMembers);
+    let teamMembers = {};
+    for (let i = 0; i < this.emails.length; i++) {
+      teamMembers[i] = {
+        email: this.emails[i],
+        role: this.state.data.role,
+        teamIdentifier: this.props.team_id
+      };
+    }
     this.setState({ teamMembers });
+    return teamMembers;
   }
-
   async doSubmit() {
-    this.onShareCollectionSubmit(this.state.teamMembers);
+    const teamMembers = this.addMember();
+    this.onShareCollectionSubmit(teamMembers);
   }
-
   handleDelete(teamId, email) {
     console.log("in delete");
     this.props.deleteUserFromTeam({ teamIdentifier: teamId, email });
@@ -113,9 +93,9 @@ class ShareCollectionForm extends Component {
                   onChange={_emails => {
                     this.emails = _emails;
                   }}
-                  // validateEmail={email => {
-                  //   return isEmail(email);
-                  // }}
+                  validateEmail={email => {
+                    return isEmail(email);
+                  }}
                   getLabel={(email, index, removeEmail) => {
                     return (
                       <div data-tag key={index}>
@@ -133,7 +113,7 @@ class ShareCollectionForm extends Component {
                 <InputGroup.Append>
                   <Dropdown>
                     <Dropdown.Toggle variant="success" id="dropdown-basic">
-                      {this.state.data.role ? this.state.data.role : "Role"}
+                      {this.state.data.role}
                     </Dropdown.Toggle>
                     <Dropdown.Menu>
                       {Object.keys(this.dropdownRole).map(key => (
@@ -145,9 +125,6 @@ class ShareCollectionForm extends Component {
                       ))}
                     </Dropdown.Menu>
                   </Dropdown>{" "}
-                  <Button variant="success" onClick={() => this.addMember()}>
-                    Add
-                  </Button>
                 </InputGroup.Append>
               </InputGroup>
             </div>
