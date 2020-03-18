@@ -4,6 +4,8 @@ import DisplayEndpoint from "./endpoints/displayEndpoint";
 import Environments from "./environments/environments";
 import DisplayPage from "./pages/displayPage";
 import EditPage from "./pages/editPage";
+import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
+import "react-tabs/style/react-tabs.css";
 
 class ContentPanel extends Component {
   state = {};
@@ -12,6 +14,7 @@ class ContentPanel extends Component {
       <main role="main" className="main col-md-9 ml-sm-auto col-lg-9 px-4 ">
         <Environments {...this.props} />
         <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom" />
+
         <Switch>
           <Route
             path="/dashboard/endpoints"

@@ -343,7 +343,9 @@ class CollectionsComponent extends Component {
             </Switch>
           </div>
         </div>
-        <div style={{ display: "flex", flexDirection: "row" }}>
+        <div
+          style={{ display: "flex", flexDirection: "row", marginTop: "15px" }}
+        >
           <div style={{ marginRight: "10px", marginTop: "5px" }}>
             <i class="fas fa-search"></i>
           </div>

@@ -18,9 +18,6 @@ const rootReducer = combineReducers({
   endpoints: endpointsReducer,
   environment: environmentsReducer
 });
-const store = createStore(
-  rootReducer,
-  storeEnhancers(applyMiddleware(thunk, logger))
-);
+const store = createStore(rootReducer, storeEnhancers(applyMiddleware(thunk)));
 
 export default store;
