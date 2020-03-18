@@ -34,12 +34,8 @@ class PageForm extends Form {
   async doSubmit(props) {
     this.props.onHide();
     if (this.props.title === "Add new Group Page") {
-      const { versionId, groupId } = this.props.location;
-      const newPage = { ...this.state.data, requestId: shortid.generate() };
-      this.props.addGroupPage(versionId, groupId, newPage);
-      this.props.history.push({
-        pathname: `/dashboard/`
-      });
+     const newPage = { ...this.state.data, requestId: shortid.generate() };
+      this.props.addGroupPage(this.props.selectedVersion, this.props.selectedGroup.id, newPage);
     }
     if (this.props.title === "Add New Version Page") {
       const versionId = this.props.selectedVersion.id;
