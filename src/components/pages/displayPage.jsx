@@ -4,13 +4,7 @@ import store from "../../store/store";
 
 class DisplayPage extends Component {
   state = {
-    data: {
-      id: null,
-      versionId: null,
-      groupId: null,
-      name: "",
-      contents: ""
-    }
+    data: { id: null, versionId: null, groupId: null, name: "", contents: "" }
   };
 
   fetchPage(pageId) {
@@ -19,13 +13,7 @@ class DisplayPage extends Component {
     let page = pages[pageId];
     if (page) {
       const { id, versionId, groupId, name, contents } = page;
-      data = {
-        id,
-        versionId,
-        groupId,
-        name,
-        contents
-      };
+      data = { id, versionId, groupId, name, contents };
       this.setState({ data });
     }
   }
@@ -48,7 +36,7 @@ class DisplayPage extends Component {
   }
   render() {
     if (this.props.location.page) {
-      const data = jQuery.extend(true, {}, this.props.location.page);
+      const data = { ...this.props.location.page };
       this.setState({ data });
       this.props.history.push({ page: null });
     }

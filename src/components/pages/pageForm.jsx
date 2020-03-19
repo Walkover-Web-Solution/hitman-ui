@@ -1,6 +1,6 @@
 import React from "react";
 import { Modal } from "react-bootstrap";
-import Joi from "joi-browser";
+import Joi, { inherits } from "joi-browser";
 import { Link } from "react-router-dom";
 import Form from "../common/form";
 import { connect } from "react-redux";
@@ -32,21 +32,15 @@ class PageForm extends Form {
   };
 
   async doSubmit(props) {
+    this.props.onHide();
     if (this.props.title === "Add new Group Page") {
-      const { versionId, groupId } = this.props.location;
-      const newPage = { ...this.state.data, requestId: shortid.generate() };
-      this.props.addGroupPage(versionId, groupId, newPage);
-      this.props.history.push({
-        pathname: `/dashboard/`
-      });
+     const newPage = { ...this.state.data, requestId: shortid.generate() };
+      this.props.addGroupPage(this.props.selectedVersion, this.props.selectedGroup.id, newPage);
     }
     if (this.props.title === "Add New Version Page") {
-      const { versionId } = this.props.location;
+      const versionId = this.props.selectedVersion.id;
       const newPage = { ...this.state.data, requestId: shortid.generate() };
-      this.props.addPage(versionId, newPage);
-      this.props.history.push({
-        pathname: `/dashboard/`
-      });
+       this.props.addPage(versionId, newPage);
     }
   }
 
@@ -67,7 +61,9 @@ class PageForm extends Form {
           <form onSubmit={this.handleSubmit}>
             {this.renderInput("name", "Page name")}
             {this.renderButton("Submit")}
-            <Link to={`/dashboard`}>Cancel</Link>
+            <button className="btn btn-default" onClick={this.props.onHide}>
+              Cancel
+            </button>
           </form>
         </Modal.Body>
       </Modal>

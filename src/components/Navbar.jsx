@@ -3,23 +3,21 @@ import { Link } from "react-router-dom";
 import "./styles.scss";
 import collectionsService from "./collections/collectionsService";
 import environmentsService from "./environments/environmentsService";
-import CreateNewModal from './CreateNewModal'
+import CreateNewModal from "./CreateNewModal";
 
 class Navbar extends Component {
   state = {};
 
-  openCreateNewModal(onHide){
-    return(<CreateNewModal
-    show={true}
-    onHide={onHide}/>)
+  openCreateNewModal(onHide) {
+    return <CreateNewModal show={true} onHide={onHide} />;
   }
   render() {
     return (
-      <nav
-        className="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow"
-        style={{ padding: "10px", borderRadius: "2px", border: "10px" }}
-      >
-        {this.state.showCreateNewModal && this.openCreateNewModal(()=>this.setState({showCreateNewModal: false}))}
+      <nav className="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
+        {this.state.showCreateNewModal &&
+          this.openCreateNewModal(() =>
+            this.setState({ showCreateNewModal: false })
+          )}
         {this.state.showCollectionForm &&
           collectionsService.showCollectionForm(
             this.props,
@@ -32,10 +30,11 @@ class Navbar extends Component {
             (() => this.setState({ showEnvironmentForm: false })).bind(this),
             "Add new Environment"
           )}
-        <div className="btn-group" style={{ backgroundColor: "tomato" }}>
+        <div className="btn-group">
           <button
             type="button"
             className="btn"
+            style={{ backgroundColor: "tomato", margin: "5px 0px 5px 5px" }}
             onClick={() => this.setState({ showCreateNewModal: true })}
           >
             <i className="fas fa-plus-square" style={{ margin: "5px" }}></i>
@@ -47,9 +46,8 @@ class Navbar extends Component {
             data-toggle="dropdown"
             aria-haspopup="true"
             aria-expanded="false"
-          >
-            <span className="sr-only">Toggle Dropdown</span>
-          </button>
+            style={{ backgroundColor: "tomato", margin: "5px 5px 5px 0px" }}
+          ></button>
           <div className="dropdown-menu">
             <li
               className="dropdown-item"
@@ -75,20 +73,65 @@ class Navbar extends Component {
               Environment
             </li>
           </div>
+          <div className="navbar-nav">
+            <button
+              type="button"
+              className="btn btn-secondary"
+              style={{ margin: "5px" }}
+            >
+              Import
+            </button>
+          </div>
+          <div className="dropdown">
+            <button
+              className="btn btn-secondary dropdown-toggle"
+              type="button"
+              id="dropdownMenuButton"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+              style={{ margin: "5px" }}
+            >
+              <i className="fa fa-file-text" aria-hidden="true"></i>
+            </button>
+            <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <a className="dropdown-item" href="#">
+                Open new Tab
+              </a>
+            </div>
+          </div>
         </div>
 
-        <div className="navbar-nav">
-          <button className="btn">Import</button>
+        <div className="btn-grp" style={{ float: "right" }}>
+          <div class="dropdown">
+            <button
+              class="btn btn-secondary dropdown-toggle"
+              type="button"
+              id="dropdownMenuButton"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+              style={{ borderRadius: "70px" }}
+            >
+              <i class="fas fa-user"></i>
+            </button>
+            <div
+              class="dropdown-menu dropdown-menu-right"
+              aria-labelledby="dropdownMenuButton"
+              alignLeft
+            >
+              <i class="fas fa-user" style={{ float: "left" }}></i>
+              <div style={{ float: "right" }}>
+                <h4>User Name</h4>
+                <h5>user email</h5>
+                <li className="nav-item text-nowrap">
+                  <Link to="/logout">Sign out</Link>
+                </li>
+              </div>
+            </div>
+          </div>
         </div>
-        {/* <a className="navbar-brand col-sm-3 col-md-2 mr-0" href="/">
-          HITMAN
-        </a>
-        <input
-          className="form-control form-control-dark w-100"
-          type="text"
-          placeholder="Search"
-          aria-label="Search"
-        />
+        {/* 
         <ul className="navbar-nav px-3">
           <li className="nav-item text-nowrap">
             <Link to="/logout">Sign out</Link>

@@ -8,6 +8,7 @@ import {
 } from "react-bootstrap";
 import GroupPages from "../pages/groupPages";
 import GroupForm from "../groups/groupForm";
+import PageForm from "../pages/pageForm";
 import Endpoints from "../endpoints/endpoints";
 import { deleteGroup, duplicateGroup } from "../groups/redux/groupsActions";
 import { connect } from "react-redux";
@@ -25,7 +26,10 @@ const mapDispatchToProps = dispatch => {
 
 class Groups extends Component {
   state = {
-    showGroupForm: false
+    showGroupForm: {
+      addPage: false,
+      edit: false
+    }
   };
 
   onDrop(destinationGroupId) {
@@ -71,22 +75,48 @@ class Groups extends Component {
       });
     }
   }
+  closeGroupForm() {
+    let edit = false;
+    let addPage = false;
+    let showGroupForm = { edit, addPage };
+    this.setState({ showGroupForm });
+  }
+  showEditGroupForm() {
+    return (
+      this.state.showGroupForm.edit && (
+        <GroupForm
+          {...this.props}
+          show={this.state.showGroupForm.edit}
+          onHide={() => this.closeGroupForm()}
+          selected_group={this.state.selectedGroup}
+          title="Edit Group"
+        />
+      )
+    );
+  }
+
+  showAddGroupPageForm() {
+    return (
+      this.state.showGroupForm.addPage && (
+        <PageForm
+          {...this.props}
+          show={this.state.showGroupForm.addPage}
+          onHide={() => this.closeGroupForm()}
+          title={this.state.groupFormName}
+          selectedVersion={this.state.selectedVersion}
+          selectedGroup={this.state.selectedGroup}
+          selectedCollection={this.state.selectedCollection}
+        />
+      )
+    );
+  }
 
   render() {
     return (
       <div>
         <div>
-          {this.state.showGroupForm && (
-            <GroupForm
-              {...this.props}
-              show={true}
-              onHide={() => {
-                this.setState({ showGroupForm: false });
-              }}
-              selected_group={this.state.selectedGroup}
-              title="Edit Group"
-            />
-          )}
+          {this.showEditGroupForm()}
+          {this.showAddGroupPageForm()}
         </div>
         {Object.keys(this.props.groups)
           .filter(
@@ -111,8 +141,10 @@ class Groups extends Component {
                     <Dropdown.Item
                       eventKey="1"
                       onClick={() => {
+                        let edit = true;
+                        let showGroupForm = { edit };
                         this.setState({
-                          showGroupForm: true,
+                          showGroupForm,
                           selectedGroup: this.props.groups[groupId]
                         });
                       }}
@@ -129,13 +161,24 @@ class Groups extends Component {
                     </Dropdown.Item>
                     <Dropdown.Item
                       eventKey="1"
-                      onClick={() =>
-                        this.handleAddPage(
-                          groupId,
-                          this.props.groups[groupId].versionId,
-                          this.props.collection_id
-                        )
-                      }
+                      // onClick={() =>
+                      //   this.handleAddPage(
+                      //     groupId,
+                      //     this.props.groups[groupId].versionId,
+                      //     this.props.collection_id
+                      //   )
+                      // }
+                      onClick={() => {
+                        let addPage = true;
+                        let showGroupForm = { addPage };
+                        this.setState({
+                          showGroupForm,
+                          groupFormName: "Add new Group Page",
+                          selectedVersion: this.props.groups[groupId].versionId,
+                          selectedGroup: this.props.groups[groupId],
+                          selectedCollection: this.props.collection_id
+                        });
+                      }}
                     >
                       Add Page
                     </Dropdown.Item>

@@ -1,3 +1,70 @@
 .navbar-nav {
   float: left;
 }
+
+#search-box-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin: 10px 10px 0px 10px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: rgb(223, 226, 230);
+  border-radius: 60px;
+  padding: 3px 10px 3px 10px;
+  height: 30px;
+  #search-icon {
+    margin-right: 10px;
+  }
+  #search-box-input {
+    border: none;
+    background-color: inherit;
+  }
+}
+
+#accordion > .card {
+  border-radius: 0;
+  border: none;
+}
+
+nav.col-md-3.d-none.d-md-block.bg-light.sidebar {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+div#custom-card-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0px;
+  height: 60px;
+  border-radius: 0px;
+  i.fas.fa-folder-open {
+    opacity: 0.4;
+    padding-left: 10px;
+  }
+  .btn-group {
+    display: none;
+
+    button.btn.btn-secondary {
+      border-radius: 0px;
+      background: rgb(237, 237, 237);
+      border: 0px;
+      border-left: 1px solid rgba(0, 0, 0, 0.125);
+    }
+  }
+}
+
+div#custom-card-header:hover {
+  .btn-group {
+    display: flex;
+    margin: 0px;
+    height: 100%;
+    border-radius: 0px;
+  }
+}
+h5.mb-0 {
+  float: left;
+  width: 80%;
+}

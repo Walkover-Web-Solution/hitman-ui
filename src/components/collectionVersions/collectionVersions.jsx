@@ -15,6 +15,7 @@ import {
 } from "../collectionVersions/redux/collectionVersionsActions";
 import ShareVersionForm from "../collectionVersions/shareVersionForm";
 import GroupForm from "../groups/groupForm";
+import PageForm from "../pages/pageForm"
 import { withRouter } from "react-router-dom";
 import CollectionVersionForm from "../collectionVersions/collectionVersionForm";
 
@@ -79,56 +80,95 @@ class CollectionVersions extends Component {
     });
   }
 
-  handleShare(version) {
-    this.handleShareVersion(
-      version.shareIdentifier,
-      version.collectionId,
-      version.id
+  showAddVersionPageForm(){
+    return (
+      this.state.showVersionForm.addPage && (
+        <PageForm
+        {...this.props}
+        show={this.state.showVersionForm.addPage}
+        onHide={() => this.closeVersionForm()}
+        title={this.state.versionFormName}
+        selectedVersion={this.state.selectedVersion}
+        /> 
+        )
     );
   }
-  handleShareVersion(shareIdentifier, collectionId, versionId) {
-    this.props.history.push({
-      pathname: `/dashboard/${collectionId}/versions/${versionId}/share`,
-      shareIdentifier: shareIdentifier
+  openShareVersionForm(version){
+    let showVersionForm = { share:true};
+    this.setState({
+      showVersionForm,
+      versionFormName: "Share Version",
+      selectedVersion:version
     });
+  }
+  openAddVersionPageForm(version){
+    let showVersionForm = { addPage :true};
+    this.setState({
+      showVersionForm,
+      versionFormName: "Add New Version Page",
+      selectedVersion:version
+    });
+  }
+  openAddGroupForm(version){
+    let showVersionForm = { addGroup:true };
+    this.setState({
+      showVersionForm,
+      versionFormName: "Add new Group",
+      selectedVersion:version
+    });
+  }
+  openEditVersionForm(version){
+    this.setState({
+      showCollectionForm: true,
+      selectedVersion: version
+    })
+
+  }
+  showShareVersionForm(){
+    return(this.state.showVersionForm.share && (
+      <ShareVersionForm
+        show={this.state.showVersionForm.share}
+        onHide={() => this.closeVersionForm()}
+        title={this.state.versionFormName}
+        selectedVersion={this.state.selectedVersion}
+      />
+    ));
+  }
+  showAddGroupForm(){
+    return(this.state.showVersionForm.addGroup && (
+      <GroupForm
+        show={this.state.showVersionForm.addGroup}
+        onHide={() => this.closeVersionForm()}
+        title={this.state.versionFormName}
+        selectedVersion={this.state.selectedVersion}
+      />
+    ));
+  }
+  showEditVersionForm(){
+    return(this.state.showCollectionForm && (
+      <CollectionVersionForm
+        {...this.props}
+        show={true}
+        onHide={() => {
+          this.setState({ showCollectionForm: false });
+        }}
+        title="Edit Collection Version"
+        selected_version={this.state.selectedVersion}
+      />
+    ));
   }
 
   closeVersionForm() {
-    let share = false;
-    let addGroup = false;
-    let showVersionForm = { share, addGroup };
+    let showVersionForm = { share:false, addGroup:false,addPage :false};
     this.setState({ showVersionForm });
   }
   render() {
     return (
       <div>
-        {this.state.showVersionForm.share && (
-          <ShareVersionForm
-            show={this.state.showVersionForm.share}
-            onHide={() => this.closeVersionForm()}
-            title={this.state.versionFormName}
-            selectedVersion={this.state.selectedVersion}
-          />
-        )}
-        {this.state.showVersionForm.addGroup && (
-          <GroupForm
-            show={this.state.showVersionForm.addGroup}
-            onHide={() => this.closeVersionForm()}
-            title={this.state.versionFormName}
-            selectedVersion={this.state.selectedVersion}
-          />
-        )}
-        {this.state.showCollectionForm && (
-          <CollectionVersionForm
-            {...this.props}
-            show={true}
-            onHide={() => {
-              this.setState({ showCollectionForm: false });
-            }}
-            title="Edit Collection Version"
-            selected_version={this.state.selectedVersion}
-          />
-        )}
+        {this.showShareVersionForm()}
+        {this.showAddGroupForm()}
+        {this.showEditVersionForm()}
+        {this.showAddVersionPageForm()}
         {this.props.versions &&
           Object.keys(this.props.versions) &&
           Object.keys(this.props.versions)
@@ -152,12 +192,7 @@ class CollectionVersions extends Component {
                     >
                       <Dropdown.Item
                         eventKey="1"
-                        onClick={() =>
-                          this.setState({
-                            showCollectionForm: true,
-                            selectedVersion: this.props.versions[versionId]
-                          })
-                        }
+                        onClick={() => this.openEditVersionForm(this.props.versions[versionId])}
                       >
                         Edit
                       </Dropdown.Item>
@@ -171,28 +206,13 @@ class CollectionVersions extends Component {
                       </Dropdown.Item>
                       <Dropdown.Item
                         eventKey="3"
-                        onClick={() => {
-                          let addGroup = true;
-                          let showVersionForm = { addGroup };
-                          this.setState({
-                            showVersionForm,
-                            versionFormName: "Add new Group",
-                            selectedVersion: {
-                              ...this.props.versions[versionId]
-                            }
-                          });
-                        }}
+                        onClick={() => this.openAddGroupForm(this.props.versions[versionId])}
                       >
                         Add Group
                       </Dropdown.Item>
                       <Dropdown.Item
                         eventKey="3"
-                        onClick={() =>
-                          this.handleAddPage(
-                            versionId,
-                            this.props.collection_id
-                          )
-                        }
+                        onClick={() => this.openAddVersionPageForm(this.props.versions[versionId])}
                       >
                         Add Page
                       </Dropdown.Item>
@@ -206,17 +226,7 @@ class CollectionVersions extends Component {
                       </Dropdown.Item>
                       <Dropdown.Item
                         eventKey="3"
-                        onClick={() => {
-                          let share = true;
-                          let showVersionForm = { share };
-                          this.setState({
-                            showVersionForm,
-                            versionFormName: "Share Version",
-                            selectedVersion: {
-                              ...this.props.versions[versionId]
-                            }
-                          });
-                        }}
+                        onClick={() => this.openShareVersionForm(this.props.versions[versionId])}
                       >
                         Share
                       </Dropdown.Item>

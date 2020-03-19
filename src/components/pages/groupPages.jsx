@@ -40,6 +40,7 @@ class GroupPages extends Component {
   }
 
   handleDisplay(page) {
+    console.log(page);
     this.props.history.push({
       pathname: `/dashboard/pages/${page.id}`,
       page: page
