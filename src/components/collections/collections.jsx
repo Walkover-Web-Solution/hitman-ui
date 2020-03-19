@@ -113,7 +113,14 @@ class CollectionsComponent extends Component {
   }
 
   async handleDelete(collection) {
-    this.props.deleteCollection(collection);
+    if (
+      window.confirm(
+        "Are you sure you wish to delete this collection?" +
+          "\n" +
+          " All your versions, groups, pages and endpoints present in this collection will be deleted."
+      )
+    )
+      this.props.deleteCollection(collection);
   }
 
   async handleUpdateCollection(editedCollection) {
@@ -207,6 +214,7 @@ class CollectionsComponent extends Component {
       )
     );
   }
+
   shareCollection(collectionId) {
     this.props.fetchAllUsersOfTeam(this.props.collections[collectionId].teamId);
     this.setState({
@@ -396,16 +404,7 @@ class CollectionsComponent extends Component {
                     <Dropdown.Item
                       eventKey="0"
                       onClick={() => {
-                        if (
-                          window.confirm(
-                            "Are you sure you wish to delete this collection?" +
-                              "\n" +
-                              " All your versions, groups, pages and endpoints present in this collection will be deleted."
-                          )
-                        )
-                          this.handleDelete(
-                            this.props.collections[collectionId]
-                          );
+                        this.handleDelete(this.props.collections[collectionId]);
                       }}
                     >
                       Delete

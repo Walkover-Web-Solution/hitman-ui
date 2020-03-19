@@ -64,11 +64,11 @@ class ShareCollectionForm extends Component {
         };
       }
     }
-
     return teamMembers;
   }
 
   async doSubmit(e) {
+    console.log("1");
     e.preventDefault();
     const teamMembers = this.addMember();
     this.onShareCollectionSubmit(teamMembers);
