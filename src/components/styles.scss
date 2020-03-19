@@ -147,3 +147,47 @@ nav.navbar.navbar-dark.fixed-top.bg-dark.flex-md-nowrap.p-0.shadow {
     border-radius: 2px;
   }
 }
+
+.custom-modal-container {
+  height: 600px;
+  background: rgb(253, 253, 248);
+}
+
+#leftbox {
+  float: left;
+  width: 33%;
+  height: 280px;
+  #custom-req-icon-div {
+    float: left;
+  }
+  #custom-req-icon {
+    font-size: 50px;
+    padding-right: 35px;
+  }
+}
+#middlebox {
+  float: left;
+  width: 33%;
+  height: 280px;
+  #custom-col-icon-div {
+    float: left;
+  }
+
+  #custom-col-icon {
+    font-size: 50px;
+    padding-right: 35px;
+  }
+}
+
+#rightbox {
+  float: right;
+  width: 33%;
+  height: 280px;
+  #custom-env-icon-div {
+    float: left;
+  }
+  #custom-env-icon {
+    font-size: 50px;
+    padding-right: 35px;
+  }
+}
