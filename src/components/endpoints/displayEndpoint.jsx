@@ -109,7 +109,6 @@ class DisplayEndpoint extends Component {
       if (endpoint.BASE_URL !== null) {
         this.setDropdownValue("custom");
       } else {
-        // this.state.selectedHost = "";
         this.setState({ selectedHost: "" });
         this.customHost = false;
       }

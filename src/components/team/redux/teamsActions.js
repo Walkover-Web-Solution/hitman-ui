@@ -66,6 +66,7 @@ export const onFetchAllUsersError = error => {
 export const deleteUserFromTeam = teamData => {
   console.log(teamData);
   return dispatch => {
+    dispatch(deleteMemberRequest(teamData));
     collectionsService
       .deleteUserOfTeam(teamData)
       .then(response => {
@@ -76,6 +77,13 @@ export const deleteUserFromTeam = teamData => {
           onDeleteUserError(error.response ? error.response.data : error)
         );
       });
+  };
+};
+
+export const deleteMemberRequest = teamData => {
+  return {
+    type: teamsActionTypes.DELETE_SHARED_USERS_REQUEST,
+    teamData
   };
 };
 
