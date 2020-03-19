@@ -3,15 +3,23 @@ import { Link } from "react-router-dom";
 import "./styles.scss";
 import collectionsService from "./collections/collectionsService";
 import environmentsService from "./environments/environmentsService";
+import CreateNewModal from './CreateNewModal'
 
 class Navbar extends Component {
   state = {};
+
+  openCreateNewModal(onHide){
+    return(<CreateNewModal
+    show={true}
+    onHide={onHide}/>)
+  }
   render() {
     return (
       <nav
         className="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow"
         style={{ padding: "10px", borderRadius: "2px", border: "10px" }}
       >
+        {this.state.showCreateNewModal && this.openCreateNewModal(()=>this.setState({showCreateNewModal: false}))}
         {this.state.showCollectionForm &&
           collectionsService.showCollectionForm(
             this.props,
@@ -25,7 +33,11 @@ class Navbar extends Component {
             "Add new Environment"
           )}
         <div className="btn-group" style={{ backgroundColor: "tomato" }}>
-          <button type="button" className="btn">
+          <button
+            type="button"
+            className="btn"
+            onClick={() => this.setState({ showCreateNewModal: true })}
+          >
             <i className="fas fa-plus-square" style={{ margin: "5px" }}></i>
             New
           </button>
