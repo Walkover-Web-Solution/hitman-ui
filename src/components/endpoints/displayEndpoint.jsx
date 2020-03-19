@@ -109,7 +109,8 @@ class DisplayEndpoint extends Component {
       if (endpoint.BASE_URL !== null) {
         this.setDropdownValue("custom");
       } else {
-        this.state.selectedHost = "";
+        // this.state.selectedHost = "";
+        this.setState({ selectedHost: "" });
         this.customHost = false;
       }
 
@@ -139,7 +140,7 @@ class DisplayEndpoint extends Component {
   handleChange = e => {
     let data = { ...this.state.data };
     if (e.currentTarget.name === "host") {
-      this.state.onChangeFlag = true;
+      this.setState({ onChangeFlag: true });
     }
     data[e.currentTarget.name] = e.currentTarget.value;
     data.uri = e.currentTarget.value;
@@ -510,6 +511,7 @@ class DisplayEndpoint extends Component {
 
   render() {
     if (this.props.location.title === "Add New Endpoint") {
+      console.log("Add New Endpoint");
       this.customHost = false;
       const hostJson = this.fetchHosts(
         this.props.location,
@@ -547,11 +549,13 @@ class DisplayEndpoint extends Component {
       this.props.location.title === "update endpoint" &&
       this.props.location.endpoint
     ) {
+      console.log("update endpoint");
+
       this.BASE_URL = this.props.location.endpoint.BASE_URL;
       if (this.props.location.endpoint.BASE_URL !== null) {
         this.setDropdownValue("custom");
       } else {
-        this.state.selectedHost = "";
+        this.setState({ selectedHost: "" });
         this.customHost = false;
       }
       let endpoint = { ...this.props.location.endpoint };

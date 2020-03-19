@@ -1,7 +1,6 @@
-import Joi from "joi-browser";
 import { Component, default as React } from "react";
 // import Form from "../common/form";
-import { Button, Dropdown, InputGroup, Modal } from "react-bootstrap";
+import { Dropdown, InputGroup, Modal } from "react-bootstrap";
 import { isEmail, ReactMultiEmail } from "react-multi-email";
 import "react-multi-email/style.css";
 import { connect } from "react-redux";
@@ -83,7 +82,6 @@ class ShareCollectionForm extends Component {
     }
   }
   handleDelete(teamId, teamMember) {
-    const { user: currentUser } = authService.getCurrentUser();
     const role = this.fetchCurrentUserRole();
     if (role === "Admin") {
       if (
@@ -121,13 +119,13 @@ class ShareCollectionForm extends Component {
           <form onSubmit={this.doSubmit.bind(this)}>
             <div className="row">
               {this.currentUserRole === "Admin" ? (
-                <InputGroup>
+                <InputGroup style={{ padding: "20px", width: "85%" }}>
                   <ReactMultiEmail
                     name="email"
                     placeholder="Email-id"
                     emails={emails}
                     onChange={_emails => {
-                      this.state.emails = _emails;
+                      this.setState({ emails: _emails });
                     }}
                     validateEmail={email => {
                       return isEmail(email);
@@ -147,7 +145,7 @@ class ShareCollectionForm extends Component {
                     }}
                   />
                   <InputGroup.Append>
-                    <Dropdown>
+                    <Dropdown style={{ paddingLeft: "20px" }}>
                       <Dropdown.Toggle variant="success" id="dropdown-basic">
                         {this.state.data.role}
                       </Dropdown.Toggle>
@@ -166,8 +164,8 @@ class ShareCollectionForm extends Component {
               ) : null}
             </div>
             <br />
-            <table class="table table-striped">
-              <thead class="thead-dark">
+            <table className="table table-striped">
+              <thead className="thead-dark">
                 <tr>
                   <th scope="col">S No.</th>
                   <th scope="col">User</th>

@@ -23,7 +23,6 @@ import { fetchAllVersions } from "../collectionVersions/redux/collectionVersions
 import { fetchEndpoints } from "../endpoints/redux/endpointsActions";
 import { fetchGroups } from "../groups/redux/groupsActions";
 import { fetchPages } from "../pages/redux/pagesActions";
-import authService from "../auth/authService";
 import {
   deleteUserFromTeam,
   fetchAllUsersOfTeam,
