@@ -73,36 +73,38 @@ class ShareCollectionForm extends Component {
     const teamMembers = this.addMember();
     this.onShareCollectionSubmit(teamMembers);
   }
-  handleDelete(teamId, teamMember) {
+
+  fetchCurrentUserRole() {
     const { user: currentUser } = authService.getCurrentUser();
     for (let i = 0; i < Object.keys(this.props.team).length; i++) {
       if (currentUser.identifier === Object.keys(this.props.team)[i]) {
-        if (this.props.team[currentUser.identifier].role === "Admin") {
-          if (
-            window.confirm(
-              "Are you sure you want to remove member from the team?"
-            )
-          ) {
-            console.log("Admin");
-            this.props.deleteUserFromTeam({
-              teamIdentifier: teamId,
-              teamMember
-            });
-          }
-        } else {
-          console.log("collaborator");
-          alert(
-            "As a collaborator, you are not allowed to remove a team member"
-          );
-        }
+        return this.props.team[currentUser.identifier].role;
       }
+    }
+  }
+  handleDelete(teamId, teamMember) {
+    const { user: currentUser } = authService.getCurrentUser();
+    const role = this.fetchCurrentUserRole();
+    if (role === "Admin") {
+      if (
+        window.confirm("Are you sure you want to remove member from the team?")
+      ) {
+        this.props.deleteUserFromTeam({
+          teamIdentifier: teamId,
+          teamMember
+        });
+      }
+    } else {
+      alert("As a collaborator, you are not allowed to remove a team member");
     }
   }
 
   render() {
+    this.currentUserRole = this.fetchCurrentUserRole();
     let count = Object.keys(this.props.team).length;
     let serialNo = 1;
     const { emails } = this.state;
+
     return (
       <Modal
         {...this.props}
@@ -118,48 +120,50 @@ class ShareCollectionForm extends Component {
         <Modal.Body>
           <form onSubmit={this.doSubmit.bind(this)}>
             <div className="row">
-              <InputGroup>
-                <ReactMultiEmail
-                  name="email"
-                  placeholder="Email-id"
-                  emails={emails}
-                  onChange={_emails => {
-                    this.state.emails = _emails;
-                  }}
-                  validateEmail={email => {
-                    return isEmail(email);
-                  }}
-                  getLabel={(email, index, removeEmail) => {
-                    return (
-                      <div data-tag key={index}>
-                        {email}
-                        <span
-                          data-tag-handle
-                          onClick={() => removeEmail(index)}
-                        >
-                          ×
-                        </span>
-                      </div>
-                    );
-                  }}
-                />
-                <InputGroup.Append>
-                  <Dropdown>
-                    <Dropdown.Toggle variant="success" id="dropdown-basic">
-                      {this.state.data.role}
-                    </Dropdown.Toggle>
-                    <Dropdown.Menu>
-                      {Object.keys(this.dropdownRole).map(key => (
-                        <Dropdown.Item
-                          onClick={() => this.setDropdownRole(key)}
-                        >
-                          {this.dropdownRole[key].name}
-                        </Dropdown.Item>
-                      ))}
-                    </Dropdown.Menu>
-                  </Dropdown>{" "}
-                </InputGroup.Append>
-              </InputGroup>
+              {this.currentUserRole === "Admin" ? (
+                <InputGroup>
+                  <ReactMultiEmail
+                    name="email"
+                    placeholder="Email-id"
+                    emails={emails}
+                    onChange={_emails => {
+                      this.state.emails = _emails;
+                    }}
+                    validateEmail={email => {
+                      return isEmail(email);
+                    }}
+                    getLabel={(email, index, removeEmail) => {
+                      return (
+                        <div data-tag key={index}>
+                          {email}
+                          <span
+                            data-tag-handle
+                            onClick={() => removeEmail(index)}
+                          >
+                            ×
+                          </span>
+                        </div>
+                      );
+                    }}
+                  />
+                  <InputGroup.Append>
+                    <Dropdown>
+                      <Dropdown.Toggle variant="success" id="dropdown-basic">
+                        {this.state.data.role}
+                      </Dropdown.Toggle>
+                      <Dropdown.Menu>
+                        {Object.keys(this.dropdownRole).map(key => (
+                          <Dropdown.Item
+                            onClick={() => this.setDropdownRole(key)}
+                          >
+                            {this.dropdownRole[key].name}
+                          </Dropdown.Item>
+                        ))}
+                      </Dropdown.Menu>
+                    </Dropdown>{" "}
+                  </InputGroup.Append>
+                </InputGroup>
+              ) : null}
             </div>
             <br />
             <table class="table table-striped">
@@ -193,13 +197,17 @@ class ShareCollectionForm extends Component {
               ))}
             </table>
             <div style={{ float: "right" }}>Total Members: {count}</div>
-            <button className="btn btn-default">Share</button>
-            <button
-              className="btn btn-default"
-              onClick={() => this.props.onHide()}
-            >
-              Cancel
-            </button>
+            {this.currentUserRole === "Admin" ? (
+              <div>
+                <button className="btn btn-default">Share</button>
+                <button
+                  className="btn btn-default"
+                  onClick={() => this.props.onHide()}
+                >
+                  Cancel
+                </button>
+              </div>
+            ) : null}
           </form>
         </Modal.Body>
       </Modal>

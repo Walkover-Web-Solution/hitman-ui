@@ -113,12 +113,6 @@ class CollectionsComponent extends Component {
   }
 
   async handleDelete(collection) {
-    console.log(collection);
-    window.confirm(
-      "Are you sure you wish to delete this collection?" +
-        "\n" +
-        " All your versions, groups, pages and endpoints present in this collection will be deleted."
-    );
     this.props.deleteCollection(collection);
   }
 
@@ -199,7 +193,6 @@ class CollectionsComponent extends Component {
     );
   }
   showShareCollectionForm() {
-    this.props.fetchAllUsersOfTeam(this.state.selectedCollection.teamId);
     return (
       this.state.showCollectionShareForm && (
         <ShareCollectionForm
@@ -215,6 +208,7 @@ class CollectionsComponent extends Component {
     );
   }
   shareCollection(collectionId) {
+    this.props.fetchAllUsersOfTeam(this.props.collections[collectionId].teamId);
     this.setState({
       showCollectionShareForm: true,
       selectedCollection: {
