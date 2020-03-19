@@ -61,46 +61,41 @@ class Environments extends Component {
 
   render() {
     return (
-      <div>
-        <div>
-          {(this.state.environmentFormName === "Add new Environment" ||
-            this.state.environmentFormName === "Edit Environment") &&
-            environmentsService.showEnvironmentForm(
-              this.props,
-              this.handleEnvironmentModal.bind(this),
-              this.state.environmentFormName,
-              this.state.environmentToBeEdited
-            )}
-          {this.state.environmentFormName === "Environment modal" && (
-            <EnvironmentModal
-              {...this.props}
-              show={true}
-              onHide={() => this.handleEnvironmentModal()}
-              handle_environment_modal={this.handleEnvironmentModal.bind(this)}
-            />
+      <div className="environment-container">
+        {(this.state.environmentFormName === "Add new Environment" ||
+          this.state.environmentFormName === "Edit Environment") &&
+          environmentsService.showEnvironmentForm(
+            this.props,
+            this.handleEnvironmentModal.bind(this),
+            this.state.environmentFormName,
+            this.state.environmentToBeEdited
           )}
-        </div>
-        <div style={{ textAlign: "left" }}>
+        {this.state.environmentFormName === "Environment modal" && (
+          <EnvironmentModal
+            {...this.props}
+            show={true}
+            onHide={() => this.handleEnvironmentModal()}
+            handle_environment_modal={this.handleEnvironmentModal.bind(this)}
+          />
+        )}
+
+        <div className="environment-buttons">
           <button
             className="btn btn-default"
             onClick={() => this.handleEnvironmentModal("Environment modal")}
-            style={{ float: "right" }}
           >
-            <i>
-              <svg width="20" height="20">
-                <circle
-                  cx="10"
-                  cy="10"
-                  r="10"
-                  stroke="black"
-                  stroke-width=".4"
-                  fill="grey"
-                />
-              </svg>
-            </i>
+            <i class="fas fa-cog"></i>
           </button>
         </div>
-        <div className="Environment Dropdown">
+        <div className="environment-buttons">
+          <button
+            className="btn btn-default"
+            onClick={() => console.log("View environment variables")}
+          >
+            <i class="fas fa-eye"></i>
+          </button>
+        </div>
+        <div className="select-environment-dropdown">
           <Dropdown className="float-right">
             <Dropdown.Toggle variant="default" id="dropdown-basic">
               {this.props.environment.environments[

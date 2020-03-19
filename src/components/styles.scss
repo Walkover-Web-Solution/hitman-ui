@@ -1,6 +1,16 @@
 .navbar-nav {
   float: left;
 }
+.nav-tabs {
+  margin-top: 10px;
+}
+.nav-link {
+  color: black;
+  border: none;
+  border-bottom: 4px solid tomato;
+  background-color: inherit;
+  border-color: tomato;
+}
 
 #search-box-wrapper {
   display: flex;
@@ -55,7 +65,9 @@ div#custom-card-header {
     }
   }
 }
-
+.btn:focus {
+  outline: none;
+}
 div#custom-card-header:hover {
   .btn-group {
     display: flex;
@@ -67,4 +79,71 @@ div#custom-card-header:hover {
 h5.mb-0 {
   float: left;
   width: 80%;
+}
+nav.navbar.navbar-dark.fixed-top.bg-dark.flex-md-nowrap.p-0.shadow {
+  display: flex;
+  align-items: baseline;
+  height: 40px;
+  .btn-group {
+    display: flex;
+    height: 100%;
+    border-radius: 2px;
+    #new-button {
+      display: flex;
+      align-items: baseline;
+      background-color: tomato;
+      margin: 5px 0px 5px 5px;
+      .fa-plus-square {
+        padding-right: 5px;
+        font-size: 17px;
+      }
+    }
+    #new-button-dropdown {
+      background-color: tomato;
+      margin: 5px 5px 5px 0px;
+    }
+    button.btn {
+      padding: 0px 6px;
+      color: white;
+      font-size: 14px;
+      font-weight: 300;
+    }
+  }
+}
+#nav-left-buttons {
+  display: flex;
+  margin: 5px;
+  border-radius: 3px;
+  background-color: rgb(101, 103, 105);
+}
+
+.environment-container {
+  border: 1px solid rgb(223, 226, 230);
+  float: right;
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: baseline;
+  align-items: flex-end;
+  height: 43px;
+  width: 300px;
+  .environment-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin: 3px;
+    height: 35px;
+    width: 35px;
+    background-color: rgb(194, 194, 194);
+    border-radius: 2px;
+  }
+  .select-environment-dropdown {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    margin: 3px;
+    height: 35px;
+    width: 100%;
+    background-color: rgb(194, 194, 194);
+    border-radius: 2px;
+  }
 }

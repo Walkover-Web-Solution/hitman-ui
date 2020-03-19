@@ -32,21 +32,19 @@ class Navbar extends Component {
           )}
         <div className="btn-group">
           <button
-            type="button"
+            id="new-button"
             className="btn"
-            style={{ backgroundColor: "tomato", margin: "5px 0px 5px 5px" }}
             onClick={() => this.setState({ showCreateNewModal: true })}
           >
-            <i className="fas fa-plus-square" style={{ margin: "5px" }}></i>
+            <i className="fas fa-plus-square"></i>
             New
           </button>
           <button
-            type="button"
+            id="new-button-dropdown"
             className="btn  dropdown-toggle dropdown-toggle-split"
             data-toggle="dropdown"
             aria-haspopup="true"
             aria-expanded="false"
-            style={{ backgroundColor: "tomato", margin: "5px 5px 5px 0px" }}
           ></button>
           <div className="dropdown-menu">
             <li
@@ -73,16 +71,12 @@ class Navbar extends Component {
               Environment
             </li>
           </div>
-          <div className="navbar-nav">
-            <button
-              type="button"
-              className="btn btn-secondary"
-              style={{ margin: "5px" }}
-            >
-              Import
-            </button>
-          </div>
-          <div className="dropdown">
+
+          <button id="nav-left-buttons" className="btn ">
+            Import
+          </button>
+
+          <div className="dropdown" id="nav-left-buttons">
             <button
               className="btn btn-secondary dropdown-toggle"
               type="button"
@@ -90,7 +84,6 @@ class Navbar extends Component {
               data-toggle="dropdown"
               aria-haspopup="true"
               aria-expanded="false"
-              style={{ margin: "5px" }}
             >
               <i className="fa fa-file-text" aria-hidden="true"></i>
             </button>
@@ -102,7 +95,7 @@ class Navbar extends Component {
           </div>
         </div>
 
-        <div className="btn-grp" style={{ float: "right" }}>
+        <div className="btn-grp">
           <div class="dropdown">
             <button
               class="btn btn-secondary dropdown-toggle"

@@ -42,10 +42,16 @@ class Main extends Component {
 
   render() {
     return (
-      <div>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "flex-start"
+        }}
+      >
         <ToastContainer />
         <Navbar />
-        <div className="container-fluid">
+        <div>
           <SideBar
             {...this.props}
             set_source_group_id={this.setSourceGroupId.bind(this)}
