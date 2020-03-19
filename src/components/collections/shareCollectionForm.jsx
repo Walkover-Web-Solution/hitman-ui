@@ -6,7 +6,7 @@ import { isEmail, ReactMultiEmail } from "react-multi-email";
 import "react-multi-email/style.css";
 import { connect } from "react-redux";
 import store from "../../store/store";
-
+import authService from "../auth/authService";
 const mapStateToProps = state => {
   return {
     team: state.team
@@ -22,8 +22,6 @@ class ShareCollectionForm extends Component {
   };
 
   async componentDidMount() {
-    this.props.fetchAllUsersOfTeam(this.props.team_id);
-    this.flag = 0;
     store.subscribe(() => {
       if (this.flag === 0) {
         this.flag = 1;
@@ -75,9 +73,30 @@ class ShareCollectionForm extends Component {
     const teamMembers = this.addMember();
     this.onShareCollectionSubmit(teamMembers);
   }
-  handleDelete(teamId, email) {
-    console.log("in delete");
-    this.props.deleteUserFromTeam({ teamIdentifier: teamId, email });
+  handleDelete(teamId, teamMember) {
+    const { user: currentUser } = authService.getCurrentUser();
+    for (let i = 0; i < Object.keys(this.props.team).length; i++) {
+      if (currentUser.identifier === Object.keys(this.props.team)[i]) {
+        if (this.props.team[currentUser.identifier].role === "Admin") {
+          if (
+            window.confirm(
+              "Are you sure you want to remove member from the team?"
+            )
+          ) {
+            console.log("Admin");
+            this.props.deleteUserFromTeam({
+              teamIdentifier: teamId,
+              teamMember
+            });
+          }
+        } else {
+          console.log("collaborator");
+          alert(
+            "As a collaborator, you are not allowed to remove a team member"
+          );
+        }
+      }
+    }
   }
 
   render() {
@@ -161,15 +180,10 @@ class ShareCollectionForm extends Component {
                     <button
                       className="btn btn-default"
                       onClick={() => {
-                        if (
-                          window.confirm(
-                            "Are you sure you want to remove member from the team?"
-                          )
-                        )
-                          this.handleDelete(
-                            this.props.team_id,
-                            this.props.team[teamId].email
-                          );
+                        this.handleDelete(
+                          this.props.team_id,
+                          this.props.team[teamId]
+                        );
                       }}
                     >
                       X
@@ -179,7 +193,7 @@ class ShareCollectionForm extends Component {
               ))}
             </table>
             <div style={{ float: "right" }}>Total Members: {count}</div>
-            <button className="btn btn-default">Share1</button>
+            <button className="btn btn-default">Share</button>
             <button
               className="btn btn-default"
               onClick={() => this.props.onHide()}

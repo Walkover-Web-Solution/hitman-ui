@@ -23,6 +23,7 @@ import { fetchAllVersions } from "../collectionVersions/redux/collectionVersions
 import { fetchEndpoints } from "../endpoints/redux/endpointsActions";
 import { fetchGroups } from "../groups/redux/groupsActions";
 import { fetchPages } from "../pages/redux/pagesActions";
+import authService from "../auth/authService";
 import {
   deleteUserFromTeam,
   fetchAllUsersOfTeam,
@@ -112,6 +113,12 @@ class CollectionsComponent extends Component {
   }
 
   async handleDelete(collection) {
+    console.log(collection);
+    window.confirm(
+      "Are you sure you wish to delete this collection?" +
+        "\n" +
+        " All your versions, groups, pages and endpoints present in this collection will be deleted."
+    );
     this.props.deleteCollection(collection);
   }
 
@@ -192,6 +199,7 @@ class CollectionsComponent extends Component {
     );
   }
   showShareCollectionForm() {
+    this.props.fetchAllUsersOfTeam(this.state.selectedCollection.teamId);
     return (
       this.state.showCollectionShareForm && (
         <ShareCollectionForm
