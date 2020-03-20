@@ -52,10 +52,10 @@ function collectionsReducer(state = initialState, action) {
       delete collections[action.collection.id];
       return collections;
 
-    case collectionsActionTypes.ON_COLLECTION_DELETE:
+    case collectionsActionTypes.ON_COLLECTION_DELETED:
       return state;
 
-    case collectionsActionTypes.ON_COLLECTION_DELETE_ERROR:
+    case collectionsActionTypes.ON_COLLECTION_DELETED_ERROR:
       toast.error(action.error.data);
       if (action.error.status === 404) return state;
       return {

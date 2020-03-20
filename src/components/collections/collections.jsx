@@ -1,38 +1,30 @@
 import React, { Component } from "react";
-import {
-  Accordion,
-  Button,
-  Card,
-  Dropdown,
-  DropdownButton,
-  Tabs,
-  Tab
-} from "react-bootstrap";
 import { connect } from "react-redux";
-import { Route, Switch, withRouter } from "react-router-dom";
-import { toast } from "react-toastify";
+import { withRouter } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import shortId from "shortid";
 import CollectionVersions from "../collectionVersions/collectionVersions";
-import ImportVersionForm from "../collectionVersions/importVersionForm";
-import ShareVersionForm from "../collectionVersions/shareVersionForm";
-import PageForm from "../pages/pageForm";
-import collectionVersionsApiService from "../collectionVersions/collectionVersionsApiService";
 import collectionVersionsService from "../collectionVersions/collectionVersionsService";
-import collectionsService from "./collectionsService";
-import endpointService from "../endpoints/endpointService";
+import ImportVersionForm from "../collectionVersions/importVersionForm";
 import { fetchAllVersions } from "../collectionVersions/redux/collectionVersionsActions";
+import endpointService from "../endpoints/endpointService";
 import { fetchEndpoints } from "../endpoints/redux/endpointsActions";
 import { fetchGroups } from "../groups/redux/groupsActions";
 import { fetchPages } from "../pages/redux/pagesActions";
 import {
+  deleteUserFromTeam,
+  fetchAllUsersOfTeam,
+  shareCollection
+} from "../team/redux/teamsActions";
+import collectionsService from "./collectionsService";
+import {
   addCollection,
-  updateCollection,
   deleteCollection,
   duplicateCollection,
-  fetchCollections
+  fetchCollections,
+  updateCollection
 } from "./redux/collectionsActions";
-import { relative } from "joi-browser";
+import ShareCollectionForm from "./shareCollectionForm";
 
 const mapStateToProps = state => {
   return {
@@ -50,10 +42,16 @@ const mapDispatchToProps = dispatch => {
     fetchEndpoints: () => dispatch(fetchEndpoints()),
     fetchPages: () => dispatch(fetchPages()),
     addCollection: newCollection => dispatch(addCollection(newCollection)),
+    shareCollection: teamMemberData =>
+      dispatch(shareCollection(teamMemberData)),
     updateCollection: editedCollection =>
       dispatch(updateCollection(editedCollection)),
     deleteCollection: collection => dispatch(deleteCollection(collection)),
-    duplicateCollection: collection => dispatch(duplicateCollection(collection))
+    duplicateCollection: collection =>
+      dispatch(duplicateCollection(collection)),
+    fetchAllUsersOfTeam: teamIdentifier =>
+      dispatch(fetchAllUsersOfTeam(teamIdentifier)),
+    deleteUserFromTeam: teamData => dispatch(deleteUserFromTeam(teamData))
   };
 };
 
@@ -103,7 +101,14 @@ class CollectionsComponent extends Component {
   }
 
   async handleDelete(collection) {
-    this.props.deleteCollection(collection);
+    if (
+      window.confirm(
+        "Are you sure you wish to delete this collection?" +
+          "\n" +
+          " All your versions, groups, pages and endpoints present in this collection will be deleted."
+      )
+    )
+      this.props.deleteCollection(collection);
   }
 
   async handleUpdateCollection(editedCollection) {
@@ -123,6 +128,47 @@ class CollectionsComponent extends Component {
     this.props.duplicateCollection(collectionCopy);
   }
 
+  // showAddCollectionForm() {
+  //   return (
+  //     this.state.showVersionForm && (
+  //       <CollectionVersionForm
+  //         {...this.props}
+  //         show={true}
+  //         onHide={() => {
+  //           this.setState({ showVersionForm: false });
+  //         }}
+  //         collection_id={this.state.selectedCollection.id}
+  //         title="Add new Collection Version"
+  //       />
+  //     )
+  //   );
+  // }
+  showShareCollectionForm() {
+    return (
+      this.state.showCollectionShareForm && (
+        <ShareCollectionForm
+          {...this.props}
+          show={true}
+          onHide={() => {
+            this.setState({ showCollectionShareForm: false });
+          }}
+          team_id={this.state.selectedCollection.teamId}
+          title="Share Collection"
+        />
+      )
+    );
+  }
+
+  shareCollection(collectionId) {
+    this.props.fetchAllUsersOfTeam(this.props.collections[collectionId].teamId);
+    this.setState({
+      showCollectionShareForm: true,
+      selectedCollection: {
+        ...this.props.collections[collectionId]
+      },
+      collectionFormName: "Share Collection"
+    });
+  }
   openAddCollectionForm() {
     this.setState({
       showCollectionForm: true,
@@ -194,6 +240,7 @@ class CollectionsComponent extends Component {
                 this.state.selectedCollection
               )}
             {this.showImportVersionForm()}
+            {this.showShareCollectionForm()}
           </div>
         </div>
 
@@ -291,6 +338,14 @@ class CollectionsComponent extends Component {
                         onClick={() => this.openImportVersionForm(collectionId)}
                       >
                         Import Version
+                      </button>
+                      <button
+                        className="dropdown-item"
+                        onClick={() => {
+                          this.shareCollection(collectionId);
+                        }}
+                      >
+                        Share
                       </button>
                     </div>
                   </div>
