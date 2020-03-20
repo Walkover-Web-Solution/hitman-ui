@@ -118,6 +118,7 @@ nav.navbar.navbar-dark.fixed-top.bg-dark.flex-md-nowrap.p-0.shadow {
 }
 
 .environment-container {
+  align-self: flex-end;
   border: 1px solid rgb(223, 226, 230);
   float: right;
   display: flex;
@@ -145,5 +146,65 @@ nav.navbar.navbar-dark.fixed-top.bg-dark.flex-md-nowrap.p-0.shadow {
     width: 100%;
     background-color: rgb(194, 194, 194);
     border-radius: 2px;
+  }
+}
+
+main.main.ml-sm-auto.col-lg-10 {
+  display: flex;
+  flex-direction: column;
+  margin-top: 40px;
+  padding: 0px;
+}
+.content-header {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  .tabs-container {
+    width: 100%;
+    border: 1px solid rgb(223, 226, 230);
+    border-right: none;
+  }
+}
+.custom-modal-container {
+  height: 600px;
+  background: rgb(253, 253, 248);
+}
+
+#leftbox {
+  float: left;
+  width: 33%;
+  height: 280px;
+  #custom-req-icon-div {
+    float: left;
+  }
+  #custom-req-icon {
+    font-size: 50px;
+    padding-right: 35px;
+  }
+}
+#middlebox {
+  float: left;
+  width: 33%;
+  height: 280px;
+  #custom-col-icon-div {
+    float: left;
+  }
+
+  #custom-col-icon {
+    font-size: 50px;
+    padding-right: 35px;
+  }
+}
+
+#rightbox {
+  float: right;
+  width: 33%;
+  height: 280px;
+  #custom-env-icon-div {
+    float: left;
+  }
+  #custom-env-icon {
+    font-size: 50px;
+    padding-right: 35px;
   }
 }
