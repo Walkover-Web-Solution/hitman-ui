@@ -1,5 +1,4 @@
 import { Component, default as React } from "react";
-// import Form from "../common/form";
 import { Dropdown, InputGroup, Modal } from "react-bootstrap";
 import { isEmail, ReactMultiEmail } from "react-multi-email";
 import "react-multi-email/style.css";
@@ -67,7 +66,6 @@ class ShareCollectionForm extends Component {
   }
 
   async doSubmit(e) {
-    console.log("1");
     e.preventDefault();
     const teamMembers = this.addMember();
     this.onShareCollectionSubmit(teamMembers);
@@ -83,7 +81,7 @@ class ShareCollectionForm extends Component {
   }
   handleDelete(teamId, teamMember) {
     const role = this.fetchCurrentUserRole();
-    if (role === "Admin") {
+    if (role === "Owner" || role === "Admin") {
       if (
         window.confirm("Are you sure you want to remove member from the team?")
       ) {
@@ -118,7 +116,8 @@ class ShareCollectionForm extends Component {
         <Modal.Body>
           <form onSubmit={this.doSubmit.bind(this)}>
             <div className="row">
-              {this.currentUserRole === "Admin" ? (
+              {this.currentUserRole === "Admin" ||
+              this.currentUserRole === "Owner" ? (
                 <InputGroup style={{ padding: "20px", width: "85%" }}>
                   <ReactMultiEmail
                     name="email"
@@ -179,25 +178,31 @@ class ShareCollectionForm extends Component {
                     <th scope="row">{serialNo++}</th>
                     <td>{this.props.team[teamId].email}</td>
                     <td> {this.props.team[teamId].role}</td>
-                    <button
-                      className="btn btn-default"
-                      onClick={() => {
-                        this.handleDelete(
-                          this.props.team_id,
-                          this.props.team[teamId]
-                        );
-                      }}
-                    >
-                      X
-                    </button>
+
+                    {this.props.team[teamId].role !== "Owner" ? (
+                      <button
+                        className="btn btn-default"
+                        onClick={() => {
+                          this.handleDelete(
+                            this.props.team_id,
+                            this.props.team[teamId]
+                          );
+                        }}
+                      >
+                        X
+                      </button>
+                    ) : (
+                      <td></td>
+                    )}
                   </tr>
                 </tbody>
               ))}
             </table>
             <div style={{ float: "right" }}>Total Members: {count}</div>
-            {this.currentUserRole === "Admin" ? (
+            {this.currentUserRole === "Admin" ||
+            this.currentUserRole === "Owner" ? (
               <div>
-                <button className="btn btn-default">Share</button>
+                <button className="btn btn-default">Apply</button>
                 <button
                   className="btn btn-default"
                   onClick={() => this.props.onHide()}
