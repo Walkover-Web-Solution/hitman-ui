@@ -7,7 +7,7 @@
 .nav-link {
   color: black;
   border: none;
-  border-bottom: 4px solid tomato;
+  // border-bottom: 4px solid tomato;
   background-color: inherit;
   border-color: tomato;
 }
@@ -207,4 +207,50 @@ main.main.ml-sm-auto.col-lg-10 {
     font-size: 50px;
     padding-right: 35px;
   }
+}
+
+.custom-collection-modal-container.modal-header {
+  color: white;
+  background: black;
+  padding: 10px;
+  button.close {
+    color: white;
+  }
+}
+
+label.custom-input-label {
+  font-size: 15px;
+  font-weight: 300;
+}
+
+input.custom-input {
+  height: 30px;
+}
+
+input.custom-input::placeholder {
+  font-size: 15px;
+}
+
+#contained-modal-title-vcenter {
+  font-size: 15px;
+}
+body {
+  .btn:focus {
+    outline: 0;
+    box-shadow: none;
+  }
+}
+
+nav.col-md-3.d-none.d-md-block.bg-light.sidebar {
+  border-right: 2px solid black;
+}
+
+// .custom-submit-button {
+//   font-size: 15px;
+//   font-weight: 400;
+// }
+
+button.btn.btn-default.custom-submit-button {
+  font-size: 15px;
+  font-weight: 400;
 }

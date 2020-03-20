@@ -128,36 +128,42 @@ class CollectionForm extends Form {
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
-        <Modal.Header closeButton>
-          <Modal.Title id="contained-modal-title-vcenter">
-            {this.props.title}
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <form onSubmit={this.handleSubmit}>
-            {this.renderInput("name", "Name*")}
-            {this.renderInput("website", "Website*", "url")}
-            <div className="row">
-              <div className="col">
-                {this.renderInput("keyword", "Keyword 1*")}
+        <div>
+          <Modal.Header
+            className="custom-collection-modal-container"
+            closeButton
+          >
+            <Modal.Title id="contained-modal-title-vcenter">
+              {this.props.title}
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <form onSubmit={this.handleSubmit}>
+              {this.renderInput("name", "Name", "Collection Name")}
+              {this.renderInput("website", "Website", "Website")}
+              <div className="row">
+                <div className="col">
+                  {this.renderInput("keyword", "Keyword 1", "Keyword 1")}
+                </div>
+                <div className="col">
+                  {this.renderInput("keyword1", "Keyword 2", "Keyword 2")}
+                </div>
+                <div className="col">
+                  {this.renderInput("keyword2", "Keyword 3", "Keyword 3")}
+                </div>
               </div>
-              <div className="col">
-                {this.renderInput("keyword1", "Keyword 2")}
-              </div>
-              <div className="col">
-                {this.renderInput("keyword2", "Keyword 3")}
-              </div>
-            </div>
-            {this.renderInput("description", "Description", "textbox")}
-            {this.renderButton("Submit")}
-            <button
-              className="btn btn-default"
-              onClick={() => this.props.onHide()}
-            >
-              Cancel
-            </button>
-          </form>
-        </Modal.Body>
+              {this.renderTextArea("description", "Description", "description")}
+              {/* {this.renderInput("description", "Description", "textbox")} */}
+              {this.renderButton("Submit")}
+              <button
+                className="btn btn-default .custom-submit-button"
+                onClick={() => this.props.onHide()}
+              >
+                Cancel
+              </button>
+            </form>
+          </Modal.Body>
+        </div>
       </Modal>
     );
   }

@@ -170,89 +170,6 @@ class CollectionsComponent extends Component {
     );
   }
 
-  routeToAddNewGroupPage() {
-    return (
-      <Route
-        path="/dashboard/:id/versions/:versionId/groups/:groupId/pages/new"
-        render={props => (
-          <PageForm
-            {...props}
-            show={true}
-            onHide={() => {
-              this.props.history.push({
-                pathname: "/dashboard"
-              });
-            }}
-            title="Add new Group Page"
-            versionId={this.props.location.versionId}
-            groupId={this.props.location.groupId}
-          />
-        )}
-      />
-    );
-  }
-
-  routeToAddNewVersionPage() {
-    return (
-      <Route
-        path="/dashboard/:id/versions/:versionId/pages/new"
-        render={props => (
-          <PageForm
-            {...props}
-            show={true}
-            onHide={() => {
-              this.props.history.push({
-                pathname: "/dashboard"
-              });
-            }}
-            title="Add New Version Page"
-            versionId={this.props.location.versionId}
-          />
-        )}
-      />
-    );
-  }
-
-  routeToImportVersionForm() {
-    return (
-      <Route
-        path="/dashboard/:collectionId/versions/import"
-        render={props => (
-          <ImportVersionForm
-            {...props}
-            show={true}
-            onHide={() => {
-              this.props.history.push({
-                pathname: "/dashboard"
-              });
-            }}
-            title="Import Version"
-          />
-        )}
-      />
-    );
-  }
-
-  routeToShareVersionForm() {
-    return (
-      <Route
-        path="/dashboard/:collectionId/versions/:versionId/share"
-        render={props => (
-          <ShareVersionForm
-            {...props}
-            show={true}
-            onHide={() => {
-              this.props.history.push({
-                pathname: "/dashboard"
-              });
-            }}
-            title="Share Version"
-          />
-        )}
-      />
-    );
-  }
-
   closeVersionForm() {
     this.setState({ showVersionForm: false });
   }
@@ -277,12 +194,6 @@ class CollectionsComponent extends Component {
                 this.state.selectedCollection
               )}
             {this.showImportVersionForm()}
-            <Switch>
-              {this.routeToAddNewGroupPage()}
-              {this.routeToAddNewVersionPage()}
-              {this.routeToImportVersionForm()}
-              {this.routeToShareVersionForm()}
-            </Switch>
           </div>
         </div>
 
@@ -301,21 +212,21 @@ class CollectionsComponent extends Component {
                 color: "tomato"
               }}
             >
-              <i class="fas fa-plus" style={{ paddingRight: "10px" }}></i>
+              <i className="fas fa-plus" style={{ paddingRight: "10px" }}></i>
               New Collection
             </button>
           </div>
           {Object.keys(this.props.collections).map((collectionId, index) => (
             <div id="accordion" key={index}>
-              <div class="card">
-                <div class="card-header" id="custom-card-header">
+              <div className="card">
+                <div className="card-header" id="custom-card-header">
                   <i
                     className="fas fa-folder-open"
                     style={{ margin: "5px" }}
                   ></i>
-                  <h5 class="mb-0">
+                  <h5 className="mb-0">
                     <button
-                      class="btn"
+                      className="btn"
                       data-toggle="collapse"
                       data-target={`#${collectionId}`}
                       aria-expanded="true"
@@ -324,18 +235,18 @@ class CollectionsComponent extends Component {
                       {this.props.collections[collectionId].name}
                     </button>
                   </h5>
-                  <div class="btn-group">
+                  <div className="btn-group">
                     <button
-                      class="btn btn-secondary "
+                      className="btn btn-secondary "
                       data-toggle="dropdown"
                       aria-haspopup="true"
                       aria-expanded="false"
                     >
-                      <i class="fas fa-ellipsis-h"></i>
+                      <i className="fas fa-ellipsis-h"></i>
                     </button>
-                    <div class="dropdown-menu dropdown-menu-right">
+                    <div className="dropdown-menu dropdown-menu-right">
                       <button
-                        class="dropdown-item"
+                        className="dropdown-item"
                         onClick={() =>
                           this.openEditCollectionForm(collectionId)
                         }
@@ -343,7 +254,7 @@ class CollectionsComponent extends Component {
                         Edit
                       </button>
                       <button
-                        class="dropdown-item"
+                        className="dropdown-item"
                         onClick={() => {
                           if (
                             window.confirm(
@@ -360,13 +271,13 @@ class CollectionsComponent extends Component {
                         Delete
                       </button>
                       <button
-                        class="dropdown-item"
+                        className="dropdown-item"
                         onClick={() => this.openAddVersionForm(collectionId)}
                       >
                         Add Version
                       </button>
                       <button
-                        class="dropdown-item"
+                        className="dropdown-item"
                         onClick={() =>
                           this.handleDuplicateCollection(
                             this.props.collections[collectionId]
@@ -376,7 +287,7 @@ class CollectionsComponent extends Component {
                         Duplicate
                       </button>
                       <button
-                        class="dropdown-item"
+                        className="dropdown-item"
                         onClick={() => this.openImportVersionForm(collectionId)}
                       >
                         Import Version
@@ -385,8 +296,8 @@ class CollectionsComponent extends Component {
                   </div>
                 </div>
 
-                <div id={collectionId} class="collapse">
-                  <div class="card-body">
+                <div id={collectionId} className="collapse">
+                  <div className="card-body">
                     <CollectionVersions
                       {...this.props}
                       collection_id={collectionId}

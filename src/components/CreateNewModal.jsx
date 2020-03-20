@@ -1,10 +1,8 @@
 import React, { Component } from "react";
-import { ListGroup, Modal, ModalBody } from "react-bootstrap";
-import Endpoints from "./endpoints/endpoints";
-import Environments from "./environments/environments";
+import { Modal } from "react-bootstrap";
 
 class CreateNewModal extends Component {
-  state = {};
+  state = { showCollectionForm: false, showEnvironmentForm: false };
   render() {
     return (
       <Modal
@@ -14,10 +12,17 @@ class CreateNewModal extends Component {
         centered
       >
         <div className="custom-modal-container">
-          <Modal.Header>Create New</Modal.Header>
+          <Modal.Header closeButton>Create New</Modal.Header>
           <Modal.Body>
-            <div>BUILDING BLOCKS</div>
-            <div id="leftbox">
+            <div
+              id="leftbox"
+              onClick={() => {
+                this.props.history.push({
+                  pathname: "/dashboard/endpoints"
+                });
+                this.props.onHide();
+              }}
+            >
               <div id="custom-req-icon-div">
                 <i className="fas fa-share-square" id="custom-req-icon"></i>
               </div>
@@ -27,7 +32,12 @@ class CreateNewModal extends Component {
               </div>
             </div>
 
-            <div id="middlebox">
+            <div
+              id="middlebox"
+              onClick={() => {
+                this.props.openCollectionForm();
+              }}
+            >
               <div id="custom-col-icon-div">
                 <i id="custom-col-icon" className="fas fa-folder-open"></i>
               </div>
@@ -37,7 +47,12 @@ class CreateNewModal extends Component {
               </div>
             </div>
 
-            <div id="rightbox">
+            <div
+              id="rightbox"
+              onClick={() => {
+                this.props.openEnvironmentForm();
+              }}
+            >
               <div id="custom-env-icon-div">
                 {" "}
                 <i id="custom-env-icon" className="fas fa-border-none"></i>
