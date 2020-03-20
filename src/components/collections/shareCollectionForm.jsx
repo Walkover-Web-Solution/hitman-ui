@@ -73,12 +73,14 @@ class ShareCollectionForm extends Component {
 
   fetchCurrentUserRole() {
     const { user: currentUser } = authService.getCurrentUser();
-    for (let i = 0; i < Object.keys(this.props.team).length; i++) {
-      if (currentUser.identifier === Object.keys(this.props.team)[i]) {
+    const teamArray = Object.keys(this.props.team);
+    for (let i = 0; i < teamArray.length; i++) {
+      if (currentUser.identifier === teamArray[i]) {
         return this.props.team[currentUser.identifier].role;
       }
     }
   }
+
   handleDelete(teamId, teamMember) {
     const role = this.fetchCurrentUserRole();
     if (role === "Owner" || role === "Admin") {
@@ -96,8 +98,10 @@ class ShareCollectionForm extends Component {
   }
 
   render() {
+    console.log(authService.getCurrentUser());
+    const { team } = this.props;
     this.currentUserRole = this.fetchCurrentUserRole();
-    let count = Object.keys(this.props.team).length;
+    let count = Object.keys(team).length;
     let serialNo = 1;
     const { emails } = this.state;
 
@@ -172,27 +176,26 @@ class ShareCollectionForm extends Component {
                   <th scope="col"></th>
                 </tr>
               </thead>
-              {Object.keys(this.props.team).map(teamId => (
+              {Object.keys(team).map(teamId => (
                 <tbody>
                   <tr>
                     <th scope="row">{serialNo++}</th>
-                    <td>{this.props.team[teamId].email}</td>
-                    <td> {this.props.team[teamId].role}</td>
+                    <td>{team[teamId].email}</td>
+                    <td> {team[teamId].role}</td>
 
-                    {this.props.team[teamId].role !== "Owner" ? (
+                    {team[teamId].role === "Owner" ||
+                    team[teamId].userId ===
+                      authService.getCurrentUser().user.identifier ? (
+                      <td></td>
+                    ) : (
                       <button
                         className="btn btn-default"
                         onClick={() => {
-                          this.handleDelete(
-                            this.props.team_id,
-                            this.props.team[teamId]
-                          );
+                          this.handleDelete(this.props.team_id, team[teamId]);
                         }}
                       >
                         X
                       </button>
-                    ) : (
-                      <td></td>
                     )}
                   </tr>
                 </tbody>
