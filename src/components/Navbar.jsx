@@ -9,14 +9,33 @@ class Navbar extends Component {
   state = {};
 
   openCreateNewModal(onHide) {
-    return <CreateNewModal show={true} onHide={onHide} />;
+    return (
+      <CreateNewModal
+        {...this.props}
+        show={true}
+        onHide={onHide}
+        openCollectionForm={this.openCollectionForm.bind(this)}
+        openEnvironmentForm={this.openEnvironmentForm.bind(this)}
+      />
+    );
   }
+
+  openCollectionForm() {
+    this.setState({ showCreateNewModal: false, showCollectionForm: true });
+  }
+
+  openEnvironmentForm() {
+    this.setState({ showCreateNewModal: false, showEnvironmentForm: true });
+  }
+
   render() {
     return (
       <nav className="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
         {this.state.showCreateNewModal &&
           this.openCreateNewModal(() =>
-            this.setState({ showCreateNewModal: false })
+            this.setState({
+              showCreateNewModal: false
+            })
           )}
         {this.state.showCollectionForm &&
           collectionsService.showCollectionForm(
@@ -56,16 +75,14 @@ class Navbar extends Component {
             </li>
             <li
               className="dropdown-item"
-              onClick={() => {
-                this.setState({ showCollectionForm: true });
-              }}
+              onClick={() => this.openCollectionForm()}
             >
               <i className="fas fa-folder-open" style={{ margin: "5px" }}></i>
               Collection
             </li>
             <li
               className="dropdown-item"
-              onClick={() => this.setState({ showEnvironmentForm: true })}
+              onClick={() => this.openEnvironmentForm()}
             >
               <i className="fas fa-border-none" style={{ margin: "5px" }}></i>
               Environment

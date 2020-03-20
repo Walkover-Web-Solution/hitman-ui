@@ -10,9 +10,17 @@ class SideBar extends Component {
       <nav className="col-md-3 d-none d-md-block bg-light sidebar ">
         <div className="sidebar-sticky">
           <div id="search-box-wrapper">
-            <i class="fas fa-search" id="search-icon"></i>
+            <div>
+              {" "}
+              <i class="fas fa-search" id="search-icon"></i>
+            </div>
+            <div id="search-box-input">
+              <input type="text" id="search-box-input" placeholder="Filter" />
+            </div>
 
-            <input id="search-box-input" type="text" placeholder="Filter" />
+            {/* <i class="fas fa-search" id="search-icon"></i>
+
+            <input id="search-box-input" type="text" placeholder="Filter" /> */}
           </div>
 
           <ul class="nav nav-tabs" id="myTab" role="tablist">

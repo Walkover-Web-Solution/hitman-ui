@@ -50,7 +50,7 @@ class Main extends Component {
         }}
       >
         <ToastContainer />
-        <Navbar />
+        <Navbar {...this.props} />
         <div>
           <SideBar
             {...this.props}
