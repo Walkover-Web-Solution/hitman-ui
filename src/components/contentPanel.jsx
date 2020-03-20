@@ -17,7 +17,7 @@ class ContentPanel extends Component {
           <Environments {...this.props} />
         </div>
 
-        <div style={{ marginTop: "60px" }}>
+        <div className="main-content">
           <Switch>
             <Route
               path="/dashboard/endpoints"

@@ -51,7 +51,7 @@ class Main extends Component {
       >
         <ToastContainer />
         <Navbar {...this.props} />
-        <div>
+        <div className="wrapper">
           <SideBar
             {...this.props}
             set_source_group_id={this.setSourceGroupId.bind(this)}

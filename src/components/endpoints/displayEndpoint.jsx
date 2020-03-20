@@ -3,7 +3,6 @@ import { Dropdown } from "react-bootstrap";
 import { connect } from "react-redux";
 import { toast } from "react-toastify";
 import shortId from "shortid";
-import "../../styles/editableDropdown.scss";
 import DisplayResponse from "./displayResponse";
 import GenericTable from "./genericTable";
 import { addEndpoint, updateEndpoint } from "./redux/endpointsActions";
@@ -595,16 +594,11 @@ class DisplayEndpoint extends Component {
       this.props.history.push({ endpoint: null });
     }
     return (
-      <div>
-        <div className="input-group flex-nowrap">
-          <div className="input-group-prepend">
-            <span className="input-group-text" id="addon-wrapping">
-              Endpoint Name :
-            </span>
-          </div>
+      <div className="endpoint-container">
+        <div className="endpoint-name-container">
           <input
             type="text"
-            className="form-control"
+            className="endpoint-name-input"
             aria-label="Username"
             aria-describedby="addon-wrapping"
             name="name"
@@ -613,33 +607,35 @@ class DisplayEndpoint extends Component {
             onChange={this.handleChange}
           />
         </div>
-        <br />
-        <div className="input-group mb-3">
-          <div className="input-group-prepend">
-            <span className="input-group-text" id="basic-addon3">
-              <div className="dropdown">
-                <div className="Environment Dropdown">
-                  <Dropdown className="float-light">
-                    <Dropdown.Toggle variant="default" id="dropdown-basic">
-                      {this.state.data.method}
-                    </Dropdown.Toggle>
-                    <Dropdown.Menu alignRight>
-                      {Object.keys(this.dropdownRequestType).map(key => (
-                        <Dropdown.Item
-                          onClick={() =>
-                            this.setMethod(this.dropdownRequestType[key].name)
-                          }
-                        >
-                          {this.dropdownRequestType[key].name}
-                        </Dropdown.Item>
-                      ))}
-                    </Dropdown.Menu>
-                  </Dropdown>
-                </div>
-              </div>
-            </span>
 
-            <div className="editableDropdown">
+        <div className="endpoint-url-container">
+          <div className="input-group-prepend">
+            <div class="dropdown">
+              <button
+                class="btn btn-secondary dropdown-toggle"
+                type="button"
+                id="dropdownMenuButton"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+              >
+                {this.state.data.method}
+              </button>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                {Object.keys(this.dropdownRequestType).map(key => (
+                  <button
+                    className="btn"
+                    onClick={() =>
+                      this.setMethod(this.dropdownRequestType[key].name)
+                    }
+                  >
+                    {this.dropdownRequestType[key].name}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="host-field-container">
               <input
                 type="text"
                 name="BASE_URL_Value"
@@ -649,11 +645,13 @@ class DisplayEndpoint extends Component {
                 disabled={this.state.selectedHost !== "custom"}
               />
               <select
-                id="selectBox"
+                class="custom-select"
+                id="select-host-dropdown"
                 onChange={() =>
                   this.setDropdownValue(
-                    document.getElementById("selectBox").options[
-                      document.getElementById("selectBox").selectedIndex
+                    document.getElementById("select-host-dropdown").options[
+                      document.getElementById("select-host-dropdown")
+                        .selectedIndex
                     ].value
                   )
                 }
@@ -667,38 +665,39 @@ class DisplayEndpoint extends Component {
                 )}
               </select>
             </div>
+            <input
+              ref={this.uri}
+              type="text"
+              value={this.state.data.updatedUri}
+              name="updatedUri"
+              className="form-control form-control-lg h-auto"
+              id="endpoint-url-input"
+              aria-describedby="basic-addon3"
+              onChange={this.handleChange}
+            />
           </div>
-          <input
-            ref={this.uri}
-            type="text"
-            value={this.state.data.updatedUri}
-            name="updatedUri"
-            className="form-control form-control-lg h-auto"
-            id="basic-url"
-            aria-describedby="basic-addon3"
-            onChange={this.handleChange}
-          />
           <div className="d-flex">
             <button
-              className="btn btn-secondary ml-3"
+              className="btn"
               type="submit"
-              id="button-addon2"
+              id="send-request-button"
               onClick={() => this.handleSend()}
             >
               Send
             </button>
             <button
-              className="btn btn-secondary ml-3"
+              className="btn"
               type="button"
-              id="button-addon2"
+              id="save-endpoint-button"
               onClick={() => this.handleSave()}
             >
               Save
             </button>
           </div>
         </div>
-        <div>
-          <ul className="nav nav-pills mb-3" id="pills-tab" role="tablist">
+
+        <div className="endpoint-headers-container">
+          <ul className="nav nav-pills" id="pills-tab" role="tablist">
             <li className="nav-item">
               <a
                 className="nav-link active"
@@ -786,7 +785,8 @@ class DisplayEndpoint extends Component {
             </div>
           </div>
         </div>
-        <div>
+
+        <div className="endpoint-response-container">
           <DisplayResponse
             timeElapsed={this.state.timeElapsed}
             response={this.state.response}

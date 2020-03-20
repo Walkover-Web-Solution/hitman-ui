@@ -26,7 +26,7 @@ class SideBar extends Component {
           <ul class="nav nav-tabs" id="myTab" role="tablist">
             <li class="nav-item">
               <a
-                class="nav-link active"
+                class="nav-link "
                 id="history-tab"
                 data-toggle="tab"
                 href="#history"
@@ -39,7 +39,7 @@ class SideBar extends Component {
             </li>
             <li class="nav-item">
               <a
-                class="nav-link"
+                class="nav-link active"
                 id="collections-tab"
                 data-toggle="tab"
                 href="#collections"
@@ -66,7 +66,7 @@ class SideBar extends Component {
           </ul>
           <div class="tab-content" id="myTabContent">
             <div
-              class="tab-pane fade show active"
+              class="tab-pane fade "
               id="history"
               role="tabpanel"
               aria-labelledby="history-tab"
@@ -74,7 +74,7 @@ class SideBar extends Component {
               History coming soon... stay tuned
             </div>
             <div
-              class="tab-pane fade"
+              class="tab-pane fade show active"
               id="collections"
               role="tabpanel"
               aria-labelledby="collections-tab"

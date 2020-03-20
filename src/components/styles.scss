@@ -1,3 +1,5 @@
+$border-color: rgba(201, 203, 206, 0.7);
+
 .navbar-nav {
   float: left;
 }
@@ -7,9 +9,7 @@
 .nav-link {
   color: black;
   border: none;
-  // border-bottom: 4px solid tomato;
   background-color: inherit;
-  border-color: tomato;
 }
 
 #search-box-wrapper {
@@ -19,7 +19,7 @@
   margin: 10px 10px 0px 10px;
   border-width: 1px;
   border-style: solid;
-  border-color: rgb(223, 226, 230);
+  border-color: $border-color;
   border-radius: 60px;
   padding: 3px 10px 3px 10px;
   height: 30px;
@@ -37,9 +37,10 @@
   border: none;
 }
 
-nav.col-md-3.d-none.d-md-block.bg-light.sidebar {
+nav.col-md-2.d-none.d-md-block.bg-light.sidebar {
   padding-left: 0;
   padding-right: 0;
+  border-right: 2px solid $border-color;
 }
 
 div#custom-card-header {
@@ -119,7 +120,7 @@ nav.navbar.navbar-dark.fixed-top.bg-dark.flex-md-nowrap.p-0.shadow {
 
 .environment-container {
   align-self: flex-end;
-  border: 1px solid rgb(223, 226, 230);
+  border: 1px solid $border-color;
   float: right;
   display: flex;
   flex-direction: row-reverse;
@@ -134,7 +135,7 @@ nav.navbar.navbar-dark.fixed-top.bg-dark.flex-md-nowrap.p-0.shadow {
     margin: 3px;
     height: 35px;
     width: 35px;
-    background-color: rgb(194, 194, 194);
+    background-color: rgb(221, 221, 223);
     border-radius: 2px;
   }
   .select-environment-dropdown {
@@ -144,27 +145,11 @@ nav.navbar.navbar-dark.fixed-top.bg-dark.flex-md-nowrap.p-0.shadow {
     margin: 3px;
     height: 35px;
     width: 100%;
-    background-color: rgb(194, 194, 194);
+    background-color: rgb(221, 221, 223);
     border-radius: 2px;
   }
 }
 
-main.main.ml-sm-auto.col-lg-10 {
-  display: flex;
-  flex-direction: column;
-  margin-top: 40px;
-  padding: 0px;
-}
-.content-header {
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  .tabs-container {
-    width: 100%;
-    border: 1px solid rgb(223, 226, 230);
-    border-right: none;
-  }
-}
 .custom-modal-container {
   height: 600px;
   background: rgb(253, 253, 248);
@@ -234,6 +219,131 @@ input.custom-input::placeholder {
 #contained-modal-title-vcenter {
   font-size: 15px;
 }
+main.main.ml-sm-auto.col-lg-10 {
+  display: flex;
+  flex-direction: column;
+  margin-top: 40px;
+  padding: 0px;
+}
+.content-header {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  .tabs-container {
+    width: 100%;
+    border: 1px solid $border-color;
+    border-right: none;
+    border-left: none;
+  }
+}
+
+.endpoint-container {
+  display: flex;
+  flex-direction: column;
+  .endpoint-name-container {
+    border-bottom: 1px solid $border-color;
+    padding: 2px;
+    .endpoint-name-input {
+      border: none;
+      opacity: 0.7;
+      padding-left: 20px;
+    }
+  }
+  .endpoint-url-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    border-bottom: 1px solid $border-color;
+    padding: 10px;
+    height: 60px;
+    .dropdown-menu.show {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .input-group-prepend {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      width: 100%;
+
+      .dropdown {
+        height: 100%;
+        border-radius: 2px;
+      }
+      button#dropdownMenuButton {
+        height: 100%;
+        border-top-right-radius: 0px;
+        border-bottom-right-radius: 0px;
+        background-color: rgb(237, 237, 237);
+        border: 1px solid $border-color;
+        border-right: none;
+        color: black;
+        font-size: 15px;
+        opacity: 0.7;
+      }
+      .host-field-container {
+        position: relative;
+        width: 280px;
+        #select-host-dropdown {
+          width: 100%;
+          border-radius: 0px;
+          border-right: none;
+          height: 100%;
+        }
+        input {
+          position: absolute;
+          height: 100%;
+          width: calc(100% - 30px);
+          background-color: rgb(237, 237, 237);
+          border: 1px solid $border-color;
+        }
+      }
+    }
+    #endpoint-url-input {
+      border-top-left-radius: 0px;
+      border-bottom-left-radius: 0px;
+      opacity: 0.8;
+      background-color: rgb(237, 237, 237);
+    }
+    #send-request-button {
+      color: white;
+      background-color: rgb(60, 60, 233);
+      margin: 0px 15px;
+    }
+    #save-endpoint-button {
+      background-color: rgb(221, 221, 223);
+      color: black;
+      opacity: 0.7;
+    }
+  }
+  .endpoint-headers-container {
+    border-bottom: 1px solid $border-color;
+    ul#pills-tab {
+      border-bottom: 1px solid $border-color;
+      margin-bottom: 10px;
+    }
+  }
+  .endpoint-response-container {
+    border-bottom: 1px solid $border-color;
+  }
+}
+.sidebar-sticky {
+  .nav-tabs {
+    .nav-link {
+      &:hover {
+        color: #495057;
+        border-color: transparent;
+      }
+      &.active {
+        background: transparent;
+        border: none;
+        border-bottom: 3px solid tomato;
+      }
+    }
+  }
+}
+
 body {
   .btn:focus {
     outline: 0;
