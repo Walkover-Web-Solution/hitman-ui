@@ -8,6 +8,8 @@ import {
 } from "react-bootstrap";
 import GroupPages from "../pages/groupPages";
 import GroupForm from "../groups/groupForm";
+import PageForm from "../pages/pageForm";
+import ShareGroupForm from "../groups/shareGroupForm";
 import Endpoints from "../endpoints/endpoints";
 import { deleteGroup, duplicateGroup } from "../groups/redux/groupsActions";
 import { connect } from "react-redux";
@@ -24,7 +26,14 @@ const mapDispatchToProps = dispatch => {
 };
 
 class Groups extends Component {
-  state = {};
+  state = {
+    GroupFormName: "",
+    showGroupForm: {
+      addPage: false,
+      edit: false,
+      share: false
+    }
+  };
 
   onDrop(destinationGroupId) {
     this.props.set_destination_group_id(destinationGroupId);
@@ -48,7 +57,14 @@ class Groups extends Component {
       groupFlag: true
     });
   }
-
+  openShareGroupForm(group) {
+    let showGroupForm = { share: true, addPage: false };
+    this.setState({
+      showGroupForm,
+      groupFormName: "Share Group",
+      selectedGroup: group
+    });
+  }
   handleDuplicate(group) {
     this.props.duplicateGroup(group);
     this.props.history.push({
@@ -69,22 +85,79 @@ class Groups extends Component {
       });
     }
   }
+  closeGroupForm() {
+    let edit = false;
+    let addPage = false;
+    let showGroupForm = { edit, addPage };
+    this.setState({ showGroupForm });
+  }
+  showEditGroupForm() {
+    return (
+      this.state.showGroupForm.edit && (
+        <GroupForm
+          {...this.props}
+          show={this.state.showGroupForm.edit}
+          onHide={() => this.closeGroupForm()}
+          selected_group={this.state.selectedGroup}
+          title="Edit Group"
+        />
+      )
+    );
+  }
+
+  showAddGroupPageForm() {
+    return (
+      this.state.showGroupForm.addPage && (
+        <PageForm
+          {...this.props}
+          show={this.state.showGroupForm.addPage}
+          onHide={() => this.closeGroupForm()}
+          title={this.state.groupFormName}
+          selectedVersion={this.state.selectedVersion}
+          selectedGroup={this.state.selectedGroup}
+          selectedCollection={this.state.selectedCollection}
+        />
+      )
+    );
+  }
+  showShareGroupForm() {
+    console.log("hello");
+    return (
+      this.state.showGroupForm.share && (
+        <ShareGroupForm
+          show={this.state.showGroupForm.share}
+          onHide={() => this.closeGroupForm()}
+          title={this.state.groupFormName}
+          selectedGroup={this.state.selectedGroup}
+        />
+      )
+    );
+  }
+  openGroupPageForm(selectedVersion, selectedGroup, selectedCollection) {
+    let showGroupForm = { addPage: true };
+    this.setState({
+      showGroupForm,
+      groupFormName: "Add new Group Page",
+      selectedVersion,
+      selectedGroup,
+      selectedCollection
+    });
+  }
+  openEditGroupForm(selectedGroup) {
+    let showGroupForm = { edit: true };
+    this.setState({
+      showGroupForm,
+      selectedGroup
+    });
+  }
 
   render() {
     return (
       <div>
         <div>
-          {this.state.showGroupForm && (
-            <GroupForm
-              {...this.props}
-              show={true}
-              onHide={() => {
-                this.setState({ showGroupForm: false });
-              }}
-              selected_group={this.state.selectedGroup}
-              title="Edit Group"
-            />
-          )}
+          {this.showShareGroupForm()}
+          {this.showEditGroupForm()}
+          {this.showAddGroupPageForm()}
         </div>
         {Object.keys(this.props.groups)
           .filter(
@@ -108,12 +181,9 @@ class Groups extends Component {
                   >
                     <Dropdown.Item
                       eventKey="1"
-                      onClick={() => {
-                        this.setState({
-                          showGroupForm: true,
-                          selectedGroup: this.props.groups[groupId]
-                        });
-                      }}
+                      onClick={() =>
+                        this.openEditGroupForm(this.props.groups[groupId])
+                      }
                     >
                       Edit
                     </Dropdown.Item>
@@ -128,9 +198,9 @@ class Groups extends Component {
                     <Dropdown.Item
                       eventKey="1"
                       onClick={() =>
-                        this.handleAddPage(
-                          groupId,
+                        this.openGroupPageForm(
                           this.props.groups[groupId].versionId,
+                          this.props.groups[groupId],
                           this.props.collection_id
                         )
                       }
@@ -155,6 +225,14 @@ class Groups extends Component {
                       }
                     >
                       Duplicate
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                      eventKey="3"
+                      onClick={() =>
+                        this.openShareGroupForm(this.props.groups[groupId])
+                      }
+                    >
+                      Share
                     </Dropdown.Item>
                   </DropdownButton>
                 </Card.Header>

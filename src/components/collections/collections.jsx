@@ -1,25 +1,13 @@
 import React, { Component } from "react";
-import {
-  Accordion,
-  Button,
-  Card,
-  Dropdown,
-  DropdownButton
-} from "react-bootstrap";
 import { connect } from "react-redux";
-import { Route, Switch, withRouter } from "react-router-dom";
-import { toast } from "react-toastify";
+import { withRouter } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import shortId from "shortid";
-import CollectionVersionForm from "../collectionVersions/collectionVersionForm";
 import CollectionVersions from "../collectionVersions/collectionVersions";
 import collectionVersionsService from "../collectionVersions/collectionVersionsService";
-import endpointService from "../endpoints/endpointService";
 import ImportVersionForm from "../collectionVersions/importVersionForm";
-import ShareVersionForm from "../collectionVersions/shareVersionForm";
-import CollectionForm from "./collectionForm";
-import PageForm from "../pages/pageForm";
 import { fetchAllVersions } from "../collectionVersions/redux/collectionVersionsActions";
+import endpointService from "../endpoints/endpointService";
 import { fetchEndpoints } from "../endpoints/redux/endpointsActions";
 import { fetchGroups } from "../groups/redux/groupsActions";
 import { fetchPages } from "../pages/redux/pagesActions";
@@ -28,6 +16,7 @@ import {
   fetchAllUsersOfTeam,
   shareCollection
 } from "../team/redux/teamsActions";
+import collectionsService from "./collectionsService";
 import {
   addCollection,
   deleteCollection,
@@ -82,7 +71,7 @@ class CollectionsComponent extends Component {
   }
 
   closeCollectionForm() {
-    this.setState({ showCollectionForm: false });
+    this.setState({ showCollectionForm: false, showImportVersionForm: false });
   }
 
   async dndMoveEndpoint(endpointId, sourceGroupId, destinationGroupId) {
@@ -126,50 +115,6 @@ class CollectionsComponent extends Component {
     this.props.updateCollection(editedCollection);
   }
 
-  async handleImportVersion(importLink, shareIdentifier, collectionId) {
-    let versions = { ...this.state.versions };
-    let version = {};
-    let endpoints = {};
-    let pages = {};
-    let groups = {};
-    try {
-      let { data } = await collectionVersionsService.exportCollectionVersion(
-        importLink,
-        shareIdentifier
-      );
-      data.collectionId = collectionId;
-      let importVersion = await collectionVersionsService.importCollectionVersion(
-        importLink,
-        shareIdentifier,
-        data
-      );
-      data = importVersion.data;
-      version = data.version;
-      versions[version.id] = version;
-      groups = { ...this.state.groups, ...data.groups };
-      endpoints = { ...this.state.endpoints, ...data.endpoints };
-      pages = { ...this.state.pages, ...data.pages };
-      const versionIds = [...this.state.versionIds, version.id.toString()];
-      const groupIds = [...this.state.groupIds, ...Object.keys(data.groups)];
-      const pageIds = [...this.state.pageIds, ...Object.keys(data.pages)];
-      this.setState({
-        versions,
-        versionIds,
-        groups,
-        groupIds,
-        endpoints,
-        pages,
-        pageIds
-      });
-    } catch (ex) {
-      toast.error(
-        ex.response
-          ? ex.response.data
-          : "Something went wrong,can't import version"
-      );
-    }
-  }
-
   async handleDeleteGroup(deletedGroupId) {
     this.props.deleteGroup(deletedGroupId);
   }
@@ -183,21 +128,21 @@ class CollectionsComponent extends Component {
     this.props.duplicateCollection(collectionCopy);
   }
 
-  showAddCollectionForm() {
-    return (
-      this.state.showVersionForm && (
-        <CollectionVersionForm
-          {...this.props}
-          show={true}
-          onHide={() => {
-            this.setState({ showVersionForm: false });
-          }}
-          collection_id={this.state.selectedCollection.id}
-          title="Add new Collection Version"
-        />
-      )
-    );
-  }
+  // showAddCollectionForm() {
+  //   return (
+  //     this.state.showVersionForm && (
+  //       <CollectionVersionForm
+  //         {...this.props}
+  //         show={true}
+  //         onHide={() => {
+  //           this.setState({ showVersionForm: false });
+  //         }}
+  //         collection_id={this.state.selectedCollection.id}
+  //         title="Add new Collection Version"
+  //       />
+  //     )
+  //   );
+  // }
   showShareCollectionForm() {
     return (
       this.state.showCollectionShareForm && (
@@ -230,20 +175,6 @@ class CollectionsComponent extends Component {
       collectionFormName: "Add new Collection"
     });
   }
-
-  showEditCollectionForm() {
-    return (
-      this.state.showCollectionForm && (
-        <CollectionForm
-          {...this.props}
-          show={this.state.showCollectionForm}
-          onHide={() => this.closeCollectionForm()}
-          title={this.state.collectionFormName}
-          edited_collection={this.state.selectedCollection}
-        />
-      )
-    );
-  }
   openEditCollectionForm(collectionId) {
     this.setState({
       showCollectionForm: true,
@@ -262,199 +193,174 @@ class CollectionsComponent extends Component {
       }
     });
   }
-
-  routeToAddNewGroupPage() {
+  openImportVersionForm(collectionId) {
+    this.setState({
+      showImportVersionForm: true,
+      collectionFormName: "Import Version",
+      selectedCollection: {
+        ...this.props.collections[collectionId]
+      }
+    });
+  }
+  showImportVersionForm() {
     return (
-      <Route
-        path="/dashboard/:id/versions/:versionId/groups/:groupId/pages/new"
-        render={props => (
-          <PageForm
-            {...props}
-            show={true}
-            onHide={() => {
-              this.props.history.push({
-                pathname: "/dashboard"
-              });
-            }}
-            title="Add new Group Page"
-            versionId={this.props.location.versionId}
-            groupId={this.props.location.groupId}
-          />
-        )}
-      />
+      this.state.showImportVersionForm && (
+        <ImportVersionForm
+          {...this.props}
+          show={this.state.showImportVersionForm}
+          onHide={() => this.closeCollectionForm()}
+          title={this.state.collectionFormName}
+          selected_collection={this.state.selectedCollection}
+        />
+      )
     );
   }
 
-  routeToAddNewVersionPage() {
-    return (
-      <Route
-        path="/dashboard/:id/versions/:versionId/pages/new"
-        render={props => (
-          <PageForm
-            {...props}
-            show={true}
-            onHide={() => {
-              this.props.history.push({
-                pathname: "/dashboard"
-              });
-            }}
-            title="Add New Version Page"
-            versionId={this.props.location.versionId}
-          />
-        )}
-      />
-    );
-  }
-
-  routeToImportVersionForm() {
-    return (
-      <Route
-        path="/dashboard/:collectionId/versions/import"
-        render={props => (
-          <ImportVersionForm
-            {...props}
-            show={true}
-            onHide={() => {
-              this.props.history.push({
-                pathname: "/dashboard"
-              });
-            }}
-            title="Import Version"
-          />
-        )}
-      />
-    );
-  }
-
-  routeToShareVersionForm() {
-    return (
-      <Route
-        path="/dashboard/:collectionId/versions/:versionId/share"
-        render={props => (
-          <ShareVersionForm
-            {...props}
-            show={true}
-            onHide={() => {
-              this.props.history.push({
-                pathname: "/dashboard"
-              });
-            }}
-            title="Share Version"
-          />
-        )}
-      />
-    );
+  closeVersionForm() {
+    this.setState({ showVersionForm: false });
   }
 
   render() {
-    const { location } = this.props;
-
-    if (location.importVersionLink) {
-      let importLink = location.importVersionLink;
-      let collectionId = location.collectionId;
-      importLink = importLink.shareVersionLink;
-      let shareIdentifier = importLink.split("/")[4];
-      this.props.history.replace({ importVersionLink: null });
-      this.handleImportVersion(importLink, shareIdentifier, collectionId);
-    }
-
     return (
       <div>
         <div className="App-Nav">
           <div className="tabs">
-            {this.showAddCollectionForm()}
-            {this.showEditCollectionForm()}
+            {this.state.showVersionForm &&
+              collectionVersionsService.showVersionForm(
+                this.props,
+                this.closeVersionForm.bind(this),
+                this.state.selectedCollection.id,
+                "Add new Collection Version"
+              )}
+            {this.state.showCollectionForm &&
+              collectionsService.showCollectionForm(
+                this.props,
+                this.closeCollectionForm.bind(this),
+                this.state.collectionFormName,
+                this.state.selectedCollection
+              )}
+            {this.showImportVersionForm()}
             {this.showShareCollectionForm()}
-
-            <Switch>
-              {this.routeToAddNewGroupPage()}
-              {this.routeToAddNewVersionPage()}
-              {this.routeToImportVersionForm()}
-              {this.routeToShareVersionForm()}
-            </Switch>
           </div>
         </div>
+
         <div className="App-Side">
-          <button
-            className="btn btn-default btn-lg"
-            onClick={() => this.openAddCollectionForm()}
+          <div
+            style={{
+              color: "tomato",
+              borderBottom: "1px solid rgba(0, 0, 0, 0.125) ",
+              width: "100%"
+            }}
           >
-            + New Collection
-          </button>
+            <button
+              className="btn btn-default"
+              onClick={() => this.openAddCollectionForm()}
+              style={{
+                color: "tomato"
+              }}
+            >
+              <i className="fas fa-plus" style={{ paddingRight: "10px" }}></i>
+              New Collection
+            </button>
+          </div>
           {Object.keys(this.props.collections).map((collectionId, index) => (
-            <Accordion key={collectionId}>
-              <Card>
-                <Card.Header>
-                  <Accordion.Toggle as={Button} variant="link" eventKey="1">
-                    {this.props.collections[collectionId].name}
-                  </Accordion.Toggle>
-                  <DropdownButton
-                    alignRight
-                    title=""
-                    id="dropdown-menu-align-right"
-                    style={{ float: "right" }}
-                  >
-                    <Dropdown.Item
-                      eventKey="1"
-                      onClick={() => this.openEditCollectionForm(collectionId)}
+            <div id="accordion" key={index}>
+              <div className="card">
+                <div className="card-header" id="custom-card-header">
+                  <i
+                    className="fas fa-folder-open"
+                    style={{ margin: "5px" }}
+                  ></i>
+                  <h5 className="mb-0">
+                    <button
+                      className="btn"
+                      data-toggle="collapse"
+                      data-target={`#${collectionId}`}
+                      aria-expanded="true"
+                      aria-controls={collectionId}
                     >
-                      Edit
-                    </Dropdown.Item>
-                    <Dropdown.Item
-                      eventKey="0"
-                      onClick={() => {
-                        this.handleDelete(this.props.collections[collectionId]);
-                      }}
+                      {this.props.collections[collectionId].name}
+                    </button>
+                  </h5>
+                  <div className="btn-group">
+                    <button
+                      className="btn btn-secondary "
+                      data-toggle="dropdown"
+                      aria-haspopup="true"
+                      aria-expanded="false"
                     >
-                      Delete
-                    </Dropdown.Item>
-                    <Dropdown.Item
-                      eventKey="3"
-                      onClick={() => this.openAddVersionForm(collectionId)}
-                    >
-                      Add Version
-                    </Dropdown.Item>
-                    <Dropdown.Item
-                      eventKey="3"
-                      onClick={() =>
-                        this.handleDuplicateCollection(
-                          this.props.collections[collectionId]
-                        )
-                      }
-                    >
-                      Duplicate
-                    </Dropdown.Item>
-                    <Dropdown.Item
-                      eventKey="3"
-                      onClick={() => {
-                        this.props.history.push({
-                          pathname: `/dashboard/${collectionId}/versions/import`,
-                          importCollection: this.state.collections[collectionId]
-                        });
-                      }}
-                    >
-                      Import Version
-                    </Dropdown.Item>
-                    <Dropdown.Item
-                      eventKey="3"
-                      onClick={() => {
-                        this.shareCollection(collectionId);
-                      }}
-                    >
-                      Share
-                    </Dropdown.Item>
-                  </DropdownButton>
-                </Card.Header>
-                <Accordion.Collapse eventKey="1">
-                  <Card.Body>
+                      <i className="fas fa-ellipsis-h"></i>
+                    </button>
+                    <div className="dropdown-menu dropdown-menu-right">
+                      <button
+                        className="dropdown-item"
+                        onClick={() =>
+                          this.openEditCollectionForm(collectionId)
+                        }
+                      >
+                        Edit
+                      </button>
+                      <button
+                        className="dropdown-item"
+                        onClick={() => {
+                          if (
+                            window.confirm(
+                              "Are you sure you wish to delete this collection?" +
+                                "\n" +
+                                " All your versions, groups, pages and endpoints present in this collection will be deleted."
+                            )
+                          )
+                            this.handleDelete(
+                              this.props.collections[collectionId]
+                            );
+                        }}
+                      >
+                        Delete
+                      </button>
+                      <button
+                        className="dropdown-item"
+                        onClick={() => this.openAddVersionForm(collectionId)}
+                      >
+                        Add Version
+                      </button>
+                      <button
+                        className="dropdown-item"
+                        onClick={() =>
+                          this.handleDuplicateCollection(
+                            this.props.collections[collectionId]
+                          )
+                        }
+                      >
+                        Duplicate
+                      </button>
+                      <button
+                        className="dropdown-item"
+                        onClick={() => this.openImportVersionForm(collectionId)}
+                      >
+                        Import Version
+                      </button>
+                      <button
+                        className="dropdown-item"
+                        onClick={() => {
+                          this.shareCollection(collectionId);
+                        }}
+                      >
+                        Share
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div id={collectionId} className="collapse">
+                  <div className="card-body">
                     <CollectionVersions
                       {...this.props}
                       collection_id={collectionId}
                     />
-                  </Card.Body>
-                </Accordion.Collapse>
-              </Card>
-            </Accordion>
+                  </div>
+                </div>
+              </div>
+            </div>
           ))}
         </div>
       </div>

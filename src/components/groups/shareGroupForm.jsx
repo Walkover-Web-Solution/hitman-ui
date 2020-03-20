@@ -5,20 +5,21 @@ import { CopyToClipboard } from "react-copy-to-clipboard";
 import { apiUrl } from "../../config.json";
 import Form from "../common/form";
 
-class ShareVersionForm extends Form {
+class ShareGroupForm extends Form {
   state = {
     data: {
-      shareVersionLink: ""
+      shareGroupLink: ""
     },
     errors: {}
   };
 
   componentDidMount() {
-    if (this.props.selectedVersion) {
+    console.log("abcd", this.props.selectedGroup);
+    if (this.props.selectedGroup) {
       let data = {};
-      const shareVersionLink =
-        apiUrl + "/share/" + this.props.selectedVersion.shareIdentifier;
-      data = { shareVersionLink };
+      const shareGroupLink = apiUrl + "/share/" + this.props.selectedGroup.id;
+      data = { shareGroupLink };
+      console.log("shareGroupLink", shareGroupLink, data);
       this.setState({ data });
     }
   }
@@ -46,11 +47,11 @@ class ShareVersionForm extends Form {
         </Modal.Header>
         <Modal.Body>
           <form onSubmit={this.handleSubmit}>
-            {this.renderInput("shareVersionLink", "Public Link")}
-            {<div name="shareVersionLink" label="Public Link"></div>}
+            {this.renderInput("shareGroupLink", "Public Link")}
+            {<div name="shareGroupLink" label="Public Link"></div>}
             {
               <CopyToClipboard
-                text={JSON.stringify(this.state.data.shareVersionLink).replace(
+                text={JSON.stringify(this.state.data.shareGroupLink).replace(
                   /['"]+/g,
                   ""
                 )}
@@ -71,4 +72,4 @@ class ShareVersionForm extends Form {
   }
 }
 
-export default ShareVersionForm;
+export default ShareGroupForm;

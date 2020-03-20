@@ -1,9 +1,9 @@
-import collectionsService from "../../collections/collectionsService";
+import collectionsApiService from "../../collections/collectionsApiService";
 import teamsActionTypes from "./teamsActionTypes";
 
 export const shareCollection = sharedCollection => {
   return dispatch => {
-    collectionsService
+    collectionsApiService
       .shareCollection(sharedCollection)
       .then(response => {
         dispatch(onCollectionShared(response.data));
@@ -36,7 +36,7 @@ export const onCollectionSharedError = (error, sharedCollection) => {
 
 export const fetchAllUsersOfTeam = teamIdentifier => {
   return dispatch => {
-    collectionsService
+    collectionsApiService
       .fetchAllUsersOfTeam(teamIdentifier)
       .then(response => {
         dispatch(onFetchAllUsers(response.data));
@@ -67,7 +67,7 @@ export const deleteUserFromTeam = teamData => {
   console.log(teamData);
   return dispatch => {
     dispatch(deleteMemberRequest(teamData));
-    collectionsService
+    collectionsApiService
       .deleteUserOfTeam(teamData)
       .then(response => {
         dispatch(onDeleteUser(response.data));

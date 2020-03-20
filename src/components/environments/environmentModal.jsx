@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { ListGroup, Modal } from "react-bootstrap";
-import environmentService from "./environmentService";
+import environmentsApiService from "./environmentsApiService";
 
 class EnvironmentModal extends Component {
   state = {
@@ -12,7 +12,7 @@ class EnvironmentModal extends Component {
     if (Object.keys(this.props.environment.environments).length) {
       environments = { ...this.props.environment.environments };
     } else {
-      const { data } = await environmentService.getEnvironments();
+      const { data } = await environmentsApiService.getEnvironments();
       environments = data;
     }
     this.setState({ environments });
@@ -27,7 +27,7 @@ class EnvironmentModal extends Component {
         { id: environmentId, ...editedEnvironment }
       ];
       this.setState({ environments });
-      await environmentService.updateEnvironment(
+      await environmentsApiService.updateEnvironment(
         environmentId,
         editedEnvironment
       );

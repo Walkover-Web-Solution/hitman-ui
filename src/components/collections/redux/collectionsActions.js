@@ -1,11 +1,11 @@
-import collectionsService from "../collectionsService";
+import collectionsApiService from "../collectionsApiService";
 import collectionsActionTypes from "./collectionsActionTypes";
 import store from "../../../store/store";
 import { toast } from "react-toastify";
 
 export const fetchCollections = () => {
   return dispatch => {
-    collectionsService
+    collectionsApiService
       .getCollections()
       .then(response => {
         dispatch(onCollectionsFetched(response.data));
@@ -37,7 +37,7 @@ export const onCollectionsFetchedError = error => {
 export const addCollection = newCollection => {
   return dispatch => {
     dispatch(addCollectionRequest(newCollection));
-    collectionsService
+    collectionsApiService
       .saveCollection(newCollection)
       .then(response => {
         dispatch(onCollectionAdded(response.data));
@@ -83,7 +83,7 @@ export const updateCollection = editedCollection => {
     dispatch(updateCollectionRequest({ ...editedCollection }));
     const id = editedCollection.id;
     delete editedCollection.id;
-    collectionsService
+    collectionsApiService
       .updateCollection(id, editedCollection)
       .then(() => {
         dispatch(onCollectionUpdated());
@@ -123,7 +123,7 @@ export const onCollectionUpdatedError = (error, originalCollection) => {
 export const deleteCollection = collection => {
   return dispatch => {
     dispatch(deleteCollectionRequest(collection));
-    collectionsService
+    collectionsApiService
       .deleteCollection(collection.id)
       .then(() => {
         dispatch(onCollectionDeleted());
@@ -157,7 +157,7 @@ export const onCollectionDeletedError = (error, collection) => {
 
 export const duplicateCollection = collection => {
   return dispatch => {
-    collectionsService
+    collectionsApiService
       .duplicateCollection(collection.id)
       .then(response => {
         dispatch(onCollectionDuplicated(response.data));

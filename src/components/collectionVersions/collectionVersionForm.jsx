@@ -63,9 +63,6 @@ class CollectionVersionForm extends Form {
       const newVersion = { ...this.state.data, requestId: shortid.generate() };
       this.props.addVersion(newVersion, collectionId);
     }
-    this.props.history.push({
-      pathname: `/dashboard`
-    });
   }
 
   render() {

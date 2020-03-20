@@ -2,7 +2,17 @@ import jQuery from "jquery";
 import React, { Component } from "react";
 import { Modal, Table } from "react-bootstrap";
 import shortId from "shortid";
-import "../../css/environmentVariables.css";
+import "../../styles/environmentVariables.scss";
+import { connect } from "react-redux";
+import { addEnvironment, updateEnvironment } from "./redux/environmentsActions";
+
+const mapDispatchToProps = dispatch => {
+  return {
+    addEnvironment: newEnvironment => dispatch(addEnvironment(newEnvironment)),
+    updateEnvironment: editedEnvironment =>
+      dispatch(updateEnvironment(editedEnvironment))
+  };
+};
 
 class EnvironmentVariables extends Component {
   state = {
@@ -233,4 +243,4 @@ class EnvironmentVariables extends Component {
   }
 }
 
-export default EnvironmentVariables;
+export default connect(null, mapDispatchToProps)(EnvironmentVariables);

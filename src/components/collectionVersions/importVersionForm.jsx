@@ -3,7 +3,15 @@ import { Link } from "react-router-dom";
 import { Modal } from "react-bootstrap";
 import Joi from "joi-browser";
 import Form from "../common/form";
+import { connect } from "react-redux";
+import { importVersion } from "../collectionVersions/redux/collectionVersionsActions";
 
+const mapDispatchToProps = dispatch => {
+  return {
+    importVersion: (importLink, shareIdentifier, collectionId) =>
+      dispatch(importVersion(importLink, shareIdentifier, collectionId))
+  };
+};
 class ShareVersionForm extends Form {
   state = {
     data: {
@@ -25,11 +33,11 @@ class ShareVersionForm extends Form {
 
   async doSubmit(props) {
     if (this.props.title === "Import Version") {
-      this.props.history.push({
-        pathname: `/dashboard`,
-        importVersionLink: { ...this.state.data },
-        collectionId: this.props.location.pathname.split("/")[2]
-      });
+      this.props.onHide();
+      const collectionId = this.props.selected_collection.id;
+      const importLink = this.state.data.shareVersionLink;
+      let shareIdentifier = importLink.split("/")[4];
+      this.props.importVersion(importLink, shareIdentifier, collectionId);
     }
   }
 
@@ -51,7 +59,9 @@ class ShareVersionForm extends Form {
             {this.renderInput("shareVersionLink", "Public Link")}
             {<div name="shareVersionLink" label="Public Link"></div>}
             {this.renderButton("Submit", "right")}
-            <Link to={`/dashboard`}>Cancel</Link>
+            <button className="btn btn-default" onClick={this.props.onHide}>
+              Cancel
+            </button>
           </form>
         </Modal.Body>
       </Modal>
@@ -59,4 +69,4 @@ class ShareVersionForm extends Form {
   }
 }
 
-export default ShareVersionForm;
+export default connect(null, mapDispatchToProps)(ShareVersionForm);
