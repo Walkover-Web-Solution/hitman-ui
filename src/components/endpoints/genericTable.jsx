@@ -56,8 +56,9 @@ class GenericTable extends Component {
   render() {
     const { dataArray, title } = this.props;
     return (
-      <div>
-        <Table bordered size="sm">
+      <div className="generic-table-container">
+        <div className="generic-table-title-container">{title}</div>
+        <table className="table table-bordered" bordered>
           <thead>
             <tr>
               <th>KEY</th>
@@ -68,7 +69,7 @@ class GenericTable extends Component {
 
           <tbody>
             {dataArray.map((e, index) => (
-              <tr key={index}>
+              <tr key={index} id="generic-table-row">
                 <td>
                   <input
                     name={index + ".key"}
@@ -89,7 +90,7 @@ class GenericTable extends Component {
                     style={{ border: "none" }}
                   />
                 </td>
-                <td>
+                <td id="generic-table-description-cell">
                   <input
                     name={index + ".description"}
                     value={dataArray[index].description}
@@ -98,11 +99,9 @@ class GenericTable extends Component {
                     style={{ border: "none" }}
                     className="form-control"
                   />
-                </td>
-                <td>
                   <button
                     type="button"
-                    className="btn btn-light btn-sm btn-block"
+                    className="btn cross-button"
                     onClick={() => this.handleDelete(dataArray, index, title)}
                   >
                     x
@@ -123,10 +122,9 @@ class GenericTable extends Component {
                 </button>
               </td>
               <td> </td>
-              <td> </td>
             </tr>
           </tbody>
-        </Table>
+        </table>
       </div>
     );
   }

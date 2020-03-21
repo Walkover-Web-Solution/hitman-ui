@@ -87,64 +87,62 @@ class Endpoints extends Component {
   }
   render() {
     return (
-      <div>
+      <React.Fragment>
         {Object.keys(this.props.endpoints).length !== 0 &&
           this.props.endpoints_order
             .filter(
               eId => this.props.endpoints[eId].groupId === this.props.group_id
             )
             .map(endpointId => (
-              <Accordion defaultActiveKey="1" key={endpointId}>
-                <Card>
-                  <Card.Header
-                    draggable
-                    onDragOver={e => this.onDragOver(e, endpointId)}
-                    onDragStart={e => this.onDragStart(e, endpointId)}
-                    onDrop={e => this.onDrop(e)}
+              <div className="endpoint-list-item">
+                <button
+                  className="btn "
+                  draggable
+                  onDragOver={e => this.onDragOver(e, endpointId)}
+                  onDragStart={e => this.onDragStart(e, endpointId)}
+                  onDrop={e => this.onDrop(e)}
+                  onClick={() =>
+                    this.handleDisplay(
+                      this.props.endpoints[endpointId],
+                      this.props.groups,
+                      this.props.versions,
+                      this.props.group_id
+                    )
+                  }
+                >
+                  {this.props.endpoints[endpointId].name}
+                </button>
+                <div className="btn-group">
+                  <button
+                    className="btn "
+                    data-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false"
                   >
-                    <Accordion.Toggle
+                    <i className="fas fa-ellipsis-h"></i>
+                  </button>
+                  <div className="dropdown-menu dropdown-menu-right">
+                    <button
+                      className="dropdown-item"
                       onClick={() =>
-                        this.handleDisplay(
-                          this.props.endpoints[endpointId],
-                          this.props.groups,
-                          this.props.versions,
-                          this.props.group_id
-                        )
+                        this.handleDelete(this.props.endpoints[endpointId])
                       }
-                      as={Button}
-                      variant="link"
-                      eventKey="1"
                     >
-                      {this.props.endpoints[endpointId].name}
-                    </Accordion.Toggle>
-                    <DropdownButton
-                      alignRight
-                      title=""
-                      id="dropdown-menu-align-right"
-                      style={{ float: "right" }}
+                      Delete
+                    </button>
+                    <button
+                      className="dropdown-item"
+                      onClick={() =>
+                        this.handleDuplicate(this.props.endpoints[endpointId])
+                      }
                     >
-                      <Dropdown.Item
-                        eventKey="2"
-                        onClick={() =>
-                          this.handleDelete(this.props.endpoints[endpointId])
-                        }
-                      >
-                        Delete
-                      </Dropdown.Item>
-                      <Dropdown.Item
-                        eventKey="3"
-                        onClick={() =>
-                          this.handleDuplicate(this.props.endpoints[endpointId])
-                        }
-                      >
-                        Duplicate
-                      </Dropdown.Item>
-                    </DropdownButton>
-                  </Card.Header>
-                </Card>
-              </Accordion>
+                      Duplicate
+                    </button>
+                  </div>
+                </div>
+              </div>
             ))}
-      </div>
+      </React.Fragment>
     );
   }
 }

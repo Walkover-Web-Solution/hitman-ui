@@ -15,7 +15,7 @@ import {
 } from "../collectionVersions/redux/collectionVersionsActions";
 import ShareVersionForm from "../collectionVersions/shareVersionForm";
 import GroupForm from "../groups/groupForm";
-import PageForm from "../pages/pageForm"
+import PageForm from "../pages/pageForm";
 import { withRouter } from "react-router-dom";
 import CollectionVersionForm from "../collectionVersions/collectionVersionForm";
 
@@ -80,86 +80,91 @@ class CollectionVersions extends Component {
     });
   }
 
-  showAddVersionPageForm(){
+  showAddVersionPageForm() {
     return (
       this.state.showVersionForm.addPage && (
         <PageForm
-        {...this.props}
-        show={this.state.showVersionForm.addPage}
-        onHide={() => this.closeVersionForm()}
-        title={this.state.versionFormName}
-        selectedVersion={this.state.selectedVersion}
-        /> 
-        )
+          {...this.props}
+          show={this.state.showVersionForm.addPage}
+          onHide={() => this.closeVersionForm()}
+          title={this.state.versionFormName}
+          selectedVersion={this.state.selectedVersion}
+        />
+      )
     );
   }
-  openShareVersionForm(version){
-    let showVersionForm = { share:true};
+  openShareVersionForm(version) {
+    let showVersionForm = { share: true };
     this.setState({
       showVersionForm,
       versionFormName: "Share Version",
-      selectedVersion:version
+      selectedVersion: version
     });
   }
-  openAddVersionPageForm(version){
-    let showVersionForm = { addPage :true};
+  openAddVersionPageForm(version) {
+    let showVersionForm = { addPage: true };
     this.setState({
       showVersionForm,
       versionFormName: "Add New Version Page",
-      selectedVersion:version
+      selectedVersion: version
     });
   }
-  openAddGroupForm(version){
-    let showVersionForm = { addGroup:true };
+  openAddGroupForm(version) {
+    let showVersionForm = { addGroup: true };
     this.setState({
       showVersionForm,
       versionFormName: "Add new Group",
-      selectedVersion:version
+      selectedVersion: version
     });
   }
-  openEditVersionForm(version){
+  openEditVersionForm(version) {
     this.setState({
       showCollectionForm: true,
       selectedVersion: version
-    })
-
+    });
   }
-  showShareVersionForm(){
-    return(this.state.showVersionForm.share && (
-      <ShareVersionForm
-        show={this.state.showVersionForm.share}
-        onHide={() => this.closeVersionForm()}
-        title={this.state.versionFormName}
-        selectedVersion={this.state.selectedVersion}
-      />
-    ));
+  showShareVersionForm() {
+    return (
+      this.state.showVersionForm.share && (
+        <ShareVersionForm
+          show={this.state.showVersionForm.share}
+          onHide={() => this.closeVersionForm()}
+          title={this.state.versionFormName}
+          selectedVersion={this.state.selectedVersion}
+        />
+      )
+    );
   }
-  showAddGroupForm(){
-    return(this.state.showVersionForm.addGroup && (
-      <GroupForm
-        show={this.state.showVersionForm.addGroup}
-        onHide={() => this.closeVersionForm()}
-        title={this.state.versionFormName}
-        selectedVersion={this.state.selectedVersion}
-      />
-    ));
+  showAddGroupForm() {
+    return (
+      this.state.showVersionForm.addGroup && (
+        <GroupForm
+          show={this.state.showVersionForm.addGroup}
+          onHide={() => this.closeVersionForm()}
+          title={this.state.versionFormName}
+          selectedVersion={this.state.selectedVersion}
+        />
+      )
+    );
   }
-  showEditVersionForm(){
-    return(this.state.showCollectionForm && (
-      <CollectionVersionForm
-        {...this.props}
-        show={true}
-        onHide={() => {
-          this.setState({ showCollectionForm: false });
-        }}
-        title="Edit Collection Version"
-        selected_version={this.state.selectedVersion}
-      />
-    ));
+  showEditVersionForm() {
+    return (
+      this.state.showCollectionForm && (
+        <CollectionVersionForm
+          {...this.props}
+          show={true}
+          onHide={() => {
+            this.setState({ showCollectionForm: false });
+          }}
+          title="Edit Collection Version"
+          selected_version={this.state.selectedVersion}
+        />
+      )
+    );
   }
 
   closeVersionForm() {
-    let showVersionForm = { share:false, addGroup:false,addPage :false};
+    let showVersionForm = { share: false, addGroup: false, addPage: false };
     this.setState({ showVersionForm });
   }
   render() {
@@ -177,69 +182,105 @@ class CollectionVersions extends Component {
                 this.props.versions[versionId].collectionId ===
                 this.props.collection_id
             )
-            .map(versionId => (
-              <Accordion defaultActiveKey="0" key={versionId}>
-                <Card>
-                  <Card.Header>
-                    <Accordion.Toggle as={Button} variant="link" eventKey="1">
-                      {this.props.versions[versionId].number}
-                    </Accordion.Toggle>
-                    <DropdownButton
-                      alignRight
-                      title=""
-                      id="dropdown-menu-align-right"
-                      style={{ float: "right" }}
-                    >
-                      <Dropdown.Item
-                        eventKey="1"
-                        onClick={() => this.openEditVersionForm(this.props.versions[versionId])}
+            .map((versionId, index) => (
+              <div id="accordion" key={versionId}>
+                <div className="card">
+                  <div className="card-header" id="custom-card-header">
+                    <i
+                      className="fas fa-folder-open"
+                      style={{ margin: "5px" }}
+                    ></i>
+                    <h5 className="mb-0">
+                      <button
+                        className="btn"
+                        data-toggle="collapse"
+                        data-target={`#${versionId}`}
+                        aria-expanded="true"
+                        aria-controls={versionId}
                       >
-                        Edit
-                      </Dropdown.Item>
-                      <Dropdown.Item
-                        eventKey="2"
-                        onClick={() =>
-                          this.handleDelete(this.props.versions[versionId])
-                        }
+                        {this.props.versions[versionId].number}
+                      </button>
+                    </h5>
+                    <div className="btn-group">
+                      <button
+                        className="btn btn-secondary "
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false"
                       >
-                        Delete
-                      </Dropdown.Item>
-                      <Dropdown.Item
-                        eventKey="3"
-                        onClick={() => this.openAddGroupForm(this.props.versions[versionId])}
-                      >
-                        Add Group
-                      </Dropdown.Item>
-                      <Dropdown.Item
-                        eventKey="3"
-                        onClick={() => this.openAddVersionPageForm(this.props.versions[versionId])}
-                      >
-                        Add Page
-                      </Dropdown.Item>
-                      <Dropdown.Item
-                        eventKey="2"
-                        onClick={() => {
-                          this.handleDuplicate(this.props.versions[versionId]);
-                        }}
-                      >
-                        Duplicate
-                      </Dropdown.Item>
-                      <Dropdown.Item
-                        eventKey="3"
-                        onClick={() => this.openShareVersionForm(this.props.versions[versionId])}
-                      >
-                        Share
-                      </Dropdown.Item>
-                    </DropdownButton>
-                  </Card.Header>
-                  <Accordion.Collapse eventKey="1">
-                    <Card.Body>
+                        <i className="fas fa-ellipsis-h"></i>
+                      </button>
+                      <div className="dropdown-menu dropdown-menu-right">
+                        <button
+                          className="dropdown-item"
+                          onClick={() =>
+                            this.openEditVersionForm(
+                              this.props.versions[versionId]
+                            )
+                          }
+                        >
+                          Edit
+                        </button>
+                        <button
+                          className="dropdown-item"
+                          onClick={() =>
+                            this.handleDelete(this.props.versions[versionId])
+                          }
+                        >
+                          Delete
+                        </button>
+                        <button
+                          className="dropdown-item"
+                          onClick={() =>
+                            this.openAddGroupForm(
+                              this.props.versions[versionId]
+                            )
+                          }
+                        >
+                          Add Group
+                        </button>
+                        <button
+                          className="dropdown-item"
+                          onClick={() => {
+                            this.handleDuplicate(
+                              this.props.versions[versionId]
+                            );
+                          }}
+                        >
+                          Duplicate
+                        </button>
+                        <button
+                          className="dropdown-item"
+                          onClick={() =>
+                            this.openAddVersionPageForm(
+                              this.props.versions[versionId]
+                            )
+                          }
+                        >
+                          Add Page
+                        </button>
+                        <button
+                          className="dropdown-item"
+                          onClick={() =>
+                            this.openShareVersionForm(
+                              this.props.versions[versionId]
+                            )
+                          }
+                        >
+                          Share
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div id={versionId} className="collapse">
+                    <div className="card-body">
                       <Groups {...this.props} version_id={versionId} />
                       <VersionPages {...this.props} version_id={versionId} />
-                    </Card.Body>
-                  </Accordion.Collapse>
-                </Card>
-              </Accordion>
+                    </div>
+                  </div>
+                </div>
+              </div>
             ))}
       </div>
     );

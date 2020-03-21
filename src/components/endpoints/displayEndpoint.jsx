@@ -700,7 +700,7 @@ class DisplayEndpoint extends Component {
         </div>
 
         <div className="endpoint-headers-container">
-          <ul className="nav nav-pills" id="pills-tab" role="tablist">
+          <ul className="nav nav-tabs" id="pills-tab" role="tablist">
             <li className="nav-item">
               <a
                 className="nav-link active"

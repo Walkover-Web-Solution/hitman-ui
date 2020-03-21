@@ -17,10 +17,6 @@ class SideBar extends Component {
             <div id="search-box-input">
               <input type="text" id="search-box-input" placeholder="Filter" />
             </div>
-
-            {/* <i class="fas fa-search" id="search-icon"></i>
-
-            <input id="search-box-input" type="text" placeholder="Filter" /> */}
           </div>
 
           <ul class="nav nav-tabs" id="myTab" role="tablist">

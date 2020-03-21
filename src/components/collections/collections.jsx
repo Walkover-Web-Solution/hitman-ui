@@ -1,4 +1,11 @@
 import React, { Component } from "react";
+import {
+  Dropdown,
+  Accordion,
+  Card,
+  Button,
+  DropdownButton
+} from "react-bootstrap";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
@@ -264,24 +271,16 @@ class CollectionsComponent extends Component {
             </button>
           </div>
           {Object.keys(this.props.collections).map((collectionId, index) => (
-            <div id="accordion" key={index}>
-              <div className="card">
-                <div className="card-header" id="custom-card-header">
+            <Accordion key={collectionId}>
+              <Card>
+                <Card.Header>
                   <i
                     className="fas fa-folder-open"
                     style={{ margin: "5px" }}
                   ></i>
-                  <h5 className="mb-0">
-                    <button
-                      className="btn"
-                      data-toggle="collapse"
-                      data-target={`#${collectionId}`}
-                      aria-expanded="true"
-                      aria-controls={collectionId}
-                    >
-                      {this.props.collections[collectionId].name}
-                    </button>
-                  </h5>
+                  <Accordion.Toggle as={Button} variant="default" eventKey="1">
+                    {this.props.collections[collectionId].name}
+                  </Accordion.Toggle>
                   <div className="btn-group">
                     <button
                       className="btn btn-secondary "
@@ -349,18 +348,69 @@ class CollectionsComponent extends Component {
                       </button>
                     </div>
                   </div>
-                </div>
-
-                <div id={collectionId} className="collapse">
-                  <div className="card-body">
+                  {/* <DropdownButton
+                    alignRight
+                    title=""
+                    id="dropdown-menu-align-right"
+                    style={{ float: "right" }}
+                  >
+                    <Dropdown.Item
+                      eventKey="1"
+                      onClick={() => this.openEditCollectionForm(collectionId)}
+                    >
+                      Edit
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                      eventKey="0"
+                      onClick={() => {
+                        if (
+                          window.confirm(
+                            "Are you sure you wish to delete this collection?" +
+                              "\n" +
+                              " All your versions, groups, pages and endpoints present in this collection will be deleted."
+                          )
+                        )
+                          this.handleDelete(
+                            this.props.collections[collectionId]
+                          );
+                      }}
+                    >
+                      Delete
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                      eventKey="3"
+                      onClick={() => this.openAddVersionForm(collectionId)}
+                    >
+                      Add Version
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                      eventKey="3"
+                      onClick={() =>
+                        this.handleDuplicateCollection(
+                          this.props.collections[collectionId]
+                        )
+                      }
+                    >
+                      Duplicate
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                      eventKey="3"
+                      onClick={() => this.openImportVersionForm(collectionId)}
+                    >
+                      Import Version
+                    </Dropdown.Item>
+                  </DropdownButton> */}
+                </Card.Header>
+                <Accordion.Collapse eventKey="1">
+                  <Card.Body>
                     <CollectionVersions
                       {...this.props}
                       collection_id={collectionId}
                     />
-                  </div>
-                </div>
-              </div>
-            </div>
+                  </Card.Body>
+                </Accordion.Collapse>
+              </Card>
+            </Accordion>
           ))}
         </div>
       </div>
