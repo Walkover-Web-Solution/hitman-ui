@@ -219,18 +219,22 @@ class ShareCollectionForm extends Component {
                     <td>
                       {" "}
                       {this.currentUserRole === "Admin" ||
-                      (this.currentUserRole === "Owner" &&
-                        this.team[teamId].role !== "Owner") ? (
+                      this.currentUserRole === "Owner" ? (
                         <Dropdown style={{ paddingLeft: "20px" }}>
                           <Dropdown.Toggle
                             variant="success"
-                            id="dropdown-basic"
+                            id="dropdown-basic disabled"
                           >
                             {this.team[teamId].role}
                           </Dropdown.Toggle>
                           <Dropdown.Menu>
                             {Object.keys(this.dropdownRole).map(key => (
                               <Dropdown.Item
+                                className={
+                                  this.team[teamId].role === "Owner"
+                                    ? "disabled"
+                                    : null
+                                }
                                 onClick={() =>
                                   this.setCurrentUserRole(
                                     this.dropdownRole[key].name,
@@ -252,15 +256,17 @@ class ShareCollectionForm extends Component {
                       authService.getCurrentUser().user.identifier ? (
                       <td></td>
                     ) : (
-                      <button
-                        type="button"
-                        className="btn btn-default"
-                        onClick={() => {
-                          this.handleDelete(this.team[teamId]);
-                        }}
-                      >
-                        X
-                      </button>
+                      <td>
+                        <button
+                          type="button"
+                          className="btn btn-default"
+                          onClick={() => {
+                            this.handleDelete(this.team[teamId]);
+                          }}
+                        >
+                          X
+                        </button>
+                      </td>
                     )}
                   </tr>
                 </tbody>
