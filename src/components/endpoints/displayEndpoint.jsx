@@ -750,7 +750,7 @@ class DisplayEndpoint extends Component {
             >
               <GenericTable
                 {...this.props}
-                title="Add Params"
+                title="Params"
                 dataArray={this.state.originalParams}
                 props_from_parent={this.propsFromChild.bind(this)}
               ></GenericTable>
@@ -764,7 +764,7 @@ class DisplayEndpoint extends Component {
               <div>
                 <GenericTable
                   {...this.props}
-                  title="Add Headers"
+                  title="Headers"
                   dataArray={this.state.originalHeaders}
                   props_from_parent={this.propsFromChild.bind(this)}
                 ></GenericTable>
@@ -789,7 +789,7 @@ class DisplayEndpoint extends Component {
           </div>
         </div>
 
-        <div className="endpoint-response-container">
+        <div className="endpoint-response-container-wrapper">
           <DisplayResponse
             timeElapsed={this.state.timeElapsed}
             response={this.state.response}

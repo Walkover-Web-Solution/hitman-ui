@@ -9,7 +9,7 @@ class GenericTable extends Component {
     const name = e.currentTarget.name.split(".");
     if (name[1] === "key") {
       dataArray[name[0]].key = e.currentTarget.value;
-      if (title === "Add Params" && dataArray[name[0]].key.length === 0) {
+      if (title === "Params" && dataArray[name[0]].key.length === 0) {
         this.handleDelete(dataArray, name[0], title);
       }
     }
@@ -19,9 +19,9 @@ class GenericTable extends Component {
     if (name[1] === "description") {
       dataArray[name[0]].description = e.currentTarget.value;
     }
-    if (title === "Add Headers")
+    if (title === "Headers")
       this.props.props_from_parent("originalHeaders", dataArray);
-    if (title === "Add Params")
+    if (title === "Params")
       this.props.props_from_parent("originalParams", dataArray);
   };
 
@@ -32,9 +32,9 @@ class GenericTable extends Component {
       value: "",
       description: ""
     };
-    if (title === "Add Headers")
+    if (title === "Headers")
       this.props.props_from_parent("originalHeaders", dataArray);
-    if (title === "Add Params")
+    if (title === "Params")
       this.props.props_from_parent("originalParams", dataArray);
   }
 
@@ -47,9 +47,9 @@ class GenericTable extends Component {
       newDataArray.push(dataArray[i]);
     }
     dataArray = newDataArray;
-    if (title === "Add Headers")
+    if (title === "Headers")
       this.props.props_from_parent("originalHeaders", dataArray);
-    if (title === "Add Params")
+    if (title === "Params")
       this.props.props_from_parent("originalParams", dataArray);
   }
 
@@ -118,7 +118,7 @@ class GenericTable extends Component {
                   className="btn btn-link btn-sm btn-block"
                   onClick={() => this.handleAdd(dataArray, title)}
                 >
-                  {"+ " + title}
+                  {"+ Add" + title}
                 </button>
               </td>
               <td> </td>
