@@ -303,16 +303,9 @@ class CollectionsComponent extends Component {
                       <button
                         className="dropdown-item"
                         onClick={() => {
-                          if (
-                            window.confirm(
-                              "Are you sure you wish to delete this collection?" +
-                                "\n" +
-                                " All your versions, groups, pages and endpoints present in this collection will be deleted."
-                            )
-                          )
-                            this.handleDelete(
-                              this.props.collections[collectionId]
-                            );
+                          this.handleDelete(
+                            this.props.collections[collectionId]
+                          );
                         }}
                       >
                         Delete
