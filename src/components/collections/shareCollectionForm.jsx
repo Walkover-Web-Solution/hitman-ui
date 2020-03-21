@@ -207,7 +207,13 @@ class ShareCollectionForm extends Component {
               </thead>
               {Object.keys(this.team).map(teamId => (
                 <tbody>
-                  <tr bgcolor="{this.team[teamId].deleteFlag === true?(#FF0000):(null)}">
+                  <tr
+                    className={
+                      this.team[teamId].deleteFlag === true
+                        ? "table-dark"
+                        : "table-light"
+                    }
+                  >
                     <th scope="row">{serialNo++}</th>
                     <td>{this.team[teamId].email}</td>
                     <td>
@@ -245,18 +251,20 @@ class ShareCollectionForm extends Component {
                       authService.getCurrentUser().user.identifier ? (
                       <td></td>
                     ) : (
-                      <button
-                        type="button"
-                        className="btn btn-default"
-                        onClick={() => {
-                          this.handleDelete(
-                            this.props.team_id,
-                            this.team[teamId]
-                          );
-                        }}
-                      >
-                        X
-                      </button>
+                      <td>
+                        <button
+                          type="button"
+                          className="btn btn-default"
+                          onClick={() => {
+                            this.handleDelete(
+                              this.props.team_id,
+                              this.team[teamId]
+                            );
+                          }}
+                        >
+                          X
+                        </button>
+                      </td>
                     )}
                   </tr>
                 </tbody>
