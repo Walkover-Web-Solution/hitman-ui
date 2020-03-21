@@ -17,8 +17,7 @@ class ShareCollectionForm extends Component {
       role: "Collaborator"
     },
     emails: [],
-    teamMembers: [],
-    currentMembersRole: {}
+    teamMembers: []
   };
 
   async componentDidMount() {
@@ -44,10 +43,18 @@ class ShareCollectionForm extends Component {
   }
 
   setCurrentUserRole(key, teamIdentifier) {
-    console.log("key", key, teamIdentifier);
     this.team[teamIdentifier].role = key;
-    console.log(this.team);
-    this.setState({ currentMemberRole: key });
+    const currentMember = this.team[teamIdentifier];
+    let teamMembers = this.state.teamMembers;
+    const len = teamMembers.length;
+    teamMembers[len.toString()] = {
+      email: currentMember.email,
+      role: currentMember.role,
+      teamIdentifier: this.props.team_id,
+      id: this.props.team[currentMember.userId].id,
+      deleteFlag: false
+    };
+    this.setState({ teamMembers });
   }
 
   async onShareCollectionSubmit(teamMemberData) {
@@ -57,17 +64,18 @@ class ShareCollectionForm extends Component {
       data: {
         role: "Collaborator"
       },
-      emails: []
+      emails: [],
+      teamMembers: []
     });
   }
 
-  addMember() {
+  async addMember() {
     let teamMembers = this.state.teamMembers;
     const len = teamMembers.length;
     if (this.state.emails !== undefined) {
-      for (let i = 0; i < this.state.emails.length; i++) {
-        teamMembers[len.toString()] = {
-          email: this.state.emails[i],
+      for (let i = len; i < len + this.state.emails.length; i++) {
+        teamMembers[i] = {
+          email: this.state.emails[i - len],
           role: this.state.data.role,
           teamIdentifier: this.props.team_id,
           id: null,
@@ -75,13 +83,13 @@ class ShareCollectionForm extends Component {
         };
       }
     }
-
+    this.setState({ teamMembers });
     return teamMembers;
   }
 
   async handleSubmit(e) {
     e.preventDefault();
-    const teamMembers = this.addMember();
+    const teamMembers = await this.addMember();
     this.onShareCollectionSubmit(teamMembers);
   }
 
@@ -101,6 +109,7 @@ class ShareCollectionForm extends Component {
       if (
         window.confirm("Are you sure you want to remove member from the team?")
       ) {
+        this.team[teamMember.userId].deleteFlag = true;
         let teamMembers = this.state.teamMembers;
         const len = teamMembers.length;
         teamMembers[len.toString()] = {
@@ -110,6 +119,7 @@ class ShareCollectionForm extends Component {
           id: this.props.team[teamMember.userId].id,
           deleteFlag: true
         };
+        this.setState({ teamMembers });
       }
     } else {
       alert("As a collaborator, you are not allowed to remove a team member");
@@ -119,7 +129,6 @@ class ShareCollectionForm extends Component {
   render() {
     this.team = this.props.team;
     this.currentUserRole = this.fetchCurrentUserRole();
-    console.log(this.currentUserRole);
     let count = Object.keys(this.team).length;
     let serialNo = 1;
     const { emails } = this.state;
@@ -198,7 +207,7 @@ class ShareCollectionForm extends Component {
               </thead>
               {Object.keys(this.team).map(teamId => (
                 <tbody>
-                  <tr>
+                  <tr bgcolor="{this.team[teamId].deleteFlag === true?(#FF0000):(null)}">
                     <th scope="row">{serialNo++}</th>
                     <td>{this.team[teamId].email}</td>
                     <td>
@@ -210,9 +219,7 @@ class ShareCollectionForm extends Component {
                             variant="success"
                             id="dropdown-basic"
                           >
-                            {this.state.currentMemberRole
-                              ? this.state.currentMemberRole
-                              : this.team[teamId].role}
+                            {this.team[teamId].role}
                           </Dropdown.Toggle>
                           <Dropdown.Menu>
                             {Object.keys(this.dropdownRole).map(key => (
@@ -233,7 +240,6 @@ class ShareCollectionForm extends Component {
                         this.team[teamId].role
                       )}
                     </td>
-
                     {this.team[teamId].role === "Owner" ||
                     this.team[teamId].userId ===
                       authService.getCurrentUser().user.identifier ? (
