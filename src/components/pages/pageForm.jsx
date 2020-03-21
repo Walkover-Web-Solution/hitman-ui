@@ -34,13 +34,17 @@ class PageForm extends Form {
   async doSubmit(props) {
     this.props.onHide();
     if (this.props.title === "Add new Group Page") {
-     const newPage = { ...this.state.data, requestId: shortid.generate() };
-      this.props.addGroupPage(this.props.selectedVersion, this.props.selectedGroup.id, newPage);
+      const newPage = { ...this.state.data, requestId: shortid.generate() };
+      this.props.addGroupPage(
+        this.props.selectedVersion,
+        this.props.selectedGroup.id,
+        newPage
+      );
     }
     if (this.props.title === "Add New Version Page") {
       const versionId = this.props.selectedVersion.id;
       const newPage = { ...this.state.data, requestId: shortid.generate() };
-       this.props.addPage(versionId, newPage);
+      this.props.addPage(versionId, newPage);
     }
   }
 
@@ -52,16 +56,19 @@ class PageForm extends Form {
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
-        <Modal.Header>
+        <Modal.Header className="custom-collection-modal-container" closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
             {this.props.title}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <form onSubmit={this.handleSubmit}>
-            {this.renderInput("name", "Page name")}
+            {this.renderInput("name", "Page name", "page name")}
             {this.renderButton("Submit")}
-            <button className="btn btn-default" onClick={this.props.onHide}>
+            <button
+              className="btn btn-default custom-button"
+              onClick={this.props.onHide}
+            >
               Cancel
             </button>
           </form>

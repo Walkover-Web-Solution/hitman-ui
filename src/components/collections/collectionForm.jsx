@@ -156,7 +156,7 @@ class CollectionForm extends Form {
               {/* {this.renderInput("description", "Description", "textbox")} */}
               {this.renderButton("Submit")}
               <button
-                className="btn btn-default .custom-submit-button"
+                className="btn btn-default custom-button"
                 onClick={() => this.props.onHide()}
               >
                 Cancel

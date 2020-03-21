@@ -134,10 +134,14 @@ class EnvironmentVariables extends Component {
         centered
       >
         <form onSubmit={this.handleSubmit}>
-          <Modal.Header>
-            <Modal.Title id="contained-modal-title-vcenter">
-              <h3>{this.props.title}</h3>
-              <h5>
+          <div className="custom-environment-modal-container">
+            <Modal.Header
+              className="custom-collection-modal-container"
+              closeButton
+            >
+              <Modal.Title id="contained-modal-title-vcenter">
+                {this.props.title}
+                {/* <h5>
                 <input
                   name={"name"}
                   value={this.state.environment.name}
@@ -146,97 +150,123 @@ class EnvironmentVariables extends Component {
                   size="100"
                   className="form-control"
                 />
-              </h5>
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <Table bordered size="sm">
-              <thead>
-                <tr>
-                  <th>Variable</th>
-                  <th>Initial Value</th>
-                  <th>Current Value</th>
-                </tr>
-              </thead>
+              </h5> */}
+              </Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <label htmlFor="custom-environment-input">
+                {this.props.title}{" "}
+              </label>
+              <input
+                name={"name"}
+                value={this.state.environment.name}
+                onChange={this.handleChangeEnv}
+                type={"text"}
+                id="custom-environment-input"
+                className="form-control"
+                placeholder="Environment Name"
+              />
+              <div className="custom-table-container">
+                <Table bordered size="sm">
+                  <thead>
+                    <tr>
+                      <th>Variable</th>
+                      <th>Initial Value</th>
+                      <th>Current Value</th>
+                    </tr>
+                  </thead>
 
-              <tbody>
-                {this.state.updatedVariableNames.map((variable, index) =>
-                  variable !== "deleted" ? (
-                    <tr key={index}>
-                      <td>
-                        <input
-                          name={index + ".name"}
-                          value={variable}
-                          onChange={this.handleChange}
-                          type={"text"}
-                          style={{ border: "none" }}
-                          className="form-control"
-                        />
-                      </td>
+                  <tbody>
+                    {this.state.updatedVariableNames.map((variable, index) =>
+                      variable !== "deleted" ? (
+                        <tr key={index}>
+                          <td>
+                            <input
+                              name={index + ".name"}
+                              value={variable}
+                              onChange={this.handleChange}
+                              type={"text"}
+                              style={{ border: "none" }}
+                              className="form-control"
+                            />
+                          </td>
+                          <td>
+                            {" "}
+                            <input
+                              name={index + ".initialValue"}
+                              value={
+                                this.state.environment.variables[
+                                  this.state.originalVariableNames[index]
+                                ].initialValue
+                              }
+                              onChange={this.handleChange}
+                              type={"text"}
+                              className="form-control"
+                              style={{ border: "none" }}
+                            />
+                          </td>
+                          <td>
+                            {" "}
+                            <input
+                              name={index + ".currentValue"}
+                              value={
+                                this.state.environment.variables[
+                                  this.state.originalVariableNames[index]
+                                ].currentValue
+                              }
+                              onChange={this.handleChange}
+                              type={"text"}
+                              style={{ border: "none" }}
+                              className="form-control"
+                            />
+                          </td>
+                          <td>
+                            <button
+                              type="button"
+                              className="btn btn-light btn-sm btn-block"
+                              onClick={() => this.handleDelete(index)}
+                            >
+                              x{" "}
+                            </button>
+                          </td>
+                        </tr>
+                      ) : null
+                    )}
+                    <tr>
+                      <td> </td>
                       <td>
                         {" "}
-                        <input
-                          name={index + ".initialValue"}
-                          value={
-                            this.state.environment.variables[
-                              this.state.originalVariableNames[index]
-                            ].initialValue
-                          }
-                          onChange={this.handleChange}
-                          type={"text"}
-                          className="form-control"
-                          style={{ border: "none" }}
-                        />
-                      </td>
-                      <td>
-                        {" "}
-                        <input
-                          name={index + ".currentValue"}
-                          value={
-                            this.state.environment.variables[
-                              this.state.originalVariableNames[index]
-                            ].currentValue
-                          }
-                          onChange={this.handleChange}
-                          type={"text"}
-                          style={{ border: "none" }}
-                          className="form-control"
-                        />
-                      </td>
-                      <td>
                         <button
                           type="button"
-                          className="btn btn-light btn-sm btn-block"
-                          onClick={() => this.handleDelete(index)}
+                          className="btn btn-link btn-sm btn-block"
+                          onClick={() => this.handleAdd()}
                         >
-                          x{" "}
+                          + New Variable
                         </button>
                       </td>
+                      <td> </td>
+                      <td> </td>
                     </tr>
-                  ) : null
-                )}
-                <tr>
-                  <td> </td>
-                  <td>
-                    {" "}
-                    <button
-                      type="button"
-                      className="btn btn-link btn-sm btn-block"
-                      onClick={() => this.handleAdd()}
-                    >
-                      + New Variable
-                    </button>
-                  </td>
-                  <td> </td>
-                  <td> </td>
-                </tr>
-              </tbody>
-            </Table>
-            <button className="btn btn-primary">Submit</button>
-            <button className="btn btn-danger" onClick={this.props.onHide}>
-              Cancel
-            </button>
-          </Modal.Body>
+                  </tbody>
+                </Table>
+              </div>
+              <hr />
+              <div>
+                <div className="custom-button-wrapper">
+                  <button className="btn btn-default custom-environment-add-button">
+                    {/* to change button label according to title of the form */}
+                    {this.props.title.split(" ")[0]}
+                  </button>
+                  <button
+                    className="btn btn-default custom-environment-cancel-button"
+                    onClick={this.props.onHide}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </Modal.Body>
+          </div>
         </form>
       </Modal>
     );

@@ -49,17 +49,24 @@ class ShareVersionForm extends Form {
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
-        <Modal.Header>
+        <Modal.Header className="custom-collection-modal-container" closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
             {this.props.title}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <form onSubmit={this.handleSubmit}>
-            {this.renderInput("shareVersionLink", "Public Link")}
+            {this.renderInput(
+              "shareVersionLink",
+              "Public Link",
+              "Enter a public link"
+            )}
             {<div name="shareVersionLink" label="Public Link"></div>}
             {this.renderButton("Submit", "right")}
-            <button className="btn btn-default" onClick={this.props.onHide}>
+            <button
+              className="btn btn-default custom-button"
+              onClick={this.props.onHide}
+            >
               Cancel
             </button>
           </form>

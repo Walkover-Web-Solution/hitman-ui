@@ -54,18 +54,18 @@ class EnvironmentModal extends Component {
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
-        <Modal.Header>
+        <Modal.Header className="custom-collection-modal-container" closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
             Manage Environments
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <ListGroup>
+          <ListGroup className="custom-environment-list-container">
             {Object.keys(this.props.environment.environments).map(
               environmentId => (
                 <div>
                   <ListGroup.Item
-                    style={{ width: "95%", float: "left" }}
+                    style={{ width: "93%", float: "left" }}
                     key={environmentId}
                     onClick={() =>
                       this.handleEdit(
@@ -75,28 +75,49 @@ class EnvironmentModal extends Component {
                   >
                     {this.props.environment.environments[environmentId].name}
                   </ListGroup.Item>
-                  <button
-                    className="btn btn-default"
-                    onClick={() => {
-                      if (
-                        window.confirm(
-                          "Are you sure you wish to delete this environment?"
-                        )
-                      )
-                        this.handleDelete(
-                          this.props.environment.environments[environmentId]
-                        );
-                    }}
-                    style={{ float: "right" }}
-                  >
-                    X
-                  </button>
+                  <div className="btn-group">
+                    <button
+                      className="btn "
+                      data-toggle="dropdown"
+                      aria-haspopup="true"
+                      aria-expanded="false"
+                    >
+                      <i className="fas fa-ellipsis-h"></i>
+                    </button>
+                    <div className="dropdown-menu dropdown-menu-right">
+                      <button
+                        className="btn btn-default"
+                        onClick={() => {
+                          if (
+                            window.confirm(
+                              "Are you sure you wish to delete this environment?"
+                            )
+                          )
+                            this.handleDelete(
+                              this.props.environment.environments[environmentId]
+                            );
+                        }}
+                      >
+                        delete
+                      </button>
+                    </div>
+                  </div>
                 </div>
               )
             )}
           </ListGroup>
-          <br />
-          <button onClick={() => this.handleCancel(this.props)}>Cancel</button>
+
+          <hr />
+          <div>
+            <div className="custom-button-wrapper">
+              <button
+                className="btn btn-default custom-environment-cancel-button"
+                onClick={() => this.handleCancel(this.props)}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
         </Modal.Body>
       </Modal>
     );
