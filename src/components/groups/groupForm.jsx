@@ -65,7 +65,6 @@ class GroupForm extends Form {
   }
 
   render() {
-    console.log("Hello")
     return (
       <Modal
         {...this.props}
