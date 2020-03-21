@@ -121,7 +121,6 @@ class Groups extends Component {
     );
   }
   showShareGroupForm() {
-    console.log("hello");
     return (
       this.state.showGroupForm.share && (
         <ShareGroupForm

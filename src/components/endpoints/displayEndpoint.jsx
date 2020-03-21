@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { Dropdown } from "react-bootstrap";
 import { connect } from "react-redux";
 import { toast } from "react-toastify";
 import shortId from "shortid";
@@ -186,17 +185,22 @@ class DisplayEndpoint extends Component {
 
   findHost(hostJson) {
     let host = "";
+    let key = "";
     if (this.customHost === true) {
       host = this.BASE_URL;
       return host;
     }
     host = hostJson.variableHost;
+    key = "variable";
     if (host === "") {
       host = hostJson.groupHost;
+      key = "group";
       if (host === "") {
         host = hostJson.versionHost;
+        key = "version";
       }
     }
+    this.setDropdownValue(key);
     let data = { ...this.state.data };
     data.host = host;
     this.setState({ data });
@@ -509,7 +513,6 @@ class DisplayEndpoint extends Component {
 
   render() {
     if (this.props.location.title === "Add New Endpoint") {
-      console.log("Add New Endpoint");
       this.customHost = false;
       const hostJson = this.fetchHosts(
         this.props.location,
@@ -547,8 +550,6 @@ class DisplayEndpoint extends Component {
       this.props.location.title === "update endpoint" &&
       this.props.location.endpoint
     ) {
-      console.log("update endpoint");
-
       this.BASE_URL = this.props.location.endpoint.BASE_URL;
       if (this.props.location.endpoint.BASE_URL !== null) {
         this.setDropdownValue("custom");
@@ -644,6 +645,7 @@ class DisplayEndpoint extends Component {
                 name="BASE_URL_Value"
                 ref={this.BASE_URL_Value}
                 value={this.state.data.host}
+                s
                 onChange={this.handleDropdownChange}
                 disabled={this.state.selectedHost !== "custom"}
               />
@@ -661,9 +663,15 @@ class DisplayEndpoint extends Component {
               >
                 {Object.keys(this.dropdownHost).map(key =>
                   this.dropdownHost[key].value !== "" ? (
-                    <option value={key} key={key}>
-                      {this.dropdownHost[key].name} Base_URL
-                    </option>
+                    this.state.selectedHost === key ? (
+                      <option value={key} key={key} selected>
+                        {this.dropdownHost[key].name} Base_URL
+                      </option>
+                    ) : (
+                      <option value={key} key={key}>
+                        {this.dropdownHost[key].name} Base_URL
+                      </option>
+                    )
                   ) : null
                 )}
               </select>

@@ -16,7 +16,8 @@ class ShareCollectionForm extends Component {
     data: {
       role: "Collaborator"
     },
-    emails: []
+    emails: [],
+    teamMembers: []
   };
 
   async componentDidMount() {
@@ -33,13 +34,22 @@ class ShareCollectionForm extends Component {
     collaborator: { name: "Collaborator" }
   };
 
-  setDropdownRole(key) {
+  setDropdowmRole(key) {
     const data = this.state.data;
     data.role = this.dropdownRole[key].name;
     this.setState({
       data
     });
   }
+
+  setCurrentUserRole(key, teamIdentifier) {
+    this.team[teamIdentifier].role = key;
+    const currentMember = this.team[teamIdentifier];
+    let teamMembers = this.state.teamMembers;
+    this.modifyMember("updateMember", currentMember);
+    this.setState({ teamMembers });
+  }
+
   async onShareCollectionSubmit(teamMemberData) {
     this.flag = 0;
     this.props.shareCollection(teamMemberData);
@@ -47,27 +57,48 @@ class ShareCollectionForm extends Component {
       data: {
         role: "Collaborator"
       },
-      emails: []
+      emails: [],
+      teamMembers: []
     });
   }
 
-  addMember() {
-    let teamMembers = [];
-    if (this.state.emails !== undefined) {
-      for (let i = 0; i < this.state.emails.length; i++) {
-        teamMembers[i] = {
-          email: this.state.emails[i],
-          role: this.state.data.role,
-          teamIdentifier: this.props.team_id
-        };
+  async modifyMember(value, currentMember) {
+    let teamMembers = this.state.teamMembers;
+    const len = teamMembers.length;
+    if (value === "addMember") {
+      if (this.state.emails !== undefined) {
+        for (let i = len; i < len + this.state.emails.length; i++) {
+          teamMembers[i] = {
+            email: this.state.emails[i - len],
+            role: this.state.data.role,
+            teamIdentifier: this.props.team_id,
+            id: null,
+            deleteFlag: false
+          };
+        }
       }
+    } else {
+      let deleteFlag = "";
+      if (value === "deleteMember") {
+        deleteFlag = true;
+      } else {
+        deleteFlag = false;
+      }
+      teamMembers[len.toString()] = {
+        email: currentMember.email,
+        role: currentMember.role,
+        teamIdentifier: this.props.team_id,
+        id: this.props.team[currentMember.userId].id,
+        deleteFlag
+      };
     }
+    this.setState({ teamMembers });
     return teamMembers;
   }
 
-  async doSubmit(e) {
+  async handleSubmit(e) {
     e.preventDefault();
-    const teamMembers = this.addMember();
+    const teamMembers = await this.modifyMember("addMember", null);
     this.onShareCollectionSubmit(teamMembers);
   }
 
@@ -81,16 +112,14 @@ class ShareCollectionForm extends Component {
     }
   }
 
-  handleDelete(teamId, teamMember) {
+  handleDelete(teamMember) {
     const role = this.fetchCurrentUserRole();
     if (role === "Owner" || role === "Admin") {
       if (
         window.confirm("Are you sure you want to remove member from the team?")
       ) {
-        this.props.deleteUserFromTeam({
-          teamIdentifier: teamId,
-          teamMember
-        });
+        this.team[teamMember.userId].deleteFlag = true;
+        this.modifyMember("deleteMember", teamMember);
       }
     } else {
       alert("As a collaborator, you are not allowed to remove a team member");
@@ -98,10 +127,9 @@ class ShareCollectionForm extends Component {
   }
 
   render() {
-    console.log(authService.getCurrentUser());
-    const { team } = this.props;
+    this.team = this.props.team;
     this.currentUserRole = this.fetchCurrentUserRole();
-    let count = Object.keys(team).length;
+    let count = Object.keys(this.team).length;
     let serialNo = 1;
     const { emails } = this.state;
 
@@ -118,12 +146,13 @@ class ShareCollectionForm extends Component {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <form onSubmit={this.doSubmit.bind(this)}>
+          <form onSubmit={this.handleSubmit.bind(this)}>
             <div className="row">
               {this.currentUserRole === "Admin" ||
               this.currentUserRole === "Owner" ? (
-                <InputGroup style={{ padding: "20px", width: "85%" }}>
+                <InputGroup style={{ padding: "20px", flexWrap: "nowrap" }}>
                   <ReactMultiEmail
+                    style={{ flex: "1" }}
                     name="email"
                     placeholder="Email-id"
                     emails={emails}
@@ -155,7 +184,7 @@ class ShareCollectionForm extends Component {
                       <Dropdown.Menu>
                         {Object.keys(this.dropdownRole).map(key => (
                           <Dropdown.Item
-                            onClick={() => this.setDropdownRole(key)}
+                            onClick={() => this.setDropdowmRole(key)}
                           >
                             {this.dropdownRole[key].name}
                           </Dropdown.Item>
@@ -176,26 +205,68 @@ class ShareCollectionForm extends Component {
                   <th scope="col"></th>
                 </tr>
               </thead>
-              {Object.keys(team).map(teamId => (
+              {Object.keys(this.team).map(teamId => (
                 <tbody>
-                  <tr>
+                  <tr
+                    className={
+                      this.team[teamId].deleteFlag === true
+                        ? "table-dark"
+                        : "table-light"
+                    }
+                  >
                     <th scope="row">{serialNo++}</th>
-                    <td>{team[teamId].email}</td>
-                    <td> {team[teamId].role}</td>
-
-                    {team[teamId].role === "Owner" ||
-                    team[teamId].userId ===
+                    <td>{this.team[teamId].email}</td>
+                    <td>
+                      {" "}
+                      {this.currentUserRole === "Admin" ||
+                      this.currentUserRole === "Owner" ? (
+                        <Dropdown style={{ paddingLeft: "20px" }}>
+                          <Dropdown.Toggle
+                            variant="success"
+                            id="dropdown-basic disabled"
+                          >
+                            {this.team[teamId].role}
+                          </Dropdown.Toggle>
+                          <Dropdown.Menu>
+                            {Object.keys(this.dropdownRole).map(key => (
+                              <Dropdown.Item
+                                className={
+                                  this.team[teamId].role === "Owner"
+                                    ? "disabled"
+                                    : null
+                                }
+                                onClick={() =>
+                                  this.setCurrentUserRole(
+                                    this.dropdownRole[key].name,
+                                    teamId
+                                  )
+                                }
+                              >
+                                {this.dropdownRole[key].name}
+                              </Dropdown.Item>
+                            ))}
+                          </Dropdown.Menu>
+                        </Dropdown>
+                      ) : (
+                        this.team[teamId].role
+                      )}
+                    </td>
+                    {this.team[teamId].role === "Owner" ||
+                    this.team[teamId].userId ===
                       authService.getCurrentUser().user.identifier ? (
                       <td></td>
                     ) : (
-                      <button
-                        className="btn btn-default"
-                        onClick={() => {
-                          this.handleDelete(this.props.team_id, team[teamId]);
-                        }}
-                      >
-                        X
-                      </button>
+                      <td>
+                        <button
+                          type="button"
+                          className="btn btn-default"
+                          onClick={() => {
+                            this.handleDelete(this.team[teamId]);
+                          }}
+                        >
+                          X
+                        </button>
+                      </td>
                     )}
                   </tr>
                 </tbody>
@@ -207,6 +278,7 @@ class ShareCollectionForm extends Component {
               <div>
                 <button className="btn btn-default">Apply</button>
                 <button
+                  type="button"
                   className="btn btn-default"
                   onClick={() => this.props.onHide()}
                 >

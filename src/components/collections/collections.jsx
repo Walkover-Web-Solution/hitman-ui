@@ -19,7 +19,6 @@ import { fetchEndpoints } from "../endpoints/redux/endpointsActions";
 import { fetchGroups } from "../groups/redux/groupsActions";
 import { fetchPages } from "../pages/redux/pagesActions";
 import {
-  deleteUserFromTeam,
   fetchAllUsersOfTeam,
   shareCollection
 } from "../team/redux/teamsActions";
@@ -57,8 +56,8 @@ const mapDispatchToProps = dispatch => {
     duplicateCollection: collection =>
       dispatch(duplicateCollection(collection)),
     fetchAllUsersOfTeam: teamIdentifier =>
-      dispatch(fetchAllUsersOfTeam(teamIdentifier)),
-    deleteUserFromTeam: teamData => dispatch(deleteUserFromTeam(teamData))
+      dispatch(fetchAllUsersOfTeam(teamIdentifier))
+    // deleteUserFromTeam: teamData => dispatch(deleteUserFromTeam(teamData))
   };
 };
 
@@ -135,21 +134,6 @@ class CollectionsComponent extends Component {
     this.props.duplicateCollection(collectionCopy);
   }
 
-  // showAddCollectionForm() {
-  //   return (
-  //     this.state.showVersionForm && (
-  //       <CollectionVersionForm
-  //         {...this.props}
-  //         show={true}
-  //         onHide={() => {
-  //           this.setState({ showVersionForm: false });
-  //         }}
-  //         collection_id={this.state.selectedCollection.id}
-  //         title="Add new Collection Version"
-  //       />
-  //     )
-  //   );
-  // }
   showShareCollectionForm() {
     return (
       this.state.showCollectionShareForm && (
@@ -302,16 +286,9 @@ class CollectionsComponent extends Component {
                       <button
                         className="dropdown-item"
                         onClick={() => {
-                          if (
-                            window.confirm(
-                              "Are you sure you wish to delete this collection?" +
-                                "\n" +
-                                " All your versions, groups, pages and endpoints present in this collection will be deleted."
-                            )
-                          )
-                            this.handleDelete(
-                              this.props.collections[collectionId]
-                            );
+                          this.handleDelete(
+                            this.props.collections[collectionId]
+                          );
                         }}
                       >
                         Delete

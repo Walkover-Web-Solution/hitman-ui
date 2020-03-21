@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import EnvironmentVariables from "./environmentVariables";
 
 function showEnvironmentForm(props, onHide, title, environment) {
