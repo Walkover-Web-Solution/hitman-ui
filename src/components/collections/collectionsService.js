@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import CollectionForm from "./collectionForm";
 
 function showCollectionForm(props, onHide, title, selectedCollection) {

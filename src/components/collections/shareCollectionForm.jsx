@@ -46,7 +46,7 @@ class ShareCollectionForm extends Component {
     this.team[teamIdentifier].role = key;
     const currentMember = this.team[teamIdentifier];
     let teamMembers = this.state.teamMembers;
-    this.addMember("updateMember", currentMember);
+    this.modifyMember("updateMember", currentMember);
     this.setState({ teamMembers });
   }
 
@@ -62,7 +62,7 @@ class ShareCollectionForm extends Component {
     });
   }
 
-  async addMember(value, currentMember) {
+  async modifyMember(value, currentMember) {
     let teamMembers = this.state.teamMembers;
     const len = teamMembers.length;
     if (value === "addMember") {
@@ -98,7 +98,7 @@ class ShareCollectionForm extends Component {
 
   async handleSubmit(e) {
     e.preventDefault();
-    const teamMembers = await this.addMember("addMember", null);
+    const teamMembers = await this.modifyMember("addMember", null);
     this.onShareCollectionSubmit(teamMembers);
   }
 
@@ -119,7 +119,7 @@ class ShareCollectionForm extends Component {
         window.confirm("Are you sure you want to remove member from the team?")
       ) {
         this.team[teamMember.userId].deleteFlag = true;
-        this.addMember("deleteMember", teamMember);
+        this.modifyMember("deleteMember", teamMember);
       }
     } else {
       alert("As a collaborator, you are not allowed to remove a team member");
@@ -278,6 +278,7 @@ class ShareCollectionForm extends Component {
               <div>
                 <button className="btn btn-default">Apply</button>
                 <button
+                  type="button"
                   className="btn btn-default"
                   onClick={() => this.props.onHide()}
                 >
