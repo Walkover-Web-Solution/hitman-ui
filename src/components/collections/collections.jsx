@@ -12,7 +12,6 @@ import { fetchEndpoints } from "../endpoints/redux/endpointsActions";
 import { fetchGroups } from "../groups/redux/groupsActions";
 import { fetchPages } from "../pages/redux/pagesActions";
 import {
-  deleteUserFromTeam,
   fetchAllUsersOfTeam,
   shareCollection
 } from "../team/redux/teamsActions";
@@ -50,8 +49,8 @@ const mapDispatchToProps = dispatch => {
     duplicateCollection: collection =>
       dispatch(duplicateCollection(collection)),
     fetchAllUsersOfTeam: teamIdentifier =>
-      dispatch(fetchAllUsersOfTeam(teamIdentifier)),
-    deleteUserFromTeam: teamData => dispatch(deleteUserFromTeam(teamData))
+      dispatch(fetchAllUsersOfTeam(teamIdentifier))
+    // deleteUserFromTeam: teamData => dispatch(deleteUserFromTeam(teamData))
   };
 };
 
@@ -128,21 +127,6 @@ class CollectionsComponent extends Component {
     this.props.duplicateCollection(collectionCopy);
   }
 
-  // showAddCollectionForm() {
-  //   return (
-  //     this.state.showVersionForm && (
-  //       <CollectionVersionForm
-  //         {...this.props}
-  //         show={true}
-  //         onHide={() => {
-  //           this.setState({ showVersionForm: false });
-  //         }}
-  //         collection_id={this.state.selectedCollection.id}
-  //         title="Add new Collection Version"
-  //       />
-  //     )
-  //   );
-  // }
   showShareCollectionForm() {
     return (
       this.state.showCollectionShareForm && (

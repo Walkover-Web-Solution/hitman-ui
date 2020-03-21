@@ -34,10 +34,10 @@ export function fetchAllUsersOfTeam(teamIdentifier) {
   return http.get(`${apiUrl}/teams/${teamIdentifier}`);
 }
 
-export function deleteUserOfTeam(teamData) {
-  console.log(teamData);
-  return http.delete(`${apiUrl}/teams`, { data: teamData });
-}
+// export function deleteUserOfTeam(teamData) {
+//   console.log(teamData);
+//   return http.delete(`${apiUrl}/teams`, { data: teamData });
+// }
 
 export function shareCollection(teamMemberData) {
   return http.patch(apiUrl + "/teams", teamMemberData);
@@ -51,6 +51,6 @@ export default {
   deleteCollection,
   duplicateCollection,
   fetchAllUsersOfTeam,
-  deleteUserOfTeam,
+  // deleteUserOfTeam,
   shareCollection
 };
