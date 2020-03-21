@@ -46,14 +46,7 @@ class ShareCollectionForm extends Component {
     this.team[teamIdentifier].role = key;
     const currentMember = this.team[teamIdentifier];
     let teamMembers = this.state.teamMembers;
-    const len = teamMembers.length;
-    teamMembers[len.toString()] = {
-      email: currentMember.email,
-      role: currentMember.role,
-      teamIdentifier: this.props.team_id,
-      id: this.props.team[currentMember.userId].id,
-      deleteFlag: false
-    };
+    this.addMember("updateMember", currentMember);
     this.setState({ teamMembers });
   }
 
@@ -69,19 +62,35 @@ class ShareCollectionForm extends Component {
     });
   }
 
-  async addMember() {
+  async addMember(value, currentMember) {
     let teamMembers = this.state.teamMembers;
     const len = teamMembers.length;
-    if (this.state.emails !== undefined) {
-      for (let i = len; i < len + this.state.emails.length; i++) {
-        teamMembers[i] = {
-          email: this.state.emails[i - len],
-          role: this.state.data.role,
-          teamIdentifier: this.props.team_id,
-          id: null,
-          deleteFlag: false
-        };
+    if (value === "addMember") {
+      if (this.state.emails !== undefined) {
+        for (let i = len; i < len + this.state.emails.length; i++) {
+          teamMembers[i] = {
+            email: this.state.emails[i - len],
+            role: this.state.data.role,
+            teamIdentifier: this.props.team_id,
+            id: null,
+            deleteFlag: false
+          };
+        }
       }
+    } else {
+      let deleteFlag = "";
+      if (value === "deleteMember") {
+        deleteFlag = true;
+      } else {
+        deleteFlag = false;
+      }
+      teamMembers[len.toString()] = {
+        email: currentMember.email,
+        role: currentMember.role,
+        teamIdentifier: this.props.team_id,
+        id: this.props.team[currentMember.userId].id,
+        deleteFlag
+      };
     }
     this.setState({ teamMembers });
     return teamMembers;
@@ -89,7 +98,7 @@ class ShareCollectionForm extends Component {
 
   async handleSubmit(e) {
     e.preventDefault();
-    const teamMembers = await this.addMember();
+    const teamMembers = await this.addMember("addMember", null);
     this.onShareCollectionSubmit(teamMembers);
   }
 
@@ -103,23 +112,14 @@ class ShareCollectionForm extends Component {
     }
   }
 
-  handleDelete(teamId, teamMember) {
+  handleDelete(teamMember) {
     const role = this.fetchCurrentUserRole();
     if (role === "Owner" || role === "Admin") {
       if (
         window.confirm("Are you sure you want to remove member from the team?")
       ) {
         this.team[teamMember.userId].deleteFlag = true;
-        let teamMembers = this.state.teamMembers;
-        const len = teamMembers.length;
-        teamMembers[len.toString()] = {
-          email: teamMember.email,
-          role: teamMember.role,
-          teamIdentifier: this.props.team_id,
-          id: this.props.team[teamMember.userId].id,
-          deleteFlag: true
-        };
-        this.setState({ teamMembers });
+        this.addMember("deleteMember", teamMember);
       }
     } else {
       alert("As a collaborator, you are not allowed to remove a team member");
@@ -219,7 +219,8 @@ class ShareCollectionForm extends Component {
                     <td>
                       {" "}
                       {this.currentUserRole === "Admin" ||
-                      this.currentUserRole === "Owner" ? (
+                      (this.currentUserRole === "Owner" &&
+                        this.team[teamId].role !== "Owner") ? (
                         <Dropdown style={{ paddingLeft: "20px" }}>
                           <Dropdown.Toggle
                             variant="success"
@@ -251,20 +252,15 @@ class ShareCollectionForm extends Component {
                       authService.getCurrentUser().user.identifier ? (
                       <td></td>
                     ) : (
-                      <td>
-                        <button
-                          type="button"
-                          className="btn btn-default"
-                          onClick={() => {
-                            this.handleDelete(
-                              this.props.team_id,
-                              this.team[teamId]
-                            );
-                          }}
-                        >
-                          X
-                        </button>
-                      </td>
+                      <button
+                        type="button"
+                        className="btn btn-default"
+                        onClick={() => {
+                          this.handleDelete(this.team[teamId]);
+                        }}
+                      >
+                        X
+                      </button>
                     )}
                   </tr>
                 </tbody>
