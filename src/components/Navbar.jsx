@@ -145,13 +145,17 @@ class Navbar extends Component {
               aria-labelledby="dropdownMenuButton"
               alignLeft
             >
-              <i class="fas fa-user" style={{ float: "left" }}></i>
-              <div>
-                <h6>{this.state.name}</h6>
-                <p>{this.state.email}</p>
-                <li className=" ">
-                  <Link to="/logout">Sign out</Link>
-                </li>
+              <div id="custom-user-left">
+                <i class="fas fa-user"></i>
+              </div>
+              <div id="custom-user-right">
+                <div>{this.state.name}</div>
+                <div>{this.state.email}</div>
+                <div>
+                  <li className=" ">
+                    <Link to="/logout">Sign out</Link>
+                  </li>
+                </div>
               </div>
             </div>
           </div>

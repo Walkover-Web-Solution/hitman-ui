@@ -653,3 +653,20 @@ input#custom-environment-input {
     border-radius: none !important;
   }
 }
+
+//user menu style
+
+.dropdown-menu.dropdown-menu-right.show {
+  width: 250px;
+}
+
+#custom-user-left {
+  float: left;
+  font-size: 25px;
+  width: 15%;
+  margin-left: 5px;
+}
+#custom-user-right {
+  float: left;
+  width: 80%;
+}
