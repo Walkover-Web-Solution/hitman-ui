@@ -39,7 +39,7 @@ class ShareVersionForm extends Form {
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
-        <Modal.Header>
+        <Modal.Header className="custom-collection-modal-container" closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
             {this.props.title}
           </Modal.Title>
@@ -61,7 +61,10 @@ class ShareVersionForm extends Form {
                 <button style={{ borderRadius: "12px" }}>Copy</button>
               </CopyToClipboard>
             }
-            <button className="btn btn-default" onClick={this.props.onHide}>
+            <button
+              className="btn btn-default custom-button"
+              onClick={this.props.onHide}
+            >
               Cancel
             </button>
           </form>

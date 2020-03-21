@@ -4,9 +4,19 @@ import "./styles.scss";
 import collectionsService from "./collections/collectionsService";
 import environmentsService from "./environments/environmentsService";
 import CreateNewModal from "./CreateNewModal";
-
+import { getCurrentUser } from "./auth/authService";
 class Navbar extends Component {
-  state = {};
+  state = {
+    name: "",
+    email: ""
+  };
+  componentDidMount() {
+    const { user } = getCurrentUser();
+    const name = user.first_name + user.last_name;
+    const email = user.email;
+    console.log(name, email);
+    this.setState({ name, email });
+  }
 
   openCreateNewModal(onHide) {
     return (
@@ -29,6 +39,7 @@ class Navbar extends Component {
   }
 
   render() {
+    console.log(getCurrentUser());
     return (
       <nav className="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
         {this.state.showCreateNewModal &&
@@ -68,7 +79,11 @@ class Navbar extends Component {
           <div className="dropdown-menu">
             <li
               className="dropdown-item"
-              onClick={() => console.log("Endpoint")}
+              onClick={() => {
+                this.props.history.push({
+                  pathname: "/dashboard/endpoints"
+                });
+              }}
             >
               <i className="fas fa-share-square" style={{ margin: "5px" }}></i>{" "}
               Endpoint
@@ -131,10 +146,10 @@ class Navbar extends Component {
               alignLeft
             >
               <i class="fas fa-user" style={{ float: "left" }}></i>
-              <div style={{ float: "right" }}>
-                <h4>User Name</h4>
-                <h5>user email</h5>
-                <li className="nav-item text-nowrap">
+              <div>
+                <h6>{this.state.name}</h6>
+                <p>{this.state.email}</p>
+                <li className=" ">
                   <Link to="/logout">Sign out</Link>
                 </li>
               </div>

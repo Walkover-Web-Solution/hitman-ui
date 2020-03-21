@@ -65,7 +65,7 @@ class GroupForm extends Form {
   }
 
   render() {
-    console.log("Hello")
+    console.log("Hello");
     return (
       <Modal
         {...this.props}
@@ -73,17 +73,20 @@ class GroupForm extends Form {
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
-        <Modal.Header>
+        <Modal.Header className="custom-collection-modal-container" closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
             {this.props.title}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <form onSubmit={this.handleSubmit}>
-            {this.renderInput("name", "Group Name*")}
-            {this.renderInput("host", "Host")}
+            {this.renderInput("name", "Group Name", "group name")}
+            {this.renderInput("host", "Host", "host name")}
             {this.renderButton("Submit")}
-            <button className="btn btn-default" onClick={this.props.onHide}>
+            <button
+              className="btn btn-default  custom-button"
+              onClick={this.props.onHide}
+            >
               Cancel
             </button>
           </form>
