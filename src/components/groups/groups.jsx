@@ -253,6 +253,11 @@ class Groups extends Component {
 
                 <div id={groupId} className="collapse">
                   <div className="card-body">
+                    <GroupPages
+                      {...this.props}
+                      version_id={this.props.groups[groupId].versionId}
+                      group_id={groupId}
+                    />
                     <Endpoints
                       {...this.props}
                       group_id={groupId}
@@ -264,96 +269,6 @@ class Groups extends Component {
                 </div>
               </div>
             </div>
-            // <Accordion defaultActiveKey="0" key={groupId}>
-            //   <Card>
-            //     <Card.Header
-            //       onDragOver={e => e.preventDefault()}
-            //       onDrop={e => this.onDrop(groupId)}
-            //     >
-            //       <Accordion.Toggle as={Button} variant="link" eventKey="1">
-            //         {this.props.groups[groupId].name}
-            //       </Accordion.Toggle>
-            //       <DropdownButton
-            //         alignRight
-            //         title=""
-            //         id="dropdown-menu-align-right"
-            //         style={{ float: "right" }}
-            //       >
-            //         <Dropdown.Item
-            //           eventKey="1"
-            //   onClick={() =>
-            //     this.openEditGroupForm(this.props.groups[groupId])
-            //   }
-            // >
-            //   Edit
-            //         </Dropdown.Item>
-            //         <Dropdown.Item
-            //           eventKey="2"
-            //   onClick={() =>
-            //     this.handleDelete(this.props.groups[groupId])
-            //   }
-            // >
-            //   Delete
-            //         </Dropdown.Item>
-            //         <Dropdown.Item
-            //           eventKey="1"
-            //   onClick={() =>
-            //     this.openGroupPageForm(
-            //       this.props.groups[groupId].versionId,
-            //       this.props.groups[groupId],
-            //       this.props.collection_id
-            //     )
-            //   }
-            // >
-            //   Add Page
-            //         </Dropdown.Item>
-            //         <Dropdown.Item
-            //           eventKey="3"
-            //   onClick={() =>
-            //     this.handleAddEndpoint(
-            //       groupId,
-            //       this.props.versions,
-            //       this.props.groups
-            //     )
-            //   }
-            // >
-            //   Add Endpoint
-            //         </Dropdown.Item>
-            //         <Dropdown.Item
-            //   onClick={() =>
-            //     this.handleDuplicate(this.props.groups[groupId])
-            //   }
-            // >
-            //   Duplicate
-            //         </Dropdown.Item>
-            //         <Dropdown.Item
-            //           eventKey="3"
-            //   onClick={() =>
-            //     this.openShareGroupForm(this.props.groups[groupId])
-            //   }
-            // >
-            //   Share
-            //         </Dropdown.Item>
-            //       </DropdownButton>
-            //     </Card.Header>
-            //     <Accordion.Collapse eventKey="1">
-            //       <Card.Body>
-            //         <GroupPages
-            //           {...this.props}
-            //           version_id={this.props.groups[groupId].versionId}
-            //           group_id={groupId}
-            //         />
-            // <Endpoints
-            //   {...this.props}
-            //   group_id={groupId}
-            //   endpoints_order={
-            //     this.props.groups[groupId].endpointsOrder
-            //   }
-            // />
-            //       </Card.Body>
-            //     </Accordion.Collapse>
-            //   </Card>
-            // </Accordion>
           ))}
       </div>
     );

@@ -1,13 +1,5 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-
-import {
-  Accordion,
-  Card,
-  Button,
-  Dropdown,
-  DropdownButton
-} from "react-bootstrap";
 import { deletePage, duplicatePage } from "./redux/pagesActions";
 
 const mapStateToProps = state => {
@@ -26,10 +18,17 @@ class GroupPages extends Component {
   state = {};
 
   async handleDelete(page) {
-    this.props.deletePage(page);
-    this.props.history.push({
-      pathname: "/dashboard"
-    });
+    const confirm = window.confirm(
+      "Are you sure you wish to delete this group? " +
+        "\n" +
+        "All your pages and endpoints present in this group will be deleted."
+    );
+    if (confirm) {
+      this.props.deletePage(page);
+      this.props.history.push({
+        pathname: "/dashboard"
+      });
+    }
   }
 
   handleUpdate(page) {
@@ -40,7 +39,6 @@ class GroupPages extends Component {
   }
 
   handleDisplay(page) {
-    console.log(page);
     this.props.history.push({
       pathname: `/dashboard/pages/${page.id}`,
       page: page
@@ -65,56 +63,60 @@ class GroupPages extends Component {
                 this.props.pages[pageId].groupId === this.props.group_id
             )
 
-            .map(pageId => (
-              <Accordion defaultActiveKey="1" key={pageId}>
-                <Card>
-                  <Card.Header>
-                    <Accordion.Toggle
-                      as={Button}
-                      onClick={() => {
-                        const page = this.props.pages[pageId];
-                        this.handleDisplay(page);
-                      }}
-                      variant="link"
-                      eventKey="1"
-                    >
-                      {this.props.pages[pageId].name}
-                    </Accordion.Toggle>
-                    <DropdownButton
-                      alignRight
-                      title=""
-                      id="dropdown-menu-align-right"
-                      style={{ float: "right" }}
-                    >
-                      <Dropdown.Item
-                        eventKey="2"
+            .map((pageId, index) => (
+              <div id="accordion" key={index}>
+                <div className="card">
+                  <div className="card-header" id="custom-card-header">
+                    {/* <i
+                      className="fas fa-folder-open"
+                      style={{ margin: "5px" }}
+                    ></i> */}
+                    <h5 className="mb-0">
+                      <button
+                        className="btn"
+                        data-toggle="collapse"
+                        data-target={`#${pageId}`}
+                        aria-expanded="true"
+                        aria-controls={pageId}
                         onClick={() => {
-                          if (
-                            window.confirm(
-                              "Are you sure you wish to delete this item?"
-                            )
-                          )
-                            this.handleDelete(this.props.pages[pageId]);
+                          const page = this.props.pages[pageId];
+                          this.handleDisplay(page);
                         }}
                       >
-                        Delete
-                      </Dropdown.Item>
-
-                      <Dropdown.Item
-                        eventKey="2"
-                        onClick={() => {
-                          this.handleDuplicate(this.props.pages[pageId]);
-                        }}
+                        {this.props.pages[pageId].name}
+                      </button>
+                    </h5>
+                    <div className="btn-group">
+                      <button
+                        className="btn btn-secondary "
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false"
                       >
-                        Duplicate
-                      </Dropdown.Item>
-                    </DropdownButton>
-                  </Card.Header>
-                  <Accordion.Collapse eventKey="0">
-                    <Card.Body></Card.Body>
-                  </Accordion.Collapse>
-                </Card>
-              </Accordion>
+                        <i className="fas fa-ellipsis-h"></i>
+                      </button>
+                      <div className="dropdown-menu dropdown-menu-right">
+                        <button
+                          className="dropdown-item"
+                          onClick={() =>
+                            this.handleDelete(this.props.pages[pageId])
+                          }
+                        >
+                          Delete
+                        </button>
+                        <button
+                          className="dropdown-item"
+                          onClick={() =>
+                            this.handleDuplicate(this.props.pages[pageId])
+                          }
+                        >
+                          Duplicate
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             ))}
       </div>
     );
