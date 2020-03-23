@@ -253,6 +253,11 @@ class Groups extends Component {
 
                 <div id={groupId} className="collapse">
                   <div className="card-body">
+                    <GroupPages
+                      {...this.props}
+                      version_id={this.props.groups[groupId].versionId}
+                      group_id={groupId}
+                    />
                     <Endpoints
                       {...this.props}
                       group_id={groupId}

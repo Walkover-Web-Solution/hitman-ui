@@ -275,8 +275,8 @@ class CollectionVersions extends Component {
 
                   <div id={versionId} className="collapse">
                     <div className="card-body">
-                      <Groups {...this.props} version_id={versionId} />
                       <VersionPages {...this.props} version_id={versionId} />
+                      <Groups {...this.props} version_id={versionId} />
                     </div>
                   </div>
                 </div>

@@ -607,6 +607,7 @@ class DisplayEndpoint extends Component {
             aria-describedby="addon-wrapping"
             name="name"
             ref={this.name}
+            placeholder="Endpoint Name"
             value={this.state.data.name}
             onChange={this.handleChange}
           />
