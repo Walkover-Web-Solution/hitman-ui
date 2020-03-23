@@ -61,16 +61,18 @@ class GenericTable extends Component {
         <table className="table table-bordered" bordered>
           <thead>
             <tr>
-              <th id="generic-table-key-cell">KEY</th>
-              <th>VALUE</th>
-              <th>DESCRIPTION</th>
+              <th className="custom-td" id="generic-table-key-cell">
+                KEY
+              </th>
+              <th className="custom-td">VALUE</th>
+              <th className="custom-td">DESCRIPTION</th>
             </tr>
           </thead>
 
           <tbody>
             {dataArray.map((e, index) => (
               <tr key={index} id="generic-table-row">
-                <td id="generic-table-key-cell">
+                <td className="custom-td" id="generic-table-key-cell">
                   <input
                     name={index + ".key"}
                     value={dataArray[index].key}
@@ -80,7 +82,7 @@ class GenericTable extends Component {
                     style={{ border: "none" }}
                   />
                 </td>
-                <td>
+                <td className="custom-td">
                   <input
                     name={index + ".value"}
                     value={dataArray[index].value}
@@ -90,7 +92,7 @@ class GenericTable extends Component {
                     style={{ border: "none" }}
                   />
                 </td>
-                <td id="generic-table-description-cell">
+                <td className="custom-td" id="generic-table-description-cell">
                   <input
                     name={index + ".description"}
                     value={dataArray[index].description}
@@ -110,8 +112,8 @@ class GenericTable extends Component {
               </tr>
             ))}
             <tr>
-              <td> </td>
-              <td>
+              <td className="custom-td"> </td>
+              <td className="custom-td">
                 {" "}
                 <button
                   type="button"
@@ -121,7 +123,7 @@ class GenericTable extends Component {
                   {"+ Add" + title}
                 </button>
               </td>
-              <td> </td>
+              <td className="custom-td"> </td>
             </tr>
           </tbody>
         </table>

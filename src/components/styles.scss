@@ -522,13 +522,13 @@ button.btn.btn-default.custom-submit-button {
     }
   }
 }
-td {
+.custom-td {
   padding: 0px !important;
-  // opacity: 0.7;
+  opacity: 0.7;
 }
-th {
+.custom-th {
   padding: 5px !important;
-  // opacity: 0.7;
+  opacity: 0.7;
 }
 
 .endpoint-response-container {

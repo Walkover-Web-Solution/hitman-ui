@@ -160,9 +160,9 @@ class EnvironmentVariables extends Component {
                 <Table bordered size="sm">
                   <thead>
                     <tr>
-                      <th>Variable</th>
-                      <th>Initial Value</th>
-                      <th>Current Value</th>
+                      <th className="custom-td">Variable</th>
+                      <th className="custom-td">Initial Value</th>
+                      <th className="custom-td">Current Value</th>
                     </tr>
                   </thead>
 
@@ -170,7 +170,7 @@ class EnvironmentVariables extends Component {
                     {this.state.updatedVariableNames.map((variable, index) =>
                       variable !== "deleted" ? (
                         <tr key={index}>
-                          <td>
+                          <td className="custom-td">
                             <input
                               name={index + ".name"}
                               value={variable}
@@ -180,7 +180,7 @@ class EnvironmentVariables extends Component {
                               className="form-control"
                             />
                           </td>
-                          <td>
+                          <td className="custom-td">
                             {" "}
                             <input
                               name={index + ".initialValue"}
@@ -195,7 +195,7 @@ class EnvironmentVariables extends Component {
                               style={{ border: "none" }}
                             />
                           </td>
-                          <td>
+                          <td className="custom-td">
                             {" "}
                             <input
                               name={index + ".currentValue"}
@@ -210,7 +210,7 @@ class EnvironmentVariables extends Component {
                               className="form-control"
                             />
                           </td>
-                          <td>
+                          <td className="custom-td">
                             <button
                               type="button"
                               className="btn btn-light btn-sm btn-block"
@@ -223,8 +223,8 @@ class EnvironmentVariables extends Component {
                       ) : null
                     )}
                     <tr>
-                      <td> </td>
-                      <td>
+                      <td className="custom-td"> </td>
+                      <td className="custom-td">
                         {" "}
                         <button
                           type="button"
@@ -234,8 +234,8 @@ class EnvironmentVariables extends Component {
                           + New Variable
                         </button>
                       </td>
-                      <td> </td>
-                      <td> </td>
+                      <td className="custom-td"> </td>
+                      <td className="custom-td"> </td>
                     </tr>
                   </tbody>
                 </Table>
