@@ -1,7 +1,6 @@
 import React from "react";
 import { Modal } from "react-bootstrap";
 import Joi from "joi-browser";
-import { Link } from "react-router-dom";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { apiUrl } from "../../config.json";
 import Form from "../common/form";
@@ -15,10 +14,10 @@ class ShareVersionForm extends Form {
   };
 
   componentDidMount() {
-    if (this.props.location.shareIdentifier) {
+    if (this.props.selectedVersion) {
       let data = {};
-      const { shareIdentifier } = this.props.location;
-      const shareVersionLink = apiUrl + "/share/" + shareIdentifier;
+      const shareVersionLink =
+        apiUrl + "/share/" + this.props.selectedVersion.shareIdentifier;
       data = { shareVersionLink };
       this.setState({ data });
     }
@@ -31,6 +30,7 @@ class ShareVersionForm extends Form {
   };
 
   async doSubmit(props) {}
+
   render() {
     return (
       <Modal
@@ -39,7 +39,7 @@ class ShareVersionForm extends Form {
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
-        <Modal.Header>
+        <Modal.Header className="custom-collection-modal-container" closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
             {this.props.title}
           </Modal.Title>
@@ -50,18 +50,28 @@ class ShareVersionForm extends Form {
             {<div name="shareVersionLink" label="Public Link"></div>}
             {
               <CopyToClipboard
-                text={JSON.stringify(this.state.data.shareVersionLink).replace(/['"]+/g, '')}
-                onCopy={() => this.setState({ copied: true })}
-                style={{ float: "right", borderRadius: "12px" }}
+                text={JSON.stringify(this.state.data.shareVersionLink).replace(
+                  /['"]+/g,
+                  ""
+                )}
+                onCopy={() => this.props.onHide()}
+                className="btn btn-default"
+                style={{ float: "right" }}
               >
                 <button style={{ borderRadius: "12px" }}>Copy</button>
               </CopyToClipboard>
             }
-            <Link to={`/dashboard/collections`}>Cancel</Link>
+            <button
+              className="btn btn-default custom-button"
+              onClick={this.props.onHide}
+            >
+              Cancel
+            </button>
           </form>
         </Modal.Body>
       </Modal>
     );
   }
 }
+
 export default ShareVersionForm;

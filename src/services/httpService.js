@@ -6,28 +6,29 @@ import "react-toastify/dist/ReactToastify.css";
 axios.defaults.baseURL = process.env.REACT_APP_API_URL;
 
 axios.interceptors.response.use(null, error => {
-    const expectedError =
-        error.response &&
-        error.response.status >= 400 &&
-        error.response.status < 500;
+  const expectedError =
+    error.response &&
+    error.response.status >= 400 &&
+    error.response.status < 500;
 
-    if (!expectedError) {
-        logger.log(!error);
-        toast.error("An unexpected error occurrred.");
-    }
+  if (!expectedError) {
+    logger.log(!error);
+    toast.error("An unexpected error occurrred.");
+  }
 
-    return Promise.reject(error);
+  return Promise.reject(error);
 });
 
 function setJwt(jwt) {
-    axios.defaults.headers.common["Authorization"] = jwt;
+  axios.defaults.headers.common["Authorization"] = jwt;
 }
 
 export default {
-    get: axios.get,
-    post: axios.post,
-    put: axios.put,
-    delete: axios.delete,
-    request: axios.request,
-    setJwt
+  get: axios.get,
+  post: axios.post,
+  put: axios.put,
+  delete: axios.delete,
+  request: axios.request,
+  patch: axios.patch,
+  setJwt
 };

@@ -1,5 +1,15 @@
 import React, { Component } from "react";
-import pageService from "./pageService";
+import { updatePage } from "../pages/redux/pagesActions";
+import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
+import store from "../../store/store";
+
+const mapDispatchToProps = (dispatch, ownProps) => {
+  return {
+    updatePage: (editedPage, pageId) =>
+      dispatch(updatePage(ownProps.history, editedPage, pageId))
+  };
+};
 
 class EditPage extends Component {
   name = React.createRef();
@@ -16,13 +26,12 @@ class EditPage extends Component {
     errors: {}
   };
 
-  async componentDidMount() {
+  fetchPage(pageId) {
     let data = {};
-    const { page } = this.props.location;
-
+    const { pages } = store.getState();
+    let page = pages[pageId];
     if (page) {
       const { id, versionId, groupId, name, contents } = page;
-
       data = {
         id,
         versionId,
@@ -30,21 +39,36 @@ class EditPage extends Component {
         name,
         contents
       };
-    } else {
-      const { pathname } = this.props.location;
-      const pageId = pathname.split("/")[4];
-      let { data: page } = await pageService.getPage(pageId);
-      const { id, versionId, groupId, name, contents } = page;
-      data = {
-        id,
-        versionId,
-        groupId,
-        name,
-        contents
-      };
+      this.setState({ data });
     }
+  }
 
-    this.setState({ data });
+  async componentDidMount() {
+    let data = {};
+    if (this.props.location.page) {
+      const {
+        id,
+        versionId,
+        groupId,
+        name,
+        contents
+      } = this.props.location.page;
+
+      data = {
+        id,
+        versionId,
+        groupId,
+        name,
+        contents
+      };
+      this.setState({ data });
+    } else {
+      const pageId = this.props.location.pathname.split("/")[3];
+      this.fetchPage(pageId);
+      store.subscribe(() => {
+        this.fetchPage(pageId);
+      });
+    }
   }
 
   handleChange = e => {
@@ -56,16 +80,18 @@ class EditPage extends Component {
   handleSubmit = e => {
     e.preventDefault();
     const groupId = this.state.data.groupId;
+
     if (groupId === null) {
+      const editedPage = { ...this.state.data };
+      this.props.updatePage(editedPage, editedPage.id);
       this.props.history.push({
-        pathname: `/dashboard/collections`,
-        editedPage: { ...this.state.data }
+        pathname: `/dashboard`
       });
     } else {
+      const editedPage = { ...this.state.data };
+      this.props.updatePage(editedPage, editedPage.id);
       this.props.history.push({
-        pathname: `/dashboard/collections`,
-        editedPage: { ...this.state.data },
-        groupId: { ...this.state.data.groupId }
+        pathname: `/dashboard`
       });
     }
   };
@@ -105,4 +131,4 @@ class EditPage extends Component {
   }
 }
 
-export default EditPage;
+export default withRouter(connect(null, mapDispatchToProps)(EditPage));

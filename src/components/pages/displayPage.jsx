@@ -1,72 +1,62 @@
 import React, { Component } from "react";
-import pageService from "./pageService";
 import jQuery from "jquery";
-import "./page.css";
+import store from "../../store/store";
+
 class DisplayPage extends Component {
   state = {
-    data: {
-      id: null,
-      versionId: null,
-      groupId: null,
-      name: "",
-      contents: ""
-    }
+    data: { id: null, versionId: null, groupId: null, name: "", contents: "" }
   };
 
-  async componentDidMount() {
+  fetchPage(pageId) {
     let data = {};
-    const { page } = this.props.location;
-
-    if (!page) {
-      const { pathname } = this.props.location;
-      //extracting pageId from pathname
-      const pageId = pathname.split("/")[4];
-      let { data: page } = await pageService.getPage(pageId);
+    const { pages } = store.getState();
+    let page = pages[pageId];
+    if (page) {
       const { id, versionId, groupId, name, contents } = page;
-      data = {
-        id,
-        versionId,
-        groupId,
-        name,
-        contents
-      };
+      data = { id, versionId, groupId, name, contents };
       this.setState({ data });
+    }
+  }
+
+  async componentDidMount() {
+    if (!this.props.location.page) {
+      const pageId = this.props.location.pathname.split("/")[3];
+      this.fetchPage(pageId);
+      store.subscribe(() => {
+        this.fetchPage(pageId);
+      });
     }
   }
 
   handleEdit(page) {
     this.props.history.push({
-      pathname: `/dashboard/collections/pages/${page.id}/edit`,
+      pathname: `/dashboard/pages/${page.id}/edit`,
       page: page
     });
   }
   render() {
-    const { page } = this.props.location;
-
-    if (page) {
-      const data = jQuery.extend(true, {}, page);
+    if (this.props.location.page) {
+      const data = { ...this.props.location.page };
       this.setState({ data });
       this.props.history.push({ page: null });
     }
 
-    const { data } = this.state;
-
     return (
       <div>
         <button
-          id="page-button"
+          style={{ float: "right" }}
           className="btn btn-primary btn-sm"
           onClick={() => {
-            this.handleEdit(data);
+            this.handleEdit(this.state.data);
           }}
         >
           Edit page
         </button>
         <span>
-          <p>{data.name}</p>
+          <p>{this.state.data.name}</p>
         </span>
         <span>
-          <p>{data.contents}</p>
+          <p>{this.state.data.contents}</p>
         </span>
       </div>
     );

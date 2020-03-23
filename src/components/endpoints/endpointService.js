@@ -14,6 +14,10 @@ export function apiTest(api, method, body, headers) {
   });
 }
 
+export function getAllEndpoints() {
+  return http.get(`${apiUrl}/endpoints`);
+}
+
 export function getEndpoints(groupId) {
   return http.get(endpointUrl(groupId));
 }
@@ -38,6 +42,10 @@ export function duplicateEndpoint(endpointId) {
   return http.post(`${apiUrl}/duplicateEndpoints/${endpointId}`);
 }
 
+export function moveEndpoint(endpointId, body) {
+  return http.patch(`${apiUrl}/endpoints/${endpointId}`, body);
+}
+
 export default {
   saveEndpoint,
   getEndpoints,
@@ -45,5 +53,7 @@ export default {
   apiTest,
   updateEndpoint,
   getEndpoint,
-  duplicateEndpoint
+  getAllEndpoints,
+  duplicateEndpoint,
+  moveEndpoint
 };

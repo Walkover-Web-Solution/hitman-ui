@@ -3,7 +3,15 @@ import { Link } from "react-router-dom";
 import { Modal } from "react-bootstrap";
 import Joi from "joi-browser";
 import Form from "../common/form";
+import { connect } from "react-redux";
+import { importVersion } from "../collectionVersions/redux/collectionVersionsActions";
 
+const mapDispatchToProps = dispatch => {
+  return {
+    importVersion: (importLink, shareIdentifier, collectionId) =>
+      dispatch(importVersion(importLink, shareIdentifier, collectionId))
+  };
+};
 class ShareVersionForm extends Form {
   state = {
     data: {
@@ -12,7 +20,10 @@ class ShareVersionForm extends Form {
     errors: {}
   };
 
-  componentDidMount() {}
+  componentDidMount() {
+    if (this.props.location.shareIdentifier) {
+    }
+  }
 
   schema = {
     shareVersionLink: Joi.string()
@@ -22,11 +33,11 @@ class ShareVersionForm extends Form {
 
   async doSubmit(props) {
     if (this.props.title === "Import Version") {
-      this.props.history.push({
-        pathname: `/dashboard/collections`,
-        importVersionLink: { ...this.state.data },
-        collectionId: this.props.location.pathname.split("/")[2]
-      });
+      this.props.onHide();
+      const collectionId = this.props.selected_collection.id;
+      const importLink = this.state.data.shareVersionLink;
+      let shareIdentifier = importLink.split("/")[4];
+      this.props.importVersion(importLink, shareIdentifier, collectionId);
     }
   }
 
@@ -38,17 +49,26 @@ class ShareVersionForm extends Form {
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
-        <Modal.Header>
+        <Modal.Header className="custom-collection-modal-container" closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
             {this.props.title}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <form onSubmit={this.handleSubmit}>
-            {this.renderInput("shareVersionLink", "Public Link")}
+            {this.renderInput(
+              "shareVersionLink",
+              "Public Link",
+              "Enter a public link"
+            )}
             {<div name="shareVersionLink" label="Public Link"></div>}
             {this.renderButton("Submit", "right")}
-            <Link to={`/dashboard/collections`}>Cancel</Link>
+            <button
+              className="btn btn-default custom-button"
+              onClick={this.props.onHide}
+            >
+              Cancel
+            </button>
           </form>
         </Modal.Body>
       </Modal>
@@ -56,4 +76,4 @@ class ShareVersionForm extends Form {
   }
 }
 
-export default ShareVersionForm;
+export default connect(null, mapDispatchToProps)(ShareVersionForm);

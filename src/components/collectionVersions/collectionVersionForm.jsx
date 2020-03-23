@@ -1,16 +1,25 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import { Modal } from "react-bootstrap";
 import Joi from "joi-browser";
 import Form from "../common/form";
-import collectionVersionsService from "./collectionVersionsService";
+import { connect } from "react-redux";
+import {
+  addVersion,
+  updateVersion
+} from "../collectionVersions/redux/collectionVersionsActions";
 
+import shortid from "shortid";
+
+const mapDispatchToProps = dispatch => {
+  return {
+    addVersion: (newCollectionVersion, collectionId) =>
+      dispatch(addVersion(newCollectionVersion, collectionId)),
+    updateVersion: editedVersion => dispatch(updateVersion(editedVersion))
+  };
+};
 class CollectionVersionForm extends Form {
   state = {
-    data: {
-      number: "",
-      host: ""
-    },
+    data: { number: "", host: "" },
     errors: {},
     versionId: null,
     collectionId: ""
@@ -28,44 +37,31 @@ class CollectionVersionForm extends Form {
 
   async componentDidMount() {
     let data = {};
-    const collectionId = this.props.location.pathname.split("/")[3];
-    const versionId = this.props.location.pathname.split("/")[5];
+    const collectionId = "";
+    let versionId = "";
     if (this.props.title === "Add new Collection Version") return;
-    if (this.props.location.editCollectionVersion) {
-      const { number, host } = this.props.location.editCollectionVersion;
+    if (this.props.selected_version) {
+      const { number, host, id } = this.props.selected_version;
       data = {
         number,
         host
       };
-    } else {
-      const {
-        data: editedCollectionVersion
-      } = await collectionVersionsService.getCollectionVersion(versionId);
-      const { number, host } = editedCollectionVersion;
-      data = {
-        number,
-        host
-      };
+      versionId = id;
     }
     this.setState({ data, versionId, collectionId });
   }
 
   async doSubmit() {
+    this.props.onHide();
     if (this.props.title === "Edit Collection Version") {
-      this.state.data.id = this.state.versionId;
-      this.state.data.collectionId = this.state.collectionId;
-
-      this.props.history.push({
-        pathname: `/dashboard/collections`,
-        editedCollectionVersion: { ...this.state.data }
-      });
+      const { id, collectionId } = this.props.selected_version;
+      const editedCollectionVersion = { ...this.state.data, collectionId, id };
+      this.props.updateVersion(editedCollectionVersion);
     }
     if (this.props.title === "Add new Collection Version") {
-      this.props.history.push({
-        pathname: `/dashboard/collections`,
-        newCollectionVersion: { ...this.state.data },
-        collectionId: this.props.location.pathname.split("/")[3]
-      });
+      const collectionId = this.props.collection_id;
+      const newVersion = { ...this.state.data, requestId: shortid.generate() };
+      this.props.addVersion(newVersion, collectionId);
     }
   }
 
@@ -77,17 +73,22 @@ class CollectionVersionForm extends Form {
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
-        <Modal.Header>
+        <Modal.Header className="custom-collection-modal-container" closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
             {this.props.title}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <form onSubmit={this.handleSubmit}>
-            {this.renderInput("number", "Version Number")}
-            {this.renderInput("host", "Host*")}
+            {this.renderInput("number", "Version Number", "version number")}
+            {this.renderInput("host", "Host", "host")}
             {this.renderButton("Submit")}
-            <Link to={`/dashboard/collections/`}>Cancel</Link>
+            <button
+              className="btn btn-default custom-button"
+              onClick={this.props.onHide}
+            >
+              Cancel
+            </button>
           </form>
         </Modal.Body>
       </Modal>
@@ -95,4 +96,4 @@ class CollectionVersionForm extends Form {
   }
 }
 
-export default CollectionVersionForm;
+export default connect(null, mapDispatchToProps)(CollectionVersionForm);

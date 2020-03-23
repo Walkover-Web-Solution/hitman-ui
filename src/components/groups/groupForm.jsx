@@ -1,15 +1,21 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import { Modal } from "react-bootstrap";
 import Joi from "joi-browser";
+import React from "react";
+import { Modal } from "react-bootstrap";
+import { connect } from "react-redux";
+import shortid from "shortid";
 import Form from "../common/form";
-import groupsService from "./groupsService";
+import { addGroup, updateGroup } from "../groups/redux/groupsActions";
+
+const mapDispatchToProps = dispatch => {
+  return {
+    addGroup: (versionId, group) => dispatch(addGroup(versionId, group)),
+    updateGroup: group => dispatch(updateGroup(group))
+  };
+};
+
 class GroupForm extends Form {
   state = {
-    data: {
-      name: "",
-      host: ""
-    },
+    data: { name: "", host: "" },
     groupId: "",
     versionId: "",
     errors: {}
@@ -18,19 +24,11 @@ class GroupForm extends Form {
   async componentDidMount() {
     if (this.props.title === "Add new Group") return;
     let data = {};
-    const groupId = this.props.location.pathname.split("/")[7];
-    const versionId = this.props.location.pathname.split("/")[5];
-    if (this.props.title === "Add new Group") return;
-    if (this.props.location.editGroup) {
-      const { name, host } = this.props.location.editGroup;
-      data = { name, host };
-    } else {
-      const {
-        data: { name, host }
-      } = await groupsService.getGroup(groupId);
+    if (this.props.selected_group) {
+      const { name, host } = this.props.selected_group;
       data = { name, host };
     }
-    this.setState({ data, groupId, versionId });
+    this.setState({ data });
   }
 
   schema = {
@@ -44,23 +42,25 @@ class GroupForm extends Form {
   };
 
   async doSubmit() {
+    this.props.onHide();
     if (this.props.title === "Add new Group") {
-      this.props.history.push({
-        pathname: `/dashboard/collections`,
-        newGroup: this.state.data,
-        versionId: this.props.location.pathname.split("/")[5]
-      });
+      const versionId = this.props.selectedVersion.id;
+      const newGroup = {
+        ...this.state.data,
+        endpointsOrder: [],
+        requestId: shortid.generate()
+      };
+      this.props.addGroup(versionId, newGroup);
     }
 
     if (this.props.title === "Edit Group") {
-      this.props.history.push({
-        pathname: `/dashboard/collections`,
-        editedGroup: {
-          ...this.state.data,
-          id: this.state.groupId,
-          versionId: this.props.location.pathname.split("/")[5]
-        }
-      });
+      const editedGroup = {
+        ...this.state.data,
+        id: this.props.selected_group.id,
+        endpointsOrder: this.props.selected_group.endpointsOrder,
+        versionId: this.props.selected_group.versionId
+      };
+      this.props.updateGroup(editedGroup);
     }
   }
 
@@ -72,17 +72,22 @@ class GroupForm extends Form {
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
-        <Modal.Header>
+        <Modal.Header className="custom-collection-modal-container" closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
             {this.props.title}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <form onSubmit={this.handleSubmit}>
-            {this.renderInput("name", "Group Name*")}
-            {this.renderInput("host", "Host")}
+            {this.renderInput("name", "Group Name", "group name")}
+            {this.renderInput("host", "Host", "host name")}
             {this.renderButton("Submit")}
-            <Link to={`/dashboard/collections/`}>Cancel</Link>
+            <button
+              className="btn btn-default  custom-button"
+              onClick={this.props.onHide}
+            >
+              Cancel
+            </button>
           </form>
         </Modal.Body>
       </Modal>
@@ -90,4 +95,4 @@ class GroupForm extends Form {
   }
 }
 
-export default GroupForm;
+export default connect(null, mapDispatchToProps)(GroupForm);

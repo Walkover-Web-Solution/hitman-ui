@@ -29,6 +29,10 @@ export function deleteGroup(GroupId) {
   return http.delete(`${GroupUrl(GroupId)}`);
 }
 
+export function getAllGroups() {
+  return http.get(`${apiUrl}/groups`);
+}
+
 export function duplicateGroup(groupId) {
   return http.post(`${apiUrl}/duplicateGroups/${groupId}`);
 }
@@ -39,5 +43,6 @@ export default {
   saveGroup,
   updateGroup,
   deleteGroup,
-  duplicateGroup
+  duplicateGroup,
+  getAllGroups
 };

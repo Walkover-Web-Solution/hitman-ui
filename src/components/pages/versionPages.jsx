@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
+
 import {
   Accordion,
   Card,
@@ -6,12 +8,24 @@ import {
   Dropdown,
   DropdownButton
 } from "react-bootstrap";
+import { deletePage, duplicatePage } from "./redux/pagesActions";
 
+const mapStateToProps = state => {
+  return {
+    pages: state.pages
+  };
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    deletePage: page => dispatch(deletePage(page)),
+    duplicatePage: page => dispatch(duplicatePage(page))
+  };
+};
 class Pages extends Component {
   state = {};
 
   onDragStart = (e, pageId) => {
-    this.props.version_dnd(false);
     this.draggedItem = pageId;
   };
 
@@ -21,7 +35,6 @@ class Pages extends Component {
   };
 
   async onDragEnd(e) {
-    this.props.version_dnd(true);
     if (this.draggedItem === this.draggedOverItem) {
       return;
     }
@@ -33,23 +46,23 @@ class Pages extends Component {
     this.props.set_page_id(pageIds);
   }
 
-  handleDelete(pageId) {
+  handleDelete(page) {
+    this.props.deletePage(page);
     this.props.history.push({
-      pathname: "/dashboard/collections",
-      deletePageId: pageId
+      pathname: "/dashboard"
     });
   }
   handleDisplay(page) {
     this.props.history.push({
-      pathname: `/dashboard/collections/pages/${page.id}`,
+      pathname: `/dashboard/pages/${page.id}`,
       page: page
     });
   }
 
   handleDuplicate(page) {
+    this.props.duplicatePage(page);
     this.props.history.push({
-      pathname: "/dashboard/collections",
-      duplicatePage: page
+      pathname: "/dashboard"
     });
   }
 
@@ -57,7 +70,7 @@ class Pages extends Component {
     return (
       <div>
         {this.props.pages &&
-          this.props.page_ids
+          Object.keys(this.props.pages)
             .filter(
               pageId =>
                 this.props.pages[pageId].versionId === this.props.version_id &&
@@ -104,7 +117,7 @@ class Pages extends Component {
                               "Are you sure you wish to delete this item?"
                             )
                           )
-                            this.handleDelete(pageId);
+                            this.handleDelete(this.props.pages[pageId]);
                         }}
                       >
                         Delete
@@ -112,10 +125,7 @@ class Pages extends Component {
                       <Dropdown.Item
                         eventKey="2"
                         onClick={() => {
-                          {
-                            const page = this.props.pages[pageId];
-                            this.handleDuplicate(page);
-                          }
+                          this.handleDuplicate(this.props.pages[pageId]);
                         }}
                       >
                         Duplicate
@@ -129,5 +139,4 @@ class Pages extends Component {
     );
   }
 }
-
-export default Pages;
+export default connect(mapStateToProps, mapDispatchToProps)(Pages);
