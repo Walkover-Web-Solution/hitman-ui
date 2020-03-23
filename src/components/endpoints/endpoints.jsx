@@ -110,6 +110,9 @@ class Endpoints extends Component {
                     )
                   }
                 >
+                  <div className={this.props.endpoints[endpointId].requestType}>
+                    {this.props.endpoints[endpointId].requestType}
+                  </div>
                   {this.props.endpoints[endpointId].name}
                 </button>
                 <div className="btn-group">

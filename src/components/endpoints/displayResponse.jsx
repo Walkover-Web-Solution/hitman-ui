@@ -117,7 +117,9 @@ class DisplayResponse extends Component {
                   onCopy={() => this.setState({ copied: true })}
                   style={{ float: "right", borderRadius: "12px" }}
                 >
-                  <i class="fas fa-clone"></i>
+                  <button>
+                    <i class="fas fa-clone"></i>
+                  </button>
                 </CopyToClipboard>
               </div>
               {/* <div className="response-body"> */}

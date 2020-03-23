@@ -1,4 +1,4 @@
-$border-color: rgba(201, 203, 206, 0.7);
+$border-color: rgba(227, 228, 230, 0.7);
 
 .navbar-nav {
   float: left;
@@ -36,6 +36,8 @@ $border-color: rgba(201, 203, 206, 0.7);
   border-radius: 0;
   border: none;
   .card-header {
+    border-bottom: 1px solid $border-color;
+    margin-bottom: 0px !important;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -43,6 +45,7 @@ $border-color: rgba(201, 203, 206, 0.7);
     padding: 0px;
     height: 60px;
     border-radius: 0px;
+    background-color: white;
     i.fas.fa-folder-open {
       opacity: 0.4;
       padding-left: 10px;
@@ -53,6 +56,7 @@ $border-color: rgba(201, 203, 206, 0.7);
     }
     .btn-group {
       visibility: hidden;
+
       button.btn.btn-secondary {
         border-radius: 0px;
         background: rgb(237, 237, 237);
@@ -83,8 +87,9 @@ $border-color: rgba(201, 203, 206, 0.7);
     align-items: center;
     justify-content: flex-start;
     padding: 0px;
-    height: 60px;
+    height: 40px;
     border-radius: 0px;
+    border: none;
     i.fas.fa-folder-open {
       opacity: 0.4;
       padding-left: 10px;
@@ -125,7 +130,43 @@ $border-color: rgba(201, 203, 206, 0.7);
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  background-color: rgb(247, 247, 247);
+  .btn {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    .POST {
+      color: rgb(255, 123, 0);
+      margin-right: 15px;
+      font-size: 13px;
+      font-weight: 800;
+      opacity: 0.7;
+      width: 50px;
+    }
+    .GET {
+      color: green;
+      margin-right: 15px;
+      font-size: 13px;
+      font-weight: 800;
+      opacity: 0.7;
+      width: 50px;
+    }
+    .PUT {
+      color: steelblue;
+      margin-right: 15px;
+      font-size: 13px;
+      font-weight: 800;
+      opacity: 0.7;
+      width: 50px;
+    }
+    .DELETE {
+      color: red;
+      margin-right: 15px;
+      font-size: 13px;
+      font-weight: 800;
+      opacity: 0.7;
+      width: 50px;
+    }
+  }
   .btn-group {
     visibility: hidden;
     color: rgba(0, 0, 0, 0.4);
@@ -157,6 +198,7 @@ nav.col-md-2.d-none.d-md-block.bg-light.sidebar {
   padding-left: 0;
   padding-right: 0;
   border-right: 2px solid $border-color;
+  background-color: white !important;
 }
 
 .btn:focus {
@@ -233,46 +275,31 @@ nav.navbar.navbar-dark.fixed-top.bg-dark.flex-md-nowrap.p-0.shadow {
 }
 
 .custom-modal-container {
-  height: 600px;
-  background: rgb(253, 253, 248);
-}
-
-#leftbox {
-  float: left;
-  width: 33%;
-  height: 280px;
-  #custom-req-icon-div {
-    float: left;
-  }
-  #custom-req-icon {
-    font-size: 50px;
-    padding-right: 35px;
+  .modal-body {
+    height: 300px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
   }
 }
-#middlebox {
-  float: left;
+.new-button-card {
   width: 33%;
-  height: 280px;
-  #custom-col-icon-div {
-    float: left;
-  }
-
-  #custom-col-icon {
+  height: 150px;
+  display: flex;
+  flex-direction: row;
+  .new-icon-wrapper {
     font-size: 50px;
-    padding-right: 35px;
+    padding-right: 25px;
+    opacity: 0.7;
   }
-}
-
-#rightbox {
-  float: right;
-  width: 33%;
-  height: 280px;
-  #custom-env-icon-div {
-    float: left;
-  }
-  #custom-env-icon {
-    font-size: 50px;
-    padding-right: 35px;
+  .new-button-text-wrapper {
+    .card-title {
+      color: tomato;
+    }
+    .card-subtitle {
+      font-size: 13px;
+      font-weight: 400;
+    }
   }
 }
 
@@ -398,6 +425,7 @@ main.main.ml-sm-auto.col-lg-10 {
       color: white;
       background-color: rgb(60, 60, 233);
       margin: 0px 15px;
+      font-weight: 250;
     }
     #save-endpoint-button {
       background-color: rgb(221, 221, 223);
@@ -439,6 +467,7 @@ body {
 
 nav.col-md-3.d-none.d-md-block.bg-light.sidebar {
   border-right: 2px solid black;
+  background-color: white !important;
 }
 
 button.btn.btn-default.custom-submit-button {
@@ -471,6 +500,9 @@ button.btn.btn-default.custom-submit-button {
   }
 }
 #generic-table-row {
+  #generic-table-key-cell {
+    border-left: none;
+  }
   #generic-table-description-cell {
     // border: none;
     display: flex;

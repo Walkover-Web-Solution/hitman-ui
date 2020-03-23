@@ -61,7 +61,7 @@ class GenericTable extends Component {
         <table className="table table-bordered" bordered>
           <thead>
             <tr>
-              <th>KEY</th>
+              <th id="generic-table-key-cell">KEY</th>
               <th>VALUE</th>
               <th>DESCRIPTION</th>
             </tr>
@@ -70,7 +70,7 @@ class GenericTable extends Component {
           <tbody>
             {dataArray.map((e, index) => (
               <tr key={index} id="generic-table-row">
-                <td>
+                <td id="generic-table-key-cell">
                   <input
                     name={index + ".key"}
                     value={dataArray[index].key}

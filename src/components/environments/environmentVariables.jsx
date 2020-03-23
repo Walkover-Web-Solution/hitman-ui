@@ -141,16 +141,6 @@ class EnvironmentVariables extends Component {
             >
               <Modal.Title id="contained-modal-title-vcenter">
                 {this.props.title}
-                {/* <h5>
-                <input
-                  name={"name"}
-                  value={this.state.environment.name}
-                  onChange={this.handleChangeEnv}
-                  type={"text"}
-                  size="100"
-                  className="form-control"
-                />
-              </h5> */}
               </Modal.Title>
             </Modal.Header>
             <Modal.Body>
@@ -255,7 +245,7 @@ class EnvironmentVariables extends Component {
                 <div className="custom-button-wrapper">
                   <button className="btn btn-default custom-environment-add-button">
                     {/* to change button label according to title of the form */}
-                    {this.props.title.split(" ")[0]}
+                    Save
                   </button>
                   <button
                     className="btn btn-default custom-environment-cancel-button"
