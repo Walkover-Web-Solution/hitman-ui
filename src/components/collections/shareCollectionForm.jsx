@@ -5,6 +5,8 @@ import "react-multi-email/style.css";
 import { connect } from "react-redux";
 import store from "../../store/store";
 import authService from "../auth/authService";
+import jQuery from "jquery";
+
 const mapStateToProps = state => {
   return {
     team: state.team
@@ -17,16 +19,9 @@ class ShareCollectionForm extends Component {
       role: "Collaborator"
     },
     emails: [],
-    teamMembers: []
+    modifiedteamMembers: []
   };
-
-  //store.subscribe(() => {
-  //   if (this.flag === 0) {
-  //     this.flag = 1;
-  //     this.props.fetchAllUsersOfTeam(this.props.team_id);
-  //   }
-  // });
-  //}
+  changeTeamFlag = true;
 
   dropdownRole = {
     admin: { name: "Admin" },
@@ -41,12 +36,13 @@ class ShareCollectionForm extends Component {
     });
   }
 
-  setCurrentUserRole(key, teamIdentifier) {
+  setSelectedUserRole(key, teamIdentifier) {
+    this.changeTeamFlag = false;
     this.team[teamIdentifier].role = key;
     const currentMember = this.team[teamIdentifier];
-    let teamMembers = this.state.teamMembers;
+    let modifiedteamMembers = this.state.modifiedteamMembers;
     this.modifyMember("updateMember", currentMember);
-    this.setState({ teamMembers });
+    this.setState({ modifiedteamMembers });
   }
 
   async onShareCollectionSubmit(teamMemberData) {
@@ -56,17 +52,17 @@ class ShareCollectionForm extends Component {
         role: "Collaborator"
       },
       emails: [],
-      teamMembers: []
+      modifiedteamMembers: []
     });
   }
 
-  async modifyMember(value, currentMember) {
-    let teamMembers = this.state.teamMembers;
-    const len = teamMembers.length;
+  async modifyMember(value, selectedMember) {
+    let modifiedteamMembers = this.state.modifiedteamMembers;
+    const len = modifiedteamMembers.length;
     if (value === "addMember") {
       if (this.state.emails !== undefined) {
         for (let i = len; i < len + this.state.emails.length; i++) {
-          teamMembers[i] = {
+          modifiedteamMembers[i] = {
             email: this.state.emails[i - len],
             role: this.state.data.role,
             teamIdentifier: this.props.team_id,
@@ -82,22 +78,22 @@ class ShareCollectionForm extends Component {
       } else {
         deleteFlag = false;
       }
-      teamMembers[len.toString()] = {
-        email: currentMember.email,
-        role: currentMember.role,
+      modifiedteamMembers[len.toString()] = {
+        email: selectedMember.email,
+        role: selectedMember.role,
         teamIdentifier: this.props.team_id,
-        id: this.props.team[currentMember.userId].id,
+        id: this.props.team[selectedMember.userId].id,
         deleteFlag
       };
     }
-    this.setState({ teamMembers });
-    return teamMembers;
+    this.setState({ modifiedteamMembers });
+    return modifiedteamMembers;
   }
 
   async handleSubmit(e) {
     e.preventDefault();
-    const teamMembers = await this.modifyMember("addMember", null);
-    this.onShareCollectionSubmit(teamMembers);
+    const modifiedteamMembers = await this.modifyMember("addMember", null);
+    this.onShareCollectionSubmit(modifiedteamMembers);
   }
 
   fetchCurrentUserRole() {
@@ -124,8 +120,13 @@ class ShareCollectionForm extends Component {
     }
   }
 
+  fetchTeam() {
+    if (this.changeTeamFlag === true) {
+      this.team = jQuery.extend(true, {}, this.props.team);
+    }
+  }
   render() {
-    this.team = this.props.team;
+    this.fetchTeam();
     this.currentUserRole = this.fetchCurrentUserRole();
     let count = Object.keys(this.team).length;
     let serialNo = 1;
@@ -234,7 +235,7 @@ class ShareCollectionForm extends Component {
                                     : null
                                 }
                                 onClick={() =>
-                                  this.setCurrentUserRole(
+                                  this.setSelectedUserRole(
                                     this.dropdownRole[key].name,
                                     teamId
                                   )
