@@ -20,14 +20,13 @@ class ShareCollectionForm extends Component {
     teamMembers: []
   };
 
-  async componentDidMount() {
-    store.subscribe(() => {
-      if (this.flag === 0) {
-        this.flag = 1;
-        this.props.fetchAllUsersOfTeam(this.props.team_id);
-      }
-    });
-  }
+  //store.subscribe(() => {
+  //   if (this.flag === 0) {
+  //     this.flag = 1;
+  //     this.props.fetchAllUsersOfTeam(this.props.team_id);
+  //   }
+  // });
+  //}
 
   dropdownRole = {
     admin: { name: "Admin" },
@@ -51,7 +50,6 @@ class ShareCollectionForm extends Component {
   }
 
   async onShareCollectionSubmit(teamMemberData) {
-    this.flag = 0;
     this.props.shareCollection(teamMemberData);
     this.setState({
       data: {
