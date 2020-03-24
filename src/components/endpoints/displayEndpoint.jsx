@@ -71,19 +71,15 @@ class DisplayEndpoint extends Component {
     let originalParams = [];
     let originalHeaders = [];
     let flag = 0;
-    if (!this.props.location.title) {
-      this.fetchEndpoint(endpoint, originalParams, originalHeaders, flag);
-      store.subscribe(() => {
-        console.log("store.subscribe");
-        if (!this.props.location.title) {
-          this.fetchEndpoint(endpoint, originalParams, originalHeaders, flag);
-        }
-      });
-    }
+    this.fetchEndpoint(endpoint, originalParams, originalHeaders, flag);
+    store.subscribe(() => {
+      if (!this.props.location.title) {
+        this.fetchEndpoint(endpoint, originalParams, originalHeaders, flag);
+      }
+    });
   }
 
   fetchEndpoint(endpoint, originalParams, originalHeaders, flag) {
-    console.log("fetchEndpoint");
     const endpointId = this.props.location.pathname.split("/")[3];
     const { endpoints } = store.getState();
     const { groups } = store.getState();
@@ -520,11 +516,7 @@ class DisplayEndpoint extends Component {
   }
 
   render() {
-    if (!this.props.location.pathname.split("/")[3]) {
-      this.state.title = "update endpoint";
-    }
     if (this.props.location.title === "Add New Endpoint") {
-      console.log("Add New Endpoint");
       this.customHost = false;
       const hostJson = this.fetchHosts(
         this.props.location,
@@ -562,7 +554,6 @@ class DisplayEndpoint extends Component {
       this.props.location.title === "update endpoint" &&
       this.props.location.endpoint
     ) {
-      console.log("update endpoint");
       this.BASE_URL = this.props.location.endpoint.BASE_URL;
       if (this.props.location.endpoint.BASE_URL !== null) {
         this.setDropdownValue("custom");
