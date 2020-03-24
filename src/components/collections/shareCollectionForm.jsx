@@ -5,6 +5,7 @@ import "react-multi-email/style.css";
 import { connect } from "react-redux";
 import store from "../../store/store";
 import authService from "../auth/authService";
+import shortid from "shortid";
 const mapStateToProps = state => {
   return {
     team: state.team
@@ -69,9 +70,11 @@ class ShareCollectionForm extends Component {
           teamMembers[i] = {
             email: this.state.emails[i - len],
             role: this.state.data.role,
-            teamIdentifier: this.props.team_id,
+            teamId: this.props.team_id,
             id: null,
-            deleteFlag: false
+            deleteFlag: false,
+            userId: null,
+            requestId: shortid.generate()
           };
         }
       }
@@ -82,12 +85,15 @@ class ShareCollectionForm extends Component {
       } else {
         deleteFlag = false;
       }
+
       teamMembers[len.toString()] = {
         email: currentMember.email,
         role: currentMember.role,
-        teamIdentifier: this.props.team_id,
+        teamId: this.props.team_id,
         id: this.props.team[currentMember.userId].id,
-        deleteFlag
+        deleteFlag,
+        userId: currentMember.userId,
+        requestId: null
       };
     }
     this.setState({ teamMembers });

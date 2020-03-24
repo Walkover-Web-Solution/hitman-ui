@@ -3,6 +3,7 @@ import teamsActionTypes from "./teamsActionTypes";
 
 export const shareCollection = sharedCollection => {
   return dispatch => {
+    dispatch(onCollectionSharedRequest(sharedCollection));
     collectionsApiService
       .shareCollection(sharedCollection)
       .then(response => {
@@ -16,6 +17,13 @@ export const shareCollection = sharedCollection => {
           )
         );
       });
+  };
+};
+
+export const onCollectionSharedRequest = sharedCollection => {
+  return {
+    type: teamsActionTypes.ON_COLLECTION_SHARED_REQUEST,
+    sharedCollection
   };
 };
 
