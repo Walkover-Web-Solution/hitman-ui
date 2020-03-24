@@ -39,7 +39,6 @@ class Navbar extends Component {
   }
 
   render() {
-    console.log(getCurrentUser());
     return (
       <nav className="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
         {this.state.showCreateNewModal &&

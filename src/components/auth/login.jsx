@@ -9,7 +9,7 @@ class Login extends Component {
     if (!socketJwt) return;
     await auth.login(socketJwt);
     const { state } = this.props.location;
-    window.location = state ? state.from.pathname : "/dashboard";
+    window.location = state ? state.from.pathname : "/dashboard/endpoints";
   }
 
   getSocketJwt = () => {

@@ -169,47 +169,23 @@ class CollectionsComponent extends Component {
     });
   }
 
-  fetchCurrentUserRole() {
-    const { user: currentUser } = authService.getCurrentUser();
-    const teamArray = Object.keys(this.props.team);
-    for (let i = 0; i < teamArray.length; i++) {
-      if (currentUser.identifier === teamArray[i]) {
-        return this.props.team[currentUser.identifier].role;
-      }
-    }
-  }
-
   openEditCollectionForm(collectionId) {
-    this.props.fetchAllUsersOfTeam(this.props.collections[collectionId].teamId);
-    const role = this.fetchCurrentUserRole();
-    if (role === "collaborator") {
-      alert("As a collaborator,you are not allowed to edit this collection");
-    } else {
-      this.setState({
-        showCollectionForm: true,
-        collectionFormName: "Edit Collection",
-        selectedCollection: {
-          ...this.props.collections[collectionId]
-        }
-      });
-    }
+    this.setState({
+      showCollectionForm: true,
+      collectionFormName: "Edit Collection",
+      selectedCollection: {
+        ...this.props.collections[collectionId]
+      }
+    });
   }
 
   openAddVersionForm(collectionId) {
-    this.props.fetchAllUsersOfTeam(this.props.collections[collectionId].teamId);
-    const role = this.fetchCurrentUserRole();
-    if (role === "collaborator") {
-      alert(
-        "As a collaborator,you are not allowed to add version to this collection"
-      );
-    } else {
-      this.setState({
-        showVersionForm: true,
-        selectedCollection: {
-          ...this.props.collections[collectionId]
-        }
-      });
-    }
+    this.setState({
+      showVersionForm: true,
+      selectedCollection: {
+        ...this.props.collections[collectionId]
+      }
+    });
   }
   openImportVersionForm(collectionId) {
     this.setState({

@@ -63,6 +63,10 @@ class DisplayEndpoint extends Component {
   };
 
   async componentDidMount() {
+    if (!this.props.location.pathname.split("/")[3]) {
+      this.setState({ selectedHost: "custom" });
+      this.customHost = true;
+    }
     let endpoint = {};
     let originalParams = [];
     let originalHeaders = [];
@@ -70,7 +74,8 @@ class DisplayEndpoint extends Component {
     if (!this.props.location.title) {
       this.fetchEndpoint(endpoint, originalParams, originalHeaders, flag);
       store.subscribe(() => {
-        if (!this.props.location.title && !this.state.title) {
+        console.log("store.subscribe");
+        if (!this.props.location.title) {
           this.fetchEndpoint(endpoint, originalParams, originalHeaders, flag);
         }
       });
@@ -78,6 +83,7 @@ class DisplayEndpoint extends Component {
   }
 
   fetchEndpoint(endpoint, originalParams, originalHeaders, flag) {
+    console.log("fetchEndpoint");
     const endpointId = this.props.location.pathname.split("/")[3];
     const { endpoints } = store.getState();
     const { groups } = store.getState();
@@ -335,7 +341,9 @@ class DisplayEndpoint extends Component {
     }
     if (endpoint.name === "" || endpoint.uri === "")
       toast.error("Please Enter all the fields");
-    else if (this.state.title === "Add New Endpoint") {
+    else if (!this.state.title) {
+      alert("Please select collection");
+    } else if (this.state.title === "Add New Endpoint") {
       endpoint.requestId = shortId.generate();
       this.props.addEndpoint(endpoint, this.state.groupId);
     } else if (this.state.title === "update endpoint") {
@@ -512,7 +520,11 @@ class DisplayEndpoint extends Component {
   }
 
   render() {
+    if (!this.props.location.pathname.split("/")[3]) {
+      this.state.title = "update endpoint";
+    }
     if (this.props.location.title === "Add New Endpoint") {
+      console.log("Add New Endpoint");
       this.customHost = false;
       const hostJson = this.fetchHosts(
         this.props.location,
@@ -550,6 +562,7 @@ class DisplayEndpoint extends Component {
       this.props.location.title === "update endpoint" &&
       this.props.location.endpoint
     ) {
+      console.log("update endpoint");
       this.BASE_URL = this.props.location.endpoint.BASE_URL;
       if (this.props.location.endpoint.BASE_URL !== null) {
         this.setDropdownValue("custom");
@@ -645,7 +658,6 @@ class DisplayEndpoint extends Component {
                 name="BASE_URL_Value"
                 ref={this.BASE_URL_Value}
                 value={this.state.data.host}
-                s
                 onChange={this.handleDropdownChange}
                 disabled={this.state.selectedHost !== "custom"}
               />
