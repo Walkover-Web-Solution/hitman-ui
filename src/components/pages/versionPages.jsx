@@ -79,10 +79,7 @@ class Pages extends Component {
               <div id="accordion" key={index}>
                 <div className="card">
                   <div className="card-header" id="custom-card-header">
-                    {/* <i
-                      className="fas fa-folder-open"
-                      style={{ margin: "5px" }}
-                    ></i> */}
+                    <i className="fa fa-file-text" aria-hidden="true"></i>
                     <h5 className="mb-0">
                       <button
                         className="btn"

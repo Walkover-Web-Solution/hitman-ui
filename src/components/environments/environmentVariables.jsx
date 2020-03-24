@@ -244,7 +244,6 @@ class EnvironmentVariables extends Component {
               <div>
                 <div className="custom-button-wrapper">
                   <button className="btn btn-default custom-environment-add-button">
-                    {/* to change button label according to title of the form */}
                     Save
                   </button>
                   <button

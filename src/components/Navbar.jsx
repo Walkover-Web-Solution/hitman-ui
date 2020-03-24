@@ -14,7 +14,6 @@ class Navbar extends Component {
     const { user } = getCurrentUser();
     const name = user.first_name + user.last_name;
     const email = user.email;
-    console.log(name, email);
     this.setState({ name, email });
   }
 
@@ -39,7 +38,6 @@ class Navbar extends Component {
   }
 
   render() {
-    console.log(getCurrentUser());
     return (
       <nav className="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
         {this.state.showCreateNewModal &&

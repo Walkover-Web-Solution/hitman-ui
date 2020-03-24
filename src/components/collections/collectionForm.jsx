@@ -70,7 +70,7 @@ class CollectionForm extends Form {
       .label("Keywords"),
     description: Joi.string()
       .allow(null, "")
-      .label("Description")
+      .label("description")
   };
 
   async onEditCollectionSubmit() {

@@ -47,7 +47,6 @@ class DisplayResponse extends Component {
   }
 
   render() {
-    console.log(this.props);
     return (
       <div className="endpoint-response-container">
         {this.props.response.status ? (
