@@ -46,6 +46,7 @@ class Form extends Component {
   }
 
   renderTextArea(name, label, placeholder) {
+    const { data, errors } = this.state;
     return (
       <div className="form-group ">
         <label for={name} className="custom-input-label">
@@ -54,7 +55,11 @@ class Form extends Component {
         <textarea
           className="form-control custom-input"
           rows="10"
+          onChange={this.handleChange}
           id={name}
+          error={errors[name]}
+          name={name}
+          value={data[name]}
           placeholder={placeholder}
         ></textarea>
       </div>
