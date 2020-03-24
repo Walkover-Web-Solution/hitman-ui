@@ -31,16 +31,11 @@ export function duplicateCollection(collectionId) {
   return http.post(`${apiUrl}/duplicateCollections/${collectionId}`);
 }
 export function fetchAllUsersOfTeam(teamIdentifier) {
-  return http.get(`${apiUrl}/teams/${teamIdentifier}`);
+  return http.get(`${apiUrl}/teams/${teamIdentifier}/teamUsers`);
 }
 
-// export function deleteUserOfTeam(teamData) {
-//   console.log(teamData);
-//   return http.delete(`${apiUrl}/teams`, { data: teamData });
-// }
-
 export function shareCollection(teamMemberData) {
-  return http.patch(apiUrl + "/teams", teamMemberData);
+  return http.patch(apiUrl + "/teamUsers", teamMemberData);
 }
 
 export default {
@@ -51,6 +46,5 @@ export default {
   deleteCollection,
   duplicateCollection,
   fetchAllUsersOfTeam,
-  // deleteUserOfTeam,
   shareCollection
 };

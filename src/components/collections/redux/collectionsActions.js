@@ -163,7 +163,11 @@ export const duplicateCollection = collection => {
         dispatch(onCollectionDuplicated(response.data));
       })
       .catch(error => {
-        toast.error(error);
+        dispatch(
+          onCollectionDuplicatedError(
+            error.response ? error.response.data : error
+          )
+        );
       });
   };
 };
@@ -172,5 +176,12 @@ export const onCollectionDuplicated = response => {
   return {
     type: collectionsActionTypes.ON_COLLECTION_DUPLICATED,
     response
+  };
+};
+
+export const onCollectionDuplicatedError = error => {
+  return {
+    type: collectionsActionTypes.ON_COLLECTION_DUPLICATED_ERROR,
+    error
   };
 };
