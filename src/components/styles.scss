@@ -53,6 +53,11 @@ $border-color: rgba(227, 228, 230, 0.7);
       opacity: 0.4;
       padding-left: 10px;
     }
+    i.fa.fa-file-text {
+      opacity: 0.4;
+      padding-left: 10px;
+      margin: 5px;
+    }
     button.btn {
       float: left;
       width: 80%;
@@ -713,4 +718,31 @@ input#custom-environment-input {
 #custom-user-right {
   float: left;
   width: 80%;
+}
+
+//display page style
+
+.custom-display-page {
+  margin-left: 20px;
+  margin-top: 5px;
+
+  button {
+    margin-top: 15px;
+    margin-right: 15px;
+    float: right;
+  }
+}
+
+//edit page style
+.custom-edit-page {
+  margin-top: 5px;
+  margin-left: 20px;
+  margin-right: 20px;
+  button {
+    margin-top: 15px;
+  }
+  label {
+    font-size: 20px;
+    font-weight: 300;
+  }
 }
