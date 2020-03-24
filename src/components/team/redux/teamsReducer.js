@@ -12,8 +12,7 @@ function teamsReducer(state = initialState, action) {
       return { ...action.response };
 
     // case teamActionTypes.ON_COLLECTION_SHARED:
-    //   console.log("sharedCollection reducer", action.sharedCollection);
-    //   console.log("respone", action.response);
+
     //   const sharedCollection = action.sharedCollection;
     //   team = { ...state };
     //   for (let i = 0; i < sharedCollection.length; i++) {
@@ -25,7 +24,6 @@ function teamsReducer(state = initialState, action) {
     //     } else {
     //     }
     //   }
-    //   console.log(team);
 
     //   return team;
     // case teamActionTypes.ON_COLLECTION_SHARED_ERROR:

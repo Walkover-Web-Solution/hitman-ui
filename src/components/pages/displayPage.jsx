@@ -23,6 +23,7 @@ class DisplayPage extends Component {
       const pageId = this.props.location.pathname.split("/")[3];
       this.fetchPage(pageId);
       store.subscribe(() => {
+        console.log("hi");
         this.fetchPage(pageId);
       });
     }

@@ -67,6 +67,7 @@ class DisplayEndpoint extends Component {
     let originalParams = [];
     let originalHeaders = [];
     let flag = 0;
+
     if (!this.props.location.title) {
       this.fetchEndpoint(endpoint, originalParams, originalHeaders, flag);
       store.subscribe(() => {

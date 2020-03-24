@@ -749,3 +749,18 @@ input#custom-environment-input {
     font-weight: 300;
   }
 }
+.tabs-container {
+  .nav {
+    .nav-item {
+      padding: 0px;
+      display: flex;
+      border: 1px solid;
+      margin: 2px;
+      height: 40px;
+
+      .nav-link.active {
+        background-color: $border-color;
+      }
+    }
+  }
+}

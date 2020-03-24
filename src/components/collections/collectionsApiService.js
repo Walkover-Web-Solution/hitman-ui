@@ -35,7 +35,7 @@ export function fetchAllUsersOfTeam(teamIdentifier) {
 }
 
 // export function deleteUserOfTeam(teamData) {
-//   console.log(teamData);
+
 //   return http.delete(`${apiUrl}/teams`, { data: teamData });
 // }
 

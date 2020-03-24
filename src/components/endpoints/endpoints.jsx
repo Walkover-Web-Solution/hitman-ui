@@ -9,6 +9,7 @@ import {
 import { deleteEndpoint, duplicateEndpoint } from "./redux/endpointsActions";
 import { connect } from "react-redux";
 import { setEndpointIds } from "../groups/redux/groupsActions";
+import store from "../../store/store";
 
 const mapStateToProps = state => {
   return { endpoints: state.endpoints, groups: state.groups };
