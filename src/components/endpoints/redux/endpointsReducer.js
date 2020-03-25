@@ -3,6 +3,7 @@ import { toast } from "react-toastify";
 import groupsActionTypes from "../../groups/redux/groupsActionTypes";
 import versionActionTypes from "../../collectionVersions/redux/collectionVersionsActionTypes";
 import collectionActionTypes from "../../collections/redux/collectionsActionTypes";
+import publicEndpointsActionTypes from "../../publicEndpoint/redux/publicEndpointsActionTypes";
 
 const initialState = {};
 
@@ -86,10 +87,16 @@ function endpointsReducer(state = initialState, action) {
 
     case collectionActionTypes.ON_COLLECTION_DUPLICATED:
       return { ...state, ...action.response.endpoints };
-    
-    case versionActionTypes.IMPORT_VERSION:
-      return {...state,...action.response.endpoints}  
 
+    case versionActionTypes.IMPORT_VERSION:
+      return { ...state, ...action.response.endpoints };
+
+    case publicEndpointsActionTypes.ON_PUBLIC_ENDPOINTS_FETCHED:
+      return { ...state, ...action.endpoints };
+
+    case publicEndpointsActionTypes.ON_PUBLIC_ENDPOINTS_FETCHED_ERROR:
+      toast.error(action.error);
+      return state;
     default:
       return state;
   }

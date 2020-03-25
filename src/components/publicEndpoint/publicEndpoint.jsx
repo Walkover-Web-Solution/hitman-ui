@@ -26,7 +26,8 @@ class PublicEndpoint extends Component {
   componentDidMount() {
     if (this.props.location.pathname) {
       let collectionIdentifier = this.props.location.pathname.split("/")[2];
-      this.props.fetchAllPublicEndpoints(collectionIdentifier);
+      console.log("aaa", collectionIdentifier);
+      // this.props.fetchAllPublicEndpoints(collectionIdentifier);
     }
   }
   setEnvironment(environment) {
