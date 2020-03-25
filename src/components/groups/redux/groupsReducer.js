@@ -99,7 +99,7 @@ function groupsReducer(state = initialState, action) {
       return { ...state, ...action.response.groups };
 
     case publicEndpointsActionTypes.ON_PUBLIC_ENDPOINTS_FETCHED:
-      return { ...state, ...action.groups };
+      return { ...state, ...action.data.groups };
 
     case publicEndpointsActionTypes.ON_PUBLIC_ENDPOINTS_FETCHED_ERROR:
       toast.error(action.error);

@@ -91,7 +91,7 @@ function versionsReducer(state = initialState, action) {
       };
 
     case publicEndpointsActionTypes.ON_PUBLIC_ENDPOINTS_FETCHED:
-      return { ...state, ...action.versions };
+      return { ...state, ...action.data.versions };
 
     case publicEndpointsActionTypes.ON_PUBLIC_ENDPOINTS_FETCHED_ERROR:
       toast.error(action.error);

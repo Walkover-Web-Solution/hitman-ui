@@ -19,10 +19,10 @@ export const fetchAllPublicEndpoints = collectionIdentifier => {
   };
 };
 
-export const onPublicEndpointsFetched = collections => {
+export const onPublicEndpointsFetched = data => {
   return {
     type: publicEndpointsActionTypes.ON_PUBLIC_ENDPOINTS_FETCHED,
-    collections
+    data
   };
 };
 

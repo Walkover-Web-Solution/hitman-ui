@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Switch } from "react-router-dom";
+import { Switch, Route } from "react-router-dom";
 import Collections from "./collections/collections";
 import ProtectedRoute from "./common/protectedRoute";
 class SideBar extends Component {
@@ -77,6 +77,11 @@ class SideBar extends Component {
               <Switch>
                 <ProtectedRoute
                   path="/dashboard/"
+                  render={props => <Collections {...this.props} />}
+                />
+
+                <Route
+                  path="/public/:collectionIdentifier"
                   render={props => <Collections {...this.props} />}
                 />
               </Switch>

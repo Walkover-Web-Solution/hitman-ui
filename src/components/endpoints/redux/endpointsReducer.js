@@ -92,7 +92,7 @@ function endpointsReducer(state = initialState, action) {
       return { ...state, ...action.response.endpoints };
 
     case publicEndpointsActionTypes.ON_PUBLIC_ENDPOINTS_FETCHED:
-      return { ...state, ...action.endpoints };
+      return { ...action.data.endpoints };
 
     case publicEndpointsActionTypes.ON_PUBLIC_ENDPOINTS_FETCHED_ERROR:
       toast.error(action.error);

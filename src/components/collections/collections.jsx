@@ -52,7 +52,6 @@ const mapDispatchToProps = dispatch => {
       dispatch(duplicateCollection(collection)),
     fetchAllUsersOfTeam: teamIdentifier =>
       dispatch(fetchAllUsersOfTeam(teamIdentifier))
-    // deleteUserFromTeam: teamData => dispatch(deleteUserFromTeam(teamData))
   };
 };
 
@@ -64,11 +63,11 @@ class CollectionsComponent extends Component {
   };
 
   async componentDidMount() {
-    this.props.fetchCollections();
-    this.props.fetchAllVersions();
-    this.props.fetchGroups();
-    this.props.fetchEndpoints();
-    this.props.fetchPages();
+    // this.props.fetchCollections();
+    // this.props.fetchAllVersions();
+    // this.props.fetchGroups();
+    // this.props.fetchEndpoints();
+    // this.props.fetchPages();
   }
 
   closeCollectionForm() {
