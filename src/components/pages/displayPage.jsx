@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import jQuery from "jquery";
 import store from "../../store/store";
 
 class DisplayPage extends Component {

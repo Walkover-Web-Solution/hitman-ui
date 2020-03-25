@@ -1,14 +1,7 @@
 import React, { Component } from "react";
-import {
-  Accordion,
-  Card,
-  Button,
-  Dropdown,
-  DropdownButton
-} from "react-bootstrap";
-import { deleteEndpoint, duplicateEndpoint } from "./redux/endpointsActions";
 import { connect } from "react-redux";
 import { setEndpointIds } from "../groups/redux/groupsActions";
+import { deleteEndpoint, duplicateEndpoint } from "./redux/endpointsActions";
 
 const mapStateToProps = state => {
   return { endpoints: state.endpoints, groups: state.groups };

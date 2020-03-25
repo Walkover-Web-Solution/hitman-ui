@@ -1,11 +1,5 @@
 import React, { Component } from "react";
-import {
-  Dropdown,
-  Accordion,
-  Card,
-  Button,
-  DropdownButton
-} from "react-bootstrap";
+import { Accordion, Button, Card } from "react-bootstrap";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
@@ -18,7 +12,6 @@ import endpointService from "../endpoints/endpointService";
 import { fetchEndpoints } from "../endpoints/redux/endpointsActions";
 import { fetchGroups } from "../groups/redux/groupsActions";
 import { fetchPages } from "../pages/redux/pagesActions";
-import authService from "../auth/authService";
 import {
   fetchAllUsersOfTeam,
   shareCollection

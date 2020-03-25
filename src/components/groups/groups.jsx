@@ -1,18 +1,11 @@
 import React, { Component } from "react";
-import {
-  Accordion,
-  Card,
-  Button,
-  Dropdown,
-  DropdownButton
-} from "react-bootstrap";
-import GroupPages from "../pages/groupPages";
-import GroupForm from "../groups/groupForm";
-import PageForm from "../pages/pageForm";
-import ShareGroupForm from "../groups/shareGroupForm";
-import Endpoints from "../endpoints/endpoints";
-import { deleteGroup, duplicateGroup } from "../groups/redux/groupsActions";
 import { connect } from "react-redux";
+import Endpoints from "../endpoints/endpoints";
+import GroupForm from "../groups/groupForm";
+import { deleteGroup, duplicateGroup } from "../groups/redux/groupsActions";
+import ShareGroupForm from "../groups/shareGroupForm";
+import GroupPages from "../pages/groupPages";
+import PageForm from "../pages/pageForm";
 
 const mapStateToProps = state => {
   return { groups: state.groups };

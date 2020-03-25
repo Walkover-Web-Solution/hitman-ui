@@ -1,23 +1,16 @@
 import React, { Component } from "react";
-import {
-  Accordion,
-  Card,
-  Button,
-  Dropdown,
-  DropdownButton
-} from "react-bootstrap";
-import Groups from "../groups/groups";
-import VersionPages from "../pages/versionPages";
 import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
+import CollectionVersionForm from "../collectionVersions/collectionVersionForm";
 import {
   deleteVersion,
   duplicateVersion
 } from "../collectionVersions/redux/collectionVersionsActions";
 import ShareVersionForm from "../collectionVersions/shareVersionForm";
 import GroupForm from "../groups/groupForm";
+import Groups from "../groups/groups";
 import PageForm from "../pages/pageForm";
-import { withRouter } from "react-router-dom";
-import CollectionVersionForm from "../collectionVersions/collectionVersionForm";
+import VersionPages from "../pages/versionPages";
 
 const mapStateToProps = state => {
   return {

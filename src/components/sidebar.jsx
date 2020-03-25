@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import { Switch } from "react-router-dom";
-import ProtectedRoute from "./common/protectedRoute";
 import Collections from "./collections/collections";
-import { Tabs, Tab } from "react-bootstrap";
+import ProtectedRoute from "./common/protectedRoute";
 class SideBar extends Component {
   state = {};
   render() {

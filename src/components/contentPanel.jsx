@@ -1,11 +1,10 @@
 import React, { Component } from "react";
-import { Link, Route, Switch } from "react-router-dom";
+import { Route, Switch } from "react-router-dom";
+import "react-tabs/style/react-tabs.css";
 import DisplayEndpoint from "./endpoints/displayEndpoint";
 import Environments from "./environments/environments";
 import DisplayPage from "./pages/displayPage";
 import EditPage from "./pages/editPage";
-import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
-import "react-tabs/style/react-tabs.css";
 
 class ContentPanel extends Component {
   state = {};

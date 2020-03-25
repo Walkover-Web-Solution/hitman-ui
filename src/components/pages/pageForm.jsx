@@ -1,12 +1,11 @@
+import Joi from "joi-browser";
 import React from "react";
 import { Modal } from "react-bootstrap";
-import Joi, { inherits } from "joi-browser";
-import { Link } from "react-router-dom";
-import Form from "../common/form";
 import { connect } from "react-redux";
-import { addPage, addGroupPage } from "../pages/redux/pagesActions";
-import shortid from "shortid";
 import { withRouter } from "react-router-dom";
+import shortid from "shortid";
+import Form from "../common/form";
+import { addGroupPage, addPage } from "../pages/redux/pagesActions";
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {

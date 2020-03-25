@@ -1,12 +1,11 @@
+import jQuery from "jquery";
 import { Component, default as React } from "react";
 import { Dropdown, InputGroup, Modal } from "react-bootstrap";
 import { isEmail, ReactMultiEmail } from "react-multi-email";
 import "react-multi-email/style.css";
 import { connect } from "react-redux";
-import store from "../../store/store";
-import authService from "../auth/authService";
 import shortid from "shortid";
-import jQuery from "jquery";
+import authService from "../auth/authService";
 
 const mapStateToProps = state => {
   return {

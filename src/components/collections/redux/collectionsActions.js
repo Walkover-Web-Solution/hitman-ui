@@ -1,7 +1,6 @@
+import store from "../../../store/store";
 import collectionsApiService from "../collectionsApiService";
 import collectionsActionTypes from "./collectionsActionTypes";
-import store from "../../../store/store";
-import { toast } from "react-toastify";
 
 export const fetchCollections = () => {
   return dispatch => {
