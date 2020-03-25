@@ -1,10 +1,11 @@
 import store from "../../../store/store";
-import PublicEndpointsService from "../publicEndpointsService.js";
+import publicEndpointsService from "../publicEndpointsService.js";
 import publicEndpointsActionTypes from "./publicEndpointsActionTypes";
 
 export const fetchAllPublicEndpoints = collectionIdentifier => {
   return dispatch => {
-    PublicEndpointsService.fetchAll(collectionIdentifier)
+    publicEndpointsService
+      .fetchAll(collectionIdentifier)
       .then(response => {
         dispatch(onPublicEndpointsFetched(response.data));
       })
