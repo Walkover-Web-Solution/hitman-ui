@@ -8,12 +8,13 @@ import PublicEndPointSrvice from "./publicEndpointsService.js";
 //import Navbar from "./Navbar";
 import ContentPanel from "../contentPanel";
 import { fetchAllPublicEndpoints } from "./redux/publicEndpointsActions.js";
+
 const mapDispatchToProps = dispatch => {
   return {
     moveEndpoint: (endpointId, sourceGroupId, destinationGroupId) =>
       dispatch(moveEndpoint(endpointId, sourceGroupId, destinationGroupId)),
     fetchAllPublicEndpoints: collectionIdentifier =>
-      dispatch((fetchAllPublicEndpoints: collectionIdentifier))
+      dispatch(fetchAllPublicEndpoints(collectionIdentifier))
   };
 };
 
