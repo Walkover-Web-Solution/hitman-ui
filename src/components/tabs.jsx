@@ -17,11 +17,12 @@ class CustomTabs extends Component {
     });
   }
 
-  deleteTab(id) {
-    let tabs = { ...this.props.tabs };
-    delete tabs[id];
-    console.log(tabs);
-    this.props.set_tabs(tabs);
+  deleteTab(index) {
+    let tabs = [...this.props.tabs];
+    tabs.splice(index, 1);
+    if (this.props.default_tab_index === index)
+      this.props.set_tabs(tabs, this.props.default_tab_index - 1);
+    else this.props.set_tabs(tabs);
   }
 
   changeRoute(type, id) {
@@ -31,28 +32,34 @@ class CustomTabs extends Component {
   }
 
   render() {
+    console.log(this.props);
     return (
       <Nav variant="pills" className="flex-row">
-        {Object.keys(this.props.tabs).map((tab, index) => (
-          <Nav.Item>
-            <Nav.Link eventKey={tab}>
-              <button
-                className="btn"
-                onClick={() => {
-                  this.setState({ key: tab });
-                  this.props.history.push({
-                    pathname: `/dashboard/endpoints/${tab}`
-                  });
-                }}
-              >
-                {tab}
+        {Object.keys(this.props.endpoints).length &&
+          this.props.tabs.map((tab, index) => (
+            <Nav.Item>
+              <Nav.Link eventKey={tab.id}>
+                <button
+                  className="btn"
+                  onClick={() => {
+                    this.props.set_tabs(null, index);
+                    this.props.history.push({
+                      pathname: `/dashboard/endpoints/${tab.id}`
+                    });
+                  }}
+                >
+                  {tab.type === "endpoint"
+                    ? tab.isSaved
+                      ? this.props.endpoints[tab.id].name
+                      : "Untitled"
+                    : null}
+                </button>
+              </Nav.Link>
+              <button className="btn" onClick={() => this.deleteTab(index)}>
+                x
               </button>
-            </Nav.Link>
-            <button className="btn" onClick={() => this.deleteTab(tab)}>
-              x
-            </button>
-          </Nav.Item>
-        ))}
+            </Nav.Item>
+          ))}
       </Nav>
     );
   }

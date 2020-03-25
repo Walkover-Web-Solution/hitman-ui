@@ -113,7 +113,11 @@ class DisplayEndpoint extends Component {
       }
 
       let props = { ...this.props, groupId: groupId };
-      const hostJson = this.fetchHosts(props, this.props.environment);
+      const hostJson = this.fetchHosts(
+        props,
+        this.props.environment,
+        props.groupId
+      );
       this.fillDropdownValue(hostJson);
       this.host = this.findHost(hostJson);
       this.setState({
@@ -484,12 +488,13 @@ class DisplayEndpoint extends Component {
     this.setState({ data });
   };
 
-  fetchHosts(location, environment) {
+  fetchHosts(props, environment, groupId) {
     let variableHost = "";
     if (environment.variables && environment.variables.BASE_URL) {
       variableHost = environment.variables.BASE_URL.currentValue;
     }
-    const { groupId, groups, versions } = location;
+
+    const { groups, versions } = props;
     const { versionId, host: groupHost } = groups[groupId];
     const { host: versionHost } = versions[versionId];
     let hostJson = {
@@ -516,8 +521,9 @@ class DisplayEndpoint extends Component {
     if (this.props.location.title === "Add New Endpoint") {
       this.customHost = false;
       const hostJson = this.fetchHosts(
-        this.props.location,
-        this.props.environment
+        this.props,
+        this.props.environment,
+        this.props.location.groupId
       );
       this.fillDropdownValue(hostJson);
       this.host = this.findHost(hostJson);
@@ -534,10 +540,10 @@ class DisplayEndpoint extends Component {
         timeElapsed: "",
         response: {},
         endpoint: {},
-        groups: this.props.location.groups,
-        versions: this.props.location.versions,
+        groups: this.props.groups,
+        versions: this.props.versions,
         groupId: this.props.location.groupId,
-        title: this.props.location.title,
+        title: "Add New Endpoint",
         selectedHost: "",
         onChangeFlag: false,
         flagResponse: false,
@@ -561,7 +567,8 @@ class DisplayEndpoint extends Component {
       let endpoint = { ...this.props.location.endpoint };
       const hostJson = this.fetchHosts(
         this.props.location,
-        this.props.environment
+        this.props.environment,
+        this.props.location.groupId
       );
       this.fillDropdownValue(hostJson);
       this.host = this.findHost(hostJson);

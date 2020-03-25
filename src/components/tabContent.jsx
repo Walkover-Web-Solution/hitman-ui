@@ -11,11 +11,11 @@ class TabContent extends Component {
   render() {
     return (
       <Tab.Content>
-        {Object.keys(this.props.tabs).map(tab => (
-          <Tab.Pane eventKey={tab}>
+        {this.props.tabs.map(tab => (
+          <Tab.Pane eventKey={tab.id}>
             <Switch>
               <Route
-                path={`/dashboard/endpoints/${tab}`}
+                path={`/dashboard/endpoints/${tab.id}`}
                 render={props => (
                   <DisplayEndpoint {...props} environment={{}} />
                 )}

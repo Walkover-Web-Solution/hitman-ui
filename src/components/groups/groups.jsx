@@ -13,6 +13,7 @@ import ShareGroupForm from "../groups/shareGroupForm";
 import Endpoints from "../endpoints/endpoints";
 import { deleteGroup, duplicateGroup } from "../groups/redux/groupsActions";
 import { connect } from "react-redux";
+import shortId from "shortid";
 
 const mapStateToProps = state => {
   return { groups: state.groups };
@@ -48,13 +49,17 @@ class Groups extends Component {
   }
 
   handleAddEndpoint(groupId, versions, groups) {
+    const newTabId = shortId.generate();
+    const tabs = [
+      ...this.props.tabs,
+      { id: newTabId, type: "endpoint", isSaved: false }
+    ];
+
+    this.props.set_tabs(tabs, tabs.length - 1);
     this.props.history.push({
-      pathname: `/dashboard/endpoints`,
-      versions: versions,
-      groups: groups,
+      pathname: `/dashboard/endpoints/new`,
       groupId: groupId,
-      title: "Add New Endpoint",
-      groupFlag: true
+      title: "Add New Endpoint"
     });
   }
   openShareGroupForm(group) {

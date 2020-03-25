@@ -16,8 +16,22 @@ const mapDispatchToProps = dispatch => {
 
 class Main extends Component {
   state = {
-    currentEnvironment: { id: null, name: "No Environment" }
+    currentEnvironment: { id: null, name: "No Environment" },
+    tabs: [
+      { id: "wZfiEZg_A", type: "endpoint", isSaved: true },
+      { id: "ZgVJFgXi5", type: "endpoint", isSaved: true }
+    ],
+    defaultTabIndex: 0
   };
+  setTabs(tabs, defaultTabIndex) {
+    console.log(tabs, defaultTabIndex);
+    if (defaultTabIndex) {
+      this.setState({ defaultTabIndex });
+    }
+    if (tabs) {
+      this.setState({ tabs });
+    }
+  }
   setEnvironment(environment) {
     this.setState({ currentEnvironment: environment });
   }
@@ -41,6 +55,7 @@ class Main extends Component {
   }
 
   render() {
+    console.log(this);
     return (
       <div
         style={{
@@ -56,10 +71,15 @@ class Main extends Component {
             {...this.props}
             set_source_group_id={this.setSourceGroupId.bind(this)}
             set_destination_group_id={this.setDestinationGroupId.bind(this)}
+            tabs={[...this.state.tabs]}
+            set_tabs={this.setTabs.bind(this)}
           />
           <ContentPanel
             {...this.props}
             set_environment={this.setEnvironment.bind(this)}
+            tabs={[...this.state.tabs]}
+            set_tabs={this.setTabs.bind(this)}
+            default_tab_index={this.state.defaultTabIndex}
           />
         </div>
       </div>
