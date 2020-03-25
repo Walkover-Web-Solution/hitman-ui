@@ -514,7 +514,56 @@ class DisplayEndpoint extends Component {
     }
     return originalParams;
   }
+  makeHeaders(headers) {
+    let processedHeaders = [];
+    for (let i = 0; i < Object.keys(headers).length; i++) {
+      processedHeaders[i] = {
+        name: headers[Object.keys(headers)[i]].key,
+        value: headers[Object.keys(headers)[i]].value,
+        comment: headers[Object.keys(headers)[i]].description
+      };
+    }
+    return processedHeaders;
+  }
 
+  makeParams(params) {
+    let processedParams = [];
+    for (let i = 0; i < Object.keys(params).length; i++) {
+      processedParams[i] = {
+        name: Object.keys(params)[i],
+        value: params[Object.keys(params)[i]].value,
+        comment: params[Object.keys(params)[i]].description
+      };
+    }
+    return processedParams;
+  }
+
+  makePostData(body) {
+    console.log(body);
+    return body;
+  }
+
+  prepareHarObject() {
+    console.log("endpoint", this.state.endpoint);
+    const {
+      uri,
+      requestType,
+      body,
+      headers,
+      params,
+      BASE_URL
+    } = this.state.endpoint;
+    const harObject = {
+      method: requestType,
+      url: BASE_URL + uri.split("?")[0],
+      httpVersion: "HTTP/1.1",
+      cookies: [],
+      headers: this.makeHeaders(headers),
+      postData: this.makePostData(body),
+      queryString: this.makeParams(params)
+    };
+    console.log(harObject);
+  }
   render() {
     if (this.props.location.title === "Add New Endpoint") {
       this.customHost = false;
@@ -707,6 +756,14 @@ class DisplayEndpoint extends Component {
               onClick={() => this.handleSave()}
             >
               Save
+            </button>
+            <button
+              className="btn"
+              type="button"
+              id="generate-code-button"
+              onClick={() => this.prepareHarObject()}
+            >
+              Code
             </button>
           </div>
         </div>
