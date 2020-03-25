@@ -18,6 +18,7 @@ import endpointService from "../endpoints/endpointService";
 import { fetchEndpoints } from "../endpoints/redux/endpointsActions";
 import { fetchGroups } from "../groups/redux/groupsActions";
 import { fetchPages } from "../pages/redux/pagesActions";
+import authService from "../auth/authService";
 import {
   fetchAllUsersOfTeam,
   shareCollection
@@ -36,7 +37,8 @@ const mapStateToProps = state => {
   return {
     collections: state.collections,
     versions: state.versions,
-    pages: state.pages
+    pages: state.pages,
+    team: state.team
   };
 };
 
@@ -166,6 +168,7 @@ class CollectionsComponent extends Component {
       collectionFormName: "Add new Collection"
     });
   }
+
   openEditCollectionForm(collectionId) {
     this.setState({
       showCollectionForm: true,
