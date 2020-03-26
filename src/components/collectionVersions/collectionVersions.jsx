@@ -12,6 +12,8 @@ import Groups from "../groups/groups";
 import PageForm from "../pages/pageForm";
 import VersionPages from "../pages/versionPages";
 
+import { Accordion, Card, Button } from "react-bootstrap";
+
 const mapStateToProps = state => {
   return {
     versions: state.versions
@@ -176,24 +178,20 @@ class CollectionVersions extends Component {
                 this.props.collection_id
             )
             .map((versionId, index) => (
-              <div id="accordion" key={versionId}>
-                <div className="card">
-                  <div className="card-header" id="custom-card-header">
+              <Accordion key={versionId}>
+                <Card>
+                  <Card.Header>
                     <i
                       className="fas fa-folder-open"
                       style={{ margin: "5px" }}
                     ></i>
-                    <h5 className="mb-0">
-                      <button
-                        className="btn"
-                        data-toggle="collapse"
-                        data-target={`#${versionId}`}
-                        aria-expanded="true"
-                        aria-controls={versionId}
-                      >
-                        {this.props.versions[versionId].number}
-                      </button>
-                    </h5>
+                    <Accordion.Toggle
+                      as={Button}
+                      variant="default"
+                      eventKey="1"
+                    >
+                      {this.props.versions[versionId].number}
+                    </Accordion.Toggle>
                     <div className="btn-group">
                       <button
                         className="btn btn-secondary "
@@ -264,18 +262,19 @@ class CollectionVersions extends Component {
                         </button>
                       </div>
                     </div>
-                  </div>
-
-                  <div id={versionId} className="collapse">
-                    <div className="card-body">
+                    {/* </div> */}
+                  </Card.Header>
+                  <Accordion.Collapse eventKey="1">
+                    <Card.Body>
                       <VersionPages {...this.props} version_id={versionId} />
                       <Groups {...this.props} version_id={versionId} />
-                    </div>
-                  </div>
-                </div>
-              </div>
+                    </Card.Body>
+                  </Accordion.Collapse>
+                </Card>
+              </Accordion>
             ))}
       </div>
+      // </div>
     );
   }
 }
@@ -283,3 +282,12 @@ class CollectionVersions extends Component {
 export default withRouter(
   connect(mapStateToProps, mapDispatchToProps)(CollectionVersions)
 );
+
+// div id={versionId} className="collapse">
+//                     <div className="card-body">
+//                       <VersionPages {...this.props} version_id={versionId} />
+//                       <Groups {...this.props} version_id={versionId} />
+//                     </div>
+//                   </div>
+//                 </div>
+//               </div>
