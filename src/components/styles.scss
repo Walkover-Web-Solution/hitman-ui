@@ -11,7 +11,9 @@ $border-color: rgba(227, 228, 230, 0.7);
   border: none;
   background-color: inherit;
 }
-
+#template-sidebar {
+  flex-direction: column;
+}
 #search-box-wrapper {
   display: flex;
   flex-direction: row;
@@ -448,6 +450,12 @@ main.main.ml-sm-auto.col-lg-10 {
       font-weight: 250;
     }
     #save-endpoint-button {
+      background-color: rgb(221, 221, 223);
+      color: black;
+      margin: 0px 15px;
+      opacity: 0.7;
+    }
+    #show-code-snippets-button {
       background-color: rgb(221, 221, 223);
       color: black;
       opacity: 0.7;

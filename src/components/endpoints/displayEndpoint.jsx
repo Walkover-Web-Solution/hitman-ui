@@ -8,6 +8,7 @@ import { addEndpoint, updateEndpoint } from "./redux/endpointsActions";
 import endpointService from "./endpointService";
 import store from "../../store/store";
 import { withRouter } from "react-router-dom";
+import CodeWindow from "./codeWindow";
 
 var URI = require("urijs");
 
@@ -63,10 +64,6 @@ class DisplayEndpoint extends Component {
   };
 
   async componentDidMount() {
-    if (!this.props.location.pathname.split("/")[3]) {
-      this.setState({ selectedHost: "custom" });
-      this.customHost = true;
-    }
     let endpoint = {};
     let originalParams = [];
     let originalHeaders = [];
@@ -84,8 +81,10 @@ class DisplayEndpoint extends Component {
     const { endpoints } = store.getState();
     const { groups } = store.getState();
     const { versions } = store.getState();
-
-    if (
+    if (!this.props.location.pathname.split("/")[3]) {
+      this.setState({ selectedHost: "custom" });
+      this.customHost = true;
+    } else if (
       Object.keys(groups).length !== 0 &&
       Object.keys(versions).length !== 0 &&
       Object.keys(endpoints).length !== 0 &&
@@ -530,7 +529,7 @@ class DisplayEndpoint extends Component {
     let processedParams = [];
     for (let i = 0; i < Object.keys(params).length; i++) {
       processedParams[i] = {
-        name: Object.keys(params)[i],
+        name: params[Object.keys(params)[i]].key,
         value: params[Object.keys(params)[i]].value,
         comment: params[Object.keys(params)[i]].description
       };
@@ -539,30 +538,48 @@ class DisplayEndpoint extends Component {
   }
 
   makePostData(body) {
-    console.log(body);
-    return body;
+    let postData = {
+      mimeType: "application/json",
+      text: '{"hello":"world"}',
+      comment: "Sample json body"
+    };
+    return postData;
   }
 
-  prepareHarObject() {
-    console.log("endpoint", this.state.endpoint);
-    const {
-      uri,
-      requestType,
-      body,
-      headers,
-      params,
-      BASE_URL
-    } = this.state.endpoint;
+  async prepareHarObject() {
+    const { uri, method, body, host } = this.state.data;
+    const { originalHeaders, originalParams } = this.state;
+
     const harObject = {
-      method: requestType,
-      url: BASE_URL + uri.split("?")[0],
+      method,
+      url: host + uri.split("?")[0],
       httpVersion: "HTTP/1.1",
       cookies: [],
-      headers: this.makeHeaders(headers),
+      headers: this.makeHeaders(originalHeaders),
       postData: this.makePostData(body),
-      queryString: this.makeParams(params)
+      queryString: this.makeParams(originalParams)
     };
-    console.log(harObject);
+    this.openCodeWindow(harObject);
+  }
+
+  openCodeWindow(harObject) {
+    this.setState({
+      showCodeWindow: true,
+      harObject
+    });
+  }
+
+  showCodeWindow() {
+    return (
+      <CodeWindow
+        show={true}
+        onHide={() => {
+          this.setState({ showCodeWindow: false });
+        }}
+        harObject={this.state.harObject}
+        title="Code Snippet"
+      />
+    );
   }
   render() {
     if (this.props.location.title === "Add New Endpoint") {
@@ -653,6 +670,7 @@ class DisplayEndpoint extends Component {
     return (
       <div className="endpoint-container">
         <div className="endpoint-name-container">
+          {this.state.showCodeWindow && this.showCodeWindow()}
           <input
             type="text"
             className="endpoint-name-input"
@@ -760,7 +778,7 @@ class DisplayEndpoint extends Component {
             <button
               className="btn"
               type="button"
-              id="generate-code-button"
+              id="show-code-snippets-button"
               onClick={() => this.prepareHarObject()}
             >
               Code
