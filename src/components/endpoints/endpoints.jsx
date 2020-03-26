@@ -72,10 +72,11 @@ class Endpoints extends Component {
   }
   async handlePublicEndpointState(endpoint) {
     if (this.state.endpointState === "Make Public") {
-      endpoint.nextState = "Pending for Approval";
+      //endpoint.nextState = "Pending for Approval";
+      endpoint.currentState = "Make Public";
+      let updatedEndpoint = await endpointService.updateEndpointState(endpoint);
+      this.setState({ endpointState: updatedEndpoint.data.state });
     }
-    let updatedEndpoint = await endpointService.updateEndpointState(endpoint);
-    this.setState({ endpointState: updatedEndpoint.data.state });
   }
   handleDisplay(endpoint, groups, versions, groupId) {
     this.props.history.push({
