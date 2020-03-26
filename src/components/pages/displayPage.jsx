@@ -20,7 +20,10 @@ class DisplayPage extends Component {
 
   async componentDidMount() {
     if (!this.props.location.page) {
-      const pageId = this.props.location.pathname.split("/")[3];
+      let pageId = "";
+      if (isDashboardRoute(this.props))
+        pageId = this.props.location.pathname.split("/")[3];
+      else pageId = this.props.location.pathname.split("/")[4];
       this.fetchPage(pageId);
       store.subscribe(() => {
         this.fetchPage(pageId);
