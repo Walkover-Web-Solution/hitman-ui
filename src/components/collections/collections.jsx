@@ -208,7 +208,7 @@ class CollectionsComponent extends Component {
   }
 
   render() {
-    if (isDashboardRoute(this.props.location.pathname)) {
+    if (isDashboardRoute(this.props)) {
       return (
         <div>
           <div className="App-Nav">

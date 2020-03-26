@@ -175,7 +175,7 @@ class Groups extends Component {
                       {this.props.groups[groupId].name}
                     </button>
                   </h5>
-                  {isDashboardRoute(this.props.location.pathname) ? (
+                  {isDashboardRoute(this.props) ? (
                     <div className="btn-group">
                       <button
                         className="btn btn-secondary "

@@ -39,11 +39,18 @@ class GroupPages extends Component {
     });
   }
 
-  handleDisplay(page) {
-    this.props.history.push({
-      pathname: `/dashboard/pages/${page.id}`,
-      page: page
-    });
+  handleDisplay(page, collectionId) {
+    if (isDashboardRoute(this.props)) {
+      this.props.history.push({
+        pathname: `/dashboard/pages/${page.id}`,
+        page: page
+      });
+    } else {
+      this.props.history.push({
+        pathname: `/public/${collectionId}/pages/${page.id}`,
+        page: page
+      });
+    }
   }
 
   handleDuplicate(page) {
@@ -78,13 +85,13 @@ class GroupPages extends Component {
                         aria-controls={pageId}
                         onClick={() => {
                           const page = this.props.pages[pageId];
-                          this.handleDisplay(page);
+                          this.handleDisplay(page, this.props.collection_id);
                         }}
                       >
                         {this.props.pages[pageId].name}
                       </button>
                     </h5>
-                    {isDashboardRoute(this.props.location.pathname) ? (
+                    {isDashboardRoute(this.props) ? (
                       <div className="btn-group">
                         <button
                           className="btn btn-secondary "

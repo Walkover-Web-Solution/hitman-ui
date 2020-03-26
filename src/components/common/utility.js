@@ -1,7 +1,9 @@
-import React from "react";
-
-export function isDashboardRoute(route) {
-  if (route === "/dashboard") return true;
+export function isDashboardRoute(props) {
+  if (
+    props.location.pathname === "/dashboard" ||
+    props.location.pathname.split("/")[1] === "dashboard"
+  )
+    return true;
   else return false;
 }
 

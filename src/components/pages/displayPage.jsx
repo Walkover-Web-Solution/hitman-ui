@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import store from "../../store/store";
+import { isDashboardRoute } from "../common/utility";
 
 class DisplayPage extends Component {
   state = {
@@ -33,6 +34,7 @@ class DisplayPage extends Component {
       page: page
     });
   }
+
   render() {
     if (this.props.location.page) {
       const data = { ...this.props.location.page };
@@ -42,14 +44,16 @@ class DisplayPage extends Component {
 
     return (
       <div className="custom-display-page">
-        <button
-          className="btn btn-primary btn-sm"
-          onClick={() => {
-            this.handleEdit(this.state.data);
-          }}
-        >
-          Edit page
-        </button>
+        {isDashboardRoute(this.props) ? (
+          <button
+            className="btn btn-primary btn-sm"
+            onClick={() => {
+              this.handleEdit(this.state.data);
+            }}
+          >
+            Edit page
+          </button>
+        ) : null}
         <span>
           <p>{this.state.data.name}</p>
         </span>

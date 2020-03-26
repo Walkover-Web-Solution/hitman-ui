@@ -68,20 +68,33 @@ class Endpoints extends Component {
       editEndpoint: endpoint
     });
   }
-  handleDisplay(endpoint, groups, versions, groupId) {
-    this.props.history.push({
-      pathname: `/dashboard/endpoints/${endpoint.id}`,
-      title: "update endpoint",
-      endpoint: endpoint,
-      groupId: groupId,
-      groups: groups,
-      versions: versions,
-      endpointFlag: true
-    });
+  handleDisplay(endpoint, groups, versions, groupId, collectionId) {
+    if (isDashboardRoute(this.props)) {
+      this.props.history.push({
+        pathname: `/dashboard/endpoints/${endpoint.id}`,
+        title: "update endpoint",
+        endpoint: endpoint,
+        groupId: groupId,
+        groups: groups,
+        versions: versions,
+        endpointFlag: true
+      });
+    } else {
+      this.props.history.push({
+        pathname: `/public/${collectionId}/endpoints/${endpoint.id}`,
+        title: "update endpoint",
+        endpoint: endpoint,
+        groupId: groupId,
+        groups: groups,
+        versions: versions,
+        endpointFlag: true
+      });
+    }
   }
 
   render() {
-    if (isDashboardRoute(this.props.location.pathname)) {
+    console.log(this.props);
+    if (isDashboardRoute(this.props)) {
       return (
         <React.Fragment>
           {Object.keys(this.props.endpoints).length !== 0 &&
@@ -102,7 +115,8 @@ class Endpoints extends Component {
                         this.props.endpoints[endpointId],
                         this.props.groups,
                         this.props.versions,
-                        this.props.group_id
+                        this.props.group_id,
+                        this.props.collection_id
                       )
                     }
                   >
@@ -162,7 +176,8 @@ class Endpoints extends Component {
                         this.props.endpoints[endpointId],
                         this.props.groups,
                         this.props.versions,
-                        this.props.group_id
+                        this.props.group_id,
+                        this.props.collection_id
                       )
                     }
                   >

@@ -195,7 +195,7 @@ class CollectionVersions extends Component {
                         {this.props.versions[versionId].number}
                       </button>
                     </h5>
-                    {isDashboardRoute(this.props.location.pathname) ? (
+                    {isDashboardRoute(this.props) ? (
                       <div className="btn-group">
                         <button
                           className="btn btn-secondary "
