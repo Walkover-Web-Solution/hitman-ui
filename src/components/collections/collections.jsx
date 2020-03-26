@@ -13,11 +13,8 @@ import shortId from "shortid";
 import CollectionVersions from "../collectionVersions/collectionVersions";
 import collectionVersionsService from "../collectionVersions/collectionVersionsService";
 import ImportVersionForm from "../collectionVersions/importVersionForm";
-import { fetchAllVersions } from "../collectionVersions/redux/collectionVersionsActions";
 import endpointService from "../endpoints/endpointService";
-import { fetchEndpoints } from "../endpoints/redux/endpointsActions";
-import { fetchGroups } from "../groups/redux/groupsActions";
-import { fetchPages } from "../pages/redux/pagesActions";
+
 import {
   fetchAllUsersOfTeam,
   shareCollection
@@ -27,7 +24,6 @@ import {
   addCollection,
   deleteCollection,
   duplicateCollection,
-  fetchCollections,
   updateCollection
 } from "./redux/collectionsActions";
 import ShareCollectionForm from "./shareCollectionForm";
@@ -42,11 +38,6 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    fetchCollections: () => dispatch(fetchCollections()),
-    fetchAllVersions: () => dispatch(fetchAllVersions()),
-    fetchGroups: () => dispatch(fetchGroups()),
-    fetchEndpoints: () => dispatch(fetchEndpoints()),
-    fetchPages: () => dispatch(fetchPages()),
     addCollection: newCollection => dispatch(addCollection(newCollection)),
     shareCollection: teamMemberData =>
       dispatch(shareCollection(teamMemberData)),
@@ -68,13 +59,7 @@ class CollectionsComponent extends Component {
     selectedCollection: {}
   };
 
-  async componentDidMount() {
-    this.props.fetchCollections();
-    this.props.fetchAllVersions();
-    this.props.fetchGroups();
-    this.props.fetchEndpoints();
-    this.props.fetchPages();
-  }
+  async componentDidMount() {}
 
   closeCollectionForm() {
     this.setState({ showCollectionForm: false, showImportVersionForm: false });
@@ -325,58 +310,6 @@ class CollectionsComponent extends Component {
                       </button>
                     </div>
                   </div>
-                  {/* <DropdownButton
-                    alignRight
-                    title=""
-                    id="dropdown-menu-align-right"
-                    style={{ float: "right" }}
-                  >
-                    <Dropdown.Item
-                      eventKey="1"
-                      onClick={() => this.openEditCollectionForm(collectionId)}
-                    >
-                      Edit
-                    </Dropdown.Item>
-                    <Dropdown.Item
-                      eventKey="0"
-                      onClick={() => {
-                        if (
-                          window.confirm(
-                            "Are you sure you wish to delete this collection?" +
-                              "\n" +
-                              " All your versions, groups, pages and endpoints present in this collection will be deleted."
-                          )
-                        )
-                          this.handleDelete(
-                            this.props.collections[collectionId]
-                          );
-                      }}
-                    >
-                      Delete
-                    </Dropdown.Item>
-                    <Dropdown.Item
-                      eventKey="3"
-                      onClick={() => this.openAddVersionForm(collectionId)}
-                    >
-                      Add Version
-                    </Dropdown.Item>
-                    <Dropdown.Item
-                      eventKey="3"
-                      onClick={() =>
-                        this.handleDuplicateCollection(
-                          this.props.collections[collectionId]
-                        )
-                      }
-                    >
-                      Duplicate
-                    </Dropdown.Item>
-                    <Dropdown.Item
-                      eventKey="3"
-                      onClick={() => this.openImportVersionForm(collectionId)}
-                    >
-                      Import Version
-                    </Dropdown.Item>
-                  </DropdownButton> */}
                 </Card.Header>
                 <Accordion.Collapse eventKey="1">
                   <Card.Body>

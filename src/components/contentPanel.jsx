@@ -24,21 +24,19 @@ class ContentPanel extends Component {
       this.props.location.pathname.split("/")[3] !== "new"
     ) {
       const endpointId = this.props.location.pathname.split("/")[3];
-      console.log(this.props.tabs, endpointId);
-      if (!this.props.tabs.find(tab => tab.id === endpointId)) {
+      const index = this.props.tabs.findIndex(tab => tab.id === endpointId)
+      if () {
         const tabs = [
           ...this.props.tabs,
           { id: endpointId, type: "endpoint", isSaved: true }
         ];
         this.props.set_tabs(tabs);
         this.setState({ key: endpointId });
-      } else {
-        if (
-          this.props.tabs.length &&
-          this.props.tabs[this.props.default_tab_index].id !== endpointId
-        ) {
-          this.setState({ key: endpointId });
-        }
+      } else if (
+        this.props.tabs.length &&
+        this.props.tabs[this.props.default_tab_index].id !== endpointId
+      ) {
+        this.set_tabs({ null, endpointId });
       }
     }
 
