@@ -50,21 +50,7 @@ function teamsReducer(state = initialState, action) {
 
     case teamActionTypes.ON_COLLECTION_SHARED_ERROR:
       toast.error(action.error);
-
-    // case teamActionTypes.DELETE_SHARED_USERS_REQUEST:
-    //   teams = { ...state };
-    //   delete teams[action.userId];
-    //   return teams;
-
-    // case teamActionTypes.ON_SHARED_USERS_DELETED:
-    //   return state;
-
-    // case teamActionTypes.ON_SHARED_USERS_DELETED_ERROR:
-    //   if (action.error.status === 404) return state;
-    //   return {
-    //     ...state,
-    //     [action.teams.userId]: action.teamData
-    //   };
+      return;
 
     default:
       return state;

@@ -81,7 +81,7 @@ class SideBar extends Component {
                 />
 
                 <Route
-                  path="/public/:collectionIdentifier"
+                  path="/public/:collectionId"
                   render={props => <Collections {...this.props} />}
                 />
               </Switch>

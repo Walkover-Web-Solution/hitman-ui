@@ -1,5 +1,8 @@
 import React, { Component } from "react";
 import { ToastContainer } from "react-toastify";
+import { Route, Switch } from "react-router-dom";
+import DisplayEndpoint from "../endpoints/displayEndpoint";
+import DisplayPage from "../pages/displayPage";
 import { connect } from "react-redux";
 import "react-toastify/dist/ReactToastify.css";
 import SideBar from "../sidebar";
@@ -22,18 +25,27 @@ class PublicEndpoint extends Component {
 
   render() {
     return (
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "flex-start"
-        }}
-      >
-        <ToastContainer />
-        <div className="wrapper">
-          <SideBar {...this.props} />
+      <main role="main" className="main ml-sm-auto col-lg-10 ">
+        <div>
+          <ToastContainer />
+          <div className="wrapper">
+            <SideBar {...this.props} />
+          </div>
+
+          <div className="main-content">
+            <Switch>
+              <Route
+                path="/public/:collectionId/endpoints/:endpointId"
+                render={props => <DisplayEndpoint {...props} />}
+              />
+              <Route
+                path="/public/:collectionId/pages/:pageid"
+                render={props => <DisplayPage {...props} />}
+              />
+            </Switch>
+          </div>
         </div>
-      </div>
+      </main>
     );
   }
 }

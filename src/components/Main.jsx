@@ -6,9 +6,19 @@ import "react-toastify/dist/ReactToastify.css";
 import SideBar from "./sidebar";
 import Navbar from "./Navbar";
 import ContentPanel from "./contentPanel";
+import { fetchCollections } from "./collections/redux/collectionsActions";
+import { fetchAllVersions } from "./collectionVersions/redux/collectionVersionsActions";
+import { fetchEndpoints } from "./endpoints/redux/endpointsActions";
+import { fetchGroups } from "./groups/redux/groupsActions";
+import { fetchPages } from "./pages/redux/pagesActions";
 
 const mapDispatchToProps = dispatch => {
   return {
+    fetchCollections: () => dispatch(fetchCollections()),
+    fetchAllVersions: () => dispatch(fetchAllVersions()),
+    fetchGroups: () => dispatch(fetchGroups()),
+    fetchEndpoints: () => dispatch(fetchEndpoints()),
+    fetchPages: () => dispatch(fetchPages()),
     moveEndpoint: (endpointId, sourceGroupId, destinationGroupId) =>
       dispatch(moveEndpoint(endpointId, sourceGroupId, destinationGroupId))
   };
@@ -18,6 +28,15 @@ class Main extends Component {
   state = {
     currentEnvironment: { id: null, name: "No Environment" }
   };
+
+  componentDidMount() {
+    this.props.fetchCollections();
+    this.props.fetchAllVersions();
+    this.props.fetchGroups();
+    this.props.fetchEndpoints();
+    this.props.fetchPages();
+  }
+
   setEnvironment(environment) {
     this.setState({ currentEnvironment: environment });
   }
