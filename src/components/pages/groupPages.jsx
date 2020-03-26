@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { deletePage, duplicatePage } from "./redux/pagesActions";
+import { isDashboardRoute } from "../common/utility";
 
 const mapStateToProps = state => {
   return {
@@ -83,34 +84,36 @@ class GroupPages extends Component {
                         {this.props.pages[pageId].name}
                       </button>
                     </h5>
-                    <div className="btn-group">
-                      <button
-                        className="btn btn-secondary "
-                        data-toggle="dropdown"
-                        aria-haspopup="true"
-                        aria-expanded="false"
-                      >
-                        <i className="fas fa-ellipsis-h"></i>
-                      </button>
-                      <div className="dropdown-menu dropdown-menu-right">
+                    {isDashboardRoute(this.props.location.pathname) ? (
+                      <div className="btn-group">
                         <button
-                          className="dropdown-item"
-                          onClick={() =>
-                            this.handleDelete(this.props.pages[pageId])
-                          }
+                          className="btn btn-secondary "
+                          data-toggle="dropdown"
+                          aria-haspopup="true"
+                          aria-expanded="false"
                         >
-                          Delete
+                          <i className="fas fa-ellipsis-h"></i>
                         </button>
-                        <button
-                          className="dropdown-item"
-                          onClick={() =>
-                            this.handleDuplicate(this.props.pages[pageId])
-                          }
-                        >
-                          Duplicate
-                        </button>
+                        <div className="dropdown-menu dropdown-menu-right">
+                          <button
+                            className="dropdown-item"
+                            onClick={() =>
+                              this.handleDelete(this.props.pages[pageId])
+                            }
+                          >
+                            Delete
+                          </button>
+                          <button
+                            className="dropdown-item"
+                            onClick={() =>
+                              this.handleDuplicate(this.props.pages[pageId])
+                            }
+                          >
+                            Duplicate
+                          </button>
+                        </div>
                       </div>
-                    </div>
+                    ) : null}
                   </div>
                 </div>
               </div>

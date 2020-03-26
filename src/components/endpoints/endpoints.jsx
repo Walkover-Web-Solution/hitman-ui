@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { setEndpointIds } from "../groups/redux/groupsActions";
 import { deleteEndpoint, duplicateEndpoint } from "./redux/endpointsActions";
+import { isDashboardRoute } from "../common/utility";
 
 const mapStateToProps = state => {
   return { endpoints: state.endpoints, groups: state.groups };
@@ -78,68 +79,105 @@ class Endpoints extends Component {
       endpointFlag: true
     });
   }
+
   render() {
-    return (
-      <React.Fragment>
-        {Object.keys(this.props.endpoints).length !== 0 &&
-          this.props.endpoints_order
-            .filter(
-              eId => this.props.endpoints[eId].groupId === this.props.group_id
-            )
-            .map(endpointId => (
-              <div className="endpoint-list-item">
-                <button
-                  className="btn "
-                  draggable
-                  onDragOver={e => this.onDragOver(e, endpointId)}
-                  onDragStart={e => this.onDragStart(e, endpointId)}
-                  onDrop={e => this.onDrop(e)}
-                  onClick={() =>
-                    this.handleDisplay(
-                      this.props.endpoints[endpointId],
-                      this.props.groups,
-                      this.props.versions,
-                      this.props.group_id
-                    )
-                  }
-                >
-                  <div className={this.props.endpoints[endpointId].requestType}>
-                    {this.props.endpoints[endpointId].requestType}
-                  </div>
-                  {this.props.endpoints[endpointId].name}
-                </button>
-                <div className="btn-group">
+    if (isDashboardRoute(this.props.location.pathname)) {
+      return (
+        <React.Fragment>
+          {Object.keys(this.props.endpoints).length !== 0 &&
+            this.props.endpoints_order
+              .filter(
+                eId => this.props.endpoints[eId].groupId === this.props.group_id
+              )
+              .map(endpointId => (
+                <div className="endpoint-list-item">
                   <button
                     className="btn "
-                    data-toggle="dropdown"
-                    aria-haspopup="true"
-                    aria-expanded="false"
+                    draggable
+                    onDragOver={e => this.onDragOver(e, endpointId)}
+                    onDragStart={e => this.onDragStart(e, endpointId)}
+                    onDrop={e => this.onDrop(e)}
+                    onClick={() =>
+                      this.handleDisplay(
+                        this.props.endpoints[endpointId],
+                        this.props.groups,
+                        this.props.versions,
+                        this.props.group_id
+                      )
+                    }
                   >
-                    <i className="fas fa-ellipsis-h"></i>
+                    <div
+                      className={this.props.endpoints[endpointId].requestType}
+                    >
+                      {this.props.endpoints[endpointId].requestType}
+                    </div>
+                    {this.props.endpoints[endpointId].name}
                   </button>
-                  <div className="dropdown-menu dropdown-menu-right">
+                  <div className="btn-group">
                     <button
-                      className="dropdown-item"
-                      onClick={() =>
-                        this.handleDelete(this.props.endpoints[endpointId])
-                      }
+                      className="btn "
+                      data-toggle="dropdown"
+                      aria-haspopup="true"
+                      aria-expanded="false"
                     >
-                      Delete
+                      <i className="fas fa-ellipsis-h"></i>
                     </button>
-                    <button
-                      className="dropdown-item"
-                      onClick={() =>
-                        this.handleDuplicate(this.props.endpoints[endpointId])
-                      }
-                    >
-                      Duplicate
-                    </button>
+                    <div className="dropdown-menu dropdown-menu-right">
+                      <button
+                        className="dropdown-item"
+                        onClick={() =>
+                          this.handleDelete(this.props.endpoints[endpointId])
+                        }
+                      >
+                        Delete
+                      </button>
+                      <button
+                        className="dropdown-item"
+                        onClick={() =>
+                          this.handleDuplicate(this.props.endpoints[endpointId])
+                        }
+                      >
+                        Duplicate
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-      </React.Fragment>
-    );
+              ))}
+        </React.Fragment>
+      );
+    } else {
+      return (
+        <div>
+          {Object.keys(this.props.endpoints).length !== 0 &&
+            this.props.endpoints_order
+              .filter(
+                eId => this.props.endpoints[eId].groupId === this.props.group_id
+              )
+              .map(endpointId => (
+                <div className="endpoint-list-item">
+                  <button
+                    className="btn "
+                    onClick={() =>
+                      this.handleDisplay(
+                        this.props.endpoints[endpointId],
+                        this.props.groups,
+                        this.props.versions,
+                        this.props.group_id
+                      )
+                    }
+                  >
+                    <div
+                      className={this.props.endpoints[endpointId].requestType}
+                    >
+                      {this.props.endpoints[endpointId].requestType}
+                    </div>
+                    {this.props.endpoints[endpointId].name}
+                  </button>
+                </div>
+              ))}
+        </div>
+      );
+    }
   }
 }
 
