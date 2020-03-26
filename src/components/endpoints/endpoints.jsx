@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { setEndpointIds } from "../groups/redux/groupsActions";
 import { deleteEndpoint, duplicateEndpoint } from "./redux/endpointsActions";
+import endpointService from "./endpointService.js";
 
 const mapStateToProps = state => {
   return { endpoints: state.endpoints, groups: state.groups };
@@ -17,7 +18,9 @@ const mapDispatchToProps = dispatch => {
 };
 
 class Endpoints extends Component {
-  state = {};
+  state = {
+    endpointState: "Make Public"
+  };
 
   onDragStart = (e, eId) => {
     this.draggedItem = eId;
@@ -66,6 +69,13 @@ class Endpoints extends Component {
       pathname: `/dashboard/${this.props.collection_id}/versions/${this.props.version_id}/groups/${this.props.group_id}/endpoints/${endpoint.id}/edit`,
       editEndpoint: endpoint
     });
+  }
+  async handlePublicEndpointState(endpoint) {
+    if (this.state.endpointState === "Make Public") {
+      endpoint.nextState = "Pending for Approval";
+    }
+    let updatedEndpoint = await endpointService.updateEndpointState(endpoint);
+    this.setState({ endpointState: updatedEndpoint.data.state });
   }
   handleDisplay(endpoint, groups, versions, groupId) {
     this.props.history.push({
@@ -133,6 +143,16 @@ class Endpoints extends Component {
                       }
                     >
                       Duplicate
+                    </button>
+                    <button
+                      className="dropdown-item"
+                      onClick={() =>
+                        this.handlePublicEndpointState(
+                          this.props.endpoints[endpointId]
+                        )
+                      }
+                    >
+                      {this.state.endpointState}
                     </button>
                   </div>
                 </div>

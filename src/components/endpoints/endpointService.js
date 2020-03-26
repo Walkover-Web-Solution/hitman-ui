@@ -45,6 +45,9 @@ export function duplicateEndpoint(endpointId) {
 export function moveEndpoint(endpointId, body) {
   return http.patch(`${apiUrl}/endpoints/${endpointId}`, body);
 }
+export function updateEndpointState(endpoint) {
+  return http.put(`${apiUrl}/endpoints/updateState/${endpoint.id}`, endpoint);
+}
 
 export default {
   saveEndpoint,
@@ -55,5 +58,6 @@ export default {
   getEndpoint,
   getAllEndpoints,
   duplicateEndpoint,
-  moveEndpoint
+  moveEndpoint,
+  updateEndpointState
 };
