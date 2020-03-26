@@ -15,7 +15,13 @@ class TabContent extends Component {
           <Tab.Pane eventKey={tab.id}>
             <Switch>
               <Route
-                path={`/dashboard/endpoints/${tab.id}`}
+                path={`/dashboard/endpoint/${tab.id}`}
+                render={props => (
+                  <DisplayEndpoint {...props} environment={{}} />
+                )}
+              />
+              <Route
+                path={`/dashboard/endpoint/new`}
                 render={props => (
                   <DisplayEndpoint {...props} environment={{}} />
                 )}

@@ -9,30 +9,59 @@ class CustomTabs extends Component {
   state = {};
 
   addNewTab() {
-    let tabs = { ...this.props.tabs };
+    let tabs = [...this.props.tabs];
     const id = shortId.generate();
-    this.props.set_tabs({
-      ...tabs,
-      [id]: { id, type: "endpoint" }
-    });
+    this.props.set_tabs(
+      [...tabs, { id, type: "endpoint", isSaved: false }],
+      tabs.length
+    );
+    this.props.history.push({ pathname: "/dashboard/endpoint/new" });
   }
 
   deleteTab(index) {
     let tabs = [...this.props.tabs];
     tabs.splice(index, 1);
-    if (this.props.default_tab_index === index)
-      this.props.set_tabs(tabs, this.props.default_tab_index - 1);
-    else this.props.set_tabs(tabs);
+    if (this.props.default_tab_index === index) {
+      if (index !== 0) {
+        const newIndex = this.props.default_tab_index - 1;
+        this.props.set_tabs(tabs, newIndex);
+        this.changeRoute(
+          tabs[newIndex].type,
+          tabs[newIndex].id,
+          "update endpoint"
+        );
+      } else {
+        if (tabs.length > 0) {
+          const newIndex = index;
+          this.props.set_tabs(tabs, newIndex);
+          this.changeRoute(
+            tabs[newIndex].type,
+            tabs[newIndex].id,
+            "update endpoint"
+          );
+        } else {
+          console.log("Sdf");
+          const newTabId = shortId.generate();
+          tabs = [...tabs, { id: newTabId, type: "endpoint", isSaved: false }];
+
+          this.props.set_tabs(tabs, tabs.length - 1);
+          this.props.history.push({
+            pathname: `/dashboard/endpoint/new`,
+
+            title: "Add New Endpoint"
+          });
+        }
+      }
+    } else this.props.set_tabs(tabs);
   }
 
-  changeRoute(type, id) {
+  changeRoute(type, id, title) {
     this.props.history.push({
-      pathname: `/dashboard/${type}s/${id}`
+      pathname: `/dashboard/${type}/${id}`
     });
   }
 
   render() {
-    console.log(this.props);
     return (
       <Nav variant="pills" className="flex-row">
         {Object.keys(this.props.endpoints).length &&
@@ -43,9 +72,15 @@ class CustomTabs extends Component {
                   className="btn"
                   onClick={() => {
                     this.props.set_tabs(null, index);
-                    this.props.history.push({
-                      pathname: `/dashboard/endpoints/${tab.id}`
-                    });
+                    if (tab.isSaved) {
+                      this.props.history.push({
+                        pathname: `/dashboard/endpoint/${tab.id}`
+                      });
+                    } else {
+                      this.props.history.push({
+                        pathname: `/dashboard/endpoint/new`
+                      });
+                    }
                   }}
                 >
                   {tab.type === "endpoint"
@@ -60,6 +95,11 @@ class CustomTabs extends Component {
               </button>
             </Nav.Item>
           ))}
+        <Nav.Item>
+          <button className="btn" onClick={() => this.addNewTab()}>
+            +
+          </button>
+        </Nav.Item>
       </Nav>
     );
   }

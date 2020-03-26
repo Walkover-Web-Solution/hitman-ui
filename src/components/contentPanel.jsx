@@ -17,26 +17,39 @@ const mapStateToProps = state => {
 };
 class ContentPanel extends Component {
   state = {};
+  componentDidMount() {
+    if (
+      this.props.location.pathname.split("/")[3] === "new" &&
+      (this.props.tabs.length === 0 ||
+        this.props.tabs[this.props.default_tab_index].isSaved == true)
+    ) {
+      const newTabId = shortId.generate();
+      const tabs = [
+        ...this.props.tabs,
+        { id: newTabId, type: "endpoint", isSaved: false }
+      ];
 
+      this.props.set_tabs(tabs, tabs.length - 1);
+    }
+  }
   render() {
     if (
-      this.props.location.pathname.split("/")[2] === "endpoints" &&
+      this.props.location.pathname.split("/")[2] === "endpoint" &&
       this.props.location.pathname.split("/")[3] !== "new"
     ) {
       const endpointId = this.props.location.pathname.split("/")[3];
-      const index = this.props.tabs.findIndex(tab => tab.id === endpointId)
-      if () {
+      const index = this.props.tabs.findIndex(tab => tab.id === endpointId);
+      if (index < 0) {
         const tabs = [
           ...this.props.tabs,
           { id: endpointId, type: "endpoint", isSaved: true }
         ];
-        this.props.set_tabs(tabs);
-        this.setState({ key: endpointId });
+        this.props.set_tabs(tabs, tabs.length - 1);
       } else if (
         this.props.tabs.length &&
         this.props.tabs[this.props.default_tab_index].id !== endpointId
       ) {
-        this.set_tabs({ null, endpointId });
+        this.props.set_tabs(null, index);
       }
     }
 

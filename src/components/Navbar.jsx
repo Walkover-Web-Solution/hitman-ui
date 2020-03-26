@@ -79,7 +79,7 @@ class Navbar extends Component {
               className="dropdown-item"
               onClick={() => {
                 this.props.history.push({
-                  pathname: "/dashboard/endpoints/new"
+                  pathname: "/dashboard/endpoint/new"
                 });
               }}
             >

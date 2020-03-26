@@ -18,7 +18,7 @@ class CreateNewModal extends Component {
               class="card-body new-button-card"
               onClick={() => {
                 this.props.history.push({
-                  pathname: "/dashboard/endpoints/new"
+                  pathname: "/dashboard/endpoint/new"
                 });
                 this.props.onHide();
               }}

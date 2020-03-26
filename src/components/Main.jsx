@@ -28,8 +28,8 @@ class Main extends Component {
   state = {
     currentEnvironment: { id: null, name: "No Environment" },
     tabs: [
-      { id: "wZfiEZg_A", type: "endpoint", isSaved: true },
-      { id: "ZgVJFgXi5", type: "endpoint", isSaved: true }
+      // { id: "iyhfRwMt4", type: "endpoint", isSaved: true },
+      // { id: "8Gw4Wtm6h", type: "endpoint", isSaved: true }
     ],
     defaultTabIndex: 0
   };
@@ -43,7 +43,7 @@ class Main extends Component {
   }
   setTabs(tabs, defaultTabIndex) {
     console.log(tabs, defaultTabIndex);
-    if (defaultTabIndex) {
+    if (defaultTabIndex >= 0) {
       this.setState({ defaultTabIndex });
     }
     if (tabs) {

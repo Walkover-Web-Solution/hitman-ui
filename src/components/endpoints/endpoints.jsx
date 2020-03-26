@@ -71,19 +71,19 @@ class Endpoints extends Component {
 
   handleUpdate(endpoint) {
     this.props.history.push({
-      pathname: `/dashboard/${this.props.collection_id}/versions/${this.props.version_id}/groups/${this.props.group_id}/endpoints/${endpoint.id}/edit`,
+      pathname: `/dashboard/${this.props.collection_id}/versions/${this.props.version_id}/groups/${this.props.group_id}/endpoint/${endpoint.id}/edit`,
       editEndpoint: endpoint
     });
   }
   handleDisplay(endpoint, groups, versions, groupId) {
     this.props.history.push({
-      pathname: `/dashboard/endpoints/${endpoint.id}`,
+      pathname: `/dashboard/endpoint/${endpoint.id}`,
       title: "update endpoint",
       endpoint: endpoint,
-      groupId: groupId,
-      groups: groups,
-      versions: versions,
-      endpointFlag: true
+      groupId: groupId
+      // groups: groups,
+      // versions: versions,
+      // endpointFlag: true
     });
   }
   render() {
