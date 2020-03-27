@@ -169,12 +169,6 @@ class Navbar extends Component {
             </div>
           </div>
         </div>
-        {/* 
-        <ul className="navbar-nav px-3">
-          <li className="nav-item text-nowrap">
-            <Link to="/logout">Sign out</Link>
-          </li>
-        </ul> */}
       </nav>
     );
   }

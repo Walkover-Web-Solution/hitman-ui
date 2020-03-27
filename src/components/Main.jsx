@@ -27,10 +27,7 @@ const mapDispatchToProps = dispatch => {
 class Main extends Component {
   state = {
     currentEnvironment: { id: null, name: "No Environment" },
-    tabs: [
-      // { id: "iyhfRwMt4", type: "endpoint", isSaved: true },
-      // { id: "8Gw4Wtm6h", type: "endpoint", isSaved: true }
-    ],
+    tabs: [],
     defaultTabIndex: 0
   };
 

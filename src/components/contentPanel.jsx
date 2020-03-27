@@ -1,11 +1,6 @@
 import React, { Component } from "react";
-import { Link, Route, Switch } from "react-router-dom";
-import DisplayEndpoint from "./endpoints/displayEndpoint";
 import Environments from "./environments/environments";
-import DisplayPage from "./pages/displayPage";
-import EditPage from "./pages/editPage";
-// import { Tab, Tabs, TabList, TabPanel } from "react-tabs";
-import { Tabs, Tab, Row, Col, Nav } from "react-bootstrap";
+import { Tab } from "react-bootstrap";
 import { connect } from "react-redux";
 import "react-tabs/style/react-tabs.css";
 import shortId from "shortid";
@@ -88,25 +83,6 @@ class ContentPanel extends Component {
 
           <div className="main-content">
             <TabContent {...this.props} />
-
-            {/* <Switch>
-            <Route
-              path="/dashboard/endpoints"
-              render={props => <DisplayEndpoint {...props} environment={{}} />}
-            />
-            <Route
-              path="/dashboard/endpoints/:endpointId"
-              render={props => <DisplayEndpoint {...props} environment={{}} />}
-            />
-            <Route
-              path="/dashboard/pages/:pageid/edit"
-              render={props => <EditPage {...props} />}
-            />
-            <Route
-              path="/dashboard/pages/:pageid"
-              render={props => <DisplayPage {...props} />}
-            />
-          </Switch> */}
           </div>
         </Tab.Container>
       </main>

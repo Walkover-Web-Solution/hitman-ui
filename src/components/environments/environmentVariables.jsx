@@ -44,7 +44,6 @@ class EnvironmentVariables extends Component {
       originalVariableNames,
       updatedVariableNames
     });
-    // this.handleAdd();
   }
 
   handleSubmit = e => {
@@ -245,21 +244,6 @@ class EnvironmentVariables extends Component {
                         </tr>
                       ) : null
                     )}
-                    {/* <tr>
-                      <td className="custom-td"> </td>
-                      <td className="custom-td">
-                        {" "}
-                        <button
-                          type="button"
-                          className="btn btn-link btn-sm btn-block"
-                          onClick={() => this.handleAdd()}
-                        >
-                          + New Variable
-                        </button>
-                      </td>
-                      <td className="custom-td"> </td>
-                      <td className="custom-td"> </td>
-                    </tr> */}
                   </tbody>
                 </Table>
               </div>
