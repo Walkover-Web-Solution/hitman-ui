@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import CollectionVersionForm from "../collectionVersions/collectionVersionForm";
 
 function showVersionForm(props, onHide, collectionId, title) {

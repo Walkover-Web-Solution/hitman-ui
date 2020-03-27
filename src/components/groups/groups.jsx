@@ -1,19 +1,13 @@
 import React, { Component } from "react";
-import {
-  Accordion,
-  Card,
-  Button,
-  Dropdown,
-  DropdownButton
-} from "react-bootstrap";
-import GroupPages from "../pages/groupPages";
-import GroupForm from "../groups/groupForm";
-import PageForm from "../pages/pageForm";
-import ShareGroupForm from "../groups/shareGroupForm";
-import Endpoints from "../endpoints/endpoints";
-import { deleteGroup, duplicateGroup } from "../groups/redux/groupsActions";
+import { Accordion, Button, Card } from "react-bootstrap";
 import { connect } from "react-redux";
 import shortId from "shortid";
+import Endpoints from "../endpoints/endpoints";
+import GroupForm from "../groups/groupForm";
+import { deleteGroup, duplicateGroup } from "../groups/redux/groupsActions";
+import ShareGroupForm from "../groups/shareGroupForm";
+import GroupPages from "../pages/groupPages";
+import PageForm from "../pages/pageForm";
 
 const mapStateToProps = state => {
   return { groups: state.groups };
@@ -168,24 +162,16 @@ class Groups extends Component {
             gId => this.props.groups[gId].versionId === this.props.version_id
           )
           .map((groupId, index) => (
-            <div id="accordion" key={index}>
-              <div className="card">
-                <div className="card-header" id="custom-card-header">
+            <Accordion key={groupId}>
+              <Card>
+                <Card.Header>
                   <i
                     className="fas fa-folder-open"
                     style={{ margin: "5px" }}
                   ></i>
-                  <h5 className="mb-0">
-                    <button
-                      className="btn"
-                      data-toggle="collapse"
-                      data-target={`#${groupId}`}
-                      aria-expanded="true"
-                      aria-controls={groupId}
-                    >
-                      {this.props.groups[groupId].name}
-                    </button>
-                  </h5>
+                  <Accordion.Toggle as={Button} variant="default" eventKey="1">
+                    {this.props.groups[groupId].name}
+                  </Accordion.Toggle>
                   <div className="btn-group">
                     <button
                       className="btn btn-secondary "
@@ -254,10 +240,9 @@ class Groups extends Component {
                       </button>
                     </div>
                   </div>
-                </div>
-
-                <div id={groupId} className="collapse">
-                  <div className="card-body">
+                </Card.Header>
+                <Accordion.Collapse eventKey="1">
+                  <Card.Body>
                     <GroupPages
                       {...this.props}
                       version_id={this.props.groups[groupId].versionId}
@@ -270,10 +255,10 @@ class Groups extends Component {
                         this.props.groups[groupId].endpointsOrder
                       }
                     />
-                  </div>
-                </div>
-              </div>
-            </div>
+                  </Card.Body>
+                </Accordion.Collapse>
+              </Card>
+            </Accordion>
           ))}
       </div>
     );

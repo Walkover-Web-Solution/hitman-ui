@@ -1,6 +1,4 @@
 import React, { Component } from "react";
-import Nav from "react-bootstrap/Nav";
-import Navbar from "react-bootstrap/Navbar";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import JSONPretty from "react-json-pretty";
 const status = require("http-status");

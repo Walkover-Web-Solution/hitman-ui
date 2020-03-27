@@ -1,11 +1,23 @@
 import React, { Component } from "react";
 import { Switch } from "react-router-dom";
-import ProtectedRoute from "./common/protectedRoute";
 import Collections from "./collections/collections";
-import { Tabs, Tab } from "react-bootstrap";
+import ProtectedRoute from "./common/protectedRoute";
 class SideBar extends Component {
-  state = {};
+  state = {
+    data: {
+      filter: ""
+    }
+  };
+
+  handleChange = e => {
+    let data = { ...this.state.data };
+    data[e.currentTarget.name] = e.currentTarget.value;
+    // console.log(data);
+    this.setState({ data });
+  };
+
   render() {
+    // console.log(this.state.data.filter);
     return (
       <nav className="col-md-2 d-none d-md-block bg-light sidebar ">
         <div className="sidebar-sticky">
@@ -15,7 +27,13 @@ class SideBar extends Component {
               <i class="fas fa-search" id="search-icon"></i>
             </div>
             <div id="search-box-input">
-              <input type="text" id="search-box-input" placeholder="Filter" />
+              <input
+                type="text"
+                id="search-box-input"
+                name="filter"
+                placeholder="Filter"
+                onChange={this.handleChange}
+              />
             </div>
           </div>
 
@@ -78,7 +96,12 @@ class SideBar extends Component {
               <Switch>
                 <ProtectedRoute
                   path="/dashboard/"
-                  render={props => <Collections {...this.props} />}
+                  render={props => (
+                    <Collections
+                      {...this.props}
+                      filter={this.state.data.filter}
+                    />
+                  )}
                 />
               </Switch>
             </div>

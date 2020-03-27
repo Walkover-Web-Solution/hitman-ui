@@ -1,10 +1,9 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import { Modal } from "react-bootstrap";
 import Joi from "joi-browser";
-import Form from "../common/form";
+import React from "react";
+import { Modal } from "react-bootstrap";
 import { connect } from "react-redux";
 import { importVersion } from "../collectionVersions/redux/collectionVersionsActions";
+import Form from "../common/form";
 
 const mapDispatchToProps = dispatch => {
   return {

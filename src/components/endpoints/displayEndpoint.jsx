@@ -64,6 +64,10 @@ class DisplayEndpoint extends Component {
   };
 
   async componentDidMount() {
+    if (!this.props.location.pathname.split("/")[3]) {
+      this.setState({ selectedHost: "custom" });
+      this.customHost = true;
+    }
     let flag = 0;
 
     if (
@@ -704,7 +708,6 @@ class DisplayEndpoint extends Component {
                 name="BASE_URL_Value"
                 ref={this.BASE_URL_Value}
                 value={this.state.data.host}
-                s
                 onChange={this.handleDropdownChange}
                 disabled={this.state.selectedHost !== "custom"}
               />
