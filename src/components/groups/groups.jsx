@@ -8,6 +8,7 @@ import { deleteGroup, duplicateGroup } from "../groups/redux/groupsActions";
 import ShareGroupForm from "../groups/shareGroupForm";
 import GroupPages from "../pages/groupPages";
 import PageForm from "../pages/pageForm";
+import { isDashboardRoute } from "../common/utility";
 
 const mapStateToProps = state => {
   return { groups: state.groups };
@@ -172,74 +173,76 @@ class Groups extends Component {
                   <Accordion.Toggle as={Button} variant="default" eventKey="1">
                     {this.props.groups[groupId].name}
                   </Accordion.Toggle>
-                  <div className="btn-group">
-                    <button
-                      className="btn btn-secondary "
-                      data-toggle="dropdown"
-                      aria-haspopup="true"
-                      aria-expanded="false"
-                    >
-                      <i className="fas fa-ellipsis-h"></i>
-                    </button>
-                    <div className="dropdown-menu dropdown-menu-right">
+                  {isDashboardRoute(this.props) ? (
+                    <div className="btn-group">
                       <button
-                        className="dropdown-item"
-                        onClick={() =>
-                          this.openEditGroupForm(this.props.groups[groupId])
-                        }
+                        className="btn btn-secondary "
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false"
                       >
-                        Edit
+                        <i className="fas fa-ellipsis-h"></i>
                       </button>
-                      <button
-                        className="dropdown-item"
-                        onClick={() =>
-                          this.handleDelete(this.props.groups[groupId])
-                        }
-                      >
-                        Delete
-                      </button>
-                      <button
-                        className="dropdown-item"
-                        onClick={() =>
-                          this.handleAddEndpoint(
-                            groupId,
-                            this.props.versions,
-                            this.props.groups
-                          )
-                        }
-                      >
-                        Add Endpoint
-                      </button>
-                      <button
-                        className="dropdown-item"
-                        onClick={() =>
-                          this.handleDuplicate(this.props.groups[groupId])
-                        }
-                      >
-                        Duplicate
-                      </button>
-                      <button
-                        className="dropdown-item"
-                        onClick={() =>
-                          this.openGroupPageForm(
-                            this.props.groups[groupId].versionId,
-                            this.props.groups[groupId],
-                            this.props.collection_id
-                          )
-                        }
-                      >
-                        Add Page
-                      </button>
-                      <button
-                        className="dropdown-item"
-                        onClick={() =>
-                          this.openShareGroupForm(this.props.groups[groupId])
-                        }
-                      >
-                        Share
-                      </button>
+                      <div className="dropdown-menu dropdown-menu-right">
+                        <button
+                          className="dropdown-item"
+                          onClick={() =>
+                            this.openEditGroupForm(this.props.groups[groupId])
+                          }
+                        >
+                          Edit
+                        </button>
+                        <button
+                          className="dropdown-item"
+                          onClick={() =>
+                            this.handleDelete(this.props.groups[groupId])
+                          }
+                        >
+                          Delete
+                        </button>
+                        <button
+                          className="dropdown-item"
+                          onClick={() =>
+                            this.handleAddEndpoint(
+                              groupId,
+                              this.props.versions,
+                              this.props.groups
+                            )
+                          }
+                        >
+                          Add Endpoint
+                        </button>
+                        <button
+                          className="dropdown-item"
+                          onClick={() =>
+                            this.handleDuplicate(this.props.groups[groupId])
+                          }
+                        >
+                          Duplicate
+                        </button>
+                        <button
+                          className="dropdown-item"
+                          onClick={() =>
+                            this.openGroupPageForm(
+                              this.props.groups[groupId].versionId,
+                              this.props.groups[groupId],
+                              this.props.collection_id
+                            )
+                          }
+                        >
+                          Add Page
+                        </button>
+                        <button
+                          className="dropdown-item"
+                          onClick={() =>
+                            this.openShareGroupForm(this.props.groups[groupId])
+                          }
+                        >
+                          Share
+                        </button>
+                      </div>
                     </div>
-                  </div>
+                  ) : null}
                 </Card.Header>
                 <Accordion.Collapse eventKey="1">
                   <Card.Body>

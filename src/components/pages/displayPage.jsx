@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import store from "../../store/store";
+import { isDashboardRoute } from "../common/utility";
 
 class DisplayPage extends Component {
   state = {
@@ -19,7 +20,10 @@ class DisplayPage extends Component {
 
   async componentDidMount() {
     if (!this.props.location.page) {
-      const pageId = this.props.location.pathname.split("/")[3];
+      let pageId = "";
+      if (isDashboardRoute(this.props))
+        pageId = this.props.location.pathname.split("/")[3];
+      else pageId = this.props.location.pathname.split("/")[4];
       this.fetchPage(pageId);
       store.subscribe(() => {
         this.fetchPage(pageId);
@@ -33,6 +37,7 @@ class DisplayPage extends Component {
       page: page
     });
   }
+
   render() {
     if (this.props.location.page) {
       const data = { ...this.props.location.page };
@@ -42,14 +47,16 @@ class DisplayPage extends Component {
 
     return (
       <div className="custom-display-page">
-        <button
-          className="btn btn-primary btn-sm"
-          onClick={() => {
-            this.handleEdit(this.state.data);
-          }}
-        >
-          Edit page
-        </button>
+        {isDashboardRoute(this.props) ? (
+          <button
+            className="btn btn-primary btn-sm"
+            onClick={() => {
+              this.handleEdit(this.state.data);
+            }}
+          >
+            Edit page
+          </button>
+        ) : null}
         <span>
           <p>{this.state.data.name}</p>
         </span>

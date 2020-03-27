@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Switch } from "react-router-dom";
+import { Switch, Route } from "react-router-dom";
 import Collections from "./collections/collections";
 import ProtectedRoute from "./common/protectedRoute";
 class SideBar extends Component {
@@ -102,6 +102,11 @@ class SideBar extends Component {
                       filter={this.state.data.filter}
                     />
                   )}
+                />
+
+                <Route
+                  path="/public/:collectionId"
+                  render={props => <Collections {...this.props} />}
                 />
               </Switch>
             </div>

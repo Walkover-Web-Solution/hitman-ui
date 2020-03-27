@@ -12,7 +12,7 @@ import endpointService from "../endpoints/endpointService";
 import {
   fetchAllUsersOfTeam,
   shareCollection
-} from "../team/redux/teamsActions";
+} from "../teamUsers/redux/teamUsersActions";
 import collectionsService from "./collectionsService";
 import {
   addCollection,
@@ -21,13 +21,15 @@ import {
   updateCollection
 } from "./redux/collectionsActions";
 import ShareCollectionForm from "./shareCollectionForm";
+import { isDashboardRoute } from "../common/utility";
+import { fetchAllTeamsOfUser } from "../teamUsers/redux/teamUsersActions";
 
 const mapStateToProps = state => {
   return {
     collections: state.collections,
     versions: state.versions,
     pages: state.pages,
-    team: state.team
+    teamUsers: state.teamUsers
   };
 };
 
@@ -42,8 +44,8 @@ const mapDispatchToProps = dispatch => {
     duplicateCollection: collection =>
       dispatch(duplicateCollection(collection)),
     fetchAllUsersOfTeam: teamIdentifier =>
-      dispatch(fetchAllUsersOfTeam(teamIdentifier))
-    // deleteUserFromTeam: teamData => dispatch(deleteUserFromTeam(teamData))
+      dispatch(fetchAllUsersOfTeam(teamIdentifier)),
+    fetchAllTeamsOfUser: () => dispatch(fetchAllTeamsOfUser())
   };
 };
 
@@ -58,7 +60,9 @@ class CollectionsComponent extends Component {
   keywords = {};
   names = {};
 
-  async componentDidMount() {}
+  async componentDidMount() {
+    this.props.fetchAllTeamsOfUser();
+  }
 
   closeCollectionForm() {
     this.setState({ showCollectionForm: false, showImportVersionForm: false });
@@ -267,137 +271,176 @@ class CollectionsComponent extends Component {
     ];
 
     finalCollections = [...new Set(finalCollections)];
-
-    return (
-      <div>
-        <div className="App-Nav">
-          <div className="tabs">
-            {this.state.showVersionForm &&
-              collectionVersionsService.showVersionForm(
-                this.props,
-                this.closeVersionForm.bind(this),
-                this.state.selectedCollection.id,
-                "Add new Collection Version"
-              )}
-            {this.state.showCollectionForm &&
-              collectionsService.showCollectionForm(
-                this.props,
-                this.closeCollectionForm.bind(this),
-                this.state.collectionFormName,
-                this.state.selectedCollection
-              )}
-            {this.showImportVersionForm()}
-            {this.showShareCollectionForm()}
+    if (isDashboardRoute(this.props)) {
+      return (
+        <div>
+          <div className="App-Nav">
+            <div className="tabs">
+              {this.state.showVersionForm &&
+                collectionVersionsService.showVersionForm(
+                  this.props,
+                  this.closeVersionForm.bind(this),
+                  this.state.selectedCollection.id,
+                  "Add new Collection Version"
+                )}
+              {this.state.showCollectionForm &&
+                collectionsService.showCollectionForm(
+                  this.props,
+                  this.closeCollectionForm.bind(this),
+                  this.state.collectionFormName,
+                  this.state.selectedCollection
+                )}
+              {this.showImportVersionForm()}
+              {this.showShareCollectionForm()}
+            </div>
           </div>
-        </div>
 
-        <div className="App-Side">
-          <div
-            style={{
-              color: "tomato",
-              borderBottom: "1px solid rgba(0, 0, 0, 0.125) ",
-              width: "100%"
-            }}
-          >
-            <button
-              className="btn btn-default"
-              onClick={() => this.openAddCollectionForm()}
+          <div className="App-Side">
+            <div
               style={{
-                color: "tomato"
+                color: "tomato",
+                borderBottom: "1px solid rgba(0, 0, 0, 0.125) ",
+                width: "100%"
               }}
             >
-              <i className="fas fa-plus" style={{ paddingRight: "10px" }}></i>
-              New Collection
-            </button>
-          </div>
-          {/* {Object.keys(this.props.collections).map((collectionId, index) => ( */}
-          {finalCollections.map((collectionId, index) => (
-            <Accordion key={collectionId}>
-              <Card>
-                <Card.Header>
-                  <i
-                    className="fas fa-folder-open"
-                    style={{ margin: "5px" }}
-                  ></i>
-                  <Accordion.Toggle as={Button} variant="default" eventKey="1">
-                    {this.props.collections[collectionId].name}
-                    {/* {collectionId} */}
-                  </Accordion.Toggle>
-                  <div className="btn-group">
-                    <button
-                      className="btn btn-secondary "
-                      data-toggle="dropdown"
-                      aria-haspopup="true"
-                      aria-expanded="false"
+              <button
+                className="btn btn-default"
+                onClick={() => this.openAddCollectionForm()}
+                style={{
+                  color: "tomato"
+                }}
+              >
+                <i className="fas fa-plus" style={{ paddingRight: "10px" }}></i>
+                New Collection
+              </button>
+            </div>
+            {finalCollections.map((collectionId, index) => (
+              <Accordion key={collectionId}>
+                <Card>
+                  <Card.Header>
+                    <i
+                      className="fas fa-folder-open"
+                      style={{ margin: "5px" }}
+                    ></i>
+                    <Accordion.Toggle
+                      as={Button}
+                      variant="default"
+                      eventKey="1"
                     >
-                      <i className="fas fa-ellipsis-h"></i>
-                    </button>
-                    <div className="dropdown-menu dropdown-menu-right">
+                      {this.props.collections[collectionId].name}
+                    </Accordion.Toggle>
+                    <div className="btn-group">
                       <button
-                        className="dropdown-item"
-                        onClick={() =>
-                          this.openEditCollectionForm(collectionId)
-                        }
+                        className="btn btn-secondary "
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false"
                       >
-                        Edit
+                        <i className="fas fa-ellipsis-h"></i>
                       </button>
-                      <button
-                        className="dropdown-item"
-                        onClick={() => {
-                          this.handleDelete(
-                            this.props.collections[collectionId]
-                          );
-                        }}
-                      >
-                        Delete
-                      </button>
-                      <button
-                        className="dropdown-item"
-                        onClick={() => this.openAddVersionForm(collectionId)}
-                      >
-                        Add Version
-                      </button>
-                      <button
-                        className="dropdown-item"
-                        onClick={() =>
-                          this.handleDuplicateCollection(
-                            this.props.collections[collectionId]
-                          )
-                        }
-                      >
-                        Duplicate
-                      </button>
-                      <button
-                        className="dropdown-item"
-                        onClick={() => this.openImportVersionForm(collectionId)}
-                      >
-                        Import Version
-                      </button>
-                      <button
-                        className="dropdown-item"
-                        onClick={() => {
-                          this.shareCollection(collectionId);
-                        }}
-                      >
-                        Share
-                      </button>
+                      <div className="dropdown-menu dropdown-menu-right">
+                        <button
+                          className="dropdown-item"
+                          onClick={() =>
+                            this.openEditCollectionForm(collectionId)
+                          }
+                        >
+                          Edit
+                        </button>
+                        <button
+                          className="dropdown-item"
+                          onClick={() => {
+                            this.handleDelete(
+                              this.props.collections[collectionId]
+                            );
+                          }}
+                        >
+                          Delete
+                        </button>
+                        <button
+                          className="dropdown-item"
+                          onClick={() => this.openAddVersionForm(collectionId)}
+                        >
+                          Add Version
+                        </button>
+                        <button
+                          className="dropdown-item"
+                          onClick={() =>
+                            this.handleDuplicateCollection(
+                              this.props.collections[collectionId]
+                            )
+                          }
+                        >
+                          Duplicate
+                        </button>
+                        <button
+                          className="dropdown-item"
+                          onClick={() =>
+                            this.openImportVersionForm(collectionId)
+                          }
+                        >
+                          Import Version
+                        </button>
+                        <button
+                          className="dropdown-item"
+                          onClick={() => {
+                            this.shareCollection(collectionId);
+                          }}
+                        >
+                          Share
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                </Card.Header>
-                <Accordion.Collapse eventKey="1">
-                  <Card.Body>
-                    <CollectionVersions
-                      {...this.props}
-                      collection_id={collectionId}
-                    />
-                  </Card.Body>
-                </Accordion.Collapse>
-              </Card>
-            </Accordion>
-          ))}
+                  </Card.Header>
+                  <Accordion.Collapse eventKey="1">
+                    <Card.Body>
+                      <CollectionVersions
+                        {...this.props}
+                        collection_id={collectionId}
+                      />
+                    </Card.Body>
+                  </Accordion.Collapse>
+                </Card>
+              </Accordion>
+            ))}
+          </div>
         </div>
-      </div>
-    );
+      );
+    } else {
+      return (
+        <div>
+          <div className="App-Side">
+            {Object.keys(this.props.collections).map((collectionId, index) => (
+              <Accordion key={collectionId}>
+                <Card>
+                  <Card.Header>
+                    <i
+                      className="fas fa-folder-open"
+                      style={{ margin: "5px" }}
+                    ></i>
+                    <Accordion.Toggle
+                      as={Button}
+                      variant="default"
+                      eventKey="1"
+                    >
+                      {this.props.collections[collectionId].name}
+                    </Accordion.Toggle>
+                  </Card.Header>
+                  <Accordion.Collapse eventKey="1">
+                    <Card.Body>
+                      <CollectionVersions
+                        {...this.props}
+                        collection_id={collectionId}
+                      />
+                    </Card.Body>
+                  </Accordion.Collapse>
+                </Card>
+              </Accordion>
+            ))}
+          </div>
+        </div>
+      );
+    }
   }
 }
 

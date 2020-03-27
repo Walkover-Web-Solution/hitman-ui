@@ -11,6 +11,7 @@ import GroupForm from "../groups/groupForm";
 import Groups from "../groups/groups";
 import PageForm from "../pages/pageForm";
 import VersionPages from "../pages/versionPages";
+import { isDashboardRoute } from "../common/utility";
 
 import { Accordion, Card, Button } from "react-bootstrap";
 
@@ -192,77 +193,78 @@ class CollectionVersions extends Component {
                     >
                       {this.props.versions[versionId].number}
                     </Accordion.Toggle>
-                    <div className="btn-group">
-                      <button
-                        className="btn btn-secondary "
-                        data-toggle="dropdown"
-                        aria-haspopup="true"
-                        aria-expanded="false"
-                      >
-                        <i className="fas fa-ellipsis-h"></i>
-                      </button>
-                      <div className="dropdown-menu dropdown-menu-right">
+                    {isDashboardRoute(this.props) ? (
+                      <div className="btn-group">
                         <button
-                          className="dropdown-item"
-                          onClick={() =>
-                            this.openEditVersionForm(
-                              this.props.versions[versionId]
-                            )
-                          }
+                          className="btn btn-secondary "
+                          data-toggle="dropdown"
+                          aria-haspopup="true"
+                          aria-expanded="false"
                         >
-                          Edit
+                          <i className="fas fa-ellipsis-h"></i>
                         </button>
-                        <button
-                          className="dropdown-item"
-                          onClick={() =>
-                            this.handleDelete(this.props.versions[versionId])
-                          }
-                        >
-                          Delete
-                        </button>
-                        <button
-                          className="dropdown-item"
-                          onClick={() =>
-                            this.openAddGroupForm(
-                              this.props.versions[versionId]
-                            )
-                          }
-                        >
-                          Add Group
-                        </button>
-                        <button
-                          className="dropdown-item"
-                          onClick={() => {
-                            this.handleDuplicate(
-                              this.props.versions[versionId]
-                            );
-                          }}
-                        >
-                          Duplicate
-                        </button>
-                        <button
-                          className="dropdown-item"
-                          onClick={() =>
-                            this.openAddVersionPageForm(
-                              this.props.versions[versionId]
-                            )
-                          }
-                        >
-                          Add Page
-                        </button>
-                        <button
-                          className="dropdown-item"
-                          onClick={() =>
-                            this.openShareVersionForm(
-                              this.props.versions[versionId]
-                            )
-                          }
-                        >
-                          Share
-                        </button>
+                        <div className="dropdown-menu dropdown-menu-right">
+                          <button
+                            className="dropdown-item"
+                            onClick={() =>
+                              this.openEditVersionForm(
+                                this.props.versions[versionId]
+                              )
+                            }
+                          >
+                            Edit
+                          </button>
+                          <button
+                            className="dropdown-item"
+                            onClick={() =>
+                              this.handleDelete(this.props.versions[versionId])
+                            }
+                          >
+                            Delete
+                          </button>
+                          <button
+                            className="dropdown-item"
+                            onClick={() =>
+                              this.openAddGroupForm(
+                                this.props.versions[versionId]
+                              )
+                            }
+                          >
+                            Add Group
+                          </button>
+                          <button
+                            className="dropdown-item"
+                            onClick={() => {
+                              this.handleDuplicate(
+                                this.props.versions[versionId]
+                              );
+                            }}
+                          >
+                            Duplicate
+                          </button>
+                          <button
+                            className="dropdown-item"
+                            onClick={() =>
+                              this.openAddVersionPageForm(
+                                this.props.versions[versionId]
+                              )
+                            }
+                          >
+                            Add Page
+                          </button>
+                          <button
+                            className="dropdown-item"
+                            onClick={() =>
+                              this.openShareVersionForm(
+                                this.props.versions[versionId]
+                              )
+                            }
+                          >
+                            Share
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                    {/* </div> */}
+                    ) : null}
                   </Card.Header>
                   <Accordion.Collapse eventKey="1">
                     <Card.Body>

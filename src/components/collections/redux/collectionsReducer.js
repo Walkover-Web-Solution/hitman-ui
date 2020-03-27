@@ -1,4 +1,5 @@
 import collectionsActionTypes from "./collectionsActionTypes";
+import publicEndpointsActionTypes from "../../publicEndpoint/redux/publicEndpointsActionTypes";
 import { toast } from "react-toastify";
 
 const initialState = {};
@@ -75,6 +76,14 @@ function collectionsReducer(state = initialState, action) {
 
     case collectionsActionTypes.ON_COLLECTION_DUPLICATED_ERROR:
       toast.error(action.error);
+      return;
+
+    case publicEndpointsActionTypes.ON_PUBLIC_ENDPOINTS_FETCHED:
+      return { ...state, ...action.data.collections };
+
+    case publicEndpointsActionTypes.ON_PUBLIC_ENDPOINTS_FETCHED_ERROR:
+      toast.error(action.error);
+      return state;
 
     default:
       return state;

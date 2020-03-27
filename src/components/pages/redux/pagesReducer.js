@@ -3,6 +3,7 @@ import { toast } from "react-toastify";
 import groupsActionTypes from "../../groups/redux/groupsActionTypes";
 import versionActionTypes from "../../collectionVersions/redux/collectionVersionsActionTypes";
 import collectionActionTypes from "../../collections/redux/collectionsActionTypes";
+import publicEndpointsActionTypes from "../../publicEndpoint/redux/publicEndpointsActionTypes";
 
 const initialState = {};
 
@@ -104,7 +105,14 @@ function pagesReducer(state = initialState, action) {
       return { ...state, ...action.response.pages };
 
     case versionActionTypes.IMPORT_VERSION:
-        return {...state,...action.response.pages}  
+      return { ...state, ...action.response.pages };
+
+    case publicEndpointsActionTypes.ON_PUBLIC_ENDPOINTS_FETCHED:
+      return { ...state, ...action.data.pages };
+
+    case publicEndpointsActionTypes.ON_PUBLIC_ENDPOINTS_FETCHED_ERROR:
+      toast.error(action.error);
+      return state;
 
     default:
       return state;

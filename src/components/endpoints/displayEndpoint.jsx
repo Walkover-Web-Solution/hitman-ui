@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+
 import { connect } from "react-redux";
 import { toast } from "react-toastify";
 import shortId from "shortid";
@@ -10,6 +11,7 @@ import store from "../../store/store";
 import { withRouter } from "react-router-dom";
 import CreateEndpointForm from "./createEndpointForm";
 import CodeWindow from "./codeWindow";
+import { isDashboardRoute } from "../common/utility";
 
 var URI = require("urijs");
 
@@ -66,6 +68,7 @@ class DisplayEndpoint extends Component {
 
   async componentDidMount() {
     if (!this.props.location.pathname.split("/")[3]) {
+      console.log("in if");
       this.setState({ selectedHost: "custom" });
       this.customHost = true;
     }
@@ -88,7 +91,12 @@ class DisplayEndpoint extends Component {
     let endpoint = {};
     let originalParams = [];
     let originalHeaders = [];
-    const endpointId = this.props.location.pathname.split("/")[3];
+    const split = this.props.location.pathname.split("/");
+    let endpointId = "";
+
+    if (isDashboardRoute(this.props)) endpointId = split[3];
+    else endpointId = split[4];
+
     const { endpoints } = store.getState();
     const { groups } = store.getState();
     const { versions } = store.getState();
@@ -832,14 +840,16 @@ class DisplayEndpoint extends Component {
             >
               Send
             </button>
-            <button
-              className="btn"
-              type="button"
-              id="save-endpoint-button"
-              onClick={() => this.handleSave()}
-            >
-              Save
-            </button>
+            {isDashboardRoute(this.props) ? (
+              <button
+                className="btn"
+                type="button"
+                id="save-endpoint-button"
+                onClick={() => this.handleSave()}
+              >
+                Save
+              </button>
+            ) : null}
             <button
               className="btn"
               type="button"
