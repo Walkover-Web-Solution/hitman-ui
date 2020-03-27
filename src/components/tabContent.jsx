@@ -17,13 +17,13 @@ class TabContent extends Component {
               <Route
                 path={`/dashboard/endpoint/${tab.id}`}
                 render={props => (
-                  <DisplayEndpoint {...props} environment={{}} />
+                  <DisplayEndpoint {...this.props} environment={{}} />
                 )}
               />
               <Route
                 path={`/dashboard/endpoint/new`}
                 render={props => (
-                  <DisplayEndpoint {...props} environment={{}} />
+                  <DisplayEndpoint {...this.props} environment={{}} />
                 )}
               />
             </Switch>

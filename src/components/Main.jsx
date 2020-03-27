@@ -81,7 +81,11 @@ class Main extends Component {
         }}
       >
         <ToastContainer />
-        <Navbar {...this.props} />
+        <Navbar
+          {...this.props}
+          tabs={[...this.state.tabs]}
+          set_tabs={this.setTabs.bind(this)}
+        />
         <div className="wrapper">
           <SideBar
             {...this.props}

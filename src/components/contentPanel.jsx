@@ -44,6 +44,16 @@ class ContentPanel extends Component {
           ...this.props.tabs,
           { id: endpointId, type: "endpoint", isSaved: true }
         ];
+        if (this.props.endpoints[endpointId]) {
+          const requestId = this.props.endpoints[endpointId].requestId;
+          console.log(requestId);
+          const tabIndex = this.props.tabs.findIndex(
+            tab => tab.id === requestId
+          );
+          if (tabIndex >= 0) {
+            tabs.splice(tabIndex, 1);
+          }
+        }
         this.props.set_tabs(tabs, tabs.length - 1);
       } else if (
         this.props.tabs.length &&

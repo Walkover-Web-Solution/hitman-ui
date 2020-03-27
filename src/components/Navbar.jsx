@@ -5,6 +5,8 @@ import collectionsService from "./collections/collectionsService";
 import environmentsService from "./environments/environmentsService";
 import CreateNewModal from "./CreateNewModal";
 import { getCurrentUser } from "./auth/authService";
+import shortId from "shortid";
+
 class Navbar extends Component {
   state = {
     name: "",
@@ -35,6 +37,19 @@ class Navbar extends Component {
 
   openEnvironmentForm() {
     this.setState({ showCreateNewModal: false, showEnvironmentForm: true });
+  }
+
+  handleAddEndpoint(groupId, versions, groups) {
+    const newTabId = shortId.generate();
+    const tabs = [
+      ...this.props.tabs,
+      { id: newTabId, type: "endpoint", isSaved: false }
+    ];
+
+    this.props.set_tabs(tabs, tabs.length - 1);
+    this.props.history.push({
+      pathname: `/dashboard/endpoint/new`
+    });
   }
 
   render() {
@@ -83,7 +98,11 @@ class Navbar extends Component {
                 });
               }}
             >
-              <i className="fas fa-share-square" style={{ margin: "5px" }}></i>{" "}
+              <i
+                className="fas fa-share-square"
+                style={{ margin: "5px" }}
+                onClick={() => this.handleAddEndpoint()}
+              ></i>{" "}
               Endpoint
             </li>
             <li
