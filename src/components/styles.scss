@@ -11,8 +11,9 @@ $border-color: rgba(227, 228, 230, 0.7);
   border: none;
   background-color: inherit;
 }
-#template-sidebar {
-  flex-direction: column;
+
+#code-window-sidebar {
+  display: flex;
 }
 #search-box-wrapper {
   display: flex;

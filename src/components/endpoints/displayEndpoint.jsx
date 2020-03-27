@@ -81,7 +81,7 @@ class DisplayEndpoint extends Component {
     const { endpoints } = store.getState();
     const { groups } = store.getState();
     const { versions } = store.getState();
-    if (!this.props.location.pathname.split("/")[3]) {
+    if (!this.props.location.pathname.split("/")[3] && !this.title) {
       this.setState({ selectedHost: "custom" });
       this.customHost = true;
     } else if (
@@ -549,7 +549,6 @@ class DisplayEndpoint extends Component {
   async prepareHarObject() {
     const { uri, method, body, host } = this.state.data;
     const { originalHeaders, originalParams } = this.state;
-
     const harObject = {
       method,
       url: host + uri.split("?")[0],
@@ -559,6 +558,9 @@ class DisplayEndpoint extends Component {
       postData: this.makePostData(body),
       queryString: this.makeParams(originalParams)
     };
+    if (harObject.url === "") {
+      harObject.url = "https://";
+    }
     this.openCodeWindow(harObject);
   }
 
@@ -583,6 +585,7 @@ class DisplayEndpoint extends Component {
   }
   render() {
     if (this.props.location.title === "Add New Endpoint") {
+      this.title = "Add New Endpoint";
       this.customHost = false;
       const hostJson = this.fetchHosts(
         this.props.location,
