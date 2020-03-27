@@ -45,7 +45,7 @@ class Navbar extends Component {
       ...this.props.tabs,
       { id: newTabId, type: "endpoint", isSaved: false }
     ];
-
+    console.log(tabs);
     this.props.set_tabs(tabs, tabs.length - 1);
     this.props.history.push({
       pathname: `/dashboard/endpoint/new`
@@ -92,17 +92,9 @@ class Navbar extends Component {
           <div className="dropdown-menu">
             <li
               className="dropdown-item"
-              onClick={() => {
-                this.props.history.push({
-                  pathname: "/dashboard/endpoint/new"
-                });
-              }}
+              onClick={() => this.handleAddEndpoint()}
             >
-              <i
-                className="fas fa-share-square"
-                style={{ margin: "5px" }}
-                onClick={() => this.handleAddEndpoint()}
-              ></i>{" "}
+              <i className="fas fa-share-square" style={{ margin: "5px" }}></i>{" "}
               Endpoint
             </li>
             <li

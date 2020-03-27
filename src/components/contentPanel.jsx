@@ -39,11 +39,8 @@ class ContentPanel extends Component {
     ) {
       const endpointId = this.props.location.pathname.split("/")[3];
       const index = this.props.tabs.findIndex(tab => tab.id === endpointId);
+      let tabs = [...this.props.tabs];
       if (index < 0) {
-        const tabs = [
-          ...this.props.tabs,
-          { id: endpointId, type: "endpoint", isSaved: true }
-        ];
         if (this.props.endpoints[endpointId]) {
           const requestId = this.props.endpoints[endpointId].requestId;
           console.log(requestId);
@@ -51,10 +48,16 @@ class ContentPanel extends Component {
             tab => tab.id === requestId
           );
           if (tabIndex >= 0) {
-            tabs.splice(tabIndex, 1);
+            tabs[this.props.default_tab_index] = {
+              id: endpointId,
+              type: "endpoint",
+              isSaved: true
+            };
+          } else {
+            tabs.push({ id: endpointId, type: "endpoint", isSaved: true });
           }
+          this.props.set_tabs(tabs, tabs.length - 1);
         }
-        this.props.set_tabs(tabs, tabs.length - 1);
       } else if (
         this.props.tabs.length &&
         this.props.tabs[this.props.default_tab_index].id !== endpointId

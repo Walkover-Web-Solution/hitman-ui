@@ -124,24 +124,40 @@ class CreateEndpointForm extends Form {
             <form onSubmit={this.handleSubmit}>
               {this.renderInput("name", "Name", "Endpoint Name")}
               {this.renderTextArea("description", "Description", "Description")}
-              <button
-                className="btn btn-default custom-button"
-                onClick={() => this.props.onHide()}
-              >
-                Cancel
-              </button>
-              <button className="btn">submit</button>
             </form>
-            <ul>
-              {this.renderListTitle()}
-              {this.renderList().map(item => (
-                <li>
-                  <button className="btn" onClick={() => this.setList(item)}>
-                    {item.name}
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">
+                  <button className="btn">
+                    <i class="fas fa-chevron-left"></i>
+                    {this.renderListTitle()}
                   </button>
-                </li>
-              ))}
-            </ul>
+                </h5>
+                <ul class="list-group">
+                  {this.renderList().map(item => (
+                    <li class="list-group-item">
+                      <button
+                        className="btn"
+                        onClick={() => this.setList(item)}
+                      >
+                        <i class="far fa-folder"></i>
+                        {item.name}
+                        <i class="fas fa-chevron-right"></i>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+            <button
+              className="btn btn-default custom-button"
+              onClick={() => this.props.onHide()}
+            >
+              Cancel
+            </button>
+            <button className="btn" onClick={this.handleSubmit}>
+              Submit
+            </button>
           </Modal.Body>
         </div>
       </Modal>
