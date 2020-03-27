@@ -9,6 +9,7 @@ import endpointService from "./endpointService";
 import store from "../../store/store";
 import { withRouter } from "react-router-dom";
 import CreateEndpointForm from "./createEndpointForm";
+import CodeWindow from "./codeWindow";
 
 var URI = require("urijs");
 
@@ -91,8 +92,10 @@ class DisplayEndpoint extends Component {
     const { endpoints } = store.getState();
     const { groups } = store.getState();
     const { versions } = store.getState();
-
-    if (
+    if (!this.props.location.pathname.split("/")[3] && !this.title) {
+      this.setState({ selectedHost: "custom" });
+      this.customHost = true;
+    } else if (
       Object.keys(groups).length !== 0 &&
       Object.keys(versions).length !== 0 &&
       Object.keys(endpoints).length !== 0 &&
@@ -529,6 +532,17 @@ class DisplayEndpoint extends Component {
     }
     return originalParams;
   }
+  makeHeaders(headers) {
+    let processedHeaders = [];
+    for (let i = 0; i < Object.keys(headers).length; i++) {
+      processedHeaders[i] = {
+        name: headers[Object.keys(headers)[i]].key,
+        value: headers[Object.keys(headers)[i]].value,
+        comment: headers[Object.keys(headers)[i]].description
+      };
+    }
+    return processedHeaders;
+  }
 
   openEndpointFormModal() {
     this.setState({ showEndpointFormModal: true });
@@ -544,6 +558,64 @@ class DisplayEndpoint extends Component {
     this.setState({ groupId, data });
   }
 
+  makeParams(params) {
+    let processedParams = [];
+    for (let i = 0; i < Object.keys(params).length; i++) {
+      processedParams[i] = {
+        name: params[Object.keys(params)[i]].key,
+        value: params[Object.keys(params)[i]].value,
+        comment: params[Object.keys(params)[i]].description
+      };
+    }
+    return processedParams;
+  }
+
+  makePostData(body) {
+    let postData = {
+      mimeType: "application/json",
+      text: '{"hello":"world"}',
+      comment: "Sample json body"
+    };
+    return postData;
+  }
+
+  async prepareHarObject() {
+    const { uri, method, body, host } = this.state.data;
+    const { originalHeaders, originalParams } = this.state;
+    const harObject = {
+      method,
+      url: host + uri.split("?")[0],
+      httpVersion: "HTTP/1.1",
+      cookies: [],
+      headers: this.makeHeaders(originalHeaders),
+      postData: this.makePostData(body),
+      queryString: this.makeParams(originalParams)
+    };
+    if (!harObject.url.split(":")[1] || harObject.url.split(":")[0] === "") {
+      harObject.url = "https://";
+    }
+    this.openCodeWindow(harObject);
+  }
+
+  openCodeWindow(harObject) {
+    this.setState({
+      showCodeWindow: true,
+      harObject
+    });
+  }
+
+  showCodeWindow() {
+    return (
+      <CodeWindow
+        show={true}
+        onHide={() => {
+          this.setState({ showCodeWindow: false });
+        }}
+        harObject={this.state.harObject}
+        title="Code Snippet"
+      />
+    );
+  }
   render() {
     console.log(this.props);
     if (
@@ -562,6 +634,7 @@ class DisplayEndpoint extends Component {
       }
     }
     if (this.props.location.title === "Add New Endpoint") {
+      this.title = "Add New Endpoint";
       this.customHost = false;
       console.log(this.props.location.groupId, this.state.groupId);
       if (this.props.location.groupId || this.state.groupId) {
@@ -662,6 +735,7 @@ class DisplayEndpoint extends Component {
           />
         )}
         <div className="endpoint-name-container">
+          {this.state.showCodeWindow && this.showCodeWindow()}
           <input
             type="text"
             className="endpoint-name-input"
@@ -765,6 +839,14 @@ class DisplayEndpoint extends Component {
               onClick={() => this.handleSave()}
             >
               Save
+            </button>
+            <button
+              className="btn"
+              type="button"
+              id="show-code-snippets-button"
+              onClick={() => this.prepareHarObject()}
+            >
+              Code
             </button>
           </div>
         </div>
