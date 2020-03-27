@@ -98,6 +98,24 @@ class CreateEndpointForm extends Form {
     }
   }
 
+  goBack() {
+    let list = { ...this.state.list };
+    switch (this.state.list.type) {
+      case "versions":
+        list.type = "collections";
+        list.parentId = null;
+        this.setState({ list });
+        break;
+      case "groups":
+        list.type = "versions";
+        list.parentId = this.props.versions[
+          this.state.list.parentId
+        ].collectionId;
+        this.setState({ list });
+        break;
+    }
+  }
+
   async doSubmit() {
     this.props.onHide();
     this.props.set_group_id(this.state.groupId, this.state.data.name);
@@ -110,6 +128,7 @@ class CreateEndpointForm extends Form {
         size="lg"
         aria-labelledby="contained-modal-title-vcenter"
         centered
+        id="endpoint-modal"
       >
         <div>
           <Modal.Header
@@ -117,7 +136,7 @@ class CreateEndpointForm extends Form {
             closeButton
           >
             <Modal.Title id="contained-modal-title-vcenter">
-              {this.props.title}
+              Add Endpoint
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
@@ -125,33 +144,30 @@ class CreateEndpointForm extends Form {
               {this.renderInput("name", "Name", "Endpoint Name")}
               {this.renderTextArea("description", "Description", "Description")}
             </form>
-            <div class="card">
-              <div class="card-body">
-                <h5 class="card-title">
-                  {this.state.list.type === "collections" ? (
-                    "All Collections"
-                  ) : (
-                    <button className="btn">
-                      <i class="fas fa-chevron-left"></i>
-                      {this.renderListTitle()}
-                    </button>
-                  )}
-                </h5>
-                <ul class="list-group">
-                  {this.renderList().map(item => (
-                    <li class="list-group-item">
-                      <button
-                        className="btn"
-                        onClick={() => this.setList(item)}
-                      >
-                        <i class="far fa-folder"></i>
-                        {item.name}
-                        <i class="fas fa-chevron-right"></i>
-                      </button>
-                    </li>
-                  ))}
-                </ul>
+            <div class="card" id="endpoint-form-collection-list">
+              <div class="card-title">
+                {this.state.list.type === "collections" ? (
+                  "All Collections"
+                ) : (
+                  <button className="btn" onClick={() => this.goBack()}>
+                    <i class="fas fa-chevron-left"></i>
+                    {this.renderListTitle()}
+                  </button>
+                )}
               </div>
+              <ul class="list-group">
+                {this.renderList().map(item => (
+                  <li class="list-group-item">
+                    <button className="btn" onClick={() => this.setList(item)}>
+                      <div className="list-item-wrapper">
+                        <i class="fas fa-folder"></i>
+                        {item.name}
+                      </div>
+                      <i class="fas fa-chevron-right"></i>
+                    </button>
+                  </li>
+                ))}
+              </ul>
             </div>
             <button
               className="btn btn-default custom-button"
