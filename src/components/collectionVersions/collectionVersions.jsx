@@ -282,12 +282,3 @@ class CollectionVersions extends Component {
 export default withRouter(
   connect(mapStateToProps, mapDispatchToProps)(CollectionVersions)
 );
-
-// div id={versionId} className="collapse">
-//                     <div className="card-body">
-//                       <VersionPages {...this.props} version_id={versionId} />
-//                       <Groups {...this.props} version_id={versionId} />
-//                     </div>
-//                   </div>
-//                 </div>
-//               </div>
