@@ -25,40 +25,42 @@ class CustomTabs extends Component {
       if (index !== 0) {
         const newIndex = this.props.default_tab_index - 1;
         this.props.set_tabs(tabs, newIndex);
-        this.changeRoute(
-          tabs[newIndex].type,
-          tabs[newIndex].id,
-          "update endpoint"
-        );
+        this.changeRoute(tabs[newIndex], "update endpoint");
       } else {
         if (tabs.length > 0) {
           const newIndex = index;
           this.props.set_tabs(tabs, newIndex);
-          this.changeRoute(
-            tabs[newIndex].type,
-            tabs[newIndex].id,
-            "update endpoint"
-          );
+          this.changeRoute(tabs, "update endpoint");
         } else {
-          console.log("Sdf");
           const newTabId = shortId.generate();
           tabs = [...tabs, { id: newTabId, type: "endpoint", isSaved: false }];
 
           this.props.set_tabs(tabs, tabs.length - 1);
           this.props.history.push({
-            pathname: `/dashboard/endpoint/new`,
-
-            title: "Add New Endpoint"
+            pathname: `/dashboard/endpoint/new`
           });
         }
       }
-    } else this.props.set_tabs(tabs);
+    } else {
+      if (index < this.props.default_tab_index) {
+        this.props.set_tabs(tabs, this.props.default_tab_index - 1);
+      } else this.props.set_tabs(tabs);
+    }
   }
 
-  changeRoute(type, id, title) {
-    this.props.history.push({
-      pathname: `/dashboard/${type}/${id}`
-    });
+  changeRoute(tab, title) {
+    if (tab.type === "endpoint") {
+      if (tab.isSaved) {
+        this.props.history.push({
+          pathname: `/dashboard/${tab.type}/${tab.id}`,
+          title
+        });
+      } else {
+        this.props.history.push({
+          pathname: `/dashboard/${tab.type}/new`
+        });
+      }
+    }
   }
 
   render() {

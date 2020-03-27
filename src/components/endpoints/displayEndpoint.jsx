@@ -8,6 +8,7 @@ import { addEndpoint, updateEndpoint } from "./redux/endpointsActions";
 import endpointService from "./endpointService";
 import store from "../../store/store";
 import { withRouter } from "react-router-dom";
+import CreateEndpointForm from "./createEndpointForm";
 
 var URI = require("urijs");
 
@@ -53,7 +54,7 @@ class DisplayEndpoint extends Component {
     endpoint: {},
     groups: {},
     versions: {},
-    groupId: "",
+    groupId: null,
     title: "",
     selectedHost: "",
     onChangeFlag: false,
@@ -325,33 +326,37 @@ class DisplayEndpoint extends Component {
   };
 
   handleSave = async e => {
-    let body = this.parseBody(this.state.data);
-    const headersData = this.doSubmitHeader();
-    const updatedParams = this.doSubmitParam();
-    const endpoint = {
-      uri: this.uri.current.value,
-      name: this.name.current.value,
-      requestType: this.state.data.method,
-      body: body,
-      headers: headersData,
-      params: updatedParams
-    };
-    if (this.customHost === true) {
-      endpoint.BASE_URL = this.BASE_URL_Value.current.value;
+    if (!this.state.groupId) {
+      this.openEndpointFormModal();
     } else {
-      endpoint.BASE_URL = null;
-    }
-    if (endpoint.name === "" || endpoint.uri === "")
-      toast.error("Please Enter all the fields");
-    else if (this.state.title === "Add New Endpoint") {
-      endpoint.requestId = shortId.generate();
-      this.props.addEndpoint(endpoint, this.state.groupId);
-    } else if (this.state.title === "update endpoint") {
-      this.props.updateEndpoint({
-        ...endpoint,
-        id: this.state.endpoint.id,
-        groupId: this.state.groupId
-      });
+      let body = this.parseBody(this.state.data);
+      const headersData = this.doSubmitHeader();
+      const updatedParams = this.doSubmitParam();
+      const endpoint = {
+        uri: this.uri.current.value,
+        name: this.name.current.value,
+        requestType: this.state.data.method,
+        body: body,
+        headers: headersData,
+        params: updatedParams
+      };
+      if (this.customHost === true) {
+        endpoint.BASE_URL = this.BASE_URL_Value.current.value;
+      } else {
+        endpoint.BASE_URL = null;
+      }
+      if (endpoint.name === "" || endpoint.uri === "")
+        toast.error("Please Enter all the fields");
+      else if (this.props.location.pathname.split("/")[3] === "new") {
+        endpoint.requestId = shortId.generate();
+        this.props.addEndpoint(endpoint, this.state.groupId);
+      } else if (this.state.title === "update endpoint") {
+        this.props.updateEndpoint({
+          ...endpoint,
+          id: this.state.endpoint.id,
+          groupId: this.state.groupId
+        });
+      }
     }
   };
 
@@ -520,6 +525,20 @@ class DisplayEndpoint extends Component {
     return originalParams;
   }
 
+  openEndpointFormModal() {
+    this.setState({ showEndpointFormModal: true });
+  }
+
+  closeEndpointFormModal() {
+    this.setState({ showEndpointFormModal: false });
+  }
+
+  setGroupId(groupId, endpointName) {
+    const data = { ...this.state.data };
+    data.name = endpointName;
+    this.setState({ groupId, data });
+  }
+
   render() {
     if (
       this.props.location.pathname.split("/")[3] !== "new" &&
@@ -537,15 +556,17 @@ class DisplayEndpoint extends Component {
       }
     }
     if (this.props.location.title === "Add New Endpoint") {
-      console.log("1");
       this.customHost = false;
-      const hostJson = this.fetchHosts(
-        this.props,
-        this.props.environment,
-        this.props.location.groupId
-      );
-      this.fillDropdownValue(hostJson);
-      this.host = this.findHost(hostJson);
+      console.log(this.props.location.groupId, this.state.groupId);
+      if (this.props.location.groupId || this.state.groupId) {
+        const hostJson = this.fetchHosts(
+          this.props,
+          this.props.environment,
+          this.props.location.groupId
+        );
+        this.fillDropdownValue(hostJson);
+        this.host = this.findHost(hostJson);
+      }
       this.setState({
         data: {
           name: "",
@@ -576,8 +597,6 @@ class DisplayEndpoint extends Component {
       this.props.location.title === "update endpoint" &&
       this.props.location.endpoint
     ) {
-      console.log("2");
-
       this.BASE_URL = this.props.location.endpoint.BASE_URL;
       if (this.props.location.endpoint.BASE_URL !== null) {
         this.setDropdownValue("custom");
@@ -628,6 +647,14 @@ class DisplayEndpoint extends Component {
     }
     return (
       <div className="endpoint-container">
+        {this.state.showEndpointFormModal && (
+          <CreateEndpointForm
+            {...this.props}
+            show={true}
+            onHide={() => this.closeEndpointFormModal()}
+            set_group_id={this.setGroupId.bind(this)}
+          />
+        )}
         <div className="endpoint-name-container">
           <input
             type="text"
