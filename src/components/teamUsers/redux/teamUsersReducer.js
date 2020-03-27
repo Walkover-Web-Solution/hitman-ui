@@ -1,10 +1,10 @@
-import teamActionTypes from "./teamsActionTypes";
+import teamActionTypes from "./teamUsersActionTypes";
 import { toast } from "react-toastify";
 
 const initialState = {};
 
-function teamsReducer(state = initialState, action) {
-  let team = {};
+function teamsUsersReducer(state = initialState, action) {
+  let teamUsers = {};
   switch (action.type) {
     case teamActionTypes.ON_FETCH_ALL_SHARED_USERS:
       return { ...action.response };
@@ -13,40 +13,40 @@ function teamsReducer(state = initialState, action) {
       return { ...action.response };
 
     case teamActionTypes.ON_COLLECTION_SHARED_REQUEST:
-      team = { ...state };
+      teamUsers = { ...state };
 
       for (let i = 0; i < action.sharedCollection.length; i++) {
         if (action.sharedCollection[i].id !== null) {
           if (action.sharedCollection[i].deleteFlag === true) {
-            delete team[action.sharedCollection[i].userId];
+            delete teamUsers[action.sharedCollection[i].userId];
           }
         } else {
-          team[action.sharedCollection[i].requestId] =
+          teamUsers[action.sharedCollection[i].requestId] =
             action.sharedCollection[i];
         }
       }
-      return team;
+      return teamUsers;
 
     case teamActionTypes.ON_COLLECTION_SHARED:
       const sharedCollection = action.sharedCollection;
-      team = { ...state };
+      teamUsers = { ...state };
 
       for (let i = 0; i < sharedCollection.length; i++) {
         if (sharedCollection[i].id !== null) {
           if (sharedCollection[i].deleteFlag === false) {
-            team[action.response[i].userId] = action.response[i];
+            teamUsers[action.response[i].userId] = action.response[i];
           }
         } else {
           if (action.response[i].id === null) {
             toast.error("User Not Found");
-            delete team[action.response[i].requestId];
+            delete teamUsers[action.response[i].requestId];
           } else {
-            team[action.response[i].userId] = action.response[i];
-            delete team[action.response[i].requestId];
+            teamUsers[action.response[i].userId] = action.response[i];
+            delete teamUsers[action.response[i].requestId];
           }
         }
       }
-      return team;
+      return teamUsers;
 
     case teamActionTypes.ON_COLLECTION_SHARED_ERROR:
       toast.error(action.error);
@@ -57,4 +57,4 @@ function teamsReducer(state = initialState, action) {
   }
 }
 
-export default teamsReducer;
+export default teamsUsersReducer;

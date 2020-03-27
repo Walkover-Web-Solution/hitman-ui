@@ -15,7 +15,7 @@ import { fetchPages } from "../pages/redux/pagesActions";
 import {
   fetchAllUsersOfTeam,
   shareCollection
-} from "../team/redux/teamsActions";
+} from "../teamUsers/redux/teamUsersActions";
 import collectionsService from "./collectionsService";
 import {
   addCollection,
@@ -26,13 +26,14 @@ import {
 } from "./redux/collectionsActions";
 import ShareCollectionForm from "./shareCollectionForm";
 import { isDashboardRoute } from "../common/utility";
+import { fetchAllTeamsOfUser } from "../teamUsers/redux/teamUsersActions";
 
 const mapStateToProps = state => {
   return {
     collections: state.collections,
     versions: state.versions,
     pages: state.pages,
-    team: state.team
+    teamUsers: state.teamUsers
   };
 };
 
@@ -43,6 +44,7 @@ const mapDispatchToProps = dispatch => {
     fetchGroups: () => dispatch(fetchGroups()),
     fetchEndpoints: () => dispatch(fetchEndpoints()),
     fetchPages: () => dispatch(fetchPages()),
+
     addCollection: newCollection => dispatch(addCollection(newCollection)),
     shareCollection: teamMemberData =>
       dispatch(shareCollection(teamMemberData)),
@@ -52,7 +54,8 @@ const mapDispatchToProps = dispatch => {
     duplicateCollection: collection =>
       dispatch(duplicateCollection(collection)),
     fetchAllUsersOfTeam: teamIdentifier =>
-      dispatch(fetchAllUsersOfTeam(teamIdentifier))
+      dispatch(fetchAllUsersOfTeam(teamIdentifier)),
+    fetchAllTeamsOfUser: () => dispatch(fetchAllTeamsOfUser())
   };
 };
 
@@ -64,6 +67,7 @@ class CollectionsComponent extends Component {
   };
 
   async componentDidMount() {
+    this.props.fetchAllTeamsOfUser();
     // this.props.fetchCollections();
     // this.props.fetchAllVersions();
     // this.props.fetchGroups();

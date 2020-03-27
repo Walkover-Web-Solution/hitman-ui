@@ -9,7 +9,7 @@ import authService from "../auth/authService";
 
 const mapStateToProps = state => {
   return {
-    team: state.team
+    teamUsers: state.teamUsers
   };
 };
 
@@ -84,7 +84,7 @@ class ShareCollectionForm extends Component {
         email: selectedMember.email,
         role: selectedMember.role,
         teamId: this.props.team_id,
-        id: this.props.team[selectedMember.userId].id,
+        id: this.props.teamUsers[selectedMember.userId].id,
         deleteFlag,
         userId: selectedMember.userId,
         requestId: null
@@ -102,10 +102,10 @@ class ShareCollectionForm extends Component {
 
   fetchCurrentUserRole() {
     const { user: currentUser } = authService.getCurrentUser();
-    const teamArray = Object.keys(this.props.team);
+    const teamArray = Object.keys(this.props.teamUsers);
     for (let i = 0; i < teamArray.length; i++) {
       if (currentUser.identifier === teamArray[i]) {
-        return this.props.team[currentUser.identifier].role;
+        return this.props.teamUsers[currentUser.identifier].role;
       }
     }
   }
@@ -126,7 +126,7 @@ class ShareCollectionForm extends Component {
 
   fetchTeam() {
     if (this.changeTeamFlag === true) {
-      this.team = jQuery.extend(true, {}, this.props.team);
+      this.team = jQuery.extend(true, {}, this.props.teamUsers);
     }
   }
 
