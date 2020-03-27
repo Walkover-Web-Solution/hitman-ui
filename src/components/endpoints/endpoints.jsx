@@ -73,7 +73,9 @@ class Endpoints extends Component {
   }
 
   async handlePublicEndpointState(endpoint) {
+    console.log("state", endpoint.state);
     if (this.state.endpointState === "Make Public") {
+      console.log("state");
       //endpoint.nextState = "Pending for Approval";
       endpoint.currentState = "Make Public";
       let updatedEndpoint = await endpointService.updateEndpointState(endpoint);
@@ -174,7 +176,7 @@ class Endpoints extends Component {
                           )
                         }
                       >
-                        {this.state.endpointState}
+                        {this.props.endpoints[endpointId].state}
                       </button>
                     </div>
                   </div>
