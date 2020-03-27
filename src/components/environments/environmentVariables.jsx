@@ -16,22 +16,35 @@ const mapDispatchToProps = dispatch => {
 
 class EnvironmentVariables extends Component {
   state = {
-    environment: { name: "", variables: {} },
-    originalVariableNames: [],
-    updatedVariableNames: []
+    environment: {
+      name: "",
+      variables: {
+        BASE_URL: { intitialValue: "", finalValue: "" },
+        "1": { intitialValue: "", finalValue: "" }
+      }
+    },
+    originalVariableNames: ["BASE_URL", "1"],
+    updatedVariableNames: ["BASE_URL", ""]
   };
 
   async componentDidMount() {
     if (this.props.title === "Add new Environment") return;
     let environment = {};
     environment = jQuery.extend(true, {}, this.props.environment);
-    const originalVariableNames = Object.keys(environment.variables);
-    const updatedVariableNames = Object.keys(environment.variables);
+    let originalVariableNames = Object.keys(environment.variables);
+    const len = originalVariableNames.length;
+    originalVariableNames.push(len.toString());
+    let updatedVariableNames = [...Object.keys(environment.variables), ""];
+    environment.variables[len.toString()] = {
+      initialValue: "",
+      currentValue: ""
+    };
     this.setState({
       environment,
       originalVariableNames,
       updatedVariableNames
     });
+    // this.handleAdd();
   }
 
   handleSubmit = e => {
@@ -44,6 +57,8 @@ class EnvironmentVariables extends Component {
     let environment = { ...this.state.environment };
     let originalVariableNames = [...this.state.originalVariableNames];
     let updatedVariableNames = [...this.state.updatedVariableNames];
+    delete environment.variables[originalVariableNames.pop()];
+    updatedVariableNames.pop();
     for (let i = 0; i < updatedVariableNames.length; i++) {
       if (updatedVariableNames[i] !== originalVariableNames[i]) {
         if (updatedVariableNames[i] === "deleted")
@@ -86,6 +101,7 @@ class EnvironmentVariables extends Component {
   handleAdd() {
     let environment = { ...this.state.environment };
     const len = this.state.originalVariableNames.length;
+    console.log(this.state.originalVariableNames);
     let originalVariableNames = [
       ...this.state.originalVariableNames,
       len.toString()
@@ -95,6 +111,7 @@ class EnvironmentVariables extends Component {
       initialValue: "",
       currentValue: ""
     };
+    console.log(environment, originalVariableNames, updatedVariableNames);
     this.setState({ environment, originalVariableNames, updatedVariableNames });
   }
 
@@ -106,6 +123,9 @@ class EnvironmentVariables extends Component {
 
   handleChange = e => {
     const name = e.currentTarget.name.split(".");
+    const lastIndex = this.state.originalVariableNames.length - 1;
+    console.log(name[0], lastIndex, name[0] === lastIndex.toString());
+
     const originalVariableNames = [...this.state.originalVariableNames];
     const updatedVariableNames = [...this.state.updatedVariableNames];
     if (name[1] === "name") {
@@ -116,6 +136,9 @@ class EnvironmentVariables extends Component {
       environment.variables[originalVariableNames[name[0]]][name[1]] =
         e.currentTarget.value;
       this.setState({ environment });
+    }
+    if (name[0] === lastIndex.toString()) {
+      this.handleAdd();
     }
   };
 
@@ -222,7 +245,7 @@ class EnvironmentVariables extends Component {
                         </tr>
                       ) : null
                     )}
-                    <tr>
+                    {/* <tr>
                       <td className="custom-td"> </td>
                       <td className="custom-td">
                         {" "}
@@ -236,7 +259,7 @@ class EnvironmentVariables extends Component {
                       </td>
                       <td className="custom-td"> </td>
                       <td className="custom-td"> </td>
-                    </tr>
+                    </tr> */}
                   </tbody>
                 </Table>
               </div>

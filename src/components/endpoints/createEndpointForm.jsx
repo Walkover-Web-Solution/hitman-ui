@@ -128,10 +128,14 @@ class CreateEndpointForm extends Form {
             <div class="card">
               <div class="card-body">
                 <h5 class="card-title">
-                  <button className="btn">
-                    <i class="fas fa-chevron-left"></i>
-                    {this.renderListTitle()}
-                  </button>
+                  {this.state.list.type === "collections" ? (
+                    "All Collections"
+                  ) : (
+                    <button className="btn">
+                      <i class="fas fa-chevron-left"></i>
+                      {this.renderListTitle()}
+                    </button>
+                  )}
                 </h5>
                 <ul class="list-group">
                   {this.renderList().map(item => (
