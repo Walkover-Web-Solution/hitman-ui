@@ -393,6 +393,7 @@ main.main.ml-sm-auto.col-lg-10 {
             width: 100%;
             text-align: left;
             padding: 0px;
+            opacity: 0.8;
           }
         }
         .btn {
@@ -584,8 +585,16 @@ button.btn.btn-default.custom-submit-button {
     padding: 0px 0px 5px 30px;
     opacity: 0.7;
   }
-  .generic-table-title-container {
-    background-color: rgba(0, 0, 0, 0);
+  .table {
+    margin-left: 10px;
+    margin-right: 10px;
+    thead {
+      tr {
+        th {
+          padding-left: 10px !important;
+        }
+      }
+    }
   }
 }
 #generic-table-row {
@@ -714,9 +723,7 @@ button.btn.btn-default.custom-submit-button {
     color: steelblue !important;
   }
 }
-.table {
-  margin: none !important;
-}
+
 button.btn.btn-default.custom-button {
   font-size: 15px;
   font-weight: 400;
