@@ -4,9 +4,15 @@ import { setEndpointIds } from "../groups/redux/groupsActions";
 import { deleteEndpoint, duplicateEndpoint } from "./redux/endpointsActions";
 import { isDashboardRoute } from "../common/utility";
 import endpointService from "./endpointService.js";
+import authService from "../auth/authService";
+import { fetchAllUsersOfTeam } from "../teamUsers/redux/teamUsersActions";
 
 const mapStateToProps = state => {
-  return { endpoints: state.endpoints, groups: state.groups };
+  return {
+    endpoints: state.endpoints,
+    groups: state.groups,
+    teams: state.teams
+  };
 };
 
 const mapDispatchToProps = dispatch => {
@@ -15,6 +21,7 @@ const mapDispatchToProps = dispatch => {
     duplicateEndpoint: endpoint => dispatch(duplicateEndpoint(endpoint)),
     setEndpointIds: (endpointsOrder, groupId) =>
       dispatch(setEndpointIds(endpointsOrder, groupId))
+    // pendingEndpoint: endpoint => dispatch(pendingEndpoint(endpoint))
   };
 };
 
@@ -22,6 +29,8 @@ class Endpoints extends Component {
   state = {
     endpointState: "Make Public"
   };
+
+  componentDidMount() {}
 
   onDragStart = (e, eId) => {
     this.draggedItem = eId;
@@ -72,15 +81,30 @@ class Endpoints extends Component {
     });
   }
 
+  getCurrentUserRole() {
+    const collectionId = this.props.collection_id;
+    const teamId = this.props.collections[collectionId].teamId;
+    return this.props.teams[teamId].role;
+  }
+
   async handlePublicEndpointState(endpoint) {
-    console.log("state", endpoint.state);
-    if (this.state.endpointState === "Make Public") {
-      console.log("state");
-      //endpoint.nextState = "Pending for Approval";
-      endpoint.currentState = "Make Public";
-      let updatedEndpoint = await endpointService.updateEndpointState(endpoint);
-      this.setState({ endpointState: updatedEndpoint.data.state });
+    const role = this.getCurrentUserRole();
+    if (endpoint.state === "draft") {
+      if (role === "Owner" || "Admin") {
+        console.log("approve endpoint api callled");
+        endpointService.approveEndpoint(endpoint);
+        //this.props.approveEndpoint(endpoint);
+      } else {
+        console.log("pending endpoint api callled");
+        endpointService.pendingEndpoint(endpoint);
+        // this.props.pendingEndpoint(endpoint);
+      }
+    } else if (endpoint.state === "") {
     }
+  }
+
+  async handleCancelRequest(endpoint) {
+    this.props.draftEndpoint(endpoint);
   }
 
   handleDisplay(endpoint, groups, versions, groupId, collectionId) {
@@ -178,6 +202,19 @@ class Endpoints extends Component {
                       >
                         {this.props.endpoints[endpointId].state}
                       </button>
+                      {this.getCurrentUserRole() === "Collaborator " &&
+                      this.props.endpoints[endpointId].state === "Pending" ? (
+                        <button
+                          className="dropdown-item"
+                          onClick={() =>
+                            this.handleCancelRequest(
+                              this.props.endpoints[endpointId]
+                            )
+                          }
+                        >
+                          Cancel Request
+                        </button>
+                      ) : null}
                     </div>
                   </div>
                 </div>
