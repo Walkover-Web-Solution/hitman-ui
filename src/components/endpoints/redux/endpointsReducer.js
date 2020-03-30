@@ -99,9 +99,30 @@ function endpointsReducer(state = initialState, action) {
       return state;
 
     case publicEndpointsActionTypes.ON_APPROVED_ENDPOINT_SUCCESS:
-      return { ...state, ...action.data };
+      return {
+        ...state,
+        [action.data.id]: action.data
+      };
 
     case publicEndpointsActionTypes.ON_APPROVED_ENDPOINT_ERROR:
+      return { ...state };
+
+    case publicEndpointsActionTypes.ON_PENDING_ENDPOINT_SUCCESS:
+      return {
+        ...state,
+        [action.data.id]: action.data
+      };
+
+    case publicEndpointsActionTypes.ON_PENDING_ENDPOINT_ERROR:
+      return { ...state };
+
+    case publicEndpointsActionTypes.ON_DRAFT_ENDPOINT_SUCCESS:
+      return {
+        ...state,
+        [action.data.id]: action.data
+      };
+
+    case publicEndpointsActionTypes.ON_DRAFT_ENDPOINT_ERROR:
       return { ...state };
 
     default:

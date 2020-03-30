@@ -89,25 +89,28 @@ class Endpoints extends Component {
     });
   }
 
-  getCurrentUserRole() {
-    const collectionId = this.props.collection_id;
-    console.log("collectionID", collectionId);
+  getCurrentUserRole(collectionId) {
     const teamId = this.props.collections[collectionId].teamId;
-    console.log("teamId", teamId);
     if (teamId !== undefined) return this.props.teams[teamId].role;
   }
 
+  checkAccess(collectionId) {
+    const role = this.getCurrentUserRole(collectionId);
+    if (role === "Admin" || role === "Owner") return true;
+    else return false;
+  }
+
   async handlePublicEndpointState(endpoint) {
-    const role = this.getCurrentUserRole();
-    if (endpoint.state === "draft") {
-      if (role === "Owner" || "Admin") {
+    const role = this.getCurrentUserRole(this.props.collection_id);
+    console.log("role", role, endpoint);
+    if (endpoint.state === "Draft") {
+      if (role === "Owner" || role === "Admin") {
         console.log("approve endpoint api callled");
         this.props.approveEndpoint(endpoint);
       } else {
         console.log("pending endpoint api callled");
         this.props.pendingEndpoint(endpoint);
       }
-    } else if (endpoint.state === "") {
     }
   }
 
@@ -163,7 +166,10 @@ class Endpoints extends Component {
                     >
                       {this.props.endpoints[endpointId].requestType}
                     </div>
-                    {this.props.endpoints[endpointId].name}
+                    {this.props.endpoints[endpointId].state === "Pending" &&
+                    this.checkAccess(this.props.collection_id)
+                      ? "Ô " + this.props.endpoints[endpointId].name
+                      : this.props.endpoints[endpointId].name}
                   </button>
                   <div className="btn-group">
                     <button
@@ -202,7 +208,12 @@ class Endpoints extends Component {
                       >
                         {this.props.endpoints[endpointId].state}
                       </button>
-                      {this.getCurrentUserRole() === "Collaborator " &&
+                      {console.log(
+                        this.props.collection_id,
+                        this.getCurrentUserRole(this.props.collection_id),
+                        this.props.endpoints[endpointId].state
+                      )}
+                      {!this.checkAccess(this.props.collection_id) &&
                       this.props.endpoints[endpointId].state === "Pending" ? (
                         <button
                           className="dropdown-item"
@@ -213,6 +224,20 @@ class Endpoints extends Component {
                           }
                         >
                           Cancel Request
+                        </button>
+                      ) : null}
+
+                      {this.checkAccess(this.props.collection_id) &&
+                      this.props.endpoints[endpointId].state === "Approved" ? (
+                        <button
+                          className="dropdown-item"
+                          onClick={() =>
+                            this.handleCancelRequest(
+                              this.props.endpoints[endpointId]
+                            )
+                          }
+                        >
+                          Move to draft
                         </button>
                       ) : null}
                     </div>
