@@ -39,7 +39,6 @@ class ContentPanel extends Component {
       if (index < 0) {
         if (this.props.endpoints[endpointId]) {
           const requestId = this.props.endpoints[endpointId].requestId;
-          console.log(requestId);
           const tabIndex = this.props.tabs.findIndex(
             tab => tab.id === requestId
           );
