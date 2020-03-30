@@ -3,6 +3,12 @@ import { connect } from "react-redux";
 import { setEndpointIds } from "../groups/redux/groupsActions";
 import { deleteEndpoint, duplicateEndpoint } from "./redux/endpointsActions";
 import { isDashboardRoute } from "../common/utility";
+import {
+  approveEndpoint,
+  pendingEndpoint,
+  draftEndpoint
+} from "../publicEndpoint/redux/publicEndpointsActions";
+
 import endpointService from "./endpointService.js";
 import authService from "../auth/authService";
 import { fetchAllUsersOfTeam } from "../teamUsers/redux/teamUsersActions";
@@ -20,8 +26,10 @@ const mapDispatchToProps = dispatch => {
     deleteEndpoint: endpoint => dispatch(deleteEndpoint(endpoint)),
     duplicateEndpoint: endpoint => dispatch(duplicateEndpoint(endpoint)),
     setEndpointIds: (endpointsOrder, groupId) =>
-      dispatch(setEndpointIds(endpointsOrder, groupId))
-    // pendingEndpoint: endpoint => dispatch(pendingEndpoint(endpoint))
+      dispatch(setEndpointIds(endpointsOrder, groupId)),
+    pendingEndpoint: endpoint => dispatch(pendingEndpoint(endpoint)),
+    approveEndpoint: endpoint => dispatch(approveEndpoint(endpoint)),
+    draftEndpoint: endpoint => dispatch(draftEndpoint(endpoint))
   };
 };
 
@@ -76,15 +84,17 @@ class Endpoints extends Component {
 
   handleUpdate(endpoint) {
     this.props.history.push({
-      pathname: `/dashboard/${this.props.collection_id}/versions/${this.props.version_id}/groups/${this.props.group_id}/endpoints/${endpoint.id}/edit`,
+      pathname: `/dashboard/${this.props.collection_id}/versions/${this.props.version_id}/groups/${this.props.group_id}/endpoint/${endpoint.id}/edit`,
       editEndpoint: endpoint
     });
   }
 
   getCurrentUserRole() {
     const collectionId = this.props.collection_id;
+    console.log("collectionID", collectionId);
     const teamId = this.props.collections[collectionId].teamId;
-    return this.props.teams[teamId].role;
+    console.log("teamId", teamId);
+    if (teamId !== undefined) return this.props.teams[teamId].role;
   }
 
   async handlePublicEndpointState(endpoint) {
@@ -92,12 +102,10 @@ class Endpoints extends Component {
     if (endpoint.state === "draft") {
       if (role === "Owner" || "Admin") {
         console.log("approve endpoint api callled");
-        endpointService.approveEndpoint(endpoint);
-        //this.props.approveEndpoint(endpoint);
+        this.props.approveEndpoint(endpoint);
       } else {
         console.log("pending endpoint api callled");
-        endpointService.pendingEndpoint(endpoint);
-        // this.props.pendingEndpoint(endpoint);
+        this.props.pendingEndpoint(endpoint);
       }
     } else if (endpoint.state === "") {
     }
@@ -107,26 +115,20 @@ class Endpoints extends Component {
     this.props.draftEndpoint(endpoint);
   }
 
-  handleDisplay(endpoint, groups, versions, groupId, collectionId) {
+  handleDisplay(endpoint, groupId, collectionId) {
     if (isDashboardRoute(this.props)) {
       this.props.history.push({
-        pathname: `/dashboard/endpoints/${endpoint.id}`,
+        pathname: `/dashboard/endpoint/${endpoint.id}`,
         title: "update endpoint",
         endpoint: endpoint,
-        groupId: groupId,
-        groups: groups,
-        versions: versions,
-        endpointFlag: true
+        groupId: groupId
       });
     } else {
       this.props.history.push({
         pathname: `/public/${collectionId}/endpoints/${endpoint.id}`,
         title: "update endpoint",
         endpoint: endpoint,
-        groupId: groupId,
-        groups: groups,
-        versions: versions,
-        endpointFlag: true
+        groupId: groupId
       });
     }
   }
@@ -151,8 +153,6 @@ class Endpoints extends Component {
                     onClick={() =>
                       this.handleDisplay(
                         this.props.endpoints[endpointId],
-                        this.props.groups,
-                        this.props.versions,
                         this.props.group_id,
                         this.props.collection_id
                       )
@@ -236,8 +236,6 @@ class Endpoints extends Component {
                     onClick={() =>
                       this.handleDisplay(
                         this.props.endpoints[endpointId],
-                        this.props.groups,
-                        this.props.versions,
                         this.props.group_id,
                         this.props.collection_id
                       )

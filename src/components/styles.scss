@@ -12,6 +12,9 @@ $border-color: rgba(227, 228, 230, 0.7);
   background-color: inherit;
 }
 
+#code-window-sidebar {
+  display: flex;
+}
 #search-box-wrapper {
   display: flex;
   flex-direction: row;
@@ -255,7 +258,7 @@ nav.navbar.navbar-dark.fixed-top.bg-dark.flex-md-nowrap.p-0.shadow {
 
 .environment-container {
   align-self: flex-end;
-  border: 1px solid $border-color;
+  border-left: 1px solid $border-color;
   float: right;
   display: flex;
   flex-direction: row-reverse;
@@ -355,11 +358,80 @@ main.main.ml-sm-auto.col-lg-10 {
   width: 100%;
   display: flex;
   flex-direction: row;
+  border-bottom: 1px solid $border-color;
   .tabs-container {
     width: 100%;
-    border: 1px solid $border-color;
+    margin-left: 10px;
+
     border-right: none;
     border-left: none;
+    border-top: none;
+    height: 35px;
+    align-self: flex-end;
+    .nav {
+      height: 100%;
+      .nav-item {
+        padding: 0px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+        border: 1px solid $border-color;
+        border-bottom: none;
+        margin: 0px 2px;
+        height: 100%;
+        width: 220px;
+        border-top-left-radius: 3px;
+        border-top-right-radius: 3px;
+        min-width: 64px;
+        max-width: 220px;
+        .nav-link {
+          height: 100%;
+          width: 100%;
+          padding: 0px;
+          padding-left: 10px;
+          width: 220px;
+          border-radius: 0px;
+          .btn {
+            width: 100%;
+            text-align: left;
+            padding: 0px;
+            opacity: 0.8;
+          }
+        }
+        .btn {
+          height: 100%;
+          border-radius: 0px;
+          padding: 0px;
+          padding-right: 10px;
+          .fas {
+            opacity: 0.7;
+          }
+        }
+        .nav-link.active {
+          background-color: rgb(247, 247, 247);
+          border-bottom: rgb(247, 247, 247) !important;
+          border-top: 2px solid tomato;
+          border-top-left-radius: 3px;
+        }
+        .nav-link.active ~ .btn {
+          background-color: rgb(247, 247, 247);
+          border-bottom: rgb(247, 247, 247);
+          border-top: 2px solid tomato;
+          border-top-right-radius: 3px;
+        }
+      }
+      #add-new-tab-button {
+        width: 35px !important;
+        min-width: 35px;
+        display: flex;
+        justify-content: center;
+        .btn {
+          padding: 0px;
+          font-size: 25px;
+        }
+      }
+    }
   }
 }
 
@@ -369,16 +441,19 @@ main.main.ml-sm-auto.col-lg-10 {
   .endpoint-name-container {
     border-bottom: 1px solid $border-color;
     padding: 2px;
+    background-color: rgb(247, 247, 247);
     .endpoint-name-input {
       display: flex;
       flex-direction: row;
       outline: none;
-      border: 1px solid rgba(227, 228, 230, 0.7);
-      border-radius: 60px;
+      // border: 1px solid rgba(227, 228, 230, 0.7);
+      // border-radius: 60px;
+      border: none;
       width: 100%;
-      margin-top: 20px;
-      margin-bottom: 20px;
+      margin-top: 5px;
+      margin-bottom: 5px;
       padding-left: 20px;
+      background-color: inherit;
     }
     .endpoint-name-input::placeholder {
       font-weight: 300;
@@ -450,12 +525,16 @@ main.main.ml-sm-auto.col-lg-10 {
     #save-endpoint-button {
       background-color: rgb(221, 221, 223);
       color: black;
+      margin: 0px 15px;
+      opacity: 0.7;
+    }
+    #show-code-snippets-button {
+      background-color: rgb(221, 221, 223);
+      color: black;
       opacity: 0.7;
     }
   }
   .endpoint-headers-container {
-    // border-bottom: 1px solid $border-color;
-
     ul#pills-tab {
       border-bottom: 1px solid $border-color;
       margin-bottom: 10px;
@@ -515,8 +594,16 @@ button.btn.btn-default.custom-submit-button {
     padding: 0px 0px 5px 30px;
     opacity: 0.7;
   }
-  .generic-table-title-container {
-    background-color: rgba(0, 0, 0, 0);
+  .table {
+    margin-left: 10px;
+    margin-right: 10px;
+    thead {
+      tr {
+        th {
+          padding-left: 10px !important;
+        }
+      }
+    }
   }
 }
 #generic-table-row {
@@ -645,9 +732,7 @@ button.btn.btn-default.custom-submit-button {
     color: steelblue !important;
   }
 }
-.table {
-  margin: none !important;
-}
+
 button.btn.btn-default.custom-button {
   font-size: 15px;
   font-weight: 400;
@@ -721,6 +806,9 @@ input#custom-environment-input {
 #custom-user-right {
   float: left;
   width: 80%;
+  a {
+    color: rgb(255, 99, 71);
+  }
 }
 
 //display page style
@@ -747,5 +835,66 @@ input#custom-environment-input {
   label {
     font-size: 20px;
     font-weight: 300;
+  }
+}
+
+#endpoint-modal {
+  width: 500px;
+  height: 800px;
+}
+
+#endpoint-form-collection-list {
+  height: 150px;
+  .card-title {
+    border-bottom: 1px solid $border-color;
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
+    padding: 10px;
+    margin: 0px;
+
+    .btn {
+      padding: 0px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      .fa-chevron-left {
+        font-size: 10px;
+        padding-right: 10px;
+      }
+    }
+  }
+  .list-group {
+    overflow: scroll;
+    padding: 3px 0px;
+    .list-group-item {
+      border: none;
+      padding: 0px;
+      .btn {
+        width: 100%;
+        text-align: left;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        border-radius: 0px;
+        padding: 3px 10px;
+        .list-item-wrapper {
+          .fa-folder {
+            margin-right: 10px;
+            opacity: 0.7;
+          }
+        }
+        .fa-chevron-right {
+          visibility: hidden;
+          font-size: 10px;
+        }
+      }
+      .btn:hover {
+        background-color: $border-color;
+        .fa-chevron-right {
+          visibility: visible;
+        }
+      }
+    }
   }
 }

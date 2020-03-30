@@ -15,14 +15,15 @@ function collectionsReducer(state = initialState, action) {
       return state;
 
     case collectionsActionTypes.ADD_COLLECTION_REQUEST:
-      return {
-        ...state,
-        [action.newCollection.requestId]: action.newCollection
-      };
+      // return {
+      //   ...state,
+      //   [action.newCollection.requestId]: action.newCollection
+      // };
+      return state;
 
     case collectionsActionTypes.ON_COLLECTION_ADDED:
       collections = { ...state };
-      delete collections[action.response.requestId];
+      // delete collections[action.response.requestId];
       collections[action.response.id] = action.response;
       return collections;
 
@@ -54,7 +55,10 @@ function collectionsReducer(state = initialState, action) {
       return collections;
 
     case collectionsActionTypes.ON_COLLECTION_DELETED:
-      return state;
+      collections = { ...state };
+      // delete collections[action.collection.id];
+      // return state;
+      return collections;
 
     case collectionsActionTypes.ON_COLLECTION_DELETED_ERROR:
       toast.error(action.error.data);

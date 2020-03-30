@@ -13,6 +13,8 @@ import PageForm from "../pages/pageForm";
 import VersionPages from "../pages/versionPages";
 import { isDashboardRoute } from "../common/utility";
 
+import { Accordion, Card, Button } from "react-bootstrap";
+
 const mapStateToProps = state => {
   return {
     versions: state.versions
@@ -176,25 +178,21 @@ class CollectionVersions extends Component {
                 this.props.versions[versionId].collectionId ===
                 this.props.collection_id
             )
-            .map(versionId => (
-              <div id="accordion" key={versionId}>
-                <div className="card">
-                  <div className="card-header" id="custom-card-header">
+            .map((versionId, index) => (
+              <Accordion key={versionId}>
+                <Card>
+                  <Card.Header>
                     <i
                       className="fas fa-folder-open"
                       style={{ margin: "5px" }}
                     ></i>
-                    <h5 className="mb-0">
-                      <button
-                        className="btn"
-                        data-toggle="collapse"
-                        data-target={`#${versionId}`}
-                        aria-expanded="true"
-                        aria-controls={versionId}
-                      >
-                        {this.props.versions[versionId].number}
-                      </button>
-                    </h5>
+                    <Accordion.Toggle
+                      as={Button}
+                      variant="default"
+                      eventKey="1"
+                    >
+                      {this.props.versions[versionId].number}
+                    </Accordion.Toggle>
                     {isDashboardRoute(this.props) ? (
                       <div className="btn-group">
                         <button
@@ -267,18 +265,18 @@ class CollectionVersions extends Component {
                         </div>
                       </div>
                     ) : null}
-                  </div>
-
-                  <div id={versionId} className="collapse">
-                    <div className="card-body">
+                  </Card.Header>
+                  <Accordion.Collapse eventKey="1">
+                    <Card.Body>
                       <VersionPages {...this.props} version_id={versionId} />
                       <Groups {...this.props} version_id={versionId} />
-                    </div>
-                  </div>
-                </div>
-              </div>
+                    </Card.Body>
+                  </Accordion.Collapse>
+                </Card>
+              </Accordion>
             ))}
       </div>
+      // </div>
     );
   }
 }

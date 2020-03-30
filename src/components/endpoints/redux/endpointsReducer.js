@@ -97,6 +97,13 @@ function endpointsReducer(state = initialState, action) {
     case publicEndpointsActionTypes.ON_PUBLIC_ENDPOINTS_FETCHED_ERROR:
       toast.error(action.error);
       return state;
+
+    case publicEndpointsActionTypes.ON_APPROVED_ENDPOINT_SUCCESS:
+      return { ...state, ...action.data };
+
+    case publicEndpointsActionTypes.ON_APPROVED_ENDPOINT_ERROR:
+      return { ...state };
+
     default:
       return state;
   }

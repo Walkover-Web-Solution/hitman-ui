@@ -46,22 +46,6 @@ export function moveEndpoint(endpointId, body) {
   return http.patch(`${apiUrl}/endpoints/${endpointId}`, body);
 }
 
-export function approveEndpoint(endpoint) {
-  return http.patch(`${apiUrl}/endpoints/${endpoint.id}/approved`);
-}
-
-export function pendingEndpoint(endpoint) {
-  return http.patch(`${apiUrl}/endpoints/${endpoint.id}/pending`);
-}
-
-export function draftEndpoint(endpoint) {
-  return http.patch(`${apiUrl}/endpoints/${endpoint.id}/draft`);
-}
-
-export function rejectEndpoint(endpoint) {
-  return http.patch(`${apiUrl}/endpoints/${endpoint.id}/reject`);
-}
-
 export default {
   saveEndpoint,
   getEndpoints,
@@ -71,9 +55,5 @@ export default {
   getEndpoint,
   getAllEndpoints,
   duplicateEndpoint,
-  moveEndpoint,
-  approveEndpoint,
-  pendingEndpoint,
-  draftEndpoint,
-  rejectEndpoint
+  moveEndpoint
 };

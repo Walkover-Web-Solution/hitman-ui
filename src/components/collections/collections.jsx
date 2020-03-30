@@ -7,11 +7,8 @@ import shortId from "shortid";
 import CollectionVersions from "../collectionVersions/collectionVersions";
 import collectionVersionsService from "../collectionVersions/collectionVersionsService";
 import ImportVersionForm from "../collectionVersions/importVersionForm";
-import { fetchAllVersions } from "../collectionVersions/redux/collectionVersionsActions";
 import endpointService from "../endpoints/endpointService";
-import { fetchEndpoints } from "../endpoints/redux/endpointsActions";
-import { fetchGroups } from "../groups/redux/groupsActions";
-import { fetchPages } from "../pages/redux/pagesActions";
+
 import {
   fetchAllUsersOfTeam,
   shareCollection
@@ -21,7 +18,6 @@ import {
   addCollection,
   deleteCollection,
   duplicateCollection,
-  fetchCollections,
   updateCollection
 } from "./redux/collectionsActions";
 import ShareCollectionForm from "./shareCollectionForm";
@@ -39,12 +35,6 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    fetchCollections: () => dispatch(fetchCollections()),
-    fetchAllVersions: () => dispatch(fetchAllVersions()),
-    fetchGroups: () => dispatch(fetchGroups()),
-    fetchEndpoints: () => dispatch(fetchEndpoints()),
-    fetchPages: () => dispatch(fetchPages()),
-
     addCollection: newCollection => dispatch(addCollection(newCollection)),
     shareCollection: teamMemberData =>
       dispatch(shareCollection(teamMemberData)),
@@ -64,15 +54,14 @@ class CollectionsComponent extends Component {
     showCollectionForm: false,
     collectionFormName: "",
     selectedCollection: {}
+    // keywords: {},
+    // names: {}
   };
+  keywords = {};
+  names = {};
 
   async componentDidMount() {
     this.props.fetchAllTeamsOfUser();
-    // this.props.fetchCollections();
-    // this.props.fetchAllVersions();
-    // this.props.fetchGroups();
-    // this.props.fetchEndpoints();
-    // this.props.fetchPages();
   }
 
   closeCollectionForm() {
@@ -112,8 +101,24 @@ class CollectionsComponent extends Component {
           "\n" +
           " All your versions, groups, pages and endpoints present in this collection will be deleted."
       )
-    )
+    ) {
+      const { id: collectionId, keyword, name } = collection;
+      let splitedKeywords = keyword.split(",");
+      for (let i = 0; i < splitedKeywords.length; i++) {
+        const keyword = splitedKeywords[i];
+        if (this.keywords[keyword]) {
+          this.keywords[keyword] = this.keywords[keyword].filter(
+            id => id !== collectionId
+          );
+          if (this.keywords[keyword].length === 0) {
+            delete this.keywords[keyword];
+          }
+        }
+      }
+
+      delete this.names[name];
       this.props.deleteCollection(collection);
+    }
   }
 
   async handleUpdateCollection(editedCollection) {
@@ -213,6 +218,64 @@ class CollectionsComponent extends Component {
 
   render() {
     if (isDashboardRoute(this.props)) {
+      let finalKeywords = [];
+      let finalnames = [];
+      let collections = { ...this.props.collections };
+      let CollectionIds = Object.keys(collections);
+
+      for (let i = 0; i < CollectionIds.length; i++) {
+        const { keyword } = this.props.collections[CollectionIds[i]];
+        const splitedKeywords = keyword.split(",");
+
+        for (let j = 0; j < splitedKeywords.length; j++) {
+          let keyword = splitedKeywords[j];
+
+          if (keyword !== "") {
+            if (this.keywords[keyword]) {
+              const ids = this.keywords[keyword];
+              if (ids.indexOf(CollectionIds[i]) === -1) {
+                this.keywords[keyword] = [...ids, CollectionIds[i]];
+              }
+            } else {
+              this.keywords[keyword] = [CollectionIds[i]];
+            }
+          }
+        }
+      }
+      let keywords = Object.keys(this.keywords);
+      finalKeywords = keywords.filter(key => {
+        return (
+          key.toLowerCase().indexOf(this.props.filter.toLowerCase()) !== -1
+        );
+      });
+
+      let keywordFinalCollections = [];
+      for (let i = 0; i < finalKeywords.length; i++) {
+        keywordFinalCollections = [
+          ...keywordFinalCollections,
+          ...this.keywords[finalKeywords[i]]
+        ];
+      }
+      keywordFinalCollections = [...new Set(keywordFinalCollections)];
+
+      for (let i = 0; i < CollectionIds.length; i++) {
+        const { name } = this.props.collections[CollectionIds[i]];
+        this.names[name] = CollectionIds[i];
+      }
+      let names = Object.keys(this.names);
+      finalnames = names.filter(name => {
+        return (
+          name.toLowerCase().indexOf(this.props.filter.toLowerCase()) !== -1
+        );
+      });
+      let namesFinalCollections = finalnames.map(name => this.names[name]);
+      namesFinalCollections = [...new Set(namesFinalCollections)];
+      let finalCollections = [
+        ...keywordFinalCollections,
+        ...namesFinalCollections
+      ];
+
+      finalCollections = [...new Set(finalCollections)];
       return (
         <div>
           <div className="App-Nav">
@@ -255,7 +318,7 @@ class CollectionsComponent extends Component {
                 New Collection
               </button>
             </div>
-            {Object.keys(this.props.collections).map((collectionId, index) => (
+            {finalCollections.map((collectionId, index) => (
               <Accordion key={collectionId}>
                 <Card>
                   <Card.Header>

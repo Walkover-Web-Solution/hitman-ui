@@ -1,5 +1,7 @@
 import React, { Component } from "react";
+import { Accordion, Button, Card } from "react-bootstrap";
 import { connect } from "react-redux";
+import shortId from "shortid";
 import Endpoints from "../endpoints/endpoints";
 import GroupForm from "../groups/groupForm";
 import { deleteGroup, duplicateGroup } from "../groups/redux/groupsActions";
@@ -42,13 +44,17 @@ class Groups extends Component {
   }
 
   handleAddEndpoint(groupId, versions, groups) {
+    const newTabId = shortId.generate();
+    const tabs = [
+      ...this.props.tabs,
+      { id: newTabId, type: "endpoint", isSaved: false }
+    ];
+
+    this.props.set_tabs(tabs, tabs.length - 1);
     this.props.history.push({
-      pathname: `/dashboard/endpoints`,
-      versions: versions,
-      groups: groups,
+      pathname: `/dashboard/endpoint/new`,
       groupId: groupId,
-      title: "Add New Endpoint",
-      groupFlag: true
+      title: "Add New Endpoint"
     });
   }
   openShareGroupForm(group) {
@@ -157,24 +163,16 @@ class Groups extends Component {
             gId => this.props.groups[gId].versionId === this.props.version_id
           )
           .map((groupId, index) => (
-            <div id="accordion" key={index}>
-              <div className="card">
-                <div className="card-header" id="custom-card-header">
+            <Accordion key={groupId}>
+              <Card>
+                <Card.Header>
                   <i
                     className="fas fa-folder-open"
                     style={{ margin: "5px" }}
                   ></i>
-                  <h5 className="mb-0">
-                    <button
-                      className="btn"
-                      data-toggle="collapse"
-                      data-target={`#${groupId}`}
-                      aria-expanded="true"
-                      aria-controls={groupId}
-                    >
-                      {this.props.groups[groupId].name}
-                    </button>
-                  </h5>
+                  <Accordion.Toggle as={Button} variant="default" eventKey="1">
+                    {this.props.groups[groupId].name}
+                  </Accordion.Toggle>
                   {isDashboardRoute(this.props) ? (
                     <div className="btn-group">
                       <button
@@ -245,10 +243,9 @@ class Groups extends Component {
                       </div>
                     </div>
                   ) : null}
-                </div>
-
-                <div id={groupId} className="collapse">
-                  <div className="card-body">
+                </Card.Header>
+                <Accordion.Collapse eventKey="1">
+                  <Card.Body>
                     <GroupPages
                       {...this.props}
                       version_id={this.props.groups[groupId].versionId}
@@ -261,10 +258,10 @@ class Groups extends Component {
                         this.props.groups[groupId].endpointsOrder
                       }
                     />
-                  </div>
-                </div>
-              </div>
-            </div>
+                  </Card.Body>
+                </Accordion.Collapse>
+              </Card>
+            </Accordion>
           ))}
       </div>
     );

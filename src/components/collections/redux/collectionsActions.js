@@ -124,8 +124,8 @@ export const deleteCollection = collection => {
     dispatch(deleteCollectionRequest(collection));
     collectionsApiService
       .deleteCollection(collection.id)
-      .then(() => {
-        dispatch(onCollectionDeleted());
+      .then(response => {
+        dispatch(onCollectionDeleted(response.data));
       })
       .catch(error => {
         dispatch(onCollectionDeletedError(error.response, collection));
@@ -140,9 +140,10 @@ export const deleteCollectionRequest = collection => {
   };
 };
 
-export const onCollectionDeleted = () => {
+export const onCollectionDeleted = collection => {
   return {
-    type: collectionsActionTypes.ON_COLLECTION_DELETED
+    type: collectionsActionTypes.ON_COLLECTION_DELETED,
+    collection
   };
 };
 

@@ -1,10 +1,11 @@
 import React, { Component } from "react";
-import { ToastContainer } from "react-toastify";
+import { Tab } from "react-bootstrap";
+import { connect } from "react-redux";
 import { Route, Switch } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import DisplayEndpoint from "../endpoints/displayEndpoint";
 import DisplayPage from "../pages/displayPage";
-import { connect } from "react-redux";
-import "react-toastify/dist/ReactToastify.css";
 import SideBar from "../sidebar";
 import { fetchAllPublicEndpoints } from "./redux/publicEndpointsActions.js";
 
