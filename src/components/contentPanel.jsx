@@ -6,6 +6,7 @@ import shortId from "shortid";
 import Environments from "./environments/environments";
 import TabContent from "./tabContent";
 import CustomTabs from "./tabs";
+import PublicEndpoint from "./publicEndpoint/publicEndpoint";
 
 const mapStateToProps = state => {
   return { endpoints: state.endpoints, groups: state.groups };

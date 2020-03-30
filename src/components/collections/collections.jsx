@@ -217,61 +217,65 @@ class CollectionsComponent extends Component {
   }
 
   render() {
-    let finalKeywords = [];
-    let finalnames = [];
-    let collections = { ...this.props.collections };
-    let CollectionIds = Object.keys(collections);
+    if (isDashboardRoute(this.props)) {
+      let finalKeywords = [];
+      let finalnames = [];
+      let collections = { ...this.props.collections };
+      let CollectionIds = Object.keys(collections);
 
-    for (let i = 0; i < CollectionIds.length; i++) {
-      const { keyword } = this.props.collections[CollectionIds[i]];
-      const splitedKeywords = keyword.split(",");
+      for (let i = 0; i < CollectionIds.length; i++) {
+        const { keyword } = this.props.collections[CollectionIds[i]];
+        const splitedKeywords = keyword.split(",");
 
-      for (let j = 0; j < splitedKeywords.length; j++) {
-        let keyword = splitedKeywords[j];
+        for (let j = 0; j < splitedKeywords.length; j++) {
+          let keyword = splitedKeywords[j];
 
-        if (keyword !== "") {
-          if (this.keywords[keyword]) {
-            const ids = this.keywords[keyword];
-            if (ids.indexOf(CollectionIds[i]) === -1) {
-              this.keywords[keyword] = [...ids, CollectionIds[i]];
+          if (keyword !== "") {
+            if (this.keywords[keyword]) {
+              const ids = this.keywords[keyword];
+              if (ids.indexOf(CollectionIds[i]) === -1) {
+                this.keywords[keyword] = [...ids, CollectionIds[i]];
+              }
+            } else {
+              this.keywords[keyword] = [CollectionIds[i]];
             }
-          } else {
-            this.keywords[keyword] = [CollectionIds[i]];
           }
         }
       }
-    }
-    let keywords = Object.keys(this.keywords);
-    finalKeywords = keywords.filter(key => {
-      return key.toLowerCase().indexOf(this.props.filter.toLowerCase()) !== -1;
-    });
+      let keywords = Object.keys(this.keywords);
+      finalKeywords = keywords.filter(key => {
+        return (
+          key.toLowerCase().indexOf(this.props.filter.toLowerCase()) !== -1
+        );
+      });
 
-    let keywordFinalCollections = [];
-    for (let i = 0; i < finalKeywords.length; i++) {
-      keywordFinalCollections = [
+      let keywordFinalCollections = [];
+      for (let i = 0; i < finalKeywords.length; i++) {
+        keywordFinalCollections = [
+          ...keywordFinalCollections,
+          ...this.keywords[finalKeywords[i]]
+        ];
+      }
+      keywordFinalCollections = [...new Set(keywordFinalCollections)];
+
+      for (let i = 0; i < CollectionIds.length; i++) {
+        const { name } = this.props.collections[CollectionIds[i]];
+        this.names[name] = CollectionIds[i];
+      }
+      let names = Object.keys(this.names);
+      finalnames = names.filter(name => {
+        return (
+          name.toLowerCase().indexOf(this.props.filter.toLowerCase()) !== -1
+        );
+      });
+      let namesFinalCollections = finalnames.map(name => this.names[name]);
+      namesFinalCollections = [...new Set(namesFinalCollections)];
+      let finalCollections = [
         ...keywordFinalCollections,
-        ...this.keywords[finalKeywords[i]]
+        ...namesFinalCollections
       ];
-    }
-    keywordFinalCollections = [...new Set(keywordFinalCollections)];
 
-    for (let i = 0; i < CollectionIds.length; i++) {
-      const { name } = this.props.collections[CollectionIds[i]];
-      this.names[name] = CollectionIds[i];
-    }
-    let names = Object.keys(this.names);
-    finalnames = names.filter(name => {
-      return name.toLowerCase().indexOf(this.props.filter.toLowerCase()) !== -1;
-    });
-    let namesFinalCollections = finalnames.map(name => this.names[name]);
-    namesFinalCollections = [...new Set(namesFinalCollections)];
-    let finalCollections = [
-      ...keywordFinalCollections,
-      ...namesFinalCollections
-    ];
-
-    finalCollections = [...new Set(finalCollections)];
-    if (isDashboardRoute(this.props)) {
+      finalCollections = [...new Set(finalCollections)];
       return (
         <div>
           <div className="App-Nav">
