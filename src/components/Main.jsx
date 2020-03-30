@@ -39,6 +39,7 @@ class Main extends Component {
     this.props.fetchPages();
   }
   setTabs(tabs, defaultTabIndex) {
+    console.log(tabs, defaultTabIndex);
     if (defaultTabIndex >= 0) {
       this.setState({ defaultTabIndex });
     }
@@ -90,6 +91,7 @@ class Main extends Component {
             set_destination_group_id={this.setDestinationGroupId.bind(this)}
             tabs={[...this.state.tabs]}
             set_tabs={this.setTabs.bind(this)}
+            default_tab_index={this.state.defaultTabIndex}
           />
           <ContentPanel
             {...this.props}

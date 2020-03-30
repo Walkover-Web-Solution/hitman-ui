@@ -48,10 +48,28 @@ class Endpoints extends Component {
   };
 
   handleDelete(endpoint) {
+    let tabs = [...this.props.tabs];
+    const tab = tabs[this.props.default_tab_index - 1];
+
+    tabs.splice(this.props.default_tab_index, 1);
+    const newIndex = this.props.default_tab_index - 1;
+    console.log(tabs, newIndex);
+    this.props.set_tabs(tabs, newIndex);
+
     this.props.deleteEndpoint(endpoint);
-    this.props.history.push({
-      pathname: "/dashboard"
-    });
+
+    if (tab.type === "endpoint") {
+      if (tab.isSaved) {
+        this.props.history.push({
+          pathname: `/dashboard/${tab.type}/${tab.id}`,
+          title: "update endpoint"
+        });
+      } else {
+        this.props.history.push({
+          pathname: `/dashboard/endpoint/new`
+        });
+      }
+    }
   }
 
   handleDuplicate(endpoint) {
@@ -76,6 +94,7 @@ class Endpoints extends Component {
     });
   }
   render() {
+    console.log(this.props);
     return (
       <React.Fragment>
         {Object.keys(this.props.endpoints).length !== 0 &&
