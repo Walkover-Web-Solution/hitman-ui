@@ -77,6 +77,7 @@ export const approveEndpoint = endpoint => {
 };
 
 export const onApproveEndpointSuccess = data => {
+  console.log("data", data);
   return {
     type: publicEndpointsActionTypes.ON_APPROVED_ENDPOINT_SUCCESS,
     data
@@ -115,6 +116,33 @@ export const onDraftEndpointSuccess = data => {
 export const onDraftEndpointError = error => {
   return {
     type: publicEndpointsActionTypes.ON_DRAFT_ENDPOINT_ERROR,
+    error
+  };
+};
+export const rejectEndpoint = endpoint => {
+  return dispatch => {
+    publicEndpointsService
+      .rejectEndpoint(endpoint)
+      .then(response => {
+        dispatch(onRejectEndpointSuccess(response.data));
+      })
+      .catch(error => {
+        dispatch(
+          onRejectEndpointError(error.response ? error.response.data : error)
+        );
+      });
+  };
+};
+export const onRejectEndpointSuccess = data => {
+  return {
+    type: publicEndpointsActionTypes.ON_REJECT_ENDPOINT_SUCCESS,
+    data
+  };
+};
+
+export const onRejectEndpointError = error => {
+  return {
+    type: publicEndpointsActionTypes.ON_REJECT_ENDPOINT_ERROR,
     error
   };
 };

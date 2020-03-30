@@ -6,6 +6,7 @@ import { isDashboardRoute } from "../common/utility";
 import {
   approveEndpoint,
   pendingEndpoint,
+  rejectEndpoint,
   draftEndpoint
 } from "../publicEndpoint/redux/publicEndpointsActions";
 
@@ -29,7 +30,8 @@ const mapDispatchToProps = dispatch => {
       dispatch(setEndpointIds(endpointsOrder, groupId)),
     pendingEndpoint: endpoint => dispatch(pendingEndpoint(endpoint)),
     approveEndpoint: endpoint => dispatch(approveEndpoint(endpoint)),
-    draftEndpoint: endpoint => dispatch(draftEndpoint(endpoint))
+    draftEndpoint: endpoint => dispatch(draftEndpoint(endpoint)),
+    rejectEndpoint: endpoint => dispatch(rejectEndpoint(endpoint))
   };
 };
 
@@ -116,6 +118,12 @@ class Endpoints extends Component {
 
   async handleCancelRequest(endpoint) {
     this.props.draftEndpoint(endpoint);
+  }
+  async handleApproveRequest(endpoint) {
+    this.props.approveEndpoint(endpoint);
+  }
+  async handleRejectRequest(endpoint) {
+    this.props.rejectEndpoint(endpoint);
   }
 
   handleDisplay(endpoint, groupId, collectionId) {
@@ -239,6 +247,31 @@ class Endpoints extends Component {
                         >
                           Move to draft
                         </button>
+                      ) : null}
+                      {this.checkAccess(this.props.collection_id) &&
+                      this.props.endpoints[endpointId].state === "Pending" ? (
+                        <div>
+                          <button
+                            className="dropdown-item"
+                            onClick={() =>
+                              this.handleApproveRequest(
+                                this.props.endpoints[endpointId]
+                              )
+                            }
+                          >
+                            Approve Request
+                          </button>
+                          <button
+                            className="dropdown-item"
+                            onClick={() =>
+                              this.handleRejectRequest(
+                                this.props.endpoints[endpointId]
+                              )
+                            }
+                          >
+                            Reject Request
+                          </button>
+                        </div>
                       ) : null}
                     </div>
                   </div>

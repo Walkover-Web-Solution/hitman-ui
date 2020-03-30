@@ -125,6 +125,14 @@ function endpointsReducer(state = initialState, action) {
     case publicEndpointsActionTypes.ON_DRAFT_ENDPOINT_ERROR:
       return { ...state };
 
+    case publicEndpointsActionTypes.ON_REJECT_ENDPOINT_SUCCESS:
+      return {
+        ...state,
+        [action.data.id]: action.data
+      };
+
+    case publicEndpointsActionTypes.ON_REJECT_ENDPOINT_ERROR:
+      return { ...state };
     default:
       return state;
   }
