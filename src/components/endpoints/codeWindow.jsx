@@ -30,6 +30,7 @@ class CodeWindow extends Component {
   }
 
   makeCodeTemplate(selectedLanguage) {
+    this.language = this.languages[selectedLanguage].name;
     let snippet = this.makeCodeSnippet();
     let codeSnippet = snippet.convert(selectedLanguage);
     this.setState({ codeSnippet });
@@ -56,6 +57,7 @@ class CodeWindow extends Component {
   render() {
     if (!this.state.codeSnippet) {
       let snippet = this.makeCodeSnippet();
+      this.language = this.languages["node"].name;
       this.codeSnippet = snippet.convert("node");
     }
     return (
@@ -67,7 +69,10 @@ class CodeWindow extends Component {
           aria-labelledby="contained-modal-title-vcenter"
           centered
         >
-          <Modal.Header closeButton>
+          <Modal.Header
+            className="custom-collection-modal-container"
+            closeButton
+          >
             <Modal.Title id="contained-modal-title-vcenter">
               {this.props.title}
             </Modal.Title>
@@ -96,7 +101,9 @@ class CodeWindow extends Component {
                   </ListGroup>
                 </Col>
                 <Col sm={7}>
-                  {" "}
+                  <div id="code-window-body">
+                    Generated code for {this.language}{" "}
+                  </div>{" "}
                   <pre>
                     {this.state.codeSnippet
                       ? this.state.codeSnippet

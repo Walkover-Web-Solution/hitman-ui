@@ -65,14 +65,9 @@ class DisplayEndpoint extends Component {
   };
 
   async componentDidMount() {
-    if (!this.props.location.pathname.split("/")[3]) {
-      this.setState({ selectedHost: "custom" });
-      this.customHost = true;
-    }
     let flag = 0;
-
     if (
-      this.props.location.pathname.split("/")[3] !== "new" &&
+      this.props.location.pathname.split("/")[3] === "new" &&
       !this.props.location.title
     ) {
       this.fetchEndpoint(flag);
@@ -92,7 +87,7 @@ class DisplayEndpoint extends Component {
     const { endpoints } = store.getState();
     const { groups } = store.getState();
     const { versions } = store.getState();
-    if (!this.props.location.pathname.split("/")[3] && !this.title) {
+    if (this.props.location.pathname.split("/")[3] === "new" && !this.title) {
       this.setState({ selectedHost: "custom" });
       this.customHost = true;
     } else if (
@@ -612,7 +607,7 @@ class DisplayEndpoint extends Component {
           this.setState({ showCodeWindow: false });
         }}
         harObject={this.state.harObject}
-        title="Code Snippet"
+        title="Generate Code Snippets"
       />
     );
   }
