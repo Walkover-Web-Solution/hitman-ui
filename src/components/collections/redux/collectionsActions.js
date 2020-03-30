@@ -1,7 +1,6 @@
+import store from "../../../store/store";
 import collectionsApiService from "../collectionsApiService";
 import collectionsActionTypes from "./collectionsActionTypes";
-import store from "../../../store/store";
-import { toast } from "react-toastify";
 
 export const fetchCollections = () => {
   return dispatch => {
@@ -125,8 +124,8 @@ export const deleteCollection = collection => {
     dispatch(deleteCollectionRequest(collection));
     collectionsApiService
       .deleteCollection(collection.id)
-      .then(() => {
-        dispatch(onCollectionDeleted());
+      .then(response => {
+        dispatch(onCollectionDeleted(response.data));
       })
       .catch(error => {
         dispatch(onCollectionDeletedError(error.response, collection));
@@ -141,9 +140,10 @@ export const deleteCollectionRequest = collection => {
   };
 };
 
-export const onCollectionDeleted = () => {
+export const onCollectionDeleted = collection => {
   return {
-    type: collectionsActionTypes.ON_COLLECTION_DELETED
+    type: collectionsActionTypes.ON_COLLECTION_DELETED,
+    collection
   };
 };
 
@@ -163,7 +163,11 @@ export const duplicateCollection = collection => {
         dispatch(onCollectionDuplicated(response.data));
       })
       .catch(error => {
-        toast.error(error);
+        dispatch(
+          onCollectionDuplicatedError(
+            error.response ? error.response.data : error
+          )
+        );
       });
   };
 };
@@ -172,5 +176,12 @@ export const onCollectionDuplicated = response => {
   return {
     type: collectionsActionTypes.ON_COLLECTION_DUPLICATED,
     response
+  };
+};
+
+export const onCollectionDuplicatedError = error => {
+  return {
+    type: collectionsActionTypes.ON_COLLECTION_DUPLICATED_ERROR,
+    error
   };
 };

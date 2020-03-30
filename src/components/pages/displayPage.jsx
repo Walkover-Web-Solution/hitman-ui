@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import jQuery from "jquery";
 import store from "../../store/store";
 
 class DisplayPage extends Component {
@@ -42,9 +41,8 @@ class DisplayPage extends Component {
     }
 
     return (
-      <div>
+      <div className="custom-display-page">
         <button
-          style={{ float: "right" }}
           className="btn btn-primary btn-sm"
           onClick={() => {
             this.handleEdit(this.state.data);

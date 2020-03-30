@@ -98,35 +98,37 @@ class EditPage extends Component {
 
   render() {
     return (
-      <form onSubmit={this.handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="exampleFormControlInput1">Page Name</label>
-          <input
-            ref={this.name}
-            type="text"
-            name="name"
-            className="form-control"
-            id="name"
-            value={this.state.data.name}
-            onChange={this.handleChange}
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="exampleFormControlTextarea1">Contents</label>
-          <textarea
-            ref={this.contents}
-            className="form-control"
-            value={this.state.data.contents || ""}
-            onChange={this.handleChange}
-            name="contents"
-            id="contents"
-            rows="20"
-          />
-          <button type="submit" className="btn btn-primary">
-            Submit
-          </button>
-        </div>
-      </form>
+      <div className="custom-edit-page">
+        <form onSubmit={this.handleSubmit}>
+          <div className="form-group">
+            <label htmlFor="exampleFormControlInput1">Page Name</label>
+            <input
+              ref={this.name}
+              type="text"
+              name="name"
+              className="form-control"
+              id="name"
+              value={this.state.data.name}
+              onChange={this.handleChange}
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="exampleFormControlTextarea1">Contents</label>
+            <textarea
+              ref={this.contents}
+              className="form-control"
+              value={this.state.data.contents || ""}
+              onChange={this.handleChange}
+              name="contents"
+              id="contents"
+              rows="20"
+            />
+            <button type="submit" className="btn btn-primary">
+              Submit
+            </button>
+          </div>
+        </form>
+      </div>
     );
   }
 }

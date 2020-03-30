@@ -70,7 +70,7 @@ class CollectionForm extends Form {
       .label("Keywords"),
     description: Joi.string()
       .allow(null, "")
-      .label("Description")
+      .label("description")
   };
 
   async onEditCollectionSubmit() {
@@ -153,7 +153,6 @@ class CollectionForm extends Form {
                 </div>
               </div>
               {this.renderTextArea("description", "Description", "description")}
-              {/* {this.renderInput("description", "Description", "textbox")} */}
               {this.renderButton("Submit")}
               <button
                 className="btn btn-default custom-button"

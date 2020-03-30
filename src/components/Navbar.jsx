@@ -5,6 +5,8 @@ import collectionsService from "./collections/collectionsService";
 import environmentsService from "./environments/environmentsService";
 import CreateNewModal from "./CreateNewModal";
 import { getCurrentUser } from "./auth/authService";
+import shortId from "shortid";
+
 class Navbar extends Component {
   state = {
     name: "",
@@ -14,7 +16,6 @@ class Navbar extends Component {
     const { user } = getCurrentUser();
     const name = user.first_name + user.last_name;
     const email = user.email;
-    console.log(name, email);
     this.setState({ name, email });
   }
 
@@ -38,8 +39,20 @@ class Navbar extends Component {
     this.setState({ showCreateNewModal: false, showEnvironmentForm: true });
   }
 
+  handleAddEndpoint(groupId, versions, groups) {
+    const newTabId = shortId.generate();
+    const tabs = [
+      ...this.props.tabs,
+      { id: newTabId, type: "endpoint", isSaved: false }
+    ];
+    console.log(tabs);
+    this.props.set_tabs(tabs, tabs.length - 1);
+    this.props.history.push({
+      pathname: `/dashboard/endpoint/new`
+    });
+  }
+
   render() {
-    console.log(getCurrentUser());
     return (
       <nav className="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
         {this.state.showCreateNewModal &&
@@ -79,11 +92,7 @@ class Navbar extends Component {
           <div className="dropdown-menu">
             <li
               className="dropdown-item"
-              onClick={() => {
-                this.props.history.push({
-                  pathname: "/dashboard/endpoints"
-                });
-              }}
+              onClick={() => this.handleAddEndpoint()}
             >
               <i className="fas fa-share-square" style={{ margin: "5px" }}></i>{" "}
               Endpoint
@@ -127,7 +136,7 @@ class Navbar extends Component {
           </div>
         </div>
 
-        <div className="btn-grp">
+        <div className="btn-grp" id="user-menu">
           <div class="dropdown">
             <button
               class="btn btn-secondary dropdown-toggle"
@@ -160,12 +169,6 @@ class Navbar extends Component {
             </div>
           </div>
         </div>
-        {/* 
-        <ul className="navbar-nav px-3">
-          <li className="nav-item text-nowrap">
-            <Link to="/logout">Sign out</Link>
-          </li>
-        </ul> */}
       </nav>
     );
   }

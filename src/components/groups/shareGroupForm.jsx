@@ -14,12 +14,10 @@ class ShareGroupForm extends Form {
   };
 
   componentDidMount() {
-    console.log("abcd", this.props.selectedGroup);
     if (this.props.selectedGroup) {
       let data = {};
       const shareGroupLink = apiUrl + "/share/" + this.props.selectedGroup.id;
       data = { shareGroupLink };
-      console.log("shareGroupLink", shareGroupLink, data);
       this.setState({ data });
     }
   }

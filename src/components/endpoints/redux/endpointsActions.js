@@ -14,7 +14,7 @@ export const addEndpoint = (history, newEndpoint, groupId) => {
         let endpointsOrder = store.getState().groups[groupId].endpointsOrder;
         endpointsOrder.push(response.data.id);
         dispatch(setEndpointIds(endpointsOrder, groupId));
-        history.push(`/dashboard/endpoints/${response.data.id}`);
+        history.push(`/dashboard/endpoint/${response.data.id}`);
       })
       .catch(error => {
         dispatch(

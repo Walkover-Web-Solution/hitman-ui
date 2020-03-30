@@ -1,14 +1,7 @@
 import React, { Component } from "react";
-import {
-  Accordion,
-  Card,
-  Button,
-  Dropdown,
-  DropdownButton
-} from "react-bootstrap";
-import { deleteEndpoint, duplicateEndpoint } from "./redux/endpointsActions";
 import { connect } from "react-redux";
 import { setEndpointIds } from "../groups/redux/groupsActions";
+import { deleteEndpoint, duplicateEndpoint } from "./redux/endpointsActions";
 
 const mapStateToProps = state => {
   return { endpoints: state.endpoints, groups: state.groups };
@@ -70,19 +63,16 @@ class Endpoints extends Component {
 
   handleUpdate(endpoint) {
     this.props.history.push({
-      pathname: `/dashboard/${this.props.collection_id}/versions/${this.props.version_id}/groups/${this.props.group_id}/endpoints/${endpoint.id}/edit`,
+      pathname: `/dashboard/${this.props.collection_id}/versions/${this.props.version_id}/groups/${this.props.group_id}/endpoint/${endpoint.id}/edit`,
       editEndpoint: endpoint
     });
   }
   handleDisplay(endpoint, groups, versions, groupId) {
     this.props.history.push({
-      pathname: `/dashboard/endpoints/${endpoint.id}`,
+      pathname: `/dashboard/endpoint/${endpoint.id}`,
       title: "update endpoint",
       endpoint: endpoint,
-      groupId: groupId,
-      groups: groups,
-      versions: versions,
-      endpointFlag: true
+      groupId: groupId
     });
   }
   render() {

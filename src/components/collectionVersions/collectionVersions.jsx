@@ -1,23 +1,18 @@
 import React, { Component } from "react";
-import {
-  Accordion,
-  Card,
-  Button,
-  Dropdown,
-  DropdownButton
-} from "react-bootstrap";
-import Groups from "../groups/groups";
-import VersionPages from "../pages/versionPages";
 import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
+import CollectionVersionForm from "../collectionVersions/collectionVersionForm";
 import {
   deleteVersion,
   duplicateVersion
 } from "../collectionVersions/redux/collectionVersionsActions";
 import ShareVersionForm from "../collectionVersions/shareVersionForm";
 import GroupForm from "../groups/groupForm";
+import Groups from "../groups/groups";
 import PageForm from "../pages/pageForm";
-import { withRouter } from "react-router-dom";
-import CollectionVersionForm from "../collectionVersions/collectionVersionForm";
+import VersionPages from "../pages/versionPages";
+
+import { Accordion, Card, Button } from "react-bootstrap";
 
 const mapStateToProps = state => {
   return {
@@ -183,24 +178,20 @@ class CollectionVersions extends Component {
                 this.props.collection_id
             )
             .map((versionId, index) => (
-              <div id="accordion" key={versionId}>
-                <div className="card">
-                  <div className="card-header" id="custom-card-header">
+              <Accordion key={versionId} id="child-accordion">
+                <Card>
+                  <Card.Header>
                     <i
                       className="fas fa-folder-open"
                       style={{ margin: "5px" }}
                     ></i>
-                    <h5 className="mb-0">
-                      <button
-                        className="btn"
-                        data-toggle="collapse"
-                        data-target={`#${versionId}`}
-                        aria-expanded="true"
-                        aria-controls={versionId}
-                      >
-                        {this.props.versions[versionId].number}
-                      </button>
-                    </h5>
+                    <Accordion.Toggle
+                      as={Button}
+                      variant="default"
+                      eventKey="1"
+                    >
+                      {this.props.versions[versionId].number}
+                    </Accordion.Toggle>
                     <div className="btn-group">
                       <button
                         className="btn btn-secondary "
@@ -271,18 +262,19 @@ class CollectionVersions extends Component {
                         </button>
                       </div>
                     </div>
-                  </div>
-
-                  <div id={versionId} className="collapse">
-                    <div className="card-body">
-                      <Groups {...this.props} version_id={versionId} />
+                    {/* </div> */}
+                  </Card.Header>
+                  <Accordion.Collapse eventKey="1">
+                    <Card.Body>
                       <VersionPages {...this.props} version_id={versionId} />
-                    </div>
-                  </div>
-                </div>
-              </div>
+                      <Groups {...this.props} version_id={versionId} />
+                    </Card.Body>
+                  </Accordion.Collapse>
+                </Card>
+              </Accordion>
             ))}
       </div>
+      // </div>
     );
   }
 }

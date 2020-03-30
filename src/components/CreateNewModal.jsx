@@ -18,7 +18,7 @@ class CreateNewModal extends Component {
               class="card-body new-button-card"
               onClick={() => {
                 this.props.history.push({
-                  pathname: "/dashboard/endpoints"
+                  pathname: "/dashboard/endpoint/new"
                 });
                 this.props.onHide();
               }}
@@ -67,55 +67,6 @@ class CreateNewModal extends Component {
                 </h6>
               </div>
             </div>
-
-            {/* <div
-     new-button-card          
-              onClick={() => {
-                this.props.history.push({
-                  pathname: "/dashboard/endpoints"
-                });
-                this.props.onHide();
-              }}
-            >
-              <div id="custom-req-icon-div">
-                <i className="fas fa-share-square" id="custom-req-icon"></i>
-              </div>
-              <div>
-                <div>Request</div>
-                <div>Create a request</div>
-              </div>
-            </div> */}
-
-            {/* <div
-              id="middlebox"
-              onClick={() => {
-                this.props.openCollectionForm();
-              }}
-            >
-              <div id="custom-col-icon-div">
-                <i id="custom-col-icon" className="fas fa-folder-open"></i>
-              </div>
-              <div>
-                <div>Collection</div>
-                <div>Create collection</div>
-              </div>
-            </div>
-
-            <div
-              id="rightbox"
-              onClick={() => {
-                this.props.openEnvironmentForm();
-              }}
-            >
-              <div id="custom-env-icon-div">
-                {" "}
-                <i id="custom-env-icon" className="fas fa-border-none"></i>
-              </div>
-              <div>
-                <div>Environment</div>
-                <div>Create Environment</div>
-              </div>
-            </div> */}
           </Modal.Body>
         </div>
       </Modal>
