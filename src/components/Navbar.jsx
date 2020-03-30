@@ -136,7 +136,7 @@ class Navbar extends Component {
           </div>
         </div>
 
-        <div className="btn-grp">
+        <div className="btn-grp" id="user-menu">
           <div class="dropdown">
             <button
               class="btn btn-secondary dropdown-toggle"

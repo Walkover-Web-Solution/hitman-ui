@@ -66,7 +66,7 @@ class CustomTabs extends Component {
   render() {
     return (
       <Nav variant="pills" className="flex-row">
-        {Object.keys(this.props.endpoints).length &&
+        {Object.keys(this.props.endpoints).length > 0 &&
           this.props.tabs.map((tab, index) => (
             <Nav.Item>
               <Nav.Link eventKey={tab.id}>

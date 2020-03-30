@@ -162,7 +162,7 @@ class Groups extends Component {
             gId => this.props.groups[gId].versionId === this.props.version_id
           )
           .map((groupId, index) => (
-            <Accordion key={groupId}>
+            <Accordion key={groupId} id="child-accordion">
               <Card>
                 <Card.Header>
                   <i

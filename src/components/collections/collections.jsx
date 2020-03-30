@@ -312,7 +312,7 @@ class CollectionsComponent extends Component {
           </div>
           {/* {Object.keys(this.props.collections).map((collectionId, index) => ( */}
           {finalCollections.map((collectionId, index) => (
-            <Accordion key={collectionId}>
+            <Accordion key={collectionId} id="parent-accordion">
               <Card>
                 <Card.Header>
                   <i

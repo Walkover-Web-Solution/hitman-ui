@@ -83,7 +83,7 @@ class Main extends Component {
           tabs={[...this.state.tabs]}
           set_tabs={this.setTabs.bind(this)}
         />
-        <div className="wrapper">
+        <div className="main-panel-wrapper">
           <SideBar
             {...this.props}
             set_source_group_id={this.setSourceGroupId.bind(this)}

@@ -9,7 +9,7 @@ class Login extends Component {
     if (!socketJwt) return;
     await auth.login(socketJwt);
     const { state } = this.props.location;
-    window.location = state ? state.from.pathname : "/dashboard/endpoints";
+    window.location = state ? state.from.pathname : "/dashboard/endpoint/new";
   }
 
   getSocketJwt = () => {
@@ -20,7 +20,7 @@ class Login extends Component {
 
   render() {
     if (auth.getCurrentUser()) return <Redirect to="/dashboard" />;
-    const redirectionUrl = `http://localhost:3000/login`;
+    const redirectionUrl = `https://hitman-ui.herokuapp.com/login`;
     const socketLoginUrl = `https://viasocket.com/login?token_required=true&redirect_uri=${redirectionUrl}`;
     const h1style = {
       color: "#0f0f0f",
