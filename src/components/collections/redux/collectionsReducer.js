@@ -18,6 +18,7 @@ function collectionsReducer(state = initialState, action) {
         ...state,
         [action.newCollection.requestId]: action.newCollection
       };
+      return state;
 
     case collectionsActionTypes.ON_COLLECTION_ADDED:
       collections = { ...state };
@@ -53,7 +54,10 @@ function collectionsReducer(state = initialState, action) {
       return collections;
 
     case collectionsActionTypes.ON_COLLECTION_DELETED:
-      return state;
+      collections = { ...state };
+      // delete collections[action.collection.id];
+      // return state;
+      return collections;
 
     case collectionsActionTypes.ON_COLLECTION_DELETED_ERROR:
       toast.error(action.error.data);
@@ -68,6 +72,9 @@ function collectionsReducer(state = initialState, action) {
       const collection = action.response.collection;
       collections = { ...collections, [collection.id]: collection };
       return collections;
+
+    case collectionsActionTypes.ON_COLLECTION_DUPLICATED_ERROR:
+      toast.error(action.error);
 
     default:
       return state;

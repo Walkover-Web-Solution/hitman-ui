@@ -100,22 +100,20 @@ class Environments extends Component {
             <Dropdown.Toggle variant="default" id="dropdown-basic">
               {this.props.environment.environments[
                 this.props.environment.currentEnvironmentId
-              ] &&
-                this.props.environment.environments[
-                  this.props.environment.currentEnvironmentId
-                ].name}
+              ]
+                ? this.props.environment.environments[
+                    this.props.environment.currentEnvironmentId
+                  ].name
+                : "No Environment"}
             </Dropdown.Toggle>
 
             <Dropdown.Menu alignRight>
-              <button
-                className="btn btn-default"
-                onClick={() =>
-                  this.handleEnvironmentModal("Add new Environment")
-                }
+              <Dropdown.Item
+                onClick={() => this.handleEnv(null)}
+                key={"no-environment"}
               >
-                + Add Environment
-              </button>
-
+                No Environment
+              </Dropdown.Item>
               {Object.keys(this.props.environment.environments).map(
                 environmentId => (
                   <Dropdown.Item
@@ -126,6 +124,14 @@ class Environments extends Component {
                   </Dropdown.Item>
                 )
               )}
+              <button
+                className="btn btn-default"
+                onClick={() =>
+                  this.handleEnvironmentModal("Add new Environment")
+                }
+              >
+                + Add Environment
+              </button>
             </Dropdown.Menu>
           </Dropdown>
         </div>

@@ -46,6 +46,7 @@ class Form extends Component {
   }
 
   renderTextArea(name, label, placeholder) {
+    const { data, errors } = this.state;
     return (
       <div className="form-group ">
         <label for={name} className="custom-input-label">
@@ -54,7 +55,11 @@ class Form extends Component {
         <textarea
           className="form-control custom-input"
           rows="10"
+          onChange={this.handleChange}
           id={name}
+          error={errors[name]}
+          name={name}
+          value={data[name]}
           placeholder={placeholder}
         ></textarea>
       </div>
@@ -71,38 +76,6 @@ class Form extends Component {
       </button>
     );
   }
-
-  //   renderInputGroup(name, label, type, role,this.dropdownRole) {
-  //     const { data, errors } = this.state;
-  //     return (
-  //       <InputGroup>
-  //         <Input
-  //           name={name}
-  //           label={label}
-  //           value={data[name]}
-  //           onChange={this.handleChange}
-  //           error={errors[name]}
-  //           type={type || "text"}
-  //         />
-  //         <InputGroup.Append>
-  //           <Dropdown>
-  //             <Dropdown.Toggle variant="success" id="dropdown-basic">
-  //               {this.state.data.role ? this.state.data.role : "Role"}
-  //             </Dropdown.Toggle>
-  //             <Dropdown.Menu>
-  //               {Object.keys(this.dropdownRole).map(key => (
-  //                 <Dropdown.Item onClick={() => this.setDropdownRole(key)}>
-  //                   {this.dropdownRole[key].name}
-  //                 </Dropdown.Item>
-  //               ))}
-  //             </Dropdown.Menu>
-  //           </Dropdown>{" "}
-  //           {/* <Button variant="outline-secondary">Button</Button> */}
-  //           <Button variant="outline-secondary">Button</Button>
-  //         </InputGroup.Append>
-  //       </InputGroup>
-  //     );
-  //   }
 }
 
 export default Form;

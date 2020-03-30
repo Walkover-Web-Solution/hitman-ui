@@ -1,6 +1,4 @@
 import React, { Component } from "react";
-import Nav from "react-bootstrap/Nav";
-import Navbar from "react-bootstrap/Navbar";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import JSONPretty from "react-json-pretty";
 const status = require("http-status");
@@ -47,7 +45,6 @@ class DisplayResponse extends Component {
   }
 
   render() {
-    console.log(this.props);
     return (
       <div className="endpoint-response-container">
         {this.props.response.status ? (
@@ -122,7 +119,6 @@ class DisplayResponse extends Component {
                   </button>
                 </CopyToClipboard>
               </div>
-              {/* <div className="response-body"> */}
               <div class="tab-content" id="myTabContent">
                 <div
                   class="tab-pane fade show active"
@@ -152,103 +148,14 @@ class DisplayResponse extends Component {
                   Feature coming soon... Stay tuned
                 </div>
               </div>
-              {/* </div> */}
             </div>
           </React.Fragment>
         ) : (
           <div className="empty-response">Response</div>
         )}
       </div>
-      // <div>
-      //   {this.props.response.status ? (
-      //     this.props.response.status === 200 ? (
-      //       <div>
-      //         <div className="alert alert-success" role="alert">
-      // Status :{" "}
-      // {this.props.response.status +
-      //   " " +
-      //   this.props.response.statusText}
-      //           <div style={{ float: "right" }}>
-      //             Time:{this.props.timeElapsed}ms
-      //           </div>
-      //         </div>
-      //       </div>
-      //     ) : (
-      //       <div className="alert alert-danger" role="alert">
-      //         Status :
-      //         {this.props.response.status +
-      //           " " +
-      //           status[this.props.response.status]}
-      //       </div>
-      //     )
-      //   ) : null}
-
-      //   {this.props.flagResponse === true &&
-      //   (this.state.prettyResponse === true ||
-      //     this.state.rawResponse === true ||
-      //     this.state.previewResponse === true) ? (
-      //     <div>
-      //       <div>
-      //         <Navbar bg="primary" variant="dark">
-      //           <Navbar.Brand href="#home" />
-      //           <Nav className="mr-auto">
-      //             <Nav.Link onClick={this.prettyDataResponse.bind(this)}>
-      //               Pretty
-      //             </Nav.Link>
-      //             <Nav.Link onClick={this.rawDataResponse.bind(this)}>
-      //               Raw
-      //             </Nav.Link>
-      //             <Nav.Link onClick={this.previewDataResponse.bind(this)}>
-      //               Preview
-      //             </Nav.Link>
-      //           </Nav>
-      //           <CopyToClipboard
-      //             text={JSON.stringify(this.props.response.data)}
-      //             onCopy={() => this.setState({ copied: true })}
-      //             style={{ float: "right", borderRadius: "12px" }}
-      //           >
-      //             <button style={{ borderRadius: "12px" }}>Copy</button>
-      //           </CopyToClipboard>
-      //         </Navbar>
-      //       </div>
-
-      //       {this.state.prettyResponse === true ? (
-      //         <div>
-      //           <JSONPretty
-      //             theme={JSONPrettyMon}
-      //             data={this.props.response.data}
-      //           />
-      //         </div>
-      //       ) : null}
-      //       {this.state.rawResponse === true ? (
-      //         <div style={{ display: "block", whiteSpace: "normal" }}>
-      //           {this.state.responseString}
-      //         </div>
-      //       ) : null}
-      //       {this.state.previewResponse === true ? (
-      //         <div style={{ display: "block", whiteSpace: "normal" }}>
-      //           feature coming soon
-      //         </div>
-      //       ) : null}
-      //     </div>
-      //   ) : null}
-      // </div>
     );
   }
 }
 
 export default DisplayResponse;
-
-{
-  /* <div className="endpoint-response-container">
-        <div className="response-status">
-          <div id="status">Status: {(200, "OK")}</div>
-          <div id="time">Time: {"1442ms"}</div>
-        </div>
-        <div className="response-viewer">
-          <div className="response-tabs"></div>
-          <div className="response-body">
-
-        </div>
-      </div></div> */
-}

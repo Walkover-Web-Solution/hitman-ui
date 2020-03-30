@@ -1,14 +1,7 @@
 import React, { Component } from "react";
-import {
-  Accordion,
-  Card,
-  Button,
-  Dropdown,
-  DropdownButton
-} from "react-bootstrap";
-import { deleteEndpoint, duplicateEndpoint } from "./redux/endpointsActions";
 import { connect } from "react-redux";
 import { setEndpointIds } from "../groups/redux/groupsActions";
+import { deleteEndpoint, duplicateEndpoint } from "./redux/endpointsActions";
 
 const mapStateToProps = state => {
   return { endpoints: state.endpoints, groups: state.groups };
@@ -55,10 +48,28 @@ class Endpoints extends Component {
   };
 
   handleDelete(endpoint) {
+    let tabs = [...this.props.tabs];
+    const tab = tabs[this.props.default_tab_index - 1];
+
+    tabs.splice(this.props.default_tab_index, 1);
+    const newIndex = this.props.default_tab_index - 1;
+    console.log(tabs, newIndex);
+    this.props.set_tabs(tabs, newIndex);
+
     this.props.deleteEndpoint(endpoint);
-    this.props.history.push({
-      pathname: "/dashboard"
-    });
+
+    if (tab.type === "endpoint") {
+      if (tab.isSaved) {
+        this.props.history.push({
+          pathname: `/dashboard/${tab.type}/${tab.id}`,
+          title: "update endpoint"
+        });
+      } else {
+        this.props.history.push({
+          pathname: `/dashboard/endpoint/new`
+        });
+      }
+    }
   }
 
   handleDuplicate(endpoint) {
@@ -70,22 +81,20 @@ class Endpoints extends Component {
 
   handleUpdate(endpoint) {
     this.props.history.push({
-      pathname: `/dashboard/${this.props.collection_id}/versions/${this.props.version_id}/groups/${this.props.group_id}/endpoints/${endpoint.id}/edit`,
+      pathname: `/dashboard/${this.props.collection_id}/versions/${this.props.version_id}/groups/${this.props.group_id}/endpoint/${endpoint.id}/edit`,
       editEndpoint: endpoint
     });
   }
   handleDisplay(endpoint, groups, versions, groupId) {
     this.props.history.push({
-      pathname: `/dashboard/endpoints/${endpoint.id}`,
+      pathname: `/dashboard/endpoint/${endpoint.id}`,
       title: "update endpoint",
       endpoint: endpoint,
-      groupId: groupId,
-      groups: groups,
-      versions: versions,
-      endpointFlag: true
+      groupId: groupId
     });
   }
   render() {
+    console.log(this.props);
     return (
       <React.Fragment>
         {Object.keys(this.props.endpoints).length !== 0 &&
