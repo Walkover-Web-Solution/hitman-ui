@@ -1,18 +1,14 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { setEndpointIds } from "../groups/redux/groupsActions";
-import { deleteEndpoint, duplicateEndpoint } from "./redux/endpointsActions";
 import { isDashboardRoute } from "../common/utility";
+import { setEndpointIds } from "../groups/redux/groupsActions";
 import {
   approveEndpoint,
+  draftEndpoint,
   pendingEndpoint,
-  rejectEndpoint,
-  draftEndpoint
+  rejectEndpoint
 } from "../publicEndpoint/redux/publicEndpointsActions";
-
-import endpointService from "./endpointService.js";
-import authService from "../auth/authService";
-import { fetchAllUsersOfTeam } from "../teamUsers/redux/teamUsersActions";
+import { deleteEndpoint, duplicateEndpoint } from "./redux/endpointsActions";
 
 const mapStateToProps = state => {
   return {
@@ -104,13 +100,10 @@ class Endpoints extends Component {
 
   async handlePublicEndpointState(endpoint) {
     const role = this.getCurrentUserRole(this.props.collection_id);
-    console.log("role", role, endpoint);
     if (endpoint.state === "Draft") {
       if (role === "Owner" || role === "Admin") {
-        console.log("approve endpoint api callled");
         this.props.approveEndpoint(endpoint);
       } else {
-        console.log("pending endpoint api callled");
         this.props.pendingEndpoint(endpoint);
       }
     }
@@ -205,22 +198,26 @@ class Endpoints extends Component {
                       >
                         Duplicate
                       </button>
-
-                      <button
-                        className="dropdown-item"
-                        onClick={() =>
-                          this.handlePublicEndpointState(
-                            this.props.endpoints[endpointId]
-                          )
-                        }
-                      >
-                        {this.props.endpoints[endpointId].state}
-                      </button>
-                      {console.log(
-                        this.props.collection_id,
-                        this.getCurrentUserRole(this.props.collection_id),
-                        this.props.endpoints[endpointId].state
+                      {this.checkAccess(this.props.collection_id) &&
+                      (this.props.endpoints[endpointId].state === "Pending" ||
+                        this.props.endpoints[endpointId].state ===
+                          "Rejected") ? null : (
+                        <button
+                          className="dropdown-item"
+                          onClick={() =>
+                            this.handlePublicEndpointState(
+                              this.props.endpoints[endpointId]
+                            )
+                          }
+                        >
+                          {this.props.endpoints[endpointId].state === "Approved"
+                            ? "Published"
+                            : this.props.endpoints[endpointId].state === "Draft"
+                            ? "Make Public"
+                            : this.props.endpoints[endpointId].state}
+                        </button>
                       )}
+
                       {!this.checkAccess(this.props.collection_id) &&
                       this.props.endpoints[endpointId].state === "Pending" ? (
                         <button
@@ -245,7 +242,7 @@ class Endpoints extends Component {
                             )
                           }
                         >
-                          Move to draft
+                          Move to Draft
                         </button>
                       ) : null}
                       {this.checkAccess(this.props.collection_id) &&

@@ -77,7 +77,6 @@ export const approveEndpoint = endpoint => {
 };
 
 export const onApproveEndpointSuccess = data => {
-  console.log("data", data);
   return {
     type: publicEndpointsActionTypes.ON_APPROVED_ENDPOINT_SUCCESS,
     data

@@ -105,6 +105,7 @@ function endpointsReducer(state = initialState, action) {
       };
 
     case publicEndpointsActionTypes.ON_APPROVED_ENDPOINT_ERROR:
+      toast.error(action.error);
       return { ...state };
 
     case publicEndpointsActionTypes.ON_PENDING_ENDPOINT_SUCCESS:
@@ -114,6 +115,7 @@ function endpointsReducer(state = initialState, action) {
       };
 
     case publicEndpointsActionTypes.ON_PENDING_ENDPOINT_ERROR:
+      toast.error(action.error);
       return { ...state };
 
     case publicEndpointsActionTypes.ON_DRAFT_ENDPOINT_SUCCESS:
@@ -123,6 +125,7 @@ function endpointsReducer(state = initialState, action) {
       };
 
     case publicEndpointsActionTypes.ON_DRAFT_ENDPOINT_ERROR:
+      toast.error(action.error);
       return { ...state };
 
     case publicEndpointsActionTypes.ON_REJECT_ENDPOINT_SUCCESS:
@@ -132,7 +135,9 @@ function endpointsReducer(state = initialState, action) {
       };
 
     case publicEndpointsActionTypes.ON_REJECT_ENDPOINT_ERROR:
+      toast.error(action.error);
       return { ...state };
+
     default:
       return state;
   }
