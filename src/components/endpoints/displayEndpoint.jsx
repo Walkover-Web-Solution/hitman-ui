@@ -68,15 +68,15 @@ class DisplayEndpoint extends Component {
 
   async componentDidMount() {
     if (!this.props.location.pathname.split("/")[3]) {
-      console.log("in if");
       this.setState({ selectedHost: "custom" });
       this.customHost = true;
     }
     let flag = 0;
 
     if (
-      this.props.location.pathname.split("/")[3] !== "new" &&
-      !this.props.location.title
+      (this.props.location.pathname.split("/")[3] !== "new" &&
+        !this.props.location.title) ||
+      !isDashboardRoute(this.props)
     ) {
       this.fetchEndpoint(flag);
       store.subscribe(() => {
@@ -139,6 +139,7 @@ class DisplayEndpoint extends Component {
       );
       this.fillDropdownValue(hostJson);
       this.host = this.findHost(hostJson);
+
       this.setState({
         data: {
           method: endpoint.requestType,
@@ -625,14 +626,13 @@ class DisplayEndpoint extends Component {
     );
   }
   render() {
-    console.log(this.props);
     if (
       this.props.location.pathname.split("/")[3] !== "new" &&
       this.state.endpoint.id !== this.props.location.pathname.split("/")[3]
     ) {
       let flag = 0;
 
-      if (!this.props.location.title) {
+      if (!this.props.location.title && isDashboardRoute(this.props)) {
         this.fetchEndpoint(flag);
         store.subscribe(() => {
           if (!this.props.location.title && !this.state.title) {
@@ -644,7 +644,6 @@ class DisplayEndpoint extends Component {
     if (this.props.location.title === "Add New Endpoint") {
       this.title = "Add New Endpoint";
       this.customHost = false;
-      console.log(this.props.location.groupId, this.state.groupId);
       if (this.props.location.groupId || this.state.groupId) {
         const hostJson = this.fetchHosts(
           this.props,
