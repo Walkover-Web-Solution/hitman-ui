@@ -93,7 +93,7 @@ export const onApproveEndpointError = error => {
 export const draftEndpoint = endpoint => {
   return dispatch => {
     publicEndpointsService
-      .approveEndpoint(endpoint)
+      .draftEndpoint(endpoint)
       .then(response => {
         dispatch(onDraftEndpointSuccess(response.data));
       })
@@ -107,14 +107,14 @@ export const draftEndpoint = endpoint => {
 
 export const onDraftEndpointSuccess = data => {
   return {
-    type: publicEndpointsActionTypes.ON_APPROVED_ENDPOINT_SUCCESS,
+    type: publicEndpointsActionTypes.ON_DRAFT_ENDPOINT_SUCCESS,
     data
   };
 };
 
 export const onDraftEndpointError = error => {
   return {
-    type: publicEndpointsActionTypes.ON_APPROVED_ENDPOINT_ERROR,
+    type: publicEndpointsActionTypes.ON_DRAFT_ENDPOINT_ERROR,
     error
   };
 };
