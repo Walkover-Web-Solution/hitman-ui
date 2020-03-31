@@ -1,4 +1,4 @@
-import endpointService from "../endpointService";
+import endpointApiService from "../endpointApiService";
 import endpointsActionTypes from "./endpointsActionTypes";
 import { setEndpointIds } from "../../groups/redux/groupsActions";
 import store from "../../../store/store";
@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 export const addEndpoint = (history, newEndpoint, groupId) => {
   return dispatch => {
     dispatch(addEndpointRequest({ ...newEndpoint, groupId }));
-    endpointService
+    endpointApiService
       .saveEndpoint(groupId, newEndpoint)
       .then(response => {
         dispatch(onEndpointAdded(response.data, newEndpoint));
@@ -29,7 +29,7 @@ export const addEndpoint = (history, newEndpoint, groupId) => {
 
 export const fetchEndpoints = () => {
   return dispatch => {
-    endpointService
+    endpointApiService
       .getAllEndpoints()
       .then(response => {
         dispatch(onEndpointsFetched(response.data));
@@ -49,7 +49,7 @@ export const updateEndpoint = editedEndpoint => {
     const id = editedEndpoint.id;
     delete editedEndpoint.id;
     delete editedEndpoint.groupId;
-    endpointService
+    endpointApiService
       .updateEndpoint(id, editedEndpoint)
       .then(response => {
         dispatch(onEndpointUpdated(response.data));
@@ -72,7 +72,7 @@ export const deleteEndpoint = endpoint => {
       .endpointsOrder;
     endpointsOrder = endpointsOrder.filter(eId => eId !== endpoint.id);
     dispatch(setEndpointIds(endpointsOrder, endpoint.groupId));
-    endpointService
+    endpointApiService
       .deleteEndpoint(endpoint.id)
       .then(() => {
         dispatch(onEndpointDeleted());
@@ -85,7 +85,7 @@ export const deleteEndpoint = endpoint => {
 
 export const duplicateEndpoint = endpoint => {
   return dispatch => {
-    endpointService
+    endpointApiService
       .duplicateEndpoint(endpoint.id)
       .then(response => {
         dispatch(onEndpointDuplicated(response.data));
@@ -103,7 +103,7 @@ export const moveEndpoint = (endpointId, sourceGroupId, destinationGroupId) => {
       moveEndpointRequest(endpointId, sourceGroupId, destinationGroupId)
     );
 
-    endpointService
+    endpointApiService
       .moveEndpoint(endpointId, { groupId: destinationGroupId })
       .then(response => {
         dispatch(moveEndpointSuccess(response.data));

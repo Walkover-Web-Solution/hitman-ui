@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { deletePage, duplicatePage } from "./redux/pagesActions";
+import pageService from "./pageService";
 
 const mapStateToProps = state => {
   return {
@@ -52,9 +53,32 @@ class GroupPages extends Component {
     });
   }
 
+  openDeleteModal(pageId) {
+    this.setState({
+      showDeleteModal: true,
+      selectedPage: {
+        ...this.props.pages[pageId]
+      }
+    });
+  }
+
+  closeDeletePageModal() {
+    this.setState({ showDeleteModal: false });
+  }
+
   render() {
     return (
       <div>
+        <div>
+          {this.state.showDeleteModal &&
+            pageService.showDeletePageModal(
+              this.props,
+              this.closeDeletePageModal.bind(this),
+              "Delete Page",
+              this.state.selectedPage
+            )}
+        </div>
+
         {this.props.pages &&
           Object.keys(this.props.pages)
             .filter(
@@ -95,9 +119,13 @@ class GroupPages extends Component {
                       <div className="dropdown-menu dropdown-menu-right">
                         <button
                           className="dropdown-item"
-                          onClick={() =>
-                            this.handleDelete(this.props.pages[pageId])
-                          }
+                          // onClick={() =>
+                          //   this.handleDelete(this.props.pages[pageId])
+                          // }
+
+                          onClick={() => {
+                            this.openDeleteModal(pageId);
+                          }}
                         >
                           Delete
                         </button>

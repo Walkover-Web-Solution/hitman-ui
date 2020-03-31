@@ -7,7 +7,7 @@ import shortId from "shortid";
 import CollectionVersions from "../collectionVersions/collectionVersions";
 import collectionVersionsService from "../collectionVersions/collectionVersionsService";
 import ImportVersionForm from "../collectionVersions/importVersionForm";
-import endpointService from "../endpoints/endpointService";
+import endpointApiService from "../endpoints/endpointApiService";
 
 import {
   fetchAllUsersOfTeam,
@@ -21,6 +21,7 @@ import {
   updateCollection
 } from "./redux/collectionsActions";
 import ShareCollectionForm from "./shareCollectionForm";
+import DeleteModal from "../common/deleteModal";
 
 const mapStateToProps = state => {
   return {
@@ -79,7 +80,7 @@ class CollectionsComponent extends Component {
     this.setState({ endpoints, groups });
     try {
       delete endpoint.id;
-      await endpointService.updateEndpoint(endpointId, endpoint);
+      await endpointApiService.updateEndpoint(endpointId, endpoint);
     } catch (error) {
       this.setState({ endpoints: originalEndpoints, groups: originalGroups });
     }
@@ -179,6 +180,17 @@ class CollectionsComponent extends Component {
       }
     });
   }
+
+  openDeleteModal(collectionId) {
+    this.setState({
+      showDeleteModal: true,
+      // collectionFormName: "Edit Collection",
+      selectedCollection: {
+        ...this.props.collections[collectionId]
+      }
+    });
+  }
+
   showImportVersionForm() {
     return (
       this.state.showImportVersionForm && (
@@ -195,6 +207,10 @@ class CollectionsComponent extends Component {
 
   closeVersionForm() {
     this.setState({ showVersionForm: false });
+  }
+
+  closeDeleteCollectionModal() {
+    this.setState({ showDeleteModal: false });
   }
 
   render() {
@@ -275,6 +291,24 @@ class CollectionsComponent extends Component {
               )}
             {this.showImportVersionForm()}
             {this.showShareCollectionForm()}
+            {this.state.showDeleteModal &&
+              collectionsService.showDeleteCollectionModal(
+                this.props,
+                this.closeDeleteCollectionModal.bind(this),
+                "Delete Collection",
+                this.state.selectedCollection
+              )
+
+            // (
+            //   <DeleteModal
+            //     {...this.props}
+            //     show={this.state.showDeleteModal}
+            //     onHide={() => this.closeDeleteModal()}
+            //     title="Delete Collection"
+            //     selected_collection={this.state.selectedCollection}
+            //   />
+            // )
+            }
           </div>
         </div>
 
@@ -330,10 +364,14 @@ class CollectionsComponent extends Component {
                       </button>
                       <button
                         className="dropdown-item"
+                        // onClick={() => {
+                        //   this.handleDelete(
+                        //     this.props.collections[collectionId]
+                        //   );
+                        // }}
+
                         onClick={() => {
-                          this.handleDelete(
-                            this.props.collections[collectionId]
-                          );
+                          this.openDeleteModal(collectionId);
                         }}
                       >
                         Delete

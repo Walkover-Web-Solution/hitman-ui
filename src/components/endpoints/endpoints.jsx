@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { setEndpointIds } from "../groups/redux/groupsActions";
 import { deleteEndpoint, duplicateEndpoint } from "./redux/endpointsActions";
+import endpointService from "./endpointService";
 
 const mapStateToProps = state => {
   return { endpoints: state.endpoints, groups: state.groups };
@@ -75,9 +76,33 @@ class Endpoints extends Component {
       groupId: groupId
     });
   }
+
+  openDeleteModal(endpointId) {
+    this.setState({
+      showDeleteModal: true,
+      selectedEndpoint: {
+        ...this.props.endpoints[endpointId]
+      }
+    });
+  }
+
+  closeDeleteEndpointModal() {
+    this.setState({ showDeleteModal: false });
+  }
+
   render() {
     return (
       <React.Fragment>
+        <div>
+          {this.state.showDeleteModal &&
+            endpointService.showDeleteEndpointModal(
+              this.props,
+              this.closeDeleteEndpointModal.bind(this),
+              "Delete Endpoint",
+              this.state.selectedEndpoint
+            )}
+        </div>
+
         {Object.keys(this.props.endpoints).length !== 0 &&
           this.props.endpoints_order
             .filter(
@@ -120,6 +145,10 @@ class Endpoints extends Component {
                       onClick={() =>
                         this.handleDelete(this.props.endpoints[endpointId])
                       }
+
+                      // onClick={() => {
+                      //   this.openDeleteModal(endpointId);
+                      // }}
                     >
                       Delete
                     </button>

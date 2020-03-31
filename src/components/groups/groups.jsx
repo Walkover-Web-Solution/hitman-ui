@@ -8,6 +8,7 @@ import { deleteGroup, duplicateGroup } from "../groups/redux/groupsActions";
 import ShareGroupForm from "../groups/shareGroupForm";
 import GroupPages from "../pages/groupPages";
 import PageForm from "../pages/pageForm";
+import groupsService from "./groupsService";
 
 const mapStateToProps = state => {
   return { groups: state.groups };
@@ -149,6 +150,19 @@ class Groups extends Component {
     });
   }
 
+  openDeleteModal(groupId) {
+    this.setState({
+      showDeleteModal: true,
+      selectedGroup: {
+        ...this.props.groups[groupId]
+      }
+    });
+  }
+
+  closeDeleteGroupModal() {
+    this.setState({ showDeleteModal: false });
+  }
+
   render() {
     return (
       <div>
@@ -156,6 +170,13 @@ class Groups extends Component {
           {this.showShareGroupForm()}
           {this.showEditGroupForm()}
           {this.showAddGroupPageForm()}
+          {this.state.showDeleteModal &&
+            groupsService.showDeleteGroupModal(
+              this.props,
+              this.closeDeleteGroupModal.bind(this),
+              "Delete Group",
+              this.state.selectedGroup
+            )}
         </div>
         {Object.keys(this.props.groups)
           .filter(
@@ -192,9 +213,13 @@ class Groups extends Component {
                       </button>
                       <button
                         className="dropdown-item"
-                        onClick={() =>
-                          this.handleDelete(this.props.groups[groupId])
-                        }
+                        // onClick={() =>
+                        //   this.handleDelete(this.props.groups[groupId])
+                        // }
+
+                        onClick={() => {
+                          this.openDeleteModal(groupId);
+                        }}
                       >
                         Delete
                       </button>

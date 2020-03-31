@@ -11,6 +11,7 @@ import GroupForm from "../groups/groupForm";
 import Groups from "../groups/groups";
 import PageForm from "../pages/pageForm";
 import VersionPages from "../pages/versionPages";
+import collectionVersionsService from "./collectionVersionsService";
 
 import { Accordion, Card, Button } from "react-bootstrap";
 
@@ -118,6 +119,16 @@ class CollectionVersions extends Component {
       selectedVersion: version
     });
   }
+
+  openDeleteModal(versionId) {
+    this.setState({
+      showDeleteModal: true,
+      selectedVersion: {
+        ...this.props.versions[versionId]
+      }
+    });
+  }
+
   showShareVersionForm() {
     return (
       this.state.showVersionForm.share && (
@@ -162,6 +173,11 @@ class CollectionVersions extends Component {
     let showVersionForm = { share: false, addGroup: false, addPage: false };
     this.setState({ showVersionForm });
   }
+
+  closeDeleteVersionModal() {
+    this.setState({ showDeleteModal: false });
+  }
+
   render() {
     return (
       <div>
@@ -169,6 +185,13 @@ class CollectionVersions extends Component {
         {this.showAddGroupForm()}
         {this.showEditVersionForm()}
         {this.showAddVersionPageForm()}
+        {this.state.showDeleteModal &&
+          collectionVersionsService.showDeleteVersionModal(
+            this.props,
+            this.closeDeleteVersionModal.bind(this),
+            "Delete Version",
+            this.state.selectedVersion
+          )}
         {this.props.versions &&
           Object.keys(this.props.versions) &&
           Object.keys(this.props.versions)
@@ -214,9 +237,12 @@ class CollectionVersions extends Component {
                         </button>
                         <button
                           className="dropdown-item"
-                          onClick={() =>
-                            this.handleDelete(this.props.versions[versionId])
-                          }
+                          // onClick={() =>
+                          //   this.handleDelete(this.props.versions[versionId])
+                          // }
+                          onClick={() => {
+                            this.openDeleteModal(versionId);
+                          }}
                         >
                           Delete
                         </button>

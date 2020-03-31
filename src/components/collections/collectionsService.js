@@ -1,5 +1,6 @@
 import React from "react";
 import CollectionForm from "./collectionForm";
+import DeleteModal from "../common/deleteModal";
 
 function showCollectionForm(props, onHide, title, selectedCollection) {
   return (
@@ -13,6 +14,19 @@ function showCollectionForm(props, onHide, title, selectedCollection) {
   );
 }
 
+function showDeleteCollectionModal(props, onHide, title, selectedCollection) {
+  return (
+    <DeleteModal
+      {...props}
+      show={true}
+      onHide={onHide}
+      title={title}
+      deleted_collection={selectedCollection}
+    />
+  );
+}
+
 export default {
-  showCollectionForm
+  showCollectionForm,
+  showDeleteCollectionModal
 };

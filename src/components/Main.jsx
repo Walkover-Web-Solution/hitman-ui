@@ -72,6 +72,7 @@ class Main extends Component {
     return (
       <div
         style={{
+          marginTop: "15px",
           display: "flex",
           flexDirection: "column",
           justifyContent: "flex-start"

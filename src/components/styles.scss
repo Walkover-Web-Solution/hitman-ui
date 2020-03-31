@@ -242,6 +242,7 @@ $border-color: rgba(227, 228, 230, 0.7);
   flex-direction: row;
 
   nav.col-md-2.d-none.d-md-block.bg-light.sidebar {
+    margin-top: 10px;
     flex: 1;
     overflow: hidden;
     padding-left: 0;
@@ -258,16 +259,16 @@ $border-color: rgba(227, 228, 230, 0.7);
 nav.navbar.navbar-dark.fixed-top.bg-dark.flex-md-nowrap.p-0.shadow {
   display: flex;
   align-items: baseline;
-  height: 40px;
+  height: 50px;
   .btn-group {
     display: flex;
-    height: 100%;
+    height: 45px;
     border-radius: 2px;
     #new-button {
       display: flex;
       align-items: baseline;
       background-color: tomato;
-      margin: 5px 0px 5px 5px;
+      margin: 8px 0px 4px 4px;
       .fa-plus-square {
         padding-right: 5px;
         font-size: 17px;
@@ -275,7 +276,7 @@ nav.navbar.navbar-dark.fixed-top.bg-dark.flex-md-nowrap.p-0.shadow {
     }
     #new-button-dropdown {
       background-color: tomato;
-      margin: 5px 5px 5px 0px;
+      margin: 8px 4px 4px 0px;
     }
     button.btn {
       padding: 0px 6px;
@@ -287,7 +288,7 @@ nav.navbar.navbar-dark.fixed-top.bg-dark.flex-md-nowrap.p-0.shadow {
 }
 #nav-left-buttons {
   display: flex;
-  margin: 5px;
+  margin: 8px 4px 4px 4px;
   border-radius: 3px;
   background-color: rgb(101, 103, 105);
 }

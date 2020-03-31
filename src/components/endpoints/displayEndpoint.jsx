@@ -5,7 +5,7 @@ import shortId from "shortid";
 import DisplayResponse from "./displayResponse";
 import GenericTable from "./genericTable";
 import { addEndpoint, updateEndpoint } from "./redux/endpointsActions";
-import endpointService from "./endpointService";
+import endpointApiService from "./endpointApiService";
 import store from "../../store/store";
 import { withRouter } from "react-router-dom";
 import CreateEndpointForm from "./createEndpointForm";
@@ -293,7 +293,7 @@ class DisplayEndpoint extends Component {
     let responseJson = {};
     try {
       let header = this.replaceVariablesInJson(headerJson);
-      responseJson = await endpointService.apiTest(
+      responseJson = await endpointApiService.apiTest(
         api,
         this.state.data.method,
         body,
