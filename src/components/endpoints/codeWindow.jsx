@@ -85,9 +85,9 @@ class CodeWindow extends Component {
               horizontal={false}
             >
               {() => <div>Some long content. </div>} */}
-            <Container>
+            <Container className="d-flex flex-column">
               <Row>
-                <Col sm={3} id="code-window-sidebar">
+                <Col id="codes" sm={3}>
                   <ListGroup>
                     {Object.keys(this.languages).map(key => (
                       <ListGroup.Item
@@ -99,6 +99,7 @@ class CodeWindow extends Component {
                       </ListGroup.Item>
                     ))}
                   </ListGroup>
+                  <v1></v1>
                 </Col>
                 <Col sm={7}>
                   <div id="code-window-body">

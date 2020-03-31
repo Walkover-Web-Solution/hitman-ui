@@ -8,6 +8,7 @@ class GenericTable extends Component {
     const name = e.currentTarget.name.split(".");
     if (name[1] === "key") {
       dataArray[name[0]].key = e.currentTarget.value;
+      this.handleAdd(dataArray, title, dataArray[name[0]].key, name[0]);
       if (title === "Params" && dataArray[name[0]].key.length === 0) {
         this.handleDelete(dataArray, name[0], title);
       }
@@ -24,17 +25,23 @@ class GenericTable extends Component {
       this.props.props_from_parent("originalParams", dataArray);
   };
 
-  handleAdd(dataArray, title) {
-    const len = dataArray.length;
-    dataArray[len.toString()] = {
-      key: "",
-      value: "",
-      description: ""
-    };
-    if (title === "Headers")
-      this.props.props_from_parent("originalHeaders", dataArray);
-    if (title === "Params")
-      this.props.props_from_parent("originalParams", dataArray);
+  handleAdd(dataArray, title, key, index) {
+    index = parseInt(index) + 1;
+    console.log(index);
+    console.log(dataArray[index]);
+    console.log(dataArray);
+    if (key.length === 1 && !dataArray[index]) {
+      const len = dataArray.length;
+      dataArray[len.toString()] = {
+        key: "",
+        value: "",
+        description: ""
+      };
+      if (title === "Headers")
+        this.props.props_from_parent("originalHeaders", dataArray);
+      if (title === "Params")
+        this.props.props_from_parent("originalParams", dataArray);
+    }
   }
 
   handleDelete(dataArray, index, title) {
@@ -53,9 +60,12 @@ class GenericTable extends Component {
   }
 
   render() {
+    console.log("this.props", this.props);
     const { dataArray, title } = this.props;
     return (
       <div className="generic-table-container">
+        <h1>{this.props.title}</h1>
+
         <div className="generic-table-title-container">{title}</div>
         <table className="table table-bordered" bordered>
           <thead>
@@ -110,7 +120,7 @@ class GenericTable extends Component {
                 </td>
               </tr>
             ))}
-            <tr>
+            {/* <tr>
               <td className="custom-td"> </td>
               <td className="custom-td">
                 {" "}
@@ -123,7 +133,7 @@ class GenericTable extends Component {
                 </button>
               </td>
               <td className="custom-td"> </td>
-            </tr>
+            </tr> */}
           </tbody>
         </table>
       </div>

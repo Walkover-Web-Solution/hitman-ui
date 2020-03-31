@@ -11,11 +11,11 @@ $border-color: rgba(227, 228, 230, 0.7);
   border: none;
   background-color: inherit;
 }
-
-#code-window-sidebar {
-  display: flex;
+#codes {
+  border-color: black;
+  border-style: solid;
+  border-width: 0px 1px 0px 0px;
 }
-
 #code-window-body {
   display: flex;
   flex-direction: row;

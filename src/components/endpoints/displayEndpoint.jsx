@@ -396,6 +396,9 @@ class DisplayEndpoint extends Component {
   }
 
   propsFromChild(name, value) {
+    console.log("this.originalParamst", this.state.originalParams);
+    console.log("this.originalHeaders", this.state.originalHeaders);
+
     if (name === "originalParams") {
       this.handleUpdateUri(value);
       this.setState({ originalParams: value });
@@ -518,15 +521,35 @@ class DisplayEndpoint extends Component {
 
   fetchoriginalParams(params) {
     let originalParams = [];
-    for (let i = 0; i < Object.keys(params).length; i++) {
+    let i = 0;
+    for (i = 0; i < Object.keys(params).length; i++) {
       originalParams[i] = {
         key: Object.keys(params)[i],
         value: params[Object.keys(params)[i]].value,
         description: params[Object.keys(params)[i]].description
       };
     }
+    originalParams[i] = {
+      key: "",
+      value: "",
+      description: ""
+    };
     return originalParams;
   }
+
+  fetchoriginalHeaders(headers) {
+    let originalHeaders = [];
+    Object.keys(headers).forEach(h => {
+      originalHeaders.push(headers[h]);
+    });
+    let length = originalHeaders.length;
+    originalHeaders[length] = {
+      key: "",
+      value: "",
+      description: ""
+    };
+  }
+
   makeHeaders(headers) {
     let processedHeaders = [];
     for (let i = 0; i < Object.keys(headers).length; i++) {
@@ -661,8 +684,20 @@ class DisplayEndpoint extends Component {
         selectedHost: "",
         onChangeFlag: false,
         flagResponse: false,
-        originalHeaders: [],
-        originalParams: []
+        originalHeaders: [
+          {
+            key: "",
+            value: "",
+            description: ""
+          }
+        ],
+        originalParams: [
+          {
+            key: "",
+            value: "",
+            description: ""
+          }
+        ]
       });
       this.props.history.push({ groups: null });
     }
@@ -688,15 +723,13 @@ class DisplayEndpoint extends Component {
       this.host = this.findHost(hostJson);
 
       //To fetch originalParams from Params
-      let originalParams = this.fetchoriginalParams(
+      const originalParams = this.fetchoriginalParams(
         this.props.location.endpoint.params
       );
 
       //To fetch originalHeaders from Headers
-      const originalHeaders = [];
-      Object.keys(endpoint.headers).forEach(h => {
-        originalHeaders.push(endpoint.headers[h]);
-      });
+      const originalHeaders = this.fetchoriginalHeaders(endpoint.headers);
+
       this.setState({
         data: {
           method: endpoint.requestType,
