@@ -18,20 +18,6 @@ const mapDispatchToProps = dispatch => {
 class GroupPages extends Component {
   state = {};
 
-  async handleDelete(page) {
-    const confirm = window.confirm(
-      "Are you sure you wish to delete this group? " +
-        "\n" +
-        "All your pages and endpoints present in this group will be deleted."
-    );
-    if (confirm) {
-      this.props.deletePage(page);
-      this.props.history.push({
-        pathname: "/dashboard"
-      });
-    }
-  }
-
   handleUpdate(page) {
     this.props.history.push({
       pathname: `/dashboard/${this.props.collection_id}/versions/${this.props.versionId}/pages/${page.id}/edit`,
@@ -53,7 +39,7 @@ class GroupPages extends Component {
     });
   }
 
-  openDeleteModal(pageId) {
+  openDeletePageModal(pageId) {
     this.setState({
       showDeleteModal: true,
       selectedPage: {
@@ -125,7 +111,7 @@ class GroupPages extends Component {
                           // }
 
                           onClick={() => {
-                            this.openDeleteModal(pageId);
+                            this.openDeletePageModal(pageId);
                           }}
                         >
                           Delete

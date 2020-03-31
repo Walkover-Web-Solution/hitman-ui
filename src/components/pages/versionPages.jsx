@@ -38,20 +38,7 @@ class Pages extends Component {
     pageIds.splice(index, 0, this.draggedItem);
     this.props.set_page_id(pageIds);
   }
-
-  handleDelete(page) {
-    const confirm = window.confirm(
-      "Are you sure you wish to delete this group? " +
-        "\n" +
-        "All your pages and endpoints present in this group will be deleted."
-    );
-    if (confirm) {
-      this.props.deletePage(page);
-      this.props.history.push({
-        pathname: "/dashboard"
-      });
-    }
-  }
+  
   handleDisplay(page) {
     this.props.history.push({
       pathname: `/dashboard/pages/${page.id}`,
@@ -66,7 +53,7 @@ class Pages extends Component {
     });
   }
 
-  openDeleteModal(pageId) {
+  openDeletePageModal(pageId) {
     this.setState({
       showDeleteModal: true,
       selectedPage: {
@@ -132,12 +119,8 @@ class Pages extends Component {
                       <div className="dropdown-menu dropdown-menu-right">
                         <button
                           className="dropdown-item"
-                          // onClick={() =>
-                          //   this.handleDelete(this.props.pages[pageId])
-                          // }
-
                           onClick={() => {
-                            this.openDeleteModal(pageId);
+                            this.openDeletePageModal(pageId);
                           }}
                         >
                           Delete

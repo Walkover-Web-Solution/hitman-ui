@@ -66,6 +66,7 @@ class CodeWindow extends Component {
           {...this.props}
           id="modal-code-window"
           size="lg"
+          animation={false}
           aria-labelledby="contained-modal-title-vcenter"
           centered
         >

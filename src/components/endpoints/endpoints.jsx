@@ -55,7 +55,6 @@ class Endpoints extends Component {
 
     tabs.splice(this.props.default_tab_index, 1);
     const newIndex = this.props.default_tab_index - 1;
-    console.log(tabs, newIndex);
     this.props.set_tabs(tabs, newIndex);
 
     this.props.deleteEndpoint(endpoint);
@@ -110,7 +109,6 @@ class Endpoints extends Component {
   }
 
   render() {
-    console.log(this.props);
     return (
       <React.Fragment>
         {/* <div>
@@ -120,6 +118,7 @@ class Endpoints extends Component {
               this.handleDelete.bind(this),
               this.closeDeleteEndpointModal.bind(this),
               "Delete Endpoint",
+              "Are you sure you wish to delete this endpoint? ",
               this.state.selectedEndpoint
             )}
         </div> */}

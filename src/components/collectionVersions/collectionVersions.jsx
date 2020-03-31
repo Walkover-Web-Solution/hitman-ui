@@ -41,20 +41,6 @@ class CollectionVersions extends Component {
     }
   };
 
-  async handleDelete(collectionVersion) {
-    const confirm = window.confirm(
-      "Are you sure you want to delete this versions? " +
-        "\n" +
-        "All your groups, pages and endpoints present in this version will be deleted."
-    );
-    if (confirm) {
-      this.props.deleteVersion(collectionVersion);
-      this.props.history.push({
-        pathname: "/dashboard"
-      });
-    }
-  }
-
   handleUpdate(collectionVersion) {
     this.props.history.push({
       pathname: `/dashboard/${this.props.collection_id}/versions/${collectionVersion.id}/edit`,
@@ -120,7 +106,7 @@ class CollectionVersions extends Component {
     });
   }
 
-  openDeleteModal(versionId) {
+  openDeleteVersionModal(versionId) {
     this.setState({
       showDeleteModal: true,
       selectedVersion: {
@@ -243,7 +229,7 @@ class CollectionVersions extends Component {
                           //   this.handleDelete(this.props.versions[versionId])
                           // }
                           onClick={() => {
-                            this.openDeleteModal(versionId);
+                            this.openDeleteVersionModal(versionId);
                           }}
                         >
                           Delete

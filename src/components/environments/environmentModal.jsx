@@ -47,35 +47,12 @@ class EnvironmentModal extends Component {
     this.props.onHide();
   }
 
-  // openDeleteModal(environmentId) {
-  //   this.setState({
-  //     showDeleteModal: true,
-  //     selectedEnvironment: {
-  //       ...this.props.environment.environments[environmentId]
-  //     }
-  //   });
-  // }
-
-  // closeDeleteEnvironmentModal() {
-  //   this.setState({ showDeleteModal: false });
-  // }
-
   render() {
     return (
-      // <div>
-      //   <div>
-      //     {this.state.showDeleteModal &&
-      //       environmentsService.showDeleteEnvironmentModal(
-      //         this.props,
-      //         this.closeDeleteEnvironmentModal.bind(this),
-      //         "Delete Environment",
-      //         this.state.selectedEnvironment
-      //       )}
-      //   </div>
-
       <Modal
         {...this.props}
         size="lg"
+        animation={false}
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
@@ -112,23 +89,9 @@ class EnvironmentModal extends Component {
                     <div className="dropdown-menu dropdown-menu-right">
                       <button
                         className="btn btn-default"
-                        // onClick={() => {
-                        // if (
-                        //   window.confirm(
-                        //     "Are you sure you wish to delete this environment?"
-                        //   )
-                        // )
-                        //   this.handleDelete(
-                        //     this.props.environment.environments[environmentId]
-                        //   );
-
-                        // }}
-                        // onClick={() => {
-                        //   this.openDeleteModal(environmentId);
-                        // }}
                         onClick={() => {
                           this.props.onHide();
-                          this.props.open_delete_modal(environmentId);
+                          this.props.open_delete_environment_modal(environmentId);
                         }}
                       >
                         delete

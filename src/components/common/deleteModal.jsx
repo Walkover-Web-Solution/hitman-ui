@@ -6,7 +6,6 @@ class DeleteModal extends Component {
 
   handleSubmit = e => {
     e.preventDefault();
-    console.log("delete modal called");
     this.doSubmit();
   };
 
@@ -44,6 +43,7 @@ class DeleteModal extends Component {
     return (
       <Modal
         {...this.props}
+        animation={false}
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >

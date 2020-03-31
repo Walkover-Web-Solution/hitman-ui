@@ -53,8 +53,6 @@ class CollectionsComponent extends Component {
     showCollectionForm: false,
     collectionFormName: "",
     selectedCollection: {}
-    // keywords: {},
-    // names: {}
   };
   keywords = {};
   names = {};
@@ -91,17 +89,6 @@ class CollectionsComponent extends Component {
     this.props.addCollection(newCollection);
   }
 
-  async handleDelete(collection) {
-    if (
-      window.confirm(
-        "Are you sure you wish to delete this collection?" +
-          "\n" +
-          " All your versions, groups, pages and endpoints present in this collection will be deleted."
-      )
-    ) {
-      this.props.deleteCollection(collection);
-    }
-  }
 
   async handleUpdateCollection(editedCollection) {
     this.props.updateCollection(editedCollection);
@@ -181,10 +168,9 @@ class CollectionsComponent extends Component {
     });
   }
 
-  openDeleteModal(collectionId) {
+  openDeleteCollectionModal(collectionId) {
     this.setState({
       showDeleteModal: true,
-      // collectionFormName: "Edit Collection",
       selectedCollection: {
         ...this.props.collections[collectionId]
       }
@@ -325,7 +311,7 @@ class CollectionsComponent extends Component {
           </div>
           {/* {Object.keys(this.props.collections).map((collectionId, index) => ( */}
           {finalCollections.map((collectionId, index) => (
-            <Accordion key={collectionId} id="parent-accordion">
+            <Accordion  key={collectionId} id="parent-accordion">
               <Card>
                 <Card.Header>
                   <i
@@ -356,14 +342,8 @@ class CollectionsComponent extends Component {
                       </button>
                       <button
                         className="dropdown-item"
-                        // onClick={() => {
-                        //   this.handleDelete(
-                        //     this.props.collections[collectionId]
-                        //   );
-                        // }}
-
                         onClick={() => {
-                          this.openDeleteModal(collectionId);
+                          this.openDeleteCollectionModal(collectionId);
                         }}
                       >
                         Delete

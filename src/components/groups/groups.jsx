@@ -71,20 +71,7 @@ class Groups extends Component {
       pathname: "/dashboard"
     });
   }
-
-  handleDelete(group) {
-    const confirm = window.confirm(
-      "Are you sure you wish to delete this group? " +
-        "\n" +
-        "All your pages and endpoints present in this group will be deleted."
-    );
-    if (confirm) {
-      this.props.deleteGroup(group);
-      this.props.history.push({
-        pathname: "/dashboard"
-      });
-    }
-  }
+  
   closeGroupForm() {
     let edit = false;
     let addPage = false;
@@ -150,7 +137,7 @@ class Groups extends Component {
     });
   }
 
-  openDeleteModal(groupId) {
+  openDeleteGroupModal(groupId) {
     this.setState({
       showDeleteModal: true,
       selectedGroup: {
@@ -215,12 +202,8 @@ class Groups extends Component {
                       </button>
                       <button
                         className="dropdown-item"
-                        // onClick={() =>
-                        //   this.handleDelete(this.props.groups[groupId])
-                        // }
-
                         onClick={() => {
-                          this.openDeleteModal(groupId);
+                          this.openDeleteGroupModal(groupId);
                         }}
                       >
                         Delete

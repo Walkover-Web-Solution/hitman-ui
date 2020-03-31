@@ -59,7 +59,7 @@ class Environments extends Component {
     this.props.addEnvironment(newEnvironment);
   }
 
-  openDeleteModal(environmentId) {
+  openDeleteEnvironmentModal(environmentId) {
     this.setState({
       showDeleteModal: true,
       selectedEnvironment: {
@@ -87,7 +87,7 @@ class Environments extends Component {
           <EnvironmentModal
             {...this.props}
             show={true}
-            open_delete_modal={this.openDeleteModal.bind(this)}
+            open_delete_environment_modal={this.openDeleteEnvironmentModal.bind(this)}
             close_delete_environment_modal={this.closeDeleteEnvironmentModal.bind(
               this
             )}

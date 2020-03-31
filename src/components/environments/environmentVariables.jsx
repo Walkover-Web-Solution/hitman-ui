@@ -100,7 +100,6 @@ class EnvironmentVariables extends Component {
   handleAdd() {
     let environment = { ...this.state.environment };
     const len = this.state.originalVariableNames.length;
-    console.log(this.state.originalVariableNames);
     let originalVariableNames = [
       ...this.state.originalVariableNames,
       len.toString()
@@ -110,7 +109,6 @@ class EnvironmentVariables extends Component {
       initialValue: "",
       currentValue: ""
     };
-    console.log(environment, originalVariableNames, updatedVariableNames);
     this.setState({ environment, originalVariableNames, updatedVariableNames });
   }
 
@@ -123,7 +121,6 @@ class EnvironmentVariables extends Component {
   handleChange = e => {
     const name = e.currentTarget.name.split(".");
     const lastIndex = this.state.originalVariableNames.length - 1;
-    console.log(name[0], lastIndex, name[0] === lastIndex.toString());
 
     const originalVariableNames = [...this.state.originalVariableNames];
     const updatedVariableNames = [...this.state.updatedVariableNames];
@@ -152,6 +149,7 @@ class EnvironmentVariables extends Component {
       <Modal
         {...this.props}
         size="lg"
+        animation={false}
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >

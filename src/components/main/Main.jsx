@@ -39,7 +39,6 @@ class Main extends Component {
     this.props.fetchPages();
   }
   setTabs(tabs, defaultTabIndex) {
-    console.log(tabs, defaultTabIndex);
     if (defaultTabIndex >= 0) {
       this.setState({ defaultTabIndex });
     }

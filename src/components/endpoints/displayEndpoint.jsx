@@ -351,7 +351,6 @@ class DisplayEndpoint extends Component {
         toast.error("Please Enter all the fields");
       else if (this.props.location.pathname.split("/")[3] === "new") {
         endpoint.requestId = this.props.tabs[this.props.default_tab_index].id;
-        console.log(endpoint.requestId);
         this.props.addEndpoint(endpoint, this.state.groupId);
       } else if (this.state.title === "update endpoint") {
         this.props.updateEndpoint({
@@ -612,7 +611,6 @@ class DisplayEndpoint extends Component {
     );
   }
   render() {
-    console.log(this.props);
     if (
       this.props.location.pathname.split("/")[3] !== "new" &&
       this.state.endpoint.id !== this.props.location.pathname.split("/")[3]
@@ -631,7 +629,6 @@ class DisplayEndpoint extends Component {
     if (this.props.location.title === "Add New Endpoint") {
       this.title = "Add New Endpoint";
       this.customHost = false;
-      console.log(this.props.location.groupId, this.state.groupId);
       if (this.props.location.groupId || this.state.groupId) {
         const hostJson = this.fetchHosts(
           this.props,

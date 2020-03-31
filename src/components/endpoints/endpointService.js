@@ -1,7 +1,7 @@
 import React from "react";
 import DeleteModal from "../common/deleteModal";
 
-function showDeleteEndpointModal(props,handleDelete, onHide, title, selectedEndpoint) {
+function showDeleteEndpointModal(props,handleDelete, onHide, title,message, selectedEndpoint) {
   return (
     <DeleteModal
       {...props}
@@ -9,6 +9,7 @@ function showDeleteEndpointModal(props,handleDelete, onHide, title, selectedEndp
       show={true}
       onHide={onHide}
       title={title}
+      message ={message}
       deleted_endpoint={selectedEndpoint}
     />
   );
