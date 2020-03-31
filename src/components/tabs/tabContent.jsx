@@ -1,10 +1,7 @@
 import React, { Component } from "react";
-import { Link, Route, Switch } from "react-router-dom";
-import DisplayEndpoint from "./endpoints/displayEndpoint";
-import Environments from "./environments/environments";
-import DisplayPage from "./pages/displayPage";
-import { Tabs, Tab, Row, Col, Nav } from "react-bootstrap";
-import EditPage from "./pages/editPage";
+import { Tab } from "react-bootstrap";
+import { Route, Switch } from "react-router-dom";
+import DisplayEndpoint from "../endpoints/displayEndpoint";
 
 class TabContent extends Component {
   state = {};

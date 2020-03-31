@@ -1,16 +1,16 @@
 import React, { Component } from "react";
 import { ToastContainer } from "react-toastify";
 import { connect } from "react-redux";
-import { moveEndpoint } from "./endpoints/redux/endpointsActions";
+import { moveEndpoint } from "../endpoints/redux/endpointsActions";
 import "react-toastify/dist/ReactToastify.css";
-import { fetchCollections } from "./collections/redux/collectionsActions";
+import { fetchCollections } from "../collections/redux/collectionsActions";
 import SideBar from "./sidebar";
 import Navbar from "./Navbar";
 import ContentPanel from "./contentPanel";
-import { fetchAllVersions } from "./collectionVersions/redux/collectionVersionsActions";
-import { fetchEndpoints } from "./endpoints/redux/endpointsActions";
-import { fetchGroups } from "./groups/redux/groupsActions";
-import { fetchPages } from "./pages/redux/pagesActions";
+import { fetchAllVersions } from "../collectionVersions/redux/collectionVersionsActions";
+import { fetchEndpoints } from "../endpoints/redux/endpointsActions";
+import { fetchGroups } from "../groups/redux/groupsActions";
+import { fetchPages } from "../pages/redux/pagesActions";
 
 const mapDispatchToProps = dispatch => {
   return {
@@ -39,6 +39,7 @@ class Main extends Component {
     this.props.fetchPages();
   }
   setTabs(tabs, defaultTabIndex) {
+    console.log(tabs, defaultTabIndex);
     if (defaultTabIndex >= 0) {
       this.setState({ defaultTabIndex });
     }
@@ -91,6 +92,7 @@ class Main extends Component {
             set_destination_group_id={this.setDestinationGroupId.bind(this)}
             tabs={[...this.state.tabs]}
             set_tabs={this.setTabs.bind(this)}
+            default_tab_index={this.state.defaultTabIndex}
           />
           <ContentPanel
             {...this.props}

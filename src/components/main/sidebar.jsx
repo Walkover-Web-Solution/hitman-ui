@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Switch } from "react-router-dom";
-import Collections from "./collections/collections";
-import ProtectedRoute from "./common/protectedRoute";
+import Collections from "../collections/collections";
+import ProtectedRoute from "../common/protectedRoute";
 class SideBar extends Component {
   state = {
     data: {

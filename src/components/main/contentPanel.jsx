@@ -3,9 +3,9 @@ import { Tab } from "react-bootstrap";
 import { connect } from "react-redux";
 import "react-tabs/style/react-tabs.css";
 import shortId from "shortid";
-import Environments from "./environments/environments";
-import TabContent from "./tabContent";
-import CustomTabs from "./tabs";
+import Environments from "../environments/environments";
+import TabContent from "../tabs/tabContent";
+import CustomTabs from "../tabs/tabs";
 
 const mapStateToProps = state => {
   return { endpoints: state.endpoints, groups: state.groups };
@@ -59,7 +59,7 @@ class ContentPanel extends Component {
         this.props.set_tabs(null, index);
       }
     }
-
+    console.log(this.props.tabs, this.props.default_tab_index);
     return (
       <main role="main" className="main ml-sm-auto col-lg-10 ">
         <Tab.Container
