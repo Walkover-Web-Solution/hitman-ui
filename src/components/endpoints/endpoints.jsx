@@ -94,7 +94,6 @@ class Endpoints extends Component {
     });
   }
   render() {
-    console.log(this.props);
     return (
       <React.Fragment>
         {Object.keys(this.props.endpoints).length !== 0 &&

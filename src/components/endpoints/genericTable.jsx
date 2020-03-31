@@ -11,6 +11,7 @@ class GenericTable extends Component {
       if (title === "Params" && dataArray[name[0]].key.length === 0) {
         this.handleDelete(dataArray, name[0], title);
       }
+      this.handleAdd(dataArray, title, dataArray[name[0]].key, name[0]);
     }
     if (name[1] === "value") {
       dataArray[name[0]].value = e.currentTarget.value;
@@ -24,17 +25,20 @@ class GenericTable extends Component {
       this.props.props_from_parent("originalParams", dataArray);
   };
 
-  handleAdd(dataArray, title) {
-    const len = dataArray.length;
-    dataArray[len.toString()] = {
-      key: "",
-      value: "",
-      description: ""
-    };
-    if (title === "Headers")
-      this.props.props_from_parent("originalHeaders", dataArray);
-    if (title === "Params")
-      this.props.props_from_parent("originalParams", dataArray);
+  handleAdd(dataArray, title, key, index) {
+    index = parseInt(index) + 1;
+    if (key.length === 1 && !dataArray[index]) {
+      const len = dataArray.length;
+      dataArray[len.toString()] = {
+        key: "",
+        value: "",
+        description: ""
+      };
+      if (title === "Headers")
+        this.props.props_from_parent("originalHeaders", dataArray);
+      if (title === "Params")
+        this.props.props_from_parent("originalParams", dataArray);
+    }
   }
 
   handleDelete(dataArray, index, title) {
@@ -100,30 +104,18 @@ class GenericTable extends Component {
                     style={{ border: "none" }}
                     className="form-control"
                   />
-                  <button
-                    type="button"
-                    className="btn cross-button"
-                    onClick={() => this.handleDelete(dataArray, index, title)}
-                  >
-                    x
-                  </button>
+                  {dataArray.length - 1 === index ? null : (
+                    <button
+                      type="button"
+                      className="btn cross-button"
+                      onClick={() => this.handleDelete(dataArray, index, title)}
+                    >
+                      x
+                    </button>
+                  )}
                 </td>
               </tr>
             ))}
-            <tr>
-              <td className="custom-td"> </td>
-              <td className="custom-td">
-                {" "}
-                <button
-                  type="button"
-                  className="btn btn-link btn-sm btn-block"
-                  onClick={() => this.handleAdd(dataArray, title)}
-                >
-                  {"+ Add" + title}
-                </button>
-              </td>
-              <td className="custom-td"> </td>
-            </tr>
           </tbody>
         </table>
       </div>
