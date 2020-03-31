@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import "./styles.scss";
-import collectionsService from "./collections/collectionsService";
-import environmentsService from "./environments/environmentsService";
+import "../styles.scss";
+import collectionsService from "../collections/collectionsService";
+import environmentsService from "../environments/environmentsService";
 import CreateNewModal from "./CreateNewModal";
-import { getCurrentUser } from "./auth/authService";
+import { getCurrentUser } from "../auth/authService";
 import shortId from "shortid";
 
 class Navbar extends Component {
@@ -136,7 +136,7 @@ class Navbar extends Component {
           </div>
         </div>
 
-        <div className="btn-grp">
+        <div className="btn-grp" id="user-menu">
           <div class="dropdown">
             <button
               class="btn btn-secondary dropdown-toggle"

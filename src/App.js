@@ -3,7 +3,7 @@ import { Route, Switch } from "react-router-dom";
 import Login from "./components/auth/login";
 import Logout from "./components/auth/logout";
 import ProtectedRoute from "./components/common/protectedRoute";
-import Main from "./components/Main.jsx";
+import Main from "./components/main/Main.jsx";
 import Public from "./components/publicEndpoint/publicEndpoint.jsx";
 
 class App extends Component {

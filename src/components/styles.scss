@@ -15,6 +15,18 @@ $border-color: rgba(227, 228, 230, 0.7);
 #code-window-sidebar {
   display: flex;
 }
+
+#code-window-body {
+  display: flex;
+  flex-direction: row;
+  background-color: var(--bg-primary);
+  box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.2);
+  border-radius: 0px;
+  z-index: 2;
+  margin-bottom: 25px;
+  padding: 5px 5px 5px 5px;
+}
+
 #search-box-wrapper {
   display: flex;
   flex-direction: row;
@@ -38,64 +50,74 @@ $border-color: rgba(227, 228, 230, 0.7);
   }
 }
 
-.accordion > .card {
-  border-radius: 0;
-  border: none;
-  .card-header {
-    border-bottom: 1px solid $border-color;
-    margin-bottom: 0px !important;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: flex-start;
-    padding: 0px;
-    height: 60px;
-    border-radius: 0px;
-    background-color: white;
-    .btn {
-      text-align: left;
-    }
-    i.fas.fa-folder-open {
-      opacity: 0.4;
-      padding-left: 10px;
-    }
-    i.fa.fa-file-text {
-      opacity: 0.4;
-      padding-left: 10px;
-      margin: 5px;
-    }
-    button.btn {
-      float: left;
-      width: 80%;
-    }
-    .btn-group {
-      visibility: hidden;
-
-      button.btn.btn-secondary {
+#parent-accordion {
+  .card {
+    border-radius: 0;
+    border: none;
+    .card-header {
+      border-bottom: 1px solid $border-color;
+      margin-bottom: 0px !important;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 0px;
+      height: 60px;
+      border-radius: 0px;
+      background-color: white;
+      .btn {
+        text-align: left;
+      }
+      i.fas.fa-folder-open {
+        opacity: 0.4;
+        padding-left: 10px;
+      }
+      i.fa.fa-file-text {
+        color: rgb(158, 154, 16);
+        opacity: 0.8;
+        padding-left: 10px;
+        margin: 5px;
+      }
+      button.btn {
+        float: left;
+        width: 80%;
+      }
+      .btn-group {
+        visibility: hidden;
+        display: flex;
+        margin: 0px;
+        height: 100%;
         border-radius: 0px;
-        background: rgb(237, 237, 237);
-        border: 0px;
-        border-left: 1px solid rgba(0, 0, 0, 0.125);
-        color: rgba(0, 0, 0, 0.4);
+        button.btn.btn-secondary {
+          border-radius: 0px;
+          background: rgb(237, 237, 237);
+          border: 0px;
+          border-left: 1px solid rgba(0, 0, 0, 0.125);
+          color: rgba(0, 0, 0, 0.4);
+        }
+        .dropdown-menu {
+          border-radius: 0px;
+          transform: translate3d(-119px, 59px, 0px) !important;
+          margin: 0px;
+        }
+      }
+      .show {
+        visibility: visible;
+      }
+    }
+    .card-header:hover {
+      background: rgb(237, 237, 237);
+
+      .btn-group {
+        visibility: visible;
       }
     }
   }
-  .card-header:hover {
-    background: rgb(237, 237, 237);
-
-    .btn-group {
-      visibility: visible;
-      display: flex;
-      margin: 0px;
-      height: 100%;
-      border-radius: 0px;
-    }
-  }
 }
-#accordion > .card {
+#child-accordion > .card {
   border-radius: 0px;
   border: none;
-  div#custom-card-header {
+  .card-header {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -114,7 +136,10 @@ $border-color: rgba(227, 228, 230, 0.7);
     }
     .btn-group {
       visibility: hidden;
-
+      display: flex;
+      margin: 0px;
+      height: 100%;
+      border-radius: 0px;
       button.btn.btn-secondary {
         border-radius: 0px;
         background: rgb(237, 237, 237);
@@ -122,20 +147,25 @@ $border-color: rgba(227, 228, 230, 0.7);
         border-left: 1px solid rgba(0, 0, 0, 0.125);
         color: rgba(0, 0, 0, 0.4);
       }
+      .dropdown-menu {
+        border-radius: 0px;
+        transform: translate3d(-119px, 40px, 0px) !important;
+        margin: 0px;
+      }
+    }
+    .show {
+      visibility: visible;
     }
   }
 
-  div#custom-card-header:hover {
+  .card-header:hover {
     background: rgb(237, 237, 237);
     .btn-group {
       visibility: visible;
-      display: flex;
-      margin: 0px;
-      height: 100%;
-      border-radius: 0px;
     }
   }
 }
+
 .card-body {
   padding: 0 0 0 15px !important;
 }
@@ -208,11 +238,18 @@ $border-color: rgba(227, 228, 230, 0.7);
     }
   }
 }
-nav.col-md-2.d-none.d-md-block.bg-light.sidebar {
-  padding-left: 0;
-  padding-right: 0;
-  border-right: 2px solid $border-color;
-  background-color: white !important;
+.main-panel-wrapper {
+  display: flex;
+  flex-direction: row;
+
+  nav.col-md-2.d-none.d-md-block.bg-light.sidebar {
+    flex: 1;
+    overflow: hidden;
+    padding-left: 0;
+    padding-right: 0;
+    border-right: 2px solid $border-color;
+    background-color: white !important;
+  }
 }
 
 .btn:focus {
@@ -421,14 +458,49 @@ main.main.ml-sm-auto.col-lg-10 {
           border-top-right-radius: 3px;
         }
       }
-      #add-new-tab-button {
+      .tab-buttons {
         width: 35px !important;
         min-width: 35px;
         display: flex;
         justify-content: center;
+        margin: 0px;
+        border-radius: 0px;
         .btn {
+          display: flex;
+          align-items: center;
           padding: 0px;
           font-size: 25px;
+          .fa-plus {
+            font-size: 15px;
+          }
+          .fa-ellipsis-h {
+            font-size: 18px;
+          }
+        }
+        .btn:hover {
+          .fa-plus {
+            color: tomato;
+          }
+          .fa-ellipsis-h {
+            color: tomato;
+          }
+        }
+      }
+      #add-new-tab-button {
+        border-top-left-radius: 5px;
+      }
+      #tabs-menu-button {
+        border-left: 0px;
+        border-top-right-radius: 5px;
+        .dropdown {
+          .dropdown-menu {
+            transform: translate3d(-132px, 20px, 0px);
+            border-radius: 0px;
+            padding: 10px;
+            .btn {
+              font-size: 15px;
+            }
+          }
         }
       }
     }
@@ -562,11 +634,6 @@ body {
     outline: 0;
     box-shadow: none;
   }
-}
-
-nav.col-md-3.d-none.d-md-block.bg-light.sidebar {
-  border-right: 2px solid black;
-  background-color: white !important;
 }
 
 button.btn.btn-default.custom-submit-button {
@@ -793,8 +860,12 @@ input#custom-environment-input {
 
 //user menu style
 
-.dropdown-menu.dropdown-menu-right.show {
-  width: 250px;
+#user-menu {
+  .dropdown {
+    .dropdown-menu {
+      width: 250px;
+    }
+  }
 }
 
 #custom-user-left {

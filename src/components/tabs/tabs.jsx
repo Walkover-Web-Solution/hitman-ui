@@ -60,10 +60,18 @@ class CustomTabs extends Component {
     }
   }
 
+  closeAllTabs() {
+    const id = shortId.generate();
+    const tabs = [{ id, type: "endpoint", isSaved: false }];
+    this.props.set_tabs(tabs, 0);
+    this.props.history.push({ pathname: "/dashboard/endpoint/new" });
+  }
+
   render() {
+    console.log(this.props.endpoints, this.props.tabs);
     return (
       <Nav variant="pills" className="flex-row">
-        {Object.keys(this.props.endpoints).length &&
+        {Object.keys(this.props.endpoints).length > 0 &&
           this.props.tabs.map((tab, index) => (
             <Nav.Item>
               <Nav.Link eventKey={tab.id}>
@@ -94,10 +102,38 @@ class CustomTabs extends Component {
               </button>
             </Nav.Item>
           ))}
-        <Nav.Item id="add-new-tab-button">
+        <Nav.Item className="tab-buttons" id="add-new-tab-button">
           <button className="btn" onClick={() => this.addNewTab()}>
-            +
+            <i class="fas fa-plus"></i>
           </button>
+        </Nav.Item>
+        <Nav.Item className="tab-buttons" id="tabs-menu-button">
+          <div class="dropdown">
+            <button
+              class="btn "
+              type="button"
+              id="tabs-menu"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
+              <i class="fas fa-ellipsis-h"></i>
+            </button>
+            <div
+              class="dropdown-menu dropdown-menu-right"
+              aria-labelledby="tabs-menu"
+            >
+              <button
+                className="btn"
+                onClick={() => this.deleteTab(this.props.default_tab_index)}
+              >
+                Close Current Tab
+              </button>
+              <button className="btn" onClick={() => this.closeAllTabs()}>
+                Close All Tabs
+              </button>
+            </div>
+          </div>
         </Nav.Item>
       </Nav>
     );

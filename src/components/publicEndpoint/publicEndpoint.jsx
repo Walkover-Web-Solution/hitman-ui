@@ -1,12 +1,11 @@
 import React, { Component } from "react";
-import { Tab } from "react-bootstrap";
 import { connect } from "react-redux";
 import { Route, Switch } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import DisplayEndpoint from "../endpoints/displayEndpoint";
 import DisplayPage from "../pages/displayPage";
-import SideBar from "../sidebar";
+import SideBar from "../main/sidebar";
 import { fetchAllPublicEndpoints } from "./redux/publicEndpointsActions.js";
 
 const mapDispatchToProps = dispatch => {
@@ -29,7 +28,7 @@ class PublicEndpoint extends Component {
       <main role="main" className="main ml-sm-auto col-lg-10 ">
         <div>
           <ToastContainer />
-          <div className="wrapper">
+          <div className="main-panel-wrapper">
             <SideBar {...this.props} />
           </div>
 

@@ -1,7 +1,8 @@
 import React, { Component } from "react";
-import { Switch, Route } from "react-router-dom";
-import Collections from "./collections/collections";
-import ProtectedRoute from "./common/protectedRoute";
+import { Route, Switch } from "react-router-dom";
+import Collections from "../collections/collections";
+import ProtectedRoute from "../common/protectedRoute";
+import { isDashboardRoute } from "../common/utility";
 class SideBar extends Component {
   state = {
     data: {
@@ -12,30 +13,30 @@ class SideBar extends Component {
   handleChange = e => {
     let data = { ...this.state.data };
     data[e.currentTarget.name] = e.currentTarget.value;
-    // console.log(data);
     this.setState({ data });
   };
 
   render() {
-    // console.log(this.state.data.filter);
     return (
       <nav className="col-md-2 d-none d-md-block bg-light sidebar ">
         <div className="sidebar-sticky">
-          <div id="search-box-wrapper">
-            <div>
-              {" "}
-              <i class="fas fa-search" id="search-icon"></i>
+          {isDashboardRoute(this.props) ? (
+            <div id="search-box-wrapper">
+              <div>
+                {" "}
+                <i class="fas fa-search" id="search-icon"></i>
+              </div>
+              <div id="search-box-input">
+                <input
+                  type="text"
+                  id="search-box-input"
+                  name="filter"
+                  placeholder="Filter"
+                  onChange={this.handleChange}
+                />
+              </div>
             </div>
-            <div id="search-box-input">
-              <input
-                type="text"
-                id="search-box-input"
-                name="filter"
-                placeholder="Filter"
-                onChange={this.handleChange}
-              />
-            </div>
-          </div>
+          ) : null}
 
           <ul class="nav nav-tabs" id="myTab" role="tablist">
             <li class="nav-item">

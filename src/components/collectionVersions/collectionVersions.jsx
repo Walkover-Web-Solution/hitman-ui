@@ -179,7 +179,7 @@ class CollectionVersions extends Component {
                 this.props.collection_id
             )
             .map((versionId, index) => (
-              <Accordion key={versionId}>
+              <Accordion key={versionId} id="child-accordion">
                 <Card>
                   <Card.Header>
                     <i
@@ -276,7 +276,6 @@ class CollectionVersions extends Component {
               </Accordion>
             ))}
       </div>
-      // </div>
     );
   }
 }

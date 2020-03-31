@@ -103,21 +103,6 @@ class CollectionsComponent extends Component {
           " All your versions, groups, pages and endpoints present in this collection will be deleted."
       )
     ) {
-      const { id: collectionId, keyword, name } = collection;
-      let splitedKeywords = keyword.split(",");
-      for (let i = 0; i < splitedKeywords.length; i++) {
-        const keyword = splitedKeywords[i];
-        if (this.keywords[keyword]) {
-          this.keywords[keyword] = this.keywords[keyword].filter(
-            id => id !== collectionId
-          );
-          if (this.keywords[keyword].length === 0) {
-            delete this.keywords[keyword];
-          }
-        }
-      }
-
-      delete this.names[name];
       this.props.deleteCollection(collection);
     }
   }
@@ -219,6 +204,8 @@ class CollectionsComponent extends Component {
 
   render() {
     if (isDashboardRoute(this.props)) {
+      this.keywords = {};
+      this.names = {};
       let finalKeywords = [];
       let finalnames = [];
       let collections = { ...this.props.collections };
@@ -319,8 +306,9 @@ class CollectionsComponent extends Component {
                 New Collection
               </button>
             </div>
+
             {finalCollections.map((collectionId, index) => (
-              <Accordion key={collectionId}>
+              <Accordion key={collectionId} id="parent-accordion">
                 <Card>
                   <Card.Header>
                     <i
@@ -416,7 +404,7 @@ class CollectionsComponent extends Component {
         <div>
           <div className="App-Side">
             {Object.keys(this.props.collections).map((collectionId, index) => (
-              <Accordion key={collectionId}>
+              <Accordion key={collectionId} id="parent-accordion">
                 <Card>
                   <Card.Header>
                     <i

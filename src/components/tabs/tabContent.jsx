@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Tab } from "react-bootstrap";
 import { Route, Switch } from "react-router-dom";
-import DisplayEndpoint from "./endpoints/displayEndpoint";
+import DisplayEndpoint from "../endpoints/displayEndpoint";
 
 class TabContent extends Component {
   state = {};

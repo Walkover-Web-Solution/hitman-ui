@@ -2,16 +2,16 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { fetchCollections } from "./collections/redux/collectionsActions";
-import { fetchAllVersions } from "./collectionVersions/redux/collectionVersionsActions";
+import { fetchCollections } from "../collections/redux/collectionsActions";
+import { fetchAllVersions } from "../collectionVersions/redux/collectionVersionsActions";
 import ContentPanel from "./contentPanel";
 import {
   fetchEndpoints,
   moveEndpoint
-} from "./endpoints/redux/endpointsActions";
-import { fetchGroups } from "./groups/redux/groupsActions";
+} from "../endpoints/redux/endpointsActions";
+import { fetchGroups } from "../groups/redux/groupsActions";
 import Navbar from "./Navbar";
-import { fetchPages } from "./pages/redux/pagesActions";
+import { fetchPages } from "../pages/redux/pagesActions";
 import SideBar from "./sidebar";
 
 const mapDispatchToProps = dispatch => {
@@ -41,6 +41,7 @@ class Main extends Component {
     this.props.fetchPages();
   }
   setTabs(tabs, defaultTabIndex) {
+    console.log(tabs, defaultTabIndex);
     if (defaultTabIndex >= 0) {
       this.setState({ defaultTabIndex });
     }
@@ -85,13 +86,14 @@ class Main extends Component {
           tabs={[...this.state.tabs]}
           set_tabs={this.setTabs.bind(this)}
         />
-        <div className="wrapper">
+        <div className="main-panel-wrapper">
           <SideBar
             {...this.props}
             set_source_group_id={this.setSourceGroupId.bind(this)}
             set_destination_group_id={this.setDestinationGroupId.bind(this)}
             tabs={[...this.state.tabs]}
             set_tabs={this.setTabs.bind(this)}
+            default_tab_index={this.state.defaultTabIndex}
           />
           <ContentPanel
             {...this.props}

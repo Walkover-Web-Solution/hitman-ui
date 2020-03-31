@@ -3,9 +3,9 @@ import { Tab } from "react-bootstrap";
 import { connect } from "react-redux";
 import "react-tabs/style/react-tabs.css";
 import shortId from "shortid";
-import Environments from "./environments/environments";
-import TabContent from "./tabContent";
-import CustomTabs from "./tabs";
+import Environments from "../environments/environments";
+import TabContent from "../tabs/tabContent";
+import CustomTabs from "../tabs/tabs";
 
 const mapStateToProps = state => {
   return { endpoints: state.endpoints, groups: state.groups };
