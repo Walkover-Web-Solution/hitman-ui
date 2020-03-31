@@ -1,16 +1,15 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { toast } from "react-toastify";
-import shortId from "shortid";
-import DisplayResponse from "./displayResponse";
-import GenericTable from "./genericTable";
-import { addEndpoint, updateEndpoint } from "./redux/endpointsActions";
-import endpointService from "./endpointService";
-import store from "../../store/store";
 import { withRouter } from "react-router-dom";
-import CreateEndpointForm from "./createEndpointForm";
+import { toast } from "react-toastify";
+import store from "../../store/store";
 import CodeWindow from "./codeWindow";
-import EndpointUri from "./endpointUri";
+import CreateEndpointForm from "./createEndpointForm";
+import DisplayResponse from "./displayResponse";
+import endpointService from "./endpointService";
+import GenericTable from "./genericTable";
+import HostContainer from "./hostContainer";
+import { addEndpoint, updateEndpoint } from "./redux/endpointsActions";
 
 var URI = require("urijs");
 
@@ -38,7 +37,7 @@ class DisplayEndpoint extends Component {
   body = React.createRef();
   name = React.createRef();
   paramKey = React.createRef();
-  BASE_URL_Value = React.createRef();
+  // BASE_URL_Value = React.createRef();
 
   state = {
     data: {
@@ -46,23 +45,27 @@ class DisplayEndpoint extends Component {
       method: "GET",
       body: {},
       uri: "",
-      updatedUri: "",
-      host: ""
+      updatedUri: ""
     },
+    methodList: ["GET", "POST", "PUT", "DELETE"],
     environment: {},
     startTime: "",
     timeElapsed: "",
     response: {},
     endpoint: {},
-    groups: {},
-    versions: {},
+    // groups: {},
+    // versions: {},
     groupId: null,
     title: "",
-    selectedHost: "",
-    onChangeFlag: false,
+    // selectedHost: "",
+    // onChangeFlag: false,
     flagResponse: false,
     originalHeaders: [],
     originalParams: []
+  };
+
+  customState = {
+    BASE_URL: ""
   };
 
   async componentDidMount() {
@@ -89,8 +92,8 @@ class DisplayEndpoint extends Component {
     const { groups } = store.getState();
     const { versions } = store.getState();
     if (this.props.location.pathname.split("/")[3] === "new" && !this.title) {
-      this.setState({ selectedHost: "custom" });
-      this.customHost = true;
+      // this.setState({ selectedHost: "custom" });
+      // this.customHost = true;
     } else if (
       Object.keys(groups).length !== 0 &&
       Object.keys(versions).length !== 0 &&
@@ -111,30 +114,29 @@ class DisplayEndpoint extends Component {
         originalHeaders.push(endpoint.headers[h]);
       });
 
-      this.BASE_URL = endpoint.BASE_URL;
-      if (endpoint.BASE_URL !== null) {
-        this.setDropdownValue("custom");
-      } else {
-        this.setState({ selectedHost: "" });
-        this.customHost = false;
-      }
+      // this.BASE_URL = endpoint.BASE_URL;
+      // if (endpoint.BASE_URL !== null) {
+      //   this.setDropdownValue("custom");
+      // } else {
+      //   this.setState({ selectedHost: "" });
+      //   this.customHost = false;
+      // }
 
-      let props = { ...this.props, groupId: groupId };
-      const hostJson = this.fetchHosts(
-        props,
-        this.props.environment,
-        props.groupId
-      );
-      this.fillDropdownValue(hostJson);
-      this.host = this.findHost(hostJson);
+      // let props = { ...this.props, groupId: groupId };
+      // const hostJson = this.fetchHosts(
+      //   props,
+      //   this.props.environment,
+      //   props.groupId
+      // );
+      // this.fillDropdownValue(hostJson);
+      // this.host = this.findHost(hostJson);
       this.setState({
         data: {
           method: endpoint.requestType,
           uri: endpoint.uri,
           updatedUri: endpoint.uri,
           name: endpoint.name,
-          body: JSON.stringify(endpoint.body, null, 4),
-          host: this.host
+          body: JSON.stringify(endpoint.body, null, 4)
         },
         originalParams,
         originalHeaders,
@@ -148,9 +150,9 @@ class DisplayEndpoint extends Component {
   }
   handleChange = e => {
     let data = { ...this.state.data };
-    if (e.currentTarget.name === "host") {
-      this.setState({ onChangeFlag: true });
-    }
+    // if (e.currentTarget.name === "host") {
+    //   // this.setState({ onChangeFlag: true });
+    // }
     data[e.currentTarget.name] = e.currentTarget.value;
     data.uri = e.currentTarget.value;
     if (e.currentTarget.name === "updatedUri") {
@@ -195,29 +197,29 @@ class DisplayEndpoint extends Component {
     return originalParams;
   }
 
-  findHost(hostJson) {
-    let host = "";
-    let key = "";
-    if (this.customHost === true) {
-      host = this.BASE_URL;
-      return host;
-    }
-    host = hostJson.variableHost;
-    key = "variable";
-    if (host === "") {
-      host = hostJson.groupHost;
-      key = "group";
-      if (host === "") {
-        host = hostJson.versionHost;
-        key = "version";
-      }
-    }
-    this.setDropdownValue(key);
-    let data = { ...this.state.data };
-    data.host = host;
-    this.setState({ data });
-    return host;
-  }
+  // findHost(hostJson) {
+  //   let host = "";
+  //   let key = "";
+  //   if (this.customHost === true) {
+  //     host = this.BASE_URL;
+  //     return host;
+  //   }
+  //   host = hostJson.variableHost;
+  //   key = "variable";
+  //   if (host === "") {
+  //     host = hostJson.groupHost;
+  //     key = "group";
+  //     if (host === "") {
+  //       host = hostJson.versionHost;
+  //       key = "version";
+  //     }
+  //   }
+  //   this.setDropdownValue(key);
+  //   let data = { ...this.state.data };
+  //   data.host = host;
+  //   this.setState({ data });
+  //   return host;
+  // }
 
   replaceVariables(str) {
     str = str.toString();
@@ -316,8 +318,8 @@ class DisplayEndpoint extends Component {
     let response = {};
     this.setState({ startTime, response });
     const headersData = this.doSubmitHeader();
-    const host = this.state.data.host;
-    let api = host + this.uri.current.value;
+    const BASE_URL = this.customState.BASE_URL;
+    let api = BASE_URL + this.uri.current.value;
     api = this.replaceVariables(api);
     let body = this.parseBody(this.state.data);
     let headerJson = {};
@@ -341,13 +343,14 @@ class DisplayEndpoint extends Component {
         requestType: this.state.data.method,
         body: body,
         headers: headersData,
-        params: updatedParams
+        params: updatedParams,
+        BASE_URL: this.customState.BASE_URL
       };
-      if (this.customHost === true) {
-        endpoint.BASE_URL = this.BASE_URL_Value.current.value;
-      } else {
-        endpoint.BASE_URL = null;
-      }
+      // if (this.customHost === true) {
+      //   endpoint.BASE_URL = this.BASE_URL_Value.current.value;
+      // } else {
+      //   endpoint.BASE_URL = null;
+      // }
       if (endpoint.name === "" || endpoint.uri === "")
         toast.error("Please Enter all the fields");
       else if (this.props.location.pathname.split("/")[3] === "new") {
@@ -388,12 +391,12 @@ class DisplayEndpoint extends Component {
     return updatedHeaders;
   }
 
-  // setMethod(method) {
-  //   const response = {};
-  //   let data = { ...this.state.data };
-  //   data.method = method;
-  //   this.setState({ response, data });
-  // }
+  setMethod(method) {
+    const response = {};
+    let data = { ...this.state.data };
+    data.method = method;
+    this.setState({ response, data });
+  }
 
   propsFromChild(name, value) {
     if (name === "originalParams") {
@@ -456,17 +459,17 @@ class DisplayEndpoint extends Component {
     return updatedParams;
   }
 
-  fillDropdownValue(hostJson) {
-    this.dropdownHost["variable"].value = hostJson.variableHost;
-    this.dropdownHost["group"].value = hostJson.groupHost;
-    this.dropdownHost["version"].value = hostJson.versionHost;
-  }
-  dropdownHost = {
-    variable: { name: "Variable", value: "" },
-    group: { name: "Group", value: "" },
-    version: { name: "Version", value: "" },
-    custom: { name: "Custom", value: "custom" }
-  };
+  // fillDropdownValue(hostJson) {
+  //   this.dropdownHost["variable"].value = hostJson.variableHost;
+  //   this.dropdownHost["group"].value = hostJson.groupHost;
+  //   this.dropdownHost["version"].value = hostJson.versionHost;
+  // }
+  // dropdownHost = {
+  //   variable: { name: "Variable", value: "" },
+  //   group: { name: "Group", value: "" },
+  //   version: { name: "Version", value: "" },
+  //   custom: { name: "Custom", value: "custom" }
+  // };
 
   // dropdownRequestType = {
   //   get: { name: "GET" },
@@ -475,46 +478,46 @@ class DisplayEndpoint extends Component {
   //   delete: { name: "DELETE" }
   // };
 
-  setDropdownValue(key) {
-    let host = "";
-    if (key === "custom") {
-      host = "";
-      this.customHost = true;
-    } else {
-      this.customHost = false;
-      host = this.dropdownHost[key].value;
-    }
-    let data = { ...this.state.data };
-    data.host = host;
-    this.setState({
-      selectedHost: key,
-      data
-    });
-  }
+  // setDropdownValue(key) {
+  //   let host = "";
+  //   if (key === "custom") {
+  //     host = "";
+  //     this.customHost = true;
+  //   } else {
+  //     this.customHost = false;
+  //     host = this.dropdownHost[key].value;
+  //   }
+  //   let data = { ...this.state.data };
+  //   data.host = host;
+  //   this.setState({
+  //     selectedHost: key,
+  //     data
+  //   });
+  // }
 
-  handleDropdownChange = e => {
-    let data = { ...this.state.data };
-    data[e.currentTarget.name] = e.currentTarget.value;
-    data.host = e.currentTarget.value;
-    this.setState({ data });
-  };
+  // handleDropdownChange = e => {
+  //   let data = { ...this.state.data };
+  //   data[e.currentTarget.name] = e.currentTarget.value;
+  //   data.host = e.currentTarget.value;
+  //   this.setState({ data });
+  // };
 
-  fetchHosts(props, environment, groupId) {
-    let variableHost = "";
-    if (environment.variables && environment.variables.BASE_URL) {
-      variableHost = environment.variables.BASE_URL.currentValue;
-    }
+  // fetchHosts(props, environment, groupId) {
+  //   let variableHost = "";
+  //   if (environment.variables && environment.variables.BASE_URL) {
+  //     variableHost = environment.variables.BASE_URL.currentValue;
+  //   }
 
-    const { groups, versions } = props;
-    const { versionId, host: groupHost } = groups[groupId];
-    const { host: versionHost } = versions[versionId];
-    let hostJson = {
-      variableHost,
-      groupHost,
-      versionHost
-    };
-    return hostJson;
-  }
+  //   const { groups, versions } = props;
+  //   const { versionId, host: groupHost } = groups[groupId];
+  //   const { host: versionHost } = versions[versionId];
+  //   let hostJson = {
+  //     variableHost,
+  //     groupHost,
+  //     versionHost
+  //   };
+  //   return hostJson;
+  // }
 
   fetchoriginalParams(params) {
     let originalParams = [];
@@ -575,11 +578,12 @@ class DisplayEndpoint extends Component {
   }
 
   async prepareHarObject() {
-    const { uri, method, body, host } = this.state.data;
+    const { uri, method, body } = this.state.data;
+    const BASE_URL = this.customState.BASE_URL;
     const { originalHeaders, originalParams } = this.state;
     const harObject = {
       method,
-      url: host + uri.split("?")[0],
+      url: BASE_URL + uri.split("?")[0],
       httpVersion: "HTTP/1.1",
       cookies: [],
       headers: this.makeHeaders(originalHeaders),
@@ -611,6 +615,10 @@ class DisplayEndpoint extends Component {
       />
     );
   }
+
+  setBaseUrl(BASE_URL) {
+    this.customState.BASE_URL = BASE_URL;
+  }
   render() {
     if (
       this.props.location.pathname.split("/")[3] !== "new" &&
@@ -629,36 +637,35 @@ class DisplayEndpoint extends Component {
     }
     if (this.props.location.title === "Add New Endpoint") {
       this.title = "Add New Endpoint";
-      this.customHost = false;
+      // this.customHost = false;
 
-      if (this.props.location.groupId || this.state.groupId) {
-        const hostJson = this.fetchHosts(
-          this.props,
-          this.props.environment,
-          this.props.location.groupId
-        );
-        this.fillDropdownValue(hostJson);
-        this.host = this.findHost(hostJson);
-      }
+      // if (this.props.location.groupId || this.state.groupId) {
+      // const hostJson = this.fetchHosts(
+      //   this.props,
+      //   this.props.environment,
+      //   this.props.location.groupId
+      // );
+      //   this.fillDropdownValue(hostJson);
+      //   this.host = this.findHost(hostJson);
+      // }
       this.setState({
         data: {
           name: "",
           method: "GET",
           body: JSON.stringify({}, null, 4),
           uri: "",
-          updatedUri: "",
-          host: this.host
+          updatedUri: ""
         },
         startTime: "",
         timeElapsed: "",
         response: {},
         endpoint: {},
-        groups: this.props.groups,
-        versions: this.props.versions,
+        // groups: this.props.groups,
+        // versions: this.props.versions,
         groupId: this.props.location.groupId,
         title: "Add New Endpoint",
-        selectedHost: "",
-        onChangeFlag: false,
+        // selectedHost: "",
+        // onChangeFlag: false,
         flagResponse: false,
         originalHeaders: [],
         originalParams: []
@@ -670,21 +677,21 @@ class DisplayEndpoint extends Component {
       this.props.location.title === "update endpoint" &&
       this.props.location.endpoint
     ) {
-      this.BASE_URL = this.props.location.endpoint.BASE_URL;
-      if (this.props.location.endpoint.BASE_URL !== null) {
-        this.setDropdownValue("custom");
-      } else {
-        this.setState({ selectedHost: "" });
-        this.customHost = false;
-      }
+      // this.BASE_URL = this.props.location.endpoint.BASE_URL;
+      // if (this.props.location.endpoint.BASE_URL !== null) {
+      //   // this.setDropdownValue("custom");
+      // } else {
+      //   // this.setState({ selectedHost: "" });
+      //   // this.customHost = false;
+      // }
       let endpoint = { ...this.props.location.endpoint };
-      const hostJson = this.fetchHosts(
-        this.props,
-        this.props.environment,
-        this.props.location.groupId
-      );
-      this.fillDropdownValue(hostJson);
-      this.host = this.findHost(hostJson);
+      // const hostJson = this.fetchHosts(
+      //   this.props,
+      //   this.props.environment,
+      //   this.props.location.groupId
+      // );
+      // this.fillDropdownValue(hostJson);
+      // this.host = this.findHost(hostJson);
 
       //To fetch originalParams from Params
       let originalParams = this.fetchoriginalParams(
@@ -702,15 +709,14 @@ class DisplayEndpoint extends Component {
           uri: endpoint.uri,
           updatedUri: endpoint.uri,
           name: endpoint.name,
-          body: JSON.stringify(endpoint.body, null, 4),
-          host: this.host
+          body: JSON.stringify(endpoint.body, null, 4)
         },
         title: "update endpoint",
         response: {},
         groupId: this.props.location.endpoint.groupId,
-        onChangeFlag: false,
-        versions: this.props.versions,
-        groups: this.props.groups,
+        // onChangeFlag: false,
+        // versions: this.props.versions,
+        // groups: this.props.groups,
         originalParams,
         originalHeaders,
         endpoint,
@@ -743,8 +749,8 @@ class DisplayEndpoint extends Component {
           />
         </div>
 
-        <EndpointUri {...this.props} groupId={this.state.groupId} />
-        {/* <div className="endpoint-url-container">
+        {/* <EndpointUri {...this.props} groupId={this.state.groupId} /> */}
+        <div className="endpoint-url-container">
           <div className="input-group-prepend">
             <div class="dropdown">
               <button
@@ -758,55 +764,21 @@ class DisplayEndpoint extends Component {
                 {this.state.data.method}
               </button>
               <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                {Object.keys(this.dropdownRequestType).map(key => (
+                {this.state.methodList.map(methodName => (
                   <button
                     className="btn"
-                    onClick={() =>
-                      this.setMethod(this.dropdownRequestType[key].name)
-                    }
+                    onClick={() => this.setMethod(methodName)}
                   >
-                    {this.dropdownRequestType[key].name}
+                    {methodName}
                   </button>
                 ))}
               </div>
             </div>
-
-            <div className="host-field-container">
-              <input
-                type="text"
-                name="BASE_URL_Value"
-                ref={this.BASE_URL_Value}
-                value={this.state.data.host}
-                onChange={this.handleDropdownChange}
-                disabled={this.state.selectedHost !== "custom"}
-              />
-              <select
-                class="custom-select"
-                id="select-host-dropdown"
-                onChange={() =>
-                  this.setDropdownValue(
-                    document.getElementById("select-host-dropdown").options[
-                      document.getElementById("select-host-dropdown")
-                        .selectedIndex
-                    ].value
-                  )
-                }
-              >
-                {Object.keys(this.dropdownHost).map(key =>
-                  this.dropdownHost[key].value !== "" ? (
-                    this.state.selectedHost === key ? (
-                      <option value={key} key={key} selected>
-                        {this.dropdownHost[key].name} Base_URL
-                      </option>
-                    ) : (
-                      <option value={key} key={key}>
-                        {this.dropdownHost[key].name} Base_URL
-                      </option>
-                    )
-                  ) : null
-                )}
-              </select>
-            </div>
+            <HostContainer
+              {...this.props}
+              groupId={this.state.groupId}
+              set_base_url={this.setBaseUrl.bind(this)}
+            />
             <input
               ref={this.uri}
               type="text"
@@ -844,7 +816,7 @@ class DisplayEndpoint extends Component {
               Code
             </button>
           </div>
-        </div> */}
+        </div>
 
         <div className="endpoint-headers-container">
           <ul className="nav nav-tabs" id="pills-tab" role="tablist">
