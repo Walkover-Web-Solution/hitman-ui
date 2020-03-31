@@ -14,13 +14,14 @@ function showVersionForm(props, onHide, collectionId, title) {
   );
 }
 
-function showDeleteVersionModal(props, onHide, title, selectedVersion) {
+function showDeleteVersionModal(props, onHide, title,message, selectedVersion) {
   return (
     <DeleteModal
       {...props}
       show={true}
       onHide={onHide}
       title={title}
+      message = {message}
       deleted_version={selectedVersion}
     />
   );

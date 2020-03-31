@@ -296,18 +296,10 @@ class CollectionsComponent extends Component {
                 this.props,
                 this.closeDeleteCollectionModal.bind(this),
                 "Delete Collection",
+                `Are you sure you wish to delete this collection? All your versions,
+                 groups, pages and endpoints present in this collection will be deleted.`,
                 this.state.selectedCollection
               )
-
-            // (
-            //   <DeleteModal
-            //     {...this.props}
-            //     show={this.state.showDeleteModal}
-            //     onHide={() => this.closeDeleteModal()}
-            //     title="Delete Collection"
-            //     selected_collection={this.state.selectedCollection}
-            //   />
-            // )
             }
           </div>
         </div>

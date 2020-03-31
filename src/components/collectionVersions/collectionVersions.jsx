@@ -190,6 +190,8 @@ class CollectionVersions extends Component {
             this.props,
             this.closeDeleteVersionModal.bind(this),
             "Delete Version",
+            `Are you sure you want to delete this versions? 
+        All your groups, pages and endpoints present in this version will be deleted.`,
             this.state.selectedVersion
           )}
         {this.props.versions &&

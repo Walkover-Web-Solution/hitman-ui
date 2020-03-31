@@ -32,7 +32,7 @@ class DeleteModal extends Component {
 
     if (title === "Delete Endpoint") {
       const { deleted_endpoint: endpoint } = this.props;
-      this.props.deleteEndpoint(endpoint);
+      this.props.handle_delete(endpoint);
     }
     if (title === "Delete Environment") {
       const { deleted_environment: environment } = this.props;
@@ -52,17 +52,28 @@ class DeleteModal extends Component {
             {this.props.title}
           </Modal.Title>
         </Modal.Header>
-        <Modal.Body>
-          <form onSubmit={this.handleSubmit}>
+        <Modal.Body id= "custom-delete-modal-body">
+          <div>
+            {this.props.message}
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+        <form onSubmit={this.handleSubmit}>
             <button
+              id="custom-delete-modal-delete"
+              className="btn btn-default custom-button"
+            >
+              Delete
+            </button>
+            <button
+              id="custom-delete-modal-cancel"
               className="btn btn-default custom-button"
               onClick={this.props.onHide}
             >
               Cancel
             </button>
-            <button className="btn btn-default custom-button">Delete</button>
           </form>
-        </Modal.Body>
+        </Modal.Footer>
       </Modal>
     );
   }

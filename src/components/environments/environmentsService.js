@@ -14,13 +14,14 @@ function showEnvironmentForm(props, onHide, title, environment) {
   );
 }
 
-function showDeleteEnvironmentModal(props, onHide, title, selectedEnvironment) {
+function showDeleteEnvironmentModal(props, onHide, title,message, selectedEnvironment) {
   return (
     <DeleteModal
       {...props}
       show={true}
       onHide={onHide}
       title={title}
+      message = {message}
       deleted_environment={selectedEnvironment}
     />
   );

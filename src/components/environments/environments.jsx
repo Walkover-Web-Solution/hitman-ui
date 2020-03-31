@@ -59,6 +59,19 @@ class Environments extends Component {
     this.props.addEnvironment(newEnvironment);
   }
 
+  openDeleteModal(environmentId) {
+    this.setState({
+      showDeleteModal: true,
+      selectedEnvironment: {
+        ...this.props.environment.environments[environmentId]
+      }
+    });
+  }
+
+  closeDeleteEnvironmentModal() {
+    this.setState({ showDeleteModal: false });
+  }
+
   render() {
     return (
       <div className="environment-container">
@@ -74,10 +87,24 @@ class Environments extends Component {
           <EnvironmentModal
             {...this.props}
             show={true}
+            open_delete_modal={this.openDeleteModal.bind(this)}
+            close_delete_environment_modal={this.closeDeleteEnvironmentModal.bind(
+              this
+            )}
             onHide={() => this.handleEnvironmentModal()}
             handle_environment_modal={this.handleEnvironmentModal.bind(this)}
           />
         )}
+        <div>
+          {this.state.showDeleteModal &&
+            environmentsService.showDeleteEnvironmentModal(
+              this.props,
+              this.closeDeleteEnvironmentModal.bind(this),
+              "Delete Environment",
+              `Are you sure you wish to delete this environment?`,
+              this.state.selectedEnvironment
+            )}
+        </div>
 
         <div className="environment-buttons">
           <button

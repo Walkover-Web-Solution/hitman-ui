@@ -333,7 +333,56 @@ nav.navbar.navbar-dark.fixed-top.bg-dark.flex-md-nowrap.p-0.shadow {
     flex-direction: row;
     align-items: center;
   }
+  button#custom-delete-modal-delete {
+    color: white;
+    float: right;
+    background: rgb(255, 0, 0);
+    font-weight: 250;
+    padding-left: 25px;
+    padding-right: 25px;
+    font-size: 15px;
+    border-color: blue;
+  }
 }
+
+//delete modal styling
+
+button#custom-delete-modal-delete {
+  color: white;
+  float: right;
+  background: rgb(255, 0, 0);
+  font-weight: 250;
+  padding-left: 25px;
+  padding-right: 25px;
+  font-size: 15px;
+  border-color: blue;
+}
+
+button#custom-delete-modal-cancel {
+  float: right;
+  font-weight: 250;
+  padding-left: 25px;
+  padding-right: 25px;
+  font-size: 15px;
+
+  color: grey;
+  background: rgb(232, 232, 232);
+  margin-right: 20px;
+
+  &:hover {
+    background: rgb(197, 197, 200);
+  }
+}
+
+#custom-delete-modal-body{
+  height : 120px;
+  display : block;
+
+}
+
+//---------------
+
+
 .new-button-card {
   width: 33%;
   height: 150px;

@@ -175,6 +175,8 @@ class Groups extends Component {
               this.props,
               this.closeDeleteGroupModal.bind(this),
               "Delete Group",
+              `Are you sure you wish to delete this group?
+              All your pages and endpoints present in this group will be deleted.`,
               this.state.selectedGroup
             )}
         </div>

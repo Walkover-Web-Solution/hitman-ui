@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { setEndpointIds } from "../groups/redux/groupsActions";
 import { deleteEndpoint, duplicateEndpoint } from "./redux/endpointsActions";
 import endpointService from "./endpointService";
+import DeleteModal from "../common/deleteModal";
 
 const mapStateToProps = state => {
   return { endpoints: state.endpoints, groups: state.groups };
@@ -112,15 +113,16 @@ class Endpoints extends Component {
     console.log(this.props);
     return (
       <React.Fragment>
-        <div>
+        {/* <div>
           {this.state.showDeleteModal &&
             endpointService.showDeleteEndpointModal(
               this.props,
+              this.handleDelete.bind(this),
               this.closeDeleteEndpointModal.bind(this),
               "Delete Endpoint",
               this.state.selectedEndpoint
             )}
-        </div>
+        </div> */}
 
         {Object.keys(this.props.endpoints).length !== 0 &&
           this.props.endpoints_order
