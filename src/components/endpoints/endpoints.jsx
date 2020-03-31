@@ -201,7 +201,7 @@ class Endpoints extends Component {
                       {this.checkAccess(this.props.collection_id) &&
                       (this.props.endpoints[endpointId].state === "Pending" ||
                         this.props.endpoints[endpointId].state ===
-                          "Rejected") ? null : (
+                          "Reject") ? null : (
                         <button
                           className="dropdown-item"
                           onClick={() =>
@@ -233,7 +233,8 @@ class Endpoints extends Component {
                       ) : null}
 
                       {this.checkAccess(this.props.collection_id) &&
-                      this.props.endpoints[endpointId].state === "Approved" ? (
+                      (this.props.endpoints[endpointId].state === "Approved" ||
+                        this.props.endpoints[endpointId].state === "Reject") ? (
                         <button
                           className="dropdown-item"
                           onClick={() =>
