@@ -1,17 +1,15 @@
 import React, { Component } from "react";
-
 import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
 import { toast } from "react-toastify";
-import shortId from "shortid";
+import store from "../../store/store";
+import { isDashboardRoute } from "../common/utility";
+import CodeWindow from "./codeWindow";
+import CreateEndpointForm from "./createEndpointForm";
 import DisplayResponse from "./displayResponse";
+import endpointService from "./endpointService";
 import GenericTable from "./genericTable";
 import { addEndpoint, updateEndpoint } from "./redux/endpointsActions";
-import endpointService from "./endpointService";
-import store from "../../store/store";
-import { withRouter } from "react-router-dom";
-import CreateEndpointForm from "./createEndpointForm";
-import CodeWindow from "./codeWindow";
-import { isDashboardRoute } from "../common/utility";
 
 var URI = require("urijs");
 

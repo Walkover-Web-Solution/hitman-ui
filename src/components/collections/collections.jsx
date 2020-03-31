@@ -29,7 +29,8 @@ const mapStateToProps = state => {
     collections: state.collections,
     versions: state.versions,
     pages: state.pages,
-    teamUsers: state.teamUsers
+    teamUsers: state.teamUsers,
+    teams: state.teams
   };
 };
 

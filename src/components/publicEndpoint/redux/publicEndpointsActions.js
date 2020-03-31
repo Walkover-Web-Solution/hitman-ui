@@ -1,5 +1,6 @@
 import publicEndpointsService from "../publicEndpointsService.js";
 import publicEndpointsActionTypes from "./publicEndpointsActionTypes";
+import publicPageService from "../publicEndpointsService";
 
 export const fetchAllPublicEndpoints = collectionIdentifier => {
   return dispatch => {
@@ -32,32 +33,92 @@ export const onPublicEndpointsFetchedError = error => {
   };
 };
 
-export const pendingEndpoint = endpoint => {
+export const pendingPage = page => {
   return dispatch => {
-    publicEndpointsService
-      .pendingEndpoint(endpoint)
+    publicPageService
+      .pendingPage(page)
       .then(response => {
-        dispatch(onPendingEndpointSuccess(response.data));
+        dispatch(onPageStateSuccess(response.data));
       })
       .catch(error => {
         dispatch(
-          onPendingEndpointError(error.response ? error.response.data : error)
+          onPageStateError(error.response ? error.response.data : error)
         );
       });
   };
 };
 
-export const onPendingEndpointSuccess = data => {
+export const approvePage = page => {
+  return dispatch => {
+    publicPageService
+      .approvePage(page)
+      .then(response => {
+        dispatch(onPageStateSuccess(response.data));
+      })
+      .catch(error => {
+        dispatch(
+          onPageStateError(error.response ? error.response.data : error)
+        );
+      });
+  };
+};
+
+export const draftPage = page => {
+  return dispatch => {
+    publicPageService
+      .draftPage(page)
+      .then(response => {
+        dispatch(onPageStateSuccess(response.data));
+      })
+      .catch(error => {
+        dispatch(
+          onPageStateError(error.response ? error.response.data : error)
+        );
+      });
+  };
+};
+
+export const rejectPage = page => {
+  return dispatch => {
+    publicPageService
+      .rejectPage(page)
+      .then(response => {
+        dispatch(onPageStateSuccess(response.data));
+      })
+      .catch(error => {
+        dispatch(
+          onPageStateError(error.response ? error.response.data : error)
+        );
+      });
+  };
+};
+
+export const onPageStateSuccess = data => {
   return {
-    type: publicEndpointsActionTypes.ON_PENDING_ENDPOINT_SUCCESS,
+    type: publicEndpointsActionTypes.ON_PAGE_STATE_SUCCESS,
     data
   };
 };
 
-export const onPendingEndpointError = error => {
+export const onPageStateError = error => {
   return {
-    type: publicEndpointsActionTypes.ON_PENDING_ENDPOINT_ERROR,
+    type: publicEndpointsActionTypes.ON_PAGE_STATE_ERROR,
     error
+  };
+};
+
+export const pendingEndpoint = endpoint => {
+  return dispatch => {
+    publicEndpointsService
+      .pendingEndpoint(endpoint)
+      .then(response => {
+        dispatch(onEndpointStateSuccess(response.data));
+      })
+      .catch(error => {
+        dispatch(
+          onEndpointStateError(error.response ? error.response.data : error)
+        );
+      });
   };
 };
 
@@ -66,27 +127,13 @@ export const approveEndpoint = endpoint => {
     publicEndpointsService
       .approveEndpoint(endpoint)
       .then(response => {
-        dispatch(onApproveEndpointSuccess(response.data));
+        dispatch(onEndpointStateSuccess(response.data));
       })
       .catch(error => {
         dispatch(
-          onApproveEndpointError(error.response ? error.response.data : error)
+          onEndpointStateError(error.response ? error.response.data : error)
         );
       });
-  };
-};
-
-export const onApproveEndpointSuccess = data => {
-  return {
-    type: publicEndpointsActionTypes.ON_APPROVED_ENDPOINT_SUCCESS,
-    data
-  };
-};
-
-export const onApproveEndpointError = error => {
-  return {
-    type: publicEndpointsActionTypes.ON_APPROVED_ENDPOINT_ERROR,
-    error
   };
 };
 
@@ -95,53 +142,41 @@ export const draftEndpoint = endpoint => {
     publicEndpointsService
       .draftEndpoint(endpoint)
       .then(response => {
-        dispatch(onDraftEndpointSuccess(response.data));
+        dispatch(onEndpointStateSuccess(response.data));
       })
       .catch(error => {
         dispatch(
-          onDraftEndpointError(error.response ? error.response.data : error)
+          onEndpointStateError(error.response ? error.response.data : error)
         );
       });
   };
 };
 
-export const onDraftEndpointSuccess = data => {
-  return {
-    type: publicEndpointsActionTypes.ON_DRAFT_ENDPOINT_SUCCESS,
-    data
-  };
-};
-
-export const onDraftEndpointError = error => {
-  return {
-    type: publicEndpointsActionTypes.ON_DRAFT_ENDPOINT_ERROR,
-    error
-  };
-};
 export const rejectEndpoint = endpoint => {
   return dispatch => {
     publicEndpointsService
       .rejectEndpoint(endpoint)
       .then(response => {
-        dispatch(onRejectEndpointSuccess(response.data));
+        dispatch(onEndpointStateSuccess(response.data));
       })
       .catch(error => {
         dispatch(
-          onRejectEndpointError(error.response ? error.response.data : error)
+          onEndpointStateError(error.response ? error.response.data : error)
         );
       });
   };
 };
-export const onRejectEndpointSuccess = data => {
+
+export const onEndpointStateSuccess = data => {
   return {
-    type: publicEndpointsActionTypes.ON_REJECT_ENDPOINT_SUCCESS,
+    type: publicEndpointsActionTypes.ON_ENDPOINT_STATE_SUCCESS,
     data
   };
 };
 
-export const onRejectEndpointError = error => {
+export const onEndpointStateError = error => {
   return {
-    type: publicEndpointsActionTypes.ON_REJECT_ENDPOINT_ERROR,
+    type: publicEndpointsActionTypes.ON_ENDPOINT_STATE_ERROR,
     error
   };
 };

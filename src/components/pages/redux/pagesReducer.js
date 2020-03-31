@@ -25,6 +25,7 @@ function pagesReducer(state = initialState, action) {
         ...state,
         [action.newPage.requestId]: action.newPage
       };
+
     case pagesActionTypes.ON_PAGE_ADDED:
       pages = { ...state };
       delete pages[action.response.requestId];
@@ -46,6 +47,7 @@ function pagesReducer(state = initialState, action) {
         ...state,
         [action.newPage.requestId]: action.newPage
       };
+
     case pagesActionTypes.ON_GROUP_PAGE_ADDED:
       pages = { ...state };
       delete pages[action.response.requestId];
@@ -64,6 +66,7 @@ function pagesReducer(state = initialState, action) {
         ...state,
         [action.editedPage.id]: action.editedPage
       };
+
     case pagesActionTypes.ON_PAGE_UPDATED:
       return state;
 
@@ -113,6 +116,16 @@ function pagesReducer(state = initialState, action) {
     case publicEndpointsActionTypes.ON_PUBLIC_ENDPOINTS_FETCHED_ERROR:
       toast.error(action.error);
       return state;
+
+    case publicEndpointsActionTypes.ON_PAGE_STATE_SUCCESS:
+      return {
+        ...state,
+        [action.data.id]: action.data
+      };
+
+    case publicEndpointsActionTypes.ON_PAGE_STATE_ERROR:
+      toast.error(action.error);
+      return { ...state };
 
     default:
       return state;

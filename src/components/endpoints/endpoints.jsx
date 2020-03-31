@@ -13,8 +13,7 @@ import { deleteEndpoint, duplicateEndpoint } from "./redux/endpointsActions";
 const mapStateToProps = state => {
   return {
     endpoints: state.endpoints,
-    groups: state.groups,
-    teams: state.teams
+    groups: state.groups
   };
 };
 

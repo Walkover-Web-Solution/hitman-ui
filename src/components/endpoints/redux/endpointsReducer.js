@@ -98,43 +98,13 @@ function endpointsReducer(state = initialState, action) {
       toast.error(action.error);
       return state;
 
-    case publicEndpointsActionTypes.ON_APPROVED_ENDPOINT_SUCCESS:
+    case publicEndpointsActionTypes.ON_ENDPOINT_STATE_SUCCESS:
       return {
         ...state,
         [action.data.id]: action.data
       };
 
-    case publicEndpointsActionTypes.ON_APPROVED_ENDPOINT_ERROR:
-      toast.error(action.error);
-      return { ...state };
-
-    case publicEndpointsActionTypes.ON_PENDING_ENDPOINT_SUCCESS:
-      return {
-        ...state,
-        [action.data.id]: action.data
-      };
-
-    case publicEndpointsActionTypes.ON_PENDING_ENDPOINT_ERROR:
-      toast.error(action.error);
-      return { ...state };
-
-    case publicEndpointsActionTypes.ON_DRAFT_ENDPOINT_SUCCESS:
-      return {
-        ...state,
-        [action.data.id]: action.data
-      };
-
-    case publicEndpointsActionTypes.ON_DRAFT_ENDPOINT_ERROR:
-      toast.error(action.error);
-      return { ...state };
-
-    case publicEndpointsActionTypes.ON_REJECT_ENDPOINT_SUCCESS:
-      return {
-        ...state,
-        [action.data.id]: action.data
-      };
-
-    case publicEndpointsActionTypes.ON_REJECT_ENDPOINT_ERROR:
+    case publicEndpointsActionTypes.ON_ENDPOINT_STATE_ERROR:
       toast.error(action.error);
       return { ...state };
 

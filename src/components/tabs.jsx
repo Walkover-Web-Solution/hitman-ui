@@ -1,8 +1,5 @@
 import React, { Component } from "react";
-import { Link, Route, Switch } from "react-router-dom";
-import DisplayPage from "./pages/displayPage";
-import DisplayEndpoint from "./endpoints/displayEndpoint";
-import { Tabs, Tab, Row, Col, Nav } from "react-bootstrap";
+import { Nav } from "react-bootstrap";
 import shortId from "shortid";
 
 class CustomTabs extends Component {

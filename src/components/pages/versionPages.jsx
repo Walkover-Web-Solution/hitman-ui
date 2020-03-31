@@ -73,6 +73,17 @@ class Pages extends Component {
     });
   }
 
+  getCurrentUserRole(collectionId) {
+    const teamId = this.props.collections[collectionId].teamId;
+    if (teamId !== undefined) return this.props.teams[teamId].role;
+  }
+
+  checkAccess(collectionId) {
+    const role = this.getCurrentUserRole(collectionId);
+    if (role === "Admin" || role === "Owner") return true;
+    else return false;
+  }
+
   render() {
     return (
       <div>
