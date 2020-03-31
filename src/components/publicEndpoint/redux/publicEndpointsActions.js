@@ -1,6 +1,6 @@
 import publicEndpointsService from "../publicEndpointsService.js";
 import publicEndpointsActionTypes from "./publicEndpointsActionTypes";
-import publicPageService from "../publicEndpointsService";
+import publicPageService from "../publicPageService";
 
 export const fetchAllPublicEndpoints = collectionIdentifier => {
   return dispatch => {
