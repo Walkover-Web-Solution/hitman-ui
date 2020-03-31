@@ -45,7 +45,6 @@ class Navbar extends Component {
       ...this.props.tabs,
       { id: newTabId, type: "endpoint", isSaved: false }
     ];
-    console.log(tabs);
     this.props.set_tabs(tabs, tabs.length - 1);
     this.props.history.push({
       pathname: `/dashboard/endpoint/new`

@@ -12,12 +12,10 @@ class SideBar extends Component {
   handleChange = e => {
     let data = { ...this.state.data };
     data[e.currentTarget.name] = e.currentTarget.value;
-    // console.log(data);
     this.setState({ data });
   };
 
   render() {
-    // console.log(this.state.data.filter);
     return (
       <nav className="col-md-2 d-none d-md-block bg-light sidebar ">
         <div className="sidebar-sticky">

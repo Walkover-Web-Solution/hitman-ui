@@ -10,6 +10,7 @@ import store from "../../store/store";
 import { withRouter } from "react-router-dom";
 import CreateEndpointForm from "./createEndpointForm";
 import CodeWindow from "./codeWindow";
+import EndpointUri from "./endpointUri";
 
 var URI = require("urijs");
 
@@ -351,7 +352,6 @@ class DisplayEndpoint extends Component {
         toast.error("Please Enter all the fields");
       else if (this.props.location.pathname.split("/")[3] === "new") {
         endpoint.requestId = this.props.tabs[this.props.default_tab_index].id;
-        console.log(endpoint.requestId);
         this.props.addEndpoint(endpoint, this.state.groupId);
       } else if (this.state.title === "update endpoint") {
         this.props.updateEndpoint({
@@ -388,12 +388,12 @@ class DisplayEndpoint extends Component {
     return updatedHeaders;
   }
 
-  setMethod(method) {
-    const response = {};
-    let data = { ...this.state.data };
-    data.method = method;
-    this.setState({ response, data });
-  }
+  // setMethod(method) {
+  //   const response = {};
+  //   let data = { ...this.state.data };
+  //   data.method = method;
+  //   this.setState({ response, data });
+  // }
 
   propsFromChild(name, value) {
     if (name === "originalParams") {
@@ -468,12 +468,12 @@ class DisplayEndpoint extends Component {
     custom: { name: "Custom", value: "custom" }
   };
 
-  dropdownRequestType = {
-    get: { name: "GET" },
-    post: { name: "POST" },
-    put: { name: "PUT" },
-    delete: { name: "DELETE" }
-  };
+  // dropdownRequestType = {
+  //   get: { name: "GET" },
+  //   post: { name: "POST" },
+  //   put: { name: "PUT" },
+  //   delete: { name: "DELETE" }
+  // };
 
   setDropdownValue(key) {
     let host = "";
@@ -612,7 +612,6 @@ class DisplayEndpoint extends Component {
     );
   }
   render() {
-    console.log(this.props);
     if (
       this.props.location.pathname.split("/")[3] !== "new" &&
       this.state.endpoint.id !== this.props.location.pathname.split("/")[3]
@@ -631,7 +630,7 @@ class DisplayEndpoint extends Component {
     if (this.props.location.title === "Add New Endpoint") {
       this.title = "Add New Endpoint";
       this.customHost = false;
-      console.log(this.props.location.groupId, this.state.groupId);
+
       if (this.props.location.groupId || this.state.groupId) {
         const hostJson = this.fetchHosts(
           this.props,
@@ -744,7 +743,8 @@ class DisplayEndpoint extends Component {
           />
         </div>
 
-        <div className="endpoint-url-container">
+        <EndpointUri {...this.props} groupId={this.state.groupId} />
+        {/* <div className="endpoint-url-container">
           <div className="input-group-prepend">
             <div class="dropdown">
               <button
@@ -844,7 +844,7 @@ class DisplayEndpoint extends Component {
               Code
             </button>
           </div>
-        </div>
+        </div> */}
 
         <div className="endpoint-headers-container">
           <ul className="nav nav-tabs" id="pills-tab" role="tablist">
