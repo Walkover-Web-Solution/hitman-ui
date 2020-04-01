@@ -11,11 +11,6 @@ import endpointService from "./endpointService";
 import GenericTable from "./genericTable";
 import { addEndpoint, updateEndpoint } from "./redux/endpointsActions";
 
-import endpointService from "./endpointService";
-import store from "../../store/store";
-import { withRouter } from "react-router-dom";
-import CreateEndpointForm from "./createEndpointForm";
-import CodeWindow from "./codeWindow";
 var URI = require("urijs");
 
 const mapStateToProps = state => {
