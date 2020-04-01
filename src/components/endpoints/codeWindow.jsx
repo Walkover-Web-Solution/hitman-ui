@@ -1,7 +1,9 @@
 import React, { Component } from "react";
 import { Modal, ListGroup, Container, Row, Col } from "react-bootstrap";
+import Highlight from "react-highlight";
+import "../../../node_modules/highlight.js/styles/vs.css";
+import { CopyToClipboard } from "react-copy-to-clipboard";
 var HTTPSnippet = require("httpsnippet");
-// var ScrollArea = require("react-scrollbar/no-css");
 
 class CodeWindow extends Component {
   state = {};
@@ -30,10 +32,11 @@ class CodeWindow extends Component {
   }
 
   makeCodeTemplate(selectedLanguage) {
-    this.language = this.languages[selectedLanguage].name;
+    this.selectedLanguage = selectedLanguage;
+    this.selectedLanguageName = this.languages[selectedLanguage].name;
     let snippet = this.makeCodeSnippet();
     let codeSnippet = snippet.convert(selectedLanguage);
-    this.setState({ codeSnippet });
+    this.setState({ codeSnippet, copied: false });
   }
   languages = {
     node: { name: "Node" },
@@ -57,7 +60,8 @@ class CodeWindow extends Component {
   render() {
     if (!this.state.codeSnippet) {
       let snippet = this.makeCodeSnippet();
-      this.language = this.languages["node"].name;
+      this.selectedLanguage = "node";
+      this.selectedLanguageName = this.languages["node"].name;
       this.codeSnippet = snippet.convert("node");
     }
     return (
@@ -78,16 +82,9 @@ class CodeWindow extends Component {
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            {/* <ScrollArea
-              speed={0.8}
-              className="area"
-              contentClassName="content"
-              horizontal={false}
-            >
-              {() => <div>Some long content. </div>} */}
-            <Container>
+            <Container className="d-flex flex-column">
               <Row>
-                <Col sm={3} id="code-window-sidebar">
+                <Col id="codes" sm={3}>
                   <ListGroup>
                     {Object.keys(this.languages).map(key => (
                       <ListGroup.Item
@@ -99,20 +96,39 @@ class CodeWindow extends Component {
                       </ListGroup.Item>
                     ))}
                   </ListGroup>
+                  <v1></v1>
                 </Col>
                 <Col sm={7}>
                   <div id="code-window-body">
-                    Generated code for {this.language}{" "}
+                    Generated code for {this.selectedLanguageName}{" "}
                   </div>{" "}
+                  <CopyToClipboard
+                    text={
+                      this.state.codeSnippet
+                        ? this.state.codeSnippet
+                        : this.codeSnippet
+                    }
+                    onCopy={() => this.setState({ copied: true })}
+                    style={{ float: "right", borderRadius: "12px" }}
+                  >
+                    <button>
+                      {this.state.copied ? (
+                        <i className="fas fa-check"></i>
+                      ) : (
+                        <i className="fas fa-clone"></i>
+                      )}
+                    </button>
+                  </CopyToClipboard>
                   <pre>
-                    {this.state.codeSnippet
-                      ? this.state.codeSnippet
-                      : this.codeSnippet}
+                    <Highlight className={this.selectedLanguage}>
+                      {this.state.codeSnippet
+                        ? this.state.codeSnippet
+                        : this.codeSnippet}
+                    </Highlight>
                   </pre>
                 </Col>
               </Row>
             </Container>
-            {/* </ScrollArea> */}
           </Modal.Body>
         </Modal>
       </div>

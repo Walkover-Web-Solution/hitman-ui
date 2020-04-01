@@ -59,7 +59,6 @@ class ContentPanel extends Component {
         this.props.set_tabs(null, index);
       }
     }
-
     return (
       <main role="main" className="main ml-sm-auto col-lg-10 ">
         <Tab.Container
