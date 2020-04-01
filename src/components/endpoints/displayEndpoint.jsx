@@ -37,7 +37,6 @@ class DisplayEndpoint extends Component {
   body = React.createRef();
   name = React.createRef();
   paramKey = React.createRef();
-  // BASE_URL_Value = React.createRef();
 
   state = {
     data: {
@@ -53,12 +52,8 @@ class DisplayEndpoint extends Component {
     timeElapsed: "",
     response: {},
     endpoint: {},
-    // groups: {},
-    // versions: {},
     groupId: null,
     title: "",
-    // selectedHost: "",
-    // onChangeFlag: false,
     flagResponse: false,
     originalHeaders: [],
     originalParams: []
@@ -92,8 +87,6 @@ class DisplayEndpoint extends Component {
     const { groups } = store.getState();
     const { versions } = store.getState();
     if (this.props.location.pathname.split("/")[3] === "new" && !this.title) {
-      // this.setState({ selectedHost: "custom" });
-      // this.customHost = true;
     } else if (
       Object.keys(groups).length !== 0 &&
       Object.keys(versions).length !== 0 &&
@@ -113,23 +106,6 @@ class DisplayEndpoint extends Component {
       Object.keys(endpoint.headers).forEach(h => {
         originalHeaders.push(endpoint.headers[h]);
       });
-
-      // this.BASE_URL = endpoint.BASE_URL;
-      // if (endpoint.BASE_URL !== null) {
-      //   this.setDropdownValue("custom");
-      // } else {
-      //   this.setState({ selectedHost: "" });
-      //   this.customHost = false;
-      // }
-
-      // let props = { ...this.props, groupId: groupId };
-      // const hostJson = this.fetchHosts(
-      //   props,
-      //   this.props.environment,
-      //   props.groupId
-      // );
-      // this.fillDropdownValue(hostJson);
-      // this.host = this.findHost(hostJson);
       this.setState({
         data: {
           method: endpoint.requestType,
@@ -141,18 +117,13 @@ class DisplayEndpoint extends Component {
         originalParams,
         originalHeaders,
         endpoint,
-        groups,
         groupId,
-        versions,
         title: "update endpoint"
       });
     }
   }
   handleChange = e => {
     let data = { ...this.state.data };
-    // if (e.currentTarget.name === "host") {
-    //   // this.setState({ onChangeFlag: true });
-    // }
     data[e.currentTarget.name] = e.currentTarget.value;
     data.uri = e.currentTarget.value;
     if (e.currentTarget.name === "updatedUri") {
@@ -196,30 +167,6 @@ class DisplayEndpoint extends Component {
     }
     return originalParams;
   }
-
-  // findHost(hostJson) {
-  //   let host = "";
-  //   let key = "";
-  //   if (this.customHost === true) {
-  //     host = this.BASE_URL;
-  //     return host;
-  //   }
-  //   host = hostJson.variableHost;
-  //   key = "variable";
-  //   if (host === "") {
-  //     host = hostJson.groupHost;
-  //     key = "group";
-  //     if (host === "") {
-  //       host = hostJson.versionHost;
-  //       key = "version";
-  //     }
-  //   }
-  //   this.setDropdownValue(key);
-  //   let data = { ...this.state.data };
-  //   data.host = host;
-  //   this.setState({ data });
-  //   return host;
-  // }
 
   replaceVariables(str) {
     str = str.toString();
@@ -346,11 +293,6 @@ class DisplayEndpoint extends Component {
         params: updatedParams,
         BASE_URL: this.customState.BASE_URL
       };
-      // if (this.customHost === true) {
-      //   endpoint.BASE_URL = this.BASE_URL_Value.current.value;
-      // } else {
-      //   endpoint.BASE_URL = null;
-      // }
       if (endpoint.name === "" || endpoint.uri === "")
         toast.error("Please Enter all the fields");
       else if (this.props.location.pathname.split("/")[3] === "new") {
@@ -458,66 +400,6 @@ class DisplayEndpoint extends Component {
     });
     return updatedParams;
   }
-
-  // fillDropdownValue(hostJson) {
-  //   this.dropdownHost["variable"].value = hostJson.variableHost;
-  //   this.dropdownHost["group"].value = hostJson.groupHost;
-  //   this.dropdownHost["version"].value = hostJson.versionHost;
-  // }
-  // dropdownHost = {
-  //   variable: { name: "Variable", value: "" },
-  //   group: { name: "Group", value: "" },
-  //   version: { name: "Version", value: "" },
-  //   custom: { name: "Custom", value: "custom" }
-  // };
-
-  // dropdownRequestType = {
-  //   get: { name: "GET" },
-  //   post: { name: "POST" },
-  //   put: { name: "PUT" },
-  //   delete: { name: "DELETE" }
-  // };
-
-  // setDropdownValue(key) {
-  //   let host = "";
-  //   if (key === "custom") {
-  //     host = "";
-  //     this.customHost = true;
-  //   } else {
-  //     this.customHost = false;
-  //     host = this.dropdownHost[key].value;
-  //   }
-  //   let data = { ...this.state.data };
-  //   data.host = host;
-  //   this.setState({
-  //     selectedHost: key,
-  //     data
-  //   });
-  // }
-
-  // handleDropdownChange = e => {
-  //   let data = { ...this.state.data };
-  //   data[e.currentTarget.name] = e.currentTarget.value;
-  //   data.host = e.currentTarget.value;
-  //   this.setState({ data });
-  // };
-
-  // fetchHosts(props, environment, groupId) {
-  //   let variableHost = "";
-  //   if (environment.variables && environment.variables.BASE_URL) {
-  //     variableHost = environment.variables.BASE_URL.currentValue;
-  //   }
-
-  //   const { groups, versions } = props;
-  //   const { versionId, host: groupHost } = groups[groupId];
-  //   const { host: versionHost } = versions[versionId];
-  //   let hostJson = {
-  //     variableHost,
-  //     groupHost,
-  //     versionHost
-  //   };
-  //   return hostJson;
-  // }
 
   fetchoriginalParams(params) {
     let originalParams = [];
@@ -637,17 +519,6 @@ class DisplayEndpoint extends Component {
     }
     if (this.props.location.title === "Add New Endpoint") {
       this.title = "Add New Endpoint";
-      // this.customHost = false;
-
-      // if (this.props.location.groupId || this.state.groupId) {
-      // const hostJson = this.fetchHosts(
-      //   this.props,
-      //   this.props.environment,
-      //   this.props.location.groupId
-      // );
-      //   this.fillDropdownValue(hostJson);
-      //   this.host = this.findHost(hostJson);
-      // }
       this.setState({
         data: {
           name: "",
@@ -660,12 +531,8 @@ class DisplayEndpoint extends Component {
         timeElapsed: "",
         response: {},
         endpoint: {},
-        // groups: this.props.groups,
-        // versions: this.props.versions,
         groupId: this.props.location.groupId,
         title: "Add New Endpoint",
-        // selectedHost: "",
-        // onChangeFlag: false,
         flagResponse: false,
         originalHeaders: [],
         originalParams: []
@@ -677,22 +544,7 @@ class DisplayEndpoint extends Component {
       this.props.location.title === "update endpoint" &&
       this.props.location.endpoint
     ) {
-      // this.BASE_URL = this.props.location.endpoint.BASE_URL;
-      // if (this.props.location.endpoint.BASE_URL !== null) {
-      //   // this.setDropdownValue("custom");
-      // } else {
-      //   // this.setState({ selectedHost: "" });
-      //   // this.customHost = false;
-      // }
       let endpoint = { ...this.props.location.endpoint };
-      // const hostJson = this.fetchHosts(
-      //   this.props,
-      //   this.props.environment,
-      //   this.props.location.groupId
-      // );
-      // this.fillDropdownValue(hostJson);
-      // this.host = this.findHost(hostJson);
-
       //To fetch originalParams from Params
       let originalParams = this.fetchoriginalParams(
         this.props.location.endpoint.params
@@ -714,9 +566,6 @@ class DisplayEndpoint extends Component {
         title: "update endpoint",
         response: {},
         groupId: this.props.location.endpoint.groupId,
-        // onChangeFlag: false,
-        // versions: this.props.versions,
-        // groups: this.props.groups,
         originalParams,
         originalHeaders,
         endpoint,
@@ -749,7 +598,6 @@ class DisplayEndpoint extends Component {
           />
         </div>
 
-        {/* <EndpointUri {...this.props} groupId={this.state.groupId} /> */}
         <div className="endpoint-url-container">
           <div className="input-group-prepend">
             <div class="dropdown">

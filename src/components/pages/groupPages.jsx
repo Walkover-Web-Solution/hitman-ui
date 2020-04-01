@@ -40,7 +40,7 @@ class GroupPages extends Component {
 
   handleDisplay(page) {
     this.props.history.push({
-      pathname: `/dashboard/pages/${page.id}`,
+      pathname: `/dashboard/page/${page.id}`,
       page: page
     });
   }

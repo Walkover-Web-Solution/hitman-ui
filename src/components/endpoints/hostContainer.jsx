@@ -20,14 +20,6 @@ class HostContainer extends Component {
     versionId: null
   };
 
-  // setMethod(requestType) {
-  //   // const response = {};
-  //   let data = { ...this.state.data };
-  //   data.requestType = requestType;
-  //   // this.setState({ response, data });
-  //   this.setState({ data });
-  // }
-
   changeHost(host) {
     if (host === "environmentHost") {
       if (
@@ -97,31 +89,6 @@ class HostContainer extends Component {
     }
 
     return (
-      // <div className="endpoint-url-container">
-      //   <div className="input-group-prepend">
-      //     <div class="dropdown">
-      //       <button
-      //         class="btn btn-secondary dropdown-toggle"
-      //         type="button"
-      //         id="dropdownMenuButton"
-      //         data-toggle="dropdown"
-      //         aria-haspopup="true"
-      //         aria-expanded="false"
-      //       >
-      //         {this.state.data.requestType}
-      //       </button>
-      //       <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-      //         {this.state.methodList.map(methodName => (
-      //           <button
-      //             className="btn"
-      //             onClick={() => this.setMethod(methodName)}
-      //           >
-      //             {methodName}
-      //           </button>
-      //         ))}
-      //       </div>
-      //     </div>
-
       <div className="host-field-container">
         <input
           type="text"

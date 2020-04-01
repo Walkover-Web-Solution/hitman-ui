@@ -42,7 +42,7 @@ export const updatePage = (history, editedPage) => {
       .updatePage(editedPage.id, newPage)
       .then(response => {
         dispatch(onPageUpdated(response.data));
-        history.push(`/dashboard/pages/${response.data.id}`);
+        history.push(`/dashboard/page/${response.data.id}`);
       })
       .catch(error => {
         dispatch(
@@ -86,7 +86,7 @@ export const addPage = (history, versionId, newPage) => {
       .saveVersionPage(versionId, newPage)
       .then(response => {
         dispatch(onPageAdded(response.data));
-        history.push(`/dashboard/pages/${response.data.id}/edit`);
+        history.push(`/dashboard/page/${response.data.id}/edit`);
       })
       .catch(error => {
         dispatch(
@@ -131,7 +131,7 @@ export const addGroupPage = (history, versionId, groupId, newPage) => {
       .saveGroupPage(groupId, newPage)
       .then(response => {
         dispatch(onGroupPageAdded(response.data));
-        history.push(`/dashboard/pages/${response.data.id}/edit`);
+        history.push(`/dashboard/page/${response.data.id}/edit`);
       })
       .catch(error => {
         dispatch(

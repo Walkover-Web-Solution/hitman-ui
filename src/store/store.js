@@ -20,6 +20,9 @@ const rootReducer = combineReducers({
   environment: environmentsReducer,
   team: teamsReducer
 });
-const store = createStore(rootReducer, storeEnhancers(applyMiddleware(thunk)));
+const store = createStore(
+  rootReducer,
+  storeEnhancers(applyMiddleware(thunk, logger))
+);
 
 export default store;

@@ -46,18 +46,18 @@ class CustomTabs extends Component {
   }
 
   changeRoute(tab, title) {
-    if (tab.type === "endpoint") {
-      if (tab.isSaved) {
-        this.props.history.push({
-          pathname: `/dashboard/${tab.type}/${tab.id}`,
-          title
-        });
-      } else {
-        this.props.history.push({
-          pathname: `/dashboard/${tab.type}/new`
-        });
-      }
+    // if (tab.type === "endpoint") {
+    if (tab.isSaved) {
+      this.props.history.push({
+        pathname: `/dashboard/${tab.type}/${tab.id}`,
+        title
+      });
+    } else {
+      this.props.history.push({
+        pathname: `/dashboard/${tab.type}/new`
+      });
     }
+    // }
   }
 
   closeAllTabs() {
@@ -65,6 +65,21 @@ class CustomTabs extends Component {
     const tabs = [{ id, type: "endpoint", isSaved: false }];
     this.props.set_tabs(tabs, 0);
     this.props.history.push({ pathname: "/dashboard/endpoint/new" });
+  }
+
+  selectTab(tab, index) {
+    {
+      this.props.set_tabs(null, index);
+      if (tab.isSaved) {
+        this.props.history.push({
+          pathname: `/dashboard/${tab.type}/${tab.id}`
+        });
+      } else {
+        this.props.history.push({
+          pathname: `/dashboard/${tab.type}/new`
+        });
+      }
+    }
   }
 
   render() {
@@ -76,24 +91,12 @@ class CustomTabs extends Component {
               <Nav.Link eventKey={tab.id}>
                 <button
                   className="btn"
-                  onClick={() => {
-                    this.props.set_tabs(null, index);
-                    if (tab.isSaved) {
-                      this.props.history.push({
-                        pathname: `/dashboard/endpoint/${tab.id}`
-                      });
-                    } else {
-                      this.props.history.push({
-                        pathname: `/dashboard/endpoint/new`
-                      });
-                    }
-                  }}
+                  onClick={() => this.selectTab(tab, index)}
                 >
-                  {tab.type === "endpoint"
-                    ? tab.isSaved
-                      ? this.props.endpoints[tab.id].name
-                      : "Untitled"
-                    : null}
+                  {tab.isSaved
+                    ? this.props[tab.type + "s"] &&
+                      this.props[tab.type + "s"][tab.id].name
+                    : "Untitled"}
                 </button>
               </Nav.Link>
               <button className="btn" onClick={() => this.deleteTab(index)}>
