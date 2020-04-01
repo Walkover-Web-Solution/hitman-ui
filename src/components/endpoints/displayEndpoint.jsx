@@ -277,8 +277,8 @@ class DisplayEndpoint extends Component {
     this.handleApiCall(api, body, headerJson);
   };
 
-  handleSave = async e => {
-    if (!this.state.groupId) {
+  handleSave = async (groupId, EndpointName) => {
+    if (!(this.state.groupId || groupId)) {
       this.openEndpointFormModal();
     } else {
       let body = this.parseBody(this.state.data);
@@ -286,23 +286,23 @@ class DisplayEndpoint extends Component {
       const updatedParams = this.doSubmitParam();
       const endpoint = {
         uri: this.uri.current.value,
-        name: this.name.current.value,
+        name: EndpointName || this.name.current.value,
         requestType: this.state.data.method,
         body: body,
         headers: headersData,
         params: updatedParams,
         BASE_URL: this.customState.BASE_URL
       };
-      if (endpoint.name === "" || endpoint.uri === "")
-        toast.error("Please Enter all the fields");
+      // if (endpoint.name === "" || endpoint.uri === "")
+      if (endpoint.name === "") toast.error("Please enter Endpoint name");
       else if (this.props.location.pathname.split("/")[3] === "new") {
         endpoint.requestId = this.props.tabs[this.props.default_tab_index].id;
-        this.props.addEndpoint(endpoint, this.state.groupId);
+        this.props.addEndpoint(endpoint, groupId || this.state.groupId);
       } else if (this.state.title === "update endpoint") {
         this.props.updateEndpoint({
           ...endpoint,
           id: this.state.endpoint.id,
-          groupId: this.state.groupId
+          groupId: groupId || this.state.groupId
         });
       }
     }
@@ -436,6 +436,7 @@ class DisplayEndpoint extends Component {
     const data = { ...this.state.data };
     data.name = endpointName;
     this.setState({ groupId, data });
+    this.handleSave(groupId, endpointName);
   }
 
   makeParams(params) {
@@ -582,6 +583,7 @@ class DisplayEndpoint extends Component {
             onHide={() => this.closeEndpointFormModal()}
             set_group_id={this.setGroupId.bind(this)}
             name={this.state.data.name}
+            save_endpoint={this.handleSave.bind(this)}
           />
         )}
         <div className="endpoint-name-container">

@@ -59,6 +59,11 @@ $border-color: rgba(227, 228, 230, 0.7);
         padding: 0 0 0 15px !important;
       }
     }
+    .collapsing {
+      .card-body {
+        padding: 0 0 0 15px !important;
+      }
+    }
     .card-header {
       border-bottom: 1px solid $border-color;
       margin-bottom: 0px !important;
