@@ -137,8 +137,6 @@ class ShareCollectionForm extends Component {
   }
 
   render() {
-    console.log(this.team);
-    console.log(this.props);
     this.fetchTeam();
     this.currentUserRole = this.fetchCurrentUserRole();
     let count = Object.keys(this.team).length;

@@ -23,7 +23,6 @@ function collectionsReducer(state = initialState, action) {
     case collectionsActionTypes.ON_COLLECTION_ADDED:
       collections = { ...state };
       delete collections[action.response.requestId];
-      console.log("response", action.response);
       collections[action.response.id] = action.response;
       return collections;
 

@@ -71,7 +71,6 @@ class Endpoints extends Component {
 
     tabs.splice(this.props.default_tab_index, 1);
     const newIndex = this.props.default_tab_index - 1;
-    console.log(tabs, newIndex);
     this.props.set_tabs(tabs, newIndex);
 
     this.props.deleteEndpoint(endpoint);

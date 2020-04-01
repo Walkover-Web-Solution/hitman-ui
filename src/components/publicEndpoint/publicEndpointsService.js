@@ -6,7 +6,6 @@ export function fetchAll(collectionIdentifier) {
 }
 
 export function approveEndpoint(endpoint) {
-  console.log("approved");
   return http.patch(`${apiUrl}/endpoints/${endpoint.id}/approved`);
 }
 
