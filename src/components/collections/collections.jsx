@@ -9,6 +9,8 @@ import collectionVersionsService from "../collectionVersions/collectionVersionsS
 import ImportVersionForm from "../collectionVersions/importVersionForm";
 import { isDashboardRoute } from "../common/utility";
 import endpointService from "../endpoints/endpointService";
+import endpointApiService from "../endpoints/endpointApiService";
+
 import {
   fetchAllUsersOfTeam,
   shareCollection
@@ -21,6 +23,7 @@ import {
   updateCollection
 } from "./redux/collectionsActions";
 import ShareCollectionForm from "./shareCollectionForm";
+import DeleteModal from "../common/deleteModal";
 
 const mapStateToProps = state => {
   return {
@@ -52,8 +55,6 @@ class CollectionsComponent extends Component {
     showCollectionForm: false,
     collectionFormName: "",
     selectedCollection: {}
-    // keywords: {},
-    // names: {}
   };
   keywords = {};
   names = {};
@@ -77,7 +78,7 @@ class CollectionsComponent extends Component {
     this.setState({ endpoints, groups });
     try {
       delete endpoint.id;
-      await endpointService.updateEndpoint(endpointId, endpoint);
+      await endpointApiService.updateEndpoint(endpointId, endpoint);
     } catch (error) {
       this.setState({ endpoints: originalEndpoints, groups: originalGroups });
     }
@@ -86,18 +87,6 @@ class CollectionsComponent extends Component {
   async handleAddCollection(newCollection) {
     newCollection.requestId = shortId.generate();
     this.props.addCollection(newCollection);
-  }
-
-  async handleDelete(collection) {
-    if (
-      window.confirm(
-        "Are you sure you wish to delete this collection?" +
-          "\n" +
-          " All your versions, groups, pages and endpoints present in this collection will be deleted."
-      )
-    ) {
-      this.props.deleteCollection(collection);
-    }
   }
 
   async handleUpdateCollection(editedCollection) {
@@ -179,6 +168,16 @@ class CollectionsComponent extends Component {
       }
     });
   }
+
+  openDeleteCollectionModal(collectionId) {
+    this.setState({
+      showDeleteModal: true,
+      selectedCollection: {
+        ...this.props.collections[collectionId]
+      }
+    });
+  }
+
   showImportVersionForm() {
     return (
       this.state.showImportVersionForm && (
@@ -201,6 +200,10 @@ class CollectionsComponent extends Component {
     collection.isPublic = !collection.isPublic;
     delete collection.teamId;
     this.props.updateCollection({ ...collection });
+  }
+
+  closeDeleteCollectionModal() {
+    this.setState({ showDeleteModal: false });
   }
 
   render() {
@@ -285,6 +288,15 @@ class CollectionsComponent extends Component {
                 )}
               {this.showImportVersionForm()}
               {this.showShareCollectionForm()}
+              {this.state.showDeleteModal &&
+                collectionsService.showDeleteCollectionModal(
+                  this.props,
+                  this.closeDeleteCollectionModal.bind(this),
+                  "Delete Collection",
+                  `Are you sure you wish to delete this collection? All your versions,
+                 groups, pages and endpoints present in this collection will be deleted.`,
+                  this.state.selectedCollection
+                )}
             </div>
           </div>
 
@@ -344,9 +356,7 @@ class CollectionsComponent extends Component {
                         <button
                           className="dropdown-item"
                           onClick={() => {
-                            this.handleDelete(
-                              this.props.collections[collectionId]
-                            );
+                            this.openDeleteCollectionModal(collectionId);
                           }}
                         >
                           Delete

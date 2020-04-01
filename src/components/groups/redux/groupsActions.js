@@ -1,5 +1,5 @@
 import store from "../../../store/store";
-import groupsService from "../groupsService";
+import groupsApiService from "../groupsApiService";
 import groupsActionTypes from "./groupsActionTypes";
 import { toast } from "react-toastify";
 
@@ -11,7 +11,7 @@ export const setEndpointIds = (endpointsOrder, groupId) => {
 
 export const fetchGroups = () => {
   return dispatch => {
-    groupsService
+    groupsApiService
       .getAllGroups()
       .then(response => {
         dispatch(onGroupsFetched(response.data));
@@ -41,7 +41,7 @@ export const onGroupsFetchedError = error => {
 export const addGroup = (versionId, newGroup) => {
   return dispatch => {
     dispatch(addGroupRequest(newGroup));
-    groupsService
+    groupsApiService
       .saveGroup(versionId, newGroup)
       .then(response => {
         dispatch(onGroupAdded(response.data));
@@ -86,7 +86,7 @@ export const updateGroup = editedGroup => {
     const id = editedGroup.id;
     delete editedGroup.id;
     const { name, host, endpointsOrder } = editedGroup;
-    groupsService
+    groupsApiService
       .updateGroup(id, { name, host, endpointsOrder })
       .then(response => {
         dispatch(onGroupUpdated(response.data));
@@ -127,7 +127,7 @@ export const onGroupUpdatedError = (error, originalGroup) => {
 export const deleteGroup = group => {
   return dispatch => {
     dispatch(deleteGroupRequest(group));
-    groupsService
+    groupsApiService
       .deleteGroup(group.id)
       .then(() => {
         dispatch(onGroupDeleted());
@@ -166,7 +166,7 @@ export const onGroupDeletedError = (error, group) => {
 
 export const duplicateGroup = group => {
   return dispatch => {
-    groupsService
+    groupsApiService
       .duplicateGroup(group.id)
       .then(response => {
         dispatch(onGroupDuplicated(response.data));

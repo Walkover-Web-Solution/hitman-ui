@@ -20,19 +20,19 @@ const mapDispatchToProps = dispatch => {
 class Pages extends Component {
   state = {};
 
-  handleDelete(page) {
-    const confirm = window.confirm(
-      "Are you sure you wish to delete this group? " +
-        "\n" +
-        "All your pages and endpoints present in this group will be deleted."
-    );
-    if (confirm) {
-      this.props.deletePage(page);
-      this.props.history.push({
-        pathname: "/dashboard"
-      });
-    }
-  }
+  // handleDelete(page) {
+  //   const confirm = window.confirm(
+  //     "Are you sure you wish to delete this group? " +
+  //       "\n" +
+  //       "All your pages and endpoints present in this group will be deleted."
+  //   );
+  //   if (confirm) {
+  //     this.props.deletePage(page);
+  //     this.props.history.push({
+  //       pathname: "/dashboard"
+  //     });
+  //   }
+  // }
 
   handleDisplay(page, collectionId) {
     if (isDashboardRoute(this.props)) {
@@ -129,7 +129,9 @@ class Pages extends Component {
                 <div className="dropdown-menu dropdown-menu-right">
                   <button
                     className="dropdown-item"
-                    onClick={() => this.handleDelete(this.props.pages[pageId])}
+                    onClick={() => {
+                      this.props.open_delete_page_modal(pageId);
+                    }}
                   >
                     Delete
                   </button>

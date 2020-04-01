@@ -68,7 +68,10 @@ function pagesReducer(state = initialState, action) {
       };
 
     case pagesActionTypes.ON_PAGE_UPDATED:
-      return state;
+      return {
+        ...state,
+        [action.response.id]: action.response
+      };
 
     case pagesActionTypes.ON_PAGE_UPDATED_ERROR:
       toast.error(action.error);

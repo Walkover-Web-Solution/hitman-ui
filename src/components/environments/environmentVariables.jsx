@@ -1,9 +1,9 @@
 import jQuery from "jquery";
 import React, { Component } from "react";
 import { Modal, Table } from "react-bootstrap";
+import { connect } from "react-redux";
 import shortId from "shortid";
 import "../../styles/environmentVariables.scss";
-import { connect } from "react-redux";
 import { addEnvironment, updateEnvironment } from "./redux/environmentsActions";
 
 const mapDispatchToProps = dispatch => {
@@ -150,6 +150,7 @@ class EnvironmentVariables extends Component {
       <Modal
         {...this.props}
         size="lg"
+        animation={false}
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >

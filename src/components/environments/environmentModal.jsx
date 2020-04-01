@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { ListGroup, Modal } from "react-bootstrap";
 import environmentsApiService from "./environmentsApiService";
+import environmentsService from "./environmentsService";
 
 class EnvironmentModal extends Component {
   state = {
@@ -51,6 +52,7 @@ class EnvironmentModal extends Component {
       <Modal
         {...this.props}
         size="lg"
+        animation={false}
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
@@ -88,14 +90,8 @@ class EnvironmentModal extends Component {
                       <button
                         className="btn btn-default"
                         onClick={() => {
-                          if (
-                            window.confirm(
-                              "Are you sure you wish to delete this environment?"
-                            )
-                          )
-                            this.handleDelete(
-                              this.props.environment.environments[environmentId]
-                            );
+                          this.props.onHide();
+                          this.props.open_delete_environment_modal(environmentId);
                         }}
                       >
                         delete
@@ -120,6 +116,7 @@ class EnvironmentModal extends Component {
           </div>
         </Modal.Body>
       </Modal>
+      // </div>
     );
   }
 }

@@ -8,6 +8,7 @@ class CreateNewModal extends Component {
       <Modal
         {...this.props}
         size="xl"
+        animation={false}
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >

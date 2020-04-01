@@ -7,7 +7,7 @@ import { isDashboardRoute } from "../common/utility";
 import CodeWindow from "./codeWindow";
 import CreateEndpointForm from "./createEndpointForm";
 import DisplayResponse from "./displayResponse";
-import endpointService from "./endpointService";
+import endpointApiService from "./endpointApiService";
 import GenericTable from "./genericTable";
 import HostContainer from "./hostContainer";
 import { addEndpoint, updateEndpoint } from "./redux/endpointsActions";
@@ -269,7 +269,7 @@ class DisplayEndpoint extends Component {
     let responseJson = {};
     try {
       let header = this.replaceVariablesInJson(headerJson);
-      responseJson = await endpointService.apiTest(
+      responseJson = await endpointApiService.apiTest(
         api,
         this.state.data.method,
         body,

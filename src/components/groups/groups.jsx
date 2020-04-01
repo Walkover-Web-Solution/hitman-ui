@@ -9,6 +9,7 @@ import ShareGroupForm from "../groups/shareGroupForm";
 import GroupPages from "../pages/groupPages";
 import PageForm from "../pages/pageForm";
 import { isDashboardRoute } from "../common/utility";
+import groupsService from "./groupsService";
 
 const mapStateToProps = state => {
   return { groups: state.groups };
@@ -57,6 +58,7 @@ class Groups extends Component {
       title: "Add New Endpoint"
     });
   }
+
   openShareGroupForm(group) {
     let showGroupForm = { share: true, addPage: false };
     this.setState({
@@ -65,6 +67,7 @@ class Groups extends Component {
       selectedGroup: group
     });
   }
+
   handleDuplicate(group) {
     this.props.duplicateGroup(group);
     this.props.history.push({
@@ -72,19 +75,6 @@ class Groups extends Component {
     });
   }
 
-  handleDelete(group) {
-    const confirm = window.confirm(
-      "Are you sure you wish to delete this group? " +
-        "\n" +
-        "All your pages and endpoints present in this group will be deleted."
-    );
-    if (confirm) {
-      this.props.deleteGroup(group);
-      this.props.history.push({
-        pathname: "/dashboard"
-      });
-    }
-  }
   closeGroupForm() {
     let edit = false;
     let addPage = false;
@@ -142,12 +132,26 @@ class Groups extends Component {
       selectedCollection
     });
   }
+
   openEditGroupForm(selectedGroup) {
     let showGroupForm = { edit: true };
     this.setState({
       showGroupForm,
       selectedGroup
     });
+  }
+
+  openDeleteGroupModal(groupId) {
+    this.setState({
+      showDeleteModal: true,
+      selectedGroup: {
+        ...this.props.groups[groupId]
+      }
+    });
+  }
+
+  closeDeleteGroupModal() {
+    this.setState({ showDeleteModal: false });
   }
 
   render() {
@@ -157,6 +161,15 @@ class Groups extends Component {
           {this.showShareGroupForm()}
           {this.showEditGroupForm()}
           {this.showAddGroupPageForm()}
+          {this.state.showDeleteModal &&
+            groupsService.showDeleteGroupModal(
+              this.props,
+              this.closeDeleteGroupModal.bind(this),
+              "Delete Group",
+              `Are you sure you wish to delete this group?
+              All your pages and endpoints present in this group will be deleted.`,
+              this.state.selectedGroup
+            )}
         </div>
         {Object.keys(this.props.groups)
           .filter(
@@ -200,9 +213,9 @@ class Groups extends Component {
                         </button>
                         <button
                           className="dropdown-item"
-                          onClick={() =>
-                            this.handleDelete(this.props.groups[groupId])
-                          }
+                          onClick={() => {
+                            this.openDeleteGroupModal(groupId);
+                          }}
                         >
                           Delete
                         </button>

@@ -258,6 +258,7 @@ $border-color: rgba(227, 228, 230, 0.7);
   flex-direction: row;
 
   nav.col-md-2.d-none.d-md-block.bg-light.sidebar {
+    margin-top: 10px;
     flex: 1;
     overflow: scroll;
     padding-left: 0;
@@ -274,16 +275,16 @@ $border-color: rgba(227, 228, 230, 0.7);
 nav.navbar.navbar-dark.fixed-top.bg-dark.flex-md-nowrap.p-0.shadow {
   display: flex;
   align-items: baseline;
-  height: 40px;
+  height: 50px;
   .btn-group {
     display: flex;
-    height: 100%;
+    height: 45px;
     border-radius: 2px;
     #new-button {
       display: flex;
       align-items: baseline;
       background-color: tomato;
-      margin: 5px 0px 5px 5px;
+      margin: 8px 0px 4px 4px;
       .fa-plus-square {
         padding-right: 5px;
         font-size: 17px;
@@ -291,7 +292,7 @@ nav.navbar.navbar-dark.fixed-top.bg-dark.flex-md-nowrap.p-0.shadow {
     }
     #new-button-dropdown {
       background-color: tomato;
-      margin: 5px 5px 5px 0px;
+      margin: 8px 4px 4px 0px;
     }
     button.btn {
       padding: 0px 6px;
@@ -303,7 +304,7 @@ nav.navbar.navbar-dark.fixed-top.bg-dark.flex-md-nowrap.p-0.shadow {
 }
 #nav-left-buttons {
   display: flex;
-  margin: 5px;
+  margin: 8px 4px 4px 4px;
   border-radius: 3px;
   background-color: rgb(101, 103, 105);
 }
@@ -356,7 +357,118 @@ nav.navbar.navbar-dark.fixed-top.bg-dark.flex-md-nowrap.p-0.shadow {
     flex-direction: row;
     align-items: center;
   }
+  button#custom-delete-modal-delete {
+    color: white;
+    float: right;
+    background: rgb(255, 0, 0);
+    font-weight: 250;
+    padding-left: 25px;
+    padding-right: 25px;
+    font-size: 15px;
+    border-color: blue;
+  }
 }
+
+//delete modal styling
+
+button#custom-delete-modal-delete {
+  color: white;
+  float: right;
+  background: rgb(255, 0, 0);
+  font-weight: 250;
+  padding-left: 25px;
+  padding-right: 25px;
+  font-size: 15px;
+  border-color: blue;
+}
+
+button#custom-delete-modal-cancel {
+  float: right;
+  font-weight: 250;
+  padding-left: 25px;
+  padding-right: 25px;
+  font-size: 15px;
+
+  color: grey;
+  background: rgb(232, 232, 232);
+  margin-right: 20px;
+
+  &:hover {
+    background: rgb(197, 197, 200);
+  }
+}
+
+#custom-delete-modal-body {
+  height: 120px;
+  display: block;
+}
+
+//env drop down styling
+.custom-env-menu.dropdown-menu.show.dropdown-menu-right {
+  height: 400px;
+  width: 780px;
+  background: rgb(245, 243, 243);
+  transform: translate3d(-700px, 38px, 0px) !important;
+  overflow-y: scroll;
+
+  .dropdown-divider {
+    border-top: 1px solid rgba(190, 201, 214, 0.7) !important;
+  }
+
+  .btn.btn-default {
+    padding-top: 0px;
+    float: right;
+    color: orange;
+    font-size: 14px;
+    font-weight: 300px;
+  }
+
+  .custom-left-pane {
+    float: left;
+    width: 231px;
+    color: rgb(128, 128, 128);
+    font-size: 13px;
+    font-weight: 400;
+    padding-left: 15px;
+  }
+  .custom-middle-pane {
+    float: left;
+    width: 269px;
+    color: rgb(128, 128, 128);
+    font-size: 13px;
+    font-weight: 400;
+  }
+  .custom-right-pane {
+    float: left;
+    width: 270px;
+    color: rgb(128, 128, 128);
+    font-size: 13px;
+    font-weight: 400;
+  }
+
+  .custom-left-box {
+    float: left;
+    width: 231px;
+    font-size: 13px;
+    font-weight: 300;
+    padding-left: 15px;
+  }
+  .custom-middle-box {
+    float: left;
+    width: 269px;
+    font-size: 13px;
+    font-weight: 300;
+  }
+  .custom-right-box {
+    float: left;
+    width: 270px;
+    font-size: 13px;
+    font-weight: 300;
+  }
+}
+
+//
+
 .new-button-card {
   border-radius: 10px;
   width: 33%;

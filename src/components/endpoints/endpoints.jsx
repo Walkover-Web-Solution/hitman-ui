@@ -10,6 +10,8 @@ import {
 } from "../publicEndpoint/redux/publicEndpointsActions";
 import { deleteEndpoint, duplicateEndpoint } from "./redux/endpointsActions";
 import shortId from "shortid";
+import endpointService from "./endpointService";
+import DeleteModal from "../common/deleteModal";
 
 const mapStateToProps = state => {
   return {
@@ -131,6 +133,18 @@ class Endpoints extends Component {
     });
   }
 
+  openDeleteModal(endpointId) {
+    this.setState({
+      showDeleteModal: true,
+      selectedEndpoint: {
+        ...this.props.endpoints[endpointId]
+      }
+    });
+  }
+
+  closeDeleteEndpointModal() {
+    this.setState({ showDeleteModal: false });
+  }
   getCurrentUserRole(collectionId) {
     const teamId = this.props.collections[collectionId].teamId;
     if (teamId !== undefined) return this.props.teams[teamId].role;
@@ -185,6 +199,17 @@ class Endpoints extends Component {
     if (isDashboardRoute(this.props)) {
       return (
         <React.Fragment>
+          {/* <div>
+          {this.state.showDeleteModal &&
+            endpointService.showDeleteEndpointModal(
+              this.props,
+              this.handleDelete.bind(this),
+              this.closeDeleteEndpointModal.bind(this),
+              "Delete Endpoint",
+              "Are you sure you wish to delete this endpoint? ",
+              this.state.selectedEndpoint
+            )}
+        </div> */}
           {Object.keys(this.props.endpoints).length !== 0 &&
             this.props.endpoints_order
               .filter(

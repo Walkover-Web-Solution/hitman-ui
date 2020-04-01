@@ -8,6 +8,7 @@ import {
 } from "../publicEndpoint/redux/publicEndpointsActions";
 import Pages from "./pages";
 import { deletePage, duplicatePage } from "./redux/pagesActions";
+import pageService from "./pageService";
 
 const mapStateToProps = state => {
   return {
@@ -36,9 +37,33 @@ class GroupPages extends Component {
     });
   }
 
+  openDeletePageModal(pageId) {
+    this.setState({
+      showDeleteModal: true,
+      selectedPage: {
+        ...this.props.pages[pageId]
+      }
+    });
+  }
+
+  closeDeletePageModal() {
+    this.setState({ showDeleteModal: false });
+  }
+
   render() {
     return (
       <div>
+        <div>
+          {this.state.showDeleteModal &&
+            pageService.showDeletePageModal(
+              this.props,
+              this.closeDeletePageModal.bind(this),
+              "Delete Page",
+              ` Are you sure you wish to delete this page? `,
+              this.state.selectedPage
+            )}
+        </div>
+
         {this.props.pages &&
           Object.keys(this.props.pages)
             .filter(
@@ -49,7 +74,13 @@ class GroupPages extends Component {
 
             .map((pageId, index) => (
               <div key={index}>
-                <Pages {...this.props} pageId={pageId} index={index}></Pages>
+                <Pages
+                  {...this.props}
+                  pageId={pageId}
+                  index={index}
+                  open_delete_page_modal={this.openDeletePageModal.bind(this)}
+                  close_delete_page_modal={this.closeDeletePageModal.bind(this)}
+                ></Pages>
               </div>
             ))}
       </div>

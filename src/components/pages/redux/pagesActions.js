@@ -1,11 +1,11 @@
-import pagesService from "../pageService";
-import pagesActionTypes from "./pagesActionTypes";
-import store from "../../../store/store";
 import { toast } from "react-toastify";
+import store from "../../../store/store";
+import pageApiService from "../pageApiService";
+import pagesActionTypes from "./pagesActionTypes";
 
 export const fetchPages = () => {
   return dispatch => {
-    pagesService
+    pageApiService
       .getAllPages()
       .then(response => {
         const pages = response.data;
@@ -38,7 +38,7 @@ export const updatePage = (history, editedPage) => {
   return dispatch => {
     const originalPage = store.getState().pages[editedPage.id];
     dispatch(updatePageRequest(editedPage));
-    pagesService
+    pageApiService
       .updatePage(editedPage.id, newPage)
       .then(response => {
         dispatch(onPageUpdated(response.data));
@@ -82,7 +82,7 @@ export const addPage = (history, versionId, newPage) => {
     dispatch(addPageRequest(versionId, newPage));
     delete newPage.groupId;
     delete newPage.versionId;
-    pagesService
+    pageApiService
       .saveVersionPage(versionId, newPage)
       .then(response => {
         dispatch(onPageAdded(response.data));
@@ -127,7 +127,7 @@ export const addGroupPage = (history, versionId, groupId, newPage) => {
     dispatch(addGroupPageRequest(versionId, groupId, newPage));
     delete newPage.groupId;
     delete newPage.versionId;
-    pagesService
+    pageApiService
       .saveGroupPage(groupId, newPage)
       .then(response => {
         dispatch(onGroupPageAdded(response.data));
@@ -171,7 +171,7 @@ export const onGroupPageAddedError = (error, newPage) => {
 export const deletePage = page => {
   return dispatch => {
     dispatch(deletePageRequest(page));
-    pagesService
+    pageApiService
       .deletePage(page.id)
       .then(() => {
         dispatch(onPageDeleted());
@@ -205,7 +205,7 @@ export const onPageDeletedError = (error, page) => {
 
 export const duplicatePage = page => {
   return dispatch => {
-    pagesService
+    pageApiService
       .duplicatePage(page.id)
       .then(response => {
         dispatch(onPageDuplicated(response.data));
