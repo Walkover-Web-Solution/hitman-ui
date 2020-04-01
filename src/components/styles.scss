@@ -178,38 +178,6 @@ $border-color: rgba(227, 228, 230, 0.7);
     display: flex;
     flex-direction: row;
     align-items: baseline;
-    .POST {
-      color: rgb(255, 123, 0);
-      margin-right: 15px;
-      font-size: 13px;
-      font-weight: 800;
-      opacity: 0.7;
-      width: 50px;
-    }
-    .GET {
-      color: green;
-      margin-right: 15px;
-      font-size: 13px;
-      font-weight: 800;
-      opacity: 0.7;
-      width: 50px;
-    }
-    .PUT {
-      color: steelblue;
-      margin-right: 15px;
-      font-size: 13px;
-      font-weight: 800;
-      opacity: 0.7;
-      width: 50px;
-    }
-    .DELETE {
-      color: red;
-      margin-right: 15px;
-      font-size: 13px;
-      font-weight: 800;
-      opacity: 0.7;
-      width: 50px;
-    }
   }
   .btn-group {
     visibility: hidden;
@@ -221,6 +189,40 @@ $border-color: rgba(227, 228, 230, 0.7);
     }
   }
 }
+
+.POST {
+  color: rgb(255, 123, 0);
+  margin-right: 15px;
+  font-size: 13px;
+  font-weight: 800;
+  opacity: 0.7;
+  width: 50px;
+}
+.GET {
+  color: green;
+  margin-right: 15px;
+  font-size: 13px;
+  font-weight: 800;
+  opacity: 0.7;
+  width: 50px;
+}
+.PUT {
+  color: steelblue;
+  margin-right: 15px;
+  font-size: 13px;
+  font-weight: 800;
+  opacity: 0.7;
+  width: 50px;
+}
+.DELETE {
+  color: red;
+  margin-right: 15px;
+  font-size: 13px;
+  font-weight: 800;
+  opacity: 0.7;
+  width: 50px;
+}
+
 .endpoint-list-item:hover {
   background: rgb(237, 237, 237);
 
@@ -244,7 +246,7 @@ $border-color: rgba(227, 228, 230, 0.7);
 
   nav.col-md-2.d-none.d-md-block.bg-light.sidebar {
     flex: 1;
-    overflow: hidden;
+    overflow: scroll;
     padding-left: 0;
     padding-right: 0;
     border-right: 2px solid $border-color;
@@ -975,4 +977,15 @@ input#custom-environment-input {
   height: 100%;
   border-radius: 0px;
   border-right: 0px;
+}
+
+#folder-list {
+  li {
+    display: flex;
+    flex-direction: left;
+    padding-left: 10px;
+  }
+  #endpoint-list {
+    opacity: 0.5;
+  }
 }

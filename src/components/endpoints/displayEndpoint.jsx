@@ -581,6 +581,7 @@ class DisplayEndpoint extends Component {
             show={true}
             onHide={() => this.closeEndpointFormModal()}
             set_group_id={this.setGroupId.bind(this)}
+            name={this.state.data.name}
           />
         )}
         <div className="endpoint-name-container">

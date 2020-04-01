@@ -162,7 +162,13 @@ class Groups extends Component {
             gId => this.props.groups[gId].versionId === this.props.version_id
           )
           .map((groupId, index) => (
-            <Accordion key={groupId} id="child-accordion">
+            <Accordion
+              key={groupId}
+              id="child-accordion"
+              // draggable
+              onDragOver={e => e.preventDefault()}
+              onDrop={e => this.onDrop(groupId)}
+            >
               <Card>
                 <Card.Header>
                   <i
