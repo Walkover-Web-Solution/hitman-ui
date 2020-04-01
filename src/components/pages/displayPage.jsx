@@ -33,7 +33,7 @@ class DisplayPage extends Component {
 
   handleEdit(page) {
     this.props.history.push({
-      pathname: `/dashboard/pages/${page.id}/edit`,
+      pathname: `/dashboard/page/${page.id}/edit`,
       page: page
     });
   }

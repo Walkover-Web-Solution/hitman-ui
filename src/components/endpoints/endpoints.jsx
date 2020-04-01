@@ -9,6 +9,7 @@ import {
   rejectEndpoint
 } from "../publicEndpoint/redux/publicEndpointsActions";
 import { deleteEndpoint, duplicateEndpoint } from "./redux/endpointsActions";
+import shortId from "shortid";
 
 const mapStateToProps = state => {
   return {
@@ -65,27 +66,54 @@ class Endpoints extends Component {
     }
   };
 
-  handleDelete(endpoint) {
+  deleteTab(index) {
     let tabs = [...this.props.tabs];
-    const tab = tabs[this.props.default_tab_index - 1];
-
-    tabs.splice(this.props.default_tab_index, 1);
-    const newIndex = this.props.default_tab_index - 1;
-    this.props.set_tabs(tabs, newIndex);
-
-    this.props.deleteEndpoint(endpoint);
-
-    if (tab.type === "endpoint") {
-      if (tab.isSaved) {
-        this.props.history.push({
-          pathname: `/dashboard/${tab.type}/${tab.id}`,
-          title: "update endpoint"
-        });
+    tabs.splice(index, 1);
+    if (this.props.default_tab_index === index) {
+      if (index !== 0) {
+        const newIndex = this.props.default_tab_index - 1;
+        this.props.set_tabs(tabs, newIndex);
+        this.changeRoute(tabs[newIndex], "update endpoint");
       } else {
-        this.props.history.push({
-          pathname: `/dashboard/endpoint/new`
-        });
+        if (tabs.length > 0) {
+          const newIndex = index;
+          this.props.set_tabs(tabs, newIndex);
+          this.changeRoute(tabs, "update endpoint");
+        } else {
+          const newTabId = shortId.generate();
+          tabs = [...tabs, { id: newTabId, type: "endpoint", isSaved: false }];
+
+          this.props.set_tabs(tabs, tabs.length - 1);
+          this.props.history.push({
+            pathname: `/dashboard/endpoint/new`
+          });
+        }
       }
+    } else {
+      if (index < this.props.default_tab_index) {
+        this.props.set_tabs(tabs, this.props.default_tab_index - 1);
+      } else this.props.set_tabs(tabs);
+    }
+  }
+
+  changeRoute(tab, title) {
+    if (tab.isSaved) {
+      this.props.history.push({
+        pathname: `/dashboard/${tab.type}/${tab.id}`,
+        title
+      });
+    } else {
+      this.props.history.push({
+        pathname: `/dashboard/${tab.type}/new`
+      });
+    }
+  }
+
+  handleDelete(endpoint) {
+    const index = this.props.tabs.findIndex(t => t.id === endpoint.id);
+    this.props.deleteEndpoint(endpoint);
+    if (index >= 0) {
+      this.deleteTab(index);
     }
   }
 

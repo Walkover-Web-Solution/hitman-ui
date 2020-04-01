@@ -54,6 +54,16 @@ $border-color: rgba(227, 228, 230, 0.7);
   .card {
     border-radius: 0;
     border: none;
+    .collapse {
+      .card-body {
+        padding: 0 0 0 15px !important;
+      }
+    }
+    .collapsing {
+      .card-body {
+        padding: 0 0 0 15px !important;
+      }
+    }
     .card-header {
       border-bottom: 1px solid $border-color;
       margin-bottom: 0px !important;
@@ -65,6 +75,7 @@ $border-color: rgba(227, 228, 230, 0.7);
       height: 60px;
       border-radius: 0px;
       background-color: white;
+
       .btn {
         text-align: left;
       }
@@ -117,6 +128,11 @@ $border-color: rgba(227, 228, 230, 0.7);
 #child-accordion > .card {
   border-radius: 0px;
   border: none;
+  .collapse {
+    .card-body {
+      padding: 0 0 0 15px !important;
+    }
+  }
   .card-header {
     display: flex;
     flex-direction: row;
@@ -126,6 +142,7 @@ $border-color: rgba(227, 228, 230, 0.7);
     height: 40px;
     border-radius: 0px;
     border: none;
+
     i.fas.fa-folder-open {
       opacity: 0.4;
       padding-left: 10px;
@@ -166,10 +183,6 @@ $border-color: rgba(227, 228, 230, 0.7);
   }
 }
 
-.card-body {
-  padding: 0 0 0 15px !important;
-}
-
 .endpoint-list-item {
   display: flex;
   flex-direction: row;
@@ -178,38 +191,6 @@ $border-color: rgba(227, 228, 230, 0.7);
     display: flex;
     flex-direction: row;
     align-items: baseline;
-    .POST {
-      color: rgb(255, 123, 0);
-      margin-right: 15px;
-      font-size: 13px;
-      font-weight: 800;
-      opacity: 0.7;
-      width: 50px;
-    }
-    .GET {
-      color: green;
-      margin-right: 15px;
-      font-size: 13px;
-      font-weight: 800;
-      opacity: 0.7;
-      width: 50px;
-    }
-    .PUT {
-      color: steelblue;
-      margin-right: 15px;
-      font-size: 13px;
-      font-weight: 800;
-      opacity: 0.7;
-      width: 50px;
-    }
-    .DELETE {
-      color: red;
-      margin-right: 15px;
-      font-size: 13px;
-      font-weight: 800;
-      opacity: 0.7;
-      width: 50px;
-    }
   }
   .btn-group {
     visibility: hidden;
@@ -221,6 +202,40 @@ $border-color: rgba(227, 228, 230, 0.7);
     }
   }
 }
+
+.POST {
+  color: rgb(255, 123, 0);
+  margin-right: 15px;
+  font-size: 13px;
+  font-weight: 800;
+  opacity: 0.7;
+  width: 50px;
+}
+.GET {
+  color: green;
+  margin-right: 15px;
+  font-size: 13px;
+  font-weight: 800;
+  opacity: 0.7;
+  width: 50px;
+}
+.PUT {
+  color: steelblue;
+  margin-right: 15px;
+  font-size: 13px;
+  font-weight: 800;
+  opacity: 0.7;
+  width: 50px;
+}
+.DELETE {
+  color: red;
+  margin-right: 15px;
+  font-size: 13px;
+  font-weight: 800;
+  opacity: 0.7;
+  width: 50px;
+}
+
 .endpoint-list-item:hover {
   background: rgb(237, 237, 237);
 
@@ -244,7 +259,7 @@ $border-color: rgba(227, 228, 230, 0.7);
 
   nav.col-md-2.d-none.d-md-block.bg-light.sidebar {
     flex: 1;
-    overflow: hidden;
+    overflow: scroll;
     padding-left: 0;
     padding-right: 0;
     border-right: 2px solid $border-color;
@@ -322,6 +337,15 @@ nav.navbar.navbar-dark.fixed-top.bg-dark.flex-md-nowrap.p-0.shadow {
     width: 100%;
     background-color: rgb(221, 221, 223);
     border-radius: 2px;
+    .dropdown {
+      width: 100%;
+      .btn {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+    }
   }
 }
 
@@ -334,10 +358,12 @@ nav.navbar.navbar-dark.fixed-top.bg-dark.flex-md-nowrap.p-0.shadow {
   }
 }
 .new-button-card {
+  border-radius: 10px;
   width: 33%;
   height: 150px;
   display: flex;
   flex-direction: row;
+  // padding: 15px;
   .new-icon-wrapper {
     font-size: 50px;
     padding-right: 25px;
@@ -352,6 +378,10 @@ nav.navbar.navbar-dark.fixed-top.bg-dark.flex-md-nowrap.p-0.shadow {
       font-weight: 400;
     }
   }
+}
+
+.new-button-card:hover {
+  background-color: rgb(245, 245, 245);
 }
 
 .custom-collection-modal-container.modal-header {
@@ -977,4 +1007,22 @@ input#custom-environment-input {
   border-radius: 50%;
   margin-right: 10px;
   display: inline-block;
+}
+#host-select {
+  width: 40px;
+  float: right;
+  height: 100%;
+  border-radius: 0px;
+  border-right: 0px;
+}
+
+#folder-list {
+  li {
+    display: flex;
+    flex-direction: left;
+    padding-left: 10px;
+  }
+  #endpoint-list {
+    opacity: 0.5;
+  }
 }

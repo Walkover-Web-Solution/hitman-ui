@@ -37,7 +37,7 @@ class Pages extends Component {
   handleDisplay(page, collectionId) {
     if (isDashboardRoute(this.props)) {
       this.props.history.push({
-        pathname: `/dashboard/pages/${page.id}`,
+        pathname: `/dashboard/page/${page.id}`,
         page: page
       });
     } else {

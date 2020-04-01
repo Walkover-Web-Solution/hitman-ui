@@ -25,8 +25,9 @@ class Navbar extends Component {
         {...this.props}
         show={true}
         onHide={onHide}
-        openCollectionForm={this.openCollectionForm.bind(this)}
-        openEnvironmentForm={this.openEnvironmentForm.bind(this)}
+        add_new_endpoint={this.handleAddEndpoint.bind(this)}
+        open_collection_form={this.openCollectionForm.bind(this)}
+        open_environment_form={this.openEnvironmentForm.bind(this)}
       />
     );
   }
@@ -39,7 +40,7 @@ class Navbar extends Component {
     this.setState({ showCreateNewModal: false, showEnvironmentForm: true });
   }
 
-  handleAddEndpoint(groupId, versions, groups) {
+  handleAddEndpoint() {
     const newTabId = shortId.generate();
     const tabs = [
       ...this.props.tabs,
