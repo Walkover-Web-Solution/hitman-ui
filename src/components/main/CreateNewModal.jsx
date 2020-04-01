@@ -17,9 +17,7 @@ class CreateNewModal extends Component {
             <div
               class="card-body new-button-card"
               onClick={() => {
-                this.props.history.push({
-                  pathname: "/dashboard/endpoint/new"
-                });
+                this.props.add_new_endpoint();
                 this.props.onHide();
               }}
             >
@@ -27,7 +25,7 @@ class CreateNewModal extends Component {
                 <i className="fas fa-share-square new-icon-wrapper"></i>
               </div>
               <div className="new-button-text-wrapper">
-                <h5 class="card-title">Request</h5>
+                <h5 class="card-title">Endpoint</h5>
                 <h6 class="card-subtitle mb-2 text-muted">
                   Create a basic request
                 </h6>
@@ -37,7 +35,7 @@ class CreateNewModal extends Component {
             <div
               class="card-body new-button-card"
               onClick={() => {
-                this.props.openCollectionForm();
+                this.props.open_collection_form();
               }}
             >
               <div id="custom-req-icon-div">
@@ -54,7 +52,7 @@ class CreateNewModal extends Component {
             <div
               class="card-body new-button-card"
               onClick={() => {
-                this.props.openEnvironmentForm();
+                this.props.open_environment_form();
               }}
             >
               <div id="custom-req-icon-div">

@@ -54,6 +54,11 @@ $border-color: rgba(227, 228, 230, 0.7);
   .card {
     border-radius: 0;
     border: none;
+    .collapse {
+      .card-body {
+        padding: 0 0 0 15px !important;
+      }
+    }
     .card-header {
       border-bottom: 1px solid $border-color;
       margin-bottom: 0px !important;
@@ -65,6 +70,7 @@ $border-color: rgba(227, 228, 230, 0.7);
       height: 60px;
       border-radius: 0px;
       background-color: white;
+
       .btn {
         text-align: left;
       }
@@ -117,6 +123,11 @@ $border-color: rgba(227, 228, 230, 0.7);
 #child-accordion > .card {
   border-radius: 0px;
   border: none;
+  .collapse {
+    .card-body {
+      padding: 0 0 0 15px !important;
+    }
+  }
   .card-header {
     display: flex;
     flex-direction: row;
@@ -126,6 +137,7 @@ $border-color: rgba(227, 228, 230, 0.7);
     height: 40px;
     border-radius: 0px;
     border: none;
+
     i.fas.fa-folder-open {
       opacity: 0.4;
       padding-left: 10px;
@@ -164,10 +176,6 @@ $border-color: rgba(227, 228, 230, 0.7);
       visibility: visible;
     }
   }
-}
-
-.card-body {
-  padding: 0 0 0 15px !important;
 }
 
 .endpoint-list-item {
@@ -324,6 +332,15 @@ nav.navbar.navbar-dark.fixed-top.bg-dark.flex-md-nowrap.p-0.shadow {
     width: 100%;
     background-color: rgb(221, 221, 223);
     border-radius: 2px;
+    .dropdown {
+      width: 100%;
+      .btn {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+    }
   }
 }
 
@@ -336,10 +353,12 @@ nav.navbar.navbar-dark.fixed-top.bg-dark.flex-md-nowrap.p-0.shadow {
   }
 }
 .new-button-card {
+  border-radius: 10px;
   width: 33%;
   height: 150px;
   display: flex;
   flex-direction: row;
+  // padding: 15px;
   .new-icon-wrapper {
     font-size: 50px;
     padding-right: 25px;
@@ -354,6 +373,10 @@ nav.navbar.navbar-dark.fixed-top.bg-dark.flex-md-nowrap.p-0.shadow {
       font-weight: 400;
     }
   }
+}
+
+.new-button-card:hover {
+  background-color: rgb(245, 245, 245);
 }
 
 .custom-collection-modal-container.modal-header {
