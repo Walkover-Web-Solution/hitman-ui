@@ -130,7 +130,15 @@ class ShareCollectionForm extends Component {
     }
   }
 
+  handlePublic(collection) {
+    collection.isPublic = !collection.isPublic;
+    delete collection.teamId;
+    this.props.updateCollection({ ...collection });
+  }
+
   render() {
+    console.log(this.team);
+    console.log(this.props);
     this.fetchTeam();
     this.currentUserRole = this.fetchCurrentUserRole();
     let count = Object.keys(this.team).length;
@@ -196,6 +204,26 @@ class ShareCollectionForm extends Component {
                       </Dropdown.Menu>
                     </Dropdown>{" "}
                   </InputGroup.Append>
+                  {this.currentUserRole === "Admin" ||
+                  this.currentUserRole === "Owner" ? (
+                    <div>
+                      <button
+                        style={{ float: "right", marginLeft: "10px" }}
+                        type="button"
+                        class="btn btn-success"
+                        onClick={() => {
+                          this.handlePublic(
+                            this.props.collections[this.props.collection_id]
+                          );
+                        }}
+                      >
+                        {this.props.collections[this.props.collection_id]
+                          .isPublic
+                          ? "Make Private"
+                          : "Make Public"}
+                      </button>
+                    </div>
+                  ) : null}
                 </InputGroup>
               ) : null}
             </div>

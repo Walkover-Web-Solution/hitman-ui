@@ -7,8 +7,8 @@ import shortId from "shortid";
 import CollectionVersions from "../collectionVersions/collectionVersions";
 import collectionVersionsService from "../collectionVersions/collectionVersionsService";
 import ImportVersionForm from "../collectionVersions/importVersionForm";
+import { isDashboardRoute } from "../common/utility";
 import endpointService from "../endpoints/endpointService";
-
 import {
   fetchAllUsersOfTeam,
   shareCollection
@@ -21,16 +21,14 @@ import {
   updateCollection
 } from "./redux/collectionsActions";
 import ShareCollectionForm from "./shareCollectionForm";
-import { isDashboardRoute } from "../common/utility";
-import { fetchAllTeamsOfUser } from "../teamUsers/redux/teamUsersActions";
 
 const mapStateToProps = state => {
   return {
+    teams: state.teams,
     collections: state.collections,
     versions: state.versions,
     pages: state.pages,
-    teamUsers: state.teamUsers,
-    teams: state.teams
+    teamUsers: state.teamUsers
   };
 };
 
@@ -45,8 +43,7 @@ const mapDispatchToProps = dispatch => {
     duplicateCollection: collection =>
       dispatch(duplicateCollection(collection)),
     fetchAllUsersOfTeam: teamIdentifier =>
-      dispatch(fetchAllUsersOfTeam(teamIdentifier)),
-    fetchAllTeamsOfUser: () => dispatch(fetchAllTeamsOfUser())
+      dispatch(fetchAllUsersOfTeam(teamIdentifier))
   };
 };
 
@@ -60,10 +57,6 @@ class CollectionsComponent extends Component {
   };
   keywords = {};
   names = {};
-
-  async componentDidMount() {
-    this.props.fetchAllTeamsOfUser();
-  }
 
   closeCollectionForm() {
     this.setState({ showCollectionForm: false, showImportVersionForm: false });
@@ -135,6 +128,7 @@ class CollectionsComponent extends Component {
           }}
           team_id={this.state.selectedCollection.teamId}
           title="Share Collection"
+          collection_id={this.state.selectedCollection.id}
         />
       )
     );
@@ -150,6 +144,7 @@ class CollectionsComponent extends Component {
       collectionFormName: "Share Collection"
     });
   }
+
   openAddCollectionForm() {
     this.setState({
       showCollectionForm: true,
@@ -200,6 +195,12 @@ class CollectionsComponent extends Component {
 
   closeVersionForm() {
     this.setState({ showVersionForm: false });
+  }
+
+  handlePublic(collection) {
+    collection.isPublic = !collection.isPublic;
+    delete collection.teamId;
+    this.props.updateCollection({ ...collection });
   }
 
   render() {

@@ -13,9 +13,11 @@ import { fetchGroups } from "../groups/redux/groupsActions";
 import Navbar from "./Navbar";
 import { fetchPages } from "../pages/redux/pagesActions";
 import SideBar from "./sidebar";
+import { fetchAllTeamsOfUser } from "../teams/redux/teamsActions";
 
 const mapDispatchToProps = dispatch => {
   return {
+    fetchAllTeamsOfUser: () => dispatch(fetchAllTeamsOfUser()),
     fetchCollections: () => dispatch(fetchCollections()),
     fetchAllVersions: () => dispatch(fetchAllVersions()),
     fetchGroups: () => dispatch(fetchGroups()),
@@ -34,6 +36,7 @@ class Main extends Component {
   };
 
   componentDidMount() {
+    this.props.fetchAllTeamsOfUser();
     this.props.fetchCollections();
     this.props.fetchAllVersions();
     this.props.fetchGroups();

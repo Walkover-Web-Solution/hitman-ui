@@ -84,8 +84,8 @@ export const updateCollection = editedCollection => {
     delete editedCollection.id;
     collectionsApiService
       .updateCollection(id, editedCollection)
-      .then(() => {
-        dispatch(onCollectionUpdated());
+      .then(response => {
+        dispatch(onCollectionUpdated(response.data));
       })
       .catch(error => {
         dispatch(
@@ -105,9 +105,10 @@ export const updateCollectionRequest = editedCollection => {
   };
 };
 
-export const onCollectionUpdated = () => {
+export const onCollectionUpdated = response => {
   return {
-    type: collectionsActionTypes.ON_COLLECTION_UPDATED
+    type: collectionsActionTypes.ON_COLLECTION_UPDATED,
+    response
   };
 };
 
