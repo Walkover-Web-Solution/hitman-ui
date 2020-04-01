@@ -84,7 +84,7 @@ class Environments extends Component {
             className="btn btn-default"
             onClick={() => this.handleEnvironmentModal("Environment modal")}
           >
-            <i class="fas fa-cog"></i>
+            <i className="fas fa-cog"></i>
           </button>
         </div>
         <div className="environment-buttons">
@@ -92,7 +92,7 @@ class Environments extends Component {
             className="btn btn-default"
             onClick={() => console.log("View environment variables")}
           >
-            <i class="fas fa-eye"></i>
+            <i className="fas fa-eye"></i>
           </button>
         </div>
         <div className="select-environment-dropdown">

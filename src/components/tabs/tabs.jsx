@@ -103,23 +103,23 @@ class CustomTabs extends Component {
           ))}
         <Nav.Item className="tab-buttons" id="add-new-tab-button">
           <button className="btn" onClick={() => this.addNewTab()}>
-            <i class="fas fa-plus"></i>
+            <i className="fas fa-plus"></i>
           </button>
         </Nav.Item>
         <Nav.Item className="tab-buttons" id="tabs-menu-button">
-          <div class="dropdown">
+          <div className="dropdown">
             <button
-              class="btn "
+              className="btn "
               type="button"
               id="tabs-menu"
               data-toggle="dropdown"
               aria-haspopup="true"
               aria-expanded="false"
             >
-              <i class="fas fa-ellipsis-h"></i>
+              <i className="fas fa-ellipsis-h"></i>
             </button>
             <div
-              class="dropdown-menu dropdown-menu-right"
+              className="dropdown-menu dropdown-menu-right"
               aria-labelledby="tabs-menu"
             >
               <button

@@ -136,9 +136,9 @@ class Navbar extends Component {
         </div>
 
         <div className="btn-grp" id="user-menu">
-          <div class="dropdown">
+          <div className="dropdown">
             <button
-              class="btn btn-secondary dropdown-toggle"
+              className="btn btn-secondary dropdown-toggle"
               type="button"
               id="dropdownMenuButton"
               data-toggle="dropdown"
@@ -146,15 +146,15 @@ class Navbar extends Component {
               aria-expanded="false"
               style={{ borderRadius: "70px" }}
             >
-              <i class="fas fa-user"></i>
+              <i className="fas fa-user"></i>
             </button>
             <div
-              class="dropdown-menu dropdown-menu-right"
+              className="dropdown-menu dropdown-menu-right"
               aria-labelledby="dropdownMenuButton"
               alignLeft
             >
               <div id="custom-user-left">
-                <i class="fas fa-user"></i>
+                <i className="fas fa-user"></i>
               </div>
               <div id="custom-user-right">
                 <div>{this.state.name}</div>

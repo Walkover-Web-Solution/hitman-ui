@@ -24,7 +24,7 @@ class SideBar extends Component {
             <div id="search-box-wrapper">
               <div>
                 {" "}
-                <i class="fas fa-search" id="search-icon"></i>
+                <i className="fas fa-search" id="search-icon"></i>
               </div>
               <div id="search-box-input">
                 <input
@@ -38,10 +38,10 @@ class SideBar extends Component {
             </div>
           ) : null}
 
-          <ul class="nav nav-tabs" id="myTab" role="tablist">
-            <li class="nav-item">
+          <ul className="nav nav-tabs" id="myTab" role="tablist">
+            <li className="nav-item">
               <a
-                class="nav-link "
+                className="nav-link "
                 id="history-tab"
                 data-toggle="tab"
                 href="#history"
@@ -52,9 +52,9 @@ class SideBar extends Component {
                 History
               </a>
             </li>
-            <li class="nav-item">
+            <li className="nav-item">
               <a
-                class="nav-link active"
+                className="nav-link active"
                 id="collections-tab"
                 data-toggle="tab"
                 href="#collections"
@@ -65,9 +65,9 @@ class SideBar extends Component {
                 Collections
               </a>
             </li>
-            <li class="nav-item">
+            <li className="nav-item">
               <a
-                class="nav-link"
+                className="nav-link"
                 id="api-tab"
                 data-toggle="tab"
                 href="#api"
@@ -79,9 +79,9 @@ class SideBar extends Component {
               </a>
             </li>
           </ul>
-          <div class="tab-content" id="myTabContent">
+          <div className="tab-content" id="myTabContent">
             <div
-              class="tab-pane fade "
+              className="tab-pane fade "
               id="history"
               role="tabpanel"
               aria-labelledby="history-tab"
@@ -89,7 +89,7 @@ class SideBar extends Component {
               History coming soon... stay tuned
             </div>
             <div
-              class="tab-pane fade show active"
+              className="tab-pane fade show active"
               id="collections"
               role="tabpanel"
               aria-labelledby="collections-tab"
@@ -112,7 +112,7 @@ class SideBar extends Component {
               </Switch>
             </div>
             <div
-              class="tab-pane fade"
+              className="tab-pane fade"
               id="api"
               role="tabpanel"
               aria-labelledby="api-tab"

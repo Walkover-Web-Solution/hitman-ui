@@ -1,14 +1,13 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { deletePage, duplicatePage } from "./redux/pagesActions";
-import { isDashboardRoute } from "../common/utility";
-import Pages from "./pages";
 import {
   approvePage,
   draftPage,
   pendingPage,
   rejectPage
 } from "../publicEndpoint/redux/publicEndpointsActions";
+import Pages from "./pages";
+import { deletePage, duplicatePage } from "./redux/pagesActions";
 
 const mapStateToProps = state => {
   return {
@@ -49,7 +48,7 @@ class GroupPages extends Component {
             )
 
             .map((pageId, index) => (
-              <div>
+              <div key={index}>
                 <Pages {...this.props} pageId={pageId} index={index}></Pages>
               </div>
             ))}

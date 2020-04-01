@@ -50,7 +50,7 @@ class VersionPages extends Component {
                 this.props.pages[pageId].groupId === null
             )
             .map((pageId, index) => (
-              <div>
+              <div key={index}>
                 <Pages {...this.props} pageId={pageId} index={index}></Pages>
               </div>
             ))}
