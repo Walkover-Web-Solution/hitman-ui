@@ -3,11 +3,24 @@ import React, { Component } from "react";
 class GenericTable extends Component {
   state = {};
 
+  checkboxFlags = [];
+
   handleChange = e => {
     const { dataArray, title } = this.props;
     const name = e.currentTarget.name.split(".");
+    if (name[1] === "checkbox") {
+      this.checkboxFlags[name[0]] = true;
+      if (dataArray[name[0]].checked === "true") {
+        dataArray[name[0]].checked = "false";
+      } else {
+        dataArray[name[0]].checked = "true";
+      }
+    }
     if (name[1] === "key") {
       dataArray[name[0]].key = e.currentTarget.value;
+      if (dataArray[name[0]].key.length !== 0 && !this.checkboxFlags[name[0]]) {
+        dataArray[name[0]].checked = "true";
+      }
       if (title === "Params" && dataArray[name[0]].key.length === 0) {
         this.handleDelete(dataArray, name[0], title);
       }
@@ -30,6 +43,7 @@ class GenericTable extends Component {
     if (key.length === 1 && !dataArray[index]) {
       const len = dataArray.length;
       dataArray[len.toString()] = {
+        checked: "notApplicable",
         key: "",
         value: "",
         description: ""
@@ -37,7 +51,7 @@ class GenericTable extends Component {
       if (title === "Headers")
         this.props.props_from_parent("originalHeaders", dataArray);
       if (title === "Params")
-        this.props.props_from_parent("originalParams", dataArray);
+        this.props.props_from_parent("handleAddParam", dataArray);
     }
   }
 
@@ -64,6 +78,7 @@ class GenericTable extends Component {
         <table className="table table-bordered" bordered>
           <thead>
             <tr>
+              <th className="custom-td"> </th>
               <th className="custom-td" id="generic-table-key-cell">
                 KEY
               </th>
@@ -76,6 +91,21 @@ class GenericTable extends Component {
             {dataArray.map((e, index) => (
               <tr key={index} id="generic-table-row">
                 <td className="custom-td" id="generic-table-key-cell">
+                  {dataArray[index].checked === "notApplicable" ? null : (
+                    <input
+                      name={index + ".checkbox"}
+                      value={dataArray[index].checked}
+                      defaultChecked={
+                        dataArray[index].checked === "true" ? "true" : "false"
+                      }
+                      onChange={this.handleChange}
+                      type={"checkbox"}
+                      className="form-control"
+                      style={{ border: "none" }}
+                    />
+                  )}
+                </td>
+                <td className="custom-td">
                   <input
                     name={index + ".key"}
                     value={dataArray[index].key}
@@ -84,7 +114,7 @@ class GenericTable extends Component {
                     className="form-control"
                     style={{ border: "none" }}
                   />
-                </td>
+                </td>{" "}
                 <td className="custom-td">
                   <input
                     name={index + ".value"}

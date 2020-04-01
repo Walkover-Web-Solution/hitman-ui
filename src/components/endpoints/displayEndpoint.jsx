@@ -80,6 +80,7 @@ class DisplayEndpoint extends Component {
 
   structueParamsHeaders = [
     {
+      checked: "notApplicable",
       key: "",
       value: "",
       description: ""
@@ -197,16 +198,16 @@ class DisplayEndpoint extends Component {
     let i = 0;
     for (i = 0; i < keys.length; i++) {
       originalParams[i] = {
+        checked:
+          this.state.originalParams[i].checked === "notApplicable"
+            ? "true"
+            : this.state.originalParams[i].checked,
         key: keys[i],
         value: values[i],
         description: description[i]
       };
     }
-    originalParams[i] = {
-      key: "",
-      value: "",
-      description: ""
-    };
+    originalParams[i] = this.structueParamsHeaders[0];
     return originalParams;
   }
 
@@ -388,7 +389,7 @@ class DisplayEndpoint extends Component {
       } else {
         updatedHeadersArray.push(originalHeaders[i]);
         updatedHeaders[originalHeaders[i].key] = {
-          key: originalHeaders[i].key,
+          checked: originalHeaders[i].checked,
           value: originalHeaders[i].value,
           description: originalHeaders[i].description
         };
@@ -412,6 +413,7 @@ class DisplayEndpoint extends Component {
 
   propsFromChild(name, value) {
     if (name === "originalParams") {
+      console.log("value", value);
       this.handleUpdateUri(value);
       this.setState({ originalParams: value });
     }
@@ -435,7 +437,10 @@ class DisplayEndpoint extends Component {
     let originalUri = this.state.data.uri.split("?")[0] + "?";
     let parts = {};
     for (let i = 0; i < originalParams.length; i++) {
-      if (originalParams[i].key.length !== 0)
+      if (
+        originalParams[i].key.length !== 0 &&
+        originalParams[i].checked === "true"
+      )
         parts[originalParams[i].key] = originalParams[i].value;
     }
     let updatedUri = URI.buildQuery(parts);
@@ -457,6 +462,7 @@ class DisplayEndpoint extends Component {
         continue;
       } else {
         updatedParams[originalParams[i].key] = {
+          checked: originalParams[i].checked,
           value: originalParams[i].value,
           description: originalParams[i].description
         };
@@ -476,6 +482,7 @@ class DisplayEndpoint extends Component {
     this.dropdownHost["group"].value = hostJson.groupHost;
     this.dropdownHost["version"].value = hostJson.versionHost;
   }
+
   dropdownHost = {
     variable: { name: "Variable", value: "" },
     group: { name: "Group", value: "" },
@@ -536,6 +543,7 @@ class DisplayEndpoint extends Component {
     let i = 0;
     for (i = 0; i < Object.keys(params).length; i++) {
       originalParams[i] = {
+        checked: params[Object.keys(params)[i]].checked,
         key: Object.keys(params)[i],
         value: params[Object.keys(params)[i]].value,
         description: params[Object.keys(params)[i]].description
@@ -547,11 +555,16 @@ class DisplayEndpoint extends Component {
 
   fetchoriginalHeaders(headers) {
     let originalHeaders = [];
-    Object.keys(headers).forEach(h => {
-      originalHeaders.push(headers[h]);
-    });
-    let length = originalHeaders.length;
-    originalHeaders[length] = this.structueParamsHeaders[0];
+    let i = 0;
+    for (i = 0; i < Object.keys(headers).length; i++) {
+      originalHeaders[i] = {
+        checked: headers[Object.keys(headers)[i]].checked,
+        key: Object.keys(headers)[i],
+        value: headers[Object.keys(headers)[i]].value,
+        description: headers[Object.keys(headers)[i]].description
+      };
+    }
+    originalHeaders[i] = this.structueParamsHeaders[0];
     return originalHeaders;
   }
 
@@ -859,18 +872,23 @@ class DisplayEndpoint extends Component {
             >
               Save
             </button>
-            <button
-              className="btn"
-              type="button"
-              id="show-code-snippets-button"
-              onClick={() => this.prepareHarObject()}
-            >
-              Code
-            </button>
           </div>
         </div>
 
         <div className="endpoint-headers-container">
+          <button
+            className="btn"
+            type="button"
+            id="show-code-snippets-button"
+            onClick={() => this.prepareHarObject()}
+            style={{
+              float: "right",
+              color: "#f28100",
+              fontFamily: "Times New Roman"
+            }}
+          >
+            Code
+          </button>
           <ul className="nav nav-tabs" id="pills-tab" role="tablist">
             <li className="nav-item">
               <a
@@ -912,6 +930,7 @@ class DisplayEndpoint extends Component {
               </a>
             </li>
           </ul>
+
           <div className="tab-content" id="pills-tabContent">
             <div
               className="tab-pane fade show active"
@@ -920,7 +939,6 @@ class DisplayEndpoint extends Component {
               aria-labelledby="pills-params-tab"
             >
               <GenericTable
-                {...this.props}
                 title="Params"
                 dataArray={this.state.originalParams}
                 props_from_parent={this.propsFromChild.bind(this)}
@@ -934,7 +952,6 @@ class DisplayEndpoint extends Component {
             >
               <div>
                 <GenericTable
-                  {...this.props}
                   title="Headers"
                   dataArray={this.state.originalHeaders}
                   props_from_parent={this.propsFromChild.bind(this)}

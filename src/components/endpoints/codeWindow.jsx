@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Modal, ListGroup, Container, Row, Col } from "react-bootstrap";
 import Highlight from "react-highlight";
 import "../../../node_modules/highlight.js/styles/vs.css";
+import { CopyToClipboard } from "react-copy-to-clipboard";
 var HTTPSnippet = require("httpsnippet");
 
 class CodeWindow extends Component {
@@ -35,7 +36,7 @@ class CodeWindow extends Component {
     this.selectedLanguageName = this.languages[selectedLanguage].name;
     let snippet = this.makeCodeSnippet();
     let codeSnippet = snippet.convert(selectedLanguage);
-    this.setState({ codeSnippet });
+    this.setState({ codeSnippet, copied: false });
   }
   languages = {
     node: { name: "Node" },
@@ -101,6 +102,23 @@ class CodeWindow extends Component {
                   <div id="code-window-body">
                     Generated code for {this.selectedLanguageName}{" "}
                   </div>{" "}
+                  <CopyToClipboard
+                    text={
+                      this.state.codeSnippet
+                        ? this.state.codeSnippet
+                        : this.codeSnippet
+                    }
+                    onCopy={() => this.setState({ copied: true })}
+                    style={{ float: "right", borderRadius: "12px" }}
+                  >
+                    <button>
+                      {this.state.copied ? (
+                        <i className="fas fa-check"></i>
+                      ) : (
+                        <i className="fas fa-clone"></i>
+                      )}
+                    </button>
+                  </CopyToClipboard>
                   <pre>
                     <Highlight className={this.selectedLanguage}>
                       {this.state.codeSnippet
