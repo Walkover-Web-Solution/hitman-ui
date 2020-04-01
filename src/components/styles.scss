@@ -374,14 +374,76 @@ button#custom-delete-modal-cancel {
   }
 }
 
-#custom-delete-modal-body{
-  height : 120px;
-  display : block;
-
+#custom-delete-modal-body {
+  height: 120px;
+  display: block;
 }
 
-//---------------
+//env drop down styling
+.custom-env-menu.dropdown-menu.show.dropdown-menu-right {
+  height: 400px;
+  width: 780px;
+  background: rgb(245, 243, 243);
+  transform: translate3d(-700px, 38px, 0px) !important;
+  overflow-y: scroll;
 
+  .dropdown-divider {
+    border-top: 1px solid rgba(190, 201, 214, 0.7) !important;
+  }
+
+  .btn.btn-default {
+    padding-top: 0px;
+    float: right;
+    color: orange;
+    font-size: 14px;
+    font-weight: 300px;
+  }
+
+  .custom-left-pane {
+    float: left;
+    width: 231px;
+    color: rgb(128, 128, 128);
+    font-size: 13px;
+    font-weight: 400;
+    padding-left: 15px;
+  }
+  .custom-middle-pane {
+    float: left;
+    width: 269px;
+    color: rgb(128, 128, 128);
+    font-size: 13px;
+    font-weight: 400;
+  }
+  .custom-right-pane {
+    float: left;
+    width: 270px;
+    color: rgb(128, 128, 128);
+    font-size: 13px;
+    font-weight: 400;
+  }
+
+  .custom-left-box {
+    float: left;
+    width: 231px;
+    font-size: 13px;
+    font-weight: 300;
+    padding-left: 15px;
+  }
+  .custom-middle-box {
+    float: left;
+    width: 269px;
+    font-size: 13px;
+    font-weight: 300;
+  }
+  .custom-right-box {
+    float: left;
+    width: 270px;
+    font-size: 13px;
+    font-weight: 300;
+  }
+}
+
+//
 
 .new-button-card {
   width: 33%;

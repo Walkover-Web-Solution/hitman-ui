@@ -4,6 +4,7 @@ import EnvironmentModal from "./environmentModal";
 import environmentsService from "./environmentsService.js";
 import shortId from "shortid";
 import { connect } from "react-redux";
+import { Table } from "react-bootstrap";
 import {
   fetchEnvironments,
   addEnvironment,
@@ -73,6 +74,10 @@ class Environments extends Component {
   }
 
   render() {
+    const env = this.props.environment.environments[
+      this.props.environment.currentEnvironmentId
+    ];
+
     return (
       <div className="environment-container">
         {(this.state.environmentFormName === "Add new Environment" ||
@@ -87,7 +92,9 @@ class Environments extends Component {
           <EnvironmentModal
             {...this.props}
             show={true}
-            open_delete_environment_modal={this.openDeleteEnvironmentModal.bind(this)}
+            open_delete_environment_modal={this.openDeleteEnvironmentModal.bind(
+              this
+            )}
             close_delete_environment_modal={this.closeDeleteEnvironmentModal.bind(
               this
             )}
@@ -114,14 +121,66 @@ class Environments extends Component {
             <i class="fas fa-cog"></i>
           </button>
         </div>
+
+        {/* start */}
         <div className="environment-buttons">
-          <button
-            className="btn btn-default"
-            onClick={() => console.log("View environment variables")}
-          >
-            <i class="fas fa-eye"></i>
-          </button>
+          <Dropdown className="float-right">
+            <Dropdown.Toggle
+              bsPrefix="dropdown"
+              variant="default"
+              id="dropdown-basic"
+            >
+              <i class="fas fa-eye"></i>
+            </Dropdown.Toggle>
+
+            <Dropdown.Menu alignRight className="custom-env-menu">
+              <Dropdown.Item>
+                {env ? env.name : "No Environment Selected"}
+
+                {env ? (
+                  <button
+                    className="btn btn-default"
+                    onClick={() =>
+                      this.handleEnvironmentModal("Edit Environment", env)
+                    }
+                  >
+                    Edit
+                  </button>
+                ) : (
+                  <button
+                    className="btn btn-default"
+                    onClick={() =>
+                      this.handleEnvironmentModal("Add new Environment")
+                    }
+                  >
+                    Add
+                  </button>
+                )}
+              </Dropdown.Item>
+              <Dropdown.Divider />
+              <div>
+                {" "}
+                <p className="custom-left-pane">VARIABLE</p>
+                <p className="custom-middle-pane">INITIAL VALUE</p>
+                <p className="custom-right-pane">CURRENT VALUE</p>
+              </div>
+              {env &&
+                Object.keys(env.variables).map(v => (
+                  <div>
+                    <p className="custom-left-box">{v}</p>
+                    <p className="custom-middle-box">
+                      {env.variables[v].initialValue || "None"}
+                    </p>
+                    <p className="custom-right-box">
+                      {env.variables[v].currentValue || "None"}
+                    </p>
+                  </div>
+                ))}
+            </Dropdown.Menu>
+          </Dropdown>
         </div>
+
+        {/* end */}
         <div className="select-environment-dropdown">
           <Dropdown className="float-right">
             <Dropdown.Toggle variant="default" id="dropdown-basic">
