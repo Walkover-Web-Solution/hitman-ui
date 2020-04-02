@@ -195,6 +195,7 @@ export const importVersion = (importLink, shareIdentifier, collectionId) => {
           });
       })
       .catch(error => {
+        console.log("error", error);
         dispatch(
           onVersionsFetchedError(error.response ? error.response.data : error)
         );
