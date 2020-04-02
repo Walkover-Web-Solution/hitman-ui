@@ -71,7 +71,6 @@ class GroupPages extends Component {
                 this.props.pages[pageId].versionId === this.props.version_id &&
                 this.props.pages[pageId].groupId === this.props.group_id
             )
-
             .map((pageId, index) => (
               <div key={index}>
                 <Pages
@@ -80,7 +79,7 @@ class GroupPages extends Component {
                   index={index}
                   open_delete_page_modal={this.openDeletePageModal.bind(this)}
                   close_delete_page_modal={this.closeDeletePageModal.bind(this)}
-                ></Pages>
+                />
               </div>
             ))}
       </div>

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Modal } from "react-bootstrap";
 import Form from "./form";
+import tabService from "../tabs/tabService";
 class DeleteModal extends Component {
   state = {};
 
@@ -26,6 +27,9 @@ class DeleteModal extends Component {
     }
     if (title === "Delete Page") {
       const { deleted_page: page } = this.props;
+      const index = this.props.tabs.findIndex(t => t.id === page.id);
+      console.log(index);
+      tabService.closeTab({ ...this.props }, index);
       this.props.deletePage(page);
     }
 
@@ -52,13 +56,11 @@ class DeleteModal extends Component {
             {this.props.title}
           </Modal.Title>
         </Modal.Header>
-        <Modal.Body id= "custom-delete-modal-body">
-          <div>
-            {this.props.message}
-          </div>
+        <Modal.Body id="custom-delete-modal-body">
+          <div>{this.props.message}</div>
         </Modal.Body>
         <Modal.Footer>
-        <form onSubmit={this.handleSubmit}>
+          <form onSubmit={this.handleSubmit}>
             <button
               id="custom-delete-modal-delete"
               className="btn btn-default custom-button"

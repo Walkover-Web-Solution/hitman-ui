@@ -1,86 +1,87 @@
 import React, { Component } from "react";
 import { Nav } from "react-bootstrap";
-import shortId from "shortid";
+import tabService from "./tabService";
 
 class CustomTabs extends Component {
   state = {};
 
-  addNewTab() {
-    let tabs = [...this.props.tabs];
-    const id = shortId.generate();
-    this.props.set_tabs(
-      [...tabs, { id, type: "endpoint", isSaved: false }],
-      tabs.length
-    );
-    this.props.history.push({ pathname: "/dashboard/endpoint/new" });
-  }
+  // addNewTab(props) {
+  //   console.log(props);
+  //   let tabs = [...props.tabs];
+  //   const id = shortId.generate();
+  //   props.set_tabs(
+  //     [...tabs, { id, type: "endpoint", isSaved: false }],
+  //     tabs.length
+  //   );
+  //   props.history.push({ pathname: "/dashboard/endpoint/new" });
+  // }
 
-  deleteTab(index) {
-    let tabs = [...this.props.tabs];
-    tabs.splice(index, 1);
-    if (this.props.default_tab_index === index) {
-      if (index !== 0) {
-        const newIndex = this.props.default_tab_index - 1;
-        this.props.set_tabs(tabs, newIndex);
-        this.changeRoute(tabs[newIndex], "update endpoint");
-      } else {
-        if (tabs.length > 0) {
-          const newIndex = index;
-          this.props.set_tabs(tabs, newIndex);
-          this.changeRoute(tabs, "update endpoint");
-        } else {
-          const newTabId = shortId.generate();
-          tabs = [...tabs, { id: newTabId, type: "endpoint", isSaved: false }];
+  // closeTab(props, index) {
+  //   let tabs = [...props.tabs];
+  //   tabs.splice(index, 1);
+  //   if (props.default_tab_index === index) {
+  //     if (index !== 0) {
+  //       const newIndex = props.default_tab_index - 1;
+  //       props.set_tabs(tabs, newIndex);
+  //       this.changeRoute(props, tabs[newIndex], "update endpoint");
+  //     } else {
+  //       if (tabs.length > 0) {
+  //         const newIndex = index;
+  //         props.set_tabs(tabs, newIndex);
+  //         this.changeRoute(props, tabs, "update endpoint");
+  //       } else {
+  //         const newTabId = shortId.generate();
+  //         tabs = [...tabs, { id: newTabId, type: "endpoint", isSaved: false }];
 
-          this.props.set_tabs(tabs, tabs.length - 1);
-          this.props.history.push({
-            pathname: `/dashboard/endpoint/new`
-          });
-        }
-      }
-    } else {
-      if (index < this.props.default_tab_index) {
-        this.props.set_tabs(tabs, this.props.default_tab_index - 1);
-      } else this.props.set_tabs(tabs);
-    }
-  }
+  //         props.set_tabs(tabs, tabs.length - 1);
+  //         props.history.push({
+  //           pathname: `/dashboard/endpoint/new`
+  //         });
+  //       }
+  //     }
+  //   } else {
+  //     if (index < props.default_tab_index) {
+  //       props.set_tabs(tabs, props.default_tab_index - 1);
+  //     } else props.set_tabs(tabs);
+  //   }
+  // }
 
-  changeRoute(tab, title) {
-    // if (tab.type === "endpoint") {
-    if (tab.isSaved) {
-      this.props.history.push({
-        pathname: `/dashboard/${tab.type}/${tab.id}`,
-        title
-      });
-    } else {
-      this.props.history.push({
-        pathname: `/dashboard/${tab.type}/new`
-      });
-    }
-    // }
-  }
+  // changeRoute(props, tab, title) {
+  //   // if (tab.type === "endpoint") {
+  //   if (tab.isSaved) {
+  //     props.history.push({
+  //       pathname: `/dashboard/${tab.type}/${tab.id}`,
+  //       title
+  //     });
+  //   } else {
+  //     props.history.push({
+  //       pathname: `/dashboard/${tab.type}/new`
+  //     });
+  //   }
+  //   // }
+  // }
 
-  closeAllTabs() {
-    const id = shortId.generate();
-    const tabs = [{ id, type: "endpoint", isSaved: false }];
-    this.props.set_tabs(tabs, 0);
-    this.props.history.push({ pathname: "/dashboard/endpoint/new" });
-  }
+  // closeAllTabs(props) {
+  //   const id = shortId.generate();
+  //   const tabs = [{ id, type: "endpoint", isSaved: false }];
+  //   props.set_tabs(tabs, 0);
+  //   props.history.push({ pathname: "/dashboard/endpoint/new" });
+  // }
 
-  selectTab(tab, index) {
-    {
-      this.props.set_tabs(null, index);
-      if (tab.isSaved) {
-        this.props.history.push({
-          pathname: `/dashboard/${tab.type}/${tab.id}`
-        });
-      } else {
-        this.props.history.push({
-          pathname: `/dashboard/${tab.type}/new`
-        });
-      }
-    }
-  }
+  // selectTab(props, tab, index) {
+  //   {
+  //     props.set_tabs(null, index);
+  //     if (tab.isSaved) {
+  //       props.history.push({
+  //         pathname: `/dashboard/${tab.type}/${tab.id}`
+  //       });
+  //     } else {
+  //       props.history.push({
+  //         pathname: `/dashboard/${tab.type}/new`
+  //       });
+  //     }
+  //   }
+  // }
 
   render() {
     return (
@@ -91,7 +92,9 @@ class CustomTabs extends Component {
               <Nav.Link eventKey={tab.id}>
                 <button
                   className="btn"
-                  onClick={() => this.selectTab(tab, index)}
+                  onClick={() =>
+                    tabService.selectTab({ ...this.props }, tab, index)
+                  }
                 >
                   {tab.isSaved
                     ? this.props[tab.type + "s"] &&
@@ -99,13 +102,19 @@ class CustomTabs extends Component {
                     : "Untitled"}
                 </button>
               </Nav.Link>
-              <button className="btn" onClick={() => this.deleteTab(index)}>
+              <button
+                className="btn"
+                onClick={() => tabService.closeTab({ ...this.props }, index)}
+              >
                 <i class="fas fa-times"></i>
               </button>
             </Nav.Item>
           ))}
         <Nav.Item className="tab-buttons" id="add-new-tab-button">
-          <button className="btn" onClick={() => this.addNewTab()}>
+          <button
+            className="btn"
+            onClick={() => tabService.addNewTab({ ...this.props })}
+          >
             <i className="fas fa-plus"></i>
           </button>
         </Nav.Item>
@@ -127,11 +136,19 @@ class CustomTabs extends Component {
             >
               <button
                 className="btn"
-                onClick={() => this.deleteTab(this.props.default_tab_index)}
+                onClick={() =>
+                  tabService.closeTab(
+                    { ...this.props },
+                    this.props.default_tab_index
+                  )
+                }
               >
                 Close Current Tab
               </button>
-              <button className="btn" onClick={() => this.closeAllTabs()}>
+              <button
+                className="btn"
+                onClick={() => tabService.closeAllTabs({ ...this.props })}
+              >
                 Close All Tabs
               </button>
             </div>
