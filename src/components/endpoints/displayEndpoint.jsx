@@ -103,8 +103,22 @@ class DisplayEndpoint extends Component {
     const { groups } = store.getState();
     const { versions } = store.getState();
     if (this.props.location.pathname.split("/")[3] === "new" && !this.title) {
-      originalParams = this.structueParamsHeaders;
-      originalHeaders = this.structueParamsHeaders;
+      originalParams = [
+        {
+          checked: "notApplicable",
+          key: "",
+          value: "",
+          description: ""
+        }
+      ];
+      originalHeaders = [
+        {
+          checked: "notApplicable",
+          key: "",
+          value: "",
+          description: ""
+        }
+      ];
       this.setState({
         originalParams,
         originalHeaders
@@ -198,7 +212,7 @@ class DisplayEndpoint extends Component {
         description: description[i]
       });
     }
-    // originalParams.push(this.structueParamsHeaders[0]);
+    originalParams.push(this.structueParamsHeaders[0]);
     return originalParams;
   }
 
@@ -451,7 +465,13 @@ class DisplayEndpoint extends Component {
         description: params[Object.keys(params)[i]].description
       };
     }
-    originalParams[i] = this.structueParamsHeaders[0];
+    originalParams[i] = {
+      checked: "notApplicable",
+      key: "",
+      value: "",
+      description: ""
+    };
+
     return originalParams;
   }
 
@@ -466,7 +486,12 @@ class DisplayEndpoint extends Component {
         description: headers[Object.keys(headers)[i]].description
       };
     }
-    originalHeaders[i] = this.structueParamsHeaders[0];
+    originalHeaders[i] = {
+      checked: "notApplicable",
+      key: "",
+      value: "",
+      description: ""
+    };
     return originalHeaders;
   }
 
@@ -597,8 +622,22 @@ class DisplayEndpoint extends Component {
         groupId: this.props.location.groupId,
         title: "Add New Endpoint",
         flagResponse: false,
-        originalHeaders: this.structueParamsHeaders,
-        originalParams: this.structueParamsHeaders
+        originalHeaders: [
+          {
+            checked: "notApplicable",
+            key: "",
+            value: "",
+            description: ""
+          }
+        ],
+        originalParams: [
+          {
+            checked: "notApplicable",
+            key: "",
+            value: "",
+            description: ""
+          }
+        ]
       });
       this.props.history.push({ groups: null });
     }
