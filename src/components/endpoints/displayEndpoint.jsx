@@ -103,8 +103,22 @@ class DisplayEndpoint extends Component {
     const { groups } = store.getState();
     const { versions } = store.getState();
     if (this.props.location.pathname.split("/")[3] === "new" && !this.title) {
-      originalParams = this.structueParamsHeaders;
-      originalHeaders = this.structueParamsHeaders;
+      originalParams = [
+        {
+          checked: "notApplicable",
+          key: "",
+          value: "",
+          description: ""
+        }
+      ];
+      originalHeaders = [
+        {
+          checked: "notApplicable",
+          key: "",
+          value: "",
+          description: ""
+        }
+      ];
       this.setState({
         originalParams,
         originalHeaders
@@ -124,7 +138,7 @@ class DisplayEndpoint extends Component {
       originalParams = this.fetchoriginalParams(endpoint.params);
 
       //To fetch originalHeaders from Headers
-      const originalHeaders = this.fetchoriginalHeaders(endpoint.headers);
+      originalHeaders = this.fetchoriginalHeaders(endpoint.headers);
 
       this.setState({
         data: {
@@ -153,20 +167,22 @@ class DisplayEndpoint extends Component {
       let originalParams = this.state.originalParams;
       let updatedUri = e.currentTarget.value.split("?")[1];
       let result = URI.parseQuery(updatedUri);
-
-      if (Object.keys(result).length === 0) {
-        this.setState({ originalParams: keys });
-      }
       for (let i = 0; i < Object.keys(result).length; i++) {
         keys.push(Object.keys(result)[i]);
       }
       for (let i = 0; i < keys.length; i++) {
         values.push(result[keys[i]]);
-        if (this.state.originalParams[i]) {
-          if (this.state.originalParams[i].key === keys[i]) {
-            description[i] = this.state.originalParams[i].description;
-          } else {
-            description[i] = "";
+        if (originalParams[i]) {
+          for (let k = 0; k < originalParams.length; k++) {
+            if (
+              originalParams[k].key === keys[i] &&
+              originalParams[k].checked === "true"
+            ) {
+              description[i] = originalParams[k].description;
+              break;
+            } else if (k === originalParams.length - 1) {
+              description[i] = "";
+            }
           }
         }
       }
@@ -178,19 +194,25 @@ class DisplayEndpoint extends Component {
 
   makeOriginalParams(keys, values, description) {
     let originalParams = [];
-    let i = 0;
-    for (i = 0; i < keys.length; i++) {
-      originalParams[i] = {
-        checked:
-          this.state.originalParams[i].checked === "notApplicable"
-            ? "true"
-            : this.state.originalParams[i].checked,
+    for (let i = 0; i < this.state.originalParams.length; i++) {
+      if (this.state.originalParams[i].checked === "false") {
+        originalParams.push({
+          checked: this.state.originalParams[i].checked,
+          key: this.state.originalParams[i].key,
+          value: this.state.originalParams[i].value,
+          description: this.state.originalParams[i].description
+        });
+      }
+    }
+    for (let i = 0; i < keys.length; i++) {
+      originalParams.push({
+        checked: "true",
         key: keys[i],
         value: values[i],
         description: description[i]
-      };
+      });
     }
-    originalParams[i] = this.structueParamsHeaders[0];
+    originalParams.push(this.structueParamsHeaders[0]);
     return originalParams;
   }
 
@@ -368,7 +390,6 @@ class DisplayEndpoint extends Component {
 
   propsFromChild(name, value) {
     if (name === "originalParams") {
-      console.log("value", value);
       this.handleUpdateUri(value);
       this.setState({ originalParams: value });
     }
@@ -398,6 +419,7 @@ class DisplayEndpoint extends Component {
       )
         parts[originalParams[i].key] = originalParams[i].value;
     }
+    URI.escapeQuerySpace = false;
     let updatedUri = URI.buildQuery(parts);
     updatedUri = originalUri + URI.decode(updatedUri);
     let data = { ...this.state.data };
@@ -443,7 +465,13 @@ class DisplayEndpoint extends Component {
         description: params[Object.keys(params)[i]].description
       };
     }
-    originalParams[i] = this.structueParamsHeaders[0];
+    originalParams[i] = {
+      checked: "notApplicable",
+      key: "",
+      value: "",
+      description: ""
+    };
+
     return originalParams;
   }
 
@@ -458,20 +486,13 @@ class DisplayEndpoint extends Component {
         description: headers[Object.keys(headers)[i]].description
       };
     }
-    originalHeaders[i] = this.structueParamsHeaders[0];
+    originalHeaders[i] = {
+      checked: "notApplicable",
+      key: "",
+      value: "",
+      description: ""
+    };
     return originalHeaders;
-  }
-
-  makeHeaders(headers) {
-    let processedHeaders = [];
-    for (let i = 0; i < Object.keys(headers).length; i++) {
-      processedHeaders[i] = {
-        name: headers[Object.keys(headers)[i]].key,
-        value: headers[Object.keys(headers)[i]].value,
-        comment: headers[Object.keys(headers)[i]].description
-      };
-    }
-    return processedHeaders;
   }
 
   openEndpointFormModal() {
@@ -489,14 +510,30 @@ class DisplayEndpoint extends Component {
     this.handleSave(groupId, endpointName);
   }
 
+  makeHeaders(headers) {
+    let processedHeaders = [];
+    for (let i = 0; i < Object.keys(headers).length; i++) {
+      if (headers[Object.keys(headers)[i]].checked === "true") {
+        processedHeaders.push({
+          name: headers[Object.keys(headers)[i]].key,
+          value: headers[Object.keys(headers)[i]].value,
+          comment: headers[Object.keys(headers)[i]].description
+        });
+      }
+    }
+    return processedHeaders;
+  }
+
   makeParams(params) {
     let processedParams = [];
     for (let i = 0; i < Object.keys(params).length; i++) {
-      processedParams[i] = {
-        name: params[Object.keys(params)[i]].key,
-        value: params[Object.keys(params)[i]].value,
-        comment: params[Object.keys(params)[i]].description
-      };
+      if (params[Object.keys(params)[i]].checked === "true") {
+        processedParams.push({
+          name: params[Object.keys(params)[i]].key,
+          value: params[Object.keys(params)[i]].value,
+          comment: params[Object.keys(params)[i]].description
+        });
+      }
     }
     return processedParams;
   }
@@ -585,8 +622,22 @@ class DisplayEndpoint extends Component {
         groupId: this.props.location.groupId,
         title: "Add New Endpoint",
         flagResponse: false,
-        originalHeaders: this.structueParamsHeaders,
-        originalParams: this.structueParamsHeaders
+        originalHeaders: [
+          {
+            checked: "notApplicable",
+            key: "",
+            value: "",
+            description: ""
+          }
+        ],
+        originalParams: [
+          {
+            checked: "notApplicable",
+            key: "",
+            value: "",
+            description: ""
+          }
+        ]
       });
       this.props.history.push({ groups: null });
     }

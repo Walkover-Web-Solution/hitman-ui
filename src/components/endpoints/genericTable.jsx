@@ -95,8 +95,11 @@ class GenericTable extends Component {
                     <input
                       name={index + ".checkbox"}
                       value={dataArray[index].checked}
-                      defaultChecked={
-                        dataArray[index].checked === "true" ? "true" : "false"
+                      // defaultChecked={
+                      //   dataArray[index].checked === "true" ? "true" : "false"
+                      // }
+                      checked={
+                        dataArray[index].checked === "true" ? true : false
                       }
                       onChange={this.handleChange}
                       type={"checkbox"}
