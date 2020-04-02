@@ -130,7 +130,7 @@ class Environments extends Component {
               variant="default"
               id="dropdown-basic"
             >
-              <i class="fas fa-eye"></i>
+              <i className="fas fa-eye"></i>
             </Dropdown.Toggle>
 
             <Dropdown.Menu alignRight className="custom-env-menu">

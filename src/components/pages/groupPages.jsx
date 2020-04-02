@@ -76,7 +76,7 @@ class GroupPages extends Component {
               <div key={index}>
                 <Pages
                   {...this.props}
-                  pageId={pageId}
+                  page_id={pageId}
                   index={index}
                   open_delete_page_modal={this.openDeletePageModal.bind(this)}
                   close_delete_page_modal={this.closeDeletePageModal.bind(this)}
