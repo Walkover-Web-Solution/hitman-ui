@@ -3,13 +3,14 @@ import { toast } from "react-toastify";
 
 class HostContainer extends Component {
   state = {
-    host: {
-      customHost: "",
-      groupHost: "",
-      versionHost: "",
-      environmentHost: ""
-    },
+    // hostList: {
+    //   customHost: true,
+    //   groupHost: false,
+    //   versionHost: false,
+    //   environmentHost: false
+    // },
     selectedHost: "customHost",
+    customHost: "",
     data: {
       requestType: "GET",
       uri: "",
@@ -20,7 +21,7 @@ class HostContainer extends Component {
     versionId: null
   };
 
-  changeHost(host) {
+  selectHost(host) {
     if (host === "environmentHost") {
       if (
         this.props.environment &&
@@ -30,7 +31,7 @@ class HostContainer extends Component {
         this.setState({ selectedHost: host });
       } else {
         toast.error("Please add BASE_URL variable in current environment");
-        document.getElementById("customHost").selected = true;
+
         this.setState({ selectedHost: "customHost" });
       }
     } else this.setState({ selectedHost: host });
@@ -46,7 +47,7 @@ class HostContainer extends Component {
     let BASE_URL = "";
     switch (this.state.selectedHost) {
       case "customHost":
-        BASE_URL = this.state.host.customHost;
+        BASE_URL = this.state.customHost;
         break;
       case "environmentHost":
         if (
@@ -66,7 +67,6 @@ class HostContainer extends Component {
           }
         } else {
           toast.error("Please add BASE_URL variable in current environment");
-          document.getElementById("customHost").selected = true;
           this.setState({ selectedHost: "customHost" });
           return;
         }
@@ -81,12 +81,55 @@ class HostContainer extends Component {
     return BASE_URL;
   }
 
+  // checkHostList() {
+  //   let hostList = { ...this.state.hostList };
+  //   let selectedHost = "customHost";
+
+  //   if (this.state.groupId) {
+  //     hostList.versionHost = true;
+  //     selectedHost = "versionHost";
+  //     if (this.props.groups[this.state.groupId].host) {
+  //       hostList.versionHost = true;
+  //       selectedHost = "groupHost";
+  //     }
+  //   } else {
+  //     hostList.versionHost = false;
+  //     hostList.groupHost = false;
+  //   }
+
+  //   if (
+  //     this.props.environment &&
+  //     this.props.environment.variables &&
+  //     this.props.environment.variables.BASE_URL
+  //   ) {
+  //     hostList.environmentHost = true;
+  //     selectedHost = "environmentHost";
+  //   } else {
+  //     hostList.environmentHost = false;
+  //   }
+  //   if (
+  //     !(
+  //       JSON.stringify(hostList) === JSON.stringify(this.state.hostList) &&
+  //       selectedHost === this.state.selectedHost
+  //     )
+  //   ) {
+  //     this.setState({ hostList });
+  //   }
+  // }
+
   render() {
     if (!this.state.groupId && this.props.groupId) {
       const groupId = this.props.groupId;
       const versionId = this.props.groups[groupId].versionId;
-      this.setState({ groupId, versionId });
+
+      let selectedHost = "versionHost";
+      if (this.props.groups[groupId].host) {
+        selectedHost = "groupHost";
+      }
+      console.log("lsdkfj");
+      this.setState({ groupId, versionId, selectedHost });
     }
+    // this.checkHostList();
 
     return (
       <div className="host-field-container">
@@ -97,16 +140,65 @@ class HostContainer extends Component {
           onChange={this.handleChange}
           disabled={this.state.selectedHost !== "customHost"}
         />
-        <select
-          class="custom-select"
-          id="host-select"
-          onChange={e => this.changeHost(e.currentTarget.value)}
-        >
-          <option id="customHost">customHost</option>
-          <option>environmentHost</option>
-          {this.state.groupId && <option>groupHost</option>}
-          {this.state.groupId && <option>versionHost</option>}
-        </select>
+        <div class="dropdown" id="host-select">
+          <button
+            class="btn btn-secondary dropdown-toggle"
+            type="button"
+            id="dropdownMenuButton"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+          ></button>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            {this.props.environment &&
+              this.props.environment.variables &&
+              this.props.environment.variables.BASE_URL && (
+                <button
+                  className="btn"
+                  onClick={() => this.selectHost("environmentHost")}
+                >
+                  {this.state.selectedHost === "environmentHost" && (
+                    <i class="fas fa-check"></i>
+                  )}
+                  environmentHost
+                </button>
+              )}
+
+            {this.state.groupId && this.props.groups[this.state.groupId].host && (
+              <button
+                className="btn"
+                onClick={() => this.selectHost("groupHost")}
+              >
+                {this.state.selectedHost === "groupHost" && (
+                  <i class="fas fa-check"></i>
+                )}
+                groupHost
+              </button>
+            )}
+            {this.state.groupId && (
+              <button
+                className="btn"
+                onClick={() => this.selectHost("versionHost")}
+              >
+                {this.state.selectedHost === "versionHost" && (
+                  <i class="fas fa-check"></i>
+                )}
+                versionHost
+              </button>
+            )}
+
+            <button
+              id="customHost"
+              className="btn"
+              onClick={() => this.selectHost("customHost")}
+            >
+              {this.state.selectedHost === "customHost" && (
+                <i class="fas fa-check"></i>
+              )}
+              customHost
+            </button>
+          </div>
+        </div>
       </div>
     );
   }
