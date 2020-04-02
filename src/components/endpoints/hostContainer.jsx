@@ -3,12 +3,6 @@ import { toast } from "react-toastify";
 
 class HostContainer extends Component {
   state = {
-    // hostList: {
-    //   customHost: true,
-    //   groupHost: false,
-    //   versionHost: false,
-    //   environmentHost: false
-    // },
     selectedHost: "customHost",
     customHost: "",
     data: {
@@ -38,9 +32,8 @@ class HostContainer extends Component {
   }
 
   handleChange = e => {
-    const host = { ...this.state.host };
-    host[e.currentTarget.name] = e.currentTarget.value;
-    this.setState({ host });
+    const customHost = e.currentTarget.value;
+    this.setState({ customHost });
   };
 
   fetchHost() {
@@ -81,55 +74,24 @@ class HostContainer extends Component {
     return BASE_URL;
   }
 
-  // checkHostList() {
-  //   let hostList = { ...this.state.hostList };
-  //   let selectedHost = "customHost";
-
-  //   if (this.state.groupId) {
-  //     hostList.versionHost = true;
-  //     selectedHost = "versionHost";
-  //     if (this.props.groups[this.state.groupId].host) {
-  //       hostList.versionHost = true;
-  //       selectedHost = "groupHost";
-  //     }
-  //   } else {
-  //     hostList.versionHost = false;
-  //     hostList.groupHost = false;
-  //   }
-
-  //   if (
-  //     this.props.environment &&
-  //     this.props.environment.variables &&
-  //     this.props.environment.variables.BASE_URL
-  //   ) {
-  //     hostList.environmentHost = true;
-  //     selectedHost = "environmentHost";
-  //   } else {
-  //     hostList.environmentHost = false;
-  //   }
-  //   if (
-  //     !(
-  //       JSON.stringify(hostList) === JSON.stringify(this.state.hostList) &&
-  //       selectedHost === this.state.selectedHost
-  //     )
-  //   ) {
-  //     this.setState({ hostList });
-  //   }
-  // }
-
   render() {
     if (!this.state.groupId && this.props.groupId) {
       const groupId = this.props.groupId;
       const versionId = this.props.groups[groupId].versionId;
 
-      let selectedHost = "versionHost";
-      if (this.props.groups[groupId].host) {
+      let selectedHost = null;
+      if (
+        this.props.environment.variables &&
+        this.props.environment.variables.BASE_URL
+      ) {
+        selectedHost = "environmentHost";
+      } else if (this.props.groups[groupId].host) {
         selectedHost = "groupHost";
+      } else {
+        selectedHost = "versionHost";
       }
-      console.log("lsdkfj");
       this.setState({ groupId, versionId, selectedHost });
     }
-    // this.checkHostList();
 
     return (
       <div className="host-field-container">
@@ -142,14 +104,17 @@ class HostContainer extends Component {
         />
         <div class="dropdown" id="host-select">
           <button
-            class="btn btn-secondary dropdown-toggle"
+            class="btn dropdown-toggle"
             type="button"
             id="dropdownMenuButton"
             data-toggle="dropdown"
             aria-haspopup="true"
             aria-expanded="false"
           ></button>
-          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <div
+            class="dropdown-menu dropdown-menu-right"
+            aria-labelledby="dropdownMenuButton"
+          >
             {this.props.environment &&
               this.props.environment.variables &&
               this.props.environment.variables.BASE_URL && (
@@ -160,7 +125,7 @@ class HostContainer extends Component {
                   {this.state.selectedHost === "environmentHost" && (
                     <i class="fas fa-check"></i>
                   )}
-                  environmentHost
+                  <div className="host-label">environmentHost</div>
                 </button>
               )}
 
@@ -172,7 +137,7 @@ class HostContainer extends Component {
                 {this.state.selectedHost === "groupHost" && (
                   <i class="fas fa-check"></i>
                 )}
-                groupHost
+                <div className="host-label">groupHost</div>
               </button>
             )}
             {this.state.groupId && (
@@ -183,7 +148,7 @@ class HostContainer extends Component {
                 {this.state.selectedHost === "versionHost" && (
                   <i class="fas fa-check"></i>
                 )}
-                versionHost
+                <div className="host-label">versionHost</div>
               </button>
             )}
 
@@ -195,7 +160,7 @@ class HostContainer extends Component {
               {this.state.selectedHost === "customHost" && (
                 <i class="fas fa-check"></i>
               )}
-              customHost
+              <div className="host-label">customHost</div>
             </button>
           </div>
         </div>
