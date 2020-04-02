@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import store from "../../store/store";
 import { isDashboardRoute } from "../common/utility";
+import ReactHtmlParser from "react-html-parser";
 
 class DisplayPage extends Component {
   state = {
@@ -57,12 +58,14 @@ class DisplayPage extends Component {
             Edit page
           </button>
         ) : null}
-        <span>
+        {/* <span>
           <p>{this.state.data.name}</p>
         </span>
         <span>
           <p>{this.state.data.contents}</p>
-        </span>
+        </span> */}
+
+        <div>{ReactHtmlParser(this.state.data.contents)}</div>
       </div>
     );
   }
