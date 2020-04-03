@@ -43,6 +43,8 @@ class GenericTable extends Component {
       this.props.props_from_parent("originalHeaders", dataArray);
     if (title === "Params")
       this.props.props_from_parent("originalParams", dataArray);
+    if (title === "x-www-form-urlencoded")
+      this.props.props_from_parent("x-www-form-urlencoded", dataArray);
   };
 
   handleBulkChange = e => {
@@ -106,6 +108,8 @@ class GenericTable extends Component {
         this.props.props_from_parent("originalHeaders", dataArray);
       if (title === "Params")
         this.props.props_from_parent("handleAddParam", dataArray);
+      if (title === "x-www-form-urlencoded")
+        this.props.props_from_parent("x-www-form-urlencoded", dataArray);
     }
   }
 
@@ -122,6 +126,8 @@ class GenericTable extends Component {
       this.props.props_from_parent("originalHeaders", dataArray);
     if (title === "Params")
       this.props.props_from_parent("originalParams", dataArray);
+    if (title === "x-www-form-urlencoded")
+      this.props.props_from_parent("x-www-form-urlencoded", dataArray);
   }
 
   displayEditButton() {

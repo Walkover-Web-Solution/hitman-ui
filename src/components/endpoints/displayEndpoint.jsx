@@ -11,6 +11,7 @@ import endpointApiService from "./endpointApiService";
 import GenericTable from "./genericTable";
 import HostContainer from "./hostContainer";
 import { addEndpoint, updateEndpoint } from "./redux/endpointsActions";
+import Body from "./displayBody";
 
 var URI = require("urijs");
 
@@ -57,7 +58,8 @@ class DisplayEndpoint extends Component {
     title: "",
     flagResponse: false,
     originalHeaders: [],
-    originalParams: []
+    originalParams: [],
+    selectedBodyType: ""
   };
 
   customState = {
@@ -119,9 +121,35 @@ class DisplayEndpoint extends Component {
           description: ""
         }
       ];
+
       this.setState({
         originalParams,
-        originalHeaders
+        originalHeaders,
+        rawBody: [
+          {
+            checked: "notApplicable",
+            key: "",
+            value: "",
+            description: ""
+          }
+        ],
+        urlencodedBody: [
+          {
+            checked: "notApplicable",
+            key: "",
+            value: "",
+            description: ""
+          }
+        ],
+        formdataBody: [
+          {
+            checked: "notApplicable",
+            key: "",
+            value: "",
+            description: ""
+          }
+        ],
+        selectedBodyType: null
       });
     } else if (
       Object.keys(groups).length !== 0 &&
@@ -139,6 +167,9 @@ class DisplayEndpoint extends Component {
 
       //To fetch originalHeaders from Headers
       originalHeaders = this.fetchoriginalHeaders(endpoint.headers);
+
+      //To fetch body from endpoint
+      this.fetchBody(endpoint.body);
 
       this.setState({
         data: {
@@ -329,7 +360,7 @@ class DisplayEndpoint extends Component {
     if (!(this.state.groupId || groupId)) {
       this.openEndpointFormModal();
     } else {
-      let body = this.parseBody(this.state.data);
+      let body = this.doSubmitBody();
       const headersData = this.doSubmitHeader();
       const updatedParams = this.doSubmitParam();
       const endpoint = {
@@ -355,6 +386,27 @@ class DisplayEndpoint extends Component {
       }
     }
   };
+
+  makeBody(type, value) {
+    let body = {
+      type,
+      value
+    };
+    return body;
+  }
+
+  doSubmitBody() {
+    let body = {};
+    const selectedBodyType = this.state.selectedBodyType;
+    if (this.state.selectedBodyType === "urlencodedBody") {
+      body = this.state.urlencodedBody;
+    }
+    if (this.state.selectedBodyType === "rawBody") {
+      body = this.parseBody(this.state.rawBody);
+    }
+    body = this.makeBody(this.state.selectedBodyType, body);
+    return body;
+  }
 
   doSubmitHeader() {
     let originalHeaders = [...this.state.originalHeaders];
@@ -389,6 +441,9 @@ class DisplayEndpoint extends Component {
   }
 
   propsFromChild(name, value) {
+    if (name === "selectedBodyType") {
+      this.setState({ selectedBodyType: value });
+    }
     if (name === "originalParams") {
       this.handleUpdateUri(value);
       this.setState({ originalParams: value });
@@ -399,6 +454,12 @@ class DisplayEndpoint extends Component {
 
     if (name === "originalHeaders") {
       this.setState({ originalHeaders: value });
+    }
+    if (name === "x-www-form-urlencoded") {
+      this.setState({ rawBody: value });
+    }
+    if (name === "x-www-form-urlencoded") {
+      this.setState({ urlencodedBody: value });
     }
   }
 
@@ -589,6 +650,25 @@ class DisplayEndpoint extends Component {
   setBaseUrl(BASE_URL) {
     this.customState.BASE_URL = BASE_URL;
   }
+  fetchBody(body) {
+    if (body.type === "rawBody") {
+      this.rawBody = JSON.stringify(body.value, null, 4);
+    } else {
+      this.rawBody = null;
+    }
+    if (body.type === "urlencodedBody") {
+      console.log("ddj");
+      this.urlencodedBody = body.value;
+      console.log("this.urlencodedBody", this.urlencodedBody);
+    } else {
+      this.urlencodedBody = null;
+    }
+    if (body.type === "formdataBody") {
+      this.formdataBody = body.value;
+    } else {
+      this.formdataBody = null;
+    }
+  }
   render() {
     if (
       this.props.location.pathname.split("/")[3] !== "new" &&
@@ -622,6 +702,31 @@ class DisplayEndpoint extends Component {
         groupId: this.props.location.groupId,
         title: "Add New Endpoint",
         flagResponse: false,
+        rawBody: [
+          {
+            checked: "notApplicable",
+            key: "",
+            value: "",
+            description: ""
+          }
+        ],
+        urlencodedBody: [
+          {
+            checked: "notApplicable",
+            key: "",
+            value: "",
+            description: ""
+          }
+        ],
+        formdataBody: [
+          {
+            checked: "notApplicable",
+            key: "",
+            value: "",
+            description: ""
+          }
+        ],
+        selectedBodyType: null,
         originalHeaders: [
           {
             checked: "notApplicable",
@@ -655,19 +760,24 @@ class DisplayEndpoint extends Component {
       //To fetch originalHeaders from Headers
       const originalHeaders = this.fetchoriginalHeaders(endpoint.headers);
 
+      //To fetch body from endpoint
+      this.fetchBody(endpoint.body);
+
       this.setState({
         data: {
           method: endpoint.requestType,
           uri: endpoint.uri,
           updatedUri: endpoint.uri,
           name: endpoint.name,
-          body: JSON.stringify(endpoint.body, null, 4)
+          body: endpoint.body.value
+          // JSON.stringify(endpoint.body, null, 4)
         },
         title: "update endpoint",
         response: {},
         groupId: this.props.location.endpoint.groupId,
         originalParams,
         originalHeaders,
+        selectedBodyType: endpoint.body.type,
         endpoint,
         flagResponse: false
       });
@@ -852,7 +962,23 @@ class DisplayEndpoint extends Component {
               role="tabpanel"
               aria-labelledby="pills-body-tab"
             >
-              <textarea
+              <Body
+                props_from_parent={this.propsFromChild.bind(this)}
+                rawBody={this.state.rawBody ? this.state.rawBody : this.rawBody}
+                formdataBody={
+                  this.state.formdataBody
+                    ? this.state.formdataBody
+                    : this.formdataBody
+                }
+                urlencodedBody={
+                  this.state.urlencodedBody
+                    ? this.state.urlencodedBody
+                    : this.urlencodedBody
+                }
+                selectedBodyType={this.state.selectedBodyType}
+              ></Body>
+
+              {/* <textarea
                 className="form-control"
                 ref={this.body}
                 name="body"
@@ -860,7 +986,7 @@ class DisplayEndpoint extends Component {
                 rows="8"
                 onChange={this.handleChange}
                 value={this.state.data.body}
-              />
+              /> */}
             </div>
           </div>
         </div>
