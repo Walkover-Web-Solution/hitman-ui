@@ -231,15 +231,18 @@ class EnvironmentVariables extends Component {
                               className="form-control"
                             />
                           </td>
-                          <td className="custom-td">
-                            <button
-                              type="button"
-                              className="btn btn-light btn-sm btn-block"
-                              onClick={() => this.handleDelete(index)}
-                            >
-                              x{" "}
-                            </button>
-                          </td>
+                          {this.state.updatedVariableNames.length - 1 !==
+                            index && (
+                            <td className="custom-td">
+                              <button
+                                type="button"
+                                className="btn btn-light btn-sm btn-block"
+                                onClick={() => this.handleDelete(index)}
+                              >
+                                X
+                              </button>
+                            </td>
+                          )}
                         </tr>
                       ) : null
                     )}
