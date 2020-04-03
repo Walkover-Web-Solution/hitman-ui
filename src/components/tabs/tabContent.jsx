@@ -19,7 +19,7 @@ class TabContent extends Component {
                 )}
               />
               <Route
-                path={`/dashboard/endpoint/new`}
+                path={`/dashboard/endpoint/new/${tab.id}`}
                 render={props => (
                   <DisplayEndpoint {...this.props} environment={{}} />
                 )}

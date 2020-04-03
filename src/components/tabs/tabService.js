@@ -9,7 +9,7 @@ function addNewTab(props) {
     [...tabs, { id, type: "endpoint", isSaved: false }],
     tabs.length
   );
-  props.history.push({ pathname: "/dashboard/endpoint/new" });
+  props.history.push({ pathname: `/dashboard/endpoint/new/${id}` });
 }
 
 function closeTab(props, index) {
@@ -73,7 +73,7 @@ function selectTab(props, tab, index) {
       });
     } else {
       props.history.push({
-        pathname: `/dashboard/${tab.type}/new`
+        pathname: `/dashboard/${tab.type}/new/${tab.id}`
       });
     }
   }
