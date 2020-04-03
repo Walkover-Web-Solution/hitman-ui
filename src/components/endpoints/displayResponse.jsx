@@ -150,7 +150,9 @@ class DisplayResponse extends Component {
             </div>
           </React.Fragment>
         ) : (
-          <div className="empty-response">Response</div>
+          <div>
+            <div className="empty-response">Response</div>
+          </div>
         )}
       </div>
     );

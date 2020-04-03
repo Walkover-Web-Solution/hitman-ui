@@ -172,18 +172,22 @@ class GenericTable extends Component {
         <div className="generic-table-title-container">
           {title}
           <button
+            id="edit-button"
             className="btn btn-default custom-button"
-            style={{ float: "right", color: "#f28100" }}
             onClick={() => this.displayEditButton()}
           >
             {this.state.editButtonName}
           </button>
         </div>
         {!this.state.bulkEdit && (
-          <table className="table table-bordered" bordered>
+          <table
+            className="table table-bordered"
+            id="custom-generic-table"
+            bordered
+          >
             <thead>
               <tr>
-                <th className="custom-td"> </th>
+                <th className="custom-td custom-checkbox"> </th>
                 <th className="custom-td" id="generic-table-key-cell">
                   KEY
                 </th>
@@ -191,7 +195,7 @@ class GenericTable extends Component {
                 <th className="custom-td">DESCRIPTION</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody style={{ border: "none" }}>
               {dataArray.map((e, index) => (
                 <tr key={index} id="generic-table-row">
                   <td className="custom-td" id="generic-table-key-cell">
@@ -203,8 +207,8 @@ class GenericTable extends Component {
                           dataArray[index].checked === "true" ? true : false
                         }
                         onChange={this.handleChange}
-                        type={"checkbox"}
-                        className="form-control"
+                        type="checkbox"
+                        className="Checkbox"
                         style={{ border: "none" }}
                       />
                     )}
@@ -215,6 +219,11 @@ class GenericTable extends Component {
                       value={dataArray[index].key}
                       onChange={this.handleChange}
                       type={"text"}
+                      placeholder={
+                        dataArray[index].checked === "notApplicable"
+                          ? "Key"
+                          : ""
+                      }
                       className="form-control"
                       style={{ border: "none" }}
                     />
@@ -225,6 +234,11 @@ class GenericTable extends Component {
                       value={dataArray[index].value}
                       onChange={this.handleChange}
                       type={"text"}
+                      placeholder={
+                        dataArray[index].checked === "notApplicable"
+                          ? "Value"
+                          : ""
+                      }
                       className="form-control"
                       style={{ border: "none" }}
                     />
@@ -235,6 +249,11 @@ class GenericTable extends Component {
                       value={dataArray[index].description}
                       onChange={this.handleChange}
                       type={"text"}
+                      placeholder={
+                        dataArray[index].checked === "notApplicable"
+                          ? "Description"
+                          : ""
+                      }
                       style={{ border: "none" }}
                       className="form-control"
                     />
