@@ -82,10 +82,11 @@ class CodeWindow extends Component {
               {this.props.title}
             </Modal.Title>
           </Modal.Header>
+
           <Modal.Body>
             <Container className="d-flex flex-column">
               <Row>
-                <Col id="codes" sm={3}>
+                <Col id="code-window-sidebar" sm={3}>
                   <ListGroup>
                     {Object.keys(this.languages).map(key => (
                       <ListGroup.Item
@@ -99,27 +100,29 @@ class CodeWindow extends Component {
                   </ListGroup>
                   <v1></v1>
                 </Col>
-                <Col sm={7}>
+                <Col sm={9}>
                   <div id="code-window-body">
-                    Generated code for {this.selectedLanguageName}{" "}
+                    <div className="code-heading">
+                      Generated code for {this.selectedLanguageName}
+                    </div>
+                    <CopyToClipboard
+                      text={
+                        this.state.codeSnippet
+                          ? this.state.codeSnippet
+                          : this.codeSnippet
+                      }
+                      onCopy={() => this.setState({ copied: true })}
+                      id="copy-to-clipboard"
+                    >
+                      <button>
+                        {this.state.copied ? (
+                          <i className="fas fa-check"></i>
+                        ) : (
+                          <i className="fas fa-clone"></i>
+                        )}
+                      </button>
+                    </CopyToClipboard>
                   </div>{" "}
-                  <CopyToClipboard
-                    text={
-                      this.state.codeSnippet
-                        ? this.state.codeSnippet
-                        : this.codeSnippet
-                    }
-                    onCopy={() => this.setState({ copied: true })}
-                    style={{ float: "right", borderRadius: "12px" }}
-                  >
-                    <button>
-                      {this.state.copied ? (
-                        <i className="fas fa-check"></i>
-                      ) : (
-                        <i className="fas fa-clone"></i>
-                      )}
-                    </button>
-                  </CopyToClipboard>
                   <pre>
                     <Highlight className={this.selectedLanguage}>
                       {this.state.codeSnippet
