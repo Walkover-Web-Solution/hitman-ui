@@ -98,7 +98,7 @@ class HostContainer extends Component {
           disabled={this.state.selectedHost !== "customHost"}
         />
         <select
-          class="custom-select"
+          className="custom-select"
           id="host-select"
           onChange={e => this.changeHost(e.currentTarget.value)}
         >

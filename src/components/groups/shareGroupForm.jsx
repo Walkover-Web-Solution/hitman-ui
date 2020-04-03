@@ -16,7 +16,8 @@ class ShareGroupForm extends Form {
   componentDidMount() {
     if (this.props.selectedGroup) {
       let data = {};
-      const shareGroupLink = apiUrl + "/share/" + this.props.selectedGroup.id;
+      const shareGroupLink =
+        apiUrl + "/shareGroup/" + this.props.selectedGroup.shareIdentifier;
       data = { shareGroupLink };
       this.setState({ data });
     }

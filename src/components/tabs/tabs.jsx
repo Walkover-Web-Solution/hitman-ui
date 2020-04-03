@@ -100,7 +100,7 @@ class CustomTabs extends Component {
                 </button>
               </Nav.Link>
               <button className="btn" onClick={() => this.deleteTab(index)}>
-                <i class="fas fa-times"></i>
+                <i className="fas fa-times"></i>
               </button>
             </Nav.Item>
           ))}
