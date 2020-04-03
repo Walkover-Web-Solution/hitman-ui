@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
+import { withRouter, Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import store from "../../store/store";
 import { isDashboardRoute } from "../common/utility";
@@ -57,7 +57,9 @@ class DisplayEndpoint extends Component {
     title: "",
     flagResponse: false,
     originalHeaders: [],
-    originalParams: []
+    originalParams: [],
+    showDescriptionFlag: false,
+    oldDescription: ""
   };
 
   customState = {
@@ -152,6 +154,9 @@ class DisplayEndpoint extends Component {
         originalHeaders,
         endpoint,
         groupId,
+        endpoint_description: endpoint.description,
+        oldDescription: endpoint.description,
+        showDescriptionFlag: false,
         title: "update endpoint"
       });
     }
@@ -589,6 +594,40 @@ class DisplayEndpoint extends Component {
   setBaseUrl(BASE_URL) {
     this.customState.BASE_URL = BASE_URL;
   }
+
+  handleDescription() {
+    const showDescriptionFlag = true;
+    this.setState({ showDescriptionFlag });
+  }
+
+  handleDescriptionCancel() {
+    let endpoint = { ...this.state.endpoint };
+    endpoint.description = this.state.oldDescription;
+    const showDescriptionFlag = false;
+    this.setState({ showDescriptionFlag, endpoint });
+  }
+
+  handleDescriptionSave(e) {
+    e.preventDefault();
+    const value = e.target.description.value;
+    if (value !== "") {
+      //api call here
+    }
+    let endpoint = { ...this.state.endpoint };
+    endpoint.description = value;
+    this.setState({
+      endpoint,
+      showDescriptionFlag: false,
+      oldDescription: value
+    });
+  }
+
+  handleChangeDescription = e => {
+    let endpoint = { ...this.state.endpoint };
+    endpoint[e.currentTarget.name] = e.currentTarget.value;
+    this.setState({ endpoint });
+  };
+
   render() {
     if (
       this.props.location.pathname.split("/")[3] !== "new" &&
@@ -622,6 +661,8 @@ class DisplayEndpoint extends Component {
         groupId: this.props.location.groupId,
         title: "Add New Endpoint",
         flagResponse: false,
+        showDescriptionFlag: false,
+
         originalHeaders: [
           {
             checked: "notApplicable",
@@ -669,7 +710,8 @@ class DisplayEndpoint extends Component {
         originalParams,
         originalHeaders,
         endpoint,
-        flagResponse: false
+        flagResponse: false,
+        oldDescription: endpoint.description
       });
       this.props.history.push({ endpoint: null });
     }
@@ -699,7 +741,62 @@ class DisplayEndpoint extends Component {
             onChange={this.handleChange}
           />
         </div>
+        {this.state.showDescriptionFlag === false &&
+        this.state.endpoint.description === "" ? (
+          <Link
+            style={{ padding: "5px 0px 0px 10px" }}
+            onClick={() => this.handleDescription()}
+          >
+            Add a Description
+          </Link>
+        ) : null}
 
+        {this.state.showDescriptionFlag === true ? (
+          <form onSubmit={this.handleDescriptionSave.bind(this)}>
+            <div class="form-group" style={{ padding: "5px 10px 5px 10px" }}>
+              <textarea
+                class="form-control"
+                rows="3"
+                name="description"
+                value={this.state.endpoint.description}
+                onChange={this.handleChangeDescription}
+              ></textarea>
+              <div style={{ float: "right", margin: "5px" }}>
+                <button
+                  class="btn btn-primary"
+                  type="cancel"
+                  onClick={() => this.handleDescriptionCancel()}
+                  style={{ margin: "5px" }}
+                >
+                  Cancel
+                </button>
+                <button
+                  class="btn btn-primary"
+                  type="submit"
+                  style={{ margin: "5px" }}
+                >
+                  Save
+                </button>
+              </div>
+            </div>
+          </form>
+        ) : null}
+
+        {this.state.endpoint.description !== "" &&
+        this.state.endpoint.description !== undefined &&
+        this.state.showDescriptionFlag === false ? (
+          <div>
+            <label style={{ margin: "5px" }}>
+              {this.state.endpoint.description}
+            </label>
+            <button
+              className="btn btn-default"
+              onClick={() => this.handleDescription()}
+            >
+              <i className="fas fa-edit"></i>
+            </button>
+          </div>
+        ) : null}
         <div className="endpoint-url-container">
           <div className="input-group-prepend">
             <div class="dropdown">
