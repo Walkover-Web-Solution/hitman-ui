@@ -199,9 +199,9 @@ class GenericTable extends Component {
                       <input
                         name={index + ".checkbox"}
                         value={dataArray[index].checked}
-                        // defaultChecked={
-                        //   dataArray[index].checked === "true" ? "true" : "false"
-                        // }
+                        checked={
+                          dataArray[index].checked === "true" ? true : false
+                        }
                         onChange={this.handleChange}
                         type={"checkbox"}
                         className="form-control"
@@ -257,12 +257,8 @@ class GenericTable extends Component {
         )}
 
         {this.state.bulkEdit && (
-          <div>
+          <div id="custom-bulk-edit">
             <textarea
-              style={{
-                fontSize: "12px",
-                fontFamily: `"OpenSans", Helvetica, Arial, sans-serif`
-              }}
               className="form-control"
               name="contents"
               id="contents"

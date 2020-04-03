@@ -29,7 +29,6 @@ class CreateEndpointForm extends Form {
   componentDidMount() {
     const data = { ...this.state.data };
     data.name = this.props.name;
-    console.log(data);
     this.setState({ data });
   }
 
@@ -105,7 +104,6 @@ class CreateEndpointForm extends Form {
           }));
         break;
     }
-    console.log(listItems);
     return listItems;
   }
 

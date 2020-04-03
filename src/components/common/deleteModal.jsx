@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { Modal } from "react-bootstrap";
-import Form from "./form";
 class DeleteModal extends Component {
   state = {};
 
@@ -52,13 +51,11 @@ class DeleteModal extends Component {
             {this.props.title}
           </Modal.Title>
         </Modal.Header>
-        <Modal.Body id= "custom-delete-modal-body">
-          <div>
-            {this.props.message}
-          </div>
+        <Modal.Body id="custom-delete-modal-body">
+          <div>{this.props.message}</div>
         </Modal.Body>
         <Modal.Footer>
-        <form onSubmit={this.handleSubmit}>
+          <form onSubmit={this.handleSubmit}>
             <button
               id="custom-delete-modal-delete"
               className="btn btn-default custom-button"

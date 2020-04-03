@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import shortId from "shortid";
 import { isDashboardRoute } from "../common/utility";
 import { setEndpointIds } from "../groups/redux/groupsActions";
 import {
@@ -9,9 +10,6 @@ import {
   rejectEndpoint
 } from "../publicEndpoint/redux/publicEndpointsActions";
 import { deleteEndpoint, duplicateEndpoint } from "./redux/endpointsActions";
-import shortId from "shortid";
-import endpointService from "./endpointService";
-import DeleteModal from "../common/deleteModal";
 
 const mapStateToProps = state => {
   return {

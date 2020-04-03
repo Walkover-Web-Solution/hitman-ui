@@ -737,6 +737,7 @@ class DisplayEndpoint extends Component {
               className="form-control form-control-lg h-auto"
               id="endpoint-url-input"
               aria-describedby="basic-addon3"
+              placeholder={"Enter request URL"}
               onChange={this.handleChange}
             />
           </div>
