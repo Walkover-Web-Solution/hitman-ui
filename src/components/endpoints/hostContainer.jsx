@@ -8,11 +8,11 @@ class HostContainer extends Component {
     data: {
       requestType: "GET",
       uri: "",
-      updatedUri: ""
+      updatedUri: "",
     },
     methodList: ["GET", "POST", "PUT", "DELETE"],
     groupId: null,
-    versionId: null
+    versionId: null,
   };
 
   selectHost(host) {
@@ -31,7 +31,7 @@ class HostContainer extends Component {
     } else this.setState({ selectedHost: host });
   }
 
-  handleChange = e => {
+  handleChange = (e) => {
     const customHost = e.currentTarget.value;
     this.setState({ customHost });
   };

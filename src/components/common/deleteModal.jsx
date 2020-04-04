@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { Modal } from "react-bootstrap";
-import Form from "./form";
 import tabService from "../tabs/tabService";
 class DeleteModal extends Component {
   state = {};

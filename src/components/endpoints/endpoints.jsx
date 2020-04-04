@@ -6,37 +6,34 @@ import {
   approveEndpoint,
   draftEndpoint,
   pendingEndpoint,
-  rejectEndpoint
+  rejectEndpoint,
 } from "../publicEndpoint/redux/publicEndpointsActions";
-import { deleteEndpoint, duplicateEndpoint } from "./redux/endpointsActions";
-import shortId from "shortid";
-import endpointService from "./endpointService";
-import DeleteModal from "../common/deleteModal";
 import tabService from "../tabs/tabService";
+import { deleteEndpoint, duplicateEndpoint } from "./redux/endpointsActions";
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     endpoints: state.endpoints,
-    groups: state.groups
+    groups: state.groups,
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    deleteEndpoint: endpoint => dispatch(deleteEndpoint(endpoint)),
-    duplicateEndpoint: endpoint => dispatch(duplicateEndpoint(endpoint)),
+    deleteEndpoint: (endpoint) => dispatch(deleteEndpoint(endpoint)),
+    duplicateEndpoint: (endpoint) => dispatch(duplicateEndpoint(endpoint)),
     setEndpointIds: (endpointsOrder, groupId) =>
       dispatch(setEndpointIds(endpointsOrder, groupId)),
-    pendingEndpoint: endpoint => dispatch(pendingEndpoint(endpoint)),
-    approveEndpoint: endpoint => dispatch(approveEndpoint(endpoint)),
-    draftEndpoint: endpoint => dispatch(draftEndpoint(endpoint)),
-    rejectEndpoint: endpoint => dispatch(rejectEndpoint(endpoint))
+    pendingEndpoint: (endpoint) => dispatch(pendingEndpoint(endpoint)),
+    approveEndpoint: (endpoint) => dispatch(approveEndpoint(endpoint)),
+    draftEndpoint: (endpoint) => dispatch(draftEndpoint(endpoint)),
+    rejectEndpoint: (endpoint) => dispatch(rejectEndpoint(endpoint)),
   };
 };
 
 class Endpoints extends Component {
   state = {
-    endpointState: "Make Public"
+    endpointState: "Make Public",
   };
 
   componentDidMount() {}
@@ -58,10 +55,10 @@ class Endpoints extends Component {
         return;
       }
       let endpointIds = this.props.endpoints_order.filter(
-        item => item !== this.draggedItem
+        (item) => item !== this.draggedItem
       );
       const index = this.props.endpoints_order.findIndex(
-        eId => eId === droppedOnItem
+        (eId) => eId === droppedOnItem
       );
       endpointIds.splice(index, 0, this.draggedItem);
       this.props.setEndpointIds(endpointIds, this.props.group_id);
@@ -113,7 +110,7 @@ class Endpoints extends Component {
   // }
 
   handleDelete(endpoint) {
-    const index = this.props.tabs.findIndex(t => t.id === endpoint.id);
+    const index = this.props.tabs.findIndex((t) => t.id === endpoint.id);
     this.props.deleteEndpoint(endpoint);
     if (index >= 0) {
       tabService.closeTab({ ...this.props }, index);
@@ -123,14 +120,14 @@ class Endpoints extends Component {
   handleDuplicate(endpoint) {
     this.props.duplicateEndpoint(endpoint);
     this.props.history.push({
-      pathname: "/dashboard"
+      pathname: "/dashboard",
     });
   }
 
   handleUpdate(endpoint) {
     this.props.history.push({
       pathname: `/dashboard/${this.props.collection_id}/versions/${this.props.version_id}/groups/${this.props.group_id}/endpoint/${endpoint.id}/edit`,
-      editEndpoint: endpoint
+      editEndpoint: endpoint,
     });
   }
 
@@ -138,8 +135,8 @@ class Endpoints extends Component {
     this.setState({
       showDeleteModal: true,
       selectedEndpoint: {
-        ...this.props.endpoints[endpointId]
-      }
+        ...this.props.endpoints[endpointId],
+      },
     });
   }
 
@@ -184,14 +181,14 @@ class Endpoints extends Component {
         pathname: `/dashboard/endpoint/${endpoint.id}`,
         title: "update endpoint",
         endpoint: endpoint,
-        groupId: groupId
+        groupId: groupId,
       });
     } else {
       this.props.history.push({
         pathname: `/public/${collectionId}/endpoints/${endpoint.id}`,
         title: "update endpoint",
         endpoint: endpoint,
-        groupId: groupId
+        groupId: groupId,
       });
     }
   }
@@ -214,16 +211,17 @@ class Endpoints extends Component {
           {Object.keys(this.props.endpoints).length !== 0 &&
             this.props.endpoints_order
               .filter(
-                eId => this.props.endpoints[eId].groupId === this.props.group_id
+                (eId) =>
+                  this.props.endpoints[eId].groupId === this.props.group_id
               )
-              .map(endpointId => (
+              .map((endpointId) => (
                 <div className="endpoint-list-item" key={endpointId}>
                   <button
                     className="btn "
                     draggable
-                    onDragOver={e => this.onDragOver(e, endpointId)}
-                    onDragStart={e => this.onDragStart(e, endpointId)}
-                    onDrop={e => this.onDrop(e)}
+                    onDragOver={(e) => this.onDragOver(e, endpointId)}
+                    onDragStart={(e) => this.onDragStart(e, endpointId)}
+                    onDrop={(e) => this.onDrop(e)}
                     onClick={() =>
                       this.handleDisplay(
                         this.props.endpoints[endpointId],
@@ -358,9 +356,10 @@ class Endpoints extends Component {
           {Object.keys(this.props.endpoints).length !== 0 &&
             this.props.endpoints_order
               .filter(
-                eId => this.props.endpoints[eId].groupId === this.props.group_id
+                (eId) =>
+                  this.props.endpoints[eId].groupId === this.props.group_id
               )
-              .map(endpointId => (
+              .map((endpointId) => (
                 <div className="endpoint-list-item">
                   <button
                     className="btn "

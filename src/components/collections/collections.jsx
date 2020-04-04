@@ -8,9 +8,7 @@ import CollectionVersions from "../collectionVersions/collectionVersions";
 import collectionVersionsService from "../collectionVersions/collectionVersionsService";
 import ImportVersionForm from "../collectionVersions/importVersionForm";
 import { isDashboardRoute } from "../common/utility";
-import endpointService from "../endpoints/endpointService";
 import endpointApiService from "../endpoints/endpointApiService";
-
 import {
   fetchAllUsersOfTeam,
   shareCollection
@@ -23,7 +21,6 @@ import {
   updateCollection
 } from "./redux/collectionsActions";
 import ShareCollectionForm from "./shareCollectionForm";
-import DeleteModal from "../common/deleteModal";
 
 const mapStateToProps = state => {
   return {

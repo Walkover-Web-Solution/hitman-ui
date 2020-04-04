@@ -1,16 +1,15 @@
 import React, { Component } from "react";
 import { Dropdown } from "react-bootstrap";
+import { connect } from "react-redux";
+import shortId from "shortid";
 import EnvironmentModal from "./environmentModal";
 import environmentsService from "./environmentsService.js";
-import shortId from "shortid";
-import { connect } from "react-redux";
-import { Table } from "react-bootstrap";
 import {
-  fetchEnvironments,
   addEnvironment,
-  updateEnvironment,
   deleteEnvironment,
-  setEnvironmentId
+  fetchEnvironments,
+  setEnvironmentId,
+  updateEnvironment
 } from "./redux/environmentsActions";
 
 const mapStateToProps = state => {
@@ -130,7 +129,7 @@ class Environments extends Component {
               variant="default"
               id="dropdown-basic"
             >
-              <i class="fas fa-eye"></i>
+              <i className="fas fa-eye"></i>
             </Dropdown.Toggle>
 
             <Dropdown.Menu alignRight className="custom-env-menu">

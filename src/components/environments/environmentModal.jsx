@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { ListGroup, Modal } from "react-bootstrap";
 import environmentsApiService from "./environmentsApiService";
-import environmentsService from "./environmentsService";
 
 class EnvironmentModal extends Component {
   state = {
@@ -91,7 +90,9 @@ class EnvironmentModal extends Component {
                         className="btn btn-default"
                         onClick={() => {
                           this.props.onHide();
-                          this.props.open_delete_environment_modal(environmentId);
+                          this.props.open_delete_environment_modal(
+                            environmentId
+                          );
                         }}
                       >
                         delete

@@ -59,6 +59,7 @@ class DisplayEndpoint extends Component {
     flagResponse: false,
     originalHeaders: [],
     originalParams: [],
+    selectedBodyType: "",
   };
 
   customState = {
@@ -104,8 +105,23 @@ class DisplayEndpoint extends Component {
     const { groups } = store.getState();
     const { versions } = store.getState();
     if (this.props.location.pathname.split("/")[3] === "new" && !this.title) {
-      originalParams = this.structueParamsHeaders;
-      originalHeaders = this.structueParamsHeaders;
+      originalParams = [
+        {
+          checked: "notApplicable",
+          key: "",
+          value: "",
+          description: "",
+        },
+      ];
+      originalHeaders = [
+        {
+          checked: "notApplicable",
+          key: "",
+          value: "",
+          description: "",
+        },
+      ];
+
       this.setState({
         originalParams,
         originalHeaders,
@@ -125,7 +141,10 @@ class DisplayEndpoint extends Component {
       originalParams = this.fetchoriginalParams(endpoint.params);
 
       //To fetch originalHeaders from Headers
-      const originalHeaders = this.fetchoriginalHeaders(endpoint.headers);
+      originalHeaders = this.fetchoriginalHeaders(endpoint.headers);
+
+      //To fetch body from endpoint
+      // this.fetchBody(endpoint.body);
 
       this.setState({
         data: {
@@ -154,20 +173,22 @@ class DisplayEndpoint extends Component {
       let originalParams = this.state.originalParams;
       let updatedUri = e.currentTarget.value.split("?")[1];
       let result = URI.parseQuery(updatedUri);
-
-      if (Object.keys(result).length === 0) {
-        this.setState({ originalParams: keys });
-      }
       for (let i = 0; i < Object.keys(result).length; i++) {
         keys.push(Object.keys(result)[i]);
       }
       for (let i = 0; i < keys.length; i++) {
         values.push(result[keys[i]]);
-        if (this.state.originalParams[i]) {
-          if (this.state.originalParams[i].key === keys[i]) {
-            description[i] = this.state.originalParams[i].description;
-          } else {
-            description[i] = "";
+        if (originalParams[i]) {
+          for (let k = 0; k < originalParams.length; k++) {
+            if (
+              originalParams[k].key === keys[i] &&
+              originalParams[k].checked === "true"
+            ) {
+              description[i] = originalParams[k].description;
+              break;
+            } else if (k === originalParams.length - 1) {
+              description[i] = "";
+            }
           }
         }
       }
@@ -179,19 +200,25 @@ class DisplayEndpoint extends Component {
 
   makeOriginalParams(keys, values, description) {
     let originalParams = [];
-    let i = 0;
-    for (i = 0; i < keys.length; i++) {
-      originalParams[i] = {
-        checked:
-          this.state.originalParams[i].checked === "notApplicable"
-            ? "true"
-            : this.state.originalParams[i].checked,
+    for (let i = 0; i < this.state.originalParams.length; i++) {
+      if (this.state.originalParams[i].checked === "false") {
+        originalParams.push({
+          checked: this.state.originalParams[i].checked,
+          key: this.state.originalParams[i].key,
+          value: this.state.originalParams[i].value,
+          description: this.state.originalParams[i].description,
+        });
+      }
+    }
+    for (let i = 0; i < keys.length; i++) {
+      originalParams.push({
+        checked: "true",
         key: keys[i],
         value: values[i],
         description: description[i],
-      };
+      });
     }
-    originalParams[i] = this.structueParamsHeaders[0];
+    originalParams.push(this.structueParamsHeaders[0]);
     return originalParams;
   }
 
@@ -240,18 +267,21 @@ class DisplayEndpoint extends Component {
     return json;
   }
 
-  parseBody(data) {
-    let { method, body } = data;
+  parseBody(rawBody) {
+    console.log(rawBody);
+    let body = {};
+    let { method } = this.state.data;
+    console.log("method", method);
     if (method === "POST" || method === "PUT") {
       try {
-        body = JSON.parse(body);
+        body = JSON.parse(rawBody);
         return body;
       } catch (error) {
         toast.error("Invalid Body");
         return body;
       }
     }
-    return {};
+    return body;
   }
 
   handleErrorResponse(error) {
@@ -308,7 +338,7 @@ class DisplayEndpoint extends Component {
     if (!(this.state.groupId || groupId)) {
       this.openEndpointFormModal();
     } else {
-      let body = this.parseBody(this.state.data);
+      let body = this.doSubmitBody();
       const headersData = this.doSubmitHeader();
       const updatedParams = this.doSubmitParam();
       const endpoint = {
@@ -334,6 +364,30 @@ class DisplayEndpoint extends Component {
       }
     }
   };
+
+  makeBody(type, value) {
+    let body = {
+      type,
+      value,
+    };
+    return body;
+  }
+
+  doSubmitBody() {
+    console.log("this.state.rawBody", this.state.rawBody);
+    let body = {};
+    const selectedBodyType = this.state.selectedBodyType;
+    if (this.state.selectedBodyType === "urlencodedBody") {
+      body = this.state.urlencodedBody;
+    }
+    if (this.state.selectedBodyType === "rawBody") {
+      body = this.parseBody(this.state.rawBody);
+      console.log("body", body);
+    }
+    body = this.makeBody(this.state.selectedBodyType, body);
+    console.log("body", body);
+    return body;
+  }
 
   doSubmitHeader() {
     let originalHeaders = [...this.state.originalHeaders];
@@ -368,6 +422,9 @@ class DisplayEndpoint extends Component {
   }
 
   propsFromChild(name, value) {
+    if (name === "selectedBodyType") {
+      this.setState({ selectedBodyType: value });
+    }
     if (name === "originalParams") {
       this.handleUpdateUri(value);
       this.setState({ originalParams: value });
@@ -378,6 +435,12 @@ class DisplayEndpoint extends Component {
 
     if (name === "originalHeaders") {
       this.setState({ originalHeaders: value });
+    }
+    if (name === "rawBody") {
+      this.setState({ rawBody: value });
+    }
+    if (name === "x-www-form-urlencoded") {
+      this.setState({ urlencodedBody: value });
     }
   }
 
@@ -398,6 +461,7 @@ class DisplayEndpoint extends Component {
       )
         parts[originalParams[i].key] = originalParams[i].value;
     }
+    URI.escapeQuerySpace = false;
     let updatedUri = URI.buildQuery(parts);
     updatedUri = originalUri + URI.decode(updatedUri);
     let data = { ...this.state.data };
@@ -443,7 +507,13 @@ class DisplayEndpoint extends Component {
         description: params[Object.keys(params)[i]].description,
       };
     }
-    originalParams[i] = this.structueParamsHeaders[0];
+    originalParams[i] = {
+      checked: "notApplicable",
+      key: "",
+      value: "",
+      description: "",
+    };
+
     return originalParams;
   }
 
@@ -458,18 +528,25 @@ class DisplayEndpoint extends Component {
         description: headers[Object.keys(headers)[i]].description,
       };
     }
-    originalHeaders[i] = this.structueParamsHeaders[0];
+    originalHeaders[i] = {
+      checked: "notApplicable",
+      key: "",
+      value: "",
+      description: "",
+    };
     return originalHeaders;
   }
 
   makeHeaders(headers) {
     let processedHeaders = [];
     for (let i = 0; i < Object.keys(headers).length; i++) {
-      processedHeaders[i] = {
-        name: headers[Object.keys(headers)[i]].key,
-        value: headers[Object.keys(headers)[i]].value,
-        comment: headers[Object.keys(headers)[i]].description,
-      };
+      if (headers[Object.keys(headers)[i]].checked === "true") {
+        processedHeaders[i] = {
+          name: headers[Object.keys(headers)[i]].key,
+          value: headers[Object.keys(headers)[i]].value,
+          comment: headers[Object.keys(headers)[i]].description,
+        };
+      }
     }
     return processedHeaders;
   }
@@ -489,14 +566,30 @@ class DisplayEndpoint extends Component {
     this.handleSave(groupId, endpointName);
   }
 
+  makeHeaders(headers) {
+    let processedHeaders = [];
+    for (let i = 0; i < Object.keys(headers).length; i++) {
+      if (headers[Object.keys(headers)[i]].checked === "true") {
+        processedHeaders.push({
+          name: headers[Object.keys(headers)[i]].key,
+          value: headers[Object.keys(headers)[i]].value,
+          comment: headers[Object.keys(headers)[i]].description,
+        });
+      }
+    }
+    return processedHeaders;
+  }
+
   makeParams(params) {
     let processedParams = [];
     for (let i = 0; i < Object.keys(params).length; i++) {
-      processedParams[i] = {
-        name: params[Object.keys(params)[i]].key,
-        value: params[Object.keys(params)[i]].value,
-        comment: params[Object.keys(params)[i]].description,
-      };
+      if (params[Object.keys(params)[i]].checked === "true") {
+        processedParams.push({
+          name: params[Object.keys(params)[i]].key,
+          value: params[Object.keys(params)[i]].value,
+          comment: params[Object.keys(params)[i]].description,
+        });
+      }
     }
     return processedParams;
   }
@@ -611,19 +704,23 @@ class DisplayEndpoint extends Component {
       //To fetch originalHeaders from Headers
       const originalHeaders = this.fetchoriginalHeaders(endpoint.headers);
 
+      //To fetch body from endpoint
+
       this.setState({
         data: {
           method: endpoint.requestType,
           uri: endpoint.uri,
           updatedUri: endpoint.uri,
           name: endpoint.name,
-          body: JSON.stringify(endpoint.body, null, 4),
+          body: endpoint.body,
+          // JSON.stringify(endpoint.body, null, 4)
         },
         title: "update endpoint",
         response: {},
         groupId: this.props.location.endpoint.groupId,
         originalParams,
         originalHeaders,
+        selectedBodyType: endpoint.body.type,
         endpoint,
         flagResponse: false,
       });
@@ -693,6 +790,7 @@ class DisplayEndpoint extends Component {
               className="form-control form-control-lg h-auto"
               id="endpoint-url-input"
               aria-describedby="basic-addon3"
+              placeholder={"Enter request URL"}
               onChange={this.handleChange}
             />
           </div>

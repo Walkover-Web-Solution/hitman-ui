@@ -87,7 +87,7 @@ class Pages extends Component {
   }
 
   render() {
-    const pageId = this.props.pageId;
+    const pageId = this.props.page_id;
     return (
       <div id="accordion" key={this.props.index}>
         <div className="card">
