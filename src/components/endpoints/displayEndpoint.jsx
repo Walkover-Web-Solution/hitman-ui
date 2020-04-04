@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
+import { withRouter, Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import store from "../../store/store";
 import { isDashboardRoute } from "../common/utility";
@@ -60,6 +60,9 @@ class DisplayEndpoint extends Component {
     originalHeaders: [],
     originalParams: [],
     selectedBodyType: "",
+    showDescriptionFlag: false,
+    showAddDescriptionFlag: false,
+    oldDescription: "",
   };
 
   customState = {
@@ -158,6 +161,9 @@ class DisplayEndpoint extends Component {
         originalHeaders,
         endpoint,
         groupId,
+        endpoint_description: endpoint.description,
+        oldDescription: endpoint.description,
+        showDescriptionFlag: false,
         title: "update endpoint",
       });
     }
@@ -651,6 +657,44 @@ class DisplayEndpoint extends Component {
     data.body = { type: bodyType, value: body };
     this.setState({ data });
   }
+  handleDescription() {
+    const showDescriptionFlag = true;
+    this.setState({ showDescriptionFlag });
+  }
+
+  handleDescriptionCancel() {
+    let endpoint = { ...this.state.endpoint };
+    endpoint.description = this.state.oldDescription;
+    const showDescriptionFlag = false;
+    this.setState({ showDescriptionFlag, endpoint });
+  }
+
+  handleDescriptionSave(e) {
+    e.preventDefault();
+    const value = e.target.description.value;
+    let endpoint = { ...this.state.endpoint };
+
+    this.props.updateEndpoint({ id: endpoint.id, description: value });
+
+    endpoint.description = value;
+    this.setState({
+      endpoint,
+      showDescriptionFlag: false,
+      oldDescription: value,
+    });
+  }
+
+  handleChangeDescription = (e) => {
+    let endpoint = { ...this.state.endpoint };
+    endpoint[e.currentTarget.name] = e.currentTarget.value;
+    this.setState({ endpoint });
+  };
+
+  showDescription() {
+    let showAddDescriptionFlag = !this.state.showAddDescriptionFlag;
+    this.setState({ showAddDescriptionFlag });
+  }
+
   render() {
     console.log(this.state.data);
     if (
@@ -685,8 +729,24 @@ class DisplayEndpoint extends Component {
         groupId: this.props.location.groupId,
         title: "Add New Endpoint",
         flagResponse: false,
-        originalHeaders: this.structueParamsHeaders,
-        originalParams: this.structueParamsHeaders,
+        showDescriptionFlag: false,
+
+        originalHeaders: [
+          {
+            checked: "notApplicable",
+            key: "",
+            value: "",
+            description: "",
+          },
+        ],
+        originalParams: [
+          {
+            checked: "notApplicable",
+            key: "",
+            value: "",
+            description: "",
+          },
+        ],
       });
       this.props.history.push({ groups: null });
     }
@@ -723,6 +783,7 @@ class DisplayEndpoint extends Component {
         selectedBodyType: endpoint.body.type,
         endpoint,
         flagResponse: false,
+        oldDescription: endpoint.description,
       });
       this.props.history.push({ endpoint: null });
     }
@@ -740,6 +801,18 @@ class DisplayEndpoint extends Component {
         )}
         <div className="endpoint-name-container">
           {this.state.showCodeWindow && this.showCodeWindow()}
+
+          {isDashboardRoute(this.props) &&
+          this.state.endpoint.description !== undefined ? (
+            <i
+              className={
+                this.state.showAddDescriptionFlag === true
+                  ? "fas fa-caret-down endpoint-description"
+                  : "fas fa-caret-right endpoint-description"
+              }
+              onClick={() => this.showDescription()}
+            ></i>
+          ) : null}
           <input
             type="text"
             className="endpoint-name-input"
@@ -752,7 +825,71 @@ class DisplayEndpoint extends Component {
             onChange={this.handleChange}
           />
         </div>
+        {this.state.showAddDescriptionFlag === true &&
+        isDashboardRoute(this.props) &&
+        (this.state.endpoint.description === null ||
+          this.state.endpoint.description === "") ? (
+          <Link
+            style={{
+              padding: "5px 0px 0px 20px",
+              fontSize: "15px",
+              color: "tomato",
+            }}
+            onClick={() => this.handleDescription()}
+          >
+            Add a Description
+          </Link>
+        ) : null}
 
+        {this.state.showDescriptionFlag && isDashboardRoute(this.props) ? (
+          <form onSubmit={this.handleDescriptionSave.bind(this)}>
+            <div class="form-group" style={{ padding: "5px 10px 5px 10px" }}>
+              <textarea
+                class="form-control"
+                rows="3"
+                name="description"
+                value={this.state.endpoint.description}
+                onChange={this.handleChangeDescription}
+              ></textarea>
+              <div style={{ float: "right", margin: "5px" }}>
+                <button
+                  class="btn btn-primary"
+                  type="cancel"
+                  onClick={() => this.handleDescriptionCancel()}
+                  style={{ margin: "5px" }}
+                >
+                  Cancel
+                </button>
+                <button
+                  class="btn btn-primary"
+                  type="submit"
+                  style={{ margin: "5px" }}
+                >
+                  Save
+                </button>
+              </div>
+            </div>
+          </form>
+        ) : null}
+
+        {this.state.endpoint.description !== null &&
+        this.state.endpoint.description !== undefined &&
+        this.state.endpoint.description !== "" &&
+        this.state.showDescriptionFlag === false ? (
+          <div>
+            <label style={{ margin: "5px" }}>
+              {this.state.endpoint.description}
+            </label>
+            {isDashboardRoute(this.props) ? (
+              <button
+                className="btn btn-default"
+                onClick={() => this.handleDescription()}
+              >
+                <i className="fas fa-edit"></i>
+              </button>
+            ) : null}
+          </div>
+        ) : null}
         <div className="endpoint-url-container">
           <div className="input-group-prepend">
             <div class="dropdown">

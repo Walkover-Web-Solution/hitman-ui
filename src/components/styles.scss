@@ -678,14 +678,21 @@ main.main.ml-sm-auto.col-lg-10 {
       // border: 1px solid rgba(227, 228, 230, 0.7);
       // border-radius: 60px;
       border: none;
-      width: 100%;
+      width: 80%;
       margin-top: 5px;
       margin-bottom: 5px;
-      padding-left: 20px;
+      padding-left: 5px;
       background-color: inherit;
     }
     .endpoint-name-input::placeholder {
       font-weight: 300;
+    }
+    .endpoint-description {
+      float: left;
+      margin-top: 5px;
+      margin-bottom: 5px;
+      padding-left: 20px;
+      padding-top: 5px;
     }
   }
   .endpoint-url-container {
