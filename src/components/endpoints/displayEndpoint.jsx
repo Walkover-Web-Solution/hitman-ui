@@ -853,7 +853,7 @@ class DisplayEndpoint extends Component {
                   className="btn btn-default"
                   onClick={() => this.handleDescription()}
                 >
-                  <i className="fas fa-edit"></i>
+                  <i className="fas fa-pen"></i>
                 </button>
               ) : null}
             </div>
