@@ -59,7 +59,7 @@ class DisplayEndpoint extends Component {
     flagResponse: false,
     originalHeaders: [],
     originalParams: [],
-    selectedBodyType: "",
+    // selectedBodyType: "",
     showDescriptionFlag: false,
     showAddDescriptionFlag: false,
     oldDescription: "",
@@ -276,17 +276,17 @@ class DisplayEndpoint extends Component {
   parseBody(rawBody) {
     console.log(rawBody);
     let body = {};
-    let { method } = this.state.data;
-    console.log("method", method);
-    if (method === "POST" || method === "PUT") {
-      try {
-        body = JSON.parse(rawBody);
-        return body;
-      } catch (error) {
-        toast.error("Invalid Body");
-        return body;
-      }
+    // let { method } = this.state.data;
+    // console.log("method", method);
+    // if (method === "POST" || method === "PUT") {
+    try {
+      body = JSON.parse(rawBody);
+      return body;
+    } catch (error) {
+      toast.error("Invalid Body");
+      return body;
     }
+    // }
     return body;
   }
 
@@ -331,20 +331,23 @@ class DisplayEndpoint extends Component {
     const BASE_URL = this.customState.BASE_URL;
     let api = BASE_URL + this.uri.current.value;
     api = this.replaceVariables(api);
-    let body = this.parseBody(this.state.data);
     let headerJson = {};
     Object.keys(headersData).forEach((header) => {
       headerJson[headersData[header].key] = headersData[header].value;
     });
+    let { body, headers } = this.formatBody(this.state.data.body, headerJson);
 
-    this.handleApiCall(api, body, headerJson);
+    this.handleApiCall(api, body, headers);
   };
 
   handleSave = async (groupId, EndpointName) => {
     if (!(this.state.groupId || groupId)) {
       this.openEndpointFormModal();
     } else {
-      let body = this.doSubmitBody();
+      let body = this.state.data.body;
+      if (this.state.data.body.type === "raw") {
+        body.value = this.parseBody(body.value);
+      }
       const headersData = this.doSubmitHeader();
       const updatedParams = this.doSubmitParam();
       const endpoint = {
@@ -371,29 +374,29 @@ class DisplayEndpoint extends Component {
     }
   };
 
-  makeBody(type, value) {
-    let body = {
-      type,
-      value,
-    };
-    return body;
-  }
+  // makeBody(type, value) {
+  //   let body = {
+  //     type,
+  //     value,
+  //   };
+  //   return body;
+  // }
 
-  doSubmitBody() {
-    console.log("this.state.rawBody", this.state.rawBody);
-    let body = {};
-    const selectedBodyType = this.state.selectedBodyType;
-    if (this.state.selectedBodyType === "urlencodedBody") {
-      body = this.state.urlencodedBody;
-    }
-    if (this.state.selectedBodyType === "rawBody") {
-      body = this.parseBody(this.state.rawBody);
-      console.log("body", body);
-    }
-    body = this.makeBody(this.state.selectedBodyType, body);
-    console.log("body", body);
-    return body;
-  }
+  // doSubmitBody() {
+  //   console.log("this.state.rawBody", this.state.rawBody);
+  //   let body = {};
+  //   const selectedBodyType = this.state.selectedBodyType;
+  //   if (this.state.selectedBodyType === "urlencodedBody") {
+  //     body = this.state.urlencodedBody;
+  //   }
+  //   if (this.state.selectedBodyType === "rawBody") {
+  //     body = this.parseBody(this.state.rawBody);
+  //     console.log("body", body);
+  //   }
+  //   body = this.makeBody(this.state.selectedBodyType, body);
+  //   console.log("body", body);
+  //   return body;
+  // }
 
   doSubmitHeader() {
     let originalHeaders = [...this.state.originalHeaders];
@@ -428,15 +431,6 @@ class DisplayEndpoint extends Component {
   }
 
   propsFromChild(name, value) {
-<<<<<<< HEAD
-    console.log("this.originalParamst", this.state.originalParams);
-    console.log("this.originalHeaders", this.state.originalHeaders);
-
-=======
-    if (name === "selectedBodyType") {
-      this.setState({ selectedBodyType: value });
-    }
->>>>>>> 183cfbd4173f16c62549cb82810803ad5ca6c12c
     if (name === "originalParams") {
       this.handleUpdateUri(value);
       this.setState({ originalParams: value });
@@ -448,12 +442,12 @@ class DisplayEndpoint extends Component {
     if (name === "originalHeaders") {
       this.setState({ originalHeaders: value });
     }
-    if (name === "rawBody") {
-      this.setState({ rawBody: value });
-    }
-    if (name === "x-www-form-urlencoded") {
-      this.setState({ urlencodedBody: value });
-    }
+    // if (name === "rawBody") {
+    //   this.setState({ rawBody: value });
+    // }
+    // if (name === "x-www-form-urlencoded") {
+    //   this.setState({ urlencodedBody: value });
+    // }
   }
 
   handleUpdateUri(originalParams) {
@@ -520,35 +514,17 @@ class DisplayEndpoint extends Component {
       };
     }
     originalParams[i] = {
-<<<<<<< HEAD
-      key: "",
-      value: "",
-      description: ""
-    };
-=======
       checked: "notApplicable",
       key: "",
       value: "",
       description: "",
     };
 
->>>>>>> 183cfbd4173f16c62549cb82810803ad5ca6c12c
     return originalParams;
   }
 
   fetchoriginalHeaders(headers) {
     let originalHeaders = [];
-<<<<<<< HEAD
-    Object.keys(headers).forEach(h => {
-      originalHeaders.push(headers[h]);
-    });
-    let length = originalHeaders.length;
-    originalHeaders[length] = {
-      key: "",
-      value: "",
-      description: ""
-    };
-=======
     let i = 0;
     for (i = 0; i < Object.keys(headers).length; i++) {
       originalHeaders[i] = {
@@ -565,7 +541,6 @@ class DisplayEndpoint extends Component {
       description: "",
     };
     return originalHeaders;
->>>>>>> 183cfbd4173f16c62549cb82810803ad5ca6c12c
   }
 
   makeHeaders(headers) {
@@ -644,7 +619,7 @@ class DisplayEndpoint extends Component {
       httpVersion: "HTTP/1.1",
       cookies: [],
       headers: this.makeHeaders(originalHeaders),
-      postData: this.makePostData(body),
+      postData: this.makePostData(body.value),
       queryString: this.makeParams(originalParams),
     };
     if (!harObject.url.split(":")[1] || harObject.url.split(":")[0] === "") {
@@ -720,6 +695,22 @@ class DisplayEndpoint extends Component {
     this.setState({ showAddDescriptionFlag });
   }
 
+  formatBody(body, headers) {
+    let finalBodyValue = null;
+    switch (body.type) {
+      case "raw":
+        finalBodyValue = this.parseBody(body.value);
+        return { body: finalBodyValue, headers };
+      case "formData":
+        headers["Content-type"] = "multipart/form-data";
+        let formData = new FormData();
+        body.value.map((o) => formData.set(o.key, o.value));
+        return { body: formData, headers };
+      case "urlEndcoded":
+        return { body: finalBodyValue, headers };
+    }
+  }
+
   render() {
     console.log(this.state.data);
     if (
@@ -743,7 +734,7 @@ class DisplayEndpoint extends Component {
         data: {
           name: "",
           method: "GET",
-          body: JSON.stringify({}, null, 4),
+          body: { type: "raw", value: null },
           uri: "",
           updatedUri: "",
         },
@@ -754,22 +745,6 @@ class DisplayEndpoint extends Component {
         groupId: this.props.location.groupId,
         title: "Add New Endpoint",
         flagResponse: false,
-<<<<<<< HEAD
-        originalHeaders: [
-          {
-            key: "",
-            value: "",
-            description: ""
-          }
-        ],
-        originalParams: [
-          {
-            key: "",
-            value: "",
-            description: ""
-          }
-        ]
-=======
         showDescriptionFlag: false,
 
         originalHeaders: [
@@ -788,7 +763,6 @@ class DisplayEndpoint extends Component {
             description: "",
           },
         ],
->>>>>>> 183cfbd4173f16c62549cb82810803ad5ca6c12c
       });
       this.props.history.push({ groups: null });
     }
@@ -806,11 +780,8 @@ class DisplayEndpoint extends Component {
       //To fetch originalHeaders from Headers
       const originalHeaders = this.fetchoriginalHeaders(endpoint.headers);
 
-<<<<<<< HEAD
-=======
       //To fetch body from endpoint
 
->>>>>>> 183cfbd4173f16c62549cb82810803ad5ca6c12c
       this.setState({
         data: {
           method: endpoint.requestType,
@@ -825,7 +796,7 @@ class DisplayEndpoint extends Component {
         groupId: this.props.location.endpoint.groupId,
         originalParams,
         originalHeaders,
-        selectedBodyType: endpoint.body.type,
+        // selectedBodyType: endpoint.body.type,
         endpoint,
         flagResponse: false,
         oldDescription: endpoint.description,

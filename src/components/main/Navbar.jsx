@@ -10,7 +10,7 @@ import shortId from "shortid";
 class Navbar extends Component {
   state = {
     name: "",
-    email: ""
+    email: "",
   };
   componentDidMount() {
     const { user } = getCurrentUser();
@@ -44,11 +44,11 @@ class Navbar extends Component {
     const newTabId = shortId.generate();
     const tabs = [
       ...this.props.tabs,
-      { id: newTabId, type: "endpoint", isSaved: false }
+      { id: newTabId, type: "endpoint", isSaved: false },
     ];
     this.props.set_tabs(tabs, tabs.length - 1);
     this.props.history.push({
-      pathname: `/dashboard/endpoint/new`
+      pathname: `/dashboard/endpoint/new/${newTabId}`,
     });
   }
 
@@ -58,7 +58,7 @@ class Navbar extends Component {
         {this.state.showCreateNewModal &&
           this.openCreateNewModal(() =>
             this.setState({
-              showCreateNewModal: false
+              showCreateNewModal: false,
             })
           )}
         {this.state.showCollectionForm &&
