@@ -3,7 +3,7 @@ import React, { Component } from "react";
 class GenericTable extends Component {
   state = {
     bulkEdit: false,
-    editButtonName: "Bulk Edit",
+    editButtonName: "Bulk Edit"
   };
 
   checkboxFlags = [];
@@ -12,7 +12,7 @@ class GenericTable extends Component {
   textAreaValueFlag = true;
   helperflag = false;
 
-  handleChange = (e) => {
+  handleChange = e => {
     const { dataArray, title } = this.props;
     const name = e.currentTarget.name.split(".");
     if (name[1] === "checkbox") {
@@ -25,13 +25,9 @@ class GenericTable extends Component {
     }
     if (name[1] === "key") {
       dataArray[name[0]].key = e.currentTarget.value;
-<<<<<<< HEAD
-      this.handleAdd(dataArray, title, dataArray[name[0]].key, name[0]);
-=======
       if (dataArray[name[0]].key.length !== 0 && !this.checkboxFlags[name[0]]) {
         dataArray[name[0]].checked = "true";
       }
->>>>>>> 183cfbd4173f16c62549cb82810803ad5ca6c12c
       if (title === "Params" && dataArray[name[0]].key.length === 0) {
         this.handleDelete(dataArray, name[0], title);
       }
@@ -69,20 +65,7 @@ class GenericTable extends Component {
     }
   };
 
-<<<<<<< HEAD
-  handleAdd(dataArray, title, key, index) {
-    index = parseInt(index) + 1;
-    console.log(index);
-    console.log(dataArray[index]);
-    console.log(dataArray);
-    if (key.length === 1 && !dataArray[index]) {
-      const len = dataArray.length;
-      dataArray[len.toString()] = {
-        key: "",
-        value: "",
-        description: ""
-=======
-  handleBulkChange = (e) => {
+  handleBulkChange = e => {
     const { title } = this.props;
     let dataArray = [];
     this.textAreaValue = e.currentTarget.value;
@@ -121,7 +104,7 @@ class GenericTable extends Component {
       checked: "notApplicable",
       key: "",
       value: "",
-      description: "",
+      description: ""
     };
     if (title === "Params")
       this.props.props_from_parent("originalParams", dataArray);
@@ -137,17 +120,12 @@ class GenericTable extends Component {
         checked: "notApplicable",
         key: "",
         value: "",
-        description: "",
->>>>>>> 183cfbd4173f16c62549cb82810803ad5ca6c12c
+        description: ""
       };
       if (title === "Headers")
         this.props.props_from_parent("originalHeaders", dataArray);
       if (title === "Params")
-<<<<<<< HEAD
-        this.props.props_from_parent("originalParams", dataArray);
-=======
         this.props.props_from_parent("handleAddParam", dataArray);
->>>>>>> 183cfbd4173f16c62549cb82810803ad5ca6c12c
     }
   }
 
@@ -175,7 +153,7 @@ class GenericTable extends Component {
     if (this.state.bulkEdit) {
       this.setState({
         bulkEdit: false,
-        editButtonName: "Bulk Edit",
+        editButtonName: "Bulk Edit"
       });
     } else {
       if (!this.helperflag && this.textAreaValueFlag) {
@@ -185,7 +163,7 @@ class GenericTable extends Component {
       }
       this.setState({
         bulkEdit: true,
-        editButtonName: "Key-Value Edit",
+        editButtonName: "Key-Value Edit"
       });
     }
   }
@@ -217,80 +195,6 @@ class GenericTable extends Component {
 
     return (
       <div className="generic-table-container">
-<<<<<<< HEAD
-        <h1>{this.props.title}</h1>
-
-        <div className="generic-table-title-container">{title}</div>
-        <table className="table table-bordered" bordered>
-          <thead>
-            <tr>
-              <th className="custom-td" id="generic-table-key-cell">
-                KEY
-              </th>
-              <th className="custom-td">VALUE</th>
-              <th className="custom-td">DESCRIPTION</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {dataArray.map((e, index) => (
-              <tr key={index} id="generic-table-row">
-                <td className="custom-td" id="generic-table-key-cell">
-                  <input
-                    name={index + ".key"}
-                    value={dataArray[index].key}
-                    onChange={this.handleChange}
-                    type={"text"}
-                    className="form-control"
-                    style={{ border: "none" }}
-                  />
-                </td>
-                <td className="custom-td">
-                  <input
-                    name={index + ".value"}
-                    value={dataArray[index].value}
-                    onChange={this.handleChange}
-                    type={"text"}
-                    className="form-control"
-                    style={{ border: "none" }}
-                  />
-                </td>
-                <td className="custom-td" id="generic-table-description-cell">
-                  <input
-                    name={index + ".description"}
-                    value={dataArray[index].description}
-                    onChange={this.handleChange}
-                    type={"text"}
-                    style={{ border: "none" }}
-                    className="form-control"
-                  />
-                  <button
-                    type="button"
-                    className="btn cross-button"
-                    onClick={() => this.handleDelete(dataArray, index, title)}
-                  >
-                    x
-                  </button>
-                </td>
-              </tr>
-            ))}
-            {/* <tr>
-              <td className="custom-td"> </td>
-              <td className="custom-td">
-                {" "}
-                <button
-                  type="button"
-                  className="btn btn-link btn-sm btn-block"
-                  onClick={() => this.handleAdd(dataArray, title)}
-                >
-                  {"+ Add" + title}
-                </button>
-              </td>
-              <td className="custom-td"> </td>
-            </tr> */}
-          </tbody>
-        </table>
-=======
         <div className="generic-table-title-container">
           {title}
           <button
@@ -393,7 +297,6 @@ class GenericTable extends Component {
             />
           </div>
         )}
->>>>>>> 183cfbd4173f16c62549cb82810803ad5ca6c12c
       </div>
     );
   }

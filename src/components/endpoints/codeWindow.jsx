@@ -84,22 +84,9 @@ class CodeWindow extends Component {
           </Modal.Header>
 
           <Modal.Body>
-<<<<<<< HEAD
-            {/* <ScrollArea
-              speed={0.8}
-              className="area"
-              contentClassName="content"
-              horizontal={false}
-            >
-              {() => <div>Some long content. </div>} */}
-            <Container className="d-flex flex-column">
-              <Row>
-                <Col id="codes" sm={3}>
-=======
             <Container className="d-flex flex-column">
               <Row>
                 <Col id="code-window-sidebar" sm={3}>
->>>>>>> 183cfbd4173f16c62549cb82810803ad5ca6c12c
                   <ListGroup>
                     {Object.keys(this.languages).map(key => (
                       <ListGroup.Item

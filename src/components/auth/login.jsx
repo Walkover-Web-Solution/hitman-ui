@@ -19,11 +19,7 @@ class Login extends Component {
   };
 
   render() {
-<<<<<<< HEAD
-    if (auth.getCurrentUser()) return <Redirect to="/dashboard" />;
-=======
     if (auth.getCurrentUser()) return <Redirect to="/dashboard/endpoint/new" />;
->>>>>>> 183cfbd4173f16c62549cb82810803ad5ca6c12c
     const redirectionUrl = `http://localhost:3000/login`;
     const socketLoginUrl = `https://viasocket.com/login?token_required=true&redirect_uri=${redirectionUrl}`;
     const h1style = {

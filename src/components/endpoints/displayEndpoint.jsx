@@ -15,14 +15,14 @@ import BodyContainer from "./bodyContainer";
 
 var URI = require("urijs");
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     groups: state.groups,
     versions: state.versions,
     endpoints: state.endpoints,
     environment: state.environment.environments[
       state.environment.currentEnvironmentId
-    ] || { id: null, name: "No Environment" },
+    ] || { id: null, name: "No Environment" }
   };
 };
 
@@ -30,8 +30,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     addEndpoint: (newEndpoint, groupId) =>
       dispatch(addEndpoint(ownProps.history, newEndpoint, groupId)),
-    updateEndpoint: (editedEndpoint) =>
-      dispatch(updateEndpoint(editedEndpoint)),
+    updateEndpoint: editedEndpoint => dispatch(updateEndpoint(editedEndpoint))
   };
 };
 
@@ -46,7 +45,7 @@ class DisplayEndpoint extends Component {
       method: "GET",
       body: { type: "raw", value: "" },
       uri: "",
-      updatedUri: "",
+      updatedUri: ""
     },
     methodList: ["GET", "POST", "PUT", "DELETE"],
     environment: {},
@@ -62,11 +61,11 @@ class DisplayEndpoint extends Component {
     selectedBodyType: "",
     showDescriptionFlag: false,
     showAddDescriptionFlag: false,
-    oldDescription: "",
+    oldDescription: ""
   };
 
   customState = {
-    BASE_URL: "",
+    BASE_URL: ""
   };
 
   async componentDidMount() {
@@ -90,8 +89,8 @@ class DisplayEndpoint extends Component {
       checked: "notApplicable",
       key: "",
       value: "",
-      description: "",
-    },
+      description: ""
+    }
   ];
 
   fetchEndpoint(flag) {
@@ -113,21 +112,21 @@ class DisplayEndpoint extends Component {
           checked: "notApplicable",
           key: "",
           value: "",
-          description: "",
-        },
+          description: ""
+        }
       ];
       originalHeaders = [
         {
           checked: "notApplicable",
           key: "",
           value: "",
-          description: "",
-        },
+          description: ""
+        }
       ];
 
       this.setState({
         originalParams,
-        originalHeaders,
+        originalHeaders
       });
     } else if (
       Object.keys(groups).length !== 0 &&
@@ -155,7 +154,7 @@ class DisplayEndpoint extends Component {
           uri: endpoint.uri,
           updatedUri: endpoint.uri,
           name: endpoint.name,
-          body: endpoint.body,
+          body: endpoint.body
         },
         originalParams,
         originalHeaders,
@@ -164,11 +163,11 @@ class DisplayEndpoint extends Component {
         endpoint_description: endpoint.description,
         oldDescription: endpoint.description,
         showDescriptionFlag: false,
-        title: "update endpoint",
+        title: "update endpoint"
       });
     }
   }
-  handleChange = (e) => {
+  handleChange = e => {
     let data = { ...this.state.data };
     data[e.currentTarget.name] = e.currentTarget.value;
     data.uri = e.currentTarget.value;
@@ -212,7 +211,7 @@ class DisplayEndpoint extends Component {
           checked: this.state.originalParams[i].checked,
           key: this.state.originalParams[i].key,
           value: this.state.originalParams[i].value,
-          description: this.state.originalParams[i].description,
+          description: this.state.originalParams[i].description
         });
       }
     }
@@ -221,7 +220,7 @@ class DisplayEndpoint extends Component {
         checked: "true",
         key: keys[i],
         value: values[i],
-        description: description[i],
+        description: description[i]
       });
     }
     originalParams.push(this.structueParamsHeaders[0]);
@@ -294,7 +293,7 @@ class DisplayEndpoint extends Component {
     if (error.response) {
       let response = {
         status: error.response.status,
-        data: error.response.data,
+        data: error.response.data
       };
       this.setState({ response, flagResponse: true });
     } else {
@@ -333,7 +332,7 @@ class DisplayEndpoint extends Component {
     api = this.replaceVariables(api);
     let body = this.parseBody(this.state.data);
     let headerJson = {};
-    Object.keys(headersData).forEach((header) => {
+    Object.keys(headersData).forEach(header => {
       headerJson[headersData[header].key] = headersData[header].value;
     });
 
@@ -354,7 +353,7 @@ class DisplayEndpoint extends Component {
         body: body,
         headers: headersData,
         params: updatedParams,
-        BASE_URL: this.customState.BASE_URL,
+        BASE_URL: this.customState.BASE_URL
       };
       // if (endpoint.name === "" || endpoint.uri === "")
       if (endpoint.name === "") toast.error("Please enter Endpoint name");
@@ -365,7 +364,7 @@ class DisplayEndpoint extends Component {
         this.props.updateEndpoint({
           ...endpoint,
           id: this.state.endpoint.id,
-          groupId: groupId || this.state.groupId,
+          groupId: groupId || this.state.groupId
         });
       }
     }
@@ -374,7 +373,7 @@ class DisplayEndpoint extends Component {
   makeBody(type, value) {
     let body = {
       type,
-      value,
+      value
     };
     return body;
   }
@@ -407,7 +406,7 @@ class DisplayEndpoint extends Component {
         updatedHeaders[originalHeaders[i].key] = {
           checked: originalHeaders[i].checked,
           value: originalHeaders[i].value,
-          description: originalHeaders[i].description,
+          description: originalHeaders[i].description
         };
       }
     }
@@ -415,7 +414,7 @@ class DisplayEndpoint extends Component {
     endpoint.headers = { ...updatedHeaders };
     this.setState({
       originalHeaders: updatedHeadersArray,
-      endpoint,
+      endpoint
     });
     return updatedHeaders;
   }
@@ -428,15 +427,9 @@ class DisplayEndpoint extends Component {
   }
 
   propsFromChild(name, value) {
-<<<<<<< HEAD
-    console.log("this.originalParamst", this.state.originalParams);
-    console.log("this.originalHeaders", this.state.originalHeaders);
-
-=======
     if (name === "selectedBodyType") {
       this.setState({ selectedBodyType: value });
     }
->>>>>>> 183cfbd4173f16c62549cb82810803ad5ca6c12c
     if (name === "originalParams") {
       this.handleUpdateUri(value);
       this.setState({ originalParams: value });
@@ -495,7 +488,7 @@ class DisplayEndpoint extends Component {
         updatedParams[originalParams[i].key] = {
           checked: originalParams[i].checked,
           value: originalParams[i].value,
-          description: originalParams[i].description,
+          description: originalParams[i].description
         };
       }
     }
@@ -503,7 +496,7 @@ class DisplayEndpoint extends Component {
     endpoint.params = { ...updatedParams };
     this.setState({
       originalParams,
-      endpoint,
+      endpoint
     });
     return updatedParams;
   }
@@ -516,56 +509,37 @@ class DisplayEndpoint extends Component {
         checked: params[Object.keys(params)[i]].checked,
         key: Object.keys(params)[i],
         value: params[Object.keys(params)[i]].value,
-        description: params[Object.keys(params)[i]].description,
+        description: params[Object.keys(params)[i]].description
       };
     }
     originalParams[i] = {
-<<<<<<< HEAD
+      checked: "notApplicable",
       key: "",
       value: "",
       description: ""
     };
-=======
-      checked: "notApplicable",
-      key: "",
-      value: "",
-      description: "",
-    };
 
->>>>>>> 183cfbd4173f16c62549cb82810803ad5ca6c12c
     return originalParams;
   }
 
   fetchoriginalHeaders(headers) {
     let originalHeaders = [];
-<<<<<<< HEAD
-    Object.keys(headers).forEach(h => {
-      originalHeaders.push(headers[h]);
-    });
-    let length = originalHeaders.length;
-    originalHeaders[length] = {
-      key: "",
-      value: "",
-      description: ""
-    };
-=======
     let i = 0;
     for (i = 0; i < Object.keys(headers).length; i++) {
       originalHeaders[i] = {
         checked: headers[Object.keys(headers)[i]].checked,
         key: Object.keys(headers)[i],
         value: headers[Object.keys(headers)[i]].value,
-        description: headers[Object.keys(headers)[i]].description,
+        description: headers[Object.keys(headers)[i]].description
       };
     }
     originalHeaders[i] = {
       checked: "notApplicable",
       key: "",
       value: "",
-      description: "",
+      description: ""
     };
     return originalHeaders;
->>>>>>> 183cfbd4173f16c62549cb82810803ad5ca6c12c
   }
 
   makeHeaders(headers) {
@@ -575,7 +549,7 @@ class DisplayEndpoint extends Component {
         processedHeaders[i] = {
           name: headers[Object.keys(headers)[i]].key,
           value: headers[Object.keys(headers)[i]].value,
-          comment: headers[Object.keys(headers)[i]].description,
+          comment: headers[Object.keys(headers)[i]].description
         };
       }
     }
@@ -604,7 +578,7 @@ class DisplayEndpoint extends Component {
         processedHeaders.push({
           name: headers[Object.keys(headers)[i]].key,
           value: headers[Object.keys(headers)[i]].value,
-          comment: headers[Object.keys(headers)[i]].description,
+          comment: headers[Object.keys(headers)[i]].description
         });
       }
     }
@@ -618,7 +592,7 @@ class DisplayEndpoint extends Component {
         processedParams.push({
           name: params[Object.keys(params)[i]].key,
           value: params[Object.keys(params)[i]].value,
-          comment: params[Object.keys(params)[i]].description,
+          comment: params[Object.keys(params)[i]].description
         });
       }
     }
@@ -629,7 +603,7 @@ class DisplayEndpoint extends Component {
     let postData = {
       mimeType: "application/json",
       text: '{"hello":"world"}',
-      comment: "Sample json body",
+      comment: "Sample json body"
     };
     return postData;
   }
@@ -645,7 +619,7 @@ class DisplayEndpoint extends Component {
       cookies: [],
       headers: this.makeHeaders(originalHeaders),
       postData: this.makePostData(body),
-      queryString: this.makeParams(originalParams),
+      queryString: this.makeParams(originalParams)
     };
     if (!harObject.url.split(":")[1] || harObject.url.split(":")[0] === "") {
       harObject.url = "https://";
@@ -656,7 +630,7 @@ class DisplayEndpoint extends Component {
   openCodeWindow(harObject) {
     this.setState({
       showCodeWindow: true,
-      harObject,
+      harObject
     });
   }
 
@@ -705,11 +679,11 @@ class DisplayEndpoint extends Component {
     this.setState({
       endpoint,
       showDescriptionFlag: false,
-      oldDescription: value,
+      oldDescription: value
     });
   }
 
-  handleChangeDescription = (e) => {
+  handleChangeDescription = e => {
     let endpoint = { ...this.state.endpoint };
     endpoint[e.currentTarget.name] = e.currentTarget.value;
     this.setState({ endpoint });
@@ -745,7 +719,7 @@ class DisplayEndpoint extends Component {
           method: "GET",
           body: JSON.stringify({}, null, 4),
           uri: "",
-          updatedUri: "",
+          updatedUri: ""
         },
         startTime: "",
         timeElapsed: "",
@@ -754,22 +728,6 @@ class DisplayEndpoint extends Component {
         groupId: this.props.location.groupId,
         title: "Add New Endpoint",
         flagResponse: false,
-<<<<<<< HEAD
-        originalHeaders: [
-          {
-            key: "",
-            value: "",
-            description: ""
-          }
-        ],
-        originalParams: [
-          {
-            key: "",
-            value: "",
-            description: ""
-          }
-        ]
-=======
         showDescriptionFlag: false,
 
         originalHeaders: [
@@ -777,18 +735,17 @@ class DisplayEndpoint extends Component {
             checked: "notApplicable",
             key: "",
             value: "",
-            description: "",
-          },
+            description: ""
+          }
         ],
         originalParams: [
           {
             checked: "notApplicable",
             key: "",
             value: "",
-            description: "",
-          },
-        ],
->>>>>>> 183cfbd4173f16c62549cb82810803ad5ca6c12c
+            description: ""
+          }
+        ]
       });
       this.props.history.push({ groups: null });
     }
@@ -806,18 +763,15 @@ class DisplayEndpoint extends Component {
       //To fetch originalHeaders from Headers
       const originalHeaders = this.fetchoriginalHeaders(endpoint.headers);
 
-<<<<<<< HEAD
-=======
       //To fetch body from endpoint
 
->>>>>>> 183cfbd4173f16c62549cb82810803ad5ca6c12c
       this.setState({
         data: {
           method: endpoint.requestType,
           uri: endpoint.uri,
           updatedUri: endpoint.uri,
           name: endpoint.name,
-          body: endpoint.body,
+          body: endpoint.body
           // JSON.stringify(endpoint.body, null, 4)
         },
         title: "update endpoint",
@@ -828,7 +782,7 @@ class DisplayEndpoint extends Component {
         selectedBodyType: endpoint.body.type,
         endpoint,
         flagResponse: false,
-        oldDescription: endpoint.description,
+        oldDescription: endpoint.description
       });
       this.props.history.push({ endpoint: null });
     }
@@ -878,7 +832,7 @@ class DisplayEndpoint extends Component {
             style={{
               padding: "5px 0px 0px 20px",
               fontSize: "15px",
-              color: "tomato",
+              color: "tomato"
             }}
             onClick={() => this.handleDescription()}
           >
@@ -949,7 +903,7 @@ class DisplayEndpoint extends Component {
                 {this.state.data.method}
               </button>
               <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                {this.state.methodList.map((methodName) => (
+                {this.state.methodList.map(methodName => (
                   <button
                     className="btn"
                     onClick={() => this.setMethod(methodName)}
@@ -1007,7 +961,7 @@ class DisplayEndpoint extends Component {
             style={{
               float: "right",
               color: "#f28100",
-              fontFamily: "Times New Roman",
+              fontFamily: "Times New Roman"
             }}
           >
             Code
