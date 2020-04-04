@@ -30,7 +30,7 @@ function closeTab(props, index) {
 
         props.set_tabs(tabs, tabs.length - 1);
         props.history.push({
-          pathname: `/dashboard/endpoint/new`,
+          pathname: `/dashboard/endpoint/new/${newTabId}`,
         });
       }
     }
@@ -60,7 +60,7 @@ function closeAllTabs(props) {
   const id = shortId.generate();
   const tabs = [{ id, type: "endpoint", isSaved: false }];
   props.set_tabs(tabs, 0);
-  props.history.push({ pathname: "/dashboard/endpoint/new" });
+  props.history.push({ pathname: `/dashboard/endpoint/new/${id}` });
 }
 
 function selectTab(props, tab, index) {

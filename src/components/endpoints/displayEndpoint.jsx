@@ -59,7 +59,7 @@ class DisplayEndpoint extends Component {
     flagResponse: false,
     originalHeaders: [],
     originalParams: [],
-    selectedBodyType: "",
+    // selectedBodyType: "",
     showDescriptionFlag: false,
     showAddDescriptionFlag: false,
     oldDescription: "",
@@ -276,17 +276,17 @@ class DisplayEndpoint extends Component {
   parseBody(rawBody) {
     console.log(rawBody);
     let body = {};
-    let { method } = this.state.data;
-    console.log("method", method);
-    if (method === "POST" || method === "PUT") {
-      try {
-        body = JSON.parse(rawBody);
-        return body;
-      } catch (error) {
-        toast.error("Invalid Body");
-        return body;
-      }
+    // let { method } = this.state.data;
+    // console.log("method", method);
+    // if (method === "POST" || method === "PUT") {
+    try {
+      body = JSON.parse(rawBody);
+      return body;
+    } catch (error) {
+      toast.error("Invalid Body");
+      return body;
     }
+    // }
     return body;
   }
 
@@ -331,20 +331,23 @@ class DisplayEndpoint extends Component {
     const BASE_URL = this.customState.BASE_URL;
     let api = BASE_URL + this.uri.current.value;
     api = this.replaceVariables(api);
-    let body = this.parseBody(this.state.data);
     let headerJson = {};
     Object.keys(headersData).forEach((header) => {
       headerJson[headersData[header].key] = headersData[header].value;
     });
+    let { body, headers } = this.formatBody(this.state.data.body, headerJson);
 
-    this.handleApiCall(api, body, headerJson);
+    this.handleApiCall(api, body, headers);
   };
 
   handleSave = async (groupId, EndpointName) => {
     if (!(this.state.groupId || groupId)) {
       this.openEndpointFormModal();
     } else {
-      let body = this.doSubmitBody();
+      let body = this.state.data.body;
+      if (this.state.data.body.type === "raw") {
+        body.value = this.parseBody(body.value);
+      }
       const headersData = this.doSubmitHeader();
       const updatedParams = this.doSubmitParam();
       const endpoint = {
@@ -371,29 +374,29 @@ class DisplayEndpoint extends Component {
     }
   };
 
-  makeBody(type, value) {
-    let body = {
-      type,
-      value,
-    };
-    return body;
-  }
+  // makeBody(type, value) {
+  //   let body = {
+  //     type,
+  //     value,
+  //   };
+  //   return body;
+  // }
 
-  doSubmitBody() {
-    console.log("this.state.rawBody", this.state.rawBody);
-    let body = {};
-    const selectedBodyType = this.state.selectedBodyType;
-    if (this.state.selectedBodyType === "urlencodedBody") {
-      body = this.state.urlencodedBody;
-    }
-    if (this.state.selectedBodyType === "rawBody") {
-      body = this.parseBody(this.state.rawBody);
-      console.log("body", body);
-    }
-    body = this.makeBody(this.state.selectedBodyType, body);
-    console.log("body", body);
-    return body;
-  }
+  // doSubmitBody() {
+  //   console.log("this.state.rawBody", this.state.rawBody);
+  //   let body = {};
+  //   const selectedBodyType = this.state.selectedBodyType;
+  //   if (this.state.selectedBodyType === "urlencodedBody") {
+  //     body = this.state.urlencodedBody;
+  //   }
+  //   if (this.state.selectedBodyType === "rawBody") {
+  //     body = this.parseBody(this.state.rawBody);
+  //     console.log("body", body);
+  //   }
+  //   body = this.makeBody(this.state.selectedBodyType, body);
+  //   console.log("body", body);
+  //   return body;
+  // }
 
   doSubmitHeader() {
     let originalHeaders = [...this.state.originalHeaders];
@@ -428,9 +431,9 @@ class DisplayEndpoint extends Component {
   }
 
   propsFromChild(name, value) {
-    if (name === "selectedBodyType") {
-      this.setState({ selectedBodyType: value });
-    }
+    // if (name === "selectedBodyType") {
+    //   this.setState({ selectedBodyType: value });
+    // }
     if (name === "originalParams") {
       this.handleUpdateUri(value);
       this.setState({ originalParams: value });
@@ -442,12 +445,12 @@ class DisplayEndpoint extends Component {
     if (name === "originalHeaders") {
       this.setState({ originalHeaders: value });
     }
-    if (name === "rawBody") {
-      this.setState({ rawBody: value });
-    }
-    if (name === "x-www-form-urlencoded") {
-      this.setState({ urlencodedBody: value });
-    }
+    // if (name === "rawBody") {
+    //   this.setState({ rawBody: value });
+    // }
+    // if (name === "x-www-form-urlencoded") {
+    //   this.setState({ urlencodedBody: value });
+    // }
   }
 
   handleUpdateUri(originalParams) {
@@ -619,7 +622,7 @@ class DisplayEndpoint extends Component {
       httpVersion: "HTTP/1.1",
       cookies: [],
       headers: this.makeHeaders(originalHeaders),
-      postData: this.makePostData(body),
+      postData: this.makePostData(body.value),
       queryString: this.makeParams(originalParams),
     };
     if (!harObject.url.split(":")[1] || harObject.url.split(":")[0] === "") {
@@ -695,6 +698,20 @@ class DisplayEndpoint extends Component {
     this.setState({ showAddDescriptionFlag });
   }
 
+  formatBody(body, headers) {
+    let finalBodyValue = null;
+    switch (body.type) {
+      case "raw":
+        finalBodyValue = this.parseBody(body.value);
+        return { body: finalBodyValue, headers };
+      case "formData":
+        headers["Content-type"] = "multipart/form-data";
+        return { body: finalBodyValue, headers };
+      case "urlEndcoded":
+        return { body: finalBodyValue, headers };
+    }
+  }
+
   render() {
     console.log(this.state.data);
     if (
@@ -718,7 +735,7 @@ class DisplayEndpoint extends Component {
         data: {
           name: "",
           method: "GET",
-          body: JSON.stringify({}, null, 4),
+          body: { type: "raw", value: null },
           uri: "",
           updatedUri: "",
         },
@@ -780,7 +797,7 @@ class DisplayEndpoint extends Component {
         groupId: this.props.location.endpoint.groupId,
         originalParams,
         originalHeaders,
-        selectedBodyType: endpoint.body.type,
+        // selectedBodyType: endpoint.body.type,
         endpoint,
         flagResponse: false,
         oldDescription: endpoint.description,

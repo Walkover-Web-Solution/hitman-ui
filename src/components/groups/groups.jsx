@@ -11,14 +11,14 @@ import PageForm from "../pages/pageForm";
 import { isDashboardRoute } from "../common/utility";
 import groupsService from "./groupsService";
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return { groups: state.groups };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    deleteGroup: group => dispatch(deleteGroup(group)),
-    duplicateGroup: group => dispatch(duplicateGroup(group))
+    deleteGroup: (group) => dispatch(deleteGroup(group)),
+    duplicateGroup: (group) => dispatch(duplicateGroup(group)),
   };
 };
 
@@ -28,8 +28,8 @@ class Groups extends Component {
     showGroupForm: {
       addPage: false,
       edit: false,
-      share: false
-    }
+      share: false,
+    },
   };
 
   onDrop(destinationGroupId) {
@@ -40,7 +40,7 @@ class Groups extends Component {
     this.props.history.push({
       pathname: `/dashboard/${collectionId}/versions/${versionId}/groups/${groupId}/pages/new`,
       versionId: versionId,
-      groupId: groupId
+      groupId: groupId,
     });
   }
 
@@ -48,14 +48,14 @@ class Groups extends Component {
     const newTabId = shortId.generate();
     const tabs = [
       ...this.props.tabs,
-      { id: newTabId, type: "endpoint", isSaved: false }
+      { id: newTabId, type: "endpoint", isSaved: false },
     ];
 
     this.props.set_tabs(tabs, tabs.length - 1);
     this.props.history.push({
-      pathname: `/dashboard/endpoint/new`,
+      pathname: `/dashboard/endpoint/new/${newTabId}`,
       groupId: groupId,
-      title: "Add New Endpoint"
+      title: "Add New Endpoint",
     });
   }
 
@@ -64,14 +64,14 @@ class Groups extends Component {
     this.setState({
       showGroupForm,
       groupFormName: "Share Group",
-      selectedGroup: group
+      selectedGroup: group,
     });
   }
 
   handleDuplicate(group) {
     this.props.duplicateGroup(group);
     this.props.history.push({
-      pathname: "/dashboard"
+      pathname: "/dashboard",
     });
   }
 
@@ -129,7 +129,7 @@ class Groups extends Component {
       groupFormName: "Add new Group Page",
       selectedVersion,
       selectedGroup,
-      selectedCollection
+      selectedCollection,
     });
   }
 
@@ -137,7 +137,7 @@ class Groups extends Component {
     let showGroupForm = { edit: true };
     this.setState({
       showGroupForm,
-      selectedGroup
+      selectedGroup,
     });
   }
 
@@ -145,8 +145,8 @@ class Groups extends Component {
     this.setState({
       showDeleteModal: true,
       selectedGroup: {
-        ...this.props.groups[groupId]
-      }
+        ...this.props.groups[groupId],
+      },
     });
   }
 
@@ -173,15 +173,15 @@ class Groups extends Component {
         </div>
         {Object.keys(this.props.groups)
           .filter(
-            gId => this.props.groups[gId].versionId === this.props.version_id
+            (gId) => this.props.groups[gId].versionId === this.props.version_id
           )
           .map((groupId, index) => (
             <Accordion
               key={groupId}
               id="child-accordion"
               // draggable
-              onDragOver={e => e.preventDefault()}
-              onDrop={e => this.onDrop(groupId)}
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={(e) => this.onDrop(groupId)}
             >
               <Card>
                 <Card.Header>
