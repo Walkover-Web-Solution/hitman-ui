@@ -620,7 +620,21 @@ class DisplayEndpoint extends Component {
     let data = { ...this.state.data };
     data.body = { type: bodyType, value: body };
     if (bodyType === "urlEncoded") {
-      let originalHeaders = this.state.originalHeaders;
+      this.setHeaders();
+    }
+    this.setState({ data });
+  }
+
+  setHeaders() {
+    this.contentTypeFlag = false;
+    let originalHeaders = this.state.originalHeaders;
+    for (let i = 0; i < originalHeaders.length; i++) {
+      if (originalHeaders[i].key === "Content-type") {
+        this.contentTypeFlag = true;
+        break;
+      }
+    }
+    if (this.contentTypeFlag === false) {
       let length = originalHeaders.length;
       originalHeaders[length - 1] = {
         checked: "true",
@@ -631,8 +645,8 @@ class DisplayEndpoint extends Component {
       originalHeaders.push(this.structueParamsHeaders[0]);
       this.setState({ originalHeaders });
     }
-    this.setState({ data });
   }
+
   handleDescription() {
     const showDescriptionFlag = true;
     this.setState({ showDescriptionFlag });
