@@ -15,14 +15,14 @@ import BodyContainer from "./bodyContainer";
 
 var URI = require("urijs");
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     groups: state.groups,
     versions: state.versions,
     endpoints: state.endpoints,
     environment: state.environment.environments[
       state.environment.currentEnvironmentId
-    ] || { id: null, name: "No Environment" },
+    ] || { id: null, name: "No Environment" }
   };
 };
 
@@ -30,8 +30,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     addEndpoint: (newEndpoint, groupId) =>
       dispatch(addEndpoint(ownProps.history, newEndpoint, groupId)),
-    updateEndpoint: (editedEndpoint) =>
-      dispatch(updateEndpoint(editedEndpoint)),
+    updateEndpoint: editedEndpoint => dispatch(updateEndpoint(editedEndpoint))
   };
 };
 
@@ -46,7 +45,7 @@ class DisplayEndpoint extends Component {
       method: "GET",
       body: { type: "raw", value: "" },
       uri: "",
-      updatedUri: "",
+      updatedUri: ""
     },
     methodList: ["GET", "POST", "PUT", "DELETE"],
     environment: {},
@@ -62,11 +61,11 @@ class DisplayEndpoint extends Component {
     selectedBodyType: "",
     showDescriptionFlag: false,
     showAddDescriptionFlag: false,
-    oldDescription: "",
+    oldDescription: ""
   };
 
   customState = {
-    BASE_URL: "",
+    BASE_URL: ""
   };
 
   async componentDidMount() {
@@ -90,8 +89,8 @@ class DisplayEndpoint extends Component {
       checked: "notApplicable",
       key: "",
       value: "",
-      description: "",
-    },
+      description: ""
+    }
   ];
 
   fetchEndpoint(flag) {
@@ -113,21 +112,21 @@ class DisplayEndpoint extends Component {
           checked: "notApplicable",
           key: "",
           value: "",
-          description: "",
-        },
+          description: ""
+        }
       ];
       originalHeaders = [
         {
           checked: "notApplicable",
           key: "",
           value: "",
-          description: "",
-        },
+          description: ""
+        }
       ];
 
       this.setState({
         originalParams,
-        originalHeaders,
+        originalHeaders
       });
     } else if (
       Object.keys(groups).length !== 0 &&
@@ -155,7 +154,7 @@ class DisplayEndpoint extends Component {
           uri: endpoint.uri,
           updatedUri: endpoint.uri,
           name: endpoint.name,
-          body: endpoint.body,
+          body: endpoint.body
         },
         originalParams,
         originalHeaders,
@@ -164,11 +163,11 @@ class DisplayEndpoint extends Component {
         endpoint_description: endpoint.description,
         oldDescription: endpoint.description,
         showDescriptionFlag: false,
-        title: "update endpoint",
+        title: "update endpoint"
       });
     }
   }
-  handleChange = (e) => {
+  handleChange = e => {
     let data = { ...this.state.data };
     data[e.currentTarget.name] = e.currentTarget.value;
     data.uri = e.currentTarget.value;
@@ -212,7 +211,7 @@ class DisplayEndpoint extends Component {
           checked: this.state.originalParams[i].checked,
           key: this.state.originalParams[i].key,
           value: this.state.originalParams[i].value,
-          description: this.state.originalParams[i].description,
+          description: this.state.originalParams[i].description
         });
       }
     }
@@ -221,7 +220,7 @@ class DisplayEndpoint extends Component {
         checked: "true",
         key: keys[i],
         value: values[i],
-        description: description[i],
+        description: description[i]
       });
     }
     originalParams.push(this.structueParamsHeaders[0]);
@@ -294,7 +293,7 @@ class DisplayEndpoint extends Component {
     if (error.response) {
       let response = {
         status: error.response.status,
-        data: error.response.data,
+        data: error.response.data
       };
       this.setState({ response, flagResponse: true });
     } else {
@@ -333,7 +332,7 @@ class DisplayEndpoint extends Component {
     api = this.replaceVariables(api);
     let body = this.parseBody(this.state.data);
     let headerJson = {};
-    Object.keys(headersData).forEach((header) => {
+    Object.keys(headersData).forEach(header => {
       headerJson[headersData[header].key] = headersData[header].value;
     });
 
@@ -354,7 +353,7 @@ class DisplayEndpoint extends Component {
         body: body,
         headers: headersData,
         params: updatedParams,
-        BASE_URL: this.customState.BASE_URL,
+        BASE_URL: this.customState.BASE_URL
       };
       // if (endpoint.name === "" || endpoint.uri === "")
       if (endpoint.name === "") toast.error("Please enter Endpoint name");
@@ -365,7 +364,7 @@ class DisplayEndpoint extends Component {
         this.props.updateEndpoint({
           ...endpoint,
           id: this.state.endpoint.id,
-          groupId: groupId || this.state.groupId,
+          groupId: groupId || this.state.groupId
         });
       }
     }
@@ -374,7 +373,7 @@ class DisplayEndpoint extends Component {
   makeBody(type, value) {
     let body = {
       type,
-      value,
+      value
     };
     return body;
   }
@@ -407,7 +406,7 @@ class DisplayEndpoint extends Component {
         updatedHeaders[originalHeaders[i].key] = {
           checked: originalHeaders[i].checked,
           value: originalHeaders[i].value,
-          description: originalHeaders[i].description,
+          description: originalHeaders[i].description
         };
       }
     }
@@ -415,7 +414,7 @@ class DisplayEndpoint extends Component {
     endpoint.headers = { ...updatedHeaders };
     this.setState({
       originalHeaders: updatedHeadersArray,
-      endpoint,
+      endpoint
     });
     return updatedHeaders;
   }
@@ -489,7 +488,7 @@ class DisplayEndpoint extends Component {
         updatedParams[originalParams[i].key] = {
           checked: originalParams[i].checked,
           value: originalParams[i].value,
-          description: originalParams[i].description,
+          description: originalParams[i].description
         };
       }
     }
@@ -497,7 +496,7 @@ class DisplayEndpoint extends Component {
     endpoint.params = { ...updatedParams };
     this.setState({
       originalParams,
-      endpoint,
+      endpoint
     });
     return updatedParams;
   }
@@ -510,14 +509,14 @@ class DisplayEndpoint extends Component {
         checked: params[Object.keys(params)[i]].checked,
         key: Object.keys(params)[i],
         value: params[Object.keys(params)[i]].value,
-        description: params[Object.keys(params)[i]].description,
+        description: params[Object.keys(params)[i]].description
       };
     }
     originalParams[i] = {
       checked: "notApplicable",
       key: "",
       value: "",
-      description: "",
+      description: ""
     };
 
     return originalParams;
@@ -531,14 +530,14 @@ class DisplayEndpoint extends Component {
         checked: headers[Object.keys(headers)[i]].checked,
         key: Object.keys(headers)[i],
         value: headers[Object.keys(headers)[i]].value,
-        description: headers[Object.keys(headers)[i]].description,
+        description: headers[Object.keys(headers)[i]].description
       };
     }
     originalHeaders[i] = {
       checked: "notApplicable",
       key: "",
       value: "",
-      description: "",
+      description: ""
     };
     return originalHeaders;
   }
@@ -550,7 +549,7 @@ class DisplayEndpoint extends Component {
         processedHeaders[i] = {
           name: headers[Object.keys(headers)[i]].key,
           value: headers[Object.keys(headers)[i]].value,
-          comment: headers[Object.keys(headers)[i]].description,
+          comment: headers[Object.keys(headers)[i]].description
         };
       }
     }
@@ -579,7 +578,7 @@ class DisplayEndpoint extends Component {
         processedHeaders.push({
           name: headers[Object.keys(headers)[i]].key,
           value: headers[Object.keys(headers)[i]].value,
-          comment: headers[Object.keys(headers)[i]].description,
+          comment: headers[Object.keys(headers)[i]].description
         });
       }
     }
@@ -593,7 +592,7 @@ class DisplayEndpoint extends Component {
         processedParams.push({
           name: params[Object.keys(params)[i]].key,
           value: params[Object.keys(params)[i]].value,
-          comment: params[Object.keys(params)[i]].description,
+          comment: params[Object.keys(params)[i]].description
         });
       }
     }
@@ -604,7 +603,7 @@ class DisplayEndpoint extends Component {
     let postData = {
       mimeType: "application/json",
       text: '{"hello":"world"}',
-      comment: "Sample json body",
+      comment: "Sample json body"
     };
     return postData;
   }
@@ -620,7 +619,7 @@ class DisplayEndpoint extends Component {
       cookies: [],
       headers: this.makeHeaders(originalHeaders),
       postData: this.makePostData(body),
-      queryString: this.makeParams(originalParams),
+      queryString: this.makeParams(originalParams)
     };
     if (!harObject.url.split(":")[1] || harObject.url.split(":")[0] === "") {
       harObject.url = "https://";
@@ -631,7 +630,7 @@ class DisplayEndpoint extends Component {
   openCodeWindow(harObject) {
     this.setState({
       showCodeWindow: true,
-      harObject,
+      harObject
     });
   }
 
@@ -659,14 +658,19 @@ class DisplayEndpoint extends Component {
   }
   handleDescription() {
     const showDescriptionFlag = true;
-    this.setState({ showDescriptionFlag });
+    let showAddDescriptionFlag = true;
+    this.setState({ showDescriptionFlag, showAddDescriptionFlag });
   }
 
   handleDescriptionCancel() {
     let endpoint = { ...this.state.endpoint };
     endpoint.description = this.state.oldDescription;
     const showDescriptionFlag = false;
-    this.setState({ showDescriptionFlag, endpoint });
+    this.setState({
+      showDescriptionFlag,
+      endpoint,
+      showAddDescriptionFlag: true
+    });
   }
 
   handleDescriptionSave(e) {
@@ -681,10 +685,11 @@ class DisplayEndpoint extends Component {
       endpoint,
       showDescriptionFlag: false,
       oldDescription: value,
+      showAddDescriptionFlag: true
     });
   }
 
-  handleChangeDescription = (e) => {
+  handleChangeDescription = e => {
     let endpoint = { ...this.state.endpoint };
     endpoint[e.currentTarget.name] = e.currentTarget.value;
     this.setState({ endpoint });
@@ -692,11 +697,10 @@ class DisplayEndpoint extends Component {
 
   showDescription() {
     let showAddDescriptionFlag = !this.state.showAddDescriptionFlag;
-    this.setState({ showAddDescriptionFlag });
+    this.setState({ showAddDescriptionFlag, showDescriptionFlag: false });
   }
 
   render() {
-    console.log(this.state.data);
     if (
       this.props.location.pathname.split("/")[3] !== "new" &&
       this.state.endpoint.id !== this.props.location.pathname.split("/")[3]
@@ -720,7 +724,7 @@ class DisplayEndpoint extends Component {
           method: "GET",
           body: JSON.stringify({}, null, 4),
           uri: "",
-          updatedUri: "",
+          updatedUri: ""
         },
         startTime: "",
         timeElapsed: "",
@@ -736,17 +740,17 @@ class DisplayEndpoint extends Component {
             checked: "notApplicable",
             key: "",
             value: "",
-            description: "",
-          },
+            description: ""
+          }
         ],
         originalParams: [
           {
             checked: "notApplicable",
             key: "",
             value: "",
-            description: "",
-          },
-        ],
+            description: ""
+          }
+        ]
       });
       this.props.history.push({ groups: null });
     }
@@ -772,7 +776,7 @@ class DisplayEndpoint extends Component {
           uri: endpoint.uri,
           updatedUri: endpoint.uri,
           name: endpoint.name,
-          body: endpoint.body,
+          body: endpoint.body
           // JSON.stringify(endpoint.body, null, 4)
         },
         title: "update endpoint",
@@ -783,7 +787,7 @@ class DisplayEndpoint extends Component {
         selectedBodyType: endpoint.body.type,
         endpoint,
         flagResponse: false,
-        oldDescription: endpoint.description,
+        oldDescription: endpoint.description
       });
       this.props.history.push({ endpoint: null });
     }
@@ -802,8 +806,7 @@ class DisplayEndpoint extends Component {
         <div className="endpoint-name-container">
           {this.state.showCodeWindow && this.showCodeWindow()}
 
-          {isDashboardRoute(this.props) &&
-          this.state.endpoint.description !== undefined ? (
+          {this.state.endpoint.description !== undefined ? (
             <i
               className={
                 this.state.showAddDescriptionFlag === true
@@ -825,45 +828,74 @@ class DisplayEndpoint extends Component {
             onChange={this.handleChange}
           />
         </div>
-        {this.state.showAddDescriptionFlag === true &&
-        isDashboardRoute(this.props) &&
-        (this.state.endpoint.description === null ||
-          this.state.endpoint.description === "") ? (
-          <Link
-            style={{
-              padding: "5px 0px 0px 20px",
-              fontSize: "15px",
-              color: "tomato",
-            }}
-            onClick={() => this.handleDescription()}
-          >
-            Add a Description
-          </Link>
+
+        {this.state.showAddDescriptionFlag &&
+        !this.state.showDescriptionFlag ? (
+          this.state.endpoint.description === "" &&
+          isDashboardRoute(this.props) ? (
+            <Link
+              style={{
+                padding: "5px 0px 0px 20px",
+                fontSize: "15px",
+                color: "tomato"
+              }}
+              onClick={() => this.handleDescription()}
+            >
+              Add a Description
+            </Link>
+          ) : (
+            <div>
+              <label style={{ padding: "5px 5px 0px 20px" }}>
+                {this.state.endpoint.description}
+              </label>
+              {isDashboardRoute(this.props) ? (
+                <button
+                  className="btn btn-default"
+                  onClick={() => this.handleDescription()}
+                >
+                  <i className="fas fa-edit"></i>
+                </button>
+              ) : null}
+            </div>
+          )
         ) : null}
 
         {this.state.showDescriptionFlag && isDashboardRoute(this.props) ? (
           <form onSubmit={this.handleDescriptionSave.bind(this)}>
-            <div class="form-group" style={{ padding: "5px 10px 5px 10px" }}>
+            <div
+              className="form-group"
+              style={{ padding: "5px 10px 5px 10px" }}
+            >
               <textarea
-                class="form-control"
+                className="form-control"
                 rows="3"
                 name="description"
+                placeholder="Make things easier for your teammates with a complete endpoint description"
                 value={this.state.endpoint.description}
                 onChange={this.handleChangeDescription}
               ></textarea>
               <div style={{ float: "right", margin: "5px" }}>
                 <button
-                  class="btn btn-primary"
+                  className="btn btn-primary"
                   type="cancel"
                   onClick={() => this.handleDescriptionCancel()}
-                  style={{ margin: "5px" }}
+                  style={{
+                    margin: "0px 5px 0px 0px",
+                    color: "tomato",
+                    background: "none",
+                    border: "none"
+                  }}
                 >
                   Cancel
                 </button>
                 <button
-                  class="btn btn-primary"
+                  className="btn btn-primary"
                   type="submit"
-                  style={{ margin: "5px" }}
+                  style={{
+                    margin: "0px 0px 0px 5px",
+                    background: "tomato",
+                    border: "none"
+                  }}
                 >
                   Save
                 </button>
@@ -872,29 +904,11 @@ class DisplayEndpoint extends Component {
           </form>
         ) : null}
 
-        {this.state.endpoint.description !== null &&
-        this.state.endpoint.description !== undefined &&
-        this.state.endpoint.description !== "" &&
-        this.state.showDescriptionFlag === false ? (
-          <div>
-            <label style={{ margin: "5px" }}>
-              {this.state.endpoint.description}
-            </label>
-            {isDashboardRoute(this.props) ? (
-              <button
-                className="btn btn-default"
-                onClick={() => this.handleDescription()}
-              >
-                <i className="fas fa-edit"></i>
-              </button>
-            ) : null}
-          </div>
-        ) : null}
         <div className="endpoint-url-container">
           <div className="input-group-prepend">
-            <div class="dropdown">
+            <div className="dropdown">
               <button
-                class="btn btn-secondary dropdown-toggle"
+                className="btn btn-secondary dropdown-toggle"
                 type="button"
                 id="dropdownMenuButton"
                 data-toggle="dropdown"
@@ -903,8 +917,11 @@ class DisplayEndpoint extends Component {
               >
                 {this.state.data.method}
               </button>
-              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                {this.state.methodList.map((methodName) => (
+              <div
+                className="dropdown-menu"
+                aria-labelledby="dropdownMenuButton"
+              >
+                {this.state.methodList.map(methodName => (
                   <button
                     className="btn"
                     onClick={() => this.setMethod(methodName)}
@@ -961,8 +978,8 @@ class DisplayEndpoint extends Component {
             onClick={() => this.prepareHarObject()}
             style={{
               float: "right",
-              color: "#f28100",
-              fontFamily: "Times New Roman",
+              color: "tomato",
+              fontFamily: "Times New Roman"
             }}
           >
             Code
