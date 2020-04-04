@@ -706,7 +706,9 @@ class DisplayEndpoint extends Component {
         return { body: finalBodyValue, headers };
       case "formData":
         headers["Content-type"] = "multipart/form-data";
-        return { body: finalBodyValue, headers };
+        let formData = new FormData();
+        body.value.map((o) => formData.set(o.key, o.value));
+        return { body: formData, headers };
       case "urlEndcoded":
         return { body: finalBodyValue, headers };
     }
