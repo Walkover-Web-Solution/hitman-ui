@@ -5,7 +5,7 @@ class GenericTable extends Component {
 
   checkboxFlags = [];
 
-  handleChange = e => {
+  handleChange = (e) => {
     const { dataArray, title } = this.props;
     const name = e.currentTarget.name.split(".");
     if (name[1] === "checkbox") {
@@ -36,6 +36,9 @@ class GenericTable extends Component {
       this.props.props_from_parent("originalHeaders", dataArray);
     if (title === "Params")
       this.props.props_from_parent("originalParams", dataArray);
+    if (title === "formData") {
+      this.props.handle_change_body_data(title, dataArray);
+    }
   };
 
   handleAdd(dataArray, title, key, index) {
@@ -46,7 +49,7 @@ class GenericTable extends Component {
         checked: "notApplicable",
         key: "",
         value: "",
-        description: ""
+        description: "",
       };
       if (title === "Headers")
         this.props.props_from_parent("originalHeaders", dataArray);
@@ -68,6 +71,10 @@ class GenericTable extends Component {
       this.props.props_from_parent("originalHeaders", dataArray);
     if (title === "Params")
       this.props.props_from_parent("originalParams", dataArray);
+
+    if (title === "formData") {
+      this.props.handle_change_body_data(title, dataArray);
+    }
   }
 
   render() {
