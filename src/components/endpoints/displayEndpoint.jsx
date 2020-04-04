@@ -59,6 +59,7 @@ class DisplayEndpoint extends Component {
     originalHeaders: [],
     originalParams: [],
     showDescriptionFlag: false,
+    showAddDescriptionFlag: false,
     oldDescription: ""
   };
 
@@ -610,10 +611,10 @@ class DisplayEndpoint extends Component {
   handleDescriptionSave(e) {
     e.preventDefault();
     const value = e.target.description.value;
-    if (value !== "") {
-      //api call here
-    }
     let endpoint = { ...this.state.endpoint };
+
+    this.props.updateEndpoint({ id: endpoint.id, description: value });
+
     endpoint.description = value;
     this.setState({
       endpoint,
@@ -627,6 +628,11 @@ class DisplayEndpoint extends Component {
     endpoint[e.currentTarget.name] = e.currentTarget.value;
     this.setState({ endpoint });
   };
+
+  showDescription() {
+    let showAddDescriptionFlag = !this.state.showAddDescriptionFlag;
+    this.setState({ showAddDescriptionFlag });
+  }
 
   render() {
     if (
@@ -729,6 +735,18 @@ class DisplayEndpoint extends Component {
         )}
         <div className="endpoint-name-container">
           {this.state.showCodeWindow && this.showCodeWindow()}
+
+          {isDashboardRoute(this.props) &&
+          this.state.endpoint.description !== undefined ? (
+            <i
+              className={
+                this.state.showAddDescriptionFlag === true
+                  ? "fas fa-caret-down endpoint-description"
+                  : "fas fa-caret-right endpoint-description"
+              }
+              onClick={() => this.showDescription()}
+            ></i>
+          ) : null}
           <input
             type="text"
             className="endpoint-name-input"
@@ -741,17 +759,24 @@ class DisplayEndpoint extends Component {
             onChange={this.handleChange}
           />
         </div>
-        {this.state.showDescriptionFlag === false &&
-        this.state.endpoint.description === "" ? (
+        {this.state.showAddDescriptionFlag === true &&
+        isDashboardRoute(this.props) &&
+        (this.state.endpoint.description === null ||
+          this.state.endpoint.description === "") ? (
           <Link
-            style={{ padding: "5px 0px 0px 10px" }}
+            style={{
+              padding: "5px 0px 0px 20px",
+              fontSize: "15px",
+              color: "tomato"
+            }}
             onClick={() => this.handleDescription()}
           >
             Add a Description
           </Link>
         ) : null}
 
-        {this.state.showDescriptionFlag === true ? (
+        {this.state.showDescriptionFlag === true &&
+        isDashboardRoute(this.props) ? (
           <form onSubmit={this.handleDescriptionSave.bind(this)}>
             <div class="form-group" style={{ padding: "5px 10px 5px 10px" }}>
               <textarea
@@ -782,19 +807,22 @@ class DisplayEndpoint extends Component {
           </form>
         ) : null}
 
-        {this.state.endpoint.description !== "" &&
+        {this.state.endpoint.description !== null &&
         this.state.endpoint.description !== undefined &&
+        this.state.endpoint.description !== "" &&
         this.state.showDescriptionFlag === false ? (
           <div>
             <label style={{ margin: "5px" }}>
               {this.state.endpoint.description}
             </label>
-            <button
-              className="btn btn-default"
-              onClick={() => this.handleDescription()}
-            >
-              <i className="fas fa-edit"></i>
-            </button>
+            {isDashboardRoute(this.props) ? (
+              <button
+                className="btn btn-default"
+                onClick={() => this.handleDescription()}
+              >
+                <i className="fas fa-edit"></i>
+              </button>
+            ) : null}
           </div>
         ) : null}
         <div className="endpoint-url-container">
