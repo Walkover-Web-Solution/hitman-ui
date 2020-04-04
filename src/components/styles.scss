@@ -903,7 +903,7 @@ button.btn.btn-default.custom-submit-button {
   display: flex;
   flex-direction: column;
   .response-status {
-    padding: 5px;
+    padding: 10px;
     background-color: rgb(236, 236, 236);
     display: flex;
     flex-direction: row;
@@ -968,7 +968,7 @@ button.btn.btn-default.custom-submit-button {
     border-bottom: 1px solid $border-color;
     background-color: rgb(236, 236, 236);
     opacity: 0.5;
-    padding: 5px;
+    padding: 10px;
   }
 }
 
