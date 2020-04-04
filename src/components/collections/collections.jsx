@@ -11,39 +11,39 @@ import { isDashboardRoute } from "../common/utility";
 import endpointApiService from "../endpoints/endpointApiService";
 import {
   fetchAllUsersOfTeam,
-  shareCollection
+  shareCollection,
 } from "../teamUsers/redux/teamUsersActions";
 import collectionsService from "./collectionsService";
 import {
   addCollection,
   deleteCollection,
   duplicateCollection,
-  updateCollection
+  updateCollection,
 } from "./redux/collectionsActions";
 import ShareCollectionForm from "./shareCollectionForm";
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     teams: state.teams,
     collections: state.collections,
     versions: state.versions,
     pages: state.pages,
-    teamUsers: state.teamUsers
+    teamUsers: state.teamUsers,
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    addCollection: newCollection => dispatch(addCollection(newCollection)),
-    shareCollection: teamMemberData =>
+    addCollection: (newCollection) => dispatch(addCollection(newCollection)),
+    shareCollection: (teamMemberData) =>
       dispatch(shareCollection(teamMemberData)),
-    updateCollection: editedCollection =>
+    updateCollection: (editedCollection) =>
       dispatch(updateCollection(editedCollection)),
-    deleteCollection: collection => dispatch(deleteCollection(collection)),
-    duplicateCollection: collection =>
+    deleteCollection: (collection) => dispatch(deleteCollection(collection)),
+    duplicateCollection: (collection) =>
       dispatch(duplicateCollection(collection)),
-    fetchAllUsersOfTeam: teamIdentifier =>
-      dispatch(fetchAllUsersOfTeam(teamIdentifier))
+    fetchAllUsersOfTeam: (teamIdentifier) =>
+      dispatch(fetchAllUsersOfTeam(teamIdentifier)),
   };
 };
 
@@ -51,7 +51,7 @@ class CollectionsComponent extends Component {
   state = {
     showCollectionForm: false,
     collectionFormName: "",
-    selectedCollection: {}
+    selectedCollection: {},
   };
   keywords = {};
   names = {};
@@ -70,7 +70,7 @@ class CollectionsComponent extends Component {
     endpoints[endpointId] = endpoint;
     groups[sourceGroupId].endpointsOrder = groups[
       sourceGroupId
-    ].endpointsOrder.filter(gId => gId !== endpointId.toString());
+    ].endpointsOrder.filter((gId) => gId !== endpointId.toString());
     groups[destinationGroupId].endpointsOrder.push(endpointId);
     this.setState({ endpoints, groups });
     try {
@@ -125,16 +125,16 @@ class CollectionsComponent extends Component {
     this.setState({
       showCollectionShareForm: true,
       selectedCollection: {
-        ...this.props.collections[collectionId]
+        ...this.props.collections[collectionId],
       },
-      collectionFormName: "Share Collection"
+      collectionFormName: "Share Collection",
     });
   }
 
   openAddCollectionForm() {
     this.setState({
       showCollectionForm: true,
-      collectionFormName: "Add new Collection"
+      collectionFormName: "Add new Collection",
     });
   }
 
@@ -143,8 +143,8 @@ class CollectionsComponent extends Component {
       showCollectionForm: true,
       collectionFormName: "Edit Collection",
       selectedCollection: {
-        ...this.props.collections[collectionId]
-      }
+        ...this.props.collections[collectionId],
+      },
     });
   }
 
@@ -152,8 +152,8 @@ class CollectionsComponent extends Component {
     this.setState({
       showVersionForm: true,
       selectedCollection: {
-        ...this.props.collections[collectionId]
-      }
+        ...this.props.collections[collectionId],
+      },
     });
   }
   openImportVersionForm(collectionId) {
@@ -161,8 +161,8 @@ class CollectionsComponent extends Component {
       showImportVersionForm: true,
       collectionFormName: "Import Version",
       selectedCollection: {
-        ...this.props.collections[collectionId]
-      }
+        ...this.props.collections[collectionId],
+      },
     });
   }
 
@@ -170,8 +170,8 @@ class CollectionsComponent extends Component {
     this.setState({
       showDeleteModal: true,
       selectedCollection: {
-        ...this.props.collections[collectionId]
-      }
+        ...this.props.collections[collectionId],
+      },
     });
   }
 
@@ -232,7 +232,7 @@ class CollectionsComponent extends Component {
         }
       }
       let keywords = Object.keys(this.keywords);
-      finalKeywords = keywords.filter(key => {
+      finalKeywords = keywords.filter((key) => {
         return (
           key.toLowerCase().indexOf(this.props.filter.toLowerCase()) !== -1
         );
@@ -242,7 +242,7 @@ class CollectionsComponent extends Component {
       for (let i = 0; i < finalKeywords.length; i++) {
         keywordFinalCollections = [
           ...keywordFinalCollections,
-          ...this.keywords[finalKeywords[i]]
+          ...this.keywords[finalKeywords[i]],
         ];
       }
       keywordFinalCollections = [...new Set(keywordFinalCollections)];
@@ -252,16 +252,16 @@ class CollectionsComponent extends Component {
         this.names[name] = CollectionIds[i];
       }
       let names = Object.keys(this.names);
-      finalnames = names.filter(name => {
+      finalnames = names.filter((name) => {
         return (
           name.toLowerCase().indexOf(this.props.filter.toLowerCase()) !== -1
         );
       });
-      let namesFinalCollections = finalnames.map(name => this.names[name]);
+      let namesFinalCollections = finalnames.map((name) => this.names[name]);
       namesFinalCollections = [...new Set(namesFinalCollections)];
       let finalCollections = [
         ...keywordFinalCollections,
-        ...namesFinalCollections
+        ...namesFinalCollections,
       ];
 
       finalCollections = [...new Set(finalCollections)];
@@ -302,14 +302,14 @@ class CollectionsComponent extends Component {
               style={{
                 color: "tomato",
                 borderBottom: "1px solid rgba(0, 0, 0, 0.125) ",
-                width: "100%"
+                width: "100%",
               }}
             >
               <button
                 className="btn btn-default"
                 onClick={() => this.openAddCollectionForm()}
                 style={{
-                  color: "tomato"
+                  color: "tomato",
                 }}
               >
                 <i className="fas fa-plus" style={{ paddingRight: "10px" }}></i>

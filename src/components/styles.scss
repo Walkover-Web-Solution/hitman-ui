@@ -1223,8 +1223,10 @@ table#custom-generic-table {
   }
 
   td {
-    height: 35px;
+    height: 30px;
+    padding: 5px !important;
   }
+
   tbody {
     input {
       height: 30px;
@@ -1246,10 +1248,71 @@ table#custom-generic-table {
 }
 
 //request select dropdown styling
+.dropdown-menu.show {
+  background: rgb(247, 247, 247);
+}
 
 .custom-request-button {
   text-align: left !important;
+
   &:hover {
     background-color: rgb(238, 235, 235);
   }
+}
+
+.Checkbox {
+  float: right;
+  position: relative;
+  height: 50px;
+  width: 30px;
+  border: 2px solid var(--hairline-regular);
+  border-radius: 3px;
+}
+
+// input:focus,
+// input.form-control:focus {
+//   box-shadow: inset 0 -1px 0 rgb(255, 255, 255) !important;
+//   // outline-color: red;
+//   outline: none;
+// }
+
+// textarea:focus,
+// textarea.form-control:focus {
+//   box-shadow: inset 0 -1px 0 rgb(255, 255, 255) !important;
+// }
+
+.response-viewer-empty__content {
+  flex: 1;
+  background-color: var(--bg-primary);
+  display: flex;
+  flex-direction: column;
+}
+
+.empty-response-container {
+  height: 560px;
+  border: 2px solid rgb(216, 221, 225);
+}
+
+.empty-response-container-2 {
+  height: 460px;
+  margin-top: 100px;
+  text-align: center;
+  display: block;
+}
+
+.empty-response-container-3 {
+  display: flex;
+
+  flex-direction: column;
+  align-items: center;
+  // line-height: 460px;
+  font-weight: 300;
+  font-family: "OpenSans", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  color: var(--content-secondary);
+}
+
+//dropdown styling
+.dropdown-menu.dropdown-menu-right.show {
+  background: rgb(247, 247, 247);
 }
