@@ -1,19 +1,23 @@
 import React, { Component } from "react";
-import { ToastContainer } from "react-toastify";
 import { connect } from "react-redux";
-import { moveEndpoint } from "./endpoints/redux/endpointsActions";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { fetchCollections } from "./collections/redux/collectionsActions";
-import SideBar from "./sidebar";
-import Navbar from "./Navbar";
+import { fetchCollections } from "../collections/redux/collectionsActions";
+import { fetchAllVersions } from "../collectionVersions/redux/collectionVersionsActions";
 import ContentPanel from "./contentPanel";
-import { fetchAllVersions } from "./collectionVersions/redux/collectionVersionsActions";
-import { fetchEndpoints } from "./endpoints/redux/endpointsActions";
-import { fetchGroups } from "./groups/redux/groupsActions";
-import { fetchPages } from "./pages/redux/pagesActions";
+import {
+  fetchEndpoints,
+  moveEndpoint
+} from "../endpoints/redux/endpointsActions";
+import { fetchGroups } from "../groups/redux/groupsActions";
+import Navbar from "./Navbar";
+import { fetchPages } from "../pages/redux/pagesActions";
+import SideBar from "./sidebar";
+import { fetchAllTeamsOfUser } from "../teams/redux/teamsActions";
 
 const mapDispatchToProps = dispatch => {
   return {
+    fetchAllTeamsOfUser: () => dispatch(fetchAllTeamsOfUser()),
     fetchCollections: () => dispatch(fetchCollections()),
     fetchAllVersions: () => dispatch(fetchAllVersions()),
     fetchGroups: () => dispatch(fetchGroups()),
@@ -32,6 +36,7 @@ class Main extends Component {
   };
 
   componentDidMount() {
+    this.props.fetchAllTeamsOfUser();
     this.props.fetchCollections();
     this.props.fetchAllVersions();
     this.props.fetchGroups();
@@ -72,6 +77,7 @@ class Main extends Component {
     return (
       <div
         style={{
+          marginTop: "15px",
           display: "flex",
           flexDirection: "column",
           justifyContent: "flex-start"
@@ -90,6 +96,7 @@ class Main extends Component {
             set_destination_group_id={this.setDestinationGroupId.bind(this)}
             tabs={[...this.state.tabs]}
             set_tabs={this.setTabs.bind(this)}
+            default_tab_index={this.state.defaultTabIndex}
           />
           <ContentPanel
             {...this.props}

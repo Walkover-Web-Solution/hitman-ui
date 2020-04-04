@@ -16,7 +16,8 @@ class ShareGroupForm extends Form {
   componentDidMount() {
     if (this.props.selectedGroup) {
       let data = {};
-      const shareGroupLink = apiUrl + "/share/" + this.props.selectedGroup.id;
+      const shareGroupLink =
+        apiUrl + "/shareGroup/" + this.props.selectedGroup.shareIdentifier;
       data = { shareGroupLink };
       this.setState({ data });
     }
@@ -35,6 +36,7 @@ class ShareGroupForm extends Form {
       <Modal
         {...this.props}
         size="lg"
+        animation={false}
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >

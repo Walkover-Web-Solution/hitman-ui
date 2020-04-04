@@ -3,6 +3,8 @@ import { updatePage } from "../pages/redux/pagesActions";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import store from "../../store/store";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
@@ -14,17 +16,43 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 class EditPage extends Component {
   name = React.createRef();
   contents = React.createRef();
-
   state = {
-    data: {
-      id: null,
-      versionId: null,
-      groupId: null,
-      name: "",
-      contents: ""
-    },
-    errors: {}
+    data: { id: null, versionId: null, groupId: null, name: "", contents: "" }
   };
+
+  modules = {
+    toolbar: [
+      [{ header: [1, 2, 3, 4, 5, 6, false] }],
+      ["bold", "italic", "underline", "strike", "blockquote"],
+      [{ color: [] }, { background: [] }],
+      [{ font: [] }],
+      [{ align: [] }],
+      [
+        ({ list: "ordered" },
+        { list: "bullet" },
+        { indent: "-1" },
+        { indent: "+1" })
+      ],
+      ["link"],
+      ["clean"]
+    ]
+  };
+  formats = [
+    "header",
+    "bold",
+    "italic",
+    "underline",
+    "strike",
+    "blockquote",
+    "color",
+    "background",
+    "font",
+    "align",
+    "list",
+    "bullet",
+    "indent",
+    "link"
+  ];
 
   fetchPage(pageId) {
     let data = {};
@@ -39,6 +67,7 @@ class EditPage extends Component {
         name,
         contents
       };
+
       this.setState({ data });
     }
   }
@@ -54,13 +83,8 @@ class EditPage extends Component {
         contents
       } = this.props.location.page;
 
-      data = {
-        id,
-        versionId,
-        groupId,
-        name,
-        contents
-      };
+      data = { id, versionId, groupId, name, contents };
+
       this.setState({ data });
     } else {
       const pageId = this.props.location.pathname.split("/")[3];
@@ -71,9 +95,9 @@ class EditPage extends Component {
     }
   }
 
-  handleChange = e => {
+  handleChange = value => {
     const data = { ...this.state.data };
-    data[e.currentTarget.name] = e.currentTarget.value;
+    data["contents"] = value;
     this.setState({ data });
   };
 
@@ -85,13 +109,13 @@ class EditPage extends Component {
       const editedPage = { ...this.state.data };
       this.props.updatePage(editedPage, editedPage.id);
       this.props.history.push({
-        pathname: `/dashboard`
+        pathname: `/dashboard/page/${editedPage.id}`
       });
     } else {
       const editedPage = { ...this.state.data };
       this.props.updatePage(editedPage, editedPage.id);
       this.props.history.push({
-        pathname: `/dashboard`
+        pathname: `/dashboard/page/${editedPage.id}`
       });
     }
   };
@@ -99,35 +123,27 @@ class EditPage extends Component {
   render() {
     return (
       <div className="custom-edit-page">
-        <form onSubmit={this.handleSubmit}>
-          <div className="form-group">
-            <label htmlFor="exampleFormControlInput1">Page Name</label>
-            <input
-              ref={this.name}
-              type="text"
-              name="name"
-              className="form-control"
-              id="name"
-              value={this.state.data.name}
-              onChange={this.handleChange}
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="exampleFormControlTextarea1">Contents</label>
-            <textarea
-              ref={this.contents}
-              className="form-control"
-              value={this.state.data.contents || ""}
-              onChange={this.handleChange}
-              name="contents"
-              id="contents"
-              rows="20"
-            />
-            <button type="submit" className="btn btn-primary">
+        <div style={{ marginBottom: "50px" }}>
+          <ReactQuill
+            style={{ height: "400px" }}
+            value={this.state.data.contents}
+            modules={this.modules}
+            formats={this.formats}
+            onChange={this.handleChange}
+          />
+        </div>
+
+        <div>
+          <form onSubmit={this.handleSubmit}>
+            <button
+              onSubmit={this.handleSubmit}
+              type="submit"
+              className="btn btn-primary"
+            >
               Submit
             </button>
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
     );
   }

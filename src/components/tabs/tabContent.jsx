@@ -1,11 +1,9 @@
 import React, { Component } from "react";
-import { Link, Route, Switch } from "react-router-dom";
-import DisplayEndpoint from "./endpoints/displayEndpoint";
-import Environments from "./environments/environments";
-import DisplayPage from "./pages/displayPage";
-import { Tabs, Tab, Row, Col, Nav } from "react-bootstrap";
-import EditPage from "./pages/editPage";
-
+import { Tab } from "react-bootstrap";
+import { Route, Switch } from "react-router-dom";
+import DisplayEndpoint from "../endpoints/displayEndpoint";
+import DisplayPage from "../pages/displayPage";
+import EditPage from "../pages/editPage";
 class TabContent extends Component {
   state = {};
   render() {
@@ -21,10 +19,18 @@ class TabContent extends Component {
                 )}
               />
               <Route
-                path={`/dashboard/endpoint/new`}
+                path={`/dashboard/endpoint/new/${tab.id}`}
                 render={props => (
                   <DisplayEndpoint {...this.props} environment={{}} />
                 )}
+              />
+              <Route
+                path="/dashboard/page/:pageid/edit"
+                render={props => <EditPage {...props} />}
+              />
+              <Route
+                path="/dashboard/page/:pageid"
+                render={props => <DisplayPage {...props} />}
               />
             </Switch>
           </Tab.Pane>

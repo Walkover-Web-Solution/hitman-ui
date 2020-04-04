@@ -1,7 +1,8 @@
 import React, { Component } from "react";
-import { Switch } from "react-router-dom";
-import Collections from "./collections/collections";
-import ProtectedRoute from "./common/protectedRoute";
+import { Route, Switch } from "react-router-dom";
+import Collections from "../collections/collections";
+import ProtectedRoute from "../common/protectedRoute";
+import { isDashboardRoute } from "../common/utility";
 class SideBar extends Component {
   state = {
     data: {
@@ -12,35 +13,35 @@ class SideBar extends Component {
   handleChange = e => {
     let data = { ...this.state.data };
     data[e.currentTarget.name] = e.currentTarget.value;
-    // console.log(data);
     this.setState({ data });
   };
 
   render() {
-    // console.log(this.state.data.filter);
     return (
       <nav className="col-md-2 d-none d-md-block bg-light sidebar ">
         <div className="sidebar-sticky">
-          <div id="search-box-wrapper">
-            <div>
-              {" "}
-              <i class="fas fa-search" id="search-icon"></i>
+          {isDashboardRoute(this.props) ? (
+            <div id="search-box-wrapper">
+              <div>
+                {" "}
+                <i className="fas fa-search" id="search-icon"></i>
+              </div>
+              <div id="search-box-input">
+                <input
+                  type="text"
+                  id="search-box-input"
+                  name="filter"
+                  placeholder="Filter"
+                  onChange={this.handleChange}
+                />
+              </div>
             </div>
-            <div id="search-box-input">
-              <input
-                type="text"
-                id="search-box-input"
-                name="filter"
-                placeholder="Filter"
-                onChange={this.handleChange}
-              />
-            </div>
-          </div>
+          ) : null}
 
-          <ul class="nav nav-tabs" id="myTab" role="tablist">
-            <li class="nav-item">
+          <ul className="nav nav-tabs" id="myTab" role="tablist">
+            <li className="nav-item">
               <a
-                class="nav-link "
+                className="nav-link "
                 id="history-tab"
                 data-toggle="tab"
                 href="#history"
@@ -51,9 +52,9 @@ class SideBar extends Component {
                 History
               </a>
             </li>
-            <li class="nav-item">
+            <li className="nav-item">
               <a
-                class="nav-link active"
+                className="nav-link active"
                 id="collections-tab"
                 data-toggle="tab"
                 href="#collections"
@@ -64,9 +65,9 @@ class SideBar extends Component {
                 Collections
               </a>
             </li>
-            <li class="nav-item">
+            <li className="nav-item">
               <a
-                class="nav-link"
+                className="nav-link"
                 id="api-tab"
                 data-toggle="tab"
                 href="#api"
@@ -78,9 +79,9 @@ class SideBar extends Component {
               </a>
             </li>
           </ul>
-          <div class="tab-content" id="myTabContent">
+          <div className="tab-content" id="myTabContent">
             <div
-              class="tab-pane fade "
+              className="tab-pane fade "
               id="history"
               role="tabpanel"
               aria-labelledby="history-tab"
@@ -88,7 +89,7 @@ class SideBar extends Component {
               History coming soon... stay tuned
             </div>
             <div
-              class="tab-pane fade show active"
+              className="tab-pane fade show active"
               id="collections"
               role="tabpanel"
               aria-labelledby="collections-tab"
@@ -103,10 +104,15 @@ class SideBar extends Component {
                     />
                   )}
                 />
+
+                <Route
+                  path="/public/:collectionId"
+                  render={props => <Collections {...this.props} />}
+                />
               </Switch>
             </div>
             <div
-              class="tab-pane fade"
+              className="tab-pane fade"
               id="api"
               role="tabpanel"
               aria-labelledby="api-tab"

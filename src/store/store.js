@@ -1,13 +1,13 @@
-import { createStore, applyMiddleware, compose, combineReducers } from "redux";
+import { applyMiddleware, combineReducers, compose, createStore } from "redux";
+import thunk from "redux-thunk";
 import collectionsReducer from "../components/collections/redux/collectionsReducer";
 import versionsReducer from "../components/collectionVersions/redux/collectionVersionsReducer";
-import groupsReducer from "../components/groups/redux/groupsReducer";
-import pagesReducer from "../components/pages/redux/pagesReducer";
 import endpointsReducer from "../components/endpoints/redux/endpointsReducer";
 import environmentsReducer from "../components/environments/redux/environmentsReducer";
-import teamsReducer from "../components/team/redux/teamsReducer";
-import thunk from "redux-thunk";
-import { logger } from "redux-logger";
+import groupsReducer from "../components/groups/redux/groupsReducer";
+import pagesReducer from "../components/pages/redux/pagesReducer";
+import teamsReducer from "../components/teams/redux/teamsReducer";
+import teamUsersReducer from "../components/teamUsers/redux/teamUsersReducer";
 
 const storeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
@@ -18,7 +18,8 @@ const rootReducer = combineReducers({
   pages: pagesReducer,
   endpoints: endpointsReducer,
   environment: environmentsReducer,
-  team: teamsReducer
+  teamUsers: teamUsersReducer,
+  teams: teamsReducer
 });
 const store = createStore(rootReducer, storeEnhancers(applyMiddleware(thunk)));
 

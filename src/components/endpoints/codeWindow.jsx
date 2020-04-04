@@ -1,7 +1,9 @@
 import React, { Component } from "react";
 import { Modal, ListGroup, Container, Row, Col } from "react-bootstrap";
+import Highlight from "react-highlight";
+import "../../../node_modules/highlight.js/styles/vs.css";
+import { CopyToClipboard } from "react-copy-to-clipboard";
 var HTTPSnippet = require("httpsnippet");
-// var ScrollArea = require("react-scrollbar/no-css");
 
 class CodeWindow extends Component {
   state = {};
@@ -30,10 +32,11 @@ class CodeWindow extends Component {
   }
 
   makeCodeTemplate(selectedLanguage) {
-    this.language = this.languages[selectedLanguage].name;
+    this.selectedLanguage = selectedLanguage;
+    this.selectedLanguageName = this.languages[selectedLanguage].name;
     let snippet = this.makeCodeSnippet();
     let codeSnippet = snippet.convert(selectedLanguage);
-    this.setState({ codeSnippet });
+    this.setState({ codeSnippet, copied: false });
   }
   languages = {
     node: { name: "Node" },
@@ -57,7 +60,8 @@ class CodeWindow extends Component {
   render() {
     if (!this.state.codeSnippet) {
       let snippet = this.makeCodeSnippet();
-      this.language = this.languages["node"].name;
+      this.selectedLanguage = "node";
+      this.selectedLanguageName = this.languages["node"].name;
       this.codeSnippet = snippet.convert("node");
     }
     return (
@@ -66,6 +70,7 @@ class CodeWindow extends Component {
           {...this.props}
           id="modal-code-window"
           size="lg"
+          animation={false}
           aria-labelledby="contained-modal-title-vcenter"
           centered
         >
@@ -77,7 +82,9 @@ class CodeWindow extends Component {
               {this.props.title}
             </Modal.Title>
           </Modal.Header>
+
           <Modal.Body>
+<<<<<<< HEAD
             {/* <ScrollArea
               speed={0.8}
               className="area"
@@ -88,6 +95,11 @@ class CodeWindow extends Component {
             <Container className="d-flex flex-column">
               <Row>
                 <Col id="codes" sm={3}>
+=======
+            <Container className="d-flex flex-column">
+              <Row>
+                <Col id="code-window-sidebar" sm={3}>
+>>>>>>> 183cfbd4173f16c62549cb82810803ad5ca6c12c
                   <ListGroup>
                     {Object.keys(this.languages).map(key => (
                       <ListGroup.Item
@@ -101,19 +113,39 @@ class CodeWindow extends Component {
                   </ListGroup>
                   <v1></v1>
                 </Col>
-                <Col sm={7}>
+                <Col sm={9}>
                   <div id="code-window-body">
-                    Generated code for {this.language}{" "}
+                    <div className="code-heading">
+                      Generated code for {this.selectedLanguageName}
+                    </div>
+                    <CopyToClipboard
+                      text={
+                        this.state.codeSnippet
+                          ? this.state.codeSnippet
+                          : this.codeSnippet
+                      }
+                      onCopy={() => this.setState({ copied: true })}
+                      id="copy-to-clipboard"
+                    >
+                      <button>
+                        {this.state.copied ? (
+                          <i className="fas fa-check"></i>
+                        ) : (
+                          <i className="fas fa-clone"></i>
+                        )}
+                      </button>
+                    </CopyToClipboard>
                   </div>{" "}
                   <pre>
-                    {this.state.codeSnippet
-                      ? this.state.codeSnippet
-                      : this.codeSnippet}
+                    <Highlight className={this.selectedLanguage}>
+                      {this.state.codeSnippet
+                        ? this.state.codeSnippet
+                        : this.codeSnippet}
+                    </Highlight>
                   </pre>
                 </Col>
               </Row>
             </Container>
-            {/* </ScrollArea> */}
           </Modal.Body>
         </Modal>
       </div>

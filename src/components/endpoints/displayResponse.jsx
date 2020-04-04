@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import JSONPretty from "react-json-pretty";
-const status = require("http-status");
 var JSONPrettyMon = require("react-json-pretty/dist/monikai");
 
 class DisplayResponse extends Component {

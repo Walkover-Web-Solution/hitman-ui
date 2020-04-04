@@ -38,6 +38,10 @@ export function shareCollection(teamMemberData) {
   return http.patch(apiUrl + "/teamUsers", teamMemberData);
 }
 
+export function fetchAllTeamsOfUser() {
+  return http.get(apiUrl + "/teams");
+}
+
 export default {
   getCollections,
   getCollection,
@@ -46,5 +50,6 @@ export default {
   deleteCollection,
   duplicateCollection,
   fetchAllUsersOfTeam,
-  shareCollection
+  shareCollection,
+  fetchAllTeamsOfUser
 };

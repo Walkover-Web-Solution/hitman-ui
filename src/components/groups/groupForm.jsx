@@ -69,6 +69,7 @@ class GroupForm extends Form {
       <Modal
         {...this.props}
         size="lg"
+        animation={false}
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
