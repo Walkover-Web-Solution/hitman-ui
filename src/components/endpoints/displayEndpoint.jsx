@@ -11,17 +11,18 @@ import endpointApiService from "./endpointApiService";
 import GenericTable from "./genericTable";
 import HostContainer from "./hostContainer";
 import { addEndpoint, updateEndpoint } from "./redux/endpointsActions";
+import BodyContainer from "./bodyContainer";
 
 var URI = require("urijs");
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     groups: state.groups,
     versions: state.versions,
     endpoints: state.endpoints,
     environment: state.environment.environments[
       state.environment.currentEnvironmentId
-    ] || { id: null, name: "No Environment" }
+    ] || { id: null, name: "No Environment" },
   };
 };
 
@@ -29,7 +30,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     addEndpoint: (newEndpoint, groupId) =>
       dispatch(addEndpoint(ownProps.history, newEndpoint, groupId)),
-    updateEndpoint: editedEndpoint => dispatch(updateEndpoint(editedEndpoint))
+    updateEndpoint: (editedEndpoint) =>
+      dispatch(updateEndpoint(editedEndpoint)),
   };
 };
 
@@ -45,7 +47,7 @@ class DisplayEndpoint extends Component {
       method: "GET",
       body: {},
       uri: "",
-      updatedUri: ""
+      updatedUri: "",
     },
     methodList: ["GET", "POST", "PUT", "DELETE"],
     environment: {},
@@ -57,11 +59,11 @@ class DisplayEndpoint extends Component {
     title: "",
     flagResponse: false,
     originalHeaders: [],
-    originalParams: []
+    originalParams: [],
   };
 
   customState = {
-    BASE_URL: ""
+    BASE_URL: "",
   };
 
   async componentDidMount() {
@@ -85,8 +87,8 @@ class DisplayEndpoint extends Component {
       checked: "notApplicable",
       key: "",
       value: "",
-      description: ""
-    }
+      description: "",
+    },
   ];
 
   fetchEndpoint(flag) {
@@ -107,7 +109,7 @@ class DisplayEndpoint extends Component {
       originalHeaders = this.structueParamsHeaders;
       this.setState({
         originalParams,
-        originalHeaders
+        originalHeaders,
       });
     } else if (
       Object.keys(groups).length !== 0 &&
@@ -132,17 +134,17 @@ class DisplayEndpoint extends Component {
           uri: endpoint.uri,
           updatedUri: endpoint.uri,
           name: endpoint.name,
-          body: JSON.stringify(endpoint.body, null, 4)
+          body: JSON.stringify(endpoint.body, null, 4),
         },
         originalParams,
         originalHeaders,
         endpoint,
         groupId,
-        title: "update endpoint"
+        title: "update endpoint",
       });
     }
   }
-  handleChange = e => {
+  handleChange = (e) => {
     let data = { ...this.state.data };
     data[e.currentTarget.name] = e.currentTarget.value;
     data.uri = e.currentTarget.value;
@@ -187,7 +189,7 @@ class DisplayEndpoint extends Component {
             : this.state.originalParams[i].checked,
         key: keys[i],
         value: values[i],
-        description: description[i]
+        description: description[i],
       };
     }
     originalParams[i] = this.structueParamsHeaders[0];
@@ -257,7 +259,7 @@ class DisplayEndpoint extends Component {
     if (error.response) {
       let response = {
         status: error.response.status,
-        data: error.response.data
+        data: error.response.data,
       };
       this.setState({ response, flagResponse: true });
     } else {
@@ -296,7 +298,7 @@ class DisplayEndpoint extends Component {
     api = this.replaceVariables(api);
     let body = this.parseBody(this.state.data);
     let headerJson = {};
-    Object.keys(headersData).forEach(header => {
+    Object.keys(headersData).forEach((header) => {
       headerJson[headersData[header].key] = headersData[header].value;
     });
 
@@ -317,7 +319,7 @@ class DisplayEndpoint extends Component {
         body: body,
         headers: headersData,
         params: updatedParams,
-        BASE_URL: this.customState.BASE_URL
+        BASE_URL: this.customState.BASE_URL,
       };
       // if (endpoint.name === "" || endpoint.uri === "")
       if (endpoint.name === "") toast.error("Please enter Endpoint name");
@@ -328,7 +330,7 @@ class DisplayEndpoint extends Component {
         this.props.updateEndpoint({
           ...endpoint,
           id: this.state.endpoint.id,
-          groupId: groupId || this.state.groupId
+          groupId: groupId || this.state.groupId,
         });
       }
     }
@@ -346,7 +348,7 @@ class DisplayEndpoint extends Component {
         updatedHeaders[originalHeaders[i].key] = {
           checked: originalHeaders[i].checked,
           value: originalHeaders[i].value,
-          description: originalHeaders[i].description
+          description: originalHeaders[i].description,
         };
       }
     }
@@ -354,7 +356,7 @@ class DisplayEndpoint extends Component {
     endpoint.headers = { ...updatedHeaders };
     this.setState({
       originalHeaders: updatedHeadersArray,
-      endpoint
+      endpoint,
     });
     return updatedHeaders;
   }
@@ -419,7 +421,7 @@ class DisplayEndpoint extends Component {
         updatedParams[originalParams[i].key] = {
           checked: originalParams[i].checked,
           value: originalParams[i].value,
-          description: originalParams[i].description
+          description: originalParams[i].description,
         };
       }
     }
@@ -427,7 +429,7 @@ class DisplayEndpoint extends Component {
     endpoint.params = { ...updatedParams };
     this.setState({
       originalParams,
-      endpoint
+      endpoint,
     });
     return updatedParams;
   }
@@ -440,7 +442,7 @@ class DisplayEndpoint extends Component {
         checked: params[Object.keys(params)[i]].checked,
         key: Object.keys(params)[i],
         value: params[Object.keys(params)[i]].value,
-        description: params[Object.keys(params)[i]].description
+        description: params[Object.keys(params)[i]].description,
       };
     }
     originalParams[i] = this.structueParamsHeaders[0];
@@ -455,7 +457,7 @@ class DisplayEndpoint extends Component {
         checked: headers[Object.keys(headers)[i]].checked,
         key: Object.keys(headers)[i],
         value: headers[Object.keys(headers)[i]].value,
-        description: headers[Object.keys(headers)[i]].description
+        description: headers[Object.keys(headers)[i]].description,
       };
     }
     originalHeaders[i] = this.structueParamsHeaders[0];
@@ -468,7 +470,7 @@ class DisplayEndpoint extends Component {
       processedHeaders[i] = {
         name: headers[Object.keys(headers)[i]].key,
         value: headers[Object.keys(headers)[i]].value,
-        comment: headers[Object.keys(headers)[i]].description
+        comment: headers[Object.keys(headers)[i]].description,
       };
     }
     return processedHeaders;
@@ -495,7 +497,7 @@ class DisplayEndpoint extends Component {
       processedParams[i] = {
         name: params[Object.keys(params)[i]].key,
         value: params[Object.keys(params)[i]].value,
-        comment: params[Object.keys(params)[i]].description
+        comment: params[Object.keys(params)[i]].description,
       };
     }
     return processedParams;
@@ -505,7 +507,7 @@ class DisplayEndpoint extends Component {
     let postData = {
       mimeType: "application/json",
       text: '{"hello":"world"}',
-      comment: "Sample json body"
+      comment: "Sample json body",
     };
     return postData;
   }
@@ -521,7 +523,7 @@ class DisplayEndpoint extends Component {
       cookies: [],
       headers: this.makeHeaders(originalHeaders),
       postData: this.makePostData(body),
-      queryString: this.makeParams(originalParams)
+      queryString: this.makeParams(originalParams),
     };
     if (!harObject.url.split(":")[1] || harObject.url.split(":")[0] === "") {
       harObject.url = "https://";
@@ -532,7 +534,7 @@ class DisplayEndpoint extends Component {
   openCodeWindow(harObject) {
     this.setState({
       showCodeWindow: true,
-      harObject
+      harObject,
     });
   }
 
@@ -576,7 +578,7 @@ class DisplayEndpoint extends Component {
           method: "GET",
           body: JSON.stringify({}, null, 4),
           uri: "",
-          updatedUri: ""
+          updatedUri: "",
         },
         startTime: "",
         timeElapsed: "",
@@ -586,7 +588,7 @@ class DisplayEndpoint extends Component {
         title: "Add New Endpoint",
         flagResponse: false,
         originalHeaders: this.structueParamsHeaders,
-        originalParams: this.structueParamsHeaders
+        originalParams: this.structueParamsHeaders,
       });
       this.props.history.push({ groups: null });
     }
@@ -610,7 +612,7 @@ class DisplayEndpoint extends Component {
           uri: endpoint.uri,
           updatedUri: endpoint.uri,
           name: endpoint.name,
-          body: JSON.stringify(endpoint.body, null, 4)
+          body: JSON.stringify(endpoint.body, null, 4),
         },
         title: "update endpoint",
         response: {},
@@ -618,7 +620,7 @@ class DisplayEndpoint extends Component {
         originalParams,
         originalHeaders,
         endpoint,
-        flagResponse: false
+        flagResponse: false,
       });
       this.props.history.push({ endpoint: null });
     }
@@ -663,7 +665,7 @@ class DisplayEndpoint extends Component {
                 {this.state.data.method}
               </button>
               <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                {this.state.methodList.map(methodName => (
+                {this.state.methodList.map((methodName) => (
                   <button
                     className="btn"
                     onClick={() => this.setMethod(methodName)}
@@ -720,7 +722,7 @@ class DisplayEndpoint extends Component {
             style={{
               float: "right",
               color: "#f28100",
-              fontFamily: "Times New Roman"
+              fontFamily: "Times New Roman",
             }}
           >
             Code
@@ -800,15 +802,7 @@ class DisplayEndpoint extends Component {
               role="tabpanel"
               aria-labelledby="pills-body-tab"
             >
-              <textarea
-                className="form-control"
-                ref={this.body}
-                name="body"
-                id="body"
-                rows="8"
-                onChange={this.handleChange}
-                value={this.state.data.body}
-              />
+              <BodyContainer />
             </div>
           </div>
         </div>
