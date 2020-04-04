@@ -189,7 +189,6 @@ class GenericTable extends Component {
   }
 
   render() {
-    console.log("this.props", this.props);
     const { dataArray, title } = this.props;
     this.autoFillBulkEdit();
 
