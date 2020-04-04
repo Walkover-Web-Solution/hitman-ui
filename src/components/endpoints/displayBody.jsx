@@ -9,20 +9,19 @@ class Body extends Component {
   handleChange = e => {
     if (e.currentTarget.name === "bodyType") {
       this.setState({ selectedBodyType: e.currentTarget.value });
+      this.selectedBodyType = null;
       this.props.props_from_parent("selectedBodyType", e.currentTarget.value);
     }
     if (e.currentTarget.name === "rawBody") {
+      console.log(" e.currentTarget.value", e.currentTarget.value);
       this.props.props_from_parent("rawBody", e.currentTarget.value);
     }
   };
 
   render() {
-    const {
-      rawBody,
-      urlencodedBody,
-      formdataBody,
-      selectedBodyType
-    } = this.props;
+    console.log("this.props", this.props);
+    const { rawBody, urlencodedBody, formdataBody } = this.props;
+    this.selectedBodyType = this.props.selectedBodyType;
     return (
       <div>
         <div
@@ -46,6 +45,12 @@ class Body extends Component {
               <input
                 name="bodyType"
                 value="rawBody"
+                checked={
+                  this.state.selectedBodyType === "rawBody" ||
+                  this.selectedBodyType === "rawBody"
+                    ? true
+                    : false
+                }
                 onChange={this.handleChange}
                 type="radio"
               ></input>
@@ -55,6 +60,12 @@ class Body extends Component {
               <input
                 name="bodyType"
                 value="formdataBody"
+                checked={
+                  this.state.selectedBodyType === "formdataBody" ||
+                  this.selectedBodyType === "formdataBody"
+                    ? true
+                    : false
+                }
                 onChange={this.handleChange}
                 type="radio"
               ></input>
@@ -64,6 +75,12 @@ class Body extends Component {
               <input
                 name="bodyType"
                 value="urlencodedBody"
+                checked={
+                  this.state.selectedBodyType === "urlencodedBody" ||
+                  this.selectedBodyType === "urlencodedBody"
+                    ? true
+                    : false
+                }
                 onChange={this.handleChange}
                 type="radio"
               ></input>{" "}
@@ -71,7 +88,8 @@ class Body extends Component {
             </label>
           </span>
         </div>
-        {this.state.selectedBodyType === "rawBody" && (
+        {(this.state.selectedBodyType === "rawBody" ||
+          this.selectedBodyType === "rawBody") && (
           <textarea
             className="form-control"
             name="rawBody"
@@ -81,7 +99,8 @@ class Body extends Component {
             value={rawBody}
           />
         )}
-        {this.state.selectedBodyType === "urlencodedBody" && (
+        {(this.state.selectedBodyType === "urlencodedBody" ||
+          this.selectedBodyType === "urlencodedBody") && (
           <GenericTable
             title="x-www-form-urlencoded"
             props_from_parent={this.props.props_from_parent.bind(this)}

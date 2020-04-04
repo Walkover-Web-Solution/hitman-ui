@@ -183,6 +183,7 @@ class DisplayEndpoint extends Component {
         originalHeaders,
         endpoint,
         groupId,
+        selectedBodyType: endpoint.body.type,
         title: "update endpoint"
       });
     }
@@ -292,18 +293,21 @@ class DisplayEndpoint extends Component {
     return json;
   }
 
-  parseBody(data) {
-    let { method, body } = data;
+  parseBody(rawBody) {
+    console.log(rawBody);
+    let body = {};
+    let { method } = this.state.data;
+    console.log("method", method);
     if (method === "POST" || method === "PUT") {
       try {
-        body = JSON.parse(this.body.current.value);
+        body = JSON.parse(rawBody);
         return body;
       } catch (error) {
         toast.error("Invalid Body");
         return body;
       }
     }
-    return {};
+    return body;
   }
 
   handleErrorResponse(error) {
@@ -396,6 +400,7 @@ class DisplayEndpoint extends Component {
   }
 
   doSubmitBody() {
+    console.log("this.state.rawBody", this.state.rawBody);
     let body = {};
     const selectedBodyType = this.state.selectedBodyType;
     if (this.state.selectedBodyType === "urlencodedBody") {
@@ -403,8 +408,10 @@ class DisplayEndpoint extends Component {
     }
     if (this.state.selectedBodyType === "rawBody") {
       body = this.parseBody(this.state.rawBody);
+      console.log("body", body);
     }
     body = this.makeBody(this.state.selectedBodyType, body);
+    console.log("body", body);
     return body;
   }
 
@@ -455,7 +462,7 @@ class DisplayEndpoint extends Component {
     if (name === "originalHeaders") {
       this.setState({ originalHeaders: value });
     }
-    if (name === "x-www-form-urlencoded") {
+    if (name === "rawBody") {
       this.setState({ rawBody: value });
     }
     if (name === "x-www-form-urlencoded") {
@@ -650,7 +657,9 @@ class DisplayEndpoint extends Component {
   setBaseUrl(BASE_URL) {
     this.customState.BASE_URL = BASE_URL;
   }
+
   fetchBody(body) {
+    console.log("body", body);
     if (body.type === "rawBody") {
       this.rawBody = JSON.stringify(body.value, null, 4);
     } else {

@@ -34,10 +34,24 @@ class GenericTable extends Component {
       this.handleAdd(dataArray, title, dataArray[name[0]].key, name[0]);
     }
     if (name[1] === "value") {
+      if (
+        dataArray[name[0]].value.length !== 0 &&
+        !this.checkboxFlags[name[0]]
+      ) {
+        dataArray[name[0]].checked = "true";
+      }
       dataArray[name[0]].value = e.currentTarget.value;
+      this.handleAdd(dataArray, title, dataArray[name[0]].value, name[0]);
     }
     if (name[1] === "description") {
+      if (
+        dataArray[name[0]].description.length !== 0 &&
+        !this.checkboxFlags[name[0]]
+      ) {
+        dataArray[name[0]].checked = "true";
+      }
       dataArray[name[0]].description = e.currentTarget.value;
+      this.handleAdd(dataArray, title, dataArray[name[0]].description, name[0]);
     }
     if (title === "Headers")
       this.props.props_from_parent("originalHeaders", dataArray);
