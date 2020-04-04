@@ -5,7 +5,7 @@ import tabService from "../tabs/tabService";
 class DeleteModal extends Component {
   state = {};
 
-  handleSubmit = e => {
+  handleSubmit = (e) => {
     e.preventDefault();
     this.doSubmit();
   };
@@ -27,8 +27,7 @@ class DeleteModal extends Component {
     }
     if (title === "Delete Page") {
       const { deleted_page: page } = this.props;
-      const index = this.props.tabs.findIndex(t => t.id === page.id);
-      console.log(index);
+      const index = this.props.tabs.findIndex((t) => t.id === page.id);
       tabService.closeTab({ ...this.props }, index);
       this.props.deletePage(page);
     }

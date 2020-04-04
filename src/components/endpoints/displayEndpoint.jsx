@@ -37,7 +37,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
 class DisplayEndpoint extends Component {
   uri = React.createRef();
-  body = React.createRef();
   name = React.createRef();
   paramKey = React.createRef();
 
@@ -45,7 +44,7 @@ class DisplayEndpoint extends Component {
     data: {
       name: "",
       method: "GET",
-      body: {},
+      body: { type: "raw", value: "" },
       uri: "",
       updatedUri: "",
     },
@@ -134,7 +133,7 @@ class DisplayEndpoint extends Component {
           uri: endpoint.uri,
           updatedUri: endpoint.uri,
           name: endpoint.name,
-          body: JSON.stringify(endpoint.body, null, 4),
+          body: endpoint.body,
         },
         originalParams,
         originalHeaders,
@@ -245,7 +244,7 @@ class DisplayEndpoint extends Component {
     let { method, body } = data;
     if (method === "POST" || method === "PUT") {
       try {
-        body = JSON.parse(this.body.current.value);
+        body = JSON.parse(body);
         return body;
       } catch (error) {
         toast.error("Invalid Body");
@@ -370,7 +369,6 @@ class DisplayEndpoint extends Component {
 
   propsFromChild(name, value) {
     if (name === "originalParams") {
-      console.log("value", value);
       this.handleUpdateUri(value);
       this.setState({ originalParams: value });
     }
@@ -554,7 +552,14 @@ class DisplayEndpoint extends Component {
   setBaseUrl(BASE_URL) {
     this.customState.BASE_URL = BASE_URL;
   }
+
+  setBody(bodyType, body) {
+    let data = { ...this.state.data };
+    data.body = { type: bodyType, value: body };
+    this.setState({ data });
+  }
   render() {
+    console.log(this.state.data);
     if (
       this.props.location.pathname.split("/")[3] !== "new" &&
       this.state.endpoint.id !== this.props.location.pathname.split("/")[3]
@@ -802,7 +807,10 @@ class DisplayEndpoint extends Component {
               role="tabpanel"
               aria-labelledby="pills-body-tab"
             >
-              <BodyContainer />
+              <BodyContainer
+                {...this.props}
+                set_body={this.setBody.bind(this)}
+              />
               {/* <textarea
                 className="form-control"
                 ref={this.body}

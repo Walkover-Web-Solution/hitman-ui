@@ -4,11 +4,11 @@ import { Modal } from "react-bootstrap";
 import { connect } from "react-redux";
 import Form from "../common/form";
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     collections: state.collections,
     versions: state.versions,
-    pages: state.pages
+    pages: state.pages,
   };
 };
 
@@ -16,30 +16,25 @@ class CreateEndpointForm extends Form {
   state = {
     data: {
       name: "",
-      description: ""
+      description: "",
     },
     list: {
       type: "collections",
-      parentId: null
+      parentId: null,
     },
     groupId: null,
-    errors: {}
+    errors: {},
   };
 
   componentDidMount() {
     const data = { ...this.state.data };
     data.name = this.props.name;
-    console.log(data);
     this.setState({ data });
   }
 
   schema = {
-    name: Joi.string()
-      .required()
-      .label("Username"),
-    description: Joi.string()
-      .allow(null, "")
-      .label("description")
+    name: Joi.string().required().label("Username"),
+    description: Joi.string().allow(null, "").label("description"),
   };
 
   setList(item) {
@@ -67,45 +62,45 @@ class CreateEndpointForm extends Form {
     var listItems = [];
     switch (this.state.list.type) {
       case "collections":
-        listItems = Object.keys(this.props.collections).map(collectionId => ({
+        listItems = Object.keys(this.props.collections).map((collectionId) => ({
           name: this.props.collections[collectionId].name,
-          id: this.props.collections[collectionId].id
+          id: this.props.collections[collectionId].id,
         }));
         break;
       case "versions":
         listItems = Object.keys(this.props.versions)
           .filter(
-            vId =>
+            (vId) =>
               this.props.versions[vId].collectionId === this.state.list.parentId
           )
-          .map(versionId => ({
+          .map((versionId) => ({
             name: this.props.versions[versionId].number,
-            id: this.props.versions[versionId].id
+            id: this.props.versions[versionId].id,
           }));
         break;
       case "groups":
         listItems = Object.keys(this.props.groups)
           .filter(
-            gId => this.props.groups[gId].versionId === this.state.list.parentId
+            (gId) =>
+              this.props.groups[gId].versionId === this.state.list.parentId
           )
-          .map(groupId => ({
+          .map((groupId) => ({
             name: this.props.groups[groupId].name,
-            id: this.props.groups[groupId].id
+            id: this.props.groups[groupId].id,
           }));
         break;
       case "endpoints":
         listItems = Object.keys(this.props.endpoints)
           .filter(
-            eId =>
+            (eId) =>
               this.props.endpoints[eId].groupId === this.state.list.parentId
           )
-          .map(endpointId => ({
+          .map((endpointId) => ({
             name: this.props.endpoints[endpointId].name,
-            id: this.props.endpoints[endpointId].id
+            id: this.props.endpoints[endpointId].id,
           }));
         break;
     }
-    console.log(listItems);
     return listItems;
   }
 
@@ -187,7 +182,7 @@ class CreateEndpointForm extends Form {
               </div>
               <ul class="list-group" id="folder-list">
                 {this.state.list.type === "endpoints" ? (
-                  this.renderList().map(item => (
+                  this.renderList().map((item) => (
                     <li id="endpoint-list">
                       <div
                         className={this.props.endpoints[item.id].requestType}
@@ -198,7 +193,7 @@ class CreateEndpointForm extends Form {
                     </li>
                   ))
                 ) : this.renderList().length ? (
-                  this.renderList().map(item => (
+                  this.renderList().map((item) => (
                     <li class="list-group-item">
                       <button
                         className="btn"

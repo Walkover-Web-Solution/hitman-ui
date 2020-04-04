@@ -6,25 +6,11 @@ function endpointUrl(groupId) {
 }
 
 export function apiTest(api, method, body, headers) {
-  let formData = new FormData();
-  formData.set("customFile", " this.state.image_file");
-  headers = {
-    ...headers,
-    "Content-Type": "multipart/form-data",
-    "Content-Length": "269",
-    Authorization: "eyJh",
-  };
-  body =
-    '------WebKitFormBoundary1yLsrvN0HArzpnJF\r\nContent-Disposition: form-data; name="customFile"\r\n\r\n this.state.image_file\r\n------WebKitFormBoundary1yLsrvN0HArzpnJF--\r\n';
-
-  console.log(body);
   return http.request({
     url: api,
     method: method,
-    data: formData,
-    headers: {
-      "Content-type": "multipart/form-data",
-    },
+    data: body,
+    headers: headers,
   });
 }
 

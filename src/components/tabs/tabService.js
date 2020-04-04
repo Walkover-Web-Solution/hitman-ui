@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import shortId from "shortid";
 
 function addNewTab(props) {
-  console.log(props);
   let tabs = [...props.tabs];
   const id = shortId.generate();
   props.set_tabs(
@@ -31,7 +30,7 @@ function closeTab(props, index) {
 
         props.set_tabs(tabs, tabs.length - 1);
         props.history.push({
-          pathname: `/dashboard/endpoint/new`
+          pathname: `/dashboard/endpoint/new`,
         });
       }
     }
@@ -47,11 +46,11 @@ function changeRoute(props, tab, title) {
   if (tab.isSaved) {
     props.history.push({
       pathname: `/dashboard/${tab.type}/${tab.id}`,
-      title
+      title,
     });
   } else {
     props.history.push({
-      pathname: `/dashboard/${tab.type}/new`
+      pathname: `/dashboard/${tab.type}/new`,
     });
   }
   // }
@@ -69,11 +68,11 @@ function selectTab(props, tab, index) {
     props.set_tabs(null, index);
     if (tab.isSaved) {
       props.history.push({
-        pathname: `/dashboard/${tab.type}/${tab.id}`
+        pathname: `/dashboard/${tab.type}/${tab.id}`,
       });
     } else {
       props.history.push({
-        pathname: `/dashboard/${tab.type}/new/${tab.id}`
+        pathname: `/dashboard/${tab.type}/new/${tab.id}`,
       });
     }
   }
@@ -84,5 +83,5 @@ export default {
   closeTab,
   changeRoute,
   closeAllTabs,
-  selectTab
+  selectTab,
 };

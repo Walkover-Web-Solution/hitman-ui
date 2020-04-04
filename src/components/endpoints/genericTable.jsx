@@ -39,6 +39,9 @@ class GenericTable extends Component {
     if (title === "formData") {
       this.props.handle_change_body_data(title, dataArray);
     }
+    if (title === "x-www-form-urlencoded") {
+      this.props.handle_change_body_data(title, dataArray);
+    }
   };
 
   handleAdd(dataArray, title, key, index) {
@@ -73,6 +76,9 @@ class GenericTable extends Component {
       this.props.props_from_parent("originalParams", dataArray);
 
     if (title === "formData") {
+      this.props.handle_change_body_data(title, dataArray);
+    }
+    if (title === "x-www-form-urlencoded") {
       this.props.handle_change_body_data(title, dataArray);
     }
   }

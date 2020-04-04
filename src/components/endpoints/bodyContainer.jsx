@@ -6,7 +6,15 @@ class BodyContainer extends Component {
     selectedBodyType: null,
     data: {
       raw: "",
-      formaData: [
+      formData: [
+        {
+          checked: "notApplicable",
+          key: "",
+          value: "",
+          description: "",
+        },
+      ],
+      urlEncodedData: [
         {
           checked: "notApplicable",
           key: "",
@@ -21,20 +29,28 @@ class BodyContainer extends Component {
     this.setState({
       selectedBodyType: bodyType,
     });
+    this.props.set_body(bodyType, this.state.data[bodyType]);
   }
 
   handleChange = (e) => {
     const data = { ...this.state.data };
     data[e.currentTarget.name] = e.currentTarget.value;
     this.setState({ data });
+    this.props.set_body(this.state.selectedBodyType, e.currentTarget.value);
   };
 
   handleChangeBody(title, dataArray) {
+    const data = { ...this.state.data };
     switch (title) {
       case "formData":
-        const data = { ...this.state.data };
-        data.formaData = dataArray;
+        data.formData = dataArray;
         this.setState({ data });
+        this.props.set_body(this.state.selectedBodyType, dataArray);
+        break;
+      case "x-www-form-urlencoded":
+        data.urlEncodedData = dataArray;
+        this.setState({ data });
+        this.props.set_body(this.state.selectedBodyType, dataArray);
         break;
     }
   }
@@ -56,7 +72,15 @@ class BodyContainer extends Component {
         return (
           <GenericTable
             title="formData"
-            dataArray={[...this.state.data.formaData]}
+            dataArray={[...this.state.data.formData]}
+            handle_change_body_data={this.handleChangeBody.bind(this)}
+          ></GenericTable>
+        );
+      case "urlEncoded":
+        return (
+          <GenericTable
+            title="x-www-form-urlencoded"
+            dataArray={[...this.state.data.urlEncodedData]}
             handle_change_body_data={this.handleChangeBody.bind(this)}
           ></GenericTable>
         );
@@ -85,6 +109,15 @@ class BodyContainer extends Component {
               onClick={() => this.handleSelectBodyType("formData")}
             />
             form-data
+          </label>
+          <label>
+            <input
+              type="radio"
+              name="body-select"
+              value="form"
+              onClick={() => this.handleSelectBodyType("urlEncoded")}
+            />
+            urlencoded
           </label>
         </form>
 
