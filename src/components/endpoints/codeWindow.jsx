@@ -17,7 +17,7 @@ class CodeWindow extends Component {
       cookies,
       headers,
       postData,
-      queryString
+      queryString,
     } = harObject;
     let snippet = new HTTPSnippet({
       method,
@@ -26,7 +26,7 @@ class CodeWindow extends Component {
       cookies,
       headers,
       postData,
-      queryString
+      queryString,
     });
     return snippet;
   }
@@ -54,7 +54,7 @@ class CodeWindow extends Component {
     htpp: { name: "http" },
     objc: { name: "objc" },
     ocaml: { name: "ocaml" },
-    python: { name: "Python" }
+    python: { name: "Python" },
   };
 
   render() {
@@ -88,7 +88,7 @@ class CodeWindow extends Component {
               <Row>
                 <Col id="code-window-sidebar" sm={3}>
                   <ListGroup>
-                    {Object.keys(this.languages).map(key => (
+                    {Object.keys(this.languages).map((key) => (
                       <ListGroup.Item
                         onClick={() => {
                           this.makeCodeTemplate(key);
