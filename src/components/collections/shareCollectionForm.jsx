@@ -1,4 +1,3 @@
-import jQuery from "jquery";
 import { Component, default as React } from "react";
 import { Dropdown, InputGroup, Modal } from "react-bootstrap";
 import { isEmail, ReactMultiEmail } from "react-multi-email";

@@ -1,17 +1,17 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { withRouter, Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import { toast } from "react-toastify";
 import store from "../../store/store";
 import { isDashboardRoute } from "../common/utility";
 import CodeWindow from "./codeWindow";
 import CreateEndpointForm from "./createEndpointForm";
+import BodyContainer from "./displayBody";
 import DisplayResponse from "./displayResponse";
 import endpointApiService from "./endpointApiService";
 import GenericTable from "./genericTable";
 import HostContainer from "./hostContainer";
 import { addEndpoint, updateEndpoint } from "./redux/endpointsActions";
-import BodyContainer from "./displayBody";
 const status = require("http-status");
 
 var URI = require("urijs");
@@ -280,8 +280,6 @@ class DisplayEndpoint extends Component {
       toast.error("Invalid Body");
       return body;
     }
-    // }
-    return body;
   }
 
   handleErrorResponse(error) {
@@ -502,20 +500,6 @@ class DisplayEndpoint extends Component {
       description: ""
     };
     return originalHeaders;
-  }
-
-  makeHeaders(headers) {
-    let processedHeaders = [];
-    for (let i = 0; i < Object.keys(headers).length; i++) {
-      if (headers[Object.keys(headers)[i]].checked === "true") {
-        processedHeaders[i] = {
-          name: headers[Object.keys(headers)[i]].key,
-          value: headers[Object.keys(headers)[i]].value,
-          comment: headers[Object.keys(headers)[i]].description
-        };
-      }
-    }
-    return processedHeaders;
   }
 
   openEndpointFormModal() {
