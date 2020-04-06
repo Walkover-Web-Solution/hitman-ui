@@ -14,7 +14,7 @@ class BodyContainer extends Component {
           description: "",
         },
       ],
-      urlEncodedData: [
+      urlEncoded: [
         {
           checked: "notApplicable",
           key: "",
@@ -48,7 +48,7 @@ class BodyContainer extends Component {
         this.props.set_body(this.state.selectedBodyType, dataArray);
         break;
       case "x-www-form-urlencoded":
-        data.urlEncodedData = dataArray;
+        data.urlEncoded = dataArray;
         this.setState({ data });
         this.props.set_body(this.state.selectedBodyType, dataArray);
         break;
@@ -81,7 +81,7 @@ class BodyContainer extends Component {
         return (
           <GenericTable
             title="x-www-form-urlencoded"
-            dataArray={[...this.state.data.urlEncodedData]}
+            dataArray={[...this.state.data.urlEncoded]}
             handle_change_body_data={this.handleChangeBody.bind(this)}
             count="2"
           ></GenericTable>
@@ -92,6 +92,7 @@ class BodyContainer extends Component {
   }
   render() {
     if (this.props.body && !this.state.selectedBodyType) {
+      console.log("this.props", this.props);
       const selectedBodyType = this.props.body.type;
       let data = this.state.data;
       data[selectedBodyType] = this.props.body.value;
