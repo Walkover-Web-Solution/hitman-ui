@@ -1,4 +1,3 @@
-import jQuery from "jquery";
 import { Component, default as React } from "react";
 import { Dropdown, InputGroup, Modal } from "react-bootstrap";
 import { isEmail, ReactMultiEmail } from "react-multi-email";
@@ -7,39 +6,39 @@ import { connect } from "react-redux";
 import shortid from "shortid";
 import authService from "../auth/authService";
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
-    team: state.team
+    teamUsers: state.teamUsers,
   };
 };
 
 class ShareCollectionForm extends Component {
   state = {
     data: {
-      role: "Collaborator"
+      role: "Collaborator",
     },
     emails: [],
-    modifiedteamMembers: []
+    modifiedteamMembers: [],
   };
   changeTeamFlag = true;
 
   dropdownRole = {
     admin: { name: "Admin" },
-    collaborator: { name: "Collaborator" }
+    collaborator: { name: "Collaborator" },
   };
 
   setDropdowmRole(key) {
     const data = this.state.data;
     data.role = this.dropdownRole[key].name;
     this.setState({
-      data
+      data,
     });
   }
 
   setSelectedUserRole(key, teamIdentifier) {
     this.changeTeamFlag = false;
-    this.team[teamIdentifier].role = key;
-    const currentMember = this.team[teamIdentifier];
+    this.props.teamUsers[teamIdentifier].role = key;
+    const currentMember = this.props.teamUsers[teamIdentifier];
     let modifiedteamMembers = this.state.modifiedteamMembers;
     this.modifyMember("updateMember", currentMember);
     this.setState({ modifiedteamMembers });
@@ -49,10 +48,10 @@ class ShareCollectionForm extends Component {
     this.props.shareCollection(teamMemberData);
     this.setState({
       data: {
-        role: "Collaborator"
+        role: "Collaborator",
       },
       emails: [],
-      modifiedteamMembers: []
+      modifiedteamMembers: [],
     });
   }
 
@@ -69,7 +68,7 @@ class ShareCollectionForm extends Component {
             id: null,
             deleteFlag: false,
             userId: null,
-            requestId: shortid.generate()
+            requestId: shortid.generate(),
           };
         }
       }
@@ -84,10 +83,10 @@ class ShareCollectionForm extends Component {
         email: selectedMember.email,
         role: selectedMember.role,
         teamId: this.props.team_id,
-        id: this.props.team[selectedMember.userId].id,
+        id: this.props.teamUsers[selectedMember.userId].id,
         deleteFlag,
         userId: selectedMember.userId,
-        requestId: null
+        requestId: null,
       };
     }
     this.setState({ modifiedteamMembers });
@@ -102,10 +101,10 @@ class ShareCollectionForm extends Component {
 
   fetchCurrentUserRole() {
     const { user: currentUser } = authService.getCurrentUser();
-    const teamArray = Object.keys(this.props.team);
+    const teamArray = Object.keys(this.props.teamUsers);
     for (let i = 0; i < teamArray.length; i++) {
       if (currentUser.identifier === teamArray[i]) {
-        return this.props.team[currentUser.identifier].role;
+        return this.props.teamUsers[currentUser.identifier].role;
       }
     }
   }
@@ -116,7 +115,7 @@ class ShareCollectionForm extends Component {
       if (
         window.confirm("Are you sure you want to remove member from the team?")
       ) {
-        this.team[teamMember.userId].deleteFlag = true;
+        this.props.teamUsers[teamMember.userId].deleteFlag = true;
         this.modifyMember("deleteMember", teamMember);
       }
     } else {
@@ -124,16 +123,22 @@ class ShareCollectionForm extends Component {
     }
   }
 
-  fetchTeam() {
-    if (this.changeTeamFlag === true) {
-      this.team = jQuery.extend(true, {}, this.props.team);
-    }
+  // fetchTeam() {
+  //   if (this.changeTeamFlag === true) {
+  //     this.team = jQuery.extend(true, {}, this.props.teamUsers);
+  //   }
+  // }
+
+  handlePublic(collection) {
+    collection.isPublic = !collection.isPublic;
+    delete collection.teamId;
+    this.props.updateCollection({ ...collection });
   }
 
   render() {
-    this.fetchTeam();
+    //this.fetchTeam();
     this.currentUserRole = this.fetchCurrentUserRole();
-    let count = Object.keys(this.team).length;
+    let count = Object.keys(this.props.teamUsers).length;
     let serialNo = 1;
     const { emails } = this.state;
 
@@ -141,6 +146,7 @@ class ShareCollectionForm extends Component {
       <Modal
         {...this.props}
         size="lg"
+        animation={false}
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
@@ -160,10 +166,10 @@ class ShareCollectionForm extends Component {
                     name="email"
                     placeholder="Email-id"
                     emails={emails}
-                    onChange={_emails => {
+                    onChange={(_emails) => {
                       this.setState({ emails: _emails });
                     }}
-                    validateEmail={email => {
+                    validateEmail={(email) => {
                       return isEmail(email);
                     }}
                     getLabel={(email, index, removeEmail) => {
@@ -186,7 +192,7 @@ class ShareCollectionForm extends Component {
                         {this.state.data.role}
                       </Dropdown.Toggle>
                       <Dropdown.Menu>
-                        {Object.keys(this.dropdownRole).map(key => (
+                        {Object.keys(this.dropdownRole).map((key) => (
                           <Dropdown.Item
                             onClick={() => this.setDropdowmRole(key)}
                           >
@@ -196,6 +202,26 @@ class ShareCollectionForm extends Component {
                       </Dropdown.Menu>
                     </Dropdown>{" "}
                   </InputGroup.Append>
+                  {this.currentUserRole === "Admin" ||
+                  this.currentUserRole === "Owner" ? (
+                    <div>
+                      <button
+                        style={{ float: "right", marginLeft: "10px" }}
+                        type="button"
+                        className="btn btn-success"
+                        onClick={() => {
+                          this.handlePublic(
+                            this.props.collections[this.props.collection_id]
+                          );
+                        }}
+                      >
+                        {this.props.collections[this.props.collection_id]
+                          .isPublic
+                          ? "Make Private"
+                          : "Make Public"}
+                      </button>
+                    </div>
+                  ) : null}
                 </InputGroup>
               ) : null}
             </div>
@@ -209,17 +235,17 @@ class ShareCollectionForm extends Component {
                   <th scope="col"></th>
                 </tr>
               </thead>
-              {Object.keys(this.team).map(teamId => (
+              {Object.keys(this.props.teamUsers).map((teamId) => (
                 <tbody>
                   <tr
                     className={
-                      this.team[teamId].deleteFlag === true
+                      this.props.teamUsers[teamId].deleteFlag === true
                         ? "table-dark"
                         : "table-light"
                     }
                   >
                     <th scope="row">{serialNo++}</th>
-                    <td>{this.team[teamId].email}</td>
+                    <td>{this.props.teamUsers[teamId].email}</td>
                     <td>
                       {" "}
                       {this.currentUserRole === "Admin" ||
@@ -229,13 +255,13 @@ class ShareCollectionForm extends Component {
                             variant="success"
                             id="dropdown-basic disabled"
                           >
-                            {this.team[teamId].role}
+                            {this.props.teamUsers[teamId].role}
                           </Dropdown.Toggle>
                           <Dropdown.Menu>
-                            {Object.keys(this.dropdownRole).map(key => (
+                            {Object.keys(this.dropdownRole).map((key) => (
                               <Dropdown.Item
                                 className={
-                                  this.team[teamId].role === "Owner"
+                                  this.props.teamUsers[teamId].role === "Owner"
                                     ? "disabled"
                                     : null
                                 }
@@ -252,11 +278,11 @@ class ShareCollectionForm extends Component {
                           </Dropdown.Menu>
                         </Dropdown>
                       ) : (
-                        this.team[teamId].role
+                        this.props.teamUsers[teamId].role
                       )}
                     </td>
-                    {this.team[teamId].role === "Owner" ||
-                    this.team[teamId].userId ===
+                    {this.props.teamUsers[teamId].role === "Owner" ||
+                    this.props.teamUsers[teamId].userId ===
                       authService.getCurrentUser().user.identifier ? (
                       <td></td>
                     ) : (
@@ -265,7 +291,7 @@ class ShareCollectionForm extends Component {
                           type="button"
                           className="btn btn-default"
                           onClick={() => {
-                            this.handleDelete(this.team[teamId]);
+                            this.handleDelete(this.props.teamUsers[teamId]);
                           }}
                         >
                           X

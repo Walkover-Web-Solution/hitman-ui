@@ -1,5 +1,5 @@
 import collectionsApiService from "../../collections/collectionsApiService";
-import teamsActionTypes from "./teamsActionTypes";
+import teamUsersActionTypes from "./teamUsersActionTypes";
 
 export const shareCollection = sharedCollection => {
   return dispatch => {
@@ -22,14 +22,14 @@ export const shareCollection = sharedCollection => {
 
 export const onCollectionSharedRequest = sharedCollection => {
   return {
-    type: teamsActionTypes.ON_COLLECTION_SHARED_REQUEST,
+    type: teamUsersActionTypes.ON_COLLECTION_SHARED_REQUEST,
     sharedCollection
   };
 };
 
 export const onCollectionShared = (sharedCollection, response) => {
   return {
-    type: teamsActionTypes.ON_COLLECTION_SHARED,
+    type: teamUsersActionTypes.ON_COLLECTION_SHARED,
     sharedCollection,
     response
   };
@@ -37,7 +37,7 @@ export const onCollectionShared = (sharedCollection, response) => {
 
 export const onCollectionSharedError = (error, sharedCollection) => {
   return {
-    type: teamsActionTypes.ON_COLLECTION_SHARED_ERROR,
+    type: teamUsersActionTypes.ON_COLLECTION_SHARED_ERROR,
     sharedCollection,
     error
   };
@@ -60,55 +60,14 @@ export const fetchAllUsersOfTeam = teamIdentifier => {
 
 export const onFetchAllUsers = response => {
   return {
-    type: teamsActionTypes.ON_FETCH_ALL_SHARED_USERS,
+    type: teamUsersActionTypes.ON_FETCH_ALL_SHARED_USERS,
     response
   };
 };
 
 export const onFetchAllUsersError = error => {
   return {
-    type: teamsActionTypes.ON_FETCH_ALL_SHARED_USERS_ERROR,
+    type: teamUsersActionTypes.ON_FETCH_ALL_SHARED_USERS_ERROR,
     error
   };
 };
-
-// export const deleteUserFromTeam = teamData => {
-//   return dispatch => {
-//     dispatch(deleteMemberRequest(teamData));
-//     collectionsApiService
-//       .deleteUserOfTeam(teamData)
-//       .then(response => {
-//         dispatch(onDeleteUser(response.data));
-//       })
-//       .catch(error => {
-//         dispatch(
-//           onDeleteUserError(
-//             error.response ? error.response.data : error,
-//             teamData
-//           )
-//         );
-//       });
-//   };
-// };
-
-// export const deleteMemberRequest = teamData => {
-//   return {
-//     type: teamsActionTypes.DELETE_SHARED_USERS_REQUEST,
-//     teamData
-//   };
-// };
-
-// export const onDeleteUser = response => {
-//   return {
-//     type: teamsActionTypes.ON_SHARED_USERS_DELETED,
-//     response
-//   };
-// };
-
-// export const onDeleteUserError = (error, teamData) => {
-//   return {
-//     type: teamsActionTypes.ON_SHARED_USERS_DELETED_ERROR,
-//     error,
-//     teamData
-//   };
-// };

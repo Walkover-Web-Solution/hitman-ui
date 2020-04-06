@@ -8,7 +8,11 @@ import TabContent from "../tabs/tabContent";
 import CustomTabs from "../tabs/tabs";
 
 const mapStateToProps = state => {
-  return { endpoints: state.endpoints, groups: state.groups };
+  return {
+    endpoints: state.endpoints,
+    groups: state.groups,
+    pages: state.pages
+  };
 };
 class ContentPanel extends Component {
   state = {};
@@ -16,7 +20,7 @@ class ContentPanel extends Component {
     if (
       this.props.location.pathname.split("/")[3] === "new" &&
       (this.props.tabs.length === 0 ||
-        this.props.tabs[this.props.default_tab_index].isSaved == true)
+        this.props.tabs[this.props.default_tab_index].isSaved === true)
     ) {
       const newTabId = shortId.generate();
       const tabs = [
@@ -27,6 +31,7 @@ class ContentPanel extends Component {
       this.props.set_tabs(tabs, tabs.length - 1);
     }
   }
+
   render() {
     if (
       this.props.location.pathname.split("/")[2] === "endpoint" &&
@@ -59,7 +64,21 @@ class ContentPanel extends Component {
         this.props.set_tabs(null, index);
       }
     }
-    console.log(this.props.tabs, this.props.default_tab_index);
+
+    if (this.props.location.pathname.split("/")[2] === "page") {
+      const pageId = this.props.location.pathname.split("/")[3];
+      const index = this.props.tabs.findIndex(tab => tab.id === pageId);
+      let tabs = [...this.props.tabs];
+      if (index < 0) {
+        tabs.push({ id: pageId, type: "page", isSaved: true });
+        this.props.set_tabs(tabs, tabs.length - 1);
+      } else if (
+        this.props.tabs.length &&
+        this.props.tabs[this.props.default_tab_index].id !== pageId
+      ) {
+        this.props.set_tabs(null, index);
+      }
+    }
     return (
       <main role="main" className="main ml-sm-auto col-lg-10 ">
         <Tab.Container

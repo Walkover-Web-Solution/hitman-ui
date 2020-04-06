@@ -4,57 +4,57 @@ import store from "../../../store/store";
 import { toast } from "react-toastify";
 
 export const fetchAllVersions = () => {
-  return dispatch => {
+  return (dispatch) => {
     collectionVersionsApiService
       .getAllCollectionVersions()
-      .then(response => {
+      .then((response) => {
         const versions = response.data;
         dispatch(onVersionsFetched(versions));
       })
-      .catch(error => {
+      .catch((error) => {
         dispatch(onVersionsFetchedError(error.message));
       });
   };
 };
-export const fetchVersions = collectionId => {
-  return dispatch => {
+export const fetchVersions = (collectionId) => {
+  return (dispatch) => {
     collectionVersionsApiService
       .getCollectionVersions(collectionId)
-      .then(response => {
+      .then((response) => {
         const versions = response.data;
         dispatch(onVersionsFetched(versions));
       })
-      .catch(error => {
+      .catch((error) => {
         dispatch(onVersionsFetchedError(error.message));
       });
   };
 };
 
-export const onVersionsFetched = versions => {
+export const onVersionsFetched = (versions) => {
   return {
     type: versionActionTypes.ON_VERSIONS_FETCHED,
-    versions
+    versions,
   };
 };
 
-export const onVersionsFetchedError = error => {
+export const onVersionsFetchedError = (error) => {
   return {
     type: versionActionTypes.ON_VERSIONS_FETCHED_ERROR,
-    error
+    error,
   };
 };
 
-export const updateVersion = editedVersion => {
-  return dispatch => {
+export const updateVersion = (editedVersion) => {
+  return (dispatch) => {
     const originalVersion = store.getState().versions[editedVersion.id];
     dispatch(updateVersionRequest(editedVersion));
     const { number, host, id } = editedVersion;
     collectionVersionsApiService
       .updateCollectionVersion(id, { number, host })
-      .then(response => {
+      .then((response) => {
         dispatch(onVersionUpdated(response.data));
       })
-      .catch(error => {
+      .catch((error) => {
         dispatch(
           onVersionUpdatedError(
             error.response ? error.response.data : error,
@@ -65,17 +65,17 @@ export const updateVersion = editedVersion => {
   };
 };
 
-export const updateVersionRequest = editedVersion => {
+export const updateVersionRequest = (editedVersion) => {
   return {
     type: versionActionTypes.UPDATE_VERSION_REQUEST,
-    editedVersion
+    editedVersion,
   };
 };
 
-export const onVersionUpdated = response => {
+export const onVersionUpdated = (response) => {
   return {
     type: versionActionTypes.ON_VERSION_UPDATED,
-    response
+    response,
   };
 };
 
@@ -83,19 +83,19 @@ export const onVersionUpdatedError = (error, originalVersion) => {
   return {
     type: versionActionTypes.ON_VERSION_UPDATED_ERROR,
     error,
-    originalVersion
+    originalVersion,
   };
 };
 
 export const addVersion = (newVersion, collectionId) => {
-  return dispatch => {
+  return (dispatch) => {
     dispatch(addVersionRequest(newVersion));
     collectionVersionsApiService
       .saveCollectionVersion(collectionId, newVersion)
-      .then(response => {
+      .then((response) => {
         dispatch(onVersionAdded(response.data));
       })
-      .catch(error => {
+      .catch((error) => {
         dispatch(
           onVersionAddedError(
             error.response ? error.response.data : error,
@@ -106,17 +106,17 @@ export const addVersion = (newVersion, collectionId) => {
   };
 };
 
-export const addVersionRequest = newVersion => {
+export const addVersionRequest = (newVersion) => {
   return {
     type: versionActionTypes.ADD_VERSION_REQUEST,
-    newVersion
+    newVersion,
   };
 };
 
-export const onVersionAdded = response => {
+export const onVersionAdded = (response) => {
   return {
     type: versionActionTypes.ON_VERSION_ADDED,
-    response
+    response,
   };
 };
 
@@ -124,34 +124,34 @@ export const onVersionAddedError = (error, newVersion) => {
   return {
     type: versionActionTypes.ON_VERSION_ADDED_ERROR,
     newVersion,
-    error
+    error,
   };
 };
 
-export const deleteVersion = version => {
-  return dispatch => {
+export const deleteVersion = (version) => {
+  return (dispatch) => {
     dispatch(deleteVersionRequest(version));
     collectionVersionsApiService
       .deleteCollectionVersion(version.id)
       .then(() => {
         dispatch(onVersionDeleted());
       })
-      .catch(error => {
+      .catch((error) => {
         dispatch(onVersionDeletedError(error.response, version));
       });
   };
 };
 
-export const deleteVersionRequest = version => {
+export const deleteVersionRequest = (version) => {
   return {
     type: versionActionTypes.DELETE_VERSION_REQUEST,
-    version
+    version,
   };
 };
 
 export const onVersionDeleted = () => {
   return {
-    type: versionActionTypes.ON_VERSION_DELETED
+    type: versionActionTypes.ON_VERSION_DELETED,
   };
 };
 
@@ -159,42 +159,42 @@ export const onVersionDeletedError = (error, version) => {
   return {
     type: versionActionTypes.ON_VERSION_DELETED_ERROR,
     error,
-    version
+    version,
   };
 };
 
-export const duplicateVersion = version => {
-  return dispatch => {
+export const duplicateVersion = (version) => {
+  return (dispatch) => {
     collectionVersionsApiService
       .duplicateVersion(version.id)
-      .then(response => {
+      .then((response) => {
         dispatch(onVersionDuplicated(response.data));
       })
-      .catch(error => {
+      .catch((error) => {
         toast.error(error);
       });
   };
 };
 
-export const onVersionDuplicated = response => {
+export const onVersionDuplicated = (response) => {
   return {
     type: versionActionTypes.ON_VERSION_DUPLICATED,
-    response
+    response,
   };
 };
 export const importVersion = (importLink, shareIdentifier, collectionId) => {
-  return dispatch => {
+  return (dispatch) => {
     collectionVersionsApiService
       .exportCollectionVersion(importLink, shareIdentifier)
-      .then(response => {
+      .then((response) => {
         response.data.collectionId = collectionId;
         collectionVersionsApiService
           .importCollectionVersion(importLink, shareIdentifier, response.data)
-          .then(response => {
+          .then((response) => {
             dispatch(saveImportedVersion(response.data));
           });
       })
-      .catch(error => {
+      .catch((error) => {
         dispatch(
           onVersionsFetchedError(error.response ? error.response.data : error)
         );
@@ -202,9 +202,9 @@ export const importVersion = (importLink, shareIdentifier, collectionId) => {
   };
 };
 
-export const saveImportedVersion = response => {
+export const saveImportedVersion = (response) => {
   return {
     type: versionActionTypes.IMPORT_VERSION,
-    response
+    response,
   };
 };

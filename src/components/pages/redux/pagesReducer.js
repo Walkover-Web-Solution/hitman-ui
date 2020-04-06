@@ -3,6 +3,7 @@ import { toast } from "react-toastify";
 import groupsActionTypes from "../../groups/redux/groupsActionTypes";
 import versionActionTypes from "../../collectionVersions/redux/collectionVersionsActionTypes";
 import collectionActionTypes from "../../collections/redux/collectionsActionTypes";
+import publicEndpointsActionTypes from "../../publicEndpoint/redux/publicEndpointsActionTypes";
 
 const initialState = {};
 
@@ -24,6 +25,7 @@ function pagesReducer(state = initialState, action) {
         ...state,
         [action.newPage.requestId]: action.newPage
       };
+
     case pagesActionTypes.ON_PAGE_ADDED:
       pages = { ...state };
       delete pages[action.response.requestId];
@@ -45,6 +47,7 @@ function pagesReducer(state = initialState, action) {
         ...state,
         [action.newPage.requestId]: action.newPage
       };
+
     case pagesActionTypes.ON_GROUP_PAGE_ADDED:
       pages = { ...state };
       delete pages[action.response.requestId];
@@ -63,8 +66,12 @@ function pagesReducer(state = initialState, action) {
         ...state,
         [action.editedPage.id]: action.editedPage
       };
+
     case pagesActionTypes.ON_PAGE_UPDATED:
-      return state;
+      return {
+        ...state,
+        [action.response.id]: action.response
+      };
 
     case pagesActionTypes.ON_PAGE_UPDATED_ERROR:
       toast.error(action.error);
@@ -104,7 +111,24 @@ function pagesReducer(state = initialState, action) {
       return { ...state, ...action.response.pages };
 
     case versionActionTypes.IMPORT_VERSION:
-        return {...state,...action.response.pages}  
+      return { ...state, ...action.response.pages };
+
+    case publicEndpointsActionTypes.ON_PUBLIC_ENDPOINTS_FETCHED:
+      return { ...state, ...action.data.pages };
+
+    case publicEndpointsActionTypes.ON_PUBLIC_ENDPOINTS_FETCHED_ERROR:
+      toast.error(action.error);
+      return state;
+
+    case publicEndpointsActionTypes.ON_PAGE_STATE_SUCCESS:
+      return {
+        ...state,
+        [action.data.id]: action.data
+      };
+
+    case publicEndpointsActionTypes.ON_PAGE_STATE_ERROR:
+      toast.error(action.error);
+      return { ...state };
 
     default:
       return state;

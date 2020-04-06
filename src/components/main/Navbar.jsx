@@ -10,7 +10,7 @@ import shortId from "shortid";
 class Navbar extends Component {
   state = {
     name: "",
-    email: ""
+    email: "",
   };
   componentDidMount() {
     const { user } = getCurrentUser();
@@ -25,8 +25,9 @@ class Navbar extends Component {
         {...this.props}
         show={true}
         onHide={onHide}
-        openCollectionForm={this.openCollectionForm.bind(this)}
-        openEnvironmentForm={this.openEnvironmentForm.bind(this)}
+        add_new_endpoint={this.handleAddEndpoint.bind(this)}
+        open_collection_form={this.openCollectionForm.bind(this)}
+        open_environment_form={this.openEnvironmentForm.bind(this)}
       />
     );
   }
@@ -39,16 +40,15 @@ class Navbar extends Component {
     this.setState({ showCreateNewModal: false, showEnvironmentForm: true });
   }
 
-  handleAddEndpoint(groupId, versions, groups) {
+  handleAddEndpoint() {
     const newTabId = shortId.generate();
     const tabs = [
       ...this.props.tabs,
-      { id: newTabId, type: "endpoint", isSaved: false }
+      { id: newTabId, type: "endpoint", isSaved: false },
     ];
-    console.log(tabs);
     this.props.set_tabs(tabs, tabs.length - 1);
     this.props.history.push({
-      pathname: `/dashboard/endpoint/new`
+      pathname: `/dashboard/endpoint/new/${newTabId}`,
     });
   }
 
@@ -58,19 +58,19 @@ class Navbar extends Component {
         {this.state.showCreateNewModal &&
           this.openCreateNewModal(() =>
             this.setState({
-              showCreateNewModal: false
+              showCreateNewModal: false,
             })
           )}
         {this.state.showCollectionForm &&
           collectionsService.showCollectionForm(
             this.props,
-            (() => this.setState({ showCollectionForm: false })).bind(this),
+            () => this.setState({ showCollectionForm: false }),
             "Add new Collection"
           )}
         {this.state.showEnvironmentForm &&
           environmentsService.showEnvironmentForm(
             this.props,
-            (() => this.setState({ showEnvironmentForm: false })).bind(this),
+            () => this.setState({ showEnvironmentForm: false }),
             "Add new Environment"
           )}
         <div className="btn-group">
@@ -129,17 +129,15 @@ class Navbar extends Component {
               <i className="fa fa-file-text" aria-hidden="true"></i>
             </button>
             <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <a className="dropdown-item" href="#">
-                Open new Tab
-              </a>
+              <button className="btn btn-primary">Open new tab</button>
             </div>
           </div>
         </div>
 
         <div className="btn-grp" id="user-menu">
-          <div class="dropdown">
+          <div className="dropdown">
             <button
-              class="btn btn-secondary dropdown-toggle"
+              className="btn btn-secondary dropdown-toggle"
               type="button"
               id="dropdownMenuButton"
               data-toggle="dropdown"
@@ -147,15 +145,14 @@ class Navbar extends Component {
               aria-expanded="false"
               style={{ borderRadius: "70px" }}
             >
-              <i class="fas fa-user"></i>
+              <i className="fas fa-user"></i>
             </button>
             <div
-              class="dropdown-menu dropdown-menu-right"
+              className="dropdown-menu dropdown-menu-right"
               aria-labelledby="dropdownMenuButton"
-              alignLeft
             >
               <div id="custom-user-left">
-                <i class="fas fa-user"></i>
+                <i className="fas fa-user"></i>
               </div>
               <div id="custom-user-right">
                 <div>{this.state.name}</div>

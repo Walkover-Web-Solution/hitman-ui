@@ -19,14 +19,14 @@ class Login extends Component {
   };
 
   render() {
-    if (auth.getCurrentUser()) return <Redirect to="/dashboard" />;
-    const redirectionUrl = `https://hitman-ui.herokuapp.com/login`;
+    if (auth.getCurrentUser()) return <Redirect to="/dashboard/endpoint/new" />;
+    const redirectionUrl = `https://hitman-ui.herokuapp.com`;
     const socketLoginUrl = `https://viasocket.com/login?token_required=true&redirect_uri=${redirectionUrl}`;
     const h1style = {
       color: "#0f0f0f",
       fontSize: "50px",
       paddingTop: "150px",
-      paddingBottom: "30px"
+      paddingBottom: "30px",
     };
     return (
       <React.Fragment>
