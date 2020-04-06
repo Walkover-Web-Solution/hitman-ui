@@ -74,6 +74,7 @@ class BodyContainer extends Component {
             title="formData"
             dataArray={[...this.state.data.formData]}
             handle_change_body_data={this.handleChangeBody.bind(this)}
+            count="1"
           ></GenericTable>
         );
       case "urlEncoded":
@@ -82,6 +83,7 @@ class BodyContainer extends Component {
             title="x-www-form-urlencoded"
             dataArray={[...this.state.data.urlEncodedData]}
             handle_change_body_data={this.handleChangeBody.bind(this)}
+            count="2"
           ></GenericTable>
         );
       default:

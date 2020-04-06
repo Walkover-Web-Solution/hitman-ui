@@ -3,7 +3,7 @@ import React, { Component } from "react";
 class GenericTable extends Component {
   state = {
     bulkEdit: false,
-    editButtonName: "Bulk Edit"
+    editButtonName: "Bulk Edit",
   };
 
   checkboxFlags = [];
@@ -11,8 +11,9 @@ class GenericTable extends Component {
   //flags used to autofill bulk edit
   textAreaValueFlag = true;
   helperflag = false;
+  count = "";
 
-  handleChange = e => {
+  handleChange = (e) => {
     const { dataArray, title } = this.props;
     const name = e.currentTarget.name.split(".");
     if (name[1] === "checkbox") {
@@ -65,7 +66,7 @@ class GenericTable extends Component {
     }
   };
 
-  handleBulkChange = e => {
+  handleBulkChange = (e) => {
     const { title } = this.props;
     let dataArray = [];
     this.textAreaValue = e.currentTarget.value;
@@ -104,12 +105,18 @@ class GenericTable extends Component {
       checked: "notApplicable",
       key: "",
       value: "",
-      description: ""
+      description: "",
     };
     if (title === "Params")
       this.props.props_from_parent("originalParams", dataArray);
     if (title === "Headers")
       this.props.props_from_parent("originalHeaders", dataArray);
+    if (title === "formData") {
+      this.props.handle_change_body_data(title, dataArray);
+    }
+    if (title === "x-www-form-urlencoded") {
+      this.props.handle_change_body_data(title, dataArray);
+    }
   };
 
   handleAdd(dataArray, title, key, index) {
@@ -120,7 +127,7 @@ class GenericTable extends Component {
         checked: "notApplicable",
         key: "",
         value: "",
-        description: ""
+        description: "",
       };
       if (title === "Headers")
         this.props.props_from_parent("originalHeaders", dataArray);
@@ -153,7 +160,7 @@ class GenericTable extends Component {
     if (this.state.bulkEdit) {
       this.setState({
         bulkEdit: false,
-        editButtonName: "Bulk Edit"
+        editButtonName: "Bulk Edit",
       });
     } else {
       if (!this.helperflag && this.textAreaValueFlag) {
@@ -163,31 +170,52 @@ class GenericTable extends Component {
       }
       this.setState({
         bulkEdit: true,
-        editButtonName: "Key-Value Edit"
+        editButtonName: "Key-Value Edit",
       });
     }
   }
 
   autoFillBulkEdit() {
     let textAreaValue = "";
-    const { dataArray } = this.props;
-    if (this.state.bulkEdit && this.textAreaValueFlag) {
-      this.textAreaValueFlag = false;
-      for (let index = 0; index < dataArray.length; index++) {
-        const { checked } = dataArray[index];
-        if (checked === "notApplicable") continue;
-        if (checked === "true") {
-          textAreaValue +=
-            dataArray[index].key + ":" + dataArray[index].value + "\n";
-        } else {
-          textAreaValue +=
-            "//" + dataArray[index].key + ":" + dataArray[index].value + "\n";
+    const { dataArray, count } = this.props;
+    if (count) {
+      if (
+        (this.state.bulkEdit && this.textAreaValueFlag) ||
+        this.count !== count
+      ) {
+        this.count = count;
+        this.textAreaValueFlag = false;
+        for (let index = 0; index < dataArray.length; index++) {
+          const { checked } = dataArray[index];
+          if (checked === "notApplicable") continue;
+          if (checked === "true") {
+            textAreaValue +=
+              dataArray[index].key + ":" + dataArray[index].value + "\n";
+          } else {
+            textAreaValue +=
+              "//" + dataArray[index].key + ":" + dataArray[index].value + "\n";
+          }
         }
+        this.textAreaValue = textAreaValue;
       }
-      this.textAreaValue = textAreaValue;
+    } else {
+      if (this.state.bulkEdit && this.textAreaValueFlag) {
+        this.textAreaValueFlag = false;
+        for (let index = 0; index < dataArray.length; index++) {
+          const { checked } = dataArray[index];
+          if (checked === "notApplicable") continue;
+          if (checked === "true") {
+            textAreaValue +=
+              dataArray[index].key + ":" + dataArray[index].value + "\n";
+          } else {
+            textAreaValue +=
+              "//" + dataArray[index].key + ":" + dataArray[index].value + "\n";
+          }
+        }
+        this.textAreaValue = textAreaValue;
+      }
     }
   }
-
   render() {
     const { dataArray, title } = this.props;
     this.autoFillBulkEdit();

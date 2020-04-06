@@ -1341,9 +1341,9 @@ table#custom-generic-table {
 
 .Checkbox {
   float: right;
-  position: relative;
-  height: 50px;
-  width: 30px;
+  position: absolute;
+  height: 10px;
+  width: 50px;
   border: 2px solid var(--hairline-regular);
   border-radius: 3px;
 }
