@@ -92,7 +92,6 @@ class BodyContainer extends Component {
   }
   render() {
     if (this.props.body && !this.state.selectedBodyType) {
-      console.log("this.props", this.props);
       const selectedBodyType = this.props.body.type;
       let data = this.state.data;
       data[selectedBodyType] = this.props.body.value;
