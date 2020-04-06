@@ -26,7 +26,7 @@ class Login extends Component {
       color: "#0f0f0f",
       fontSize: "50px",
       paddingTop: "150px",
-      paddingBottom: "30px"
+      paddingBottom: "30px",
     };
     return (
       <React.Fragment>

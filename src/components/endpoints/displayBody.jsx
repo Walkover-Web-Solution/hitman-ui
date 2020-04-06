@@ -1,115 +1,139 @@
 import React, { Component } from "react";
 import GenericTable from "./genericTable";
 
-class Body extends Component {
+class BodyContainer extends Component {
   state = {
-    selectedBodyType: ""
+    selectedBodyType: null,
+    data: {
+      raw: "",
+      formData: [
+        {
+          checked: "notApplicable",
+          key: "",
+          value: "",
+          description: "",
+        },
+      ],
+      urlEncodedData: [
+        {
+          checked: "notApplicable",
+          key: "",
+          value: "",
+          description: "",
+        },
+      ],
+    },
   };
 
-  handleChange = e => {
-    if (e.currentTarget.name === "bodyType") {
-      this.setState({ selectedBodyType: e.currentTarget.value });
-      this.selectedBodyType = null;
-      this.props.props_from_parent("selectedBodyType", e.currentTarget.value);
-    }
-    if (e.currentTarget.name === "rawBody") {
-      console.log(" e.currentTarget.value", e.currentTarget.value);
-      this.props.props_from_parent("rawBody", e.currentTarget.value);
-    }
+  handleSelectBodyType(bodyType) {
+    this.setState({
+      selectedBodyType: bodyType,
+    });
+    this.props.set_body(bodyType, this.state.data[bodyType]);
+  }
+
+  handleChange = (e) => {
+    const data = { ...this.state.data };
+    data[e.currentTarget.name] = e.currentTarget.value;
+    this.setState({ data });
+    this.props.set_body(this.state.selectedBodyType, e.currentTarget.value);
   };
 
-  render() {
-    console.log("this.props", this.props);
-    const { rawBody, urlencodedBody, formdataBody } = this.props;
-    this.selectedBodyType = this.props.selectedBodyType;
-    return (
-      <div>
-        <div
-          style={{
-            padding: "5px 10px",
-            display: "flex",
-            flexDirection: "row"
-          }}
-        >
-          <span>
-            <label>
-              <input
-                name="bodyType"
-                value={null}
-                onChange={this.handleChange}
-                type="radio"
-              ></input>{" "}
-              none
-            </label>
-            <label>
-              <input
-                name="bodyType"
-                value="rawBody"
-                checked={
-                  this.state.selectedBodyType === "rawBody" ||
-                  this.selectedBodyType === "rawBody"
-                    ? true
-                    : false
-                }
-                onChange={this.handleChange}
-                type="radio"
-              ></input>
-              raw{" "}
-            </label>
-            <label>
-              <input
-                name="bodyType"
-                value="formdataBody"
-                checked={
-                  this.state.selectedBodyType === "formdataBody" ||
-                  this.selectedBodyType === "formdataBody"
-                    ? true
-                    : false
-                }
-                onChange={this.handleChange}
-                type="radio"
-              ></input>
-              form-data
-            </label>
-            <label>
-              <input
-                name="bodyType"
-                value="urlencodedBody"
-                checked={
-                  this.state.selectedBodyType === "urlencodedBody" ||
-                  this.selectedBodyType === "urlencodedBody"
-                    ? true
-                    : false
-                }
-                onChange={this.handleChange}
-                type="radio"
-              ></input>{" "}
-              x-www-form-urlencoded
-            </label>
-          </span>
-        </div>
-        {(this.state.selectedBodyType === "rawBody" ||
-          this.selectedBodyType === "rawBody") && (
+  handleChangeBody(title, dataArray) {
+    const data = { ...this.state.data };
+    switch (title) {
+      case "formData":
+        data.formData = dataArray;
+        this.setState({ data });
+        this.props.set_body(this.state.selectedBodyType, dataArray);
+        break;
+      case "x-www-form-urlencoded":
+        data.urlEncodedData = dataArray;
+        this.setState({ data });
+        this.props.set_body(this.state.selectedBodyType, dataArray);
+        break;
+    }
+  }
+
+  renderBody() {
+    switch (this.state.selectedBodyType) {
+      case "raw":
+        return (
           <textarea
             className="form-control"
-            name="rawBody"
-            id="rawbBody"
+            name="raw"
+            id="body"
             rows="8"
             onChange={this.handleChange}
-            value={rawBody}
+            value={this.state.data.raw}
           />
-        )}
-        {(this.state.selectedBodyType === "urlencodedBody" ||
-          this.selectedBodyType === "urlencodedBody") && (
+        );
+      case "formData":
+        return (
+          <GenericTable
+            title="formData"
+            dataArray={[...this.state.data.formData]}
+            handle_change_body_data={this.handleChangeBody.bind(this)}
+          ></GenericTable>
+        );
+      case "urlEncoded":
+        return (
           <GenericTable
             title="x-www-form-urlencoded"
-            props_from_parent={this.props.props_from_parent.bind(this)}
-            dataArray={urlencodedBody}
+            dataArray={[...this.state.data.urlEncodedData]}
+            handle_change_body_data={this.handleChangeBody.bind(this)}
           ></GenericTable>
-        )}
+        );
+      default:
+        return <div></div>;
+    }
+  }
+  render() {
+    if (this.props.body && !this.state.selectedBodyType) {
+      const selectedBodyType = this.props.body.type;
+      let data = this.state.data;
+      data[selectedBodyType] = this.props.body.value;
+      if (document.getElementById(selectedBodyType)) {
+        document.getElementById(selectedBodyType).checked = true;
+        this.setState({ selectedBodyType, data });
+      }
+    }
+    return (
+      <div className="body-wrapper">
+        <form className="body-select">
+          <label>
+            <input
+              type="radio"
+              name="body-select"
+              id="raw"
+              onClick={() => this.handleSelectBodyType("raw")}
+            />
+            raw
+          </label>
+          <label>
+            <input
+              type="radio"
+              name="body-select"
+              id="formData"
+              onClick={() => this.handleSelectBodyType("formData")}
+            />
+            form-data
+          </label>
+          <label>
+            <input
+              type="radio"
+              name="body-select"
+              id="urlEncoded"
+              onClick={() => this.handleSelectBodyType("urlEncoded")}
+            />
+            urlencoded
+          </label>
+        </form>
+
+        <div className="body-container">{this.renderBody()}</div>
       </div>
     );
   }
 }
 
-export default Body;
+export default BodyContainer;
