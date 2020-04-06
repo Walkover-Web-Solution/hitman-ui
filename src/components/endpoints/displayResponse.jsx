@@ -10,7 +10,7 @@ class DisplayResponse extends Component {
     prettyResponse: true,
     previewResponse: false,
     responseString: "",
-    timeElapsed: "",
+    timeElapsed: ""
   };
 
   responseTime() {
@@ -23,7 +23,7 @@ class DisplayResponse extends Component {
       rawResponse: true,
       previewResponse: false,
       prettyResponse: false,
-      responseString: JSON.stringify(this.props.response.data),
+      responseString: JSON.stringify(this.props.response.data)
     });
   }
 
@@ -32,7 +32,7 @@ class DisplayResponse extends Component {
       rawResponse: false,
       previewResponse: false,
       prettyResponse: true,
-      responseString: JSON.stringify(this.props.response),
+      responseString: JSON.stringify(this.props.response)
     });
   }
 
@@ -40,7 +40,7 @@ class DisplayResponse extends Component {
     this.setState({
       rawResponse: false,
       previewResponse: true,
-      prettyResponse: false,
+      prettyResponse: false
     });
   }
 
