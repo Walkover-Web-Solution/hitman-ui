@@ -52,6 +52,8 @@ class BodyContainer extends Component {
         this.setState({ data });
         this.props.set_body(this.state.selectedBodyType, dataArray);
         break;
+      default:
+        break;
     }
   }
 
@@ -92,7 +94,6 @@ class BodyContainer extends Component {
   }
   render() {
     if (this.props.body && !this.state.selectedBodyType) {
-      console.log("this.props", this.props);
       const selectedBodyType = this.props.body.type;
       let data = this.state.data;
       data[selectedBodyType] = this.props.body.value;

@@ -1,4 +1,3 @@
-import jQuery from "jquery";
 import { Component, default as React } from "react";
 import { Dropdown, InputGroup, Modal } from "react-bootstrap";
 import { isEmail, ReactMultiEmail } from "react-multi-email";
@@ -7,32 +6,32 @@ import { connect } from "react-redux";
 import shortid from "shortid";
 import authService from "../auth/authService";
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
-    teamUsers: state.teamUsers
+    teamUsers: state.teamUsers,
   };
 };
 
 class ShareCollectionForm extends Component {
   state = {
     data: {
-      role: "Collaborator"
+      role: "Collaborator",
     },
     emails: [],
-    modifiedteamMembers: []
+    modifiedteamMembers: [],
   };
   changeTeamFlag = true;
 
   dropdownRole = {
     admin: { name: "Admin" },
-    collaborator: { name: "Collaborator" }
+    collaborator: { name: "Collaborator" },
   };
 
   setDropdowmRole(key) {
     const data = this.state.data;
     data.role = this.dropdownRole[key].name;
     this.setState({
-      data
+      data,
     });
   }
 
@@ -49,10 +48,10 @@ class ShareCollectionForm extends Component {
     this.props.shareCollection(teamMemberData);
     this.setState({
       data: {
-        role: "Collaborator"
+        role: "Collaborator",
       },
       emails: [],
-      modifiedteamMembers: []
+      modifiedteamMembers: [],
     });
   }
 
@@ -69,7 +68,7 @@ class ShareCollectionForm extends Component {
             id: null,
             deleteFlag: false,
             userId: null,
-            requestId: shortid.generate()
+            requestId: shortid.generate(),
           };
         }
       }
@@ -87,7 +86,7 @@ class ShareCollectionForm extends Component {
         id: this.props.teamUsers[selectedMember.userId].id,
         deleteFlag,
         userId: selectedMember.userId,
-        requestId: null
+        requestId: null,
       };
     }
     this.setState({ modifiedteamMembers });
@@ -167,10 +166,10 @@ class ShareCollectionForm extends Component {
                     name="email"
                     placeholder="Email-id"
                     emails={emails}
-                    onChange={_emails => {
+                    onChange={(_emails) => {
                       this.setState({ emails: _emails });
                     }}
-                    validateEmail={email => {
+                    validateEmail={(email) => {
                       return isEmail(email);
                     }}
                     getLabel={(email, index, removeEmail) => {
@@ -193,7 +192,7 @@ class ShareCollectionForm extends Component {
                         {this.state.data.role}
                       </Dropdown.Toggle>
                       <Dropdown.Menu>
-                        {Object.keys(this.dropdownRole).map(key => (
+                        {Object.keys(this.dropdownRole).map((key) => (
                           <Dropdown.Item
                             onClick={() => this.setDropdowmRole(key)}
                           >
@@ -209,7 +208,7 @@ class ShareCollectionForm extends Component {
                       <button
                         style={{ float: "right", marginLeft: "10px" }}
                         type="button"
-                        class="btn btn-success"
+                        className="btn btn-success"
                         onClick={() => {
                           this.handlePublic(
                             this.props.collections[this.props.collection_id]
@@ -236,7 +235,7 @@ class ShareCollectionForm extends Component {
                   <th scope="col"></th>
                 </tr>
               </thead>
-              {Object.keys(this.props.teamUsers).map(teamId => (
+              {Object.keys(this.props.teamUsers).map((teamId) => (
                 <tbody>
                   <tr
                     className={
@@ -259,7 +258,7 @@ class ShareCollectionForm extends Component {
                             {this.props.teamUsers[teamId].role}
                           </Dropdown.Toggle>
                           <Dropdown.Menu>
-                            {Object.keys(this.dropdownRole).map(key => (
+                            {Object.keys(this.dropdownRole).map((key) => (
                               <Dropdown.Item
                                 className={
                                   this.props.teamUsers[teamId].role === "Owner"

@@ -67,10 +67,10 @@ class DisplayResponse extends Component {
             </div>
             <div className="response-viewer">
               <div className="response-tabs">
-                <ul class="nav nav-tabs" id="myTab" role="tablist">
-                  <li class="nav-item">
+                <ul className="nav nav-tabs" id="myTab" role="tablist">
+                  <li className="nav-item">
                     <a
-                      class="nav-link active"
+                      className="nav-link active"
                       id="home-tab"
                       data-toggle="tab"
                       href="#home"
@@ -81,9 +81,9 @@ class DisplayResponse extends Component {
                       Pretty
                     </a>
                   </li>
-                  <li class="nav-item">
+                  <li className="nav-item">
                     <a
-                      class="nav-link"
+                      className="nav-link"
                       id="profile-tab"
                       data-toggle="tab"
                       href="#profile"
@@ -94,9 +94,9 @@ class DisplayResponse extends Component {
                       Raw
                     </a>
                   </li>
-                  <li class="nav-item">
+                  <li className="nav-item">
                     <a
-                      class="nav-link"
+                      className="nav-link"
                       id="contact-tab"
                       data-toggle="tab"
                       href="#contact"
@@ -115,13 +115,13 @@ class DisplayResponse extends Component {
                   style={{ float: "right", borderRadius: "12px" }}
                 >
                   <button>
-                    <i class="fas fa-clone"></i>
+                    <i className="fas fa-clone"></i>
                   </button>
                 </CopyToClipboard>
               </div>
-              <div class="tab-content" id="myTabContent">
+              <div className="tab-content" id="myTabContent">
                 <div
-                  class="tab-pane fade show active"
+                  className="tab-pane fade show active"
                   id="home"
                   role="tabpanel"
                   aria-labelledby="home-tab"
@@ -132,7 +132,7 @@ class DisplayResponse extends Component {
                   />
                 </div>
                 <div
-                  class="tab-pane fade"
+                  className="tab-pane fade"
                   id="profile"
                   role="tabpanel"
                   aria-labelledby="profile-tab"
@@ -140,7 +140,7 @@ class DisplayResponse extends Component {
                   {JSON.stringify(this.props.response.data)}
                 </div>
                 <div
-                  class="tab-pane fade"
+                  className="tab-pane fade"
                   id="contact"
                   role="tabpanel"
                   aria-labelledby="contact-tab"
