@@ -923,7 +923,7 @@ class DisplayEndpoint extends Component {
               >
                 {this.state.methodList.map(methodName => (
                   <button
-                    className="btn"
+                    className="btn custom-request-button"
                     onClick={() => this.setMethod(methodName)}
                   >
                     {methodName}
@@ -971,61 +971,57 @@ class DisplayEndpoint extends Component {
         </div>
 
         <div className="endpoint-headers-container">
-          <button
-            className="btn"
-            type="button"
-            id="show-code-snippets-button"
-            onClick={() => this.prepareHarObject()}
-            style={{
-              float: "right",
-              color: "tomato",
-              fontFamily: "Times New Roman"
-            }}
-          >
-            Code
-          </button>
-          <ul className="nav nav-tabs" id="pills-tab" role="tablist">
-            <li className="nav-item">
-              <a
-                className="nav-link active"
-                id="pills-params-tab"
-                data-toggle="pill"
-                href="#pills-home"
-                role="tab"
-                aria-controls="pills-home"
-                aria-selected="true"
-              >
-                Params
-              </a>
-            </li>
-            <li className="nav-item">
-              <a
-                className="nav-link"
-                id="pills-headers-tab"
-                data-toggle="pill"
-                href="#pills-profile"
-                role="tab"
-                aria-controls="pills-profile"
-                aria-selected="false"
-              >
-                Headers
-              </a>
-            </li>
-            <li className="nav-item">
-              <a
-                className="nav-link"
-                id="pills-body-tab"
-                data-toggle="pill"
-                href="#pills-contact"
-                role="tab"
-                aria-controls="pills-contact"
-                aria-selected="false"
-              >
-                Body
-              </a>
-            </li>
-          </ul>
-
+          <div className="headers-params-wrapper">
+            <button
+              className="btn"
+              type="button"
+              id="show-code-snippets-button"
+              onClick={() => this.prepareHarObject()}
+            >
+              Code
+            </button>
+            <ul className="nav nav-tabs" id="pills-tab" role="tablist">
+              <li className="nav-item">
+                <a
+                  className="nav-link active"
+                  id="pills-params-tab"
+                  data-toggle="pill"
+                  href="#pills-home"
+                  role="tab"
+                  aria-controls="pills-home"
+                  aria-selected="true"
+                >
+                  Params
+                </a>
+              </li>
+              <li className="nav-item">
+                <a
+                  className="nav-link"
+                  id="pills-headers-tab"
+                  data-toggle="pill"
+                  href="#pills-profile"
+                  role="tab"
+                  aria-controls="pills-profile"
+                  aria-selected="false"
+                >
+                  Headers
+                </a>
+              </li>
+              <li className="nav-item">
+                <a
+                  className="nav-link"
+                  id="pills-body-tab"
+                  data-toggle="pill"
+                  href="#pills-contact"
+                  role="tab"
+                  aria-controls="pills-contact"
+                  aria-selected="false"
+                >
+                  Body
+                </a>
+              </li>
+            </ul>
+          </div>
           <div className="tab-content" id="pills-tabContent">
             <div
               className="tab-pane fade show active"

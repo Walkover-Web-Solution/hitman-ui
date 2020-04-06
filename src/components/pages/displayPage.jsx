@@ -58,12 +58,6 @@ class DisplayPage extends Component {
             Edit page
           </button>
         ) : null}
-        {/* <span>
-          <p>{this.state.data.name}</p>
-        </span>
-        <span>
-          <p>{this.state.data.contents}</p>
-        </span> */}
 
         <div>{ReactHtmlParser(this.state.data.contents)}</div>
       </div>
