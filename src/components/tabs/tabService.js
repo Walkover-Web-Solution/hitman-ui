@@ -23,7 +23,7 @@ function closeTab(props, index) {
       if (tabs.length > 0) {
         const newIndex = index;
         props.set_tabs(tabs, newIndex);
-        changeRoute(props, tabs, "update endpoint");
+        changeRoute(props, tabs[newIndex], "update endpoint");
       } else {
         const newTabId = shortId.generate();
         tabs = [...tabs, { id: newTabId, type: "endpoint", isSaved: false }];
