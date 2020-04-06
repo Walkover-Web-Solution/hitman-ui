@@ -330,7 +330,10 @@ class DisplayEndpoint extends Component {
     Object.keys(headersData).forEach((header) => {
       headerJson[headersData[header].key] = headersData[header].value;
     });
+    console.log(headerJson);
+    // console.log(this.formatBody(this.state.data.body, headerJson))
     let { body, headers } = this.formatBody(this.state.data.body, headerJson);
+    console.log(headers, headerJson);
     this.handleApiCall(api, body, headers);
   };
 
@@ -401,6 +404,7 @@ class DisplayEndpoint extends Component {
   }
 
   propsFromChild(name, value) {
+    console.log(name, value);
     if (name === "originalParams") {
       this.handleUpdateUri(value);
       this.setState({ originalParams: value });

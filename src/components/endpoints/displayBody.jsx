@@ -93,8 +93,10 @@ class BodyContainer extends Component {
       const selectedBodyType = this.props.body.type;
       let data = this.state.data;
       data[selectedBodyType] = this.props.body.value;
-      document.getElementById(selectedBodyType).checked = true;
-      this.setState({ selectedBodyType, data });
+      if (document.getElementById(selectedBodyType)) {
+        document.getElementById(selectedBodyType).checked = true;
+        this.setState({ selectedBodyType, data });
+      }
     }
     return (
       <div className="body-wrapper">
