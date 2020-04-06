@@ -1064,6 +1064,7 @@ class DisplayEndpoint extends Component {
               <BodyContainer
                 {...this.props}
                 set_body={this.setBody.bind(this)}
+                body={this.state.endpoint.body}
               />
               {/* <textarea
                 className="form-control"

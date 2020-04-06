@@ -89,6 +89,13 @@ class BodyContainer extends Component {
     }
   }
   render() {
+    if (this.props.body && !this.state.selectedBodyType) {
+      const selectedBodyType = this.props.body.type;
+      let data = this.state.data;
+      data[selectedBodyType] = this.props.body.value;
+      document.getElementById(selectedBodyType).checked = true;
+      this.setState({ selectedBodyType, data });
+    }
     return (
       <div className="body-wrapper">
         <form className="body-select">
@@ -96,7 +103,7 @@ class BodyContainer extends Component {
             <input
               type="radio"
               name="body-select"
-              value="raw"
+              id="raw"
               onClick={() => this.handleSelectBodyType("raw")}
             />
             raw
@@ -105,7 +112,7 @@ class BodyContainer extends Component {
             <input
               type="radio"
               name="body-select"
-              value="form"
+              id="formData"
               onClick={() => this.handleSelectBodyType("formData")}
             />
             form-data
@@ -114,7 +121,7 @@ class BodyContainer extends Component {
             <input
               type="radio"
               name="body-select"
-              value="form"
+              id="urlEncoded"
               onClick={() => this.handleSelectBodyType("urlEncoded")}
             />
             urlencoded
