@@ -221,7 +221,12 @@ class DisplayEndpoint extends Component {
         description: description[i],
       });
     }
-    originalParams.push(this.structueParamsHeaders[0]);
+    originalParams.push({
+      checked: "notApplicable",
+      key: "",
+      value: "",
+      description: "",
+    });
     return originalParams;
   }
 
@@ -622,7 +627,12 @@ class DisplayEndpoint extends Component {
         value: "application/x-www-form-urlencoded",
         description: "",
       };
-      originalHeaders.push(this.structueParamsHeaders[0]);
+      originalHeaders.push({
+        checked: "notApplicable",
+        key: "",
+        value: "",
+        description: "",
+      });
       this.setState({ originalHeaders });
     }
   }
