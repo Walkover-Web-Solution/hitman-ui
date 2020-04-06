@@ -97,6 +97,13 @@ class BodyContainer extends Component {
       const selectedBodyType = this.props.body.type;
       let data = this.state.data;
       data[selectedBodyType] = this.props.body.value;
+      if (selectedBodyType === "raw") {
+        data[selectedBodyType] = JSON.stringify(
+          data[selectedBodyType],
+          null,
+          4
+        );
+      }
       if (document.getElementById(selectedBodyType)) {
         document.getElementById(selectedBodyType).checked = true;
         this.setState({ selectedBodyType, data });
