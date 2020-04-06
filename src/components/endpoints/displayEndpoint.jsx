@@ -12,6 +12,7 @@ import GenericTable from "./genericTable";
 import HostContainer from "./hostContainer";
 import { addEndpoint, updateEndpoint } from "./redux/endpointsActions";
 import BodyContainer from "./displayBody";
+const status = require("http-status");
 
 var URI = require("urijs");
 
@@ -284,6 +285,7 @@ class DisplayEndpoint extends Component {
     if (error.response) {
       let response = {
         status: error.response.status,
+        statusText: status[error.response.status],
         data: error.response.data,
       };
       this.setState({ response, flagResponse: true });
@@ -365,12 +367,10 @@ class DisplayEndpoint extends Component {
   doSubmitHeader() {
     let originalHeaders = [...this.state.originalHeaders];
     let updatedHeaders = {};
-    let updatedHeadersArray = [];
     for (let i = 0; i < originalHeaders.length; i++) {
       if (originalHeaders[i].key === "") {
         continue;
       } else {
-        updatedHeadersArray.push(originalHeaders[i]);
         updatedHeaders[originalHeaders[i].key] = {
           checked: originalHeaders[i].checked,
           value: originalHeaders[i].value,
@@ -381,7 +381,7 @@ class DisplayEndpoint extends Component {
     const endpoint = { ...this.state.endpoint };
     endpoint.headers = { ...updatedHeaders };
     this.setState({
-      originalHeaders: updatedHeadersArray,
+      originalHeaders,
       endpoint,
     });
     return updatedHeaders;
