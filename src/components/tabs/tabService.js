@@ -50,7 +50,7 @@ function changeRoute(props, tab, title) {
     });
   } else {
     props.history.push({
-      pathname: `/dashboard/${tab.type}/new`,
+      pathname: `/dashboard/${tab.type}/new/${tab.id}`,
     });
   }
   // }
