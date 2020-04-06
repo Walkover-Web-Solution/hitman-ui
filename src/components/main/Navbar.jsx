@@ -64,13 +64,13 @@ class Navbar extends Component {
         {this.state.showCollectionForm &&
           collectionsService.showCollectionForm(
             this.props,
-            (() => this.setState({ showCollectionForm: false })).bind(this),
+            () => this.setState({ showCollectionForm: false }),
             "Add new Collection"
           )}
         {this.state.showEnvironmentForm &&
           environmentsService.showEnvironmentForm(
             this.props,
-            (() => this.setState({ showEnvironmentForm: false })).bind(this),
+            () => this.setState({ showEnvironmentForm: false }),
             "Add new Environment"
           )}
         <div className="btn-group">
@@ -129,9 +129,7 @@ class Navbar extends Component {
               <i className="fa fa-file-text" aria-hidden="true"></i>
             </button>
             <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <a className="dropdown-item" href="#">
-                Open new Tab
-              </a>
+              <button className="btn btn-primary">Open new tab</button>
             </div>
           </div>
         </div>
@@ -152,7 +150,6 @@ class Navbar extends Component {
             <div
               className="dropdown-menu dropdown-menu-right"
               aria-labelledby="dropdownMenuButton"
-              alignLeft
             >
               <div id="custom-user-left">
                 <i className="fas fa-user"></i>

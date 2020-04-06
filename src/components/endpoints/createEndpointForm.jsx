@@ -58,7 +58,9 @@ class CreateEndpointForm extends Form {
         list.type = "endpoints";
         list.parentId = item.id;
         this.setState({ list });
-      // this.setState({ groupId: item.id });
+        return;
+      default:
+        return;
     }
   }
 
@@ -103,6 +105,8 @@ class CreateEndpointForm extends Form {
             id: this.props.endpoints[endpointId].id
           }));
         break;
+      default:
+        break;
     }
     return listItems;
   }
@@ -117,6 +121,8 @@ class CreateEndpointForm extends Form {
         return this.props.versions[this.state.list.parentId].number;
       case "endpoints":
         return this.props.groups[this.state.list.parentId].name;
+      default:
+        return;
     }
   }
 
@@ -139,6 +145,8 @@ class CreateEndpointForm extends Form {
         list.type = "groups";
         list.parentId = this.props.groups[this.state.list.parentId].versionId;
         this.setState({ list });
+        break;
+      default:
         break;
     }
   }
@@ -172,18 +180,18 @@ class CreateEndpointForm extends Form {
               {this.renderInput("name", "Name", "Endpoint Name")}
               {this.renderTextArea("description", "Description", "Description")}
             </form>
-            <div class="card" id="endpoint-form-collection-list">
-              <div class="card-title">
+            <div className="card" id="endpoint-form-collection-list">
+              <div className="card-title">
                 {this.state.list.type === "collections" ? (
                   "All Collections"
                 ) : (
                   <button className="btn" onClick={() => this.goBack()}>
-                    <i class="fas fa-chevron-left"></i>
+                    <i className="fas fa-chevron-left"></i>
                     {this.renderListTitle()}
                   </button>
                 )}
               </div>
-              <ul class="list-group" id="folder-list">
+              <ul className="list-group" id="folder-list">
                 {this.state.list.type === "endpoints" ? (
                   this.renderList().map(item => (
                     <li id="endpoint-list">
@@ -197,16 +205,16 @@ class CreateEndpointForm extends Form {
                   ))
                 ) : this.renderList().length ? (
                   this.renderList().map(item => (
-                    <li class="list-group-item">
+                    <li className="list-group-item">
                       <button
                         className="btn"
                         onClick={() => this.setList(item)}
                       >
                         <div className="list-item-wrapper">
-                          <i class="fas fa-folder"></i>
+                          <i className="fas fa-folder"></i>
                           {item.name}
                         </div>
-                        <i class="fas fa-chevron-right"></i>
+                        <i className="fas fa-chevron-right"></i>
                       </button>
                     </li>
                   ))

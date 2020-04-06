@@ -52,6 +52,8 @@ class BodyContainer extends Component {
         this.setState({ data });
         this.props.set_body(this.state.selectedBodyType, dataArray);
         break;
+      default:
+        break;
     }
   }
 

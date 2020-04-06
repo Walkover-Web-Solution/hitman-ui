@@ -63,17 +63,15 @@ function closeAllTabs(props) {
 }
 
 function selectTab(props, tab, index) {
-  {
-    props.set_tabs(null, index);
-    if (tab.isSaved) {
-      props.history.push({
-        pathname: `/dashboard/${tab.type}/${tab.id}`
-      });
-    } else {
-      props.history.push({
-        pathname: `/dashboard/${tab.type}/new/${tab.id}`
-      });
-    }
+  props.set_tabs(null, index);
+  if (tab.isSaved) {
+    props.history.push({
+      pathname: `/dashboard/${tab.type}/${tab.id}`
+    });
+  } else {
+    props.history.push({
+      pathname: `/dashboard/${tab.type}/new/${tab.id}`
+    });
   }
 }
 

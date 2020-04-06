@@ -5,90 +5,12 @@ import tabService from "./tabService";
 class CustomTabs extends Component {
   state = {};
 
-  // addNewTab(props) {
-  //   console.log(props);
-  //   let tabs = [...props.tabs];
-  //   const id = shortId.generate();
-  //   props.set_tabs(
-  //     [...tabs, { id, type: "endpoint", isSaved: false }],
-  //     tabs.length
-  //   );
-  //   props.history.push({ pathname: "/dashboard/endpoint/new" });
-  // }
-
-  // closeTab(props, index) {
-  //   let tabs = [...props.tabs];
-  //   tabs.splice(index, 1);
-  //   if (props.default_tab_index === index) {
-  //     if (index !== 0) {
-  //       const newIndex = props.default_tab_index - 1;
-  //       props.set_tabs(tabs, newIndex);
-  //       this.changeRoute(props, tabs[newIndex], "update endpoint");
-  //     } else {
-  //       if (tabs.length > 0) {
-  //         const newIndex = index;
-  //         props.set_tabs(tabs, newIndex);
-  //         this.changeRoute(props, tabs, "update endpoint");
-  //       } else {
-  //         const newTabId = shortId.generate();
-  //         tabs = [...tabs, { id: newTabId, type: "endpoint", isSaved: false }];
-
-  //         props.set_tabs(tabs, tabs.length - 1);
-  //         props.history.push({
-  //           pathname: `/dashboard/endpoint/new`
-  //         });
-  //       }
-  //     }
-  //   } else {
-  //     if (index < props.default_tab_index) {
-  //       props.set_tabs(tabs, props.default_tab_index - 1);
-  //     } else props.set_tabs(tabs);
-  //   }
-  // }
-
-  // changeRoute(props, tab, title) {
-  //   // if (tab.type === "endpoint") {
-  //   if (tab.isSaved) {
-  //     props.history.push({
-  //       pathname: `/dashboard/${tab.type}/${tab.id}`,
-  //       title
-  //     });
-  //   } else {
-  //     props.history.push({
-  //       pathname: `/dashboard/${tab.type}/new`
-  //     });
-  //   }
-  //   // }
-  // }
-
-  // closeAllTabs(props) {
-  //   const id = shortId.generate();
-  //   const tabs = [{ id, type: "endpoint", isSaved: false }];
-  //   props.set_tabs(tabs, 0);
-  //   props.history.push({ pathname: "/dashboard/endpoint/new" });
-  // }
-
-  // selectTab(props, tab, index) {
-  //   {
-  //     props.set_tabs(null, index);
-  //     if (tab.isSaved) {
-  //       props.history.push({
-  //         pathname: `/dashboard/${tab.type}/${tab.id}`
-  //       });
-  //     } else {
-  //       props.history.push({
-  //         pathname: `/dashboard/${tab.type}/new`
-  //       });
-  //     }
-  //   }
-  // }
-
   render() {
     return (
       <Nav variant="pills" className="flex-row">
         {Object.keys(this.props.endpoints).length > 0 &&
           this.props.tabs.map((tab, index) => (
-            <Nav.Item>
+            <Nav.Item key={tab.id}>
               <Nav.Link eventKey={tab.id}>
                 <button
                   className="btn"
@@ -106,7 +28,7 @@ class CustomTabs extends Component {
                 className="btn"
                 onClick={() => tabService.closeTab({ ...this.props }, index)}
               >
-                <i class="fas fa-times"></i>
+                <i className="fas fa-times"></i>
               </button>
             </Nav.Item>
           ))}

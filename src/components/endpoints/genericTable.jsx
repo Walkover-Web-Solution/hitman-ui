@@ -237,7 +237,7 @@ class GenericTable extends Component {
           <table
             className="table table-bordered"
             id="custom-generic-table"
-            bordered
+            // bordered
           >
             <thead>
               <tr>
@@ -281,7 +281,7 @@ class GenericTable extends Component {
                       className="form-control"
                       style={{ border: "none" }}
                     />
-                  </td>{" "}
+                  </td>
                   <td className="custom-td">
                     <input
                       name={index + ".value"}

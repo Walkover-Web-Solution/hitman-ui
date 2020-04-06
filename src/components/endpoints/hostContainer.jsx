@@ -69,6 +69,8 @@ class HostContainer extends Component {
       case "versionHost":
         BASE_URL = this.props.versions[this.state.versionId].host;
         break;
+      default:
+        break;
     }
     this.props.set_base_url(BASE_URL);
     return BASE_URL;
@@ -102,9 +104,9 @@ class HostContainer extends Component {
           onChange={this.handleChange}
           disabled={this.state.selectedHost !== "customHost"}
         />
-        <div class="dropdown" id="host-select">
+        <div className="dropdown" id="host-select">
           <button
-            class="btn dropdown-toggle"
+            className="btn dropdown-toggle"
             type="button"
             id="dropdownMenuButton"
             data-toggle="dropdown"
@@ -112,7 +114,7 @@ class HostContainer extends Component {
             aria-expanded="false"
           ></button>
           <div
-            class="dropdown-menu dropdown-menu-right"
+            className="dropdown-menu dropdown-menu-right"
             aria-labelledby="dropdownMenuButton"
           >
             {this.props.environment &&
@@ -123,7 +125,7 @@ class HostContainer extends Component {
                   onClick={() => this.selectHost("environmentHost")}
                 >
                   {this.state.selectedHost === "environmentHost" && (
-                    <i class="fas fa-check"></i>
+                    <i className="fas fa-check"></i>
                   )}
                   <div className="host-label">environmentHost</div>
                 </button>
@@ -135,7 +137,7 @@ class HostContainer extends Component {
                 onClick={() => this.selectHost("groupHost")}
               >
                 {this.state.selectedHost === "groupHost" && (
-                  <i class="fas fa-check"></i>
+                  <i className="fas fa-check"></i>
                 )}
                 <div className="host-label">groupHost</div>
               </button>
@@ -146,7 +148,7 @@ class HostContainer extends Component {
                 onClick={() => this.selectHost("versionHost")}
               >
                 {this.state.selectedHost === "versionHost" && (
-                  <i class="fas fa-check"></i>
+                  <i className="fas fa-check"></i>
                 )}
                 <div className="host-label">versionHost</div>
               </button>
@@ -158,7 +160,7 @@ class HostContainer extends Component {
               onClick={() => this.selectHost("customHost")}
             >
               {this.state.selectedHost === "customHost" && (
-                <i class="fas fa-check"></i>
+                <i className="fas fa-check"></i>
               )}
               <div className="host-label">customHost</div>
             </button>
