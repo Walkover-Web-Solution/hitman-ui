@@ -386,16 +386,18 @@ class CollectionsComponent extends Component {
                         >
                           Import Version
                         </button>
-                        <button
-                          className="dropdown-item"
-                          onClick={() =>
-                            this.handleGoToDocs(
-                              this.props.collections[collectionId]
-                            )
-                          }
-                        >
-                          Go to Docs
-                        </button>
+                        {this.props.collections[collectionId].isPublic && (
+                          <button
+                            className="dropdown-item"
+                            onClick={() =>
+                              this.handleGoToDocs(
+                                this.props.collections[collectionId]
+                              )
+                            }
+                          >
+                            Go to Docs
+                          </button>
+                        )}
                         <button
                           className="dropdown-item"
                           onClick={() => {
