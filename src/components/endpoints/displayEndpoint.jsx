@@ -94,15 +94,15 @@ class DisplayEndpoint extends Component {
     },
   ];
 
-  fetchEndpoint(flag) {
+  fetchEndpoint(flag, endpointId) {
     let endpoint = {};
     let originalParams = [];
     let originalHeaders = [];
     const split = this.props.location.pathname.split("/");
-    let endpointId = "";
 
-    if (isDashboardRoute(this.props)) endpointId = split[3];
-    else endpointId = split[4];
+    if (isDashboardRoute(this.props)) {
+      if (!endpointId) endpointId = split[3];
+    } else endpointId = split[4];
 
     const { endpoints } = store.getState();
     const { groups } = store.getState();
@@ -712,91 +712,93 @@ class DisplayEndpoint extends Component {
   render() {
     if (
       this.props.location.pathname.split("/")[3] !== "new" &&
-      this.state.endpoint.id !== this.props.location.pathname.split("/")[3]
+      this.state.endpoint.id !== this.props.tab.id &&
+      this.props.endpoints[this.props.tab.id]
     ) {
       let flag = 0;
 
-      if (!this.props.location.title && isDashboardRoute(this.props)) {
-        this.fetchEndpoint(flag);
+      if (isDashboardRoute(this.props)) {
+        this.fetchEndpoint(flag, this.props.tab.id);
         store.subscribe(() => {
           if (!this.props.location.title && !this.state.title) {
-            this.fetchEndpoint(flag);
+            this.fetchEndpoint(flag, this.props.tab.id);
           }
         });
       }
     }
-    if (this.props.location.title === "Add New Endpoint") {
-      this.title = "Add New Endpoint";
-      this.setState({
-        data: {
-          name: "",
-          method: "GET",
-          body: { type: "raw", value: null },
-          uri: "",
-          updatedUri: "",
-        },
-        startTime: "",
-        timeElapsed: "",
-        response: {},
-        endpoint: {},
-        groupId: this.props.location.groupId,
-        title: "Add New Endpoint",
-        flagResponse: false,
-        showDescriptionFlag: false,
+    // if (this.props.location.title === "Add New Endpoint") {
+    //   console.log("a");
+    //   this.title = "Add New Endpoint";
+    //   this.setState({
+    //     data: {
+    //       name: "",
+    //       method: "GET",
+    //       body: { type: "raw", value: null },
+    //       uri: "",
+    //       updatedUri: "",
+    //     },
+    //     startTime: "",
+    //     timeElapsed: "",
+    //     response: {},
+    //     endpoint: {},
+    //     groupId: this.props.location.groupId,
+    //     title: "Add New Endpoint",
+    //     flagResponse: false,
+    //     showDescriptionFlag: false,
 
-        originalHeaders: [
-          {
-            checked: "notApplicable",
-            key: "",
-            value: "",
-            description: "",
-          },
-        ],
-        originalParams: [
-          {
-            checked: "notApplicable",
-            key: "",
-            value: "",
-            description: "",
-          },
-        ],
-      });
-      this.props.history.push({ groups: null });
-    }
+    //     originalHeaders: [
+    //       {
+    //         checked: "notApplicable",
+    //         key: "",
+    //         value: "",
+    //         description: "",
+    //       },
+    //     ],
+    //     originalParams: [
+    //       {
+    //         checked: "notApplicable",
+    //         key: "",
+    //         value: "",
+    //         description: "",
+    //       },
+    //     ],
+    //   });
+    //   this.props.history.push({ groups: null });
+    // }
 
-    if (
-      this.props.location.title === "update endpoint" &&
-      this.props.location.endpoint
-    ) {
-      let endpoint = { ...this.props.location.endpoint };
-      //To fetch originalParams from Params
-      const originalParams = this.fetchoriginalParams(
-        this.props.location.endpoint.params
-      );
+    // if (
+    //   this.props.location.title === "update endpoint" &&
+    //   this.props.location.endpoint
+    // ) {
+    //   let endpoint = { ...this.props.location.endpoint };
+    //   //To fetch originalParams from Params
+    //   const originalParams = this.fetchoriginalParams(
+    //     this.props.location.endpoint.params
+    //   );
 
-      //To fetch originalHeaders from Headers
-      const originalHeaders = this.fetchoriginalHeaders(endpoint.headers);
+    //   //To fetch originalHeaders from Headers
+    //   const originalHeaders = this.fetchoriginalHeaders(endpoint.headers);
 
-      this.setState({
-        data: {
-          method: endpoint.requestType,
-          uri: endpoint.uri,
-          updatedUri: endpoint.uri,
-          name: endpoint.name,
-          body: endpoint.body,
-          // JSON.stringify(endpoint.body, null, 4)
-        },
-        title: "update endpoint",
-        response: {},
-        groupId: this.props.location.endpoint.groupId,
-        originalParams,
-        originalHeaders,
-        endpoint,
-        flagResponse: false,
-        oldDescription: endpoint.description,
-      });
-      this.props.history.push({ endpoint: null });
-    }
+    //   this.setState({
+    //     data: {
+    //       method: endpoint.requestType,
+    //       uri: endpoint.uri,
+    //       updatedUri: endpoint.uri,
+    //       name: endpoint.name,
+    //       body: endpoint.body,
+    //       // JSON.stringify(endpoint.body, null, 4)
+    //     },
+    //     title: "update endpoint",
+    //     response: {},
+    //     groupId: this.props.location.endpoint.groupId,
+    //     originalParams,
+    //     originalHeaders,
+    //     endpoint,
+    //     flagResponse: false,
+    //     oldDescription: endpoint.description,
+    //   });
+    //   this.props.history.push({ endpoint: null });
+    // }
     return (
       <div className="endpoint-container">
         {this.state.showEndpointFormModal && (

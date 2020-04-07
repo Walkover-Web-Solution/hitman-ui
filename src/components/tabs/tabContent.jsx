@@ -11,7 +11,8 @@ class TabContent extends Component {
       <Tab.Content>
         {this.props.tabs.map((tab) => (
           <Tab.Pane eventKey={tab.id} key={tab.id}>
-            <Switch>
+            <DisplayEndpoint {...this.props} environment={{}} tab={tab} />
+            {/* <Switch>
               <Route
                 path={`/dashboard/endpoint/${tab.id}`}
                 render={(props) => (
@@ -32,7 +33,7 @@ class TabContent extends Component {
                 path={`/dashboard/page/${tab.id}`}
                 render={(props) => <DisplayPage {...props} />}
               />
-            </Switch>
+            </Switch> */}
           </Tab.Pane>
         ))}
       </Tab.Content>
