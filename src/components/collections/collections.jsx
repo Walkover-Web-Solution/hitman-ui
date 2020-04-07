@@ -21,7 +21,7 @@ import {
   updateCollection,
 } from "./redux/collectionsActions";
 import ShareCollectionForm from "./shareCollectionForm";
-
+import { uiUrl } from "../../config.json";
 const mapStateToProps = (state) => {
   return {
     teams: state.teams,
@@ -101,6 +101,10 @@ class CollectionsComponent extends Component {
 
   async handleDuplicateCollection(collectionCopy) {
     this.props.duplicateCollection(collectionCopy);
+  }
+  async handleGoToDocs(collection) {
+    const publicDocsUrl = `${uiUrl}/public/${collection.id}`;
+    window.open(publicDocsUrl, "_blank");
   }
 
   showShareCollectionForm() {
@@ -381,6 +385,16 @@ class CollectionsComponent extends Component {
                           }
                         >
                           Import Version
+                        </button>
+                        <button
+                          className="dropdown-item"
+                          onClick={() =>
+                            this.handleGoToDocs(
+                              this.props.collections[collectionId]
+                            )
+                          }
+                        >
+                          Go to Docs
                         </button>
                         <button
                           className="dropdown-item"
