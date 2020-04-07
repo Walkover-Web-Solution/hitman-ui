@@ -78,10 +78,8 @@ class HostContainer extends Component {
   fetchPublicEndpointHost(props) {
     let HOST_URL = "";
     let endpointId = props.location.pathname.split("/")[4];
-    console.log("endpointId", endpointId);
     let endpoint = props.endpoints[endpointId];
     let groupId = endpoint.groupId;
-    console.log("endpoint", endpoint);
     let endpointUrl = endpoint.BASE_URL;
     if (endpointUrl === "" || endpointUrl === null) {
       let group = props.groups[groupId];
