@@ -216,6 +216,7 @@ class Endpoints extends Component {
               )
               .map((endpointId) => (
                 <div className="endpoint-list-item" key={endpointId}>
+                  <div className={this.props.endpoints[endpointId].state}></div>
                   <button
                     className="btn "
                     draggable
@@ -235,14 +236,7 @@ class Endpoints extends Component {
                     >
                       {this.props.endpoints[endpointId].requestType}
                     </div>
-                    <div
-                      className={
-                        this.props.endpoints[endpointId].state === "Pending" &&
-                        this.checkAccess(this.props.collection_id)
-                          ? "circle"
-                          : null
-                      }
-                    ></div>
+
                     {this.props.endpoints[endpointId].name}
                   </button>
                   <div className="btn-group">
