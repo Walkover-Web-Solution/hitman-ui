@@ -71,11 +71,7 @@ class DisplayEndpoint extends Component {
 
   async componentDidMount() {
     let flag = 0;
-    if (
-      (this.props.location.pathname.split("/")[3] === "new" &&
-        !this.props.location.title) ||
-      !isDashboardRoute(this.props)
-    ) {
+    if (!isDashboardRoute(this.props)) {
       this.fetchEndpoint(flag);
       store.subscribe(() => {
         if (!this.props.location.title && !this.state.title) {
@@ -137,6 +133,7 @@ class DisplayEndpoint extends Component {
       flag === 0
     ) {
       flag = 1;
+      console.log(endpointId, this.props.tab);
       endpoint = endpoints[endpointId];
       const groupId = endpoints[endpointId].groupId;
 
@@ -710,6 +707,7 @@ class DisplayEndpoint extends Component {
   }
 
   render() {
+    console.log(this.props.tab, this.props.location.pathname);
     if (
       this.props.location.pathname.split("/")[3] !== "new" &&
       this.state.endpoint.id !== this.props.tab.id &&
@@ -995,9 +993,9 @@ class DisplayEndpoint extends Component {
                   className="nav-link active"
                   id="pills-params-tab"
                   data-toggle="pill"
-                  href="#pills-home"
+                  href={`#params-${this.props.tab.id}`}
                   role="tab"
-                  aria-controls="pills-home"
+                  aria-controls={`params-${this.props.tab.id}`}
                   aria-selected="true"
                 >
                   Params
@@ -1008,9 +1006,9 @@ class DisplayEndpoint extends Component {
                   className="nav-link"
                   id="pills-headers-tab"
                   data-toggle="pill"
-                  href="#pills-profile"
+                  href={`#headers-${this.props.tab.id}`}
                   role="tab"
-                  aria-controls="pills-profile"
+                  aria-controls={`headers-${this.props.tab.id}`}
                   aria-selected="false"
                 >
                   Headers
@@ -1021,9 +1019,9 @@ class DisplayEndpoint extends Component {
                   className="nav-link"
                   id="pills-body-tab"
                   data-toggle="pill"
-                  href="#pills-contact"
+                  href={`#body-${this.props.tab.id}`}
                   role="tab"
-                  aria-controls="pills-contact"
+                  aria-controls={`body-${this.props.tab.id}`}
                   aria-selected="false"
                 >
                   Body
@@ -1034,7 +1032,7 @@ class DisplayEndpoint extends Component {
           <div className="tab-content" id="pills-tabContent">
             <div
               className="tab-pane fade show active"
-              id="pills-home"
+              id={`params-${this.props.tab.id}`}
               role="tabpanel"
               aria-labelledby="pills-params-tab"
             >
@@ -1046,7 +1044,7 @@ class DisplayEndpoint extends Component {
             </div>
             <div
               className="tab-pane fade"
-              id="pills-profile"
+              id={`headers-${this.props.tab.id}`}
               role="tabpanel"
               aria-labelledby="pills-headers-tab"
             >
@@ -1060,7 +1058,7 @@ class DisplayEndpoint extends Component {
             </div>
             <div
               className="tab-pane fade"
-              id="pills-contact"
+              id={`body-${this.props.tab.id}`}
               role="tabpanel"
               aria-labelledby="pills-body-tab"
             >
