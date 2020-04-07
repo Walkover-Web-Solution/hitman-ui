@@ -104,7 +104,7 @@ class BodyContainer extends Component {
     }
     return (
       <div className="body-wrapper">
-        <form className="body-select">
+        <form className="body-select custom-body-form">
           <label>
             <input
               type="radio"

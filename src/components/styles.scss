@@ -1395,3 +1395,19 @@ table#custom-generic-table {
 .dropdown-menu.dropdown-menu-right.show {
   background: rgb(247, 247, 247);
 }
+
+//body styling
+.custom-body-form {
+  padding: 10px;
+  border-bottom: 1px solid rgb(216, 221, 225);
+  label {
+    padding-right: 15px;
+    font-weight: 300;
+    input {
+      margin-right: 10px;
+    }
+    input[type="radio"]:checked {
+      background: rgb(128, 26, 0) !important;
+    }
+  }
+}
