@@ -20,20 +20,6 @@ const mapDispatchToProps = (dispatch) => {
 class Pages extends Component {
   state = {};
 
-  // handleDelete(page) {
-  //   const confirm = window.confirm(
-  //     "Are you sure you wish to delete this group? " +
-  //       "\n" +
-  //       "All your pages and endpoints present in this group will be deleted."
-  //   );
-  //   if (confirm) {
-  //     this.props.deletePage(page);
-  //     this.props.history.push({
-  //       pathname: "/dashboard"
-  //     });
-  //   }
-  // }
-
   handleDisplay(page, collectionId) {
     if (isDashboardRoute(this.props)) {
       this.props.history.push({

@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import Pages from "./pages";
 import { deletePage, duplicatePage } from "./redux/pagesActions";
 import pageService from "./pageService";
-
+import { isDashboardRoute } from "../common/utility";
 const mapStateToProps = (state) => {
   return {
     pages: state.pages,
@@ -75,7 +75,14 @@ class VersionPages extends Component {
                 this.props.pages[pageId].groupId === null
             )
             .map((pageId, index) => (
-              <div key={index} className={this.props.pages[pageId].state}>
+              <div
+                key={index}
+                className={
+                  isDashboardRoute(this.props)
+                    ? this.props.pages[pageId].state
+                    : null
+                }
+              >
                 <Pages
                   {...this.props}
                   page_id={pageId}

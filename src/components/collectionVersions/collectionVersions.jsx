@@ -4,7 +4,7 @@ import { withRouter } from "react-router-dom";
 import CollectionVersionForm from "../collectionVersions/collectionVersionForm";
 import {
   deleteVersion,
-  duplicateVersion
+  duplicateVersion,
 } from "../collectionVersions/redux/collectionVersionsActions";
 import ShareVersionForm from "../collectionVersions/shareVersionForm";
 import GroupForm from "../groups/groupForm";
@@ -16,16 +16,16 @@ import collectionVersionsService from "./collectionVersionsService";
 
 import { Accordion, Card, Button } from "react-bootstrap";
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
-    versions: state.versions
+    versions: state.versions,
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    deleteVersion: version => dispatch(deleteVersion(version)),
-    duplicateVersion: version => dispatch(duplicateVersion(version))
+    deleteVersion: (version) => dispatch(deleteVersion(version)),
+    duplicateVersion: (version) => dispatch(duplicateVersion(version)),
   };
 };
 
@@ -38,28 +38,28 @@ class CollectionVersions extends Component {
       addGroup: false,
       addPage: false,
       share: false,
-      edit: false
-    }
+      edit: false,
+    },
   };
 
   handleUpdate(collectionVersion) {
     this.props.history.push({
       pathname: `/dashboard/${this.props.collection_id}/versions/${collectionVersion.id}/edit`,
-      editCollectionVersion: collectionVersion
+      editCollectionVersion: collectionVersion,
     });
   }
 
   handleAddPage(versionId, collectionId) {
     this.props.history.push({
       pathname: `/dashboard/${collectionId}/versions/${versionId}/pages/new`,
-      versionId: versionId
+      versionId: versionId,
     });
   }
 
   handleDuplicate(version) {
     this.props.duplicateVersion(version);
     this.props.history.push({
-      pathname: "/dashboard"
+      pathname: "/dashboard",
     });
   }
 
@@ -81,7 +81,7 @@ class CollectionVersions extends Component {
     this.setState({
       showVersionForm,
       versionFormName: "Share Version",
-      selectedVersion: version
+      selectedVersion: version,
     });
   }
   openAddVersionPageForm(version) {
@@ -89,7 +89,7 @@ class CollectionVersions extends Component {
     this.setState({
       showVersionForm,
       versionFormName: "Add New Version Page",
-      selectedVersion: version
+      selectedVersion: version,
     });
   }
   openAddGroupForm(version) {
@@ -97,13 +97,13 @@ class CollectionVersions extends Component {
     this.setState({
       showVersionForm,
       versionFormName: "Add new Group",
-      selectedVersion: version
+      selectedVersion: version,
     });
   }
   openEditVersionForm(version) {
     this.setState({
       showCollectionForm: true,
-      selectedVersion: version
+      selectedVersion: version,
     });
   }
 
@@ -111,8 +111,8 @@ class CollectionVersions extends Component {
     this.setState({
       showDeleteModal: true,
       selectedVersion: {
-        ...this.props.versions[versionId]
-      }
+        ...this.props.versions[versionId],
+      },
     });
   }
 
@@ -185,7 +185,7 @@ class CollectionVersions extends Component {
           Object.keys(this.props.versions) &&
           Object.keys(this.props.versions)
             .filter(
-              versionId =>
+              (versionId) =>
                 this.props.versions[versionId].collectionId ===
                 this.props.collection_id
             )

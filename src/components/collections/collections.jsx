@@ -193,6 +193,13 @@ class CollectionsComponent extends Component {
     );
   }
 
+  handlePublicCollectionDescription(collection) {
+    this.props.history.push({
+      pathname: `/public/${collection.id}/description`,
+      collection,
+    });
+  }
+
   closeVersionForm() {
     this.setState({ showVersionForm: false });
   }
@@ -426,31 +433,25 @@ class CollectionsComponent extends Component {
         <div>
           <div className="App-Side">
             {Object.keys(this.props.collections).map((collectionId, index) => (
-              <Accordion key={collectionId} id="parent-accordion">
-                <Card>
-                  <Card.Header>
-                    <i
-                      className="fas fa-folder-open"
-                      style={{ margin: "5px" }}
-                    ></i>
-                    <Accordion.Toggle
-                      as={Button}
-                      variant="default"
-                      eventKey="1"
-                    >
-                      {this.props.collections[collectionId].name}
-                    </Accordion.Toggle>
-                  </Card.Header>
-                  <Accordion.Collapse eventKey="1">
-                    <Card.Body>
-                      <CollectionVersions
-                        {...this.props}
-                        collection_id={collectionId}
-                      />
-                    </Card.Body>
-                  </Accordion.Collapse>
-                </Card>
-              </Accordion>
+              <div id="parent-accordion">
+                <div>
+                  <h4
+                    style={{ "margin-bottom": "50px", "margin-left": "30px" }}
+                    onClick={() =>
+                      this.handlePublicCollectionDescription(
+                        this.props.collections[collectionId]
+                      )
+                    }
+                  >
+                    {this.props.collections[collectionId].name}
+                  </h4>
+
+                  <CollectionVersions
+                    {...this.props}
+                    collection_id={collectionId}
+                  />
+                </div>
+              </div>
             ))}
           </div>
         </div>
