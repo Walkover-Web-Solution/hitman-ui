@@ -12,6 +12,7 @@ import endpointApiService from "./endpointApiService";
 import GenericTable from "./genericTable";
 import HostContainer from "./hostContainer";
 import { addEndpoint, updateEndpoint } from "./redux/endpointsActions";
+
 const status = require("http-status");
 
 var URI = require("urijs");
@@ -175,6 +176,21 @@ class DisplayEndpoint extends Component {
       let description = [];
       let originalParams = this.state.originalParams;
       let updatedUri = e.currentTarget.value.split("?")[1];
+      let uri = e.currentTarget.value.split("?")[0];
+      let uripath = new URI(e.currentTarget.value);
+      let path = uripath.pathname().slice(1);
+      let pathVariableKeys = path.split("/");
+      let pathVariableKeysObject = {};
+      for (keys in pathVariableKeys) {
+        pathVariableKeysObject[pathVariableKeys[keys]] = false;
+      }
+      this.setPathVariables(pathVariableKeys, pathVariableKeysObject);
+
+      // if (pathVariableKeys[1] && pathVariableKeys[1].length !== 0) {
+      //   this.setPathVatiables(pathVariableKeys);
+      // } else {
+      //   this.setState({ pathVariables: [] });
+      // }
       let result = URI.parseQuery(updatedUri);
       for (let i = 0; i < Object.keys(result).length; i++) {
         keys.push(Object.keys(result)[i]);
@@ -200,6 +216,34 @@ class DisplayEndpoint extends Component {
     }
     this.setState({ data });
   };
+
+  setPathVariables(pathVariableKeys, pathVariableKeysObject) {
+    let pathVariables = [];
+    for (let i = 1; i < pathVariableKeys.length; i++) {
+      if (
+        pathVariableKeys[i][0] === ":" &&
+        pathVariableKeysObject[pathVariableKeys[i]] === false
+      ) {
+        pathVariableKeysObject[pathVariableKeys[i]] = true;
+        pathVariables.push({
+          checked: "notApplicable",
+          key: pathVariableKeys[i].slice(1),
+          value: this.state.pathVariables[i - 1]
+            ? this.state.pathVariables[i - 1].key === pathVariableKeys[i]
+              ? this.state.pathVariables[i - 1].value
+              : ""
+            : "",
+          description: this.state.pathVariables[i - 1]
+            ? this.state.pathVariables[i - 1].key === pathVariableKeys[i]
+              ? this.state.pathVariables[i - 1].description
+              : ""
+            : "",
+        });
+      }
+    }
+
+    this.setState({ pathVariables });
+  }
 
   makeOriginalParams(keys, values, description) {
     let originalParams = [];
@@ -318,6 +362,29 @@ class DisplayEndpoint extends Component {
       this.handleErrorResponse(error);
     }
   }
+  setPathVariableValues() {
+    let uri = new URI(this.uri.current.value);
+    uri = uri.pathname().slice(1);
+    let pathParameters = uri.split("/");
+    let path = "/";
+    let counter = 0;
+    for (let i = 0; i < pathParameters.length; i++) {
+      if (pathParameters[i][0] === ":") {
+        path = path + this.state.pathVariables[counter].value + "/";
+        counter++;
+      } else {
+        path = path + pathParameters[i] + "/";
+      }
+    }
+    console.log("path", path);
+    // generatePath(
+    //   uri,
+    //   this.state.pathVariables.map(
+    //     (variable) => (variable.key = variable.value)
+    //   )
+    // );
+    return path;
+  }
 
   handleSend = async () => {
     let startTime = new Date().getTime();
@@ -325,7 +392,10 @@ class DisplayEndpoint extends Component {
     this.setState({ startTime, response });
     const headersData = this.doSubmitHeader();
     const BASE_URL = this.customState.BASE_URL;
-    let api = BASE_URL + this.uri.current.value;
+    let uri = new URI(this.uri.current.value);
+    let queryparams = uri.search();
+    let path = this.setPathVariableValues();
+    let api = BASE_URL + path + queryparams;
     api = this.replaceVariables(api);
     let headerJson = {};
     Object.keys(headersData).forEach((header) => {
@@ -345,6 +415,7 @@ class DisplayEndpoint extends Component {
       }
       const headersData = this.doSubmitHeader();
       const updatedParams = this.doSubmitParam();
+      const pathVariables = this.doSubmitPathVariables();
       const endpoint = {
         uri: this.uri.current.value,
         name: EndpointName || this.name.current.value,
@@ -352,6 +423,7 @@ class DisplayEndpoint extends Component {
         body: body,
         headers: headersData,
         params: updatedParams,
+        pathVariables: pathVariables,
         BASE_URL: this.customState.BASE_URL,
       };
       // if (endpoint.name === "" || endpoint.uri === "")
@@ -368,6 +440,31 @@ class DisplayEndpoint extends Component {
       }
     }
   };
+
+  doSubmitPathVariables() {
+    let updatedPathVariables = {};
+    if (this.state.pathVariables) {
+      let pathVariables = [...this.state.pathVariables];
+      for (let i = 0; i < pathVariables.length; i++) {
+        if (pathVariables[i].key === "") {
+          continue;
+        } else {
+          updatedPathVariables[pathVariables[i].key] = {
+            checked: pathVariables[i].checked,
+            value: pathVariables[i].value,
+            description: pathVariables[i].description,
+          };
+        }
+      }
+      const endpoint = { ...this.state.endpoint };
+      endpoint.pathVariables = { ...updatedPathVariables };
+      this.setState({
+        pathVariables,
+        endpoint,
+      });
+    }
+    return updatedPathVariables;
+  }
 
   doSubmitHeader() {
     let originalHeaders = [...this.state.originalHeaders];
@@ -410,6 +507,10 @@ class DisplayEndpoint extends Component {
 
     if (name === "originalHeaders") {
       this.setState({ originalHeaders: value });
+    }
+
+    if (name === "Path Variables") {
+      this.setState({ pathVariables: value });
     }
   }
 
@@ -1069,6 +1170,15 @@ class DisplayEndpoint extends Component {
             </div>
           </div>
         </div>
+        {this.state.pathVariables && this.state.pathVariables.length !== 0 && (
+          <div>
+            <GenericTable
+              title="Path Variables"
+              dataArray={this.state.pathVariables}
+              props_from_parent={this.propsFromChild.bind(this)}
+            ></GenericTable>
+          </div>
+        )}
 
         <div className="endpoint-response-container-wrapper">
           <DisplayResponse
