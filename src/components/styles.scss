@@ -79,6 +79,7 @@ $border-color: rgba(227, 228, 230, 0.7);
         padding: 0 0 0 15px !important;
       }
     }
+
     .card-header {
       border-bottom: 1px solid $border-color;
       margin-bottom: 0px !important;
@@ -140,6 +141,7 @@ $border-color: rgba(227, 228, 230, 0.7);
     }
   }
 }
+
 #child-accordion > .card {
   border-radius: 0px;
   border: none;
@@ -198,19 +200,21 @@ $border-color: rgba(227, 228, 230, 0.7);
   }
 }
 
+.Pending {
+  border-left: 1.5px solid #daa609;
+}
+.Approved {
+  border-left: 1.5px solid green;
+}
+.Reject {
+  border-left: 1.5px solid red;
+}
+
 .endpoint-list-item {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  .Pending {
-    border: 1.5px solid #daa609;
-  }
-  .Approved {
-    border: 1.5px solid green;
-  }
-  .Reject {
-    border: 1.5px solid red;
-  }
+
   .btn {
     display: flex;
     flex-direction: row;

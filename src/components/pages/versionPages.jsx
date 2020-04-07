@@ -4,16 +4,16 @@ import Pages from "./pages";
 import { deletePage, duplicatePage } from "./redux/pagesActions";
 import pageService from "./pageService";
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
-    pages: state.pages
+    pages: state.pages,
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    deletePage: page => dispatch(deletePage(page)),
-    duplicatePage: page => dispatch(duplicatePage(page))
+    deletePage: (page) => dispatch(deletePage(page)),
+    duplicatePage: (page) => dispatch(duplicatePage(page)),
   };
 };
 class VersionPages extends Component {
@@ -44,8 +44,8 @@ class VersionPages extends Component {
     this.setState({
       showDeleteModal: true,
       selectedPage: {
-        ...this.props.pages[pageId]
-      }
+        ...this.props.pages[pageId],
+      },
     });
   }
 
@@ -70,12 +70,12 @@ class VersionPages extends Component {
         {this.props.pages &&
           Object.keys(this.props.pages)
             .filter(
-              pageId =>
+              (pageId) =>
                 this.props.pages[pageId].versionId === this.props.version_id &&
                 this.props.pages[pageId].groupId === null
             )
             .map((pageId, index) => (
-              <div key={index}>
+              <div key={index} className={this.props.pages[pageId].state}>
                 <Pages
                   {...this.props}
                   page_id={pageId}

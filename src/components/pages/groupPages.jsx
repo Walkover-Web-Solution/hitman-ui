@@ -4,26 +4,26 @@ import {
   approvePage,
   draftPage,
   pendingPage,
-  rejectPage
+  rejectPage,
 } from "../publicEndpoint/redux/publicEndpointsActions";
 import Pages from "./pages";
 import { deletePage, duplicatePage } from "./redux/pagesActions";
 import pageService from "./pageService";
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
-    pages: state.pages
+    pages: state.pages,
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    deletePage: page => dispatch(deletePage(page)),
-    duplicatePage: page => dispatch(duplicatePage(page)),
-    pendingPage: page => dispatch(pendingPage(page)),
-    approvePage: page => dispatch(approvePage(page)),
-    draftPage: page => dispatch(draftPage(page)),
-    rejectPage: page => dispatch(rejectPage(page))
+    deletePage: (page) => dispatch(deletePage(page)),
+    duplicatePage: (page) => dispatch(duplicatePage(page)),
+    pendingPage: (page) => dispatch(pendingPage(page)),
+    approvePage: (page) => dispatch(approvePage(page)),
+    draftPage: (page) => dispatch(draftPage(page)),
+    rejectPage: (page) => dispatch(rejectPage(page)),
   };
 };
 
@@ -33,7 +33,7 @@ class GroupPages extends Component {
   handleUpdate(page) {
     this.props.history.push({
       pathname: `/dashboard/${this.props.collection_id}/versions/${this.props.versionId}/pages/${page.id}/edit`,
-      editPage: page
+      editPage: page,
     });
   }
 
@@ -41,8 +41,8 @@ class GroupPages extends Component {
     this.setState({
       showDeleteModal: true,
       selectedPage: {
-        ...this.props.pages[pageId]
-      }
+        ...this.props.pages[pageId],
+      },
     });
   }
 
@@ -67,12 +67,12 @@ class GroupPages extends Component {
         {this.props.pages &&
           Object.keys(this.props.pages)
             .filter(
-              pageId =>
+              (pageId) =>
                 this.props.pages[pageId].versionId === this.props.version_id &&
                 this.props.pages[pageId].groupId === this.props.group_id
             )
             .map((pageId, index) => (
-              <div key={index}>
+              <div key={index} className={this.props.pages[pageId].state}>
                 <Pages
                   {...this.props}
                   page_id={pageId}

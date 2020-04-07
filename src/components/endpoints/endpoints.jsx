@@ -265,10 +265,7 @@ class Endpoints extends Component {
                       >
                         Duplicate
                       </button>
-                      {this.checkAccess(this.props.collection_id) &&
-                      (this.props.endpoints[endpointId].state === "Pending" ||
-                        this.props.endpoints[endpointId].state ===
-                          "Reject") ? null : (
+                      {this.props.endpoints[endpointId].state === "Draft" ? (
                         <button
                           className="dropdown-item"
                           onClick={() =>
@@ -277,13 +274,9 @@ class Endpoints extends Component {
                             )
                           }
                         >
-                          {this.props.endpoints[endpointId].state === "Approved"
-                            ? "Published"
-                            : this.props.endpoints[endpointId].state === "Draft"
-                            ? "Make Public"
-                            : this.props.endpoints[endpointId].state}
+                          Make Public
                         </button>
-                      )}
+                      ) : null}
 
                       {!this.checkAccess(this.props.collection_id) &&
                       this.props.endpoints[endpointId].state === "Pending" ? (
