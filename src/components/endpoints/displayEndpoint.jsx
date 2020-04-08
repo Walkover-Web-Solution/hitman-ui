@@ -63,6 +63,8 @@ class DisplayEndpoint extends Component {
     showDescriptionFlag: false,
     showAddDescriptionFlag: false,
     oldDescription: "",
+    headers: [],
+    params: [],
   };
 
   customState = {
@@ -142,10 +144,12 @@ class DisplayEndpoint extends Component {
 
       //To fetch originalParams from Params
       originalParams = this.fetchoriginalParams(endpoint.params);
+      let params = this.fetchoriginalParams(endpoint.params);
 
       //To fetch originalHeaders from Headers
       originalHeaders = this.fetchoriginalHeaders(endpoint.headers);
-
+      let headers = this.fetchoriginalHeaders(endpoint.headers);
+      console.log("fffffff", originalParams);
       this.setState({
         data: {
           method: endpoint.requestType,
@@ -154,6 +158,8 @@ class DisplayEndpoint extends Component {
           name: endpoint.name,
           body: endpoint.body,
         },
+        params,
+        headers,
         originalParams,
         originalHeaders,
         endpoint,
@@ -710,6 +716,7 @@ class DisplayEndpoint extends Component {
   }
 
   render() {
+    console.log(this.props);
     if (
       this.props.location.pathname.split("/")[3] !== "new" &&
       this.state.endpoint.id !== this.props.location.pathname.split("/")[3]
@@ -773,10 +780,12 @@ class DisplayEndpoint extends Component {
       const originalParams = this.fetchoriginalParams(
         this.props.location.endpoint.params
       );
+      const params = this.fetchoriginalParams(endpoint.params);
 
       //To fetch originalHeaders from Headers
       const originalHeaders = this.fetchoriginalHeaders(endpoint.headers);
-
+      const headers = this.fetchoriginalHeaders(endpoint.headers);
+      console.log("in update endpoint");
       this.setState({
         data: {
           method: endpoint.requestType,
@@ -791,6 +800,8 @@ class DisplayEndpoint extends Component {
         groupId: this.props.location.endpoint.groupId,
         originalParams,
         originalHeaders,
+        params,
+        headers,
         endpoint,
         flagResponse: false,
         oldDescription: endpoint.description,
@@ -1037,9 +1048,11 @@ class DisplayEndpoint extends Component {
               aria-labelledby="pills-params-tab"
             >
               <GenericTable
+                {...this.props}
                 title="Params"
                 dataArray={this.state.originalParams}
                 props_from_parent={this.propsFromChild.bind(this)}
+                original_data={[...this.state.params]}
               ></GenericTable>
             </div>
             <div
@@ -1050,9 +1063,11 @@ class DisplayEndpoint extends Component {
             >
               <div>
                 <GenericTable
+                  {...this.props}
                   title="Headers"
                   dataArray={this.state.originalHeaders}
                   props_from_parent={this.propsFromChild.bind(this)}
+                  original_data={[...this.state.headers]}
                 ></GenericTable>
               </div>
             </div>

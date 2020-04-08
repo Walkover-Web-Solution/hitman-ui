@@ -1,9 +1,12 @@
 import React, { Component } from "react";
+import { isDashboardRoute } from "../common/utility";
 
 class GenericTable extends Component {
   state = {
     bulkEdit: false,
     editButtonName: "Bulk Edit",
+    originalParams: [],
+    originalHeaders: [],
   };
 
   checkboxFlags = [];
@@ -12,6 +15,14 @@ class GenericTable extends Component {
   textAreaValueFlag = true;
   helperflag = false;
   count = "";
+
+  // componentDidMount() {
+  //   const dataArray = this.props.dataArray;
+  //   console.log("dataArrArray", dataArray);
+  //   const originalParams = dataArray;
+  //   console.log("IN CDM", originalParams);
+  //   this.setState({ originalParams });
+  // }
 
   handleChange = (e) => {
     const { dataArray, title } = this.props;
@@ -216,10 +227,62 @@ class GenericTable extends Component {
       }
     }
   }
-  render() {
-    const { dataArray, title } = this.props;
-    this.autoFillBulkEdit();
 
+  // checkBoxAccess(dataArray)
+  // {
+  //   for(i in dataArray)
+  //   {
+  //     dataArray[i].checked===false;
+
+  //   }
+  // }
+
+  fetchoriginalParams(params) {
+    let originalParams = [];
+    let i = 0;
+    for (i = 0; i < Object.keys(params).length; i++) {
+      originalParams[i] = {
+        checked: params[Object.keys(params)[i]].checked,
+        key: Object.keys(params)[i],
+        value: params[Object.keys(params)[i]].value,
+        description: params[Object.keys(params)[i]].description,
+      };
+    }
+
+    return originalParams;
+  }
+
+  fetchoriginalHeaders(headers) {
+    let originalHeaders = [];
+    let i = 0;
+    for (i = 0; i < Object.keys(headers).length; i++) {
+      originalHeaders[i] = {
+        checked: headers[Object.keys(headers)[i]].checked,
+        key: Object.keys(headers)[i],
+        value: headers[Object.keys(headers)[i]].value,
+        description: headers[Object.keys(headers)[i]].description,
+      };
+    }
+
+    return originalHeaders;
+  }
+
+  render() {
+    const { dataArray, original_data, title } = this.props;
+    console.log(title, original_data, dataArray);
+    if (!isDashboardRoute(this.props)) {
+      for (let index = 0; index < dataArray.length; index++) {
+        if (dataArray[index].key === "") {
+          dataArray.splice(index, 1);
+        }
+
+        if (original_data[index].key === "") {
+          original_data.splice(index, 1);
+        }
+      }
+    }
+
+    this.autoFillBulkEdit();
     return (
       <div className="generic-table-container">
         <div className="generic-table-title-container">
@@ -255,20 +318,29 @@ class GenericTable extends Component {
                   <td className="custom-td" id="generic-table-key-cell">
                     {dataArray[index].checked === "notApplicable" ? null : (
                       <input
+                        disabled={
+                          isDashboardRoute(this.props) ||
+                          original_data[index].checked === "false"
+                            ? null
+                            : "disabled"
+                        }
                         name={index + ".checkbox"}
                         value={dataArray[index].checked}
                         checked={
                           dataArray[index].checked === "true" ? true : false
                         }
-                        onChange={this.handleChange}
                         type="checkbox"
                         className="Checkbox"
+                        onChange={this.handleChange}
                         style={{ border: "none" }}
                       />
                     )}
                   </td>
                   <td className="custom-td">
                     <input
+                      disabled={
+                        isDashboardRoute(this.props) ? null : "disabled"
+                      }
                       name={index + ".key"}
                       value={dataArray[index].key}
                       onChange={this.handleChange}
@@ -299,6 +371,9 @@ class GenericTable extends Component {
                   </td>
                   <td className="custom-td" id="generic-table-description-cell">
                     <input
+                      disabled={
+                        isDashboardRoute(this.props) ? null : "disabled"
+                      }
                       name={index + ".description"}
                       value={dataArray[index].description}
                       onChange={this.handleChange}
@@ -311,7 +386,8 @@ class GenericTable extends Component {
                       style={{ border: "none" }}
                       className="form-control"
                     />
-                    {dataArray.length - 1 === index ? null : (
+                    {dataArray.length - 1 === index ||
+                    !isDashboardRoute(this.props) ? null : (
                       <button
                         type="button"
                         className="btn cross-button"
