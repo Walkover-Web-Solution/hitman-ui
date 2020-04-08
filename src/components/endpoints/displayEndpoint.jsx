@@ -67,6 +67,7 @@ class DisplayEndpoint extends Component {
 
   customState = {
     BASE_URL: "",
+    customBASE_URL: "",
   };
 
   async componentDidMount() {
@@ -133,7 +134,6 @@ class DisplayEndpoint extends Component {
       flag === 0
     ) {
       flag = 1;
-      console.log(endpointId, this.props.tab);
       endpoint = endpoints[endpointId];
       const groupId = endpoints[endpointId].groupId;
 
@@ -142,6 +142,7 @@ class DisplayEndpoint extends Component {
 
       //To fetch originalHeaders from Headers
       originalHeaders = this.fetchoriginalHeaders(endpoint.headers);
+      this.customState.customBASE_URL = endpoint.BASE_URL;
 
       this.setState({
         data: {
@@ -349,7 +350,7 @@ class DisplayEndpoint extends Component {
         body: body,
         headers: headersData,
         params: updatedParams,
-        BASE_URL: this.customState.BASE_URL,
+        BASE_URL: this.customState.customBASE_URL,
       };
       // if (endpoint.name === "" || endpoint.uri === "")
       if (endpoint.name === "") toast.error("Please enter Endpoint name");
@@ -594,8 +595,9 @@ class DisplayEndpoint extends Component {
     );
   }
 
-  setBaseUrl(BASE_URL) {
+  setBaseUrl(BASE_URL, customBASE_URL) {
     this.customState.BASE_URL = BASE_URL;
+    this.customState.customBASE_URL = customBASE_URL;
   }
 
   setBody(bodyType, body) {
@@ -707,7 +709,6 @@ class DisplayEndpoint extends Component {
   }
 
   render() {
-    console.log(this.props.tab, this.props.location.pathname);
     if (
       this.props.location.pathname.split("/")[3] !== "new" &&
       this.state.endpoint.id !== this.props.tab.id &&
@@ -725,7 +726,6 @@ class DisplayEndpoint extends Component {
       }
     }
     // if (this.props.location.title === "Add New Endpoint") {
-    //   console.log("a");
     //   this.title = "Add New Endpoint";
     //   this.setState({
     //     data: {
@@ -942,6 +942,7 @@ class DisplayEndpoint extends Component {
               {...this.props}
               groupId={this.state.groupId}
               set_base_url={this.setBaseUrl.bind(this)}
+              custom_host={this.state.endpoint.BASE_URL}
             />
             <input
               ref={this.uri}

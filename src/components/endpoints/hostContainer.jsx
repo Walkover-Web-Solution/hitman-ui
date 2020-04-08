@@ -72,7 +72,7 @@ class HostContainer extends Component {
       default:
         break;
     }
-    this.props.set_base_url(BASE_URL);
+    this.props.set_base_url(BASE_URL, this.state.customHost);
     return BASE_URL;
   }
 
@@ -80,7 +80,7 @@ class HostContainer extends Component {
     if (!this.state.groupId && this.props.groupId) {
       const groupId = this.props.groupId;
       const versionId = this.props.groups[groupId].versionId;
-
+      const customHost = this.props.custom_host;
       let selectedHost = null;
       if (
         this.props.environment.variables &&
@@ -92,7 +92,7 @@ class HostContainer extends Component {
       } else {
         selectedHost = "versionHost";
       }
-      this.setState({ groupId, versionId, selectedHost });
+      this.setState({ groupId, versionId, customHost, selectedHost });
     }
 
     return (
