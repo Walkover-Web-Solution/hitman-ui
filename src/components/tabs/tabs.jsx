@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Nav } from "react-bootstrap";
 import tabService from "./tabService";
+import "./tabs.scss";
 
 class CustomTabs extends Component {
   state = {};

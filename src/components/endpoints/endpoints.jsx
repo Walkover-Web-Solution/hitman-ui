@@ -10,6 +10,7 @@ import {
 } from "../publicEndpoint/redux/publicEndpointsActions";
 import tabService from "../tabs/tabService";
 import { deleteEndpoint, duplicateEndpoint } from "./redux/endpointsActions";
+import "./endpoints.scss";
 
 const mapStateToProps = (state) => {
   return {

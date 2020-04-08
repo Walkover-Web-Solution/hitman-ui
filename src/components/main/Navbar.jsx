@@ -6,6 +6,7 @@ import environmentsService from "../environments/environmentsService";
 import CreateNewModal from "./CreateNewModal";
 import { getCurrentUser } from "../auth/authService";
 import shortId from "shortid";
+import "./main.scss";
 
 class Navbar extends Component {
   state = {

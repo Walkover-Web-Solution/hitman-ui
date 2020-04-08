@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import GenericTable from "./genericTable";
+import "./endpoints.scss";
 
 class BodyContainer extends Component {
   state = {

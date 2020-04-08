@@ -12,6 +12,7 @@ import endpointApiService from "./endpointApiService";
 import GenericTable from "./genericTable";
 import HostContainer from "./hostContainer";
 import { addEndpoint, updateEndpoint } from "./redux/endpointsActions";
+import "./endpoints.scss";
 const status = require("http-status");
 
 var URI = require("urijs");

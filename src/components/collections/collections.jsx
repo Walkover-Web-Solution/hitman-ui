@@ -21,6 +21,7 @@ import {
   updateCollection,
 } from "./redux/collectionsActions";
 import ShareCollectionForm from "./shareCollectionForm";
+import "./collections.scss";
 
 const mapStateToProps = (state) => {
   return {
@@ -298,21 +299,12 @@ class CollectionsComponent extends Component {
           </div>
 
           <div className="App-Side">
-            <div
-              style={{
-                color: "tomato",
-                borderBottom: "1px solid rgba(0, 0, 0, 0.125) ",
-                width: "100%",
-              }}
-            >
+            <div className="custom-add-collection-button-container">
               <button
                 className="btn btn-default"
                 onClick={() => this.openAddCollectionForm()}
-                style={{
-                  color: "tomato",
-                }}
               >
-                <i className="fas fa-plus" style={{ paddingRight: "10px" }}></i>
+                <i className="fas fa-plus"></i>
                 New Collection
               </button>
             </div>
@@ -321,10 +313,7 @@ class CollectionsComponent extends Component {
               <Accordion key={collectionId} id="parent-accordion">
                 <Card>
                   <Card.Header>
-                    <i
-                      className="fas fa-folder-open"
-                      style={{ margin: "5px" }}
-                    ></i>
+                    <i className="fas fa-folder-open"></i>
                     <Accordion.Toggle
                       as={Button}
                       variant="default"

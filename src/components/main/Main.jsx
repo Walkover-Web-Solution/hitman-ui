@@ -7,15 +7,16 @@ import { fetchAllVersions } from "../collectionVersions/redux/collectionVersions
 import ContentPanel from "./contentPanel";
 import {
   fetchEndpoints,
-  moveEndpoint
+  moveEndpoint,
 } from "../endpoints/redux/endpointsActions";
 import { fetchGroups } from "../groups/redux/groupsActions";
 import Navbar from "./Navbar";
 import { fetchPages } from "../pages/redux/pagesActions";
 import SideBar from "./sidebar";
 import { fetchAllTeamsOfUser } from "../teams/redux/teamsActions";
+import "./main.scss";
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     fetchAllTeamsOfUser: () => dispatch(fetchAllTeamsOfUser()),
     fetchCollections: () => dispatch(fetchCollections()),
@@ -24,7 +25,7 @@ const mapDispatchToProps = dispatch => {
     fetchEndpoints: () => dispatch(fetchEndpoints()),
     fetchPages: () => dispatch(fetchPages()),
     moveEndpoint: (endpointId, sourceGroupId, destinationGroupId) =>
-      dispatch(moveEndpoint(endpointId, sourceGroupId, destinationGroupId))
+      dispatch(moveEndpoint(endpointId, sourceGroupId, destinationGroupId)),
   };
 };
 
@@ -32,7 +33,7 @@ class Main extends Component {
   state = {
     currentEnvironment: { id: null, name: "No Environment" },
     tabs: [],
-    defaultTabIndex: 0
+    defaultTabIndex: 0,
   };
 
   componentDidMount() {
@@ -76,12 +77,13 @@ class Main extends Component {
   render() {
     return (
       <div
-        style={{
-          marginTop: "15px",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "flex-start"
-        }}
+        // style={{
+        //   marginTop: "15px",
+        //   display: "flex",
+        //   flexDirection: "column",
+        //   justifyContent: "flex-start"
+        // }}
+        className="custom-main-container"
       >
         <ToastContainer />
         <Navbar

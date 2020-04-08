@@ -6,12 +6,13 @@ import shortId from "shortid";
 import Environments from "../environments/environments";
 import TabContent from "../tabs/tabContent";
 import CustomTabs from "../tabs/tabs";
+import "./main.scss";
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     endpoints: state.endpoints,
     groups: state.groups,
-    pages: state.pages
+    pages: state.pages,
   };
 };
 class ContentPanel extends Component {
@@ -25,7 +26,7 @@ class ContentPanel extends Component {
       const newTabId = shortId.generate();
       const tabs = [
         ...this.props.tabs,
-        { id: newTabId, type: "endpoint", isSaved: false }
+        { id: newTabId, type: "endpoint", isSaved: false },
       ];
 
       this.props.set_tabs(tabs, tabs.length - 1);
@@ -38,19 +39,19 @@ class ContentPanel extends Component {
       this.props.location.pathname.split("/")[3] !== "new"
     ) {
       const endpointId = this.props.location.pathname.split("/")[3];
-      const index = this.props.tabs.findIndex(tab => tab.id === endpointId);
+      const index = this.props.tabs.findIndex((tab) => tab.id === endpointId);
       let tabs = [...this.props.tabs];
       if (index < 0) {
         if (this.props.endpoints[endpointId]) {
           const requestId = this.props.endpoints[endpointId].requestId;
           const tabIndex = this.props.tabs.findIndex(
-            tab => tab.id === requestId
+            (tab) => tab.id === requestId
           );
           if (tabIndex >= 0) {
             tabs[this.props.default_tab_index] = {
               id: endpointId,
               type: "endpoint",
-              isSaved: true
+              isSaved: true,
             };
           } else {
             tabs.push({ id: endpointId, type: "endpoint", isSaved: true });
@@ -67,7 +68,7 @@ class ContentPanel extends Component {
 
     if (this.props.location.pathname.split("/")[2] === "page") {
       const pageId = this.props.location.pathname.split("/")[3];
-      const index = this.props.tabs.findIndex(tab => tab.id === pageId);
+      const index = this.props.tabs.findIndex((tab) => tab.id === pageId);
       let tabs = [...this.props.tabs];
       if (index < 0) {
         tabs.push({ id: pageId, type: "page", isSaved: true });

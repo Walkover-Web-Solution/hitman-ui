@@ -5,12 +5,14 @@ import { connect } from "react-redux";
 import shortId from "shortid";
 import "../../styles/environmentVariables.scss";
 import { addEnvironment, updateEnvironment } from "./redux/environmentsActions";
+import "./environments.scss";
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    addEnvironment: newEnvironment => dispatch(addEnvironment(newEnvironment)),
-    updateEnvironment: editedEnvironment =>
-      dispatch(updateEnvironment(editedEnvironment))
+    addEnvironment: (newEnvironment) =>
+      dispatch(addEnvironment(newEnvironment)),
+    updateEnvironment: (editedEnvironment) =>
+      dispatch(updateEnvironment(editedEnvironment)),
   };
 };
 
@@ -20,11 +22,11 @@ class EnvironmentVariables extends Component {
       name: "",
       variables: {
         BASE_URL: { intitialValue: "", finalValue: "" },
-        "1": { intitialValue: "", finalValue: "" }
-      }
+        "1": { intitialValue: "", finalValue: "" },
+      },
     },
     originalVariableNames: ["BASE_URL", "1"],
-    updatedVariableNames: ["BASE_URL", ""]
+    updatedVariableNames: ["BASE_URL", ""],
   };
 
   async componentDidMount() {
@@ -37,16 +39,16 @@ class EnvironmentVariables extends Component {
     let updatedVariableNames = [...Object.keys(environment.variables), ""];
     environment.variables[len.toString()] = {
       initialValue: "",
-      currentValue: ""
+      currentValue: "",
     };
     this.setState({
       environment,
       originalVariableNames,
-      updatedVariableNames
+      updatedVariableNames,
     });
   }
 
-  handleSubmit = e => {
+  handleSubmit = (e) => {
     e.preventDefault();
     this.doSubmit();
   };
@@ -76,7 +78,7 @@ class EnvironmentVariables extends Component {
       this.setState({
         environment: { name: "", variables: {} },
         originalVariableNames: [],
-        updatedVariableNames: []
+        updatedVariableNames: [],
       });
     } else {
       const updatedEnvironment = { ...this.state.environment };
@@ -91,7 +93,7 @@ class EnvironmentVariables extends Component {
       ) {
         if (updatedEnvironment.requestId) delete updatedEnvironment.requestId;
         this.props.updateEnvironment({
-          ...updatedEnvironment
+          ...updatedEnvironment,
         });
       }
     }
@@ -102,24 +104,24 @@ class EnvironmentVariables extends Component {
     const len = this.state.originalVariableNames.length;
     let originalVariableNames = [
       ...this.state.originalVariableNames,
-      len.toString()
+      len.toString(),
     ];
     let updatedVariableNames = [...this.state.updatedVariableNames, ""];
     environment.variables[len.toString()] = {
       initialValue: "",
-      currentValue: ""
+      currentValue: "",
     };
 
     this.setState({ environment, originalVariableNames, updatedVariableNames });
   }
 
-  handleChangeEnv = e => {
+  handleChangeEnv = (e) => {
     const environment = { ...this.state.environment };
     environment[e.currentTarget.name] = e.currentTarget.value;
     this.setState({ environment });
   };
 
-  handleChange = e => {
+  handleChange = (e) => {
     const name = e.currentTarget.name.split(".");
     const lastIndex = this.state.originalVariableNames.length - 1;
 

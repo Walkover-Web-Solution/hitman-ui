@@ -5,15 +5,16 @@ import {
   approvePage,
   draftPage,
   pendingPage,
-  rejectPage
+  rejectPage,
 } from "../publicEndpoint/redux/publicEndpointsActions";
+import "./page.scss";
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    pendingPage: page => dispatch(pendingPage(page)),
-    approvePage: page => dispatch(approvePage(page)),
-    draftPage: page => dispatch(draftPage(page)),
-    rejectPage: page => dispatch(rejectPage(page))
+    pendingPage: (page) => dispatch(pendingPage(page)),
+    approvePage: (page) => dispatch(approvePage(page)),
+    draftPage: (page) => dispatch(draftPage(page)),
+    rejectPage: (page) => dispatch(rejectPage(page)),
   };
 };
 
@@ -38,12 +39,12 @@ class Pages extends Component {
     if (isDashboardRoute(this.props)) {
       this.props.history.push({
         pathname: `/dashboard/page/${page.id}`,
-        page: page
+        page: page,
       });
     } else {
       this.props.history.push({
         pathname: `/public/${collectionId}/pages/${page.id}`,
-        page: page
+        page: page,
       });
     }
   }
@@ -51,7 +52,7 @@ class Pages extends Component {
   handleDuplicate(page) {
     this.props.duplicatePage(page);
     this.props.history.push({
-      pathname: "/dashboard"
+      pathname: "/dashboard",
     });
   }
 

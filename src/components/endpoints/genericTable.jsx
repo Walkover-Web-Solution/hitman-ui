@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import "./endpoints.scss";
 
 class GenericTable extends Component {
   state = {

@@ -1,10 +1,11 @@
 import React, { Component } from "react";
 import { ListGroup, Modal } from "react-bootstrap";
 import environmentsApiService from "./environmentsApiService";
+import "./environments.scss";
 
 class EnvironmentModal extends Component {
   state = {
-    environments: {}
+    environments: {},
   };
 
   async componentDidMount() {
@@ -19,12 +20,12 @@ class EnvironmentModal extends Component {
     if (this.props.location.editedEnvironment) {
       const {
         environmentid: environmentId,
-        editedEnvironment
+        editedEnvironment,
       } = this.props.location;
       this.props.history.replace({ editedEnvironment: null });
       environments = [
-        ...environments.filter(env => env.id !== environmentId),
-        { id: environmentId, ...editedEnvironment }
+        ...environments.filter((env) => env.id !== environmentId),
+        { id: environmentId, ...editedEnvironment },
       ];
       this.setState({ environments });
       await environmentsApiService.updateEnvironment(
@@ -63,7 +64,7 @@ class EnvironmentModal extends Component {
         <Modal.Body>
           <ListGroup className="custom-environment-list-container">
             {Object.keys(this.props.environment.environments).map(
-              environmentId => (
+              (environmentId) => (
                 <div>
                   <ListGroup.Item
                     style={{ width: "93%", float: "left" }}

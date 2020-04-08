@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { toast } from "react-toastify";
+import "./endpoints.scss";
 
 class HostContainer extends Component {
   state = {

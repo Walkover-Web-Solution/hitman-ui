@@ -3,14 +3,15 @@ import { Route, Switch } from "react-router-dom";
 import Collections from "../collections/collections";
 import ProtectedRoute from "../common/protectedRoute";
 import { isDashboardRoute } from "../common/utility";
+import "./main.scss";
 class SideBar extends Component {
   state = {
     data: {
-      filter: ""
-    }
+      filter: "",
+    },
   };
 
-  handleChange = e => {
+  handleChange = (e) => {
     let data = { ...this.state.data };
     data[e.currentTarget.name] = e.currentTarget.value;
     this.setState({ data });
@@ -97,7 +98,7 @@ class SideBar extends Component {
               <Switch>
                 <ProtectedRoute
                   path="/dashboard/"
-                  render={props => (
+                  render={(props) => (
                     <Collections
                       {...this.props}
                       filter={this.state.data.filter}
@@ -107,7 +108,7 @@ class SideBar extends Component {
 
                 <Route
                   path="/public/:collectionId"
-                  render={props => <Collections {...this.props} />}
+                  render={(props) => <Collections {...this.props} />}
                 />
               </Switch>
             </div>

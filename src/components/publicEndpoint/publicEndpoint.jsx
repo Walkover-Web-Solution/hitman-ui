@@ -7,11 +7,12 @@ import DisplayEndpoint from "../endpoints/displayEndpoint";
 import DisplayPage from "../pages/displayPage";
 import SideBar from "../main/sidebar";
 import { fetchAllPublicEndpoints } from "./redux/publicEndpointsActions.js";
+import "./publicEndpoint.scss";
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    fetchAllPublicEndpoints: collectionIdentifier =>
-      dispatch(fetchAllPublicEndpoints(collectionIdentifier))
+    fetchAllPublicEndpoints: (collectionIdentifier) =>
+      dispatch(fetchAllPublicEndpoints(collectionIdentifier)),
   };
 };
 
@@ -36,11 +37,11 @@ class PublicEndpoint extends Component {
             <Switch>
               <Route
                 path="/public/:collectionId/endpoints/:endpointId"
-                render={props => <DisplayEndpoint {...props} />}
+                render={(props) => <DisplayEndpoint {...props} />}
               />
               <Route
                 path="/public/:collectionId/pages/:pageid"
-                render={props => <DisplayPage {...props} />}
+                render={(props) => <DisplayPage {...props} />}
               />
             </Switch>
           </div>

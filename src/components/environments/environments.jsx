@@ -9,24 +9,27 @@ import {
   deleteEnvironment,
   fetchEnvironments,
   setEnvironmentId,
-  updateEnvironment
+  updateEnvironment,
 } from "./redux/environmentsActions";
+import "./environments.scss";
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
-    environment: state.environment
+    environment: state.environment,
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     fetchEnvironments: () => dispatch(fetchEnvironments()),
-    addEnvironment: newEnvironment => dispatch(addEnvironment(newEnvironment)),
-    updateEnvironment: editedEnvironment =>
+    addEnvironment: (newEnvironment) =>
+      dispatch(addEnvironment(newEnvironment)),
+    updateEnvironment: (editedEnvironment) =>
       dispatch(updateEnvironment(editedEnvironment)),
-    deleteEnvironment: deletedEnvironment =>
+    deleteEnvironment: (deletedEnvironment) =>
       dispatch(deleteEnvironment(deletedEnvironment)),
-    setEnvironmentId: environmentId => dispatch(setEnvironmentId(environmentId))
+    setEnvironmentId: (environmentId) =>
+      dispatch(setEnvironmentId(environmentId)),
   };
 };
 
@@ -36,7 +39,7 @@ class Environments extends Component {
     environmentFormName: null,
     showEnvironmentForm: false,
     showEnvironmentModal: false,
-    environmentToBeEdited: {}
+    environmentToBeEdited: {},
   };
 
   async componentDidMount() {
@@ -46,7 +49,7 @@ class Environments extends Component {
   handleEnvironmentModal(environmentFormName, environmentToBeEdited) {
     this.setState({
       environmentFormName,
-      environmentToBeEdited
+      environmentToBeEdited,
     });
   }
   handleEnv(environmentId) {
@@ -63,8 +66,8 @@ class Environments extends Component {
     this.setState({
       showDeleteModal: true,
       selectedEnvironment: {
-        ...this.props.environment.environments[environmentId]
-      }
+        ...this.props.environment.environments[environmentId],
+      },
     });
   }
 
@@ -164,7 +167,7 @@ class Environments extends Component {
                 <p className="custom-right-pane">CURRENT VALUE</p>
               </div>
               {env &&
-                Object.keys(env.variables).map(v => (
+                Object.keys(env.variables).map((v) => (
                   <div>
                     <p className="custom-left-box">{v}</p>
                     <p className="custom-middle-box">
@@ -200,7 +203,7 @@ class Environments extends Component {
                 No Environment
               </Dropdown.Item>
               {Object.keys(this.props.environment.environments).map(
-                environmentId => (
+                (environmentId) => (
                   <Dropdown.Item
                     onClick={() => this.handleEnv(environmentId)}
                     key={environmentId}

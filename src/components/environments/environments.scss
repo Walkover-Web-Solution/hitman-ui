@@ -1,0 +1,158 @@
+$border-color: rgba(227, 228, 230, 0.7);
+
+.custom-environment-list-container {
+  height: 600px;
+  overflow: scroll;
+
+  .list-group-item {
+    border-top: none;
+    border-right: none;
+    border-left: none;
+    border-bottom: 1px solid rgb(230, 223, 223) !important;
+    border-radius: none;
+  }
+
+  button.btn.btn-secondary {
+    height: 45px;
+    border: none !important;
+    border-radius: none !important;
+  }
+}
+
+.custom-button-wrapper {
+  button.btn.btn-default.custom-environment-cancel-button {
+    float: right;
+    font-size: 15px;
+    font-weight: 300;
+    border-radius: 2px;
+    background-color: rgb(235, 236, 220);
+    padding: 10px 20px 10px 20px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+  }
+
+  button.btn.btn-default.custom-environment-add-button {
+    float: right;
+    font-size: 15px;
+    font-weight: 300;
+    color: white;
+    border-radius: 2px;
+    background-color: rgba(231, 108, 86, 0.877);
+    padding: 10px 20px 10px 20px;
+    margin-left: 10px;
+    margin-bottom: 10px;
+  }
+}
+
+.custom-table-container {
+  height: 600px;
+  overflow: scroll;
+}
+
+.environment-container {
+  align-self: flex-end;
+  border-left: 1px solid $border-color;
+  float: right;
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: baseline;
+  align-items: flex-end;
+  height: 43px;
+  width: 300px;
+  .environment-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin: 3px;
+    height: 35px;
+    width: 35px;
+    background-color: rgb(221, 221, 223);
+    border-radius: 2px;
+  }
+  .select-environment-dropdown {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    margin: 3px;
+    height: 35px;
+    width: 100%;
+    background-color: rgb(221, 221, 223);
+    border-radius: 2px;
+    .dropdown {
+      width: 100%;
+      .btn {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+    }
+  }
+}
+
+.custom-env-menu.dropdown-menu.show.dropdown-menu-right {
+  height: 400px;
+  width: 780px;
+  background: rgb(245, 243, 243);
+  transform: translate3d(-700px, 38px, 0px) !important;
+  overflow-y: scroll;
+
+  .dropdown-divider {
+    border-top: 1px solid rgba(190, 201, 214, 0.7) !important;
+  }
+
+  .btn.btn-default {
+    padding-top: 0px;
+    float: right;
+    color: orange;
+    font-size: 14px;
+    font-weight: 300px;
+  }
+
+  .custom-left-pane {
+    float: left;
+    width: 231px;
+    color: rgb(128, 128, 128);
+    font-size: 13px;
+    font-weight: 400;
+    padding-left: 15px;
+  }
+  .custom-middle-pane {
+    float: left;
+    width: 269px;
+    color: rgb(128, 128, 128);
+    font-size: 13px;
+    font-weight: 400;
+  }
+  .custom-right-pane {
+    float: left;
+    width: 270px;
+    color: rgb(128, 128, 128);
+    font-size: 13px;
+    font-weight: 400;
+  }
+
+  .custom-left-box {
+    float: left;
+    width: 231px;
+    font-size: 13px;
+    font-weight: 300;
+    padding-left: 15px;
+  }
+  .custom-middle-box {
+    float: left;
+    width: 269px;
+    font-size: 13px;
+    font-weight: 300;
+  }
+  .custom-right-box {
+    float: left;
+    width: 270px;
+    font-size: 13px;
+    font-weight: 300;
+  }
+}
+
+input#custom-environment-input {
+  margin-bottom: 15px;
+}

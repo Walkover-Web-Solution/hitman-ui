@@ -1,0 +1,23 @@
+$border-color: rgba(227, 228, 230, 0.7);
+
+main.main.ml-sm-auto.col-lg-10 {
+  display: flex;
+  flex-direction: column;
+  margin-top: 40px;
+  padding: 0px;
+}
+
+.main-panel-wrapper {
+  display: flex;
+  flex-direction: row;
+
+  nav.col-md-2.d-none.d-md-block.bg-light.sidebar {
+    margin-top: 10px;
+    flex: 1;
+    overflow: scroll;
+    padding-left: 0;
+    padding-right: 0;
+    border-right: 2px solid $border-color;
+    background-color: white !important;
+  }
+}

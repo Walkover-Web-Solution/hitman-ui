@@ -160,7 +160,10 @@ class ShareCollectionForm extends Component {
             <div className="row">
               {this.currentUserRole === "Admin" ||
               this.currentUserRole === "Owner" ? (
-                <InputGroup style={{ padding: "20px", flexWrap: "nowrap" }}>
+                <InputGroup
+                  id="input-group"
+                  style={{ padding: "20px", flexWrap: "nowrap" }}
+                >
                   <ReactMultiEmail
                     style={{ flex: "1" }}
                     name="email"
