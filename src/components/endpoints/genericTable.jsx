@@ -228,48 +228,9 @@ class GenericTable extends Component {
     }
   }
 
-  // checkBoxAccess(dataArray)
-  // {
-  //   for(i in dataArray)
-  //   {
-  //     dataArray[i].checked===false;
-
-  //   }
-  // }
-
-  fetchoriginalParams(params) {
-    let originalParams = [];
-    let i = 0;
-    for (i = 0; i < Object.keys(params).length; i++) {
-      originalParams[i] = {
-        checked: params[Object.keys(params)[i]].checked,
-        key: Object.keys(params)[i],
-        value: params[Object.keys(params)[i]].value,
-        description: params[Object.keys(params)[i]].description,
-      };
-    }
-
-    return originalParams;
-  }
-
-  fetchoriginalHeaders(headers) {
-    let originalHeaders = [];
-    let i = 0;
-    for (i = 0; i < Object.keys(headers).length; i++) {
-      originalHeaders[i] = {
-        checked: headers[Object.keys(headers)[i]].checked,
-        key: Object.keys(headers)[i],
-        value: headers[Object.keys(headers)[i]].value,
-        description: headers[Object.keys(headers)[i]].description,
-      };
-    }
-
-    return originalHeaders;
-  }
-
   render() {
     const { dataArray, original_data, title } = this.props;
-    console.log(title, original_data, dataArray);
+
     if (!isDashboardRoute(this.props)) {
       for (let index = 0; index < dataArray.length; index++) {
         if (dataArray[index].key === "") {

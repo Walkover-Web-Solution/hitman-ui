@@ -69,6 +69,7 @@ class DisplayEndpoint extends Component {
 
   customState = {
     BASE_URL: "",
+    customBASE_URL: "",
   };
 
   async componentDidMount() {
@@ -149,6 +150,8 @@ class DisplayEndpoint extends Component {
       //To fetch originalHeaders from Headers
       originalHeaders = this.fetchoriginalHeaders(endpoint.headers);
       let headers = this.fetchoriginalHeaders(endpoint.headers);
+
+      this.customState.customBASE_URL = endpoint.BASE_URL;
       console.log("fffffff", originalParams);
       this.setState({
         data: {
@@ -358,7 +361,7 @@ class DisplayEndpoint extends Component {
         body: body,
         headers: headersData,
         params: updatedParams,
-        BASE_URL: this.customState.BASE_URL,
+        BASE_URL: this.customState.customBASE_URL,
       };
       // if (endpoint.name === "" || endpoint.uri === "")
       if (endpoint.name === "") toast.error("Please enter Endpoint name");
@@ -603,8 +606,9 @@ class DisplayEndpoint extends Component {
     );
   }
 
-  setBaseUrl(BASE_URL) {
+  setBaseUrl(BASE_URL, customBASE_URL) {
     this.customState.BASE_URL = BASE_URL;
+    this.customState.customBASE_URL = customBASE_URL;
   }
 
   setBody(bodyType, body) {
@@ -716,7 +720,6 @@ class DisplayEndpoint extends Component {
   }
 
   render() {
-    console.log(this.props);
     if (
       this.props.location.pathname.split("/")[3] !== "new" &&
       this.state.endpoint.id !== this.props.location.pathname.split("/")[3]
@@ -923,44 +926,41 @@ class DisplayEndpoint extends Component {
 
         <div className="endpoint-url-container">
           <div className="input-group-prepend">
-            {isDashboardRoute(this.props) ? (
-              <div>
-                <div className="dropdown">
-                  <button
-                    className="btn btn-secondary dropdown-toggle"
-                    type="button"
-                    id="dropdownMenuButton"
-                    data-toggle="dropdown"
-                    aria-haspopup="true"
-                    aria-expanded="false"
-                  >
-                    {this.state.data.method}
-                  </button>
-                  <div
-                    className="dropdown-menu"
-                    aria-labelledby="dropdownMenuButton"
-                  >
-                    {this.state.methodList.map((methodName) => (
-                      <button
-                        className="btn custom-request-button"
-                        onClick={() => this.setMethod(methodName)}
-                        key={methodName}
-                      >
-                        {methodName}
-                      </button>
-                    ))}
-                  </div>
+            <div>
+              <div className="dropdown">
+                <button
+                  className="btn btn-secondary dropdown-toggle"
+                  type="button"
+                  id="dropdownMenuButton"
+                  data-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                  disabled={isDashboardRoute(this.props) ? null : true}
+                >
+                  {this.state.data.method}
+                </button>
+                <div
+                  className="dropdown-menu"
+                  aria-labelledby="dropdownMenuButton"
+                >
+                  {this.state.methodList.map((methodName) => (
+                    <button
+                      className="btn custom-request-button"
+                      onClick={() => this.setMethod(methodName)}
+                      key={methodName}
+                    >
+                      {methodName}
+                    </button>
+                  ))}
                 </div>
               </div>
-            ) : (
-              <button className="btn btn-secondary dropdown-toggle">
-                {this.state.data.method}
-              </button>
-            )}
+            </div>
+
             <HostContainer
               {...this.props}
               groupId={this.state.groupId}
               set_base_url={this.setBaseUrl.bind(this)}
+              custom_host={this.state.endpoint.BASE_URL}
             />
             <input
               ref={this.uri}
@@ -1097,6 +1097,7 @@ class DisplayEndpoint extends Component {
               aria-labelledby="pills-body-tab"
             >
               <BodyContainer
+                {...this.props}
                 set_body={this.setBody.bind(this)}
                 body={this.state.data.body}
               />

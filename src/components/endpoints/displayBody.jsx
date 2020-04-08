@@ -73,6 +73,7 @@ class BodyContainer extends Component {
       case "formData":
         return (
           <GenericTable
+            {...this.props}
             title="formData"
             dataArray={[...this.state.data.formData]}
             handle_change_body_data={this.handleChangeBody.bind(this)}
@@ -82,6 +83,7 @@ class BodyContainer extends Component {
       case "urlEncoded":
         return (
           <GenericTable
+            {...this.props}
             title="x-www-form-urlencoded"
             dataArray={[...this.state.data.urlEncoded]}
             handle_change_body_data={this.handleChangeBody.bind(this)}
