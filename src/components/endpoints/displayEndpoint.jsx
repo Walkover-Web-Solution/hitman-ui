@@ -975,25 +975,15 @@ class DisplayEndpoint extends Component {
             />
           </div>
           <div className="d-flex">
-            {isDashboardRoute(this.props) ? (
-              <button
-                className="btn"
-                type="submit"
-                id="send-request-button"
-                onClick={() => this.handleSend()}
-              >
-                Send
-              </button>
-            ) : (
-              <button
-                className="btn"
-                type="submit"
-                id="send-request-button"
-                onClick={() => this.handleSend()}
-              >
-                Try
-              </button>
-            )}
+            <button
+              className="btn"
+              type="submit"
+              id="send-request-button"
+              onClick={() => this.handleSend()}
+            >
+              {isDashboardRoute(this.props) ? "Send" : "Try"}
+            </button>
+
             {isDashboardRoute(this.props) ? (
               <button
                 className="btn"

@@ -1315,20 +1315,20 @@ table#custom-generic-table {
   }
 
   td {
-    height: 30px;
-    padding: 5px !important;
+    height: 35px;
+    //padding: 5px !important;
   }
 
   tbody {
     input {
-      height: 30px;
+      height: 35px;
       font-size: 14px;
       font-weight: 400;
     }
     input:focus,
     input.form-control:focus {
       box-shadow: inset 0 -1px 0 rgb(255, 255, 255) !important;
-      height: 30px;
+      height: 35px;
       // font-size: 12px;
       // font-weight: 400;
     }

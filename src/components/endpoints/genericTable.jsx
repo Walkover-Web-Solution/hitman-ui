@@ -276,7 +276,11 @@ class GenericTable extends Component {
             <tbody style={{ border: "none" }}>
               {dataArray.map((e, index) => (
                 <tr key={index} id="generic-table-row">
-                  <td className="custom-td" id="generic-table-key-cell">
+                  <td
+                    className="custom-td"
+                    id="generic-table-key-cell"
+                    style={{ "margin-left": "5px" }}
+                  >
                     {dataArray[index].checked === "notApplicable" ? null : (
                       <input
                         disabled={
