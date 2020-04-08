@@ -720,6 +720,10 @@ class DisplayEndpoint extends Component {
   }
 
   render() {
+    // if (!isDashboardRoute(this.props)) {
+    //   this.setState({ showDescriptionFlag: true });
+    // }
+
     if (
       this.props.location.pathname.split("/")[3] !== "new" &&
       this.state.endpoint.id !== this.props.location.pathname.split("/")[3]
@@ -827,18 +831,24 @@ class DisplayEndpoint extends Component {
           {this.state.showCodeWindow && this.showCodeWindow()}
 
           {this.state.endpoint.description !== undefined ? (
-            <i
-              className={
-                this.state.showAddDescriptionFlag === true
-                  ? "fas fa-caret-down endpoint-description"
-                  : "fas fa-caret-right endpoint-description"
-              }
-              onClick={() => this.showDescription()}
-            ></i>
+            <button className="endpoint-description">
+              <i
+                className={
+                  this.state.showAddDescriptionFlag === true
+                    ? "fas fa-caret-down "
+                    : "fas fa-caret-right"
+                }
+                onClick={() => this.showDescription()}
+              ></i>
+            </button>
           ) : null}
           <input
             type="text"
-            className="endpoint-name-input"
+            className={
+              isDashboardRoute(this.props)
+                ? "endpoint-name-input"
+                : "public-endpoint-name-input"
+            }
             aria-label="Username"
             aria-describedby="addon-wrapping"
             name="name"
@@ -846,6 +856,7 @@ class DisplayEndpoint extends Component {
             placeholder="Endpoint Name"
             value={this.state.data.name}
             onChange={this.handleChange}
+            disabled={isDashboardRoute(this.props) ? null : true}
           />
         </div>
 
@@ -972,6 +983,7 @@ class DisplayEndpoint extends Component {
               aria-describedby="basic-addon3"
               placeholder={"Enter request URL"}
               onChange={this.handleChange}
+              disabled={isDashboardRoute(this.props) ? null : true}
             />
           </div>
           <div className="d-flex">
