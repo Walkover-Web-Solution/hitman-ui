@@ -60,8 +60,8 @@ class DisplayEndpoint extends Component {
     flagResponse: false,
     originalHeaders: [],
     originalParams: [],
-    showDescriptionFlag: false,
-    showAddDescriptionFlag: false,
+    showDescriptionFormFlag: false,
+    showAddDescriptionFlag: isDashboardRoute(this.props) ? false : true,
     oldDescription: "",
     headers: [],
     params: [],
@@ -74,6 +74,9 @@ class DisplayEndpoint extends Component {
 
   async componentDidMount() {
     let flag = 0;
+    // if (!isDashboardRoute(this.props)) {
+    //   this.setState({ showDescriptionFormFlag: true });
+    // }
     if (
       (this.props.location.pathname.split("/")[3] === "new" &&
         !this.props.location.title) ||
@@ -169,7 +172,7 @@ class DisplayEndpoint extends Component {
         groupId,
         endpoint_description: endpoint.description,
         oldDescription: endpoint.description,
-        showDescriptionFlag: false,
+        showDescriptionFormFlag: false,
         title: "update endpoint",
       });
     }
@@ -648,17 +651,17 @@ class DisplayEndpoint extends Component {
   }
 
   handleDescription() {
-    const showDescriptionFlag = true;
+    const showDescriptionFormFlag = true;
     let showAddDescriptionFlag = true;
-    this.setState({ showDescriptionFlag, showAddDescriptionFlag });
+    this.setState({ showDescriptionFormFlag, showAddDescriptionFlag });
   }
 
   handleDescriptionCancel() {
     let endpoint = { ...this.state.endpoint };
     endpoint.description = this.state.oldDescription;
-    const showDescriptionFlag = false;
+    const showDescriptionFormFlag = false;
     this.setState({
-      showDescriptionFlag,
+      showDescriptionFormFlag,
       endpoint,
       showAddDescriptionFlag: true,
     });
@@ -674,7 +677,7 @@ class DisplayEndpoint extends Component {
     endpoint.description = value;
     this.setState({
       endpoint,
-      showDescriptionFlag: false,
+      showDescriptionFormFlag: false,
       oldDescription: value,
       showAddDescriptionFlag: true,
     });
@@ -688,7 +691,7 @@ class DisplayEndpoint extends Component {
 
   showDescription() {
     let showAddDescriptionFlag = !this.state.showAddDescriptionFlag;
-    this.setState({ showAddDescriptionFlag, showDescriptionFlag: false });
+    this.setState({ showAddDescriptionFlag, showDescriptionFormFlag: false });
   }
 
   formatBody(body, headers) {
@@ -720,10 +723,6 @@ class DisplayEndpoint extends Component {
   }
 
   render() {
-    // if (!isDashboardRoute(this.props)) {
-    //   this.setState({ showDescriptionFlag: true });
-    // }
-
     if (
       this.props.location.pathname.split("/")[3] !== "new" &&
       this.state.endpoint.id !== this.props.location.pathname.split("/")[3]
@@ -756,7 +755,7 @@ class DisplayEndpoint extends Component {
         groupId: this.props.location.groupId,
         title: "Add New Endpoint",
         flagResponse: false,
-        showDescriptionFlag: false,
+        showDescriptionFormFlag: false,
 
         originalHeaders: [
           {
@@ -830,7 +829,8 @@ class DisplayEndpoint extends Component {
         <div className="endpoint-name-container">
           {this.state.showCodeWindow && this.showCodeWindow()}
 
-          {this.state.endpoint.description !== undefined ? (
+          {this.state.endpoint.description !== undefined &&
+          isDashboardRoute(this.props) ? (
             <button className="endpoint-description">
               <i
                 className={
@@ -861,7 +861,7 @@ class DisplayEndpoint extends Component {
         </div>
 
         {this.state.showAddDescriptionFlag &&
-        !this.state.showDescriptionFlag ? (
+        !this.state.showDescriptionFormFlag ? (
           this.state.endpoint.description === "" &&
           isDashboardRoute(this.props) ? (
             <Link
@@ -891,7 +891,7 @@ class DisplayEndpoint extends Component {
           )
         ) : null}
 
-        {this.state.showDescriptionFlag && isDashboardRoute(this.props) ? (
+        {this.state.showDescriptionFormFlag && isDashboardRoute(this.props) ? (
           <form onSubmit={this.handleDescriptionSave.bind(this)}>
             <div
               className="form-group"

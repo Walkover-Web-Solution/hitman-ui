@@ -1425,3 +1425,7 @@ table#custom-generic-table {
 .dropdown-menu.dropdown-menu-right.show {
   background: rgb(247, 247, 247);
 }
+
+input.disabled:hover {
+  cursor: not-allowed;
+}
