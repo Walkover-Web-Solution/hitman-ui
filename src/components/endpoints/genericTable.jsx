@@ -36,7 +36,9 @@ class GenericTable extends Component {
       if (title === "Params" && dataArray[name[0]].key.length === 0) {
         this.handleDelete(dataArray, name[0], title);
       }
-      // this.handleAdd(dataArray, title, dataArray[name[0]].key, name[0]);
+      if (title !== "Path Variables") {
+        this.handleAdd(dataArray, title, dataArray[name[0]].key, name[0]);
+      }
     }
     if (name[1] === "value") {
       if (
@@ -47,7 +49,9 @@ class GenericTable extends Component {
         dataArray[name[0]].checked = "true";
       }
       dataArray[name[0]].value = e.currentTarget.value;
-      // this.handleAdd(dataArray, title, dataArray[name[0]].value, name[0]);
+      if (title !== "Path Variables") {
+        this.handleAdd(dataArray, title, dataArray[name[0]].value, name[0]);
+      }
     }
     if (name[1] === "description") {
       if (
@@ -58,7 +62,14 @@ class GenericTable extends Component {
         dataArray[name[0]].checked = "true";
       }
       dataArray[name[0]].description = e.currentTarget.value;
-      // this.handleAdd(dataArray, title, dataArray[name[0]].description, name[0]);
+      if (title !== "Path Variables") {
+        this.handleAdd(
+          dataArray,
+          title,
+          dataArray[name[0]].description,
+          name[0]
+        );
+      }
     }
 
     // if (
@@ -69,9 +80,9 @@ class GenericTable extends Component {
     //   dataArray[name[0]].checked = "true";
     // }
 
-    if (title !== "Path Variables") {
-      this.handleAdd(dataArray, title, dataArray[name[0]].name[1], name[0]);
-    }
+    // if (title !== "Path Variables") {
+    //   this.handleAdd(dataArray, title, dataArray[name[0]].name[1], name[0]);
+    // }
 
     if (title === "Headers")
       this.props.props_from_parent("originalHeaders", dataArray);
@@ -143,7 +154,7 @@ class GenericTable extends Component {
 
   handleAdd(dataArray, title, key, index) {
     index = parseInt(index) + 1;
-    if (key.length === 1 && !dataArray[index]) {
+    if (key.length >= 1 && !dataArray[index]) {
       const len = dataArray.length;
       dataArray[len.toString()] = {
         checked: "notApplicable",

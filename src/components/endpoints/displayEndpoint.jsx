@@ -181,16 +181,10 @@ class DisplayEndpoint extends Component {
       let path = uripath.pathname().slice(1);
       let pathVariableKeys = path.split("/");
       let pathVariableKeysObject = {};
-      for (keys in pathVariableKeys) {
-        pathVariableKeysObject[pathVariableKeys[keys]] = false;
+      for (let i = 0; i < pathVariableKeys.length; i++) {
+        pathVariableKeysObject[pathVariableKeys[i]] = false;
       }
       this.setPathVariables(pathVariableKeys, pathVariableKeysObject);
-
-      // if (pathVariableKeys[1] && pathVariableKeys[1].length !== 0) {
-      //   this.setPathVatiables(pathVariableKeys);
-      // } else {
-      //   this.setState({ pathVariables: [] });
-      // }
       let result = URI.parseQuery(updatedUri);
       for (let i = 0; i < Object.keys(result).length; i++) {
         keys.push(Object.keys(result)[i]);
@@ -376,7 +370,6 @@ class DisplayEndpoint extends Component {
         path = path + pathParameters[i] + "/";
       }
     }
-    console.log("path", path);
     // generatePath(
     //   uri,
     //   this.state.pathVariables.map(
@@ -703,40 +696,111 @@ class DisplayEndpoint extends Component {
   }
 
   setBody(bodyType, body) {
+    console.log(bodyType, body);
     let data = { ...this.state.data };
     data.body = { type: bodyType, value: body };
-    if (bodyType === "urlEncoded") {
-      this.setHeaders();
+    if (bodyType !== "formData") {
+      this.setHeaders(bodyType);
     }
     this.setState({ data });
   }
 
-  setHeaders() {
-    this.contentTypeFlag = false;
+  setHeaders(bodyType) {
     let originalHeaders = this.state.originalHeaders;
+    let updatedHeaders = [];
+    this.contentTypeFlag = false;
     for (let i = 0; i < originalHeaders.length; i++) {
-      if (originalHeaders[i].key === "Content-type") {
-        this.contentTypeFlag = true;
-        break;
+      if (
+        originalHeaders[i].key === "Content-type" ||
+        originalHeaders[i].key === ""
+      ) {
+        continue;
+      } else {
+        updatedHeaders.push(originalHeaders[i]);
       }
     }
-    if (this.contentTypeFlag === false) {
-      let length = originalHeaders.length;
-      originalHeaders[length - 1] = {
-        checked: "true",
-        key: "Content-type",
-        value: "application/x-www-form-urlencoded",
-        description: "",
-      };
-      originalHeaders.push({
-        checked: "notApplicable",
-        key: "",
-        value: "",
-        description: "",
-      });
-      this.setState({ originalHeaders });
+    switch (bodyType) {
+      case "urlEncoded":
+        updatedHeaders[updatedHeaders.length] = {
+          checked: "true",
+          key: "Content-type",
+          value: "application/x-www-form-urlencoded",
+          description: "",
+        };
+        break;
+      case "TEXT":
+        updatedHeaders[updatedHeaders.length] = {
+          checked: "true",
+          key: "Content-type",
+          value: "text/plain",
+          description: "",
+        };
+        break;
+      case "JSON":
+        updatedHeaders[updatedHeaders.length] = {
+          checked: "true",
+          key: "Content-type",
+          value: "application/JSON",
+          description: "",
+        };
+        break;
+      case "HTML":
+        updatedHeaders[updatedHeaders.length] = {
+          checked: "true",
+          key: "Content-type",
+          value: "text/HTML",
+          description: "",
+        };
+        break;
+      case "XML":
+        updatedHeaders[updatedHeaders.length] = {
+          checked: "true",
+          key: "Content-type",
+          value: "application/XML",
+          description: "",
+        };
+        break;
+      case "JavaScript":
+        updatedHeaders[updatedHeaders.length] = {
+          checked: "true",
+          key: "Content-type",
+          value: "application/JavaScript",
+          description: "",
+        };
+        break;
     }
+    updatedHeaders.push({
+      checked: "notApplicable",
+      key: "",
+      value: "",
+      description: "",
+    });
+    this.setState({ originalHeaders: updatedHeaders });
   }
+  // this.contentTypeFlag = false;
+  // let originalHeaders = this.state.originalHeaders;
+  // for (let i = 0; i < originalHeaders.length; i++) {
+  //   if (originalHeaders[i].key === "Content-type") {
+  //     this.contentTypeFlag = true;
+  //     break;
+  //   }
+  // }
+  // if (this.contentTypeFlag === false) {
+  //   let length = originalHeaders.length;
+  //   originalHeaders[length - 1] = {
+  //     checked: "true",
+  //     key: "Content-type",
+  //     value: "application/x-www-form-urlencoded",
+  //     description: "",
+  //   };
+  //   originalHeaders.push({
+  //     checked: "notApplicable",
+  //     key: "",
+  //     value: "",
+  //     description: "",
+  //   });
+  //   }
+  // }
 
   handleDescription() {
     const showDescriptionFlag = true;

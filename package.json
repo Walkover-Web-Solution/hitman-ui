@@ -5,6 +5,7 @@
   "dependencies": {
     "axios": "^0.19.1",
     "bootstrap": "^4.4.1",
+    "highlight.js": "^9.18.1",
     "http-status": "^1.4.2",
     "httpsnippet": "^1.19.1",
     "joi-browser": "^13.4.0",

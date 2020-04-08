@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import GenericTable from "./genericTable";
+import Highlight from "react-highlight";
+import "../../../node_modules/highlight.js/styles/vs.css";
 
 class BodyContainer extends Component {
   state = {
@@ -23,21 +25,27 @@ class BodyContainer extends Component {
         },
       ],
     },
+    selectedRawBodyType: "TEXT",
   };
+
+  rawBodyTypes = ["TEXT", "HTML", "JSON", "XML", "JavaScript"];
 
   handleSelectBodyType(bodyType) {
     this.setState({
       selectedBodyType: bodyType,
     });
+    console.log("bodyType", bodyType);
     this.props.set_body(bodyType, this.state.data[bodyType]);
   }
 
-  handleChange = (e) => {
+  handleChange(e) {
+    let selectedBodyType = e.currentTarget.name;
     const data = { ...this.state.data };
-    data[e.currentTarget.name] = e.currentTarget.value;
-    this.setState({ data });
-    this.props.set_body(this.state.selectedBodyType, e.currentTarget.value);
-  };
+    data.raw = e.currentTarget.value;
+    console.log("data", data);
+    this.setState({ data, selectedBodyType });
+    this.props.set_body(selectedBodyType, e.currentTarget.value);
+  }
 
   handleChangeBody(title, dataArray) {
     const data = { ...this.state.data };
@@ -57,19 +65,16 @@ class BodyContainer extends Component {
     }
   }
 
+  setRawBodyType(rawBodyType) {
+    this.setState({
+      selectedRawBodyType: rawBodyType,
+      selectedBodyType: rawBodyType,
+    });
+    this.props.set_body(rawBodyType, this.state.data.raw);
+  }
+
   renderBody() {
     switch (this.state.selectedBodyType) {
-      case "raw":
-        return (
-          <textarea
-            className="form-control"
-            name="raw"
-            id="body"
-            rows="8"
-            onChange={this.handleChange}
-            value={this.state.data.raw}
-          />
-        );
       case "formData":
         return (
           <GenericTable
@@ -89,21 +94,28 @@ class BodyContainer extends Component {
           ></GenericTable>
         );
       default:
-        return <div></div>;
+        return (
+          <div>
+            <Highlight className={this.state.rawBodyType}>
+              <textarea
+                className="form-control"
+                name={this.state.selectedBodyType}
+                id="body"
+                rows="8"
+                onChange={this.handleChange}
+                value={this.state.data.raw}
+              />
+            </Highlight>{" "}
+          </div>
+        );
     }
   }
+
   render() {
     if (this.props.body && !this.state.selectedBodyType) {
       const selectedBodyType = this.props.body.type;
       let data = this.state.data;
       data[selectedBodyType] = this.props.body.value;
-      if (selectedBodyType === "raw") {
-        data[selectedBodyType] = JSON.stringify(
-          data[selectedBodyType],
-          null,
-          4
-        );
-      }
       if (document.getElementById(selectedBodyType)) {
         document.getElementById(selectedBodyType).checked = true;
         this.setState({ selectedBodyType, data });
@@ -116,8 +128,8 @@ class BodyContainer extends Component {
             <input
               type="radio"
               name="body-select"
-              id="raw"
-              onClick={() => this.handleSelectBodyType("raw")}
+              id="Text"
+              onClick={() => this.handleSelectBodyType("TEXT")}
             />
             raw
           </label>
@@ -139,6 +151,36 @@ class BodyContainer extends Component {
             />
             urlencoded
           </label>
+          {this.state.selectedBodyType !== "urlEncoded" &&
+          this.state.selectedBodyType !== "formData" ? (
+            <div className="dropdown">
+              <button
+                className="btn btn-secondary dropdown-toggle"
+                type="button"
+                id="dropdownMenuButton"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+              >
+                {this.state.selectedRawBodyType}
+              </button>
+              <div
+                className="dropdown-menu"
+                aria-labelledby="dropdownMenuButton"
+              >
+                {this.rawBodyTypes.map((rawBodyType) => (
+                  <button
+                    className="btn custom-request-button"
+                    type="button"
+                    onClick={() => this.setRawBodyType(rawBodyType)}
+                    key={rawBodyType}
+                  >
+                    {rawBodyType}
+                  </button>
+                ))}
+              </div>
+            </div>
+          ) : null}
         </form>
 
         <div className="body-container">{this.renderBody()}</div>
