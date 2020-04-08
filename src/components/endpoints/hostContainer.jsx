@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { toast } from "react-toastify";
-
+import { isDashboardRoute } from "../common/utility";
 class HostContainer extends Component {
   state = {
     selectedHost: "customHost",
@@ -75,6 +75,27 @@ class HostContainer extends Component {
     this.props.set_base_url(BASE_URL);
     return BASE_URL;
   }
+  fetchPublicEndpointHost(props) {
+    let HOST_URL = "";
+    let endpointId = props.location.pathname.split("/")[4];
+    let endpoint = props.endpoints[endpointId];
+    let groupId = endpoint.groupId;
+    let endpointUrl = endpoint.BASE_URL;
+    if (endpointUrl === "" || endpointUrl === null) {
+      let group = props.groups[groupId];
+      let groupUrl = group.host;
+      let versionId = group.versionId;
+      if (groupUrl === "" || groupUrl === null) {
+        let version = props.versions[versionId];
+        HOST_URL = version.host;
+      } else {
+        HOST_URL = groupUrl;
+      }
+    } else {
+      HOST_URL = endpointUrl;
+    }
+    return HOST_URL;
+  }
 
   render() {
     if (!this.state.groupId && this.props.groupId) {
@@ -94,80 +115,94 @@ class HostContainer extends Component {
       }
       this.setState({ groupId, versionId, selectedHost });
     }
+    if (isDashboardRoute(this.props)) {
+      return (
+        <div className="host-field-container">
+          <input
+            type="text"
+            name="customHost"
+            value={this.fetchHost()}
+            onChange={this.handleChange}
+            disabled={this.state.selectedHost !== "customHost"}
+          />
+          <div className="dropdown" id="host-select">
+            <button
+              className="btn dropdown-toggle"
+              type="button"
+              id="dropdownMenuButton"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+            ></button>
+            <div
+              className="dropdown-menu dropdown-menu-right"
+              aria-labelledby="dropdownMenuButton"
+            >
+              {this.props.environment &&
+                this.props.environment.variables &&
+                this.props.environment.variables.BASE_URL && (
+                  <button
+                    className="btn"
+                    onClick={() => this.selectHost("environmentHost")}
+                  >
+                    {this.state.selectedHost === "environmentHost" && (
+                      <i className="fas fa-check"></i>
+                    )}
+                    <div className="host-label">environmentHost</div>
+                  </button>
+                )}
 
-    return (
-      <div className="host-field-container">
-        <input
-          type="text"
-          name="customHost"
-          value={this.fetchHost()}
-          onChange={this.handleChange}
-          disabled={this.state.selectedHost !== "customHost"}
-        />
-        <div className="dropdown" id="host-select">
-          <button
-            className="btn dropdown-toggle"
-            type="button"
-            id="dropdownMenuButton"
-            data-toggle="dropdown"
-            aria-haspopup="true"
-            aria-expanded="false"
-          ></button>
-          <div
-            className="dropdown-menu dropdown-menu-right"
-            aria-labelledby="dropdownMenuButton"
-          >
-            {this.props.environment &&
-              this.props.environment.variables &&
-              this.props.environment.variables.BASE_URL && (
+              {this.state.groupId &&
+                this.props.groups[this.state.groupId].host && (
+                  <button
+                    className="btn"
+                    onClick={() => this.selectHost("groupHost")}
+                  >
+                    {this.state.selectedHost === "groupHost" && (
+                      <i className="fas fa-check"></i>
+                    )}
+                    <div className="host-label">groupHost</div>
+                  </button>
+                )}
+              {this.state.groupId && (
                 <button
                   className="btn"
-                  onClick={() => this.selectHost("environmentHost")}
+                  onClick={() => this.selectHost("versionHost")}
                 >
-                  {this.state.selectedHost === "environmentHost" && (
+                  {this.state.selectedHost === "versionHost" && (
                     <i className="fas fa-check"></i>
                   )}
-                  <div className="host-label">environmentHost</div>
+                  <div className="host-label">versionHost</div>
                 </button>
               )}
 
-            {this.state.groupId && this.props.groups[this.state.groupId].host && (
               <button
+                id="customHost"
                 className="btn"
-                onClick={() => this.selectHost("groupHost")}
+                onClick={() => this.selectHost("customHost")}
               >
-                {this.state.selectedHost === "groupHost" && (
+                {this.state.selectedHost === "customHost" && (
                   <i className="fas fa-check"></i>
                 )}
-                <div className="host-label">groupHost</div>
+                <div className="host-label">customHost</div>
               </button>
-            )}
-            {this.state.groupId && (
-              <button
-                className="btn"
-                onClick={() => this.selectHost("versionHost")}
-              >
-                {this.state.selectedHost === "versionHost" && (
-                  <i className="fas fa-check"></i>
-                )}
-                <div className="host-label">versionHost</div>
-              </button>
-            )}
-
-            <button
-              id="customHost"
-              className="btn"
-              onClick={() => this.selectHost("customHost")}
-            >
-              {this.state.selectedHost === "customHost" && (
-                <i className="fas fa-check"></i>
-              )}
-              <div className="host-label">customHost</div>
-            </button>
+            </div>
           </div>
         </div>
-      </div>
-    );
+      );
+    } else {
+      return (
+        <div className="host-field-container">
+          <input
+            type="text"
+            name="customHost"
+            value={this.fetchPublicEndpointHost(this.props)}
+            onChange={this.handleChange}
+            disabled={this.state.selectedHost !== "customHost"}
+          />
+        </div>
+      );
+    }
   }
 }
 

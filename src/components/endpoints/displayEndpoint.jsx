@@ -923,32 +923,40 @@ class DisplayEndpoint extends Component {
 
         <div className="endpoint-url-container">
           <div className="input-group-prepend">
-            <div className="dropdown">
-              <button
-                className="btn btn-secondary dropdown-toggle"
-                type="button"
-                id="dropdownMenuButton"
-                data-toggle="dropdown"
-                aria-haspopup="true"
-                aria-expanded="false"
-              >
+            {isDashboardRoute(this.props) ? (
+              <div>
+                <div className="dropdown">
+                  <button
+                    className="btn btn-secondary dropdown-toggle"
+                    type="button"
+                    id="dropdownMenuButton"
+                    data-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                  >
+                    {this.state.data.method}
+                  </button>
+                  <div
+                    className="dropdown-menu"
+                    aria-labelledby="dropdownMenuButton"
+                  >
+                    {this.state.methodList.map((methodName) => (
+                      <button
+                        className="btn custom-request-button"
+                        onClick={() => this.setMethod(methodName)}
+                        key={methodName}
+                      >
+                        {methodName}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <button className="btn btn-secondary dropdown-toggle">
                 {this.state.data.method}
               </button>
-              <div
-                className="dropdown-menu"
-                aria-labelledby="dropdownMenuButton"
-              >
-                {this.state.methodList.map((methodName) => (
-                  <button
-                    className="btn custom-request-button"
-                    onClick={() => this.setMethod(methodName)}
-                    key={methodName}
-                  >
-                    {methodName}
-                  </button>
-                ))}
-              </div>
-            </div>
+            )}
             <HostContainer
               {...this.props}
               groupId={this.state.groupId}
@@ -967,14 +975,25 @@ class DisplayEndpoint extends Component {
             />
           </div>
           <div className="d-flex">
-            <button
-              className="btn"
-              type="submit"
-              id="send-request-button"
-              onClick={() => this.handleSend()}
-            >
-              Send
-            </button>
+            {isDashboardRoute(this.props) ? (
+              <button
+                className="btn"
+                type="submit"
+                id="send-request-button"
+                onClick={() => this.handleSend()}
+              >
+                Send
+              </button>
+            ) : (
+              <button
+                className="btn"
+                type="submit"
+                id="send-request-button"
+                onClick={() => this.handleSend()}
+              >
+                Try
+              </button>
+            )}
             {isDashboardRoute(this.props) ? (
               <button
                 className="btn"
