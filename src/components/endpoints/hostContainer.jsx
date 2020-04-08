@@ -77,8 +77,14 @@ class HostContainer extends Component {
   }
   fetchPublicEndpointHost(props) {
     let HOST_URL = "";
-    let endpointId = props.location.pathname.split("/")[4];
-    let endpoint = props.endpoints[endpointId];
+    let endpoint = {};
+    let allEndpoints = this.props.endpoints;
+    for (endpoint in allEndpoints) {
+      if (allEndpoints[endpoint].groupId === this.props.groupId) {
+        endpoint = allEndpoints[endpoint];
+        break;
+      }
+    }
     let groupId = endpoint.groupId;
     let endpointUrl = endpoint.BASE_URL;
     if (endpointUrl === "" || endpointUrl === null) {
@@ -94,6 +100,7 @@ class HostContainer extends Component {
     } else {
       HOST_URL = endpointUrl;
     }
+    this.props.set_base_url(HOST_URL);
     return HOST_URL;
   }
 
