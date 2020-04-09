@@ -61,8 +61,6 @@ class DisplayEndpoint extends Component {
     flagResponse: false,
     originalHeaders: [],
     originalParams: [],
-    showDescriptionFormFlag: false,
-    showAddDescriptionFlag: isDashboardRoute(this.props) ? false : true,
     oldDescription: "",
     headers: [],
     params: [],
@@ -170,14 +168,13 @@ class DisplayEndpoint extends Component {
         groupId,
         endpoint_description: endpoint.description,
         oldDescription: endpoint.description,
-        showDescriptionFormFlag: false,
         title: "update endpoint",
       });
     }
   }
   handleChange = (e) => {
     let data = { ...this.state.data };
-    //data[e.currentTarget.name] = e.currentTarget.value;
+    data[e.currentTarget.name] = e.currentTarget.value;
     data.uri = e.currentTarget.value;
     if (e.currentTarget.name === "updatedUri") {
       let keys = [];
@@ -718,7 +715,6 @@ class DisplayEndpoint extends Component {
         groupId: this.props.location.groupId,
         title: "Add New Endpoint",
         flagResponse: false,
-        showDescriptionFormFlag: false,
 
         originalHeaders: [
           {
