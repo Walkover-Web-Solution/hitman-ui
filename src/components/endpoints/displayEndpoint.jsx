@@ -11,6 +11,7 @@ import DisplayResponse from "./displayResponse";
 import endpointApiService from "./endpointApiService";
 import GenericTable from "./genericTable";
 import HostContainer from "./hostContainer";
+import DisplayDescription from "./displayDescription";
 import { addEndpoint, updateEndpoint } from "./redux/endpointsActions";
 const status = require("http-status");
 
@@ -38,7 +39,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
 class DisplayEndpoint extends Component {
   uri = React.createRef();
-  name = React.createRef();
+  // name = React.createRef();
   paramKey = React.createRef();
 
   state = {
@@ -74,9 +75,6 @@ class DisplayEndpoint extends Component {
 
   async componentDidMount() {
     let flag = 0;
-    // if (!isDashboardRoute(this.props)) {
-    //   this.setState({ showDescriptionFormFlag: true });
-    // }
     if (
       (this.props.location.pathname.split("/")[3] === "new" &&
         !this.props.location.title) ||
@@ -179,7 +177,7 @@ class DisplayEndpoint extends Component {
   }
   handleChange = (e) => {
     let data = { ...this.state.data };
-    data[e.currentTarget.name] = e.currentTarget.value;
+    //data[e.currentTarget.name] = e.currentTarget.value;
     data.uri = e.currentTarget.value;
     if (e.currentTarget.name === "updatedUri") {
       let keys = [];
@@ -359,7 +357,7 @@ class DisplayEndpoint extends Component {
       const updatedParams = this.doSubmitParam();
       const endpoint = {
         uri: this.uri.current.value,
-        name: EndpointName || this.name.current.value,
+        name: EndpointName || this.state.data.name,
         requestType: this.state.data.method,
         body: body,
         headers: headersData,
@@ -650,48 +648,12 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  handleDescription() {
-    const showDescriptionFormFlag = true;
-    let showAddDescriptionFlag = true;
-    this.setState({ showDescriptionFormFlag, showAddDescriptionFlag });
-  }
-
-  handleDescriptionCancel() {
-    let endpoint = { ...this.state.endpoint };
-    endpoint.description = this.state.oldDescription;
-    const showDescriptionFormFlag = false;
-    this.setState({
-      showDescriptionFormFlag,
-      endpoint,
-      showAddDescriptionFlag: true,
-    });
-  }
-
-  handleDescriptionSave(e) {
-    e.preventDefault();
-    const value = e.target.description.value;
-    let endpoint = { ...this.state.endpoint };
-
-    this.props.updateEndpoint({ id: endpoint.id, description: value });
-
-    endpoint.description = value;
-    this.setState({
-      endpoint,
-      showDescriptionFormFlag: false,
-      oldDescription: value,
-      showAddDescriptionFlag: true,
-    });
-  }
-
-  handleChangeDescription = (e) => {
-    let endpoint = { ...this.state.endpoint };
-    endpoint[e.currentTarget.name] = e.currentTarget.value;
-    this.setState({ endpoint });
-  };
-
-  showDescription() {
-    let showAddDescriptionFlag = !this.state.showAddDescriptionFlag;
-    this.setState({ showAddDescriptionFlag, showDescriptionFormFlag: false });
+  propsFromDescription(title, data) {
+    console.log(title, data);
+    if (title === "data") {
+      this.setState({ data: data });
+    }
+    if (title === "endpoint") this.setState({ endpoint: data });
   }
 
   formatBody(body, headers) {
@@ -723,6 +685,7 @@ class DisplayEndpoint extends Component {
   }
 
   render() {
+    console.log("ddd", this.state.data);
     if (
       this.props.location.pathname.split("/")[3] !== "new" &&
       this.state.endpoint.id !== this.props.location.pathname.split("/")[3]
@@ -826,114 +789,14 @@ class DisplayEndpoint extends Component {
             save_endpoint={this.handleSave.bind(this)}
           />
         )}
-        <div className="endpoint-name-container">
-          {this.state.showCodeWindow && this.showCodeWindow()}
-
-          {this.state.endpoint.description !== undefined &&
-          isDashboardRoute(this.props) ? (
-            <button className="endpoint-description">
-              <i
-                className={
-                  this.state.showAddDescriptionFlag === true
-                    ? "fas fa-caret-down "
-                    : "fas fa-caret-right"
-                }
-                onClick={() => this.showDescription()}
-              ></i>
-            </button>
-          ) : null}
-          <input
-            type="text"
-            className={
-              isDashboardRoute(this.props)
-                ? "endpoint-name-input"
-                : "public-endpoint-name-input"
-            }
-            aria-label="Username"
-            aria-describedby="addon-wrapping"
-            name="name"
-            ref={this.name}
-            placeholder="Endpoint Name"
-            value={this.state.data.name}
-            onChange={this.handleChange}
-            disabled={isDashboardRoute(this.props) ? null : true}
-          />
-        </div>
-
-        {this.state.showAddDescriptionFlag &&
-        !this.state.showDescriptionFormFlag ? (
-          this.state.endpoint.description === "" &&
-          isDashboardRoute(this.props) ? (
-            <Link
-              style={{
-                padding: "5px 0px 0px 20px",
-                fontSize: "15px",
-                color: "tomato",
-              }}
-              onClick={() => this.handleDescription()}
-            >
-              Add a Description
-            </Link>
-          ) : (
-            <div>
-              <label style={{ padding: "5px 5px 0px 20px" }}>
-                {this.state.endpoint.description}
-              </label>
-              {isDashboardRoute(this.props) ? (
-                <button
-                  className="btn btn-default"
-                  onClick={() => this.handleDescription()}
-                >
-                  <i className="fas fa-pen"></i>
-                </button>
-              ) : null}
-            </div>
-          )
-        ) : null}
-
-        {this.state.showDescriptionFormFlag && isDashboardRoute(this.props) ? (
-          <form onSubmit={this.handleDescriptionSave.bind(this)}>
-            <div
-              className="form-group"
-              style={{ padding: "5px 10px 5px 10px" }}
-            >
-              <textarea
-                className="form-control"
-                rows="3"
-                name="description"
-                placeholder="Make things easier for your teammates with a complete endpoint description"
-                value={this.state.endpoint.description}
-                onChange={this.handleChangeDescription}
-              ></textarea>
-              <div style={{ float: "right", margin: "5px" }}>
-                <button
-                  className="btn btn-primary"
-                  type="cancel"
-                  onClick={() => this.handleDescriptionCancel()}
-                  style={{
-                    margin: "0px 5px 0px 0px",
-                    color: "tomato",
-                    background: "none",
-                    border: "none",
-                  }}
-                >
-                  Cancel
-                </button>
-                <button
-                  className="btn btn-primary"
-                  type="submit"
-                  style={{
-                    margin: "0px 0px 0px 5px",
-                    background: "tomato",
-                    border: "none",
-                  }}
-                >
-                  Save
-                </button>
-              </div>
-            </div>
-          </form>
-        ) : null}
+        {this.state.showCodeWindow && this.showCodeWindow()}
+        <DisplayDescription
+          {...this.props}
+          endpoint={this.state.endpoint}
+          data={this.state.data}
+          old_description={this.state.oldDescription}
+          props_from_parent={this.propsFromDescription.bind(this)}
+        ></DisplayDescription>
 
         <div className="endpoint-url-container">
           <div className="input-group-prepend">

@@ -248,16 +248,18 @@ class GenericTable extends Component {
       <div className="generic-table-container">
         <div className="generic-table-title-container">
           {title}
-          <button
-            id="edit-button"
-            className="btn btn-default custom-button"
-            style={{ float: "right", color: "tomato" }}
-            onClick={() => this.displayEditButton()}
-          >
-            {this.state.editButtonName}
-          </button>
+          {isDashboardRoute(this.props) ? (
+            <button
+              id="edit-button"
+              className="btn btn-default custom-button"
+              style={{ float: "right", color: "tomato" }}
+              onClick={() => this.displayEditButton()}
+            >
+              {this.state.editButtonName}
+            </button>
+          ) : null}
         </div>
-        {!this.state.bulkEdit && (
+        {!this.state.bulkEdit && dataArray.length > 0 ? (
           <table
             className="table table-bordered"
             id="custom-generic-table"
@@ -368,7 +370,7 @@ class GenericTable extends Component {
               ))}
             </tbody>
           </table>
-        )}
+        ) : null}
 
         {this.state.bulkEdit && (
           <div id="custom-bulk-edit">

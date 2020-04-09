@@ -40,6 +40,7 @@ class HostContainer extends Component {
     let BASE_URL = "";
     switch (this.state.selectedHost) {
       case "customHost":
+        //BASE_URL = this.state.customHost === null ? "" : this.state.customHost;
         BASE_URL = this.state.customHost;
         break;
       case "environmentHost":
@@ -75,6 +76,7 @@ class HostContainer extends Component {
     this.props.set_base_url(BASE_URL, this.state.customHost);
     return BASE_URL;
   }
+
   fetchPublicEndpointHost(props) {
     let HOST_URL = "";
     let endpoint = {};
@@ -110,6 +112,9 @@ class HostContainer extends Component {
       const versionId = this.props.groups[groupId].versionId;
       const customHost = this.props.custom_host;
       let selectedHost = null;
+
+      // if (customHost !== null) selectedHost = "customHost";
+      //else if (
       if (
         this.props.environment.variables &&
         this.props.environment.variables.BASE_URL
@@ -204,9 +209,23 @@ class HostContainer extends Component {
             type="text"
             name="customHost"
             value={this.fetchPublicEndpointHost(this.props)}
-            onChange={this.handleChange}
-            disabled={this.state.selectedHost !== "customHost"}
+            disabled
           />
+          <div className="dropdown" id="host-select">
+            <button
+              className="btn dropdown-toggle"
+              type="button"
+              id="dropdownMenuButton"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+              disabled
+            ></button>
+            <div
+              className="dropdown-menu dropdown-menu-right"
+              aria-labelledby="dropdownMenuButton"
+            ></div>
+          </div>
         </div>
       );
     }
