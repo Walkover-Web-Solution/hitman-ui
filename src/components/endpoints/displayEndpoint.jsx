@@ -71,6 +71,42 @@ class DisplayEndpoint extends Component {
   };
 
   async componentDidMount() {
+    if (this.props.location.pathname.split("/")[3] === "new") {
+      this.setState({
+        data: {
+          name: "",
+          method: "GET",
+          body: { type: "raw", value: null },
+          uri: "",
+          updatedUri: "",
+        },
+        startTime: "",
+        timeElapsed: "",
+        response: {},
+        endpoint: {},
+        groupId: this.props.location.groupId,
+        title: "Add New Endpoint",
+        flagResponse: false,
+        showDescriptionFlag: false,
+
+        originalHeaders: [
+          {
+            checked: "notApplicable",
+            key: "",
+            value: "",
+            description: "",
+          },
+        ],
+        originalParams: [
+          {
+            checked: "notApplicable",
+            key: "",
+            value: "",
+            description: "",
+          },
+        ],
+      });
+    }
     let flag = 0;
     if (!isDashboardRoute(this.props)) {
       this.fetchEndpoint(flag);
@@ -727,40 +763,40 @@ class DisplayEndpoint extends Component {
     }
     // if (this.props.location.title === "Add New Endpoint") {
     //   this.title = "Add New Endpoint";
-    //   this.setState({
-    //     data: {
-    //       name: "",
-    //       method: "GET",
-    //       body: { type: "raw", value: null },
-    //       uri: "",
-    //       updatedUri: "",
-    //     },
-    //     startTime: "",
-    //     timeElapsed: "",
-    //     response: {},
-    //     endpoint: {},
-    //     groupId: this.props.location.groupId,
-    //     title: "Add New Endpoint",
-    //     flagResponse: false,
-    //     showDescriptionFlag: false,
+    // this.setState({
+    //   data: {
+    //     name: "",
+    //     method: "GET",
+    //     body: { type: "raw", value: null },
+    //     uri: "",
+    //     updatedUri: "",
+    //   },
+    //   startTime: "",
+    //   timeElapsed: "",
+    //   response: {},
+    //   endpoint: {},
+    //   groupId: this.props.location.groupId,
+    //   title: "Add New Endpoint",
+    //   flagResponse: false,
+    //   showDescriptionFlag: false,
 
-    //     originalHeaders: [
-    //       {
-    //         checked: "notApplicable",
-    //         key: "",
-    //         value: "",
-    //         description: "",
-    //       },
-    //     ],
-    //     originalParams: [
-    //       {
-    //         checked: "notApplicable",
-    //         key: "",
-    //         value: "",
-    //         description: "",
-    //       },
-    //     ],
-    //   });
+    //   originalHeaders: [
+    //     {
+    //       checked: "notApplicable",
+    //       key: "",
+    //       value: "",
+    //       description: "",
+    //     },
+    //   ],
+    //   originalParams: [
+    //     {
+    //       checked: "notApplicable",
+    //       key: "",
+    //       value: "",
+    //       description: "",
+    //     },
+    //   ],
+    // });
     //   this.props.history.push({ groups: null });
     // }
 
