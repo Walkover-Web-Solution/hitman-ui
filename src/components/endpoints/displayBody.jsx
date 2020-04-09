@@ -23,6 +23,7 @@ class BodyContainer extends Component {
         },
       ],
     },
+    endpointId: null,
   };
 
   handleSelectBodyType(bodyType) {
@@ -97,8 +98,13 @@ class BodyContainer extends Component {
       const selectedBodyType = this.props.body.type;
       let data = this.state.data;
       data[selectedBodyType] = this.props.body.value;
-      if (document.getElementById(selectedBodyType)) {
-        document.getElementById(selectedBodyType).checked = true;
+      if (
+        document.getElementById(selectedBodyType + "-" + this.props.endpoint_id)
+      ) {
+        document.getElementById(
+          selectedBodyType + "-" + this.props.endpoint_id
+        ).checked = true;
+
         this.setState({ selectedBodyType, data });
       }
     }
@@ -108,8 +114,8 @@ class BodyContainer extends Component {
           <label>
             <input
               type="radio"
-              name="body-select"
-              id="raw"
+              name={`body-select-${this.props.endpoint_id}`}
+              id={`raw-${this.props.endpoint_id}`}
               onClick={() => this.handleSelectBodyType("raw")}
             />
             raw
@@ -117,8 +123,8 @@ class BodyContainer extends Component {
           <label>
             <input
               type="radio"
-              name="body-select"
-              id="formData"
+              name={`body-select-${this.props.endpoint_id}`}
+              id={`formData-${this.props.endpoint_id}`}
               onClick={() => this.handleSelectBodyType("formData")}
             />
             form-data
@@ -126,8 +132,8 @@ class BodyContainer extends Component {
           <label>
             <input
               type="radio"
-              name="body-select"
-              id="urlEncoded"
+              name={`body-select-${this.props.endpoint_id}`}
+              id={`urlEncoded-${this.props.endpoint_id}`}
               onClick={() => this.handleSelectBodyType("urlEncoded")}
             />
             urlencoded

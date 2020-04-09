@@ -45,7 +45,7 @@ class DisplayEndpoint extends Component {
     data: {
       name: "",
       method: "GET",
-      body: { type: "raw", value: "" },
+      body: null,
       uri: "",
       updatedUri: "",
     },
@@ -1102,6 +1102,7 @@ class DisplayEndpoint extends Component {
               <BodyContainer
                 set_body={this.setBody.bind(this)}
                 body={this.state.data.body}
+                endpoint_id={this.props.tab.id}
               />
             </div>
           </div>
