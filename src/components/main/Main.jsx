@@ -7,15 +7,16 @@ import { fetchAllVersions } from "../collectionVersions/redux/collectionVersions
 import ContentPanel from "./contentPanel";
 import {
   fetchEndpoints,
-  moveEndpoint
+  moveEndpoint,
 } from "../endpoints/redux/endpointsActions";
 import { fetchGroups } from "../groups/redux/groupsActions";
 import Navbar from "./Navbar";
 import { fetchPages } from "../pages/redux/pagesActions";
 import SideBar from "./sidebar";
 import { fetchAllTeamsOfUser } from "../teams/redux/teamsActions";
+import indexedDbService from "../indexedDb/indexedDbService";
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     fetchAllTeamsOfUser: () => dispatch(fetchAllTeamsOfUser()),
     fetchCollections: () => dispatch(fetchCollections()),
@@ -24,7 +25,7 @@ const mapDispatchToProps = dispatch => {
     fetchEndpoints: () => dispatch(fetchEndpoints()),
     fetchPages: () => dispatch(fetchPages()),
     moveEndpoint: (endpointId, sourceGroupId, destinationGroupId) =>
-      dispatch(moveEndpoint(endpointId, sourceGroupId, destinationGroupId))
+      dispatch(moveEndpoint(endpointId, sourceGroupId, destinationGroupId)),
   };
 };
 
@@ -32,10 +33,29 @@ class Main extends Component {
   state = {
     currentEnvironment: { id: null, name: "No Environment" },
     tabs: [],
-    defaultTabIndex: 0
+    defaultTabIndex: 0,
   };
 
-  componentDidMount() {
+  async componentDidMount() {
+    this.fetchAll();
+
+    const stores = [{ name: "environment" }];
+    await indexedDbService.createDataBase(stores);
+
+    const currentEnvironmentId = await indexedDbService.getValue(
+      "environment",
+      "currentEnvironmentId"
+    );
+    if (!currentEnvironmentId) {
+      await indexedDbService.addData(
+        "environment",
+        null,
+        "currentEnvironmentId"
+      );
+    }
+  }
+
+  fetchAll() {
     this.props.fetchAllTeamsOfUser();
     this.props.fetchCollections();
     this.props.fetchAllVersions();
@@ -43,6 +63,7 @@ class Main extends Component {
     this.props.fetchEndpoints();
     this.props.fetchPages();
   }
+
   setTabs(tabs, defaultTabIndex) {
     if (defaultTabIndex >= 0) {
       this.setState({ defaultTabIndex });
@@ -80,7 +101,7 @@ class Main extends Component {
           marginTop: "15px",
           display: "flex",
           flexDirection: "column",
-          justifyContent: "flex-start"
+          justifyContent: "flex-start",
         }}
       >
         <ToastContainer />
