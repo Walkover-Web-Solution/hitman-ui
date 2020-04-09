@@ -1426,6 +1426,6 @@ table#custom-generic-table {
   background: rgb(247, 247, 247);
 }
 
-input.disabled:hover {
+:disabled {
   cursor: not-allowed;
 }

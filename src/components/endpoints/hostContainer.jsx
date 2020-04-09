@@ -210,6 +210,7 @@ class HostContainer extends Component {
             name="customHost"
             value={this.fetchPublicEndpointHost(this.props)}
             disabled
+            style={{ cursor: "not-allowed" }}
           />
           <div className="dropdown" id="host-select">
             <button
@@ -220,6 +221,7 @@ class HostContainer extends Component {
               aria-haspopup="true"
               aria-expanded="false"
               disabled
+              style={{ cursor: "not-allowed" }}
             ></button>
             <div
               className="dropdown-menu dropdown-menu-right"

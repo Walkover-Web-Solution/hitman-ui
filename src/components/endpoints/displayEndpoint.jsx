@@ -13,6 +13,7 @@ import GenericTable from "./genericTable";
 import HostContainer from "./hostContainer";
 import DisplayDescription from "./displayDescription";
 import { addEndpoint, updateEndpoint } from "./redux/endpointsActions";
+import PublicBodyContainer from "./publicBodyContainer";
 const status = require("http-status");
 
 var URI = require("urijs");
@@ -46,7 +47,7 @@ class DisplayEndpoint extends Component {
     data: {
       name: "",
       method: "GET",
-      body: { type: "raw", value: "" },
+      body: null,
       uri: "",
       updatedUri: "",
     },
@@ -957,11 +958,25 @@ class DisplayEndpoint extends Component {
               role="tabpanel"
               aria-labelledby="pills-body-tab"
             >
-              <BodyContainer
+              {/* <BodyContainer
                 {...this.props}
                 set_body={this.setBody.bind(this)}
                 body={this.state.data.body}
-              />
+                // endpoint_id={this.props.tab.id}
+              /> */}
+              {isDashboardRoute(this.props) ? (
+                <BodyContainer
+                  {...this.props}
+                  set_body={this.setBody.bind(this)}
+                  body={this.state.data.body}
+                />
+              ) : (
+                <PublicBodyContainer
+                  {...this.props}
+                  set_body={this.setBody.bind(this)}
+                  body={this.state.data.body}
+                ></PublicBodyContainer>
+              )}
             </div>
           </div>
         </div>
