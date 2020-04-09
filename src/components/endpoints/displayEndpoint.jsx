@@ -73,12 +73,44 @@ class DisplayEndpoint extends Component {
   };
 
   async componentDidMount() {
+    if (this.props.location.pathname.split("/")[3] === "new") {
+      this.setState({
+        data: {
+          name: "",
+          method: "GET",
+          body: { type: "raw", value: null },
+          uri: "",
+          updatedUri: "",
+        },
+        startTime: "",
+        timeElapsed: "",
+        response: {},
+        endpoint: {},
+        groupId: this.props.location.groupId,
+        title: "Add New Endpoint",
+        flagResponse: false,
+        showDescriptionFlag: false,
+
+        originalHeaders: [
+          {
+            checked: "notApplicable",
+            key: "",
+            value: "",
+            description: "",
+          },
+        ],
+        originalParams: [
+          {
+            checked: "notApplicable",
+            key: "",
+            value: "",
+            description: "",
+          },
+        ],
+      });
+    }
     let flag = 0;
-    if (
-      (this.props.location.pathname.split("/")[3] === "new" &&
-        !this.props.location.title) ||
-      !isDashboardRoute(this.props)
-    ) {
+    if (!isDashboardRoute(this.props)) {
       this.fetchEndpoint(flag);
       store.subscribe(() => {
         if (!this.props.location.title && !this.state.title) {
@@ -97,15 +129,15 @@ class DisplayEndpoint extends Component {
     },
   ];
 
-  fetchEndpoint(flag) {
+  fetchEndpoint(flag, endpointId) {
     let endpoint = {};
     let originalParams = [];
     let originalHeaders = [];
     const split = this.props.location.pathname.split("/");
-    let endpointId = "";
 
-    if (isDashboardRoute(this.props)) endpointId = split[3];
-    else endpointId = split[4];
+    if (isDashboardRoute(this.props)) {
+      if (!endpointId) endpointId = split[3];
+    } else endpointId = split[4];
 
     const { endpoints } = store.getState();
     const { groups } = store.getState();
@@ -150,9 +182,8 @@ class DisplayEndpoint extends Component {
       //To fetch originalHeaders from Headers
       originalHeaders = this.fetchoriginalHeaders(endpoint.headers);
       let headers = this.fetchoriginalHeaders(endpoint.headers);
-
       this.customState.customBASE_URL = endpoint.BASE_URL;
-      console.log("fffffff", originalParams);
+
       this.setState({
         data: {
           method: endpoint.requestType,
@@ -647,11 +678,11 @@ class DisplayEndpoint extends Component {
   }
 
   propsFromDescription(title, data) {
-    console.log(title, data);
     if (title === "data") {
       this.setState({ data: data });
     }
     if (title === "endpoint") this.setState({ endpoint: data });
+    if (title === "oldDescription") this.setState({ oldDescription: data });
   }
 
   formatBody(body, headers) {
@@ -685,95 +716,114 @@ class DisplayEndpoint extends Component {
   render() {
     console.log("ddd", this.state.data);
     if (
+      isDashboardRoute(this.props) &&
       this.props.location.pathname.split("/")[3] !== "new" &&
-      this.state.endpoint.id !== this.props.location.pathname.split("/")[3]
+      this.state.endpoint.id !== this.props.tab.id &&
+      this.props.endpoints[this.props.tab.id]
     ) {
       let flag = 0;
 
-      if (!this.props.location.title && isDashboardRoute(this.props)) {
-        this.fetchEndpoint(flag);
+      if (isDashboardRoute(this.props)) {
+        this.fetchEndpoint(flag, this.props.tab.id);
         store.subscribe(() => {
           if (!this.props.location.title && !this.state.title) {
-            this.fetchEndpoint(flag);
+            this.fetchEndpoint(flag, this.props.tab.id);
           }
         });
       }
     }
-    if (this.props.location.title === "Add New Endpoint") {
-      this.title = "Add New Endpoint";
-      this.setState({
-        data: {
-          name: "",
-          method: "GET",
-          body: { type: "raw", value: null },
-          uri: "",
-          updatedUri: "",
-        },
-        startTime: "",
-        timeElapsed: "",
-        response: {},
-        endpoint: {},
-        groupId: this.props.location.groupId,
-        title: "Add New Endpoint",
-        flagResponse: false,
-
-        originalHeaders: [
-          {
-            checked: "notApplicable",
-            key: "",
-            value: "",
-            description: "",
-          },
-        ],
-        originalParams: [
-          {
-            checked: "notApplicable",
-            key: "",
-            value: "",
-            description: "",
-          },
-        ],
-      });
-      this.props.history.push({ groups: null });
-    }
 
     if (
-      this.props.location.title === "update endpoint" &&
-      this.props.location.endpoint
+      !isDashboardRoute(this.props) &&
+      this.props.location.pathname.split("/")[3] !== "new" &&
+      this.state.endpoint.id !== this.props.location.pathname.split("/")[4] &&
+      this.props.endpoints[this.props.location.pathname.split("/")[4]]
     ) {
-      let endpoint = { ...this.props.location.endpoint };
-      //To fetch originalParams from Params
-      const originalParams = this.fetchoriginalParams(
-        this.props.location.endpoint.params
-      );
-      const params = this.fetchoriginalParams(endpoint.params);
-
-      //To fetch originalHeaders from Headers
-      const originalHeaders = this.fetchoriginalHeaders(endpoint.headers);
-      const headers = this.fetchoriginalHeaders(endpoint.headers);
-      console.log("in update endpoint");
-      this.setState({
-        data: {
-          method: endpoint.requestType,
-          uri: endpoint.uri,
-          updatedUri: endpoint.uri,
-          name: endpoint.name,
-          body: endpoint.body,
-          // JSON.stringify(endpoint.body, null, 4)
-        },
-        title: "update endpoint",
-        response: {},
-        groupId: this.props.location.endpoint.groupId,
-        originalParams,
-        originalHeaders,
-        params,
-        headers,
-        endpoint,
-        flagResponse: false,
-        oldDescription: endpoint.description,
-      });
-      this.props.history.push({ endpoint: null });
+      if (!isDashboardRoute(this.props)) {
+        this.fetchEndpoint(0, this.props.location.pathname.split("/")[4]);
+        store.subscribe(() => {
+          if (!this.props.location.title && !this.state.title) {
+            this.fetchEndpoint(0, this.props.location.pathname.split("/")[4]);
+          }
+        });
+      }
     }
+
+    // if (this.props.location.title === "Add New Endpoint") {
+    //   this.title = "Add New Endpoint";
+    //   this.setState({
+    //     data: {
+    //       name: "",
+    //       method: "GET",
+    //       body: { type: "raw", value: null },
+    //       uri: "",
+    //       updatedUri: "",
+    //     },
+    //     startTime: "",
+    //     timeElapsed: "",
+    //     response: {},
+    //     endpoint: {},
+    //     groupId: this.props.location.groupId,
+    //     title: "Add New Endpoint",
+    //     flagResponse: false,
+
+    //     originalHeaders: [
+    //       {
+    //         checked: "notApplicable",
+    //         key: "",
+    //         value: "",
+    //         description: "",
+    //       },
+    //     ],
+    //     originalParams: [
+    //       {
+    //         checked: "notApplicable",
+    //         key: "",
+    //         value: "",
+    //         description: "",
+    //       },
+    //     ],
+    //   });
+    //   this.props.history.push({ groups: null });
+    // }
+
+    // if (
+    //   this.props.location.title === "update endpoint" &&
+    //   this.props.location.endpoint
+    // ) {
+    //   let endpoint = { ...this.props.location.endpoint };
+    //   //To fetch originalParams from Params
+    //   const originalParams = this.fetchoriginalParams(
+    //     this.props.location.endpoint.params
+    //   );
+    //   const params = this.fetchoriginalParams(endpoint.params);
+
+    //   //To fetch originalHeaders from Headers
+    //   const originalHeaders = this.fetchoriginalHeaders(endpoint.headers);
+    //   const headers = this.fetchoriginalHeaders(endpoint.headers);
+    //   console.log("in update endpoint");
+    //   this.setState({
+    //     data: {
+    //       method: endpoint.requestType,
+    //       uri: endpoint.uri,
+    //       updatedUri: endpoint.uri,
+    //       name: endpoint.name,
+    //       body: endpoint.body,
+    //       // JSON.stringify(endpoint.body, null, 4)
+    //     },
+    //     title: "update endpoint",
+    //     response: {},
+    //     groupId: this.props.location.endpoint.groupId,
+    //     originalParams,
+    //     originalHeaders,
+    //     params,
+    //     headers,
+    //     endpoint,
+    //     flagResponse: false,
+    //     oldDescription: endpoint.description,
+    //   });
+    //   this.props.history.push({ endpoint: null });
+    // }
     return (
       <div className="endpoint-container">
         {this.state.showEndpointFormModal && (
@@ -885,9 +935,17 @@ class DisplayEndpoint extends Component {
                   className="nav-link active"
                   id="pills-params-tab"
                   data-toggle="pill"
-                  href="#pills-home"
+                  href={
+                    isDashboardRoute(this.props)
+                      ? `#params-${this.props.tab.id}`
+                      : "#pills-params"
+                  }
                   role="tab"
-                  aria-controls="pills-home"
+                  aria-controls={
+                    isDashboardRoute(this.props)
+                      ? `params-${this.props.tab.id}`
+                      : "pills-params"
+                  }
                   aria-selected="true"
                 >
                   Params
@@ -898,9 +956,17 @@ class DisplayEndpoint extends Component {
                   className="nav-link"
                   id="pills-headers-tab"
                   data-toggle="pill"
-                  href="#pills-profile"
+                  href={
+                    isDashboardRoute(this.props)
+                      ? `#headers-${this.props.tab.id}`
+                      : "#pills-headers"
+                  }
                   role="tab"
-                  aria-controls="pills-profile"
+                  aria-controls={
+                    isDashboardRoute(this.props)
+                      ? `headers-${this.props.tab.id}`
+                      : "pills-headers"
+                  }
                   aria-selected="false"
                 >
                   Headers
@@ -911,9 +977,17 @@ class DisplayEndpoint extends Component {
                   className="nav-link"
                   id="pills-body-tab"
                   data-toggle="pill"
-                  href="#pills-contact"
+                  href={
+                    isDashboardRoute(this.props)
+                      ? `#body-${this.props.tab.id}`
+                      : "#pills-body"
+                  }
                   role="tab"
-                  aria-controls="pills-contact"
+                  aria-controls={
+                    isDashboardRoute(this.props)
+                      ? `body-${this.props.tab.id}`
+                      : "pills-body"
+                  }
                   aria-selected="false"
                 >
                   Body
@@ -924,7 +998,11 @@ class DisplayEndpoint extends Component {
           <div className="tab-content" id="pills-tabContent">
             <div
               className="tab-pane fade show active"
-              id="pills-home"
+              id={
+                isDashboardRoute(this.props)
+                  ? `params-${this.props.tab.id}`
+                  : "pills-params"
+              }
               role="tabpanel"
               aria-labelledby="pills-params-tab"
             >
@@ -938,7 +1016,11 @@ class DisplayEndpoint extends Component {
             </div>
             <div
               className="tab-pane fade"
-              id="pills-profile"
+              id={
+                isDashboardRoute(this.props)
+                  ? `headers-${this.props.tab.id}`
+                  : "pills-headers"
+              }
               role="tabpanel"
               aria-labelledby="pills-headers-tab"
             >
@@ -954,21 +1036,20 @@ class DisplayEndpoint extends Component {
             </div>
             <div
               className="tab-pane fade"
-              id="pills-contact"
+              id={
+                isDashboardRoute(this.props)
+                  ? `body-${this.props.tab.id}`
+                  : "pills-body"
+              }
               role="tabpanel"
               aria-labelledby="pills-body-tab"
             >
-              {/* <BodyContainer
-                {...this.props}
-                set_body={this.setBody.bind(this)}
-                body={this.state.data.body}
-                // endpoint_id={this.props.tab.id}
-              /> */}
               {isDashboardRoute(this.props) ? (
                 <BodyContainer
                   {...this.props}
                   set_body={this.setBody.bind(this)}
                   body={this.state.data.body}
+                  endpoint_id={this.props.tab.id}
                 />
               ) : (
                 <PublicBodyContainer

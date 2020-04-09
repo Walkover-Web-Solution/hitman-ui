@@ -20,7 +20,6 @@ class DisplayDescription extends Component {
   handleChange = (e) => {
     let data = { ...this.props.data };
     data[e.currentTarget.name] = e.currentTarget.value;
-    console.log(data);
     this.props.props_from_parent("data", data);
   };
 
@@ -51,10 +50,10 @@ class DisplayDescription extends Component {
     endpoint.description = value;
     this.setState({
       showDescriptionFormFlag: false,
-      oldDescription: value,
       showAddDescriptionFlag: true,
     });
     this.props.props_from_parent("endpoint", endpoint);
+    this.props.props_from_parent("oldDescription", value);
   }
 
   handleChangeDescription = (e) => {
@@ -69,7 +68,6 @@ class DisplayDescription extends Component {
   }
 
   render() {
-    console.log(this.props);
     return (
       <div>
         <div className="endpoint-name-container">
