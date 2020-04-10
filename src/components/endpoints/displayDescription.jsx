@@ -107,7 +107,7 @@ class DisplayDescription extends Component {
           isDashboardRoute(this.props) ? (
             <Link
               style={{
-                padding: "5px 0px 0px 20px",
+                padding: "0px 0px 0px 35px",
                 fontSize: "15px",
                 color: "tomato",
               }}
@@ -117,7 +117,7 @@ class DisplayDescription extends Component {
             </Link>
           ) : (
             <div>
-              <label style={{ padding: "5px 5px 0px 20px" }}>
+              <label style={{ padding: "5px 5px 0px 35px" }}>
                 {this.props.endpoint.description}
               </label>
               {isDashboardRoute(this.props) ? (

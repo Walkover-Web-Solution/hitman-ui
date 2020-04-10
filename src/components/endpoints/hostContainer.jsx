@@ -82,7 +82,7 @@ class HostContainer extends Component {
     let endpoint = {};
     let allEndpoints = this.props.endpoints;
     for (endpoint in allEndpoints) {
-      if (allEndpoints[endpoint].groupId === this.props.groupId) {
+      if (allEndpoints[endpoint].id === props.match.params.endpointId) {
         endpoint = allEndpoints[endpoint];
         break;
       }
