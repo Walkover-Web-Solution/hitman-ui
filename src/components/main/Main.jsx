@@ -39,7 +39,10 @@ class Main extends Component {
   async componentDidMount() {
     this.fetchAll();
 
-    const stores = [{ name: "environment" }];
+    const stores = [
+      { name: "environment" },
+      { name: "tabs", options: { keyPath: "id", autoIncrement: true } },
+    ];
     await indexedDbService.createDataBase(stores);
 
     const currentEnvironmentId = await indexedDbService.getValue(

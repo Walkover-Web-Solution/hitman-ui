@@ -14,7 +14,7 @@ const createDataBase = async (stores) => {
   const version = 1;
 
   db = await openDB(dbName, version, {
-    upgrade(db, oldVersion, newVersion, transaction) {
+    upgrade(db, oldVersion, newVersion, transaction, stores) {
       stores.map((store) => db.createObjectStore(store.name, store.options));
     },
   });
@@ -66,8 +66,14 @@ const deleteData = async (storeName, key) => {
   const tx = await db.transaction(storeName, "readwrite");
   const store = await tx.objectStore(storeName);
 
+  console.log(key);
   await store.delete(key);
   await tx.done;
+};
+
+const deleteDataByIndex = async (storeName, index) => {
+  const keys = await getAllKeys(storeName);
+  deleteData(storeName, keys[index]);
 };
 
 export default {
@@ -80,4 +86,5 @@ export default {
   getAllData,
   updateData,
   deleteData,
+  deleteDataByIndex,
 };
