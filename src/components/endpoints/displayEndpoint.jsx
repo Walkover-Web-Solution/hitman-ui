@@ -714,7 +714,6 @@ class DisplayEndpoint extends Component {
   }
 
   render() {
-    console.log("ddd", this.state.data);
     if (
       isDashboardRoute(this.props) &&
       this.props.location.pathname.split("/")[3] !== "new" &&
@@ -929,102 +928,109 @@ class DisplayEndpoint extends Component {
             >
               Code
             </button>
-            <ul className="nav nav-tabs" id="pills-tab" role="tablist">
-              <li className="nav-item">
-                <a
-                  className="nav-link active"
-                  id="pills-params-tab"
-                  data-toggle="pill"
-                  href={
-                    isDashboardRoute(this.props)
-                      ? `#params-${this.props.tab.id}`
-                      : "#pills-params"
-                  }
-                  role="tab"
-                  aria-controls={
-                    isDashboardRoute(this.props)
-                      ? `params-${this.props.tab.id}`
-                      : "pills-params"
-                  }
-                  aria-selected="true"
-                >
-                  Params
-                </a>
-              </li>
-              <li className="nav-item">
-                <a
-                  className="nav-link"
-                  id="pills-headers-tab"
-                  data-toggle="pill"
-                  href={
-                    isDashboardRoute(this.props)
-                      ? `#headers-${this.props.tab.id}`
-                      : "#pills-headers"
-                  }
-                  role="tab"
-                  aria-controls={
-                    isDashboardRoute(this.props)
-                      ? `headers-${this.props.tab.id}`
-                      : "pills-headers"
-                  }
-                  aria-selected="false"
-                >
-                  Headers
-                </a>
-              </li>
-              <li className="nav-item">
-                <a
-                  className="nav-link"
-                  id="pills-body-tab"
-                  data-toggle="pill"
-                  href={
-                    isDashboardRoute(this.props)
-                      ? `#body-${this.props.tab.id}`
-                      : "#pills-body"
-                  }
-                  role="tab"
-                  aria-controls={
-                    isDashboardRoute(this.props)
-                      ? `body-${this.props.tab.id}`
-                      : "pills-body"
-                  }
-                  aria-selected="false"
-                >
-                  Body
-                </a>
-              </li>
-            </ul>
+            {isDashboardRoute(this.props) ? (
+              <ul className="nav nav-tabs" id="pills-tab" role="tablist">
+                <li className="nav-item">
+                  <a
+                    className="nav-link active"
+                    id="pills-params-tab"
+                    data-toggle="pill"
+                    href={`#params-${this.props.tab.id}`}
+                    role="tab"
+                    aria-controls={`params-${this.props.tab.id}`}
+                    aria-selected="true"
+                  >
+                    Params
+                  </a>
+                </li>
+                <li className="nav-item">
+                  <a
+                    className="nav-link"
+                    id="pills-headers-tab"
+                    data-toggle="pill"
+                    href={`#headers-${this.props.tab.id}`}
+                    role="tab"
+                    aria-controls={`headers-${this.props.tab.id}`}
+                    aria-selected="false"
+                  >
+                    Headers
+                  </a>
+                </li>
+                <li className="nav-item">
+                  <a
+                    className="nav-link"
+                    id="pills-body-tab"
+                    data-toggle="pill"
+                    href={`#body-${this.props.tab.id}`}
+                    role="tab"
+                    aria-controls={`body-${this.props.tab.id}`}
+                    aria-selected="false"
+                  >
+                    Body
+                  </a>
+                </li>
+              </ul>
+            ) : null}
           </div>
-          <div className="tab-content" id="pills-tabContent">
-            <div
-              className="tab-pane fade show active"
-              id={
-                isDashboardRoute(this.props)
-                  ? `params-${this.props.tab.id}`
-                  : "pills-params"
-              }
-              role="tabpanel"
-              aria-labelledby="pills-params-tab"
-            >
-              <GenericTable
-                {...this.props}
-                title="Params"
-                dataArray={this.state.originalParams}
-                props_from_parent={this.propsFromChild.bind(this)}
-                original_data={[...this.state.params]}
-              ></GenericTable>
+          {isDashboardRoute(this.props) ? (
+            <div className="tab-content" id="pills-tabContent">
+              <div
+                className="tab-pane fade show active"
+                id={`params-${this.props.tab.id}`}
+                role="tabpanel"
+                aria-labelledby="pills-params-tab"
+              >
+                <GenericTable
+                  {...this.props}
+                  title="Params"
+                  dataArray={this.state.originalParams}
+                  props_from_parent={this.propsFromChild.bind(this)}
+                  original_data={[...this.state.params]}
+                ></GenericTable>
+              </div>
+              <div
+                className="tab-pane fade"
+                id={`headers-${this.props.tab.id}`}
+                role="tabpanel"
+                aria-labelledby="pills-headers-tab"
+              >
+                <div>
+                  <GenericTable
+                    {...this.props}
+                    title="Headers"
+                    dataArray={this.state.originalHeaders}
+                    props_from_parent={this.propsFromChild.bind(this)}
+                    original_data={[...this.state.headers]}
+                  ></GenericTable>
+                </div>
+              </div>
+              <div
+                className="tab-pane fade"
+                id={`body-${this.props.tab.id}`}
+                role="tabpanel"
+                aria-labelledby="pills-body-tab"
+              >
+                <BodyContainer
+                  {...this.props}
+                  set_body={this.setBody.bind(this)}
+                  body={this.state.data.body}
+                  endpoint_id={this.props.tab.id}
+                />
+              </div>
             </div>
-            <div
-              className="tab-pane fade"
-              id={
-                isDashboardRoute(this.props)
-                  ? `headers-${this.props.tab.id}`
-                  : "pills-headers"
-              }
-              role="tabpanel"
-              aria-labelledby="pills-headers-tab"
-            >
-              <div>
+          ) : (
+            <div>
+              {this.state.params.length > 1 && (
+                <GenericTable
+                  {...this.props}
+                  title="Params"
+                  dataArray={this.state.originalParams}
+                  props_from_parent={this.propsFromChild.bind(this)}
+                  original_data={[...this.state.params]}
+                ></GenericTable>
+              )}
+
+              {this.state.headers.length > 1 && (
                 <GenericTable
                   {...this.props}
                   title="Headers"
@@ -1032,34 +1038,15 @@ class DisplayEndpoint extends Component {
                   props_from_parent={this.propsFromChild.bind(this)}
                   original_data={[...this.state.headers]}
                 ></GenericTable>
-              </div>
-            </div>
-            <div
-              className="tab-pane fade"
-              id={
-                isDashboardRoute(this.props)
-                  ? `body-${this.props.tab.id}`
-                  : "pills-body"
-              }
-              role="tabpanel"
-              aria-labelledby="pills-body-tab"
-            >
-              {isDashboardRoute(this.props) ? (
-                <BodyContainer
-                  {...this.props}
-                  set_body={this.setBody.bind(this)}
-                  body={this.state.data.body}
-                  endpoint_id={this.props.tab.id}
-                />
-              ) : (
-                <PublicBodyContainer
-                  {...this.props}
-                  set_body={this.setBody.bind(this)}
-                  body={this.state.data.body}
-                ></PublicBodyContainer>
               )}
+
+              <PublicBodyContainer
+                {...this.props}
+                set_body={this.setBody.bind(this)}
+                body={this.state.data.body}
+              ></PublicBodyContainer>
             </div>
-          </div>
+          )}
         </div>
 
         <div className="endpoint-response-container-wrapper">

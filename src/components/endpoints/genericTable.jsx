@@ -230,7 +230,6 @@ class GenericTable extends Component {
 
   render() {
     const { dataArray, original_data, title } = this.props;
-    console.log("dataArray", dataArray, "orgianlData", original_data);
     if (!isDashboardRoute(this.props)) {
       for (let index = 0; index < dataArray.length; index++) {
         if (dataArray[index].key === "") {
@@ -246,7 +245,13 @@ class GenericTable extends Component {
     this.autoFillBulkEdit();
     return (
       <div className="generic-table-container">
-        <div className="generic-table-title-container">
+        <div
+          className={
+            isDashboardRoute(this.props)
+              ? "generic-table-title-container"
+              : "public-generic-table-title-container"
+          }
+        >
           {title}
           {isDashboardRoute(this.props) ? (
             <button
@@ -260,11 +265,7 @@ class GenericTable extends Component {
           ) : null}
         </div>
         {!this.state.bulkEdit && dataArray.length > 0 ? (
-          <table
-            className="table table-bordered"
-            id="custom-generic-table"
-            // bordered
-          >
+          <table className="table table-bordered" id="custom-generic-table">
             <thead>
               <tr>
                 <th className="custom-th"> </th>

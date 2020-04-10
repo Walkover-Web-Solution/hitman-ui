@@ -438,7 +438,11 @@ class CollectionsComponent extends Component {
               <div id="parent-accordion">
                 <div>
                   <h4
-                    style={{ "margin-bottom": "50px", "margin-left": "30px" }}
+                    style={{
+                      color: "tomato",
+                      "text-align": "center",
+                      padding: "35px",
+                    }}
                     onClick={() =>
                       this.handlePublicCollectionDescription(
                         this.props.collections[collectionId]
