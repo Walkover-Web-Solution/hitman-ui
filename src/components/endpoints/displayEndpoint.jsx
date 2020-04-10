@@ -46,7 +46,7 @@ class DisplayEndpoint extends Component {
     data: {
       name: "",
       method: "GET",
-      body: { type: "raw", value: "" },
+      body: { type: "none", value: "" },
       uri: "",
       updatedUri: "",
     },
@@ -696,7 +696,6 @@ class DisplayEndpoint extends Component {
   }
 
   setBody(bodyType, body) {
-    console.log(bodyType, body);
     let data = { ...this.state.data };
     data.body = { type: bodyType, value: body };
     if (bodyType !== "formData") {
@@ -719,54 +718,33 @@ class DisplayEndpoint extends Component {
         updatedHeaders.push(originalHeaders[i]);
       }
     }
+    updatedHeaders.push({
+      checked: "true",
+      key: "Content-type",
+      value: "",
+      description: "",
+    });
+
     switch (bodyType) {
       case "urlEncoded":
-        updatedHeaders[updatedHeaders.length] = {
-          checked: "true",
-          key: "Content-type",
-          value: "application/x-www-form-urlencoded",
-          description: "",
-        };
+        updatedHeaders[updatedHeaders.length - 1].value =
+          "application/x-www-form-urlencoded";
         break;
       case "TEXT":
-        updatedHeaders[updatedHeaders.length] = {
-          checked: "true",
-          key: "Content-type",
-          value: "text/plain",
-          description: "",
-        };
+        updatedHeaders[updatedHeaders.length - 1].value = "text/plain";
         break;
       case "JSON":
-        updatedHeaders[updatedHeaders.length] = {
-          checked: "true",
-          key: "Content-type",
-          value: "application/JSON",
-          description: "",
-        };
+        updatedHeaders[updatedHeaders.length - 1].value = "application/JSON";
         break;
       case "HTML":
-        updatedHeaders[updatedHeaders.length] = {
-          checked: "true",
-          key: "Content-type",
-          value: "text/HTML",
-          description: "",
-        };
+        updatedHeaders[updatedHeaders.length - 1].value = "text/HTML";
         break;
       case "XML":
-        updatedHeaders[updatedHeaders.length] = {
-          checked: "true",
-          key: "Content-type",
-          value: "application/XML",
-          description: "",
-        };
+        updatedHeaders[updatedHeaders.length - 1].value = "application/XML";
         break;
       case "JavaScript":
-        updatedHeaders[updatedHeaders.length] = {
-          checked: "true",
-          key: "Content-type",
-          value: "application/JavaScript",
-          description: "",
-        };
+        updatedHeaders[updatedHeaders.length - 1].value =
+          "application/JavaScript";
         break;
     }
     updatedHeaders.push({
@@ -777,30 +755,6 @@ class DisplayEndpoint extends Component {
     });
     this.setState({ originalHeaders: updatedHeaders });
   }
-  // this.contentTypeFlag = false;
-  // let originalHeaders = this.state.originalHeaders;
-  // for (let i = 0; i < originalHeaders.length; i++) {
-  //   if (originalHeaders[i].key === "Content-type") {
-  //     this.contentTypeFlag = true;
-  //     break;
-  //   }
-  // }
-  // if (this.contentTypeFlag === false) {
-  //   let length = originalHeaders.length;
-  //   originalHeaders[length - 1] = {
-  //     checked: "true",
-  //     key: "Content-type",
-  //     value: "application/x-www-form-urlencoded",
-  //     description: "",
-  //   };
-  //   originalHeaders.push({
-  //     checked: "notApplicable",
-  //     key: "",
-  //     value: "",
-  //     description: "",
-  //   });
-  //   }
-  // }
 
   handleDescription() {
     const showDescriptionFlag = true;
@@ -896,7 +850,7 @@ class DisplayEndpoint extends Component {
         data: {
           name: "",
           method: "GET",
-          body: { type: "raw", value: null },
+          body: { type: "none", value: null },
           uri: "",
           updatedUri: "",
         },

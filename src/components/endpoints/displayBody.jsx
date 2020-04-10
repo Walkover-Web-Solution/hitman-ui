@@ -1,7 +1,14 @@
 import React, { Component } from "react";
 import GenericTable from "./genericTable";
-import Highlight from "react-highlight";
-import "../../../node_modules/highlight.js/styles/vs.css";
+import "ace-builds";
+import AceEditor from "react-ace";
+import "ace-builds/webpack-resolver";
+import "ace-builds/src-noconflict/mode-java";
+import "ace-builds/src-noconflict/mode-json";
+import "ace-builds/src-noconflict/mode-html";
+import "ace-builds/src-noconflict/mode-javascript";
+import "ace-builds/src-noconflict/mode-xml";
+import "ace-builds/src-noconflict/theme-github";
 
 class BodyContainer extends Component {
   state = {
@@ -31,20 +38,23 @@ class BodyContainer extends Component {
   rawBodyTypes = ["TEXT", "HTML", "JSON", "XML", "JavaScript"];
 
   handleSelectBodyType(bodyType) {
+    if (bodyType === "raw") {
+      this.showRawBodyType = true;
+    } else {
+      this.showRawBodyType = false;
+    }
     this.setState({
-      selectedBodyType: bodyType,
+      selectedBodyType: this.state.selectedRawBodyType,
     });
-    console.log("bodyType", bodyType);
     this.props.set_body(bodyType, this.state.data[bodyType]);
   }
 
-  handleChange(e) {
-    let selectedBodyType = e.currentTarget.name;
+  handleChange(value) {
+    console.log(value);
     const data = { ...this.state.data };
-    data.raw = e.currentTarget.value;
-    console.log("data", data);
-    this.setState({ data, selectedBodyType });
-    this.props.set_body(selectedBodyType, e.currentTarget.value);
+    data.raw = value;
+    this.setState({ data });
+    this.props.set_body(this.state.selectedRawBodyType, value);
   }
 
   handleChangeBody(title, dataArray) {
@@ -74,45 +84,52 @@ class BodyContainer extends Component {
   }
 
   renderBody() {
-    switch (this.state.selectedBodyType) {
-      case "formData":
-        return (
-          <GenericTable
-            title="formData"
-            dataArray={[...this.state.data.formData]}
-            handle_change_body_data={this.handleChangeBody.bind(this)}
-            count="1"
-          ></GenericTable>
-        );
-      case "urlEncoded":
-        return (
-          <GenericTable
-            title="x-www-form-urlencoded"
-            dataArray={[...this.state.data.urlEncoded]}
-            handle_change_body_data={this.handleChangeBody.bind(this)}
-            count="2"
-          ></GenericTable>
-        );
-      default:
-        return (
-          <div>
-            <Highlight className={this.state.rawBodyType}>
-              <textarea
-                className="form-control"
-                name={this.state.selectedBodyType}
-                id="body"
-                rows="8"
-                onChange={this.handleChange}
-                value={this.state.data.raw}
-              />
-            </Highlight>{" "}
-          </div>
-        );
+    if (this.state.selectedBodyType) {
+      switch (this.state.selectedBodyType) {
+        case "formData":
+          return (
+            <GenericTable
+              title="formData"
+              dataArray={[...this.state.data.formData]}
+              handle_change_body_data={this.handleChangeBody.bind(this)}
+              count="1"
+            ></GenericTable>
+          );
+        case "urlEncoded":
+          return (
+            <GenericTable
+              title="x-www-form-urlencoded"
+              dataArray={[...this.state.data.urlEncoded]}
+              handle_change_body_data={this.handleChangeBody.bind(this)}
+              count="2"
+            ></GenericTable>
+          );
+        case "none":
+          return;
+        default:
+          return (
+            <AceEditor
+              mode={this.state.selectedRawBodyType.toLowerCase()}
+              theme="github"
+              value={this.state.data.raw}
+              onChange={this.handleChange.bind(this)}
+              showPrintMargin
+              showGutter={true}
+              highlightActiveLine
+              setOptions={{
+                showLineNumbers: true,
+                tabSize: 2,
+              }}
+              editorProps={{ $blockScrolling: true }}
+            />
+          );
+      }
     }
   }
 
   render() {
     if (this.props.body && !this.state.selectedBodyType) {
+      console.log("this.props", this.props);
       const selectedBodyType = this.props.body.type;
       let data = this.state.data;
       data[selectedBodyType] = this.props.body.value;
@@ -128,8 +145,18 @@ class BodyContainer extends Component {
             <input
               type="radio"
               name="body-select"
-              id="Text"
-              onClick={() => this.handleSelectBodyType("TEXT")}
+              id="none"
+              checked={this.state.selectedBodyType === "none" ? true : false}
+              onClick={() => this.handleSelectBodyType("none")}
+            />
+            none
+          </label>
+          <label>
+            <input
+              type="radio"
+              name="body-select"
+              id="raw"
+              onClick={() => this.handleSelectBodyType("raw")}
             />
             raw
           </label>
@@ -151,8 +178,7 @@ class BodyContainer extends Component {
             />
             urlencoded
           </label>
-          {this.state.selectedBodyType !== "urlEncoded" &&
-          this.state.selectedBodyType !== "formData" ? (
+          {this.showRawBodyType === true && (
             <div className="dropdown">
               <button
                 className="btn btn-secondary dropdown-toggle"
@@ -180,7 +206,7 @@ class BodyContainer extends Component {
                 ))}
               </div>
             </div>
-          ) : null}
+          )}
         </form>
 
         <div className="body-container">{this.renderBody()}</div>
