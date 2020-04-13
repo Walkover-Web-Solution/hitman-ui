@@ -40,13 +40,20 @@ class BodyContainer extends Component {
   handleSelectBodyType(bodyType) {
     if (bodyType === "raw") {
       this.showRawBodyType = true;
+      this.setState({
+        selectedBodyType: this.state.selectedRawBodyType,
+      });
+      this.props.set_body(
+        this.state.selectedRawBodyType,
+        this.state.data[bodyType]
+      );
     } else {
       this.showRawBodyType = false;
+      this.setState({
+        selectedBodyType: bodyType,
+      });
+      this.props.set_body(bodyType, this.state.data[bodyType]);
     }
-    this.setState({
-      selectedBodyType: this.state.selectedRawBodyType,
-    });
-    this.props.set_body(bodyType, this.state.data[bodyType]);
   }
 
   handleChange(value) {
@@ -108,20 +115,29 @@ class BodyContainer extends Component {
           return;
         default:
           return (
-            <AceEditor
-              mode={this.state.selectedRawBodyType.toLowerCase()}
-              theme="github"
-              value={this.state.data.raw}
-              onChange={this.handleChange.bind(this)}
-              showPrintMargin
-              showGutter={true}
-              highlightActiveLine
-              setOptions={{
-                showLineNumbers: true,
-                tabSize: 2,
-              }}
-              editorProps={{ $blockScrolling: true }}
-            />
+            <div>
+              {" "}
+              <AceEditor
+                style={{
+                  width: "1000px",
+                }}
+                mode={this.state.selectedRawBodyType.toLowerCase()}
+                theme="github"
+                value={this.state.data.raw}
+                onChange={this.handleChange.bind(this)}
+                setOptions={{
+                  showLineNumbers: true,
+                }}
+                editorProps={{
+                  $blockScrolling: false,
+                }}
+                onLoad={(editor) => {
+                  editor.focus();
+                  editor.getSession().setUseWrapMode(true);
+                  editor.setShowPrintMargin(false);
+                }}
+              />
+            </div>
           );
       }
     }
@@ -129,19 +145,33 @@ class BodyContainer extends Component {
 
   render() {
     if (this.props.body && !this.state.selectedBodyType) {
-      console.log("this.props", this.props);
-      const selectedBodyType = this.props.body.type;
+      let selectedBodyType = this.props.body.type;
+      if (
+        selectedBodyType === "JSON" ||
+        selectedBodyType === "HTML" ||
+        selectedBodyType === "JavaScript" ||
+        selectedBodyType === "XML" ||
+        selectedBodyType === "TEXT"
+      ) {
+        this.showRawBodyType = true;
+        this.rawBodyType = selectedBodyType;
+        selectedBodyType = "raw";
+      }
       let data = this.state.data;
       data[selectedBodyType] = this.props.body.value;
       if (document.getElementById(selectedBodyType)) {
         document.getElementById(selectedBodyType).checked = true;
-        this.setState({ selectedBodyType, data });
+        this.setState({
+          selectedRawBodyType: this.rawBodyType ? this.rawBodyType : "TEXT",
+          selectedBodyType,
+          data,
+        });
       }
     }
     return (
       <div className="body-wrapper">
-        <form className="body-select">
-          <label>
+        <form className="body-select" className="d-flex ">
+          <label class="body">
             <input
               type="radio"
               name="body-select"
@@ -151,7 +181,7 @@ class BodyContainer extends Component {
             />
             none
           </label>
-          <label>
+          <label class="body">
             <input
               type="radio"
               name="body-select"
@@ -160,7 +190,7 @@ class BodyContainer extends Component {
             />
             raw
           </label>
-          <label>
+          <label class="body">
             <input
               type="radio"
               name="body-select"
@@ -169,46 +199,48 @@ class BodyContainer extends Component {
             />
             form-data
           </label>
-          <label>
+          <label class="body">
             <input
               type="radio"
               name="body-select"
               id="urlEncoded"
               onClick={() => this.handleSelectBodyType("urlEncoded")}
             />
-            urlencoded
+            x-www-form-urlencoded
           </label>
-          {this.showRawBodyType === true && (
-            <div className="dropdown">
-              <button
-                className="btn btn-secondary dropdown-toggle"
-                type="button"
-                id="dropdownMenuButton"
-                data-toggle="dropdown"
-                aria-haspopup="true"
-                aria-expanded="false"
-              >
-                {this.state.selectedRawBodyType}
-              </button>
-              <div
-                className="dropdown-menu"
-                aria-labelledby="dropdownMenuButton"
-              >
-                {this.rawBodyTypes.map((rawBodyType) => (
-                  <button
-                    className="btn custom-request-button"
-                    type="button"
-                    onClick={() => this.setRawBodyType(rawBodyType)}
-                    key={rawBodyType}
-                  >
-                    {rawBodyType}
-                  </button>
-                ))}
+          <div class="body">
+            {this.showRawBodyType === true && (
+              <div className="dropdown">
+                <button
+                  style={{ color: "#f29624" }}
+                  className="btn dropdown-toggle flex-column"
+                  type="button"
+                  id="dropdownMenuButton"
+                  data-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                >
+                  {this.state.selectedRawBodyType}
+                </button>
+                <div
+                  className="dropdown-menu"
+                  aria-labelledby="dropdownMenuButton"
+                >
+                  {this.rawBodyTypes.map((rawBodyType) => (
+                    <button
+                      className="btn custom-request-button"
+                      type="button"
+                      onClick={() => this.setRawBodyType(rawBodyType)}
+                      key={rawBodyType}
+                    >
+                      {rawBodyType}
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </form>
-
         <div className="body-container">{this.renderBody()}</div>
       </div>
     );

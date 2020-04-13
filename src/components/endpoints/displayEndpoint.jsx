@@ -337,7 +337,7 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  async handleApiCall(api, body, headerJson) {
+  async handleApiCall(api, body, headerJson, bodyType) {
     let responseJson = {};
     try {
       let header = this.replaceVariablesInJson(headerJson);
@@ -345,7 +345,8 @@ class DisplayEndpoint extends Component {
         api,
         this.state.data.method,
         body,
-        header
+        header,
+        bodyType
       );
       const response = { ...responseJson };
       if (responseJson.status === 200) {
@@ -395,7 +396,7 @@ class DisplayEndpoint extends Component {
       headerJson[header] = headersData[header].value;
     });
     let { body, headers } = this.formatBody(this.state.data.body, headerJson);
-    this.handleApiCall(api, body, headers);
+    this.handleApiCall(api, body, headers, this.state.data.body.type);
   };
 
   handleSave = async (groupId, EndpointName) => {
@@ -812,17 +813,18 @@ class DisplayEndpoint extends Component {
         body.value.map((o) => formData.set(o.key, o.value));
         return { body: formData, headers };
       case "urlEncoded":
-        let urlEncodedData = [];
+        let urlEncodedData = {};
         for (let i = 0; i < body.value.length; i++) {
           if (body.value[i].key.length !== 0) {
-            let encodedKey = encodeURIComponent(body.value[i].key);
-            let encodedValue = encodeURIComponent(body.value[i].value);
-            urlEncodedData.push(encodedKey + "=" + encodedValue);
+            urlEncodedData[body.value[i].key] = body.value[i].value;
+            // let encodedKey = encodeURIComponent(body.value[i].key);
+            // let encodedValue = encodeURIComponent(body.value[i].value);
+            // urlEncodedData.push(encodedKey + "=" + encodedValue);
           }
         }
-        urlEncodedData = urlEncodedData.join("&");
+        console.log("urlEncodedData", urlEncodedData);
+        // urlEncodedData = urlEncodedData.join("&");
         return { body: urlEncodedData, headers };
-
       default:
         return { body: {}, headers };
     }
