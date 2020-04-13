@@ -47,7 +47,7 @@ class DisplayEndpoint extends Component {
     data: {
       name: "",
       method: "GET",
-      body: null,
+      body: { type: "none", value: "" },
       uri: "",
       updatedUri: "",
     },
@@ -78,7 +78,7 @@ class DisplayEndpoint extends Component {
         data: {
           name: "",
           method: "GET",
-          body: { type: "raw", value: null },
+          body: { type: "none", value: null },
           uri: "",
           updatedUri: "",
         },
@@ -214,6 +214,15 @@ class DisplayEndpoint extends Component {
       let description = [];
       let originalParams = this.state.originalParams;
       let updatedUri = e.currentTarget.value.split("?")[1];
+      let uri = e.currentTarget.value.split("?")[0];
+      let uripath = new URI(e.currentTarget.value);
+      let path = uripath.pathname().slice(1);
+      let pathVariableKeys = path.split("/");
+      let pathVariableKeysObject = {};
+      for (let i = 0; i < pathVariableKeys.length; i++) {
+        pathVariableKeysObject[pathVariableKeys[i]] = false;
+      }
+      this.setPathVariables(pathVariableKeys, pathVariableKeysObject);
       let result = URI.parseQuery(updatedUri);
       for (let i = 0; i < Object.keys(result).length; i++) {
         keys.push(Object.keys(result)[i]);
@@ -239,6 +248,34 @@ class DisplayEndpoint extends Component {
     }
     this.setState({ data });
   };
+
+  setPathVariables(pathVariableKeys, pathVariableKeysObject) {
+    let pathVariables = [];
+    for (let i = 1; i < pathVariableKeys.length; i++) {
+      if (
+        pathVariableKeys[i][0] === ":" &&
+        pathVariableKeysObject[pathVariableKeys[i]] === false
+      ) {
+        pathVariableKeysObject[pathVariableKeys[i]] = true;
+        pathVariables.push({
+          checked: "notApplicable",
+          key: pathVariableKeys[i].slice(1),
+          value: this.state.pathVariables[i - 1]
+            ? this.state.pathVariables[i - 1].key === pathVariableKeys[i]
+              ? this.state.pathVariables[i - 1].value
+              : ""
+            : "",
+          description: this.state.pathVariables[i - 1]
+            ? this.state.pathVariables[i - 1].key === pathVariableKeys[i]
+              ? this.state.pathVariables[i - 1].description
+              : ""
+            : "",
+        });
+      }
+    }
+
+    this.setState({ pathVariables });
+  }
 
   makeOriginalParams(keys, values, description) {
     let originalParams = [];
@@ -338,7 +375,7 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  async handleApiCall(api, body, headerJson) {
+  async handleApiCall(api, body, headerJson, bodyType) {
     let responseJson = {};
     try {
       let header = this.replaceVariablesInJson(headerJson);
@@ -346,7 +383,8 @@ class DisplayEndpoint extends Component {
         api,
         this.state.data.method,
         body,
-        header
+        header,
+        bodyType
       );
       const response = { ...responseJson };
       if (responseJson.status === 200) {
@@ -357,6 +395,28 @@ class DisplayEndpoint extends Component {
       this.handleErrorResponse(error);
     }
   }
+  setPathVariableValues() {
+    let uri = new URI(this.uri.current.value);
+    uri = uri.pathname().slice(1);
+    let pathParameters = uri.split("/");
+    let path = "/";
+    let counter = 0;
+    for (let i = 0; i < pathParameters.length; i++) {
+      if (pathParameters[i][0] === ":") {
+        path = path + this.state.pathVariables[counter].value + "/";
+        counter++;
+      } else {
+        path = path + pathParameters[i] + "/";
+      }
+    }
+    // generatePath(
+    //   uri,
+    //   this.state.pathVariables.map(
+    //     (variable) => (variable.key = variable.value)
+    //   )
+    // );
+    return path;
+  }
 
   handleSend = async () => {
     let startTime = new Date().getTime();
@@ -364,14 +424,17 @@ class DisplayEndpoint extends Component {
     this.setState({ startTime, response });
     const headersData = this.doSubmitHeader();
     const BASE_URL = this.customState.BASE_URL;
-    let api = BASE_URL + this.uri.current.value;
+    let uri = new URI(this.uri.current.value);
+    let queryparams = uri.search();
+    let path = this.setPathVariableValues();
+    let api = BASE_URL + path + queryparams;
     api = this.replaceVariables(api);
     let headerJson = {};
     Object.keys(headersData).forEach((header) => {
       headerJson[header] = headersData[header].value;
     });
     let { body, headers } = this.formatBody(this.state.data.body, headerJson);
-    this.handleApiCall(api, body, headers);
+    this.handleApiCall(api, body, headers, this.state.data.body.type);
   };
 
   handleSave = async (groupId, EndpointName) => {
@@ -384,6 +447,7 @@ class DisplayEndpoint extends Component {
       }
       const headersData = this.doSubmitHeader();
       const updatedParams = this.doSubmitParam();
+      const pathVariables = this.doSubmitPathVariables();
       const endpoint = {
         uri: this.uri.current.value,
         name: EndpointName || this.state.data.name,
@@ -391,7 +455,8 @@ class DisplayEndpoint extends Component {
         body: body,
         headers: headersData,
         params: updatedParams,
-        BASE_URL: this.customState.customBASE_URL,
+        pathVariables: pathVariables,
+        BASE_URL: this.customState.BASE_URL,
       };
       // if (endpoint.name === "" || endpoint.uri === "")
       if (endpoint.name === "") toast.error("Please enter Endpoint name");
@@ -407,6 +472,31 @@ class DisplayEndpoint extends Component {
       }
     }
   };
+
+  doSubmitPathVariables() {
+    let updatedPathVariables = {};
+    if (this.state.pathVariables) {
+      let pathVariables = [...this.state.pathVariables];
+      for (let i = 0; i < pathVariables.length; i++) {
+        if (pathVariables[i].key === "") {
+          continue;
+        } else {
+          updatedPathVariables[pathVariables[i].key] = {
+            checked: pathVariables[i].checked,
+            value: pathVariables[i].value,
+            description: pathVariables[i].description,
+          };
+        }
+      }
+      const endpoint = { ...this.state.endpoint };
+      endpoint.pathVariables = { ...updatedPathVariables };
+      this.setState({
+        pathVariables,
+        endpoint,
+      });
+    }
+    return updatedPathVariables;
+  }
 
   doSubmitHeader() {
     let originalHeaders = [...this.state.originalHeaders];
@@ -449,6 +539,10 @@ class DisplayEndpoint extends Component {
 
     if (name === "originalHeaders") {
       this.setState({ originalHeaders: value });
+    }
+
+    if (name === "Path Variables") {
+      this.setState({ pathVariables: value });
     }
   }
 
@@ -644,37 +738,62 @@ class DisplayEndpoint extends Component {
   setBody(bodyType, body) {
     let data = { ...this.state.data };
     data.body = { type: bodyType, value: body };
-    if (bodyType === "urlEncoded") {
-      this.setHeaders();
+    if (bodyType !== "formData") {
+      this.setHeaders(bodyType);
     }
     this.setState({ data });
   }
 
-  setHeaders() {
-    this.contentTypeFlag = false;
+  setHeaders(bodyType) {
     let originalHeaders = this.state.originalHeaders;
+    let updatedHeaders = [];
+    this.contentTypeFlag = false;
     for (let i = 0; i < originalHeaders.length; i++) {
-      if (originalHeaders[i].key === "Content-type") {
-        this.contentTypeFlag = true;
-        break;
+      if (
+        originalHeaders[i].key === "Content-type" ||
+        originalHeaders[i].key === ""
+      ) {
+        continue;
+      } else {
+        updatedHeaders.push(originalHeaders[i]);
       }
     }
-    if (this.contentTypeFlag === false) {
-      let length = originalHeaders.length;
-      originalHeaders[length - 1] = {
-        checked: "true",
-        key: "Content-type",
-        value: "application/x-www-form-urlencoded",
-        description: "",
-      };
-      originalHeaders.push({
-        checked: "notApplicable",
-        key: "",
-        value: "",
-        description: "",
-      });
-      this.setState({ originalHeaders });
+    updatedHeaders.push({
+      checked: "true",
+      key: "Content-type",
+      value: "",
+      description: "",
+    });
+
+    switch (bodyType) {
+      case "urlEncoded":
+        updatedHeaders[updatedHeaders.length - 1].value =
+          "application/x-www-form-urlencoded";
+        break;
+      case "TEXT":
+        updatedHeaders[updatedHeaders.length - 1].value = "text/plain";
+        break;
+      case "JSON":
+        updatedHeaders[updatedHeaders.length - 1].value = "application/JSON";
+        break;
+      case "HTML":
+        updatedHeaders[updatedHeaders.length - 1].value = "text/HTML";
+        break;
+      case "XML":
+        updatedHeaders[updatedHeaders.length - 1].value = "application/XML";
+        break;
+      case "JavaScript":
+        updatedHeaders[updatedHeaders.length - 1].value =
+          "application/JavaScript";
+        break;
     }
+    updatedHeaders.push({
+      checked: "notApplicable",
+      key: "",
+      value: "",
+      description: "",
+    });
+    this.setState({ originalHeaders: updatedHeaders });
   }
 
   propsFromDescription(title, data) {
@@ -697,17 +816,18 @@ class DisplayEndpoint extends Component {
         body.value.map((o) => formData.set(o.key, o.value));
         return { body: formData, headers };
       case "urlEncoded":
-        let urlEncodedData = [];
+        let urlEncodedData = {};
         for (let i = 0; i < body.value.length; i++) {
           if (body.value[i].key.length !== 0) {
-            let encodedKey = encodeURIComponent(body.value[i].key);
-            let encodedValue = encodeURIComponent(body.value[i].value);
-            urlEncodedData.push(encodedKey + "=" + encodedValue);
+            urlEncodedData[body.value[i].key] = body.value[i].value;
+            // let encodedKey = encodeURIComponent(body.value[i].key);
+            // let encodedValue = encodeURIComponent(body.value[i].value);
+            // urlEncodedData.push(encodedKey + "=" + encodedValue);
           }
         }
-        urlEncodedData = urlEncodedData.join("&");
+        console.log("urlEncodedData", urlEncodedData);
+        // urlEncodedData = urlEncodedData.join("&");
         return { body: urlEncodedData, headers };
-
       default:
         return { body: {}, headers };
     }
@@ -1048,6 +1168,17 @@ class DisplayEndpoint extends Component {
             </div>
           )}
         </div>
+        {this.state.pathVariables && this.state.pathVariables.length !== 0 && (
+          <div>
+            <GenericTable
+              {...this.props}
+              title="Path Variables"
+              dataArray={this.state.pathVariables}
+              props_from_parent={this.propsFromChild.bind(this)}
+              original_data={[...this.state.pathVariables]}
+            ></GenericTable>
+          </div>
+        )}
 
         <div className="endpoint-response-container-wrapper">
           <DisplayResponse

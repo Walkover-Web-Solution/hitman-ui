@@ -1,15 +1,19 @@
 import http from "../../services/httpService";
 import { apiUrl } from "../../config.json";
+import qs from "qs";
 
 function endpointUrl(groupId) {
   return `${apiUrl}/groups/${groupId}/endpoints`;
 }
 
-export function apiTest(api, method, body, headers) {
+export function apiTest(api, method, body, headers, bodyType) {
+  console.log("body", body);
+  console.log("headers", headers);
+  console.log("bodyType", bodyType);
   return http.request({
     url: api,
     method: method,
-    data: body,
+    data: bodyType === "urlEncoded" ? qs.stringify({ body }) : body,
     headers: headers,
   });
 }

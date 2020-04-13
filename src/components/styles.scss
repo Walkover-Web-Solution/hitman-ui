@@ -1,5 +1,14 @@
 $border-color: rgba(227, 228, 230, 0.7);
 
+.body {
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.body-span {
+  margin-top: 2px;
+  margin-bottom: 10px;
+}
 .collapsing {
   -webkit-transition: none;
   transition: none !important;
