@@ -257,14 +257,16 @@ class GenericTable extends Component {
       <div className="generic-table-container">
         <div className="generic-table-title-container">
           {title}
-          <button
-            id="edit-button"
-            className="btn btn-default custom-button"
-            style={{ float: "right", color: "tomato" }}
-            onClick={() => this.displayEditButton()}
-          >
-            {this.state.editButtonName}
-          </button>
+          {title === "Path Variables" ? null : (
+            <button
+              id="edit-button"
+              className="btn btn-default custom-button"
+              style={{ float: "right", color: "tomato" }}
+              onClick={() => this.displayEditButton()}
+            >
+              {this.state.editButtonName}
+            </button>
+          )}
         </div>
         {!this.state.bulkEdit && (
           <table
