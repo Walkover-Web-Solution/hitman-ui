@@ -1,0 +1,117 @@
+$border-color: rgba(227, 228, 230, 0.7);
+
+.content-header {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  border-bottom: 1px solid $border-color;
+  .tabs-container {
+    width: 100%;
+    margin-left: 10px;
+
+    border-right: none;
+    border-left: none;
+    border-top: none;
+    height: 35px;
+    align-self: flex-end;
+    .nav {
+      height: 100%;
+      .nav-item {
+        padding: 0px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+        border: 1px solid $border-color;
+        border-bottom: none;
+        margin: 0px 2px;
+        height: 100%;
+        width: 220px;
+        border-top-left-radius: 3px;
+        border-top-right-radius: 3px;
+        min-width: 64px;
+        max-width: 220px;
+        .nav-link {
+          height: 100%;
+          width: 100%;
+          padding: 0px;
+          padding-left: 10px;
+          width: 220px;
+          border-radius: 0px;
+          .btn {
+            width: 100%;
+            text-align: left;
+            padding: 0px;
+            opacity: 0.8;
+          }
+        }
+        .btn {
+          height: 100%;
+          border-radius: 0px;
+          padding: 0px;
+          padding-right: 10px;
+          .fas {
+            opacity: 0.7;
+          }
+        }
+        .nav-link.active {
+          background-color: rgb(247, 247, 247);
+          border-bottom: rgb(247, 247, 247) !important;
+          border-top: 2px solid tomato;
+          border-top-left-radius: 3px;
+        }
+        .nav-link.active ~ .btn {
+          background-color: rgb(247, 247, 247);
+          border-bottom: rgb(247, 247, 247);
+          border-top: 2px solid tomato;
+          border-top-right-radius: 3px;
+        }
+      }
+      .tab-buttons {
+        width: 35px !important;
+        min-width: 35px;
+        display: flex;
+        justify-content: center;
+        margin: 0px;
+        border-radius: 0px;
+        .btn {
+          display: flex;
+          align-items: center;
+          padding: 0px;
+          font-size: 25px;
+          .fa-plus {
+            font-size: 15px;
+          }
+          .fa-ellipsis-h {
+            font-size: 18px;
+          }
+        }
+        .btn:hover {
+          .fa-plus {
+            color: tomato;
+          }
+          .fa-ellipsis-h {
+            color: tomato;
+          }
+        }
+      }
+      #add-new-tab-button {
+        border-top-left-radius: 5px;
+      }
+      #tabs-menu-button {
+        border-left: 0px;
+        border-top-right-radius: 5px;
+        .dropdown {
+          .dropdown-menu {
+            transform: translate3d(-132px, 20px, 0px);
+            border-radius: 0px;
+            padding: 10px;
+            .btn {
+              font-size: 15px;
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Modal } from "react-bootstrap";
+import "./main.scss";
 
 class CreateNewModal extends Component {
   state = { showCollectionForm: false, showEnvironmentForm: false };

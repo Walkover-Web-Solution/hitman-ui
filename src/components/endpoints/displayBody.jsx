@@ -9,8 +9,11 @@ import "ace-builds/src-noconflict/mode-html";
 import "ace-builds/src-noconflict/mode-javascript";
 import "ace-builds/src-noconflict/mode-xml";
 import "ace-builds/src-noconflict/theme-github";
+import "./endpoints.scss";
+import { Table } from "react-bootstrap";
 
 class BodyContainer extends Component {
+  updatedArray = React.createRef();
   state = {
     selectedBodyType: null,
     data: {
@@ -34,9 +37,28 @@ class BodyContainer extends Component {
     },
     endpointId: null,
     selectedRawBodyType: "TEXT",
+
+    updatedArray: {},
   };
 
   rawBodyTypes = ["TEXT", "HTML", "JSON", "XML", "JavaScript"];
+
+  handleAdd(dataType, key) {
+    let updatedArray = { ...this.state.updatedArray };
+    if (updatedArray[key]) {
+      updatedArray[key].push(null);
+    } else {
+      let tempArr = [null];
+      updatedArray[key] = tempArr;
+    }
+    this.setState({ updatedArray });
+  }
+
+  handleDelete(index, key) {
+    const updatedArray = { ...this.state.updatedArray };
+    updatedArray[key].splice(index, 1);
+    this.setState({ updatedArray });
+  }
 
   handleSelectBodyType(bodyType) {
     if (bodyType === "raw") {

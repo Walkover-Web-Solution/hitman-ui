@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { isDashboardRoute } from "../common/utility";
+import "./endpoints.scss";
 
 class GenericTable extends Component {
   state = {

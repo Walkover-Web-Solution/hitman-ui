@@ -3,6 +3,7 @@ import { Route, Switch } from "react-router-dom";
 import Collections from "../collections/collections";
 import ProtectedRoute from "../common/protectedRoute";
 import { isDashboardRoute } from "../common/utility";
+import "./main.scss";
 class SideBar extends Component {
   state = {
     data: {

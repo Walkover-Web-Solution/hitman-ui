@@ -8,6 +8,7 @@ import DisplayPage from "../pages/displayPage";
 import DisplayCollection from "../collections/displayCollection";
 import SideBar from "../main/sidebar";
 import { fetchAllPublicEndpoints } from "./redux/publicEndpointsActions.js";
+import "./publicEndpoint.scss";
 
 const mapDispatchToProps = (dispatch) => {
   return {

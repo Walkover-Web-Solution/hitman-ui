@@ -5,11 +5,12 @@ import { withRouter } from "react-router-dom";
 import store from "../../store/store";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import "./page.scss";
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     updatePage: (editedPage, pageId) =>
-      dispatch(updatePage(ownProps.history, editedPage, pageId))
+      dispatch(updatePage(ownProps.history, editedPage, pageId)),
   };
 };
 
@@ -17,7 +18,7 @@ class EditPage extends Component {
   name = React.createRef();
   contents = React.createRef();
   state = {
-    data: { id: null, versionId: null, groupId: null, name: "", contents: "" }
+    data: { id: null, versionId: null, groupId: null, name: "", contents: "" },
   };
 
   modules = {
@@ -31,11 +32,11 @@ class EditPage extends Component {
         ({ list: "ordered" },
         { list: "bullet" },
         { indent: "-1" },
-        { indent: "+1" })
+        { indent: "+1" }),
       ],
       ["link"],
-      ["clean"]
-    ]
+      ["clean"],
+    ],
   };
   formats = [
     "header",
@@ -51,7 +52,7 @@ class EditPage extends Component {
     "list",
     "bullet",
     "indent",
-    "link"
+    "link",
   ];
 
   fetchPage(pageId) {
@@ -65,7 +66,7 @@ class EditPage extends Component {
         versionId,
         groupId,
         name,
-        contents
+        contents,
       };
 
       this.setState({ data });
@@ -80,7 +81,7 @@ class EditPage extends Component {
         versionId,
         groupId,
         name,
-        contents
+        contents,
       } = this.props.location.page;
 
       data = { id, versionId, groupId, name, contents };
@@ -95,13 +96,13 @@ class EditPage extends Component {
     }
   }
 
-  handleChange = value => {
+  handleChange = (value) => {
     const data = { ...this.state.data };
     data["contents"] = value;
     this.setState({ data });
   };
 
-  handleSubmit = e => {
+  handleSubmit = (e) => {
     e.preventDefault();
     const groupId = this.state.data.groupId;
 
@@ -109,13 +110,13 @@ class EditPage extends Component {
       const editedPage = { ...this.state.data };
       this.props.updatePage(editedPage, editedPage.id);
       this.props.history.push({
-        pathname: `/dashboard/page/${editedPage.id}`
+        pathname: `/dashboard/page/${editedPage.id}`,
       });
     } else {
       const editedPage = { ...this.state.data };
       this.props.updatePage(editedPage, editedPage.id);
       this.props.history.push({
-        pathname: `/dashboard/page/${editedPage.id}`
+        pathname: `/dashboard/page/${editedPage.id}`,
       });
     }
   };

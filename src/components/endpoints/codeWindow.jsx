@@ -1,3 +1,4 @@
+import "./endpoints.scss";
 import React, { Component } from "react";
 import { Modal, ListGroup, Container, Row, Col } from "react-bootstrap";
 import Highlight from "react-highlight";

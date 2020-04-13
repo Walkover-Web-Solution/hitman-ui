@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Accordion, Button, Card } from "react-bootstrap";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import CollectionVersionForm from "../collectionVersions/collectionVersionForm";
@@ -7,14 +8,13 @@ import {
   duplicateVersion,
 } from "../collectionVersions/redux/collectionVersionsActions";
 import ShareVersionForm from "../collectionVersions/shareVersionForm";
+import { isDashboardRoute } from "../common/utility";
 import GroupForm from "../groups/groupForm";
 import Groups from "../groups/groups";
 import PageForm from "../pages/pageForm";
 import VersionPages from "../pages/versionPages";
-import { isDashboardRoute } from "../common/utility";
+import "./collectionVersions.scss";
 import collectionVersionsService from "./collectionVersionsService";
-
-import { Accordion, Card, Button } from "react-bootstrap";
 
 const mapStateToProps = (state) => {
   return {
@@ -193,10 +193,7 @@ class CollectionVersions extends Component {
               <Accordion key={versionId} id="child-accordion">
                 <Card>
                   <Card.Header>
-                    <i
-                      className="fas fa-folder-open"
-                      style={{ margin: "5px" }}
-                    ></i>
+                    <i className="fas fa-folder-open"></i>
                     <Accordion.Toggle
                       as={Button}
                       variant="default"

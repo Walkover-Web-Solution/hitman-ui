@@ -4,17 +4,18 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { fetchCollections } from "../collections/redux/collectionsActions";
 import { fetchAllVersions } from "../collectionVersions/redux/collectionVersionsActions";
-import ContentPanel from "./contentPanel";
 import {
   fetchEndpoints,
   moveEndpoint,
 } from "../endpoints/redux/endpointsActions";
 import { fetchGroups } from "../groups/redux/groupsActions";
-import Navbar from "./Navbar";
-import { fetchPages } from "../pages/redux/pagesActions";
-import SideBar from "./sidebar";
-import { fetchAllTeamsOfUser } from "../teams/redux/teamsActions";
 import indexedDbService from "../indexedDb/indexedDbService";
+import { fetchPages } from "../pages/redux/pagesActions";
+import { fetchAllTeamsOfUser } from "../teams/redux/teamsActions";
+import ContentPanel from "./contentPanel";
+import "./main.scss";
+import Navbar from "./Navbar";
+import SideBar from "./sidebar";
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -95,14 +96,7 @@ class Main extends Component {
 
   render() {
     return (
-      <div
-        style={{
-          marginTop: "15px",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "flex-start",
-        }}
-      >
+      <div className="custom-main-container">
         <ToastContainer />
         <Navbar
           {...this.props}

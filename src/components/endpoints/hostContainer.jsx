@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import { toast } from "react-toastify";
-import { isDashboardRoute } from "../common/utility";
 import store from "../../store/store";
+import { isDashboardRoute } from "../common/utility";
+import "./endpoints.scss";
 
 class HostContainer extends Component {
   state = {
@@ -19,13 +20,8 @@ class HostContainer extends Component {
 
   componentDidMount() {
     let isLoaded = false;
-    console.log(1);
     store.subscribe(() => {
-      console.log(2);
-
       if (!isLoaded) {
-        console.log(3);
-
         let selectedHost = "customHost";
         if (this.props.custom_host) {
           selectedHost = "customHost";

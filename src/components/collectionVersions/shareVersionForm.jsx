@@ -8,9 +8,9 @@ import Form from "../common/form";
 class ShareVersionForm extends Form {
   state = {
     data: {
-      shareVersionLink: ""
+      shareVersionLink: "",
     },
-    errors: {}
+    errors: {},
   };
 
   componentDidMount() {
@@ -24,9 +24,7 @@ class ShareVersionForm extends Form {
   }
 
   schema = {
-    shareVersionLink: Joi.string()
-      .required()
-      .label("Public Link")
+    shareVersionLink: Joi.string().required().label("Public Link"),
   };
 
   async doSubmit(props) {}

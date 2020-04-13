@@ -2,7 +2,9 @@ import React, { Component } from "react";
 import { Dropdown } from "react-bootstrap";
 import { connect } from "react-redux";
 import shortId from "shortid";
+import indexedDbService from "../indexedDb/indexedDbService";
 import EnvironmentModal from "./environmentModal";
+import "./environments.scss";
 import environmentsService from "./environmentsService.js";
 import {
   addEnvironment,
@@ -11,7 +13,6 @@ import {
   setEnvironmentId,
   updateEnvironment,
 } from "./redux/environmentsActions";
-import indexedDbService from "../indexedDb/indexedDbService";
 
 const mapStateToProps = (state) => {
   return {

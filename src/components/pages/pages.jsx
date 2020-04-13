@@ -7,6 +7,7 @@ import {
   pendingPage,
   rejectPage,
 } from "../publicEndpoint/redux/publicEndpointsActions";
+import "./page.scss";
 
 const mapDispatchToProps = (dispatch) => {
   return {

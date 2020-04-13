@@ -7,6 +7,7 @@ import Environments from "../environments/environments";
 import TabContent from "../tabs/tabContent";
 import CustomTabs from "../tabs/tabs";
 import indexedDbService from "../indexedDb/indexedDbService";
+import "./main.scss";
 
 const mapStateToProps = (state) => {
   return {
