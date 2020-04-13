@@ -6,6 +6,7 @@ import environmentsService from "../environments/environmentsService";
 import CreateNewModal from "./CreateNewModal";
 import { getCurrentUser } from "../auth/authService";
 import shortId from "shortid";
+import tabService from "../tabs/tabService";
 
 class Navbar extends Component {
   state = {
@@ -41,15 +42,17 @@ class Navbar extends Component {
   }
 
   handleAddEndpoint() {
-    const newTabId = shortId.generate();
-    const tabs = [
-      ...this.props.tabs,
-      { id: newTabId, type: "endpoint", isSaved: false },
-    ];
-    this.props.set_tabs(tabs, tabs.length - 1);
-    this.props.history.push({
-      pathname: `/dashboard/endpoint/new`,
-    });
+    tabService.addNewTab({ ...this.props });
+
+    // const newTabId = shortId.generate();
+    // const tabs = [
+    //   ...this.props.tabs,
+    //   { id: newTabId, type: "endpoint", isSaved: false },
+    // ];
+    // this.props.set_tabs(tabs, tabs.length - 1);
+    // this.props.history.push({
+    //   pathname: `/dashboard/endpoint/new`,
+    // });
   }
 
   render() {
