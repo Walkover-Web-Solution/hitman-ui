@@ -146,9 +146,10 @@ $border-color: rgba(227, 228, 230, 0.7);
   display: flex;
   flex-direction: column;
   .endpoint-name-container {
-    border-bottom: 1px solid $border-color;
+    //border-bottom: 1px solid $border-color;
     padding: 2px;
-    background-color: rgb(247, 247, 247);
+    display: flex;
+    //background-color: rgb(247, 247, 247);
     .endpoint-name-input {
       display: flex;
       flex-direction: row;
@@ -162,6 +163,22 @@ $border-color: rgba(227, 228, 230, 0.7);
       padding-left: 5px;
       background-color: inherit;
     }
+
+    .public-endpoint-name-input {
+      display: flex;
+      flex-direction: row;
+      outline: none;
+      border: 1px solid rgba(227, 228, 230, 0.7);
+      border-radius: 60px;
+      margin-top: 5px;
+      margin-bottom: 5px;
+      margin-left: 15px;
+      padding-left: 10px;
+      font-size: 25px;
+      background-color: inherit;
+      border-color: tomato;
+    }
+
     .endpoint-name-input::placeholder {
       font-weight: 300;
     }
@@ -169,8 +186,10 @@ $border-color: rgba(227, 228, 230, 0.7);
       float: left;
       margin-top: 5px;
       margin-bottom: 5px;
-      padding-left: 20px;
-      padding-top: 5px;
+      outline: none;
+      border: none;
+      background: inherit;
+      padding: 2px 2px 2px 20px;
     }
   }
   .endpoint-url-container {
@@ -457,7 +476,12 @@ $border-color: rgba(227, 228, 230, 0.7);
   background-color: white;
   .generic-table-title-container {
     padding: 7px 0px 3px 30px;
-    opacity: 0.7;
+    opacity: 0.8;
+  }
+  .public-generic-table-title-container {
+    padding: 40px 0px 3px 20px;
+    opacity: 1;
+    color: tomato;
   }
   button#edit-button {
     float: right;
@@ -496,7 +520,7 @@ table#custom-generic-table {
   }
 
   td {
-    height: 30px;
+    height: 35px;
     padding: 5px !important;
   }
 
