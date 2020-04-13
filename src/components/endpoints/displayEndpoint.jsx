@@ -1239,6 +1239,7 @@ class DisplayEndpoint extends Component {
                   set_body={this.setBody.bind(this)}
                   body={this.state.data.body}
                   endpoint_id={this.props.tab.id}
+                  body_description={this.state.bodyDescription}
                 />
               </div>
               <div
