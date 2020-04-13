@@ -1211,6 +1211,18 @@ class DisplayEndpoint extends Component {
                   props_from_parent={this.propsFromChild.bind(this)}
                   original_data={[...this.state.params]}
                 ></GenericTable>
+                {this.state.pathVariables &&
+                  this.state.pathVariables.length !== 0 && (
+                    <div>
+                      <GenericTable
+                        {...this.props}
+                        title="Path Variables"
+                        dataArray={this.state.pathVariables}
+                        props_from_parent={this.propsFromChild.bind(this)}
+                        original_data={[...this.state.pathVariables]}
+                      ></GenericTable>
+                    </div>
+                  )}
               </div>
               <div
                 className="tab-pane fade"
@@ -1281,7 +1293,7 @@ class DisplayEndpoint extends Component {
             </div>
           )}
         </div>
-        {this.state.pathVariables && this.state.pathVariables.length !== 0 && (
+        {/* {this.state.pathVariables && this.state.pathVariables.length !== 0 && (
           <div>
             <GenericTable
               {...this.props}
@@ -1291,7 +1303,7 @@ class DisplayEndpoint extends Component {
               original_data={[...this.state.pathVariables]}
             ></GenericTable>
           </div>
-        )}
+        )} */}
 
         <div className="endpoint-response-container-wrapper">
           <DisplayResponse
