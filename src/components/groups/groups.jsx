@@ -10,6 +10,7 @@ import GroupPages from "../pages/groupPages";
 import PageForm from "../pages/pageForm";
 import { isDashboardRoute } from "../common/utility";
 import groupsService from "./groupsService";
+import tabService from "../tabs/tabService";
 
 const mapStateToProps = (state) => {
   return { groups: state.groups };
@@ -45,13 +46,14 @@ class Groups extends Component {
   }
 
   handleAddEndpoint(groupId, versions, groups) {
-    const newTabId = shortId.generate();
-    const tabs = [
-      ...this.props.tabs,
-      { id: newTabId, type: "endpoint", isSaved: false },
-    ];
+    // const newTabId = shortId.generate();
+    // const tabs = [
+    //   ...this.props.tabs,
+    //   { id: newTabId, type: "endpoint", isSaved: false },
+    // ];
 
-    this.props.set_tabs(tabs, tabs.length - 1);
+    // this.props.set_tabs(tabs, tabs.length - 1);
+    tabService.addNewTab({ ...this.props });
     this.props.history.push({
       pathname: `/dashboard/endpoint/new`,
       groupId: groupId,
