@@ -9,12 +9,16 @@ const getDataBase = async () => {
   }
 };
 
-const createDataBase = async (stores) => {
+const createDataBase = async () => {
   const dbName = "hitman";
   const version = 1;
 
   db = await openDB(dbName, version, {
     upgrade(db, oldVersion, newVersion, transaction) {
+      const stores = [
+        { name: "environment" },
+        { name: "tabs", options: { keyPath: "id", autoIncrement: true } },
+      ];
       stores.map((store) => db.createObjectStore(store.name, store.options));
     },
   });
@@ -66,9 +70,14 @@ const deleteData = async (storeName, key) => {
   const tx = await db.transaction(storeName, "readwrite");
   const store = await tx.objectStore(storeName);
 
-  const key = "Hello again";
+  console.log(key);
   await store.delete(key);
   await tx.done;
+};
+
+const deleteDataByIndex = async (storeName, index) => {
+  const keys = await getAllKeys(storeName);
+  deleteData(storeName, keys[index]);
 };
 
 export default {
@@ -81,4 +90,5 @@ export default {
   getAllData,
   updateData,
   deleteData,
+  deleteDataByIndex,
 };
