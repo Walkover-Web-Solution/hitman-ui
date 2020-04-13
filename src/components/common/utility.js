@@ -8,5 +8,5 @@ export function isDashboardRoute(props) {
 }
 
 export default {
-  isDashboardRoute
+  isDashboardRoute,
 };

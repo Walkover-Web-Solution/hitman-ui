@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import { toast } from "react-toastify";
 import store from "../../store/store";
+import { isDashboardRoute } from "../common/utility";
+import "./endpoints.scss";
 
 class HostContainer extends Component {
   state = {
@@ -18,13 +20,8 @@ class HostContainer extends Component {
 
   componentDidMount() {
     let isLoaded = false;
-    console.log(1);
     store.subscribe(() => {
-      console.log(2);
-
       if (!isLoaded) {
-        console.log(3);
-
         let selectedHost = "customHost";
         if (this.props.custom_host) {
           selectedHost = "customHost";
@@ -65,6 +62,7 @@ class HostContainer extends Component {
     let BASE_URL = "";
     switch (this.state.selectedHost) {
       case "customHost":
+        //BASE_URL = this.state.customHost === null ? "" : this.state.customHost;
         BASE_URL = this.state.customHost;
         break;
       case "environmentHost":
@@ -100,6 +98,35 @@ class HostContainer extends Component {
     return BASE_URL;
   }
 
+  fetchPublicEndpointHost(props) {
+    let HOST_URL = "";
+    let endpoint = {};
+    let allEndpoints = this.props.endpoints;
+    for (endpoint in allEndpoints) {
+      if (allEndpoints[endpoint].id === props.match.params.endpointId) {
+        endpoint = allEndpoints[endpoint];
+        break;
+      }
+    }
+    let groupId = endpoint.groupId;
+    let endpointUrl = endpoint.BASE_URL;
+    if (endpointUrl === "" || endpointUrl === null) {
+      let group = props.groups[groupId];
+      let groupUrl = group.host;
+      let versionId = group.versionId;
+      if (groupUrl === "" || groupUrl === null) {
+        let version = props.versions[versionId];
+        HOST_URL = version.host;
+      } else {
+        HOST_URL = groupUrl;
+      }
+    } else {
+      HOST_URL = endpointUrl;
+    }
+    this.props.set_base_url(HOST_URL);
+    return HOST_URL;
+  }
+
   render() {
     if (!this.state.groupId && this.props.groupId) {
       const groupId = this.props.groupId;
@@ -120,88 +147,116 @@ class HostContainer extends Component {
       }
       this.setState({ groupId, versionId, customHost, selectedHost });
     }
-
-    return (
-      <div className="host-field-container">
-        <input
-          type="text"
-          name="customHost"
-          value={this.fetchHost()}
-          onChange={this.handleChange}
-          disabled={this.state.selectedHost !== "customHost"}
-        />
-        <div className="dropdown" id="host-select">
-          <button
-            className="btn dropdown-toggle"
-            type="button"
-            id="dropdownMenuButton"
-            data-toggle="dropdown"
-            aria-haspopup="true"
-            aria-expanded="false"
-          ></button>
-          <div
-            className="dropdown-menu dropdown-menu-right"
-            aria-labelledby="dropdownMenuButton"
-          >
-            {this.props.environment &&
-              this.props.environment.variables &&
-              this.props.environment.variables.BASE_URL && (
+    if (isDashboardRoute(this.props)) {
+      return (
+        <div className="host-field-container">
+          <input
+            type="text"
+            name="customHost"
+            value={this.fetchHost()}
+            onChange={this.handleChange}
+            disabled={this.state.selectedHost !== "customHost"}
+          />
+          <div className="dropdown" id="host-select">
+            <button
+              className="btn dropdown-toggle"
+              type="button"
+              id="dropdownMenuButton"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+            ></button>
+            <div
+              className="dropdown-menu dropdown-menu-right"
+              aria-labelledby="dropdownMenuButton"
+            >
+              {this.props.environment &&
+                this.props.environment.variables &&
+                this.props.environment.variables.BASE_URL && (
+                  <button
+                    className="btn"
+                    onClick={() => this.selectHost("environmentHost")}
+                  >
+                    <div>
+                      {this.state.selectedHost === "environmentHost" && (
+                        <i className="fas fa-check"></i>
+                      )}
+                    </div>
+                    <div className="host-label">environment BASE_URL</div>
+                  </button>
+                )}
+              {this.state.groupId &&
+                this.props.groups[this.state.groupId].host && (
+                  <button
+                    className="btn"
+                    onClick={() => this.selectHost("groupHost")}
+                  >
+                    <div>
+                      {this.state.selectedHost === "groupHost" && (
+                        <i className="fas fa-check"></i>
+                      )}
+                    </div>
+                    <div className="host-label">group BASE_URL</div>
+                  </button>
+                )}
+              {this.state.groupId && (
                 <button
                   className="btn"
-                  onClick={() => this.selectHost("environmentHost")}
+                  onClick={() => this.selectHost("versionHost")}
                 >
                   <div>
-                    {this.state.selectedHost === "environmentHost" && (
+                    {this.state.selectedHost === "versionHost" && (
                       <i className="fas fa-check"></i>
                     )}
                   </div>
-                  <div className="host-label">environment BASE_URL</div>
+                  <div className="host-label">version BASE_URL</div>
                 </button>
               )}
-
-            {this.state.groupId && this.props.groups[this.state.groupId].host && (
               <button
+                id="customHost"
                 className="btn"
-                onClick={() => this.selectHost("groupHost")}
+                onClick={() => this.selectHost("customHost")}
               >
                 <div>
-                  {this.state.selectedHost === "groupHost" && (
+                  {this.state.selectedHost === "customHost" && (
                     <i className="fas fa-check"></i>
                   )}
                 </div>
-                <div className="host-label">group BASE_URL</div>
+                <div className="host-label">custom BASE_URL</div>
               </button>
-            )}
-            {this.state.groupId && (
-              <button
-                className="btn"
-                onClick={() => this.selectHost("versionHost")}
-              >
-                <div>
-                  {this.state.selectedHost === "versionHost" && (
-                    <i className="fas fa-check"></i>
-                  )}
-                </div>
-                <div className="host-label">version BASE_URL</div>
-              </button>
-            )}
-
-            <button
-              id="customHost"
-              className="btn"
-              onClick={() => this.selectHost("customHost")}
-            >
-              <div>
-                {this.state.selectedHost === "customHost" && (
-                  <i className="fas fa-check"></i>
-                )}
-              </div>
-              <div className="host-label">custom BASE_URL</div>
-            </button>
+            </div>
           </div>
         </div>
-      </div>
-    );
+      );
+    } else {
+      return (
+        <div className="host-field-container">
+          <input
+            type="text"
+            name="customHost"
+            value={this.fetchPublicEndpointHost(this.props)}
+            disabled
+            style={{ cursor: "not-allowed" }}
+          />
+          <div className="dropdown" id="host-select">
+            <button
+              className="btn dropdown-toggle"
+              type="button"
+              id="dropdownMenuButton"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+              disabled
+              style={{ cursor: "not-allowed" }}
+            ></button>
+            <div
+              className="dropdown-menu dropdown-menu-right"
+              aria-labelledby="dropdownMenuButton"
+            ></div>
+          </div>
+        </div>
+      );
+    }
   }
 }
 

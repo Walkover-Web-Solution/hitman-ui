@@ -11,9 +11,13 @@ import DisplayResponse from "./displayResponse";
 import endpointApiService from "./endpointApiService";
 import GenericTable from "./genericTable";
 import HostContainer from "./hostContainer";
+import DisplayDescription from "./displayDescription";
 import { addEndpoint, updateEndpoint } from "./redux/endpointsActions";
+import PublicBodyContainer from "./publicBodyContainer";
+import BodyDescription from "./bodyDescription";
+import "./endpoints.scss";
+import validator from "validator";
 const status = require("http-status");
-
 var URI = require("urijs");
 
 const mapStateToProps = (state) => {
@@ -38,14 +42,14 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
 class DisplayEndpoint extends Component {
   uri = React.createRef();
-  name = React.createRef();
+  // name = React.createRef();
   paramKey = React.createRef();
 
   state = {
     data: {
       name: "",
       method: "GET",
-      body: null,
+      body: { type: "none", value: "" },
       uri: "",
       updatedUri: "",
     },
@@ -60,9 +64,10 @@ class DisplayEndpoint extends Component {
     flagResponse: false,
     originalHeaders: [],
     originalParams: [],
-    showDescriptionFlag: false,
-    showAddDescriptionFlag: false,
     oldDescription: "",
+    headers: [],
+    params: [],
+    bodyDescription: [],
   };
 
   customState = {
@@ -76,7 +81,7 @@ class DisplayEndpoint extends Component {
         data: {
           name: "",
           method: "GET",
-          body: { type: "raw", value: null },
+          body: { type: "none", value: null },
           uri: "",
           updatedUri: "",
         },
@@ -131,6 +136,7 @@ class DisplayEndpoint extends Component {
     let endpoint = {};
     let originalParams = [];
     let originalHeaders = [];
+    let pathVariables = [];
     const split = this.props.location.pathname.split("/");
 
     if (isDashboardRoute(this.props)) {
@@ -175,10 +181,18 @@ class DisplayEndpoint extends Component {
 
       //To fetch originalParams from Params
       originalParams = this.fetchoriginalParams(endpoint.params);
+      let params = this.fetchoriginalParams(endpoint.params);
 
       //To fetch originalHeaders from Headers
       originalHeaders = this.fetchoriginalHeaders(endpoint.headers);
+      let headers = this.fetchoriginalHeaders(endpoint.headers);
       this.customState.customBASE_URL = endpoint.BASE_URL;
+
+      //To fetch Path Variables
+      if (endpoint.pathVariables.length !== 0) {
+        pathVariables = this.fetchPathVariables(endpoint.pathVariables);
+        this.setState({ pathVariables });
+      }
 
       this.setState({
         data: {
@@ -188,13 +202,14 @@ class DisplayEndpoint extends Component {
           name: endpoint.name,
           body: endpoint.body,
         },
+        params,
+        headers,
         originalParams,
         originalHeaders,
         endpoint,
         groupId,
         endpoint_description: endpoint.description,
         oldDescription: endpoint.description,
-        showDescriptionFlag: false,
         title: "update endpoint",
       });
     }
@@ -209,6 +224,15 @@ class DisplayEndpoint extends Component {
       let description = [];
       let originalParams = this.state.originalParams;
       let updatedUri = e.currentTarget.value.split("?")[1];
+      let uri = e.currentTarget.value.split("?")[0];
+      let uripath = new URI(e.currentTarget.value);
+      let path = uripath.pathname().slice(1);
+      let pathVariableKeys = path.split("/");
+      let pathVariableKeysObject = {};
+      for (let i = 0; i < pathVariableKeys.length; i++) {
+        pathVariableKeysObject[pathVariableKeys[i]] = false;
+      }
+      this.setPathVariables(pathVariableKeys, pathVariableKeysObject);
       let result = URI.parseQuery(updatedUri);
       for (let i = 0; i < Object.keys(result).length; i++) {
         keys.push(Object.keys(result)[i]);
@@ -234,6 +258,34 @@ class DisplayEndpoint extends Component {
     }
     this.setState({ data });
   };
+
+  setPathVariables(pathVariableKeys, pathVariableKeysObject) {
+    let pathVariables = [];
+    for (let i = 1; i < pathVariableKeys.length; i++) {
+      if (
+        pathVariableKeys[i][0] === ":" &&
+        pathVariableKeysObject[pathVariableKeys[i]] === false
+      ) {
+        pathVariableKeysObject[pathVariableKeys[i]] = true;
+        pathVariables.push({
+          checked: "notApplicable",
+          key: pathVariableKeys[i].slice(1),
+          value: this.state.pathVariables[i - 1]
+            ? this.state.pathVariables[i - 1].key === pathVariableKeys[i]
+              ? this.state.pathVariables[i - 1].value
+              : ""
+            : "",
+          description: this.state.pathVariables[i - 1]
+            ? this.state.pathVariables[i - 1].key === pathVariableKeys[i]
+              ? this.state.pathVariables[i - 1].description
+              : ""
+            : "",
+        });
+      }
+    }
+
+    this.setState({ pathVariables });
+  }
 
   makeOriginalParams(keys, values, description) {
     let originalParams = [];
@@ -333,7 +385,7 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  async handleApiCall(api, body, headerJson) {
+  async handleApiCall(api, body, headerJson, bodyType) {
     let responseJson = {};
     try {
       let header = this.replaceVariablesInJson(headerJson);
@@ -341,7 +393,8 @@ class DisplayEndpoint extends Component {
         api,
         this.state.data.method,
         body,
-        header
+        header,
+        bodyType
       );
       const response = { ...responseJson };
       if (responseJson.status === 200) {
@@ -352,21 +405,109 @@ class DisplayEndpoint extends Component {
       this.handleErrorResponse(error);
     }
   }
+  setPathVariableValues() {
+    let uri = new URI(this.uri.current.value);
+    uri = uri.pathname().slice(1);
+    let pathParameters = uri.split("/");
+    let path = "/";
+    let counter = 0;
+    for (let i = 0; i < pathParameters.length; i++) {
+      if (pathParameters[i][0] === ":") {
+        path = path + this.state.pathVariables[counter].value + "/";
+        counter++;
+      } else {
+        path = path + pathParameters[i] + "/";
+      }
+    }
+    // generatePath(
+    //   uri,
+    //   this.state.pathVariables.map(
+    //     (variable) => (variable.key = variable.value)
+    //   )
+    // );
+    return path;
+  }
+
+  validateBodyParams() {
+    let bodyDescription = [...this.state.bodyDescription];
+    let rawBody = this.parseBody(this.state.data.body.value);
+    let rawBodyArray = Object.keys(rawBody);
+    for (let index = 0; index < bodyDescription.length; index++) {
+      let dataType = bodyDescription[index].dataType;
+      dataType = dataType.toLowerCase();
+      let name = bodyDescription[index].name;
+      if (dataType === "boolean") {
+        if (!validator.isBoolean(rawBody[name])) {
+          toast.error("cannot validate body according to body description.");
+        }
+      } else if (dataType === "integer") {
+        if (!validator.isInt(rawBody[name])) {
+          toast.error("cannot validate body according to body description.");
+        }
+      } else if (dataType === "long") {
+        // validator.iaLong(rawBody[name])
+      } else if (dataType === "float") {
+        if (!validator.isFloat(rawBody[name])) {
+          toast.error("cannot validate body according to body description.");
+        }
+      } else if (dataType === "double") {
+      } else if (dataType === "yyyy-mm-dd") {
+      } else if (dataType === "datetime") {
+      } else if (dataType === "timestamp") {
+      } else if (dataType === "array of integer") {
+        for (let i = 0; i < rawBody[name].length; i++) {
+          const element = rawBody[name][i];
+          if (validator.isInt(element)) continue;
+          else {
+            toast.error("cannot validate body according to body description.");
+            break;
+          }
+        }
+      } else if (dataType === "array of long") {
+      } else if (dataType === "array of double") {
+      } else if (dataType === "array of float") {
+        for (let i = 0; i < rawBody[name].length; i++) {
+          const element = rawBody[name][i];
+          if (validator.isFloat(element)) continue;
+          else {
+            toast.error("cannot validate body according to body description.");
+            break;
+          }
+        }
+      } else if (dataType === "array of boolean") {
+        for (let i = 0; i < rawBody[name].length; i++) {
+          const element = rawBody[name][i];
+          if (validator.isBoolean(element)) continue;
+          else {
+            toast.error("cannot validate body according to body description.");
+            break;
+          }
+        }
+      } else if (dataType === "array of datetime") {
+      } else if (dataType === "array of yyyy-mm-dd") {
+      } else if (dataType === "array of timestamp") {
+      }
+    }
+  }
 
   handleSend = async () => {
+    // this.validateBodyParams();
     let startTime = new Date().getTime();
     let response = {};
     this.setState({ startTime, response });
     const headersData = this.doSubmitHeader();
     const BASE_URL = this.customState.BASE_URL;
-    let api = BASE_URL + this.uri.current.value;
+    let uri = new URI(this.uri.current.value);
+    let queryparams = uri.search();
+    let path = this.setPathVariableValues();
+    let api = BASE_URL + path + queryparams;
     api = this.replaceVariables(api);
     let headerJson = {};
     Object.keys(headersData).forEach((header) => {
       headerJson[header] = headersData[header].value;
     });
     let { body, headers } = this.formatBody(this.state.data.body, headerJson);
-    this.handleApiCall(api, body, headers);
+    this.handleApiCall(api, body, headers, this.state.data.body.type);
   };
 
   handleSave = async (groupId, EndpointName) => {
@@ -379,14 +520,16 @@ class DisplayEndpoint extends Component {
       }
       const headersData = this.doSubmitHeader();
       const updatedParams = this.doSubmitParam();
+      const pathVariables = this.doSubmitPathVariables();
       const endpoint = {
         uri: this.uri.current.value,
-        name: EndpointName || this.name.current.value,
+        name: EndpointName || this.state.data.name,
         requestType: this.state.data.method,
         body: body,
         headers: headersData,
         params: updatedParams,
-        BASE_URL: this.customState.customBASE_URL,
+        pathVariables: pathVariables,
+        BASE_URL: this.customState.BASE_URL,
       };
       // if (endpoint.name === "" || endpoint.uri === "")
       if (endpoint.name === "") toast.error("Please enter Endpoint name");
@@ -402,6 +545,31 @@ class DisplayEndpoint extends Component {
       }
     }
   };
+
+  doSubmitPathVariables() {
+    let updatedPathVariables = {};
+    if (this.state.pathVariables) {
+      let pathVariables = [...this.state.pathVariables];
+      for (let i = 0; i < pathVariables.length; i++) {
+        if (pathVariables[i].key === "") {
+          continue;
+        } else {
+          updatedPathVariables[pathVariables[i].key] = {
+            checked: pathVariables[i].checked,
+            value: pathVariables[i].value,
+            description: pathVariables[i].description,
+          };
+        }
+      }
+      const endpoint = { ...this.state.endpoint };
+      endpoint.pathVariables = { ...updatedPathVariables };
+      this.setState({
+        pathVariables,
+        endpoint,
+      });
+    }
+    return updatedPathVariables;
+  }
 
   doSubmitHeader() {
     let originalHeaders = [...this.state.originalHeaders];
@@ -444,6 +612,10 @@ class DisplayEndpoint extends Component {
 
     if (name === "originalHeaders") {
       this.setState({ originalHeaders: value });
+    }
+
+    if (name === "Path Variables") {
+      this.setState({ pathVariables: value });
     }
   }
 
@@ -538,6 +710,20 @@ class DisplayEndpoint extends Component {
       description: "",
     };
     return originalHeaders;
+  }
+
+  fetchPathVariables(pathVariables) {
+    let originalPathVariables = [];
+    let i = 0;
+    for (i = 0; i < Object.keys(pathVariables).length; i++) {
+      originalPathVariables[i] = {
+        checked: pathVariables[Object.keys(pathVariables)[i]].checked,
+        key: Object.keys(pathVariables)[i],
+        value: pathVariables[Object.keys(pathVariables)[i]].value,
+        description: pathVariables[Object.keys(pathVariables)[i]].description,
+      };
+    }
+    return originalPathVariables;
   }
 
   openEndpointFormModal() {
@@ -639,81 +825,74 @@ class DisplayEndpoint extends Component {
   setBody(bodyType, body) {
     let data = { ...this.state.data };
     data.body = { type: bodyType, value: body };
-    if (bodyType === "urlEncoded") {
-      this.setHeaders();
+    if (bodyType !== "formData") {
+      this.setHeaders(bodyType);
     }
     this.setState({ data });
   }
 
-  setHeaders() {
-    this.contentTypeFlag = false;
+  setBodyDescription(bodyDescription) {
+    this.setState({ bodyDescription });
+  }
+
+  setHeaders(bodyType) {
     let originalHeaders = this.state.originalHeaders;
+    let updatedHeaders = [];
+    this.contentTypeFlag = false;
     for (let i = 0; i < originalHeaders.length; i++) {
-      if (originalHeaders[i].key === "Content-type") {
-        this.contentTypeFlag = true;
-        break;
+      if (
+        originalHeaders[i].key === "Content-type" ||
+        originalHeaders[i].key === ""
+      ) {
+        continue;
+      } else {
+        updatedHeaders.push(originalHeaders[i]);
       }
     }
-    if (this.contentTypeFlag === false) {
-      let length = originalHeaders.length;
-      originalHeaders[length - 1] = {
-        checked: "true",
-        key: "Content-type",
-        value: "application/x-www-form-urlencoded",
-        description: "",
-      };
-      originalHeaders.push({
-        checked: "notApplicable",
-        key: "",
-        value: "",
-        description: "",
-      });
-      this.setState({ originalHeaders });
+    updatedHeaders.push({
+      checked: "true",
+      key: "Content-type",
+      value: "",
+      description: "",
+    });
+
+    switch (bodyType) {
+      case "urlEncoded":
+        updatedHeaders[updatedHeaders.length - 1].value =
+          "application/x-www-form-urlencoded";
+        break;
+      case "TEXT":
+        updatedHeaders[updatedHeaders.length - 1].value = "text/plain";
+        break;
+      case "JSON":
+        updatedHeaders[updatedHeaders.length - 1].value = "application/JSON";
+        break;
+      case "HTML":
+        updatedHeaders[updatedHeaders.length - 1].value = "text/HTML";
+        break;
+      case "XML":
+        updatedHeaders[updatedHeaders.length - 1].value = "application/XML";
+        break;
+      case "JavaScript":
+        updatedHeaders[updatedHeaders.length - 1].value =
+          "application/JavaScript";
+        break;
     }
-  }
-
-  handleDescription() {
-    const showDescriptionFlag = true;
-    let showAddDescriptionFlag = true;
-    this.setState({ showDescriptionFlag, showAddDescriptionFlag });
-  }
-
-  handleDescriptionCancel() {
-    let endpoint = { ...this.state.endpoint };
-    endpoint.description = this.state.oldDescription;
-    const showDescriptionFlag = false;
-    this.setState({
-      showDescriptionFlag,
-      endpoint,
-      showAddDescriptionFlag: true,
+    updatedHeaders.push({
+      checked: "notApplicable",
+      key: "",
+      value: "",
+      description: "",
     });
+    this.setState({ originalHeaders: updatedHeaders });
   }
 
-  handleDescriptionSave(e) {
-    e.preventDefault();
-    const value = e.target.description.value;
-    let endpoint = { ...this.state.endpoint };
-
-    this.props.updateEndpoint({ id: endpoint.id, description: value });
-
-    endpoint.description = value;
-    this.setState({
-      endpoint,
-      showDescriptionFlag: false,
-      oldDescription: value,
-      showAddDescriptionFlag: true,
-    });
-  }
-
-  handleChangeDescription = (e) => {
-    let endpoint = { ...this.state.endpoint };
-    endpoint[e.currentTarget.name] = e.currentTarget.value;
-    this.setState({ endpoint });
-  };
-
-  showDescription() {
-    let showAddDescriptionFlag = !this.state.showAddDescriptionFlag;
-    this.setState({ showAddDescriptionFlag, showDescriptionFlag: false });
+  propsFromDescription(title, data) {
+    if (title === "data") {
+      this.setState({ data: data });
+    }
+    if (title === "endpoint") this.setState({ endpoint: data });
+    if (title === "oldDescription") this.setState({ oldDescription: data });
   }
 
   formatBody(body, headers) {
@@ -728,17 +907,18 @@ class DisplayEndpoint extends Component {
         body.value.map((o) => formData.set(o.key, o.value));
         return { body: formData, headers };
       case "urlEncoded":
-        let urlEncodedData = [];
+        let urlEncodedData = {};
         for (let i = 0; i < body.value.length; i++) {
           if (body.value[i].key.length !== 0) {
-            let encodedKey = encodeURIComponent(body.value[i].key);
-            let encodedValue = encodeURIComponent(body.value[i].value);
-            urlEncodedData.push(encodedKey + "=" + encodedValue);
+            urlEncodedData[body.value[i].key] = body.value[i].value;
+            // let encodedKey = encodeURIComponent(body.value[i].key);
+            // let encodedValue = encodeURIComponent(body.value[i].value);
+            // urlEncodedData.push(encodedKey + "=" + encodedValue);
           }
         }
-        urlEncodedData = urlEncodedData.join("&");
+        console.log("urlEncodedData", urlEncodedData);
+        // urlEncodedData = urlEncodedData.join("&");
         return { body: urlEncodedData, headers };
-
       default:
         return { body: {}, headers };
     }
@@ -746,6 +926,7 @@ class DisplayEndpoint extends Component {
 
   render() {
     if (
+      isDashboardRoute(this.props) &&
       this.props.location.pathname.split("/")[3] !== "new" &&
       this.state.endpoint.id !== this.props.tab.id &&
       this.props.endpoints[this.props.tab.id]
@@ -761,42 +942,58 @@ class DisplayEndpoint extends Component {
         });
       }
     }
+
+    if (
+      !isDashboardRoute(this.props) &&
+      this.props.location.pathname.split("/")[3] !== "new" &&
+      this.state.endpoint.id !== this.props.location.pathname.split("/")[4] &&
+      this.props.endpoints[this.props.location.pathname.split("/")[4]]
+    ) {
+      if (!isDashboardRoute(this.props)) {
+        this.fetchEndpoint(0, this.props.location.pathname.split("/")[4]);
+        store.subscribe(() => {
+          if (!this.props.location.title && !this.state.title) {
+            this.fetchEndpoint(0, this.props.location.pathname.split("/")[4]);
+          }
+        });
+      }
+    }
+
     // if (this.props.location.title === "Add New Endpoint") {
     //   this.title = "Add New Endpoint";
-    // this.setState({
-    //   data: {
-    //     name: "",
-    //     method: "GET",
-    //     body: { type: "raw", value: null },
-    //     uri: "",
-    //     updatedUri: "",
-    //   },
-    //   startTime: "",
-    //   timeElapsed: "",
-    //   response: {},
-    //   endpoint: {},
-    //   groupId: this.props.location.groupId,
-    //   title: "Add New Endpoint",
-    //   flagResponse: false,
-    //   showDescriptionFlag: false,
+    //   this.setState({
+    //     data: {
+    //       name: "",
+    //       method: "GET",
+    //       body: { type: "raw", value: null },
+    //       uri: "",
+    //       updatedUri: "",
+    //     },
+    //     startTime: "",
+    //     timeElapsed: "",
+    //     response: {},
+    //     endpoint: {},
+    //     groupId: this.props.location.groupId,
+    //     title: "Add New Endpoint",
+    //     flagResponse: false,
 
-    //   originalHeaders: [
-    //     {
-    //       checked: "notApplicable",
-    //       key: "",
-    //       value: "",
-    //       description: "",
-    //     },
-    //   ],
-    //   originalParams: [
-    //     {
-    //       checked: "notApplicable",
-    //       key: "",
-    //       value: "",
-    //       description: "",
-    //     },
-    //   ],
-    // });
+    //     originalHeaders: [
+    //       {
+    //         checked: "notApplicable",
+    //         key: "",
+    //         value: "",
+    //         description: "",
+    //       },
+    //     ],
+    //     originalParams: [
+    //       {
+    //         checked: "notApplicable",
+    //         key: "",
+    //         value: "",
+    //         description: "",
+    //       },
+    //     ],
+    //   });
     //   this.props.history.push({ groups: null });
     // }
 
@@ -809,10 +1006,12 @@ class DisplayEndpoint extends Component {
     //   const originalParams = this.fetchoriginalParams(
     //     this.props.location.endpoint.params
     //   );
+    //   const params = this.fetchoriginalParams(endpoint.params);
 
     //   //To fetch originalHeaders from Headers
     //   const originalHeaders = this.fetchoriginalHeaders(endpoint.headers);
-
+    //   const headers = this.fetchoriginalHeaders(endpoint.headers);
+    //   console.log("in update endpoint");
     //   this.setState({
     //     data: {
     //       method: endpoint.requestType,
@@ -827,6 +1026,8 @@ class DisplayEndpoint extends Component {
     //     groupId: this.props.location.endpoint.groupId,
     //     originalParams,
     //     originalHeaders,
+    //     params,
+    //     headers,
     //     endpoint,
     //     flagResponse: false,
     //     oldDescription: endpoint.description,
@@ -845,135 +1046,47 @@ class DisplayEndpoint extends Component {
             save_endpoint={this.handleSave.bind(this)}
           />
         )}
-        <div className="endpoint-name-container">
-          {this.state.showCodeWindow && this.showCodeWindow()}
-
-          {this.state.endpoint.description !== undefined ? (
-            <i
-              className={
-                this.state.showAddDescriptionFlag === true
-                  ? "fas fa-caret-down endpoint-description"
-                  : "fas fa-caret-right endpoint-description"
-              }
-              onClick={() => this.showDescription()}
-            ></i>
-          ) : null}
-          <input
-            type="text"
-            className="endpoint-name-input"
-            aria-label="Username"
-            aria-describedby="addon-wrapping"
-            name="name"
-            ref={this.name}
-            placeholder="Endpoint Name"
-            value={this.state.data.name}
-            onChange={this.handleChange}
-          />
-        </div>
-
-        {this.state.showAddDescriptionFlag &&
-        !this.state.showDescriptionFlag ? (
-          this.state.endpoint.description === "" &&
-          isDashboardRoute(this.props) ? (
-            <Link
-              style={{
-                padding: "5px 0px 0px 20px",
-                fontSize: "15px",
-                color: "tomato",
-              }}
-              onClick={() => this.handleDescription()}
-            >
-              Add a Description
-            </Link>
-          ) : (
-            <div>
-              <label style={{ padding: "5px 5px 0px 20px" }}>
-                {this.state.endpoint.description}
-              </label>
-              {isDashboardRoute(this.props) ? (
-                <button
-                  className="btn btn-default"
-                  onClick={() => this.handleDescription()}
-                >
-                  <i className="fas fa-pen"></i>
-                </button>
-              ) : null}
-            </div>
-          )
-        ) : null}
-
-        {this.state.showDescriptionFlag && isDashboardRoute(this.props) ? (
-          <form onSubmit={this.handleDescriptionSave.bind(this)}>
-            <div
-              className="form-group"
-              style={{ padding: "5px 10px 5px 10px" }}
-            >
-              <textarea
-                className="form-control"
-                rows="3"
-                name="description"
-                placeholder="Make things easier for your teammates with a complete endpoint description"
-                value={this.state.endpoint.description}
-                onChange={this.handleChangeDescription}
-              ></textarea>
-              <div style={{ float: "right", margin: "5px" }}>
-                <button
-                  className="btn btn-primary"
-                  type="cancel"
-                  onClick={() => this.handleDescriptionCancel()}
-                  style={{
-                    margin: "0px 5px 0px 0px",
-                    color: "tomato",
-                    background: "none",
-                    border: "none",
-                  }}
-                >
-                  Cancel
-                </button>
-                <button
-                  className="btn btn-primary"
-                  type="submit"
-                  style={{
-                    margin: "0px 0px 0px 5px",
-                    background: "tomato",
-                    border: "none",
-                  }}
-                >
-                  Save
-                </button>
-              </div>
-            </div>
-          </form>
-        ) : null}
+        {this.state.showCodeWindow && this.showCodeWindow()}
+        <DisplayDescription
+          {...this.props}
+          endpoint={this.state.endpoint}
+          data={this.state.data}
+          old_description={this.state.oldDescription}
+          props_from_parent={this.propsFromDescription.bind(this)}
+        ></DisplayDescription>
 
         <div className="endpoint-url-container">
           <div className="input-group-prepend">
-            <div className="dropdown">
-              <button
-                className="btn btn-secondary dropdown-toggle"
-                type="button"
-                id="dropdownMenuButton"
-                data-toggle="dropdown"
-                aria-haspopup="true"
-                aria-expanded="false"
-              >
-                {this.state.data.method}
-              </button>
-              <div
-                className="dropdown-menu"
-                aria-labelledby="dropdownMenuButton"
-              >
-                {this.state.methodList.map((methodName) => (
-                  <button
-                    className="btn custom-request-button"
-                    onClick={() => this.setMethod(methodName)}
-                    key={methodName}
-                  >
-                    {methodName}
-                  </button>
-                ))}
+            <div>
+              <div className="dropdown">
+                <button
+                  className="btn btn-secondary dropdown-toggle"
+                  type="button"
+                  id="dropdownMenuButton"
+                  data-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                  disabled={isDashboardRoute(this.props) ? null : true}
+                >
+                  {this.state.data.method}
+                </button>
+                <div
+                  className="dropdown-menu"
+                  aria-labelledby="dropdownMenuButton"
+                >
+                  {this.state.methodList.map((methodName) => (
+                    <button
+                      className="btn custom-request-button"
+                      onClick={() => this.setMethod(methodName)}
+                      key={methodName}
+                    >
+                      {methodName}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
+
             <HostContainer
               {...this.props}
               groupId={this.state.groupId}
@@ -990,6 +1103,7 @@ class DisplayEndpoint extends Component {
               aria-describedby="basic-addon3"
               placeholder={"Enter request URL"}
               onChange={this.handleChange}
+              disabled={isDashboardRoute(this.props) ? null : true}
             />
           </div>
           <div className="d-flex">
@@ -999,8 +1113,9 @@ class DisplayEndpoint extends Component {
               id="send-request-button"
               onClick={() => this.handleSend()}
             >
-              Send
+              {isDashboardRoute(this.props) ? "Send" : "Try"}
             </button>
+
             {isDashboardRoute(this.props) ? (
               <button
                 className="btn"
@@ -1024,89 +1139,159 @@ class DisplayEndpoint extends Component {
             >
               Code
             </button>
-            <ul className="nav nav-tabs" id="pills-tab" role="tablist">
-              <li className="nav-item">
-                <a
-                  className="nav-link active"
-                  id="pills-params-tab"
-                  data-toggle="pill"
-                  href={`#params-${this.props.tab.id}`}
-                  role="tab"
-                  aria-controls={`params-${this.props.tab.id}`}
-                  aria-selected="true"
-                >
-                  Params
-                </a>
-              </li>
-              <li className="nav-item">
-                <a
-                  className="nav-link"
-                  id="pills-headers-tab"
-                  data-toggle="pill"
-                  href={`#headers-${this.props.tab.id}`}
-                  role="tab"
-                  aria-controls={`headers-${this.props.tab.id}`}
-                  aria-selected="false"
-                >
-                  Headers
-                </a>
-              </li>
-              <li className="nav-item">
-                <a
-                  className="nav-link"
-                  id="pills-body-tab"
-                  data-toggle="pill"
-                  href={`#body-${this.props.tab.id}`}
-                  role="tab"
-                  aria-controls={`body-${this.props.tab.id}`}
-                  aria-selected="false"
-                >
-                  Body
-                </a>
-              </li>
-            </ul>
+            {isDashboardRoute(this.props) ? (
+              <ul className="nav nav-tabs" id="pills-tab" role="tablist">
+                <li className="nav-item">
+                  <a
+                    className="nav-link active"
+                    id="pills-params-tab"
+                    data-toggle="pill"
+                    href={`#params-${this.props.tab.id}`}
+                    role="tab"
+                    aria-controls={`params-${this.props.tab.id}`}
+                    aria-selected="true"
+                  >
+                    Params
+                  </a>
+                </li>
+                <li className="nav-item">
+                  <a
+                    className="nav-link"
+                    id="pills-headers-tab"
+                    data-toggle="pill"
+                    href={`#headers-${this.props.tab.id}`}
+                    role="tab"
+                    aria-controls={`headers-${this.props.tab.id}`}
+                    aria-selected="false"
+                  >
+                    Headers
+                  </a>
+                </li>
+                <li className="nav-item">
+                  <a
+                    className="nav-link"
+                    id="pills-body-tab"
+                    data-toggle="pill"
+                    href={`#body-${this.props.tab.id}`}
+                    role="tab"
+                    aria-controls={`body-${this.props.tab.id}`}
+                    aria-selected="false"
+                  >
+                    Body
+                  </a>
+                </li>
+                <li className="nav-item">
+                  <a
+                    className="nav-link"
+                    id="pills-body-description-tab"
+                    data-toggle="pill"
+                    href={`#body-description-${this.props.tab.id}`}
+                    role="tab"
+                    aria-controls={`body-description-${this.props.tab.id}`}
+                    aria-selected="false"
+                  >
+                    Body Description
+                  </a>
+                </li>
+              </ul>
+            ) : null}
           </div>
-          <div className="tab-content" id="pills-tabContent">
-            <div
-              className="tab-pane fade show active"
-              id={`params-${this.props.tab.id}`}
-              role="tabpanel"
-              aria-labelledby="pills-params-tab"
-            >
-              <GenericTable
-                title="Params"
-                dataArray={this.state.originalParams}
-                props_from_parent={this.propsFromChild.bind(this)}
-              ></GenericTable>
-            </div>
-            <div
-              className="tab-pane fade"
-              id={`headers-${this.props.tab.id}`}
-              role="tabpanel"
-              aria-labelledby="pills-headers-tab"
-            >
-              <div>
+          {isDashboardRoute(this.props) ? (
+            <div className="tab-content" id="pills-tabContent">
+              <div
+                className="tab-pane fade show active"
+                id={`params-${this.props.tab.id}`}
+                role="tabpanel"
+                aria-labelledby="pills-params-tab"
+              >
                 <GenericTable
+                  {...this.props}
+                  title="Params"
+                  dataArray={this.state.originalParams}
+                  props_from_parent={this.propsFromChild.bind(this)}
+                  original_data={[...this.state.params]}
+                ></GenericTable>
+              </div>
+              <div
+                className="tab-pane fade"
+                id={`headers-${this.props.tab.id}`}
+                role="tabpanel"
+                aria-labelledby="pills-headers-tab"
+              >
+                <div>
+                  <GenericTable
+                    {...this.props}
+                    title="Headers"
+                    dataArray={this.state.originalHeaders}
+                    props_from_parent={this.propsFromChild.bind(this)}
+                    original_data={[...this.state.headers]}
+                  ></GenericTable>
+                </div>
+              </div>
+              <div
+                className="tab-pane fade"
+                id={`body-${this.props.tab.id}`}
+                role="tabpanel"
+                aria-labelledby="pills-body-tab"
+              >
+                <BodyContainer
+                  {...this.props}
+                  set_body={this.setBody.bind(this)}
+                  body={this.state.data.body}
+                  endpoint_id={this.props.tab.id}
+                  body_description={this.state.bodyDescription}
+                />
+              </div>
+              <div
+                className="tab-pane fade"
+                id={`body-description-${this.props.tab.id}`}
+                role="tabpanel"
+                aria-labelledby="pills-body-description-tab"
+              >
+                <BodyDescription
+                  set_body_description={this.setBodyDescription.bind(this)}
+                />
+              </div>
+            </div>
+          ) : (
+            <div>
+              {this.state.params.length > 1 && (
+                <GenericTable
+                  {...this.props}
+                  title="Params"
+                  dataArray={this.state.originalParams}
+                  props_from_parent={this.propsFromChild.bind(this)}
+                  original_data={[...this.state.params]}
+                ></GenericTable>
+              )}
+              {this.state.headers.length > 1 && (
+                <GenericTable
+                  {...this.props}
                   title="Headers"
                   dataArray={this.state.originalHeaders}
                   props_from_parent={this.propsFromChild.bind(this)}
+                  original_data={[...this.state.headers]}
                 ></GenericTable>
-              </div>
-            </div>
-            <div
-              className="tab-pane fade"
-              id={`body-${this.props.tab.id}`}
-              role="tabpanel"
-              aria-labelledby="pills-body-tab"
-            >
-              <BodyContainer
+              )}
+              <PublicBodyContainer
+                {...this.props}
                 set_body={this.setBody.bind(this)}
                 body={this.state.data.body}
-                endpoint_id={this.props.tab.id}
-              />
+              ></PublicBodyContainer>
             </div>
-          </div>
+          )}
         </div>
+        {this.state.pathVariables && this.state.pathVariables.length !== 0 && (
+          <div>
+            <GenericTable
+              {...this.props}
+              title="Path Variables"
+              dataArray={this.state.pathVariables}
+              props_from_parent={this.propsFromChild.bind(this)}
+              original_data={[...this.state.pathVariables]}
+            ></GenericTable>
+          </div>
+        )}
 
         <div className="endpoint-response-container-wrapper">
           <DisplayResponse

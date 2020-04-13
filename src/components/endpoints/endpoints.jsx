@@ -10,6 +10,7 @@ import {
 } from "../publicEndpoint/redux/publicEndpointsActions";
 import tabService from "../tabs/tabService";
 import { deleteEndpoint, duplicateEndpoint } from "./redux/endpointsActions";
+import "./endpoints.scss";
 
 const mapStateToProps = (state) => {
   return {
@@ -216,6 +217,7 @@ class Endpoints extends Component {
               )
               .map((endpointId) => (
                 <div className="endpoint-list-item" key={endpointId}>
+                  <div className={this.props.endpoints[endpointId].state}></div>
                   <button
                     className="btn "
                     draggable
@@ -235,14 +237,7 @@ class Endpoints extends Component {
                     >
                       {this.props.endpoints[endpointId].requestType}
                     </div>
-                    <div
-                      className={
-                        this.props.endpoints[endpointId].state === "Pending" &&
-                        this.checkAccess(this.props.collection_id)
-                          ? "circle"
-                          : null
-                      }
-                    ></div>
+
                     {this.props.endpoints[endpointId].name}
                   </button>
                   <div className="btn-group">
@@ -271,10 +266,7 @@ class Endpoints extends Component {
                       >
                         Duplicate
                       </button>
-                      {this.checkAccess(this.props.collection_id) &&
-                      (this.props.endpoints[endpointId].state === "Pending" ||
-                        this.props.endpoints[endpointId].state ===
-                          "Reject") ? null : (
+                      {this.props.endpoints[endpointId].state === "Draft" ? (
                         <button
                           className="dropdown-item"
                           onClick={() =>
@@ -283,13 +275,9 @@ class Endpoints extends Component {
                             )
                           }
                         >
-                          {this.props.endpoints[endpointId].state === "Approved"
-                            ? "Published"
-                            : this.props.endpoints[endpointId].state === "Draft"
-                            ? "Make Public"
-                            : this.props.endpoints[endpointId].state}
+                          Make Public
                         </button>
-                      )}
+                      ) : null}
 
                       {!this.checkAccess(this.props.collection_id) &&
                       this.props.endpoints[endpointId].state === "Pending" ? (

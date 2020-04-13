@@ -1,12 +1,12 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import "../styles.scss";
+import { getCurrentUser } from "../auth/authService";
 import collectionsService from "../collections/collectionsService";
 import environmentsService from "../environments/environmentsService";
-import CreateNewModal from "./CreateNewModal";
-import { getCurrentUser } from "../auth/authService";
-import shortId from "shortid";
+import "../styles.scss";
 import tabService from "../tabs/tabService";
+import CreateNewModal from "./CreateNewModal";
+import "./main.scss";
 
 class Navbar extends Component {
   state = {

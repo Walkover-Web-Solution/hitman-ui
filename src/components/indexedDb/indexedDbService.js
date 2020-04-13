@@ -9,12 +9,16 @@ const getDataBase = async () => {
   }
 };
 
-const createDataBase = async (stores) => {
+const createDataBase = async () => {
   const dbName = "hitman";
   const version = 1;
 
   db = await openDB(dbName, version, {
-    upgrade(db, oldVersion, newVersion, transaction, stores) {
+    upgrade(db, oldVersion, newVersion, transaction) {
+      const stores = [
+        { name: "environment" },
+        { name: "tabs", options: { keyPath: "id", autoIncrement: true } },
+      ];
       stores.map((store) => db.createObjectStore(store.name, store.options));
     },
   });

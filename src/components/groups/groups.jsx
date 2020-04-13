@@ -11,6 +11,7 @@ import PageForm from "../pages/pageForm";
 import { isDashboardRoute } from "../common/utility";
 import groupsService from "./groupsService";
 import tabService from "../tabs/tabService";
+import "./groups.scss";
 
 const mapStateToProps = (state) => {
   return { groups: state.groups };
