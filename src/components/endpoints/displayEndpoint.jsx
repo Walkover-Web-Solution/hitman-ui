@@ -136,6 +136,7 @@ class DisplayEndpoint extends Component {
     let endpoint = {};
     let originalParams = [];
     let originalHeaders = [];
+    let pathVariables = [];
     const split = this.props.location.pathname.split("/");
 
     if (isDashboardRoute(this.props)) {
@@ -186,6 +187,12 @@ class DisplayEndpoint extends Component {
       originalHeaders = this.fetchoriginalHeaders(endpoint.headers);
       let headers = this.fetchoriginalHeaders(endpoint.headers);
       this.customState.customBASE_URL = endpoint.BASE_URL;
+
+      //To fetch Path Variables
+      if (endpoint.pathVariables.length !== 0) {
+        pathVariables = this.fetchPathVariables(endpoint.pathVariables);
+        this.setState({ pathVariables });
+      }
 
       this.setState({
         data: {
@@ -703,6 +710,20 @@ class DisplayEndpoint extends Component {
       description: "",
     };
     return originalHeaders;
+  }
+
+  fetchPathVariables(pathVariables) {
+    let originalPathVariables = [];
+    let i = 0;
+    for (i = 0; i < Object.keys(pathVariables).length; i++) {
+      originalPathVariables[i] = {
+        checked: pathVariables[Object.keys(pathVariables)[i]].checked,
+        key: Object.keys(pathVariables)[i],
+        value: pathVariables[Object.keys(pathVariables)[i]].value,
+        description: pathVariables[Object.keys(pathVariables)[i]].description,
+      };
+    }
+    return originalPathVariables;
   }
 
   openEndpointFormModal() {
