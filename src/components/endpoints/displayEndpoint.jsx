@@ -12,9 +12,10 @@ import endpointApiService from "./endpointApiService";
 import GenericTable from "./genericTable";
 import HostContainer from "./hostContainer";
 import { addEndpoint, updateEndpoint } from "./redux/endpointsActions";
+import BodyDescription from "./bodyDescription";
 import "./endpoints.scss";
+import validator from "validator";
 const status = require("http-status");
-
 var URI = require("urijs");
 
 const mapStateToProps = (state) => {
@@ -64,6 +65,7 @@ class DisplayEndpoint extends Component {
     showDescriptionFlag: false,
     showAddDescriptionFlag: false,
     oldDescription: "",
+    bodyDescription: [],
   };
 
   customState = {
@@ -320,7 +322,70 @@ class DisplayEndpoint extends Component {
     }
   }
 
+  validateBodyParams() {
+    let bodyDescription = [...this.state.bodyDescription];
+    let rawBody = this.parseBody(this.state.data.body.value);
+    let rawBodyArray = Object.keys(rawBody);
+    for (let index = 0; index < bodyDescription.length; index++) {
+      let dataType = bodyDescription[index].dataType;
+      dataType = dataType.toLowerCase();
+      let name = bodyDescription[index].name;
+      if (dataType === "boolean") {
+        if (!validator.isBoolean(rawBody[name])) {
+          toast.error("cannot validate body according to body description.");
+        }
+      } else if (dataType === "integer") {
+        if (!validator.isInt(rawBody[name])) {
+          toast.error("cannot validate body according to body description.");
+        }
+      } else if (dataType === "long") {
+        // validator.iaLong(rawBody[name])
+      } else if (dataType === "float") {
+        if (!validator.isFloat(rawBody[name])) {
+          toast.error("cannot validate body according to body description.");
+        }
+      } else if (dataType === "double") {
+      } else if (dataType === "yyyy-mm-dd") {
+      } else if (dataType === "datetime") {
+      } else if (dataType === "timestamp") {
+      } else if (dataType === "array of integer") {
+        for (let i = 0; i < rawBody[name].length; i++) {
+          const element = rawBody[name][i];
+          if (validator.isInt(element)) continue;
+          else {
+            toast.error("cannot validate body according to body description.");
+            break;
+          }
+        }
+      } else if (dataType === "array of long") {
+      } else if (dataType === "array of double") {
+      } else if (dataType === "array of float") {
+        for (let i = 0; i < rawBody[name].length; i++) {
+          const element = rawBody[name][i];
+          if (validator.isFloat(element)) continue;
+          else {
+            toast.error("cannot validate body according to body description.");
+            break;
+          }
+        }
+      } else if (dataType === "array of boolean") {
+        for (let i = 0; i < rawBody[name].length; i++) {
+          const element = rawBody[name][i];
+          if (validator.isBoolean(element)) continue;
+          else {
+            toast.error("cannot validate body according to body description.");
+            break;
+          }
+        }
+      } else if (dataType === "array of datetime") {
+      } else if (dataType === "array of yyyy-mm-dd") {
+      } else if (dataType === "array of timestamp") {
+      }
+    }
+  }
+
   handleSend = async () => {
+    // this.validateBodyParams();
     let startTime = new Date().getTime();
     let response = {};
     this.setState({ startTime, response });
@@ -609,6 +674,10 @@ class DisplayEndpoint extends Component {
       this.setHeaders();
     }
     this.setState({ data });
+  }
+
+  setBodyDescription(bodyDescription) {
+    this.setState({ bodyDescription });
   }
 
   setHeaders() {
@@ -1028,6 +1097,19 @@ class DisplayEndpoint extends Component {
                   Body
                 </a>
               </li>
+              <li className="nav-item">
+                <a
+                  className="nav-link"
+                  id="pills-body-description-tab"
+                  data-toggle="pill"
+                  href="#pills-contact1"
+                  role="tab"
+                  aria-controls="pills-contact1"
+                  aria-selected="false"
+                >
+                  Body Description
+                </a>
+              </li>
             </ul>
           </div>
           <div className="tab-content" id="pills-tabContent">
@@ -1066,6 +1148,17 @@ class DisplayEndpoint extends Component {
               <BodyContainer
                 set_body={this.setBody.bind(this)}
                 body={this.state.data.body}
+                body_description={this.state.bodyDescription}
+              />
+            </div>
+            <div
+              className="tab-pane fade"
+              id="pills-contact1"
+              role="tabpanel"
+              aria-labelledby="pills-body-description-tab"
+            >
+              <BodyDescription
+                set_body_description={this.setBodyDescription.bind(this)}
               />
             </div>
           </div>

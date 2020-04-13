@@ -1,8 +1,10 @@
 import React, { Component } from "react";
 import GenericTable from "./genericTable";
 import "./endpoints.scss";
+import { Table } from "react-bootstrap";
 
 class BodyContainer extends Component {
+  updatedArray = React.createRef();
   state = {
     selectedBodyType: null,
     data: {
@@ -24,7 +26,25 @@ class BodyContainer extends Component {
         },
       ],
     },
+    updatedArray: {},
   };
+
+  handleAdd(dataType, key) {
+    let updatedArray = { ...this.state.updatedArray };
+    if (updatedArray[key]) {
+      updatedArray[key].push(null);
+    } else {
+      let tempArr = [null];
+      updatedArray[key] = tempArr;
+    }
+    this.setState({ updatedArray });
+  }
+
+  handleDelete(index, key) {
+    const updatedArray = { ...this.state.updatedArray };
+    updatedArray[key].splice(index, 1);
+    this.setState({ updatedArray });
+  }
 
   handleSelectBodyType(bodyType) {
     this.setState({
@@ -33,11 +53,29 @@ class BodyContainer extends Component {
     this.props.set_body(bodyType, this.state.data[bodyType]);
   }
 
+  // handleChange = (e) => {
+  //   const data = { ...this.state.data };
+  //   data[e.currentTarget.name] = e.currentTarget.value;
+  //   this.setState({ data });
+  //   this.props.set_body(this.state.selectedBodyType, e.currentTarget.value);
+  // };
+
+  handleArrayChange = (e, field, index) => {
+    let updatedArray = { ...this.state.updatedArray };
+    updatedArray[e.currentTarget.name][index] = e.currentTarget.value;
+    console.log(updatedArray);
+    let test1 = JSON.stringify(updatedArray);
+    this.setState({ updatedArray });
+    this.props.set_body(this.state.selectedBodyType, test1);
+  };
+
   handleChange = (e) => {
-    const data = { ...this.state.data };
-    data[e.currentTarget.name] = e.currentTarget.value;
-    this.setState({ data });
-    this.props.set_body(this.state.selectedBodyType, e.currentTarget.value);
+    let updatedArray = { ...this.state.updatedArray };
+    updatedArray[e.currentTarget.name] = e.currentTarget.value;
+
+    let test1 = JSON.stringify(updatedArray);
+    this.setState({ updatedArray });
+    this.props.set_body(this.state.selectedBodyType, test1);
   };
 
   handleChangeBody(title, dataArray) {
@@ -62,15 +100,105 @@ class BodyContainer extends Component {
     switch (this.state.selectedBodyType) {
       case "raw":
         return (
-          <textarea
-            className="form-control"
-            name="raw"
-            id="body"
-            rows="8"
-            onChange={this.handleChange}
-            value={this.state.data.raw}
-          />
+          <div>
+            {this.props.body_description.map((field) =>
+              field.dataType.includes("Array") ? (
+                <div>
+                  <td>{field.name}</td>
+                  <Table bordered size="sm">
+                    <tbody>
+                      {this.state.updatedArray[field.name] &&
+                        this.state.updatedArray[field.name].map((item, index) =>
+                          item !== "deleted" ? (
+                            <tr key={index}>
+                              <td>{field.dataType.split(" ")[2]}</td>
+                              <td>
+                                <input
+                                  name={field.name}
+                                  onChange={(e) =>
+                                    this.handleArrayChange(e, field.name, index)
+                                  }
+                                  id={field.name}
+                                  type={"text"}
+                                  style={{ border: "none" }}
+                                  className="form-control"
+                                  placeholder={"name"}
+                                />
+                              </td>
+
+                              <td>
+                                <button
+                                  type="button"
+                                  className="btn btn-light btn-sm btn-block"
+                                  onClick={() =>
+                                    this.handleDelete(index, field.name)
+                                  }
+                                >
+                                  x{" "}
+                                </button>
+                              </td>
+                            </tr>
+                          ) : null
+                        )}
+                      <tr>
+                        <td> </td>
+                        <td>
+                          {" "}
+                          <button
+                            type="button"
+                            className="btn btn-link btn-sm btn-block"
+                            onClick={() =>
+                              this.handleAdd(field.dataType, field.name)
+                            }
+                          >
+                            + New Body param
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </Table>
+                </div>
+              ) : field !== "deleted" && field.name.trim() !== "" ? (
+                <div className="form-group">
+                  <label htmlFor={field.name} className="custom-input-label">
+                    {field.name}
+                  </label>
+                  {field.dataType === "Boolean" && (
+                    <select
+                      id="custom-select-box"
+                      value={null}
+                      onChange={(e) => this.handleChange(e)}
+                      name={field.name}
+                    >
+                      <option value={true} key={true}>
+                        true
+                      </option>
+                      <option value={false} key={false}>
+                        false
+                      </option>
+                    </select>
+                  )}
+                  {field.dataType !== "Boolean" && (
+                    <input
+                      onChange={this.handleChange}
+                      id={field.name}
+                      name={field.name}
+                      className="form-control custom-input"
+                      type={
+                        field.dataType === "Integer" ||
+                        field.dataType === "Long"
+                          ? "number"
+                          : "text"
+                      }
+                      placeholder=""
+                    />
+                  )}
+                </div>
+              ) : null
+            )}
+          </div>
         );
+
       case "formData":
         return (
           <GenericTable
