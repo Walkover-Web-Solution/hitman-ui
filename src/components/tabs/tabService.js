@@ -6,7 +6,7 @@ function addNewTab(props) {
   const id = shortId.generate();
   tabs.push({ id, type: "endpoint", isSaved: false });
   props.set_tabs([...tabs], tabs.length - 1);
-  indexedDbService.addData("tabs", { id, type: "endpoint", isSaved: false });
+  // indexedDbService.addData("tabs", { id, type: "endpoint", isSaved: false });
   props.history.push({ pathname: `/dashboard/endpoint/new` });
 }
 
@@ -27,11 +27,11 @@ function closeTab(props, index) {
       } else {
         const newTabId = shortId.generate();
         tabs = [...tabs, { id: newTabId, type: "endpoint", isSaved: false }];
-        indexedDbService.addData("tabs", {
-          id: newTabId,
-          type: "endpoint",
-          isSaved: false,
-        });
+        // indexedDbService.addData("tabs", {
+        //   id: newTabId,
+        //   type: "endpoint",
+        //   isSaved: false,
+        // });
         props.set_tabs(tabs, tabs.length - 1);
         props.history.push({
           pathname: `/dashboard/endpoint/new`,

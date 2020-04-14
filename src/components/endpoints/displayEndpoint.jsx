@@ -452,8 +452,20 @@ class DisplayEndpoint extends Component {
         }
       } else if (dataType === "double") {
       } else if (dataType === "yyyy-mm-dd") {
+        const abc = /^(19[5-9][0-9]|20[0-4][0-9]|2050)[-/](0?[1-9]|1[0-2])[-/](0?[1-9]|[12][0-9]|3[01])$/gim;
+        let match = abc.exec(rawBody[name]);
+        if (match === null) console.log("false");
+        else console.log("true");
       } else if (dataType === "datetime") {
+        const abc1 = /^\d\d\d\d-(0?[1-9]|1[0-2])-(0?[1-9]|[12][0-9]|3[01]) (00|[0-9]|1[0-9]|2[0-3]):([0-9]|[0-5][0-9]):([0-9]|[0-5][0-9])$/g;
+        let match = abc1.exec(rawBody[name]);
+        if (match === null) console.log("false");
+        else console.log("true");
       } else if (dataType === "timestamp") {
+        var valid = new Date(rawBody[name]).getTime() > 0;
+        if (!valid) {
+          toast.error("cannot validate body according to body description.");
+        }
       } else if (dataType === "array of integer") {
         for (let i = 0; i < rawBody[name].length; i++) {
           const element = rawBody[name][i];
@@ -500,6 +512,7 @@ class DisplayEndpoint extends Component {
     let uri = new URI(this.uri.current.value);
     let queryparams = uri.search();
     let path = this.setPathVariableValues();
+    console.log(BASE_URL, path, queryparams);
     let api = BASE_URL + path + queryparams;
     api = this.replaceVariables(api);
     let headerJson = {};
@@ -770,10 +783,25 @@ class DisplayEndpoint extends Component {
   }
 
   makePostData(body) {
+    console.log(body);
+    let params = [];
+    let text = "";
+    if (
+      body.type === "application/x-www-form-urlencoded" ||
+      body.type === "multipart/form-data"
+    ) {
+      for (let i = 0; i < body.value.length - 1; i++) {
+        params.push({
+          name: body.value[i].key,
+          value: body.value[i].value,
+        });
+      }
+    }
     let postData = {
-      mimeType: "application/json",
-      text: '{"hello":"world"}',
-      comment: "Sample json body",
+      mimeType: body.type,
+      params: params,
+      text: params.length === 0 ? body.value : "",
+      comment: "",
     };
     return postData;
   }
@@ -788,7 +816,7 @@ class DisplayEndpoint extends Component {
       httpVersion: "HTTP/1.1",
       cookies: [],
       headers: this.makeHeaders(originalHeaders),
-      postData: this.makePostData(body.value),
+      postData: this.makePostData(body),
       queryString: this.makeParams(originalParams),
     };
     if (!harObject.url.split(":")[1] || harObject.url.split(":")[0] === "") {
@@ -916,11 +944,10 @@ class DisplayEndpoint extends Component {
             // urlEncodedData.push(encodedKey + "=" + encodedValue);
           }
         }
-        console.log("urlEncodedData", urlEncodedData);
         // urlEncodedData = urlEncodedData.join("&");
         return { body: urlEncodedData, headers };
       default:
-        return { body: {}, headers };
+        return { body: body.value, headers };
     }
   }
 
@@ -1293,17 +1320,6 @@ class DisplayEndpoint extends Component {
             </div>
           )}
         </div>
-        {/* {this.state.pathVariables && this.state.pathVariables.length !== 0 && (
-          <div>
-            <GenericTable
-              {...this.props}
-              title="Path Variables"
-              dataArray={this.state.pathVariables}
-              props_from_parent={this.propsFromChild.bind(this)}
-              original_data={[...this.state.pathVariables]}
-            ></GenericTable>
-          </div>
-        )} */}
 
         <div className="endpoint-response-container-wrapper">
           <DisplayResponse

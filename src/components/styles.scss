@@ -1562,3 +1562,25 @@ main.main.ml-sm-auto.col-lg-10 {
 :disabled {
   cursor: not-allowed;
 }
+
+button.btn.btn-default {
+  box-shadow: none !important;
+}
+
+button.btn {
+  box-shadow: none !important;
+}
+
+//body styling
+#ace-editor {
+  width: 100% !important ;
+}
+
+.custom-radio-input {
+  margin-right: 5px;
+}
+
+.body-wrapper {
+  margin-top: 10px;
+  margin-bottom: 7px;
+}
