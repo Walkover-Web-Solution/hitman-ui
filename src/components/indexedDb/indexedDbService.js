@@ -26,6 +26,7 @@ const createDataBase = async () => {
 };
 
 const addData = async (storeName, val, key) => {
+  console.log(storeName, key, val);
   const tx = db.transaction(storeName, "readwrite");
   const store = await tx.objectStore(storeName);
 
