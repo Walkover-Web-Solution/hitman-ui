@@ -512,6 +512,7 @@ class DisplayEndpoint extends Component {
     let uri = new URI(this.uri.current.value);
     let queryparams = uri.search();
     let path = this.setPathVariableValues();
+    console.log(BASE_URL, path, queryparams);
     let api = BASE_URL + path + queryparams;
     api = this.replaceVariables(api);
     let headerJson = {};
@@ -519,6 +520,7 @@ class DisplayEndpoint extends Component {
       headerJson[header] = headersData[header].value;
     });
     let { body, headers } = this.formatBody(this.state.data.body, headerJson);
+    console.log("api", api);
     this.handleApiCall(api, body, headers, this.state.data.body.type);
   };
 
@@ -782,10 +784,25 @@ class DisplayEndpoint extends Component {
   }
 
   makePostData(body) {
+    console.log(body);
+    let params = [];
+    let text = "";
+    if (
+      body.type === "application/x-www-form-urlencoded" ||
+      body.type === "multipart/form-data"
+    ) {
+      for (let i = 0; i < body.value.length - 1; i++) {
+        params.push({
+          name: body.value[i].key,
+          value: body.value[i].value,
+        });
+      }
+    }
     let postData = {
-      mimeType: "application/json",
-      text: '{"hello":"world"}',
-      comment: "Sample json body",
+      mimeType: body.type,
+      params: params,
+      text: params.length === 0 ? body.value : "",
+      comment: "",
     };
     return postData;
   }
@@ -800,7 +817,7 @@ class DisplayEndpoint extends Component {
       httpVersion: "HTTP/1.1",
       cookies: [],
       headers: this.makeHeaders(originalHeaders),
-      postData: this.makePostData(body.value),
+      postData: this.makePostData(body),
       queryString: this.makeParams(originalParams),
     };
     if (!harObject.url.split(":")[1] || harObject.url.split(":")[0] === "") {
