@@ -130,7 +130,7 @@ export const onVersionAddedError = (error, newVersion) => {
 
 export const deleteVersion = (version) => {
   return (dispatch) => {
-    dispatch(deleteVersionRequest(version));
+    dispatch(deleteVersionRequest(version.id));
     collectionVersionsApiService
       .deleteCollectionVersion(version.id)
       .then(() => {
@@ -142,10 +142,10 @@ export const deleteVersion = (version) => {
   };
 };
 
-export const deleteVersionRequest = (version) => {
+export const deleteVersionRequest = (versionId) => {
   return {
     type: versionActionTypes.DELETE_VERSION_REQUEST,
-    version,
+    versionId,
   };
 };
 

@@ -196,7 +196,6 @@ class Endpoints extends Component {
 
   render() {
     if (isDashboardRoute(this.props)) {
-      console.log(this.props.endpoints, this.props.endpoints_order);
       return (
         <React.Fragment>
           {/* <div>

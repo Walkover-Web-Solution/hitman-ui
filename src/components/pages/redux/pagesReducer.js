@@ -4,6 +4,7 @@ import groupsActionTypes from "../../groups/redux/groupsActionTypes";
 import versionActionTypes from "../../collectionVersions/redux/collectionVersionsActionTypes";
 import collectionActionTypes from "../../collections/redux/collectionsActionTypes";
 import publicEndpointsActionTypes from "../../publicEndpoint/redux/publicEndpointsActionTypes";
+import collectionsActionTypes from "../../collections/redux/collectionsActionTypes";
 
 const initialState = {};
 
@@ -23,7 +24,7 @@ function pagesReducer(state = initialState, action) {
       action.newPage.versionId = action.versionId;
       return {
         ...state,
-        [action.newPage.requestId]: action.newPage
+        [action.newPage.requestId]: action.newPage,
       };
 
     case pagesActionTypes.ON_PAGE_ADDED:
@@ -45,7 +46,7 @@ function pagesReducer(state = initialState, action) {
 
       return {
         ...state,
-        [action.newPage.requestId]: action.newPage
+        [action.newPage.requestId]: action.newPage,
       };
 
     case pagesActionTypes.ON_GROUP_PAGE_ADDED:
@@ -64,20 +65,20 @@ function pagesReducer(state = initialState, action) {
     case pagesActionTypes.UPDATE_PAGE_REQUEST:
       return {
         ...state,
-        [action.editedPage.id]: action.editedPage
+        [action.editedPage.id]: action.editedPage,
       };
 
     case pagesActionTypes.ON_PAGE_UPDATED:
       return {
         ...state,
-        [action.response.id]: action.response
+        [action.response.id]: action.response,
       };
 
     case pagesActionTypes.ON_PAGE_UPDATED_ERROR:
       toast.error(action.error);
       return {
         ...state,
-        [action.originalPage.id]: action.originalPage
+        [action.originalPage.id]: action.originalPage,
       };
 
     case pagesActionTypes.DELETE_PAGE_REQUEST:
@@ -93,7 +94,7 @@ function pagesReducer(state = initialState, action) {
       if (action.error.status === 404) return state;
       return {
         ...state,
-        [action.page.id]: action.page
+        [action.page.id]: action.page,
       };
 
     case pagesActionTypes.ON_PAGE_DUPLICATED:
@@ -123,12 +124,19 @@ function pagesReducer(state = initialState, action) {
     case publicEndpointsActionTypes.ON_PAGE_STATE_SUCCESS:
       return {
         ...state,
-        [action.data.id]: action.data
+        [action.data.id]: action.data,
       };
 
     case publicEndpointsActionTypes.ON_PAGE_STATE_ERROR:
       toast.error(action.error);
       return { ...state };
+
+    case collectionsActionTypes.ON_COLLECTION_DELETED:
+      let pages = { ...state };
+      action.payload.pageIds.map((pId) => {
+        delete pages[pId];
+      });
+      return pages;
 
     default:
       return state;

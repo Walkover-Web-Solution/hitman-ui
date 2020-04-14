@@ -19,7 +19,7 @@ function teamsReducer(state = initialState, action) {
 
     case collectionsActionTypes.ON_COLLECTION_DELETED:
       teams = { ...state };
-      delete teams[action.collection.teamId];
+      delete teams[action.payload.collection.teamId];
       return teams;
 
     default:

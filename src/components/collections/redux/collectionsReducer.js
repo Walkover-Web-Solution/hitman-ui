@@ -17,7 +17,7 @@ function collectionsReducer(state = initialState, action) {
     case collectionsActionTypes.ADD_COLLECTION_REQUEST:
       return {
         ...state,
-        [action.newCollection.requestId]: action.newCollection
+        [action.newCollection.requestId]: action.newCollection,
       };
 
     case collectionsActionTypes.ON_COLLECTION_ADDED:
@@ -35,20 +35,20 @@ function collectionsReducer(state = initialState, action) {
     case collectionsActionTypes.UPDATE_COLLECTION_REQUEST:
       return {
         ...state,
-        [action.editedCollection.id]: action.editedCollection
+        [action.editedCollection.id]: action.editedCollection,
       };
 
     case collectionsActionTypes.ON_COLLECTION_UPDATED:
       return {
         ...state,
-        [action.response.id]: action.response
+        [action.response.id]: action.response,
       };
 
     case collectionsActionTypes.ON_COLLECTION_UPDATED_ERROR:
       toast.error(action.error);
       return {
         ...state,
-        [action.originalCollection.id]: action.originalCollection
+        [action.originalCollection.id]: action.originalCollection,
       };
 
     case collectionsActionTypes.DELETE_COLLECTION_REQUEST:
@@ -57,17 +57,14 @@ function collectionsReducer(state = initialState, action) {
       return collections;
 
     case collectionsActionTypes.ON_COLLECTION_DELETED:
-      collections = { ...state };
-      // delete collections[action.collection.id];
-      // return state;
-      return collections;
+      return state;
 
     case collectionsActionTypes.ON_COLLECTION_DELETED_ERROR:
       toast.error(action.error.data);
       if (action.error.status === 404) return state;
       return {
         ...state,
-        [action.collection.id]: action.collection
+        [action.collection.id]: action.collection,
       };
 
     case collectionsActionTypes.ON_COLLECTION_DUPLICATED:
