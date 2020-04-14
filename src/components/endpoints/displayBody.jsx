@@ -134,7 +134,7 @@ class BodyContainer extends Component {
   renderBody() {
     if (this.state.selectedBodyType) {
       switch (this.state.selectedBodyType) {
-        case "formData":
+        case "multipart/form-data":
           return (
             <GenericTable
               {...this.props}
@@ -145,7 +145,7 @@ class BodyContainer extends Component {
               count="1"
             ></GenericTable>
           );
-        case "urlEncoded":
+        case "application/x-www-form-urlencoded":
           return (
             <GenericTable
               {...this.props}
@@ -363,7 +363,7 @@ class BodyContainer extends Component {
               type="radio"
               name={`body-select-${this.props.endpoint_id}`}
               id={`formData-${this.props.endpoint_id}`}
-              onClick={() => this.handleSelectBodyType("formData")}
+              onClick={() => this.handleSelectBodyType("multipart/form-data")}
               className="custom-radio-input"
             />
             form-data
@@ -373,7 +373,9 @@ class BodyContainer extends Component {
               type="radio"
               name={`body-select-${this.props.endpoint_id}`}
               id={`urlEncoded-${this.props.endpoint_id}`}
-              onClick={() => this.handleSelectBodyType("urlEncoded")}
+              onClick={() =>
+                this.handleSelectBodyType("application/x-www-form-urlencoded")
+              }
               className="custom-radio-input"
             />
             x-www-form-urlencoded
