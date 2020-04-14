@@ -1,11 +1,12 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import "../styles.scss";
+import { getCurrentUser } from "../auth/authService";
 import collectionsService from "../collections/collectionsService";
 import environmentsService from "../environments/environmentsService";
+import "../styles.scss";
+import tabService from "../tabs/tabService";
 import CreateNewModal from "./CreateNewModal";
-import { getCurrentUser } from "../auth/authService";
-import shortId from "shortid";
+import "./main.scss";
 
 class Navbar extends Component {
   state = {
@@ -41,15 +42,17 @@ class Navbar extends Component {
   }
 
   handleAddEndpoint() {
-    const newTabId = shortId.generate();
-    const tabs = [
-      ...this.props.tabs,
-      { id: newTabId, type: "endpoint", isSaved: false },
-    ];
-    this.props.set_tabs(tabs, tabs.length - 1);
-    this.props.history.push({
-      pathname: `/dashboard/endpoint/new/${newTabId}`,
-    });
+    tabService.addNewTab({ ...this.props });
+
+    // const newTabId = shortId.generate();
+    // const tabs = [
+    //   ...this.props.tabs,
+    //   { id: newTabId, type: "endpoint", isSaved: false },
+    // ];
+    // this.props.set_tabs(tabs, tabs.length - 1);
+    // this.props.history.push({
+    //   pathname: `/dashboard/endpoint/new`,
+    // });
   }
 
   render() {

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Nav } from "react-bootstrap";
 import tabService from "./tabService";
+import "./tabs.scss";
 
 class CustomTabs extends Component {
   state = {};
@@ -8,7 +9,8 @@ class CustomTabs extends Component {
   render() {
     return (
       <Nav variant="pills" className="flex-row">
-        {Object.keys(this.props.endpoints).length > 0 &&
+        {
+          // Object.keys(this.props.endpoints).length > 0 &&
           this.props.tabs.map((tab, index) => (
             <Nav.Item key={tab.id}>
               <Nav.Link eventKey={tab.id}>
@@ -19,7 +21,7 @@ class CustomTabs extends Component {
                   }
                 >
                   {tab.isSaved
-                    ? this.props[tab.type + "s"] &&
+                    ? Object.keys(this.props[tab.type + "s"]).length > 0 &&
                       this.props[tab.type + "s"][tab.id].name
                     : "Untitled"}
                 </button>
@@ -31,7 +33,8 @@ class CustomTabs extends Component {
                 <i className="fas fa-times"></i>
               </button>
             </Nav.Item>
-          ))}
+          ))
+        }
         <Nav.Item className="tab-buttons" id="add-new-tab-button">
           <button
             className="btn"

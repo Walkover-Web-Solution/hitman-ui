@@ -1,7 +1,9 @@
+import "./endpoints.scss";
 import React, { Component } from "react";
 import { Modal, ListGroup, Container, Row, Col } from "react-bootstrap";
-import Highlight from "react-highlight";
-import "../../../node_modules/highlight.js/styles/vs.css";
+import "ace-builds";
+import AceEditor from "react-ace";
+import "ace-builds/webpack-resolver";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 var HTTPSnippet = require("httpsnippet");
 
@@ -123,13 +125,40 @@ class CodeWindow extends Component {
                       </button>
                     </CopyToClipboard>
                   </div>{" "}
-                  <pre>
+                  <div>
+                    {" "}
+                    <AceEditor
+                      // style={{
+                      //   width: "1000px",
+                      // }}
+                      mode={this.selectedLanguage.toLowerCase()}
+                      theme="github"
+                      value={
+                        this.state.codeSnippet
+                          ? this.state.codeSnippet
+                          : this.codeSnippet
+                      }
+                      // onChange={this.handleChange.bind(this)}
+                      setOptions={{
+                        showLineNumbers: true,
+                      }}
+                      editorProps={{
+                        $blockScrolling: false,
+                      }}
+                      onLoad={(editor) => {
+                        editor.focus();
+                        editor.getSession().setUseWrapMode(true);
+                        editor.setShowPrintMargin(false);
+                      }}
+                    />
+                  </div>
+                  {/* <pre>
                     <Highlight className={this.selectedLanguage}>
                       {this.state.codeSnippet
                         ? this.state.codeSnippet
                         : this.codeSnippet}
                     </Highlight>
-                  </pre>
+                  </pre> */}
                 </Col>
               </Row>
             </Container>

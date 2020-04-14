@@ -1,34 +1,41 @@
 import React, { Component } from "react";
-import { Tab } from "react-bootstrap";
+import { Tab, ThemeProvider } from "react-bootstrap";
 import { connect } from "react-redux";
 import "react-tabs/style/react-tabs.css";
 import shortId from "shortid";
 import Environments from "../environments/environments";
 import TabContent from "../tabs/tabContent";
 import CustomTabs from "../tabs/tabs";
+import indexedDbService from "../indexedDb/indexedDbService";
+import "./main.scss";
+import tabService from "../tabs/tabService";
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     endpoints: state.endpoints,
     groups: state.groups,
-    pages: state.pages
+    pages: state.pages,
   };
 };
 class ContentPanel extends Component {
   state = {};
-  componentDidMount() {
+  async componentDidMount() {
+    await indexedDbService.getDataBase();
+    // const tabs = await indexedDbService.getAllValues("tabs");
+    // this.props.set_tabs(tabs);
     if (
       this.props.location.pathname.split("/")[3] === "new" &&
       (this.props.tabs.length === 0 ||
         this.props.tabs[this.props.default_tab_index].isSaved === true)
     ) {
-      const newTabId = shortId.generate();
-      const tabs = [
-        ...this.props.tabs,
-        { id: newTabId, type: "endpoint", isSaved: false }
-      ];
+      tabService.addNewTab({ ...this.props });
+      // const newTabId = shortId.generate();
+      // const tabs = [
+      //   ...this.props.tabs,
+      //   { id: newTabId, type: "endpoint", isSaved: false },
+      // ];
 
-      this.props.set_tabs(tabs, tabs.length - 1);
+      // this.props.set_tabs(tabs, tabs.length - 1);
     }
   }
 
@@ -38,22 +45,33 @@ class ContentPanel extends Component {
       this.props.location.pathname.split("/")[3] !== "new"
     ) {
       const endpointId = this.props.location.pathname.split("/")[3];
-      const index = this.props.tabs.findIndex(tab => tab.id === endpointId);
+      const index = this.props.tabs.findIndex((tab) => tab.id === endpointId);
       let tabs = [...this.props.tabs];
       if (index < 0) {
         if (this.props.endpoints[endpointId]) {
           const requestId = this.props.endpoints[endpointId].requestId;
           const tabIndex = this.props.tabs.findIndex(
-            tab => tab.id === requestId
+            (tab) => tab.id === requestId
           );
           if (tabIndex >= 0) {
             tabs[this.props.default_tab_index] = {
               id: endpointId,
               type: "endpoint",
-              isSaved: true
+              isSaved: true,
             };
+            indexedDbService.deleteData("tabs", requestId);
+            // indexedDbService.addData("tabs", {
+            //   id: endpointId,
+            //   type: "endpoint",
+            //   isSaved: true,
+            // });
           } else {
             tabs.push({ id: endpointId, type: "endpoint", isSaved: true });
+            // indexedDbService.addData("tabs", {
+            //   id: endpointId,
+            //   type: "endpoint",
+            //   isSaved: true,
+            // });
           }
           this.props.set_tabs(tabs, tabs.length - 1);
         }
@@ -67,10 +85,15 @@ class ContentPanel extends Component {
 
     if (this.props.location.pathname.split("/")[2] === "page") {
       const pageId = this.props.location.pathname.split("/")[3];
-      const index = this.props.tabs.findIndex(tab => tab.id === pageId);
+      const index = this.props.tabs.findIndex((tab) => tab.id === pageId);
       let tabs = [...this.props.tabs];
       if (index < 0) {
         tabs.push({ id: pageId, type: "page", isSaved: true });
+        // indexedDbService.addData("tabs", {
+        //   id: pageId,
+        //   type: "page",
+        //   isSaved: true,
+        // });
         this.props.set_tabs(tabs, tabs.length - 1);
       } else if (
         this.props.tabs.length &&

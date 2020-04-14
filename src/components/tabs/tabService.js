@@ -1,18 +1,19 @@
 import shortId from "shortid";
+import indexedDbService from "../indexedDb/indexedDbService";
 
 function addNewTab(props) {
   let tabs = [...props.tabs];
   const id = shortId.generate();
-  props.set_tabs(
-    [...tabs, { id, type: "endpoint", isSaved: false }],
-    tabs.length
-  );
-  props.history.push({ pathname: `/dashboard/endpoint/new/${id}` });
+  tabs.push({ id, type: "endpoint", isSaved: false });
+  props.set_tabs([...tabs], tabs.length - 1);
+  // indexedDbService.addData("tabs", { id, type: "endpoint", isSaved: false });
+  props.history.push({ pathname: `/dashboard/endpoint/new` });
 }
 
 function closeTab(props, index) {
   let tabs = [...props.tabs];
   tabs.splice(index, 1);
+  indexedDbService.deleteDataByIndex("tabs", index);
   if (props.default_tab_index === index) {
     if (index !== 0) {
       const newIndex = props.default_tab_index - 1;
@@ -26,10 +27,14 @@ function closeTab(props, index) {
       } else {
         const newTabId = shortId.generate();
         tabs = [...tabs, { id: newTabId, type: "endpoint", isSaved: false }];
-
+        // indexedDbService.addData("tabs", {
+        //   id: newTabId,
+        //   type: "endpoint",
+        //   isSaved: false,
+        // });
         props.set_tabs(tabs, tabs.length - 1);
         props.history.push({
-          pathname: `/dashboard/endpoint/new/${newTabId}`
+          pathname: `/dashboard/endpoint/new`,
         });
       }
     }
@@ -45,11 +50,11 @@ function changeRoute(props, tab, title) {
   if (tab.isSaved) {
     props.history.push({
       pathname: `/dashboard/${tab.type}/${tab.id}`,
-      title
+      title,
     });
   } else {
     props.history.push({
-      pathname: `/dashboard/${tab.type}/new/${tab.id}`
+      pathname: `/dashboard/${tab.type}/new`,
     });
   }
   // }
@@ -59,18 +64,18 @@ function closeAllTabs(props) {
   const id = shortId.generate();
   const tabs = [{ id, type: "endpoint", isSaved: false }];
   props.set_tabs(tabs, 0);
-  props.history.push({ pathname: `/dashboard/endpoint/new/${id}` });
+  props.history.push({ pathname: `/dashboard/endpoint/new` });
 }
 
 function selectTab(props, tab, index) {
   props.set_tabs(null, index);
   if (tab.isSaved) {
     props.history.push({
-      pathname: `/dashboard/${tab.type}/${tab.id}`
+      pathname: `/dashboard/${tab.type}/${tab.id}`,
     });
   } else {
     props.history.push({
-      pathname: `/dashboard/${tab.type}/new/${tab.id}`
+      pathname: `/dashboard/${tab.type}/new`,
     });
   }
 }
@@ -80,5 +85,5 @@ export default {
   closeTab,
   changeRoute,
   closeAllTabs,
-  selectTab
+  selectTab,
 };

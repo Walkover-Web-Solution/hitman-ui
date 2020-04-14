@@ -5,45 +5,32 @@ import {
   approvePage,
   draftPage,
   pendingPage,
-  rejectPage
+  rejectPage,
 } from "../publicEndpoint/redux/publicEndpointsActions";
+import "./page.scss";
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    pendingPage: page => dispatch(pendingPage(page)),
-    approvePage: page => dispatch(approvePage(page)),
-    draftPage: page => dispatch(draftPage(page)),
-    rejectPage: page => dispatch(rejectPage(page))
+    pendingPage: (page) => dispatch(pendingPage(page)),
+    approvePage: (page) => dispatch(approvePage(page)),
+    draftPage: (page) => dispatch(draftPage(page)),
+    rejectPage: (page) => dispatch(rejectPage(page)),
   };
 };
 
 class Pages extends Component {
   state = {};
 
-  // handleDelete(page) {
-  //   const confirm = window.confirm(
-  //     "Are you sure you wish to delete this group? " +
-  //       "\n" +
-  //       "All your pages and endpoints present in this group will be deleted."
-  //   );
-  //   if (confirm) {
-  //     this.props.deletePage(page);
-  //     this.props.history.push({
-  //       pathname: "/dashboard"
-  //     });
-  //   }
-  // }
-
   handleDisplay(page, collectionId) {
     if (isDashboardRoute(this.props)) {
       this.props.history.push({
         pathname: `/dashboard/page/${page.id}`,
-        page: page
+        page: page,
       });
     } else {
       this.props.history.push({
         pathname: `/public/${collectionId}/pages/${page.id}`,
-        page: page
+        page: page,
       });
     }
   }
@@ -51,7 +38,7 @@ class Pages extends Component {
   handleDuplicate(page) {
     this.props.duplicatePage(page);
     this.props.history.push({
-      pathname: "/dashboard"
+      pathname: "/dashboard",
     });
   }
 
@@ -77,7 +64,8 @@ class Pages extends Component {
 
   getCurrentUserRole(collectionId) {
     const teamId = this.props.collections[collectionId].teamId;
-    if (teamId !== undefined) return this.props.teams[teamId].role;
+    if (this.props.teams !== undefined && teamId !== undefined)
+      return this.props.teams[teamId].role;
   }
 
   checkAccess(collectionId) {
@@ -105,14 +93,6 @@ class Pages extends Component {
                   this.handleDisplay(page, this.props.collection_id);
                 }}
               >
-                <div
-                  className={
-                    this.props.pages[pageId].state === "Pending" &&
-                    this.checkAccess(this.props.collection_id)
-                      ? "circle"
-                      : null
-                  }
-                ></div>
                 {this.props.pages[pageId].name}
               </button>
             </h5>
@@ -143,22 +123,16 @@ class Pages extends Component {
                   >
                     Duplicate
                   </button>
-                  {this.checkAccess(this.props.collection_id) &&
-                  (this.props.pages[pageId].state === "Pending" ||
-                    this.props.pages[pageId].state === "Reject") ? null : (
+                  {this.props.pages[pageId].state === "Draft" ? (
                     <button
                       className="dropdown-item"
                       onClick={() =>
                         this.handlePublicPageState(this.props.pages[pageId])
                       }
                     >
-                      {this.props.pages[pageId].state === "Approved"
-                        ? "Published"
-                        : this.props.pages[pageId].state === "Draft"
-                        ? "Make Public"
-                        : this.props.pages[pageId].state}
+                      Make Public
                     </button>
-                  )}
+                  ) : null}
 
                   {!this.checkAccess(this.props.collection_id) &&
                   this.props.pages[pageId].state === "Pending" ? (

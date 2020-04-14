@@ -21,6 +21,8 @@ import {
   updateCollection,
 } from "./redux/collectionsActions";
 import ShareCollectionForm from "./shareCollectionForm";
+import { uiUrl } from "../../config.json";
+import "./collections.scss";
 
 const mapStateToProps = (state) => {
   return {
@@ -101,6 +103,10 @@ class CollectionsComponent extends Component {
 
   async handleDuplicateCollection(collectionCopy) {
     this.props.duplicateCollection(collectionCopy);
+  }
+  async handleGoToDocs(collection) {
+    const publicDocsUrl = `${uiUrl}/public/${collection.id}`;
+    window.open(publicDocsUrl, "_blank");
   }
 
   showShareCollectionForm() {
@@ -187,6 +193,13 @@ class CollectionsComponent extends Component {
         />
       )
     );
+  }
+
+  handlePublicCollectionDescription(collection) {
+    this.props.history.push({
+      pathname: `/public/${collection.id}/description`,
+      collection,
+    });
   }
 
   closeVersionForm() {
@@ -298,21 +311,12 @@ class CollectionsComponent extends Component {
           </div>
 
           <div className="App-Side">
-            <div
-              style={{
-                color: "tomato",
-                borderBottom: "1px solid rgba(0, 0, 0, 0.125) ",
-                width: "100%",
-              }}
-            >
+            <div className="custom-add-collection-button-container">
               <button
                 className="btn btn-default"
                 onClick={() => this.openAddCollectionForm()}
-                style={{
-                  color: "tomato",
-                }}
               >
-                <i className="fas fa-plus" style={{ paddingRight: "10px" }}></i>
+                <i className="fas fa-plus"></i>
                 New Collection
               </button>
             </div>
@@ -321,10 +325,7 @@ class CollectionsComponent extends Component {
               <Accordion key={collectionId} id="parent-accordion">
                 <Card>
                   <Card.Header>
-                    <i
-                      className="fas fa-folder-open"
-                      style={{ margin: "5px" }}
-                    ></i>
+                    <i className="fas fa-folder-open"></i>
                     <Accordion.Toggle
                       as={Button}
                       variant="default"
@@ -382,6 +383,18 @@ class CollectionsComponent extends Component {
                         >
                           Import Version
                         </button>
+                        {this.props.collections[collectionId].isPublic && (
+                          <button
+                            className="dropdown-item"
+                            onClick={() =>
+                              this.handleGoToDocs(
+                                this.props.collections[collectionId]
+                              )
+                            }
+                          >
+                            Go to Docs
+                          </button>
+                        )}
                         <button
                           className="dropdown-item"
                           onClick={() => {
@@ -412,31 +425,29 @@ class CollectionsComponent extends Component {
         <div>
           <div className="App-Side">
             {Object.keys(this.props.collections).map((collectionId, index) => (
-              <Accordion key={collectionId} id="parent-accordion">
-                <Card>
-                  <Card.Header>
-                    <i
-                      className="fas fa-folder-open"
-                      style={{ margin: "5px" }}
-                    ></i>
-                    <Accordion.Toggle
-                      as={Button}
-                      variant="default"
-                      eventKey="1"
-                    >
-                      {this.props.collections[collectionId].name}
-                    </Accordion.Toggle>
-                  </Card.Header>
-                  <Accordion.Collapse eventKey="1">
-                    <Card.Body>
-                      <CollectionVersions
-                        {...this.props}
-                        collection_id={collectionId}
-                      />
-                    </Card.Body>
-                  </Accordion.Collapse>
-                </Card>
-              </Accordion>
+              <div id="parent-accordion">
+                <div>
+                  <h4
+                    style={{
+                      color: "tomato",
+                      "text-align": "center",
+                      padding: "35px",
+                    }}
+                    onClick={() =>
+                      this.handlePublicCollectionDescription(
+                        this.props.collections[collectionId]
+                      )
+                    }
+                  >
+                    {this.props.collections[collectionId].name}
+                  </h4>
+
+                  <CollectionVersions
+                    {...this.props}
+                    collection_id={collectionId}
+                  />
+                </div>
+              </div>
             ))}
           </div>
         </div>

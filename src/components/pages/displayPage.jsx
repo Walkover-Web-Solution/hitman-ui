@@ -2,10 +2,11 @@ import React, { Component } from "react";
 import store from "../../store/store";
 import { isDashboardRoute } from "../common/utility";
 import ReactHtmlParser from "react-html-parser";
+import "./page.scss";
 
 class DisplayPage extends Component {
   state = {
-    data: { id: null, versionId: null, groupId: null, name: "", contents: "" }
+    data: { id: null, versionId: null, groupId: null, name: "", contents: "" },
   };
 
   fetchPage(pageId) {
@@ -35,7 +36,7 @@ class DisplayPage extends Component {
   handleEdit(page) {
     this.props.history.push({
       pathname: `/dashboard/page/${page.id}/edit`,
-      page: page
+      page: page,
     });
   }
 
