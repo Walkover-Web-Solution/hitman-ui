@@ -1322,17 +1322,6 @@ class DisplayEndpoint extends Component {
             </div>
           )}
         </div>
-        {/* {this.state.pathVariables && this.state.pathVariables.length !== 0 && (
-          <div>
-            <GenericTable
-              {...this.props}
-              title="Path Variables"
-              dataArray={this.state.pathVariables}
-              props_from_parent={this.propsFromChild.bind(this)}
-              original_data={[...this.state.pathVariables]}
-            ></GenericTable>
-          </div>
-        )} */}
 
         <div className="endpoint-response-container-wrapper">
           <DisplayResponse
