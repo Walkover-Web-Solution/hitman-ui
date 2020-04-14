@@ -46,13 +46,13 @@ class Main extends Component {
       "environment",
       "currentEnvironmentId"
     );
-    // if (!currentEnvironmentId) {
-    //   await indexedDbService.addData(
-    //     "environment",
-    //     null,
-    //     "currentEnvironmentId"
-    //   );
-    // }
+    if (!currentEnvironmentId) {
+      await indexedDbService.addData(
+        "environment",
+        null,
+        "currentEnvironmentId"
+      );
+    }
   }
 
   fetchAll() {

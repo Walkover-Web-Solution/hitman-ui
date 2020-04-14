@@ -193,7 +193,7 @@ class DisplayEndpoint extends Component {
         pathVariables = this.fetchPathVariables(endpoint.pathVariables);
         this.setState({ pathVariables });
       }
-
+      console.log("endpoint", endpoint);
       this.setState({
         data: {
           method: endpoint.requestType,
@@ -808,6 +808,7 @@ class DisplayEndpoint extends Component {
 
   async prepareHarObject() {
     const { uri, method, body } = this.state.data;
+    console.log(body);
     const BASE_URL = this.customState.BASE_URL;
     const { originalHeaders, originalParams } = this.state;
     const harObject = {
@@ -816,7 +817,7 @@ class DisplayEndpoint extends Component {
       httpVersion: "HTTP/1.1",
       cookies: [],
       headers: this.makeHeaders(originalHeaders),
-      postData: this.makePostData(body),
+      postData: body.type === "none" ? null : this.makePostData(body),
       queryString: this.makeParams(originalParams),
     };
     if (!harObject.url.split(":")[1] || harObject.url.split(":")[0] === "") {
@@ -929,12 +930,12 @@ class DisplayEndpoint extends Component {
       case "raw":
         finalBodyValue = this.parseBody(body.value);
         return { body: finalBodyValue, headers };
-      case "formData":
+      case "multipart/form-data":
         headers["Content-type"] = "multipart/form-data";
         let formData = new FormData();
         body.value.map((o) => formData.set(o.key, o.value));
         return { body: formData, headers };
-      case "urlEncoded":
+      case "application/x-www-form-urlencoded":
         let urlEncodedData = {};
         for (let i = 0; i < body.value.length; i++) {
           if (body.value[i].key.length !== 0) {
