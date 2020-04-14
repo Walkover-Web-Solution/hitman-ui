@@ -22,6 +22,11 @@ function teamsReducer(state = initialState, action) {
       delete teams[action.collection.teamId];
       return teams;
 
+    case collectionsActionTypes.ON_COLLECTION_DUPLICATED:
+      teams = { ...state };
+      teams[action.response.team.teamId] = action.response.team;
+      return teams;
+
     default:
       return state;
   }

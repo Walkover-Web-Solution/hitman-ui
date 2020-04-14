@@ -146,7 +146,8 @@ class Endpoints extends Component {
   }
   getCurrentUserRole(collectionId) {
     const teamId = this.props.collections[collectionId].teamId;
-    if (teamId !== undefined) return this.props.teams[teamId].role;
+    if (this.props.teams !== undefined && teamId !== undefined)
+      return this.props.teams[teamId].role;
   }
 
   checkAccess(collectionId) {
