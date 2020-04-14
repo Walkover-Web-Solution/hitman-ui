@@ -520,7 +520,6 @@ class DisplayEndpoint extends Component {
       headerJson[header] = headersData[header].value;
     });
     let { body, headers } = this.formatBody(this.state.data.body, headerJson);
-    console.log("api", api);
     this.handleApiCall(api, body, headers, this.state.data.body.type);
   };
 
@@ -945,11 +944,10 @@ class DisplayEndpoint extends Component {
             // urlEncodedData.push(encodedKey + "=" + encodedValue);
           }
         }
-        console.log("urlEncodedData", urlEncodedData);
         // urlEncodedData = urlEncodedData.join("&");
         return { body: urlEncodedData, headers };
       default:
-        return { body: {}, headers };
+        return { body: body.value, headers };
     }
   }
 
