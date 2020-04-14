@@ -295,7 +295,6 @@ class BodyContainer extends Component {
   }
 
   render() {
-    console.log("this.props", this.props);
     if (this.props.body && !this.state.selectedBodyType) {
       let selectedBodyType = this.props.body.type;
       if (
@@ -311,7 +310,6 @@ class BodyContainer extends Component {
       }
       let data = this.state.data;
       let type = selectedBodyType.split("-");
-      console.log(type[type.length - 1]);
       data[type[type.length - 1]] = this.props.body.value;
       if (
         document.getElementById(selectedBodyType + "-" + this.props.endpoint_id)

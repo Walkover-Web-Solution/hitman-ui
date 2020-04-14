@@ -93,7 +93,6 @@ class DisplayEndpoint extends Component {
         title: "Add New Endpoint",
         flagResponse: false,
         showDescriptionFlag: false,
-
         originalHeaders: [
           {
             checked: "notApplicable",
@@ -193,7 +192,6 @@ class DisplayEndpoint extends Component {
         pathVariables = this.fetchPathVariables(endpoint.pathVariables);
         this.setState({ pathVariables });
       }
-      console.log("endpoint", endpoint);
       this.setState({
         data: {
           method: endpoint.requestType,
@@ -226,7 +224,9 @@ class DisplayEndpoint extends Component {
       let updatedUri = e.currentTarget.value.split("?")[1];
       let uri = e.currentTarget.value.split("?")[0];
       let uripath = new URI(e.currentTarget.value);
-      let path = uripath.pathname().slice(1);
+      console.log(uripath);
+      let path = uripath.pathname();
+      console.log("path", path);
       let pathVariableKeys = path.split("/");
       let pathVariableKeysObject = {};
       for (let i = 0; i < pathVariableKeys.length; i++) {
@@ -256,6 +256,7 @@ class DisplayEndpoint extends Component {
       originalParams = this.makeOriginalParams(keys, values, description);
       this.setState({ originalParams });
     }
+    console.log("data", data);
     this.setState({ data });
   };
 
@@ -615,7 +616,7 @@ class DisplayEndpoint extends Component {
   }
 
   propsFromChild(name, value) {
-    if (name === "originalParams") {
+    if (name === "Params") {
       this.handleUpdateUri(value);
       this.setState({ originalParams: value });
     }
@@ -623,7 +624,7 @@ class DisplayEndpoint extends Component {
       this.setState({ originalParams: value });
     }
 
-    if (name === "originalHeaders") {
+    if (name === "Headers") {
       this.setState({ originalHeaders: value });
     }
 
