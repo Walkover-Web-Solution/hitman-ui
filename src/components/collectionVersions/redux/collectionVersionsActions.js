@@ -134,10 +134,32 @@ export const deleteVersion = (version) => {
     collectionVersionsApiService
       .deleteCollectionVersion(version.id)
       .then(() => {
-        dispatch(onVersionDeleted());
+        const storeData = { ...store.getState() };
+        let groupIds = Object.keys(storeData.groups).filter(
+          (gId) => storeData.groups[gId].versionId === version.id
+        );
+        const pageIds = [
+          ...Object.keys(storeData.pages).filter(
+            (pId) => storeData.pages[pId].versionId === version.id
+          ),
+        ];
+        let endpointIds = [];
+
+        groupIds.map(
+          (gId) =>
+            (endpointIds = [
+              ...Object.keys(storeData.endpoints).filter(
+                (eId) => storeData.endpoints[eId].groupId === gId
+              ),
+              ...endpointIds,
+            ])
+        );
+
+        dispatch(onVersionDeleted({ groupIds, endpointIds, pageIds }));
       })
       .catch((error) => {
-        dispatch(onVersionDeletedError(error.response, version));
+        console.log(error);
+        // dispatch(onVersionDeletedError(error.response, version));
       });
   };
 };
@@ -149,9 +171,10 @@ export const deleteVersionRequest = (versionId) => {
   };
 };
 
-export const onVersionDeleted = () => {
+export const onVersionDeleted = (payload) => {
   return {
     type: versionActionTypes.ON_VERSION_DELETED,
+    payload,
   };
 };
 

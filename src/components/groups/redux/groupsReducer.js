@@ -107,7 +107,8 @@ function groupsReducer(state = initialState, action) {
       return state;
 
     case collectionsActionTypes.ON_COLLECTION_DELETED:
-      let groups = { ...state };
+    case versionActionTypes.ON_VERSION_DELETED:
+      groups = { ...state };
       action.payload.groupIds.map((gId) => {
         delete groups[gId];
       });

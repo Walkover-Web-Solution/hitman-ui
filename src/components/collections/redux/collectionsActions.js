@@ -157,17 +157,10 @@ export const deleteCollection = (collection) => {
               ...endpointIds,
             ])
         );
-        console.log({
-          collectionId: collection.id,
-          versionIds,
-          groupIds,
-          endpointIds,
-          pageIds,
-        });
 
         dispatch(
           onCollectionDeleted({
-            collection,
+            collection: response.data,
             versionIds,
             groupIds,
             endpointIds,
@@ -176,8 +169,7 @@ export const deleteCollection = (collection) => {
         );
       })
       .catch((error) => {
-        console.log(error);
-        // dispatch(onCollectionDeletedError(error.response, collection));
+        dispatch(onCollectionDeletedError(error.response, collection));
       });
   };
 };

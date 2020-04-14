@@ -132,7 +132,9 @@ function pagesReducer(state = initialState, action) {
       return { ...state };
 
     case collectionsActionTypes.ON_COLLECTION_DELETED:
-      let pages = { ...state };
+    case versionActionTypes.ON_VERSION_DELETED:
+    case groupsActionTypes.ON_GROUP_DELETED:
+      pages = { ...state };
       action.payload.pageIds.map((pId) => {
         delete pages[pId];
       });

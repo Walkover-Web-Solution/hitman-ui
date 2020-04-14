@@ -110,7 +110,9 @@ function endpointsReducer(state = initialState, action) {
       return { ...state };
 
     case collectionsActionTypes.ON_COLLECTION_DELETED:
-      let endpoints = { ...state };
+    case versionActionTypes.ON_VERSION_DELETED:
+    case groupsActionTypes.ON_GROUP_DELETED:
+      endpoints = { ...state };
       action.payload.endpointIds.map((eId) => {
         delete endpoints[eId];
       });
