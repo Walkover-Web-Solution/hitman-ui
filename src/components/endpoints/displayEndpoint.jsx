@@ -452,8 +452,20 @@ class DisplayEndpoint extends Component {
         }
       } else if (dataType === "double") {
       } else if (dataType === "yyyy-mm-dd") {
+        const abc = /^(19[5-9][0-9]|20[0-4][0-9]|2050)[-/](0?[1-9]|1[0-2])[-/](0?[1-9]|[12][0-9]|3[01])$/gim;
+        let match = abc.exec(rawBody[name]);
+        if (match === null) console.log("false");
+        else console.log("true");
       } else if (dataType === "datetime") {
+        const abc1 = /^\d\d\d\d-(0?[1-9]|1[0-2])-(0?[1-9]|[12][0-9]|3[01]) (00|[0-9]|1[0-9]|2[0-3]):([0-9]|[0-5][0-9]):([0-9]|[0-5][0-9])$/g;
+        let match = abc1.exec(rawBody[name]);
+        if (match === null) console.log("false");
+        else console.log("true");
       } else if (dataType === "timestamp") {
+        var valid = new Date(rawBody[name]).getTime() > 0;
+        if (!valid) {
+          toast.error("cannot validate body according to body description.");
+        }
       } else if (dataType === "array of integer") {
         for (let i = 0; i < rawBody[name].length; i++) {
           const element = rawBody[name][i];
