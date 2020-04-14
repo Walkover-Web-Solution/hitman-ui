@@ -18,22 +18,26 @@ class PublicBodyContainer extends Component {
     }
   }
 
+  handleChange = (e) => {
+    const dataArray = [...this.dataArray];
+    dataArray[e.currentTarget.name.split(".")[0]].value = e.currentTarget.value;
+    let json = {};
+    let i;
+    for (i in dataArray) {
+      json[dataArray[i].key] = dataArray[i].value;
+    }
+    json = JSON.stringify(json);
+    this.props.set_body("JSON", json);
+  };
+
   render() {
     console.log(this.props);
     if (this.props.body && this.props.body.type === "JSON") {
       this.dataArray = [];
       const jsonData = JSON.parse(this.props.body.value);
-      console.log(jsonData);
       const keysArray = Object.keys(jsonData);
-      console.log(typeof jsonData[keysArray[1]]);
       let i;
       for (i in keysArray) {
-        // let thing = new JSONObject(jsonData).get(keysArray[i]);
-        // let classNameOfThing = thing.getClass().getName();
-        // console.log("thing is a ", classNameOfThing);
-        // if (thing instanceof Integer) {
-        //   System.out.println("thing is an Integer");
-        // }
         const json = {
           key: keysArray[i],
           value: jsonData[keysArray[i]],
@@ -41,8 +45,6 @@ class PublicBodyContainer extends Component {
         };
         this.dataArray.push(json);
       }
-
-      console.log(this.dataArray);
     }
     return (
       <div>
@@ -93,7 +95,6 @@ class PublicBodyContainer extends Component {
                         disabled
                         name={index + ".key"}
                         value={this.dataArray[index].key}
-                        onChange={this.handleChange}
                         type={"text"}
                         placeholder={
                           this.dataArray[index].checked === "notApplicable"
@@ -107,6 +108,7 @@ class PublicBodyContainer extends Component {
                     <td className="custom-td">
                       <input
                         name={index + ".value"}
+                        value={this.dataArray[index].value}
                         onChange={this.handleChange}
                         type={"text"}
                         placeholder="Value"
