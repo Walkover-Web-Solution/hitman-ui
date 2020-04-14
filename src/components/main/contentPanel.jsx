@@ -60,18 +60,18 @@ class ContentPanel extends Component {
               isSaved: true,
             };
             indexedDbService.deleteData("tabs", requestId);
-            // indexedDbService.addData("tabs", {
-            //   id: endpointId,
-            //   type: "endpoint",
-            //   isSaved: true,
-            // });
+            indexedDbService.addData("tabs", {
+              id: endpointId,
+              type: "endpoint",
+              isSaved: true,
+            });
           } else {
             tabs.push({ id: endpointId, type: "endpoint", isSaved: true });
-            // indexedDbService.addData("tabs", {
-            //   id: endpointId,
-            //   type: "endpoint",
-            //   isSaved: true,
-            // });
+            indexedDbService.addData("tabs", {
+              id: endpointId,
+              type: "endpoint",
+              isSaved: true,
+            });
           }
           this.props.set_tabs(tabs, tabs.length - 1);
         }
@@ -89,11 +89,11 @@ class ContentPanel extends Component {
       let tabs = [...this.props.tabs];
       if (index < 0) {
         tabs.push({ id: pageId, type: "page", isSaved: true });
-        // indexedDbService.addData("tabs", {
-        //   id: pageId,
-        //   type: "page",
-        //   isSaved: true,
-        // });
+        indexedDbService.addData("tabs", {
+          id: pageId,
+          type: "page",
+          isSaved: true,
+        });
         this.props.set_tabs(tabs, tabs.length - 1);
       } else if (
         this.props.tabs.length &&

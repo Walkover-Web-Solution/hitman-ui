@@ -19,7 +19,7 @@ class BodyContainer extends Component {
     data: {
       raw: "",
       raw1: "",
-      formData: [
+      data: [
         {
           checked: "notApplicable",
           key: "",
@@ -27,7 +27,7 @@ class BodyContainer extends Component {
           description: "",
         },
       ],
-      urlEncoded: [
+      urlencoded: [
         {
           checked: "notApplicable",
           key: "",
@@ -109,12 +109,12 @@ class BodyContainer extends Component {
     const data = { ...this.state.data };
     switch (title) {
       case "formData":
-        data.formData = dataArray;
+        data.data = dataArray;
         this.setState({ data });
         this.props.set_body(this.state.selectedBodyType, dataArray);
         break;
       case "x-www-form-urlencoded":
-        data.urlEncoded = dataArray;
+        data.urlencoded = dataArray;
         this.setState({ data });
         this.props.set_body(this.state.selectedBodyType, dataArray);
         break;
@@ -139,9 +139,9 @@ class BodyContainer extends Component {
             <GenericTable
               {...this.props}
               title="formData"
-              dataArray={[...this.state.data.formData]}
+              dataArray={[...this.state.data.data]}
               handle_change_body_data={this.handleChangeBody.bind(this)}
-              original_data={[...this.state.data.formData]}
+              original_data={[...this.state.data.data]}
               count="1"
             ></GenericTable>
           );
@@ -150,9 +150,9 @@ class BodyContainer extends Component {
             <GenericTable
               {...this.props}
               title="x-www-form-urlencoded"
-              dataArray={[...this.state.data.urlEncoded]}
+              dataArray={[...this.state.data.urlencoded]}
               handle_change_body_data={this.handleChangeBody.bind(this)}
-              original_data={[...this.state.data.urlEncoded]}
+              original_data={[...this.state.data.urlencoded]}
               count="2"
             ></GenericTable>
           );
@@ -295,6 +295,7 @@ class BodyContainer extends Component {
   }
 
   render() {
+    console.log("this.props", this.props);
     if (this.props.body && !this.state.selectedBodyType) {
       let selectedBodyType = this.props.body.type;
       if (
@@ -309,7 +310,9 @@ class BodyContainer extends Component {
         selectedBodyType = "raw";
       }
       let data = this.state.data;
-      data[selectedBodyType] = this.props.body.value;
+      let type = selectedBodyType.split("-");
+      console.log(type[type.length - 1]);
+      data[type[type.length - 1]] = this.props.body.value;
       if (
         document.getElementById(selectedBodyType + "-" + this.props.endpoint_id)
       ) {
@@ -362,7 +365,7 @@ class BodyContainer extends Component {
             <input
               type="radio"
               name={`body-select-${this.props.endpoint_id}`}
-              id={`formData-${this.props.endpoint_id}`}
+              id={`multipart/form-data-${this.props.endpoint_id}`}
               onClick={() => this.handleSelectBodyType("multipart/form-data")}
               className="custom-radio-input"
             />
@@ -372,7 +375,7 @@ class BodyContainer extends Component {
             <input
               type="radio"
               name={`body-select-${this.props.endpoint_id}`}
-              id={`urlEncoded-${this.props.endpoint_id}`}
+              id={`application/x-www-form-urlencoded-${this.props.endpoint_id}`}
               onClick={() =>
                 this.handleSelectBodyType("application/x-www-form-urlencoded")
               }
