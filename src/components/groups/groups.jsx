@@ -1,17 +1,16 @@
 import React, { Component } from "react";
 import { Accordion, Button, Card } from "react-bootstrap";
 import { connect } from "react-redux";
-import shortId from "shortid";
+import { isDashboardRoute } from "../common/utility";
 import Endpoints from "../endpoints/endpoints";
 import GroupForm from "../groups/groupForm";
 import { deleteGroup, duplicateGroup } from "../groups/redux/groupsActions";
 import ShareGroupForm from "../groups/shareGroupForm";
 import GroupPages from "../pages/groupPages";
 import PageForm from "../pages/pageForm";
-import { isDashboardRoute } from "../common/utility";
-import groupsService from "./groupsService";
 import tabService from "../tabs/tabService";
 import "./groups.scss";
+import groupsService from "./groupsService";
 
 const mapStateToProps = (state) => {
   return { groups: state.groups };

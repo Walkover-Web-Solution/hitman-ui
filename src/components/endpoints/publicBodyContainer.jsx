@@ -31,7 +31,6 @@ class PublicBodyContainer extends Component {
   };
 
   render() {
-    console.log(this.props);
     if (this.props.body && this.props.body.type === "JSON") {
       this.dataArray = [];
       const jsonData = JSON.parse(this.props.body.value);
@@ -88,7 +87,7 @@ class PublicBodyContainer extends Component {
                     <td
                       className="custom-td"
                       id="generic-table-key-cell"
-                      style={{ "margin-left": "5px" }}
+                      style={{ marginLeft: "5px" }}
                     ></td>
                     <td className="custom-td">
                       <input

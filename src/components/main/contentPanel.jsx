@@ -1,14 +1,13 @@
 import React, { Component } from "react";
-import { Tab, ThemeProvider } from "react-bootstrap";
+import { Tab } from "react-bootstrap";
 import { connect } from "react-redux";
 import "react-tabs/style/react-tabs.css";
-import shortId from "shortid";
 import Environments from "../environments/environments";
+import indexedDbService from "../indexedDb/indexedDbService";
 import TabContent from "../tabs/tabContent";
 import CustomTabs from "../tabs/tabs";
-import indexedDbService from "../indexedDb/indexedDbService";
-import "./main.scss";
 import tabService from "../tabs/tabService";
+import "./main.scss";
 
 const mapStateToProps = (state) => {
   return {

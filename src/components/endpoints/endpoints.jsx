@@ -350,7 +350,7 @@ class Endpoints extends Component {
                   this.props.endpoints[eId].groupId === this.props.group_id
               )
               .map((endpointId) => (
-                <div className="endpoint-list-item">
+                <div className="endpoint-list-item" key={endpointId}>
                   <button
                     className="btn "
                     onClick={() =>

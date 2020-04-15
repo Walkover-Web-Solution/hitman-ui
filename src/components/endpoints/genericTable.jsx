@@ -257,7 +257,7 @@ class GenericTable extends Component {
                   <td
                     className="custom-td"
                     id="generic-table-key-cell"
-                    style={{ "margin-left": "5px" }}
+                    style={{ marginLeft: "5px" }}
                   >
                     {dataArray[index].checked === "notApplicable" ? null : (
                       <input

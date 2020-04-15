@@ -1,22 +1,22 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Link, withRouter } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import { toast } from "react-toastify";
+import validator from "validator";
 import store from "../../store/store";
 import { isDashboardRoute } from "../common/utility";
+import BodyDescription from "./bodyDescription";
 import CodeWindow from "./codeWindow";
 import CreateEndpointForm from "./createEndpointForm";
 import BodyContainer from "./displayBody";
+import DisplayDescription from "./displayDescription";
 import DisplayResponse from "./displayResponse";
 import endpointApiService from "./endpointApiService";
+import "./endpoints.scss";
 import GenericTable from "./genericTable";
 import HostContainer from "./hostContainer";
-import DisplayDescription from "./displayDescription";
-import { addEndpoint, updateEndpoint } from "./redux/endpointsActions";
 import PublicBodyContainer from "./publicBodyContainer";
-import BodyDescription from "./bodyDescription";
-import "./endpoints.scss";
-import validator from "validator";
+import { addEndpoint, updateEndpoint } from "./redux/endpointsActions";
 const status = require("http-status");
 var URI = require("urijs");
 
