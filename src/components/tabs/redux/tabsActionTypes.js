@@ -1,0 +1,13 @@
+const ADD_NEW_TAB = "ADD_NEW_TAB";
+const CLOSE_TAB = "CLOSE_TAB";
+const UPDATE_TAB = "UPDATE_TAB";
+const OPEN_IN_NEW_TAB = "OPEN_IN_NEW_TAB";
+const SET_ACTIVE_TAB_ID = "SET_ACTIVE_TAB_ID";
+
+export default {
+  ADD_NEW_TAB,
+  CLOSE_TAB,
+  UPDATE_TAB,
+  OPEN_IN_NEW_TAB,
+  SET_ACTIVE_TAB_ID,
+};

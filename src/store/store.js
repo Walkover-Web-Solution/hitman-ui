@@ -8,6 +8,7 @@ import groupsReducer from "../components/groups/redux/groupsReducer";
 import pagesReducer from "../components/pages/redux/pagesReducer";
 import teamsReducer from "../components/teams/redux/teamsReducer";
 import teamUsersReducer from "../components/teamUsers/redux/teamUsersReducer";
+import tabsReducer from "../components/tabs/redux/tabsReducer";
 
 const storeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
@@ -18,8 +19,9 @@ const rootReducer = combineReducers({
   pages: pagesReducer,
   endpoints: endpointsReducer,
   environment: environmentsReducer,
+  tabs: tabsReducer,
   teamUsers: teamUsersReducer,
-  teams: teamsReducer
+  teams: teamsReducer,
 });
 const store = createStore(rootReducer, storeEnhancers(applyMiddleware(thunk)));
 

@@ -7,7 +7,8 @@ import EditPage from "../pages/editPage";
 class TabContent extends Component {
   state = {};
 
-  renderContent(tab) {
+  renderContent(tabId) {
+    const tab = this.props.tabs.tabs[tabId];
     switch (tab.type) {
       case "endpoint":
         return <DisplayEndpoint {...this.props} environment={{}} tab={tab} />;
@@ -30,9 +31,9 @@ class TabContent extends Component {
   render() {
     return (
       <Tab.Content>
-        {this.props.tabs.map((tab) => (
-          <Tab.Pane eventKey={tab.id} key={tab.id}>
-            {this.renderContent(tab)}
+        {Object.keys(this.props.tabs.tabs).map((tabId) => (
+          <Tab.Pane eventKey={tabId} key={tabId}>
+            {this.renderContent(tabId)}
             {/* <Switch>
               <Route
                 path={`/dashboard/endpoint/${tab.id}`}

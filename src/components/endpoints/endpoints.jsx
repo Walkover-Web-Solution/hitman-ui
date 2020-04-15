@@ -114,7 +114,7 @@ class Endpoints extends Component {
     const index = this.props.tabs.findIndex((t) => t.id === endpoint.id);
     this.props.deleteEndpoint(endpoint);
     if (index >= 0) {
-      tabService.closeTab({ ...this.props }, index);
+      tabService.removeTab({ ...this.props }, index);
     }
   }
 

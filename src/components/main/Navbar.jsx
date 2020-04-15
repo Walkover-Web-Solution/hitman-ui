@@ -42,7 +42,7 @@ class Navbar extends Component {
   }
 
   handleAddEndpoint() {
-    tabService.addNewTab({ ...this.props });
+    tabService.newTab({ ...this.props });
 
     // const newTabId = shortId.generate();
     // const tabs = [

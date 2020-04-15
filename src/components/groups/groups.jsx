@@ -54,7 +54,7 @@ class Groups extends Component {
     // ];
 
     // this.props.set_tabs(tabs, tabs.length - 1);
-    tabService.addNewTab({ ...this.props });
+    tabService.newTab({ ...this.props });
     this.props.history.push({
       pathname: `/dashboard/endpoint/new`,
       groupId: groupId,

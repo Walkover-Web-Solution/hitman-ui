@@ -1,16 +1,26 @@
 import shortId from "shortid";
 import indexedDbService from "../indexedDb/indexedDbService";
+import { dispatch } from "react-redux";
+import {
+  addNewTab,
+  closeTab,
+  openInNewTab,
+  updateTab,
+  setActiveTabId,
+} from "../tabs/redux/tabsActions";
+import store from "../../store/store";
 
-function addNewTab(props) {
-  let tabs = [...props.tabs];
-  const id = shortId.generate();
-  tabs.push({ id, type: "endpoint", isSaved: false });
-  props.set_tabs([...tabs], tabs.length - 1);
+function newTab(props) {
+  // let tabs = {...props.tabs};
+  // const id = shortId.generate();
+  // tabs.push({ id, type: "endpoint", isSaved: false });
+  // props.set_tabs([...tabs], tabs.length - 1);
   // indexedDbService.addData("tabs", { id, type: "endpoint", isSaved: false });
-  props.history.push({ pathname: `/dashboard/endpoint/new` });
+  store.dispatch(addNewTab({ ...props.history }));
+  // props.history.push({ pathname: `/dashboard/endpoint/new` });
 }
 
-function closeTab(props, index) {
+function removeTab(props, index) {
   let tabs = [...props.tabs];
   tabs.splice(index, 1);
   indexedDbService.deleteDataByIndex("tabs", index);
@@ -67,22 +77,23 @@ function closeAllTabs(props) {
   props.history.push({ pathname: `/dashboard/endpoint/new` });
 }
 
-function selectTab(props, tab, index) {
-  props.set_tabs(null, index);
-  if (tab.isSaved) {
+function selectTab(props, tabId) {
+  // props.set_tabs(null, index);
+  const tab = props.tabs.tabs[tabId];
+  if (tab.status === "NEW") {
     props.history.push({
-      pathname: `/dashboard/${tab.type}/${tab.id}`,
+      pathname: `/dashboard/${tab.type}/new`,
     });
   } else {
     props.history.push({
-      pathname: `/dashboard/${tab.type}/new`,
+      pathname: `/dashboard/${tab.type}/${tab.id}`,
     });
   }
 }
 
 export default {
-  addNewTab,
-  closeTab,
+  newTab,
+  removeTab,
   changeRoute,
   closeAllTabs,
   selectTab,

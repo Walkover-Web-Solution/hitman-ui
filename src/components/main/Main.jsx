@@ -115,7 +115,7 @@ class Main extends Component {
           <ContentPanel
             {...this.props}
             set_environment={this.setEnvironment.bind(this)}
-            tabs={[...this.state.tabs]}
+            // tabs={[...this.state.tabs]}
             set_tabs={this.setTabs.bind(this)}
             default_tab_index={this.state.defaultTabIndex}
           />

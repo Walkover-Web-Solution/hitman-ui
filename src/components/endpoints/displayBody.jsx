@@ -352,7 +352,7 @@ class BodyContainer extends Component {
             <input
               type="radio"
               name={`body-select-${this.props.endpoint_id}`}
-              id={`raw-${this.props.endpoint_id}`}
+              id={`raw1-${this.props.endpoint_id}`}
               onClick={() => this.handleSelectBodyType("raw1")}
               className="custom-radio-input"
             />

@@ -27,7 +27,7 @@ class DeleteModal extends Component {
     if (title === "Delete Page") {
       const { deleted_page: page } = this.props;
       const index = this.props.tabs.findIndex((t) => t.id === page.id);
-      tabService.closeTab({ ...this.props }, index);
+      tabService.removeTab({ ...this.props }, index);
       this.props.deletePage(page);
     }
 
