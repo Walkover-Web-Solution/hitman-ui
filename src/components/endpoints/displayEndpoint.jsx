@@ -412,7 +412,7 @@ class DisplayEndpoint extends Component {
       if (pathParameters[i][0] === ":") {
         path = path + "/" + this.state.pathVariables[counter].value;
         counter++;
-      } else {
+      } else if (pathParameters[i].length !== 0) {
         path = path + "/" + pathParameters[i];
       }
     }
@@ -502,6 +502,7 @@ class DisplayEndpoint extends Component {
     let uri = new URI(this.uri.current.value);
     let queryparams = uri.search();
     let path = this.setPathVariableValues();
+    console.log("path", path);
     let api = BASE_URL + path + queryparams;
     api = this.replaceVariables(api);
     let headerJson = {};
@@ -509,6 +510,7 @@ class DisplayEndpoint extends Component {
       headerJson[header] = headersData[header].value;
     });
     let { body, headers } = this.formatBody(this.state.data.body, headerJson);
+    console.log("api", api);
     this.handleApiCall(api, body, headers, this.state.data.body.type);
   };
 
