@@ -502,7 +502,6 @@ class DisplayEndpoint extends Component {
     let uri = new URI(this.uri.current.value);
     let queryparams = uri.search();
     let path = this.setPathVariableValues();
-    console.log("path", path);
     let api = BASE_URL + path + queryparams;
     api = this.replaceVariables(api);
     let headerJson = {};
@@ -510,7 +509,6 @@ class DisplayEndpoint extends Component {
       headerJson[header] = headersData[header].value;
     });
     let { body, headers } = this.formatBody(this.state.data.body, headerJson);
-    console.log("api", api);
     this.handleApiCall(api, body, headers, this.state.data.body.type);
   };
 
@@ -774,7 +772,6 @@ class DisplayEndpoint extends Component {
   }
 
   makePostData(body) {
-    console.log(body);
     let params = [];
     let text = "";
     if (
@@ -799,7 +796,6 @@ class DisplayEndpoint extends Component {
 
   async prepareHarObject() {
     const { uri, method, body } = this.state.data;
-    console.log(body);
     const BASE_URL = this.customState.BASE_URL;
     const { originalHeaders, originalParams } = this.state;
     const harObject = {
@@ -845,7 +841,7 @@ class DisplayEndpoint extends Component {
   setBody(bodyType, body) {
     let data = { ...this.state.data };
     data.body = { type: bodyType, value: body };
-    if (bodyType !== "formData") {
+    if (bodyType !== "multipart/form-data") {
       this.setHeaders(bodyType);
     }
     this.setState({ data });

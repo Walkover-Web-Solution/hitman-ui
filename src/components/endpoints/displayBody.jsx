@@ -82,7 +82,6 @@ class BodyContainer extends Component {
   handleArrayChange = (e, field, index) => {
     let updatedArray = { ...this.state.updatedArray };
     updatedArray[e.currentTarget.name][index] = e.currentTarget.value;
-    console.log(updatedArray);
     let test1 = JSON.stringify(updatedArray);
     this.setState({ updatedArray });
     this.props.set_body(this.state.selectedBodyType, test1);
@@ -98,7 +97,6 @@ class BodyContainer extends Component {
   };
 
   handleChange(value) {
-    console.log(value);
     const data = { ...this.state.data };
     data.raw = value;
     this.setState({ data });

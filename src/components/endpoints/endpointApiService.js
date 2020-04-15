@@ -7,9 +7,6 @@ function endpointUrl(groupId) {
 }
 
 export function apiTest(api, method, body, headers, bodyType) {
-  console.log("body", body);
-  console.log("headers", headers);
-  console.log("bodyType", bodyType);
   return http.request({
     url: api,
     method: method,
