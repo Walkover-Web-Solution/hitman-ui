@@ -75,7 +75,7 @@ function collectionsReducer(state = initialState, action) {
 
     case collectionsActionTypes.ON_COLLECTION_DUPLICATED_ERROR:
       toast.error(action.error);
-      return;
+      return state;
 
     case publicEndpointsActionTypes.ON_PUBLIC_ENDPOINTS_FETCHED:
       return { ...state, ...action.data.collections };

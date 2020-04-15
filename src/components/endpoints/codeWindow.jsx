@@ -128,9 +128,6 @@ class CodeWindow extends Component {
                   <div>
                     {" "}
                     <AceEditor
-                      // style={{
-                      //   width: "1000px",
-                      // }}
                       mode={this.selectedLanguage.toLowerCase()}
                       theme="github"
                       value={
@@ -138,7 +135,6 @@ class CodeWindow extends Component {
                           ? this.state.codeSnippet
                           : this.codeSnippet
                       }
-                      // onChange={this.handleChange.bind(this)}
                       setOptions={{
                         showLineNumbers: true,
                       }}
@@ -152,13 +148,6 @@ class CodeWindow extends Component {
                       }}
                     />
                   </div>
-                  {/* <pre>
-                    <Highlight className={this.selectedLanguage}>
-                      {this.state.codeSnippet
-                        ? this.state.codeSnippet
-                        : this.codeSnippet}
-                    </Highlight>
-                  </pre> */}
                 </Col>
               </Row>
             </Container>

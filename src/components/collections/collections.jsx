@@ -425,12 +425,12 @@ class CollectionsComponent extends Component {
         <div>
           <div className="App-Side">
             {Object.keys(this.props.collections).map((collectionId, index) => (
-              <div id="parent-accordion">
+              <div id="parent-accordion" key={index}>
                 <div>
                   <h4
                     style={{
                       color: "tomato",
-                      "text-align": "center",
+                      textAlign: "center",
                       padding: "35px",
                     }}
                     onClick={() =>

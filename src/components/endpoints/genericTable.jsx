@@ -38,77 +38,29 @@ class GenericTable extends Component {
     }
     if (name[1] === "key" && title !== "Path Variables") {
       dataArray[name[0]].key = e.currentTarget.value;
-      if (
-        dataArray[name[0]].key.length !== 0 &&
-        !this.checkboxFlags[name[0]] &&
-        title !== "Path Variables"
-      ) {
-        dataArray[name[0]].checked = "true";
-      }
       if (title === "Params" && dataArray[name[0]].key.length === 0) {
         this.handleDelete(dataArray, name[0], title);
       }
-      if (title !== "Path Variables") {
-        this.handleAdd(dataArray, title, dataArray[name[0]].key, name[0]);
-      }
-    }
-    if (name[1] === "value") {
-      if (
-        dataArray[name[0]].value.length !== 0 &&
-        !this.checkboxFlags[name[0]] &&
-        title !== "Path Variables"
-      ) {
-        dataArray[name[0]].checked = "true";
-      }
-      dataArray[name[0]].value = e.currentTarget.value;
-      if (title !== "Path Variables") {
-        this.handleAdd(dataArray, title, dataArray[name[0]].value, name[0]);
-      }
-    }
-    if (name[1] === "description") {
-      if (
-        dataArray[name[0]].description.length !== 0 &&
-        !this.checkboxFlags[name[0]] &&
-        title !== "Path Variables"
-      ) {
-        dataArray[name[0]].checked = "true";
-      }
-      dataArray[name[0]].description = e.currentTarget.value;
-      if (title !== "Path Variables") {
-        this.handleAdd(
-          dataArray,
-          title,
-          dataArray[name[0]].description,
-          name[0]
-        );
-      }
+    } else if (title !== "Path Variables" || name[1] !== "key") {
+      dataArray[name[0]][name[1]] = e.currentTarget.value;
     }
 
-    // if (
-    //   dataArray[name[0]].name[1].length !== 0 &&
-    //   !this.checkboxFlags[name[0]] &&
-    //   title !== "Path Variables"
-    // ) {
-    //   dataArray[name[0]].checked = "true";
-    // }
-
-    // if (title !== "Path Variables") {
-    //   this.handleAdd(dataArray, title, dataArray[name[0]].name[1], name[0]);
-    // }
-
-    if (title === "Headers")
-      this.props.props_from_parent("originalHeaders", dataArray);
-    if (title === "Params")
-      this.props.props_from_parent("originalParams", dataArray);
-    if (title === "formData") {
-      this.props.handle_change_body_data(title, dataArray);
+    if (
+      dataArray[name[0]][name[1]].length !== 0 &&
+      !this.checkboxFlags[name[0]] &&
+      title !== "Path Variables"
+    ) {
+      dataArray[name[0]].checked = "true";
     }
-    if (title === "x-www-form-urlencoded") {
-      this.props.handle_change_body_data(title, dataArray);
+
+    if (title !== "Path Variables") {
+      this.handleAdd(dataArray, title, dataArray[name[0]][name[1]], name[0]);
     }
-    if (title === "Path Variables") {
+
+    if (title === "Headers" || title === "Params" || title === "Path Variables")
       this.props.props_from_parent(title, dataArray);
-    }
+    if (title === "formData" || title === "x-www-form-urlencoded")
+      this.props.handle_change_body_data(title, dataArray);
   };
 
   handleBulkChange = (e) => {
@@ -152,16 +104,10 @@ class GenericTable extends Component {
       value: "",
       description: "",
     };
-    if (title === "Params")
-      this.props.props_from_parent("originalParams", dataArray);
-    if (title === "Headers")
-      this.props.props_from_parent("originalHeaders", dataArray);
-    if (title === "formData") {
+    if (title === "Params" || title === "Headers")
+      this.props.props_from_parent(title, dataArray);
+    if (title === "formData" || title === "x-www-form-urlencoded")
       this.props.handle_change_body_data(title, dataArray);
-    }
-    if (title === "x-www-form-urlencoded") {
-      this.props.handle_change_body_data(title, dataArray);
-    }
   };
 
   handleAdd(dataArray, title, key, index) {
@@ -174,8 +120,7 @@ class GenericTable extends Component {
         value: "",
         description: "",
       };
-      if (title === "Headers")
-        this.props.props_from_parent("originalHeaders", dataArray);
+      if (title === "Headers") this.props.props_from_parent(title, dataArray);
       if (title === "Params")
         this.props.props_from_parent("handleAddParam", dataArray);
     }
@@ -190,17 +135,12 @@ class GenericTable extends Component {
       newDataArray.push(dataArray[i]);
     }
     dataArray = newDataArray;
-    if (title === "Headers")
-      this.props.props_from_parent("originalHeaders", dataArray);
-    if (title === "Params")
-      this.props.props_from_parent("originalParams", dataArray);
-    if (title === "formData") {
+    if (title === "Headers" || title === "Params")
+      this.props.props_from_parent(title, dataArray);
+    if (title === "formData" || title === "x-www-form-urlencoded")
       this.props.handle_change_body_data(title, dataArray);
-    }
-    if (title === "x-www-form-urlencoded") {
-      this.props.handle_change_body_data(title, dataArray);
-    }
   }
+
   displayEditButton() {
     if (this.state.bulkEdit) {
       this.setState({
@@ -317,7 +257,7 @@ class GenericTable extends Component {
                   <td
                     className="custom-td"
                     id="generic-table-key-cell"
-                    style={{ "margin-left": "5px" }}
+                    style={{ marginLeft: "5px" }}
                   >
                     {dataArray[index].checked === "notApplicable" ? null : (
                       <input
@@ -390,7 +330,8 @@ class GenericTable extends Component {
                       className="form-control"
                     />
                     {dataArray.length - 1 === index ||
-                    !isDashboardRoute(this.props) ? null : (
+                    !isDashboardRoute(this.props) ||
+                    title === "Path Variables" ? null : (
                       <button
                         type="button"
                         className="btn cross-button"
