@@ -1304,6 +1304,7 @@ class DisplayEndpoint extends Component {
                 {...this.props}
                 set_body={this.setBody.bind(this)}
                 body={this.state.data.body}
+                endpoint={this.state.endpoint}
               ></PublicBodyContainer>
             </div>
           )}
