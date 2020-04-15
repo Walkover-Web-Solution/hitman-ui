@@ -401,7 +401,7 @@ class BodyContainer extends Component {
                 >
                   {this.rawBodyTypes.map((rawBodyType) => (
                     <button
-                      className="btn custom-request-button"
+                      className="btn custom-body-type-button "
                       type="button"
                       onClick={() => this.setRawBodyType(rawBodyType)}
                       key={rawBodyType}
