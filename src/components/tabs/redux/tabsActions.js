@@ -6,7 +6,9 @@ import tabStatusTypes from "../tabStatusTypes";
 
 export const addNewTab = (history) => {
   const id = shortid.generate();
+
   return (dispatch) => {
+    dispatch(setActiveTabId(id));
     dispatch({
       type: tabsActionTypes.ADD_NEW_TAB,
       newTab: { id, type: "endpoint", status: tabStatusTypes.NEW },

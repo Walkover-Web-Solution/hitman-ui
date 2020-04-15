@@ -11,56 +11,30 @@ import {
 import store from "../../store/store";
 
 function newTab(props) {
-  // let tabs = {...props.tabs};
-  // const id = shortId.generate();
-  // tabs.push({ id, type: "endpoint", isSaved: false });
-  // props.set_tabs([...tabs], tabs.length - 1);
-  // indexedDbService.addData("tabs", { id, type: "endpoint", isSaved: false });
   store.dispatch(addNewTab({ ...props.history }));
-  // props.history.push({ pathname: `/dashboard/endpoint/new` });
 }
 
-function removeTab(props, index) {
-  let tabs = [...props.tabs];
-  tabs.splice(index, 1);
-  indexedDbService.deleteDataByIndex("tabs", index);
-  if (props.default_tab_index === index) {
-    if (index !== 0) {
-      const newIndex = props.default_tab_index - 1;
-      props.set_tabs(tabs, newIndex);
-      changeRoute(props, tabs[newIndex], "update endpoint");
+function removeTab(tabId, props) {
+  // let tabs = [...props.tabs];
+  // tabs.splice(index, 1);
+  // indexedDbService.deleteDataByIndex("tabs", index);
+  props.closeTab(tabId);
+  if (props.tabs.activeTabId === tabId) {
+    const tabsCount = Object.keys(props.tabs.tabs).length;
+    if (tabsCount === 0) {
+      newTab(props);
     } else {
-      if (tabs.length > 0) {
-        const newIndex = index;
-        props.set_tabs(tabs, newIndex);
-        changeRoute(props, tabs[newIndex], "update endpoint");
-      } else {
-        const newTabId = shortId.generate();
-        tabs = [...tabs, { id: newTabId, type: "endpoint", isSaved: false }];
-        // indexedDbService.addData("tabs", {
-        //   id: newTabId,
-        //   type: "endpoint",
-        //   isSaved: false,
-        // });
-        props.set_tabs(tabs, tabs.length - 1);
-        props.history.push({
-          pathname: `/dashboard/endpoint/new`,
-        });
-      }
+      props.setActiveTabId(Object.keys(props.tabs.tabs)[0]);
+      changeRoute(props, props.tabs.tabs[Object.keys(props.tabs.tabs)[0]]);
     }
-  } else {
-    if (index < props.default_tab_index) {
-      props.set_tabs(tabs, props.default_tab_index - 1);
-    } else props.set_tabs(tabs);
   }
 }
 
-function changeRoute(props, tab, title) {
+function changeRoute(props, tab) {
   // if (tab.type === "endpoint") {
   if (tab.isSaved) {
     props.history.push({
       pathname: `/dashboard/${tab.type}/${tab.id}`,
-      title,
     });
   } else {
     props.history.push({
@@ -80,6 +54,7 @@ function closeAllTabs(props) {
 function selectTab(props, tabId) {
   // props.set_tabs(null, index);
   const tab = props.tabs.tabs[tabId];
+  props.setActiveTabId(tabId);
   if (tab.status === "NEW") {
     props.history.push({
       pathname: `/dashboard/${tab.type}/new`,

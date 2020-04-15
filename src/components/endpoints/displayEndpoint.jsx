@@ -454,13 +454,9 @@ class DisplayEndpoint extends Component {
       } else if (dataType === "yyyy-mm-dd") {
         const abc = /^(19[5-9][0-9]|20[0-4][0-9]|2050)[-/](0?[1-9]|1[0-2])[-/](0?[1-9]|[12][0-9]|3[01])$/gim;
         let match = abc.exec(rawBody[name]);
-        if (match === null) console.log("false");
-        else console.log("true");
       } else if (dataType === "datetime") {
         const abc1 = /^\d\d\d\d-(0?[1-9]|1[0-2])-(0?[1-9]|[12][0-9]|3[01]) (00|[0-9]|1[0-9]|2[0-3]):([0-9]|[0-5][0-9]):([0-9]|[0-5][0-9])$/g;
         let match = abc1.exec(rawBody[name]);
-        if (match === null) console.log("false");
-        else console.log("true");
       } else if (dataType === "timestamp") {
         var valid = new Date(rawBody[name]).getTime() > 0;
         if (!valid) {
@@ -512,7 +508,6 @@ class DisplayEndpoint extends Component {
     let uri = new URI(this.uri.current.value);
     let queryparams = uri.search();
     let path = this.setPathVariableValues();
-    console.log(BASE_URL, path, queryparams);
     let api = BASE_URL + path + queryparams;
     api = this.replaceVariables(api);
     let headerJson = {};
@@ -520,7 +515,6 @@ class DisplayEndpoint extends Component {
       headerJson[header] = headersData[header].value;
     });
     let { body, headers } = this.formatBody(this.state.data.body, headerJson);
-    console.log("api", api);
     this.handleApiCall(api, body, headers, this.state.data.body.type);
   };
 
@@ -548,7 +542,7 @@ class DisplayEndpoint extends Component {
       // if (endpoint.name === "" || endpoint.uri === "")
       if (endpoint.name === "") toast.error("Please enter Endpoint name");
       else if (this.props.location.pathname.split("/")[3] === "new") {
-        endpoint.requestId = this.props.tabs[this.props.default_tab_index].id;
+        endpoint.requestId = this.props.tab.id;
         this.props.addEndpoint(endpoint, groupId || this.state.groupId);
       } else if (this.state.title === "update endpoint") {
         this.props.updateEndpoint({
@@ -784,7 +778,6 @@ class DisplayEndpoint extends Component {
   }
 
   makePostData(body) {
-    console.log(body);
     let params = [];
     let text = "";
     if (
@@ -945,7 +938,6 @@ class DisplayEndpoint extends Component {
             // urlEncodedData.push(encodedKey + "=" + encodedValue);
           }
         }
-        console.log("urlEncodedData", urlEncodedData);
         // urlEncodedData = urlEncodedData.join("&");
         return { body: urlEncodedData, headers };
       default:

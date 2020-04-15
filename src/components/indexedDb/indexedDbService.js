@@ -26,7 +26,6 @@ const createDataBase = async () => {
 };
 
 const addData = async (storeName, val, key) => {
-  console.log(storeName, key, val);
   const tx = db.transaction(storeName, "readwrite");
   const store = await tx.objectStore(storeName);
 
@@ -71,7 +70,6 @@ const deleteData = async (storeName, key) => {
   const tx = await db.transaction(storeName, "readwrite");
   const store = await tx.objectStore(storeName);
 
-  console.log(key);
   await store.delete(key);
   await tx.done;
 };

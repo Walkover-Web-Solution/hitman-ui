@@ -38,7 +38,7 @@ class CustomTabs extends Component {
               </Nav.Link>
               <button
                 className="btn"
-                onClick={() => this.props.closeTab(tabId)}
+                onClick={() => tabService.removeTab(tabId, { ...this.props })}
               >
                 <i className="fas fa-times"></i>
               </button>

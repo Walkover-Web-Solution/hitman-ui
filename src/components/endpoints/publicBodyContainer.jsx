@@ -5,7 +5,6 @@ class PublicBodyContainer extends Component {
   state = {};
 
   handleChangeBody(title, dataArray) {
-    console.log(title, dataArray);
     switch (title) {
       case "formData":
         this.props.set_body("formData", dataArray);
@@ -19,7 +18,6 @@ class PublicBodyContainer extends Component {
   }
 
   render() {
-    console.log(this.props);
     return (
       <div>
         {this.props.body && this.props.body.type === "formData" && (

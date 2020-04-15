@@ -158,8 +158,7 @@ export const deleteVersion = (version) => {
         dispatch(onVersionDeleted({ groupIds, endpointIds, pageIds }));
       })
       .catch((error) => {
-        console.log(error);
-        // dispatch(onVersionDeletedError(error.response, version));
+        dispatch(onVersionDeletedError(error.response, version));
       });
   };
 };

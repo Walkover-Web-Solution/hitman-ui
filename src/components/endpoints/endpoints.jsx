@@ -8,6 +8,7 @@ import {
   pendingEndpoint,
   rejectEndpoint,
 } from "../publicEndpoint/redux/publicEndpointsActions";
+import { closeTab } from "../tabs/redux/tabsActions";
 import tabService from "../tabs/tabService";
 import { deleteEndpoint, duplicateEndpoint } from "./redux/endpointsActions";
 import "./endpoints.scss";
@@ -16,6 +17,7 @@ const mapStateToProps = (state) => {
   return {
     endpoints: state.endpoints,
     groups: state.groups,
+    tabs: state.tabs,
   };
 };
 
@@ -29,6 +31,7 @@ const mapDispatchToProps = (dispatch) => {
     approveEndpoint: (endpoint) => dispatch(approveEndpoint(endpoint)),
     draftEndpoint: (endpoint) => dispatch(draftEndpoint(endpoint)),
     rejectEndpoint: (endpoint) => dispatch(rejectEndpoint(endpoint)),
+    closeTab: (tabId) => dispatch(closeTab(tabId)),
   };
 };
 
@@ -111,10 +114,9 @@ class Endpoints extends Component {
   // }
 
   handleDelete(endpoint) {
-    const index = this.props.tabs.findIndex((t) => t.id === endpoint.id);
     this.props.deleteEndpoint(endpoint);
-    if (index >= 0) {
-      tabService.removeTab({ ...this.props }, index);
+    if (this.props.tabs.tabs[endpoint.id]) {
+      tabService.removeTab(endpoint.id, { ...this.props });
     }
   }
 

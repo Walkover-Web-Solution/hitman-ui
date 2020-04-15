@@ -123,21 +123,19 @@ class ContentPanel extends Component {
 
     if (this.props.location.pathname.split("/")[2] === "page") {
       const pageId = this.props.location.pathname.split("/")[3];
-      const index = this.props.tabs.findIndex((tab) => tab.id === pageId);
-      let tabs = [...this.props.tabs];
-      if (index < 0) {
-        tabs.push({ id: pageId, type: "page", isSaved: true });
+      if (this.props.tabs.tabs[pageId]) {
         // indexedDbService.addData("tabs", {
         //   id: pageId,
         //   type: "page",
         //   isSaved: true,
         // });
-        this.props.set_tabs(tabs, tabs.length - 1);
-      } else if (
-        this.props.tabs.length &&
-        this.props.tabs[this.props.default_tab_index].id !== pageId
-      ) {
-        this.props.set_tabs(null, index);
+        this.props.setActiveTabId(pageId);
+      } else {
+        this.props.openInNewTab({
+          id: pageId,
+          type: "page",
+          status: tabStatusTypes.SAVED,
+        });
       }
     }
     return (

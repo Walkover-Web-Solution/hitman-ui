@@ -145,7 +145,6 @@ export const deleteGroup = (group) => {
         dispatch(onGroupDeleted({ endpointIds, pageIds }));
       })
       .catch((error) => {
-        console.log(error);
         dispatch(
           onGroupDeletedError(
             error.response ? error.response.data : error,
