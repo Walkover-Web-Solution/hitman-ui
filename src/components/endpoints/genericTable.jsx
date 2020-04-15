@@ -41,7 +41,7 @@ class GenericTable extends Component {
       if (title === "Params" && dataArray[name[0]].key.length === 0) {
         this.handleDelete(dataArray, name[0], title);
       }
-    } else {
+    } else if (title !== "Path Variables" || name[1] !== "key") {
       dataArray[name[0]][name[1]] = e.currentTarget.value;
     }
 
@@ -104,16 +104,10 @@ class GenericTable extends Component {
       value: "",
       description: "",
     };
-    if (title === "Params")
-      this.props.props_from_parent("originalParams", dataArray);
-    if (title === "Headers")
-      this.props.props_from_parent("originalHeaders", dataArray);
-    if (title === "formData") {
+    if (title === "Params" || title === "Headers")
+      this.props.props_from_parent(title, dataArray);
+    if (title === "formData" || title === "x-www-form-urlencoded")
       this.props.handle_change_body_data(title, dataArray);
-    }
-    if (title === "x-www-form-urlencoded") {
-      this.props.handle_change_body_data(title, dataArray);
-    }
   };
 
   handleAdd(dataArray, title, key, index) {
@@ -126,8 +120,7 @@ class GenericTable extends Component {
         value: "",
         description: "",
       };
-      if (title === "Headers")
-        this.props.props_from_parent("originalHeaders", dataArray);
+      if (title === "Headers") this.props.props_from_parent(title, dataArray);
       if (title === "Params")
         this.props.props_from_parent("handleAddParam", dataArray);
     }
@@ -142,17 +135,12 @@ class GenericTable extends Component {
       newDataArray.push(dataArray[i]);
     }
     dataArray = newDataArray;
-    if (title === "Headers")
-      this.props.props_from_parent("originalHeaders", dataArray);
-    if (title === "Params")
-      this.props.props_from_parent("originalParams", dataArray);
-    if (title === "formData") {
+    if (title === "Headers" || title === "Params")
+      this.props.props_from_parent(title, dataArray);
+    if (title === "formData" || title === "x-www-form-urlencoded")
       this.props.handle_change_body_data(title, dataArray);
-    }
-    if (title === "x-www-form-urlencoded") {
-      this.props.handle_change_body_data(title, dataArray);
-    }
   }
+
   displayEditButton() {
     if (this.state.bulkEdit) {
       this.setState({
