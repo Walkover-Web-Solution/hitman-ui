@@ -18,31 +18,77 @@ class PublicBodyContainer extends Component {
     }
   }
 
+  handleDelete(valuesArrayIndex, index) {
+    this.valuesArray[valuesArrayIndex].splice(index, 1);
+    let i;
+    let json = {};
+    for (i in this.valuesArray) {
+      json[this.keysArray[i]] = this.valuesArray[i];
+    }
+    json = JSON.stringify(json);
+    this.props.set_body("JSON", json);
+  }
+
+  handleAdd(valuesArrayIndex) {
+    this.valuesArray[valuesArrayIndex].push("");
+    let i;
+    let json = {};
+    for (i in this.valuesArray) {
+      json[this.keysArray[i]] = this.valuesArray[i];
+    }
+    json = JSON.stringify(json);
+    this.props.set_body("JSON", json);
+  }
+
   handleChange = (e) => {
-    const dataArray = [...this.dataArray];
-    dataArray[e.currentTarget.name.split(".")[0]].value = e.currentTarget.value;
+    let valuesArray = [...this.valuesArray];
+    const name = e.currentTarget.name.split(".");
+    if (e.target.type === "number") {
+      if (this.dataType[name[0]] === "Array") {
+        valuesArray[name[0]][name[1]] = parseInt(e.currentTarget.value);
+      } else {
+        valuesArray[name[0]] = parseInt(e.currentTarget.value);
+      }
+    } else {
+      if (this.dataType[name[0]] === "Array") {
+        valuesArray[name[0]][name[1]] = e.currentTarget.value;
+      } else {
+        valuesArray[name[0]] = e.currentTarget.value;
+      }
+    }
     let json = {};
     let i;
-    for (i in dataArray) {
-      json[dataArray[i].key] = dataArray[i].value;
+    for (i in valuesArray) {
+      json[this.keysArray[i]] = valuesArray[i];
     }
     json = JSON.stringify(json);
     this.props.set_body("JSON", json);
   };
 
   render() {
+    console.log("props", this.props);
+    this.keysArray = [];
+    this.valuesArray = [];
+    this.dataType = [];
     if (this.props.body && this.props.body.type === "JSON") {
-      this.dataArray = [];
       const jsonData = JSON.parse(this.props.body.value);
-      const keysArray = Object.keys(jsonData);
+      this.keysArray = Object.keys(jsonData);
+      this.valuesArray = Object.values(jsonData);
+      const data = Object.values(JSON.parse(this.props.endpoint.body.value));
       let i;
-      for (i in keysArray) {
-        const json = {
-          key: keysArray[i],
-          value: jsonData[keysArray[i]],
-          dataType: typeof jsonData[keysArray[i]],
-        };
-        this.dataArray.push(json);
+      for (i in data) {
+        let type = typeof data[i];
+        if (type === "object") {
+          if (Array.isArray(this.valuesArray[i])) {
+            // if (
+            //   typeof this.valuesArray[i][0] === "string" ||
+            //   typeof this.valuesArray[i][0] === "number"
+            // )
+            type = "Array";
+            //else type = "Array of Objects";
+          }
+        }
+        this.dataType[i] = type;
       }
     }
     return (
@@ -68,6 +114,34 @@ class PublicBodyContainer extends Component {
         )}
 
         {this.props.body && this.props.body.type === "JSON" && (
+          // <div className="generic-table-container">
+          //   <div className="public-generic-table-title-container">Body</div>
+          //   {this.keysArray.map((e, index) => (
+          //     <div>
+          //       <label style={{ marginLeft: "70px", width: "30%" }}>
+          //         {this.keysArray[index]}
+          //         <label
+          //           style={{
+          //             marginLeft: "20px",
+          //             background: "lightgrey",
+          //             fontSize: "10px",
+          //           }}
+          //         >
+          //           {typeof this.dataType[index]}
+          //         </label>
+          //       </label>
+          //       {typeof this.dataType[index] !== "boolean" &&
+          //         typeof this.dataType[index] !== "object"}
+          //       <input
+          //         style={{ marginLeft: "10px", padding: "3px", width: "30%" }}
+          //         type="number"
+          //         name={index + ".value"}
+          //         value={this.valuesArray[index]}
+          //         onChange={this.handleChange}
+          //       ></input>
+          //     </div>
+          //   ))}
+          // </div>
           <div className="generic-table-container">
             <div className="public-generic-table-title-container">Body</div>
             <table className="table table-bordered" id="custom-generic-table">
@@ -82,7 +156,7 @@ class PublicBodyContainer extends Component {
                 </tr>
               </thead>
               <tbody style={{ border: "none" }}>
-                {this.dataArray.map((e, index) => (
+                {this.keysArray.map((e, index) => (
                   <tr key={index} id="generic-table-row">
                     <td
                       className="custom-td"
@@ -93,34 +167,83 @@ class PublicBodyContainer extends Component {
                       <input
                         disabled
                         name={index + ".key"}
-                        value={this.dataArray[index].key}
+                        value={this.keysArray[index]}
                         type={"text"}
-                        placeholder={
-                          this.dataArray[index].checked === "notApplicable"
-                            ? "Key"
-                            : ""
-                        }
                         className="form-control"
                         style={{ border: "none" }}
                       ></input>
                     </td>
                     <td className="custom-td">
-                      <input
-                        name={index + ".value"}
-                        value={this.dataArray[index].value}
-                        onChange={this.handleChange}
-                        type={"text"}
-                        placeholder="Value"
-                        className="form-control"
-                        style={{ border: "none" }}
-                      />
+                      {this.dataType[index] === "boolean" ? (
+                        <select
+                          id="custom-select-box"
+                          value={this.valuesArray[index]}
+                          onChange={this.handleChange}
+                          name={index + ".value"}
+                        >
+                          <option value={true} key={true}>
+                            true
+                          </option>
+                          <option value={false} key={false}>
+                            false
+                          </option>
+                        </select>
+                      ) : this.dataType[index] === "Array" ? (
+                        <div>
+                          {this.valuesArray[index].map((i, key) => (
+                            <div>
+                              <input
+                                style={{
+                                  marginLeft: "20px",
+                                  width: "70%",
+                                }}
+                                type={typeof i === "number" ? "number" : "text"}
+                                name={index + "." + key + ".value"}
+                                value={i}
+                                onChange={this.handleChange}
+                              ></input>
+                              <button
+                                type="button"
+                                className="btn cross-button"
+                                onClick={() => this.handleDelete(index, key)}
+                              >
+                                X
+                              </button>
+                            </div>
+                          ))}
+                          <span
+                            class="badge badge-success"
+                            style={{
+                              marginLeft: "20px",
+                              marginTop: "5px",
+                            }}
+                            onClick={() => this.handleAdd(index)}
+                          >
+                            Add+
+                          </span>
+                        </div>
+                      ) : (
+                        <input
+                          name={index + ".value"}
+                          value={this.valuesArray[index]}
+                          onChange={this.handleChange}
+                          type={
+                            this.dataType[index] === "number"
+                              ? "number"
+                              : "text"
+                          }
+                          placeholder="Value"
+                          className="form-control"
+                          style={{ border: "none" }}
+                        />
+                      )}
                     </td>
                     <td className="custom-td">
                       <input
                         disabled
                         name={index + ".datatype"}
-                        type={"text"}
-                        value={this.dataArray[index].dataType}
+                        type="text"
+                        value={this.dataType[index]}
                         placeholder="DataType"
                         className="form-control"
                         style={{ border: "none" }}
