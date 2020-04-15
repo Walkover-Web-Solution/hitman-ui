@@ -82,7 +82,6 @@ class BodyContainer extends Component {
   handleArrayChange = (e, field, index) => {
     let updatedArray = { ...this.state.updatedArray };
     updatedArray[e.currentTarget.name][index] = e.currentTarget.value;
-    console.log(updatedArray);
     let test1 = JSON.stringify(updatedArray);
     this.setState({ updatedArray });
     this.props.set_body(this.state.selectedBodyType, test1);
@@ -98,7 +97,6 @@ class BodyContainer extends Component {
   };
 
   handleChange(value) {
-    console.log(value);
     const data = { ...this.state.data };
     data.raw = value;
     this.setState({ data });
@@ -295,7 +293,6 @@ class BodyContainer extends Component {
   }
 
   render() {
-    console.log("this.props", this.props);
     if (this.props.body && !this.state.selectedBodyType) {
       let selectedBodyType = this.props.body.type;
       if (
@@ -311,7 +308,6 @@ class BodyContainer extends Component {
       }
       let data = this.state.data;
       let type = selectedBodyType.split("-");
-      console.log(type[type.length - 1]);
       data[type[type.length - 1]] = this.props.body.value;
       if (
         document.getElementById(selectedBodyType + "-" + this.props.endpoint_id)
@@ -403,7 +399,7 @@ class BodyContainer extends Component {
                 >
                   {this.rawBodyTypes.map((rawBodyType) => (
                     <button
-                      className="btn custom-request-button"
+                      className="btn custom-body-type-button "
                       type="button"
                       onClick={() => this.setRawBodyType(rawBodyType)}
                       key={rawBodyType}

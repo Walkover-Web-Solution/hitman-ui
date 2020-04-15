@@ -146,7 +146,8 @@ class Endpoints extends Component {
   }
   getCurrentUserRole(collectionId) {
     const teamId = this.props.collections[collectionId].teamId;
-    if (teamId !== undefined) return this.props.teams[teamId].role;
+    if (this.props.teams !== undefined && teamId !== undefined)
+      return this.props.teams[teamId].role;
   }
 
   checkAccess(collectionId) {
@@ -349,7 +350,7 @@ class Endpoints extends Component {
                   this.props.endpoints[eId].groupId === this.props.group_id
               )
               .map((endpointId) => (
-                <div className="endpoint-list-item">
+                <div className="endpoint-list-item" key={endpointId}>
                   <button
                     className="btn "
                     onClick={() =>

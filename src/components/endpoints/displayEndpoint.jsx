@@ -1,22 +1,22 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Link, withRouter } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import { toast } from "react-toastify";
+import validator from "validator";
 import store from "../../store/store";
 import { isDashboardRoute } from "../common/utility";
+import BodyDescription from "./bodyDescription";
 import CodeWindow from "./codeWindow";
 import CreateEndpointForm from "./createEndpointForm";
 import BodyContainer from "./displayBody";
+import DisplayDescription from "./displayDescription";
 import DisplayResponse from "./displayResponse";
 import endpointApiService from "./endpointApiService";
+import "./endpoints.scss";
 import GenericTable from "./genericTable";
 import HostContainer from "./hostContainer";
-import DisplayDescription from "./displayDescription";
-import { addEndpoint, updateEndpoint } from "./redux/endpointsActions";
 import PublicBodyContainer from "./publicBodyContainer";
-import BodyDescription from "./bodyDescription";
-import "./endpoints.scss";
-import validator from "validator";
+import { addEndpoint, updateEndpoint } from "./redux/endpointsActions";
 const status = require("http-status");
 var URI = require("urijs");
 
@@ -93,7 +93,6 @@ class DisplayEndpoint extends Component {
         title: "Add New Endpoint",
         flagResponse: false,
         showDescriptionFlag: false,
-
         originalHeaders: [
           {
             checked: "notApplicable",
@@ -193,7 +192,6 @@ class DisplayEndpoint extends Component {
         pathVariables = this.fetchPathVariables(endpoint.pathVariables);
         this.setState({ pathVariables });
       }
-      console.log("endpoint", endpoint);
       this.setState({
         data: {
           method: endpoint.requestType,
@@ -224,9 +222,8 @@ class DisplayEndpoint extends Component {
       let description = [];
       let originalParams = this.state.originalParams;
       let updatedUri = e.currentTarget.value.split("?")[1];
-      let uri = e.currentTarget.value.split("?")[0];
-      let uripath = new URI(e.currentTarget.value);
-      let path = uripath.pathname().slice(1);
+      let path = new URI(e.currentTarget.value);
+      path = path.pathname();
       let pathVariableKeys = path.split("/");
       let pathVariableKeysObject = {};
       for (let i = 0; i < pathVariableKeys.length; i++) {
@@ -407,24 +404,18 @@ class DisplayEndpoint extends Component {
   }
   setPathVariableValues() {
     let uri = new URI(this.uri.current.value);
-    uri = uri.pathname().slice(1);
+    uri = uri.pathname();
     let pathParameters = uri.split("/");
-    let path = "/";
+    let path = "";
     let counter = 0;
     for (let i = 0; i < pathParameters.length; i++) {
       if (pathParameters[i][0] === ":") {
-        path = path + this.state.pathVariables[counter].value + "/";
+        path = path + "/" + this.state.pathVariables[counter].value;
         counter++;
-      } else {
-        path = path + pathParameters[i] + "/";
+      } else if (pathParameters[i].length !== 0) {
+        path = path + "/" + pathParameters[i];
       }
     }
-    // generatePath(
-    //   uri,
-    //   this.state.pathVariables.map(
-    //     (variable) => (variable.key = variable.value)
-    //   )
-    // );
     return path;
   }
 
@@ -503,7 +494,6 @@ class DisplayEndpoint extends Component {
   }
 
   handleSend = async () => {
-    // this.validateBodyParams();
     let startTime = new Date().getTime();
     let response = {};
     this.setState({ startTime, response });
@@ -512,7 +502,6 @@ class DisplayEndpoint extends Component {
     let uri = new URI(this.uri.current.value);
     let queryparams = uri.search();
     let path = this.setPathVariableValues();
-    console.log(BASE_URL, path, queryparams);
     let api = BASE_URL + path + queryparams;
     api = this.replaceVariables(api);
     let headerJson = {};
@@ -615,7 +604,7 @@ class DisplayEndpoint extends Component {
   }
 
   propsFromChild(name, value) {
-    if (name === "originalParams") {
+    if (name === "Params") {
       this.handleUpdateUri(value);
       this.setState({ originalParams: value });
     }
@@ -623,7 +612,7 @@ class DisplayEndpoint extends Component {
       this.setState({ originalParams: value });
     }
 
-    if (name === "originalHeaders") {
+    if (name === "Headers") {
       this.setState({ originalHeaders: value });
     }
 
@@ -783,7 +772,6 @@ class DisplayEndpoint extends Component {
   }
 
   makePostData(body) {
-    console.log(body);
     let params = [];
     let text = "";
     if (
@@ -808,7 +796,6 @@ class DisplayEndpoint extends Component {
 
   async prepareHarObject() {
     const { uri, method, body } = this.state.data;
-    console.log(body);
     const BASE_URL = this.customState.BASE_URL;
     const { originalHeaders, originalParams } = this.state;
     const harObject = {
@@ -854,7 +841,7 @@ class DisplayEndpoint extends Component {
   setBody(bodyType, body) {
     let data = { ...this.state.data };
     data.body = { type: bodyType, value: body };
-    if (bodyType !== "formData") {
+    if (bodyType !== "multipart/form-data") {
       this.setHeaders(bodyType);
     }
     this.setState({ data });
@@ -886,7 +873,7 @@ class DisplayEndpoint extends Component {
     });
 
     switch (bodyType) {
-      case "urlEncoded":
+      case "application/x-www-form-urlencoded":
         updatedHeaders[updatedHeaders.length - 1].value =
           "application/x-www-form-urlencoded";
         break;

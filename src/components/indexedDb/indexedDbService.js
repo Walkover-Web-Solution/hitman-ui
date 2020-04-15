@@ -1,4 +1,4 @@
-import { openDB, deleteDB } from "idb";
+import { openDB } from "idb";
 let db = null;
 
 const getDataBase = async () => {
