@@ -74,12 +74,14 @@ class ContentPanel extends Component {
             id: endpointId,
             type: "endpoint",
             status: tabStatusTypes.SAVED,
+            previewMode: false,
           });
         } else {
           this.props.openInNewTab({
             id: endpointId,
             type: "endpoint",
             status: tabStatusTypes.SAVED,
+            previewMode: false,
           });
         }
       }
@@ -134,6 +136,7 @@ class ContentPanel extends Component {
           id: pageId,
           type: "page",
           status: tabStatusTypes.SAVED,
+          previewMode: false,
         });
       }
     }

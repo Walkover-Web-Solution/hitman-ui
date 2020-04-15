@@ -17,7 +17,7 @@ function tabsReducer(state = initialState, action) {
 
     case tabsActionTypes.OPEN_IN_NEW_TAB:
       tabs = {
-        ...state,
+        activeTabId: action.tab.id,
         tabs: { ...state.tabs, [action.tab.id]: action.tab },
       };
       return tabs;

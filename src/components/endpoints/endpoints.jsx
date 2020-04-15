@@ -8,10 +8,11 @@ import {
   pendingEndpoint,
   rejectEndpoint,
 } from "../publicEndpoint/redux/publicEndpointsActions";
-import { closeTab } from "../tabs/redux/tabsActions";
+import { closeTab, openInNewTab } from "../tabs/redux/tabsActions";
 import tabService from "../tabs/tabService";
-import { deleteEndpoint, duplicateEndpoint } from "./redux/endpointsActions";
+import tabStatusTypes from "../tabs/tabStatusTypes";
 import "./endpoints.scss";
+import { deleteEndpoint, duplicateEndpoint } from "./redux/endpointsActions";
 
 const mapStateToProps = (state) => {
   return {
@@ -32,6 +33,7 @@ const mapDispatchToProps = (dispatch) => {
     draftEndpoint: (endpoint) => dispatch(draftEndpoint(endpoint)),
     rejectEndpoint: (endpoint) => dispatch(rejectEndpoint(endpoint)),
     closeTab: (tabId) => dispatch(closeTab(tabId)),
+    openInNewTab: (tab) => dispatch(openInNewTab(tab)),
   };
 };
 
@@ -181,6 +183,14 @@ class Endpoints extends Component {
 
   handleDisplay(endpoint, groupId, collectionId) {
     if (isDashboardRoute(this.props)) {
+      if (!this.props.tabs.tabs[endpoint.id]) {
+        this.props.openInNewTab({
+          id: endpoint.id,
+          type: "endpoint",
+          status: tabStatusTypes.SAVED,
+          previewMode: true,
+        });
+      }
       this.props.history.push({
         pathname: `/dashboard/endpoint/${endpoint.id}`,
         title: "update endpoint",

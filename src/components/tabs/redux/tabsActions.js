@@ -11,7 +11,12 @@ export const addNewTab = (history) => {
     dispatch(setActiveTabId(id));
     dispatch({
       type: tabsActionTypes.ADD_NEW_TAB,
-      newTab: { id, type: "endpoint", status: tabStatusTypes.NEW },
+      newTab: {
+        id,
+        type: "endpoint",
+        status: tabStatusTypes.NEW,
+        previewMode: false,
+      },
     });
     history.push({ pathname: `/dashboard/endpoint/new` });
   };

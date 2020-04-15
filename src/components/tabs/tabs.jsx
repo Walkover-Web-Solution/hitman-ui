@@ -13,11 +13,19 @@ class CustomTabs extends Component {
     else {
       switch (tab.type) {
         case "endpoint":
-          if (this.props.endpoints[tabId])
-            return this.props.endpoints[tabId].name;
-          else return null;
+          if (this.props.endpoints[tabId]) {
+            console.log(tab.previewMode);
+            if (tab.previewMode)
+              return (
+                <label style={{ fontStyle: "italic" }}>
+                  {this.props.endpoints[tabId].name}
+                </label>
+              );
+            else return <label>{this.props.endpoints[tabId].name}</label>;
+          } else return null;
         case "page":
-          if (this.props.page[tabId]) return this.props.page[tabId].name;
+          if (this.props.page[tabId])
+            return <label>{this.props.page[tabId].name}</label>;
       }
     }
   }
