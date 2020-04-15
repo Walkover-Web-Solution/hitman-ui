@@ -1059,7 +1059,7 @@ main.main.ml-sm-auto.col-lg-10 {
       }
       #generic-table-description-cell {
         // border: none;
-        display: flex;
+        //display: flex;
         flex-direction: row;
         justify-content: space-between;
         .cross-button {
@@ -1559,8 +1559,10 @@ main.main.ml-sm-auto.col-lg-10 {
     }
   }
 }
+
 :disabled {
   cursor: not-allowed;
+  background-color: #e9ecef;
 }
 
 button.btn.btn-default {
