@@ -1,19 +1,22 @@
-import React from 'react'
+import React from "react";
 
-const Input = ({ name, label, value, onChange, error, type }) => {
+const Input = ({ name, label, value, onChange, error, placeholder }) => {
   return (
-    <div className='form-group'>
-      <label htmlFor={name}>{label}</label>
+    <div className="form-group">
+      <label htmlFor={name} className="custom-input-label">
+        {label}
+      </label>
       <input
         value={value}
         onChange={onChange}
         id={name}
         name={name}
-        type={type || 'text'}
-        className='form-control'
+        className="form-control custom-input"
+        type="text"
+        placeholder={placeholder}
       />
-      {error && <div className='alert alert-danger'>{error}</div>}
+      {error && <div className="alert alert-danger">{error}</div>}
     </div>
-  )
-}
-export default Input
+  );
+};
+export default Input;
