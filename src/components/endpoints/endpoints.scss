@@ -550,7 +550,7 @@ table#custom-generic-table {
   }
   #generic-table-description-cell {
     // border: none;
-    //display: flex;
+    display: flex;
     flex-direction: row;
     justify-content: space-between;
     .cross-button {
