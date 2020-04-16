@@ -37,7 +37,7 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 class ContentPanel extends Component {
-  state = {};
+  state = { saveEndpointFlag: false };
   async componentDidMount() {
     await indexedDbService.getDataBase();
     // const tabs = await indexedDbService.getAllValues("tabs");
@@ -49,6 +49,10 @@ class ContentPanel extends Component {
     ) {
       tabService.newTab({ ...this.props });
     }
+  }
+
+  handleSaveEndpoint(flag) {
+    this.setState({ saveEndpointFlag: flag });
   }
 
   render() {
@@ -115,13 +119,20 @@ class ContentPanel extends Component {
         >
           <div className="content-header">
             <div className="tabs-container">
-              <CustomTabs {...this.props} />
+              <CustomTabs
+                {...this.props}
+                handle_save_endpoint={this.handleSaveEndpoint.bind(this)}
+              />
             </div>
             <Environments {...this.props} />
           </div>
 
           <div className="main-content">
-            <TabContent {...this.props} />
+            <TabContent
+              {...this.props}
+              handle_save_endpoint={this.handleSaveEndpoint.bind(this)}
+              save_endpoint_flag={this.state.saveEndpointFlag}
+            />
           </div>
         </Tab.Container>
       </main>

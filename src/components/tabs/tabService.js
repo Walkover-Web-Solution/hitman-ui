@@ -16,9 +16,6 @@ function newTab(props) {
 }
 
 function removeTab(tabId, props) {
-  // let tabs = [...props.tabs];
-  // tabs.splice(index, 1);
-  // indexedDbService.deleteDataByIndex("tabs", index);
   props.closeTab(tabId);
   if (props.tabs.activeTabId === tabId) {
     const tabsCount = Object.keys(props.tabs.tabs).length;
@@ -73,10 +70,7 @@ function disablePreviewMode(tabId) {
 
 function markTabAsModified(tabId) {
   const tab = store.getState().tabs.tabs[tabId];
-  if (
-    tab.status !== tabStatusTypes.MODIFIED &&
-    tab.status !== tabStatusTypes.NEW
-  ) {
+  if (tab.status !== tabStatusTypes.MODIFIED) {
     store.dispatch(
       updateTab(tabId, { previewMode: false, status: tabStatusTypes.MODIFIED })
     );

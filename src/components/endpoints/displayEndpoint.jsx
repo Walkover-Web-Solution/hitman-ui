@@ -957,6 +957,10 @@ class DisplayEndpoint extends Component {
   }
 
   render() {
+    if (this.props.save_endpoint_flag) {
+      this.props.handle_save_endpoint(false);
+      this.handleSave();
+    }
     if (
       isDashboardRoute(this.props) &&
       this.props.location.pathname.split("/")[3] !== "new" &&
