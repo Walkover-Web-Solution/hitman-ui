@@ -40,6 +40,10 @@ class CustomTabs extends Component {
                 <button
                   className="btn"
                   onClick={() => tabService.selectTab({ ...this.props }, tabId)}
+                  onDoubleClick={() => {
+                    console.log("tab double clicked");
+                    tabService.disablePreviewMode(tabId);
+                  }}
                 >
                   {this.renderTabName(tabId)}
                 </button>

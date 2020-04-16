@@ -66,10 +66,15 @@ function selectTab(props, tabId) {
   }
 }
 
+function disablePreviewMode(tabId) {
+  store.dispatch(updateTab(tabId, { previewMode: false }));
+}
+
 export default {
   newTab,
   removeTab,
   changeRoute,
   closeAllTabs,
   selectTab,
+  disablePreviewMode,
 };

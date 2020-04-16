@@ -181,15 +181,24 @@ class Endpoints extends Component {
     this.props.rejectEndpoint(endpoint);
   }
 
-  handleDisplay(endpoint, groupId, collectionId) {
+  handleDisplay(endpoint, groupId, collectionId, previewMode) {
     if (isDashboardRoute(this.props)) {
       if (!this.props.tabs.tabs[endpoint.id]) {
+        const previewTabId = Object.keys(this.props.tabs.tabs).filter(
+          (tabId) => this.props.tabs.tabs[tabId].previewMode === true
+        )[0];
+        this.props.closeTab(previewTabId);
         this.props.openInNewTab({
           id: endpoint.id,
           type: "endpoint",
           status: tabStatusTypes.SAVED,
-          previewMode: true,
+          previewMode,
         });
+      } else if (
+        this.props.tabs.tabs[endpoint.id].previewMode === true &&
+        previewMode === false
+      ) {
+        tabService.disablePreviewMode(endpoint.id);
       }
       this.props.history.push({
         pathname: `/dashboard/endpoint/${endpoint.id}`,
@@ -241,7 +250,16 @@ class Endpoints extends Component {
                       this.handleDisplay(
                         this.props.endpoints[endpointId],
                         this.props.group_id,
-                        this.props.collection_id
+                        this.props.collection_id,
+                        true
+                      )
+                    }
+                    onDoubleClick={() =>
+                      this.handleDisplay(
+                        this.props.endpoints[endpointId],
+                        this.props.group_id,
+                        this.props.collection_id,
+                        false
                       )
                     }
                   >

@@ -29,6 +29,16 @@ function tabsReducer(state = initialState, action) {
       delete tabs.tabs[action.tabId];
       return tabs;
 
+    case tabsActionTypes.UPDATE_TAB:
+      tabs = {
+        ...state,
+      };
+      tabs.tabs[action.payload.tabId] = {
+        ...tabs.tabs[action.payload.tabId],
+        ...action.payload.data,
+      };
+      return tabs;
+
     case tabsActionTypes.SET_ACTIVE_TAB_ID:
       tabs = { ...state, activeTabId: action.tabId };
       return tabs;

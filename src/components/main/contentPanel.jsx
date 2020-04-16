@@ -57,8 +57,6 @@ class ContentPanel extends Component {
       this.props.location.pathname.split("/")[3] !== "new"
     ) {
       const endpointId = this.props.location.pathname.split("/")[3];
-      // const index = this.props.tabs.findIndex((tab) => tab.id === endpointId);
-      // let tabs = [...this.props.tabs];
 
       if (this.props.tabs.tabs[endpointId]) {
         if (this.props.tabs.activeTabId !== endpointId)
@@ -85,41 +83,6 @@ class ContentPanel extends Component {
           });
         }
       }
-
-      // if (index < 0) {
-      //   if (this.props.endpoints[endpointId]) {
-      //     const requestId = this.props.endpoints[endpointId].requestId;
-      //     const tabIndex = this.props.tabs.findIndex(
-      //       (tab) => tab.id === requestId
-      //     );
-      //     if (tabIndex >= 0) {
-      //       tabs[this.props.default_tab_index] = {
-      //         id: endpointId,
-      //         type: "endpoint",
-      //         isSaved: true,
-      //       };
-      //       indexedDbService.deleteData("tabs", requestId);
-      //       // indexedDbService.addData("tabs", {
-      //       //   id: endpointId,
-      //       //   type: "endpoint",
-      //       //   isSaved: true,
-      //       // });
-      //     } else {
-      //       tabs.push({ id: endpointId, type: "endpoint", isSaved: true });
-      //       // indexedDbService.addData("tabs", {
-      //       //   id: endpointId,
-      //       //   type: "endpoint",
-      //       //   isSaved: true,
-      //       // });
-      //     }
-      //     this.props.set_tabs(tabs, tabs.length - 1);
-      //   }
-      // } else if (
-      //   this.props.tabs.length &&
-      //   this.props.tabs[this.props.default_tab_index].id !== endpointId
-      // ) {
-      //   this.props.set_tabs(null, index);
-      // }
     }
 
     if (this.props.location.pathname.split("/")[2] === "page") {

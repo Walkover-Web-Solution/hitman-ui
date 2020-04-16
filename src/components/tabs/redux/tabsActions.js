@@ -34,9 +34,9 @@ export const openInNewTab = (tab) => {
   };
 };
 
-export const updateTab = (tab) => {
+export const updateTab = (tabId, data) => {
   return (dispatch) => {
-    dispatch({ type: tabsActionTypes.UPDATE_TAB, tab });
+    dispatch({ type: tabsActionTypes.UPDATE_TAB, payload: { tabId, data } });
   };
 };
 
