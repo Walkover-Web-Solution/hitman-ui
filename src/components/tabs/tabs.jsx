@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Nav } from "react-bootstrap";
 import tabService from "./tabService";
 import "./tabs.scss";
+import tabStatusTypes from "./tabStatusTypes";
 
 class CustomTabs extends Component {
   state = {};
@@ -52,7 +53,12 @@ class CustomTabs extends Component {
                 className="btn"
                 onClick={() => tabService.removeTab(tabId, { ...this.props })}
               >
-                <i className="fas fa-times"></i>
+                {this.props.tabs.tabs[tabId].status ===
+                tabStatusTypes.MODIFIED ? (
+                  <i class="fas fa-circle" id="modified-dot-icon"></i>
+                ) : (
+                  <i className="fas fa-times"></i>
+                )}
               </button>
             </Nav.Item>
           ))

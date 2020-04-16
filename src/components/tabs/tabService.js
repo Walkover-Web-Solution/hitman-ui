@@ -9,6 +9,7 @@ import {
   setActiveTabId,
 } from "../tabs/redux/tabsActions";
 import store from "../../store/store";
+import tabStatusTypes from "./tabStatusTypes";
 
 function newTab(props) {
   store.dispatch(addNewTab({ ...props.history }));
@@ -70,6 +71,22 @@ function disablePreviewMode(tabId) {
   store.dispatch(updateTab(tabId, { previewMode: false }));
 }
 
+function markTabAsModified(tabId) {
+  const tab = store.getState().tabs.tabs[tabId];
+  if (
+    tab.status !== tabStatusTypes.MODIFIED &&
+    tab.status !== tabStatusTypes.NEW
+  ) {
+    store.dispatch(
+      updateTab(tabId, { previewMode: false, status: tabStatusTypes.MODIFIED })
+    );
+  }
+}
+
+function markTabAsSaved(tabId) {
+  store.dispatch(updateTab(tabId, { status: tabStatusTypes.SAVED }));
+}
+
 export default {
   newTab,
   removeTab,
@@ -77,4 +94,6 @@ export default {
   closeAllTabs,
   selectTab,
   disablePreviewMode,
+  markTabAsModified,
+  markTabAsSaved,
 };

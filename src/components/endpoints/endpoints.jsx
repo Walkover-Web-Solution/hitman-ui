@@ -183,6 +183,7 @@ class Endpoints extends Component {
 
   handleDisplay(endpoint, groupId, collectionId, previewMode) {
     if (isDashboardRoute(this.props)) {
+      console.log(previewMode);
       if (!this.props.tabs.tabs[endpoint.id]) {
         const previewTabId = Object.keys(this.props.tabs.tabs).filter(
           (tabId) => this.props.tabs.tabs[tabId].previewMode === true

@@ -17,6 +17,8 @@ import GenericTable from "./genericTable";
 import HostContainer from "./hostContainer";
 import PublicBodyContainer from "./publicBodyContainer";
 import { addEndpoint, updateEndpoint } from "./redux/endpointsActions";
+import tabStatusTypes from "../tabs/tabStatusTypes";
+import tabService from "../tabs/tabService";
 const status = require("http-status");
 var URI = require("urijs");
 
@@ -252,6 +254,9 @@ class DisplayEndpoint extends Component {
       }
       originalParams = this.makeOriginalParams(keys, values, description);
       this.setState({ originalParams });
+    }
+    if (isDashboardRoute(this.props)) {
+      tabService.markTabAsModified(this.props.tab.id);
     }
     this.setState({ data });
   };
@@ -542,6 +547,7 @@ class DisplayEndpoint extends Component {
         });
       }
     }
+    tabService.markTabAsSaved(this.props.tab.id);
   };
 
   doSubmitPathVariables() {
@@ -597,14 +603,14 @@ class DisplayEndpoint extends Component {
     let data = { ...this.state.data };
     data.method = method;
     this.setState({ response, data });
+    if (isDashboardRoute(this.props)) {
+      tabService.markTabAsModified(this.props.tab.id);
+    }
   }
 
   propsFromChild(name, value) {
     if (name === "Params") {
       this.handleUpdateUri(value);
-      this.setState({ originalParams: value });
-    }
-    if (name === "handleAddParam") {
       this.setState({ originalParams: value });
     }
 
@@ -614,6 +620,14 @@ class DisplayEndpoint extends Component {
 
     if (name === "Path Variables") {
       this.setState({ pathVariables: value });
+    }
+
+    if (
+      (isDashboardRoute(this.props) && name === "Params") ||
+      name === "Headers" ||
+      name === "Path Variables"
+    ) {
+      tabService.markTabAsModified(this.props.tab.id);
     }
   }
 
@@ -841,6 +855,10 @@ class DisplayEndpoint extends Component {
       this.setHeaders(bodyType);
     }
     this.setState({ data });
+
+    if (isDashboardRoute(this.props)) {
+      tabService.markTabAsModified(this.props.tab.id);
+    }
   }
 
   setBodyDescription(bodyDescription) {
@@ -902,6 +920,9 @@ class DisplayEndpoint extends Component {
   propsFromDescription(title, data) {
     if (title === "data") {
       this.setState({ data: data });
+      if (isDashboardRoute(this.props)) {
+        tabService.markTabAsModified(this.props.tab.id);
+      }
     }
     if (title === "endpoint") this.setState({ endpoint: data });
     if (title === "oldDescription") this.setState({ oldDescription: data });
@@ -969,82 +990,6 @@ class DisplayEndpoint extends Component {
         });
       }
     }
-
-    // if (this.props.location.title === "Add New Endpoint") {
-    //   this.title = "Add New Endpoint";
-    //   this.setState({
-    //     data: {
-    //       name: "",
-    //       method: "GET",
-    //       body: { type: "raw", value: null },
-    //       uri: "",
-    //       updatedUri: "",
-    //     },
-    //     startTime: "",
-    //     timeElapsed: "",
-    //     response: {},
-    //     endpoint: {},
-    //     groupId: this.props.location.groupId,
-    //     title: "Add New Endpoint",
-    //     flagResponse: false,
-
-    //     originalHeaders: [
-    //       {
-    //         checked: "notApplicable",
-    //         key: "",
-    //         value: "",
-    //         description: "",
-    //       },
-    //     ],
-    //     originalParams: [
-    //       {
-    //         checked: "notApplicable",
-    //         key: "",
-    //         value: "",
-    //         description: "",
-    //       },
-    //     ],
-    //   });
-    //   this.props.history.push({ groups: null });
-    // }
-
-    // if (
-    //   this.props.location.title === "update endpoint" &&
-    //   this.props.location.endpoint
-    // ) {
-    //   let endpoint = { ...this.props.location.endpoint };
-    //   //To fetch originalParams from Params
-    //   const originalParams = this.fetchoriginalParams(
-    //     this.props.location.endpoint.params
-    //   );
-    //   const params = this.fetchoriginalParams(endpoint.params);
-
-    //   //To fetch originalHeaders from Headers
-    //   const originalHeaders = this.fetchoriginalHeaders(endpoint.headers);
-    //   const headers = this.fetchoriginalHeaders(endpoint.headers);
-    //   console.log("in update endpoint");
-    //   this.setState({
-    //     data: {
-    //       method: endpoint.requestType,
-    //       uri: endpoint.uri,
-    //       updatedUri: endpoint.uri,
-    //       name: endpoint.name,
-    //       body: endpoint.body,
-    //       // JSON.stringify(endpoint.body, null, 4)
-    //     },
-    //     title: "update endpoint",
-    //     response: {},
-    //     groupId: this.props.location.endpoint.groupId,
-    //     originalParams,
-    //     originalHeaders,
-    //     params,
-    //     headers,
-    //     endpoint,
-    //     flagResponse: false,
-    //     oldDescription: endpoint.description,
-    //   });
-    //   this.props.history.push({ endpoint: null });
-    // }
     return (
       <div className="endpoint-container">
         {this.state.showEndpointFormModal && (
@@ -1064,7 +1009,7 @@ class DisplayEndpoint extends Component {
           data={this.state.data}
           old_description={this.state.oldDescription}
           props_from_parent={this.propsFromDescription.bind(this)}
-        ></DisplayDescription>
+        />
 
         <div className="endpoint-url-container">
           <div className="input-group-prepend">

@@ -3,6 +3,8 @@ import { toast } from "react-toastify";
 import store from "../../store/store";
 import { isDashboardRoute } from "../common/utility";
 import "./endpoints.scss";
+import tabService from "../tabs/tabService";
+import tabStatusTypes from "../tabs/tabStatusTypes";
 
 class HostContainer extends Component {
   state = {
@@ -51,11 +53,17 @@ class HostContainer extends Component {
         this.setState({ selectedHost: "customHost" });
       }
     } else this.setState({ selectedHost: host });
+    if (isDashboardRoute(this.props)) {
+      tabService.markTabAsModified(this.props.tab.id);
+    }
   }
 
   handleChange = (e) => {
     const customHost = e.currentTarget.value;
     this.setState({ customHost });
+    if (isDashboardRoute(this.props)) {
+      tabService.markTabAsModified(this.props.tab.id);
+    }
   };
 
   fetchHost() {
