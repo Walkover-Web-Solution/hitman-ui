@@ -10,6 +10,7 @@ import {
   openInNewTab,
   setActiveTabId,
   updateTab,
+  setTabsOrder,
 } from "../tabs/redux/tabsActions";
 import TabContent from "../tabs/tabContent";
 import CustomTabs from "../tabs/tabs";
@@ -33,6 +34,7 @@ const mapDispatchToProps = (dispatch) => {
     openInNewTab: (tab) => dispatch(openInNewTab(tab)),
     updateTab: (tab) => dispatch(updateTab(tab)),
     setActiveTabId: (tabId) => dispatch(setActiveTabId(tabId)),
+    setTabsOrder: (tabsOrder) => dispatch(setTabsOrder(tabsOrder)),
   };
 };
 

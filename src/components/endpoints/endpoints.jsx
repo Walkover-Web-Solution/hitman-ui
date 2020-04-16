@@ -49,7 +49,7 @@ class Endpoints extends Component {
     this.props.set_source_group_id(eId, this.props.group_id);
   };
 
-  onDragOver = (e, eId) => {
+  onDragOver = (e) => {
     e.preventDefault();
   };
   onDrop = (e, droppedOnItem) => {
@@ -244,7 +244,7 @@ class Endpoints extends Component {
                   <button
                     className="btn "
                     draggable
-                    onDragOver={(e) => this.onDragOver(e, endpointId)}
+                    onDragOver={this.onDragOver}
                     onDragStart={(e) => this.onDragStart(e, endpointId)}
                     onDrop={(e) => this.onDrop(e)}
                     onClick={() =>

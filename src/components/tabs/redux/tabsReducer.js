@@ -3,6 +3,7 @@ import tabsActionTypes from "./tabsActionTypes";
 const initialState = {
   tabs: {},
   activeTabId: null,
+  tabsOrder: [],
 };
 
 function tabsReducer(state = initialState, action) {
@@ -12,13 +13,16 @@ function tabsReducer(state = initialState, action) {
       tabs = {
         ...state,
         tabs: { ...state.tabs, [action.newTab.id]: action.newTab },
+        tabsOrder: [...state.tabsOrder, action.newTab.id],
       };
+
       return tabs;
 
     case tabsActionTypes.OPEN_IN_NEW_TAB:
       tabs = {
         activeTabId: action.tab.id,
         tabs: { ...state.tabs, [action.tab.id]: action.tab },
+        tabsOrder: [...state.tabsOrder, action.tab.id],
       };
       return tabs;
 
@@ -27,6 +31,7 @@ function tabsReducer(state = initialState, action) {
         ...state,
       };
       delete tabs.tabs[action.tabId];
+      tabs.tabsOrder = tabs.tabsOrder.filter((t) => t != action.tabId);
       return tabs;
 
     case tabsActionTypes.UPDATE_TAB:
@@ -44,6 +49,10 @@ function tabsReducer(state = initialState, action) {
       return tabs;
     default:
       return state;
+
+    case tabsActionTypes.SET_TABS_ORDER:
+      tabs = { ...state, tabsOrder: action.tabsOrder };
+      return tabs;
   }
 }
 

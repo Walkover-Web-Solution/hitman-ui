@@ -47,6 +47,13 @@ export const setActiveTabId = (tabId) => {
   };
 };
 
+export const setTabsOrder = (tabsOrder) => {
+  return {
+    type: tabsActionTypes.SET_TABS_ORDER,
+    tabsOrder,
+  };
+};
+
 // export default {
 //   addNewTab,
 //   closeTab,

@@ -38,6 +38,34 @@ class CustomTabs extends Component {
   closeSavePrompt() {
     this.setState({ showSavePrompt: false });
   }
+
+  onDragStart = (tId) => {
+    this.draggedItem = tId;
+  };
+
+  onDragOver = (e) => {
+    e.preventDefault();
+  };
+
+  onDrop = (e, droppedOnItem) => {
+    e.preventDefault();
+    console.log(this.props.tabs.tabsOrder);
+    if (this.draggedItem === droppedOnItem) {
+      this.draggedItem = null;
+      return;
+    }
+    let tabsOrder = this.props.tabs.tabsOrder.filter(
+      (item) => item !== this.draggedItem
+    );
+    const index = this.props.tabs.tabsOrder.findIndex(
+      (tId) => tId === droppedOnItem
+    );
+    tabsOrder.splice(index, 0, this.draggedItem);
+    // this.props.setEndpointIds(endpointIds, this.props.group_id);
+    this.props.setTabsOrder(tabsOrder);
+    console.log(tabsOrder);
+  };
+
   render() {
     return (
       <Nav variant="pills" className="flex-row">
@@ -51,8 +79,14 @@ class CustomTabs extends Component {
             />
           )}
         </div>
-        {Object.keys(this.props.tabs.tabs).map((tabId, index) => (
-          <Nav.Item key={tabId}>
+        {this.props.tabs.tabsOrder.map((tabId, index) => (
+          <Nav.Item
+            key={tabId}
+            draggable
+            onDragOver={this.onDragOver}
+            onDragStart={() => this.onDragStart(tabId)}
+            onDrop={(e) => this.onDrop(e, tabId)}
+          >
             <Nav.Link eventKey={tabId}>
               <button
                 className="btn"
