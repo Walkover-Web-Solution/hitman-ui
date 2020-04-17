@@ -1368,7 +1368,13 @@ class DisplayEndpoint extends Component {
                 set_body={this.setBody.bind(this)}
                 body={this.state.data.body}
                 endpoint={this.state.endpoint}
-                body_description={this.state.bodyDescription}
+                body_description={{
+                  key1: { default: "", dataType: "string" },
+                  key2: { default: "", dataType: "number" },
+                  key3: { default: "", dataType: "Array of String" },
+                  key4: { default: "", dataType: "Array of Integer" },
+                  key5: { default: "", dataType: "Array of Object" },
+                }}
               ></PublicBodyContainer>
             </div>
           )}

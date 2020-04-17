@@ -136,8 +136,8 @@ class PublicBodyContainer extends Component {
         let type = typeof data[i];
         if (type === "object") {
           if (Array.isArray(data[i])) {
-            if (typeof data[i][0] === "number") type = "Array of Integers";
-            else if (typeof data[i][0] === "string") type = "Array of Strings";
+            if (typeof data[i][0] === "number") type = "Array";
+            else if (typeof data[i][0] === "string") type = "Array";
             //type = "Array";
             else type = "Array of Objects";
           }
@@ -171,16 +171,25 @@ class PublicBodyContainer extends Component {
           <div>
             <div className="generic-table-container">
               <div className="public-generic-table-title-container">Body</div>
-              <table className="table table-bordered">
+              <table className="table table-bordered" id="custom-generic-table">
                 <thead>
                   <tr>
-                    <th style={{ width: "30%" }}>KEY</th>
-                    <th style={{ width: "60%" }}>VALUE</th>
+                    <th className="custom-th"> </th>
+                    <th className="custom-th" id="generic-table-key-cell">
+                      KEY
+                    </th>
+                    <th className="custom-th">VALUE</th>
+                    <th className="custom-th">DESCRIPTION</th>
                   </tr>
                 </thead>
                 <tbody style={{ border: "none" }}>
                   {this.keysArray.map((e, index) => (
                     <tr key={index}>
+                      <td
+                        className="custom-td"
+                        id="generic-table-key-cell"
+                        style={{ marginLeft: "5px" }}
+                      ></td>
                       <td className="custom-td">
                         <div>
                           <input
@@ -189,12 +198,6 @@ class PublicBodyContainer extends Component {
                             value={this.keysArray[index]}
                             type={"text"}
                             className="form-control"
-                            style={{
-                              border: "none",
-                              background: "none",
-                              width: "auto",
-                              display: "inline",
-                            }}
                           ></input>
                           <label
                             style={{
@@ -319,7 +322,7 @@ class PublicBodyContainer extends Component {
                           />
                         )}
                       </td>
-                      {/* <td className="custom-td">
+                      <td className="custom-td">
                         <input
                           disabled
                           name={index + ".datatype"}
@@ -329,7 +332,7 @@ class PublicBodyContainer extends Component {
                           className="form-control"
                           style={{ border: "none" }}
                         />
-                      </td> */}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
