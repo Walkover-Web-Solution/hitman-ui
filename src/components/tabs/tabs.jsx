@@ -73,7 +73,7 @@ class CustomTabs extends Component {
 
   render() {
     return (
-      <Nav variant="pills" className="flex-row">
+      <Nav variant="pills" className="flex-row flex-nowrap item-wrp">
         <div>
           {this.state.showSavePrompt && (
             <SavePromptModal
