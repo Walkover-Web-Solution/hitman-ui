@@ -188,7 +188,7 @@ class Endpoints extends Component {
         const previewTabId = Object.keys(this.props.tabs.tabs).filter(
           (tabId) => this.props.tabs.tabs[tabId].previewMode === true
         )[0];
-        this.props.closeTab(previewTabId);
+        if (previewTabId) this.props.closeTab(previewTabId);
         this.props.openInNewTab({
           id: endpoint.id,
           type: "endpoint",

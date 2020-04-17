@@ -1,5 +1,4 @@
 import shortId from "shortid";
-import indexedDbService from "../indexedDb/indexedDbService";
 import { dispatch } from "react-redux";
 import {
   addNewTab,

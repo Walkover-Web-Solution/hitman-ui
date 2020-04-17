@@ -32,6 +32,7 @@ function tabsReducer(state = initialState, action) {
       };
       delete tabs.tabs[action.tabId];
       tabs.tabsOrder = tabs.tabsOrder.filter((t) => t != action.tabId);
+      console.log(tabs);
       return tabs;
 
     case tabsActionTypes.UPDATE_TAB:
@@ -49,6 +50,15 @@ function tabsReducer(state = initialState, action) {
       return tabs;
     default:
       return state;
+
+    case tabsActionTypes.FETCH_TABS_FROM_IDB:
+      tabs = {
+        ...state,
+        tabs: { ...state.tabs, ...action.tabsList },
+        tabsOrder: [...state.tabsOrder, ...Object.keys(action.tabsList)],
+      };
+
+      return tabs;
 
     case tabsActionTypes.SET_TABS_ORDER:
       tabs = { ...state, tabsOrder: action.tabsOrder };
