@@ -5,7 +5,7 @@ import Joi from "joi-browser";
 class Form extends Component {
   state = {
     data: {},
-    errors: {}
+    errors: {},
   };
 
   validate = () => {
@@ -17,7 +17,7 @@ class Form extends Component {
     return errors;
   };
 
-  handleSubmit = e => {
+  handleSubmit = (e) => {
     e.preventDefault();
     const errors = this.validate();
     this.setState({ errors: errors || {} });
@@ -25,7 +25,7 @@ class Form extends Component {
     this.doSubmit();
   };
 
-  handleChange = e => {
+  handleChange = (e) => {
     const data = { ...this.state.data };
     data[e.currentTarget.name] = e.currentTarget.value;
     this.setState({ data });
@@ -33,6 +33,7 @@ class Form extends Component {
 
   renderInput(name, label, placeholder) {
     const { data, errors } = this.state;
+    console.log(errors[name]);
     return (
       <Input
         name={name}

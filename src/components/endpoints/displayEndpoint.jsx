@@ -68,12 +68,32 @@ class DisplayEndpoint extends Component {
     headers: [],
     params: [],
     bodyDescription: [],
+    updatedArray: {},
+    // test: "",
+    objectDefinition: {},
   };
 
   customState = {
     BASE_URL: "",
     customBASE_URL: "",
   };
+
+  setObjectDefinition(name, definition) {
+    let objectDefinition = { ...this.state.objectDefinition };
+    objectDefinition[name] = definition;
+    this.setState({ objectDefinition });
+  }
+
+  deleteObjectDefinition(objectKey) {
+    let objectDefinition = { ...this.state.objectDefinition };
+    delete objectDefinition[objectKey];
+    this.setState({ objectDefinition });
+  }
+  // test() {
+  //   const test = "hello World!";
+  //   console.log("test", test);
+  //   this.setState({ test });
+  // }
 
   async componentDidMount() {
     if (this.props.location.pathname.split("/")[3] === "new") {
@@ -192,6 +212,22 @@ class DisplayEndpoint extends Component {
         pathVariables = this.fetchPathVariables(endpoint.pathVariables);
         this.setState({ pathVariables });
       }
+      // console.log(endpoint.bodyDescription);
+      // console.log("123");
+      // let bodyDescription = [];
+      // if (endpoint.bodyDescription.length !== 0) {
+
+      //   // bodyDescription = JSON.parse(endpoint.bodyDescription);
+      // }
+      // console.log(endpoint.bodyDescription);
+      // console.log("124");
+      let updatedArray = {};
+      let bodyDescription = [];
+      if (endpoint.body.type === "raw1") {
+        updatedArray = JSON.parse(endpoint.body.value);
+        bodyDescription = endpoint.bodyDescription;
+      }
+
       this.setState({
         data: {
           method: endpoint.requestType,
@@ -209,6 +245,8 @@ class DisplayEndpoint extends Component {
         endpoint_description: endpoint.description,
         oldDescription: endpoint.description,
         title: "update endpoint",
+        bodyDescription,
+        updatedArray,
       });
     }
   }
@@ -520,6 +558,11 @@ class DisplayEndpoint extends Component {
       if (this.state.data.body.type === "raw") {
         body.value = this.parseBody(body.value);
       }
+      if (!(this.state.data.body.type === "raw1")) {
+        const bodyDescription = [];
+        const updatedArray = {};
+        this.setState({ updatedArray, bodyDescription });
+      }
       const headersData = this.doSubmitHeader();
       const updatedParams = this.doSubmitParam();
       const pathVariables = this.doSubmitPathVariables();
@@ -532,6 +575,7 @@ class DisplayEndpoint extends Component {
         params: updatedParams,
         pathVariables: pathVariables,
         BASE_URL: this.customState.BASE_URL,
+        bodyDescription: this.state.bodyDescription,
       };
       // if (endpoint.name === "" || endpoint.uri === "")
       if (endpoint.name === "") toast.error("Please enter Endpoint name");
@@ -743,6 +787,10 @@ class DisplayEndpoint extends Component {
     this.handleSave(groupId, endpointName);
   }
 
+  updateArray(updatedArray) {
+    this.setState({ updatedArray });
+  }
+
   makeHeaders(headers) {
     let processedHeaders = [];
     for (let i = 0; i < Object.keys(headers).length; i++) {
@@ -940,6 +988,10 @@ class DisplayEndpoint extends Component {
   }
 
   render() {
+    // console.log(this.state.updatedArray);
+    console.log(this.state.objectDefinition);
+    console.log(this.state.bodyDescription);
+
     if (
       isDashboardRoute(this.props) &&
       this.props.location.pathname.split("/")[3] !== "new" &&
@@ -1266,7 +1318,10 @@ class DisplayEndpoint extends Component {
                   set_body={this.setBody.bind(this)}
                   body={this.state.data.body}
                   endpoint_id={this.props.tab.id}
+                  update_array={this.updateArray.bind(this)}
+                  updated_array={this.state.updatedArray}
                   body_description={this.state.bodyDescription}
+                  object_definition={this.state.objectDefinition}
                 />
               </div>
               <div
@@ -1277,6 +1332,14 @@ class DisplayEndpoint extends Component {
               >
                 <BodyDescription
                   set_body_description={this.setBodyDescription.bind(this)}
+                  update_array={this.updateArray.bind(this)}
+                  updated_array={this.state.updatedArray}
+                  body_description={this.state.bodyDescription}
+                  object_definition={this.state.objectDefinition}
+                  delete_object_definition={this.deleteObjectDefinition.bind(
+                    this
+                  )}
+                  set_object_definition={this.setObjectDefinition.bind(this)}
                 />
               </div>
             </div>
