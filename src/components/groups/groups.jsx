@@ -31,7 +31,10 @@ class Groups extends Component {
       edit: false,
       share: false,
     },
+    filter: "",
   };
+
+  filterFlag = false;
 
   onDrop(destinationGroupId) {
     this.props.set_destination_group_id(destinationGroupId);
@@ -156,10 +159,62 @@ class Groups extends Component {
     this.setState({ showDeleteModal: false });
   }
 
+  propsFromGroups(groupIds) {
+    let versionIds = [];
+    this.filteredGroups = {};
+    for (let i = 0; i < groupIds.length; i++) {
+      this.filteredGroups[groupIds[i]] = this.props.groups[groupIds[i]];
+      versionIds.push(this.props.groups[groupIds[i]].versionId);
+    }
+    console.log(versionIds);
+    this.props.show_filter_version(versionIds);
+  }
+
+  filterGroups() {
+    if (
+      this.props.selectedCollection === true &&
+      this.props.filter !== "" &&
+      this.filterFlag === false
+    ) {
+      this.filteredGroups = {};
+      this.filterFlag = true;
+      let groups = { ...this.props.groups };
+      let groupIds = Object.keys(groups);
+      let groupNameIds = {};
+      for (let i = 0; i < groupIds.length; i++) {
+        const { name } = groups[groupIds[i]];
+        groupNameIds[name] = groupIds[i];
+      }
+      let groupNames = Object.keys(groupNameIds);
+      let finalGroupNames = groupNames.filter((name) => {
+        return (
+          name.toLowerCase().indexOf(this.props.filter.toLowerCase()) !== -1
+        );
+      });
+      let finalGroupIds = finalGroupNames.map((name) => groupNameIds[name]);
+      for (let i = 0; i < finalGroupIds.length; i++) {
+        this.filteredGroups[finalGroupIds[i]] = this.props.groups[
+          finalGroupIds[i]
+        ];
+      }
+      this.setState({ filter: this.props.filter });
+      if (Object.keys(this.filteredGroups).length !== 0) {
+        let versionIds = [];
+        for (let i = 0; i < Object.keys(this.filteredGroups).length; i++) {
+          versionIds.push(this.filteredGroups[finalGroupIds[i]].groupId);
+        }
+        this.props.show_filter_version(versionIds);
+      }
+    } else if (this.filterFlag === false) {
+      this.filteredGroups = { ...this.props.groups };
+    }
+  }
+
   render() {
     return (
       <div>
         <div>
+          {this.filterGroups()}
           {this.showShareGroupForm()}
           {this.showEditGroupForm()}
           {this.showAddGroupPageForm()}
@@ -278,6 +333,7 @@ class Groups extends Component {
                       endpoints_order={
                         this.props.groups[groupId].endpointsOrder
                       }
+                      show_filter_groups={this.propsFromGroups.bind(this)}
                     />
                   </Card.Body>
                 </Accordion.Collapse>

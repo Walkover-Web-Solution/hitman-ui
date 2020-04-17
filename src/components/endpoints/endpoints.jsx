@@ -35,7 +35,10 @@ const mapDispatchToProps = (dispatch) => {
 class Endpoints extends Component {
   state = {
     endpointState: "Make Public",
+    filter: "",
   };
+
+  filterFlag = false;
 
   componentDidMount() {}
 
@@ -195,11 +198,57 @@ class Endpoints extends Component {
     }
   }
 
+  filterEndpoints() {
+    if (
+      this.props.selectedCollection === true &&
+      this.props.filter !== "" &&
+      this.filterFlag === false
+    ) {
+      this.filteredEndpoints = {};
+      this.filterFlag = true;
+      let endpoints = { ...this.props.endpoints };
+      let EndpointIds = Object.keys(endpoints);
+      let endpointNameIds = {};
+      for (let i = 0; i < EndpointIds.length; i++) {
+        const { name } = endpoints[EndpointIds[i]];
+        endpointNameIds[name] = EndpointIds[i];
+      }
+      let endpointNames = Object.keys(endpointNameIds);
+      let finalEndpointNames = endpointNames.filter((name) => {
+        return (
+          name.toLowerCase().indexOf(this.props.filter.toLowerCase()) !== -1
+        );
+      });
+      let finalEndpointIds = finalEndpointNames.map(
+        (name) => endpointNameIds[name]
+      );
+      for (let i = 0; i < finalEndpointIds.length; i++) {
+        this.filteredEndpoints[finalEndpointIds[i]] = this.props.endpoints[
+          finalEndpointIds[i]
+        ];
+      }
+      this.setState({ filter: this.props.filter });
+
+      if (Object.keys(this.filteredEndpoints).length !== 0) {
+        let groupIds = [];
+        for (let i = 0; i < Object.keys(this.filteredEndpoints).length; i++) {
+          groupIds.push(this.filteredEndpoints[finalEndpointIds[i]].groupId);
+        }
+        this.props.show_filter_groups(groupIds);
+      }
+    } else if (this.filterFlag === false) {
+      this.filteredEndpoints = { ...this.props.endpoints };
+    }
+  }
   render() {
+    if (this.state.filter !== this.props.filter) {
+      this.filterFlag = false;
+    }
     if (isDashboardRoute(this.props)) {
-      console.log(this.props.endpoints, this.props.endpoints_order);
       return (
         <React.Fragment>
+          {this.filterEndpoints()}
+
           {/* <div>
           {this.state.showDeleteModal &&
             endpointService.showDeleteEndpointModal(

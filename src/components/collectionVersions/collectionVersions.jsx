@@ -40,7 +40,10 @@ class CollectionVersions extends Component {
       share: false,
       edit: false,
     },
+    filter: "",
   };
+
+  filterFlag = false;
 
   handleUpdate(collectionVersion) {
     this.props.history.push({
@@ -165,7 +168,19 @@ class CollectionVersions extends Component {
     this.setState({ showDeleteModal: false });
   }
 
+  propsFromVersion(versionIds) {
+    this.filteredVersions = {};
+    this.filterFlag = true;
+    for (let i = 0; i < versionIds.length; i++) {
+      this.filteredVersions[versionIds[i]] = this.props.versions[versionIds[i]];
+    }
+    this.setState({ filter: this.props.filter });
+  }
+
   render() {
+    if (this.filterFlag === false) {
+      this.filteredVersions = { ...this.props.versions };
+    }
     return (
       <div>
         {this.showShareVersionForm()}
@@ -181,12 +196,12 @@ class CollectionVersions extends Component {
         All your groups, pages and endpoints present in this version will be deleted.`,
             this.state.selectedVersion
           )}
-        {this.props.versions &&
-          Object.keys(this.props.versions) &&
-          Object.keys(this.props.versions)
+        {this.filteredVersions &&
+          Object.keys(this.filteredVersions) &&
+          Object.keys(this.filteredVersions)
             .filter(
               (versionId) =>
-                this.props.versions[versionId].collectionId ===
+                this.filteredVersions[versionId].collectionId ===
                 this.props.collection_id
             )
             .map((versionId, index) => (
@@ -277,7 +292,11 @@ class CollectionVersions extends Component {
                   <Accordion.Collapse eventKey="1">
                     <Card.Body>
                       <VersionPages {...this.props} version_id={versionId} />
-                      <Groups {...this.props} version_id={versionId} />
+                      <Groups
+                        {...this.props}
+                        version_id={versionId}
+                        show_filter_version={this.propsFromVersion.bind(this)}
+                      />
                     </Card.Body>
                   </Accordion.Collapse>
                 </Card>
