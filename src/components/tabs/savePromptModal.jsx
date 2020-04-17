@@ -7,7 +7,7 @@ class SavePromptModal extends Component {
 
   handleSave() {
     this.props.onHide();
-    this.props.handle_save_endpoint(true);
+    this.props.handle_save_endpoint(true, this.props.tab_id);
   }
 
   handleDontSave() {

@@ -11,6 +11,7 @@ import {
   updateTab,
   setTabsOrder,
   fetchTabsFromIdb,
+  replaceTab,
 } from "../tabs/redux/tabsActions";
 import TabContent from "../tabs/tabContent";
 import CustomTabs from "../tabs/tabs";
@@ -36,6 +37,7 @@ const mapDispatchToProps = (dispatch) => {
     setActiveTabId: (tabId) => dispatch(setActiveTabId(tabId)),
     setTabsOrder: (tabsOrder) => dispatch(setTabsOrder(tabsOrder)),
     fetchTabsFromIdb: (tabsOrder) => dispatch(fetchTabsFromIdb(tabsOrder)),
+    replaceTab: (oldTabId, newTab) => dispatch(replaceTab(oldTabId, newTab)),
   };
 };
 
@@ -53,8 +55,8 @@ class ContentPanel extends Component {
     }
   }
 
-  handleSaveEndpoint(flag) {
-    this.setState({ saveEndpointFlag: flag });
+  handleSaveEndpoint(flag, tabId) {
+    this.setState({ saveEndpointFlag: flag, selectedTabId: tabId });
   }
 
   render() {
@@ -73,19 +75,22 @@ class ContentPanel extends Component {
           this.props.endpoints[endpointId] &&
           this.props.endpoints[endpointId].requestId
         ) {
-          this.props.closeTab(this.props.endpoints[endpointId].requestId);
-          this.props.openInNewTab({
+          const requestId = this.props.endpoints[endpointId].requestId;
+          this.props.replaceTab(requestId, {
             id: endpointId,
             type: "endpoint",
             status: tabStatusTypes.SAVED,
             previewMode: false,
+            isModified: false,
           });
+          // this.props.closeTab;
         } else {
           this.props.openInNewTab({
             id: endpointId,
             type: "endpoint",
             status: tabStatusTypes.SAVED,
             previewMode: false,
+            isModified: false,
           });
         }
       }
@@ -94,13 +99,15 @@ class ContentPanel extends Component {
     if (this.props.location.pathname.split("/")[2] === "page") {
       const pageId = this.props.location.pathname.split("/")[3];
       if (this.props.tabs.tabs[pageId]) {
-        this.props.setActiveTabId(pageId);
+        if (this.props.tabs.activeTabId !== pageId)
+          this.props.setActiveTabId(pageId);
       } else {
         this.props.openInNewTab({
           id: pageId,
           type: "page",
           status: tabStatusTypes.SAVED,
           previewMode: false,
+          isModified: false,
         });
       }
     }
@@ -129,6 +136,7 @@ class ContentPanel extends Component {
               {...this.props}
               handle_save_endpoint={this.handleSaveEndpoint.bind(this)}
               save_endpoint_flag={this.state.saveEndpointFlag}
+              selected_tab_id={this.state.selectedTabId}
             />
           </div>
         </Tab.Container>

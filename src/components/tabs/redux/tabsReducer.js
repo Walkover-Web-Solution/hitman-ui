@@ -8,6 +8,7 @@ const initialState = {
 
 function tabsReducer(state = initialState, action) {
   let tabs = {};
+  console.log(state, action);
   switch (action.type) {
     case tabsActionTypes.ADD_NEW_TAB:
       tabs = {
@@ -32,7 +33,6 @@ function tabsReducer(state = initialState, action) {
       };
       delete tabs.tabs[action.tabId];
       tabs.tabsOrder = tabs.tabsOrder.filter((t) => t != action.tabId);
-      console.log(tabs);
       return tabs;
 
     case tabsActionTypes.UPDATE_TAB:
@@ -57,7 +57,16 @@ function tabsReducer(state = initialState, action) {
         tabs: { ...state.tabs, ...action.tabsList },
         tabsOrder: [...state.tabsOrder, ...Object.keys(action.tabsList)],
       };
+      return tabs;
 
+    case tabsActionTypes.REPLACE_TAB:
+      tabs = {
+        ...state,
+      };
+      delete tabs.tabs[action.oldTabId];
+      tabs.tabs[action.newTab.id] = action.newTab;
+      const index = tabs.tabsOrder.findIndex((t) => t === action.oldTabId);
+      tabs.tabsOrder[index] = action.newTab.id;
       return tabs;
 
     case tabsActionTypes.SET_TABS_ORDER:

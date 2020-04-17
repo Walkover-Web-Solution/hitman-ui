@@ -49,7 +49,6 @@ function closeAllTabs(props) {
 }
 
 function selectTab(props, tabId) {
-  // props.set_tabs(null, index);
   const tab = props.tabs.tabs[tabId];
   props.setActiveTabId(tabId);
   if (tab.status === "NEW") {
@@ -69,15 +68,15 @@ function disablePreviewMode(tabId) {
 
 function markTabAsModified(tabId) {
   const tab = store.getState().tabs.tabs[tabId];
-  if (tab.status !== tabStatusTypes.MODIFIED) {
-    store.dispatch(
-      updateTab(tabId, { previewMode: false, status: tabStatusTypes.MODIFIED })
-    );
+  if (!tab.isModified) {
+    store.dispatch(updateTab(tabId, { previewMode: false, isModified: true }));
   }
 }
 
 function markTabAsSaved(tabId) {
-  store.dispatch(updateTab(tabId, { status: tabStatusTypes.SAVED }));
+  store.dispatch(
+    updateTab(tabId, { status: tabStatusTypes.SAVED, isModified: false })
+  );
 }
 
 export default {

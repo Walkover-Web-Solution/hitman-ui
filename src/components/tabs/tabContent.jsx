@@ -17,11 +17,11 @@ class TabContent extends Component {
           <Switch>
             <Route
               path={`/dashboard/page/${tab.id}/edit`}
-              render={(props) => <EditPage {...props} />}
+              render={(props) => <EditPage {...props} tab={tab} />}
             />
             <Route
               path={`/dashboard/page/${tab.id}`}
-              render={(props) => <DisplayPage {...props} />}
+              render={(props) => <DisplayPage {...props} tab={tab} />}
             />
           </Switch>
         );
@@ -34,28 +34,6 @@ class TabContent extends Component {
         {Object.keys(this.props.tabs.tabs).map((tabId) => (
           <Tab.Pane eventKey={tabId} key={tabId}>
             {this.renderContent(tabId)}
-            {/* <Switch>
-              <Route
-                path={`/dashboard/endpoint/${tab.id}`}
-                render={(props) => (
-                  <DisplayEndpoint {...this.props} environment={{}} />
-                )}
-              />
-              <Route
-                path={`/dashboard/endpoint/new/${tab.id}`}
-                render={(props) => (
-                  <DisplayEndpoint {...this.props} environment={{}} />
-                )}
-              />
-              <Route
-                path={`/dashboard/page/${tab.id}/edit`}
-                render={(props) => <EditPage {...props} />}
-              />
-              <Route
-                path={`/dashboard/page/${tab.id}`}
-                render={(props) => <DisplayPage {...props} />}
-              />
-            </Switch> */}
           </Tab.Pane>
         ))}
       </Tab.Content>

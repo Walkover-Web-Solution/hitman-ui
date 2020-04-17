@@ -10,6 +10,7 @@ class CustomTabs extends Component {
 
   renderTabName(tabId) {
     const tab = this.props.tabs.tabs[tabId];
+    if (!tab) return;
     switch (tab.type) {
       case "endpoint":
         if (this.props.endpoints[tabId]) {
@@ -22,16 +23,23 @@ class CustomTabs extends Component {
           else return <label>{this.props.endpoints[tabId].name}</label>;
         } else return "Untitled";
       case "page":
-        if (this.props.page[tabId])
-          return <label>{this.props.page[tabId].name}</label>;
+        if (this.props.pages[tabId]) {
+          if (tab.previewMode)
+            return (
+              <label style={{ fontStyle: "italic" }}>
+                {this.props.pages[tabId].name}
+              </label>
+            );
+          else return <label>{this.props.pages[tabId].name}</label>;
+        }
     }
   }
 
   removeTab(tabId) {
-    if (this.props.tabs.tabs[tabId].status !== tabStatusTypes.MODIFIED) {
-      tabService.removeTab(tabId, { ...this.props });
+    if (this.props.tabs.tabs[tabId].isModified) {
+      this.setState({ showSavePrompt: true, selectedTabId: tabId });
     } else {
-      this.setState({ showSavePrompt: true, selectedTab: tabId });
+      tabService.removeTab(tabId, { ...this.props });
     }
   }
 
@@ -49,7 +57,6 @@ class CustomTabs extends Component {
 
   onDrop = (e, droppedOnItem) => {
     e.preventDefault();
-    console.log(this.props.tabs.tabsOrder);
     if (this.draggedItem === droppedOnItem) {
       this.draggedItem = null;
       return;
@@ -61,12 +68,10 @@ class CustomTabs extends Component {
       (tId) => tId === droppedOnItem
     );
     tabsOrder.splice(index, 0, this.draggedItem);
-    // this.props.setEndpointIds(endpointIds, this.props.group_id);
     this.props.setTabsOrder(tabsOrder);
   };
 
   render() {
-    console.log(this.props.tabs);
     return (
       <Nav variant="pills" className="flex-row">
         <div>
@@ -75,7 +80,7 @@ class CustomTabs extends Component {
               {...this.props}
               show={true}
               onHide={() => this.closeSavePrompt()}
-              tab_id={this.state.selectedTab}
+              tab_id={this.state.selectedTabId}
             />
           )}
         </div>
@@ -92,7 +97,6 @@ class CustomTabs extends Component {
                 className="btn"
                 onClick={() => tabService.selectTab({ ...this.props }, tabId)}
                 onDoubleClick={() => {
-                  console.log("tab double clicked");
                   tabService.disablePreviewMode(tabId);
                 }}
               >
@@ -100,8 +104,7 @@ class CustomTabs extends Component {
               </button>
             </Nav.Link>
             <button className="btn" onClick={() => this.removeTab(tabId)}>
-              {this.props.tabs.tabs[tabId].status ===
-              tabStatusTypes.MODIFIED ? (
+              {this.props.tabs.tabs[tabId].isModified ? (
                 <i class="fas fa-circle" id="modified-dot-icon"></i>
               ) : (
                 <i className="fas fa-times"></i>
@@ -135,12 +138,11 @@ class CustomTabs extends Component {
             >
               <button
                 className="btn"
-                // onClick={() =>
-                //   tabService.removeTab(
-                //     { ...this.props },
-                //     this.props.default_tab_index
-                //   )
-                // }
+                onClick={() =>
+                  tabService.removeTab(this.props.tabs.activeTabId, {
+                    ...this.props,
+                  })
+                }
               >
                 Close Current Tab
               </button>

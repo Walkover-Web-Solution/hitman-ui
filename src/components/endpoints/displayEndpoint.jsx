@@ -957,7 +957,10 @@ class DisplayEndpoint extends Component {
   }
 
   render() {
-    if (this.props.save_endpoint_flag) {
+    if (
+      this.props.save_endpoint_flag &&
+      this.props.tab.id === this.props.selected_tab_id
+    ) {
       this.props.handle_save_endpoint(false);
       this.handleSave();
     }

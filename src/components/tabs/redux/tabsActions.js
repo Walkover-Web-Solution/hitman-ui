@@ -12,19 +12,6 @@ export const fetchTabsFromIdb = () => {
       .then((data) =>
         dispatch({ type: tabsActionTypes.FETCH_TABS_FROM_IDB, tabsList: data })
       );
-
-    // .getCollections())
-
-    // .then((response) => {
-    //   dispatch(onCollectionsFetched(response.data));
-    // })
-    // .catch((error) => {
-    //   dispatch(
-    //     onCollectionsFetchedError(
-    //       error.response ? error.response.data : error
-    //     )
-    //   );
-    // });
   };
 };
 
@@ -40,6 +27,7 @@ export const addNewTab = (history) => {
         type: "endpoint",
         status: tabStatusTypes.NEW,
         previewMode: false,
+        isModified: false,
       },
     });
     history.push({ pathname: `/dashboard/endpoint/new` });
@@ -48,6 +36,7 @@ export const addNewTab = (history) => {
       type: "endpoint",
       status: tabStatusTypes.NEW,
       previewMode: false,
+      isModified: false,
     });
   };
 };
@@ -88,6 +77,17 @@ export const setTabsOrder = (tabsOrder) => {
   };
 };
 
+export const replaceTab = (oldTabId, newTab) => {
+  return (dispatch) => {
+    dispatch({
+      type: tabsActionTypes.REPLACE_TAB,
+      oldTabId,
+      newTab,
+    });
+    indexedDbService.deleteData("tabs", oldTabId);
+    indexedDbService.addData("tabs", newTab);
+  };
+};
 // export default {
 //   addNewTab,
 //   closeTab,

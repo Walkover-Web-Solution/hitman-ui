@@ -86,7 +86,6 @@ const deleteData = async (storeName, key) => {
   }
   const tx = await db.transaction(storeName, "readwrite");
   const store = await tx.objectStore(storeName);
-  console.log(key);
   await store.delete(key);
   await tx.done;
 };
