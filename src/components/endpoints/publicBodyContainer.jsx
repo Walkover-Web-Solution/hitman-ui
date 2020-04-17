@@ -18,78 +18,50 @@ class PublicBodyContainer extends Component {
     }
   }
 
-  handleDelete(valuesArrayIndex, index) {
-    this.valuesArray[valuesArrayIndex].splice(index, 1);
-    let i;
-    let json = {};
-    for (i in this.valuesArray) {
-      json[this.keysArray[i]] = this.valuesArray[i];
-    }
-    json = JSON.stringify(json);
-    this.props.set_body("JSON", json);
+  handleDelete(bodyDescription, key, index) {
+    bodyDescription[key].default.splice(index, 1);
+    this.props.set_public_body(bodyDescription);
   }
 
-  handleAdd(valuesArrayIndex) {
-    const data = Object.values(JSON.parse(this.props.endpoint.body.value));
-
-    if (
-      typeof data[valuesArrayIndex][0] === "string" ||
-      typeof data[valuesArrayIndex][0] === "number"
-    )
-      this.valuesArray[valuesArrayIndex].push(null);
-    else this.valuesArray[valuesArrayIndex].push(data[valuesArrayIndex][0]);
-    let i;
-    let json = {};
-    for (i in this.valuesArray) {
-      json[this.keysArray[i]] = this.valuesArray[i];
-    }
-    console.log(json);
-    json = JSON.stringify(json);
-    this.props.set_body("JSON", json);
+  handleAdd(bodyDescription, key) {
+    bodyDescription[key].default.push(null);
+    this.props.set_public_body(bodyDescription);
   }
 
   handleChange = (e) => {
-    let valuesArray = [...this.valuesArray];
     const name = e.currentTarget.name.split(".");
-    console.log(name);
-    console.log(this.dataType);
+    const key = name[0];
+    const bodyDescription = this.props.body_description;
     if (e.target.type === "number") {
-      if (this.dataType[name[0]] === "Array") {
-        valuesArray[name[0]][name[1]] = parseInt(e.currentTarget.value);
-      } else if (this.dataType[name[0]] === "object") {
-        valuesArray[name[0]][name[1]] = parseInt(e.currentTarget.value);
-      } else if (this.dataType[name[0]] === "Array of Objects") {
-        valuesArray[name[0]][name[1]][name[2]] = parseInt(
+      if (bodyDescription[key].dataType === "Array of Integer") {
+        bodyDescription[key].default[name[1]] = parseInt(e.currentTarget.value);
+      } else if (bodyDescription[key].dataType === "Object") {
+        bodyDescription[key].default[name[1]] = parseInt(e.currentTarget.value);
+      } else if (bodyDescription[key].dataType === "Array of Objects") {
+        bodyDescription[key].default[name[1]][name[2]] = parseInt(
           e.currentTarget.value
         );
       } else {
-        valuesArray[name[0]] = parseInt(e.currentTarget.value);
+        bodyDescription[key].default = parseInt(e.currentTarget.value);
       }
     } else {
-      if (this.dataType[name[0]] === "Array") {
-        valuesArray[name[0]][name[1]] = e.currentTarget.value;
-      } else if (this.dataType[name[0]] === "object") {
-        valuesArray[name[0]][name[1]] = e.currentTarget.value;
-      } else if (this.dataType[name[0]] === "Array of Objects") {
-        valuesArray[name[0]][name[1]][name[2]] = e.currentTarget.value;
+      if (bodyDescription[key].dataType === "Array of String") {
+        bodyDescription[key].default[name[1]] = e.currentTarget.value;
+      } else if (bodyDescription[key].dataType === "Object") {
+        bodyDescription[key].default[name[1]] = e.currentTarget.value;
+      } else if (bodyDescription[key].dataType === "Array of Objects") {
+        bodyDescription[key].default[name[1]][name[2]] = e.currentTarget.value;
       } else {
-        valuesArray[name[0]] = e.currentTarget.value;
+        bodyDescription[key].default = e.currentTarget.value;
       }
     }
-    let json = {};
-    let i;
-    for (i in valuesArray) {
-      json[this.keysArray[i]] = valuesArray[i];
-    }
-    console.log(json);
-    json = JSON.stringify(json);
-    this.props.set_body("JSON", json);
+    this.props.set_public_body(bodyDescription);
   };
 
-  obectDiv(obj, index, i) {
+  obectDiv(obj, key, index) {
     return (
       <div>
-        {Object.keys(obj).map((key) => (
+        {Object.keys(obj).map((k) => (
           <div>
             <label
               style={{
@@ -98,20 +70,21 @@ class PublicBodyContainer extends Component {
                 width: "20%",
               }}
             >
-              {key}
+              {k}
             </label>
             <input
               style={{
                 marginLeft: "20px",
                 width: "60%",
               }}
-              type={typeof obj[key] === "number" ? "number" : "text"}
+              type={typeof obj[k] === "number" ? "number" : "text"}
               name={
-                this.dataType[index] === "object"
-                  ? index + "." + key + ".value"
-                  : index + "." + i + "." + key + ".value"
+                this.props.body_description[key].dataType === "Object"
+                  ? key + "." + k + ".value"
+                  : key + "." + index + "." + k + ".value"
               }
-              value={obj[key]}
+              // name={key + "." + k + ".value"}
+              value={obj[k]}
               onChange={this.handleChange}
             ></input>
           </div>
@@ -120,31 +93,78 @@ class PublicBodyContainer extends Component {
     );
   }
 
+  displayArray(key) {
+    return (
+      <div>
+        {this.props.body_description[key].default.map((value, index) => (
+          <div>
+            <input
+              style={{
+                marginLeft: "50px",
+                width: "60%",
+              }}
+              type={
+                this.props.body_description[key].dataType === "Array of Integer"
+                  ? "number"
+                  : "text"
+              }
+              //type="text"
+              name={key + "." + index + ".value"}
+              value={value}
+              onChange={this.handleChange}
+            ></input>
+            <button
+              type="button"
+              className="btn cross-button"
+              onClick={() =>
+                this.handleDelete(this.props.body_description, key, index)
+              }
+            >
+              X
+            </button>
+          </div>
+        ))}
+        <span
+          class="badge badge-success"
+          style={{
+            marginLeft: "50px",
+            marginTop: "5px",
+          }}
+          onClick={() => this.handleAdd(this.props.body_description, key)}
+        >
+          Add+
+        </span>
+      </div>
+    );
+  }
+
   render() {
     console.log("props", this.props);
-    this.keysArray = [];
-    this.valuesArray = [];
+    const bodyDescription = this.props.body_description;
+    this.keysArray = Object.keys(bodyDescription);
+    //this.valuesArray = [];
+    this.defaultValuesArray = [];
     this.dataType = [];
 
-    if (this.props.body && this.props.body.type === "JSON") {
-      const jsonData = JSON.parse(this.props.body.value);
-      this.keysArray = Object.keys(jsonData);
-      this.valuesArray = Object.values(jsonData);
-      const data = Object.values(JSON.parse(this.props.endpoint.body.value));
-      let i;
-      for (i in data) {
-        let type = typeof data[i];
-        if (type === "object") {
-          if (Array.isArray(data[i])) {
-            if (typeof data[i][0] === "number") type = "Array";
-            else if (typeof data[i][0] === "string") type = "Array";
-            //type = "Array";
-            else type = "Array of Objects";
-          }
-        }
-        this.dataType[i] = type;
-      }
-    }
+    // if (this.keysArray.length > 0) {
+    //   // const jsonData = JSON.parse(this.props.body.value);
+    //   this.keysArray = Object.keys(this.props.body_description);
+    //   this.defaultValuesArray = Object.values();
+    //   const data = Object.values(JSON.parse(this.props.endpoint.body.value));
+    //   let i;
+    //   for (i in data) {
+    //     let type = typeof data[i];
+    //     if (type === "object") {
+    //       if (Array.isArray(data[i])) {
+    //         if (typeof data[i][0] === "number") type = "Array";
+    //         else if (typeof data[i][0] === "string") type = "Array";
+    //         //type = "Array";
+    //         else type = "Array of Objects";
+    //       }
+    //     }
+    //     this.dataType[i] = type;
+    //   }
+    // }
     return (
       <div>
         {this.props.body && this.props.body.type === "formData" && (
@@ -167,7 +187,7 @@ class PublicBodyContainer extends Component {
           ></GenericTable>
         )}
 
-        {this.props.body && this.props.body.type === "JSON" && (
+        {this.keysArray.length > 0 && (
           <div>
             <div className="generic-table-container">
               <div className="public-generic-table-title-container">Body</div>
@@ -183,7 +203,7 @@ class PublicBodyContainer extends Component {
                   </tr>
                 </thead>
                 <tbody style={{ border: "none" }}>
-                  {this.keysArray.map((e, index) => (
+                  {this.keysArray.map((key, index) => (
                     <tr key={index}>
                       <td
                         className="custom-td"
@@ -194,8 +214,8 @@ class PublicBodyContainer extends Component {
                         <div>
                           <input
                             disabled
-                            name={index + ".key"}
-                            value={this.keysArray[index]}
+                            //name={index + ".key"}
+                            value={key}
                             type={"text"}
                             className="form-control"
                           ></input>
@@ -207,15 +227,15 @@ class PublicBodyContainer extends Component {
                               fontSize: "10px",
                             }}
                           >
-                            {this.dataType[index]}
+                            {bodyDescription[key].dataType}
                           </label>
                         </div>
                       </td>
                       <td className="custom-td">
-                        {this.dataType[index] === "boolean" ? (
+                        {bodyDescription[key].dataType === "boolean" ? (
                           <select
                             id="custom-select-box"
-                            value={this.valuesArray[index]}
+                            value={bodyDescription[key].default}
                             onChange={this.handleChange}
                             name={index + ".value"}
                             style={{ width: "20%" }}
@@ -227,48 +247,18 @@ class PublicBodyContainer extends Component {
                               false
                             </option>
                           </select>
-                        ) : this.dataType[index] === "Array" ? (
+                        ) : bodyDescription[key].dataType ===
+                          "Array of Integer" ? (
+                          this.displayArray(key)
+                        ) : bodyDescription[key].dataType ===
+                          "Array of String" ? (
+                          this.displayArray(key)
+                        ) : bodyDescription[key].dataType === "Object" ? (
+                          this.obectDiv(bodyDescription[key].default, key)
+                        ) : bodyDescription[key].dataType ===
+                          "Array of Objects" ? (
                           <div>
-                            {this.valuesArray[index].map((i, key) => (
-                              <div>
-                                <input
-                                  style={{
-                                    marginLeft: "50px",
-                                    width: "60%",
-                                  }}
-                                  type={
-                                    typeof i === "number" ? "number" : "text"
-                                  }
-                                  //type="text"
-                                  name={index + "." + key + ".value"}
-                                  value={i}
-                                  onChange={this.handleChange}
-                                ></input>
-                                <button
-                                  type="button"
-                                  className="btn cross-button"
-                                  onClick={() => this.handleDelete(index, key)}
-                                >
-                                  X
-                                </button>
-                              </div>
-                            ))}
-                            <span
-                              class="badge badge-success"
-                              style={{
-                                marginLeft: "50px",
-                                marginTop: "5px",
-                              }}
-                              onClick={() => this.handleAdd(index)}
-                            >
-                              Add+
-                            </span>
-                          </div>
-                        ) : this.dataType[index] === "object" ? (
-                          this.obectDiv(this.valuesArray[index], index)
-                        ) : this.dataType[index] === "Array of Objects" ? (
-                          <div>
-                            {this.valuesArray[index].map((k, i) => (
+                            {bodyDescription[key].default.map((obj, i) => (
                               <div
                                 style={{
                                   display: "flex",
@@ -284,7 +274,7 @@ class PublicBodyContainer extends Component {
                                     background: "lightgrey",
                                   }}
                                 >
-                                  {this.obectDiv(k, index, i)}
+                                  {this.obectDiv(obj, key, i)}
                                 </div>
                                 <button
                                   type="button"
@@ -309,13 +299,13 @@ class PublicBodyContainer extends Component {
                         ) : (
                           <input
                             name={index + ".value"}
-                            value={this.valuesArray[index]}
+                            value={bodyDescription[key].default}
                             onChange={this.handleChange}
-                            type={
-                              this.dataType[index] === "number"
-                                ? "number"
-                                : "text"
-                            }
+                            // type={
+                            //   this.dataType[index] === "number"
+                            //     ? "number"
+                            //     : "text"
+                            // }
                             placeholder="Value"
                             className="form-control"
                             style={{ border: "none" }}
@@ -327,7 +317,7 @@ class PublicBodyContainer extends Component {
                           disabled
                           name={index + ".datatype"}
                           type="text"
-                          value={this.dataType[index]}
+                          value={bodyDescription[key].description}
                           placeholder="DataType"
                           className="form-control"
                           style={{ border: "none" }}

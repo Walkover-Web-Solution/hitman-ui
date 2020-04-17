@@ -67,9 +67,22 @@ class DisplayEndpoint extends Component {
     oldDescription: "",
     headers: [],
     params: [],
-    bodyDescription: [],
+    bodyDescription: {
+      key1: { default: "abcd", dataType: "string" },
+      key2: { default: 4, dataType: "number" },
+      key3: { default: true, dataType: "boolean" },
+      key4: { default: [2, 20], dataType: "Array of Integer" },
+      key5: { default: ["a", "b"], dataType: "Array of String" },
+      key6: { default: { k1: "v1", k2: 10 }, dataType: "Object" },
+      key7: {
+        default: [
+          { k1: "v1", k2: 10 },
+          { k1: "v1", k2: 10 },
+        ],
+        dataType: "Array of Objects",
+      },
+    },
     updatedArray: {},
-    // test: "",
     objectDefinition: {},
   };
 
@@ -212,22 +225,27 @@ class DisplayEndpoint extends Component {
         pathVariables = this.fetchPathVariables(endpoint.pathVariables);
         this.setState({ pathVariables });
       }
-      // console.log(endpoint.bodyDescription);
-      // console.log("123");
-      // let bodyDescription = [];
-      // if (endpoint.bodyDescription.length !== 0) {
 
-      //   // bodyDescription = JSON.parse(endpoint.bodyDescription);
-      // }
-      // console.log(endpoint.bodyDescription);
-      // console.log("124");
       let updatedArray = {};
-      let bodyDescription = [];
-      if (endpoint.body.type === "raw1") {
-        updatedArray = JSON.parse(endpoint.body.value);
-        bodyDescription = endpoint.bodyDescription;
+      //let bodyDescription = [];
+      // if (endpoint.body.type === "raw1") {
+      //   updatedArray = JSON.parse(endpoint.body.value);
+      //   bodyDescription = endpoint.bodyDescription;
+      // }
+      console.log(endpoint.body);
+      if (!isDashboardRoute(this.props)) {
+        console.log("in if 1", this.state.data);
+        if (endpoint.body.type === "JSON") {
+          console.log("in if 2");
+          let body = JSON.parse(endpoint.body.value);
+          const keys = Object.keys(this.state.bodyDescription);
+          keys.map((k) => (body[k] = this.state.bodyDescription[k].default));
+          body = { type: "JSON", value: JSON.stringify(body) };
+          endpoint.body = body;
+        }
       }
 
+      console.log("qqqqqqqq", endpoint);
       this.setState({
         data: {
           method: endpoint.requestType,
@@ -245,7 +263,7 @@ class DisplayEndpoint extends Component {
         endpoint_description: endpoint.description,
         oldDescription: endpoint.description,
         title: "update endpoint",
-        bodyDescription,
+        // bodyDescription,
         updatedArray,
       });
     }
@@ -547,6 +565,7 @@ class DisplayEndpoint extends Component {
       headerJson[header] = headersData[header].value;
     });
     let { body, headers } = this.formatBody(this.state.data.body, headerJson);
+    console.log("in handle send", body);
     this.handleApiCall(api, body, headers, this.state.data.body.type);
   };
 
@@ -663,6 +682,19 @@ class DisplayEndpoint extends Component {
     if (name === "Path Variables") {
       this.setState({ pathVariables: value });
     }
+  }
+
+  setPublicBody(bodyDescription) {
+    let json = {};
+    console.log(bodyDescription);
+    Object.keys(bodyDescription).map(
+      (key) => (json[key] = bodyDescription[key].default)
+    );
+    json = JSON.stringify(json);
+    let data = { ...this.state.data };
+    data.body = { type: "JSON", value: json };
+    console.log(bodyDescription, data);
+    this.setState({ bodyDescription, data });
   }
 
   handleUpdateUri(originalParams) {
@@ -960,6 +992,7 @@ class DisplayEndpoint extends Component {
   }
 
   formatBody(body, headers) {
+    console.log(body);
     let finalBodyValue = null;
     switch (body.type) {
       case "raw":
@@ -983,15 +1016,12 @@ class DisplayEndpoint extends Component {
         // urlEncodedData = urlEncodedData.join("&");
         return { body: urlEncodedData, headers };
       default:
+        console.log("in default", body.value);
         return { body: body.value, headers };
     }
   }
 
   render() {
-    // console.log(this.state.updatedArray);
-    console.log(this.state.objectDefinition);
-    console.log(this.state.bodyDescription);
-
     if (
       isDashboardRoute(this.props) &&
       this.props.location.pathname.split("/")[3] !== "new" &&
@@ -1026,81 +1056,6 @@ class DisplayEndpoint extends Component {
       }
     }
 
-    // if (this.props.location.title === "Add New Endpoint") {
-    //   this.title = "Add New Endpoint";
-    //   this.setState({
-    //     data: {
-    //       name: "",
-    //       method: "GET",
-    //       body: { type: "raw", value: null },
-    //       uri: "",
-    //       updatedUri: "",
-    //     },
-    //     startTime: "",
-    //     timeElapsed: "",
-    //     response: {},
-    //     endpoint: {},
-    //     groupId: this.props.location.groupId,
-    //     title: "Add New Endpoint",
-    //     flagResponse: false,
-
-    //     originalHeaders: [
-    //       {
-    //         checked: "notApplicable",
-    //         key: "",
-    //         value: "",
-    //         description: "",
-    //       },
-    //     ],
-    //     originalParams: [
-    //       {
-    //         checked: "notApplicable",
-    //         key: "",
-    //         value: "",
-    //         description: "",
-    //       },
-    //     ],
-    //   });
-    //   this.props.history.push({ groups: null });
-    // }
-
-    // if (
-    //   this.props.location.title === "update endpoint" &&
-    //   this.props.location.endpoint
-    // ) {
-    //   let endpoint = { ...this.props.location.endpoint };
-    //   //To fetch originalParams from Params
-    //   const originalParams = this.fetchoriginalParams(
-    //     this.props.location.endpoint.params
-    //   );
-    //   const params = this.fetchoriginalParams(endpoint.params);
-
-    //   //To fetch originalHeaders from Headers
-    //   const originalHeaders = this.fetchoriginalHeaders(endpoint.headers);
-    //   const headers = this.fetchoriginalHeaders(endpoint.headers);
-    //   console.log("in update endpoint");
-    //   this.setState({
-    //     data: {
-    //       method: endpoint.requestType,
-    //       uri: endpoint.uri,
-    //       updatedUri: endpoint.uri,
-    //       name: endpoint.name,
-    //       body: endpoint.body,
-    //       // JSON.stringify(endpoint.body, null, 4)
-    //     },
-    //     title: "update endpoint",
-    //     response: {},
-    //     groupId: this.props.location.endpoint.groupId,
-    //     originalParams,
-    //     originalHeaders,
-    //     params,
-    //     headers,
-    //     endpoint,
-    //     flagResponse: false,
-    //     oldDescription: endpoint.description,
-    //   });
-    //   this.props.history.push({ endpoint: null });
-    // }
     return (
       <div className="endpoint-container">
         {this.state.showEndpointFormModal && (
@@ -1330,7 +1285,7 @@ class DisplayEndpoint extends Component {
                 role="tabpanel"
                 aria-labelledby="pills-body-description-tab"
               >
-                <BodyDescription
+                {/* <BodyDescription
                   set_body_description={this.setBodyDescription.bind(this)}
                   update_array={this.updateArray.bind(this)}
                   updated_array={this.state.updatedArray}
@@ -1340,7 +1295,7 @@ class DisplayEndpoint extends Component {
                     this
                   )}
                   set_object_definition={this.setObjectDefinition.bind(this)}
-                />
+                /> */}
               </div>
             </div>
           ) : (
@@ -1367,14 +1322,8 @@ class DisplayEndpoint extends Component {
                 {...this.props}
                 set_body={this.setBody.bind(this)}
                 body={this.state.data.body}
-                endpoint={this.state.endpoint}
-                body_description={{
-                  key1: { default: "", dataType: "string" },
-                  key2: { default: "", dataType: "number" },
-                  key3: { default: "", dataType: "Array of String" },
-                  key4: { default: "", dataType: "Array of Integer" },
-                  key5: { default: "", dataType: "Array of Object" },
-                }}
+                set_public_body={this.setPublicBody.bind(this)}
+                body_description={this.state.bodyDescription}
               ></PublicBodyContainer>
             </div>
           )}
