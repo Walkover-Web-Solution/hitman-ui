@@ -13,7 +13,7 @@ import "./endpoints.scss";
 import { Table } from "react-bootstrap";
 
 class BodyContainer extends Component {
-  updatedArray = React.createRef();
+  // updatedArray = React.createRef();
   state = {
     selectedBodyType: null,
     data: {
@@ -39,26 +39,28 @@ class BodyContainer extends Component {
     endpointId: null,
     selectedRawBodyType: "TEXT",
 
-    updatedArray: {},
+    // updatedArray: {},
   };
 
   rawBodyTypes = ["TEXT", "HTML", "JSON", "XML", "JavaScript"];
 
   handleAdd(dataType, key) {
-    let updatedArray = { ...this.state.updatedArray };
+    let updatedArray = { ...this.props.updated_array };
     if (updatedArray[key] && Array.isArray(updatedArray[key])) {
       updatedArray[key].push(null);
     } else {
       let tempArr = [null];
       updatedArray[key] = tempArr;
     }
-    this.setState({ updatedArray });
+    this.props.update_array(updatedArray);
+    // this.setState({ updatedArray });
   }
 
   handleDelete(index, key) {
-    const updatedArray = { ...this.state.updatedArray };
+    const updatedArray = { ...this.props.updated_array };
     updatedArray[key].splice(index, 1);
-    this.setState({ updatedArray });
+    this.props.update_array(updatedArray);
+    // this.setState({ updatedArray });
   }
 
   handleSelectBodyType(bodyType) {
@@ -80,21 +82,34 @@ class BodyContainer extends Component {
     }
   }
   handleArrayChange = (e, field, index) => {
-    let updatedArray = { ...this.state.updatedArray };
+    let updatedArray = { ...this.props.updated_array };
     updatedArray[e.currentTarget.name][index] = e.currentTarget.value;
     console.log(updatedArray);
     let test1 = JSON.stringify(updatedArray);
-    this.setState({ updatedArray });
+    this.props.update_array(updatedArray);
+    // this.setState({ updatedArray });
     this.props.set_body(this.state.selectedBodyType, test1);
   };
 
   handleBodyChange = (e) => {
-    let updatedArray = { ...this.state.updatedArray };
+    let updatedArray = { ...this.props.updated_array };
     updatedArray[e.currentTarget.name] = e.currentTarget.value;
-
     let test1 = JSON.stringify(updatedArray);
-    this.setState({ updatedArray });
+    this.props.update_array(updatedArray);
+    // this.setState({ updatedArray });
     this.props.set_body(this.state.selectedBodyType, test1);
+  };
+
+  handleObjectChange = (e, key) => {
+    let updatedArray = { ...this.props.updated_array };
+    const name = e.currentTarget.name.split(".")[1];
+    console.log(name);
+    // updatedArray[name] = {  };
+    // updatedArray[name][key] = e.currentTarget.value;
+    // let test1 = JSON.stringify(updatedArray);
+    // this.props.update_array(updatedArray);
+    // // this.setState({ updatedArray });
+    // this.props.set_body(this.state.selectedBodyType, test1);
   };
 
   handleChange(value) {
@@ -156,80 +171,123 @@ class BodyContainer extends Component {
               count="2"
             ></GenericTable>
           );
-        case "raw1":
-          return (
-            <div>
-              {this.props.body_description.map((field) =>
-                field.dataType.includes("Array") ? (
-                  <div>
-                    <td>{field.name}</td>
-                    <Table bordered size="sm">
-                      <tbody>
-                        {this.state.updatedArray[field.name] &&
-                          Array.isArray(this.state.updatedArray[field.name]) &&
-                          this.state.updatedArray[field.name].map(
-                            (item, index) =>
-                              item !== "deleted" ? (
-                                <tr key={index}>
-                                  <td>{field.dataType.split(" ")[2]}</td>
-                                  <td>
-                                    <input
-                                      name={field.name}
-                                      onChange={(e) =>
-                                        this.handleArrayChange(
-                                          e,
-                                          field.name,
-                                          index
-                                        )
-                                      }
-                                      id={field.name}
-                                      type={"text"}
-                                      style={{ border: "none" }}
-                                      className="form-control"
-                                    />
-                                  </td>
 
-                                  <td>
-                                    <button
-                                      type="button"
-                                      className="btn btn-light btn-sm btn-block"
-                                      onClick={() =>
-                                        this.handleDelete(index, field.name)
-                                      }
-                                    >
-                                      x{" "}
-                                    </button>
-                                  </td>
-                                </tr>
-                              ) : null
-                          )}
-                        <tr>
-                          <td> </td>
-                          <td>
-                            {" "}
-                            <button
-                              type="button"
-                              className="btn btn-link btn-sm btn-block"
-                              onClick={() =>
-                                this.handleAdd(field.dataType, field.name)
-                              }
-                            >
-                              + New Item
-                            </button>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </Table>
-                  </div>
-                ) : field !== "deleted" && field.name.trim() !== "" ? (
+        case "raw1":
+          console.log(this.props.body_description);
+          return this.props.body_description.map((field) => (
+            <div>
+              {field.dataType.includes("Array") && (
+                <div>
+                  <p>{field.name}</p>
+                  <Table bordered size="sm">
+                    <tbody>
+                      {this.props.updated_array[field.name] &&
+                        Array.isArray(this.props.updated_array[field.name]) &&
+                        this.props.updated_array[field.name].map(
+                          (item, index) =>
+                            item !== "deleted" ? (
+                              <tr key={index}>
+                                <td>{field.dataType.split(" ")[2]}</td>
+                                <td>
+                                  <input
+                                    name={field.name}
+                                    value={
+                                      this.props.updated_array[field.name][
+                                        index
+                                      ]
+                                    }
+                                    onChange={(e) =>
+                                      this.handleArrayChange(
+                                        e,
+                                        field.name,
+                                        index
+                                      )
+                                    }
+                                    id={field.name}
+                                    type={"text"}
+                                    style={{ border: "none" }}
+                                    className="form-control"
+                                    // value={field.defaultValue || ""}s
+                                    // defaultValue={field.defaultValue}
+                                  />
+                                </td>
+
+                                <td>
+                                  <button
+                                    type="button"
+                                    className="btn btn-light btn-sm btn-block"
+                                    onClick={() =>
+                                      this.handleDelete(index, field.name)
+                                    }
+                                  >
+                                    x{" "}
+                                  </button>
+                                </td>
+                              </tr>
+                            ) : null
+                        )}
+                      <tr>
+                        <td> </td>
+                        <td>
+                          {" "}
+                          <button
+                            type="button"
+                            className="btn btn-link btn-sm btn-block"
+                            onClick={() =>
+                              this.handleAdd(field.dataType, field.name)
+                            }
+                          >
+                            + New Item
+                          </button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </Table>
+                </div>
+              )}
+              {!field.dataType.includes("Array") &&
+                field !== "deleted" &&
+                field.name.trim() !== "" && (
                   <div className="form-group">
                     <label htmlFor={field.name} className="custom-input-label">
                       {field.name}
                     </label>
+
+                    {/* {field.dataType === "Object" &&
+                      this.props.object_definition[field.defaultValue] &&
+                      this.props.object_definition[field.defaultValue].map(
+                        (objfield, index) => (
+                          <div>
+                            {objfield.name}:
+                            <input
+                              onChange={(e) => {
+                                this.handleObjectChange(objfield.name);
+                              }}
+                              id={index + "." + field.name}
+                              name={index + "." + field.name}
+                              // value={
+                              //   this.props.updated_array[field.name] === undefined
+                              //     ? field.defaultValue
+                              //     : this.props.updated_array[field.name]
+                              // }
+                              className="form-control custom-input"
+                              type={
+                                field.dataType === "Integer" ||
+                                field.dataType === "Long"
+                                  ? "number"
+                                  : "text"
+                              }
+                              placeholder=""
+                            />
+                          </div>
+                        )
+                      )} */}
+
                     {field.dataType === "Boolean" && (
                       <select
                         id="custom-select-box"
-                        value={null}
+                        value={field.defaultValue || ""}
+                        // defaultValue={field.value}
                         onChange={(e) => this.handleBodyChange(e)}
                         name={field.name}
                       >
@@ -241,26 +299,48 @@ class BodyContainer extends Component {
                         </option>
                       </select>
                     )}
-                    {field.dataType !== "Boolean" && (
-                      <input
-                        onChange={this.handleBodyChange}
-                        id={field.name}
+
+                    {field.dataType === "Json" && (
+                      <textarea
+                        className="form-control"
                         name={field.name}
-                        className="form-control custom-input"
-                        type={
-                          field.dataType === "Integer" ||
-                          field.dataType === "Long"
-                            ? "number"
-                            : "text"
+                        id="contents"
+                        rows="3"
+                        value={
+                          this.props.updated_array[field.name] === undefined
+                            ? field.defaultValue
+                            : this.props.updated_array[field.name]
                         }
-                        placeholder=""
+                        onChange={this.handleBodyChange}
                       />
                     )}
+
+                    {field.dataType !== "Boolean" &&
+                      field.dataType !== "Json" &&
+                      field.dataType !== "Object" && (
+                        <input
+                          onChange={this.handleBodyChange}
+                          id={field.name}
+                          name={field.name}
+                          value={
+                            this.props.updated_array[field.name] === undefined
+                              ? field.defaultValue
+                              : this.props.updated_array[field.name]
+                          }
+                          className="form-control custom-input"
+                          type={
+                            field.dataType === "Integer" ||
+                            field.dataType === "Long"
+                              ? "number"
+                              : "text"
+                          }
+                          placeholder=""
+                        />
+                      )}
                   </div>
-                ) : null
-              )}
+                )}
             </div>
-          );
+          ));
 
         case "none":
           return;
@@ -353,7 +433,7 @@ class BodyContainer extends Component {
             <input
               type="radio"
               name={`body-select-${this.props.endpoint_id}`}
-              id={`raw-${this.props.endpoint_id}`}
+              id={`raw1-${this.props.endpoint_id}`}
               onClick={() => this.handleSelectBodyType("raw1")}
               className="custom-radio-input"
             />
@@ -385,7 +465,7 @@ class BodyContainer extends Component {
             {this.showRawBodyType === true && (
               <div className="dropdown">
                 <button
-                  style={{ color: "#f29624" }}
+                  style={{ color: "#f29624", paddingTop: "0px" }}
                   className="btn dropdown-toggle flex-column"
                   type="button"
                   id="dropdownMenuButton"
@@ -401,7 +481,7 @@ class BodyContainer extends Component {
                 >
                   {this.rawBodyTypes.map((rawBodyType) => (
                     <button
-                      className="btn custom-request-button"
+                      className="btn custom-body-type-button"
                       type="button"
                       onClick={() => this.setRawBodyType(rawBodyType)}
                       key={rawBodyType}

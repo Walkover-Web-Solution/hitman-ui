@@ -1572,8 +1572,10 @@ button.btn {
 }
 
 //body styling
+
 #ace-editor {
   width: 100% !important ;
+  height: 300px !important ;
 }
 
 .custom-radio-input {
@@ -1583,4 +1585,13 @@ button.btn {
 .body-wrapper {
   margin-top: 10px;
   margin-bottom: 7px;
+}
+
+button.btn.custom-body-type-button {
+  display: flex;
+}
+
+.custom-td {
+  padding: 0px !important;
+  opacity: 0.8;
 }
