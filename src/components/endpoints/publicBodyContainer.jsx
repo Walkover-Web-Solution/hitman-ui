@@ -32,12 +32,18 @@ class PublicBodyContainer extends Component {
   handleAdd(valuesArrayIndex) {
     const data = Object.values(JSON.parse(this.props.endpoint.body.value));
 
-    this.valuesArray[valuesArrayIndex].push(data[valuesArrayIndex][0]);
+    if (
+      typeof data[valuesArrayIndex][0] === "string" ||
+      typeof data[valuesArrayIndex][0] === "number"
+    )
+      this.valuesArray[valuesArrayIndex].push(null);
+    else this.valuesArray[valuesArrayIndex].push(data[valuesArrayIndex][0]);
     let i;
     let json = {};
     for (i in this.valuesArray) {
       json[this.keysArray[i]] = this.valuesArray[i];
     }
+    console.log(json);
     json = JSON.stringify(json);
     this.props.set_body("JSON", json);
   }
@@ -51,9 +57,11 @@ class PublicBodyContainer extends Component {
       if (this.dataType[name[0]] === "Array") {
         valuesArray[name[0]][name[1]] = parseInt(e.currentTarget.value);
       } else if (this.dataType[name[0]] === "object") {
-        valuesArray[name[0]][name[1]] = e.currentTarget.value;
+        valuesArray[name[0]][name[1]] = parseInt(e.currentTarget.value);
       } else if (this.dataType[name[0]] === "Array of Objects") {
-        valuesArray[name[0]][name[1]][name[2]] = e.currentTarget.value;
+        valuesArray[name[0]][name[1]][name[2]] = parseInt(
+          e.currentTarget.value
+        );
       } else {
         valuesArray[name[0]] = parseInt(e.currentTarget.value);
       }
@@ -117,6 +125,7 @@ class PublicBodyContainer extends Component {
     this.keysArray = [];
     this.valuesArray = [];
     this.dataType = [];
+
     if (this.props.body && this.props.body.type === "JSON") {
       const jsonData = JSON.parse(this.props.body.value);
       this.keysArray = Object.keys(jsonData);
@@ -127,11 +136,9 @@ class PublicBodyContainer extends Component {
         let type = typeof data[i];
         if (type === "object") {
           if (Array.isArray(data[i])) {
-            if (
-              typeof this.valuesArray[i][0] === "string" ||
-              typeof this.valuesArray[i][0] === "number"
-            )
-              type = "Array";
+            if (typeof data[i][0] === "number") type = "Array of Integers";
+            else if (typeof data[i][0] === "string") type = "Array of Strings";
+            //type = "Array";
             else type = "Array of Objects";
           }
         }
@@ -164,25 +171,16 @@ class PublicBodyContainer extends Component {
           <div>
             <div className="generic-table-container">
               <div className="public-generic-table-title-container">Body</div>
-              <table className="table table-bordered" id="custom-generic-table">
+              <table className="table table-bordered">
                 <thead>
                   <tr>
-                    <th className="custom-th"> </th>
-                    <th className="custom-th" id="generic-table-key-cell">
-                      KEY
-                    </th>
-                    <th className="custom-th">VALUE</th>
-                    <th className="custom-th">DATATYPE</th>
+                    <th style={{ width: "30%" }}>KEY</th>
+                    <th style={{ width: "60%" }}>VALUE</th>
                   </tr>
                 </thead>
                 <tbody style={{ border: "none" }}>
                   {this.keysArray.map((e, index) => (
-                    <tr key={index} id="generic-table-row">
-                      <td
-                        className="custom-td"
-                        id="generic-table-key-cell"
-                        style={{ marginLeft: "5px" }}
-                      ></td>
+                    <tr key={index}>
                       <td className="custom-td">
                         <div>
                           <input
@@ -217,6 +215,7 @@ class PublicBodyContainer extends Component {
                             value={this.valuesArray[index]}
                             onChange={this.handleChange}
                             name={index + ".value"}
+                            style={{ width: "20%" }}
                           >
                             <option value={true} key={true}>
                               true
@@ -234,8 +233,10 @@ class PublicBodyContainer extends Component {
                                     marginLeft: "50px",
                                     width: "60%",
                                   }}
-                                  //type={typeof i === "number" ? "number" : "text"}
-                                  type="text"
+                                  type={
+                                    typeof i === "number" ? "number" : "text"
+                                  }
+                                  //type="text"
                                   name={index + "." + key + ".value"}
                                   value={i}
                                   onChange={this.handleChange}
@@ -285,14 +286,14 @@ class PublicBodyContainer extends Component {
                                 <button
                                   type="button"
                                   className="btn cross-button"
-                                  onClick={() => this.handleDelete(index, k)}
+                                  onClick={() => this.handleDelete(index, i)}
                                 >
                                   X
                                 </button>
                               </div>
                             ))}
                             <span
-                              class="badge badge-success"
+                              className="badge badge-success"
                               style={{
                                 marginLeft: "50px",
                                 marginTop: "5px",
@@ -318,7 +319,7 @@ class PublicBodyContainer extends Component {
                           />
                         )}
                       </td>
-                      <td className="custom-td">
+                      {/* <td className="custom-td">
                         <input
                           disabled
                           name={index + ".datatype"}
@@ -328,7 +329,7 @@ class PublicBodyContainer extends Component {
                           className="form-control"
                           style={{ border: "none" }}
                         />
-                      </td>
+                      </td> */}
                     </tr>
                   ))}
                 </tbody>
