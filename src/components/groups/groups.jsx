@@ -159,17 +159,75 @@ class Groups extends Component {
     this.setState({ showDeleteModal: false });
   }
 
-  propsFromGroups(groupIds) {
-    let versionIds = [];
+  filteredGroupEndpoints = {};
+  filteredGroupPages = {};
+
+  propsFromGroups(groupIds, title) {
     this.filteredGroups = {};
-    for (let i = 0; i < groupIds.length; i++) {
-      this.filteredGroups[groupIds[i]] = this.props.groups[groupIds[i]];
-      versionIds.push(this.props.groups[groupIds[i]].versionId);
+
+    if (title === "endpoints") {
+      if (groupIds === null) {
+        this.filteredGroupEndpoints = {};
+        // this.props.show_filter_version(null);
+      } else {
+        // let versionIds = [];
+        for (let i = 0; i < groupIds.length; i++) {
+          this.filteredGroupEndpoints[groupIds[i]] = this.props.groups[
+            groupIds[i]
+          ];
+          // versionIds.push(this.props.groups[groupIds[i]].versionId);
+        }
+        // console.log(versionIds);
+        // this.props.show_filter_version(versionIds);
+      }
     }
-    console.log(versionIds);
-    this.props.show_filter_version(versionIds);
+    if (title === "pages") {
+      if (groupIds === null) {
+        this.filteredGroupPages = {};
+        // this.props.show_filter_version(null);
+      } else {
+        // let versionIds = [];
+        for (let i = 0; i < groupIds.length; i++) {
+          this.filteredGroupPages[groupIds[i]] = this.props.groups[groupIds[i]];
+          // versionIds.push(this.props.groups[groupIds[i]].versionId);
+        }
+        // console.log(versionIds);
+        // this.props.show_filter_version(versionIds);
+      }
+    }
+    // jsonArray1 = jsonArray1.concat(jsonArray2);
+    this.filteredGroups = this.jsonConcat(
+      this.filteredGroups,
+      this.filteredGroupPages
+    );
+    this.filteredGroups = this.jsonConcat(
+      this.filteredGroups,
+      this.filteredGroupEndpoints
+    );
+    let versionIds = [];
+    console.log("this.filteredGroups", this.filteredGroups);
+    for (let i = 0; i < Object.keys(this.filteredGroups).length; i++) {
+      if (Object.keys(this.filteredGroups)[i] !== "null") {
+        versionIds.push(
+          this.filteredGroups[Object.keys(this.filteredGroups)[i]].versionId
+        );
+      }
+    }
+    console.log("versionIds", versionIds);
+
+    if (Object.keys(this.filteredGroups).length === 0) {
+      this.props.show_filter_version(null, "groups");
+    } else {
+      this.props.show_filter_version(versionIds, "groups");
+    }
   }
 
+  jsonConcat(o1, o2) {
+    for (var key in o2) {
+      o1[key] = o2[key];
+    }
+    return o1;
+  }
   filterGroups() {
     if (
       this.props.selectedCollection === true &&
@@ -211,6 +269,12 @@ class Groups extends Component {
   }
 
   render() {
+    if (this.filterFlag === false && this.props.filter === "") {
+      // this.filteredVersions = { ...this.props.versions };
+      this.eventkey = "1";
+    } else {
+      this.eventkey = "0";
+    }
     return (
       <div>
         <div>
@@ -236,6 +300,7 @@ class Groups extends Component {
             <Accordion
               key={groupId}
               id="child-accordion"
+              defaultActiveKey={this.eventkey}
               // draggable
               onDragOver={(e) => e.preventDefault()}
               onDrop={(e) => this.onDrop(groupId)}
@@ -320,12 +385,16 @@ class Groups extends Component {
                     </div>
                   ) : null}
                 </Card.Header>
-                <Accordion.Collapse eventKey="1">
+                <Accordion.Collapse
+                  defaultActiveKey={this.eventkey}
+                  eventKey="1"
+                >
                   <Card.Body>
                     <GroupPages
                       {...this.props}
                       version_id={this.props.groups[groupId].versionId}
                       group_id={groupId}
+                      show_filter_groups={this.propsFromGroups.bind(this)}
                     />
                     <Endpoints
                       {...this.props}

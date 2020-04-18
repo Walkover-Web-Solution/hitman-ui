@@ -35,10 +35,7 @@ const mapDispatchToProps = (dispatch) => {
 class Endpoints extends Component {
   state = {
     endpointState: "Make Public",
-    filter: "",
   };
-
-  filterFlag = false;
 
   componentDidMount() {}
 
@@ -208,38 +205,52 @@ class Endpoints extends Component {
       this.filterFlag = true;
       let endpoints = { ...this.props.endpoints };
       let EndpointIds = Object.keys(endpoints);
-      let endpointNameIds = {};
+      let endpointNameIds = [];
+      let endpointNames = [];
       for (let i = 0; i < EndpointIds.length; i++) {
         const { name } = endpoints[EndpointIds[i]];
-        endpointNameIds[name] = EndpointIds[i];
+        endpointNameIds.push({ name: name, id: EndpointIds[i] });
+        endpointNames.push(name);
       }
-      let endpointNames = Object.keys(endpointNameIds);
       let finalEndpointNames = endpointNames.filter((name) => {
         return (
           name.toLowerCase().indexOf(this.props.filter.toLowerCase()) !== -1
         );
       });
-      let finalEndpointIds = finalEndpointNames.map(
-        (name) => endpointNameIds[name]
-      );
+      let finalEndpointIds = [];
+      let uniqueIds = {};
+      for (let i = 0; i < finalEndpointNames.length; i++) {
+        for (let j = 0; j < Object.keys(endpointNameIds).length; j++) {
+          if (
+            finalEndpointNames[i] === endpointNameIds[j].name &&
+            !uniqueIds[endpointNameIds[j].id]
+          ) {
+            finalEndpointIds.push(endpointNameIds[j].id);
+            uniqueIds[endpointNameIds[j].id] = true;
+            break;
+          }
+        }
+      }
       for (let i = 0; i < finalEndpointIds.length; i++) {
         this.filteredEndpoints[finalEndpointIds[i]] = this.props.endpoints[
           finalEndpointIds[i]
         ];
       }
       this.setState({ filter: this.props.filter });
-
       if (Object.keys(this.filteredEndpoints).length !== 0) {
         let groupIds = [];
         for (let i = 0; i < Object.keys(this.filteredEndpoints).length; i++) {
           groupIds.push(this.filteredEndpoints[finalEndpointIds[i]].groupId);
         }
-        this.props.show_filter_groups(groupIds);
+        this.props.show_filter_groups(groupIds, "endpoints");
+      } else {
+        this.props.show_filter_groups(null, "endpoints");
       }
     } else if (this.filterFlag === false) {
       this.filteredEndpoints = { ...this.props.endpoints };
     }
   }
+
   render() {
     if (this.state.filter !== this.props.filter) {
       this.filterFlag = false;

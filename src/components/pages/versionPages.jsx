@@ -53,9 +53,77 @@ class VersionPages extends Component {
     this.setState({ showDeleteModal: false });
   }
 
+  filterVersionPages() {
+    if (
+      this.props.selectedCollection === true &&
+      this.props.filter !== "" &&
+      this.filterFlag === false
+    ) {
+      this.filteredVersionPages = {};
+      this.filterFlag = true;
+      let pages = { ...this.props.pages };
+      let pageIds = Object.keys(pages);
+      let pageNameIds = [];
+      let pageNames = [];
+      for (let i = 0; i < pageIds.length; i++) {
+        if (pages[pageIds[i]].groupId === null) {
+          const { name } = pages[pageIds[i]];
+          pageNameIds.push({ name: name, id: pageIds[i] });
+          pageNames.push(name);
+        }
+      }
+      let finalPageNames = pageNames.filter((name) => {
+        return (
+          name.toLowerCase().indexOf(this.props.filter.toLowerCase()) !== -1
+        );
+      });
+      let finalPageIds = [];
+      let uniqueIds = {};
+      for (let i = 0; i < finalPageNames.length; i++) {
+        for (let j = 0; j < Object.keys(pageNameIds).length; j++) {
+          if (
+            finalPageNames[i] === pageNameIds[j].name &&
+            !uniqueIds[pageNameIds[j].id]
+          ) {
+            finalPageIds.push(pageNameIds[j].id);
+            uniqueIds[pageNameIds[j].id] = true;
+            break;
+          }
+        }
+      }
+      for (let i = 0; i < finalPageIds.length; i++) {
+        this.filteredVersionPages[finalPageIds[i]] = this.props.pages[
+          finalPageIds[i]
+        ];
+      }
+
+      this.setState({ filter: this.props.filter });
+      if (Object.keys(this.filteredVersionPages).length !== 0) {
+        let versionIds = [];
+        for (
+          let i = 0;
+          i < Object.keys(this.filteredVersionPages).length;
+          i++
+        ) {
+          versionIds.push(this.filteredVersionPages[finalPageIds[i]].versionId);
+        }
+        this.props.show_filter_version(versionIds, "pages");
+      } else {
+        this.props.show_filter_version(null, "pages");
+      }
+    } else {
+      if (this.filterFlag === false)
+        this.filteredVersionPages = { ...this.props.pages };
+    }
+  }
+
   render() {
+    if (this.state.filter !== this.props.filter) {
+      this.filterFlag = false;
+    }
     return (
       <div>
+        {this.filterVersionPages()}
         <div>
           {this.state.showDeleteModal &&
             pageService.showDeletePageModal(
