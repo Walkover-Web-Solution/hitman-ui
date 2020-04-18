@@ -21,8 +21,8 @@ class EnvironmentVariables extends Component {
     environment: {
       name: "",
       variables: {
-        BASE_URL: { intitialValue: "", finalValue: "" },
-        "1": { intitialValue: "", finalValue: "" },
+        BASE_URL: { initialValue: "", currentValue: "" },
+        "1": { initialValue: "", currentValue: "" },
       },
     },
     originalVariableNames: ["BASE_URL", "1"],

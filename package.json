@@ -39,6 +39,7 @@
     "redux": "^4.0.5",
     "redux-logger": "^3.0.6",
     "redux-saga": "^1.1.3",
+    "redux-subscribe-action": "^2.1.3",
     "redux-thunk": "^2.3.0",
     "shortid": "^2.2.15",
     "urijs": "^1.19.2",

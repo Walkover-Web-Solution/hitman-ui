@@ -30,6 +30,8 @@ const mapStateToProps = (state) => {
     environment: state.environment.environments[
       state.environment.currentEnvironmentId
     ] || { id: null, name: "No Environment" },
+    currentEnvironmentId: state.environment.currentEnvironmentId,
+    environments: state.environment.environments,
   };
 };
 
@@ -532,7 +534,10 @@ class DisplayEndpoint extends Component {
         headers: headersData,
         params: updatedParams,
         pathVariables: pathVariables,
-        BASE_URL: this.customState.BASE_URL,
+        BASE_URL:
+          this.customState.selectedHost === "customHost"
+            ? this.customState.BASE_URL
+            : null,
       };
       // if (endpoint.name === "" || endpoint.uri === "")
       if (endpoint.name === "") toast.error("Please enter Endpoint name");
@@ -843,9 +848,9 @@ class DisplayEndpoint extends Component {
     );
   }
 
-  setBaseUrl(BASE_URL, customBASE_URL) {
+  setBaseUrl(BASE_URL, selectedHost) {
     this.customState.BASE_URL = BASE_URL;
-    this.customState.customBASE_URL = customBASE_URL;
+    this.customState.selectedHost = selectedHost;
   }
 
   setBody(bodyType, body) {

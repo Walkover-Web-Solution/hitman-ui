@@ -8,7 +8,6 @@ const initialState = {
 
 function tabsReducer(state = initialState, action) {
   let tabs = {};
-  console.log(state, action);
   switch (action.type) {
     case tabsActionTypes.ADD_NEW_TAB:
       tabs = {

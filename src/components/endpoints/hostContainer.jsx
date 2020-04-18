@@ -5,6 +5,8 @@ import { isDashboardRoute } from "../common/utility";
 import "./endpoints.scss";
 import tabService from "../tabs/tabService";
 import tabStatusTypes from "../tabs/tabStatusTypes";
+import environmentsActionTypes from "../environments/redux/environmentsActionTypes";
+import { subscribeActionAfter } from "redux-subscribe-action";
 
 class HostContainer extends Component {
   state = {
@@ -21,22 +23,40 @@ class HostContainer extends Component {
   };
 
   componentDidMount() {
-    let isLoaded = false;
-    store.subscribe(() => {
-      if (!isLoaded) {
-        let selectedHost = "customHost";
-        if (this.props.custom_host) {
-          selectedHost = "customHost";
-        } else if (
-          this.props.environment.variables &&
-          this.props.environment.variables.BASE_URL
-        ) {
-          selectedHost = "environmentHost";
+    let selectedHost = this.findTopPriorityHost();
+    this.setState({ selectedHost });
+
+    const unsubscribe = store.subscribe(() => {
+      if (this.props.currentEnvironmentId) {
+        if (Object.keys(this.props.environments).length) {
+          let selectedHost = this.findTopPriorityHost();
+          this.setState({ selectedHost });
+          unsubscribe();
         }
-        this.setState({ selectedHost });
+      } else {
+        unsubscribe();
       }
-      isLoaded = true;
     });
+  }
+
+  findTopPriorityHost() {
+    let selectedHost = "customHost";
+    if (this.props.custom_host) {
+      selectedHost = "customHost";
+    } else if (
+      this.props.environment &&
+      this.props.environment.variables &&
+      this.props.environment.variables.BASE_URL
+    ) {
+      selectedHost = "environmentHost";
+    } else if (this.state.groupId) {
+      if (this.props.groups[this.state.groupId].host) {
+        selectedHost = "groupHost";
+      } else if (this.props.groups[this.state.versionId].host) {
+        selectedHost = "versionHost";
+      }
+    }
+    return selectedHost;
   }
 
   selectHost(host) {
@@ -70,8 +90,7 @@ class HostContainer extends Component {
     let BASE_URL = "";
     switch (this.state.selectedHost) {
       case "customHost":
-        //BASE_URL = this.state.customHost === null ? "" : this.state.customHost;
-        BASE_URL = this.state.customHost;
+        BASE_URL = this.state.customHost || "";
         break;
       case "environmentHost":
         if (
@@ -102,7 +121,7 @@ class HostContainer extends Component {
       default:
         break;
     }
-    this.props.set_base_url(BASE_URL, this.state.customHost);
+    this.props.set_base_url(BASE_URL, this.state.selectedHost);
     return BASE_URL;
   }
 

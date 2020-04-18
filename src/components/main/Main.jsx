@@ -32,7 +32,6 @@ const mapDispatchToProps = (dispatch) => {
 
 class Main extends Component {
   state = {
-    currentEnvironment: { id: null, name: "No Environment" },
     tabs: [],
     defaultTabIndex: 0,
   };
