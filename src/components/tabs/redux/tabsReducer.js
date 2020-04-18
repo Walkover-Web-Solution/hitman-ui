@@ -54,8 +54,18 @@ function tabsReducer(state = initialState, action) {
       tabs = {
         ...state,
         tabs: { ...state.tabs, ...action.tabsList },
-        tabsOrder: [...state.tabsOrder, ...Object.keys(action.tabsList)],
+        tabsOrder: [...state.tabsOrder],
       };
+      const fetchedTabIds = [...Object.keys(action.tabsList)];
+      if (tabs.tabsOrder.length) {
+        const index = fetchedTabIds.findIndex(
+          (tId) => tId === tabs.tabsOrder[0]
+        );
+        if (index >= 0) {
+          console.log(fetchedTabIds.splice(index, 1));
+        }
+      }
+      tabs.tabsOrder = [...state.tabsOrder, ...fetchedTabIds];
       return tabs;
 
     case tabsActionTypes.REPLACE_TAB:

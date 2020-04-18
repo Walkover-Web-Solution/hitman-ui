@@ -5,13 +5,42 @@ import shortid from "shortid";
 import tabStatusTypes from "../tabStatusTypes";
 import indexedDbService from "../../indexedDb/indexedDbService";
 
-export const fetchTabsFromIdb = () => {
+export const fetchTabsFromIdb = (props) => {
   return async (dispatch) => {
-    indexedDbService
-      .getAllData("tabs")
-      .then((data) =>
-        dispatch({ type: tabsActionTypes.FETCH_TABS_FROM_IDB, tabsList: data })
-      );
+    indexedDbService.getAllData("tabs").then((tabsList) => {
+      if (!(tabsList && Object.keys(tabsList).length)) {
+        console.log();
+        if (props.location.pathname[1] === "endpoint") {
+          if (props.location.pathname[2] === "new") {
+            const id = shortid.generate();
+            tabsList = [
+              {
+                id,
+                type: "endpoint",
+                status: tabStatusTypes.NEW,
+                previewMode: false,
+                isModified: false,
+              },
+            ];
+          } else if (props.location.pathname[2]) {
+            const endpointId = props.location.pathname[2];
+            tabsList = [
+              {
+                id: endpointId,
+                type: "endpoint",
+                status: tabStatusTypes.SAVED,
+                previewMode: false,
+                isModified: false,
+              },
+            ];
+          }
+        }
+      }
+      dispatch({
+        type: tabsActionTypes.FETCH_TABS_FROM_IDB,
+        tabsList,
+      });
+    });
   };
 };
 
