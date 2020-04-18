@@ -20,7 +20,6 @@ function tabsReducer(state = initialState, action) {
 
     case tabsActionTypes.OPEN_IN_NEW_TAB:
       tabs = {
-        activeTabId: action.tab.id,
         tabs: { ...state.tabs, [action.tab.id]: action.tab },
         tabsOrder: [...state.tabsOrder, action.tab.id],
       };
@@ -51,21 +50,20 @@ function tabsReducer(state = initialState, action) {
       return state;
 
     case tabsActionTypes.FETCH_TABS_FROM_IDB:
+      console.log(action);
       tabs = {
-        ...state,
-        tabs: { ...state.tabs, ...action.tabsList },
-        tabsOrder: [...state.tabsOrder],
+        tabs: { ...state.tabsList, ...action.tabsList },
+        tabsOrder: [...state.tabsOrder, ...action.tabsMetadata.tabsOrder],
+        activeTabId: action.tabsMetadata.activeTabId,
       };
-      const fetchedTabIds = [...Object.keys(action.tabsList)];
-      if (tabs.tabsOrder.length) {
-        const index = fetchedTabIds.findIndex(
-          (tId) => tId === tabs.tabsOrder[0]
-        );
-        if (index >= 0) {
-          console.log(fetchedTabIds.splice(index, 1));
+      if (state.tabsOrder.length) {
+        if (action.tabsMetadata.tabsOrder.includes(state.tabsOrder[0])) {
+          const index = tabs.tabsOrder.indexOf(state.tabsOrder[0]);
+          console.log(tabs.tabsOrder);
+          console.log(tabs.tabsOrder.splice(index, 1));
+          console.log(tabs.tabsOrder);
         }
       }
-      tabs.tabsOrder = [...state.tabsOrder, ...fetchedTabIds];
       return tabs;
 
     case tabsActionTypes.REPLACE_TAB:

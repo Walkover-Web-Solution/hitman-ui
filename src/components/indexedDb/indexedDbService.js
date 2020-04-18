@@ -3,6 +3,7 @@ let db = null;
 const stores = [
   { name: "environment" },
   { name: "tabs", options: { keyPath: "id", autoIncrement: true } },
+  { name: "tabs_metadata" },
 ];
 
 const getDataBase = async () => {
@@ -19,7 +20,16 @@ const createDataBase = async () => {
 
   db = await openDB(dbName, version, {
     upgrade(db, oldVersion, newVersion, transaction) {
-      stores.map((store) => db.createObjectStore(store.name, store.options));
+      const environmentStore = db.createObjectStore("environment");
+      const tabsStore = db.createObjectStore("tabs", {
+        keyPath: "id",
+        autoIncrement: true,
+      });
+      const tabsMetadataStore = db.createObjectStore("tabs_metadata");
+
+      environmentStore.put(null, "currentEnvironmentId");
+      tabsMetadataStore.put(null, "activeTabId");
+      tabsMetadataStore.put([], "tabsOrder");
     },
   });
   return db;

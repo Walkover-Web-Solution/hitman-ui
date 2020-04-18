@@ -40,18 +40,6 @@ class Main extends Component {
     this.fetchAll();
 
     await indexedDbService.createDataBase();
-
-    const currentEnvironmentId = await indexedDbService.getValue(
-      "environment",
-      "currentEnvironmentId"
-    );
-    if (!currentEnvironmentId) {
-      await indexedDbService.addData(
-        "environment",
-        null,
-        "currentEnvironmentId"
-      );
-    }
   }
 
   fetchAll() {

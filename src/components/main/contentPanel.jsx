@@ -83,7 +83,6 @@ class ContentPanel extends Component {
             previewMode: false,
             isModified: false,
           });
-          // this.props.closeTab;
         } else {
           this.props.openInNewTab({
             id: endpointId,
