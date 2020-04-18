@@ -9,7 +9,6 @@ export const fetchTabsFromIdb = (props) => {
   return async (dispatch) => {
     indexedDbService.getAllData("tabs").then((tabsList) => {
       indexedDbService.getAllData("tabs_metadata").then((tabsMetadata) => {
-        console.log(tabsList, tabsMetadata);
         if (!(tabsList && Object.keys(tabsList).length)) {
           if (props.location.pathname.split("/")[2] === "endpoint") {
             let newTab = null;
@@ -92,10 +91,10 @@ export const closeTab = (tabId, history) => {
   const tabsOrder = store
     .getState()
     .tabs.tabsOrder.filter((tId) => tId !== tabId);
+  console.log(tabId);
   return (dispatch) => {
     dispatch({ type: tabsActionTypes.CLOSE_TAB, tabId });
     indexedDbService.deleteData("tabs", tabId);
-
     indexedDbService.updateData("tabs_metadata", tabsOrder, "tabsOrder");
   };
 };

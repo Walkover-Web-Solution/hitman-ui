@@ -963,6 +963,13 @@ class DisplayEndpoint extends Component {
 
   render() {
     if (
+      this.state.groupId &&
+      this.props.tab.status === tabStatusTypes.DELETED
+    ) {
+      this.setState({ groupId: null });
+    }
+
+    if (
       this.props.save_endpoint_flag &&
       this.props.tab.id === this.props.selected_tab_id
     ) {

@@ -15,20 +15,24 @@ function newTab(props) {
 }
 
 function removeTab(tabId, props) {
-  props.closeTab(tabId);
-  if (props.tabs.activeTabId === tabId) {
-    const tabsCount = Object.keys(props.tabs.tabs).length;
-    if (tabsCount === 0) {
-      newTab(props);
-    } else {
-      props.setActiveTabId(Object.keys(props.tabs.tabs)[0]);
-      changeRoute(props, props.tabs.tabs[Object.keys(props.tabs.tabs)[0]]);
+  const { tabs, tabsOrder, activeTabId } = store.getState().tabs;
+  if (tabs[tabId]) {
+    if (activeTabId === tabId) {
+      const tabsCount = Object.keys(tabs).length;
+      console.log(1, tabsCount);
+      if (tabsCount === 1) {
+        newTab(props);
+      } else {
+        const index = tabsOrder.indexOf(tabId);
+        console.log(2, index);
+        selectTab(props, tabsOrder[index - 1]);
+      }
     }
+    store.dispatch(closeTab(tabId));
   }
 }
 
 function changeRoute(props, tab) {
-  // if (tab.type === "endpoint") {
   if (tab.isSaved) {
     props.history.push({
       pathname: `/dashboard/${tab.type}/${tab.id}`,
@@ -38,19 +42,21 @@ function changeRoute(props, tab) {
       pathname: `/dashboard/${tab.type}/new`,
     });
   }
-  // }
 }
 
 function closeAllTabs(props) {
-  const id = shortId.generate();
-  const tabs = [{ id, type: "endpoint", isSaved: false }];
-  props.set_tabs(tabs, 0);
-  props.history.push({ pathname: `/dashboard/endpoint/new` });
+  // const id = shortId.generate();
+  // const tabs = [{ id, type: "endpoint", isSaved: false }];
+  // props.set_tabs(tabs, 0);
+  // props.history.push({ pathname: `/dashboard/endpoint/new` });
 }
 
 function selectTab(props, tabId) {
-  const tab = props.tabs.tabs[tabId];
-  props.setActiveTabId(tabId);
+  const { tabs, tabsOrder, activeTabId } = store.getState().tabs;
+
+  const tab = tabs[tabId];
+  store.dispatch(setActiveTabId(tabId));
+  console.log(tabId);
   if (tab.status === "NEW") {
     props.history.push({
       pathname: `/dashboard/${tab.type}/new`,
@@ -79,6 +85,10 @@ function markTabAsSaved(tabId) {
   );
 }
 
+function markTabAsDeleted(tabId) {
+  store.dispatch(updateTab(tabId, { status: tabStatusTypes.DELETED }));
+}
+
 export default {
   newTab,
   removeTab,
@@ -88,4 +98,5 @@ export default {
   disablePreviewMode,
   markTabAsModified,
   markTabAsSaved,
+  markTabAsDeleted,
 };

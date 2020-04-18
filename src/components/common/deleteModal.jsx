@@ -1,6 +1,13 @@
 import React, { Component } from "react";
 import { Modal } from "react-bootstrap";
 import tabService from "../tabs/tabService";
+import { connect } from "react-redux";
+import { closeTab, openInNewTab } from "../tabs/redux/tabsActions";
+const mapDispatchToProps = (dispatch) => {
+  return {
+    closeTab: (tabId) => dispatch(closeTab(tabId)),
+  };
+};
 class DeleteModal extends Component {
   state = {};
 
@@ -78,4 +85,4 @@ class DeleteModal extends Component {
   }
 }
 
-export default DeleteModal;
+export default connect(null, mapDispatchToProps)(DeleteModal);

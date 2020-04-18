@@ -3,6 +3,7 @@ import endpointsActionTypes from "./endpointsActionTypes";
 import { setEndpointIds } from "../../groups/redux/groupsActions";
 import store from "../../../store/store";
 import { toast } from "react-toastify";
+import tabService from "../../tabs/tabService";
 
 export const addEndpoint = (history, newEndpoint, groupId) => {
   return (dispatch) => {

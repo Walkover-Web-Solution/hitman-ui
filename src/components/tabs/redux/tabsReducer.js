@@ -50,18 +50,16 @@ function tabsReducer(state = initialState, action) {
       return state;
 
     case tabsActionTypes.FETCH_TABS_FROM_IDB:
-      console.log(action);
       tabs = {
         tabs: { ...state.tabsList, ...action.tabsList },
         tabsOrder: [...state.tabsOrder, ...action.tabsMetadata.tabsOrder],
         activeTabId: action.tabsMetadata.activeTabId,
       };
       if (state.tabsOrder.length) {
+        console.log(state.tabsOrder);
         if (action.tabsMetadata.tabsOrder.includes(state.tabsOrder[0])) {
           const index = tabs.tabsOrder.indexOf(state.tabsOrder[0]);
-          console.log(tabs.tabsOrder);
-          console.log(tabs.tabsOrder.splice(index, 1));
-          console.log(tabs.tabsOrder);
+          tabs.tabsOrder.splice(index, 1);
         }
       }
       return tabs;

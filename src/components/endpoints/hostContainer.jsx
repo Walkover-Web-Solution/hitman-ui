@@ -155,6 +155,13 @@ class HostContainer extends Component {
   }
 
   render() {
+    if (
+      this.state.groupId &&
+      this.props.tab.status === tabStatusTypes.DELETED
+    ) {
+      this.setState({ groupId: null });
+    }
+
     if (!this.state.groupId && this.props.groupId) {
       const groupId = this.props.groupId;
       const versionId = this.props.groups[groupId].versionId;
