@@ -44,7 +44,7 @@ class CollectionVersions extends Component {
   };
 
   filterFlag = false;
-  eventkey = "1";
+  eventkey = {};
   filteredGroups = {};
   filteredEndpointsAndPages = {};
   filteredVersionPages = {};
@@ -183,6 +183,7 @@ class CollectionVersions extends Component {
           this.filteredGroups[versionIds[i]] = this.props.versions[
             versionIds[i]
           ];
+          this.eventkey[versionIds[i]] = "0";
         }
       }
     }
@@ -193,6 +194,7 @@ class CollectionVersions extends Component {
           this.filteredEndpointsAndPages[versionIds[i]] = this.props.versions[
             versionIds[i]
           ];
+          this.eventkey[versionIds[i]] = "0";
         }
       }
     }
@@ -203,6 +205,7 @@ class CollectionVersions extends Component {
           this.filteredVersionPages[versionIds[i]] = this.props.versions[
             versionIds[i]
           ];
+          this.eventkey[versionIds[i]] = "0";
         }
       }
     }
@@ -218,12 +221,10 @@ class CollectionVersions extends Component {
       this.filteredVersions,
       this.filteredGroups
     );
-    console.log(this.filteredOnlyVersions);
     this.filteredVersions = this.jsonConcat(
       this.filteredVersions,
       this.filteredOnlyVersions
     );
-    console.log(this.filteredVersions);
 
     this.setState({ filter: this.props.filter });
   }
@@ -277,8 +278,13 @@ class CollectionVersions extends Component {
           this.filteredOnlyVersions[versionIds[i]] = this.props.versions[
             versionIds[i]
           ];
+          if (
+            !this.eventkey[versionIds[i]] ||
+            this.eventkey[versionIds[i]] !== "0"
+          ) {
+            this.eventkey[versionIds[i]] = "1";
+          }
         }
-        console.log("this.filteredOnlyVersions", this.filteredOnlyVersions);
       } else {
         this.filteredOnlyVersions = {};
       }
@@ -292,11 +298,8 @@ class CollectionVersions extends Component {
       this.state.filter !== this.props.filter
     ) {
       this.filteredVersions = { ...this.props.versions };
-      this.eventkey = "1";
-    } else {
-      this.eventkey = "0";
+      this.eventkey = {};
     }
-
     return (
       <div>
         {this.showShareVersionForm()}
@@ -332,7 +335,7 @@ class CollectionVersions extends Component {
                     <Accordion.Toggle
                       as={Button}
                       variant="default"
-                      eventKey={this.eventkey}
+                      eventKey={this.eventkey[versionId]}
                     >
                       {this.props.versions[versionId].number}
                     </Accordion.Toggle>
@@ -409,10 +412,7 @@ class CollectionVersions extends Component {
                       </div>
                     ) : null}
                   </Card.Header>
-                  <Accordion.Collapse
-                    // defaultActiveKey={this.eventkey}
-                    eventKey={this.eventkey}
-                  >
+                  <Accordion.Collapse eventKey={this.eventkey[versionId]}>
                     <Card.Body>
                       <VersionPages
                         {...this.props}
