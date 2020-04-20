@@ -156,6 +156,7 @@ class HostContainer extends Component {
 
   render() {
     if (
+      isDashboardRoute(this.props) &&
       this.state.groupId &&
       this.props.tab.status === tabStatusTypes.DELETED
     ) {

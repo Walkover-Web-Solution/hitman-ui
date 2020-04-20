@@ -73,7 +73,7 @@ class PublicBodyContainer extends Component {
   displayAddButton(bodyDescription, key) {
     return (
       <span
-        class="badge badge-success"
+        className="badge badge-success"
         style={{
           marginLeft: "50px",
           marginTop: "5px",
@@ -103,7 +103,7 @@ class PublicBodyContainer extends Component {
     return (
       <div>
         {Object.keys(obj).map((k) => (
-          <div>
+          <div key={k}>
             <label
               style={{
                 width: "20%",
@@ -143,7 +143,7 @@ class PublicBodyContainer extends Component {
     return (
       <div>
         {this.props.body_description[key].default.map((value, index) => (
-          <div>
+          <div key={index}>
             {this.props.body_description[key].dataType === "Array of Boolean"
               ? this.displayBoolean(key, value, key + "." + index + ".value")
               : this.displayInput(key, value, key + "." + index + ".value")}
@@ -254,6 +254,7 @@ class PublicBodyContainer extends Component {
                           <div>
                             {bodyDescription[key].default.map((obj, i) => (
                               <div
+                                key={i}
                                 style={{
                                   display: "flex",
                                   margin: "10px",
@@ -289,6 +290,7 @@ class PublicBodyContainer extends Component {
                             {Object.keys(bodyDescription[key].default).map(
                               (k) => (
                                 <div
+                                  key={k}
                                   style={{
                                     marginLeft: "5px",
                                     border: "1px solid",

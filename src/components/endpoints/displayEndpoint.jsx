@@ -695,11 +695,10 @@ class DisplayEndpoint extends Component {
     if (name === "Path Variables") {
       this.setState({ pathVariables: value });
     }
-
+    console.log(isDashboardRoute(this.props), name);
     if (
-      (isDashboardRoute(this.props) && name === "Params") ||
-      name === "Headers" ||
-      name === "Path Variables"
+      isDashboardRoute(this.props) &&
+      (name === "Params" || name === "Headers" || name === "Path Variables")
     ) {
       tabService.markTabAsModified(this.props.tab.id);
     }
@@ -1051,6 +1050,7 @@ class DisplayEndpoint extends Component {
 
   render() {
     if (
+      isDashboardRoute(this.props) &&
       this.state.groupId &&
       this.props.tab.status === tabStatusTypes.DELETED
     ) {
