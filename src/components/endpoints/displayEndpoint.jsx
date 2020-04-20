@@ -78,23 +78,22 @@ class DisplayEndpoint extends Component {
       key3: { default: true, dataType: "boolean" },
       key4: { default: [2], dataType: "Array of Integer" },
       key5: { default: ["a"], dataType: "Array of String" },
-      // key6: { default: { k1: "v1", k2: 10 }, dataType: "Object" },
-      key6: {
+      key6: { default: { k1: "v1", k2: 10 }, dataType: "Object" },
+      key7: {
         default: [{ k1: "v1", k2: 10 }],
         dataType: "Array of Objects",
         object: { k1: "v1", k2: 10 },
       },
-      // key8: {
-      //   default: {
-      //     k1: { k1: "v1", k2: 10, k3: 44 },
-      //     k2: { k1: "v1", k2: 10 },
-      //   },
-      //   dataType: "Object of Objects",
-      //object: { k1: "v1", k2: 10 },
-      // },
-      // key9: { default: [true], dataType: "Array of Boolean" },
+      key8: {
+        default: {
+          k1: { k1: "v1", k2: 10, k3: 44 },
+          k2: { k1: "v1", k2: 10 },
+        },
+        dataType: "Object of Objects",
+        object: { k1: "v1", k2: 10 },
+      },
+      key9: { default: [true], dataType: "Array of Boolean" },
     },
-    //bodyDescription: {},
     updatedArray: {},
     objectDefinition: {},
   };
@@ -158,14 +157,14 @@ class DisplayEndpoint extends Component {
       });
     }
     let flag = 0;
-    if (!isDashboardRoute(this.props)) {
-      this.fetchEndpoint(flag);
-      store.subscribe(() => {
-        if (!this.props.location.title && !this.state.title) {
-          this.fetchEndpoint(flag);
-        }
-      });
-    }
+    // if (!isDashboardRoute(this.props)) {
+    //   this.fetchEndpoint(flag);
+    //   store.subscribe(() => {
+    //     if (!this.props.location.title && !this.state.title) {
+    //       this.fetchEndpoint(flag);
+    //     }
+    //   });
+    // }
   }
 
   structueParamsHeaders = [
@@ -223,6 +222,11 @@ class DisplayEndpoint extends Component {
     ) {
       flag = 1;
       endpoint = endpoints[endpointId];
+      //      let groupId;
+      // if (!isDashboardRoute(this.props) && endpoint === undefined) {
+      //   const collectionId = this.props.location.pathname.split("/")[2];
+      //   this.props.history.push({ pathname: `/public/${collectionId}` });
+
       const groupId = endpoints[endpointId].groupId;
 
       //To fetch originalParams from Params
@@ -1366,16 +1370,18 @@ class DisplayEndpoint extends Component {
                 ></GenericTable>
               )}
               {console.log(this.state.data.body)}
-              {this.state.data.body && this.state.data.body.value !== "" && (
-                <PublicBodyContainer
-                  {...this.props}
-                  set_body={this.setBody.bind(this)}
-                  body={this.state.data.body}
-                  public_body_flag={this.state.publicBodyFlag}
-                  set_public_body={this.setPublicBody.bind(this)}
-                  body_description={this.state.bodyDescription}
-                ></PublicBodyContainer>
-              )}
+              {this.state.data.body &&
+                this.state.data.body.value !== "" &&
+                this.state.data.body.value !== null && (
+                  <PublicBodyContainer
+                    {...this.props}
+                    set_body={this.setBody.bind(this)}
+                    body={this.state.data.body}
+                    public_body_flag={this.state.publicBodyFlag}
+                    set_public_body={this.setPublicBody.bind(this)}
+                    body_description={this.state.bodyDescription}
+                  ></PublicBodyContainer>
+                )}
             </div>
           )}
         </div>
