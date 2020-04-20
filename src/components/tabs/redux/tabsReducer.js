@@ -56,7 +56,6 @@ function tabsReducer(state = initialState, action) {
         activeTabId: action.tabsMetadata.activeTabId,
       };
       if (state.tabsOrder.length) {
-        console.log(state.tabsOrder);
         if (action.tabsMetadata.tabsOrder.includes(state.tabsOrder[0])) {
           const index = tabs.tabsOrder.indexOf(state.tabsOrder[0]);
           tabs.tabsOrder.splice(index, 1);

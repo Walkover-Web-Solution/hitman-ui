@@ -19,13 +19,15 @@ function removeTab(tabId, props) {
   if (tabs[tabId]) {
     if (activeTabId === tabId) {
       const tabsCount = Object.keys(tabs).length;
-      console.log(1, tabsCount);
       if (tabsCount === 1) {
         newTab(props);
       } else {
         const index = tabsOrder.indexOf(tabId);
-        console.log(2, index);
-        selectTab(props, tabsOrder[index - 1]);
+        if (index > 0) {
+          selectTab(props, tabsOrder[index - 1]);
+        } else {
+          selectTab(props, tabsOrder[index + 1]);
+        }
       }
     }
     store.dispatch(closeTab(tabId));
@@ -56,7 +58,6 @@ function selectTab(props, tabId) {
 
   const tab = tabs[tabId];
   store.dispatch(setActiveTabId(tabId));
-  console.log(tabId);
   if (tab.status === "NEW") {
     props.history.push({
       pathname: `/dashboard/${tab.type}/new`,

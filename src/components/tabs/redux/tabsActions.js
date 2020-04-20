@@ -91,7 +91,6 @@ export const closeTab = (tabId, history) => {
   const tabsOrder = store
     .getState()
     .tabs.tabsOrder.filter((tId) => tId !== tabId);
-  console.log(tabId);
   return (dispatch) => {
     dispatch({ type: tabsActionTypes.CLOSE_TAB, tabId });
     indexedDbService.deleteData("tabs", tabId);
@@ -154,5 +153,6 @@ export const replaceTab = (oldTabId, newTab) => {
     });
     indexedDbService.deleteData("tabs", oldTabId);
     indexedDbService.addData("tabs", newTab);
+    indexedDbService.updateData("tabs_metadata", tabsOrder, "tabsOrder");
   };
 };
