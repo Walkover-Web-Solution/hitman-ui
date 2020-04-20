@@ -17,6 +17,12 @@ class SideBar extends Component {
     this.setState({ data });
   };
 
+  emptyFilter() {
+    let data = { ...this.state.data };
+    data.filter = "";
+    this.setState({ data });
+  }
+
   render() {
     return (
       <nav className="col-md-2 d-none d-md-block bg-light sidebar ">
@@ -30,6 +36,7 @@ class SideBar extends Component {
                 </div>
                 <div id="search-box-input">
                   <input
+                    value={this.state.data.filter}
                     type="text"
                     id="search-box-input"
                     name="filter"
@@ -103,6 +110,7 @@ class SideBar extends Component {
                   render={(props) => (
                     <Collections
                       {...this.props}
+                      empty_filter={this.emptyFilter.bind(this)}
                       filter={this.state.data.filter}
                     />
                   )}

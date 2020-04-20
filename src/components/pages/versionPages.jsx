@@ -107,9 +107,9 @@ class VersionPages extends Component {
         ) {
           versionIds.push(this.filteredVersionPages[finalPageIds[i]].versionId);
         }
-        this.props.show_filter_version(versionIds, "pages");
+        this.props.show_filter_version(versionIds, "versionPages");
       } else {
-        this.props.show_filter_version(null, "pages");
+        this.props.show_filter_version(null, "versionPages");
       }
     } else {
       if (this.filterFlag === false)

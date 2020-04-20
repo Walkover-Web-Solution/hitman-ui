@@ -45,6 +45,10 @@ class CollectionVersions extends Component {
 
   filterFlag = false;
   eventkey = "1";
+  filteredGroups = {};
+  filteredEndpointsAndPages = {};
+  filteredVersionPages = {};
+  filteredOnlyVersions = {};
 
   handleUpdate(collectionVersion) {
     this.props.history.push({
@@ -171,30 +175,42 @@ class CollectionVersions extends Component {
     this.setState({ showDeleteModal: false });
   }
 
-  filteredGroups = {};
-  filteredVersionPages = {};
-
   propsFromVersion(versionIds, title) {
     this.filteredVersions = {};
     this.filterFlag = true;
-
+    // if (title === "versions") {
+    //   this.filteredOnlyVersions = {};
+    //   if (versionIds !== null) {
+    //     for (let i = 0; i < versionIds.length; i++) {
+    //       this.filteredOnlyVersions[versionIds[i]] = this.props.versions[
+    //         versionIds[i]
+    //       ];
+    //     }
+    //   }
+    // }
     if (title === "groups") {
-      if (versionIds === null) {
-        this.filteredGroups = {};
-      } else {
-        // this.filteredVersions = {};
+      this.filteredGroups = {};
+      if (versionIds !== null) {
         for (let i = 0; i < versionIds.length; i++) {
           this.filteredGroups[versionIds[i]] = this.props.versions[
             versionIds[i]
           ];
         }
       }
-      // this.setState({ filter: this.props.filter });
     }
-    if (title === "pages") {
-      if (versionIds === null) {
-        this.filteredVersionPages = {};
-      } else {
+    if (title === "endpointsAndPages") {
+      this.filteredEndpointsAndPages = {};
+      if (versionIds !== null) {
+        for (let i = 0; i < versionIds.length; i++) {
+          this.filteredEndpointsAndPages[versionIds[i]] = this.props.versions[
+            versionIds[i]
+          ];
+        }
+      }
+    }
+    if (title === "versionPages") {
+      this.filteredVersionPages = {};
+      if (versionIds !== null) {
         for (let i = 0; i < versionIds.length; i++) {
           this.filteredVersionPages[versionIds[i]] = this.props.versions[
             versionIds[i]
@@ -208,25 +224,18 @@ class CollectionVersions extends Component {
     );
     this.filteredVersions = this.jsonConcat(
       this.filteredVersions,
+      this.filteredEndpointsAndPages
+    );
+    this.filteredVersions = this.jsonConcat(
+      this.filteredVersions,
       this.filteredGroups
     );
-    console.log("this.filteredVersions", this.filteredVersions);
+    // this.filteredVersions = this.jsonConcat(
+    //   this.filteredVersions,
+    //   this.filteredOnlyVersions
+    // );
     this.setState({ filter: this.props.filter });
   }
-  // let versionIds = [];
-  // for (let i = 0; i < Object.keys(this.filteredVersions).length; i++) {
-  //   versionIds.push(
-  //     this.filteredVersions[Object.keys(this.filteredVersions)[i]].versionId
-  //   );
-  // }
-  // console.log("this.filteredVersions", this.filteredVersions);
-  // console.log("versionIds", versionIds);
-
-  // if (Object.keys(this.filteredVersions).length === 0) {
-  //   this.props.show_filter_version(null);
-  // } else {
-  //   this.props.show_filter_version(versionIds);
-  // }
 
   jsonConcat(o1, o2) {
     for (var key in o2) {
@@ -235,42 +244,85 @@ class CollectionVersions extends Component {
     return o1;
   }
 
-  // propsFromVersion(versionIds) {
-  //   this.filterFlag = true;
-  //   if (versionIds === null) {
-  //     this.filteredVersions = {};
-  //   } else {
-  //     this.filteredVersions = {};
-  //     for (let i = 0; i < versionIds.length; i++) {
-  //       this.filteredVersions[versionIds[i]] = this.props.versions[
-  //         versionIds[i]
-  //       ];
-  //     }
-  //   }
-  //   this.setState({ filter: this.props.filter });
-  // }
+  filterVersions() {
+    if (
+      this.props.selectedCollection === true &&
+      this.props.filter !== "" &&
+      this.filterFlag === false
+    ) {
+      // this.filteredVersions = {};
+      this.filterFlag = true;
+      let versions = { ...this.props.versions };
+      console.log(versions);
+      let versionIds = Object.keys(versions);
+      let versionNameIds = [];
+      let versionNames = [];
+      for (let i = 0; i < versionIds.length; i++) {
+        const { number: name } = versions[versionIds[i]];
+        versionNameIds.push({ name: name, id: versionIds[i] });
+        versionNames.push(name);
+      }
+      console.log("versionNames", versionNames);
+      let finalVersionNames = versionNames.filter((name) => {
+        return (
+          name.toLowerCase().indexOf(this.props.filter.toLowerCase()) !== -1
+        );
+      });
+      versionIds = [];
+      let uniqueIds = {};
+      for (let i = 0; i < finalVersionNames.length; i++) {
+        for (let j = 0; j < Object.keys(versionNameIds).length; j++) {
+          if (
+            finalVersionNames[i] === versionNameIds[j].name &&
+            !uniqueIds[versionNameIds[j].id]
+          ) {
+            versionIds.push(versionNameIds[j].id);
+            uniqueIds[versionNameIds[j].id] = true;
+            break;
+          }
+        }
+      }
+      console.log("versionIds", versionIds);
+      if (versionIds.length !== 0) {
+        this.propsFromVersion(versionIds, "versions");
+      } else {
+        this.propsFromVersion(null, "versions");
+      }
+      // for (let i = 0; i < finalVersionIds.length; i++) {
+      //   this.filteredVersions[finalVersionIds[i]] = this.props.versions[
+      //     finalVersionIds[i]
+      //   ];
+      // }
+      // this.setState({ filter: this.props.filter });
+      // if (Object.keys(this.filteredVersions).length !== 0) {
+      //   let versionIds = [];
+      //   for (let i = 0; i < Object.keys(this.filteredVersions).length; i++) {
+      //     versionIds.push(this.filteredVersions[finalVersionIds[i]].versionId);
+      //   }
+      //   this.props.show_filter_version(versionIds, "versions");
+      // } else {
+      //   this.props.show_filter_version(null, "versions");
+      // }
+    } else if (this.filterFlag === false) {
+      this.filteredVersions = { ...this.props.versions };
+    }
+  }
 
   render() {
-    console.log("render", this.filterFlag, this.props);
-    console.log("this.filteredVersions", this.filteredVersions);
-
     if (
       this.filterFlag === false ||
       this.props.filter === "" ||
       this.state.filter !== this.props.filter
     ) {
-      console.log("innn");
       this.filteredVersions = { ...this.props.versions };
       this.eventkey = "1";
     } else {
       this.eventkey = "0";
     }
-    console.log(
-      "Object.keys(this.filteredVersions)",
-      Object.keys(this.filteredVersions)
-    );
+
     return (
       <div>
+        {/* {this.filterVersions()} */}
         {this.showShareVersionForm()}
         {this.showAddGroupForm()}
         {this.showEditVersionForm()}
@@ -294,7 +346,7 @@ class CollectionVersions extends Component {
             )
             .map((versionId, index) => (
               <Accordion
-                defaultActiveKey={this.eventkey}
+                defaultActiveKey="0"
                 key={versionId}
                 id="child-accordion"
               >
@@ -304,7 +356,7 @@ class CollectionVersions extends Component {
                     <Accordion.Toggle
                       as={Button}
                       variant="default"
-                      eventKey="1"
+                      eventKey={this.eventkey}
                     >
                       {this.props.versions[versionId].number}
                     </Accordion.Toggle>
@@ -382,8 +434,8 @@ class CollectionVersions extends Component {
                     ) : null}
                   </Card.Header>
                   <Accordion.Collapse
-                    defaultActiveKey={this.eventkey}
-                    eventKey="1"
+                    // defaultActiveKey={this.eventkey}
+                    eventKey={this.eventkey}
                   >
                     <Card.Body>
                       <VersionPages

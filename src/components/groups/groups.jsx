@@ -35,6 +35,9 @@ class Groups extends Component {
   };
 
   filterFlag = false;
+  filteredGroupEndpoints = {};
+  filteredGroupPages = {};
+  filteredEndpointsAndPages = {};
 
   onDrop(destinationGroupId) {
     this.props.set_destination_group_id(destinationGroupId);
@@ -159,66 +162,52 @@ class Groups extends Component {
     this.setState({ showDeleteModal: false });
   }
 
-  filteredGroupEndpoints = {};
-  filteredGroupPages = {};
-
   propsFromGroups(groupIds, title) {
-    this.filteredGroups = {};
-
+    this.filteredEndpointsAndPages = {};
     if (title === "endpoints") {
-      if (groupIds === null) {
-        this.filteredGroupEndpoints = {};
-        // this.props.show_filter_version(null);
-      } else {
-        // let versionIds = [];
+      this.filteredGroupEndpoints = {};
+      if (groupIds !== null) {
         for (let i = 0; i < groupIds.length; i++) {
           this.filteredGroupEndpoints[groupIds[i]] = this.props.groups[
             groupIds[i]
           ];
-          // versionIds.push(this.props.groups[groupIds[i]].versionId);
         }
-        // console.log(versionIds);
-        // this.props.show_filter_version(versionIds);
       }
     }
     if (title === "pages") {
-      if (groupIds === null) {
-        this.filteredGroupPages = {};
-        // this.props.show_filter_version(null);
-      } else {
-        // let versionIds = [];
+      this.filteredGroupPages = {};
+      if (groupIds !== null) {
         for (let i = 0; i < groupIds.length; i++) {
           this.filteredGroupPages[groupIds[i]] = this.props.groups[groupIds[i]];
-          // versionIds.push(this.props.groups[groupIds[i]].versionId);
         }
-        // console.log(versionIds);
-        // this.props.show_filter_version(versionIds);
       }
     }
-    // jsonArray1 = jsonArray1.concat(jsonArray2);
-    this.filteredGroups = this.jsonConcat(
-      this.filteredGroups,
+    this.filteredEndpointsAndPages = this.jsonConcat(
+      this.filteredEndpointsAndPages,
       this.filteredGroupPages
     );
-    this.filteredGroups = this.jsonConcat(
-      this.filteredGroups,
+    this.filteredEndpointsAndPages = this.jsonConcat(
+      this.filteredEndpointsAndPages,
       this.filteredGroupEndpoints
     );
     let versionIds = [];
-    console.log("this.filteredGroups", this.filteredGroups);
-    for (let i = 0; i < Object.keys(this.filteredGroups).length; i++) {
-      if (Object.keys(this.filteredGroups)[i] !== "null") {
+    for (
+      let i = 0;
+      i < Object.keys(this.filteredEndpointsAndPages).length;
+      i++
+    ) {
+      if (Object.keys(this.filteredEndpointsAndPages)[i] !== "null") {
         versionIds.push(
-          this.filteredGroups[Object.keys(this.filteredGroups)[i]].versionId
+          this.filteredEndpointsAndPages[
+            Object.keys(this.filteredEndpointsAndPages)[i]
+          ].versionId
         );
       }
     }
-    console.log("versionIds", versionIds);
-
-    if (Object.keys(this.filteredGroups).length === 0) {
-      this.props.show_filter_version(null, "groups");
+    if (Object.keys(this.filteredEndpointsAndPages).length === 0) {
+      this.props.show_filter_version(null, "endpointsAndPages");
     } else {
-      this.props.show_filter_version(versionIds, "groups");
+      this.props.show_filter_version(versionIds, "endpointsAndPages");
     }
   }
 
@@ -228,6 +217,7 @@ class Groups extends Component {
     }
     return o1;
   }
+
   filterGroups() {
     if (
       this.props.selectedCollection === true &&
@@ -238,18 +228,32 @@ class Groups extends Component {
       this.filterFlag = true;
       let groups = { ...this.props.groups };
       let groupIds = Object.keys(groups);
-      let groupNameIds = {};
+      let groupNameIds = [];
+      let groupNames = [];
       for (let i = 0; i < groupIds.length; i++) {
         const { name } = groups[groupIds[i]];
-        groupNameIds[name] = groupIds[i];
+        groupNameIds.push({ name: name, id: groupIds[i] });
+        groupNames.push(name);
       }
-      let groupNames = Object.keys(groupNameIds);
       let finalGroupNames = groupNames.filter((name) => {
         return (
           name.toLowerCase().indexOf(this.props.filter.toLowerCase()) !== -1
         );
       });
-      let finalGroupIds = finalGroupNames.map((name) => groupNameIds[name]);
+      let finalGroupIds = [];
+      let uniqueIds = {};
+      for (let i = 0; i < finalGroupNames.length; i++) {
+        for (let j = 0; j < Object.keys(groupNameIds).length; j++) {
+          if (
+            finalGroupNames[i] === groupNameIds[j].name &&
+            !uniqueIds[groupNameIds[j].id]
+          ) {
+            finalGroupIds.push(groupNameIds[j].id);
+            uniqueIds[groupNameIds[j].id] = true;
+            break;
+          }
+        }
+      }
       for (let i = 0; i < finalGroupIds.length; i++) {
         this.filteredGroups[finalGroupIds[i]] = this.props.groups[
           finalGroupIds[i]
@@ -259,9 +263,11 @@ class Groups extends Component {
       if (Object.keys(this.filteredGroups).length !== 0) {
         let versionIds = [];
         for (let i = 0; i < Object.keys(this.filteredGroups).length; i++) {
-          versionIds.push(this.filteredGroups[finalGroupIds[i]].groupId);
+          versionIds.push(this.filteredGroups[finalGroupIds[i]].versionId);
         }
-        this.props.show_filter_version(versionIds);
+        this.props.show_filter_version(versionIds, "groups");
+      } else {
+        this.props.show_filter_version(null, "groups");
       }
     } else if (this.filterFlag === false) {
       this.filteredGroups = { ...this.props.groups };
@@ -269,8 +275,10 @@ class Groups extends Component {
   }
 
   render() {
+    if (this.state.filter !== this.props.filter) {
+      this.filterFlag = false;
+    }
     if (this.filterFlag === false && this.props.filter === "") {
-      // this.filteredVersions = { ...this.props.versions };
       this.eventkey = "1";
     } else {
       this.eventkey = "0";
@@ -300,7 +308,7 @@ class Groups extends Component {
             <Accordion
               key={groupId}
               id="child-accordion"
-              defaultActiveKey={this.eventkey}
+              defaultActiveKey="0"
               // draggable
               onDragOver={(e) => e.preventDefault()}
               onDrop={(e) => this.onDrop(groupId)}
@@ -311,7 +319,11 @@ class Groups extends Component {
                     className="fas fa-folder-open"
                     style={{ margin: "5px" }}
                   ></i>
-                  <Accordion.Toggle as={Button} variant="default" eventKey="1">
+                  <Accordion.Toggle
+                    as={Button}
+                    variant="default"
+                    eventKey={this.eventkey}
+                  >
                     {this.props.groups[groupId].name}
                   </Accordion.Toggle>
                   {isDashboardRoute(this.props) ? (
@@ -385,10 +397,7 @@ class Groups extends Component {
                     </div>
                   ) : null}
                 </Card.Header>
-                <Accordion.Collapse
-                  defaultActiveKey={this.eventkey}
-                  eventKey="1"
-                >
+                <Accordion.Collapse eventKey={this.eventkey}>
                   <Card.Body>
                     <GroupPages
                       {...this.props}

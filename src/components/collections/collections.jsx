@@ -217,10 +217,12 @@ class CollectionsComponent extends Component {
     this.setState({ showDeleteModal: false });
   }
   openSelectedCollection(collectionId) {
+    this.props.empty_filter();
     this.collectionId = collectionId;
     this.setState({ openSelectedCollection: true });
   }
   openAllCollections() {
+    this.props.empty_filter();
     this.collectionId = null;
     this.setState({ openSelectedCollection: false });
   }
