@@ -11,6 +11,7 @@ import "ace-builds/src-noconflict/mode-xml";
 import "ace-builds/src-noconflict/theme-github";
 import "./endpoints.scss";
 import { Table } from "react-bootstrap";
+import NewBodyDescription from "./newBodyDescription";
 
 class BodyContainer extends Component {
   // updatedArray = React.createRef();
@@ -63,8 +64,9 @@ class BodyContainer extends Component {
     // this.setState({ updatedArray });
   }
 
-  handleSelectBodyType(bodyType) {
-    if (bodyType === "raw") {
+  handleSelectBodyType(bodyType, bodyDescription) {
+    if (bodyType === "raw" && bodyDescription) {
+      this.flag = true;
       this.showRawBodyType = true;
       this.setState({
         selectedBodyType: this.state.selectedRawBodyType,
@@ -74,11 +76,23 @@ class BodyContainer extends Component {
         this.state.data[bodyType]
       );
     } else {
-      this.showRawBodyType = false;
-      this.setState({
-        selectedBodyType: bodyType,
-      });
-      this.props.set_body(bodyType, this.state.data[bodyType]);
+      this.flag = false;
+      if (bodyType === "raw") {
+        this.showRawBodyType = true;
+        this.setState({
+          selectedBodyType: this.state.selectedRawBodyType,
+        });
+        this.props.set_body(
+          this.state.selectedRawBodyType,
+          this.state.data[bodyType]
+        );
+      } else {
+        this.showRawBodyType = false;
+        this.setState({
+          selectedBodyType: bodyType,
+        });
+        this.props.set_body(bodyType, this.state.data[bodyType]);
+      }
     }
   }
   handleArrayChange = (e, field, index) => {
@@ -145,7 +159,9 @@ class BodyContainer extends Component {
   }
 
   renderBody() {
-    if (this.state.selectedBodyType) {
+    if (this.state.selectedBodyType && this.flag) {
+      return <NewBodyDescription {...this.props} />;
+    } else if (this.state.selectedBodyType) {
       switch (this.state.selectedBodyType) {
         case "multipart/form-data":
           return (
@@ -171,7 +187,6 @@ class BodyContainer extends Component {
           );
 
         case "raw1":
-          console.log(this.props.body_description);
           return this.props.body_description.map((field) => (
             <div>
               {field.dataType.includes("Array") && (
@@ -347,6 +362,7 @@ class BodyContainer extends Component {
             <div>
               {" "}
               <AceEditor
+                className="custom-raw-editor"
                 // style={{
                 //   width: "1000px",
                 // }}
@@ -373,6 +389,34 @@ class BodyContainer extends Component {
   }
 
   render() {
+    // console.log("props", this.props);
+    // this.keysArray = [];
+    // this.valuesArray = [];
+    // this.dataType = [];
+
+    // if (this.props.body && this.props.body.type === "JSON") {
+    //   const jsonData = JSON.parse(this.props.body.value);
+    //   this.keysArray = Object.keys(jsonData);
+    //   this.valuesArray = Object.values(jsonData);
+    //   const data = Object.values(
+    //     JSON.parse(this.props.endpoints[this.props.endpoint_id].body.value)
+    //   );
+    //   console.log(this.keysArray, this.valuesArray, this.dataType);
+    //   let i;
+    //   for (i in data) {
+    //     let type = typeof data[i];
+    //     if (type === "object") {
+    //       if (Array.isArray(data[i])) {
+    //         if (typeof data[i][0] === "number") type = "Array";
+    //         else if (typeof data[i][0] === "string") type = "Array";
+    //         //type = "Array";
+    //         else type = "Array of Objects";
+    //       }
+    //     }
+    //     this.dataType[i] = type;
+    //   }
+    // }
+
     if (this.props.body && !this.state.selectedBodyType) {
       let selectedBodyType = this.props.body.type;
       if (
@@ -427,7 +471,7 @@ class BodyContainer extends Component {
             />
             raw
           </label>
-          <label className="body">
+          {/* <label className="body">
             <input
               type="radio"
               name={`body-select-${this.props.endpoint_id}`}
@@ -436,7 +480,7 @@ class BodyContainer extends Component {
               className="custom-radio-input"
             />
             raw1
-          </label>
+          </label> */}
           <label className="body">
             <input
               type="radio"
@@ -459,38 +503,60 @@ class BodyContainer extends Component {
             />
             x-www-form-urlencoded
           </label>
+
           <div className="body">
             {this.showRawBodyType === true && (
-              <div className="dropdown">
-                <button
-                  style={{ color: "#f29624", paddingTop: "0px" }}
-                  className="btn dropdown-toggle flex-column"
-                  type="button"
-                  id="dropdownMenuButton"
-                  data-toggle="dropdown"
-                  aria-haspopup="true"
-                  aria-expanded="false"
-                >
-                  {this.state.selectedRawBodyType}
-                </button>
-                <div
-                  className="dropdown-menu"
-                  aria-labelledby="dropdownMenuButton"
-                >
-                  {this.rawBodyTypes.map((rawBodyType) => (
-                    <button
-                      className="btn custom-body-type-button"
-                      type="button"
-                      onClick={() => this.setRawBodyType(rawBodyType)}
-                      key={rawBodyType}
-                    >
-                      {rawBodyType}
-                    </button>
-                  ))}
+              <div>
+                <div className="dropdown">
+                  <button
+                    style={{ color: "#f29624", paddingTop: "0px" }}
+                    className="btn dropdown-toggle flex-column"
+                    type="button"
+                    id="dropdownMenuButton"
+                    data-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                  >
+                    {this.state.selectedRawBodyType}
+                  </button>
+                  <div
+                    className="dropdown-menu"
+                    aria-labelledby="dropdownMenuButton"
+                  >
+                    {this.rawBodyTypes.map((rawBodyType) => (
+                      <button
+                        className="btn custom-body-type-button"
+                        type="button"
+                        onClick={() => this.setRawBodyType(rawBodyType)}
+                        key={rawBodyType}
+                      >
+                        {rawBodyType}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
             )}
           </div>
+          {this.showRawBodyType === true && (
+            <span style={{ textAlign: "right" }}>
+              <label
+                htmlFor={`body-description-${this.props.endpoint_id}`}
+                // className="body"
+              >
+                <input
+                  type="radio"
+                  name={`body-select-${this.props.endpoint_id}`}
+                  id={`body-description-${this.props.endpoint_id}`}
+                  onClick={() =>
+                    this.handleSelectBodyType("raw", "bodyDescription")
+                  }
+                  className="custom-radio-input"
+                />
+                Body Description
+              </label>
+            </span>
+          )}
         </form>
         <div className="body-container">{this.renderBody()}</div>
       </div>
@@ -499,3 +565,192 @@ class BodyContainer extends Component {
 }
 
 export default BodyContainer;
+
+/* {this.props.body && this.props.body.type === "JSON" && (
+                  <div>
+                    <div className="generic-table-container">
+                      <div className="public-generic-table-title-container">
+                        Body
+                      </div>
+                      <table
+                        className="table table-bordered"
+                        id="custom-generic-table"
+                      >
+                        <thead>
+                          <tr>
+                            <th className="custom-th"> </th>
+                            <th
+                              className="custom-th"
+                              id="generic-table-key-cell"
+                            >
+                              KEY
+                            </th>
+                            <th className="custom-th">VALUE</th>
+                            <th className="custom-th">DESCRIPTION</th>
+                          </tr>
+                        </thead>
+                        <tbody style={{ border: "none" }}>
+                          {this.keysArray.map((e, index) => (
+                            <tr key={index}>
+                              <td
+                                className="custom-td"
+                                id="generic-table-key-cell"
+                                style={{ marginLeft: "5px" }}
+                              ></td>
+                              <td className="custom-td">
+                                <div>
+                                  <input
+                                    disabled
+                                    name={index + ".key"}
+                                    value={this.keysArray[index]}
+                                    type={"text"}
+                                    className="form-control"
+                                  ></input>
+                                  <label
+                                    style={{
+                                      marginLeft: "20px",
+                                      background: "lightgrey",
+                                      padding: "1px",
+                                      fontSize: "10px",
+                                    }}
+                                  >
+                                    {this.dataType[index]}
+                                  </label>
+                                </div>
+                              </td>
+                              <td className="custom-td">
+                                {this.dataType[index] === "boolean" ? (
+                                  <select
+                                    id="custom-select-box"
+                                    value={this.valuesArray[index]}
+                                    onChange={this.handleChange}
+                                    name={index + ".value"}
+                                    style={{ width: "20%" }}
+                                  >
+                                    <option value={true} key={true}>
+                                      true
+                                    </option>
+                                    <option value={false} key={false}>
+                                      false
+                                    </option>
+                                  </select>
+                                ) : this.dataType[index] === "Array" ? (
+                                  <div>
+                                    {this.valuesArray[index].map((i, key) => (
+                                      <div>
+                                        <input
+                                          style={{
+                                            marginLeft: "50px",
+                                            width: "60%",
+                                          }}
+                                          type={
+                                            typeof i === "number"
+                                              ? "number"
+                                              : "text"
+                                          }
+                                          //type="text"
+                                          name={index + "." + key + ".value"}
+                                          value={i}
+                                          onChange={this.handleChange}
+                                        ></input>
+                                        <button
+                                          type="button"
+                                          className="btn cross-button"
+                                          onClick={() =>
+                                            this.handleDelete(index, key)
+                                          }
+                                        >
+                                          X
+                                        </button>
+                                      </div>
+                                    ))}
+                                    <span
+                                      class="badge badge-success"
+                                      style={{
+                                        marginLeft: "50px",
+                                        marginTop: "5px",
+                                      }}
+                                      onClick={() => this.handleAdd(index)}
+                                    >
+                                      Add+
+                                    </span>
+                                  </div>
+                                ) : this.dataType[index] === "object" ? (
+                                  this.obectDiv(this.valuesArray[index], index)
+                                ) : this.dataType[index] ===
+                                  "Array of Objects" ? (
+                                  <div>
+                                    {this.valuesArray[index].map((k, i) => (
+                                      <div
+                                        style={{
+                                          display: "flex",
+                                          margin: "10px",
+                                        }}
+                                      >
+                                        <div
+                                          style={{
+                                            marginLeft: "5px",
+                                            border: "1px solid",
+                                            width: "80%",
+                                            padding: "5px",
+                                            background: "lightgrey",
+                                          }}
+                                        >
+                                          {this.obectDiv(k, index, i)}
+                                        </div>
+                                        <button
+                                          type="button"
+                                          className="btn cross-button"
+                                          onClick={() =>
+                                            this.handleDelete(index, i)
+                                          }
+                                        >
+                                          X
+                                        </button>
+                                      </div>
+                                    ))}
+                                    <span
+                                      className="badge badge-success"
+                                      style={{
+                                        marginLeft: "50px",
+                                        marginTop: "5px",
+                                      }}
+                                      onClick={() => this.handleAdd(index)}
+                                    >
+                                      Add+
+                                    </span>
+                                  </div>
+                                ) : (
+                                  <input
+                                    name={index + ".value"}
+                                    value={this.valuesArray[index]}
+                                    onChange={this.handleChange}
+                                    type={
+                                      this.dataType[index] === "number"
+                                        ? "number"
+                                        : "text"
+                                    }
+                                    placeholder="Value"
+                                    className="form-control"
+                                    style={{ border: "none" }}
+                                  />
+                                )}
+                              </td>
+                              <td className="custom-td">
+                                <input
+                                  disabled
+                                  name={index + ".datatype"}
+                                  type="text"
+                                  value={this.dataType[index]}
+                                  placeholder="DataType"
+                                  className="form-control"
+                                  style={{ border: "none" }}
+                                />
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                                  )}*/

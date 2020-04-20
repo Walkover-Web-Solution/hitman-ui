@@ -37,6 +37,10 @@ class Main extends Component {
   };
 
   async componentDidMount() {
+    let test = {};
+    test["name"] = {};
+    test["name"]["name1"] = "mohit";
+    console.log("test", test);
     this.fetchAll();
 
     await indexedDbService.createDataBase();
