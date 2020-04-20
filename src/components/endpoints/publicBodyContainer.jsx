@@ -130,7 +130,15 @@ class PublicBodyContainer extends Component {
       const jsonData = JSON.parse(this.props.body.value);
       this.keysArray = Object.keys(jsonData);
       this.valuesArray = Object.values(jsonData);
+
       const data = Object.values(JSON.parse(this.props.endpoint.body.value));
+      console.log(
+        "this.keys,this.values,this.valuesArray",
+        this.keysArray,
+        this.valuesArray,
+        data
+      );
+
       let i;
       for (i in data) {
         let type = typeof data[i];
