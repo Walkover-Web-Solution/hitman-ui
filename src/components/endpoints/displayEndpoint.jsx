@@ -71,13 +71,53 @@ class DisplayEndpoint extends Component {
     oldDescription: "",
     headers: [],
     params: [],
-    bodyDescription: [],
+    bodyDescription: {
+      key1: { default: "abcd", dataType: "string" },
+      key2: { default: 4, dataType: "number" },
+      key3: { default: true, dataType: "boolean" },
+      key4: { default: [2], dataType: "Array of Integer" },
+      key5: { default: ["a"], dataType: "Array of String" },
+      key6: { default: { k1: "v1", k2: 10 }, dataType: "Object" },
+      key7: {
+        default: [{ k1: "v1", k2: 10 }],
+        dataType: "Array of Objects",
+        object: { k1: "v1", k2: 10 },
+      },
+      key8: {
+        default: {
+          k1: { k1: "v1", k2: 10, k3: 44 },
+          k2: { k1: "v1", k2: 10 },
+        },
+        dataType: "Object of Objects",
+        //object: { k1: "v1", k2: 10 },
+      },
+      key9: { default: [true], dataType: "Array of Boolean" },
+    },
+    updatedArray: {},
+    objectDefinition: {},
   };
 
   customState = {
     BASE_URL: "",
     customBASE_URL: "",
   };
+
+  setObjectDefinition(name, definition) {
+    let objectDefinition = { ...this.state.objectDefinition };
+    objectDefinition[name] = definition;
+    this.setState({ objectDefinition });
+  }
+
+  deleteObjectDefinition(objectKey) {
+    let objectDefinition = { ...this.state.objectDefinition };
+    delete objectDefinition[objectKey];
+    this.setState({ objectDefinition });
+  }
+  // test() {
+  //   const test = "hello World!";
+  //   console.log("test", test);
+  //   this.setState({ test });
+  // }
 
   async componentDidMount() {
     if (this.props.location.pathname.split("/")[3] === "new") {
@@ -196,6 +236,27 @@ class DisplayEndpoint extends Component {
         pathVariables = this.fetchPathVariables(endpoint.pathVariables);
         this.setState({ pathVariables });
       }
+
+      let updatedArray = {};
+      //let bodyDescription = [];
+      // if (endpoint.body.type === "raw1") {
+      //   updatedArray = JSON.parse(endpoint.body.value);
+      //   bodyDescription = endpoint.bodyDescription;
+      // }
+      console.log(endpoint.body);
+      if (!isDashboardRoute(this.props)) {
+        console.log("in if 1", this.state.data);
+        if (endpoint.body.type === "JSON") {
+          console.log("in if 2");
+          let body = JSON.parse(endpoint.body.value);
+          const keys = Object.keys(this.state.bodyDescription);
+          keys.map((k) => (body[k] = this.state.bodyDescription[k].default));
+          body = { type: "JSON", value: JSON.stringify(body) };
+          endpoint.body = body;
+        }
+      }
+
+      console.log("qqqqqqqq", endpoint);
       this.setState({
         data: {
           method: endpoint.requestType,
@@ -213,6 +274,8 @@ class DisplayEndpoint extends Component {
         endpoint_description: endpoint.description,
         oldDescription: endpoint.description,
         title: "update endpoint",
+        // bodyDescription,
+        updatedArray,
       });
     }
   }
@@ -512,6 +575,7 @@ class DisplayEndpoint extends Component {
       headerJson[header] = headersData[header].value;
     });
     let { body, headers } = this.formatBody(this.state.data.body, headerJson);
+    console.log("in handle send", body);
     this.handleApiCall(api, body, headers, this.state.data.body.type);
   };
 
@@ -522,6 +586,11 @@ class DisplayEndpoint extends Component {
       let body = this.state.data.body;
       if (this.state.data.body.type === "raw") {
         body.value = this.parseBody(body.value);
+      }
+      if (!(this.state.data.body.type === "raw1")) {
+        const bodyDescription = [];
+        const updatedArray = {};
+        this.setState({ updatedArray, bodyDescription });
       }
       const headersData = this.doSubmitHeader();
       const updatedParams = this.doSubmitParam();
@@ -634,6 +703,19 @@ class DisplayEndpoint extends Component {
     ) {
       tabService.markTabAsModified(this.props.tab.id);
     }
+  }
+
+  setPublicBody(bodyDescription) {
+    let json = {};
+    console.log(bodyDescription);
+    Object.keys(bodyDescription).map(
+      (key) => (json[key] = bodyDescription[key].default)
+    );
+    json = JSON.stringify(json);
+    let data = { ...this.state.data };
+    data.body = { type: "JSON", value: json };
+    console.log(bodyDescription, data);
+    this.setState({ bodyDescription, data });
   }
 
   handleUpdateUri(originalParams) {
@@ -756,6 +838,10 @@ class DisplayEndpoint extends Component {
     data.name = endpointName;
     this.setState({ groupId, data });
     this.handleSave(groupId, endpointName);
+  }
+
+  updateArray(updatedArray) {
+    this.setState({ updatedArray });
   }
 
   makeHeaders(headers) {
@@ -934,6 +1020,7 @@ class DisplayEndpoint extends Component {
   }
 
   formatBody(body, headers) {
+    console.log(body);
     let finalBodyValue = null;
     switch (body.type) {
       case "raw":
@@ -957,6 +1044,7 @@ class DisplayEndpoint extends Component {
         // urlEncodedData = urlEncodedData.join("&");
         return { body: urlEncodedData, headers };
       default:
+        console.log("in default", body.value);
         return { body: body.value, headers };
     }
   }
@@ -1226,7 +1314,10 @@ class DisplayEndpoint extends Component {
                   set_body={this.setBody.bind(this)}
                   body={this.state.data.body}
                   endpoint_id={this.props.tab.id}
+                  update_array={this.updateArray.bind(this)}
+                  updated_array={this.state.updatedArray}
                   body_description={this.state.bodyDescription}
+                  object_definition={this.state.objectDefinition}
                 />
               </div>
               <div
@@ -1235,9 +1326,17 @@ class DisplayEndpoint extends Component {
                 role="tabpanel"
                 aria-labelledby="pills-body-description-tab"
               >
-                <BodyDescription
+                {/* <BodyDescription
                   set_body_description={this.setBodyDescription.bind(this)}
-                />
+                  update_array={this.updateArray.bind(this)}
+                  updated_array={this.state.updatedArray}
+                  body_description={this.state.bodyDescription}
+                  object_definition={this.state.objectDefinition}
+                  delete_object_definition={this.deleteObjectDefinition.bind(
+                    this
+                  )}
+                  set_object_definition={this.setObjectDefinition.bind(this)}
+                /> */}
               </div>
             </div>
           ) : (
@@ -1264,6 +1363,8 @@ class DisplayEndpoint extends Component {
                 {...this.props}
                 set_body={this.setBody.bind(this)}
                 body={this.state.data.body}
+                set_public_body={this.setPublicBody.bind(this)}
+                body_description={this.state.bodyDescription}
               ></PublicBodyContainer>
             </div>
           )}
