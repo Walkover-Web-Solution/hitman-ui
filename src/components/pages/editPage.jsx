@@ -6,6 +6,7 @@ import store from "../../store/store";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import "./page.scss";
+import tabService from "../tabs/tabService";
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {

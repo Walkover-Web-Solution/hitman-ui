@@ -32,27 +32,18 @@ const mapDispatchToProps = (dispatch) => {
 
 class Main extends Component {
   state = {
-    currentEnvironment: { id: null, name: "No Environment" },
     tabs: [],
     defaultTabIndex: 0,
   };
 
   async componentDidMount() {
+    let test = {};
+    test["name"] = {};
+    test["name"]["name1"] = "mohit";
+    console.log("test", test);
     this.fetchAll();
 
     await indexedDbService.createDataBase();
-
-    const currentEnvironmentId = await indexedDbService.getValue(
-      "environment",
-      "currentEnvironmentId"
-    );
-    if (!currentEnvironmentId) {
-      await indexedDbService.addData(
-        "environment",
-        null,
-        "currentEnvironmentId"
-      );
-    }
   }
 
   fetchAll() {
@@ -115,7 +106,7 @@ class Main extends Component {
           <ContentPanel
             {...this.props}
             set_environment={this.setEnvironment.bind(this)}
-            tabs={[...this.state.tabs]}
+            // tabs={[...this.state.tabs]}
             set_tabs={this.setTabs.bind(this)}
             default_tab_index={this.state.defaultTabIndex}
           />

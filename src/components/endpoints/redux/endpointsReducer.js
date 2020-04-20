@@ -4,6 +4,7 @@ import groupsActionTypes from "../../groups/redux/groupsActionTypes";
 import versionActionTypes from "../../collectionVersions/redux/collectionVersionsActionTypes";
 import collectionActionTypes from "../../collections/redux/collectionsActionTypes";
 import publicEndpointsActionTypes from "../../publicEndpoint/redux/publicEndpointsActionTypes";
+import collectionsActionTypes from "../../collections/redux/collectionsActionTypes";
 
 const initialState = {};
 
@@ -25,7 +26,7 @@ function endpointsReducer(state = initialState, action) {
     case endpointsActionTypes.ADD_ENDPOINT_REQUEST:
       return {
         ...state,
-        [action.newEndpoint.requestId]: action.newEndpoint
+        [action.newEndpoint.requestId]: action.newEndpoint,
       };
 
     case endpointsActionTypes.ON_ENDPOINT_ADDED:
@@ -43,20 +44,20 @@ function endpointsReducer(state = initialState, action) {
     case endpointsActionTypes.UPDATE_ENDPOINT_REQUEST:
       return {
         ...state,
-        [action.editedEndpoint.id]: action.editedEndpoint
+        [action.editedEndpoint.id]: action.editedEndpoint,
       };
 
     case endpointsActionTypes.ON_ENDPOINT_UPDATED:
       return {
         ...state,
-        [action.response.id]: action.response
+        [action.response.id]: action.response,
       };
 
     case endpointsActionTypes.ON_ENDPOINT_UPDATED_ERROR:
       toast.error(action.error);
       return {
         ...state,
-        [action.originalEndpoint.id]: action.originalEndpoint
+        [action.originalEndpoint.id]: action.originalEndpoint,
       };
 
     case endpointsActionTypes.DELETE_ENDPOINT_REQUEST:
@@ -72,7 +73,7 @@ function endpointsReducer(state = initialState, action) {
       if (action.error.status === 404) return state;
       return {
         ...state,
-        [action.endpoint.id]: action.endpoint
+        [action.endpoint.id]: action.endpoint,
       };
 
     case endpointsActionTypes.ON_ENDPOINT_DUPLICATED:
@@ -101,12 +102,21 @@ function endpointsReducer(state = initialState, action) {
     case publicEndpointsActionTypes.ON_ENDPOINT_STATE_SUCCESS:
       return {
         ...state,
-        [action.data.id]: action.data
+        [action.data.id]: action.data,
       };
 
     case publicEndpointsActionTypes.ON_ENDPOINT_STATE_ERROR:
       toast.error(action.error);
       return { ...state };
+
+    case collectionsActionTypes.ON_COLLECTION_DELETED:
+    case versionActionTypes.ON_VERSION_DELETED:
+    case groupsActionTypes.ON_GROUP_DELETED:
+      endpoints = { ...state };
+      action.payload.endpointIds.map((eId) => {
+        delete endpoints[eId];
+      });
+      return endpoints;
 
     default:
       return state;

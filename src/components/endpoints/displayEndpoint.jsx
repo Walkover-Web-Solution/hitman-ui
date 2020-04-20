@@ -17,6 +17,8 @@ import GenericTable from "./genericTable";
 import HostContainer from "./hostContainer";
 import PublicBodyContainer from "./publicBodyContainer";
 import { addEndpoint, updateEndpoint } from "./redux/endpointsActions";
+import tabStatusTypes from "../tabs/tabStatusTypes";
+import tabService from "../tabs/tabService";
 const status = require("http-status");
 var URI = require("urijs");
 
@@ -28,6 +30,8 @@ const mapStateToProps = (state) => {
     environment: state.environment.environments[
       state.environment.currentEnvironmentId
     ] || { id: null, name: "No Environment" },
+    currentEnvironmentId: state.environment.currentEnvironmentId,
+    environments: state.environment.environments,
   };
 };
 
@@ -316,6 +320,9 @@ class DisplayEndpoint extends Component {
       originalParams = this.makeOriginalParams(keys, values, description);
       this.setState({ originalParams });
     }
+    if (isDashboardRoute(this.props)) {
+      tabService.markTabAsModified(this.props.tab.id);
+    }
     this.setState({ data });
   };
 
@@ -508,13 +515,9 @@ class DisplayEndpoint extends Component {
       } else if (dataType === "yyyy-mm-dd") {
         const abc = /^(19[5-9][0-9]|20[0-4][0-9]|2050)[-/](0?[1-9]|1[0-2])[-/](0?[1-9]|[12][0-9]|3[01])$/gim;
         let match = abc.exec(rawBody[name]);
-        if (match === null) console.log("false");
-        else console.log("true");
       } else if (dataType === "datetime") {
         const abc1 = /^\d\d\d\d-(0?[1-9]|1[0-2])-(0?[1-9]|[12][0-9]|3[01]) (00|[0-9]|1[0-9]|2[0-3]):([0-9]|[0-5][0-9]):([0-9]|[0-5][0-9])$/g;
         let match = abc1.exec(rawBody[name]);
-        if (match === null) console.log("false");
-        else console.log("true");
       } else if (dataType === "timestamp") {
         var valid = new Date(rawBody[name]).getTime() > 0;
         if (!valid) {
@@ -600,13 +603,15 @@ class DisplayEndpoint extends Component {
         headers: headersData,
         params: updatedParams,
         pathVariables: pathVariables,
-        BASE_URL: this.customState.BASE_URL,
-        bodyDescription: this.state.bodyDescription,
+        BASE_URL:
+          this.customState.selectedHost === "customHost"
+            ? this.customState.BASE_URL
+            : null,
       };
       // if (endpoint.name === "" || endpoint.uri === "")
       if (endpoint.name === "") toast.error("Please enter Endpoint name");
       else if (this.props.location.pathname.split("/")[3] === "new") {
-        endpoint.requestId = this.props.tabs[this.props.default_tab_index].id;
+        endpoint.requestId = this.props.tab.id;
         this.props.addEndpoint(endpoint, groupId || this.state.groupId);
       } else if (this.state.title === "update endpoint") {
         this.props.updateEndpoint({
@@ -616,6 +621,7 @@ class DisplayEndpoint extends Component {
         });
       }
     }
+    tabService.markTabAsSaved(this.props.tab.id);
   };
 
   doSubmitPathVariables() {
@@ -671,14 +677,14 @@ class DisplayEndpoint extends Component {
     let data = { ...this.state.data };
     data.method = method;
     this.setState({ response, data });
+    if (isDashboardRoute(this.props)) {
+      tabService.markTabAsModified(this.props.tab.id);
+    }
   }
 
   propsFromChild(name, value) {
     if (name === "Params") {
       this.handleUpdateUri(value);
-      this.setState({ originalParams: value });
-    }
-    if (name === "handleAddParam") {
       this.setState({ originalParams: value });
     }
 
@@ -688,6 +694,14 @@ class DisplayEndpoint extends Component {
 
     if (name === "Path Variables") {
       this.setState({ pathVariables: value });
+    }
+
+    if (
+      (isDashboardRoute(this.props) && name === "Params") ||
+      name === "Headers" ||
+      name === "Path Variables"
+    ) {
+      tabService.markTabAsModified(this.props.tab.id);
     }
   }
 
@@ -920,9 +934,9 @@ class DisplayEndpoint extends Component {
     );
   }
 
-  setBaseUrl(BASE_URL, customBASE_URL) {
+  setBaseUrl(BASE_URL, selectedHost) {
     this.customState.BASE_URL = BASE_URL;
-    this.customState.customBASE_URL = customBASE_URL;
+    this.customState.selectedHost = selectedHost;
   }
 
   setBody(bodyType, body) {
@@ -932,6 +946,10 @@ class DisplayEndpoint extends Component {
       this.setHeaders(bodyType);
     }
     this.setState({ data });
+
+    if (isDashboardRoute(this.props)) {
+      tabService.markTabAsModified(this.props.tab.id);
+    }
   }
 
   setBodyDescription(bodyDescription) {
@@ -993,6 +1011,9 @@ class DisplayEndpoint extends Component {
   propsFromDescription(title, data) {
     if (title === "data") {
       this.setState({ data: data });
+      if (isDashboardRoute(this.props)) {
+        tabService.markTabAsModified(this.props.tab.id);
+      }
     }
     if (title === "endpoint") this.setState({ endpoint: data });
     if (title === "oldDescription") this.setState({ oldDescription: data });
@@ -1030,6 +1051,20 @@ class DisplayEndpoint extends Component {
 
   render() {
     if (
+      this.state.groupId &&
+      this.props.tab.status === tabStatusTypes.DELETED
+    ) {
+      this.setState({ groupId: null });
+    }
+
+    if (
+      this.props.save_endpoint_flag &&
+      this.props.tab.id === this.props.selected_tab_id
+    ) {
+      this.props.handle_save_endpoint(false);
+      this.handleSave();
+    }
+    if (
       isDashboardRoute(this.props) &&
       this.props.location.pathname.split("/")[3] !== "new" &&
       this.state.endpoint.id !== this.props.tab.id &&
@@ -1062,7 +1097,6 @@ class DisplayEndpoint extends Component {
         });
       }
     }
-
     return (
       <div className="endpoint-container">
         {this.state.showEndpointFormModal && (
@@ -1082,7 +1116,7 @@ class DisplayEndpoint extends Component {
           data={this.state.data}
           old_description={this.state.oldDescription}
           props_from_parent={this.propsFromDescription.bind(this)}
-        ></DisplayDescription>
+        />
 
         <div className="endpoint-url-container">
           <div className="input-group-prepend">

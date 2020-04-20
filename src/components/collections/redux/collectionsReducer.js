@@ -57,10 +57,7 @@ function collectionsReducer(state = initialState, action) {
       return collections;
 
     case collectionsActionTypes.ON_COLLECTION_DELETED:
-      collections = { ...state };
-      // delete collections[action.collection.id];
-      // return state;
-      return collections;
+      return state;
 
     case collectionsActionTypes.ON_COLLECTION_DELETED_ERROR:
       toast.error(action.error.data);

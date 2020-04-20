@@ -6,7 +6,6 @@ class PublicBodyContainer extends Component {
   state = {};
 
   handleChangeBody(title, dataArray) {
-    console.log(title, dataArray);
     switch (title) {
       case "formData":
         this.props.set_body("formData", dataArray);

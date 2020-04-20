@@ -6,17 +6,17 @@ import { toast } from "react-toastify";
 export const setEndpointIds = (endpointsOrder, groupId) => {
   const group = store.getState().groups[groupId];
   group.endpointsOrder = endpointsOrder;
-  return dispatch => dispatch(updateGroup(group));
+  return (dispatch) => dispatch(updateGroup(group));
 };
 
 export const fetchGroups = () => {
-  return dispatch => {
+  return (dispatch) => {
     groupsApiService
       .getAllGroups()
-      .then(response => {
+      .then((response) => {
         dispatch(onGroupsFetched(response.data));
       })
-      .catch(error => {
+      .catch((error) => {
         dispatch(
           onGroupsFetchedError(error.response ? error.response.data : error)
         );
@@ -24,29 +24,29 @@ export const fetchGroups = () => {
   };
 };
 
-export const onGroupsFetched = groups => {
+export const onGroupsFetched = (groups) => {
   return {
     type: groupsActionTypes.ON_GROUPS_FETCHED,
-    groups
+    groups,
   };
 };
 
-export const onGroupsFetchedError = error => {
+export const onGroupsFetchedError = (error) => {
   return {
     type: groupsActionTypes.ON_GROUPS_FETCHED_ERROR,
-    error
+    error,
   };
 };
 
 export const addGroup = (versionId, newGroup) => {
-  return dispatch => {
+  return (dispatch) => {
     dispatch(addGroupRequest(newGroup));
     groupsApiService
       .saveGroup(versionId, newGroup)
-      .then(response => {
+      .then((response) => {
         dispatch(onGroupAdded(response.data));
       })
-      .catch(error => {
+      .catch((error) => {
         dispatch(
           onGroupAddedError(
             error.response ? error.response.data : error,
@@ -57,17 +57,17 @@ export const addGroup = (versionId, newGroup) => {
   };
 };
 
-export const addGroupRequest = newGroup => {
+export const addGroupRequest = (newGroup) => {
   return {
     type: groupsActionTypes.ADD_GROUP_REQUEST,
-    newGroup
+    newGroup,
   };
 };
 
-export const onGroupAdded = response => {
+export const onGroupAdded = (response) => {
   return {
     type: groupsActionTypes.ON_GROUP_ADDED,
-    response
+    response,
   };
 };
 
@@ -75,12 +75,12 @@ export const onGroupAddedError = (error, newGroup) => {
   return {
     type: groupsActionTypes.ON_GROUP_ADDED_ERROR,
     newGroup,
-    error
+    error,
   };
 };
 
-export const updateGroup = editedGroup => {
-  return dispatch => {
+export const updateGroup = (editedGroup) => {
+  return (dispatch) => {
     const originalGroup = store.getState().groups[editedGroup.id];
     dispatch(updateGroupRequest(editedGroup));
     const id = editedGroup.id;
@@ -88,10 +88,10 @@ export const updateGroup = editedGroup => {
     const { name, host, endpointsOrder } = editedGroup;
     groupsApiService
       .updateGroup(id, { name, host, endpointsOrder })
-      .then(response => {
+      .then((response) => {
         dispatch(onGroupUpdated(response.data));
       })
-      .catch(error => {
+      .catch((error) => {
         dispatch(
           onGroupUpdatedError(
             error.response ? error.response.data : error,
@@ -102,17 +102,17 @@ export const updateGroup = editedGroup => {
   };
 };
 
-export const updateGroupRequest = editedGroup => {
+export const updateGroupRequest = (editedGroup) => {
   return {
     type: groupsActionTypes.UPDATE_GROUP_REQUEST,
-    editedGroup
+    editedGroup,
   };
 };
 
-export const onGroupUpdated = response => {
+export const onGroupUpdated = (response) => {
   return {
     type: groupsActionTypes.ON_GROUP_UPDATED,
-    response
+    response,
   };
 };
 
@@ -120,19 +120,31 @@ export const onGroupUpdatedError = (error, originalGroup) => {
   return {
     type: groupsActionTypes.ON_GROUP_UPDATED_ERROR,
     error,
-    originalGroup
+    originalGroup,
   };
 };
 
-export const deleteGroup = group => {
-  return dispatch => {
+export const deleteGroup = (group) => {
+  return (dispatch) => {
     dispatch(deleteGroupRequest(group));
     groupsApiService
       .deleteGroup(group.id)
       .then(() => {
-        dispatch(onGroupDeleted());
+        const storeData = { ...store.getState() };
+        const pageIds = [
+          ...Object.keys(storeData.pages).filter(
+            (pId) => storeData.pages[pId].groupId === group.id
+          ),
+        ];
+        const endpointIds = [
+          ...Object.keys(storeData.endpoints).filter(
+            (eId) => storeData.endpoints[eId].groupId === group.id
+          ),
+        ];
+
+        dispatch(onGroupDeleted({ endpointIds, pageIds }));
       })
-      .catch(error => {
+      .catch((error) => {
         dispatch(
           onGroupDeletedError(
             error.response ? error.response.data : error,
@@ -143,16 +155,17 @@ export const deleteGroup = group => {
   };
 };
 
-export const deleteGroupRequest = group => {
+export const deleteGroupRequest = (group) => {
   return {
     type: groupsActionTypes.DELETE_GROUP_REQUEST,
-    group
+    group,
   };
 };
 
-export const onGroupDeleted = () => {
+export const onGroupDeleted = (payload) => {
   return {
-    type: groupsActionTypes.ON_GROUP_DELETED
+    type: groupsActionTypes.ON_GROUP_DELETED,
+    payload,
   };
 };
 
@@ -160,26 +173,26 @@ export const onGroupDeletedError = (error, group) => {
   return {
     type: groupsActionTypes.ON_GROUP_DELETED_ERROR,
     error,
-    group
+    group,
   };
 };
 
-export const duplicateGroup = group => {
-  return dispatch => {
+export const duplicateGroup = (group) => {
+  return (dispatch) => {
     groupsApiService
       .duplicateGroup(group.id)
-      .then(response => {
+      .then((response) => {
         dispatch(onGroupDuplicated(response.data));
       })
-      .catch(error => {
+      .catch((error) => {
         toast.error(error);
       });
   };
 };
 
-export const onGroupDuplicated = response => {
+export const onGroupDuplicated = (response) => {
   return {
     type: groupsActionTypes.ON_GROUP_DUPLICATED,
-    response
+    response,
   };
 };

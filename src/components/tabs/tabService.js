@@ -1,89 +1,103 @@
 import shortId from "shortid";
-import indexedDbService from "../indexedDb/indexedDbService";
+import { dispatch } from "react-redux";
+import {
+  addNewTab,
+  closeTab,
+  openInNewTab,
+  updateTab,
+  setActiveTabId,
+} from "../tabs/redux/tabsActions";
+import store from "../../store/store";
+import tabStatusTypes from "./tabStatusTypes";
 
-function addNewTab(props) {
-  let tabs = [...props.tabs];
-  const id = shortId.generate();
-  tabs.push({ id, type: "endpoint", isSaved: false });
-  props.set_tabs([...tabs], tabs.length - 1);
-  indexedDbService.addData("tabs", { id, type: "endpoint", isSaved: false });
-  props.history.push({ pathname: `/dashboard/endpoint/new` });
+function newTab(props) {
+  store.dispatch(addNewTab({ ...props.history }));
 }
 
-function closeTab(props, index) {
-  let tabs = [...props.tabs];
-  tabs.splice(index, 1);
-  indexedDbService.deleteDataByIndex("tabs", index);
-  if (props.default_tab_index === index) {
-    if (index !== 0) {
-      const newIndex = props.default_tab_index - 1;
-      props.set_tabs(tabs, newIndex);
-      changeRoute(props, tabs[newIndex], "update endpoint");
-    } else {
-      if (tabs.length > 0) {
-        const newIndex = index;
-        props.set_tabs(tabs, newIndex);
-        changeRoute(props, tabs[newIndex], "update endpoint");
+function removeTab(tabId, props) {
+  const { tabs, tabsOrder, activeTabId } = store.getState().tabs;
+  if (tabs[tabId]) {
+    if (activeTabId === tabId) {
+      const tabsCount = Object.keys(tabs).length;
+      if (tabsCount === 1) {
+        newTab(props);
       } else {
-        const newTabId = shortId.generate();
-        tabs = [...tabs, { id: newTabId, type: "endpoint", isSaved: false }];
-        indexedDbService.addData("tabs", {
-          id: newTabId,
-          type: "endpoint",
-          isSaved: false,
-        });
-        props.set_tabs(tabs, tabs.length - 1);
-        props.history.push({
-          pathname: `/dashboard/endpoint/new`,
-        });
+        const index = tabsOrder.indexOf(tabId);
+        if (index > 0) {
+          selectTab(props, tabsOrder[index - 1]);
+        } else {
+          selectTab(props, tabsOrder[index + 1]);
+        }
       }
     }
-  } else {
-    if (index < props.default_tab_index) {
-      props.set_tabs(tabs, props.default_tab_index - 1);
-    } else props.set_tabs(tabs);
+    store.dispatch(closeTab(tabId));
   }
 }
 
-function changeRoute(props, tab, title) {
-  // if (tab.type === "endpoint") {
+function changeRoute(props, tab) {
   if (tab.isSaved) {
     props.history.push({
       pathname: `/dashboard/${tab.type}/${tab.id}`,
-      title,
     });
   } else {
     props.history.push({
       pathname: `/dashboard/${tab.type}/new`,
     });
   }
-  // }
 }
 
 function closeAllTabs(props) {
-  const id = shortId.generate();
-  const tabs = [{ id, type: "endpoint", isSaved: false }];
-  props.set_tabs(tabs, 0);
-  props.history.push({ pathname: `/dashboard/endpoint/new` });
+  // const id = shortId.generate();
+  // const tabs = [{ id, type: "endpoint", isSaved: false }];
+  // props.set_tabs(tabs, 0);
+  // props.history.push({ pathname: `/dashboard/endpoint/new` });
 }
 
-function selectTab(props, tab, index) {
-  props.set_tabs(null, index);
-  if (tab.isSaved) {
+function selectTab(props, tabId) {
+  const { tabs, tabsOrder, activeTabId } = store.getState().tabs;
+
+  const tab = tabs[tabId];
+  store.dispatch(setActiveTabId(tabId));
+  if (tab.status === "NEW") {
     props.history.push({
-      pathname: `/dashboard/${tab.type}/${tab.id}`,
+      pathname: `/dashboard/${tab.type}/new`,
     });
   } else {
     props.history.push({
-      pathname: `/dashboard/${tab.type}/new`,
+      pathname: `/dashboard/${tab.type}/${tab.id}`,
     });
   }
 }
 
+function disablePreviewMode(tabId) {
+  store.dispatch(updateTab(tabId, { previewMode: false }));
+}
+
+function markTabAsModified(tabId) {
+  const tab = store.getState().tabs.tabs[tabId];
+  if (!tab.isModified) {
+    store.dispatch(updateTab(tabId, { previewMode: false, isModified: true }));
+  }
+}
+
+function markTabAsSaved(tabId) {
+  store.dispatch(
+    updateTab(tabId, { status: tabStatusTypes.SAVED, isModified: false })
+  );
+}
+
+function markTabAsDeleted(tabId) {
+  store.dispatch(updateTab(tabId, { status: tabStatusTypes.DELETED }));
+}
+
 export default {
-  addNewTab,
-  closeTab,
+  newTab,
+  removeTab,
   changeRoute,
   closeAllTabs,
   selectTab,
+  disablePreviewMode,
+  markTabAsModified,
+  markTabAsSaved,
+  markTabAsDeleted,
 };
