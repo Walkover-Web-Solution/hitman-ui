@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import GenericTable from "./genericTable";
 import "./publicEndpoint.scss";
+import { toPathSchema } from "react-jsonschema-form/lib/utils";
 
 class PublicBodyContainer extends Component {
   state = {};
@@ -18,59 +19,52 @@ class PublicBodyContainer extends Component {
     }
   }
 
-  handleDelete(bodyDescription, key, index) {
-    bodyDescription[key].default.splice(index, 1);
-    this.props.set_public_body(bodyDescription);
+  handleDelete(key, index) {
+    this.body[key].splice(index, 1);
+    this.props.set_public_body(this.body);
   }
 
-  handleAdd(bodyDescription, key) {
-    if (bodyDescription[key].dataType === "Array of Objects")
-      bodyDescription[key].default.push({ ...bodyDescription[key].object });
-    //bodyDescription[key].default.push(bodyDescription[key].object);
-    else bodyDescription[key].default.push(null);
-    this.props.set_public_body(bodyDescription);
+  handleAdd(body, key) {
+    body[key].push(this.props.body_description[key].default[0]);
+    this.props.set_public_body(body);
   }
 
   handleChange = (e) => {
-    console.log(e.currentTarget);
     const name = e.currentTarget.name.split(".");
     const key = name[0];
     const bodyDescription = this.props.body_description;
+    let body = this.body;
     if (e.target.type === "number") {
       if (bodyDescription[key].dataType === "Array of Integer") {
-        bodyDescription[key].default[name[1]] = parseInt(e.currentTarget.value);
+        body[key][name[1]] = parseInt(e.currentTarget.value);
       } else if (bodyDescription[key].dataType === "Object") {
-        bodyDescription[key].default[name[1]] = parseInt(e.currentTarget.value);
+        body[key][name[1]] = parseInt(e.currentTarget.value);
       } else if (bodyDescription[key].dataType === "Array of Objects") {
-        bodyDescription[key].default[name[1]][name[2]] = parseInt(
-          e.currentTarget.value
-        );
+        body[key][name[1]][name[2]] = parseInt(e.currentTarget.value);
       } else if (bodyDescription[key].dataType === "Object of Objects") {
-        bodyDescription[key].default[name[1]][name[2]] = parseInt(
-          e.currentTarget.value
-        );
+        body[key][name[1]][name[2]] = parseInt(e.currentTarget.value);
       } else {
-        bodyDescription[key].default = parseInt(e.currentTarget.value);
+        body[key] = parseInt(e.currentTarget.value);
       }
     } else {
       if (bodyDescription[key].dataType === "Array of String") {
-        bodyDescription[key].default[name[1]] = e.currentTarget.value;
+        body[key][name[1]] = e.currentTarget.value;
       } else if (bodyDescription[key].dataType === "Object") {
-        bodyDescription[key].default[name[1]] = e.currentTarget.value;
+        body[key][name[1]] = e.currentTarget.value;
       } else if (bodyDescription[key].dataType === "Array of Objects") {
-        bodyDescription[key].default[name[1]][name[2]] = e.currentTarget.value;
+        body[key][name[1]][name[2]] = e.currentTarget.value;
       } else if (bodyDescription[key].dataType === "Array of Boolean") {
-        bodyDescription[key].default[name[1]] = e.currentTarget.value;
+        body[key][name[1]] = e.currentTarget.value;
       } else if (bodyDescription[key].dataType === "Object of Objects") {
-        bodyDescription[key].default[name[1]][name[2]] = e.currentTarget.value;
+        body[key][name[1]][name[2]] = e.currentTarget.value;
       } else {
-        bodyDescription[key].default = e.currentTarget.value;
+        body[key] = e.currentTarget.value;
       }
     }
-    this.props.set_public_body(bodyDescription);
+    this.props.set_public_body(body);
   };
 
-  displayAddButton(bodyDescription, key) {
+  displayAddButton(key) {
     return (
       <span
         className="badge badge-success"
@@ -78,13 +72,13 @@ class PublicBodyContainer extends Component {
           marginLeft: "50px",
           marginTop: "5px",
         }}
-        onClick={() => this.handleAdd(bodyDescription, key)}
+        onClick={() => this.handleAdd(this.body, key)}
       >
         Add+
       </span>
     );
   }
-  displayBoolean(key, value, name) {
+  displayBoolean(value, name) {
     return (
       <select
         className="custom-boolean"
@@ -114,9 +108,8 @@ class PublicBodyContainer extends Component {
             </label>
 
             {this.props.body_description[key].dataType === "Object"
-              ? this.displayInput(key, obj[k], key + "." + k + ".value")
+              ? this.displayInput(obj[k], key + "." + k + ".value")
               : this.displayInput(
-                  key,
                   obj[k],
                   key + "." + index + "." + k + ".value"
                 )}
@@ -126,7 +119,7 @@ class PublicBodyContainer extends Component {
     );
   }
 
-  displayInput(key, value, name) {
+  displayInput(value, name) {
     return (
       <input
         className="custom-input"
@@ -142,23 +135,21 @@ class PublicBodyContainer extends Component {
   displayArray(key) {
     return (
       <div>
-        {this.props.body_description[key].default.map((value, index) => (
+        {this.body[key].map((value, index) => (
           <div key={index}>
             {this.props.body_description[key].dataType === "Array of Boolean"
-              ? this.displayBoolean(key, value, key + "." + index + ".value")
-              : this.displayInput(key, value, key + "." + index + ".value")}
+              ? this.displayBoolean(value, key + "." + index + ".value")
+              : this.displayInput(value, key + "." + index + ".value")}
             <button
               type="button"
               className="btn cross-button"
-              onClick={() =>
-                this.handleDelete(this.props.body_description, key, index)
-              }
+              onClick={() => this.handleDelete(key, index)}
             >
               X
             </button>
           </div>
         ))}
-        {this.displayAddButton(this.props.body_description, key)}
+        {this.displayAddButton(key)}
       </div>
     );
   }
@@ -169,6 +160,18 @@ class PublicBodyContainer extends Component {
     this.keysArray = Object.keys(bodyDescription);
     this.defaultValuesArray = [];
     this.dataType = [];
+    this.body = JSON.parse(this.props.body.value);
+    if (
+      this.props.public_body_flag &&
+      this.props.body &&
+      this.props.body.type === "JSON"
+    ) {
+      for (let i = 0; i < this.keysArray.length; i++) {
+        this.body[this.keysArray[i]] =
+          bodyDescription[this.keysArray[i]].default;
+      }
+      this.props.set_public_body(this.body);
+    }
 
     return (
       <div>
@@ -214,10 +217,8 @@ class PublicBodyContainer extends Component {
                           <input
                             disabled
                             className="key-input"
-                            //name={index + ".key"}
                             value={key}
                             type={"text"}
-                            // className="form-control"
                           ></input>
                           <label
                             style={{
@@ -233,11 +234,7 @@ class PublicBodyContainer extends Component {
                       </td>
                       <td>
                         {bodyDescription[key].dataType === "boolean" ? (
-                          this.displayBoolean(
-                            key,
-                            bodyDescription[key].default,
-                            key + ".value"
-                          )
+                          this.displayBoolean(this.body[key], key + ".value")
                         ) : bodyDescription[key].dataType ===
                           "Array of Integer" ? (
                           this.displayArray(key)
@@ -248,11 +245,11 @@ class PublicBodyContainer extends Component {
                           "Array of Boolean" ? (
                           this.displayArray(key)
                         ) : bodyDescription[key].dataType === "Object" ? (
-                          this.obectDiv(bodyDescription[key].default, key)
+                          this.obectDiv(this.body[key], key)
                         ) : bodyDescription[key].dataType ===
                           "Array of Objects" ? (
                           <div>
-                            {bodyDescription[key].default.map((obj, i) => (
+                            {this.body[key].map((obj, i) => (
                               <div
                                 key={i}
                                 style={{
@@ -274,46 +271,34 @@ class PublicBodyContainer extends Component {
                                 <button
                                   type="button"
                                   className="btn cross-button"
-                                  onClick={() =>
-                                    this.handleDelete(bodyDescription, key, i)
-                                  }
+                                  onClick={() => this.handleDelete(key, i)}
                                 >
                                   X
                                 </button>
                               </div>
                             ))}
-                            {this.displayAddButton(bodyDescription, key)}
+                            {this.displayAddButton(key)}
                           </div>
                         ) : bodyDescription[key].dataType ===
                           "Object of Objects" ? (
                           <div>
-                            {Object.keys(bodyDescription[key].default).map(
-                              (k) => (
-                                <div
-                                  key={k}
-                                  style={{
-                                    marginLeft: "5px",
-                                    border: "1px solid",
-                                    width: "80%",
-                                    padding: "5px",
-                                    background: "lightgrey",
-                                  }}
-                                >
-                                  {this.obectDiv(
-                                    bodyDescription[key].default[k],
-                                    key,
-                                    k
-                                  )}
-                                </div>
-                              )
-                            )}
+                            {Object.keys(this.body[key]).map((k) => (
+                              <div
+                                key={k}
+                                style={{
+                                  marginLeft: "5px",
+                                  border: "1px solid",
+                                  width: "80%",
+                                  padding: "5px",
+                                  background: "lightgrey",
+                                }}
+                              >
+                                {this.obectDiv(this.body[key][k], key, k)}
+                              </div>
+                            ))}
                           </div>
                         ) : (
-                          this.displayInput(
-                            key,
-                            bodyDescription[key].default,
-                            key + ".value"
-                          )
+                          this.displayInput(this.body[key], key + ".value")
                         )}
                       </td>
                       <td>
@@ -322,7 +307,7 @@ class PublicBodyContainer extends Component {
                           name={index + ".datatype"}
                           type="text"
                           value={bodyDescription[key].description}
-                          placeholder="DataType"
+                          placeholder="Description"
                           className="form-control"
                           style={{ border: "none" }}
                         />
