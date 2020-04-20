@@ -1,6 +1,13 @@
 import React, { Component } from "react";
 import { Modal } from "react-bootstrap";
 import tabService from "../tabs/tabService";
+import { connect } from "react-redux";
+import { closeTab, openInNewTab } from "../tabs/redux/tabsActions";
+const mapDispatchToProps = (dispatch) => {
+  return {
+    closeTab: (tabId) => dispatch(closeTab(tabId)),
+  };
+};
 class DeleteModal extends Component {
   state = {};
 
@@ -14,20 +21,19 @@ class DeleteModal extends Component {
     const { title } = this.props;
     if (title === "Delete Collection") {
       const { deleted_collection: collection } = this.props;
-      this.props.deleteCollection(collection);
+      this.props.deleteCollection(collection, this.props);
     }
     if (title === "Delete Version") {
       const { deleted_version: version } = this.props;
-      this.props.deleteVersion(version);
+      this.props.deleteVersion(version, this.props);
     }
     if (title === "Delete Group") {
       const { deleted_group: group } = this.props;
-      this.props.deleteGroup(group);
+      this.props.deleteGroup(group, this.props);
     }
     if (title === "Delete Page") {
       const { deleted_page: page } = this.props;
-      const index = this.props.tabs.findIndex((t) => t.id === page.id);
-      tabService.closeTab({ ...this.props }, index);
+      tabService.removeTab(page.id, { ...this.props });
       this.props.deletePage(page);
     }
 
@@ -79,4 +85,4 @@ class DeleteModal extends Component {
   }
 }
 
-export default DeleteModal;
+export default connect(null, mapDispatchToProps)(DeleteModal);

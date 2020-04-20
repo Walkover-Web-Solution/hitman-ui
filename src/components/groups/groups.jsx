@@ -18,7 +18,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    deleteGroup: (group) => dispatch(deleteGroup(group)),
+    deleteGroup: (group, props) => dispatch(deleteGroup(group, props)),
     duplicateGroup: (group) => dispatch(duplicateGroup(group)),
   };
 };
@@ -59,7 +59,7 @@ class Groups extends Component {
     // ];
 
     // this.props.set_tabs(tabs, tabs.length - 1);
-    tabService.addNewTab({ ...this.props });
+    tabService.newTab({ ...this.props });
     this.props.history.push({
       pathname: `/dashboard/endpoint/new`,
       groupId: groupId,
@@ -78,9 +78,6 @@ class Groups extends Component {
 
   handleDuplicate(group) {
     this.props.duplicateGroup(group);
-    this.props.history.push({
-      pathname: "/dashboard",
-    });
   }
 
   closeGroupForm() {

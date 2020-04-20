@@ -17,6 +17,8 @@ import GenericTable from "./genericTable";
 import HostContainer from "./hostContainer";
 import PublicBodyContainer from "./publicBodyContainer";
 import { addEndpoint, updateEndpoint } from "./redux/endpointsActions";
+import tabStatusTypes from "../tabs/tabStatusTypes";
+import tabService from "../tabs/tabService";
 const status = require("http-status");
 var URI = require("urijs");
 
@@ -28,6 +30,8 @@ const mapStateToProps = (state) => {
     environment: state.environment.environments[
       state.environment.currentEnvironmentId
     ] || { id: null, name: "No Environment" },
+    currentEnvironmentId: state.environment.currentEnvironmentId,
+    environments: state.environment.environments,
   };
 };
 
@@ -67,13 +71,53 @@ class DisplayEndpoint extends Component {
     oldDescription: "",
     headers: [],
     params: [],
-    bodyDescription: [],
+    bodyDescription: {
+      key1: { default: "abcd", dataType: "string" },
+      key2: { default: 4, dataType: "number" },
+      key3: { default: true, dataType: "boolean" },
+      key4: { default: [2], dataType: "Array of Integer" },
+      key5: { default: ["a"], dataType: "Array of String" },
+      key6: { default: { k1: "v1", k2: 10 }, dataType: "Object" },
+      key7: {
+        default: [{ k1: "v1", k2: 10 }],
+        dataType: "Array of Objects",
+        object: { k1: "v1", k2: 10 },
+      },
+      key8: {
+        default: {
+          k1: { k1: "v1", k2: 10, k3: 44 },
+          k2: { k1: "v1", k2: 10 },
+        },
+        dataType: "Object of Objects",
+        //object: { k1: "v1", k2: 10 },
+      },
+      key9: { default: [true], dataType: "Array of Boolean" },
+    },
+    updatedArray: {},
+    objectDefinition: {},
   };
 
   customState = {
     BASE_URL: "",
     customBASE_URL: "",
   };
+
+  setObjectDefinition(name, definition) {
+    let objectDefinition = { ...this.state.objectDefinition };
+    objectDefinition[name] = definition;
+    this.setState({ objectDefinition });
+  }
+
+  deleteObjectDefinition(objectKey) {
+    let objectDefinition = { ...this.state.objectDefinition };
+    delete objectDefinition[objectKey];
+    this.setState({ objectDefinition });
+  }
+  // test() {
+  //   const test = "hello World!";
+  //   console.log("test", test);
+  //   this.setState({ test });
+  // }
 
   async componentDidMount() {
     if (this.props.location.pathname.split("/")[3] === "new") {
@@ -192,6 +236,23 @@ class DisplayEndpoint extends Component {
         pathVariables = this.fetchPathVariables(endpoint.pathVariables);
         this.setState({ pathVariables });
       }
+
+      let updatedArray = {};
+      //let bodyDescription = [];
+      // if (endpoint.body.type === "raw1") {
+      //   updatedArray = JSON.parse(endpoint.body.value);
+      //   bodyDescription = endpoint.bodyDescription;
+      // }
+      if (!isDashboardRoute(this.props)) {
+        if (endpoint.body.type === "JSON") {
+          let body = JSON.parse(endpoint.body.value);
+          const keys = Object.keys(this.state.bodyDescription);
+          keys.map((k) => (body[k] = this.state.bodyDescription[k].default));
+          body = { type: "JSON", value: JSON.stringify(body) };
+          endpoint.body = body;
+        }
+      }
+
       this.setState({
         data: {
           method: endpoint.requestType,
@@ -209,6 +270,8 @@ class DisplayEndpoint extends Component {
         endpoint_description: endpoint.description,
         oldDescription: endpoint.description,
         title: "update endpoint",
+        // bodyDescription,
+        updatedArray,
       });
     }
   }
@@ -252,6 +315,9 @@ class DisplayEndpoint extends Component {
       }
       originalParams = this.makeOriginalParams(keys, values, description);
       this.setState({ originalParams });
+    }
+    if (isDashboardRoute(this.props)) {
+      tabService.markTabAsModified(this.props.tab.id);
     }
     this.setState({ data });
   };
@@ -445,13 +511,9 @@ class DisplayEndpoint extends Component {
       } else if (dataType === "yyyy-mm-dd") {
         const abc = /^(19[5-9][0-9]|20[0-4][0-9]|2050)[-/](0?[1-9]|1[0-2])[-/](0?[1-9]|[12][0-9]|3[01])$/gim;
         let match = abc.exec(rawBody[name]);
-        if (match === null) console.log("false");
-        else console.log("true");
       } else if (dataType === "datetime") {
         const abc1 = /^\d\d\d\d-(0?[1-9]|1[0-2])-(0?[1-9]|[12][0-9]|3[01]) (00|[0-9]|1[0-9]|2[0-3]):([0-9]|[0-5][0-9]):([0-9]|[0-5][0-9])$/g;
         let match = abc1.exec(rawBody[name]);
-        if (match === null) console.log("false");
-        else console.log("true");
       } else if (dataType === "timestamp") {
         var valid = new Date(rawBody[name]).getTime() > 0;
         if (!valid) {
@@ -520,6 +582,11 @@ class DisplayEndpoint extends Component {
       if (this.state.data.body.type === "raw") {
         body.value = this.parseBody(body.value);
       }
+      if (!(this.state.data.body.type === "raw1")) {
+        const bodyDescription = [];
+        const updatedArray = {};
+        this.setState({ updatedArray, bodyDescription });
+      }
       const headersData = this.doSubmitHeader();
       const updatedParams = this.doSubmitParam();
       const pathVariables = this.doSubmitPathVariables();
@@ -531,12 +598,15 @@ class DisplayEndpoint extends Component {
         headers: headersData,
         params: updatedParams,
         pathVariables: pathVariables,
-        BASE_URL: this.customState.BASE_URL,
+        BASE_URL:
+          this.customState.selectedHost === "customHost"
+            ? this.customState.BASE_URL
+            : null,
       };
       // if (endpoint.name === "" || endpoint.uri === "")
       if (endpoint.name === "") toast.error("Please enter Endpoint name");
       else if (this.props.location.pathname.split("/")[3] === "new") {
-        endpoint.requestId = this.props.tabs[this.props.default_tab_index].id;
+        endpoint.requestId = this.props.tab.id;
         this.props.addEndpoint(endpoint, groupId || this.state.groupId);
       } else if (this.state.title === "update endpoint") {
         this.props.updateEndpoint({
@@ -546,6 +616,7 @@ class DisplayEndpoint extends Component {
         });
       }
     }
+    tabService.markTabAsSaved(this.props.tab.id);
   };
 
   doSubmitPathVariables() {
@@ -601,14 +672,14 @@ class DisplayEndpoint extends Component {
     let data = { ...this.state.data };
     data.method = method;
     this.setState({ response, data });
+    if (isDashboardRoute(this.props)) {
+      tabService.markTabAsModified(this.props.tab.id);
+    }
   }
 
   propsFromChild(name, value) {
     if (name === "Params") {
       this.handleUpdateUri(value);
-      this.setState({ originalParams: value });
-    }
-    if (name === "handleAddParam") {
       this.setState({ originalParams: value });
     }
 
@@ -619,6 +690,24 @@ class DisplayEndpoint extends Component {
     if (name === "Path Variables") {
       this.setState({ pathVariables: value });
     }
+    console.log(isDashboardRoute(this.props), name);
+    if (
+      isDashboardRoute(this.props) &&
+      (name === "Params" || name === "Headers" || name === "Path Variables")
+    ) {
+      tabService.markTabAsModified(this.props.tab.id);
+    }
+  }
+
+  setPublicBody(bodyDescription) {
+    let json = {};
+    Object.keys(bodyDescription).map(
+      (key) => (json[key] = bodyDescription[key].default)
+    );
+    json = JSON.stringify(json);
+    let data = { ...this.state.data };
+    data.body = { type: "JSON", value: json };
+    this.setState({ bodyDescription, data });
   }
 
   handleUpdateUri(originalParams) {
@@ -743,6 +832,10 @@ class DisplayEndpoint extends Component {
     this.handleSave(groupId, endpointName);
   }
 
+  updateArray(updatedArray) {
+    this.setState({ updatedArray });
+  }
+
   makeHeaders(headers) {
     let processedHeaders = [];
     for (let i = 0; i < Object.keys(headers).length; i++) {
@@ -833,9 +926,9 @@ class DisplayEndpoint extends Component {
     );
   }
 
-  setBaseUrl(BASE_URL, customBASE_URL) {
+  setBaseUrl(BASE_URL, selectedHost) {
     this.customState.BASE_URL = BASE_URL;
-    this.customState.customBASE_URL = customBASE_URL;
+    this.customState.selectedHost = selectedHost;
   }
 
   setBody(bodyType, body) {
@@ -845,6 +938,10 @@ class DisplayEndpoint extends Component {
       this.setHeaders(bodyType);
     }
     this.setState({ data });
+
+    if (isDashboardRoute(this.props)) {
+      tabService.markTabAsModified(this.props.tab.id);
+    }
   }
 
   setBodyDescription(bodyDescription) {
@@ -906,6 +1003,9 @@ class DisplayEndpoint extends Component {
   propsFromDescription(title, data) {
     if (title === "data") {
       this.setState({ data: data });
+      if (isDashboardRoute(this.props)) {
+        tabService.markTabAsModified(this.props.tab.id);
+      }
     }
     if (title === "endpoint") this.setState({ endpoint: data });
     if (title === "oldDescription") this.setState({ oldDescription: data });
@@ -942,6 +1042,21 @@ class DisplayEndpoint extends Component {
   render() {
     if (
       isDashboardRoute(this.props) &&
+      this.state.groupId &&
+      this.props.tab.status === tabStatusTypes.DELETED
+    ) {
+      this.setState({ groupId: null });
+    }
+
+    if (
+      this.props.save_endpoint_flag &&
+      this.props.tab.id === this.props.selected_tab_id
+    ) {
+      this.props.handle_save_endpoint(false);
+      this.handleSave();
+    }
+    if (
+      isDashboardRoute(this.props) &&
       this.props.location.pathname.split("/")[3] !== "new" &&
       this.state.endpoint.id !== this.props.tab.id &&
       this.props.endpoints[this.props.tab.id]
@@ -973,82 +1088,6 @@ class DisplayEndpoint extends Component {
         });
       }
     }
-
-    // if (this.props.location.title === "Add New Endpoint") {
-    //   this.title = "Add New Endpoint";
-    //   this.setState({
-    //     data: {
-    //       name: "",
-    //       method: "GET",
-    //       body: { type: "raw", value: null },
-    //       uri: "",
-    //       updatedUri: "",
-    //     },
-    //     startTime: "",
-    //     timeElapsed: "",
-    //     response: {},
-    //     endpoint: {},
-    //     groupId: this.props.location.groupId,
-    //     title: "Add New Endpoint",
-    //     flagResponse: false,
-
-    //     originalHeaders: [
-    //       {
-    //         checked: "notApplicable",
-    //         key: "",
-    //         value: "",
-    //         description: "",
-    //       },
-    //     ],
-    //     originalParams: [
-    //       {
-    //         checked: "notApplicable",
-    //         key: "",
-    //         value: "",
-    //         description: "",
-    //       },
-    //     ],
-    //   });
-    //   this.props.history.push({ groups: null });
-    // }
-
-    // if (
-    //   this.props.location.title === "update endpoint" &&
-    //   this.props.location.endpoint
-    // ) {
-    //   let endpoint = { ...this.props.location.endpoint };
-    //   //To fetch originalParams from Params
-    //   const originalParams = this.fetchoriginalParams(
-    //     this.props.location.endpoint.params
-    //   );
-    //   const params = this.fetchoriginalParams(endpoint.params);
-
-    //   //To fetch originalHeaders from Headers
-    //   const originalHeaders = this.fetchoriginalHeaders(endpoint.headers);
-    //   const headers = this.fetchoriginalHeaders(endpoint.headers);
-    //   console.log("in update endpoint");
-    //   this.setState({
-    //     data: {
-    //       method: endpoint.requestType,
-    //       uri: endpoint.uri,
-    //       updatedUri: endpoint.uri,
-    //       name: endpoint.name,
-    //       body: endpoint.body,
-    //       // JSON.stringify(endpoint.body, null, 4)
-    //     },
-    //     title: "update endpoint",
-    //     response: {},
-    //     groupId: this.props.location.endpoint.groupId,
-    //     originalParams,
-    //     originalHeaders,
-    //     params,
-    //     headers,
-    //     endpoint,
-    //     flagResponse: false,
-    //     oldDescription: endpoint.description,
-    //   });
-    //   this.props.history.push({ endpoint: null });
-    // }
     return (
       <div className="endpoint-container">
         {this.state.showEndpointFormModal && (
@@ -1068,7 +1107,7 @@ class DisplayEndpoint extends Component {
           data={this.state.data}
           old_description={this.state.oldDescription}
           props_from_parent={this.propsFromDescription.bind(this)}
-        ></DisplayDescription>
+        />
 
         <div className="endpoint-url-container">
           <div className="input-group-prepend">
@@ -1266,7 +1305,10 @@ class DisplayEndpoint extends Component {
                   set_body={this.setBody.bind(this)}
                   body={this.state.data.body}
                   endpoint_id={this.props.tab.id}
+                  update_array={this.updateArray.bind(this)}
+                  updated_array={this.state.updatedArray}
                   body_description={this.state.bodyDescription}
+                  object_definition={this.state.objectDefinition}
                 />
               </div>
               <div
@@ -1275,9 +1317,17 @@ class DisplayEndpoint extends Component {
                 role="tabpanel"
                 aria-labelledby="pills-body-description-tab"
               >
-                <BodyDescription
+                {/* <BodyDescription
                   set_body_description={this.setBodyDescription.bind(this)}
-                />
+                  update_array={this.updateArray.bind(this)}
+                  updated_array={this.state.updatedArray}
+                  body_description={this.state.bodyDescription}
+                  object_definition={this.state.objectDefinition}
+                  delete_object_definition={this.deleteObjectDefinition.bind(
+                    this
+                  )}
+                  set_object_definition={this.setObjectDefinition.bind(this)}
+                /> */}
               </div>
             </div>
           ) : (
@@ -1304,6 +1354,8 @@ class DisplayEndpoint extends Component {
                 {...this.props}
                 set_body={this.setBody.bind(this)}
                 body={this.state.data.body}
+                set_public_body={this.setPublicBody.bind(this)}
+                body_description={this.state.bodyDescription}
               ></PublicBodyContainer>
             </div>
           )}

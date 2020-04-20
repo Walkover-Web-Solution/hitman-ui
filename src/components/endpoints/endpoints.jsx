@@ -8,14 +8,17 @@ import {
   pendingEndpoint,
   rejectEndpoint,
 } from "../publicEndpoint/redux/publicEndpointsActions";
+import { closeTab, openInNewTab } from "../tabs/redux/tabsActions";
 import tabService from "../tabs/tabService";
-import { deleteEndpoint, duplicateEndpoint } from "./redux/endpointsActions";
+import tabStatusTypes from "../tabs/tabStatusTypes";
 import "./endpoints.scss";
+import { deleteEndpoint, duplicateEndpoint } from "./redux/endpointsActions";
 
 const mapStateToProps = (state) => {
   return {
     endpoints: state.endpoints,
     groups: state.groups,
+    tabs: state.tabs,
   };
 };
 
@@ -29,6 +32,8 @@ const mapDispatchToProps = (dispatch) => {
     approveEndpoint: (endpoint) => dispatch(approveEndpoint(endpoint)),
     draftEndpoint: (endpoint) => dispatch(draftEndpoint(endpoint)),
     rejectEndpoint: (endpoint) => dispatch(rejectEndpoint(endpoint)),
+    closeTab: (tabId) => dispatch(closeTab(tabId)),
+    openInNewTab: (tab) => dispatch(openInNewTab(tab)),
   };
 };
 
@@ -44,7 +49,7 @@ class Endpoints extends Component {
     this.props.set_source_group_id(eId, this.props.group_id);
   };
 
-  onDragOver = (e, eId) => {
+  onDragOver = (e) => {
     e.preventDefault();
   };
   onDrop = (e, droppedOnItem) => {
@@ -67,62 +72,15 @@ class Endpoints extends Component {
     }
   };
 
-  // deleteTab(index) {
-  //   let tabs = [...this.props.tabs];
-  //   tabs.splice(index, 1);
-  //   if (this.props.default_tab_index === index) {
-  //     if (index !== 0) {
-  //       const newIndex = this.props.default_tab_index - 1;
-  //       this.props.set_tabs(tabs, newIndex);
-  //       this.changeRoute(tabs[newIndex], "update endpoint");
-  //     } else {
-  //       if (tabs.length > 0) {
-  //         const newIndex = index;
-  //         this.props.set_tabs(tabs, newIndex);
-  //         this.changeRoute(tabs, "update endpoint");
-  //       } else {
-  //         const newTabId = shortId.generate();
-  //         tabs = [...tabs, { id: newTabId, type: "endpoint", isSaved: false }];
-
-  //         this.props.set_tabs(tabs, tabs.length - 1);
-  //         this.props.history.push({
-  //           pathname: `/dashboard/endpoint/new`
-  //         });
-  //       }
-  //     }
-  //   } else {
-  //     if (index < this.props.default_tab_index) {
-  //       this.props.set_tabs(tabs, this.props.default_tab_index - 1);
-  //     } else this.props.set_tabs(tabs);
-  //   }
-  // }
-
-  // changeRoute(tab, title) {
-  //   if (tab.isSaved) {
-  //     this.props.history.push({
-  //       pathname: `/dashboard/${tab.type}/${tab.id}`,
-  //       title
-  //     });
-  //   } else {
-  //     this.props.history.push({
-  //       pathname: `/dashboard/${tab.type}/new`
-  //     });
-  //   }
-  // }
-
   handleDelete(endpoint) {
-    const index = this.props.tabs.findIndex((t) => t.id === endpoint.id);
     this.props.deleteEndpoint(endpoint);
-    if (index >= 0) {
-      tabService.closeTab({ ...this.props }, index);
+    if (this.props.tabs.tabs[endpoint.id]) {
+      tabService.removeTab(endpoint.id, { ...this.props });
     }
   }
 
   handleDuplicate(endpoint) {
     this.props.duplicateEndpoint(endpoint);
-    this.props.history.push({
-      pathname: "/dashboard",
-    });
   }
 
   handleUpdate(endpoint) {
@@ -177,8 +135,26 @@ class Endpoints extends Component {
     this.props.rejectEndpoint(endpoint);
   }
 
-  handleDisplay(endpoint, groupId, collectionId) {
+  handleDisplay(endpoint, groupId, collectionId, previewMode) {
     if (isDashboardRoute(this.props)) {
+      if (!this.props.tabs.tabs[endpoint.id]) {
+        const previewTabId = Object.keys(this.props.tabs.tabs).filter(
+          (tabId) => this.props.tabs.tabs[tabId].previewMode === true
+        )[0];
+        if (previewTabId) this.props.closeTab(previewTabId);
+        this.props.openInNewTab({
+          id: endpoint.id,
+          type: "endpoint",
+          status: tabStatusTypes.SAVED,
+          previewMode,
+          isModified: false,
+        });
+      } else if (
+        this.props.tabs.tabs[endpoint.id].previewMode === true &&
+        previewMode === false
+      ) {
+        tabService.disablePreviewMode(endpoint.id);
+      }
       this.props.history.push({
         pathname: `/dashboard/endpoint/${endpoint.id}`,
         title: "update endpoint",
@@ -283,14 +259,23 @@ class Endpoints extends Component {
                   <button
                     className="btn "
                     draggable
-                    onDragOver={(e) => this.onDragOver(e, endpointId)}
+                    onDragOver={this.onDragOver}
                     onDragStart={(e) => this.onDragStart(e, endpointId)}
                     onDrop={(e) => this.onDrop(e)}
                     onClick={() =>
                       this.handleDisplay(
                         this.props.endpoints[endpointId],
                         this.props.group_id,
-                        this.props.collection_id
+                        this.props.collection_id,
+                        true
+                      )
+                    }
+                    onDoubleClick={() =>
+                      this.handleDisplay(
+                        this.props.endpoints[endpointId],
+                        this.props.group_id,
+                        this.props.collection_id,
+                        false
                       )
                     }
                   >

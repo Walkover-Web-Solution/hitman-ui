@@ -3,6 +3,10 @@ import { toast } from "react-toastify";
 import store from "../../store/store";
 import { isDashboardRoute } from "../common/utility";
 import "./endpoints.scss";
+import tabService from "../tabs/tabService";
+import tabStatusTypes from "../tabs/tabStatusTypes";
+import environmentsActionTypes from "../environments/redux/environmentsActionTypes";
+import { subscribeActionAfter } from "redux-subscribe-action";
 
 class HostContainer extends Component {
   state = {
@@ -19,22 +23,40 @@ class HostContainer extends Component {
   };
 
   componentDidMount() {
-    let isLoaded = false;
-    store.subscribe(() => {
-      if (!isLoaded) {
-        let selectedHost = "customHost";
-        if (this.props.custom_host) {
-          selectedHost = "customHost";
-        } else if (
-          this.props.environment.variables &&
-          this.props.environment.variables.BASE_URL
-        ) {
-          selectedHost = "environmentHost";
+    let selectedHost = this.findTopPriorityHost();
+    this.setState({ selectedHost });
+
+    const unsubscribe = store.subscribe(() => {
+      if (this.props.currentEnvironmentId) {
+        if (Object.keys(this.props.environments).length) {
+          let selectedHost = this.findTopPriorityHost();
+          this.setState({ selectedHost });
+          unsubscribe();
         }
-        this.setState({ selectedHost });
+      } else {
+        unsubscribe();
       }
-      isLoaded = true;
     });
+  }
+
+  findTopPriorityHost() {
+    let selectedHost = "customHost";
+    if (this.props.custom_host) {
+      selectedHost = "customHost";
+    } else if (
+      this.props.environment &&
+      this.props.environment.variables &&
+      this.props.environment.variables.BASE_URL
+    ) {
+      selectedHost = "environmentHost";
+    } else if (this.state.groupId) {
+      if (this.props.groups[this.state.groupId].host) {
+        selectedHost = "groupHost";
+      } else if (this.props.groups[this.state.versionId].host) {
+        selectedHost = "versionHost";
+      }
+    }
+    return selectedHost;
   }
 
   selectHost(host) {
@@ -51,19 +73,24 @@ class HostContainer extends Component {
         this.setState({ selectedHost: "customHost" });
       }
     } else this.setState({ selectedHost: host });
+    if (isDashboardRoute(this.props)) {
+      tabService.markTabAsModified(this.props.tab.id);
+    }
   }
 
   handleChange = (e) => {
     const customHost = e.currentTarget.value;
     this.setState({ customHost });
+    if (isDashboardRoute(this.props)) {
+      tabService.markTabAsModified(this.props.tab.id);
+    }
   };
 
   fetchHost() {
     let BASE_URL = "";
     switch (this.state.selectedHost) {
       case "customHost":
-        //BASE_URL = this.state.customHost === null ? "" : this.state.customHost;
-        BASE_URL = this.state.customHost;
+        BASE_URL = this.state.customHost || "";
         break;
       case "environmentHost":
         if (
@@ -86,15 +113,19 @@ class HostContainer extends Component {
           return;
         }
       case "groupHost":
-        BASE_URL = this.props.groups[this.state.groupId].host;
+        if (this.props.groups[this.state.groupId]) {
+          BASE_URL = this.props.groups[this.state.groupId].host;
+        }
         break;
       case "versionHost":
-        BASE_URL = this.props.versions[this.state.versionId].host;
+        if (this.props.versions[this.state.versionId]) {
+          BASE_URL = this.props.versions[this.state.versionId].host;
+        }
         break;
       default:
         break;
     }
-    this.props.set_base_url(BASE_URL, this.state.customHost);
+    this.props.set_base_url(BASE_URL, this.state.selectedHost);
     return BASE_URL;
   }
 
@@ -128,6 +159,14 @@ class HostContainer extends Component {
   }
 
   render() {
+    if (
+      isDashboardRoute(this.props) &&
+      this.state.groupId &&
+      this.props.tab.status === tabStatusTypes.DELETED
+    ) {
+      this.setState({ groupId: null });
+    }
+
     if (!this.state.groupId && this.props.groupId) {
       const groupId = this.props.groupId;
       const versionId = this.props.groups[groupId].versionId;
@@ -182,10 +221,11 @@ class HostContainer extends Component {
                         <i className="fas fa-check"></i>
                       )}
                     </div>
-                    <div className="host-label">environment BASE_URL</div>
+                    <div className="host-label">environment BASE_URL </div>
                   </button>
                 )}
               {this.state.groupId &&
+                this.props.groups[this.state.groupId] &&
                 this.props.groups[this.state.groupId].host && (
                   <button
                     className="btn"

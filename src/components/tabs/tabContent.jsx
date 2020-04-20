@@ -7,7 +7,8 @@ import EditPage from "../pages/editPage";
 class TabContent extends Component {
   state = {};
 
-  renderContent(tab) {
+  renderContent(tabId) {
+    const tab = this.props.tabs.tabs[tabId];
     switch (tab.type) {
       case "endpoint":
         return <DisplayEndpoint {...this.props} environment={{}} tab={tab} />;
@@ -16,11 +17,11 @@ class TabContent extends Component {
           <Switch>
             <Route
               path={`/dashboard/page/${tab.id}/edit`}
-              render={(props) => <EditPage {...props} />}
+              render={(props) => <EditPage {...props} tab={tab} />}
             />
             <Route
               path={`/dashboard/page/${tab.id}`}
-              render={(props) => <DisplayPage {...props} />}
+              render={(props) => <DisplayPage {...props} tab={tab} />}
             />
           </Switch>
         );
@@ -30,31 +31,9 @@ class TabContent extends Component {
   render() {
     return (
       <Tab.Content>
-        {this.props.tabs.map((tab) => (
-          <Tab.Pane eventKey={tab.id} key={tab.id}>
-            {this.renderContent(tab)}
-            {/* <Switch>
-              <Route
-                path={`/dashboard/endpoint/${tab.id}`}
-                render={(props) => (
-                  <DisplayEndpoint {...this.props} environment={{}} />
-                )}
-              />
-              <Route
-                path={`/dashboard/endpoint/new/${tab.id}`}
-                render={(props) => (
-                  <DisplayEndpoint {...this.props} environment={{}} />
-                )}
-              />
-              <Route
-                path={`/dashboard/page/${tab.id}/edit`}
-                render={(props) => <EditPage {...props} />}
-              />
-              <Route
-                path={`/dashboard/page/${tab.id}`}
-                render={(props) => <DisplayPage {...props} />}
-              />
-            </Switch> */}
+        {Object.keys(this.props.tabs.tabs).map((tabId) => (
+          <Tab.Pane eventKey={tabId} key={tabId}>
+            {this.renderContent(tabId)}
           </Tab.Pane>
         ))}
       </Tab.Content>
