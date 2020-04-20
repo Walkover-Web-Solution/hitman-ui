@@ -177,17 +177,8 @@ class CollectionVersions extends Component {
 
   propsFromVersion(versionIds, title) {
     this.filteredVersions = {};
-    this.filterFlag = true;
-    // if (title === "versions") {
-    //   this.filteredOnlyVersions = {};
-    //   if (versionIds !== null) {
-    //     for (let i = 0; i < versionIds.length; i++) {
-    //       this.filteredOnlyVersions[versionIds[i]] = this.props.versions[
-    //         versionIds[i]
-    //       ];
-    //     }
-    //   }
-    // }
+    this.filterFlag = false;
+    this.filterVersions();
     if (title === "groups") {
       this.filteredGroups = {};
       if (versionIds !== null) {
@@ -230,10 +221,13 @@ class CollectionVersions extends Component {
       this.filteredVersions,
       this.filteredGroups
     );
-    // this.filteredVersions = this.jsonConcat(
-    //   this.filteredVersions,
-    //   this.filteredOnlyVersions
-    // );
+    console.log(this.filteredOnlyVersions);
+    this.filteredVersions = this.jsonConcat(
+      this.filteredVersions,
+      this.filteredOnlyVersions
+    );
+    console.log(this.filteredVersions);
+
     this.setState({ filter: this.props.filter });
   }
 
@@ -250,10 +244,9 @@ class CollectionVersions extends Component {
       this.props.filter !== "" &&
       this.filterFlag === false
     ) {
-      // this.filteredVersions = {};
+      this.filteredOnlyVersions = {};
       this.filterFlag = true;
       let versions = { ...this.props.versions };
-      console.log(versions);
       let versionIds = Object.keys(versions);
       let versionNameIds = [];
       let versionNames = [];
@@ -262,7 +255,6 @@ class CollectionVersions extends Component {
         versionNameIds.push({ name: name, id: versionIds[i] });
         versionNames.push(name);
       }
-      console.log("versionNames", versionNames);
       let finalVersionNames = versionNames.filter((name) => {
         return (
           name.toLowerCase().indexOf(this.props.filter.toLowerCase()) !== -1
@@ -284,27 +276,16 @@ class CollectionVersions extends Component {
       }
       console.log("versionIds", versionIds);
       if (versionIds.length !== 0) {
-        this.propsFromVersion(versionIds, "versions");
+        // this.propsFromVersion(versionIds, "versions");
+        for (let i = 0; i < versionIds.length; i++) {
+          this.filteredOnlyVersions[versionIds[i]] = this.props.versions[
+            versionIds[i]
+          ];
+        }
+        console.log("this.filteredOnlyVersions", this.filteredOnlyVersions);
       } else {
-        this.propsFromVersion(null, "versions");
+        this.filteredOnlyVersions = {};
       }
-      // for (let i = 0; i < finalVersionIds.length; i++) {
-      //   this.filteredVersions[finalVersionIds[i]] = this.props.versions[
-      //     finalVersionIds[i]
-      //   ];
-      // }
-      // this.setState({ filter: this.props.filter });
-      // if (Object.keys(this.filteredVersions).length !== 0) {
-      //   let versionIds = [];
-      //   for (let i = 0; i < Object.keys(this.filteredVersions).length; i++) {
-      //     versionIds.push(this.filteredVersions[finalVersionIds[i]].versionId);
-      //   }
-      //   this.props.show_filter_version(versionIds, "versions");
-      // } else {
-      //   this.props.show_filter_version(null, "versions");
-      // }
-    } else if (this.filterFlag === false) {
-      this.filteredVersions = { ...this.props.versions };
     }
   }
 
@@ -322,7 +303,6 @@ class CollectionVersions extends Component {
 
     return (
       <div>
-        {/* {this.filterVersions()} */}
         {this.showShareVersionForm()}
         {this.showAddGroupForm()}
         {this.showEditVersionForm()}
