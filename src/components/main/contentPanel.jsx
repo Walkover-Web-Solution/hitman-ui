@@ -67,8 +67,9 @@ class ContentPanel extends Component {
       const endpointId = this.props.location.pathname.split("/")[3];
 
       if (this.props.tabs.tabs[endpointId]) {
-        if (this.props.tabs.activeTabId !== endpointId)
+        if (this.props.tabs.activeTabId !== endpointId) {
           this.props.setActiveTabId(endpointId);
+        }
       } else {
         if (
           this.props.endpoints &&

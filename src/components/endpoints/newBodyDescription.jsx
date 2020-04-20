@@ -215,12 +215,10 @@ class NewBodyDescription extends Component {
 
   componentDidMount() {
     const { value } = this.props.endpoints[this.props.endpoint_id].body;
-    console.log(value);
     let body = JSON.parse(value);
     let keys = Object.keys(body);
     let bodyDescription = {};
     for (let i = 0; i < keys.length; i++) {
-      console.log(typeof body[keys[i]]);
       if (typeof body[keys[i]] !== "object") {
         bodyDescription[keys[i]] = {
           defaultValue: body[keys[i]],
@@ -229,7 +227,6 @@ class NewBodyDescription extends Component {
         };
       } else {
         if (typeof body[keys[i]] === "object" && Array.isArray(body[keys[i]])) {
-          console.log("hello", body[keys[i]].length);
           if (body[keys[i]].length !== 0) {
             bodyDescription[keys[i]] = {
               defaultValue: [body[keys[i]][0]],
@@ -253,7 +250,6 @@ class NewBodyDescription extends Component {
       }
     }
     this.setState({ bodyDescription });
-    console.log("bodyDescription", bodyDescription);
     // recurseObject(body, "");
   }
 
@@ -266,7 +262,6 @@ class NewBodyDescription extends Component {
   //     }
   //   }
   obectDiv(obj, index, i) {
-    console.log("sedgdrjf", obj);
     return (
       <div>
         {Object.keys(obj.defaultValue).map((key) => (
@@ -325,7 +320,6 @@ class NewBodyDescription extends Component {
     for (i in this.valuesArray) {
       json[this.keysArray[i]] = this.valuesArray[i];
     }
-    console.log(json);
     json = JSON.stringify(json);
     this.props.set_body("JSON", json);
   }
@@ -333,8 +327,6 @@ class NewBodyDescription extends Component {
   handleChange = (e) => {
     let valuesArray = [...this.valuesArray];
     const name = e.currentTarget.name.split(".");
-    console.log(name);
-    console.log(this.dataType);
     if (e.target.type === "number") {
       if (this.dataType[name[0]] === "Array") {
         valuesArray[name[0]][name[1]] = parseInt(e.currentTarget.value);
@@ -363,14 +355,11 @@ class NewBodyDescription extends Component {
     for (i in valuesArray) {
       json[this.keysArray[i]] = valuesArray[i];
     }
-    console.log(json);
     json = JSON.stringify(json);
     this.props.set_body("JSON", json);
   };
 
   render() {
-    console.log("this.props", this.props);
-
     return (
       <div>
         <div className="generic-table-container">
@@ -555,9 +544,8 @@ function recurseObject(obj, key1) {
     // works for objects and arrays
     var item = obj[key];
     if (typeof item === "object") {
-      console.log(key1 + "." + key);
       recurseObject(item, key);
-    } else console.log(key1 + "." + key);
+    }
   }
 }
 export default NewBodyDescription;

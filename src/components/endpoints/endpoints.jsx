@@ -81,9 +81,6 @@ class Endpoints extends Component {
 
   handleDuplicate(endpoint) {
     this.props.duplicateEndpoint(endpoint);
-    this.props.history.push({
-      pathname: "/dashboard",
-    });
   }
 
   handleUpdate(endpoint) {

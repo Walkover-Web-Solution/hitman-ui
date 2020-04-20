@@ -116,7 +116,6 @@ class BodyContainer extends Component {
   handleObjectChange = (e, key) => {
     let updatedArray = { ...this.props.updated_array };
     const name = e.currentTarget.name.split(".")[1];
-    console.log(name);
     // updatedArray[name] = {  };
     // updatedArray[name][key] = e.currentTarget.value;
     // let test1 = JSON.stringify(updatedArray);

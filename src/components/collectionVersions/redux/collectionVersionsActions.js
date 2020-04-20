@@ -2,6 +2,7 @@ import collectionVersionsApiService from "../collectionVersionsApiService";
 import versionActionTypes from "./collectionVersionsActionTypes";
 import store from "../../../store/store";
 import { toast } from "react-toastify";
+import tabService from "../../tabs/tabService";
 
 export const fetchAllVersions = () => {
   return (dispatch) => {
@@ -128,7 +129,7 @@ export const onVersionAddedError = (error, newVersion) => {
   };
 };
 
-export const deleteVersion = (version) => {
+export const deleteVersion = (version, props) => {
   return (dispatch) => {
     dispatch(deleteVersionRequest(version.id));
     collectionVersionsApiService
@@ -154,6 +155,9 @@ export const deleteVersion = (version) => {
               ...endpointIds,
             ])
         );
+
+        endpointIds.map((eId) => tabService.removeTab(eId, props));
+        pageIds.map((pId) => tabService.removeTab(pId, props));
 
         dispatch(onVersionDeleted({ groupIds, endpointIds, pageIds }));
       })

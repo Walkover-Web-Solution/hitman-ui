@@ -31,7 +31,6 @@ class PublicBodyContainer extends Component {
   }
 
   handleChange = (e) => {
-    console.log(e.currentTarget);
     const name = e.currentTarget.name.split(".");
     const key = name[0];
     const bodyDescription = this.props.body_description;
@@ -179,7 +178,6 @@ class PublicBodyContainer extends Component {
   }
 
   render() {
-    console.log("props", this.props);
     const bodyDescription = this.props.body_description;
     this.keysArray = Object.keys(bodyDescription);
     //this.valuesArray = [];

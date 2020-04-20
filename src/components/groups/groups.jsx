@@ -18,7 +18,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    deleteGroup: (group) => dispatch(deleteGroup(group)),
+    deleteGroup: (group, props) => dispatch(deleteGroup(group, props)),
     duplicateGroup: (group) => dispatch(duplicateGroup(group)),
   };
 };
@@ -78,9 +78,6 @@ class Groups extends Component {
 
   handleDuplicate(group) {
     this.props.duplicateGroup(group);
-    this.props.history.push({
-      pathname: "/dashboard",
-    });
   }
 
   closeGroupForm() {

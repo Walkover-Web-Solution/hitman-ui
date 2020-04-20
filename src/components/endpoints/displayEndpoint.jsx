@@ -243,11 +243,8 @@ class DisplayEndpoint extends Component {
       //   updatedArray = JSON.parse(endpoint.body.value);
       //   bodyDescription = endpoint.bodyDescription;
       // }
-      console.log(endpoint.body);
       if (!isDashboardRoute(this.props)) {
-        console.log("in if 1", this.state.data);
         if (endpoint.body.type === "JSON") {
-          console.log("in if 2");
           let body = JSON.parse(endpoint.body.value);
           const keys = Object.keys(this.state.bodyDescription);
           keys.map((k) => (body[k] = this.state.bodyDescription[k].default));
@@ -256,7 +253,6 @@ class DisplayEndpoint extends Component {
         }
       }
 
-      console.log("qqqqqqqq", endpoint);
       this.setState({
         data: {
           method: endpoint.requestType,
@@ -575,7 +571,6 @@ class DisplayEndpoint extends Component {
       headerJson[header] = headersData[header].value;
     });
     let { body, headers } = this.formatBody(this.state.data.body, headerJson);
-    console.log("in handle send", body);
     this.handleApiCall(api, body, headers, this.state.data.body.type);
   };
 
@@ -707,14 +702,12 @@ class DisplayEndpoint extends Component {
 
   setPublicBody(bodyDescription) {
     let json = {};
-    console.log(bodyDescription);
     Object.keys(bodyDescription).map(
       (key) => (json[key] = bodyDescription[key].default)
     );
     json = JSON.stringify(json);
     let data = { ...this.state.data };
     data.body = { type: "JSON", value: json };
-    console.log(bodyDescription, data);
     this.setState({ bodyDescription, data });
   }
 
@@ -1020,7 +1013,6 @@ class DisplayEndpoint extends Component {
   }
 
   formatBody(body, headers) {
-    console.log(body);
     let finalBodyValue = null;
     switch (body.type) {
       case "raw":
@@ -1044,13 +1036,13 @@ class DisplayEndpoint extends Component {
         // urlEncodedData = urlEncodedData.join("&");
         return { body: urlEncodedData, headers };
       default:
-        console.log("in default", body.value);
         return { body: body.value, headers };
     }
   }
 
   render() {
     if (
+      isDashboardRoute(this.props) &&
       this.state.groupId &&
       this.props.tab.status === tabStatusTypes.DELETED
     ) {

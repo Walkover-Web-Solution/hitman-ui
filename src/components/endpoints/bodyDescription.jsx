@@ -59,7 +59,6 @@ class BodyDescription extends Component {
     }
 
     if (name[1] === "defaultValue" && datatype) {
-      console.log(datatype, e.target.value);
       updatedBodyParams[index].defaultValue = e.target.value;
     } else if (name[1] === "defaultValue") {
       updatedBodyParams[index].defaultValue = e.currentTarget.value;
@@ -84,13 +83,11 @@ class BodyDescription extends Component {
   }
 
   addDefinition() {
-    console.log("addDefinition");
     const formName = "Add new Object Definition";
     this.setState({ formName });
   }
 
   render() {
-    // console.log(this.props.body_description);
     return (
       <div>
         {this.state.formName === "manage defintion" && (

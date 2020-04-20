@@ -1,6 +1,7 @@
 import store from "../../../store/store";
 import collectionsApiService from "../collectionsApiService";
 import collectionsActionTypes from "./collectionsActionTypes";
+import tabService from "../../tabs/tabService";
 
 export const fetchCollections = () => {
   return (dispatch) => {
@@ -120,7 +121,7 @@ export const onCollectionUpdatedError = (error, originalCollection) => {
   };
 };
 
-export const deleteCollection = (collection) => {
+export const deleteCollection = (collection, props) => {
   return (dispatch) => {
     dispatch(deleteCollectionRequest(collection));
     collectionsApiService
@@ -157,6 +158,9 @@ export const deleteCollection = (collection) => {
               ...endpointIds,
             ])
         );
+
+        endpointIds.map((eId) => tabService.removeTab(eId, props));
+        pageIds.map((pId) => tabService.removeTab(pId, props));
 
         dispatch(
           onCollectionDeleted({

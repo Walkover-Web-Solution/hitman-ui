@@ -40,7 +40,6 @@ class Main extends Component {
     let test = {};
     test["name"] = {};
     test["name"]["name1"] = "mohit";
-    console.log("test", test);
     this.fetchAll();
 
     await indexedDbService.createDataBase();

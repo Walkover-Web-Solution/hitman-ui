@@ -42,7 +42,8 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(shareCollection(teamMemberData)),
     updateCollection: (editedCollection) =>
       dispatch(updateCollection(editedCollection)),
-    deleteCollection: (collection) => dispatch(deleteCollection(collection)),
+    deleteCollection: (collection, props) =>
+      dispatch(deleteCollection(collection, props)),
     duplicateCollection: (collection) =>
       dispatch(duplicateCollection(collection)),
     fetchAllUsersOfTeam: (teamIdentifier) =>
@@ -413,7 +414,7 @@ class CollectionsComponent extends Component {
               {this.showShareCollectionForm()}
               {this.state.showDeleteModal &&
                 collectionsService.showDeleteCollectionModal(
-                  this.props,
+                  { ...this.props },
                   this.closeDeleteCollectionModal.bind(this),
                   "Delete Collection",
                   `Are you sure you wish to delete this collection? All your versions,

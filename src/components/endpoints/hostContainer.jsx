@@ -113,10 +113,14 @@ class HostContainer extends Component {
           return;
         }
       case "groupHost":
-        BASE_URL = this.props.groups[this.state.groupId].host;
+        if (this.props.groups[this.state.groupId]) {
+          BASE_URL = this.props.groups[this.state.groupId].host;
+        }
         break;
       case "versionHost":
-        BASE_URL = this.props.versions[this.state.versionId].host;
+        if (this.props.versions[this.state.versionId]) {
+          BASE_URL = this.props.versions[this.state.versionId].host;
+        }
         break;
       default:
         break;
@@ -156,6 +160,7 @@ class HostContainer extends Component {
 
   render() {
     if (
+      isDashboardRoute(this.props) &&
       this.state.groupId &&
       this.props.tab.status === tabStatusTypes.DELETED
     ) {
@@ -216,10 +221,11 @@ class HostContainer extends Component {
                         <i className="fas fa-check"></i>
                       )}
                     </div>
-                    <div className="host-label">environment BASE_URL</div>
+                    <div className="host-label">environment BASE_URL </div>
                   </button>
                 )}
               {this.state.groupId &&
+                this.props.groups[this.state.groupId] &&
                 this.props.groups[this.state.groupId].host && (
                   <button
                     className="btn"

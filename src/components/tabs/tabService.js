@@ -57,7 +57,6 @@ function selectTab(props, tabId) {
   const { tabs, tabsOrder, activeTabId } = store.getState().tabs;
 
   const tab = tabs[tabId];
-  store.dispatch(setActiveTabId(tabId));
   if (tab.status === "NEW") {
     props.history.push({
       pathname: `/dashboard/${tab.type}/new`,
@@ -67,6 +66,7 @@ function selectTab(props, tabId) {
       pathname: `/dashboard/${tab.type}/${tab.id}`,
     });
   }
+  store.dispatch(setActiveTabId(tabId));
 }
 
 function disablePreviewMode(tabId) {

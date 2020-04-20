@@ -41,7 +41,6 @@ class CreateNewDefinition extends Component {
     if (this.props.title === "Add new Object Definition") return;
     const { object_definition, edited_object_definition } = this.props;
     let updatedBodyParams = object_definition[edited_object_definition];
-    console.log(updatedBodyParams, edited_object_definition);
     this.setState({ objectName: edited_object_definition, updatedBodyParams });
   }
   handleAdd() {
@@ -67,7 +66,6 @@ class CreateNewDefinition extends Component {
 
     if (this.state.objectName.trim().length === 0) {
       const error = "Object name cannot be empty";
-      console.log(error);
       this.setState({ error });
     } else {
       const error = "";
@@ -82,17 +80,14 @@ class CreateNewDefinition extends Component {
     updatedBodyParams = updatedBodyParams.filter(
       (obj) => obj.name.trim() !== ""
     );
-    console.log(updatedBodyParams);
     this.props.set_object_definition(objectName, updatedBodyParams);
   }
 
   handleChange = (e, index) => {
     const name = e.currentTarget.name.split(".");
     const updatedBodyParams = [...this.state.updatedBodyParams];
-    console.log(name);
     let objectName = this.state.objectName;
     if (name[0] === "objectName") {
-      console.log("object name");
       objectName = e.currentTarget.value;
     }
     if (name[1] === "name") {
@@ -112,11 +107,6 @@ class CreateNewDefinition extends Component {
   };
 
   render() {
-    // console.log(this.props.body_description);
-    // console.log(this.state.updatedBodyParams);
-    // console.log(this.state.objectName);
-    console.log(this.state.error, this.state.objectName);
-
     return (
       <Modal
         {...this.props}

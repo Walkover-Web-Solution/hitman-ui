@@ -21,15 +21,15 @@ class DeleteModal extends Component {
     const { title } = this.props;
     if (title === "Delete Collection") {
       const { deleted_collection: collection } = this.props;
-      this.props.deleteCollection(collection);
+      this.props.deleteCollection(collection, this.props);
     }
     if (title === "Delete Version") {
       const { deleted_version: version } = this.props;
-      this.props.deleteVersion(version);
+      this.props.deleteVersion(version, this.props);
     }
     if (title === "Delete Group") {
       const { deleted_group: group } = this.props;
-      this.props.deleteGroup(group);
+      this.props.deleteGroup(group, this.props);
     }
     if (title === "Delete Page") {
       const { deleted_page: page } = this.props;

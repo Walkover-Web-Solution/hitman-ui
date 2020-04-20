@@ -42,7 +42,6 @@ class ManageDefintionForm extends Component {
   handleEdit(object_definition) {
     this.props.onHide(object_definition);
 
-    console.log(object_definition);
     //   this.props.("Edit Object Definition", object_definitionvironment);
   }
 

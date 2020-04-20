@@ -24,7 +24,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    deleteVersion: (version) => dispatch(deleteVersion(version)),
+    deleteVersion: (version, props) => dispatch(deleteVersion(version, props)),
     duplicateVersion: (version) => dispatch(duplicateVersion(version)),
   };
 };
@@ -66,9 +66,6 @@ class CollectionVersions extends Component {
 
   handleDuplicate(version) {
     this.props.duplicateVersion(version);
-    this.props.history.push({
-      pathname: "/dashboard",
-    });
   }
 
   showAddVersionPageForm() {
@@ -253,7 +250,6 @@ class CollectionVersions extends Component {
       // this.filteredVersions = {};
       this.filterFlag = true;
       let versions = { ...this.props.versions };
-      console.log(versions);
       let versionIds = Object.keys(versions);
       let versionNameIds = [];
       let versionNames = [];
@@ -262,7 +258,6 @@ class CollectionVersions extends Component {
         versionNameIds.push({ name: name, id: versionIds[i] });
         versionNames.push(name);
       }
-      console.log("versionNames", versionNames);
       let finalVersionNames = versionNames.filter((name) => {
         return (
           name.toLowerCase().indexOf(this.props.filter.toLowerCase()) !== -1
@@ -282,7 +277,6 @@ class CollectionVersions extends Component {
           }
         }
       }
-      console.log("versionIds", versionIds);
       if (versionIds.length !== 0) {
         this.propsFromVersion(versionIds, "versions");
       } else {
