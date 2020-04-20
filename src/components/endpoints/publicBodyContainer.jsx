@@ -114,42 +114,31 @@ class PublicBodyContainer extends Component {
             >
               {k}
             </label>
-            <input
-              style={{
-                marginLeft: "20px",
-                width: "60%",
-              }}
-              type={typeof obj[k] === "number" ? "number" : "text"}
-              name={
-                this.props.body_description[key].dataType === "Object"
-                  ? key + "." + k + ".value"
-                  : key + "." + index + "." + k + ".value"
-              }
-              // name={key + "." + k + ".value"}
-              value={obj[k]}
-              onChange={this.handleChange}
-            ></input>
+
+            {this.props.body_description[key].dataType === "Object"
+              ? this.displayInput(key, obj[k], key + "." + k + ".value")
+              : this.displayInput(
+                  key,
+                  obj[k],
+                  key + "." + index + "." + k + ".value"
+                )}
           </div>
         ))}
       </div>
     );
   }
 
-  displayInput(key, value, index) {
+  displayInput(key, value, name) {
     return (
       <input
         style={{
           marginLeft: "50px",
           width: "60%",
         }}
-        // type={
-        //   this.props.body_description[key].dataType === "Array of Integer"
-        //     ? "number"
-        //     : "text"
-        // }
         type={typeof value}
-        name={key + "." + index + ".value"}
+        name={name}
         value={value}
+        placeholder="Value"
         onChange={this.handleChange}
       ></input>
     );
@@ -162,7 +151,7 @@ class PublicBodyContainer extends Component {
           <div>
             {this.props.body_description[key].dataType === "Array of Boolean"
               ? this.displayBoolean(key, value, key + "." + index + ".value")
-              : this.displayInput(key, value, index)}
+              : this.displayInput(key, value, key + "." + index + ".value")}
             <button
               type="button"
               className="btn cross-button"
@@ -329,19 +318,11 @@ class PublicBodyContainer extends Component {
                             )}
                           </div>
                         ) : (
-                          <input
-                            name={key + ".value"}
-                            value={bodyDescription[key].default}
-                            onChange={this.handleChange}
-                            type={
-                              bodyDescription[key].dataType === "number"
-                                ? "number"
-                                : "text"
-                            }
-                            placeholder="Value"
-                            className="form-control"
-                            style={{ border: "none" }}
-                          />
+                          this.displayInput(
+                            key,
+                            bodyDescription[key].default,
+                            key + ".value"
+                          )
                         )}
                       </td>
                       <td className="custom-td">
