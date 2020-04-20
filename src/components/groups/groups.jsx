@@ -31,7 +31,13 @@ class Groups extends Component {
       edit: false,
       share: false,
     },
+    filter: "",
   };
+
+  filterFlag = false;
+  filteredGroupEndpoints = {};
+  filteredGroupPages = {};
+  filteredEndpointsAndPages = {};
 
   onDrop(destinationGroupId) {
     this.props.set_destination_group_id(destinationGroupId);
@@ -156,10 +162,131 @@ class Groups extends Component {
     this.setState({ showDeleteModal: false });
   }
 
+  propsFromGroups(groupIds, title) {
+    this.filteredEndpointsAndPages = {};
+    if (title === "endpoints") {
+      this.filteredGroupEndpoints = {};
+      if (groupIds !== null) {
+        for (let i = 0; i < groupIds.length; i++) {
+          this.filteredGroupEndpoints[groupIds[i]] = this.props.groups[
+            groupIds[i]
+          ];
+        }
+      }
+    }
+    if (title === "pages") {
+      this.filteredGroupPages = {};
+      if (groupIds !== null) {
+        for (let i = 0; i < groupIds.length; i++) {
+          this.filteredGroupPages[groupIds[i]] = this.props.groups[groupIds[i]];
+        }
+      }
+    }
+    this.filteredEndpointsAndPages = this.jsonConcat(
+      this.filteredEndpointsAndPages,
+      this.filteredGroupPages
+    );
+    this.filteredEndpointsAndPages = this.jsonConcat(
+      this.filteredEndpointsAndPages,
+      this.filteredGroupEndpoints
+    );
+    let versionIds = [];
+    for (
+      let i = 0;
+      i < Object.keys(this.filteredEndpointsAndPages).length;
+      i++
+    ) {
+      if (Object.keys(this.filteredEndpointsAndPages)[i] !== "null") {
+        versionIds.push(
+          this.filteredEndpointsAndPages[
+            Object.keys(this.filteredEndpointsAndPages)[i]
+          ].versionId
+        );
+      }
+    }
+    if (Object.keys(this.filteredEndpointsAndPages).length === 0) {
+      this.props.show_filter_version(null, "endpointsAndPages");
+    } else {
+      this.props.show_filter_version(versionIds, "endpointsAndPages");
+    }
+  }
+
+  jsonConcat(o1, o2) {
+    for (var key in o2) {
+      o1[key] = o2[key];
+    }
+    return o1;
+  }
+
+  filterGroups() {
+    if (
+      this.props.selectedCollection === true &&
+      this.props.filter !== "" &&
+      this.filterFlag === false
+    ) {
+      this.filteredGroups = {};
+      this.filterFlag = true;
+      let groups = { ...this.props.groups };
+      let groupIds = Object.keys(groups);
+      let groupNameIds = [];
+      let groupNames = [];
+      for (let i = 0; i < groupIds.length; i++) {
+        const { name } = groups[groupIds[i]];
+        groupNameIds.push({ name: name, id: groupIds[i] });
+        groupNames.push(name);
+      }
+      let finalGroupNames = groupNames.filter((name) => {
+        return (
+          name.toLowerCase().indexOf(this.props.filter.toLowerCase()) !== -1
+        );
+      });
+      let finalGroupIds = [];
+      let uniqueIds = {};
+      for (let i = 0; i < finalGroupNames.length; i++) {
+        for (let j = 0; j < Object.keys(groupNameIds).length; j++) {
+          if (
+            finalGroupNames[i] === groupNameIds[j].name &&
+            !uniqueIds[groupNameIds[j].id]
+          ) {
+            finalGroupIds.push(groupNameIds[j].id);
+            uniqueIds[groupNameIds[j].id] = true;
+            break;
+          }
+        }
+      }
+      for (let i = 0; i < finalGroupIds.length; i++) {
+        this.filteredGroups[finalGroupIds[i]] = this.props.groups[
+          finalGroupIds[i]
+        ];
+      }
+      this.setState({ filter: this.props.filter });
+      if (Object.keys(this.filteredGroups).length !== 0) {
+        let versionIds = [];
+        for (let i = 0; i < Object.keys(this.filteredGroups).length; i++) {
+          versionIds.push(this.filteredGroups[finalGroupIds[i]].versionId);
+        }
+        this.props.show_filter_version(versionIds, "groups");
+      } else {
+        this.props.show_filter_version(null, "groups");
+      }
+    } else if (this.filterFlag === false) {
+      this.filteredGroups = { ...this.props.groups };
+    }
+  }
+
   render() {
+    if (this.state.filter !== this.props.filter) {
+      this.filterFlag = false;
+    }
+    if (this.filterFlag === false && this.props.filter === "") {
+      this.eventkey = "1";
+    } else {
+      this.eventkey = "0";
+    }
     return (
       <div>
         <div>
+          {this.filterGroups()}
           {this.showShareGroupForm()}
           {this.showEditGroupForm()}
           {this.showAddGroupPageForm()}
@@ -181,6 +308,7 @@ class Groups extends Component {
             <Accordion
               key={groupId}
               id="child-accordion"
+              defaultActiveKey="0"
               // draggable
               onDragOver={(e) => e.preventDefault()}
               onDrop={(e) => this.onDrop(groupId)}
@@ -191,7 +319,11 @@ class Groups extends Component {
                     className="fas fa-folder-open"
                     style={{ margin: "5px" }}
                   ></i>
-                  <Accordion.Toggle as={Button} variant="default" eventKey="1">
+                  <Accordion.Toggle
+                    as={Button}
+                    variant="default"
+                    eventKey={this.eventkey}
+                  >
                     {this.props.groups[groupId].name}
                   </Accordion.Toggle>
                   {isDashboardRoute(this.props) ? (
@@ -265,12 +397,13 @@ class Groups extends Component {
                     </div>
                   ) : null}
                 </Card.Header>
-                <Accordion.Collapse eventKey="1">
+                <Accordion.Collapse eventKey={this.eventkey}>
                   <Card.Body>
                     <GroupPages
                       {...this.props}
                       version_id={this.props.groups[groupId].versionId}
                       group_id={groupId}
+                      show_filter_groups={this.propsFromGroups.bind(this)}
                     />
                     <Endpoints
                       {...this.props}
@@ -278,6 +411,7 @@ class Groups extends Component {
                       endpoints_order={
                         this.props.groups[groupId].endpointsOrder
                       }
+                      show_filter_groups={this.propsFromGroups.bind(this)}
                     />
                   </Card.Body>
                 </Accordion.Collapse>
