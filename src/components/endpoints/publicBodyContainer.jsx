@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import GenericTable from "./genericTable";
+import "./publicEndpoint.scss";
 
 class PublicBodyContainer extends Component {
   state = {};
@@ -87,11 +88,10 @@ class PublicBodyContainer extends Component {
   displayBoolean(key, value, name) {
     return (
       <select
-        id="custom-select-box"
+        className="custom-boolean"
         value={value}
         onChange={this.handleChange}
         name={name}
-        style={{ width: "20%" }}
       >
         <option value={null}></option>
         <option value={true}>true</option>
@@ -107,9 +107,8 @@ class PublicBodyContainer extends Component {
           <div>
             <label
               style={{
-                marginLeft: "5px",
-                paddingRight: "5px",
                 width: "20%",
+                display: "inline",
               }}
             >
               {k}
@@ -131,10 +130,7 @@ class PublicBodyContainer extends Component {
   displayInput(key, value, name) {
     return (
       <input
-        style={{
-          marginLeft: "50px",
-          width: "60%",
-        }}
+        className="custom-input"
         type={typeof value}
         name={name}
         value={value}
@@ -172,7 +168,6 @@ class PublicBodyContainer extends Component {
     console.log("props", this.props);
     const bodyDescription = this.props.body_description;
     this.keysArray = Object.keys(bodyDescription);
-    //this.valuesArray = [];
     this.defaultValuesArray = [];
     this.dataType = [];
 
@@ -200,35 +195,30 @@ class PublicBodyContainer extends Component {
 
         {this.keysArray.length > 0 && (
           <div>
-            <div className="generic-table-container">
+            <div className="public-generic-table-container">
               <div className="public-generic-table-title-container">Body</div>
               <table className="table table-bordered" id="custom-generic-table">
                 <thead>
                   <tr>
-                    <th className="custom-th"> </th>
-                    <th className="custom-th" id="generic-table-key-cell">
-                      KEY
-                    </th>
-                    <th className="custom-th">VALUE</th>
-                    <th className="custom-th">DESCRIPTION</th>
+                    <th> </th>
+                    <th>KEY</th>
+                    <th>VALUE</th>
+                    <th>DESCRIPTION</th>
                   </tr>
                 </thead>
                 <tbody style={{ border: "none" }}>
                   {this.keysArray.map((key, index) => (
                     <tr key={index}>
-                      <td
-                        className="custom-td"
-                        id="generic-table-key-cell"
-                        style={{ marginLeft: "5px" }}
-                      ></td>
-                      <td className="custom-td">
+                      <td style={{ marginLeft: "5px" }}></td>
+                      <td>
                         <div>
                           <input
                             disabled
+                            className="key-input"
                             //name={index + ".key"}
                             value={key}
                             type={"text"}
-                            className="form-control"
+                            // className="form-control"
                           ></input>
                           <label
                             style={{
@@ -242,7 +232,7 @@ class PublicBodyContainer extends Component {
                           </label>
                         </div>
                       </td>
-                      <td className="custom-td">
+                      <td>
                         {bodyDescription[key].dataType === "boolean" ? (
                           this.displayBoolean(
                             key,
@@ -274,9 +264,9 @@ class PublicBodyContainer extends Component {
                                   style={{
                                     marginLeft: "5px",
                                     border: "1px solid",
-                                    width: "80%",
+                                    width: "100%",
                                     padding: "5px",
-                                    background: "lightgrey",
+                                    background: "#e8e7e7",
                                   }}
                                 >
                                   {this.obectDiv(obj, key, i)}
@@ -325,7 +315,7 @@ class PublicBodyContainer extends Component {
                           )
                         )}
                       </td>
-                      <td className="custom-td">
+                      <td>
                         <input
                           disabled
                           name={index + ".datatype"}
