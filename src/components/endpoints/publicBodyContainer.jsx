@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import GenericTable from "./genericTable";
+import "./publicEndpoint.scss";
 
 class PublicBodyContainer extends Component {
   state = {};
@@ -71,7 +72,7 @@ class PublicBodyContainer extends Component {
   displayAddButton(bodyDescription, key) {
     return (
       <span
-        class="badge badge-success"
+        className="badge badge-success"
         style={{
           marginLeft: "50px",
           marginTop: "5px",
@@ -85,11 +86,10 @@ class PublicBodyContainer extends Component {
   displayBoolean(key, value, name) {
     return (
       <select
-        id="custom-select-box"
+        className="custom-boolean"
         value={value}
         onChange={this.handleChange}
         name={name}
-        style={{ width: "20%" }}
       >
         <option value={null}></option>
         <option value={true}>true</option>
@@ -102,52 +102,37 @@ class PublicBodyContainer extends Component {
     return (
       <div>
         {Object.keys(obj).map((k) => (
-          <div>
+          <div key={k}>
             <label
               style={{
-                marginLeft: "5px",
-                paddingRight: "5px",
                 width: "20%",
+                display: "inline",
               }}
             >
               {k}
             </label>
-            <input
-              style={{
-                marginLeft: "20px",
-                width: "60%",
-              }}
-              type={typeof obj[k] === "number" ? "number" : "text"}
-              name={
-                this.props.body_description[key].dataType === "Object"
-                  ? key + "." + k + ".value"
-                  : key + "." + index + "." + k + ".value"
-              }
-              // name={key + "." + k + ".value"}
-              value={obj[k]}
-              onChange={this.handleChange}
-            ></input>
+
+            {this.props.body_description[key].dataType === "Object"
+              ? this.displayInput(key, obj[k], key + "." + k + ".value")
+              : this.displayInput(
+                  key,
+                  obj[k],
+                  key + "." + index + "." + k + ".value"
+                )}
           </div>
         ))}
       </div>
     );
   }
 
-  displayInput(key, value, index) {
+  displayInput(key, value, name) {
     return (
       <input
-        style={{
-          marginLeft: "50px",
-          width: "60%",
-        }}
-        // type={
-        //   this.props.body_description[key].dataType === "Array of Integer"
-        //     ? "number"
-        //     : "text"
-        // }
+        className="custom-input"
         type={typeof value}
-        name={key + "." + index + ".value"}
+        name={name}
         value={value}
+        placeholder="Value"
         onChange={this.handleChange}
       ></input>
     );
@@ -157,10 +142,10 @@ class PublicBodyContainer extends Component {
     return (
       <div>
         {this.props.body_description[key].default.map((value, index) => (
-          <div>
+          <div key={index}>
             {this.props.body_description[key].dataType === "Array of Boolean"
               ? this.displayBoolean(key, value, key + "." + index + ".value")
-              : this.displayInput(key, value, index)}
+              : this.displayInput(key, value, key + "." + index + ".value")}
             <button
               type="button"
               className="btn cross-button"
@@ -180,7 +165,6 @@ class PublicBodyContainer extends Component {
   render() {
     const bodyDescription = this.props.body_description;
     this.keysArray = Object.keys(bodyDescription);
-    //this.valuesArray = [];
     this.defaultValuesArray = [];
     this.dataType = [];
 
@@ -208,35 +192,30 @@ class PublicBodyContainer extends Component {
 
         {this.keysArray.length > 0 && (
           <div>
-            <div className="generic-table-container">
+            <div className="public-generic-table-container">
               <div className="public-generic-table-title-container">Body</div>
               <table className="table table-bordered" id="custom-generic-table">
                 <thead>
                   <tr>
-                    <th className="custom-th"> </th>
-                    <th className="custom-th" id="generic-table-key-cell">
-                      KEY
-                    </th>
-                    <th className="custom-th">VALUE</th>
-                    <th className="custom-th">DESCRIPTION</th>
+                    <th> </th>
+                    <th>KEY</th>
+                    <th>VALUE</th>
+                    <th>DESCRIPTION</th>
                   </tr>
                 </thead>
                 <tbody style={{ border: "none" }}>
                   {this.keysArray.map((key, index) => (
                     <tr key={index}>
-                      <td
-                        className="custom-td"
-                        id="generic-table-key-cell"
-                        style={{ marginLeft: "5px" }}
-                      ></td>
-                      <td className="custom-td">
+                      <td style={{ marginLeft: "5px" }}></td>
+                      <td>
                         <div>
                           <input
                             disabled
+                            className="key-input"
                             //name={index + ".key"}
                             value={key}
                             type={"text"}
-                            className="form-control"
+                            // className="form-control"
                           ></input>
                           <label
                             style={{
@@ -250,7 +229,7 @@ class PublicBodyContainer extends Component {
                           </label>
                         </div>
                       </td>
-                      <td className="custom-td">
+                      <td>
                         {bodyDescription[key].dataType === "boolean" ? (
                           this.displayBoolean(
                             key,
@@ -273,6 +252,7 @@ class PublicBodyContainer extends Component {
                           <div>
                             {bodyDescription[key].default.map((obj, i) => (
                               <div
+                                key={i}
                                 style={{
                                   display: "flex",
                                   margin: "10px",
@@ -282,9 +262,9 @@ class PublicBodyContainer extends Component {
                                   style={{
                                     marginLeft: "5px",
                                     border: "1px solid",
-                                    width: "80%",
+                                    width: "100%",
                                     padding: "5px",
-                                    background: "lightgrey",
+                                    background: "#e8e7e7",
                                   }}
                                 >
                                   {this.obectDiv(obj, key, i)}
@@ -308,6 +288,7 @@ class PublicBodyContainer extends Component {
                             {Object.keys(bodyDescription[key].default).map(
                               (k) => (
                                 <div
+                                  key={k}
                                   style={{
                                     marginLeft: "5px",
                                     border: "1px solid",
@@ -326,22 +307,14 @@ class PublicBodyContainer extends Component {
                             )}
                           </div>
                         ) : (
-                          <input
-                            name={key + ".value"}
-                            value={bodyDescription[key].default}
-                            onChange={this.handleChange}
-                            type={
-                              bodyDescription[key].dataType === "number"
-                                ? "number"
-                                : "text"
-                            }
-                            placeholder="Value"
-                            className="form-control"
-                            style={{ border: "none" }}
-                          />
+                          this.displayInput(
+                            key,
+                            bodyDescription[key].default,
+                            key + ".value"
+                          )
                         )}
                       </td>
-                      <td className="custom-td">
+                      <td>
                         <input
                           disabled
                           name={index + ".datatype"}
