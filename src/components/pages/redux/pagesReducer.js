@@ -117,10 +117,6 @@ function pagesReducer(state = initialState, action) {
     case publicEndpointsActionTypes.ON_PUBLIC_ENDPOINTS_FETCHED:
       return { ...state, ...action.data.pages };
 
-    case publicEndpointsActionTypes.ON_PUBLIC_ENDPOINTS_FETCHED_ERROR:
-      toast.error(action.error);
-      return state;
-
     case publicEndpointsActionTypes.ON_PAGE_STATE_SUCCESS:
       return {
         ...state,

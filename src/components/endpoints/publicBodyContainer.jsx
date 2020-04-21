@@ -34,20 +34,18 @@ class PublicBodyContainer extends Component {
     const bodyDescription = this.props.body_description;
     let body = this.body;
     const { type, value } = e.currentTarget;
-
     if (type === "number") {
       switch (bodyDescription[key].dataType) {
-        case "Array of Integer":
-          console.log(parseInt(value));
+        case "Array of number":
           body[key][name[1]] = parseInt(value);
           break;
-        case "Object":
+        case "object":
           body[key][name[1]] = parseInt(value);
           break;
-        case "Array of Objects":
+        case "Array of object":
           body[key][name[1]][name[2]] = parseInt(value);
           break;
-        case "Object of Objects":
+        case "Object of objects":
           body[key][name[1]][name[2]] = parseInt(value);
           break;
         default:
@@ -55,23 +53,20 @@ class PublicBodyContainer extends Component {
       }
     } else {
       switch (bodyDescription[key].dataType) {
-        case "Array of String":
+        case "Array of string":
           body[key][name[1]] = value;
           break;
-        case "Object":
+        case "object":
           body[key][name[1]] = value;
           break;
-        case "Array of Objects":
+        case "Array of object":
           body[key][name[1]][name[2]] = value;
           break;
-        case "Object of Objects":
+        case "Object of objects":
           body[key][name[1]][name[2]] = value;
           break;
-        case "Array of Boolean":
-          body[key][name[1]] = value === "true" ? true : false;
-          break;
-        case "boolean":
-          body[key] = value === "true" ? true : false;
+        case "Array of boolean":
+          body[key][name[1]] = value;
           break;
         default:
           body[key] = value;
@@ -109,10 +104,12 @@ class PublicBodyContainer extends Component {
   }
 
   displayInput(value, name, className) {
+    let type = typeof value;
+    type = type === "object" || type === "number" ? "number" : "string";
     return (
       <input
         className={className || "custom-input"}
-        type={typeof value}
+        type={type}
         name={name}
         value={value}
         placeholder="Value"
@@ -127,7 +124,7 @@ class PublicBodyContainer extends Component {
         {Object.keys(obj).map((k) => (
           <div key={k} className="object-row-wrapper">
             <label>{k}</label>
-            {this.props.body_description[key].dataType === "Object"
+            {this.props.body_description[key].dataType === "object"
               ? this.displayInput(
                   obj[k],
                   key + "." + k + ".value",
@@ -149,7 +146,7 @@ class PublicBodyContainer extends Component {
       <div>
         {this.body[key].map((value, index) => (
           <div key={index} className="array-row">
-            {this.props.body_description[key].dataType === "Array of Boolean"
+            {this.props.body_description[key].dataType === "Array of boolean"
               ? this.displayBoolean(
                   value,
                   key + "." + index + ".value",
@@ -177,8 +174,6 @@ class PublicBodyContainer extends Component {
   render() {
     const bodyDescription = this.props.body_description;
     this.keysArray = Object.keys(bodyDescription);
-    this.defaultValuesArray = [];
-    this.dataType = [];
     this.body = JSON.parse(this.props.body.value);
     if (
       this.props.public_body_flag &&
@@ -248,18 +243,18 @@ class PublicBodyContainer extends Component {
                         {bodyDescription[key].dataType === "boolean" ? (
                           this.displayBoolean(this.body[key], key + ".value")
                         ) : bodyDescription[key].dataType ===
-                          "Array of Integer" ? (
+                          "Array of number" ? (
                           this.displayArray(key)
                         ) : bodyDescription[key].dataType ===
-                          "Array of String" ? (
+                          "Array of string" ? (
                           this.displayArray(key)
                         ) : bodyDescription[key].dataType ===
-                          "Array of Boolean" ? (
+                          "Array of boolean" ? (
                           this.displayArray(key)
-                        ) : bodyDescription[key].dataType === "Object" ? (
+                        ) : bodyDescription[key].dataType === "object" ? (
                           this.obectDiv(this.body[key], key)
                         ) : bodyDescription[key].dataType ===
-                          "Array of Objects" ? (
+                          "Array of object" ? (
                           <React.Fragment>
                             {this.body[key].map((obj, i) => (
                               <div key={i} className="object-wrapper">
@@ -277,7 +272,7 @@ class PublicBodyContainer extends Component {
                             {this.displayAddButton(key)}
                           </React.Fragment>
                         ) : bodyDescription[key].dataType ===
-                          "Object of Objects" ? (
+                          "Object of objects" ? (
                           <div>
                             {Object.keys(this.body[key]).map((k) => (
                               // <div
@@ -290,7 +285,7 @@ class PublicBodyContainer extends Component {
                               //   //   background: "lightgrey",
                               //   // }}
                               // >
-                              <div className="object-wrapper">
+                              <div className="object-wrapper" key={k}>
                                 {this.obectDiv(this.body[key][k], key, k)}
                               </div>
                             ))}
