@@ -69,9 +69,6 @@ class PublicBodyContainer extends Component {
         case "Array of boolean":
           body[key][name[1]] = value === "true" ? true : false;
           break;
-        case "boolean":
-          body[key] = value === "true" ? true : false;
-          break;
         default:
           body[key] = value;
       }
@@ -110,10 +107,12 @@ class PublicBodyContainer extends Component {
   }
 
   displayInput(value, name) {
+    let type = typeof value;
+    type = type === "object" || type === "number" ? "number" : "string";
     return (
       <input
         className="custom-input"
-        type={typeof value}
+        type={type}
         name={name}
         value={value}
         placeholder="Value"
@@ -171,6 +170,7 @@ class PublicBodyContainer extends Component {
   }
 
   render() {
+    console.log(this.props);
     const bodyDescription = this.props.body_description;
     this.keysArray = Object.keys(bodyDescription);
     this.defaultValuesArray = [];
