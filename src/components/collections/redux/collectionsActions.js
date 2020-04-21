@@ -134,7 +134,7 @@ export const deleteCollection = (collection, props) => {
         let groupIds = [];
         let endpointIds = [];
         let pageIds = [];
-        versionIds.map((vId) => {
+        versionIds.forEach((vId) => {
           groupIds = [
             ...Object.keys(storeData.groups).filter(
               (gId) => storeData.groups[gId].versionId === vId
@@ -149,7 +149,7 @@ export const deleteCollection = (collection, props) => {
           ];
         });
 
-        groupIds.map(
+        groupIds.forEach(
           (gId) =>
             (endpointIds = [
               ...Object.keys(storeData.endpoints).filter(

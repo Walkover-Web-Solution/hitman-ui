@@ -1,9 +1,8 @@
-import tabsActionTypes from "./tabsActionTypes";
-import store from "../../../store/store";
-import { toast } from "react-toastify";
 import shortid from "shortid";
-import tabStatusTypes from "../tabStatusTypes";
+import store from "../../../store/store";
 import indexedDbService from "../../indexedDb/indexedDbService";
+import tabStatusTypes from "../tabStatusTypes";
+import tabsActionTypes from "./tabsActionTypes";
 
 export const fetchTabsFromIdb = (props) => {
   return async (dispatch) => {

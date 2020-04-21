@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { Modal } from "react-bootstrap";
-import tabService from "../tabs/tabService";
 import { connect } from "react-redux";
-import { closeTab, openInNewTab } from "../tabs/redux/tabsActions";
+import { closeTab } from "../tabs/redux/tabsActions";
+import tabService from "../tabs/tabService";
 const mapDispatchToProps = (dispatch) => {
   return {
     closeTab: (tabId) => dispatch(closeTab(tabId)),

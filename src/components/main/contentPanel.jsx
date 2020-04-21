@@ -6,16 +6,15 @@ import Environments from "../environments/environments";
 import {
   addNewTab,
   closeTab,
-  openInNewTab,
-  setActiveTabId,
-  updateTab,
-  setTabsOrder,
   fetchTabsFromIdb,
+  openInNewTab,
   replaceTab,
+  setActiveTabId,
+  setTabsOrder,
+  updateTab,
 } from "../tabs/redux/tabsActions";
 import TabContent from "../tabs/tabContent";
 import CustomTabs from "../tabs/tabs";
-import tabService from "../tabs/tabService";
 import tabStatusTypes from "../tabs/tabStatusTypes";
 import "./main.scss";
 
