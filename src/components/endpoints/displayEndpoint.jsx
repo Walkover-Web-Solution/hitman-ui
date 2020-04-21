@@ -70,6 +70,7 @@ class DisplayEndpoint extends Component {
     originalParams: [],
     oldDescription: "",
     headers: [],
+    publicBodyFlag: true,
     params: [],
     bodyDescription: {
       key1: { default: "abcd", dataType: "string" },
@@ -79,9 +80,8 @@ class DisplayEndpoint extends Component {
       key5: { default: ["a"], dataType: "Array of String" },
       key6: { default: { k1: "v1", k2: 10 }, dataType: "Object" },
       key7: {
-        default: [{ k1: "v1", k2: 10 }],
+        default: [{ k1: "v1", k2: true }],
         dataType: "Array of Objects",
-        object: { k1: "v1", k2: 10 },
       },
       key8: {
         default: {
@@ -89,7 +89,6 @@ class DisplayEndpoint extends Component {
           k2: { k1: "v1", k2: 10 },
         },
         dataType: "Object of Objects",
-        //object: { k1: "v1", k2: 10 },
       },
       key9: { default: [true], dataType: "Array of Boolean" },
     },
@@ -156,14 +155,14 @@ class DisplayEndpoint extends Component {
       });
     }
     let flag = 0;
-    if (!isDashboardRoute(this.props)) {
-      this.fetchEndpoint(flag);
-      store.subscribe(() => {
-        if (!this.props.location.title && !this.state.title) {
-          this.fetchEndpoint(flag);
-        }
-      });
-    }
+    // if (!isDashboardRoute(this.props)) {
+    //   this.fetchEndpoint(flag);
+    //   store.subscribe(() => {
+    //     if (!this.props.location.title && !this.state.title) {
+    //       this.fetchEndpoint(flag);
+    //     }
+    //   });
+    // }
   }
 
   structueParamsHeaders = [
@@ -176,6 +175,7 @@ class DisplayEndpoint extends Component {
   ];
 
   fetchEndpoint(flag, endpointId) {
+    console.log("in fetch endpoint");
     let endpoint = {};
     let originalParams = [];
     let originalHeaders = [];
@@ -220,6 +220,11 @@ class DisplayEndpoint extends Component {
     ) {
       flag = 1;
       endpoint = endpoints[endpointId];
+      //      let groupId;
+      // if (!isDashboardRoute(this.props) && endpoint === undefined) {
+      //   const collectionId = this.props.location.pathname.split("/")[2];
+      //   this.props.history.push({ pathname: `/public/${collectionId}` });
+
       const groupId = endpoints[endpointId].groupId;
 
       //To fetch originalParams from Params
@@ -243,16 +248,21 @@ class DisplayEndpoint extends Component {
       //   updatedArray = JSON.parse(endpoint.body.value);
       //   bodyDescription = endpoint.bodyDescription;
       // }
-      if (!isDashboardRoute(this.props)) {
-        if (endpoint.body.type === "JSON") {
-          let body = JSON.parse(endpoint.body.value);
-          const keys = Object.keys(this.state.bodyDescription);
-          keys.map((k) => (body[k] = this.state.bodyDescription[k].default));
-          body = { type: "JSON", value: JSON.stringify(body) };
-          endpoint.body = body;
-        }
-      }
 
+      //console.log(endpoint.body);
+      // if (!isDashboardRoute(this.props)) {
+      //   console.log("in if 1", this.state.data);
+      //   if (endpoint.body.type === "JSON") {
+      //     console.log("in if 2");
+      //     let body = JSON.parse(endpoint.body.value);
+      //     const keys = Object.keys(this.state.bodyDescription);
+      //     keys.map((k) => (body[k] = this.state.bodyDescription[k].default));
+      //     body = { type: "JSON", value: JSON.stringify(body) };
+      //     endpoint.body = body;
+      //   }
+      // }
+
+      //console.log("qqqqqqqq", endpoint);
       this.setState({
         data: {
           method: endpoint.requestType,
@@ -267,10 +277,10 @@ class DisplayEndpoint extends Component {
         originalHeaders,
         endpoint,
         groupId,
-        endpoint_description: endpoint.description,
         oldDescription: endpoint.description,
         title: "update endpoint",
-        // bodyDescription,
+        publicBodyFlag: true,
+        //bodyDescription,
         updatedArray,
       });
     }
@@ -699,15 +709,17 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  setPublicBody(bodyDescription) {
-    let json = {};
-    Object.keys(bodyDescription).map(
-      (key) => (json[key] = bodyDescription[key].default)
-    );
-    json = JSON.stringify(json);
+  setPublicBody(body) {
+    // let json = {};
+    // console.log(bodyDescription);
+    // Object.keys(bodyDescription).map(
+    //   (key) => (json[key] = bodyDescription[key].default)
+    // );
+    let json = JSON.stringify(body);
     let data = { ...this.state.data };
     data.body = { type: "JSON", value: json };
-    this.setState({ bodyDescription, data });
+    console.log(data);
+    this.setState({ data, publicBodyFlag: false });
   }
 
   handleUpdateUri(originalParams) {
@@ -1040,6 +1052,7 @@ class DisplayEndpoint extends Component {
   }
 
   render() {
+    console.log("state", this.state);
     if (
       isDashboardRoute(this.props) &&
       this.state.groupId &&
@@ -1079,6 +1092,7 @@ class DisplayEndpoint extends Component {
       this.state.endpoint.id !== this.props.location.pathname.split("/")[4] &&
       this.props.endpoints[this.props.location.pathname.split("/")[4]]
     ) {
+      console.log("in render if");
       if (!isDashboardRoute(this.props)) {
         this.fetchEndpoint(0, this.props.location.pathname.split("/")[4]);
         store.subscribe(() => {
@@ -1350,13 +1364,19 @@ class DisplayEndpoint extends Component {
                   original_data={[...this.state.headers]}
                 ></GenericTable>
               )}
-              <PublicBodyContainer
-                {...this.props}
-                set_body={this.setBody.bind(this)}
-                body={this.state.data.body}
-                set_public_body={this.setPublicBody.bind(this)}
-                body_description={this.state.bodyDescription}
-              ></PublicBodyContainer>
+              {console.log(this.state.data.body)}
+              {this.state.data.body &&
+                this.state.data.body.value !== "" &&
+                this.state.data.body.value !== null && (
+                  <PublicBodyContainer
+                    {...this.props}
+                    set_body={this.setBody.bind(this)}
+                    body={this.state.data.body}
+                    public_body_flag={this.state.publicBodyFlag}
+                    set_public_body={this.setPublicBody.bind(this)}
+                    body_description={this.state.bodyDescription}
+                  ></PublicBodyContainer>
+                )}
             </div>
           )}
         </div>
