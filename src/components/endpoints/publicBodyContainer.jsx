@@ -8,10 +8,10 @@ class PublicBodyContainer extends Component {
   handleChangeBody(title, dataArray) {
     switch (title) {
       case "formData":
-        this.props.set_body("formData", dataArray);
+        this.props.set_body("multipart/form-data", dataArray);
         break;
       case "x-www-form-urlencoded":
-        this.props.set_body("urlEncoded", dataArray);
+        this.props.set_body("application/x-www-form-urlencoded", dataArray);
         break;
       default:
         break;
@@ -172,146 +172,156 @@ class PublicBodyContainer extends Component {
   }
 
   render() {
+    console.log(this.props);
     const bodyDescription = this.props.body_description;
-    this.keysArray = Object.keys(bodyDescription);
-    this.body = JSON.parse(this.props.body.value);
-    if (
-      this.props.public_body_flag &&
-      this.props.body &&
-      this.props.body.type === "JSON"
-    ) {
-      for (let i = 0; i < this.keysArray.length; i++) {
-        this.body[this.keysArray[i]] =
-          bodyDescription[this.keysArray[i]].default;
+    if (this.props.body.type === "JSON") {
+      this.body = JSON.parse(this.props.body.value);
+      this.keysArray = Object.keys(this.body);
+      console.log("in if");
+      if (
+        this.props.public_body_flag &&
+        this.props.body &&
+        this.props.body.type === "JSON"
+      ) {
+        for (let i = 0; i < this.keysArray.length; i++) {
+          this.body[this.keysArray[i]] =
+            bodyDescription[this.keysArray[i]].default;
+        }
+        this.props.set_public_body(this.body);
       }
-      this.props.set_public_body(this.body);
     }
-
     return (
       <div>
-        {this.props.body && this.props.body.type === "formData" && (
+        {this.props.body && this.props.body.type === "multipart/form-data" && (
           <GenericTable
             {...this.props}
-            title={this.props.body.type}
+            title="formData"
             dataArray={this.props.body.value}
             handle_change_body_data={this.handleChangeBody.bind(this)}
             original_data={[...this.props.body.value]}
           ></GenericTable>
         )}
 
-        {this.props.body && this.props.body.type === "urlEncoded" && (
-          <GenericTable
-            {...this.props}
-            title="x-www-form-urlencoded"
-            dataArray={this.props.body.value}
-            handle_change_body_data={this.handleChangeBody.bind(this)}
-            original_data={[...this.props.body.value]}
-          ></GenericTable>
-        )}
+        {this.props.body &&
+          this.props.body.type === "application/x-www-form-urlencoded" && (
+            <GenericTable
+              {...this.props}
+              title="x-www-form-urlencoded"
+              dataArray={this.props.body.value}
+              handle_change_body_data={this.handleChangeBody.bind(this)}
+              original_data={[...this.props.body.value]}
+            ></GenericTable>
+          )}
 
-        {this.keysArray.length > 0 && (
-          <div>
-            <div className="public-generic-table-container">
-              <div className="public-generic-table-title-container">Body</div>
-              <table className="table table-bordered" id="custom-generic-table">
-                <thead>
-                  <tr>
-                    <th> </th>
-                    <th>KEY</th>
-                    <th>VALUE</th>
-                    <th>DESCRIPTION</th>
-                  </tr>
-                </thead>
-                <tbody style={{ border: "none" }}>
-                  {this.keysArray.map((key, index) => (
-                    <tr key={index}>
-                      <td style={{ marginLeft: "5px" }}></td>
-                      <td>
-                        <div>
+        {this.props.body &&
+          this.props.body.type === "JSON" &&
+          this.keysArray &&
+          this.keysArray.length > 0 && (
+            <div>
+              <div className="public-generic-table-container">
+                <div className="public-generic-table-title-container">Body</div>
+                <table
+                  className="table table-bordered"
+                  id="custom-generic-table"
+                >
+                  <thead>
+                    <tr>
+                      <th> </th>
+                      <th>KEY</th>
+                      <th>VALUE</th>
+                      <th>DESCRIPTION</th>
+                    </tr>
+                  </thead>
+                  <tbody style={{ border: "none" }}>
+                    {this.keysArray.map((key, index) => (
+                      <tr key={index}>
+                        <td style={{ marginLeft: "5px" }}></td>
+                        <td>
+                          <div>
+                            <input
+                              disabled
+                              className="key-input"
+                              value={key}
+                              type={"text"}
+                            ></input>
+                            <label className="data-type">
+                              {bodyDescription[key].dataType}
+                            </label>
+                          </div>
+                        </td>
+                        <td>
+                          {bodyDescription[key].dataType === "boolean" ? (
+                            this.displayBoolean(this.body[key], key + ".value")
+                          ) : bodyDescription[key].dataType ===
+                            "Array of number" ? (
+                            this.displayArray(key)
+                          ) : bodyDescription[key].dataType ===
+                            "Array of string" ? (
+                            this.displayArray(key)
+                          ) : bodyDescription[key].dataType ===
+                            "Array of boolean" ? (
+                            this.displayArray(key)
+                          ) : bodyDescription[key].dataType === "object" ? (
+                            this.obectDiv(this.body[key], key)
+                          ) : bodyDescription[key].dataType ===
+                            "Array of object" ? (
+                            <React.Fragment>
+                              {this.body[key].map((obj, i) => (
+                                <div key={i} className="object-wrapper">
+                                  {this.obectDiv(obj, key, i)}
+
+                                  <button
+                                    type="button"
+                                    className="btn cross-button"
+                                    onClick={() => this.handleDelete(key, i)}
+                                  >
+                                    <i className="fas fa-times"></i>
+                                  </button>
+                                </div>
+                              ))}
+                              {this.displayAddButton(key)}
+                            </React.Fragment>
+                          ) : bodyDescription[key].dataType ===
+                            "Object of objects" ? (
+                            <div>
+                              {Object.keys(this.body[key]).map((k) => (
+                                // <div
+                                //   key={k}
+                                //   // style={{
+                                //   //   marginLeft: "5px",
+                                //   //   border: "1px solid",
+                                //   //   width: "80%",
+                                //   //   padding: "5px",
+                                //   //   background: "lightgrey",
+                                //   // }}
+                                // >
+                                <div className="object-wrapper" key={k}>
+                                  {this.obectDiv(this.body[key][k], key, k)}
+                                </div>
+                              ))}
+                            </div>
+                          ) : (
+                            this.displayInput(this.body[key], key + ".value")
+                          )}
+                        </td>
+                        <td>
                           <input
                             disabled
-                            className="key-input"
-                            value={key}
-                            type={"text"}
-                          ></input>
-                          <label className="data-type">
-                            {bodyDescription[key].dataType}
-                          </label>
-                        </div>
-                      </td>
-                      <td>
-                        {bodyDescription[key].dataType === "boolean" ? (
-                          this.displayBoolean(this.body[key], key + ".value")
-                        ) : bodyDescription[key].dataType ===
-                          "Array of number" ? (
-                          this.displayArray(key)
-                        ) : bodyDescription[key].dataType ===
-                          "Array of string" ? (
-                          this.displayArray(key)
-                        ) : bodyDescription[key].dataType ===
-                          "Array of boolean" ? (
-                          this.displayArray(key)
-                        ) : bodyDescription[key].dataType === "object" ? (
-                          this.obectDiv(this.body[key], key)
-                        ) : bodyDescription[key].dataType ===
-                          "Array of object" ? (
-                          <React.Fragment>
-                            {this.body[key].map((obj, i) => (
-                              <div key={i} className="object-wrapper">
-                                {this.obectDiv(obj, key, i)}
-
-                                <button
-                                  type="button"
-                                  className="btn cross-button"
-                                  onClick={() => this.handleDelete(key, i)}
-                                >
-                                  <i className="fas fa-times"></i>
-                                </button>
-                              </div>
-                            ))}
-                            {this.displayAddButton(key)}
-                          </React.Fragment>
-                        ) : bodyDescription[key].dataType ===
-                          "Object of objects" ? (
-                          <div>
-                            {Object.keys(this.body[key]).map((k) => (
-                              // <div
-                              //   key={k}
-                              //   // style={{
-                              //   //   marginLeft: "5px",
-                              //   //   border: "1px solid",
-                              //   //   width: "80%",
-                              //   //   padding: "5px",
-                              //   //   background: "lightgrey",
-                              //   // }}
-                              // >
-                              <div className="object-wrapper" key={k}>
-                                {this.obectDiv(this.body[key][k], key, k)}
-                              </div>
-                            ))}
-                          </div>
-                        ) : (
-                          this.displayInput(this.body[key], key + ".value")
-                        )}
-                      </td>
-                      <td>
-                        <input
-                          disabled
-                          name={index + ".datatype"}
-                          type="text"
-                          value={bodyDescription[key].description}
-                          placeholder="Description"
-                          className="form-control"
-                          style={{ border: "none" }}
-                        />
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                            name={index + ".datatype"}
+                            type="text"
+                            value={bodyDescription[key].description}
+                            placeholder="Description"
+                            className="form-control"
+                            style={{ border: "none" }}
+                          />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
-          </div>
-        )}
+          )}
       </div>
     );
   }
