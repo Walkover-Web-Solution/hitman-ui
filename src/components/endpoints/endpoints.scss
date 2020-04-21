@@ -161,12 +161,12 @@ $border-color: rgba(227, 228, 230, 0.7);
     }
 
     .public-endpoint-name-input {
-      width: 100%;
+      // width: 100%;
       display: flex;
       flex-direction: row;
       outline: none;
       // border: none;
-      border: 1px solid steelblue;
+      border: 1px solid tomato;
       border-radius: 25px;
       margin-top: 5px;
       margin-bottom: 5px;
@@ -479,7 +479,7 @@ $border-color: rgba(227, 228, 230, 0.7);
   .public-generic-table-title-container {
     padding: 40px 0px 3px 20px;
     opacity: 1;
-    color: steelblue;
+    color: tomato;
   }
   button#edit-button {
     float: right;
