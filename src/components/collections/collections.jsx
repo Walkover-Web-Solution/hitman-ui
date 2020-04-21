@@ -175,6 +175,9 @@ class CollectionsComponent extends Component {
   }
 
   openDeleteCollectionModal(collectionId) {
+    if (this.state.openSelectedCollection === true) {
+      this.setState({ openSelectedCollection: false });
+    }
     this.setState({
       showDeleteModal: true,
       selectedCollection: {
