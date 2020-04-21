@@ -99,7 +99,7 @@ function versionsReducer(state = initialState, action) {
 
     case collectionsActionTypes.ON_COLLECTION_DELETED:
       versions = { ...state };
-      action.payload.versionIds.map((vId) => {
+      action.payload.versionIds.forEach((vId) => {
         delete versions[vId];
       });
       return versions;

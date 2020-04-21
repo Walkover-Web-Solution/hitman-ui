@@ -1,9 +1,8 @@
 import React, { Component } from "react";
 import { Nav } from "react-bootstrap";
-import tabService from "./tabService";
-import "./tabs.scss";
-import tabStatusTypes from "./tabStatusTypes";
 import SavePromptModal from "./savePromptModal";
+import "./tabs.scss";
+import tabService from "./tabService";
 
 class CustomTabs extends Component {
   state = { showSavePrompt: false };
@@ -148,7 +147,7 @@ class CustomTabs extends Component {
               </button>
               <button
                 className="btn"
-                onClick={() => tabService.closeAllTabs({ ...this.props })}
+                onClick={() => tabService.removeAllTabs({ ...this.props })}
               >
                 Close All Tabs
               </button>

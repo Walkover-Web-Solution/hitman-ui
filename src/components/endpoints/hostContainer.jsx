@@ -2,11 +2,9 @@ import React, { Component } from "react";
 import { toast } from "react-toastify";
 import store from "../../store/store";
 import { isDashboardRoute } from "../common/utility";
-import "./endpoints.scss";
 import tabService from "../tabs/tabService";
 import tabStatusTypes from "../tabs/tabStatusTypes";
-import environmentsActionTypes from "../environments/redux/environmentsActionTypes";
-import { subscribeActionAfter } from "redux-subscribe-action";
+import "./endpoints.scss";
 
 class HostContainer extends Component {
   state = {

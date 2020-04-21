@@ -39,6 +39,7 @@ const addData = async (storeName, val, key) => {
   if (!db) {
     await getDataBase();
   }
+  console.log(storeName, val, key);
   const tx = db.transaction(storeName, "readwrite");
   const store = await tx.objectStore(storeName);
   const value = await store.put(val, key);
@@ -108,6 +109,16 @@ const deleteDataByIndex = async (storeName, index) => {
   deleteData(storeName, keys[index]);
 };
 
+const clearStore = async (storeName) => {
+  if (!db) {
+    await getDataBase();
+  }
+  const tx = await db.transaction(storeName, "readwrite");
+  const store = await tx.objectStore(storeName);
+  await store.clear(storeName);
+  await tx.done;
+};
+
 export default {
   createDataBase,
   getDataBase,
@@ -119,4 +130,5 @@ export default {
   updateData,
   deleteData,
   deleteDataByIndex,
+  clearStore,
 };
