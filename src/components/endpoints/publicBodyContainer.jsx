@@ -38,6 +38,7 @@ class PublicBodyContainer extends Component {
     if (type === "number") {
       switch (bodyDescription[key].dataType) {
         case "Array of Integer":
+          console.log(parseInt(value));
           body[key][name[1]] = parseInt(value);
           break;
         case "Object":
@@ -238,14 +239,7 @@ class PublicBodyContainer extends Component {
                             value={key}
                             type={"text"}
                           ></input>
-                          <label
-                          // style={{
-                          //   marginLeft: "20px",
-                          //   background: "lightgrey",
-                          //   padding: "1px",
-                          //   fontSize: "10px",
-                          // }}
-                          >
+                          <label className="data-type">
                             {bodyDescription[key].dataType}
                           </label>
                         </div>

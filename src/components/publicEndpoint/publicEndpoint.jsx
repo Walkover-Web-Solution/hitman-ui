@@ -27,31 +27,43 @@ class PublicEndpoint extends Component {
 
   render() {
     return (
-      <main role="main" className="main ml-sm-auto col-lg-10 ">
-        <div>
-          <ToastContainer />
-          <div className="main-panel-wrapper">
-            <SideBar {...this.props} />
-          </div>
+      <React.Fragment>
+        <nav
+          class="navbar navbar-light public-endpoint-navbar"
+          style={{
+            backgroundColor: "#e3f2fd",
+            height: "40px",
+            padding: "0px 0px 0px 30px",
+          }}
+        >
+          <img className="hitman-logo" src={require("../../hitman-icon.png")} />
+        </nav>
+        <main role="main" className="main ml-sm-auto col-lg-10 ">
+          <div>
+            <ToastContainer />
+            <div className="main-panel-wrapper">
+              <SideBar {...this.props} />
+            </div>
 
-          <div className="main-content">
-            <Switch>
-              <Route
-                path="/public/:collectionId/endpoints/:endpointId"
-                render={(props) => <DisplayEndpoint {...props} />}
-              />
-              <Route
-                path="/public/:collectionId/pages/:pageid"
-                render={(props) => <DisplayPage {...props} />}
-              />
-              <Route
-                path="/public/:collectionId/description"
-                render={(props) => <DisplayCollection {...props} />}
-              />
-            </Switch>
+            <div className="main-content">
+              <Switch>
+                <Route
+                  path="/public/:collectionId/endpoints/:endpointId"
+                  render={(props) => <DisplayEndpoint {...props} />}
+                />
+                <Route
+                  path="/public/:collectionId/pages/:pageid"
+                  render={(props) => <DisplayPage {...props} />}
+                />
+                <Route
+                  path="/public/:collectionId/description"
+                  render={(props) => <DisplayCollection {...props} />}
+                />
+              </Switch>
+            </div>
           </div>
-        </div>
-      </main>
+        </main>
+      </React.Fragment>
     );
   }
 }

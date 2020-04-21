@@ -5,15 +5,15 @@ $border-color: rgba(227, 228, 230, 0.7);
   .public-generic-table-title-container {
     padding: 40px 0px 3px 20px;
     opacity: 1;
-    color: tomato;
+    color: steelblue;
   }
 
   button#edit-button {
     float: right;
-    color: #f28100;
+    color: steelblue;
     padding-top: 0px;
     &:hover {
-      color: #f28100;
+      color: steelblue;
     }
   }
 
@@ -174,4 +174,16 @@ table#custom-generic-table {
       font-weight: 300;
     }
   }
+}
+.data-type {
+  margin-left: 20px;
+  background: lightgrey;
+  padding: 1px;
+  font-size: 10px;
+}
+
+.public-endpoint-navbar {
+  background-color: rgb(227, 242, 253);
+  height: 40px;
+  padding: 0px 0px 0px 30px;
 }
