@@ -48,5 +48,5 @@ export default {
   duplicateVersion,
   importCollectionVersion,
   exportCollectionVersion,
-  getAllCollectionVersions
+  getAllCollectionVersions,
 };

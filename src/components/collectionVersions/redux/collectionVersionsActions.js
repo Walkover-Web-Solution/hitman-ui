@@ -218,6 +218,13 @@ export const importVersion = (importLink, shareIdentifier, collectionId) => {
           .importCollectionVersion(importLink, shareIdentifier, response.data)
           .then((response) => {
             dispatch(saveImportedVersion(response.data));
+          })
+          .catch((error) => {
+            dispatch(
+              onVersionsFetchedError(
+                error.response ? error.response.data : error
+              )
+            );
           });
       })
       .catch((error) => {
@@ -229,6 +236,7 @@ export const importVersion = (importLink, shareIdentifier, collectionId) => {
 };
 
 export const saveImportedVersion = (response) => {
+  console.log("response", response);
   return {
     type: versionActionTypes.IMPORT_VERSION,
     response,
