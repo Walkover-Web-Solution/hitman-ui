@@ -513,27 +513,30 @@ table#custom-generic-table {
     width: 3% !important;
   }
   th {
-    height: 35px;
+    height: 100%;
+
     font-size: 12px;
     font-weight: 800;
     padding-bottom: 5px !important;
   }
 
   td {
-    height: 35px;
-    padding: 5px !important;
+    height: 100%;
+    padding: 3px !important;
   }
 
   tbody {
     input {
-      height: 30px;
+      height: 100%;
+
       font-size: 14px;
       font-weight: 400;
     }
     input:focus,
     input.form-control:focus {
       box-shadow: inset 0 -1px 0 rgb(255, 255, 255) !important;
-      height: 30px;
+      height: 100%;
+
       // font-size: 12px;
       // font-weight: 400;
     }
@@ -556,6 +559,7 @@ table#custom-generic-table {
     .cross-button {
       visibility: hidden;
       width: 10px;
+      border: none;
     }
   }
 }
@@ -564,6 +568,7 @@ table#custom-generic-table {
     .cross-button {
       visibility: visible;
       width: 10px;
+      border: none;
     }
   }
 }
@@ -612,4 +617,9 @@ table#custom-generic-table {
 
 #custom-select-box {
   outline: none;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 0px;
 }
