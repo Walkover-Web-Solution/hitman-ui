@@ -34,7 +34,6 @@ class PublicBodyContainer extends Component {
     const bodyDescription = this.props.body_description;
     let body = this.body;
     const { type, value } = e.currentTarget;
-
     if (type === "number") {
       switch (bodyDescription[key].dataType) {
         case "Array of number":
@@ -67,7 +66,7 @@ class PublicBodyContainer extends Component {
           body[key][name[1]][name[2]] = value;
           break;
         case "Array of boolean":
-          body[key][name[1]] = value === "true" ? true : false;
+          body[key][name[1]] = value;
           break;
         default:
           body[key] = value;
@@ -125,7 +124,7 @@ class PublicBodyContainer extends Component {
         {Object.keys(obj).map((k) => (
           <div key={k} className="object-row-wrapper">
             <label>{k}</label>
-            {this.props.body_description[key].dataType === "Object"
+            {this.props.body_description[key].dataType === "object"
               ? this.displayInput(
                   obj[k],
                   key + "." + k + ".value",
@@ -147,7 +146,7 @@ class PublicBodyContainer extends Component {
       <div>
         {this.body[key].map((value, index) => (
           <div key={index} className="array-row">
-            {this.props.body_description[key].dataType === "Array of Boolean"
+            {this.props.body_description[key].dataType === "Array of boolean"
               ? this.displayBoolean(
                   value,
                   key + "." + index + ".value",
@@ -173,11 +172,8 @@ class PublicBodyContainer extends Component {
   }
 
   render() {
-    console.log(this.props);
     const bodyDescription = this.props.body_description;
     this.keysArray = Object.keys(bodyDescription);
-    this.defaultValuesArray = [];
-    this.dataType = [];
     this.body = JSON.parse(this.props.body.value);
     if (
       this.props.public_body_flag &&
@@ -296,7 +292,7 @@ class PublicBodyContainer extends Component {
                               //   //   background: "lightgrey",
                               //   // }}
                               // >
-                              <div className="object-wrapper">
+                              <div className="object-wrapper" key={k}>
                                 {this.obectDiv(this.body[key][k], key, k)}
                               </div>
                             ))}
