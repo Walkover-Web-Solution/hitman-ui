@@ -5,7 +5,8 @@ import { toast } from "react-toastify";
 import validator from "validator";
 import store from "../../store/store";
 import { isDashboardRoute } from "../common/utility";
-import BodyDescription from "./bodyDescription";
+import tabService from "../tabs/tabService";
+import tabStatusTypes from "../tabs/tabStatusTypes";
 import CodeWindow from "./codeWindow";
 import CreateEndpointForm from "./createEndpointForm";
 import BodyContainer from "./displayBody";
@@ -17,8 +18,6 @@ import GenericTable from "./genericTable";
 import HostContainer from "./hostContainer";
 import PublicBodyContainer from "./publicBodyContainer";
 import { addEndpoint, updateEndpoint } from "./redux/endpointsActions";
-import tabStatusTypes from "../tabs/tabStatusTypes";
-import tabService from "../tabs/tabService";
 const status = require("http-status");
 var URI = require("urijs");
 
@@ -112,11 +111,6 @@ class DisplayEndpoint extends Component {
     delete objectDefinition[objectKey];
     this.setState({ objectDefinition });
   }
-  // test() {
-  //   const test = "hello World!";
-  //   console.log("test", test);
-  //   this.setState({ test });
-  // }
 
   async componentDidMount() {
     if (this.props.location.pathname.split("/")[3] === "new") {
@@ -154,15 +148,6 @@ class DisplayEndpoint extends Component {
         ],
       });
     }
-    let flag = 0;
-    // if (!isDashboardRoute(this.props)) {
-    //   this.fetchEndpoint(flag);
-    //   store.subscribe(() => {
-    //     if (!this.props.location.title && !this.state.title) {
-    //       this.fetchEndpoint(flag);
-    //     }
-    //   });
-    // }
   }
 
   structueParamsHeaders = [
@@ -220,10 +205,6 @@ class DisplayEndpoint extends Component {
     ) {
       flag = 1;
       endpoint = endpoints[endpointId];
-      //      let groupId;
-      // if (!isDashboardRoute(this.props) && endpoint === undefined) {
-      //   const collectionId = this.props.location.pathname.split("/")[2];
-      //   this.props.history.push({ pathname: `/public/${collectionId}` });
 
       const groupId = endpoints[endpointId].groupId;
 
@@ -243,26 +224,7 @@ class DisplayEndpoint extends Component {
       }
 
       let updatedArray = {};
-      //let bodyDescription = [];
-      // if (endpoint.body.type === "raw1") {
-      //   updatedArray = JSON.parse(endpoint.body.value);
-      //   bodyDescription = endpoint.bodyDescription;
-      // }
 
-      //console.log(endpoint.body);
-      // if (!isDashboardRoute(this.props)) {
-      //   console.log("in if 1", this.state.data);
-      //   if (endpoint.body.type === "JSON") {
-      //     console.log("in if 2");
-      //     let body = JSON.parse(endpoint.body.value);
-      //     const keys = Object.keys(this.state.bodyDescription);
-      //     keys.map((k) => (body[k] = this.state.bodyDescription[k].default));
-      //     body = { type: "JSON", value: JSON.stringify(body) };
-      //     endpoint.body = body;
-      //   }
-      // }
-
-      //console.log("qqqqqqqq", endpoint);
       this.setState({
         data: {
           method: endpoint.requestType,
@@ -498,7 +460,7 @@ class DisplayEndpoint extends Component {
   validateBodyParams() {
     let bodyDescription = [...this.state.bodyDescription];
     let rawBody = this.parseBody(this.state.data.body.value);
-    let rawBodyArray = Object.keys(rawBody);
+    //let rawBodyArray = Object.keys(rawBody);
     for (let index = 0; index < bodyDescription.length; index++) {
       let dataType = bodyDescription[index].dataType;
       dataType = dataType.toLowerCase();
@@ -519,11 +481,11 @@ class DisplayEndpoint extends Component {
         }
       } else if (dataType === "double") {
       } else if (dataType === "yyyy-mm-dd") {
-        const abc = /^(19[5-9][0-9]|20[0-4][0-9]|2050)[-/](0?[1-9]|1[0-2])[-/](0?[1-9]|[12][0-9]|3[01])$/gim;
-        let match = abc.exec(rawBody[name]);
+        //const abc = /^(19[5-9][0-9]|20[0-4][0-9]|2050)[-/](0?[1-9]|1[0-2])[-/](0?[1-9]|[12][0-9]|3[01])$/gim;
+        //let match = abc.exec(rawBody[name]);
       } else if (dataType === "datetime") {
-        const abc1 = /^\d\d\d\d-(0?[1-9]|1[0-2])-(0?[1-9]|[12][0-9]|3[01]) (00|[0-9]|1[0-9]|2[0-3]):([0-9]|[0-5][0-9]):([0-9]|[0-5][0-9])$/g;
-        let match = abc1.exec(rawBody[name]);
+        //const abc1 = /^\d\d\d\d-(0?[1-9]|1[0-2])-(0?[1-9]|[12][0-9]|3[01]) (00|[0-9]|1[0-9]|2[0-3]):([0-9]|[0-5][0-9]):([0-9]|[0-5][0-9])$/g;
+        //let match = abc1.exec(rawBody[name]);
       } else if (dataType === "timestamp") {
         var valid = new Date(rawBody[name]).getTime() > 0;
         if (!valid) {
@@ -878,7 +840,7 @@ class DisplayEndpoint extends Component {
 
   makePostData(body) {
     let params = [];
-    let text = "";
+
     if (
       body.type === "application/x-www-form-urlencoded" ||
       body.type === "multipart/form-data"
@@ -1355,6 +1317,20 @@ class DisplayEndpoint extends Component {
                   original_data={[...this.state.params]}
                 ></GenericTable>
               )}
+
+              {this.state.pathVariables &&
+                this.state.pathVariables.length !== 0 && (
+                  <div>
+                    <GenericTable
+                      {...this.props}
+                      title="Path Variables"
+                      dataArray={this.state.pathVariables}
+                      props_from_parent={this.propsFromChild.bind(this)}
+                      original_data={[...this.state.pathVariables]}
+                    ></GenericTable>
+                  </div>
+                )}
+
               {this.state.headers.length > 1 && (
                 <GenericTable
                   {...this.props}
@@ -1364,7 +1340,7 @@ class DisplayEndpoint extends Component {
                   original_data={[...this.state.headers]}
                 ></GenericTable>
               )}
-              {console.log(this.state.data.body)}
+
               {this.state.data.body &&
                 this.state.data.body.value !== "" &&
                 this.state.data.body.value !== null && (

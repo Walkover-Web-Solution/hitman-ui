@@ -6,10 +6,9 @@ import endpointsReducer from "../components/endpoints/redux/endpointsReducer";
 import environmentsReducer from "../components/environments/redux/environmentsReducer";
 import groupsReducer from "../components/groups/redux/groupsReducer";
 import pagesReducer from "../components/pages/redux/pagesReducer";
+import tabsReducer from "../components/tabs/redux/tabsReducer";
 import teamsReducer from "../components/teams/redux/teamsReducer";
 import teamUsersReducer from "../components/teamUsers/redux/teamUsersReducer";
-import tabsReducer from "../components/tabs/redux/tabsReducer";
-import logger from "redux-logger";
 
 const storeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 

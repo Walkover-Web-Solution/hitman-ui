@@ -1,16 +1,12 @@
-import shortId from "shortid";
-import { dispatch } from "react-redux";
+import store from "../../store/store";
 import {
   addNewTab,
-  closeTab,
-  openInNewTab,
-  updateTab,
-  setActiveTabId,
   closeAllTabs,
+  closeTab,
+  setActiveTabId,
+  updateTab,
 } from "../tabs/redux/tabsActions";
-import store from "../../store/store";
 import tabStatusTypes from "./tabStatusTypes";
-import indexedDbService from "../indexedDb/indexedDbService";
 
 function newTab(props) {
   store.dispatch(addNewTab({ ...props.history }));
@@ -55,7 +51,7 @@ function removeAllTabs(props) {
 }
 
 function selectTab(props, tabId) {
-  const { tabs, tabsOrder, activeTabId } = store.getState().tabs;
+  const { tabs } = store.getState().tabs;
 
   const tab = tabs[tabId];
   if (tab.status === "NEW") {

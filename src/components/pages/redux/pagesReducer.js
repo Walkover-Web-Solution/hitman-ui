@@ -135,7 +135,7 @@ function pagesReducer(state = initialState, action) {
     case versionActionTypes.ON_VERSION_DELETED:
     case groupsActionTypes.ON_GROUP_DELETED:
       pages = { ...state };
-      action.payload.pageIds.map((pId) => {
+      action.payload.pageIds.forEach((pId) => {
         delete pages[pId];
       });
       return pages;

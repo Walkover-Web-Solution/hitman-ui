@@ -114,8 +114,8 @@ class BodyContainer extends Component {
   };
 
   handleObjectChange = (e, key) => {
-    let updatedArray = { ...this.props.updated_array };
-    const name = e.currentTarget.name.split(".")[1];
+    //let updatedArray = { ...this.props.updated_array };
+    //const name = e.currentTarget.name.split(".")[1];
     // updatedArray[name] = {  };
     // updatedArray[name][key] = e.currentTarget.value;
     // let test1 = JSON.stringify(updatedArray);
@@ -448,7 +448,7 @@ class BodyContainer extends Component {
 
     return (
       <div className="body-wrapper">
-        <form className="body-select" className="d-flex ">
+        <form className="body-select d-flex ">
           <label className="body">
             <input
               type="radio"
