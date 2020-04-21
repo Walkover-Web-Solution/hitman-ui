@@ -155,3 +155,13 @@ export const replaceTab = (oldTabId, newTab) => {
     indexedDbService.updateData("tabs_metadata", tabsOrder, "tabsOrder");
   };
 };
+
+export const closeAllTabs = () => {
+  console.log("2");
+  return (dispatch) => {
+    dispatch({ type: tabsActionTypes.CLOSE_ALL_TABS });
+    indexedDbService.updateData("tabs_metadata", [], "tabsOrder");
+    indexedDbService.updateData("tabs_metadata", null, "activeTabId");
+    indexedDbService.clearStore("tabs");
+  };
+};
