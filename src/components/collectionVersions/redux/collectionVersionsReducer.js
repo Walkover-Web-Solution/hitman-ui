@@ -93,10 +93,6 @@ function versionsReducer(state = initialState, action) {
     case publicEndpointsActionTypes.ON_PUBLIC_ENDPOINTS_FETCHED:
       return { ...state, ...action.data.versions };
 
-    case publicEndpointsActionTypes.ON_PUBLIC_ENDPOINTS_FETCHED_ERROR:
-      toast.error(action.error);
-      return state;
-
     case collectionsActionTypes.ON_COLLECTION_DELETED:
       versions = { ...state };
       action.payload.versionIds.forEach((vId) => {
