@@ -78,23 +78,21 @@ class PublicBodyContainer extends Component {
 
   displayAddButton(key) {
     return (
-      <span
-        className="badge badge-success"
-        style={{
-          marginLeft: "50px",
-          marginTop: "5px",
-        }}
-        onClick={() => this.handleAdd(this.body, key)}
-      >
-        Add+
-      </span>
+      <div className="array-row-add-wrapper">
+        <span
+          className="badge badge-success"
+          onClick={() => this.handleAdd(this.body, key)}
+        >
+          Add+
+        </span>
+      </div>
     );
   }
 
-  displayBoolean(value, name) {
+  displayBoolean(value, name, className) {
     return (
       <select
-        className="custom-boolean"
+        className={className || "custom-boolean"}
         value={value}
         onChange={this.handleChange}
         name={name}
@@ -106,12 +104,12 @@ class PublicBodyContainer extends Component {
     );
   }
 
-  displayInput(value, name) {
+  displayInput(value, name, className) {
     let type = typeof value;
     type = type === "object" || type === "number" ? "number" : "string";
     return (
       <input
-        className="custom-input"
+        className={className || "custom-input"}
         type={type}
         name={name}
         value={value}
@@ -123,23 +121,20 @@ class PublicBodyContainer extends Component {
 
   obectDiv(obj, key, index) {
     return (
-      <div>
+      <div className="object-container">
         {Object.keys(obj).map((k) => (
-          <div key={k}>
-            <label
-              style={{
-                width: "20%",
-                display: "inline",
-              }}
-            >
-              {k}
-            </label>
-
-            {this.props.body_description[key].dataType === "object"
-              ? this.displayInput(obj[k], key + "." + k + ".value")
+          <div key={k} className="object-row-wrapper">
+            <label>{k}</label>
+            {this.props.body_description[key].dataType === "Object"
+              ? this.displayInput(
+                  obj[k],
+                  key + "." + k + ".value",
+                  "object-value"
+                )
               : this.displayInput(
                   obj[k],
-                  key + "." + index + "." + k + ".value"
+                  key + "." + index + "." + k + ".value",
+                  "object-value"
                 )}
           </div>
         ))}
@@ -151,16 +146,24 @@ class PublicBodyContainer extends Component {
     return (
       <div>
         {this.body[key].map((value, index) => (
-          <div key={index}>
-            {this.props.body_description[key].dataType === "Array of boolean"
-              ? this.displayBoolean(value, key + "." + index + ".value")
-              : this.displayInput(value, key + "." + index + ".value")}
+          <div key={index} className="array-row">
+            {this.props.body_description[key].dataType === "Array of Boolean"
+              ? this.displayBoolean(
+                  value,
+                  key + "." + index + ".value",
+                  "array-boolean"
+                )
+              : this.displayInput(
+                  value,
+                  key + "." + index + ".value",
+                  "array-input"
+                )}
             <button
               type="button"
               className="btn cross-button"
               onClick={() => this.handleDelete(key, index)}
             >
-              X
+              <i className="fas fa-times"></i>
             </button>
           </div>
         ))}
@@ -236,12 +239,12 @@ class PublicBodyContainer extends Component {
                             type={"text"}
                           ></input>
                           <label
-                            style={{
-                              marginLeft: "20px",
-                              background: "lightgrey",
-                              padding: "1px",
-                              fontSize: "10px",
-                            }}
+                          // style={{
+                          //   marginLeft: "20px",
+                          //   background: "lightgrey",
+                          //   padding: "1px",
+                          //   fontSize: "10px",
+                          // }}
                           >
                             {bodyDescription[key].dataType}
                           </label>
@@ -263,51 +266,37 @@ class PublicBodyContainer extends Component {
                           this.obectDiv(this.body[key], key)
                         ) : bodyDescription[key].dataType ===
                           "Array of object" ? (
-                          <div>
+                          <React.Fragment>
                             {this.body[key].map((obj, i) => (
-                              <div
-                                key={i}
-                                style={{
-                                  display: "flex",
-                                  margin: "10px",
-                                }}
-                              >
-                                <div
-                                  style={{
-                                    marginLeft: "5px",
-                                    border: "1px solid",
-                                    width: "100%",
-                                    padding: "5px",
-                                    background: "#e8e7e7",
-                                  }}
-                                >
-                                  {this.obectDiv(obj, key, i)}
-                                </div>
+                              <div key={i} className="object-wrapper">
+                                {this.obectDiv(obj, key, i)}
+
                                 <button
                                   type="button"
                                   className="btn cross-button"
                                   onClick={() => this.handleDelete(key, i)}
                                 >
-                                  X
+                                  <i className="fas fa-times"></i>
                                 </button>
                               </div>
                             ))}
                             {this.displayAddButton(key)}
-                          </div>
+                          </React.Fragment>
                         ) : bodyDescription[key].dataType ===
                           "Object of objects" ? (
                           <div>
                             {Object.keys(this.body[key]).map((k) => (
-                              <div
-                                key={k}
-                                style={{
-                                  marginLeft: "5px",
-                                  border: "1px solid",
-                                  width: "80%",
-                                  padding: "5px",
-                                  background: "lightgrey",
-                                }}
-                              >
+                              // <div
+                              //   key={k}
+                              //   // style={{
+                              //   //   marginLeft: "5px",
+                              //   //   border: "1px solid",
+                              //   //   width: "80%",
+                              //   //   padding: "5px",
+                              //   //   background: "lightgrey",
+                              //   // }}
+                              // >
+                              <div className="object-wrapper">
                                 {this.obectDiv(this.body[key][k], key, k)}
                               </div>
                             ))}
