@@ -75,21 +75,21 @@ class DisplayEndpoint extends Component {
       key1: { default: "abcd", dataType: "string" },
       key2: { default: 4, dataType: "number" },
       key3: { default: true, dataType: "boolean" },
-      key4: { default: [2], dataType: "Array of Integer" },
-      key5: { default: ["a"], dataType: "Array of String" },
-      key6: { default: { k1: "v1", k2: 10 }, dataType: "Object" },
+      key4: { default: [2], dataType: "Array of number" },
+      key5: { default: ["a"], dataType: "Array of string" },
+      key6: { default: { k1: "v1", k2: 10 }, dataType: "object" },
       key7: {
         default: [{ k1: "v1", k2: true }],
-        dataType: "Array of Objects",
+        dataType: "Array of object",
       },
       key8: {
         default: {
           k1: { k1: "v1", k2: 10, k3: 44 },
           k2: { k1: "v1", k2: 10 },
         },
-        dataType: "Object of Objects",
+        dataType: "Object of objects",
       },
-      key9: { default: [true], dataType: "Array of Boolean" },
+      key9: { default: [true], dataType: "Array of boolean" },
     },
     updatedArray: {},
     objectDefinition: {},
@@ -160,7 +160,6 @@ class DisplayEndpoint extends Component {
   ];
 
   fetchEndpoint(flag, endpointId) {
-    console.log("in fetch endpoint");
     let endpoint = {};
     let originalParams = [];
     let originalHeaders = [];
@@ -662,7 +661,7 @@ class DisplayEndpoint extends Component {
     if (name === "Path Variables") {
       this.setState({ pathVariables: value });
     }
-    console.log(isDashboardRoute(this.props), name);
+
     if (
       isDashboardRoute(this.props) &&
       (name === "Params" || name === "Headers" || name === "Path Variables")
@@ -672,15 +671,10 @@ class DisplayEndpoint extends Component {
   }
 
   setPublicBody(body) {
-    // let json = {};
-    // console.log(bodyDescription);
-    // Object.keys(bodyDescription).map(
-    //   (key) => (json[key] = bodyDescription[key].default)
-    // );
     let json = JSON.stringify(body);
     let data = { ...this.state.data };
     data.body = { type: "JSON", value: json };
-    console.log(data);
+
     this.setState({ data, publicBodyFlag: false });
   }
 
@@ -1014,7 +1008,6 @@ class DisplayEndpoint extends Component {
   }
 
   render() {
-    console.log("state", this.state);
     if (
       isDashboardRoute(this.props) &&
       this.state.groupId &&
@@ -1054,7 +1047,6 @@ class DisplayEndpoint extends Component {
       this.state.endpoint.id !== this.props.location.pathname.split("/")[4] &&
       this.props.endpoints[this.props.location.pathname.split("/")[4]]
     ) {
-      console.log("in render if");
       if (!isDashboardRoute(this.props)) {
         this.fetchEndpoint(0, this.props.location.pathname.split("/")[4]);
         store.subscribe(() => {
@@ -1064,6 +1056,7 @@ class DisplayEndpoint extends Component {
         });
       }
     }
+
     return (
       <div className="endpoint-container">
         {this.state.showEndpointFormModal && (

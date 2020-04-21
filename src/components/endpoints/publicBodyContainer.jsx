@@ -37,16 +37,16 @@ class PublicBodyContainer extends Component {
 
     if (type === "number") {
       switch (bodyDescription[key].dataType) {
-        case "Array of Integer":
+        case "Array of number":
           body[key][name[1]] = parseInt(value);
           break;
-        case "Object":
+        case "object":
           body[key][name[1]] = parseInt(value);
           break;
-        case "Array of Objects":
+        case "Array of object":
           body[key][name[1]][name[2]] = parseInt(value);
           break;
-        case "Object of Objects":
+        case "Object of objects":
           body[key][name[1]][name[2]] = parseInt(value);
           break;
         default:
@@ -54,19 +54,19 @@ class PublicBodyContainer extends Component {
       }
     } else {
       switch (bodyDescription[key].dataType) {
-        case "Array of String":
+        case "Array of string":
           body[key][name[1]] = value;
           break;
-        case "Object":
+        case "object":
           body[key][name[1]] = value;
           break;
-        case "Array of Objects":
+        case "Array of object":
           body[key][name[1]][name[2]] = value;
           break;
-        case "Object of Objects":
+        case "Object of objects":
           body[key][name[1]][name[2]] = value;
           break;
-        case "Array of Boolean":
+        case "Array of boolean":
           body[key][name[1]] = value === "true" ? true : false;
           break;
         case "boolean":
@@ -136,7 +136,7 @@ class PublicBodyContainer extends Component {
               {k}
             </label>
 
-            {this.props.body_description[key].dataType === "Object"
+            {this.props.body_description[key].dataType === "object"
               ? this.displayInput(obj[k], key + "." + k + ".value")
               : this.displayInput(
                   obj[k],
@@ -153,7 +153,7 @@ class PublicBodyContainer extends Component {
       <div>
         {this.body[key].map((value, index) => (
           <div key={index}>
-            {this.props.body_description[key].dataType === "Array of Boolean"
+            {this.props.body_description[key].dataType === "Array of boolean"
               ? this.displayBoolean(value, key + "." + index + ".value")
               : this.displayInput(value, key + "." + index + ".value")}
             <button
@@ -251,18 +251,18 @@ class PublicBodyContainer extends Component {
                         {bodyDescription[key].dataType === "boolean" ? (
                           this.displayBoolean(this.body[key], key + ".value")
                         ) : bodyDescription[key].dataType ===
-                          "Array of Integer" ? (
+                          "Array of number" ? (
                           this.displayArray(key)
                         ) : bodyDescription[key].dataType ===
-                          "Array of String" ? (
+                          "Array of string" ? (
                           this.displayArray(key)
                         ) : bodyDescription[key].dataType ===
-                          "Array of Boolean" ? (
+                          "Array of boolean" ? (
                           this.displayArray(key)
-                        ) : bodyDescription[key].dataType === "Object" ? (
+                        ) : bodyDescription[key].dataType === "object" ? (
                           this.obectDiv(this.body[key], key)
                         ) : bodyDescription[key].dataType ===
-                          "Array of Objects" ? (
+                          "Array of object" ? (
                           <div>
                             {this.body[key].map((obj, i) => (
                               <div
@@ -295,7 +295,7 @@ class PublicBodyContainer extends Component {
                             {this.displayAddButton(key)}
                           </div>
                         ) : bodyDescription[key].dataType ===
-                          "Object of Objects" ? (
+                          "Object of objects" ? (
                           <div>
                             {Object.keys(this.body[key]).map((k) => (
                               <div
