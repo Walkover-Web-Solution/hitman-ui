@@ -33,7 +33,6 @@ class Form extends Component {
 
   renderInput(name, label, placeholder) {
     const { data, errors } = this.state;
-    console.log(errors[name]);
     return (
       <Input
         name={name}

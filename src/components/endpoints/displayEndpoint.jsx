@@ -2,10 +2,10 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { toast } from "react-toastify";
-import validator from "validator";
 import store from "../../store/store";
 import { isDashboardRoute } from "../common/utility";
-import BodyDescription from "./bodyDescription";
+import tabService from "../tabs/tabService";
+import tabStatusTypes from "../tabs/tabStatusTypes";
 import CodeWindow from "./codeWindow";
 import CreateEndpointForm from "./createEndpointForm";
 import BodyContainer from "./displayBody";
@@ -17,8 +17,6 @@ import GenericTable from "./genericTable";
 import HostContainer from "./hostContainer";
 import PublicBodyContainer from "./publicBodyContainer";
 import { addEndpoint, updateEndpoint } from "./redux/endpointsActions";
-import tabStatusTypes from "../tabs/tabStatusTypes";
-import tabService from "../tabs/tabService";
 const status = require("http-status");
 var URI = require("urijs");
 
@@ -71,53 +69,36 @@ class DisplayEndpoint extends Component {
     oldDescription: "",
     headers: [],
     params: [],
-    bodyDescription: {
-      key1: { default: "abcd", dataType: "string" },
-      key2: { default: 4, dataType: "number" },
-      key3: { default: true, dataType: "boolean" },
-      key4: { default: [2], dataType: "Array of Integer" },
-      key5: { default: ["a"], dataType: "Array of String" },
-      key6: { default: { k1: "v1", k2: 10 }, dataType: "Object" },
-      key7: {
-        default: [{ k1: "v1", k2: 10 }],
-        dataType: "Array of Objects",
-        object: { k1: "v1", k2: 10 },
-      },
-      key8: {
-        default: {
-          k1: { k1: "v1", k2: 10, k3: 44 },
-          k2: { k1: "v1", k2: 10 },
-        },
-        dataType: "Object of Objects",
-        //object: { k1: "v1", k2: 10 },
-      },
-      key9: { default: [true], dataType: "Array of Boolean" },
-    },
-    updatedArray: {},
-    objectDefinition: {},
+    bodyDescription: {},
+    fieldDescription: {},
+    // bodyDescription: {
+    //   key1: { default: "abcd", dataType: "string" },
+    //   key2: { default: 4, dataType: "number" },
+    //   key3: { default: true, dataType: "boolean" },
+    //   key4: { default: [2], dataType: "Array of Integer" },
+    //   key5: { default: ["a"], dataType: "Array of String" },
+    //   key6: { default: { k1: "v1", k2: 10 }, dataType: "Object" },
+    //   key7: {
+    //     default: [{ k1: "v1", k2: 10 }],
+    //     dataType: "Array of Objects",
+    //     object: { k1: "v1", k2: 10 },
+    //   },
+    //   key8: {
+    //     default: {
+    //       k1: { k1: "v1", k2: 10, k3: 44 },
+    //       k2: { k1: "v1", k2: 10 },
+    //     },
+    //     dataType: "Object of Objects",
+    //     //object: { k1: "v1", k2: 10 },
+    //   },
+    //   key9: { default: [true], dataType: "Array of Boolean" },
+    // },
   };
 
   customState = {
     BASE_URL: "",
     customBASE_URL: "",
   };
-
-  setObjectDefinition(name, definition) {
-    let objectDefinition = { ...this.state.objectDefinition };
-    objectDefinition[name] = definition;
-    this.setState({ objectDefinition });
-  }
-
-  deleteObjectDefinition(objectKey) {
-    let objectDefinition = { ...this.state.objectDefinition };
-    delete objectDefinition[objectKey];
-    this.setState({ objectDefinition });
-  }
-  // test() {
-  //   const test = "hello World!";
-  //   console.log("test", test);
-  //   this.setState({ test });
-  // }
 
   async componentDidMount() {
     if (this.props.location.pathname.split("/")[3] === "new") {
@@ -237,7 +218,6 @@ class DisplayEndpoint extends Component {
         this.setState({ pathVariables });
       }
 
-      let updatedArray = {};
       //let bodyDescription = [];
       // if (endpoint.body.type === "raw1") {
       //   updatedArray = JSON.parse(endpoint.body.value);
@@ -274,8 +254,7 @@ class DisplayEndpoint extends Component {
         endpoint_description: endpoint.description,
         oldDescription: endpoint.description,
         title: "update endpoint",
-        // bodyDescription,
-        updatedArray,
+        bodyDescription: endpoint.bodyDescription,
       });
     }
   }
@@ -489,76 +468,6 @@ class DisplayEndpoint extends Component {
     return path;
   }
 
-  validateBodyParams() {
-    let bodyDescription = [...this.state.bodyDescription];
-    let rawBody = this.parseBody(this.state.data.body.value);
-    let rawBodyArray = Object.keys(rawBody);
-    for (let index = 0; index < bodyDescription.length; index++) {
-      let dataType = bodyDescription[index].dataType;
-      dataType = dataType.toLowerCase();
-      let name = bodyDescription[index].name;
-      if (dataType === "boolean") {
-        if (!validator.isBoolean(rawBody[name])) {
-          toast.error("cannot validate body according to body description.");
-        }
-      } else if (dataType === "integer") {
-        if (!validator.isInt(rawBody[name])) {
-          toast.error("cannot validate body according to body description.");
-        }
-      } else if (dataType === "long") {
-        // validator.iaLong(rawBody[name])
-      } else if (dataType === "float") {
-        if (!validator.isFloat(rawBody[name])) {
-          toast.error("cannot validate body according to body description.");
-        }
-      } else if (dataType === "double") {
-      } else if (dataType === "yyyy-mm-dd") {
-        const abc = /^(19[5-9][0-9]|20[0-4][0-9]|2050)[-/](0?[1-9]|1[0-2])[-/](0?[1-9]|[12][0-9]|3[01])$/gim;
-        let match = abc.exec(rawBody[name]);
-      } else if (dataType === "datetime") {
-        const abc1 = /^\d\d\d\d-(0?[1-9]|1[0-2])-(0?[1-9]|[12][0-9]|3[01]) (00|[0-9]|1[0-9]|2[0-3]):([0-9]|[0-5][0-9]):([0-9]|[0-5][0-9])$/g;
-        let match = abc1.exec(rawBody[name]);
-      } else if (dataType === "timestamp") {
-        var valid = new Date(rawBody[name]).getTime() > 0;
-        if (!valid) {
-          toast.error("cannot validate body according to body description.");
-        }
-      } else if (dataType === "array of integer") {
-        for (let i = 0; i < rawBody[name].length; i++) {
-          const element = rawBody[name][i];
-          if (validator.isInt(element)) continue;
-          else {
-            toast.error("cannot validate body according to body description.");
-            break;
-          }
-        }
-      } else if (dataType === "array of long") {
-      } else if (dataType === "array of double") {
-      } else if (dataType === "array of float") {
-        for (let i = 0; i < rawBody[name].length; i++) {
-          const element = rawBody[name][i];
-          if (validator.isFloat(element)) continue;
-          else {
-            toast.error("cannot validate body according to body description.");
-            break;
-          }
-        }
-      } else if (dataType === "array of boolean") {
-        for (let i = 0; i < rawBody[name].length; i++) {
-          const element = rawBody[name][i];
-          if (validator.isBoolean(element)) continue;
-          else {
-            toast.error("cannot validate body according to body description.");
-            break;
-          }
-        }
-      } else if (dataType === "array of datetime") {
-      } else if (dataType === "array of yyyy-mm-dd") {
-      } else if (dataType === "array of timestamp") {
-      }
-    }
-  }
-
   handleSend = async () => {
     let startTime = new Date().getTime();
     let response = {};
@@ -587,11 +496,7 @@ class DisplayEndpoint extends Component {
       if (this.state.data.body.type === "raw") {
         body.value = this.parseBody(body.value);
       }
-      if (!(this.state.data.body.type === "raw1")) {
-        const bodyDescription = [];
-        const updatedArray = {};
-        this.setState({ updatedArray, bodyDescription });
-      }
+
       const headersData = this.doSubmitHeader();
       const updatedParams = this.doSubmitParam();
       const pathVariables = this.doSubmitPathVariables();
@@ -607,6 +512,7 @@ class DisplayEndpoint extends Component {
           this.customState.selectedHost === "customHost"
             ? this.customState.BASE_URL
             : null,
+        bodyDescription: this.state.bodyDescription,
       };
       // if (endpoint.name === "" || endpoint.uri === "")
       if (endpoint.name === "") toast.error("Please enter Endpoint name");
@@ -711,6 +617,7 @@ class DisplayEndpoint extends Component {
     Object.keys(bodyDescription).map(
       (key) => (json[key] = bodyDescription[key].default)
     );
+    // console.log("json", json);
     json = JSON.stringify(json);
     let data = { ...this.state.data };
     data.body = { type: "JSON", value: json };
@@ -945,15 +852,98 @@ class DisplayEndpoint extends Component {
     if (bodyType !== "multipart/form-data") {
       this.setHeaders(bodyType);
     }
-    this.setState({ data });
+    if (bodyType === "JSON") {
+      const data1 = this.setBodyDescription(bodyType, body);
 
+      // this.set_body_description(body)
+      if (data1.error !== undefined) this.setState({ data });
+      else {
+        const bodyDescription = data1.bodyDescription;
+        this.setState({ data, bodyDescription });
+      }
+    } else {
+      this.setState({ data });
+    }
     if (isDashboardRoute(this.props)) {
       tabService.markTabAsModified(this.props.tab.id);
     }
   }
 
-  setBodyDescription(bodyDescription) {
+  setBodyDescription(type, value) {
+    let data = {};
+    try {
+      let body = JSON.parse(value);
+      let keys = Object.keys(body);
+      let bodyDescription = {};
+      // const body_description = this.props.body_description;
+      for (let i = 0; i < keys.length; i++) {
+        if (typeof body[keys[i]] !== "object") {
+          bodyDescription[keys[i]] = {
+            default: body[keys[i]],
+            description: this.state.fieldDescription[keys[i]]
+              ? this.state.fieldDescription[keys[i]]
+              : "",
+            dataType: typeof body[keys[i]],
+          };
+        } else {
+          if (
+            typeof body[keys[i]] === "object" &&
+            Array.isArray(body[keys[i]])
+          ) {
+            if (body[keys[i]].length !== 0) {
+              bodyDescription[keys[i]] = {
+                default: body[keys[i]],
+                description: this.state.fieldDescription[keys[i]]
+                  ? this.state.fieldDescription[keys[i]]
+                  : "",
+                dataType: "Array of " + typeof body[keys[i]][0],
+              };
+            } else {
+              bodyDescription[keys[i]] = {
+                default: [""],
+                description: this.state.fieldDescription[keys[i]]
+                  ? this.state.fieldDescription[keys[i]]
+                  : "",
+                dataType: "Array of string",
+              };
+            }
+          } else if (typeof body[keys[i]] === "object") {
+            let bodyField = body[keys[i]];
+            let key = Object.keys(bodyField);
+            if (key.length > 0 && typeof bodyField[key[0]] === "object")
+              bodyDescription[keys[i]] = {
+                default: body[keys[i]],
+                description: this.state.fieldDescription[keys[i]]
+                  ? this.state.fieldDescription[keys[i]]
+                  : "",
+                dataType: "Object of objects",
+              };
+            else {
+              bodyDescription[keys[i]] = {
+                default: body[keys[i]],
+                description: this.state.fieldDescription[keys[i]]
+                  ? this.state.fieldDescription[keys[i]]
+                  : "",
+                dataType: typeof body[keys[i]],
+              };
+            }
+          }
+        }
+      }
+      data.bodyDescription = bodyDescription;
+      return data;
+    } catch (error) {
+      data.error = error;
+      return data;
+    }
+  }
+
+  set_description(bodyDescription) {
     this.setState({ bodyDescription });
+  }
+
+  setFieldDescription(fieldDescription) {
+    this.setState({ fieldDescription });
   }
 
   setHeaders(bodyType) {
@@ -1051,6 +1041,7 @@ class DisplayEndpoint extends Component {
 
   render() {
     if (
+      isDashboardRoute(this.props) &&
       this.state.groupId &&
       this.props.tab.status === tabStatusTypes.DELETED
     ) {
@@ -1312,31 +1303,13 @@ class DisplayEndpoint extends Component {
                 <BodyContainer
                   {...this.props}
                   set_body={this.setBody.bind(this)}
+                  set_body_description={this.set_description.bind(this)}
                   body={this.state.data.body}
                   endpoint_id={this.props.tab.id}
-                  update_array={this.updateArray.bind(this)}
-                  updated_array={this.state.updatedArray}
                   body_description={this.state.bodyDescription}
-                  object_definition={this.state.objectDefinition}
+                  field_description={this.state.fieldDescription}
+                  set_field_description={this.setFieldDescription.bind(this)}
                 />
-              </div>
-              <div
-                className="tab-pane fade"
-                id={`body-description-${this.props.tab.id}`}
-                role="tabpanel"
-                aria-labelledby="pills-body-description-tab"
-              >
-                {/* <BodyDescription
-                  set_body_description={this.setBodyDescription.bind(this)}
-                  update_array={this.updateArray.bind(this)}
-                  updated_array={this.state.updatedArray}
-                  body_description={this.state.bodyDescription}
-                  object_definition={this.state.objectDefinition}
-                  delete_object_definition={this.deleteObjectDefinition.bind(
-                    this
-                  )}
-                  set_object_definition={this.setObjectDefinition.bind(this)}
-                /> */}
               </div>
             </div>
           ) : (

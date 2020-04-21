@@ -6,7 +6,6 @@ import "./endpoints.scss";
 import tabService from "../tabs/tabService";
 import tabStatusTypes from "../tabs/tabStatusTypes";
 import environmentsActionTypes from "../environments/redux/environmentsActionTypes";
-import { subscribeActionAfter } from "redux-subscribe-action";
 
 class HostContainer extends Component {
   state = {
@@ -156,6 +155,7 @@ class HostContainer extends Component {
 
   render() {
     if (
+      isDashboardRoute(this.props) &&
       this.state.groupId &&
       this.props.tab.status === tabStatusTypes.DELETED
     ) {
