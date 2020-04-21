@@ -113,7 +113,7 @@ function endpointsReducer(state = initialState, action) {
     case versionActionTypes.ON_VERSION_DELETED:
     case groupsActionTypes.ON_GROUP_DELETED:
       endpoints = { ...state };
-      action.payload.endpointIds.map((eId) => {
+      action.payload.endpointIds.forEach((eId) => {
         delete endpoints[eId];
       });
       return endpoints;

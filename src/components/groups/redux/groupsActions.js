@@ -2,6 +2,7 @@ import store from "../../../store/store";
 import groupsApiService from "../groupsApiService";
 import groupsActionTypes from "./groupsActionTypes";
 import { toast } from "react-toastify";
+import tabService from "../../tabs/tabService";
 
 export const setEndpointIds = (endpointsOrder, groupId) => {
   const group = store.getState().groups[groupId];
@@ -124,7 +125,7 @@ export const onGroupUpdatedError = (error, originalGroup) => {
   };
 };
 
-export const deleteGroup = (group) => {
+export const deleteGroup = (group, props) => {
   return (dispatch) => {
     dispatch(deleteGroupRequest(group));
     groupsApiService
@@ -141,6 +142,9 @@ export const deleteGroup = (group) => {
             (eId) => storeData.endpoints[eId].groupId === group.id
           ),
         ];
+
+        endpointIds.map((eId) => tabService.removeTab(eId, props));
+        pageIds.map((pId) => tabService.removeTab(pId, props));
 
         dispatch(onGroupDeleted({ endpointIds, pageIds }));
       })

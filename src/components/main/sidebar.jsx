@@ -25,7 +25,13 @@ class SideBar extends Component {
 
   render() {
     return (
-      <nav className="col-md-2 d-none d-md-block bg-light sidebar ">
+      <nav
+        className={
+          isDashboardRoute(this.props)
+            ? "col-md-2 d-none d-md-block bg-light sidebar "
+            : "col-md-2 d-none d-md-block bg-light sidebar public-endpoint-sidebar"
+        }
+      >
         <div className="sidebar-sticky">
           {isDashboardRoute(this.props) ? (
             <div>

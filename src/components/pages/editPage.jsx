@@ -1,12 +1,11 @@
 import React, { Component } from "react";
-import { updatePage } from "../pages/redux/pagesActions";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import store from "../../store/store";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
+import { updatePage } from "../pages/redux/pagesActions";
 import "./page.scss";
-import tabService from "../tabs/tabService";
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {

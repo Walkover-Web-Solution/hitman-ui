@@ -68,6 +68,7 @@ class DisplayEndpoint extends Component {
     originalParams: [],
     oldDescription: "",
     headers: [],
+    publicBodyFlag: true,
     params: [],
     bodyDescription: {},
     fieldDescription: {},
@@ -136,15 +137,6 @@ class DisplayEndpoint extends Component {
         ],
       });
     }
-    let flag = 0;
-    if (!isDashboardRoute(this.props)) {
-      this.fetchEndpoint(flag);
-      store.subscribe(() => {
-        if (!this.props.location.title && !this.state.title) {
-          this.fetchEndpoint(flag);
-        }
-      });
-    }
   }
 
   structueParamsHeaders = [
@@ -201,6 +193,7 @@ class DisplayEndpoint extends Component {
     ) {
       flag = 1;
       endpoint = endpoints[endpointId];
+
       const groupId = endpoints[endpointId].groupId;
 
       //To fetch originalParams from Params
@@ -217,26 +210,10 @@ class DisplayEndpoint extends Component {
         pathVariables = this.fetchPathVariables(endpoint.pathVariables);
         this.setState({ pathVariables });
       }
+      const fieldDescription = this.getFieldDescription(
+        endpoint.bodyDescription
+      );
 
-      //let bodyDescription = [];
-      // if (endpoint.body.type === "raw1") {
-      //   updatedArray = JSON.parse(endpoint.body.value);
-      //   bodyDescription = endpoint.bodyDescription;
-      // }
-      console.log(endpoint.body);
-      if (!isDashboardRoute(this.props)) {
-        console.log("in if 1", this.state.data);
-        if (endpoint.body.type === "JSON") {
-          console.log("in if 2");
-          let body = JSON.parse(endpoint.body.value);
-          const keys = Object.keys(this.state.bodyDescription);
-          keys.map((k) => (body[k] = this.state.bodyDescription[k].default));
-          body = { type: "JSON", value: JSON.stringify(body) };
-          endpoint.body = body;
-        }
-      }
-
-      console.log("qqqqqqqq", endpoint);
       this.setState({
         data: {
           method: endpoint.requestType,
@@ -251,13 +228,25 @@ class DisplayEndpoint extends Component {
         originalHeaders,
         endpoint,
         groupId,
-        endpoint_description: endpoint.description,
         oldDescription: endpoint.description,
         title: "update endpoint",
         bodyDescription: endpoint.bodyDescription,
+        fieldDescription,
+        publicBodyFlag: true,
       });
     }
   }
+
+  getFieldDescription(bodyDescription) {
+    let keys = Object.keys(bodyDescription);
+    let fieldDescription = {};
+    for (let i = 0; i < keys.length; i++) {
+      fieldDescription[keys[i]] = bodyDescription[keys[i]].description;
+    }
+    console.log(fieldDescription);
+    return fieldDescription;
+  }
+
   handleChange = (e) => {
     let data = { ...this.state.data };
     data[e.currentTarget.name] = e.currentTarget.value;
@@ -472,7 +461,7 @@ class DisplayEndpoint extends Component {
     let startTime = new Date().getTime();
     let response = {};
     this.setState({ startTime, response });
-    const headersData = this.doSubmitHeader();
+    const headersData = this.doSubmitHeader("send");
     const BASE_URL = this.customState.BASE_URL;
     let uri = new URI(this.uri.current.value);
     let queryparams = uri.search();
@@ -484,7 +473,6 @@ class DisplayEndpoint extends Component {
       headerJson[header] = headersData[header].value;
     });
     let { body, headers } = this.formatBody(this.state.data.body, headerJson);
-    console.log("in handle send", body);
     this.handleApiCall(api, body, headers, this.state.data.body.type);
   };
 
@@ -497,7 +485,7 @@ class DisplayEndpoint extends Component {
         body.value = this.parseBody(body.value);
       }
 
-      const headersData = this.doSubmitHeader();
+      const headersData = this.doSubmitHeader("save");
       const updatedParams = this.doSubmitParam();
       const pathVariables = this.doSubmitPathVariables();
       const endpoint = {
@@ -555,13 +543,13 @@ class DisplayEndpoint extends Component {
     return updatedPathVariables;
   }
 
-  doSubmitHeader() {
+  doSubmitHeader(title) {
     let originalHeaders = [...this.state.originalHeaders];
     let updatedHeaders = {};
     for (let i = 0; i < originalHeaders.length; i++) {
       if (originalHeaders[i].key === "") {
         continue;
-      } else {
+      } else if (originalHeaders[i].checked === "true" || title === "save") {
         updatedHeaders[originalHeaders[i].key] = {
           checked: originalHeaders[i].checked,
           value: originalHeaders[i].value,
@@ -603,26 +591,19 @@ class DisplayEndpoint extends Component {
     }
 
     if (
-      (isDashboardRoute(this.props) && name === "Params") ||
-      name === "Headers" ||
-      name === "Path Variables"
+      isDashboardRoute(this.props) &&
+      (name === "Params" || name === "Headers" || name === "Path Variables")
     ) {
       tabService.markTabAsModified(this.props.tab.id);
     }
   }
 
-  setPublicBody(bodyDescription) {
-    let json = {};
-    console.log(bodyDescription);
-    Object.keys(bodyDescription).map(
-      (key) => (json[key] = bodyDescription[key].default)
-    );
-    // console.log("json", json);
-    json = JSON.stringify(json);
+  setPublicBody(body) {
+    let json = JSON.stringify(body);
     let data = { ...this.state.data };
     data.body = { type: "JSON", value: json };
-    console.log(bodyDescription, data);
-    this.setState({ bodyDescription, data });
+
+    this.setState({ data, publicBodyFlag: false });
   }
 
   handleUpdateUri(originalParams) {
@@ -781,7 +762,7 @@ class DisplayEndpoint extends Component {
 
   makePostData(body) {
     let params = [];
-    let text = "";
+
     if (
       body.type === "application/x-www-form-urlencoded" ||
       body.type === "multipart/form-data"
@@ -942,8 +923,8 @@ class DisplayEndpoint extends Component {
     this.setState({ bodyDescription });
   }
 
-  setFieldDescription(fieldDescription) {
-    this.setState({ fieldDescription });
+  setFieldDescription(fieldDescription, bodyDescription) {
+    this.setState({ fieldDescription, bodyDescription });
   }
 
   setHeaders(bodyType) {
@@ -1010,7 +991,6 @@ class DisplayEndpoint extends Component {
   }
 
   formatBody(body, headers) {
-    console.log(body);
     let finalBodyValue = null;
     switch (body.type) {
       case "raw":
@@ -1034,7 +1014,6 @@ class DisplayEndpoint extends Component {
         // urlEncodedData = urlEncodedData.join("&");
         return { body: urlEncodedData, headers };
       default:
-        console.log("in default", body.value);
         return { body: body.value, headers };
     }
   }
@@ -1088,6 +1067,7 @@ class DisplayEndpoint extends Component {
         });
       }
     }
+
     return (
       <div className="endpoint-container">
         {this.state.showEndpointFormModal && (
@@ -1234,19 +1214,6 @@ class DisplayEndpoint extends Component {
                     Body
                   </a>
                 </li>
-                <li className="nav-item">
-                  <a
-                    className="nav-link"
-                    id="pills-body-description-tab"
-                    data-toggle="pill"
-                    href={`#body-description-${this.props.tab.id}`}
-                    role="tab"
-                    aria-controls={`body-description-${this.props.tab.id}`}
-                    aria-selected="false"
-                  >
-                    Body Description
-                  </a>
-                </li>
               </ul>
             ) : null}
           </div>
@@ -1323,6 +1290,20 @@ class DisplayEndpoint extends Component {
                   original_data={[...this.state.params]}
                 ></GenericTable>
               )}
+
+              {this.state.pathVariables &&
+                this.state.pathVariables.length !== 0 && (
+                  <div>
+                    <GenericTable
+                      {...this.props}
+                      title="Path Variables"
+                      dataArray={this.state.pathVariables}
+                      props_from_parent={this.propsFromChild.bind(this)}
+                      original_data={[...this.state.pathVariables]}
+                    ></GenericTable>
+                  </div>
+                )}
+
               {this.state.headers.length > 1 && (
                 <GenericTable
                   {...this.props}
@@ -1332,13 +1313,19 @@ class DisplayEndpoint extends Component {
                   original_data={[...this.state.headers]}
                 ></GenericTable>
               )}
-              <PublicBodyContainer
-                {...this.props}
-                set_body={this.setBody.bind(this)}
-                body={this.state.data.body}
-                set_public_body={this.setPublicBody.bind(this)}
-                body_description={this.state.bodyDescription}
-              ></PublicBodyContainer>
+
+              {this.state.data.body &&
+                this.state.data.body.value !== "" &&
+                this.state.data.body.value !== null && (
+                  <PublicBodyContainer
+                    {...this.props}
+                    set_body={this.setBody.bind(this)}
+                    body={this.state.data.body}
+                    public_body_flag={this.state.publicBodyFlag}
+                    set_public_body={this.setPublicBody.bind(this)}
+                    body_description={this.state.bodyDescription}
+                  ></PublicBodyContainer>
+                )}
             </div>
           )}
         </div>

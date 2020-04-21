@@ -62,7 +62,10 @@ class EnvironmentVariables extends Component {
     updatedVariableNames.pop();
     for (let i = 0; i < updatedVariableNames.length; i++) {
       if (updatedVariableNames[i] !== originalVariableNames[i]) {
-        if (updatedVariableNames[i] === "deleted")
+        if (
+          updatedVariableNames[i] === "deleted" ||
+          updatedVariableNames[i] === ""
+        )
           delete environment.variables[originalVariableNames[i]];
         else {
           environment.variables[updatedVariableNames[i]] =
@@ -107,11 +110,12 @@ class EnvironmentVariables extends Component {
       len.toString(),
     ];
     let updatedVariableNames = [...this.state.updatedVariableNames, ""];
-    environment.variables[len.toString()] = {
-      initialValue: "",
-      currentValue: "",
-    };
-
+    if (originalVariableNames[len.toString() - 1] != "") {
+      environment.variables[len.toString()] = {
+        initialValue: "",
+        currentValue: "",
+      };
+    }
     this.setState({ environment, originalVariableNames, updatedVariableNames });
   }
 

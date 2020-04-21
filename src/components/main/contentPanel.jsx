@@ -6,16 +6,15 @@ import Environments from "../environments/environments";
 import {
   addNewTab,
   closeTab,
-  openInNewTab,
-  setActiveTabId,
-  updateTab,
-  setTabsOrder,
   fetchTabsFromIdb,
+  openInNewTab,
   replaceTab,
+  setActiveTabId,
+  setTabsOrder,
+  updateTab,
 } from "../tabs/redux/tabsActions";
 import TabContent from "../tabs/tabContent";
 import CustomTabs from "../tabs/tabs";
-import tabService from "../tabs/tabService";
 import tabStatusTypes from "../tabs/tabStatusTypes";
 import "./main.scss";
 
@@ -67,8 +66,9 @@ class ContentPanel extends Component {
       const endpointId = this.props.location.pathname.split("/")[3];
 
       if (this.props.tabs.tabs[endpointId]) {
-        if (this.props.tabs.activeTabId !== endpointId)
+        if (this.props.tabs.activeTabId !== endpointId) {
           this.props.setActiveTabId(endpointId);
+        }
       } else {
         if (
           this.props.endpoints &&

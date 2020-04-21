@@ -1,6 +1,7 @@
 import store from "../../../store/store";
 import collectionsApiService from "../collectionsApiService";
 import collectionsActionTypes from "./collectionsActionTypes";
+import tabService from "../../tabs/tabService";
 
 export const fetchCollections = () => {
   return (dispatch) => {
@@ -120,7 +121,7 @@ export const onCollectionUpdatedError = (error, originalCollection) => {
   };
 };
 
-export const deleteCollection = (collection) => {
+export const deleteCollection = (collection, props) => {
   return (dispatch) => {
     dispatch(deleteCollectionRequest(collection));
     collectionsApiService
@@ -133,7 +134,7 @@ export const deleteCollection = (collection) => {
         let groupIds = [];
         let endpointIds = [];
         let pageIds = [];
-        versionIds.map((vId) => {
+        versionIds.forEach((vId) => {
           groupIds = [
             ...Object.keys(storeData.groups).filter(
               (gId) => storeData.groups[gId].versionId === vId
@@ -148,7 +149,7 @@ export const deleteCollection = (collection) => {
           ];
         });
 
-        groupIds.map(
+        groupIds.forEach(
           (gId) =>
             (endpointIds = [
               ...Object.keys(storeData.endpoints).filter(
@@ -157,6 +158,9 @@ export const deleteCollection = (collection) => {
               ...endpointIds,
             ])
         );
+
+        endpointIds.map((eId) => tabService.removeTab(eId, props));
+        pageIds.map((pId) => tabService.removeTab(pId, props));
 
         dispatch(
           onCollectionDeleted({

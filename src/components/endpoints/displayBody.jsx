@@ -11,7 +11,7 @@ import "ace-builds/src-noconflict/mode-xml";
 import "ace-builds/src-noconflict/theme-github";
 import "./endpoints.scss";
 import { Table, Button } from "react-bootstrap";
-import BodyDescription from "./BodyDescription";
+import BodyDescription from "./bodyDescription";
 
 class BodyContainer extends Component {
   state = {
@@ -200,7 +200,7 @@ class BodyContainer extends Component {
 
     return (
       <div className="body-wrapper">
-        <form className="body-select" className="d-flex ">
+        <form className="body-select d-flex ">
           <label className="body">
             <input
               type="radio"

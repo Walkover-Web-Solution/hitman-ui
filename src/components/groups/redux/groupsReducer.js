@@ -102,14 +102,10 @@ function groupsReducer(state = initialState, action) {
     case publicEndpointsActionTypes.ON_PUBLIC_ENDPOINTS_FETCHED:
       return { ...state, ...action.data.groups };
 
-    case publicEndpointsActionTypes.ON_PUBLIC_ENDPOINTS_FETCHED_ERROR:
-      toast.error(action.error);
-      return state;
-
     case collectionsActionTypes.ON_COLLECTION_DELETED:
     case versionActionTypes.ON_VERSION_DELETED:
       groups = { ...state };
-      action.payload.groupIds.map((gId) => {
+      action.payload.groupIds.forEach((gId) => {
         delete groups[gId];
       });
       return groups;

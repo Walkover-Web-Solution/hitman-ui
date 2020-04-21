@@ -5,8 +5,10 @@ class BodyDescription extends Component {
 
   handleChange = (e, key) => {
     let fieldDescription = { ...this.props.field_description };
+    let bodyDescription = { ...this.props.body_description };
     fieldDescription[key] = e.currentTarget.value;
-    this.props.set_field_description(fieldDescription);
+    bodyDescription[key].description = e.currentTarget.value;
+    this.props.set_field_description(fieldDescription, bodyDescription);
   };
 
   displayAddButton(bodyDescription, key) {

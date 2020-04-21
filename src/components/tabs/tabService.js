@@ -1,13 +1,11 @@
-import shortId from "shortid";
-import { dispatch } from "react-redux";
+import store from "../../store/store";
 import {
   addNewTab,
+  closeAllTabs,
   closeTab,
-  openInNewTab,
-  updateTab,
   setActiveTabId,
+  updateTab,
 } from "../tabs/redux/tabsActions";
-import store from "../../store/store";
 import tabStatusTypes from "./tabStatusTypes";
 
 function newTab(props) {
@@ -46,18 +44,16 @@ function changeRoute(props, tab) {
   }
 }
 
-function closeAllTabs(props) {
-  // const id = shortId.generate();
-  // const tabs = [{ id, type: "endpoint", isSaved: false }];
-  // props.set_tabs(tabs, 0);
-  // props.history.push({ pathname: `/dashboard/endpoint/new` });
+function removeAllTabs(props) {
+  console.log("1");
+  store.dispatch(closeAllTabs());
+  newTab(props);
 }
 
 function selectTab(props, tabId) {
-  const { tabs, tabsOrder, activeTabId } = store.getState().tabs;
+  const { tabs } = store.getState().tabs;
 
   const tab = tabs[tabId];
-  store.dispatch(setActiveTabId(tabId));
   if (tab.status === "NEW") {
     props.history.push({
       pathname: `/dashboard/${tab.type}/new`,
@@ -67,6 +63,7 @@ function selectTab(props, tabId) {
       pathname: `/dashboard/${tab.type}/${tab.id}`,
     });
   }
+  store.dispatch(setActiveTabId(tabId));
 }
 
 function disablePreviewMode(tabId) {
@@ -94,7 +91,7 @@ export default {
   newTab,
   removeTab,
   changeRoute,
-  closeAllTabs,
+  removeAllTabs,
   selectTab,
   disablePreviewMode,
   markTabAsModified,

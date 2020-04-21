@@ -67,9 +67,6 @@ class Pages extends Component {
 
   handleDuplicate(page) {
     this.props.duplicatePage(page);
-    this.props.history.push({
-      pathname: "/dashboard",
-    });
   }
 
   async handlePublicPageState(page) {

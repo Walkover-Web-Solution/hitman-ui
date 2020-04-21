@@ -1,9 +1,8 @@
-import tabsActionTypes from "./tabsActionTypes";
-import store from "../../../store/store";
-import { toast } from "react-toastify";
 import shortid from "shortid";
-import tabStatusTypes from "../tabStatusTypes";
+import store from "../../../store/store";
 import indexedDbService from "../../indexedDb/indexedDbService";
+import tabStatusTypes from "../tabStatusTypes";
+import tabsActionTypes from "./tabsActionTypes";
 
 export const fetchTabsFromIdb = (props) => {
   return async (dispatch) => {
@@ -154,5 +153,15 @@ export const replaceTab = (oldTabId, newTab) => {
     indexedDbService.deleteData("tabs", oldTabId);
     indexedDbService.addData("tabs", newTab);
     indexedDbService.updateData("tabs_metadata", tabsOrder, "tabsOrder");
+  };
+};
+
+export const closeAllTabs = () => {
+  console.log("2");
+  return (dispatch) => {
+    dispatch({ type: tabsActionTypes.CLOSE_ALL_TABS });
+    indexedDbService.updateData("tabs_metadata", [], "tabsOrder");
+    indexedDbService.updateData("tabs_metadata", null, "activeTabId");
+    indexedDbService.clearStore("tabs");
   };
 };

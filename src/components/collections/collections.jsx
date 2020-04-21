@@ -42,7 +42,8 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(shareCollection(teamMemberData)),
     updateCollection: (editedCollection) =>
       dispatch(updateCollection(editedCollection)),
-    deleteCollection: (collection) => dispatch(deleteCollection(collection)),
+    deleteCollection: (collection, props) =>
+      dispatch(deleteCollection(collection, props)),
     duplicateCollection: (collection) =>
       dispatch(duplicateCollection(collection)),
     fetchAllUsersOfTeam: (teamIdentifier) =>
@@ -174,6 +175,9 @@ class CollectionsComponent extends Component {
   }
 
   openDeleteCollectionModal(collectionId) {
+    if (this.state.openSelectedCollection === true) {
+      this.setState({ openSelectedCollection: false });
+    }
     this.setState({
       showDeleteModal: true,
       selectedCollection: {
@@ -229,106 +233,122 @@ class CollectionsComponent extends Component {
 
   renderBody(collectionId, collectionState) {
     return (
-      <Accordion defaultActiveKey="0" key={collectionId} id="parent-accordion">
-        <Card>
-          <Card.Header>
-            <i className="fas fa-folder-open"></i>
-            <Accordion.Toggle as={Button} variant="default" eventKey="1">
-              {collectionState === "singleCollection" ? (
-                <div>
-                  {this.props.collections[collectionId].name}
-                  <div onClick={() => this.openAllCollections()}>
-                    <i class="fas fa-arrow-left"></i>{" "}
+      <React.Fragment>
+        {collectionState === "singleCollection" ? (
+          <button
+            id="back-to-all-collections-button"
+            className="btn"
+            onClick={() => this.openAllCollections()}
+          >
+            <i class="fas fa-arrow-left"></i>
+            <label>All Collections</label>
+          </button>
+        ) : null}
+
+        <Accordion
+          defaultActiveKey="0"
+          key={collectionId}
+          id="parent-accordion"
+        >
+          <Card>
+            <Card.Header>
+              <i className="fas fa-folder-open"></i>
+              <Accordion.Toggle as={Button} variant="default" eventKey="1">
+                {collectionState === "singleCollection" ? (
+                  <div>{this.props.collections[collectionId].name}</div>
+                ) : (
+                  <div
+                    onClick={() => this.openSelectedCollection(collectionId)}
+                  >
+                    {this.props.collections[collectionId].name}
                   </div>
-                </div>
-              ) : (
-                <div onClick={() => this.openSelectedCollection(collectionId)}>
-                  {this.props.collections[collectionId].name}
-                </div>
-              )}
-            </Accordion.Toggle>
-            <div className="btn-group">
-              <button
-                className="btn btn-secondary "
-                data-toggle="dropdown"
-                aria-haspopup="true"
-                aria-expanded="false"
-              >
-                <i className="fas fa-ellipsis-h"></i>
-              </button>
-              <div className="dropdown-menu dropdown-menu-right">
+                )}
+              </Accordion.Toggle>
+              <div className="btn-group">
                 <button
-                  className="dropdown-item"
-                  onClick={() => this.openEditCollectionForm(collectionId)}
+                  className="btn btn-secondary "
+                  data-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false"
                 >
-                  Edit
+                  <i className="fas fa-ellipsis-h"></i>
                 </button>
-                <button
-                  className="dropdown-item"
-                  onClick={() => {
-                    this.openDeleteCollectionModal(collectionId);
-                  }}
-                >
-                  Delete
-                </button>
-                <button
-                  className="dropdown-item"
-                  onClick={() => this.openAddVersionForm(collectionId)}
-                >
-                  Add Version
-                </button>
-                <button
-                  className="dropdown-item"
-                  onClick={() =>
-                    this.handleDuplicateCollection(
-                      this.props.collections[collectionId]
-                    )
-                  }
-                >
-                  Duplicate
-                </button>
-                <button
-                  className="dropdown-item"
-                  onClick={() => this.openImportVersionForm(collectionId)}
-                >
-                  Import Version
-                </button>
-                {this.props.collections[collectionId].isPublic && (
+                <div className="dropdown-menu dropdown-menu-right">
+                  <button
+                    className="dropdown-item"
+                    onClick={() => this.openEditCollectionForm(collectionId)}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    className="dropdown-item"
+                    onClick={() => {
+                      this.openDeleteCollectionModal(collectionId);
+                    }}
+                  >
+                    Delete
+                  </button>
+                  <button
+                    className="dropdown-item"
+                    onClick={() => this.openAddVersionForm(collectionId)}
+                  >
+                    Add Version
+                  </button>
                   <button
                     className="dropdown-item"
                     onClick={() =>
-                      this.handleGoToDocs(this.props.collections[collectionId])
+                      this.handleDuplicateCollection(
+                        this.props.collections[collectionId]
+                      )
                     }
                   >
-                    Go to Docs
+                    Duplicate
                   </button>
-                )}
-                <button
-                  className="dropdown-item"
-                  onClick={() => {
-                    this.shareCollection(collectionId);
-                  }}
-                >
-                  Share
-                </button>
+                  <button
+                    className="dropdown-item"
+                    onClick={() => this.openImportVersionForm(collectionId)}
+                  >
+                    Import Version
+                  </button>
+                  {this.props.collections[collectionId].isPublic && (
+                    <button
+                      className="dropdown-item"
+                      onClick={() =>
+                        this.handleGoToDocs(
+                          this.props.collections[collectionId]
+                        )
+                      }
+                    >
+                      Go to Docs
+                    </button>
+                  )}
+                  <button
+                    className="dropdown-item"
+                    onClick={() => {
+                      this.shareCollection(collectionId);
+                    }}
+                  >
+                    Share
+                  </button>
+                </div>
               </div>
-            </div>
-          </Card.Header>
-          {collectionState === "singleCollection" ? (
-            <Accordion.Collapse
-              eventKey={collectionState === "singleCollection" ? "0" : "1"}
-            >
-              <Card.Body>
-                <CollectionVersions
-                  {...this.props}
-                  collection_id={collectionId}
-                  selectedCollection={true}
-                />
-              </Card.Body>
-            </Accordion.Collapse>
-          ) : null}
-        </Card>
-      </Accordion>
+            </Card.Header>
+            {collectionState === "singleCollection" ? (
+              <Accordion.Collapse
+                eventKey={collectionState === "singleCollection" ? "0" : "1"}
+              >
+                <Card.Body>
+                  <CollectionVersions
+                    {...this.props}
+                    collection_id={collectionId}
+                    selectedCollection={true}
+                  />
+                </Card.Body>
+              </Accordion.Collapse>
+            ) : null}
+          </Card>
+        </Accordion>
+      </React.Fragment>
     );
   }
   render() {
@@ -413,7 +433,7 @@ class CollectionsComponent extends Component {
               {this.showShareCollectionForm()}
               {this.state.showDeleteModal &&
                 collectionsService.showDeleteCollectionModal(
-                  this.props,
+                  { ...this.props },
                   this.closeDeleteCollectionModal.bind(this),
                   "Delete Collection",
                   `Are you sure you wish to delete this collection? All your versions,

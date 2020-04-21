@@ -18,7 +18,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    deleteGroup: (group) => dispatch(deleteGroup(group)),
+    deleteGroup: (group, props) => dispatch(deleteGroup(group, props)),
     duplicateGroup: (group) => dispatch(duplicateGroup(group)),
   };
 };
@@ -33,7 +33,7 @@ class Groups extends Component {
     },
     filter: "",
   };
-
+  eventkey = {};
   filterFlag = false;
   filteredGroupEndpoints = {};
   filteredGroupPages = {};
@@ -78,9 +78,6 @@ class Groups extends Component {
 
   handleDuplicate(group) {
     this.props.duplicateGroup(group);
-    this.props.history.push({
-      pathname: "/dashboard",
-    });
   }
 
   closeGroupForm() {
@@ -171,6 +168,7 @@ class Groups extends Component {
           this.filteredGroupEndpoints[groupIds[i]] = this.props.groups[
             groupIds[i]
           ];
+          this.eventkey[groupIds[i]] = "0";
         }
       }
     }
@@ -179,6 +177,7 @@ class Groups extends Component {
       if (groupIds !== null) {
         for (let i = 0; i < groupIds.length; i++) {
           this.filteredGroupPages[groupIds[i]] = this.props.groups[groupIds[i]];
+          this.eventkey[groupIds[i]] = "0";
         }
       }
     }
@@ -279,9 +278,7 @@ class Groups extends Component {
       this.filterFlag = false;
     }
     if (this.filterFlag === false && this.props.filter === "") {
-      this.eventkey = "1";
-    } else {
-      this.eventkey = "0";
+      this.eventkey = {};
     }
     return (
       <div>
@@ -322,7 +319,9 @@ class Groups extends Component {
                   <Accordion.Toggle
                     as={Button}
                     variant="default"
-                    eventKey={this.eventkey}
+                    eventKey={
+                      this.eventkey[groupId] ? this.eventkey[groupId] : "1"
+                    }
                   >
                     {this.props.groups[groupId].name}
                   </Accordion.Toggle>
@@ -397,7 +396,11 @@ class Groups extends Component {
                     </div>
                   ) : null}
                 </Card.Header>
-                <Accordion.Collapse eventKey={this.eventkey}>
+                <Accordion.Collapse
+                  eventKey={
+                    this.eventkey[groupId] ? this.eventkey[groupId] : "1"
+                  }
+                >
                   <Card.Body>
                     <GroupPages
                       {...this.props}
