@@ -471,7 +471,7 @@ class CollectionsComponent extends Component {
                 <div>
                   <h4
                     style={{
-                      color: "steelblue",
+                      color: "tomato",
                       textAlign: "center",
                       padding: "35px",
                     }}

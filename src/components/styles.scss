@@ -713,11 +713,10 @@ main.main.ml-sm-auto.col-lg-10 {
     }
 
     .public-endpoint-name-input {
-      width: 100%;
+      // width: 100%;
       display: flex;
       flex-direction: row;
       outline: none;
-      border-bottom: 1px solid steelblue;
       // border-radius: 60px;
       margin-top: 5px;
       margin-bottom: 5px;
@@ -1030,7 +1029,7 @@ main.main.ml-sm-auto.col-lg-10 {
       .public-generic-table-title-container {
         padding: 40px 0px 3px 20px;
         opacity: 1;
-        color: steelblue;
+        color: tomato;
       }
 
       button#edit-button {
@@ -1604,8 +1603,8 @@ button.btn.custom-body-type-button {
   opacity: 0.8;
 }
 .public-endpoint-sidebar {
-  margin-top: 40px !important;
+  margin-top: 45px !important;
 }
 .hitman-logo {
-  height: 40px;
+  height: 45px;
 }
