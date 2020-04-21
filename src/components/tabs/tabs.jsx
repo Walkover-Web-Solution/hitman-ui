@@ -148,7 +148,7 @@ class CustomTabs extends Component {
               </button>
               <button
                 className="btn"
-                onClick={() => tabService.closeAllTabs({ ...this.props })}
+                onClick={() => tabService.removeAllTabs({ ...this.props })}
               >
                 Close All Tabs
               </button>

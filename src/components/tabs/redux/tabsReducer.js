@@ -73,6 +73,9 @@ function tabsReducer(state = initialState, action) {
       tabs.tabsOrder[index] = action.newTab.id;
       return tabs;
 
+    case tabsActionTypes.CLOSE_ALL_TABS:
+      return initialState;
+
     case tabsActionTypes.SET_TABS_ORDER:
       tabs = { ...state, tabsOrder: action.tabsOrder };
       return tabs;
