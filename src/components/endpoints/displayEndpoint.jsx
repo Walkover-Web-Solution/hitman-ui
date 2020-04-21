@@ -80,9 +80,8 @@ class DisplayEndpoint extends Component {
       key5: { default: ["a"], dataType: "Array of String" },
       key6: { default: { k1: "v1", k2: 10 }, dataType: "Object" },
       key7: {
-        default: [{ k1: "v1", k2: 10 }],
+        default: [{ k1: "v1", k2: true }],
         dataType: "Array of Objects",
-        object: { k1: "v1", k2: 10 },
       },
       key8: {
         default: {
@@ -90,7 +89,6 @@ class DisplayEndpoint extends Component {
           k2: { k1: "v1", k2: 10 },
         },
         dataType: "Object of Objects",
-        object: { k1: "v1", k2: 10 },
       },
       key9: { default: [true], dataType: "Array of Boolean" },
     },

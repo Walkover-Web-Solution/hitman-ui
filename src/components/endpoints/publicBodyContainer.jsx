@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import GenericTable from "./genericTable";
 import "./publicEndpoint.scss";
-import { toPathSchema } from "react-jsonschema-form/lib/utils";
 
 class PublicBodyContainer extends Component {
   state = {};
@@ -34,31 +33,47 @@ class PublicBodyContainer extends Component {
     const key = name[0];
     const bodyDescription = this.props.body_description;
     let body = this.body;
-    if (e.target.type === "number") {
-      if (bodyDescription[key].dataType === "Array of Integer") {
-        body[key][name[1]] = parseInt(e.currentTarget.value);
-      } else if (bodyDescription[key].dataType === "Object") {
-        body[key][name[1]] = parseInt(e.currentTarget.value);
-      } else if (bodyDescription[key].dataType === "Array of Objects") {
-        body[key][name[1]][name[2]] = parseInt(e.currentTarget.value);
-      } else if (bodyDescription[key].dataType === "Object of Objects") {
-        body[key][name[1]][name[2]] = parseInt(e.currentTarget.value);
-      } else {
-        body[key] = parseInt(e.currentTarget.value);
+    const { type, value } = e.currentTarget;
+
+    if (type === "number") {
+      switch (bodyDescription[key].dataType) {
+        case "Array of Integer":
+          body[key][name[1]] = parseInt(value);
+          break;
+        case "Object":
+          body[key][name[1]] = parseInt(value);
+          break;
+        case "Array of Objects":
+          body[key][name[1]][name[2]] = parseInt(value);
+          break;
+        case "Object of Objects":
+          body[key][name[1]][name[2]] = parseInt(value);
+          break;
+        default:
+          body[key] = parseInt(value);
       }
     } else {
-      if (bodyDescription[key].dataType === "Array of String") {
-        body[key][name[1]] = e.currentTarget.value;
-      } else if (bodyDescription[key].dataType === "Object") {
-        body[key][name[1]] = e.currentTarget.value;
-      } else if (bodyDescription[key].dataType === "Array of Objects") {
-        body[key][name[1]][name[2]] = e.currentTarget.value;
-      } else if (bodyDescription[key].dataType === "Array of Boolean") {
-        body[key][name[1]] = e.currentTarget.value;
-      } else if (bodyDescription[key].dataType === "Object of Objects") {
-        body[key][name[1]][name[2]] = e.currentTarget.value;
-      } else {
-        body[key] = e.currentTarget.value;
+      switch (bodyDescription[key].dataType) {
+        case "Array of String":
+          body[key][name[1]] = value;
+          break;
+        case "Object":
+          body[key][name[1]] = value;
+          break;
+        case "Array of Objects":
+          body[key][name[1]][name[2]] = value;
+          break;
+        case "Object of Objects":
+          body[key][name[1]][name[2]] = value;
+          break;
+        case "Array of Boolean":
+          body[key][name[1]] = value === "true" ? true : false;
+          break;
+        case "boolean":
+          body[key] = value === "true" ? true : false;
+          break;
+        default:
+          body[key] = value;
       }
     }
     this.props.set_public_body(body);
@@ -78,6 +93,7 @@ class PublicBodyContainer extends Component {
       </span>
     );
   }
+
   displayBoolean(value, name) {
     return (
       <select
@@ -90,6 +106,19 @@ class PublicBodyContainer extends Component {
         <option value={true}>true</option>
         <option value={false}>false</option>
       </select>
+    );
+  }
+
+  displayInput(value, name) {
+    return (
+      <input
+        className="custom-input"
+        type={typeof value}
+        name={name}
+        value={value}
+        placeholder="Value"
+        onChange={this.handleChange}
+      ></input>
     );
   }
 
@@ -116,19 +145,6 @@ class PublicBodyContainer extends Component {
           </div>
         ))}
       </div>
-    );
-  }
-
-  displayInput(value, name) {
-    return (
-      <input
-        className="custom-input"
-        type={typeof value}
-        name={name}
-        value={value}
-        placeholder="Value"
-        onChange={this.handleChange}
-      ></input>
     );
   }
 

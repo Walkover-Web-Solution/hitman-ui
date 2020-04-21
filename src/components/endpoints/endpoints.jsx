@@ -86,12 +86,12 @@ class Endpoints extends Component {
     });
   }
 
-  handleUpdate(endpoint) {
-    this.props.history.push({
-      pathname: `/dashboard/${this.props.collection_id}/versions/${this.props.version_id}/groups/${this.props.group_id}/endpoint/${endpoint.id}/edit`,
-      editEndpoint: endpoint,
-    });
-  }
+  // handleUpdate(endpoint) {
+  //   this.props.history.push({
+  //     pathname: `/dashboard/${this.props.collection_id}/versions/${this.props.version_id}/groups/${this.props.group_id}/endpoint/${endpoint.id}/edit`,
+  //     editEndpoint: endpoint,
+  //   });
+  // }
 
   openDeleteModal(endpointId) {
     this.setState({
@@ -105,6 +105,7 @@ class Endpoints extends Component {
   closeDeleteEndpointModal() {
     this.setState({ showDeleteModal: false });
   }
+
   getCurrentUserRole(collectionId) {
     const teamId = this.props.collections[collectionId].teamId;
     if (
