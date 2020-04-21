@@ -1,7 +1,4 @@
 import React, { Component } from "react";
-import Form from "react-jsonschema-form";
-
-const toJsonSchema = require("to-json-schema");
 
 // class NewBodyDescription extends Component {
 //   state = { bodyDescription: {} };
