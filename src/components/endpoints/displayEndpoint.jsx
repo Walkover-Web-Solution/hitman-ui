@@ -559,7 +559,7 @@ class DisplayEndpoint extends Component {
     let startTime = new Date().getTime();
     let response = {};
     this.setState({ startTime, response });
-    const headersData = this.doSubmitHeader();
+    const headersData = this.doSubmitHeader("send");
     const BASE_URL = this.customState.BASE_URL;
     let uri = new URI(this.uri.current.value);
     let queryparams = uri.search();
@@ -587,7 +587,7 @@ class DisplayEndpoint extends Component {
         const updatedArray = {};
         this.setState({ updatedArray, bodyDescription });
       }
-      const headersData = this.doSubmitHeader();
+      const headersData = this.doSubmitHeader("save");
       const updatedParams = this.doSubmitParam();
       const pathVariables = this.doSubmitPathVariables();
       const endpoint = {
@@ -644,13 +644,13 @@ class DisplayEndpoint extends Component {
     return updatedPathVariables;
   }
 
-  doSubmitHeader() {
+  doSubmitHeader(title) {
     let originalHeaders = [...this.state.originalHeaders];
     let updatedHeaders = {};
     for (let i = 0; i < originalHeaders.length; i++) {
       if (originalHeaders[i].key === "") {
         continue;
-      } else {
+      } else if (originalHeaders[i].checked === "true" || title === "save") {
         updatedHeaders[originalHeaders[i].key] = {
           checked: originalHeaders[i].checked,
           value: originalHeaders[i].value,
