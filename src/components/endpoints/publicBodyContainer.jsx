@@ -172,12 +172,10 @@ class PublicBodyContainer extends Component {
   }
 
   render() {
-    console.log(this.props);
     const bodyDescription = this.props.body_description;
     if (this.props.body.type === "JSON") {
       this.body = JSON.parse(this.props.body.value);
       this.keysArray = Object.keys(this.body);
-      console.log("in if");
       if (
         this.props.public_body_flag &&
         this.props.body &&

@@ -39,7 +39,6 @@ const addData = async (storeName, val, key) => {
   if (!db) {
     await getDataBase();
   }
-  console.log(storeName, val, key);
   const tx = db.transaction(storeName, "readwrite");
   const store = await tx.objectStore(storeName);
   const value = await store.put(val, key);

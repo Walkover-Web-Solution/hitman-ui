@@ -197,33 +197,6 @@ class BodyContainer extends Component {
         });
       }
     }
-    // this.keysArray = [];
-    // this.valuesArray = [];
-    // this.dataType = [];
-
-    // if (this.props.body && this.props.body.type === "JSON") {
-    //   const jsonData = JSON.parse(this.props.body.value);
-    //   this.keysArray = Object.keys(jsonData);
-    //   this.valuesArray = Object.values(jsonData);
-    //   const data = Object.values(
-    //     JSON.parse(this.props.endpoints[this.props.endpoint_id].body.value)
-    //   );
-    //   console.log(this.keysArray, this.valuesArray, this.dataType);
-    //   let i;
-    //   for (i in data) {
-    //     let type = typeof data[i];
-    //     if (type === "object") {
-    //       if (Array.isArray(data[i])) {
-    //         if (typeof data[i][0] === "number") type = "Array";
-    //         else if (typeof data[i][0] === "string") type = "Array";
-    //         //type = "Array";
-    //         else type = "Array of Objects";
-    //       }
-    //     }
-    //     this.dataType[i] = type;
-    //   }
-    // }
-
     return (
       <div className="body-wrapper">
         <form className="body-select d-flex ">

@@ -293,14 +293,3 @@ class BodyDescription extends Component {
 }
 
 export default BodyDescription;
-
-// function recurseObject(obj, key1) {
-//   for (var key in obj) {
-//     // works for objects and arrays
-//     var item = obj[key];
-//     if (typeof item === "object") {
-//       console.log(key1 + "." + key);
-//       recurseObject(item, key);
-//     } else console.log(key1 + "." + key);
-//   }
-// }

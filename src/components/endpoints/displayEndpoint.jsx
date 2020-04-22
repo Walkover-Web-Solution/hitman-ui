@@ -244,7 +244,6 @@ class DisplayEndpoint extends Component {
     for (let i = 0; i < keys.length; i++) {
       fieldDescription[keys[i]] = bodyDescription[keys[i]].description;
     }
-    console.log(fieldDescription);
     return fieldDescription;
   }
 
@@ -764,8 +763,6 @@ class DisplayEndpoint extends Component {
   makePostData(body) {
     let params = [];
     let paramsFlag = false;
-    console.log(body.value);
-    console.log(body.type);
 
     if (
       (body.type === "application/x-www-form-urlencoded" ||
@@ -836,7 +833,6 @@ class DisplayEndpoint extends Component {
       postData: body.type === "none" ? null : this.makePostData(body),
       queryString: this.makeParams(originalParams),
     };
-    console.log(harObject);
     if (!harObject.url.split(":")[1] || harObject.url.split(":")[0] === "") {
       harObject.url = "https://";
     }

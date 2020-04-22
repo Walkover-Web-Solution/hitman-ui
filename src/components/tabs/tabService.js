@@ -45,7 +45,6 @@ function changeRoute(props, tab) {
 }
 
 function removeAllTabs(props) {
-  console.log("1");
   store.dispatch(closeAllTabs());
   newTab(props);
 }

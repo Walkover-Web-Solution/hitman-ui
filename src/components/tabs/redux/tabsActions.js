@@ -157,7 +157,6 @@ export const replaceTab = (oldTabId, newTab) => {
 };
 
 export const closeAllTabs = () => {
-  console.log("2");
   return (dispatch) => {
     dispatch({ type: tabsActionTypes.CLOSE_ALL_TABS });
     indexedDbService.updateData("tabs_metadata", [], "tabsOrder");
