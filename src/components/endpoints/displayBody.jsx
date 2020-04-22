@@ -305,22 +305,18 @@ class BodyContainer extends Component {
               </div>
             )}
           </div>
-          {this.showRawBodyType === true && (
-            <span style={{ textAlign: "right" }}>
-              <Button
-                type="button"
-                name={`body-select-${this.props.endpoint_id}`}
-                id={`body-description-${this.props.endpoint_id}`}
-                onClick={() =>
-                  this.handleSelectBodyType("raw", "bodyDescription")
-                }
-                className="custom-body-description"
-              >
-                Body Description
-              </Button>
-            </span>
-          )}
         </form>
+        {this.showRawBodyType === true && (
+          <Button
+            type="button"
+            name={`body-select-${this.props.endpoint_id}`}
+            id={`body-description-${this.props.endpoint_id}`}
+            onClick={() => this.handleSelectBodyType("raw", "bodyDescription")}
+            className="custom-body-description"
+          >
+            Body Description
+          </Button>
+        )}
         <div className="body-container">{this.renderBody()}</div>
       </div>
     );

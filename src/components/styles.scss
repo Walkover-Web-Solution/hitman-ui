@@ -1609,10 +1609,21 @@ button.btn.custom-body-type-button {
   height: 45px;
 }
 
-.custom-body-description {
-  float: right;
-  margin-left: 59pc;
+// .custom-body-description {
+//   float: right;
+//   margin-left: 58pc;
 
+//
+// }
+
+.custom-body-description {
+  display: flex;
+  flex-direction: row-reverse;
+  transform: translateY(-34px);
+  position: relative;
+  float: right;
+  height: 0px;
+  will-change: transform;
   color: rgb(255, 99, 71) !important;
   background: rgb(241, 241, 241) !important;
   border: none !important;
