@@ -11,6 +11,7 @@ import PageForm from "../pages/pageForm";
 import tabService from "../tabs/tabService";
 import "./groups.scss";
 import groupsService from "./groupsService";
+import filterService from "../common/filterService";
 
 const mapStateToProps = (state) => {
   return { groups: state.groups };
@@ -181,11 +182,11 @@ class Groups extends Component {
         }
       }
     }
-    this.filteredEndpointsAndPages = this.jsonConcat(
+    this.filteredEndpointsAndPages = filterService.jsonConcat(
       this.filteredEndpointsAndPages,
       this.filteredGroupPages
     );
-    this.filteredEndpointsAndPages = this.jsonConcat(
+    this.filteredEndpointsAndPages = filterService.jsonConcat(
       this.filteredEndpointsAndPages,
       this.filteredGroupEndpoints
     );
@@ -208,13 +209,6 @@ class Groups extends Component {
     } else {
       this.props.show_filter_version(versionIds, "endpointsAndPages");
     }
-  }
-
-  jsonConcat(o1, o2) {
-    for (var key in o2) {
-      o1[key] = o2[key];
-    }
-    return o1;
   }
 
   filterGroups() {

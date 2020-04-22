@@ -15,6 +15,7 @@ import PageForm from "../pages/pageForm";
 import VersionPages from "../pages/versionPages";
 import "./collectionVersions.scss";
 import collectionVersionsService from "./collectionVersionsService";
+import filterService from "../common/filterService";
 
 const mapStateToProps = (state) => {
   return {
@@ -209,31 +210,24 @@ class CollectionVersions extends Component {
         }
       }
     }
-    this.filteredVersions = this.jsonConcat(
+    this.filteredVersions = filterService.jsonConcat(
       this.filteredVersions,
       this.filteredVersionPages
     );
-    this.filteredVersions = this.jsonConcat(
+    this.filteredVersions = filterService.jsonConcat(
       this.filteredVersions,
       this.filteredEndpointsAndPages
     );
-    this.filteredVersions = this.jsonConcat(
+    this.filteredVersions = filterService.jsonConcat(
       this.filteredVersions,
       this.filteredGroups
     );
-    this.filteredVersions = this.jsonConcat(
+    this.filteredVersions = filterService.jsonConcat(
       this.filteredVersions,
       this.filteredOnlyVersions
     );
 
     this.setState({ filter: this.props.filter });
-  }
-
-  jsonConcat(o1, o2) {
-    for (var key in o2) {
-      o1[key] = o2[key];
-    }
-    return o1;
   }
 
   filterVersions() {

@@ -232,6 +232,12 @@ class CollectionsComponent extends Component {
   }
 
   renderBody(collectionId, collectionState) {
+    let eventkeyValue = "";
+    if (this.props.filter !== "") {
+      eventkeyValue = "0";
+    } else {
+      eventkeyValue = null;
+    }
     return (
       <React.Fragment>
         {collectionState === "singleCollection" ? (
@@ -253,7 +259,12 @@ class CollectionsComponent extends Component {
           <Card>
             <Card.Header>
               <i className="fas fa-folder-open"></i>
-              <Accordion.Toggle as={Button} variant="default" eventKey="1">
+              <Accordion.Toggle
+                as={Button}
+                variant="default"
+                eventKey={eventkeyValue !== null ? eventkeyValue : "0"}
+                // eventkey="0"
+              >
                 {collectionState === "singleCollection" ? (
                   <div>{this.props.collections[collectionId].name}</div>
                 ) : (
@@ -335,7 +346,11 @@ class CollectionsComponent extends Component {
             </Card.Header>
             {collectionState === "singleCollection" ? (
               <Accordion.Collapse
-                eventKey={collectionState === "singleCollection" ? "0" : "1"}
+                // defaultActiveKey="0"
+                // eventKey={collectionState === "singleCollection" ? "0" : "1"}
+                // eventKey={this.eventKey !== null ? this.eventKey : "0"}
+                // eventKey="0"
+                eventKey={this.props.filter !== "" ? "0" : "0"}
               >
                 <Card.Body>
                   <CollectionVersions
