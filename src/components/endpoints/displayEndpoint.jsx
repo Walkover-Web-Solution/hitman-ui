@@ -474,8 +474,6 @@ class DisplayEndpoint extends Component {
       headerJson[header] = headersData[header].value;
     });
     let { body, headers } = this.formatBody(this.state.data.body, headerJson);
-    const asString = new URLSearchParams(body).toString();
-    console.log(asString);
     this.handleApiCall(api, body, headers, this.state.data.body.type);
   };
 
@@ -765,9 +763,16 @@ class DisplayEndpoint extends Component {
 
   makePostData(body) {
     let params = [];
-    let text = "";
-    let asString = "";
-    if (body.type === "application/x-www-form-urlencoded") {
+    let paramsFlag = false;
+    console.log(body.value);
+    console.log(body.type);
+
+    if (
+      (body.type === "application/x-www-form-urlencoded" ||
+        body.type === "multipart/form-data") &&
+      body.value
+    ) {
+      paramsFlag = true;
       for (let i = 0; i < body.value.length - 1; i++) {
         if (body.value[i].checked === "true") {
           params.push({
@@ -777,24 +782,46 @@ class DisplayEndpoint extends Component {
         }
       }
     }
-    if (body.type === "multipart/form-data") {
-      let formData = this.makeFormData;
-      asString = new URLSearchParams(formData).toString();
-      console.log(asString);
-    }
     let postData = {
       mimeType: body.type,
       params: params,
-      text:
-        params.length === 0
-          ? body.type === "multipart/form-data"
-            ? asString
-            : ""
-          : "",
+      text: paramsFlag === false ? body.value : "",
       comment: "",
     };
     return postData;
   }
+
+  // makePostData(body) {
+  //   let params = [];
+  //   let paramsFlag = false;
+  //   let formData = "";
+  //   if (body.type === "application/x-www-form-urlencoded" && body.value) {
+  //     paramsFlag = true;
+  //     for (let i = 0; i < body.value.length - 1; i++) {
+  //       if (body.value[i].checked === "true") {
+  //         params.push({
+  //           name: body.value[i].key,
+  //           value: body.value[i].value,
+  //         });
+  //       }
+  //     }
+  //   }
+  //   if (body.type === "multipart/form-data") {
+  //     formData = this.makeFormData();
+  //   }
+  //   let postData = {
+  //     mimeType: body.type,
+  //     params: params,
+  //     text:
+  //       paramsFlag === false
+  //         ? body.type === "multipart/form-data"
+  //           ? formData
+  //           : ""
+  //         : "",
+  //     comment: "",
+  //   };
+  //   return postData;
+  // }
 
   async prepareHarObject() {
     const { uri, method, body } = this.state.data;
@@ -809,6 +836,7 @@ class DisplayEndpoint extends Component {
       postData: body.type === "none" ? null : this.makePostData(body),
       queryString: this.makeParams(originalParams),
     };
+    console.log(harObject);
     if (!harObject.url.split(":")[1] || harObject.url.split(":")[0] === "") {
       harObject.url = "https://";
     }
@@ -843,9 +871,9 @@ class DisplayEndpoint extends Component {
   setBody(bodyType, body) {
     let data = { ...this.state.data };
     data.body = { type: bodyType, value: body };
-    if (bodyType !== "multipart/form-data") {
-      this.setHeaders(bodyType);
-    }
+    // if (bodyType !== "multipart/form-data") {
+    this.setHeaders(bodyType);
+    // }
     if (bodyType === "JSON") {
       const data1 = this.setBodyDescription(bodyType, body);
 
@@ -965,6 +993,9 @@ class DisplayEndpoint extends Component {
       case "application/x-www-form-urlencoded":
         updatedHeaders[updatedHeaders.length - 1].value =
           "application/x-www-form-urlencoded";
+        break;
+      case "multipart/form-data":
+        updatedHeaders[updatedHeaders.length - 1].value = "multipart/form-data";
         break;
       case "TEXT":
         updatedHeaders[updatedHeaders.length - 1].value = "text/plain";
@@ -1193,7 +1224,6 @@ class DisplayEndpoint extends Component {
                 Code
               </button>
             ) : null}
-
             {isDashboardRoute(this.props) ? (
               <ul className="nav nav-tabs" id="pills-tab" role="tablist">
                 <li className="nav-item">

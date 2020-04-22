@@ -232,7 +232,7 @@ class BodyContainer extends Component {
               type="radio"
               name={`body-select-${this.props.endpoint_id}`}
               id={`none-${this.props.endpoint_id}`}
-              checked={this.state.selectedBodyType === "none" ? true : false}
+              defaultChecked={!this.state.selectedBodyType ? true : false}
               onClick={() => this.handleSelectBodyType("none")}
               className="custom-radio-input"
             />
