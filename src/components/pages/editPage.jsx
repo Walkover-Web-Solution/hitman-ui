@@ -1,10 +1,10 @@
 import React, { Component } from "react";
-import { updatePage } from "../pages/redux/pagesActions";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import store from "../../store/store";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
+import { updatePage } from "../pages/redux/pagesActions";
 import "./page.scss";
 
 const mapDispatchToProps = (dispatch, ownProps) => {
@@ -24,18 +24,11 @@ class EditPage extends Component {
   modules = {
     toolbar: [
       [{ header: [1, 2, 3, 4, 5, 6, false] }],
-      ["bold", "italic", "underline", "strike", "blockquote"],
+      ["bold", "italic", "underline", "strike"],
       [{ color: [] }, { background: [] }],
-      [{ font: [] }],
-      [{ align: [] }],
-      [
-        ({ list: "ordered" },
-        { list: "bullet" },
-        { indent: "-1" },
-        { indent: "+1" }),
-      ],
+
+      [({ list: "ordered" }, { list: "bullet" })],
       ["link"],
-      ["clean"],
     ],
   };
   formats = [
@@ -44,14 +37,10 @@ class EditPage extends Component {
     "italic",
     "underline",
     "strike",
-    "blockquote",
     "color",
     "background",
-    "font",
-    "align",
     "list",
     "bullet",
-    "indent",
     "link",
   ];
 

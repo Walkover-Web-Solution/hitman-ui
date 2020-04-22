@@ -19,6 +19,7 @@ class ShareVersionForm extends Form {
       const shareVersionLink =
         apiUrl + "/share/" + this.props.selectedVersion.shareIdentifier;
       data = { shareVersionLink };
+      data.disabled = true;
       this.setState({ data });
     }
   }

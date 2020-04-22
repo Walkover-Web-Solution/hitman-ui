@@ -10,10 +10,10 @@ import "ace-builds/src-noconflict/mode-javascript";
 import "ace-builds/src-noconflict/mode-xml";
 import "ace-builds/src-noconflict/theme-github";
 import "./endpoints.scss";
-import { Table } from "react-bootstrap";
+import { Table, Button } from "react-bootstrap";
+import BodyDescription from "./bodyDescription";
 
 class BodyContainer extends Component {
-  updatedArray = React.createRef();
   state = {
     selectedBodyType: null,
     data: {
@@ -39,30 +39,14 @@ class BodyContainer extends Component {
     endpointId: null,
     selectedRawBodyType: "TEXT",
 
-    updatedArray: {},
+    // updatedArray: {},
   };
 
   rawBodyTypes = ["TEXT", "HTML", "JSON", "XML", "JavaScript"];
 
-  handleAdd(dataType, key) {
-    let updatedArray = { ...this.state.updatedArray };
-    if (updatedArray[key] && Array.isArray(updatedArray[key])) {
-      updatedArray[key].push(null);
-    } else {
-      let tempArr = [null];
-      updatedArray[key] = tempArr;
-    }
-    this.setState({ updatedArray });
-  }
-
-  handleDelete(index, key) {
-    const updatedArray = { ...this.state.updatedArray };
-    updatedArray[key].splice(index, 1);
-    this.setState({ updatedArray });
-  }
-
-  handleSelectBodyType(bodyType) {
-    if (bodyType === "raw") {
+  handleSelectBodyType(bodyType, bodyDescription) {
+    if (bodyType === "raw" && bodyDescription) {
+      this.flag = true;
       this.showRawBodyType = true;
       this.setState({
         selectedBodyType: this.state.selectedRawBodyType,
@@ -72,29 +56,25 @@ class BodyContainer extends Component {
         this.state.data[bodyType]
       );
     } else {
-      this.showRawBodyType = false;
-      this.setState({
-        selectedBodyType: bodyType,
-      });
-      this.props.set_body(bodyType, this.state.data[bodyType]);
+      this.flag = false;
+      if (bodyType === "raw") {
+        this.showRawBodyType = true;
+        this.setState({
+          selectedBodyType: this.state.selectedRawBodyType,
+        });
+        this.props.set_body(
+          this.state.selectedRawBodyType,
+          this.state.data[bodyType]
+        );
+      } else {
+        this.showRawBodyType = false;
+        this.setState({
+          selectedBodyType: bodyType,
+        });
+        this.props.set_body(bodyType, this.state.data[bodyType]);
+      }
     }
   }
-  handleArrayChange = (e, field, index) => {
-    let updatedArray = { ...this.state.updatedArray };
-    updatedArray[e.currentTarget.name][index] = e.currentTarget.value;
-    let test1 = JSON.stringify(updatedArray);
-    this.setState({ updatedArray });
-    this.props.set_body(this.state.selectedBodyType, test1);
-  };
-
-  handleBodyChange = (e) => {
-    let updatedArray = { ...this.state.updatedArray };
-    updatedArray[e.currentTarget.name] = e.currentTarget.value;
-
-    let test1 = JSON.stringify(updatedArray);
-    this.setState({ updatedArray });
-    this.props.set_body(this.state.selectedBodyType, test1);
-  };
 
   handleChange(value) {
     const data = { ...this.state.data };
@@ -130,7 +110,9 @@ class BodyContainer extends Component {
   }
 
   renderBody() {
-    if (this.state.selectedBodyType) {
+    if (this.state.selectedBodyType && this.flag) {
+      return <BodyDescription {...this.props} />;
+    } else if (this.state.selectedBodyType) {
       switch (this.state.selectedBodyType) {
         case "multipart/form-data":
           return (
@@ -154,111 +136,6 @@ class BodyContainer extends Component {
               count="2"
             ></GenericTable>
           );
-        case "raw1":
-          return (
-            <div>
-              {this.props.body_description.map((field) =>
-                field.dataType.includes("Array") ? (
-                  <div>
-                    <td>{field.name}</td>
-                    <Table bordered size="sm">
-                      <tbody>
-                        {this.state.updatedArray[field.name] &&
-                          Array.isArray(this.state.updatedArray[field.name]) &&
-                          this.state.updatedArray[field.name].map(
-                            (item, index) =>
-                              item !== "deleted" ? (
-                                <tr key={index}>
-                                  <td>{field.dataType.split(" ")[2]}</td>
-                                  <td>
-                                    <input
-                                      name={field.name}
-                                      onChange={(e) =>
-                                        this.handleArrayChange(
-                                          e,
-                                          field.name,
-                                          index
-                                        )
-                                      }
-                                      id={field.name}
-                                      type={"text"}
-                                      style={{ border: "none" }}
-                                      className="form-control"
-                                    />
-                                  </td>
-
-                                  <td>
-                                    <button
-                                      type="button"
-                                      className="btn btn-light btn-sm btn-block"
-                                      onClick={() =>
-                                        this.handleDelete(index, field.name)
-                                      }
-                                    >
-                                      x{" "}
-                                    </button>
-                                  </td>
-                                </tr>
-                              ) : null
-                          )}
-                        <tr>
-                          <td> </td>
-                          <td>
-                            {" "}
-                            <button
-                              type="button"
-                              className="btn btn-link btn-sm btn-block"
-                              onClick={() =>
-                                this.handleAdd(field.dataType, field.name)
-                              }
-                            >
-                              + New Item
-                            </button>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </Table>
-                  </div>
-                ) : field !== "deleted" && field.name.trim() !== "" ? (
-                  <div className="form-group">
-                    <label htmlFor={field.name} className="custom-input-label">
-                      {field.name}
-                    </label>
-                    {field.dataType === "Boolean" && (
-                      <select
-                        id="custom-select-box"
-                        value={null}
-                        onChange={(e) => this.handleBodyChange(e)}
-                        name={field.name}
-                      >
-                        <option value={true} key={true}>
-                          true
-                        </option>
-                        <option value={false} key={false}>
-                          false
-                        </option>
-                      </select>
-                    )}
-                    {field.dataType !== "Boolean" && (
-                      <input
-                        onChange={this.handleBodyChange}
-                        id={field.name}
-                        name={field.name}
-                        className="form-control custom-input"
-                        type={
-                          field.dataType === "Integer" ||
-                          field.dataType === "Long"
-                            ? "number"
-                            : "text"
-                        }
-                        placeholder=""
-                      />
-                    )}
-                  </div>
-                ) : null
-              )}
-            </div>
-          );
 
         case "none":
           return;
@@ -267,9 +144,7 @@ class BodyContainer extends Component {
             <div>
               {" "}
               <AceEditor
-                // style={{
-                //   width: "1000px",
-                // }}
+                className="custom-raw-editor"
                 mode={this.state.selectedRawBodyType.toLowerCase()}
                 theme="github"
                 value={this.state.data.raw}
@@ -293,7 +168,7 @@ class BodyContainer extends Component {
   }
 
   render() {
-    if (this.props.body && !this.state.selectedBodyType) {
+    if (this.props.body !== "" && !this.state.selectedBodyType) {
       let selectedBodyType = this.props.body.type;
       if (
         selectedBodyType === "JSON" ||
@@ -322,16 +197,15 @@ class BodyContainer extends Component {
         });
       }
     }
-
     return (
       <div className="body-wrapper">
-        <form className="body-select" className="d-flex ">
+        <form className="body-select d-flex ">
           <label className="body">
             <input
               type="radio"
               name={`body-select-${this.props.endpoint_id}`}
               id={`none-${this.props.endpoint_id}`}
-              checked={this.state.selectedBodyType === "none" ? true : false}
+              defaultChecked={!this.state.selectedBodyType ? true : false}
               onClick={() => this.handleSelectBodyType("none")}
               className="custom-radio-input"
             />
@@ -346,16 +220,6 @@ class BodyContainer extends Component {
               className="custom-radio-input"
             />
             raw
-          </label>
-          <label className="body">
-            <input
-              type="radio"
-              name={`body-select-${this.props.endpoint_id}`}
-              id={`raw-${this.props.endpoint_id}`}
-              onClick={() => this.handleSelectBodyType("raw1")}
-              className="custom-radio-input"
-            />
-            raw1
           </label>
           <label className="body">
             <input
@@ -379,39 +243,53 @@ class BodyContainer extends Component {
             />
             x-www-form-urlencoded
           </label>
+
           <div className="body">
             {this.showRawBodyType === true && (
-              <div className="dropdown">
-                <button
-                  style={{ color: "#f29624" }}
-                  className="btn dropdown-toggle flex-column"
-                  type="button"
-                  id="dropdownMenuButton"
-                  data-toggle="dropdown"
-                  aria-haspopup="true"
-                  aria-expanded="false"
-                >
-                  {this.state.selectedRawBodyType}
-                </button>
-                <div
-                  className="dropdown-menu"
-                  aria-labelledby="dropdownMenuButton"
-                >
-                  {this.rawBodyTypes.map((rawBodyType) => (
-                    <button
-                      className="btn custom-body-type-button "
-                      type="button"
-                      onClick={() => this.setRawBodyType(rawBodyType)}
-                      key={rawBodyType}
-                    >
-                      {rawBodyType}
-                    </button>
-                  ))}
+              <div>
+                <div className="dropdown">
+                  <button
+                    style={{ color: "#f29624", paddingTop: "0px" }}
+                    className="btn dropdown-toggle flex-column"
+                    type="button"
+                    id="dropdownMenuButton"
+                    data-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                  >
+                    {this.state.selectedRawBodyType}
+                  </button>
+                  <div
+                    className="dropdown-menu"
+                    aria-labelledby="dropdownMenuButton"
+                  >
+                    {this.rawBodyTypes.map((rawBodyType) => (
+                      <button
+                        className="btn custom-body-type-button"
+                        type="button"
+                        onClick={() => this.setRawBodyType(rawBodyType)}
+                        key={rawBodyType}
+                      >
+                        {rawBodyType}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
             )}
           </div>
         </form>
+        {this.showRawBodyType === true && (
+          <Button
+            type="button"
+            name={`body-select-${this.props.endpoint_id}`}
+            id={`body-description-${this.props.endpoint_id}`}
+            onClick={() => this.handleSelectBodyType("raw", "bodyDescription")}
+            className="custom-body-description"
+          >
+            Body Description
+          </Button>
+        )}
         <div className="body-container">{this.renderBody()}</div>
       </div>
     );

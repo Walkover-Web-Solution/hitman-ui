@@ -10,6 +10,7 @@ import Pages from "./pages";
 import { deletePage, duplicatePage } from "./redux/pagesActions";
 import pageService from "./pageService";
 import { isDashboardRoute } from "../common/utility";
+import filterService from "../common/filterService";
 
 const mapStateToProps = (state) => {
   return {
@@ -51,9 +52,35 @@ class GroupPages extends Component {
     this.setState({ showDeleteModal: false });
   }
 
+  filterGroupPages() {
+    if (
+      this.props.selectedCollection === true &&
+      this.props.filter !== "" &&
+      this.filterFlag === false
+    ) {
+      this.filterFlag = true;
+      let groupIds = [];
+      groupIds = filterService.filter(
+        this.props.pages,
+        this.props.filter,
+        "groupPages"
+      );
+      this.setState({ filter: this.props.filter });
+      if (groupIds.length !== 0) {
+        this.props.show_filter_groups(groupIds, "pages");
+      } else {
+        this.props.show_filter_groups(null, "pages");
+      }
+    }
+  }
+
   render() {
+    if (this.state.filter !== this.props.filter) {
+      this.filterFlag = false;
+    }
     return (
       <div>
+        {this.filterGroupPages()}
         <div>
           {this.state.showDeleteModal &&
             pageService.showDeletePageModal(

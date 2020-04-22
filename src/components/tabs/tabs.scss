@@ -14,6 +14,9 @@ $border-color: rgba(227, 228, 230, 0.7);
     border-top: none;
     height: 35px;
     align-self: flex-end;
+    .item-wrp {
+      width: calc(100vw - 560px);
+    }
     .nav {
       height: 100%;
       .nav-item {
@@ -114,4 +117,9 @@ $border-color: rgba(227, 228, 230, 0.7);
       }
     }
   }
+}
+
+#modified-dot-icon {
+  font-size: 10px;
+  color: tomato;
 }

@@ -4,6 +4,8 @@ import Pages from "./pages";
 import { deletePage, duplicatePage } from "./redux/pagesActions";
 import pageService from "./pageService";
 import { isDashboardRoute } from "../common/utility";
+import filterService from "../common/filterService";
+
 const mapStateToProps = (state) => {
   return {
     pages: state.pages,
@@ -53,9 +55,35 @@ class VersionPages extends Component {
     this.setState({ showDeleteModal: false });
   }
 
+  filterVersionPages() {
+    if (
+      this.props.selectedCollection === true &&
+      this.props.filter !== "" &&
+      this.filterFlag === false
+    ) {
+      this.filterFlag = true;
+      let versionIds = [];
+      versionIds = filterService.filter(
+        this.props.pages,
+        this.props.filter,
+        "versionPages"
+      );
+      this.setState({ filter: this.props.filter });
+      if (versionIds.length !== 0) {
+        this.props.show_filter_version(versionIds, "versionPages");
+      } else {
+        this.props.show_filter_version(null, "versionPages");
+      }
+    }
+  }
+
   render() {
+    if (this.state.filter !== this.props.filter) {
+      this.filterFlag = false;
+    }
     return (
       <div>
+        {this.filterVersionPages()}
         <div>
           {this.state.showDeleteModal &&
             pageService.showDeletePageModal(

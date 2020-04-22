@@ -2,6 +2,7 @@ import collectionVersionsApiService from "../collectionVersionsApiService";
 import versionActionTypes from "./collectionVersionsActionTypes";
 import store from "../../../store/store";
 import { toast } from "react-toastify";
+import tabService from "../../tabs/tabService";
 
 export const fetchAllVersions = () => {
   return (dispatch) => {
@@ -128,13 +129,37 @@ export const onVersionAddedError = (error, newVersion) => {
   };
 };
 
-export const deleteVersion = (version) => {
+export const deleteVersion = (version, props) => {
   return (dispatch) => {
-    dispatch(deleteVersionRequest(version));
+    dispatch(deleteVersionRequest(version.id));
     collectionVersionsApiService
       .deleteCollectionVersion(version.id)
       .then(() => {
-        dispatch(onVersionDeleted());
+        const storeData = { ...store.getState() };
+        let groupIds = Object.keys(storeData.groups).filter(
+          (gId) => storeData.groups[gId].versionId === version.id
+        );
+        const pageIds = [
+          ...Object.keys(storeData.pages).filter(
+            (pId) => storeData.pages[pId].versionId === version.id
+          ),
+        ];
+        let endpointIds = [];
+
+        groupIds.map(
+          (gId) =>
+            (endpointIds = [
+              ...Object.keys(storeData.endpoints).filter(
+                (eId) => storeData.endpoints[eId].groupId === gId
+              ),
+              ...endpointIds,
+            ])
+        );
+
+        endpointIds.map((eId) => tabService.removeTab(eId, props));
+        pageIds.map((pId) => tabService.removeTab(pId, props));
+
+        dispatch(onVersionDeleted({ groupIds, endpointIds, pageIds }));
       })
       .catch((error) => {
         dispatch(onVersionDeletedError(error.response, version));
@@ -142,16 +167,17 @@ export const deleteVersion = (version) => {
   };
 };
 
-export const deleteVersionRequest = (version) => {
+export const deleteVersionRequest = (versionId) => {
   return {
     type: versionActionTypes.DELETE_VERSION_REQUEST,
-    version,
+    versionId,
   };
 };
 
-export const onVersionDeleted = () => {
+export const onVersionDeleted = (payload) => {
   return {
     type: versionActionTypes.ON_VERSION_DELETED,
+    payload,
   };
 };
 
@@ -192,6 +218,13 @@ export const importVersion = (importLink, shareIdentifier, collectionId) => {
           .importCollectionVersion(importLink, shareIdentifier, response.data)
           .then((response) => {
             dispatch(saveImportedVersion(response.data));
+          })
+          .catch((error) => {
+            dispatch(
+              onVersionsFetchedError(
+                error.response ? error.response.data : error
+              )
+            );
           });
       })
       .catch((error) => {
