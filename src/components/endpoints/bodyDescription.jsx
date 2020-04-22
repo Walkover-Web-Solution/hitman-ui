@@ -199,7 +199,6 @@ class BodyDescription extends Component {
                 >
                   <thead>
                     <tr>
-                      <th> </th>
                       <th>KEY</th>
                       <th>VALUE</th>
                       <th>DESCRIPTION</th>
@@ -208,7 +207,6 @@ class BodyDescription extends Component {
                   <tbody style={{ border: "none" }}>
                     {this.keysArray.map((key, index) => (
                       <tr key={index}>
-                        <td style={{ marginLeft: "5px" }}></td>
                         <td>
                           <div>
                             <input
