@@ -736,11 +736,11 @@ class DisplayEndpoint extends Component {
     let processedHeaders = [];
     for (let i = 0; i < Object.keys(headers).length; i++) {
       if (headers[Object.keys(headers)[i]].checked === "true") {
-        processedHeaders[i] = {
+        processedHeaders.push({
           name: headers[Object.keys(headers)[i]].key,
           value: headers[Object.keys(headers)[i]].value,
           comment: headers[Object.keys(headers)[i]].description,
-        };
+        });
       }
     }
     return processedHeaders;
@@ -836,6 +836,7 @@ class DisplayEndpoint extends Component {
     if (!harObject.url.split(":")[1] || harObject.url.split(":")[0] === "") {
       harObject.url = "https://";
     }
+    console.log("harObject", harObject);
     this.openCodeWindow(harObject);
   }
 

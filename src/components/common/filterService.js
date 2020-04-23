@@ -3,7 +3,7 @@ export function filter(entity, filter, title) {
   if (title === "groupPages" || title === "endpoints") {
     entityId = "groupId";
   }
-  if (title === "versionPages") {
+  if (title === "versionPages" || title === "groups") {
     entityId = "versionId";
   }
   this.filtered = {};
