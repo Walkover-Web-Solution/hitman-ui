@@ -64,8 +64,22 @@ class DisplayEndpoint extends Component {
     groupId: null,
     title: "",
     flagResponse: false,
-    originalHeaders: [],
-    originalParams: [],
+    originalHeaders: [
+      {
+        checked: "notApplicable",
+        key: "",
+        value: "",
+        description: "",
+      },
+    ],
+    originalParams: [
+      {
+        checked: "notApplicable",
+        key: "",
+        value: "",
+        description: "",
+      },
+    ],
     oldDescription: "",
     headers: [],
     publicBodyFlag: true,
