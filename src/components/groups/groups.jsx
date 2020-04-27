@@ -269,6 +269,15 @@ class Groups extends Component {
   }
 
   render() {
+    if (document.getElementById("group-collapse")) {
+      if (
+        document.getElementById("group-collapse").className.split(" ")[1] !==
+          "show" &&
+        this.props.filter
+      ) {
+        document.getElementById("group-collapse").className = "collapse show";
+      }
+    }
     if (this.state.filter !== this.props.filter) {
       this.filterFlag = false;
     }
@@ -392,6 +401,7 @@ class Groups extends Component {
                   ) : null}
                 </Card.Header>
                 <Accordion.Collapse
+                  id="group-collapse"
                   eventKey={
                     this.eventkey[groupId] ? this.eventkey[groupId] : "1"
                   }
