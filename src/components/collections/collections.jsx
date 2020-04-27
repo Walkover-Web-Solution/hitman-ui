@@ -238,6 +238,20 @@ class CollectionsComponent extends Component {
     } else {
       eventkeyValue = null;
     }
+
+    if (document.getElementById("collection-collapse")) {
+      if (
+        document
+          .getElementById("collection-collapse")
+          .className.split(" ")[1] !== "show" &&
+        this.props.filter
+      ) {
+        document.getElementById("collection-collapse").className =
+          "collapse show";
+        console.log("done");
+      }
+    }
+
     return (
       <React.Fragment>
         {collectionState === "singleCollection" ? (
@@ -346,10 +360,7 @@ class CollectionsComponent extends Component {
             </Card.Header>
             {collectionState === "singleCollection" ? (
               <Accordion.Collapse
-                // defaultActiveKey="0"
-                // eventKey={collectionState === "singleCollection" ? "0" : "1"}
-                // eventKey={this.eventKey !== null ? this.eventKey : "0"}
-                // eventKey="0"
+                id="collection-collapse"
                 eventKey={this.props.filter !== "" ? "0" : "0"}
               >
                 <Card.Body>

@@ -257,7 +257,9 @@ class Endpoints extends Component {
                       {this.props.endpoints[endpointId].requestType}
                     </div>
 
-                    {this.props.endpoints[endpointId].name}
+                    <div style={{ width: "100%", textAlign: "left" }}>
+                      {this.props.endpoints[endpointId].name}
+                    </div>
                   </button>
                   <div className="btn-group">
                     <button

@@ -286,6 +286,15 @@ class CollectionVersions extends Component {
   }
 
   render() {
+    if (document.getElementById("version-collapse")) {
+      if (
+        document.getElementById("version-collapse").className.split(" ")[1] !==
+          "show" &&
+        this.props.filter
+      ) {
+        document.getElementById("version-collapse").className = "collapse show";
+      }
+    }
     if (
       this.filterFlag === false ||
       this.props.filter === "" ||
@@ -406,7 +415,10 @@ class CollectionVersions extends Component {
                       </div>
                     ) : null}
                   </Card.Header>
-                  <Accordion.Collapse eventKey={this.eventkey[versionId]}>
+                  <Accordion.Collapse
+                    id="version-collapse"
+                    eventKey={this.eventkey[versionId]}
+                  >
                     <Card.Body>
                       <VersionPages
                         {...this.props}

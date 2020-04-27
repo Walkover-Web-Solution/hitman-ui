@@ -224,12 +224,13 @@ $border-color: rgba(227, 228, 230, 0.7);
 .endpoint-list-item {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  // justify-content: space-between;
 
   .btn {
     display: flex;
     flex-direction: row;
     align-items: baseline;
+    width: 100%;
   }
   .btn-group {
     visibility: hidden;
@@ -248,7 +249,7 @@ $border-color: rgba(227, 228, 230, 0.7);
   font-size: 13px;
   font-weight: 800;
   opacity: 0.7;
-  width: 50px;
+  width: 60px;
 }
 .GET {
   color: green;
@@ -256,7 +257,7 @@ $border-color: rgba(227, 228, 230, 0.7);
   font-size: 13px;
   font-weight: 800;
   opacity: 0.7;
-  width: 50px;
+  width: 60px;
 }
 .PUT {
   color: steelblue;
@@ -264,7 +265,7 @@ $border-color: rgba(227, 228, 230, 0.7);
   font-size: 13px;
   font-weight: 800;
   opacity: 0.7;
-  width: 50px;
+  width: 60px;
 }
 .DELETE {
   color: red;
@@ -272,7 +273,7 @@ $border-color: rgba(227, 228, 230, 0.7);
   font-size: 13px;
   font-weight: 800;
   opacity: 0.7;
-  width: 50px;
+  width: 60px;
 }
 
 // .endpoint-list-item:hover {

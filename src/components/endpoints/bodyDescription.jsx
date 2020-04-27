@@ -187,9 +187,9 @@ class BodyDescription extends Component {
 
     return (
       <div>
-        {this.props.body.type !== "JSON" && <div>{this.props.body.value}</div>}
-        {this.props.body &&
-          this.props.body.type === "JSON" &&
+        {this.props.Body.type !== "JSON" && <div>{this.props.Body.value}</div>}
+        {this.props.Body &&
+          this.props.Body.type === "JSON" &&
           this.keysArray.length > 0 && (
             <div>
               <div className="public-generic-table-container">

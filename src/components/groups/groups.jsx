@@ -217,57 +217,67 @@ class Groups extends Component {
       this.props.filter !== "" &&
       this.filterFlag === false
     ) {
-      this.filteredGroups = {};
       this.filterFlag = true;
-      let groups = { ...this.props.groups };
-      let groupIds = Object.keys(groups);
-      let groupNameIds = [];
-      let groupNames = [];
-      for (let i = 0; i < groupIds.length; i++) {
-        const { name } = groups[groupIds[i]];
-        groupNameIds.push({ name: name, id: groupIds[i] });
-        groupNames.push(name);
-      }
-      let finalGroupNames = groupNames.filter((name) => {
-        return (
-          name.toLowerCase().indexOf(this.props.filter.toLowerCase()) !== -1
-        );
-      });
-      let finalGroupIds = [];
-      let uniqueIds = {};
-      for (let i = 0; i < finalGroupNames.length; i++) {
-        for (let j = 0; j < Object.keys(groupNameIds).length; j++) {
-          if (
-            finalGroupNames[i] === groupNameIds[j].name &&
-            !uniqueIds[groupNameIds[j].id]
-          ) {
-            finalGroupIds.push(groupNameIds[j].id);
-            uniqueIds[groupNameIds[j].id] = true;
-            break;
-          }
-        }
-      }
-      for (let i = 0; i < finalGroupIds.length; i++) {
-        this.filteredGroups[finalGroupIds[i]] = this.props.groups[
-          finalGroupIds[i]
-        ];
-      }
+      let versionIds = [];
+      versionIds = filterService.filter(
+        this.props.groups,
+        this.props.filter,
+        "groups"
+      );
+      // this.filteredGroups = {};
+      // this.filterFlag = true;
+      // let groups = { ...this.props.groups };
+      // let groupIds = Object.keys(groups);
+      // let groupNameIds = [];
+      // let groupNames = [];
+      // for (let i = 0; i < groupIds.length; i++) {
+      //   const { name } = groups[groupIds[i]];
+      //   groupNameIds.push({ name: name, id: groupIds[i] });
+      //   groupNames.push(name);
+      // }
+      // let finalGroupNames = groupNames.filter((name) => {
+      //   return (
+      //     name.toLowerCase().indexOf(this.props.filter.toLowerCase()) !== -1
+      //   );
+      // });
+      // let finalGroupIds = [];
+      // let uniqueIds = {};
+      // for (let i = 0; i < finalGroupNames.length; i++) {
+      //   for (let j = 0; j < Object.keys(groupNameIds).length; j++) {
+      //     if (
+      //       finalGroupNames[i] === groupNameIds[j].name &&
+      //       !uniqueIds[groupNameIds[j].id]
+      //     ) {
+      //       finalGroupIds.push(groupNameIds[j].id);
+      //       uniqueIds[groupNameIds[j].id] = true;
+      //       break;
+      //     }
+      //   }
+      // }
+      // for (let i = 0; i < finalGroupIds.length; i++) {
+      //   this.filteredGroups[finalGroupIds[i]] = this.props.groups[
+      //     finalGroupIds[i]
+      //   ];
+      // }
       this.setState({ filter: this.props.filter });
-      if (Object.keys(this.filteredGroups).length !== 0) {
-        let versionIds = [];
-        for (let i = 0; i < Object.keys(this.filteredGroups).length; i++) {
-          versionIds.push(this.filteredGroups[finalGroupIds[i]].versionId);
-        }
+      if (versionIds.length !== 0) {
         this.props.show_filter_version(versionIds, "groups");
       } else {
         this.props.show_filter_version(null, "groups");
       }
-    } else if (this.filterFlag === false) {
-      this.filteredGroups = { ...this.props.groups };
     }
   }
 
   render() {
+    if (document.getElementById("group-collapse")) {
+      if (
+        document.getElementById("group-collapse").className.split(" ")[1] !==
+          "show" &&
+        this.props.filter
+      ) {
+        document.getElementById("group-collapse").className = "collapse show";
+      }
+    }
     if (this.state.filter !== this.props.filter) {
       this.filterFlag = false;
     }
@@ -391,6 +401,7 @@ class Groups extends Component {
                   ) : null}
                 </Card.Header>
                 <Accordion.Collapse
+                  id="group-collapse"
                   eventKey={
                     this.eventkey[groupId] ? this.eventkey[groupId] : "1"
                   }
