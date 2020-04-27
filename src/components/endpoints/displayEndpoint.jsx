@@ -514,7 +514,10 @@ class DisplayEndpoint extends Component {
           this.customState.selectedHost === "customHost"
             ? this.customState.BASE_URL
             : null,
-        bodyDescription: this.state.bodyDescription,
+        bodyDescription:
+          this.state.data.body.type === "JSON"
+            ? this.state.bodyDescription
+            : {},
       };
       // if (endpoint.name === "" || endpoint.uri === "")
       if (endpoint.name === "") toast.error("Please enter Endpoint name");
@@ -905,6 +908,10 @@ class DisplayEndpoint extends Component {
   setBodyDescription(type, value) {
     let data = {};
     try {
+      if (value.trim() === "") {
+        data.bodyDescription = {};
+        return data;
+      }
       let body = JSON.parse(value);
       let keys = Object.keys(body);
       let bodyDescription = {};
@@ -1127,7 +1134,6 @@ class DisplayEndpoint extends Component {
         });
       }
     }
-
     return (
       <div className="endpoint-container">
         {this.state.showEndpointFormModal && (
@@ -1336,6 +1342,7 @@ class DisplayEndpoint extends Component {
                   body={
                     this.state.bodyFlag === true ? this.state.data.body : ""
                   }
+                  Body={this.state.data.body}
                   endpoint_id={this.props.tab.id}
                   body_description={this.state.bodyDescription}
                   field_description={this.state.fieldDescription}
