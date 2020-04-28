@@ -111,7 +111,7 @@ class BodyContainer extends Component {
 
   renderBody() {
     if (this.state.selectedBodyType && this.flag) {
-      return <BodyDescription {...this.props} />;
+      return <BodyDescription {...this.props} body={this.state.data.raw} />;
     } else if (this.state.selectedBodyType) {
       switch (this.state.selectedBodyType) {
         case "multipart/form-data":
