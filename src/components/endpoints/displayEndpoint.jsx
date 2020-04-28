@@ -852,7 +852,7 @@ class DisplayEndpoint extends Component {
     const { originalHeaders, originalParams } = this.state;
     const harObject = {
       method,
-      url: BASE_URL + uri.split("?")[0],
+      url: BASE_URL.trim() + uri.split("?")[0].trim(),
       httpVersion: "HTTP/1.1",
       cookies: [],
       headers: this.makeHeaders(originalHeaders),
@@ -1240,7 +1240,6 @@ class DisplayEndpoint extends Component {
 
         <div className="endpoint-headers-container">
           <div className="headers-params-wrapper">
-            {/* {this.state.data.body.type !== "multipart/form-data" ? ( */}
             <button
               className="btn"
               type="button"
@@ -1249,7 +1248,6 @@ class DisplayEndpoint extends Component {
             >
               Code
             </button>
-            {/* // ) : null} */}
             {isDashboardRoute(this.props) ? (
               <ul className="nav nav-tabs" id="pills-tab" role="tablist">
                 <li className="nav-item">

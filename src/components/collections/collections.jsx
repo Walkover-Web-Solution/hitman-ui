@@ -248,7 +248,6 @@ class CollectionsComponent extends Component {
       ) {
         document.getElementById("collection-collapse").className =
           "collapse show";
-        console.log("done");
       }
     }
 
@@ -277,7 +276,6 @@ class CollectionsComponent extends Component {
                 as={Button}
                 variant="default"
                 eventKey={eventkeyValue !== null ? eventkeyValue : "0"}
-                // eventkey="0"
               >
                 {collectionState === "singleCollection" ? (
                   <div>{this.props.collections[collectionId].name}</div>
@@ -359,10 +357,7 @@ class CollectionsComponent extends Component {
               </div>
             </Card.Header>
             {collectionState === "singleCollection" ? (
-              <Accordion.Collapse
-                id="collection-collapse"
-                eventKey={this.props.filter !== "" ? "0" : "0"}
-              >
+              <Accordion.Collapse id="collection-collapse" eventKey="0">
                 <Card.Body>
                   <CollectionVersions
                     {...this.props}
