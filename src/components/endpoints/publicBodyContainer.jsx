@@ -18,14 +18,17 @@ class PublicBodyContainer extends Component {
     }
   }
 
-  handleDelete(key, index) {
-    this.body[key].splice(index, 1);
-    this.props.set_public_body(this.body);
+  handleDelete(index) {
+    this.bodyDescription.splice(index, 1);
+    console.log(this.bodyDescription);
+    //this.props.set_public_body(this.body);
   }
 
-  handleAdd(body, key) {
-    body[key].push(this.props.body_description[key].default[0]);
-    this.props.set_public_body(body);
+  handleAdd(index, value) {
+    this.bodyDescription.splice(1, index, value);
+    console.log(index, this.bodyDescription[index]);
+    //body[key].push(this.props.body_description[key].default[0]);
+    //this.props.set_public_body(body);
   }
 
   handleChange = (e) => {
@@ -172,22 +175,23 @@ class PublicBodyContainer extends Component {
   }
 
   render() {
-    const bodyDescription = this.props.body_description;
-    if (this.props.body.type === "JSON") {
-      this.body = JSON.parse(this.props.body.value);
-      this.keysArray = Object.keys(this.body);
-      if (
-        this.props.public_body_flag &&
-        this.props.body &&
-        this.props.body.type === "JSON"
-      ) {
-        for (let i = 0; i < this.keysArray.length; i++) {
-          this.body[this.keysArray[i]] =
-            bodyDescription[this.keysArray[i]].default;
-        }
-        this.props.set_public_body(this.body);
-      }
-    }
+    this.bodyDescription = this.props.body_description;
+
+    // if (this.props.body.type === "JSON") {
+    //   this.body = JSON.parse(this.props.body.value);
+    //   this.keysArray = Object.keys(this.body);
+    //   if (
+    //     this.props.public_body_flag &&
+    //     this.props.body &&
+    //     this.props.body.type === "JSON"
+    //   ) {
+    //     for (let i = 0; i < this.keysArray.length; i++) {
+    //       this.body[this.keysArray[i]] =
+    //         bodyDescription[this.keysArray[i]].default;
+    //     }
+    //     this.props.set_public_body(this.body);
+    //   }
+    // }
     return (
       <div>
         {this.props.body && this.props.body.type === "multipart/form-data" && (
@@ -211,115 +215,75 @@ class PublicBodyContainer extends Component {
             ></GenericTable>
           )}
 
-        {this.props.body &&
-          this.props.body.type === "JSON" &&
-          this.keysArray &&
-          this.keysArray.length > 0 && (
+        {this.props.body && this.props.body.type === "JSON" && (
+          <div>
             <div>
-              <div className="public-generic-table-container">
-                <div className="public-generic-table-title-container">Body</div>
-                <table
-                  className="table table-bordered"
-                  id="custom-generic-table"
-                >
-                  <thead>
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Key</th>
+                    {/* <th scope="col">datatype</th> */}
+                    <th scope="col">Default Value</th>
+                    <th scope="col">Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {this.bodyDescription.map((k, index) => (
                     <tr>
-                      {/* <th> </th> */}
-                      <th>KEY</th>
-                      <th>VALUE</th>
-                      <th>DESCRIPTION</th>
-                    </tr>
-                  </thead>
-                  <tbody style={{ border: "none" }}>
-                    {this.keysArray.map((key, index) => (
-                      <tr key={index}>
-                        {/* <td style={{ marginLeft: "5px" }}></td> */}
-                        <td>
-                          <div>
-                            <input
-                              disabled
-                              className="key-input"
-                              value={key}
-                              type={"text"}
-                            ></input>
-                            <label className="data-type">
-                              {bodyDescription[key].dataType}
-                            </label>
-                          </div>
-                        </td>
-                        <td>
-                          {bodyDescription[key].dataType === "boolean" ? (
-                            this.displayBoolean(this.body[key], key + ".value")
-                          ) : bodyDescription[key].dataType ===
-                            "Array of number" ? (
-                            this.displayArray(key)
-                          ) : bodyDescription[key].dataType ===
-                            "Array of string" ? (
-                            this.displayArray(key)
-                          ) : bodyDescription[key].dataType ===
-                            "Array of boolean" ? (
-                            this.displayArray(key)
-                          ) : bodyDescription[key].dataType === "object" ? (
-                            this.obectDiv(this.body[key], key)
-                          ) : bodyDescription[key].dataType ===
-                            "Array of object" ? (
-                            <React.Fragment>
-                              {this.body[key].map((obj, i) => (
-                                <div key={i} className="object-wrapper">
-                                  {this.obectDiv(obj, key, i)}
+                      <th
+                        scope="row"
+                        style={{
+                          textIndent: `${k.parentKeys.length * 25}px`,
+                        }}
+                      >
+                        {k.name}
+                        <label className="data-type">{k.type}</label>
+                      </th>
+                      {k.type === "array" && (
+                        <button
+                          onClick={() =>
+                            this.handleAdd(
+                              index,
+                              this.bodyDescription[index].value
+                            )
+                          }
+                        >
+                          Add
+                        </button>
+                      )}
 
-                                  <button
-                                    type="button"
-                                    className="btn cross-button"
-                                    onClick={() => this.handleDelete(key, i)}
-                                  >
-                                    <i className="fas fa-times"></i>
-                                  </button>
-                                </div>
-                              ))}
-                              {this.displayAddButton(key)}
-                            </React.Fragment>
-                          ) : bodyDescription[key].dataType ===
-                            "Object of objects" ? (
-                            <div>
-                              {Object.keys(this.body[key]).map((k) => (
-                                // <div
-                                //   key={k}
-                                //   // style={{
-                                //   //   marginLeft: "5px",
-                                //   //   border: "1px solid",
-                                //   //   width: "80%",
-                                //   //   padding: "5px",
-                                //   //   background: "lightgrey",
-                                //   // }}
-                                // >
-                                <div className="object-wrapper" key={k}>
-                                  {this.obectDiv(this.body[key][k], key, k)}
-                                </div>
-                              ))}
-                            </div>
-                          ) : (
-                            this.displayInput(this.body[key], key + ".value")
+                      {k.type === "object" || k.type === "array" ? (
+                        <td>
+                          {typeof k.name === "number" && (
+                            <button onClick={() => this.handleDelete(index)}>
+                              X
+                            </button>
                           )}
                         </td>
+                      ) : (
                         <td>
-                          <input
-                            disabled
-                            name={index + ".datatype"}
-                            type="text"
-                            value={bodyDescription[key].description}
-                            placeholder="Description"
-                            className="form-control"
-                            style={{ border: "none" }}
-                          />
+                          <input></input>
+                          {typeof k.name === "number" && (
+                            <button onClick={() => this.handleDelete(index)}>
+                              X
+                            </button>
+                          )}
                         </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                      )}
+                      {k.type === "object" || k.type === "array" ? (
+                        <td></td>
+                      ) : (
+                        <td>
+                          <input></input>
+                        </td>
+                      )}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
-          )}
+          </div>
+        )}
       </div>
     );
   }

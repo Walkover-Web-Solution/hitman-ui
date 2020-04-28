@@ -1373,7 +1373,76 @@ class DisplayEndpoint extends Component {
                     body={this.state.data.body}
                     public_body_flag={this.state.publicBodyFlag}
                     set_public_body={this.setPublicBody.bind(this)}
-                    body_description={this.state.bodyDescription}
+                    body_description={[
+                      { name: "key1", parentKeys: [], type: "string" },
+                      { name: "key2", parentKeys: [], type: "boolean" },
+                      { name: "key6", parentKeys: [], type: "object" },
+                      { name: "k1", parentKeys: ["key6"], type: "string" },
+                      { name: "key7", parentKeys: [], type: "array" },
+                      { name: 0, parentKeys: ["key7"], type: "object" },
+                      { name: "k1", parentKeys: ["key7", 0], type: "string" },
+
+                      { name: "key8", parentKeys: [], type: "object" },
+                      { name: "k11", parentKeys: ["key8"], type: "object" },
+                      {
+                        name: "k1",
+                        parentKeys: ["key8", "k11"],
+                        type: "string",
+                      },
+                      {
+                        name: "k3",
+                        parentKeys: ["key8", "k11"],
+                        type: "object",
+                      },
+                      {
+                        name: "k1",
+                        parentKeys: ["key8", "k11", "k3"],
+                        type: "string",
+                      },
+                      {
+                        name: "k2",
+                        parentKeys: ["key8", "k11", "k3"],
+                        type: "object",
+                      },
+                      {
+                        name: "k1",
+                        parentKeys: ["key8", "k11", "k3", "k2"],
+                        type: "string",
+                      },
+                      {
+                        name: "k2",
+                        parentKeys: ["key8", "k11", "k3", "k2"],
+                        type: "array",
+                        value: {
+                          name: 0,
+                          parentKeys: ["key8", "k11", "k3", "k2", "k2"],
+                          type: "number",
+                        },
+                      },
+                      {
+                        name: 0,
+                        parentKeys: ["key8", "k11", "k3", "k2", "k2"],
+                        type: "number",
+                      },
+                      {
+                        name: 1,
+                        parentKeys: ["key8", "k11", "k3", "k2", "k2"],
+                        type: "number",
+                      },
+                      { name: "k12", parentKeys: ["key8"], type: "object" },
+                      {
+                        name: "k1",
+                        parentKeys: ["key8", "k12"],
+                        type: "string",
+                      },
+                      {
+                        name: "k2",
+                        parentKeys: ["key8", "k12"],
+                        type: "number",
+                      },
+                      { name: "key9", parentKeys: [], type: "array" },
+                      { name: 0, parentKeys: ["key9"], type: "boolean" },
+                    ]}
                   ></PublicBodyContainer>
                 )}
             </div>
