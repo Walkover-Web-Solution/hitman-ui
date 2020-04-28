@@ -248,24 +248,22 @@ class BodyDescription extends Component {
         <table class="table">
           <thead>
             <tr>
-              <th scope="col">level</th>
-              <th scope="col">key</th>
-              <th scope="col">datatype</th>
-              <th scope="col">value</th>
-              <th scope="col">description</th>
+              <th scope="col">Key</th>
+              {/* <th scope="col">datatype</th> */}
+              <th scope="col">Default Value</th>
+              <th scope="col">Description</th>
             </tr>
           </thead>
           <tbody>
             {bodyDescription.map((k) => (
               <tr>
-                <td>{k.parentKeys.length}</td>
                 <th
                   scope="row"
                   style={{ textIndent: `${k.parentKeys.length * 25}px` }}
                 >
                   {k.name}
+                  <label className="data-type">{k.type}</label>
                 </th>
-                <td className="data-type">{k.type}</td>
                 {k.type === "object" || k.type === "array" ? (
                   <td></td>
                 ) : (
@@ -273,9 +271,13 @@ class BodyDescription extends Component {
                     <input></input>
                   </td>
                 )}
-                <td>
-                  <input></input>
-                </td>
+                {k.type === "object" || k.type === "array" ? (
+                  <td></td>
+                ) : (
+                  <td>
+                    <input></input>
+                  </td>
+                )}
               </tr>
             ))}
           </tbody>
