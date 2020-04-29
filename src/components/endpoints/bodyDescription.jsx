@@ -3,7 +3,9 @@ import "./publicEndpoint.scss";
 import { JsonHighlightRules } from "ace-builds/src-noconflict/mode-json";
 
 class BodyDescription extends Component {
-  state = {};
+  state = {
+    bodyDescription: null,
+  };
 
   // handleChangeBody(title, dataArray) {
   //   switch (title) {
@@ -193,7 +195,7 @@ class BodyDescription extends Component {
     }
   }
 
-  generateBodyDescription(json, parentKeys) {
+  generateBodyDescription1(json, parentKeys) {
     if (!parentKeys) parentKeys = [];
 
     let obj = json;
@@ -209,12 +211,14 @@ class BodyDescription extends Component {
             name: keys[i],
             parentKeys,
             type: "array",
+            description: "",
           });
         } else {
           keyElements.push({
             name: keys[i],
             parentKeys,
             type: typeof obj[keys[i]],
+            description: "",
           });
         }
         const childKeyElements = this.generateBodyDescription(obj[keys[i]], [
@@ -229,62 +233,200 @@ class BodyDescription extends Component {
           name: keys[i],
           parentKeys,
           type: typeof obj[keys[i]],
+          description: "",
         });
       }
     }
     return keyElements;
   }
 
+  generateBodyDescription(body) {
+    let bodyDescription = null;
+    if (Array.isArray(body)) bodyDescription = [];
+    else bodyDescription = {};
+
+    const keys = Object.keys(body);
+    for (let i = 0; i < keys.length; i++) {
+      const value = body[keys[i]];
+      if (
+        typeof value === "string" ||
+        typeof value === "number" ||
+        typeof value === "boolean"
+      ) {
+        bodyDescription[keys[i]] = {
+          value,
+          dataTtypeype: typeof value,
+          description: null,
+        };
+      } else {
+        if (Array.isArray(value))
+          bodyDescription[keys[i]] = {
+            value: this.generateBodyDescription(value),
+            type: "array",
+          };
+        else
+          bodyDescription[keys[i]] = {
+            value: this.generateBodyDescription(value),
+            type: "object",
+          };
+      }
+    }
+    return bodyDescription;
+  }
+
+  generateBodyFromDescription(bodyDescription, body) {}
+
+  handleChange(e, index, title) {
+    // switch (title) {
+    //   case "default-value":
+    //     bodyDescription[index].defaultValue = e.currentTarget.value;
+    //   case "description":
+    //     bodyDescription[index].defaultValue = e.currentTarget.value;
+    // }
+  }
+
+  updateBodyDescription(body) {
+    body = this.parseBody(body);
+    const bodyDescription = {
+      value: this.generateBodyDescription(body),
+      type: "object",
+    };
+    // this.setState({ bodyDescription });
+    return bodyDescription;
+  }
+
   render() {
     // const bodyDescription = { ...this.props.body_description };
     console.log(this.props.body);
+    const bodyDescription = this.updateBodyDescription(this.props.body);
 
-    const bodyDescription = this.generateBodyDescription(
-      this.parseBody(this.props.body)
-    );
     console.log(bodyDescription);
     return (
       <div>
-        <table class="table">
+        {/* <table class="table">
           <thead>
             <tr>
               <th scope="col">Key</th>
-              {/* <th scope="col">datatype</th> */}
               <th scope="col">Default Value</th>
               <th scope="col">Description</th>
             </tr>
           </thead>
           <tbody>
-            {bodyDescription.map((k) => (
+            {bodyDescription.map((k, index) => (
               <tr>
-                <th
+                <td
                   scope="row"
                   style={{ textIndent: `${k.parentKeys.length * 25}px` }}
                 >
                   {k.name}
                   <label className="data-type">{k.type}</label>
-                </th>
+                </td>
                 {k.type === "object" || k.type === "array" ? (
                   <td></td>
                 ) : (
                   <td>
-                    <input></input>
+                    <input
+                      onChange={(e) =>
+                        this.handleChange(e, index, "default-value")
+                      }
+                    ></input>
                   </td>
                 )}
                 {k.type === "object" || k.type === "array" ? (
                   <td></td>
                 ) : (
                   <td>
-                    <input></input>
+                    <input
+                      onChange={(e) =>
+                        this.handleChange(e, index, "description")
+                      }
+                    ></input>
                   </td>
                 )}
               </tr>
             ))}
           </tbody>
-        </table>
+        </table> */}
       </div>
     );
   }
 }
 
 export default BodyDescription;
+
+// 0: {name: "name", parentKeys: Array(0), type: "string", description: ""}
+// 1: {name: "variables", parentKeys: Array(0), type: "object", description: ""}
+// 2:
+// description: ""
+// name: "var1"
+// parentKeys: ["variables"]
+// type: "object"
+// __proto__: Object
+// 3:
+// description: ""
+// name: "initialValue"
+// parentKeys: (2) ["variables", "var1"]
+// type: "string"
+// __proto__: Object
+// 4:
+// description: ""
+// name: "currentValue"
+// parentKeys: (2) ["variables", "var1"]
+// type: "string"
+// __proto__: Object
+// 5:
+// description: ""
+// name: "var2"
+// parentKeys: ["variables"]
+// type: "object"
+// __proto__: Object
+// 6:
+// description: ""
+// name: "initialVaddddlue"
+// parentKeys: (2) ["variables", "var2"]
+// type: "string"
+// __proto__: Object
+// 7:
+// description: ""
+// name: "currentValue"
+// parentKeys: (2) ["variables", "var2"]
+// type: "string"
+
+// 0: {name: "name", parentKeys: Array(0), type: "string", description: ""}
+// 1: {name: "variables", parentKeys: Array(0), type: "object", description: ""}
+// 2: {name: "var1", parentKeys: Array(1), type: "object", description: ""}
+// 3:
+// description: ""
+// name: "initialValue"
+// parentKeys: (2) ["variables", "var1"]
+// type: "string"
+// __proto__: Object
+// 4:
+// description: ""
+// name: "currentValue"
+// parentKeys: (2) ["variables", "var1"]
+// type: "string"
+// __proto__: Object
+// 5:
+// description: ""
+// name: "key45"
+// parentKeys: (2) ["variables", "var1"]
+// type: "string"
+// __proto__: Object
+// 6:
+// description: ""
+// name: "var2"
+// parentKeys: ["variables"]
+// type: "object"
+// __proto__: Object
+// 7:
+// description: ""
+// name: "initialVaddddlue"
+// parentKeys: (2) ["variables", "var2"]
+// type: "string"
+// __proto__: Object
+// 8:
+// description: ""
+// name: "currentValue"
+// parentKeys: (2) ["variables", "var2"]
+// type: "string"
