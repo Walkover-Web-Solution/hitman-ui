@@ -45,7 +45,7 @@ class PublicBodyContainer extends Component {
   handleAdd(name) {
     this.performAdd(name.split("."), this.bodyDescription);
     console.log(name, this.bodyDescription);
-    this.props.set_body_description(this.bodyDescription);
+    //this.props.set_body_description(this.bodyDescription);
   }
 
   performChange(pkeys, bodyDescription, value) {
