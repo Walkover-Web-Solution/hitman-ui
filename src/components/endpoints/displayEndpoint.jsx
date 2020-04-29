@@ -843,24 +843,36 @@ class DisplayEndpoint extends Component {
     this.customState.selectedHost = selectedHost;
   }
 
+  // setBody(bodyType, body) {
+  //   let data = { ...this.state.data };
+  //   data.body = { type: bodyType, value: body };
+  //   // if (bodyType !== "multipart/form-data") {
+  //   this.setHeaders(bodyType);
+  //   // }
+  //   if (bodyType === "JSON") {
+  //     const data1 = this.setBodyDescription(bodyType, body);
+
+  //     // this.set_body_description(body)
+  //     if (data1.error !== undefined) this.setState({ data });
+  //     else {
+  //       const bodyDescription = data1.bodyDescription;
+  //       this.setState({ data, bodyDescription });
+  //     }
+  //   } else {
+  //     this.setState({ data });
+  //   }
+  //   if (isDashboardRoute(this.props)) {
+  //     tabService.markTabAsModified(this.props.tab.id);
+  //   }
+  // }
+
   setBody(bodyType, body) {
     let data = { ...this.state.data };
     data.body = { type: bodyType, value: body };
     // if (bodyType !== "multipart/form-data") {
     this.setHeaders(bodyType);
     // }
-    if (bodyType === "JSON") {
-      const data1 = this.setBodyDescription(bodyType, body);
-
-      // this.set_body_description(body)
-      if (data1.error !== undefined) this.setState({ data });
-      else {
-        const bodyDescription = data1.bodyDescription;
-        this.setState({ data, bodyDescription });
-      }
-    } else {
-      this.setState({ data });
-    }
+    this.setState({ data });
     if (isDashboardRoute(this.props)) {
       tabService.markTabAsModified(this.props.tab.id);
     }
