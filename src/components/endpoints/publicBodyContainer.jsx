@@ -18,72 +18,91 @@ class PublicBodyContainer extends Component {
     }
   }
 
-  handleDelete(index) {
-    this.bodyDescription.splice(index, 1);
-    console.log(this.bodyDescription);
+  performDelete(pkeys, value) {
+    if (pkeys.length == 1) {
+      value.splice(pkeys[0], 1);
+      return;
+    }
+    const data = value[pkeys[0]].value;
+    return this.performDelete(pkeys.slice(1, pkeys.length), data);
+  }
+
+  handleDelete(name) {
+    this.performDelete(name.split("."), this.bodyDescription);
+    console.log(name, this.bodyDescription);
     //this.props.set_public_body(this.body);
   }
 
-  handleAdd(index, value) {
-    this.bodyDescription.splice(1, index, value);
-    console.log(index, this.bodyDescription[index]);
-    //body[key].push(this.props.body_description[key].default[0]);
+  performAdd(pkeys, value) {
+    if (pkeys.length == 1) {
+      value[pkeys[0]].value.push(value[pkeys[0]].default);
+      return;
+    }
+    const data = value[pkeys[0]].value;
+    return this.performAdd(pkeys.slice(1, pkeys.length), data);
+  }
+
+  handleAdd(name) {
+    this.performAdd(name.split("."), this.bodyDescription);
+    console.log(name, this.bodyDescription);
     //this.props.set_public_body(body);
   }
 
   handleChange = (e) => {
     const name = e.currentTarget.name.split(".");
-    const key = name[0];
-    const bodyDescription = this.props.body_description;
-    let body = this.body;
+    console.log(name);
+    // const key = name[0];
+    //const bodyDescription = this.props.body_description;
+    //let body = this.body;
     const { type, value } = e.currentTarget;
-    if (type === "number") {
-      switch (bodyDescription[key].dataType) {
-        case "Array of number":
-          body[key][name[1]] = parseInt(value);
-          break;
-        case "object":
-          body[key][name[1]] = parseInt(value);
-          break;
-        case "Array of object":
-          body[key][name[1]][name[2]] = parseInt(value);
-          break;
-        case "Object of objects":
-          body[key][name[1]][name[2]] = parseInt(value);
-          break;
-        default:
-          body[key] = parseInt(value);
-      }
-    } else {
-      switch (bodyDescription[key].dataType) {
-        case "Array of string":
-          body[key][name[1]] = value;
-          break;
-        case "object":
-          body[key][name[1]] = value;
-          break;
-        case "Array of object":
-          body[key][name[1]][name[2]] = value;
-          break;
-        case "Object of objects":
-          body[key][name[1]][name[2]] = value;
-          break;
-        case "Array of boolean":
-          body[key][name[1]] = value;
-          break;
-        default:
-          body[key] = value;
-      }
-    }
-    this.props.set_public_body(body);
+    console.log(type, value);
+    // if (type === "number") {
+    //   switch (bodyDescription[key].dataType) {
+    //     case "Array of number":
+    //       body[key][name[1]] = parseInt(value);
+    //       break;
+    //     case "object":
+    //       body[key][name[1]] = parseInt(value);
+    //       break;
+    //     case "Array of object":
+    //       body[key][name[1]][name[2]] = parseInt(value);
+    //       break;
+    //     case "Object of objects":
+    //       body[key][name[1]][name[2]] = parseInt(value);
+    //       break;
+    //     default:
+    //       body[key] = parseInt(value);
+    //   }
+    // } else {
+    //   switch (bodyDescription[key].dataType) {
+    //     case "Array of string":
+    //       body[key][name[1]] = value;
+    //       break;
+    //     case "object":
+    //       body[key][name[1]] = value;
+    //       break;
+    //     case "Array of object":
+    //       body[key][name[1]][name[2]] = value;
+    //       break;
+    //     case "Object of objects":
+    //       body[key][name[1]][name[2]] = value;
+    //       break;
+    //     case "Array of boolean":
+    //       body[key][name[1]] = value;
+    //       break;
+    //     default:
+    //       body[key] = value;
+    //   }
+    // }
+    // this.props.set_public_body(body);
   };
 
-  displayAddButton(key) {
+  displayAddButton(name) {
     return (
       <div className="array-row-add-wrapper">
         <span
           className="badge badge-success"
-          onClick={() => this.handleAdd(this.body, key)}
+          onClick={() => this.handleAdd(name)}
         >
           Add+
         </span>
@@ -107,8 +126,6 @@ class PublicBodyContainer extends Component {
   }
 
   displayInput(obj, name, className) {
-    // let type = typeof value;
-    // type = type === "object" || type === "number" ? "number" : "string";
     return (
       <div>
         <input
@@ -120,29 +137,6 @@ class PublicBodyContainer extends Component {
           onChange={this.handleChange}
         ></input>
         <input value={obj.description} disabled></input>
-      </div>
-    );
-  }
-
-  obectDiv(obj, key, index) {
-    return (
-      <div className="object-container">
-        {Object.keys(obj).map((k) => (
-          <div key={k} className="object-row-wrapper">
-            <label>{k}</label>
-            {this.props.body_description[key].dataType === "object"
-              ? this.displayInput(
-                  obj[k],
-                  key + "." + k + ".value",
-                  "object-value"
-                )
-              : this.displayInput(
-                  obj[k],
-                  key + "." + index + "." + k + ".value",
-                  "object-value"
-                )}
-          </div>
-        ))}
       </div>
     );
   }
@@ -170,47 +164,39 @@ class PublicBodyContainer extends Component {
             {value.type === "boolean"
               ? this.displayBoolean(
                   value.value,
-                  name + "." + index + ".value",
+                  name + "." + index,
                   "array-boolean"
                 )
               : value.type === "object"
-              ? this.displayObject(value.value, name + "." + index + ".value")
-              : this.arrayInput(
-                  value.value,
-                  value.type,
-                  name + "." + index + ".value"
-                )}
+              ? this.displayObject(value.value, name + "." + index)
+              : this.arrayInput(value.value, value.type, name + "." + index)}
             <button
               type="button"
               className="btn cross-button"
-              //onClick={() => this.handleDelete(key, index)}
+              onClick={() => this.handleDelete(name + "." + index)}
             >
-              <i className="fas fa-times"></i>
+              X{/* <i className="fas fa-times"></i> */}
             </button>
           </div>
         ))}
-        {/* {this.displayAddButton(key)} */}
+        {this.displayAddButton(name)}
       </div>
     );
   }
 
   displayObject(obj, name) {
     return (
-      <div className="object-container">
+      <div style={{ border: "1px solid" }}>
         {Object.keys(obj).map((key, index) => (
           <div key={key} className="object-row-wrapper">
             <label>{key}</label>
             {obj[key].type === "object"
               ? this.displayObject(obj[key].value, name + "." + key)
               : obj[key].type === "array"
-              ? this.displayArray(obj[key].value, name + ".key")
+              ? this.displayArray(obj[key].value, name + "." + key)
               : obj[key].type === "boolean"
               ? this.displayBoolean(obj[key].value, name + "." + key)
-              : this.displayInput(
-                  obj[key],
-                  name + "." + key + ".value",
-                  "object-value"
-                )}
+              : this.displayInput(obj[key], name + "." + key, "object-value")}
           </div>
         ))}
       </div>
@@ -248,6 +234,7 @@ class PublicBodyContainer extends Component {
         ],
         type: "array",
         description: "dfd",
+        default: { value: 2, type: "number", description: "sfdf" },
       },
       key5: {
         value: [
@@ -261,6 +248,14 @@ class PublicBodyContainer extends Component {
           },
         ],
         type: "array",
+        default: {
+          value: {
+            k1: { value: "v1", type: "string", description: "" },
+            k2: { value: 10, type: "number", description: "" },
+          },
+          type: "object",
+          description: "",
+        },
       },
 
       key6: {
@@ -272,6 +267,7 @@ class PublicBodyContainer extends Component {
             ],
             type: "array",
             description: "",
+            default: { value: 2, type: "number", description: "sfdf" },
           },
           k2: { value: 10, type: "number", description: "" },
         },
@@ -326,25 +322,19 @@ class PublicBodyContainer extends Component {
                   {this.bodyDescription[key].type === "string"
                     ? this.displayInput(
                         this.bodyDescription[key],
-                        key + ".value",
+                        key,
                         "custom-input"
                       )
                     : this.bodyDescription[key].type === "number"
                     ? this.displayInput(
                         this.bodyDescription[key],
-                        key + ".value",
+                        key,
                         "custom-input"
                       )
                     : this.bodyDescription[key].type === "object"
-                    ? this.displayObject(
-                        this.bodyDescription[key].value,
-                        key + ".value"
-                      )
+                    ? this.displayObject(this.bodyDescription[key].value, key)
                     : this.bodyDescription[key].type === "array"
-                    ? this.displayArray(
-                        this.bodyDescription[key].value,
-                        key + ".value"
-                      )
+                    ? this.displayArray(this.bodyDescription[key].value, key)
                     : null}
                 </div>
               ))}
