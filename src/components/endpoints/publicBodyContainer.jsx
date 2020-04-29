@@ -91,11 +91,11 @@ class PublicBodyContainer extends Component {
     );
   }
 
-  displayBoolean(value, name, className) {
+  displayBoolean(obj, name, className) {
     return (
       <select
         className={className || "custom-boolean"}
-        value={value}
+        value={obj.value}
         onChange={this.handleChange}
         name={name}
       >
@@ -106,18 +106,21 @@ class PublicBodyContainer extends Component {
     );
   }
 
-  displayInput(value, name, className) {
-    let type = typeof value;
-    type = type === "object" || type === "number" ? "number" : "string";
+  displayInput(obj, name, className) {
+    // let type = typeof value;
+    // type = type === "object" || type === "number" ? "number" : "string";
     return (
-      <input
-        className={className || "custom-input"}
-        type={type}
-        name={name}
-        value={value}
-        placeholder="Value"
-        onChange={this.handleChange}
-      ></input>
+      <div>
+        <input
+          className={className || "custom-input"}
+          type={obj.type}
+          name={name}
+          value={obj.value}
+          placeholder="Value"
+          onChange={this.handleChange}
+        ></input>
+        <input value={obj.description} disabled></input>
+      </div>
     );
   }
 
@@ -144,38 +147,137 @@ class PublicBodyContainer extends Component {
     );
   }
 
-  displayArray(key) {
+  arrayInput(value, type, name) {
     return (
       <div>
-        {this.body[key].map((value, index) => (
+        <input
+          className={"custom-input"}
+          type={type}
+          name={name}
+          value={value}
+          placeholder="Value"
+          onChange={this.handleChange}
+        ></input>
+      </div>
+    );
+  }
+
+  displayArray(array, name) {
+    return (
+      <div>
+        {array.map((value, index) => (
           <div key={index} className="array-row">
-            {this.props.body_description[key].dataType === "Array of boolean"
+            {value.type === "boolean"
               ? this.displayBoolean(
-                  value,
-                  key + "." + index + ".value",
+                  value.value,
+                  name + "." + index + ".value",
                   "array-boolean"
                 )
-              : this.displayInput(
-                  value,
-                  key + "." + index + ".value",
-                  "array-input"
+              : value.type === "object"
+              ? this.displayObject(value.value, name + "." + index + ".value")
+              : this.arrayInput(
+                  value.value,
+                  value.type,
+                  name + "." + index + ".value"
                 )}
             <button
               type="button"
               className="btn cross-button"
-              onClick={() => this.handleDelete(key, index)}
+              //onClick={() => this.handleDelete(key, index)}
             >
               <i className="fas fa-times"></i>
             </button>
           </div>
         ))}
-        {this.displayAddButton(key)}
+        {/* {this.displayAddButton(key)} */}
+      </div>
+    );
+  }
+
+  displayObject(obj, name) {
+    return (
+      <div className="object-container">
+        {Object.keys(obj).map((key, index) => (
+          <div key={key} className="object-row-wrapper">
+            <label>{key}</label>
+            {obj[key].type === "object"
+              ? this.displayObject(obj[key].value, name + "." + key)
+              : obj[key].type === "array"
+              ? this.displayArray(obj[key].value, name + ".key")
+              : obj[key].type === "boolean"
+              ? this.displayBoolean(obj[key].value, name + "." + key)
+              : this.displayInput(
+                  obj[key],
+                  name + "." + key + ".value",
+                  "object-value"
+                )}
+          </div>
+        ))}
       </div>
     );
   }
 
   render() {
-    this.bodyDescription = this.props.body_description;
+    //this.bodyDescription = this.props.body_description;
+    this.bodyDescription = {
+      key1: { value: "abc", type: "string", description: "d" },
+      key2: {
+        value: {
+          k1: { value: "v1", type: "string", description: "" },
+          k2: { value: 10, type: "number", description: "" },
+        },
+        type: "object",
+      },
+      key3: {
+        value: {
+          key1: {
+            value: {
+              k1: { value: "v1", type: "string", description: "" },
+              k2: { value: 10, type: "number", description: "" },
+            },
+            type: "object",
+          },
+          k22: { value: 10, type: "number", description: "" },
+        },
+        type: "object",
+      },
+      key4: {
+        value: [
+          { value: 2, type: "number", description: "sfdf" },
+          { value: 3, type: "number", description: "sfdf" },
+        ],
+        type: "array",
+        description: "dfd",
+      },
+      key5: {
+        value: [
+          {
+            value: {
+              k1: { value: "v1", type: "string", description: "" },
+              k2: { value: 10, type: "number", description: "" },
+            },
+            type: "object",
+            description: "",
+          },
+        ],
+        type: "array",
+      },
+
+      key6: {
+        value: {
+          k1: {
+            value: [
+              { value: 2, type: "number", description: "sfdf" },
+              { value: 3, type: "number", description: "sfdf" },
+            ],
+            type: "array",
+            description: "",
+          },
+          k2: { value: 10, type: "number", description: "" },
+        },
+        type: "object",
+      },
+    };
 
     // if (this.props.body.type === "JSON") {
     //   this.body = JSON.parse(this.props.body.value);
@@ -218,11 +320,40 @@ class PublicBodyContainer extends Component {
         {this.props.body && this.props.body.type === "JSON" && (
           <div>
             <div>
+              {Object.keys(this.bodyDescription).map((key) => (
+                <div>
+                  <label style={{ fontWeight: "bold" }}>{key}</label>
+                  {this.bodyDescription[key].type === "string"
+                    ? this.displayInput(
+                        this.bodyDescription[key],
+                        key + ".value",
+                        "custom-input"
+                      )
+                    : this.bodyDescription[key].type === "number"
+                    ? this.displayInput(
+                        this.bodyDescription[key],
+                        key + ".value",
+                        "custom-input"
+                      )
+                    : this.bodyDescription[key].type === "object"
+                    ? this.displayObject(
+                        this.bodyDescription[key].value,
+                        key + ".value"
+                      )
+                    : this.bodyDescription[key].type === "array"
+                    ? this.displayArray(
+                        this.bodyDescription[key].value,
+                        key + ".value"
+                      )
+                    : null}
+                </div>
+              ))}
+            </div>
+            {/* <div>
               <table class="table">
                 <thead>
                   <tr>
                     <th scope="col">Key</th>
-                    {/* <th scope="col">datatype</th> */}
                     <th scope="col">Default Value</th>
                     <th scope="col">Description</th>
                   </tr>
@@ -281,7 +412,7 @@ class PublicBodyContainer extends Component {
                   ))}
                 </tbody>
               </table>
-            </div>
+            </div> */}
           </div>
         )}
       </div>
