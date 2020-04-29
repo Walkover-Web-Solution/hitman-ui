@@ -18,56 +18,60 @@ class PublicBodyContainer extends Component {
     }
   }
 
-  performDelete(pkeys, value) {
+  performDelete(pkeys, value, body) {
     if (pkeys.length == 1) {
+      body.splice(pkeys[0], 1);
       value.splice(pkeys[0], 1);
       return;
     }
     const data = value[pkeys[0]].value;
-    return this.performDelete(pkeys.slice(1, pkeys.length), data);
+    const bodyData = body[pkeys[0]];
+    this.performDelete(pkeys.slice(1, pkeys.length), data, bodyData);
   }
 
   handleDelete(name) {
-    this.performDelete(name.split("."), this.bodyDescription);
+    let body = JSON.parse(this.props.body.value);
+    this.performDelete(name.split("."), this.bodyDescription, body);
     this.props.set_body_description(this.bodyDescription);
+    this.props.set_public_body(body);
   }
 
-  performAdd(pkeys, value) {
+  performAdd(pkeys, value, body) {
     if (pkeys.length == 1) {
       value[pkeys[0]].value.push(value[pkeys[0]].default);
+      body[pkeys[0]].push(value[pkeys[0]].default.value);
       return;
     }
     const data = value[pkeys[0]].value;
-    return this.performAdd(pkeys.slice(1, pkeys.length), data);
+    const bodyData = body[pkeys[0]];
+    this.performAdd(pkeys.slice(1, pkeys.length), data, bodyData);
   }
 
   handleAdd(name) {
-    this.performAdd(name.split("."), this.bodyDescription);
+    let body = JSON.parse(this.props.body.value);
+    this.performAdd(name.split("."), this.bodyDescription, body);
     this.props.set_body_description(this.bodyDescription);
+    this.props.set_public_body(body);
   }
 
-  performChange(pkeys, bodyDescription, value) {
+  performChange(pkeys, bodyDescription, body, value) {
     if (pkeys.length == 1) {
-      if (bodyDescription[pkeys[0]].type === "number")
+      if (bodyDescription[pkeys[0]].type === "number") {
         bodyDescription[pkeys[0]].value = parseInt(value);
-      else if (bodyDescription[pkeys[0]].type === "string")
+        body[pkeys[0]] = value;
+      } else if (bodyDescription[pkeys[0]].type === "string") {
         bodyDescription[pkeys[0]].value = value;
-      else bodyDescription[pkeys[0]].value = value;
+        body[pkeys[0]] = value;
+      } else {
+        bodyDescription[pkeys[0]].value = value;
+        body[pkeys[0]] = value;
+      }
 
       return;
     } else {
       const data = bodyDescription[pkeys[0]].value;
-      this.performChange(pkeys.slice(1, pkeys.length), data, value);
-    }
-  }
-
-  performBodyChange(pkeys, body, value) {
-    if (pkeys.length == 1) {
-      body[pkeys[0]] = value;
-      return;
-    } else {
-      const data = body[pkeys[0]];
-      this.performBodyChange(pkeys.slice(1, pkeys.length), data, value);
+      const bodyData = body[pkeys[0]];
+      this.performChange(pkeys.slice(1, pkeys.length), data, bodyData, value);
     }
   }
 
@@ -75,9 +79,8 @@ class PublicBodyContainer extends Component {
     const { name, value } = e.currentTarget;
     //console.log(name);
 
-    this.performChange(name.split("."), this.bodyDescription, value);
     let body = JSON.parse(this.props.body.value);
-    this.performBodyChange(name.split("."), body, value);
+    this.performChange(name.split("."), this.bodyDescription, body, value);
     console.log(this.bodyDescription);
     this.props.set_public_body(body);
     this.props.set_body_description(this.bodyDescription);
@@ -172,7 +175,7 @@ class PublicBodyContainer extends Component {
 
   render() {
     this.bodyDescription = this.props.body_description;
-    //console.log(this.props);
+    console.log(this.props);
 
     // if (this.props.body.type === "JSON") {
     //   this.body = JSON.parse(this.props.body.value);

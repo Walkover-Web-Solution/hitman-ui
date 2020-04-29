@@ -462,17 +462,18 @@ class BodyDescription extends Component {
           description: null,
         };
       } else {
-        if (Array.isArray(value))
+        if (Array.isArray(value)) {
           bodyDescription[keys[i]] = {
             value: this.generateBodyDescription(value),
             type: "array",
-            default: value[0],
+            default: this.generateBodyDescription(value)[0],
           };
-        else
+        } else {
           bodyDescription[keys[i]] = {
             value: this.generateBodyDescription(value),
             type: "object",
           };
+        }
       }
     }
     return bodyDescription;
