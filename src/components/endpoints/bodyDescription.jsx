@@ -274,7 +274,9 @@ class BodyDescription extends Component {
     return bodyDescription;
   }
 
-  generateBodyFromDescription(bodyDescription, body) {}
+  generateBodyFromDescription(bodyDescription, body) {
+    const keys = Object.keys(bodyDescription)
+  }
 
   handleChange(e, index, title) {
     // switch (title) {
@@ -287,10 +289,8 @@ class BodyDescription extends Component {
 
   updateBodyDescription(body) {
     body = this.parseBody(body);
-    const bodyDescription = {
-      value: this.generateBodyDescription(body),
-      type: "object",
-    };
+    const bodyDescription = this.generateBodyDescription(body),
+ 
     // this.setState({ bodyDescription });
     return bodyDescription;
   }

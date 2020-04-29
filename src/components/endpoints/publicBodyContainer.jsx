@@ -37,45 +37,45 @@ class PublicBodyContainer extends Component {
     const bodyDescription = this.props.body_description;
     let body = this.body;
     const { type, value } = e.currentTarget;
-    if (type === "number") {
-      switch (bodyDescription[key].dataType) {
-        case "Array of number":
-          body[key][name[1]] = parseInt(value);
-          break;
-        case "object":
-          body[key][name[1]] = parseInt(value);
-          break;
-        case "Array of object":
-          body[key][name[1]][name[2]] = parseInt(value);
-          break;
-        case "Object of objects":
-          body[key][name[1]][name[2]] = parseInt(value);
-          break;
-        default:
-          body[key] = parseInt(value);
-      }
-    } else {
-      switch (bodyDescription[key].dataType) {
-        case "Array of string":
-          body[key][name[1]] = value;
-          break;
-        case "object":
-          body[key][name[1]] = value;
-          break;
-        case "Array of object":
-          body[key][name[1]][name[2]] = value;
-          break;
-        case "Object of objects":
-          body[key][name[1]][name[2]] = value;
-          break;
-        case "Array of boolean":
-          body[key][name[1]] = value;
-          break;
-        default:
-          body[key] = value;
-      }
-    }
-    this.props.set_public_body(body);
+    // if (type === "number") {
+    //   switch (bodyDescription[key].dataType) {
+    //     case "Array of number":
+    //       body[key][name[1]] = parseInt(value);
+    //       break;
+    //     case "object":
+    //       body[key][name[1]] = parseInt(value);
+    //       break;
+    //     case "Array of object":
+    //       body[key][name[1]][name[2]] = parseInt(value);
+    //       break;
+    //     case "Object of objects":
+    //       body[key][name[1]][name[2]] = parseInt(value);
+    //       break;
+    //     default:
+    //       body[key] = parseInt(value);
+    //   }
+    // } else {
+    //   switch (bodyDescription[key].dataType) {
+    //     case "Array of string":
+    //       body[key][name[1]] = value;
+    //       break;
+    //     case "object":
+    //       body[key][name[1]] = value;
+    //       break;
+    //     case "Array of object":
+    //       body[key][name[1]][name[2]] = value;
+    //       break;
+    //     case "Object of objects":
+    //       body[key][name[1]][name[2]] = value;
+    //       break;
+    //     case "Array of boolean":
+    //       body[key][name[1]] = value;
+    //       break;
+    //     default:
+    //       body[key] = value;
+    //   }
+    // }
+    // this.props.set_public_body(body);
   };
 
   displayAddButton(key) {
@@ -170,16 +170,12 @@ class PublicBodyContainer extends Component {
             {value.type === "boolean"
               ? this.displayBoolean(
                   value.value,
-                  name + "." + index + ".value",
+                  name + "." + index,
                   "array-boolean"
                 )
               : value.type === "object"
               ? this.displayObject(value.value, name + "." + index + ".value")
-              : this.arrayInput(
-                  value.value,
-                  value.type,
-                  name + "." + index + ".value"
-                )}
+              : this.arrayInput(value.value, value.type, name + "." + index)}
             <button
               type="button"
               className="btn cross-button"
@@ -189,7 +185,7 @@ class PublicBodyContainer extends Component {
             </button>
           </div>
         ))}
-        {/* {this.displayAddButton(key)} */}
+        {this.displayAddButton()}
       </div>
     );
   }
@@ -203,14 +199,10 @@ class PublicBodyContainer extends Component {
             {obj[key].type === "object"
               ? this.displayObject(obj[key].value, name + "." + key)
               : obj[key].type === "array"
-              ? this.displayArray(obj[key].value, name + ".key")
+              ? this.displayArray(obj[key].value, name + "." + key)
               : obj[key].type === "boolean"
               ? this.displayBoolean(obj[key].value, name + "." + key)
-              : this.displayInput(
-                  obj[key],
-                  name + "." + key + ".value",
-                  "object-value"
-                )}
+              : this.displayInput(obj[key], name + "." + key, "object-value")}
           </div>
         ))}
       </div>
@@ -326,25 +318,19 @@ class PublicBodyContainer extends Component {
                   {this.bodyDescription[key].type === "string"
                     ? this.displayInput(
                         this.bodyDescription[key],
-                        key + ".value",
+                        key,
                         "custom-input"
                       )
                     : this.bodyDescription[key].type === "number"
                     ? this.displayInput(
                         this.bodyDescription[key],
-                        key + ".value",
+                        key,
                         "custom-input"
                       )
                     : this.bodyDescription[key].type === "object"
-                    ? this.displayObject(
-                        this.bodyDescription[key].value,
-                        key + ".value"
-                      )
+                    ? this.displayObject(this.bodyDescription[key].value, key)
                     : this.bodyDescription[key].type === "array"
-                    ? this.displayArray(
-                        this.bodyDescription[key].value,
-                        key + ".value"
-                      )
+                    ? this.displayArray(this.bodyDescription[key].value, key)
                     : null}
                 </div>
               ))}
