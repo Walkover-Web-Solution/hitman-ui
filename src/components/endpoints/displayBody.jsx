@@ -111,7 +111,13 @@ class BodyContainer extends Component {
 
   renderBody() {
     if (this.state.selectedBodyType && this.flag) {
-      return <BodyDescription {...this.props} body={this.state.data.raw} />;
+      return (
+        <BodyDescription
+          {...this.props}
+          body={this.state.data.raw}
+          body_type={this.state.selectedRawBodyType}
+        />
+      );
     } else if (this.state.selectedBodyType) {
       switch (this.state.selectedBodyType) {
         case "multipart/form-data":
@@ -249,7 +255,7 @@ class BodyContainer extends Component {
               <div>
                 <div className="dropdown">
                   <button
-                    style={{ color: "#f29624", paddingTop: "0px" }}
+                    style={{ color: "tomato", paddingTop: "0px" }}
                     className="btn dropdown-toggle flex-column"
                     type="button"
                     id="dropdownMenuButton"

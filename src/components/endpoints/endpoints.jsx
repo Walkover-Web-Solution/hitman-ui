@@ -124,7 +124,7 @@ class Endpoints extends Component {
     const role = this.getCurrentUserRole(this.props.collection_id);
     if (endpoint.state === "Draft") {
       if (role === "Owner" || role === "Admin") {
-        this.props.approveEndpoint(endpoint);
+        this.handleApproveRequest(endpoint);
       } else {
         this.props.pendingEndpoint(endpoint);
       }
@@ -135,11 +135,55 @@ class Endpoints extends Component {
     this.props.draftEndpoint(endpoint);
   }
   async handleApproveRequest(endpoint) {
+    // if (
+    //   endpoint.body.type === "JSON" &&
+    //   Object.keys(endpoint.bodyDescription).length === 0
+    // ) {
+    //   let { value } = endpoint.body;
+    //   let body = JSON.parse(value);
+    //   let bodyDescription = this.generateBodyDescription(body);
+    //   endpoint.bodyDescription = bodyDescription;
+    //   console.log("sdfs", endpoint);
+    // }
     this.props.approveEndpoint(endpoint);
   }
   async handleRejectRequest(endpoint) {
     this.props.rejectEndpoint(endpoint);
   }
+
+  // generateBodyDescription(body) {
+  //   let bodyDescription = null;
+  //   if (Array.isArray(body)) bodyDescription = [];
+  //   else bodyDescription = {};
+
+  //   const keys = Object.keys(body);
+  //   for (let i = 0; i < keys.length; i++) {
+  //     const value = body[keys[i]];
+  //     if (
+  //       typeof value === "string" ||
+  //       typeof value === "number" ||
+  //       typeof value === "boolean"
+  //     ) {
+  //       bodyDescription[keys[i]] = {
+  //         value,
+  //         type: typeof value,
+  //         description: null,
+  //       };
+  //     } else {
+  //       if (Array.isArray(value))
+  //         bodyDescription[keys[i]] = {
+  //           value: this.generateBodyDescription(value),
+  //           type: "array",
+  //         };
+  //       else
+  //         bodyDescription[keys[i]] = {
+  //           value: this.generateBodyDescription(value),
+  //           type: "object",
+  //         };
+  //     }
+  //   }
+  //   return bodyDescription;
+  // }
 
   handleDisplay(endpoint, groupId, collectionId, previewMode) {
     if (isDashboardRoute(this.props)) {
