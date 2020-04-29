@@ -26,12 +26,11 @@ class PublicBodyContainer extends Component {
         value.splice(pkeys[0], 1);
       } else if (title === "add") {
         const defaultValue = jQuery.extend(true, {}, value[pkeys[0]].default);
-
         value[pkeys[0]].value.push(defaultValue);
+
         if (defaultValue.type === "object") {
           const keyArray = Object.keys(defaultValue.value);
-          let data = {};
-          data[keyArray[0]] = defaultValue.value[keyArray[0]].value;
+          let data = { [keyArray[0]]: defaultValue.value[keyArray[0]].value };
           body[pkeys[0]].push(data);
         } else {
           body[pkeys[0]].push(defaultValue.value);
@@ -58,16 +57,18 @@ class PublicBodyContainer extends Component {
     this.props.set_public_body(body);
   }
 
-  performChange(pkeys, bodyDescription, body, value) {
-    console.log(pkeys, bodyDescription, body);
+  performChange(pkeys, bodyDescription, body, newValue) {
     if (pkeys.length == 1) {
-      if (bodyDescription[pkeys[0]].type === "number") {
-        bodyDescription[pkeys[0]].value = parseInt(value);
-        body[pkeys[0]] = parseInt(value);
-      } else if (bodyDescription[pkeys[0]].type === "string") {
-        bodyDescription[pkeys[0]].value = value;
-        body[pkeys[0]] = value;
-      } else {
+      const type = bodyDescription[pkeys[0]].type;
+      if (type === "number") {
+        bodyDescription[pkeys[0]].value = parseInt(newValue);
+        body[pkeys[0]] = parseInt(newValue);
+      } else if (type === "string") {
+        bodyDescription[pkeys[0]].value = newValue;
+        body[pkeys[0]] = newValue;
+      } else if (type === "boolean") {
+        const value =
+          newValue === "true" ? true : newValue === "false" ? false : null;
         bodyDescription[pkeys[0]].value = value;
         body[pkeys[0]] = value;
       }
@@ -75,16 +76,19 @@ class PublicBodyContainer extends Component {
     } else {
       const data = bodyDescription[pkeys[0]].value;
       const bodyData = body[pkeys[0]];
-      this.performChange(pkeys.slice(1, pkeys.length), data, bodyData, value);
+      this.performChange(
+        pkeys.slice(1, pkeys.length),
+        data,
+        bodyData,
+        newValue
+      );
     }
   }
 
   handleChange = (e) => {
     const { name, value } = e.currentTarget;
-    console.log(name);
     let body = JSON.parse(this.props.body.value);
     this.performChange(name.split("."), this.bodyDescription, body, value);
-    console.log(this.bodyDescription);
     this.props.set_public_body(body);
     this.props.set_body_description(this.bodyDescription);
   };
