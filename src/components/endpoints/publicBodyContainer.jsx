@@ -19,6 +19,35 @@ class PublicBodyContainer extends Component {
     }
   }
 
+  generateBodyFromDescription(bodyDescription, body) {
+    if (!body) {
+      body = {};
+    }
+    const keys = Object.keys(bodyDescription);
+    for (let i = 0; i < keys.length; i++) {
+      switch (bodyDescription[keys[i]].type) {
+        case "string":
+        case "number":
+        case "boolean":
+          body[keys[i]] = bodyDescription[keys[i]].value;
+          break;
+        case "array":
+          body[keys[i]] = this.generateBodyFromDescription(
+            bodyDescription[keys[i]].value,
+            []
+          );
+          break;
+        case "object":
+          body[keys[i]] = this.generateBodyFromDescription(
+            bodyDescription[keys[i]].value,
+            {}
+          );
+          break;
+      }
+    }
+    return body;
+  }
+
   handleAddDelete(pkeys, value, body, title) {
     if (pkeys.length == 1) {
       if (title === "delete") {
@@ -172,7 +201,7 @@ class PublicBodyContainer extends Component {
               : obj[key].type === "array"
               ? this.displayArray(obj[key].value, name + "." + key)
               : obj[key].type === "boolean"
-              ? this.displayBoolean(obj[key].value, name + "." + key)
+              ? this.displayBoolean(obj[key], name + "." + key)
               : this.displayInput(obj[key], name + "." + key, "object-value")}
           </div>
         ))}
@@ -184,21 +213,16 @@ class PublicBodyContainer extends Component {
     this.bodyDescription = this.props.body_description;
     console.log(this.props);
 
-    // if (this.props.body.type === "JSON") {
-    //   this.body = JSON.parse(this.props.body.value);
-    //   this.keysArray = Object.keys(this.body);
-    //   if (
-    //     this.props.public_body_flag &&
-    //     this.props.body &&
-    //     this.props.body.type === "JSON"
-    //   ) {
-    //     for (let i = 0; i < this.keysArray.length; i++) {
-    //       this.body[this.keysArray[i]] =
-    //         bodyDescription[this.keysArray[i]].default;
-    //     }
-    //     this.props.set_public_body(this.body);
-    //   }
-    // }
+    if (
+      this.props.public_body_flag &&
+      this.props.body &&
+      this.props.body.type === "JSON"
+    ) {
+      const body = this.generateBodyFromDescription(this.bodyDescription);
+      console.log("body", body);
+      this.props.set_public_body(body);
+    }
+
     return (
       <div>
         {this.props.body && this.props.body.type === "multipart/form-data" && (
