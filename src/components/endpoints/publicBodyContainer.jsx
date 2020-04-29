@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import GenericTable from "./genericTable";
+import jQuery from "jquery";
 import "./publicEndpoint.scss";
 
 class PublicBodyContainer extends Component {
@@ -18,47 +19,51 @@ class PublicBodyContainer extends Component {
     }
   }
 
-  performDelete(pkeys, value, body) {
+  handleAddDelete(pkeys, value, body, title) {
     if (pkeys.length == 1) {
-      body.splice(pkeys[0], 1);
-      value.splice(pkeys[0], 1);
+      if (title === "delete") {
+        body.splice(pkeys[0], 1);
+        value.splice(pkeys[0], 1);
+      } else if (title === "add") {
+        const defaultValue = jQuery.extend(true, {}, value[pkeys[0]].default);
+
+        value[pkeys[0]].value.push(defaultValue);
+        if (defaultValue.type === "object") {
+          const keyArray = Object.keys(defaultValue.value);
+          let data = {};
+          data[keyArray[0]] = defaultValue.value[keyArray[0]].value;
+          body[pkeys[0]].push(data);
+        } else {
+          body[pkeys[0]].push(defaultValue.value);
+        }
+      }
       return;
     }
     const data = value[pkeys[0]].value;
     const bodyData = body[pkeys[0]];
-    this.performDelete(pkeys.slice(1, pkeys.length), data, bodyData);
+    this.handleAddDelete(pkeys.slice(1, pkeys.length), data, bodyData, title);
   }
 
   handleDelete(name) {
     let body = JSON.parse(this.props.body.value);
-    this.performDelete(name.split("."), this.bodyDescription, body);
+    this.handleAddDelete(name.split("."), this.bodyDescription, body, "delete");
     this.props.set_body_description(this.bodyDescription);
     this.props.set_public_body(body);
   }
 
-  performAdd(pkeys, value, body) {
-    if (pkeys.length == 1) {
-      value[pkeys[0]].value.push(value[pkeys[0]].default);
-      body[pkeys[0]].push(value[pkeys[0]].default.value);
-      return;
-    }
-    const data = value[pkeys[0]].value;
-    const bodyData = body[pkeys[0]];
-    this.performAdd(pkeys.slice(1, pkeys.length), data, bodyData);
-  }
-
   handleAdd(name) {
     let body = JSON.parse(this.props.body.value);
-    this.performAdd(name.split("."), this.bodyDescription, body);
+    this.handleAddDelete(name.split("."), this.bodyDescription, body, "add");
     this.props.set_body_description(this.bodyDescription);
     this.props.set_public_body(body);
   }
 
   performChange(pkeys, bodyDescription, body, value) {
+    console.log(pkeys, bodyDescription, body);
     if (pkeys.length == 1) {
       if (bodyDescription[pkeys[0]].type === "number") {
         bodyDescription[pkeys[0]].value = parseInt(value);
-        body[pkeys[0]] = value;
+        body[pkeys[0]] = parseInt(value);
       } else if (bodyDescription[pkeys[0]].type === "string") {
         bodyDescription[pkeys[0]].value = value;
         body[pkeys[0]] = value;
@@ -66,7 +71,6 @@ class PublicBodyContainer extends Component {
         bodyDescription[pkeys[0]].value = value;
         body[pkeys[0]] = value;
       }
-
       return;
     } else {
       const data = bodyDescription[pkeys[0]].value;
@@ -77,8 +81,7 @@ class PublicBodyContainer extends Component {
 
   handleChange = (e) => {
     const { name, value } = e.currentTarget;
-    //console.log(name);
-
+    console.log(name);
     let body = JSON.parse(this.props.body.value);
     this.performChange(name.split("."), this.bodyDescription, body, value);
     console.log(this.bodyDescription);
@@ -145,7 +148,7 @@ class PublicBodyContainer extends Component {
               className="btn cross-button"
               onClick={() => this.handleDelete(name + "." + index)}
             >
-              X{/* <i className="fas fa-times"></i> */}
+              <i className="fas fa-times"></i>
             </button>
           </div>
         ))}
@@ -156,7 +159,7 @@ class PublicBodyContainer extends Component {
 
   displayObject(obj, name) {
     return (
-      <div style={{ border: "1px solid" }}>
+      <div style={{ border: "1px solid", padding: "8px" }}>
         {Object.keys(obj).map((key, index) => (
           <div key={key} className="object-row-wrapper">
             <label>{key}</label>
