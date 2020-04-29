@@ -238,34 +238,13 @@ class CollectionVersions extends Component {
     ) {
       this.filteredOnlyVersions = {};
       this.filterFlag = true;
-      let versions = { ...this.props.versions };
-      let versionIds = Object.keys(versions);
-      let versionNameIds = [];
-      let versionNames = [];
-      for (let i = 0; i < versionIds.length; i++) {
-        const { number: name } = versions[versionIds[i]];
-        versionNameIds.push({ name: name, id: versionIds[i] });
-        versionNames.push(name);
-      }
-      let finalVersionNames = versionNames.filter((name) => {
-        return (
-          name.toLowerCase().indexOf(this.props.filter.toLowerCase()) !== -1
-        );
-      });
-      versionIds = [];
-      let uniqueIds = {};
-      for (let i = 0; i < finalVersionNames.length; i++) {
-        for (let j = 0; j < Object.keys(versionNameIds).length; j++) {
-          if (
-            finalVersionNames[i] === versionNameIds[j].name &&
-            !uniqueIds[versionNameIds[j].id]
-          ) {
-            versionIds.push(versionNameIds[j].id);
-            uniqueIds[versionNameIds[j].id] = true;
-            break;
-          }
-        }
-      }
+      let versionIds = [];
+      versionIds = filterService.filter(
+        this.props.versions,
+        this.props.filter,
+        "versions"
+      );
+      this.setState({ filter: this.props.filter });
       if (versionIds.length !== 0) {
         for (let i = 0; i < versionIds.length; i++) {
           this.filteredOnlyVersions[versionIds[i]] = this.props.versions[
@@ -283,10 +262,9 @@ class CollectionVersions extends Component {
       }
     }
   }
-
-  render() {
+  renderBody(versionId) {
     if (document.getElementsByClassName("version-collapse")) {
-      if (this.props.filter !== "") {
+      if (this.props.filter !== "" && this.eventkey[versionId] === "0") {
         let elements = document.getElementsByClassName("version-collapse");
         for (let i = 0; i < elements.length; i++) {
           elements[i].className = "version-collapse collapse show";
@@ -298,6 +276,105 @@ class CollectionVersions extends Component {
         }
       }
     }
+    return (
+      <Accordion defaultActiveKey="0" key={versionId} id="child-accordion">
+        <Card>
+          <Card.Header>
+            <i className="fas fa-folder-open"></i>
+            <Accordion.Toggle
+              as={Button}
+              variant="default"
+              eventKey={this.eventkey[versionId]}
+            >
+              {this.props.versions[versionId].number}
+            </Accordion.Toggle>
+            {isDashboardRoute(this.props) ? (
+              <div className="btn-group">
+                <button
+                  className="btn btn-secondary "
+                  data-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                >
+                  <i className="fas fa-ellipsis-h"></i>
+                </button>
+                <div className="dropdown-menu dropdown-menu-right">
+                  <button
+                    className="dropdown-item"
+                    onClick={() =>
+                      this.openEditVersionForm(this.props.versions[versionId])
+                    }
+                  >
+                    Edit
+                  </button>
+                  <button
+                    className="dropdown-item"
+                    onClick={() => {
+                      this.openDeleteVersionModal(versionId);
+                    }}
+                  >
+                    Delete
+                  </button>
+                  <button
+                    className="dropdown-item"
+                    onClick={() =>
+                      this.openAddGroupForm(this.props.versions[versionId])
+                    }
+                  >
+                    Add Group
+                  </button>
+                  <button
+                    className="dropdown-item"
+                    onClick={() => {
+                      this.handleDuplicate(this.props.versions[versionId]);
+                    }}
+                  >
+                    Duplicate
+                  </button>
+                  <button
+                    className="dropdown-item"
+                    onClick={() =>
+                      this.openAddVersionPageForm(
+                        this.props.versions[versionId]
+                      )
+                    }
+                  >
+                    Add Page
+                  </button>
+                  <button
+                    className="dropdown-item"
+                    onClick={() =>
+                      this.openShareVersionForm(this.props.versions[versionId])
+                    }
+                  >
+                    Share
+                  </button>
+                </div>
+              </div>
+            ) : null}
+          </Card.Header>
+          <Accordion.Collapse
+            className="version-collapse"
+            eventKey={this.eventkey[versionId]}
+          >
+            <Card.Body>
+              <VersionPages
+                {...this.props}
+                version_id={versionId}
+                show_filter_version={this.propsFromVersion.bind(this)}
+              />
+              <Groups
+                {...this.props}
+                version_id={versionId}
+                show_filter_version={this.propsFromVersion.bind(this)}
+              />
+            </Card.Body>
+          </Accordion.Collapse>
+        </Card>
+      </Accordion>
+    );
+  }
+  render() {
     if (
       this.filterFlag === false ||
       this.props.filter === "" ||
@@ -329,117 +406,7 @@ class CollectionVersions extends Component {
                 this.filteredVersions[versionId].collectionId ===
                 this.props.collection_id
             )
-            .map((versionId, index) => (
-              <div>
-                <Accordion
-                  defaultActiveKey="0"
-                  key={versionId}
-                  id="child-accordion"
-                >
-                  <Card>
-                    <Card.Header>
-                      <i className="fas fa-folder-open"></i>
-                      <Accordion.Toggle
-                        as={Button}
-                        variant="default"
-                        eventKey={this.eventkey[versionId]}
-                      >
-                        {this.props.versions[versionId].number}
-                      </Accordion.Toggle>
-                      {isDashboardRoute(this.props) ? (
-                        <div className="btn-group">
-                          <button
-                            className="btn btn-secondary "
-                            data-toggle="dropdown"
-                            aria-haspopup="true"
-                            aria-expanded="false"
-                          >
-                            <i className="fas fa-ellipsis-h"></i>
-                          </button>
-                          <div className="dropdown-menu dropdown-menu-right">
-                            <button
-                              className="dropdown-item"
-                              onClick={() =>
-                                this.openEditVersionForm(
-                                  this.props.versions[versionId]
-                                )
-                              }
-                            >
-                              Edit
-                            </button>
-                            <button
-                              className="dropdown-item"
-                              onClick={() => {
-                                this.openDeleteVersionModal(versionId);
-                              }}
-                            >
-                              Delete
-                            </button>
-                            <button
-                              className="dropdown-item"
-                              onClick={() =>
-                                this.openAddGroupForm(
-                                  this.props.versions[versionId]
-                                )
-                              }
-                            >
-                              Add Group
-                            </button>
-                            <button
-                              className="dropdown-item"
-                              onClick={() => {
-                                this.handleDuplicate(
-                                  this.props.versions[versionId]
-                                );
-                              }}
-                            >
-                              Duplicate
-                            </button>
-                            <button
-                              className="dropdown-item"
-                              onClick={() =>
-                                this.openAddVersionPageForm(
-                                  this.props.versions[versionId]
-                                )
-                              }
-                            >
-                              Add Page
-                            </button>
-                            <button
-                              className="dropdown-item"
-                              onClick={() =>
-                                this.openShareVersionForm(
-                                  this.props.versions[versionId]
-                                )
-                              }
-                            >
-                              Share
-                            </button>
-                          </div>
-                        </div>
-                      ) : null}
-                    </Card.Header>
-                    <Accordion.Collapse
-                      className="version-collapse"
-                      eventKey={this.eventkey[versionId]}
-                    >
-                      <Card.Body>
-                        <VersionPages
-                          {...this.props}
-                          version_id={versionId}
-                          show_filter_version={this.propsFromVersion.bind(this)}
-                        />
-                        <Groups
-                          {...this.props}
-                          version_id={versionId}
-                          show_filter_version={this.propsFromVersion.bind(this)}
-                        />
-                      </Card.Body>
-                    </Accordion.Collapse>
-                  </Card>
-                </Accordion>
-              </div>
-            ))}
+            .map((versionId, index) => <div>{this.renderBody(versionId)}</div>)}
       </div>
     );
   }
