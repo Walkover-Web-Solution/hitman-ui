@@ -45,17 +45,34 @@ class PublicBodyContainer extends Component {
   handleAdd(name) {
     this.performAdd(name.split("."), this.bodyDescription);
     console.log(name, this.bodyDescription);
-    //this.props.set_public_body(body);
+    this.props.set_body_description(this.bodyDescription);
+  }
+
+  performChange(pkeys, bodyDescription, value) {
+    if (pkeys.length == 1) {
+      if ((bodyDescription[pkeys[0]].type = "number"))
+        bodyDescription[pkeys[0]].value = parseInt(value);
+      else if ((bodyDescription[pkeys[0]].type = "string"))
+        bodyDescription[pkeys[0]].value = value;
+      else bodyDescription[pkeys[0]].value = value;
+
+      return;
+    } else {
+      const data = bodyDescription[pkeys[0]].value;
+      this.performChange(pkeys.slice(1, pkeys.length), data, value);
+    }
   }
 
   handleChange = (e) => {
-    const name = e.currentTarget.name.split(".");
+    const name = e.currentTarget.name;
     console.log(name);
     // const key = name[0];
     //const bodyDescription = this.props.body_description;
     //let body = this.body;
     const { type, value } = e.currentTarget;
-    console.log(type, value);
+    //sconsole.log(type, value);
+    this.performChange(name.split("."), this.bodyDescription, value);
+    console.log(this.bodyDescription);
     // if (type === "number") {
     //   switch (bodyDescription[key].dataType) {
     //     case "Array of number":
@@ -204,76 +221,77 @@ class PublicBodyContainer extends Component {
   }
 
   render() {
-    //this.bodyDescription = this.props.body_description;
-    this.bodyDescription = {
-      key1: { value: "abc", type: "string", description: "d" },
-      key2: {
-        value: {
-          k1: { value: "v1", type: "string", description: "" },
-          k2: { value: 10, type: "number", description: "" },
-        },
-        type: "object",
-      },
-      key3: {
-        value: {
-          key1: {
-            value: {
-              k1: { value: "v1", type: "string", description: "" },
-              k2: { value: 10, type: "number", description: "" },
-            },
-            type: "object",
-          },
-          k22: { value: 10, type: "number", description: "" },
-        },
-        type: "object",
-      },
-      key4: {
-        value: [
-          { value: 2, type: "number", description: "sfdf" },
-          { value: 3, type: "number", description: "sfdf" },
-        ],
-        type: "array",
-        description: "dfd",
-        default: { value: 2, type: "number", description: "sfdf" },
-      },
-      key5: {
-        value: [
-          {
-            value: {
-              k1: { value: "v1", type: "string", description: "" },
-              k2: { value: 10, type: "number", description: "" },
-            },
-            type: "object",
-            description: "",
-          },
-        ],
-        type: "array",
-        default: {
-          value: {
-            k1: { value: "v1", type: "string", description: "" },
-            k2: { value: 10, type: "number", description: "" },
-          },
-          type: "object",
-          description: "",
-        },
-      },
+    this.bodyDescription = this.props.body_description;
+    console.log(this.props);
+    // this.bodyDescription = {
+    //   key1: { value: "abc", type: "string", description: "d" },
+    //   key2: {
+    //     value: {
+    //       k1: { value: "v1", type: "string", description: "" },
+    //       k2: { value: 10, type: "number", description: "" },
+    //     },
+    //     type: "object",
+    //   },
+    //   key3: {
+    //     value: {
+    //       key1: {
+    //         value: {
+    //           k1: { value: "v1", type: "string", description: "" },
+    //           k2: { value: 10, type: "number", description: "" },
+    //         },
+    //         type: "object",
+    //       },
+    //       k22: { value: 10, type: "number", description: "" },
+    //     },
+    //     type: "object",
+    //   },
+    //   key4: {
+    //     value: [
+    //       { value: 2, type: "number", description: "sfdf" },
+    //       { value: 3, type: "number", description: "sfdf" },
+    //     ],
+    //     type: "array",
+    //     description: "dfd",
+    //     default: { value: 2, type: "number", description: "sfdf" },
+    //   },
+    //   key5: {
+    //     value: [
+    //       {
+    //         value: {
+    //           k1: { value: "v1", type: "string", description: "" },
+    //           k2: { value: 10, type: "number", description: "" },
+    //         },
+    //         type: "object",
+    //         description: "",
+    //       },
+    //     ],
+    //     type: "array",
+    //     default: {
+    //       value: {
+    //         k1: { value: "v1", type: "string", description: "" },
+    //         k2: { value: 10, type: "number", description: "" },
+    //       },
+    //       type: "object",
+    //       description: "",
+    //     },
+    //   },
 
-      key6: {
-        value: {
-          k1: {
-            value: [
-              { value: 2, type: "number", description: "sfdf" },
-              { value: 3, type: "number", description: "sfdf" },
-            ],
-            type: "array",
-            description: "",
-            default: { value: 2, type: "number", description: "sfdf" },
-          },
-          k2: { value: 10, type: "number", description: "" },
-        },
-        type: "object",
-      },
-    };
+    //   key6: {
+    //     value: {
+    //       k1: {
+    //         value: [
+    //           { value: 2, type: "number", description: "sfdf" },
+    //           { value: 3, type: "number", description: "sfdf" },
+    //         ],
+    //         type: "array",
+    //         description: "",
+    //         default: { value: 2, type: "number", description: "sfdf" },
+    //       },
+    //       k2: { value: 10, type: "number", description: "" },
+    //     },
+    //     type: "object",
+    //   },
+    // };
 
     // if (this.props.body.type === "JSON") {
     //   this.body = JSON.parse(this.props.body.value);

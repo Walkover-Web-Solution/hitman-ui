@@ -72,28 +72,6 @@ class DisplayEndpoint extends Component {
     params: [],
     bodyDescription: {},
     fieldDescription: {},
-    // bodyDescription: {
-    //   key1: { default: "abcd", dataType: "string" },
-    //   key2: { default: 4, dataType: "number" },
-    //   key3: { default: true, dataType: "boolean" },
-    //   key4: { default: [2], dataType: "Array of Integer" },
-    //   key5: { default: ["a"], dataType: "Array of String" },
-    //   key6: { default: { k1: "v1", k2: 10 }, dataType: "Object" },
-    //   key7: {
-    //     default: [{ k1: "v1", k2: 10 }],
-    //     dataType: "Array of Objects",
-    //     object: { k1: "v1", k2: 10 },
-    //   },
-    //   key8: {
-    //     default: {
-    //       k1: { k1: "v1", k2: 10, k3: 44 },
-    //       k2: { k1: "v1", k2: 10 },
-    //     },
-    //     dataType: "Object of Objects",
-    //     //object: { k1: "v1", k2: 10 },
-    //   },
-    //   key9: { default: [true], dataType: "Array of Boolean" },
-    // },
   };
 
   customState = {
@@ -1370,79 +1348,119 @@ class DisplayEndpoint extends Component {
                   <PublicBodyContainer
                     {...this.props}
                     set_body={this.setBody.bind(this)}
+                    set_body_description={this.set_description.bind(this)}
                     body={this.state.data.body}
                     public_body_flag={this.state.publicBodyFlag}
                     set_public_body={this.setPublicBody.bind(this)}
-                    body_description={[
-                      { name: "key1", parentKeys: [], type: "string" },
-                      { name: "key2", parentKeys: [], type: "boolean" },
-                      { name: "key6", parentKeys: [], type: "object" },
-                      { name: "k1", parentKeys: ["key6"], type: "string" },
-                      { name: "key7", parentKeys: [], type: "array" },
-                      { name: 0, parentKeys: ["key7"], type: "object" },
-                      { name: "k1", parentKeys: ["key7", 0], type: "string" },
-
-                      { name: "key8", parentKeys: [], type: "object" },
-                      { name: "k11", parentKeys: ["key8"], type: "object" },
-                      {
-                        name: "k1",
-                        parentKeys: ["key8", "k11"],
-                        type: "string",
-                      },
-                      {
-                        name: "k3",
-                        parentKeys: ["key8", "k11"],
-                        type: "object",
-                      },
-                      {
-                        name: "k1",
-                        parentKeys: ["key8", "k11", "k3"],
-                        type: "string",
-                      },
-                      {
-                        name: "k2",
-                        parentKeys: ["key8", "k11", "k3"],
-                        type: "object",
-                      },
-                      {
-                        name: "k1",
-                        parentKeys: ["key8", "k11", "k3", "k2"],
-                        type: "string",
-                      },
-                      {
-                        name: "k2",
-                        parentKeys: ["key8", "k11", "k3", "k2"],
-                        type: "array",
+                    body_description={{
+                      key1: { value: "abc", type: "string", description: "d" },
+                      key2: {
                         value: {
-                          name: 0,
-                          parentKeys: ["key8", "k11", "k3", "k2", "k2"],
+                          k1: { value: "v1", type: "string", description: "" },
+                          k2: { value: 10, type: "number", description: "" },
+                        },
+                        type: "object",
+                      },
+                      key3: {
+                        value: {
+                          key1: {
+                            value: {
+                              k1: {
+                                value: {
+                                  k11: {
+                                    value: 24,
+                                    type: "number",
+                                    description: "fdf",
+                                  },
+                                },
+                                type: "object",
+                                description: "",
+                              },
+                              k2: {
+                                value: 10,
+                                type: "number",
+                                description: "",
+                              },
+                            },
+                            type: "object",
+                          },
+                          k22: { value: 10, type: "number", description: "" },
+                        },
+                        type: "object",
+                      },
+                      key4: {
+                        value: [
+                          { value: 2, type: "number", description: "sfdf" },
+                          { value: 3, type: "number", description: "sfdf" },
+                        ],
+                        type: "array",
+                        description: "dfd",
+                        default: {
+                          value: 2,
                           type: "number",
+                          description: "sfdf",
                         },
                       },
-                      {
-                        name: 0,
-                        parentKeys: ["key8", "k11", "k3", "k2", "k2"],
-                        type: "number",
+                      key5: {
+                        value: [
+                          {
+                            value: {
+                              k1: {
+                                value: {
+                                  k1: {
+                                    value: "v1",
+                                    type: "string",
+                                    description: "",
+                                  },
+                                },
+                                type: "object",
+                                description: "",
+                              },
+                              k2: {
+                                value: 10,
+                                type: "number",
+                                description: "",
+                              },
+                            },
+                            type: "object",
+                            description: "",
+                          },
+                        ],
+                        type: "array",
+                        default: {
+                          value: {
+                            k1: {
+                              value: "v1",
+                              type: "string",
+                              description: "",
+                            },
+                            k2: { value: 10, type: "number", description: "" },
+                          },
+                          type: "object",
+                          description: "",
+                        },
                       },
-                      {
-                        name: 1,
-                        parentKeys: ["key8", "k11", "k3", "k2", "k2"],
-                        type: "number",
+
+                      key6: {
+                        value: {
+                          k1: {
+                            value: [
+                              { value: 2, type: "number", description: "sfdf" },
+                              { value: 3, type: "number", description: "sfdf" },
+                            ],
+                            type: "array",
+                            description: "",
+                            default: {
+                              value: 2,
+                              type: "number",
+                              description: "sfdf",
+                            },
+                          },
+                          k2: { value: 10, type: "number", description: "" },
+                        },
+                        type: "object",
                       },
-                      { name: "k12", parentKeys: ["key8"], type: "object" },
-                      {
-                        name: "k1",
-                        parentKeys: ["key8", "k12"],
-                        type: "string",
-                      },
-                      {
-                        name: "k2",
-                        parentKeys: ["key8", "k12"],
-                        type: "number",
-                      },
-                      { name: "key9", parentKeys: [], type: "array" },
-                      { name: 0, parentKeys: ["key9"], type: "boolean" },
-                    ]}
+                    }}
                   ></PublicBodyContainer>
                 )}
             </div>
