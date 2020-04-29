@@ -466,6 +466,7 @@ class BodyDescription extends Component {
           bodyDescription[keys[i]] = {
             value: this.generateBodyDescription(value),
             type: "array",
+            default: value[0],
           };
         else
           bodyDescription[keys[i]] = {
@@ -477,7 +478,10 @@ class BodyDescription extends Component {
     return bodyDescription;
   }
 
-  generateBodyFromDescription(bodyDescription, body) {
+  generateBodyFromDescription(bodyDescription) {
+    if (!body) {
+      body = {};
+    }
     const keys = Object.keys(bodyDescription);
     for (let i = 0; i < keys.length; i++) {
       switch (bodyDescription[keys[i]].type) {
@@ -513,10 +517,36 @@ class BodyDescription extends Component {
     // }
   }
 
+  compareDefaultValue(updatedBodyDescription, originalBodyDescription) {
+    const originalKeys = Object.keys(originalBodyDescription);
+    const updatedKeys = Object.keys(updatedBodyDescription);
+    for (let i = 0; i < updatedKeys.length; i++) {
+      if (originalBodyDescription[updatedKeys[i]]) {
+      }
+    }
+  }
+
+  handleDefaultValue(bodyDescription) {
+    const originalBodyDescription = this.state.bodyDescription;
+    const updatedBodyDescription = bodyDescription;
+
+    updatedBodyDescription = this.compareDefaultValue(
+      updatedBodyDescription,
+      originalBodyDescription
+    );
+
+    console.log(updatedBodyDescription);
+
+    return bodyDescription;
+  }
   updateBodyDescription(body) {
     body = this.parseBody(body);
-    const bodyDescription = this.generateBodyDescription(body);
-    // this.setState({ bodyDescription });
+    let bodyDescription = this.generateBodyDescription(body);
+
+    bodyDescription = this.handleDefaultValue(bodyDescription);
+
+    this.setState({ bodyDescription });
+
     return bodyDescription;
   }
 
@@ -526,13 +556,6 @@ class BodyDescription extends Component {
   }
 
   render() {
-    // const bodyDescription = { ...this.props.body_description };
-    // console.log(this.props.body);
-    const bodyDescription = this.updateBodyDescription(this.props.body);
-
-    console.log(bodyDescription);
-    const body = this.generateBodyFromDescription(bodyDescription, {});
-    console.log(body);
     return (
       <div>
         <Button

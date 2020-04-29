@@ -63,13 +63,11 @@ class Main extends Component {
   }
 
   setSourceGroupId(draggedEndpoint, groupId) {
-    console.log(draggedEndpoint, groupId);
     this.draggedEndpoint = draggedEndpoint;
     this.sourceGroupId = groupId;
   }
 
   setDestinationGroupId(destinationGroupId) {
-    console.log(destinationGroupId);
     this.dndMoveEndpoint(
       this.draggedEndpoint,
       this.sourceGroupId,

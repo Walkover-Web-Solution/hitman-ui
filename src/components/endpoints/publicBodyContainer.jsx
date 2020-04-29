@@ -29,7 +29,6 @@ class PublicBodyContainer extends Component {
 
   handleDelete(name) {
     this.performDelete(name.split("."), this.bodyDescription);
-    console.log(name, this.bodyDescription);
     //this.props.set_public_body(this.body);
   }
 
@@ -44,7 +43,6 @@ class PublicBodyContainer extends Component {
 
   handleAdd(name) {
     this.performAdd(name.split("."), this.bodyDescription);
-    console.log(name, this.bodyDescription);
     //this.props.set_body_description(this.bodyDescription);
   }
 
@@ -65,14 +63,12 @@ class PublicBodyContainer extends Component {
 
   handleChange = (e) => {
     const name = e.currentTarget.name;
-    console.log(name);
     // const key = name[0];
     //const bodyDescription = this.props.body_description;
     //let body = this.body;
     const { type, value } = e.currentTarget;
     //sconsole.log(type, value);
     this.performChange(name.split("."), this.bodyDescription, value);
-    console.log(this.bodyDescription);
     // if (type === "number") {
     //   switch (bodyDescription[key].dataType) {
     //     case "Array of number":
@@ -222,7 +218,6 @@ class PublicBodyContainer extends Component {
 
   render() {
     this.bodyDescription = this.props.body_description;
-    console.log(this.props);
     // this.bodyDescription = {
     //   key1: { value: "abc", type: "string", description: "d" },
     //   key2: {
