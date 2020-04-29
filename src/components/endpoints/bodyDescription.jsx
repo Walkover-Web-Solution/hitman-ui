@@ -478,7 +478,7 @@ class BodyDescription extends Component {
     return bodyDescription;
   }
 
-  generateBodyFromDescription(bodyDescription) {
+  generateBodyFromDescription(bodyDescription, body) {
     if (!body) {
       body = {};
     }
@@ -543,7 +543,7 @@ class BodyDescription extends Component {
     body = this.parseBody(body);
     let bodyDescription = this.generateBodyDescription(body);
 
-    bodyDescription = this.handleDefaultValue(bodyDescription);
+    // bodyDescription = this.handleDefaultValue(bodyDescription);
 
     this.setState({ bodyDescription });
 

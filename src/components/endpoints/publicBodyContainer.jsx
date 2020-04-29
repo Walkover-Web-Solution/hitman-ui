@@ -29,11 +29,7 @@ class PublicBodyContainer extends Component {
 
   handleDelete(name) {
     this.performDelete(name.split("."), this.bodyDescription);
-<<<<<<< HEAD
-    //this.props.set_public_body(this.body);
-=======
     this.props.set_body_description(this.bodyDescription);
->>>>>>> 91eab4c7ab51c01440a3ac34b73d5b1a6a628fbc
   }
 
   performAdd(pkeys, value) {
@@ -47,11 +43,7 @@ class PublicBodyContainer extends Component {
 
   handleAdd(name) {
     this.performAdd(name.split("."), this.bodyDescription);
-<<<<<<< HEAD
-    //this.props.set_body_description(this.bodyDescription);
-=======
     this.props.set_body_description(this.bodyDescription);
->>>>>>> 91eab4c7ab51c01440a3ac34b73d5b1a6a628fbc
   }
 
   performChange(pkeys, bodyDescription, value) {
