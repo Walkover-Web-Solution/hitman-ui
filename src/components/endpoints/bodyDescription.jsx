@@ -195,50 +195,50 @@ class BodyDescription extends Component {
     }
   }
 
-  generateBodyDescription1(json, parentKeys) {
-    if (!parentKeys) parentKeys = [];
+  // generateBodyDescription1(json, parentKeys) {
+  //   if (!parentKeys) parentKeys = [];
 
-    let obj = json;
-    let keys = Object.keys(json);
-    if (json.length) {
-      keys = keys.map(Number);
-    }
-    let keyElements = [];
-    for (let i = 0; i < keys.length; i++) {
-      if (typeof obj[keys[i]] === "object") {
-        if (obj[keys[i]].length) {
-          keyElements.push({
-            name: keys[i],
-            parentKeys,
-            type: "array",
-            description: "",
-          });
-        } else {
-          keyElements.push({
-            name: keys[i],
-            parentKeys,
-            type: typeof obj[keys[i]],
-            description: "",
-          });
-        }
-        const childKeyElements = this.generateBodyDescription(obj[keys[i]], [
-          ...parentKeys,
-          keys[i],
-        ]);
-        if (childKeyElements.length) {
-          keyElements.push(...childKeyElements);
-        }
-      } else {
-        keyElements.push({
-          name: keys[i],
-          parentKeys,
-          type: typeof obj[keys[i]],
-          description: "",
-        });
-      }
-    }
-    return keyElements;
-  }
+  //   let obj = json;
+  //   let keys = Object.keys(json);
+  //   if (json.length) {
+  //     keys = keys.map(Number);
+  //   }
+  //   let keyElements = [];
+  //   for (let i = 0; i < keys.length; i++) {
+  //     if (typeof obj[keys[i]] === "object") {
+  //       if (obj[keys[i]].length) {
+  //         keyElements.push({
+  //           name: keys[i],
+  //           parentKeys,
+  //           type: "array",
+  //           description: "",
+  //         });
+  //       } else {
+  //         keyElements.push({
+  //           name: keys[i],
+  //           parentKeys,
+  //           type: typeof obj[keys[i]],
+  //           description: "",
+  //         });
+  //       }
+  //       const childKeyElements = this.generateBodyDescription(obj[keys[i]], [
+  //         ...parentKeys,
+  //         keys[i],
+  //       ]);
+  //       if (childKeyElements.length) {
+  //         keyElements.push(...childKeyElements);
+  //       }
+  //     } else {
+  //       keyElements.push({
+  //         name: keys[i],
+  //         parentKeys,
+  //         type: typeof obj[keys[i]],
+  //         description: "",
+  //       });
+  //     }
+  //   }
+  //   return keyElements;
+  // }
 
   generateBodyDescription(body) {
     let bodyDescription = null;
@@ -255,7 +255,7 @@ class BodyDescription extends Component {
       ) {
         bodyDescription[keys[i]] = {
           value,
-          dataTtypeype: typeof value,
+          type: typeof value,
           description: null,
         };
       } else {
@@ -275,7 +275,30 @@ class BodyDescription extends Component {
   }
 
   generateBodyFromDescription(bodyDescription, body) {
-    const keys = Object.keys(bodyDescription)
+    const keys = Object.keys(bodyDescription);
+    for (let i = 0; i < keys.length; i++) {
+      switch (bodyDescription[keys[i]].type) {
+        case "string":
+        case "number":
+        case "boolean":
+          body[keys[i]] = bodyDescription[keys[i]].value;
+          break;
+        case "array":
+          body[keys[i]] = this.generateBodyFromDescription(
+            bodyDescription[keys[i]].value,
+            []
+          );
+          break;
+        case "object":
+          body[keys[i]] = this.generateBodyFromDescription(
+            bodyDescription[keys[i]].value,
+            {}
+          );
+          break;
+      }
+      // console.log(body);
+    }
+    return body;
   }
 
   handleChange(e, index, title) {
@@ -289,18 +312,19 @@ class BodyDescription extends Component {
 
   updateBodyDescription(body) {
     body = this.parseBody(body);
-    const bodyDescription = this.generateBodyDescription(body),
- 
+    const bodyDescription = this.generateBodyDescription(body);
     // this.setState({ bodyDescription });
     return bodyDescription;
   }
 
   render() {
     // const bodyDescription = { ...this.props.body_description };
-    console.log(this.props.body);
+    // console.log(this.props.body);
     const bodyDescription = this.updateBodyDescription(this.props.body);
 
     console.log(bodyDescription);
+    const body = this.generateBodyFromDescription(bodyDescription, {});
+    console.log(body);
     return (
       <div>
         {/* <table class="table">
