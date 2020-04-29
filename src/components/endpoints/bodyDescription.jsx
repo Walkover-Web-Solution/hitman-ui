@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import "./publicEndpoint.scss";
 import { JsonHighlightRules } from "ace-builds/src-noconflict/mode-json";
 import { Button } from "react-bootstrap";
+import jQuery from "jquery";
 
 class BodyDescription extends Component {
   state = {
@@ -199,13 +200,11 @@ class BodyDescription extends Component {
 
   handleDelete(index) {
     this.bodyDescription.splice(index, 1);
-    console.log(this.bodyDescription);
     //this.props.set_public_body(this.body);
   }
 
   handleAdd(index, value) {
     this.bodyDescription.splice(1, index, value);
-    console.log(index, this.bodyDescription[index]);
     //body[key].push(this.props.body_description[key].default[0]);
     //this.props.set_public_body(body);
   }
@@ -457,7 +456,7 @@ class BodyDescription extends Component {
         typeof value === "boolean"
       ) {
         bodyDescription[keys[i]] = {
-          value,
+          value: null,
           type: typeof value,
           description: null,
         };
@@ -469,6 +468,7 @@ class BodyDescription extends Component {
             default: this.generateBodyDescription(value)[0],
           };
         } else {
+          const value1 = this.generateBodyDescription(value);
           bodyDescription[keys[i]] = {
             value: this.generateBodyDescription(value),
             type: "object",
@@ -504,7 +504,6 @@ class BodyDescription extends Component {
           );
           break;
       }
-      // console.log(body);
     }
     return body;
   }
@@ -519,39 +518,73 @@ class BodyDescription extends Component {
   }
 
   compareDefaultValue(updatedBodyDescription, originalBodyDescription) {
-    const originalKeys = Object.keys(originalBodyDescription);
+    // const originalKeys = Object.keys(originalBodyDescription);
     const updatedKeys = Object.keys(updatedBodyDescription);
     for (let i = 0; i < updatedKeys.length; i++) {
-      if (originalBodyDescription[updatedKeys[i]]) {
+      if (
+        originalBodyDescription[updatedKeys[i]] &&
+        updatedBodyDescription[updatedKeys[i]].type ===
+          originalBodyDescription[updatedKeys[i]].type
+      ) {
+        switch (updatedBodyDescription[updatedKeys[i]].type) {
+          case "string":
+          case "number":
+          case "boolean":
+            updatedBodyDescription[updatedKeys[i]].value =
+              originalBodyDescription[updatedKeys[i]].value;
+            break;
+          case "array":
+            updatedBodyDescription[
+              updatedKeys[i]
+            ].value = this.compareDefaultValue(
+              updatedBodyDescription[updatedKeys[i]].value,
+              originalBodyDescription[updatedKeys[i]].value
+            );
+
+            break;
+          case "object":
+            updatedBodyDescription[
+              updatedKeys[i]
+            ].value = this.compareDefaultValue(
+              updatedBodyDescription[updatedKeys[i]].value,
+              originalBodyDescription[updatedKeys[i]].value
+            );
+
+            break;
+        }
+      } else {
       }
     }
+    return updatedBodyDescription;
   }
 
   handleDefaultValue(bodyDescription) {
-    const originalBodyDescription = this.state.bodyDescription;
-    const updatedBodyDescription = bodyDescription;
-
+    if (!this.originalBodyDescription) return bodyDescription;
+    let originalBodyDescription = this.originalBodyDescription;
+    let updatedBodyDescription = jQuery.extend(true, {}, bodyDescription);
     updatedBodyDescription = this.compareDefaultValue(
       updatedBodyDescription,
       originalBodyDescription
     );
 
-    console.log(updatedBodyDescription);
-
-    return bodyDescription;
+    return updatedBodyDescription;
   }
   updateBodyDescription(body) {
     body = this.parseBody(body);
     let bodyDescription = this.generateBodyDescription(body);
 
-    // bodyDescription = this.handleDefaultValue(bodyDescription);
-
+    bodyDescription = this.handleDefaultValue(bodyDescription);
     this.setState({ bodyDescription });
 
     return bodyDescription;
   }
 
   handleUpdate() {
+    this.originalBodyDescription = jQuery.extend(
+      true,
+      {},
+      this.props.body_description
+    );
     const bodyDescription = this.updateBodyDescription(this.props.body);
     this.props.set_body_description(bodyDescription);
   }
