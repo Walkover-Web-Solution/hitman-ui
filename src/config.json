@@ -1,4 +1,4 @@
 {
-  "apiUrl": "http://localhost:2000",
+  "apiUrl": "https://hitman-api.herokuapp.com",
   "uiUrl": "http://localhost:3000"
 }

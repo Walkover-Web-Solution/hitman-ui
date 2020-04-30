@@ -161,7 +161,7 @@ class PublicBodyContainer extends Component {
 
   displayBoolean(obj, name, className) {
     return (
-      <div>
+      <div className="value-description-input-wrapper">
         <select
           className={className || "custom-boolean"}
           value={obj.value}
@@ -172,36 +172,59 @@ class PublicBodyContainer extends Component {
           <option value={true}>true</option>
           <option value={false}>false</option>
         </select>
-        <input value={obj.description} disabled></input>
+        <input
+          className="description-input-field"
+          value={obj.description}
+          name={name + ".description"}
+          type="text"
+          placeholder="Description"
+          onChange={this.handleDescriptionChange}
+        ></input>
       </div>
     );
   }
 
-  displayInput(obj, name, className) {
+  displayInput(obj, name) {
     return (
-      <div>
+      <div className="value-description-input-wrapper">
         <input
-          className={className || "custom-input"}
+          className="value-input-field"
           type={obj.type}
           name={name}
           value={obj.value}
           placeholder="Value"
           onChange={this.handleChange}
         ></input>
-        <input value={obj.description} disabled></input>
+        <input
+          className="description-input-field"
+          value={obj.description}
+          name={name + ".description"}
+          type="text"
+          placeholder="Description"
+          onChange={this.handleDescriptionChange}
+          disabled
+        ></input>
       </div>
     );
   }
 
   displayArray(array, name) {
     return (
-      <div>
+      <div
+        className={
+          array[0].type === "object" || array[0].type === "array"
+            ? "array-wrapper"
+            : ""
+        }
+      >
         {array.map((value, index) => (
           <div key={index} className="array-row">
             {value.type === "boolean"
               ? this.displayBoolean(value, name + "." + index, "array-boolean")
               : value.type === "object"
               ? this.displayObject(value.value, name + "." + index)
+              : value.type === "array"
+              ? this.displayArray(value.value, name + "." + index)
               : this.displayInput(value, name + "." + index)}
             <button
               type="button"
@@ -219,17 +242,32 @@ class PublicBodyContainer extends Component {
 
   displayObject(obj, name) {
     return (
-      <div style={{ border: "1px solid", padding: "8px" }}>
+      <div className="object-container">
         {Object.keys(obj).map((key, index) => (
-          <div key={key} className="object-row-wrapper">
-            <label>{key}</label>
+          <div
+            key={key}
+            className={
+              obj[key].type === "array"
+                ? "array-container"
+                : "object-row-wrapper"
+            }
+            style={
+              obj[key].type === "object"
+                ? { flexDirection: "column" }
+                : { flexDirection: "row" }
+            }
+          >
+            <div className="key-title">
+              <label>{key}</label>
+              <label className="data-type">{obj[key].type}</label>
+            </div>
             {obj[key].type === "object"
               ? this.displayObject(obj[key].value, name + "." + key)
               : obj[key].type === "array"
               ? this.displayArray(obj[key].value, name + "." + key)
               : obj[key].type === "boolean"
               ? this.displayBoolean(obj[key], name + "." + key)
-              : this.displayInput(obj[key], name + "." + key, "object-value")}
+              : this.displayInput(obj[key], name + "." + key)}
           </div>
         ))}
       </div>
@@ -273,7 +311,7 @@ class PublicBodyContainer extends Component {
 
         {this.props.body && this.props.body.type === "JSON" && (
           <div>
-            <div>
+            <div className="body-description-container">
               {Object.keys(this.bodyDescription).map((key) => (
                 <div key={key}>
                   <label style={{ fontWeight: "bold" }}>{key}</label>
