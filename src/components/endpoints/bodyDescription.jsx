@@ -144,13 +144,21 @@ class BodyDescription extends Component {
 
   displayArray(array, name) {
     return (
-      <div>
+      <div
+        className={
+          array[0].type === "object" || array[0].type === "array"
+            ? "array-row-wrapper"
+            : ""
+        }
+      >
         {array.map((value, index) => (
           <div key={index} className="array-row">
             {value.type === "boolean"
               ? this.displayBoolean(value, name + "." + index, "array-boolean")
               : value.type === "object"
               ? this.displayObject(value.value, name + "." + index)
+              : value.type === "array"
+              ? this.displayArray(value.value, name + "." + index)
               : this.displayInput(value, name + "." + index)}
             <button
               type="button"
@@ -177,8 +185,16 @@ class BodyDescription extends Component {
                 ? "array-container"
                 : "object-row-wrapper"
             }
+            style={
+              obj[key].type === "object"
+                ? { flexDirection: "column" }
+                : { flexDirection: "row" }
+            }
           >
-            <label>{key}</label>
+            <div className="key-title">
+              <label>{key}</label>
+              <label className="data-type">{obj[key].type}</label>
+            </div>
             {obj[key].type === "object"
               ? this.displayObject(obj[key].value, name + "." + key)
               : obj[key].type === "array"
