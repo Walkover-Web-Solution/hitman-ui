@@ -1,4 +1,6 @@
 import http from "../../services/httpService";
+import httpService from "../../services/endpointHttpService";
+
 import { apiUrl } from "../../config.json";
 import qs from "qs";
 
@@ -7,7 +9,7 @@ function endpointUrl(groupId) {
 }
 
 export function apiTest(api, method, body, headers, bodyType) {
-  return http.request({
+  return httpService.request({
     url: api,
     method: method,
     data: bodyType === "urlEncoded" ? qs.stringify({ body }) : body,
