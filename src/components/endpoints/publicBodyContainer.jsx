@@ -305,6 +305,7 @@ class PublicBodyContainer extends Component {
           style={{
             padding: "40px 0px 3px 20px",
             color: " tomato",
+            backgroundColor: "white",
           }}
         >
           Body
