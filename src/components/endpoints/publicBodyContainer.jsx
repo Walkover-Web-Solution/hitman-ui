@@ -48,42 +48,61 @@ class PublicBodyContainer extends Component {
     return body;
   }
 
-  handleAddDelete(pkeys, value, body, title) {
+  handleAddDelete(pkeys, bodyDescription, body, title) {
     if (pkeys.length == 1) {
       if (title === "delete") {
         body.splice(pkeys[0], 1);
-        value.splice(pkeys[0], 1);
+        bodyDescription.splice(pkeys[0], 1);
       } else if (title === "add") {
-        const defaultValue = jQuery.extend(true, {}, value[pkeys[0]].default);
-        value[pkeys[0]].value.push(defaultValue);
+        const defaultValue = jQuery.extend(
+          true,
+          {},
+          bodyDescription[pkeys[0]].default
+        );
+
+        bodyDescription[pkeys[0]].value.push(defaultValue);
 
         if (defaultValue.type === "object") {
-          const keyArray = Object.keys(defaultValue.value);
-          let data = { [keyArray[0]]: defaultValue.value[keyArray[0]].value };
+          let data = {};
+          Object.keys(defaultValue.value).forEach((key) => {
+            data[key] = defaultValue.value[key].value;
+          });
           body[pkeys[0]].push(data);
         } else {
           body[pkeys[0]].push(defaultValue.value);
         }
       }
-      return;
+    } else {
+      const data = bodyDescription[pkeys[0]].value;
+      const bodyData = body[pkeys[0]];
+      this.handleAddDelete(pkeys.slice(1, pkeys.length), data, bodyData, title);
     }
-    const data = value[pkeys[0]].value;
-    const bodyData = body[pkeys[0]];
-    this.handleAddDelete(pkeys.slice(1, pkeys.length), data, bodyData, title);
+
+    return { body, bodyDescription };
   }
 
   handleDelete(name) {
     let body = JSON.parse(this.props.body.value);
-    this.handleAddDelete(name.split("."), this.bodyDescription, body, "delete");
-    this.props.set_body_description(this.bodyDescription);
-    this.props.set_public_body(body);
+    const data = this.handleAddDelete(
+      name.split("."),
+      jQuery.extend(true, {}, this.bodyDescription),
+      jQuery.extend(true, {}, body),
+      "delete"
+    );
+    this.props.set_body_description(data.bodyDescription);
+    this.props.set_public_body(data.body);
   }
 
   handleAdd(name) {
     let body = JSON.parse(this.props.body.value);
-    this.handleAddDelete(name.split("."), this.bodyDescription, body, "add");
-    this.props.set_body_description(this.bodyDescription);
-    this.props.set_public_body(body);
+    const data = this.handleAddDelete(
+      name.split("."),
+      jQuery.extend(true, {}, this.bodyDescription),
+      jQuery.extend(true, {}, body),
+      "add"
+    );
+    this.props.set_body_description(data.bodyDescription);
+    this.props.set_public_body(data.body);
   }
 
   performChange(pkeys, bodyDescription, body, newValue) {
@@ -101,7 +120,6 @@ class PublicBodyContainer extends Component {
         bodyDescription[pkeys[0]].value = value;
         body[pkeys[0]] = value;
       }
-      return;
     } else {
       const data = bodyDescription[pkeys[0]].value;
       const bodyData = body[pkeys[0]];
@@ -112,14 +130,20 @@ class PublicBodyContainer extends Component {
         newValue
       );
     }
+    return { body, bodyDescription };
   }
 
   handleChange = (e) => {
     const { name, value } = e.currentTarget;
     let body = JSON.parse(this.props.body.value);
-    this.performChange(name.split("."), this.bodyDescription, body, value);
-    this.props.set_public_body(body);
-    this.props.set_body_description(this.bodyDescription);
+    const data = this.performChange(
+      name.split("."),
+      jQuery.extend(true, {}, this.bodyDescription),
+      jQuery.extend(true, {}, body),
+      value
+    );
+    this.props.set_public_body(data.body);
+    this.props.set_body_description(data.bodyDescription);
   };
 
   displayAddButton(name) {
