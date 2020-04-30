@@ -121,9 +121,8 @@ class Endpoints extends Component {
   }
 
   async handlePublicEndpointState(endpoint) {
-    const role = this.getCurrentUserRole(this.props.collection_id);
     if (endpoint.state === "Draft") {
-      if (role === "Owner" || role === "Admin") {
+      if (this.checkAccess(this.props.collection_id)) {
         this.handleApproveRequest(endpoint);
       } else {
         this.props.pendingEndpoint(endpoint);

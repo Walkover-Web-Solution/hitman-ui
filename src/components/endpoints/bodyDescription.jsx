@@ -256,6 +256,7 @@ class BodyDescription extends Component {
         };
       } else {
         if (Array.isArray(value)) {
+          console.log("value");
           const child = this.generateBodyDescription(value)[0];
           bodyDescription[keys[i]] = {
             value: this.generateBodyDescription(value),

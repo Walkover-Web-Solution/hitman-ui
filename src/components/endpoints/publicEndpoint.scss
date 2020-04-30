@@ -103,7 +103,7 @@ $border-color: rgba(227, 228, 230, 0.7);
   //           width: 100%;
 
   //           .object-row-wrapper {
-  //             // background-color: rgb(241, 241, 241);
+  //
   //             display: flex;
   //             flex-direction: row;
   //             justify-content: space-between;
@@ -228,7 +228,6 @@ table#custom-generic-table {
   border: 1px solid rgb(192, 193, 194);
   border-radius: 5px;
   margin: 5px;
-  background-color: rgb(241, 241, 241);
 }
 
 .array-container {
@@ -239,7 +238,6 @@ table#custom-generic-table {
   flex-direction: row;
   justify-content: space-between;
   padding: 10px;
-  background-color: rgb(241, 241, 241);
 }
 
 .array-row {
@@ -268,7 +266,6 @@ button.btn.cross-button {
 .array-wrapper {
   width: 100%;
   border: 1px solid rgba(192, 193, 194, 0.7);
-  background-color: rgb(241, 241, 241);
 
   margin: 5px;
   border-radius: 5px;

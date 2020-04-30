@@ -209,11 +209,12 @@ class PublicBodyContainer extends Component {
     );
   }
 
-  displayArray(array, name) {
+  displayArray(array, name, defaultValue) {
     return (
       <div
         className={
-          array[0] && (array[0].type === "object" || array[0].type === "array")
+          defaultValue &&
+          (defaultValue.type === "object" || defaultValue.type === "array")
             ? "array-wrapper"
             : ""
         }
@@ -225,7 +226,11 @@ class PublicBodyContainer extends Component {
               : value.type === "object"
               ? this.displayObject(value.value, name + "." + index)
               : value.type === "array"
-              ? this.displayArray(value.value, name + "." + index)
+              ? this.displayArray(
+                  value.value,
+                  name + "." + index,
+                  value.default
+                )
               : this.displayInput(value, name + "." + index)}
             <button
               type="button"
@@ -265,7 +270,11 @@ class PublicBodyContainer extends Component {
             {obj[key].type === "object"
               ? this.displayObject(obj[key].value, name + "." + key)
               : obj[key].type === "array"
-              ? this.displayArray(obj[key].value, name + "." + key)
+              ? this.displayArray(
+                  obj[key].value,
+                  name + "." + key,
+                  obj[key].default
+                )
               : obj[key].type === "boolean"
               ? this.displayBoolean(obj[key], name + "." + key)
               : this.displayInput(obj[key], name + "." + key)}
@@ -349,7 +358,11 @@ class PublicBodyContainer extends Component {
                     : this.bodyDescription[key].type === "object"
                     ? this.displayObject(this.bodyDescription[key].value, key)
                     : this.bodyDescription[key].type === "array"
-                    ? this.displayArray(this.bodyDescription[key].value, key)
+                    ? this.displayArray(
+                        this.bodyDescription[key].value,
+                        key,
+                        this.bodyDescription[key].default
+                      )
                     : null}
                 </div>
               ))}
