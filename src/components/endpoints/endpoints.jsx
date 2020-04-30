@@ -13,7 +13,7 @@ import tabService from "../tabs/tabService";
 import tabStatusTypes from "../tabs/tabStatusTypes";
 import "./endpoints.scss";
 import { deleteEndpoint, duplicateEndpoint } from "./redux/endpointsActions";
-import filterService from "../common/filterService";
+import filterService from "../../services/filterService";
 
 const mapStateToProps = (state) => {
   return {

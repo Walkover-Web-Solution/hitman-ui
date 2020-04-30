@@ -6,7 +6,7 @@ import store from "../../store/store";
 import { isDashboardRoute } from "../common/utility";
 import tabService from "../tabs/tabService";
 import tabStatusTypes from "../tabs/tabStatusTypes";
-import CodeWindow from "./codeWindow";
+import CodeTemplate from "./codeTemplate";
 import CreateEndpointForm from "./createEndpointForm";
 import BodyContainer from "./displayBody";
 import DisplayDescription from "./displayDescription";
@@ -454,16 +454,28 @@ class DisplayEndpoint extends Component {
       this.handleErrorResponse(error);
     }
   }
+
   setPathVariableValues() {
     let uri = new URI(this.uri.current.value);
     uri = uri.pathname();
     let pathParameters = uri.split("/");
+    let uniquePathParameters = {};
     let path = "";
     let counter = 0;
     for (let i = 0; i < pathParameters.length; i++) {
       if (pathParameters[i][0] === ":") {
-        path = path + "/" + this.state.pathVariables[counter].value;
-        counter++;
+        if (
+          uniquePathParameters[pathParameters[i]] ||
+          uniquePathParameters[pathParameters[i]] === ""
+        ) {
+          path = path + "/" + uniquePathParameters[pathParameters[i]];
+        } else {
+          uniquePathParameters[pathParameters[i]] = this.state.pathVariables[
+            counter
+          ].value;
+          path = path + "/" + this.state.pathVariables[counter].value;
+          counter++;
+        }
       } else if (pathParameters[i].length !== 0) {
         path = path + "/" + pathParameters[i];
       }
@@ -810,49 +822,21 @@ class DisplayEndpoint extends Component {
         comment: "",
       };
     }
-    console.log("postData", postData);
     return postData;
   }
 
-  // makePostData(body) {
-  //   let params = [];
-  //   let paramsFlag = false;
-  //   let formData = "";
-  //   if (body.type === "application/x-www-form-urlencoded" && body.value) {
-  //     paramsFlag = true;
-  //     for (let i = 0; i < body.value.length - 1; i++) {
-  //       if (body.value[i].checked === "true") {
-  //         params.push({
-  //           name: body.value[i].key,
-  //           value: body.value[i].value,
-  //         });
-  //       }
-  //     }
-  //   }
-  //   if (body.type === "multipart/form-data") {
-  //     formData = this.makeFormData();
-  //   }
-  //   let postData = {
-  //     mimeType: body.type,
-  //     params: params,
-  //     text:
-  //       paramsFlag === false
-  //         ? body.type === "multipart/form-data"
-  //           ? formData
-  //           : ""
-  //         : "",
-  //     comment: "",
-  //   };
-  //   return postData;
-  // }
-
   async prepareHarObject() {
-    const { uri, method, body } = this.state.data;
     const BASE_URL = this.customState.BASE_URL;
+    let uri = new URI(this.uri.current.value);
+    let queryparams = uri.search();
+    let path = this.setPathVariableValues();
+    let url = BASE_URL + path + queryparams;
+    url = this.replaceVariables(url);
+    const { method, body } = this.state.data;
     const { originalHeaders, originalParams } = this.state;
     const harObject = {
       method,
-      url: BASE_URL.trim() + uri.split("?")[0].trim(),
+      url: url,
       httpVersion: "HTTP/1.1",
       cookies: [],
       headers: this.makeHeaders(originalHeaders),
@@ -860,25 +844,24 @@ class DisplayEndpoint extends Component {
       queryString: this.makeParams(originalParams),
     };
     if (!harObject.url.split(":")[1] || harObject.url.split(":")[0] === "") {
-      harObject.url = "https://";
+      harObject.url = "https://" + url;
     }
-    console.log("harObject", harObject);
-    this.openCodeWindow(harObject);
+    this.openCodeTemplate(harObject);
   }
 
-  openCodeWindow(harObject) {
+  openCodeTemplate(harObject) {
     this.setState({
-      showCodeWindow: true,
+      showCodeTemplate: true,
       harObject,
     });
   }
 
-  showCodeWindow() {
+  showCodeTemplate() {
     return (
-      <CodeWindow
+      <CodeTemplate
         show={true}
         onHide={() => {
-          this.setState({ showCodeWindow: false });
+          this.setState({ showCodeTemplate: false });
         }}
         harObject={this.state.harObject}
         title="Generate Code Snippets"
@@ -998,7 +981,13 @@ class DisplayEndpoint extends Component {
   setHeaders(bodyType) {
     let originalHeaders = this.state.originalHeaders;
     let updatedHeaders = [];
-    this.contentTypeFlag = false;
+    // this.contentTypeFlag = false;
+    let emptyHeader = {
+      checked: "notApplicable",
+      key: "",
+      value: "",
+      description: "",
+    };
     for (let i = 0; i < originalHeaders.length; i++) {
       if (
         originalHeaders[i].key === "content-type" ||
@@ -1009,47 +998,43 @@ class DisplayEndpoint extends Component {
         updatedHeaders.push(originalHeaders[i]);
       }
     }
+    if (bodyType === "none") {
+      updatedHeaders.push(emptyHeader);
+      this.setState({ originalHeaders: updatedHeaders });
+      return;
+    }
     updatedHeaders.push({
       checked: "true",
       key: "content-type",
       value: "",
       description: "",
     });
+    updatedHeaders[updatedHeaders.length - 1].value = this.identifyBodyType(
+      bodyType
+    );
+    updatedHeaders.push(emptyHeader);
+    this.setState({ originalHeaders: updatedHeaders });
+  }
 
+  identifyBodyType(bodyType) {
     switch (bodyType) {
       case "application/x-www-form-urlencoded":
-        updatedHeaders[updatedHeaders.length - 1].value =
-          "application/x-www-form-urlencoded";
-        break;
+        return "application/x-www-form-urlencoded";
       case "multipart/form-data":
-        updatedHeaders[updatedHeaders.length - 1].value = "multipart/form-data";
-        break;
+        return "multipart/form-data";
       case "TEXT":
-        updatedHeaders[updatedHeaders.length - 1].value = "text/plain";
-        break;
+        return "text/plain";
       case "JSON":
-        updatedHeaders[updatedHeaders.length - 1].value = "application/JSON";
-        break;
+        return "application/JSON";
       case "HTML":
-        updatedHeaders[updatedHeaders.length - 1].value = "text/HTML";
-        break;
+        return "text/HTML";
       case "XML":
-        updatedHeaders[updatedHeaders.length - 1].value = "application/XML";
-        break;
+        return "application/XML";
       case "JavaScript":
-        updatedHeaders[updatedHeaders.length - 1].value =
-          "application/JavaScript";
-        break;
+        return "application/JavaScript";
       default:
         break;
     }
-    updatedHeaders.push({
-      checked: "notApplicable",
-      key: "",
-      value: "",
-      description: "",
-    });
-    this.setState({ originalHeaders: updatedHeaders });
   }
 
   propsFromDescription(title, data) {
@@ -1155,7 +1140,7 @@ class DisplayEndpoint extends Component {
             save_endpoint={this.handleSave.bind(this)}
           />
         )}
-        {this.state.showCodeWindow && this.showCodeWindow()}
+        {this.state.showCodeTemplate && this.showCodeTemplate()}
         <DisplayDescription
           {...this.props}
           endpoint={this.state.endpoint}

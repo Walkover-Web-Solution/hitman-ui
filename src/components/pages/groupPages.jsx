@@ -10,7 +10,7 @@ import Pages from "./pages";
 import { deletePage, duplicatePage } from "./redux/pagesActions";
 import pageService from "./pageService";
 import { isDashboardRoute } from "../common/utility";
-import filterService from "../common/filterService";
+import filterService from "../../services/filterService";
 
 const mapStateToProps = (state) => {
   return {

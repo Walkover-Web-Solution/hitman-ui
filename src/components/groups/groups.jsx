@@ -11,7 +11,7 @@ import PageForm from "../pages/pageForm";
 import tabService from "../tabs/tabService";
 import "./groups.scss";
 import groupsService from "./groupsService";
-import filterService from "../common/filterService";
+import filterService from "../../services/filterService";
 
 const mapStateToProps = (state) => {
   return { groups: state.groups };
@@ -244,7 +244,7 @@ class Groups extends Component {
         for (let i = 0; i < elements.length; i++) {
           elements[i].className = "group-collapse collapse show";
         }
-      } else if (this.props.filter === "") {
+      } else if (this.props.filter !== "") {
         let elements = document.getElementsByClassName("group-collapse");
         for (let i = 0; i < elements.length; i++) {
           elements[i].className = "group-collapse collapse hide";

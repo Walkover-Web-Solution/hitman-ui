@@ -15,7 +15,7 @@ import PageForm from "../pages/pageForm";
 import VersionPages from "../pages/versionPages";
 import "./collectionVersions.scss";
 import collectionVersionsService from "./collectionVersionsService";
-import filterService from "../common/filterService";
+import filterService from "../../services/filterService";
 
 const mapStateToProps = (state) => {
   return {
@@ -269,7 +269,7 @@ class CollectionVersions extends Component {
         for (let i = 0; i < elements.length; i++) {
           elements[i].className = "version-collapse collapse show";
         }
-      } else if (this.props.filter === "") {
+      } else if (this.props.filter !== "") {
         let elements = document.getElementsByClassName("version-collapse");
         for (let i = 0; i < elements.length; i++) {
           elements[i].className = "version-collapse collapse hide";
