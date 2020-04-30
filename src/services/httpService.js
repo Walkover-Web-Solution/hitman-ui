@@ -6,7 +6,8 @@ import auth from "../components/auth/authService";
 
 axios.defaults.baseURL = process.env.REACT_APP_API_URL;
 
-axios.interceptors.response.use(null, (error) => {
+var instance = axios.create();
+instance.interceptors.response.use(null, (error) => {
   const expectedError =
     error.response &&
     error.response.status >= 400 &&
@@ -21,20 +22,20 @@ axios.interceptors.response.use(null, (error) => {
     auth.logout();
     window.location = "/";
   }
-
+  console.log("httpService interceptor");
   return Promise.reject(error);
 });
 
 function setJwt(jwt) {
-  axios.defaults.headers.common["Authorization"] = jwt;
+  instance.defaults.headers.common["Authorization"] = jwt;
 }
 
 export default {
-  get: axios.get,
-  post: axios.post,
-  put: axios.put,
-  delete: axios.delete,
-  request: axios.request,
-  patch: axios.patch,
+  get: instance.get,
+  post: instance.post,
+  put: instance.put,
+  delete: instance.delete,
+  request: instance.request,
+  patch: instance.patch,
   setJwt,
 };
