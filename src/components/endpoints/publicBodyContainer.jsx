@@ -177,6 +177,7 @@ class PublicBodyContainer extends Component {
           value={obj.description}
           name={name + ".description"}
           type="text"
+          disabled
           placeholder="Description"
           onChange={this.handleDescriptionChange}
         ></input>
@@ -212,7 +213,7 @@ class PublicBodyContainer extends Component {
     return (
       <div
         className={
-          array[0].type === "object" || array[0].type === "array"
+          array[0] && (array[0].type === "object" || array[0].type === "array")
             ? "array-wrapper"
             : ""
         }
