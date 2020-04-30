@@ -177,7 +177,7 @@ class BodyDescription extends Component {
         {array.map((value, index) => (
           <div key={index} className="array-row">
             {value.type === "boolean"
-              ? this.displayBoolean(value, name + "." + index, "array-boolean")
+              ? this.displayBoolean(value, name + "." + index)
               : value.type === "object"
               ? this.displayObject(value.value, name + "." + index)
               : value.type === "array"

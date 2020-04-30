@@ -220,7 +220,7 @@ class PublicBodyContainer extends Component {
         {array.map((value, index) => (
           <div key={index} className="array-row">
             {value.type === "boolean"
-              ? this.displayBoolean(value, name + "." + index, "array-boolean")
+              ? this.displayBoolean(value, name + "." + index)
               : value.type === "object"
               ? this.displayObject(value.value, name + "." + index)
               : value.type === "array"
@@ -287,7 +287,17 @@ class PublicBodyContainer extends Component {
     }
 
     return (
+      // "public-generic-table-title-container"
       <div>
+        <div
+          className="public-generic-table-title-container"
+          style={{
+            padding: "40px 0px 3px 20px",
+            color: " tomato",
+          }}
+        >
+          Body
+        </div>
         {this.props.body && this.props.body.type === "multipart/form-data" && (
           <GenericTable
             {...this.props}
@@ -313,8 +323,23 @@ class PublicBodyContainer extends Component {
           <div>
             <div className="body-description-container">
               {Object.keys(this.bodyDescription).map((key) => (
-                <div>
-                  <label style={{ fontWeight: "bold" }}>{key}</label>
+                <div
+                  style={
+                    this.bodyDescription[key].type === "object"
+                      ? { display: "flex", flexDirection: "column" }
+                      : {
+                          display: "flex",
+                          flexDirection: "row",
+                          justifyContent: "space-between",
+                        }
+                  }
+                >
+                  <div className="key-title">
+                    <label>{key}</label>
+                    <label className="data-type">
+                      {this.bodyDescription[key].type}
+                    </label>
+                  </div>
                   {this.bodyDescription[key].type === "string" ||
                   this.bodyDescription[key].type === "number"
                     ? this.displayInput(this.bodyDescription[key], key)
