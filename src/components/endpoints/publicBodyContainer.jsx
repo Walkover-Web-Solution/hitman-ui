@@ -211,7 +211,6 @@ class PublicBodyContainer extends Component {
 
   render() {
     this.bodyDescription = this.props.body_description;
-    console.log(this.props);
 
     if (
       this.props.public_body_flag &&
@@ -219,7 +218,6 @@ class PublicBodyContainer extends Component {
       this.props.body.type === "JSON"
     ) {
       const body = this.generateBodyFromDescription(this.bodyDescription);
-      console.log("body", body);
       this.props.set_public_body(body);
     }
 

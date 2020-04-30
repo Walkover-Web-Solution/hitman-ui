@@ -8,6 +8,7 @@ export const fetchTabsFromIdb = (props) => {
   return async (dispatch) => {
     indexedDbService.getAllData("tabs").then((tabsList) => {
       indexedDbService.getAllData("tabs_metadata").then((tabsMetadata) => {
+        console.log(tabsList, tabsMetadata);
         if (!(tabsList && Object.keys(tabsList).length)) {
           if (props.location.pathname.split("/")[2] === "endpoint") {
             let newTab = null;
@@ -45,6 +46,34 @@ export const fetchTabsFromIdb = (props) => {
               "tabsOrder"
             );
           }
+        } else if (
+          props.location.pathname.split("/")[2] === "endpoint" &&
+          props.location.pathname.split("/")[3] === "new" &&
+          tabsList[tabsMetadata.activeTabId] &&
+          tabsList[tabsMetadata.activeTabId].status !== tabsActionTypes.NEW
+        ) {
+          const id = shortid.generate();
+          let newTab = {
+            id,
+            type: "endpoint",
+            status: tabStatusTypes.NEW,
+            previewMode: false,
+            isModified: false,
+          };
+          tabsList[newTab.id] = newTab;
+          tabsMetadata.tabsOrder.push(newTab.id);
+          tabsMetadata.activeTabId = newTab.id;
+          indexedDbService.addData("tabs", newTab);
+          indexedDbService.updateData(
+            "tabs_metadata",
+            tabsMetadata.activeTabId,
+            "activeTabId"
+          );
+          indexedDbService.updateData(
+            "tabs_metadata",
+            tabsMetadata.tabsOrder,
+            "tabsOrder"
+          );
         }
 
         dispatch({
