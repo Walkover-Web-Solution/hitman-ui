@@ -48,6 +48,17 @@ class PublicBodyContainer extends Component {
     return body;
   }
 
+  makeParentKeysArray(name) {
+    let parentKeyArray = name.split(".");
+    parentKeyArray.splice(0, 1);
+    return parentKeyArray;
+  }
+
+  setBody(data) {
+    this.props.set_body_description(data.bodyDescription);
+    this.props.set_public_body(data.body);
+  }
+
   handleAddDelete(pkeys, bodyDescription, body, title) {
     if (pkeys.length === 1) {
       if (title === "delete") {
@@ -83,31 +94,34 @@ class PublicBodyContainer extends Component {
 
   handleDelete(name) {
     let body = JSON.parse(this.props.body.value);
+
     const data = this.handleAddDelete(
-      name.split("."),
+      this.makeParentKeysArray(name),
       jQuery.extend(true, {}, this.bodyDescription),
       jQuery.extend(true, {}, body),
       "delete"
     );
-    this.props.set_body_description(data.bodyDescription);
-    this.props.set_public_body(data.body);
+
+    this.setBody(data);
   }
 
   handleAdd(name) {
     let body = JSON.parse(this.props.body.value);
+
     const data = this.handleAddDelete(
-      name.split("."),
+      this.makeParentKeysArray(name),
       jQuery.extend(true, {}, this.bodyDescription),
       jQuery.extend(true, {}, body),
       "add"
     );
-    this.props.set_body_description(data.bodyDescription);
-    this.props.set_public_body(data.body);
+
+    this.setBody(data);
   }
 
   performChange(pkeys, bodyDescription, body, newValue) {
     if (pkeys.length === 1) {
       const type = bodyDescription[pkeys[0]].type;
+
       if (type === "number") {
         bodyDescription[pkeys[0]].value = parseInt(newValue);
         body[pkeys[0]] = parseInt(newValue);
@@ -123,6 +137,7 @@ class PublicBodyContainer extends Component {
     } else {
       const data = bodyDescription[pkeys[0]].value;
       const bodyData = body[pkeys[0]];
+
       this.performChange(
         pkeys.slice(1, pkeys.length),
         data,
@@ -136,14 +151,15 @@ class PublicBodyContainer extends Component {
   handleChange = (e) => {
     const { name, value } = e.currentTarget;
     let body = JSON.parse(this.props.body.value);
+
     const data = this.performChange(
-      name.split("."),
+      this.makeParentKeysArray(name),
       jQuery.extend(true, {}, this.bodyDescription),
       jQuery.extend(true, {}, body),
       value
     );
-    this.props.set_public_body(data.body);
-    this.props.set_body_description(data.bodyDescription);
+
+    this.setBody(data);
   };
 
   displayAddButton(name) {
@@ -248,6 +264,7 @@ class PublicBodyContainer extends Component {
   }
 
   displayObject(obj, name) {
+    console.log(obj, name);
     return (
       <div className="object-container">
         {Object.keys(obj).map((key, index) => (
@@ -334,7 +351,8 @@ class PublicBodyContainer extends Component {
         {this.props.body && this.props.body.type === "JSON" && (
           <div>
             <div className="body-description-container">
-              {Object.keys(this.bodyDescription).map((key) => (
+              {this.displayObject(this.bodyDescription, "body_description")}
+              {/* {Object.keys(this.bodyDescription).map((key) => (
                 <div
                   style={
                     this.bodyDescription[key].type === "object"
@@ -367,7 +385,7 @@ class PublicBodyContainer extends Component {
                       )
                     : null}
                 </div>
-              ))}
+              ))} */}
             </div>
           </div>
         )}
