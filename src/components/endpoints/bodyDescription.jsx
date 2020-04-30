@@ -113,11 +113,11 @@ class BodyDescription extends Component {
     );
   }
 
-  displayInput(obj, name, className) {
+  displayInput(obj, name) {
     return (
-      <div>
+      <div className="value-description-input-wrapper">
         <input
-          className={className || "custom-input"}
+          className="value-input-field"
           type={obj.type}
           name={name}
           value={obj.value}
@@ -125,6 +125,7 @@ class BodyDescription extends Component {
           onChange={this.handleChange}
         ></input>
         <input
+          className="description-input-field"
           value={obj.description}
           name={name + ".description"}
           type="text"
@@ -145,25 +146,32 @@ class BodyDescription extends Component {
               : value.type === "object"
               ? this.displayObject(value.value, name + "." + index)
               : this.displayInput(value, name + "." + index)}
-            <button
+            {/* <button
               type="button"
               className="btn cross-button"
               onClick={() => this.handleDelete(name + "." + index)}
             >
-              X{/* <i className="fas fa-times"></i> */}
-            </button>
+              <i className="fas fa-times"></i>
+            </button> */}
           </div>
         ))}
-        {this.displayAddButton(name)}
+        {/* {this.displayAddButton(name)} */}
       </div>
     );
   }
 
   displayObject(obj, name) {
     return (
-      <div style={{ border: "1px solid" }}>
+      <div className="object-container">
         {Object.keys(obj).map((key, index) => (
-          <div key={key} className="object-row-wrapper">
+          <div
+            key={key}
+            className={
+              obj[key].type === "array"
+                ? "array-container"
+                : "object-row-wrapper"
+            }
+          >
             <label>{key}</label>
             {obj[key].type === "object"
               ? this.displayObject(obj[key].value, name + "." + key)
@@ -171,7 +179,7 @@ class BodyDescription extends Component {
               ? this.displayArray(obj[key].value, name + "." + key)
               : obj[key].type === "boolean"
               ? this.displayBoolean(obj[key].value, name + "." + key)
-              : this.displayInput(obj[key], name + "." + key, "object-value")}
+              : this.displayInput(obj[key], name + "." + key)}
           </div>
         ))}
       </div>
@@ -207,13 +215,13 @@ class BodyDescription extends Component {
         };
       } else {
         if (Array.isArray(value)) {
+          const child = this.generateBodyDescription(value)[0];
           bodyDescription[keys[i]] = {
             value: this.generateBodyDescription(value),
             type: "array",
-            default: this.generateBodyDescription(value)[0],
+            default: child,
           };
         } else {
-          const value1 = this.generateBodyDescription(value);
           bodyDescription[keys[i]] = {
             value: this.generateBodyDescription(value),
             type: "object",
@@ -268,6 +276,8 @@ class BodyDescription extends Component {
           case "boolean":
             updatedBodyDescription[updatedKeys[i]].value =
               originalBodyDescription[updatedKeys[i]].value;
+            updatedBodyDescription[updatedKeys[i]].description =
+              originalBodyDescription[updatedKeys[i]].description;
             break;
           case "array":
             updatedBodyDescription[
@@ -294,7 +304,7 @@ class BodyDescription extends Component {
     return updatedBodyDescription;
   }
 
-  handleDefaultValue(bodyDescription) {
+  preserveDefaultValue(bodyDescription) {
     if (!this.originalBodyDescription) return bodyDescription;
     let originalBodyDescription = this.originalBodyDescription;
     let updatedBodyDescription = jQuery.extend(true, {}, bodyDescription);
@@ -309,7 +319,7 @@ class BodyDescription extends Component {
     body = this.parseBody(body);
     let bodyDescription = this.generateBodyDescription(body);
 
-    bodyDescription = this.handleDefaultValue(bodyDescription);
+    bodyDescription = this.preserveDefaultValue(bodyDescription);
     this.setState({ bodyDescription });
 
     return bodyDescription;
@@ -337,10 +347,14 @@ class BodyDescription extends Component {
             >
               Update
             </Button>
-            <div>
-              {Object.keys(this.props.body_description).map((key) => (
+            <div className="body-description-container">
+              {this.displayObject(
+                this.props.body_description,
+                "body_description"
+              )}
+              {/* {Object.keys(this.props.body_description).map((key) => (
                 <div>
-                  <label style={{ fontWeight: "bold" }}>{key}</label>
+                  <label>{key}</label>
                   {this.props.body_description[key].type === "string"
                     ? this.displayInput(
                         this.props.body_description[key],
@@ -365,7 +379,7 @@ class BodyDescription extends Component {
                       )
                     : null}
                 </div>
-              ))}
+              ))} */}
             </div>
           </div>
         )}
