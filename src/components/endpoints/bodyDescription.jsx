@@ -44,19 +44,25 @@ class BodyDescription extends Component {
       else if (bodyDescription[pkeys[0]].type === "string")
         bodyDescription[pkeys[0]].value = value;
       else bodyDescription[pkeys[0]].value = value;
-
-      return;
     } else {
       const data = bodyDescription[pkeys[0]].value;
-      this.performChange(pkeys.slice(1, pkeys.length), data, value);
+      bodyDescription[pkeys[0]].value = this.performChange(
+        pkeys.slice(1, pkeys.length),
+        data,
+        value
+      );
     }
+    return bodyDescription;
   }
 
   handleChange = (e) => {
     const { name, value } = e.currentTarget;
-
-    this.performChange(name.split("."), this.props.body_description, value);
-    this.props.set_body_description(this.props.body_description);
+    const bodyDescription = this.performChange(
+      name.split("."),
+      jQuery.extend(true, {}, this.props.body_description),
+      value
+    );
+    this.props.set_body_description(bodyDescription);
   };
 
   performDescriptionChange(pkeys, bodyDescription, value) {
@@ -146,16 +152,16 @@ class BodyDescription extends Component {
               : value.type === "object"
               ? this.displayObject(value.value, name + "." + index)
               : this.displayInput(value, name + "." + index)}
-            {/* <button
+            <button
               type="button"
               className="btn cross-button"
               onClick={() => this.handleDelete(name + "." + index)}
             >
               <i className="fas fa-times"></i>
-            </button> */}
+            </button>
           </div>
         ))}
-        {/* {this.displayAddButton(name)} */}
+        {this.displayAddButton(name)}
       </div>
     );
   }
