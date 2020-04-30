@@ -151,6 +151,7 @@ class PublicBodyContainer extends Component {
       <div className="array-row-add-wrapper">
         <span
           className="badge badge-success"
+          style={{ cursor: "pointer" }}
           onClick={() => this.handleAdd(name)}
         >
           Add+
@@ -345,7 +346,7 @@ class PublicBodyContainer extends Component {
                   }
                 >
                   <div className="key-title">
-                    <label>{key}</label>
+                    <label style={{ fontWeight: "bold" }}>{key}</label>
                     <label className="data-type">
                       {this.bodyDescription[key].type}
                     </label>
