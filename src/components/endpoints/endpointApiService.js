@@ -44,7 +44,7 @@ export function duplicateEndpoint(endpointId) {
 }
 
 export function moveEndpoint(endpointId, body) {
-  return http.patch(`${apiUrl}/endpoints/${endpointId}`, body);
+  return http.patch(`${apiUrl}/endpoints/${endpointId}/move`, body);
 }
 
 export default {

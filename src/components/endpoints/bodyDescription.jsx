@@ -261,11 +261,10 @@ class BodyDescription extends Component {
       } else {
         if (Array.isArray(value)) {
           console.log("value");
-          const child = this.generateBodyDescription(value)[0];
           bodyDescription[keys[i]] = {
             value: this.generateBodyDescription(value),
             type: "array",
-            default: child,
+            default: this.generateBodyDescription(value)[0],
           };
         } else {
           bodyDescription[keys[i]] = {
@@ -332,6 +331,12 @@ class BodyDescription extends Component {
               updatedBodyDescription[updatedKeys[i]].value,
               originalBodyDescription[updatedKeys[i]].value
             );
+            updatedBodyDescription[
+              updatedKeys[i]
+            ].default = this.compareDefaultValue(
+              updatedBodyDescription[updatedKeys[i]].value,
+              originalBodyDescription[updatedKeys[i]].value
+            )[0];
 
             break;
           case "object":
@@ -364,9 +369,9 @@ class BodyDescription extends Component {
   updateBodyDescription(body) {
     body = this.parseBody(body);
     let bodyDescription = this.generateBodyDescription(body);
-
     bodyDescription = this.preserveDefaultValue(bodyDescription);
     this.setState({ bodyDescription });
+    this.props.updateEndpoint({ id: this.props.tab.id, bodyDescription });
 
     return bodyDescription;
   }
@@ -378,10 +383,12 @@ class BodyDescription extends Component {
       this.props.body_description
     );
     const bodyDescription = this.updateBodyDescription(this.props.body);
+
     this.props.set_body_description(bodyDescription);
   }
 
   render() {
+    console.log(this.props.body_description);
     return (
       <div>
         {this.props.body_type === "JSON" && (
