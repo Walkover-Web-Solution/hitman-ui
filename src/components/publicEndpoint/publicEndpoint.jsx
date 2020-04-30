@@ -28,8 +28,12 @@ class PublicEndpoint extends Component {
   render() {
     return (
       <React.Fragment>
-        <nav class="navbar  public-endpoint-navbar">
-          <img className="hitman-logo" src={require("../../hitman-icon.png")} />
+        <nav className="navbar  public-endpoint-navbar">
+          <img
+            className="hitman-logo"
+            alt=""
+            src={require("../../hitman-icon.png")}
+          />
         </nav>
         <main role="main" className="main ml-sm-auto col-lg-10 ">
           <div>

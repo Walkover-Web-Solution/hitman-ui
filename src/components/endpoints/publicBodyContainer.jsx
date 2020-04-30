@@ -49,7 +49,7 @@ class PublicBodyContainer extends Component {
   }
 
   handleAddDelete(pkeys, bodyDescription, body, title) {
-    if (pkeys.length == 1) {
+    if (pkeys.length === 1) {
       if (title === "delete") {
         body.splice(pkeys[0], 1);
         bodyDescription.splice(pkeys[0], 1);
@@ -106,7 +106,7 @@ class PublicBodyContainer extends Component {
   }
 
   performChange(pkeys, bodyDescription, body, newValue) {
-    if (pkeys.length == 1) {
+    if (pkeys.length === 1) {
       const type = bodyDescription[pkeys[0]].type;
       if (type === "number") {
         bodyDescription[pkeys[0]].value = parseInt(newValue);
@@ -177,6 +177,7 @@ class PublicBodyContainer extends Component {
           value={obj.description}
           name={name + ".description"}
           type="text"
+          disabled
           placeholder="Description"
           onChange={this.handleDescriptionChange}
         ></input>

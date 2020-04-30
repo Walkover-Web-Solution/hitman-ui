@@ -91,7 +91,11 @@ class Pages extends Component {
 
   getCurrentUserRole(collectionId) {
     const teamId = this.props.collections[collectionId].teamId;
-    if (this.props.teams !== undefined && teamId !== undefined)
+    if (
+      this.props.teams !== undefined &&
+      teamId !== undefined &&
+      this.props.teams[teamId] !== undefined
+    )
       return this.props.teams[teamId].role;
   }
 

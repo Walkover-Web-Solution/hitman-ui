@@ -1,17 +1,17 @@
-import React, { Component } from "react";
-import GenericTable from "./genericTable";
 import "ace-builds";
-import AceEditor from "react-ace";
-import "ace-builds/webpack-resolver";
-import "ace-builds/src-noconflict/mode-java";
-import "ace-builds/src-noconflict/mode-json";
 import "ace-builds/src-noconflict/mode-html";
+import "ace-builds/src-noconflict/mode-java";
 import "ace-builds/src-noconflict/mode-javascript";
+import "ace-builds/src-noconflict/mode-json";
 import "ace-builds/src-noconflict/mode-xml";
 import "ace-builds/src-noconflict/theme-github";
-import "./endpoints.scss";
-import { Table, Button } from "react-bootstrap";
+import "ace-builds/webpack-resolver";
+import React, { Component } from "react";
+import AceEditor from "react-ace";
+import { Button } from "react-bootstrap";
 import BodyDescription from "./bodyDescription";
+import "./endpoints.scss";
+import GenericTable from "./genericTable";
 
 class BodyContainer extends Component {
   state = {
