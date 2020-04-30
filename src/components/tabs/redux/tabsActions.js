@@ -8,10 +8,10 @@ export const fetchTabsFromIdb = (props) => {
   return async (dispatch) => {
     indexedDbService.getAllData("tabs").then((tabsList) => {
       indexedDbService.getAllData("tabs_metadata").then((tabsMetadata) => {
-        console.log(tabsList, tabsMetadata);
         if (!(tabsList && Object.keys(tabsList).length)) {
           if (props.location.pathname.split("/")[2] === "endpoint") {
             let newTab = null;
+
             if (props.location.pathname.split("/")[3] === "new") {
               const id = shortid.generate();
               newTab = {
@@ -31,6 +31,7 @@ export const fetchTabsFromIdb = (props) => {
                 isModified: false,
               };
             }
+
             tabsList[newTab.id] = newTab;
             tabsMetadata.tabsOrder.push(newTab.id);
             tabsMetadata.activeTabId = newTab.id;
