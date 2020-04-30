@@ -196,14 +196,19 @@ table#custom-generic-table {
 
 //update button styling in body description
 .custom-update-button {
-  color: tomato !important;
-  background: rgb(241, 241, 241) !important;
+  background-color: rgba(231, 108, 86, 0.877) !important;
+  color: white !important;
   border: none !important;
+  border-radius: 0 !important;
+  margin-left: 5px;
+  margin-bottom: 10px;
+  margin-top: 5px;
 }
 
 .body-description-container {
   padding: 10px;
   background-color: white;
+  border: 2px solid rgb(217, 221, 225);
 }
 
 .primitive-datatype-wrapper {

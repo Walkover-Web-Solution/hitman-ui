@@ -64,13 +64,11 @@ class BodyDescription extends Component {
     const { name, value } = e.currentTarget;
     let parentKeyArray = name.split(".");
     parentKeyArray.splice(0, 1);
-    console.log(parentKeyArray);
     const bodyDescription = this.performChange(
       parentKeyArray,
       jQuery.extend(true, {}, this.props.body_description),
       value
     );
-    console.log(bodyDescription);
     this.props.set_body_description(bodyDescription);
   };
 
@@ -94,13 +92,11 @@ class BodyDescription extends Component {
     let parentKeyArray = name.split(".");
     parentKeyArray.splice(0, 1);
     parentKeyArray.splice(-1, 1);
-    console.log(parentKeyArray);
     const bodyDescription = this.performDescriptionChange(
       parentKeyArray,
       jQuery.extend(true, {}, this.props.body_description),
       value
     );
-    console.log(bodyDescription);
     this.props.set_body_description(bodyDescription);
   };
 
@@ -389,7 +385,7 @@ class BodyDescription extends Component {
               onClick={() => this.handleUpdate()}
               className="custom-update-button"
             >
-              Update
+              Update Body Description
             </Button>
             <div className="body-description-container">
               {this.displayObject(
@@ -428,7 +424,7 @@ class BodyDescription extends Component {
           </div>
         )}
 
-        {this.props.body_type !== "JSON" && <div>{this.props.body}</div>}
+        {/* {this.props.body_type !== "JSON" && <pre>{this.props.body}</pre>} */}
       </div>
     );
   }
