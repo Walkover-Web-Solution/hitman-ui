@@ -37,16 +37,51 @@ class BodyDescription extends Component {
     this.props.set_body_description(this.props.body_description);
   }
 
-  performChange(pkeys, bodyDescription, value) {
+  performChange(pkeys, bodyDescription, newValue) {
     if (pkeys.length == 1) {
       if (bodyDescription[pkeys[0]].type === "number")
-        bodyDescription[pkeys[0]].value = parseInt(value);
+        bodyDescription[pkeys[0]].value = parseInt(newValue);
       else if (bodyDescription[pkeys[0]].type === "string")
+        bodyDescription[pkeys[0]].value = newValue;
+      else if (bodyDescription[pkeys[0]].type === "boolean") {
+        const value =
+          newValue === "true" ? true : newValue === "false" ? false : null;
         bodyDescription[pkeys[0]].value = value;
-      else bodyDescription[pkeys[0]].value = value;
+        // else bodyDescription[pkeys[0]].value = value;
+      }
     } else {
       const data = bodyDescription[pkeys[0]].value;
       bodyDescription[pkeys[0]].value = this.performChange(
+        pkeys.slice(1, pkeys.length),
+        data,
+        newValue
+      );
+    }
+    return bodyDescription;
+  }
+
+  handleChange = (e) => {
+    const { name, value } = e.currentTarget;
+    let parentKeyArray = name.split(".");
+    parentKeyArray.splice(0, 1);
+    console.log(parentKeyArray);
+    const bodyDescription = this.performChange(
+      parentKeyArray,
+      jQuery.extend(true, {}, this.props.body_description),
+      value
+    );
+    console.log(bodyDescription);
+    this.props.set_body_description(bodyDescription);
+  };
+
+  performDescriptionChange(pkeys, bodyDescription, value) {
+    console.log("bodyDescription", bodyDescription);
+    if (pkeys.length == 1) {
+      bodyDescription[pkeys[0]].description = value;
+    } else {
+      // console.log(bodyDescription[pkeys[0]]);
+      const data = bodyDescription[pkeys[0]].value;
+      bodyDescription[pkeys[0]].value = this.performDescriptionChange(
         pkeys.slice(1, pkeys.length),
         data,
         value
@@ -55,40 +90,20 @@ class BodyDescription extends Component {
     return bodyDescription;
   }
 
-  handleChange = (e) => {
-    const { name, value } = e.currentTarget;
-    const bodyDescription = this.performChange(
-      name.split("."),
-      jQuery.extend(true, {}, this.props.body_description),
-      value
-    );
-    this.props.set_body_description(bodyDescription);
-  };
-
-  performDescriptionChange(pkeys, bodyDescription, value) {
-    if (pkeys.length == 1) {
-      bodyDescription[pkeys[0]].description = value;
-
-      return;
-    } else {
-      const data = bodyDescription[pkeys[0]].value;
-      this.performDescriptionChange(pkeys.slice(1, pkeys.length), data, value);
-    }
-  }
-
   handleDescriptionChange = (e) => {
     const { name, value } = e.currentTarget;
 
     let parentKeyArray = name.split(".");
+    parentKeyArray.splice(0, 1);
     parentKeyArray.splice(-1, 1);
-
-    this.performDescriptionChange(
+    console.log(parentKeyArray);
+    const bodyDescription = this.performDescriptionChange(
       parentKeyArray,
-      this.props.body_description,
+      jQuery.extend(true, {}, this.props.body_description),
       value
     );
-    console.log(this.props.body_description);
-    this.props.set_body_description(this.props.body_description);
+    console.log(bodyDescription);
+    this.props.set_body_description(bodyDescription);
   };
 
   displayAddButton(name) {
@@ -106,16 +121,26 @@ class BodyDescription extends Component {
 
   displayBoolean(obj, name, className) {
     return (
-      <select
-        className={className || "custom-boolean"}
-        value={obj.value}
-        onChange={this.handleChange}
-        name={name}
-      >
-        <option value={null}></option>
-        <option value={true}>true</option>
-        <option value={false}>false</option>
-      </select>
+      <div className="value-description-input-wrapper">
+        <select
+          className={className || "custom-boolean"}
+          value={obj.value}
+          onChange={this.handleChange}
+          name={name}
+        >
+          <option value={null}></option>
+          <option value={true}>true</option>
+          <option value={false}>false</option>
+        </select>
+        <input
+          className="description-input-field"
+          value={obj.description}
+          name={name + ".description"}
+          type="text"
+          placeholder="Description"
+          onChange={this.handleDescriptionChange}
+        ></input>
+      </div>
     );
   }
 
@@ -144,24 +169,32 @@ class BodyDescription extends Component {
 
   displayArray(array, name) {
     return (
-      <div>
+      <div
+        className={
+          array[0].type === "object" || array[0].type === "array"
+            ? "array-wrapper"
+            : ""
+        }
+      >
         {array.map((value, index) => (
           <div key={index} className="array-row">
             {value.type === "boolean"
               ? this.displayBoolean(value, name + "." + index, "array-boolean")
               : value.type === "object"
               ? this.displayObject(value.value, name + "." + index)
+              : value.type === "array"
+              ? this.displayArray(value.value, name + "." + index)
               : this.displayInput(value, name + "." + index)}
-            <button
+            {/* <button
               type="button"
               className="btn cross-button"
               onClick={() => this.handleDelete(name + "." + index)}
             >
               <i className="fas fa-times"></i>
-            </button>
+            </button> */}
           </div>
         ))}
-        {this.displayAddButton(name)}
+        {/* {this.displayAddButton(name)} */}
       </div>
     );
   }
@@ -177,14 +210,22 @@ class BodyDescription extends Component {
                 ? "array-container"
                 : "object-row-wrapper"
             }
+            style={
+              obj[key].type === "object"
+                ? { flexDirection: "column" }
+                : { flexDirection: "row" }
+            }
           >
-            <label>{key}</label>
+            <div className="key-title">
+              <label>{key}</label>
+              <label className="data-type">{obj[key].type}</label>
+            </div>
             {obj[key].type === "object"
               ? this.displayObject(obj[key].value, name + "." + key)
               : obj[key].type === "array"
               ? this.displayArray(obj[key].value, name + "." + key)
               : obj[key].type === "boolean"
-              ? this.displayBoolean(obj[key].value, name + "." + key)
+              ? this.displayBoolean(obj[key], name + "." + key)
               : this.displayInput(obj[key], name + "." + key)}
           </div>
         ))}
@@ -215,7 +256,7 @@ class BodyDescription extends Component {
         typeof value === "boolean"
       ) {
         bodyDescription[keys[i]] = {
-          value: "",
+          value: null,
           type: typeof value,
           description: "",
         };
@@ -338,7 +379,6 @@ class BodyDescription extends Component {
       this.props.body_description
     );
     const bodyDescription = this.updateBodyDescription(this.props.body);
-    console.log(bodyDescription);
     this.props.set_body_description(bodyDescription);
   }
 
