@@ -75,11 +75,9 @@ class BodyDescription extends Component {
   };
 
   performDescriptionChange(pkeys, bodyDescription, value) {
-    console.log("bodyDescription", bodyDescription);
     if (pkeys.length == 1) {
       bodyDescription[pkeys[0]].description = value;
     } else {
-      // console.log(bodyDescription[pkeys[0]]);
       const data = bodyDescription[pkeys[0]].value;
       bodyDescription[pkeys[0]].value = this.performDescriptionChange(
         pkeys.slice(1, pkeys.length),
