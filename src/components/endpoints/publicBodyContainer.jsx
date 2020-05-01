@@ -264,7 +264,6 @@ class PublicBodyContainer extends Component {
   }
 
   displayObject(obj, name) {
-    console.log(obj, name);
     return (
       <div className="object-container">
         {Object.keys(obj).map((key, index) => (
@@ -315,7 +314,6 @@ class PublicBodyContainer extends Component {
     }
 
     return (
-      // "public-generic-table-title-container"
       <div>
         <div
           className="public-generic-table-title-container"
@@ -352,40 +350,6 @@ class PublicBodyContainer extends Component {
           <div>
             <div className="body-description-container">
               {this.displayObject(this.bodyDescription, "body_description")}
-              {/* {Object.keys(this.bodyDescription).map((key) => (
-                <div
-                  style={
-                    this.bodyDescription[key].type === "object"
-                      ? { display: "flex", flexDirection: "column" }
-                      : {
-                          display: "flex",
-                          flexDirection: "row",
-                          justifyContent: "space-between",
-                        }
-                  }
-                >
-                  <div className="key-title">
-                    <label style={{ fontWeight: "bold" }}>{key}</label>
-                    <label className="data-type">
-                      {this.bodyDescription[key].type}
-                    </label>
-                  </div>
-                  {this.bodyDescription[key].type === "string" ||
-                  this.bodyDescription[key].type === "number"
-                    ? this.displayInput(this.bodyDescription[key], key)
-                    : this.bodyDescription[key].type === "boolean"
-                    ? this.displayBoolean(this.bodyDescription[key], key)
-                    : this.bodyDescription[key].type === "object"
-                    ? this.displayObject(this.bodyDescription[key].value, key)
-                    : this.bodyDescription[key].type === "array"
-                    ? this.displayArray(
-                        this.bodyDescription[key].value,
-                        key,
-                        this.bodyDescription[key].default
-                      )
-                    : null}
-                </div>
-              ))} */}
             </div>
           </div>
         )}
