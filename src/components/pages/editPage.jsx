@@ -6,6 +6,7 @@ import { withRouter } from "react-router-dom";
 import store from "../../store/store";
 import { updatePage } from "../pages/redux/pagesActions";
 import "./page.scss";
+import { toast } from "react-toastify";
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
@@ -91,28 +92,55 @@ class EditPage extends Component {
     this.setState({ data });
   };
 
+  handleNameChange = (e) => {
+    const data = { ...this.state.data };
+    data["name"] = e.currentTarget.value;
+    this.setState({ data });
+  };
+
   handleSubmit = (e) => {
     e.preventDefault();
     const groupId = this.state.data.groupId;
 
     if (groupId === null) {
       const editedPage = { ...this.state.data };
-      this.props.updatePage(editedPage, editedPage.id);
-      this.props.history.push({
-        pathname: `/dashboard/page/${editedPage.id}`,
-      });
+      if (editedPage.name.trim() === "") {
+        toast.error("Page name cannot be empty.");
+      } else {
+        this.props.updatePage(editedPage, editedPage.id);
+        this.props.history.push({
+          pathname: `/dashboard/page/${editedPage.id}`,
+        });
+      }
     } else {
       const editedPage = { ...this.state.data };
-      this.props.updatePage(editedPage, editedPage.id);
-      this.props.history.push({
-        pathname: `/dashboard/page/${editedPage.id}`,
-      });
+      if (editedPage.name.trim() === "") {
+        toast.error("Page name cannot be empty.");
+      } else {
+        this.props.updatePage(editedPage, editedPage.id);
+        this.props.history.push({
+          pathname: `/dashboard/page/${editedPage.id}`,
+        });
+      }
     }
   };
 
   render() {
+    console.log(this.state.data);
     return (
       <div className="custom-edit-page">
+        <div>
+          <input
+            name={"name"}
+            id="name"
+            value={this.state.data.name}
+            onChange={this.handleNameChange}
+            type={"text"}
+            className="form-control custom-page-name-input"
+            placeholder="Page Name"
+          />
+        </div>
+
         <div style={{ marginBottom: "50px" }}>
           <ReactQuill
             style={{ height: "400px" }}
