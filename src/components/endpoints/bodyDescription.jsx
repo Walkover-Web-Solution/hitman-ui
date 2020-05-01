@@ -288,7 +288,8 @@ class BodyDescription extends Component {
     let bodyDescription = this.generateBodyDescription(body);
     bodyDescription = this.preserveDefaultValue(bodyDescription);
     this.setState({ bodyDescription });
-    this.props.updateEndpoint({ id: this.props.tab.id, bodyDescription });
+    if (this.props.tab.status !== "NEW")
+      this.props.updateEndpoint({ id: this.props.tab.id, bodyDescription });
 
     return bodyDescription;
   }
@@ -305,6 +306,7 @@ class BodyDescription extends Component {
   }
 
   render() {
+    console.log("1", this.props.body_type);
     return (
       <div>
         {this.props.body_type === "JSON" && (
