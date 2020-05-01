@@ -212,6 +212,7 @@ class DisplayEndpoint extends Component {
         fieldDescription,
         publicBodyFlag: true,
         bodyFlag: true,
+        response: {},
       });
     }
   }
@@ -1078,6 +1079,7 @@ class DisplayEndpoint extends Component {
       let flag = 0;
 
       if (isDashboardRoute(this.props)) {
+        console.log("in render if");
         this.fetchEndpoint(flag, this.props.tab.id);
         store.subscribe(() => {
           if (!this.props.location.title && !this.state.title) {
@@ -1089,18 +1091,15 @@ class DisplayEndpoint extends Component {
 
     if (
       !isDashboardRoute(this.props) &&
-      this.props.location.pathname.split("/")[3] !== "new" &&
       this.state.endpoint.id !== this.props.location.pathname.split("/")[4] &&
       this.props.endpoints[this.props.location.pathname.split("/")[4]]
     ) {
-      if (!isDashboardRoute(this.props)) {
-        this.fetchEndpoint(0, this.props.location.pathname.split("/")[4]);
-        store.subscribe(() => {
-          if (!this.props.location.title && !this.state.title) {
-            this.fetchEndpoint(0, this.props.location.pathname.split("/")[4]);
-          }
-        });
-      }
+      this.fetchEndpoint(0, this.props.location.pathname.split("/")[4]);
+      store.subscribe(() => {
+        if (!this.props.location.title && !this.state.title) {
+          this.fetchEndpoint(0, this.props.location.pathname.split("/")[4]);
+        }
+      });
     }
 
     return (
