@@ -306,7 +306,6 @@ class BodyDescription extends Component {
   }
 
   render() {
-    console.log("1", this.props.body_type);
     return (
       <div>
         {this.props.body_type === "JSON" && (

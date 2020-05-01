@@ -92,7 +92,6 @@ export const duplicateEndpoint = (endpoint) => {
       })
       .catch((error) => {
         toast.error(error);
-        // dispatch(onEndpointDuplicatedError(error.response, endpoint));
       });
   };
 };

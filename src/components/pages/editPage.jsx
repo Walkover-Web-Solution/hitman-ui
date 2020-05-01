@@ -126,7 +126,6 @@ class EditPage extends Component {
   };
 
   render() {
-    console.log(this.state.data);
     return (
       <div className="custom-edit-page">
         <div>

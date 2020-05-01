@@ -53,13 +53,6 @@ class Groups extends Component {
   }
 
   handleAddEndpoint(groupId, versions, groups) {
-    // const newTabId = shortId.generate();
-    // const tabs = [
-    //   ...this.props.tabs,
-    //   { id: newTabId, type: "endpoint", isSaved: false },
-    // ];
-
-    // this.props.set_tabs(tabs, tabs.length - 1);
     tabService.newTab({ ...this.props });
     this.props.history.push({
       pathname: `/dashboard/endpoint/new`,

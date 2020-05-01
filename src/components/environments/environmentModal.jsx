@@ -118,7 +118,6 @@ class EnvironmentModal extends Component {
           </div>
         </Modal.Body>
       </Modal>
-      // </div>
     );
   }
 }

@@ -53,12 +53,6 @@ export const fetchTabsFromIdb = (props) => {
           tabsList[tabsMetadata.activeTabId] &&
           tabsList[tabsMetadata.activeTabId].status !== "NEW"
         ) {
-          console.log(
-            "sdf",
-            tabsList[tabsMetadata.activeTabId].status !== tabsActionTypes.NEW,
-            tabsList[tabsMetadata.activeTabId].status,
-            tabsActionTypes.NEW
-          );
           const id = shortid.generate();
           let newTab = {
             id,

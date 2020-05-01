@@ -22,7 +22,6 @@ instance.interceptors.response.use(null, (error) => {
     auth.logout();
     window.location = "/";
   }
-  console.log("httpService interceptor");
   return Promise.reject(error);
 });
 

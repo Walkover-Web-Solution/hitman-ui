@@ -19,10 +19,6 @@ endpointInstance.interceptors.response.use(null, (error) => {
   return Promise.reject(error);
 });
 
-// function setJwt(jwt) {
-//   axios.defaults.headers.common["Authorization"] = jwt;
-// }
-
 export default {
   get: endpointInstance.get,
   post: endpointInstance.post,
@@ -30,5 +26,4 @@ export default {
   delete: endpointInstance.delete,
   request: endpointInstance.request,
   patch: endpointInstance.patch,
-  //   setJwt,
 };

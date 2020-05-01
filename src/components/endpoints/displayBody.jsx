@@ -44,7 +44,6 @@ class BodyContainer extends Component {
   rawBodyTypes = ["TEXT", "HTML", "JSON", "XML", "JavaScript"];
 
   handleSelectBodyType(bodyType, bodyDescription) {
-    console.log(bodyType);
     switch (bodyType) {
       case "multipart/form-data":
         this.props.set_body(bodyType, this.state.data.data);
