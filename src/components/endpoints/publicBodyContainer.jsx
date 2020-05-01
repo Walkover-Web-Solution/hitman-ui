@@ -315,16 +315,6 @@ class PublicBodyContainer extends Component {
 
     return (
       <div>
-        <div
-          className="public-generic-table-title-container"
-          style={{
-            padding: "40px 0px 3px 20px",
-            color: " tomato",
-            backgroundColor: "white",
-          }}
-        >
-          Body
-        </div>
         {this.props.body && this.props.body.type === "multipart/form-data" && (
           <GenericTable
             {...this.props}
@@ -348,6 +338,16 @@ class PublicBodyContainer extends Component {
 
         {this.props.body && this.props.body.type === "JSON" && (
           <div>
+            <div
+              className="public-generic-table-title-container"
+              style={{
+                padding: "40px 0px 3px 20px",
+                color: " tomato",
+                backgroundColor: "white",
+              }}
+            >
+              Body
+            </div>
             <div className="body-description-container">
               {this.displayObject(this.bodyDescription, "body_description")}
             </div>
