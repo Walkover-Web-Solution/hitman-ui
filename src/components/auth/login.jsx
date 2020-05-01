@@ -27,7 +27,7 @@ class Login extends Component {
     return (
       <React.Fragment>
         <center>
-          <h1 id="custom-login-heading">Welcome to the Login Page</h1>
+          <h1 id="custom-login-heading">Welcome to the Hitman</h1>
 
           <button className="btn btn-primary btn-lg" id="custom-login-button">
             <a href={socketLoginUrl}>Login With ViaSocket</a>
