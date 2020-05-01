@@ -1,10 +1,5 @@
 import { openDB } from "idb";
 let db = null;
-const stores = [
-  { name: "environment" },
-  { name: "tabs", options: { keyPath: "id", autoIncrement: true } },
-  { name: "tabs_metadata" },
-];
 
 const getDataBase = async () => {
   if (db) return db;
@@ -21,7 +16,7 @@ const createDataBase = async () => {
   db = await openDB(dbName, version, {
     upgrade(db, oldVersion, newVersion, transaction) {
       const environmentStore = db.createObjectStore("environment");
-      const tabsStore = db.createObjectStore("tabs", {
+      db.createObjectStore("tabs", {
         keyPath: "id",
         autoIncrement: true,
       });
@@ -41,7 +36,7 @@ const addData = async (storeName, val, key) => {
   }
   const tx = db.transaction(storeName, "readwrite");
   const store = await tx.objectStore(storeName);
-  const value = await store.put(val, key);
+  await store.put(val, key);
   await tx.done;
 };
 

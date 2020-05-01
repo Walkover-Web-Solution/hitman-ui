@@ -20,7 +20,10 @@ class CustomTabs extends Component {
               </label>
             );
           else return <label>{this.props.endpoints[tabId].name}</label>;
-        } else return "Untitled";
+        } else {
+          return "Untitled";
+        }
+
       case "page":
         if (this.props.pages[tabId]) {
           if (tab.previewMode)
@@ -31,6 +34,8 @@ class CustomTabs extends Component {
             );
           else return <label>{this.props.pages[tabId].name}</label>;
         }
+        break;
+      default:
     }
   }
 

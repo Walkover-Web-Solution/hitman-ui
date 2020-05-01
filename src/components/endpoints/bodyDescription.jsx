@@ -1,8 +1,7 @@
-import React, { Component } from "react";
-import "./publicEndpoint.scss";
-import { JsonHighlightRules } from "ace-builds/src-noconflict/mode-json";
-import { Button } from "react-bootstrap";
 import jQuery from "jquery";
+import React, { Component } from "react";
+import { Button } from "react-bootstrap";
+import "./publicEndpoint.scss";
 
 class BodyDescription extends Component {
   state = {
@@ -10,7 +9,7 @@ class BodyDescription extends Component {
   };
 
   performChange(pkeys, bodyDescription, newValue) {
-    if (pkeys.length == 1) {
+    if (pkeys.length === 1) {
       if (bodyDescription[pkeys[0]].type === "number")
         bodyDescription[pkeys[0]].value = parseInt(newValue);
       else if (bodyDescription[pkeys[0]].type === "string")
@@ -19,7 +18,6 @@ class BodyDescription extends Component {
         const value =
           newValue === "true" ? true : newValue === "false" ? false : null;
         bodyDescription[pkeys[0]].value = value;
-        // else bodyDescription[pkeys[0]].value = value;
       }
     } else {
       const data = bodyDescription[pkeys[0]].value;
@@ -45,7 +43,7 @@ class BodyDescription extends Component {
   };
 
   performDescriptionChange(pkeys, bodyDescription, value) {
-    if (pkeys.length == 1) {
+    if (pkeys.length === 1) {
       bodyDescription[pkeys[0]].description = value;
     } else {
       const data = bodyDescription[pkeys[0]].value;
@@ -264,6 +262,8 @@ class BodyDescription extends Component {
               originalBodyDescription[updatedKeys[i]].value
             );
 
+            break;
+          default:
             break;
         }
       } else {

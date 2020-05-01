@@ -51,6 +51,9 @@ class BodyContainer extends Component {
         break;
       case "application/x-www-form-urlencoded":
         this.props.set_body(bodyType, this.state.data.urlencoded);
+        break;
+      default:
+        break;
     }
     if (bodyType === "raw" && bodyDescription) {
       this.flag = true;

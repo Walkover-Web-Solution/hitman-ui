@@ -110,7 +110,7 @@ class EnvironmentVariables extends Component {
       len.toString(),
     ];
     let updatedVariableNames = [...this.state.updatedVariableNames, ""];
-    if (originalVariableNames[len.toString() - 1] != "") {
+    if (originalVariableNames[len.toString() - 1] !== "") {
       environment.variables[len.toString()] = {
         initialValue: "",
         currentValue: "",

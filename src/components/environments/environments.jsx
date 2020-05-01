@@ -45,7 +45,7 @@ class Environments extends Component {
 
   async componentDidMount() {
     this.props.fetchEnvironments();
-    const db = await indexedDbService.getDataBase();
+    await indexedDbService.getDataBase();
     const currentEnvironmentId = await indexedDbService.getValue(
       "environment",
       "currentEnvironmentId"

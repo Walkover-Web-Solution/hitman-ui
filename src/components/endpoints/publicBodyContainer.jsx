@@ -43,6 +43,8 @@ class PublicBodyContainer extends Component {
             {}
           );
           break;
+        default:
+          break;
       }
     }
     return body;

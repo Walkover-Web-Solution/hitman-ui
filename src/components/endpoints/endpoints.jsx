@@ -135,7 +135,6 @@ class Endpoints extends Component {
     //   let body = JSON.parse(value);
     //   let bodyDescription = this.generateBodyDescription(body);
     //   endpoint.bodyDescription = bodyDescription;
-    //   console.log("sdfs", endpoint);
     // }
     this.props.approveEndpoint(endpoint);
   }
