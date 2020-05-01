@@ -3,7 +3,7 @@ export function filter(entity, filter, title) {
   if (title === "groupPages" || title === "endpoints") {
     entityId = "groupId";
   }
-  if (title === "versionPages" || title === "groups") {
+  if (title === "versionPages" || title === "groups" || title === "versions") {
     entityId = "versionId";
   }
   this.filtered = {};
@@ -11,7 +11,12 @@ export function filter(entity, filter, title) {
   let entityNameIds = [];
   let entityNames = [];
   for (let i = 0; i < entityIds.length; i++) {
-    const { name } = entity[entityIds[i]];
+    let name = "";
+    if (title === "versions") {
+      name = entity[entityIds[i]].number;
+    } else {
+      name = entity[entityIds[i]].name;
+    }
     entityNameIds.push({ name: name, id: entityIds[i] });
     entityNames.push(name);
   }
@@ -32,6 +37,9 @@ export function filter(entity, filter, title) {
         break;
       }
     }
+  }
+  if (title === "versions") {
+    return finalEntityIds;
   }
   for (let i = 0; i < finalEntityIds.length; i++) {
     this.filtered[finalEntityIds[i]] = entity[finalEntityIds[i]];

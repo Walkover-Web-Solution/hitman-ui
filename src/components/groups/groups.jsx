@@ -11,7 +11,7 @@ import PageForm from "../pages/pageForm";
 import tabService from "../tabs/tabService";
 import "./groups.scss";
 import groupsService from "./groupsService";
-import filterService from "../common/filterService";
+import filterService from "../../services/filterService";
 
 const mapStateToProps = (state) => {
   return { groups: state.groups };
@@ -53,13 +53,6 @@ class Groups extends Component {
   }
 
   handleAddEndpoint(groupId, versions, groups) {
-    // const newTabId = shortId.generate();
-    // const tabs = [
-    //   ...this.props.tabs,
-    //   { id: newTabId, type: "endpoint", isSaved: false },
-    // ];
-
-    // this.props.set_tabs(tabs, tabs.length - 1);
     tabService.newTab({ ...this.props });
     this.props.history.push({
       pathname: `/dashboard/endpoint/new`,
@@ -182,26 +175,31 @@ class Groups extends Component {
         }
       }
     }
+
     this.filteredEndpointsAndPages = filterService.jsonConcat(
       this.filteredEndpointsAndPages,
       this.filteredGroupPages
     );
+
     this.filteredEndpointsAndPages = filterService.jsonConcat(
       this.filteredEndpointsAndPages,
       this.filteredGroupEndpoints
     );
+
     let versionIds = [];
-    for (
-      let i = 0;
-      i < Object.keys(this.filteredEndpointsAndPages).length;
-      i++
-    ) {
-      if (Object.keys(this.filteredEndpointsAndPages)[i] !== "null") {
-        versionIds.push(
-          this.filteredEndpointsAndPages[
-            Object.keys(this.filteredEndpointsAndPages)[i]
-          ].versionId
-        );
+    if (Object.keys(this.filteredEndpointsAndPages).length !== 0) {
+      for (
+        let i = 0;
+        i < Object.keys(this.filteredEndpointsAndPages).length;
+        i++
+      ) {
+        if (Object.keys(this.filteredEndpointsAndPages)[i] !== "null") {
+          versionIds.push(
+            this.filteredEndpointsAndPages[
+              Object.keys(this.filteredEndpointsAndPages)[i]
+            ].versionId
+          );
+        }
       }
     }
     if (Object.keys(this.filteredEndpointsAndPages).length === 0) {
@@ -224,41 +222,6 @@ class Groups extends Component {
         this.props.filter,
         "groups"
       );
-      // this.filteredGroups = {};
-      // this.filterFlag = true;
-      // let groups = { ...this.props.groups };
-      // let groupIds = Object.keys(groups);
-      // let groupNameIds = [];
-      // let groupNames = [];
-      // for (let i = 0; i < groupIds.length; i++) {
-      //   const { name } = groups[groupIds[i]];
-      //   groupNameIds.push({ name: name, id: groupIds[i] });
-      //   groupNames.push(name);
-      // }
-      // let finalGroupNames = groupNames.filter((name) => {
-      //   return (
-      //     name.toLowerCase().indexOf(this.props.filter.toLowerCase()) !== -1
-      //   );
-      // });
-      // let finalGroupIds = [];
-      // let uniqueIds = {};
-      // for (let i = 0; i < finalGroupNames.length; i++) {
-      //   for (let j = 0; j < Object.keys(groupNameIds).length; j++) {
-      //     if (
-      //       finalGroupNames[i] === groupNameIds[j].name &&
-      //       !uniqueIds[groupNameIds[j].id]
-      //     ) {
-      //       finalGroupIds.push(groupNameIds[j].id);
-      //       uniqueIds[groupNameIds[j].id] = true;
-      //       break;
-      //     }
-      //   }
-      // }
-      // for (let i = 0; i < finalGroupIds.length; i++) {
-      //   this.filteredGroups[finalGroupIds[i]] = this.props.groups[
-      //     finalGroupIds[i]
-      //   ];
-      // }
       this.setState({ filter: this.props.filter });
       if (versionIds.length !== 0) {
         this.props.show_filter_version(versionIds, "groups");
@@ -267,17 +230,136 @@ class Groups extends Component {
       }
     }
   }
-
-  render() {
-    if (document.getElementById("group-collapse")) {
-      if (
-        document.getElementById("group-collapse").className.split(" ")[1] !==
-          "show" &&
-        this.props.filter
-      ) {
-        document.getElementById("group-collapse").className = "collapse show";
+  renderBody(groupId) {
+    if (
+      isDashboardRoute(this.props) &&
+      document.getElementsByClassName("group-collapse")
+    ) {
+      if (this.props.filter !== "" && this.eventkey[groupId] === "0") {
+        let elements = document.getElementsByClassName("group-collapse");
+        for (let i = 0; i < elements.length; i++) {
+          elements[i].className = "group-collapse collapse show";
+        }
+      } else if (this.props.filter !== "") {
+        let elements = document.getElementsByClassName("group-collapse");
+        for (let i = 0; i < elements.length; i++) {
+          elements[i].className = "group-collapse collapse hide";
+        }
       }
     }
+    return (
+      <Accordion
+        key={groupId}
+        id="child-accordion"
+        defaultActiveKey="0"
+        onDragOver={(e) => e.preventDefault()}
+        onDrop={(e) => this.onDrop(groupId)}
+      >
+        <Card>
+          <Card.Header>
+            <i className="fas fa-folder-open" style={{ margin: "5px" }}></i>
+            <Accordion.Toggle
+              as={Button}
+              variant="default"
+              eventKey={this.eventkey[groupId] ? this.eventkey[groupId] : "1"}
+            >
+              {this.props.groups[groupId].name}
+            </Accordion.Toggle>
+            {isDashboardRoute(this.props) ? (
+              <div className="btn-group">
+                <button
+                  className="btn btn-secondary "
+                  data-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                >
+                  <i className="fas fa-ellipsis-h"></i>
+                </button>
+                <div className="dropdown-menu dropdown-menu-right">
+                  <button
+                    className="dropdown-item"
+                    onClick={() =>
+                      this.openEditGroupForm(this.props.groups[groupId])
+                    }
+                  >
+                    Edit
+                  </button>
+                  <button
+                    className="dropdown-item"
+                    onClick={() => {
+                      this.openDeleteGroupModal(groupId);
+                    }}
+                  >
+                    Delete
+                  </button>
+                  <button
+                    className="dropdown-item"
+                    onClick={() =>
+                      this.handleAddEndpoint(
+                        groupId,
+                        this.props.versions,
+                        this.props.groups
+                      )
+                    }
+                  >
+                    Add Endpoint
+                  </button>
+                  <button
+                    className="dropdown-item"
+                    onClick={() =>
+                      this.handleDuplicate(this.props.groups[groupId])
+                    }
+                  >
+                    Duplicate
+                  </button>
+                  <button
+                    className="dropdown-item"
+                    onClick={() =>
+                      this.openGroupPageForm(
+                        this.props.groups[groupId].versionId,
+                        this.props.groups[groupId],
+                        this.props.collection_id
+                      )
+                    }
+                  >
+                    Add Page
+                  </button>
+                  <button
+                    className="dropdown-item"
+                    onClick={() =>
+                      this.openShareGroupForm(this.props.groups[groupId])
+                    }
+                  >
+                    Share
+                  </button>
+                </div>
+              </div>
+            ) : null}
+          </Card.Header>
+          <Accordion.Collapse
+            className="group-collapse"
+            eventKey={this.eventkey[groupId] ? this.eventkey[groupId] : "1"}
+          >
+            <Card.Body>
+              <GroupPages
+                {...this.props}
+                version_id={this.props.groups[groupId].versionId}
+                group_id={groupId}
+                show_filter_groups={this.propsFromGroups.bind(this)}
+              />
+              <Endpoints
+                {...this.props}
+                group_id={groupId}
+                endpoints_order={this.props.groups[groupId].endpointsOrder}
+                show_filter_groups={this.propsFromGroups.bind(this)}
+              />
+            </Card.Body>
+          </Accordion.Collapse>
+        </Card>
+      </Accordion>
+    );
+  }
+  render() {
     if (this.state.filter !== this.props.filter) {
       this.filterFlag = false;
     }
@@ -306,125 +388,7 @@ class Groups extends Component {
             (gId) => this.props.groups[gId].versionId === this.props.version_id
           )
           .map((groupId, index) => (
-            <Accordion
-              key={groupId}
-              id="child-accordion"
-              defaultActiveKey="0"
-              // draggable
-              onDragOver={(e) => e.preventDefault()}
-              onDrop={(e) => this.onDrop(groupId)}
-            >
-              <Card>
-                <Card.Header>
-                  <i
-                    className="fas fa-folder-open"
-                    style={{ margin: "5px" }}
-                  ></i>
-                  <Accordion.Toggle
-                    as={Button}
-                    variant="default"
-                    eventKey={
-                      this.eventkey[groupId] ? this.eventkey[groupId] : "1"
-                    }
-                  >
-                    {this.props.groups[groupId].name}
-                  </Accordion.Toggle>
-                  {isDashboardRoute(this.props) ? (
-                    <div className="btn-group">
-                      <button
-                        className="btn btn-secondary "
-                        data-toggle="dropdown"
-                        aria-haspopup="true"
-                        aria-expanded="false"
-                      >
-                        <i className="fas fa-ellipsis-h"></i>
-                      </button>
-                      <div className="dropdown-menu dropdown-menu-right">
-                        <button
-                          className="dropdown-item"
-                          onClick={() =>
-                            this.openEditGroupForm(this.props.groups[groupId])
-                          }
-                        >
-                          Edit
-                        </button>
-                        <button
-                          className="dropdown-item"
-                          onClick={() => {
-                            this.openDeleteGroupModal(groupId);
-                          }}
-                        >
-                          Delete
-                        </button>
-                        <button
-                          className="dropdown-item"
-                          onClick={() =>
-                            this.handleAddEndpoint(
-                              groupId,
-                              this.props.versions,
-                              this.props.groups
-                            )
-                          }
-                        >
-                          Add Endpoint
-                        </button>
-                        <button
-                          className="dropdown-item"
-                          onClick={() =>
-                            this.handleDuplicate(this.props.groups[groupId])
-                          }
-                        >
-                          Duplicate
-                        </button>
-                        <button
-                          className="dropdown-item"
-                          onClick={() =>
-                            this.openGroupPageForm(
-                              this.props.groups[groupId].versionId,
-                              this.props.groups[groupId],
-                              this.props.collection_id
-                            )
-                          }
-                        >
-                          Add Page
-                        </button>
-                        <button
-                          className="dropdown-item"
-                          onClick={() =>
-                            this.openShareGroupForm(this.props.groups[groupId])
-                          }
-                        >
-                          Share
-                        </button>
-                      </div>
-                    </div>
-                  ) : null}
-                </Card.Header>
-                <Accordion.Collapse
-                  id="group-collapse"
-                  eventKey={
-                    this.eventkey[groupId] ? this.eventkey[groupId] : "1"
-                  }
-                >
-                  <Card.Body>
-                    <GroupPages
-                      {...this.props}
-                      version_id={this.props.groups[groupId].versionId}
-                      group_id={groupId}
-                      show_filter_groups={this.propsFromGroups.bind(this)}
-                    />
-                    <Endpoints
-                      {...this.props}
-                      group_id={groupId}
-                      endpoints_order={
-                        this.props.groups[groupId].endpointsOrder
-                      }
-                      show_filter_groups={this.propsFromGroups.bind(this)}
-                    />
-                  </Card.Body>
-                </Accordion.Collapse>
-              </Card>
-            </Accordion>
+            <div>{this.renderBody(groupId)}</div>
           ))}
       </div>
     );

@@ -20,7 +20,10 @@ class CustomTabs extends Component {
               </label>
             );
           else return <label>{this.props.endpoints[tabId].name}</label>;
-        } else return "Untitled";
+        } else {
+          return "Untitled";
+        }
+
       case "page":
         if (this.props.pages[tabId]) {
           if (tab.previewMode)
@@ -31,6 +34,8 @@ class CustomTabs extends Component {
             );
           else return <label>{this.props.pages[tabId].name}</label>;
         }
+        break;
+      default:
     }
   }
 
@@ -104,7 +109,7 @@ class CustomTabs extends Component {
             </Nav.Link>
             <button className="btn" onClick={() => this.removeTab(tabId)}>
               {this.props.tabs.tabs[tabId].isModified ? (
-                <i class="fas fa-circle" id="modified-dot-icon"></i>
+                <i className="fas fa-circle" id="modified-dot-icon"></i>
               ) : (
                 <i className="fas fa-times"></i>
               )}

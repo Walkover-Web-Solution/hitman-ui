@@ -1,24 +1,23 @@
-import React, { Component } from "react";
-import GenericTable from "./genericTable";
 import "ace-builds";
-import AceEditor from "react-ace";
-import "ace-builds/webpack-resolver";
-import "ace-builds/src-noconflict/mode-java";
-import "ace-builds/src-noconflict/mode-json";
 import "ace-builds/src-noconflict/mode-html";
+import "ace-builds/src-noconflict/mode-java";
 import "ace-builds/src-noconflict/mode-javascript";
+import "ace-builds/src-noconflict/mode-json";
 import "ace-builds/src-noconflict/mode-xml";
 import "ace-builds/src-noconflict/theme-github";
-import "./endpoints.scss";
-import { Table, Button } from "react-bootstrap";
+import "ace-builds/webpack-resolver";
+import React, { Component } from "react";
+import AceEditor from "react-ace";
+import { Button } from "react-bootstrap";
 import BodyDescription from "./bodyDescription";
+import "./endpoints.scss";
+import GenericTable from "./genericTable";
 
 class BodyContainer extends Component {
   state = {
     selectedBodyType: null,
     data: {
       raw: "",
-      raw1: "",
       data: [
         {
           checked: "notApplicable",
@@ -45,6 +44,16 @@ class BodyContainer extends Component {
   rawBodyTypes = ["TEXT", "HTML", "JSON", "XML", "JavaScript"];
 
   handleSelectBodyType(bodyType, bodyDescription) {
+    switch (bodyType) {
+      case "multipart/form-data":
+        this.props.set_body(bodyType, this.state.data.data);
+        break;
+      case "application/x-www-form-urlencoded":
+        this.props.set_body(bodyType, this.state.data.urlencoded);
+        break;
+      default:
+        break;
+    }
     if (bodyType === "raw" && bodyDescription) {
       this.flag = true;
       this.showRawBodyType = true;
@@ -71,7 +80,6 @@ class BodyContainer extends Component {
         this.setState({
           selectedBodyType: bodyType,
         });
-        this.props.set_body(bodyType, this.state.data[bodyType]);
       }
     }
   }
@@ -111,7 +119,13 @@ class BodyContainer extends Component {
 
   renderBody() {
     if (this.state.selectedBodyType && this.flag) {
-      return <BodyDescription {...this.props} />;
+      return (
+        <BodyDescription
+          {...this.props}
+          body={this.state.data.raw}
+          body_type={this.state.selectedRawBodyType}
+        />
+      );
     } else if (this.state.selectedBodyType) {
       switch (this.state.selectedBodyType) {
         case "multipart/form-data":
@@ -249,7 +263,7 @@ class BodyContainer extends Component {
               <div>
                 <div className="dropdown">
                   <button
-                    style={{ color: "#f29624", paddingTop: "0px" }}
+                    style={{ color: "tomato", paddingTop: "0px" }}
                     className="btn dropdown-toggle flex-column"
                     type="button"
                     id="dropdownMenuButton"

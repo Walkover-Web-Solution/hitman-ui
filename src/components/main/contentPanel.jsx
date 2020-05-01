@@ -44,14 +44,6 @@ class ContentPanel extends Component {
   state = { saveEndpointFlag: false };
   async componentDidMount() {
     this.props.fetchTabsFromIdb({ ...this.props });
-
-    // if (
-    //   this.props.location.pathname.split("/")[3] === "new" &&
-    //   (Object.keys(this.props.tabs.tabs).length === 0 ||
-    //     this.props.tabs.tabs[this.props.tabs.activeTabId].status !== "NEW")
-    // ) {
-    //   tabService.newTab({ ...this.props });
-    // }
   }
 
   handleSaveEndpoint(flag, tabId) {

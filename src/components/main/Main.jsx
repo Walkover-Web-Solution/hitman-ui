@@ -63,13 +63,11 @@ class Main extends Component {
   }
 
   setSourceGroupId(draggedEndpoint, groupId) {
-    console.log(draggedEndpoint, groupId);
     this.draggedEndpoint = draggedEndpoint;
     this.sourceGroupId = groupId;
   }
 
   setDestinationGroupId(destinationGroupId) {
-    console.log(destinationGroupId);
     this.dndMoveEndpoint(
       this.draggedEndpoint,
       this.sourceGroupId,
@@ -103,7 +101,6 @@ class Main extends Component {
           <ContentPanel
             {...this.props}
             set_environment={this.setEnvironment.bind(this)}
-            // tabs={[...this.state.tabs]}
             set_tabs={this.setTabs.bind(this)}
             default_tab_index={this.state.defaultTabIndex}
           />

@@ -6,7 +6,7 @@ import store from "../../store/store";
 import { isDashboardRoute } from "../common/utility";
 import tabService from "../tabs/tabService";
 import tabStatusTypes from "../tabs/tabStatusTypes";
-import CodeWindow from "./codeWindow";
+import CodeTemplate from "./codeTemplate";
 import CreateEndpointForm from "./createEndpointForm";
 import BodyContainer from "./displayBody";
 import DisplayDescription from "./displayDescription";
@@ -86,28 +86,6 @@ class DisplayEndpoint extends Component {
     params: [],
     bodyDescription: {},
     fieldDescription: {},
-    // bodyDescription: {
-    //   key1: { default: "abcd", dataType: "string" },
-    //   key2: { default: 4, dataType: "number" },
-    //   key3: { default: true, dataType: "boolean" },
-    //   key4: { default: [2], dataType: "Array of Integer" },
-    //   key5: { default: ["a"], dataType: "Array of String" },
-    //   key6: { default: { k1: "v1", k2: 10 }, dataType: "Object" },
-    //   key7: {
-    //     default: [{ k1: "v1", k2: 10 }],
-    //     dataType: "Array of Objects",
-    //     object: { k1: "v1", k2: 10 },
-    //   },
-    //   key8: {
-    //     default: {
-    //       k1: { k1: "v1", k2: 10, k3: 44 },
-    //       k2: { k1: "v1", k2: 10 },
-    //     },
-    //     dataType: "Object of Objects",
-    //     //object: { k1: "v1", k2: 10 },
-    //   },
-    //   key9: { default: [true], dataType: "Array of Boolean" },
-    // },
   };
 
   customState = {
@@ -248,6 +226,7 @@ class DisplayEndpoint extends Component {
         fieldDescription,
         publicBodyFlag: true,
         bodyFlag: true,
+        response: {},
       });
     }
   }
@@ -454,16 +433,28 @@ class DisplayEndpoint extends Component {
       this.handleErrorResponse(error);
     }
   }
+
   setPathVariableValues() {
     let uri = new URI(this.uri.current.value);
     uri = uri.pathname();
     let pathParameters = uri.split("/");
+    let uniquePathParameters = {};
     let path = "";
     let counter = 0;
     for (let i = 0; i < pathParameters.length; i++) {
       if (pathParameters[i][0] === ":") {
-        path = path + "/" + this.state.pathVariables[counter].value;
-        counter++;
+        if (
+          uniquePathParameters[pathParameters[i]] ||
+          uniquePathParameters[pathParameters[i]] === ""
+        ) {
+          path = path + "/" + uniquePathParameters[pathParameters[i]];
+        } else {
+          uniquePathParameters[pathParameters[i]] = this.state.pathVariables[
+            counter
+          ].value;
+          path = path + "/" + this.state.pathVariables[counter].value;
+          counter++;
+        }
       } else if (pathParameters[i].length !== 0) {
         path = path + "/" + pathParameters[i];
       }
@@ -777,10 +768,10 @@ class DisplayEndpoint extends Component {
     return processedParams;
   }
 
-  makePostData(body) {
+  async makePostData(body) {
     let params = [];
     let paramsFlag = false;
-
+    let postData = {};
     if (
       (body.type === "application/x-www-form-urlencoded" ||
         body.type === "multipart/form-data") &&
@@ -788,88 +779,68 @@ class DisplayEndpoint extends Component {
     ) {
       paramsFlag = true;
       for (let i = 0; i < body.value.length - 1; i++) {
-        if (body.value[i].checked === "true") {
+        if (body.value[i].checked === "true" && body.value[i].key !== "") {
           params.push({
             name: body.value[i].key,
             value: body.value[i].value,
+            fileName: null,
+            contentType: null,
           });
         }
       }
+      postData = {
+        mimeType: body.type,
+        params: params,
+        comment: "",
+      };
+    } else {
+      postData = {
+        mimeType: body.type,
+        params: params,
+        text: paramsFlag === false ? body.value : "",
+        comment: "",
+      };
     }
-    let postData = {
-      mimeType: body.type,
-      params: params,
-      text: paramsFlag === false ? body.value : "",
-      comment: "",
-    };
     return postData;
   }
 
-  // makePostData(body) {
-  //   let params = [];
-  //   let paramsFlag = false;
-  //   let formData = "";
-  //   if (body.type === "application/x-www-form-urlencoded" && body.value) {
-  //     paramsFlag = true;
-  //     for (let i = 0; i < body.value.length - 1; i++) {
-  //       if (body.value[i].checked === "true") {
-  //         params.push({
-  //           name: body.value[i].key,
-  //           value: body.value[i].value,
-  //         });
-  //       }
-  //     }
-  //   }
-  //   if (body.type === "multipart/form-data") {
-  //     formData = this.makeFormData();
-  //   }
-  //   let postData = {
-  //     mimeType: body.type,
-  //     params: params,
-  //     text:
-  //       paramsFlag === false
-  //         ? body.type === "multipart/form-data"
-  //           ? formData
-  //           : ""
-  //         : "",
-  //     comment: "",
-  //   };
-  //   return postData;
-  // }
-
   async prepareHarObject() {
-    const { uri, method, body } = this.state.data;
     const BASE_URL = this.customState.BASE_URL;
+    let uri = new URI(this.uri.current.value);
+    let queryparams = uri.search();
+    let path = this.setPathVariableValues();
+    let url = BASE_URL + path + queryparams;
+    url = this.replaceVariables(url);
+    const { method, body } = this.state.data;
     const { originalHeaders, originalParams } = this.state;
     const harObject = {
       method,
-      url: BASE_URL + uri.split("?")[0],
+      url: url,
       httpVersion: "HTTP/1.1",
       cookies: [],
       headers: this.makeHeaders(originalHeaders),
-      postData: body.type === "none" ? null : this.makePostData(body),
+      postData: body.type === "none" ? null : await this.makePostData(body),
       queryString: this.makeParams(originalParams),
     };
     if (!harObject.url.split(":")[1] || harObject.url.split(":")[0] === "") {
-      harObject.url = "https://";
+      harObject.url = "https://" + url;
     }
-    console.log("harObject", harObject);
-    this.openCodeWindow(harObject);
+    this.openCodeTemplate(harObject);
   }
 
-  openCodeWindow(harObject) {
+  openCodeTemplate(harObject) {
     this.setState({
-      showCodeWindow: true,
+      showCodeTemplate: true,
       harObject,
     });
   }
 
-  showCodeWindow() {
+  showCodeTemplate() {
     return (
-      <CodeWindow
+      <CodeTemplate
         show={true}
         onHide={() => {
-          this.setState({ showCodeWindow: false });
+          this.setState({ showCodeTemplate: false });
         }}
         harObject={this.state.harObject}
         title="Generate Code Snippets"
@@ -888,18 +859,7 @@ class DisplayEndpoint extends Component {
     // if (bodyType !== "multipart/form-data") {
     this.setHeaders(bodyType);
     // }
-    if (bodyType === "JSON") {
-      const data1 = this.setBodyDescription(bodyType, body);
-
-      // this.set_body_description(body)
-      if (data1.error !== undefined) this.setState({ data });
-      else {
-        const bodyDescription = data1.bodyDescription;
-        this.setState({ data, bodyDescription });
-      }
-    } else {
-      this.setState({ data });
-    }
+    this.setState({ data });
     if (isDashboardRoute(this.props)) {
       tabService.markTabAsModified(this.props.tab.id);
     }
@@ -989,10 +949,16 @@ class DisplayEndpoint extends Component {
   setHeaders(bodyType) {
     let originalHeaders = this.state.originalHeaders;
     let updatedHeaders = [];
-    this.contentTypeFlag = false;
+    // this.contentTypeFlag = false;
+    let emptyHeader = {
+      checked: "notApplicable",
+      key: "",
+      value: "",
+      description: "",
+    };
     for (let i = 0; i < originalHeaders.length; i++) {
       if (
-        originalHeaders[i].key === "Content-type" ||
+        originalHeaders[i].key === "content-type" ||
         originalHeaders[i].key === ""
       ) {
         continue;
@@ -1000,47 +966,43 @@ class DisplayEndpoint extends Component {
         updatedHeaders.push(originalHeaders[i]);
       }
     }
+    if (bodyType === "none") {
+      updatedHeaders.push(emptyHeader);
+      this.setState({ originalHeaders: updatedHeaders });
+      return;
+    }
     updatedHeaders.push({
       checked: "true",
-      key: "Content-type",
+      key: "content-type",
       value: "",
       description: "",
     });
+    updatedHeaders[updatedHeaders.length - 1].value = this.identifyBodyType(
+      bodyType
+    );
+    updatedHeaders.push(emptyHeader);
+    this.setState({ originalHeaders: updatedHeaders });
+  }
 
+  identifyBodyType(bodyType) {
     switch (bodyType) {
       case "application/x-www-form-urlencoded":
-        updatedHeaders[updatedHeaders.length - 1].value =
-          "application/x-www-form-urlencoded";
-        break;
+        return "application/x-www-form-urlencoded";
       case "multipart/form-data":
-        updatedHeaders[updatedHeaders.length - 1].value = "multipart/form-data";
-        break;
+        return "multipart/form-data";
       case "TEXT":
-        updatedHeaders[updatedHeaders.length - 1].value = "text/plain";
-        break;
+        return "text/plain";
       case "JSON":
-        updatedHeaders[updatedHeaders.length - 1].value = "application/JSON";
-        break;
+        return "application/JSON";
       case "HTML":
-        updatedHeaders[updatedHeaders.length - 1].value = "text/HTML";
-        break;
+        return "text/HTML";
       case "XML":
-        updatedHeaders[updatedHeaders.length - 1].value = "application/XML";
-        break;
+        return "application/XML";
       case "JavaScript":
-        updatedHeaders[updatedHeaders.length - 1].value =
-          "application/JavaScript";
-        break;
+        return "application/JavaScript";
       default:
         break;
     }
-    updatedHeaders.push({
-      checked: "notApplicable",
-      key: "",
-      value: "",
-      description: "",
-    });
-    this.setState({ originalHeaders: updatedHeaders });
   }
 
   propsFromDescription(title, data) {
@@ -1067,7 +1029,7 @@ class DisplayEndpoint extends Component {
         return { body: finalBodyValue, headers };
       case "multipart/form-data":
         let formData = this.makeFormData(body, headers);
-        headers["Content-type"] = "multipart/form-data";
+        headers["content-type"] = "multipart/form-data";
         return { body: formData, headers };
       case "application/x-www-form-urlencoded":
         let urlEncodedData = {};
@@ -1121,18 +1083,15 @@ class DisplayEndpoint extends Component {
 
     if (
       !isDashboardRoute(this.props) &&
-      this.props.location.pathname.split("/")[3] !== "new" &&
       this.state.endpoint.id !== this.props.location.pathname.split("/")[4] &&
       this.props.endpoints[this.props.location.pathname.split("/")[4]]
     ) {
-      if (!isDashboardRoute(this.props)) {
-        this.fetchEndpoint(0, this.props.location.pathname.split("/")[4]);
-        store.subscribe(() => {
-          if (!this.props.location.title && !this.state.title) {
-            this.fetchEndpoint(0, this.props.location.pathname.split("/")[4]);
-          }
-        });
-      }
+      this.fetchEndpoint(0, this.props.location.pathname.split("/")[4]);
+      store.subscribe(() => {
+        if (!this.props.location.title && !this.state.title) {
+          this.fetchEndpoint(0, this.props.location.pathname.split("/")[4]);
+        }
+      });
     }
     return (
       <div className="endpoint-container">
@@ -1146,7 +1105,7 @@ class DisplayEndpoint extends Component {
             save_endpoint={this.handleSave.bind(this)}
           />
         )}
-        {this.state.showCodeWindow && this.showCodeWindow()}
+        {this.state.showCodeTemplate && this.showCodeTemplate()}
         <DisplayDescription
           {...this.props}
           endpoint={this.state.endpoint}
@@ -1231,16 +1190,14 @@ class DisplayEndpoint extends Component {
 
         <div className="endpoint-headers-container">
           <div className="headers-params-wrapper">
-            {this.state.data.body.type !== "multipart/form-data" ? (
-              <button
-                className="btn"
-                type="button"
-                id="show-code-snippets-button"
-                onClick={() => this.prepareHarObject()}
-              >
-                Code
-              </button>
-            ) : null}
+            <button
+              className="btn"
+              type="button"
+              id="show-code-snippets-button"
+              onClick={() => this.prepareHarObject()}
+            >
+              Code
+            </button>
             {isDashboardRoute(this.props) ? (
               <ul className="nav nav-tabs" id="pills-tab" role="tablist">
                 <li className="nav-item">
@@ -1391,6 +1348,7 @@ class DisplayEndpoint extends Component {
                   <PublicBodyContainer
                     {...this.props}
                     set_body={this.setBody.bind(this)}
+                    set_body_description={this.set_description.bind(this)}
                     body={this.state.data.body}
                     public_body_flag={this.state.publicBodyFlag}
                     set_public_body={this.setPublicBody.bind(this)}
