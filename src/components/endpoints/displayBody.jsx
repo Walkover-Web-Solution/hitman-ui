@@ -18,7 +18,6 @@ class BodyContainer extends Component {
     selectedBodyType: null,
     data: {
       raw: "",
-      raw1: "",
       data: [
         {
           checked: "notApplicable",
@@ -45,6 +44,14 @@ class BodyContainer extends Component {
   rawBodyTypes = ["TEXT", "HTML", "JSON", "XML", "JavaScript"];
 
   handleSelectBodyType(bodyType, bodyDescription) {
+    console.log(bodyType);
+    switch (bodyType) {
+      case "multipart/form-data":
+        this.props.set_body(bodyType, this.state.data.data);
+        break;
+      case "application/x-www-form-urlencoded":
+        this.props.set_body(bodyType, this.state.data.urlencoded);
+    }
     if (bodyType === "raw" && bodyDescription) {
       this.flag = true;
       this.showRawBodyType = true;
@@ -71,7 +78,6 @@ class BodyContainer extends Component {
         this.setState({
           selectedBodyType: bodyType,
         });
-        this.props.set_body(bodyType, this.state.data[bodyType]);
       }
     }
   }
