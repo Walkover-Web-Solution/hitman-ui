@@ -7,7 +7,7 @@ import "ace-builds/webpack-resolver";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 var HTTPSnippet = require("httpsnippet");
 
-class CodeWindow extends Component {
+class CodeTemplate extends Component {
   state = {};
 
   makeCodeSnippet() {
@@ -158,4 +158,4 @@ class CodeWindow extends Component {
   }
 }
 
-export default CodeWindow;
+export default CodeTemplate;

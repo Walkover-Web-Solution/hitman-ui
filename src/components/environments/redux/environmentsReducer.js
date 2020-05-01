@@ -3,7 +3,7 @@ import { toast } from "react-toastify";
 
 const initialState = {
   environments: {},
-  currentEnvironmentId: null
+  currentEnvironmentId: null,
 };
 
 function environmentsReducer(state = initialState, action) {
@@ -12,13 +12,13 @@ function environmentsReducer(state = initialState, action) {
     case environmentsActionTypes.SET_ENVIRONMENT_ID:
       return {
         ...state,
-        currentEnvironmentId: action.currentEnvironmentId
+        currentEnvironmentId: action.currentEnvironmentId,
       };
 
     case environmentsActionTypes.ON_ENVIRONMENTS_FETCHED:
       return {
         ...state,
-        environments: { ...state.environments, ...action.environments }
+        environments: { ...state.environments, ...action.environments },
       };
 
     case environmentsActionTypes.ON_ENVIRONMENTS_FETCHED_ERROR:
@@ -30,8 +30,8 @@ function environmentsReducer(state = initialState, action) {
         ...state,
         environments: {
           ...state.environments,
-          [action.newEnvironment.requestId]: action.newEnvironment
-        }
+          [action.newEnvironment.requestId]: action.newEnvironment,
+        },
       };
 
     case environmentsActionTypes.ON_ENVIRONMENT_ADDED:
@@ -51,8 +51,8 @@ function environmentsReducer(state = initialState, action) {
         ...state,
         environments: {
           ...state.environments,
-          [action.editedEnvironment.id]: action.editedEnvironment
-        }
+          [action.editedEnvironment.id]: action.editedEnvironment,
+        },
       };
 
     case environmentsActionTypes.ON_ENVIRONMENT_UPDATED:
@@ -60,8 +60,8 @@ function environmentsReducer(state = initialState, action) {
         ...state,
         environments: {
           ...state.environments,
-          [action.response.id]: action.response
-        }
+          [action.response.id]: action.response,
+        },
       };
 
     case environmentsActionTypes.ON_ENVIRONMENT_UPDATED_ERROR:
@@ -70,8 +70,8 @@ function environmentsReducer(state = initialState, action) {
         ...state,
         environments: {
           ...state.environments,
-          [action.originalEnvironment.id]: action.originalEnvironment
-        }
+          [action.originalEnvironment.id]: action.originalEnvironment,
+        },
       };
 
     case environmentsActionTypes.DELETE_ENVIRONMENT_REQUEST:
@@ -89,8 +89,8 @@ function environmentsReducer(state = initialState, action) {
         ...state,
         environments: {
           ...state.environments,
-          [action.environment.id]: action.environment
-        }
+          [action.environment.id]: action.environment,
+        },
       };
 
     default:

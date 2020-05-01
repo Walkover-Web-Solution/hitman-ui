@@ -4,6 +4,8 @@ import Pages from "./pages";
 import { deletePage, duplicatePage } from "./redux/pagesActions";
 import pageService from "./pageService";
 import { isDashboardRoute } from "../common/utility";
+import filterService from "../../services/filterService";
+
 const mapStateToProps = (state) => {
   return {
     pages: state.pages,
@@ -19,27 +21,6 @@ const mapDispatchToProps = (dispatch) => {
 class VersionPages extends Component {
   state = {};
 
-  // onDragStart = (e, pageId) => {
-  //   this.draggedItem = pageId;
-  // };
-
-  // onDragOver = (e, pageId) => {
-  //   e.preventDefault();
-  //   this.draggedOverItem = pageId;
-  // };
-
-  // async onDragEnd(e) {
-  //   if (this.draggedItem === this.draggedOverItem) {
-  //     return;
-  //   }
-  //   let pageIds = this.props.page_ids.filter(item => item !== this.draggedItem);
-  //   const index = this.props.page_ids.findIndex(
-  //     vId => vId === this.draggedOverItem
-  //   );
-  //   pageIds.splice(index, 0, this.draggedItem);
-  //   this.props.set_page_id(pageIds);
-  // }
-
   openDeletePageModal(pageId) {
     this.setState({
       showDeleteModal: true,
@@ -53,9 +34,35 @@ class VersionPages extends Component {
     this.setState({ showDeleteModal: false });
   }
 
+  filterVersionPages() {
+    if (
+      this.props.selectedCollection === true &&
+      this.props.filter !== "" &&
+      this.filterFlag === false
+    ) {
+      this.filterFlag = true;
+      let versionIds = [];
+      versionIds = filterService.filter(
+        this.props.pages,
+        this.props.filter,
+        "versionPages"
+      );
+      this.setState({ filter: this.props.filter });
+      if (versionIds.length !== 0) {
+        this.props.show_filter_version(versionIds, "versionPages");
+      } else {
+        this.props.show_filter_version(null, "versionPages");
+      }
+    }
+  }
+
   render() {
+    if (this.state.filter !== this.props.filter) {
+      this.filterFlag = false;
+    }
     return (
       <div>
+        {this.filterVersionPages()}
         <div>
           {this.state.showDeleteModal &&
             pageService.showDeletePageModal(

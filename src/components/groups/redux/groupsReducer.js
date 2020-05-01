@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import versionActionTypes from "../../collectionVersions/redux/collectionVersionsActionTypes";
 import collectionActionTypes from "../../collections/redux/collectionsActionTypes";
 import publicEndpointsActionTypes from "../../publicEndpoint/redux/publicEndpointsActionTypes";
+import collectionsActionTypes from "../../collections/redux/collectionsActionTypes";
 
 const initialState = {};
 
@@ -19,8 +20,16 @@ function groupsReducer(state = initialState, action) {
       groups = { ...state };
       groups[action.sourceGroupId].endpointsOrder = groups[
         action.sourceGroupId
-      ].endpointsOrder.filter(eId => eId !== action.endpointId);
-      groups[action.destinationGroupId].endpointsOrder.push(action.endpointId);
+      ].endpointsOrder.filter((eId) => eId !== action.endpointId);
+      if (
+        !groups[action.destinationGroupId].endpointsOrder.includes(
+          action.endpointId
+        )
+      ) {
+        groups[action.destinationGroupId].endpointsOrder.push(
+          action.endpointId
+        );
+      }
       return groups;
 
     case groupsActionTypes.ON_GROUPS_FETCHED:
@@ -33,7 +42,7 @@ function groupsReducer(state = initialState, action) {
     case groupsActionTypes.ADD_GROUP_REQUEST:
       return {
         ...state,
-        [action.newGroup.requestId]: action.newGroup
+        [action.newGroup.requestId]: action.newGroup,
       };
 
     case groupsActionTypes.ON_GROUP_ADDED:
@@ -51,20 +60,20 @@ function groupsReducer(state = initialState, action) {
     case groupsActionTypes.UPDATE_GROUP_REQUEST:
       return {
         ...state,
-        [action.editedGroup.id]: action.editedGroup
+        [action.editedGroup.id]: action.editedGroup,
       };
 
     case groupsActionTypes.ON_GROUP_UPDATED:
       return {
         ...state,
-        [action.response.id]: action.response
+        [action.response.id]: action.response,
       };
 
     case groupsActionTypes.ON_GROUP_UPDATED_ERROR:
       toast.error(action.error);
       return {
         ...state,
-        [action.originalGroup.id]: action.originalGroup
+        [action.originalGroup.id]: action.originalGroup,
       };
 
     case groupsActionTypes.DELETE_GROUP_REQUEST:
@@ -80,7 +89,7 @@ function groupsReducer(state = initialState, action) {
       if (action.error.status === 404) return state;
       return {
         ...state,
-        [action.group.id]: action.group
+        [action.group.id]: action.group,
       };
 
     case groupsActionTypes.ON_GROUP_DUPLICATED:
@@ -101,9 +110,13 @@ function groupsReducer(state = initialState, action) {
     case publicEndpointsActionTypes.ON_PUBLIC_ENDPOINTS_FETCHED:
       return { ...state, ...action.data.groups };
 
-    case publicEndpointsActionTypes.ON_PUBLIC_ENDPOINTS_FETCHED_ERROR:
-      toast.error(action.error);
-      return state;
+    case collectionsActionTypes.ON_COLLECTION_DELETED:
+    case versionActionTypes.ON_VERSION_DELETED:
+      groups = { ...state };
+      action.payload.groupIds.forEach((gId) => {
+        delete groups[gId];
+      });
+      return groups;
 
     default:
       return state;

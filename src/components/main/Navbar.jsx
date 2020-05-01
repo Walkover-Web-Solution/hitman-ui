@@ -42,17 +42,7 @@ class Navbar extends Component {
   }
 
   handleAddEndpoint() {
-    tabService.addNewTab({ ...this.props });
-
-    // const newTabId = shortId.generate();
-    // const tabs = [
-    //   ...this.props.tabs,
-    //   { id: newTabId, type: "endpoint", isSaved: false },
-    // ];
-    // this.props.set_tabs(tabs, tabs.length - 1);
-    // this.props.history.push({
-    //   pathname: `/dashboard/endpoint/new`,
-    // });
+    tabService.newTab({ ...this.props });
   }
 
   render() {
@@ -116,9 +106,9 @@ class Navbar extends Component {
             </li>
           </div>
 
-          <button id="nav-left-buttons" className="btn ">
+          {/* <button id="nav-left-buttons" className="btn ">
             Import
-          </button>
+          </button> */}
 
           <div className="dropdown" id="nav-left-buttons">
             <button
@@ -132,7 +122,13 @@ class Navbar extends Component {
               <i className="fa fa-file-text" aria-hidden="true"></i>
             </button>
             <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <button className="btn btn-primary">Open new tab</button>
+              <button
+                className="btn "
+                onClick={() => tabService.newTab(this.props)}
+                style={{ color: "black", width: "100%" }}
+              >
+                Open new tab
+              </button>
             </div>
           </div>
         </div>

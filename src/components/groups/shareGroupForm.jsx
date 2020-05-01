@@ -8,9 +8,9 @@ import Form from "../common/form";
 class ShareGroupForm extends Form {
   state = {
     data: {
-      shareGroupLink: ""
+      shareGroupLink: "",
     },
-    errors: {}
+    errors: {},
   };
 
   componentDidMount() {
@@ -19,14 +19,13 @@ class ShareGroupForm extends Form {
       const shareGroupLink =
         apiUrl + "/shareGroup/" + this.props.selectedGroup.shareIdentifier;
       data = { shareGroupLink };
+      data.disabled = true;
       this.setState({ data });
     }
   }
 
   schema = {
-    shareVersionLink: Joi.string()
-      .required()
-      .label("Public Link")
+    shareVersionLink: Joi.string().required().label("Public Link"),
   };
 
   async doSubmit(props) {}

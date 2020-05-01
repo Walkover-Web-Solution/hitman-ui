@@ -8,6 +8,15 @@ import {
   rejectPage,
 } from "../publicEndpoint/redux/publicEndpointsActions";
 import "./page.scss";
+import tabStatusTypes from "../tabs/tabStatusTypes";
+import tabService from "../tabs/tabService";
+import { closeTab, openInNewTab } from "../tabs/redux/tabsActions";
+
+const mapStateToProps = (state) => {
+  return {
+    tabs: state.tabs,
+  };
+};
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -15,14 +24,35 @@ const mapDispatchToProps = (dispatch) => {
     approvePage: (page) => dispatch(approvePage(page)),
     draftPage: (page) => dispatch(draftPage(page)),
     rejectPage: (page) => dispatch(rejectPage(page)),
+    closeTab: (tabId) => dispatch(closeTab(tabId)),
+    openInNewTab: (tab) => dispatch(openInNewTab(tab)),
   };
 };
 
 class Pages extends Component {
   state = {};
 
-  handleDisplay(page, collectionId) {
+  handleDisplay(page, collectionId, previewMode) {
     if (isDashboardRoute(this.props)) {
+      if (!this.props.tabs.tabs[page.id]) {
+        const previewTabId = Object.keys(this.props.tabs.tabs).filter(
+          (tabId) => this.props.tabs.tabs[tabId].previewMode === true
+        )[0];
+        if (previewTabId) this.props.closeTab(previewTabId);
+        this.props.openInNewTab({
+          id: page.id,
+          type: "page",
+          status: tabStatusTypes.SAVED,
+          previewMode,
+          isModified: false,
+        });
+      } else if (
+        this.props.tabs.tabs[page.id].previewMode === true &&
+        previewMode === false
+      ) {
+        tabService.disablePreviewMode(page.id);
+      }
+
       this.props.history.push({
         pathname: `/dashboard/page/${page.id}`,
         page: page,
@@ -37,9 +67,6 @@ class Pages extends Component {
 
   handleDuplicate(page) {
     this.props.duplicatePage(page);
-    this.props.history.push({
-      pathname: "/dashboard",
-    });
   }
 
   async handlePublicPageState(page) {
@@ -64,7 +91,11 @@ class Pages extends Component {
 
   getCurrentUserRole(collectionId) {
     const teamId = this.props.collections[collectionId].teamId;
-    if (this.props.teams !== undefined && teamId !== undefined)
+    if (
+      this.props.teams !== undefined &&
+      teamId !== undefined &&
+      this.props.teams[teamId] !== undefined
+    )
       return this.props.teams[teamId].role;
   }
 
@@ -90,7 +121,11 @@ class Pages extends Component {
                 aria-controls={pageId}
                 onClick={() => {
                   const page = this.props.pages[pageId];
-                  this.handleDisplay(page, this.props.collection_id);
+                  this.handleDisplay(page, this.props.collection_id, true);
+                }}
+                onDoubleClick={() => {
+                  const page = this.props.pages[pageId];
+                  this.handleDisplay(page, this.props.collection_id, false);
                 }}
               >
                 {this.props.pages[pageId].name}
@@ -189,4 +224,4 @@ class Pages extends Component {
   }
 }
 
-export default connect(null, mapDispatchToProps)(Pages);
+export default connect(mapStateToProps, mapDispatchToProps)(Pages);

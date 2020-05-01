@@ -13,7 +13,7 @@ function versionsReducer(state = initialState, action) {
     case collectionsActionTypes.ON_COLLECTION_ADDED:
       return {
         ...state,
-        [action.response.version.id]: action.response.version
+        [action.response.version.id]: action.response.version,
       };
 
     case versionActionTypes.ON_VERSIONS_FETCHED:
@@ -26,25 +26,25 @@ function versionsReducer(state = initialState, action) {
     case versionActionTypes.UPDATE_VERSION_REQUEST:
       return {
         ...state,
-        [action.editedVersion.id]: action.editedVersion
+        [action.editedVersion.id]: action.editedVersion,
       };
 
     case versionActionTypes.ON_VERSION_UPDATED:
       return {
         ...state,
-        [action.response.id]: action.response
+        [action.response.id]: action.response,
       };
 
     case versionActionTypes.ON_VERSION_UPDATED_ERROR:
       toast.error(action.error);
       return {
         ...state,
-        [action.originalVersion.id]: action.originalVersion
+        [action.originalVersion.id]: action.originalVersion,
       };
     case versionActionTypes.ADD_VERSION_REQUEST:
       return {
         ...state,
-        [action.newVersion.requestId]: action.newVersion
+        [action.newVersion.requestId]: action.newVersion,
       };
 
     case versionActionTypes.ON_VERSION_ADDED:
@@ -62,7 +62,7 @@ function versionsReducer(state = initialState, action) {
 
     case versionActionTypes.DELETE_VERSION_REQUEST:
       versions = { ...state };
-      delete versions[action.version.id];
+      delete versions[action.versionId];
       return versions;
 
     case versionActionTypes.ON_VERSION_DELETED:
@@ -73,7 +73,7 @@ function versionsReducer(state = initialState, action) {
       if (action.error.status === 404) return state;
       return {
         ...state,
-        [action.teamIdentifier.id]: action.version
+        [action.teamIdentifier.id]: action.version,
       };
     case versionActionTypes.ON_VERSION_DUPLICATED:
       versions = { ...state };
@@ -87,15 +87,18 @@ function versionsReducer(state = initialState, action) {
     case versionActionTypes.IMPORT_VERSION:
       return {
         ...state,
-        [action.response.version.id]: action.response.version
+        [action.response.version.id]: action.response.version,
       };
 
     case publicEndpointsActionTypes.ON_PUBLIC_ENDPOINTS_FETCHED:
       return { ...state, ...action.data.versions };
 
-    case publicEndpointsActionTypes.ON_PUBLIC_ENDPOINTS_FETCHED_ERROR:
-      toast.error(action.error);
-      return state;
+    case collectionsActionTypes.ON_COLLECTION_DELETED:
+      versions = { ...state };
+      action.payload.versionIds.forEach((vId) => {
+        delete versions[vId];
+      });
+      return versions;
 
     default:
       return state;

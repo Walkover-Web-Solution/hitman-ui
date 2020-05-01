@@ -15,6 +15,7 @@ import PageForm from "../pages/pageForm";
 import VersionPages from "../pages/versionPages";
 import "./collectionVersions.scss";
 import collectionVersionsService from "./collectionVersionsService";
+import filterService from "../../services/filterService";
 
 const mapStateToProps = (state) => {
   return {
@@ -24,7 +25,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    deleteVersion: (version) => dispatch(deleteVersion(version)),
+    deleteVersion: (version, props) => dispatch(deleteVersion(version, props)),
     duplicateVersion: (version) => dispatch(duplicateVersion(version)),
   };
 };
@@ -40,7 +41,15 @@ class CollectionVersions extends Component {
       share: false,
       edit: false,
     },
+    filter: "",
   };
+
+  filterFlag = false;
+  eventkey = {};
+  filteredGroups = {};
+  filteredEndpointsAndPages = {};
+  filteredVersionPages = {};
+  filteredOnlyVersions = {};
 
   handleUpdate(collectionVersion) {
     this.props.history.push({
@@ -58,9 +67,6 @@ class CollectionVersions extends Component {
 
   handleDuplicate(version) {
     this.props.duplicateVersion(version);
-    this.props.history.push({
-      pathname: "/dashboard",
-    });
   }
 
   showAddVersionPageForm() {
@@ -100,6 +106,7 @@ class CollectionVersions extends Component {
       selectedVersion: version,
     });
   }
+
   openEditVersionForm(version) {
     this.setState({
       showCollectionForm: true,
@@ -128,6 +135,7 @@ class CollectionVersions extends Component {
       )
     );
   }
+
   showAddGroupForm() {
     return (
       this.state.showVersionForm.addGroup && (
@@ -165,7 +173,219 @@ class CollectionVersions extends Component {
     this.setState({ showDeleteModal: false });
   }
 
+  propsFromVersion(versionIds, title) {
+    this.filteredVersions = {};
+    this.filterFlag = false;
+    this.filterVersions();
+    if (title === "groups") {
+      this.filteredGroups = {};
+      if (versionIds !== null) {
+        for (let i = 0; i < versionIds.length; i++) {
+          this.filteredGroups[versionIds[i]] = this.props.versions[
+            versionIds[i]
+          ];
+          this.eventkey[versionIds[i]] = "0";
+        }
+      }
+    }
+    if (title === "endpointsAndPages") {
+      this.filteredEndpointsAndPages = {};
+      if (versionIds !== null) {
+        for (let i = 0; i < versionIds.length; i++) {
+          this.filteredEndpointsAndPages[versionIds[i]] = this.props.versions[
+            versionIds[i]
+          ];
+          this.eventkey[versionIds[i]] = "0";
+        }
+      }
+    }
+    if (title === "versionPages") {
+      this.filteredVersionPages = {};
+      if (versionIds !== null) {
+        for (let i = 0; i < versionIds.length; i++) {
+          this.filteredVersionPages[versionIds[i]] = this.props.versions[
+            versionIds[i]
+          ];
+          this.eventkey[versionIds[i]] = "0";
+        }
+      }
+    }
+    this.filteredVersions = filterService.jsonConcat(
+      this.filteredVersions,
+      this.filteredVersionPages
+    );
+    this.filteredVersions = filterService.jsonConcat(
+      this.filteredVersions,
+      this.filteredEndpointsAndPages
+    );
+    this.filteredVersions = filterService.jsonConcat(
+      this.filteredVersions,
+      this.filteredGroups
+    );
+    this.filteredVersions = filterService.jsonConcat(
+      this.filteredVersions,
+      this.filteredOnlyVersions
+    );
+
+    this.setState({ filter: this.props.filter });
+  }
+
+  filterVersions() {
+    if (
+      this.props.selectedCollection === true &&
+      this.props.filter !== "" &&
+      this.filterFlag === false
+    ) {
+      this.filteredOnlyVersions = {};
+      this.filterFlag = true;
+      let versionIds = [];
+      versionIds = filterService.filter(
+        this.props.versions,
+        this.props.filter,
+        "versions"
+      );
+      this.setState({ filter: this.props.filter });
+      if (versionIds.length !== 0) {
+        for (let i = 0; i < versionIds.length; i++) {
+          this.filteredOnlyVersions[versionIds[i]] = this.props.versions[
+            versionIds[i]
+          ];
+          if (
+            !this.eventkey[versionIds[i]] ||
+            this.eventkey[versionIds[i]] !== "0"
+          ) {
+            this.eventkey[versionIds[i]] = "1";
+          }
+        }
+      } else {
+        this.filteredOnlyVersions = {};
+      }
+    }
+  }
+  renderBody(versionId) {
+    if (
+      isDashboardRoute(this.props) &&
+      document.getElementsByClassName("version-collapse")
+    ) {
+      if (this.props.filter !== "" && this.eventkey[versionId] === "0") {
+        let elements = document.getElementsByClassName("version-collapse");
+        for (let i = 0; i < elements.length; i++) {
+          elements[i].className = "version-collapse collapse show";
+        }
+      } else if (this.props.filter !== "") {
+        let elements = document.getElementsByClassName("version-collapse");
+        for (let i = 0; i < elements.length; i++) {
+          elements[i].className = "version-collapse collapse hide";
+        }
+      }
+    }
+    return (
+      <Accordion defaultActiveKey="0" key={versionId} id="child-accordion">
+        <Card>
+          <Card.Header>
+            <i className="fas fa-folder-open"></i>
+            <Accordion.Toggle
+              as={Button}
+              variant="default"
+              eventKey={this.eventkey[versionId]}
+            >
+              {this.props.versions[versionId].number}
+            </Accordion.Toggle>
+            {isDashboardRoute(this.props) ? (
+              <div className="btn-group">
+                <button
+                  className="btn btn-secondary "
+                  data-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                >
+                  <i className="fas fa-ellipsis-h"></i>
+                </button>
+                <div className="dropdown-menu dropdown-menu-right">
+                  <button
+                    className="dropdown-item"
+                    onClick={() =>
+                      this.openEditVersionForm(this.props.versions[versionId])
+                    }
+                  >
+                    Edit
+                  </button>
+                  <button
+                    className="dropdown-item"
+                    onClick={() => {
+                      this.openDeleteVersionModal(versionId);
+                    }}
+                  >
+                    Delete
+                  </button>
+                  <button
+                    className="dropdown-item"
+                    onClick={() =>
+                      this.openAddGroupForm(this.props.versions[versionId])
+                    }
+                  >
+                    Add Group
+                  </button>
+                  <button
+                    className="dropdown-item"
+                    onClick={() => {
+                      this.handleDuplicate(this.props.versions[versionId]);
+                    }}
+                  >
+                    Duplicate
+                  </button>
+                  <button
+                    className="dropdown-item"
+                    onClick={() =>
+                      this.openAddVersionPageForm(
+                        this.props.versions[versionId]
+                      )
+                    }
+                  >
+                    Add Page
+                  </button>
+                  <button
+                    className="dropdown-item"
+                    onClick={() =>
+                      this.openShareVersionForm(this.props.versions[versionId])
+                    }
+                  >
+                    Share
+                  </button>
+                </div>
+              </div>
+            ) : null}
+          </Card.Header>
+          <Accordion.Collapse
+            className="version-collapse"
+            eventKey={this.eventkey[versionId]}
+          >
+            <Card.Body>
+              <VersionPages
+                {...this.props}
+                version_id={versionId}
+                show_filter_version={this.propsFromVersion.bind(this)}
+              />
+              <Groups
+                {...this.props}
+                version_id={versionId}
+                show_filter_version={this.propsFromVersion.bind(this)}
+              />
+            </Card.Body>
+          </Accordion.Collapse>
+        </Card>
+      </Accordion>
+    );
+  }
   render() {
+    if (
+      this.filterFlag === false ||
+      this.props.filter === "" ||
+      this.state.filter !== this.props.filter
+    ) {
+      this.filteredVersions = { ...this.props.versions };
+      this.eventkey = {};
+    }
     return (
       <div>
         {this.showShareVersionForm()}
@@ -181,108 +401,15 @@ class CollectionVersions extends Component {
         All your groups, pages and endpoints present in this version will be deleted.`,
             this.state.selectedVersion
           )}
-        {this.props.versions &&
-          Object.keys(this.props.versions) &&
-          Object.keys(this.props.versions)
+        {this.filteredVersions &&
+          Object.keys(this.filteredVersions) &&
+          Object.keys(this.filteredVersions)
             .filter(
               (versionId) =>
-                this.props.versions[versionId].collectionId ===
+                this.filteredVersions[versionId].collectionId ===
                 this.props.collection_id
             )
-            .map((versionId, index) => (
-              <Accordion key={versionId} id="child-accordion">
-                <Card>
-                  <Card.Header>
-                    <i className="fas fa-folder-open"></i>
-                    <Accordion.Toggle
-                      as={Button}
-                      variant="default"
-                      eventKey="1"
-                    >
-                      {this.props.versions[versionId].number}
-                    </Accordion.Toggle>
-                    {isDashboardRoute(this.props) ? (
-                      <div className="btn-group">
-                        <button
-                          className="btn btn-secondary "
-                          data-toggle="dropdown"
-                          aria-haspopup="true"
-                          aria-expanded="false"
-                        >
-                          <i className="fas fa-ellipsis-h"></i>
-                        </button>
-                        <div className="dropdown-menu dropdown-menu-right">
-                          <button
-                            className="dropdown-item"
-                            onClick={() =>
-                              this.openEditVersionForm(
-                                this.props.versions[versionId]
-                              )
-                            }
-                          >
-                            Edit
-                          </button>
-                          <button
-                            className="dropdown-item"
-                            onClick={() => {
-                              this.openDeleteVersionModal(versionId);
-                            }}
-                          >
-                            Delete
-                          </button>
-                          <button
-                            className="dropdown-item"
-                            onClick={() =>
-                              this.openAddGroupForm(
-                                this.props.versions[versionId]
-                              )
-                            }
-                          >
-                            Add Group
-                          </button>
-                          <button
-                            className="dropdown-item"
-                            onClick={() => {
-                              this.handleDuplicate(
-                                this.props.versions[versionId]
-                              );
-                            }}
-                          >
-                            Duplicate
-                          </button>
-                          <button
-                            className="dropdown-item"
-                            onClick={() =>
-                              this.openAddVersionPageForm(
-                                this.props.versions[versionId]
-                              )
-                            }
-                          >
-                            Add Page
-                          </button>
-                          <button
-                            className="dropdown-item"
-                            onClick={() =>
-                              this.openShareVersionForm(
-                                this.props.versions[versionId]
-                              )
-                            }
-                          >
-                            Share
-                          </button>
-                        </div>
-                      </div>
-                    ) : null}
-                  </Card.Header>
-                  <Accordion.Collapse eventKey="1">
-                    <Card.Body>
-                      <VersionPages {...this.props} version_id={versionId} />
-                      <Groups {...this.props} version_id={versionId} />
-                    </Card.Body>
-                  </Accordion.Collapse>
-                </Card>
-              </Accordion>
-            ))}
+            .map((versionId, index) => <div>{this.renderBody(versionId)}</div>)}
       </div>
     );
   }

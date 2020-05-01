@@ -123,12 +123,6 @@ class ShareCollectionForm extends Component {
     }
   }
 
-  // fetchTeam() {
-  //   if (this.changeTeamFlag === true) {
-  //     this.team = jQuery.extend(true, {}, this.props.teamUsers);
-  //   }
-  // }
-
   handlePublic(collection) {
     collection.isPublic = !collection.isPublic;
     delete collection.teamId;
@@ -136,7 +130,6 @@ class ShareCollectionForm extends Component {
   }
 
   render() {
-    //this.fetchTeam();
     this.currentUserRole = this.fetchCurrentUserRole();
     let count = Object.keys(this.props.teamUsers).length;
     let serialNo = 1;

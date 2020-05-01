@@ -12,18 +12,9 @@ class GenericTable extends Component {
 
   checkboxFlags = [];
   textAreaValue = "";
-  //flags used to autofill bulk edit
   textAreaValueFlag = true;
   helperflag = false;
   count = "";
-
-  // componentDidMount() {
-  //   const dataArray = this.props.dataArray;
-  //   console.log("dataArrArray", dataArray);
-  //   const originalParams = dataArray;
-  //   console.log("IN CDM", originalParams);
-  //   this.setState({ originalParams });
-  // }
 
   handleChange = (e) => {
     const { dataArray, title } = this.props;
