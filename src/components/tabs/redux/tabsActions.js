@@ -51,8 +51,14 @@ export const fetchTabsFromIdb = (props) => {
           props.location.pathname.split("/")[2] === "endpoint" &&
           props.location.pathname.split("/")[3] === "new" &&
           tabsList[tabsMetadata.activeTabId] &&
-          tabsList[tabsMetadata.activeTabId].status !== tabsActionTypes.NEW
+          tabsList[tabsMetadata.activeTabId].status !== "NEW"
         ) {
+          console.log(
+            "sdf",
+            tabsList[tabsMetadata.activeTabId].status !== tabsActionTypes.NEW,
+            tabsList[tabsMetadata.activeTabId].status,
+            tabsActionTypes.NEW
+          );
           const id = shortid.generate();
           let newTab = {
             id,
