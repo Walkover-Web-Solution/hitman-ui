@@ -238,7 +238,10 @@ class Groups extends Component {
     }
   }
   renderBody(groupId) {
-    if (document.getElementsByClassName("group-collapse")) {
+    if (
+      isDashboardRoute(this.props) &&
+      document.getElementsByClassName("group-collapse")
+    ) {
       if (this.props.filter !== "" && this.eventkey[groupId] === "0") {
         let elements = document.getElementsByClassName("group-collapse");
         for (let i = 0; i < elements.length; i++) {

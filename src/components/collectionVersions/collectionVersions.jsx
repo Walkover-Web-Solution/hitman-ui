@@ -263,7 +263,10 @@ class CollectionVersions extends Component {
     }
   }
   renderBody(versionId) {
-    if (document.getElementsByClassName("version-collapse")) {
+    if (
+      isDashboardRoute(this.props) &&
+      document.getElementsByClassName("version-collapse")
+    ) {
       if (this.props.filter !== "" && this.eventkey[versionId] === "0") {
         let elements = document.getElementsByClassName("version-collapse");
         for (let i = 0; i < elements.length; i++) {
