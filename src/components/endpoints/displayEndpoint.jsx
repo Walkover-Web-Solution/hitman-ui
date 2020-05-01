@@ -86,28 +86,6 @@ class DisplayEndpoint extends Component {
     params: [],
     bodyDescription: {},
     fieldDescription: {},
-    // bodyDescription: {
-    //   key1: { default: "abcd", dataType: "string" },
-    //   key2: { default: 4, dataType: "number" },
-    //   key3: { default: true, dataType: "boolean" },
-    //   key4: { default: [2], dataType: "Array of Integer" },
-    //   key5: { default: ["a"], dataType: "Array of String" },
-    //   key6: { default: { k1: "v1", k2: 10 }, dataType: "Object" },
-    //   key7: {
-    //     default: [{ k1: "v1", k2: 10 }],
-    //     dataType: "Array of Objects",
-    //     object: { k1: "v1", k2: 10 },
-    //   },
-    //   key8: {
-    //     default: {
-    //       k1: { k1: "v1", k2: 10, k3: 44 },
-    //       k2: { k1: "v1", k2: 10 },
-    //     },
-    //     dataType: "Object of Objects",
-    //     //object: { k1: "v1", k2: 10 },
-    //   },
-    //   key9: { default: [true], dataType: "Array of Boolean" },
-    // },
   };
 
   customState = {
@@ -248,6 +226,7 @@ class DisplayEndpoint extends Component {
         fieldDescription,
         publicBodyFlag: true,
         bodyFlag: true,
+        response: {},
       });
     }
   }
@@ -880,18 +859,7 @@ class DisplayEndpoint extends Component {
     // if (bodyType !== "multipart/form-data") {
     this.setHeaders(bodyType);
     // }
-    if (bodyType === "JSON") {
-      const data1 = this.setBodyDescription(bodyType, body);
-
-      // this.set_body_description(body)
-      if (data1.error !== undefined) this.setState({ data });
-      else {
-        const bodyDescription = data1.bodyDescription;
-        this.setState({ data, bodyDescription });
-      }
-    } else {
-      this.setState({ data });
-    }
+    this.setState({ data });
     if (isDashboardRoute(this.props)) {
       tabService.markTabAsModified(this.props.tab.id);
     }
@@ -1115,18 +1083,15 @@ class DisplayEndpoint extends Component {
 
     if (
       !isDashboardRoute(this.props) &&
-      this.props.location.pathname.split("/")[3] !== "new" &&
       this.state.endpoint.id !== this.props.location.pathname.split("/")[4] &&
       this.props.endpoints[this.props.location.pathname.split("/")[4]]
     ) {
-      if (!isDashboardRoute(this.props)) {
-        this.fetchEndpoint(0, this.props.location.pathname.split("/")[4]);
-        store.subscribe(() => {
-          if (!this.props.location.title && !this.state.title) {
-            this.fetchEndpoint(0, this.props.location.pathname.split("/")[4]);
-          }
-        });
-      }
+      this.fetchEndpoint(0, this.props.location.pathname.split("/")[4]);
+      store.subscribe(() => {
+        if (!this.props.location.title && !this.state.title) {
+          this.fetchEndpoint(0, this.props.location.pathname.split("/")[4]);
+        }
+      });
     }
     return (
       <div className="endpoint-container">
@@ -1383,6 +1348,7 @@ class DisplayEndpoint extends Component {
                   <PublicBodyContainer
                     {...this.props}
                     set_body={this.setBody.bind(this)}
+                    set_body_description={this.set_description.bind(this)}
                     body={this.state.data.body}
                     public_body_flag={this.state.publicBodyFlag}
                     set_public_body={this.setPublicBody.bind(this)}
