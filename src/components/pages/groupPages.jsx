@@ -20,12 +20,12 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    deletePage: (page) => dispatch(deletePage(page)),
-    duplicatePage: (page) => dispatch(duplicatePage(page)),
-    pendingPage: (page) => dispatch(pendingPage(page)),
-    approvePage: (page) => dispatch(approvePage(page)),
-    draftPage: (page) => dispatch(draftPage(page)),
-    rejectPage: (page) => dispatch(rejectPage(page)),
+    delete_page: (page) => dispatch(deletePage(page)),
+    duplicate_page: (page) => dispatch(duplicatePage(page)),
+    pending_page: (page) => dispatch(pendingPage(page)),
+    approve_page: (page) => dispatch(approvePage(page)),
+    draft_page: (page) => dispatch(draftPage(page)),
+    reject_page: (page) => dispatch(rejectPage(page)),
   };
 };
 

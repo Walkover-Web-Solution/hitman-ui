@@ -37,16 +37,16 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    addCollection: (newCollection) => dispatch(addCollection(newCollection)),
-    shareCollection: (teamMemberData) =>
+    add_collection: (newCollection) => dispatch(addCollection(newCollection)),
+    share_collection: (teamMemberData) =>
       dispatch(shareCollection(teamMemberData)),
-    updateCollection: (editedCollection) =>
+    update_collection: (editedCollection) =>
       dispatch(updateCollection(editedCollection)),
-    deleteCollection: (collection, props) =>
+    delete_collection: (collection, props) =>
       dispatch(deleteCollection(collection, props)),
-    duplicateCollection: (collection) =>
+    duplicate_collection: (collection) =>
       dispatch(duplicateCollection(collection)),
-    fetchAllUsersOfTeam: (teamIdentifier) =>
+    fetch_all_users_of_team: (teamIdentifier) =>
       dispatch(fetchAllUsersOfTeam(teamIdentifier)),
   };
 };
@@ -87,24 +87,24 @@ class CollectionsComponent extends Component {
 
   async handleAddCollection(newCollection) {
     newCollection.requestId = shortId.generate();
-    this.props.addCollection(newCollection);
+    this.props.add_collection(newCollection);
   }
 
   async handleUpdateCollection(editedCollection) {
-    this.props.updateCollection(editedCollection);
+    this.props.update_collection(editedCollection);
   }
 
   async handleDeleteGroup(deletedGroupId) {
-    this.props.deleteGroup(deletedGroupId);
+    this.props.delete_group(deletedGroupId);
   }
 
   async handleAddVersionPage(versionId, newPage) {
     newPage.requestId = shortId.generate();
-    this.props.addPage(versionId, newPage);
+    this.props.add_page(versionId, newPage);
   }
 
   async handleDuplicateCollection(collectionCopy) {
-    this.props.duplicateCollection(collectionCopy);
+    this.props.duplicate_collection(collectionCopy);
   }
   async handleGoToDocs(collection) {
     const publicDocsUrl = `${uiUrl}/public/${collection.id}`;
@@ -129,7 +129,9 @@ class CollectionsComponent extends Component {
   }
 
   shareCollection(collectionId) {
-    this.props.fetchAllUsersOfTeam(this.props.collections[collectionId].teamId);
+    this.props.fetch_all_users_of_team(
+      this.props.collections[collectionId].teamId
+    );
     this.setState({
       showCollectionShareForm: true,
       selectedCollection: {
@@ -214,7 +216,7 @@ class CollectionsComponent extends Component {
   handlePublic(collection) {
     collection.isPublic = !collection.isPublic;
     delete collection.teamId;
-    this.props.updateCollection({ ...collection });
+    this.props.update_collection({ ...collection });
   }
 
   closeDeleteCollectionModal() {

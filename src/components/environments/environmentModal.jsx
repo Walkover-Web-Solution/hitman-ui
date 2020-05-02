@@ -36,7 +36,7 @@ class EnvironmentModal extends Component {
   }
 
   async handleDelete(environment) {
-    this.props.deleteEnvironment(environment);
+    this.props.delete_environment(environment);
   }
 
   handleEdit(environment) {

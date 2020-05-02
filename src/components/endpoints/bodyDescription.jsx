@@ -305,7 +305,7 @@ class BodyDescription extends Component {
       bodyDescription = this.preserveDefaultValue(bodyDescription);
     this.setState({ bodyDescription });
     if (this.props.tab.status !== "NEW")
-      this.props.updateEndpoint({ id: this.props.tab.id, bodyDescription });
+      this.props.update_endpoint({ id: this.props.tab.id, bodyDescription });
 
     return bodyDescription;
   }

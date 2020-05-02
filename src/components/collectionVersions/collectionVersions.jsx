@@ -25,8 +25,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    deleteVersion: (version, props) => dispatch(deleteVersion(version, props)),
-    duplicateVersion: (version) => dispatch(duplicateVersion(version)),
+    delete_version: (version, props) => dispatch(deleteVersion(version, props)),
+    duplicate_version: (version) => dispatch(duplicateVersion(version)),
   };
 };
 
@@ -66,7 +66,7 @@ class CollectionVersions extends Component {
   }
 
   handleDuplicate(version) {
-    this.props.duplicateVersion(version);
+    this.props.duplicate_version(version);
   }
 
   showAddVersionPageForm() {

@@ -12,7 +12,7 @@ import "./publicEndpoint.scss";
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetchAllPublicEndpoints: (collectionIdentifier) =>
+    fetch_all_public_endpoints: (collectionIdentifier) =>
       dispatch(fetchAllPublicEndpoints(collectionIdentifier)),
   };
 };
@@ -21,7 +21,7 @@ class PublicEndpoint extends Component {
   componentDidMount() {
     if (this.props.location.pathname) {
       let collectionIdentifier = this.props.location.pathname.split("/")[2];
-      this.props.fetchAllPublicEndpoints(collectionIdentifier);
+      this.props.fetch_all_public_endpoints(collectionIdentifier);
     }
   }
 

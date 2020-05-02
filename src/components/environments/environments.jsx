@@ -22,14 +22,14 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetchEnvironments: () => dispatch(fetchEnvironments()),
-    addEnvironment: (newEnvironment) =>
+    fetch_environments: () => dispatch(fetchEnvironments()),
+    add_environment: (newEnvironment) =>
       dispatch(addEnvironment(newEnvironment)),
-    updateEnvironment: (editedEnvironment) =>
+    update_environment: (editedEnvironment) =>
       dispatch(updateEnvironment(editedEnvironment)),
-    deleteEnvironment: (deletedEnvironment) =>
+    delete_environment: (deletedEnvironment) =>
       dispatch(deleteEnvironment(deletedEnvironment)),
-    setEnvironmentId: (environmentId) =>
+    set_environment_id: (environmentId) =>
       dispatch(setEnvironmentId(environmentId)),
   };
 };
@@ -44,7 +44,7 @@ class Environments extends Component {
   };
 
   async componentDidMount() {
-    this.props.fetchEnvironments();
+    this.props.fetch_environments();
     await indexedDbService.getDataBase();
     const currentEnvironmentId = await indexedDbService.getValue(
       "environment",
@@ -60,7 +60,7 @@ class Environments extends Component {
     });
   }
   async handleEnv(environmentId) {
-    this.props.setEnvironmentId(environmentId);
+    this.props.set_environment_id(environmentId);
     this.setState({ currentEnvironmentId: environmentId });
     await indexedDbService.updateData(
       "environment",
@@ -71,7 +71,7 @@ class Environments extends Component {
 
   async handleAdd(newEnvironment) {
     newEnvironment.requestId = shortId.generate();
-    this.props.addEnvironment(newEnvironment);
+    this.props.add_environment(newEnvironment);
   }
 
   openDeleteEnvironmentModal(environmentId) {

@@ -5,18 +5,18 @@ import { connect } from "react-redux";
 import { importVersion } from "../collectionVersions/redux/collectionVersionsActions";
 import Form from "../common/form";
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    importVersion: (importLink, shareIdentifier, collectionId) =>
-      dispatch(importVersion(importLink, shareIdentifier, collectionId))
+    import_version: (importLink, shareIdentifier, collectionId) =>
+      dispatch(importVersion(importLink, shareIdentifier, collectionId)),
   };
 };
 class ShareVersionForm extends Form {
   state = {
     data: {
-      shareVersionLink: ""
+      shareVersionLink: "",
     },
-    errors: {}
+    errors: {},
   };
 
   componentDidMount() {
@@ -25,9 +25,7 @@ class ShareVersionForm extends Form {
   }
 
   schema = {
-    shareVersionLink: Joi.string()
-      .required()
-      .label("Public Link")
+    shareVersionLink: Joi.string().required().label("Public Link"),
   };
 
   async doSubmit(props) {
@@ -36,7 +34,7 @@ class ShareVersionForm extends Form {
       const collectionId = this.props.selected_collection.id;
       const importLink = this.state.data.shareVersionLink;
       let shareIdentifier = importLink.split("/")[4];
-      this.props.importVersion(importLink, shareIdentifier, collectionId);
+      this.props.import_version(importLink, shareIdentifier, collectionId);
     }
   }
 
