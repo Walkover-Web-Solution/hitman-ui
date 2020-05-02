@@ -53,6 +53,19 @@ class Endpoints extends Component {
   onDragOver = (e) => {
     e.preventDefault();
   };
+
+  sequencingOnFilter() {
+    let filteredEndpointKeys = Object.keys(this.filteredEndpoints);
+    this.filteredEndpointsOrder = [];
+    for (let i = 0; i < this.props.endpoints_order.length; i++) {
+      for (let j = 0; j < filteredEndpointKeys.length; j++) {
+        if (this.props.endpoints_order[i] === filteredEndpointKeys[j]) {
+          this.filteredEndpointsOrder.push(this.props.endpoints_order[i]);
+          break;
+        }
+      }
+    }
+  }
   onDrop = (e, droppedOnItem) => {
     e.preventDefault();
     if (!this.draggedItem) {
@@ -220,11 +233,14 @@ class Endpoints extends Component {
     ) {
       this.filterFlag = true;
       let groupIds = [];
-      groupIds = filterService.filter(
+      let groupIdsAndFilteredEndpoints = [];
+      groupIdsAndFilteredEndpoints = filterService.filter(
         this.props.endpoints,
         this.props.filter,
         "endpoints"
       );
+      this.filteredEndpoints = groupIdsAndFilteredEndpoints[0];
+      groupIds = groupIdsAndFilteredEndpoints[1];
       this.setState({ filter: this.props.filter });
       if (groupIds.length !== 0) {
         this.props.show_filter_groups(groupIds, "endpoints");
@@ -238,11 +254,16 @@ class Endpoints extends Component {
     if (this.state.filter !== this.props.filter) {
       this.filterFlag = false;
     }
+    if (this.props.filter === "") {
+      this.filteredEndpoints = { ...this.props.endpoints };
+      this.filteredEndpointsOrder = [...this.props.endpoints_order];
+    }
+
     if (isDashboardRoute(this.props)) {
       return (
         <React.Fragment>
           {this.filterEndpoints()}
-
+          {this.sequencingOnFilter()}
           {/* <div>
           {this.state.showDeleteModal &&
             endpointService.showDeleteEndpointModal(
@@ -254,8 +275,8 @@ class Endpoints extends Component {
               this.state.selectedEndpoint
             )}
         </div> */}
-          {Object.keys(this.props.endpoints).length !== 0 &&
-            this.props.endpoints_order
+          {Object.keys(this.filteredEndpoints).length !== 0 &&
+            this.filteredEndpointsOrder
               .filter(
                 (eId) =>
                   this.props.endpoints[eId].groupId === this.props.group_id

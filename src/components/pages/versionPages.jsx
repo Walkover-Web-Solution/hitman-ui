@@ -42,11 +42,14 @@ class VersionPages extends Component {
     ) {
       this.filterFlag = true;
       let versionIds = [];
-      versionIds = filterService.filter(
+      let versionIdsAndFilteredPages = [];
+      versionIdsAndFilteredPages = filterService.filter(
         this.props.pages,
         this.props.filter,
         "versionPages"
       );
+      this.filteredVersionPages = versionIdsAndFilteredPages[0];
+      versionIds = versionIdsAndFilteredPages[1];
       this.setState({ filter: this.props.filter });
       if (versionIds.length !== 0) {
         this.props.show_filter_version(versionIds, "versionPages");
@@ -59,6 +62,9 @@ class VersionPages extends Component {
   render() {
     if (this.state.filter !== this.props.filter) {
       this.filterFlag = false;
+    }
+    if (this.props.filter === "") {
+      this.filteredVersionPages = { ...this.props.pages };
     }
     return (
       <div>
@@ -74,8 +80,8 @@ class VersionPages extends Component {
             )}
         </div>
 
-        {this.props.pages &&
-          Object.keys(this.props.pages)
+        {this.filteredVersionPages &&
+          Object.keys(this.filteredVersionPages)
             .filter(
               (pageId) =>
                 this.props.pages[pageId].versionId === this.props.version_id &&
