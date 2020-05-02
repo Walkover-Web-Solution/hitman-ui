@@ -261,7 +261,13 @@ class Groups extends Component {
             <Accordion.Toggle
               as={Button}
               variant="default"
-              eventKey={this.eventkey[groupId] ? this.eventkey[groupId] : "1"}
+              eventKey={
+                !isDashboardRoute(this.props)
+                  ? "0"
+                  : this.eventkey[groupId]
+                  ? this.eventkey[groupId]
+                  : "1"
+              }
             >
               {this.props.groups[groupId].name}
             </Accordion.Toggle>
@@ -338,7 +344,13 @@ class Groups extends Component {
           </Card.Header>
           <Accordion.Collapse
             className="group-collapse"
-            eventKey={this.eventkey[groupId] ? this.eventkey[groupId] : "1"}
+            eventKey={
+              !isDashboardRoute(this.props)
+                ? "0"
+                : this.eventkey[groupId]
+                ? this.eventkey[groupId]
+                : "1"
+            }
           >
             <Card.Body>
               <GroupPages

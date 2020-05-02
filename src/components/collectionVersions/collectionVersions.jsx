@@ -287,7 +287,9 @@ class CollectionVersions extends Component {
             <Accordion.Toggle
               as={Button}
               variant="default"
-              eventKey={this.eventkey[versionId]}
+              eventKey={
+                !isDashboardRoute(this.props) ? "0" : this.eventkey[versionId]
+              }
             >
               {this.props.versions[versionId].number}
             </Accordion.Toggle>
@@ -358,7 +360,9 @@ class CollectionVersions extends Component {
           </Card.Header>
           <Accordion.Collapse
             className="version-collapse"
-            eventKey={this.eventkey[versionId]}
+            eventKey={
+              !isDashboardRoute(this.props) ? "0" : this.eventkey[versionId]
+            }
           >
             <Card.Body>
               <VersionPages
