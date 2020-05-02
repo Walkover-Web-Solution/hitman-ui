@@ -188,10 +188,17 @@ class BodyDescription extends Component {
 
   generateBodyDescription(body, isFirstTime) {
     let bodyDescription = null;
-    if (Array.isArray(body)) bodyDescription = [];
-    else bodyDescription = {};
+    let keys = [];
+    if (Array.isArray(body)) {
+      bodyDescription = [];
+      keys = ["0"];
+    } else {
+      bodyDescription = {};
+      keys = Object.keys(body);
+    }
 
-    const keys = Object.keys(body);
+    console.log(body, isFirstTime, bodyDescription, keys);
+
     for (let i = 0; i < keys.length; i++) {
       const value = body[keys[i]];
       if (
@@ -215,13 +222,13 @@ class BodyDescription extends Component {
       } else {
         if (Array.isArray(value)) {
           bodyDescription[keys[i]] = {
-            value: this.generateBodyDescription(value),
+            value: this.generateBodyDescription(value, isFirstTime),
             type: "array",
-            default: this.generateBodyDescription(value)[0],
+            default: this.generateBodyDescription(value, isFirstTime)[0],
           };
         } else {
           bodyDescription[keys[i]] = {
-            value: this.generateBodyDescription(value),
+            value: this.generateBodyDescription(value, isFirstTime),
             type: "object",
           };
         }
@@ -320,6 +327,7 @@ class BodyDescription extends Component {
   }
 
   render() {
+    console.log(this.props.body_description);
     if (
       this.props.body &&
       Object.keys(this.props.body) &&
