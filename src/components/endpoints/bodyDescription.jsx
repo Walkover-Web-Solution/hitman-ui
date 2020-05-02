@@ -186,7 +186,7 @@ class BodyDescription extends Component {
     }
   }
 
-  generateBodyDescription(body) {
+  generateBodyDescription(body, isFirstTime) {
     let bodyDescription = null;
     if (Array.isArray(body)) bodyDescription = [];
     else bodyDescription = {};
@@ -199,11 +199,19 @@ class BodyDescription extends Component {
         typeof value === "number" ||
         typeof value === "boolean"
       ) {
-        bodyDescription[keys[i]] = {
-          value: null,
-          type: typeof value,
-          description: "",
-        };
+        if (isFirstTime) {
+          bodyDescription[keys[i]] = {
+            value,
+            type: typeof value,
+            description: "",
+          };
+        } else {
+          bodyDescription[keys[i]] = {
+            value: null,
+            type: typeof value,
+            description: "",
+          };
+        }
       } else {
         if (Array.isArray(value)) {
           bodyDescription[keys[i]] = {
@@ -283,10 +291,11 @@ class BodyDescription extends Component {
 
     return updatedBodyDescription;
   }
-  updateBodyDescription(body) {
+  updateBodyDescription(body, isFirstTime) {
     body = this.parseBody(body);
-    let bodyDescription = this.generateBodyDescription(body);
-    bodyDescription = this.preserveDefaultValue(bodyDescription);
+    let bodyDescription = this.generateBodyDescription(body, isFirstTime);
+    if (!isFirstTime)
+      bodyDescription = this.preserveDefaultValue(bodyDescription);
     this.setState({ bodyDescription });
     if (this.props.tab.status !== "NEW")
       this.props.updateEndpoint({ id: this.props.tab.id, bodyDescription });
@@ -294,18 +303,35 @@ class BodyDescription extends Component {
     return bodyDescription;
   }
 
-  handleUpdate() {
+  handleUpdate(isFirstTime) {
     this.originalBodyDescription = jQuery.extend(
       true,
       {},
       this.props.body_description
     );
-    const bodyDescription = this.updateBodyDescription(this.props.body);
+    const bodyDescription = this.updateBodyDescription(
+      this.props.body,
+      isFirstTime
+    );
+
+    console.log(bodyDescription);
 
     this.props.set_body_description(bodyDescription);
   }
 
   render() {
+    if (
+      this.props.body &&
+      Object.keys(this.props.body) &&
+      Object.keys(this.props.body).length &&
+      !(
+        this.props.body_description &&
+        Object.keys(this.props.body_description) &&
+        Object.keys(this.props.body_description).length
+      )
+    ) {
+      this.handleUpdate(true);
+    }
     return (
       <div>
         {this.props.body_type === "JSON" && (
