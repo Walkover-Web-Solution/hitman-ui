@@ -9,32 +9,30 @@ import { addGroupPage, addPage } from "../pages/redux/pagesActions";
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    addPage: (versionId, newPage) =>
+    add_page: (versionId, newPage) =>
       dispatch(addPage(ownProps.history, versionId, newPage)),
-    addGroupPage: (versionId, groupId, newPage) =>
-      dispatch(addGroupPage(ownProps.history, versionId, groupId, newPage))
+    add_group_page: (versionId, groupId, newPage) =>
+      dispatch(addGroupPage(ownProps.history, versionId, groupId, newPage)),
   };
 };
 
 class PageForm extends Form {
   state = {
     data: {
-      name: ""
+      name: "",
     },
-    errors: {}
+    errors: {},
   };
 
   schema = {
-    name: Joi.string()
-      .required()
-      .label("Page name")
+    name: Joi.string().required().label("Page name"),
   };
 
   async doSubmit(props) {
     this.props.onHide();
     if (this.props.title === "Add new Group Page") {
       const newPage = { ...this.state.data, requestId: shortid.generate() };
-      this.props.addGroupPage(
+      this.props.add_group_page(
         this.props.selectedVersion,
         this.props.selectedGroup.id,
         newPage
@@ -43,7 +41,7 @@ class PageForm extends Form {
     if (this.props.title === "Add New Version Page") {
       const versionId = this.props.selectedVersion.id;
       const newPage = { ...this.state.data, requestId: shortid.generate() };
-      this.props.addPage(versionId, newPage);
+      this.props.add_page(versionId, newPage);
     }
   }
 

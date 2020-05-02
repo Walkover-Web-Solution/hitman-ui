@@ -35,9 +35,9 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    addEndpoint: (newEndpoint, groupId) =>
+    add_endpoint: (newEndpoint, groupId) =>
       dispatch(addEndpoint(ownProps.history, newEndpoint, groupId)),
-    updateEndpoint: (editedEndpoint) =>
+    update_endpoint: (editedEndpoint) =>
       dispatch(updateEndpoint(editedEndpoint)),
   };
 };
@@ -514,9 +514,9 @@ class DisplayEndpoint extends Component {
       if (endpoint.name === "") toast.error("Please enter Endpoint name");
       else if (this.props.location.pathname.split("/")[3] === "new") {
         endpoint.requestId = this.props.tab.id;
-        this.props.addEndpoint(endpoint, groupId || this.state.groupId);
+        this.props.add_endpoint(endpoint, groupId || this.state.groupId);
       } else if (this.state.title === "update endpoint") {
-        this.props.updateEndpoint({
+        this.props.update_endpoint({
           ...endpoint,
           id: this.state.endpoint.id,
           groupId: groupId || this.state.groupId,

@@ -12,7 +12,7 @@ import "./publicEndpoint.scss";
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetchAllPublicEndpoints: (collectionIdentifier) =>
+    fetch_all_public_endpoints: (collectionIdentifier) =>
       dispatch(fetchAllPublicEndpoints(collectionIdentifier)),
   };
 };
@@ -21,47 +21,67 @@ class PublicEndpoint extends Component {
   componentDidMount() {
     if (this.props.location.pathname) {
       let collectionIdentifier = this.props.location.pathname.split("/")[2];
-      this.props.fetchAllPublicEndpoints(collectionIdentifier);
+      this.props.fetch_all_public_endpoints(collectionIdentifier);
     }
   }
 
   render() {
-    return (
-      <React.Fragment>
-        <nav className="navbar  public-endpoint-navbar">
-          <img
-            className="hitman-logo"
-            alt=""
-            src={require("../../hitman-icon.png")}
+    console.log("hello");
+    if (
+      this.props.location.pathname.split("/")[1] === "public" &&
+      (this.props.location.pathname.split("/")[3] === undefined ||
+        this.props.location.pathname.split("/")[3] === "")
+    ) {
+      console.log("this.props", this.props);
+      this.props.history.push({
+        pathname: `/public/${this.props.match.params.collectionIdentifier}/description`,
+      });
+      return (
+        <div>
+          <Route
+            path="/public/:collectionId/description"
+            render={(props) => <DisplayCollection {...props} />}
           />
-        </nav>
-        <main role="main" className="main ml-sm-auto col-lg-10 ">
-          <div>
-            <ToastContainer />
-            <div className="main-panel-wrapper">
-              <SideBar {...this.props} />
-            </div>
+        </div>
+      );
+    } else {
+      return (
+        <React.Fragment>
+          <nav className="navbar  public-endpoint-navbar">
+            <img
+              className="hitman-logo"
+              alt=""
+              src={require("../../hitman-icon.png")}
+            />
+          </nav>
+          <main role="main" className="main ml-sm-auto col-lg-10 ">
+            <div>
+              <ToastContainer />
+              <div className="main-panel-wrapper">
+                <SideBar {...this.props} />
+              </div>
 
-            <div className="main-content">
-              <Switch>
-                <Route
-                  path="/public/:collectionId/endpoints/:endpointId"
-                  render={(props) => <DisplayEndpoint {...props} />}
-                />
-                <Route
-                  path="/public/:collectionId/pages/:pageid"
-                  render={(props) => <DisplayPage {...props} />}
-                />
-                <Route
-                  path="/public/:collectionId/description"
-                  render={(props) => <DisplayCollection {...props} />}
-                />
-              </Switch>
+              <div className="main-content">
+                <Switch>
+                  <Route
+                    path="/public/:collectionId/endpoints/:endpointId"
+                    render={(props) => <DisplayEndpoint {...props} />}
+                  />
+                  <Route
+                    path="/public/:collectionId/pages/:pageid"
+                    render={(props) => <DisplayPage {...props} />}
+                  />
+                  <Route
+                    path="/public/:collectionId/description"
+                    render={(props) => <DisplayCollection {...props} />}
+                  />
+                </Switch>
+              </div>
             </div>
-          </div>
-        </main>
-      </React.Fragment>
-    );
+          </main>
+        </React.Fragment>
+      );
+    }
   }
 }
 

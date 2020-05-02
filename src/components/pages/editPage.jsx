@@ -10,7 +10,7 @@ import { toast } from "react-toastify";
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    updatePage: (editedPage, pageId) =>
+    update_page: (editedPage, pageId) =>
       dispatch(updatePage(ownProps.history, editedPage, pageId)),
   };
 };
@@ -107,7 +107,7 @@ class EditPage extends Component {
       if (editedPage.name.trim() === "") {
         toast.error("Page name cannot be empty.");
       } else {
-        this.props.updatePage(editedPage, editedPage.id);
+        this.props.update_page(editedPage, editedPage.id);
         this.props.history.push({
           pathname: `/dashboard/page/${editedPage.id}`,
         });
@@ -117,7 +117,7 @@ class EditPage extends Component {
       if (editedPage.name.trim() === "") {
         toast.error("Page name cannot be empty.");
       } else {
-        this.props.updatePage(editedPage, editedPage.id);
+        this.props.update_page(editedPage, editedPage.id);
         this.props.history.push({
           pathname: `/dashboard/page/${editedPage.id}`,
         });

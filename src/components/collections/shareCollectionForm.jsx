@@ -45,7 +45,7 @@ class ShareCollectionForm extends Component {
   }
 
   async onShareCollectionSubmit(teamMemberData) {
-    this.props.shareCollection(teamMemberData);
+    this.props.share_collection(teamMemberData);
     this.setState({
       data: {
         role: "Collaborator",
@@ -126,7 +126,7 @@ class ShareCollectionForm extends Component {
   handlePublic(collection) {
     collection.isPublic = !collection.isPublic;
     delete collection.teamId;
-    this.props.updateCollection({ ...collection });
+    this.props.update_collection({ ...collection });
   }
 
   render() {

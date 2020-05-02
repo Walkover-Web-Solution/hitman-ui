@@ -20,12 +20,12 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    pendingPage: (page) => dispatch(pendingPage(page)),
-    approvePage: (page) => dispatch(approvePage(page)),
-    draftPage: (page) => dispatch(draftPage(page)),
-    rejectPage: (page) => dispatch(rejectPage(page)),
-    closeTab: (tabId) => dispatch(closeTab(tabId)),
-    openInNewTab: (tab) => dispatch(openInNewTab(tab)),
+    pending_page: (page) => dispatch(pendingPage(page)),
+    approve_page: (page) => dispatch(approvePage(page)),
+    draft_page: (page) => dispatch(draftPage(page)),
+    reject_page: (page) => dispatch(rejectPage(page)),
+    close_tab: (tabId) => dispatch(closeTab(tabId)),
+    open_in_new_tab: (tab) => dispatch(openInNewTab(tab)),
   };
 };
 
@@ -38,8 +38,8 @@ class Pages extends Component {
         const previewTabId = Object.keys(this.props.tabs.tabs).filter(
           (tabId) => this.props.tabs.tabs[tabId].previewMode === true
         )[0];
-        if (previewTabId) this.props.closeTab(previewTabId);
-        this.props.openInNewTab({
+        if (previewTabId) this.props.close_tab(previewTabId);
+        this.props.open_in_new_tab({
           id: page.id,
           type: "page",
           status: tabStatusTypes.SAVED,
@@ -66,27 +66,27 @@ class Pages extends Component {
   }
 
   handleDuplicate(page) {
-    this.props.duplicatePage(page);
+    this.props.duplicate_page(page);
   }
 
   async handlePublicPageState(page) {
     if (page.state === "Draft") {
       if (this.checkAccess(this.props.collection_id)) {
-        this.props.approvePage(page);
+        this.props.approve_page(page);
       } else {
-        this.props.pendingPage(page);
+        this.props.pending_page(page);
       }
     }
   }
 
   async handleCancelRequest(page) {
-    this.props.draftPage(page);
+    this.props.draft_page(page);
   }
   async handleApproveRequest(page) {
-    this.props.approvePage(page);
+    this.props.approve_page(page);
   }
   async handleRejectRequest(page) {
-    this.props.rejectPage(page);
+    this.props.reject_page(page);
   }
 
   getCurrentUserRole(collectionId) {

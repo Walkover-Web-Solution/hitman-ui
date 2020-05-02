@@ -14,8 +14,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    deletePage: (page) => dispatch(deletePage(page)),
-    duplicatePage: (page) => dispatch(duplicatePage(page)),
+    delete_page: (page) => dispatch(deletePage(page)),
+    duplicate_page: (page) => dispatch(duplicatePage(page)),
   };
 };
 class VersionPages extends Component {
