@@ -9,6 +9,7 @@ import DisplayCollection from "../collections/displayCollection";
 import SideBar from "../main/sidebar";
 import { fetchAllPublicEndpoints } from "./redux/publicEndpointsActions.js";
 import "./publicEndpoint.scss";
+import Environments from "../environments/environments";
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -26,7 +27,6 @@ class PublicEndpoint extends Component {
   }
 
   render() {
-    console.log("hello");
     if (
       this.props.location.pathname.split("/")[1] === "public" &&
       (this.props.location.pathname.split("/")[3] === undefined ||
@@ -59,6 +59,8 @@ class PublicEndpoint extends Component {
               <ToastContainer />
               <div className="main-panel-wrapper">
                 <SideBar {...this.props} />
+
+                <Environments {...this.props} />
               </div>
 
               <div className="main-content">

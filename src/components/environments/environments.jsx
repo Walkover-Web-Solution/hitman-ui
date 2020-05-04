@@ -6,6 +6,7 @@ import indexedDbService from "../indexedDb/indexedDbService";
 import EnvironmentModal from "./environmentModal";
 import "./environments.scss";
 import environmentsService from "./environmentsService.js";
+import { isDashboardRoute } from "../common/utility";
 import {
   addEnvironment,
   deleteEnvironment,
@@ -160,7 +161,7 @@ class Environments extends Component {
                   >
                     Edit
                   </button>
-                ) : (
+                ) : isDashboardRoute ? (
                   <button
                     className="btn btn-default"
                     onClick={() =>
@@ -169,7 +170,7 @@ class Environments extends Component {
                   >
                     Add
                   </button>
-                )}
+                ) : null}
               </Dropdown.Item>
               <Dropdown.Divider />
               <div>
@@ -196,44 +197,46 @@ class Environments extends Component {
 
         {/* end */}
         <div className="select-environment-dropdown">
-          <Dropdown className="float-right">
-            <Dropdown.Toggle variant="default" id="dropdown-basic">
-              {this.props.environment.environments[
-                this.props.environment.currentEnvironmentId
-              ]
-                ? this.props.environment.environments[
-                    this.props.environment.currentEnvironmentId
-                  ].name
-                : "No Environment"}
-            </Dropdown.Toggle>
+          {isDashboardRoute(this.props) ? (
+            <Dropdown className="float-right">
+              <Dropdown.Toggle variant="default" id="dropdown-basic">
+                {this.props.environment.environments[
+                  this.props.environment.currentEnvironmentId
+                ]
+                  ? this.props.environment.environments[
+                      this.props.environment.currentEnvironmentId
+                    ].name
+                  : "No Environment"}
+              </Dropdown.Toggle>
 
-            <Dropdown.Menu alignRight>
-              <Dropdown.Item
-                onClick={() => this.handleEnv(null)}
-                key={"no-environment"}
-              >
-                No Environment
-              </Dropdown.Item>
-              {Object.keys(this.props.environment.environments).map(
-                (environmentId) => (
-                  <Dropdown.Item
-                    onClick={() => this.handleEnv(environmentId)}
-                    key={environmentId}
-                  >
-                    {this.props.environment.environments[environmentId].name}
-                  </Dropdown.Item>
-                )
-              )}
-              <button
-                className="btn btn-default"
-                onClick={() =>
-                  this.handleEnvironmentModal("Add new Environment")
-                }
-              >
-                + Add Environment
-              </button>
-            </Dropdown.Menu>
-          </Dropdown>
+              <Dropdown.Menu alignRight>
+                <Dropdown.Item
+                  onClick={() => this.handleEnv(null)}
+                  key={"no-environment"}
+                >
+                  No Environment
+                </Dropdown.Item>
+                {Object.keys(this.props.environment.environments).map(
+                  (environmentId) => (
+                    <Dropdown.Item
+                      onClick={() => this.handleEnv(environmentId)}
+                      key={environmentId}
+                    >
+                      {this.props.environment.environments[environmentId].name}
+                    </Dropdown.Item>
+                  )
+                )}
+                <button
+                  className="btn btn-default"
+                  onClick={() =>
+                    this.handleEnvironmentModal("Add new Environment")
+                  }
+                >
+                  + Add Environment
+                </button>
+              </Dropdown.Menu>
+            </Dropdown>
+          ) : null}
         </div>
       </div>
     );
