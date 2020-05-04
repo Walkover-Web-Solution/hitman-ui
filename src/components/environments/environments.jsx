@@ -42,6 +42,7 @@ class Environments extends Component {
     showEnvironmentForm: false,
     showEnvironmentModal: false,
     environmentToBeEdited: {},
+    publicCollectionEnvironmentId: null,
   };
 
   async componentDidMount() {
@@ -61,6 +62,7 @@ class Environments extends Component {
     });
   }
   async handleEnv(environmentId) {
+    console.log("env", environmentId);
     this.props.set_environment_id(environmentId);
     this.setState({ currentEnvironmentId: environmentId });
     await indexedDbService.updateData(
@@ -92,7 +94,15 @@ class Environments extends Component {
     const env = this.props.environment.environments[
       this.props.environment.currentEnvironmentId
     ];
-
+    if (!isDashboardRoute(this.props)) {
+      let publicCollection = this.props.location.publicCollection;
+      // if (publicCollection != undefined) {
+      //   this.setState({
+      //     publicCollectionEnvironmentId: publicCollection.environment,
+      //   });
+      // }
+      console.log("mmmm", publicCollection);
+    }
     return (
       <div className="environment-container">
         {(this.state.environmentFormName === "Add new Environment" ||

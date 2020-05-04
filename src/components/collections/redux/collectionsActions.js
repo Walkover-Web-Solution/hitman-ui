@@ -21,6 +21,7 @@ export const fetchCollections = () => {
 };
 
 export const onCollectionsFetched = (collections) => {
+  console.log("nnnn", collections);
   return {
     type: collectionsActionTypes.ON_COLLECTIONS_FETCHED,
     collections,
@@ -31,6 +32,23 @@ export const onCollectionsFetchedError = (error) => {
   return {
     type: collectionsActionTypes.ON_COLLECTIONS_FETCHED_ERROR,
     error,
+  };
+};
+
+export const fetchCollection = (collectionId) => {
+  return (dispatch) => {
+    collectionsApiService
+      .getCollection(collectionId)
+      .then((response) => {
+        dispatch(onCollectionsFetched(response.data));
+      })
+      .catch((error) => {
+        dispatch(
+          onCollectionsFetchedError(
+            error.response ? error.response.data : error
+          )
+        );
+      });
   };
 };
 
