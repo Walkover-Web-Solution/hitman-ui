@@ -17,6 +17,7 @@ import GenericTable from "./genericTable";
 import HostContainer from "./hostContainer";
 import PublicBodyContainer from "./publicBodyContainer";
 import { addEndpoint, updateEndpoint } from "./redux/endpointsActions";
+import Authorization from "./displayAuthorization";
 const status = require("http-status");
 var URI = require("urijs");
 
@@ -857,7 +858,7 @@ class DisplayEndpoint extends Component {
     let data = { ...this.state.data };
     data.body = { type: bodyType, value: body };
     // if (bodyType !== "multipart/form-data") {
-    this.setHeaders(bodyType);
+    this.setHeaders(bodyType, "content-type");
     // }
     this.setState({ data });
     if (isDashboardRoute(this.props)) {
@@ -946,10 +947,46 @@ class DisplayEndpoint extends Component {
     this.setState({ fieldDescription, bodyDescription });
   }
 
-  setHeaders(bodyType) {
+  // setHeaders(encodedValue) {
+  //   let originalHeaders = this.state.originalHeaders;
+  //   let updatedHeaders = [];
+  //   let emptyHeader = {
+  //     checked: "notApplicable",
+  //     key: "",
+  //     value: "",
+  //     description: "",
+  //   };
+  //   for (let i = 0; i < originalHeaders.length; i++) {
+  //     if (
+  //       originalHeaders[i].key === "Authorization" ||
+  //       originalHeaders[i].key === ""
+  //     ) {
+  //       continue;
+  //     } else {
+  //       updatedHeaders.push(originalHeaders[i]);
+  //     }
+  //   }
+  //   // if (bodyType === "none") {
+  //   //   updatedHeaders.push(emptyHeader);
+  //   //   this.setState({ originalHeaders: updatedHeaders });
+  //   //   return;
+  //   // }
+  //   updatedHeaders.push({
+  //     checked: "true",
+  //     key: "Authorization",
+  //     value: "Basic " + encodedValue,
+  //     description: "",
+  //   });
+  //   // updatedHeaders[updatedHeaders.length - 1].value = this.identifyBodyType(
+  //   //   bodyType
+  //   // );
+  //   updatedHeaders.push(emptyHeader);
+  //   this.setState({ originalHeaders: updatedHeaders });
+  // }
+
+  setHeaders(value, title) {
     let originalHeaders = this.state.originalHeaders;
     let updatedHeaders = [];
-    // this.contentTypeFlag = false;
     let emptyHeader = {
       checked: "notApplicable",
       key: "",
@@ -957,29 +994,31 @@ class DisplayEndpoint extends Component {
       description: "",
     };
     for (let i = 0; i < originalHeaders.length; i++) {
-      if (
-        originalHeaders[i].key === "content-type" ||
-        originalHeaders[i].key === ""
-      ) {
+      if (originalHeaders[i].key === title || originalHeaders[i].key === "") {
         continue;
       } else {
         updatedHeaders.push(originalHeaders[i]);
       }
     }
-    if (bodyType === "none") {
+    if (value === "none") {
       updatedHeaders.push(emptyHeader);
       this.setState({ originalHeaders: updatedHeaders });
       return;
     }
-    updatedHeaders.push({
-      checked: "true",
-      key: "content-type",
-      value: "",
-      description: "",
-    });
-    updatedHeaders[updatedHeaders.length - 1].value = this.identifyBodyType(
-      bodyType
-    );
+    if (value !== "noAuth") {
+      updatedHeaders.push({
+        checked: "true",
+        key: title === "content-type" ? "content-type" : "Authorization",
+        value: title === "Authorization" ? "Basic " + value : "",
+        description: "",
+      });
+    }
+    if (title === "content-type") {
+      updatedHeaders[updatedHeaders.length - 1].value = this.identifyBodyType(
+        value
+      );
+    }
+
     updatedHeaders.push(emptyHeader);
     this.setState({ originalHeaders: updatedHeaders });
   }
@@ -1216,6 +1255,19 @@ class DisplayEndpoint extends Component {
                 <li className="nav-item">
                   <a
                     className="nav-link"
+                    id="pills-authorization-tab"
+                    data-toggle="pill"
+                    href={`#authorization-${this.props.tab.id}`}
+                    role="tab"
+                    aria-controls={`authorization-${this.props.tab.id}`}
+                    aria-selected="false"
+                  >
+                    Authorization
+                  </a>
+                </li>
+                <li className="nav-item">
+                  <a
+                    className="nav-link"
                     id="pills-headers-tab"
                     data-toggle="pill"
                     href={`#headers-${this.props.tab.id}`}
@@ -1269,6 +1321,20 @@ class DisplayEndpoint extends Component {
                       ></GenericTable>
                     </div>
                   )}
+              </div>
+              <div
+                className="tab-pane fade"
+                id={`authorization-${this.props.tab.id}`}
+                role="tabpanel"
+                aria-labelledby="pills-authorization-tab"
+              >
+                <div>
+                  <Authorization
+                    {...this.props}
+                    title="Authorization"
+                    set_authorization_headers={this.setHeaders.bind(this)}
+                  ></Authorization>
+                </div>
               </div>
               <div
                 className="tab-pane fade"
