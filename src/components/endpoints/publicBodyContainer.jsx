@@ -191,7 +191,7 @@ class PublicBodyContainer extends Component {
           <option value={true}>true</option>
           <option value={false}>false</option>
         </select>
-        <input
+        <label
           className="description-input-field"
           value={obj.description}
           name={name + ".description"}
@@ -199,7 +199,7 @@ class PublicBodyContainer extends Component {
           disabled
           placeholder="Description"
           onChange={this.handleDescriptionChange}
-        ></input>
+        ></label>
       </div>
     );
   }
@@ -215,15 +215,17 @@ class PublicBodyContainer extends Component {
           placeholder="Value"
           onChange={this.handleChange}
         ></input>
-        <input
+        <label
           className="description-input-field"
-          value={obj.description}
-          name={name + ".description"}
-          type="text"
-          placeholder="Description"
-          onChange={this.handleDescriptionChange}
-          disabled
-        ></input>
+          // value={obj.description}
+          // name={name + ".description"}
+          // type="text"
+          // placeholder="Description"
+          // onChange={this.handleDescriptionChange}
+          // disabled
+        >
+          {obj.description}
+        </label>
       </div>
     );
   }

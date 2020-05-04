@@ -608,3 +608,14 @@ table#custom-generic-table {
 ::-webkit-scrollbar {
   width: 0px;
 }
+pre.__json-pretty-error__ {
+  color: red !important;
+  background: white !important;
+}
+
+.button-panel-wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
