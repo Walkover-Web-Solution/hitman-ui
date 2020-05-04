@@ -38,7 +38,8 @@ export function filter(entity, filter, title) {
       }
     }
   }
-  if (title === "versions") {
+
+  if (title === "versions" || title === "groups") {
     return finalEntityIds;
   }
   for (let i = 0; i < finalEntityIds.length; i++) {
