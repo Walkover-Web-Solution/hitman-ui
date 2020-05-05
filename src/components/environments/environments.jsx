@@ -7,6 +7,7 @@ import EnvironmentModal from "./environmentModal";
 import "./environments.scss";
 import environmentsService from "./environmentsService.js";
 import { isDashboardRoute } from "../common/utility";
+import collectionsApiService from "../collections/collectionsApiService";
 import {
   addEnvironment,
   deleteEnvironment,
@@ -42,7 +43,6 @@ class Environments extends Component {
     showEnvironmentForm: false,
     showEnvironmentModal: false,
     environmentToBeEdited: {},
-    publicCollectionEnvironmentId: null,
   };
 
   async componentDidMount() {
@@ -53,6 +53,8 @@ class Environments extends Component {
       "currentEnvironmentId"
     );
     this.handleEnv(currentEnvironmentId);
+    console.log("sss", this.props.location.collectionIdentifier);
+    this.fetchCollection(this.props.location.collectionIdentifier);
   }
 
   handleEnvironmentModal(environmentFormName, environmentToBeEdited) {
@@ -90,19 +92,25 @@ class Environments extends Component {
     this.setState({ showDeleteModal: false });
   }
 
+  async fetchCollection(collectionId) {
+    let collection = await collectionsApiService.getCollection(collectionId);
+    this.setState({
+      publicCollectionEnvironmentId: collection.data.environment,
+    });
+    console.log(
+      "publicCollectionEnvironmentId",
+      this.state.publicCollectionEnvironmentId
+    );
+  }
   render() {
     const env = this.props.environment.environments[
       this.props.environment.currentEnvironmentId
     ];
-    if (!isDashboardRoute(this.props)) {
-      let publicCollection = this.props.location.publicCollection;
-      // if (publicCollection != undefined) {
-      //   this.setState({
-      //     publicCollectionEnvironmentId: publicCollection.environment,
-      //   });
-      // }
-      console.log("mmmm", publicCollection);
-    }
+    console.log("this.props", this.props);
+    console.log(
+      "this.state.publicCollectionEnvironmentId",
+      this.state.publicCollectionEnvironmentId
+    );
     return (
       <div className="environment-container">
         {(this.state.environmentFormName === "Add new Environment" ||
@@ -207,7 +215,7 @@ class Environments extends Component {
 
         {/* end */}
         <div className="select-environment-dropdown">
-          {isDashboardRoute(this.props) ? (
+          {isDashboardRoute(this.props) && (
             <Dropdown className="float-right">
               <Dropdown.Toggle variant="default" id="dropdown-basic">
                 {this.props.environment.environments[
@@ -246,7 +254,20 @@ class Environments extends Component {
                 </button>
               </Dropdown.Menu>
             </Dropdown>
-          ) : null}
+          )}
+          {!isDashboardRoute(this.props) && (
+            <Dropdown className="float-right">
+              <Dropdown.Toggle variant="default" id="dropdown-basic">
+                {this.props.environment.environments[
+                  this.state.publicCollectionEnvironmentId
+                ]
+                  ? this.props.environment.environments[
+                      this.state.publicCollectionEnvironmentId
+                    ].name
+                  : "No Environment"}
+              </Dropdown.Toggle>
+            </Dropdown>
+          )}
         </div>
       </div>
     );

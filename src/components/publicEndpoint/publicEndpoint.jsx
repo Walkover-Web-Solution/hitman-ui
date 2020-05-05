@@ -31,19 +31,24 @@ class PublicEndpoint extends Component {
     if (this.props.location.pathname) {
       let collectionIdentifier = this.props.location.pathname.split("/")[2];
       this.props.fetch_all_public_endpoints(collectionIdentifier);
-      this.fetchCollection(collectionIdentifier);
+      //   this.fetchCollection(collectionIdentifier);
+      console.log(" collectionIdentifier");
+      this.props.history.push({
+        collectionIdentifier: collectionIdentifier,
+      });
     }
   }
   async fetchCollection(collectionId) {
     let collection = await collectionsApiService.getCollection(collectionId);
     this.setState({ publicCollection: collection.data });
-    console.log("this.state.publicCollection", this.state.publicCollection);
-    this.props.history.push({
-      publicCollection: this.state.publicCollection,
-    });
+    console.log("this.state.publicCollection");
+    if (this.state.publicCollection != undefined) {
+      this.props.history.push({
+        publicCollection: this.state.publicCollection,
+      });
+    }
   }
   render() {
-    console.log("0000", this.state.publicCollection);
     if (
       this.props.location.pathname.split("/")[1] === "public" &&
       (this.props.location.pathname.split("/")[3] === undefined ||
@@ -76,7 +81,6 @@ class PublicEndpoint extends Component {
               <ToastContainer />
               <div className="main-panel-wrapper">
                 <SideBar {...this.props} />
-
                 <Environments {...this.props} />
               </div>
 
