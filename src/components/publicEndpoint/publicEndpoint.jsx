@@ -26,13 +26,11 @@ class PublicEndpoint extends Component {
   }
 
   render() {
-    console.log("hello");
     if (
       this.props.location.pathname.split("/")[1] === "public" &&
       (this.props.location.pathname.split("/")[3] === undefined ||
         this.props.location.pathname.split("/")[3] === "")
     ) {
-      console.log("this.props", this.props);
       this.props.history.push({
         pathname: `/public/${this.props.match.params.collectionIdentifier}/description`,
       });

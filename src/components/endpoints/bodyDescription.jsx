@@ -197,8 +197,6 @@ class BodyDescription extends Component {
       keys = Object.keys(body);
     }
 
-    console.log(body, isFirstTime, bodyDescription, keys);
-
     for (let i = 0; i < keys.length; i++) {
       const value = body[keys[i]];
       if (
@@ -321,13 +319,10 @@ class BodyDescription extends Component {
       isFirstTime
     );
 
-    console.log(bodyDescription);
-
     this.props.set_body_description(bodyDescription);
   }
 
   render() {
-    console.log(this.props.body_description);
     if (
       this.props.body &&
       Object.keys(this.props.body) &&

@@ -1,9 +1,8 @@
 import queryString from "query-string";
 import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
-import auth from "./authService";
 import "./auth.scss";
-import { uiUrl } from "../../config.json";
+import auth from "./authService";
 
 class Login extends Component {
   async componentDidMount() {

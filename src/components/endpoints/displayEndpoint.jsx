@@ -1157,8 +1157,7 @@ class DisplayEndpoint extends Component {
               type="text"
               value={this.state.data.updatedUri}
               name="updatedUri"
-              className="form-control form-control-lg h-auto"
-              id="endpoint-url-input"
+              className="form-control form-control-lg h-auto endpoint-url-input"
               aria-describedby="basic-addon3"
               placeholder={"Enter request URL"}
               onChange={this.handleChange}

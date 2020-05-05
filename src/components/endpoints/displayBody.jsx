@@ -8,7 +8,6 @@ import "ace-builds/src-noconflict/theme-github";
 import "ace-builds/webpack-resolver";
 import React, { Component } from "react";
 import AceEditor from "react-ace";
-import { Button } from "react-bootstrap";
 import BodyDescription from "./bodyDescription";
 import "./endpoints.scss";
 import GenericTable from "./genericTable";
@@ -318,7 +317,7 @@ class BodyContainer extends Component {
                   name="options"
                   id="option1"
                   autoComplete="off"
-                  checked
+                  defaultChecked
                   onClick={() => this.handleSelectBodyType("raw")}
                 />
                 Raw

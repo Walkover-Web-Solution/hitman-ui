@@ -254,7 +254,7 @@ class CollectionsComponent extends Component {
     }
 
     return (
-      <React.Fragment>
+      <React.Fragment key={collectionId}>
         {collectionState === "singleCollection" ? (
           <button
             id="back-to-all-collections-button"
