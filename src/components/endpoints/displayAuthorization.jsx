@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import "./endpoints.scss";
 
 class Authorization extends Component {
   state = {
@@ -46,52 +47,66 @@ class Authorization extends Component {
 
   render() {
     return (
-      <div>
-        <label>TYPE</label>
-        <div className="dropdown">
-          <button
-            className="btn dropdown-toggle"
-            type="button"
-            id="dropdownMenuButton"
-            data-toggle="dropdown"
-            aria-haspopup="true"
-            aria-expanded="false"
-          >
-            {this.state.authorizationType === "noAuth"
-              ? this.authorizationTypes["noAuth"]
-              : this.authorizationTypes[this.state.authorizationType]}
-          </button>
-          <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            {Object.keys(this.authorizationTypes).map((key) => (
+      <div className="authorization-panel">
+        <div className="authorization-selector-wrapper">
+          <div className="auth-selector-container">
+            <label>TYPE</label>
+            <div className="dropdown">
               <button
-                className="btn custom-request-button"
-                onClick={() => this.setAuthorizationType(key)}
-                key={key}
+                className="btn dropdown-toggle"
+                id="dropdownMenuButton"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
               >
-                {this.authorizationTypes[key]}
+                {this.state.authorizationType === "noAuth"
+                  ? this.authorizationTypes["noAuth"]
+                  : this.authorizationTypes[this.state.authorizationType]}
               </button>
-            ))}
+              <div
+                className="dropdown-menu"
+                aria-labelledby="dropdownMenuButton"
+              >
+                {Object.keys(this.authorizationTypes).map((key) => (
+                  <button
+                    className="btn custom-request-button"
+                    onClick={() => this.setAuthorizationType(key)}
+                    key={key}
+                  >
+                    {this.authorizationTypes[key]}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="auth-description">
+            {this.state.authorizationType === "noAuth" &&
+              "This request does not use any authorization"}
           </div>
         </div>
 
-        {this.state.authorizationType === "noAuth" &&
-          "This request does not use any authorization"}
+        <div className="authorization-editor-wrapper">
+          {this.state.authorizationType === "basicAuth" && (
+            <form>
+              <div className="input-field-wrapper">
+                <label>Username</label>
+                <input
+                  name="username"
+                  onChange={this.handleChange.bind(this)}
+                ></input>
+              </div>
 
-        {this.state.authorizationType === "basicAuth" && (
-          <form>
-            <label>Username</label>
-            <input
-              name="username"
-              onChange={this.handleChange.bind(this)}
-            ></input>
-
-            <label>Password</label>
-            <input
-              name="password"
-              onChange={this.handleChange.bind(this)}
-            ></input>
-          </form>
-        )}
+              <div className="input-field-wrapper">
+                <label>Password</label>
+                <input
+                  name="password"
+                  onChange={this.handleChange.bind(this)}
+                ></input>
+              </div>
+            </form>
+          )}
+        </div>
       </div>
     );
   }
