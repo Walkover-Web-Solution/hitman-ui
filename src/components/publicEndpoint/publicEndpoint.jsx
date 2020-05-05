@@ -8,16 +8,12 @@ import DisplayPage from "../pages/displayPage";
 import DisplayCollection from "../collections/displayCollection";
 import SideBar from "../main/sidebar";
 import collectionsApiService from "../collections/collectionsApiService";
-import {
-  fetchAllPublicEndpoints,
-  // fetchCollection,
-} from "./redux/publicEndpointsActions.js";
+import { fetchAllPublicEndpoints } from "./redux/publicEndpointsActions.js";
 import "./publicEndpoint.scss";
 import Environments from "../environments/environments";
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    //  fetch_collection: (collectionId) => dispatch(fetchCollection(collectionId)),
     fetch_all_public_endpoints: (collectionIdentifier) =>
       dispatch(fetchAllPublicEndpoints(collectionIdentifier)),
   };
@@ -31,20 +27,8 @@ class PublicEndpoint extends Component {
     if (this.props.location.pathname) {
       let collectionIdentifier = this.props.location.pathname.split("/")[2];
       this.props.fetch_all_public_endpoints(collectionIdentifier);
-      //   this.fetchCollection(collectionIdentifier);
-      console.log(" collectionIdentifier");
       this.props.history.push({
         collectionIdentifier: collectionIdentifier,
-      });
-    }
-  }
-  async fetchCollection(collectionId) {
-    let collection = await collectionsApiService.getCollection(collectionId);
-    this.setState({ publicCollection: collection.data });
-    console.log("this.state.publicCollection");
-    if (this.state.publicCollection != undefined) {
-      this.props.history.push({
-        publicCollection: this.state.publicCollection,
       });
     }
   }

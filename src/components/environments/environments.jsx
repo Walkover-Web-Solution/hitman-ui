@@ -53,7 +53,6 @@ class Environments extends Component {
       "currentEnvironmentId"
     );
     this.handleEnv(currentEnvironmentId);
-    console.log("sss", this.props.location.collectionIdentifier);
     this.fetchCollection(this.props.location.collectionIdentifier);
   }
 
@@ -64,7 +63,6 @@ class Environments extends Component {
     });
   }
   async handleEnv(environmentId) {
-    console.log("env", environmentId);
     this.props.set_environment_id(environmentId);
     this.setState({ currentEnvironmentId: environmentId });
     await indexedDbService.updateData(
@@ -97,180 +95,191 @@ class Environments extends Component {
     this.setState({
       publicCollectionEnvironmentId: collection.data.environment,
     });
-    console.log(
-      "publicCollectionEnvironmentId",
-      this.state.publicCollectionEnvironmentId
-    );
   }
   render() {
-    const env = this.props.environment.environments[
-      this.props.environment.currentEnvironmentId
-    ];
-    console.log("this.props", this.props);
-    console.log(
-      "this.state.publicCollectionEnvironmentId",
-      this.state.publicCollectionEnvironmentId
-    );
-    return (
-      <div className="environment-container">
-        {(this.state.environmentFormName === "Add new Environment" ||
-          this.state.environmentFormName === "Edit Environment") &&
-          environmentsService.showEnvironmentForm(
-            this.props,
-            this.handleEnvironmentModal.bind(this),
-            this.state.environmentFormName,
-            this.state.environmentToBeEdited
-          )}
-        {this.state.environmentFormName === "Environment modal" && (
-          <EnvironmentModal
-            {...this.props}
-            show={true}
-            open_delete_environment_modal={this.openDeleteEnvironmentModal.bind(
-              this
-            )}
-            close_delete_environment_modal={this.closeDeleteEnvironmentModal.bind(
-              this
-            )}
-            onHide={() => this.handleEnvironmentModal()}
-            handle_environment_modal={this.handleEnvironmentModal.bind(this)}
-          />
-        )}
-        <div>
-          {this.state.showDeleteModal &&
-            environmentsService.showDeleteEnvironmentModal(
+    const env = isDashboardRoute(this.props)
+      ? this.props.environment.environments[
+          this.props.environment.currentEnvironmentId
+        ]
+      : this.state.publicCollectionEnvironmentId != null
+      ? this.props.environment.environments[
+          this.state.publicCollectionEnvironmentId
+        ]
+      : null;
+    if (
+      isDashboardRoute(this.props) ||
+      this.state.publicCollectionEnvironmentId != null
+    ) {
+      return (
+        <div className="environment-container">
+          {(this.state.environmentFormName === "Add new Environment" ||
+            this.state.environmentFormName === "Edit Environment") &&
+            environmentsService.showEnvironmentForm(
               this.props,
-              this.closeDeleteEnvironmentModal.bind(this),
-              "Delete Environment",
-              `Are you sure you wish to delete this environment?`,
-              this.state.selectedEnvironment
+              this.handleEnvironmentModal.bind(this),
+              this.state.environmentFormName,
+              this.state.environmentToBeEdited
             )}
-        </div>
+          {this.state.environmentFormName === "Environment modal" && (
+            <EnvironmentModal
+              {...this.props}
+              show={true}
+              open_delete_environment_modal={this.openDeleteEnvironmentModal.bind(
+                this
+              )}
+              close_delete_environment_modal={this.closeDeleteEnvironmentModal.bind(
+                this
+              )}
+              onHide={() => this.handleEnvironmentModal()}
+              handle_environment_modal={this.handleEnvironmentModal.bind(this)}
+            />
+          )}
+          <div>
+            {this.state.showDeleteModal &&
+              environmentsService.showDeleteEnvironmentModal(
+                this.props,
+                this.closeDeleteEnvironmentModal.bind(this),
+                "Delete Environment",
+                `Are you sure you wish to delete this environment?`,
+                this.state.selectedEnvironment
+              )}
+          </div>
+          {isDashboardRoute(this.props) && (
+            <div className="environment-buttons">
+              <button
+                className="btn btn-default"
+                onClick={() => this.handleEnvironmentModal("Environment modal")}
+              >
+                <i className="fas fa-cog"></i>
+              </button>
+            </div>
+          )}
 
-        <div className="environment-buttons">
-          <button
-            className="btn btn-default"
-            onClick={() => this.handleEnvironmentModal("Environment modal")}
-          >
-            <i className="fas fa-cog"></i>
-          </button>
-        </div>
+          {(this.state.publicCollectionEnvironmentId != null ||
+            isDashboardRoute(this.props)) && (
+            <div className="environment-buttons">
+              <Dropdown className="float-right">
+                <Dropdown.Toggle
+                  bsPrefix="dropdown"
+                  variant="default"
+                  id="dropdown-basic"
+                >
+                  <i className="fas fa-eye"></i>
+                </Dropdown.Toggle>
 
-        {/* start */}
-        <div className="environment-buttons">
-          <Dropdown className="float-right">
-            <Dropdown.Toggle
-              bsPrefix="dropdown"
-              variant="default"
-              id="dropdown-basic"
-            >
-              <i className="fas fa-eye"></i>
-            </Dropdown.Toggle>
+                <Dropdown.Menu alignRight className="custom-env-menu">
+                  <Dropdown.Item>
+                    {env ? env.name : "No Environment Selected"}
 
-            <Dropdown.Menu alignRight className="custom-env-menu">
-              <Dropdown.Item>
-                {env ? env.name : "No Environment Selected"}
+                    {env ? (
+                      <button
+                        className="btn btn-default"
+                        onClick={() =>
+                          this.handleEnvironmentModal("Edit Environment", env)
+                        }
+                      >
+                        Edit
+                      </button>
+                    ) : isDashboardRoute(this.props) ? (
+                      <button
+                        className="btn btn-default"
+                        onClick={() =>
+                          this.handleEnvironmentModal("Add new Environment")
+                        }
+                      >
+                        Add
+                      </button>
+                    ) : null}
+                  </Dropdown.Item>
+                  <Dropdown.Divider />
+                  <div>
+                    {" "}
+                    <p className="custom-left-pane">VARIABLE</p>
+                    <p className="custom-middle-pane">INITIAL VALUE</p>
+                    <p className="custom-right-pane">CURRENT VALUE</p>
+                  </div>
+                  {env &&
+                    Object.keys(env.variables).map((v) => (
+                      <div>
+                        <p className="custom-left-box">{v}</p>
+                        <p className="custom-middle-box">
+                          {env.variables[v].initialValue || "None"}
+                        </p>
+                        <p className="custom-right-box">
+                          {env.variables[v].currentValue || "None"}
+                        </p>
+                      </div>
+                    ))}
+                </Dropdown.Menu>
+              </Dropdown>
+            </div>
+          )}
 
-                {env ? (
-                  <button
-                    className="btn btn-default"
-                    onClick={() =>
-                      this.handleEnvironmentModal("Edit Environment", env)
-                    }
+          {isDashboardRoute(this.props) && (
+            <div className="select-environment-dropdown">
+              <Dropdown className="float-right">
+                <Dropdown.Toggle variant="default" id="dropdown-basic">
+                  {this.props.environment.environments[
+                    this.props.environment.currentEnvironmentId
+                  ]
+                    ? this.props.environment.environments[
+                        this.props.environment.currentEnvironmentId
+                      ].name
+                    : "No Environment"}
+                </Dropdown.Toggle>
+
+                <Dropdown.Menu alignRight>
+                  <Dropdown.Item
+                    onClick={() => this.handleEnv(null)}
+                    key={"no-environment"}
                   >
-                    Edit
-                  </button>
-                ) : isDashboardRoute ? (
+                    No Environment
+                  </Dropdown.Item>
+                  {Object.keys(this.props.environment.environments).map(
+                    (environmentId) => (
+                      <Dropdown.Item
+                        onClick={() => this.handleEnv(environmentId)}
+                        key={environmentId}
+                      >
+                        {
+                          this.props.environment.environments[environmentId]
+                            .name
+                        }
+                      </Dropdown.Item>
+                    )
+                  )}
                   <button
                     className="btn btn-default"
                     onClick={() =>
                       this.handleEnvironmentModal("Add new Environment")
                     }
                   >
-                    Add
+                    + Add Environment
                   </button>
-                ) : null}
-              </Dropdown.Item>
-              <Dropdown.Divider />
-              <div>
-                {" "}
-                <p className="custom-left-pane">VARIABLE</p>
-                <p className="custom-middle-pane">INITIAL VALUE</p>
-                <p className="custom-right-pane">CURRENT VALUE</p>
-              </div>
-              {env &&
-                Object.keys(env.variables).map((v) => (
-                  <div>
-                    <p className="custom-left-box">{v}</p>
-                    <p className="custom-middle-box">
-                      {env.variables[v].initialValue || "None"}
-                    </p>
-                    <p className="custom-right-box">
-                      {env.variables[v].currentValue || "None"}
-                    </p>
-                  </div>
-                ))}
-            </Dropdown.Menu>
-          </Dropdown>
-        </div>
-
-        {/* end */}
-        <div className="select-environment-dropdown">
-          {isDashboardRoute(this.props) && (
-            <Dropdown className="float-right">
-              <Dropdown.Toggle variant="default" id="dropdown-basic">
-                {this.props.environment.environments[
-                  this.props.environment.currentEnvironmentId
-                ]
-                  ? this.props.environment.environments[
-                      this.props.environment.currentEnvironmentId
-                    ].name
-                  : "No Environment"}
-              </Dropdown.Toggle>
-
-              <Dropdown.Menu alignRight>
-                <Dropdown.Item
-                  onClick={() => this.handleEnv(null)}
-                  key={"no-environment"}
-                >
-                  No Environment
-                </Dropdown.Item>
-                {Object.keys(this.props.environment.environments).map(
-                  (environmentId) => (
-                    <Dropdown.Item
-                      onClick={() => this.handleEnv(environmentId)}
-                      key={environmentId}
-                    >
-                      {this.props.environment.environments[environmentId].name}
-                    </Dropdown.Item>
-                  )
-                )}
-                <button
-                  className="btn btn-default"
-                  onClick={() =>
-                    this.handleEnvironmentModal("Add new Environment")
-                  }
-                >
-                  + Add Environment
-                </button>
-              </Dropdown.Menu>
-            </Dropdown>
+                </Dropdown.Menu>
+              </Dropdown>
+            </div>
           )}
           {!isDashboardRoute(this.props) && (
-            <Dropdown className="float-right">
-              <Dropdown.Toggle variant="default" id="dropdown-basic">
-                {this.props.environment.environments[
-                  this.state.publicCollectionEnvironmentId
-                ]
-                  ? this.props.environment.environments[
-                      this.state.publicCollectionEnvironmentId
-                    ].name
-                  : "No Environment"}
-              </Dropdown.Toggle>
-            </Dropdown>
+            <div className="select-environment-dropdown">
+              <Dropdown className="float-right">
+                <Dropdown.Toggle variant="default" id="dropdown-basic">
+                  {this.props.environment.environments[
+                    this.state.publicCollectionEnvironmentId
+                  ]
+                    ? this.props.environment.environments[
+                        this.state.publicCollectionEnvironmentId
+                      ].name
+                    : "No Environment"}
+                </Dropdown.Toggle>
+              </Dropdown>
+            </div>
           )}
         </div>
-      </div>
-    );
+      );
+    } else {
+      return <div></div>;
+    }
   }
 }
 
