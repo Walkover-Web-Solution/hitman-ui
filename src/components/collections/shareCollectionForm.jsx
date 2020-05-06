@@ -140,7 +140,11 @@ class ShareCollectionForm extends Component {
       publicEnvironment: "publicEnvironment",
     });
     collection.isPublic = !collection.isPublic;
-    collection.environment = null;
+    if (collection.isPublic) {
+      collection.environment = this.props.location.selectedPublicEnvironment;
+    } else {
+      collection.environment = null;
+    }
     delete collection.teamId;
     this.props.update_collection({ ...collection });
   }

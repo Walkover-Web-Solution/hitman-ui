@@ -43,6 +43,7 @@ class Environments extends Component {
     showEnvironmentForm: false,
     showEnvironmentModal: false,
     environmentToBeEdited: {},
+    publicEnvironmentName: "No Environment",
   };
 
   async componentDidMount() {
@@ -54,6 +55,7 @@ class Environments extends Component {
     );
     this.handleEnv(currentEnvironmentId);
     this.fetchCollection(this.props.location.collectionIdentifier);
+    console.log("pppp", this.props);
   }
 
   handleEnvironmentModal(environmentFormName, environmentToBeEdited) {
@@ -77,6 +79,13 @@ class Environments extends Component {
       environmentId,
       this.props.environment.environments[environmentId]
     );
+    if (environmentId != null) {
+      this.setState({
+        publicEnvironmentName: this.props.environment.environments[
+          environmentId
+        ].name,
+      });
+    }
     this.props.history.push({
       publicEnvironment: "publicEnvironment",
       selectedPublicEnvironment: this.props.environment.environments[
@@ -104,9 +113,16 @@ class Environments extends Component {
 
   async fetchCollection(collectionId) {
     let collection = await collectionsApiService.getCollection(collectionId);
-    this.setState({
-      publicCollectionEnvironmentId: collection.data.environment,
-    });
+    if (collection.data.environment != null) {
+      this.setState({
+        publicCollectionEnvironmentId: collection.data.environment.id,
+      });
+    }
+    // else{
+    //   this.setState({
+    //     publicCollectionEnvironmentId: null,
+    //   });
+    // }
   }
   render() {
     console.log("this.props", this.props);
@@ -125,7 +141,7 @@ class Environments extends Component {
     );
     if (
       this.props.location.publicEnvironment != "publicEnvironment" &&
-      this.props.location.publicEnvironment != undefined &&
+      //  this.props.location.publicEnvironment != undefined &&
       (isDashboardRoute(this.props) ||
         this.state.publicCollectionEnvironmentId != null)
     ) {
@@ -305,13 +321,14 @@ class Environments extends Component {
         <div className="select-environment-dropdown">
           <Dropdown className="float-right">
             <Dropdown.Toggle variant="default" id="dropdown-basic">
-              {this.props.environment.environments[
+              {/* {this.props.environment.environments[
                 this.props.environment.currentEnvironmentId
               ]
                 ? this.props.environment.environments[
                     this.props.environment.currentEnvironmentId
                   ].name
-                : "No Environment"}
+                : "No Environment"} */}
+              {this.state.publicEnvironmentName}
             </Dropdown.Toggle>
 
             <Dropdown.Menu alignRight>
