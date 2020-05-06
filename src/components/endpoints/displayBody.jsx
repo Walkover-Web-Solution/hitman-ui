@@ -302,7 +302,7 @@ class BodyContainer extends Component {
               </div>
             )}
           </form>
-          {this.showRawBodyType === true && (
+          {this.state.selectedBodyType === "JSON" && (
             <div
               className="btn-group btn-group-toggle"
               data-toggle="buttons"
