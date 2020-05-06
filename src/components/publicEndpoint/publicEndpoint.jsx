@@ -29,6 +29,7 @@ class PublicEndpoint extends Component {
       this.props.fetch_all_public_endpoints(collectionIdentifier);
       this.props.history.push({
         collectionIdentifier: collectionIdentifier,
+        Environment:"publicCollectionEnvironment"
       });
     }
   }

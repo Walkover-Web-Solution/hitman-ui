@@ -44,6 +44,9 @@ class ContentPanel extends Component {
   state = { saveEndpointFlag: false };
   async componentDidMount() {
     this.props.fetch_tabs_from_idb({ ...this.props });
+    this.props.history.push({
+      dashboardEnvironment: true,
+    });
   }
 
   handleSaveEndpoint(flag, tabId) {

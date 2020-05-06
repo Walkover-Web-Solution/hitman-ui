@@ -21,7 +21,6 @@ export const fetchCollections = () => {
 };
 
 export const onCollectionsFetched = (collections) => {
-  console.log("nnnn", collections);
   return {
     type: collectionsActionTypes.ON_COLLECTIONS_FETCHED,
     collections,

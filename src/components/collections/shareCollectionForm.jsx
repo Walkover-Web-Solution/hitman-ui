@@ -30,8 +30,13 @@ class ShareCollectionForm extends Component {
   };
   componentDidMount() {
     this.props.history.push({
-      publicEnvironment: "publicEnvironment",
+      Environment: "setCollectionEnvironment",
     });
+    if (this.props.collections[this.props.collection_id].isPublic) {
+      this.props.history.push({
+        publishedCollectionEnv: true,
+      });
+    }
   }
   setDropdowmRole(key) {
     const data = this.state.data;
@@ -130,23 +135,46 @@ class ShareCollectionForm extends Component {
   }
 
   handlePublic(collection) {
-    this.setState({
-      selectedEnvironment: this.props.location.selectedPublicEnvironment,
-    });
-    console.log("aaa", this.props.location.selectedPublicEnvironment);
-    console.log("bb", collection);
-    this.props.history.push({
-      publicCollection: collection,
-      publicEnvironment: "publicEnvironment",
-    });
+    // this.setState({
+    //   selectedEnvironment: this.props.location.selectedPublicEnvironment,
+    // });
+    // this.props.history.push({
+    //   publicCollection: collection,
+    //   Environment: "setCollectionEnvironment",
+    // });
     collection.isPublic = !collection.isPublic;
     if (collection.isPublic) {
       collection.environment = this.props.location.selectedPublicEnvironment;
+      this.props.history.push({
+        publishedCollectionEnv: true,
+        Environment: "setCollectionEnvironment",
+        dashboardEnvironment: false,
+      });
+      this.setState({
+        selectedEnvironment: this.props.location.selectedPublicEnvironment,
+        dashboardEnvironment: false,
+      });
     } else {
       collection.environment = null;
+      this.props.history.push({
+        privateCollectionEnv: true,
+        Environment: "setCollectionEnvironment",
+      });
+      this.setState({
+        selectedEnvironment: "No Environment",
+      });
     }
     delete collection.teamId;
     this.props.update_collection({ ...collection });
+  }
+  onHide() {
+    this.props.onHide();
+    this.props.history.push({
+      dashboardEnvironment: true,
+    });
+    this.setState({
+      selectedEnvironment: "No Environment",
+    });
   }
 
   render() {
@@ -327,7 +355,7 @@ class ShareCollectionForm extends Component {
                 <button
                   type="button"
                   className="btn btn-default"
-                  onClick={() => this.props.onHide()}
+                  onClick={() => this.onHide()}
                 >
                   Cancel
                 </button>
