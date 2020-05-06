@@ -1085,8 +1085,22 @@ class DisplayEndpoint extends Component {
         return { body: body.value, headers };
     }
   }
-
+  setAccessToken() {
+    console.log("window.location.href", window.location.href);
+    let url = window.location.href;
+    if (url.split("access_token=")[1]) {
+      console.log(url.split("#")[1]);
+      let response = url.split("#")[1];
+      console.log("response", response);
+      this.responseArray = response.split("&");
+      console.log(this.responseArray);
+      this.accessToken = this.responseArray[1].split("=")[1];
+    } else {
+      this.accessToken = "";
+    }
+  }
   render() {
+    this.setAccessToken();
     if (
       isDashboardRoute(this.props) &&
       this.state.groupId &&
@@ -1333,6 +1347,7 @@ class DisplayEndpoint extends Component {
                     {...this.props}
                     title="Authorization"
                     set_authorization_headers={this.setHeaders.bind(this)}
+                    accessToken={this.accessToken}
                   ></Authorization>
                 </div>
               </div>

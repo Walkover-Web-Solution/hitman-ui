@@ -173,7 +173,10 @@ class Authorization extends Component {
             <form>
               <div className="input-field-wrapper">
                 <label>Access Token</label>
-                <input name="accessToken"></input>
+                <input
+                  value={this.props.accessToken}
+                  name="accessToken"
+                ></input>
               </div>
               <button
                 type="button"

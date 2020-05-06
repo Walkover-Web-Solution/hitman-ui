@@ -49,6 +49,10 @@ export function moveEndpoint(endpointId, body) {
   return http.patch(`${apiUrl}/endpoints/${endpointId}/move`, body);
 }
 
+export function authorize(requestApi) {
+  console.log("requestApi", requestApi);
+  window.open(requestApi, "_top");
+}
 export default {
   saveEndpoint,
   getEndpoints,
@@ -59,4 +63,5 @@ export default {
   getAllEndpoints,
   duplicateEndpoint,
   moveEndpoint,
+  authorize,
 };
