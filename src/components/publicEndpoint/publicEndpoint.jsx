@@ -65,7 +65,7 @@ class PublicEndpoint extends Component {
               <ToastContainer />
               <div className="main-panel-wrapper">
                 <SideBar {...this.props} />
-                <Environments {...this.props} style={{ float: "right" }} />
+                <Environments {...this.props} />
               </div>
 
               <div className="main-content">

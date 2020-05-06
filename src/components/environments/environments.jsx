@@ -71,7 +71,19 @@ class Environments extends Component {
       "currentEnvironmentId"
     );
   }
-
+  async handlePublicEnv(environmentId) {
+    console.log(
+      "envId",
+      environmentId,
+      this.props.environment.environments[environmentId]
+    );
+    this.props.history.push({
+      publicEnvironment: "publicEnvironment",
+      selectedPublicEnvironment: this.props.environment.environments[
+        environmentId
+      ],
+    });
+  }
   async handleAdd(newEnvironment) {
     newEnvironment.requestId = shortId.generate();
     this.props.add_environment(newEnvironment);
@@ -97,6 +109,7 @@ class Environments extends Component {
     });
   }
   render() {
+    console.log("this.props", this.props);
     const env = isDashboardRoute(this.props)
       ? this.props.environment.environments[
           this.props.environment.currentEnvironmentId
@@ -106,9 +119,15 @@ class Environments extends Component {
           this.state.publicCollectionEnvironmentId
         ]
       : null;
+    console.log(
+      "this.props.location.publicEnvironment ",
+      this.props.location.publicEnvironment
+    );
     if (
-      isDashboardRoute(this.props) ||
-      this.state.publicCollectionEnvironmentId != null
+      this.props.location.publicEnvironment != "publicEnvironment" &&
+      this.props.location.publicEnvironment != undefined &&
+      (isDashboardRoute(this.props) ||
+        this.state.publicCollectionEnvironmentId != null)
     ) {
       return (
         <div className="environment-container">
@@ -275,6 +294,45 @@ class Environments extends Component {
               </Dropdown>
             </div>
           )}
+        </div>
+      );
+    }
+    if (
+      isDashboardRoute(this.props) &&
+      this.props.location.publicEnvironment === "publicEnvironment"
+    ) {
+      return (
+        <div className="select-environment-dropdown">
+          <Dropdown className="float-right">
+            <Dropdown.Toggle variant="default" id="dropdown-basic">
+              {this.props.environment.environments[
+                this.props.environment.currentEnvironmentId
+              ]
+                ? this.props.environment.environments[
+                    this.props.environment.currentEnvironmentId
+                  ].name
+                : "No Environment"}
+            </Dropdown.Toggle>
+
+            <Dropdown.Menu alignRight>
+              <Dropdown.Item
+                onClick={() => this.handlePublicEnv(null)}
+                key={"no-environment"}
+              >
+                No Environment
+              </Dropdown.Item>
+              {Object.keys(this.props.environment.environments).map(
+                (environmentId) => (
+                  <Dropdown.Item
+                    onClick={() => this.handlePublicEnv(environmentId)}
+                    key={environmentId}
+                  >
+                    {this.props.environment.environments[environmentId].name}
+                  </Dropdown.Item>
+                )
+              )}
+            </Dropdown.Menu>
+          </Dropdown>
         </div>
       );
     } else {

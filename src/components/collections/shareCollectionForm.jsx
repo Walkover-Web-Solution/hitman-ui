@@ -5,6 +5,7 @@ import "react-multi-email/style.css";
 import { connect } from "react-redux";
 import shortid from "shortid";
 import authService from "../auth/authService";
+import Environments from "../environments/environments";
 
 const mapStateToProps = (state) => {
   return {
@@ -19,6 +20,7 @@ class ShareCollectionForm extends Component {
     },
     emails: [],
     modifiedteamMembers: [],
+    selectedEnvironment: null,
   };
   changeTeamFlag = true;
 
@@ -26,7 +28,11 @@ class ShareCollectionForm extends Component {
     admin: { name: "Admin" },
     collaborator: { name: "Collaborator" },
   };
-
+  componentDidMount() {
+    this.props.history.push({
+      publicEnvironment: "publicEnvironment",
+    });
+  }
   setDropdowmRole(key) {
     const data = this.state.data;
     data.role = this.dropdownRole[key].name;
@@ -124,7 +130,17 @@ class ShareCollectionForm extends Component {
   }
 
   handlePublic(collection) {
+    this.setState({
+      selectedEnvironment: this.props.location.selectedPublicEnvironment,
+    });
+    console.log("aaa", this.props.location.selectedPublicEnvironment);
+    console.log("bb", collection);
+    this.props.history.push({
+      publicCollection: collection,
+      publicEnvironment: "publicEnvironment",
+    });
     collection.isPublic = !collection.isPublic;
+    collection.environment = null;
     delete collection.teamId;
     this.props.update_collection({ ...collection });
   }
@@ -216,6 +232,7 @@ class ShareCollectionForm extends Component {
                           ? "Make Private"
                           : "Make Public"}
                       </button>
+                      <Environments {...this.props} />
                     </div>
                   ) : null}
                 </InputGroup>

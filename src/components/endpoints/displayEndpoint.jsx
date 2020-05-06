@@ -359,8 +359,7 @@ class DisplayEndpoint extends Component {
     for (let i = 0; i < variables.length; i++) {
       if (!this.props.environment.variables[variables[i]]) {
         str = str.replace(`{{${variables[i]}}}`, "");
-      }
-      if (
+      } else if (
         isDashboardRoute(this.props) &&
         this.props.environment.variables[variables[i]].currentValue
       ) {
