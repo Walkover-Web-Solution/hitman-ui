@@ -118,6 +118,11 @@ class Environments extends Component {
     if (collection.data.environment != null) {
       this.setState({
         publicCollectionEnvironmentId: collection.data.environment.id,
+        originalEnvironmentReplica: collection.data.environment,
+      });
+      this.props.history.push({
+        originalPublicEnvReplica: collection.data.environment,
+        publicCollectionEnvId: collection.data.environment.id,
       });
     }
   }
@@ -131,12 +136,18 @@ class Environments extends Component {
           this.state.publicCollectionEnvironmentId
         ]
       : null;
-
+    console.log(
+      "fff",
+      this.props,
+      this.props.location.Environment,
+      this.props.location.dashboardEnvironment
+    );
     if (
       isDashboardRoute(this.props) &&
       this.props.location.Environment === "setCollectionEnvironment" &&
       !this.props.location.dashboardEnvironment
     ) {
+      console.log("xxx");
       if (!this.props.location.publishedCollectionEnv) {
         return (
           <div className="select-environment-dropdown">
@@ -169,15 +180,12 @@ class Environments extends Component {
           </div>
         );
       } else {
+        console.log("aaaa");
         return <div></div>;
       }
     } else {
-      if (
-        (this.props.location.dashboardEnvironment ||
-          this.props.location.Environment === "publicCollectionEnvironment") &&
-        (isDashboardRoute(this.props) ||
-          this.state.publicCollectionEnvironmentId != null)
-      ) {
+      if (isDashboardRoute(this.props)) {
+        console.log("xxx");
         return (
           <div className="environment-container">
             {(this.state.environmentFormName === "Add new Environment" ||
@@ -227,8 +235,7 @@ class Environments extends Component {
               </div>
             )}
 
-            {(this.state.publicCollectionEnvironmentId != null ||
-              isDashboardRoute(this.props)) && (
+            {isDashboardRoute(this.props) && (
               <div className="environment-buttons">
                 <Dropdown className="float-right">
                   <Dropdown.Toggle
@@ -332,21 +339,65 @@ class Environments extends Component {
                 </Dropdown>
               </div>
             )}
-            {!isDashboardRoute(this.props) && (
-              <div className="select-environment-dropdown">
+          </div>
+        );
+      }
+      if (!isDashboardRoute(this.props)) {
+        return (
+          <div className="environment-container">
+            {(this.state.publicCollectionEnvironmentId != null ||
+              isDashboardRoute(this.props)) && (
+              <div className="environment-buttons">
                 <Dropdown className="float-right">
-                  <Dropdown.Toggle variant="default" id="dropdown-basic">
-                    {this.props.environment.environments[
-                      this.state.publicCollectionEnvironmentId
-                    ]
-                      ? this.props.environment.environments[
-                          this.state.publicCollectionEnvironmentId
-                        ].name
-                      : "No Environment"}
+                  <Dropdown.Toggle
+                    bsPrefix="dropdown"
+                    variant="default"
+                    id="dropdown-basic"
+                  >
+                    <i className="fas fa-eye"></i>
                   </Dropdown.Toggle>
+
+                  <Dropdown.Menu alignRight className="custom-env-menu">
+                    <Dropdown.Item>
+                      {env ? env.name : "No Environment Selected"}
+                    </Dropdown.Item>
+                    <Dropdown.Divider />
+                    <div>
+                      {" "}
+                      <p className="custom-left-pane">VARIABLE</p>
+                      <p className="custom-middle-pane">INITIAL VALUE</p>
+                      <p className="custom-right-pane">CURRENT VALUE</p>
+                    </div>
+                    {env &&
+                      Object.keys(env.variables).map((v) => (
+                        <div>
+                          <p className="custom-left-box">{v}</p>
+                          <p className="custom-middle-box">
+                            {env.variables[v].initialValue || "None"}
+                          </p>
+                          <p className="custom-right-box">
+                            {env.variables[v].currentValue || "None"}
+                          </p>
+                        </div>
+                      ))}
+                  </Dropdown.Menu>
                 </Dropdown>
               </div>
             )}
+
+            <div className="select-environment-dropdown">
+              <Dropdown className="float-right">
+                <Dropdown.Toggle variant="default" id="dropdown-basic">
+                  {this.props.environment.environments[
+                    this.state.publicCollectionEnvironmentId
+                  ]
+                    ? this.props.environment.environments[
+                        this.state.publicCollectionEnvironmentId
+                      ].name
+                    : "No Environment"}
+                </Dropdown.Toggle>
+              </Dropdown>
+            </div>
           </div>
         );
       } else {

@@ -28,16 +28,34 @@ class ShareCollectionForm extends Component {
     admin: { name: "Admin" },
     collaborator: { name: "Collaborator" },
   };
-  componentDidMount() {
-    this.props.history.push({
-      Environment: "setCollectionEnvironment",
-    });
+  componentWillMount() {
+    console.log("kkk");
     if (this.props.collections[this.props.collection_id].isPublic) {
+      console.log("bbb");
       this.props.history.push({
-        publishedCollectionEnv: true,
+        publishedCollectionEnv: "vvv",
+        Environment: "setCollectionEnvironment",
+        dashboardEnvironment: false,
+      });
+    } else {
+      this.props.history.push({
+        Environment: "setCollectionEnvironment",
+        dashboardEnvironment: false,
       });
     }
   }
+  // componentDidMount() {
+  //   this.props.history.push({
+  //     Environment: "setCollectionEnvironment",
+  //     dashboardEnvironment: false,
+  //   });
+  //   if (this.props.collections[this.props.collection_id].isPublic) {
+  //     this.props.history.push({
+  //       publishedCollectionEnv: true,
+  //     });
+  //   }
+  //   this.setState({ selectedEnvironment: null });
+  // }
   setDropdowmRole(key) {
     const data = this.state.data;
     data.role = this.dropdownRole[key].name;

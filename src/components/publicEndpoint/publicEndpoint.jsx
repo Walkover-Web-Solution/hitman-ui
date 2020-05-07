@@ -29,7 +29,7 @@ class PublicEndpoint extends Component {
       this.props.fetch_all_public_endpoints(collectionIdentifier);
       this.props.history.push({
         collectionIdentifier: collectionIdentifier,
-        Environment:"publicCollectionEnvironment"
+        Environment: "publicCollectionEnvironment",
       });
     }
   }
@@ -39,7 +39,7 @@ class PublicEndpoint extends Component {
       (this.props.location.pathname.split("/")[3] === undefined ||
         this.props.location.pathname.split("/")[3] === "")
     ) {
-      console.log("this.props", this.props);
+      console.log("xxx", this.props);
       this.props.history.push({
         pathname: `/public/${this.props.match.params.collectionIdentifier}/description`,
       });

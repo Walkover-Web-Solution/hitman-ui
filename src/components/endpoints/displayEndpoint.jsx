@@ -345,36 +345,44 @@ class DisplayEndpoint extends Component {
   }
 
   replaceVariables(str) {
+    console.log("str", str, this.props);
     str = str.toString();
     const regexp = /{{(\w+)}}/g;
     let match = regexp.exec(str);
     let variables = [];
     if (match === null) return str;
-    if (!this.props.environment.variables) {
-      return str.replace(regexp, "");
-    }
-    do {
-      variables.push(match[1]);
-    } while ((match = regexp.exec(str)) !== null);
-    for (let i = 0; i < variables.length; i++) {
-      if (!this.props.environment.variables[variables[i]]) {
-        str = str.replace(`{{${variables[i]}}}`, "");
-      } else if (
-        isDashboardRoute(this.props) &&
-        this.props.environment.variables[variables[i]].currentValue
-      ) {
-        str = str.replace(
-          `{{${variables[i]}}}`,
-          this.props.environment.variables[variables[i]].currentValue
-        );
-      } else if (this.props.environment.variables[variables[i]].initialValue) {
-        str = str.replace(
-          `{{${variables[i]}}}`,
-          this.props.environment.variables[variables[i]].initialValue
-        );
-      } else {
-        str = str.replace(`{{${variables[i]}}}`, "");
+    if (isDashboardRoute(this.props)) {
+      console.log("sss", this.props.environment.variables);
+      if (!this.props.environment.variables) {
+        return str.replace(regexp, "");
       }
+      do {
+        variables.push(match[1]);
+      } while ((match = regexp.exec(str)) !== null);
+      for (let i = 0; i < variables.length; i++) {
+        if (!this.props.environment.variables[variables[i]]) {
+          str = str.replace(`{{${variables[i]}}}`, "");
+        } else if (
+          isDashboardRoute(this.props) &&
+          this.props.environment.variables[variables[i]].currentValue
+        ) {
+          str = str.replace(
+            `{{${variables[i]}}}`,
+            this.props.environment.variables[variables[i]].currentValue
+          );
+        } else if (
+          this.props.environment.variables[variables[i]].initialValue
+        ) {
+          str = str.replace(
+            `{{${variables[i]}}}`,
+            this.props.environment.variables[variables[i]].initialValue
+          );
+        } else {
+          str = str.replace(`{{${variables[i]}}}`, "");
+        }
+      }
+    } else {
+      console.log("pp", this.state);
     }
     return str;
   }
@@ -466,6 +474,23 @@ class DisplayEndpoint extends Component {
   }
 
   handleSend = async () => {
+    console.log(
+      "this.props",
+      this.props,
+      this.props.publicCollectionEnvId,
+      this.props.location.originalPublicEnvReplica
+    );
+    if (
+      !isDashboardRoute(this.props) &&
+      this.props.location.originalPublicEnvReplica != undefined &&
+      this.props.publicCollectionEnvId != undefined
+    ) {
+      console.log("ccc", this.props.location.originalPublicEnvReplica);
+      this.setState({
+        originalPublicEnvReplica: this.props.location.originalPublicEnvReplica,
+        publicCollectionEnvId: this.props.publicCollectionEnvId,
+      });
+    }
     let startTime = new Date().getTime();
     let response = {};
     this.setState({ startTime, response });

@@ -178,6 +178,7 @@ class Endpoints extends Component {
         title: "update endpoint",
         endpoint: endpoint,
         groupId: groupId,
+        Environment: "publicCollectionEnvironment",
       });
     }
   }
