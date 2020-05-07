@@ -29,9 +29,7 @@ class ShareCollectionForm extends Component {
     collaborator: { name: "Collaborator" },
   };
   componentWillMount() {
-    console.log("kkk");
     if (this.props.collections[this.props.collection_id].isPublic) {
-      console.log("bbb");
       this.props.history.push({
         publishedCollectionEnv: "vvv",
         Environment: "setCollectionEnvironment",

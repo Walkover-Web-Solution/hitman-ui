@@ -54,7 +54,12 @@ class Environments extends Component {
       "currentEnvironmentId"
     );
     this.handleEnv(currentEnvironmentId);
-    this.fetchCollection(this.props.location.collectionIdentifier);
+  }
+  async componentWillMount() {
+    if (!isDashboardRoute(this.props)) {
+      let collectionIdentifier = this.props.location.pathname.split("/")[2];
+      this.fetchCollection(collectionIdentifier);
+    }
   }
 
   handleEnvironmentModal(environmentFormName, environmentToBeEdited) {
@@ -120,10 +125,6 @@ class Environments extends Component {
         publicCollectionEnvironmentId: collection.data.environment.id,
         originalEnvironmentReplica: collection.data.environment,
       });
-      this.props.history.push({
-        originalPublicEnvReplica: collection.data.environment,
-        publicCollectionEnvId: collection.data.environment.id,
-      });
     }
   }
   render() {
@@ -136,18 +137,11 @@ class Environments extends Component {
           this.state.publicCollectionEnvironmentId
         ]
       : null;
-    console.log(
-      "fff",
-      this.props,
-      this.props.location.Environment,
-      this.props.location.dashboardEnvironment
-    );
     if (
       isDashboardRoute(this.props) &&
       this.props.location.Environment === "setCollectionEnvironment" &&
       !this.props.location.dashboardEnvironment
     ) {
-      console.log("xxx");
       if (!this.props.location.publishedCollectionEnv) {
         return (
           <div className="select-environment-dropdown">
@@ -180,12 +174,10 @@ class Environments extends Component {
           </div>
         );
       } else {
-        console.log("aaaa");
         return <div></div>;
       }
     } else {
       if (isDashboardRoute(this.props)) {
-        console.log("xxx");
         return (
           <div className="environment-container">
             {(this.state.environmentFormName === "Add new Environment" ||
@@ -388,12 +380,8 @@ class Environments extends Component {
             <div className="select-environment-dropdown">
               <Dropdown className="float-right">
                 <Dropdown.Toggle variant="default" id="dropdown-basic">
-                  {this.props.environment.environments[
-                    this.state.publicCollectionEnvironmentId
-                  ]
-                    ? this.props.environment.environments[
-                        this.state.publicCollectionEnvironmentId
-                      ].name
+                  {this.state.originalEnvironmentReplica != undefined
+                    ? this.state.originalEnvironmentReplica.name
                     : "No Environment"}
                 </Dropdown.Toggle>
               </Dropdown>

@@ -17,6 +17,7 @@ import GenericTable from "./genericTable";
 import HostContainer from "./hostContainer";
 import PublicBodyContainer from "./publicBodyContainer";
 import { addEndpoint, updateEndpoint } from "./redux/endpointsActions";
+import collectionsApiService from "../collections/collectionsApiService";
 const status = require("http-status");
 var URI = require("urijs");
 
@@ -129,6 +130,10 @@ class DisplayEndpoint extends Component {
         ],
       });
     }
+    if (!isDashboardRoute(this.props)) {
+      let collectionIdentifier = this.props.location.pathname.split("/")[2];
+      this.fetchPublicCollection(collectionIdentifier);
+    }
   }
 
   structueParamsHeaders = [
@@ -140,6 +145,21 @@ class DisplayEndpoint extends Component {
     },
   ];
 
+  async fetchPublicCollection(collectionId) {
+    let collection = await collectionsApiService.getCollection(collectionId);
+    if (collection.data.environment != null) {
+      this.setState({
+        publicCollectionEnvironmentId: collection.data.environment.id,
+        originalEnvironmentReplica: collection.data.environment,
+      });
+    }
+    if (collection.data.environment == null) {
+      this.setState({
+        publicCollectionEnvironmentId: null,
+        originalEnvironmentReplica: null,
+      });
+    }
+  }
   fetchEndpoint(flag, endpointId) {
     let endpoint = {};
     let originalParams = [];
@@ -345,14 +365,13 @@ class DisplayEndpoint extends Component {
   }
 
   replaceVariables(str) {
-    console.log("str", str, this.props);
     str = str.toString();
     const regexp = /{{(\w+)}}/g;
     let match = regexp.exec(str);
     let variables = [];
     if (match === null) return str;
+
     if (isDashboardRoute(this.props)) {
-      console.log("sss", this.props.environment.variables);
       if (!this.props.environment.variables) {
         return str.replace(regexp, "");
       }
@@ -382,7 +401,61 @@ class DisplayEndpoint extends Component {
         }
       }
     } else {
-      console.log("pp", this.state);
+      let environmentId = this.state.publicCollectionEnvironmentId;
+      let originalEnv = this.state.originalEnvironmentReplica;
+      if (
+        this.props.environments[environmentId] != undefined ||
+        (this.props.environments[environmentId] === undefined &&
+          originalEnv === null)
+      ) {
+        if (!this.props.environments[environmentId].variables) {
+          return str.replace(regexp, "");
+        }
+        do {
+          variables.push(match[1]);
+        } while ((match = regexp.exec(str)) !== null);
+        for (let i = 0; i < variables.length; i++) {
+          if (!this.props.environments[environmentId].variables[variables[i]]) {
+            str = str.replace(`{{${variables[i]}}}`, "");
+          } else if (
+            this.props.environments[environmentId].variables[variables[i]]
+              .initialValue
+          ) {
+            str = str.replace(
+              `{{${variables[i]}}}`,
+              this.props.environments[environmentId].variables[variables[i]]
+                .initialValue
+            );
+          } else {
+            str = str.replace(`{{${variables[i]}}}`, "");
+          }
+        }
+      }
+      //If Environment is Deleted
+      if (
+        this.props.environments[environmentId] === undefined &&
+        environmentId != null &&
+        originalEnv != null
+      ) {
+        if (!originalEnv.variables) {
+          return str.replace(regexp, "");
+        }
+        do {
+          variables.push(match[1]);
+        } while ((match = regexp.exec(str)) !== null);
+        for (let i = 0; i < variables.length; i++) {
+          if (!originalEnv.variables[variables[i]]) {
+            str = str.replace(`{{${variables[i]}}}`, "");
+          } else if (originalEnv.variables[variables[i]].initialValue) {
+            str = str.replace(
+              `{{${variables[i]}}}`,
+              originalEnv.variables[variables[i]].initialValue
+            );
+          } else {
+            str = str.replace(`{{${variables[i]}}}`, "");
+          }
+        }
+      }
     }
     return str;
   }
@@ -474,23 +547,6 @@ class DisplayEndpoint extends Component {
   }
 
   handleSend = async () => {
-    console.log(
-      "this.props",
-      this.props,
-      this.props.publicCollectionEnvId,
-      this.props.location.originalPublicEnvReplica
-    );
-    if (
-      !isDashboardRoute(this.props) &&
-      this.props.location.originalPublicEnvReplica != undefined &&
-      this.props.publicCollectionEnvId != undefined
-    ) {
-      console.log("ccc", this.props.location.originalPublicEnvReplica);
-      this.setState({
-        originalPublicEnvReplica: this.props.location.originalPublicEnvReplica,
-        publicCollectionEnvId: this.props.publicCollectionEnvId,
-      });
-    }
     let startTime = new Date().getTime();
     let response = {};
     this.setState({ startTime, response });

@@ -33,13 +33,22 @@ class PublicEndpoint extends Component {
       });
     }
   }
+  // componentWillMount() {
+  //   if (this.props.location.pathname) {
+  //     let collectionIdentifier = this.props.location.pathname.split("/")[2];
+  //     this.fetchCollection(collectionIdentifier);
+  //     this.props.history.push({
+  //       collectionIdentifier: collectionIdentifier,
+  //       Environment: "publicCollectionEnvironment"
+  //     });
+  //   }
+  // }
   render() {
     if (
       this.props.location.pathname.split("/")[1] === "public" &&
       (this.props.location.pathname.split("/")[3] === undefined ||
         this.props.location.pathname.split("/")[3] === "")
     ) {
-      console.log("xxx", this.props);
       this.props.history.push({
         pathname: `/public/${this.props.match.params.collectionIdentifier}/description`,
       });
