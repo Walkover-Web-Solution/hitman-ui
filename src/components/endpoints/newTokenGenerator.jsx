@@ -4,6 +4,7 @@ import endpointApiService from "./endpointApiService";
 
 import Authorization from "./displayAuthorization";
 import { Redirect } from "react-router-dom";
+var URI = require("urijs");
 
 class TokenGenerator extends Component {
   state = {
@@ -16,7 +17,7 @@ class TokenGenerator extends Component {
       username: "",
       password: "",
       accessTokenUrl: "",
-      clientId: "",
+      client_id: "",
       clientSecret: "",
       scope: "",
       state: "",
@@ -57,20 +58,84 @@ class TokenGenerator extends Component {
     this.setState({ data });
   }
 
-  makeRequest() {
-    let data = { ...this.state.data };
-    let requestApi =
-      this.state.data.authUrl +
-      "?" +
-      "scope=" +
-      this.state.data.scope +
-      "&redirect_uri=" +
-      this.state.data.callbackUrl +
-      "&client_id=" +
-      this.state.data.clientId +
-      "&response_type=token";
+  async makeRequest() {
+    let grantType = this.state.grantType;
+    let requestApi = "";
+    let params = this.makeParams(grantType);
+    params = URI.buildQuery(params);
+    console.log("params", params);
+    // if (grantType === "implicit") {
+    //   let paramsObject = {};
+    //   for (let i = 0; i < keys.length; i++) {
+    //     if (this.state.data[keys[i]] !== "" && keys[i] !== "authUrl") {
+    //       paramsObject[keys[i]] = this.state.data[keys[i]];
+    //     }
+    //   }
+    //   console.log("paramsObject", paramsObject);
+    //   requestApi = URI.buildQuery(paramsObject);
+    //   console.log("requestApi", requestApi);
+    // }
+    if (grantType === "implicit") {
+      requestApi =
+        this.state.data.authUrl + "?" + params + "&response_type=token";
+    }
+
     console.log("requestapi", requestApi);
+    console.log(this.props);
+    if (this.props.groupId) {
+      await endpointApiService.setAuthorizationData(
+        this.props.groups[this.props.groupId].versionId,
+        this.state.data
+      );
+    }
+
     endpointApiService.authorize(requestApi);
+  }
+
+  makeParams(grantType) {
+    // tokenName: "",
+    // grantType: "",
+    // callbackUrl: "",
+    // authUrl: "",
+    // username: "",
+    // password: "",
+    // accessTokenUrl: "",
+    // clientId: "",
+    // clientSecret: "",
+    // scope: "",
+    // state: "",
+    // clientAuthentication: "",
+    let params = {};
+    let data = { ...this.state.data };
+    let keys = Object.keys(data);
+    for (let i = 0; i < keys.length; i++) {
+      switch (keys[i]) {
+        case "callbackUrl":
+          if (grantType === "implicit") {
+            params["redirect_uri"] = data[keys[i]];
+          }
+          break;
+        case "clientId":
+          if (grantType === "implicit") {
+            params["client_id"] = data[keys[i]];
+          }
+          break;
+        case "scope":
+          if (grantType === "implicit") {
+            params[keys[i]] = data[keys[i]];
+          }
+          break;
+        case "state":
+          if (grantType === "implicit") {
+            params[keys[i]] = data[keys[i]];
+          }
+          break;
+        default:
+          continue;
+      }
+    }
+    console.log(params);
+    return params;
   }
   renderInput(key) {
     switch (key) {

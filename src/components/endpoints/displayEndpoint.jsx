@@ -984,7 +984,38 @@ class DisplayEndpoint extends Component {
   //   this.setState({ originalHeaders: updatedHeaders });
   // }
 
-  setHeaders(value, title) {
+  setParams(value, title, authorizationFlag) {
+    console.log("setParams", value, title);
+    let originalParams = this.state.originalParams;
+    console.log("originalParams", originalParams);
+    let updatedParams = [];
+    let emptyParam = {
+      checked: "notApplicable",
+      key: "",
+      value: "",
+      description: "",
+    };
+    for (let i = 0; i < originalParams.length; i++) {
+      if (originalParams[i].key === title || originalParams[i].key === "") {
+        continue;
+      } else {
+        updatedParams.push(originalParams[i]);
+      }
+    }
+    if (title === "access_token" && !authorizationFlag) {
+      updatedParams.push({
+        checked: "true",
+        key: title,
+        value: value,
+        description: "",
+      });
+    }
+    updatedParams.push(emptyParam);
+    console.log("updatedParams", updatedParams);
+    this.setState({ originalParams: updatedParams });
+  }
+
+  setHeaders(value, title, authorizationFlag = undefined) {
     let originalHeaders = this.state.originalHeaders;
     let updatedHeaders = [];
     let emptyHeader = {
@@ -1005,7 +1036,7 @@ class DisplayEndpoint extends Component {
       this.setState({ originalHeaders: updatedHeaders });
       return;
     }
-    if (value !== "noAuth") {
+    if (value !== "noAuth" && !authorizationFlag) {
       updatedHeaders.push({
         checked: "true",
         key: title === "content-type" ? "content-type" : "Authorization",
@@ -1085,20 +1116,26 @@ class DisplayEndpoint extends Component {
         return { body: body.value, headers };
     }
   }
-  setAccessToken() {
-    console.log("window.location.href", window.location.href);
+
+  async setAccessToken() {
     let url = window.location.href;
-    if (url.split("access_token=")[1]) {
-      console.log(url.split("#")[1]);
-      let response = url.split("#")[1];
-      console.log("response", response);
-      this.responseArray = response.split("&");
-      console.log(this.responseArray);
-      this.accessToken = this.responseArray[1].split("=")[1];
-    } else {
-      this.accessToken = "";
+    if (url.split("#")[1]) {
+      let object = URI.parseQuery("?" + url.split("#")[1]);
+      this.accessToken = object.access_token;
+      // this.setState({ accessToken });
+      console.log("object", object);
+      console.log("this.props.groupId", this.props.groupId);
+      console.log("this.props.groups", this.props.groups);
+      // console.log("this.state.groupId",this.state.groupId)
+      if (this.state.groupId) {
+        await endpointApiService.setAuthorizationResponse(
+          this.props.groups[this.state.groupId].versionId,
+          object
+        );
+      }
     }
   }
+
   render() {
     this.setAccessToken();
     if (
@@ -1346,7 +1383,9 @@ class DisplayEndpoint extends Component {
                   <Authorization
                     {...this.props}
                     title="Authorization"
+                    groupId={this.state.groupId}
                     set_authorization_headers={this.setHeaders.bind(this)}
+                    set_authoriztaion_params={this.setParams.bind(this)}
                     accessToken={this.accessToken}
                   ></Authorization>
                 </div>

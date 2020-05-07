@@ -9,7 +9,7 @@ class Authorization extends Component {
       password: "",
     },
     oauth_2: {
-      authorizationAddedTo: "",
+      authorizationAddedTo: "Request Headers",
     },
     authorizationType: "noAuth",
   };
@@ -55,8 +55,23 @@ class Authorization extends Component {
   }
 
   setAuthorizationAddedTo(key) {
-    if (key === "headers") {
-    } else if (key === "params") {
+    let oauth_2 = { ...this.state.oauth_2 };
+    oauth_2.authorizationAddedTo = key;
+    this.setState({ oauth_2 });
+    if (key === "Request Headers") {
+      this.props.set_authorization_headers("", "Authorization");
+      this.props.set_authoriztaion_params(
+        "",
+        "access_token",
+        "authorizationFlag"
+      );
+    } else {
+      this.props.set_authorization_headers(
+        "",
+        "Authorization",
+        "authorizationFlag"
+      );
+      this.props.set_authoriztaion_params("", "access_token");
     }
   }
 
@@ -72,6 +87,7 @@ class Authorization extends Component {
         {this.state.getNewAccessToken === true && (
           <TokenGenerator
             {...this.props}
+            groupId={this.props.groupId}
             show={true}
             onHide={() => this.closeGetNewAccessTokenModal()}
             title="GET NEW ACCESS TOKEN"
@@ -119,7 +135,7 @@ class Authorization extends Component {
                     aria-haspopup="true"
                     aria-expanded="false"
                   >
-                    Request Headers
+                    {this.state.oauth_2.authorizationAddedTo}
                   </button>
                   <div
                     className="dropdown-menu"
@@ -127,15 +143,19 @@ class Authorization extends Component {
                   >
                     <button
                       className="btn custom-request-button"
-                      onClick={() => this.setAuthorizationAddedTo("headers")}
+                      onClick={() =>
+                        this.setAuthorizationAddedTo("Request Headers")
+                      }
                     >
-                      Request Headers{" "}
+                      Request Headers
                     </button>
                     <button
                       className="btn custom-request-button"
-                      onClick={() => this.setAuthorizationAddedTo("params")}
+                      onClick={() =>
+                        this.setAuthorizationAddedTo("Request URL")
+                      }
                     >
-                      Request URL{" "}
+                      Request URL
                     </button>
                   </div>
                 </div>

@@ -46,6 +46,7 @@ export function duplicateEndpoint(endpointId) {
 }
 
 export function moveEndpoint(endpointId, body) {
+  console.log("body", body);
   return http.patch(`${apiUrl}/endpoints/${endpointId}/move`, body);
 }
 
@@ -53,6 +54,20 @@ export function authorize(requestApi) {
   console.log("requestApi", requestApi);
   window.open(requestApi, "_top");
 }
+
+export function setAuthorizationData(versionId, data) {
+  console.log(versionId, data);
+  return http.patch(`${apiUrl}/versions/${versionId}/authorizationData`, data);
+}
+
+export function setAuthorizationResponse(versionId, data) {
+  console.log(versionId, data);
+  return http.patch(
+    `${apiUrl}/versions/${versionId}/authorizationResponse`,
+    data
+  );
+}
+
 export default {
   saveEndpoint,
   getEndpoints,
@@ -64,4 +79,6 @@ export default {
   duplicateEndpoint,
   moveEndpoint,
   authorize,
+  setAuthorizationData,
+  setAuthorizationResponse,
 };
