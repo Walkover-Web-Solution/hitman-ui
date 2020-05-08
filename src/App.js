@@ -8,6 +8,9 @@ import Public from "./components/publicEndpoint/publicEndpoint.jsx";
 
 class App extends Component {
   render() {
+    if (this.props) {
+      console.log(this.props);
+    }
     return (
       <Switch>
         <ProtectedRoute path="/dashboard/" component={Main} />

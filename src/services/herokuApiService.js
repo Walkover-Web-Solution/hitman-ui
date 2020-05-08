@@ -1,11 +1,13 @@
-import http from "../../services/httpService";
-import httpService from "../../services/endpointHttpService";
+// import http from "../../services/http";
+import httpService from "./endpointHttpService";
+import http from "./httpService";
 
-import { apiUrl } from "../../config.json";
+const herokuToken = "5bb3b4dd-c590-4b68-a337-4ba2ca78d180";
+const appName = "socket-sample-app";
 
 export function getConfigVars() {
-  return httpService.request({
-    url: `https://api.heroku.com/apps/hitman-ui/config-vars`,
+  return http.request({
+    url: `https://api.heroku.com/apps/${appName}/config-vars`,
     method: "GET",
     headers: {
       Accept: " application/vnd.heroku+json; version=3",
@@ -15,12 +17,12 @@ export function getConfigVars() {
 }
 
 export function updateConfigVars(variablesJson) {
-  return httpService.request({
-    url: `https://api.heroku.com/apps/hitman-ui/config-vars`,
+  return http.request({
+    url: `https://api.heroku.com/apps/${appName}/config-vars`,
     method: "PATCH",
-    body: variablesJson,
+    data: variablesJson,
     headers: {
-      "Content-Type": "application / json",
+      "Content-Type": "application/json",
       Accept: " application/vnd.heroku+json; version=3",
       Authorization: `Bearer ${herokuToken}`,
     },
@@ -28,12 +30,12 @@ export function updateConfigVars(variablesJson) {
 }
 
 export function createDomain(domainName) {
-  return httpService.request({
-    url: `https://api.heroku.com/apps/hitman-ui/domains`,
+  return http.request({
+    url: `https://api.heroku.com/apps/${appName}/domains`,
     method: "POST",
-    body: { hostname: domainName },
+    data: { hostname: domainName },
     headers: {
-      "Content-Type": "application / json",
+      "Content-Type": "application/json",
       Accept: " application/vnd.heroku+json; version=3",
       Authorization: `Bearer ${herokuToken}`,
     },
@@ -41,15 +43,20 @@ export function createDomain(domainName) {
 }
 
 export function deleteDomain(domainName) {
-  return httpService.request({
-    url: `https://api.heroku.com/apps/hitman-ui/domains/${domainName}`,
+  return http.request({
+    url: `https://api.heroku.com/apps/${appName}/domains/${domainName}`,
     method: "DELETE",
     headers: {
-      "Content-Type": "application / json",
+      "Content-Type": "application/json",
       Accept: " application/vnd.heroku+json; version=3",
       Authorization: `Bearer ${herokuToken}`,
     },
   });
 }
 
-export default {};
+export default {
+  getConfigVars,
+  updateConfigVars,
+  createDomain,
+  deleteDomain,
+};

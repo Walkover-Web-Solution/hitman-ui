@@ -23,6 +23,7 @@ import {
 import ShareCollectionForm from "./shareCollectionForm";
 import { uiUrl } from "../../config.json";
 import "./collections.scss";
+import CustomDomainModal from "../publicEndpoint/customDomainModal";
 
 const mapStateToProps = (state) => {
   return {
@@ -56,6 +57,7 @@ class CollectionsComponent extends Component {
     showCollectionForm: false,
     collectionFormName: "",
     selectedCollection: {},
+    showCustomDomainModal: false,
   };
   keywords = {};
   names = {};
@@ -347,6 +349,18 @@ class CollectionsComponent extends Component {
                       Go to Docs
                     </button>
                   )}
+                  {this.props.collections[collectionId].isPublic && (
+                    <button
+                      className="dropdown-item"
+                      onClick={() =>
+                        this.handleCustomDomain(
+                          this.props.collections[collectionId]
+                        )
+                      }
+                    >
+                      Add Custom Domain
+                    </button>
+                  )}
                   <button
                     className="dropdown-item"
                     onClick={() => {
@@ -374,6 +388,26 @@ class CollectionsComponent extends Component {
       </React.Fragment>
     );
   }
+
+  handleCustomDomain(collection) {
+    console.log(collection);
+    this.setState({ showCustomDomainModal: true });
+  }
+
+  openCustomDomainModal(onHide) {
+    console.log("hi");
+    return (
+      <CustomDomainModal
+        {...this.props}
+        show={true}
+        onHide={onHide}
+        // add_new_endpoint={this.handleAddEndpoint.bind(this)}
+        // open_collection_form={this.openCollectionForm.bind(this)}
+        // open_environment_form={this.openEnvironmentForm.bind(this)}
+      />
+    );
+  }
+
   render() {
     if (isDashboardRoute(this.props)) {
       let finalCollections = [];
@@ -436,6 +470,12 @@ class CollectionsComponent extends Component {
       finalCollections = [...new Set(finalCollections)];
       return (
         <div>
+          {this.state.showCustomDomainModal &&
+            this.openCustomDomainModal(() =>
+              this.setState({
+                showCustomDomainModal: false,
+              })
+            )}
           <div className="App-Nav">
             <div className="tabs">
               {this.state.showVersionForm &&
@@ -486,6 +526,7 @@ class CollectionsComponent extends Component {
         </div>
       );
     } else {
+      console.log(this.state.showCustomDomainModal);
       return (
         <div>
           <div className="App-Side">
