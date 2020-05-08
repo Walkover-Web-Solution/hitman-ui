@@ -261,7 +261,7 @@ class CollectionsComponent extends Component {
             className="btn"
             onClick={() => this.openAllCollections()}
           >
-            <i class="fas fa-arrow-left"></i>
+            <i className="fas fa-arrow-left"></i>
             <label>All Collections</label>
           </button>
         ) : null}

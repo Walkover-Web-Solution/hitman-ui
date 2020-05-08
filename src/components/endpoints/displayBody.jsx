@@ -8,7 +8,6 @@ import "ace-builds/src-noconflict/theme-github";
 import "ace-builds/webpack-resolver";
 import React, { Component } from "react";
 import AceEditor from "react-ace";
-import { Button } from "react-bootstrap";
 import BodyDescription from "./bodyDescription";
 import "./endpoints.scss";
 import GenericTable from "./genericTable";

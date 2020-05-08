@@ -81,6 +81,7 @@ class DisplayEndpoint extends Component {
         description: "",
       },
     ],
+    authType: null,
     oldDescription: "",
     headers: [],
     publicBodyFlag: true,
@@ -112,6 +113,7 @@ class DisplayEndpoint extends Component {
         title: "Add New Endpoint",
         flagResponse: false,
         showDescriptionFlag: false,
+        authType: null,
         originalHeaders: [
           {
             checked: "notApplicable",
@@ -186,6 +188,15 @@ class DisplayEndpoint extends Component {
     ) {
       flag = 1;
       endpoint = endpoints[endpointId];
+      let authType = {};
+      if (endpoint.authorizationType !== null) {
+        authType = {
+          type: endpoint.authorizationType.type,
+          value: endpoint.authorizationType.value,
+        };
+      } else {
+        authType = endpoint.authorizationType;
+      }
 
       const groupId = endpoints[endpointId].groupId;
 
@@ -224,11 +235,13 @@ class DisplayEndpoint extends Component {
         oldDescription: endpoint.description,
         title: "update endpoint",
         bodyDescription: endpoint.bodyDescription,
+        authType,
         fieldDescription,
         publicBodyFlag: true,
         bodyFlag: true,
         response: {},
       });
+      this.setAccessToken(endpoint, versions, groups);
     }
   }
 
@@ -510,6 +523,7 @@ class DisplayEndpoint extends Component {
           this.state.data.body.type === "JSON"
             ? this.state.bodyDescription
             : {},
+        authorizationType: this.state.authType,
       };
       // if (endpoint.name === "" || endpoint.uri === "")
       if (endpoint.name === "") toast.error("Please enter Endpoint name");
@@ -985,9 +999,7 @@ class DisplayEndpoint extends Component {
   // }
 
   setParams(value, title, authorizationFlag) {
-    console.log("setParams", value, title);
     let originalParams = this.state.originalParams;
-    console.log("originalParams", originalParams);
     let updatedParams = [];
     let emptyParam = {
       checked: "notApplicable",
@@ -1011,7 +1023,6 @@ class DisplayEndpoint extends Component {
       });
     }
     updatedParams.push(emptyParam);
-    console.log("updatedParams", updatedParams);
     this.setState({ originalParams: updatedParams });
   }
 
@@ -1117,27 +1128,47 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  async setAccessToken() {
+  async setAccessToken(endpoint, versions, groups) {
     let url = window.location.href;
     if (url.split("#")[1]) {
-      let object = URI.parseQuery("?" + url.split("#")[1]);
-      this.accessToken = object.access_token;
-      // this.setState({ accessToken });
-      console.log("object", object);
-      console.log("this.props.groupId", this.props.groupId);
-      console.log("this.props.groups", this.props.groups);
-      // console.log("this.state.groupId",this.state.groupId)
-      if (this.state.groupId) {
+      let response = URI.parseQuery("?" + url.split("#")[1]);
+      this.accessToken = response.access_token;
+      response.tokenName =
+        versions[
+          groups[endpoint.groupId].versionId
+        ].authorizationData.tokenName;
+      let authResponses =
+        versions[groups[endpoint.groupId].versionId].authorizationResponse;
+      if (authResponses !== null) {
+        authResponses.push(response);
+      } else {
+        authResponses = [];
+        authResponses.push(response);
+      }
+
+      if (endpoint.groupId) {
         await endpointApiService.setAuthorizationResponse(
-          this.props.groups[this.state.groupId].versionId,
-          object
+          groups[endpoint.groupId].versionId,
+          authResponses
         );
       }
     }
   }
 
+  setAuthType(type, value) {
+    let authType = {};
+    if (type === "") {
+      authType = null;
+    } else {
+      authType = {
+        type,
+        value,
+      };
+    }
+    this.setState({ authType });
+  }
+
   render() {
-    this.setAccessToken();
     if (
       isDashboardRoute(this.props) &&
       this.state.groupId &&
@@ -1386,7 +1417,9 @@ class DisplayEndpoint extends Component {
                     groupId={this.state.groupId}
                     set_authorization_headers={this.setHeaders.bind(this)}
                     set_authoriztaion_params={this.setParams.bind(this)}
+                    set_authoriztaion_type={this.setAuthType.bind(this)}
                     accessToken={this.accessToken}
+                    authorizationType={this.state.authType}
                   ></Authorization>
                 </div>
               </div>

@@ -1,9 +1,6 @@
 import React, { Component } from "react";
-import { Modal, ListGroup, Container, Row, Col } from "react-bootstrap";
+import { Modal } from "react-bootstrap";
 import endpointApiService from "./endpointApiService";
-
-import Authorization from "./displayAuthorization";
-import { Redirect } from "react-router-dom";
 var URI = require("urijs");
 
 class TokenGenerator extends Component {
@@ -24,6 +21,20 @@ class TokenGenerator extends Component {
       clientAuthentication: "",
     },
   };
+
+  componentDidMount() {
+    this.fetchAuthorizationData();
+  }
+
+  fetchAuthorizationData() {
+    if (this.props.groupId) {
+      let versionId = this.props.groups[this.props.groupId].versionId;
+      let data = this.props.versions[versionId].authorizationData;
+      if (data !== null && Object.keys(data).length !== 0) {
+        this.setState({ data });
+      }
+    }
+  }
 
   grantTypes = {
     authorizationCode: "Authorization Code",
@@ -63,7 +74,6 @@ class TokenGenerator extends Component {
     let requestApi = "";
     let params = this.makeParams(grantType);
     params = URI.buildQuery(params);
-    console.log("params", params);
     // if (grantType === "implicit") {
     //   let paramsObject = {};
     //   for (let i = 0; i < keys.length; i++) {
@@ -80,8 +90,6 @@ class TokenGenerator extends Component {
         this.state.data.authUrl + "?" + params + "&response_type=token";
     }
 
-    console.log("requestapi", requestApi);
-    console.log(this.props);
     if (this.props.groupId) {
       await endpointApiService.setAuthorizationData(
         this.props.groups[this.props.groupId].versionId,
@@ -137,6 +145,7 @@ class TokenGenerator extends Component {
     console.log(params);
     return params;
   }
+
   renderInput(key) {
     switch (key) {
       case "grantType":
@@ -202,10 +211,12 @@ class TokenGenerator extends Component {
         if (this.state.grantType === "implicit") {
           return;
         }
+        break;
       case "clientSecret":
         if (this.state.grantType === "implicit") {
           return;
         }
+        break;
       default:
         return this.fetchDefaultInputField(key);
     }
@@ -215,7 +226,11 @@ class TokenGenerator extends Component {
     return (
       <div>
         <label>{this.inputFields[key]}</label>
-        <input name={key} onChange={this.handleChange.bind(this)}></input>
+        <input
+          name={key}
+          value={this.state.data[key]}
+          onChange={this.handleChange.bind(this)}
+        ></input>
       </div>
     );
   }

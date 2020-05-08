@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "./endpoints.scss";
 import TokenGenerator from "./newTokenGenerator";
-
+import AccessTokenManager from "./displayTokenManager";
 class Authorization extends Component {
   state = {
     basicAuth: {
@@ -10,23 +10,71 @@ class Authorization extends Component {
     },
     oauth_2: {
       authorizationAddedTo: "Request Headers",
+      access_token: "",
     },
     authorizationType: "noAuth",
   };
 
+  componentDidMount() {
+    this.authResponses = [];
+  }
+  componentDidUpdate() {
+    this.fetchAuthorizationResponse();
+  }
+
+  fetchAuthorizationResponse() {
+    if (
+      this.authResponses.length === 0 &&
+      Object.keys(this.props.versions).length !== 0 &&
+      Object.keys(this.props.groups).length !== 0 &&
+      this.props.groupId !== undefined &&
+      this.props.groupId !== null
+    ) {
+      this.authResponses = this.props.versions[
+        this.props.groups[this.props.groupId].versionId
+      ].authorizationResponse;
+      if (this.authResponses === null) {
+        this.authResponses = [];
+      }
+    }
+  }
+
   setAuthorizationType(type) {
+    let value = {};
     switch (type) {
       case "basicAuth":
+        value = {
+          username: "",
+          password: "",
+        };
         this.setState({ authorizationType: "basicAuth" });
+        this.props.set_authoriztaion_params(
+          "",
+          "access_token",
+          "authorizationFlag"
+        );
         this.props.set_authorization_headers("", "Authorization");
+        this.props.set_authoriztaion_type(type, value);
         break;
       case "noAuth":
         this.setState({ authorizationType: "noAuth" });
+        this.props.set_authoriztaion_params(
+          "",
+          "access_token",
+          "authorizationFlag"
+        );
         this.props.set_authorization_headers("noAuth", "Authorization");
+        this.props.set_authoriztaion_type("", "");
         break;
       case "oauth_2":
+        value = this.state.oauth_2;
         this.setState({ authorizationType: "oauth_2" });
-        this.props.set_authorization_headers("", "Authorization");
+        if (this.state.oauth_2.authorizationAddedTo === "Request Headers") {
+          this.props.set_authorization_headers("", "Authorization");
+        } else {
+          this.props.set_authoriztaion_params("", "access_token");
+        }
+        this.props.set_authoriztaion_type(type, value);
         break;
       default:
         break;
@@ -40,16 +88,29 @@ class Authorization extends Component {
   };
 
   handleChange(e) {
+    let basicAuth = { ...this.state.basicAuth };
     if (e.currentTarget.name === "username") {
-      this.setState({ username: e.currentTarget.value });
-      this.generateEncodedValue(e.currentTarget.value, this.state.password);
+      basicAuth.username = e.currentTarget.value;
+      this.generateEncodedValue(
+        e.currentTarget.value,
+        this.state.basicAuth.password
+      );
     } else if (e.currentTarget.name === "password") {
-      this.setState({ password: e.currentTarget.value });
-      this.generateEncodedValue(this.state.username, e.currentTarget.value);
+      basicAuth.password = e.currentTarget.value;
+      this.generateEncodedValue(
+        this.state.basicAuth.username,
+        e.currentTarget.value
+      );
     }
+    this.setState({ basicAuth });
   }
 
   generateEncodedValue(username, password) {
+    let value = {
+      username,
+      password,
+    };
+    this.props.set_authoriztaion_type("basicAuth", value);
     let encodedValue = new Buffer(username + ":" + password).toString("base64");
     this.props.set_authorization_headers(encodedValue, "Authorization");
   }
@@ -58,6 +119,7 @@ class Authorization extends Component {
     let oauth_2 = { ...this.state.oauth_2 };
     oauth_2.authorizationAddedTo = key;
     this.setState({ oauth_2 });
+
     if (key === "Request Headers") {
       this.props.set_authorization_headers("", "Authorization");
       this.props.set_authoriztaion_params(
@@ -65,6 +127,7 @@ class Authorization extends Component {
         "access_token",
         "authorizationFlag"
       );
+      this.props.set_authoriztaion_type("oauth_2", oauth_2);
     } else {
       this.props.set_authorization_headers(
         "",
@@ -72,16 +135,42 @@ class Authorization extends Component {
         "authorizationFlag"
       );
       this.props.set_authoriztaion_params("", "access_token");
+      this.props.set_authoriztaion_type("oauth_2", oauth_2);
     }
   }
 
   getNewAccessTokenModal() {
     this.setState({ getNewAccessToken: true });
   }
+
   closeGetNewAccessTokenModal() {
     this.setState({ getNewAccessToken: false });
   }
+
+  openManageTokenModel() {
+    console.log("openManageTokenModel");
+    this.setState({ openManageTokenModel: true });
+  }
+
+  closeManageTokenModel() {
+    this.setState({ openManageTokenModel: false });
+  }
   render() {
+    if (this.props.authorizationType) {
+      const authType = this.props.authorizationType.type;
+      if (authType !== this.state.authorizationType) {
+        this.setState({
+          authorizationType: authType,
+        });
+        if (authType === "basicAuth") {
+          this.setState({ basicAuth: this.props.authorizationType.value });
+        }
+        if (authType === "oauth_2") {
+          this.setState({ oauth_2: this.props.authorizationType.value });
+        }
+      }
+    }
+
     return (
       <div className="authorization-panel">
         {this.state.getNewAccessToken === true && (
@@ -92,6 +181,15 @@ class Authorization extends Component {
             onHide={() => this.closeGetNewAccessTokenModal()}
             title="GET NEW ACCESS TOKEN"
           ></TokenGenerator>
+        )}
+        {this.state.openManageTokenModel === true && (
+          <AccessTokenManager
+            {...this.props}
+            authResponses={this.authResponses}
+            show={true}
+            onHide={() => this.closeManageTokenModel()}
+            title="MANAGE ACCESS TOKEN"
+          ></AccessTokenManager>
         )}
         <div className="authorization-selector-wrapper">
           <div className="auth-selector-container">
@@ -176,6 +274,7 @@ class Authorization extends Component {
                 <label>Username</label>
                 <input
                   name="username"
+                  value={this.state.basicAuth.username}
                   onChange={this.handleChange.bind(this)}
                 ></input>
               </div>
@@ -184,6 +283,7 @@ class Authorization extends Component {
                 <label>Password</label>
                 <input
                   name="password"
+                  value={this.state.basicAuth.password}
                   onChange={this.handleChange.bind(this)}
                 ></input>
               </div>
@@ -198,6 +298,40 @@ class Authorization extends Component {
                   name="accessToken"
                 ></input>
               </div>
+
+              <div className="dropdown">
+                <button
+                  className="btn dropdown-toggle"
+                  id="dropdownMenuButton"
+                  data-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                >
+                  Availabale Tokens
+                </button>
+                <div
+                  className="dropdown-menu"
+                  aria-labelledby="dropdownMenuButton"
+                >
+                  {this.authResponses.map((response) => (
+                    <button
+                      type="button"
+                      className="btn custom-request-button"
+                      // onClick={() => this.setAuthorizationType(key)}
+                    >
+                      {response.tokenName}
+                    </button>
+                  ))}
+                  <button
+                    type="button"
+                    className="btn custom-request-button"
+                    onClick={() => this.openManageTokenModel()}
+                  >
+                    Manage Tokens
+                  </button>
+                </div>
+              </div>
+
               <button
                 type="button"
                 onClick={() => this.getNewAccessTokenModal()}

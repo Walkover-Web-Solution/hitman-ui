@@ -61,7 +61,7 @@ export function setAuthorizationData(versionId, data) {
 }
 
 export function setAuthorizationResponse(versionId, data) {
-  console.log(versionId, data);
+  console.log("setAuthorizationResponse", data);
   return http.patch(
     `${apiUrl}/versions/${versionId}/authorizationResponse`,
     data
