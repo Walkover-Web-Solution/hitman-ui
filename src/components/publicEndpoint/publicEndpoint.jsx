@@ -7,7 +7,6 @@ import DisplayEndpoint from "../endpoints/displayEndpoint";
 import DisplayPage from "../pages/displayPage";
 import DisplayCollection from "../collections/displayCollection";
 import SideBar from "../main/sidebar";
-import collectionsApiService from "../collections/collectionsApiService";
 import { fetchAllPublicEndpoints } from "./redux/publicEndpointsActions.js";
 import "./publicEndpoint.scss";
 import Environments from "../environments/environments";
@@ -33,16 +32,6 @@ class PublicEndpoint extends Component {
       });
     }
   }
-  // componentWillMount() {
-  //   if (this.props.location.pathname) {
-  //     let collectionIdentifier = this.props.location.pathname.split("/")[2];
-  //     this.fetchCollection(collectionIdentifier);
-  //     this.props.history.push({
-  //       collectionIdentifier: collectionIdentifier,
-  //       Environment: "publicCollectionEnvironment"
-  //     });
-  //   }
-  // }
   render() {
     if (
       this.props.location.pathname.split("/")[1] === "public" &&

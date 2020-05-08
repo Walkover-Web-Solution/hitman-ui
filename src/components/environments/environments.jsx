@@ -54,8 +54,6 @@ class Environments extends Component {
       "currentEnvironmentId"
     );
     this.handleEnv(currentEnvironmentId);
-  }
-  async componentWillMount() {
     if (!isDashboardRoute(this.props)) {
       let collectionIdentifier = this.props.location.pathname.split("/")[2];
       this.fetchCollection(collectionIdentifier);
@@ -336,15 +334,15 @@ class Environments extends Component {
       }
       if (!isDashboardRoute(this.props)) {
         if (
-          env == undefined &&
+          env === undefined &&
           this.state.publicCollectionEnvironmentId != null
         ) {
           env = this.state.originalEnvironmentReplica;
         }
         return (
           <div className="environment-container">
-            {this.state.publicCollectionEnvironmentId != null &&
-              env != undefined && (
+            {this.state.publicCollectionEnvironmentId !== null &&
+              env !== undefined && (
                 <div className="environment-buttons">
                   <Dropdown className="float-right">
                     <Dropdown.Toggle
@@ -362,20 +360,20 @@ class Environments extends Component {
                       <Dropdown.Divider />
                       <div>
                         {" "}
-                        <p className="custom-left-pane">VARIABLE</p>
-                        <p className="custom-middle-pane">DEFAULT VALUE</p>
-                        <p className="custom-right-pane">CURRENT VALUE</p>
+                        <p className="custom-middle-pane">VARIABLE</p>
+                        <p className="custom-right-box">DEFAULT VALUE</p>
+                        {/* <p className="custom-right-pane">CURRENT VALUE</p> */}
                       </div>
                       {env &&
                         Object.keys(env.variables).map((v) => (
                           <div>
-                            <p className="custom-left-box">{v}</p>
-                            <p className="custom-middle-box">
+                            <p className="custom-middle-box">{v}</p>
+                            <p className="custom-right-box">
                               {env.variables[v].initialValue || "None"}
                             </p>
-                            <p className="custom-right-box">
+                            {/* <p className="custom-right-box">
                               {env.variables[v].currentValue || "None"}
-                            </p>
+                            </p> */}
                           </div>
                         ))}
                     </Dropdown.Menu>
@@ -386,7 +384,7 @@ class Environments extends Component {
             <div className="select-environment-dropdown">
               <Dropdown className="float-right">
                 <Dropdown.Toggle variant="default" id="dropdown-basic">
-                  {this.state.originalEnvironmentReplica != undefined
+                  {this.state.originalEnvironmentReplica !== undefined
                     ? this.state.originalEnvironmentReplica.name
                     : "No Environment"}
                 </Dropdown.Toggle>

@@ -404,7 +404,7 @@ class DisplayEndpoint extends Component {
       let environmentId = this.state.publicCollectionEnvironmentId;
       let originalEnv = this.state.originalEnvironmentReplica;
       if (
-        this.props.environments[environmentId] != undefined ||
+        this.props.environments[environmentId] !== undefined ||
         (this.props.environments[environmentId] === undefined &&
           originalEnv === null)
       ) {

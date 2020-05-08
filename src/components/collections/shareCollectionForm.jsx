@@ -28,7 +28,7 @@ class ShareCollectionForm extends Component {
     admin: { name: "Admin" },
     collaborator: { name: "Collaborator" },
   };
-  componentWillMount() {
+  componentDidMount() {
     if (this.props.collections[this.props.collection_id].isPublic) {
       this.props.history.push({
         publishedCollectionEnv: true,
@@ -42,18 +42,6 @@ class ShareCollectionForm extends Component {
       });
     }
   }
-  // componentDidMount() {
-  //   this.props.history.push({
-  //     Environment: "setCollectionEnvironment",
-  //     dashboardEnvironment: false,
-  //   });
-  //   if (this.props.collections[this.props.collection_id].isPublic) {
-  //     this.props.history.push({
-  //       publishedCollectionEnv: true,
-  //     });
-  //   }
-  //   this.setState({ selectedEnvironment: null });
-  // }
   setDropdowmRole(key) {
     const data = this.state.data;
     data.role = this.dropdownRole[key].name;
@@ -206,6 +194,7 @@ class ShareCollectionForm extends Component {
         animation={false}
         aria-labelledby="contained-modal-title-vcenter"
         centered
+        onHide={() => this.onHide()}
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
