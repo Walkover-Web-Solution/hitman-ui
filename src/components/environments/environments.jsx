@@ -128,7 +128,7 @@ class Environments extends Component {
     }
   }
   render() {
-    const env = isDashboardRoute(this.props)
+    let env = isDashboardRoute(this.props)
       ? this.props.environment.environments[
           this.props.environment.currentEnvironmentId
         ]
@@ -335,47 +335,53 @@ class Environments extends Component {
         );
       }
       if (!isDashboardRoute(this.props)) {
+        if (
+          env == undefined &&
+          this.state.publicCollectionEnvironmentId != null
+        ) {
+          env = this.state.originalEnvironmentReplica;
+        }
         return (
           <div className="environment-container">
-            {(this.state.publicCollectionEnvironmentId != null ||
-              isDashboardRoute(this.props)) && (
-              <div className="environment-buttons">
-                <Dropdown className="float-right">
-                  <Dropdown.Toggle
-                    bsPrefix="dropdown"
-                    variant="default"
-                    id="dropdown-basic"
-                  >
-                    <i className="fas fa-eye"></i>
-                  </Dropdown.Toggle>
+            {this.state.publicCollectionEnvironmentId != null &&
+              env != undefined && (
+                <div className="environment-buttons">
+                  <Dropdown className="float-right">
+                    <Dropdown.Toggle
+                      bsPrefix="dropdown"
+                      variant="default"
+                      id="dropdown-basic"
+                    >
+                      <i className="fas fa-eye"></i>
+                    </Dropdown.Toggle>
 
-                  <Dropdown.Menu alignRight className="custom-env-menu">
-                    <Dropdown.Item>
-                      {env ? env.name : "No Environment Selected"}
-                    </Dropdown.Item>
-                    <Dropdown.Divider />
-                    <div>
-                      {" "}
-                      <p className="custom-left-pane">VARIABLE</p>
-                      <p className="custom-middle-pane">INITIAL VALUE</p>
-                      <p className="custom-right-pane">CURRENT VALUE</p>
-                    </div>
-                    {env &&
-                      Object.keys(env.variables).map((v) => (
-                        <div>
-                          <p className="custom-left-box">{v}</p>
-                          <p className="custom-middle-box">
-                            {env.variables[v].initialValue || "None"}
-                          </p>
-                          <p className="custom-right-box">
-                            {env.variables[v].currentValue || "None"}
-                          </p>
-                        </div>
-                      ))}
-                  </Dropdown.Menu>
-                </Dropdown>
-              </div>
-            )}
+                    <Dropdown.Menu alignRight className="custom-env-menu">
+                      <Dropdown.Item>
+                        {env ? env.name : "No Environment Selected"}
+                      </Dropdown.Item>
+                      <Dropdown.Divider />
+                      <div>
+                        {" "}
+                        <p className="custom-left-pane">VARIABLE</p>
+                        <p className="custom-middle-pane">DEFAULT VALUE</p>
+                        <p className="custom-right-pane">CURRENT VALUE</p>
+                      </div>
+                      {env &&
+                        Object.keys(env.variables).map((v) => (
+                          <div>
+                            <p className="custom-left-box">{v}</p>
+                            <p className="custom-middle-box">
+                              {env.variables[v].initialValue || "None"}
+                            </p>
+                            <p className="custom-right-box">
+                              {env.variables[v].currentValue || "None"}
+                            </p>
+                          </div>
+                        ))}
+                    </Dropdown.Menu>
+                  </Dropdown>
+                </div>
+              )}
 
             <div className="select-environment-dropdown">
               <Dropdown className="float-right">

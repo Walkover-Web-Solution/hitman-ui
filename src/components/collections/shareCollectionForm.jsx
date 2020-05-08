@@ -31,7 +31,7 @@ class ShareCollectionForm extends Component {
   componentWillMount() {
     if (this.props.collections[this.props.collection_id].isPublic) {
       this.props.history.push({
-        publishedCollectionEnv: "vvv",
+        publishedCollectionEnv: true,
         Environment: "setCollectionEnvironment",
         dashboardEnvironment: false,
       });
