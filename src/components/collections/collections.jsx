@@ -391,16 +391,19 @@ class CollectionsComponent extends Component {
 
   handleCustomDomain(collection) {
     console.log(collection);
-    this.setState({ showCustomDomainModal: true });
+    this.setState({
+      showCustomDomainModal: true,
+      selectedCollection: collection.id,
+    });
   }
 
   openCustomDomainModal(onHide) {
-    console.log("hi");
     return (
       <CustomDomainModal
         {...this.props}
         show={true}
         onHide={onHide}
+        collection_id={this.state.selectedCollection}
         // add_new_endpoint={this.handleAddEndpoint.bind(this)}
         // open_collection_form={this.openCollectionForm.bind(this)}
         // open_environment_form={this.openEnvironmentForm.bind(this)}

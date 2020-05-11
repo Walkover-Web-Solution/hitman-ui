@@ -21,7 +21,8 @@ class CustomDomainModal extends Form {
 
   doSubmit() {
     herokuApiService.updateConfigVars({
-      [this.state.data.domain]: this.state.data.title,
+      [this.state.data
+        .domain]: `${this.state.data.title},${this.props.collection_id}`,
     });
     herokuApiService.createDomain(this.state.data.domain);
     endpointApiService.apiTest(
@@ -43,6 +44,7 @@ class CustomDomainModal extends Form {
         "Content-Type": "application/json",
       }
     );
+
     this.props.onHide();
   }
 

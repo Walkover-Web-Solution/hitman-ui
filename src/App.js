@@ -5,11 +5,21 @@ import Logout from "./components/auth/logout";
 import ProtectedRoute from "./components/common/protectedRoute";
 import Main from "./components/main/Main.jsx";
 import Public from "./components/publicEndpoint/publicEndpoint.jsx";
+import { Redirect } from "react-router-dom";
 
 class App extends Component {
   render() {
-    if (this.props) {
-      console.log(this.props);
+    console.log(window.location.href.split("/")[2]);
+
+    if (window.location.href.split("/")[2] !== "hitman-ui.herokuapp.com") {
+      if (process.env && process.env[window.location.href.split("/")[2]]) {
+        const baseUrl = window.location.href.split("/")[2];
+        const clientDetails = process.env[baseUrl].split(",");
+        const clientTitle = clientDetails[0];
+        const clientDomain = window.location.href.split("/")[2];
+        const clientCollectionId = clientDetails[1];
+        return <Redirect to={`/dashboard/public/${clientCollectionId}`} />;
+      }
     }
     return (
       <Switch>
