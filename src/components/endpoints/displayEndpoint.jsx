@@ -1102,6 +1102,7 @@ class DisplayEndpoint extends Component {
     body.value.map((o) => formData.set(o.key, o.value));
     return formData;
   }
+
   formatBody(body, headers) {
     let finalBodyValue = null;
     switch (body.type) {
@@ -1155,7 +1156,7 @@ class DisplayEndpoint extends Component {
           authorizationType
         );
       }
-
+      console.log(authResponses);
       if (endpoint.groupId) {
         await endpointApiService.setAuthorizationResponse(
           groups[endpoint.groupId].versionId,

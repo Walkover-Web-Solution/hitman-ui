@@ -32,10 +32,15 @@ class Authorization extends Component {
       this.props.groupId !== undefined &&
       this.props.groupId !== null
     ) {
+      console.log(
+        "innn",
+        this.props.versions[this.props.groups[this.props.groupId].versionId]
+      );
       this.authResponses = this.props.versions[
         this.props.groups[this.props.groupId].versionId
       ].authorizationResponse;
       if (this.authResponses === null) {
+        console.log("this.authResponses", this.authResponses);
         this.authResponses = [];
       }
     }
@@ -154,6 +159,7 @@ class Authorization extends Component {
   }
 
   closeManageTokenModel() {
+    console.log("this.authResponses", this.authResponses);
     this.setState({ openManageTokenModel: false });
   }
 
@@ -167,6 +173,10 @@ class Authorization extends Component {
     let oauth_2 = { ...this.state.oauth_2 };
     oauth_2.accessToken = accessToken;
     this.setState({ oauth_2 });
+  }
+
+  setAuthResponses(authResponses) {
+    this.authResponses = authResponses;
   }
 
   render() {
@@ -205,6 +215,7 @@ class Authorization extends Component {
             onHide={() => this.closeManageTokenModel()}
             title="MANAGE ACCESS TOKENS"
             set_access_token={this.setAccessToken.bind(this)}
+            set_auth_responses={this.setAuthResponses.bind(this)}
           ></AccessTokenManager>
         )}
         <div className="authorization-selector-wrapper">

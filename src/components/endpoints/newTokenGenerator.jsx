@@ -17,7 +17,7 @@ class TokenGenerator extends Component {
       clientSecret: "",
       scope: "",
       state: "",
-      clientAuthentication: "",
+      clientAuthentication: "Send as Basic Auth header",
     },
   };
 
@@ -87,6 +87,14 @@ class TokenGenerator extends Component {
       requestApi =
         this.state.data.authUrl + "?" + params + "&response_type=token";
     }
+    if (
+      grantType === "passwordCredentials" ||
+      grantType === "clientCredentials"
+    ) {
+      requestApi =
+        this.state.data.accessTokenUrl + "?" + params + "&response_type=token";
+      console.log("requestApi", requestApi);
+    }
 
     if (this.props.groupId) {
       await endpointApiService.setAuthorizationData(
@@ -105,42 +113,55 @@ class TokenGenerator extends Component {
         data
       );
     }
-
-    endpointApiService.authorize(requestApi);
+    // endpointApiService.authorize(requestApi);
   }
 
   makeParams(grantType) {
     // tokenName: "",
-    // grantType: "",
-    // callbackUrl: "",
-    // authUrl: "",
-    // username: "",
-    // password: "",
-    // accessTokenUrl: "",
-    // clientId: "",
-    // clientSecret: "",
-    // scope: "",
-    // state: "",
-    // clientAuthentication: "",
+    //   grantType: "authorizationCode",
+    //   callbackUrl: "",
+    //   authUrl: "",
+    //   username: "",
+    //   password: "",
+    //   accessTokenUrl: "",
+    //   client_id: "",
+    //   clientSecret: "",
+    //   scope: "",
+    //   state: "",
+    //   clientAuthentication: "Send as Basic Auth header",
     let params = {};
     let data = { ...this.state.data };
     let keys = Object.keys(data);
     for (let i = 0; i < keys.length; i++) {
       switch (keys[i]) {
+        case "username":
+          if (grantType === "passwordCredentials") {
+            params["username"] = data[keys[i]];
+          }
+          break;
+        case "password":
+          if (grantType === "passwordCredentials") {
+            params["password"] = data[keys[i]];
+          }
+          break;
         case "callbackUrl":
           if (grantType === "implicit") {
             params["redirect_uri"] = data[keys[i]];
           }
           break;
         case "clientId":
-          if (grantType === "implicit") {
-            params["client_id"] = data[keys[i]];
+          params["client_id"] = data[keys[i]];
+          break;
+        case "clientSecret":
+          if (
+            grantType === "passwordCredentials" ||
+            grantType === "clientCredentials"
+          ) {
+            params["clientSecret"] = data[keys[i]];
           }
           break;
         case "scope":
-          if (grantType === "implicit") {
-            params[keys[i]] = data[keys[i]];
-          }
+          params[keys[i]] = data[keys[i]];
           break;
         case "state":
           if (grantType === "implicit") {
@@ -152,6 +173,12 @@ class TokenGenerator extends Component {
       }
     }
     return params;
+  }
+
+  setClientAuthorization(e) {
+    let data = this.state.data;
+    data.clientAuthentication = e.currentTarget.value;
+    this.setState({ data });
   }
 
   renderInput(key) {
@@ -180,6 +207,37 @@ class TokenGenerator extends Component {
                   {this.grantTypes[key]}
                 </button>
               ))}
+            </div>
+          </div>
+        );
+      case "clientAuthentication":
+        return (
+          <div className="dropdown">
+            <label>{this.inputFields[key]}</label>
+            <button
+              className="btn dropdown-toggle"
+              id="dropdownMenuButton"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
+              {this.state.data.clientAuthentication}
+            </button>
+            <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <button
+                value="Send as Basic Auth header"
+                onClick={this.setClientAuthorization.bind(this)}
+                className="btn custom-request-button"
+              >
+                Send as Basic Auth header
+              </button>
+              <button
+                value="Send client credentials in body"
+                onClick={this.setClientAuthorization.bind(this)}
+                className="btn custom-request-button"
+              >
+                Send client credentials in body
+              </button>
             </div>
           </div>
         );
