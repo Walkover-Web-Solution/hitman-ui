@@ -139,13 +139,6 @@ class ShareCollectionForm extends Component {
   }
 
   handlePublic(collection) {
-    // this.setState({
-    //   selectedEnvironment: this.props.location.selectedPublicEnvironment,
-    // });
-    // this.props.history.push({
-    //   publicCollection: collection,
-    //   Environment: "setCollectionEnvironment",
-    // });
     collection.isPublic = !collection.isPublic;
     if (collection.isPublic) {
       collection.environment = this.props.location.selectedPublicEnvironment;
