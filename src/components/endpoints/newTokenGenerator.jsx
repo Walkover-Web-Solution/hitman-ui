@@ -5,10 +5,9 @@ var URI = require("urijs");
 
 class TokenGenerator extends Component {
   state = {
-    grantType: "authorizationCode",
     data: {
       tokenName: "",
-      grantType: "",
+      grantType: "authorizationCode",
       callbackUrl: "",
       authUrl: "",
       username: "",
@@ -59,18 +58,19 @@ class TokenGenerator extends Component {
   };
 
   setGrantType(key) {
-    this.setState({ grantType: key });
+    let data = this.state.data;
+    data.grantType = key;
+    this.setState({ data });
   }
 
   handleChange(e) {
     let data = { ...this.state.data };
     data[e.currentTarget.name] = e.currentTarget.value;
-    console.log("data", data);
     this.setState({ data });
   }
 
   async makeRequest() {
-    let grantType = this.state.grantType;
+    let grantType = this.state.data.grantType;
     let requestApi = "";
     let params = this.makeParams(grantType);
     params = URI.buildQuery(params);
@@ -81,9 +81,7 @@ class TokenGenerator extends Component {
     //       paramsObject[keys[i]] = this.state.data[keys[i]];
     //     }
     //   }
-    //   console.log("paramsObject", paramsObject);
     //   requestApi = URI.buildQuery(paramsObject);
-    //   console.log("requestApi", requestApi);
     // }
     if (grantType === "implicit") {
       requestApi =
@@ -94,6 +92,17 @@ class TokenGenerator extends Component {
       await endpointApiService.setAuthorizationData(
         this.props.groups[this.props.groupId].versionId,
         this.state.data
+      );
+    }
+
+    if (this.props.location.pathname.split("/")[3] !== "new") {
+      let data = {
+        type: "oauth_2",
+        value: this.props.oauth_2,
+      };
+      await endpointApiService.setAuthorizationType(
+        this.props.location.pathname.split("/")[3],
+        data
       );
     }
 
@@ -142,11 +151,12 @@ class TokenGenerator extends Component {
           continue;
       }
     }
-    console.log(params);
     return params;
   }
 
   renderInput(key) {
+    let grantType = this.state.data.grantType;
+
     switch (key) {
       case "grantType":
         return (
@@ -159,7 +169,7 @@ class TokenGenerator extends Component {
               aria-haspopup="true"
               aria-expanded="false"
             >
-              {this.grantTypes[this.state.grantType]}
+              {this.grantTypes[grantType]}
             </button>
             <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
               {Object.keys(this.grantTypes).map((key) => (
@@ -174,49 +184,40 @@ class TokenGenerator extends Component {
           </div>
         );
       case "callbackUrl":
-        if (
-          this.state.grantType === "authorizationCode" ||
-          this.state.grantType === "implicit"
-        ) {
+        if (grantType === "authorizationCode" || grantType === "implicit") {
           return this.fetchDefaultInputField(key);
         }
         break;
       case "authUrl":
-        if (
-          this.state.grantType === "authorizationCode" ||
-          this.state.grantType === "implicit"
-        ) {
+        if (grantType === "authorizationCode" || grantType === "implicit") {
           return this.fetchDefaultInputField(key);
         }
         break;
       case "state":
-        if (
-          this.state.grantType === "authorizationCode" ||
-          this.state.grantType === "implicit"
-        ) {
+        if (grantType === "authorizationCode" || grantType === "implicit") {
           return this.fetchDefaultInputField(key);
         }
         break;
       case "username":
-        if (this.state.grantType === "passwordCredentials") {
+        if (grantType === "passwordCredentials") {
           return this.fetchDefaultInputField(key);
         }
         break;
       case "password":
-        if (this.state.grantType === "passwordCredentials") {
+        if (grantType === "passwordCredentials") {
           return this.fetchDefaultInputField(key);
         }
         break;
       case "accessTokenUrl":
-        if (this.state.grantType === "implicit") {
+        if (grantType === "implicit") {
           return;
         }
-        break;
+        return this.fetchDefaultInputField(key);
       case "clientSecret":
-        if (this.state.grantType === "implicit") {
+        if (grantType === "implicit") {
           return;
         }
-        break;
+        return this.fetchDefaultInputField(key);
       default:
         return this.fetchDefaultInputField(key);
     }
@@ -236,8 +237,6 @@ class TokenGenerator extends Component {
   }
 
   render() {
-    console.log("sasa", this.props.title);
-
     return (
       <div>
         <Modal

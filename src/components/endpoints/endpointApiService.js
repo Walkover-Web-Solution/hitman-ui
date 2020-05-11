@@ -56,14 +56,19 @@ export function authorize(requestApi) {
 }
 
 export function setAuthorizationData(versionId, data) {
-  console.log(versionId, data);
   return http.patch(`${apiUrl}/versions/${versionId}/authorizationData`, data);
 }
 
 export function setAuthorizationResponse(versionId, data) {
-  console.log("setAuthorizationResponse", data);
   return http.patch(
     `${apiUrl}/versions/${versionId}/authorizationResponse`,
+    data
+  );
+}
+
+export function setAuthorizationType(endpointId, data) {
+  return http.patch(
+    `${apiUrl}/endpoints/${endpointId}/authorizationType`,
     data
   );
 }
@@ -81,4 +86,5 @@ export default {
   authorize,
   setAuthorizationData,
   setAuthorizationResponse,
+  setAuthorizationType,
 };

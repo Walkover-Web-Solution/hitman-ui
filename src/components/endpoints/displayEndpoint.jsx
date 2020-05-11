@@ -241,7 +241,7 @@ class DisplayEndpoint extends Component {
         bodyFlag: true,
         response: {},
       });
-      this.setAccessToken(endpoint, versions, groups);
+      this.setAccessToken(endpoint, versions, groups, authType);
     }
   }
 
@@ -1128,10 +1128,11 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  async setAccessToken(endpoint, versions, groups) {
+  async setAccessToken(endpoint, versions, groups, authType) {
     let url = window.location.href;
+    let response = URI.parseQuery("?" + url.split("#")[1]);
     if (url.split("#")[1]) {
-      let response = URI.parseQuery("?" + url.split("#")[1]);
+      this.setAuthorizationTab = true;
       this.accessToken = response.access_token;
       response.tokenName =
         versions[
@@ -1144,6 +1145,15 @@ class DisplayEndpoint extends Component {
       } else {
         authResponses = [];
         authResponses.push(response);
+      }
+
+      if (endpoint.groupId) {
+        let authorizationType = authType;
+        authorizationType.value.accessToken = response.access_token;
+        await endpointApiService.setAuthorizationType(
+          this.props.location.pathname.split("/")[3],
+          authorizationType
+        );
       }
 
       if (endpoint.groupId) {
@@ -1323,26 +1333,30 @@ class DisplayEndpoint extends Component {
               <ul className="nav nav-tabs" id="pills-tab" role="tablist">
                 <li className="nav-item">
                   <a
-                    className="nav-link active"
+                    className={
+                      this.setAuthorizationTab ? "nav-link " : "nav-link active"
+                    }
                     id="pills-params-tab"
                     data-toggle="pill"
                     href={`#params-${this.props.tab.id}`}
                     role="tab"
                     aria-controls={`params-${this.props.tab.id}`}
-                    aria-selected="true"
+                    aria-selected={this.setAuthorizationTab ? "false" : "true"}
                   >
                     Params
                   </a>
                 </li>
                 <li className="nav-item">
                   <a
-                    className="nav-link"
+                    className={
+                      this.setAuthorizationTab ? "nav-link active" : "nav-link "
+                    }
                     id="pills-authorization-tab"
                     data-toggle="pill"
                     href={`#authorization-${this.props.tab.id}`}
                     role="tab"
                     aria-controls={`authorization-${this.props.tab.id}`}
-                    aria-selected="false"
+                    aria-selected={this.setAuthorizationTab ? "true" : "false"}
                   >
                     Authorization
                   </a>
@@ -1379,7 +1393,11 @@ class DisplayEndpoint extends Component {
           {isDashboardRoute(this.props) ? (
             <div className="tab-content" id="pills-tabContent">
               <div
-                className="tab-pane fade show active"
+                className={
+                  this.setAuthorizationTab
+                    ? "tab-pane fade"
+                    : "tab-pane fade show active"
+                }
                 id={`params-${this.props.tab.id}`}
                 role="tabpanel"
                 aria-labelledby="pills-params-tab"
@@ -1405,7 +1423,11 @@ class DisplayEndpoint extends Component {
                   )}
               </div>
               <div
-                className="tab-pane fade"
+                className={
+                  this.setAuthorizationTab
+                    ? "tab-pane fade show active"
+                    : "tab-pane fade "
+                }
                 id={`authorization-${this.props.tab.id}`}
                 role="tabpanel"
                 aria-labelledby="pills-authorization-tab"

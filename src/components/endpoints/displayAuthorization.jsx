@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import "./endpoints.scss";
 import TokenGenerator from "./newTokenGenerator";
 import AccessTokenManager from "./displayTokenManager";
+
 class Authorization extends Component {
   state = {
     basicAuth: {
@@ -10,7 +11,7 @@ class Authorization extends Component {
     },
     oauth_2: {
       authorizationAddedTo: "Request Headers",
-      access_token: "",
+      accessToken: "",
     },
     authorizationType: "noAuth",
   };
@@ -18,6 +19,7 @@ class Authorization extends Component {
   componentDidMount() {
     this.authResponses = [];
   }
+
   componentDidUpdate() {
     this.fetchAuthorizationResponse();
   }
@@ -148,13 +150,25 @@ class Authorization extends Component {
   }
 
   openManageTokenModel() {
-    console.log("openManageTokenModel");
     this.setState({ openManageTokenModel: true });
   }
 
   closeManageTokenModel() {
     this.setState({ openManageTokenModel: false });
   }
+
+  selectAccessToken(index) {
+    let oauth_2 = this.state.oauth_2;
+    oauth_2.accessToken = this.authResponses[index].access_token;
+    this.setState({ oauth_2 });
+  }
+
+  setAccessToken(accessToken) {
+    let oauth_2 = { ...this.state.oauth_2 };
+    oauth_2.accessToken = accessToken;
+    this.setState({ oauth_2 });
+  }
+
   render() {
     if (this.props.authorizationType) {
       const authType = this.props.authorizationType.type;
@@ -176,6 +190,7 @@ class Authorization extends Component {
         {this.state.getNewAccessToken === true && (
           <TokenGenerator
             {...this.props}
+            oauth_2={this.state.oauth_2}
             groupId={this.props.groupId}
             show={true}
             onHide={() => this.closeGetNewAccessTokenModal()}
@@ -188,7 +203,8 @@ class Authorization extends Component {
             authResponses={this.authResponses}
             show={true}
             onHide={() => this.closeManageTokenModel()}
-            title="MANAGE ACCESS TOKEN"
+            title="MANAGE ACCESS TOKENS"
+            set_access_token={this.setAccessToken.bind(this)}
           ></AccessTokenManager>
         )}
         <div className="authorization-selector-wrapper">
@@ -294,7 +310,7 @@ class Authorization extends Component {
               <div className="input-field-wrapper">
                 <label>Access Token</label>
                 <input
-                  value={this.props.accessToken}
+                  value={this.state.oauth_2.accessToken}
                   name="accessToken"
                 ></input>
               </div>
@@ -313,11 +329,11 @@ class Authorization extends Component {
                   className="dropdown-menu"
                   aria-labelledby="dropdownMenuButton"
                 >
-                  {this.authResponses.map((response) => (
+                  {this.authResponses.map((response, index) => (
                     <button
                       type="button"
                       className="btn custom-request-button"
-                      // onClick={() => this.setAuthorizationType(key)}
+                      onClick={() => this.selectAccessToken(index)}
                     >
                       {response.tokenName}
                     </button>
@@ -327,7 +343,9 @@ class Authorization extends Component {
                     className="btn custom-request-button"
                     onClick={() => this.openManageTokenModel()}
                   >
-                    Manage Tokens
+                    {this.authResponses.length !== 0
+                      ? "Manage Tokens"
+                      : "No Tokens Available"}
                   </button>
                 </div>
               </div>
