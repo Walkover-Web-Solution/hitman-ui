@@ -140,7 +140,6 @@ class Environments extends Component {
       this.props.location.Environment === "setCollectionEnvironment" &&
       !this.props.location.dashboardEnvironment
     ) {
-      console.log("zzzz");
       if (!this.props.location.publishedCollectionEnv) {
         return (
           <div className="select-environment-dropdown">
@@ -177,7 +176,6 @@ class Environments extends Component {
       }
     } else {
       if (isDashboardRoute(this.props)) {
-        console.log("ddd");
         return (
             <div className="environment-container">
               {(this.state.environmentFormName === "Add new Environment" ||
@@ -335,8 +333,6 @@ class Environments extends Component {
         );
       }
       if (!isDashboardRoute(this.props)) {
-        console.log("this.props",this.props);
-        console.log("this.state",this.state)
         if (
           env === undefined &&
           this.state.publicCollectionEnvironmentId != null
