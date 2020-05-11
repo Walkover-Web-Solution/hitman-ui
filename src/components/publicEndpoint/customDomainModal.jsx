@@ -20,6 +20,10 @@ class CustomDomainModal extends Form {
   };
 
   doSubmit() {
+    this.props.add_custom_domain(
+      this.state.data.domain,
+      this.props.collection_id
+    );
     herokuApiService.updateConfigVars({
       [this.state.data
         .domain]: `${this.state.data.title},${this.props.collection_id}`,

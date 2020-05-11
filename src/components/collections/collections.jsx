@@ -19,6 +19,7 @@ import {
   deleteCollection,
   duplicateCollection,
   updateCollection,
+  addCustomDomain,
 } from "./redux/collectionsActions";
 import ShareCollectionForm from "./shareCollectionForm";
 import { uiUrl } from "../../config.json";
@@ -49,6 +50,8 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(duplicateCollection(collection)),
     fetch_all_users_of_team: (teamIdentifier) =>
       dispatch(fetchAllUsersOfTeam(teamIdentifier)),
+    add_custom_domain: (domain, collectionId) =>
+      dispatch(addCustomDomain(domain, collectionId)),
   };
 };
 
@@ -390,7 +393,6 @@ class CollectionsComponent extends Component {
   }
 
   handleCustomDomain(collection) {
-    console.log(collection);
     this.setState({
       showCustomDomainModal: true,
       selectedCollection: collection.id,

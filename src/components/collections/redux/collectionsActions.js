@@ -230,3 +230,28 @@ export const onCollectionDuplicatedError = (error) => {
     error,
   };
 };
+
+export const addCustomDomain = (domain, collectionId) => {
+  return (dispatch) => {
+    const collection = store.getState().collections[collectionId];
+    collection.customDomain = domain;
+    dispatch(updateCollectionRequest({ ...collection }));
+
+    const id = collection.id;
+    delete collection.id;
+    delete collection.teamId;
+    collectionsApiService
+      .updateCollection(id, collection)
+      .then((response) => {
+        dispatch(onCollectionUpdated(response.data));
+      })
+      .catch((error) => {
+        dispatch(
+          onCollectionUpdatedError(
+            error.response ? error.response.data : error,
+            collection
+          )
+        );
+      });
+  };
+};
