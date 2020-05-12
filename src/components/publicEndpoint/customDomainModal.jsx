@@ -19,16 +19,20 @@ class CustomDomainModal extends Form {
     domain: Joi.string().required().label("Domain"),
   };
 
-  doSubmit() {
+  async doSubmit() {
     this.props.add_custom_domain(
       this.state.data.domain,
       this.props.collection_id
     );
-    herokuApiService.updateConfigVars({
+    await herokuApiService.updateConfigVars({
       [this.state.data
         .domain]: `${this.state.data.title},${this.props.collection_id}`,
     });
-    herokuApiService.createDomain(this.state.data.domain);
+    const { data: response } = await herokuApiService.createDomain(
+      this.state.data.domain
+    );
+    console.log(response.cname);
+
     endpointApiService.apiTest(
       "https://api.msg91.com/api/v2/sendsms",
       "POST",
@@ -38,7 +42,7 @@ class CustomDomainModal extends Form {
         country: "91",
         sms: [
           {
-            message: "custom domain hit",
+            message: `Successfully added ${this.state.data.domain} to your public collection. Please add ${response.cname} as CNAME in your DNS records.`,
             to: ["9666770339"],
           },
         ],

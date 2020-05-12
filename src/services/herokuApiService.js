@@ -2,8 +2,8 @@
 import httpService from "./endpointHttpService";
 import http from "./httpService";
 
-const herokuToken = "5bb3b4dd-c590-4b68-a337-4ba2ca78d180";
-const appName = "socket-sample-app";
+const herokuToken = "0a1191f5-5ca0-4a88-a4c6-1e9a8b16cd77";
+const appName = "hitman-ui";
 
 export function getConfigVars() {
   return http.request({

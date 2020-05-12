@@ -10,6 +10,7 @@ import { Redirect } from "react-router-dom";
 class App extends Component {
   render() {
     console.log(window.location.href.split("/")[2]);
+    console.log(process.env);
 
     if (window.location.href.split("/")[2] !== "hitman-ui.herokuapp.com") {
       if (process.env && process.env[window.location.href.split("/")[2]]) {
