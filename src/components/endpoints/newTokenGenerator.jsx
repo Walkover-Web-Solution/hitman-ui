@@ -93,7 +93,6 @@ class TokenGenerator extends Component {
     ) {
       requestApi =
         this.state.data.accessTokenUrl + "?" + params + "&response_type=token";
-      console.log("requestApi", requestApi);
     }
 
     if (this.props.groupId) {
@@ -113,7 +112,9 @@ class TokenGenerator extends Component {
         data
       );
     }
-    // endpointApiService.authorize(requestApi);
+
+    console.log("requestApi", requestApi);
+    endpointApiService.authorize(requestApi);
   }
 
   makeParams(grantType) {

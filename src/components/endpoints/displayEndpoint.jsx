@@ -18,6 +18,7 @@ import HostContainer from "./hostContainer";
 import PublicBodyContainer from "./publicBodyContainer";
 import { addEndpoint, updateEndpoint } from "./redux/endpointsActions";
 import Authorization from "./displayAuthorization";
+import collectionVersionsApiService from "../collectionVersions/collectionVersionsApiService";
 const status = require("http-status");
 var URI = require("urijs");
 
@@ -1036,7 +1037,10 @@ class DisplayEndpoint extends Component {
       description: "",
     };
     for (let i = 0; i < originalHeaders.length; i++) {
-      if (originalHeaders[i].key === title || originalHeaders[i].key === "") {
+      if (
+        originalHeaders[i].key === title.split(".")[0] ||
+        originalHeaders[i].key === ""
+      ) {
         continue;
       } else {
         updatedHeaders.push(originalHeaders[i]);
@@ -1051,7 +1055,12 @@ class DisplayEndpoint extends Component {
       updatedHeaders.push({
         checked: "true",
         key: title === "content-type" ? "content-type" : "Authorization",
-        value: title === "Authorization" ? "Basic " + value : "",
+        value:
+          title.split(".")[0] === "Authorization"
+            ? title.split(".")[1] === "oauth_2"
+              ? "Bearer " + value
+              : "Basic " + value
+            : "",
         description: "",
       });
     }
@@ -1156,13 +1165,14 @@ class DisplayEndpoint extends Component {
           authorizationType
         );
       }
-      console.log(authResponses);
+
       if (endpoint.groupId) {
-        await endpointApiService.setAuthorizationResponse(
+        await collectionVersionsApiService.setAuthorizationResponse(
           groups[endpoint.groupId].versionId,
           authResponses
         );
       }
+      this.props.history.push(`/dashboard/endpoint/${endpoint.id}`);
     }
   }
 

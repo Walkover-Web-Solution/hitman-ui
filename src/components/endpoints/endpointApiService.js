@@ -59,13 +59,6 @@ export function setAuthorizationData(versionId, data) {
   return http.patch(`${apiUrl}/versions/${versionId}/authorizationData`, data);
 }
 
-export function setAuthorizationResponse(versionId, data) {
-  return http.patch(
-    `${apiUrl}/versions/${versionId}/authorizationResponse`,
-    data
-  );
-}
-
 export function setAuthorizationType(endpointId, data) {
   return http.patch(
     `${apiUrl}/endpoints/${endpointId}/authorizationType`,
@@ -85,6 +78,5 @@ export default {
   moveEndpoint,
   authorize,
   setAuthorizationData,
-  setAuthorizationResponse,
   setAuthorizationType,
 };

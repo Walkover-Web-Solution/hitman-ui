@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import "./endpoints.scss";
 import TokenGenerator from "./newTokenGenerator";
 import AccessTokenManager from "./displayTokenManager";
+import collectionVersionsApiService from "../collectionVersions/collectionVersionsApiService";
 
 class Authorization extends Component {
   state = {
@@ -32,15 +33,10 @@ class Authorization extends Component {
       this.props.groupId !== undefined &&
       this.props.groupId !== null
     ) {
-      console.log(
-        "innn",
-        this.props.versions[this.props.groups[this.props.groupId].versionId]
-      );
       this.authResponses = this.props.versions[
         this.props.groups[this.props.groupId].versionId
       ].authorizationResponse;
       if (this.authResponses === null) {
-        console.log("this.authResponses", this.authResponses);
         this.authResponses = [];
       }
     }
@@ -60,7 +56,7 @@ class Authorization extends Component {
           "access_token",
           "authorizationFlag"
         );
-        this.props.set_authorization_headers("", "Authorization");
+        this.props.set_authorization_headers("", "Authorization.basicAuth");
         this.props.set_authoriztaion_type(type, value);
         break;
       case "noAuth":
@@ -70,18 +66,26 @@ class Authorization extends Component {
           "access_token",
           "authorizationFlag"
         );
-        this.props.set_authorization_headers("noAuth", "Authorization");
+        this.props.set_authorization_headers("noAuth", "Authorization.noAuth");
         this.props.set_authoriztaion_type("", "");
         break;
       case "oauth_2":
+        this.props.set_authoriztaion_type(type, value);
         value = this.state.oauth_2;
         this.setState({ authorizationType: "oauth_2" });
-        if (this.state.oauth_2.authorizationAddedTo === "Request Headers") {
-          this.props.set_authorization_headers("", "Authorization");
-        } else {
-          this.props.set_authoriztaion_params("", "access_token");
+        if (this.state.oauth_2.accessToken !== "") {
+          if (this.state.oauth_2.authorizationAddedTo === "Request Headers") {
+            this.props.set_authorization_headers(
+              this.state.oauth_2.accessToken,
+              "Authorization.oauth_2"
+            );
+          } else {
+            this.props.set_authoriztaion_params(
+              this.state.oauth_2.accessToken,
+              "access_token"
+            );
+          }
         }
-        this.props.set_authoriztaion_type(type, value);
         break;
       default:
         break;
@@ -119,30 +123,40 @@ class Authorization extends Component {
     };
     this.props.set_authoriztaion_type("basicAuth", value);
     let encodedValue = new Buffer(username + ":" + password).toString("base64");
-    this.props.set_authorization_headers(encodedValue, "Authorization");
+    this.props.set_authorization_headers(
+      encodedValue,
+      "Authorization.basicAuth"
+    );
   }
 
   setAuthorizationAddedTo(key) {
     let oauth_2 = { ...this.state.oauth_2 };
     oauth_2.authorizationAddedTo = key;
     this.setState({ oauth_2 });
-
-    if (key === "Request Headers") {
-      this.props.set_authorization_headers("", "Authorization");
-      this.props.set_authoriztaion_params(
-        "",
-        "access_token",
-        "authorizationFlag"
-      );
-      this.props.set_authoriztaion_type("oauth_2", oauth_2);
-    } else {
-      this.props.set_authorization_headers(
-        "",
-        "Authorization",
-        "authorizationFlag"
-      );
-      this.props.set_authoriztaion_params("", "access_token");
-      this.props.set_authoriztaion_type("oauth_2", oauth_2);
+    if (this.state.oauth_2.accessToken !== "") {
+      if (key === "Request Headers") {
+        this.props.set_authorization_headers(
+          this.state.oauth_2.accessToken,
+          "Authorization.oauth_2"
+        );
+        this.props.set_authoriztaion_params(
+          "",
+          "access_token",
+          "authorizationFlag"
+        );
+        this.props.set_authoriztaion_type("oauth_2", oauth_2);
+      } else {
+        this.props.set_authorization_headers(
+          "",
+          "Authorization",
+          "authorizationFlag"
+        );
+        this.props.set_authoriztaion_params(
+          this.state.oauth_2.accessToken,
+          "access_token"
+        );
+        this.props.set_authoriztaion_type("oauth_2", oauth_2);
+      }
     }
   }
 
@@ -159,7 +173,11 @@ class Authorization extends Component {
   }
 
   closeManageTokenModel() {
-    console.log("this.authResponses", this.authResponses);
+    let versionId = this.props.groups[this.props.groupId].versionId;
+    collectionVersionsApiService.setAuthorizationResponse(
+      versionId,
+      this.authResponses
+    );
     this.setState({ openManageTokenModel: false });
   }
 
@@ -167,16 +185,58 @@ class Authorization extends Component {
     let oauth_2 = this.state.oauth_2;
     oauth_2.accessToken = this.authResponses[index].access_token;
     this.setState({ oauth_2 });
+    this.setHeadersandParams(
+      this.authResponses[index].access_token,
+      this.state.oauth_2.authorizationAddedTo
+    );
+  }
+
+  setHeadersandParams(accessToken, authorizationAddedTo) {
+    if (accessToken === "") {
+      this.props.set_authoriztaion_params(
+        "",
+        "access_token",
+        "authorizationFlag"
+      );
+      this.props.set_authorization_headers("noAuth", "Authorization");
+    } else {
+      if (authorizationAddedTo === "Request Headers") {
+        this.props.set_authorization_headers(
+          accessToken,
+          "Authorization.oauth_2"
+        );
+        this.props.set_authoriztaion_params(
+          "",
+          "access_token",
+          "authorizationFlag"
+        );
+      } else {
+        this.props.set_authoriztaion_params(accessToken, "access_token");
+        this.props.set_authorization_headers("noAuth", "Authorization");
+      }
+    }
   }
 
   setAccessToken(accessToken) {
     let oauth_2 = { ...this.state.oauth_2 };
     oauth_2.accessToken = accessToken;
     this.setState({ oauth_2 });
+    this.setHeadersandParams(accessToken, oauth_2.authorizationAddedTo);
   }
 
   setAuthResponses(authResponses) {
     this.authResponses = authResponses;
+    if (authResponses.length === 0) {
+      this.closeManageTokenModel();
+    }
+  }
+
+  updateAccessToken(e) {
+    let accessToken = e.currentTarget.value;
+    let oauth_2 = this.state.oauth_2;
+    oauth_2.accessToken = accessToken;
+    this.setState({ oauth_2 });
+    this.setHeadersandParams(accessToken);
   }
 
   render() {
@@ -192,6 +252,10 @@ class Authorization extends Component {
         if (authType === "oauth_2") {
           this.setState({ oauth_2: this.props.authorizationType.value });
         }
+        this.setHeadersandParams(
+          this.props.authorizationType.value.accessToken,
+          this.props.authorizationType.value.authorizationAddedTo
+        );
       }
     }
 
@@ -322,6 +386,7 @@ class Authorization extends Component {
                 <label>Access Token</label>
                 <input
                   value={this.state.oauth_2.accessToken}
+                  onChange={this.updateAccessToken.bind(this)}
                   name="accessToken"
                 ></input>
               </div>
