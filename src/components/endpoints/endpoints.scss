@@ -619,3 +619,73 @@ pre.__json-pretty-error__ {
   justify-content: space-between;
   align-items: center;
 }
+.authorization-panel {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  background-color: white;
+}
+
+.authorization-selector-wrapper {
+  flex: 0.35;
+  padding: 20px;
+  border-right: 3px solid $border-color;
+  flex-direction: column;
+  label {
+    font-size: 13px;
+    opacity: 0.8;
+  }
+  .auth-selector-container {
+    .dropdown {
+      background-color: #f1f1f1;
+      button#dropdownMenuButton {
+        width: 100%;
+        text-align: left;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .dropdown-menu.show {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        .btn {
+          padding-top: 3px;
+        }
+      }
+    }
+  }
+}
+
+.authorization-editor-wrapper {
+  flex: 1;
+}
+
+.auth-description {
+  padding-top: 20px;
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+.authorization-editor-wrapper {
+  padding: 30px;
+  display: flex;
+  form {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    .input-field-wrapper {
+      display: flex;
+      flex-direction: row;
+      padding-bottom: 10px;
+      label {
+        flex: 0.7;
+      }
+
+      input {
+        flex: 1.6;
+      }
+    }
+  }
+}

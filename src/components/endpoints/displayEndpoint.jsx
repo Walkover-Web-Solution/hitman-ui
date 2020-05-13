@@ -17,6 +17,8 @@ import GenericTable from "./genericTable";
 import HostContainer from "./hostContainer";
 import PublicBodyContainer from "./publicBodyContainer";
 import { addEndpoint, updateEndpoint } from "./redux/endpointsActions";
+import Authorization from "./displayAuthorization";
+import collectionVersionsApiService from "../collectionVersions/collectionVersionsApiService";
 const status = require("http-status");
 var URI = require("urijs");
 
@@ -80,6 +82,7 @@ class DisplayEndpoint extends Component {
         description: "",
       },
     ],
+    authType: null,
     oldDescription: "",
     headers: [],
     publicBodyFlag: true,
@@ -111,6 +114,7 @@ class DisplayEndpoint extends Component {
         title: "Add New Endpoint",
         flagResponse: false,
         showDescriptionFlag: false,
+        authType: null,
         originalHeaders: [
           {
             checked: "notApplicable",
@@ -185,6 +189,15 @@ class DisplayEndpoint extends Component {
     ) {
       flag = 1;
       endpoint = endpoints[endpointId];
+      let authType = {};
+      if (endpoint.authorizationType !== null) {
+        authType = {
+          type: endpoint.authorizationType.type,
+          value: endpoint.authorizationType.value,
+        };
+      } else {
+        authType = endpoint.authorizationType;
+      }
 
       const groupId = endpoints[endpointId].groupId;
 
@@ -223,11 +236,13 @@ class DisplayEndpoint extends Component {
         oldDescription: endpoint.description,
         title: "update endpoint",
         bodyDescription: endpoint.bodyDescription,
+        authType,
         fieldDescription,
         publicBodyFlag: true,
         bodyFlag: true,
         response: {},
       });
+      this.setAccessToken(endpoint, versions, groups, authType);
     }
   }
 
@@ -509,6 +524,7 @@ class DisplayEndpoint extends Component {
           this.state.data.body.type === "JSON"
             ? this.state.bodyDescription
             : {},
+        authorizationType: this.state.authType,
       };
       // if (endpoint.name === "" || endpoint.uri === "")
       if (endpoint.name === "") toast.error("Please enter Endpoint name");
@@ -857,7 +873,7 @@ class DisplayEndpoint extends Component {
     let data = { ...this.state.data };
     data.body = { type: bodyType, value: body };
     // if (bodyType !== "multipart/form-data") {
-    this.setHeaders(bodyType);
+    this.setHeaders(bodyType, "content-type");
     // }
     this.setState({ data });
     if (isDashboardRoute(this.props)) {
@@ -946,10 +962,74 @@ class DisplayEndpoint extends Component {
     this.setState({ fieldDescription, bodyDescription });
   }
 
-  setHeaders(bodyType) {
+  // setHeaders(encodedValue) {
+  //   let originalHeaders = this.state.originalHeaders;
+  //   let updatedHeaders = [];
+  //   let emptyHeader = {
+  //     checked: "notApplicable",
+  //     key: "",
+  //     value: "",
+  //     description: "",
+  //   };
+  //   for (let i = 0; i < originalHeaders.length; i++) {
+  //     if (
+  //       originalHeaders[i].key === "Authorization" ||
+  //       originalHeaders[i].key === ""
+  //     ) {
+  //       continue;
+  //     } else {
+  //       updatedHeaders.push(originalHeaders[i]);
+  //     }
+  //   }
+  //   // if (bodyType === "none") {
+  //   //   updatedHeaders.push(emptyHeader);
+  //   //   this.setState({ originalHeaders: updatedHeaders });
+  //   //   return;
+  //   // }
+  //   updatedHeaders.push({
+  //     checked: "true",
+  //     key: "Authorization",
+  //     value: "Basic " + encodedValue,
+  //     description: "",
+  //   });
+  //   // updatedHeaders[updatedHeaders.length - 1].value = this.identifyBodyType(
+  //   //   bodyType
+  //   // );
+  //   updatedHeaders.push(emptyHeader);
+  //   this.setState({ originalHeaders: updatedHeaders });
+  // }
+
+  setParams(value, title, authorizationFlag) {
+    let originalParams = this.state.originalParams;
+    let updatedParams = [];
+    let emptyParam = {
+      checked: "notApplicable",
+      key: "",
+      value: "",
+      description: "",
+    };
+    for (let i = 0; i < originalParams.length; i++) {
+      if (originalParams[i].key === title || originalParams[i].key === "") {
+        continue;
+      } else {
+        updatedParams.push(originalParams[i]);
+      }
+    }
+    if (title === "access_token" && !authorizationFlag) {
+      updatedParams.push({
+        checked: "true",
+        key: title,
+        value: value,
+        description: "",
+      });
+    }
+    updatedParams.push(emptyParam);
+    this.setState({ originalParams: updatedParams });
+  }
+
+  setHeaders(value, title, authorizationFlag = undefined) {
     let originalHeaders = this.state.originalHeaders;
     let updatedHeaders = [];
-    // this.contentTypeFlag = false;
     let emptyHeader = {
       checked: "notApplicable",
       key: "",
@@ -958,7 +1038,7 @@ class DisplayEndpoint extends Component {
     };
     for (let i = 0; i < originalHeaders.length; i++) {
       if (
-        originalHeaders[i].key === "content-type" ||
+        originalHeaders[i].key === title.split(".")[0] ||
         originalHeaders[i].key === ""
       ) {
         continue;
@@ -966,20 +1046,30 @@ class DisplayEndpoint extends Component {
         updatedHeaders.push(originalHeaders[i]);
       }
     }
-    if (bodyType === "none") {
+    if (value === "none") {
       updatedHeaders.push(emptyHeader);
       this.setState({ originalHeaders: updatedHeaders });
       return;
     }
-    updatedHeaders.push({
-      checked: "true",
-      key: "content-type",
-      value: "",
-      description: "",
-    });
-    updatedHeaders[updatedHeaders.length - 1].value = this.identifyBodyType(
-      bodyType
-    );
+    if (value !== "noAuth" && !authorizationFlag) {
+      updatedHeaders.push({
+        checked: "true",
+        key: title === "content-type" ? "content-type" : "Authorization",
+        value:
+          title.split(".")[0] === "Authorization"
+            ? title.split(".")[1] === "oauth_2"
+              ? "Bearer " + value
+              : "Basic " + value
+            : "",
+        description: "",
+      });
+    }
+    if (title === "content-type") {
+      updatedHeaders[updatedHeaders.length - 1].value = this.identifyBodyType(
+        value
+      );
+    }
+
     updatedHeaders.push(emptyHeader);
     this.setState({ originalHeaders: updatedHeaders });
   }
@@ -1021,6 +1111,7 @@ class DisplayEndpoint extends Component {
     body.value.map((o) => formData.set(o.key, o.value));
     return formData;
   }
+
   formatBody(body, headers) {
     let finalBodyValue = null;
     switch (body.type) {
@@ -1045,6 +1136,57 @@ class DisplayEndpoint extends Component {
       default:
         return { body: body.value, headers };
     }
+  }
+
+  async setAccessToken(endpoint, versions, groups, authType) {
+    let url = window.location.href;
+    let response = URI.parseQuery("?" + url.split("#")[1]);
+    if (url.split("#")[1]) {
+      this.setAuthorizationTab = true;
+      this.accessToken = response.access_token;
+      response.tokenName =
+        versions[
+          groups[endpoint.groupId].versionId
+        ].authorizationData.tokenName;
+      let authResponses =
+        versions[groups[endpoint.groupId].versionId].authorizationResponse;
+      if (authResponses !== null) {
+        authResponses.push(response);
+      } else {
+        authResponses = [];
+        authResponses.push(response);
+      }
+
+      if (endpoint.groupId) {
+        let authorizationType = authType;
+        authorizationType.value.accessToken = response.access_token;
+        await endpointApiService.setAuthorizationType(
+          this.props.location.pathname.split("/")[3],
+          authorizationType
+        );
+      }
+
+      if (endpoint.groupId) {
+        await collectionVersionsApiService.setAuthorizationResponse(
+          groups[endpoint.groupId].versionId,
+          authResponses
+        );
+      }
+      this.props.history.push(`/dashboard/endpoint/${endpoint.id}`);
+    }
+  }
+
+  setAuthType(type, value) {
+    let authType = {};
+    if (type === "") {
+      authType = null;
+    } else {
+      authType = {
+        type,
+        value,
+      };
+    }
+    this.setState({ authType });
   }
 
   render() {
@@ -1201,15 +1343,32 @@ class DisplayEndpoint extends Component {
               <ul className="nav nav-tabs" id="pills-tab" role="tablist">
                 <li className="nav-item">
                   <a
-                    className="nav-link active"
+                    className={
+                      this.setAuthorizationTab ? "nav-link " : "nav-link active"
+                    }
                     id="pills-params-tab"
                     data-toggle="pill"
                     href={`#params-${this.props.tab.id}`}
                     role="tab"
                     aria-controls={`params-${this.props.tab.id}`}
-                    aria-selected="true"
+                    aria-selected={this.setAuthorizationTab ? "false" : "true"}
                   >
                     Params
+                  </a>
+                </li>
+                <li className="nav-item">
+                  <a
+                    className={
+                      this.setAuthorizationTab ? "nav-link active" : "nav-link "
+                    }
+                    id="pills-authorization-tab"
+                    data-toggle="pill"
+                    href={`#authorization-${this.props.tab.id}`}
+                    role="tab"
+                    aria-controls={`authorization-${this.props.tab.id}`}
+                    aria-selected={this.setAuthorizationTab ? "true" : "false"}
+                  >
+                    Authorization
                   </a>
                 </li>
                 <li className="nav-item">
@@ -1244,7 +1403,11 @@ class DisplayEndpoint extends Component {
           {isDashboardRoute(this.props) ? (
             <div className="tab-content" id="pills-tabContent">
               <div
-                className="tab-pane fade show active"
+                className={
+                  this.setAuthorizationTab
+                    ? "tab-pane fade"
+                    : "tab-pane fade show active"
+                }
                 id={`params-${this.props.tab.id}`}
                 role="tabpanel"
                 aria-labelledby="pills-params-tab"
@@ -1268,6 +1431,29 @@ class DisplayEndpoint extends Component {
                       ></GenericTable>
                     </div>
                   )}
+              </div>
+              <div
+                className={
+                  this.setAuthorizationTab
+                    ? "tab-pane fade show active"
+                    : "tab-pane fade "
+                }
+                id={`authorization-${this.props.tab.id}`}
+                role="tabpanel"
+                aria-labelledby="pills-authorization-tab"
+              >
+                <div>
+                  <Authorization
+                    {...this.props}
+                    title="Authorization"
+                    groupId={this.state.groupId}
+                    set_authorization_headers={this.setHeaders.bind(this)}
+                    set_authoriztaion_params={this.setParams.bind(this)}
+                    set_authoriztaion_type={this.setAuthType.bind(this)}
+                    accessToken={this.accessToken}
+                    authorizationType={this.state.authType}
+                  ></Authorization>
+                </div>
               </div>
               <div
                 className="tab-pane fade"

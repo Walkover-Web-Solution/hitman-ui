@@ -39,6 +39,13 @@ export function importCollectionVersion(importLink, shareIdentifier, data) {
   return http.post(`${apiUrl}/share/${shareIdentifier}/import`, data);
 }
 
+export function setAuthorizationResponse(versionId, authorizationResponse) {
+  return http.patch(
+    `${apiUrl}/versions/${versionId}/authorizationResponse`,
+    authorizationResponse
+  );
+}
+
 export default {
   getCollectionVersions,
   getCollectionVersion,
@@ -49,4 +56,5 @@ export default {
   importCollectionVersion,
   exportCollectionVersion,
   getAllCollectionVersions,
+  setAuthorizationResponse,
 };
