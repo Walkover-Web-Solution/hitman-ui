@@ -24,7 +24,7 @@ import {
 import ShareCollectionForm from "./shareCollectionForm";
 import { uiUrl } from "../../config.json";
 import "./collections.scss";
-import DocSettingsModal from "../publicEndpoint/docSettingsModal";
+import PublishDocsModal from "../publicEndpoint/publishDocsModal";
 
 const mapStateToProps = (state) => {
   return {
@@ -60,7 +60,7 @@ class CollectionsComponent extends Component {
     showCollectionForm: false,
     collectionFormName: "",
     selectedCollection: {},
-    showDocSettingsModal: false,
+    showPublishDocsModal: false,
   };
   keywords = {};
   names = {};
@@ -356,12 +356,12 @@ class CollectionsComponent extends Component {
                     <button
                       className="dropdown-item"
                       onClick={() =>
-                        this.openDocSettings(
+                        this.openPublishDocs(
                           this.props.collections[collectionId]
                         )
                       }
                     >
-                      Doc Settings
+                      Publish Docs{" "}
                     </button>
                   )}
                   <button
@@ -392,16 +392,16 @@ class CollectionsComponent extends Component {
     );
   }
 
-  openDocSettings(collection) {
+  openPublishDocs(collection) {
     this.setState({
-      showDocSettingsModal: true,
+      showPublishDocsModal: true,
       selectedCollection: collection.id,
     });
   }
 
-  showDocSettingsModal(onHide) {
+  showPublishDocsModal(onHide) {
     return (
-      <DocSettingsModal
+      <PublishDocsModal
         {...this.props}
         show={true}
         onHide={onHide}
@@ -475,10 +475,10 @@ class CollectionsComponent extends Component {
       finalCollections = [...new Set(finalCollections)];
       return (
         <div>
-          {this.state.showDocSettingsModal &&
-            this.showDocSettingsModal(() =>
+          {this.state.showPublishDocsModal &&
+            this.showPublishDocsModal(() =>
               this.setState({
-                showDocSettingsModal: false,
+                showPublishDocsModal: false,
               })
             )}
           <div className="App-Nav">
@@ -531,7 +531,7 @@ class CollectionsComponent extends Component {
         </div>
       );
     } else {
-      console.log(this.state.showDocSettingsModal);
+      console.log(this.state.showPublishDocsModal);
       return (
         <div>
           <div className="App-Side">

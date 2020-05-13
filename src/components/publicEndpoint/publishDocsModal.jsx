@@ -6,7 +6,7 @@ import Joi from "joi-browser";
 import herokuApiService from "../../services/herokuApiService";
 import endpointApiService from "../endpoints/endpointApiService";
 
-class DocSettingsModal extends Form {
+class PublishDocsModal extends Form {
   state = {
     data: { title: "" },
     errors: { title: "" },
@@ -67,14 +67,85 @@ class DocSettingsModal extends Form {
       >
         <Modal.Header className="custom-collection-modal-container" closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-            Documentation Settings
+            Publish Docs{" "}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <form onSubmit={this.handleSubmit}>
+          Env
+          <div class="dropdown">
+            <button
+              class="btn btn-secondary dropdown-toggle"
+              type="button"
+              id="dropdownMenuButton"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
+              env
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <a class="dropdown-item" href="#">
+                Action
+              </a>
+              <a class="dropdown-item" href="#">
+                Another action
+              </a>
+              <a class="dropdown-item" href="#">
+                Something else here
+              </a>
+            </div>
+          </div>
+          Custom domain
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Domain name</th>
+                <th scope="col">DNS Target</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Otto</td>
+                <td>@mdo</td>
+              </tr>
+              <tr>
+                <td>Thornton</td>
+                <td>@fat</td>
+              </tr>
+              <tr>
+                <td>the Bird</td>
+                <td>@twitter</td>
+              </tr>
+            </tbody>
+          </table>
+          {this.state.flag ? (
+            <div>
+              <input />
+              <button
+                onClick={() => {
+                  this.setState({ flag: false });
+                }}
+              >
+                Add
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => {
+                this.setState({ flag: true });
+              }}
+            >
+              Add domain
+            </button>
+          )}{" "}
+          <br></br>
+          Title
+          <input type="text" /> <br></br>
+          Logo
+          <input type="text" placeholder="url of favicon logo"></input>
+          {/* <form onSubmit={this.handleSubmit}>
             {this.renderInput("title", "Title", "Title")}
             {this.renderInput("domain", "Domain", "Domain")}
-            {/* {this.renderInput("host", "Host", "host name")} */}
             {this.renderButton("Submit")}
             <button
               className="btn btn-default  custom-button"
@@ -82,11 +153,11 @@ class DocSettingsModal extends Form {
             >
               Cancel
             </button>
-          </form>
+          </form> */}
         </Modal.Body>
       </Modal>
     );
   }
 }
 
-export default DocSettingsModal;
+export default PublishDocsModal;
