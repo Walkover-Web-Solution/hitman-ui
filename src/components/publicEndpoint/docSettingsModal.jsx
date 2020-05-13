@@ -6,7 +6,7 @@ import Joi from "joi-browser";
 import herokuApiService from "../../services/herokuApiService";
 import endpointApiService from "../endpoints/endpointApiService";
 
-class CustomDomainModal extends Form {
+class DocSettingsModal extends Form {
   state = {
     data: { title: "" },
     errors: { title: "" },
@@ -67,7 +67,7 @@ class CustomDomainModal extends Form {
       >
         <Modal.Header className="custom-collection-modal-container" closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-            Add Custom Domain
+            Documentation Settings
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -89,4 +89,4 @@ class CustomDomainModal extends Form {
   }
 }
 
-export default CustomDomainModal;
+export default DocSettingsModal;
