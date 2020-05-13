@@ -17,6 +17,7 @@ import GenericTable from "./genericTable";
 import HostContainer from "./hostContainer";
 import PublicBodyContainer from "./publicBodyContainer";
 import { addEndpoint, updateEndpoint } from "./redux/endpointsActions";
+import collectionsApiService from "../collections/collectionsApiService";
 import Authorization from "./displayAuthorization";
 import collectionVersionsApiService from "../collectionVersions/collectionVersionsApiService";
 const status = require("http-status");
@@ -133,6 +134,10 @@ class DisplayEndpoint extends Component {
         ],
       });
     }
+    if (!isDashboardRoute(this.props)) {
+      let collectionIdentifier = this.props.location.pathname.split("/")[2];
+      this.fetchPublicCollection(collectionIdentifier);
+    }
   }
 
   structueParamsHeaders = [
@@ -144,6 +149,21 @@ class DisplayEndpoint extends Component {
     },
   ];
 
+  async fetchPublicCollection(collectionId) {
+    let collection = await collectionsApiService.getCollection(collectionId);
+    if (collection.data.environment != null) {
+      this.setState({
+        publicCollectionEnvironmentId: collection.data.environment.id,
+        originalEnvironmentReplica: collection.data.environment,
+      });
+    }
+    if (collection.data.environment == null) {
+      this.setState({
+        publicCollectionEnvironmentId: null,
+        originalEnvironmentReplica: null,
+      });
+    }
+  }
   fetchEndpoint(flag, endpointId) {
     let endpoint = {};
     let originalParams = [];
@@ -365,27 +385,91 @@ class DisplayEndpoint extends Component {
     let match = regexp.exec(str);
     let variables = [];
     if (match === null) return str;
-    if (!this.props.environment.variables) {
-      return str.replace(regexp, "");
-    }
-    do {
-      variables.push(match[1]);
-    } while ((match = regexp.exec(str)) !== null);
-    for (let i = 0; i < variables.length; i++) {
-      if (!this.props.environment.variables[variables[i]]) {
-        str = str.replace(`{{${variables[i]}}}`, "");
-      } else if (this.props.environment.variables[variables[i]].currentValue) {
-        str = str.replace(
-          `{{${variables[i]}}}`,
+
+    if (isDashboardRoute(this.props)) {
+      if (!this.props.environment.variables) {
+        return str.replace(regexp, "");
+      }
+      do {
+        variables.push(match[1]);
+      } while ((match = regexp.exec(str)) !== null);
+      for (let i = 0; i < variables.length; i++) {
+        if (!this.props.environment.variables[variables[i]]) {
+          str = str.replace(`{{${variables[i]}}}`, "");
+        } else if (
+          isDashboardRoute(this.props) &&
           this.props.environment.variables[variables[i]].currentValue
-        );
-      } else if (this.props.environment.variables[variables[i]].initialValue) {
-        str = str.replace(
-          `{{${variables[i]}}}`,
+        ) {
+          str = str.replace(
+            `{{${variables[i]}}}`,
+            this.props.environment.variables[variables[i]].currentValue
+          );
+        } else if (
           this.props.environment.variables[variables[i]].initialValue
-        );
-      } else {
-        str = str.replace(`{{${variables[i]}}}`, "");
+        ) {
+          str = str.replace(
+            `{{${variables[i]}}}`,
+            this.props.environment.variables[variables[i]].initialValue
+          );
+        } else {
+          str = str.replace(`{{${variables[i]}}}`, "");
+        }
+      }
+    } else {
+      let environmentId = this.state.publicCollectionEnvironmentId;
+      let originalEnv = this.state.originalEnvironmentReplica;
+      if (
+        this.props.environments[environmentId] !== undefined ||
+        (this.props.environments[environmentId] === undefined &&
+          originalEnv === null)
+      ) {
+        if (!this.props.environments[environmentId].variables) {
+          return str.replace(regexp, "");
+        }
+        do {
+          variables.push(match[1]);
+        } while ((match = regexp.exec(str)) !== null);
+        for (let i = 0; i < variables.length; i++) {
+          if (!this.props.environments[environmentId].variables[variables[i]]) {
+            str = str.replace(`{{${variables[i]}}}`, "");
+          } else if (
+            this.props.environments[environmentId].variables[variables[i]]
+              .initialValue
+          ) {
+            str = str.replace(
+              `{{${variables[i]}}}`,
+              this.props.environments[environmentId].variables[variables[i]]
+                .initialValue
+            );
+          } else {
+            str = str.replace(`{{${variables[i]}}}`, "");
+          }
+        }
+      }
+      //If Environment is Deleted
+      if (
+        this.props.environments[environmentId] === undefined &&
+        environmentId != null &&
+        originalEnv != null
+      ) {
+        if (!originalEnv.variables) {
+          return str.replace(regexp, "");
+        }
+        do {
+          variables.push(match[1]);
+        } while ((match = regexp.exec(str)) !== null);
+        for (let i = 0; i < variables.length; i++) {
+          if (!originalEnv.variables[variables[i]]) {
+            str = str.replace(`{{${variables[i]}}}`, "");
+          } else if (originalEnv.variables[variables[i]].initialValue) {
+            str = str.replace(
+              `{{${variables[i]}}}`,
+              originalEnv.variables[variables[i]].initialValue
+            );
+          } else {
+            str = str.replace(`{{${variables[i]}}}`, "");
+          }
+        }
       }
     }
     return str;

@@ -80,6 +80,13 @@ function collectionsReducer(state = initialState, action) {
     case publicEndpointsActionTypes.ON_PUBLIC_ENDPOINTS_FETCHED:
       return { ...state, ...action.data.collections };
 
+    case collectionsActionTypes.ON_PUBLIC_COLLECTION_FETCHED:
+      return { ...action.data.collections };
+
+    case collectionsActionTypes.ON_PUBLIC_COLLECTION_FETCHED_ERROR:
+      toast.error(action.error);
+      return state;
+
     default:
       return state;
   }

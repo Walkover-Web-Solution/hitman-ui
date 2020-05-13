@@ -5,6 +5,7 @@ import "react-multi-email/style.css";
 import { connect } from "react-redux";
 import shortid from "shortid";
 import authService from "../auth/authService";
+import Environments from "../environments/environments";
 
 const mapStateToProps = (state) => {
   return {
@@ -19,6 +20,7 @@ class ShareCollectionForm extends Component {
     },
     emails: [],
     modifiedteamMembers: [],
+    selectedEnvironment: null,
   };
   changeTeamFlag = true;
 
@@ -26,7 +28,20 @@ class ShareCollectionForm extends Component {
     admin: { name: "Admin" },
     collaborator: { name: "Collaborator" },
   };
-
+  componentDidMount() {
+    if (this.props.collections[this.props.collection_id].isPublic) {
+      this.props.history.push({
+        publishedCollectionEnv: true,
+        Environment: "setCollectionEnvironment",
+        dashboardEnvironment: false,
+      });
+    } else {
+      this.props.history.push({
+        Environment: "setCollectionEnvironment",
+        dashboardEnvironment: false,
+      });
+    }
+  }
   setDropdowmRole(key) {
     const data = this.state.data;
     data.role = this.dropdownRole[key].name;
@@ -125,8 +140,38 @@ class ShareCollectionForm extends Component {
 
   handlePublic(collection) {
     collection.isPublic = !collection.isPublic;
+    if (collection.isPublic) {
+      collection.environment = this.props.location.selectedPublicEnvironment;
+      this.props.history.push({
+        publishedCollectionEnv: true,
+        Environment: "setCollectionEnvironment",
+        dashboardEnvironment: false,
+      });
+      this.setState({
+        selectedEnvironment: this.props.location.selectedPublicEnvironment,
+        dashboardEnvironment: false,
+      });
+    } else {
+      collection.environment = null;
+      this.props.history.push({
+        privateCollectionEnv: true,
+        Environment: "setCollectionEnvironment",
+      });
+      this.setState({
+        selectedEnvironment: "No Environment",
+      });
+    }
     delete collection.teamId;
     this.props.update_collection({ ...collection });
+  }
+  onHide() {
+    this.props.onHide();
+    this.props.history.push({
+      dashboardEnvironment: true,
+    });
+    this.setState({
+      selectedEnvironment: "No Environment",
+    });
   }
 
   render() {
@@ -142,6 +187,7 @@ class ShareCollectionForm extends Component {
         animation={false}
         aria-labelledby="contained-modal-title-vcenter"
         centered
+        onHide={() => this.onHide()}
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
@@ -216,6 +262,7 @@ class ShareCollectionForm extends Component {
                           ? "Make Private"
                           : "Make Public"}
                       </button>
+                      <Environments {...this.props} />
                     </div>
                   ) : null}
                 </InputGroup>
@@ -306,7 +353,7 @@ class ShareCollectionForm extends Component {
                 <button
                   type="button"
                   className="btn btn-default"
-                  onClick={() => this.props.onHide()}
+                  onClick={() => this.onHide()}
                 >
                   Cancel
                 </button>

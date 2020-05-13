@@ -34,6 +34,23 @@ export const onCollectionsFetchedError = (error) => {
   };
 };
 
+export const fetchCollection = (collectionId) => {
+  return (dispatch) => {
+    collectionsApiService
+      .getCollection(collectionId)
+      .then((response) => {
+        dispatch(onCollectionsFetched(response.data));
+      })
+      .catch((error) => {
+        dispatch(
+          onCollectionsFetchedError(
+            error.response ? error.response.data : error
+          )
+        );
+      });
+  };
+};
+
 export const addCollection = (newCollection) => {
   return (dispatch) => {
     dispatch(addCollectionRequest(newCollection));

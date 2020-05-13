@@ -9,6 +9,7 @@ import DisplayCollection from "../collections/displayCollection";
 import SideBar from "../main/sidebar";
 import { fetchAllPublicEndpoints } from "./redux/publicEndpointsActions.js";
 import "./publicEndpoint.scss";
+import Environments from "../environments/environments";
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -18,13 +19,19 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 class PublicEndpoint extends Component {
+  state = {
+    publicCollectionId: "",
+  };
   componentDidMount() {
     if (this.props.location.pathname) {
       let collectionIdentifier = this.props.location.pathname.split("/")[2];
       this.props.fetch_all_public_endpoints(collectionIdentifier);
+      this.props.history.push({
+        collectionIdentifier: collectionIdentifier,
+      Environment: "publicCollectionEnvironment",
+      });
     }
   }
-
   render() {
     if (
       this.props.location.pathname.split("/")[1] === "public" &&
@@ -57,6 +64,7 @@ class PublicEndpoint extends Component {
               <ToastContainer />
               <div className="main-panel-wrapper">
                 <SideBar {...this.props} />
+                <Environments {...this.props} />
               </div>
 
               <div className="main-content">
