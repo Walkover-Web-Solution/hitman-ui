@@ -16,10 +16,17 @@ import "./endpoints.scss";
 import GenericTable from "./genericTable";
 import HostContainer from "./hostContainer";
 import PublicBodyContainer from "./publicBodyContainer";
-import { addEndpoint, updateEndpoint } from "./redux/endpointsActions";
+import {
+  addEndpoint,
+  updateEndpoint,
+  setAuthorizationType,
+} from "./redux/endpointsActions";
+import {
+  setAuthorizationResponses,
+  setAuthorizationData,
+} from "../collectionVersions/redux/collectionVersionsActions";
 import collectionsApiService from "../collections/collectionsApiService";
 import Authorization from "./displayAuthorization";
-import collectionVersionsApiService from "../collectionVersions/collectionVersionsApiService";
 const status = require("http-status");
 var URI = require("urijs");
 
@@ -42,6 +49,12 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(addEndpoint(ownProps.history, newEndpoint, groupId)),
     update_endpoint: (editedEndpoint) =>
       dispatch(updateEndpoint(editedEndpoint)),
+    set_authorization_responses: (versionId, authResponses) =>
+      dispatch(setAuthorizationResponses(versionId, authResponses)),
+    set_authorization_type: (endpointId, authData) =>
+      dispatch(setAuthorizationType(endpointId, authData)),
+    set_authorization_data: (versionId, data) =>
+      dispatch(setAuthorizationData(versionId, data)),
   };
 };
 
@@ -1239,14 +1252,14 @@ class DisplayEndpoint extends Component {
       if (endpoint.groupId) {
         let authorizationType = authType;
         authorizationType.value.accessToken = response.access_token;
-        await endpointApiService.setAuthorizationType(
+        this.props.set_authorization_type(
           this.props.location.pathname.split("/")[3],
           authorizationType
         );
       }
 
       if (endpoint.groupId) {
-        await collectionVersionsApiService.setAuthorizationResponse(
+        this.props.set_authorization_responses(
           groups[endpoint.groupId].versionId,
           authResponses
         );

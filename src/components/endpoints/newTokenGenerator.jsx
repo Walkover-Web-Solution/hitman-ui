@@ -95,7 +95,7 @@ class TokenGenerator extends Component {
     }
 
     if (this.props.groupId) {
-      await endpointApiService.setAuthorizationData(
+      this.props.set_authorization_data(
         this.props.groups[this.props.groupId].versionId,
         this.state.data
       );
@@ -106,28 +106,16 @@ class TokenGenerator extends Component {
         type: "oauth_2",
         value: this.props.oauth_2,
       };
-      await endpointApiService.setAuthorizationType(
+      this.props.set_authorization_type(
         this.props.location.pathname.split("/")[3],
         data
       );
     }
     console.log("requestApi", "params", requestApi, paramsObject);
-    // endpointApiService.authorize(requestApi, paramsObject, grantType);
+    endpointApiService.authorize(requestApi, paramsObject, grantType);
   }
 
   makeParams(grantType) {
-    // tokenName: "",
-    //   grantType: "authorizationCode",
-    //   callbackUrl: "",
-    //   authUrl: "",
-    //   username: "",
-    //   password: "",
-    //   accessTokenUrl: "",
-    //   client_id: "",
-    //   clientSecret: "",
-    //   scope: "",
-    //   state: "",
-    //   clientAuthentication: "Send as Basic Auth header",
     let params = {};
     let data = { ...this.state.data };
     let keys = Object.keys(data);
@@ -182,7 +170,6 @@ class TokenGenerator extends Component {
 
   renderInput(key) {
     let grantType = this.state.data.grantType;
-
     switch (key) {
       case "grantType":
         return (

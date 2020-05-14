@@ -2,8 +2,6 @@ import React, { Component } from "react";
 import "./endpoints.scss";
 import TokenGenerator from "./newTokenGenerator";
 import AccessTokenManager from "./displayTokenManager";
-import collectionVersionsApiService from "../collectionVersions/collectionVersionsApiService";
-import endpointApiService from "./endpointApiService";
 
 class Authorization extends Component {
   state = {
@@ -175,16 +173,13 @@ class Authorization extends Component {
 
   async closeManageTokenModel() {
     let versionId = this.props.groups[this.props.groupId].versionId;
-    await collectionVersionsApiService.setAuthorizationResponse(
-      versionId,
-      this.authResponses
-    );
+    this.props.set_authorization_responses(versionId, this.authResponses);
     if (this.props.location.pathname.split("/")[3] !== "new") {
       let data = {
         type: "oauth_2",
         value: this.state.oauth_2,
       };
-      await endpointApiService.setAuthorizationType(
+      this.props.set_authorization_type(
         this.props.location.pathname.split("/")[3],
         data
       );

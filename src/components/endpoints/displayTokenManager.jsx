@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { Modal, ListGroup, Container, Row, Col } from "react-bootstrap";
-import endpointApiService from "./endpointApiService";
 
 class AccessTokenManager extends Component {
   state = {
