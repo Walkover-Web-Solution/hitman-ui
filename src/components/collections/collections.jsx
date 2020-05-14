@@ -50,8 +50,10 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(duplicateCollection(collection)),
     fetch_all_users_of_team: (teamIdentifier) =>
       dispatch(fetchAllUsersOfTeam(teamIdentifier)),
-    add_custom_domain: (domain, collectionId) =>
-      dispatch(addCustomDomain(domain, collectionId)),
+    add_custom_domain: (collectionId, domain, dnsTarget, title, logoUrl) =>
+      dispatch(
+        addCustomDomain(collectionId, domain, dnsTarget, title, logoUrl)
+      ),
   };
 };
 
