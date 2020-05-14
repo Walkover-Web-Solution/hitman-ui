@@ -6,7 +6,7 @@ import ProtectedRoute from "./components/common/protectedRoute";
 import Main from "./components/main/Main.jsx";
 import Public from "./components/publicEndpoint/publicEndpoint.jsx";
 import { Redirect } from "react-router-dom";
-
+require("dotenv").config();
 class App extends Component {
   render() {
     console.log(window.location.href.split("/")[2]);
