@@ -146,6 +146,7 @@ class DisplayEndpoint extends Component {
           },
         ],
       });
+      this.setAccessToken("", "", "", "");
     }
     if (!isDashboardRoute(this.props)) {
       let collectionIdentifier = this.props.location.pathname.split("/")[2];
@@ -178,6 +179,7 @@ class DisplayEndpoint extends Component {
     }
   }
   fetchEndpoint(flag, endpointId) {
+    console.log("fetchEndpoint");
     let endpoint = {};
     let originalParams = [];
     let originalHeaders = [];
@@ -1240,31 +1242,44 @@ class DisplayEndpoint extends Component {
     let response = URI.parseQuery("?" + url.split("#")[1]);
     if (url.split("#")[1]) {
       this.setAuthorizationTab = true;
-      this.accessToken = response.access_token;
-      response.tokenName =
-        versions[
-          groups[endpoint.groupId].versionId
-        ].authorizationData.tokenName;
-      let authResponses =
-        versions[groups[endpoint.groupId].versionId].authorizationResponse;
-      authResponses.push(response);
 
-      if (endpoint.groupId) {
-        let authorizationType = authType;
-        authorizationType.value.accessToken = response.access_token;
-        this.props.set_authorization_type(
-          this.props.location.pathname.split("/")[3],
-          authorizationType
-        );
-      }
+      if (endpoint === "") {
+        let authType = {
+          type: "oauth_2",
+          value: {
+            authorizationAddedTo: "Request Headers",
+            accessToken: response.access_token,
+          },
+        };
+        this.setState({ authType });
+        // this.props.history.push(`/dashboard/endpoint/new`);
+      } else {
+        this.accessToken = response.access_token;
+        response.tokenName =
+          versions[
+            groups[endpoint.groupId].versionId
+          ].authorizationData.tokenName;
+        let authResponses =
+          versions[groups[endpoint.groupId].versionId].authorizationResponse;
+        authResponses.push(response);
 
-      if (endpoint.groupId) {
-        this.props.set_authorization_responses(
-          groups[endpoint.groupId].versionId,
-          authResponses
-        );
+        if (endpoint.groupId) {
+          let authorizationType = authType;
+          authorizationType.value.accessToken = response.access_token;
+          this.props.set_authorization_type(
+            this.props.location.pathname.split("/")[3],
+            authorizationType
+          );
+        }
+
+        if (endpoint.groupId) {
+          this.props.set_authorization_responses(
+            groups[endpoint.groupId].versionId,
+            authResponses
+          );
+        }
+        this.props.history.push(`/dashboard/endpoint/${endpoint.id}`);
       }
-      this.props.history.push(`/dashboard/endpoint/${endpoint.id}`);
     }
   }
 
