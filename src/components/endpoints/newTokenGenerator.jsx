@@ -72,27 +72,26 @@ class TokenGenerator extends Component {
   async makeRequest() {
     let grantType = this.state.data.grantType;
     let requestApi = "";
-    let params = this.makeParams(grantType);
-    params = URI.buildQuery(params);
-    // if (grantType === "implicit") {
-    //   let paramsObject = {};
-    //   for (let i = 0; i < keys.length; i++) {
-    //     if (this.state.data[keys[i]] !== "" && keys[i] !== "authUrl") {
-    //       paramsObject[keys[i]] = this.state.data[keys[i]];
-    //     }
-    //   }
-    //   requestApi = URI.buildQuery(paramsObject);
-    // }
-    if (grantType === "implicit") {
-      requestApi =
-        this.state.data.authUrl + "?" + params + "&response_type=token";
+    let paramsObject = this.makeParams(grantType);
+    let params = URI.buildQuery(paramsObject);
+    if (grantType === "implicit" || grantType === "authorizationCode") {
+      if (grantType === "implicit")
+        requestApi =
+          this.state.data.authUrl + "?" + params + "&response_type=token";
+      else
+        requestApi =
+          this.state.data.authUrl + "?" + params + "&response_type=code";
     }
+
     if (
       grantType === "passwordCredentials" ||
       grantType === "clientCredentials"
     ) {
-      requestApi =
-        this.state.data.accessTokenUrl + "?" + params + "&response_type=token";
+      requestApi = this.state.data.accessTokenUrl;
+      if (grantType === "passwordCredentials")
+        paramsObject.grantType = "password";
+      else if (grantType === "clientCredentials")
+        paramsObject.grantType = "client_credentials";
     }
 
     if (this.props.groupId) {
@@ -112,9 +111,8 @@ class TokenGenerator extends Component {
         data
       );
     }
-
-    console.log("requestApi", requestApi);
-    endpointApiService.authorize(requestApi);
+    console.log("requestApi", "params", requestApi, paramsObject);
+    // endpointApiService.authorize(requestApi, paramsObject, grantType);
   }
 
   makeParams(grantType) {
@@ -319,7 +317,9 @@ class TokenGenerator extends Component {
             {Object.keys(this.inputFields).map((key) => (
               <div className="input-field-wrapper">{this.renderInput(key)}</div>
             ))}
-            <button>Cancel</button>
+            <button type="button" onClick={() => this.props.onHide()}>
+              Cancel
+            </button>
             <button type="button" onClick={() => this.makeRequest()}>
               Request Token
             </button>

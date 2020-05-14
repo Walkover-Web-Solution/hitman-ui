@@ -1234,12 +1234,7 @@ class DisplayEndpoint extends Component {
         ].authorizationData.tokenName;
       let authResponses =
         versions[groups[endpoint.groupId].versionId].authorizationResponse;
-      if (authResponses !== null) {
-        authResponses.push(response);
-      } else {
-        authResponses = [];
-        authResponses.push(response);
-      }
+      authResponses.push(response);
 
       if (endpoint.groupId) {
         let authorizationType = authType;

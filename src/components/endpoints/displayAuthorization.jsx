@@ -3,6 +3,7 @@ import "./endpoints.scss";
 import TokenGenerator from "./newTokenGenerator";
 import AccessTokenManager from "./displayTokenManager";
 import collectionVersionsApiService from "../collectionVersions/collectionVersionsApiService";
+import endpointApiService from "./endpointApiService";
 
 class Authorization extends Component {
   state = {
@@ -172,12 +173,22 @@ class Authorization extends Component {
     this.setState({ openManageTokenModel: true });
   }
 
-  closeManageTokenModel() {
+  async closeManageTokenModel() {
     let versionId = this.props.groups[this.props.groupId].versionId;
-    collectionVersionsApiService.setAuthorizationResponse(
+    await collectionVersionsApiService.setAuthorizationResponse(
       versionId,
       this.authResponses
     );
+    if (this.props.location.pathname.split("/")[3] !== "new") {
+      let data = {
+        type: "oauth_2",
+        value: this.state.oauth_2,
+      };
+      await endpointApiService.setAuthorizationType(
+        this.props.location.pathname.split("/")[3],
+        data
+      );
+    }
     this.setState({ openManageTokenModel: false });
   }
 
@@ -280,6 +291,7 @@ class Authorization extends Component {
             title="MANAGE ACCESS TOKENS"
             set_access_token={this.setAccessToken.bind(this)}
             set_auth_responses={this.setAuthResponses.bind(this)}
+            accessToken={this.state.oauth_2.accessToken}
           ></AccessTokenManager>
         )}
         <div className="authorization-selector-wrapper">

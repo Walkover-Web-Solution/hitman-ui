@@ -46,13 +46,23 @@ export function duplicateEndpoint(endpointId) {
 }
 
 export function moveEndpoint(endpointId, body) {
-  console.log("body", body);
   return http.patch(`${apiUrl}/endpoints/${endpointId}/move`, body);
 }
 
-export function authorize(requestApi) {
-  console.log("requestApi", requestApi);
-  window.open(requestApi, "_top");
+export function authorize(requestApi, params) {
+  if (
+    params.grantType === "password" ||
+    params.grantType === "client_credentials"
+  ) {
+    return httpService.request({
+      url: requestApi,
+      method: "POST",
+      data: qs.stringify({ params }),
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    });
+  } else {
+    window.open(requestApi, "_top");
+  }
 }
 
 export function setAuthorizationData(versionId, data) {
