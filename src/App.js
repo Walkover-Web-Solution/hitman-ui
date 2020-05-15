@@ -9,7 +9,7 @@ import { Redirect } from "react-router-dom";
 import herokuApiService from "./services/herokuApiService";
 require("dotenv").config();
 class App extends Component {
-  async redirectToClientDoc() {
+  async redirectToClientDomain() {
     const { data: configVars } = await herokuApiService.getConfigVars();
     console.log(configVars);
     if (
@@ -22,14 +22,14 @@ class App extends Component {
         const clientTitle = clientDetails[0];
         const clientDomain = window.location.href.split("/")[2];
         const clientCollectionId = clientDetails[1];
-        return <Redirect to={`/dashboard/public/${clientCollectionId}`} />;
+        return <Redirect to={`/public/${clientCollectionId}`} />;
       }
     }
   }
 
   render() {
     console.log(window.location.href.split("/")[2]);
-    this.redirectToClientDoc();
+    this.redirectToClientDomain();
     return (
       <Switch>
         <ProtectedRoute path="/dashboard/" component={Main} />

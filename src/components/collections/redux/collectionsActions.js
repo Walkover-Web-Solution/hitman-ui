@@ -257,7 +257,10 @@ export const addCustomDomain = (
   logoUrl
 ) => {
   return (dispatch) => {
-    const collection = store.getState().collections[collectionId];
+    let collection = { ...store.getState().collections[collectionId] };
+    if (!collection.docProperties.domainsList) {
+      collection.docProperties.domainsList = [];
+    }
     collection.docProperties.domainsList.push({
       domain,
       dnsTarget,

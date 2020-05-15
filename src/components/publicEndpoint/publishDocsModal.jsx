@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Modal } from "react-bootstrap";
-import "../main/main.scss";
+import "./publicEndpoint.scss";
 import Form from "../common/form";
 import Joi from "joi-browser";
 import herokuApiService from "../../services/herokuApiService";
@@ -28,6 +28,19 @@ class PublishDocsModal extends Form {
     selectedDomain: null,
     editableDocProperties: false,
   };
+
+  componentDidMount() {
+    if (this.props.collections[this.props.collection_id].docProperties) {
+      this.setState({
+        data: {
+          defaultTitle: this.props.collections[this.props.collection_id]
+            .docProperties.defaultTitle,
+          defaultLogoUrl: this.props.collections[this.props.collection_id]
+            .docProperties.defaultLogoUrl,
+        },
+      });
+    }
+  }
 
   schema = {
     title: Joi.string().required().label("Title"),
@@ -72,11 +85,16 @@ class PublishDocsModal extends Form {
   }
 
   selectEnvironment(envId) {
-    const environment = jQuery.extend(
-      true,
-      {},
-      this.props.environment.environments[envId]
-    );
+    let environment = {};
+    if (envId) {
+      environment = jQuery.extend(
+        true,
+        {},
+        this.props.environment.environments[envId]
+      );
+    } else {
+      environment = null;
+    }
 
     let collection = {
       ...this.props.collections[this.props.collection_id],
@@ -108,6 +126,7 @@ class PublishDocsModal extends Form {
       let docProperties = {
         defaultTitle: this.state.data.defaultTitle,
         defaultLogoUrl: this.state.data.defaultLogoUrl,
+        ...this.props.collections[this.props.collection_id].docProperties,
       };
       let collection = {
         ...this.props.collections[this.props.collection_id],
@@ -121,19 +140,37 @@ class PublishDocsModal extends Form {
 
   renderNewDomainForm() {
     return (
-      <form>
+      <form
+        className="add-new-domain-form"
+        onSubmit={() => {
+          this.handleAddDomain();
+          this.setState({ flag: false });
+        }}
+      >
         {this.renderInput("newDomain", "Domain", "Domain")}
         {this.renderInput("newTitle", "Title", "Title")}
         {this.renderInput("newLogoUrl", "Logo Url", "Logo Url")}
 
-        <button
-          onClick={() => {
-            this.handleAddDomain();
-            this.setState({ flag: false });
-          }}
-        >
-          Add
-        </button>
+        <div className="button-group">
+          <button
+            className="btn cancel-button"
+            onClick={() => {
+              this.setState({ flag: false });
+            }}
+          >
+            Cancel
+          </button>
+
+          <button
+            className="btn submit-button"
+            onClick={() => {
+              this.handleAddDomain();
+              this.setState({ flag: false });
+            }}
+          >
+            Add
+          </button>
+        </div>
       </form>
     );
   }
@@ -147,6 +184,7 @@ class PublishDocsModal extends Form {
       const { data: response } = await herokuApiService.createDomain(
         this.state.data.newDomain
       );
+      console.log(response.cname);
       this.props.add_custom_domain(
         this.props.collection_id,
         this.state.data.newDomain,
@@ -155,11 +193,11 @@ class PublishDocsModal extends Form {
         this.state.data.newLogoUrl
       );
     } catch (error) {
+      console.log(error);
       toast.error(error.response ? error.response.data : error);
     }
   }
   render() {
-    console.log(this.props.collections[this.props.collection_id]);
     return (
       <Modal
         {...this.props}
@@ -170,14 +208,14 @@ class PublishDocsModal extends Form {
       >
         <Modal.Header className="custom-collection-modal-container" closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-            Publish Docs{" "}
+            Publish Docs
           </Modal.Title>
         </Modal.Header>
-        <Modal.Body>
-          Environment
-          <div class="dropdown">
+        <Modal.Body className="publish-doc-body">
+          <h5>Environment</h5>
+          <div className="dropdown">
             <button
-              class="btn btn-secondary dropdown-toggle"
+              className="btn dropdown-toggle"
               type="button"
               id="dropdownMenuButton"
               data-toggle="dropdown"
@@ -189,7 +227,15 @@ class PublishDocsModal extends Form {
                     .name
                 : "No Environment"}
             </button>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <button
+                className="btn"
+                onClick={() => {
+                  this.selectEnvironment();
+                }}
+              >
+                No Environment
+              </button>
               {Object.keys(this.props.environment.environments).map((e) => (
                 <button
                   className="btn"
@@ -220,37 +266,45 @@ class PublishDocsModal extends Form {
               {this.state.editableDocProperties ? "Update" : "Edit"}
             </button>
           </div>
-          <div className="doc-properites" style={{ border: "1px solid grey" }}>
+          <div>
             {this.state.editableDocProperties ? (
-              <div>
-                {this.renderInput("defaultTitle", "Title", "Title")}
-                {this.renderInput("defaultLogoUrl", "Logo url", "Logo Url")}
+              <div className="doc-properites">
+                {this.renderInput("defaultTitle", "Page Title", "Page Title")}
+                {this.renderInput("defaultLogoUrl", "Logo Url", "Logo Url")}
               </div>
             ) : (
-              <div>
-                title{" "}
-                <label>
-                  {this.props.collections[this.props.collection_id]
-                    .docProperties &&
-                    this.props.collections[this.props.collection_id]
-                      .docProperties.defaultTitle}
-                </label>
-                Logo Url{" "}
-                <label>
-                  {this.props.collections[this.props.collection_id]
-                    .docProperties &&
-                    this.props.collections[this.props.collection_id]
-                      .docProperties.defaultlogoUrl}
-                </label>
+              <div className="doc-properites">
+                <div className="doc-properties-item">
+                  <label>Page Title</label>
+                  <label>
+                    {this.props.collections[this.props.collection_id]
+                      .docProperties &&
+                      this.props.collections[this.props.collection_id]
+                        .docProperties.defaultTitle}
+                  </label>
+                </div>
+                <div className="doc-properties-item">
+                  <label>Logo Url</label>
+                  <label>
+                    {this.props.collections[this.props.collection_id]
+                      .docProperties &&
+                      this.props.collections[this.props.collection_id]
+                        .docProperties.defaultLogoUrl}
+                  </label>
+                </div>
               </div>
             )}
           </div>
-          Custom domain
-          <table class="table">
+          <h5>Custom domain</h5>
+          <table className="table domain-list-table">
             <thead>
               <tr>
-                <th scope="col">Domain name</th>
-                <th scope="col">DNS Target</th>
+                <th scope="col" className="domain-name-column-heading">
+                  Domain name
+                </th>
+                <th scope="col" className="dns-target-column-heading">
+                  DNS Target
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -261,58 +315,43 @@ class PublishDocsModal extends Form {
                   .domainsList &&
                 this.props.collections[
                   this.props.collection_id
-                ].docProperties.domainsList.map((d) => (
+                ].docProperties.domainsList.map((d, index) => (
                   <tr
                     onClick={() => {
                       console.log(d.domain);
                     }}
+                    key={index}
                   >
-                    <td>{d.domain}</td>
-                    <td>{d.dnsTarget}</td>
+                    <td className="domain-name-column-item">{d.domain}</td>
+                    <td className="dns-target-column-item">{d.dnsTarget}</td>
                   </tr>
                 ))}
+              {this.state.flag ? (
+                <div>{this.renderNewDomainForm()}</div>
+              ) : (
+                <div className="btn add-domain-button-wrapper">
+                  <button
+                    className="btn add-domain-button"
+                    onClick={() => {
+                      this.setState({ flag: true });
+                    }}
+                  >
+                    Add domain
+                  </button>
+                </div>
+              )}
             </tbody>
           </table>
-          {this.state.flag ? (
-            <div>{this.renderNewDomainForm()}</div>
-          ) : (
-            <button
-              onClick={() => {
-                this.setState({ flag: true });
-              }}
-            >
-              Add domain
-            </button>
-          )}
-          {/* {this.renderDomainProperties()} */}
-          {/* <form onSubmit={this.handleSubmit}>
-            {this.renderInput("title", "Title", "Title")}
-            {this.renderInput("domain", "Domain", "Domain")}
-            {this.renderButton("Submit")}
-            <button
-              className="btn btn-default  custom-button"
-              onClick={this.props.onHide}
-            >
-              Cancel
-            </button>
-          </form> */}
         </Modal.Body>
-        {/* <Modal.Footer>
-          <button
-            id="custom-delete-modal-delete"
-            className="btn btn-default custom-button"
-            onClick={this.handleSubmit}
-          >
-            Delete
-          </button>
+        <Modal.Footer>
           <button
             id="custom-delete-modal-cancel"
             className="btn btn-default custom-button"
             onClick={this.props.onHide}
           >
-            Cancel
+            Close
           </button>
-        </Modal.Footer>*/}
+        </Modal.Footer>
       </Modal>
     );
   }
