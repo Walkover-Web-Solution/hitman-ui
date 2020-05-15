@@ -27,10 +27,21 @@ class PublishDocsModal extends Form {
     errors: { title: "" },
     selectedDomain: null,
     editableDocProperties: false,
+    domainPropertiesShowFlags: {},
   };
 
   componentDidMount() {
     if (this.props.collections[this.props.collection_id].docProperties) {
+      let domainPropertiesShowFlags = {};
+      this.props.collections[
+        this.props.collection_id
+      ].docProperties.domainsList.forEach((d) => {
+        domainPropertiesShowFlags[d.domain] = {
+          show: false,
+          isEditable: false,
+        };
+      });
+
       this.setState({
         data: {
           defaultTitle: this.props.collections[this.props.collection_id]
@@ -38,6 +49,7 @@ class PublishDocsModal extends Form {
           defaultLogoUrl: this.props.collections[this.props.collection_id]
             .docProperties.defaultLogoUrl,
         },
+        domainPropertiesShowFlags,
       });
     }
   }
@@ -48,19 +60,6 @@ class PublishDocsModal extends Form {
   };
 
   async doSubmit() {
-    // this.props.add_custom_domain(
-    //   this.state.data.domain,
-    //   this.props.collection_id
-    // );
-    // await herokuApiService.updateConfigVars({
-    //   [this.state.data
-    //     .domain]: `${this.state.data.title},${this.props.collection_id}`,
-    // });
-    // const { data: response } = await herokuApiService.createDomain(
-    //   this.state.data.domain
-    // );
-    // console.log(response.cname);
-
     // endpointApiService.apiTest(
     //   "https://api.msg91.com/api/v2/sendsms",
     //   "POST",
@@ -102,22 +101,7 @@ class PublishDocsModal extends Form {
     };
     delete collection.teamId;
     this.props.update_collection(collection);
-
-    // this.setState({ selectedEnvironmentId: envId });
   }
-
-  // renderDomainProperties() {
-  //   const domainProperties = this.props.collections[this.props.collection_id]
-  //     .docProperties;
-  //   let data = {};
-  //   if (!this.state.selectedDomain) {
-  //     data.title = domainProperties.defaultTitle;
-  //     data.logoUrl = domainProperties.defaultLogoUrl;
-  //   }
-  //   else{
-
-  //   }
-  // }
 
   handleEditButton() {
     if (this.state.editableDocProperties === false)
@@ -192,12 +176,51 @@ class PublishDocsModal extends Form {
         this.state.data.newTitle,
         this.state.data.newLogoUrl
       );
+      const domainPropertiesShowFlags = {
+        ...this.state.domainPropertiesShowFlags,
+        [this.state.newDomain]: { show: false, isEditable: false },
+      };
+      this.setState({});
     } catch (error) {
       console.log(error);
       toast.error(error.response ? error.response.data : error);
     }
   }
+
+  renderDocProperties(title, logoUrl) {
+    return (
+      <div className="doc-properites">
+        <div className="doc-properties-item">
+          <label>Page Title</label>
+          <label>{title}</label>
+        </div>
+        <div className="doc-properties-item">
+          <label>Logo Url</label>
+          <label>{logoUrl}</label>
+        </div>
+      </div>
+    );
+  }
+
+  showDocProperties(domain) {
+    let domainPropertiesShowFlags = {
+      ...this.state.domainPropertiesShowFlags,
+    };
+    domainPropertiesShowFlags[domain].show = !domainPropertiesShowFlags[domain]
+      .show;
+    this.setState({ domainPropertiesShowFlags });
+  }
+
+  makeDomainPropertiesEditable(domain, isEditable) {
+    let domainPropertiesShowFlags = {
+      ...this.state.domainPropertiesShowFlags,
+    };
+    domainPropertiesShowFlags[domain].isEditable = isEditable;
+    this.setState({ domainPropertiesShowFlags });
+  }
+
   render() {
+    console.log(this.state);
     return (
       <Modal
         {...this.props}
@@ -258,7 +281,7 @@ class PublishDocsModal extends Form {
           >
             <h5>Doc Properties</h5>
             <button
-              className="btn"
+              className="btn doc-properties-edit-button"
               onClick={() => {
                 this.handleEditButton();
               }}
@@ -273,26 +296,16 @@ class PublishDocsModal extends Form {
                 {this.renderInput("defaultLogoUrl", "Logo Url", "Logo Url")}
               </div>
             ) : (
-              <div className="doc-properites">
-                <div className="doc-properties-item">
-                  <label>Page Title</label>
-                  <label>
-                    {this.props.collections[this.props.collection_id]
-                      .docProperties &&
-                      this.props.collections[this.props.collection_id]
-                        .docProperties.defaultTitle}
-                  </label>
-                </div>
-                <div className="doc-properties-item">
-                  <label>Logo Url</label>
-                  <label>
-                    {this.props.collections[this.props.collection_id]
-                      .docProperties &&
-                      this.props.collections[this.props.collection_id]
-                        .docProperties.defaultLogoUrl}
-                  </label>
-                </div>
-              </div>
+              this.renderDocProperties(
+                this.props.collections[this.props.collection_id]
+                  .docProperties &&
+                  this.props.collections[this.props.collection_id].docProperties
+                    .defaultTitle,
+                this.props.collections[this.props.collection_id]
+                  .docProperties &&
+                  this.props.collections[this.props.collection_id].docProperties
+                    .defaultLogoUrl
+              )
             )}
           </div>
           <h5>Custom domain</h5>
@@ -316,15 +329,53 @@ class PublishDocsModal extends Form {
                 this.props.collections[
                   this.props.collection_id
                 ].docProperties.domainsList.map((d, index) => (
-                  <tr
-                    onClick={() => {
-                      console.log(d.domain);
-                    }}
-                    key={index}
-                  >
-                    <td className="domain-name-column-item">{d.domain}</td>
-                    <td className="dns-target-column-item">{d.dnsTarget}</td>
-                  </tr>
+                  <div>
+                    <tr
+                      onClick={() => {
+                        this.showDocProperties(d.domain);
+                      }}
+                      key={index}
+                    >
+                      <td className="domain-name-column-item">{d.domain}</td>
+                      <td className="dns-target-column-item">{d.dnsTarget}</td>
+                    </tr>
+                    {this.state.domainPropertiesShowFlags[d.domain] &&
+                      this.state.domainPropertiesShowFlags[d.domain].show && (
+                        <div>
+                          {this.renderDocProperties(d.title, d.logoUrl)}
+                          <div className="button-group">
+                            {this.state.domainPropertiesShowFlags[d.domain]
+                              .isEditable ? (
+                              <button
+                                className="btn cancel-button"
+                                onClick={() => {
+                                  this.makeDomainPropertiesEditable(
+                                    d.domain,
+                                    false
+                                  );
+                                }}
+                              >
+                                Cancel
+                              </button>
+                            ) : null}
+                            <button
+                              className="btn doc-properties-edit-button"
+                              onClick={() => {
+                                this.makeDomainPropertiesEditable(
+                                  d.domain,
+                                  true
+                                );
+                              }}
+                            >
+                              {this.state.domainPropertiesShowFlags[d.domain]
+                                .isEditable
+                                ? "Update"
+                                : "Edit"}
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                  </div>
                 ))}
               {this.state.flag ? (
                 <div>{this.renderNewDomainForm()}</div>
