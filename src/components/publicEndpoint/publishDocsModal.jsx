@@ -375,10 +375,11 @@ class PublishDocsModal extends Form {
             </thead>
             <tbody>
               {this.props.collections[this.props.collection_id] &&
-                this.props.collections[this.props.collection_id]
-                  .docProperties &&
-                this.props.collections[this.props.collection_id].docProperties
-                  .domainsList &&
+              this.props.collections[this.props.collection_id].docProperties &&
+              this.props.collections[this.props.collection_id].docProperties
+                .domainsList &&
+              this.props.collections[this.props.collection_id].docProperties
+                .domainsList.length > 0 ? (
                 this.props.collections[
                   this.props.collection_id
                 ].docProperties.domainsList.map((d, index) => (
@@ -465,7 +466,15 @@ class PublishDocsModal extends Form {
                         </div>
                       )}
                   </div>
-                ))}
+                ))
+              ) : (
+                <div
+                  className="no-domain-message"
+                  style={{ textAlign: "center" }}
+                >
+                  There is no domain added to this doc.
+                </div>
+              )}
               {this.state.flag ? (
                 <div>{this.renderNewDomainForm()}</div>
               ) : (
