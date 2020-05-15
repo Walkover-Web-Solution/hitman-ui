@@ -261,9 +261,13 @@ class PublishDocsModal extends Form {
     this.props.update_collection(collection);
     this.makeDomainPropertiesEditable(domain, false);
   }
+  handleMakePublic(collection) {
+    collection.isPublic = !collection.isPublic;
+    delete collection.teamId;
+    this.props.update_collection({ ...collection });
+  }
 
   render() {
-    console.log(this.state);
     return (
       <Modal
         {...this.props}
@@ -314,6 +318,22 @@ class PublishDocsModal extends Form {
                 </button>
               ))}
             </div>
+          </div>
+          <div>
+            <button
+              style={{ float: "left", marginLeft: "10px" }}
+              type="button"
+              className="btn btn-success"
+              onClick={() => {
+                this.handleMakePublic(
+                  this.props.collections[this.props.collection_id]
+                );
+              }}
+            >
+              {this.props.collections[this.props.collection_id].isPublic
+                ? "Make Private"
+                : "Make Public"}
+            </button>
           </div>
           <div className="doc-properties-title">
             <h5>Doc Properties</h5>

@@ -25,6 +25,7 @@ import ShareCollectionForm from "./shareCollectionForm";
 import { uiUrl } from "../../config.json";
 import "./collections.scss";
 import PublishDocsModal from "../publicEndpoint/publishDocsModal";
+import authService from "../auth/authService";
 
 const mapStateToProps = (state) => {
   return {
@@ -239,6 +240,15 @@ class CollectionsComponent extends Component {
     this.collectionId = null;
     this.setState({ openSelectedCollection: false });
   }
+  fetchCurrentUserRole() {
+    const { user: currentUser } = authService.getCurrentUser();
+    const teamArray = Object.keys(this.props.teamUsers);
+    for (let i = 0; i < teamArray.length; i++) {
+      if (currentUser.identifier === teamArray[i]) {
+        return this.props.teamUsers[currentUser.identifier].role;
+      }
+    }
+  }
 
   renderBody(collectionId, collectionState) {
     let eventkeyValue = "";
@@ -354,7 +364,7 @@ class CollectionsComponent extends Component {
                       Go to Docs
                     </button>
                   )}
-                  {this.props.collections[collectionId].isPublic && (
+                  {/* {(this.currentUserRole==="Admin"||this.currentUserRole==="Owner") && ( */}
                     <button
                       className="dropdown-item"
                       onClick={() =>
@@ -365,7 +375,7 @@ class CollectionsComponent extends Component {
                     >
                       Publish Docs{" "}
                     </button>
-                  )}
+                  
                   <button
                     className="dropdown-item"
                     onClick={() => {
