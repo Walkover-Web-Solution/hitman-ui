@@ -166,6 +166,15 @@ class PublishDocsModal extends Form {
   }
 
   async handleAddDomain() {
+    const index = this.props.collections[
+      this.props.collection_id
+    ].docProperties.domainsList.findIndex(
+      (d) => d.domain === this.state.data.newDomain
+    );
+    if (index >= 0) {
+      toast.error("Domain already added to this doc.");
+      return;
+    }
     try {
       await herokuApiService.updateConfigVars({
         [this.state.data
@@ -399,6 +408,9 @@ class PublishDocsModal extends Form {
                             <i className="fas fa-clone"></i>
                           </button>
                         </CopyToClipboard>
+                        <button className="btn delete-button">
+                          <i class="fas fa-trash"></i>
+                        </button>
                       </td>
                     </tr>
                     {this.state.domainPropertiesShowFlags[d.domain] &&
