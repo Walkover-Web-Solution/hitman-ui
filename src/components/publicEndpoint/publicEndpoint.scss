@@ -24,6 +24,7 @@ main.main.ml-sm-auto.col-lg-10 {
 
 .publish-doc-body {
   padding-top: 5px !important;
+  overflow: scroll;
   h5 {
     font-size: 17px;
     margin: 8px;
@@ -69,6 +70,16 @@ main.main.ml-sm-auto.col-lg-10 {
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  .button-group {
+    padding: 2px;
+    display: flex;
+    flex-direction: row-reverse;
+    .doc-properties-cancel-button {
+      padding: 5px;
+      font-size: 14px;
+      font-weight: 300;
+    }
+  }
 }
 .doc-properties-edit-button {
   background-color: #fde5e1 !important;
@@ -121,7 +132,14 @@ main.main.ml-sm-auto.col-lg-10 {
     display: flex;
   }
   .dns-target-column-item {
-    flex: 1.6;
+    flex: 1.7;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    .copy-to-clipboard {
+      padding: 0px;
+      padding-left: 10px;
+    }
   }
   .dns-target-column-heading {
     flex: 1.6;
@@ -176,5 +194,11 @@ form.add-new-domain-form {
     padding: 5px;
     font-size: 14px;
     font-weight: 300;
+  }
+}
+
+.public-doc-modal {
+  .modal-content {
+    height: 600px;
   }
 }

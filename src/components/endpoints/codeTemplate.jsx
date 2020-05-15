@@ -114,7 +114,7 @@ class CodeTemplate extends Component {
                           : this.codeSnippet
                       }
                       onCopy={() => this.setState({ copied: true })}
-                      id="copy-to-clipboard"
+                      className="copy-to-clipboard"
                     >
                       <button>
                         {this.state.copied ? (
