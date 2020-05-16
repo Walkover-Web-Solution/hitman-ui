@@ -702,6 +702,12 @@ pre.__json-pretty-error__ {
   }
 }
 
+.input-field-wrapper {
+  display: flex;
+  flex-direction: row;
+  padding-bottom: 10px;
+}
+
 .basic-auth-label {
   flex: 0.7;
 }
@@ -713,4 +719,22 @@ pre.__json-pretty-error__ {
 .get-new-access-token {
   background-color: rgb(241, 241, 241) !important;
   border-radius: 4px;
+}
+.token-generator-input-field {
+  flex: 1.6;
+}
+.new-token-generator-modal-body {
+  padding: 1rem !important;
+}
+
+.new-token-generator-dropdown {
+  width: 15rem;
+  background-color: rgb(239, 239, 239) !important;
+  display: flex !important;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+.request-token-button {
+  background-color: rgb(255, 212, 204) !important;
 }
