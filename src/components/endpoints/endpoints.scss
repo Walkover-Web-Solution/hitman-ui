@@ -682,10 +682,35 @@ pre.__json-pretty-error__ {
       label {
         flex: 0.7;
       }
-
       input {
         flex: 1.6;
       }
+      .input-dropdown {
+        input {
+          flex: 1.6;
+        }
+        display: flex;
+        flex-direction: row;
+        flex: 1.6;
+        .dropdown {
+          background-color: rgb(241, 241, 241) !important;
+          border-radius: 4px;
+          margin-left: 5px;
+        }
+      }
     }
   }
+}
+
+.basic-auth-label {
+  flex: 0.7;
+}
+.basic-auth-input {
+  flex: 1.6;
+  display: flex;
+}
+
+.get-new-access-token {
+  background-color: rgb(241, 241, 241) !important;
+  border-radius: 4px;
 }

@@ -353,13 +353,14 @@ class Authorization extends Component {
           </div>
         </div>
 
-        <div className="authorization-editor-wrapper">
-          {this.state.authorizationType === "noAuth" &&
-            "This request does not use any authorization."}
-        </div>
+        {this.state.authorizationType === "noAuth" && (
+          <div className="authorization-editor-wrapper">
+            This request does not use any authorization.
+          </div>
+        )}
 
-        <div className="authorization-editor-wrapper">
-          {this.state.authorizationType === "basicAuth" && (
+        {this.state.authorizationType === "basicAuth" && (
+          <div className="authorization-editor-wrapper">
             <form>
               <div className="input-field-wrapper">
                 <label>Username</label>
@@ -379,62 +380,70 @@ class Authorization extends Component {
                 ></input>
               </div>
             </form>
-          )}
-          {this.state.authorizationType === "oauth_2" && (
+          </div>
+        )}
+        {this.state.authorizationType === "oauth_2" && (
+          <div className="authorization-editor-wrapper">
             <form>
               <div className="input-field-wrapper">
-                <label>Access Token</label>
-                <input
-                  value={this.state.oauth_2.accessToken}
-                  onChange={this.updateAccessToken.bind(this)}
-                  name="accessToken"
-                ></input>
-              </div>
-
-              <div className="dropdown">
-                <button
-                  className="btn dropdown-toggle"
-                  id="dropdownMenuButton"
-                  data-toggle="dropdown"
-                  aria-haspopup="true"
-                  aria-expanded="false"
-                >
-                  Availabale Tokens
-                </button>
-                <div
-                  className="dropdown-menu"
-                  aria-labelledby="dropdownMenuButton"
-                >
-                  {this.authResponses.map((response, index) => (
+                <label className="basic-auth-label">Access Token</label>
+                <div className="basic-auth-input">
+                  <input
+                    value={this.state.oauth_2.accessToken}
+                    onChange={this.updateAccessToken.bind(this)}
+                    name="accessToken"
+                  />
+                  <div className="dropdown">
                     <button
-                      type="button"
-                      className="btn custom-request-button"
-                      onClick={() => this.selectAccessToken(index)}
+                      className="btn dropdown-toggle"
+                      id="dropdownMenuButton"
+                      data-toggle="dropdown"
+                      aria-haspopup="true"
+                      aria-expanded="false"
                     >
-                      {response.tokenName}
+                      Availabale Tokens
                     </button>
-                  ))}
+                    <div
+                      className="dropdown-menu"
+                      aria-labelledby="dropdownMenuButton"
+                    >
+                      {this.authResponses.map((response, index) => (
+                        <button
+                          type="button"
+                          className="btn custom-request-button"
+                          onClick={() => this.selectAccessToken(index)}
+                        >
+                          {response.tokenName}
+                        </button>
+                      ))}
+                      <button
+                        type="button"
+                        className="btn custom-request-button"
+                        onClick={() => this.openManageTokenModel()}
+                      >
+                        {this.authResponses.length !== 0
+                          ? "Manage Tokens"
+                          : "No Tokens Available"}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="input-field-wrapper">
+                <div className="basic-auth-label"></div>
+                <div className="basic-auth-input">
                   <button
+                    className="btn get-new-access-token"
                     type="button"
-                    className="btn custom-request-button"
-                    onClick={() => this.openManageTokenModel()}
+                    onClick={() => this.getNewAccessTokenModal()}
                   >
-                    {this.authResponses.length !== 0
-                      ? "Manage Tokens"
-                      : "No Tokens Available"}
+                    Get New Access Token
                   </button>
                 </div>
               </div>
-
-              <button
-                type="button"
-                onClick={() => this.getNewAccessTokenModal()}
-              >
-                Get New Aceess Token
-              </button>
             </form>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     );
   }
