@@ -319,22 +319,7 @@ class PublishDocsModal extends Form {
               ))}
             </div>
           </div>
-          <div>
-            <button
-              style={{ float: "left", marginLeft: "10px" }}
-              type="button"
-              className="btn btn-success"
-              onClick={() => {
-                this.handleMakePublic(
-                  this.props.collections[this.props.collection_id]
-                );
-              }}
-            >
-              {this.props.collections[this.props.collection_id].isPublic
-                ? "Make Private"
-                : "Make Public"}
-            </button>
-          </div>
+
           <div className="doc-properties-title">
             <h5>Doc Properties</h5>
             {this.state.editableDocProperties ? (
@@ -513,6 +498,21 @@ class PublishDocsModal extends Form {
           </table>
         </Modal.Body>
         <Modal.Footer>
+          <button
+            style={{ float: "left", marginLeft: "10px" }}
+            type="button"
+            className="btn make-public-button"
+            onClick={() => {
+              this.handleMakePublic(
+                this.props.collections[this.props.collection_id]
+              );
+            }}
+          >
+            {this.props.collections[this.props.collection_id].isPublic
+              ? "Make Private"
+              : "Make Public"}
+          </button>
+
           <button
             id="custom-delete-modal-cancel"
             className="btn btn-default custom-button"
