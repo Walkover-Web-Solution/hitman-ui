@@ -49,10 +49,12 @@ export function moveEndpoint(endpointId, body) {
   return http.patch(`${apiUrl}/endpoints/${endpointId}/move`, body);
 }
 
-export function authorize(requestApi, params) {
+export function authorize(requestApi, params, grantType) {
+  params.grant_type = "authorization_code";
   if (
-    params.grantType === "password" ||
-    params.grantType === "client_credentials"
+    grantType === "password" ||
+    grantType === "client_credentials" ||
+    grantType === "auth_code"
   ) {
     return httpService.request({
       url: requestApi,

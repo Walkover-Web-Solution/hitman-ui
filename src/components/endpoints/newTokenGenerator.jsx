@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Modal } from "react-bootstrap";
 import endpointApiService from "./endpointApiService";
+import indexedDbService from "../indexedDb/indexedDbService";
 var URI = require("urijs");
 
 class TokenGenerator extends Component {
@@ -74,6 +75,7 @@ class TokenGenerator extends Component {
     let requestApi = "";
     let paramsObject = this.makeParams(grantType);
     let params = URI.buildQuery(paramsObject);
+    console.log("params", params);
     if (grantType === "implicit" || grantType === "authorizationCode") {
       if (grantType === "implicit")
         requestApi =
@@ -111,6 +113,14 @@ class TokenGenerator extends Component {
         data
       );
     }
+
+    await indexedDbService.getDataBase();
+    await indexedDbService.updateData(
+      "authData",
+      this.state.data,
+      "currentAuthData"
+    );
+
     console.log("requestApi", "params", requestApi, paramsObject);
     endpointApiService.authorize(requestApi, paramsObject, grantType);
   }
@@ -132,7 +142,7 @@ class TokenGenerator extends Component {
           }
           break;
         case "callbackUrl":
-          if (grantType === "implicit") {
+          if (grantType === "implicit" || grantType === "authorizationCode") {
             params["redirect_uri"] = data[keys[i]];
           }
           break;
@@ -142,7 +152,8 @@ class TokenGenerator extends Component {
         case "clientSecret":
           if (
             grantType === "passwordCredentials" ||
-            grantType === "clientCredentials"
+            grantType === "clientCredentials" ||
+            grantType === "authorizationCode"
           ) {
             params["clientSecret"] = data[keys[i]];
           }
@@ -151,7 +162,7 @@ class TokenGenerator extends Component {
           params[keys[i]] = data[keys[i]];
           break;
         case "state":
-          if (grantType === "implicit") {
+          if (grantType === "implicit" || grantType === "authorizationCode") {
             params[keys[i]] = data[keys[i]];
           }
           break;
