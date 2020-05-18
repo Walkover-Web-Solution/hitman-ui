@@ -90,11 +90,12 @@ class TokenGenerator extends Component {
       grantType === "passwordCredentials" ||
       grantType === "clientCredentials"
     ) {
+      delete paramsObject.grantType;
       requestApi = this.state.data.accessTokenUrl;
       if (grantType === "passwordCredentials")
-        paramsObject.grantType = "password";
+        paramsObject["grant_type"] = "password";
       else if (grantType === "clientCredentials")
-        paramsObject.grantType = "client_credentials";
+        paramsObject["grant_type"] = "client_credentials";
     }
 
     if (this.props.groupId) {
@@ -122,7 +123,6 @@ class TokenGenerator extends Component {
       "currentAuthData"
     );
 
-    console.log("requestApi", "params", requestApi, paramsObject);
     endpointApiService.authorize(requestApi, paramsObject, grantType);
   }
 
@@ -156,7 +156,7 @@ class TokenGenerator extends Component {
             grantType === "clientCredentials" ||
             grantType === "authorizationCode"
           ) {
-            params["clientSecret"] = data[keys[i]];
+            params["client_secret"] = data[keys[i]];
           }
           break;
         case "scope":
@@ -289,16 +289,52 @@ class TokenGenerator extends Component {
     }
   }
 
+  showPassword() {
+    if (this.state.showPassword && this.state.showPassword === true) {
+      this.setState({ showPassword: false });
+    } else {
+      this.setState({ showPassword: true });
+    }
+  }
+
   fetchDefaultInputField(key) {
     return (
       <React.Fragment>
         <label className="basic-auth-label">{this.inputFields[key]}</label>
         <input
+          id="input"
+          type={
+            key === "password"
+              ? this.state.showPassword
+                ? this.state.showPassword === false
+                  ? "password"
+                  : null
+                : "password"
+              : null
+          }
           className="token-generator-input-field"
           name={key}
           value={this.state.data[key]}
           onChange={this.handleChange.bind(this)}
         ></input>
+        {key === "password" && (
+          <div>
+            <label>
+              <button
+                type="checkbox"
+                value={
+                  this.state.showPassword
+                    ? this.state.showPassword === true
+                      ? true
+                      : false
+                    : false
+                }
+                onClick={() => this.showPassword()}
+              ></button>
+              Show Password
+            </label>
+          </div>
+        )}
       </React.Fragment>
     );
   }

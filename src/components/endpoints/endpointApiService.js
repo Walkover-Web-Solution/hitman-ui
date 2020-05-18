@@ -50,12 +50,14 @@ export function moveEndpoint(endpointId, body) {
 }
 
 export function authorize(requestApi, params, grantType) {
-  params.grant_type = "authorization_code";
   if (
     grantType === "password" ||
     grantType === "client_credentials" ||
     grantType === "auth_code"
   ) {
+    if (grantType === "auth_code") {
+      params.grant_type = "authorization_code";
+    }
     return httpService.request({
       url: requestApi,
       method: "POST",

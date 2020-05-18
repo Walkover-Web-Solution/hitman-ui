@@ -245,6 +245,14 @@ class Authorization extends Component {
     this.setHeadersandParams(accessToken);
   }
 
+  showPassword() {
+    if (this.state.showPassword && this.state.showPassword === true) {
+      this.setState({ showPassword: false });
+    } else {
+      this.setState({ showPassword: true });
+    }
+  }
+
   render() {
     if (this.props.authorizationType) {
       const authType = this.props.authorizationType.type;
@@ -381,11 +389,28 @@ class Authorization extends Component {
               <div className="input-field-wrapper">
                 <label>Password</label>
                 <input
+                  type="password"
                   name="password"
                   value={this.state.basicAuth.password}
                   onChange={this.handleChange.bind(this)}
                 ></input>
               </div>
+              {/* <div className="input-field-wrapper">
+                <label>
+                  <button
+                    type="checkbox"
+                    value={
+                      this.state.showPassword
+                        ? this.state.showPassword === true
+                          ? true
+                          : false
+                        : false
+                    }
+                    onClick={() => this.showPassword()}
+                  ></button>
+                  Show Password
+                </label>
+              </div> */}
             </form>
           </div>
         )}
