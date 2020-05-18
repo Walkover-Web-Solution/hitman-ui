@@ -425,7 +425,7 @@ class Authorization extends Component {
                     onChange={this.updateAccessToken.bind(this)}
                     name="accessToken"
                   />
-                  <div className="dropdown">
+                  <div className="dropdown available-token-dropdown">
                     <button
                       className="btn dropdown-toggle"
                       id="dropdownMenuButton"
@@ -436,7 +436,7 @@ class Authorization extends Component {
                       Availabale Tokens
                     </button>
                     <div
-                      className="dropdown-menu"
+                      className="dropdown-menu available-token-dropdown-menu"
                       aria-labelledby="dropdownMenuButton"
                     >
                       {this.authResponses.map((response, index) => (

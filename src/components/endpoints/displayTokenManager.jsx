@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Modal, ListGroup, Container, Row, Col } from "react-bootstrap";
+import "./endpoints.scss";
 
 class AccessTokenManager extends Component {
   state = {
@@ -91,12 +92,16 @@ class AccessTokenManager extends Component {
                           onClick={() => {
                             this.selectTokenIndex(index);
                           }}
+                          className="tokens-list-item"
                         >
-                          {response.tokenName}
+                          <label>{response.tokenName}</label>
+                          <button
+                            className="btn delete-button"
+                            onClick={() => this.deleteToken(index)}
+                          >
+                            <i class="fas fa-trash"></i>
+                          </button>
                         </ListGroup.Item>
-                        <button onClick={() => this.deleteToken(index)}>
-                          Delete
-                        </button>
                       </div>
                     ))}
                   </ListGroup>
@@ -112,53 +117,57 @@ class AccessTokenManager extends Component {
                       Use Token
                     </button>
                     <div>
-                      <div>
+                      <div className="oauth2-token-details-list">
                         {Object.keys(this.authResponse).map((property) => (
-                          <div>
-                            {this.authResponse[property]}
-                            {!this.state.editTokenName ? (
-                              this.state.authResponses[
-                                this.state.tokenIndex
-                              ] ? (
-                                this.state.authResponses[this.state.tokenIndex][
-                                  property
-                                ]
-                              ) : null
-                            ) : property !== "tokenName" ? (
-                              this.state.authResponses[
-                                this.state.tokenIndex
-                              ] ? (
-                                this.state.authResponses[this.state.tokenIndex][
-                                  property
-                                ]
-                              ) : null
-                            ) : this.state.editTokenName !== true ? (
-                              this.state.authResponses[
-                                this.state.tokenIndex
-                              ] ? (
-                                this.state.authResponses[this.state.tokenIndex][
-                                  property
-                                ]
-                              ) : null
-                            ) : (
-                              <div>
-                                <input
-                                  name="tokenName"
-                                  value={
-                                    this.state.authResponses[
-                                      this.state.tokenIndex
-                                    ]["tokenName"]
-                                  }
-                                  onChange={this.updateTokenName.bind(this)}
-                                ></input>
-                                <button
-                                  type="button"
-                                  onClick={() => this.selectEditToken("")}
-                                >
-                                  Save
-                                </button>
-                              </div>
-                            )}
+                          <div className="oauth2-token-details-list-item">
+                            <label className="oauth2-token-details-list-item-label">
+                              {this.authResponse[property]}
+                            </label>
+                            <div className="oauth2-token-details-list-item-value">
+                              {!this.state.editTokenName ? (
+                                this.state.authResponses[
+                                  this.state.tokenIndex
+                                ] ? (
+                                  this.state.authResponses[
+                                    this.state.tokenIndex
+                                  ][property]
+                                ) : null
+                              ) : property !== "tokenName" ? (
+                                this.state.authResponses[
+                                  this.state.tokenIndex
+                                ] ? (
+                                  this.state.authResponses[
+                                    this.state.tokenIndex
+                                  ][property]
+                                ) : null
+                              ) : this.state.editTokenName !== true ? (
+                                this.state.authResponses[
+                                  this.state.tokenIndex
+                                ] ? (
+                                  this.state.authResponses[
+                                    this.state.tokenIndex
+                                  ][property]
+                                ) : null
+                              ) : (
+                                <div>
+                                  <input
+                                    name="tokenName"
+                                    value={
+                                      this.state.authResponses[
+                                        this.state.tokenIndex
+                                      ]["tokenName"]
+                                    }
+                                    onChange={this.updateTokenName.bind(this)}
+                                  ></input>
+                                  <button
+                                    type="button"
+                                    onClick={() => this.selectEditToken("")}
+                                  >
+                                    Save
+                                  </button>
+                                </div>
+                              )}
+                            </div>
                             {this.authResponse[property] === "Token Name" ? (
                               this.state.editTokenName ? (
                                 this.state.editTokenName === true ? null : (
