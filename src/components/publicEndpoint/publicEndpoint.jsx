@@ -22,13 +22,18 @@ class PublicEndpoint extends Component {
   state = {
     publicCollectionId: "",
   };
+
+  componentWillMount() {
+    document.title = "your title name";
+  }
+
   componentDidMount() {
     if (this.props.location.pathname) {
       let collectionIdentifier = this.props.location.pathname.split("/")[2];
       this.props.fetch_all_public_endpoints(collectionIdentifier);
       this.props.history.push({
         collectionIdentifier: collectionIdentifier,
-      Environment: "publicCollectionEnvironment",
+        Environment: "publicCollectionEnvironment",
       });
     }
   }
@@ -64,7 +69,7 @@ class PublicEndpoint extends Component {
               <ToastContainer />
               <div className="main-panel-wrapper">
                 <SideBar {...this.props} />
-                <Environments {...this.props} />
+                {/* <Environments {...this.props} /> */}
               </div>
 
               <div className="main-content">

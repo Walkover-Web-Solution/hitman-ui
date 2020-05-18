@@ -178,7 +178,7 @@ class PublishDocsModal extends Form {
     try {
       await herokuApiService.updateConfigVars({
         [this.state.data
-          .domain]: `${this.state.data.newTitle},${this.state.data.newLogoUrl}${this.props.collection_id}`,
+          .newDomain]: `${this.state.data.newTitle},${this.state.data.newLogoUrl},${this.props.collection_id}`,
       });
       const { data: response } = await herokuApiService.createDomain(
         this.state.data.newDomain
