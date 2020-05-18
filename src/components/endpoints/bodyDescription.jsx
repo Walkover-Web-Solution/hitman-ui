@@ -183,7 +183,7 @@ class BodyDescription extends Component {
       body = JSON.parse(rawBody);
       return body;
     } catch (error) {
-      return body;
+      return null;
     }
   }
 
@@ -334,7 +334,7 @@ class BodyDescription extends Component {
         Object.keys(this.props.body_description).length
       )
     ) {
-      this.handleUpdate(true);
+      if (this.parseBody(this.props.body)) this.handleUpdate(true);
     }
     return (
       <div>

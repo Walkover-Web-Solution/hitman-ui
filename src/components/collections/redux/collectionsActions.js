@@ -100,6 +100,7 @@ export const updateCollection = (editedCollection) => {
     dispatch(updateCollectionRequest({ ...editedCollection }));
     const id = editedCollection.id;
     delete editedCollection.id;
+    delete editedCollection.requestId;
     collectionsApiService
       .updateCollection(id, editedCollection)
       .then((response) => {
@@ -248,10 +249,25 @@ export const onCollectionDuplicatedError = (error) => {
   };
 };
 
-export const addCustomDomain = (domain, collectionId) => {
+export const addCustomDomain = (
+  collectionId,
+  domain,
+  dnsTarget,
+  title,
+  logoUrl
+) => {
   return (dispatch) => {
-    const collection = store.getState().collections[collectionId];
-    collection.customDomain = domain;
+    let collection = { ...store.getState().collections[collectionId] };
+    if (!collection.docProperties.domainsList) {
+      collection.docProperties.domainsList = [];
+    }
+    collection.docProperties.domainsList.push({
+      domain,
+      dnsTarget,
+      title,
+      logoUrl,
+    });
+    console.log(collection);
     dispatch(updateCollectionRequest({ ...collection }));
 
     const id = collection.id;

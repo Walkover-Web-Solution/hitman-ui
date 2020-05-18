@@ -5,8 +5,6 @@ import "react-multi-email/style.css";
 import { connect } from "react-redux";
 import shortid from "shortid";
 import authService from "../auth/authService";
-import Environments from "../environments/environments";
-
 const mapStateToProps = (state) => {
   return {
     teamUsers: state.teamUsers,
@@ -28,20 +26,6 @@ class ShareCollectionForm extends Component {
     admin: { name: "Admin" },
     collaborator: { name: "Collaborator" },
   };
-  componentDidMount() {
-    if (this.props.collections[this.props.collection_id].isPublic) {
-      this.props.history.push({
-        publishedCollectionEnv: true,
-        Environment: "setCollectionEnvironment",
-        dashboardEnvironment: false,
-      });
-    } else {
-      this.props.history.push({
-        Environment: "setCollectionEnvironment",
-        dashboardEnvironment: false,
-      });
-    }
-  }
   setDropdowmRole(key) {
     const data = this.state.data;
     data.role = this.dropdownRole[key].name;
@@ -138,32 +122,6 @@ class ShareCollectionForm extends Component {
     }
   }
 
-  handlePublic(collection) {
-    collection.isPublic = !collection.isPublic;
-    if (collection.isPublic) {
-      collection.environment = this.props.location.selectedPublicEnvironment;
-      this.props.history.push({
-        publishedCollectionEnv: true,
-        Environment: "setCollectionEnvironment",
-        dashboardEnvironment: false,
-      });
-      this.setState({
-        selectedEnvironment: this.props.location.selectedPublicEnvironment,
-        dashboardEnvironment: false,
-      });
-    } else {
-      collection.environment = null;
-      this.props.history.push({
-        privateCollectionEnv: true,
-        Environment: "setCollectionEnvironment",
-      });
-      this.setState({
-        selectedEnvironment: "No Environment",
-      });
-    }
-    delete collection.teamId;
-    this.props.update_collection({ ...collection });
-  }
   onHide() {
     this.props.onHide();
     this.props.history.push({
@@ -244,27 +202,6 @@ class ShareCollectionForm extends Component {
                       </Dropdown.Menu>
                     </Dropdown>{" "}
                   </InputGroup.Append>
-                  {this.currentUserRole === "Admin" ||
-                  this.currentUserRole === "Owner" ? (
-                    <div>
-                      <button
-                        style={{ float: "right", marginLeft: "10px" }}
-                        type="button"
-                        className="btn btn-success"
-                        onClick={() => {
-                          this.handlePublic(
-                            this.props.collections[this.props.collection_id]
-                          );
-                        }}
-                      >
-                        {this.props.collections[this.props.collection_id]
-                          .isPublic
-                          ? "Make Private"
-                          : "Make Public"}
-                      </button>
-                      <Environments {...this.props} />
-                    </div>
-                  ) : null}
                 </InputGroup>
               ) : null}
             </div>

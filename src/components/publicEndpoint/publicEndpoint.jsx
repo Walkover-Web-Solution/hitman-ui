@@ -10,6 +10,13 @@ import SideBar from "../main/sidebar";
 import { fetchAllPublicEndpoints } from "./redux/publicEndpointsActions.js";
 import "./publicEndpoint.scss";
 import Environments from "../environments/environments";
+import store from "../../store/store";
+
+const mapStateToProps = (state) => {
+  return {
+    collections: state.collections,
+  };
+};
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -22,16 +29,34 @@ class PublicEndpoint extends Component {
   state = {
     publicCollectionId: "",
   };
+
   componentDidMount() {
     if (this.props.location.pathname) {
       let collectionIdentifier = this.props.location.pathname.split("/")[2];
       this.props.fetch_all_public_endpoints(collectionIdentifier);
       this.props.history.push({
         collectionIdentifier: collectionIdentifier,
-      Environment: "publicCollectionEnvironment",
+        Environment: "publicCollectionEnvironment",
       });
     }
+
+    const unsubscribe = store.subscribe(() => {
+      const baseUrl = window.location.href.split("/")[2];
+      const collectionId = this.props.location.collectionIdentifier;
+      const domain = this.props.location.pathname.split("/");
+
+      if (this.props.collections[collectionId]) {
+        const index = this.props.collections[
+          collectionId
+        ].docProperties.domainsList.findIndex((d) => d.domain === baseUrl);
+        document.title = this.props.collections[
+          collectionId
+        ].docProperties.domainsList[index].title;
+        unsubscribe();
+      }
+    });
   }
+
   render() {
     if (
       this.props.location.pathname.split("/")[1] === "public" &&
@@ -64,7 +89,7 @@ class PublicEndpoint extends Component {
               <ToastContainer />
               <div className="main-panel-wrapper">
                 <SideBar {...this.props} />
-                <Environments {...this.props} />
+                {/* <Environments {...this.props} /> */}
               </div>
 
               <div className="main-content">
@@ -91,4 +116,4 @@ class PublicEndpoint extends Component {
   }
 }
 
-export default connect(null, mapDispatchToProps)(PublicEndpoint);
+export default connect(mapStateToProps, mapDispatchToProps)(PublicEndpoint);

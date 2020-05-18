@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Modal } from "react-bootstrap";
 import endpointApiService from "./endpointApiService";
 import indexedDbService from "../indexedDb/indexedDbService";
+import "./endpoints.scss";
 var URI = require("urijs");
 
 class TokenGenerator extends Component {
@@ -184,59 +185,69 @@ class TokenGenerator extends Component {
     switch (key) {
       case "grantType":
         return (
-          <div className="dropdown">
-            <label>{this.inputFields[key]}</label>
-            <button
-              className="btn dropdown-toggle"
-              id="dropdownMenuButton"
-              data-toggle="dropdown"
-              aria-haspopup="true"
-              aria-expanded="false"
-            >
-              {this.grantTypes[grantType]}
-            </button>
-            <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              {Object.keys(this.grantTypes).map((key) => (
-                <button
-                  onClick={() => this.setGrantType(key)}
-                  className="btn custom-request-button"
-                >
-                  {this.grantTypes[key]}
-                </button>
-              ))}
+          <React.Fragment>
+            <label className="basic-auth-label">{this.inputFields[key]}</label>
+            <div className="dropdown basic-auth-input">
+              <button
+                className="btn dropdown-toggle new-token-generator-dropdown"
+                id="dropdownMenuButton"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+              >
+                {this.grantTypes[grantType]}
+              </button>
+              <div
+                className="dropdown-menu"
+                aria-labelledby="dropdownMenuButton"
+              >
+                {Object.keys(this.grantTypes).map((key) => (
+                  <button
+                    onClick={() => this.setGrantType(key)}
+                    className="btn custom-request-button"
+                  >
+                    {this.grantTypes[key]}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
+          </React.Fragment>
         );
       case "clientAuthentication":
         return (
-          <div className="dropdown">
-            <label>{this.inputFields[key]}</label>
-            <button
-              className="btn dropdown-toggle"
-              id="dropdownMenuButton"
-              data-toggle="dropdown"
-              aria-haspopup="true"
-              aria-expanded="false"
-            >
-              {this.state.data.clientAuthentication}
-            </button>
-            <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <React.Fragment>
+            <label className="basic-auth-label">{this.inputFields[key]}</label>
+            <div className="dropdown basic-auth-input">
               <button
-                value="Send as Basic Auth header"
-                onClick={this.setClientAuthorization.bind(this)}
-                className="btn custom-request-button"
+                className="btn dropdown-toggle new-token-generator-dropdown"
+                id="dropdownMenuButton"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
               >
-                Send as Basic Auth header
+                {this.state.data.clientAuthentication}
               </button>
-              <button
-                value="Send client credentials in body"
-                onClick={this.setClientAuthorization.bind(this)}
-                className="btn custom-request-button"
+              <div
+                className="dropdown-menu"
+                aria-labelledby="dropdownMenuButton"
               >
-                Send client credentials in body
-              </button>
+                <button
+                  value="Send as Basic Auth header"
+                  onClick={this.setClientAuthorization.bind(this)}
+                  className="btn custom-request-button"
+                >
+                  Send as Basic Auth header
+                </button>
+                <button
+                  value="Send client credentials in body"
+                  onClick={this.setClientAuthorization.bind(this)}
+                  className="btn custom-request-button"
+                >
+                  Send client credentials in body
+                </button>
+              </div>
             </div>
-          </div>
+          </React.Fragment>
         );
       case "callbackUrl":
         if (grantType === "authorizationCode" || grantType === "implicit") {
@@ -280,14 +291,15 @@ class TokenGenerator extends Component {
 
   fetchDefaultInputField(key) {
     return (
-      <div>
-        <label>{this.inputFields[key]}</label>
+      <React.Fragment>
+        <label className="basic-auth-label">{this.inputFields[key]}</label>
         <input
+          className="token-generator-input-field"
           name={key}
           value={this.state.data[key]}
           onChange={this.handleChange.bind(this)}
         ></input>
-      </div>
+      </React.Fragment>
     );
   }
 
@@ -311,16 +323,20 @@ class TokenGenerator extends Component {
             </Modal.Title>
           </Modal.Header>
 
-          <Modal.Body>
+          <Modal.Body className="new-token-generator-modal-body">
             {Object.keys(this.inputFields).map((key) => (
               <div className="input-field-wrapper">{this.renderInput(key)}</div>
             ))}
-            <button type="button" onClick={() => this.props.onHide()}>
-              Cancel
-            </button>
-            <button type="button" onClick={() => this.makeRequest()}>
-              Request Token
-            </button>
+            <div className="button-group">
+              <button className="btn">Cancel</button>
+              <button
+                className="btn request-token-button"
+                type="button"
+                onClick={() => this.makeRequest()}
+              >
+                Request Token
+              </button>
+            </div>
           </Modal.Body>
         </Modal>
       </div>

@@ -5,23 +5,33 @@ import Logout from "./components/auth/logout";
 import ProtectedRoute from "./components/common/protectedRoute";
 import Main from "./components/main/Main.jsx";
 import Public from "./components/publicEndpoint/publicEndpoint.jsx";
-import { Redirect } from "react-router-dom";
-
+import herokuApiService from "./services/herokuApiService";
+import store from "./store/store";
 class App extends Component {
-  render() {
-    console.log(window.location.href.split("/")[2]);
-    console.log(process.env);
+  async redirectToClientDomain() {
+    const { data: configVars } = await herokuApiService.getConfigVars();
+    console.log(configVars);
+    if (
+      window.location.href.split("/")[3] !== "public" &&
+      window.location.href.split("/")[2] !== "hitman-ui.herokuapp.com" &&
+      window.location.href.split("/")[2] !== "localhost:3000"
+    ) {
+      if (configVars && configVars[window.location.href.split("/")[2]]) {
+        const url = window.location.href.split("/");
+        const baseUrl = url[2];
 
-    if (window.location.href.split("/")[2] !== "hitman-ui.herokuapp.com") {
-      if (process.env && process.env[window.location.href.split("/")[2]]) {
-        const baseUrl = window.location.href.split("/")[2];
-        const clientDetails = process.env[baseUrl].split(",");
+        const clientDetails = configVars[baseUrl].split(",");
+        console.log(clientDetails);
         const clientTitle = clientDetails[0];
-        const clientDomain = window.location.href.split("/")[2];
-        const clientCollectionId = clientDetails[1];
-        return <Redirect to={`/dashboard/public/${clientCollectionId}`} />;
+        const clientDomain = url[2];
+        const clientCollectionId = clientDetails[2];
+        this.props.history.push({ pathname: `/public/${clientCollectionId}` });
       }
     }
+  }
+
+  render() {
+    this.redirectToClientDomain();
     return (
       <Switch>
         <ProtectedRoute path="/dashboard/" component={Main} />

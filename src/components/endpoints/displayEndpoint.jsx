@@ -149,10 +149,10 @@ class DisplayEndpoint extends Component {
       });
       this.setAccessToken("", "", "", "");
     }
-    if (!isDashboardRoute(this.props)) {
-      let collectionIdentifier = this.props.location.pathname.split("/")[2];
-      this.fetchPublicCollection(collectionIdentifier);
-    }
+    // if (!isDashboardRoute(this.props)) {
+    //   let collectionIdentifier = this.props.location.pathname.split("/")[2];
+    //   this.fetchPublicCollection(collectionIdentifier);
+    // }
   }
 
   structueParamsHeaders = [
