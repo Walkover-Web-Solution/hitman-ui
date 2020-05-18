@@ -6,14 +6,14 @@ import ProtectedRoute from "./components/common/protectedRoute";
 import Main from "./components/main/Main.jsx";
 import Public from "./components/publicEndpoint/publicEndpoint.jsx";
 import herokuApiService from "./services/herokuApiService";
-require("dotenv").config();
+import store from "./store/store";
 class App extends Component {
   async redirectToClientDomain() {
     const { data: configVars } = await herokuApiService.getConfigVars();
     console.log(configVars);
     if (
-      (window.location.href.split("/")[3] !== "public" &&
-        window.location.href.split("/")[2] !== "hitman-ui.herokuapp.com") ||
+      window.location.href.split("/")[3] !== "public" &&
+      window.location.href.split("/")[2] !== "hitman-ui.herokuapp.com" &&
       window.location.href.split("/")[2] !== "localhost:3000"
     ) {
       if (configVars && configVars[window.location.href.split("/")[2]]) {
@@ -25,7 +25,7 @@ class App extends Component {
         const clientTitle = clientDetails[0];
         const clientDomain = url[2];
         const clientCollectionId = clientDetails[2];
-        window.location.replace(`/public/${clientCollectionId}`);
+        this.props.history.push({ pathname: `/public/${clientCollectionId}` });
       }
     }
   }

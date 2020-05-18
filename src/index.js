@@ -1,4 +1,5 @@
 import React from "react";
+import { Route, Switch } from "react-router-dom";
 import ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
 import "./index.scss";
@@ -11,7 +12,9 @@ import store from "./store/store";
 ReactDOM.render(
   <Provider store={store}>
     <BrowserRouter>
-      <App />
+      <Switch>
+        <Route path="/" component={App} />
+      </Switch>
     </BrowserRouter>
   </Provider>,
   document.getElementById("root")
