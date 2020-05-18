@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import "./endpoints.scss";
 import TokenGenerator from "./newTokenGenerator";
 import AccessTokenManager from "./displayTokenManager";
-import collectionVersionsApiService from "../collectionVersions/collectionVersionsApiService";
 
 class Authorization extends Component {
   state = {
@@ -172,12 +171,19 @@ class Authorization extends Component {
     this.setState({ openManageTokenModel: true });
   }
 
-  closeManageTokenModel() {
+  async closeManageTokenModel() {
     let versionId = this.props.groups[this.props.groupId].versionId;
-    collectionVersionsApiService.setAuthorizationResponse(
-      versionId,
-      this.authResponses
-    );
+    this.props.set_authorization_responses(versionId, this.authResponses);
+    if (this.props.location.pathname.split("/")[3] !== "new") {
+      let data = {
+        type: "oauth_2",
+        value: this.state.oauth_2,
+      };
+      this.props.set_authorization_type(
+        this.props.location.pathname.split("/")[3],
+        data
+      );
+    }
     this.setState({ openManageTokenModel: false });
   }
 
@@ -239,6 +245,14 @@ class Authorization extends Component {
     this.setHeadersandParams(accessToken);
   }
 
+  showPassword() {
+    if (this.state.showPassword && this.state.showPassword === true) {
+      this.setState({ showPassword: false });
+    } else {
+      this.setState({ showPassword: true });
+    }
+  }
+
   render() {
     if (this.props.authorizationType) {
       const authType = this.props.authorizationType.type;
@@ -280,6 +294,7 @@ class Authorization extends Component {
             title="MANAGE ACCESS TOKENS"
             set_access_token={this.setAccessToken.bind(this)}
             set_auth_responses={this.setAuthResponses.bind(this)}
+            accessToken={this.state.oauth_2.accessToken}
           ></AccessTokenManager>
         )}
         <div className="authorization-selector-wrapper">
@@ -374,11 +389,28 @@ class Authorization extends Component {
               <div className="input-field-wrapper">
                 <label>Password</label>
                 <input
+                  type="password"
                   name="password"
                   value={this.state.basicAuth.password}
                   onChange={this.handleChange.bind(this)}
                 ></input>
               </div>
+              {/* <div className="input-field-wrapper">
+                <label>
+                  <button
+                    type="checkbox"
+                    value={
+                      this.state.showPassword
+                        ? this.state.showPassword === true
+                          ? true
+                          : false
+                        : false
+                    }
+                    onClick={() => this.showPassword()}
+                  ></button>
+                  Show Password
+                </label>
+              </div> */}
             </form>
           </div>
         )}

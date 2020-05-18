@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Modal } from "react-bootstrap";
 import endpointApiService from "./endpointApiService";
+import indexedDbService from "../indexedDb/indexedDbService";
 import "./endpoints.scss";
 var URI = require("urijs");
 
@@ -73,31 +74,32 @@ class TokenGenerator extends Component {
   async makeRequest() {
     let grantType = this.state.data.grantType;
     let requestApi = "";
-    let params = this.makeParams(grantType);
-    params = URI.buildQuery(params);
-    // if (grantType === "implicit") {
-    //   let paramsObject = {};
-    //   for (let i = 0; i < keys.length; i++) {
-    //     if (this.state.data[keys[i]] !== "" && keys[i] !== "authUrl") {
-    //       paramsObject[keys[i]] = this.state.data[keys[i]];
-    //     }
-    //   }
-    //   requestApi = URI.buildQuery(paramsObject);
-    // }
-    if (grantType === "implicit") {
-      requestApi =
-        this.state.data.authUrl + "?" + params + "&response_type=token";
+    let paramsObject = this.makeParams(grantType);
+    let params = URI.buildQuery(paramsObject);
+    console.log("params", params);
+    if (grantType === "implicit" || grantType === "authorizationCode") {
+      if (grantType === "implicit")
+        requestApi =
+          this.state.data.authUrl + "?" + params + "&response_type=token";
+      else
+        requestApi =
+          this.state.data.authUrl + "?" + params + "&response_type=code";
     }
+
     if (
       grantType === "passwordCredentials" ||
       grantType === "clientCredentials"
     ) {
-      requestApi =
-        this.state.data.accessTokenUrl + "?" + params + "&response_type=token";
+      delete paramsObject.grantType;
+      requestApi = this.state.data.accessTokenUrl;
+      if (grantType === "passwordCredentials")
+        paramsObject["grant_type"] = "password";
+      else if (grantType === "clientCredentials")
+        paramsObject["grant_type"] = "client_credentials";
     }
 
     if (this.props.groupId) {
-      await endpointApiService.setAuthorizationData(
+      this.props.set_authorization_data(
         this.props.groups[this.props.groupId].versionId,
         this.state.data
       );
@@ -108,29 +110,23 @@ class TokenGenerator extends Component {
         type: "oauth_2",
         value: this.props.oauth_2,
       };
-      await endpointApiService.setAuthorizationType(
+      this.props.set_authorization_type(
         this.props.location.pathname.split("/")[3],
         data
       );
     }
 
-    console.log("requestApi", requestApi);
-    endpointApiService.authorize(requestApi);
+    await indexedDbService.getDataBase();
+    await indexedDbService.updateData(
+      "authData",
+      this.state.data,
+      "currentAuthData"
+    );
+
+    endpointApiService.authorize(requestApi, paramsObject, grantType);
   }
 
   makeParams(grantType) {
-    // tokenName: "",
-    //   grantType: "authorizationCode",
-    //   callbackUrl: "",
-    //   authUrl: "",
-    //   username: "",
-    //   password: "",
-    //   accessTokenUrl: "",
-    //   client_id: "",
-    //   clientSecret: "",
-    //   scope: "",
-    //   state: "",
-    //   clientAuthentication: "Send as Basic Auth header",
     let params = {};
     let data = { ...this.state.data };
     let keys = Object.keys(data);
@@ -147,7 +143,7 @@ class TokenGenerator extends Component {
           }
           break;
         case "callbackUrl":
-          if (grantType === "implicit") {
+          if (grantType === "implicit" || grantType === "authorizationCode") {
             params["redirect_uri"] = data[keys[i]];
           }
           break;
@@ -157,16 +153,17 @@ class TokenGenerator extends Component {
         case "clientSecret":
           if (
             grantType === "passwordCredentials" ||
-            grantType === "clientCredentials"
+            grantType === "clientCredentials" ||
+            grantType === "authorizationCode"
           ) {
-            params["clientSecret"] = data[keys[i]];
+            params["client_secret"] = data[keys[i]];
           }
           break;
         case "scope":
           params[keys[i]] = data[keys[i]];
           break;
         case "state":
-          if (grantType === "implicit") {
+          if (grantType === "implicit" || grantType === "authorizationCode") {
             params[keys[i]] = data[keys[i]];
           }
           break;
@@ -185,7 +182,6 @@ class TokenGenerator extends Component {
 
   renderInput(key) {
     let grantType = this.state.data.grantType;
-
     switch (key) {
       case "grantType":
         return (
@@ -293,16 +289,52 @@ class TokenGenerator extends Component {
     }
   }
 
+  showPassword() {
+    if (this.state.showPassword && this.state.showPassword === true) {
+      this.setState({ showPassword: false });
+    } else {
+      this.setState({ showPassword: true });
+    }
+  }
+
   fetchDefaultInputField(key) {
     return (
       <React.Fragment>
         <label className="basic-auth-label">{this.inputFields[key]}</label>
         <input
+          id="input"
+          type={
+            key === "password"
+              ? this.state.showPassword
+                ? this.state.showPassword === false
+                  ? "password"
+                  : null
+                : "password"
+              : null
+          }
           className="token-generator-input-field"
           name={key}
           value={this.state.data[key]}
           onChange={this.handleChange.bind(this)}
         ></input>
+        {key === "password" && (
+          <div>
+            <label>
+              <button
+                type="checkbox"
+                value={
+                  this.state.showPassword
+                    ? this.state.showPassword === true
+                      ? true
+                      : false
+                    : false
+                }
+                onClick={() => this.showPassword()}
+              ></button>
+              Show Password
+            </label>
+          </div>
+        )}
       </React.Fragment>
     );
   }

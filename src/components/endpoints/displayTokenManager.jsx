@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { Modal, ListGroup, Container, Row, Col } from "react-bootstrap";
-import endpointApiService from "./endpointApiService";
 
 class AccessTokenManager extends Component {
   state = {
@@ -45,6 +44,10 @@ class AccessTokenManager extends Component {
       } else {
         updatedAuthResponses.push(authResponses[i]);
       }
+    }
+    if (this.props.accessToken === authResponses[index].access_token) {
+      if (updatedAuthResponses.length === 0) this.props.set_access_token("");
+      else this.props.set_access_token(updatedAuthResponses[0].access_token);
     }
     this.setState({ tokenIndex: 0, authResponses: updatedAuthResponses });
     this.props.set_auth_responses(updatedAuthResponses);
@@ -113,22 +116,31 @@ class AccessTokenManager extends Component {
                         {Object.keys(this.authResponse).map((property) => (
                           <div>
                             {this.authResponse[property]}
-                            {this.state.authResponses[this.state.tokenIndex]
-                              ? this.state.authResponses[this.state.tokenIndex][
+                            {!this.state.editTokenName ? (
+                              this.state.authResponses[
+                                this.state.tokenIndex
+                              ] ? (
+                                this.state.authResponses[this.state.tokenIndex][
                                   property
                                 ]
-                              : null}
-                            }
-                            {this.authResponse[property] === "Token Name" ? (
-                              <button
-                                onClick={() => this.selectEditToken("edit")}
-                              >
-                                Edit
-                              </button>
-                            ) : null}
-                            {this.state.editTokenName &&
-                            property === "tokenName" &&
-                            this.state.editTokenName === true ? (
+                              ) : null
+                            ) : property !== "tokenName" ? (
+                              this.state.authResponses[
+                                this.state.tokenIndex
+                              ] ? (
+                                this.state.authResponses[this.state.tokenIndex][
+                                  property
+                                ]
+                              ) : null
+                            ) : this.state.editTokenName !== true ? (
+                              this.state.authResponses[
+                                this.state.tokenIndex
+                              ] ? (
+                                this.state.authResponses[this.state.tokenIndex][
+                                  property
+                                ]
+                              ) : null
+                            ) : (
                               <div>
                                 <input
                                   name="tokenName"
@@ -141,17 +153,28 @@ class AccessTokenManager extends Component {
                                 ></input>
                                 <button
                                   type="button"
-                                  // onClick={() => this.updateTokenName()}
+                                  onClick={() => this.selectEditToken("")}
                                 >
                                   Save
                                 </button>
-                                <button
-                                  type="button"
-                                  onClick={() => this.selectEditToken("cancel")}
-                                >
-                                  Cancel
-                                </button>
                               </div>
+                            )}
+                            {this.authResponse[property] === "Token Name" ? (
+                              this.state.editTokenName ? (
+                                this.state.editTokenName === true ? null : (
+                                  <button
+                                    onClick={() => this.selectEditToken("edit")}
+                                  >
+                                    Edit
+                                  </button>
+                                )
+                              ) : (
+                                <button
+                                  onClick={() => this.selectEditToken("edit")}
+                                >
+                                  Edit
+                                </button>
+                              )
                             ) : null}
                           </div>
                         ))}

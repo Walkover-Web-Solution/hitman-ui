@@ -46,17 +46,27 @@ export function duplicateEndpoint(endpointId) {
 }
 
 export function moveEndpoint(endpointId, body) {
-  console.log("body", body);
   return http.patch(`${apiUrl}/endpoints/${endpointId}/move`, body);
 }
 
-export function authorize(requestApi) {
-  console.log("requestApi", requestApi);
-  window.open(requestApi, "_top");
-}
-
-export function setAuthorizationData(versionId, data) {
-  return http.patch(`${apiUrl}/versions/${versionId}/authorizationData`, data);
+export function authorize(requestApi, params, grantType) {
+  if (
+    grantType === "password" ||
+    grantType === "client_credentials" ||
+    grantType === "auth_code"
+  ) {
+    if (grantType === "auth_code") {
+      params.grant_type = "authorization_code";
+    }
+    return httpService.request({
+      url: requestApi,
+      method: "POST",
+      data: qs.stringify({ params }),
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    });
+  } else {
+    window.open(requestApi, "_top");
+  }
 }
 
 export function setAuthorizationType(endpointId, data) {
@@ -77,6 +87,5 @@ export default {
   duplicateEndpoint,
   moveEndpoint,
   authorize,
-  setAuthorizationData,
   setAuthorizationType,
 };
