@@ -167,24 +167,28 @@ class AccessTokenManager extends Component {
                                   </button>
                                 </div>
                               )}
-                            </div>
-                            {this.authResponse[property] === "Token Name" ? (
-                              this.state.editTokenName ? (
-                                this.state.editTokenName === true ? null : (
+                              {this.authResponse[property] === "Token Name" ? (
+                                this.state.editTokenName ? (
+                                  this.state.editTokenName === true ? null : (
+                                    <button
+                                      onClick={() =>
+                                        this.selectEditToken("edit")
+                                      }
+                                      className="btn"
+                                    >
+                                      Edit
+                                    </button>
+                                  )
+                                ) : (
                                   <button
                                     onClick={() => this.selectEditToken("edit")}
+                                    className="btn"
                                   >
                                     Edit
                                   </button>
                                 )
-                              ) : (
-                                <button
-                                  onClick={() => this.selectEditToken("edit")}
-                                >
-                                  Edit
-                                </button>
-                              )
-                            ) : null}
+                              ) : null}
+                            </div>
                           </div>
                         ))}
                       </div>
