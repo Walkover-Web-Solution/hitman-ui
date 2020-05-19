@@ -147,7 +147,7 @@ class DisplayEndpoint extends Component {
           },
         ],
       });
-      this.setAccessToken("", "", "", "");
+      this.setAccessToken();
     }
     // if (!isDashboardRoute(this.props)) {
     //   let collectionIdentifier = this.props.location.pathname.split("/")[2];
@@ -277,7 +277,7 @@ class DisplayEndpoint extends Component {
         bodyFlag: true,
         response: {},
       });
-      this.setAccessToken(endpoint, versions, groups, authType);
+      this.setAccessToken();
     }
   }
 
@@ -1237,76 +1237,95 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  extractToken(
-    endpoint,
-    groups,
-    authData,
-    authResponses,
-    authType,
-    responseObject = undefined
-  ) {
-    let url = window.location.href;
-    let response = {};
-    if (responseObject === undefined) {
-      response = URI.parseQuery("?" + url.split("#")[1]);
-    } else {
-      response = responseObject;
-    }
+  // async extractToken(
+  //   endpoint,
+  //   groups,
+  //   authData,
+  //   authResponses,
+  //   authType,
+  //   responseObject = undefined
+  // ) {
+  //   let url = window.location.href;
+  // let response = {};
+  // if (responseObject === undefined) {
+  // let response = URI.parseQuery("?" + url.split("#")[1]);
+  // } else {
+  //   response = responseObject;
+  // }
 
+  // if (url.split("#")[1]) {
+  //   await indexedDbService.getDataBase();
+  //   await indexedDbService.updateData(
+  //     "responseData",
+  //     response,
+  //     "currentResponse"
+  //   );
+  //   window.close();
+
+  //   if (endpoint === "") {
+  //     let authType = {
+  //       type: "oauth_2",
+  //       value: {
+  //         authorizationAddedTo: "Request Headers",
+  //         accessToken: response.access_token,
+  //       },
+  //     };
+  //     this.setState({ authType });
+  //     this.props.history.push(`/dashboard/endpoint/new`);
+  //   } else {
+  //     this.accessToken = response.access_token;
+  //     response.tokenName = authData.tokenName;
+  //     authResponses.push(response);
+
+  //     if (endpoint.groupId) {
+  //       let authorizationType = authType;
+  //       authorizationType.value.accessToken = response.access_token;
+  //       this.props.set_authorization_type(
+  //         this.props.location.pathname.split("/")[3],
+  //         authorizationType
+  //       );
+  //     }
+
+  //     if (endpoint.groupId) {
+  //       this.props.set_authorization_responses(
+  //         groups[endpoint.groupId].versionId,
+  //         authResponses
+  //       );
+  //     }
+  //     this.props.history.push(`/dashboard/endpoint/${endpoint.id}`);
+  //   }
+  //   this.setAuthorizationTab = true;
+  //   }
+  // }
+  //  async setAccessToken(endpoint, versions, groups, authType) {
+
+  async setAccessToken() {
+    let url = window.location.href;
+    let response = URI.parseQuery("?" + url.split("#")[1]);
     if (url.split("#")[1]) {
-      this.setAuthorizationTab = true;
-      if (endpoint === "") {
-        let authType = {
-          type: "oauth_2",
-          value: {
-            authorizationAddedTo: "Request Headers",
-            accessToken: response.access_token,
-          },
-        };
-        this.setState({ authType });
-        // this.props.history.push(`/dashboard/endpoint/new`);
-      } else {
-        this.accessToken = response.access_token;
-        response.tokenName = authData.tokenName;
-        authResponses.push(response);
-
-        if (endpoint.groupId) {
-          let authorizationType = authType;
-          authorizationType.value.accessToken = response.access_token;
-          this.props.set_authorization_type(
-            this.props.location.pathname.split("/")[3],
-            authorizationType
-          );
+      await indexedDbService.getDataBase();
+      await indexedDbService.updateData(
+        "responseData",
+        response,
+        "currentResponse"
+      );
+      let responseData = await indexedDbService.getValue(
+        "responseData",
+        "currentResponse"
+      );
+      let timer = setInterval(async function () {
+        if (responseData) {
+          clearInterval(timer);
+          window.close();
         }
-
-        if (endpoint.groupId) {
-          this.props.set_authorization_responses(
-            groups[endpoint.groupId].versionId,
-            authResponses
-          );
-        }
-        this.props.history.push(`/dashboard/endpoint/${endpoint.id}`);
-      }
+      }, 1000);
     }
-  }
-
-  async setAccessToken(endpoint, versions, groups, authType) {
-    let url = window.location.href;
-
-    await indexedDbService.getDataBase();
-    let authData = await indexedDbService.getValue(
-      "authData",
-      "currentAuthData"
-    );
-    let authResponses = {};
-    if (endpoint !== "") {
-      authResponses =
-        versions[groups[endpoint.groupId].versionId].authorizationResponse;
-    }
-    this.extractToken(endpoint, groups, authData, authResponses, authType);
-
     if (url.split("?")[1]) {
-      this.setAuthorizationTab = true;
+      await indexedDbService.getDataBase();
+      let authData = await indexedDbService.getValue(
+        "authData",
+        "currentAuthData"
+      );
       let resposneAuthCode = URI.parseQuery("?" + url.split("?")[1]);
       let code = resposneAuthCode.code;
       let paramsObject = {};
@@ -1319,18 +1338,51 @@ class DisplayEndpoint extends Component {
         paramsObject,
         "auth_code"
       );
-      this.extractToken(
-        endpoint,
-        groups,
-        authData,
-        authResponses,
-        authType,
-        response
-      );
+      this.setAccessToken();
     }
-    await indexedDbService.deleteData("authData", "currentAuthData");
-    authData = await indexedDbService.getValue("authData", "currentAuthData");
-    console.log(authData);
+
+    // await indexedDbService.getDataBase();
+    // let authData = await indexedDbService.getValue(
+    //   "authData",
+    //   "currentAuthData"
+    // );
+    // let abcd = await indexedDbService.getValue(
+    //   "responseData",
+    //   "currentResponse"
+    // );
+
+    // let authResponses = {};
+    // if (endpoint !== "") {
+    //   authResponses =
+    //     versions[groups[endpoint.groupId].versionId].authorizationResponse;
+    // }
+    // this.extractToken(endpoint, groups, authData, authResponses, authType);
+    // if (url.split("?")[1]) {
+    //   this.setAuthorizationTab = true;
+    //   let resposneAuthCode = URI.parseQuery("?" + url.split("?")[1]);
+    //   let code = resposneAuthCode.code;
+    //   let paramsObject = {};
+    //   paramsObject.code = code;
+    //   paramsObject.client_id = authData.clientId;
+    //   paramsObject.client_secret = authData.clientSecret;
+    //   paramsObject.redirect_uri = authData.callbackUrl;
+    //   let response = await endpointApiService.authorize(
+    //     authData.accessTokenUrl,
+    //     paramsObject,
+    //     "auth_code"
+    //   );
+    //   this.extractToken(
+    //     endpoint,
+    //     groups,
+    //     authData,
+    //     authResponses,
+    //     authType,
+    //     response
+    //   );
+    // }
+    // await indexedDbService.deleteData("authData", "currentAuthData");
+    // authData = await indexedDbService.getValue("authData", "currentAuthData");
+    // console.log(authData);
   }
 
   setAuthType(type, value) {
@@ -1607,6 +1659,7 @@ class DisplayEndpoint extends Component {
                     set_authorization_headers={this.setHeaders.bind(this)}
                     set_authoriztaion_params={this.setParams.bind(this)}
                     set_authoriztaion_type={this.setAuthType.bind(this)}
+                    // set_access_token={this.setAccessToken.bind(this)}
                     accessToken={this.accessToken}
                     authorizationType={this.state.authType}
                   ></Authorization>

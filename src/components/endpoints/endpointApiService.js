@@ -1,6 +1,6 @@
 import http from "../../services/httpService";
 import httpService from "../../services/endpointHttpService";
-
+import indexedDbService from "../indexedDb/indexedDbService";
 import { apiUrl } from "../../config.json";
 import qs from "qs";
 
@@ -49,24 +49,61 @@ export function moveEndpoint(endpointId, body) {
   return http.patch(`${apiUrl}/endpoints/${endpointId}/move`, body);
 }
 
-export function authorize(requestApi, params, grantType) {
+export async function authorize(
+  requestApi,
+  params,
+  grantType,
+  props,
+  tokenName
+) {
   if (
-    grantType === "password" ||
-    grantType === "client_credentials" ||
+    grantType === "passwordCredentials" ||
+    grantType === "clientCredentials" ||
     grantType === "auth_code"
   ) {
-    if (grantType === "auth_code") {
-      params.grant_type = "authorization_code";
-    }
-    return httpService.request({
+    if (grantType === "auth_code") params.grant_type = "authorization_code";
+    let responseData = httpService.request({
       url: requestApi,
       method: "POST",
       data: qs.stringify({ params }),
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
     });
+    responseData["tokenName"] = tokenName;
+    if (responseData && responseData.access_token) {
+      if (props.groupId) await setResponse(props, responseData);
+      props.set_access_token(responseData.access_token);
+    }
   } else {
-    window.open(requestApi, "_top");
+    let openWindow = window.open(
+      requestApi,
+      "windowName",
+      "width=400,height=600"
+    );
+
+    let timer = setInterval(async function () {
+      if (openWindow.closed) {
+        clearInterval(timer);
+        await indexedDbService.getDataBase();
+        let responseData = await indexedDbService.getValue(
+          "responseData",
+          "currentResponse"
+        );
+        await indexedDbService.deleteData("responseData", "currentResponse");
+        if (responseData && responseData.access_token) {
+          responseData["tokenName"] = tokenName;
+          if (props.groupId) await setResponse(props, responseData);
+          props.set_access_token(responseData.access_token);
+        }
+      }
+    }, 1000);
   }
+}
+
+async function setResponse(props, responseData) {
+  let versionId = props.groups[props.groupId].versionId;
+  let authResponses = props.versions[versionId].authorizationResponse;
+  authResponses.push(responseData);
+  await props.set_authorization_responses(versionId, authResponses);
 }
 
 export function setAuthorizationType(endpointId, data) {

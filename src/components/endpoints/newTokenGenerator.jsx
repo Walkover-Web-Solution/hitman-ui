@@ -8,7 +8,7 @@ var URI = require("urijs");
 class TokenGenerator extends Component {
   state = {
     data: {
-      tokenName: "",
+      tokenName: "Token Name",
       grantType: "authorizationCode",
       callbackUrl: "",
       authUrl: "",
@@ -76,7 +76,7 @@ class TokenGenerator extends Component {
     let requestApi = "";
     let paramsObject = this.makeParams(grantType);
     let params = URI.buildQuery(paramsObject);
-    console.log("params", params);
+
     if (grantType === "implicit" || grantType === "authorizationCode") {
       if (grantType === "implicit")
         requestApi =
@@ -99,18 +99,19 @@ class TokenGenerator extends Component {
     }
 
     if (this.props.groupId) {
-      this.props.set_authorization_data(
+      await this.props.set_authorization_data(
         this.props.groups[this.props.groupId].versionId,
         this.state.data
       );
     }
 
-    if (this.props.location.pathname.split("/")[3] !== "new") {
+    if (this.props.groupId) {
+      // if (this.props.location.pathname.split("/")[3] !== "new") {
       let data = {
         type: "oauth_2",
         value: this.props.oauth_2,
       };
-      this.props.set_authorization_type(
+      await this.props.set_authorization_type(
         this.props.location.pathname.split("/")[3],
         data
       );
@@ -123,7 +124,15 @@ class TokenGenerator extends Component {
       "currentAuthData"
     );
 
-    endpointApiService.authorize(requestApi, paramsObject, grantType);
+    await endpointApiService.authorize(
+      requestApi,
+      paramsObject,
+      grantType,
+      this.props,
+      this.state.data.tokenName
+    );
+
+    this.props.onHide();
   }
 
   makeParams(grantType) {
@@ -306,9 +315,9 @@ class TokenGenerator extends Component {
           type={
             key === "password"
               ? this.state.showPassword
-                ? this.state.showPassword === false
-                  ? "password"
-                  : null
+                ? this.state.showPassword === true
+                  ? null
+                  : "password"
                 : "password"
               : null
           }
@@ -320,17 +329,10 @@ class TokenGenerator extends Component {
         {key === "password" && (
           <div>
             <label>
-              <button
+              <input
                 type="checkbox"
-                value={
-                  this.state.showPassword
-                    ? this.state.showPassword === true
-                      ? true
-                      : false
-                    : false
-                }
                 onClick={() => this.showPassword()}
-              ></button>
+              ></input>
               Show Password
             </label>
           </div>
@@ -364,7 +366,9 @@ class TokenGenerator extends Component {
               <div className="input-field-wrapper">{this.renderInput(key)}</div>
             ))}
             <div className="button-group">
-              <button className="btn">Cancel</button>
+              <button className="btn" onClick={this.props.onHide}>
+                Cancel
+              </button>
               <button
                 className="btn request-token-button"
                 type="button"

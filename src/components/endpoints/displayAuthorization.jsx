@@ -233,6 +233,9 @@ class Authorization extends Component {
   setAuthResponses(authResponses) {
     this.authResponses = authResponses;
     if (authResponses.length === 0) {
+      let oauth_2 = this.state.oauth_2;
+      oauth_2.accessToken = "";
+      this.setState({ oauth_2 });
       this.closeManageTokenModel();
     }
   }
@@ -282,6 +285,7 @@ class Authorization extends Component {
             groupId={this.props.groupId}
             show={true}
             onHide={() => this.closeGetNewAccessTokenModal()}
+            set_access_token={this.setAccessToken.bind(this)}
             title="GET NEW ACCESS TOKEN"
           ></TokenGenerator>
         )}
@@ -389,29 +393,28 @@ class Authorization extends Component {
               <div className="input-field-wrapper">
                 <label>Password</label>
                 <input
-                  type="password"
+                  type={
+                    this.state.showPassword
+                      ? this.state.showPassword === true
+                        ? null
+                        : "password"
+                      : "password"
+                  }
                   name="password"
                   value={this.state.basicAuth.password}
                   onChange={this.handleChange.bind(this)}
                 ></input>
               </div>
-              {/* <div className="input-field-wrapper">
-                <label>
-                  <button
-                    type="checkbox"
-                    value={
-                      this.state.showPassword
-                        ? this.state.showPassword === true
-                          ? true
-                          : false
-                        : false
-                    }
-                    onClick={() => this.showPassword()}
-                  ></button>
-                  Show Password
-                </label>
-              </div> */}
             </form>
+            <div className="input-field-wrapper">
+              <label>
+                <input
+                  type="checkbox"
+                  onClick={() => this.showPassword()}
+                ></input>
+                Show Password
+              </label>
+            </div>
           </div>
         )}
         {this.state.authorizationType === "oauth_2" && (
@@ -451,7 +454,11 @@ class Authorization extends Component {
                       <button
                         type="button"
                         className="btn custom-request-button"
-                        onClick={() => this.openManageTokenModel()}
+                        onClick={() =>
+                          this.authResponses.length !== 0
+                            ? this.openManageTokenModel()
+                            : null
+                        }
                       >
                         {this.authResponses.length !== 0
                           ? "Manage Tokens"
