@@ -129,7 +129,7 @@ class TokenGenerator extends Component {
       paramsObject,
       grantType,
       this.props,
-      this.state.data.tokenName
+      this.state.data
     );
 
     this.props.onHide();

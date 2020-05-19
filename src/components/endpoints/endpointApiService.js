@@ -49,26 +49,70 @@ export function moveEndpoint(endpointId, body) {
   return http.patch(`${apiUrl}/endpoints/${endpointId}/move`, body);
 }
 
+function makeParams(params, grantType, authData) {
+  let finalHeaders = {};
+  let finalParams = {};
+  if (authData.clientAuthentication === "Send as Basic Auth header") {
+    if (grantType === "passwordCredentials") {
+      finalHeaders = {
+        "Content-Type": "application/x-www-form-urlencoded",
+        client_id: params.client_id,
+        client_secret: params.client_secret,
+        username: params.username,
+        password: params.password,
+      };
+      finalParams = params;
+      delete finalParams.client_id;
+      delete finalParams.client_secret;
+      delete finalParams.username;
+      delete finalParams.password;
+    } else {
+      finalHeaders = {
+        "Content-Type": "application/x-www-form-urlencoded",
+        client_id: params.client_id,
+        client_secret: params.client_secret,
+      };
+      finalParams = params;
+      delete finalParams.client_id;
+      delete finalParams.client_secret;
+    }
+  } else if (
+    authData.clientAuthentication === "Send client credentials in body"
+  ) {
+    finalHeaders = {
+      "Content-Type": "application/x-www-form-urlencoded",
+    };
+    finalParams = params;
+  }
+  let finalParamsandHeaders = [];
+  finalParamsandHeaders[0] = finalParams;
+  finalParamsandHeaders[1] = finalHeaders;
+  return finalParamsandHeaders;
+}
+
 export async function authorize(
   requestApi,
   params,
   grantType,
   props,
-  tokenName
+  authData
 ) {
   if (
     grantType === "passwordCredentials" ||
     grantType === "clientCredentials" ||
     grantType === "auth_code"
   ) {
+    let finalParamsandHeaders = makeParams(params, grantType, authData);
+    let finalParams = finalParamsandHeaders[0];
+    let finalHeaders = finalParamsandHeaders[1];
     if (grantType === "auth_code") params.grant_type = "authorization_code";
     let responseData = httpService.request({
       url: requestApi,
       method: "POST",
-      data: qs.stringify({ params }),
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      data: qs.stringify({ finalParams }),
+      headers: finalHeaders,
     });
-    responseData["tokenName"] = tokenName;
+    responseData["tokenName"] = authData.tokenName;
     if (responseData && responseData.access_token) {
       if (props.groupId) await setResponse(props, responseData);
       props.set_access_token(responseData.access_token);
@@ -90,7 +134,7 @@ export async function authorize(
         );
         await indexedDbService.deleteData("responseData", "currentResponse");
         if (responseData && responseData.access_token) {
-          responseData["tokenName"] = tokenName;
+          responseData["tokenName"] = authData.tokenName;
           if (props.groupId) await setResponse(props, responseData);
           props.set_access_token(responseData.access_token);
         }
