@@ -735,6 +735,32 @@ pre.__json-pretty-error__ {
   justify-content: space-between;
   align-items: center;
 }
+
+.new-token-generator-dropdown-menu.show {
+  display: flex !important;
+  flex-direction: column;
+}
 .request-token-button {
   background-color: rgb(255, 212, 204) !important;
+}
+.available-token-dropdown-menu {
+  button.btn.custom-request-button {
+    width: 100%;
+    border-radius: 0px;
+  }
+}
+.tokens-list-item {
+  display: flex !important;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  label {
+    margin: 0px;
+  }
+}
+.oauth2-token-details-list-item {
+  display: flex;
+}
+.oauth2-token-details-list-item-label {
+  flex: 0.4;
 }

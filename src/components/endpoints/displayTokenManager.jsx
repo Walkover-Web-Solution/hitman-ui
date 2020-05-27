@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Modal, ListGroup, Container, Row, Col } from "react-bootstrap";
+import "./endpoints.scss";
 
 class AccessTokenManager extends Component {
   state = {
@@ -91,12 +92,16 @@ class AccessTokenManager extends Component {
                           onClick={() => {
                             this.selectTokenIndex(index);
                           }}
+                          className="tokens-list-item"
                         >
-                          {response.tokenName}
+                          <label>{response.tokenName}</label>
+                          <button
+                            className="btn delete-button"
+                            onClick={() => this.deleteToken(index)}
+                          >
+                            <i class="fas fa-trash"></i>
+                          </button>
                         </ListGroup.Item>
-                        <button onClick={() => this.deleteToken(index)}>
-                          Delete
-                        </button>
                       </div>
                     ))}
                   </ListGroup>
@@ -112,7 +117,7 @@ class AccessTokenManager extends Component {
                       Use Token
                     </button>
                     <div>
-                      <div>
+                      <div className="oauth2-token-details-list">
                         {Object.keys(this.authResponse).map((property) => (
                           <div>
                             {this.authResponse[property]}

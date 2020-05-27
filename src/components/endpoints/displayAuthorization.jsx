@@ -405,6 +405,22 @@ class Authorization extends Component {
                   onChange={this.handleChange.bind(this)}
                 ></input>
               </div>
+              {/* <div className="input-field-wrapper">
+                <label>
+                  <button
+                    type="checkbox"
+                    value={
+                      this.state.showPassword
+                        ? this.state.showPassword === true
+                          ? true
+                          : false
+                        : false
+                    }
+                    onClick={() => this.showPassword()}
+                  ></button>
+                  Show Password
+                </label>
+              </div> */}
             </form>
             <div className="input-field-wrapper">
               <label>
@@ -428,7 +444,7 @@ class Authorization extends Component {
                     onChange={this.updateAccessToken.bind(this)}
                     name="accessToken"
                   />
-                  <div className="dropdown">
+                  <div className="dropdown available-token-dropdown">
                     <button
                       className="btn dropdown-toggle"
                       id="dropdownMenuButton"
@@ -439,7 +455,7 @@ class Authorization extends Component {
                       Availabale Tokens
                     </button>
                     <div
-                      className="dropdown-menu"
+                      className="dropdown-menu available-token-dropdown-menu"
                       aria-labelledby="dropdownMenuButton"
                     >
                       {this.authResponses.map((response, index) => (
