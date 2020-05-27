@@ -2,6 +2,7 @@ import store from "../../../store/store";
 import collectionsApiService from "../collectionsApiService";
 import collectionsActionTypes from "./collectionsActionTypes";
 import tabService from "../../tabs/tabService";
+import openApiService from "../../openApi/openApiService";
 
 export const fetchCollections = () => {
   return (dispatch) => {
@@ -285,6 +286,23 @@ export const addCustomDomain = (
             collection
           )
         );
+      });
+  };
+};
+
+export const importApi = (openApiObject) => {
+  console.log("importApi", openApiObject);
+  return (dispatch) => {
+    openApiService
+      .importApi(openApiObject)
+      .then((response) => {
+        // dispatch(onCollectionDuplicated(response.data));
+      })
+      .catch((error) => {
+        dispatch();
+        // onCollectionDuplicatedError(
+        //   error.response ? error.response.data : error
+        // )
       });
   };
 };

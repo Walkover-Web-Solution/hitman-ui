@@ -143,7 +143,7 @@ export async function authorize(
   }
 }
 
-async function setResponse(props, responseData) {
+export async function setResponse(props, responseData) {
   let versionId = props.groups[props.groupId].versionId;
   let authResponses = props.versions[versionId].authorizationResponse;
   authResponses.push(responseData);
