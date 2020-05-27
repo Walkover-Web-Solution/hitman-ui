@@ -7,6 +7,7 @@ import "../styles.scss";
 import tabService from "../tabs/tabService";
 import CreateNewModal from "./CreateNewModal";
 import "./main.scss";
+import openApiService from "../openApi/openApiServices";
 
 class Navbar extends Component {
   state = {
@@ -44,6 +45,10 @@ class Navbar extends Component {
   handleAddEndpoint() {
     tabService.newTab({ ...this.props });
   }
+  openApiForm(){
+    console.log("dddd");
+    this.setState({ showCreateNewModal: false, showCollectionForm: false,showOpenApiForm:true });
+  }
 
   render() {
     return (
@@ -65,6 +70,12 @@ class Navbar extends Component {
             this.props,
             () => this.setState({ showEnvironmentForm: false }),
             "Add new Environment"
+          )}
+          {this.state.showOpenApi &&
+          openApiService.showEnvironmentForm(
+            this.props,
+            () => this.setState({ showOpenApiForm: false }),
+            "Import Open Api"
           )}
         <div className="btn-group">
           <button
@@ -129,7 +140,15 @@ class Navbar extends Component {
               >
                 Open new tab
               </button>
+              
             </div>
+            <button
+                className="btn "
+                onClick={()=> this.openApiForm()}
+                style={{ color: "black", width: "100%" }}
+              >
+                Import OpenApi
+              </button>
           </div>
         </div>
 
