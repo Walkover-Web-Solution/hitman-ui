@@ -1301,13 +1301,7 @@ class DisplayEndpoint extends Component {
 
   async setAccessToken() {
     let url = window.location.href;
-    let response = {};
-    if (responseObject === undefined) {
-      response = URI.parseQuery("?" + url.split("#")[1]);
-    } else {
-      response = responseObject;
-    }
-
+    let response = URI.parseQuery("?" + url.split("#")[1]);
     if (url.split("#")[1]) {
       await indexedDbService.getDataBase();
       await indexedDbService.updateData(
@@ -1389,49 +1383,6 @@ class DisplayEndpoint extends Component {
     // await indexedDbService.deleteData("authData", "currentAuthData");
     // authData = await indexedDbService.getValue("authData", "currentAuthData");
     // console.log(authData);
-  }
-
-  async setAccessToken(endpoint, versions, groups, authType) {
-    let url = window.location.href;
-
-    await indexedDbService.getDataBase();
-    let authData = await indexedDbService.getValue(
-      "authData",
-      "currentAuthData"
-    );
-    let authResponses = {};
-    if (endpoint !== "") {
-      authResponses =
-        versions[groups[endpoint.groupId].versionId].authorizationResponse;
-    }
-    this.extractToken(endpoint, groups, authData, authResponses, authType);
-
-    if (url.split("?")[1]) {
-      this.setAuthorizationTab = true;
-      let resposneAuthCode = URI.parseQuery("?" + url.split("?")[1]);
-      let code = resposneAuthCode.code;
-      let paramsObject = {};
-      paramsObject.code = code;
-      paramsObject.client_id = authData.clientId;
-      paramsObject.client_secret = authData.clientSecret;
-      paramsObject.redirect_uri = authData.callbackUrl;
-      let response = await endpointApiService.authorize(
-        authData.accessTokenUrl,
-        paramsObject,
-        "auth_code"
-      );
-      this.extractToken(
-        endpoint,
-        groups,
-        authData,
-        authResponses,
-        authType,
-        response
-      );
-    }
-    await indexedDbService.deleteData("authData", "currentAuthData");
-    authData = await indexedDbService.getValue("authData", "currentAuthData");
-    console.log(authData);
   }
 
   setAuthType(type, value) {
