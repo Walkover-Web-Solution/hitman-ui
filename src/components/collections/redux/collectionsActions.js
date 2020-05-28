@@ -3,6 +3,7 @@ import collectionsApiService from "../collectionsApiService";
 import collectionsActionTypes from "./collectionsActionTypes";
 import tabService from "../../tabs/tabService";
 import openApiService from "../../openApi/openApiService";
+import versionActionTypes from "../../collectionVersions/redux/collectionVersionsActionTypes";
 
 export const fetchCollections = () => {
   return (dispatch) => {
@@ -291,18 +292,43 @@ export const addCustomDomain = (
 };
 
 export const importApi = (openApiObject) => {
-  console.log("importApi", openApiObject);
   return (dispatch) => {
     openApiService
       .importApi(openApiObject)
       .then((response) => {
-        // dispatch(onCollectionDuplicated(response.data));
+        dispatch(saveImportedCollection(response.data));
+        dispatch(saveImportedVersion(response.data));
       })
       .catch((error) => {
-        dispatch();
-        // onCollectionDuplicatedError(
-        //   error.response ? error.response.data : error
-        // )
+        dispatch(
+          onVersionsFetchedError(error.response ? error.response.data : error)
+        );
+      })
+      .catch((error) => {
+        dispatch(
+          onVersionsFetchedError(error.response ? error.response.data : error)
+        );
       });
+  };
+};
+
+export const saveImportedCollection = (response) => {
+  return {
+    type: collectionsActionTypes.IMPORT_COLLECTION,
+    response,
+  };
+};
+
+export const saveImportedVersion = (response) => {
+  return {
+    type: versionActionTypes.IMPORT_VERSION,
+    response,
+  };
+};
+
+export const onVersionsFetchedError = (error) => {
+  return {
+    type: versionActionTypes.ON_VERSIONS_FETCHED_ERROR,
+    error,
   };
 };

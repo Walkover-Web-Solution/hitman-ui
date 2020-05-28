@@ -4,9 +4,13 @@ import { withRouter } from "react-router-dom";
 import { importApi } from "../collections/redux/collectionsActions";
 import { connect } from "react-redux";
 
-const mapDispatchToProps = (dispatch, ownProps) => {
+const mapStateToProps = (state) => {
+  return {};
+};
+
+const mapDispatchToProps = (dispatch) => {
   return {
-    importApi: (openApiObject) => dispatch(importApi(openApiObject)),
+    import_api: (openApiObject) => dispatch(importApi(openApiObject)),
   };
 };
 
@@ -27,7 +31,7 @@ class OpenApiForm extends Component {
 
   importApi() {
     console.log(this.state.openApiObject);
-    this.props.importApi(this.state.openApiObject);
+    this.props.import_api(this.state.openApiObject);
   }
 
   render() {
@@ -87,4 +91,6 @@ class OpenApiForm extends Component {
     );
   }
 }
-export default withRouter(connect(mapDispatchToProps)(OpenApiForm));
+export default withRouter(
+  connect(mapStateToProps, mapDispatchToProps)(OpenApiForm)
+);

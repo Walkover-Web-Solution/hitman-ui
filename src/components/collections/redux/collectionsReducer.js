@@ -7,6 +7,9 @@ const initialState = {};
 function collectionsReducer(state = initialState, action) {
   let collections = {};
   switch (action.type) {
+    case collectionsActionTypes.IMPORT_COLLECTION:
+      return { ...state, ...action.response.collection };
+
     case collectionsActionTypes.ON_COLLECTIONS_FETCHED:
       return { ...action.collections };
 
