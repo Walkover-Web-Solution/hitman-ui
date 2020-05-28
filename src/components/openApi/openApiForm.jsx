@@ -17,6 +17,8 @@ const mapDispatchToProps = (dispatch) => {
 class OpenApiForm extends Component {
   state = {
     openApiObject: {},
+    // selectedFile: null,
+    uploadedFile: null,
   };
 
   handleChange(e) {
@@ -30,9 +32,40 @@ class OpenApiForm extends Component {
   }
 
   importApi() {
-    console.log(this.state.openApiObject);
-    this.props.import_api(this.state.openApiObject);
+    console.log("importApi", this.state.uploadedFile);
+    this.props.import_api(this.state.uploadedFile);
   }
+
+  onFileChange(e) {
+    // this.setState({ selectedFile: e.currentTarget.files[0] });
+    let selectedFile = e.currentTarget.files[0];
+    let uploadedFile = new FormData();
+    uploadedFile.append("myFile", selectedFile, selectedFile.name);
+    this.setState({ uploadedFile });
+    // return this.fileData(selectedFile);
+  }
+
+  // onFileUpload() {
+  //   const uploadedFile = new FormData();
+  //   uploadedFile.append(
+  //     "myFile",
+  //     this.state.selectedFile,
+  //     this.state.selectedFile.name
+  //   );
+  //   this.setState({ uploadedFile });
+  // }
+
+  // fileData(selectedFile) {
+  //   if (selectedFile) {
+  //     return (
+  //       <div>
+  //         <h2>File Details:</h2>
+  //         <p>File Name: {selectedFile.name}</p>
+  //         <p>File Type: {selectedFile.type}</p>
+  //       </div>
+  //     );
+  //   }
+  // }
 
   render() {
     return (
@@ -57,16 +90,22 @@ class OpenApiForm extends Component {
             <div>
               <form>
                 <label>
-                  Enter JSON to import API
-                  <textarea
+                  Select JSON File
+                  {/* <textarea
                     onChange={this.handleChange.bind(this)}
                     rows="20"
                     cols="50"
-                  >
-                    At w3schools.com you will learn how to make a website. We
-                    offer free tutorials in all web development technologies.
-                  </textarea>
+                  ></textarea> */}
                 </label>
+                <br></br>
+                {/* <input></input> */}
+                <input type="file" onChange={this.onFileChange.bind(this)} />
+                {/* <button type="button" onClick={this.onFileUpload.bind(this)}>
+                  Upload!
+                </button> */}
+                {/* <input type="file" id="myFile" name="filename" /> */}
+                {/* {this.fileData()} */}
+
                 <div className="button-group">
                   <button
                     type="button"
