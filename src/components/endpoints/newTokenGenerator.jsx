@@ -76,7 +76,6 @@ class TokenGenerator extends Component {
     let requestApi = "";
     let paramsObject = this.makeParams(grantType);
     let params = URI.buildQuery(paramsObject);
-
     if (grantType === "implicit" || grantType === "authorizationCode") {
       if (grantType === "implicit")
         requestApi =
@@ -207,7 +206,7 @@ class TokenGenerator extends Component {
                 {this.grantTypes[grantType]}
               </button>
               <div
-                className="dropdown-menu"
+                className="dropdown-menu new-token-generator-dropdown-menu"
                 aria-labelledby="dropdownMenuButton"
               >
                 {Object.keys(this.grantTypes).map((key) => (
@@ -237,7 +236,7 @@ class TokenGenerator extends Component {
                 {this.state.data.clientAuthentication}
               </button>
               <div
-                className="dropdown-menu"
+                className="dropdown-menu new-token-generator-dropdown-menu"
                 aria-labelledby="dropdownMenuButton"
               >
                 <button

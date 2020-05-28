@@ -176,14 +176,14 @@ class PublishDocsModal extends Form {
       return;
     }
     try {
-      await herokuApiService.updateConfigVars({
-        [this.state.data
-          .newDomain]: `${this.state.data.newTitle},${this.state.data.newLogoUrl},${this.props.collection_id}`,
-      });
       const { data: response } = await herokuApiService.createDomain(
         this.state.data.newDomain
       );
       console.log(response.cname);
+      await herokuApiService.updateConfigVars({
+        [this.state.data
+          .newDomain]: `${this.state.data.newTitle},${this.state.data.newLogoUrl},${this.props.collection_id}`,
+      });
       this.props.add_custom_domain(
         this.props.collection_id,
         this.state.data.newDomain,
