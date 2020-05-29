@@ -129,7 +129,7 @@ class Navbar extends Component {
             id="nav-left-buttons"
             onClick={() => this.openApiForm()}
           >
-            Import Open API
+            Import open API
           </button>
 
           <div className="dropdown" id="nav-left-buttons">
