@@ -39,35 +39,11 @@ class OpenApiForm extends Component {
   }
 
   onFileChange(e) {
-    // this.setState({ selectedFile: e.currentTarget.files[0] });
     let selectedFile = e.currentTarget.files[0];
     let uploadedFile = new FormData();
     uploadedFile.append("myFile", selectedFile, selectedFile.name);
     this.setState({ uploadedFile });
-    // return this.fileData(selectedFile);
   }
-
-  // onFileUpload() {
-  //   const uploadedFile = new FormData();
-  //   uploadedFile.append(
-  //     "myFile",
-  //     this.state.selectedFile,
-  //     this.state.selectedFile.name
-  //   );
-  //   this.setState({ uploadedFile });
-  // }
-
-  // fileData(selectedFile) {
-  //   if (selectedFile) {
-  //     return (
-  //       <div>
-  //         <h2>File Details:</h2>
-  //         <p>File Name: {selectedFile.name}</p>
-  //         <p>File Type: {selectedFile.type}</p>
-  //       </div>
-  //     );
-  //   }
-  // }
 
   render() {
     return (
@@ -100,13 +76,7 @@ class OpenApiForm extends Component {
                   ></textarea> */}
                 </label>
                 <br></br>
-                {/* <input></input> */}
                 <input type="file" onChange={this.onFileChange.bind(this)} />
-                {/* <button type="button" onClick={this.onFileUpload.bind(this)}>
-                  Upload!
-                </button> */}
-                {/* <input type="file" id="myFile" name="filename" /> */}
-                {/* {this.fileData()} */}
 
                 <div className="button-group">
                   <button
