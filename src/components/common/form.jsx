@@ -50,7 +50,7 @@ class Form extends Component {
     const { data, errors } = this.state;
     return (
       <div className="form-group ">
-        <label for={name} className="custom-input-label">
+        <label htmlFor={name} className="custom-input-label">
           {label}
         </label>
         <textarea

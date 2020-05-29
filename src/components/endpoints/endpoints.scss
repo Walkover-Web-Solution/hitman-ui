@@ -12,7 +12,7 @@ $border-color: rgba(227, 228, 230, 0.7);
   padding: 5px 5px 5px 5px;
   border-left: 0px;
   font-size: 13px;
-  #copy-to-clipboard {
+  .copy-to-clipboard {
     border: none;
     .fa-check {
       color: green;
@@ -259,13 +259,13 @@ $border-color: rgba(227, 228, 230, 0.7);
         }
       }
     }
-    #endpoint-url-input {
+    .endpoint-url-input {
       border-top-left-radius: 0px;
       border-bottom-left-radius: 0px;
       opacity: 0.8;
       background-color: rgb(237, 237, 237);
     }
-    #endpoint-url-input::placeholder {
+    .endpoint-url-input::placeholder {
       font-weight: 250;
       font-size: 17px;
     }
@@ -607,4 +607,160 @@ table#custom-generic-table {
 /* width */
 ::-webkit-scrollbar {
   width: 0px;
+}
+pre.__json-pretty-error__ {
+  color: red !important;
+  background: white !important;
+}
+
+.button-panel-wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+.authorization-panel {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  background-color: white;
+}
+
+.authorization-selector-wrapper {
+  flex: 0.35;
+  padding: 20px;
+  border-right: 3px solid $border-color;
+  flex-direction: column;
+  label {
+    font-size: 13px;
+    opacity: 0.8;
+  }
+  .auth-selector-container {
+    .dropdown {
+      background-color: #f1f1f1;
+      button#dropdownMenuButton {
+        width: 100%;
+        text-align: left;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .dropdown-menu.show {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        .btn {
+          padding-top: 3px;
+        }
+      }
+    }
+  }
+}
+
+.authorization-editor-wrapper {
+  flex: 1;
+}
+
+.auth-description {
+  padding-top: 20px;
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+.authorization-editor-wrapper {
+  padding: 30px;
+  display: flex;
+  form {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    .input-field-wrapper {
+      display: flex;
+      flex-direction: row;
+      padding-bottom: 10px;
+      label {
+        flex: 0.7;
+      }
+      input {
+        flex: 1.6;
+      }
+      .input-dropdown {
+        input {
+          flex: 1.6;
+        }
+        display: flex;
+        flex-direction: row;
+        flex: 1.6;
+        .dropdown {
+          background-color: rgb(241, 241, 241) !important;
+          border-radius: 4px;
+          margin-left: 5px;
+        }
+      }
+    }
+  }
+}
+
+.input-field-wrapper {
+  display: flex;
+  flex-direction: row;
+  padding-bottom: 10px;
+}
+
+.basic-auth-label {
+  flex: 0.7;
+}
+.basic-auth-input {
+  flex: 1.6;
+  display: flex;
+}
+
+.get-new-access-token {
+  background-color: rgb(241, 241, 241) !important;
+  border-radius: 4px;
+}
+.token-generator-input-field {
+  flex: 1.6;
+}
+.new-token-generator-modal-body {
+  padding: 1rem !important;
+}
+
+.new-token-generator-dropdown {
+  width: 15rem;
+  background-color: rgb(239, 239, 239) !important;
+  display: flex !important;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.new-token-generator-dropdown-menu.show {
+  display: flex !important;
+  flex-direction: column;
+}
+.request-token-button {
+  background-color: rgb(255, 212, 204) !important;
+}
+.available-token-dropdown-menu {
+  button.btn.custom-request-button {
+    width: 100%;
+    border-radius: 0px;
+  }
+}
+.tokens-list-item {
+  display: flex !important;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  label {
+    margin: 0px;
+  }
+}
+.oauth2-token-details-list-item {
+  display: flex;
+}
+.oauth2-token-details-list-item-label {
+  flex: 0.4;
 }

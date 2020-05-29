@@ -19,13 +19,13 @@ import SideBar from "./sidebar";
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetchAllTeamsOfUser: () => dispatch(fetchAllTeamsOfUser()),
-    fetchCollections: () => dispatch(fetchCollections()),
-    fetchAllVersions: () => dispatch(fetchAllVersions()),
-    fetchGroups: () => dispatch(fetchGroups()),
-    fetchEndpoints: () => dispatch(fetchEndpoints()),
-    fetchPages: () => dispatch(fetchPages()),
-    moveEndpoint: (endpointId, sourceGroupId, destinationGroupId) =>
+    fetch_all_teams_of_user: () => dispatch(fetchAllTeamsOfUser()),
+    fetch_collections: () => dispatch(fetchCollections()),
+    fetch_all_versions: () => dispatch(fetchAllVersions()),
+    fetch_groups: () => dispatch(fetchGroups()),
+    fetch_endpoints: () => dispatch(fetchEndpoints()),
+    fetch_pages: () => dispatch(fetchPages()),
+    move_endpoint: (endpointId, sourceGroupId, destinationGroupId) =>
       dispatch(moveEndpoint(endpointId, sourceGroupId, destinationGroupId)),
   };
 };
@@ -42,12 +42,12 @@ class Main extends Component {
   }
 
   fetchAll() {
-    this.props.fetchAllTeamsOfUser();
-    this.props.fetchCollections();
-    this.props.fetchAllVersions();
-    this.props.fetchGroups();
-    this.props.fetchEndpoints();
-    this.props.fetchPages();
+    this.props.fetch_all_teams_of_user();
+    this.props.fetch_collections();
+    this.props.fetch_all_versions();
+    this.props.fetch_groups();
+    this.props.fetch_endpoints();
+    this.props.fetch_pages();
   }
 
   setTabs(tabs, defaultTabIndex) {
@@ -77,7 +77,7 @@ class Main extends Component {
 
   dndMoveEndpoint(endpointId, sourceGroupId, destinationGroupId) {
     if (sourceGroupId !== destinationGroupId)
-      this.props.moveEndpoint(endpointId, sourceGroupId, destinationGroupId);
+      this.props.move_endpoint(endpointId, sourceGroupId, destinationGroupId);
   }
 
   render() {

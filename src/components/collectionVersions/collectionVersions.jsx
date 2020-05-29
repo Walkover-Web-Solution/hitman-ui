@@ -25,8 +25,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    deleteVersion: (version, props) => dispatch(deleteVersion(version, props)),
-    duplicateVersion: (version) => dispatch(duplicateVersion(version)),
+    delete_version: (version, props) => dispatch(deleteVersion(version, props)),
+    duplicate_version: (version) => dispatch(duplicateVersion(version)),
   };
 };
 
@@ -66,7 +66,7 @@ class CollectionVersions extends Component {
   }
 
   handleDuplicate(version) {
-    this.props.duplicateVersion(version);
+    this.props.duplicate_version(version);
   }
 
   showAddVersionPageForm() {
@@ -287,7 +287,9 @@ class CollectionVersions extends Component {
             <Accordion.Toggle
               as={Button}
               variant="default"
-              eventKey={this.eventkey[versionId]}
+              eventKey={
+                !isDashboardRoute(this.props) ? "0" : this.eventkey[versionId]
+              }
             >
               {this.props.versions[versionId].number}
             </Accordion.Toggle>
@@ -358,7 +360,9 @@ class CollectionVersions extends Component {
           </Card.Header>
           <Accordion.Collapse
             className="version-collapse"
-            eventKey={this.eventkey[versionId]}
+            eventKey={
+              !isDashboardRoute(this.props) ? "0" : this.eventkey[versionId]
+            }
           >
             <Card.Body>
               <VersionPages

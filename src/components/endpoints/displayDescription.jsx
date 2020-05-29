@@ -6,7 +6,7 @@ import { connect } from "react-redux";
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    updateEndpoint: (editedEndpoint) =>
+    update_endpoint: (editedEndpoint) =>
       dispatch(updateEndpoint(editedEndpoint)),
   };
 };
@@ -45,7 +45,7 @@ class DisplayDescription extends Component {
     const value = e.target.description.value;
     let endpoint = { ...this.props.endpoint };
 
-    this.props.updateEndpoint({ id: endpoint.id, description: value });
+    this.props.update_endpoint({ id: endpoint.id, description: value });
 
     endpoint.description = value;
     this.setState({

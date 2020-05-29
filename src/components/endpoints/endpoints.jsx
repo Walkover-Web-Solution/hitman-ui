@@ -25,16 +25,16 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    deleteEndpoint: (endpoint) => dispatch(deleteEndpoint(endpoint)),
-    duplicateEndpoint: (endpoint) => dispatch(duplicateEndpoint(endpoint)),
-    setEndpointIds: (endpointsOrder, groupId) =>
+    delete_endpoint: (endpoint) => dispatch(deleteEndpoint(endpoint)),
+    duplicate_endpoint: (endpoint) => dispatch(duplicateEndpoint(endpoint)),
+    set_endpoint_ids: (endpointsOrder, groupId) =>
       dispatch(setEndpointIds(endpointsOrder, groupId)),
-    pendingEndpoint: (endpoint) => dispatch(pendingEndpoint(endpoint)),
-    approveEndpoint: (endpoint) => dispatch(approveEndpoint(endpoint)),
-    draftEndpoint: (endpoint) => dispatch(draftEndpoint(endpoint)),
-    rejectEndpoint: (endpoint) => dispatch(rejectEndpoint(endpoint)),
-    closeTab: (tabId) => dispatch(closeTab(tabId)),
-    openInNewTab: (tab) => dispatch(openInNewTab(tab)),
+    pending_endpoint: (endpoint) => dispatch(pendingEndpoint(endpoint)),
+    approve_endpoint: (endpoint) => dispatch(approveEndpoint(endpoint)),
+    draft_endpoint: (endpoint) => dispatch(draftEndpoint(endpoint)),
+    reject_endpoint: (endpoint) => dispatch(rejectEndpoint(endpoint)),
+    close_tab: (tabId) => dispatch(closeTab(tabId)),
+    open_in_new_tab: (tab) => dispatch(openInNewTab(tab)),
   };
 };
 
@@ -53,6 +53,19 @@ class Endpoints extends Component {
   onDragOver = (e) => {
     e.preventDefault();
   };
+
+  sequencingOnFilter() {
+    let filteredEndpointKeys = Object.keys(this.filteredEndpoints);
+    this.filteredEndpointsOrder = [];
+    for (let i = 0; i < this.props.endpoints_order.length; i++) {
+      for (let j = 0; j < filteredEndpointKeys.length; j++) {
+        if (this.props.endpoints_order[i] === filteredEndpointKeys[j]) {
+          this.filteredEndpointsOrder.push(this.props.endpoints_order[i]);
+          break;
+        }
+      }
+    }
+  }
   onDrop = (e, droppedOnItem) => {
     e.preventDefault();
     if (!this.draggedItem) {
@@ -68,20 +81,20 @@ class Endpoints extends Component {
         (eId) => eId === droppedOnItem
       );
       endpointIds.splice(index, 0, this.draggedItem);
-      this.props.setEndpointIds(endpointIds, this.props.group_id);
+      this.props.set_endpoint_ids(endpointIds, this.props.group_id);
       this.draggedItem = null;
     }
   };
 
   handleDelete(endpoint) {
-    this.props.deleteEndpoint(endpoint);
+    this.props.delete_endpoint(endpoint);
     if (this.props.tabs.tabs[endpoint.id]) {
       tabService.removeTab(endpoint.id, { ...this.props });
     }
   }
 
   handleDuplicate(endpoint) {
-    this.props.duplicateEndpoint(endpoint);
+    this.props.duplicate_endpoint(endpoint);
   }
 
   openDeleteModal(endpointId) {
@@ -118,63 +131,20 @@ class Endpoints extends Component {
       if (this.checkAccess(this.props.collection_id)) {
         this.handleApproveRequest(endpoint);
       } else {
-        this.props.pendingEndpoint(endpoint);
+        this.props.pending_endpoint(endpoint);
       }
     }
   }
 
   async handleCancelRequest(endpoint) {
-    this.props.draftEndpoint(endpoint);
+    this.props.draft_endpoint(endpoint);
   }
   async handleApproveRequest(endpoint) {
-    // if (
-    //   endpoint.body.type === "JSON" &&
-    //   Object.keys(endpoint.bodyDescription).length === 0
-    // ) {
-    //   let { value } = endpoint.body;
-    //   let body = JSON.parse(value);
-    //   let bodyDescription = this.generateBodyDescription(body);
-    //   endpoint.bodyDescription = bodyDescription;
-    // }
-    this.props.approveEndpoint(endpoint);
+    this.props.approve_endpoint(endpoint);
   }
   async handleRejectRequest(endpoint) {
-    this.props.rejectEndpoint(endpoint);
+    this.props.reject_endpoint(endpoint);
   }
-
-  // generateBodyDescription(body) {
-  //   let bodyDescription = null;
-  //   if (Array.isArray(body)) bodyDescription = [];
-  //   else bodyDescription = {};
-
-  //   const keys = Object.keys(body);
-  //   for (let i = 0; i < keys.length; i++) {
-  //     const value = body[keys[i]];
-  //     if (
-  //       typeof value === "string" ||
-  //       typeof value === "number" ||
-  //       typeof value === "boolean"
-  //     ) {
-  //       bodyDescription[keys[i]] = {
-  //         value,
-  //         type: typeof value,
-  //         description: null,
-  //       };
-  //     } else {
-  //       if (Array.isArray(value))
-  //         bodyDescription[keys[i]] = {
-  //           value: this.generateBodyDescription(value),
-  //           type: "array",
-  //         };
-  //       else
-  //         bodyDescription[keys[i]] = {
-  //           value: this.generateBodyDescription(value),
-  //           type: "object",
-  //         };
-  //     }
-  //   }
-  //   return bodyDescription;
-  // }
 
   handleDisplay(endpoint, groupId, collectionId, previewMode) {
     if (isDashboardRoute(this.props)) {
@@ -182,8 +152,8 @@ class Endpoints extends Component {
         const previewTabId = Object.keys(this.props.tabs.tabs).filter(
           (tabId) => this.props.tabs.tabs[tabId].previewMode === true
         )[0];
-        if (previewTabId) this.props.closeTab(previewTabId);
-        this.props.openInNewTab({
+        if (previewTabId) this.props.close_tab(previewTabId);
+        this.props.open_in_new_tab({
           id: endpoint.id,
           type: "endpoint",
           status: tabStatusTypes.SAVED,
@@ -208,6 +178,7 @@ class Endpoints extends Component {
         title: "update endpoint",
         endpoint: endpoint,
         groupId: groupId,
+        Environment: "publicCollectionEnvironment",
       });
     }
   }
@@ -220,11 +191,14 @@ class Endpoints extends Component {
     ) {
       this.filterFlag = true;
       let groupIds = [];
-      groupIds = filterService.filter(
+      let groupIdsAndFilteredEndpoints = [];
+      groupIdsAndFilteredEndpoints = filterService.filter(
         this.props.endpoints,
         this.props.filter,
         "endpoints"
       );
+      this.filteredEndpoints = groupIdsAndFilteredEndpoints[0];
+      groupIds = groupIdsAndFilteredEndpoints[1];
       this.setState({ filter: this.props.filter });
       if (groupIds.length !== 0) {
         this.props.show_filter_groups(groupIds, "endpoints");
@@ -238,11 +212,16 @@ class Endpoints extends Component {
     if (this.state.filter !== this.props.filter) {
       this.filterFlag = false;
     }
+    if (this.props.filter === "") {
+      this.filteredEndpoints = { ...this.props.endpoints };
+      this.filteredEndpointsOrder = [...this.props.endpoints_order];
+    }
+
     if (isDashboardRoute(this.props)) {
       return (
         <React.Fragment>
           {this.filterEndpoints()}
-
+          {this.sequencingOnFilter()}
           {/* <div>
           {this.state.showDeleteModal &&
             endpointService.showDeleteEndpointModal(
@@ -254,8 +233,8 @@ class Endpoints extends Component {
               this.state.selectedEndpoint
             )}
         </div> */}
-          {Object.keys(this.props.endpoints).length !== 0 &&
-            this.props.endpoints_order
+          {Object.keys(this.filteredEndpoints).length !== 0 &&
+            this.filteredEndpointsOrder
               .filter(
                 (eId) =>
                   this.props.endpoints[eId].groupId === this.props.group_id

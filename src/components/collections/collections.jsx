@@ -19,10 +19,13 @@ import {
   deleteCollection,
   duplicateCollection,
   updateCollection,
+  addCustomDomain,
 } from "./redux/collectionsActions";
 import ShareCollectionForm from "./shareCollectionForm";
 import { uiUrl } from "../../config.json";
 import "./collections.scss";
+import PublishDocsModal from "../publicEndpoint/publishDocsModal";
+import authService from "../auth/authService";
 
 const mapStateToProps = (state) => {
   return {
@@ -37,17 +40,21 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    addCollection: (newCollection) => dispatch(addCollection(newCollection)),
-    shareCollection: (teamMemberData) =>
+    add_collection: (newCollection) => dispatch(addCollection(newCollection)),
+    share_collection: (teamMemberData) =>
       dispatch(shareCollection(teamMemberData)),
-    updateCollection: (editedCollection) =>
+    update_collection: (editedCollection) =>
       dispatch(updateCollection(editedCollection)),
-    deleteCollection: (collection, props) =>
+    delete_collection: (collection, props) =>
       dispatch(deleteCollection(collection, props)),
-    duplicateCollection: (collection) =>
+    duplicate_collection: (collection) =>
       dispatch(duplicateCollection(collection)),
-    fetchAllUsersOfTeam: (teamIdentifier) =>
+    fetch_all_users_of_team: (teamIdentifier) =>
       dispatch(fetchAllUsersOfTeam(teamIdentifier)),
+    add_custom_domain: (collectionId, domain, dnsTarget, title, logoUrl) =>
+      dispatch(
+        addCustomDomain(collectionId, domain, dnsTarget, title, logoUrl)
+      ),
   };
 };
 
@@ -56,6 +63,7 @@ class CollectionsComponent extends Component {
     showCollectionForm: false,
     collectionFormName: "",
     selectedCollection: {},
+    showPublishDocsModal: false,
   };
   keywords = {};
   names = {};
@@ -87,24 +95,24 @@ class CollectionsComponent extends Component {
 
   async handleAddCollection(newCollection) {
     newCollection.requestId = shortId.generate();
-    this.props.addCollection(newCollection);
+    this.props.add_collection(newCollection);
   }
 
   async handleUpdateCollection(editedCollection) {
-    this.props.updateCollection(editedCollection);
+    this.props.update_collection(editedCollection);
   }
 
   async handleDeleteGroup(deletedGroupId) {
-    this.props.deleteGroup(deletedGroupId);
+    this.props.delete_group(deletedGroupId);
   }
 
   async handleAddVersionPage(versionId, newPage) {
     newPage.requestId = shortId.generate();
-    this.props.addPage(versionId, newPage);
+    this.props.add_page(versionId, newPage);
   }
 
   async handleDuplicateCollection(collectionCopy) {
-    this.props.duplicateCollection(collectionCopy);
+    this.props.duplicate_collection(collectionCopy);
   }
   async handleGoToDocs(collection) {
     const publicDocsUrl = `${uiUrl}/public/${collection.id}`;
@@ -129,7 +137,9 @@ class CollectionsComponent extends Component {
   }
 
   shareCollection(collectionId) {
-    this.props.fetchAllUsersOfTeam(this.props.collections[collectionId].teamId);
+    this.props.fetch_all_users_of_team(
+      this.props.collections[collectionId].teamId
+    );
     this.setState({
       showCollectionShareForm: true,
       selectedCollection: {
@@ -214,7 +224,7 @@ class CollectionsComponent extends Component {
   handlePublic(collection) {
     collection.isPublic = !collection.isPublic;
     delete collection.teamId;
-    this.props.updateCollection({ ...collection });
+    this.props.update_collection({ ...collection });
   }
 
   closeDeleteCollectionModal() {
@@ -229,6 +239,15 @@ class CollectionsComponent extends Component {
     this.props.empty_filter();
     this.collectionId = null;
     this.setState({ openSelectedCollection: false });
+  }
+  fetchCurrentUserRole() {
+    const { user: currentUser } = authService.getCurrentUser();
+    const teamArray = Object.keys(this.props.teamUsers);
+    for (let i = 0; i < teamArray.length; i++) {
+      if (currentUser.identifier === teamArray[i]) {
+        return this.props.teamUsers[currentUser.identifier].role;
+      }
+    }
   }
 
   renderBody(collectionId, collectionState) {
@@ -252,14 +271,14 @@ class CollectionsComponent extends Component {
     }
 
     return (
-      <React.Fragment>
+      <React.Fragment key={collectionId}>
         {collectionState === "singleCollection" ? (
           <button
             id="back-to-all-collections-button"
             className="btn"
             onClick={() => this.openAllCollections()}
           >
-            <i class="fas fa-arrow-left"></i>
+            <i className="fas fa-arrow-left"></i>
             <label>All Collections</label>
           </button>
         ) : null}
@@ -345,6 +364,18 @@ class CollectionsComponent extends Component {
                       Go to Docs
                     </button>
                   )}
+                  {/* {(this.currentUserRole==="Admin"||this.currentUserRole==="Owner") && ( */}
+                    <button
+                      className="dropdown-item"
+                      onClick={() =>
+                        this.openPublishDocs(
+                          this.props.collections[collectionId]
+                        )
+                      }
+                    >
+                      Publish Docs{" "}
+                    </button>
+                  
                   <button
                     className="dropdown-item"
                     onClick={() => {
@@ -372,6 +403,28 @@ class CollectionsComponent extends Component {
       </React.Fragment>
     );
   }
+
+  openPublishDocs(collection) {
+    this.setState({
+      showPublishDocsModal: true,
+      selectedCollection: collection.id,
+    });
+  }
+
+  showPublishDocsModal(onHide) {
+    return (
+      <PublishDocsModal
+        {...this.props}
+        show={true}
+        onHide={onHide}
+        collection_id={this.state.selectedCollection}
+        // add_new_endpoint={this.handleAddEndpoint.bind(this)}
+        // open_collection_form={this.openCollectionForm.bind(this)}
+        // open_environment_form={this.openEnvironmentForm.bind(this)}
+      />
+    );
+  }
+
   render() {
     if (isDashboardRoute(this.props)) {
       let finalCollections = [];
@@ -434,6 +487,12 @@ class CollectionsComponent extends Component {
       finalCollections = [...new Set(finalCollections)];
       return (
         <div>
+          {this.state.showPublishDocsModal &&
+            this.showPublishDocsModal(() =>
+              this.setState({
+                showPublishDocsModal: false,
+              })
+            )}
           <div className="App-Nav">
             <div className="tabs">
               {this.state.showVersionForm &&
@@ -484,6 +543,7 @@ class CollectionsComponent extends Component {
         </div>
       );
     } else {
+      console.log(this.state.showPublishDocsModal);
       return (
         <div>
           <div className="App-Side">

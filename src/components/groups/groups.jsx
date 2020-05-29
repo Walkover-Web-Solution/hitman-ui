@@ -19,8 +19,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    deleteGroup: (group, props) => dispatch(deleteGroup(group, props)),
-    duplicateGroup: (group) => dispatch(duplicateGroup(group)),
+    delete_group: (group, props) => dispatch(deleteGroup(group, props)),
+    duplicate_group: (group) => dispatch(duplicateGroup(group)),
   };
 };
 
@@ -71,7 +71,7 @@ class Groups extends Component {
   }
 
   handleDuplicate(group) {
-    this.props.duplicateGroup(group);
+    this.props.duplicate_group(group);
   }
 
   closeGroupForm() {
@@ -155,6 +155,7 @@ class Groups extends Component {
 
   propsFromGroups(groupIds, title) {
     this.filteredEndpointsAndPages = {};
+    this.filterGroups();
     if (title === "endpoints") {
       this.filteredGroupEndpoints = {};
       if (groupIds !== null) {
@@ -185,7 +186,10 @@ class Groups extends Component {
       this.filteredEndpointsAndPages,
       this.filteredGroupEndpoints
     );
-
+    this.filteredEndpointsAndPages = filterService.jsonConcat(
+      this.filteredEndpointsAndPages,
+      this.filteredOnlyGroups
+    );
     let versionIds = [];
     if (Object.keys(this.filteredEndpointsAndPages).length !== 0) {
       for (
@@ -216,18 +220,21 @@ class Groups extends Component {
       this.filterFlag === false
     ) {
       this.filterFlag = true;
-      let versionIds = [];
-      versionIds = filterService.filter(
+      let groupIds = [];
+      this.filteredOnlyGroups = {};
+      groupIds = filterService.filter(
         this.props.groups,
         this.props.filter,
         "groups"
       );
       this.setState({ filter: this.props.filter });
-      if (versionIds.length !== 0) {
-        this.props.show_filter_version(versionIds, "groups");
-      } else {
-        this.props.show_filter_version(null, "groups");
+      if (groupIds.length !== 0) {
+        for (let i = 0; i < groupIds.length; i++) {
+          this.filteredOnlyGroups[groupIds[i]] = this.props.groups[groupIds[i]];
+        }
       }
+    } else {
+      this.filteredOnlyGroups = {};
     }
   }
   renderBody(groupId) {
@@ -240,12 +247,13 @@ class Groups extends Component {
         for (let i = 0; i < elements.length; i++) {
           elements[i].className = "group-collapse collapse show";
         }
-      } else if (this.props.filter !== "") {
-        let elements = document.getElementsByClassName("group-collapse");
-        for (let i = 0; i < elements.length; i++) {
-          elements[i].className = "group-collapse collapse hide";
-        }
       }
+      // else if (this.props.filter !== "") {
+      //   let elements = document.getElementsByClassName("group-collapse");
+      //   for (let i = 0; i < elements.length; i++) {
+      //     elements[i].className = "group-collapse collapse hide";
+      //   }
+      // }
     }
     return (
       <Accordion
@@ -261,7 +269,13 @@ class Groups extends Component {
             <Accordion.Toggle
               as={Button}
               variant="default"
-              eventKey={this.eventkey[groupId] ? this.eventkey[groupId] : "1"}
+              eventKey={
+                !isDashboardRoute(this.props)
+                  ? "0"
+                  : this.eventkey[groupId]
+                  ? this.eventkey[groupId]
+                  : "1"
+              }
             >
               {this.props.groups[groupId].name}
             </Accordion.Toggle>
@@ -338,7 +352,13 @@ class Groups extends Component {
           </Card.Header>
           <Accordion.Collapse
             className="group-collapse"
-            eventKey={this.eventkey[groupId] ? this.eventkey[groupId] : "1"}
+            eventKey={
+              !isDashboardRoute(this.props)
+                ? "0"
+                : this.eventkey[groupId]
+                ? this.eventkey[groupId]
+                : "1"
+            }
           >
             <Card.Body>
               <GroupPages
@@ -369,7 +389,6 @@ class Groups extends Component {
     return (
       <div>
         <div>
-          {this.filterGroups()}
           {this.showShareGroupForm()}
           {this.showEditGroupForm()}
           {this.showAddGroupPageForm()}

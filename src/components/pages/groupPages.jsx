@@ -20,12 +20,12 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    deletePage: (page) => dispatch(deletePage(page)),
-    duplicatePage: (page) => dispatch(duplicatePage(page)),
-    pendingPage: (page) => dispatch(pendingPage(page)),
-    approvePage: (page) => dispatch(approvePage(page)),
-    draftPage: (page) => dispatch(draftPage(page)),
-    rejectPage: (page) => dispatch(rejectPage(page)),
+    delete_page: (page) => dispatch(deletePage(page)),
+    duplicate_page: (page) => dispatch(duplicatePage(page)),
+    pending_page: (page) => dispatch(pendingPage(page)),
+    approve_page: (page) => dispatch(approvePage(page)),
+    draft_page: (page) => dispatch(draftPage(page)),
+    reject_page: (page) => dispatch(rejectPage(page)),
   };
 };
 
@@ -60,11 +60,14 @@ class GroupPages extends Component {
     ) {
       this.filterFlag = true;
       let groupIds = [];
-      groupIds = filterService.filter(
+      let groupIdsAndFilteredPages = [];
+      groupIdsAndFilteredPages = filterService.filter(
         this.props.pages,
         this.props.filter,
         "groupPages"
       );
+      this.filteredGroupPages = groupIdsAndFilteredPages[0];
+      groupIds = groupIdsAndFilteredPages[1];
       this.setState({ filter: this.props.filter });
       if (groupIds.length !== 0) {
         this.props.show_filter_groups(groupIds, "pages");
@@ -77,6 +80,9 @@ class GroupPages extends Component {
   render() {
     if (this.state.filter !== this.props.filter) {
       this.filterFlag = false;
+    }
+    if (this.props.filter === "") {
+      this.filteredGroupPages = { ...this.props.pages };
     }
     return (
       <div>
@@ -92,8 +98,8 @@ class GroupPages extends Component {
             )}
         </div>
 
-        {this.props.pages &&
-          Object.keys(this.props.pages)
+        {this.filteredGroupPages &&
+          Object.keys(this.filteredGroupPages)
             .filter(
               (pageId) =>
                 this.props.pages[pageId].versionId === this.props.version_id &&

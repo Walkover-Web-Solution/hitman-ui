@@ -2,14 +2,14 @@ import publicEndpointsService from "../publicEndpointsService.js";
 import publicEndpointsActionTypes from "./publicEndpointsActionTypes";
 import publicPageService from "../publicPageService";
 
-export const fetchAllPublicEndpoints = collectionIdentifier => {
-  return dispatch => {
+export const fetchAllPublicEndpoints = (collectionIdentifier) => {
+  return (dispatch) => {
     publicEndpointsService
       .fetchAll(collectionIdentifier)
-      .then(response => {
+      .then((response) => {
         dispatch(onPublicEndpointsFetched(response.data));
       })
-      .catch(error => {
+      .catch((error) => {
         dispatch(
           onPublicEndpointsFetchedError(
             error.response ? error.response.data : error
@@ -19,28 +19,28 @@ export const fetchAllPublicEndpoints = collectionIdentifier => {
   };
 };
 
-export const onPublicEndpointsFetched = data => {
+export const onPublicEndpointsFetched = (data) => {
   return {
     type: publicEndpointsActionTypes.ON_PUBLIC_ENDPOINTS_FETCHED,
-    data
+    data,
   };
 };
 
-export const onPublicEndpointsFetchedError = error => {
+export const onPublicEndpointsFetchedError = (error) => {
   return {
     type: publicEndpointsActionTypes.ON_PUBLIC_ENDPOINTS_FETCHED_ERROR,
-    error
+    error,
   };
 };
 
-export const pendingPage = page => {
-  return dispatch => {
+export const pendingPage = (page) => {
+  return (dispatch) => {
     publicPageService
       .pendingPage(page)
-      .then(response => {
+      .then((response) => {
         dispatch(onPageStateSuccess(response.data));
       })
-      .catch(error => {
+      .catch((error) => {
         dispatch(
           onPageStateError(error.response ? error.response.data : error)
         );
@@ -48,14 +48,14 @@ export const pendingPage = page => {
   };
 };
 
-export const approvePage = page => {
-  return dispatch => {
+export const approvePage = (page) => {
+  return (dispatch) => {
     publicPageService
       .approvePage(page)
-      .then(response => {
+      .then((response) => {
         dispatch(onPageStateSuccess(response.data));
       })
-      .catch(error => {
+      .catch((error) => {
         dispatch(
           onPageStateError(error.response ? error.response.data : error)
         );
@@ -63,14 +63,14 @@ export const approvePage = page => {
   };
 };
 
-export const draftPage = page => {
-  return dispatch => {
+export const draftPage = (page) => {
+  return (dispatch) => {
     publicPageService
       .draftPage(page)
-      .then(response => {
+      .then((response) => {
         dispatch(onPageStateSuccess(response.data));
       })
-      .catch(error => {
+      .catch((error) => {
         dispatch(
           onPageStateError(error.response ? error.response.data : error)
         );
@@ -78,14 +78,14 @@ export const draftPage = page => {
   };
 };
 
-export const rejectPage = page => {
-  return dispatch => {
+export const rejectPage = (page) => {
+  return (dispatch) => {
     publicPageService
       .rejectPage(page)
-      .then(response => {
+      .then((response) => {
         dispatch(onPageStateSuccess(response.data));
       })
-      .catch(error => {
+      .catch((error) => {
         dispatch(
           onPageStateError(error.response ? error.response.data : error)
         );
@@ -93,28 +93,28 @@ export const rejectPage = page => {
   };
 };
 
-export const onPageStateSuccess = data => {
+export const onPageStateSuccess = (data) => {
   return {
     type: publicEndpointsActionTypes.ON_PAGE_STATE_SUCCESS,
-    data
+    data,
   };
 };
 
-export const onPageStateError = error => {
+export const onPageStateError = (error) => {
   return {
     type: publicEndpointsActionTypes.ON_PAGE_STATE_ERROR,
-    error
+    error,
   };
 };
 
-export const pendingEndpoint = endpoint => {
-  return dispatch => {
+export const pendingEndpoint = (endpoint) => {
+  return (dispatch) => {
     publicEndpointsService
       .pendingEndpoint(endpoint)
-      .then(response => {
+      .then((response) => {
         dispatch(onEndpointStateSuccess(response.data));
       })
-      .catch(error => {
+      .catch((error) => {
         dispatch(
           onEndpointStateError(error.response ? error.response.data : error)
         );
@@ -122,14 +122,14 @@ export const pendingEndpoint = endpoint => {
   };
 };
 
-export const approveEndpoint = endpoint => {
-  return dispatch => {
+export const approveEndpoint = (endpoint) => {
+  return (dispatch) => {
     publicEndpointsService
       .approveEndpoint(endpoint)
-      .then(response => {
+      .then((response) => {
         dispatch(onEndpointStateSuccess(response.data));
       })
-      .catch(error => {
+      .catch((error) => {
         dispatch(
           onEndpointStateError(error.response ? error.response.data : error)
         );
@@ -137,14 +137,14 @@ export const approveEndpoint = endpoint => {
   };
 };
 
-export const draftEndpoint = endpoint => {
-  return dispatch => {
+export const draftEndpoint = (endpoint) => {
+  return (dispatch) => {
     publicEndpointsService
       .draftEndpoint(endpoint)
-      .then(response => {
+      .then((response) => {
         dispatch(onEndpointStateSuccess(response.data));
       })
-      .catch(error => {
+      .catch((error) => {
         dispatch(
           onEndpointStateError(error.response ? error.response.data : error)
         );
@@ -152,14 +152,14 @@ export const draftEndpoint = endpoint => {
   };
 };
 
-export const rejectEndpoint = endpoint => {
-  return dispatch => {
+export const rejectEndpoint = (endpoint) => {
+  return (dispatch) => {
     publicEndpointsService
       .rejectEndpoint(endpoint)
-      .then(response => {
+      .then((response) => {
         dispatch(onEndpointStateSuccess(response.data));
       })
-      .catch(error => {
+      .catch((error) => {
         dispatch(
           onEndpointStateError(error.response ? error.response.data : error)
         );
@@ -167,16 +167,16 @@ export const rejectEndpoint = endpoint => {
   };
 };
 
-export const onEndpointStateSuccess = data => {
+export const onEndpointStateSuccess = (data) => {
   return {
     type: publicEndpointsActionTypes.ON_ENDPOINT_STATE_SUCCESS,
-    data
+    data,
   };
 };
 
-export const onEndpointStateError = error => {
+export const onEndpointStateError = (error) => {
   return {
     type: publicEndpointsActionTypes.ON_ENDPOINT_STATE_ERROR,
-    error
+    error,
   };
 };

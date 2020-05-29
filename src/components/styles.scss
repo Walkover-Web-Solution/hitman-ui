@@ -569,13 +569,13 @@ main.main.ml-sm-auto.col-lg-10 {
         }
       }
     }
-    #endpoint-url-input {
+    .endpoint-url-input {
       border-top-left-radius: 0px;
       border-bottom-left-radius: 0px;
       opacity: 0.8;
       background-color: rgb(237, 237, 237);
     }
-    #endpoint-url-input::placeholder {
+    .endpoint-url-input::placeholder {
       font-weight: 250;
       font-size: 17px;
     }

@@ -38,19 +38,30 @@ export function filter(entity, filter, title) {
       }
     }
   }
-  if (title === "versions") {
+
+  if (title === "versions" || title === "groups") {
     return finalEntityIds;
   }
   for (let i = 0; i < finalEntityIds.length; i++) {
     this.filtered[finalEntityIds[i]] = entity[finalEntityIds[i]];
   }
-  let Ids = [];
+  let ids = [];
   if (Object.keys(this.filtered).length !== 0) {
     for (let i = 0; i < Object.keys(this.filtered).length; i++) {
-      Ids.push(this.filtered[finalEntityIds[i]][entityId]);
+      ids.push(this.filtered[finalEntityIds[i]][entityId]);
     }
   }
-  return Ids;
+  if (
+    title === "versionPages" ||
+    title === "groupPages" ||
+    title === "endpoints"
+  ) {
+    let idsAndFilteredEntity = [];
+    idsAndFilteredEntity[0] = this.filtered;
+    idsAndFilteredEntity[1] = ids;
+    return idsAndFilteredEntity;
+  }
+  return ids;
 }
 
 export function jsonConcat(o1, o2) {

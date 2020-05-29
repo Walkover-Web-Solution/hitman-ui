@@ -72,7 +72,7 @@ class CustomTabs extends Component {
       (tId) => tId === droppedOnItem
     );
     tabsOrder.splice(index, 0, this.draggedItem);
-    this.props.setTabsOrder(tabsOrder);
+    this.props.set_tabs_order(tabsOrder);
   };
 
   render() {

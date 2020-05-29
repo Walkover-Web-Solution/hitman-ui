@@ -16,7 +16,18 @@ import "./endpoints.scss";
 import GenericTable from "./genericTable";
 import HostContainer from "./hostContainer";
 import PublicBodyContainer from "./publicBodyContainer";
-import { addEndpoint, updateEndpoint } from "./redux/endpointsActions";
+import {
+  addEndpoint,
+  updateEndpoint,
+  setAuthorizationType,
+} from "./redux/endpointsActions";
+import {
+  setAuthorizationResponses,
+  setAuthorizationData,
+} from "../collectionVersions/redux/collectionVersionsActions";
+import collectionsApiService from "../collections/collectionsApiService";
+import indexedDbService from "../indexedDb/indexedDbService";
+import Authorization from "./displayAuthorization";
 const status = require("http-status");
 var URI = require("urijs");
 
@@ -35,10 +46,16 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    addEndpoint: (newEndpoint, groupId) =>
+    add_endpoint: (newEndpoint, groupId) =>
       dispatch(addEndpoint(ownProps.history, newEndpoint, groupId)),
-    updateEndpoint: (editedEndpoint) =>
+    update_endpoint: (editedEndpoint) =>
       dispatch(updateEndpoint(editedEndpoint)),
+    set_authorization_responses: (versionId, authResponses) =>
+      dispatch(setAuthorizationResponses(versionId, authResponses)),
+    set_authorization_type: (endpointId, authData) =>
+      dispatch(setAuthorizationType(endpointId, authData)),
+    set_authorization_data: (versionId, data) =>
+      dispatch(setAuthorizationData(versionId, data)),
   };
 };
 
@@ -80,6 +97,7 @@ class DisplayEndpoint extends Component {
         description: "",
       },
     ],
+    authType: null,
     oldDescription: "",
     headers: [],
     publicBodyFlag: true,
@@ -111,6 +129,7 @@ class DisplayEndpoint extends Component {
         title: "Add New Endpoint",
         flagResponse: false,
         showDescriptionFlag: false,
+        authType: null,
         originalHeaders: [
           {
             checked: "notApplicable",
@@ -128,7 +147,12 @@ class DisplayEndpoint extends Component {
           },
         ],
       });
+      this.setAccessToken();
     }
+    // if (!isDashboardRoute(this.props)) {
+    //   let collectionIdentifier = this.props.location.pathname.split("/")[2];
+    //   this.fetchPublicCollection(collectionIdentifier);
+    // }
   }
 
   structueParamsHeaders = [
@@ -140,6 +164,21 @@ class DisplayEndpoint extends Component {
     },
   ];
 
+  async fetchPublicCollection(collectionId) {
+    let collection = await collectionsApiService.getCollection(collectionId);
+    if (collection.data.environment != null) {
+      this.setState({
+        publicCollectionEnvironmentId: collection.data.environment.id,
+        originalEnvironmentReplica: collection.data.environment,
+      });
+    }
+    if (collection.data.environment == null) {
+      this.setState({
+        publicCollectionEnvironmentId: null,
+        originalEnvironmentReplica: null,
+      });
+    }
+  }
   fetchEndpoint(flag, endpointId) {
     let endpoint = {};
     let originalParams = [];
@@ -185,6 +224,15 @@ class DisplayEndpoint extends Component {
     ) {
       flag = 1;
       endpoint = endpoints[endpointId];
+      let authType = {};
+      if (endpoint.authorizationType !== null) {
+        authType = {
+          type: endpoint.authorizationType.type,
+          value: endpoint.authorizationType.value,
+        };
+      } else {
+        authType = endpoint.authorizationType;
+      }
 
       const groupId = endpoints[endpointId].groupId;
 
@@ -223,11 +271,13 @@ class DisplayEndpoint extends Component {
         oldDescription: endpoint.description,
         title: "update endpoint",
         bodyDescription: endpoint.bodyDescription,
+        authType,
         fieldDescription,
         publicBodyFlag: true,
         bodyFlag: true,
         response: {},
       });
+      this.setAccessToken();
     }
   }
 
@@ -350,27 +400,91 @@ class DisplayEndpoint extends Component {
     let match = regexp.exec(str);
     let variables = [];
     if (match === null) return str;
-    if (!this.props.environment.variables) {
-      return str.replace(regexp, "");
-    }
-    do {
-      variables.push(match[1]);
-    } while ((match = regexp.exec(str)) !== null);
-    for (let i = 0; i < variables.length; i++) {
-      if (!this.props.environment.variables[variables[i]]) {
-        str = str.replace(`{{${variables[i]}}}`, "");
-      } else if (this.props.environment.variables[variables[i]].currentValue) {
-        str = str.replace(
-          `{{${variables[i]}}}`,
+
+    if (isDashboardRoute(this.props)) {
+      if (!this.props.environment.variables) {
+        return str.replace(regexp, "");
+      }
+      do {
+        variables.push(match[1]);
+      } while ((match = regexp.exec(str)) !== null);
+      for (let i = 0; i < variables.length; i++) {
+        if (!this.props.environment.variables[variables[i]]) {
+          str = str.replace(`{{${variables[i]}}}`, "");
+        } else if (
+          isDashboardRoute(this.props) &&
           this.props.environment.variables[variables[i]].currentValue
-        );
-      } else if (this.props.environment.variables[variables[i]].initialValue) {
-        str = str.replace(
-          `{{${variables[i]}}}`,
+        ) {
+          str = str.replace(
+            `{{${variables[i]}}}`,
+            this.props.environment.variables[variables[i]].currentValue
+          );
+        } else if (
           this.props.environment.variables[variables[i]].initialValue
-        );
-      } else {
-        str = str.replace(`{{${variables[i]}}}`, "");
+        ) {
+          str = str.replace(
+            `{{${variables[i]}}}`,
+            this.props.environment.variables[variables[i]].initialValue
+          );
+        } else {
+          str = str.replace(`{{${variables[i]}}}`, "");
+        }
+      }
+    } else {
+      let environmentId = this.state.publicCollectionEnvironmentId;
+      let originalEnv = this.state.originalEnvironmentReplica;
+      if (
+        this.props.environments[environmentId] !== undefined ||
+        (this.props.environments[environmentId] === undefined &&
+          originalEnv === null)
+      ) {
+        if (!this.props.environments[environmentId].variables) {
+          return str.replace(regexp, "");
+        }
+        do {
+          variables.push(match[1]);
+        } while ((match = regexp.exec(str)) !== null);
+        for (let i = 0; i < variables.length; i++) {
+          if (!this.props.environments[environmentId].variables[variables[i]]) {
+            str = str.replace(`{{${variables[i]}}}`, "");
+          } else if (
+            this.props.environments[environmentId].variables[variables[i]]
+              .initialValue
+          ) {
+            str = str.replace(
+              `{{${variables[i]}}}`,
+              this.props.environments[environmentId].variables[variables[i]]
+                .initialValue
+            );
+          } else {
+            str = str.replace(`{{${variables[i]}}}`, "");
+          }
+        }
+      }
+      //If Environment is Deleted
+      if (
+        this.props.environments[environmentId] === undefined &&
+        environmentId != null &&
+        originalEnv != null
+      ) {
+        if (!originalEnv.variables) {
+          return str.replace(regexp, "");
+        }
+        do {
+          variables.push(match[1]);
+        } while ((match = regexp.exec(str)) !== null);
+        for (let i = 0; i < variables.length; i++) {
+          if (!originalEnv.variables[variables[i]]) {
+            str = str.replace(`{{${variables[i]}}}`, "");
+          } else if (originalEnv.variables[variables[i]].initialValue) {
+            str = str.replace(
+              `{{${variables[i]}}}`,
+              originalEnv.variables[variables[i]].initialValue
+            );
+          } else {
+            str = str.replace(`{{${variables[i]}}}`, "");
+          }
+        }
       }
     }
     return str;
@@ -509,14 +623,15 @@ class DisplayEndpoint extends Component {
           this.state.data.body.type === "JSON"
             ? this.state.bodyDescription
             : {},
+        authorizationType: this.state.authType,
       };
       // if (endpoint.name === "" || endpoint.uri === "")
       if (endpoint.name === "") toast.error("Please enter Endpoint name");
       else if (this.props.location.pathname.split("/")[3] === "new") {
         endpoint.requestId = this.props.tab.id;
-        this.props.addEndpoint(endpoint, groupId || this.state.groupId);
+        this.props.add_endpoint(endpoint, groupId || this.state.groupId);
       } else if (this.state.title === "update endpoint") {
-        this.props.updateEndpoint({
+        this.props.update_endpoint({
           ...endpoint,
           id: this.state.endpoint.id,
           groupId: groupId || this.state.groupId,
@@ -857,7 +972,7 @@ class DisplayEndpoint extends Component {
     let data = { ...this.state.data };
     data.body = { type: bodyType, value: body };
     // if (bodyType !== "multipart/form-data") {
-    this.setHeaders(bodyType);
+    this.setHeaders(bodyType, "content-type");
     // }
     this.setState({ data });
     if (isDashboardRoute(this.props)) {
@@ -946,10 +1061,74 @@ class DisplayEndpoint extends Component {
     this.setState({ fieldDescription, bodyDescription });
   }
 
-  setHeaders(bodyType) {
+  // setHeaders(encodedValue) {
+  //   let originalHeaders = this.state.originalHeaders;
+  //   let updatedHeaders = [];
+  //   let emptyHeader = {
+  //     checked: "notApplicable",
+  //     key: "",
+  //     value: "",
+  //     description: "",
+  //   };
+  //   for (let i = 0; i < originalHeaders.length; i++) {
+  //     if (
+  //       originalHeaders[i].key === "Authorization" ||
+  //       originalHeaders[i].key === ""
+  //     ) {
+  //       continue;
+  //     } else {
+  //       updatedHeaders.push(originalHeaders[i]);
+  //     }
+  //   }
+  //   // if (bodyType === "none") {
+  //   //   updatedHeaders.push(emptyHeader);
+  //   //   this.setState({ originalHeaders: updatedHeaders });
+  //   //   return;
+  //   // }
+  //   updatedHeaders.push({
+  //     checked: "true",
+  //     key: "Authorization",
+  //     value: "Basic " + encodedValue,
+  //     description: "",
+  //   });
+  //   // updatedHeaders[updatedHeaders.length - 1].value = this.identifyBodyType(
+  //   //   bodyType
+  //   // );
+  //   updatedHeaders.push(emptyHeader);
+  //   this.setState({ originalHeaders: updatedHeaders });
+  // }
+
+  setParams(value, title, authorizationFlag) {
+    let originalParams = this.state.originalParams;
+    let updatedParams = [];
+    let emptyParam = {
+      checked: "notApplicable",
+      key: "",
+      value: "",
+      description: "",
+    };
+    for (let i = 0; i < originalParams.length; i++) {
+      if (originalParams[i].key === title || originalParams[i].key === "") {
+        continue;
+      } else {
+        updatedParams.push(originalParams[i]);
+      }
+    }
+    if (title === "access_token" && !authorizationFlag) {
+      updatedParams.push({
+        checked: "true",
+        key: title,
+        value: value,
+        description: "",
+      });
+    }
+    updatedParams.push(emptyParam);
+    this.setState({ originalParams: updatedParams });
+  }
+
+  setHeaders(value, title, authorizationFlag = undefined) {
     let originalHeaders = this.state.originalHeaders;
     let updatedHeaders = [];
-    // this.contentTypeFlag = false;
     let emptyHeader = {
       checked: "notApplicable",
       key: "",
@@ -958,7 +1137,7 @@ class DisplayEndpoint extends Component {
     };
     for (let i = 0; i < originalHeaders.length; i++) {
       if (
-        originalHeaders[i].key === "content-type" ||
+        originalHeaders[i].key === title.split(".")[0] ||
         originalHeaders[i].key === ""
       ) {
         continue;
@@ -966,20 +1145,30 @@ class DisplayEndpoint extends Component {
         updatedHeaders.push(originalHeaders[i]);
       }
     }
-    if (bodyType === "none") {
+    if (value === "none") {
       updatedHeaders.push(emptyHeader);
       this.setState({ originalHeaders: updatedHeaders });
       return;
     }
-    updatedHeaders.push({
-      checked: "true",
-      key: "content-type",
-      value: "",
-      description: "",
-    });
-    updatedHeaders[updatedHeaders.length - 1].value = this.identifyBodyType(
-      bodyType
-    );
+    if (value !== "noAuth" && !authorizationFlag) {
+      updatedHeaders.push({
+        checked: "true",
+        key: title === "content-type" ? "content-type" : "Authorization",
+        value:
+          title.split(".")[0] === "Authorization"
+            ? title.split(".")[1] === "oauth_2"
+              ? "Bearer " + value
+              : "Basic " + value
+            : "",
+        description: "",
+      });
+    }
+    if (title === "content-type") {
+      updatedHeaders[updatedHeaders.length - 1].value = this.identifyBodyType(
+        value
+      );
+    }
+
     updatedHeaders.push(emptyHeader);
     this.setState({ originalHeaders: updatedHeaders });
   }
@@ -1021,6 +1210,7 @@ class DisplayEndpoint extends Component {
     body.value.map((o) => formData.set(o.key, o.value));
     return formData;
   }
+
   formatBody(body, headers) {
     let finalBodyValue = null;
     switch (body.type) {
@@ -1045,6 +1235,167 @@ class DisplayEndpoint extends Component {
       default:
         return { body: body.value, headers };
     }
+  }
+
+  // async extractToken(
+  //   endpoint,
+  //   groups,
+  //   authData,
+  //   authResponses,
+  //   authType,
+  //   responseObject = undefined
+  // ) {
+  //   let url = window.location.href;
+  // let response = {};
+  // if (responseObject === undefined) {
+  // let response = URI.parseQuery("?" + url.split("#")[1]);
+  // } else {
+  //   response = responseObject;
+  // }
+
+  // if (url.split("#")[1]) {
+  //   await indexedDbService.getDataBase();
+  //   await indexedDbService.updateData(
+  //     "responseData",
+  //     response,
+  //     "currentResponse"
+  //   );
+  //   window.close();
+
+  //   if (endpoint === "") {
+  //     let authType = {
+  //       type: "oauth_2",
+  //       value: {
+  //         authorizationAddedTo: "Request Headers",
+  //         accessToken: response.access_token,
+  //       },
+  //     };
+  //     this.setState({ authType });
+  //     this.props.history.push(`/dashboard/endpoint/new`);
+  //   } else {
+  //     this.accessToken = response.access_token;
+  //     response.tokenName = authData.tokenName;
+  //     authResponses.push(response);
+
+  //     if (endpoint.groupId) {
+  //       let authorizationType = authType;
+  //       authorizationType.value.accessToken = response.access_token;
+  //       this.props.set_authorization_type(
+  //         this.props.location.pathname.split("/")[3],
+  //         authorizationType
+  //       );
+  //     }
+
+  //     if (endpoint.groupId) {
+  //       this.props.set_authorization_responses(
+  //         groups[endpoint.groupId].versionId,
+  //         authResponses
+  //       );
+  //     }
+  //     this.props.history.push(`/dashboard/endpoint/${endpoint.id}`);
+  //   }
+  //   this.setAuthorizationTab = true;
+  //   }
+  // }
+  //  async setAccessToken(endpoint, versions, groups, authType) {
+
+  async setAccessToken() {
+    let url = window.location.href;
+    let response = URI.parseQuery("?" + url.split("#")[1]);
+    if (url.split("#")[1]) {
+      await indexedDbService.getDataBase();
+      await indexedDbService.updateData(
+        "responseData",
+        response,
+        "currentResponse"
+      );
+      let responseData = await indexedDbService.getValue(
+        "responseData",
+        "currentResponse"
+      );
+      let timer = setInterval(async function () {
+        if (responseData) {
+          clearInterval(timer);
+          window.close();
+        }
+      }, 1000);
+    }
+    if (url.split("?")[1]) {
+      await indexedDbService.getDataBase();
+      let authData = await indexedDbService.getValue(
+        "authData",
+        "currentAuthData"
+      );
+      let resposneAuthCode = URI.parseQuery("?" + url.split("?")[1]);
+      let code = resposneAuthCode.code;
+      let paramsObject = {};
+      paramsObject.code = code;
+      paramsObject.client_id = authData.clientId;
+      paramsObject.client_secret = authData.clientSecret;
+      paramsObject.redirect_uri = authData.callbackUrl;
+      let response = await endpointApiService.authorize(
+        authData.accessTokenUrl,
+        paramsObject,
+        "auth_code"
+      );
+      this.setAccessToken();
+    }
+
+    // await indexedDbService.getDataBase();
+    // let authData = await indexedDbService.getValue(
+    //   "authData",
+    //   "currentAuthData"
+    // );
+    // let abcd = await indexedDbService.getValue(
+    //   "responseData",
+    //   "currentResponse"
+    // );
+
+    // let authResponses = {};
+    // if (endpoint !== "") {
+    //   authResponses =
+    //     versions[groups[endpoint.groupId].versionId].authorizationResponse;
+    // }
+    // this.extractToken(endpoint, groups, authData, authResponses, authType);
+    // if (url.split("?")[1]) {
+    //   this.setAuthorizationTab = true;
+    //   let resposneAuthCode = URI.parseQuery("?" + url.split("?")[1]);
+    //   let code = resposneAuthCode.code;
+    //   let paramsObject = {};
+    //   paramsObject.code = code;
+    //   paramsObject.client_id = authData.clientId;
+    //   paramsObject.client_secret = authData.clientSecret;
+    //   paramsObject.redirect_uri = authData.callbackUrl;
+    //   let response = await endpointApiService.authorize(
+    //     authData.accessTokenUrl,
+    //     paramsObject,
+    //     "auth_code"
+    //   );
+    //   this.extractToken(
+    //     endpoint,
+    //     groups,
+    //     authData,
+    //     authResponses,
+    //     authType,
+    //     response
+    //   );
+    // }
+    // await indexedDbService.deleteData("authData", "currentAuthData");
+    // authData = await indexedDbService.getValue("authData", "currentAuthData");
+    // console.log(authData);
+  }
+
+  setAuthType(type, value) {
+    let authType = {};
+    if (type === "") {
+      authType = null;
+    } else {
+      authType = {
+        type,
+        value,
+      };
+    }
+    this.setState({ authType });
   }
 
   render() {
@@ -1157,8 +1508,7 @@ class DisplayEndpoint extends Component {
               type="text"
               value={this.state.data.updatedUri}
               name="updatedUri"
-              className="form-control form-control-lg h-auto"
-              id="endpoint-url-input"
+              className="form-control form-control-lg h-auto endpoint-url-input"
               aria-describedby="basic-addon3"
               placeholder={"Enter request URL"}
               onChange={this.handleChange}
@@ -1202,15 +1552,32 @@ class DisplayEndpoint extends Component {
               <ul className="nav nav-tabs" id="pills-tab" role="tablist">
                 <li className="nav-item">
                   <a
-                    className="nav-link active"
+                    className={
+                      this.setAuthorizationTab ? "nav-link " : "nav-link active"
+                    }
                     id="pills-params-tab"
                     data-toggle="pill"
                     href={`#params-${this.props.tab.id}`}
                     role="tab"
                     aria-controls={`params-${this.props.tab.id}`}
-                    aria-selected="true"
+                    aria-selected={this.setAuthorizationTab ? "false" : "true"}
                   >
                     Params
+                  </a>
+                </li>
+                <li className="nav-item">
+                  <a
+                    className={
+                      this.setAuthorizationTab ? "nav-link active" : "nav-link "
+                    }
+                    id="pills-authorization-tab"
+                    data-toggle="pill"
+                    href={`#authorization-${this.props.tab.id}`}
+                    role="tab"
+                    aria-controls={`authorization-${this.props.tab.id}`}
+                    aria-selected={this.setAuthorizationTab ? "true" : "false"}
+                  >
+                    Authorization
                   </a>
                 </li>
                 <li className="nav-item">
@@ -1245,7 +1612,11 @@ class DisplayEndpoint extends Component {
           {isDashboardRoute(this.props) ? (
             <div className="tab-content" id="pills-tabContent">
               <div
-                className="tab-pane fade show active"
+                className={
+                  this.setAuthorizationTab
+                    ? "tab-pane fade"
+                    : "tab-pane fade show active"
+                }
                 id={`params-${this.props.tab.id}`}
                 role="tabpanel"
                 aria-labelledby="pills-params-tab"
@@ -1269,6 +1640,30 @@ class DisplayEndpoint extends Component {
                       ></GenericTable>
                     </div>
                   )}
+              </div>
+              <div
+                className={
+                  this.setAuthorizationTab
+                    ? "tab-pane fade show active"
+                    : "tab-pane fade "
+                }
+                id={`authorization-${this.props.tab.id}`}
+                role="tabpanel"
+                aria-labelledby="pills-authorization-tab"
+              >
+                <div>
+                  <Authorization
+                    {...this.props}
+                    title="Authorization"
+                    groupId={this.state.groupId}
+                    set_authorization_headers={this.setHeaders.bind(this)}
+                    set_authoriztaion_params={this.setParams.bind(this)}
+                    set_authoriztaion_type={this.setAuthType.bind(this)}
+                    // set_access_token={this.setAccessToken.bind(this)}
+                    accessToken={this.accessToken}
+                    authorizationType={this.state.authType}
+                  ></Authorization>
+                </div>
               </div>
               <div
                 className="tab-pane fade"

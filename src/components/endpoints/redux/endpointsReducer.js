@@ -11,6 +11,17 @@ const initialState = {};
 function endpointsReducer(state = initialState, action) {
   let endpoints = {};
   switch (action.type) {
+    case endpointsActionTypes.SET_AUTHORIZATION_TYPE_REQUEST:
+      state[action.endpointId].authorizationType = action.authData;
+      return {
+        ...state,
+      };
+
+    case endpointsActionTypes.SET_AUTHORIZATION_TYPE_ERROR:
+      state[action.versionId].authorizationType = action.originalAuthType;
+      toast.error(action.error);
+      return state;
+
     case endpointsActionTypes.MOVE_ENDPOINT_REQUEST:
       endpoints = { ...state };
       endpoints[action.endpointId].groupId = action.destinationGroupId;

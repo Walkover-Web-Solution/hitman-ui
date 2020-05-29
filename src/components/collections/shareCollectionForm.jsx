@@ -5,7 +5,6 @@ import "react-multi-email/style.css";
 import { connect } from "react-redux";
 import shortid from "shortid";
 import authService from "../auth/authService";
-
 const mapStateToProps = (state) => {
   return {
     teamUsers: state.teamUsers,
@@ -19,6 +18,7 @@ class ShareCollectionForm extends Component {
     },
     emails: [],
     modifiedteamMembers: [],
+    selectedEnvironment: null,
   };
   changeTeamFlag = true;
 
@@ -26,7 +26,6 @@ class ShareCollectionForm extends Component {
     admin: { name: "Admin" },
     collaborator: { name: "Collaborator" },
   };
-
   setDropdowmRole(key) {
     const data = this.state.data;
     data.role = this.dropdownRole[key].name;
@@ -45,7 +44,7 @@ class ShareCollectionForm extends Component {
   }
 
   async onShareCollectionSubmit(teamMemberData) {
-    this.props.shareCollection(teamMemberData);
+    this.props.share_collection(teamMemberData);
     this.setState({
       data: {
         role: "Collaborator",
@@ -123,10 +122,14 @@ class ShareCollectionForm extends Component {
     }
   }
 
-  handlePublic(collection) {
-    collection.isPublic = !collection.isPublic;
-    delete collection.teamId;
-    this.props.updateCollection({ ...collection });
+  onHide() {
+    this.props.onHide();
+    this.props.history.push({
+      dashboardEnvironment: true,
+    });
+    this.setState({
+      selectedEnvironment: "No Environment",
+    });
   }
 
   render() {
@@ -142,6 +145,7 @@ class ShareCollectionForm extends Component {
         animation={false}
         aria-labelledby="contained-modal-title-vcenter"
         centered
+        onHide={() => this.onHide()}
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
@@ -198,26 +202,6 @@ class ShareCollectionForm extends Component {
                       </Dropdown.Menu>
                     </Dropdown>{" "}
                   </InputGroup.Append>
-                  {this.currentUserRole === "Admin" ||
-                  this.currentUserRole === "Owner" ? (
-                    <div>
-                      <button
-                        style={{ float: "right", marginLeft: "10px" }}
-                        type="button"
-                        className="btn btn-success"
-                        onClick={() => {
-                          this.handlePublic(
-                            this.props.collections[this.props.collection_id]
-                          );
-                        }}
-                      >
-                        {this.props.collections[this.props.collection_id]
-                          .isPublic
-                          ? "Make Private"
-                          : "Make Public"}
-                      </button>
-                    </div>
-                  ) : null}
                 </InputGroup>
               ) : null}
             </div>
@@ -306,7 +290,7 @@ class ShareCollectionForm extends Component {
                 <button
                   type="button"
                   className="btn btn-default"
-                  onClick={() => this.props.onHide()}
+                  onClick={() => this.onHide()}
                 >
                   Cancel
                 </button>

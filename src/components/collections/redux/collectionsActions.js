@@ -2,6 +2,8 @@ import store from "../../../store/store";
 import collectionsApiService from "../collectionsApiService";
 import collectionsActionTypes from "./collectionsActionTypes";
 import tabService from "../../tabs/tabService";
+import openApiService from "../../openApi/openApiService";
+import versionActionTypes from "../../collectionVersions/redux/collectionVersionsActionTypes";
 
 export const fetchCollections = () => {
   return (dispatch) => {
@@ -31,6 +33,23 @@ export const onCollectionsFetchedError = (error) => {
   return {
     type: collectionsActionTypes.ON_COLLECTIONS_FETCHED_ERROR,
     error,
+  };
+};
+
+export const fetchCollection = (collectionId) => {
+  return (dispatch) => {
+    collectionsApiService
+      .getCollection(collectionId)
+      .then((response) => {
+        dispatch(onCollectionsFetched(response.data));
+      })
+      .catch((error) => {
+        dispatch(
+          onCollectionsFetchedError(
+            error.response ? error.response.data : error
+          )
+        );
+      });
   };
 };
 
@@ -83,6 +102,7 @@ export const updateCollection = (editedCollection) => {
     dispatch(updateCollectionRequest({ ...editedCollection }));
     const id = editedCollection.id;
     delete editedCollection.id;
+    delete editedCollection.requestId;
     collectionsApiService
       .updateCollection(id, editedCollection)
       .then((response) => {
@@ -227,6 +247,90 @@ export const onCollectionDuplicated = (response) => {
 export const onCollectionDuplicatedError = (error) => {
   return {
     type: collectionsActionTypes.ON_COLLECTION_DUPLICATED_ERROR,
+    error,
+  };
+};
+
+export const addCustomDomain = (
+  collectionId,
+  domain,
+  dnsTarget,
+  title,
+  logoUrl
+) => {
+  return (dispatch) => {
+    let collection = { ...store.getState().collections[collectionId] };
+    if (!collection.docProperties.domainsList) {
+      collection.docProperties.domainsList = [];
+    }
+    collection.docProperties.domainsList.push({
+      domain,
+      dnsTarget,
+      title,
+      logoUrl,
+    });
+    console.log(collection);
+    dispatch(updateCollectionRequest({ ...collection }));
+
+    const id = collection.id;
+    delete collection.id;
+    delete collection.teamId;
+    collectionsApiService
+      .updateCollection(id, collection)
+      .then((response) => {
+        dispatch(onCollectionUpdated(response.data));
+      })
+      .catch((error) => {
+        dispatch(
+          onCollectionUpdatedError(
+            error.response ? error.response.data : error,
+            collection
+          )
+        );
+      });
+  };
+};
+
+export const importApi = (openApiObject) => {
+  return (dispatch) => {
+    openApiService
+      .importApi(openApiObject)
+      .then((response) => {
+        // dispatch(saveImportedCollection(response.data));
+        dispatch(saveImportedVersion(response.data));
+      })
+      .catch((error) => {
+        dispatch(
+          onVersionsFetchedError(error.response ? error.response.data : error)
+        );
+      })
+      .catch((error) => {
+        dispatch(
+          onVersionsFetchedError(error.response ? error.response.data : error)
+        );
+      });
+  };
+};
+
+// export const saveImportedCollection = (response) => {
+//   console.log(response);
+//   return {
+//     type: collectionsActionTypes.IMPORT_COLLECTION,
+//     response,
+//   };
+// };
+
+export const saveImportedVersion = (response) => {
+  console.log(response);
+  return {
+    type: versionActionTypes.IMPORT_VERSION,
+    response,
+  };
+};
+
+export const onVersionsFetchedError = (error) => {
+  return {
+    type: versionActionTypes.ON_VERSIONS_FETCHED_ERROR,
     error,
   };
 };

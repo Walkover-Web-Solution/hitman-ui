@@ -155,9 +155,10 @@ class CreateEndpointForm extends Form {
   }
 
   render() {
+    const { staticContext, ...props } = this.props;
     return (
       <Modal
-        {...this.props}
+        {...props}
         size="lg"
         animation={false}
         aria-labelledby="contained-modal-title-vcenter"
@@ -203,7 +204,7 @@ class CreateEndpointForm extends Form {
                   ))
                 ) : this.renderList().length ? (
                   this.renderList().map((item) => (
-                    <li className="list-group-item">
+                    <li className="list-group-item" key={item.id}>
                       <button
                         className="btn"
                         onClick={() => this.setList(item)}

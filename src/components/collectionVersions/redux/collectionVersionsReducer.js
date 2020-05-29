@@ -10,6 +10,32 @@ function versionsReducer(state = initialState, action) {
   let versions = {};
 
   switch (action.type) {
+    case versionActionTypes.ON_AUTHORIZATION_DATA_REQUEST:
+      state[action.versionId].authorizationData = action.data;
+      return {
+        ...state,
+      };
+
+    case versionActionTypes.ON_AUTHORIZATION_DATA_ERROR:
+      state[action.versionId].authorizationData = action.originalAuthdata;
+      toast.error(action.error);
+      return {
+        ...state,
+      };
+
+    case versionActionTypes.ON_AUTHORIZATION_RESPONSES_REQUEST:
+      state[action.versionId].authorizationResponse = action.authResponses;
+      return {
+        ...state,
+      };
+
+    case versionActionTypes.ON_AUTHORIZATION_RESPONSES_ERROR:
+      state[action.versionId].authorizationResponse = action.authResponses;
+      toast.error(action.error);
+      return {
+        ...state,
+      };
+
     case collectionsActionTypes.ON_COLLECTION_ADDED:
       return {
         ...state,

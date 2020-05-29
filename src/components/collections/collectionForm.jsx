@@ -6,11 +6,11 @@ import shortid from "shortid";
 import { connect } from "react-redux";
 import { addCollection, updateCollection } from "./redux/collectionsActions";
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    addCollection: newCollection => dispatch(addCollection(newCollection)),
-    updateCollection: editedCollection =>
-      dispatch(updateCollection(editedCollection))
+    add_collection: (newCollection) => dispatch(addCollection(newCollection)),
+    update_collection: (editedCollection) =>
+      dispatch(updateCollection(editedCollection)),
   };
 };
 
@@ -22,11 +22,11 @@ class CollectionForm extends Form {
       description: "",
       keyword: "",
       keyword1: "",
-      keyword2: ""
+      keyword2: "",
     },
     collectionId: "",
     errors: {},
-    show: true
+    show: true,
   };
 
   async componentDidMount() {
@@ -38,7 +38,7 @@ class CollectionForm extends Form {
         name,
         website,
         description,
-        keyword
+        keyword,
       } = this.props.edited_collection;
       data = {
         name,
@@ -46,38 +46,26 @@ class CollectionForm extends Form {
         description,
         keyword: keyword.split(",")[0],
         keyword1: keyword.split(",")[1],
-        keyword2: keyword.split(",")[2]
+        keyword2: keyword.split(",")[2],
       };
     }
     this.setState({ data, collectionId });
   }
 
   schema = {
-    name: Joi.string()
-      .required()
-      .label("Username"),
-    website: Joi.string()
-      .required()
-      .label("Website"),
-    keyword: Joi.string()
-      .required()
-      .label("Keywords"),
-    keyword1: Joi.string()
-      .allow(null, "")
-      .label("Keywords"),
-    keyword2: Joi.string()
-      .allow(null, "")
-      .label("Keywords"),
-    description: Joi.string()
-      .allow(null, "")
-      .label("description")
+    name: Joi.string().required().label("Username"),
+    website: Joi.string().required().label("Website"),
+    keyword: Joi.string().required().label("Keywords"),
+    keyword1: Joi.string().allow(null, "").label("Keywords"),
+    keyword2: Joi.string().allow(null, "").label("Keywords"),
+    description: Joi.string().allow(null, "").label("description"),
   };
 
   async onEditCollectionSubmit() {
     this.props.onHide();
-    this.props.updateCollection({
+    this.props.update_collection({
       ...this.state.data,
-      id: this.state.collectionId
+      id: this.state.collectionId,
     });
     this.setState({
       data: {
@@ -86,15 +74,15 @@ class CollectionForm extends Form {
         description: "",
         keyword: "",
         keyword1: "",
-        keyword2: ""
-      }
+        keyword2: "",
+      },
     });
   }
 
   async onAddCollectionSubmit() {
     this.props.onHide();
     const requestId = shortid.generate();
-    this.props.addCollection({ ...this.state.data, requestId });
+    this.props.add_collection({ ...this.state.data, requestId });
     this.setState({
       data: {
         name: "",
@@ -102,8 +90,8 @@ class CollectionForm extends Form {
         description: "",
         keyword: "",
         keyword1: "",
-        keyword2: ""
-      }
+        keyword2: "",
+      },
     });
   }
 
