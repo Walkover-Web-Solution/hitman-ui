@@ -296,7 +296,7 @@ export const importApi = (openApiObject) => {
     openApiService
       .importApi(openApiObject)
       .then((response) => {
-        dispatch(saveImportedCollection(response.data));
+        // dispatch(saveImportedCollection(response.data));
         dispatch(saveImportedVersion(response.data));
       })
       .catch((error) => {
@@ -312,14 +312,16 @@ export const importApi = (openApiObject) => {
   };
 };
 
-export const saveImportedCollection = (response) => {
-  return {
-    type: collectionsActionTypes.IMPORT_COLLECTION,
-    response,
-  };
-};
+// export const saveImportedCollection = (response) => {
+//   console.log(response);
+//   return {
+//     type: collectionsActionTypes.IMPORT_COLLECTION,
+//     response,
+//   };
+// };
 
 export const saveImportedVersion = (response) => {
+  console.log(response);
   return {
     type: versionActionTypes.IMPORT_VERSION,
     response,

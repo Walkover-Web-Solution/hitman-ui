@@ -1,15 +1,18 @@
 import collectionsActionTypes from "./collectionsActionTypes";
 import publicEndpointsActionTypes from "../../publicEndpoint/redux/publicEndpointsActionTypes";
 import { toast } from "react-toastify";
+import versionActionTypes from "../../collectionVersions/redux/collectionVersionsActionTypes";
 
 const initialState = {};
 
 function collectionsReducer(state = initialState, action) {
   let collections = {};
   switch (action.type) {
-    case collectionsActionTypes.IMPORT_COLLECTION:
-      return { ...state, ...action.response.collection };
-
+    case versionActionTypes.IMPORT_VERSION:
+      return {
+        ...state,
+        [action.response.collection.id]: action.response.collection,
+      };
     case collectionsActionTypes.ON_COLLECTIONS_FETCHED:
       return { ...action.collections };
 
