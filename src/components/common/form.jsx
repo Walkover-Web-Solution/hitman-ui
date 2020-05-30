@@ -56,8 +56,9 @@ class Form extends Component {
     this.setState({ data });
   };
   handleEditorChange = (value) => {
-    const data = { ...this.state.data };
-    data["description"] = value;
+    const data = this.state.data;
+    let description = value;
+    data["description"] = description;
     this.setState({ data });
   };
 
@@ -99,14 +100,14 @@ class Form extends Component {
 
   renderQuillEditor(name, label) {
     const { data, errors } = this.state;
+
     return (
       <div className="form-group ">
         <label htmlFor={name} className="custom-input-label">
           {label}
         </label>
         <ReactQuill
-          style={{ height: "200px" }}
-          value={data.contents}
+          value={data.description}
           modules={this.modules}
           formats={this.formats}
           onChange={this.handleEditorChange}

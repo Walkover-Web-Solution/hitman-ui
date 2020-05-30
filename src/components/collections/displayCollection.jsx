@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import store from "../../store/store";
+import ReactHtmlParser from "react-html-parser";
 
 class DisplayCollection extends Component {
   state = {
@@ -32,7 +33,9 @@ class DisplayCollection extends Component {
       this.props.history.push({ collection: null });
     }
     return (
-      <div className="collection-description">{this.state.description}</div>
+      <div className="collection-description">
+        {ReactHtmlParser(this.state.description)}
+      </div>
     );
   }
 }
