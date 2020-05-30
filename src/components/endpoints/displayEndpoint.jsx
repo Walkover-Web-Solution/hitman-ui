@@ -72,7 +72,7 @@ class DisplayEndpoint extends Component {
       uri: "",
       updatedUri: "",
     },
-    methodList: ["GET", "POST", "PUT", "DELETE"],
+    methodList: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     environment: {},
     startTime: "",
     timeElapsed: "",

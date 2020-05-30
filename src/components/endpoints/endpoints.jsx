@@ -268,10 +268,12 @@ class Endpoints extends Component {
                     <div
                       className={this.props.endpoints[endpointId].requestType}
                     >
-                      {this.props.endpoints[endpointId].requestType}
+                      <div className="endpoint-request-div">
+                        {this.props.endpoints[endpointId].requestType}
+                      </div>
                     </div>
 
-                    <div style={{ width: "100%", textAlign: "left" }}>
+                    <div className="endpoint-name-div">
                       {this.props.endpoints[endpointId].name}
                     </div>
                   </button>
@@ -397,9 +399,13 @@ class Endpoints extends Component {
                     <div
                       className={this.props.endpoints[endpointId].requestType}
                     >
-                      {this.props.endpoints[endpointId].requestType}
+                      <div className="endpoint-request-div">
+                        {this.props.endpoints[endpointId].requestType}
+                      </div>
                     </div>
-                    {this.props.endpoints[endpointId].name}
+                    <div className="endpoint-name-div">
+                      {this.props.endpoints[endpointId].name}
+                    </div>
                   </button>
                 </div>
               ))}

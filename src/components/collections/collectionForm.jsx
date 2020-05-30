@@ -141,7 +141,8 @@ class CollectionForm extends Form {
                   {this.renderInput("keyword2", "Keyword 3", "Keyword 3")}
                 </div>
               </div>
-              {this.renderTextArea("description", "Description", "description")}
+              {/* {this.renderTextArea("description", "Description", "description")} */}
+              {this.renderQuillEditor("descriptoion", "Description")}
               {this.renderButton("Submit")}
               <button
                 className="btn btn-default custom-button"

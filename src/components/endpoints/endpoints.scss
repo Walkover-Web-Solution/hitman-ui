@@ -764,3 +764,14 @@ pre.__json-pretty-error__ {
 .oauth2-token-details-list-item-label {
   flex: 0.4;
 }
+
+//endpoint name style
+.endpoint-name-div {
+  text-align: left;
+}
+
+//endpoint request styling
+.endpoint-request-div {
+  align-content: left;
+  width: 60px;
+}

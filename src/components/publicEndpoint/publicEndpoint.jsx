@@ -84,7 +84,10 @@ class PublicEndpoint extends Component {
               src={require("../../hitman-icon.png")}
             />
           </nav>
-          <main role="main" className="main ml-sm-auto col-lg-10 ">
+          <main
+            role="main"
+            className="main ml-sm-auto col-lg-10 public-endpoint-main "
+          >
             <div>
               <ToastContainer />
               <div className="main-panel-wrapper">

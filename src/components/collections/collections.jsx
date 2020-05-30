@@ -551,8 +551,8 @@ class CollectionsComponent extends Component {
                   <h4
                     style={{
                       color: "tomato",
-                      textAlign: "center",
-                      padding: "35px",
+                      margin: "5px",
+                      padding: "10px",
                     }}
                     onClick={() =>
                       this.handlePublicCollectionDescription(
