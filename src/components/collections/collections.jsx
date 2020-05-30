@@ -365,17 +365,15 @@ class CollectionsComponent extends Component {
                     </button>
                   )}
                   {/* {(this.currentUserRole==="Admin"||this.currentUserRole==="Owner") && ( */}
-                    <button
-                      className="dropdown-item"
-                      onClick={() =>
-                        this.openPublishDocs(
-                          this.props.collections[collectionId]
-                        )
-                      }
-                    >
-                      Publish Docs{" "}
-                    </button>
-                  
+                  <button
+                    className="dropdown-item"
+                    onClick={() =>
+                      this.openPublishDocs(this.props.collections[collectionId])
+                    }
+                  >
+                    Publish Docs{" "}
+                  </button>
+
                   <button
                     className="dropdown-item"
                     onClick={() => {
@@ -543,7 +541,7 @@ class CollectionsComponent extends Component {
         </div>
       );
     } else {
-      console.log(this.state.showPublishDocsModal);
+      // console.log(this.state.showPublishDocsModal);
       return (
         <div>
           <div className="App-Side">

@@ -33,7 +33,6 @@ class OpenApiForm extends Component {
 
   importApi() {
     let uploadedFile = this.state.uploadedFile;
-    console.log("importApi", uploadedFile);
     this.props.import_api(uploadedFile);
     this.props.onHide();
   }

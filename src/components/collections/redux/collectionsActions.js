@@ -269,7 +269,7 @@ export const addCustomDomain = (
       title,
       logoUrl,
     });
-    console.log(collection);
+    // console.log(collection);
     dispatch(updateCollectionRequest({ ...collection }));
 
     const id = collection.id;
@@ -312,16 +312,7 @@ export const importApi = (openApiObject) => {
   };
 };
 
-// export const saveImportedCollection = (response) => {
-//   console.log(response);
-//   return {
-//     type: collectionsActionTypes.IMPORT_COLLECTION,
-//     response,
-//   };
-// };
-
 export const saveImportedVersion = (response) => {
-  console.log(response);
   return {
     type: versionActionTypes.IMPORT_VERSION,
     response,
