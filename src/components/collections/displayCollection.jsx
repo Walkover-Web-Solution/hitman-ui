@@ -31,7 +31,9 @@ class DisplayCollection extends Component {
       this.setState({ description });
       this.props.history.push({ collection: null });
     }
-    return <div style={{ margin: "20px" }}>{this.state.description}</div>;
+    return (
+      <div className="collection-description">{this.state.description}</div>
+    );
   }
 }
 
