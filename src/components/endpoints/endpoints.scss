@@ -41,6 +41,27 @@ $border-color: rgba(227, 228, 230, 0.7);
   }
 }
 
+#modal-display-token {
+  .modal-content {
+    height: 500px;
+    .modal-body {
+      padding: 0px;
+      .container {
+        height: 100%;
+        .row {
+          height: 100%;
+          .col-sm-9 {
+            padding: 0px !important;
+            pre {
+              padding-left: 15px;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
 #code-window-sidebar {
   border-right: 1px solid rgb(197, 197, 197);
   box-shadow: 1px 0px #e8e8e8;
@@ -760,11 +781,52 @@ pre.__json-pretty-error__ {
 }
 .oauth2-token-details-list-item {
   display: flex;
+  padding: 10px;
 }
 .oauth2-token-details-list-item-label {
   flex: 0.4;
+  padding-left: 10px;
+  padding-right: 10px;
+  margin: 0px;
+  font-weight: 300;
+  font-size: 13px;
+}
+.oauth2-token-details-list-item-value {
+  width: 250px;
+  padding: 0 20px;
+  word-break: break-all;
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+  font-weight: 300;
+  font-size: 13px;
 }
 
+.oauth2-token-details-list-item-button {
+  width: 110px;
+  font-size: 13px;
+  margin: 8px;
+  margin-top: 0px;
+  color: white;
+  background: rgb(221, 77, 20);
+  height: 35px;
+  border: none;
+  border-radius: 3px;
+  float: right !important;
+  padding: 0 20px;
+}
+
+.token-detail-div {
+  margin: 10px;
+}
+
+.custom-token-detais {
+  flex: 0.4;
+  padding-left: 10px;
+  padding-right: 10px;
+  margin: 0px;
+}
 //endpoint name style
 .endpoint-name-div {
   text-align: left;
@@ -774,4 +836,14 @@ pre.__json-pretty-error__ {
 .endpoint-request-div {
   align-content: left;
   width: 60px;
+}
+
+.display-token-edit-button {
+  margin-left: 20px;
+  border: 0px;
+  background: white;
+
+  i.fas.fa-pen {
+    opacity: 0.3;
+  }
 }

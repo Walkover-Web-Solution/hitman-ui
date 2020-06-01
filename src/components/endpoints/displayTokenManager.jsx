@@ -66,7 +66,7 @@ class AccessTokenManager extends Component {
       <div>
         <Modal
           {...this.props}
-          id="modal-code-window"
+          id="modal-display-token"
           size="lg"
           animation={false}
           aria-labelledby="contained-modal-title-vcenter"
@@ -109,19 +109,29 @@ class AccessTokenManager extends Component {
                 </Col>
                 <Col sm={9}>
                   <div>
-                    <div>Token Details</div>
-                    <button
-                      type="button"
-                      onClick={() => this.setSelectedToken()}
-                    >
-                      Use Token
-                    </button>
+                    <div>
+                      <div className="token-detail-div">
+                        <label className="custom-token-detais">
+                          Token Details
+                        </label>
+
+                        <button
+                          className="oauth2-token-details-list-item-button"
+                          type="button"
+                          onClick={() => this.setSelectedToken()}
+                        >
+                          Use Token
+                        </button>
+                      </div>
+                    </div>
+
+                    <br />
                     <div>
                       <div className="oauth2-token-details-list">
                         {Object.keys(this.authResponse).map((property) => (
                           <div className="oauth2-token-details-list-item">
                             <label className="oauth2-token-details-list-item-label">
-                              {this.authResponse[property]}{" "}
+                              {this.authResponse[property]}
                             </label>
                             <div className="oauth2-token-details-list-item-value">
                               {!this.state.editTokenName ? (
@@ -171,18 +181,20 @@ class AccessTokenManager extends Component {
                                 this.state.editTokenName ? (
                                   this.state.editTokenName === true ? null : (
                                     <button
+                                      className="display-token-edit-button"
                                       onClick={() =>
                                         this.selectEditToken("edit")
                                       }
                                     >
-                                      Edit
+                                      <i className="fas fa-pen"></i>
                                     </button>
                                   )
                                 ) : (
                                   <button
+                                    className="display-token-edit-button"
                                     onClick={() => this.selectEditToken("edit")}
                                   >
-                                    Edit
+                                    <i className="fas fa-pen"></i>
                                   </button>
                                 )
                               ) : null}
