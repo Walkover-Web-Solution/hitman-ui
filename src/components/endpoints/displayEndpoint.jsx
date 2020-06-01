@@ -862,7 +862,10 @@ class DisplayEndpoint extends Component {
         processedHeaders.push({
           name: headers[Object.keys(headers)[i]].key,
           value: headers[Object.keys(headers)[i]].value,
-          comment: headers[Object.keys(headers)[i]].description,
+          comment:
+            headers[Object.keys(headers)[i]].description === null
+              ? ""
+              : headers[Object.keys(headers)[i]].description,
         });
       }
     }

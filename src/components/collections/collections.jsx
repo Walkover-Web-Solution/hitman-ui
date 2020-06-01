@@ -560,6 +560,18 @@ class CollectionsComponent extends Component {
                       )
                     }
                   >
+                    <img
+                      src={
+                        "//logo.clearbit.com/" +
+                        this.props.collections[collectionId].name +
+                        ".com"
+                      }
+                      onClick={() =>
+                        window.open(
+                          this.props.collections[collectionId].website
+                        )
+                      }
+                    ></img>
                     {this.props.collections[collectionId].name}
                   </h4>
 
