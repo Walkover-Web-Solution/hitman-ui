@@ -112,3 +112,13 @@ $border-color: rgba(227, 228, 230, 0.7);
 .collection-description {
   padding: 10px;
 }
+
+.img-icon-div {
+  img {
+    height: 50px;
+    width: 50px;
+    border: 2px solid tomato;
+
+    border-radius: 100%;
+  }
+}

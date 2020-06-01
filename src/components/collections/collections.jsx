@@ -544,7 +544,7 @@ class CollectionsComponent extends Component {
       // console.log(this.state.showPublishDocsModal);
       return (
         <div>
-          <div className="App-Side">
+          <div className="navbar-header">
             {Object.keys(this.props.collections).map((collectionId, index) => (
               <div id="parent-accordion" key={index}>
                 <div>
@@ -560,18 +560,16 @@ class CollectionsComponent extends Component {
                       )
                     }
                   >
-                    <img
-                      src={
-                        "//logo.clearbit.com/" +
-                        this.props.collections[collectionId].name +
-                        ".com"
-                      }
-                      onClick={() =>
-                        window.open(
-                          this.props.collections[collectionId].website
-                        )
-                      }
-                    ></img>
+                    <div className="img-icon-div navbar-brand icon">
+                      <img
+                        src={`//logo.clearbit.com/${this.props.collections[collectionId].name}.com`}
+                        onClick={() =>
+                          window.open(
+                            this.props.collections[collectionId].website
+                          )
+                        }
+                      ></img>
+                    </div>
                     {this.props.collections[collectionId].name}
                   </h4>
 
