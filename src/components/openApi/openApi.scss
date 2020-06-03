@@ -1,0 +1,19 @@
+#modal-open-api {
+  .modal-content {
+    // height: 400px !important;
+    .modal-body {
+      form {
+        font-size: 15px;
+        font-weight: 400;
+        div#select-json-wrapper {
+          label {
+            font-weight: 600;
+            font-size: 17px;
+          }
+          height: 120px;
+          padding: 0px;
+        }
+      }
+    }
+  }
+}

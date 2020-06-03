@@ -3,6 +3,7 @@ import { Modal } from "react-bootstrap";
 import { withRouter } from "react-router-dom";
 import { importApi } from "../collections/redux/collectionsActions";
 import { connect } from "react-redux";
+import "./openApi.scss";
 
 const mapStateToProps = (state) => {
   return {};
@@ -46,58 +47,53 @@ class OpenApiForm extends Component {
 
   render() {
     return (
-      <div>
-        <Modal
-          {...this.props}
-          id="modal-code-window"
-          size="lg"
-          animation={false}
-          aria-labelledby="contained-modal-title-vcenter"
-          centered
-        >
-          <Modal.Header
-            className="custom-collection-modal-container"
-            closeButton
-          >
-            <Modal.Title id="contained-modal-title-vcenter">
-              {this.props.title}
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <div>
-              <form>
-                <label>
-                  Select JSON File
-                  {/* <textarea
-                    onChange={this.handleChange.bind(this)}
-                    rows="20"
-                    cols="50"
-                  ></textarea> */}
-                </label>
-                <br></br>
-                <input type="file" onChange={this.onFileChange.bind(this)} />
-
-                <div className="button-group">
-                  <button
-                    type="button"
-                    className="btn"
-                    onClick={this.props.onHide}
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    className="btn request-token-button"
-                    type="button"
-                    onClick={() => this.importApi()}
-                  >
-                    Import{" "}
-                  </button>
-                </div>
-              </form>
+      <Modal
+        {...this.props}
+        id="modal-open-api"
+        size="lg"
+        animation={false}
+        aria-labelledby="contained-modal-title-vcenter"
+        centered
+      >
+        <Modal.Header className="custom-collection-modal-container" closeButton>
+          <Modal.Title id="contained-modal-title-vcenter">
+            {this.props.title}
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <form>
+            <div id="select-json-wrapper">
+              <label>
+                Select JSON File
+                {/* <textarea
+            onChange={this.handleChange.bind(this)}
+            rows="20"
+            cols="50"
+            ></textarea> */}
+              </label>
+              <br></br>
+              <input type="file" onChange={this.onFileChange.bind(this)} />
             </div>
-          </Modal.Body>
-        </Modal>
-      </div>
+
+            <div className="button-group">
+              <button
+                type="button"
+                className="btn "
+                onClick={this.props.onHide}
+              >
+                Cancel
+              </button>
+              <button
+                className="btn request-token-button"
+                type="button"
+                onClick={() => this.importApi()}
+              >
+                Import{" "}
+              </button>
+            </div>
+          </form>
+        </Modal.Body>
+      </Modal>
     );
   }
 }
