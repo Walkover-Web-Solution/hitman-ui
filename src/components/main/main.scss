@@ -91,17 +91,17 @@ main.main.ml-sm-auto.col-lg-10 {
 
 nav.navbar.navbar-dark.fixed-top.bg-dark.flex-md-nowrap.p-0.shadow {
   display: flex;
-  align-items: baseline;
+  // align-items: baseline;
   height: 50px;
   .btn-group {
     display: flex;
     height: 45px;
     border-radius: 2px;
     #new-button {
-      display: flex;
+      // display: flex;
       align-items: baseline;
       background-color: tomato;
-      margin: 8px 0px 4px 4px;
+      margin: 4px 0px 4px 4px;
       .fa-plus-square {
         padding-right: 5px;
         font-size: 17px;
@@ -109,7 +109,7 @@ nav.navbar.navbar-dark.fixed-top.bg-dark.flex-md-nowrap.p-0.shadow {
     }
     #new-button-dropdown {
       background-color: tomato;
-      margin: 8px 4px 4px 0px;
+      margin: 4px 10px 4px 0px;
     }
     button.btn {
       padding: 0px 6px;
@@ -120,11 +120,28 @@ nav.navbar.navbar-dark.fixed-top.bg-dark.flex-md-nowrap.p-0.shadow {
   }
 }
 
-#nav-left-buttons {
-  display: flex;
-  margin: 8px 4px 4px 4px;
-  border-radius: 3px;
-  background-color: rgb(101, 103, 105);
+.nav-left-button-1 {
+  // display: flex;
+  margin: 4px 10px 4px 1px;
+  border-radius: 3px !important;
+  border-color: none !important;
+  background: rgb(101, 103, 105) !important;
+}
+
+.nav-left-button-2 {
+  // display: flex;
+  margin: 4px 10px 4px 1px;
+  border-radius: 3px !important;
+  border-color: none !important;
+
+  background: rgb(101, 103, 105) !important;
+  button#dropdownMenuButton {
+    background: rgb(101, 103, 105) !important;
+    border: none;
+    i.fa.fa-file-text {
+      font-size: 18px;
+    }
+  }
 }
 
 #search-box-wrapper {
