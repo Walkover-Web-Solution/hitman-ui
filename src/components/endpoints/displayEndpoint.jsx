@@ -1339,9 +1339,10 @@ class DisplayEndpoint extends Component {
       let response = await endpointApiService.authorize(
         authData.accessTokenUrl,
         paramsObject,
-        "auth_code"
+        "auth_code",
+        this.props,
+        authData
       );
-      this.setAccessToken();
     }
 
     // await indexedDbService.getDataBase();
