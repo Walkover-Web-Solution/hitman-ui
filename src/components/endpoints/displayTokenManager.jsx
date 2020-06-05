@@ -88,13 +88,14 @@ class AccessTokenManager extends Component {
                     <ListGroup.Item>All Tokens</ListGroup.Item>
                     {this.state.authResponses.map((response, index) => (
                       <div>
-                        <ListGroup.Item
-                          onClick={() => {
-                            this.selectTokenIndex(index);
-                          }}
-                          className="tokens-list-item"
-                        >
-                          <label>{response.tokenName}</label>
+                        <ListGroup.Item className="tokens-list-item">
+                          <label
+                            onClick={() => {
+                              this.selectTokenIndex(index);
+                            }}
+                          >
+                            {response.tokenName}
+                          </label>
                           <button
                             className="btn delete-button"
                             onClick={() => this.deleteToken(index)}
