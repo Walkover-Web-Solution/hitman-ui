@@ -762,9 +762,7 @@ pre.__json-pretty-error__ {
   display: flex !important;
   flex-direction: column;
 }
-.request-token-button {
-  background-color: rgb(255, 212, 204) !important;
-}
+
 .available-token-dropdown-menu {
   button.btn.custom-request-button {
     width: 100%;
@@ -846,5 +844,44 @@ pre.__json-pretty-error__ {
 
   i.fas.fa-pen {
     opacity: 0.3;
+  }
+}
+#modal-new-token-generator {
+  .modal-content {
+    // height: 500px;
+    .modal-body {
+      padding: 0px;
+      .container {
+        height: 100%;
+        .row {
+          height: 100%;
+          .col-sm-9 {
+            padding: 0px !important;
+            pre {
+              padding-left: 15px;
+            }
+          }
+        }
+      }
+      .cancel-button {
+        background: rgb(241, 241, 241) !important;
+        margin: 5px;
+        font-weight: 400;
+      }
+      .cancel-button:hover {
+        background: rgb(231, 230, 230) !important;
+        margin: 5px;
+        font-weight: 400;
+      }
+
+      .request-token-button {
+        background-color: rgb(255, 212, 204) !important;
+        margin: 5px;
+      }
+      .request-token-button:hover {
+        background-color: rgb(212, 183, 178) !important;
+        margin: 5px;
+      }
+    }
   }
 }
