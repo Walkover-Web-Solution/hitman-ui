@@ -280,105 +280,122 @@ class CollectionVersions extends Component {
       }
     }
     return (
-      <Accordion defaultActiveKey="0" key={versionId} id="child-accordion">
-        <Card>
-          <Card.Header>
-            <i className="fas fa-folder-open"></i>
-            <Accordion.Toggle
-              as={Button}
-              variant="default"
-              eventKey={
-                !isDashboardRoute(this.props) ? "0" : this.eventkey[versionId]
-              }
-            >
-              {this.props.versions[versionId].number}
-            </Accordion.Toggle>
-            {isDashboardRoute(this.props) ? (
-              <div className="btn-group">
-                <button
-                  className="btn btn-secondary "
-                  data-toggle="dropdown"
-                  aria-haspopup="true"
-                  aria-expanded="false"
+      <React.Fragment>
+        {(isDashboardRoute(this.props) ?
+          <Accordion defaultActiveKey="0" key={versionId} id="child-accordion">
+            <Card>
+              <Card.Header>
+                <i className="fas fa-folder-open"></i>
+                <Accordion.Toggle
+                  as={Button}
+                  variant="default"
+                  eventKey={
+                    !isDashboardRoute(this.props) ? "0" : this.eventkey[versionId]
+                  }
                 >
-                  <i className="fas fa-ellipsis-h"></i>
-                </button>
-                <div className="dropdown-menu dropdown-menu-right">
-                  <button
-                    className="dropdown-item"
-                    onClick={() =>
-                      this.openEditVersionForm(this.props.versions[versionId])
-                    }
-                  >
-                    Edit
-                  </button>
-                  <button
-                    className="dropdown-item"
-                    onClick={() => {
-                      this.openDeleteVersionModal(versionId);
-                    }}
-                  >
-                    Delete
-                  </button>
-                  <button
-                    className="dropdown-item"
-                    onClick={() =>
-                      this.openAddGroupForm(this.props.versions[versionId])
-                    }
-                  >
-                    Add Group
-                  </button>
-                  <button
-                    className="dropdown-item"
-                    onClick={() => {
-                      this.handleDuplicate(this.props.versions[versionId]);
-                    }}
-                  >
-                    Duplicate
-                  </button>
-                  <button
-                    className="dropdown-item"
-                    onClick={() =>
-                      this.openAddVersionPageForm(
-                        this.props.versions[versionId]
-                      )
-                    }
-                  >
-                    Add Page
-                  </button>
-                  <button
-                    className="dropdown-item"
-                    onClick={() =>
-                      this.openShareVersionForm(this.props.versions[versionId])
-                    }
-                  >
-                    Share
-                  </button>
-                </div>
-              </div>
-            ) : null}
-          </Card.Header>
-          <Accordion.Collapse
-            className="version-collapse"
-            eventKey={
-              !isDashboardRoute(this.props) ? "0" : this.eventkey[versionId]
-            }
-          >
-            <Card.Body>
-              <VersionPages
-                {...this.props}
-                version_id={versionId}
-                show_filter_version={this.propsFromVersion.bind(this)}
-              />
-              <Groups
-                {...this.props}
-                version_id={versionId}
-                show_filter_version={this.propsFromVersion.bind(this)}
-              />
-            </Card.Body>
-          </Accordion.Collapse>
-        </Card>
-      </Accordion>
+                  {this.props.versions[versionId].number}
+                </Accordion.Toggle>
+                {isDashboardRoute(this.props) ? (
+                  <div className="btn-group">
+                    <button
+                      className="btn btn-secondary "
+                      data-toggle="dropdown"
+                      aria-haspopup="true"
+                      aria-expanded="false"
+                    >
+                      <i className="fas fa-ellipsis-h"></i>
+                    </button>
+                    <div className="dropdown-menu dropdown-menu-right">
+                      <button
+                        className="dropdown-item"
+                        onClick={() =>
+                          this.openEditVersionForm(this.props.versions[versionId])
+                        }
+                      >
+                        Edit
+                      </button>
+                      <button
+                        className="dropdown-item"
+                        onClick={() => {
+                          this.openDeleteVersionModal(versionId);
+                        }}
+                      >
+                        Delete
+                      </button>
+                      <button
+                        className="dropdown-item"
+                        onClick={() =>
+                          this.openAddGroupForm(this.props.versions[versionId])
+                        }
+                      >
+                        Add Group
+                      </button>
+                      <button
+                        className="dropdown-item"
+                        onClick={() => {
+                          this.handleDuplicate(this.props.versions[versionId]);
+                        }}
+                      >
+                        Duplicate
+                      </button>
+                      <button
+                        className="dropdown-item"
+                        onClick={() =>
+                          this.openAddVersionPageForm(
+                            this.props.versions[versionId]
+                          )
+                        }
+                      >
+                        Add Page
+                      </button>
+                      <button
+                        className="dropdown-item"
+                        onClick={() =>
+                          this.openShareVersionForm(this.props.versions[versionId])
+                        }
+                      >
+                        Share
+                      </button>
+                    </div>
+                  </div>
+                ) : null}
+              </Card.Header>
+              <Accordion.Collapse
+                className="version-collapse"
+                eventKey={
+                  !isDashboardRoute(this.props) ? "0" : this.eventkey[versionId]
+                }
+              >
+                <Card.Body>
+                  <VersionPages
+                    {...this.props}
+                    version_id={versionId}
+                    show_filter_version={this.propsFromVersion.bind(this)}
+                  />
+                  <Groups
+                    {...this.props}
+                    version_id={versionId}
+                    show_filter_version={this.propsFromVersion.bind(this)}
+                  />
+                </Card.Body>
+              </Accordion.Collapse>
+            </Card>
+          </Accordion>
+        :
+        <React.Fragment>
+          <VersionPages
+            {...this.props}
+            version_id={versionId}
+            show_filter_version={this.propsFromVersion.bind(this)}
+          />
+          <Groups
+            {...this.props}
+            version_id={versionId}
+            show_filter_version={this.propsFromVersion.bind(this)}
+          />
+        </React.Fragment>
+      )}
+      </React.Fragment>
     );
   }
   render() {
@@ -391,7 +408,7 @@ class CollectionVersions extends Component {
       this.eventkey = {};
     }
     return (
-      <div>
+      <React.Fragment>
         {this.showShareVersionForm()}
         {this.showAddGroupForm()}
         {this.showEditVersionForm()}
@@ -401,10 +418,15 @@ class CollectionVersions extends Component {
             this.props,
             this.closeDeleteVersionModal.bind(this),
             "Delete Version",
-            `Are you sure you want to delete this versions? 
+            `Are you sure you want to delete this versions?
         All your groups, pages and endpoints present in this version will be deleted.`,
             this.state.selectedVersion
           )}
+
+        {(!isDashboardRoute(this.props) ?
+        <div className="hm-sidebar-label">Introduction</div>
+        : null)}
+
         {this.filteredVersions &&
           Object.keys(this.filteredVersions) &&
           Object.keys(this.filteredVersions)
@@ -414,7 +436,7 @@ class CollectionVersions extends Component {
                 this.props.collection_id
             )
             .map((versionId, index) => <div>{this.renderBody(versionId)}</div>)}
-      </div>
+      </React.Fragment>
     );
   }
 }

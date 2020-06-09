@@ -1,8 +1,10 @@
 // import image from "../common/Screenshot 2020-03-21 at 10.53.24 AM.png";
+import { ReactComponent as EmptyResponseImg} from "./img/empty-response.svg";
 import React, { Component } from "react";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import JSONPretty from "react-json-pretty";
 import "./endpoints.scss";
+import { isDashboardRoute } from "../common/utility";
 var JSONPrettyMon = require("react-json-pretty/dist/monikai");
 
 class DisplayResponse extends Component {
@@ -155,12 +157,9 @@ class DisplayResponse extends Component {
           <div>
             <div className="empty-response">Response</div>
             <div className="empty-response-container">
-              <div className="empty-response-container-2">
-                <div className="empty-response-container-3">
                   {/* <img src={image} height="100px" width="100px" alt="" /> */}
-                  {/* <p>esdfsf</p> */}
-                </div>
-              </div>
+                  <EmptyResponseImg/>
+                  <p>Hit Try to get a response</p>
             </div>
           </div>
         )}

@@ -29,11 +29,11 @@ class SideBar extends Component {
         className={
           isDashboardRoute(this.props)
             ? "col-md-2 d-none d-md-block bg-light sidebar "
-            : "col-md-2 d-none d-md-block bg-light sidebar public-endpoint-sidebar"
+            : "public-endpoint-sidebar"
         }
       >
-        <div className="sidebar-sticky">
-          {isDashboardRoute(this.props) ? (
+        {isDashboardRoute(this.props) ? (
+          <div className="sidebar-sticky">
             <div>
               <div id="search-box-wrapper">
                 <div>
@@ -52,28 +52,26 @@ class SideBar extends Component {
                 </div>
               </div>
             </div>
-          ) : null}
-
-          <div>
-            <Switch>
-              <ProtectedRoute
-                path="/dashboard/"
-                render={(props) => (
-                  <Collections
-                    {...this.props}
-                    empty_filter={this.emptyFilter.bind(this)}
-                    filter={this.state.data.filter}
-                  />
-                )}
-              />
-
-              <Route
-                path="/public/:collectionId"
-                render={(props) => <Collections {...this.props} />}
-              />
-            </Switch>
           </div>
-        </div>
+        ) : null}
+
+        <Switch>
+          <ProtectedRoute
+            path="/dashboard/"
+            render={(props) => (
+              <Collections
+                {...this.props}
+                empty_filter={this.emptyFilter.bind(this)}
+                filter={this.state.data.filter}
+              />
+            )}
+          />
+
+          <Route
+            path="/public/:collectionId"
+            render={(props) => <Collections {...this.props} />}
+          />
+        </Switch>
       </nav>
     );
   }

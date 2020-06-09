@@ -188,3 +188,32 @@ nav.navbar.navbar-dark.fixed-top.bg-dark.flex-md-nowrap.p-0.shadow {
     color: rgb(255, 99, 71);
   }
 }
+
+
+.hm-sidebar-block {
+  margin-top: 40px;
+}
+.hm-sidebar-item {
+  color: #999;
+  cursor: pointer;
+  padding: 7px 15px;
+  font-size: 14px;
+  font-weight: 500;
+  text-transform: capitalize;
+  display: flex;
+  width: 100%;
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.03);
+  }
+  &.active {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: #fff;
+  }
+}
+.hm-sidebar-label {
+  color: #777777;
+  padding: 0 15px;
+  text-transform: uppercase;
+  font-weight: 500;
+  margin-bottom: 7px;
+}

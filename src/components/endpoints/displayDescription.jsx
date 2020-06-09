@@ -69,36 +69,38 @@ class DisplayDescription extends Component {
 
   render() {
     return (
-      <div>
+      <div class="endpoint-header">
         <div className="endpoint-name-container">
           {this.props.endpoint.description !== undefined &&
           isDashboardRoute(this.props) ? (
-            <button className="endpoint-description">
-              <i
-                className={
-                  this.state.showAddDescriptionFlag === true
-                    ? "fas fa-caret-down "
-                    : "fas fa-caret-right"
-                }
-                onClick={() => this.showDescription()}
-              ></i>
-            </button>
-          ) : null}
-          <input
-            type="text"
-            className={
-              isDashboardRoute(this.props)
-                ? "endpoint-name-input"
-                : "public-endpoint-name-input"
-            }
-            aria-label="Username"
-            aria-describedby="addon-wrapping"
-            name="name"
-            placeholder="Endpoint Name"
-            value={this.props.data.name}
-            onChange={this.handleChange}
-            disabled={isDashboardRoute(this.props) ? null : true}
-          />
+            <React.Fragment>
+              <button className="endpoint-description">
+                <i
+                  className={
+                    this.state.showAddDescriptionFlag === true
+                      ? "fas fa-caret-down "
+                      : "fas fa-caret-right"
+                  }
+                  onClick={() => this.showDescription()}
+                ></i>
+              </button>
+              <input
+                type="text"
+                className="endpoint-name-input"
+                aria-label="Username"
+                aria-describedby="addon-wrapping"
+                name="name"
+                placeholder="Endpoint Name"
+                value={this.props.data.name}
+                onChange={this.handleChange}
+              />
+              </React.Fragment>
+          )
+          :
+            <h1 class="endpoint-title">
+              {this.props.data.name}
+            </h1>
+          }
         </div>
 
         {this.state.showAddDescriptionFlag &&
@@ -116,10 +118,10 @@ class DisplayDescription extends Component {
               Add a Description
             </Link>
           ) : (
-            <div>
-              <label style={{ padding: "5px 5px 0px 35px" }}>
+            <div class="endpoint-description">
+              <div className="endpoint-description-text">
                 {this.props.endpoint.description}
-              </label>
+              </div>
               {isDashboardRoute(this.props) ? (
                 <button
                   className="btn btn-default"

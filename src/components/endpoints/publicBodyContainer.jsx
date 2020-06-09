@@ -318,7 +318,7 @@ class PublicBodyContainer extends Component {
     }
 
     return (
-      <div>
+      <React.Fragment>
         {this.props.body && this.props.body.type === "multipart/form-data" && (
           <GenericTable
             {...this.props}
@@ -357,7 +357,7 @@ class PublicBodyContainer extends Component {
             </div>
           </div>
         )}
-      </div>
+      </React.Fragment>
     );
   }
 }

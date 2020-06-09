@@ -582,6 +582,7 @@ class DisplayEndpoint extends Component {
     this.setState({ startTime, response });
     const headersData = this.doSubmitHeader("send");
     const BASE_URL = this.customState.BASE_URL;
+    console.log('this.uri', this.uri);
     let uri = new URI(this.uri.current.value);
     let queryparams = uri.search();
     let path = this.setPathVariableValues();
@@ -1449,7 +1450,7 @@ class DisplayEndpoint extends Component {
       });
     }
     return (
-      <div className="endpoint-container">
+      <div className="hm-endpoint-container endpoint-container">
         {this.state.showEndpointFormModal && (
           <CreateEndpointForm
             {...this.props}
@@ -1468,259 +1469,284 @@ class DisplayEndpoint extends Component {
           old_description={this.state.oldDescription}
           props_from_parent={this.propsFromDescription.bind(this)}
         />
-
-        <div className="endpoint-url-container">
-          <div className="input-group-prepend">
-            <div>
-              <div className="dropdown">
-                <button
-                  className="btn btn-secondary dropdown-toggle"
-                  type="button"
-                  id="dropdownMenuButton"
-                  data-toggle="dropdown"
-                  aria-haspopup="true"
-                  aria-expanded="false"
-                  disabled={isDashboardRoute(this.props) ? null : true}
-                >
-                  {this.state.data.method}
-                </button>
-                <div
-                  className="dropdown-menu"
-                  aria-labelledby="dropdownMenuButton"
-                >
-                  {this.state.methodList.map((methodName) => (
-                    <button
-                      className="btn custom-request-button"
-                      onClick={() => this.setMethod(methodName)}
-                      key={methodName}
-                    >
-                      {methodName}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            <HostContainer
-              {...this.props}
-              groupId={this.state.groupId}
-              set_base_url={this.setBaseUrl.bind(this)}
-              custom_host={this.state.endpoint.BASE_URL}
-            />
-            <input
-              ref={this.uri}
-              type="text"
-              value={this.state.data.updatedUri}
-              name="updatedUri"
-              className="form-control form-control-lg h-auto endpoint-url-input"
-              aria-describedby="basic-addon3"
-              placeholder={"Enter request URL"}
-              onChange={this.handleChange}
-              disabled={isDashboardRoute(this.props) ? null : true}
-            />
-          </div>
-          <div className="d-flex">
-            <button
-              className="btn"
-              type="submit"
-              id="send-request-button"
-              onClick={() => this.handleSend()}
-            >
-              {isDashboardRoute(this.props) ? "Send" : "Try"}
-            </button>
-
-            {isDashboardRoute(this.props) ? (
-              <button
-                className="btn"
-                type="button"
-                id="save-endpoint-button"
-                onClick={() => this.handleSave()}
-              >
-                Save
-              </button>
-            ) : null}
-          </div>
-        </div>
-
-        <div className="endpoint-headers-container">
-          <div className="headers-params-wrapper">
-            <button
-              className="btn"
-              type="button"
-              id="show-code-snippets-button"
-              onClick={() => this.prepareHarObject()}
-            >
-              Code
-            </button>
-            {isDashboardRoute(this.props) ? (
-              <ul className="nav nav-tabs" id="pills-tab" role="tablist">
-                <li className="nav-item">
-                  <a
-                    className={
-                      this.setAuthorizationTab ? "nav-link " : "nav-link active"
-                    }
-                    id="pills-params-tab"
-                    data-toggle="pill"
-                    href={`#params-${this.props.tab.id}`}
-                    role="tab"
-                    aria-controls={`params-${this.props.tab.id}`}
-                    aria-selected={this.setAuthorizationTab ? "false" : "true"}
-                  >
-                    Params
-                  </a>
-                </li>
-                <li className="nav-item">
-                  <a
-                    className={
-                      this.setAuthorizationTab ? "nav-link active" : "nav-link "
-                    }
-                    id="pills-authorization-tab"
-                    data-toggle="pill"
-                    href={`#authorization-${this.props.tab.id}`}
-                    role="tab"
-                    aria-controls={`authorization-${this.props.tab.id}`}
-                    aria-selected={this.setAuthorizationTab ? "true" : "false"}
-                  >
-                    Authorization
-                  </a>
-                </li>
-                <li className="nav-item">
-                  <a
-                    className="nav-link"
-                    id="pills-headers-tab"
-                    data-toggle="pill"
-                    href={`#headers-${this.props.tab.id}`}
-                    role="tab"
-                    aria-controls={`headers-${this.props.tab.id}`}
-                    aria-selected="false"
-                  >
-                    Headers
-                  </a>
-                </li>
-                <li className="nav-item">
-                  <a
-                    className="nav-link"
-                    id="pills-body-tab"
-                    data-toggle="pill"
-                    href={`#body-${this.props.tab.id}`}
-                    role="tab"
-                    aria-controls={`body-${this.props.tab.id}`}
-                    aria-selected="false"
-                  >
-                    Body
-                  </a>
-                </li>
-              </ul>
-            ) : null}
-          </div>
+        <div className={!isDashboardRoute(this.props) ? 'hm-panel' : null}>
           {isDashboardRoute(this.props) ? (
-            <div className="tab-content" id="pills-tabContent">
-              <div
-                className={
-                  this.setAuthorizationTab
-                    ? "tab-pane fade"
-                    : "tab-pane fade show active"
-                }
-                id={`params-${this.props.tab.id}`}
-                role="tabpanel"
-                aria-labelledby="pills-params-tab"
-              >
-                <GenericTable
-                  {...this.props}
-                  title="Params"
-                  dataArray={this.state.originalParams}
-                  props_from_parent={this.propsFromChild.bind(this)}
-                  original_data={[...this.state.params]}
-                ></GenericTable>
-                {this.state.pathVariables &&
-                  this.state.pathVariables.length !== 0 && (
-                    <div>
-                      <GenericTable
-                        {...this.props}
-                        title="Path Variables"
-                        dataArray={this.state.pathVariables}
-                        props_from_parent={this.propsFromChild.bind(this)}
-                        original_data={[...this.state.pathVariables]}
-                      ></GenericTable>
+            <div className="endpoint-url-container">
+              <div className="input-group-prepend">
+                <div>
+                  <div className="dropdown">
+                    <button
+                      className="btn btn-secondary dropdown-toggle"
+                      type="button"
+                      id="dropdownMenuButton"
+                      data-toggle="dropdown"
+                      aria-haspopup="true"
+                      aria-expanded="false"
+                      disabled={isDashboardRoute(this.props) ? null : true}
+                    >
+                      {this.state.data.method}
+                    </button>
+                    <div
+                      className="dropdown-menu"
+                      aria-labelledby="dropdownMenuButton"
+                    >
+                      {this.state.methodList.map((methodName) => (
+                        <button
+                          className="btn custom-request-button"
+                          onClick={() => this.setMethod(methodName)}
+                          key={methodName}
+                        >
+                          {methodName}
+                        </button>
+                      ))}
                     </div>
-                  )}
-              </div>
-              <div
-                className={
-                  this.setAuthorizationTab
-                    ? "tab-pane fade show active"
-                    : "tab-pane fade "
-                }
-                id={`authorization-${this.props.tab.id}`}
-                role="tabpanel"
-                aria-labelledby="pills-authorization-tab"
-              >
-                <div>
-                  <Authorization
-                    {...this.props}
-                    title="Authorization"
-                    groupId={this.state.groupId}
-                    set_authorization_headers={this.setHeaders.bind(this)}
-                    set_authoriztaion_params={this.setParams.bind(this)}
-                    set_authoriztaion_type={this.setAuthType.bind(this)}
-                    // set_access_token={this.setAccessToken.bind(this)}
-                    accessToken={this.accessToken}
-                    authorizationType={this.state.authType}
-                  ></Authorization>
+                  </div>
                 </div>
-              </div>
-              <div
-                className="tab-pane fade"
-                id={`headers-${this.props.tab.id}`}
-                role="tabpanel"
-                aria-labelledby="pills-headers-tab"
-              >
-                <div>
-                  <GenericTable
-                    {...this.props}
-                    title="Headers"
-                    dataArray={this.state.originalHeaders}
-                    props_from_parent={this.propsFromChild.bind(this)}
-                    original_data={[...this.state.headers]}
-                  ></GenericTable>
-                </div>
-              </div>
-              <div
-                className="tab-pane fade"
-                id={`body-${this.props.tab.id}`}
-                role="tabpanel"
-                aria-labelledby="pills-body-tab"
-              >
-                <BodyContainer
+
+                <HostContainer
                   {...this.props}
-                  set_body={this.setBody.bind(this)}
-                  set_body_description={this.set_description.bind(this)}
-                  body={
-                    this.state.bodyFlag === true ? this.state.data.body : ""
-                  }
-                  Body={this.state.data.body}
-                  endpoint_id={this.props.tab.id}
-                  body_description={this.state.bodyDescription}
-                  field_description={this.state.fieldDescription}
-                  set_field_description={this.setFieldDescription.bind(this)}
+                  groupId={this.state.groupId}
+                  set_base_url={this.setBaseUrl.bind(this)}
+                  custom_host={this.state.endpoint.BASE_URL}
+                />
+                <input
+                  ref={this.uri}
+                  type="text"
+                  value={this.state.data.updatedUri}
+                  name="updatedUri"
+                  className="form-control form-control-lg h-auto endpoint-url-input"
+                  aria-describedby="basic-addon3"
+                  placeholder={"Enter request URL"}
+                  onChange={this.handleChange}
+                  disabled={isDashboardRoute(this.props) ? null : true}
                 />
               </div>
-            </div>
-          ) : (
-            <div>
-              {this.state.params.length > 1 && (
-                <GenericTable
-                  {...this.props}
-                  title="Params"
-                  dataArray={this.state.originalParams}
-                  props_from_parent={this.propsFromChild.bind(this)}
-                  original_data={[...this.state.params]}
-                ></GenericTable>
-              )}
+              <div className="d-flex">
+                <button
+                  className="btn"
+                  type="submit"
+                  id="send-request-button"
+                  onClick={() => this.handleSend()}
+                >
+                  {isDashboardRoute(this.props) ? "Send" : "Try"}
+                </button>
 
-              {this.state.pathVariables &&
-                this.state.pathVariables.length !== 0 && (
+                {isDashboardRoute(this.props) ? (
+                  <button
+                    className="btn"
+                    type="button"
+                    id="save-endpoint-button"
+                    onClick={() => this.handleSave()}
+                  >
+                    Save
+                  </button>
+                ) : null}
+                </div>
+              </div>
+          )
+          :
+          <div className="hm-endpoint-wrap">
+            <div className="hm-endpoint-header">
+              <div className={`api-label api-label-lg ${this.state.data.method}`}>
+                {this.state.data.method}
+              </div>
+              <a
+                href="javascript:void(0)"
+                id="show-code-snippets-button"
+                onClick={() => this.prepareHarObject()}
+              >
+                Sample Code
+              </a>
+            </div>
+            <div className="endpoint-host">
+              <HostContainer
+                {...this.props}
+                groupId={this.state.groupId}
+                set_base_url={this.setBaseUrl.bind(this)}
+                custom_host={this.state.endpoint.BASE_URL}
+              />
+            </div>
+            <input
+                  ref={this.uri}
+                  type="hidden"
+                  value={this.state.data.updatedUri}
+                  name="updatedUri"
+                />
+            <div className="endpoint-uri">
+              {this.state.data.updatedUri}
+            </div>
+          </div>
+          }
+          <div className={isDashboardRoute(this.props) ? 'endpoint-headers-container': 'hm-public-endpoint-headers'}>
+            {isDashboardRoute(this.props) ? (
+              <div className="headers-params-wrapper">
+                  <ul className="nav nav-tabs" id="pills-tab" role="tablist">
+                    <li className="nav-item">
+                      <a
+                        className={
+                          this.setAuthorizationTab ? "nav-link " : "nav-link active"
+                        }
+                        id="pills-params-tab"
+                        data-toggle="pill"
+                        href={`#params-${this.props.tab.id}`}
+                        role="tab"
+                        aria-controls={`params-${this.props.tab.id}`}
+                        aria-selected={this.setAuthorizationTab ? "false" : "true"}
+                      >
+                        Params
+                      </a>
+                    </li>
+                    <li className="nav-item">
+                      <a
+                        className={
+                          this.setAuthorizationTab ? "nav-link active" : "nav-link "
+                        }
+                        id="pills-authorization-tab"
+                        data-toggle="pill"
+                        href={`#authorization-${this.props.tab.id}`}
+                        role="tab"
+                        aria-controls={`authorization-${this.props.tab.id}`}
+                        aria-selected={this.setAuthorizationTab ? "true" : "false"}
+                      >
+                        Authorization
+                      </a>
+                    </li>
+                    <li className="nav-item">
+                      <a
+                        className="nav-link"
+                        id="pills-headers-tab"
+                        data-toggle="pill"
+                        href={`#headers-${this.props.tab.id}`}
+                        role="tab"
+                        aria-controls={`headers-${this.props.tab.id}`}
+                        aria-selected="false"
+                      >
+                        Headers
+                      </a>
+                    </li>
+                    <li className="nav-item">
+                      <a
+                        className="nav-link"
+                        id="pills-body-tab"
+                        data-toggle="pill"
+                        href={`#body-${this.props.tab.id}`}
+                        role="tab"
+                        aria-controls={`body-${this.props.tab.id}`}
+                        aria-selected="false"
+                      >
+                        Body
+                      </a>
+                    </li>
+                  </ul>
+              </div>
+            ) : null}
+            {isDashboardRoute(this.props) ? (
+              <div className="tab-content" id="pills-tabContent">
+                <div
+                  className={
+                    this.setAuthorizationTab
+                      ? "tab-pane fade"
+                      : "tab-pane fade show active"
+                  }
+                  id={`params-${this.props.tab.id}`}
+                  role="tabpanel"
+                  aria-labelledby="pills-params-tab"
+                >
+                  <GenericTable
+                    {...this.props}
+                    title="Params"
+                    dataArray={this.state.originalParams}
+                    props_from_parent={this.propsFromChild.bind(this)}
+                    original_data={[...this.state.params]}
+                  ></GenericTable>
+                  {this.state.pathVariables &&
+                    this.state.pathVariables.length !== 0 && (
+                      <div>
+                        <GenericTable
+                          {...this.props}
+                          title="Path Variables"
+                          dataArray={this.state.pathVariables}
+                          props_from_parent={this.propsFromChild.bind(this)}
+                          original_data={[...this.state.pathVariables]}
+                        ></GenericTable>
+                      </div>
+                    )}
+                </div>
+                <div
+                  className={
+                    this.setAuthorizationTab
+                      ? "tab-pane fade show active"
+                      : "tab-pane fade "
+                  }
+                  id={`authorization-${this.props.tab.id}`}
+                  role="tabpanel"
+                  aria-labelledby="pills-authorization-tab"
+                >
                   <div>
+                    <Authorization
+                      {...this.props}
+                      title="Authorization"
+                      groupId={this.state.groupId}
+                      set_authorization_headers={this.setHeaders.bind(this)}
+                      set_authoriztaion_params={this.setParams.bind(this)}
+                      set_authoriztaion_type={this.setAuthType.bind(this)}
+                      // set_access_token={this.setAccessToken.bind(this)}
+                      accessToken={this.accessToken}
+                      authorizationType={this.state.authType}
+                    ></Authorization>
+                  </div>
+                </div>
+                <div
+                  className="tab-pane fade"
+                  id={`headers-${this.props.tab.id}`}
+                  role="tabpanel"
+                  aria-labelledby="pills-headers-tab"
+                >
+                  <div>
+                    <GenericTable
+                      {...this.props}
+                      title="Headers"
+                      dataArray={this.state.originalHeaders}
+                      props_from_parent={this.propsFromChild.bind(this)}
+                      original_data={[...this.state.headers]}
+                    ></GenericTable>
+                  </div>
+                </div>
+                <div
+                  className="tab-pane fade"
+                  id={`body-${this.props.tab.id}`}
+                  role="tabpanel"
+                  aria-labelledby="pills-body-tab"
+                >
+                  <BodyContainer
+                    {...this.props}
+                    set_body={this.setBody.bind(this)}
+                    set_body_description={this.set_description.bind(this)}
+                    body={
+                      this.state.bodyFlag === true ? this.state.data.body : ""
+                    }
+                    Body={this.state.data.body}
+                    endpoint_id={this.props.tab.id}
+                    body_description={this.state.bodyDescription}
+                    field_description={this.state.fieldDescription}
+                    set_field_description={this.setFieldDescription.bind(this)}
+                  />
+                </div>
+              </div>
+            ) : (
+              <React.Fragment>
+                {this.state.params.length > 1 && (
+                  <GenericTable
+                    {...this.props}
+                    title="Params"
+                    dataArray={this.state.originalParams}
+                    props_from_parent={this.propsFromChild.bind(this)}
+                    original_data={[...this.state.params]}
+                  ></GenericTable>
+                )}
+
+                {this.state.pathVariables &&
+                  this.state.pathVariables.length !== 0 && (
                     <GenericTable
                       {...this.props}
                       title="Path Variables"
@@ -1728,37 +1754,52 @@ class DisplayEndpoint extends Component {
                       props_from_parent={this.propsFromChild.bind(this)}
                       original_data={[...this.state.pathVariables]}
                     ></GenericTable>
-                  </div>
-                )}
+                  )}
 
-              {this.state.headers.length > 1 && (
-                <GenericTable
-                  {...this.props}
-                  title="Headers"
-                  dataArray={this.state.originalHeaders}
-                  props_from_parent={this.propsFromChild.bind(this)}
-                  original_data={[...this.state.headers]}
-                ></GenericTable>
-              )}
-
-              {this.state.data.body &&
-                this.state.data.body.value !== "" &&
-                this.state.data.body.value !== null && (
-                  <PublicBodyContainer
+                {this.state.headers.length > 1 && (
+                  <GenericTable
                     {...this.props}
-                    set_body={this.setBody.bind(this)}
-                    set_body_description={this.set_description.bind(this)}
-                    body={this.state.data.body}
-                    public_body_flag={this.state.publicBodyFlag}
-                    set_public_body={this.setPublicBody.bind(this)}
-                    body_description={this.state.bodyDescription}
-                  ></PublicBodyContainer>
+                    title="Headers"
+                    dataArray={this.state.originalHeaders}
+                    props_from_parent={this.propsFromChild.bind(this)}
+                    original_data={[...this.state.headers]}
+                  ></GenericTable>
                 )}
-            </div>
-          )}
+
+                {this.state.data.body &&
+                  this.state.data.body.value !== "" &&
+                  this.state.data.body.value !== null && (
+                    <PublicBodyContainer
+                      {...this.props}
+                      set_body={this.setBody.bind(this)}
+                      set_body_description={this.set_description.bind(this)}
+                      body={this.state.data.body}
+                      public_body_flag={this.state.publicBodyFlag}
+                      set_public_body={this.setPublicBody.bind(this)}
+                      body_description={this.state.bodyDescription}
+                    ></PublicBodyContainer>
+                  )}
+              </React.Fragment>
+            )}
+            {!isDashboardRoute(this.props) &&
+              <div className="d-flex">
+                <button
+                  className="btn btn-primary"
+                  type="submit"
+                  id="send-request-button"
+                  onClick={() => this.handleSend()}
+                >
+                  Try
+                </button>
+              </div>
+            }
+          </div>
         </div>
 
-        <div className="endpoint-response-container-wrapper">
+        {!isDashboardRoute(this.props) &&
+          <div className="public-response-title">Response</div>
+        }
+        <div className={`${!isDashboardRoute(this.props) ? 'hm-panel endpoint-public-response-container' : 'endpoint-response-container-wrapper'}`}>
           <DisplayResponse
             timeElapsed={this.state.timeElapsed}
             response={this.state.response}

@@ -49,9 +49,9 @@ class PublicEndpoint extends Component {
         const index = this.props.collections[
           collectionId
         ].docProperties.domainsList.findIndex((d) => d.domain === baseUrl);
-        document.title = this.props.collections[
-          collectionId
-        ].docProperties.domainsList[index].title;
+        // document.title = this.props.collections[
+        //   collectionId
+        // ].docProperties.domainsList[index].title;
         unsubscribe();
       }
     });
@@ -77,40 +77,38 @@ class PublicEndpoint extends Component {
     } else {
       return (
         <React.Fragment>
-          <nav className="navbar  public-endpoint-navbar">
+          {/* <nav className="navbar  public-endpoint-navbar">
             <img
               className="hitman-logo"
               alt=""
               src={require("../../hitman-icon.png")}
             />
-          </nav>
+          </nav> */}
           <main
             role="main"
-            className="main ml-sm-auto col-lg-10 public-endpoint-main "
+            className="mainpublic-endpoint-main hm-wrapper"
           >
-            <div>
-              <ToastContainer />
-              <div className="main-panel-wrapper">
-                <SideBar {...this.props} />
-                {/* <Environments {...this.props} /> */}
-              </div>
+            <ToastContainer />
+            <div className="hm-sidebar">
+              <SideBar {...this.props} />
+              {/* <Environments {...this.props} /> */}
+            </div>
 
-              <div className="main-content">
-                <Switch>
-                  <Route
-                    path="/public/:collectionId/endpoints/:endpointId"
-                    render={(props) => <DisplayEndpoint {...props} />}
-                  />
-                  <Route
-                    path="/public/:collectionId/pages/:pageid"
-                    render={(props) => <DisplayPage {...props} />}
-                  />
-                  <Route
-                    path="/public/:collectionId/description"
-                    render={(props) => <DisplayCollection {...props} />}
-                  />
-                </Switch>
-              </div>
+            <div className="hm-right-content">
+              <Switch>
+                <Route
+                  path="/public/:collectionId/endpoints/:endpointId"
+                  render={(props) => <DisplayEndpoint {...props} />}
+                />
+                <Route
+                  path="/public/:collectionId/pages/:pageid"
+                  render={(props) => <DisplayPage {...props} />}
+                />
+                <Route
+                  path="/public/:collectionId/description"
+                  render={(props) => <DisplayCollection {...props} />}
+                />
+              </Switch>
             </div>
           </main>
         </React.Fragment>

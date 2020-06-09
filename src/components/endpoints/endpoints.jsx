@@ -377,7 +377,7 @@ class Endpoints extends Component {
       );
     } else {
       return (
-        <div>
+        <React.Fragment>
           {Object.keys(this.props.endpoints).length !== 0 &&
             this.props.endpoints_order
               .filter(
@@ -385,31 +385,24 @@ class Endpoints extends Component {
                   this.props.endpoints[eId].groupId === this.props.group_id
               )
               .map((endpointId) => (
-                <div className="endpoint-list-item" key={endpointId}>
-                  <button
-                    className="btn "
-                    onClick={() =>
-                      this.handleDisplay(
-                        this.props.endpoints[endpointId],
-                        this.props.group_id,
-                        this.props.collection_id
-                      )
-                    }
-                  >
-                    <div
-                      className={this.props.endpoints[endpointId].requestType}
-                    >
-                      <div className="endpoint-request-div">
-                        {this.props.endpoints[endpointId].requestType}
-                      </div>
+                <div className="hm-sidebar-item" key={endpointId} onClick={() =>
+                  this.handleDisplay(
+                    this.props.endpoints[endpointId],
+                    this.props.group_id,
+                    this.props.collection_id
+                  )
+                }>
+                  <div className={`api-label ${this.props.endpoints[endpointId].requestType}`}>
+                    <div className="endpoint-request-div">
+                      {this.props.endpoints[endpointId].requestType}
                     </div>
-                    <div className="endpoint-name-div">
-                      {this.props.endpoints[endpointId].name}
-                    </div>
-                  </button>
+                  </div>
+                  <div className="endpoint-name-div">
+                    {this.props.endpoints[endpointId].name}
+                  </div>
                 </div>
               ))}
-        </div>
+        </React.Fragment>
       );
     }
   }

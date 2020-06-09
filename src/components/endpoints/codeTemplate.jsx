@@ -5,6 +5,7 @@ import "ace-builds";
 import AceEditor from "react-ace";
 import "ace-builds/webpack-resolver";
 import { CopyToClipboard } from "react-copy-to-clipboard";
+// import "ace-builds/src-noconflict/theme-ambiance";
 var HTTPSnippet = require("httpsnippet");
 
 class CodeTemplate extends Component {
@@ -76,14 +77,14 @@ class CodeTemplate extends Component {
           aria-labelledby="contained-modal-title-vcenter"
           centered
         >
-          <Modal.Header
+          {/* <Modal.Header
             className="custom-collection-modal-container"
             closeButton
           >
             <Modal.Title id="contained-modal-title-vcenter">
               {this.props.title}
             </Modal.Title>
-          </Modal.Header>
+          </Modal.Header> */}
 
           <Modal.Body>
             <Container className="d-flex flex-column">
@@ -92,6 +93,7 @@ class CodeTemplate extends Component {
                   <ListGroup>
                     {Object.keys(this.languages).map((key) => (
                       <ListGroup.Item
+                        className={this.languages[key].name === this.selectedLanguageName ? 'active' : ''}
                         onClick={() => {
                           this.makeCodeTemplate(key);
                         }}
@@ -125,7 +127,7 @@ class CodeTemplate extends Component {
                       </button>
                     </CopyToClipboard>
                   </div>{" "}
-                  <div>
+                  <div className="ace-editor-wrapper">
                     {" "}
                     <AceEditor
                       mode={this.selectedLanguage.toLowerCase()}

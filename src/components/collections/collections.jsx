@@ -543,45 +543,39 @@ class CollectionsComponent extends Component {
     } else {
       // console.log(this.state.showPublishDocsModal);
       return (
-        <div>
-          <div className="navbar-header">
-            {Object.keys(this.props.collections).map((collectionId, index) => (
-              <div id="parent-accordion" key={index}>
-                <div>
-                  <h4
-                    style={{
-                      color: "tomato",
-                      margin: "5px",
-                      padding: "10px",
-                    }}
+        <React.Fragment>
+          {Object.keys(this.props.collections).map((collectionId, index) => (
+            <React.Fragment>
+              <div className="hm-sidebar-header"
+                onClick={() =>
+                  this.handlePublicCollectionDescription(
+                    this.props.collections[collectionId]
+                  )
+                }
+              >
+                <div className="hm-sidebar-logo">
+                  <img
+                    src={`//logo.clearbit.com/${this.props.collections[collectionId].name}.com`}
                     onClick={() =>
-                      this.handlePublicCollectionDescription(
-                        this.props.collections[collectionId]
+                      window.open(
+                        this.props.collections[collectionId].website
                       )
                     }
-                  >
-                    <div className="img-icon-div navbar-brand icon">
-                      <img
-                        src={`//logo.clearbit.com/${this.props.collections[collectionId].name}.com`}
-                        onClick={() =>
-                          window.open(
-                            this.props.collections[collectionId].website
-                          )
-                        }
-                      ></img>
-                    </div>
-                    {this.props.collections[collectionId].name}
-                  </h4>
-
-                  <CollectionVersions
-                    {...this.props}
-                    collection_id={collectionId}
-                  />
+                  ></img>
                 </div>
+                <h4 className="hm-sidebar-title">
+                  {this.props.collections[collectionId].name}
+                </h4>
               </div>
-            ))}
-          </div>
-        </div>
+              <div id="parent-accordion" key={index}>
+                <CollectionVersions
+                  {...this.props}
+                  collection_id={collectionId}
+                />
+              </div>
+            </React.Fragment>
+          ))}
+        </React.Fragment>
       );
     }
   }
