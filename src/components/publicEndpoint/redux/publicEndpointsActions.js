@@ -2,7 +2,7 @@ import publicEndpointsService from "../publicEndpointsService.js";
 import publicEndpointsActionTypes from "./publicEndpointsActionTypes";
 import publicPageService from "../publicPageService";
 
-export const fetchAllPublicEndpoints = (collectionIdentifier) => {
+export const fetchAllPublicEndpoints = (history, collectionIdentifier) => {
   return (dispatch) => {
     publicEndpointsService
       .fetchAll(collectionIdentifier)
@@ -15,6 +15,7 @@ export const fetchAllPublicEndpoints = (collectionIdentifier) => {
             error.response ? error.response.data : error
           )
         );
+        history.push(`/public/error`);
       });
   };
 };

@@ -39,7 +39,7 @@ export function filter(entity, filter, title) {
     }
   }
 
-  if (title === "versions" || title === "groups") {
+  if (title === "versions" || title === "groups" || title === "publicView") {
     return finalEntityIds;
   }
   for (let i = 0; i < finalEntityIds.length; i++) {

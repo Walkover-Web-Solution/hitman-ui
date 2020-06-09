@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
 import "./auth.scss";
 import auth from "./authService";
+import Navbar from "../main/Navbar";
 
 class Login extends Component {
   async componentDidMount() {
@@ -21,18 +22,17 @@ class Login extends Component {
 
   render() {
     if (auth.getCurrentUser()) return <Redirect to="/dashboard/endpoint/new" />;
-    const redirectionUrl = `http://localhost:3000/login`;
-    // const redirectionUrl = `https://hitman-ui.herokuapp.com/login`;
-    const socketLoginUrl = `https://viasocket.com/login?token_required=true&redirect_uri=${redirectionUrl}`;
+    // const redirectionUrl = `http://localhost:3000/login`;
+    // // const redirectionUrl = `https://hitman-ui.herokuapp.com/login`;
+    // const socketLoginUrl = `https://viasocket.com/login?token_required=true&redirect_uri=${redirectionUrl}`;
     return (
       <React.Fragment>
-        <center>
+        {/* <center>
           <h1 id="custom-login-heading">Welcome to the Hitman</h1>
-
           <button className="btn btn-primary btn-lg" id="custom-login-button">
             <a href={socketLoginUrl}>Login With ViaSocket</a>
           </button>
-        </center>
+        </center> */}
       </React.Fragment>
     );
   }
