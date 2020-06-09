@@ -60,8 +60,8 @@ class PublicEndpoint extends Component {
   }
 
   render() {
-    const redirectionUrl = `http://localhost:3000/login`;
-    // const redirectionUrl = `https://hitman-ui.herokuapp.com/login`;
+    // const redirectionUrl = `http://localhost:3000/login`;
+    const redirectionUrl = `https://hitman-ui.herokuapp.com/login`;
     const socketLoginUrl = `https://viasocket.com/login?token_required=true&redirect_uri=${redirectionUrl}`;
     if (
       this.props.location.pathname.split("/")[1] === "public" &&
