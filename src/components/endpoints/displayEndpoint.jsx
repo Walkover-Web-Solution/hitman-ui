@@ -72,7 +72,7 @@ class DisplayEndpoint extends Component {
       uri: "",
       updatedUri: "",
     },
-    methodList: ["GET", "POST", "PUT", "DELETE"],
+    methodList: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     environment: {},
     startTime: "",
     timeElapsed: "",
@@ -862,7 +862,10 @@ class DisplayEndpoint extends Component {
         processedHeaders.push({
           name: headers[Object.keys(headers)[i]].key,
           value: headers[Object.keys(headers)[i]].value,
-          comment: headers[Object.keys(headers)[i]].description,
+          comment:
+            headers[Object.keys(headers)[i]].description === null
+              ? ""
+              : headers[Object.keys(headers)[i]].description,
         });
       }
     }
@@ -1336,9 +1339,10 @@ class DisplayEndpoint extends Component {
       let response = await endpointApiService.authorize(
         authData.accessTokenUrl,
         paramsObject,
-        "auth_code"
+        "auth_code",
+        this.props,
+        authData
       );
-      this.setAccessToken();
     }
 
     // await indexedDbService.getDataBase();

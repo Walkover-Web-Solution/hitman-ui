@@ -203,6 +203,10 @@ class Groups extends Component {
               Object.keys(this.filteredEndpointsAndPages)[i]
             ].versionId
           );
+        } else {
+          delete this.filteredEndpointsAndPages[
+            Object.keys(this.filteredEndpointsAndPages)[i]
+          ];
         }
       }
     }
@@ -211,6 +215,7 @@ class Groups extends Component {
     } else {
       this.props.show_filter_version(versionIds, "endpointsAndPages");
     }
+    this.groups = this.filteredEndpointsAndPages;
   }
 
   filterGroups() {
@@ -237,6 +242,7 @@ class Groups extends Component {
       this.filteredOnlyGroups = {};
     }
   }
+
   renderBody(groupId) {
     if (
       isDashboardRoute(this.props) &&
@@ -247,14 +253,14 @@ class Groups extends Component {
         for (let i = 0; i < elements.length; i++) {
           elements[i].className = "group-collapse collapse show";
         }
+      } else if (this.props.filter !== "") {
+        let elements = document.getElementsByClassName("group-collapse");
+        for (let i = 0; i < elements.length; i++) {
+          elements[i].className = "group-collapse collapse hide";
+        }
       }
-      // else if (this.props.filter !== "") {
-      //   let elements = document.getElementsByClassName("group-collapse");
-      //   for (let i = 0; i < elements.length; i++) {
-      //     elements[i].className = "group-collapse collapse hide";
-      //   }
-      // }
     }
+
     return (
       <Accordion
         key={groupId}
@@ -269,6 +275,7 @@ class Groups extends Component {
             <Accordion.Toggle
               as={Button}
               variant="default"
+              // eventKey="0"
               eventKey={
                 !isDashboardRoute(this.props)
                   ? "0"
@@ -352,6 +359,7 @@ class Groups extends Component {
           </Card.Header>
           <Accordion.Collapse
             className="group-collapse"
+            // eventKey="0"
             eventKey={
               !isDashboardRoute(this.props)
                 ? "0"
@@ -386,6 +394,10 @@ class Groups extends Component {
     if (this.filterFlag === false && this.props.filter === "") {
       this.eventkey = {};
     }
+    if (!this.props.filter || this.props.filter === "") {
+      this.groups = { ...this.props.groups };
+    }
+
     return (
       <div>
         <div>
@@ -402,13 +414,12 @@ class Groups extends Component {
               this.state.selectedGroup
             )}
         </div>
-        {Object.keys(this.props.groups)
-          .filter(
-            (gId) => this.props.groups[gId].versionId === this.props.version_id
-          )
-          .map((groupId, index) => (
-            <div>{this.renderBody(groupId)}</div>
-          ))}
+        {this.groups &&
+          Object.keys(this.groups)
+            .filter(
+              (gId) => this.groups[gId].versionId === this.props.version_id
+            )
+            .map((groupId, index) => <div>{this.renderBody(groupId)}</div>)}
       </div>
     );
   }

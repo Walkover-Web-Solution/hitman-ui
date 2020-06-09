@@ -365,17 +365,15 @@ class CollectionsComponent extends Component {
                     </button>
                   )}
                   {/* {(this.currentUserRole==="Admin"||this.currentUserRole==="Owner") && ( */}
-                    <button
-                      className="dropdown-item"
-                      onClick={() =>
-                        this.openPublishDocs(
-                          this.props.collections[collectionId]
-                        )
-                      }
-                    >
-                      Publish Docs{" "}
-                    </button>
-                  
+                  <button
+                    className="dropdown-item"
+                    onClick={() =>
+                      this.openPublishDocs(this.props.collections[collectionId])
+                    }
+                  >
+                    Publish Docs{" "}
+                  </button>
+
                   <button
                     className="dropdown-item"
                     onClick={() => {
@@ -543,18 +541,18 @@ class CollectionsComponent extends Component {
         </div>
       );
     } else {
-      console.log(this.state.showPublishDocsModal);
+      // console.log(this.state.showPublishDocsModal);
       return (
         <div>
-          <div className="App-Side">
+          <div className="navbar-header">
             {Object.keys(this.props.collections).map((collectionId, index) => (
               <div id="parent-accordion" key={index}>
                 <div>
                   <h4
                     style={{
                       color: "tomato",
-                      textAlign: "center",
-                      padding: "35px",
+                      margin: "5px",
+                      padding: "10px",
                     }}
                     onClick={() =>
                       this.handlePublicCollectionDescription(
@@ -562,6 +560,16 @@ class CollectionsComponent extends Component {
                       )
                     }
                   >
+                    <div className="img-icon-div navbar-brand icon">
+                      <img
+                        src={`//logo.clearbit.com/${this.props.collections[collectionId].name}.com`}
+                        onClick={() =>
+                          window.open(
+                            this.props.collections[collectionId].website
+                          )
+                        }
+                      ></img>
+                    </div>
                     {this.props.collections[collectionId].name}
                   </h4>
 

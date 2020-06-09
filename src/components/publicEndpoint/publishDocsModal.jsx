@@ -179,7 +179,7 @@ class PublishDocsModal extends Form {
       const { data: response } = await herokuApiService.createDomain(
         this.state.data.newDomain
       );
-      console.log(response.cname);
+      // console.log(response.cname);
       await herokuApiService.updateConfigVars({
         [this.state.data
           .newDomain]: `${this.state.data.newTitle},${this.state.data.newLogoUrl},${this.props.collection_id}`,
@@ -197,7 +197,7 @@ class PublishDocsModal extends Form {
       };
       this.setState({ domainPropertiesShowFlags });
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       toast.error(error.response ? error.response.data : error);
     }
   }

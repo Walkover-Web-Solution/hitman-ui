@@ -1,4 +1,6 @@
 import http from "../../services/httpService";
+import httpService from "../../services/endpointHttpService";
+
 import { apiUrl } from "../../config.json";
 
 const apiEndpoint = apiUrl + "/collections";
@@ -9,6 +11,10 @@ function collectionUrl(id) {
 
 export function getCollections() {
   return http.get(apiEndpoint);
+}
+
+export function getAllPublicCollections() {
+  return httpService.get(apiEndpoint, { params: { public: "true" } });
 }
 
 export function getCollection(collectionId) {
@@ -51,5 +57,6 @@ export default {
   duplicateCollection,
   fetchAllUsersOfTeam,
   shareCollection,
-  fetchAllTeamsOfUser
+  fetchAllTeamsOfUser,
+  getAllPublicCollections,
 };

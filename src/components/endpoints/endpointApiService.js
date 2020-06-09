@@ -106,18 +106,42 @@ export async function authorize(
     let finalParams = finalParamsandHeaders[0];
     let finalHeaders = finalParamsandHeaders[1];
     if (grantType === "auth_code") params.grant_type = "authorization_code";
-    let responseData = httpService.request({
+    let { data: responseData } = await httpService.request({
       url: requestApi,
       method: "POST",
-      data: qs.stringify({ finalParams }),
+      data: qs.stringify(finalParams),
       headers: finalHeaders,
     });
     responseData["tokenName"] = authData.tokenName;
-    if (responseData && responseData.access_token) {
-      if (props.groupId) await setResponse(props, responseData);
-      props.set_access_token(responseData.access_token);
+    if (grantType === "auth_code") {
+      await indexedDbService.getDataBase();
+      await indexedDbService.updateData(
+        "responseData",
+        responseData,
+        "currentResponse"
+      );
+      let response = await indexedDbService.getValue(
+        "responseData",
+        "currentResponse"
+      );
+      let timer = setInterval(async function () {
+        if (response) {
+          clearInterval(timer);
+          window.close();
+        }
+      }, 1000);
+    } else {
+      if (responseData && responseData.access_token) {
+        if (props.groupId) await setResponse(props, responseData);
+        props.set_access_token(responseData.access_token);
+      }
     }
   } else {
+    if (grantType === "authorizationCode") {
+      requestApi = requestApi + "&response_type=code";
+    } else {
+      requestApi = requestApi + "&response_type=token";
+    }
     let openWindow = window.open(
       requestApi,
       "windowName",

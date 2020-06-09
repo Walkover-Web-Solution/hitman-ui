@@ -41,6 +41,27 @@ $border-color: rgba(227, 228, 230, 0.7);
   }
 }
 
+#modal-display-token {
+  .modal-content {
+    height: 500px;
+    .modal-body {
+      padding: 0px;
+      .container {
+        height: 100%;
+        .row {
+          height: 100%;
+          .col-sm-9 {
+            padding: 0px !important;
+            pre {
+              padding-left: 15px;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
 #code-window-sidebar {
   border-right: 1px solid rgb(197, 197, 197);
   box-shadow: 1px 0px #e8e8e8;
@@ -536,6 +557,7 @@ table#custom-generic-table {
 #generic-table-row {
   #generic-table-key-cell {
     border-left: none;
+    width: 30px;
   }
   #generic-table-description-cell {
     display: flex;
@@ -594,8 +616,8 @@ table#custom-generic-table {
 .Checkbox {
   float: right;
   position: absolute;
-  height: 10px;
-  width: 50px;
+  // height: 10px;
+  width: 15px !important;
   border: 2px solid var(--hairline-regular);
   border-radius: 3px;
 }
@@ -740,9 +762,7 @@ pre.__json-pretty-error__ {
   display: flex !important;
   flex-direction: column;
 }
-.request-token-button {
-  background-color: rgb(255, 212, 204) !important;
-}
+
 .available-token-dropdown-menu {
   button.btn.custom-request-button {
     width: 100%;
@@ -760,7 +780,108 @@ pre.__json-pretty-error__ {
 }
 .oauth2-token-details-list-item {
   display: flex;
+  padding: 10px;
 }
 .oauth2-token-details-list-item-label {
   flex: 0.4;
+  padding-left: 10px;
+  padding-right: 10px;
+  margin: 0px;
+  font-weight: 300;
+  font-size: 13px;
+}
+.oauth2-token-details-list-item-value {
+  width: 250px;
+  padding: 0 20px;
+  word-break: break-all;
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+  font-weight: 300;
+  font-size: 13px;
+}
+
+.oauth2-token-details-list-item-button {
+  width: 110px;
+  font-size: 13px;
+  margin: 8px;
+  margin-top: 0px;
+  color: white;
+  background: rgb(221, 77, 20);
+  height: 35px;
+  border: none;
+  border-radius: 3px;
+  float: right !important;
+  padding: 0 20px;
+}
+
+.token-detail-div {
+  margin: 10px;
+}
+
+.custom-token-detais {
+  flex: 0.4;
+  padding-left: 10px;
+  padding-right: 10px;
+  margin: 0px;
+}
+//endpoint name style
+.endpoint-name-div {
+  text-align: left;
+}
+
+//endpoint request styling
+.endpoint-request-div {
+  align-content: left;
+  width: 60px;
+}
+
+.display-token-edit-button {
+  margin-left: 20px;
+  border: 0px;
+  background: white;
+
+  i.fas.fa-pen {
+    opacity: 0.3;
+  }
+}
+#modal-new-token-generator {
+  .modal-content {
+    // height: 500px;
+    .modal-body {
+      padding: 0px;
+      .container {
+        height: 100%;
+        .row {
+          height: 100%;
+          .col-sm-9 {
+            padding: 0px !important;
+            pre {
+              padding-left: 15px;
+            }
+          }
+        }
+      }
+      .cancel-button {
+        background: rgb(241, 241, 241) !important;
+        margin: 5px;
+        font-weight: 400;
+      }
+      .cancel-button:hover {
+        background: rgb(231, 230, 230) !important;
+        margin: 5px;
+        font-weight: 400;
+      }
+
+      .request-token-button {
+        background-color: rgb(255, 212, 204) !important;
+        margin: 5px;
+      }
+      .request-token-button:hover {
+        background-color: rgb(212, 183, 178) !important;
+        margin: 5px;
+      }
+    }
+  }
 }

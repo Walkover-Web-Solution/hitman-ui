@@ -77,12 +77,12 @@ class TokenGenerator extends Component {
     let paramsObject = this.makeParams(grantType);
     let params = URI.buildQuery(paramsObject);
     if (grantType === "implicit" || grantType === "authorizationCode") {
-      if (grantType === "implicit")
-        requestApi =
-          this.state.data.authUrl + "?" + params + "&response_type=token";
-      else
-        requestApi =
-          this.state.data.authUrl + "?" + params + "&response_type=code";
+      // if (grantType === "implicit")
+      requestApi = this.state.data.authUrl + "?" + params;
+      //  + "&response_type=token";
+      // else
+      //   requestApi =
+      //     this.state.data.authUrl + "?" + params + "&response_type=code";
     }
 
     if (
@@ -161,8 +161,9 @@ class TokenGenerator extends Component {
         case "clientSecret":
           if (
             grantType === "passwordCredentials" ||
-            grantType === "clientCredentials" ||
-            grantType === "authorizationCode"
+            grantType === "clientCredentials"
+            // ||
+            // grantType === "authorizationCode"
           ) {
             params["client_secret"] = data[keys[i]];
           }
@@ -345,7 +346,8 @@ class TokenGenerator extends Component {
       <div>
         <Modal
           {...this.props}
-          id="modal-code-window"
+          id="modal-new-token-generator"
+          // id="modal-code-window"
           size="lg"
           animation={false}
           aria-labelledby="contained-modal-title-vcenter"
@@ -365,7 +367,7 @@ class TokenGenerator extends Component {
               <div className="input-field-wrapper">{this.renderInput(key)}</div>
             ))}
             <div className="button-group">
-              <button className="btn" onClick={this.props.onHide}>
+              <button className="btn cancel-button" onClick={this.props.onHide}>
                 Cancel
               </button>
               <button

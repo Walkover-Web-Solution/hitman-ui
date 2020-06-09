@@ -81,7 +81,7 @@ class GroupPages extends Component {
     if (this.state.filter !== this.props.filter) {
       this.filterFlag = false;
     }
-    if (this.props.filter === "") {
+    if (!this.props.filter || this.props.filter === "") {
       this.filteredGroupPages = { ...this.props.pages };
     }
     return (
