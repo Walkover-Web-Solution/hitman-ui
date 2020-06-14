@@ -29,7 +29,6 @@ table#custom-generic-table {
     height: 35px;
     font-size: 12px;
     font-weight: 800;
-    padding-bottom: 5px !important;
   }
 
   td {
@@ -49,7 +48,7 @@ table#custom-generic-table {
     }
     input::placeholder {
       font-size: 14px;
-      font-weight: 300;
+      // font-weight: 300;
     }
   }
 }
@@ -123,17 +122,13 @@ table#custom-generic-table {
 }
 
 .description-input-field {
-  padding: 0px 5px;
-  margin: 5px 7px;
-  width: 400px;
+  // padding: 0px 5px;
+  // margin: 5px 7px;
+  // width: 400px;
 }
 .array-row-add-wrapper {
   text-align: center;
 }
-button.btn.cross-button {
-  opacity: 0.7;
-}
-
 .array-wrapper {
   width: 100%;
   border: 1px solid rgba(192, 193, 194, 0.7);
@@ -154,3 +149,11 @@ button.btn.cross-button {
   width: 180px;
   margin-right: 11px;
 }
+
+// .hm-public-endpoint-headers {
+//   .description-input-field {
+//     padding: 0px;
+//     margin: 0px;
+//     width: auto;
+//   }
+// }

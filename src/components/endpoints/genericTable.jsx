@@ -211,11 +211,7 @@ class GenericTable extends Component {
     return (
       // "generic-table-container"
       // table-bordered
-      <div className={
-        isDashboardRoute(this.props)
-          ? "generic-table-container"
-          : "hm-public-table"
-      }>
+      <div className="hm-public-table">
         <div
           className={
             isDashboardRoute(this.props)
@@ -223,21 +219,10 @@ class GenericTable extends Component {
               : "public-generic-table-title-container"
           }
         >
-          {title}
-          {title === "Path Variables" ||
-          !isDashboardRoute(this.props) ? null : (
-            <button
-              id="edit-button"
-              className="btn btn-default custom-button"
-              style={{ float: "right", color: "tomato" }}
-              onClick={() => this.displayEditButton()}
-            >
-              {this.state.editButtonName}
-            </button>
-          )}
+          {!isDashboardRoute(this.props) && title}
         </div>
         {!this.state.bulkEdit && dataArray.length > 0 ? (
-          <table className={`table ${isDashboardRoute(this.props) ? 'table-bordered' : ''}`} id="custom-generic-table">
+          <table className="table" id="custom-generic-table">
             {isDashboardRoute(this.props) ?
               <thead>
                 <tr>
@@ -348,7 +333,7 @@ class GenericTable extends Component {
                               this.handleDelete(dataArray, index, title)
                             }
                           >
-                            x
+                            <i className="uil-trash-alt text-danger"></i>
                           </button>
                         )}
                       </React.Fragment>
@@ -377,6 +362,19 @@ class GenericTable extends Component {
             />
           </div>
         )}
+
+          {title === "Path Variables" ||
+          !isDashboardRoute(this.props) ? null : (
+            <div className="generic-table-title-container">
+              <button
+                id="edit-button"
+                className="btn btn-default custom-button"
+                onClick={() => this.displayEditButton()}
+                >
+                {this.state.editButtonName}
+              </button>
+            </div>
+          )}
       </div>
     );
   }

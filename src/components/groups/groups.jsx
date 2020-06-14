@@ -266,99 +266,101 @@ class Groups extends Component {
         {(isDashboardRoute(this.props) ?
           <Accordion
             key={groupId}
+            className="sidebar-accordion"
             id="child-accordion"
-            defaultActiveKey="0"
+            defaultActiveKey={this.eventkey[groupId] ? this.eventkey[groupId] : "1"}
             onDragOver={(e) => e.preventDefault()}
             onDrop={(e) => this.onDrop(groupId)}
           >
-            <Card>
-              <Card.Header>
-                <i className="fas fa-folder-open" style={{ margin: "5px" }}></i>
+            {/* <Card> */}
+              {/* <Card.Header> */}
                 <Accordion.Toggle
-                  as={Button}
                   variant="default"
                   // eventKey="0"
                   eventKey={
                     !isDashboardRoute(this.props)
-                      ? "0"
-                      : this.eventkey[groupId]
-                      ? this.eventkey[groupId]
-                      : "1"
+                    ? "0"
+                    : this.eventkey[groupId]
+                    ? this.eventkey[groupId]
+                    : "1"
                   }
                 >
-                  {this.props.groups[groupId].name}
-                </Accordion.Toggle>
-                {isDashboardRoute(this.props) ? (
-                  <div className="btn-group">
-                    <button
-                      className="btn btn-secondary "
-                      data-toggle="dropdown"
-                      aria-haspopup="true"
-                      aria-expanded="false"
-                    >
-                      <i className="fas fa-ellipsis-h"></i>
-                    </button>
-                    <div className="dropdown-menu dropdown-menu-right">
-                      <button
-                        className="dropdown-item"
-                        onClick={() =>
-                          this.openEditGroupForm(this.props.groups[groupId])
-                        }
-                      >
-                        Edit
-                      </button>
-                      <button
-                        className="dropdown-item"
-                        onClick={() => {
-                          this.openDeleteGroupModal(groupId);
-                        }}
-                      >
-                        Delete
-                      </button>
-                      <button
-                        className="dropdown-item"
-                        onClick={() =>
-                          this.handleAddEndpoint(
-                            groupId,
-                            this.props.versions,
-                            this.props.groups
-                          )
-                        }
-                      >
-                        Add Endpoint
-                      </button>
-                      <button
-                        className="dropdown-item"
-                        onClick={() =>
-                          this.handleDuplicate(this.props.groups[groupId])
-                        }
-                      >
-                        Duplicate
-                      </button>
-                      <button
-                        className="dropdown-item"
-                        onClick={() =>
-                          this.openGroupPageForm(
-                            this.props.groups[groupId].versionId,
-                            this.props.groups[groupId],
-                            this.props.collection_id
-                          )
-                        }
-                      >
-                        Add Page
-                      </button>
-                      <button
-                        className="dropdown-item"
-                        onClick={() =>
-                          this.openShareGroupForm(this.props.groups[groupId])
-                        }
-                      >
-                        Share
-                      </button>
-                    </div>
+                  <div className="sidebar-accordion-item">
+                    <i className="uil uil-folder"></i>
+                    {this.props.groups[groupId].name}
                   </div>
-                ) : null}
-              </Card.Header>
+                  {isDashboardRoute(this.props) ? (
+                    <div className="sidebar-item-action">
+                      <div
+                        className="sidebar-item-action-btn"
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false"
+                      >
+                        <i className="uil uil-ellipsis-v"></i>
+                      </div>
+                      <div className="dropdown-menu dropdown-menu-right">
+                        <a
+                          className="dropdown-item"
+                          onClick={() =>
+                            this.openEditGroupForm(this.props.groups[groupId])
+                          }
+                        >
+                          Edit
+                        </a>
+                        <a
+                          className="dropdown-item"
+                          onClick={() => {
+                            this.openDeleteGroupModal(groupId);
+                          }}
+                        >
+                          Delete
+                        </a>
+                        <a
+                          className="dropdown-item"
+                          onClick={() =>
+                            this.handleAddEndpoint(
+                              groupId,
+                              this.props.versions,
+                              this.props.groups
+                            )
+                          }
+                        >
+                          Add Endpoint
+                        </a>
+                        <a
+                          className="dropdown-item"
+                          onClick={() =>
+                            this.handleDuplicate(this.props.groups[groupId])
+                          }
+                        >
+                          Duplicate
+                        </a>
+                        <a
+                          className="dropdown-item"
+                          onClick={() =>
+                            this.openGroupPageForm(
+                              this.props.groups[groupId].versionId,
+                              this.props.groups[groupId],
+                              this.props.collection_id
+                            )
+                          }
+                        >
+                          Add Page
+                        </a>
+                        <a
+                          className="dropdown-item"
+                          onClick={() =>
+                            this.openShareGroupForm(this.props.groups[groupId])
+                          }
+                        >
+                          Share
+                        </a>
+                      </div>
+                    </div>
+                  ) : null}
+                </Accordion.Toggle>
+              {/* </Card.Header> */}
               <Accordion.Collapse
                 className="group-collapse"
                 // eventKey="0"
@@ -385,7 +387,7 @@ class Groups extends Component {
                   />
                 </Card.Body>
               </Accordion.Collapse>
-            </Card>
+            {/* </Card> */}
           </Accordion>
         :
         <div className="hm-sidebar-block">

@@ -190,6 +190,7 @@ class HostContainer extends Component {
           <input
             type="text"
             name="customHost"
+            class="form-control"
             value={this.fetchHost()}
             onChange={this.handleChange}
             disabled={this.state.selectedHost !== "customHost"}
@@ -198,7 +199,6 @@ class HostContainer extends Component {
             <button
               className="btn dropdown-toggle"
               type="button"
-              id="dropdownMenuButton"
               data-toggle="dropdown"
               aria-haspopup="true"
               aria-expanded="false"

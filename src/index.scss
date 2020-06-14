@@ -1,21 +1,29 @@
 .sidebar {
-  position: fixed !important;
-  top: 0;
-  bottom: 0;
-  width: 500;
-  left: 0;
-  z-index: 100;
-  padding: 48px 0 0;
-  overflow: scroll;
-  box-shadow: inset -1px 0 0 rgba(0, 0, 0, 0.1);
+  // position: fixed !important;
+  // top: 0;
+  // bottom: 0;
+  // width: 500;
+  // left: 0;
+  // z-index: 100;
+  // padding: 48px 0 0;
+  // overflow: scroll;
+  // box-shadow: inset -1px 0 0 rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: row;
-  resize: horizontal;
+  height: 100vh;
+  max-height: 100vh;
+  position: sticky;
+  top: 0;
+  // resize: horizontal;
 }
 
 .main {
-  padding: 48px 0 0;
-  flex-grow: 2;
+  // padding: 48px 0 0;
+  // flex-grow: 2;
+  max-width: 1060px;
+  width: 1060px;
+  padding: 0 30px;
+  margin: 0 auto;
 }
 
 .accordion > .card {

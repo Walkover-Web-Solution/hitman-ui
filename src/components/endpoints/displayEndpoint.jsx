@@ -1451,32 +1451,35 @@ class DisplayEndpoint extends Component {
     }
     return (
       <div className="hm-endpoint-container endpoint-container">
-        {this.state.showEndpointFormModal && (
-          <CreateEndpointForm
+        <div className={isDashboardRoute(this.props) ? 'hm-panel mt-4' : null}>
+
+          {this.state.showEndpointFormModal && (
+            <CreateEndpointForm
             {...this.props}
             show={true}
             onHide={() => this.closeEndpointFormModal()}
             set_group_id={this.setGroupId.bind(this)}
             name={this.state.data.name}
             save_endpoint={this.handleSave.bind(this)}
+            />
+            )}
+          {this.state.showCodeTemplate && this.showCodeTemplate()}
+          <DisplayDescription
+            {...this.props}
+            endpoint={this.state.endpoint}
+            data={this.state.data}
+            old_description={this.state.oldDescription}
+            props_from_parent={this.propsFromDescription.bind(this)}
           />
-        )}
-        {this.state.showCodeTemplate && this.showCodeTemplate()}
-        <DisplayDescription
-          {...this.props}
-          endpoint={this.state.endpoint}
-          data={this.state.data}
-          old_description={this.state.oldDescription}
-          props_from_parent={this.propsFromDescription.bind(this)}
-        />
-        <div className={!isDashboardRoute(this.props) ? 'hm-panel' : null}>
+        </div>
+        <div className={!isDashboardRoute(this.props) ? 'hm-panel' : 'hm-panel'}>
           {isDashboardRoute(this.props) ? (
             <div className="endpoint-url-container">
               <div className="input-group-prepend">
                 <div>
                   <div className="dropdown">
                     <button
-                      className="btn btn-secondary dropdown-toggle"
+                      className={`api-label ${this.state.data.method} dropdown-toggle`}
                       type="button"
                       id="dropdownMenuButton"
                       data-toggle="dropdown"
@@ -1514,7 +1517,7 @@ class DisplayEndpoint extends Component {
                   type="text"
                   value={this.state.data.updatedUri}
                   name="updatedUri"
-                  className="form-control form-control-lg h-auto endpoint-url-input"
+                  className="form-control endpoint-url-input"
                   aria-describedby="basic-addon3"
                   placeholder={"Enter request URL"}
                   onChange={this.handleChange}
@@ -1523,7 +1526,7 @@ class DisplayEndpoint extends Component {
               </div>
               <div className="d-flex">
                 <button
-                  className="btn"
+                  className="btn btn-info"
                   type="submit"
                   id="send-request-button"
                   onClick={() => this.handleSend()}
@@ -1533,7 +1536,7 @@ class DisplayEndpoint extends Component {
 
                 {isDashboardRoute(this.props) ? (
                   <button
-                    className="btn"
+                    className="btn btn-primary"
                     type="button"
                     id="save-endpoint-button"
                     onClick={() => this.handleSave()}
@@ -1796,16 +1799,20 @@ class DisplayEndpoint extends Component {
           </div>
         </div>
 
-        {!isDashboardRoute(this.props) &&
+        {/* {!isDashboardRoute(this.props) &&
+        } */}
+        {this.state.response.status &&
+        <React.Fragment>
           <div className="public-response-title">Response</div>
+          <div className="hm-panel endpoint-public-response-container">
+            <DisplayResponse
+              timeElapsed={this.state.timeElapsed}
+              response={this.state.response}
+              flagResponse={this.state.flagResponse}
+              ></DisplayResponse>
+          </div>
+        </React.Fragment>
         }
-        <div className={`${!isDashboardRoute(this.props) ? 'hm-panel endpoint-public-response-container' : 'endpoint-response-container-wrapper'}`}>
-          <DisplayResponse
-            timeElapsed={this.state.timeElapsed}
-            response={this.state.response}
-            flagResponse={this.state.flagResponse}
-          ></DisplayResponse>
-        </div>
       </div>
     );
   }

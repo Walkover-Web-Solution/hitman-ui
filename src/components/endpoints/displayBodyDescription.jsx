@@ -141,7 +141,7 @@ class DisplayBodyDescription extends Component {
           defaultValue &&
           (defaultValue.type === "object" || defaultValue.type === "array")
             ? "array-wrapper"
-            : ""
+            : "array-without-key"
         }
       >
         {array.map((value, index) => (

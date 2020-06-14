@@ -237,7 +237,7 @@ class PublicBodyContainer extends Component {
           defaultValue &&
           (defaultValue.type === "object" || defaultValue.type === "array")
             ? "array-wrapper"
-            : ""
+            : "array-without-key"
         }
       >
         {array.map((value, index) => (
@@ -341,15 +341,9 @@ class PublicBodyContainer extends Component {
           )}
 
         {this.props.body && this.props.body.type === "JSON" && (
-          <div>
+          <div className="hm-public-table">
             <div
-              className="public-generic-table-title-container"
-              style={{
-                padding: "40px 0px 3px 20px",
-                color: " tomato",
-                backgroundColor: "white",
-              }}
-            >
+              className="public-generic-table-title-container">
               Body
             </div>
             <div className="body-description-container">
