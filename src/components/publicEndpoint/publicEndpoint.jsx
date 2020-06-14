@@ -11,6 +11,8 @@ import { fetchAllPublicEndpoints } from "./redux/publicEndpointsActions.js";
 import "./publicEndpoint.scss";
 import Environments from "../environments/environments";
 import store from "../../store/store";
+import auth from "../auth/authService";
+import UserInfo from "../common/userInfo";
 
 const mapStateToProps = (state) => {
   return {
@@ -18,10 +20,10 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     fetch_all_public_endpoints: (collectionIdentifier) =>
-      dispatch(fetchAllPublicEndpoints(collectionIdentifier)),
+      dispatch(fetchAllPublicEndpoints(ownProps.history, collectionIdentifier)),
   };
 };
 
@@ -58,6 +60,9 @@ class PublicEndpoint extends Component {
   }
 
   render() {
+    // const redirectionUrl = `http://localhost:3000/login`;
+    const redirectionUrl = `https://hitman-ui.herokuapp.com/login`;
+    const socketLoginUrl = `https://viasocket.com/login?token_required=true&redirect_uri=${redirectionUrl}`;
     if (
       this.props.location.pathname.split("/")[1] === "public" &&
       (this.props.location.pathname.split("/")[3] === undefined ||
@@ -68,10 +73,12 @@ class PublicEndpoint extends Component {
       });
       return (
         <div>
-          <Route
-            path="/public/:collectionId/description"
-            render={(props) => <DisplayCollection {...props} />}
-          />
+          <Switch>
+            <Route
+              path="/public/:collectionId/description"
+              render={(props) => <DisplayCollection {...props} />}
+            />
+          </Switch>
         </div>
       );
     } else {
@@ -83,6 +90,22 @@ class PublicEndpoint extends Component {
               alt=""
               src={require("../../hitman-icon.png")}
             />
+            {process.env.REACT_APP_UI_URL === window.location.origin + "/" ? (
+              auth.getCurrentUser() === null ? (
+                <div>
+                  <button
+                    className="btn btn-primary btn-lg"
+                    id="custom-login-button"
+                  >
+                    <a href={socketLoginUrl}>Login With ViaSocket</a>
+                  </button>
+                </div>
+              ) : (
+                <div>
+                  <UserInfo></UserInfo>
+                </div>
+              )
+            ) : null}
           </nav> */}
           <main
             role="main"
