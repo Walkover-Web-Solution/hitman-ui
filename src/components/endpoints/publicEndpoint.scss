@@ -53,9 +53,9 @@ table#custom-generic-table {
   }
 }
 .data-type {
-  margin-left: 20px;
-  background: lightgrey;
-  padding: 1px;
+  // margin-left: 20px;
+  // background: lightgrey;
+  // padding: 1px;
   font-size: 10px;
 }
 
@@ -76,9 +76,9 @@ table#custom-generic-table {
 }
 
 .body-description-container {
-  padding: 10px;
-  background-color: white;
-  border: 2px solid rgb(217, 221, 225);
+  // padding: 10px;
+  // background-color: white;
+  // border: 2px solid rgb(217, 221, 225);
 }
 
 .primitive-datatype-wrapper {
@@ -89,31 +89,31 @@ table#custom-generic-table {
 
 .object-row-wrapper {
   margin: 10px;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  // display: flex;
+  // flex-direction: row;
+  // justify-content: space-between;
 }
 .object-container {
-  width: 100%;
-  border: 1px solid rgb(192, 193, 194);
-  border-radius: 5px;
-  margin: 5px;
+  // width: 100%;
+  // border: 1px solid rgb(192, 193, 194);
+  // border-radius: 5px;
+  // margin: 5px;
 }
 
 .array-container {
-  border: 1px solid rgb(192, 193, 194);
-  border-radius: 5px;
-  margin: 10px;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  padding: 10px;
+  // border: 1px solid rgb(192, 193, 194);
+  // border-radius: 5px;
+  // margin: 10px;
+  // display: flex;
+  // flex-direction: row;
+  // justify-content: space-between;
+  // padding: 10px;
 }
 
 .array-row {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
+  // display: flex;
+  // flex-direction: row;
+  // align-items: center;
 }
 
 .value-input-field {
@@ -127,19 +127,19 @@ table#custom-generic-table {
   // width: 400px;
 }
 .array-row-add-wrapper {
-  text-align: center;
+  // text-align: center;
 }
 .array-wrapper {
   width: 100%;
-  border: 1px solid rgba(192, 193, 194, 0.7);
+  // border: 1px solid rgba(192, 193, 194, 0.7);
 
-  margin: 5px;
-  border-radius: 5px;
+  // margin: 5px;
+  // border-radius: 5px;
 }
 
 .key-title {
-  height: min-content;
-  display: flex;
+  // height: min-content;
+  // display: flex;
 }
 .custom-boolean {
   width: 180px;
