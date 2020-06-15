@@ -50,9 +50,9 @@ class PublicView extends Component {
 
     const filteredPublicCollections = this.state.filteredPublicCollections;
     return (
-      <div>
+      <React.Fragment>
         {" "}
-        <nav className="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
+        {/* <nav className="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
           {auth.getCurrentUser() === null ? (
             <div>
               <button type="button" className="btn ">
@@ -62,28 +62,30 @@ class PublicView extends Component {
           ) : (
             <UserInfo></UserInfo>
           )}
-          <div>
-            <input
-              type="text"
-              placeholder="Search Collections"
-              onChange={this.filterPublicCollections.bind(this)}
-            />
-          </div>
-        </nav>
-        <br></br>
-        <br></br>
-        {Object.keys(filteredPublicCollections).map((collectionId) => (
-          <div
-            onClick={() => this.openCollection(collectionId)}
-            style={{ margin: "5px", borderStyle: "solid" }}
-          >
-            <img
-              src={`//logo.clearbit.com/${filteredPublicCollections[collectionId].name}.com`}
-            ></img>
-            <h1>{filteredPublicCollections[collectionId].name}</h1>
-          </div>
-        ))}
-      </div>
+        </nav> */}
+        <div class="public-dashboard-searchbox">
+          <input
+            type="text"
+            placeholder="Search Collections"
+            onChange={this.filterPublicCollections.bind(this)}
+          />
+        </div>
+        <div className="collection-wrap">
+          {Object.keys(filteredPublicCollections).map((collectionId) => (
+            <div
+              onClick={() => this.openCollection(collectionId)}
+              className="collection-box"
+            >
+              <div className="collection-image">
+                <img
+                  src={`//logo.clearbit.com/${filteredPublicCollections[collectionId].name}.com`}
+                ></img>
+              </div>
+              <h1>{filteredPublicCollections[collectionId].name}</h1>
+            </div>
+          ))}
+        </div>
+      </React.Fragment>
     );
   }
 }
