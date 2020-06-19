@@ -51,24 +51,27 @@ class PublicView extends Component {
     const filteredPublicCollections = this.state.filteredPublicCollections;
     return (
       <React.Fragment>
-        {" "}
-        {/* <nav className="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
-          {auth.getCurrentUser() === null ? (
-            <div>
-              <button type="button" className="btn ">
-                <a href={socketLoginUrl}>Login With ViaSocket</a>
-              </button>
+        <div className="public-dashboard-header">
+          <div className="public-dashboard-container">
+            <div class="public-dashboard-searchbox">
+              <i className="uil uil-search"></i>
+              <input
+                type="text"
+                placeholder="Search Collections"
+                onChange={this.filterPublicCollections.bind(this)}
+              />
             </div>
-          ) : (
-            <UserInfo></UserInfo>
-          )}
-        </nav> */}
-        <div class="public-dashboard-searchbox">
-          <input
-            type="text"
-            placeholder="Search Collections"
-            onChange={this.filterPublicCollections.bind(this)}
-          />
+            <div className="public-dashboard-action">
+              {auth.getCurrentUser() === null ? (
+                <a className="public-dashboard-user-login" href={socketLoginUrl}>
+                  <i className="uil uil-signin"></i>
+                  Login With ViaSocket
+                </a>
+              ) : (
+                <UserInfo></UserInfo>
+              )}
+            </div>
+          </div>
         </div>
         <div className="collection-wrap">
           {Object.keys(filteredPublicCollections).map((collectionId) => (

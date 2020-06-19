@@ -84,29 +84,31 @@ class PublicEndpoint extends Component {
     } else {
       return (
         <React.Fragment>
-          {/* <nav className="navbar  public-endpoint-navbar">
-            <img
-              className="hitman-logo"
-              alt=""
-              src={require("../../hitman-icon.png")}
-            />
+          <nav className="public-endpoint-navbar">
             {process.env.REACT_APP_UI_URL === window.location.origin + "/" ? (
               auth.getCurrentUser() === null ? (
-                <div>
-                  <button
-                    className="btn btn-primary btn-lg"
-                    id="custom-login-button"
-                  >
-                    <a href={socketLoginUrl}>Login With ViaSocket</a>
-                  </button>
+                <div className="dropdown user-dropdown">
+                  <a href={socketLoginUrl} className="user-dropdown-btn">
+                    <div className="user-info">
+                      <div className="user-avatar">
+                        <i className="uil uil-signin"></i>
+                      </div>
+                      <div className="user-details">
+                        <div className="user-details-heading not-logged-in">
+                          <div className="user-name">
+                            Login with ViaSocket
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </a>
                 </div>
+
               ) : (
-                <div>
-                  <UserInfo></UserInfo>
-                </div>
+                <UserInfo></UserInfo>
               )
             ) : null}
-          </nav> */}
+          </nav>
           <main
             role="main"
             className="mainpublic-endpoint-main hm-wrapper"

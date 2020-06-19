@@ -60,9 +60,34 @@ table#custom-generic-table {
 }
 
 .public-endpoint-navbar {
-  background-color: #343a40 !important;
-  height: 45px;
-  padding: 0px 0px 0px 30px !important;
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  padding: 0;
+  left: 0;
+  width: 350px;
+  background: #1f2628;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  z-index: 99;
+  .user-dropdown-btn {
+    .user-info {
+      padding: 12px 30px;
+      .user-details-heading {
+        &:after {
+          content: "\f0d8"; // UP caret
+        }
+      }
+    }
+  }
+  .user-dropdown {
+    .dropdown-menu.show {
+      left: 100% !important;
+      margin: 0 !important;
+      bottom: 0;
+      top: auto !important;
+      transform: translate(0px, 0px) !important;
+    }
+  }
 }
 
 .custom-update-button {
