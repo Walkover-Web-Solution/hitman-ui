@@ -190,6 +190,7 @@ class HostContainer extends Component {
           <input
             type="text"
             name="customHost"
+            className="form-control"
             value={this.fetchHost()}
             onChange={this.handleChange}
             disabled={this.state.selectedHost !== "customHost"}
@@ -198,7 +199,6 @@ class HostContainer extends Component {
             <button
               className="btn dropdown-toggle"
               type="button"
-              id="dropdownMenuButton"
               data-toggle="dropdown"
               aria-haspopup="true"
               aria-expanded="false"
@@ -268,31 +268,9 @@ class HostContainer extends Component {
       );
     } else {
       return (
-        <div className="host-field-container">
-          <input
-            type="text"
-            name="customHost"
-            value={this.fetchPublicEndpointHost(this.props)}
-            disabled
-            style={{ cursor: "not-allowed" }}
-          />
-          <div className="dropdown" id="host-select">
-            <button
-              className="btn dropdown-toggle"
-              type="button"
-              id="dropdownMenuButton"
-              data-toggle="dropdown"
-              aria-haspopup="true"
-              aria-expanded="false"
-              disabled
-              style={{ cursor: "not-allowed" }}
-            ></button>
-            <div
-              className="dropdown-menu dropdown-menu-right"
-              aria-labelledby="dropdownMenuButton"
-            ></div>
-          </div>
-        </div>
+        <React.Fragment>
+          {this.fetchPublicEndpointHost(this.props)}
+        </React.Fragment>
       );
     }
   }

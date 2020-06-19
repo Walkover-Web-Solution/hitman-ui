@@ -84,11 +84,11 @@ class Main extends Component {
     return (
       <div className="custom-main-container">
         <ToastContainer />
-        <Navbar
+        {/* <Navbar
           {...this.props}
           tabs={[...this.state.tabs]}
           set_tabs={this.setTabs.bind(this)}
-        />
+        /> */}
         <div className="main-panel-wrapper">
           <SideBar
             {...this.props}

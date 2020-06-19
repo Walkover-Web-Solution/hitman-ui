@@ -327,15 +327,14 @@ class TokenGenerator extends Component {
           onChange={this.handleChange.bind(this)}
         ></input>
         {key === "password" && (
-          <div>
-            <label>
-              <input
-                type="checkbox"
-                onClick={() => this.showPassword()}
-              ></input>
-              Show Password
-            </label>
-          </div>
+          <label className="mb-0 ml-3">
+            <input
+              className="mr-1"
+              type="checkbox"
+              onClick={() => this.showPassword()}
+            ></input>
+            Show Password
+          </label>
         )}
       </React.Fragment>
     );

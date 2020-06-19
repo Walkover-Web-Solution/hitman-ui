@@ -34,29 +34,6 @@ $border-color: rgba(227, 228, 230, 0.7);
   border-width: 0px 1px 0px 0px;
 }
 
-#search-box-wrapper {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  margin: 10px 10px 0px 10px;
-  border-width: 1px;
-  border-style: solid;
-  border-color: $border-color;
-  border-radius: 60px;
-  padding: 3px 10px 3px 10px;
-  height: 30px;
-  #search-icon {
-    margin-right: 10px;
-  }
-  #search-box-input {
-    border: none;
-    background-color: inherit;
-    outline: none;
-    width: 250px;
-    overflow: hidden;
-  }
-}
-
 #parent-accordion {
   .card {
     border-radius: 0;
@@ -192,15 +169,15 @@ $border-color: rgba(227, 228, 230, 0.7);
   }
 }
 
-.Pending {
-  border-left: 1.5px solid #daa609;
-}
-.Approved {
-  border-left: 1.5px solid green;
-}
-.Reject {
-  border-left: 1.5px solid red;
-}
+// .Pending {
+//   border-left: 1.5px solid #daa609;
+// }
+// .Approved {
+//   border-left: 1.5px solid green;
+// }
+// .Reject {
+//   border-left: 1.5px solid red;
+// }
 
 .endpoint-list-item {
   display: flex;
@@ -266,11 +243,56 @@ $border-color: rgba(227, 228, 230, 0.7);
   width: 60px;
 }
 
+.api-label {
+  width: 42px;
+  min-width: 42px;
+  height: 16px;
+  line-height: 16px;
+  background-color: rgba(0, 0, 0, 0.15);
+  color: #000000;
+  font-size: 9px;
+  font-weight: bold;
+  text-transform: uppercase;
+  text-align: center;
+  margin: 0;
+  border-radius: 3px;
+  opacity: 1;
+  display: inline-block;
+  .endpoint-request-div {
+    width: auto;
+  }
+  &.api-label-lg {
+    font-size: 12px;
+    width: 60px;
+    height: 26px;
+    line-height: 26px;
+  }
+  &.POST {
+    background-color: rgba($color: #54AD7E, $alpha: 0.15);
+    color: #54AD7E;
+  }
+  &.GET {
+    background-color: rgba($color: #1D9EE2, $alpha: 0.15);
+    color: #1D9EE2;
+  }
+  &.PUT {
+    background-color: rgba($color: #CCA027, $alpha: 0.15);
+    color: #CCA027;
+  }
+  &.PATCH {
+    background-color: rgba($color: white, $alpha: 0.15);
+    color: white;
+  }
+  &.DELETE {
+    background-color: rgba($color: #D13755, $alpha: 0.15);
+    color: #D13755;
+  }
+}
+
 button#custom-delete-modal-delete {
   color: white;
   float: right;
   background: rgb(255, 0, 0);
-  font-weight: 250;
   padding-left: 25px;
   padding-right: 25px;
   font-size: 15px;
@@ -279,7 +301,6 @@ button#custom-delete-modal-delete {
 
 button#custom-delete-modal-cancel {
   float: right;
-  font-weight: 250;
   padding-left: 25px;
   padding-right: 25px;
   font-size: 15px;
@@ -318,12 +339,12 @@ input.custom-input {
 
 input.custom-input::placeholder {
   font-size: 15px;
-  font-weight: 300;
+  // font-weight: 300;
 }
 
 textarea.custom-input::placeholder {
   font-size: 15px;
-  font-weight: 300;
+  // font-weight: 300;
 }
 
 //common
@@ -336,431 +357,121 @@ main.main.ml-sm-auto.col-lg-10 {
   margin-top: 40px;
   padding: 0px;
 }
-.content-header {
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  border-bottom: 1px solid $border-color;
-  .tabs-container {
-    width: 100%;
-    margin-left: 10px;
+// .content-header {
+//   width: 100%;
+//   display: flex;
+//   flex-direction: row;
+//   border-bottom: 1px solid $border-color;
+//   .tabs-container {
+//     width: 100%;
+//     margin-left: 10px;
 
-    border-right: none;
-    border-left: none;
-    border-top: none;
-    height: 35px;
-    align-self: flex-end;
-    .nav {
-      height: 100%;
-      .nav-item {
-        padding: 0px;
-        display: flex;
-        flex-direction: row;
-        justify-content: space-around;
-        align-items: center;
-        border: 1px solid $border-color;
-        border-bottom: none;
-        margin: 0px 2px;
-        height: 100%;
-        width: 220px;
-        border-top-left-radius: 3px;
-        border-top-right-radius: 3px;
-        min-width: 64px;
-        max-width: 220px;
-        .nav-link {
-          height: 100%;
-          width: 100%;
-          padding: 0px;
-          padding-left: 10px;
-          width: 220px;
-          border-radius: 0px;
-          .btn {
-            width: 100%;
-            text-align: left;
-            padding: 0px;
-            opacity: 0.8;
-          }
-        }
-        .btn {
-          height: 100%;
-          border-radius: 0px;
-          padding: 0px;
-          padding-right: 10px;
-          .fas {
-            opacity: 0.7;
-          }
-        }
-        .nav-link.active {
-          background-color: rgb(247, 247, 247);
-          border-bottom: rgb(247, 247, 247) !important;
-          border-top: 2px solid tomato;
-          border-top-left-radius: 3px;
-        }
-        .nav-link.active ~ .btn {
-          background-color: rgb(247, 247, 247);
-          border-bottom: rgb(247, 247, 247);
-          border-top: 2px solid tomato;
-          border-top-right-radius: 3px;
-        }
-      }
-      .tab-buttons {
-        width: 35px !important;
-        min-width: 35px;
-        display: flex;
-        justify-content: center;
-        margin: 0px;
-        border-radius: 0px;
-        .btn {
-          display: flex;
-          align-items: center;
-          padding: 0px;
-          font-size: 25px;
-          .fa-plus {
-            font-size: 15px;
-          }
-          .fa-ellipsis-h {
-            font-size: 18px;
-          }
-        }
-        .btn:hover {
-          .fa-plus {
-            color: tomato;
-          }
-          .fa-ellipsis-h {
-            color: tomato;
-          }
-        }
-      }
-      #add-new-tab-button {
-        border-top-left-radius: 5px;
-      }
-      #tabs-menu-button {
-        border-left: 0px;
-        border-top-right-radius: 5px;
-        .dropdown {
-          .dropdown-menu {
-            transform: translate3d(-132px, 20px, 0px);
-            border-radius: 0px;
-            padding: 10px;
-            .btn {
-              font-size: 15px;
-            }
-          }
-        }
-      }
-    }
-  }
-}
-
-.endpoint-container {
-  display: flex;
-  flex-direction: column;
-  .endpoint-name-container {
-    //border-bottom: 1px solid $border-color;
-    padding: 2px;
-    //background-color: rgb(247, 247, 247);
-    display: flex;
-
-    .endpoint-name-input {
-      display: flex;
-      flex-direction: row;
-      outline: none;
-      // border: 1px solid rgba(227, 228, 230, 0.7);
-      // border-radius: 60px;
-      border: none;
-      width: 80%;
-      margin-top: 5px;
-      margin-bottom: 5px;
-      padding-left: 5px;
-      background-color: inherit;
-    }
-
-    .public-endpoint-name-input {
-      // width: 100%;
-      display: flex;
-      flex-direction: row;
-      outline: none;
-      // border-radius: 60px;
-      margin-top: 5px;
-      margin-bottom: 5px;
-      margin-left: 15px;
-      padding-left: 10px;
-      font-size: 25px;
-      background-color: inherit;
-      // border-color: steelblue;
-    }
-    .endpoint-name-input::placeholder {
-      font-weight: 300;
-    }
-    .endpoint-description {
-      float: left;
-      margin-top: 5px;
-      margin-bottom: 5px;
-      outline: none;
-      border: none;
-      background: inherit;
-      padding: 2px 2px 2px 20px;
-    }
-  }
-  .endpoint-url-container {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    border-bottom: 1px solid $border-color;
-    padding: 10px;
-    height: 60px;
-    .dropdown-menu.show {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .input-group-prepend {
-      display: flex;
-      flex-direction: row;
-      justify-content: center;
-      width: 100%;
-
-      .dropdown {
-        height: 100%;
-        border-radius: 2px;
-      }
-      button#dropdownMenuButton {
-        height: 100%;
-        border-top-right-radius: 0px;
-        border-bottom-right-radius: 0px;
-        background-color: rgb(237, 237, 237);
-        border: 1px solid $border-color;
-        border-right: none;
-        color: black;
-        font-size: 15px;
-        opacity: 0.7;
-      }
-      .host-field-container {
-        position: relative;
-        width: 280px;
-        #host-select {
-          // width: 40px;
-          float: right;
-          // height: 100%;
-          // border-radius: 0px;
-          // border-right: 0px;
-          background-color: rgb(237, 237, 237);
-          border-radius: 0px;
-
-          .dropdown-menu {
-            border-radius: 0px;
-            transform: translate3d(-125px, 37px, 0px);
-            padding: 0px;
-            .btn {
-              display: flex;
-              flex-direction: row;
-              align-items: center;
-              justify-content: space-between;
-              width: 100%;
-              .fa-check {
-                opacity: 0.7;
-                font-size: 15px;
-              }
-              .host-label {
-                width: 140px;
-                justify-self: flex-end;
-                float: right;
-              }
-            }
-          }
-        }
-        input {
-          position: absolute;
-          height: 100%;
-          width: calc(100% - 30px);
-          background-color: rgb(237, 237, 237);
-          border: 1px solid $border-color;
-        }
-      }
-    }
-    .endpoint-url-input {
-      border-top-left-radius: 0px;
-      border-bottom-left-radius: 0px;
-      opacity: 0.8;
-      background-color: rgb(237, 237, 237);
-    }
-    .endpoint-url-input::placeholder {
-      font-weight: 250;
-      font-size: 17px;
-    }
-
-    body {
-      .btn:focus {
-        outline: 0;
-        box-shadow: none;
-      }
-    }
-
-    button.btn.btn-default.custom-submit-button {
-      font-size: 15px;
-      font-weight: 400;
-    }
-    .endpoint-headers-container {
-      .nav-tabs {
-        opacity: 0.7;
-        .nav-link {
-          &:hover {
-            color: #495057;
-            border-color: transparent;
-          }
-          &.active {
-            background: transparent;
-            border: none;
-            border-bottom: 3px solid tomato;
-          }
-        }
-      }
-    }
-    .generic-table-container {
-      background-color: white;
-      .generic-table-title-container {
-        padding: 7px 0px 3px 30px;
-        opacity: 0.8;
-      }
-
-      .public-generic-table-title-container {
-        padding: 40px 0px 3px 20px;
-        opacity: 1;
-        color: tomato;
-      }
-
-      button#edit-button {
-        float: right;
-        color: #f28100;
-        padding-top: 0px;
-        &:hover {
-          color: #f28100;
-        }
-      }
-
-      .table {
-        margin-left: 10px;
-        margin-right: 10px;
-        thead {
-          tr {
-            th {
-              padding-left: 10px !important;
-            }
-          }
-        }
-      }
-    }
-    #generic-table-row {
-      #generic-table-key-cell {
-        border-left: none;
-      }
-      #generic-table-description-cell {
-        border: none;
-        //display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        .cross-button {
-          visibility: hidden;
-          width: 50px;
-        }
-      }
-    }
-    #generic-table-row:hover {
-      #generic-table-description-cell {
-        .cross-button {
-          visibility: visible;
-          width: 50px;
-        }
-      }
-    }
-    .custom-td {
-      padding: 0px !important;
-      opacity: 0.8;
-    }
-    .custom-th {
-      padding: 5px !important;
-      opacity: 0.8;
-    }
-
-    button.btn.btn-default.custom-button {
-      font-size: 15px;
-      font-weight: 400;
-    }
-
-    #endpoint-modal {
-      width: 500px;
-      height: 800px;
-    }
-
-    #custom-bulk-edit {
-      textarea {
-        font-size: 14px !important;
-        font-family: "OpenSans", Helvetica, Arial, sans-serif !important  ;
-        width: 99% !important;
-        margin-left: 0.5%;
-      }
-      textarea::placeholder {
-        font-weight: 200;
-      }
-
-      textarea:focus,
-      textarea.form-control:focus {
-        box-shadow: inset 0 -1px 0 rgb(255, 255, 255) !important;
-      }
-    }
-
-    // generic table styling(params and headers)
-
-    table#custom-generic-table {
-      margin-left: 0 !important;
-      margin-bottom: 0;
-      background: rgb(255, 255, 255);
-      .custom-checkbox {
-        width: 3% !important;
-      }
-      th {
-        height: 35px;
-        font-size: 12px;
-        font-weight: 800;
-        padding-bottom: 5px !important;
-      }
-
-      td {
-        height: 100%;
-        //padding: 5px !important;
-      }
-
-      tbody {
-        input {
-          height: 35px;
-          font-size: 14px;
-          font-weight: 400;
-        }
-        input:focus,
-        input.form-control:focus {
-          box-shadow: inset 0 -1px 0 rgb(255, 255, 255) !important;
-          height: 35px;
-          // font-size: 12px;
-          // font-weight: 400;
-        }
-        input::placeholder {
-          font-size: 14px;
-          font-weight: 300;
-        }
-      }
-    }
-
-    //request select dropdown styling
-    .dropdown-menu.show {
-      background: rgb(247, 247, 247);
-    }
-
-    .dropdown-menu.dropdown-menu-right.show {
-      background: rgb(247, 247, 247);
-    }
-  }
-}
-
+//     border-right: none;
+//     border-left: none;
+//     border-top: none;
+//     height: 35px;
+//     align-self: flex-end;
+//     .nav {
+//       height: 100%;
+//       .nav-item {
+//         padding: 0px;
+//         display: flex;
+//         flex-direction: row;
+//         justify-content: space-around;
+//         align-items: center;
+//         border: 1px solid $border-color;
+//         border-bottom: none;
+//         margin: 0px 2px;
+//         height: 100%;
+//         width: 220px;
+//         border-top-left-radius: 3px;
+//         border-top-right-radius: 3px;
+//         min-width: 64px;
+//         max-width: 220px;
+//         .nav-link {
+//           height: 100%;
+//           width: 100%;
+//           padding: 0px;
+//           padding-left: 10px;
+//           width: 220px;
+//           border-radius: 0px;
+//           .btn {
+//             width: 100%;
+//             text-align: left;
+//             padding: 0px;
+//             opacity: 0.8;
+//           }
+//         }
+//         .btn {
+//           height: 100%;
+//           border-radius: 0px;
+//           padding: 0px;
+//           padding-right: 10px;
+//           .fas {
+//             opacity: 0.7;
+//           }
+//         }
+//         .nav-link.active {
+//           background-color: rgb(247, 247, 247);
+//           border-bottom: rgb(247, 247, 247) !important;
+//           border-top: 2px solid tomato;
+//           border-top-left-radius: 3px;
+//         }
+//         .nav-link.active ~ .btn {
+//           background-color: rgb(247, 247, 247);
+//           border-bottom: rgb(247, 247, 247);
+//           border-top: 2px solid tomato;
+//           border-top-right-radius: 3px;
+//         }
+//       }
+//       .tab-buttons {
+//         width: 35px !important;
+//         min-width: 35px;
+//         display: flex;
+//         justify-content: center;
+//         margin: 0px;
+//         border-radius: 0px;
+//         .btn {
+//           display: flex;
+//           align-items: center;
+//           padding: 0px;
+//           font-size: 25px;
+//           .fa-plus {
+//             font-size: 15px;
+//           }
+//           .fa-ellipsis-h {
+//             font-size: 18px;
+//           }
+//         }
+//         .btn:hover {
+//           .fa-plus {
+//             color: tomato;
+//           }
+//           .fa-ellipsis-h {
+//             color: tomato;
+//           }
+//         }
+//       }
+//       #add-new-tab-button {
+//         border-top-left-radius: 5px;
+//       }
+//       #tabs-menu-button {
+//         border-left: 0px;
+//         border-top-right-radius: 5px;
+//         .dropdown {
+//           .dropdown-menu {
+//             transform: translate3d(-132px, 20px, 0px);
+//             border-radius: 0px;
+//             padding: 10px;
+//             .btn {
+//               font-size: 15px;
+//             }
+//           }
+//         }
+//       }
+//     }
+//   }
+// }
 :disabled {
   cursor: not-allowed;
   //background-color: #e9ecef;
@@ -797,8 +508,9 @@ button.btn.custom-body-type-button {
   opacity: 0.8;
 }
 .public-endpoint-sidebar {
-  margin-top: 45px !important;
-  padding: 0px !important;
+  .primary-sidebar {
+    width: 100%;
+  }
 }
 .hitman-logo {
   height: 45px;

@@ -1,10 +1,14 @@
+import "ace-builds";
 import React, { Component } from "react";
 import GenericTable from "./genericTable";
 import jQuery from "jquery";
+import AceEditor from "react-ace";
 import "./publicEndpoint.scss";
 
 class PublicBodyContainer extends Component {
-  state = {};
+  state = {
+    showBodyCodeEditor: true
+  };
 
   handleChangeBody(title, dataArray) {
     switch (title) {
@@ -164,6 +168,15 @@ class PublicBodyContainer extends Component {
     this.setBody(data);
   };
 
+  handleChangeBodyDescription = (data) => {
+    const body = JSON.parse(data);
+    const bodyData = {
+      bodyDescription: this.bodyDescription,
+      body: body
+    }
+    this.setBody(bodyData);
+  }
+
   displayAddButton(name) {
     return (
       <div className="array-row-add-wrapper">
@@ -237,7 +250,7 @@ class PublicBodyContainer extends Component {
           defaultValue &&
           (defaultValue.type === "object" || defaultValue.type === "array")
             ? "array-wrapper"
-            : ""
+            : "array-without-key"
         }
       >
         {array.map((value, index) => (
@@ -318,7 +331,7 @@ class PublicBodyContainer extends Component {
     }
 
     return (
-      <div>
+      <React.Fragment>
         {this.props.body && this.props.body.type === "multipart/form-data" && (
           <GenericTable
             {...this.props}
@@ -341,23 +354,43 @@ class PublicBodyContainer extends Component {
           )}
 
         {this.props.body && this.props.body.type === "JSON" && (
-          <div>
+          <div className="hm-public-table">
             <div
-              className="public-generic-table-title-container"
-              style={{
-                padding: "40px 0px 3px 20px",
-                color: " tomato",
-                backgroundColor: "white",
-              }}
-            >
+              className="public-generic-table-title-container">
               Body
             </div>
-            <div className="body-description-container">
-              {this.displayObject(this.bodyDescription, "body_description")}
-            </div>
+          <ul className="public-endpoint-tabs">
+            <li className={this.state.showBodyCodeEditor && 'active'}><a onClick={() => this.setState({showBodyCodeEditor: true})} href="javascript:void(0)">Raw</a></li>
+            <li className={!this.state.showBodyCodeEditor && 'active'}><a onClick={() => this.setState({showBodyCodeEditor: false})} href="javascript:void(0)">Body description</a></li>
+          </ul>
+
+          {this.state.showBodyCodeEditor ?
+            <AceEditor
+                className="custom-raw-editor"
+                mode={"json"}
+                theme="github"
+                value={this.props.body.value}
+                onChange={this.handleChangeBodyDescription.bind(this)}
+                setOptions={{
+                  showLineNumbers: true,
+                }}
+                editorProps={{
+                  $blockScrolling: false,
+                }}
+                onLoad={(editor) => {
+                  editor.focus();
+                  editor.getSession().setUseWrapMode(true);
+                  editor.setShowPrintMargin(false);
+                }}
+              />
+            :
+              <div className="body-description-container">
+                {this.displayObject(this.bodyDescription, "body_description")}
+              </div>
+          }
           </div>
         )}
-      </div>
+      </React.Fragment>
     );
   }
 }

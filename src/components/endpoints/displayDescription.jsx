@@ -69,36 +69,60 @@ class DisplayDescription extends Component {
 
   render() {
     return (
-      <div>
-        <div className="endpoint-name-container">
+      <div className="endpoint-header">
+        <div className={
+          isDashboardRoute(this.props)
+            ? "panel-endpoint-name-container"
+            : "endpoint-name-container"
+          }>
           {this.props.endpoint.description !== undefined &&
           isDashboardRoute(this.props) ? (
-            <button className="endpoint-description">
-              <i
-                className={
-                  this.state.showAddDescriptionFlag === true
-                    ? "fas fa-caret-down "
-                    : "fas fa-caret-right"
-                }
-                onClick={() => this.showDescription()}
-              ></i>
-            </button>
-          ) : null}
-          <input
-            type="text"
-            className={
-              isDashboardRoute(this.props)
-                ? "endpoint-name-input"
-                : "public-endpoint-name-input"
-            }
-            aria-label="Username"
-            aria-describedby="addon-wrapping"
-            name="name"
-            placeholder="Endpoint Name"
-            value={this.props.data.name}
-            onChange={this.handleChange}
-            disabled={isDashboardRoute(this.props) ? null : true}
-          />
+            <React.Fragment>
+              {/* <button className="endpoint-description">
+                <i
+                  className={
+                    this.state.showAddDescriptionFlag === true
+                      ? "fas fa-caret-down "
+                      : "fas fa-caret-right"
+                  }
+                  onClick={() => this.showDescription()}
+                ></i>
+              </button> */}
+              {/* <input
+                type="text"
+                className="endpoint-name-input"
+                aria-label="Username"
+                aria-describedby="addon-wrapping"
+                name="name"
+                placeholder="Endpoint Name"
+                value={this.props.data.name}
+                onChange={this.handleChange}
+              /> */}
+              </React.Fragment>
+          )
+          : null
+          }
+
+          {isDashboardRoute(this.props) &&
+          <React.Fragment>
+            <label className="hm-panel-label">Endpoint title</label>
+            <input
+              type="text"
+              className={"form-control"}
+              aria-label="Username"
+              aria-describedby="addon-wrapping"
+              name="name"
+              placeholder="Endpoint Name"
+              value={this.props.data.name}
+              onChange={this.handleChange}
+              disabled={isDashboardRoute(this.props) ? null : true} />
+            </React.Fragment>
+          }
+          {!isDashboardRoute(this.props) &&
+            <h1 className="endpoint-title">
+              {this.props.data.name}
+            </h1>
+          }
         </div>
 
         {this.state.showAddDescriptionFlag &&
@@ -116,10 +140,10 @@ class DisplayDescription extends Component {
               Add a Description
             </Link>
           ) : (
-            <div>
-              <label style={{ padding: "5px 5px 0px 35px" }}>
+            <div className="endpoint-description">
+              <div className="endpoint-description-text">
                 {this.props.endpoint.description}
-              </label>
+              </div>
               {isDashboardRoute(this.props) ? (
                 <button
                   className="btn btn-default"
@@ -132,11 +156,11 @@ class DisplayDescription extends Component {
           )
         ) : null}
 
-        {this.state.showDescriptionFormFlag && isDashboardRoute(this.props) ? (
+        {isDashboardRoute(this.props) ? (
           <form onSubmit={this.handleDescriptionSave.bind(this)}>
+          <label className="hm-panel-label">Endpoint Description</label>
             <div
-              className="form-group"
-              style={{ padding: "5px 10px 5px 10px" }}
+              className="endpoint-description-wrap"
             >
               <textarea
                 className="form-control"
@@ -146,28 +170,17 @@ class DisplayDescription extends Component {
                 value={this.props.endpoint.description}
                 onChange={this.handleChangeDescription}
               ></textarea>
-              <div style={{ float: "right", margin: "5px" }}>
-                <button
-                  className="btn btn-primary"
+              <div className="endpoint-cta">
+                {/* <button
+                  className="btn btn-link"
                   type="cancel"
                   onClick={() => this.handleDescriptionCancel()}
-                  style={{
-                    margin: "0px 5px 0px 0px",
-                    color: "tomato",
-                    background: "none",
-                    border: "none",
-                  }}
                 >
                   Cancel
-                </button>
+                </button> */}
                 <button
                   className="btn btn-primary"
                   type="submit"
-                  style={{
-                    margin: "0px 0px 0px 5px",
-                    background: "tomato",
-                    border: "none",
-                  }}
                 >
                   Save
                 </button>

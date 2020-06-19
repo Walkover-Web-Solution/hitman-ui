@@ -111,7 +111,7 @@ class CustomTabs extends Component {
               {this.props.tabs.tabs[tabId].isModified ? (
                 <i className="fas fa-circle" id="modified-dot-icon"></i>
               ) : (
-                <i className="fas fa-times"></i>
+                <i className="uil uil-multiply"></i>
               )}
             </button>
           </Nav.Item>
@@ -121,7 +121,7 @@ class CustomTabs extends Component {
             className="btn"
             onClick={() => tabService.newTab({ ...this.props })}
           >
-            <i className="fas fa-plus"></i>
+            <i className="uil uil-plus"></i>
           </button>
         </Nav.Item>
         <Nav.Item className="tab-buttons" id="tabs-menu-button">
@@ -134,7 +134,7 @@ class CustomTabs extends Component {
               aria-haspopup="true"
               aria-expanded="false"
             >
-              <i className="fas fa-ellipsis-h"></i>
+              <i className="uil uil-ellipsis-h"></i>
             </button>
             <div
               className="dropdown-menu dropdown-menu-right"

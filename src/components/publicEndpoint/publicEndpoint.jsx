@@ -51,9 +51,9 @@ class PublicEndpoint extends Component {
         const index = this.props.collections[
           collectionId
         ].docProperties.domainsList.findIndex((d) => d.domain === baseUrl);
-        document.title = this.props.collections[
-          collectionId
-        ].docProperties.domainsList[index].title;
+        // document.title = this.props.collections[
+        //   collectionId
+        // ].docProperties.domainsList[index].title;
         unsubscribe();
       }
     });
@@ -70,8 +70,8 @@ class PublicEndpoint extends Component {
       ].name;
       this.setState({ collectionName });
     }
-    const redirectionUrl = `http://localhost:3000/login`;
-    // const redirectionUrl = `https://hitman-ui.herokuapp.com/login`;
+    // const redirectionUrl = `http://localhost:3000/login`;
+    const redirectionUrl = `https://hitman-ui.herokuapp.com/login`;
     const socketLoginUrl = `https://viasocket.com/login?token_required=true&redirect_uri=${redirectionUrl}`;
     if (
       this.props.location.pathname.split("/")[1] === "p" &&
@@ -95,58 +95,52 @@ class PublicEndpoint extends Component {
     } else {
       return (
         <React.Fragment>
-          <nav className="navbar  public-endpoint-navbar">
-            <img
-              className="hitman-logo"
-              alt=""
-              src={require("../../hitman-icon.png")}
-            />
+          <nav className="public-endpoint-navbar">
             {process.env.REACT_APP_UI_URL === window.location.origin + "/" ? (
               auth.getCurrentUser() === null ? (
-                <div>
-                  <button
-                    className="btn btn-primary btn-lg"
-                    id="custom-login-button"
-                  >
-                    <a href={socketLoginUrl}>Login With ViaSocket</a>
-                  </button>
+                <div className="dropdown user-dropdown">
+                  <a href={socketLoginUrl} className="user-dropdown-btn">
+                    <div className="user-info">
+                      <div className="user-avatar">
+                        <i className="uil uil-signin"></i>
+                      </div>
+                      <div className="user-details">
+                        <div className="user-details-heading not-logged-in">
+                          <div className="user-name">Login with ViaSocket</div>
+                        </div>
+                      </div>
+                    </div>
+                  </a>
                 </div>
               ) : (
-                <div>
-                  <UserInfo></UserInfo>
-                </div>
+                <UserInfo></UserInfo>
               )
             ) : null}
           </nav>
-          <main
-            role="main"
-            className="main ml-sm-auto col-lg-10 public-endpoint-main "
-          >
-            <div>
-              <ToastContainer />
-              <div className="main-panel-wrapper">
-                <SideBar {...this.props} />
-                {/* <Environments {...this.props} /> */}
-              </div>
+          <main role="main" className="mainpublic-endpoint-main hm-wrapper">
+            <ToastContainer />
+            <div className="hm-sidebar">
+              <SideBar {...this.props} />
+              {/* <Environments {...this.props} /> */}
+            </div>
 
-              <div className="main-content">
-                {this.state.collectionName !== "" ? (
-                  <Switch>
-                    <Route
-                      path={`/p/:collectionId/e/:endpointId/${this.state.collectionName}`}
-                      render={(props) => <DisplayEndpoint {...props} />}
-                    />
-                    <Route
-                      path={`/p/:collectionId/pages/:pageid/${this.state.collectionName}`}
-                      render={(props) => <DisplayPage {...props} />}
-                    />
-                    <Route
-                      path={`/p/:collectionId/description/${this.state.collectionName}`}
-                      render={(props) => <DisplayCollection {...props} />}
-                    />
-                  </Switch>
-                ) : null}
-              </div>
+            <div className="hm-right-content">
+              {this.state.collectionName !== "" ? (
+                <Switch>
+                  <Route
+                    path={`/p/:collectionId/e/:endpointId/${this.state.collectionName}`}
+                    render={(props) => <DisplayEndpoint {...props} />}
+                  />
+                  <Route
+                    path={`/p/:collectionId/pages/:pageid/${this.state.collectionName}`}
+                    render={(props) => <DisplayPage {...props} />}
+                  />
+                  <Route
+                    path={`/p/:collectionId/description/${this.state.collectionName}`}
+                    render={(props) => <DisplayCollection {...props} />}
+                  />
+                </Switch>
+              ) : null}
             </div>
           </main>
         </React.Fragment>
