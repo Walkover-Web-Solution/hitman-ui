@@ -715,7 +715,8 @@ pre.__json-pretty-error__ {
       flex-direction: row;
       padding-bottom: 10px;
       label {
-        flex: 0.7;
+        // flex: 0.7;
+        min-width: 140px;
       }
       input {
         flex: 1.6;
@@ -741,10 +742,12 @@ pre.__json-pretty-error__ {
   display: flex;
   flex-direction: row;
   padding-bottom: 10px;
+  align-items: center;
 }
 
 .basic-auth-label {
-  flex: 0.7;
+  // flex: 0.7;
+  min-width: 240px;
 }
 .basic-auth-input {
   flex: 1.6;
