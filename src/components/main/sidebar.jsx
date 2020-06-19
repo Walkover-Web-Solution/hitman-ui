@@ -68,13 +68,11 @@ class SideBar extends Component {
 
   emptyFilter() {
     let data = { ...this.state.data };
-    console.log('emptyFilter this.state', this.state);
     data.filter = "";
     this.setState({ data });
   }
 
   openCollection(collectionId) {
-    console.log('openCollection collectionId', collectionId);
     this.collectionId = collectionId;
   }
 

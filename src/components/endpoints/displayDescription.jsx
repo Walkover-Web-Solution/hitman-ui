@@ -69,7 +69,7 @@ class DisplayDescription extends Component {
 
   render() {
     return (
-      <div class="endpoint-header">
+      <div className="endpoint-header">
         <div className={
           isDashboardRoute(this.props)
             ? "panel-endpoint-name-container"
@@ -105,7 +105,7 @@ class DisplayDescription extends Component {
 
           {isDashboardRoute(this.props) &&
           <React.Fragment>
-            <label class="hm-panel-label">Endpoint title</label>
+            <label className="hm-panel-label">Endpoint title</label>
             <input
               type="text"
               className={"form-control"}
@@ -119,7 +119,7 @@ class DisplayDescription extends Component {
             </React.Fragment>
           }
           {!isDashboardRoute(this.props) &&
-            <h1 class="endpoint-title">
+            <h1 className="endpoint-title">
               {this.props.data.name}
             </h1>
           }
@@ -140,7 +140,7 @@ class DisplayDescription extends Component {
               Add a Description
             </Link>
           ) : (
-            <div class="endpoint-description">
+            <div className="endpoint-description">
               <div className="endpoint-description-text">
                 {this.props.endpoint.description}
               </div>
@@ -158,7 +158,7 @@ class DisplayDescription extends Component {
 
         {isDashboardRoute(this.props) ? (
           <form onSubmit={this.handleDescriptionSave.bind(this)}>
-          <label class="hm-panel-label">Endpoint Description</label>
+          <label className="hm-panel-label">Endpoint Description</label>
             <div
               className="endpoint-description-wrap"
             >

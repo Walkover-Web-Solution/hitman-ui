@@ -53,7 +53,7 @@ class PublicView extends Component {
       <React.Fragment>
         <div className="public-dashboard-header">
           <div className="public-dashboard-container">
-            <div class="public-dashboard-searchbox">
+            <div className="public-dashboard-searchbox">
               <i className="uil uil-search"></i>
               <input
                 type="text"

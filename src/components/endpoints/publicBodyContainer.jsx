@@ -1,10 +1,14 @@
+import "ace-builds";
 import React, { Component } from "react";
 import GenericTable from "./genericTable";
 import jQuery from "jquery";
+import AceEditor from "react-ace";
 import "./publicEndpoint.scss";
 
 class PublicBodyContainer extends Component {
-  state = {};
+  state = {
+    showBodyCodeEditor: true
+  };
 
   handleChangeBody(title, dataArray) {
     switch (title) {
@@ -163,6 +167,15 @@ class PublicBodyContainer extends Component {
 
     this.setBody(data);
   };
+
+  handleChangeBodyDescription = (data) => {
+    const body = JSON.parse(data);
+    const bodyData = {
+      bodyDescription: this.bodyDescription,
+      body: body
+    }
+    this.setBody(bodyData);
+  }
 
   displayAddButton(name) {
     return (
@@ -346,9 +359,35 @@ class PublicBodyContainer extends Component {
               className="public-generic-table-title-container">
               Body
             </div>
-            <div className="body-description-container">
-              {this.displayObject(this.bodyDescription, "body_description")}
-            </div>
+          <ul className="public-endpoint-tabs">
+            <li className={this.state.showBodyCodeEditor && 'active'}><a onClick={() => this.setState({showBodyCodeEditor: true})} href="javascript:void(0)">Raw</a></li>
+            <li className={!this.state.showBodyCodeEditor && 'active'}><a onClick={() => this.setState({showBodyCodeEditor: false})} href="javascript:void(0)">Body description</a></li>
+          </ul>
+
+          {this.state.showBodyCodeEditor ?
+            <AceEditor
+                className="custom-raw-editor"
+                mode={"json"}
+                theme="github"
+                value={this.props.body.value}
+                onChange={this.handleChangeBodyDescription.bind(this)}
+                setOptions={{
+                  showLineNumbers: true,
+                }}
+                editorProps={{
+                  $blockScrolling: false,
+                }}
+                onLoad={(editor) => {
+                  editor.focus();
+                  editor.getSession().setUseWrapMode(true);
+                  editor.setShowPrintMargin(false);
+                }}
+              />
+            :
+              <div className="body-description-container">
+                {this.displayObject(this.bodyDescription, "body_description")}
+              </div>
+          }
           </div>
         )}
       </React.Fragment>

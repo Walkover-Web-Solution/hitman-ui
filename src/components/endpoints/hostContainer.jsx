@@ -190,7 +190,7 @@ class HostContainer extends Component {
           <input
             type="text"
             name="customHost"
-            class="form-control"
+            className="form-control"
             value={this.fetchHost()}
             onChange={this.handleChange}
             disabled={this.state.selectedHost !== "customHost"}

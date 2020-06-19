@@ -582,7 +582,6 @@ class DisplayEndpoint extends Component {
     this.setState({ startTime, response });
     const headersData = this.doSubmitHeader("send");
     const BASE_URL = this.customState.BASE_URL;
-    console.log('this.uri', this.uri);
     let uri = new URI(this.uri.current.value);
     let queryparams = uri.search();
     let path = this.setPathVariableValues();

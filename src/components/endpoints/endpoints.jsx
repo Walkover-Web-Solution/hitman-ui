@@ -209,7 +209,6 @@ class Endpoints extends Component {
   }
 
   render() {
-    console.log('ENDPOINTS this.props', this.props);
     if (this.state.filter !== this.props.filter) {
       this.filterFlag = false;
     }
