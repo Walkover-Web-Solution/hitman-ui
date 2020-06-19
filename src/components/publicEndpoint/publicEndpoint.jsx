@@ -30,6 +30,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 class PublicEndpoint extends Component {
   state = {
     publicCollectionId: "",
+    collectionName: "",
   };
 
   componentDidMount() {
@@ -46,7 +47,6 @@ class PublicEndpoint extends Component {
       const baseUrl = window.location.href.split("/")[2];
       const collectionId = this.props.location.collectionIdentifier;
       const domain = this.props.location.pathname.split("/");
-
       if (this.props.collections[collectionId]) {
         const index = this.props.collections[
           collectionId
@@ -60,22 +60,33 @@ class PublicEndpoint extends Component {
   }
 
   render() {
-    // const redirectionUrl = `http://localhost:3000/login`;
-    const redirectionUrl = `https://hitman-ui.herokuapp.com/login`;
+    if (
+      this.props.collections[this.props.location.pathname.split("/")[2]] &&
+      this.props.collections[this.props.location.pathname.split("/")[2]].name &&
+      this.state.collectionName === ""
+    ) {
+      let collectionName = this.props.collections[
+        this.props.location.pathname.split("/")[2]
+      ].name;
+      this.setState({ collectionName });
+    }
+    const redirectionUrl = `http://localhost:3000/login`;
+    // const redirectionUrl = `https://hitman-ui.herokuapp.com/login`;
     const socketLoginUrl = `https://viasocket.com/login?token_required=true&redirect_uri=${redirectionUrl}`;
     if (
-      this.props.location.pathname.split("/")[1] === "public" &&
+      this.props.location.pathname.split("/")[1] === "p" &&
       (this.props.location.pathname.split("/")[3] === undefined ||
-        this.props.location.pathname.split("/")[3] === "")
+        this.props.location.pathname.split("/")[3] === "") &&
+      this.state.collectionName !== ""
     ) {
       this.props.history.push({
-        pathname: `/public/${this.props.match.params.collectionIdentifier}/description`,
+        pathname: `/p/${this.props.match.params.collectionIdentifier}/description/${this.state.collectionName}`,
       });
       return (
         <div>
           <Switch>
             <Route
-              path="/public/:collectionId/description"
+              path={`/p/:collectionId/description/${this.state.collectionName}`}
               render={(props) => <DisplayCollection {...props} />}
             />
           </Switch>
@@ -119,20 +130,22 @@ class PublicEndpoint extends Component {
               </div>
 
               <div className="main-content">
-                <Switch>
-                  <Route
-                    path="/public/:collectionId/endpoints/:endpointId"
-                    render={(props) => <DisplayEndpoint {...props} />}
-                  />
-                  <Route
-                    path="/public/:collectionId/pages/:pageid"
-                    render={(props) => <DisplayPage {...props} />}
-                  />
-                  <Route
-                    path="/public/:collectionId/description"
-                    render={(props) => <DisplayCollection {...props} />}
-                  />
-                </Switch>
+                {this.state.collectionName !== "" ? (
+                  <Switch>
+                    <Route
+                      path={`/p/:collectionId/e/:endpointId/${this.state.collectionName}`}
+                      render={(props) => <DisplayEndpoint {...props} />}
+                    />
+                    <Route
+                      path={`/p/:collectionId/pages/:pageid/${this.state.collectionName}`}
+                      render={(props) => <DisplayPage {...props} />}
+                    />
+                    <Route
+                      path={`/p/:collectionId/description/${this.state.collectionName}`}
+                      render={(props) => <DisplayCollection {...props} />}
+                    />
+                  </Switch>
+                ) : null}
               </div>
             </div>
           </main>

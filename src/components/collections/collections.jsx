@@ -115,7 +115,7 @@ class CollectionsComponent extends Component {
     this.props.duplicate_collection(collectionCopy);
   }
   async handleGoToDocs(collection) {
-    const publicDocsUrl = `${uiUrl}/public/${collection.id}`;
+    const publicDocsUrl = `${uiUrl}/p/${collection.id}`;
     window.open(publicDocsUrl, "_blank");
   }
 
@@ -212,7 +212,7 @@ class CollectionsComponent extends Component {
 
   handlePublicCollectionDescription(collection) {
     this.props.history.push({
-      pathname: `/public/${collection.id}/description`,
+      pathname: `/p/${collection.id}/description/${collection.name}`,
       collection,
     });
   }

@@ -174,7 +174,7 @@ class Endpoints extends Component {
       });
     } else {
       this.props.history.push({
-        pathname: `/public/${collectionId}/endpoints/${endpoint.id}`,
+        pathname: `/p/${collectionId}/e/${endpoint.id}/${this.props.collections[collectionId].name}`,
         title: "update endpoint",
         endpoint: endpoint,
         groupId: groupId,

@@ -59,7 +59,7 @@ class Pages extends Component {
       });
     } else {
       this.props.history.push({
-        pathname: `/public/${collectionId}/pages/${page.id}`,
+        pathname: `/p/${collectionId}/pages/${page.id}/${this.props.collections[collectionId].name}`,
         page: page,
       });
     }
