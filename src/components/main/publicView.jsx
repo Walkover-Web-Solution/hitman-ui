@@ -44,10 +44,7 @@ class PublicView extends Component {
   }
 
   render() {
-    // const redirectionUrl = `http://localhost:3000/login`;
-    const redirectionUrl = `https://hitman-ui.herokuapp.com/login`;
-    const socketLoginUrl = `https://viasocket.com/login?token_required=true&redirect_uri=${redirectionUrl}`;
-
+    const redirectionUrl = uiUrl + "/login";
     const filteredPublicCollections = this.state.filteredPublicCollections;
     return (
       <React.Fragment>
@@ -63,13 +60,13 @@ class PublicView extends Component {
             </div>
             <div className="public-dashboard-action">
               {auth.getCurrentUser() === null ? (
-                <a
-                  className="public-dashboard-user-login"
-                  href={socketLoginUrl}
-                >
-                  <i className="uil uil-signin"></i>
-                  Login With ViaSocket
-                </a>
+                <div
+                  id="sokt-sso"
+                  data-redirect-uri={redirectionUrl}
+                  data-source="sokt-app"
+                  data-token-key="sokt-auth-token"
+                  data-view="button"
+                ></div>
               ) : (
                 <UserInfo></UserInfo>
               )}

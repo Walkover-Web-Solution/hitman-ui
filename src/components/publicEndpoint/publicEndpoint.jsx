@@ -13,6 +13,7 @@ import Environments from "../environments/environments";
 import store from "../../store/store";
 import auth from "../auth/authService";
 import UserInfo from "../common/userInfo";
+import { uiUrl } from "../../config.json";
 
 const mapStateToProps = (state) => {
   return {
@@ -70,9 +71,7 @@ class PublicEndpoint extends Component {
       ].name;
       this.setState({ collectionName });
     }
-    // const redirectionUrl = `http://localhost:3000/login`;
-    const redirectionUrl = `https://hitman-ui.herokuapp.com/login`;
-    const socketLoginUrl = `https://viasocket.com/login?token_required=true&redirect_uri=${redirectionUrl}`;
+    const redirectionUrl = uiUrl + "/login";
     if (
       this.props.location.pathname.split("/")[1] === "p" &&
       (this.props.location.pathname.split("/")[3] === undefined ||
@@ -99,18 +98,22 @@ class PublicEndpoint extends Component {
             {process.env.REACT_APP_UI_URL === window.location.origin + "/" ? (
               auth.getCurrentUser() === null ? (
                 <div className="dropdown user-dropdown">
-                  <a href={socketLoginUrl} className="user-dropdown-btn">
-                    <div className="user-info">
-                      <div className="user-avatar">
-                        <i className="uil uil-signin"></i>
-                      </div>
-                      <div className="user-details">
-                        <div className="user-details-heading not-logged-in">
-                          <div className="user-name">Login with ViaSocket</div>
-                        </div>
+                  <div className="user-info">
+                    <div className="user-avatar">
+                      <i className="uil uil-signin"></i>
+                    </div>
+                    <div className="user-details ">
+                      <div className="user-details-heading not-logged-in">
+                        <div
+                          id="sokt-sso"
+                          data-redirect-uri={redirectionUrl}
+                          data-source="sokt-app"
+                          data-token-key="sokt-auth-token"
+                          data-view="button"
+                        ></div>
                       </div>
                     </div>
-                  </a>
+                  </div>
                 </div>
               ) : (
                 <UserInfo></UserInfo>
