@@ -538,7 +538,13 @@ class DisplayEndpoint extends Component {
         header,
         bodyType
       );
-      const response = { ...responseJson };
+      let response;
+      if (responseJson?.data?.status) {
+        const { status, statusText, response: data } = responseJson.data;
+        response = { status, statusText, data };
+      } else {
+        response = { ...responseJson };
+      }
       if (responseJson.status === 200) {
         let timeElapsed = new Date().getTime() - this.state.startTime;
         this.setState({ response, timeElapsed, flagResponse: true });
@@ -1450,18 +1456,17 @@ class DisplayEndpoint extends Component {
     }
     return (
       <div className="hm-endpoint-container endpoint-container">
-        <div className={isDashboardRoute(this.props) ? 'hm-panel mt-4' : null}>
-
+        <div className={isDashboardRoute(this.props) ? "hm-panel mt-4" : null}>
           {this.state.showEndpointFormModal && (
             <CreateEndpointForm
-            {...this.props}
-            show={true}
-            onHide={() => this.closeEndpointFormModal()}
-            set_group_id={this.setGroupId.bind(this)}
-            name={this.state.data.name}
-            save_endpoint={this.handleSave.bind(this)}
+              {...this.props}
+              show={true}
+              onHide={() => this.closeEndpointFormModal()}
+              set_group_id={this.setGroupId.bind(this)}
+              name={this.state.data.name}
+              save_endpoint={this.handleSave.bind(this)}
             />
-            )}
+          )}
           {this.state.showCodeTemplate && this.showCodeTemplate()}
           <DisplayDescription
             {...this.props}
@@ -1471,7 +1476,9 @@ class DisplayEndpoint extends Component {
             props_from_parent={this.propsFromDescription.bind(this)}
           />
         </div>
-        <div className={!isDashboardRoute(this.props) ? 'hm-panel' : 'hm-panel'}>
+        <div
+          className={!isDashboardRoute(this.props) ? "hm-panel" : "hm-panel"}
+        >
           {isDashboardRoute(this.props) ? (
             <div className="endpoint-url-container">
               <div className="input-group-prepend">
@@ -1543,103 +1550,116 @@ class DisplayEndpoint extends Component {
                     Save
                   </button>
                 ) : null}
+              </div>
+            </div>
+          ) : (
+            <div className="hm-endpoint-wrap">
+              <div className="hm-endpoint-header">
+                <div
+                  className={`api-label api-label-lg ${this.state.data.method}`}
+                >
+                  {this.state.data.method}
                 </div>
+                <a
+                  href="javascript:void(0)"
+                  id="show-code-snippets-button"
+                  onClick={() => this.prepareHarObject()}
+                >
+                  Sample Code
+                </a>
               </div>
-          )
-          :
-          <div className="hm-endpoint-wrap">
-            <div className="hm-endpoint-header">
-              <div className={`api-label api-label-lg ${this.state.data.method}`}>
-                {this.state.data.method}
-              </div>
-              <a
-                href="javascript:void(0)"
-                id="show-code-snippets-button"
-                onClick={() => this.prepareHarObject()}
-              >
-                Sample Code
-              </a>
-            </div>
-            <div className="endpoint-host">
-              <HostContainer
-                {...this.props}
-                groupId={this.state.groupId}
-                set_base_url={this.setBaseUrl.bind(this)}
-                custom_host={this.state.endpoint.BASE_URL}
-              />
-            </div>
-            <input
-                  ref={this.uri}
-                  type="hidden"
-                  value={this.state.data.updatedUri}
-                  name="updatedUri"
+              <div className="endpoint-host">
+                <HostContainer
+                  {...this.props}
+                  groupId={this.state.groupId}
+                  set_base_url={this.setBaseUrl.bind(this)}
+                  custom_host={this.state.endpoint.BASE_URL}
                 />
-            <div className="endpoint-uri">
-              {this.state.data.updatedUri}
+              </div>
+              <input
+                ref={this.uri}
+                type="hidden"
+                value={this.state.data.updatedUri}
+                name="updatedUri"
+              />
+              <div className="endpoint-uri">{this.state.data.updatedUri}</div>
             </div>
-          </div>
-          }
-          <div className={isDashboardRoute(this.props) ? 'endpoint-headers-container': 'hm-public-endpoint-headers'}>
+          )}
+          <div
+            className={
+              isDashboardRoute(this.props)
+                ? "endpoint-headers-container"
+                : "hm-public-endpoint-headers"
+            }
+          >
             {isDashboardRoute(this.props) ? (
               <div className="headers-params-wrapper">
-                  <ul className="nav nav-tabs" id="pills-tab" role="tablist">
-                    <li className="nav-item">
-                      <a
-                        className={
-                          this.setAuthorizationTab ? "nav-link " : "nav-link active"
-                        }
-                        id="pills-params-tab"
-                        data-toggle="pill"
-                        href={`#params-${this.props.tab.id}`}
-                        role="tab"
-                        aria-controls={`params-${this.props.tab.id}`}
-                        aria-selected={this.setAuthorizationTab ? "false" : "true"}
-                      >
-                        Params
-                      </a>
-                    </li>
-                    <li className="nav-item">
-                      <a
-                        className={
-                          this.setAuthorizationTab ? "nav-link active" : "nav-link "
-                        }
-                        id="pills-authorization-tab"
-                        data-toggle="pill"
-                        href={`#authorization-${this.props.tab.id}`}
-                        role="tab"
-                        aria-controls={`authorization-${this.props.tab.id}`}
-                        aria-selected={this.setAuthorizationTab ? "true" : "false"}
-                      >
-                        Authorization
-                      </a>
-                    </li>
-                    <li className="nav-item">
-                      <a
-                        className="nav-link"
-                        id="pills-headers-tab"
-                        data-toggle="pill"
-                        href={`#headers-${this.props.tab.id}`}
-                        role="tab"
-                        aria-controls={`headers-${this.props.tab.id}`}
-                        aria-selected="false"
-                      >
-                        Headers
-                      </a>
-                    </li>
-                    <li className="nav-item">
-                      <a
-                        className="nav-link"
-                        id="pills-body-tab"
-                        data-toggle="pill"
-                        href={`#body-${this.props.tab.id}`}
-                        role="tab"
-                        aria-controls={`body-${this.props.tab.id}`}
-                        aria-selected="false"
-                      >
-                        Body
-                      </a>
-                    </li>
-                  </ul>
+                <ul className="nav nav-tabs" id="pills-tab" role="tablist">
+                  <li className="nav-item">
+                    <a
+                      className={
+                        this.setAuthorizationTab
+                          ? "nav-link "
+                          : "nav-link active"
+                      }
+                      id="pills-params-tab"
+                      data-toggle="pill"
+                      href={`#params-${this.props.tab.id}`}
+                      role="tab"
+                      aria-controls={`params-${this.props.tab.id}`}
+                      aria-selected={
+                        this.setAuthorizationTab ? "false" : "true"
+                      }
+                    >
+                      Params
+                    </a>
+                  </li>
+                  <li className="nav-item">
+                    <a
+                      className={
+                        this.setAuthorizationTab
+                          ? "nav-link active"
+                          : "nav-link "
+                      }
+                      id="pills-authorization-tab"
+                      data-toggle="pill"
+                      href={`#authorization-${this.props.tab.id}`}
+                      role="tab"
+                      aria-controls={`authorization-${this.props.tab.id}`}
+                      aria-selected={
+                        this.setAuthorizationTab ? "true" : "false"
+                      }
+                    >
+                      Authorization
+                    </a>
+                  </li>
+                  <li className="nav-item">
+                    <a
+                      className="nav-link"
+                      id="pills-headers-tab"
+                      data-toggle="pill"
+                      href={`#headers-${this.props.tab.id}`}
+                      role="tab"
+                      aria-controls={`headers-${this.props.tab.id}`}
+                      aria-selected="false"
+                    >
+                      Headers
+                    </a>
+                  </li>
+                  <li className="nav-item">
+                    <a
+                      className="nav-link"
+                      id="pills-body-tab"
+                      data-toggle="pill"
+                      href={`#body-${this.props.tab.id}`}
+                      role="tab"
+                      aria-controls={`body-${this.props.tab.id}`}
+                      aria-selected="false"
+                    >
+                      Body
+                    </a>
+                  </li>
+                </ul>
               </div>
             ) : null}
             {isDashboardRoute(this.props) ? (
@@ -1783,7 +1803,7 @@ class DisplayEndpoint extends Component {
                   )}
               </React.Fragment>
             )}
-            {!isDashboardRoute(this.props) &&
+            {!isDashboardRoute(this.props) && (
               <div className="d-flex">
                 <button
                   className="btn btn-primary"
@@ -1794,24 +1814,24 @@ class DisplayEndpoint extends Component {
                   Try
                 </button>
               </div>
-            }
+            )}
           </div>
         </div>
 
         {/* {!isDashboardRoute(this.props) &&
         } */}
-        {this.state.response.status &&
-        <React.Fragment>
-          <div className="public-response-title">Response</div>
-          <div className="hm-panel endpoint-public-response-container">
-            <DisplayResponse
-              timeElapsed={this.state.timeElapsed}
-              response={this.state.response}
-              flagResponse={this.state.flagResponse}
+        {this.state.response.status && (
+          <React.Fragment>
+            <div className="public-response-title">Response</div>
+            <div className="hm-panel endpoint-public-response-container">
+              <DisplayResponse
+                timeElapsed={this.state.timeElapsed}
+                response={this.state.response}
+                flagResponse={this.state.flagResponse}
               ></DisplayResponse>
-          </div>
-        </React.Fragment>
-        }
+            </div>
+          </React.Fragment>
+        )}
       </div>
     );
   }
