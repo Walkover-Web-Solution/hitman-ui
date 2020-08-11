@@ -220,7 +220,6 @@ form.add-new-domain-form {
   margin-top: 0px !important;
 }
 
-
 // Overall layout
 .hm-wrapper {
   display: flex;
@@ -229,7 +228,7 @@ form.add-new-domain-form {
 
 .hm-sidebar {
   width: 350px;
-  background-color: #252D30;
+  background-color: #252d30;
   padding: 20px 15px 85px 15px;
   min-height: 100vh;
 }
@@ -264,8 +263,8 @@ form.add-new-domain-form {
 
 // Panel
 .hm-panel {
-  background-color: #F7F7F7;
-  border: 1px solid #E5E5E5;
+  background-color: #f7f7f7;
+  border: 1px solid #e5e5e5;
   padding: 20px;
   margin-bottom: 40px;
   border-radius: 3px;
@@ -354,7 +353,7 @@ h4.hm-sidebar-title {
         }
         td {
           &.custom-td {
-            border-color: #E5E5E5 !important;
+            border-color: #e5e5e5 !important;
             padding: 15px 10px !important;
             vertical-align: middle;
             opacity: 1;
@@ -380,7 +379,7 @@ h4.hm-sidebar-title {
     input.form-control {
       background: #fff;
       border-radius: 3px;
-      border: 1px solid #E0E0E0 !important;
+      border: 1px solid #e0e0e0 !important;
     }
   }
 }
@@ -425,7 +424,7 @@ h4.hm-sidebar-title {
       background: white;
       border-radius: 3px;
       overflow: auto;
-      max-height: 600px;
+      height: 600px;
     }
   }
 }

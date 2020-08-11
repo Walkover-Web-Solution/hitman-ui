@@ -1820,18 +1820,63 @@ class DisplayEndpoint extends Component {
 
         {/* {!isDashboardRoute(this.props) &&
         } */}
-        {this.state.response.status && (
-          <React.Fragment>
-            <div className="public-response-title">Response</div>
-            <div className="hm-panel endpoint-public-response-container">
-              <DisplayResponse
-                timeElapsed={this.state.timeElapsed}
-                response={this.state.response}
-                flagResponse={this.state.flagResponse}
-              ></DisplayResponse>
+        {/* {this.state.response.status && ( */}
+        <React.Fragment>
+          <div>
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+              <li className="nav-item">
+                <a
+                  className="nav-link active"
+                  id="pills-response-tab"
+                  data-toggle="pill"
+                  href={`#response-${this.props.tab.id}`}
+                  role="tab"
+                  aria-controls={`response-${this.props.tab.id}`}
+                  aria-selected="true"
+                >
+                  Response
+                </a>
+              </li>
+              <li className="nav-item">
+                <a
+                  className="nav-link"
+                  id="pills-sample-tab"
+                  data-toggle="pill"
+                  href={`#sample-${this.props.tab.id}`}
+                  role="tab"
+                  aria-controls={`sample-${this.props.tab.id}`}
+                  aria-selected="false"
+                >
+                  Sample Response
+                </a>
+              </li>
+            </ul>
+            <div className="tab-content" id="pills-tabContent">
+              <div
+                className="tab-pane fade show active"
+                id={`response-${this.props.tab.id}`}
+                role="tabpanel"
+                aria-labelledby="pills-response-tab"
+              >
+                <div className="hm-panel endpoint-public-response-container">
+                  <DisplayResponse
+                    timeElapsed={this.state.timeElapsed}
+                    response={this.state.response}
+                    flagResponse={this.state.flagResponse}
+                  ></DisplayResponse>
+                </div>
+              </div>
+              <div
+                className="tab-pane fade"
+                id={`sample-${this.props.tab.id}`}
+                role="tabpanel"
+                aria-labelledby="pills-sample-tab"
+              >
+                {"hello"}
+              </div>
             </div>
-          </React.Fragment>
-        )}
+          </div>
+        </React.Fragment>
       </div>
     );
   }
