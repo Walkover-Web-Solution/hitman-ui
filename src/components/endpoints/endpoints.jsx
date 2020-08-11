@@ -20,6 +20,7 @@ const mapStateToProps = (state) => {
     endpoints: state.endpoints,
     groups: state.groups,
     tabs: state.tabs,
+    teams: state.teams,
   };
 };
 
@@ -55,7 +56,9 @@ class Endpoints extends Component {
   };
 
   sequencingOnFilter() {
-    let filteredEndpointKeys = this.filteredEndpoints ? Object.keys(this.filteredEndpoints) : [];
+    let filteredEndpointKeys = this.filteredEndpoints
+      ? Object.keys(this.filteredEndpoints)
+      : [];
     this.filteredEndpointsOrder = [];
     for (let i = 0; i < this.props.endpoints_order.length; i++) {
       for (let j = 0; j < filteredEndpointKeys.length; j++) {
@@ -233,7 +236,9 @@ class Endpoints extends Component {
               this.state.selectedEndpoint
             )}
         </div> */}
-          {this.filteredEndpoints && Object.keys(this.filteredEndpoints) && Object.keys(this.filteredEndpoints).length !== 0 &&
+          {this.filteredEndpoints &&
+            Object.keys(this.filteredEndpoints) &&
+            Object.keys(this.filteredEndpoints).length !== 0 &&
             this.filteredEndpointsOrder
               .filter(
                 (eId) =>
@@ -267,7 +272,7 @@ class Endpoints extends Component {
                     <div className="sidebar-accordion-item">
                       <div
                         className={`api-label ${this.props.endpoints[endpointId].requestType}`}
-                        >
+                      >
                         <div className="endpoint-request-div">
                           {this.props.endpoints[endpointId].requestType}
                         </div>
@@ -295,7 +300,9 @@ class Endpoints extends Component {
                         <a
                           className="dropdown-item"
                           onClick={() =>
-                            this.handleDuplicate(this.props.endpoints[endpointId])
+                            this.handleDuplicate(
+                              this.props.endpoints[endpointId]
+                            )
                           }
                         >
                           Duplicate
@@ -328,8 +335,10 @@ class Endpoints extends Component {
                         ) : null}
 
                         {this.checkAccess(this.props.collection_id) &&
-                        (this.props.endpoints[endpointId].state === "Approved" ||
-                          this.props.endpoints[endpointId].state === "Reject") ? (
+                        (this.props.endpoints[endpointId].state ===
+                          "Approved" ||
+                          this.props.endpoints[endpointId].state ===
+                            "Reject") ? (
                           <a
                             className="dropdown-item"
                             onClick={() =>
@@ -383,14 +392,20 @@ class Endpoints extends Component {
                   this.props.endpoints[eId].groupId === this.props.group_id
               )
               .map((endpointId) => (
-                <div className="hm-sidebar-item" key={endpointId} onClick={() =>
-                  this.handleDisplay(
-                    this.props.endpoints[endpointId],
-                    this.props.group_id,
-                    this.props.collection_id
-                  )
-                }>
-                  <div className={`api-label ${this.props.endpoints[endpointId].requestType}`}>
+                <div
+                  className="hm-sidebar-item"
+                  key={endpointId}
+                  onClick={() =>
+                    this.handleDisplay(
+                      this.props.endpoints[endpointId],
+                      this.props.group_id,
+                      this.props.collection_id
+                    )
+                  }
+                >
+                  <div
+                    className={`api-label ${this.props.endpoints[endpointId].requestType}`}
+                  >
                     <div className="endpoint-request-div">
                       {this.props.endpoints[endpointId].requestType}
                     </div>
