@@ -4,6 +4,7 @@ import { withRouter } from "react-router-dom";
 import { toast } from "react-toastify";
 import store from "../../store/store";
 import { isDashboardRoute } from "../common/utility";
+import { isSavedEndpoint } from "../common/utility";
 import tabService from "../tabs/tabService";
 import tabStatusTypes from "../tabs/tabStatusTypes";
 import CodeTemplate from "./codeTemplate";
@@ -381,7 +382,7 @@ class DisplayEndpoint extends Component {
     if (sampleResponse) {
       let index = 0;
       while (index < sampleResponse.length) {
-        sampleResponseFlagArray.push(false);
+        sampleResponseFlagArray.push(!isDashboardRoute(this.props));
         index++;
       }
     }
@@ -1242,6 +1243,14 @@ class DisplayEndpoint extends Component {
     if (title === "oldDescription") this.setState({ oldDescription: data });
   }
 
+  propsFromSampleResponse(sampleResponseArray, sampleResponseFlagArray) {
+    this.setState({ sampleResponseArray, sampleResponseFlagArray });
+    this.props.update_endpoint({
+      id: this.state.endpoint.id,
+      sampleResponse: sampleResponseArray,
+    });
+  }
+
   makeFormData(body) {
     let formData = new FormData();
     body.value.map((o) => formData.set(o.key, o.value));
@@ -1879,97 +1888,114 @@ class DisplayEndpoint extends Component {
         {/* {!isDashboardRoute(this.props) &&
         } */}
         {/* {this.state.response.status && ( */}
-        <React.Fragment>
-          <div>
-            <ul class="nav nav-tabs" id="myTab" role="tablist">
-              <li className="nav-item">
-                <a
-                  className="nav-link active"
-                  id="pills-response-tab"
-                  data-toggle="pill"
-                  href={
-                    isDashboardRoute(this.props)
-                      ? `#response-${this.props.tab.id}`
-                      : "#response"
-                  }
-                  role="tab"
-                  aria-controls={
+        {isSavedEndpoint(this.props) ? (
+          <React.Fragment>
+            <div>
+              <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li className="nav-item">
+                  <a
+                    className="nav-link active"
+                    id="pills-response-tab"
+                    data-toggle="pill"
+                    href={
+                      isDashboardRoute(this.props)
+                        ? `#response-${this.props.tab.id}`
+                        : "#response"
+                    }
+                    role="tab"
+                    aria-controls={
+                      isDashboardRoute(this.props)
+                        ? `response-${this.props.tab.id}`
+                        : "response"
+                    }
+                    aria-selected="true"
+                  >
+                    Response
+                  </a>
+                </li>
+                <li className="nav-item">
+                  <a
+                    className="nav-link"
+                    id="pills-sample-tab"
+                    data-toggle="pill"
+                    href={
+                      isDashboardRoute(this.props)
+                        ? `#sample-${this.props.tab.id}`
+                        : "#sample"
+                    }
+                    role="tab"
+                    aria-controls={
+                      isDashboardRoute(this.props)
+                        ? `sample-${this.props.tab.id}`
+                        : "sample"
+                    }
+                    aria-selected="false"
+                  >
+                    Sample Response
+                  </a>
+                </li>
+              </ul>
+              <div className="tab-content" id="pills-tabContent">
+                <div
+                  className="tab-pane fade show active"
+                  id={
                     isDashboardRoute(this.props)
                       ? `response-${this.props.tab.id}`
                       : "response"
                   }
-                  aria-selected="true"
+                  role="tabpanel"
+                  aria-labelledby="pills-response-tab"
                 >
-                  Response
-                </a>
-              </li>
-              <li className="nav-item">
-                <a
-                  className="nav-link"
-                  id="pills-sample-tab"
-                  data-toggle="pill"
-                  href={
-                    isDashboardRoute(this.props)
-                      ? `#sample-${this.props.tab.id}`
-                      : "#sample"
-                  }
-                  role="tab"
-                  aria-controls={
+                  <div className="hm-panel endpoint-public-response-container">
+                    <DisplayResponse
+                      {...this.props}
+                      timeElapsed={this.state.timeElapsed}
+                      response={this.state.response}
+                      flagResponse={this.state.flagResponse}
+                      add_sample_response={this.addSampleResponse.bind(this)}
+                    ></DisplayResponse>
+                  </div>
+                </div>
+                <div
+                  className="tab-pane fade"
+                  id={
                     isDashboardRoute(this.props)
                       ? `sample-${this.props.tab.id}`
                       : "sample"
                   }
-                  aria-selected="false"
+                  role="tabpanel"
+                  aria-labelledby="pills-sample-tab"
                 >
-                  Sample Response
-                </a>
-              </li>
-            </ul>
-            <div className="tab-content" id="pills-tabContent">
-              <div
-                className="tab-pane fade show active"
-                id={
-                  isDashboardRoute(this.props)
-                    ? `response-${this.props.tab.id}`
-                    : "response"
-                }
-                role="tabpanel"
-                aria-labelledby="pills-response-tab"
-              >
-                <div className="hm-panel endpoint-public-response-container">
-                  <DisplayResponse
+                  <SampleResponse
+                    {...this.props}
                     timeElapsed={this.state.timeElapsed}
                     response={this.state.response}
                     flagResponse={this.state.flagResponse}
-                    add_sample_response={this.addSampleResponse.bind(this)}
-                  ></DisplayResponse>
+                    sample_response_array={this.state.sampleResponseArray}
+                    sample_response_flag_array={
+                      this.state.sampleResponseFlagArray
+                    }
+                    open_body={this.openBody.bind(this)}
+                    close_body={this.closeBody.bind(this)}
+                    props_from_parent={this.propsFromSampleResponse.bind(this)}
+                  ></SampleResponse>
                 </div>
               </div>
-              <div
-                className="tab-pane fade"
-                id={
-                  isDashboardRoute(this.props)
-                    ? `sample-${this.props.tab.id}`
-                    : "sample"
-                }
-                role="tabpanel"
-                aria-labelledby="pills-sample-tab"
-              >
-                <SampleResponse
-                  timeElapsed={this.state.timeElapsed}
-                  response={this.state.response}
-                  flagResponse={this.state.flagResponse}
-                  sample_response_array={this.state.sampleResponseArray}
-                  sample_response_flag_array={
-                    this.state.sampleResponseFlagArray
-                  }
-                  open_body={this.openBody.bind(this)}
-                  close_body={this.closeBody.bind(this)}
-                ></SampleResponse>
-              </div>
             </div>
-          </div>
-        </React.Fragment>
+          </React.Fragment>
+        ) : (
+          <React.Fragment>
+            <div className="public-response-title">Response</div>
+            <div className="hm-panel endpoint-public-response-container">
+              <DisplayResponse
+                {...this.props}
+                timeElapsed={this.state.timeElapsed}
+                response={this.state.response}
+                flagResponse={this.state.flagResponse}
+              ></DisplayResponse>
+            </div>
+          </React.Fragment>
+        )}
       </div>
     );
   }

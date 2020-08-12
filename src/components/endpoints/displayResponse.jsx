@@ -5,6 +5,7 @@ import { CopyToClipboard } from "react-copy-to-clipboard";
 import JSONPretty from "react-json-pretty";
 import "./endpoints.scss";
 import { isDashboardRoute } from "../common/utility";
+import { isSavedEndpoint } from "../common/utility";
 var JSONPrettyMon = require("react-json-pretty/dist/monikai");
 
 class DisplayResponse extends Component {
@@ -111,16 +112,17 @@ class DisplayResponse extends Component {
                     </a>
                   </li>
                 </ul>
-                <button
-                  // style={{ float: "right" }}
-                  onClick={() =>
-                    this.props.add_sample_response(this.props.response)
-                  }
-                >
-                  {" "}
-                  Add Sample Response
-                </button>
-
+                {isSavedEndpoint(this.props) ? (
+                  <button
+                    // style={{ float: "right" }}
+                    onClick={() =>
+                      this.props.add_sample_response(this.props.response)
+                    }
+                  >
+                    {" "}
+                    Add Sample Response
+                  </button>
+                ) : null}
                 <CopyToClipboard
                   text={JSON.stringify(this.props.response.data)}
                   onCopy={() => this.setState({ copied: true })}

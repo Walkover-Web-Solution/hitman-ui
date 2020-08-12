@@ -2,9 +2,12 @@
 import { ReactComponent as EmptyResponseImg } from "./img/empty-response.svg";
 import React, { Component } from "react";
 import { CopyToClipboard } from "react-copy-to-clipboard";
+import { isSavedEndpoint } from "../common/utility";
+import { isDashboardRoute } from "../common/utility";
 import JSONPretty from "react-json-pretty";
 import "./endpoints.scss";
 import SampleResponseForm from "./sampleResponseForm";
+var JSONPrettyMon = require("react-json-pretty/dist/monikai");
 
 class SampleResponse extends Component {
   state = {
@@ -75,47 +78,64 @@ class SampleResponse extends Component {
     this.setState({ showSampleResponseForm: false });
   }
 
+  deleteSampleResponse(sampleResponseArray, sampleResponseFlagArray, index) {
+    sampleResponseArray.splice(index, 1);
+    sampleResponseFlagArray.splice(index, 1);
+    this.props.props_from_parent(sampleResponseArray, sampleResponseFlagArray);
+  }
+
   render() {
     const sampleResponseArray = [...this.props.sample_response_array];
     const sampleResponseFlagArray = [...this.props.sample_response_flag_array];
-    console.log(sampleResponseArray);
     return (
       <React.Fragment>
-        <div>
-          <button
-            type="button"
-            className="btn btn-primary"
-            style={{ marginTop: "7px", marginLeft: "7px" }}
-            onClick={() =>
-              this.openSampleResponseForm({}, 0, "Add Sample Response")
-            }
-          >
-            + Add Sample Response
-          </button>
-        </div>
+        {isDashboardRoute(this.props) ? (
+          <div>
+            <button
+              type="button"
+              className="btn btn-primary"
+              style={{ marginTop: "7px", marginLeft: "7px" }}
+              onClick={() =>
+                this.openSampleResponseForm({}, 0, "Add Sample Response")
+              }
+            >
+              + Add Sample Response
+            </button>
+          </div>
+        ) : null}
         <div id="sample-response">
           {this.showSampleResponseForm()}
 
           {sampleResponseArray.map((obj, index) => (
             <div key={index} className="sample-response-item">
-              <span
-                className="sample-response-edit"
-                // onClick={() => this.openSampleResponseForm(obj, index)}
-              >
-                <i class="fa fa-trash" aria-hidden="true"></i>
-              </span>
-              <span
-                className="sample-response-edit"
-                onClick={() =>
-                  this.openSampleResponseForm(
-                    obj,
-                    index,
-                    "Edit Sample Response"
-                  )
-                }
-              >
-                <i className="fas fa-pen"></i>
-              </span>
+              {isDashboardRoute(this.props) ? (
+                <React.Fragment>
+                  <span
+                    className="sample-response-edit"
+                    onClick={() =>
+                      this.deleteSampleResponse(
+                        sampleResponseArray,
+                        sampleResponseFlagArray,
+                        index
+                      )
+                    }
+                  >
+                    <i class="fa fa-trash" aria-hidden="true"></i>
+                  </span>
+                  <span
+                    className="sample-response-edit"
+                    onClick={() =>
+                      this.openSampleResponseForm(
+                        obj,
+                        index,
+                        "Edit Sample Response"
+                      )
+                    }
+                  >
+                    <i className="fas fa-pen"></i>
+                  </span>
+                </React.Fragment>
+              ) : null}
               <div className="response-item-status">Status : {obj.status}</div>
               <div className="response-item-description">
                 Description : {obj.description || ""}
@@ -138,8 +158,9 @@ class SampleResponse extends Component {
                     ></i>
 
                     <JSONPretty
-                      // theme={JSONPrettyMon}
-                      themeClassName="custom-json-pretty"
+                      theme={JSONPrettyMon}
+                      style={{ maxHeight: "250px", overflow: "auto" }}
+                      // themeClassName="custom-json-pretty"
                       data={obj.data}
                     />
                   </React.Fragment>
