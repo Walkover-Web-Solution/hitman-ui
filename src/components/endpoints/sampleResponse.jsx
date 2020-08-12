@@ -4,8 +4,7 @@ import React, { Component } from "react";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import JSONPretty from "react-json-pretty";
 import "./endpoints.scss";
-import { isDashboardRoute } from "../common/utility";
-var JSONPrettyMon = require("react-json-pretty/dist/monikai");
+import SampleResponseForm from "./sampleResponseForm";
 
 class SampleResponse extends Component {
   state = {
@@ -48,13 +47,33 @@ class SampleResponse extends Component {
     });
   }
 
-  //   openBody() {
-  //     this.setState({ openBody: true });
-  //   }
+  openSampleResponseForm(obj, index) {
+    this.setState({
+      showSampleResponseForm: true,
+      sampleResponseFormName: "Edit Sample Response",
+      selectedSampleResponse: {
+        ...obj,
+      },
+    });
+  }
 
-  //   closeBody() {
-  //     this.setState({ openBody: false });
-  //   }
+  showSampleResponseForm() {
+    return (
+      this.state.showSampleResponseForm && (
+        <SampleResponseForm
+          {...this.props}
+          show={true}
+          onHide={this.closeForm.bind(this)}
+          title={this.state.sampleResponseFormName}
+          selectedSampleResponse={this.state.selectedSampleResponse}
+        />
+      )
+    );
+  }
+
+  closeForm() {
+    this.setState({ showSampleResponseForm: false });
+  }
 
   render() {
     const sampleResponseArray = [...this.props.sample_response_array];
@@ -62,10 +81,14 @@ class SampleResponse extends Component {
     console.log(sampleResponseArray);
     return (
       <div id="sample-response">
+        {this.showSampleResponseForm()}
         {sampleResponseArray.map((obj, index) => (
           <div key={index} className="sample-response-item">
-            <span className="sample-response-edit">
-              <i class="fas fa-edit"></i>
+            <span
+              className="sample-response-edit"
+              onClick={() => this.openSampleResponseForm(obj, index)}
+            >
+              <i className="fas fa-pen"></i>
             </span>
             <div className="response-item-status">status : {obj.status}</div>
             <div className="response-item-description">
@@ -88,7 +111,11 @@ class SampleResponse extends Component {
                     onClick={() => this.props.close_body(index)}
                   ></i>
 
-                  <JSONPretty theme={JSONPrettyMon} data={obj.data} />
+                  <JSONPretty
+                    // theme={JSONPrettyMon}
+                    themeClassName="custom-json-pretty"
+                    data={obj.data}
+                  />
                 </React.Fragment>
               )}
             </div>

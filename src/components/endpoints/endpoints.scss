@@ -921,6 +921,10 @@ pre.__json-pretty-error__ {
 
 #sample-response {
   min-height: 400px;
+
+  .fas.fa-pen {
+    color: rgb(120, 120, 120);
+  }
   .sample-response-item {
     padding: 10px;
     margin: 10px;
