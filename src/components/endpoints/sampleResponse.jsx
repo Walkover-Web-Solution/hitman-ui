@@ -59,6 +59,7 @@ class SampleResponse extends Component {
   render() {
     const sampleResponseArray = [...this.props.sample_response_array];
     const sampleResponseFlagArray = [...this.props.sample_response_flag_array];
+    console.log(sampleResponseArray);
     return (
       <div id="sample-response">
         {sampleResponseArray.map((obj, index) => (
@@ -87,10 +88,7 @@ class SampleResponse extends Component {
                     onClick={() => this.props.close_body(index)}
                   ></i>
 
-                  <JSONPretty
-                    theme={JSONPrettyMon}
-                    data={this.props.response.data}
-                  />
+                  <JSONPretty theme={JSONPrettyMon} data={obj.data} />
                 </React.Fragment>
               )}
             </div>
