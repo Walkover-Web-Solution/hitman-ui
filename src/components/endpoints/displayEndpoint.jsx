@@ -11,6 +11,8 @@ import CreateEndpointForm from "./createEndpointForm";
 import BodyContainer from "./displayBody";
 import DisplayDescription from "./displayDescription";
 import DisplayResponse from "./displayResponse";
+import SampleResponse from "./sampleResponse";
+
 import endpointApiService from "./endpointApiService";
 import "./endpoints.scss";
 import GenericTable from "./genericTable";
@@ -28,6 +30,7 @@ import {
 import collectionsApiService from "../collections/collectionsApiService";
 import indexedDbService from "../indexedDb/indexedDbService";
 import Authorization from "./displayAuthorization";
+import { data } from "jquery";
 const status = require("http-status");
 var URI = require("urijs");
 
@@ -104,6 +107,8 @@ class DisplayEndpoint extends Component {
     params: [],
     bodyDescription: {},
     fieldDescription: {},
+    sampleResponseArray: [],
+    sampleResponseFlagArray: [],
   };
 
   customState = {
@@ -540,8 +545,13 @@ class DisplayEndpoint extends Component {
       );
       let response;
       if (responseJson?.data?.status) {
-        const { status, statusText, response: data } = responseJson.data;
-        response = { status, statusText, data };
+        const {
+          status,
+          statusText,
+          response: data,
+          headers,
+        } = responseJson.data;
+        response = { status, statusText, data, headers };
       } else {
         response = { ...responseJson };
       }
@@ -1408,6 +1418,32 @@ class DisplayEndpoint extends Component {
     this.setState({ authType });
   }
 
+  addSampleResponse(response) {
+    const { data, status } = response;
+
+    let sampleResponseFlagArray = [...this.state.sampleResponseFlagArray];
+    const description = "";
+    let sampleResponse = { data, status, description };
+    let sampleResponseArray = [
+      ...this.state.sampleResponseArray,
+      sampleResponse,
+    ];
+    sampleResponseFlagArray.push(false);
+    this.setState({ sampleResponseArray, sampleResponseFlagArray });
+  }
+
+  openBody(index) {
+    let sampleResponseFlagArray = [...this.state.sampleResponseFlagArray];
+    sampleResponseFlagArray[index] = true;
+    this.setState({ sampleResponseFlagArray });
+  }
+
+  closeBody(index) {
+    let sampleResponseFlagArray = [...this.state.sampleResponseFlagArray];
+    sampleResponseFlagArray[index] = false;
+    this.setState({ sampleResponseFlagArray });
+  }
+
   render() {
     if (
       isDashboardRoute(this.props) &&
@@ -1863,6 +1899,7 @@ class DisplayEndpoint extends Component {
                     timeElapsed={this.state.timeElapsed}
                     response={this.state.response}
                     flagResponse={this.state.flagResponse}
+                    add_sample_response={this.addSampleResponse.bind(this)}
                   ></DisplayResponse>
                 </div>
               </div>
@@ -1872,7 +1909,17 @@ class DisplayEndpoint extends Component {
                 role="tabpanel"
                 aria-labelledby="pills-sample-tab"
               >
-                {"hello"}
+                <SampleResponse
+                  timeElapsed={this.state.timeElapsed}
+                  response={this.state.response}
+                  flagResponse={this.state.flagResponse}
+                  sample_response_array={this.state.sampleResponseArray}
+                  sample_response_flag_array={
+                    this.state.sampleResponseFlagArray
+                  }
+                  open_body={this.openBody.bind(this)}
+                  close_body={this.closeBody.bind(this)}
+                ></SampleResponse>
               </div>
             </div>
           </div>
