@@ -16,41 +16,41 @@ class SampleResponse extends Component {
     // openBody: false,
   };
 
-  responseTime() {
-    let timeElapsed = this.props.timeElapsed;
-    this.setState({ timeElapsed });
-  }
+  // responseTime() {
+  //   let timeElapsed = this.props.timeElapsed;
+  //   this.setState({ timeElapsed });
+  // }
 
-  rawDataResponse() {
-    this.setState({
-      rawResponse: true,
-      previewResponse: false,
-      prettyResponse: false,
-      responseString: JSON.stringify(this.props.response.data),
-    });
-  }
+  // rawDataResponse() {
+  //   this.setState({
+  //     rawResponse: true,
+  //     previewResponse: false,
+  //     prettyResponse: false,
+  //     responseString: JSON.stringify(this.props.response.data),
+  //   });
+  // }
 
-  prettyDataResponse() {
-    this.setState({
-      rawResponse: false,
-      previewResponse: false,
-      prettyResponse: true,
-      responseString: JSON.stringify(this.props.response),
-    });
-  }
+  // prettyDataResponse() {
+  //   this.setState({
+  //     rawResponse: false,
+  //     previewResponse: false,
+  //     prettyResponse: true,
+  //     responseString: JSON.stringify(this.props.response),
+  //   });
+  // }
 
-  previewDataResponse() {
-    this.setState({
-      rawResponse: false,
-      previewResponse: true,
-      prettyResponse: false,
-    });
-  }
+  // previewDataResponse() {
+  //   this.setState({
+  //     rawResponse: false,
+  //     previewResponse: true,
+  //     prettyResponse: false,
+  //   });
+  // }
 
-  openSampleResponseForm(obj, index) {
+  openSampleResponseForm(obj, index, name) {
     this.setState({
       showSampleResponseForm: true,
-      sampleResponseFormName: "Edit Sample Response",
+      sampleResponseFormName: name,
       selectedSampleResponse: {
         ...obj,
       },
@@ -80,48 +80,75 @@ class SampleResponse extends Component {
     const sampleResponseFlagArray = [...this.props.sample_response_flag_array];
     console.log(sampleResponseArray);
     return (
-      <div id="sample-response">
-        {this.showSampleResponseForm()}
-        {sampleResponseArray.map((obj, index) => (
-          <div key={index} className="sample-response-item">
-            <span
-              className="sample-response-edit"
-              onClick={() => this.openSampleResponseForm(obj, index)}
-            >
-              <i className="fas fa-pen"></i>
-            </span>
-            <div className="response-item-status">Status : {obj.status}</div>
-            <div className="response-item-description">
-              Description : {obj.description || ""}
-            </div>
-            <div className="response-item-body">
-              Body :{" "}
-              {!sampleResponseFlagArray[index] && (
-                <i
-                  class="fa fa-caret-right"
-                  aria-hidden="true"
-                  onClick={() => this.props.open_body(index)}
-                ></i>
-              )}
-              {sampleResponseFlagArray[index] && (
-                <React.Fragment>
-                  <i
-                    class="fa fa-caret-down"
-                    aria-hidden="true"
-                    onClick={() => this.props.close_body(index)}
-                  ></i>
+      <React.Fragment>
+        <div>
+          <button
+            type="button"
+            className="btn btn-primary"
+            style={{ marginTop: "7px", marginLeft: "7px" }}
+            onClick={() =>
+              this.openSampleResponseForm({}, 0, "Add Sample Response")
+            }
+          >
+            + Add Sample Response
+          </button>
+        </div>
+        <div id="sample-response">
+          {this.showSampleResponseForm()}
 
-                  <JSONPretty
-                    // theme={JSONPrettyMon}
-                    themeClassName="custom-json-pretty"
-                    data={obj.data}
-                  />
-                </React.Fragment>
-              )}
+          {sampleResponseArray.map((obj, index) => (
+            <div key={index} className="sample-response-item">
+              <span
+                className="sample-response-edit"
+                // onClick={() => this.openSampleResponseForm(obj, index)}
+              >
+                <i class="fa fa-trash" aria-hidden="true"></i>
+              </span>
+              <span
+                className="sample-response-edit"
+                onClick={() =>
+                  this.openSampleResponseForm(
+                    obj,
+                    index,
+                    "Edit Sample Response"
+                  )
+                }
+              >
+                <i className="fas fa-pen"></i>
+              </span>
+              <div className="response-item-status">Status : {obj.status}</div>
+              <div className="response-item-description">
+                Description : {obj.description || ""}
+              </div>
+              <div className="response-item-body">
+                Body :{" "}
+                {!sampleResponseFlagArray[index] && (
+                  <i
+                    class="fa fa-caret-right"
+                    aria-hidden="true"
+                    onClick={() => this.props.open_body(index)}
+                  ></i>
+                )}
+                {sampleResponseFlagArray[index] && (
+                  <React.Fragment>
+                    <i
+                      class="fa fa-caret-down"
+                      aria-hidden="true"
+                      onClick={() => this.props.close_body(index)}
+                    ></i>
+
+                    <JSONPretty
+                      // theme={JSONPrettyMon}
+                      themeClassName="custom-json-pretty"
+                      data={obj.data}
+                    />
+                  </React.Fragment>
+                )}
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      </React.Fragment>
     );
   }
 }
