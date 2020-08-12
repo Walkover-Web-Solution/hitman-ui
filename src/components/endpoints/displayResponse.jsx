@@ -111,6 +111,15 @@ class DisplayResponse extends Component {
                     </a>
                   </li>
                 </ul>
+                <button
+                  // style={{ float: "right" }}
+                  onClick={() =>
+                    this.props.add_sample_response(this.props.response)
+                  }
+                >
+                  {" "}
+                  Add Sample Response
+                </button>
 
                 <CopyToClipboard
                   text={JSON.stringify(this.props.response.data)}

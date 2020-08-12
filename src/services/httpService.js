@@ -17,7 +17,7 @@ instance.interceptors.response.use(null, (error) => {
     logger.log(!error);
     toast.error("An unexpected error occur");
   }
-  if (error.response.status === 401) {
+  if (error?.response?.status === 401) {
     toast.error("Session Expired");
     auth.logout();
     window.location = "/";
