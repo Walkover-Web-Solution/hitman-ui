@@ -259,6 +259,10 @@ class DisplayEndpoint extends Component {
         endpoint.bodyDescription
       );
 
+      const sampleResponseFlagArray = this.getSampleResponseFlagArray(
+        endpoint.sampleResponse
+      );
+
       this.setState({
         data: {
           method: endpoint.requestType,
@@ -272,6 +276,8 @@ class DisplayEndpoint extends Component {
         originalParams,
         originalHeaders,
         endpoint,
+        sampleResponseArray: endpoint.sampleResponse || [],
+        sampleResponseFlagArray,
         groupId,
         oldDescription: endpoint.description,
         title: "update endpoint",
@@ -368,6 +374,18 @@ class DisplayEndpoint extends Component {
     }
 
     this.setState({ pathVariables });
+  }
+
+  getSampleResponseFlagArray(sampleResponse) {
+    let sampleResponseFlagArray = [];
+    if (sampleResponse) {
+      let index = 0;
+      while (index < sampleResponse.length) {
+        sampleResponseFlagArray.push(false);
+        index++;
+      }
+    }
+    return sampleResponseFlagArray;
   }
 
   makeOriginalParams(keys, values, description) {
@@ -1430,6 +1448,10 @@ class DisplayEndpoint extends Component {
     ];
     sampleResponseFlagArray.push(false);
     this.setState({ sampleResponseArray, sampleResponseFlagArray });
+    this.props.update_endpoint({
+      id: this.state.endpoint.id,
+      sampleResponse: sampleResponseArray,
+    });
   }
 
   openBody(index) {

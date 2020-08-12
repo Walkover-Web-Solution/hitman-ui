@@ -90,12 +90,12 @@ class SampleResponse extends Component {
             >
               <i className="fas fa-pen"></i>
             </span>
-            <div className="response-item-status">status : {obj.status}</div>
+            <div className="response-item-status">Status : {obj.status}</div>
             <div className="response-item-description">
-              descripton : {obj.description || "No descrption"}
+              Description : {obj.description || ""}
             </div>
             <div className="response-item-body">
-              body :{" "}
+              Body :{" "}
               {!sampleResponseFlagArray[index] && (
                 <i
                   class="fa fa-caret-right"
