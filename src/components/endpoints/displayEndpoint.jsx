@@ -1865,9 +1865,17 @@ class DisplayEndpoint extends Component {
                   className="nav-link active"
                   id="pills-response-tab"
                   data-toggle="pill"
-                  href={`#response-${this.props.tab.id}`}
+                  href={
+                    isDashboardRoute(this.props)
+                      ? `#response-${this.props.tab.id}`
+                      : "#response"
+                  }
                   role="tab"
-                  aria-controls={`response-${this.props.tab.id}`}
+                  aria-controls={
+                    isDashboardRoute(this.props)
+                      ? `response-${this.props.tab.id}`
+                      : "response"
+                  }
                   aria-selected="true"
                 >
                   Response
@@ -1878,9 +1886,17 @@ class DisplayEndpoint extends Component {
                   className="nav-link"
                   id="pills-sample-tab"
                   data-toggle="pill"
-                  href={`#sample-${this.props.tab.id}`}
+                  href={
+                    isDashboardRoute(this.props)
+                      ? `#sample-${this.props.tab.id}`
+                      : "#sample"
+                  }
                   role="tab"
-                  aria-controls={`sample-${this.props.tab.id}`}
+                  aria-controls={
+                    isDashboardRoute(this.props)
+                      ? `sample-${this.props.tab.id}`
+                      : "sample"
+                  }
                   aria-selected="false"
                 >
                   Sample Response
@@ -1890,7 +1906,11 @@ class DisplayEndpoint extends Component {
             <div className="tab-content" id="pills-tabContent">
               <div
                 className="tab-pane fade show active"
-                id={`response-${this.props.tab.id}`}
+                id={
+                  isDashboardRoute(this.props)
+                    ? `response-${this.props.tab.id}`
+                    : "response"
+                }
                 role="tabpanel"
                 aria-labelledby="pills-response-tab"
               >
@@ -1905,7 +1925,11 @@ class DisplayEndpoint extends Component {
               </div>
               <div
                 className="tab-pane fade"
-                id={`sample-${this.props.tab.id}`}
+                id={
+                  isDashboardRoute(this.props)
+                    ? `sample-${this.props.tab.id}`
+                    : "sample"
+                }
                 role="tabpanel"
                 aria-labelledby="pills-sample-tab"
               >
