@@ -1446,8 +1446,10 @@ class DisplayEndpoint extends Component {
   }
 
   addSampleResponse(response) {
-    const { data, status } = response;
+    let { data, status } = response;
 
+    // data = JSON.stringify(data, null, 2);
+    // console.log("data", data);
     let sampleResponseFlagArray = [...this.state.sampleResponseFlagArray];
     const description = "";
     let sampleResponse = { data, status, description };

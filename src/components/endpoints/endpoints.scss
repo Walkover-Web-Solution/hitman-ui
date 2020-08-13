@@ -941,3 +941,21 @@ pre.__json-pretty-error__ {
     margin: 5px;
   }
 }
+
+.add-sample-response {
+  display: flex;
+  flex-direction: row-reverse;
+  padding: 5px;
+  margin: 5px;
+  // color: rgb(3, 123, 254);
+  button {
+    color: rgb(3, 123, 254);
+    border-radius: 0px;
+    border: none;
+  }
+}
+
+.custom-json-pretty {
+  max-height: 250px;
+  overflow: auto;
+}

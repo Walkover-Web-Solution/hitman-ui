@@ -1,8 +1,11 @@
 import React, { Component } from "react";
 import Input from "./input";
 import Joi from "joi-browser";
+import AceEditor from "react-ace";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import "ace-builds";
+import "ace-builds/src-noconflict/mode-json";
 
 class Form extends Component {
   state = {
@@ -59,6 +62,12 @@ class Form extends Component {
     const data = this.state.data;
     let description = value;
     data["description"] = description;
+    this.setState({ data });
+  };
+
+  handleAceEditorChange = (value) => {
+    const data = { ...this.state.data };
+    data["body"] = value;
     this.setState({ data });
   };
 
@@ -124,6 +133,35 @@ class Form extends Component {
       >
         {label}
       </button>
+    );
+  }
+  renderAceEditor(name, label) {
+    const { data, errors } = this.state;
+
+    return (
+      <div className="form-group ">
+        <label htmlFor={name} className="custom-input-label">
+          {label}
+        </label>
+        <AceEditor
+          className="custom-raw-editor"
+          mode={"json"}
+          theme="github"
+          value={this.state.data.body}
+          onChange={this.handleAceEditorChange}
+          setOptions={{
+            showLineNumbers: true,
+          }}
+          editorProps={{
+            $blockScrolling: false,
+          }}
+          onLoad={(editor) => {
+            editor.focus();
+            editor.getSession().setUseWrapMode(true);
+            editor.setShowPrintMargin(false);
+          }}
+        />
+      </div>
     );
   }
 }
