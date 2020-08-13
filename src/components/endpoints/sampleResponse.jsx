@@ -19,37 +19,6 @@ class SampleResponse extends Component {
     // openBody: false,
   };
 
-  // responseTime() {
-  //   let timeElapsed = this.props.timeElapsed;
-  //   this.setState({ timeElapsed });
-  // }
-
-  // rawDataResponse() {
-  //   this.setState({
-  //     rawResponse: true,
-  //     previewResponse: false,
-  //     prettyResponse: false,
-  //     responseString: JSON.stringify(this.props.response.data),
-  //   });
-  // }
-
-  // prettyDataResponse() {
-  //   this.setState({
-  //     rawResponse: false,
-  //     previewResponse: false,
-  //     prettyResponse: true,
-  //     responseString: JSON.stringify(this.props.response),
-  //   });
-  // }
-
-  // previewDataResponse() {
-  //   this.setState({
-  //     rawResponse: false,
-  //     previewResponse: true,
-  //     prettyResponse: false,
-  //   });
-  // }
-
   openSampleResponseForm(obj, index, name) {
     this.setState({
       showSampleResponseForm: true,
@@ -157,7 +126,6 @@ class SampleResponse extends Component {
 
                   <JSONPretty
                     // theme={JSONPrettyMon}
-                    // style={{ maxHeight: "250px", overflow: "auto" }}
                     themeClassName="custom-json-pretty"
                     data={obj.data}
                   />

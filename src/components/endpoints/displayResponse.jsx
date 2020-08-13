@@ -112,7 +112,7 @@ class DisplayResponse extends Component {
                     </a>
                   </li>
                 </ul>
-                {isSavedEndpoint(this.props) ? (
+                {isSavedEndpoint(this.props) && isDashboardRoute(this.props) ? (
                   <button
                     // style={{ float: "right" }}
                     onClick={() =>
@@ -120,7 +120,7 @@ class DisplayResponse extends Component {
                     }
                   >
                     {" "}
-                    Add Sample Response
+                    Add to Sample Response
                   </button>
                 ) : null}
                 <CopyToClipboard
