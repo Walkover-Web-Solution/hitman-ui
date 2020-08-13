@@ -929,7 +929,7 @@ pre.__json-pretty-error__ {
     padding: 10px;
     margin: 10px;
     margin-bottom: 25px;
-    background: rgb(245, 245, 245);
+    background: rgb(247, 247, 247) !important;
     /* background: blue; */
     font-weight: 340;
     font-family: serif;
@@ -958,4 +958,18 @@ pre.__json-pretty-error__ {
 .custom-json-pretty {
   max-height: 250px;
   overflow: auto;
+  border: 1px solid black;
+  padding: 10px;
+  margin: 10px;
+  background: white;
+  border-radius: 10px;
+}
+
+.add-to-sample-response {
+  flex: auto;
+  padding-left: 30pc;
+  .sample-response-txt {
+    color: rgb(3, 123, 254);
+    cursor: pointer;
+  }
 }

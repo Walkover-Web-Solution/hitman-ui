@@ -42,6 +42,7 @@ class Form extends Component {
     if (!error) return null;
     const errors = {};
     for (let item of error.details) errors[item.path[0]] = item.message;
+    console.log(errors);
     return errors;
   };
 
@@ -144,6 +145,7 @@ class Form extends Component {
           {label}
         </label>
         <AceEditor
+          style={{ border: "1px solid rgb(206 213 218)" }}
           className="custom-raw-editor"
           mode={"json"}
           theme="github"
@@ -161,6 +163,9 @@ class Form extends Component {
             editor.setShowPrintMargin(false);
           }}
         />
+        {errors[name] && (
+          <div className="alert alert-danger">{errors[name]}</div>
+        )}
       </div>
     );
   }

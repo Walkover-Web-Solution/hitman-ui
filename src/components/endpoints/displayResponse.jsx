@@ -113,15 +113,19 @@ class DisplayResponse extends Component {
                   </li>
                 </ul>
                 {isSavedEndpoint(this.props) && isDashboardRoute(this.props) ? (
-                  <button
+                  <div
                     // style={{ float: "right" }}
-                    onClick={() =>
-                      this.props.add_sample_response(this.props.response)
-                    }
+                    className="add-to-sample-response"
                   >
-                    {" "}
-                    Add to Sample Response
-                  </button>
+                    <div
+                      className="sample-response-txt"
+                      onClick={() =>
+                        this.props.add_sample_response(this.props.response)
+                      }
+                    >
+                      Add to Sample Response
+                    </div>
+                  </div>
                 ) : null}
                 <CopyToClipboard
                   text={JSON.stringify(this.props.response.data)}

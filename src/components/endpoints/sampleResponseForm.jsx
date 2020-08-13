@@ -10,9 +10,9 @@ class SampleResponseForm extends Form {
   };
 
   schema = {
-    status: Joi.string().required().label("status: "),
+    status: Joi.number().min(100).max(599).label("status: "),
     description: Joi.string().allow(null, "").label("description: "),
-    body: Joi.string().allow(null, "").label("body: "),
+    body: Joi.object().allow(null, "").label("body: "),
   };
 
   async componentDidMount() {
@@ -39,7 +39,11 @@ class SampleResponseForm extends Form {
 
   editSampleResponse() {
     let { status, description, body: data } = this.state.data;
-    data = JSON.parse(data);
+    try {
+      data = JSON.parse(data);
+    } catch (error) {
+      data = null;
+    }
     const index = this.props.index;
     let sampleResponse = { status, description, data };
     let sampleResponseArray = [...this.props.sample_response_array];
@@ -50,7 +54,11 @@ class SampleResponseForm extends Form {
 
   addSampleResponse() {
     let { status, description, body: data } = this.state.data;
-    data = JSON.parse(data);
+    try {
+      data = JSON.parse(data);
+    } catch (error) {
+      data = null;
+    }
 
     let sampleResponse = { status, description, data };
     let sampleResponseArray = [
@@ -67,15 +75,13 @@ class SampleResponseForm extends Form {
   async doSubmit() {
     this.props.onHide();
     if (this.props.title === "Add Sample Response") {
-      // const { id, collectionId } = this.props.selected_version;
-      // const editedCollectionVersion = { ...this.state.data, collectionId, id };
       this.addSampleResponse();
     }
     if (this.props.title === "Edit Sample Response") {
       this.editSampleResponse();
     }
   }
-  // {"a":"b"}
+
   render() {
     return (
       <Modal
