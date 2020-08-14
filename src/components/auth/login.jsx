@@ -3,7 +3,6 @@ import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
 import "./auth.scss";
 import auth from "./authService";
-import Navbar from "../main/Navbar";
 
 class Login extends Component {
   async componentDidMount() {

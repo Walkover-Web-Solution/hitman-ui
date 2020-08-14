@@ -9,7 +9,6 @@ import DisplayCollection from "../collections/displayCollection";
 import SideBar from "../main/sidebar";
 import { fetchAllPublicEndpoints } from "./redux/publicEndpointsActions.js";
 import "./publicEndpoint.scss";
-import Environments from "../environments/environments";
 import store from "../../store/store";
 import auth from "../auth/authService";
 import UserInfo from "../common/userInfo";

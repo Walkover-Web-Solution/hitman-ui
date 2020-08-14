@@ -7,7 +7,6 @@ import "../styles.scss";
 import tabService from "../tabs/tabService";
 import CreateNewModal from "./CreateNewModal";
 import "./main.scss";
-import openApiService from "../openApi/openApiService";
 import OpenApiForm from "../openApi/openApiForm";
 
 class Navbar extends Component {

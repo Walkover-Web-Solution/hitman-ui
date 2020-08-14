@@ -14,7 +14,6 @@ import { fetchPages } from "../pages/redux/pagesActions";
 import { fetchAllTeamsOfUser } from "../teams/redux/teamsActions";
 import ContentPanel from "./contentPanel";
 import "./main.scss";
-import Navbar from "./Navbar";
 import SideBar from "./sidebar";
 
 const mapDispatchToProps = (dispatch) => {

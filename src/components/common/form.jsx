@@ -109,7 +109,7 @@ class Form extends Component {
   }
 
   renderQuillEditor(name, label) {
-    const { data, errors } = this.state;
+    const { data } = this.state;
 
     return (
       <div className="form-group ">
@@ -149,7 +149,7 @@ class Form extends Component {
           className="custom-raw-editor"
           mode={"json"}
           theme="github"
-          value={this.state.data.body}
+          value={data.body}
           onChange={this.handleAceEditorChange}
           setOptions={{
             showLineNumbers: true,

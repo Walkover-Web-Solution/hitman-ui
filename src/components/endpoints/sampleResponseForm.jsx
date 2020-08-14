@@ -12,7 +12,7 @@ class SampleResponseForm extends Form {
   schema = {
     status: Joi.number().min(100).max(599).label("status: "),
     description: Joi.string().allow(null, "").label("description: "),
-    body: Joi.object().allow(null, "").label("body: "),
+    body: Joi.object().allow(null, "", "null").label("body: "),
   };
 
   async componentDidMount() {

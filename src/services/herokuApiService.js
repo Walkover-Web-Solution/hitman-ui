@@ -1,5 +1,3 @@
-// import http from "../../services/http";
-import httpService from "./endpointHttpService";
 import http from "./httpService";
 
 const herokuToken = "0a1191f5-5ca0-4a88-a4c6-1e9a8b16cd77";

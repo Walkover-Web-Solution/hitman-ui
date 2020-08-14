@@ -6,6 +6,7 @@ import JSONPretty from "react-json-pretty";
 import "./endpoints.scss";
 import { isDashboardRoute } from "../common/utility";
 import { isSavedEndpoint } from "../common/utility";
+import { Toast } from "react-bootstrap";
 var JSONPrettyMon = require("react-json-pretty/dist/monikai");
 
 class DisplayResponse extends Component {
@@ -15,6 +16,7 @@ class DisplayResponse extends Component {
     previewResponse: false,
     responseString: "",
     timeElapsed: "",
+    show: false,
   };
 
   responseTime() {
@@ -46,6 +48,17 @@ class DisplayResponse extends Component {
       previewResponse: true,
       prettyResponse: false,
     });
+  }
+
+  toggleShow = () => {
+    const show = !this.state.show;
+    console.log("show", show);
+    this.setState({ show });
+  };
+
+  addSampleResponse(response) {
+    this.toggleShow();
+    this.props.add_sample_response(response);
   }
 
   render() {
@@ -120,7 +133,7 @@ class DisplayResponse extends Component {
                     <div
                       className="sample-response-txt"
                       onClick={() =>
-                        this.props.add_sample_response(this.props.response)
+                        this.addSampleResponse(this.props.response)
                       }
                     >
                       Add to Sample Response
@@ -137,6 +150,20 @@ class DisplayResponse extends Component {
                   </button>
                 </CopyToClipboard>
               </div>
+              {this.state.show && (
+                <div className="custom-toast">
+                  <Toast
+                    show={this.state.show}
+                    autohide={true}
+                    onClose={this.toggleShow}
+                  >
+                    <Toast.Body>
+                      <i class="fa fa-check" aria-hidden="true"></i> Added to
+                      sample response successfully!{" "}
+                    </Toast.Body>
+                  </Toast>
+                </div>
+              )}
               <div className="tab-content" id="myTabContent">
                 <div
                   className="tab-pane fade show active"

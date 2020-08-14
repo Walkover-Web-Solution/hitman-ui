@@ -1,13 +1,9 @@
-// import image from "../common/Screenshot 2020-03-21 at 10.53.24 AM.png";
-import { ReactComponent as EmptyResponseImg } from "./img/empty-response.svg";
-import React, { Component, Fragment } from "react";
-import { CopyToClipboard } from "react-copy-to-clipboard";
-import { isSavedEndpoint } from "../common/utility";
+import React, { Component } from "react";
 import { isDashboardRoute } from "../common/utility";
 import JSONPretty from "react-json-pretty";
 import "./endpoints.scss";
 import SampleResponseForm from "./sampleResponseForm";
-var JSONPrettyMon = require("react-json-pretty/dist/monikai");
+import DeleteModal from "../common/deleteModal";
 
 class SampleResponse extends Component {
   state = {
@@ -16,12 +12,20 @@ class SampleResponse extends Component {
     previewResponse: false,
     responseString: "",
     timeElapsed: "",
+
+    showSampleResponseForm: {
+      add: false,
+      edit: false,
+      delete: false,
+    },
     // openBody: false,
   };
 
-  openSampleResponseForm(obj, index, name) {
+  openAddForm(obj, index, name) {
+    let showSampleResponseForm = { ...this.state.showSampleResponseForm };
+    showSampleResponseForm.add = true;
     this.setState({
-      showSampleResponseForm: true,
+      showSampleResponseForm,
       sampleResponseFormName: name,
       selectedSampleResponse: {
         ...obj,
@@ -30,9 +34,9 @@ class SampleResponse extends Component {
     });
   }
 
-  showSampleResponseForm() {
+  showAddForm() {
     return (
-      this.state.showSampleResponseForm && (
+      this.state.showSampleResponseForm.add && (
         <SampleResponseForm
           {...this.props}
           show={true}
@@ -45,8 +49,63 @@ class SampleResponse extends Component {
     );
   }
 
+  openEditForm(obj, index, name) {
+    let showSampleResponseForm = { ...this.state.showSampleResponseForm };
+    showSampleResponseForm.edit = true;
+    this.setState({
+      showSampleResponseForm,
+      sampleResponseFormName: name,
+      selectedSampleResponse: {
+        ...obj,
+      },
+      index,
+    });
+  }
+
+  showEditForm() {
+    return (
+      this.state.showSampleResponseForm.edit && (
+        <SampleResponseForm
+          {...this.props}
+          show={true}
+          onHide={this.closeForm.bind(this)}
+          title={this.state.sampleResponseFormName}
+          selectedSampleResponse={this.state.selectedSampleResponse}
+          index={this.state.index}
+        />
+      )
+    );
+  }
+
+  openDeleteForm(index, name) {
+    let showSampleResponseForm = { ...this.state.showSampleResponseForm };
+    showSampleResponseForm.delete = true;
+    this.setState({
+      showSampleResponseForm,
+      sampleResponseFormName: name,
+      index,
+    });
+  }
+
+  showDeleteForm() {
+    const msg = `Are you sure you want to delete this sample response?`;
+    return (
+      this.state.showSampleResponseForm.delete && (
+        <DeleteModal
+          {...this.props}
+          show={true}
+          onHide={this.closeForm.bind(this)}
+          title={this.state.sampleResponseFormName}
+          index={this.state.index}
+          message={msg}
+        />
+      )
+    );
+  }
+
   closeForm() {
-    this.setState({ showSampleResponseForm: false });
+    let showSampleResponseForm = { add: false, delete: false, edit: false };
+    this.setState({ showSampleResponseForm });
   }
 
   deleteSampleResponse(sampleResponseArray, sampleResponseFlagArray, index) {
@@ -63,15 +122,15 @@ class SampleResponse extends Component {
         {isDashboardRoute(this.props) ? (
           <div className="add-sample-response">
             <button
-              onClick={() =>
-                this.openSampleResponseForm({}, null, "Add Sample Response")
-              }
+              onClick={() => this.openAddForm({}, null, "Add Sample Response")}
             >
               + Add Sample Response
             </button>
           </div>
         ) : null}
-        {this.showSampleResponseForm()}
+        {this.showAddForm()}
+        {this.showEditForm()}
+        {this.showDeleteForm()}
 
         {sampleResponseArray.map((obj, index) => (
           <div key={index} className="sample-response-item">
@@ -80,11 +139,12 @@ class SampleResponse extends Component {
                 <span
                   className="sample-response-edit"
                   onClick={() =>
-                    this.deleteSampleResponse(
-                      sampleResponseArray,
-                      sampleResponseFlagArray,
-                      index
-                    )
+                    // this.deleteSampleResponse(
+                    //   sampleResponseArray,
+                    //   sampleResponseFlagArray,
+                    //   index
+                    // )
+                    this.openDeleteForm(index, "Delete Sample Response")
                   }
                 >
                   <i class="fa fa-trash" aria-hidden="true"></i>
@@ -92,11 +152,7 @@ class SampleResponse extends Component {
                 <span
                   className="sample-response-edit"
                   onClick={() =>
-                    this.openSampleResponseForm(
-                      obj,
-                      index,
-                      "Edit Sample Response"
-                    )
+                    this.openEditForm(obj, index, "Edit Sample Response")
                   }
                 >
                   <i className="fas fa-pen"></i>

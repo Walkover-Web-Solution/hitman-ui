@@ -82,6 +82,7 @@ class PublicView extends Component {
               <div className="collection-image">
                 <img
                   src={`//logo.clearbit.com/${filteredPublicCollections[collectionId].name}.com`}
+                  alt=""
                 ></img>
               </div>
               <h1>{filteredPublicCollections[collectionId].name}</h1>

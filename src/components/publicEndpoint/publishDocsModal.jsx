@@ -1,10 +1,9 @@
-import React, { Component } from "react";
+import React from "react";
 import { Modal } from "react-bootstrap";
 import "./publicEndpoint.scss";
 import Form from "../common/form";
 import Joi from "joi-browser";
 import herokuApiService from "../../services/herokuApiService";
-import endpointApiService from "../endpoints/endpointApiService";
 import { connect } from "react-redux";
 import jQuery from "jquery";
 import { toast } from "react-toastify";

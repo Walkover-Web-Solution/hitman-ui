@@ -31,7 +31,6 @@ import {
 import collectionsApiService from "../collections/collectionsApiService";
 import indexedDbService from "../indexedDb/indexedDbService";
 import Authorization from "./displayAuthorization";
-import { data } from "jquery";
 const status = require("http-status");
 var URI = require("urijs");
 
@@ -1379,7 +1378,7 @@ class DisplayEndpoint extends Component {
       paramsObject.client_id = authData.clientId;
       paramsObject.client_secret = authData.clientSecret;
       paramsObject.redirect_uri = authData.callbackUrl;
-      let response = await endpointApiService.authorize(
+      await endpointApiService.authorize(
         authData.accessTokenUrl,
         paramsObject,
         "auth_code",

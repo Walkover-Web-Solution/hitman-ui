@@ -2,13 +2,12 @@ import React, { Component } from "react";
 import { Route, Switch } from "react-router-dom";
 import Login from "./components/auth/login";
 import Logout from "./components/auth/logout";
+import NotFound from "./components/common/notFound";
 import ProtectedRoute from "./components/common/protectedRoute";
 import Main from "./components/main/Main.jsx";
+import PublicView from "./components/main/publicView";
 import Public from "./components/publicEndpoint/publicEndpoint.jsx";
 import herokuApiService from "./services/herokuApiService";
-import store from "./store/store";
-import PublicView from "./components/main/publicView";
-import NotFound from "./components/common/notFound";
 
 class App extends Component {
   async redirectToClientDomain() {
@@ -23,8 +22,8 @@ class App extends Component {
         const baseUrl = url[2];
 
         const clientDetails = configVars[baseUrl].split(",");
-        const clientTitle = clientDetails[0];
-        const clientDomain = url[2];
+        // const clientTitle = clientDetails[0];
+        // const clientDomain = url[2];
         const clientCollectionId = clientDetails[2];
 
         this.props.history.push({ pathname: `/p/${clientCollectionId}` });
