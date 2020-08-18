@@ -68,14 +68,7 @@ class DisplayDescription extends Component {
     this.props.props_from_parent("endpoint", endpoint);
   };
 
-  showDescription() {
-    let showAddDescriptionFlag = !this.state.showAddDescriptionFlag;
-    this.setState({ showAddDescriptionFlag, showDescriptionFormFlag: false });
-  }
-
   render() {
-    console.log("state", this.state);
-    console.log("props", this.props.endpoint);
     return (
       <div className="endpoint-header">
         <div
@@ -85,32 +78,6 @@ class DisplayDescription extends Component {
               : "endpoint-name-container"
           }
         >
-          {/* {this.props.endpoint.description !== undefined &&
-          isDashboardRoute(this.props) ? (
-            <React.Fragment> */}
-          {/* <button className="endpoint-description">
-                <i
-                  className={
-                    this.state.showAddDescriptionFlag === true
-                      ? "fas fa-caret-down "
-                      : "fas fa-caret-right"
-                  }
-                  onClick={() => this.showDescription()}
-                ></i>
-              </button> */}
-          {/* <input
-                type="text"
-                className="endpoint-name-input"
-                aria-label="Username"
-                aria-describedby="addon-wrapping"
-                name="name"
-                placeholder="Endpoint Name"
-                value={this.props.data.name}
-                onChange={this.handleChange}
-              /> */}
-          {/* </React.Fragment>
-          ) : null} */}
-
           {isDashboardRoute(this.props) && (
             <React.Fragment>
               <label className="hm-panel-label">Endpoint title</label>
@@ -139,7 +106,7 @@ class DisplayDescription extends Component {
           isDashboardRoute(this.props) ? (
             <Link
               style={{
-                padding: "0px 0px 0px 35px",
+                padding: "0px 0px 0px 10px",
                 fontSize: "15px",
                 color: "tomato",
               }}
