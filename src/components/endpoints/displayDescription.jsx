@@ -122,23 +122,30 @@ class DisplayDescription extends Component {
                     <label className="hm-panel-label">
                       Endpoint Description
                     </label>
+                    <button
+                      className="btn btn-default"
+                      onClick={() => this.handleDescription()}
+                    >
+                      <i className="fas fa-pen"></i>
+                    </button>
                     <br />
+                    <div
+                      className="endpoint-description-text"
+                      style={{
+                        color: "#495057",
+                        maxHeight: "240px",
+                        overflow: "auto",
+                        padding: "2px",
+                      }}
+                    >
+                      {this.props.endpoint.description}
+                    </div>
                   </div>
-                ) : null}
-                <div
-                  className="endpoint-description-text"
-                  style={{ display: "inline" }}
-                >
-                  {this.props.endpoint.description}
-                </div>
-                {isDashboardRoute(this.props) ? (
-                  <button
-                    className="btn btn-default"
-                    onClick={() => this.handleDescription()}
-                  >
-                    <i className="fas fa-pen"></i>
-                  </button>
-                ) : null}
+                ) : (
+                  <div className="endpoint-description-text">
+                    {this.props.endpoint.description}
+                  </div>
+                )}
               </div>
             </React.Fragment>
           )
@@ -152,7 +159,7 @@ class DisplayDescription extends Component {
             <div className="endpoint-description-wrap">
               <textarea
                 className="form-control"
-                rows="3"
+                rows="5"
                 name="description"
                 placeholder="Make things easier for your teammates with a complete endpoint description"
                 value={this.props.endpoint.description}
