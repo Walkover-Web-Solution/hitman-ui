@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { isDashboardRoute } from "../common/utility";
+import { isSavedEndpoint } from "../common/utility";
 import { Link } from "react-router-dom";
 import { updateEndpoint } from "./redux/endpointsActions";
 import { connect } from "react-redux";
@@ -14,7 +15,12 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 class DisplayDescription extends Component {
   state = {
     showDescriptionFormFlag: false,
-    showAddDescriptionFlag: isDashboardRoute(this.props) ? false : true,
+    showAddDescriptionFlag: isDashboardRoute(this.props)
+      ? this.props.endpoint.description == "" ||
+        this.props.endpoint.description == null
+        ? true
+        : false
+      : false,
   };
 
   handleChange = (e) => {
@@ -25,7 +31,7 @@ class DisplayDescription extends Component {
 
   handleDescription() {
     const showDescriptionFormFlag = true;
-    let showAddDescriptionFlag = true;
+    let showAddDescriptionFlag = false;
     this.setState({ showDescriptionFormFlag, showAddDescriptionFlag });
   }
 
@@ -68,17 +74,21 @@ class DisplayDescription extends Component {
   }
 
   render() {
+    console.log("state", this.state);
+    console.log("props", this.props.endpoint);
     return (
       <div className="endpoint-header">
-        <div className={
-          isDashboardRoute(this.props)
-            ? "panel-endpoint-name-container"
-            : "endpoint-name-container"
-          }>
-          {this.props.endpoint.description !== undefined &&
+        <div
+          className={
+            isDashboardRoute(this.props)
+              ? "panel-endpoint-name-container"
+              : "endpoint-name-container"
+          }
+        >
+          {/* {this.props.endpoint.description !== undefined &&
           isDashboardRoute(this.props) ? (
-            <React.Fragment>
-              {/* <button className="endpoint-description">
+            <React.Fragment> */}
+          {/* <button className="endpoint-description">
                 <i
                   className={
                     this.state.showAddDescriptionFlag === true
@@ -88,7 +98,7 @@ class DisplayDescription extends Component {
                   onClick={() => this.showDescription()}
                 ></i>
               </button> */}
-              {/* <input
+          {/* <input
                 type="text"
                 className="endpoint-name-input"
                 aria-label="Username"
@@ -98,36 +108,34 @@ class DisplayDescription extends Component {
                 value={this.props.data.name}
                 onChange={this.handleChange}
               /> */}
-              </React.Fragment>
-          )
-          : null
-          }
+          {/* </React.Fragment>
+          ) : null} */}
 
-          {isDashboardRoute(this.props) &&
-          <React.Fragment>
-            <label className="hm-panel-label">Endpoint title</label>
-            <input
-              type="text"
-              className={"form-control"}
-              aria-label="Username"
-              aria-describedby="addon-wrapping"
-              name="name"
-              placeholder="Endpoint Name"
-              value={this.props.data.name}
-              onChange={this.handleChange}
-              disabled={isDashboardRoute(this.props) ? null : true} />
+          {isDashboardRoute(this.props) && (
+            <React.Fragment>
+              <label className="hm-panel-label">Endpoint title</label>
+              <input
+                type="text"
+                className={"form-control"}
+                aria-label="Username"
+                aria-describedby="addon-wrapping"
+                name="name"
+                placeholder="Endpoint Name"
+                value={this.props.data.name}
+                onChange={this.handleChange}
+                disabled={isDashboardRoute(this.props) ? null : true}
+              />
             </React.Fragment>
-          }
-          {!isDashboardRoute(this.props) &&
-            <h1 className="endpoint-title">
-              {this.props.data.name}
-            </h1>
-          }
+          )}
+          {!isDashboardRoute(this.props) && (
+            <h1 className="endpoint-title">{this.props.data.name}</h1>
+          )}
         </div>
 
-        {this.state.showAddDescriptionFlag &&
-        !this.state.showDescriptionFormFlag ? (
-          this.props.endpoint.description === "" &&
+        {isSavedEndpoint(this.props) && !this.state.showDescriptionFormFlag ? (
+          this.state.showAddDescriptionFlag &&
+          (this.props.endpoint.description === "" ||
+            this.props.endpoint.description === null) &&
           isDashboardRoute(this.props) ? (
             <Link
               style={{
@@ -140,28 +148,41 @@ class DisplayDescription extends Component {
               Add a Description
             </Link>
           ) : (
-            <div className="endpoint-description">
-              <div className="endpoint-description-text">
-                {this.props.endpoint.description}
-              </div>
-              {isDashboardRoute(this.props) ? (
-                <button
-                  className="btn btn-default"
-                  onClick={() => this.handleDescription()}
+            <React.Fragment>
+              <div className="endpoint-description">
+                {isDashboardRoute(this.props) ? (
+                  <div>
+                    <label className="hm-panel-label">
+                      Endpoint Description
+                    </label>
+                    <br />
+                  </div>
+                ) : null}
+                <div
+                  className="endpoint-description-text"
+                  style={{ display: "inline" }}
                 >
-                  <i className="fas fa-pen"></i>
-                </button>
-              ) : null}
-            </div>
+                  {this.props.endpoint.description}
+                </div>
+                {isDashboardRoute(this.props) ? (
+                  <button
+                    className="btn btn-default"
+                    onClick={() => this.handleDescription()}
+                  >
+                    <i className="fas fa-pen"></i>
+                  </button>
+                ) : null}
+              </div>
+            </React.Fragment>
           )
         ) : null}
 
-        {isDashboardRoute(this.props) ? (
+        {isDashboardRoute(this.props) &&
+        isSavedEndpoint(this.props) &&
+        this.state.showDescriptionFormFlag ? (
           <form onSubmit={this.handleDescriptionSave.bind(this)}>
-          <label className="hm-panel-label">Endpoint Description</label>
-            <div
-              className="endpoint-description-wrap"
-            >
+            <label className="hm-panel-label">Endpoint Description</label>
+            <div className="endpoint-description-wrap">
               <textarea
                 className="form-control"
                 rows="3"
@@ -171,17 +192,14 @@ class DisplayDescription extends Component {
                 onChange={this.handleChangeDescription}
               ></textarea>
               <div className="endpoint-cta">
-                {/* <button
+                <button
                   className="btn btn-link"
                   type="cancel"
                   onClick={() => this.handleDescriptionCancel()}
                 >
                   Cancel
-                </button> */}
-                <button
-                  className="btn btn-primary"
-                  type="submit"
-                >
+                </button>
+                <button className="btn btn-primary" type="submit">
                   Save
                 </button>
               </div>

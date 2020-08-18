@@ -237,6 +237,7 @@ class Pages extends Component {
               this.handleDisplay(page, this.props.collection_id, false);
             }}
           >
+            <i className="uil uil-file-alt" aria-hidden="true"></i>
             {this.props.pages[pageId].name}
           </div>
         )}

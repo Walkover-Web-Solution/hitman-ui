@@ -154,6 +154,10 @@ nav.navbar.navbar-dark.fixed-top.bg-dark.flex-md-nowrap.p-0.shadow {
   margin-bottom: 7px;
 }
 
+.hm-sidebar-item > i {
+  display: inline-block;
+  width: 30px;
+}
 
 // Body description
 
@@ -163,80 +167,80 @@ nav.navbar.navbar-dark.fixed-top.bg-dark.flex-md-nowrap.p-0.shadow {
 }
 
 .key-title {
-    display: table-cell;
-    vertical-align: middle;
-    min-width: 180px;
-    padding: 0 15px;
-    vertical-align: top;
-    padding-top: 12px;
+  display: table-cell;
+  vertical-align: middle;
+  min-width: 180px;
+  padding: 0 15px;
+  vertical-align: top;
+  padding-top: 12px;
 }
 
 .object-row-wrapper {
-    display: table-row;
+  display: table-row;
 }
 
 label.data-type {
-    margin: 0;
-    display: inline-block;
-    background: #e8e8e800;
-    padding: 0 6px;
-    border-radius: 3px;
-    margin: 5px;
-    /* display: block; */
-    vertical-align: middle;
-    color: #999;
+  margin: 0;
+  display: inline-block;
+  background: #e8e8e800;
+  padding: 0 6px;
+  border-radius: 3px;
+  margin: 5px;
+  /* display: block; */
+  vertical-align: middle;
+  color: #999;
 }
 
 .key-title label {
-    margin: 0;
-    vertical-align: middle;
+  margin: 0;
+  vertical-align: middle;
 }
 
 .value-description-input-wrapper > input {
-    margin: 0;
-    padding: 0 15px;
-    background: #fff;
-    border-radius: 3px;
-    border: 1px solid #E0E0E0 !important;
-    height: 35px;
-    min-width: 220px;
+  margin: 0;
+  padding: 0 15px;
+  background: #fff;
+  border-radius: 3px;
+  border: 1px solid #e0e0e0 !important;
+  height: 35px;
+  min-width: 220px;
 }
 
 .array-container {
-    border: none;
-    margin: 0;
-    padding: 0;
+  border: none;
+  margin: 0;
+  padding: 0;
 }
 
 .array-container {
-    display: block;
-    border: none !important;
-    // padding: 10px 0;
-    border-radius: 0;
+  display: block;
+  border: none !important;
+  // padding: 10px 0;
+  border-radius: 0;
 }
 
 .array-wrapper {
-    border: none;
-    margin: 0;
-    padding-left: 10px;
+  border: none;
+  margin: 0;
+  padding-left: 10px;
 }
 
 .array-row .object-container > div {
-    // display: list-item;
-    // list-style: decimal;
-    margin: 0 0 0 20px;
-    display: block;
-    position: relative;
-    border-left: 1px solid #d8d8d8 !important;
-    &:before {
-      content: "";
-      position: absolute;
-      top: 22px;
-      left: 0;
-      height: 1px;
-      width: 10px;
-      background: #d8d8d8;
-    }
+  // display: list-item;
+  // list-style: decimal;
+  margin: 0 0 0 20px;
+  display: block;
+  position: relative;
+  border-left: 1px solid #d8d8d8 !important;
+  &:before {
+    content: "";
+    position: absolute;
+    top: 22px;
+    left: 0;
+    height: 1px;
+    width: 10px;
+    background: #d8d8d8;
+  }
 }
 
 .array-row {
@@ -245,15 +249,15 @@ label.data-type {
 }
 
 .object-container {
-    border: none;
-    margin: 0;
-    border-radius: 0;
+  border: none;
+  margin: 0;
+  border-radius: 0;
 }
 
 .body-description-container {
-    padding: 0;
-    background: transparent;
-    border: none;
+  padding: 0;
+  background: transparent;
+  border: none;
 }
 .array-row-add-wrapper {
   text-align: left;
@@ -264,7 +268,7 @@ label.data-type {
     margin-right: 15px;
   }
   .description-input-field {
-    color: #999999;;
+    color: #999999;
   }
 }
 
@@ -293,18 +297,21 @@ label.data-type {
   }
 }
 
-
 // Dropdown
 .dropdown-menu {
   border-radius: 3px !important;
   box-shadow: none;
   border: none;
   padding: 10px 10px;
-  box-shadow: 0 3px 5px 0px rgba(0, 0, 0, 0.03), 0 0 20px 0px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 3px 5px 0px rgba(0, 0, 0, 0.03),
+    0 0 20px 0px rgba(0, 0, 0, 0.08);
   color: #252d30;
 }
 
-.dropdown-menu .dropdown-item {border-radius: 3px;padding: 5px 10px;}
+.dropdown-menu .dropdown-item {
+  border-radius: 3px;
+  padding: 5px 10px;
+}
 
 // Public Dashboard
 .collection-wrap {
@@ -373,9 +380,8 @@ label.data-type {
   }
 }
 
-
 .public-dashboard-header {
-  background: #252D30;
+  background: #252d30;
   color: #fff;
   margin-bottom: 40px;
   .public-dashboard-container {
@@ -403,7 +409,6 @@ label.data-type {
   }
 }
 
-
 // User Dropdown
 .user-dropdown {
   a {
@@ -422,7 +427,8 @@ label.data-type {
     &:hover {
       background-color: rgba(255, 255, 255, 0.05);
     }
-    &:active, &:focus {
+    &:active,
+    &:focus {
       box-shadow: none;
       outline: none;
     }
@@ -495,8 +501,8 @@ label.data-type {
         }
       }
       .user-details-text {
-          color: #777777;
-          font-size: 12px;
+        color: #777777;
+        font-size: 12px;
       }
     }
     li {
