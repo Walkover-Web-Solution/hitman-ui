@@ -957,27 +957,31 @@ class DisplayEndpoint extends Component {
   }
 
   async prepareHarObject() {
-    const BASE_URL = this.customState.BASE_URL;
-    let uri = new URI(this.uri.current.value);
-    let queryparams = uri.search();
-    let path = this.setPathVariableValues();
-    let url = BASE_URL + path + queryparams;
-    url = this.replaceVariables(url);
-    const { method, body } = this.state.data;
-    const { originalHeaders, originalParams } = this.state;
-    const harObject = {
-      method,
-      url: url,
-      httpVersion: "HTTP/1.1",
-      cookies: [],
-      headers: this.makeHeaders(originalHeaders),
-      postData: body.type === "none" ? null : await this.makePostData(body),
-      queryString: this.makeParams(originalParams),
-    };
-    if (!harObject.url.split(":")[1] || harObject.url.split(":")[0] === "") {
-      harObject.url = "https://" + url;
+    try {
+      const BASE_URL = this.customState.BASE_URL;
+      let uri = new URI(this.uri.current.value);
+      let queryparams = uri.search();
+      let path = this.setPathVariableValues();
+      let url = BASE_URL + path + queryparams;
+      url = this.replaceVariables(url);
+      const { method, body } = this.state.data;
+      const { originalHeaders, originalParams } = this.state;
+      const harObject = {
+        method,
+        url: url,
+        httpVersion: "HTTP/1.1",
+        cookies: [],
+        headers: this.makeHeaders(originalHeaders),
+        postData: body.type === "none" ? null : await this.makePostData(body),
+        queryString: this.makeParams(originalParams),
+      };
+      if (!harObject.url.split(":")[1] || harObject.url.split(":")[0] === "") {
+        harObject.url = "https://" + url;
+      }
+      this.openCodeTemplate(harObject);
+    } catch (error) {
+      toast.error(error);
     }
-    this.openCodeTemplate(harObject);
   }
 
   openCodeTemplate(harObject) {
@@ -1892,7 +1896,7 @@ class DisplayEndpoint extends Component {
         {isSavedEndpoint(this.props) ? (
           <React.Fragment>
             <div>
-              <ul class="nav nav-tabs" id="myTab" role="tablist">
+              <ul className="nav nav-tabs" id="myTab" role="tablist">
                 <li className="nav-item">
                   <a
                     className="nav-link active"
