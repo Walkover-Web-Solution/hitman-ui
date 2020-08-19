@@ -108,14 +108,18 @@ class PublishDocsModal extends Form {
     this.props.update_collection(collection);
   }
 
-  handleEditButton() {
+  handleEditButton(operation) {
+    if (operation === "cancel") {
+      this.setState({ editableDocProperties: false });
+      return;
+    }
     if (this.state.editableDocProperties === false)
       this.setState({ editableDocProperties: true });
     else {
       let docProperties = {
+        ...this.props.collections[this.props.collection_id].docProperties,
         defaultTitle: this.state.data.defaultTitle,
         defaultLogoUrl: this.state.data.defaultLogoUrl,
-        ...this.props.collections[this.props.collection_id].docProperties,
       };
       let collection = {
         ...this.props.collections[this.props.collection_id],
