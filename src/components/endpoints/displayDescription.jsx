@@ -16,7 +16,7 @@ class DisplayDescription extends Component {
   state = {
     showDescriptionFormFlag: false,
     showAddDescriptionFlag: isDashboardRoute(this.props)
-      ? this.props.endpoint.description == "" ||
+      ? this.props.endpoint.description === "" ||
         this.props.endpoint.description == null
         ? true
         : false
