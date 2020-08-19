@@ -36,8 +36,10 @@ class DisplayBodyDescription extends Component {
 
   handleChange = (e) => {
     const { name, value } = e.currentTarget;
-    let body = JSON.parse(this.props.body.value);
-    const bodyDescription = this.performChange(
+    let body = JSON.parse(this.props.body);
+    // let body = this.props.body.value;
+
+    const { bodyDescription } = this.performChange(
       this.makeParentKeysArray(name),
       jQuery.extend(true, {}, this.props.body_description),
       value,
