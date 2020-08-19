@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Accordion, Button, Card } from "react-bootstrap";
+import { Accordion, Card } from "react-bootstrap";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
@@ -291,112 +291,111 @@ class CollectionsComponent extends Component {
           className="sidebar-accordion"
         >
           {/* <Card> */}
-            {/* <Card.Header> */}
-              <Accordion.Toggle
-                variant="default"
-                eventKey={eventkeyValue !== null ? eventkeyValue : "0"}
-              >
-                {collectionState === "singleCollection" ? (
-                  <div>{this.props.collections[collectionId].name}</div>
-                  ) : (
-                    <div className="sidebar-accordion-item"
-                    onClick={() => this.openSelectedCollection(collectionId)}
-                    >
-                    <i className="uil uil-parcel"></i>
-                    {this.props.collections[collectionId].name}
-                  </div>
-                )}
-              <div className="sidebar-item-action">
-                <div
-                  className="sidebar-item-action-btn "
-                  data-toggle="dropdown"
-                  aria-haspopup="true"
-                  aria-expanded="false"
-                >
-                  <i className="uil uil-ellipsis-v"></i>
-                </div>
-                <div className="dropdown-menu dropdown-menu-right">
-                  <a
-                    className="dropdown-item"
-                    onClick={() => this.openEditCollectionForm(collectionId)}
-                  >
-                    Edit
-                  </a>
-                  <a
-                    className="dropdown-item"
-                    onClick={() => {
-                      this.openDeleteCollectionModal(collectionId);
-                    }}
-                  >
-                    Delete
-                  </a>
-                  <a
-                    className="dropdown-item"
-                    onClick={() => this.openAddVersionForm(collectionId)}
-                  >
-                    Add Version
-                  </a>
-                  <a
-                    className="dropdown-item"
-                    onClick={() =>
-                      this.handleDuplicateCollection(
-                        this.props.collections[collectionId]
-                      )
-                    }
-                  >
-                    Duplicate
-                  </a>
-                  <a
-                    className="dropdown-item"
-                    onClick={() => this.openImportVersionForm(collectionId)}
-                  >
-                    Import Version
-                  </a>
-                  {this.props.collections[collectionId].isPublic && (
-                    <a
-                      className="dropdown-item"
-                      onClick={() =>
-                        this.handleGoToDocs(
-                          this.props.collections[collectionId]
-                        )
-                      }
-                    >
-                      Go to Docs
-                    </a>
-                  )}
-                  {/* {(this.currentUserRole==="Admin"||this.currentUserRole==="Owner") && ( */}
-                  <a
-                    className="dropdown-item"
-                    onClick={() =>
-                      this.openPublishDocs(this.props.collections[collectionId])
-                    }
-                  >
-                    Publish Docs{" "}
-                  </a>
-
-                  <a
-                    className="dropdown-item"
-                    onClick={() => {
-                      this.shareCollection(collectionId);
-                    }}
-                  >
-                    Share
-                  </a>
-                </div>
-              </div>
-              </Accordion.Toggle>
-            {/* </Card.Header> */}
+          {/* <Card.Header> */}
+          <Accordion.Toggle
+            variant="default"
+            eventKey={eventkeyValue !== null ? eventkeyValue : "0"}
+          >
             {collectionState === "singleCollection" ? (
-              <Accordion.Collapse id="collection-collapse" eventKey="0">
-                <Card.Body>
-                  <CollectionVersions
-                    {...this.props}
-                    collection_id={collectionId}
-                    selectedCollection={true}
-                  />
-                </Card.Body>
-              </Accordion.Collapse>
-            ) : null}
+              <div>{this.props.collections[collectionId].name}</div>
+            ) : (
+              <div
+                className="sidebar-accordion-item"
+                onClick={() => this.openSelectedCollection(collectionId)}
+              >
+                <i className="uil uil-parcel"></i>
+                {this.props.collections[collectionId].name}
+              </div>
+            )}
+            <div className="sidebar-item-action">
+              <div
+                className="sidebar-item-action-btn "
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+              >
+                <i className="uil uil-ellipsis-v"></i>
+              </div>
+              <div className="dropdown-menu dropdown-menu-right">
+                <a
+                  className="dropdown-item"
+                  onClick={() => this.openEditCollectionForm(collectionId)}
+                >
+                  Edit
+                </a>
+                <a
+                  className="dropdown-item"
+                  onClick={() => {
+                    this.openDeleteCollectionModal(collectionId);
+                  }}
+                >
+                  Delete
+                </a>
+                <a
+                  className="dropdown-item"
+                  onClick={() => this.openAddVersionForm(collectionId)}
+                >
+                  Add Version
+                </a>
+                <a
+                  className="dropdown-item"
+                  onClick={() =>
+                    this.handleDuplicateCollection(
+                      this.props.collections[collectionId]
+                    )
+                  }
+                >
+                  Duplicate
+                </a>
+                <a
+                  className="dropdown-item"
+                  onClick={() => this.openImportVersionForm(collectionId)}
+                >
+                  Import Version
+                </a>
+                {this.props.collections[collectionId].isPublic && (
+                  <a
+                    className="dropdown-item"
+                    onClick={() =>
+                      this.handleGoToDocs(this.props.collections[collectionId])
+                    }
+                  >
+                    Go to Docs
+                  </a>
+                )}
+                {/* {(this.currentUserRole==="Admin"||this.currentUserRole==="Owner") && ( */}
+                <a
+                  className="dropdown-item"
+                  onClick={() =>
+                    this.openPublishDocs(this.props.collections[collectionId])
+                  }
+                >
+                  Publish Docs{" "}
+                </a>
+
+                <a
+                  className="dropdown-item"
+                  onClick={() => {
+                    this.shareCollection(collectionId);
+                  }}
+                >
+                  Share
+                </a>
+              </div>
+            </div>
+          </Accordion.Toggle>
+          {/* </Card.Header> */}
+          {collectionState === "singleCollection" ? (
+            <Accordion.Collapse id="collection-collapse" eventKey="0">
+              <Card.Body>
+                <CollectionVersions
+                  {...this.props}
+                  collection_id={collectionId}
+                  selectedCollection={true}
+                />
+              </Card.Body>
+            </Accordion.Collapse>
+          ) : null}
           {/* </Card> */}
         </Accordion>
       </React.Fragment>
@@ -539,8 +538,8 @@ class CollectionsComponent extends Component {
                 this.renderBody(collectionId, "allCollections")
               )} */}
             {finalCollections.map((collectionId, index) =>
-                this.renderBody(collectionId, "allCollections")
-              )}
+              this.renderBody(collectionId, "allCollections")
+            )}
           </div>
         </div>
       );
@@ -550,7 +549,8 @@ class CollectionsComponent extends Component {
         <React.Fragment>
           {Object.keys(this.props.collections).map((collectionId, index) => (
             <React.Fragment>
-              <div className="hm-sidebar-header"
+              <div
+                className="hm-sidebar-header"
                 onClick={() =>
                   this.handlePublicCollectionDescription(
                     this.props.collections[collectionId]
@@ -561,9 +561,7 @@ class CollectionsComponent extends Component {
                   <img
                     src={`//logo.clearbit.com/${this.props.collections[collectionId].name}.com`}
                     onClick={() =>
-                      window.open(
-                        this.props.collections[collectionId].website
-                      )
+                      window.open(this.props.collections[collectionId].website)
                     }
                   ></img>
                 </div>
