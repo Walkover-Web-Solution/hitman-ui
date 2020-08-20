@@ -384,6 +384,7 @@ class Authorization extends Component {
               <div className="input-field-wrapper">
                 <label>Username</label>
                 <input
+                  className="form-control"
                   name="username"
                   value={this.state.basicAuth.username}
                   onChange={this.handleChange.bind(this)}
@@ -393,6 +394,7 @@ class Authorization extends Component {
               <div className="input-field-wrapper">
                 <label>Password</label>
                 <input
+                  className="form-control"
                   type={
                     this.state.showPassword
                       ? this.state.showPassword === true
@@ -404,6 +406,14 @@ class Authorization extends Component {
                   value={this.state.basicAuth.password}
                   onChange={this.handleChange.bind(this)}
                 ></input>
+                <label className="mb-0 ml-3">
+                  <input
+                    className="mr-1"
+                    type="checkbox"
+                    onClick={() => this.showPassword()}
+                  ></input>
+                  Show Password
+                </label>
               </div>
               {/* <div className="input-field-wrapper">
                 <label>
@@ -422,15 +432,6 @@ class Authorization extends Component {
                 </label>
               </div> */}
             </form>
-            <div className="input-field-wrapper">
-              <label>
-                <input
-                  type="checkbox"
-                  onClick={() => this.showPassword()}
-                ></input>
-                Show Password
-              </label>
-            </div>
           </div>
         )}
         {this.state.authorizationType === "oauth_2" && (

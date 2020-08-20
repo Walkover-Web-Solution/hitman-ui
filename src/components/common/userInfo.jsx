@@ -17,47 +17,57 @@ class UserInfo extends Component {
 
   render() {
     return (
-      <div>
         <div className="btn-grp" id="user-menu">
-          <div className="dropdown">
+          <div className="dropdown user-dropdown">
             <button
-              className="btn btn-secondary dropdown-toggle"
+              className="user-dropdown-btn"
               type="button"
               id="dropdownMenuButton"
               data-toggle="dropdown"
               aria-haspopup="true"
               aria-expanded="false"
-              style={{ borderRadius: "70px" }}
             >
-              <i className="fas fa-user"></i>
-            </button>
-            <div
-              className="dropdown-menu dropdown-menu-right"
-              aria-labelledby="dropdownMenuButton"
-            >
-              <div id="custom-user-left">
-                <i className="fas fa-user"></i>
-              </div>
-              <div id="custom-user-right">
-                <div>{this.state.user.name}</div>
-                <div>{this.state.user.email}</div>
-                <div>
-                  <li className=" ">
-                    <Link to="/logout">Sign out</Link>
-                  </li>
-                  {auth.getCurrentUser() === null ? null : (
-                    <div>
-                      <li className=" ">
-                        <Link to="/dashboard">My Collections</Link>
-                      </li>
+              <div className="user-info">
+                <div className="user-avatar">
+                  <i className="uil uil-user"></i>
+                </div>
+                <div className="user-details">
+                  <div className="user-details-heading">
+                    <div className="user-name">
+                      {this.state.user.name}
                     </div>
-                  )}
+                  </div>
                 </div>
               </div>
+            </button>
+            <div
+              className="dropdown-menu"
+              aria-labelledby="dropdownMenuButton"
+            >
+              <div className="user-info">
+                <div className="user-avatar">
+                  <i className="uil uil-user"></i>
+                </div>
+                <div className="user-details">
+                  <div className="user-details-heading">
+                    <div className="user-name">
+                      {this.state.user.name}
+                    </div>
+                  </div>
+                  <div className="user-details-text">{this.state.user.email}</div>
+                </div>
+              </div>
+              <li>
+                <Link to="/logout">Sign out</Link>
+              </li>
+              {auth.getCurrentUser() === null ? null : (
+                <li>
+                  <Link to="/dashboard">My Collections</Link>
+                </li>
+              )}
             </div>
           </div>
         </div>
-      </div>
     );
   }
 }

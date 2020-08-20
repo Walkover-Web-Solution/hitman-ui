@@ -51,14 +51,15 @@ $border-color: rgba(227, 228, 230, 0.7);
 
 .environment-container {
   align-self: flex-end;
-  border-left: 1px solid $border-color;
-  float: right;
+  // border-left: 1px solid $border-color;
+  // float: right;
   display: flex;
   flex-direction: row-reverse;
   justify-content: baseline;
-  align-items: flex-end;
-  height: 43px;
+  // align-items: flex-end;
+  // height: 43px;
   width: 200px;
+  min-width: 200px;
   .environment-buttons {
     display: flex;
     flex-direction: row;

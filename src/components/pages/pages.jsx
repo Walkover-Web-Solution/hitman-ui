@@ -15,6 +15,7 @@ import { closeTab, openInNewTab } from "../tabs/redux/tabsActions";
 const mapStateToProps = (state) => {
   return {
     tabs: state.tabs,
+    teams: state.teams,
   };
 };
 
@@ -59,7 +60,7 @@ class Pages extends Component {
       });
     } else {
       this.props.history.push({
-        pathname: `/public/${collectionId}/pages/${page.id}`,
+        pathname: `/p/${collectionId}/pages/${page.id}/${this.props.collections[collectionId].name}`,
         page: page,
       });
     }
@@ -108,118 +109,139 @@ class Pages extends Component {
   render() {
     const pageId = this.props.page_id;
     return (
-      <div id="accordion" key={this.props.index}>
-        <div className="card">
-          <div className="card-header" id="custom-card-header">
-            <i className="fa fa-file-text" aria-hidden="true"></i>
-            <h5 className="mb-0">
-              <button
-                className="btn"
-                data-toggle="collapse"
-                data-target={`#${pageId}`}
-                aria-expanded="true"
-                aria-controls={pageId}
-                onClick={() => {
-                  const page = this.props.pages[pageId];
-                  this.handleDisplay(page, this.props.collection_id, true);
-                }}
-                onDoubleClick={() => {
-                  const page = this.props.pages[pageId];
-                  this.handleDisplay(page, this.props.collection_id, false);
-                }}
-              >
+      <React.Fragment>
+        {isDashboardRoute(this.props) ? (
+          <div
+            className="sidebar-accordion"
+            id="accordion"
+            key={this.props.index}
+          >
+            {/* <div className="card"> */}
+            {/* <div className="card-header" id="custom-card-header"> */}
+            <button
+              data-toggle="collapse"
+              data-target={`#${pageId}`}
+              aria-expanded="true"
+              aria-controls={pageId}
+              onClick={() => {
+                const page = this.props.pages[pageId];
+                this.handleDisplay(page, this.props.collection_id, true);
+              }}
+              onDoubleClick={() => {
+                const page = this.props.pages[pageId];
+                this.handleDisplay(page, this.props.collection_id, false);
+              }}
+            >
+              <div className="sidebar-accordion-item">
+                <i className="uil uil-file-alt" aria-hidden="true"></i>
                 {this.props.pages[pageId].name}
-              </button>
-            </h5>
-            {isDashboardRoute(this.props) ? (
-              <div className="btn-group">
-                <button
-                  className="btn btn-secondary "
+              </div>
+              <div className="sidebar-item-action">
+                <div
+                  className="sidebar-item-action-btn"
                   data-toggle="dropdown"
                   aria-haspopup="true"
                   aria-expanded="false"
+                  onClick={(event) => event.stopPropagation()}
                 >
-                  <i className="fas fa-ellipsis-h"></i>
-                </button>
+                  <i className="uil uil-ellipsis-v"></i>
+                </div>
                 <div className="dropdown-menu dropdown-menu-right">
-                  <button
+                  <a
                     className="dropdown-item"
                     onClick={() => {
                       this.props.open_delete_page_modal(pageId);
                     }}
                   >
                     Delete
-                  </button>
-                  <button
+                  </a>
+                  <a
                     className="dropdown-item"
                     onClick={() =>
                       this.handleDuplicate(this.props.pages[pageId])
                     }
                   >
                     Duplicate
-                  </button>
+                  </a>
                   {this.props.pages[pageId].state === "Draft" ? (
-                    <button
+                    <a
                       className="dropdown-item"
                       onClick={() =>
                         this.handlePublicPageState(this.props.pages[pageId])
                       }
                     >
                       Make Public
-                    </button>
+                    </a>
                   ) : null}
 
                   {!this.checkAccess(this.props.collection_id) &&
                   this.props.pages[pageId].state === "Pending" ? (
-                    <button
+                    <a
                       className="dropdown-item"
                       onClick={() =>
                         this.handleCancelRequest(this.props.pages[pageId])
                       }
                     >
                       Cancel Request
-                    </button>
+                    </a>
                   ) : null}
 
                   {this.checkAccess(this.props.collection_id) &&
                   (this.props.pages[pageId].state === "Approved" ||
                     this.props.pages[pageId].state === "Reject") ? (
-                    <button
+                    <a
                       className="dropdown-item"
                       onClick={() =>
                         this.handleCancelRequest(this.props.pages[pageId])
                       }
                     >
                       Move to Draft
-                    </button>
+                    </a>
                   ) : null}
                   {this.checkAccess(this.props.collection_id) &&
                   this.props.pages[pageId].state === "Pending" ? (
                     <div>
-                      <button
+                      <a
                         className="dropdown-item"
                         onClick={() =>
                           this.handleApproveRequest(this.props.pages[pageId])
                         }
                       >
                         Approve Request
-                      </button>
-                      <button
+                      </a>
+                      <a
                         className="dropdown-item"
                         onClick={() =>
                           this.handleRejectRequest(this.props.pages[pageId])
                         }
                       >
                         Reject Request
-                      </button>
+                      </a>
                     </div>
                   ) : null}
                 </div>
               </div>
-            ) : null}
+            </button>
+            {/* </div> */}
+            {/* </div> */}
           </div>
-        </div>
-      </div>
+        ) : (
+          <div
+            className="hm-sidebar-item"
+            onClick={() => {
+              const page = this.props.pages[pageId];
+              this.handleDisplay(page, this.props.collection_id, true);
+            }}
+            onDoubleClick={() => {
+              const page = this.props.pages[pageId];
+              this.handleDisplay(page, this.props.collection_id, false);
+            }}
+          >
+            <i className="uil uil-file-alt" aria-hidden="true"></i>
+            {this.props.pages[pageId].name}
+          </div>
+        )}
+      </React.Fragment>
     );
   }
 }

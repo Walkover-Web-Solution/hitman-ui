@@ -1,8 +1,11 @@
 import React, { Component } from "react";
 import Input from "./input";
 import Joi from "joi-browser";
+import AceEditor from "react-ace";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import "ace-builds";
+import "ace-builds/src-noconflict/mode-json";
 
 class Form extends Component {
   state = {
@@ -39,6 +42,7 @@ class Form extends Component {
     if (!error) return null;
     const errors = {};
     for (let item of error.details) errors[item.path[0]] = item.message;
+    console.log(errors);
     return errors;
   };
 
@@ -59,6 +63,12 @@ class Form extends Component {
     const data = this.state.data;
     let description = value;
     data["description"] = description;
+    this.setState({ data });
+  };
+
+  handleAceEditorChange = (value) => {
+    const data = { ...this.state.data };
+    data["body"] = value;
     this.setState({ data });
   };
 
@@ -99,7 +109,7 @@ class Form extends Component {
   }
 
   renderQuillEditor(name, label) {
-    const { data, errors } = this.state;
+    const { data } = this.state;
 
     return (
       <div className="form-group ">
@@ -124,6 +134,39 @@ class Form extends Component {
       >
         {label}
       </button>
+    );
+  }
+  renderAceEditor(name, label) {
+    const { data, errors } = this.state;
+
+    return (
+      <div className="form-group ">
+        <label htmlFor={name} className="custom-input-label">
+          {label}
+        </label>
+        <AceEditor
+          style={{ border: "1px solid rgb(206 213 218)" }}
+          className="custom-raw-editor"
+          mode={"json"}
+          theme="github"
+          value={data.body}
+          onChange={this.handleAceEditorChange}
+          setOptions={{
+            showLineNumbers: true,
+          }}
+          editorProps={{
+            $blockScrolling: false,
+          }}
+          onLoad={(editor) => {
+            editor.focus();
+            editor.getSession().setUseWrapMode(true);
+            editor.setShowPrintMargin(false);
+          }}
+        />
+        {errors[name] && (
+          <div className="alert alert-danger">{errors[name]}</div>
+        )}
+      </div>
     );
   }
 }

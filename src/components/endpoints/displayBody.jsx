@@ -11,6 +11,7 @@ import AceEditor from "react-ace";
 import BodyDescription from "./bodyDescription";
 import "./endpoints.scss";
 import GenericTable from "./genericTable";
+import { isSavedEndpoint } from "../common/utility";
 
 class BodyContainer extends Component {
   state = {
@@ -218,6 +219,7 @@ class BodyContainer extends Component {
         });
       }
     }
+
     return (
       <div className="body-wrapper">
         <div className="button-panel-wrapper">
@@ -302,43 +304,46 @@ class BodyContainer extends Component {
               </div>
             )}
           </form>
-          {this.state.selectedBodyType === "JSON" && (
-            <div
-              className="btn-group btn-group-toggle"
-              data-toggle="buttons"
-              style={{ float: "right" }}
-            >
-              <label
-                className="btn btn-secondary active"
-                id={`toggle-raw-${this.props.endpoint_id}`}
+          {isSavedEndpoint(this.props) &&
+            this.state.selectedRawBodyType === "JSON" &&
+            (this.state.selectedBodyType === "raw" ||
+              this.state.selectedBodyType === "JSON") && (
+              <div
+                className="btn-group btn-group-toggle"
+                data-toggle="buttons"
+                style={{ float: "right" }}
               >
-                <input
-                  type="radio"
-                  name="options"
-                  id="option1"
-                  autoComplete="off"
-                  defaultChecked
-                  onClick={() => this.handleSelectBodyType("raw")}
-                />
-                Raw
-              </label>
-              <label
-                className="btn btn-secondary"
-                id={`toggle-body-description-${this.props.endpoint_id}`}
-              >
-                <input
-                  type="radio"
-                  name="options"
-                  id="option2"
-                  autoComplete="off"
-                  onClick={() =>
-                    this.handleSelectBodyType("raw", "bodyDescription")
-                  }
-                />
-                Body Description
-              </label>
-            </div>
-          )}
+                <label
+                  className="btn btn-secondary active"
+                  id={`toggle-raw-${this.props.endpoint_id}`}
+                >
+                  <input
+                    type="radio"
+                    name="options"
+                    id="option1"
+                    autoComplete="off"
+                    defaultChecked
+                    onClick={() => this.handleSelectBodyType("raw")}
+                  />
+                  Raw
+                </label>
+                <label
+                  className="btn btn-secondary"
+                  id={`toggle-body-description-${this.props.endpoint_id}`}
+                >
+                  <input
+                    type="radio"
+                    name="options"
+                    id="option2"
+                    autoComplete="off"
+                    onClick={() =>
+                      this.handleSelectBodyType("raw", "bodyDescription")
+                    }
+                  />
+                  Body Description
+                </label>
+              </div>
+            )}
         </div>
         <div className="body-container">{this.renderBody()}</div>
       </div>

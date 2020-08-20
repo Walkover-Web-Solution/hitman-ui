@@ -190,6 +190,9 @@ class BodyDescription extends Component {
   generateBodyDescription(body, isFirstTime) {
     let bodyDescription = null;
     let keys = [];
+    if (!body) {
+      return null;
+    }
     if (Array.isArray(body)) {
       bodyDescription = [];
       keys = ["0"];
@@ -319,15 +322,15 @@ class BodyDescription extends Component {
       this.props.body,
       isFirstTime
     );
-
     this.props.set_body_description(bodyDescription);
   }
 
   render() {
+    const body = this.parseBody(this.props.body);
     if (
-      this.props.body &&
-      Object.keys(this.props.body) &&
-      Object.keys(this.props.body).length &&
+      body &&
+      Object.keys(body) &&
+      Object.keys(body).length &&
       !(
         this.props.body_description &&
         Object.keys(this.props.body_description) &&

@@ -9,12 +9,22 @@ function endpointUrl(groupId) {
 }
 
 export function apiTest(api, method, body, headers, bodyType) {
-  return httpService.request({
-    url: api,
-    method: method,
-    data: bodyType === "urlEncoded" ? qs.stringify({ body }) : body,
-    headers: headers,
-  });
+  if (api.indexOf("localhost") > 0) {
+    return httpService.request({
+      url: api,
+      method: method,
+      data: bodyType === "urlEncoded" ? qs.stringify({ body }) : body,
+      headers: headers,
+    });
+  } else {
+    const data = {
+      url: api,
+      method,
+      data: bodyType === "urlEncoded" ? qs.stringify({ body }) : body,
+      headers,
+    };
+    return httpService.post(`${apiUrl}/test-apis/run`, data);
+  }
 }
 
 export function getAllEndpoints() {

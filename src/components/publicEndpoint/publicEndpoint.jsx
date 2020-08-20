@@ -9,10 +9,10 @@ import DisplayCollection from "../collections/displayCollection";
 import SideBar from "../main/sidebar";
 import { fetchAllPublicEndpoints } from "./redux/publicEndpointsActions.js";
 import "./publicEndpoint.scss";
-import Environments from "../environments/environments";
 import store from "../../store/store";
 import auth from "../auth/authService";
 import UserInfo from "../common/userInfo";
+import { uiUrl } from "../../config.json";
 
 const mapStateToProps = (state) => {
   return {
@@ -30,6 +30,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 class PublicEndpoint extends Component {
   state = {
     publicCollectionId: "",
+    collectionName: "",
   };
 
   componentDidMount() {
@@ -46,36 +47,44 @@ class PublicEndpoint extends Component {
       const baseUrl = window.location.href.split("/")[2];
       const collectionId = this.props.location.collectionIdentifier;
       const domain = this.props.location.pathname.split("/");
-
       if (this.props.collections[collectionId]) {
         const index = this.props.collections[
           collectionId
         ].docProperties.domainsList.findIndex((d) => d.domain === baseUrl);
-        document.title = this.props.collections[
-          collectionId
-        ].docProperties.domainsList[index].title;
+        // document.title = this.props.collections[
+        //   collectionId
+        // ].docProperties.domainsList[index].title;
         unsubscribe();
       }
     });
   }
 
   render() {
-    // const redirectionUrl = `http://localhost:3000/login`;
-    const redirectionUrl = `https://hitman-ui.herokuapp.com/login`;
-    const socketLoginUrl = `https://viasocket.com/login?token_required=true&redirect_uri=${redirectionUrl}`;
     if (
-      this.props.location.pathname.split("/")[1] === "public" &&
+      this.props.collections[this.props.location.pathname.split("/")[2]] &&
+      this.props.collections[this.props.location.pathname.split("/")[2]].name &&
+      this.state.collectionName === ""
+    ) {
+      let collectionName = this.props.collections[
+        this.props.location.pathname.split("/")[2]
+      ].name;
+      this.setState({ collectionName });
+    }
+    const redirectionUrl = uiUrl + "/login";
+    if (
+      this.props.location.pathname.split("/")[1] === "p" &&
       (this.props.location.pathname.split("/")[3] === undefined ||
-        this.props.location.pathname.split("/")[3] === "")
+        this.props.location.pathname.split("/")[3] === "") &&
+      this.state.collectionName !== ""
     ) {
       this.props.history.push({
-        pathname: `/public/${this.props.match.params.collectionIdentifier}/description`,
+        pathname: `/p/${this.props.match.params.collectionIdentifier}/description/${this.state.collectionName}`,
       });
       return (
         <div>
           <Switch>
             <Route
-              path="/public/:collectionId/description"
+              path={`/p/:collectionId/description/${this.state.collectionName}`}
               render={(props) => <DisplayCollection {...props} />}
             />
           </Switch>
@@ -84,56 +93,56 @@ class PublicEndpoint extends Component {
     } else {
       return (
         <React.Fragment>
-          <nav className="navbar  public-endpoint-navbar">
-            <img
-              className="hitman-logo"
-              alt=""
-              src={require("../../hitman-icon.png")}
-            />
+          <nav className="public-endpoint-navbar">
             {process.env.REACT_APP_UI_URL === window.location.origin + "/" ? (
               auth.getCurrentUser() === null ? (
-                <div>
-                  <button
-                    className="btn btn-primary btn-lg"
-                    id="custom-login-button"
-                  >
-                    <a href={socketLoginUrl}>Login With ViaSocket</a>
-                  </button>
+                <div className="dropdown user-dropdown">
+                  <div className="user-info">
+                    <div className="user-avatar">
+                      <i className="uil uil-signin"></i>
+                    </div>
+                    <div className="user-details ">
+                      <div className="user-details-heading not-logged-in">
+                        <div
+                          id="sokt-sso"
+                          data-redirect-uri={redirectionUrl}
+                          data-source="sokt-app"
+                          data-token-key="sokt-auth-token"
+                          data-view="button"
+                        ></div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               ) : (
-                <div>
-                  <UserInfo></UserInfo>
-                </div>
+                <UserInfo></UserInfo>
               )
             ) : null}
           </nav>
-          <main
-            role="main"
-            className="main ml-sm-auto col-lg-10 public-endpoint-main "
-          >
-            <div>
-              <ToastContainer />
-              <div className="main-panel-wrapper">
-                <SideBar {...this.props} />
-                {/* <Environments {...this.props} /> */}
-              </div>
+          <main role="main" className="mainpublic-endpoint-main hm-wrapper">
+            <ToastContainer />
+            <div className="hm-sidebar">
+              <SideBar {...this.props} />
+              {/* <Environments {...this.props} /> */}
+            </div>
 
-              <div className="main-content">
+            <div className="hm-right-content">
+              {this.state.collectionName !== "" ? (
                 <Switch>
                   <Route
-                    path="/public/:collectionId/endpoints/:endpointId"
+                    path={`/p/:collectionId/e/:endpointId/${this.state.collectionName}`}
                     render={(props) => <DisplayEndpoint {...props} />}
                   />
                   <Route
-                    path="/public/:collectionId/pages/:pageid"
+                    path={`/p/:collectionId/pages/:pageid/${this.state.collectionName}`}
                     render={(props) => <DisplayPage {...props} />}
                   />
                   <Route
-                    path="/public/:collectionId/description"
+                    path={`/p/:collectionId/description/${this.state.collectionName}`}
                     render={(props) => <DisplayCollection {...props} />}
                   />
                 </Switch>
-              </div>
+              ) : null}
             </div>
           </main>
         </React.Fragment>

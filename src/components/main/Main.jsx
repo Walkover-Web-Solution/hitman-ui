@@ -14,7 +14,6 @@ import { fetchPages } from "../pages/redux/pagesActions";
 import { fetchAllTeamsOfUser } from "../teams/redux/teamsActions";
 import ContentPanel from "./contentPanel";
 import "./main.scss";
-import Navbar from "./Navbar";
 import SideBar from "./sidebar";
 
 const mapDispatchToProps = (dispatch) => {
@@ -84,11 +83,11 @@ class Main extends Component {
     return (
       <div className="custom-main-container">
         <ToastContainer />
-        <Navbar
+        {/* <Navbar
           {...this.props}
           tabs={[...this.state.tabs]}
           set_tabs={this.setTabs.bind(this)}
-        />
+        /> */}
         <div className="main-panel-wrapper">
           <SideBar
             {...this.props}

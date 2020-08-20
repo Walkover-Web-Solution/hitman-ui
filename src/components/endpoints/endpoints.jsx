@@ -20,6 +20,7 @@ const mapStateToProps = (state) => {
     endpoints: state.endpoints,
     groups: state.groups,
     tabs: state.tabs,
+    teams: state.teams,
   };
 };
 
@@ -55,7 +56,9 @@ class Endpoints extends Component {
   };
 
   sequencingOnFilter() {
-    let filteredEndpointKeys = Object.keys(this.filteredEndpoints);
+    let filteredEndpointKeys = this.filteredEndpoints
+      ? Object.keys(this.filteredEndpoints)
+      : [];
     this.filteredEndpointsOrder = [];
     for (let i = 0; i < this.props.endpoints_order.length; i++) {
       for (let j = 0; j < filteredEndpointKeys.length; j++) {
@@ -174,7 +177,7 @@ class Endpoints extends Component {
       });
     } else {
       this.props.history.push({
-        pathname: `/public/${collectionId}/endpoints/${endpoint.id}`,
+        pathname: `/p/${collectionId}/e/${endpoint.id}/${this.props.collections[collectionId].name}`,
         title: "update endpoint",
         endpoint: endpoint,
         groupId: groupId,
@@ -233,17 +236,18 @@ class Endpoints extends Component {
               this.state.selectedEndpoint
             )}
         </div> */}
-          {Object.keys(this.filteredEndpoints).length !== 0 &&
+          {this.filteredEndpoints &&
+            Object.keys(this.filteredEndpoints) &&
+            Object.keys(this.filteredEndpoints).length !== 0 &&
             this.filteredEndpointsOrder
               .filter(
                 (eId) =>
                   this.props.endpoints[eId].groupId === this.props.group_id
               )
               .map((endpointId) => (
-                <div className="endpoint-list-item" key={endpointId}>
+                <div className="sidebar-accordion" key={endpointId}>
                   <div className={this.props.endpoints[endpointId].state}></div>
                   <button
-                    className="btn "
                     draggable
                     onDragOver={this.onDragOver}
                     onDragStart={(e) => this.onDragStart(e, endpointId)}
@@ -265,119 +269,122 @@ class Endpoints extends Component {
                       )
                     }
                   >
-                    <div
-                      className={this.props.endpoints[endpointId].requestType}
-                    >
-                      <div className="endpoint-request-div">
-                        {this.props.endpoints[endpointId].requestType}
+                    <div className="sidebar-accordion-item">
+                      <div
+                        className={`api-label ${this.props.endpoints[endpointId].requestType}`}
+                      >
+                        <div className="endpoint-request-div">
+                          {this.props.endpoints[endpointId].requestType}
+                        </div>
                       </div>
-                    </div>
-
-                    <div className="endpoint-name-div">
                       {this.props.endpoints[endpointId].name}
                     </div>
-                  </button>
-                  <div className="btn-group">
-                    <button
-                      className="btn "
-                      data-toggle="dropdown"
-                      aria-haspopup="true"
-                      aria-expanded="false"
-                    >
-                      <i className="fas fa-ellipsis-h"></i>
-                    </button>
-                    <div className="dropdown-menu dropdown-menu-right">
-                      <button
-                        className="dropdown-item"
-                        onClick={() =>
-                          this.handleDelete(this.props.endpoints[endpointId])
-                        }
+                    <div className="sidebar-item-action">
+                      <div
+                        className="sidebar-item-action-btn"
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false"
                       >
-                        Delete
-                      </button>
-                      <button
-                        className="dropdown-item"
-                        onClick={() =>
-                          this.handleDuplicate(this.props.endpoints[endpointId])
-                        }
-                      >
-                        Duplicate
-                      </button>
-                      {this.props.endpoints[endpointId].state === "Draft" ? (
-                        <button
+                        <i className="uil uil-ellipsis-v"></i>
+                      </div>
+                      <div className="dropdown-menu dropdown-menu-right">
+                        <a
                           className="dropdown-item"
                           onClick={() =>
-                            this.handlePublicEndpointState(
+                            this.handleDelete(this.props.endpoints[endpointId])
+                          }
+                        >
+                          Delete
+                        </a>
+                        <a
+                          className="dropdown-item"
+                          onClick={() =>
+                            this.handleDuplicate(
                               this.props.endpoints[endpointId]
                             )
                           }
                         >
-                          Make Public
-                        </button>
-                      ) : null}
-
-                      {!this.checkAccess(this.props.collection_id) &&
-                      this.props.endpoints[endpointId].state === "Pending" ? (
-                        <button
-                          className="dropdown-item"
-                          onClick={() =>
-                            this.handleCancelRequest(
-                              this.props.endpoints[endpointId]
-                            )
-                          }
-                        >
-                          Cancel Request
-                        </button>
-                      ) : null}
-
-                      {this.checkAccess(this.props.collection_id) &&
-                      (this.props.endpoints[endpointId].state === "Approved" ||
-                        this.props.endpoints[endpointId].state === "Reject") ? (
-                        <button
-                          className="dropdown-item"
-                          onClick={() =>
-                            this.handleCancelRequest(
-                              this.props.endpoints[endpointId]
-                            )
-                          }
-                        >
-                          Move to Draft
-                        </button>
-                      ) : null}
-                      {this.checkAccess(this.props.collection_id) &&
-                      this.props.endpoints[endpointId].state === "Pending" ? (
-                        <div>
-                          <button
+                          Duplicate
+                        </a>
+                        {this.props.endpoints[endpointId].state === "Draft" ? (
+                          <a
                             className="dropdown-item"
                             onClick={() =>
-                              this.handleApproveRequest(
+                              this.handlePublicEndpointState(
                                 this.props.endpoints[endpointId]
                               )
                             }
                           >
-                            Approve Request
-                          </button>
-                          <button
+                            Make Public
+                          </a>
+                        ) : null}
+
+                        {!this.checkAccess(this.props.collection_id) &&
+                        this.props.endpoints[endpointId].state === "Pending" ? (
+                          <a
                             className="dropdown-item"
                             onClick={() =>
-                              this.handleRejectRequest(
+                              this.handleCancelRequest(
                                 this.props.endpoints[endpointId]
                               )
                             }
                           >
-                            Reject Request
-                          </button>
-                        </div>
-                      ) : null}
+                            Cancel Request
+                          </a>
+                        ) : null}
+
+                        {this.checkAccess(this.props.collection_id) &&
+                        (this.props.endpoints[endpointId].state ===
+                          "Approved" ||
+                          this.props.endpoints[endpointId].state ===
+                            "Reject") ? (
+                          <a
+                            className="dropdown-item"
+                            onClick={() =>
+                              this.handleCancelRequest(
+                                this.props.endpoints[endpointId]
+                              )
+                            }
+                          >
+                            Move to Draft
+                          </a>
+                        ) : null}
+                        {this.checkAccess(this.props.collection_id) &&
+                        this.props.endpoints[endpointId].state === "Pending" ? (
+                          <div>
+                            <a
+                              className="dropdown-item"
+                              onClick={() =>
+                                this.handleApproveRequest(
+                                  this.props.endpoints[endpointId]
+                                )
+                              }
+                            >
+                              Approve Request
+                            </a>
+                            <a
+                              className="dropdown-item"
+                              onClick={() =>
+                                this.handleRejectRequest(
+                                  this.props.endpoints[endpointId]
+                                )
+                              }
+                            >
+                              Reject Request
+                            </a>
+                          </div>
+                        ) : null}
+                      </div>
                     </div>
-                  </div>
+                  </button>
                 </div>
               ))}
         </React.Fragment>
       );
     } else {
       return (
-        <div>
+        <React.Fragment>
           {Object.keys(this.props.endpoints).length !== 0 &&
             this.props.endpoints_order
               .filter(
@@ -385,31 +392,30 @@ class Endpoints extends Component {
                   this.props.endpoints[eId].groupId === this.props.group_id
               )
               .map((endpointId) => (
-                <div className="endpoint-list-item" key={endpointId}>
-                  <button
-                    className="btn "
-                    onClick={() =>
-                      this.handleDisplay(
-                        this.props.endpoints[endpointId],
-                        this.props.group_id,
-                        this.props.collection_id
-                      )
-                    }
+                <div
+                  className="hm-sidebar-item"
+                  key={endpointId}
+                  onClick={() =>
+                    this.handleDisplay(
+                      this.props.endpoints[endpointId],
+                      this.props.group_id,
+                      this.props.collection_id
+                    )
+                  }
+                >
+                  <div
+                    className={`api-label ${this.props.endpoints[endpointId].requestType}`}
                   >
-                    <div
-                      className={this.props.endpoints[endpointId].requestType}
-                    >
-                      <div className="endpoint-request-div">
-                        {this.props.endpoints[endpointId].requestType}
-                      </div>
+                    <div className="endpoint-request-div">
+                      {this.props.endpoints[endpointId].requestType}
                     </div>
-                    <div className="endpoint-name-div">
-                      {this.props.endpoints[endpointId].name}
-                    </div>
-                  </button>
+                  </div>
+                  <div className="endpoint-name-div">
+                    {this.props.endpoints[endpointId].name}
+                  </div>
                 </div>
               ))}
-        </div>
+        </React.Fragment>
       );
     }
   }

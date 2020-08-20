@@ -15,7 +15,7 @@ export const fetchAllPublicEndpoints = (history, collectionIdentifier) => {
             error.response ? error.response.data : error
           )
         );
-        history.push(`/public/error`);
+        history.push(`/p/error`);
       });
   };
 };

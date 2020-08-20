@@ -106,7 +106,7 @@ class ContentPanel extends Component {
       }
     }
     return (
-      <main role="main" className="main ml-sm-auto col-lg-10 ">
+      <main role="main" className="main">
         {/* <main role="main" className="main ml-sm-auto custom-main"> */}
         <Tab.Container
           id="left-tabs-example"

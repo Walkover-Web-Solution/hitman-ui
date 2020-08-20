@@ -67,7 +67,7 @@ class VersionPages extends Component {
       this.filteredVersionPages = { ...this.props.pages };
     }
     return (
-      <div>
+      <React.Fragment>
         {this.filterVersionPages()}
         <div>
           {this.state.showDeleteModal &&
@@ -88,24 +88,36 @@ class VersionPages extends Component {
                 this.props.pages[pageId].groupId === null
             )
             .map((pageId, index) => (
-              <div
-                key={index}
-                className={
-                  isDashboardRoute(this.props)
-                    ? this.props.pages[pageId].state
-                    : null
-                }
-              >
-                <Pages
-                  {...this.props}
-                  page_id={pageId}
-                  index={index}
-                  open_delete_page_modal={this.openDeletePageModal.bind(this)}
-                  close_delete_page_modal={this.closeDeletePageModal.bind(this)}
-                ></Pages>
-              </div>
+              <React.Fragment>
+                {(isDashboardRoute(this.props) ?
+                  <div
+                    key={index}
+                    className={
+                      isDashboardRoute(this.props)
+                        ? this.props.pages[pageId].state
+                        : null
+                    }
+                  >
+                    <Pages
+                      {...this.props}
+                      page_id={pageId}
+                      index={index}
+                      open_delete_page_modal={this.openDeletePageModal.bind(this)}
+                      close_delete_page_modal={this.closeDeletePageModal.bind(this)}
+                    ></Pages>
+                  </div>
+                :
+                  <Pages
+                    {...this.props}
+                    page_id={pageId}
+                    index={index}
+                    open_delete_page_modal={this.openDeletePageModal.bind(this)}
+                    close_delete_page_modal={this.closeDeletePageModal.bind(this)}
+                  ></Pages>
+                )}
+              </React.Fragment>
             ))}
-      </div>
+      </React.Fragment>
     );
   }
 }

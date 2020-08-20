@@ -39,51 +39,57 @@ class PublicView extends Component {
   }
 
   openCollection(collectionId) {
-    const publicDocsUrl = `${uiUrl}/public/${collectionId}`;
+    const publicDocsUrl = `${uiUrl}/p/${collectionId}`;
     window.open(publicDocsUrl, "_blank");
   }
 
   render() {
-    // const redirectionUrl = `http://localhost:3000/login`;
-    const redirectionUrl = `https://hitman-ui.herokuapp.com/login`;
-    const socketLoginUrl = `https://viasocket.com/login?token_required=true&redirect_uri=${redirectionUrl}`;
-
+    const redirectionUrl = uiUrl + "/login";
     const filteredPublicCollections = this.state.filteredPublicCollections;
     return (
-      <div>
-        {" "}
-        <nav className="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
-          {auth.getCurrentUser() === null ? (
-            <div>
-              <button type="button" className="btn ">
-                <a href={socketLoginUrl}>Login With ViaSocket</a>
-              </button>
+      <React.Fragment>
+        <div className="public-dashboard-header">
+          <div className="public-dashboard-container">
+            <div className="public-dashboard-searchbox">
+              <i className="uil uil-search"></i>
+              <input
+                type="text"
+                placeholder="Search Collections"
+                onChange={this.filterPublicCollections.bind(this)}
+              />
             </div>
-          ) : (
-            <UserInfo></UserInfo>
-          )}
-          <div>
-            <input
-              type="text"
-              placeholder="Search Collections"
-              onChange={this.filterPublicCollections.bind(this)}
-            />
+            <div className="public-dashboard-action">
+              {auth.getCurrentUser() === null ? (
+                <div
+                  id="sokt-sso"
+                  data-redirect-uri={redirectionUrl}
+                  data-source="sokt-app"
+                  data-token-key="sokt-auth-token"
+                  data-view="button"
+                ></div>
+              ) : (
+                <UserInfo></UserInfo>
+              )}
+            </div>
           </div>
-        </nav>
-        <br></br>
-        <br></br>
-        {Object.keys(filteredPublicCollections).map((collectionId) => (
-          <div
-            onClick={() => this.openCollection(collectionId)}
-            style={{ margin: "5px", borderStyle: "solid" }}
-          >
-            <img
-              src={`//logo.clearbit.com/${filteredPublicCollections[collectionId].name}.com`}
-            ></img>
-            <h1>{filteredPublicCollections[collectionId].name}</h1>
-          </div>
-        ))}
-      </div>
+        </div>
+        <div className="collection-wrap">
+          {Object.keys(filteredPublicCollections).map((collectionId) => (
+            <div
+              onClick={() => this.openCollection(collectionId)}
+              className="collection-box"
+            >
+              <div className="collection-image">
+                <img
+                  src={`//logo.clearbit.com/${filteredPublicCollections[collectionId].name}.com`}
+                  alt=""
+                ></img>
+              </div>
+              <h1>{filteredPublicCollections[collectionId].name}</h1>
+            </div>
+          ))}
+        </div>
+      </React.Fragment>
     );
   }
 }

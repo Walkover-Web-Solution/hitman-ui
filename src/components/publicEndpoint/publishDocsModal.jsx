@@ -1,10 +1,9 @@
-import React, { Component } from "react";
+import React from "react";
 import { Modal } from "react-bootstrap";
 import "./publicEndpoint.scss";
 import Form from "../common/form";
 import Joi from "joi-browser";
 import herokuApiService from "../../services/herokuApiService";
-import endpointApiService from "../endpoints/endpointApiService";
 import { connect } from "react-redux";
 import jQuery from "jquery";
 import { toast } from "react-toastify";
@@ -109,14 +108,18 @@ class PublishDocsModal extends Form {
     this.props.update_collection(collection);
   }
 
-  handleEditButton() {
+  handleEditButton(operation) {
+    if (operation === "cancel") {
+      this.setState({ editableDocProperties: false });
+      return;
+    }
     if (this.state.editableDocProperties === false)
       this.setState({ editableDocProperties: true });
     else {
       let docProperties = {
+        ...this.props.collections[this.props.collection_id].docProperties,
         defaultTitle: this.state.data.defaultTitle,
         defaultLogoUrl: this.state.data.defaultLogoUrl,
-        ...this.props.collections[this.props.collection_id].docProperties,
       };
       let collection = {
         ...this.props.collections[this.props.collection_id],

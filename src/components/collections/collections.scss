@@ -1,21 +1,29 @@
 $border-color: rgba(227, 228, 230, 0.7);
 
-.custom-add-collection-button-container {
-  color: tomato;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.125);
-  width: 100%;
-
-  button {
-    color: tomato;
-
+.add-collection-btn-wrap {
+  padding: 0;
+  margin-bottom: 10px;
+  .add-collection-btn {
+    background: transparent;
+    border: none;
+    color: #999;
+    width: 100%;
+    text-align: left;
+    padding: 7px 10px;
+    &:active, &:focus {
+      outline: none;
+      border: none;
+      box-shadow: none;
+    }
     &:hover {
-      color: tomato;
+      color: #ffffff;
+    }
+    > i {
+      width: 30px;
+      display: inline-block;
     }
   }
 
-  .fas.fa-plus {
-    padding-right: 10px;
-  }
 }
 
 #parent-accordion {
