@@ -52,7 +52,6 @@ class DisplayResponse extends Component {
 
   toggleShow = () => {
     const show = !this.state.show;
-    console.log("show", show);
     this.setState({ show });
   };
 

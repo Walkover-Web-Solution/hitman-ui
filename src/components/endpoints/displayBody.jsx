@@ -11,6 +11,7 @@ import AceEditor from "react-ace";
 import BodyDescription from "./bodyDescription";
 import "./endpoints.scss";
 import GenericTable from "./genericTable";
+import { isSavedEndpoint } from "../common/utility";
 
 class BodyContainer extends Component {
   state = {
@@ -303,7 +304,8 @@ class BodyContainer extends Component {
               </div>
             )}
           </form>
-          {this.state.selectedRawBodyType === "JSON" &&
+          {isSavedEndpoint(this.props) &&
+            this.state.selectedRawBodyType === "JSON" &&
             (this.state.selectedBodyType === "raw" ||
               this.state.selectedBodyType === "JSON") && (
               <div

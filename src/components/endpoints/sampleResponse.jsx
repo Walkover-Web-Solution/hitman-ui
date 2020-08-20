@@ -7,12 +7,6 @@ import DeleteModal from "../common/deleteModal";
 
 class SampleResponse extends Component {
   state = {
-    rawResponse: false,
-    prettyResponse: true,
-    previewResponse: false,
-    responseString: "",
-    timeElapsed: "",
-
     showSampleResponseForm: {
       add: false,
       edit: false,
