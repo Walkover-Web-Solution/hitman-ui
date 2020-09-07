@@ -93,6 +93,7 @@ class BodyContainer extends Component {
   }
 
   handleChange(value) {
+    this.alteredBody = true;
     const data = { ...this.state.data };
     data.raw = value;
     this.setState({ data });
@@ -114,6 +115,19 @@ class BodyContainer extends Component {
         break;
       default:
         break;
+    }
+  }
+
+  makeJson(body) {
+    if (!this.alteredBody) {
+      try {
+        let parsedBody = JSON.stringify(JSON.parse(body), null, 2);
+        return parsedBody;
+      } catch (e) {
+        return body;
+      }
+    } else {
+      return body;
     }
   }
 
@@ -169,7 +183,11 @@ class BodyContainer extends Component {
                 className="custom-raw-editor"
                 mode={this.state.selectedRawBodyType.toLowerCase()}
                 theme="github"
-                value={this.state.data.raw}
+                value={
+                  this.state.selectedRawBodyType === "JSON"
+                    ? this.makeJson(this.state.data.raw)
+                    : this.state.data.raw
+                }
                 onChange={this.handleChange.bind(this)}
                 setOptions={{
                   showLineNumbers: true,
@@ -190,6 +208,11 @@ class BodyContainer extends Component {
   }
 
   render() {
+    if (this.props.location.pathname.split("/")[3] !== this.endpointId) {
+      this.endpointId = this.props.location.pathname.split("/")[3];
+      this.alteredBody = false;
+    }
+
     if (this.props.body !== "" && !this.state.selectedBodyType) {
       let selectedBodyType = this.props.body.type;
       if (

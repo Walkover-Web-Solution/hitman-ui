@@ -626,6 +626,11 @@ class DisplayEndpoint extends Component {
       headerJson[header] = headersData[header].value;
     });
     let { body, headers } = this.formatBody(this.state.data.body, headerJson);
+    try {
+      if (this.state.data.body.type === "JSON") JSON.parse(body);
+    } catch (e) {
+      toast.error("Invalid JSON Body");
+    }
     this.handleApiCall(api, body, headers, this.state.data.body.type);
   };
 
@@ -1861,7 +1866,7 @@ class DisplayEndpoint extends Component {
                 )}
 
                 {this.state.data.body &&
-                  this.state.data.body.value !== "" &&
+                  // this.state.data.body.value !== "" &&
                   this.state.data.body.value !== null && (
                     <PublicBodyContainer
                       {...this.props}

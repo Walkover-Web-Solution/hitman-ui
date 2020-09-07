@@ -7,7 +7,7 @@ import "./publicEndpoint.scss";
 
 class PublicBodyContainer extends Component {
   state = {
-    showBodyCodeEditor: true
+    showBodyCodeEditor: true,
   };
 
   handleChangeBody(title, dataArray) {
@@ -169,13 +169,15 @@ class PublicBodyContainer extends Component {
   };
 
   handleChangeBodyDescription = (data) => {
-    const body = JSON.parse(data);
-    const bodyData = {
-      bodyDescription: this.bodyDescription,
-      body: body
-    }
-    this.setBody(bodyData);
-  }
+    try {
+      const body = JSON.parse(data);
+      const bodyData = {
+        bodyDescription: this.bodyDescription,
+        body: body,
+      };
+      this.setBody(bodyData);
+    } catch (e) {}
+  };
 
   displayAddButton(name) {
     return (
@@ -318,6 +320,15 @@ class PublicBodyContainer extends Component {
     );
   }
 
+  makeJson(body) {
+    try {
+      let parsedBody = JSON.stringify(JSON.parse(body), null, 2);
+      return parsedBody;
+    } catch (e) {
+      return body;
+    }
+  }
+
   render() {
     this.bodyDescription = this.props.body_description;
 
@@ -355,21 +366,32 @@ class PublicBodyContainer extends Component {
 
         {this.props.body && this.props.body.type === "JSON" && (
           <div className="hm-public-table">
-            <div
-              className="public-generic-table-title-container">
-              Body
-            </div>
-          <ul className="public-endpoint-tabs">
-            <li className={this.state.showBodyCodeEditor && 'active'}><a onClick={() => this.setState({showBodyCodeEditor: true})} href="javascript:void(0)">Raw</a></li>
-            <li className={!this.state.showBodyCodeEditor && 'active'}><a onClick={() => this.setState({showBodyCodeEditor: false})} href="javascript:void(0)">Body description</a></li>
-          </ul>
+            <div className="public-generic-table-title-container">Body</div>
+            <ul className="public-endpoint-tabs">
+              <li className={this.state.showBodyCodeEditor && "active"}>
+                <a
+                  onClick={() => this.setState({ showBodyCodeEditor: true })}
+                  href="javascript:void(0)"
+                >
+                  Raw
+                </a>
+              </li>
+              <li className={!this.state.showBodyCodeEditor && "active"}>
+                <a
+                  onClick={() => this.setState({ showBodyCodeEditor: false })}
+                  href="javascript:void(0)"
+                >
+                  Body description
+                </a>
+              </li>
+            </ul>
 
-          {this.state.showBodyCodeEditor ?
-            <AceEditor
+            {this.state.showBodyCodeEditor ? (
+              <AceEditor
                 className="custom-raw-editor"
                 mode={"json"}
                 theme="github"
-                value={this.props.body.value}
+                value={this.makeJson(this.props.body.value)}
                 onChange={this.handleChangeBodyDescription.bind(this)}
                 setOptions={{
                   showLineNumbers: true,
@@ -383,11 +405,11 @@ class PublicBodyContainer extends Component {
                   editor.setShowPrintMargin(false);
                 }}
               />
-            :
+            ) : (
               <div className="body-description-container">
                 {this.displayObject(this.bodyDescription, "body_description")}
               </div>
-          }
+            )}
           </div>
         )}
       </React.Fragment>
