@@ -115,6 +115,10 @@ function groupsReducer(state = initialState, action) {
       });
       return groups;
 
+    case groupsActionTypes.ON_GROUPS_ORDER_UPDATED:
+      groups = { ...action.groups };
+      return groups;
+
     default:
       return state;
   }

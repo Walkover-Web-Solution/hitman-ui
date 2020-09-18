@@ -4,7 +4,11 @@ import { connect } from "react-redux";
 import { isDashboardRoute } from "../common/utility";
 import Endpoints from "../endpoints/endpoints";
 import GroupForm from "../groups/groupForm";
-import { deleteGroup, duplicateGroup } from "../groups/redux/groupsActions";
+import {
+  deleteGroup,
+  duplicateGroup,
+  setGroupIds,
+} from "../groups/redux/groupsActions";
 import ShareGroupForm from "../groups/shareGroupForm";
 import GroupPages from "../pages/groupPages";
 import PageForm from "../pages/pageForm";
@@ -19,6 +23,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    set_group_ids: (groupIds, versionId) =>
+      dispatch(setGroupIds(groupIds, versionId)),
     delete_group: (group, props) => dispatch(deleteGroup(group, props)),
     duplicate_group: (group) => dispatch(duplicateGroup(group)),
   };
@@ -40,8 +46,61 @@ class Groups extends Component {
   filteredGroupPages = {};
   filteredEndpointsAndPages = {};
 
-  onDrop(destinationGroupId) {
-    this.props.set_destination_group_id(destinationGroupId);
+  onDrop(e, destinationGroupId) {
+    e.preventDefault();
+    if (this.endpointDrag === true) {
+      this.endpointDrag = false;
+      this.props.set_destination_group_id(destinationGroupId);
+    } else {
+      if (!this.draggedItem) {
+      } else {
+        if (this.draggedItem === destinationGroupId) {
+          this.draggedItem = null;
+          return;
+        }
+        const groups = this.extractGroups();
+        const positionWisegroups = this.makePositionWisegroups({ ...groups });
+        const index = positionWisegroups.findIndex(
+          (eId) => eId === destinationGroupId
+        );
+        let groupIds = positionWisegroups.filter(
+          (item) => item !== this.draggedItem
+        );
+        groupIds.splice(index, 0, this.draggedItem);
+        let gps = {};
+        for (let index = 0; index < groupIds.length; index++) {
+          gps[index] = this.props.groups[groupIds[index]];
+        }
+        console.log(gps);
+        this.props.set_group_ids(groupIds, this.props.version_id);
+        this.draggedItem = null;
+      }
+    }
+  }
+
+  makePositionWisegroups(groups) {
+    let positionWisegroups = [];
+    for (let i = 0; i < Object.keys(groups).length; i++) {
+      positionWisegroups[groups[Object.keys(groups)[i]].position] = Object.keys(
+        groups
+      )[i];
+    }
+    return positionWisegroups;
+  }
+
+  extractGroups() {
+    let groups = {};
+    for (let i = 0; i < Object.keys(this.props.groups).length; i++) {
+      if (
+        this.props.groups[Object.keys(this.props.groups)[i]].versionId ===
+        this.props.version_id
+      ) {
+        groups[Object.keys(this.props.groups)[i]] = this.props.groups[
+          Object.keys(this.props.groups)[i]
+        ];
+      }
+    }
+    return groups;
   }
 
   handleAddPage(groupId, versionId, collectionId) {
@@ -243,6 +302,14 @@ class Groups extends Component {
     }
   }
 
+  onDragStart = (e, gId) => {
+    this.draggedItem = gId;
+  };
+
+  setEndpointdrag() {
+    this.endpointDrag = true;
+  }
+
   renderBody(groupId) {
     if (
       isDashboardRoute(this.props) &&
@@ -271,8 +338,12 @@ class Groups extends Component {
             defaultActiveKey={
               this.eventkey[groupId] ? this.eventkey[groupId] : "1"
             }
-            onDragOver={(e) => e.preventDefault()}
-            onDrop={(e) => this.onDrop(groupId)}
+            draggable
+            onDragStart={(e) => this.onDragStart(e, groupId)}
+            onDragOver={(e) => {
+              e.preventDefault();
+            }}
+            onDrop={(e) => this.onDrop(e, groupId)}
           >
             {/* <Card> */}
             {/* <Card.Header> */}
@@ -384,6 +455,7 @@ class Groups extends Component {
                 <Endpoints
                   {...this.props}
                   group_id={groupId}
+                  set_endpoint_drag={this.setEndpointdrag.bind(this)}
                   endpoints_order={this.props.groups[groupId].endpointsOrder}
                   show_filter_groups={this.propsFromGroups.bind(this)}
                 />
@@ -428,7 +500,7 @@ class Groups extends Component {
       this.sortedGroups = Object.keys(this.groups)
         .map((gId) => this.groups[gId])
         .sort(function (a, b) {
-          return new Date(a.createdAt) - new Date(b.createdAt);
+          return a.position - b.position;
         });
     }
 

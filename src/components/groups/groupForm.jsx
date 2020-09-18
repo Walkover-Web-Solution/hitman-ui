@@ -39,9 +39,11 @@ class GroupForm extends Form {
   async doSubmit() {
     this.props.onHide();
     if (this.props.title === "Add new Group") {
+      let data = { ...this.state.data };
+      data.position = this.extractPosition();
       const versionId = this.props.selectedVersion.id;
       const newGroup = {
-        ...this.state.data,
+        ...data,
         endpointsOrder: [],
         requestId: shortid.generate(),
       };
@@ -57,6 +59,19 @@ class GroupForm extends Form {
       };
       this.props.update_group(editedGroup);
     }
+  }
+
+  extractPosition() {
+    let count = -1;
+    for (let i = 0; i < Object.keys(this.props.groups).length; i++) {
+      if (
+        this.props.selectedVersion.id ===
+        this.props.groups[Object.keys(this.props.groups)[i]].versionId
+      ) {
+        count = count + 1;
+      }
+    }
+    return count + 1;
   }
 
   render() {

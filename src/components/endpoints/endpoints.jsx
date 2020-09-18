@@ -49,6 +49,7 @@ class Endpoints extends Component {
   onDragStart = (e, eId) => {
     console.log("onDragStart", this.props.endpoints[eId].name);
     this.draggedItem = eId;
+    this.props.set_endpoint_drag();
     this.props.set_source_group_id(eId, this.props.group_id);
   };
 

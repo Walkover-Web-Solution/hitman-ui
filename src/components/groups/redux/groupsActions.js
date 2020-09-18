@@ -10,6 +10,23 @@ export const setEndpointIds = (endpointsOrder, groupId) => {
   return (dispatch) => dispatch(updateGroup(group));
 };
 
+export const setGroupIds = (groupsOrder, versionId) => {
+  return (dispatch) => {
+    dispatch(updateGroupOrderRequest(groupsOrder, versionId));
+  };
+};
+
+export const updateGroupOrderRequest = (groupsOrder) => {
+  let groups = { ...store.getState().groups };
+  for (let i = 0; i < groupsOrder.length; i++) {
+    groups[groupsOrder[i]].position = i;
+  }
+  return {
+    type: groupsActionTypes.ON_GROUPS_ORDER_UPDATED,
+    groups,
+  };
+};
+
 export const fetchGroups = () => {
   return (dispatch) => {
     groupsApiService
