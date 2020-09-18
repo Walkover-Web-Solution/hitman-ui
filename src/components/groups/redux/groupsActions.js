@@ -83,9 +83,10 @@ export const onGroupAddedError = (error, newGroup) => {
 export const updateGroup = (editedGroup) => {
   return (dispatch) => {
     const originalGroup = store.getState().groups[editedGroup.id];
+    let group = { ...editedGroup };
     dispatch(updateGroupRequest(editedGroup));
-    const id = editedGroup.id;
-    delete editedGroup.id;
+    const id = group.id;
+    delete group.id;
     const { name, host, endpointsOrder } = editedGroup;
     groupsApiService
       .updateGroup(id, { name, host, endpointsOrder })

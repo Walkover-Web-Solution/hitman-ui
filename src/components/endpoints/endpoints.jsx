@@ -47,11 +47,13 @@ class Endpoints extends Component {
   componentDidMount() {}
 
   onDragStart = (e, eId) => {
+    console.log("onDragStart", this.props.endpoints[eId].name);
     this.draggedItem = eId;
     this.props.set_source_group_id(eId, this.props.group_id);
   };
 
-  onDragOver = (e) => {
+  onDragOver = (e, eId) => {
+    console.log("onDragOver", this.props.endpoints[eId].name);
     e.preventDefault();
   };
 
@@ -71,6 +73,7 @@ class Endpoints extends Component {
   }
   onDrop = (e, droppedOnItem) => {
     e.preventDefault();
+    console.log("onDrop", this.props.endpoints[droppedOnItem].name);
     if (!this.draggedItem) {
     } else {
       if (this.draggedItem === droppedOnItem) {
@@ -249,9 +252,9 @@ class Endpoints extends Component {
                   <div className={this.props.endpoints[endpointId].state}></div>
                   <button
                     draggable
-                    onDragOver={this.onDragOver}
+                    onDragOver={(e) => this.onDragOver(e, endpointId)}
                     onDragStart={(e) => this.onDragStart(e, endpointId)}
-                    onDrop={(e) => this.onDrop(e)}
+                    onDrop={(e) => this.onDrop(e, endpointId)}
                     onClick={() =>
                       this.handleDisplay(
                         this.props.endpoints[endpointId],

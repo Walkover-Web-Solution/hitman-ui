@@ -64,10 +64,7 @@ function groupsReducer(state = initialState, action) {
       };
 
     case groupsActionTypes.ON_GROUP_UPDATED:
-      return {
-        ...state,
-        [action.response.id]: action.response,
-      };
+      return state;
 
     case groupsActionTypes.ON_GROUP_UPDATED_ERROR:
       toast.error(action.error);
