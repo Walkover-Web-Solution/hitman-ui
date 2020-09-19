@@ -7,7 +7,7 @@ import GroupForm from "../groups/groupForm";
 import {
   deleteGroup,
   duplicateGroup,
-  setGroupIds,
+  updateGroupOrder,
 } from "../groups/redux/groupsActions";
 import ShareGroupForm from "../groups/shareGroupForm";
 import GroupPages from "../pages/groupPages";
@@ -23,8 +23,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    set_group_ids: (groupIds, versionId) =>
-      dispatch(setGroupIds(groupIds, versionId)),
+    update_groups_order: (groupIds, versionId) =>
+      dispatch(updateGroupOrder(groupIds, versionId)),
     delete_group: (group, props) => dispatch(deleteGroup(group, props)),
     duplicate_group: (group) => dispatch(duplicateGroup(group)),
   };
@@ -72,7 +72,7 @@ class Groups extends Component {
           gps[index] = this.props.groups[groupIds[index]];
         }
         console.log(gps);
-        this.props.set_group_ids(groupIds, this.props.version_id);
+        this.props.update_groups_order(groupIds, this.props.version_id);
         this.draggedItem = null;
       }
     }

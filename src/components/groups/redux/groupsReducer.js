@@ -119,6 +119,11 @@ function groupsReducer(state = initialState, action) {
       groups = { ...action.groups };
       return groups;
 
+    case groupsActionTypes.ON_GROUPS_ORDER_UPDATED_ERROR:
+      toast.error(action.error);
+      groups = { ...action.groups };
+      return groups;
+
     default:
       return state;
   }

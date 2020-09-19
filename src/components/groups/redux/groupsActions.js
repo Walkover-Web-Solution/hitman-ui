@@ -10,9 +10,21 @@ export const setEndpointIds = (endpointsOrder, groupId) => {
   return (dispatch) => dispatch(updateGroup(group));
 };
 
-export const setGroupIds = (groupsOrder, versionId) => {
+export const updateGroupOrder = (groupsOrder, versionId) => {
   return (dispatch) => {
+    const originalGroups = JSON.parse(JSON.stringify(store.getState().groups));
     dispatch(updateGroupOrderRequest(groupsOrder, versionId));
+    groupsApiService
+      .updateGroupOrder(groupsOrder)
+      .then(() => {})
+      .catch((error) => {
+        dispatch(
+          onGroupOrderUpdatedError(
+            error.response ? error.response.data : error,
+            originalGroups
+          )
+        );
+      });
   };
 };
 
@@ -24,6 +36,14 @@ export const updateGroupOrderRequest = (groupsOrder) => {
   return {
     type: groupsActionTypes.ON_GROUPS_ORDER_UPDATED,
     groups,
+  };
+};
+
+export const onGroupOrderUpdatedError = (error, groups) => {
+  return {
+    type: groupsActionTypes.ON_GROUPS_ORDER_UPDATED_ERROR,
+    groups,
+    error,
   };
 };
 

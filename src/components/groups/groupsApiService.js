@@ -37,6 +37,12 @@ export function duplicateGroup(groupId) {
   return http.post(`${apiUrl}/duplicateGroups/${groupId}`);
 }
 
+export function updateGroupOrder(groupsOrder) {
+  return http.patch(`${apiUrl}/updateGroupsOrder`, {
+    groupsOrder: groupsOrder,
+  });
+}
+
 export default {
   getGroups,
   getGroup,
@@ -44,5 +50,6 @@ export default {
   updateGroup,
   deleteGroup,
   duplicateGroup,
-  getAllGroups
+  getAllGroups,
+  updateGroupOrder,
 };
