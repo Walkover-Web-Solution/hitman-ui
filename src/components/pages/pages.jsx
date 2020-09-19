@@ -119,6 +119,12 @@ class Pages extends Component {
             {/* <div className="card"> */}
             {/* <div className="card-header" id="custom-card-header"> */}
             <button
+              draggable
+              onDragStart={(e) => this.props.onDragStart(e, pageId)}
+              onDragOver={(e) => {
+                e.preventDefault();
+              }}
+              onDrop={(e) => this.props.onDrop(e, pageId)}
               data-toggle="collapse"
               data-target={`#${pageId}`}
               aria-expanded="true"

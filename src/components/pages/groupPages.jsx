@@ -7,7 +7,7 @@ import {
   rejectPage,
 } from "../publicEndpoint/redux/publicEndpointsActions";
 import Pages from "./pages";
-import { deletePage, duplicatePage } from "./redux/pagesActions";
+import { deletePage, duplicatePage, setPageIds } from "./redux/pagesActions";
 import pageService from "./pageService";
 import { isDashboardRoute } from "../common/utility";
 import filterService from "../../services/filterService";
@@ -20,6 +20,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    set_page_ids: (pageIds, groupId) => dispatch(setPageIds(pageIds, groupId)),
     delete_page: (page) => dispatch(deletePage(page)),
     duplicate_page: (page) => dispatch(duplicatePage(page)),
     pending_page: (page) => dispatch(pendingPage(page)),
@@ -77,6 +78,63 @@ class GroupPages extends Component {
     }
   }
 
+  onDragStart = (e, gId) => {
+    this.draggedItem = gId;
+    this.props.set_page_drag();
+  };
+
+  onDrop(e, destinationPageId) {
+    e.preventDefault();
+
+    if (!this.draggedItem) {
+    } else {
+      if (this.draggedItem === destinationPageId) {
+        this.draggedItem = null;
+        return;
+      }
+      const pages = this.extractPages();
+      const positionWisePages = this.makePositionWisePages({ ...pages });
+      const index = positionWisePages.findIndex(
+        (pId) => pId === destinationPageId
+      );
+      let pageIds = positionWisePages.filter(
+        (item) => item !== this.draggedItem
+      );
+      pageIds.splice(index, 0, this.draggedItem);
+      let pgs = {};
+      for (let index = 0; index < pageIds.length; index++) {
+        pgs[index] = this.props.pages[pageIds[index]];
+      }
+      this.props.set_page_ids(pageIds, this.props.group_id);
+      this.draggedItem = null;
+    }
+  }
+
+  extractPages() {
+    let pages = {};
+    for (let i = 0; i < Object.keys(this.props.pages).length; i++) {
+      if (
+        this.props.pages[Object.keys(this.props.pages)[i]].groupId ===
+        this.props.group_id
+      ) {
+        pages[Object.keys(this.props.pages)[i]] = this.props.pages[
+          Object.keys(this.props.pages)[i]
+        ];
+      }
+    }
+    return pages;
+  }
+
+  makePositionWisePages(pages) {
+    let positionWisePages = [];
+    for (let i = 0; i < Object.keys(pages).length; i++) {
+      positionWisePages[pages[Object.keys(pages)[i]].position] = Object.keys(
+        pages
+      )[i];
+    }
+    return positionWisePages;
+  }
+
   render() {
     if (this.state.filter !== this.props.filter) {
       this.filterFlag = false;
@@ -84,6 +142,29 @@ class GroupPages extends Component {
     if (!this.props.filter || this.props.filter === "") {
       this.filteredGroupPages = { ...this.props.pages };
     }
+    let groupPageIds = Object.keys(this.props.pages).filter(
+      (pId) =>
+        this.props.pages[pId].groupId &&
+        this.props.pages[pId].groupId === this.props.group_id
+    );
+
+    let groupPagesArray = [];
+    for (let index = 0; index < groupPageIds.length; index++) {
+      const id = groupPageIds[index];
+      const groupPage = this.props.pages[id];
+      groupPagesArray = [...groupPagesArray, groupPage];
+    }
+
+    groupPagesArray.sort(function (a, b) {
+      return a.position - b.position;
+    });
+
+    let groupPages = {};
+    for (let index = 0; index < groupPagesArray.length; index++) {
+      const id = groupPagesArray[index].id;
+      groupPages[id] = this.props.pages[id];
+    }
+
     return (
       <div>
         {this.filterGroupPages()}
@@ -98,8 +179,8 @@ class GroupPages extends Component {
             )}
         </div>
 
-        {this.filteredGroupPages &&
-          Object.keys(this.filteredGroupPages)
+        {groupPages &&
+          Object.keys(groupPages)
             .filter(
               (pageId) =>
                 this.props.pages[pageId].versionId === this.props.version_id &&
@@ -118,6 +199,11 @@ class GroupPages extends Component {
                   {...this.props}
                   page_id={pageId}
                   index={index}
+                  onDragStart={this.onDragStart.bind(this)}
+                  // onDragOver={(e) => {
+                  //   e.preventDefault();
+                  // }}
+                  onDrop={this.onDrop.bind(this)}
                   open_delete_page_modal={this.openDeletePageModal.bind(this)}
                   close_delete_page_modal={this.closeDeletePageModal.bind(this)}
                 />

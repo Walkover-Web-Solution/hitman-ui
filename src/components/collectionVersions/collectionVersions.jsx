@@ -21,6 +21,7 @@ const mapStateToProps = (state) => {
   return {
     versions: state.versions,
     groups: state.groups,
+    pages: state.pages,
   };
 };
 

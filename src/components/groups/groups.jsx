@@ -18,7 +18,7 @@ import groupsService from "./groupsService";
 import filterService from "../../services/filterService";
 
 const mapStateToProps = (state) => {
-  return { groups: state.groups };
+  return { groups: state.groups, pages: state.pages };
 };
 
 const mapDispatchToProps = (dispatch) => {
@@ -51,6 +51,8 @@ class Groups extends Component {
     if (this.endpointDrag === true) {
       this.endpointDrag = false;
       this.props.set_destination_group_id(destinationGroupId);
+    } else if (this.pageDrag === true) {
+      this.pageDrag = false;
     } else {
       if (!this.draggedItem) {
       } else {
@@ -71,7 +73,6 @@ class Groups extends Component {
         for (let index = 0; index < groupIds.length; index++) {
           gps[index] = this.props.groups[groupIds[index]];
         }
-        console.log(gps);
         this.props.set_group_ids(groupIds, this.props.version_id);
         this.draggedItem = null;
       }
@@ -309,6 +310,9 @@ class Groups extends Component {
   setEndpointdrag() {
     this.endpointDrag = true;
   }
+  setPagedrag() {
+    this.pageDrag = true;
+  }
 
   renderBody(groupId) {
     if (
@@ -449,6 +453,7 @@ class Groups extends Component {
                 <GroupPages
                   {...this.props}
                   version_id={this.props.groups[groupId].versionId}
+                  set_page_drag={this.setPagedrag.bind(this)}
                   group_id={groupId}
                   show_filter_groups={this.propsFromGroups.bind(this)}
                 />
