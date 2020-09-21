@@ -51,8 +51,6 @@ class Groups extends Component {
     if (this.endpointDrag === true) {
       this.endpointDrag = false;
       this.props.set_destination_group_id(destinationGroupId);
-    } else if (this.pageDrag === true) {
-      this.pageDrag = false;
     } else {
       if (!this.draggedItem) {
       } else {
@@ -73,6 +71,7 @@ class Groups extends Component {
         for (let index = 0; index < groupIds.length; index++) {
           gps[index] = this.props.groups[groupIds[index]];
         }
+        console.log("gp", gps);
         this.props.set_group_ids(groupIds, this.props.version_id);
         this.draggedItem = null;
       }

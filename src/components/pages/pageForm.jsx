@@ -54,13 +54,14 @@ class PageForm extends Form {
     for (let i = 0; i < Object.keys(this.props.pages).length; i++) {
       if (
         this.props.selectedGroup &&
-        this.this.props.selectedVersion &&
+        this.props.selectedVersion &&
         this.props.selectedGroup.id ===
           this.props.pages[Object.keys(this.props.pages)[i]].groupId
       ) {
         count = count + 1;
       } else if (
         this.props.selectedVersion &&
+        this.props.pages[Object.keys(this.props.pages)[i]].groupId === null &&
         this.props.selectedVersion.id ===
           this.props.pages[Object.keys(this.props.pages)[i]].versionId
       ) {

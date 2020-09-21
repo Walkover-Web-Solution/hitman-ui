@@ -80,7 +80,6 @@ class GroupPages extends Component {
 
   onDragStart = (e, gId) => {
     this.draggedItem = gId;
-    this.props.set_page_drag();
   };
 
   onDrop(e, destinationPageId) {
@@ -105,6 +104,7 @@ class GroupPages extends Component {
       for (let index = 0; index < pageIds.length; index++) {
         pgs[index] = this.props.pages[pageIds[index]];
       }
+      console.log("pgs", pgs);
       this.props.set_page_ids(pageIds, this.props.group_id);
       this.draggedItem = null;
     }
@@ -114,14 +114,17 @@ class GroupPages extends Component {
     let pages = {};
     for (let i = 0; i < Object.keys(this.props.pages).length; i++) {
       if (
+        this.props.pages[Object.keys(this.props.pages)[i]].groupId &&
         this.props.pages[Object.keys(this.props.pages)[i]].groupId ===
-        this.props.group_id
+          this.props.group_id
       ) {
         pages[Object.keys(this.props.pages)[i]] = this.props.pages[
           Object.keys(this.props.pages)[i]
         ];
       }
     }
+    console.log("pages", pages);
+
     return pages;
   }
 
