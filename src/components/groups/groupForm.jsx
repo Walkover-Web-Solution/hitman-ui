@@ -56,6 +56,7 @@ class GroupForm extends Form {
         id: this.props.selected_group.id,
         endpointsOrder: this.props.selected_group.endpointsOrder,
         versionId: this.props.selected_group.versionId,
+        position: this.props.selected_group.position,
       };
       this.props.update_group(editedGroup);
     }

@@ -10,20 +10,41 @@ export const setEndpointIds = (endpointsOrder, groupId) => {
   return (dispatch) => dispatch(updateGroup(group));
 };
 
-export const setGroupIds = (groupsOrder, versionId) => {
+export const updateGroupOrder = (groupsOrder, versionId) => {
   return (dispatch) => {
-    dispatch(updateGroupOrderRequest(groupsOrder, versionId));
+    const originalGroups = JSON.parse(JSON.stringify(store.getState().groups));
+    dispatch(
+      updateGroupOrderRequest({ ...store.getState().groups }, groupsOrder)
+    );
+    groupsApiService
+      .updateGroupOrder(groupsOrder)
+      .then(() => {})
+      .catch((error) => {
+        dispatch(
+          onGroupOrderUpdatedError(
+            error.response ? error.response.data : error,
+            originalGroups
+          )
+        );
+      });
   };
 };
 
-export const updateGroupOrderRequest = (groupsOrder) => {
-  let groups = { ...store.getState().groups };
+export const updateGroupOrderRequest = (groups, groupsOrder) => {
   for (let i = 0; i < groupsOrder.length; i++) {
     groups[groupsOrder[i]].position = i;
   }
   return {
     type: groupsActionTypes.ON_GROUPS_ORDER_UPDATED,
     groups,
+  };
+};
+
+export const onGroupOrderUpdatedError = (error, groups) => {
+  return {
+    type: groupsActionTypes.ON_GROUPS_ORDER_UPDATED_ERROR,
+    groups,
+    error,
   };
 };
 
@@ -104,9 +125,9 @@ export const updateGroup = (editedGroup) => {
     dispatch(updateGroupRequest(editedGroup));
     const id = group.id;
     delete group.id;
-    const { name, host, endpointsOrder } = editedGroup;
+    const { name, host, endpointsOrder, position } = editedGroup;
     groupsApiService
-      .updateGroup(id, { name, host, endpointsOrder })
+      .updateGroup(id, { name, host, endpointsOrder, position })
       .then((response) => {
         dispatch(onGroupUpdated(response.data));
       })
@@ -148,7 +169,7 @@ export const deleteGroup = (group, props) => {
     dispatch(deleteGroupRequest(group));
     groupsApiService
       .deleteGroup(group.id)
-      .then(() => {
+      .then((response) => {
         const storeData = { ...store.getState() };
         const pageIds = [
           ...Object.keys(storeData.pages).filter(
@@ -163,8 +184,10 @@ export const deleteGroup = (group, props) => {
 
         endpointIds.map((eId) => tabService.removeTab(eId, props));
         pageIds.map((pId) => tabService.removeTab(pId, props));
-
         dispatch(onGroupDeleted({ endpointIds, pageIds }));
+        let groups = JSON.parse(JSON.stringify(store.getState().groups));
+        delete groups[group.id];
+        dispatch(updateGroupOrderRequest(groups, response.data));
       })
       .catch((error) => {
         dispatch(
