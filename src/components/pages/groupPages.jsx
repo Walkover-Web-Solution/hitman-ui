@@ -7,7 +7,11 @@ import {
   rejectPage,
 } from "../publicEndpoint/redux/publicEndpointsActions";
 import Pages from "./pages";
-import { deletePage, duplicatePage, setPageIds } from "./redux/pagesActions";
+import {
+  deletePage,
+  duplicatePage,
+  updatePageOrder,
+} from "./redux/pagesActions";
 import pageService from "./pageService";
 import { isDashboardRoute } from "../common/utility";
 import filterService from "../../services/filterService";
@@ -20,7 +24,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    set_page_ids: (pageIds, groupId) => dispatch(setPageIds(pageIds, groupId)),
+    set_page_ids: (pageIds) => dispatch(updatePageOrder(pageIds)),
     delete_page: (page) => dispatch(deletePage(page)),
     duplicate_page: (page) => dispatch(duplicatePage(page)),
     pending_page: (page) => dispatch(pendingPage(page)),

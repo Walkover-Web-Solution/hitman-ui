@@ -223,25 +223,61 @@ export const onPageDuplicated = (response) => {
   };
 };
 
-export const setPageIds = (pagesOrder, groupId) => {
+// export const setPageIds = (pagesOrder, groupId) => {
+//   return (dispatch) => {
+//     dispatch(updatePageOrderRequest(pagesOrder, groupId));
+//   };
+// };
+
+// export const setVersionPageIds = (pagesOrder, versionId) => {
+//   return (dispatch) => {
+//     dispatch(updatePageOrderRequest(pagesOrder, versionId));
+//   };
+// };
+
+// export const updatePageOrderRequest = (pagesOrder) => {
+//   let pages = { ...store.getState().pages };
+//   for (let i = 0; i < pagesOrder.length; i++) {
+//     pages[pagesOrder[i]].position = i;
+//   }
+//   return {
+//     type: pagesActionTypes.ON_PAGES_ORDER_UPDATED,
+//     pages,
+//   };
+// };
+
+export const updatePageOrder = (pagesOrder) => {
   return (dispatch) => {
-    dispatch(updatePageOrderRequest(pagesOrder, groupId));
+    const originalPages = JSON.parse(JSON.stringify(store.getState().pages));
+    dispatch(updatePageOrderRequest({ ...store.getState().pages }, pagesOrder));
+    pageApiService
+      .updatePageOrder(pagesOrder)
+      .then(() => {})
+      .catch((error) => {
+        dispatch(
+          onPageOrderUpdatedError(
+            error.response ? error.response.data : error,
+            originalPages
+          )
+        );
+      });
   };
 };
 
-export const setVersionPageIds = (pagesOrder, versionId) => {
-  return (dispatch) => {
-    dispatch(updatePageOrderRequest(pagesOrder, versionId));
-  };
-};
-
-export const updatePageOrderRequest = (pagesOrder) => {
-  let pages = { ...store.getState().pages };
+export const updatePageOrderRequest = (pages, pagesOrder) => {
   for (let i = 0; i < pagesOrder.length; i++) {
     pages[pagesOrder[i]].position = i;
   }
   return {
     type: pagesActionTypes.ON_PAGES_ORDER_UPDATED,
     pages,
+  };
+};
+
+export const onPageOrderUpdatedError = (error, pages) => {
+  return {
+    type: pagesActionTypes.ON_PAGES_ORDER_UPDATED_ERROR,
+    pages,
+    error,
   };
 };

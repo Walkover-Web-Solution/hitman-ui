@@ -72,7 +72,7 @@ class Groups extends Component {
           gps[index] = this.props.groups[groupIds[index]];
         }
         console.log("gp", gps);
-        this.props.set_group_ids(groupIds, this.props.version_id);
+        this.props.update_groups_order(groupIds, this.props.version_id);
         this.draggedItem = null;
       }
     }

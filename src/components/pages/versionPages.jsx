@@ -4,7 +4,7 @@ import Pages from "./pages";
 import {
   deletePage,
   duplicatePage,
-  setVersionPageIds,
+  updatePageOrder,
 } from "./redux/pagesActions";
 import pageService from "./pageService";
 import { isDashboardRoute } from "../common/utility";
@@ -18,8 +18,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    set_page_ids: (pageIds, groupId) =>
-      dispatch(setVersionPageIds(pageIds, groupId)),
+    set_page_ids: (pageIds) => dispatch(updatePageOrder(pageIds)),
     delete_page: (page) => dispatch(deletePage(page)),
     duplicate_page: (page) => dispatch(duplicatePage(page)),
   };
