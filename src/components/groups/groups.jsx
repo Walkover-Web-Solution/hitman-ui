@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Accordion, Card } from "react-bootstrap";
 import { connect } from "react-redux";
 import { isDashboardRoute } from "../common/utility";
+// import Endpoints from "../endpoints/endpointsCopy";
 import Endpoints from "../endpoints/endpoints";
 import GroupForm from "../groups/groupForm";
 import {
@@ -9,6 +10,7 @@ import {
   duplicateGroup,
   updateGroupOrder,
 } from "../groups/redux/groupsActions";
+// import { changeEndpointGroupId } from "../endpoints/redux/endpointsActions";
 import ShareGroupForm from "../groups/shareGroupForm";
 import GroupPages from "../pages/groupPages";
 import PageForm from "../pages/pageForm";
@@ -18,11 +20,17 @@ import groupsService from "./groupsService";
 import filterService from "../../services/filterService";
 
 const mapStateToProps = (state) => {
-  return { groups: state.groups, pages: state.pages };
+  return {
+    groups: state.groups,
+    pages: state.pages,
+    endpoints: state.endpoints,
+  };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    // change_endpoint_groupId: (destinationGroupId) =>
+    //   dispatch(changeEndpointGroupId(destinationGroupId)),
     update_groups_order: (groupIds, versionId) =>
       dispatch(updateGroupOrder(groupIds, versionId)),
     delete_group: (group, props) => dispatch(deleteGroup(group, props)),
@@ -45,63 +53,6 @@ class Groups extends Component {
   filteredGroupEndpoints = {};
   filteredGroupPages = {};
   filteredEndpointsAndPages = {};
-
-  onDrop(e, destinationGroupId) {
-    e.preventDefault();
-    if (this.endpointDrag === true) {
-      this.endpointDrag = false;
-      this.props.set_destination_group_id(destinationGroupId);
-    } else {
-      if (!this.draggedItem) {
-      } else {
-        if (this.draggedItem === destinationGroupId) {
-          this.draggedItem = null;
-          return;
-        }
-        const groups = this.extractGroups();
-        const positionWisegroups = this.makePositionWisegroups({ ...groups });
-        const index = positionWisegroups.findIndex(
-          (eId) => eId === destinationGroupId
-        );
-        let groupIds = positionWisegroups.filter(
-          (item) => item !== this.draggedItem
-        );
-        groupIds.splice(index, 0, this.draggedItem);
-        let gps = {};
-        for (let index = 0; index < groupIds.length; index++) {
-          gps[index] = this.props.groups[groupIds[index]];
-        }
-        console.log("gp", gps);
-        this.props.update_groups_order(groupIds, this.props.version_id);
-        this.draggedItem = null;
-      }
-    }
-  }
-
-  makePositionWisegroups(groups) {
-    let positionWisegroups = [];
-    for (let i = 0; i < Object.keys(groups).length; i++) {
-      positionWisegroups[groups[Object.keys(groups)[i]].position] = Object.keys(
-        groups
-      )[i];
-    }
-    return positionWisegroups;
-  }
-
-  extractGroups() {
-    let groups = {};
-    for (let i = 0; i < Object.keys(this.props.groups).length; i++) {
-      if (
-        this.props.groups[Object.keys(this.props.groups)[i]].versionId ===
-        this.props.version_id
-      ) {
-        groups[Object.keys(this.props.groups)[i]] = this.props.groups[
-          Object.keys(this.props.groups)[i]
-        ];
-      }
-    }
-    return groups;
-  }
 
   handleAddPage(groupId, versionId, collectionId) {
     this.props.history.push({
@@ -306,8 +257,100 @@ class Groups extends Component {
     this.draggedItem = gId;
   };
 
-  setEndpointdrag() {
+  extractEndpoints() {
+    let endpoints = {};
+    for (let i = 0; i < Object.keys(this.props.endpoints).length; i++) {
+      if (
+        this.props.endpoints[Object.keys(this.props.endpoints)[i]].groupId &&
+        this.props.endpoints[Object.keys(this.props.endpoints)[i]].groupId ===
+          this.props.group_id
+      ) {
+        endpoints[Object.keys(this.props.endpoints)[i]] = this.props.endpoints[
+          Object.keys(this.props.endpoints)[i]
+        ];
+      }
+    }
+
+    return endpoints;
+  }
+
+  makePositionWiseEndpoints(endpoints) {
+    let positionWiseEndpoints = [];
+    for (let i = 0; i < Object.keys(endpoints).length; i++) {
+      positionWiseEndpoints[
+        endpoints[Object.keys(endpoints)[i]].position
+      ] = Object.keys(endpoints)[i];
+    }
+    return positionWiseEndpoints;
+  }
+
+  onDrop(e, destinationGroupId) {
+    e.preventDefault();
+    if (this.endpointDrag === true) {
+      console.log(
+        "mohit",
+        this.props.groups[destinationGroupId].name,
+        this.props.endpoints[this.endpointId].name
+      );
+      const endpoint = this.props.endpoints[this.endpointId];
+      this.endpointDrag = false;
+      // this.props.change_endpoint_groupId(destinationGroupId);
+      // this.props.set_destination_group_id(destinationGroupId);
+    } else {
+      if (!this.draggedItem) {
+      } else {
+        if (this.draggedItem === destinationGroupId) {
+          this.draggedItem = null;
+          return;
+        }
+        const groups = this.extractGroups();
+        const positionWisegroups = this.makePositionWisegroups({ ...groups });
+        const index = positionWisegroups.findIndex(
+          (eId) => eId === destinationGroupId
+        );
+        let groupIds = positionWisegroups.filter(
+          (item) => item !== this.draggedItem
+        );
+        groupIds.splice(index, 0, this.draggedItem);
+        let gps = {};
+        for (let index = 0; index < groupIds.length; index++) {
+          gps[index] = this.props.groups[groupIds[index]];
+        }
+        console.log("gp", gps);
+        this.props.update_groups_order(groupIds, this.props.version_id);
+        this.draggedItem = null;
+      }
+    }
+  }
+
+  makePositionWisegroups(groups) {
+    let positionWisegroups = [];
+    for (let i = 0; i < Object.keys(groups).length; i++) {
+      positionWisegroups[groups[Object.keys(groups)[i]].position] = Object.keys(
+        groups
+      )[i];
+    }
+    return positionWisegroups;
+  }
+
+  extractGroups() {
+    let groups = {};
+    for (let i = 0; i < Object.keys(this.props.groups).length; i++) {
+      if (
+        this.props.groups[Object.keys(this.props.groups)[i]].versionId ===
+        this.props.version_id
+      ) {
+        groups[Object.keys(this.props.groups)[i]] = this.props.groups[
+          Object.keys(this.props.groups)[i]
+        ];
+      }
+    }
+    return groups;
+  }
+
+  setEndpointdrag(eId) {
     this.endpointDrag = true;
+    this.endpointId = eId;
   }
   setPagedrag() {
     this.pageDrag = true;
@@ -472,16 +515,16 @@ class Groups extends Component {
             <div className="hm-sidebar-label">
               {this.props.groups[groupId].name}
             </div>
-            <GroupPages
-              {...this.props}
-              version_id={this.props.groups[groupId].versionId}
-              group_id={groupId}
-              show_filter_groups={this.propsFromGroups.bind(this)}
-            />
             <Endpoints
               {...this.props}
               group_id={groupId}
               endpoints_order={this.props.groups[groupId].endpointsOrder}
+              show_filter_groups={this.propsFromGroups.bind(this)}
+            />
+            <GroupPages
+              {...this.props}
+              version_id={this.props.groups[groupId].versionId}
+              group_id={groupId}
               show_filter_groups={this.propsFromGroups.bind(this)}
             />
           </div>

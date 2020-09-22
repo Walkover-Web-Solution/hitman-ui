@@ -634,6 +634,19 @@ class DisplayEndpoint extends Component {
     this.handleApiCall(api, body, headers, this.state.data.body.type);
   };
 
+  extractPosition(groupId) {
+    let count = -1;
+    for (let i = 0; i < Object.keys(this.props.endpoints).length; i++) {
+      if (
+        groupId ===
+        this.props.endpoints[Object.keys(this.props.endpoints)[i]].groupId
+      ) {
+        count = count + 1;
+      }
+    }
+    return count + 1;
+  }
+
   handleSave = async (groupId, EndpointName) => {
     if (!(this.state.groupId || groupId)) {
       this.openEndpointFormModal();
@@ -668,6 +681,7 @@ class DisplayEndpoint extends Component {
       if (endpoint.name === "") toast.error("Please enter Endpoint name");
       else if (this.props.location.pathname.split("/")[3] === "new") {
         endpoint.requestId = this.props.tab.id;
+        endpoint.position = this.extractPosition(groupId || this.state.groupId);
         this.props.add_endpoint(endpoint, groupId || this.state.groupId);
       } else if (this.state.title === "update endpoint") {
         this.props.update_endpoint({

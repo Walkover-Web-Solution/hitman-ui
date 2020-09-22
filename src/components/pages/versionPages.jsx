@@ -84,7 +84,6 @@ class VersionPages extends Component {
         ];
       }
     }
-    console.log("pages", pages);
     return pages;
   }
 
