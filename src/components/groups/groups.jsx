@@ -287,11 +287,6 @@ class Groups extends Component {
   onDrop(e, destinationGroupId) {
     e.preventDefault();
     if (this.endpointDrag === true) {
-      console.log(
-        "mohit",
-        this.props.groups[destinationGroupId].name,
-        this.props.endpoints[this.endpointId].name
-      );
       const endpoint = this.props.endpoints[this.endpointId];
       this.endpointDrag = false;
       // this.props.change_endpoint_groupId(destinationGroupId);
@@ -312,11 +307,7 @@ class Groups extends Component {
           (item) => item !== this.draggedItem
         );
         groupIds.splice(index, 0, this.draggedItem);
-        let gps = {};
-        for (let index = 0; index < groupIds.length; index++) {
-          gps[index] = this.props.groups[groupIds[index]];
-        }
-        console.log("gp", gps);
+
         this.props.update_groups_order(groupIds, this.props.version_id);
         this.draggedItem = null;
       }

@@ -269,7 +269,6 @@ export const addCustomDomain = (
       title,
       logoUrl,
     });
-    // console.log(collection);
     dispatch(updateCollectionRequest({ ...collection }));
 
     const id = collection.id;

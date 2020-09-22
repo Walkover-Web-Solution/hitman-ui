@@ -61,11 +61,7 @@ class VersionPages extends Component {
         (item) => item !== this.draggedItem
       );
       pageIds.splice(index, 0, this.draggedItem);
-      let pgs = {};
-      for (let index = 0; index < pageIds.length; index++) {
-        pgs[index] = this.props.pages[pageIds[index]];
-      }
-      console.log("pgs", pgs);
+
       this.props.set_page_ids(pageIds, this.props.group_id);
       this.draggedItem = null;
     }

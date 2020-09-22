@@ -268,11 +268,7 @@ class Endpoints extends Component {
         (item) => item !== this.draggedItem
       );
       endpointIds.splice(index, 0, this.draggedItem);
-      let eds = {};
-      for (let index = 0; index < endpointIds.length; index++) {
-        eds[index] = this.props.endpoints[endpointIds[index]];
-      }
-      console.log("eds", eds);
+
       this.props.update_endpoints_order(endpointIds, this.props.group_id);
       this.draggedItem = null;
     }
