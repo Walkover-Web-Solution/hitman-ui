@@ -26,6 +26,8 @@ import { uiUrl } from "../../config.json";
 import "./collections.scss";
 import PublishDocsModal from "../publicEndpoint/publishDocsModal";
 import authService from "../auth/authService";
+import TagManager from "react-gtm-module";
+import TagManagerModal from "./tagModal";
 
 const mapStateToProps = (state) => {
   return {
@@ -241,6 +243,7 @@ class CollectionsComponent extends Component {
     this.collectionId = null;
     this.setState({ openSelectedCollection: false });
   }
+
   fetchCurrentUserRole() {
     const { user: currentUser } = authService.getCurrentUser();
     const teamArray = Object.keys(this.props.teamUsers);
@@ -249,6 +252,24 @@ class CollectionsComponent extends Component {
         return this.props.teamUsers[currentUser.identifier].role;
       }
     }
+  }
+
+  TagManagerModal(collectionId) {
+    this.setState({ TagManagerCollectionId: collectionId });
+  }
+
+  openTagManagerModal() {
+    return (
+      this.state.TagManagerCollectionId && (
+        <TagManagerModal
+          {...this.props}
+          show={true}
+          onHide={() => this.setState({ TagManagerCollectionId: false })}
+          title={"Google Tag Manager"}
+          collection_id={this.state.TagManagerCollectionId}
+        />
+      )
+    );
   }
 
   renderBody(collectionId, collectionState) {
@@ -370,7 +391,7 @@ class CollectionsComponent extends Component {
                     this.openPublishDocs(this.props.collections[collectionId])
                   }
                 >
-                  Publish Docs{" "}
+                  Publish Docs
                 </a>
 
                 <a
@@ -380,6 +401,14 @@ class CollectionsComponent extends Component {
                   }}
                 >
                   Share
+                </a>
+                <a
+                  className="dropdown-item"
+                  onClick={() => {
+                    this.TagManagerModal(collectionId);
+                  }}
+                >
+                  Add Google Tag Manager
                 </a>
               </div>
             </div>
@@ -421,6 +450,15 @@ class CollectionsComponent extends Component {
         // open_environment_form={this.openEnvironmentForm.bind(this)}
       />
     );
+  }
+
+  addGTM(gtmId) {
+    if (gtmId) {
+      const tagManagerArgs = {
+        gtmId: gtmId,
+      };
+      TagManager.initialize(tagManagerArgs);
+    }
   }
 
   render() {
@@ -509,6 +547,7 @@ class CollectionsComponent extends Component {
                 )}
               {this.showImportVersionForm()}
               {this.showShareCollectionForm()}
+              {this.openTagManagerModal()}
               {this.state.showDeleteModal &&
                 collectionsService.showDeleteCollectionModal(
                   { ...this.props },
@@ -544,11 +583,11 @@ class CollectionsComponent extends Component {
         </div>
       );
     } else {
-      // console.log(this.state.showPublishDocsModal);
       return (
         <React.Fragment>
           {Object.keys(this.props.collections).map((collectionId, index) => (
             <React.Fragment>
+              {this.addGTM(this.props.collections[collectionId].gtmId)}
               <div
                 className="hm-sidebar-header"
                 onClick={() =>
