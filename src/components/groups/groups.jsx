@@ -10,7 +10,7 @@ import {
   duplicateGroup,
   updateGroupOrder,
 } from "../groups/redux/groupsActions";
-// import { changeEndpointGroupId } from "../endpoints/redux/endpointsActions";
+import { reorderEndpoint } from "../endpoints/redux/endpointsActions";
 import ShareGroupForm from "../groups/shareGroupForm";
 import GroupPages from "../pages/groupPages";
 import PageForm from "../pages/pageForm";
@@ -29,8 +29,22 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    // change_endpoint_groupId: (destinationGroupId) =>
-    //   dispatch(changeEndpointGroupId(destinationGroupId)),
+    reorder_endpoint: (
+      sourceEndpointIds,
+      groupId,
+      destinationEndpointIds,
+      destinationGroupId,
+      endpointId
+    ) =>
+      dispatch(
+        reorderEndpoint(
+          sourceEndpointIds,
+          groupId,
+          destinationEndpointIds,
+          destinationGroupId,
+          endpointId
+        )
+      ),
     update_groups_order: (groupIds, versionId) =>
       dispatch(updateGroupOrder(groupIds, versionId)),
     delete_group: (group, props) => dispatch(deleteGroup(group, props)),
@@ -257,13 +271,13 @@ class Groups extends Component {
     this.draggedItem = gId;
   };
 
-  extractEndpoints() {
+  extractEndpoints(groupId) {
     let endpoints = {};
     for (let i = 0; i < Object.keys(this.props.endpoints).length; i++) {
       if (
         this.props.endpoints[Object.keys(this.props.endpoints)[i]].groupId &&
         this.props.endpoints[Object.keys(this.props.endpoints)[i]].groupId ===
-          this.props.group_id
+          groupId
       ) {
         endpoints[Object.keys(this.props.endpoints)[i]] = this.props.endpoints[
           Object.keys(this.props.endpoints)[i]
@@ -284,13 +298,38 @@ class Groups extends Component {
     return positionWiseEndpoints;
   }
 
+  getEndpointIds(groupId) {
+    const endpoints = this.extractEndpoints(groupId);
+    const positionWiseEndpoints = this.makePositionWiseEndpoints({
+      ...endpoints,
+    });
+    let endpointIds = positionWiseEndpoints.filter(
+      (item) => item !== this.endpointId
+    );
+    return endpointIds;
+  }
+
   onDrop(e, destinationGroupId) {
     e.preventDefault();
     if (this.endpointDrag === true) {
       const endpoint = this.props.endpoints[this.endpointId];
-      this.endpointDrag = false;
-      // this.props.change_endpoint_groupId(destinationGroupId);
-      // this.props.set_destination_group_id(destinationGroupId);
+      if (endpoint.groupId !== destinationGroupId) {
+        const groupId = endpoint.groupId;
+
+        const sourceEndpointIds = this.getEndpointIds(groupId);
+        const destinationEndpointIds = this.getEndpointIds(destinationGroupId);
+
+        destinationEndpointIds.push(this.endpointId);
+
+        this.endpointDrag = false;
+        this.props.reorder_endpoint(
+          sourceEndpointIds,
+          groupId,
+          destinationEndpointIds,
+          destinationGroupId,
+          this.endpointId
+        );
+      }
     } else {
       if (!this.draggedItem) {
       } else {

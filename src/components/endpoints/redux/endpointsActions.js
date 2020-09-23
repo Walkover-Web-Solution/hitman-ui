@@ -258,7 +258,7 @@ export const onEndpointDuplicated = (response) => {
   };
 };
 
-export const updateEndpointOrder = (endpointsOrder, groupId) => {
+export const updateEndpointOrder = (sourceEndpointIds, groupId) => {
   return (dispatch) => {
     const originalEndpoints = JSON.parse(
       JSON.stringify(store.getState().endpoints)
@@ -266,11 +266,11 @@ export const updateEndpointOrder = (endpointsOrder, groupId) => {
     dispatch(
       updateEndpointOrderRequest(
         { ...store.getState().endpoints },
-        endpointsOrder
+        sourceEndpointIds
       )
     );
     endpointApiService
-      .updateEndpointOrder(endpointsOrder)
+      .updateEndpointOrder(sourceEndpointIds)
       .then(() => {})
       .catch((error) => {
         dispatch(
@@ -283,9 +283,9 @@ export const updateEndpointOrder = (endpointsOrder, groupId) => {
   };
 };
 
-export const updateEndpointOrderRequest = (endpoints, endpointsOrder) => {
-  for (let i = 0; i < endpointsOrder.length; i++) {
-    endpoints[endpointsOrder[i]].position = i;
+export const updateEndpointOrderRequest = (endpoints, sourceEndpointIds) => {
+  for (let i = 0; i < sourceEndpointIds.length; i++) {
+    endpoints[sourceEndpointIds[i]].position = i;
   }
   return {
     type: endpointsActionTypes.ON_ENDPOINTS_ORDER_UPDATED,
@@ -302,3 +302,73 @@ export const onEndpointOrderUpdatedError = (error, endpoints) => {
 };
 
 //-----------------------------------------------------------
+
+export const reorderEndpoint = (
+  sourceEndpointIds,
+  sourceGroupId,
+  destinationEndpointIds,
+  destinationGroupId,
+  endpointId
+) => {
+  return (dispatch) => {
+    const originalEndpoints = JSON.parse(
+      JSON.stringify(store.getState().endpoints)
+    );
+    dispatch(
+      reorderEndpointRequest(
+        { ...store.getState().endpoints },
+        sourceEndpointIds,
+        sourceGroupId,
+        destinationEndpointIds,
+        destinationGroupId,
+        endpointId
+      )
+    );
+    endpointApiService
+      .updateEndpointOrder(
+        sourceEndpointIds,
+        sourceGroupId,
+        destinationEndpointIds,
+        destinationGroupId,
+        endpointId
+      )
+      .then(() => {})
+      .catch((error) => {
+        dispatch(
+          reorderEndpointError(
+            error.response ? error.response.data : error,
+            originalEndpoints
+          )
+        );
+      });
+  };
+};
+
+export const reorderEndpointRequest = (
+  endpoints,
+  sourceEndpointIds,
+  sourceGroupId,
+  destinationEndpointIds,
+  destinationGroupId,
+  endpointId
+) => {
+  for (let i = 0; i < sourceEndpointIds.length; i++) {
+    endpoints[sourceEndpointIds[i]].position = i;
+  }
+  for (let i = 0; i < destinationEndpointIds.length; i++) {
+    endpoints[destinationEndpointIds[i]].position = i;
+  }
+  endpoints[endpointId].groupId = destinationGroupId;
+  return {
+    type: endpointsActionTypes.ON_ENDPOINTS_ORDER_UPDATED,
+    endpoints,
+  };
+};
+
+export const reorderEndpointError = (error, endpoints) => {
+  return {
+    type: endpointsActionTypes.ON_ENDPOINTS_ORDER_UPDATED_ERROR,
+    endpoints,
+    error,
+  };
+};
