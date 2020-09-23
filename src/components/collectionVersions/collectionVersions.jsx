@@ -20,6 +20,8 @@ import filterService from "../../services/filterService";
 const mapStateToProps = (state) => {
   return {
     versions: state.versions,
+    groups: state.groups,
+    pages: state.pages,
   };
 };
 
@@ -140,6 +142,7 @@ class CollectionVersions extends Component {
     return (
       this.state.showVersionForm.addGroup && (
         <GroupForm
+          {...this.props}
           show={this.state.showVersionForm.addGroup}
           onHide={() => this.closeVersionForm()}
           title={this.state.versionFormName}
@@ -262,6 +265,7 @@ class CollectionVersions extends Component {
       }
     }
   }
+
   renderBody(versionId, index) {
     if (
       isDashboardRoute(this.props) &&

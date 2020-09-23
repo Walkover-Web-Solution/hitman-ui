@@ -136,6 +136,15 @@ function pagesReducer(state = initialState, action) {
       });
       return pages;
 
+    case pagesActionTypes.ON_PAGES_ORDER_UPDATED:
+      pages = { ...action.pages };
+      return pages;
+
+    case pagesActionTypes.ON_PAGES_ORDER_UPDATED_ERROR:
+      toast.error(action.error);
+      pages = { ...action.pages };
+      return pages;
+
     default:
       return state;
   }

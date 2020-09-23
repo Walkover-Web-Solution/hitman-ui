@@ -12,7 +12,11 @@ import { closeTab, openInNewTab } from "../tabs/redux/tabsActions";
 import tabService from "../tabs/tabService";
 import tabStatusTypes from "../tabs/tabStatusTypes";
 import "./endpoints.scss";
-import { deleteEndpoint, duplicateEndpoint } from "./redux/endpointsActions";
+import {
+  deleteEndpoint,
+  duplicateEndpoint,
+  updateEndpointOrder,
+} from "./redux/endpointsActions";
 import filterService from "../../services/filterService";
 
 const mapStateToProps = (state) => {
@@ -30,6 +34,8 @@ const mapDispatchToProps = (dispatch) => {
     duplicate_endpoint: (endpoint) => dispatch(duplicateEndpoint(endpoint)),
     set_endpoint_ids: (endpointsOrder, groupId) =>
       dispatch(setEndpointIds(endpointsOrder, groupId)),
+    update_endpoints_order: (endpointIds, groupId) =>
+      dispatch(updateEndpointOrder(endpointIds, groupId)),
     pending_endpoint: (endpoint) => dispatch(pendingEndpoint(endpoint)),
     approve_endpoint: (endpoint) => dispatch(approveEndpoint(endpoint)),
     draft_endpoint: (endpoint) => dispatch(draftEndpoint(endpoint)),
@@ -46,14 +52,11 @@ class Endpoints extends Component {
 
   componentDidMount() {}
 
-  onDragStart = (e, eId) => {
-    this.draggedItem = eId;
-    this.props.set_source_group_id(eId, this.props.group_id);
-  };
-
-  onDragOver = (e) => {
-    e.preventDefault();
-  };
+  // onDragStart = (e, eId) => {
+  //   this.draggedItem = eId;
+  //   this.props.set_endpoint_drag();
+  //   this.props.set_source_group_id(eId, this.props.group_id);
+  // };
 
   sequencingOnFilter() {
     let filteredEndpointKeys = this.filteredEndpoints
@@ -69,25 +72,25 @@ class Endpoints extends Component {
       }
     }
   }
-  onDrop = (e, droppedOnItem) => {
-    e.preventDefault();
-    if (!this.draggedItem) {
-    } else {
-      if (this.draggedItem === droppedOnItem) {
-        this.draggedItem = null;
-        return;
-      }
-      let endpointIds = this.props.endpoints_order.filter(
-        (item) => item !== this.draggedItem
-      );
-      const index = this.props.endpoints_order.findIndex(
-        (eId) => eId === droppedOnItem
-      );
-      endpointIds.splice(index, 0, this.draggedItem);
-      this.props.set_endpoint_ids(endpointIds, this.props.group_id);
-      this.draggedItem = null;
-    }
-  };
+  // onDrop = (e, droppedOnItem) => {
+  //   e.preventDefault();
+  //   if (!this.draggedItem) {
+  //   } else {
+  //     if (this.draggedItem === droppedOnItem) {
+  //       this.draggedItem = null;
+  //       return;
+  //     }
+  //     let endpointIds = this.props.endpoints_order.filter(
+  //       (item) => item !== this.draggedItem
+  //     );
+  //     const index = this.props.endpoints_order.findIndex(
+  //       (eId) => eId === droppedOnItem
+  //     );
+  //     endpointIds.splice(index, 0, this.draggedItem);
+  //     this.props.set_endpoint_ids(endpointIds, this.props.group_id);
+  //     this.draggedItem = null;
+  //   }
+  // };
 
   handleDelete(endpoint) {
     this.props.delete_endpoint(endpoint);
@@ -211,6 +214,93 @@ class Endpoints extends Component {
     }
   }
 
+  filterGroupPages() {
+    if (
+      this.props.selectedCollection === true &&
+      this.props.filter !== "" &&
+      this.filterFlag === false
+    ) {
+      this.filterFlag = true;
+      let groupIds = [];
+      let groupIdsAndFilteredPages = [];
+      groupIdsAndFilteredPages = filterService.filter(
+        this.props.pages,
+        this.props.filter,
+        "groupPages"
+      );
+      this.filteredGroupPages = groupIdsAndFilteredPages[0];
+      groupIds = groupIdsAndFilteredPages[1];
+      this.setState({ filter: this.props.filter });
+      if (groupIds.length !== 0) {
+        this.props.show_filter_groups(groupIds, "pages");
+      } else {
+        this.props.show_filter_groups(null, "pages");
+      }
+    }
+  }
+
+  onDragStart = (e, eId) => {
+    this.draggedItem = eId;
+    this.props.set_endpoint_drag(eId);
+  };
+
+  onDragOver = (e, eId) => {
+    e.preventDefault();
+  };
+
+  onDrop(e, destinationEndpointId) {
+    e.preventDefault();
+
+    if (!this.draggedItem) {
+    } else {
+      if (this.draggedItem === destinationEndpointId) {
+        this.draggedItem = null;
+        return;
+      }
+      const endpoints = this.extractEndpoints();
+      const positionWiseEndpoints = this.makePositionWiseEndpoints({
+        ...endpoints,
+      });
+      const index = positionWiseEndpoints.findIndex(
+        (eId) => eId === destinationEndpointId
+      );
+      let endpointIds = positionWiseEndpoints.filter(
+        (item) => item !== this.draggedItem
+      );
+      endpointIds.splice(index, 0, this.draggedItem);
+
+      this.props.update_endpoints_order(endpointIds, this.props.group_id);
+      this.draggedItem = null;
+    }
+  }
+
+  extractEndpoints() {
+    let endpoints = {};
+    for (let i = 0; i < Object.keys(this.props.endpoints).length; i++) {
+      if (
+        this.props.endpoints[Object.keys(this.props.endpoints)[i]].groupId &&
+        this.props.endpoints[Object.keys(this.props.endpoints)[i]].groupId ===
+          this.props.group_id
+      ) {
+        endpoints[Object.keys(this.props.endpoints)[i]] = this.props.endpoints[
+          Object.keys(this.props.endpoints)[i]
+        ];
+      }
+    }
+
+    return endpoints;
+  }
+
+  makePositionWiseEndpoints(endpoints) {
+    let positionWiseEndpoints = [];
+    for (let i = 0; i < Object.keys(endpoints).length; i++) {
+      positionWiseEndpoints[
+        endpoints[Object.keys(endpoints)[i]].position
+      ] = Object.keys(endpoints)[i];
+    }
+    return positionWiseEndpoints;
+  }
+
   render() {
     if (this.state.filter !== this.props.filter) {
       this.filterFlag = false;
@@ -218,6 +308,27 @@ class Endpoints extends Component {
     if (this.props.filter === "") {
       this.filteredEndpoints = { ...this.props.endpoints };
       this.filteredEndpointsOrder = [...this.props.endpoints_order];
+    }
+
+    let endpointIds = Object.keys(this.props.endpoints).filter(
+      (eId) =>
+        this.props.endpoints[eId].groupId &&
+        this.props.endpoints[eId].groupId === this.props.group_id
+    );
+    let endpointsArray = [];
+    for (let index = 0; index < endpointIds.length; index++) {
+      const id = endpointIds[index];
+      const endpoint = this.props.endpoints[id];
+      endpointsArray = [...endpointsArray, endpoint];
+    }
+
+    endpointsArray.sort(function (a, b) {
+      return a.position - b.position;
+    });
+    let endpoints = {};
+    for (let index = 0; index < endpointsArray.length; index++) {
+      const id = endpointsArray[index].id || endpointsArray[index].requestId;
+      endpoints[id] = this.props.endpoints[id];
     }
 
     if (isDashboardRoute(this.props)) {
@@ -236,22 +347,22 @@ class Endpoints extends Component {
               this.state.selectedEndpoint
             )}
         </div> */}
-          {this.filteredEndpoints &&
-            Object.keys(this.filteredEndpoints) &&
-            Object.keys(this.filteredEndpoints).length !== 0 &&
-            this.filteredEndpointsOrder
-              .filter(
-                (eId) =>
-                  this.props.endpoints[eId].groupId === this.props.group_id
-              )
+          {endpoints &&
+            Object.keys(endpoints).length !== 0 &&
+            Object.keys(endpoints)
+              // filteredEndpointsOrder
+              //   .filter(
+              //     (eId) =>
+              //       this.props.endpoints[eId].groupId === this.props.group_id
+              //   )
               .map((endpointId) => (
                 <div className="sidebar-accordion" key={endpointId}>
                   <div className={this.props.endpoints[endpointId].state}></div>
                   <button
                     draggable
-                    onDragOver={this.onDragOver}
+                    onDragOver={(e) => this.onDragOver(e, endpointId)}
                     onDragStart={(e) => this.onDragStart(e, endpointId)}
-                    onDrop={(e) => this.onDrop(e)}
+                    onDrop={(e) => this.onDrop(e, endpointId)}
                     onClick={() =>
                       this.handleDisplay(
                         this.props.endpoints[endpointId],
@@ -385,13 +496,16 @@ class Endpoints extends Component {
     } else {
       return (
         <React.Fragment>
-          {Object.keys(this.props.endpoints).length !== 0 &&
-            this.props.endpoints_order
-              .filter(
-                (eId) =>
-                  this.props.endpoints[eId].groupId === this.props.group_id
-              )
-              .map((endpointId) => (
+          {
+            // Object.keys(this.props.endpoints).length !== 0 &&
+            //   this.props.endpoints_order
+            //     .filter(
+            //       (eId) =>
+            //         this.props.endpoints[eId].groupId === this.props.group_id
+            //     )
+            endpoints &&
+              Object.keys(endpoints).length !== 0 &&
+              Object.keys(endpoints).map((endpointId) => (
                 <div
                   className="hm-sidebar-item"
                   key={endpointId}
@@ -414,7 +528,8 @@ class Endpoints extends Component {
                     {this.props.endpoints[endpointId].name}
                   </div>
                 </div>
-              ))}
+              ))
+          }
         </React.Fragment>
       );
     }

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import ReactQuill from "react-quill";
+import ReactQuill, { Quill } from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
@@ -7,6 +7,14 @@ import store from "../../store/store";
 import { updatePage } from "../pages/redux/pagesActions";
 import "./page.scss";
 import { toast } from "react-toastify";
+var Link = Quill.import("formats/link");
+var builtInFunc = Link.sanitize;
+Link.sanitize = function customSanitizeLinkInput(linkValueInput) {
+  var val = linkValueInput;
+  if (/^\w+:/.test(val));
+  else if (!/^https?:/.test(val)) val = "https://" + val;
+  return builtInFunc.call(this, val);
+};
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {

@@ -129,6 +129,15 @@ function endpointsReducer(state = initialState, action) {
       });
       return endpoints;
 
+    case endpointsActionTypes.ON_ENDPOINTS_ORDER_UPDATED:
+      endpoints = { ...action.endpoints };
+      return endpoints;
+
+    case endpointsActionTypes.ON_ENDPOINTS_ORDER_UPDATED_ERROR:
+      toast.error(action.error);
+      endpoints = { ...action.endpoints };
+      return endpoints;
+
     default:
       return state;
   }

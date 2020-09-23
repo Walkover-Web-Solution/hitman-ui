@@ -52,6 +52,12 @@ export function duplicatePage(pageId) {
   return http.post(`${apiUrl}/duplicatePages/${pageId}`);
 }
 
+export function updatePageOrder(pagesOrder) {
+  return http.patch(`${apiUrl}/updatePagesOrder`, {
+    pagesOrder: pagesOrder,
+  });
+}
+
 export default {
   getVersionPages,
   getGroupPages,
@@ -61,5 +67,6 @@ export default {
   updatePage,
   deletePage,
   duplicatePage,
-  getAllPages
+  getAllPages,
+  updatePageOrder,
 };

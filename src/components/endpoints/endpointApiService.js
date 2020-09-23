@@ -59,6 +59,22 @@ export function moveEndpoint(endpointId, body) {
   return http.patch(`${apiUrl}/endpoints/${endpointId}/move`, body);
 }
 
+export function updateEndpointOrder(
+  sourceEndpointIds,
+  sourceGroupId = null,
+  destinationEndpointIds = null,
+  destinationGroupId = null,
+  endpointId = null
+) {
+  return http.patch(`${apiUrl}/updateEndpointsOrder`, {
+    sourceEndpointIds,
+    sourceGroupId,
+    destinationEndpointIds,
+    destinationGroupId,
+    endpointId,
+  });
+}
+
 function makeParams(params, grantType, authData) {
   let finalHeaders = {};
   let finalParams = {};
@@ -203,4 +219,5 @@ export default {
   moveEndpoint,
   authorize,
   setAuthorizationType,
+  updateEndpointOrder,
 };

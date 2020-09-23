@@ -15,7 +15,7 @@ export const fetchAllPublicEndpoints = (history, collectionIdentifier) => {
             error.response ? error.response.data : error
           )
         );
-        history.push(`/p/error`);
+        history.push({ pathname: `/p/error`, collection: true });
       });
   };
 };
