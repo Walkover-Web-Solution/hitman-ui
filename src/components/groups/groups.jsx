@@ -411,9 +411,9 @@ class Groups extends Component {
             key={groupId}
             className="sidebar-accordion"
             id="child-accordion"
-            defaultActiveKey={
-              this.eventkey[groupId] ? this.eventkey[groupId] : "1"
-            }
+            // defaultActiveKey={
+            //   this.eventkey[groupId] ? this.eventkey[groupId] : "1"
+            // }
             draggable
             onDragStart={(e) => this.onDragStart(e, groupId)}
             onDragOver={(e) => {

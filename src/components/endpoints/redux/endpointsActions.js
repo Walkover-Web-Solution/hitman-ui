@@ -301,8 +301,6 @@ export const onEndpointOrderUpdatedError = (error, endpoints) => {
   };
 };
 
-//-----------------------------------------------------------
-
 export const reorderEndpoint = (
   sourceEndpointIds,
   sourceGroupId,
