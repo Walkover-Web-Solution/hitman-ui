@@ -1,6 +1,6 @@
 import http from "./httpService";
 
-const herokuToken = "0a1191f5-5ca0-4a88-a4c6-1e9a8b16cd77";
+const herokuToken = "adfa5eee-ca81-45bf-a856-0f782562b2a5";
 const appName = "hitman-ui";
 
 export function getConfigVars() {
