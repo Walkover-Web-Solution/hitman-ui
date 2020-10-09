@@ -1,0 +1,99 @@
+version: 2.1
+orbs:
+  gcp-gke: circleci/gcp-gke@1.1.0
+  gcr: circleci/gcp-gcr@0.0.2
+jobs:
+  Build-Push-Image-Docker:
+    description: Build and push image to Google Container Registry
+    machine: true
+    steps:
+      - checkout
+      - run:
+          name: Add Environment Variables
+          command: |
+            echo "
+            REACT_APP_UI_URL=$REACT_APP_UI_URL
+            REACT_APP_API_URL= $REACT_APP_API_URL
+            " > .env
+      - gcr/gcr-auth
+      - run:
+          name: Build Docker Image
+          command: |
+            docker build -t asia.gcr.io/$GOOGLE_PROJECT_ID/hitman-ui:<< pipeline.number >> .
+      - run:
+          name: Push image to GCR
+          command: |
+            docker push asia.gcr.io/$GOOGLE_PROJECT_ID/hitman-ui:<< pipeline.number >>
+
+  Deploy-to-GKE:
+    description: Deploy application to Google Kubernetes Engine
+    machine: true
+    steps:
+      # Install `gcloud` and `kubectl` if not already installed.
+      - gcp-gke/install
+      # Initialize the `gcloud` CLI.
+      - gcp-gke/update-kubeconfig-with-credentials:
+          cluster: $GOOGLE_CLUSTER_ID
+          perform-login: true
+
+      - add_ssh_keys:
+          fingerprints:
+            - $GOOGLE_SSH_KEY
+
+      # Update a deployment Docker image.
+      - run:
+          name: Set Image
+          command: |
+            ssh circle_ci@$GOOGLE_SSH_IP -p $GOOGLE_SSH_PORT "sudo su -c 'kubectl set image deployment/hitman-ui hitman-ui=asia.gcr.io/$GOOGLE_PROJECT_ID/hitman-ui:<< pipeline.number >> -n viasocket '"
+
+workflows:
+  Build_Deploy_Dev:
+    jobs:
+      - Build-Push-Image-Docker:
+          filters:
+            branches:
+              only:
+                - master
+                - gcp
+          context:
+            - dev
+            - hitman-ui-dev
+
+      - Deploy-to-GKE:
+          requires:
+            - Build-Push-Image-Docker
+          filters:
+            branches:
+              only:
+                - master
+                - gcp
+          context:
+            - dev
+            - hitman-ui-dev
+
+  Build_Deploy_Prod:
+    jobs:
+      - Build-Push-Image-Docker:
+          filters:
+            branches:
+              only:
+                - prod
+          context:
+            - prod
+            - hitman-ui-prod
+
+      - hold:
+          type: approval
+          requires:
+            - Build-Push-Image-Docker
+
+      - Deploy-to-GKE:
+          requires:
+            - hold
+          filters:
+            branches:
+              only:
+                - prod
+          context:
+            - prod
+            - hitman-ui-prod
