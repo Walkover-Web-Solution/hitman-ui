@@ -22,7 +22,6 @@ import {
   addCustomDomain,
 } from "./redux/collectionsActions";
 import ShareCollectionForm from "./shareCollectionForm";
-import { uiUrl } from "../../config.json";
 import "./collections.scss";
 import PublishDocsModal from "../publicEndpoint/publishDocsModal";
 import authService from "../auth/authService";
@@ -117,7 +116,7 @@ class CollectionsComponent extends Component {
     this.props.duplicate_collection(collectionCopy);
   }
   async handleGoToDocs(collection) {
-    const publicDocsUrl = `${uiUrl}/p/${collection.id}`;
+    const publicDocsUrl = `${process.env.REACT_APP_UI_URL}/p/${collection.id}`;
     window.open(publicDocsUrl, "_blank");
   }
 

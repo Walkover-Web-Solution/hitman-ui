@@ -8,6 +8,7 @@ import Main from "./components/main/Main.jsx";
 import PublicView from "./components/main/publicView";
 import Public from "./components/publicEndpoint/publicEndpoint.jsx";
 import herokuApiService from "./services/herokuApiService";
+require("dotenv").config();
 
 class App extends Component {
   async redirectToClientDomain() {
@@ -32,7 +33,7 @@ class App extends Component {
   }
 
   render() {
-    this.redirectToClientDomain();
+    // this.redirectToClientDomain();
     return (
       <Switch>
         <ProtectedRoute path="/dashboard/" component={Main} />

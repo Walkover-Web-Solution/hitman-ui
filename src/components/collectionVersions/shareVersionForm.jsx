@@ -2,7 +2,6 @@ import React from "react";
 import { Modal } from "react-bootstrap";
 import Joi from "joi-browser";
 import { CopyToClipboard } from "react-copy-to-clipboard";
-import { apiUrl } from "../../config.json";
 import Form from "../common/form";
 
 class ShareVersionForm extends Form {
@@ -17,7 +16,9 @@ class ShareVersionForm extends Form {
     if (this.props.selectedVersion) {
       let data = {};
       const shareVersionLink =
-        apiUrl + "/share/" + this.props.selectedVersion.shareIdentifier;
+        process.env.REACT_APP_API_URL +
+        "/share/" +
+        this.props.selectedVersion.shareIdentifier;
       data = { shareVersionLink };
       data.disabled = true;
       this.setState({ data });

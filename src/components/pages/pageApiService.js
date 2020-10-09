@@ -1,5 +1,6 @@
 import http from "../../services/httpService";
-import { apiUrl } from "../../config.json";
+
+const apiUrl = process.env.REACT_APP_API_URL;
 
 function versionPagesUrl(versionId) {
   return `${apiUrl}/versions/${versionId}/pages`;

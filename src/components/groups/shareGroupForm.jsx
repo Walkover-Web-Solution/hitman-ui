@@ -2,7 +2,6 @@ import React from "react";
 import { Modal } from "react-bootstrap";
 import Joi from "joi-browser";
 import { CopyToClipboard } from "react-copy-to-clipboard";
-import { apiUrl } from "../../config.json";
 import Form from "../common/form";
 
 class ShareGroupForm extends Form {
@@ -17,7 +16,9 @@ class ShareGroupForm extends Form {
     if (this.props.selectedGroup) {
       let data = {};
       const shareGroupLink =
-        apiUrl + "/shareGroup/" + this.props.selectedGroup.shareIdentifier;
+        process.env.REACT_APP_API_URL +
+        "/shareGroup/" +
+        this.props.selectedGroup.shareIdentifier;
       data = { shareGroupLink };
       data.disabled = true;
       this.setState({ data });

@@ -1,8 +1,9 @@
 import http from "../../services/httpService";
 import httpService from "../../services/endpointHttpService";
 import indexedDbService from "../indexedDb/indexedDbService";
-import { apiUrl } from "../../config.json";
 import qs from "qs";
+
+const apiUrl = process.env.REACT_APP_API_URL;
 
 function endpointUrl(groupId) {
   return `${apiUrl}/groups/${groupId}/endpoints`;

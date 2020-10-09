@@ -12,7 +12,6 @@ import "./publicEndpoint.scss";
 import store from "../../store/store";
 import auth from "../auth/authService";
 import UserInfo from "../common/userInfo";
-import { uiUrl } from "../../config.json";
 
 const mapStateToProps = (state) => {
   return {
@@ -70,7 +69,7 @@ class PublicEndpoint extends Component {
       ].name;
       this.setState({ collectionName });
     }
-    const redirectionUrl = uiUrl + "/login";
+    const redirectionUrl = process.env.REACT_APP_API_URL + "/login";
     if (
       this.props.location.pathname.split("/")[1] === "p" &&
       (this.props.location.pathname.split("/")[3] === undefined ||

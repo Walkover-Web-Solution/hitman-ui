@@ -1,9 +1,9 @@
 import http from "../../services/httpService";
 import httpService from "../../services/endpointHttpService";
 
-import { apiUrl } from "../../config.json";
+const apiEndpoint = process.env.REACT_APP_API_URL + "/collections";
 
-const apiEndpoint = apiUrl + "/collections";
+const apiUrl = process.env.REACT_APP_API_URL;
 
 function collectionUrl(id) {
   return `${apiEndpoint}/${id}`;

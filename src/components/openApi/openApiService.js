@@ -1,6 +1,7 @@
-import { apiUrl } from "../../config.json";
 import http from "../../services/httpService";
 import authService from "../auth/authService";
+
+const apiUrl = process.env.REACT_APP_API_URL;
 
 export function importApi(openApiObject) {
   let user = authService.getCurrentUser();

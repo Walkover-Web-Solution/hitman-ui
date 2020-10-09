@@ -4,7 +4,6 @@ import "../styles.scss";
 import "./main.scss";
 import auth from "../auth/authService";
 import filterService from "../../services/filterService";
-import { uiUrl } from "../../config.json";
 import UserInfo from "../common/userInfo";
 
 class PublicView extends Component {
@@ -39,12 +38,12 @@ class PublicView extends Component {
   }
 
   openCollection(collectionId) {
-    const publicDocsUrl = `${uiUrl}/p/${collectionId}`;
+    const publicDocsUrl = `${process.env.REACT_APP_API_URL}/p/${collectionId}`;
     window.open(publicDocsUrl, "_blank");
   }
 
   render() {
-    const redirectionUrl = uiUrl + "/login";
+    const redirectionUrl = process.env.REACT_APP_API_URL + "/login";
     const filteredPublicCollections = this.state.filteredPublicCollections;
     return (
       <React.Fragment>
