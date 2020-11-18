@@ -54,7 +54,6 @@ workflows:
             branches:
               only:
                 - master
-                - gcp
           context:
             - dev
             - hitman-ui-dev
@@ -66,7 +65,6 @@ workflows:
             branches:
               only:
                 - master
-                - gcp
           context:
             - dev
             - hitman-ui-dev
