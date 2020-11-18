@@ -1,15 +1,66 @@
 import React, { Component } from "react";
 import { Route, Switch } from "react-router-dom";
+import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Collections from "../collections/collections";
 import ProtectedRoute from "../common/protectedRoute";
 import { isDashboardRoute } from "../common/utility";
+import { getCurrentUser } from "../auth/authService";
+import OpenApiForm from "../openApi/openApiForm";
+import CollectionVersions from "../collectionVersions/collectionVersions";
+import endpointApiService from "../endpoints/endpointApiService";
 import "./main.scss";
+import "./sidebar.scss";
+const mapStateToProps = (state) => {
+  return {
+    // teams: state.teams,
+    collections: state.collections,
+    // versions: state.versions,
+    // pages: state.pages,
+    // teamUsers: state.teamUsers,
+    // groups: state.groups,
+    filter: "",
+  };
+};
+
 class SideBar extends Component {
   state = {
     data: {
       filter: "",
     },
+    name: "",
+    email: "",
   };
+  componentDidMount() {
+    if (getCurrentUser()) {
+      const { user } = getCurrentUser();
+      const name = user.first_name + user.last_name;
+      const email = user.email;
+      this.setState({ name, email });
+    }
+  }
+
+  async dndMoveEndpoint(endpointId, sourceGroupId, destinationGroupId) {
+    const groups = { ...this.state.groups };
+    const endpoints = { ...this.state.endpoints };
+    const originalEndpoints = { ...this.state.endpoints };
+    const originalGroups = { ...this.state.groups };
+    const endpoint = endpoints[endpointId];
+    endpoint.groupId = destinationGroupId;
+    endpoints[endpointId] = endpoint;
+    groups[sourceGroupId].endpointsOrder = groups[
+      sourceGroupId
+    ].endpointsOrder.filter((gId) => gId !== endpointId.toString());
+    groups[destinationGroupId].endpointsOrder.push(endpointId);
+    this.setState({ endpoints, groups });
+    try {
+      delete endpoint.id;
+      await endpointApiService.updateEndpoint(endpointId, endpoint);
+    } catch (error) {
+      this.setState({ endpoints: originalEndpoints, groups: originalGroups });
+    }
+  }
 
   handleChange = (e) => {
     let data = { ...this.state.data };
@@ -23,124 +74,112 @@ class SideBar extends Component {
     this.setState({ data });
   }
 
+  openCollection(collectionId) {
+    this.collectionId = collectionId;
+  }
+
+  openApiForm() {
+    this.setState({ showOpenApiForm: true });
+  }
+
+  closeOpenApiFormModal() {
+    this.setState({ showOpenApiForm: false });
+  }
+
   render() {
     return (
       <nav
         className={
-          isDashboardRoute(this.props)
-            ? "col-md-2 d-none d-md-block bg-light sidebar "
-            : "col-md-2 d-none d-md-block bg-light sidebar public-endpoint-sidebar"
+          isDashboardRoute(this.props) ? "sidebar" : "public-endpoint-sidebar"
         }
       >
-        <div className="sidebar-sticky">
+        <div className="primary-sidebar">
           {isDashboardRoute(this.props) ? (
-            <div>
-              <div id="search-box-wrapper">
-                <div>
-                  {" "}
-                  <i className="fas fa-search" id="search-icon"></i>
+            <React.Fragment>
+              <div className="user-info">
+                <div className="user-avatar">
+                  <i className="uil uil-user"></i>
                 </div>
-                <div id="search-box-input">
-                  <input
-                    value={this.state.data.filter}
-                    type="text"
-                    id="search-box-input"
-                    name="filter"
-                    placeholder="Filter"
-                    onChange={this.handleChange}
-                  />
+                <div className="user-details">
+                  <div className="user-details-heading">
+                    <div className="user-name">{this.state.name}</div>
+                    <div className="user-settings-dropdown">
+                      <div className="dropdown-toggle" data-toggle="dropdown">
+                        <i className="uil uil-cog"></i>
+                      </div>
+                      <div className="dropdown-menu">
+                        <a
+                          className="dropdown-item"
+                          onClick={() => this.openApiForm()}
+                        >
+                          Import open API
+                        </a>
+                        <Link className="dropdown-item" to="/logout">
+                          Sign out
+                        </Link>
+
+                        {this.state.showOpenApiForm &&
+                          this.state.showOpenApiForm === true && (
+                            <OpenApiForm
+                              {...this.props}
+                              show={true}
+                              onHide={() => this.closeOpenApiFormModal()}
+                              title="IMPORT API"
+                            ></OpenApiForm>
+                          )}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="user-details-text">{this.state.email}</div>
                 </div>
               </div>
 
-              <ul className="nav nav-tabs" id="myTab" role="tablist">
-                <li className="nav-item">
-                  <a
-                    className="nav-link "
-                    id="history-tab"
-                    data-toggle="tab"
-                    href="#history"
-                    role="tab"
-                    aria-controls="history"
-                    aria-selected="false"
-                  >
-                    History
-                  </a>
-                </li>
-                <li className="nav-item">
-                  <a
-                    className="nav-link active"
-                    id="collections-tab"
-                    data-toggle="tab"
-                    href="#collections"
-                    role="tab"
-                    aria-controls="collections"
-                    aria-selected="true"
-                  >
-                    Collections
-                  </a>
-                </li>
-                <li className="nav-item">
-                  <a
-                    className="nav-link"
-                    id="api-tab"
-                    data-toggle="tab"
-                    href="#api"
-                    role="tab"
-                    aria-controls="api"
-                    aria-selected="false"
-                  >
-                    APIs
-                  </a>
-                </li>
-              </ul>
-            </div>
+              <div className="search-box">
+                <i className="fas fa-search" id="search-icon"></i>
+                <input
+                  value={this.state.data.filter}
+                  type="text"
+                  name="filter"
+                  placeholder="Filter"
+                  onChange={this.handleChange}
+                />
+              </div>
+            </React.Fragment>
           ) : null}
-          <div className="tab-content" id="myTabContent">
-            <div
-              className="tab-pane fade "
-              id="history"
-              role="tabpanel"
-              aria-labelledby="history-tab"
-            >
-              History coming soon... stay tuned
-            </div>
-            <div
-              className="tab-pane fade show active"
-              id="collections"
-              role="tabpanel"
-              aria-labelledby="collections-tab"
-            >
-              <Switch>
-                <ProtectedRoute
-                  path="/dashboard/"
-                  render={(props) => (
-                    <Collections
-                      {...this.props}
-                      empty_filter={this.emptyFilter.bind(this)}
-                      filter={this.state.data.filter}
-                    />
-                  )}
-                />
 
-                <Route
-                  path="/public/:collectionId"
-                  render={(props) => <Collections {...this.props} />}
+          <Switch>
+            <ProtectedRoute
+              path="/dashboard/"
+              render={(props) => (
+                <Collections
+                  {...this.props}
+                  empty_filter={this.emptyFilter.bind(this)}
+                  collection_selected={this.openCollection.bind(this)}
+                  filter={this.state.data.filter}
                 />
-              </Switch>
-            </div>
-            <div
-              className="tab-pane fade"
-              id="api"
-              role="tabpanel"
-              aria-labelledby="api-tab"
-            >
-              ...
-            </div>
-          </div>
+              )}
+            />
+            <Route
+              path="/p/:collectionId"
+              render={(props) => <Collections {...this.props} />}
+            />
+          </Switch>
+          {isDashboardRoute(this.props) ? (
+            <React.Fragment></React.Fragment>
+          ) : null}
         </div>
+        {this.collectionId && (
+          <div className="secondary-sidebar">
+            <CollectionVersions
+              {...this.props}
+              collection_id={this.collectionId}
+            />
+          </div>
+        )}
       </nav>
     );
   }
 }
 
-export default SideBar;
+// export default SideBar;
+export default withRouter(connect(mapStateToProps)(SideBar));

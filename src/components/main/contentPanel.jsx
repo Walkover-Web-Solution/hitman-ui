@@ -29,21 +29,24 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    addNewTab: () => dispatch(addNewTab()),
-    closeTab: (tabId) => dispatch(closeTab(tabId)),
-    openInNewTab: (tab) => dispatch(openInNewTab(tab)),
-    updateTab: (tab) => dispatch(updateTab(tab)),
-    setActiveTabId: (tabId) => dispatch(setActiveTabId(tabId)),
-    setTabsOrder: (tabsOrder) => dispatch(setTabsOrder(tabsOrder)),
-    fetchTabsFromIdb: (tabsOrder) => dispatch(fetchTabsFromIdb(tabsOrder)),
-    replaceTab: (oldTabId, newTab) => dispatch(replaceTab(oldTabId, newTab)),
+    add_new_tab: () => dispatch(addNewTab()),
+    close_tab: (tabId) => dispatch(closeTab(tabId)),
+    open_in_new_tab: (tab) => dispatch(openInNewTab(tab)),
+    update_tab: (tab) => dispatch(updateTab(tab)),
+    set_active_tab_id: (tabId) => dispatch(setActiveTabId(tabId)),
+    set_tabs_order: (tabsOrder) => dispatch(setTabsOrder(tabsOrder)),
+    fetch_tabs_from_idb: (tabsOrder) => dispatch(fetchTabsFromIdb(tabsOrder)),
+    replace_tab: (oldTabId, newTab) => dispatch(replaceTab(oldTabId, newTab)),
   };
 };
 
 class ContentPanel extends Component {
   state = { saveEndpointFlag: false };
   async componentDidMount() {
-    this.props.fetchTabsFromIdb({ ...this.props });
+    this.props.fetch_tabs_from_idb({ ...this.props });
+    // this.props.history.push({
+    //   dashboardEnvironment: true,
+    // });
   }
 
   handleSaveEndpoint(flag, tabId) {
@@ -59,7 +62,7 @@ class ContentPanel extends Component {
 
       if (this.props.tabs.tabs[endpointId]) {
         if (this.props.tabs.activeTabId !== endpointId) {
-          this.props.setActiveTabId(endpointId);
+          this.props.set_active_tab_id(endpointId);
         }
       } else {
         if (
@@ -68,7 +71,7 @@ class ContentPanel extends Component {
           this.props.endpoints[endpointId].requestId
         ) {
           const requestId = this.props.endpoints[endpointId].requestId;
-          this.props.replaceTab(requestId, {
+          this.props.replace_tab(requestId, {
             id: endpointId,
             type: "endpoint",
             status: tabStatusTypes.SAVED,
@@ -76,7 +79,7 @@ class ContentPanel extends Component {
             isModified: false,
           });
         } else {
-          this.props.openInNewTab({
+          this.props.open_in_new_tab({
             id: endpointId,
             type: "endpoint",
             status: tabStatusTypes.SAVED,
@@ -91,9 +94,9 @@ class ContentPanel extends Component {
       const pageId = this.props.location.pathname.split("/")[3];
       if (this.props.tabs.tabs[pageId]) {
         if (this.props.tabs.activeTabId !== pageId)
-          this.props.setActiveTabId(pageId);
+          this.props.set_active_tab_id(pageId);
       } else {
-        this.props.openInNewTab({
+        this.props.open_in_new_tab({
           id: pageId,
           type: "page",
           status: tabStatusTypes.SAVED,
@@ -103,7 +106,8 @@ class ContentPanel extends Component {
       }
     }
     return (
-      <main role="main" className="main ml-sm-auto col-lg-10 ">
+      <main role="main" className="main">
+        {/* <main role="main" className="main ml-sm-auto custom-main"> */}
         <Tab.Container
           id="left-tabs-example"
           defaultActiveKey={

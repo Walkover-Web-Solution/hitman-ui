@@ -5,7 +5,7 @@ import { closeTab } from "../tabs/redux/tabsActions";
 import tabService from "../tabs/tabService";
 const mapDispatchToProps = (dispatch) => {
   return {
-    closeTab: (tabId) => dispatch(closeTab(tabId)),
+    close_tab: (tabId) => dispatch(closeTab(tabId)),
   };
 };
 class DeleteModal extends Component {
@@ -21,20 +21,20 @@ class DeleteModal extends Component {
     const { title } = this.props;
     if (title === "Delete Collection") {
       const { deleted_collection: collection } = this.props;
-      this.props.deleteCollection(collection, this.props);
+      this.props.delete_collection(collection, this.props);
     }
     if (title === "Delete Version") {
       const { deleted_version: version } = this.props;
-      this.props.deleteVersion(version, this.props);
+      this.props.delete_version(version, this.props);
     }
     if (title === "Delete Group") {
       const { deleted_group: group } = this.props;
-      this.props.deleteGroup(group, this.props);
+      this.props.delete_group(group, this.props);
     }
     if (title === "Delete Page") {
       const { deleted_page: page } = this.props;
       tabService.removeTab(page.id, { ...this.props });
-      this.props.deletePage(page);
+      this.props.delete_page(page);
     }
 
     if (title === "Delete Endpoint") {
@@ -43,7 +43,18 @@ class DeleteModal extends Component {
     }
     if (title === "Delete Environment") {
       const { deleted_environment: environment } = this.props;
-      this.props.deleteEnvironment(environment);
+      this.props.delete_environment(environment);
+    }
+    if (title === "Delete Sample Response") {
+      let sampleResponseArray = [...this.props.sample_response_array];
+      let sampleResponseFlagArray = [...this.props.sample_response_flag_array];
+      const index = this.props.index;
+      sampleResponseArray.splice(index, 1);
+      sampleResponseFlagArray.splice(index, 1);
+      this.props.props_from_parent(
+        sampleResponseArray,
+        sampleResponseFlagArray
+      );
     }
   }
 

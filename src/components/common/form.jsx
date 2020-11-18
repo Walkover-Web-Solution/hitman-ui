@@ -1,12 +1,40 @@
 import React, { Component } from "react";
 import Input from "./input";
 import Joi from "joi-browser";
+import AceEditor from "react-ace";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
+import "ace-builds";
+import "ace-builds/src-noconflict/mode-json";
 
 class Form extends Component {
   state = {
     data: {},
     errors: {},
   };
+
+  modules = {
+    toolbar: [
+      [{ header: [1, 2, 3, 4, 5, 6, false] }],
+      ["bold", "italic", "underline", "strike"],
+      [{ color: [] }, { background: [] }],
+
+      [({ list: "ordered" }, { list: "bullet" })],
+      ["link"],
+    ],
+  };
+  formats = [
+    "header",
+    "bold",
+    "italic",
+    "underline",
+    "strike",
+    "color",
+    "background",
+    "list",
+    "bullet",
+    "link",
+  ];
 
   validate = () => {
     const options = { abortEarly: false };
@@ -30,6 +58,18 @@ class Form extends Component {
     data[e.currentTarget.name] = e.currentTarget.value;
     this.setState({ data });
   };
+  handleEditorChange = (value) => {
+    const data = this.state.data;
+    let description = value;
+    data["description"] = description;
+    this.setState({ data });
+  };
+
+  handleAceEditorChange = (value) => {
+    const data = { ...this.state.data };
+    data["body"] = value;
+    this.setState({ data });
+  };
 
   renderInput(name, label, placeholder) {
     const { data, errors } = this.state;
@@ -50,7 +90,7 @@ class Form extends Component {
     const { data, errors } = this.state;
     return (
       <div className="form-group ">
-        <label for={name} className="custom-input-label">
+        <label htmlFor={name} className="custom-input-label">
           {label}
         </label>
         <textarea
@@ -67,6 +107,24 @@ class Form extends Component {
     );
   }
 
+  renderQuillEditor(name, label) {
+    const { data } = this.state;
+
+    return (
+      <div className="form-group ">
+        <label htmlFor={name} className="custom-input-label">
+          {label}
+        </label>
+        <ReactQuill
+          value={data.description}
+          modules={this.modules}
+          formats={this.formats}
+          onChange={this.handleEditorChange}
+        />
+      </div>
+    );
+  }
+
   renderButton(label, style) {
     return (
       <button
@@ -75,6 +133,39 @@ class Form extends Component {
       >
         {label}
       </button>
+    );
+  }
+  renderAceEditor(name, label) {
+    const { data, errors } = this.state;
+
+    return (
+      <div className="form-group ">
+        <label htmlFor={name} className="custom-input-label">
+          {label}
+        </label>
+        <AceEditor
+          style={{ border: "1px solid rgb(206 213 218)" }}
+          className="custom-raw-editor"
+          mode={"json"}
+          theme="github"
+          value={data.body}
+          onChange={this.handleAceEditorChange}
+          setOptions={{
+            showLineNumbers: true,
+          }}
+          editorProps={{
+            $blockScrolling: false,
+          }}
+          onLoad={(editor) => {
+            editor.focus();
+            editor.getSession().setUseWrapMode(true);
+            editor.setShowPrintMargin(false);
+          }}
+        />
+        {errors[name] && (
+          <div className="alert alert-danger">{errors[name]}</div>
+        )}
+      </div>
     );
   }
 }

@@ -1,7 +1,9 @@
 import http from "../../services/httpService";
-import { apiUrl } from "../../config.json";
+import httpService from "../../services/endpointHttpService";
 
-const apiEndpoint = apiUrl + "/collections";
+const apiEndpoint = process.env.REACT_APP_API_URL + "/collections";
+
+const apiUrl = process.env.REACT_APP_API_URL;
 
 function collectionUrl(id) {
   return `${apiEndpoint}/${id}`;
@@ -9,6 +11,10 @@ function collectionUrl(id) {
 
 export function getCollections() {
   return http.get(apiEndpoint);
+}
+
+export function getAllPublicCollections() {
+  return httpService.get(apiEndpoint, { params: { public: "true" } });
 }
 
 export function getCollection(collectionId) {
@@ -51,5 +57,6 @@ export default {
   duplicateCollection,
   fetchAllUsersOfTeam,
   shareCollection,
-  fetchAllTeamsOfUser
+  fetchAllTeamsOfUser,
+  getAllPublicCollections,
 };

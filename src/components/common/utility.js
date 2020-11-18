@@ -7,6 +7,17 @@ export function isDashboardRoute(props) {
   else return false;
 }
 
+export function isSavedEndpoint(props) {
+  const pathname = props.location.pathname;
+  if (
+    pathname === "/dashboard/endpoint/new" ||
+    pathname.split("/")[3] === "new"
+  )
+    return false;
+  else return true;
+}
+
 export default {
   isDashboardRoute,
+  isSavedEndpoint,
 };

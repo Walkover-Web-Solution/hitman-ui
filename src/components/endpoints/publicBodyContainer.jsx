@@ -1,10 +1,14 @@
+import "ace-builds";
 import React, { Component } from "react";
 import GenericTable from "./genericTable";
 import jQuery from "jquery";
+import AceEditor from "react-ace";
 import "./publicEndpoint.scss";
 
 class PublicBodyContainer extends Component {
-  state = {};
+  state = {
+    showBodyCodeEditor: true,
+  };
 
   handleChangeBody(title, dataArray) {
     switch (title) {
@@ -164,6 +168,17 @@ class PublicBodyContainer extends Component {
     this.setBody(data);
   };
 
+  handleChangeBodyDescription = (data) => {
+    try {
+      const body = JSON.parse(data);
+      const bodyData = {
+        bodyDescription: this.bodyDescription,
+        body: body,
+      };
+      this.setBody(bodyData);
+    } catch (e) {}
+  };
+
   displayAddButton(name) {
     return (
       <div className="array-row-add-wrapper">
@@ -191,7 +206,7 @@ class PublicBodyContainer extends Component {
           <option value={true}>true</option>
           <option value={false}>false</option>
         </select>
-        <input
+        <label
           className="description-input-field"
           value={obj.description}
           name={name + ".description"}
@@ -199,7 +214,7 @@ class PublicBodyContainer extends Component {
           disabled
           placeholder="Description"
           onChange={this.handleDescriptionChange}
-        ></input>
+        ></label>
       </div>
     );
   }
@@ -215,15 +230,17 @@ class PublicBodyContainer extends Component {
           placeholder="Value"
           onChange={this.handleChange}
         ></input>
-        <input
+        <label
           className="description-input-field"
-          value={obj.description}
-          name={name + ".description"}
-          type="text"
-          placeholder="Description"
-          onChange={this.handleDescriptionChange}
-          disabled
-        ></input>
+          // value={obj.description}
+          // name={name + ".description"}
+          // type="text"
+          // placeholder="Description"
+          // onChange={this.handleDescriptionChange}
+          // disabled
+        >
+          {obj.description}
+        </label>
       </div>
     );
   }
@@ -235,7 +252,7 @@ class PublicBodyContainer extends Component {
           defaultValue &&
           (defaultValue.type === "object" || defaultValue.type === "array")
             ? "array-wrapper"
-            : ""
+            : "array-without-key"
         }
       >
         {array.map((value, index) => (
@@ -303,6 +320,15 @@ class PublicBodyContainer extends Component {
     );
   }
 
+  makeJson(body) {
+    try {
+      let parsedBody = JSON.stringify(JSON.parse(body), null, 2);
+      return parsedBody;
+    } catch (e) {
+      return body;
+    }
+  }
+
   render() {
     this.bodyDescription = this.props.body_description;
 
@@ -316,7 +342,7 @@ class PublicBodyContainer extends Component {
     }
 
     return (
-      <div>
+      <React.Fragment>
         {this.props.body && this.props.body.type === "multipart/form-data" && (
           <GenericTable
             {...this.props}
@@ -339,23 +365,54 @@ class PublicBodyContainer extends Component {
           )}
 
         {this.props.body && this.props.body.type === "JSON" && (
-          <div>
-            <div
-              className="public-generic-table-title-container"
-              style={{
-                padding: "40px 0px 3px 20px",
-                color: " tomato",
-                backgroundColor: "white",
-              }}
-            >
-              Body
-            </div>
-            <div className="body-description-container">
-              {this.displayObject(this.bodyDescription, "body_description")}
-            </div>
+          <div className="hm-public-table">
+            <div className="public-generic-table-title-container">Body</div>
+            <ul className="public-endpoint-tabs">
+              <li className={this.state.showBodyCodeEditor && "active"}>
+                <a
+                  onClick={() => this.setState({ showBodyCodeEditor: true })}
+                  href="javascript:void(0)"
+                >
+                  Raw
+                </a>
+              </li>
+              <li className={!this.state.showBodyCodeEditor && "active"}>
+                <a
+                  onClick={() => this.setState({ showBodyCodeEditor: false })}
+                  href="javascript:void(0)"
+                >
+                  Body description
+                </a>
+              </li>
+            </ul>
+
+            {this.state.showBodyCodeEditor ? (
+              <AceEditor
+                className="custom-raw-editor"
+                mode={"json"}
+                theme="github"
+                value={this.makeJson(this.props.body.value)}
+                onChange={this.handleChangeBodyDescription.bind(this)}
+                setOptions={{
+                  showLineNumbers: true,
+                }}
+                editorProps={{
+                  $blockScrolling: false,
+                }}
+                onLoad={(editor) => {
+                  editor.focus();
+                  editor.getSession().setUseWrapMode(true);
+                  editor.setShowPrintMargin(false);
+                }}
+              />
+            ) : (
+              <div className="body-description-container">
+                {this.displayObject(this.bodyDescription, "body_description")}
+              </div>
+            )}
           </div>
         )}
-      </div>
+      </React.Fragment>
     );
   }
 }

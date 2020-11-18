@@ -6,10 +6,10 @@ import shortid from "shortid";
 import Form from "../common/form";
 import { addGroup, updateGroup } from "../groups/redux/groupsActions";
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    addGroup: (versionId, group) => dispatch(addGroup(versionId, group)),
-    updateGroup: group => dispatch(updateGroup(group))
+    add_group: (versionId, group) => dispatch(addGroup(versionId, group)),
+    update_group: (group) => dispatch(updateGroup(group)),
   };
 };
 
@@ -18,7 +18,7 @@ class GroupForm extends Form {
     data: { name: "", host: "" },
     groupId: "",
     versionId: "",
-    errors: {}
+    errors: {},
   };
 
   async componentDidMount() {
@@ -32,25 +32,22 @@ class GroupForm extends Form {
   }
 
   schema = {
-    name: Joi.string()
-      .required()
-      .label("Group Name"),
-    host: Joi.string()
-      .uri()
-      .allow(null, "")
-      .label("Host")
+    name: Joi.string().required().label("Group Name"),
+    host: Joi.string().uri().allow(null, "").label("Host"),
   };
 
   async doSubmit() {
     this.props.onHide();
     if (this.props.title === "Add new Group") {
+      let data = { ...this.state.data };
+      data.position = this.extractPosition();
       const versionId = this.props.selectedVersion.id;
       const newGroup = {
-        ...this.state.data,
+        ...data,
         endpointsOrder: [],
-        requestId: shortid.generate()
+        requestId: shortid.generate(),
       };
-      this.props.addGroup(versionId, newGroup);
+      this.props.add_group(versionId, newGroup);
     }
 
     if (this.props.title === "Edit Group") {
@@ -58,10 +55,24 @@ class GroupForm extends Form {
         ...this.state.data,
         id: this.props.selected_group.id,
         endpointsOrder: this.props.selected_group.endpointsOrder,
-        versionId: this.props.selected_group.versionId
+        versionId: this.props.selected_group.versionId,
+        position: this.props.selected_group.position,
       };
-      this.props.updateGroup(editedGroup);
+      this.props.update_group(editedGroup);
     }
+  }
+
+  extractPosition() {
+    let count = -1;
+    for (let i = 0; i < Object.keys(this.props.groups).length; i++) {
+      if (
+        this.props.selectedVersion.id ===
+        this.props.groups[Object.keys(this.props.groups)[i]].versionId
+      ) {
+        count = count + 1;
+      }
+    }
+    return count + 1;
   }
 
   render() {

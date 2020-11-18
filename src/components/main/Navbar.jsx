@@ -7,6 +7,7 @@ import "../styles.scss";
 import tabService from "../tabs/tabService";
 import CreateNewModal from "./CreateNewModal";
 import "./main.scss";
+import OpenApiForm from "../openApi/openApiForm";
 
 class Navbar extends Component {
   state = {
@@ -45,6 +46,14 @@ class Navbar extends Component {
     tabService.newTab({ ...this.props });
   }
 
+  openApiForm() {
+    this.setState({ showOpenApiForm: true });
+  }
+
+  closeOpenApiFormModal() {
+    this.setState({ showOpenApiForm: false });
+  }
+
   render() {
     return (
       <nav className="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
@@ -66,6 +75,14 @@ class Navbar extends Component {
             () => this.setState({ showEnvironmentForm: false }),
             "Add new Environment"
           )}
+        {this.state.showOpenApiForm && this.state.showOpenApiForm === true && (
+          <OpenApiForm
+            {...this.props}
+            show={true}
+            onHide={() => this.closeOpenApiFormModal()}
+            title="IMPORT API"
+          ></OpenApiForm>
+        )}
         <div className="btn-group">
           <button
             id="new-button"
@@ -106,13 +123,18 @@ class Navbar extends Component {
             </li>
           </div>
 
-          {/* <button id="nav-left-buttons" className="btn ">
-            Import
-          </button> */}
+          <button
+            className="btn nav-left-button-1"
+            // id="nav-left-buttons"
+            onClick={() => this.openApiForm()}
+          >
+            Import open API
+          </button>
 
-          <div className="dropdown" id="nav-left-buttons">
+          {/* <div className="dropdown" id="nav-left-buttons"> */}
+          <div className="dropdown nav-left-button-2">
             <button
-              className="btn btn-secondary dropdown-toggle"
+              className="btn btn-secondary dropdown-toggle "
               type="button"
               id="dropdownMenuButton"
               data-toggle="dropdown"
@@ -130,6 +152,13 @@ class Navbar extends Component {
                 Open new tab
               </button>
             </div>
+            {/* <button
+              className="btn "
+              onClick={() => this.openApiForm()}
+              style={{ color: "black", width: "100%", paddingLeft: "10px" }}
+            >
+              Import OpenApi
+            </button> */}
           </div>
         </div>
 

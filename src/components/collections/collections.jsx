@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Accordion, Button, Card } from "react-bootstrap";
+import { Accordion, Card } from "react-bootstrap";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
@@ -19,10 +19,14 @@ import {
   deleteCollection,
   duplicateCollection,
   updateCollection,
+  addCustomDomain,
 } from "./redux/collectionsActions";
 import ShareCollectionForm from "./shareCollectionForm";
-import { uiUrl } from "../../config.json";
 import "./collections.scss";
+import PublishDocsModal from "../publicEndpoint/publishDocsModal";
+import authService from "../auth/authService";
+import TagManager from "react-gtm-module";
+import TagManagerModal from "./tagModal";
 
 const mapStateToProps = (state) => {
   return {
@@ -37,17 +41,21 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    addCollection: (newCollection) => dispatch(addCollection(newCollection)),
-    shareCollection: (teamMemberData) =>
+    add_collection: (newCollection) => dispatch(addCollection(newCollection)),
+    share_collection: (teamMemberData) =>
       dispatch(shareCollection(teamMemberData)),
-    updateCollection: (editedCollection) =>
+    update_collection: (editedCollection) =>
       dispatch(updateCollection(editedCollection)),
-    deleteCollection: (collection, props) =>
+    delete_collection: (collection, props) =>
       dispatch(deleteCollection(collection, props)),
-    duplicateCollection: (collection) =>
+    duplicate_collection: (collection) =>
       dispatch(duplicateCollection(collection)),
-    fetchAllUsersOfTeam: (teamIdentifier) =>
+    fetch_all_users_of_team: (teamIdentifier) =>
       dispatch(fetchAllUsersOfTeam(teamIdentifier)),
+    add_custom_domain: (collectionId, domain, dnsTarget, title, logoUrl) =>
+      dispatch(
+        addCustomDomain(collectionId, domain, dnsTarget, title, logoUrl)
+      ),
   };
 };
 
@@ -56,6 +64,7 @@ class CollectionsComponent extends Component {
     showCollectionForm: false,
     collectionFormName: "",
     selectedCollection: {},
+    showPublishDocsModal: false,
   };
   keywords = {};
   names = {};
@@ -87,27 +96,27 @@ class CollectionsComponent extends Component {
 
   async handleAddCollection(newCollection) {
     newCollection.requestId = shortId.generate();
-    this.props.addCollection(newCollection);
+    this.props.add_collection(newCollection);
   }
 
   async handleUpdateCollection(editedCollection) {
-    this.props.updateCollection(editedCollection);
+    this.props.update_collection(editedCollection);
   }
 
   async handleDeleteGroup(deletedGroupId) {
-    this.props.deleteGroup(deletedGroupId);
+    this.props.delete_group(deletedGroupId);
   }
 
   async handleAddVersionPage(versionId, newPage) {
     newPage.requestId = shortId.generate();
-    this.props.addPage(versionId, newPage);
+    this.props.add_page(versionId, newPage);
   }
 
   async handleDuplicateCollection(collectionCopy) {
-    this.props.duplicateCollection(collectionCopy);
+    this.props.duplicate_collection(collectionCopy);
   }
   async handleGoToDocs(collection) {
-    const publicDocsUrl = `${uiUrl}/public/${collection.id}`;
+    const publicDocsUrl = `${process.env.REACT_APP_UI_URL}/p/${collection.id}`;
     window.open(publicDocsUrl, "_blank");
   }
 
@@ -129,7 +138,9 @@ class CollectionsComponent extends Component {
   }
 
   shareCollection(collectionId) {
-    this.props.fetchAllUsersOfTeam(this.props.collections[collectionId].teamId);
+    this.props.fetch_all_users_of_team(
+      this.props.collections[collectionId].teamId
+    );
     this.setState({
       showCollectionShareForm: true,
       selectedCollection: {
@@ -202,7 +213,7 @@ class CollectionsComponent extends Component {
 
   handlePublicCollectionDescription(collection) {
     this.props.history.push({
-      pathname: `/public/${collection.id}/description`,
+      pathname: `/p/${collection.id}/description/${collection.name}`,
       collection,
     });
   }
@@ -214,7 +225,7 @@ class CollectionsComponent extends Component {
   handlePublic(collection) {
     collection.isPublic = !collection.isPublic;
     delete collection.teamId;
-    this.props.updateCollection({ ...collection });
+    this.props.update_collection({ ...collection });
   }
 
   closeDeleteCollectionModal() {
@@ -222,6 +233,7 @@ class CollectionsComponent extends Component {
   }
   openSelectedCollection(collectionId) {
     this.props.empty_filter();
+    this.props.collection_selected(collectionId);
     this.collectionId = collectionId;
     this.setState({ openSelectedCollection: true });
   }
@@ -229,6 +241,34 @@ class CollectionsComponent extends Component {
     this.props.empty_filter();
     this.collectionId = null;
     this.setState({ openSelectedCollection: false });
+  }
+
+  fetchCurrentUserRole() {
+    const { user: currentUser } = authService.getCurrentUser();
+    const teamArray = Object.keys(this.props.teamUsers);
+    for (let i = 0; i < teamArray.length; i++) {
+      if (currentUser.identifier === teamArray[i]) {
+        return this.props.teamUsers[currentUser.identifier].role;
+      }
+    }
+  }
+
+  TagManagerModal(collectionId) {
+    this.setState({ TagManagerCollectionId: collectionId });
+  }
+
+  openTagManagerModal() {
+    return (
+      this.state.TagManagerCollectionId && (
+        <TagManagerModal
+          {...this.props}
+          show={true}
+          onHide={() => this.setState({ TagManagerCollectionId: false })}
+          title={"Google Tag Manager"}
+          collection_id={this.state.TagManagerCollectionId}
+        />
+      )
+    );
   }
 
   renderBody(collectionId, collectionState) {
@@ -252,14 +292,14 @@ class CollectionsComponent extends Component {
     }
 
     return (
-      <React.Fragment>
+      <React.Fragment key={collectionId}>
         {collectionState === "singleCollection" ? (
           <button
             id="back-to-all-collections-button"
             className="btn"
             onClick={() => this.openAllCollections()}
           >
-            <i class="fas fa-arrow-left"></i>
+            <i className="fas fa-arrow-left"></i>
             <label>All Collections</label>
           </button>
         ) : null}
@@ -268,110 +308,158 @@ class CollectionsComponent extends Component {
           defaultActiveKey="0"
           key={collectionId}
           id="parent-accordion"
+          className="sidebar-accordion"
         >
-          <Card>
-            <Card.Header>
-              <i className="fas fa-folder-open"></i>
-              <Accordion.Toggle
-                as={Button}
-                variant="default"
-                eventKey={eventkeyValue !== null ? eventkeyValue : "0"}
+          {/* <Card> */}
+          {/* <Card.Header> */}
+          <Accordion.Toggle
+            variant="default"
+            eventKey={eventkeyValue !== null ? eventkeyValue : "0"}
+          >
+            {collectionState === "singleCollection" ? (
+              <div>{this.props.collections[collectionId].name}</div>
+            ) : (
+              <div
+                className="sidebar-accordion-item"
+                onClick={() => this.openSelectedCollection(collectionId)}
               >
-                {collectionState === "singleCollection" ? (
-                  <div>{this.props.collections[collectionId].name}</div>
-                ) : (
-                  <div
-                    onClick={() => this.openSelectedCollection(collectionId)}
-                  >
-                    {this.props.collections[collectionId].name}
-                  </div>
-                )}
-              </Accordion.Toggle>
-              <div className="btn-group">
-                <button
-                  className="btn btn-secondary "
-                  data-toggle="dropdown"
-                  aria-haspopup="true"
-                  aria-expanded="false"
+                <i className="uil uil-parcel"></i>
+                {this.props.collections[collectionId].name}
+              </div>
+            )}
+            <div className="sidebar-item-action">
+              <div
+                className="sidebar-item-action-btn "
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+              >
+                <i className="uil uil-ellipsis-v"></i>
+              </div>
+              <div className="dropdown-menu dropdown-menu-right">
+                <a
+                  className="dropdown-item"
+                  onClick={() => this.openEditCollectionForm(collectionId)}
                 >
-                  <i className="fas fa-ellipsis-h"></i>
-                </button>
-                <div className="dropdown-menu dropdown-menu-right">
-                  <button
-                    className="dropdown-item"
-                    onClick={() => this.openEditCollectionForm(collectionId)}
-                  >
-                    Edit
-                  </button>
-                  <button
-                    className="dropdown-item"
-                    onClick={() => {
-                      this.openDeleteCollectionModal(collectionId);
-                    }}
-                  >
-                    Delete
-                  </button>
-                  <button
-                    className="dropdown-item"
-                    onClick={() => this.openAddVersionForm(collectionId)}
-                  >
-                    Add Version
-                  </button>
-                  <button
+                  Edit
+                </a>
+                <a
+                  className="dropdown-item"
+                  onClick={() => {
+                    this.openDeleteCollectionModal(collectionId);
+                  }}
+                >
+                  Delete
+                </a>
+                <a
+                  className="dropdown-item"
+                  onClick={() => this.openAddVersionForm(collectionId)}
+                >
+                  Add Version
+                </a>
+                <a
+                  className="dropdown-item"
+                  onClick={() =>
+                    this.handleDuplicateCollection(
+                      this.props.collections[collectionId]
+                    )
+                  }
+                >
+                  Duplicate
+                </a>
+                <a
+                  className="dropdown-item"
+                  onClick={() => this.openImportVersionForm(collectionId)}
+                >
+                  Import Version
+                </a>
+                {this.props.collections[collectionId].isPublic && (
+                  <a
                     className="dropdown-item"
                     onClick={() =>
-                      this.handleDuplicateCollection(
-                        this.props.collections[collectionId]
-                      )
+                      this.handleGoToDocs(this.props.collections[collectionId])
                     }
                   >
-                    Duplicate
-                  </button>
-                  <button
-                    className="dropdown-item"
-                    onClick={() => this.openImportVersionForm(collectionId)}
-                  >
-                    Import Version
-                  </button>
-                  {this.props.collections[collectionId].isPublic && (
-                    <button
-                      className="dropdown-item"
-                      onClick={() =>
-                        this.handleGoToDocs(
-                          this.props.collections[collectionId]
-                        )
-                      }
-                    >
-                      Go to Docs
-                    </button>
-                  )}
-                  <button
-                    className="dropdown-item"
-                    onClick={() => {
-                      this.shareCollection(collectionId);
-                    }}
-                  >
-                    Share
-                  </button>
-                </div>
+                    Go to Docs
+                  </a>
+                )}
+                {/* {(this.currentUserRole==="Admin"||this.currentUserRole==="Owner") && ( */}
+                <a
+                  className="dropdown-item"
+                  onClick={() =>
+                    this.openPublishDocs(this.props.collections[collectionId])
+                  }
+                >
+                  Publish Docs
+                </a>
+
+                <a
+                  className="dropdown-item"
+                  onClick={() => {
+                    this.shareCollection(collectionId);
+                  }}
+                >
+                  Share
+                </a>
+                <a
+                  className="dropdown-item"
+                  onClick={() => {
+                    this.TagManagerModal(collectionId);
+                  }}
+                >
+                  Add Google Tag Manager
+                </a>
               </div>
-            </Card.Header>
-            {collectionState === "singleCollection" ? (
-              <Accordion.Collapse id="collection-collapse" eventKey="0">
-                <Card.Body>
-                  <CollectionVersions
-                    {...this.props}
-                    collection_id={collectionId}
-                    selectedCollection={true}
-                  />
-                </Card.Body>
-              </Accordion.Collapse>
-            ) : null}
-          </Card>
+            </div>
+          </Accordion.Toggle>
+          {/* </Card.Header> */}
+          {collectionState === "singleCollection" ? (
+            <Accordion.Collapse id="collection-collapse" eventKey="0">
+              <Card.Body>
+                <CollectionVersions
+                  {...this.props}
+                  collection_id={collectionId}
+                  selectedCollection={true}
+                />
+              </Card.Body>
+            </Accordion.Collapse>
+          ) : null}
+          {/* </Card> */}
         </Accordion>
       </React.Fragment>
     );
   }
+
+  openPublishDocs(collection) {
+    this.setState({
+      showPublishDocsModal: true,
+      selectedCollection: collection.id,
+    });
+  }
+
+  showPublishDocsModal(onHide) {
+    return (
+      <PublishDocsModal
+        {...this.props}
+        show={true}
+        onHide={onHide}
+        collection_id={this.state.selectedCollection}
+        // add_new_endpoint={this.handleAddEndpoint.bind(this)}
+        // open_collection_form={this.openCollectionForm.bind(this)}
+        // open_environment_form={this.openEnvironmentForm.bind(this)}
+      />
+    );
+  }
+
+  addGTM(gtmId) {
+    if (gtmId) {
+      const tagManagerArgs = {
+        gtmId: gtmId,
+      };
+      TagManager.initialize(tagManagerArgs);
+    }
+  }
+
   render() {
     if (isDashboardRoute(this.props)) {
       let finalCollections = [];
@@ -434,6 +522,12 @@ class CollectionsComponent extends Component {
       finalCollections = [...new Set(finalCollections)];
       return (
         <div>
+          {this.state.showPublishDocsModal &&
+            this.showPublishDocsModal(() =>
+              this.setState({
+                showPublishDocsModal: false,
+              })
+            )}
           <div className="App-Nav">
             <div className="tabs">
               {this.state.showVersionForm &&
@@ -452,6 +546,7 @@ class CollectionsComponent extends Component {
                 )}
               {this.showImportVersionForm()}
               {this.showShareCollectionForm()}
+              {this.openTagManagerModal()}
               {this.state.showDeleteModal &&
                 collectionsService.showDeleteCollectionModal(
                   { ...this.props },
@@ -465,55 +560,62 @@ class CollectionsComponent extends Component {
           </div>
 
           <div className="App-Side">
-            <div className="custom-add-collection-button-container">
+            <div className="add-collection-btn-wrap">
               <button
-                className="btn btn-default"
+                className="add-collection-btn"
                 onClick={() => this.openAddCollectionForm()}
               >
-                <i className="fas fa-plus"></i>
+                <i className="uil uil-plus"></i>
                 New Collection
               </button>
             </div>
-            {this.state.openSelectedCollection &&
-              this.renderBody(this.collectionId, "singleCollection")}
-            {!this.state.openSelectedCollection &&
+            {/* {this.state.openSelectedCollection &&
+              this.renderBody(this.collectionId, "singleCollection")} */}
+            {/* {!this.state.openSelectedCollection &&
               finalCollections.map((collectionId, index) =>
                 this.renderBody(collectionId, "allCollections")
-              )}
+              )} */}
+            {finalCollections.map((collectionId, index) =>
+              this.renderBody(collectionId, "allCollections")
+            )}
           </div>
         </div>
       );
     } else {
       return (
-        <div>
-          <div className="App-Side">
-            {Object.keys(this.props.collections).map((collectionId, index) => (
-              <div id="parent-accordion" key={index}>
-                <div>
-                  <h4
-                    style={{
-                      color: "tomato",
-                      textAlign: "center",
-                      padding: "35px",
-                    }}
+        <React.Fragment>
+          {Object.keys(this.props.collections).map((collectionId, index) => (
+            <React.Fragment>
+              {this.addGTM(this.props.collections[collectionId].gtmId)}
+              <div
+                className="hm-sidebar-header"
+                onClick={() =>
+                  this.handlePublicCollectionDescription(
+                    this.props.collections[collectionId]
+                  )
+                }
+              >
+                <div className="hm-sidebar-logo">
+                  <img
+                    src={`//logo.clearbit.com/${this.props.collections[collectionId].name}.com`}
                     onClick={() =>
-                      this.handlePublicCollectionDescription(
-                        this.props.collections[collectionId]
-                      )
+                      window.open(this.props.collections[collectionId].website)
                     }
-                  >
-                    {this.props.collections[collectionId].name}
-                  </h4>
-
-                  <CollectionVersions
-                    {...this.props}
-                    collection_id={collectionId}
-                  />
+                  ></img>
                 </div>
+                <h4 className="hm-sidebar-title">
+                  {this.props.collections[collectionId].name}
+                </h4>
               </div>
-            ))}
-          </div>
-        </div>
+              <div id="parent-accordion" key={index}>
+                <CollectionVersions
+                  {...this.props}
+                  collection_id={collectionId}
+                />
+              </div>
+            </React.Fragment>
+          ))}
+        </React.Fragment>
       );
     }
   }

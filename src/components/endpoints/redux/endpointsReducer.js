@@ -11,6 +11,17 @@ const initialState = {};
 function endpointsReducer(state = initialState, action) {
   let endpoints = {};
   switch (action.type) {
+    case endpointsActionTypes.SET_AUTHORIZATION_TYPE_REQUEST:
+      state[action.endpointId].authorizationType = action.authData;
+      return {
+        ...state,
+      };
+
+    case endpointsActionTypes.SET_AUTHORIZATION_TYPE_ERROR:
+      state[action.versionId].authorizationType = action.originalAuthType;
+      toast.error(action.error);
+      return state;
+
     case endpointsActionTypes.MOVE_ENDPOINT_REQUEST:
       endpoints = { ...state };
       endpoints[action.endpointId].groupId = action.destinationGroupId;
@@ -116,6 +127,15 @@ function endpointsReducer(state = initialState, action) {
       action.payload.endpointIds.forEach((eId) => {
         delete endpoints[eId];
       });
+      return endpoints;
+
+    case endpointsActionTypes.ON_ENDPOINTS_ORDER_UPDATED:
+      endpoints = { ...action.endpoints };
+      return endpoints;
+
+    case endpointsActionTypes.ON_ENDPOINTS_ORDER_UPDATED_ERROR:
+      toast.error(action.error);
+      endpoints = { ...action.endpoints };
       return endpoints;
 
     default:

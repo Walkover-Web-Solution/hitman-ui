@@ -29,7 +29,6 @@ table#custom-generic-table {
     height: 35px;
     font-size: 12px;
     font-weight: 800;
-    padding-bottom: 5px !important;
   }
 
   td {
@@ -49,21 +48,46 @@ table#custom-generic-table {
     }
     input::placeholder {
       font-size: 14px;
-      font-weight: 300;
+      // font-weight: 300;
     }
   }
 }
 .data-type {
-  margin-left: 20px;
-  background: lightgrey;
-  padding: 1px;
+  // margin-left: 20px;
+  // background: lightgrey;
+  // padding: 1px;
   font-size: 10px;
 }
 
 .public-endpoint-navbar {
-  background-color: #343a40 !important;
-  height: 45px;
-  padding: 0px 0px 0px 30px !important;
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  padding: 0;
+  left: 0;
+  width: 350px;
+  background: #1f2628;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  z-index: 99;
+  .user-dropdown-btn {
+    .user-info {
+      padding: 12px 30px;
+      .user-details-heading {
+        &:after {
+          content: "\f0d8"; // UP caret
+        }
+      }
+    }
+  }
+  .user-dropdown {
+    .dropdown-menu.show {
+      left: 100% !important;
+      margin: 0 !important;
+      bottom: 0;
+      top: auto !important;
+      transform: translate(0px, 0px) !important;
+    }
+  }
 }
 
 .custom-update-button {
@@ -77,9 +101,9 @@ table#custom-generic-table {
 }
 
 .body-description-container {
-  padding: 10px;
-  background-color: white;
-  border: 2px solid rgb(217, 221, 225);
+  // padding: 10px;
+  // background-color: white;
+  // border: 2px solid rgb(217, 221, 225);
 }
 
 .primitive-datatype-wrapper {
@@ -90,31 +114,31 @@ table#custom-generic-table {
 
 .object-row-wrapper {
   margin: 10px;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  // display: flex;
+  // flex-direction: row;
+  // justify-content: space-between;
 }
 .object-container {
-  width: 100%;
-  border: 1px solid rgb(192, 193, 194);
-  border-radius: 5px;
-  margin: 5px;
+  // width: 100%;
+  // border: 1px solid rgb(192, 193, 194);
+  // border-radius: 5px;
+  // margin: 5px;
 }
 
 .array-container {
-  border: 1px solid rgb(192, 193, 194);
-  border-radius: 5px;
-  margin: 10px;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  padding: 10px;
+  // border: 1px solid rgb(192, 193, 194);
+  // border-radius: 5px;
+  // margin: 10px;
+  // display: flex;
+  // flex-direction: row;
+  // justify-content: space-between;
+  // padding: 10px;
 }
 
 .array-row {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
+  // display: flex;
+  // flex-direction: row;
+  // align-items: center;
 }
 
 .value-input-field {
@@ -123,34 +147,67 @@ table#custom-generic-table {
 }
 
 .description-input-field {
-  padding: 0px 5px;
-  margin: 5px 7px;
-  width: 400px;
+  // padding: 0px 5px;
+  // margin: 5px 7px;
+  // width: 400px;
 }
 .array-row-add-wrapper {
-  text-align: center;
+  // text-align: center;
 }
-button.btn.cross-button {
-  opacity: 0.7;
-}
-
 .array-wrapper {
   width: 100%;
-  border: 1px solid rgba(192, 193, 194, 0.7);
+  // border: 1px solid rgba(192, 193, 194, 0.7);
 
-  margin: 5px;
-  border-radius: 5px;
+  // margin: 5px;
+  // border-radius: 5px;
 }
 
 .key-title {
-  height: min-content;
+  // height: min-content;
+  // display: flex;
+}
+.custom-boolean {
+  width: 180px;
+  margin-right: 11px;
+}
+.custom-boolean {
+  width: 180px;
+  margin-right: 11px;
+}
+
+// .hm-public-endpoint-headers {
+//   .description-input-field {
+//     padding: 0px;
+//     margin: 0px;
+//     width: auto;
+//   }
+// }
+
+.public-endpoint-tabs {
+  padding: 0;
+  list-style: none;
+  margin-bottom: 20px;
   display: flex;
-}
-.custom-boolean {
-  width: 180px;
-  margin-right: 11px;
-}
-.custom-boolean {
-  width: 180px;
-  margin-right: 11px;
+  li {
+    border: 1px solid #e5e5e5;
+    margin-right: -1px;
+    a {
+      display: block;
+      padding: 5px 20px;
+      color: #333;
+      text-decoration: none;
+    }
+    &.active {
+      background: #eee;
+      background: #e6e6e6;
+    }
+
+    &:first-child {
+      border-radius: 3px 0 0 3px;
+    }
+
+    &:last-child {
+      border-radius: 0 3px 3px 0;
+    }
+  }
 }

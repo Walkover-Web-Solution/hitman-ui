@@ -1,4 +1,5 @@
 import { openDB } from "idb";
+
 let db = null;
 
 const getDataBase = async () => {
@@ -21,10 +22,14 @@ const createDataBase = async () => {
         autoIncrement: true,
       });
       const tabsMetadataStore = db.createObjectStore("tabs_metadata");
+      const authDataStore = db.createObjectStore("authData");
+      const responseDataStore = db.createObjectStore("responseData");
 
       environmentStore.put(null, "currentEnvironmentId");
       tabsMetadataStore.put(null, "activeTabId");
       tabsMetadataStore.put([], "tabsOrder");
+      authDataStore.put({}, "currentAuthData");
+      responseDataStore.put({}, "currentResponse");
     },
   });
   return db;

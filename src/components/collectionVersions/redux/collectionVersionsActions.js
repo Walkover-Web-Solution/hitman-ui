@@ -241,3 +241,85 @@ export const saveImportedVersion = (response) => {
     response,
   };
 };
+
+export const setAuthorizationResponses = (versionId, authResponses) => {
+  return (dispatch) => {
+    const originalAuthResponses = store.getState().versions[versionId]
+      .authorizationResponse;
+    dispatch(setAuthorizationResponsesRequest(versionId, authResponses));
+    collectionVersionsApiService
+      .setAuthorizationResponse(versionId, authResponses)
+      .then(() => {})
+      .catch((error) => {
+        dispatch(
+          onAuthorizationResponsesError(
+            error.response ? error.response.data : error,
+            versionId,
+            originalAuthResponses
+          )
+        );
+      });
+  };
+};
+
+export const setAuthorizationResponsesRequest = (versionId, authResponses) => {
+  return {
+    type: versionActionTypes.ON_AUTHORIZATION_RESPONSES_REQUEST,
+    versionId,
+    authResponses,
+  };
+};
+
+export const onAuthorizationResponsesError = (
+  error,
+  versionId,
+  authResponses
+) => {
+  return {
+    type: versionActionTypes.ON_AUTHORIZATION_RESPONSES_ERROR,
+    error,
+    versionId,
+    authResponses,
+  };
+};
+
+export const setAuthorizationData = (versionId, data) => {
+  return (dispatch) => {
+    const originalAuthdata = store.getState().versions[versionId]
+      .authorizationData;
+    dispatch(onAuthorizationDataRequest(versionId, data));
+    collectionVersionsApiService
+      .setAuthorizationData(versionId, data)
+      .then(() => {})
+      .catch((error) => {
+        dispatch(
+          onAuthorizationDataError(
+            error.response ? error.response.data : error,
+            versionId,
+            originalAuthdata
+          )
+        );
+      });
+  };
+};
+
+export const onAuthorizationDataRequest = (versionId, data) => {
+  return {
+    type: versionActionTypes.ON_AUTHORIZATION_DATA_REQUEST,
+    versionId,
+    data,
+  };
+};
+
+export const onAuthorizationDataError = (
+  error,
+  versionId,
+  originalAuthdata
+) => {
+  return {
+    type: versionActionTypes.ON_AUTHORIZATION_DATA_ERROR,
+    error,
+    versionId,
+    originalAuthdata,
+  };
+};

@@ -12,7 +12,11 @@ import { closeTab, openInNewTab } from "../tabs/redux/tabsActions";
 import tabService from "../tabs/tabService";
 import tabStatusTypes from "../tabs/tabStatusTypes";
 import "./endpoints.scss";
-import { deleteEndpoint, duplicateEndpoint } from "./redux/endpointsActions";
+import {
+  deleteEndpoint,
+  duplicateEndpoint,
+  updateEndpointOrder,
+} from "./redux/endpointsActions";
 import filterService from "../../services/filterService";
 
 const mapStateToProps = (state) => {
@@ -20,21 +24,24 @@ const mapStateToProps = (state) => {
     endpoints: state.endpoints,
     groups: state.groups,
     tabs: state.tabs,
+    teams: state.teams,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    deleteEndpoint: (endpoint) => dispatch(deleteEndpoint(endpoint)),
-    duplicateEndpoint: (endpoint) => dispatch(duplicateEndpoint(endpoint)),
-    setEndpointIds: (endpointsOrder, groupId) =>
+    delete_endpoint: (endpoint) => dispatch(deleteEndpoint(endpoint)),
+    duplicate_endpoint: (endpoint) => dispatch(duplicateEndpoint(endpoint)),
+    set_endpoint_ids: (endpointsOrder, groupId) =>
       dispatch(setEndpointIds(endpointsOrder, groupId)),
-    pendingEndpoint: (endpoint) => dispatch(pendingEndpoint(endpoint)),
-    approveEndpoint: (endpoint) => dispatch(approveEndpoint(endpoint)),
-    draftEndpoint: (endpoint) => dispatch(draftEndpoint(endpoint)),
-    rejectEndpoint: (endpoint) => dispatch(rejectEndpoint(endpoint)),
-    closeTab: (tabId) => dispatch(closeTab(tabId)),
-    openInNewTab: (tab) => dispatch(openInNewTab(tab)),
+    update_endpoints_order: (endpointIds, groupId) =>
+      dispatch(updateEndpointOrder(endpointIds, groupId)),
+    pending_endpoint: (endpoint) => dispatch(pendingEndpoint(endpoint)),
+    approve_endpoint: (endpoint) => dispatch(approveEndpoint(endpoint)),
+    draft_endpoint: (endpoint) => dispatch(draftEndpoint(endpoint)),
+    reject_endpoint: (endpoint) => dispatch(rejectEndpoint(endpoint)),
+    close_tab: (tabId) => dispatch(closeTab(tabId)),
+    open_in_new_tab: (tab) => dispatch(openInNewTab(tab)),
   };
 };
 
@@ -45,43 +52,55 @@ class Endpoints extends Component {
 
   componentDidMount() {}
 
-  onDragStart = (e, eId) => {
-    this.draggedItem = eId;
-    this.props.set_source_group_id(eId, this.props.group_id);
-  };
+  // onDragStart = (e, eId) => {
+  //   this.draggedItem = eId;
+  //   this.props.set_endpoint_drag();
+  //   this.props.set_source_group_id(eId, this.props.group_id);
+  // };
 
-  onDragOver = (e) => {
-    e.preventDefault();
-  };
-  onDrop = (e, droppedOnItem) => {
-    e.preventDefault();
-    if (!this.draggedItem) {
-    } else {
-      if (this.draggedItem === droppedOnItem) {
-        this.draggedItem = null;
-        return;
+  sequencingOnFilter() {
+    let filteredEndpointKeys = this.filteredEndpoints
+      ? Object.keys(this.filteredEndpoints)
+      : [];
+    this.filteredEndpointsOrder = [];
+    for (let i = 0; i < this.props.endpoints_order.length; i++) {
+      for (let j = 0; j < filteredEndpointKeys.length; j++) {
+        if (this.props.endpoints_order[i] === filteredEndpointKeys[j]) {
+          this.filteredEndpointsOrder.push(this.props.endpoints_order[i]);
+          break;
+        }
       }
-      let endpointIds = this.props.endpoints_order.filter(
-        (item) => item !== this.draggedItem
-      );
-      const index = this.props.endpoints_order.findIndex(
-        (eId) => eId === droppedOnItem
-      );
-      endpointIds.splice(index, 0, this.draggedItem);
-      this.props.setEndpointIds(endpointIds, this.props.group_id);
-      this.draggedItem = null;
     }
-  };
+  }
+  // onDrop = (e, droppedOnItem) => {
+  //   e.preventDefault();
+  //   if (!this.draggedItem) {
+  //   } else {
+  //     if (this.draggedItem === droppedOnItem) {
+  //       this.draggedItem = null;
+  //       return;
+  //     }
+  //     let endpointIds = this.props.endpoints_order.filter(
+  //       (item) => item !== this.draggedItem
+  //     );
+  //     const index = this.props.endpoints_order.findIndex(
+  //       (eId) => eId === droppedOnItem
+  //     );
+  //     endpointIds.splice(index, 0, this.draggedItem);
+  //     this.props.set_endpoint_ids(endpointIds, this.props.group_id);
+  //     this.draggedItem = null;
+  //   }
+  // };
 
   handleDelete(endpoint) {
-    this.props.deleteEndpoint(endpoint);
+    this.props.delete_endpoint(endpoint);
     if (this.props.tabs.tabs[endpoint.id]) {
       tabService.removeTab(endpoint.id, { ...this.props });
     }
   }
 
   handleDuplicate(endpoint) {
-    this.props.duplicateEndpoint(endpoint);
+    this.props.duplicate_endpoint(endpoint);
   }
 
   openDeleteModal(endpointId) {
@@ -118,63 +137,20 @@ class Endpoints extends Component {
       if (this.checkAccess(this.props.collection_id)) {
         this.handleApproveRequest(endpoint);
       } else {
-        this.props.pendingEndpoint(endpoint);
+        this.props.pending_endpoint(endpoint);
       }
     }
   }
 
   async handleCancelRequest(endpoint) {
-    this.props.draftEndpoint(endpoint);
+    this.props.draft_endpoint(endpoint);
   }
   async handleApproveRequest(endpoint) {
-    // if (
-    //   endpoint.body.type === "JSON" &&
-    //   Object.keys(endpoint.bodyDescription).length === 0
-    // ) {
-    //   let { value } = endpoint.body;
-    //   let body = JSON.parse(value);
-    //   let bodyDescription = this.generateBodyDescription(body);
-    //   endpoint.bodyDescription = bodyDescription;
-    // }
-    this.props.approveEndpoint(endpoint);
+    this.props.approve_endpoint(endpoint);
   }
   async handleRejectRequest(endpoint) {
-    this.props.rejectEndpoint(endpoint);
+    this.props.reject_endpoint(endpoint);
   }
-
-  // generateBodyDescription(body) {
-  //   let bodyDescription = null;
-  //   if (Array.isArray(body)) bodyDescription = [];
-  //   else bodyDescription = {};
-
-  //   const keys = Object.keys(body);
-  //   for (let i = 0; i < keys.length; i++) {
-  //     const value = body[keys[i]];
-  //     if (
-  //       typeof value === "string" ||
-  //       typeof value === "number" ||
-  //       typeof value === "boolean"
-  //     ) {
-  //       bodyDescription[keys[i]] = {
-  //         value,
-  //         type: typeof value,
-  //         description: null,
-  //       };
-  //     } else {
-  //       if (Array.isArray(value))
-  //         bodyDescription[keys[i]] = {
-  //           value: this.generateBodyDescription(value),
-  //           type: "array",
-  //         };
-  //       else
-  //         bodyDescription[keys[i]] = {
-  //           value: this.generateBodyDescription(value),
-  //           type: "object",
-  //         };
-  //     }
-  //   }
-  //   return bodyDescription;
-  // }
 
   handleDisplay(endpoint, groupId, collectionId, previewMode) {
     if (isDashboardRoute(this.props)) {
@@ -182,8 +158,8 @@ class Endpoints extends Component {
         const previewTabId = Object.keys(this.props.tabs.tabs).filter(
           (tabId) => this.props.tabs.tabs[tabId].previewMode === true
         )[0];
-        if (previewTabId) this.props.closeTab(previewTabId);
-        this.props.openInNewTab({
+        if (previewTabId) this.props.close_tab(previewTabId);
+        this.props.open_in_new_tab({
           id: endpoint.id,
           type: "endpoint",
           status: tabStatusTypes.SAVED,
@@ -204,10 +180,11 @@ class Endpoints extends Component {
       });
     } else {
       this.props.history.push({
-        pathname: `/public/${collectionId}/endpoints/${endpoint.id}`,
+        pathname: `/p/${collectionId}/e/${endpoint.id}/${this.props.collections[collectionId].name}`,
         title: "update endpoint",
         endpoint: endpoint,
         groupId: groupId,
+        Environment: "publicCollectionEnvironment",
       });
     }
   }
@@ -220,11 +197,14 @@ class Endpoints extends Component {
     ) {
       this.filterFlag = true;
       let groupIds = [];
-      groupIds = filterService.filter(
+      let groupIdsAndFilteredEndpoints = [];
+      groupIdsAndFilteredEndpoints = filterService.filter(
         this.props.endpoints,
         this.props.filter,
         "endpoints"
       );
+      this.filteredEndpoints = groupIdsAndFilteredEndpoints[0];
+      groupIds = groupIdsAndFilteredEndpoints[1];
       this.setState({ filter: this.props.filter });
       if (groupIds.length !== 0) {
         this.props.show_filter_groups(groupIds, "endpoints");
@@ -234,15 +214,128 @@ class Endpoints extends Component {
     }
   }
 
+  filterGroupPages() {
+    if (
+      this.props.selectedCollection === true &&
+      this.props.filter !== "" &&
+      this.filterFlag === false
+    ) {
+      this.filterFlag = true;
+      let groupIds = [];
+      let groupIdsAndFilteredPages = [];
+      groupIdsAndFilteredPages = filterService.filter(
+        this.props.pages,
+        this.props.filter,
+        "groupPages"
+      );
+      this.filteredGroupPages = groupIdsAndFilteredPages[0];
+      groupIds = groupIdsAndFilteredPages[1];
+      this.setState({ filter: this.props.filter });
+      if (groupIds.length !== 0) {
+        this.props.show_filter_groups(groupIds, "pages");
+      } else {
+        this.props.show_filter_groups(null, "pages");
+      }
+    }
+  }
+
+  onDragStart = (e, eId) => {
+    this.draggedItem = eId;
+    this.props.set_endpoint_drag(eId);
+  };
+
+  onDragOver = (e, eId) => {
+    e.preventDefault();
+  };
+
+  onDrop(e, destinationEndpointId) {
+    e.preventDefault();
+
+    if (!this.draggedItem) {
+    } else {
+      if (this.draggedItem === destinationEndpointId) {
+        this.draggedItem = null;
+        return;
+      }
+      const endpoints = this.extractEndpoints();
+      const positionWiseEndpoints = this.makePositionWiseEndpoints({
+        ...endpoints,
+      });
+      const index = positionWiseEndpoints.findIndex(
+        (eId) => eId === destinationEndpointId
+      );
+      let endpointIds = positionWiseEndpoints.filter(
+        (item) => item !== this.draggedItem
+      );
+      endpointIds.splice(index, 0, this.draggedItem);
+
+      this.props.update_endpoints_order(endpointIds, this.props.group_id);
+      this.draggedItem = null;
+    }
+  }
+
+  extractEndpoints() {
+    let endpoints = {};
+    for (let i = 0; i < Object.keys(this.props.endpoints).length; i++) {
+      if (
+        this.props.endpoints[Object.keys(this.props.endpoints)[i]].groupId &&
+        this.props.endpoints[Object.keys(this.props.endpoints)[i]].groupId ===
+          this.props.group_id
+      ) {
+        endpoints[Object.keys(this.props.endpoints)[i]] = this.props.endpoints[
+          Object.keys(this.props.endpoints)[i]
+        ];
+      }
+    }
+
+    return endpoints;
+  }
+
+  makePositionWiseEndpoints(endpoints) {
+    let positionWiseEndpoints = [];
+    for (let i = 0; i < Object.keys(endpoints).length; i++) {
+      positionWiseEndpoints[
+        endpoints[Object.keys(endpoints)[i]].position
+      ] = Object.keys(endpoints)[i];
+    }
+    return positionWiseEndpoints;
+  }
+
   render() {
     if (this.state.filter !== this.props.filter) {
       this.filterFlag = false;
     }
+    if (this.props.filter === "") {
+      this.filteredEndpoints = { ...this.props.endpoints };
+      this.filteredEndpointsOrder = [...this.props.endpoints_order];
+    }
+
+    let endpointIds = Object.keys(this.props.endpoints).filter(
+      (eId) =>
+        this.props.endpoints[eId].groupId &&
+        this.props.endpoints[eId].groupId === this.props.group_id
+    );
+    let endpointsArray = [];
+    for (let index = 0; index < endpointIds.length; index++) {
+      const id = endpointIds[index];
+      const endpoint = this.props.endpoints[id];
+      endpointsArray = [...endpointsArray, endpoint];
+    }
+
+    endpointsArray.sort(function (a, b) {
+      return a.position - b.position;
+    });
+    let endpoints = {};
+    for (let index = 0; index < endpointsArray.length; index++) {
+      const id = endpointsArray[index].id || endpointsArray[index].requestId;
+      endpoints[id] = this.props.endpoints[id];
+    }
+
     if (isDashboardRoute(this.props)) {
       return (
         <React.Fragment>
           {this.filterEndpoints()}
-
+          {this.sequencingOnFilter()}
           {/* <div>
           {this.state.showDeleteModal &&
             endpointService.showDeleteEndpointModal(
@@ -254,21 +347,22 @@ class Endpoints extends Component {
               this.state.selectedEndpoint
             )}
         </div> */}
-          {Object.keys(this.props.endpoints).length !== 0 &&
-            this.props.endpoints_order
-              .filter(
-                (eId) =>
-                  this.props.endpoints[eId].groupId === this.props.group_id
-              )
+          {endpoints &&
+            Object.keys(endpoints).length !== 0 &&
+            Object.keys(endpoints)
+              // filteredEndpointsOrder
+              //   .filter(
+              //     (eId) =>
+              //       this.props.endpoints[eId].groupId === this.props.group_id
+              //   )
               .map((endpointId) => (
-                <div className="endpoint-list-item" key={endpointId}>
+                <div className="sidebar-accordion" key={endpointId}>
                   <div className={this.props.endpoints[endpointId].state}></div>
                   <button
-                    className="btn "
                     draggable
-                    onDragOver={this.onDragOver}
+                    onDragOver={(e) => this.onDragOver(e, endpointId)}
                     onDragStart={(e) => this.onDragStart(e, endpointId)}
-                    onDrop={(e) => this.onDrop(e)}
+                    onDrop={(e) => this.onDrop(e, endpointId)}
                     onClick={() =>
                       this.handleDisplay(
                         this.props.endpoints[endpointId],
@@ -286,145 +380,157 @@ class Endpoints extends Component {
                       )
                     }
                   >
-                    <div
-                      className={this.props.endpoints[endpointId].requestType}
-                    >
-                      {this.props.endpoints[endpointId].requestType}
-                    </div>
-
-                    <div style={{ width: "100%", textAlign: "left" }}>
+                    <div className="sidebar-accordion-item">
+                      <div
+                        className={`api-label ${this.props.endpoints[endpointId].requestType}`}
+                      >
+                        <div className="endpoint-request-div">
+                          {this.props.endpoints[endpointId].requestType}
+                        </div>
+                      </div>
                       {this.props.endpoints[endpointId].name}
                     </div>
-                  </button>
-                  <div className="btn-group">
-                    <button
-                      className="btn "
-                      data-toggle="dropdown"
-                      aria-haspopup="true"
-                      aria-expanded="false"
-                    >
-                      <i className="fas fa-ellipsis-h"></i>
-                    </button>
-                    <div className="dropdown-menu dropdown-menu-right">
-                      <button
-                        className="dropdown-item"
-                        onClick={() =>
-                          this.handleDelete(this.props.endpoints[endpointId])
-                        }
+                    <div className="sidebar-item-action">
+                      <div
+                        className="sidebar-item-action-btn"
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false"
                       >
-                        Delete
-                      </button>
-                      <button
-                        className="dropdown-item"
-                        onClick={() =>
-                          this.handleDuplicate(this.props.endpoints[endpointId])
-                        }
-                      >
-                        Duplicate
-                      </button>
-                      {this.props.endpoints[endpointId].state === "Draft" ? (
-                        <button
+                        <i className="uil uil-ellipsis-v"></i>
+                      </div>
+                      <div className="dropdown-menu dropdown-menu-right">
+                        <a
                           className="dropdown-item"
                           onClick={() =>
-                            this.handlePublicEndpointState(
+                            this.handleDelete(this.props.endpoints[endpointId])
+                          }
+                        >
+                          Delete
+                        </a>
+                        <a
+                          className="dropdown-item"
+                          onClick={() =>
+                            this.handleDuplicate(
                               this.props.endpoints[endpointId]
                             )
                           }
                         >
-                          Make Public
-                        </button>
-                      ) : null}
-
-                      {!this.checkAccess(this.props.collection_id) &&
-                      this.props.endpoints[endpointId].state === "Pending" ? (
-                        <button
-                          className="dropdown-item"
-                          onClick={() =>
-                            this.handleCancelRequest(
-                              this.props.endpoints[endpointId]
-                            )
-                          }
-                        >
-                          Cancel Request
-                        </button>
-                      ) : null}
-
-                      {this.checkAccess(this.props.collection_id) &&
-                      (this.props.endpoints[endpointId].state === "Approved" ||
-                        this.props.endpoints[endpointId].state === "Reject") ? (
-                        <button
-                          className="dropdown-item"
-                          onClick={() =>
-                            this.handleCancelRequest(
-                              this.props.endpoints[endpointId]
-                            )
-                          }
-                        >
-                          Move to Draft
-                        </button>
-                      ) : null}
-                      {this.checkAccess(this.props.collection_id) &&
-                      this.props.endpoints[endpointId].state === "Pending" ? (
-                        <div>
-                          <button
+                          Duplicate
+                        </a>
+                        {this.props.endpoints[endpointId].state === "Draft" ? (
+                          <a
                             className="dropdown-item"
                             onClick={() =>
-                              this.handleApproveRequest(
+                              this.handlePublicEndpointState(
                                 this.props.endpoints[endpointId]
                               )
                             }
                           >
-                            Approve Request
-                          </button>
-                          <button
+                            Make Public
+                          </a>
+                        ) : null}
+
+                        {!this.checkAccess(this.props.collection_id) &&
+                        this.props.endpoints[endpointId].state === "Pending" ? (
+                          <a
                             className="dropdown-item"
                             onClick={() =>
-                              this.handleRejectRequest(
+                              this.handleCancelRequest(
                                 this.props.endpoints[endpointId]
                               )
                             }
                           >
-                            Reject Request
-                          </button>
-                        </div>
-                      ) : null}
+                            Cancel Request
+                          </a>
+                        ) : null}
+
+                        {this.checkAccess(this.props.collection_id) &&
+                        (this.props.endpoints[endpointId].state ===
+                          "Approved" ||
+                          this.props.endpoints[endpointId].state ===
+                            "Reject") ? (
+                          <a
+                            className="dropdown-item"
+                            onClick={() =>
+                              this.handleCancelRequest(
+                                this.props.endpoints[endpointId]
+                              )
+                            }
+                          >
+                            Move to Draft
+                          </a>
+                        ) : null}
+                        {this.checkAccess(this.props.collection_id) &&
+                        this.props.endpoints[endpointId].state === "Pending" ? (
+                          <div>
+                            <a
+                              className="dropdown-item"
+                              onClick={() =>
+                                this.handleApproveRequest(
+                                  this.props.endpoints[endpointId]
+                                )
+                              }
+                            >
+                              Approve Request
+                            </a>
+                            <a
+                              className="dropdown-item"
+                              onClick={() =>
+                                this.handleRejectRequest(
+                                  this.props.endpoints[endpointId]
+                                )
+                              }
+                            >
+                              Reject Request
+                            </a>
+                          </div>
+                        ) : null}
+                      </div>
                     </div>
-                  </div>
+                  </button>
                 </div>
               ))}
         </React.Fragment>
       );
     } else {
       return (
-        <div>
-          {Object.keys(this.props.endpoints).length !== 0 &&
-            this.props.endpoints_order
-              .filter(
-                (eId) =>
-                  this.props.endpoints[eId].groupId === this.props.group_id
-              )
-              .map((endpointId) => (
-                <div className="endpoint-list-item" key={endpointId}>
-                  <button
-                    className="btn "
-                    onClick={() =>
-                      this.handleDisplay(
-                        this.props.endpoints[endpointId],
-                        this.props.group_id,
-                        this.props.collection_id
-                      )
-                    }
+        <React.Fragment>
+          {
+            // Object.keys(this.props.endpoints).length !== 0 &&
+            //   this.props.endpoints_order
+            //     .filter(
+            //       (eId) =>
+            //         this.props.endpoints[eId].groupId === this.props.group_id
+            //     )
+            endpoints &&
+              Object.keys(endpoints).length !== 0 &&
+              Object.keys(endpoints).map((endpointId) => (
+                <div
+                  className="hm-sidebar-item"
+                  key={endpointId}
+                  onClick={() =>
+                    this.handleDisplay(
+                      this.props.endpoints[endpointId],
+                      this.props.group_id,
+                      this.props.collection_id
+                    )
+                  }
+                >
+                  <div
+                    className={`api-label ${this.props.endpoints[endpointId].requestType}`}
                   >
-                    <div
-                      className={this.props.endpoints[endpointId].requestType}
-                    >
+                    <div className="endpoint-request-div">
                       {this.props.endpoints[endpointId].requestType}
                     </div>
+                  </div>
+                  <div className="endpoint-name-div">
                     {this.props.endpoints[endpointId].name}
-                  </button>
+                  </div>
                 </div>
-              ))}
-        </div>
+              ))
+          }
+        </React.Fragment>
       );
     }
   }

@@ -1,5 +1,5 @@
 import http from "../../services/httpService";
-import { apiUrl } from "../../config.json";
+const apiUrl = process.env.REACT_APP_API_URL;
 
 function collectionVersionsUrl(collectionId) {
   return `${apiUrl}/collections/${collectionId}/versions`;
@@ -35,8 +35,20 @@ export function duplicateVersion(versionId) {
 export function exportCollectionVersion(importLink, shareIdentifier) {
   return http.get(`${importLink}`);
 }
+
 export function importCollectionVersion(importLink, shareIdentifier, data) {
   return http.post(`${apiUrl}/share/${shareIdentifier}/import`, data);
+}
+
+export function setAuthorizationData(versionId, data) {
+  return http.patch(`${apiUrl}/versions/${versionId}/authorizationData`, data);
+}
+
+export function setAuthorizationResponse(versionId, authorizationResponse) {
+  return http.patch(
+    `${apiUrl}/versions/${versionId}/authorizationResponse`,
+    authorizationResponse
+  );
 }
 
 export default {
@@ -49,4 +61,6 @@ export default {
   importCollectionVersion,
   exportCollectionVersion,
   getAllCollectionVersions,
+  setAuthorizationResponse,
+  setAuthorizationData,
 };

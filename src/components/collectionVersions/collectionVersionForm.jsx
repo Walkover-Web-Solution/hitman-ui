@@ -5,16 +5,16 @@ import Form from "../common/form";
 import { connect } from "react-redux";
 import {
   addVersion,
-  updateVersion
+  updateVersion,
 } from "../collectionVersions/redux/collectionVersionsActions";
 
 import shortid from "shortid";
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    addVersion: (newCollectionVersion, collectionId) =>
+    add_version: (newCollectionVersion, collectionId) =>
       dispatch(addVersion(newCollectionVersion, collectionId)),
-    updateVersion: editedVersion => dispatch(updateVersion(editedVersion))
+    update_version: (editedVersion) => dispatch(updateVersion(editedVersion)),
   };
 };
 class CollectionVersionForm extends Form {
@@ -22,17 +22,12 @@ class CollectionVersionForm extends Form {
     data: { number: "", host: "" },
     errors: {},
     versionId: null,
-    collectionId: ""
+    collectionId: "",
   };
 
   schema = {
-    number: Joi.string()
-      .required()
-      .label("Version number"),
-    host: Joi.string()
-      .uri()
-      .required()
-      .label("Host")
+    number: Joi.string().required().label("Version number"),
+    host: Joi.string().uri().required().label("Host"),
   };
 
   async componentDidMount() {
@@ -44,7 +39,7 @@ class CollectionVersionForm extends Form {
       const { number, host, id } = this.props.selected_version;
       data = {
         number,
-        host
+        host,
       };
       versionId = id;
     }
@@ -56,12 +51,12 @@ class CollectionVersionForm extends Form {
     if (this.props.title === "Edit Collection Version") {
       const { id, collectionId } = this.props.selected_version;
       const editedCollectionVersion = { ...this.state.data, collectionId, id };
-      this.props.updateVersion(editedCollectionVersion);
+      this.props.update_version(editedCollectionVersion);
     }
     if (this.props.title === "Add new Collection Version") {
       const collectionId = this.props.collection_id;
       const newVersion = { ...this.state.data, requestId: shortid.generate() };
-      this.props.addVersion(newVersion, collectionId);
+      this.props.add_version(newVersion, collectionId);
     }
   }
 

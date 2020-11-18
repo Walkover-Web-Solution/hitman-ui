@@ -1,5 +1,6 @@
 import http from "../../services/httpService";
-import { apiUrl } from "../../config.json";
+
+const apiUrl = process.env.REACT_APP_API_URL;
 
 function GroupsUrl(versionId) {
   return `${apiUrl}/versions/${versionId}/groups`;
@@ -37,6 +38,12 @@ export function duplicateGroup(groupId) {
   return http.post(`${apiUrl}/duplicateGroups/${groupId}`);
 }
 
+export function updateGroupOrder(groupsOrder) {
+  return http.patch(`${apiUrl}/updateGroupsOrder`, {
+    groupsOrder: groupsOrder,
+  });
+}
+
 export default {
   getGroups,
   getGroup,
@@ -44,5 +51,6 @@ export default {
   updateGroup,
   deleteGroup,
   duplicateGroup,
-  getAllGroups
+  getAllGroups,
+  updateGroupOrder,
 };

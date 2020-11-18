@@ -9,9 +9,9 @@ import "./environments.scss";
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    addEnvironment: (newEnvironment) =>
+    add_environment: (newEnvironment) =>
       dispatch(addEnvironment(newEnvironment)),
-    updateEnvironment: (editedEnvironment) =>
+    update_environment: (editedEnvironment) =>
       dispatch(updateEnvironment(editedEnvironment)),
   };
 };
@@ -77,7 +77,7 @@ class EnvironmentVariables extends Component {
     if (this.props.title === "Add new Environment") {
       this.props.onHide();
       const requestId = shortId.generate();
-      this.props.addEnvironment({ ...this.state.environment, requestId });
+      this.props.add_environment({ ...this.state.environment, requestId });
       this.setState({
         environment: { name: "", variables: {} },
         originalVariableNames: [],
@@ -95,7 +95,7 @@ class EnvironmentVariables extends Component {
         JSON.stringify(updatedEnvironment)
       ) {
         if (updatedEnvironment.requestId) delete updatedEnvironment.requestId;
-        this.props.updateEnvironment({
+        this.props.update_environment({
           ...updatedEnvironment,
         });
       }

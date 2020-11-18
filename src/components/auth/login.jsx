@@ -1,9 +1,8 @@
 import queryString from "query-string";
 import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
-import auth from "./authService";
 import "./auth.scss";
-import { uiUrl } from "../../config.json";
+import auth from "./authService";
 
 class Login extends Component {
   async componentDidMount() {
@@ -22,19 +21,8 @@ class Login extends Component {
 
   render() {
     if (auth.getCurrentUser()) return <Redirect to="/dashboard/endpoint/new" />;
-    const redirectionUrl = `${uiUrl}/login`;
-    const socketLoginUrl = `https://viasocket.com/login?token_required=true&redirect_uri=${redirectionUrl}`;
-    return (
-      <React.Fragment>
-        <center>
-          <h1 id="custom-login-heading">Welcome to the Hitman</h1>
 
-          <button className="btn btn-primary btn-lg" id="custom-login-button">
-            <a href={socketLoginUrl}>Login With ViaSocket</a>
-          </button>
-        </center>
-      </React.Fragment>
-    );
+    return <React.Fragment></React.Fragment>;
   }
 }
 

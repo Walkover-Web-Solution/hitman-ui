@@ -1,0 +1,38 @@
+#modal-open-api {
+  .modal-content {
+    // height: 400px !important;
+    .modal-body {
+      form {
+        font-size: 15px;
+        font-weight: 400;
+        div#select-json-wrapper {
+          label {
+            font-weight: 600;
+            font-size: 17px;
+          }
+          height: 120px;
+          padding: 0px;
+        }
+        .cancel-button {
+          background: rgb(241, 241, 241) !important;
+          font-weight: 400;
+          margin: 5px;
+        }
+        .cancel-button:hover {
+          background: rgb(231, 230, 230) !important;
+          font-weight: 400;
+          margin: 5px;
+        }
+
+        .import-button {
+          background-color: rgb(255, 212, 204) !important;
+          margin: 5px;
+        }
+        .import-button:hover {
+          background-color: rgb(212, 183, 178) !important;
+          margin: 5px;
+        }
+      }
+    }
+  }
+}

@@ -1,5 +1,6 @@
 import http from "../../services/httpService";
-import { apiUrl } from "../../config.json";
+
+const apiUrl = process.env.REACT_APP_API_URL;
 
 function versionPagesUrl(versionId) {
   return `${apiUrl}/versions/${versionId}/pages`;
@@ -52,6 +53,12 @@ export function duplicatePage(pageId) {
   return http.post(`${apiUrl}/duplicatePages/${pageId}`);
 }
 
+export function updatePageOrder(pagesOrder) {
+  return http.patch(`${apiUrl}/updatePagesOrder`, {
+    pagesOrder: pagesOrder,
+  });
+}
+
 export default {
   getVersionPages,
   getGroupPages,
@@ -61,5 +68,6 @@ export default {
   updatePage,
   deletePage,
   duplicatePage,
-  getAllPages
+  getAllPages,
+  updatePageOrder,
 };

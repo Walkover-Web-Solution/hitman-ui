@@ -64,10 +64,7 @@ function groupsReducer(state = initialState, action) {
       };
 
     case groupsActionTypes.ON_GROUP_UPDATED:
-      return {
-        ...state,
-        [action.response.id]: action.response,
-      };
+      return state;
 
     case groupsActionTypes.ON_GROUP_UPDATED_ERROR:
       toast.error(action.error);
@@ -116,6 +113,15 @@ function groupsReducer(state = initialState, action) {
       action.payload.groupIds.forEach((gId) => {
         delete groups[gId];
       });
+      return groups;
+
+    case groupsActionTypes.ON_GROUPS_ORDER_UPDATED:
+      groups = { ...action.groups };
+      return groups;
+
+    case groupsActionTypes.ON_GROUPS_ORDER_UPDATED_ERROR:
+      toast.error(action.error);
+      groups = { ...action.groups };
       return groups;
 
     default:

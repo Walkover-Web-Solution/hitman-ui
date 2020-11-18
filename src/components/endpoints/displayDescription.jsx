@@ -1,12 +1,13 @@
 import React, { Component } from "react";
 import { isDashboardRoute } from "../common/utility";
+import { isSavedEndpoint } from "../common/utility";
 import { Link } from "react-router-dom";
 import { updateEndpoint } from "./redux/endpointsActions";
 import { connect } from "react-redux";
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    updateEndpoint: (editedEndpoint) =>
+    update_endpoint: (editedEndpoint) =>
       dispatch(updateEndpoint(editedEndpoint)),
   };
 };
@@ -14,7 +15,12 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 class DisplayDescription extends Component {
   state = {
     showDescriptionFormFlag: false,
-    showAddDescriptionFlag: isDashboardRoute(this.props) ? false : true,
+    showAddDescriptionFlag: isDashboardRoute(this.props)
+      ? this.props.endpoint.description === "" ||
+        this.props.endpoint.description == null
+        ? true
+        : false
+      : false,
   };
 
   handleChange = (e) => {
@@ -25,7 +31,7 @@ class DisplayDescription extends Component {
 
   handleDescription() {
     const showDescriptionFormFlag = true;
-    let showAddDescriptionFlag = true;
+    let showAddDescriptionFlag = false;
     this.setState({ showDescriptionFormFlag, showAddDescriptionFlag });
   }
 
@@ -45,7 +51,7 @@ class DisplayDescription extends Component {
     const value = e.target.description.value;
     let endpoint = { ...this.props.endpoint };
 
-    this.props.updateEndpoint({ id: endpoint.id, description: value });
+    this.props.update_endpoint({ id: endpoint.id, description: value });
 
     endpoint.description = value;
     this.setState({
@@ -62,52 +68,45 @@ class DisplayDescription extends Component {
     this.props.props_from_parent("endpoint", endpoint);
   };
 
-  showDescription() {
-    let showAddDescriptionFlag = !this.state.showAddDescriptionFlag;
-    this.setState({ showAddDescriptionFlag, showDescriptionFormFlag: false });
-  }
-
   render() {
     return (
-      <div>
-        <div className="endpoint-name-container">
-          {this.props.endpoint.description !== undefined &&
-          isDashboardRoute(this.props) ? (
-            <button className="endpoint-description">
-              <i
-                className={
-                  this.state.showAddDescriptionFlag === true
-                    ? "fas fa-caret-down "
-                    : "fas fa-caret-right"
-                }
-                onClick={() => this.showDescription()}
-              ></i>
-            </button>
-          ) : null}
-          <input
-            type="text"
-            className={
-              isDashboardRoute(this.props)
-                ? "endpoint-name-input"
-                : "public-endpoint-name-input"
-            }
-            aria-label="Username"
-            aria-describedby="addon-wrapping"
-            name="name"
-            placeholder="Endpoint Name"
-            value={this.props.data.name}
-            onChange={this.handleChange}
-            disabled={isDashboardRoute(this.props) ? null : true}
-          />
+      <div className="endpoint-header">
+        <div
+          className={
+            isDashboardRoute(this.props)
+              ? "panel-endpoint-name-container"
+              : "endpoint-name-container"
+          }
+        >
+          {isDashboardRoute(this.props) && (
+            <React.Fragment>
+              <label className="hm-panel-label">Endpoint title</label>
+              <input
+                type="text"
+                className={"form-control"}
+                aria-label="Username"
+                aria-describedby="addon-wrapping"
+                name="name"
+                placeholder="Endpoint Name"
+                value={this.props.data.name}
+                onChange={this.handleChange}
+                disabled={isDashboardRoute(this.props) ? null : true}
+              />
+            </React.Fragment>
+          )}
+          {!isDashboardRoute(this.props) && (
+            <h1 className="endpoint-title">{this.props.data.name}</h1>
+          )}
         </div>
 
-        {this.state.showAddDescriptionFlag &&
-        !this.state.showDescriptionFormFlag ? (
-          this.props.endpoint.description === "" &&
+        {isSavedEndpoint(this.props) && !this.state.showDescriptionFormFlag ? (
+          this.state.showAddDescriptionFlag &&
+          (this.props.endpoint.description === "" ||
+            this.props.endpoint.description === null) &&
           isDashboardRoute(this.props) ? (
             <Link
               style={{
-                padding: "0px 0px 0px 35px",
+                padding: "0px 0px 0px 10px",
                 fontSize: "15px",
                 color: "tomato",
               }}
@@ -116,59 +115,65 @@ class DisplayDescription extends Component {
               Add a Description
             </Link>
           ) : (
-            <div>
-              <label style={{ padding: "5px 5px 0px 35px" }}>
-                {this.props.endpoint.description}
-              </label>
-              {isDashboardRoute(this.props) ? (
-                <button
-                  className="btn btn-default"
-                  onClick={() => this.handleDescription()}
-                >
-                  <i className="fas fa-pen"></i>
-                </button>
-              ) : null}
-            </div>
+            <React.Fragment>
+              <div className="endpoint-description">
+                {isDashboardRoute(this.props) ? (
+                  <div>
+                    <label className="hm-panel-label">
+                      Endpoint Description
+                    </label>
+                    <button
+                      className="btn btn-default"
+                      onClick={() => this.handleDescription()}
+                    >
+                      <i className="fas fa-pen"></i>
+                    </button>
+                    <br />
+                    <div
+                      className="endpoint-description-text"
+                      style={{
+                        color: "#495057",
+                        maxHeight: "240px",
+                        overflow: "auto",
+                        padding: "2px",
+                      }}
+                    >
+                      {this.props.endpoint.description}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="endpoint-description-text">
+                    {this.props.endpoint.description}
+                  </div>
+                )}
+              </div>
+            </React.Fragment>
           )
         ) : null}
 
-        {this.state.showDescriptionFormFlag && isDashboardRoute(this.props) ? (
+        {isDashboardRoute(this.props) &&
+        isSavedEndpoint(this.props) &&
+        this.state.showDescriptionFormFlag ? (
           <form onSubmit={this.handleDescriptionSave.bind(this)}>
-            <div
-              className="form-group"
-              style={{ padding: "5px 10px 5px 10px" }}
-            >
+            <label className="hm-panel-label">Endpoint Description</label>
+            <div className="endpoint-description-wrap">
               <textarea
                 className="form-control"
-                rows="3"
+                rows="5"
                 name="description"
                 placeholder="Make things easier for your teammates with a complete endpoint description"
                 value={this.props.endpoint.description}
                 onChange={this.handleChangeDescription}
               ></textarea>
-              <div style={{ float: "right", margin: "5px" }}>
+              <div className="endpoint-cta">
                 <button
-                  className="btn btn-primary"
+                  className="btn btn-link"
                   type="cancel"
                   onClick={() => this.handleDescriptionCancel()}
-                  style={{
-                    margin: "0px 5px 0px 0px",
-                    color: "tomato",
-                    background: "none",
-                    border: "none",
-                  }}
                 >
                   Cancel
                 </button>
-                <button
-                  className="btn btn-primary"
-                  type="submit"
-                  style={{
-                    margin: "0px 0px 0px 5px",
-                    background: "tomato",
-                    border: "none",
-                  }}
-                >
+                <button className="btn btn-primary" type="submit">
                   Save
                 </button>
               </div>

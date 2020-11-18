@@ -8,10 +8,10 @@ import "ace-builds/src-noconflict/theme-github";
 import "ace-builds/webpack-resolver";
 import React, { Component } from "react";
 import AceEditor from "react-ace";
-import { Button } from "react-bootstrap";
 import BodyDescription from "./bodyDescription";
 import "./endpoints.scss";
 import GenericTable from "./genericTable";
+import { isSavedEndpoint } from "../common/utility";
 
 class BodyContainer extends Component {
   state = {
@@ -66,6 +66,14 @@ class BodyContainer extends Component {
       );
     } else {
       this.flag = false;
+      if (document.getElementById(`toggle-raw-${this.props.endpoint_id}`)) {
+        document.getElementById(
+          `toggle-raw-${this.props.endpoint_id}`
+        ).className = "btn btn-secondary active";
+        document.getElementById(
+          `toggle-body-description-${this.props.endpoint_id}`
+        ).className = "btn btn-secondary ";
+      }
       if (bodyType === "raw") {
         this.showRawBodyType = true;
         this.setState({
@@ -85,6 +93,7 @@ class BodyContainer extends Component {
   }
 
   handleChange(value) {
+    this.alteredBody = true;
     const data = { ...this.state.data };
     data.raw = value;
     this.setState({ data });
@@ -106,6 +115,19 @@ class BodyContainer extends Component {
         break;
       default:
         break;
+    }
+  }
+
+  makeJson(body) {
+    if (!this.alteredBody) {
+      try {
+        let parsedBody = JSON.stringify(JSON.parse(body), null, 2);
+        return parsedBody;
+      } catch (e) {
+        return body;
+      }
+    } else {
+      return body;
     }
   }
 
@@ -161,7 +183,11 @@ class BodyContainer extends Component {
                 className="custom-raw-editor"
                 mode={this.state.selectedRawBodyType.toLowerCase()}
                 theme="github"
-                value={this.state.data.raw}
+                value={
+                  this.state.selectedRawBodyType === "JSON"
+                    ? this.makeJson(this.state.data.raw)
+                    : this.state.data.raw
+                }
                 onChange={this.handleChange.bind(this)}
                 setOptions={{
                   showLineNumbers: true,
@@ -182,6 +208,11 @@ class BodyContainer extends Component {
   }
 
   render() {
+    if (this.props.location.pathname.split("/")[3] !== this.endpointId) {
+      this.endpointId = this.props.location.pathname.split("/")[3];
+      this.alteredBody = false;
+    }
+
     if (this.props.body !== "" && !this.state.selectedBodyType) {
       let selectedBodyType = this.props.body.type;
       if (
@@ -211,99 +242,132 @@ class BodyContainer extends Component {
         });
       }
     }
+
     return (
       <div className="body-wrapper">
-        <form className="body-select d-flex ">
-          <label className="body">
-            <input
-              type="radio"
-              name={`body-select-${this.props.endpoint_id}`}
-              id={`none-${this.props.endpoint_id}`}
-              defaultChecked={!this.state.selectedBodyType ? true : false}
-              onClick={() => this.handleSelectBodyType("none")}
-              className="custom-radio-input"
-            />
-            none
-          </label>
-          <label className="body">
-            <input
-              type="radio"
-              name={`body-select-${this.props.endpoint_id}`}
-              id={`raw-${this.props.endpoint_id}`}
-              onClick={() => this.handleSelectBodyType("raw")}
-              className="custom-radio-input"
-            />
-            raw
-          </label>
-          <label className="body">
-            <input
-              type="radio"
-              name={`body-select-${this.props.endpoint_id}`}
-              id={`multipart/form-data-${this.props.endpoint_id}`}
-              onClick={() => this.handleSelectBodyType("multipart/form-data")}
-              className="custom-radio-input"
-            />
-            form-data
-          </label>
-          <label className="body">
-            <input
-              type="radio"
-              name={`body-select-${this.props.endpoint_id}`}
-              id={`application/x-www-form-urlencoded-${this.props.endpoint_id}`}
-              onClick={() =>
-                this.handleSelectBodyType("application/x-www-form-urlencoded")
-              }
-              className="custom-radio-input"
-            />
-            x-www-form-urlencoded
-          </label>
-
-          <div className="body">
-            {this.showRawBodyType === true && (
-              <div>
-                <div className="dropdown">
-                  <button
-                    style={{ color: "tomato", paddingTop: "0px" }}
-                    className="btn dropdown-toggle flex-column"
-                    type="button"
-                    id="dropdownMenuButton"
-                    data-toggle="dropdown"
-                    aria-haspopup="true"
-                    aria-expanded="false"
-                  >
-                    {this.state.selectedRawBodyType}
-                  </button>
-                  <div
-                    className="dropdown-menu"
-                    aria-labelledby="dropdownMenuButton"
-                  >
-                    {this.rawBodyTypes.map((rawBodyType) => (
+        <div className="button-panel-wrapper">
+          <form className="body-select d-flex ">
+            <label className="body">
+              <input
+                type="radio"
+                name={`body-select-${this.props.endpoint_id}`}
+                id={`none-${this.props.endpoint_id}`}
+                defaultChecked={!this.state.selectedBodyType ? true : false}
+                onClick={() => this.handleSelectBodyType("none")}
+                className="custom-radio-input"
+              />
+              none
+            </label>
+            <label className="body">
+              <input
+                type="radio"
+                name={`body-select-${this.props.endpoint_id}`}
+                id={`raw-${this.props.endpoint_id}`}
+                onClick={() => this.handleSelectBodyType("raw")}
+                className="custom-radio-input"
+              />
+              raw
+            </label>
+            <label className="body">
+              <input
+                type="radio"
+                name={`body-select-${this.props.endpoint_id}`}
+                id={`multipart/form-data-${this.props.endpoint_id}`}
+                onClick={() => this.handleSelectBodyType("multipart/form-data")}
+                className="custom-radio-input"
+              />
+              form-data
+            </label>
+            <label className="body">
+              <input
+                type="radio"
+                name={`body-select-${this.props.endpoint_id}`}
+                id={`application/x-www-form-urlencoded-${this.props.endpoint_id}`}
+                onClick={() =>
+                  this.handleSelectBodyType("application/x-www-form-urlencoded")
+                }
+                className="custom-radio-input"
+              />
+              x-www-form-urlencoded
+            </label>
+            {!(this.showRawBodyType && this.flag) && (
+              <div className="body">
+                {this.showRawBodyType === true && (
+                  <div>
+                    <div className="dropdown">
                       <button
-                        className="btn custom-body-type-button"
+                        style={{ color: "tomato", paddingTop: "0px" }}
+                        className="btn dropdown-toggle flex-column"
                         type="button"
-                        onClick={() => this.setRawBodyType(rawBodyType)}
-                        key={rawBodyType}
+                        id="dropdownMenuButton"
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false"
                       >
-                        {rawBodyType}
+                        {this.state.selectedRawBodyType}
                       </button>
-                    ))}
+                      <div
+                        className="dropdown-menu"
+                        aria-labelledby="dropdownMenuButton"
+                      >
+                        {this.rawBodyTypes.map((rawBodyType) => (
+                          <button
+                            className="btn custom-body-type-button"
+                            type="button"
+                            onClick={() => this.setRawBodyType(rawBodyType)}
+                            key={rawBodyType}
+                          >
+                            {rawBodyType}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
             )}
-          </div>
-        </form>
-        {this.showRawBodyType === true && (
-          <Button
-            type="button"
-            name={`body-select-${this.props.endpoint_id}`}
-            id={`body-description-${this.props.endpoint_id}`}
-            onClick={() => this.handleSelectBodyType("raw", "bodyDescription")}
-            className="custom-body-description"
-          >
-            Body Description
-          </Button>
-        )}
+          </form>
+          {isSavedEndpoint(this.props) &&
+            this.state.selectedRawBodyType === "JSON" &&
+            (this.state.selectedBodyType === "raw" ||
+              this.state.selectedBodyType === "JSON") && (
+              <div
+                className="btn-group btn-group-toggle"
+                data-toggle="buttons"
+                style={{ float: "right" }}
+              >
+                <label
+                  className="btn btn-secondary active"
+                  id={`toggle-raw-${this.props.endpoint_id}`}
+                >
+                  <input
+                    type="radio"
+                    name="options"
+                    id="option1"
+                    autoComplete="off"
+                    defaultChecked
+                    onClick={() => this.handleSelectBodyType("raw")}
+                  />
+                  Raw
+                </label>
+                <label
+                  className="btn btn-secondary"
+                  id={`toggle-body-description-${this.props.endpoint_id}`}
+                >
+                  <input
+                    type="radio"
+                    name="options"
+                    id="option2"
+                    autoComplete="off"
+                    onClick={() =>
+                      this.handleSelectBodyType("raw", "bodyDescription")
+                    }
+                  />
+                  Body Description
+                </label>
+              </div>
+            )}
+        </div>
         <div className="body-container">{this.renderBody()}</div>
       </div>
     );

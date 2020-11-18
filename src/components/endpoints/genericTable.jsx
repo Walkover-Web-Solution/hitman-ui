@@ -209,7 +209,9 @@ class GenericTable extends Component {
 
     this.autoFillBulkEdit();
     return (
-      <div className="generic-table-container">
+      // "generic-table-container"
+      // table-bordered
+      <div className="hm-public-table">
         <div
           className={
             isDashboardRoute(this.props)
@@ -217,31 +219,29 @@ class GenericTable extends Component {
               : "public-generic-table-title-container"
           }
         >
-          {title}
-          {title === "Path Variables" ||
-          !isDashboardRoute(this.props) ? null : (
-            <button
-              id="edit-button"
-              className="btn btn-default custom-button"
-              style={{ float: "right", color: "tomato" }}
-              onClick={() => this.displayEditButton()}
-            >
-              {this.state.editButtonName}
-            </button>
-          )}
+          {!isDashboardRoute(this.props) && title}
         </div>
         {!this.state.bulkEdit && dataArray.length > 0 ? (
-          <table className="table table-bordered" id="custom-generic-table">
-            <thead>
-              <tr>
-                <th className="custom-th"> </th>
-                <th className="custom-th" id="generic-table-key-cell">
-                  KEY
-                </th>
-                <th className="custom-th">VALUE</th>
-                <th className="custom-th">DESCRIPTION</th>
-              </tr>
-            </thead>
+          <table className="table" id="custom-generic-table">
+            {isDashboardRoute(this.props) ?
+              <thead>
+                <tr>
+                  <th className="custom-th"> </th>
+                  <th className="custom-th" id="generic-table-key-cell">
+                    KEY
+                  </th>
+                  <th className="custom-th">VALUE</th>
+                  <th className="custom-th">DESCRIPTION</th>
+                </tr>
+              </thead>
+              :
+              <colgroup>
+                <col style={{width: "36px"}}></col>
+                <col style={{width: "150px"}}></col>
+                <col style={{width: "240px"}}></col>
+                <col></col>
+                </colgroup>
+            }
             <tbody style={{ border: "none" }}>
               {dataArray.map((e, index) => (
                 <tr key={index} id="generic-table-row">
@@ -271,22 +271,23 @@ class GenericTable extends Component {
                     )}
                   </td>
                   <td className="custom-td">
-                    <input
-                      disabled={
-                        isDashboardRoute(this.props) ? null : "disabled"
+                    {isDashboardRoute(this.props) ?
+                      <input
+                        name={index + ".key"}
+                        value={dataArray[index].key}
+                        onChange={this.handleChange}
+                        type={"text"}
+                        placeholder={
+                          dataArray[index].checked === "notApplicable"
+                            ? "Key"
+                            : ""
+                        }
+                        className="form-control"
+                        style={{ border: "none" }}
+                      />
+                      :
+                        dataArray[index].key
                       }
-                      name={index + ".key"}
-                      value={dataArray[index].key}
-                      onChange={this.handleChange}
-                      type={"text"}
-                      placeholder={
-                        dataArray[index].checked === "notApplicable"
-                          ? "Key"
-                          : ""
-                      }
-                      className="form-control"
-                      style={{ border: "none" }}
-                    />
                   </td>
                   <td className="custom-td">
                     <input
@@ -297,42 +298,48 @@ class GenericTable extends Component {
                       placeholder={
                         dataArray[index].checked === "notApplicable"
                           ? "Value"
-                          : ""
+                          : `Enter ${dataArray[index].key}`
                       }
                       className="form-control"
                       style={{ border: "none" }}
                     />
                   </td>
                   <td className="custom-td" id="generic-table-description-cell">
-                    <input
-                      disabled={
-                        isDashboardRoute(this.props) ? null : "disabled"
-                      }
-                      name={index + ".description"}
-                      value={dataArray[index].description}
-                      onChange={this.handleChange}
-                      type={"text"}
-                      placeholder={
-                        dataArray[index].checked === "notApplicable"
-                          ? "Description"
-                          : ""
-                      }
-                      style={{ border: "none" }}
-                      className="form-control"
-                    />
-                    {dataArray.length - 1 === index ||
-                    !isDashboardRoute(this.props) ||
-                    title === "Path Variables" ? null : (
-                      <button
-                        type="button"
-                        className="btn cross-button"
-                        onClick={() =>
-                          this.handleDelete(dataArray, index, title)
-                        }
-                      >
-                        x
-                      </button>
-                    )}
+                    {isDashboardRoute(this.props) ?
+                      <React.Fragment>
+                        <input
+                          disabled={
+                            isDashboardRoute(this.props) ? null : "disabled"
+                          }
+                          name={index + ".description"}
+                          value={dataArray[index].description}
+                          onChange={this.handleChange}
+                          type={"text"}
+                          placeholder={
+                            dataArray[index].checked === "notApplicable"
+                              ? "Description"
+                              : ""
+                          }
+                          style={{ border: "none" }}
+                          className="form-control"
+                        />
+                        {dataArray.length - 1 === index ||
+                        !isDashboardRoute(this.props) ||
+                        title === "Path Variables" ? null : (
+                          <button
+                            type="button"
+                            className="btn cross-button"
+                            onClick={() =>
+                              this.handleDelete(dataArray, index, title)
+                            }
+                          >
+                            <i className="uil-trash-alt text-danger"></i>
+                          </button>
+                        )}
+                      </React.Fragment>
+                    :
+                      dataArray[index].description
+                    }
                   </td>
                 </tr>
               ))}
@@ -355,6 +362,19 @@ class GenericTable extends Component {
             />
           </div>
         )}
+
+          {title === "Path Variables" ||
+          !isDashboardRoute(this.props) ? null : (
+            <div className="generic-table-title-container">
+              <button
+                id="edit-button"
+                className="btn btn-default custom-button"
+                onClick={() => this.displayEditButton()}
+                >
+                {this.state.editButtonName}
+              </button>
+            </div>
+          )}
       </div>
     );
   }

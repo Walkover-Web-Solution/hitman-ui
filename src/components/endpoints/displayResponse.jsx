@@ -1,8 +1,12 @@
 // import image from "../common/Screenshot 2020-03-21 at 10.53.24 AM.png";
+import { ReactComponent as EmptyResponseImg } from "./img/empty-response.svg";
 import React, { Component } from "react";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import JSONPretty from "react-json-pretty";
 import "./endpoints.scss";
+import { isDashboardRoute } from "../common/utility";
+import { isSavedEndpoint } from "../common/utility";
+import { Toast } from "react-bootstrap";
 var JSONPrettyMon = require("react-json-pretty/dist/monikai");
 
 class DisplayResponse extends Component {
@@ -12,6 +16,7 @@ class DisplayResponse extends Component {
     previewResponse: false,
     responseString: "",
     timeElapsed: "",
+    show: false,
   };
 
   responseTime() {
@@ -43,6 +48,16 @@ class DisplayResponse extends Component {
       previewResponse: true,
       prettyResponse: false,
     });
+  }
+
+  toggleShow = () => {
+    const show = !this.state.show;
+    this.setState({ show });
+  };
+
+  addSampleResponse(response) {
+    this.toggleShow();
+    this.props.add_sample_response(response);
   }
 
   render() {
@@ -109,7 +124,21 @@ class DisplayResponse extends Component {
                     </a>
                   </li>
                 </ul>
-
+                {isSavedEndpoint(this.props) && isDashboardRoute(this.props) ? (
+                  <div
+                    // style={{ float: "right" }}
+                    className="add-to-sample-response"
+                  >
+                    <div
+                      className="sample-response-txt"
+                      onClick={() =>
+                        this.addSampleResponse(this.props.response)
+                      }
+                    >
+                      Add to Sample Response
+                    </div>
+                  </div>
+                ) : null}
                 <CopyToClipboard
                   text={JSON.stringify(this.props.response.data)}
                   onCopy={() => this.setState({ copied: true })}
@@ -120,6 +149,20 @@ class DisplayResponse extends Component {
                   </button>
                 </CopyToClipboard>
               </div>
+              {this.state.show && (
+                <div className="custom-toast">
+                  <Toast
+                    show={this.state.show}
+                    autohide={true}
+                    onClose={this.toggleShow}
+                  >
+                    <Toast.Body>
+                      <i class="fa fa-check" aria-hidden="true"></i> Added to
+                      sample response successfully!{" "}
+                    </Toast.Body>
+                  </Toast>
+                </div>
+              )}
               <div className="tab-content" id="myTabContent">
                 <div
                   className="tab-pane fade show active"
@@ -155,12 +198,9 @@ class DisplayResponse extends Component {
           <div>
             <div className="empty-response">Response</div>
             <div className="empty-response-container">
-              <div className="empty-response-container-2">
-                <div className="empty-response-container-3">
-                  {/* <img src={image} height="100px" width="100px" alt="" /> */}
-                  {/* <p>esdfsf</p> */}
-                </div>
-              </div>
+              {/* <img src={image} height="100px" width="100px" alt="" /> */}
+              <EmptyResponseImg />
+              <p>Hit Try to get a response</p>
             </div>
           </div>
         )}

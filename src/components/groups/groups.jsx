@@ -1,10 +1,16 @@
 import React, { Component } from "react";
-import { Accordion, Button, Card } from "react-bootstrap";
+import { Accordion, Card } from "react-bootstrap";
 import { connect } from "react-redux";
 import { isDashboardRoute } from "../common/utility";
+// import Endpoints from "../endpoints/endpointsCopy";
 import Endpoints from "../endpoints/endpoints";
 import GroupForm from "../groups/groupForm";
-import { deleteGroup, duplicateGroup } from "../groups/redux/groupsActions";
+import {
+  deleteGroup,
+  duplicateGroup,
+  updateGroupOrder,
+} from "../groups/redux/groupsActions";
+import { reorderEndpoint } from "../endpoints/redux/endpointsActions";
 import ShareGroupForm from "../groups/shareGroupForm";
 import GroupPages from "../pages/groupPages";
 import PageForm from "../pages/pageForm";
@@ -14,13 +20,35 @@ import groupsService from "./groupsService";
 import filterService from "../../services/filterService";
 
 const mapStateToProps = (state) => {
-  return { groups: state.groups };
+  return {
+    groups: state.groups,
+    pages: state.pages,
+    endpoints: state.endpoints,
+  };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    deleteGroup: (group, props) => dispatch(deleteGroup(group, props)),
-    duplicateGroup: (group) => dispatch(duplicateGroup(group)),
+    reorder_endpoint: (
+      sourceEndpointIds,
+      groupId,
+      destinationEndpointIds,
+      destinationGroupId,
+      endpointId
+    ) =>
+      dispatch(
+        reorderEndpoint(
+          sourceEndpointIds,
+          groupId,
+          destinationEndpointIds,
+          destinationGroupId,
+          endpointId
+        )
+      ),
+    update_groups_order: (groupIds, versionId) =>
+      dispatch(updateGroupOrder(groupIds, versionId)),
+    delete_group: (group, props) => dispatch(deleteGroup(group, props)),
+    duplicate_group: (group) => dispatch(duplicateGroup(group)),
   };
 };
 
@@ -39,10 +67,6 @@ class Groups extends Component {
   filteredGroupEndpoints = {};
   filteredGroupPages = {};
   filteredEndpointsAndPages = {};
-
-  onDrop(destinationGroupId) {
-    this.props.set_destination_group_id(destinationGroupId);
-  }
 
   handleAddPage(groupId, versionId, collectionId) {
     this.props.history.push({
@@ -71,7 +95,7 @@ class Groups extends Component {
   }
 
   handleDuplicate(group) {
-    this.props.duplicateGroup(group);
+    this.props.duplicate_group(group);
   }
 
   closeGroupForm() {
@@ -155,6 +179,7 @@ class Groups extends Component {
 
   propsFromGroups(groupIds, title) {
     this.filteredEndpointsAndPages = {};
+    this.filterGroups();
     if (title === "endpoints") {
       this.filteredGroupEndpoints = {};
       if (groupIds !== null) {
@@ -185,7 +210,10 @@ class Groups extends Component {
       this.filteredEndpointsAndPages,
       this.filteredGroupEndpoints
     );
-
+    this.filteredEndpointsAndPages = filterService.jsonConcat(
+      this.filteredEndpointsAndPages,
+      this.filteredOnlyGroups
+    );
     let versionIds = [];
     if (Object.keys(this.filteredEndpointsAndPages).length !== 0) {
       for (
@@ -199,6 +227,10 @@ class Groups extends Component {
               Object.keys(this.filteredEndpointsAndPages)[i]
             ].versionId
           );
+        } else {
+          delete this.filteredEndpointsAndPages[
+            Object.keys(this.filteredEndpointsAndPages)[i]
+          ];
         }
       }
     }
@@ -207,6 +239,7 @@ class Groups extends Component {
     } else {
       this.props.show_filter_version(versionIds, "endpointsAndPages");
     }
+    this.groups = this.filteredEndpointsAndPages;
   }
 
   filterGroups() {
@@ -216,20 +249,143 @@ class Groups extends Component {
       this.filterFlag === false
     ) {
       this.filterFlag = true;
-      let versionIds = [];
-      versionIds = filterService.filter(
+      let groupIds = [];
+      this.filteredOnlyGroups = {};
+      groupIds = filterService.filter(
         this.props.groups,
         this.props.filter,
         "groups"
       );
       this.setState({ filter: this.props.filter });
-      if (versionIds.length !== 0) {
-        this.props.show_filter_version(versionIds, "groups");
+      if (groupIds.length !== 0) {
+        for (let i = 0; i < groupIds.length; i++) {
+          this.filteredOnlyGroups[groupIds[i]] = this.props.groups[groupIds[i]];
+        }
+      }
+    } else {
+      this.filteredOnlyGroups = {};
+    }
+  }
+
+  onDragStart = (e, gId) => {
+    this.draggedItem = gId;
+  };
+
+  extractEndpoints(groupId) {
+    let endpoints = {};
+    for (let i = 0; i < Object.keys(this.props.endpoints).length; i++) {
+      if (
+        this.props.endpoints[Object.keys(this.props.endpoints)[i]].groupId &&
+        this.props.endpoints[Object.keys(this.props.endpoints)[i]].groupId ===
+          groupId
+      ) {
+        endpoints[Object.keys(this.props.endpoints)[i]] = this.props.endpoints[
+          Object.keys(this.props.endpoints)[i]
+        ];
+      }
+    }
+
+    return endpoints;
+  }
+
+  makePositionWiseEndpoints(endpoints) {
+    let positionWiseEndpoints = [];
+    for (let i = 0; i < Object.keys(endpoints).length; i++) {
+      positionWiseEndpoints[
+        endpoints[Object.keys(endpoints)[i]].position
+      ] = Object.keys(endpoints)[i];
+    }
+    return positionWiseEndpoints;
+  }
+
+  getEndpointIds(groupId) {
+    const endpoints = this.extractEndpoints(groupId);
+    const positionWiseEndpoints = this.makePositionWiseEndpoints({
+      ...endpoints,
+    });
+    let endpointIds = positionWiseEndpoints.filter(
+      (item) => item !== this.endpointId
+    );
+    return endpointIds;
+  }
+
+  onDrop(e, destinationGroupId) {
+    e.preventDefault();
+    if (this.endpointDrag === true) {
+      const endpoint = this.props.endpoints[this.endpointId];
+      if (endpoint.groupId !== destinationGroupId) {
+        const groupId = endpoint.groupId;
+
+        const sourceEndpointIds = this.getEndpointIds(groupId);
+        const destinationEndpointIds = this.getEndpointIds(destinationGroupId);
+
+        destinationEndpointIds.push(this.endpointId);
+
+        this.endpointDrag = false;
+        this.props.reorder_endpoint(
+          sourceEndpointIds,
+          groupId,
+          destinationEndpointIds,
+          destinationGroupId,
+          this.endpointId
+        );
+      }
+    } else {
+      if (!this.draggedItem) {
       } else {
-        this.props.show_filter_version(null, "groups");
+        if (this.draggedItem === destinationGroupId) {
+          this.draggedItem = null;
+          return;
+        }
+        const groups = this.extractGroups();
+        const positionWisegroups = this.makePositionWisegroups({ ...groups });
+        const index = positionWisegroups.findIndex(
+          (eId) => eId === destinationGroupId
+        );
+        let groupIds = positionWisegroups.filter(
+          (item) => item !== this.draggedItem
+        );
+        groupIds.splice(index, 0, this.draggedItem);
+
+        this.props.update_groups_order(groupIds, this.props.version_id);
+        this.draggedItem = null;
       }
     }
   }
+
+  makePositionWisegroups(groups) {
+    let positionWisegroups = [];
+    for (let i = 0; i < Object.keys(groups).length; i++) {
+      positionWisegroups[groups[Object.keys(groups)[i]].position] = Object.keys(
+        groups
+      )[i];
+    }
+    return positionWisegroups;
+  }
+
+  extractGroups() {
+    let groups = {};
+    for (let i = 0; i < Object.keys(this.props.groups).length; i++) {
+      if (
+        this.props.groups[Object.keys(this.props.groups)[i]].versionId ===
+        this.props.version_id
+      ) {
+        groups[Object.keys(this.props.groups)[i]] = this.props.groups[
+          Object.keys(this.props.groups)[i]
+        ];
+      }
+    }
+    return groups;
+  }
+
+  setEndpointdrag(eId) {
+    this.endpointDrag = true;
+    this.endpointId = eId;
+  }
+  setPagedrag() {
+    this.pageDrag = true;
+  }
+
   renderBody(groupId) {
     if (
       isDashboardRoute(this.props) &&
@@ -247,116 +403,163 @@ class Groups extends Component {
         }
       }
     }
+
     return (
-      <Accordion
-        key={groupId}
-        id="child-accordion"
-        defaultActiveKey="0"
-        onDragOver={(e) => e.preventDefault()}
-        onDrop={(e) => this.onDrop(groupId)}
-      >
-        <Card>
-          <Card.Header>
-            <i className="fas fa-folder-open" style={{ margin: "5px" }}></i>
-            <Accordion.Toggle
-              as={Button}
-              variant="default"
-              eventKey={this.eventkey[groupId] ? this.eventkey[groupId] : "1"}
-            >
-              {this.props.groups[groupId].name}
-            </Accordion.Toggle>
-            {isDashboardRoute(this.props) ? (
-              <div className="btn-group">
-                <button
-                  className="btn btn-secondary "
-                  data-toggle="dropdown"
-                  aria-haspopup="true"
-                  aria-expanded="false"
-                >
-                  <i className="fas fa-ellipsis-h"></i>
-                </button>
-                <div className="dropdown-menu dropdown-menu-right">
-                  <button
-                    className="dropdown-item"
-                    onClick={() =>
-                      this.openEditGroupForm(this.props.groups[groupId])
-                    }
-                  >
-                    Edit
-                  </button>
-                  <button
-                    className="dropdown-item"
-                    onClick={() => {
-                      this.openDeleteGroupModal(groupId);
-                    }}
-                  >
-                    Delete
-                  </button>
-                  <button
-                    className="dropdown-item"
-                    onClick={() =>
-                      this.handleAddEndpoint(
-                        groupId,
-                        this.props.versions,
-                        this.props.groups
-                      )
-                    }
-                  >
-                    Add Endpoint
-                  </button>
-                  <button
-                    className="dropdown-item"
-                    onClick={() =>
-                      this.handleDuplicate(this.props.groups[groupId])
-                    }
-                  >
-                    Duplicate
-                  </button>
-                  <button
-                    className="dropdown-item"
-                    onClick={() =>
-                      this.openGroupPageForm(
-                        this.props.groups[groupId].versionId,
-                        this.props.groups[groupId],
-                        this.props.collection_id
-                      )
-                    }
-                  >
-                    Add Page
-                  </button>
-                  <button
-                    className="dropdown-item"
-                    onClick={() =>
-                      this.openShareGroupForm(this.props.groups[groupId])
-                    }
-                  >
-                    Share
-                  </button>
-                </div>
-              </div>
-            ) : null}
-          </Card.Header>
-          <Accordion.Collapse
-            className="group-collapse"
-            eventKey={this.eventkey[groupId] ? this.eventkey[groupId] : "1"}
+      <React.Fragment>
+        {isDashboardRoute(this.props) ? (
+          <Accordion
+            key={groupId}
+            className="sidebar-accordion"
+            id="child-accordion"
+            // defaultActiveKey={
+            //   this.eventkey[groupId] ? this.eventkey[groupId] : "1"
+            // }
+            draggable
+            onDragStart={(e) => this.onDragStart(e, groupId)}
+            onDragOver={(e) => {
+              e.preventDefault();
+            }}
+            onDrop={(e) => this.onDrop(e, groupId)}
           >
-            <Card.Body>
-              <GroupPages
-                {...this.props}
-                version_id={this.props.groups[groupId].versionId}
-                group_id={groupId}
-                show_filter_groups={this.propsFromGroups.bind(this)}
-              />
-              <Endpoints
-                {...this.props}
-                group_id={groupId}
-                endpoints_order={this.props.groups[groupId].endpointsOrder}
-                show_filter_groups={this.propsFromGroups.bind(this)}
-              />
-            </Card.Body>
-          </Accordion.Collapse>
-        </Card>
-      </Accordion>
+            {/* <Card> */}
+            {/* <Card.Header> */}
+            <Accordion.Toggle
+              variant="default"
+              // eventKey="0"
+              eventKey={
+                !isDashboardRoute(this.props)
+                  ? "0"
+                  : this.eventkey[groupId]
+                  ? this.eventkey[groupId]
+                  : "1"
+              }
+            >
+              <div className="sidebar-accordion-item">
+                <i className="uil uil-folder"></i>
+                {this.props.groups[groupId].name}
+              </div>
+              {isDashboardRoute(this.props) ? (
+                <div className="sidebar-item-action">
+                  <div
+                    className="sidebar-item-action-btn"
+                    data-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                  >
+                    <i className="uil uil-ellipsis-v"></i>
+                  </div>
+                  <div className="dropdown-menu dropdown-menu-right">
+                    <a
+                      className="dropdown-item"
+                      onClick={() =>
+                        this.openEditGroupForm(this.props.groups[groupId])
+                      }
+                    >
+                      Edit
+                    </a>
+                    <a
+                      className="dropdown-item"
+                      onClick={() => {
+                        this.openDeleteGroupModal(groupId);
+                      }}
+                    >
+                      Delete
+                    </a>
+                    <a
+                      className="dropdown-item"
+                      onClick={() =>
+                        this.handleAddEndpoint(
+                          groupId,
+                          this.props.versions,
+                          this.props.groups
+                        )
+                      }
+                    >
+                      Add Endpoint
+                    </a>
+                    <a
+                      className="dropdown-item"
+                      onClick={() =>
+                        this.handleDuplicate(this.props.groups[groupId])
+                      }
+                    >
+                      Duplicate
+                    </a>
+                    <a
+                      className="dropdown-item"
+                      onClick={() =>
+                        this.openGroupPageForm(
+                          this.props.groups[groupId].versionId,
+                          this.props.groups[groupId],
+                          this.props.collection_id
+                        )
+                      }
+                    >
+                      Add Page
+                    </a>
+                    <a
+                      className="dropdown-item"
+                      onClick={() =>
+                        this.openShareGroupForm(this.props.groups[groupId])
+                      }
+                    >
+                      Share
+                    </a>
+                  </div>
+                </div>
+              ) : null}
+            </Accordion.Toggle>
+            {/* </Card.Header> */}
+            <Accordion.Collapse
+              className="group-collapse"
+              // eventKey="0"
+              eventKey={
+                !isDashboardRoute(this.props)
+                  ? "0"
+                  : this.eventkey[groupId]
+                  ? this.eventkey[groupId]
+                  : "1"
+              }
+            >
+              <Card.Body>
+                <GroupPages
+                  {...this.props}
+                  version_id={this.props.groups[groupId].versionId}
+                  set_page_drag={this.setPagedrag.bind(this)}
+                  group_id={groupId}
+                  show_filter_groups={this.propsFromGroups.bind(this)}
+                />
+                <Endpoints
+                  {...this.props}
+                  group_id={groupId}
+                  set_endpoint_drag={this.setEndpointdrag.bind(this)}
+                  endpoints_order={this.props.groups[groupId].endpointsOrder}
+                  show_filter_groups={this.propsFromGroups.bind(this)}
+                />
+              </Card.Body>
+            </Accordion.Collapse>
+            {/* </Card> */}
+          </Accordion>
+        ) : (
+          <div className="hm-sidebar-block">
+            <div className="hm-sidebar-label">
+              {this.props.groups[groupId].name}
+            </div>
+            <Endpoints
+              {...this.props}
+              group_id={groupId}
+              endpoints_order={this.props.groups[groupId].endpointsOrder}
+              show_filter_groups={this.propsFromGroups.bind(this)}
+            />
+            <GroupPages
+              {...this.props}
+              version_id={this.props.groups[groupId].versionId}
+              group_id={groupId}
+              show_filter_groups={this.propsFromGroups.bind(this)}
+            />
+          </div>
+        )}
+      </React.Fragment>
     );
   }
   render() {
@@ -366,10 +569,21 @@ class Groups extends Component {
     if (this.filterFlag === false && this.props.filter === "") {
       this.eventkey = {};
     }
+    if (!this.props.filter || this.props.filter === "") {
+      this.groups = { ...this.props.groups };
+    }
+
+    if (this.groups && Object.keys(this.groups)) {
+      this.sortedGroups = Object.keys(this.groups)
+        .map((gId) => this.groups[gId])
+        .sort(function (a, b) {
+          return a.position - b.position;
+        });
+    }
+
     return (
       <div>
         <div>
-          {this.filterGroups()}
           {this.showShareGroupForm()}
           {this.showEditGroupForm()}
           {this.showAddGroupPageForm()}
@@ -383,13 +597,12 @@ class Groups extends Component {
               this.state.selectedGroup
             )}
         </div>
-        {Object.keys(this.props.groups)
-          .filter(
-            (gId) => this.props.groups[gId].versionId === this.props.version_id
-          )
-          .map((groupId, index) => (
-            <div>{this.renderBody(groupId)}</div>
-          ))}
+        {this.sortedGroups &&
+          this.sortedGroups
+            .filter((group) => group.versionId === this.props.version_id)
+            .map((group) =>
+              group.id ? <div>{this.renderBody(group.id)}</div> : null
+            )}
       </div>
     );
   }

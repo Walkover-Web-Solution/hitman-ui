@@ -1,12 +1,18 @@
 import collectionsActionTypes from "./collectionsActionTypes";
 import publicEndpointsActionTypes from "../../publicEndpoint/redux/publicEndpointsActionTypes";
 import { toast } from "react-toastify";
+import versionActionTypes from "../../collectionVersions/redux/collectionVersionsActionTypes";
 
 const initialState = {};
 
 function collectionsReducer(state = initialState, action) {
   let collections = {};
   switch (action.type) {
+    case versionActionTypes.IMPORT_VERSION:
+      return {
+        ...state,
+        [action.response.collection.id]: action.response.collection,
+      };
     case collectionsActionTypes.ON_COLLECTIONS_FETCHED:
       return { ...action.collections };
 
@@ -23,7 +29,8 @@ function collectionsReducer(state = initialState, action) {
     case collectionsActionTypes.ON_COLLECTION_ADDED:
       collections = { ...state };
       delete collections[action.response.requestId];
-      collections[action.response.id] = action.response;
+      const { version, team, ...newCollection } = action.response;
+      collections[action.response.id] = newCollection;
       return collections;
 
     case collectionsActionTypes.ON_COLLECTION_ADDED_ERROR:
@@ -79,6 +86,13 @@ function collectionsReducer(state = initialState, action) {
 
     case publicEndpointsActionTypes.ON_PUBLIC_ENDPOINTS_FETCHED:
       return { ...state, ...action.data.collections };
+
+    case collectionsActionTypes.ON_PUBLIC_COLLECTION_FETCHED:
+      return { ...action.data.collections };
+
+    case collectionsActionTypes.ON_PUBLIC_COLLECTION_FETCHED_ERROR:
+      toast.error(action.error);
+      return state;
 
     default:
       return state;
