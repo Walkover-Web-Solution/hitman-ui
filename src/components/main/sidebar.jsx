@@ -12,6 +12,7 @@ import CollectionVersions from "../collectionVersions/collectionVersions";
 import endpointApiService from "../endpoints/endpointApiService";
 import "./main.scss";
 import "./sidebar.scss";
+
 const mapStateToProps = (state) => {
   return {
     // teams: state.teams,
@@ -32,6 +33,7 @@ class SideBar extends Component {
     name: "",
     email: "",
   };
+
   componentDidMount() {
     if (getCurrentUser()) {
       const { user } = getCurrentUser();

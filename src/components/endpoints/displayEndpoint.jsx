@@ -13,7 +13,7 @@ import BodyContainer from "./displayBody";
 import DisplayDescription from "./displayDescription";
 import DisplayResponse from "./displayResponse";
 import SampleResponse from "./sampleResponse";
-
+import { getCurrentUser } from "../auth/authService";
 import endpointApiService from "./endpointApiService";
 import "./endpoints.scss";
 import GenericTable from "./genericTable";
@@ -648,6 +648,9 @@ class DisplayEndpoint extends Component {
   }
 
   handleSave = async (groupId, EndpointName) => {
+    if (!getCurrentUser()) {
+      console.log("getCurrentUser")
+    }
     if (!(this.state.groupId || groupId)) {
       this.openEndpointFormModal();
     } else {
@@ -1543,26 +1546,28 @@ class DisplayEndpoint extends Component {
     }
     return (
       <div className="hm-endpoint-container endpoint-container">
-        <div className={isDashboardRoute(this.props) ? "hm-panel mt-4" : null}>
-          {this.state.showEndpointFormModal && (
-            <CreateEndpointForm
+        {getCurrentUser() ? (
+          <div className={isDashboardRoute(this.props) ? "hm-panel mt-4" : null}>
+            {this.state.showEndpointFormModal && (
+              <CreateEndpointForm
+                {...this.props}
+                show={true}
+                onHide={() => this.closeEndpointFormModal()}
+                set_group_id={this.setGroupId.bind(this)}
+                name={this.state.data.name}
+                save_endpoint={this.handleSave.bind(this)}
+              />
+            )}
+            {this.state.showCodeTemplate && this.showCodeTemplate()}
+            <DisplayDescription
               {...this.props}
-              show={true}
-              onHide={() => this.closeEndpointFormModal()}
-              set_group_id={this.setGroupId.bind(this)}
-              name={this.state.data.name}
-              save_endpoint={this.handleSave.bind(this)}
+              endpoint={this.state.endpoint}
+              data={this.state.data}
+              old_description={this.state.oldDescription}
+              props_from_parent={this.propsFromDescription.bind(this)}
             />
-          )}
-          {this.state.showCodeTemplate && this.showCodeTemplate()}
-          <DisplayDescription
-            {...this.props}
-            endpoint={this.state.endpoint}
-            data={this.state.data}
-            old_description={this.state.oldDescription}
-            props_from_parent={this.propsFromDescription.bind(this)}
-          />
-        </div>
+          </div>
+        ) : null}
         <div
           className={!isDashboardRoute(this.props) ? "hm-panel" : "hm-panel"}
         >
@@ -1640,38 +1645,38 @@ class DisplayEndpoint extends Component {
               </div>
             </div>
           ) : (
-            <div className="hm-endpoint-wrap">
-              <div className="hm-endpoint-header">
-                <div
-                  className={`api-label api-label-lg ${this.state.data.method}`}
-                >
-                  {this.state.data.method}
-                </div>
-                <a
-                  href="javascript:void(0)"
-                  id="show-code-snippets-button"
-                  onClick={() => this.prepareHarObject()}
-                >
-                  Sample Code
+              <div className="hm-endpoint-wrap">
+                <div className="hm-endpoint-header">
+                  <div
+                    className={`api-label api-label-lg ${this.state.data.method}`}
+                  >
+                    {this.state.data.method}
+                  </div>
+                  <a
+                    href="javascript:void(0)"
+                    id="show-code-snippets-button"
+                    onClick={() => this.prepareHarObject()}
+                  >
+                    Sample Code
                 </a>
-              </div>
-              <div className="endpoint-host">
-                <HostContainer
-                  {...this.props}
-                  groupId={this.state.groupId}
-                  set_base_url={this.setBaseUrl.bind(this)}
-                  custom_host={this.state.endpoint.BASE_URL}
+                </div>
+                <div className="endpoint-host">
+                  <HostContainer
+                    {...this.props}
+                    groupId={this.state.groupId}
+                    set_base_url={this.setBaseUrl.bind(this)}
+                    custom_host={this.state.endpoint.BASE_URL}
+                  />
+                </div>
+                <input
+                  ref={this.uri}
+                  type="hidden"
+                  value={this.state.data.updatedUri}
+                  name="updatedUri"
                 />
+                <div className="endpoint-uri">{this.state.data.updatedUri}</div>
               </div>
-              <input
-                ref={this.uri}
-                type="hidden"
-                value={this.state.data.updatedUri}
-                name="updatedUri"
-              />
-              <div className="endpoint-uri">{this.state.data.updatedUri}</div>
-            </div>
-          )}
+            )}
           <div
             className={
               isDashboardRoute(this.props)
@@ -1843,53 +1848,53 @@ class DisplayEndpoint extends Component {
                 </div>
               </div>
             ) : (
-              <React.Fragment>
-                {this.state.params.length > 1 && (
-                  <GenericTable
-                    {...this.props}
-                    title="Params"
-                    dataArray={this.state.originalParams}
-                    props_from_parent={this.propsFromChild.bind(this)}
-                    original_data={[...this.state.params]}
-                  ></GenericTable>
-                )}
-
-                {this.state.pathVariables &&
-                  this.state.pathVariables.length !== 0 && (
+                <React.Fragment>
+                  {this.state.params.length > 1 && (
                     <GenericTable
                       {...this.props}
-                      title="Path Variables"
-                      dataArray={this.state.pathVariables}
+                      title="Params"
+                      dataArray={this.state.originalParams}
                       props_from_parent={this.propsFromChild.bind(this)}
-                      original_data={[...this.state.pathVariables]}
+                      original_data={[...this.state.params]}
                     ></GenericTable>
                   )}
 
-                {this.state.headers.length > 1 && (
-                  <GenericTable
-                    {...this.props}
-                    title="Headers"
-                    dataArray={this.state.originalHeaders}
-                    props_from_parent={this.propsFromChild.bind(this)}
-                    original_data={[...this.state.headers]}
-                  ></GenericTable>
-                )}
+                  {this.state.pathVariables &&
+                    this.state.pathVariables.length !== 0 && (
+                      <GenericTable
+                        {...this.props}
+                        title="Path Variables"
+                        dataArray={this.state.pathVariables}
+                        props_from_parent={this.propsFromChild.bind(this)}
+                        original_data={[...this.state.pathVariables]}
+                      ></GenericTable>
+                    )}
 
-                {this.state.data.body &&
-                  // this.state.data.body.value !== "" &&
-                  this.state.data.body.value !== null && (
-                    <PublicBodyContainer
+                  {this.state.headers.length > 1 && (
+                    <GenericTable
                       {...this.props}
-                      set_body={this.setBody.bind(this)}
-                      set_body_description={this.set_description.bind(this)}
-                      body={this.state.data.body}
-                      public_body_flag={this.state.publicBodyFlag}
-                      set_public_body={this.setPublicBody.bind(this)}
-                      body_description={this.state.bodyDescription}
-                    ></PublicBodyContainer>
+                      title="Headers"
+                      dataArray={this.state.originalHeaders}
+                      props_from_parent={this.propsFromChild.bind(this)}
+                      original_data={[...this.state.headers]}
+                    ></GenericTable>
                   )}
-              </React.Fragment>
-            )}
+
+                  {this.state.data.body &&
+                    // this.state.data.body.value !== "" &&
+                    this.state.data.body.value !== null && (
+                      <PublicBodyContainer
+                        {...this.props}
+                        set_body={this.setBody.bind(this)}
+                        set_body_description={this.set_description.bind(this)}
+                        body={this.state.data.body}
+                        public_body_flag={this.state.publicBodyFlag}
+                        set_public_body={this.setPublicBody.bind(this)}
+                        body_description={this.state.bodyDescription}
+                      ></PublicBodyContainer>
+                    )}
+                </React.Fragment>
+              )}
             {!isDashboardRoute(this.props) && (
               <div className="d-flex">
                 <button
@@ -1933,27 +1938,29 @@ class DisplayEndpoint extends Component {
                     Response
                   </a>
                 </li>
-                <li className="nav-item">
-                  <a
-                    className="nav-link"
-                    id="pills-sample-tab"
-                    data-toggle="pill"
-                    href={
-                      isDashboardRoute(this.props)
-                        ? `#sample-${this.props.tab.id}`
-                        : "#sample"
-                    }
-                    role="tab"
-                    aria-controls={
-                      isDashboardRoute(this.props)
-                        ? `sample-${this.props.tab.id}`
-                        : "sample"
-                    }
-                    aria-selected="false"
-                  >
-                    Sample Response
+                {getCurrentUser() ? (
+
+                  <li className="nav-item">
+                    <a
+                      className="nav-link"
+                      id="pills-sample-tab"
+                      data-toggle="pill"
+                      href={
+                        isDashboardRoute(this.props)
+                          ? `#sample-${this.props.tab.id}`
+                          : "#sample"
+                      }
+                      role="tab"
+                      aria-controls={
+                        isDashboardRoute(this.props)
+                          ? `sample-${this.props.tab.id}`
+                          : "sample"
+                      }
+                      aria-selected="false"
+                    >
+                      Sample Response
                   </a>
-                </li>
+                  </li>) : null}
               </ul>
               <div className="tab-content" id="pills-tabContent">
                 <div
@@ -1976,46 +1983,47 @@ class DisplayEndpoint extends Component {
                     ></DisplayResponse>
                   </div>
                 </div>
-                <div
-                  className="tab-pane fade"
-                  id={
-                    isDashboardRoute(this.props)
-                      ? `sample-${this.props.tab.id}`
-                      : "sample"
-                  }
-                  role="tabpanel"
-                  aria-labelledby="pills-sample-tab"
-                >
-                  <SampleResponse
-                    {...this.props}
-                    timeElapsed={this.state.timeElapsed}
-                    response={this.state.response}
-                    flagResponse={this.state.flagResponse}
-                    sample_response_array={this.state.sampleResponseArray}
-                    sample_response_flag_array={
-                      this.state.sampleResponseFlagArray
+                {getCurrentUser() ? (
+                  <div
+                    className="tab-pane fade"
+                    id={
+                      isDashboardRoute(this.props)
+                        ? `sample-${this.props.tab.id}`
+                        : "sample"
                     }
-                    open_body={this.openBody.bind(this)}
-                    close_body={this.closeBody.bind(this)}
-                    props_from_parent={this.propsFromSampleResponse.bind(this)}
-                  ></SampleResponse>
-                </div>
+                    role="tabpanel"
+                    aria-labelledby="pills-sample-tab"
+                  >
+                    <SampleResponse
+                      {...this.props}
+                      timeElapsed={this.state.timeElapsed}
+                      response={this.state.response}
+                      flagResponse={this.state.flagResponse}
+                      sample_response_array={this.state.sampleResponseArray}
+                      sample_response_flag_array={
+                        this.state.sampleResponseFlagArray
+                      }
+                      open_body={this.openBody.bind(this)}
+                      close_body={this.closeBody.bind(this)}
+                      props_from_parent={this.propsFromSampleResponse.bind(this)}
+                    ></SampleResponse>
+                  </div>) : null}
               </div>
             </div>
           </React.Fragment>
         ) : (
-          <React.Fragment>
-            <div className="public-response-title">Response</div>
-            <div className="hm-panel endpoint-public-response-container">
-              <DisplayResponse
-                {...this.props}
-                timeElapsed={this.state.timeElapsed}
-                response={this.state.response}
-                flagResponse={this.state.flagResponse}
-              ></DisplayResponse>
-            </div>
-          </React.Fragment>
-        )}
+            <React.Fragment>
+              <div className="public-response-title">Response</div>
+              <div className="hm-panel endpoint-public-response-container">
+                <DisplayResponse
+                  {...this.props}
+                  timeElapsed={this.state.timeElapsed}
+                  response={this.state.response}
+                  flagResponse={this.state.flagResponse}
+                ></DisplayResponse>
+              </div>
+            </React.Fragment>
+          )}
       </div>
     );
   }

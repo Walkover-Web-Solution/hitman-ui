@@ -15,6 +15,7 @@ import { fetchAllTeamsOfUser } from "../teams/redux/teamsActions";
 import ContentPanel from "./contentPanel";
 import "./main.scss";
 import SideBar from "./sidebar";
+import { getCurrentUser } from "../auth/authService";
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -36,7 +37,9 @@ class Main extends Component {
   };
 
   async componentDidMount() {
-    this.fetchAll();
+    if (getCurrentUser()) {
+      this.fetchAll();
+    }
     await indexedDbService.createDataBase();
   }
 
@@ -57,6 +60,7 @@ class Main extends Component {
       this.setState({ tabs });
     }
   }
+
   setEnvironment(environment) {
     this.setState({ currentEnvironment: environment });
   }
@@ -89,14 +93,14 @@ class Main extends Component {
           set_tabs={this.setTabs.bind(this)}
         /> */}
         <div className="main-panel-wrapper">
-          <SideBar
+          {/* <SideBar
             {...this.props}
             set_source_group_id={this.setSourceGroupId.bind(this)}
             set_destination_group_id={this.setDestinationGroupId.bind(this)}
             tabs={[...this.state.tabs]}
             set_tabs={this.setTabs.bind(this)}
             default_tab_index={this.state.defaultTabIndex}
-          />
+          /> */}
           <ContentPanel
             {...this.props}
             set_environment={this.setEnvironment.bind(this)}
