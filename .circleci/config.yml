@@ -14,6 +14,7 @@ jobs:
             echo "
             REACT_APP_UI_URL=$REACT_APP_UI_URL
             REACT_APP_API_URL= $REACT_APP_API_URL
+            REACT_APP_SOCKET_SSO_URL= $REACT_APP_SOCKET_SSO_URL
             " > .env
       - gcr/gcr-auth
       - run:

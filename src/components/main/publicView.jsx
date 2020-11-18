@@ -38,12 +38,12 @@ class PublicView extends Component {
   }
 
   openCollection(collectionId) {
-    const publicDocsUrl = `${process.env.REACT_APP_API_URL}/p/${collectionId}`;
+    const publicDocsUrl = `${process.env.REACT_APP_UI_URL}/p/${collectionId}`;
     window.open(publicDocsUrl, "_blank");
   }
 
   render() {
-    const redirectionUrl = process.env.REACT_APP_API_URL + "/login";
+    const redirectionUrl = process.env.REACT_APP_UI_URL + "/login";
     const filteredPublicCollections = this.state.filteredPublicCollections;
     return (
       <React.Fragment>

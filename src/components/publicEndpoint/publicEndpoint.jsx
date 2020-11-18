@@ -69,7 +69,7 @@ class PublicEndpoint extends Component {
       ].name;
       this.setState({ collectionName });
     }
-    const redirectionUrl = process.env.REACT_APP_API_URL + "/login";
+    const redirectionUrl = process.env.REACT_APP_UI_URL + "/login";
     if (
       this.props.location.pathname.split("/")[1] === "p" &&
       (this.props.location.pathname.split("/")[3] === undefined ||
