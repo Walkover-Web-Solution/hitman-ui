@@ -10,7 +10,8 @@ $border-color: rgba(227, 228, 230, 0.7);
     width: 100%;
     text-align: left;
     padding: 7px 10px;
-    &:active, &:focus {
+    &:active,
+    &:focus {
       outline: none;
       border: none;
       box-shadow: none;
@@ -23,7 +24,6 @@ $border-color: rgba(227, 228, 230, 0.7);
       display: inline-block;
     }
   }
-
 }
 
 #parent-accordion {
@@ -129,4 +129,8 @@ $border-color: rgba(227, 228, 230, 0.7);
 
     border-radius: 100%;
   }
+}
+
+.collection-name-count {
+  float: right;
 }

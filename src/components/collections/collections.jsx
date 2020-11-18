@@ -271,6 +271,81 @@ class CollectionsComponent extends Component {
     );
   }
 
+ getEndpoints(){
+    return {
+      1 : {
+        collectionId :"S-vOwrvXFj" ,
+      },
+      2 : {
+        collectionId :"S-vOwrvXFj" ,
+      },
+      3 : {
+        collectionId :"S-vOwrvXFj" ,
+      },
+      4 : {
+        collectionId :"S-vOwrvXFj" ,
+      },
+      5 : {
+        collectionId :"S-vOwrvXFj" ,
+      },
+      6 : {
+        collectionId :"1ZVAhNVAEd" ,
+      },
+      7 : {
+        collectionId :"1ZVAhNVAEd" ,
+      },
+      8 : {
+        collectionId :"1ZVAhNVAEd" ,
+      },
+      9 : {
+        collectionId :"1ZVAhNVAEd" ,
+      },
+      10 : {
+        collectionId :"1ZVAhNVAEd" ,
+      },
+      11 : {
+        collectionId :"1ZVAhNVAEd" ,
+      },
+      12 : {
+        collectionId :"miUMaBFHFl" ,
+      },
+      13 : {
+        collectionId :"miUMaBFHFl" ,
+      },
+      14 : {
+        collectionId :"miUMaBFHFl" ,
+      },
+      15 : {
+        collectionId :"87m6EJGeQw" ,
+      },
+      16 : {
+        collectionId :"87m6EJGeQw" ,
+      },
+      17 : {
+        collectionId :"87m6EJGeQw" ,
+      },
+  
+      18 : {
+        collectionId :"87m6EJGeQw" ,
+      },
+      19 : {
+        collectionId :"_QBSiVW_dj" ,
+      },
+      20 : {
+        collectionId :"_QBSiVW_dj" ,
+      },
+    }
+  }
+
+  findEndpointCount(collectionId){
+    let endpoints = this.getEndpoints()
+    const endpointIds =Object.keys(endpoints)
+    console.log(endpoints)
+    return Object.keys(endpoints).filter(eId => endpoints[eId].collectionId === collectionId).length
+      
+    }
+  
+
   renderBody(collectionId, collectionState) {
     let eventkeyValue = "";
     if (this.props.filter !== "") {
@@ -317,14 +392,25 @@ class CollectionsComponent extends Component {
             eventKey={eventkeyValue !== null ? eventkeyValue : "0"}
           >
             {collectionState === "singleCollection" ? (
+              <React.Fragment>
+                <div style={{display : "flex"}}>
               <div>{this.props.collections[collectionId].name}</div>
+              <div  > {this.findEndpointCount(collectionId)}</div>
+
+                </div>
+              </React.Fragment>
             ) : (
               <div
                 className="sidebar-accordion-item"
                 onClick={() => this.openSelectedCollection(collectionId)}
               >
                 <i className="uil uil-parcel"></i>
-                {this.props.collections[collectionId].name}
+                <div >
+               <div  style={{display : "flex"}}>
+                 {this.props.collections[collectionId].name}
+                 </div> 
+                <div >{this.findEndpointCount(collectionId)}</div>
+                </div>
               </div>
             )}
             <div className="sidebar-item-action">
