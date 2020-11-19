@@ -163,7 +163,6 @@ class DisplayEndpoint extends Component {
   componentDidUpdate(prevProps, prevState) {
     if(!isDashboardRoute(this.props))
     {
-      // console.log(prevState.originalHeaders, this.state.originalHeaders)
       if(this.state.data !== prevState.data || this.state.originalParams !== prevState.originalParams || this.state.originalHeaders !== prevState.originalHeaders)
       {
         this.prepareHarObject();
@@ -960,7 +959,7 @@ class DisplayEndpoint extends Component {
       body.value
     ) {
       paramsFlag = true;
-      for (let i = 0; i < body.value.length - 1; i++) {
+      for (let i = 0; i < body.value.length; i++) {
         if (body.value[i].checked === "true" && body.value[i].key !== "") {
           params.push({
             name: body.value[i].key,
@@ -1010,7 +1009,7 @@ class DisplayEndpoint extends Component {
       }
       // this.openCodeTemplate(harObject);
       this.setState({harObject}, ()=>{
-        console.log(harObject);
+        // console.log(harObject);
       });
     } catch (error) {
       toast.error(error);
@@ -1046,7 +1045,7 @@ class DisplayEndpoint extends Component {
     let data = { ...this.state.data };
     data.body = { type: bodyType, value: body };
     // if (bodyType !== "multipart/form-data") {
-    this.setHeaders(bodyType, "content-type");
+    isDashboardRoute(this.props) && this.setHeaders(bodyType, "content-type");
     // }
     this.setState({ data });
     if (isDashboardRoute(this.props)) {
