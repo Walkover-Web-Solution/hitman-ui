@@ -14,6 +14,11 @@ import "./main.scss";
 import "./sidebar.scss";
 import { Tabs, Tab, Button } from 'react-bootstrap'
 import LoginSignupModal from './loginSignupModal';
+import hitmanIcon from "../../assets/icons/hitman.svg"
+import collectionIcon from "../../assets/icons/collectionIcon.svg"
+import historyIcon from "../../assets/icons/historyIcon.svg"
+import randomTriggerIcon from "../../assets/icons/randomTriggerIcon.svg"
+
 const mapStateToProps = (state) => {
   return {
     // teams: state.teams,
@@ -112,8 +117,8 @@ class SideBar extends Component {
         <div className="primary-sidebar">
           {isDashboardRoute(this.props) ? (
             <React.Fragment>
-              {/* <div className="user-info"> */}
-              {/* <div className="user-avatar">
+              {/* <div className="user-info">
+                <div className="user-avatar">
                   <i className="uil uil-user"></i>
                 </div>
                 <div className="user-details">
@@ -150,7 +155,7 @@ class SideBar extends Component {
                 </div>
               </div> */}
 
-              <div>HITMAN</div>
+              <div className="app-name"><img className="icon" src={hitmanIcon}></img>HITMAN</div>
               <div className="search-box">
                 <i className="fas fa-search" id="search-icon"></i>
                 <input
@@ -162,8 +167,10 @@ class SideBar extends Component {
                 />
               </div>
 
-              <Tabs defaultActiveKey="profile" id="uncontrolled-tab-example">
-                <Tab eventKey="collection" title="1">
+              <Tabs defaultActiveKey={getCurrentUser() ? "collection" : "randomTrigger"} id="uncontrolled-tab-example">
+                <Tab eventKey="collection" title={
+                  <img src={collectionIcon}></img>
+                } >
                   {!getCurrentUser() ? (<div>
                     Your collection is Empty.
                     <br></br>
@@ -175,9 +182,12 @@ class SideBar extends Component {
                     >+ Add here</Button>{' '}
                   </div>) : null}
                 </Tab>
-                <Tab eventKey="history" title="2">
+                <Tab eventKey="history" title={<img src={historyIcon}></img>
+
+                }>
                 </Tab>
-                <Tab eventKey="randomTrigger" title="Random Trigger" >
+                <Tab eventKey="randomTrigger" title={<img src={randomTriggerIcon}></img>
+                } >
                 </Tab>
               </Tabs>
             </React.Fragment>

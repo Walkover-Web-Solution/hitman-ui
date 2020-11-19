@@ -110,14 +110,16 @@ class ContentPanel extends Component {
     const redirectionUrl = process.env.REACT_APP_UI_URL + "/login";
     return (
       <main role="main" className="main">
-        {!getCurrentUser() ? <div
-          id="sokt-sso"
-          data-redirect-uri={redirectionUrl}
-          data-source="sokt-app"
-          data-token-key="sokt-auth-token"
-          data-view="button"
-        ></div> : null
-        }
+        <div className="login-sso">
+          {!getCurrentUser() ? <div
+            id="sokt-sso"
+            data-redirect-uri={redirectionUrl}
+            data-source="sokt-app"
+            data-token-key="sokt-auth-token"
+            data-view="button"
+          ></div> : null
+          }
+        </div>
         {/* <main role="main" className="main ml-sm-auto custom-main"> */}
         <Tab.Container
           id="left-tabs-example"
