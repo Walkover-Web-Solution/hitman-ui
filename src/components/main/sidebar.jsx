@@ -12,7 +12,8 @@ import CollectionVersions from "../collectionVersions/collectionVersions";
 import endpointApiService from "../endpoints/endpointApiService";
 import "./main.scss";
 import "./sidebar.scss";
-
+import { Tabs, Tab, Button } from 'react-bootstrap'
+import LoginSignupModal from './loginSignupModal';
 const mapStateToProps = (state) => {
   return {
     // teams: state.teams,
@@ -88,6 +89,12 @@ class SideBar extends Component {
     this.setState({ showOpenApiForm: false });
   }
 
+  closeLoginSignupModal() {
+    this.setState({
+      showLoginSignupModal: false
+    })
+  }
+
   render() {
     return (
       <nav
@@ -95,11 +102,18 @@ class SideBar extends Component {
           isDashboardRoute(this.props) ? "sidebar" : "public-endpoint-sidebar"
         }
       >
+        {this.state.showLoginSignupModal && (
+          <LoginSignupModal
+            show={true}
+            onHide={() => this.closeLoginSignupModal()}
+            title="Add Collection"
+          />
+        )}
         <div className="primary-sidebar">
           {isDashboardRoute(this.props) ? (
             <React.Fragment>
-              <div className="user-info">
-                <div className="user-avatar">
+              {/* <div className="user-info"> */}
+              {/* <div className="user-avatar">
                   <i className="uil uil-user"></i>
                 </div>
                 <div className="user-details">
@@ -134,18 +148,38 @@ class SideBar extends Component {
                   </div>
                   <div className="user-details-text">{this.state.email}</div>
                 </div>
-              </div>
+              </div> */}
 
+              <div>HITMAN</div>
               <div className="search-box">
                 <i className="fas fa-search" id="search-icon"></i>
                 <input
                   value={this.state.data.filter}
                   type="text"
                   name="filter"
-                  placeholder="Filter"
+                  placeholder="Search"
                   onChange={this.handleChange}
                 />
               </div>
+
+              <Tabs defaultActiveKey="profile" id="uncontrolled-tab-example">
+                <Tab eventKey="collection" title="1">
+                  {!getCurrentUser() ? (<div>
+                    Your collection is Empty.
+                    <br></br>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                    <Button variant="warning" onClick={() => this.setState({
+                      showLoginSignupModal: true
+                    })
+                    }
+                    >+ Add here</Button>{' '}
+                  </div>) : null}
+                </Tab>
+                <Tab eventKey="history" title="2">
+                </Tab>
+                <Tab eventKey="randomTrigger" title="Random Trigger" >
+                </Tab>
+              </Tabs>
             </React.Fragment>
           ) : null}
           {getCurrentUser() ? (
@@ -170,15 +204,17 @@ class SideBar extends Component {
             <React.Fragment></React.Fragment>
           ) : null}
         </div>
-        {this.collectionId && (
-          <div className="secondary-sidebar">
-            <CollectionVersions
-              {...this.props}
-              collection_id={this.collectionId}
-            />
-          </div>
-        )}
-      </nav>
+        {
+          this.collectionId && (
+            <div className="secondary-sidebar">
+              <CollectionVersions
+                {...this.props}
+                collection_id={this.collectionId}
+              />
+            </div>
+          )
+        }
+      </nav >
     );
   }
 }

@@ -319,14 +319,14 @@ class CollectionsComponent extends Component {
             {collectionState === "singleCollection" ? (
               <div>{this.props.collections[collectionId].name}</div>
             ) : (
-              <div
-                className="sidebar-accordion-item"
-                onClick={() => this.openSelectedCollection(collectionId)}
-              >
-                <i className="uil uil-parcel"></i>
-                {this.props.collections[collectionId].name}
-              </div>
-            )}
+                <div
+                  className="sidebar-accordion-item"
+                  onClick={() => this.openSelectedCollection(collectionId)}
+                >
+                  <i className="uil uil-parcel"></i>
+                  {this.props.collections[collectionId].name}
+                </div>
+              )}
             <div className="sidebar-item-action">
               <div
                 className="sidebar-item-action-btn "
@@ -431,6 +431,10 @@ class CollectionsComponent extends Component {
   }
 
   openPublishDocs(collection) {
+    // this.props.history.push({
+    //   pathname: "/documentation",
+    //   selectedCollection: collection.id,
+    // })
     this.setState({
       showPublishDocsModal: true,
       selectedCollection: collection.id,
@@ -444,9 +448,9 @@ class CollectionsComponent extends Component {
         show={true}
         onHide={onHide}
         collection_id={this.state.selectedCollection}
-        // add_new_endpoint={this.handleAddEndpoint.bind(this)}
-        // open_collection_form={this.openCollectionForm.bind(this)}
-        // open_environment_form={this.openEnvironmentForm.bind(this)}
+      // add_new_endpoint={this.handleAddEndpoint.bind(this)}
+      // open_collection_form={this.openCollectionForm.bind(this)}
+      // open_environment_form={this.openEnvironmentForm.bind(this)}
       />
     );
   }

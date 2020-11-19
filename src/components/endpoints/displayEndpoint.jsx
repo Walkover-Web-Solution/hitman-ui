@@ -1560,6 +1560,7 @@ class DisplayEndpoint extends Component {
           <LoginSignupModal
             show={true}
             onHide={() => this.closeLoginSignupModal()}
+            title="Save Endpoint"
           />
         )}
         {getCurrentUser() ? (
