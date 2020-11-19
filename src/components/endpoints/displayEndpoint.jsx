@@ -31,6 +31,8 @@ import {
 import collectionsApiService from "../collections/collectionsApiService";
 import indexedDbService from "../indexedDb/indexedDbService";
 import Authorization from "./displayAuthorization";
+import LoginSignupModal from "../main/loginSignupModal"
+
 const status = require("http-status");
 var URI = require("urijs");
 
@@ -649,7 +651,9 @@ class DisplayEndpoint extends Component {
 
   handleSave = async (groupId, EndpointName) => {
     if (!getCurrentUser()) {
-      console.log("getCurrentUser")
+      this.setState({
+        showLoginSignupModal: true
+      })
     }
     if (!(this.state.groupId || groupId)) {
       this.openEndpointFormModal();
@@ -1498,6 +1502,12 @@ class DisplayEndpoint extends Component {
     this.setState({ sampleResponseFlagArray });
   }
 
+  closeLoginSignupModal() {
+    this.setState({
+      showLoginSignupModal: false
+    })
+  }
+
   render() {
     if (
       isDashboardRoute(this.props) &&
@@ -1546,6 +1556,12 @@ class DisplayEndpoint extends Component {
     }
     return (
       <div className="hm-endpoint-container endpoint-container">
+        {this.state.showLoginSignupModal && (
+          <LoginSignupModal
+            show={true}
+            onHide={() => this.closeLoginSignupModal()}
+          />
+        )}
         {getCurrentUser() ? (
           <div className={isDashboardRoute(this.props) ? "hm-panel mt-4" : null}>
             {this.state.showEndpointFormModal && (

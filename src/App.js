@@ -8,6 +8,7 @@ import Main from "./components/main/Main.jsx";
 import PublicView from "./components/main/publicView";
 import Public from "./components/publicEndpoint/publicEndpoint.jsx";
 import herokuApiService from "./services/herokuApiService";
+import Landing from './components/landing/landing';
 require("dotenv").config();
 
 class App extends Component {
@@ -41,7 +42,9 @@ class App extends Component {
         <Route path="/p/:collectionIdentifier" component={Public} />
         <Route path="/logout" component={Logout} />
         <Route path="/login" component={Login} />
-        <Route path="/" component={PublicView} />
+        <Route path="/marketPlace" component={PublicView} />
+        <Route path="/" component={Landing} />
+
       </Switch>
     );
   }

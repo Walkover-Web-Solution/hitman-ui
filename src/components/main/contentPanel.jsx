@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Tab } from "react-bootstrap";
 import { connect } from "react-redux";
 import "react-tabs/style/react-tabs.css";
+import { Button } from "react-bootstrap";
 import Environments from "../environments/environments";
 import {
   addNewTab,
@@ -108,7 +109,7 @@ class ContentPanel extends Component {
     }
     return (
       <main role="main" className="main">
-        {!getCurrentUser() ? <button>Log in/Sign up</button> : null
+        {!getCurrentUser() ? <Button variant="warning">Log in/Sign up</Button> : null
         }
         {/* <main role="main" className="main ml-sm-auto custom-main"> */}
         <Tab.Container

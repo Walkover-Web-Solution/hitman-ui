@@ -148,24 +148,24 @@ class SideBar extends Component {
               </div>
             </React.Fragment>
           ) : null}
-
-          <Switch>
-            <ProtectedRoute
-              path="/dashboard/"
-              render={(props) => (
-                <Collections
-                  {...this.props}
-                  empty_filter={this.emptyFilter.bind(this)}
-                  collection_selected={this.openCollection.bind(this)}
-                  filter={this.state.data.filter}
-                />
-              )}
-            />
-            <Route
-              path="/p/:collectionId"
-              render={(props) => <Collections {...this.props} />}
-            />
-          </Switch>
+          {getCurrentUser() ? (
+            <Switch>
+              <ProtectedRoute
+                path="/dashboard/"
+                render={(props) => (
+                  <Collections
+                    {...this.props}
+                    empty_filter={this.emptyFilter.bind(this)}
+                    collection_selected={this.openCollection.bind(this)}
+                    filter={this.state.data.filter}
+                  />
+                )}
+              />
+              <Route
+                path="/p/:collectionId"
+                render={(props) => <Collections {...this.props} />}
+              />
+            </Switch>) : null}
           {isDashboardRoute(this.props) ? (
             <React.Fragment></React.Fragment>
           ) : null}
