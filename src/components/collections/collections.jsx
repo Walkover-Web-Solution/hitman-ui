@@ -36,6 +36,7 @@ const mapStateToProps = (state) => {
     pages: state.pages,
     teamUsers: state.teamUsers,
     groups: state.groups,
+    endpoints : state.endpoints,
   };
 };
 
@@ -271,82 +272,41 @@ class CollectionsComponent extends Component {
     );
   }
 
- getEndpoints(){
-    return {
-      1 : {
-        collectionId :"S-vOwrvXFj" ,
-      },
-      2 : {
-        collectionId :"S-vOwrvXFj" ,
-      },
-      3 : {
-        collectionId :"S-vOwrvXFj" ,
-      },
-      4 : {
-        collectionId :"S-vOwrvXFj" ,
-      },
-      5 : {
-        collectionId :"S-vOwrvXFj" ,
-      },
-      6 : {
-        collectionId :"1ZVAhNVAEd" ,
-      },
-      7 : {
-        collectionId :"1ZVAhNVAEd" ,
-      },
-      8 : {
-        collectionId :"1ZVAhNVAEd" ,
-      },
-      9 : {
-        collectionId :"1ZVAhNVAEd" ,
-      },
-      10 : {
-        collectionId :"1ZVAhNVAEd" ,
-      },
-      11 : {
-        collectionId :"1ZVAhNVAEd" ,
-      },
-      12 : {
-        collectionId :"miUMaBFHFl" ,
-      },
-      13 : {
-        collectionId :"miUMaBFHFl" ,
-      },
-      14 : {
-        collectionId :"miUMaBFHFl" ,
-      },
-      15 : {
-        collectionId :"87m6EJGeQw" ,
-      },
-      16 : {
-        collectionId :"87m6EJGeQw" ,
-      },
-      17 : {
-        collectionId :"87m6EJGeQw" ,
-      },
-  
-      18 : {
-        collectionId :"87m6EJGeQw" ,
-      },
-      19 : {
-        collectionId :"_QBSiVW_dj" ,
-      },
-      20 : {
-        collectionId :"_QBSiVW_dj" ,
-      },
-    }
+  dataFetched(){
+    return (this.props.collections && this.props.versions && this.props.groups && this.props.endpoints)
   }
 
+
   findEndpointCount(collectionId){
-    let endpoints = this.getEndpoints()
-    const endpointIds =Object.keys(endpoints)
-    console.log(endpoints)
-    return Object.keys(endpoints).filter(eId => endpoints[eId].collectionId === collectionId).length
+    if(this.dataFetched()){
+      let versionIds = Object.keys(this.props.versions).filter(vId => this.props.versions[vId].collectionId === collectionId)
+      let groupIds = Object.keys(this.props.groups)
+      let groupsArray = []
+      for (let i = 0; i < groupIds.length; i++) {
+        const groupId = groupIds[i];
+        const group = this.props.groups[groupId]
+        
+        if(versionIds.includes(group.versionId))
+        groupsArray.push(groupId)
+      }
+      
+      let endpointIds = Object.keys(this.props.endpoints)
+      let endpointsArray = []
+      
+      for (let i = 0; i <endpointIds.length; i++) {
+        const endpointId = endpointIds[i];
+        const endpoint = this.props.endpoints[endpointId]
+        
+        if(groupsArray.includes(endpoint.groupId))
+        endpointsArray.push(endpointId)
+        
+      }
+      return endpointsArray.length
+    }
       
     }
-  
-
-  renderBody(collectionId, collectionState) {
+    
+    renderBody(collectionId, collectionState) {
     let eventkeyValue = "";
     if (this.props.filter !== "") {
       eventkeyValue = "0";
@@ -393,11 +353,7 @@ class CollectionsComponent extends Component {
           >
             {collectionState === "singleCollection" ? (
               <React.Fragment>
-                <div style={{display : "flex"}}>
               <div>{this.props.collections[collectionId].name}</div>
-              <div  > {this.findEndpointCount(collectionId)}</div>
-
-                </div>
               </React.Fragment>
             ) : (
               <div
@@ -406,13 +362,11 @@ class CollectionsComponent extends Component {
               >
                 <i className="uil uil-parcel"></i>
                 <div >
-               <div  style={{display : "flex"}}>
                  {this.props.collections[collectionId].name}
-                 </div> 
-                <div >{this.findEndpointCount(collectionId)}</div>
                 </div>
               </div>
             )}
+              <div class="show-endpoint-count">{this.findEndpointCount(collectionId)}</div>
             <div className="sidebar-item-action">
               <div
                 className="sidebar-item-action-btn "
