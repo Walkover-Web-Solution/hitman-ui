@@ -60,23 +60,35 @@ class CodeTemplate extends Component {
     python: { name: "Python" },
   };
 
+  selectedLanguage="node";
+
+  componentDidMount() {
+    if(this.props.harObject)
+    this.makeCodeTemplate(this.selectedLanguage);
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if(this.props.harObject !== prevProps.harObject)
+    this.makeCodeTemplate(this.selectedLanguage);
+  }
+
   render() {
-    if (!this.state.codeSnippet) {
-      let snippet = this.makeCodeSnippet();
-      this.selectedLanguage = "node";
-      this.selectedLanguageName = this.languages["node"].name;
-      this.codeSnippet = snippet.convert("node");
-    }
+    // if (!this.state.codeSnippet) {
+    //   let snippet = this.makeCodeSnippet();
+    //   this.selectedLanguage = "node";
+    //   this.selectedLanguageName = this.languages["node"].name;
+    //   this.codeSnippet = snippet.convert("node");
+    // }
     return (
       <div>
-        <Modal
+        {/* <Modal
           {...this.props}
           id="modal-code-window"
           size="lg"
           animation={false}
           aria-labelledby="contained-modal-title-vcenter"
           centered
-        >
+        > */}
           {/* <Modal.Header
             className="custom-collection-modal-container"
             closeButton
@@ -86,8 +98,8 @@ class CodeTemplate extends Component {
             </Modal.Title>
           </Modal.Header> */}
 
-          <Modal.Body>
-            <Container className="d-flex flex-column">
+          {/* <Modal.Body> */}
+            <Container className="d-flex flex-column my-5 mx-1">
               <Row>
                 <Col id="code-window-sidebar" sm={3}>
                   <ListGroup>
@@ -153,8 +165,8 @@ class CodeTemplate extends Component {
                 </Col>
               </Row>
             </Container>
-          </Modal.Body>
-        </Modal>
+          {/* </Modal.Body> */}
+        {/* </Modal> */}
       </div>
     );
   }

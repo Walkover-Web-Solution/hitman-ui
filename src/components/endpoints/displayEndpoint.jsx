@@ -160,6 +160,17 @@ class DisplayEndpoint extends Component {
     // }
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if(!isDashboardRoute(this.props))
+    {
+      // console.log(prevState.originalHeaders, this.state.originalHeaders)
+      if(this.state.data !== prevState.data || this.state.originalParams !== prevState.originalParams || this.state.originalHeaders !== prevState.originalHeaders)
+      {
+        this.prepareHarObject();
+      }
+    }
+  }
+
   structueParamsHeaders = [
     {
       checked: "notApplicable",
@@ -997,7 +1008,10 @@ class DisplayEndpoint extends Component {
       if (!harObject.url.split(":")[1] || harObject.url.split(":")[0] === "") {
         harObject.url = "https://" + url;
       }
-      this.openCodeTemplate(harObject);
+      // this.openCodeTemplate(harObject);
+      this.setState({harObject}, ()=>{
+        console.log(harObject);
+      });
     } catch (error) {
       toast.error(error);
     }
@@ -1542,7 +1556,8 @@ class DisplayEndpoint extends Component {
       });
     }
     return (
-      <div className="hm-endpoint-container endpoint-container">
+      <div className="d-flex">
+        <div className="hm-endpoint-container endpoint-container mx-3">
         <div className={isDashboardRoute(this.props) ? "hm-panel mt-4" : null}>
           {this.state.showEndpointFormModal && (
             <CreateEndpointForm
@@ -1554,7 +1569,7 @@ class DisplayEndpoint extends Component {
               save_endpoint={this.handleSave.bind(this)}
             />
           )}
-          {this.state.showCodeTemplate && this.showCodeTemplate()}
+          {/* {this.state.showCodeTemplate && this.showCodeTemplate()} */}
           <DisplayDescription
             {...this.props}
             endpoint={this.state.endpoint}
@@ -1647,13 +1662,13 @@ class DisplayEndpoint extends Component {
                 >
                   {this.state.data.method}
                 </div>
-                <a
+                {/* <a
                   href="javascript:void(0)"
                   id="show-code-snippets-button"
                   onClick={() => this.prepareHarObject()}
                 >
                   Sample Code
-                </a>
+                </a> */}
               </div>
               <div className="endpoint-host">
                 <HostContainer
@@ -2016,6 +2031,20 @@ class DisplayEndpoint extends Component {
             </div>
           </React.Fragment>
         )}
+        </div>
+        
+        {!isDashboardRoute(this.props) && this.state.harObject && 
+          
+            <CodeTemplate
+              show={true}
+              onHide={() => {
+                this.setState({ showCodeTemplate: false });
+              }}
+              harObject={this.state.harObject}
+              title="Generate Code Snippets"
+            />
+          
+        }
       </div>
     );
   }
