@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { toast } from "react-toastify";
+import { Dropdown, ButtonGroup} from "react-bootstrap";
 import store from "../../store/store";
 import { isDashboardRoute } from "../common/utility";
 import { isSavedEndpoint } from "../common/utility";
@@ -916,7 +917,7 @@ class DisplayEndpoint extends Component {
   }
 
   closeEndpointFormModal() {
-    this.setState({ showEndpointFormModal: false });
+    this.setState({ showEndpointFormModal: false, saveAsFlag:false });
   }
 
   setGroupId(groupId, endpointName) {
@@ -1666,24 +1667,33 @@ class DisplayEndpoint extends Component {
 
                 {isDashboardRoute(this.props) ? (
                   <div className="d-flex">
-                    <button
-                      className="btn btn-primary"
-                      type="button"
-                      id="save-endpoint-button"
-                      onClick={() => this.handleSave()}
-                    >
-                      Save
-                    </button>
-                    {this.props.location.pathname.split("/")[3] !== "new" && <button
-                      className="btn btn-primary"
-                      type="button"
-                      id="save-endpoint-button"
-                      onClick={() => this.setState({ saveAsFlag:true},()=>{
-                        this.openEndpointFormModal()
-                      })}
-                    >
-                      Save As
-                    </button>}
+                    {this.props.location.pathname.split("/")[3] !== "new" ?
+                      <Dropdown as={ButtonGroup}>
+                        <button
+                          className="btn btn-primary"
+                          type="button"
+                          id="save-endpoint-button"
+                          onClick={() => this.handleSave()}
+                        >
+                          Save
+                        </button>
+                        <Dropdown.Toggle split variant="primary"/>
+                        <Dropdown.Menu className="">
+                          <Dropdown.Item onClick={() => this.setState({ saveAsFlag:true},()=>{
+                            this.openEndpointFormModal()
+                          })}>Save As</Dropdown.Item>
+                        </Dropdown.Menu>
+                      </Dropdown>
+                    :
+                      <button
+                        className="btn btn-primary"
+                        type="button"
+                        id="save-endpoint-button"
+                        onClick={() => this.handleSave()}
+                      >
+                        Save
+                      </button>
+                    }
                   </div>
                 ) : null}
               </div>
