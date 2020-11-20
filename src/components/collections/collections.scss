@@ -161,6 +161,7 @@ div.fixed {
   .fas.fa-bell {
     padding-left: 10px;
     font-size: 20px;
+    color: black;
   }
 
   .notification {
@@ -176,8 +177,14 @@ div.fixed {
     right: -15px;
     padding: 5px 10px;
     border-radius: 50%;
-    font-size: 11px;
-    background-color: white;
+    font-size: 8px;
+    border: 1px solid white;
+    background-color: black;
+  }
+
+  button#dropdown-basic {
+    background: rgb(255, 252, 246);
+    border: none;
   }
 
   .user-avatar {

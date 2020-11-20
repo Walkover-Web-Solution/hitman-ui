@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import auth from "../auth/authService";
 import { Link } from "react-router-dom";
+import {Dropdown} from 'react-bootstrap'
 
 class UserInfo extends Component {
   state = { user: { name: "", email: "" } };
@@ -16,16 +17,27 @@ class UserInfo extends Component {
   }
 
 
+  getFirstPublicCollection(){
+   const allCollections =  this.props.get_public_collections()
+
+   let firstCollection = {}
+   for (let i = 0; i < allCollections.length; i++) {
+     const  collectionId = allCollections[i];
+      const collection = this.props.collections[collectionId]
+      firstCollection = collection
+      break
+   }
+   return firstCollection
+  }
+
   navigateToPublishDocs(){
-    //   this.props.history.push({
-    //       pathname : `/`
-    //   })
+   const collection =  this.getFirstPublicCollection()
+   this.props.open_publish_docs(collection)
   }
 
   render() {
     return (
-
-
+    <React.Fragment>
         <div className="user-notification user-info ">
         <div className="user-avatar ">
           <i className="uil uil-user"></i>
@@ -35,69 +47,23 @@ class UserInfo extends Component {
             <div className="user-name">
               {this.state.user.name}
             </div>
-
-            {/* <div className="user-name">
-            <i class="fas fa-bell"></i>
-            </div> */}
-
-            <div  class=" user-name notification" onClick = {()=>this.navigateToPublishDocs()}>
+            <Dropdown>
+            <Dropdown.Toggle variant="success" id="dropdown-basic">
+            <div  class=" user-name notification"
+            //  onClick = {()=>this.navigateToPublishDocs()}
+             >
                 <span> <i class="fas fa-bell"></i></span>
                 <span class="badge">{this.props.get_notification_count()}</span>
             </div>
+              </Dropdown.Toggle>
+            <Dropdown.Menu>
+              <Dropdown.Item onClick = {()=>this.navigateToPublishDocs()}>Hosted API</Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
           </div>
         </div>
       </div>
-        // <div className="btn-grp" id="user-menu">
-        //   <div className=" user-dropdown">
-        //     <button
-        //       className="user-dropdown-btn"
-        //       type="button"
-        //       id="dropdownMenuButton"
-        //       data-toggle="dropdown"
-        //       aria-haspopup="true"
-        //       aria-expanded="false"
-        //     >
-        //       <div className="user-info">
-        //         <div className="user-avatar">
-        //           <i className="uil uil-user"></i>
-        //         </div>
-        //         <div className="user-details">
-        //           <div className="user-details-heading">
-        //             <div className="user-name">
-        //               {this.state.user.name}
-        //             </div>
-        //           </div>
-        //         </div>
-        //       </div>
-        //     </button>
-        //     <div
-        //       className="dropdown-menu"
-        //       aria-labelledby="dropdownMenuButton"
-        //     >
-        //       <div className="user-info">
-        //         <div className="user-avatar">
-        //           <i className="uil uil-user"></i>
-        //         </div>
-        //         <div className="user-details">
-        //           <div className="user-details-heading">
-        //             <div className="user-name">
-        //               {this.state.user.name}
-        //             </div>
-        //           </div>
-        //           <div className="user-details-text">{this.state.user.email}</div>
-        //         </div>
-        //       </div>
-        //       <li>
-        //         <Link to="/logout">Sign out</Link>
-        //       </li>
-        //       {auth.getCurrentUser() === null ? null : (
-        //         <li>
-        //           <Link to="/dashboard">My Collections</Link>
-        //         </li>
-        //       )}
-        //     </div>
-        //   </div>
-        // </div>
+      </React.Fragment>
     );
   }
 }

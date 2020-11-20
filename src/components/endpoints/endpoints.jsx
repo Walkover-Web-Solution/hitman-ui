@@ -134,11 +134,7 @@ class Endpoints extends Component {
 
   async handlePublicEndpointState(endpoint) {
     if (endpoint.state === "Draft") {
-      if (this.checkAccess(this.props.collection_id)) {
-        this.handleApproveRequest(endpoint);
-      } else {
         this.props.pending_endpoint(endpoint);
-      }
     }
   }
 
@@ -431,8 +427,7 @@ class Endpoints extends Component {
                           </a>
                         ) : null}
 
-                        {!this.checkAccess(this.props.collection_id) &&
-                        this.props.endpoints[endpointId].state === "Pending" ? (
+                        {  this.props.endpoints[endpointId].state === "Pending" ? (
                           <a
                             className="dropdown-item"
                             onClick={() =>
@@ -443,48 +438,6 @@ class Endpoints extends Component {
                           >
                             Cancel Request
                           </a>
-                        ) : null}
-
-                        {this.checkAccess(this.props.collection_id) &&
-                        (this.props.endpoints[endpointId].state ===
-                          "Approved" ||
-                          this.props.endpoints[endpointId].state ===
-                            "Reject") ? (
-                          <a
-                            className="dropdown-item"
-                            onClick={() =>
-                              this.handleCancelRequest(
-                                this.props.endpoints[endpointId]
-                              )
-                            }
-                          >
-                            Move to Draft
-                          </a>
-                        ) : null}
-                        {this.checkAccess(this.props.collection_id) &&
-                        this.props.endpoints[endpointId].state === "Pending" ? (
-                          <div>
-                            <a
-                              className="dropdown-item"
-                              onClick={() =>
-                                this.handleApproveRequest(
-                                  this.props.endpoints[endpointId]
-                                )
-                              }
-                            >
-                              Approve Request
-                            </a>
-                            <a
-                              className="dropdown-item"
-                              onClick={() =>
-                                this.handleRejectRequest(
-                                  this.props.endpoints[endpointId]
-                                )
-                              }
-                            >
-                              Reject Request
-                            </a>
-                          </div>
                         ) : null}
                       </div>
                     </div>

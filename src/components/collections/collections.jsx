@@ -482,10 +482,18 @@ class CollectionsComponent extends Component {
   }
 
   openPublishDocs(collection) {
-    this.props.history.push({
-      pathname: `/admin/publish`,
-      search: `?collectionId=${collection.id}`,
-    })
+    if(collection.id){
+      this.props.history.push({
+        pathname: `/admin/publish`,
+        search: `?collectionId=${collection.id}`,
+      })
+
+    }
+    else{
+      this.props.history.push({
+        pathname: `/admin/publish`,
+      })
+    }
     // this.setState({
     //   showPublishDocsModal: true,
     //   selectedCollection: collection.id,
@@ -566,7 +574,7 @@ class CollectionsComponent extends Component {
       return collectionsArray
   }
 
-  getNotificationCount(){
+  getPublicCollections(){
     if(this.dataFetched()){
       const pendingEndpointIds = Object.keys(this.props.endpoints).filter(eId=>this.props.endpoints[eId].state==="Pending")
       const pendingPageIds = Object.keys(this.props.pages).filter(pId=>this.props.pages[pId].state==="Pending")
@@ -574,9 +582,23 @@ class CollectionsComponent extends Component {
       const endpointCollections = this.findPendingEndpointsCollections(pendingEndpointIds)
       const pageCollections = this.findPendingPagesCollections(pendingPageIds)
 
-      let finalCollections = [...new Set([...endpointCollections,...pageCollections])] 
-      return finalCollections.length
-    }
+      let allCollections = [...new Set([...endpointCollections,...pageCollections])] 
+      let finalCollections =  []
+      for (let i = 0; i < allCollections.length; i++) {
+        const collectionId = allCollections[i];
+        if(this.props.collections[collectionId]?.isPublic){
+          finalCollections.push(collectionId)
+        }
+        
+      }
+      return finalCollections
+     }
+  }
+
+  getNotificationCount(){
+      const collections = this.getPublicCollections()
+     
+      return collections.length || 0
   }
 
   render() {
@@ -699,7 +721,10 @@ class CollectionsComponent extends Component {
             )}
 
         <div className="fixed">
-          <UserNotification {...this.props} get_notification_count = {this.getNotificationCount.bind(this)}></UserNotification>
+          <UserNotification {...this.props} get_notification_count = {this.getNotificationCount.bind(this)}
+            get_public_collections = {this.getPublicCollections.bind(this)}
+            open_publish_docs = {this.openPublishDocs.bind(this)}
+          ></UserNotification>
           {/* Notifications
             <div>count : {this.getNotificationCount()}</div> */}
         </div>
