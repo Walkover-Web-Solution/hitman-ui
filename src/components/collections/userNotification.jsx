@@ -58,6 +58,9 @@ class UserInfo extends Component {
               </Dropdown.Toggle>
             <Dropdown.Menu>
               <Dropdown.Item onClick = {()=>this.navigateToPublishDocs()}>Hosted API</Dropdown.Item>
+              <Dropdown.Item > <li>
+                <Link to="/logout">Sign out</Link>
+              </li></Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
           </div>

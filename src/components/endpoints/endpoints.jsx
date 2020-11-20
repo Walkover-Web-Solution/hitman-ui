@@ -133,7 +133,7 @@ class Endpoints extends Component {
   }
 
   async handlePublicEndpointState(endpoint) {
-    if (endpoint.state === "Draft") {
+    if (endpoint.state === "Draft" || endpoint.state === "Reject") {
         this.props.pending_endpoint(endpoint);
     }
   }
@@ -414,7 +414,7 @@ class Endpoints extends Component {
                         >
                           Duplicate
                         </a>
-                        {this.props.endpoints[endpointId].state === "Draft" ? (
+                        {this.props.endpoints[endpointId].state === "Draft" || this.props.endpoints[endpointId].state === "Reject"  ? (
                           <a
                             className="dropdown-item"
                             onClick={() =>
@@ -426,6 +426,15 @@ class Endpoints extends Component {
                             Make Public
                           </a>
                         ) : null}
+
+                        {this.props.endpoints[endpointId].state === "Approved" ? (
+                          <a
+                            className="dropdown-item"
+                            disabled
+                          >
+                            Approved
+                          </a>
+                        ) : null} 
 
                         {  this.props.endpoints[endpointId].state === "Pending" ? (
                           <a
@@ -439,6 +448,8 @@ class Endpoints extends Component {
                             Cancel Request
                           </a>
                         ) : null}
+
+                        
                       </div>
                     </div>
                   </button>

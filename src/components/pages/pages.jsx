@@ -71,12 +71,8 @@ class Pages extends Component {
   }
 
   async handlePublicPageState(page) {
-    if (page.state === "Draft") {
-      if (this.checkAccess(this.props.collection_id)) {
-        this.props.approve_page(page);
-      } else {
+    if (page.state === "Draft" || page.state === "Reject") {
         this.props.pending_page(page);
-      }
     }
   }
 
@@ -169,7 +165,7 @@ class Pages extends Component {
                   >
                     Duplicate
                   </a>
-                  {this.props.pages[pageId].state === "Draft" ? (
+                  {this.props.pages[pageId].state === "Draft" || this.props.pages[pageId].state==="Reject" ? (
                     <a
                       className="dropdown-item"
                       onClick={() =>
@@ -180,8 +176,7 @@ class Pages extends Component {
                     </a>
                   ) : null}
 
-                  {!this.checkAccess(this.props.collection_id) &&
-                  this.props.pages[pageId].state === "Pending" ? (
+                  {this.props.pages[pageId].state === "Pending" ? (
                     <a
                       className="dropdown-item"
                       onClick={() =>
@@ -192,39 +187,8 @@ class Pages extends Component {
                     </a>
                   ) : null}
 
-                  {this.checkAccess(this.props.collection_id) &&
-                  (this.props.pages[pageId].state === "Approved" ||
-                    this.props.pages[pageId].state === "Reject") ? (
-                    <a
-                      className="dropdown-item"
-                      onClick={() =>
-                        this.handleCancelRequest(this.props.pages[pageId])
-                      }
-                    >
-                      Move to Draft
-                    </a>
-                  ) : null}
-                  {this.checkAccess(this.props.collection_id) &&
-                  this.props.pages[pageId].state === "Pending" ? (
-                    <div>
-                      <a
-                        className="dropdown-item"
-                        onClick={() =>
-                          this.handleApproveRequest(this.props.pages[pageId])
-                        }
-                      >
-                        Approve Request
-                      </a>
-                      <a
-                        className="dropdown-item"
-                        onClick={() =>
-                          this.handleRejectRequest(this.props.pages[pageId])
-                        }
-                      >
-                        Reject Request
-                      </a>
-                    </div>
-                  ) : null}
+                  
+                 
                 </div>
               </div>
             </button>

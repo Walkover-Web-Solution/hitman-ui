@@ -490,8 +490,10 @@ class CollectionsComponent extends Component {
 
     }
     else{
+      let collection = this.props.collections[Object.keys(this.props.collections)[0]]
       this.props.history.push({
         pathname: `/admin/publish`,
+        search: `?collectionId=${collection.id}`,
       })
     }
     // this.setState({
