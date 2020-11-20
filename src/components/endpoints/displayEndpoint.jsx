@@ -32,6 +32,7 @@ import collectionsApiService from "../collections/collectionsApiService";
 import indexedDbService from "../indexedDb/indexedDbService";
 import Authorization from "./displayAuthorization";
 import LoginSignupModal from "../main/loginSignupModal"
+const shortid = require('shortid');
 
 const status = require("http-status");
 var URI = require("urijs");
@@ -612,6 +613,18 @@ class DisplayEndpoint extends Component {
     return path;
   }
 
+  setData = async ()=> {
+    let obj={
+      id:shortid.generate(),
+      ...this.state
+    }
+    indexedDbService.addData("history",obj,obj.id);
+  }
+  getData = async ()=>{
+    let obj= await indexedDbService.getAllValues("history");
+    console.log(obj);
+    }
+
   handleSend = async () => {
     let startTime = new Date().getTime();
     let response = {};
@@ -634,6 +647,8 @@ class DisplayEndpoint extends Component {
       toast.error("Invalid JSON Body");
     }
     this.handleApiCall(api, body, headers, this.state.data.body.type);
+    this.setData();
+    this.getData();
   };
 
   extractPosition(groupId) {
