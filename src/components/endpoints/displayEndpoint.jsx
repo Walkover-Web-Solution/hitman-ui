@@ -28,6 +28,7 @@ import {
   setAuthorizationResponses,
   setAuthorizationData,
 } from "../collectionVersions/redux/collectionVersionsActions";
+import { addHistory } from "../history/redux/historyAction";
 import collectionsApiService from "../collections/collectionsApiService";
 import indexedDbService from "../indexedDb/indexedDbService";
 import Authorization from "./displayAuthorization";
@@ -62,6 +63,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(setAuthorizationType(endpointId, authData)),
     set_authorization_data: (versionId, data) =>
       dispatch(setAuthorizationData(versionId, data)),
+    add_history: (data) => dispatch(addHistory(data))
   };
 };
 
@@ -614,16 +616,43 @@ class DisplayEndpoint extends Component {
   }
 
   setData = async ()=> {
+    let body = this.state.data.body;
+      if (this.state.data.body.type === "raw") {
+        body.value = this.parseBody(body.value);
+      }
+    const headersData = this.doSubmitHeader("save");
+    const updatedParams = this.doSubmitParam();
+    const pathVariables = this.doSubmitPathVariables();
+    const endpoint = {
+      uri: this.uri.current.value,
+      name: this.state.data.name,
+      requestType: this.state.data.method,
+      body: body,
+      headers: headersData,
+      params: updatedParams,
+      pathVariables: pathVariables,
+      BASE_URL:
+        this.customState.selectedHost === "customHost"
+          ? this.customState.BASE_URL
+          : null,
+      bodyDescription:
+        this.state.data.body.type === "JSON"
+          ? this.state.bodyDescription
+          : {},
+      authorizationType: this.state.authType,
+    };
+    const response = {...this.state.response};
+    const createdAt = new Date();
+    const timeElapsed = this.state.timeElapsed;
     let obj={
       id:shortid.generate(),
-      ...this.state
+      endpoint: {...endpoint},
+      response,
+      timeElapsed,
+      createdAt
     }
-    indexedDbService.addData("history",obj,obj.id);
+    this.props.add_history(obj)
   }
-  getData = async ()=>{
-    let obj= await indexedDbService.getAllValues("history");
-    console.log(obj);
-    }
 
   handleSend = async () => {
     let startTime = new Date().getTime();
@@ -646,9 +675,8 @@ class DisplayEndpoint extends Component {
     } catch (e) {
       toast.error("Invalid JSON Body");
     }
-    this.handleApiCall(api, body, headers, this.state.data.body.type);
+    await this.handleApiCall(api, body, headers, this.state.data.body.type);
     this.setData();
-    this.getData();
   };
 
   extractPosition(groupId) {
@@ -711,9 +739,9 @@ class DisplayEndpoint extends Component {
           id: this.state.endpoint.id,
           groupId: groupId || this.state.groupId,
         });
+        tabService.markTabAsSaved(this.props.tab.id);
       }
     }
-    tabService.markTabAsSaved(this.props.tab.id);
   };
 
   doSubmitPathVariables() {

@@ -14,6 +14,7 @@ import "./main.scss";
 import "./sidebar.scss";
 import { Tabs, Tab, Button } from 'react-bootstrap'
 import LoginSignupModal from './loginSignupModal';
+import indexedDbService from "../indexedDb/indexedDbService";
 import hitmanIcon from "../../assets/icons/hitman.svg"
 import collectionIcon from "../../assets/icons/collectionIcon.svg"
 import historyIcon from "../../assets/icons/historyIcon.svg"
@@ -27,6 +28,7 @@ const mapStateToProps = (state) => {
     // pages: state.pages,
     // teamUsers: state.teamUsers,
     // groups: state.groups,
+    history: state.history,
     filter: "",
   };
 };
@@ -98,6 +100,29 @@ class SideBar extends Component {
     this.setState({
       showLoginSignupModal: false
     })
+  }
+
+  renderHistoryList() {
+    return (
+      this.props.history && 
+        Object.values(this.props.history).map(history =>(
+          Object.keys(history).length !== 0 &&
+          <div className="btn d-flex align-items-center"
+            onClick={()=> { console.log(history.id) }}>
+            <div
+              className={`api-label ${history.endpoint.requestType}`}
+            >
+              <div className="endpoint-request-div">
+                {history.endpoint.requestType}
+              </div>
+            </div>
+            <div className="ml-3">
+              <div>{history.endpoint.name}</div>
+              <small className="text-muted">SAT 11:23 pm</small>
+            </div>
+          </div>
+        ))
+    )
   }
 
   render() {
@@ -182,9 +207,8 @@ class SideBar extends Component {
                     >+ Add here</Button>{' '}
                   </div>) : null}
                 </Tab>
-                <Tab eventKey="history" title={<img src={historyIcon}></img>
-
-                }>
+                <Tab eventKey="history" title={<img src={historyIcon}></img>}>
+                  {this.renderHistoryList()}
                 </Tab>
                 <Tab eventKey="randomTrigger" title={<img src={randomTriggerIcon}></img>
                 } >
