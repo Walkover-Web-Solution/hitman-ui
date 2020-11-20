@@ -21,9 +21,51 @@ function PublishDocs(props) {
                         </select>
                     </div>
                     <div className="grid">
-                        <div className="grid-columns">sd</div>
-                        <div className="grid-columns">sd</div>
+                        <div className="grid-column-one">
+                             <div className="domain">
+                                Domain: docs.msg91.com
+                                <br/>
+                                 Slug: api/sendsms/bulk
+                            </div>
+                            <div className="product">
+                                MSG91
+                            </div>
+                        </div>
+
+                        <div className="grid-column-two">
+                           <div>
+                             Pick your favorite color for website
+                           </div>
+
+                        </div>
+
                         <div className="publish-button">  <Button variant="success">PUBLISH ALL</Button>
+                        </div>
+                    </div>
+
+                    <div className="grid-two">
+                        <div className="grid-column-three">
+                            <select className="selected-API" name="MSG91" >
+                            <option >option1</option>
+                            <option >option2</option>
+                            
+                        </select>
+                        </div>
+                        <div className="grid-column-four">
+                            <div className="contacts">Contacts</div>
+                           
+                            <div className="list-contacts">
+                                List of contacts
+                            </div>
+                        </div>
+                         
+                        <div className="grid-column-five">
+                            
+                        </div>
+
+                       <div className="grid-column-six">
+                            <div className="publish-button">  <Button variant="success">PUBLISH</Button>
+                        </div>
                         </div>
                     </div>
                 </div>
