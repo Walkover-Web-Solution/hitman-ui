@@ -27,6 +27,7 @@ import PublishDocsModal from "../publicEndpoint/publishDocsModal";
 import authService from "../auth/authService";
 import TagManager from "react-gtm-module";
 import TagManagerModal from "./tagModal";
+import UserNotification from './userNotification'
 
 const mapStateToProps = (state) => {
   return {
@@ -273,7 +274,7 @@ class CollectionsComponent extends Component {
   }
 
   dataFetched(){
-    return (this.props.collections && this.props.versions && this.props.groups && this.props.endpoints)
+    return (this.props.collections && this.props.versions && this.props.groups && this.props.endpoints && this.props.pages)
   }
 
 
@@ -305,6 +306,13 @@ class CollectionsComponent extends Component {
     }
       
     }
+
+ 
+  // findEndpointCount(collectionId){
+  //   if(this.dataFetched()){
+  //     return Object.keys(this.props.endpoints).filter(eId => this.props.endpoints[eId].collectionId === collectionId).length
+  //     }
+  //   }
     
     renderBody(collectionId, collectionState) {
     let eventkeyValue = "";
@@ -466,6 +474,9 @@ class CollectionsComponent extends Component {
           ) : null}
           {/* </Card> */}
         </Accordion>
+
+
+      
       </React.Fragment>
     );
   }
@@ -497,6 +508,70 @@ class CollectionsComponent extends Component {
         gtmId: gtmId,
       };
       TagManager.initialize(tagManagerArgs);
+    }
+  }
+
+
+  findPendingPagesCollections(pendingPageIds){
+    let versionsArray = []
+    for (let i = 0; i < pendingPageIds.length; i++) {
+      const pageId = pendingPageIds[i];
+      if(this.props.pages[pageId]){
+        const versionId = this.props.pages[pageId].versionId
+        versionsArray.push(versionId)
+      }
+    }
+    let collectionsArray = []
+    for (let i = 0; i < versionsArray.length; i++) {
+      const versionId = versionsArray[i];
+      if(this.props.versions[versionId]){
+        const collectionId = this.props.versions[versionId].collectionId
+        collectionsArray.push(collectionId)
+      }
+    }
+    return collectionsArray
+  }
+
+  findPendingEndpointsCollections(pendingEndpointIds){
+    let groupsArray = []
+      for (let i = 0; i < pendingEndpointIds.length; i++) {
+        const endpointId = pendingEndpointIds[i];
+        if(this.props.endpoints[endpointId]){
+        const groupId = this.props.endpoints[endpointId].groupId
+        groupsArray.push(groupId)
+        }
+      }
+
+      let versionsArray = []
+      for (let i = 0; i < groupsArray.length; i++) {
+        const groupId = groupsArray[i];
+        if(this.props.groups[groupId]){
+          const versionId = this.props.groups[groupId].versionId
+           versionsArray.push(versionId)
+          }
+      }
+      let collectionsArray = []
+      for (let i = 0; i < versionsArray.length; i++) {
+        const versionId = versionsArray[i];
+        if(this.props.versions[versionId]){
+          const collectionId = this.props.versions[versionId].collectionId
+          collectionsArray.push(collectionId)
+        }
+
+        }
+      return collectionsArray
+  }
+
+  getNotificationCount(){
+    if(this.dataFetched()){
+      const pendingEndpointIds = Object.keys(this.props.endpoints).filter(eId=>this.props.endpoints[eId].state==="Pending")
+      const pendingPageIds = Object.keys(this.props.pages).filter(pId=>this.props.pages[pId].state==="Pending")
+      
+      const endpointCollections = this.findPendingEndpointsCollections(pendingEndpointIds)
+      const pageCollections = this.findPendingPagesCollections(pendingPageIds)
+
+      let finalCollections = [...new Set([...endpointCollections,...pageCollections])] 
+      return finalCollections.length
     }
   }
 
@@ -618,8 +693,17 @@ class CollectionsComponent extends Component {
             {finalCollections.map((collectionId, index) =>
               this.renderBody(collectionId, "allCollections")
             )}
-          </div>
+
+        <div className="fixed">
+          <UserNotification {...this.props} get_notification_count = {this.getNotificationCount.bind(this)}></UserNotification>
+          {/* Notifications
+            <div>count : {this.getNotificationCount()}</div> */}
         </div>
+              
+          </div>
+          
+        </div>
+        
       );
     } else {
       return (

@@ -137,3 +137,49 @@ $border-color: rgba(227, 228, 230, 0.7);
   color: black;
   border-radius: 10px;
 }
+
+div.absolute {
+  position: absolute;
+  bottom: 10px;
+}
+
+div.fixed {
+  position: fixed;
+  bottom: 10px;
+}
+
+.user-notification {
+  padding: 0px !important;
+  width: 230px;
+  .user-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 18px;
+    color: #fff;
+  }
+
+  .fas.fa-bell {
+    padding-left: 10px;
+    font-size: 20px;
+  }
+
+  .notification {
+    color: white;
+    text-decoration: none;
+    position: relative;
+    display: inline-block;
+    border-radius: 2px;
+  }
+
+  .notification .badge {
+    position: absolute;
+    top: -8px;
+    right: -15px;
+    padding: 5px 10px;
+    border-radius: 50%;
+    font-size: 11px;
+    background-color: blue;
+    color: white;
+  }
+}
