@@ -11,6 +11,7 @@ import { closeTab } from "../tabs/redux/tabsActions";
 import tabStatusTypes from "../tabs/tabStatusTypes";
 import CodeTemplate from "./codeTemplate";
 import CreateEndpointForm from "./createEndpointForm";
+import SaveAsSidebar from "./saveAsSidebar";
 import BodyContainer from "./displayBody";
 import DisplayDescription from "./displayDescription";
 import DisplayResponse from "./displayResponse";
@@ -1582,9 +1583,16 @@ class DisplayEndpoint extends Component {
         {getCurrentUser() ? (
           <div className={isDashboardRoute(this.props) ? "hm-panel mt-4" : null}>
             {this.state.showEndpointFormModal && (
-              <CreateEndpointForm
-                {...this.props}
-                show={true}
+              // <CreateEndpointForm
+              //   {...this.props}
+              //   show={true}
+              //   onHide={() => this.closeEndpointFormModal()}
+              //   set_group_id={this.setGroupId.bind(this)}
+              //   name={this.state.data.name}
+              //   save_endpoint={this.handleSave.bind(this)}
+              // />
+              <SaveAsSidebar 
+                {...this.props} 
                 onHide={() => this.closeEndpointFormModal()}
                 set_group_id={this.setGroupId.bind(this)}
                 name={this.state.data.name}
