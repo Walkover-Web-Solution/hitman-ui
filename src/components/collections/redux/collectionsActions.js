@@ -253,10 +253,7 @@ export const onCollectionDuplicatedError = (error) => {
 
 export const addCustomDomain = (
   collectionId,
-  domain,
-  dnsTarget,
-  title,
-  logoUrl
+  domain
 ) => {
   return (dispatch) => {
     let collection = { ...store.getState().collections[collectionId] };
@@ -264,10 +261,7 @@ export const addCustomDomain = (
       collection.docProperties.domainsList = [];
     }
     collection.docProperties.domainsList.push({
-      domain,
-      dnsTarget,
-      title,
-      logoUrl,
+      domain
     });
     dispatch(updateCollectionRequest({ ...collection }));
 

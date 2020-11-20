@@ -3,11 +3,11 @@ import { Modal } from "react-bootstrap";
 import "./publicEndpoint.scss";
 import Form from "../common/form";
 import Joi from "joi-browser";
-import herokuApiService from "../../services/herokuApiService";
 import { connect } from "react-redux";
 import jQuery from "jquery";
 import { toast } from "react-toastify";
 import { CopyToClipboard } from "react-copy-to-clipboard";
+import cirlceCiApiService from "../../services/circleCiApiService";
 
 const mapStateToProps = (state) => {
   return {
@@ -179,20 +179,23 @@ class PublishDocsModal extends Form {
       return;
     }
     try {
-      const { data: response } = await herokuApiService.createDomain(
-        this.state.data.newDomain
-      );
-      await herokuApiService.updateConfigVars({
-        [this.state.data
-          .newDomain]: `${this.state.data.newTitle},${this.state.data.newLogoUrl},${this.props.collection_id}`,
+      // const { data: response } = await herokuApiService.createDomain(
+      //   this.state.data.newDomain
+      // );
+      // await herokuApiService.updateConfigVars({
+      //   [this.state.data
+      //     .newDomain]: `${this.state.data.newTitle},${this.state.data.newLogoUrl},${this.props.collection_id}`,
+      // });
+      // this.props.add_custom_domain(
+      //   this.props.collection_id,
+      //   this.state.data.newDomain
+      // );
+      cirlceCiApiService.addEnvVariable('REACT_APP_CUSTOM_DOMAINS_LIST',process.env.REACT_APP_CUSTOM_DOMAINS_LIST+`;${this.state.data.newDomain},${this.props.collection_id}`)
+      
+      this.props.update_collection({
+        customDomain: this.state.data.newDomain,
+        id:this.props.collection_id
       });
-      this.props.add_custom_domain(
-        this.props.collection_id,
-        this.state.data.newDomain,
-        response.cname,
-        this.state.data.newTitle,
-        this.state.data.newLogoUrl
-      );
       const domainPropertiesShowFlags = {
         ...this.state.domainPropertiesShowFlags,
         [this.state.newDomain]: { show: false, isEditable: false },
@@ -368,14 +371,12 @@ class PublishDocsModal extends Form {
                 )}
           </div>
           <h5>Custom domain</h5>
+          Please map your domain to {process.env.REACT_APP_UI_IP} after adding here.
           <table className="table domain-list-table">
             <thead>
               <tr>
                 <th scope="col" className="domain-name-column-heading">
                   Domain name
-                </th>
-                <th scope="col" className="dns-target-column-heading">
-                  DNS Target
                 </th>
               </tr>
             </thead>
@@ -398,26 +399,6 @@ class PublishDocsModal extends Form {
                         }}
                       >
                         {d.domain}
-                      </td>
-                      <td className="dns-target-column-item">
-                        <label
-                          onClick={() => {
-                            this.showDocProperties(d.domain);
-                          }}
-                        >
-                          {d.dnsTarget}
-                        </label>
-                        <CopyToClipboard
-                          text={d.dnsTarget}
-                          className="copy-to-clipboard btn"
-                        >
-                          <button className="btn">
-                            <i className="fas fa-clone"></i>
-                          </button>
-                        </CopyToClipboard>
-                        <button className="btn delete-button">
-                          <i class="fas fa-trash"></i>
-                        </button>
                       </td>
                     </tr>
                     {this.state.domainPropertiesShowFlags[d.domain] &&
