@@ -14,11 +14,9 @@ import "./main.scss";
 import "./sidebar.scss";
 const mapStateToProps = (state) => {
   return {
-    // teams: state.teams,
     collections: state.collections,
     // versions: state.versions,
     // pages: state.pages,
-    // teamUsers: state.teamUsers,
     // groups: state.groups,
     filter: "",
   };
