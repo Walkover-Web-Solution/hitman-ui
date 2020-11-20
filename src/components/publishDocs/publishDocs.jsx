@@ -60,13 +60,25 @@ function PublishDocs(props) {
                         </div>
                          
                         <div className="grid-column-five">
-                            
+                            <button class="btn default">Reject</button>
+
                         </div>
 
                        <div className="grid-column-six">
                             <div className="publish-button">  <Button variant="success">PUBLISH</Button>
                         </div>
                         </div>
+                    </div>
+                    <div className="grid-three">
+                        <div className="grid-column-seven">
+                            sdads
+                        </div>
+                        <div className="grid-column-eight"> 
+                        <div ></div>
+                        <div>sdas</div>
+
+                        </div>
+                        
                     </div>
                 </div>
             </div>
