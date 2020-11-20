@@ -6,6 +6,7 @@ import store from "../../store/store";
 import { isDashboardRoute } from "../common/utility";
 import { isSavedEndpoint } from "../common/utility";
 import tabService from "../tabs/tabService";
+import { closeTab } from "../tabs/redux/tabsActions";
 import tabStatusTypes from "../tabs/tabStatusTypes";
 import CodeTemplate from "./codeTemplate";
 import CreateEndpointForm from "./createEndpointForm";
@@ -32,6 +33,7 @@ import collectionsApiService from "../collections/collectionsApiService";
 import indexedDbService from "../indexedDb/indexedDbService";
 import Authorization from "./displayAuthorization";
 import LoginSignupModal from "../main/loginSignupModal"
+import shortid from "shortid";
 
 const status = require("http-status");
 var URI = require("urijs");
@@ -61,6 +63,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(setAuthorizationType(endpointId, authData)),
     set_authorization_data: (versionId, data) =>
       dispatch(setAuthorizationData(versionId, data)),
+    // generate_temp_tab: (id) => dispatch(generateTempTab(id))
+    close_tab: (id) => dispatch(closeTab(id))
   };
 };
 
@@ -690,15 +694,26 @@ class DisplayEndpoint extends Component {
         endpoint.requestId = this.props.tab.id;
         endpoint.position = this.extractPosition(groupId || this.state.groupId);
         this.props.add_endpoint(endpoint, groupId || this.state.groupId);
-      } else if (this.state.title === "update endpoint") {
-        this.props.update_endpoint({
+      } 
+      else {
+        if(this.state.saveAsFlag)
+        {
+          console.log("add new by shortid");
+          endpoint.requestId = shortid.generate();
+          endpoint.position = this.extractPosition(groupId || this.state.groupId);
+          this.props.add_endpoint(endpoint, groupId || this.state.groupId);
+          this.setState({saveAsFlag:false});
+          this.props.close_tab(this.props.tab.id);
+        }
+        else if (this.state.title === "update endpoint") {
+          this.props.update_endpoint({
           ...endpoint,
           id: this.state.endpoint.id,
           groupId: groupId || this.state.groupId,
         });
+        tabService.markTabAsSaved(this.props.tab.id);
       }
-    }
-    tabService.markTabAsSaved(this.props.tab.id);
+    }}
   };
 
   doSubmitPathVariables() {
@@ -1650,14 +1665,26 @@ class DisplayEndpoint extends Component {
                 </button>
 
                 {isDashboardRoute(this.props) ? (
-                  <button
-                    className="btn btn-primary"
-                    type="button"
-                    id="save-endpoint-button"
-                    onClick={() => this.handleSave()}
-                  >
-                    Save
-                  </button>
+                  <div className="d-flex">
+                    <button
+                      className="btn btn-primary"
+                      type="button"
+                      id="save-endpoint-button"
+                      onClick={() => this.handleSave()}
+                    >
+                      Save
+                    </button>
+                    {this.props.location.pathname.split("/")[3] !== "new" && <button
+                      className="btn btn-primary"
+                      type="button"
+                      id="save-endpoint-button"
+                      onClick={() => this.setState({ saveAsFlag:true},()=>{
+                        this.openEndpointFormModal()
+                      })}
+                    >
+                      Save As
+                    </button>}
+                  </div>
                 ) : null}
               </div>
             </div>

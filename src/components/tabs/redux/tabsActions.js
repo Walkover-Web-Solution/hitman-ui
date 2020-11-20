@@ -180,6 +180,10 @@ export const replaceTab = (oldTabId, newTab) => {
       oldTabId,
       newTab,
     });
+    dispatch({
+      type: tabsActionTypes.SET_TABS_ORDER,
+      tabsOrder,
+    });
     indexedDbService.deleteData("tabs", oldTabId);
     indexedDbService.addData("tabs", newTab);
     indexedDbService.updateData("tabs_metadata", tabsOrder, "tabsOrder");
