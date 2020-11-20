@@ -169,3 +169,23 @@ input[type="text"]:focus {
 .version-collapse .sidebar-accordion#child-accordion {
   margin-top: 10px;
 }
+
+.app-name {
+  margin: 20px;
+  font-family: Alegreya Sans SC;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 22px;
+  line-height: 26px;
+  letter-spacing: 0.03em;
+  color: #212224;
+  .icon {
+    margin: 5px;
+  }
+}
+
+.empty-collections {
+  margin: 80px 20px 0px 20px;
+  .button {
+  }
+}

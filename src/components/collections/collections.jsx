@@ -482,14 +482,14 @@ class CollectionsComponent extends Component {
   }
 
   openPublishDocs(collection) {
-    // this.props.history.push({
-    //   pathname: "/documentation",
+    this.props.history.push({
+      pathname: `/admin/publish`,
+      search: `?collectionId=${collection.id}`,
+    })
+    // this.setState({
+    //   showPublishDocsModal: true,
     //   selectedCollection: collection.id,
-    // })
-    this.setState({
-      showPublishDocsModal: true,
-      selectedCollection: collection.id,
-    });
+    // });
   }
 
   showPublishDocsModal(onHide) {
