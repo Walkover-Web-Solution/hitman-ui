@@ -16,9 +16,9 @@ $border-color: rgba(227, 228, 230, 0.7);
       border: none;
       box-shadow: none;
     }
-    &:hover {
-      color: #ffffff;
-    }
+    // &:hover {
+    //   color: #ffffff;
+    // }
     > i {
       width: 30px;
       display: inline-block;
@@ -156,7 +156,6 @@ div.fixed {
     align-items: center;
     justify-content: space-between;
     font-size: 18px;
-    color: #fff;
   }
 
   .fas.fa-bell {
@@ -165,7 +164,6 @@ div.fixed {
   }
 
   .notification {
-    color: white;
     text-decoration: none;
     position: relative;
     display: inline-block;
@@ -179,7 +177,10 @@ div.fixed {
     padding: 5px 10px;
     border-radius: 50%;
     font-size: 11px;
-    background-color: blue;
-    color: white;
+    background-color: white;
+  }
+
+  .user-avatar {
+    background-color: rgb(255, 252, 246) !important;
   }
 }

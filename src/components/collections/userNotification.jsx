@@ -27,7 +27,7 @@ class UserInfo extends Component {
 
 
         <div className="user-notification user-info ">
-        <div className="user-avatar">
+        <div className="user-avatar ">
           <i className="uil uil-user"></i>
         </div>
         <div className="user-details">

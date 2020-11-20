@@ -15,6 +15,7 @@ import { fetchAllTeamsOfUser } from "../teams/redux/teamsActions";
 import ContentPanel from "./contentPanel";
 import "./main.scss";
 import SideBar from "./sidebar";
+import { getCurrentUser } from "../auth/authService";
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -36,7 +37,9 @@ class Main extends Component {
   };
 
   async componentDidMount() {
-    this.fetchAll();
+    if (getCurrentUser()) {
+      this.fetchAll();
+    }
     await indexedDbService.createDataBase();
   }
 
@@ -57,6 +60,7 @@ class Main extends Component {
       this.setState({ tabs });
     }
   }
+
   setEnvironment(environment) {
     this.setState({ currentEnvironment: environment });
   }
