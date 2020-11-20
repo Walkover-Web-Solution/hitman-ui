@@ -18,6 +18,7 @@ import hitmanIcon from "../../assets/icons/hitman.svg"
 import collectionIcon from "../../assets/icons/collectionIcon.svg"
 import historyIcon from "../../assets/icons/historyIcon.svg"
 import randomTriggerIcon from "../../assets/icons/randomTriggerIcon.svg"
+import emptyCollections from "../../assets/icons/emptyCollections.svg"
 
 const mapStateToProps = (state) => {
   return {
@@ -171,19 +172,22 @@ class SideBar extends Component {
                 <Tab eventKey="collection" title={
                   <img src={collectionIcon}></img>
                 } >
-                  {!getCurrentUser() ? (<div>
-                    Your collection is Empty.
-                    <br></br>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    <Button variant="warning" onClick={() => this.setState({
-                      showLoginSignupModal: true
-                    })
-                    }
-                    >+ Add here</Button>{' '}
-                  </div>) : null}
+                  {!getCurrentUser() ? (
+                    <div className="empty-collections">
+                      <div> <img src={emptyCollections}></img></div>
+                      <div className="content">
+                        Your collection is Empty.
+                        <br></br>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                      </div>
+                      <Button className="button" variant="warning" onClick={() => this.setState({
+                        showLoginSignupModal: true
+                      })
+                      }
+                      >+ Add here</Button>{' '}
+                    </div>) : null}
                 </Tab>
                 <Tab eventKey="history" title={<img src={historyIcon}></img>
-
                 }>
                 </Tab>
                 <Tab eventKey="randomTrigger" title={<img src={randomTriggerIcon}></img>

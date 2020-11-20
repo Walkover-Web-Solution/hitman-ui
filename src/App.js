@@ -38,13 +38,13 @@ class App extends Component {
     // this.redirectToClientDomain();
     return (
       <Switch>
+        <Route path="/admin/publish" component={PublishDocs} />
         <Route path="/dashboard/" component={Main} />
         <Route path="/p/error" component={NotFound} />
         <Route path="/p/:collectionIdentifier" component={Public} />
         <Route path="/logout" component={Logout} />
         <Route path="/login" component={Login} />
         <Route path="/marketPlace" component={PublicView} />
-        <Route path="/admin/publish" component={PublishDocs} />
         <Route path="/" component={Landing} />
       </Switch>
     );
