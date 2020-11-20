@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button, DropdownButton, Dropdown } from 'react-bootstrap';
+import MyPicker from './customColorPicker'
 import SideBar from '../main/sidebar';
 import "./publishDocs.scss"
 import { connect } from "react-redux";
@@ -56,9 +57,10 @@ function PublishDocs(props) {
                     <div className="grid">
                         <div className="grid-column-one">
                             <div className="domain">
-                                Domain: docs.msg91.com
+                                Domain:   <input type="text"/>
                                 <br />
-                                 Slug: api/sendsms/bulk
+                               
+                                 Title: <input type="text"/>
                             </div>
                             <div className="product">
                                 MSG91
@@ -68,6 +70,9 @@ function PublishDocs(props) {
                         <div className="grid-column-two">
                             <div>
                                 Pick your favorite color for website
+                           </div>
+                           <div>
+                           <MyPicker/>
                            </div>
 
                         </div>
