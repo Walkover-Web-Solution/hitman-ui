@@ -9,10 +9,6 @@ import collectionVersionsService from "../collectionVersions/collectionVersionsS
 import ImportVersionForm from "../collectionVersions/importVersionForm";
 import { isDashboardRoute } from "../common/utility";
 import endpointApiService from "../endpoints/endpointApiService";
-import {
-  fetchAllUsersOfTeam,
-  shareCollection,
-} from "../teamUsers/redux/teamUsersActions";
 import collectionsService from "./collectionsService";
 import {
   addCollection,
@@ -21,7 +17,6 @@ import {
   updateCollection,
   addCustomDomain,
 } from "./redux/collectionsActions";
-import ShareCollectionForm from "./shareCollectionForm";
 import "./collections.scss";
 import PublishDocsModal from "../publicEndpoint/publishDocsModal";
 import authService from "../auth/authService";
@@ -30,11 +25,9 @@ import TagManagerModal from "./tagModal";
 
 const mapStateToProps = (state) => {
   return {
-    teams: state.teams,
     collections: state.collections,
     versions: state.versions,
     pages: state.pages,
-    teamUsers: state.teamUsers,
     groups: state.groups,
   };
 };
@@ -42,16 +35,12 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     add_collection: (newCollection) => dispatch(addCollection(newCollection)),
-    share_collection: (teamMemberData) =>
-      dispatch(shareCollection(teamMemberData)),
     update_collection: (editedCollection) =>
       dispatch(updateCollection(editedCollection)),
     delete_collection: (collection, props) =>
       dispatch(deleteCollection(collection, props)),
     duplicate_collection: (collection) =>
       dispatch(duplicateCollection(collection)),
-    fetch_all_users_of_team: (teamIdentifier) =>
-      dispatch(fetchAllUsersOfTeam(teamIdentifier)),
     add_custom_domain: (collectionId, domain, dnsTarget, title, logoUrl) =>
       dispatch(
         addCustomDomain(collectionId, domain, dnsTarget, title, logoUrl)
@@ -118,36 +107,6 @@ class CollectionsComponent extends Component {
   async handleGoToDocs(collection) {
     const publicDocsUrl = `${process.env.REACT_APP_UI_URL}/p/${collection.id}`;
     window.open(publicDocsUrl, "_blank");
-  }
-
-  showShareCollectionForm() {
-    return (
-      this.state.showCollectionShareForm && (
-        <ShareCollectionForm
-          {...this.props}
-          show={true}
-          onHide={() => {
-            this.setState({ showCollectionShareForm: false });
-          }}
-          team_id={this.state.selectedCollection.teamId}
-          title="Share Collection"
-          collection_id={this.state.selectedCollection.id}
-        />
-      )
-    );
-  }
-
-  shareCollection(collectionId) {
-    this.props.fetch_all_users_of_team(
-      this.props.collections[collectionId].teamId
-    );
-    this.setState({
-      showCollectionShareForm: true,
-      selectedCollection: {
-        ...this.props.collections[collectionId],
-      },
-      collectionFormName: "Share Collection",
-    });
   }
 
   openAddCollectionForm() {
@@ -224,7 +183,6 @@ class CollectionsComponent extends Component {
 
   handlePublic(collection) {
     collection.isPublic = !collection.isPublic;
-    delete collection.teamId;
     this.props.update_collection({ ...collection });
   }
 
@@ -241,16 +199,6 @@ class CollectionsComponent extends Component {
     this.props.empty_filter();
     this.collectionId = null;
     this.setState({ openSelectedCollection: false });
-  }
-
-  fetchCurrentUserRole() {
-    const { user: currentUser } = authService.getCurrentUser();
-    const teamArray = Object.keys(this.props.teamUsers);
-    for (let i = 0; i < teamArray.length; i++) {
-      if (currentUser.identifier === teamArray[i]) {
-        return this.props.teamUsers[currentUser.identifier].role;
-      }
-    }
   }
 
   TagManagerModal(collectionId) {
@@ -383,7 +331,6 @@ class CollectionsComponent extends Component {
                     Go to Docs
                   </a>
                 )}
-                {/* {(this.currentUserRole==="Admin"||this.currentUserRole==="Owner") && ( */}
                 <a
                   className="dropdown-item"
                   onClick={() =>
@@ -391,15 +338,6 @@ class CollectionsComponent extends Component {
                   }
                 >
                   Publish Docs
-                </a>
-
-                <a
-                  className="dropdown-item"
-                  onClick={() => {
-                    this.shareCollection(collectionId);
-                  }}
-                >
-                  Share
                 </a>
                 <a
                   className="dropdown-item"
@@ -545,7 +483,6 @@ class CollectionsComponent extends Component {
                   this.state.selectedCollection
                 )}
               {this.showImportVersionForm()}
-              {this.showShareCollectionForm()}
               {this.openTagManagerModal()}
               {this.state.showDeleteModal &&
                 collectionsService.showDeleteCollectionModal(
