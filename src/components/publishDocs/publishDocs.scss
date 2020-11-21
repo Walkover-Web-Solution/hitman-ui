@@ -47,9 +47,14 @@
   display: grid;
   grid-template-columns: 0.5fr 1.5fr;
   .versions-section {
-    border: 1px solid black;
+    margin: 10px;
+    .selected-version {
+      padding: 10px;
+      margin: 4px;
+      width: 80%;
+    }
     .version-groups {
-      padding: 50px;
+      padding: 10px;
     }
     .groups {
       margin: 10px;

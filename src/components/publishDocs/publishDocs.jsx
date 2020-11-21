@@ -67,6 +67,9 @@ class PublishDocs extends Component {
 
     componentDidUpdate(prevProps, prevState) {
         if (prevProps !== this.props) {
+            this.setState({
+                selectedCollectionId: URI.parseQuery(this.props.location.search).collectionId
+            })
             this.extractCollectionInfo()
         }
     }
@@ -145,18 +148,13 @@ class PublishDocs extends Component {
 
                             <select name="selectedCollection"
                                 onChange={this.setSelectedCollection.bind(this)}
+                                value={this.state.selectedCollectionId}
                             >
                                 {this.props.collections ? Object.keys(this.props.collections).map((id) =>
                                     <option value={id}>{this.props.collections[id]?.name}</option>
                                 ) : null}
                             </select>
                         </div>
-
-
-
-
-
-
 
                         <div className="grid">
                             <div className="grid-column-one">
@@ -181,7 +179,7 @@ class PublishDocs extends Component {
 
                         <div className="grid-two">
                             <div className="versions-section">
-                                <select className="selected-API" onChange={this.setSelectedVersion.bind(this)}
+                                <select className="selected-version" onChange={this.setSelectedVersion.bind(this)}
                                 >
                                     {this.versions ? Object.keys(this.versions).map((id) =>
                                         <option value={id}>{this.props.versions[id]?.number}</option>
