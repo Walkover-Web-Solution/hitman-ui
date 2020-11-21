@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import auth from "../auth/authService";
 import { Link } from "react-router-dom";
 import {Dropdown} from 'react-bootstrap'
+import authService from "../auth/authService";
 
 class UserInfo extends Component {
   state = { user: { name: "", email: "" } };
@@ -9,7 +10,7 @@ class UserInfo extends Component {
   componentDidMount() {
     if (auth.getCurrentUser()) {
       let user = {};
-      const { user: currentUser } = auth.getCurrentUser();
+      const currentUser = auth.getCurrentUser();
       user.name = currentUser.first_name + currentUser.last_name;
       user.email = currentUser.email;
       this.setState({ user });
@@ -47,7 +48,7 @@ class UserInfo extends Component {
             <div className="user-name">
               {this.state.user.name}
             </div>
-            <Dropdown>
+            {authService.isAdmin() && <Dropdown>
             <Dropdown.Toggle variant="success" id="dropdown-basic">
             <div  class=" user-name notification"
             //  onClick = {()=>this.navigateToPublishDocs()}
@@ -62,7 +63,12 @@ class UserInfo extends Component {
                 <Link to="/logout">Sign out</Link>
               </li></Dropdown.Item>
             </Dropdown.Menu>
-          </Dropdown>
+          </Dropdown>}
+          {
+            !authService.isAdmin() &&
+            <Link to="/logout">Sign out</Link>
+          
+          }
           </div>
         </div>
       </div>

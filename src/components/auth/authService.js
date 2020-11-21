@@ -27,6 +27,24 @@ export function loginWithJwt(jwt) {
   localStorage.setItem(tokenKey, jwt);
 }
 
+export function isAdmin(){
+    let organisation = localStorage.getItem(orgKey)
+    organisation = JSON.parse(organisation)
+    let {org_user : orgUser} = organisation
+    if(orgUser.is_admin)
+    return true
+    else if(!orgUser.is_admin){
+      let {product_roles : productRoles}  =orgUser
+      if(productRoles?.hitman?.is_product_admin){
+        return true
+      }
+      else{
+        return false
+      }
+    }
+    
+}
+
 export function logout() {
   localStorage.removeItem(tokenKey);
   localStorage.removeItem(profileKey);
@@ -52,4 +70,5 @@ export default {
   logout,
   getCurrentUser,
   getJwt,
+  isAdmin
 };
