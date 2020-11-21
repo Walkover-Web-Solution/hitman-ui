@@ -7,6 +7,7 @@ import {
   updateTab,
 } from "../tabs/redux/tabsActions";
 import tabStatusTypes from "./tabStatusTypes";
+import { getCurrentUser } from "../auth/authService";
 
 function newTab(props) {
   store.dispatch(addNewTab({ ...props.history }));
@@ -70,9 +71,11 @@ function disablePreviewMode(tabId) {
 }
 
 function markTabAsModified(tabId) {
-  const tab = store.getState().tabs.tabs[tabId];
-  if (!tab.isModified) {
-    store.dispatch(updateTab(tabId, { previewMode: false, isModified: true }));
+  if (getCurrentUser()) {
+    const tab = store.getState().tabs.tabs[tabId];
+    if (!tab.isModified) {
+      store.dispatch(updateTab(tabId, { previewMode: false, isModified: true }));
+    }
   }
 }
 

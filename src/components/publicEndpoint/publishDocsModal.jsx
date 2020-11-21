@@ -84,7 +84,6 @@ class PublishDocsModal extends Form {
       ...this.props.collections[this.props.collection_id],
       environment,
     };
-    delete collection.teamId;
     this.props.update_collection(collection);
   }
 
@@ -105,7 +104,6 @@ class PublishDocsModal extends Form {
         ...this.props.collections[this.props.collection_id],
         docProperties,
       };
-      delete collection.teamId;
       this.props.update_collection(collection);
       this.setState({ editableDocProperties: false });
     }
@@ -230,13 +228,11 @@ class PublishDocsModal extends Form {
       ...this.props.collections[this.props.collection_id],
       docProperties,
     };
-    delete collection.teamId;
     this.props.update_collection(collection);
     this.makeDomainPropertiesEditable(domain, false);
   }
   handleMakePublic(collection) {
     collection.isPublic = !collection.isPublic;
-    delete collection.teamId;
     this.props.update_collection({ ...collection });
   }
 

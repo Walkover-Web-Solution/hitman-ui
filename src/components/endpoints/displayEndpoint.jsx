@@ -2,18 +2,20 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { toast } from "react-toastify";
+import { Dropdown, ButtonGroup } from "react-bootstrap";
 import store from "../../store/store";
 import { isDashboardRoute } from "../common/utility";
 import { isSavedEndpoint } from "../common/utility";
 import tabService from "../tabs/tabService";
+import { closeTab } from "../tabs/redux/tabsActions";
 import tabStatusTypes from "../tabs/tabStatusTypes";
 import CodeTemplate from "./codeTemplate";
-import CreateEndpointForm from "./createEndpointForm";
+import SaveAsSidebar from "./saveAsSidebar";
 import BodyContainer from "./displayBody";
 import DisplayDescription from "./displayDescription";
 import DisplayResponse from "./displayResponse";
 import SampleResponse from "./sampleResponse";
-
+import { getCurrentUser } from "../auth/authService";
 import endpointApiService from "./endpointApiService";
 import "./endpoints.scss";
 import GenericTable from "./genericTable";
@@ -28,9 +30,13 @@ import {
   setAuthorizationResponses,
   setAuthorizationData,
 } from "../collectionVersions/redux/collectionVersionsActions";
+import { addHistory } from "../history/redux/historyAction";
 import collectionsApiService from "../collections/collectionsApiService";
 import indexedDbService from "../indexedDb/indexedDbService";
 import Authorization from "./displayAuthorization";
+import LoginSignupModal from "../main/loginSignupModal"
+const shortid = require('shortid');
+
 const status = require("http-status");
 var URI = require("urijs");
 
@@ -59,12 +65,14 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(setAuthorizationType(endpointId, authData)),
     set_authorization_data: (versionId, data) =>
       dispatch(setAuthorizationData(versionId, data)),
+    // generate_temp_tab: (id) => dispatch(generateTempTab(id))
+    close_tab: (id) => dispatch(closeTab(id)),
+    add_history: (data) => dispatch(addHistory(data))
   };
 };
 
 class DisplayEndpoint extends Component {
   uri = React.createRef();
-  // name = React.createRef();
   paramKey = React.createRef();
 
   state = {
@@ -117,6 +125,9 @@ class DisplayEndpoint extends Component {
   };
 
   async componentDidMount() {
+    this.endpointId = this.props.endpointId ? this.props.endpointId : isDashboardRoute(this.props) ? this.props.location.pathname.split("/")[3] :
+      this.props.location.pathname.split("/")[4];
+
     if (this.props.location.pathname.split("/")[3] === "new") {
       this.setState({
         data: {
@@ -160,6 +171,14 @@ class DisplayEndpoint extends Component {
     // }
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (!isDashboardRoute(this.props)) {
+      if (this.state.data !== prevState.data || this.state.originalParams !== prevState.originalParams || this.state.originalHeaders !== prevState.originalHeaders) {
+        this.prepareHarObject();
+      }
+    }
+  }
+
   structueParamsHeaders = [
     {
       checked: "notApplicable",
@@ -184,17 +203,14 @@ class DisplayEndpoint extends Component {
       });
     }
   }
+
   fetchEndpoint(flag, endpointId) {
     let endpoint = {};
     let originalParams = [];
     let originalHeaders = [];
     let pathVariables = [];
     const split = this.props.location.pathname.split("/");
-
-    if (isDashboardRoute(this.props)) {
-      if (!endpointId) endpointId = split[3];
-    } else endpointId = split[4];
-
+    endpointId = this.endpointId
     const { endpoints } = store.getState();
     const { groups } = store.getState();
     const { versions } = store.getState();
@@ -610,6 +626,45 @@ class DisplayEndpoint extends Component {
     return path;
   }
 
+  setData = async () => {
+    let body = this.state.data.body;
+    if (this.state.data.body.type === "raw") {
+      body.value = this.parseBody(body.value);
+    }
+    const headersData = this.doSubmitHeader("save");
+    const updatedParams = this.doSubmitParam();
+    const pathVariables = this.doSubmitPathVariables();
+    const endpoint = {
+      uri: this.uri.current.value,
+      name: this.state.data.name,
+      requestType: this.state.data.method,
+      body: body,
+      headers: headersData,
+      params: updatedParams,
+      pathVariables: pathVariables,
+      BASE_URL:
+        this.customState.selectedHost === "customHost"
+          ? this.customState.BASE_URL
+          : null,
+      bodyDescription:
+        this.state.data.body.type === "JSON"
+          ? this.state.bodyDescription
+          : {},
+      authorizationType: this.state.authType,
+    };
+    const response = { ...this.state.response };
+    const createdAt = new Date();
+    const timeElapsed = this.state.timeElapsed;
+    let obj = {
+      id: shortid.generate(),
+      endpoint: { ...endpoint },
+      response,
+      timeElapsed,
+      createdAt
+    }
+    this.props.add_history(obj)
+  }
+
   handleSend = async () => {
     let startTime = new Date().getTime();
     let response = {};
@@ -631,7 +686,8 @@ class DisplayEndpoint extends Component {
     } catch (e) {
       toast.error("Invalid JSON Body");
     }
-    this.handleApiCall(api, body, headers, this.state.data.body.type);
+    await this.handleApiCall(api, body, headers, this.state.data.body.type);
+    this.setData();
   };
 
   extractPosition(groupId) {
@@ -647,7 +703,19 @@ class DisplayEndpoint extends Component {
     return count + 1;
   }
 
+  extractCollectionId(groupId) {
+    const group = this.props.groups[groupId]
+    const versionId = group.versionId
+    const version = this.props.versions[versionId]
+    return version.collectionId
+  }
+
   handleSave = async (groupId, EndpointName) => {
+    if (!getCurrentUser()) {
+      this.setState({
+        showLoginSignupModal: true
+      })
+    }
     if (!(this.state.groupId || groupId)) {
       this.openEndpointFormModal();
     } else {
@@ -655,7 +723,6 @@ class DisplayEndpoint extends Component {
       if (this.state.data.body.type === "raw") {
         body.value = this.parseBody(body.value);
       }
-
       const headersData = this.doSubmitHeader("save");
       const updatedParams = this.doSubmitParam();
       const pathVariables = this.doSubmitPathVariables();
@@ -677,21 +744,32 @@ class DisplayEndpoint extends Component {
             : {},
         authorizationType: this.state.authType,
       };
-      // if (endpoint.name === "" || endpoint.uri === "")
       if (endpoint.name === "") toast.error("Please enter Endpoint name");
       else if (this.props.location.pathname.split("/")[3] === "new") {
         endpoint.requestId = this.props.tab.id;
+        const collectionId = this.extractCollectionId(groupId || this.state.groupId)
         endpoint.position = this.extractPosition(groupId || this.state.groupId);
         this.props.add_endpoint(endpoint, groupId || this.state.groupId);
-      } else if (this.state.title === "update endpoint") {
-        this.props.update_endpoint({
-          ...endpoint,
-          id: this.state.endpoint.id,
-          groupId: groupId || this.state.groupId,
-        });
+      }
+      else {
+        if (this.state.saveAsFlag) {
+          console.log("add new by shortid");
+          endpoint.requestId = shortid.generate();
+          endpoint.position = this.extractPosition(groupId || this.state.groupId);
+          this.props.add_endpoint(endpoint, groupId || this.state.groupId);
+          this.setState({ saveAsFlag: false });
+          this.props.close_tab(this.props.tab.id);
+        }
+        else if (this.state.title === "update endpoint") {
+          this.props.update_endpoint({
+            ...endpoint,
+            id: this.state.endpoint.id,
+            groupId: groupId || this.state.groupId,
+          });
+          tabService.markTabAsSaved(this.props.tab.id);
+        }
       }
     }
-    tabService.markTabAsSaved(this.props.tab.id);
   };
 
   doSubmitPathVariables() {
@@ -894,7 +972,7 @@ class DisplayEndpoint extends Component {
   }
 
   closeEndpointFormModal() {
-    this.setState({ showEndpointFormModal: false });
+    this.setState({ showEndpointFormModal: false, saveAsFlag: false });
   }
 
   setGroupId(groupId, endpointName) {
@@ -949,7 +1027,7 @@ class DisplayEndpoint extends Component {
       body.value
     ) {
       paramsFlag = true;
-      for (let i = 0; i < body.value.length - 1; i++) {
+      for (let i = 0; i < body.value.length; i++) {
         if (body.value[i].checked === "true" && body.value[i].key !== "") {
           params.push({
             name: body.value[i].key,
@@ -997,7 +1075,7 @@ class DisplayEndpoint extends Component {
       if (!harObject.url.split(":")[1] || harObject.url.split(":")[0] === "") {
         harObject.url = "https://" + url;
       }
-      this.openCodeTemplate(harObject);
+      this.setState({ harObject }, () => { });
     } catch (error) {
       toast.error(error);
     }
@@ -1031,9 +1109,7 @@ class DisplayEndpoint extends Component {
   setBody(bodyType, body) {
     let data = { ...this.state.data };
     data.body = { type: bodyType, value: body };
-    // if (bodyType !== "multipart/form-data") {
-    this.setHeaders(bodyType, "content-type");
-    // }
+    isDashboardRoute(this.props) && this.setHeaders(bodyType, "content-type");
     this.setState({ data });
     if (isDashboardRoute(this.props)) {
       tabService.markTabAsModified(this.props.tab.id);
@@ -1050,7 +1126,6 @@ class DisplayEndpoint extends Component {
       let body = JSON.parse(value);
       let keys = Object.keys(body);
       let bodyDescription = {};
-      // const body_description = this.props.body_description;
       for (let i = 0; i < keys.length; i++) {
         if (typeof body[keys[i]] !== "object") {
           bodyDescription[keys[i]] = {
@@ -1120,43 +1195,6 @@ class DisplayEndpoint extends Component {
   setFieldDescription(fieldDescription, bodyDescription) {
     this.setState({ fieldDescription, bodyDescription });
   }
-
-  // setHeaders(encodedValue) {
-  //   let originalHeaders = this.state.originalHeaders;
-  //   let updatedHeaders = [];
-  //   let emptyHeader = {
-  //     checked: "notApplicable",
-  //     key: "",
-  //     value: "",
-  //     description: "",
-  //   };
-  //   for (let i = 0; i < originalHeaders.length; i++) {
-  //     if (
-  //       originalHeaders[i].key === "Authorization" ||
-  //       originalHeaders[i].key === ""
-  //     ) {
-  //       continue;
-  //     } else {
-  //       updatedHeaders.push(originalHeaders[i]);
-  //     }
-  //   }
-  //   // if (bodyType === "none") {
-  //   //   updatedHeaders.push(emptyHeader);
-  //   //   this.setState({ originalHeaders: updatedHeaders });
-  //   //   return;
-  //   // }
-  //   updatedHeaders.push({
-  //     checked: "true",
-  //     key: "Authorization",
-  //     value: "Basic " + encodedValue,
-  //     description: "",
-  //   });
-  //   // updatedHeaders[updatedHeaders.length - 1].value = this.identifyBodyType(
-  //   //   bodyType
-  //   // );
-  //   updatedHeaders.push(emptyHeader);
-  //   this.setState({ originalHeaders: updatedHeaders });
-  // }
 
   setParams(value, title, authorizationFlag) {
     let originalParams = this.state.originalParams;
@@ -1305,67 +1343,6 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  // async extractToken(
-  //   endpoint,
-  //   groups,
-  //   authData,
-  //   authResponses,
-  //   authType,
-  //   responseObject = undefined
-  // ) {
-  //   let url = window.location.href;
-  // let response = {};
-  // if (responseObject === undefined) {
-  // let response = URI.parseQuery("?" + url.split("#")[1]);
-  // } else {
-  //   response = responseObject;
-  // }
-
-  // if (url.split("#")[1]) {
-  //   await indexedDbService.getDataBase();
-  //   await indexedDbService.updateData(
-  //     "responseData",
-  //     response,
-  //     "currentResponse"
-  //   );
-  //   window.close();
-
-  //   if (endpoint === "") {
-  //     let authType = {
-  //       type: "oauth_2",
-  //       value: {
-  //         authorizationAddedTo: "Request Headers",
-  //         accessToken: response.access_token,
-  //       },
-  //     };
-  //     this.setState({ authType });
-  //     this.props.history.push(`/dashboard/endpoint/new`);
-  //   } else {
-  //     this.accessToken = response.access_token;
-  //     response.tokenName = authData.tokenName;
-  //     authResponses.push(response);
-
-  //     if (endpoint.groupId) {
-  //       let authorizationType = authType;
-  //       authorizationType.value.accessToken = response.access_token;
-  //       this.props.set_authorization_type(
-  //         this.props.location.pathname.split("/")[3],
-  //         authorizationType
-  //       );
-  //     }
-
-  //     if (endpoint.groupId) {
-  //       this.props.set_authorization_responses(
-  //         groups[endpoint.groupId].versionId,
-  //         authResponses
-  //       );
-  //     }
-  //     this.props.history.push(`/dashboard/endpoint/${endpoint.id}`);
-  //   }
-  //   this.setAuthorizationTab = true;
-  //   }
-  // }
-  //  async setAccessToken(endpoint, versions, groups, authType) {
 
   async setAccessToken() {
     let url = window.location.href;
@@ -1410,47 +1387,6 @@ class DisplayEndpoint extends Component {
       );
     }
 
-    // await indexedDbService.getDataBase();
-    // let authData = await indexedDbService.getValue(
-    //   "authData",
-    //   "currentAuthData"
-    // );
-    // let abcd = await indexedDbService.getValue(
-    //   "responseData",
-    //   "currentResponse"
-    // );
-
-    // let authResponses = {};
-    // if (endpoint !== "") {
-    //   authResponses =
-    //     versions[groups[endpoint.groupId].versionId].authorizationResponse;
-    // }
-    // this.extractToken(endpoint, groups, authData, authResponses, authType);
-    // if (url.split("?")[1]) {
-    //   this.setAuthorizationTab = true;
-    //   let resposneAuthCode = URI.parseQuery("?" + url.split("?")[1]);
-    //   let code = resposneAuthCode.code;
-    //   let paramsObject = {};
-    //   paramsObject.code = code;
-    //   paramsObject.client_id = authData.clientId;
-    //   paramsObject.client_secret = authData.clientSecret;
-    //   paramsObject.redirect_uri = authData.callbackUrl;
-    //   let response = await endpointApiService.authorize(
-    //     authData.accessTokenUrl,
-    //     paramsObject,
-    //     "auth_code"
-    //   );
-    //   this.extractToken(
-    //     endpoint,
-    //     groups,
-    //     authData,
-    //     authResponses,
-    //     authType,
-    //     response
-    //   );
-    // }
-    // await indexedDbService.deleteData("authData", "currentAuthData");
-    // authData = await indexedDbService.getValue("authData", "currentAuthData");
   }
 
   setAuthType(type, value) {
@@ -1495,7 +1431,15 @@ class DisplayEndpoint extends Component {
     this.setState({ sampleResponseFlagArray });
   }
 
+  closeLoginSignupModal() {
+    this.setState({
+      showLoginSignupModal: false
+    })
+  }
+
   render() {
+    this.endpointId = this.props.endpointId ? this.props.endpointId : isDashboardRoute(this.props) ? this.props.location.pathname.split("/")[3] :
+      this.props.location.pathname.split("/")[4];
     if (
       isDashboardRoute(this.props) &&
       this.state.groupId &&
@@ -1531,246 +1475,352 @@ class DisplayEndpoint extends Component {
 
     if (
       !isDashboardRoute(this.props) &&
-      this.state.endpoint.id !== this.props.location.pathname.split("/")[4] &&
-      this.props.endpoints[this.props.location.pathname.split("/")[4]]
+      this.state.endpoint.id !== this.endpointId &&
+      this.props.endpoints[this.endpointId]
     ) {
-      this.fetchEndpoint(0, this.props.location.pathname.split("/")[4]);
+      this.fetchEndpoint(0, this.endpointId);
       store.subscribe(() => {
         if (!this.props.location.title && !this.state.title) {
-          this.fetchEndpoint(0, this.props.location.pathname.split("/")[4]);
+          this.fetchEndpoint(0, this.endpointId);
         }
       });
     }
     return (
-      <div className="hm-endpoint-container endpoint-container">
-        <div className={isDashboardRoute(this.props) ? "hm-panel mt-4" : null}>
-          {this.state.showEndpointFormModal && (
-            <CreateEndpointForm
-              {...this.props}
+      <div className="d-flex">
+        <div className="hm-endpoint-container endpoint-container mx-3">
+          {this.state.showLoginSignupModal && (
+            <LoginSignupModal
               show={true}
-              onHide={() => this.closeEndpointFormModal()}
-              set_group_id={this.setGroupId.bind(this)}
-              name={this.state.data.name}
-              save_endpoint={this.handleSave.bind(this)}
+              onHide={() => this.closeLoginSignupModal()}
+              title="Save Endpoint"
             />
           )}
-          {this.state.showCodeTemplate && this.showCodeTemplate()}
-          <DisplayDescription
-            {...this.props}
-            endpoint={this.state.endpoint}
-            data={this.state.data}
-            old_description={this.state.oldDescription}
-            props_from_parent={this.propsFromDescription.bind(this)}
-          />
-        </div>
-        <div
-          className={!isDashboardRoute(this.props) ? "hm-panel" : "hm-panel"}
-        >
-          {isDashboardRoute(this.props) ? (
-            <div className="endpoint-url-container">
-              <div className="input-group-prepend">
-                <div>
-                  <div className="dropdown">
-                    <button
-                      className={`api-label ${this.state.data.method} dropdown-toggle`}
-                      type="button"
-                      id="dropdownMenuButton"
-                      data-toggle="dropdown"
-                      aria-haspopup="true"
-                      aria-expanded="false"
-                      disabled={isDashboardRoute(this.props) ? null : true}
-                    >
-                      {this.state.data.method}
-                    </button>
-                    <div
-                      className="dropdown-menu"
-                      aria-labelledby="dropdownMenuButton"
-                    >
-                      {this.state.methodList.map((methodName) => (
-                        <button
-                          className="btn custom-request-button"
-                          onClick={() => this.setMethod(methodName)}
-                          key={methodName}
-                        >
-                          {methodName}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                <HostContainer
+          {getCurrentUser() ? (
+            <div className={isDashboardRoute(this.props) ? "hm-panel mt-4" : null}>
+              {this.state.showEndpointFormModal && (
+                <SaveAsSidebar
                   {...this.props}
-                  groupId={this.state.groupId}
-                  set_base_url={this.setBaseUrl.bind(this)}
-                  custom_host={this.state.endpoint.BASE_URL}
+                  onHide={() => this.closeEndpointFormModal()}
+                  set_group_id={this.setGroupId.bind(this)}
+                  name={this.state.data.name}
+                  save_endpoint={this.handleSave.bind(this)}
                 />
-                <input
-                  ref={this.uri}
-                  type="text"
-                  value={this.state.data.updatedUri}
-                  name="updatedUri"
-                  className="form-control endpoint-url-input"
-                  aria-describedby="basic-addon3"
-                  placeholder={"Enter request URL"}
-                  onChange={this.handleChange}
-                  disabled={isDashboardRoute(this.props) ? null : true}
-                />
-              </div>
-              <div className="d-flex">
-                <button
-                  className="btn btn-info"
-                  type="submit"
-                  id="send-request-button"
-                  onClick={() => this.handleSend()}
-                >
-                  {isDashboardRoute(this.props) ? "Send" : "Try"}
-                </button>
-
-                {isDashboardRoute(this.props) ? (
-                  <button
-                    className="btn btn-primary"
-                    type="button"
-                    id="save-endpoint-button"
-                    onClick={() => this.handleSave()}
-                  >
-                    Save
-                  </button>
-                ) : null}
-              </div>
-            </div>
-          ) : (
-            <div className="hm-endpoint-wrap">
-              <div className="hm-endpoint-header">
-                <div
-                  className={`api-label api-label-lg ${this.state.data.method}`}
-                >
-                  {this.state.data.method}
-                </div>
-                <a
-                  href="javascript:void(0)"
-                  id="show-code-snippets-button"
-                  onClick={() => this.prepareHarObject()}
-                >
-                  Sample Code
-                </a>
-              </div>
-              <div className="endpoint-host">
-                <HostContainer
-                  {...this.props}
-                  groupId={this.state.groupId}
-                  set_base_url={this.setBaseUrl.bind(this)}
-                  custom_host={this.state.endpoint.BASE_URL}
-                />
-              </div>
-              <input
-                ref={this.uri}
-                type="hidden"
-                value={this.state.data.updatedUri}
-                name="updatedUri"
+              )}
+              <DisplayDescription
+                {...this.props}
+                endpoint={this.state.endpoint}
+                data={this.state.data}
+                old_description={this.state.oldDescription}
+                props_from_parent={this.propsFromDescription.bind(this)}
               />
-              <div className="endpoint-uri">{this.state.data.updatedUri}</div>
             </div>
-          )}
+          ) : null}
           <div
-            className={
-              isDashboardRoute(this.props)
-                ? "endpoint-headers-container"
-                : "hm-public-endpoint-headers"
-            }
+            className={!isDashboardRoute(this.props) ? "hm-panel" : "hm-panel"}
           >
             {isDashboardRoute(this.props) ? (
-              <div className="headers-params-wrapper">
-                <ul className="nav nav-tabs" id="pills-tab" role="tablist">
-                  <li className="nav-item">
-                    <a
-                      className={
-                        this.setAuthorizationTab
-                          ? "nav-link "
-                          : "nav-link active"
-                      }
-                      id="pills-params-tab"
-                      data-toggle="pill"
-                      href={`#params-${this.props.tab.id}`}
-                      role="tab"
-                      aria-controls={`params-${this.props.tab.id}`}
-                      aria-selected={
-                        this.setAuthorizationTab ? "false" : "true"
-                      }
-                    >
-                      Params
-                    </a>
-                  </li>
-                  <li className="nav-item">
-                    <a
-                      className={
-                        this.setAuthorizationTab
-                          ? "nav-link active"
-                          : "nav-link "
-                      }
-                      id="pills-authorization-tab"
-                      data-toggle="pill"
-                      href={`#authorization-${this.props.tab.id}`}
-                      role="tab"
-                      aria-controls={`authorization-${this.props.tab.id}`}
-                      aria-selected={
-                        this.setAuthorizationTab ? "true" : "false"
-                      }
-                    >
-                      Authorization
-                    </a>
-                  </li>
-                  <li className="nav-item">
-                    <a
-                      className="nav-link"
-                      id="pills-headers-tab"
-                      data-toggle="pill"
-                      href={`#headers-${this.props.tab.id}`}
-                      role="tab"
-                      aria-controls={`headers-${this.props.tab.id}`}
-                      aria-selected="false"
-                    >
-                      Headers
-                    </a>
-                  </li>
-                  <li className="nav-item">
-                    <a
-                      className="nav-link"
-                      id="pills-body-tab"
-                      data-toggle="pill"
-                      href={`#body-${this.props.tab.id}`}
-                      role="tab"
-                      aria-controls={`body-${this.props.tab.id}`}
-                      aria-selected="false"
-                    >
-                      Body
-                    </a>
-                  </li>
-                </ul>
-              </div>
-            ) : null}
-            {isDashboardRoute(this.props) ? (
-              <div className="tab-content" id="pills-tabContent">
-                <div
-                  className={
-                    this.setAuthorizationTab
-                      ? "tab-pane fade"
-                      : "tab-pane fade show active"
-                  }
-                  id={`params-${this.props.tab.id}`}
-                  role="tabpanel"
-                  aria-labelledby="pills-params-tab"
-                >
-                  <GenericTable
+              <div className="endpoint-url-container">
+                <div className="input-group-prepend">
+                  <div>
+                    <div className="dropdown">
+                      <button
+                        className={`api-label ${this.state.data.method} dropdown-toggle`}
+                        type="button"
+                        id="dropdownMenuButton"
+                        data-toggle="dropdown"
+                        aria-haspopup="true"
+                        aria-expanded="false"
+                        disabled={isDashboardRoute(this.props) ? null : true}
+                      >
+                        {this.state.data.method}
+                      </button>
+                      <div
+                        className="dropdown-menu"
+                        aria-labelledby="dropdownMenuButton"
+                      >
+                        {this.state.methodList.map((methodName) => (
+                          <button
+                            className="btn custom-request-button"
+                            onClick={() => this.setMethod(methodName)}
+                            key={methodName}
+                          >
+                            {methodName}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  <HostContainer
                     {...this.props}
-                    title="Params"
-                    dataArray={this.state.originalParams}
-                    props_from_parent={this.propsFromChild.bind(this)}
-                    original_data={[...this.state.params]}
-                  ></GenericTable>
-                  {this.state.pathVariables &&
-                    this.state.pathVariables.length !== 0 && (
-                      <div>
+                    groupId={this.state.groupId}
+                    set_base_url={this.setBaseUrl.bind(this)}
+                    custom_host={this.state.endpoint.BASE_URL}
+                  />
+                  <input
+                    ref={this.uri}
+                    type="text"
+                    value={this.state.data.updatedUri}
+                    name="updatedUri"
+                    className="form-control endpoint-url-input"
+                    aria-describedby="basic-addon3"
+                    placeholder={"Enter request URL"}
+                    onChange={this.handleChange}
+                    disabled={isDashboardRoute(this.props) ? null : true}
+                  />
+                </div>
+                <div className="d-flex">
+                  <button
+                    className="btn btn-info"
+                    type="submit"
+                    id="send-request-button"
+                    onClick={() => this.handleSend()}
+                  >
+                    {isDashboardRoute(this.props) ? "Send" : "Try"}
+                  </button>
+
+                  {isDashboardRoute(this.props) ? (
+                    <div className="d-flex">
+                      {this.props.location.pathname.split("/")[3] !== "new" ?
+                        <Dropdown as={ButtonGroup}>
+                          <button
+                            className="btn btn-primary"
+                            type="button"
+                            id="save-endpoint-button"
+                            onClick={() => this.handleSave()}
+                          >
+                            Save
+                        </button>
+                          <Dropdown.Toggle split variant="primary" />
+                          <Dropdown.Menu className="">
+                            <Dropdown.Item onClick={() => this.setState({ saveAsFlag: true }, () => {
+                              this.openEndpointFormModal()
+                            })}>Save As</Dropdown.Item>
+                          </Dropdown.Menu>
+                        </Dropdown>
+                        :
+                        <button
+                          className="btn btn-primary"
+                          type="button"
+                          id="save-endpoint-button"
+                          onClick={() => this.handleSave()}
+                        >
+                          Save
+                      </button>
+                      }
+                    </div>
+                  ) : null}
+                </div>
+              </div>
+            ) : (
+                <div className="hm-endpoint-wrap">
+                  <div className="hm-endpoint-header">
+                    <div
+                      className={`api-label api-label-lg ${this.state.data.method}`}
+                    >
+                      {this.state.data.method}
+                    </div>
+                  </div>
+                  <div className="endpoint-host">
+                    <HostContainer
+                      {...this.props}
+                      groupId={this.state.groupId}
+                      set_base_url={this.setBaseUrl.bind(this)}
+                      custom_host={this.state.endpoint.BASE_URL}
+                    />
+                  </div>
+                  <input
+                    ref={this.uri}
+                    type="hidden"
+                    value={this.state.data.updatedUri}
+                    name="updatedUri"
+                  />
+                  <div className="endpoint-uri">{this.state.data.updatedUri}</div>
+                </div>
+              )}
+            <div
+              className={
+                isDashboardRoute(this.props)
+                  ? "endpoint-headers-container"
+                  : "hm-public-endpoint-headers"
+              }
+            >
+              {isDashboardRoute(this.props) ? (
+                <div className="headers-params-wrapper">
+                  <ul className="nav nav-tabs" id="pills-tab" role="tablist">
+                    <li className="nav-item">
+                      <a
+                        className={
+                          this.setAuthorizationTab
+                            ? "nav-link "
+                            : "nav-link active"
+                        }
+                        id="pills-params-tab"
+                        data-toggle="pill"
+                        href={`#params-${this.props.tab.id}`}
+                        role="tab"
+                        aria-controls={`params-${this.props.tab.id}`}
+                        aria-selected={
+                          this.setAuthorizationTab ? "false" : "true"
+                        }
+                      >
+                        Params
+                    </a>
+                    </li>
+                    <li className="nav-item">
+                      <a
+                        className={
+                          this.setAuthorizationTab
+                            ? "nav-link active"
+                            : "nav-link "
+                        }
+                        id="pills-authorization-tab"
+                        data-toggle="pill"
+                        href={`#authorization-${this.props.tab.id}`}
+                        role="tab"
+                        aria-controls={`authorization-${this.props.tab.id}`}
+                        aria-selected={
+                          this.setAuthorizationTab ? "true" : "false"
+                        }
+                      >
+                        Authorization
+                    </a>
+                    </li>
+                    <li className="nav-item">
+                      <a
+                        className="nav-link"
+                        id="pills-headers-tab"
+                        data-toggle="pill"
+                        href={`#headers-${this.props.tab.id}`}
+                        role="tab"
+                        aria-controls={`headers-${this.props.tab.id}`}
+                        aria-selected="false"
+                      >
+                        Headers
+                    </a>
+                    </li>
+                    <li className="nav-item">
+                      <a
+                        className="nav-link"
+                        id="pills-body-tab"
+                        data-toggle="pill"
+                        href={`#body-${this.props.tab.id}`}
+                        role="tab"
+                        aria-controls={`body-${this.props.tab.id}`}
+                        aria-selected="false"
+                      >
+                        Body
+                    </a>
+                    </li>
+                  </ul>
+                </div>
+              ) : null}
+              {isDashboardRoute(this.props) ? (
+                <div className="tab-content" id="pills-tabContent">
+                  <div
+                    className={
+                      this.setAuthorizationTab
+                        ? "tab-pane fade"
+                        : "tab-pane fade show active"
+                    }
+                    id={`params-${this.props.tab.id}`}
+                    role="tabpanel"
+                    aria-labelledby="pills-params-tab"
+                  >
+                    <GenericTable
+                      {...this.props}
+                      title="Params"
+                      dataArray={this.state.originalParams}
+                      props_from_parent={this.propsFromChild.bind(this)}
+                      original_data={[...this.state.params]}
+                    ></GenericTable>
+                    {this.state.pathVariables &&
+                      this.state.pathVariables.length !== 0 && (
+                        <div>
+                          <GenericTable
+                            {...this.props}
+                            title="Path Variables"
+                            dataArray={this.state.pathVariables}
+                            props_from_parent={this.propsFromChild.bind(this)}
+                            original_data={[...this.state.pathVariables]}
+                          ></GenericTable>
+                        </div>
+                      )}
+                  </div>
+                  <div
+                    className={
+                      this.setAuthorizationTab
+                        ? "tab-pane fade show active"
+                        : "tab-pane fade "
+                    }
+                    id={`authorization-${this.props.tab.id}`}
+                    role="tabpanel"
+                    aria-labelledby="pills-authorization-tab"
+                  >
+                    <div>
+                      <Authorization
+                        {...this.props}
+                        title="Authorization"
+                        groupId={this.state.groupId}
+                        set_authorization_headers={this.setHeaders.bind(this)}
+                        set_authoriztaion_params={this.setParams.bind(this)}
+                        set_authoriztaion_type={this.setAuthType.bind(this)}
+                        accessToken={this.accessToken}
+                        authorizationType={this.state.authType}
+                      ></Authorization>
+                    </div>
+                  </div>
+                  <div
+                    className="tab-pane fade"
+                    id={`headers-${this.props.tab.id}`}
+                    role="tabpanel"
+                    aria-labelledby="pills-headers-tab"
+                  >
+                    <div>
+                      <GenericTable
+                        {...this.props}
+                        title="Headers"
+                        dataArray={this.state.originalHeaders}
+                        props_from_parent={this.propsFromChild.bind(this)}
+                        original_data={[...this.state.headers]}
+                      ></GenericTable>
+                    </div>
+                  </div>
+                  <div
+                    className="tab-pane fade"
+                    id={`body-${this.props.tab.id}`}
+                    role="tabpanel"
+                    aria-labelledby="pills-body-tab"
+                  >
+                    <BodyContainer
+                      {...this.props}
+                      set_body={this.setBody.bind(this)}
+                      set_body_description={this.set_description.bind(this)}
+                      body={
+                        this.state.bodyFlag === true ? this.state.data.body : ""
+                      }
+                      Body={this.state.data.body}
+                      endpoint_id={this.props.tab.id}
+                      body_description={this.state.bodyDescription}
+                      field_description={this.state.fieldDescription}
+                      set_field_description={this.setFieldDescription.bind(this)}
+                    />
+                  </div>
+                </div>
+              ) : (
+                  <React.Fragment>
+                    {this.state.params.length > 1 && (
+                      <GenericTable
+                        {...this.props}
+                        title="Params"
+                        dataArray={this.state.originalParams}
+                        props_from_parent={this.propsFromChild.bind(this)}
+                        original_data={[...this.state.params]}
+                      ></GenericTable>
+                    )}
+
+                    {this.state.pathVariables &&
+                      this.state.pathVariables.length !== 0 && (
                         <GenericTable
                           {...this.props}
                           title="Path Variables"
@@ -1778,244 +1828,168 @@ class DisplayEndpoint extends Component {
                           props_from_parent={this.propsFromChild.bind(this)}
                           original_data={[...this.state.pathVariables]}
                         ></GenericTable>
-                      </div>
+                      )}
+
+                    {this.state.headers.length > 1 && (
+                      <GenericTable
+                        {...this.props}
+                        title="Headers"
+                        dataArray={this.state.originalHeaders}
+                        props_from_parent={this.propsFromChild.bind(this)}
+                        original_data={[...this.state.headers]}
+                      ></GenericTable>
                     )}
-                </div>
-                <div
-                  className={
-                    this.setAuthorizationTab
-                      ? "tab-pane fade show active"
-                      : "tab-pane fade "
-                  }
-                  id={`authorization-${this.props.tab.id}`}
-                  role="tabpanel"
-                  aria-labelledby="pills-authorization-tab"
-                >
-                  <div>
-                    <Authorization
-                      {...this.props}
-                      title="Authorization"
-                      groupId={this.state.groupId}
-                      set_authorization_headers={this.setHeaders.bind(this)}
-                      set_authoriztaion_params={this.setParams.bind(this)}
-                      set_authoriztaion_type={this.setAuthType.bind(this)}
-                      // set_access_token={this.setAccessToken.bind(this)}
-                      accessToken={this.accessToken}
-                      authorizationType={this.state.authType}
-                    ></Authorization>
-                  </div>
-                </div>
-                <div
-                  className="tab-pane fade"
-                  id={`headers-${this.props.tab.id}`}
-                  role="tabpanel"
-                  aria-labelledby="pills-headers-tab"
-                >
-                  <div>
-                    <GenericTable
-                      {...this.props}
-                      title="Headers"
-                      dataArray={this.state.originalHeaders}
-                      props_from_parent={this.propsFromChild.bind(this)}
-                      original_data={[...this.state.headers]}
-                    ></GenericTable>
-                  </div>
-                </div>
-                <div
-                  className="tab-pane fade"
-                  id={`body-${this.props.tab.id}`}
-                  role="tabpanel"
-                  aria-labelledby="pills-body-tab"
-                >
-                  <BodyContainer
-                    {...this.props}
-                    set_body={this.setBody.bind(this)}
-                    set_body_description={this.set_description.bind(this)}
-                    body={
-                      this.state.bodyFlag === true ? this.state.data.body : ""
-                    }
-                    Body={this.state.data.body}
-                    endpoint_id={this.props.tab.id}
-                    body_description={this.state.bodyDescription}
-                    field_description={this.state.fieldDescription}
-                    set_field_description={this.setFieldDescription.bind(this)}
-                  />
-                </div>
-              </div>
-            ) : (
-              <React.Fragment>
-                {this.state.params.length > 1 && (
-                  <GenericTable
-                    {...this.props}
-                    title="Params"
-                    dataArray={this.state.originalParams}
-                    props_from_parent={this.propsFromChild.bind(this)}
-                    original_data={[...this.state.params]}
-                  ></GenericTable>
+
+                    {this.state.data.body &&
+                      this.state.data.body.value !== null && (
+                        <PublicBodyContainer
+                          {...this.props}
+                          set_body={this.setBody.bind(this)}
+                          set_body_description={this.set_description.bind(this)}
+                          body={this.state.data.body}
+                          public_body_flag={this.state.publicBodyFlag}
+                          set_public_body={this.setPublicBody.bind(this)}
+                          body_description={this.state.bodyDescription}
+                        ></PublicBodyContainer>
+                      )}
+                  </React.Fragment>
                 )}
-
-                {this.state.pathVariables &&
-                  this.state.pathVariables.length !== 0 && (
-                    <GenericTable
-                      {...this.props}
-                      title="Path Variables"
-                      dataArray={this.state.pathVariables}
-                      props_from_parent={this.propsFromChild.bind(this)}
-                      original_data={[...this.state.pathVariables]}
-                    ></GenericTable>
-                  )}
-
-                {this.state.headers.length > 1 && (
-                  <GenericTable
-                    {...this.props}
-                    title="Headers"
-                    dataArray={this.state.originalHeaders}
-                    props_from_parent={this.propsFromChild.bind(this)}
-                    original_data={[...this.state.headers]}
-                  ></GenericTable>
-                )}
-
-                {this.state.data.body &&
-                  // this.state.data.body.value !== "" &&
-                  this.state.data.body.value !== null && (
-                    <PublicBodyContainer
-                      {...this.props}
-                      set_body={this.setBody.bind(this)}
-                      set_body_description={this.set_description.bind(this)}
-                      body={this.state.data.body}
-                      public_body_flag={this.state.publicBodyFlag}
-                      set_public_body={this.setPublicBody.bind(this)}
-                      body_description={this.state.bodyDescription}
-                    ></PublicBodyContainer>
-                  )}
-              </React.Fragment>
-            )}
-            {!isDashboardRoute(this.props) && (
-              <div className="d-flex">
-                <button
-                  className="btn btn-primary"
-                  type="submit"
-                  id="send-request-button"
-                  onClick={() => this.handleSend()}
-                >
-                  Try
+              {!isDashboardRoute(this.props) && (
+                <div className="d-flex">
+                  <button
+                    className="btn btn-primary"
+                    type="submit"
+                    id="send-request-button"
+                    onClick={() => this.handleSend()}
+                  >
+                    Try
                 </button>
-              </div>
-            )}
+                </div>
+              )}
+            </div>
           </div>
-        </div>
+          {isSavedEndpoint(this.props) ? (
+            <React.Fragment>
+              <div>
+                <ul className="nav nav-tabs" id="myTab" role="tablist">
+                  <li className="nav-item">
+                    <a
+                      className="nav-link active"
+                      id="pills-response-tab"
+                      data-toggle="pill"
+                      href={
+                        isDashboardRoute(this.props)
+                          ? `#response-${this.props.tab.id}`
+                          : "#response"
+                      }
+                      role="tab"
+                      aria-controls={
+                        isDashboardRoute(this.props)
+                          ? `response-${this.props.tab.id}`
+                          : "response"
+                      }
+                      aria-selected="true"
+                    >
+                      Response
+                  </a>
+                  </li>
+                  {getCurrentUser() ? (
 
-        {/* {!isDashboardRoute(this.props) &&
-        } */}
-        {/* {this.state.response.status && ( */}
-        {isSavedEndpoint(this.props) ? (
-          <React.Fragment>
-            <div>
-              <ul className="nav nav-tabs" id="myTab" role="tablist">
-                <li className="nav-item">
-                  <a
-                    className="nav-link active"
-                    id="pills-response-tab"
-                    data-toggle="pill"
-                    href={
-                      isDashboardRoute(this.props)
-                        ? `#response-${this.props.tab.id}`
-                        : "#response"
-                    }
-                    role="tab"
-                    aria-controls={
+                    <li className="nav-item">
+                      <a
+                        className="nav-link"
+                        id="pills-sample-tab"
+                        data-toggle="pill"
+                        href={
+                          isDashboardRoute(this.props)
+                            ? `#sample-${this.props.tab.id}`
+                            : "#sample"
+                        }
+                        role="tab"
+                        aria-controls={
+                          isDashboardRoute(this.props)
+                            ? `sample-${this.props.tab.id}`
+                            : "sample"
+                        }
+                        aria-selected="false"
+                      >
+                        Sample Response
+                  </a>
+                    </li>) : null}
+                </ul>
+                <div className="tab-content" id="pills-tabContent">
+                  <div
+                    className="tab-pane fade show active"
+                    id={
                       isDashboardRoute(this.props)
                         ? `response-${this.props.tab.id}`
                         : "response"
                     }
-                    aria-selected="true"
+                    role="tabpanel"
+                    aria-labelledby="pills-response-tab"
                   >
-                    Response
-                  </a>
-                </li>
-                <li className="nav-item">
-                  <a
-                    className="nav-link"
-                    id="pills-sample-tab"
-                    data-toggle="pill"
-                    href={
-                      isDashboardRoute(this.props)
-                        ? `#sample-${this.props.tab.id}`
-                        : "#sample"
-                    }
-                    role="tab"
-                    aria-controls={
-                      isDashboardRoute(this.props)
-                        ? `sample-${this.props.tab.id}`
-                        : "sample"
-                    }
-                    aria-selected="false"
-                  >
-                    Sample Response
-                  </a>
-                </li>
-              </ul>
-              <div className="tab-content" id="pills-tabContent">
-                <div
-                  className="tab-pane fade show active"
-                  id={
-                    isDashboardRoute(this.props)
-                      ? `response-${this.props.tab.id}`
-                      : "response"
-                  }
-                  role="tabpanel"
-                  aria-labelledby="pills-response-tab"
-                >
-                  <div className="hm-panel endpoint-public-response-container">
-                    <DisplayResponse
-                      {...this.props}
-                      timeElapsed={this.state.timeElapsed}
-                      response={this.state.response}
-                      flagResponse={this.state.flagResponse}
-                      add_sample_response={this.addSampleResponse.bind(this)}
-                    ></DisplayResponse>
+                    <div className="hm-panel endpoint-public-response-container">
+                      <DisplayResponse
+                        {...this.props}
+                        timeElapsed={this.state.timeElapsed}
+                        response={this.state.response}
+                        flagResponse={this.state.flagResponse}
+                        add_sample_response={this.addSampleResponse.bind(this)}
+                      ></DisplayResponse>
+                    </div>
                   </div>
+                  {getCurrentUser() ? (
+                    <div
+                      className="tab-pane fade"
+                      id={
+                        isDashboardRoute(this.props)
+                          ? `sample-${this.props.tab.id}`
+                          : "sample"
+                      }
+                      role="tabpanel"
+                      aria-labelledby="pills-sample-tab"
+                    >
+                      <SampleResponse
+                        {...this.props}
+                        timeElapsed={this.state.timeElapsed}
+                        response={this.state.response}
+                        flagResponse={this.state.flagResponse}
+                        sample_response_array={this.state.sampleResponseArray}
+                        sample_response_flag_array={
+                          this.state.sampleResponseFlagArray
+                        }
+                        open_body={this.openBody.bind(this)}
+                        close_body={this.closeBody.bind(this)}
+                        props_from_parent={this.propsFromSampleResponse.bind(this)}
+                      ></SampleResponse>
+                    </div>) : null}
                 </div>
-                <div
-                  className="tab-pane fade"
-                  id={
-                    isDashboardRoute(this.props)
-                      ? `sample-${this.props.tab.id}`
-                      : "sample"
-                  }
-                  role="tabpanel"
-                  aria-labelledby="pills-sample-tab"
-                >
-                  <SampleResponse
+              </div>
+            </React.Fragment>
+          ) : (
+              <React.Fragment>
+                <div className="public-response-title">Response</div>
+                <div className="hm-panel endpoint-public-response-container">
+                  <DisplayResponse
                     {...this.props}
                     timeElapsed={this.state.timeElapsed}
                     response={this.state.response}
                     flagResponse={this.state.flagResponse}
-                    sample_response_array={this.state.sampleResponseArray}
-                    sample_response_flag_array={
-                      this.state.sampleResponseFlagArray
-                    }
-                    open_body={this.openBody.bind(this)}
-                    close_body={this.closeBody.bind(this)}
-                    props_from_parent={this.propsFromSampleResponse.bind(this)}
-                  ></SampleResponse>
+                  ></DisplayResponse>
                 </div>
-              </div>
-            </div>
-          </React.Fragment>
-        ) : (
-          <React.Fragment>
-            <div className="public-response-title">Response</div>
-            <div className="hm-panel endpoint-public-response-container">
-              <DisplayResponse
-                {...this.props}
-                timeElapsed={this.state.timeElapsed}
-                response={this.state.response}
-                flagResponse={this.state.flagResponse}
-              ></DisplayResponse>
-            </div>
-          </React.Fragment>
-        )}
+              </React.Fragment>
+            )}
+        </div>
+        {!isDashboardRoute(this.props) && this.state.harObject && !this.props.location.pathname.split("/")[1] === "admin" &&
+          < CodeTemplate
+            show={true}
+            onHide={() => {
+              this.setState({ showCodeTemplate: false });
+            }}
+            harObject={this.state.harObject}
+            title="Generate Code Snippets"
+          />
+        }
       </div>
     );
   }

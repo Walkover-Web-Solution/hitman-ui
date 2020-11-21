@@ -11,19 +11,20 @@ import {
 import { fetchGroups } from "../groups/redux/groupsActions";
 import indexedDbService from "../indexedDb/indexedDbService";
 import { fetchPages } from "../pages/redux/pagesActions";
-import { fetchAllTeamsOfUser } from "../teams/redux/teamsActions";
+import { fetchHistoryFromIdb } from "../history/redux/historyAction";
 import ContentPanel from "./contentPanel";
 import "./main.scss";
 import SideBar from "./sidebar";
+import { getCurrentUser } from "../auth/authService";
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetch_all_teams_of_user: () => dispatch(fetchAllTeamsOfUser()),
     fetch_collections: () => dispatch(fetchCollections()),
     fetch_all_versions: () => dispatch(fetchAllVersions()),
     fetch_groups: () => dispatch(fetchGroups()),
     fetch_endpoints: () => dispatch(fetchEndpoints()),
     fetch_pages: () => dispatch(fetchPages()),
+    fetch_history: () => dispatch(fetchHistoryFromIdb()),
     move_endpoint: (endpointId, sourceGroupId, destinationGroupId) =>
       dispatch(moveEndpoint(endpointId, sourceGroupId, destinationGroupId)),
   };
@@ -36,17 +37,19 @@ class Main extends Component {
   };
 
   async componentDidMount() {
-    this.fetchAll();
+    if (getCurrentUser()) {
+      this.fetchAll();
+    }
     await indexedDbService.createDataBase();
   }
 
   fetchAll() {
-    this.props.fetch_all_teams_of_user();
     this.props.fetch_collections();
     this.props.fetch_all_versions();
     this.props.fetch_groups();
     this.props.fetch_endpoints();
     this.props.fetch_pages();
+    this.props.fetch_history();
   }
 
   setTabs(tabs, defaultTabIndex) {
@@ -57,6 +60,7 @@ class Main extends Component {
       this.setState({ tabs });
     }
   }
+
   setEnvironment(environment) {
     this.setState({ currentEnvironment: environment });
   }

@@ -17,6 +17,7 @@ import TabContent from "../tabs/tabContent";
 import CustomTabs from "../tabs/tabs";
 import tabStatusTypes from "../tabs/tabStatusTypes";
 import "./main.scss";
+import { getCurrentUser } from "../auth/authService";
 
 const mapStateToProps = (state) => {
   return {
@@ -105,8 +106,19 @@ class ContentPanel extends Component {
         });
       }
     }
+    const redirectionUrl = process.env.REACT_APP_UI_URL + "/login";
     return (
       <main role="main" className="main">
+        <div className="login-sso">
+          {!getCurrentUser() ? <div
+            id="sokt-sso"
+            data-redirect-uri={redirectionUrl}
+            data-source="sokt-app"
+            data-token-key="sokt-auth-token"
+            data-view="button"
+          ></div> : null
+          }
+        </div>
         {/* <main role="main" className="main ml-sm-auto custom-main"> */}
         <Tab.Container
           id="left-tabs-example"
@@ -116,16 +128,17 @@ class ContentPanel extends Component {
           }
           activeKey={this.props.tabs.activeTabId}
         >
-          <div className="content-header">
-            <div className="tabs-container">
-              <CustomTabs
-                {...this.props}
-                handle_save_endpoint={this.handleSaveEndpoint.bind(this)}
-              />
+          {getCurrentUser() ? (
+            <div className="content-header">
+              <div className="tabs-container">
+                <CustomTabs
+                  {...this.props}
+                  handle_save_endpoint={this.handleSaveEndpoint.bind(this)}
+                />
+              </div>
+              <Environments {...this.props} />
             </div>
-            <Environments {...this.props} />
-          </div>
-
+          ) : null}
           <div className="main-content">
             <TabContent
               {...this.props}
