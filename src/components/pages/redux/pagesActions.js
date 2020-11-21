@@ -1,5 +1,6 @@
 import { toast } from "react-toastify";
 import store from "../../../store/store";
+import authService from "../../auth/authService";
 import pageApiService from "../pageApiService";
 import pagesActionTypes from "./pagesActionTypes";
 
@@ -42,7 +43,7 @@ export const updatePage = (history, editedPage) => {
       .updatePage(editedPage.id, newPage)
       .then((response) => {
         dispatch(onPageUpdated(response.data));
-        history.push(`/dashboard/page/${response.data.id}`);
+        history.push(`/org/${authService.getCurrentOrg().identifier}/dashboard/page/${response.data.id}`);
       })
       .catch((error) => {
         dispatch(
@@ -86,7 +87,7 @@ export const addPage = (history, versionId, newPage) => {
       .saveVersionPage(versionId, newPage)
       .then((response) => {
         dispatch(onPageAdded(response.data));
-        history.push(`/dashboard/page/${response.data.id}/edit`);
+        history.push(`/org/${authService.getCurrentOrg().identifier}/dashboard/page/${response.data.id}/edit`);
       })
       .catch((error) => {
         dispatch(
@@ -131,7 +132,7 @@ export const addGroupPage = (history, versionId, groupId, newPage) => {
       .saveGroupPage(groupId, newPage)
       .then((response) => {
         dispatch(onGroupPageAdded(response.data));
-        history.push(`/dashboard/page/${response.data.id}/edit`);
+        history.push(`/org/${authService.getCurrentOrg().identifier}/dashboard/page/${response.data.id}/edit`);
       })
       .catch((error) => {
         dispatch(

@@ -18,6 +18,7 @@ import {
   updateEndpointOrder,
 } from "./redux/endpointsActions";
 import filterService from "../../services/filterService";
+import authService from "../auth/authService";
 
 const mapStateToProps = (state) => {
   return {
@@ -173,7 +174,7 @@ class Endpoints extends Component {
         tabService.disablePreviewMode(endpoint.id);
       }
       this.props.history.push({
-        pathname: `/dashboard/endpoint/${endpoint.id}`,
+        pathname: `/org/${authService.getCurrentOrg().identifier}/dashboard/endpoint/${endpoint.id}`,
         title: "update endpoint",
         endpoint: endpoint,
         groupId: groupId,

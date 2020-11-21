@@ -16,11 +16,11 @@ class TabContent extends Component {
         return (
           <Switch>
             <Route
-              path={`/dashboard/page/${tab.id}/edit`}
+              path="/org/:orgId/dashboard/page/${tab.id}/edit"
               render={(props) => <EditPage {...props} tab={tab} />}
             />
             <Route
-              path={`/dashboard/page/${tab.id}`}
+              path="/org/:orgId/dashboard/page/${tab.id}"
               render={(props) => <DisplayPage {...props} tab={tab} />}
             />
           </Switch>
