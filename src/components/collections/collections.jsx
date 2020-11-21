@@ -23,6 +23,7 @@ import authService from "../auth/authService";
 import TagManager from "react-gtm-module";
 import TagManagerModal from "./tagModal";
 import UserNotification from './userNotification'
+import { isAdmin } from "../auth/authService"
 
 const mapStateToProps = (state) => {
   return {
@@ -379,14 +380,15 @@ class CollectionsComponent extends Component {
                     Go to Docs
                   </a>
                 )}
-                <a
+                {isAdmin() ? <a
                   className="dropdown-item"
                   onClick={() =>
                     this.openPublishDocs(this.props.collections[collectionId])
                   }
                 >
                   Publish Docs
-                </a>
+                </a> : null}
+
                 <a
                   className="dropdown-item"
                   onClick={() => {

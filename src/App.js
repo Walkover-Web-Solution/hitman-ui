@@ -14,17 +14,16 @@ import PublishDocs from './components/publishDocs/publishDocs';
 class App extends Component {
   async redirectToClientDomain() {
     console.log(window.location.href)
-    const domainsList = process.env.REACT_APP_DOMAINS_LIST?process.env.REACT_APP_DOMAINS_LIST.split(','):[];
+    const domainsList = process.env.REACT_APP_DOMAINS_LIST ? process.env.REACT_APP_DOMAINS_LIST.split(',') : [];
     const currentDomain = window.location.href.split("/")[2];
     console.log(!domainsList.includes(currentDomain))
-    if (!domainsList.includes(currentDomain)&&window.location.href.split("/")[3] !== "p") 
-    { 
+    if (!domainsList.includes(currentDomain) && window.location.href.split("/")[3] !== "p") {
       const clientCollection = collectionsApiService.getCollectionsByCustomDomain(currentDomain);
-      if (clientCollection&&clientCollection[0]) {
+      if (clientCollection && clientCollection[0]) {
         const clientCollectionId = clientCollection[0].id;
         this.props.history.push({ pathname: `/p/${clientCollectionId}` });
       }
-      else{
+      else {
         this.props.history.push({ pathname: `/p/error` });
       }
     }
