@@ -12,14 +12,12 @@ require("dotenv").config();
 
 class App extends Component {
   async redirectToClientDomain() {
-    // const { data: configVars } = await herokuApiService.getConfigVars();
     console.log(window.location.href)
     const domainsList = process.env.REACT_APP_DOMAINS_LIST?process.env.REACT_APP_DOMAINS_LIST.split(','):[];
     const currentDomain = window.location.href.split("/")[2];
     console.log(!domainsList.includes(currentDomain))
     if (!domainsList.includes(currentDomain)&&window.location.href.split("/")[3] !== "p") 
     { 
-      // process.env.REACT_APP_CUSTOM_DOMAINS_LIST.split(';').forEach(s=>{customDomainsList[s.split(',')[0]]=s.split(',')[1]})
       const clientCollection = collectionsApiService.getCollectionsByCustomDomain(currentDomain);
       if (clientCollection&&clientCollection[0]) {
         const clientCollectionId = clientCollection[0].id;

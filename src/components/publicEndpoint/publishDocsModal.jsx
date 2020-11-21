@@ -65,26 +65,6 @@ class PublishDocsModal extends Form {
   };
 
   async doSubmit() {
-    // endpointApiService.apiTest(
-    //   "https://api.msg91.com/api/v2/sendsms",
-    //   "POST",
-    //   {
-    //     sender: "SOCKET",
-    //     route: "4",
-    //     country: "91",
-    //     sms: [
-    //       {
-    //         message: `Successfully added ${this.state.data.domain} to your public collection. Please add ${response.cname} as CNAME in your DNS records.`,
-    //         to: ["9666770339"],
-    //       },
-    //     ],
-    //   },
-    //   {
-    //     authkey: "311584A9QCyvMghL5e10a184P1",
-    //     "Content-Type": "application/json",
-    //   }
-    // );
-
     this.props.onHide();
   }
 
@@ -179,17 +159,6 @@ class PublishDocsModal extends Form {
       return;
     }
     try {
-      // const { data: response } = await herokuApiService.createDomain(
-      //   this.state.data.newDomain
-      // );
-      // await herokuApiService.updateConfigVars({
-      //   [this.state.data
-      //     .newDomain]: `${this.state.data.newTitle},${this.state.data.newLogoUrl},${this.props.collection_id}`,
-      // });
-      // this.props.add_custom_domain(
-      //   this.props.collection_id,
-      //   this.state.data.newDomain
-      // );
       cirlceCiApiService.addEnvVariable('REACT_APP_CUSTOM_DOMAINS_LIST',process.env.REACT_APP_CUSTOM_DOMAINS_LIST+`;${this.state.data.newDomain},${this.props.collection_id}`)
       
       this.props.update_collection({
