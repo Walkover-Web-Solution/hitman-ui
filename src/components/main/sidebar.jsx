@@ -105,7 +105,7 @@ class SideBar extends Component {
     return (
       <nav
         className={
-          isDashboardRoute(this.props) ? "sidebar" : "public-endpoint-sidebar"
+          isDashboardRoute(this.props, true) ? "sidebar" : "public-endpoint-sidebar"
         }
       >
         {this.state.showLoginSignupModal && (
@@ -116,7 +116,7 @@ class SideBar extends Component {
           />
         )}
         <div className="primary-sidebar">
-          {isDashboardRoute(this.props) ? (
+          {isDashboardRoute(this.props, true) ? (
             <React.Fragment>
               {/* <div className="user-info">
                 <div className="user-avatar">
@@ -214,7 +214,7 @@ class SideBar extends Component {
                 render={(props) => <Collections {...this.props} />}
               />
             </Switch>) : null}
-          {isDashboardRoute(this.props) ? (
+          {isDashboardRoute(this.props, true) ? (
             <React.Fragment></React.Fragment>
           ) : null}
         </div>

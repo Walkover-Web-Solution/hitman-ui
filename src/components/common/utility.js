@@ -1,7 +1,7 @@
-export function isDashboardRoute(props) {
+export function isDashboardRoute(props, sidebar = false) {
   if (
     props.location.pathname === "/dashboard" ||
-    props.location.pathname.split("/")[1] === "dashboard" || (props.location.pathname.split("/")[1] === "admin" && props.location.pathname.split("/")[2] === "publish")
+    props.location.pathname.split("/")[1] === "dashboard" || (sidebar === true && props.location.pathname.split("/")[1] === "admin" && props.location.pathname.split("/")[2] === "publish")
   )
     return true;
   else return false;
