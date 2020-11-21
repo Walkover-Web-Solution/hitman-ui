@@ -19,6 +19,8 @@ import hitmanIcon from "../../assets/icons/hitman.svg"
 import collectionIcon from "../../assets/icons/collectionIcon.svg"
 import historyIcon from "../../assets/icons/historyIcon.svg"
 import randomTriggerIcon from "../../assets/icons/randomTriggerIcon.svg"
+import collections from "../collections/collections";
+const moment = require('moment');
 
 const mapStateToProps = (state) => {
   return {
@@ -28,7 +30,7 @@ const mapStateToProps = (state) => {
     // pages: state.pages,
     // teamUsers: state.teamUsers,
     // groups: state.groups,
-    history: state.history,
+    historySnapshot: state.history,
     filter: "",
   };
 };
@@ -40,6 +42,7 @@ class SideBar extends Component {
     },
     name: "",
     email: "",
+    historySnapshot:null
   };
 
   componentDidMount() {
@@ -49,7 +52,15 @@ class SideBar extends Component {
       const email = user.email;
       this.setState({ name, email });
     }
+    if(this.props.historySnapshot)
+    this.setState({historySnapshot:Object.values(this.props.historySnapshot)})
   }
+   componentDidUpdate(prevProps, prevState) {
+      if(this.props.historySnapshot!=prevProps.historySnapshot)
+      {
+        this.setState({historySnapshot:Object.values(this.props.historySnapshot)})
+      }
+   }
 
   async dndMoveEndpoint(endpointId, sourceGroupId, destinationGroupId) {
     const groups = { ...this.state.groups };
@@ -72,10 +83,17 @@ class SideBar extends Component {
     }
   }
 
-  handleChange = (e) => {
-    let data = { ...this.state.data };
-    data[e.currentTarget.name] = e.currentTarget.value;
-    this.setState({ data });
+  handleOnChange = (e) => {
+    this.setState({data:{...this.state.data,filter:e.target.value}});
+    let obj=Object.values(this.props.historySnapshot);
+    if(e.target.value.length>2)
+    {
+      if(this.props.historySnapshot)
+      {
+      obj=obj.filter(o=>o.endpoint.name.includes(e.target.value));
+      }
+    }
+    this.setState({historySnapshot:obj});
   };
 
   emptyFilter() {
@@ -103,9 +121,9 @@ class SideBar extends Component {
   }
 
   renderHistoryList() {
-    return (
-      this.props.history && 
-        Object.values(this.props.history).map(history =>(
+    return(
+      this.state.historySnapshot&&this.props.historySnapshot&&
+        this.state.historySnapshot.map(history =>(
           Object.keys(history).length !== 0 &&
           <div className="btn d-flex align-items-center"
             onClick={()=> { console.log(history.id) }}>
@@ -123,7 +141,7 @@ class SideBar extends Component {
           </div>
         ))
     )
-  }
+}
 
   render() {
     return (
@@ -188,7 +206,7 @@ class SideBar extends Component {
                   type="text"
                   name="filter"
                   placeholder="Search"
-                  onChange={this.handleChange}
+                  onChange={(e)=>this.handleOnChange(e)}
                 />
               </div>
 
@@ -225,7 +243,7 @@ class SideBar extends Component {
                     {...this.props}
                     empty_filter={this.emptyFilter.bind(this)}
                     collection_selected={this.openCollection.bind(this)}
-                    filter={this.state.data.filter}
+                    filter={this.state.data.filter.lenght>2?this.state.data.filter:""}
                   />
                 )}
               />

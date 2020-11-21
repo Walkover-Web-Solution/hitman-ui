@@ -26,7 +26,6 @@ const createDataBase = async () => {
       const responseDataStore = db.createObjectStore("responseData");
       const historyStore=db.createObjectStore("history");
       
-      historyStore.put({},"endpoint");
       environmentStore.put(null, "currentEnvironmentId");
       tabsMetadataStore.put(null, "activeTabId");
       tabsMetadataStore.put([], "tabsOrder");

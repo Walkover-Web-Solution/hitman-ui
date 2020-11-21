@@ -1,5 +1,5 @@
 .primary-sidebar {
-  background-color:#FEFCF7;
+  background-color: #fefcf7;
   color: #999;
   width: 220px;
   min-width: 220px;
@@ -51,137 +51,135 @@
 }
 
 .search-box {
-margin: 10px;
-position: relative;
-width: auto;
-padding: 0 20px;
-margin-bottom: 20px;
-background: #F8F5F0;
-border-radius: 4px;
+  margin: 10px;
+  position: relative;
+  width: auto;
+  padding: 0 20px;
+  margin-bottom: 20px;
+  background: #f8f5f0;
+  border-radius: 4px;
 }
 
 .search-box > i {
-position: absolute;
-left: 32px;
-top: 0;
-line-height: 34px;
-font-size: 14px;
+  position: absolute;
+  left: 32px;
+  top: 0;
+  line-height: 34px;
+  font-size: 14px;
 }
 
 .search-box > input[type="text"] {
-width: 100%;
-border: none;
-height: 34px;
-padding: 0 0 0 40px;
-border-radius: 3px;
-border: 1px solid rgba(255, 255, 255, 0);
-background: rgba(255, 255, 255, 0.07);
-color: #fff;
+  width: 100%;
+  border: none;
+  height: 34px;
+  padding: 0 0 0 40px;
+  border-radius: 3px;
+  border: 1px solid rgba(255, 255, 255, 0);
+  background: rgba(255, 255, 255, 0.07);
+  color: black;
 }
 
 input[type="text"]:focus {
-// border: 1px solid rgba(255, 255, 255, 0.1);
-outline: none;
-box-shadow: none;
+  // border: 1px solid rgba(255, 255, 255, 0.1);
+  outline: none;
+  box-shadow: none;
 }
 
-
-
-
-
-
 .App-Side {
-padding: 0 10px;
+  padding: 0 10px;
 }
 
 .sidebar-accordion > button {
-width: 100%;
-display: flex;
-align-items: center;
-text-align: left;
-padding: 0;
-margin: 0;
-border: none;
-background: transparent;
-color: inherit;
-/* font-size: 14px; */
-border-radius: 3px;
-&:active, &:focus {
-  outline: none;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  text-align: left;
+  padding: 0;
+  margin: 0;
   border: none;
-  box-shadow: none;
-}
-&:hover {
-  .sidebar-item-action-btn {
-    visibility: visible;
-    opacity: 1;
+  background: transparent;
+  color: inherit;
+  /* font-size: 14px; */
+  border-radius: 3px;
+  &:active,
+  &:focus {
+    outline: none;
+    border: none;
+    box-shadow: none;
+  }
+  &:hover {
+    .sidebar-item-action-btn {
+      visibility: visible;
+      opacity: 1;
+    }
   }
 }
-}
 .sidebar-accordion-item {
-padding: 7px 10px;
-flex-grow: 1;
-display: flex;
-align-items: center;
-.api-label {
-  margin-right: 10px;
-}
+  padding: 7px 10px;
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  .api-label {
+    margin-right: 10px;
+  }
 }
 
 .sidebar-item-action {
-// margin-left: auto;
-margin-right: 10px;
+  // margin-left: auto;
+  margin-right: 10px;
 }
 
 .sidebar-accordion .sidebar-accordion-item > i {
-display: inline-block;
-width: 30px;
+  display: inline-block;
+  width: 30px;
 }
 
 .sidebar-accordion > button:hover {
-background: rgba(255, 255, 255, 0.03);
+  background: rgba(255, 255, 255, 0.03);
 }
 
 .sidebar-item-action-btn {
-width: 26px;
-border-radius: 3px;
-/* background: #fff; */
-text-align: center;
-visibility: hidden;
-opacity: 0;
+  width: 26px;
+  border-radius: 3px;
+  /* background: #fff; */
+  text-align: center;
+  visibility: hidden;
+  opacity: 0;
 }
 
 .sidebar-item-action:hover {
-background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .secondary-sidebar .card-body {
-padding: 0 0 0 15px;
+  padding: 0 0 0 15px;
 }
 
 .secondary-sidebar {
-min-width: 300px;
-width: 300px;
-font-size: 14px;
-background: #252d30;
-color: #999;
-border-left: 1px solid rgba(255, 255, 255, 0.1);
-padding: 20px 10px;
-overflow: auto;
+  min-width: 300px;
+  width: 300px;
+  font-size: 14px;
+  background: #252d30;
+  color: #999;
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 20px 10px;
+  overflow: auto;
 }
 
-.version-collapse .sidebar-accordion#child-accordion {margin-top: 10px;}
+.version-collapse .sidebar-accordion#child-accordion {
+  margin-top: 10px;
+}
 
 .app-name {
-margin: 20px;
-font-family: Alegreya Sans SC;
-font-style: normal;
-font-weight: bold;
-font-size: 22px;
-line-height: 26px;
-letter-spacing: 0.03em;
-color: #212224;
-.icon{
-  margin: 5px
-}
+  margin: 20px;
+  font-family: Alegreya Sans SC;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 22px;
+  line-height: 26px;
+  letter-spacing: 0.03em;
+  color: #212224;
+  .icon {
+    margin: 5px;
+  }
 }
