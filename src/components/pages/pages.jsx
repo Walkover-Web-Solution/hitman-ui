@@ -34,7 +34,7 @@ class Pages extends Component {
   state = {};
 
   handleDisplay(page, collectionId, previewMode) {
-    if (isDashboardRoute(this.props)) {
+    if (isDashboardRoute(this.props, true)) {
       if (!this.props.tabs.tabs[page.id]) {
         const previewTabId = Object.keys(this.props.tabs.tabs).filter(
           (tabId) => this.props.tabs.tabs[tabId].previewMode === true
@@ -71,12 +71,8 @@ class Pages extends Component {
   }
 
   async handlePublicPageState(page) {
-    if (page.state === "Draft") {
-      if (this.checkAccess(this.props.collection_id)) {
-        this.props.approve_page(page);
-      } else {
-        this.props.pending_page(page);
-      }
+    if (page.state === "Draft" || page.state === "Reject") {
+      this.props.pending_page(page);
     }
   }
 
@@ -110,7 +106,7 @@ class Pages extends Component {
     const pageId = this.props.page_id;
     return (
       <React.Fragment>
-        {isDashboardRoute(this.props) ? (
+        {isDashboardRoute(this.props, true) ? (
           <div
             className="sidebar-accordion"
             id="accordion"
@@ -169,7 +165,7 @@ class Pages extends Component {
                   >
                     Duplicate
                   </a>
-                  {this.props.pages[pageId].state === "Draft" ? (
+                  {this.props.pages[pageId].state === "Draft" || this.props.pages[pageId].state === "Reject" ? (
                     <a
                       className="dropdown-item"
                       onClick={() =>
@@ -180,8 +176,7 @@ class Pages extends Component {
                     </a>
                   ) : null}
 
-                  {!this.checkAccess(this.props.collection_id) &&
-                  this.props.pages[pageId].state === "Pending" ? (
+                  {this.props.pages[pageId].state === "Pending" ? (
                     <a
                       className="dropdown-item"
                       onClick={() =>
@@ -192,39 +187,8 @@ class Pages extends Component {
                     </a>
                   ) : null}
 
-                  {this.checkAccess(this.props.collection_id) &&
-                  (this.props.pages[pageId].state === "Approved" ||
-                    this.props.pages[pageId].state === "Reject") ? (
-                    <a
-                      className="dropdown-item"
-                      onClick={() =>
-                        this.handleCancelRequest(this.props.pages[pageId])
-                      }
-                    >
-                      Move to Draft
-                    </a>
-                  ) : null}
-                  {this.checkAccess(this.props.collection_id) &&
-                  this.props.pages[pageId].state === "Pending" ? (
-                    <div>
-                      <a
-                        className="dropdown-item"
-                        onClick={() =>
-                          this.handleApproveRequest(this.props.pages[pageId])
-                        }
-                      >
-                        Approve Request
-                      </a>
-                      <a
-                        className="dropdown-item"
-                        onClick={() =>
-                          this.handleRejectRequest(this.props.pages[pageId])
-                        }
-                      >
-                        Reject Request
-                      </a>
-                    </div>
-                  ) : null}
+
+
                 </div>
               </div>
             </button>
@@ -232,21 +196,21 @@ class Pages extends Component {
             {/* </div> */}
           </div>
         ) : (
-          <div
-            className="hm-sidebar-item"
-            onClick={() => {
-              const page = this.props.pages[pageId];
-              this.handleDisplay(page, this.props.collection_id, true);
-            }}
-            onDoubleClick={() => {
-              const page = this.props.pages[pageId];
-              this.handleDisplay(page, this.props.collection_id, false);
-            }}
-          >
-            <i className="uil uil-file-alt" aria-hidden="true"></i>
-            {this.props.pages[pageId].name}
-          </div>
-        )}
+            <div
+              className="hm-sidebar-item"
+              onClick={() => {
+                const page = this.props.pages[pageId];
+                this.handleDisplay(page, this.props.collection_id, true);
+              }}
+              onDoubleClick={() => {
+                const page = this.props.pages[pageId];
+                this.handleDisplay(page, this.props.collection_id, false);
+              }}
+            >
+              <i className="uil uil-file-alt" aria-hidden="true"></i>
+              {this.props.pages[pageId].name}
+            </div>
+          )}
       </React.Fragment>
     );
   }

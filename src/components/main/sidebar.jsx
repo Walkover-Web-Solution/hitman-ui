@@ -43,7 +43,8 @@ class SideBar extends Component {
 
   componentDidMount() {
     if (getCurrentUser()) {
-      const { user } = getCurrentUser();
+      const user = getCurrentUser();
+      console.log(user)
       const name = user.first_name + user.last_name;
       const email = user.email;
       this.setState({ name, email });
@@ -200,6 +201,17 @@ class SideBar extends Component {
             <Switch>
               <ProtectedRoute
                 path="/dashboard/"
+                render={(props) => (
+                  <Collections
+                    {...this.props}
+                    empty_filter={this.emptyFilter.bind(this)}
+                    collection_selected={this.openCollection.bind(this)}
+                    filter={this.state.data.filter}
+                  />
+                )}
+              />
+              <ProtectedRoute
+                path="/admin/publish"
                 render={(props) => (
                   <Collections
                     {...this.props}

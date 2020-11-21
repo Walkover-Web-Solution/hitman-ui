@@ -649,6 +649,13 @@ class DisplayEndpoint extends Component {
     return count + 1;
   }
 
+  extractCollectionId(groupId){
+    const group = this.props.groups[groupId]
+    const versionId = group.versionId
+    const version = this.props.versions[versionId] 
+    return version.collectionId
+  }
+
   handleSave = async (groupId, EndpointName) => {
     if (!getCurrentUser()) {
       this.setState({
@@ -662,7 +669,6 @@ class DisplayEndpoint extends Component {
       if (this.state.data.body.type === "raw") {
         body.value = this.parseBody(body.value);
       }
-
       const headersData = this.doSubmitHeader("save");
       const updatedParams = this.doSubmitParam();
       const pathVariables = this.doSubmitPathVariables();
@@ -688,13 +694,17 @@ class DisplayEndpoint extends Component {
       if (endpoint.name === "") toast.error("Please enter Endpoint name");
       else if (this.props.location.pathname.split("/")[3] === "new") {
         endpoint.requestId = this.props.tab.id;
+        const collectionId = this.extractCollectionId(groupId || this.state.groupId)
+        // endpoint.collectionId = collectionId
         endpoint.position = this.extractPosition(groupId || this.state.groupId);
         this.props.add_endpoint(endpoint, groupId || this.state.groupId);
       } else if (this.state.title === "update endpoint") {
+        const collectionId = this.extractCollectionId(groupId || this.state.groupId)
         this.props.update_endpoint({
           ...endpoint,
           id: this.state.endpoint.id,
           groupId: groupId || this.state.groupId,
+          // collectionId : collectionId
         });
       }
     }

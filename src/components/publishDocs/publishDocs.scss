@@ -136,3 +136,46 @@
     grid-template-columns: 50px auto;
   }
 }
+
+.custom-color {
+  height: 28px;
+  width: 28px;
+  border-radius: 4px;
+  margin: 0px 10px;
+  text-align: center;
+}
+
+.dashed-border {
+  border: 1px dashed gray;
+}
+
+.color1 {
+  background: linear-gradient(135.53deg, #dd755e 0%, #f7bb97 97.33%);
+}
+.color2 {
+  background: linear-gradient(133.45deg, #686eff 0%, #bd68ff 99.18%);
+}
+.color3 {
+  background: linear-gradient(317.12deg, #7dccee 3.44%, #679ad7 100%);
+}
+.color4 {
+  background: linear-gradient(135deg, #27ae60 0%, #1fdba3 100%);
+}
+
+.color5 {
+  background: linear-gradient(
+    135deg,
+    #f2994a 2.5%,
+    #f2994a 2.51%,
+    #f0bd3b 100%
+  );
+}
+
+.twitter-picker {
+  width: 400px !important;
+
+  box-shadow: none !important;
+  div {
+    border: none !important;
+  }
+}

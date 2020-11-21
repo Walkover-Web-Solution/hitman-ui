@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Button, DropdownButton, Dropdown } from 'react-bootstrap';
+import MyPicker from './customColorPicker'
 import SideBar from '../main/sidebar';
 import "./publishDocs.scss"
 import { connect } from "react-redux";
@@ -17,7 +18,9 @@ import {
     approveEndpoint,
     rejectEndpoint
 } from "../publicEndpoint/redux/publicEndpointsActions";
+import PublishDocsForm from './publishDocsForm'
 var URI = require("urijs");
+
 
 const mapDispatchToProps = (dispatch) => {
     return {
@@ -148,23 +151,28 @@ class PublishDocs extends Component {
                                 ) : null}
                             </select>
                         </div>
+
+
+
+
+
+
+
                         <div className="grid">
                             <div className="grid-column-one">
                                 <div className="domain">
-                                    Domain: docs.msg91.com
-                                <br />
-                                 Slug: api/sendsms/bulk
-                            </div>
+                                    <PublishDocsForm />
+                                </div>
                                 <div className="product">
-                                    MSG91
+                                </div>
                             </div>
-                            </div>
-
                             <div className="grid-column-two">
                                 <div>
                                     Pick your favorite color for website
-                           </div>
-
+                                       </div>
+                                <div>
+                                    <MyPicker />
+                                </div>
                             </div>
 
                             <div className="publish-button">  <Button variant="success">PUBLISH ALL</Button>
@@ -248,7 +256,6 @@ class PublishDocs extends Component {
                             <div ></div>
                             <div>sdas</div>
 
-                        </div>
 
                     </div> */}
                     </div>

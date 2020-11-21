@@ -29,7 +29,10 @@ function showDeleteCollectionModal(props, onHide, title,message, selectedCollect
   );
 }
 
+
+
 export default {
   showCollectionForm,
-  showDeleteCollectionModal
+  showDeleteCollectionModal,
+  
 };
