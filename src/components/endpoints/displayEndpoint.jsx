@@ -117,7 +117,7 @@ class DisplayEndpoint extends Component {
   };
 
   async componentDidMount() {
-    if (this.props.location.pathname.split("/")[5] === "new") {
+    if (this.props.location.pathname.split("/")[3] === "new") {
       this.setState({
         data: {
           name: "",
@@ -192,13 +192,13 @@ class DisplayEndpoint extends Component {
     const split = this.props.location.pathname.split("/");
 
     if (isDashboardRoute(this.props)) {
-      if (!endpointId) endpointId = split[5];
+      if (!endpointId) endpointId = split[3];
     } else endpointId = split[4];
 
     const { endpoints } = store.getState();
     const { groups } = store.getState();
     const { versions } = store.getState();
-    if (this.props.location.pathname.split("/")[5] === "new" && !this.title) {
+    if (this.props.location.pathname.split("/")[3] === "new" && !this.title) {
       originalParams = [
         {
           checked: "notApplicable",
@@ -679,7 +679,7 @@ class DisplayEndpoint extends Component {
       };
       // if (endpoint.name === "" || endpoint.uri === "")
       if (endpoint.name === "") toast.error("Please enter Endpoint name");
-      else if (this.props.location.pathname.split("/")[5] === "new") {
+      else if (this.props.location.pathname.split("/")[3] === "new") {
         endpoint.requestId = this.props.tab.id;
         endpoint.position = this.extractPosition(groupId || this.state.groupId);
         this.props.add_endpoint(endpoint, groupId || this.state.groupId);
@@ -1513,7 +1513,7 @@ class DisplayEndpoint extends Component {
     }
     if (
       isDashboardRoute(this.props) &&
-      this.props.location.pathname.split("/")[5] !== "new" &&
+      this.props.location.pathname.split("/")[3] !== "new" &&
       this.state.endpoint.id !== this.props.tab.id &&
       this.props.endpoints[this.props.tab.id]
     ) {

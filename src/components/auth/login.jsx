@@ -4,16 +4,14 @@ import { Redirect } from "react-router-dom";
 import "./auth.scss";
 import auth from "./authService";
 
-
 class Login extends Component {
   async componentDidMount() {
     const socketJwt = this.getSocketJwt();
     if (!socketJwt) return;
-    const userInfo = await auth.login(socketJwt);
-    console.log(userInfo)
+    const profile = await auth.login(socketJwt);
+    console.log(profile)
     const { state } = this.props.location;
-    const orgIdentifier = userInfo.orgs[0].identifier
-    window.location = state ? state.from.pathname : `/org/${orgIdentifier}/dashboard`;
+    window.location = state ? state.from.pathname : "/dashboard/endpoint/new";
   }
 
   getSocketJwt = () => {
@@ -23,9 +21,7 @@ class Login extends Component {
   };
 
   render() {
-    if (auth.getCurrentUser()) {
-      const orgIdentifier = auth.getCurrentOrg().identifier
-      return <Redirect to={`/org/${orgIdentifier}/dashboard`} />;}
+    if (auth.getCurrentUser()) return <Redirect to="/dashboard/endpoint/new" />;
 
     return <React.Fragment></React.Fragment>;
   }
