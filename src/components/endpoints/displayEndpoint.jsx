@@ -10,7 +10,6 @@ import tabService from "../tabs/tabService";
 import { closeTab } from "../tabs/redux/tabsActions";
 import tabStatusTypes from "../tabs/tabStatusTypes";
 import CodeTemplate from "./codeTemplate";
-import CreateEndpointForm from "./createEndpointForm";
 import SaveAsSidebar from "./saveAsSidebar";
 import BodyContainer from "./displayBody";
 import DisplayDescription from "./displayDescription";
@@ -699,7 +698,6 @@ class DisplayEndpoint extends Component {
             : {},
         authorizationType: this.state.authType,
       };
-      // if (endpoint.name === "" || endpoint.uri === "")
       if (endpoint.name === "") toast.error("Please enter Endpoint name");
       else if (this.props.location.pathname.split("/")[3] === "new") {
         endpoint.requestId = this.props.tab.id;
@@ -1590,14 +1588,6 @@ class DisplayEndpoint extends Component {
         {getCurrentUser() ? (
           <div className={isDashboardRoute(this.props) ? "hm-panel mt-4" : null}>
             {this.state.showEndpointFormModal && (
-              // <CreateEndpointForm
-              //   {...this.props}
-              //   show={true}
-              //   onHide={() => this.closeEndpointFormModal()}
-              //   set_group_id={this.setGroupId.bind(this)}
-              //   name={this.state.data.name}
-              //   save_endpoint={this.handleSave.bind(this)}
-              // />
               <SaveAsSidebar 
                 {...this.props} 
                 onHide={() => this.closeEndpointFormModal()}
@@ -1942,7 +1932,6 @@ class DisplayEndpoint extends Component {
                   )}
 
                   {this.state.data.body &&
-                    // this.state.data.body.value !== "" &&
                     this.state.data.body.value !== null && (
                       <PublicBodyContainer
                         {...this.props}
