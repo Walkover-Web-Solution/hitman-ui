@@ -15,7 +15,6 @@ import { closeTab, openInNewTab } from "../tabs/redux/tabsActions";
 const mapStateToProps = (state) => {
   return {
     tabs: state.tabs,
-    teams: state.teams,
   };
 };
 
@@ -72,7 +71,7 @@ class Pages extends Component {
 
   async handlePublicPageState(page) {
     if (page.state === "Draft" || page.state === "Reject") {
-        this.props.pending_page(page);
+      this.props.pending_page(page);
     }
   }
 
@@ -84,22 +83,6 @@ class Pages extends Component {
   }
   async handleRejectRequest(page) {
     this.props.reject_page(page);
-  }
-
-  getCurrentUserRole(collectionId) {
-    const teamId = this.props.collections[collectionId].teamId;
-    if (
-      this.props.teams !== undefined &&
-      teamId !== undefined &&
-      this.props.teams[teamId] !== undefined
-    )
-      return this.props.teams[teamId].role;
-  }
-
-  checkAccess(collectionId) {
-    const role = this.getCurrentUserRole(collectionId);
-    if (role === "Admin" || role === "Owner") return true;
-    else return false;
   }
 
   render() {
@@ -165,7 +148,8 @@ class Pages extends Component {
                   >
                     Duplicate
                   </a>
-                  {this.props.pages[pageId].state === "Draft" || this.props.pages[pageId].state==="Reject" ? (
+                  {this.props.pages[pageId].state === "Draft" ||
+                  this.props.pages[pageId].state === "Reject" ? (
                     <a
                       className="dropdown-item"
                       onClick={() =>
@@ -186,9 +170,6 @@ class Pages extends Component {
                       Cancel Request
                     </a>
                   ) : null}
-
-                  
-                 
                 </div>
               </div>
             </button>

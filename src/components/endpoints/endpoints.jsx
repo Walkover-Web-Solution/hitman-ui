@@ -24,7 +24,6 @@ const mapStateToProps = (state) => {
     endpoints: state.endpoints,
     groups: state.groups,
     tabs: state.tabs,
-    teams: state.teams,
   };
 };
 
@@ -116,25 +115,9 @@ class Endpoints extends Component {
     this.setState({ showDeleteModal: false });
   }
 
-  getCurrentUserRole(collectionId) {
-    const teamId = this.props.collections[collectionId].teamId;
-    if (
-      this.props.teams !== undefined &&
-      teamId !== undefined &&
-      this.props.teams[teamId] !== undefined
-    )
-      return this.props.teams[teamId].role;
-  }
-
-  checkAccess(collectionId) {
-    const role = this.getCurrentUserRole(collectionId);
-    if (role === "Admin" || role === "Owner") return true;
-    else return false;
-  }
-
   async handlePublicEndpointState(endpoint) {
     if (endpoint.state === "Draft" || endpoint.state === "Reject") {
-        this.props.pending_endpoint(endpoint);
+      this.props.pending_endpoint(endpoint);
     }
   }
 
@@ -414,7 +397,8 @@ class Endpoints extends Component {
                         >
                           Duplicate
                         </a>
-                        {this.props.endpoints[endpointId].state === "Draft" || this.props.endpoints[endpointId].state === "Reject"  ? (
+                        {this.props.endpoints[endpointId].state === "Draft" ||
+                        this.props.endpoints[endpointId].state === "Reject" ? (
                           <a
                             className="dropdown-item"
                             onClick={() =>
@@ -427,16 +411,15 @@ class Endpoints extends Component {
                           </a>
                         ) : null}
 
-                        {this.props.endpoints[endpointId].state === "Approved" ? (
-                          <a
-                            className="dropdown-item"
-                            disabled
-                          >
+                        {this.props.endpoints[endpointId].state ===
+                        "Approved" ? (
+                          <a className="dropdown-item" disabled>
                             Approved
                           </a>
-                        ) : null} 
+                        ) : null}
 
-                        {  this.props.endpoints[endpointId].state === "Pending" ? (
+                        {this.props.endpoints[endpointId].state ===
+                        "Pending" ? (
                           <a
                             className="dropdown-item"
                             onClick={() =>
@@ -448,8 +431,6 @@ class Endpoints extends Component {
                             Cancel Request
                           </a>
                         ) : null}
-
-                        
                       </div>
                     </div>
                   </button>
