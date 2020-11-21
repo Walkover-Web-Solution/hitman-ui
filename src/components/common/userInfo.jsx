@@ -7,10 +7,9 @@ class UserInfo extends Component {
 
   componentDidMount() {
     if (auth.getCurrentUser()) {
-      let user = {};
-      const { user: currentUser } = auth.getCurrentUser();
-      user.name = currentUser.first_name + currentUser.last_name;
-      user.email = currentUser.email;
+      const user = auth.getCurrentUser();
+      user.name = user.first_name + user.last_name;
+      user.email = user.email;
       this.setState({ user });
     }
   }

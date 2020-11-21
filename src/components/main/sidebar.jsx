@@ -12,6 +12,14 @@ import CollectionVersions from "../collectionVersions/collectionVersions";
 import endpointApiService from "../endpoints/endpointApiService";
 import "./main.scss";
 import "./sidebar.scss";
+import { Tabs, Tab, Button } from 'react-bootstrap'
+import LoginSignupModal from './loginSignupModal';
+import hitmanIcon from "../../assets/icons/hitman.svg"
+import collectionIcon from "../../assets/icons/collectionIcon.svg"
+import historyIcon from "../../assets/icons/historyIcon.svg"
+import randomTriggerIcon from "../../assets/icons/randomTriggerIcon.svg"
+import emptyCollections from "../../assets/icons/emptyCollections.svg"
+
 const mapStateToProps = (state) => {
   return {
     collections: state.collections,
@@ -30,9 +38,11 @@ class SideBar extends Component {
     name: "",
     email: "",
   };
+
   componentDidMount() {
     if (getCurrentUser()) {
-      const { user } = getCurrentUser();
+      const  user  = getCurrentUser();
+      console.log(user)
       const name = user.first_name + user.last_name;
       const email = user.email;
       this.setState({ name, email });
@@ -84,6 +94,12 @@ class SideBar extends Component {
     this.setState({ showOpenApiForm: false });
   }
 
+  closeLoginSignupModal() {
+    this.setState({
+      showLoginSignupModal: false
+    })
+  }
+
   render() {
     return (
       <nav
@@ -91,10 +107,17 @@ class SideBar extends Component {
           isDashboardRoute(this.props) ? "sidebar" : "public-endpoint-sidebar"
         }
       >
+        {this.state.showLoginSignupModal && (
+          <LoginSignupModal
+            show={true}
+            onHide={() => this.closeLoginSignupModal()}
+            title="Add Collection"
+          />
+        )}
         <div className="primary-sidebar">
           {isDashboardRoute(this.props) ? (
             <React.Fragment>
-              <div className="user-info">
+              {/* <div className="user-info">
                 <div className="user-avatar">
                   <i className="uil uil-user"></i>
                 </div>
@@ -130,51 +153,92 @@ class SideBar extends Component {
                   </div>
                   <div className="user-details-text">{this.state.email}</div>
                 </div>
-              </div>
+              </div> */}
 
+              <div className="app-name"><img className="icon" src={hitmanIcon}></img>HITMAN</div>
               <div className="search-box">
                 <i className="fas fa-search" id="search-icon"></i>
                 <input
                   value={this.state.data.filter}
                   type="text"
                   name="filter"
-                  placeholder="Filter"
+                  placeholder="Search"
                   onChange={this.handleChange}
                 />
               </div>
+
+              <Tabs defaultActiveKey={getCurrentUser() ? "collection" : "randomTrigger"} id="uncontrolled-tab-example">
+                <Tab eventKey="collection" title={
+                  <img src={collectionIcon}></img>
+                } >
+                  {!getCurrentUser() ? (
+                    <div className="empty-collections">
+                      <div> <img src={emptyCollections}></img></div>
+                      <div className="content">
+                        Your collection is Empty.
+                        <br></br>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                      </div>
+                      <Button className="button" variant="warning" onClick={() => this.setState({
+                        showLoginSignupModal: true
+                      })
+                      }
+                      >+ Add here</Button>{' '}
+                    </div>) : null}
+                </Tab>
+                <Tab eventKey="history" title={<img src={historyIcon}></img>
+                }>
+                </Tab>
+                <Tab eventKey="randomTrigger" title={<img src={randomTriggerIcon}></img>
+                } >
+                </Tab>
+              </Tabs>
             </React.Fragment>
           ) : null}
-
-          <Switch>
-            <ProtectedRoute
-              path="/dashboard/"
-              render={(props) => (
-                <Collections
-                  {...this.props}
-                  empty_filter={this.emptyFilter.bind(this)}
-                  collection_selected={this.openCollection.bind(this)}
-                  filter={this.state.data.filter}
-                />
-              )}
-            />
-            <Route
-              path="/p/:collectionId"
-              render={(props) => <Collections {...this.props} />}
-            />
-          </Switch>
+          {getCurrentUser() ? (
+            <Switch>
+              <ProtectedRoute
+                path="/dashboard/"
+                render={(props) => (
+                  <Collections
+                    {...this.props}
+                    empty_filter={this.emptyFilter.bind(this)}
+                    collection_selected={this.openCollection.bind(this)}
+                    filter={this.state.data.filter}
+                  />
+                )}
+              />
+              <ProtectedRoute
+                path="/admin/publish"
+                render={(props) => (
+                  <Collections
+                    {...this.props}
+                    empty_filter={this.emptyFilter.bind(this)}
+                    collection_selected={this.openCollection.bind(this)}
+                    filter={this.state.data.filter}
+                  />
+                )}
+              />
+              <Route
+                path="/p/:collectionId"
+                render={(props) => <Collections {...this.props} />}
+              />
+            </Switch>) : null}
           {isDashboardRoute(this.props) ? (
             <React.Fragment></React.Fragment>
           ) : null}
         </div>
-        {this.collectionId && (
-          <div className="secondary-sidebar">
-            <CollectionVersions
-              {...this.props}
-              collection_id={this.collectionId}
-            />
-          </div>
-        )}
-      </nav>
+        {
+          this.collectionId && (
+            <div className="secondary-sidebar">
+              <CollectionVersions
+                {...this.props}
+                collection_id={this.collectionId}
+              />
+            </div>
+          )
+        }
+      </nav >
     );
   }
 }
