@@ -142,6 +142,9 @@ class SideBar extends Component {
         ))
     )
 }
+setKeyWord(){
+  return this.state.data.filter.length>2?this.state.data.filter:"";
+}
 
   render() {
     return (
@@ -243,7 +246,7 @@ class SideBar extends Component {
                     {...this.props}
                     empty_filter={this.emptyFilter.bind(this)}
                     collection_selected={this.openCollection.bind(this)}
-                    filter={this.state.data.filter.lenght>2?this.state.data.filter:""}
+                    filter={this.setKeyWord()}
                   />
                 )}
               />
