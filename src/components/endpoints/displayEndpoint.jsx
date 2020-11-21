@@ -1938,8 +1938,8 @@ class DisplayEndpoint extends Component {
               </React.Fragment>
             )}
         </div>
-        {!isDashboardRoute(this.props) && this.state.harObject &&
-          <CodeTemplate
+        {!isDashboardRoute(this.props) && this.state.harObject && !this.props.location.pathname.split("/")[1] === "admin" &&
+          < CodeTemplate
             show={true}
             onHide={() => {
               this.setState({ showCodeTemplate: false });
