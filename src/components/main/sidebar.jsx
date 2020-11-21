@@ -19,15 +19,12 @@ import historyIcon from "../../assets/icons/historyIcon.svg"
 import randomTriggerIcon from "../../assets/icons/randomTriggerIcon.svg"
 import emptyCollections from "../../assets/icons/emptyCollections.svg"
 import collections from "../collections/collections";
-const moment = require('moment');
 
 const mapStateToProps = (state) => {
   return {
-    // teams: state.teams,
     collections: state.collections,
     // versions: state.versions,
     // pages: state.pages,
-    // teamUsers: state.teamUsers,
     // groups: state.groups,
     historySnapshot: state.history,
     filter: "",

@@ -99,7 +99,7 @@ function versionsReducer(state = initialState, action) {
       if (action.error.status === 404) return state;
       return {
         ...state,
-        [action.teamIdentifier.id]: action.version,
+        [action.version.id]: action.version,
       };
     case versionActionTypes.ON_VERSION_DUPLICATED:
       versions = { ...state };

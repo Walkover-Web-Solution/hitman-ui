@@ -15,7 +15,6 @@ import { closeTab, openInNewTab } from "../tabs/redux/tabsActions";
 const mapStateToProps = (state) => {
   return {
     tabs: state.tabs,
-    teams: state.teams,
   };
 };
 
@@ -86,22 +85,6 @@ class Pages extends Component {
     this.props.reject_page(page);
   }
 
-  getCurrentUserRole(collectionId) {
-    const teamId = this.props.collections[collectionId].teamId;
-    if (
-      this.props.teams !== undefined &&
-      teamId !== undefined &&
-      this.props.teams[teamId] !== undefined
-    )
-      return this.props.teams[teamId].role;
-  }
-
-  checkAccess(collectionId) {
-    const role = this.getCurrentUserRole(collectionId);
-    if (role === "Admin" || role === "Owner") return true;
-    else return false;
-  }
-
   render() {
     const pageId = this.props.page_id;
     return (
@@ -165,16 +148,17 @@ class Pages extends Component {
                   >
                     Duplicate
                   </a>
-                  {this.props.pages[pageId].state === "Draft" || this.props.pages[pageId].state === "Reject" ? (
-                    <a
-                      className="dropdown-item"
-                      onClick={() =>
-                        this.handlePublicPageState(this.props.pages[pageId])
-                      }
-                    >
-                      Make Public
-                    </a>
-                  ) : null}
+                  {this.props.pages[pageId].state === "Draft" ||
+                    this.props.pages[pageId].state === "Reject" ? (
+                      <a
+                        className="dropdown-item"
+                        onClick={() =>
+                          this.handlePublicPageState(this.props.pages[pageId])
+                        }
+                      >
+                        Make Public
+                      </a>
+                    ) : null}
 
                   {this.props.pages[pageId].state === "Pending" ? (
                     <a
@@ -186,9 +170,6 @@ class Pages extends Component {
                       Cancel Request
                     </a>
                   ) : null}
-
-
-
                 </div>
               </div>
             </button>
@@ -210,7 +191,8 @@ class Pages extends Component {
               <i className="uil uil-file-alt" aria-hidden="true"></i>
               {this.props.pages[pageId].name}
             </div>
-          )}
+          )
+        }
       </React.Fragment>
     );
   }

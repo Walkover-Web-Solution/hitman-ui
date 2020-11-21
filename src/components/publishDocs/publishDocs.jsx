@@ -6,12 +6,9 @@ import "./publishDocs.scss"
 import { connect } from "react-redux";
 import { fetchCollections } from "../collections/redux/collectionsActions";
 import { fetchAllVersions } from "../collectionVersions/redux/collectionVersionsActions";
-import {
-    fetchEndpoints,
-} from "../endpoints/redux/endpointsActions";
+import { fetchEndpoints } from "../endpoints/redux/endpointsActions";
 import { fetchGroups } from "../groups/redux/groupsActions";
 import { fetchPages } from "../pages/redux/pagesActions";
-import { fetchAllTeamsOfUser } from "../teams/redux/teamsActions";
 import extractCollectionInfoService from "./extractCollectionInfoService"
 import DisplayEndpoint from "../endpoints/displayEndpoint";
 import {
@@ -24,7 +21,6 @@ var URI = require("urijs");
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        fetch_all_teams_of_user: () => dispatch(fetchAllTeamsOfUser()),
         fetch_collections: () => dispatch(fetchCollections()),
         fetch_all_versions: () => dispatch(fetchAllVersions()),
         fetch_groups: () => dispatch(fetchGroups()),
@@ -37,11 +33,9 @@ const mapDispatchToProps = (dispatch) => {
 
 const mapStateToProps = (state) => {
     return {
-        teams: state.teams,
         collections: state.collections,
         versions: state.versions,
         pages: state.pages,
-        teamUsers: state.teamUsers,
         groups: state.groups,
         endpoints: state.endpoints,
         pages: state.pages
@@ -76,7 +70,6 @@ class PublishDocs extends Component {
 
     fetchAll() {
         if (Object.keys(this.props.collections).length === 0) {
-            this.props.fetch_all_teams_of_user();
             this.props.fetch_collections();
             this.props.fetch_all_versions();
             this.props.fetch_groups();

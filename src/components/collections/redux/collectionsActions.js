@@ -273,7 +273,6 @@ export const addCustomDomain = (
 
     const id = collection.id;
     delete collection.id;
-    delete collection.teamId;
     collectionsApiService
       .updateCollection(id, collection)
       .then((response) => {

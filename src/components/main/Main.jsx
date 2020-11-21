@@ -11,8 +11,7 @@ import {
 import { fetchGroups } from "../groups/redux/groupsActions";
 import indexedDbService from "../indexedDb/indexedDbService";
 import { fetchPages } from "../pages/redux/pagesActions";
-import { fetchAllTeamsOfUser } from "../teams/redux/teamsActions";
-import {fetchHistoryFromIdb} from "../history/redux/historyAction";
+import { fetchHistoryFromIdb } from "../history/redux/historyAction";
 import ContentPanel from "./contentPanel";
 import "./main.scss";
 import SideBar from "./sidebar";
@@ -20,7 +19,6 @@ import { getCurrentUser } from "../auth/authService";
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetch_all_teams_of_user: () => dispatch(fetchAllTeamsOfUser()),
     fetch_collections: () => dispatch(fetchCollections()),
     fetch_all_versions: () => dispatch(fetchAllVersions()),
     fetch_groups: () => dispatch(fetchGroups()),
@@ -46,7 +44,6 @@ class Main extends Component {
   }
 
   fetchAll() {
-    this.props.fetch_all_teams_of_user();
     this.props.fetch_collections();
     this.props.fetch_all_versions();
     this.props.fetch_groups();
