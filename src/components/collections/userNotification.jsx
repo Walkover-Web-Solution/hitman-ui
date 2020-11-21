@@ -10,7 +10,7 @@ class UserInfo extends Component {
   componentDidMount() {
     if (auth.getCurrentUser()) {
       let user = {};
-      const currentUser = auth.getCurrentUser();
+      const {user :currentUser} = auth.getCurrentUser();
       user.name = currentUser.first_name + currentUser.last_name;
       user.email = currentUser.email;
       this.setState({ user });
@@ -48,7 +48,9 @@ class UserInfo extends Component {
             <div className="user-name">
               {this.state.user.name}
             </div>
-            {authService.isAdmin() && <Dropdown>
+            {
+            // authService.isAdmin() &&
+             <Dropdown>
             <Dropdown.Toggle variant="success" id="dropdown-basic">
             <div  class=" user-name notification"
             //  onClick = {()=>this.navigateToPublishDocs()}
@@ -63,12 +65,13 @@ class UserInfo extends Component {
                 <Link to="/logout">Sign out</Link>
               </li></Dropdown.Item>
             </Dropdown.Menu>
-          </Dropdown>}
-          {
+          </Dropdown>
+          }
+          {/* {
             !authService.isAdmin() &&
             <Link to="/logout">Sign out</Link>
           
-          }
+          } */}
           </div>
         </div>
       </div>

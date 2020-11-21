@@ -40,17 +40,16 @@ class MyColorPicker extends React.Component {
     return (
       <React.Fragment>
     <div style = {{display : "flex"}}>
-      <div id = "1" className = "custom-color color1" onClick = {(e)=>this.handleThemeChange(e)}></div>
+      {/* <div id = "1" className = "custom-color color1" onClick = {(e)=>this.handleThemeChange(e)}></div>
       <div  className = "custom-color color2" onClick = {()=>this.handleThemeChange(colorPickerEnum. COLOR2)}></div>
       <div  className = "custom-color color3" onClick = {()=>this.handleThemeChange(colorPickerEnum. COLOR3)}></div>
       <div  className = "custom-color color4" onClick = {()=>this.handleThemeChange(colorPickerEnum. COLOR4)}>  </div>
       <div  className = "custom-color color5" onClick = {()=>this.handleThemeChange(colorPickerEnum. COLOR5)}>  </div>
-      <div  className = "custom-color dashed-border" onClick = {()=>this.toggleColorOption()} ><img src={PlusIcon} alt=""/> </div>
+      <div  className = "custom-color dashed-border" onClick = {()=>this.toggleColorOption()} ><img src={PlusIcon} alt=""/> </div> */}
 
     </div>
     <div>
       {
-       this.state.openColorPicker &&
           <TwitterPicker onChangeComplete={this.handleChangeComplete }/>
      }
     </div>
