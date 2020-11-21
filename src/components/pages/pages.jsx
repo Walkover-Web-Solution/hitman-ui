@@ -11,6 +11,7 @@ import "./page.scss";
 import tabStatusTypes from "../tabs/tabStatusTypes";
 import tabService from "../tabs/tabService";
 import { closeTab, openInNewTab } from "../tabs/redux/tabsActions";
+import authService from "../auth/authService";
 
 const mapStateToProps = (state) => {
   return {
@@ -55,7 +56,7 @@ class Pages extends Component {
       }
 
       this.props.history.push({
-        pathname: `/dashboard/page/${page.id}`,
+        pathname: `/org/${authService.getCurrentOrg().identifier}/dashboard/page/${page.id}`,
         page: page,
       });
     } else {

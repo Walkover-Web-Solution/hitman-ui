@@ -61,7 +61,7 @@ class UserInfo extends Component {
               </li>
               {auth.getCurrentUser() === null ? null : (
                 <li>
-                  <Link to="/dashboard">My Collections</Link>
+                  <Link to={`/org/${auth.getCurrentOrg().identifier}/dashboard`}>My Collections</Link>
                 </li>
               )}
             </div>

@@ -7,6 +7,7 @@ import store from "../../store/store";
 import { updatePage } from "../pages/redux/pagesActions";
 import "./page.scss";
 import { toast } from "react-toastify";
+import authService from "../auth/authService";
 var Link = Quill.import("formats/link");
 var builtInFunc = Link.sanitize;
 Link.sanitize = function customSanitizeLinkInput(linkValueInput) {
@@ -86,7 +87,7 @@ class EditPage extends Component {
 
       this.setState({ data });
     } else {
-      const pageId = this.props.location.pathname.split("/")[3];
+      const pageId = this.props.location.pathname.split("/")[4];
       this.fetchPage(pageId);
       store.subscribe(() => {
         this.fetchPage(pageId);
@@ -117,7 +118,7 @@ class EditPage extends Component {
       } else {
         this.props.update_page(editedPage, editedPage.id);
         this.props.history.push({
-          pathname: `/dashboard/page/${editedPage.id}`,
+          pathname: `/org/${authService.getCurrentOrg().identifier}/dashboard/page/${editedPage.id}`,
         });
       }
     } else {
@@ -127,7 +128,7 @@ class EditPage extends Component {
       } else {
         this.props.update_page(editedPage, editedPage.id);
         this.props.history.push({
-          pathname: `/dashboard/page/${editedPage.id}`,
+          pathname: `/org/${authService.getCurrentOrg().identifier}/dashboard/page/${editedPage.id}`,
         });
       }
     }

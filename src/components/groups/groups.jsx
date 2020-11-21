@@ -18,6 +18,7 @@ import tabService from "../tabs/tabService";
 import "./groups.scss";
 import groupsService from "./groupsService";
 import filterService from "../../services/filterService";
+import authService from "../auth/authService";
 
 const mapStateToProps = (state) => {
   return {
@@ -70,7 +71,7 @@ class Groups extends Component {
 
   handleAddPage(groupId, versionId, collectionId) {
     this.props.history.push({
-      pathname: `/dashboard/${collectionId}/versions/${versionId}/groups/${groupId}/pages/new`,
+      pathname: `/org/${authService.getCurrentOrg().identifier}/dashboard/${collectionId}/versions/${versionId}/groups/${groupId}/pages/new`,
       versionId: versionId,
       groupId: groupId,
     });
@@ -79,7 +80,7 @@ class Groups extends Component {
   handleAddEndpoint(groupId, versions, groups) {
     tabService.newTab({ ...this.props });
     this.props.history.push({
-      pathname: `/dashboard/endpoint/new`,
+      pathname: `/org/${authService.getCurrentOrg().identifier}/dashboard/endpoint/new`,
       groupId: groupId,
       title: "Add New Endpoint",
     });

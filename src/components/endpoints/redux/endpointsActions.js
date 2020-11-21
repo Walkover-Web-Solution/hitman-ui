@@ -1,5 +1,6 @@
 import { toast } from "react-toastify";
 import store from "../../../store/store";
+import authService from "../../auth/authService";
 import { setEndpointIds } from "../../groups/redux/groupsActions";
 import endpointApiService from "../endpointApiService";
 import endpointsActionTypes from "./endpointsActionTypes";
@@ -14,7 +15,7 @@ export const addEndpoint = (history, newEndpoint, groupId) => {
         // let endpointsOrder = store.getState().groups[groupId].endpointsOrder;
         // endpointsOrder.push(response.data.id);
         // dispatch(setEndpointIds(endpointsOrder, groupId));
-        history.push(`/dashboard/endpoint/${response.data.id}`);
+        history.push(`/org/${authService.getCurrentOrg().identifier}/dashboard/endpoint/${response.data.id}`);
       })
       .catch((error) => {
         dispatch(

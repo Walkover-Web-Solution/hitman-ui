@@ -35,7 +35,7 @@ class App extends Component {
     this.redirectToClientDomain();
     return (
       <Switch>
-        <ProtectedRoute path="/dashboard/" component={Main} />
+        <ProtectedRoute path="/org/:orgId/dashboard/" component={Main} />
         <Route path="/p/error" component={NotFound} />
         <Route path="/p/:collectionIdentifier" component={Public} />
         <Route path="/logout" component={Logout} />

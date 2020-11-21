@@ -1,5 +1,6 @@
 import shortid from "shortid";
 import store from "../../../store/store";
+import authService from "../../auth/authService";
 import indexedDbService from "../../indexedDb/indexedDbService";
 import tabStatusTypes from "../tabStatusTypes";
 import tabsActionTypes from "./tabsActionTypes";
@@ -9,10 +10,10 @@ export const fetchTabsFromIdb = (props) => {
     indexedDbService.getAllData("tabs").then((tabsList) => {
       indexedDbService.getAllData("tabs_metadata").then((tabsMetadata) => {
         if (!(tabsList && Object.keys(tabsList).length)) {
-          if (props.location.pathname.split("/")[2] === "endpoint") {
+          if (props.location.pathname.split("/")[4] === "endpoint") {
             let newTab = null;
 
-            if (props.location.pathname.split("/")[3] === "new") {
+            if (props.location.pathname.split("/")[5] === "new") {
               const id = shortid.generate();
               newTab = {
                 id,
@@ -21,8 +22,8 @@ export const fetchTabsFromIdb = (props) => {
                 previewMode: false,
                 isModified: false,
               };
-            } else if (props.location.pathname.split("/")[3]) {
-              const endpointId = props.location.pathname.split("/")[3];
+            } else if (props.location.pathname.split("/")[5]) {
+              const endpointId = props.location.pathname.split("/")[5];
               newTab = {
                 id: endpointId,
                 type: "endpoint",
@@ -48,8 +49,8 @@ export const fetchTabsFromIdb = (props) => {
             );
           }
         } else if (
-          props.location.pathname.split("/")[2] === "endpoint" &&
-          props.location.pathname.split("/")[3] === "new" &&
+          props.location.pathname.split("/")[4] === "endpoint" &&
+          props.location.pathname.split("/")[5] === "new" &&
           tabsList[tabsMetadata.activeTabId] &&
           tabsList[tabsMetadata.activeTabId].status !== "NEW"
         ) {
@@ -104,7 +105,7 @@ export const addNewTab = (history) => {
         isModified: false,
       },
     });
-    history.push({ pathname: `/dashboard/endpoint/new` });
+    history.push({ pathname: `/org/${authService.getCurrentOrg().identifier}/dashboard/endpoint/new` });
     indexedDbService.addData("tabs", {
       id,
       type: "endpoint",
