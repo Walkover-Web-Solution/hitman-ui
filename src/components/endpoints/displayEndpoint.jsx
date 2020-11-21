@@ -64,7 +64,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
 class DisplayEndpoint extends Component {
   uri = React.createRef();
-  // name = React.createRef();
   paramKey = React.createRef();
 
   state = {
@@ -1007,10 +1006,7 @@ class DisplayEndpoint extends Component {
       if (!harObject.url.split(":")[1] || harObject.url.split(":")[0] === "") {
         harObject.url = "https://" + url;
       }
-      // this.openCodeTemplate(harObject);
-      this.setState({harObject}, ()=>{
-        // console.log(harObject);
-      });
+      this.setState({harObject}, ()=>{});
     } catch (error) {
       toast.error(error);
     }
@@ -1044,9 +1040,7 @@ class DisplayEndpoint extends Component {
   setBody(bodyType, body) {
     let data = { ...this.state.data };
     data.body = { type: bodyType, value: body };
-    // if (bodyType !== "multipart/form-data") {
     isDashboardRoute(this.props) && this.setHeaders(bodyType, "content-type");
-    // }
     this.setState({ data });
     if (isDashboardRoute(this.props)) {
       tabService.markTabAsModified(this.props.tab.id);
@@ -1063,7 +1057,6 @@ class DisplayEndpoint extends Component {
       let body = JSON.parse(value);
       let keys = Object.keys(body);
       let bodyDescription = {};
-      // const body_description = this.props.body_description;
       for (let i = 0; i < keys.length; i++) {
         if (typeof body[keys[i]] !== "object") {
           bodyDescription[keys[i]] = {
@@ -1568,7 +1561,6 @@ class DisplayEndpoint extends Component {
               save_endpoint={this.handleSave.bind(this)}
             />
           )}
-          {/* {this.state.showCodeTemplate && this.showCodeTemplate()} */}
           <DisplayDescription
             {...this.props}
             endpoint={this.state.endpoint}
@@ -1661,13 +1653,6 @@ class DisplayEndpoint extends Component {
                 >
                   {this.state.data.method}
                 </div>
-                {/* <a
-                  href="javascript:void(0)"
-                  id="show-code-snippets-button"
-                  onClick={() => this.prepareHarObject()}
-                >
-                  Sample Code
-                </a> */}
               </div>
               <div className="endpoint-host">
                 <HostContainer
@@ -1890,7 +1875,6 @@ class DisplayEndpoint extends Component {
                 )}
 
                 {this.state.data.body &&
-                  // this.state.data.body.value !== "" &&
                   this.state.data.body.value !== null && (
                     <PublicBodyContainer
                       {...this.props}
@@ -1918,10 +1902,6 @@ class DisplayEndpoint extends Component {
             )}
           </div>
         </div>
-
-        {/* {!isDashboardRoute(this.props) &&
-        } */}
-        {/* {this.state.response.status && ( */}
         {isSavedEndpoint(this.props) ? (
           <React.Fragment>
             <div>
@@ -2031,18 +2011,15 @@ class DisplayEndpoint extends Component {
           </React.Fragment>
         )}
         </div>
-        
         {!isDashboardRoute(this.props) && this.state.harObject && 
-          
-            <CodeTemplate
-              show={true}
-              onHide={() => {
-                this.setState({ showCodeTemplate: false });
-              }}
-              harObject={this.state.harObject}
-              title="Generate Code Snippets"
-            />
-          
+          <CodeTemplate
+            show={true}
+            onHide={() => {
+              this.setState({ showCodeTemplate: false });
+            }}
+            harObject={this.state.harObject}
+            title="Generate Code Snippets"
+          />
         }
       </div>
     );
