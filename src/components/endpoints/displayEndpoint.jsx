@@ -72,7 +72,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 
 class DisplayEndpoint extends Component {
   uri = React.createRef();
-  // name = React.createRef();
   paramKey = React.createRef();
 
   state = {
@@ -166,6 +165,16 @@ class DisplayEndpoint extends Component {
     //   let collectionIdentifier = this.props.location.pathname.split("/")[2];
     //   this.fetchPublicCollection(collectionIdentifier);
     // }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if(!isDashboardRoute(this.props))
+    {
+      if(this.state.data !== prevState.data || this.state.originalParams !== prevState.originalParams || this.state.originalHeaders !== prevState.originalHeaders)
+      {
+        this.prepareHarObject();
+      }
+    }
   }
 
   structueParamsHeaders = [
@@ -973,7 +982,7 @@ class DisplayEndpoint extends Component {
       body.value
     ) {
       paramsFlag = true;
-      for (let i = 0; i < body.value.length - 1; i++) {
+      for (let i = 0; i < body.value.length; i++) {
         if (body.value[i].checked === "true" && body.value[i].key !== "") {
           params.push({
             name: body.value[i].key,
@@ -1021,7 +1030,7 @@ class DisplayEndpoint extends Component {
       if (!harObject.url.split(":")[1] || harObject.url.split(":")[0] === "") {
         harObject.url = "https://" + url;
       }
-      this.openCodeTemplate(harObject);
+      this.setState({harObject}, ()=>{});
     } catch (error) {
       toast.error(error);
     }
@@ -1055,9 +1064,7 @@ class DisplayEndpoint extends Component {
   setBody(bodyType, body) {
     let data = { ...this.state.data };
     data.body = { type: bodyType, value: body };
-    // if (bodyType !== "multipart/form-data") {
-    this.setHeaders(bodyType, "content-type");
-    // }
+    isDashboardRoute(this.props) && this.setHeaders(bodyType, "content-type");
     this.setState({ data });
     if (isDashboardRoute(this.props)) {
       tabService.markTabAsModified(this.props.tab.id);
@@ -1074,7 +1081,6 @@ class DisplayEndpoint extends Component {
       let body = JSON.parse(value);
       let keys = Object.keys(body);
       let bodyDescription = {};
-      // const body_description = this.props.body_description;
       for (let i = 0; i < keys.length; i++) {
         if (typeof body[keys[i]] !== "object") {
           bodyDescription[keys[i]] = {
@@ -1572,7 +1578,8 @@ class DisplayEndpoint extends Component {
       });
     }
     return (
-      <div className="hm-endpoint-container endpoint-container">
+      <div className="d-flex">
+        <div className="hm-endpoint-container endpoint-container mx-3">
         {this.state.showLoginSignupModal && (
           <LoginSignupModal
             show={true}
@@ -1598,16 +1605,15 @@ class DisplayEndpoint extends Component {
                 name={this.state.data.name}
                 save_endpoint={this.handleSave.bind(this)}
               />
-            )}
-            {this.state.showCodeTemplate && this.showCodeTemplate()}
-            <DisplayDescription
-              {...this.props}
-              endpoint={this.state.endpoint}
-              data={this.state.data}
-              old_description={this.state.oldDescription}
-              props_from_parent={this.propsFromDescription.bind(this)}
-            />
-          </div>
+            )} 
+          <DisplayDescription
+            {...this.props}
+            endpoint={this.state.endpoint}
+            data={this.state.data}
+            old_description={this.state.oldDescription}
+            props_from_parent={this.propsFromDescription.bind(this)}
+          />
+        </div> 
         ) : null}
         <div
           className={!isDashboardRoute(this.props) ? "hm-panel" : "hm-panel"}
@@ -1707,27 +1713,20 @@ class DisplayEndpoint extends Component {
               </div>
             </div>
           ) : (
-              <div className="hm-endpoint-wrap">
-                <div className="hm-endpoint-header">
-                  <div
-                    className={`api-label api-label-lg ${this.state.data.method}`}
-                  >
-                    {this.state.data.method}
-                  </div>
-                  <a
-                    href="javascript:void(0)"
-                    id="show-code-snippets-button"
-                    onClick={() => this.prepareHarObject()}
-                  >
-                    Sample Code
-                </a>
+            <div className="hm-endpoint-wrap">
+              <div className="hm-endpoint-header">
+                <div
+                  className={`api-label api-label-lg ${this.state.data.method}`}
+                >
+                  {this.state.data.method}
                 </div>
-                <div className="endpoint-host">
-                  <HostContainer
-                    {...this.props}
-                    groupId={this.state.groupId}
-                    set_base_url={this.setBaseUrl.bind(this)}
-                    custom_host={this.state.endpoint.BASE_URL}
+              </div>
+              <div className="endpoint-host">
+                <HostContainer
+                  {...this.props}
+                  groupId={this.state.groupId}
+                  set_base_url={this.setBaseUrl.bind(this)}
+                  custom_host={this.state.endpoint.BASE_URL}
                   />
                 </div>
                 <input
@@ -1971,10 +1970,6 @@ class DisplayEndpoint extends Component {
             )}
           </div>
         </div>
-
-        {/* {!isDashboardRoute(this.props) &&
-        } */}
-        {/* {this.state.response.status && ( */}
         {isSavedEndpoint(this.props) ? (
           <React.Fragment>
             <div>
@@ -2074,18 +2069,29 @@ class DisplayEndpoint extends Component {
             </div>
           </React.Fragment>
         ) : (
-            <React.Fragment>
-              <div className="public-response-title">Response</div>
-              <div className="hm-panel endpoint-public-response-container">
-                <DisplayResponse
-                  {...this.props}
-                  timeElapsed={this.state.timeElapsed}
-                  response={this.state.response}
-                  flagResponse={this.state.flagResponse}
-                ></DisplayResponse>
-              </div>
-            </React.Fragment>
-          )}
+          <React.Fragment>
+            <div className="public-response-title">Response</div>
+            <div className="hm-panel endpoint-public-response-container">
+              <DisplayResponse
+                {...this.props}
+                timeElapsed={this.state.timeElapsed}
+                response={this.state.response}
+                flagResponse={this.state.flagResponse}
+              ></DisplayResponse>
+            </div>
+          </React.Fragment>
+        )}
+        </div>
+        {!isDashboardRoute(this.props) && this.state.harObject && 
+          <CodeTemplate
+            show={true}
+            onHide={() => {
+              this.setState({ showCodeTemplate: false });
+            }}
+            harObject={this.state.harObject}
+            title="Generate Code Snippets"
+          />
+        }
       </div>
     );
   }

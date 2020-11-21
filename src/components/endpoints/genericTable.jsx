@@ -17,7 +17,8 @@ class GenericTable extends Component {
   count = "";
 
   handleChange = (e) => {
-    const { dataArray, title } = this.props;
+    let { dataArray, title } = this.props;
+    dataArray = JSON.parse(JSON.stringify(dataArray));
     const name = e.currentTarget.name.split(".");
     if (name[1] === "checkbox") {
       this.checkboxFlags[name[0]] = true;
