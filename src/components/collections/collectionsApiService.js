@@ -17,6 +17,10 @@ export function getAllPublicCollections() {
   return httpService.get(apiEndpoint, { params: { public: "true" } });
 }
 
+export function getCollectionsByCustomDomain(domain) {
+  return httpService.get(apiEndpoint, { params: { custom_domain: domain } });
+}
+
 export function getCollection(collectionId) {
   return http.get(collectionUrl(collectionId));
 }
@@ -59,4 +63,5 @@ export default {
   shareCollection,
   fetchAllTeamsOfUser,
   getAllPublicCollections,
+  getCollectionsByCustomDomain
 };

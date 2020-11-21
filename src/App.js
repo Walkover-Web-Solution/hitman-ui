@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Route, Switch } from "react-router-dom";
 import Login from "./components/auth/login";
 import Logout from "./components/auth/logout";
+import collectionsApiService from "./components/collections/collectionsApiService";
 import NotFound from "./components/common/notFound";
 import ProtectedRoute from "./components/common/protectedRoute";
 import Main from "./components/main/Main.jsx";
@@ -13,18 +14,15 @@ class App extends Component {
   async redirectToClientDomain() {
     // const { data: configVars } = await herokuApiService.getConfigVars();
     console.log(window.location.href)
-    const domainsList = process.env.REACT_APP_DOMAINS_LIST?process.env.REACT_APP_DOMAINS_LIST.split(','):[]
-    console.log(!domainsList.includes(window.location.href.split("/")[2]))
-    if (!domainsList.includes(window.location.href.split("/")[2])&&window.location.href.split("/")[3] !== "p") 
+    const domainsList = process.env.REACT_APP_DOMAINS_LIST?process.env.REACT_APP_DOMAINS_LIST.split(','):[];
+    const currentDomain = window.location.href.split("/")[2];
+    console.log(!domainsList.includes(currentDomain))
+    if (!domainsList.includes(currentDomain)&&window.location.href.split("/")[3] !== "p") 
     { 
-      let customDomainsList={}
-      process.env.REACT_APP_CUSTOM_DOMAINS_LIST.split(';').forEach(s=>{customDomainsList[s.split(',')[0]]=s.split(',')[1]})
-      console.log(customDomainsList)
-      if (customDomainsList && customDomainsList[window.location.href.split("/")[2]]) {
-        const url = window.location.href.split("/");
-        const baseUrl = url[2];        
-        const clientCollectionId = customDomainsList[baseUrl];
-        console.log(clientCollectionId)
+      // process.env.REACT_APP_CUSTOM_DOMAINS_LIST.split(';').forEach(s=>{customDomainsList[s.split(',')[0]]=s.split(',')[1]})
+      const clientCollection = collectionsApiService.getCollectionsByCustomDomain(currentDomain);
+      if (clientCollection&&clientCollection[0]) {
+        const clientCollectionId = clientCollection[0].id;
         this.props.history.push({ pathname: `/p/${clientCollectionId}` });
       }
       else{
