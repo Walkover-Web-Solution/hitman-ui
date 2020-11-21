@@ -119,6 +119,9 @@ class DisplayEndpoint extends Component {
   };
 
   async componentDidMount() {
+    this.endpointId = this.props.endpointId ? this.props.endpointId : isDashboardRoute(this.props) ? this.props.location.pathname.split("/")[3] :
+      this.props.location.pathname.split("/")[4];
+
     if (this.props.location.pathname.split("/")[3] === "new") {
       this.setState({
         data: {
@@ -186,17 +189,14 @@ class DisplayEndpoint extends Component {
       });
     }
   }
+
   fetchEndpoint(flag, endpointId) {
     let endpoint = {};
     let originalParams = [];
     let originalHeaders = [];
     let pathVariables = [];
     const split = this.props.location.pathname.split("/");
-
-    if (isDashboardRoute(this.props)) {
-      if (!endpointId) endpointId = split[3];
-    } else endpointId = split[4];
-
+    endpointId = this.endpointId
     const { endpoints } = store.getState();
     const { groups } = store.getState();
     const { versions } = store.getState();
@@ -1509,6 +1509,8 @@ class DisplayEndpoint extends Component {
   }
 
   render() {
+    this.endpointId = this.props.endpointId ? this.props.endpointId : isDashboardRoute(this.props) ? this.props.location.pathname.split("/")[3] :
+      this.props.location.pathname.split("/")[4];
     if (
       isDashboardRoute(this.props) &&
       this.state.groupId &&
@@ -1544,13 +1546,13 @@ class DisplayEndpoint extends Component {
 
     if (
       !isDashboardRoute(this.props) &&
-      this.state.endpoint.id !== this.props.location.pathname.split("/")[4] &&
-      this.props.endpoints[this.props.location.pathname.split("/")[4]]
+      this.state.endpoint.id !== this.endpointId &&
+      this.props.endpoints[this.endpointId]
     ) {
-      this.fetchEndpoint(0, this.props.location.pathname.split("/")[4]);
+      this.fetchEndpoint(0, this.endpointId);
       store.subscribe(() => {
         if (!this.props.location.title && !this.state.title) {
-          this.fetchEndpoint(0, this.props.location.pathname.split("/")[4]);
+          this.fetchEndpoint(0, this.endpointId);
         }
       });
     }

@@ -13,7 +13,10 @@ import { fetchPages } from "../pages/redux/pagesActions";
 import { fetchAllTeamsOfUser } from "../teams/redux/teamsActions";
 import extractCollectionInfoService from "./extractCollectionInfoService"
 import DisplayEndpoint from "../endpoints/displayEndpoint";
-
+import {
+    approveEndpoint,
+    rejectEndpoint
+} from "../publicEndpoint/redux/publicEndpointsActions";
 var URI = require("urijs");
 
 const mapDispatchToProps = (dispatch) => {
@@ -24,6 +27,8 @@ const mapDispatchToProps = (dispatch) => {
         fetch_groups: () => dispatch(fetchGroups()),
         fetch_endpoints: () => dispatch(fetchEndpoints()),
         fetch_pages: () => dispatch(fetchPages()),
+        approve_endpoint: (endpoint) => dispatch(approveEndpoint(endpoint)),
+        reject_endpoint: (endpoint) => dispatch(rejectEndpoint(endpoint)),
     };
 };
 
@@ -99,6 +104,29 @@ class PublishDocs extends Component {
         })
     }
 
+    setSelectedVersion(e) {
+        this.setState({
+            selectedVersionId: e.currentTarget.value,
+        })
+    }
+
+    checkEndpointStateandGroup(endpointId, groupId) {
+        if (this.endpoints[endpointId].groupId?.toString() === groupId?.toString()) {
+            if (this.endpoints[endpointId].state === "Approved" || this.endpoints[endpointId].state === "Pending") return true
+            else return false
+        }
+        else return false
+
+    }
+
+    async handleApproveRequest(endpointId) {
+        this.props.approve_endpoint(this.props.endpoints[endpointId]);
+    }
+
+    async handleRejectRequest(endpointId) {
+        this.props.reject_endpoint(this.props.endpoints[endpointId]);
+    }
+
     render() {
         return (
             <div className="publish-docs-container" >
@@ -145,7 +173,8 @@ class PublishDocs extends Component {
 
                         <div className="grid-two">
                             <div className="versions-section">
-                                <select className="selected-API" name="MSG91" >
+                                <select className="selected-API" onChange={this.setSelectedVersion.bind(this)}
+                                >
                                     {this.versions ? Object.keys(this.versions).map((id) =>
                                         <option value={id}>{this.props.versions[id]?.number}</option>
                                     ) : null}
@@ -174,10 +203,9 @@ class PublishDocs extends Component {
                                                         : null
                                                 ) : null}
                                                 {this.endpoints ? Object.keys(this.endpoints).map((endpointId) =>
-                                                    this.endpoints[endpointId].groupId?.toString() === groupId?.toString() ? (<div onClick={() => this.openEndpoint(groupId, endpointId)} className="groups">{this.endpoints[endpointId]?.name
+                                                    this.checkEndpointStateandGroup(endpointId, groupId) ? (<div onClick={() => this.openEndpoint(groupId, endpointId)} className="groups">{this.endpoints[endpointId]?.name
                                                     }</div>) : null
                                                 ) : null}
-
 
                                             </div>)
                                             : null
@@ -191,11 +219,15 @@ class PublishDocs extends Component {
                                         <div className="list-contacts">
                                             {this.props.endpoints[this.state.selectedEndpointId].name}
                                         </div>
+                                        <div className="publish-reject">
+                                            <button class="btn default" onClick={() => this.handleRejectRequest(this.state.selectedEndpointId)}>Reject</button>
+                                            <div className="publish-button">  <Button variant="success" onClick={() => this.handleApproveRequest(this.state.selectedEndpointId)}>PUBLISH</Button>
+                                            </div>
+                                        </div>
                                         <DisplayEndpoint endpointId={this.state.selectedEndpointId} groupId={this.state.selectedGroupId} {...this.props} />
                                     </div>
 
                                 ) : null}
-
                             </div>
 
                             {/* <div className="grid-column-five">

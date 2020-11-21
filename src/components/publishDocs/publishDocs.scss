@@ -57,6 +57,12 @@
       background: white;
     }
   }
+  .version-details {
+    .publish-reject {
+      float: right;
+      display: flex;
+    }
+  }
   .contacts {
     font-family: Sora;
     font-style: normal;

@@ -296,9 +296,7 @@ class CollectionVersions extends Component {
             {/* <Card.Header> */}
             <Accordion.Toggle
               variant="default"
-              eventKey={
-                !isDashboardRoute(this.props) ? "0" : this.eventkey[versionId]
-              }
+              eventKey="1"
             >
               <div className="sidebar-accordion-item">
                 <i className="uil uil-folder"></i>
@@ -375,9 +373,7 @@ class CollectionVersions extends Component {
             {/* </Card.Header> */}
             <Accordion.Collapse
               className="version-collapse"
-              eventKey={
-                !isDashboardRoute(this.props) ? "0" : this.eventkey[versionId]
-              }
+              eventKey="1"
             >
               <Card.Body>
                 <VersionPages
@@ -395,19 +391,19 @@ class CollectionVersions extends Component {
             {/* </Card> */}
           </Accordion>
         ) : (
-          <React.Fragment>
-            <VersionPages
-              {...this.props}
-              version_id={versionId}
-              show_filter_version={this.propsFromVersion.bind(this)}
-            />
-            <Groups
-              {...this.props}
-              version_id={versionId}
-              show_filter_version={this.propsFromVersion.bind(this)}
-            />
-          </React.Fragment>
-        )}
+            <React.Fragment>
+              <VersionPages
+                {...this.props}
+                version_id={versionId}
+                show_filter_version={this.propsFromVersion.bind(this)}
+              />
+              <Groups
+                {...this.props}
+                version_id={versionId}
+                show_filter_version={this.propsFromVersion.bind(this)}
+              />
+            </React.Fragment>
+          )}
       </React.Fragment>
     );
   }
