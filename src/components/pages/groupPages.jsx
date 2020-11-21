@@ -15,7 +15,6 @@ import {
 import pageService from "./pageService";
 import { isDashboardRoute } from "../common/utility";
 import filterService from "../../services/filterService";
-import authService from "../auth/authService";
 
 const mapStateToProps = (state) => {
   return {
@@ -40,7 +39,7 @@ class GroupPages extends Component {
 
   handleUpdate(page) {
     this.props.history.push({
-      pathname: `/org/${authService.getCurrentOrg().identifier}/dashboard/${this.props.collection_id}/versions/${this.props.versionId}/pages/${page.id}/edit`,
+      pathname: `/dashboard/${this.props.collection_id}/versions/${this.props.versionId}/pages/${page.id}/edit`,
       editPage: page,
     });
   }

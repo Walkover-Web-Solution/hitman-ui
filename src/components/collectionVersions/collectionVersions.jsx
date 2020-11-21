@@ -16,7 +16,6 @@ import VersionPages from "../pages/versionPages";
 import "./collectionVersions.scss";
 import collectionVersionsService from "./collectionVersionsService";
 import filterService from "../../services/filterService";
-import authService from "../auth/authService";
 
 const mapStateToProps = (state) => {
   return {
@@ -55,17 +54,15 @@ class CollectionVersions extends Component {
   filteredOnlyVersions = {};
 
   handleUpdate(collectionVersion) {
-    const orgIdentifier = authService.getCurrentOrg().identifer;
     this.props.history.push({
-      pathname: `/org/${orgIdentifier}/dashboard/${this.props.collection_id}/versions/${collectionVersion.id}/edit`,
+      pathname: `/dashboard/${this.props.collection_id}/versions/${collectionVersion.id}/edit`,
       editCollectionVersion: collectionVersion,
     });
   }
 
   handleAddPage(versionId, collectionId) {
-    const orgIdentifier = authService.getCurrentOrg().identifer;
     this.props.history.push({
-      pathname: `/org/${orgIdentifier}/dashboard/${collectionId}/versions/${versionId}/pages/new`,
+      pathname: `/dashboard/${collectionId}/versions/${versionId}/pages/new`,
       versionId: versionId,
     });
   }

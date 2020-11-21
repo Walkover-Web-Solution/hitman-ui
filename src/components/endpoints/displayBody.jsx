@@ -208,8 +208,8 @@ class BodyContainer extends Component {
   }
 
   render() {
-    if (this.props.location.pathname.split("/")[5] !== this.endpointId) {
-      this.endpointId = this.props.location.pathname.split("/")[5];
+    if (this.props.location.pathname.split("/")[3] !== this.endpointId) {
+      this.endpointId = this.props.location.pathname.split("/")[3];
       this.alteredBody = false;
     }
 

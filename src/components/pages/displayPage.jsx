@@ -3,7 +3,6 @@ import store from "../../store/store";
 import { isDashboardRoute } from "../common/utility";
 import ReactHtmlParser from "react-html-parser";
 import "./page.scss";
-import authService from "../auth/authService";
 
 class DisplayPage extends Component {
   state = {
@@ -25,7 +24,7 @@ class DisplayPage extends Component {
     if (!this.props.location.page) {
       let pageId = "";
       if (isDashboardRoute(this.props))
-        pageId = this.props.location.pathname.split("/")[5];
+        pageId = this.props.location.pathname.split("/")[3];
       else pageId = this.props.location.pathname.split("/")[4];
       this.fetchPage(pageId);
       store.subscribe(() => {
@@ -36,7 +35,7 @@ class DisplayPage extends Component {
 
   handleEdit(page) {
     this.props.history.push({
-      pathname: `/org/${authService.getCurrentOrg().identifier}/dashboard/page/${page.id}/edit`,
+      pathname: `/dashboard/page/${page.id}/edit`,
       page: page,
     });
   }

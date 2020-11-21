@@ -150,7 +150,7 @@ class SideBar extends Component {
 
           <Switch>
             <ProtectedRoute
-              path="/org/:orgId/dashboard/"
+              path="/dashboard/"
               render={(props) => (
                 <Collections
                   {...this.props}

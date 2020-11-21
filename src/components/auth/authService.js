@@ -38,19 +38,6 @@ export function getCurrentUser() {
     const profile = localStorage.getItem(profileKey);
     return JSON.parse(profile)
   } catch (ex) {
-    logout();
-    window.location = "/";
-    return null;
-  }
-}
-
-export function getCurrentOrg() {
-  try {
-    const org = localStorage.getItem(orgKey);
-    return JSON.parse(org)
-  } catch (ex) {
-    logout();
-    window.location = "/";
     return null;
   }
 }
@@ -64,6 +51,5 @@ export default {
   loginWithJwt,
   logout,
   getCurrentUser,
-  getCurrentOrg,
   getJwt,
 };

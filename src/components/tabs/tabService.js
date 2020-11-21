@@ -1,5 +1,4 @@
 import store from "../../store/store";
-import authService from "../auth/authService";
 import {
   addNewTab,
   closeAllTabs,
@@ -36,11 +35,11 @@ function removeTab(tabId, props) {
 function changeRoute(props, tab) {
   if (tab.isSaved) {
     props.history.push({
-      pathname: `/org/${authService.getCurrentOrg().identifier}/dashboard/${tab.type}/${tab.id}`,
+      pathname: `/dashboard/${tab.type}/${tab.id}`,
     });
   } else {
     props.history.push({
-      pathname: `/org/${authService.getCurrentOrg().identifier}/dashboard/${tab.type}/new`,
+      pathname: `/dashboard/${tab.type}/new`,
     });
   }
 }
@@ -56,11 +55,11 @@ function selectTab(props, tabId) {
   const tab = tabs[tabId];
   if (tab.status === "NEW") {
     props.history.push({
-      pathname: `/org/${authService.getCurrentOrg().identifier}/dashboard/${tab.type}/new`,
+      pathname: `/dashboard/${tab.type}/new`,
     });
   } else {
     props.history.push({
-      pathname: `/org/${authService.getCurrentOrg().identifier}/dashboard/${tab.type}/${tab.id}`,
+      pathname: `/dashboard/${tab.type}/${tab.id}`,
     });
   }
   store.dispatch(setActiveTabId(tabId));
