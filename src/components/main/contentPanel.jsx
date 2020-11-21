@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { Tab } from "react-bootstrap";
 import { connect } from "react-redux";
 import "react-tabs/style/react-tabs.css";
-import { Button } from "react-bootstrap";
 import Environments from "../environments/environments";
 import {
   addNewTab,

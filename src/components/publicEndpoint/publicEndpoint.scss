@@ -235,9 +235,11 @@ form.add-new-domain-form {
 
 .hm-right-content {
   flex-grow: 1;
-  max-width: 1000px;
+  // max-width: 1000px;
   margin: 0 auto;
   .hm-endpoint-container {
+    overflow-y: scroll;
+    max-height: 100vh;
     padding: 40px 0;
     .endpoint-header {
       margin-bottom: 40px;

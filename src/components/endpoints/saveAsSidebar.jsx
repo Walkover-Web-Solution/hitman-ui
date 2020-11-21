@@ -17,7 +17,9 @@ const mapStateToProps = (state) => {
   };
 };
 
-class CreateEndpointForm extends Form {
+
+
+class SaveAsSidebar extends Form {
   state = {
     data: {
       name: "",
@@ -216,28 +218,54 @@ class CreateEndpointForm extends Form {
 
   render() {
     const { staticContext, ...props } = this.props;
+    const saveAsSidebarStyle = {
+      position:"fixed",
+      background: "white",
+      zIndex: "101",
+      top:"0px",
+      right:"0px",
+      height:"100vh",
+      width: "35vw",
+      // border: "1px solid red",
+      boxShadow: "-10px 0px  25px #888888"
+    }
+    const darkBackgroundStyle = {
+      position:"fixed",
+      background: "black",
+      opacity: 0.1,
+      zIndex: "100",
+      top:"0px",
+      right:"0px",
+      height:"100vh",
+      width: "100vw",
+    }
     return (
       
-      <Modal
-        {...props}
-        size="lg"
-        animation={false}
-        aria-labelledby="contained-modal-title-vcenter"
-        centered
-        id="endpoint-modal"
-      >
+      // <Modal
+      //   {...props}
+      //   size="lg"
+      //   animation={false}
+      //   aria-labelledby="contained-modal-title-vcenter"
+      //   centered
+      //   id="endpoint-modal"
+      // >
+      <div >
+        <div onClick={()=>{this.props.onHide()}}style={darkBackgroundStyle}>wd</div>
+      <div style={saveAsSidebarStyle}>
         {this.showCollectionForm()}
         {this.showCollectionVersionForm()}
         {this.showGroupForm()}
         <div>
-          <Modal.Header
-            className="custom-collection-modal-container"
-            closeButton
+          <div
+            className="d-flex justify-content-between p-3"
           >
-            <Modal.Title id="contained-modal-title-vcenter">
-              Add Endpoint
-            </Modal.Title>
-          </Modal.Header>
+            <p className="h4">
+              Save As
+            </p>
+            <button className="btn" onClick={()=>{this.props.onHide()}}>
+              <i className="fas fa-times"/>
+            </button>
+          </div>
           <Modal.Body>
             <form onSubmit={this.handleSubmit}>
               {this.renderInput("name", "Name", "Endpoint Name")}
@@ -323,9 +351,13 @@ class CreateEndpointForm extends Form {
             </button>
           </Modal.Body>
         </div>
-      </Modal>
+      </div>
+      </div>
+      // </Modal>
     );
   }
 }
 
-export default connect(mapStateToProps, null)(CreateEndpointForm);
+
+
+export default connect(mapStateToProps, null)(SaveAsSidebar);
