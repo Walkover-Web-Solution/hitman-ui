@@ -12,11 +12,14 @@ import "./main.scss";
 import "./sidebar.scss";
 import { Tabs, Tab, Button } from 'react-bootstrap'
 import LoginSignupModal from './loginSignupModal';
+import indexedDbService from "../indexedDb/indexedDbService";
 import hitmanIcon from "../../assets/icons/hitman.svg"
 import collectionIcon from "../../assets/icons/collectionIcon.svg"
 import historyIcon from "../../assets/icons/historyIcon.svg"
 import randomTriggerIcon from "../../assets/icons/randomTriggerIcon.svg"
 import emptyCollections from "../../assets/icons/emptyCollections.svg"
+import collections from "../collections/collections";
+const moment = require('moment');
 
 const mapStateToProps = (state) => {
   return {
@@ -26,6 +29,7 @@ const mapStateToProps = (state) => {
     // pages: state.pages,
     // teamUsers: state.teamUsers,
     // groups: state.groups,
+    historySnapshot: state.history,
     filter: "",
   };
 };
@@ -37,6 +41,7 @@ class SideBar extends Component {
     },
     name: "",
     email: "",
+    historySnapshot: null
   };
 
   componentDidMount() {
@@ -46,6 +51,13 @@ class SideBar extends Component {
       const name = user.first_name + user.last_name;
       const email = user.email;
       this.setState({ name, email });
+    }
+    if (this.props.historySnapshot)
+      this.setState({ historySnapshot: Object.values(this.props.historySnapshot) })
+  }
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props.historySnapshot != prevProps.historySnapshot) {
+      this.setState({ historySnapshot: Object.values(this.props.historySnapshot) })
     }
   }
 
@@ -70,10 +82,15 @@ class SideBar extends Component {
     }
   }
 
-  handleChange = (e) => {
-    let data = { ...this.state.data };
-    data[e.currentTarget.name] = e.currentTarget.value;
-    this.setState({ data });
+  handleOnChange = (e) => {
+    this.setState({ data: { ...this.state.data, filter: e.target.value } });
+    let obj = Object.values(this.props.historySnapshot);
+    if (e.target.value.length > 2) {
+      if (this.props.historySnapshot) {
+        obj = obj.filter(o => o.endpoint.name.includes(e.target.value));
+      }
+    }
+    this.setState({ historySnapshot: obj });
   };
 
   emptyFilter() {
@@ -98,6 +115,32 @@ class SideBar extends Component {
     this.setState({
       showLoginSignupModal: false
     })
+  }
+
+  renderHistoryList() {
+    return (
+      this.state.historySnapshot && this.props.historySnapshot &&
+      this.state.historySnapshot.map(history => (
+        Object.keys(history).length !== 0 &&
+        <div className="btn d-flex align-items-center"
+          onClick={() => { console.log(history.id) }}>
+          <div
+            className={`api-label ${history.endpoint.requestType}`}
+          >
+            <div className="endpoint-request-div">
+              {history.endpoint.requestType}
+            </div>
+          </div>
+          <div className="ml-3">
+            <div>{history.endpoint.name}</div>
+            <small className="text-muted">SAT 11:23 pm</small>
+          </div>
+        </div>
+      ))
+    )
+  }
+  setKeyWord() {
+    return this.state.data.filter.length > 2 ? this.state.data.filter : "";
   }
 
   render() {
@@ -163,7 +206,7 @@ class SideBar extends Component {
                   type="text"
                   name="filter"
                   placeholder="Search"
-                  onChange={this.handleChange}
+                  onChange={(e) => this.handleOnChange(e)}
                 />
               </div>
 
@@ -186,8 +229,8 @@ class SideBar extends Component {
                       >+ Add here</Button>{' '}
                     </div>) : null}
                 </Tab>
-                <Tab eventKey="history" title={<img src={historyIcon}></img>
-                }>
+                <Tab eventKey="history" title={<img src={historyIcon}></img>}>
+                  {this.renderHistoryList()}
                 </Tab>
                 <Tab eventKey="randomTrigger" title={<img src={randomTriggerIcon}></img>
                 } >
@@ -204,7 +247,7 @@ class SideBar extends Component {
                     {...this.props}
                     empty_filter={this.emptyFilter.bind(this)}
                     collection_selected={this.openCollection.bind(this)}
-                    filter={this.state.data.filter}
+                    filter={this.setKeyWord()}
                   />
                 )}
               />

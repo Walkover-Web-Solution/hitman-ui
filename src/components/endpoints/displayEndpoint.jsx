@@ -30,11 +30,12 @@ import {
   setAuthorizationResponses,
   setAuthorizationData,
 } from "../collectionVersions/redux/collectionVersionsActions";
+import { addHistory } from "../history/redux/historyAction";
 import collectionsApiService from "../collections/collectionsApiService";
 import indexedDbService from "../indexedDb/indexedDbService";
 import Authorization from "./displayAuthorization";
 import LoginSignupModal from "../main/loginSignupModal"
-import shortid from "shortid";
+const shortid = require('shortid');
 
 const status = require("http-status");
 var URI = require("urijs");
@@ -65,7 +66,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     set_authorization_data: (versionId, data) =>
       dispatch(setAuthorizationData(versionId, data)),
     // generate_temp_tab: (id) => dispatch(generateTempTab(id))
-    close_tab: (id) => dispatch(closeTab(id))
+    close_tab: (id) => dispatch(closeTab(id)),
+    add_history: (data) => dispatch(addHistory(data))
   };
 };
 
@@ -624,6 +626,45 @@ class DisplayEndpoint extends Component {
     return path;
   }
 
+  setData = async () => {
+    let body = this.state.data.body;
+    if (this.state.data.body.type === "raw") {
+      body.value = this.parseBody(body.value);
+    }
+    const headersData = this.doSubmitHeader("save");
+    const updatedParams = this.doSubmitParam();
+    const pathVariables = this.doSubmitPathVariables();
+    const endpoint = {
+      uri: this.uri.current.value,
+      name: this.state.data.name,
+      requestType: this.state.data.method,
+      body: body,
+      headers: headersData,
+      params: updatedParams,
+      pathVariables: pathVariables,
+      BASE_URL:
+        this.customState.selectedHost === "customHost"
+          ? this.customState.BASE_URL
+          : null,
+      bodyDescription:
+        this.state.data.body.type === "JSON"
+          ? this.state.bodyDescription
+          : {},
+      authorizationType: this.state.authType,
+    };
+    const response = { ...this.state.response };
+    const createdAt = new Date();
+    const timeElapsed = this.state.timeElapsed;
+    let obj = {
+      id: shortid.generate(),
+      endpoint: { ...endpoint },
+      response,
+      timeElapsed,
+      createdAt
+    }
+    this.props.add_history(obj)
+  }
+
   handleSend = async () => {
     let startTime = new Date().getTime();
     let response = {};
@@ -645,7 +686,8 @@ class DisplayEndpoint extends Component {
     } catch (e) {
       toast.error("Invalid JSON Body");
     }
-    this.handleApiCall(api, body, headers, this.state.data.body.type);
+    await this.handleApiCall(api, body, headers, this.state.data.body.type);
+    this.setData();
   };
 
   extractPosition(groupId) {

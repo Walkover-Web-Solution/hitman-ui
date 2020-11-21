@@ -9,7 +9,7 @@ class NotFound extends Component {
     this.props.history.push({ pathname: "/" });
   }
   render() {
-    const msg = `Currently this collection has no public endpoints and pages.\nMake any   endpoint or page public.`;
+    // const msg = `Currently this collection has no public endpoints and pages.\nMake any   endpoint or page public.`;
     if (this.props.location.collection) {
       return (
         <div className="main-div">

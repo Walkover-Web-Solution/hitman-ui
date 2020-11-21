@@ -9,6 +9,7 @@ import pagesReducer from "../components/pages/redux/pagesReducer";
 import tabsReducer from "../components/tabs/redux/tabsReducer";
 import teamsReducer from "../components/teams/redux/teamsReducer";
 import teamUsersReducer from "../components/teamUsers/redux/teamUsersReducer";
+import historyReducer from "../components/history/redux/historyReducer";
 
 const storeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
@@ -22,6 +23,7 @@ const rootReducer = combineReducers({
   tabs: tabsReducer,
   teamUsers: teamUsersReducer,
   teams: teamsReducer,
+  history: historyReducer
 });
 const store = createStore(rootReducer, storeEnhancers(applyMiddleware(thunk)));
 

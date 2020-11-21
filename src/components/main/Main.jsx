@@ -12,6 +12,7 @@ import { fetchGroups } from "../groups/redux/groupsActions";
 import indexedDbService from "../indexedDb/indexedDbService";
 import { fetchPages } from "../pages/redux/pagesActions";
 import { fetchAllTeamsOfUser } from "../teams/redux/teamsActions";
+import {fetchHistoryFromIdb} from "../history/redux/historyAction";
 import ContentPanel from "./contentPanel";
 import "./main.scss";
 import SideBar from "./sidebar";
@@ -25,6 +26,7 @@ const mapDispatchToProps = (dispatch) => {
     fetch_groups: () => dispatch(fetchGroups()),
     fetch_endpoints: () => dispatch(fetchEndpoints()),
     fetch_pages: () => dispatch(fetchPages()),
+    fetch_history: () => dispatch(fetchHistoryFromIdb()),
     move_endpoint: (endpointId, sourceGroupId, destinationGroupId) =>
       dispatch(moveEndpoint(endpointId, sourceGroupId, destinationGroupId)),
   };
@@ -50,6 +52,7 @@ class Main extends Component {
     this.props.fetch_groups();
     this.props.fetch_endpoints();
     this.props.fetch_pages();
+    this.props.fetch_history();
   }
 
   setTabs(tabs, defaultTabIndex) {
