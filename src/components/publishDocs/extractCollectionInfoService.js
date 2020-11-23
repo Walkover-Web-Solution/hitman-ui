@@ -17,7 +17,7 @@ function extractGroupsFromVersions(versions, props) {
         let versionId = Object.keys(versions)[i]
         for (let j = 0; j < Object.keys(props.groups).length; j++) {
             let group = props.groups[Object.keys(props.groups)[j]]
-            if (versionId?.toString() === group?.versionId?.toString()) {
+            if (versionId.toString() === group?.versionId?.toString()) {
                 groups[group.id] = group
             }
         }
@@ -32,7 +32,7 @@ function extractPagesFromVersions(versions, props) {
         let versionId = Object.keys(versions)[i]
         for (let j = 0; j < Object.keys(props.pages).length; j++) {
             let page = props.pages[Object.keys(props.pages)[j]]
-            if (versionId?.toString() === page.versionId?.toString()) {
+            if (versionId.toString() === page.versionId?.toString()) {
                 pages[page.id] = page
             }
         }
@@ -47,7 +47,7 @@ function extractEndpointsFromGroups(groups, props) {
         let groupId = Object.keys(groups)[i]
         for (let j = 0; j < Object.keys(props.endpoints).length; j++) {
             let endpoint = props.endpoints[Object.keys(props.endpoints)[j]]
-            if (groupId?.toString() === endpoint.groupId?.toString()) {
+            if (groupId.toString() === endpoint.groupId?.toString()) {
                 endpoints[endpoint.id] = endpoint
             }
         }
