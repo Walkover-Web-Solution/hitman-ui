@@ -68,11 +68,34 @@ class PublishDocs extends Component {
 
     componentDidUpdate(prevProps, prevState) {
         if (prevProps !== this.props) {
-            this.setState({
-                selectedCollectionId: URI.parseQuery(this.props.location.search).collectionId
-            })
             this.extractCollectionInfo()
+            let selectedGroupId = this.getInitialGroup(Object.keys(this.versions)[0]);
+            let selectedEndpointId = this.getInitialEndpoint(selectedGroupId);
+            this.setState({
+                selectedCollectionId: URI.parseQuery(this.props.location.search).collectionId,
+                selectedVersionId: Object.keys(this.versions)[0],
+                selectedGroupId,
+                selectedEndpointId
+            })
         }
+    }
+    getInitialGroup(versionId) {
+        for (let i = 0; i < Object.keys(this.groups).length; i++) {
+            if (this.groups[Object.keys(this.groups)[i]].versionId === versionId) {
+                return Object.keys(this.groups)[i]
+            }
+        }
+        return ""
+    }
+
+    getInitialEndpoint(groupId) {
+
+        for (let i = 0; i < Object.keys(this.endpoints).length; i++) {
+            if (this.endpoints[Object.keys(this.endpoints)[i]].groupId === groupId && (this.endpoints[Object.keys(this.endpoints)[i]].state === "Approved" || this.endpoints[Object.keys(this.endpoints)[i]].state === "Pending")) {
+                return Object.keys(this.endpoints)[i]
+            }
+        }
+        return ""
     }
 
     fetchAll() {
@@ -168,7 +191,8 @@ class PublishDocs extends Component {
                                 value={this.state.selectedCollectionId}
                             >
                                 {this.props.collections ? Object.keys(this.props.collections).map((id) =>
-                                    <option value={id}>{this.props.collections[id]?.name}</option>
+                                    this.props.collections[id].isPublic === true ?
+                                        (<option value={id}>{this.props.collections[id]?.name}</option>) : null
                                 ) : null}
                             </select>
                         </div>
