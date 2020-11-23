@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Button, DropdownButton, Dropdown } from 'react-bootstrap';
-import MyPicker from './customColorPicker'
 import SideBar from '../main/sidebar';
 import "./publishDocs.scss"
 import { connect } from "react-redux";
@@ -198,21 +197,9 @@ class PublishDocs extends Component {
                         </div>
 
                         <div className="grid">
-                            <div className="grid-column-one">
-                                <div className="domain">
-                                    <PublishDocsForm />
-                                </div>
-                                <div className="product">
-                                </div>
-                            </div>
-                            <div className="grid-column-two">
-                                <div>
-                                    Pick your favorite color for website
-                                       </div>
-                                <div>
-                                    <MyPicker />
-                                </div>
-                            </div>
+                                <PublishDocsForm {...this.props}
+                                    selected_collection_id = {this.state.selectedCollectionId}
+                                />
 
                             <div className="publish-button">  <Button variant="success">PUBLISH ALL</Button>
                             </div>

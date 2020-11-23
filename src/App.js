@@ -10,6 +10,7 @@ import PublicView from "./components/main/publicView";
 import Public from "./components/publicEndpoint/publicEndpoint.jsx";
 import Landing from './components/landing/landing';
 import PublishDocs from './components/publishDocs/publishDocs';
+import { ToastContainer } from "react-toastify";
 
 class App extends Component {
   async redirectToClientDomain() {
@@ -32,6 +33,8 @@ class App extends Component {
   render() {
     this.redirectToClientDomain();
     return (
+      <React.Fragment>
+      <ToastContainer />
       <Switch>
         <Route path="/admin/publish" component={PublishDocs} />
         <Route path="/dashboard/" component={Main} />
@@ -42,6 +45,7 @@ class App extends Component {
         <Route path="/marketPlace" component={PublicView} />
         <Route path="/" component={Landing} />
       </Switch>
+      </React.Fragment>
     );
   }
 }
