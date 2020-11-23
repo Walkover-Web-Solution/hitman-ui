@@ -60,7 +60,6 @@ workflows:
             branches:
               only:
                 - master
-                - dns-mapping
           context:
             - dev
             - hitman-ui-dev
@@ -72,7 +71,6 @@ workflows:
             branches:
               only:
                 - master
-                - dns-mapping
           context:
             - dev
             - hitman-ui-dev
