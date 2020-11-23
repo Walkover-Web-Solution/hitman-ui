@@ -18,9 +18,9 @@ class App extends Component {
     const currentDomain = window.location.href.split("/")[2];
     console.log(!domainsList.includes(currentDomain))
     if (!domainsList.includes(currentDomain) && window.location.href.split("/")[3] !== "p") {
-      const clientCollection = await collectionsApiService.getCollectionsByCustomDomain(currentDomain);
-      if (clientCollection && clientCollection[0]) {
-        const clientCollectionId = clientCollection[0].id;
+      const {data: clientCollection} = await collectionsApiService.getCollectionsByCustomDomain(currentDomain);
+      if (Object.keys(clientCollection) && Object.keys(clientCollection)[0]) {
+        const clientCollectionId = Object.keys(clientCollection)[0];
         this.props.history.push({ pathname: `/p/${clientCollectionId}` });
       }
       else {
