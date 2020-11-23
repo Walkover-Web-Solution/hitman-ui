@@ -238,38 +238,35 @@ class SideBar extends Component {
                       }
                       >+ Add here</Button>{' '}
                     </div>) : null}
-                    {getCurrentUser() ? (
-            <Switch>
-              <ProtectedRoute
-                path="/dashboard/"
-                render={(props) => (
-                  <Collections
-                    {...this.props}
-                    empty_filter={this.emptyFilter.bind(this)}
-                    collection_selected={this.openCollection.bind(this)}
-                    filter={this.setKeyWord()}
-                  />
-                )}
-              />
-              <ProtectedRoute
-                path="/admin/publish"
-                render={(props) => (
-                  <Collections
-                    {...this.props}
-                    empty_filter={this.emptyFilter.bind(this)}
-                    collection_selected={this.openCollection.bind(this)}
-                    filter={this.state.data.filter}
-                  />
-                )}
-              />
-              <Route
-                path="/p/:collectionId"
-                render={(props) => <Collections {...this.props} />}
-              />
-            </Switch>) : null}
-          {isDashboardRoute(this.props, true) ? (
-            <React.Fragment></React.Fragment>
-          ) : null}
+                  {getCurrentUser() ? (
+                    <Switch>
+                      <ProtectedRoute
+                        path="/dashboard/"
+                        render={(props) => (
+                          <Collections
+                            {...this.props}
+                            empty_filter={this.emptyFilter.bind(this)}
+                            collection_selected={this.openCollection.bind(this)}
+                            filter={this.setKeyWord()}
+                          />
+                        )}
+                      />
+                      <ProtectedRoute
+                        path="/admin/publish"
+                        render={(props) => (
+                          <Collections
+                            {...this.props}
+                            empty_filter={this.emptyFilter.bind(this)}
+                            collection_selected={this.openCollection.bind(this)}
+                            filter={this.state.data.filter}
+                          />
+                        )}
+                      />
+
+                    </Switch>) : null}
+                  {isDashboardRoute(this.props, true) ? (
+                    <React.Fragment></React.Fragment>
+                  ) : null}
                 </Tab>
                 <Tab eventKey="history" title={<img src={historyIcon}></img>}>
                   {this.renderHistoryList()}
@@ -279,8 +276,11 @@ class SideBar extends Component {
                 </Tab>
               </Tabs>
             </React.Fragment>
-          ) : null}
-          
+          ) : <Route
+              path="/p/:collectionId"
+              render={(props) => <Collections {...this.props} />}
+            />}
+
         </div>
         {
           this.collectionId && (
