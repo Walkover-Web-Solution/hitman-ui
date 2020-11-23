@@ -251,7 +251,7 @@ class PublishDocs extends Component {
                                                 ) : null}
                                                 {this.endpoints ? Object.keys(this.endpoints).map((endpointId) =>
                                                     this.checkEndpointStateandGroup(endpointId, groupId) ? (<div onClick={() => this.openEndpoint(groupId, endpointId)} className="groups">{this.endpoints[endpointId]?.name
-                                                    }</div>) : null
+                                                    }  {this.endpoints[endpointId]?.state === "Pending" ? <span style={{ "float": "right", "background": "#95a6b9", "padding": "5px", "borderRadius": "2px" }}> New</span> : null} </div>) : null
                                                 ) : null}
 
                                             </div>)
@@ -265,7 +265,7 @@ class PublishDocs extends Component {
                                         <div className="contacts">{this.props.groups[this.state.selectedGroupId].name}</div>
                                         <div className="list-contacts">
                                             {this.props.endpoints[this.state.selectedEndpointId].name}
-                                            {this.props.endpoints[this.state.selectedEndpointId].state === "Pending" ? <span>new</span> : null}
+                                            {/* {this.props.endpoints[this.state.selectedEndpointId].state === "Pending" ? <span>new</span> : null} */}
                                         </div>
                                         <div className="publish-reject">
                                             <button class="btn default" onClick={() => this.handleRejectEndpointRequest(this.state.selectedEndpointId)}>Reject</button>
