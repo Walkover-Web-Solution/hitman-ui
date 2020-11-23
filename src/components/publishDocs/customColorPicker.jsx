@@ -1,8 +1,5 @@
 import React from 'react';
 import { CustomPicker ,TwitterPicker} from 'react-color';
-import { Overlay,Popover  } from 'react-bootstrap';
-
-import PlusIcon from '../../assets/icons/plus.svg'
 
 const colorPickerEnum = {
   COLOR1 : "#dd755e",
@@ -13,10 +10,20 @@ const colorPickerEnum = {
 
 }
 
-class MyColorPicker extends React.Component {
+class CustomColorPicker extends React.Component {
 
   state ={
-    openColorPicker : false
+    data : {
+      theme  : ""
+    }
+  }
+
+  componentDidMount() {
+      if(this.props.theme){
+        let data = {...this.state.theme}
+        data.theme = this.props.theme
+        this.setState({ data })
+      }
   }
 
   toggleColorOption(){
@@ -26,31 +33,24 @@ class MyColorPicker extends React.Component {
   }
 
 
-  handleThemeChange (color){
-    const element =   document.getElementById("1");
-    console.log(element.className)
-  }
-
-
   handleChangeComplete=(color)=>{
-    console.log("color",color)
+      let data = {...this.state.data}
+      data.theme = color.hex
+      this.setState({
+        data
+      })
+      this.props.set_theme(color.hex)
+    
   }
 
   render() {
     return (
-      <React.Fragment>
-    <div style = {{display : "flex"}}>
-      {/* <div id = "1" className = "custom-color color1" onClick = {(e)=>this.handleThemeChange(e)}></div>
-      <div  className = "custom-color color2" onClick = {()=>this.handleThemeChange(colorPickerEnum. COLOR2)}></div>
-      <div  className = "custom-color color3" onClick = {()=>this.handleThemeChange(colorPickerEnum. COLOR3)}></div>
-      <div  className = "custom-color color4" onClick = {()=>this.handleThemeChange(colorPickerEnum. COLOR4)}>  </div>
-      <div  className = "custom-color color5" onClick = {()=>this.handleThemeChange(colorPickerEnum. COLOR5)}>  </div>
-      <div  className = "custom-color dashed-border" onClick = {()=>this.toggleColorOption()} ><img src={PlusIcon} alt=""/> </div> */}
-
-    </div>
+    <React.Fragment>
     <div>
       {
-          <TwitterPicker onChangeComplete={this.handleChangeComplete }/>
+          <TwitterPicker
+          color = {this.state.data.theme}
+           onChangeComplete={this.handleChangeComplete }/>
      }
     </div>
     </React.Fragment>
@@ -58,4 +58,4 @@ class MyColorPicker extends React.Component {
   }
 }
 
-export default CustomPicker(MyColorPicker);
+export default CustomPicker(CustomColorPicker);

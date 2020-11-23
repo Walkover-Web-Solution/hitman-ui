@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Button, DropdownButton, Dropdown } from 'react-bootstrap';
-import MyPicker from './customColorPicker'
 import SideBar from '../main/sidebar';
 import "./publishDocs.scss"
 import { connect } from "react-redux";
@@ -198,21 +197,9 @@ class PublishDocs extends Component {
                         </div>
 
                         <div className="grid">
-                            <div className="grid-column-one">
-                                <div className="domain">
-                                    <PublishDocsForm />
-                                </div>
-                                <div className="product">
-                                </div>
-                            </div>
-                            <div className="grid-column-two">
-                                <div>
-                                    Pick your favorite color for website
-                                       </div>
-                                <div>
-                                    <MyPicker />
-                                </div>
-                            </div>
+                                <PublishDocsForm {...this.props}
+                                    selected_collection_id = {this.state.selectedCollectionId}
+                                />
 
                             <div className="publish-button">  <Button variant="success">PUBLISH ALL</Button>
                             </div>
@@ -265,7 +252,7 @@ class PublishDocs extends Component {
                                         <div className="contacts">{this.props.groups[this.state.selectedGroupId].name}</div>
                                         <div className="list-contacts">
                                             {this.props.endpoints[this.state.selectedEndpointId].name}
-                                            {/* {this.props.endpoints[this.state.selectedEndpointId].state === "Pending" ? <span>new</span> : null} */}
+                                            
                                         </div>
                                         <div className="publish-reject">
                                             <button class="btn default" onClick={() => this.handleRejectEndpointRequest(this.state.selectedEndpointId)}>Reject</button>
@@ -287,7 +274,7 @@ class PublishDocs extends Component {
                                             <div className="publish-button">  <Button variant="success" onClick={() => this.handleApprovePageRequest(this.state.selectedPageId)}>PUBLISH</Button>
                                             </div>
                                         </div>
-                                        {/* <DisplayPage pageId={this.state.selectedPageId} groupId={this.state.selectedGroupId} {...this.props} /> */}
+                                        
                                     </div>
 
                                 ) : null}
