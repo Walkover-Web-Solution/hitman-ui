@@ -19,6 +19,7 @@ import historyIcon from "../../assets/icons/historyIcon.svg"
 import randomTriggerIcon from "../../assets/icons/randomTriggerIcon.svg"
 import emptyCollections from "../../assets/icons/emptyCollections.svg"
 import collections from "../collections/collections";
+import moment from 'moment';
 
 const mapStateToProps = (state) => {
   return {
@@ -84,7 +85,7 @@ class SideBar extends Component {
     let obj = Object.values(this.props.historySnapshot);
     if (e.target.value.length > 2) {
       if (this.props.historySnapshot) {
-        obj = obj.filter(o => o.endpoint.name.includes(e.target.value));
+        obj = obj.filter(o => o.endpoint.name?.includes(e.target.value) || o.endpoint.BASE_URL?.includes(e.target.value) || o.endpoint.uri?.includes(e.target.value));
       }
     }
     this.setState({ historySnapshot: obj });
@@ -129,8 +130,8 @@ class SideBar extends Component {
             </div>
           </div>
           <div className="ml-3">
-            <div>{history.endpoint.name}</div>
-            <small className="text-muted">SAT 11:23 pm</small>
+            <div>{history.endpoint.name || history.endpoint.BASE_URL + history.endpoint.uri || "Random Trigger"}</div>
+            <small className="text-muted">{moment(history.createdAt).format("ddd, Do MMM h:ss a")}</small>
           </div>
         </div>
       ))
@@ -225,17 +226,7 @@ class SideBar extends Component {
                       }
                       >+ Add here</Button>{' '}
                     </div>) : null}
-                </Tab>
-                <Tab eventKey="history" title={<img src={historyIcon}></img>}>
-                  {this.renderHistoryList()}
-                </Tab>
-                <Tab eventKey="randomTrigger" title={<img src={randomTriggerIcon}></img>
-                } >
-                </Tab>
-              </Tabs>
-            </React.Fragment>
-          ) : null}
-          {getCurrentUser() ? (
+                    {getCurrentUser() ? (
             <Switch>
               <ProtectedRoute
                 path="/dashboard/"
@@ -267,6 +258,17 @@ class SideBar extends Component {
           {isDashboardRoute(this.props, true) ? (
             <React.Fragment></React.Fragment>
           ) : null}
+                </Tab>
+                <Tab eventKey="history" title={<img src={historyIcon}></img>}>
+                  {this.renderHistoryList()}
+                </Tab>
+                <Tab eventKey="randomTrigger" title={<img src={randomTriggerIcon}></img>
+                } >
+                </Tab>
+              </Tabs>
+            </React.Fragment>
+          ) : null}
+          
         </div>
         {
           this.collectionId && (
