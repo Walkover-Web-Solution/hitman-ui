@@ -5,6 +5,10 @@ import { connect } from "react-redux";
 import Form from "../common/form";
 import "./endpoints.scss";
 
+import CollectionForm from "../collections/collectionForm";
+import CollectionVersionForm from "../collectionVersions/collectionVersionForm";
+import GroupForm from "../groups/groupForm";
+
 const mapStateToProps = (state) => {
   return {
     collections: state.collections,
@@ -59,6 +63,62 @@ class CreateEndpointForm extends Form {
       default:
         return;
     }
+  }
+
+  openAddModal() {
+    switch (this.state.list.type) {
+      case "collections":
+        this.setState({showCollectionForm: true})
+        break;
+      case "versions":
+        this.setState({showCollectionVersionForm: true})
+        break;
+      case "groups":
+        this.setState({showGroupForm: true})
+        break;
+      case "endpoints":
+        break;
+      default:
+        break;
+    }
+  }
+
+  showCollectionForm() {
+    return (
+      this.state.showCollectionForm &&
+      <CollectionForm
+        {...this.props}
+        onHide={()=>{this.setState({showCollectionForm: false})}}
+        show={true}
+        title="Add new Collection"
+      />
+    )
+  }
+
+  showCollectionVersionForm() {
+    return (
+      this.state.showCollectionVersionForm &&
+      <CollectionVersionForm
+        {...this.props}
+        collection_id={this.state.list.parentId}
+        onHide={()=>{this.setState({showCollectionVersionForm: false})}}
+        show={true}
+        title="Add new Collection Version"
+      />
+    )
+  }
+
+  showGroupForm() {
+    return (
+      this.state.showGroupForm &&
+      <GroupForm
+        {...this.props}
+        selectedVersion = {{id: this.state.list.parentId}}
+        onHide={()=>{this.setState({showGroupForm: false})}}
+        show={true}
+        title="Add new Group"
+      />
+    )
   }
 
   renderList() {
@@ -157,6 +217,7 @@ class CreateEndpointForm extends Form {
   render() {
     const { staticContext, ...props } = this.props;
     return (
+      
       <Modal
         {...props}
         size="lg"
@@ -165,6 +226,9 @@ class CreateEndpointForm extends Form {
         centered
         id="endpoint-modal"
       >
+        {this.showCollectionForm()}
+        {this.showCollectionVersionForm()}
+        {this.showGroupForm()}
         <div>
           <Modal.Header
             className="custom-collection-modal-container"
@@ -182,12 +246,30 @@ class CreateEndpointForm extends Form {
             <div className="card" id="endpoint-form-collection-list">
               <div className="card-title">
                 {this.state.list.type === "collections" ? (
-                  "All Collections"
+                  <div className="d-flex justify-content-between">
+                    <div>All Collections</div>
+                    <button className="btn" onClick={() => {this.openAddModal()}}>
+                      <i className="fas fa-plus"></i>
+                    </button>
+                  </div>
+                  
                 ) : (
+                  this.state.list.type === "endpoints" 
+                  ? 
                   <button className="btn" onClick={() => this.goBack()}>
                     <i className="fas fa-chevron-left"></i>
                     {this.renderListTitle()}
                   </button>
+                  : 
+                  <div className="d-flex justify-content-between">
+                    <button className="btn" onClick={() => this.goBack()}>
+                    <i className="fas fa-chevron-left"></i>
+                    {this.renderListTitle()}
+                  </button>
+                    <button className="btn" onClick={() => {this.openAddModal()}}>
+                      <i className="fas fa-plus"></i>
+                    </button>
+                  </div>
                 )}
               </div>
               <ul className="list-group" id="folder-list">

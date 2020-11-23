@@ -277,7 +277,7 @@ class Groups extends Component {
       if (
         this.props.endpoints[Object.keys(this.props.endpoints)[i]].groupId &&
         this.props.endpoints[Object.keys(this.props.endpoints)[i]].groupId ===
-          groupId
+        groupId
       ) {
         endpoints[Object.keys(this.props.endpoints)[i]] = this.props.endpoints[
           Object.keys(this.props.endpoints)[i]
@@ -388,7 +388,7 @@ class Groups extends Component {
 
   renderBody(groupId) {
     if (
-      isDashboardRoute(this.props) &&
+      isDashboardRoute(this.props, true) &&
       document.getElementsByClassName("group-collapse")
     ) {
       if (this.props.filter !== "" && this.eventkey[groupId] === "0") {
@@ -406,7 +406,7 @@ class Groups extends Component {
 
     return (
       <React.Fragment>
-        {isDashboardRoute(this.props) ? (
+        {isDashboardRoute(this.props, true) ? (
           <Accordion
             key={groupId}
             className="sidebar-accordion"
@@ -430,15 +430,15 @@ class Groups extends Component {
                 !isDashboardRoute(this.props)
                   ? "0"
                   : this.eventkey[groupId]
-                  ? this.eventkey[groupId]
-                  : "1"
+                    ? this.eventkey[groupId]
+                    : "1"
               }
             >
               <div className="sidebar-accordion-item">
                 <i className="uil uil-folder"></i>
                 {this.props.groups[groupId].name}
               </div>
-              {isDashboardRoute(this.props) ? (
+              {isDashboardRoute(this.props, true) ? (
                 <div className="sidebar-item-action">
                   <div
                     className="sidebar-item-action-btn"
@@ -517,8 +517,8 @@ class Groups extends Component {
                 !isDashboardRoute(this.props)
                   ? "0"
                   : this.eventkey[groupId]
-                  ? this.eventkey[groupId]
-                  : "1"
+                    ? this.eventkey[groupId]
+                    : "1"
               }
             >
               <Card.Body>
@@ -541,24 +541,24 @@ class Groups extends Component {
             {/* </Card> */}
           </Accordion>
         ) : (
-          <div className="hm-sidebar-block">
-            <div className="hm-sidebar-label">
-              {this.props.groups[groupId].name}
+            <div className="hm-sidebar-block">
+              <div className="hm-sidebar-label">
+                {this.props.groups[groupId].name}
+              </div>
+              <Endpoints
+                {...this.props}
+                group_id={groupId}
+                endpoints_order={this.props.groups[groupId].endpointsOrder}
+                show_filter_groups={this.propsFromGroups.bind(this)}
+              />
+              <GroupPages
+                {...this.props}
+                version_id={this.props.groups[groupId].versionId}
+                group_id={groupId}
+                show_filter_groups={this.propsFromGroups.bind(this)}
+              />
             </div>
-            <Endpoints
-              {...this.props}
-              group_id={groupId}
-              endpoints_order={this.props.groups[groupId].endpointsOrder}
-              show_filter_groups={this.propsFromGroups.bind(this)}
-            />
-            <GroupPages
-              {...this.props}
-              version_id={this.props.groups[groupId].versionId}
-              group_id={groupId}
-              show_filter_groups={this.propsFromGroups.bind(this)}
-            />
-          </div>
-        )}
+          )}
       </React.Fragment>
     );
   }

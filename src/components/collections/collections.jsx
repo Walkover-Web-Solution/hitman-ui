@@ -9,10 +9,6 @@ import collectionVersionsService from "../collectionVersions/collectionVersionsS
 import ImportVersionForm from "../collectionVersions/importVersionForm";
 import { isDashboardRoute } from "../common/utility";
 import endpointApiService from "../endpoints/endpointApiService";
-import {
-  fetchAllUsersOfTeam,
-  shareCollection,
-} from "../teamUsers/redux/teamUsersActions";
 import collectionsService from "./collectionsService";
 import {
   addCollection,
@@ -21,40 +17,36 @@ import {
   updateCollection,
   addCustomDomain,
 } from "./redux/collectionsActions";
-import ShareCollectionForm from "./shareCollectionForm";
 import "./collections.scss";
 import PublishDocsModal from "../publicEndpoint/publishDocsModal";
 import authService from "../auth/authService";
 import TagManager from "react-gtm-module";
 import TagManagerModal from "./tagModal";
+import UserNotification from './userNotification'
+import { isAdmin } from "../auth/authService"
 
 const mapStateToProps = (state) => {
   return {
-    teams: state.teams,
     collections: state.collections,
     versions: state.versions,
     pages: state.pages,
-    teamUsers: state.teamUsers,
     groups: state.groups,
+    endpoints: state.endpoints,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
     add_collection: (newCollection) => dispatch(addCollection(newCollection)),
-    share_collection: (teamMemberData) =>
-      dispatch(shareCollection(teamMemberData)),
     update_collection: (editedCollection) =>
       dispatch(updateCollection(editedCollection)),
     delete_collection: (collection, props) =>
       dispatch(deleteCollection(collection, props)),
     duplicate_collection: (collection) =>
       dispatch(duplicateCollection(collection)),
-    fetch_all_users_of_team: (teamIdentifier) =>
-      dispatch(fetchAllUsersOfTeam(teamIdentifier)),
-    add_custom_domain: (collectionId, domain, dnsTarget, title, logoUrl) =>
+    add_custom_domain: (collectionId, domain) =>
       dispatch(
-        addCustomDomain(collectionId, domain, dnsTarget, title, logoUrl)
+        addCustomDomain(collectionId, domain)
       ),
   };
 };
@@ -118,36 +110,6 @@ class CollectionsComponent extends Component {
   async handleGoToDocs(collection) {
     const publicDocsUrl = `${process.env.REACT_APP_UI_URL}/p/${collection.id}`;
     window.open(publicDocsUrl, "_blank");
-  }
-
-  showShareCollectionForm() {
-    return (
-      this.state.showCollectionShareForm && (
-        <ShareCollectionForm
-          {...this.props}
-          show={true}
-          onHide={() => {
-            this.setState({ showCollectionShareForm: false });
-          }}
-          team_id={this.state.selectedCollection.teamId}
-          title="Share Collection"
-          collection_id={this.state.selectedCollection.id}
-        />
-      )
-    );
-  }
-
-  shareCollection(collectionId) {
-    this.props.fetch_all_users_of_team(
-      this.props.collections[collectionId].teamId
-    );
-    this.setState({
-      showCollectionShareForm: true,
-      selectedCollection: {
-        ...this.props.collections[collectionId],
-      },
-      collectionFormName: "Share Collection",
-    });
   }
 
   openAddCollectionForm() {
@@ -224,7 +186,6 @@ class CollectionsComponent extends Component {
 
   handlePublic(collection) {
     collection.isPublic = !collection.isPublic;
-    delete collection.teamId;
     this.props.update_collection({ ...collection });
   }
 
@@ -241,16 +202,6 @@ class CollectionsComponent extends Component {
     this.props.empty_filter();
     this.collectionId = null;
     this.setState({ openSelectedCollection: false });
-  }
-
-  fetchCurrentUserRole() {
-    const { user: currentUser } = authService.getCurrentUser();
-    const teamArray = Object.keys(this.props.teamUsers);
-    for (let i = 0; i < teamArray.length; i++) {
-      if (currentUser.identifier === teamArray[i]) {
-        return this.props.teamUsers[currentUser.identifier].role;
-      }
-    }
   }
 
   TagManagerModal(collectionId) {
@@ -270,6 +221,47 @@ class CollectionsComponent extends Component {
       )
     );
   }
+
+  dataFetched() {
+    return (this.props.collections && this.props.versions && this.props.groups && this.props.endpoints && this.props.pages)
+  }
+
+
+  findEndpointCount(collectionId) {
+    if (this.dataFetched()) {
+      let versionIds = Object.keys(this.props.versions).filter(vId => this.props.versions[vId].collectionId === collectionId)
+      let groupIds = Object.keys(this.props.groups)
+      let groupsArray = []
+      for (let i = 0; i < groupIds.length; i++) {
+        const groupId = groupIds[i];
+        const group = this.props.groups[groupId]
+
+        if (versionIds.includes(group.versionId))
+          groupsArray.push(groupId)
+      }
+
+      let endpointIds = Object.keys(this.props.endpoints)
+      let endpointsArray = []
+
+      for (let i = 0; i < endpointIds.length; i++) {
+        const endpointId = endpointIds[i];
+        const endpoint = this.props.endpoints[endpointId]
+
+        if (groupsArray.includes(endpoint.groupId))
+          endpointsArray.push(endpointId)
+
+      }
+      return endpointsArray.length
+    }
+
+  }
+
+
+  // findEndpointCount(collectionId){
+  //   if(this.dataFetched()){
+  //     return Object.keys(this.props.endpoints).filter(eId => this.props.endpoints[eId].collectionId === collectionId).length
+  //     }
+  //   }
 
   renderBody(collectionId, collectionState) {
     let eventkeyValue = "";
@@ -317,16 +309,21 @@ class CollectionsComponent extends Component {
             eventKey={eventkeyValue !== null ? eventkeyValue : "0"}
           >
             {collectionState === "singleCollection" ? (
-              <div>{this.props.collections[collectionId].name}</div>
+              <React.Fragment>
+                <div>{this.props.collections[collectionId].name}</div>
+              </React.Fragment>
             ) : (
-              <div
-                className="sidebar-accordion-item"
-                onClick={() => this.openSelectedCollection(collectionId)}
-              >
-                <i className="uil uil-parcel"></i>
-                {this.props.collections[collectionId].name}
-              </div>
-            )}
+                <div
+                  className="sidebar-accordion-item"
+                  onClick={() => this.openSelectedCollection(collectionId)}
+                >
+                  <i className="uil uil-parcel"></i>
+                  <div >
+                    {this.props.collections[collectionId].name}
+                  </div>
+                </div>
+              )}
+            <div class="show-endpoint-count">{this.findEndpointCount(collectionId)}</div>
             <div className="sidebar-item-action">
               <div
                 className="sidebar-item-action-btn "
@@ -383,24 +380,15 @@ class CollectionsComponent extends Component {
                     Go to Docs
                   </a>
                 )}
-                {/* {(this.currentUserRole==="Admin"||this.currentUserRole==="Owner") && ( */}
-                <a
+                {isAdmin() ? <a
                   className="dropdown-item"
                   onClick={() =>
                     this.openPublishDocs(this.props.collections[collectionId])
                   }
                 >
                   Publish Docs
-                </a>
+                </a> : null}
 
-                <a
-                  className="dropdown-item"
-                  onClick={() => {
-                    this.shareCollection(collectionId);
-                  }}
-                >
-                  Share
-                </a>
                 <a
                   className="dropdown-item"
                   onClick={() => {
@@ -426,15 +414,32 @@ class CollectionsComponent extends Component {
           ) : null}
           {/* </Card> */}
         </Accordion>
+
+
+
       </React.Fragment>
     );
   }
 
   openPublishDocs(collection) {
-    this.setState({
-      showPublishDocsModal: true,
-      selectedCollection: collection.id,
-    });
+    if (collection.id) {
+      this.props.history.push({
+        pathname: `/admin/publish`,
+        search: `?collectionId=${collection.id}`,
+      })
+
+    }
+    else {
+      let collection = this.props.collections[Object.keys(this.props.collections)[0]]
+      this.props.history.push({
+        pathname: `/admin/publish`,
+        search: `?collectionId=${collection.id}`,
+      })
+    }
+    // this.setState({
+    //   showPublishDocsModal: true,
+    //   selectedCollection: collection.id,
+    // });
   }
 
   showPublishDocsModal(onHide) {
@@ -444,9 +449,9 @@ class CollectionsComponent extends Component {
         show={true}
         onHide={onHide}
         collection_id={this.state.selectedCollection}
-        // add_new_endpoint={this.handleAddEndpoint.bind(this)}
-        // open_collection_form={this.openCollectionForm.bind(this)}
-        // open_environment_form={this.openEnvironmentForm.bind(this)}
+      // add_new_endpoint={this.handleAddEndpoint.bind(this)}
+      // open_collection_form={this.openCollectionForm.bind(this)}
+      // open_environment_form={this.openEnvironmentForm.bind(this)}
       />
     );
   }
@@ -460,8 +465,86 @@ class CollectionsComponent extends Component {
     }
   }
 
+
+  findPendingPagesCollections(pendingPageIds) {
+    let versionsArray = []
+    for (let i = 0; i < pendingPageIds.length; i++) {
+      const pageId = pendingPageIds[i];
+      if (this.props.pages[pageId]) {
+        const versionId = this.props.pages[pageId].versionId
+        versionsArray.push(versionId)
+      }
+    }
+    let collectionsArray = []
+    for (let i = 0; i < versionsArray.length; i++) {
+      const versionId = versionsArray[i];
+      if (this.props.versions[versionId]) {
+        const collectionId = this.props.versions[versionId].collectionId
+        collectionsArray.push(collectionId)
+      }
+    }
+    return collectionsArray
+  }
+
+  findPendingEndpointsCollections(pendingEndpointIds) {
+    let groupsArray = []
+    for (let i = 0; i < pendingEndpointIds.length; i++) {
+      const endpointId = pendingEndpointIds[i];
+      if (this.props.endpoints[endpointId]) {
+        const groupId = this.props.endpoints[endpointId].groupId
+        groupsArray.push(groupId)
+      }
+    }
+
+    let versionsArray = []
+    for (let i = 0; i < groupsArray.length; i++) {
+      const groupId = groupsArray[i];
+      if (this.props.groups[groupId]) {
+        const versionId = this.props.groups[groupId].versionId
+        versionsArray.push(versionId)
+      }
+    }
+    let collectionsArray = []
+    for (let i = 0; i < versionsArray.length; i++) {
+      const versionId = versionsArray[i];
+      if (this.props.versions[versionId]) {
+        const collectionId = this.props.versions[versionId].collectionId
+        collectionsArray.push(collectionId)
+      }
+
+    }
+    return collectionsArray
+  }
+
+  getPublicCollections() {
+    if (this.dataFetched()) {
+      const pendingEndpointIds = Object.keys(this.props.endpoints).filter(eId => this.props.endpoints[eId].state === "Pending")
+      const pendingPageIds = Object.keys(this.props.pages).filter(pId => this.props.pages[pId].state === "Pending")
+
+      const endpointCollections = this.findPendingEndpointsCollections(pendingEndpointIds)
+      const pageCollections = this.findPendingPagesCollections(pendingPageIds)
+
+      let allCollections = [...new Set([...endpointCollections, ...pageCollections])]
+      let finalCollections = []
+      for (let i = 0; i < allCollections.length; i++) {
+        const collectionId = allCollections[i];
+        if (this.props.collections[collectionId]?.isPublic) {
+          finalCollections.push(collectionId)
+        }
+
+      }
+      return finalCollections
+    }
+  }
+
+  getNotificationCount() {
+    const collections = this.getPublicCollections()
+
+    return collections.length || 0
+  }
+
   render() {
-    if (isDashboardRoute(this.props)) {
+    if (isDashboardRoute(this.props, true)) {
       let finalCollections = [];
       this.names = {};
       let finalnames = [];
@@ -491,6 +574,7 @@ class CollectionsComponent extends Component {
       }
       let keywords = Object.keys(this.keywords);
       finalKeywords = keywords.filter((key) => {
+        console.log(this.props.filter);
         return (
           key.toLowerCase().indexOf(this.props.filter.toLowerCase()) !== -1
         );
@@ -545,7 +629,6 @@ class CollectionsComponent extends Component {
                   this.state.selectedCollection
                 )}
               {this.showImportVersionForm()}
-              {this.showShareCollectionForm()}
               {this.openTagManagerModal()}
               {this.state.showDeleteModal &&
                 collectionsService.showDeleteCollectionModal(
@@ -578,8 +661,20 @@ class CollectionsComponent extends Component {
             {finalCollections.map((collectionId, index) =>
               this.renderBody(collectionId, "allCollections")
             )}
+
+            <div className="fixed">
+              <UserNotification {...this.props} get_notification_count={this.getNotificationCount.bind(this)}
+                get_public_collections={this.getPublicCollections.bind(this)}
+                open_publish_docs={this.openPublishDocs.bind(this)}
+              ></UserNotification>
+              {/* Notifications
+            <div>count : {this.getNotificationCount()}</div> */}
+            </div>
+
           </div>
+
         </div>
+
       );
     } else {
       return (

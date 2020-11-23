@@ -3,11 +3,11 @@ import { Modal } from "react-bootstrap";
 import "./publicEndpoint.scss";
 import Form from "../common/form";
 import Joi from "joi-browser";
-import herokuApiService from "../../services/herokuApiService";
 import { connect } from "react-redux";
 import jQuery from "jquery";
 import { toast } from "react-toastify";
 import { CopyToClipboard } from "react-copy-to-clipboard";
+import cirlceCiApiService from "../../services/circleCiApiService";
 
 const mapStateToProps = (state) => {
   return {
@@ -65,26 +65,6 @@ class PublishDocsModal extends Form {
   };
 
   async doSubmit() {
-    // endpointApiService.apiTest(
-    //   "https://api.msg91.com/api/v2/sendsms",
-    //   "POST",
-    //   {
-    //     sender: "SOCKET",
-    //     route: "4",
-    //     country: "91",
-    //     sms: [
-    //       {
-    //         message: `Successfully added ${this.state.data.domain} to your public collection. Please add ${response.cname} as CNAME in your DNS records.`,
-    //         to: ["9666770339"],
-    //       },
-    //     ],
-    //   },
-    //   {
-    //     authkey: "311584A9QCyvMghL5e10a184P1",
-    //     "Content-Type": "application/json",
-    //   }
-    // );
-
     this.props.onHide();
   }
 
@@ -104,7 +84,6 @@ class PublishDocsModal extends Form {
       ...this.props.collections[this.props.collection_id],
       environment,
     };
-    delete collection.teamId;
     this.props.update_collection(collection);
   }
 
@@ -125,7 +104,6 @@ class PublishDocsModal extends Form {
         ...this.props.collections[this.props.collection_id],
         docProperties,
       };
-      delete collection.teamId;
       this.props.update_collection(collection);
       this.setState({ editableDocProperties: false });
     }
@@ -179,20 +157,12 @@ class PublishDocsModal extends Form {
       return;
     }
     try {
-      const { data: response } = await herokuApiService.createDomain(
-        this.state.data.newDomain
-      );
-      await herokuApiService.updateConfigVars({
-        [this.state.data
-          .newDomain]: `${this.state.data.newTitle},${this.state.data.newLogoUrl},${this.props.collection_id}`,
+      cirlceCiApiService.addEnvVariable('REACT_APP_CUSTOM_DOMAINS_LIST',process.env.REACT_APP_CUSTOM_DOMAINS_LIST+`;${this.state.data.newDomain},${this.props.collection_id}`)
+      
+      this.props.update_collection({
+        customDomain: this.state.data.newDomain,
+        id:this.props.collection_id
       });
-      this.props.add_custom_domain(
-        this.props.collection_id,
-        this.state.data.newDomain,
-        response.cname,
-        this.state.data.newTitle,
-        this.state.data.newLogoUrl
-      );
       const domainPropertiesShowFlags = {
         ...this.state.domainPropertiesShowFlags,
         [this.state.newDomain]: { show: false, isEditable: false },
@@ -258,13 +228,11 @@ class PublishDocsModal extends Form {
       ...this.props.collections[this.props.collection_id],
       docProperties,
     };
-    delete collection.teamId;
     this.props.update_collection(collection);
     this.makeDomainPropertiesEditable(domain, false);
   }
   handleMakePublic(collection) {
     collection.isPublic = !collection.isPublic;
-    delete collection.teamId;
     this.props.update_collection({ ...collection });
   }
 
@@ -368,14 +336,12 @@ class PublishDocsModal extends Form {
                 )}
           </div>
           <h5>Custom domain</h5>
+          Please map your domain to {process.env.REACT_APP_UI_IP} after adding here.
           <table className="table domain-list-table">
             <thead>
               <tr>
                 <th scope="col" className="domain-name-column-heading">
                   Domain name
-                </th>
-                <th scope="col" className="dns-target-column-heading">
-                  DNS Target
                 </th>
               </tr>
             </thead>
@@ -398,26 +364,6 @@ class PublishDocsModal extends Form {
                         }}
                       >
                         {d.domain}
-                      </td>
-                      <td className="dns-target-column-item">
-                        <label
-                          onClick={() => {
-                            this.showDocProperties(d.domain);
-                          }}
-                        >
-                          {d.dnsTarget}
-                        </label>
-                        <CopyToClipboard
-                          text={d.dnsTarget}
-                          className="copy-to-clipboard btn"
-                        >
-                          <button className="btn">
-                            <i className="fas fa-clone"></i>
-                          </button>
-                        </CopyToClipboard>
-                        <button className="btn delete-button">
-                          <i class="fas fa-trash"></i>
-                        </button>
                       </td>
                     </tr>
                     {this.state.domainPropertiesShowFlags[d.domain] &&

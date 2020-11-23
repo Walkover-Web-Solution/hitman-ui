@@ -4,6 +4,8 @@ import { Route, Switch } from "react-router-dom";
 import DisplayEndpoint from "../endpoints/displayEndpoint";
 import DisplayPage from "../pages/displayPage";
 import EditPage from "../pages/editPage";
+import { getCurrentUser } from "../auth/authService";
+
 class TabContent extends Component {
   state = {};
 
@@ -30,14 +32,20 @@ class TabContent extends Component {
     }
   }
 
+  renderEndpoint() {
+    return <DisplayEndpoint {...this.props} environment={{}} tab="" />
+  }
+
   render() {
     return (
       <Tab.Content>
-        {Object.keys(this.props.tabs.tabs).map((tabId) => (
-          <Tab.Pane eventKey={tabId} key={tabId}>
-            {this.renderContent(tabId)}
-          </Tab.Pane>
-        ))}
+        {getCurrentUser() ? (
+          Object.keys(this.props.tabs.tabs).map((tabId) => (
+            <Tab.Pane eventKey={tabId} key={tabId}>
+              {this.renderContent(tabId)}
+            </Tab.Pane>
+          ))) : this.renderEndpoint()
+        }
       </Tab.Content>
     );
   }

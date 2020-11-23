@@ -18,7 +18,6 @@ class TagManagerModal extends Form {
 
   async doSubmit() {
     let updatedCollection = this.props.collections[this.props.collection_id];
-    delete updatedCollection.teamId;
     updatedCollection.gtmId = this.state.data.gtmId;
     this.props.update_collection(updatedCollection);
     this.props.onHide();

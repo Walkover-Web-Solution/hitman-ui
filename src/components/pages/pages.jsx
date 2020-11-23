@@ -15,7 +15,6 @@ import { closeTab, openInNewTab } from "../tabs/redux/tabsActions";
 const mapStateToProps = (state) => {
   return {
     tabs: state.tabs,
-    teams: state.teams,
   };
 };
 
@@ -34,7 +33,7 @@ class Pages extends Component {
   state = {};
 
   handleDisplay(page, collectionId, previewMode) {
-    if (isDashboardRoute(this.props)) {
+    if (isDashboardRoute(this.props, true)) {
       if (!this.props.tabs.tabs[page.id]) {
         const previewTabId = Object.keys(this.props.tabs.tabs).filter(
           (tabId) => this.props.tabs.tabs[tabId].previewMode === true
@@ -71,12 +70,8 @@ class Pages extends Component {
   }
 
   async handlePublicPageState(page) {
-    if (page.state === "Draft") {
-      if (this.checkAccess(this.props.collection_id)) {
-        this.props.approve_page(page);
-      } else {
-        this.props.pending_page(page);
-      }
+    if (page.state === "Draft" || page.state === "Reject") {
+      this.props.pending_page(page);
     }
   }
 
@@ -90,27 +85,11 @@ class Pages extends Component {
     this.props.reject_page(page);
   }
 
-  getCurrentUserRole(collectionId) {
-    const teamId = this.props.collections[collectionId].teamId;
-    if (
-      this.props.teams !== undefined &&
-      teamId !== undefined &&
-      this.props.teams[teamId] !== undefined
-    )
-      return this.props.teams[teamId].role;
-  }
-
-  checkAccess(collectionId) {
-    const role = this.getCurrentUserRole(collectionId);
-    if (role === "Admin" || role === "Owner") return true;
-    else return false;
-  }
-
   render() {
     const pageId = this.props.page_id;
     return (
       <React.Fragment>
-        {isDashboardRoute(this.props) ? (
+        {isDashboardRoute(this.props, true) ? (
           <div
             className="sidebar-accordion"
             id="accordion"
@@ -169,19 +148,19 @@ class Pages extends Component {
                   >
                     Duplicate
                   </a>
-                  {this.props.pages[pageId].state === "Draft" ? (
-                    <a
-                      className="dropdown-item"
-                      onClick={() =>
-                        this.handlePublicPageState(this.props.pages[pageId])
-                      }
-                    >
-                      Make Public
-                    </a>
-                  ) : null}
+                  {this.props.pages[pageId].state === "Draft" ||
+                    this.props.pages[pageId].state === "Reject" ? (
+                      <a
+                        className="dropdown-item"
+                        onClick={() =>
+                          this.handlePublicPageState(this.props.pages[pageId])
+                        }
+                      >
+                        Make Public
+                      </a>
+                    ) : null}
 
-                  {!this.checkAccess(this.props.collection_id) &&
-                  this.props.pages[pageId].state === "Pending" ? (
+                  {this.props.pages[pageId].state === "Pending" ? (
                     <a
                       className="dropdown-item"
                       onClick={() =>
@@ -191,40 +170,6 @@ class Pages extends Component {
                       Cancel Request
                     </a>
                   ) : null}
-
-                  {this.checkAccess(this.props.collection_id) &&
-                  (this.props.pages[pageId].state === "Approved" ||
-                    this.props.pages[pageId].state === "Reject") ? (
-                    <a
-                      className="dropdown-item"
-                      onClick={() =>
-                        this.handleCancelRequest(this.props.pages[pageId])
-                      }
-                    >
-                      Move to Draft
-                    </a>
-                  ) : null}
-                  {this.checkAccess(this.props.collection_id) &&
-                  this.props.pages[pageId].state === "Pending" ? (
-                    <div>
-                      <a
-                        className="dropdown-item"
-                        onClick={() =>
-                          this.handleApproveRequest(this.props.pages[pageId])
-                        }
-                      >
-                        Approve Request
-                      </a>
-                      <a
-                        className="dropdown-item"
-                        onClick={() =>
-                          this.handleRejectRequest(this.props.pages[pageId])
-                        }
-                      >
-                        Reject Request
-                      </a>
-                    </div>
-                  ) : null}
                 </div>
               </div>
             </button>
@@ -232,21 +177,22 @@ class Pages extends Component {
             {/* </div> */}
           </div>
         ) : (
-          <div
-            className="hm-sidebar-item"
-            onClick={() => {
-              const page = this.props.pages[pageId];
-              this.handleDisplay(page, this.props.collection_id, true);
-            }}
-            onDoubleClick={() => {
-              const page = this.props.pages[pageId];
-              this.handleDisplay(page, this.props.collection_id, false);
-            }}
-          >
-            <i className="uil uil-file-alt" aria-hidden="true"></i>
-            {this.props.pages[pageId].name}
-          </div>
-        )}
+            <div
+              className="hm-sidebar-item"
+              onClick={() => {
+                const page = this.props.pages[pageId];
+                this.handleDisplay(page, this.props.collection_id, true);
+              }}
+              onDoubleClick={() => {
+                const page = this.props.pages[pageId];
+                this.handleDisplay(page, this.props.collection_id, false);
+              }}
+            >
+              <i className="uil uil-file-alt" aria-hidden="true"></i>
+              {this.props.pages[pageId].name}
+            </div>
+          )
+        }
       </React.Fragment>
     );
   }

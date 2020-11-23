@@ -285,7 +285,7 @@ class CollectionVersions extends Component {
     }
     return (
       <React.Fragment>
-        {isDashboardRoute(this.props) ? (
+        {isDashboardRoute(this.props, true) ? (
           <Accordion
             className="sidebar-accordion"
             defaultActiveKey={index === 0 ? this.eventkey[versionId] : null}
@@ -296,15 +296,16 @@ class CollectionVersions extends Component {
             {/* <Card.Header> */}
             <Accordion.Toggle
               variant="default"
-              eventKey={
-                !isDashboardRoute(this.props) ? "0" : this.eventkey[versionId]
-              }
+              eventKey="1"
+            // eventKey={
+            //   !isDashboardRoute(this.props) ? "0" : this.eventkey[versionId]
+            // }
             >
               <div className="sidebar-accordion-item">
                 <i className="uil uil-folder"></i>
                 {this.props.versions[versionId].number}
               </div>
-              {isDashboardRoute(this.props) ? (
+              {isDashboardRoute(this.props, true) ? (
                 <div className="sidebar-item-action">
                   <div
                     className="sidebar-item-action-btn"
@@ -375,9 +376,10 @@ class CollectionVersions extends Component {
             {/* </Card.Header> */}
             <Accordion.Collapse
               className="version-collapse"
-              eventKey={
-                !isDashboardRoute(this.props) ? "0" : this.eventkey[versionId]
-              }
+              eventKey="1"
+            // eventKey={
+            //   !isDashboardRoute(this.props) ? "0" : this.eventkey[versionId]
+            // }
             >
               <Card.Body>
                 <VersionPages
@@ -395,19 +397,19 @@ class CollectionVersions extends Component {
             {/* </Card> */}
           </Accordion>
         ) : (
-          <React.Fragment>
-            <VersionPages
-              {...this.props}
-              version_id={versionId}
-              show_filter_version={this.propsFromVersion.bind(this)}
-            />
-            <Groups
-              {...this.props}
-              version_id={versionId}
-              show_filter_version={this.propsFromVersion.bind(this)}
-            />
-          </React.Fragment>
-        )}
+            <React.Fragment>
+              <VersionPages
+                {...this.props}
+                version_id={versionId}
+                show_filter_version={this.propsFromVersion.bind(this)}
+              />
+              <Groups
+                {...this.props}
+                version_id={versionId}
+                show_filter_version={this.propsFromVersion.bind(this)}
+              />
+            </React.Fragment>
+          )}
       </React.Fragment>
     );
   }
