@@ -1,13 +1,16 @@
-import jQuery from "jquery";
-import React, { Component } from "react";
-import { Button } from "react-bootstrap";
-import "./publicEndpoint.scss";
-import DisplayBodyDescription from "./displayBodyDescription";
+import jQuery from 'jquery'
+import React, { Component } from 'react'
+import { Button } from 'react-bootstrap'
+import './publicEndpoint.scss'
+import DisplayBodyDescription from './displayBodyDescription'
 
 class BodyDescription extends Component {
-  state = {
-    bodyDescription: null,
-  };
+  constructor (props) {
+    super(props)
+    this.state = {
+      bodyDescription: null
+    }
+  }
 
   // performChange(pkeys, bodyDescription, newValue) {
   //   if (pkeys.length === 1) {
@@ -177,156 +180,154 @@ class BodyDescription extends Component {
   //   );
   // }
 
-  parseBody(rawBody) {
-    let body = {};
+  parseBody (rawBody) {
+    let body = {}
     try {
-      body = JSON.parse(rawBody);
-      return body;
+      body = JSON.parse(rawBody)
+      return body
     } catch (error) {
-      return null;
+      return null
     }
   }
 
-  generateBodyDescription(body, isFirstTime) {
-    let bodyDescription = null;
-    let keys = [];
+  generateBodyDescription (body, isFirstTime) {
+    let bodyDescription = null
+    let keys = []
     if (!body) {
-      return null;
+      return null
     }
     if (Array.isArray(body)) {
-      bodyDescription = [];
-      keys = ["0"];
+      bodyDescription = []
+      keys = ['0']
     } else {
-      bodyDescription = {};
-      keys = Object.keys(body);
+      bodyDescription = {}
+      keys = Object.keys(body)
     }
 
     for (let i = 0; i < keys.length; i++) {
-      const value = body[keys[i]];
+      const value = body[keys[i]]
       if (
-        typeof value === "string" ||
-        typeof value === "number" ||
-        typeof value === "boolean"
+        typeof value === 'string' ||
+        typeof value === 'number' ||
+        typeof value === 'boolean'
       ) {
         if (isFirstTime) {
           bodyDescription[keys[i]] = {
             value,
             type: typeof value,
-            description: "",
-          };
+            description: ''
+          }
         } else {
           bodyDescription[keys[i]] = {
             value: null,
             type: typeof value,
-            description: "",
-          };
+            description: ''
+          }
         }
       } else {
         if (Array.isArray(value)) {
           bodyDescription[keys[i]] = {
             value: this.generateBodyDescription(value, isFirstTime),
-            type: "array",
-            default: this.generateBodyDescription(value, isFirstTime)[0],
-          };
+            type: 'array',
+            default: this.generateBodyDescription(value, isFirstTime)[0]
+          }
         } else {
           bodyDescription[keys[i]] = {
             value: this.generateBodyDescription(value, isFirstTime),
-            type: "object",
-          };
+            type: 'object'
+          }
         }
       }
     }
-    return bodyDescription;
+    return bodyDescription
   }
 
-  compareDefaultValue(updatedBodyDescription, originalBodyDescription) {
-    const updatedKeys = Object.keys(updatedBodyDescription);
+  compareDefaultValue (updatedBodyDescription, originalBodyDescription) {
+    const updatedKeys = Object.keys(updatedBodyDescription)
     for (let i = 0; i < updatedKeys.length; i++) {
       if (
         originalBodyDescription[updatedKeys[i]] &&
         updatedBodyDescription[updatedKeys[i]].type ===
-          originalBodyDescription[updatedKeys[i]].type
+        originalBodyDescription[updatedKeys[i]].type
       ) {
         switch (updatedBodyDescription[updatedKeys[i]].type) {
-          case "string":
-          case "number":
-          case "boolean":
+          case 'string':
+          case 'number':
+          case 'boolean':
             updatedBodyDescription[updatedKeys[i]].value =
-              originalBodyDescription[updatedKeys[i]].value;
+              originalBodyDescription[updatedKeys[i]].value
             updatedBodyDescription[updatedKeys[i]].description =
-              originalBodyDescription[updatedKeys[i]].description;
-            break;
-          case "array":
+              originalBodyDescription[updatedKeys[i]].description
+            break
+          case 'array':
             updatedBodyDescription[
               updatedKeys[i]
             ].value = this.compareDefaultValue(
               updatedBodyDescription[updatedKeys[i]].value,
               originalBodyDescription[updatedKeys[i]].value
-            );
+            )
             updatedBodyDescription[
               updatedKeys[i]
             ].default = this.compareDefaultValue(
               updatedBodyDescription[updatedKeys[i]].value,
               originalBodyDescription[updatedKeys[i]].value
-            )[0];
+            )[0]
 
-            break;
-          case "object":
+            break
+          case 'object':
             updatedBodyDescription[
               updatedKeys[i]
             ].value = this.compareDefaultValue(
               updatedBodyDescription[updatedKeys[i]].value,
               originalBodyDescription[updatedKeys[i]].value
-            );
+            )
 
-            break;
+            break
           default:
-            break;
+            break
         }
-      } else {
       }
     }
-    return updatedBodyDescription;
+    return updatedBodyDescription
   }
 
-  preserveDefaultValue(bodyDescription) {
-    if (!this.originalBodyDescription) return bodyDescription;
-    let originalBodyDescription = this.originalBodyDescription;
-    let updatedBodyDescription = jQuery.extend(true, {}, bodyDescription);
+  preserveDefaultValue (bodyDescription) {
+    if (!this.originalBodyDescription) return bodyDescription
+    const originalBodyDescription = this.originalBodyDescription
+    let updatedBodyDescription = jQuery.extend(true, {}, bodyDescription)
     updatedBodyDescription = this.compareDefaultValue(
       updatedBodyDescription,
       originalBodyDescription
-    );
+    )
 
-    return updatedBodyDescription;
-  }
-  updateBodyDescription(body, isFirstTime) {
-    body = this.parseBody(body);
-    let bodyDescription = this.generateBodyDescription(body, isFirstTime);
-    if (!isFirstTime)
-      bodyDescription = this.preserveDefaultValue(bodyDescription);
-    this.setState({ bodyDescription });
-    if (this.props.tab.status !== "NEW")
-      this.props.update_endpoint({ id: this.props.tab.id, bodyDescription });
-
-    return bodyDescription;
+    return updatedBodyDescription
   }
 
-  handleUpdate(isFirstTime) {
+  updateBodyDescription (body, isFirstTime) {
+    body = this.parseBody(body)
+    let bodyDescription = this.generateBodyDescription(body, isFirstTime)
+    if (!isFirstTime) { bodyDescription = this.preserveDefaultValue(bodyDescription) }
+    this.setState({ bodyDescription })
+    if (this.props.tab.status !== 'NEW') { this.props.update_endpoint({ id: this.props.tab.id, bodyDescription }) }
+
+    return bodyDescription
+  }
+
+  handleUpdate (isFirstTime) {
     this.originalBodyDescription = jQuery.extend(
       true,
       {},
       this.props.body_description
-    );
+    )
     const bodyDescription = this.updateBodyDescription(
       this.props.body,
       isFirstTime
-    );
-    this.props.set_body_description(bodyDescription);
+    )
+    this.props.set_body_description(bodyDescription)
   }
 
-  render() {
-    const body = this.parseBody(this.props.body);
+  render () {
+    const body = this.parseBody(this.props.body)
     if (
       body &&
       Object.keys(body) &&
@@ -337,15 +338,15 @@ class BodyDescription extends Component {
         Object.keys(this.props.body_description).length
       )
     ) {
-      if (this.parseBody(this.props.body)) this.handleUpdate(true);
+      if (this.parseBody(this.props.body)) this.handleUpdate(true)
     }
     return (
       <div>
-        {this.props.body_type === "JSON" && (
+        {this.props.body_type === 'JSON' && (
           <div>
             <Button
               onClick={() => this.handleUpdate()}
-              className="custom-update-button"
+              className='custom-update-button'
             >
               Update Body Description
             </Button>
@@ -362,8 +363,8 @@ class BodyDescription extends Component {
           </div>
         )}
       </div>
-    );
+    )
   }
 }
 
-export default BodyDescription;
+export default BodyDescription

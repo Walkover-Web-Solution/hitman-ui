@@ -1,65 +1,65 @@
-import store from "../../../store/store";
-import collectionsApiService from "../collectionsApiService";
-import collectionsActionTypes from "./collectionsActionTypes";
-import tabService from "../../tabs/tabService";
-import openApiService from "../../openApi/openApiService";
-import versionActionTypes from "../../collectionVersions/redux/collectionVersionsActionTypes";
+import store from '../../../store/store'
+import collectionsApiService from '../collectionsApiService'
+import collectionsActionTypes from './collectionsActionTypes'
+import tabService from '../../tabs/tabService'
+import openApiService from '../../openApi/openApiService'
+import versionActionTypes from '../../collectionVersions/redux/collectionVersionsActionTypes'
 
 export const fetchCollections = () => {
   return (dispatch) => {
     collectionsApiService
       .getCollections()
       .then((response) => {
-        dispatch(onCollectionsFetched(response.data));
+        dispatch(onCollectionsFetched(response.data))
       })
       .catch((error) => {
         dispatch(
           onCollectionsFetchedError(
             error.response ? error.response.data : error
           )
-        );
-      });
-  };
-};
+        )
+      })
+  }
+}
 
 export const onCollectionsFetched = (collections) => {
   return {
     type: collectionsActionTypes.ON_COLLECTIONS_FETCHED,
-    collections,
-  };
-};
+    collections
+  }
+}
 
 export const onCollectionsFetchedError = (error) => {
   return {
     type: collectionsActionTypes.ON_COLLECTIONS_FETCHED_ERROR,
-    error,
-  };
-};
+    error
+  }
+}
 
 export const fetchCollection = (collectionId) => {
   return (dispatch) => {
     collectionsApiService
       .getCollection(collectionId)
       .then((response) => {
-        dispatch(onCollectionsFetched(response.data));
+        dispatch(onCollectionsFetched(response.data))
       })
       .catch((error) => {
         dispatch(
           onCollectionsFetchedError(
             error.response ? error.response.data : error
           )
-        );
-      });
-  };
-};
+        )
+      })
+  }
+}
 
 export const addCollection = (newCollection) => {
   return (dispatch) => {
-    dispatch(addCollectionRequest(newCollection));
+    dispatch(addCollectionRequest(newCollection))
     collectionsApiService
       .saveCollection(newCollection)
       .then((response) => {
-        dispatch(onCollectionAdded(response.data));
+        dispatch(onCollectionAdded(response.data))
       })
       .catch((error) => {
         dispatch(
@@ -67,46 +67,46 @@ export const addCollection = (newCollection) => {
             error.response ? error.response.data : error,
             newCollection
           )
-        );
-      });
-  };
-};
+        )
+      })
+  }
+}
 
 export const addCollectionRequest = (newCollection) => {
   return {
     type: collectionsActionTypes.ADD_COLLECTION_REQUEST,
-    newCollection,
-  };
-};
+    newCollection
+  }
+}
 
 export const onCollectionAdded = (response) => {
   return {
     type: collectionsActionTypes.ON_COLLECTION_ADDED,
-    response,
-  };
-};
+    response
+  }
+}
 
 export const onCollectionAddedError = (error, newCollection) => {
   return {
     type: collectionsActionTypes.ON_COLLECTION_ADDED_ERROR,
     newCollection,
-    error,
-  };
-};
+    error
+  }
+}
 
 export const updateCollection = (editedCollection) => {
   return (dispatch) => {
     const originalCollection = store.getState().collections[
       editedCollection.id
-    ];
-    dispatch(updateCollectionRequest({ ...editedCollection }));
-    const id = editedCollection.id;
-    delete editedCollection.id;
-    delete editedCollection.requestId;
+    ]
+    dispatch(updateCollectionRequest({ ...editedCollection }))
+    const id = editedCollection.id
+    delete editedCollection.id
+    delete editedCollection.requestId
     collectionsApiService
       .updateCollection(id, editedCollection)
       .then((response) => {
-        dispatch(onCollectionUpdated(response.data));
+        dispatch(onCollectionUpdated(response.data))
       })
       .catch((error) => {
         dispatch(
@@ -114,60 +114,60 @@ export const updateCollection = (editedCollection) => {
             error.response ? error.response.data : error,
             originalCollection
           )
-        );
-      });
-  };
-};
+        )
+      })
+  }
+}
 
 export const updateCollectionRequest = (editedCollection) => {
   return {
     type: collectionsActionTypes.UPDATE_COLLECTION_REQUEST,
-    editedCollection,
-  };
-};
+    editedCollection
+  }
+}
 
 export const onCollectionUpdated = (response) => {
   return {
     type: collectionsActionTypes.ON_COLLECTION_UPDATED,
-    response,
-  };
-};
+    response
+  }
+}
 
 export const onCollectionUpdatedError = (error, originalCollection) => {
   return {
     type: collectionsActionTypes.ON_COLLECTION_UPDATED_ERROR,
     error,
-    originalCollection,
-  };
-};
+    originalCollection
+  }
+}
 
 export const deleteCollection = (collection, props) => {
   return (dispatch) => {
-    dispatch(deleteCollectionRequest(collection));
+    dispatch(deleteCollectionRequest(collection))
     collectionsApiService
       .deleteCollection(collection.id)
       .then((response) => {
-        const storeData = { ...store.getState() };
+        const storeData = { ...store.getState() }
         const versionIds = Object.keys(storeData.versions).filter(
           (vId) => storeData.versions[vId].collectionId === collection.id
-        );
-        let groupIds = [];
-        let endpointIds = [];
-        let pageIds = [];
+        )
+        let groupIds = []
+        let endpointIds = []
+        let pageIds = []
         versionIds.forEach((vId) => {
           groupIds = [
             ...Object.keys(storeData.groups).filter(
               (gId) => storeData.groups[gId].versionId === vId
             ),
-            ...groupIds,
-          ];
+            ...groupIds
+          ]
           pageIds = [
             ...Object.keys(storeData.pages).filter(
               (pId) => storeData.pages[pId].versionId === vId
             ),
-            ...pageIds,
-          ];
-        });
+            ...pageIds
+          ]
+        })
 
         groupIds.forEach(
           (gId) =>
@@ -175,12 +175,12 @@ export const deleteCollection = (collection, props) => {
               ...Object.keys(storeData.endpoints).filter(
                 (eId) => storeData.endpoints[eId].groupId === gId
               ),
-              ...endpointIds,
+              ...endpointIds
             ])
-        );
+        )
 
-        endpointIds.map((eId) => tabService.removeTab(eId, props));
-        pageIds.map((pId) => tabService.removeTab(pId, props));
+        endpointIds.map((eId) => tabService.removeTab(eId, props))
+        pageIds.map((pId) => tabService.removeTab(pId, props))
 
         dispatch(
           onCollectionDeleted({
@@ -188,89 +188,89 @@ export const deleteCollection = (collection, props) => {
             versionIds,
             groupIds,
             endpointIds,
-            pageIds,
+            pageIds
           })
-        );
+        )
       })
       .catch((error) => {
-        dispatch(onCollectionDeletedError(error.response, collection));
-      });
-  };
-};
+        dispatch(onCollectionDeletedError(error.response, collection))
+      })
+  }
+}
 
 export const deleteCollectionRequest = (collection) => {
   return {
     type: collectionsActionTypes.DELETE_COLLECTION_REQUEST,
-    collection,
-  };
-};
+    collection
+  }
+}
 
 export const onCollectionDeleted = (payload) => {
   return {
     type: collectionsActionTypes.ON_COLLECTION_DELETED,
-    payload,
-  };
-};
+    payload
+  }
+}
 
 export const onCollectionDeletedError = (error, collection) => {
   return {
     type: collectionsActionTypes.ON_COLLECTION_DELETED_ERROR,
     error,
-    collection,
-  };
-};
+    collection
+  }
+}
 
 export const duplicateCollection = (collection) => {
   return (dispatch) => {
     collectionsApiService
       .duplicateCollection(collection.id)
       .then((response) => {
-        dispatch(onCollectionDuplicated(response.data));
+        dispatch(onCollectionDuplicated(response.data))
       })
       .catch((error) => {
         dispatch(
           onCollectionDuplicatedError(
             error.response ? error.response.data : error
           )
-        );
-      });
-  };
-};
+        )
+      })
+  }
+}
 
 export const onCollectionDuplicated = (response) => {
   return {
     type: collectionsActionTypes.ON_COLLECTION_DUPLICATED,
-    response,
-  };
-};
+    response
+  }
+}
 
 export const onCollectionDuplicatedError = (error) => {
   return {
     type: collectionsActionTypes.ON_COLLECTION_DUPLICATED_ERROR,
-    error,
-  };
-};
+    error
+  }
+}
 
 export const addCustomDomain = (
   collectionId,
   domain
 ) => {
   return (dispatch) => {
-    let collection = { ...store.getState().collections[collectionId] };
+    const collection = { ...store.getState().collections[collectionId] }
     if (!collection.docProperties.domainsList) {
-      collection.docProperties.domainsList = [];
+      collection.docProperties.domainsList = []
     }
     collection.docProperties.domainsList.push({
       domain
-    });
-    dispatch(updateCollectionRequest({ ...collection }));
+    })
+    dispatch(updateCollectionRequest({ ...collection }))
 
-    const id = collection.id;
-    delete collection.id;
+    const id = collection.id
+    delete collection.id
     collectionsApiService
       .updateCollection(id, collection)
       .then((response) => {
-        dispatch(onCollectionUpdated(response.data));
+        dispatch(onCollectionUpdated(response.data))
       })
       .catch((error) => {
         dispatch(
@@ -278,10 +278,10 @@ export const addCustomDomain = (
             error.response ? error.response.data : error,
             collection
           )
-        );
-      });
-  };
-};
+        )
+      })
+  }
+}
 
 export const importApi = (openApiObject) => {
   return (dispatch) => {
@@ -289,31 +289,31 @@ export const importApi = (openApiObject) => {
       .importApi(openApiObject)
       .then((response) => {
         // dispatch(saveImportedCollection(response.data));
-        dispatch(saveImportedVersion(response.data));
+        dispatch(saveImportedVersion(response.data))
       })
       .catch((error) => {
         dispatch(
           onVersionsFetchedError(error.response ? error.response.data : error)
-        );
+        )
       })
       .catch((error) => {
         dispatch(
           onVersionsFetchedError(error.response ? error.response.data : error)
-        );
-      });
-  };
-};
+        )
+      })
+  }
+}
 
 export const saveImportedVersion = (response) => {
   return {
     type: versionActionTypes.IMPORT_VERSION,
-    response,
-  };
-};
+    response
+  }
+}
 
 export const onVersionsFetchedError = (error) => {
   return {
     type: versionActionTypes.ON_VERSIONS_FETCHED_ERROR,
-    error,
-  };
-};
+    error
+  }
+}

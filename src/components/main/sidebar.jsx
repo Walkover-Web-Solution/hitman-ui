@@ -45,14 +45,18 @@ function compareByCreatedAt(a, b) {
 }
 
 class SideBar extends Component {
-  state = {
-    data: {
-      filter: "",
-    },
-    name: "",
-    email: "",
-    historySnapshot: null
-  };
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      data: {
+        filter: "",
+      },
+      name: "",
+      email: "",
+      historySnapshot: null
+    };
+  }
 
   componentDidMount() {
     if (getCurrentUser()) {

@@ -8,35 +8,43 @@ import "ace-builds";
 import "ace-builds/src-noconflict/mode-json";
 
 class Form extends Component {
-  state = {
-    data: {},
-    errors: {},
-  };
 
-  modules = {
-    toolbar: [
-      [{ header: [1, 2, 3, 4, 5, 6, false] }],
-      ["bold", "italic", "underline", "strike"],
-      [{ color: [] }, { background: [] }],
+  constructor(props) {
+    super(props);
+    this.state = {
+      data: {},
+      errors: {},
+    };
 
-      [({ list: "ordered" }, { list: "bullet" })],
-      ["link"],
-    ],
-  };
-  formats = [
-    "header",
-    "bold",
-    "italic",
-    "underline",
-    "strike",
-    "color",
-    "background",
-    "list",
-    "bullet",
-    "link",
-  ];
+    this.modules = {
+      toolbar: [
+        [{ header: [1, 2, 3, 4, 5, 6, false] }],
+        ["bold", "italic", "underline", "strike"],
+        [{ color: [] }, { background: [] }],
 
-  validate = () => {
+        [({ list: "ordered" }, { list: "bullet" })],
+        ["link"],
+      ],
+    };
+
+    this.formats = [
+      "header",
+      "bold",
+      "italic",
+      "underline",
+      "strike",
+      "color",
+      "background",
+      "list",
+      "bullet",
+      "link",
+    ];
+
+  }
+
+
+
+  validate() {
     const options = { abortEarly: false };
     const { error } = Joi.validate(this.state.data, this.schema, options);
     if (!error) return null;
@@ -58,7 +66,8 @@ class Form extends Component {
     data[e.currentTarget.name] = e.currentTarget.value;
     this.setState({ data });
   };
-  handleEditorChange = (value) => {
+
+  handleEditorChange(value) {
     const data = this.state.data;
     let description = value;
     data["description"] = description;

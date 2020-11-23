@@ -53,20 +53,25 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 class Groups extends Component {
-  state = {
-    GroupFormName: "",
-    showGroupForm: {
-      addPage: false,
-      edit: false,
-      share: false,
-    },
-    filter: "",
-  };
-  eventkey = {};
-  filterFlag = false;
-  filteredGroupEndpoints = {};
-  filteredGroupPages = {};
-  filteredEndpointsAndPages = {};
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      GroupFormName: "",
+      showGroupForm: {
+        addPage: false,
+        edit: false,
+        share: false,
+      },
+      filter: "",
+    };
+
+    this.eventkey = {};
+    this.filterFlag = false;
+    this.filteredGroupEndpoints = {};
+    this.filteredGroupPages = {};
+    this.filteredEndpointsAndPages = {};
+  }
 
   handleAddPage(groupId, versionId, collectionId) {
     this.props.history.push({

@@ -5,7 +5,13 @@ import "./tabs.scss";
 import tabService from "./tabService";
 
 class CustomTabs extends Component {
-  state = { showSavePrompt: false };
+
+  constructor(props) {
+    super(props);
+    this.state = { showSavePrompt: false }
+  }
+
+
 
   renderTabName(tabId) {
     const tab = this.props.tabs.tabs[tabId];
@@ -51,11 +57,11 @@ class CustomTabs extends Component {
     this.setState({ showSavePrompt: false });
   }
 
-  onDragStart = (tId) => {
+  onDragStart(tId) {
     this.draggedItem = tId;
   };
 
-  onDragOver = (e) => {
+  onDragOver(e) {
     e.preventDefault();
   };
 
@@ -111,8 +117,8 @@ class CustomTabs extends Component {
               {this.props.tabs.tabs[tabId].isModified ? (
                 <i className="fas fa-circle" id="modified-dot-icon"></i>
               ) : (
-                <i className="uil uil-multiply"></i>
-              )}
+                  <i className="uil uil-multiply"></i>
+                )}
             </button>
           </Nav.Item>
         ))}

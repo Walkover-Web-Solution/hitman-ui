@@ -24,34 +24,40 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 };
 
 class EditPage extends Component {
-  name = React.createRef();
-  contents = React.createRef();
-  state = {
-    data: { id: null, versionId: null, groupId: null, name: "", contents: "" },
-  };
 
-  modules = {
-    toolbar: [
-      [{ header: [1, 2, 3, 4, 5, 6, false] }],
-      ["bold", "italic", "underline", "strike"],
-      [{ color: [] }, { background: [] }],
 
-      [({ list: "ordered" }, { list: "bullet" })],
-      ["link"],
-    ],
-  };
-  formats = [
-    "header",
-    "bold",
-    "italic",
-    "underline",
-    "strike",
-    "color",
-    "background",
-    "list",
-    "bullet",
-    "link",
-  ];
+  constructor(props) {
+    super(props);
+    this.state = {
+      data: { id: null, versionId: null, groupId: null, name: "", contents: "" },
+    };
+    this.name = React.createRef();
+    this.contents = React.createRef();
+
+    this.modules = {
+      toolbar: [
+        [{ header: [1, 2, 3, 4, 5, 6, false] }],
+        ["bold", "italic", "underline", "strike"],
+        [{ color: [] }, { background: [] }],
+
+        [({ list: "ordered" }, { list: "bullet" })],
+        ["link"],
+      ],
+    };
+
+    this.formats = [
+      "header",
+      "bold",
+      "italic",
+      "underline",
+      "strike",
+      "color",
+      "background",
+      "list",
+      "bullet",
+      "link",
+    ];
+  }
 
   fetchPage(pageId) {
     let data = {};

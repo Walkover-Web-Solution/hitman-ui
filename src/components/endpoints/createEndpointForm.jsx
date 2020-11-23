@@ -1,136 +1,138 @@
-import Joi from "joi-browser";
-import React from "react";
-import { Modal } from "react-bootstrap";
-import { connect } from "react-redux";
-import Form from "../common/form";
-import "./endpoints.scss";
+import Joi from 'joi-browser'
+import React from 'react'
+import { Modal } from 'react-bootstrap'
+import { connect } from 'react-redux'
+import Form from '../common/form'
+import './endpoints.scss'
 
-import CollectionForm from "../collections/collectionForm";
-import CollectionVersionForm from "../collectionVersions/collectionVersionForm";
-import GroupForm from "../groups/groupForm";
+import CollectionForm from '../collections/collectionForm'
+import CollectionVersionForm from '../collectionVersions/collectionVersionForm'
+import GroupForm from '../groups/groupForm'
 
 const mapStateToProps = (state) => {
   return {
     collections: state.collections,
     versions: state.versions,
-    pages: state.pages,
-  };
-};
+    pages: state.pages
+  }
+}
 
 class CreateEndpointForm extends Form {
-  state = {
-    data: {
-      name: "",
-      description: "",
-    },
-    list: {
-      type: "collections",
-      parentId: null,
-    },
-    groupId: null,
-    errors: {},
-  };
+  constructor (props) {
+    super(props)
+    this.state = {
+      data: {
+        name: '',
+        description: ''
+      },
+      list: {
+        type: 'collections',
+        parentId: null
+      },
+      groupId: null,
+      errors: {}
+    }
 
-  componentDidMount() {
-    const data = { ...this.state.data };
-    data.name = this.props.name;
-    this.setState({ data });
-  }
-
-  schema = {
-    name: Joi.string().required().label("Username"),
-    description: Joi.string().allow(null, "").label("description"),
-  };
-
-  setList(item) {
-    let list = {};
-    switch (this.state.list.type) {
-      case "collections":
-        list.type = "versions";
-        list.parentId = item.id;
-        this.setState({ list });
-        return;
-      case "versions":
-        list.type = "groups";
-        list.parentId = item.id;
-        this.setState({ list });
-        return;
-      case "groups":
-        list.type = "endpoints";
-        list.parentId = item.id;
-        this.setState({ list });
-        return;
-      default:
-        return;
+    this.schema = {
+      name: Joi.string().required().label('Username'),
+      description: Joi.string().allow(null, '').label('description')
     }
   }
 
-  openAddModal() {
+  componentDidMount () {
+    const data = { ...this.state.data }
+    data.name = this.props.name
+    this.setState({ data })
+  }
+
+  setList (item) {
+    const list = {}
     switch (this.state.list.type) {
-      case "collections":
-        this.setState({showCollectionForm: true})
-        break;
-      case "versions":
-        this.setState({showCollectionVersionForm: true})
-        break;
-      case "groups":
-        this.setState({showGroupForm: true})
-        break;
-      case "endpoints":
-        break;
+      case 'collections':
+        list.type = 'versions'
+        list.parentId = item.id
+        this.setState({ list })
+        return
+      case 'versions':
+        list.type = 'groups'
+        list.parentId = item.id
+        this.setState({ list })
+        return
+      case 'groups':
+        list.type = 'endpoints'
+        list.parentId = item.id
+        this.setState({ list })
+        break
       default:
-        break;
     }
   }
 
-  showCollectionForm() {
+  openAddModal () {
+    switch (this.state.list.type) {
+      case 'collections':
+        this.setState({ showCollectionForm: true })
+        break
+      case 'versions':
+        this.setState({ showCollectionVersionForm: true })
+        break
+      case 'groups':
+        this.setState({ showGroupForm: true })
+        break
+      case 'endpoints':
+        break
+      default:
+        break
+    }
+  }
+
+  showCollectionForm () {
     return (
       this.state.showCollectionForm &&
-      <CollectionForm
-        {...this.props}
-        onHide={()=>{this.setState({showCollectionForm: false})}}
-        show={true}
-        title="Add new Collection"
-      />
+        <CollectionForm
+          {...this.props}
+          onHide={() => { this.setState({ showCollectionForm: false }) }}
+          show
+          title='Add new Collection'
+        />
     )
   }
 
-  showCollectionVersionForm() {
+  showCollectionVersionForm () {
     return (
       this.state.showCollectionVersionForm &&
-      <CollectionVersionForm
-        {...this.props}
-        collection_id={this.state.list.parentId}
-        onHide={()=>{this.setState({showCollectionVersionForm: false})}}
-        show={true}
-        title="Add new Collection Version"
-      />
+        <CollectionVersionForm
+          {...this.props}
+          collection_id={this.state.list.parentId}
+          onHide={() => { this.setState({ showCollectionVersionForm: false }) }}
+          show
+          title='Add new Collection Version'
+        />
     )
   }
 
-  showGroupForm() {
+  showGroupForm () {
     return (
       this.state.showGroupForm &&
-      <GroupForm
-        {...this.props}
-        selectedVersion = {{id: this.state.list.parentId}}
-        onHide={()=>{this.setState({showGroupForm: false})}}
-        show={true}
-        title="Add new Group"
-      />
+        <GroupForm
+          {...this.props}
+          selectedVersion={{ id: this.state.list.parentId }}
+          onHide={() => { this.setState({ showGroupForm: false }) }}
+          show
+          title='Add new Group'
+        />
     )
   }
 
-  renderList() {
-    var listItems = [];
+  renderList () {
+    let listItems = []
     switch (this.state.list.type) {
-      case "collections":
+      case 'collections':
         listItems = Object.keys(this.props.collections).map((collectionId) => ({
           name: this.props.collections[collectionId].name,
-          id: this.props.collections[collectionId].id,
-        }));
-        break;
-      case "versions":
+          id: this.props.collections[collectionId].id
+        }))
+        break
+      case 'versions':
         listItems = Object.keys(this.props.versions)
           .filter(
             (vId) =>
@@ -138,10 +140,10 @@ class CreateEndpointForm extends Form {
           )
           .map((versionId) => ({
             name: this.props.versions[versionId].number,
-            id: this.props.versions[versionId].id,
-          }));
-        break;
-      case "groups":
+            id: this.props.versions[versionId].id
+          }))
+        break
+      case 'groups':
         listItems = Object.keys(this.props.groups)
           .filter(
             (gId) =>
@@ -149,10 +151,10 @@ class CreateEndpointForm extends Form {
           )
           .map((groupId) => ({
             name: this.props.groups[groupId].name,
-            id: this.props.groups[groupId].id,
-          }));
-        break;
-      case "endpoints":
+            id: this.props.groups[groupId].id
+          }))
+        break
+      case 'endpoints':
         listItems = Object.keys(this.props.endpoints)
           .filter(
             (eId) =>
@@ -160,172 +162,179 @@ class CreateEndpointForm extends Form {
           )
           .map((endpointId) => ({
             name: this.props.endpoints[endpointId].name,
-            id: this.props.endpoints[endpointId].id,
-          }));
-        break;
+            id: this.props.endpoints[endpointId].id
+          }))
+        break
       default:
-        break;
+        break
     }
-    return listItems;
+    return listItems
   }
 
-  renderListTitle() {
+  renderListTitle () {
     switch (this.state.list.type) {
-      case "collections":
-        return "All Collections";
-      case "versions":
-        return this.props.collections[this.state.list.parentId].name;
-      case "groups":
-        return this.props.versions[this.state.list.parentId].number;
-      case "endpoints":
-        return this.props.groups[this.state.list.parentId].name;
+      case 'collections':
+        return 'All Collections'
+      case 'versions':
+        return this.props.collections[this.state.list.parentId].name
+      case 'groups':
+        return this.props.versions[this.state.list.parentId].number
+      case 'endpoints':
+        return this.props.groups[this.state.list.parentId].name
       default:
-        return;
     }
   }
 
-  goBack() {
-    let list = { ...this.state.list };
+  goBack () {
+    const list = { ...this.state.list }
     switch (this.state.list.type) {
-      case "versions":
-        list.type = "collections";
-        list.parentId = null;
-        this.setState({ list });
-        break;
-      case "groups":
-        list.type = "versions";
+      case 'versions':
+        list.type = 'collections'
+        list.parentId = null
+        this.setState({ list })
+        break
+      case 'groups':
+        list.type = 'versions'
         list.parentId = this.props.versions[
           this.state.list.parentId
-        ].collectionId;
-        this.setState({ list });
-        break;
-      case "endpoints":
-        list.type = "groups";
-        list.parentId = this.props.groups[this.state.list.parentId].versionId;
-        this.setState({ list });
-        break;
+        ].collectionId
+        this.setState({ list })
+        break
+      case 'endpoints':
+        list.type = 'groups'
+        list.parentId = this.props.groups[this.state.list.parentId].versionId
+        this.setState({ list })
+        break
       default:
-        break;
+        break
     }
   }
 
-  async doSubmit() {
-    this.props.onHide();
-    this.props.set_group_id(this.state.list.parentId, this.state.data.name);
+  async doSubmit () {
+    this.props.onHide()
+    this.props.set_group_id(this.state.list.parentId, this.state.data.name)
   }
 
-  render() {
-    const { staticContext, ...props } = this.props;
+  render () {
+    const { staticContext, ...props } = this.props
     return (
-      
+
       <Modal
         {...props}
-        size="lg"
+        size='lg'
         animation={false}
-        aria-labelledby="contained-modal-title-vcenter"
+        aria-labelledby='contained-modal-title-vcenter'
         centered
-        id="endpoint-modal"
+        id='endpoint-modal'
       >
         {this.showCollectionForm()}
         {this.showCollectionVersionForm()}
         {this.showGroupForm()}
         <div>
           <Modal.Header
-            className="custom-collection-modal-container"
+            className='custom-collection-modal-container'
             closeButton
           >
-            <Modal.Title id="contained-modal-title-vcenter">
+            <Modal.Title id='contained-modal-title-vcenter'>
               Add Endpoint
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <form onSubmit={this.handleSubmit}>
-              {this.renderInput("name", "Name", "Endpoint Name")}
-              {this.renderTextArea("description", "Description", "Description")}
+              {this.renderInput('name', 'Name', 'Endpoint Name')}
+              {this.renderTextArea('description', 'Description', 'Description')}
             </form>
-            <div className="card" id="endpoint-form-collection-list">
-              <div className="card-title">
-                {this.state.list.type === "collections" ? (
-                  <div className="d-flex justify-content-between">
-                    <div>All Collections</div>
-                    <button className="btn" onClick={() => {this.openAddModal()}}>
-                      <i className="fas fa-plus"></i>
-                    </button>
-                  </div>
-                  
-                ) : (
-                  this.state.list.type === "endpoints" 
-                  ? 
-                  <button className="btn" onClick={() => this.goBack()}>
-                    <i className="fas fa-chevron-left"></i>
-                    {this.renderListTitle()}
-                  </button>
-                  : 
-                  <div className="d-flex justify-content-between">
-                    <button className="btn" onClick={() => this.goBack()}>
-                    <i className="fas fa-chevron-left"></i>
-                    {this.renderListTitle()}
-                  </button>
-                    <button className="btn" onClick={() => {this.openAddModal()}}>
-                      <i className="fas fa-plus"></i>
-                    </button>
-                  </div>
-                )}
-              </div>
-              <ul className="list-group" id="folder-list">
-                {this.state.list.type === "endpoints" ? (
-                  this.renderList().map((item) => (
-                    <li id="endpoint-list">
-                      <div
-                        className={this.props.endpoints[item.id].requestType}
-                      >
-                        {this.props.endpoints[item.id].requestType}
+            <div className='card' id='endpoint-form-collection-list'>
+              <div className='card-title'>
+                {
+                  this.state.list.type === 'collections'
+                    ? (
+                      <div className='d-flex justify-content-between'>
+                        <div>All Collections</div>
+                        <button className='btn' onClick={() => { this.openAddModal() }}>
+                          <i className='fas fa-plus' />
+                        </button>
                       </div>
-                      <div className="list-item-wrapper">{item.name}</div>
-                    </li>
-                  ))
-                ) : this.renderList().length ? (
-                  this.renderList().map((item) => (
-                    <li className="list-group-item" key={item.id}>
-                      <button
-                        className="btn"
-                        onClick={() => this.setList(item)}
-                      >
-                        <div className="list-item-wrapper">
-                          <i className="fas fa-folder"></i>
-                          {item.name}
-                        </div>
-                        <i className="fas fa-chevron-right"></i>
-                      </button>
-                    </li>
-                  ))
-                ) : (
-                  <div className="not-found-label">
-                    {this.state.list.type + " not found in this folder"}
-                  </div>
-                )}
+
+                      )
+                    : (
+                        this.state.list.type === 'endpoints'
+                          ? <button className='btn' onClick={() => this.goBack()}>
+                            <i className='fas fa-chevron-left' />
+                            {this.renderListTitle()}
+                          </button>
+                          : <div className='d-flex justify-content-between'>
+                            <button className='btn' onClick={() => this.goBack()}>
+                              <i className='fas fa-chevron-left' />
+                              {this.renderListTitle()}
+                            </button>
+                            <button className='btn' onClick={() => { this.openAddModal() }}>
+                              <i className='fas fa-plus' />
+                            </button>
+                          </div>
+                      )
+                }
+              </div>
+              <ul className='list-group' id='folder-list'>
+                {this.state.list.type === 'endpoints'
+                  ? (
+                      this.renderList().map((item) => (
+                        <li id='endpoint-list'>
+                          <div
+                            className={this.props.endpoints[item.id].requestType}
+                          >
+                            {this.props.endpoints[item.id].requestType}
+                          </div>
+                          <div className='list-item-wrapper'>{item.name}</div>
+                        </li>
+                      )
+                      )
+                    )
+                  : this.renderList().length
+                    ? (
+                        this.renderList().map((item) => (
+                          <li className='list-group-item' key={item.id}>
+                            <button
+                              className='btn'
+                              onClick={() => this.setList(item)}
+                            >
+                              <div className='list-item-wrapper'>
+                                <i className='fas fa-folder' />
+                                {item.name}
+                              </div>
+                              <i className='fas fa-chevron-right' />
+                            </button>
+                          </li>
+                        )
+                        )
+                      )
+                    : (
+                      <div className='not-found-label'>
+                        {this.state.list.type + ' not found in this folder'}
+                      </div>
+                      )}
               </ul>
             </div>
             <button
-              className="btn btn-default custom-button"
+              className='btn btn-default custom-button'
               onClick={() => this.props.onHide()}
             >
               Cancel
             </button>
             <button
-              className="btn"
+              className='btn'
               onClick={this.handleSubmit}
-              disabled={this.state.list.type !== "endpoints"}
+              disabled={this.state.list.type !== 'endpoints'}
             >
-              Save{" "}
-              {this.state.list.type === "endpoints" &&
+              Save{' '}
+              {this.state.list.type === 'endpoints' &&
                 `to ${this.renderListTitle()}`}
             </button>
           </Modal.Body>
         </div>
       </Modal>
-    );
+    )
   }
 }
 
-export default connect(mapStateToProps, null)(CreateEndpointForm);
+export default connect(mapStateToProps, null)(CreateEndpointForm)

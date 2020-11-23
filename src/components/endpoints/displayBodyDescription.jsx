@@ -1,7 +1,11 @@
 import React, { Component } from "react";
 import jQuery from "jquery";
 class DisplayBodyDescription extends Component {
-  state = {};
+
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
 
   performChange(pkeys, bodyDescription, newValue, body) {
     if (pkeys.length === 1) {
@@ -141,7 +145,7 @@ class DisplayBodyDescription extends Component {
       <div
         className={
           defaultValue &&
-          (defaultValue.type === "object" || defaultValue.type === "array")
+            (defaultValue.type === "object" || defaultValue.type === "array")
             ? "array-wrapper"
             : "array-without-key"
         }
@@ -151,14 +155,14 @@ class DisplayBodyDescription extends Component {
             {value.type === "boolean"
               ? this.displayBoolean(value, name + "." + index)
               : value.type === "object"
-              ? this.displayObject(value.value, name + "." + index)
-              : value.type === "array"
-              ? this.displayArray(
-                  value.value,
-                  name + "." + index,
-                  value.default
-                )
-              : this.displayInput(value, name + "." + index)}
+                ? this.displayObject(value.value, name + "." + index)
+                : value.type === "array"
+                  ? this.displayArray(
+                    value.value,
+                    name + "." + index,
+                    value.default
+                  )
+                  : this.displayInput(value, name + "." + index)}
             {/* <button
               type="button"
               className="btn cross-button"
@@ -196,14 +200,14 @@ class DisplayBodyDescription extends Component {
             {obj[key].type === "object"
               ? this.displayObject(obj[key].value, name + "." + key)
               : obj[key].type === "array"
-              ? this.displayArray(
+                ? this.displayArray(
                   obj[key].value,
                   name + "." + key,
                   obj[key].default
                 )
-              : obj[key].type === "boolean"
-              ? this.displayBoolean(obj[key], name + "." + key)
-              : this.displayInput(obj[key], name + "." + key)}
+                : obj[key].type === "boolean"
+                  ? this.displayBoolean(obj[key], name + "." + key)
+                  : this.displayInput(obj[key], name + "." + key)}
           </div>
         ))}
       </div>

@@ -1,32 +1,32 @@
-import axios from "axios";
-import logger from "./logService";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import auth from "../components/auth/authService";
+import axios from 'axios'
+import logger from './logService'
+import { toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+import auth from '../components/auth/authService'
 
-axios.defaults.baseURL = process.env.REACT_APP_API_URL;
+axios.defaults.baseURL = process.env.REACT_APP_API_URL
 
-var instance = axios.create();
+const instance = axios.create()
 instance.interceptors.response.use(null, (error) => {
   const expectedError =
     error.response &&
     error.response.status >= 400 &&
-    error.response.status < 500;
+    error.response.status < 500
 
   if (!expectedError) {
-    logger.log(!error);
-    toast.error("An unexpected error occur");
+    logger.log(!error)
+    toast.error('An unexpected error occur')
   }
   if (error?.response?.status === 401) {
-    toast.error("Session Expired");
-    auth.logout();
-    window.location = "/";
+    toast.error('Session Expired')
+    auth.logout()
+    window.location = '/'
   }
-  return Promise.reject(error);
-});
+  return Promise.reject(error)
+})
 
-function setJwt(jwt) {
-  instance.defaults.headers.common["Authorization"] = jwt;
+function setJwt (jwt) {
+  instance.defaults.headers.common.Authorization = jwt
 }
 
 export default {
@@ -36,5 +36,5 @@ export default {
   delete: instance.delete,
   request: instance.request,
   patch: instance.patch,
-  setJwt,
-};
+  setJwt
+}

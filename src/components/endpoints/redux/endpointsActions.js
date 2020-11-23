@@ -1,20 +1,19 @@
-import { toast } from "react-toastify";
-import store from "../../../store/store";
-import { setEndpointIds } from "../../groups/redux/groupsActions";
-import endpointApiService from "../endpointApiService";
-import endpointsActionTypes from "./endpointsActionTypes";
+import { toast } from 'react-toastify'
+import store from '../../../store/store'
+import endpointApiService from '../endpointApiService'
+import endpointsActionTypes from './endpointsActionTypes'
 
 export const addEndpoint = (history, newEndpoint, groupId) => {
   return (dispatch) => {
-    dispatch(addEndpointRequest({ ...newEndpoint, groupId }));
+    dispatch(addEndpointRequest({ ...newEndpoint, groupId }))
     endpointApiService
       .saveEndpoint(groupId, newEndpoint)
       .then((response) => {
-        dispatch(onEndpointAdded(response.data, newEndpoint));
+        dispatch(onEndpointAdded(response.data, newEndpoint))
         // let endpointsOrder = store.getState().groups[groupId].endpointsOrder;
         // endpointsOrder.push(response.data.id);
         // dispatch(setEndpointIds(endpointsOrder, groupId));
-        history.push(`/dashboard/endpoint/${response.data.id}`);
+        history.push(`/dashboard/endpoint/${response.data.id}`)
       })
       .catch((error) => {
         dispatch(
@@ -22,37 +21,37 @@ export const addEndpoint = (history, newEndpoint, groupId) => {
             error.response ? error.response.data : error,
             newEndpoint
           )
-        );
-      });
-  };
-};
+        )
+      })
+  }
+}
 
 export const fetchEndpoints = () => {
   return (dispatch) => {
     endpointApiService
       .getAllEndpoints()
       .then((response) => {
-        dispatch(onEndpointsFetched(response.data));
+        dispatch(onEndpointsFetched(response.data))
       })
       .catch((error) => {
         dispatch(
           onEndpointsFetchedError(error.response ? error.response.data : error)
-        );
-      });
-  };
-};
+        )
+      })
+  }
+}
 
 export const updateEndpoint = (editedEndpoint) => {
   return (dispatch) => {
-    const originalEndpoint = store.getState().endpoints[editedEndpoint.id];
-    dispatch(updateEndpointRequest(editedEndpoint));
-    const id = editedEndpoint.id;
-    delete editedEndpoint.id;
-    delete editedEndpoint.groupId;
+    const originalEndpoint = store.getState().endpoints[editedEndpoint.id]
+    dispatch(updateEndpointRequest(editedEndpoint))
+    const id = editedEndpoint.id
+    delete editedEndpoint.id
+    delete editedEndpoint.groupId
     endpointApiService
       .updateEndpoint(id, editedEndpoint)
       .then((response) => {
-        dispatch(onEndpointUpdated(response.data));
+        dispatch(onEndpointUpdated(response.data))
       })
       .catch((error) => {
         dispatch(
@@ -60,14 +59,14 @@ export const updateEndpoint = (editedEndpoint) => {
             error.response ? error.response.data : error,
             originalEndpoint
           )
-        );
-      });
-  };
-};
+        )
+      })
+  }
+}
 
 export const deleteEndpoint = (endpoint) => {
   return (dispatch) => {
-    dispatch(deleteEndpointRequest(endpoint));
+    dispatch(deleteEndpointRequest(endpoint))
     // let endpointsOrder = store.getState().groups[endpoint.groupId]
     // .endpointsOrder;
     // endpointsOrder = endpointsOrder.filter((eId) => eId !== endpoint.id);
@@ -75,49 +74,49 @@ export const deleteEndpoint = (endpoint) => {
     endpointApiService
       .deleteEndpoint(endpoint.id)
       .then(() => {
-        dispatch(onEndpointDeleted());
+        dispatch(onEndpointDeleted())
       })
       .catch((error) => {
-        dispatch(onEndpointDeletedError(error.response, endpoint));
-      });
-  };
-};
+        dispatch(onEndpointDeletedError(error.response, endpoint))
+      })
+  }
+}
 
 export const duplicateEndpoint = (endpoint) => {
   return (dispatch) => {
     endpointApiService
       .duplicateEndpoint(endpoint.id)
       .then((response) => {
-        dispatch(onEndpointDuplicated(response.data));
+        dispatch(onEndpointDuplicated(response.data))
       })
       .catch((error) => {
-        toast.error(error);
-      });
-  };
-};
+        toast.error(error)
+      })
+  }
+}
 
 export const moveEndpoint = (endpointId, sourceGroupId, destinationGroupId) => {
   return (dispatch) => {
     dispatch(
       moveEndpointRequest(endpointId, sourceGroupId, destinationGroupId)
-    );
+    )
 
     endpointApiService
       .moveEndpoint(endpointId, { groupId: destinationGroupId })
       .then((response) => {
-        dispatch(moveEndpointSuccess(response.data));
-      });
-  };
-};
+        dispatch(moveEndpointSuccess(response.data))
+      })
+  }
+}
 
 export const setAuthorizationType = (endpointId, authData) => {
   const originalAuthType = store.getState().endpoints[endpointId]
-    .authorizationType;
+    .authorizationType
   return (dispatch) => {
-    dispatch(setAuthorizationTypeRequest(endpointId, authData));
+    dispatch(setAuthorizationTypeRequest(endpointId, authData))
     endpointApiService
       .setAuthorizationType(endpointId, authData)
-      .then(() => {})
+      .then(() => { })
       .catch((error) => {
         dispatch(
           onAuthorizationTypeError(
@@ -125,19 +124,19 @@ export const setAuthorizationType = (endpointId, authData) => {
             endpointId,
             originalAuthType
           )
-        );
-        toast.error(error);
-      });
-  };
-};
+        )
+        toast.error(error)
+      })
+  }
+}
 
 export const setAuthorizationTypeRequest = (endpointId, authData) => {
   return {
     type: endpointsActionTypes.SET_AUTHORIZATION_TYPE_REQUEST,
     endpointId,
-    authData,
-  };
-};
+    authData
+  }
+}
 
 export const onAuthorizationTypeError = (
   error,
@@ -148,9 +147,9 @@ export const onAuthorizationTypeError = (
     type: endpointsActionTypes.SET_AUTHORIZATION_TYPE_ERROR,
     error,
     endpointId,
-    originalAuthType,
-  };
-};
+    originalAuthType
+  }
+}
 
 export const moveEndpointRequest = (
   endpointId,
@@ -161,145 +160,145 @@ export const moveEndpointRequest = (
     type: endpointsActionTypes.MOVE_ENDPOINT_REQUEST,
     endpointId,
     sourceGroupId,
-    destinationGroupId,
-  };
-};
+    destinationGroupId
+  }
+}
 
 export const moveEndpointSuccess = (response) => {
   return {
     type: endpointsActionTypes.MOVE_ENDPOINT_SUCCESS,
-    response,
-  };
-};
+    response
+  }
+}
 
 export const onEndpointsFetched = (endpoints) => {
   return {
     type: endpointsActionTypes.ON_ENDPOINTS_FETCHED,
-    endpoints,
-  };
-};
+    endpoints
+  }
+}
 
 export const onEndpointsFetchedError = (error) => {
   return {
     type: endpointsActionTypes.ON_ENDPOINTS_FETCHED_ERROR,
-    error,
-  };
-};
+    error
+  }
+}
 
 export const addEndpointRequest = (newEndpoint) => {
   return {
     type: endpointsActionTypes.ADD_ENDPOINT_REQUEST,
-    newEndpoint,
-  };
-};
+    newEndpoint
+  }
+}
 
 export const onEndpointAdded = (response) => {
   return {
     type: endpointsActionTypes.ON_ENDPOINT_ADDED,
-    response,
-  };
-};
+    response
+  }
+}
 
 export const onEndpointAddedError = (error, newEndpoint) => {
   return {
     type: endpointsActionTypes.ON_ENDPOINT_ADDED_ERROR,
     newEndpoint,
-    error,
-  };
-};
+    error
+  }
+}
 
 export const updateEndpointRequest = (editedEndpoint) => {
   return {
     type: endpointsActionTypes.UPDATE_ENDPOINT_REQUEST,
-    editedEndpoint,
-  };
-};
+    editedEndpoint
+  }
+}
 
 export const onEndpointUpdated = (response) => {
   return {
     type: endpointsActionTypes.ON_ENDPOINT_UPDATED,
-    response,
-  };
-};
+    response
+  }
+}
 
 export const onEndpointUpdatedError = (error, originalEndpoint) => {
   return {
     type: endpointsActionTypes.ON_ENDPOINT_UPDATED_ERROR,
     error,
-    originalEndpoint,
-  };
-};
+    originalEndpoint
+  }
+}
 
 export const deleteEndpointRequest = (endpoint) => {
   return {
     type: endpointsActionTypes.DELETE_ENDPOINT_REQUEST,
-    endpoint,
-  };
-};
+    endpoint
+  }
+}
 
 export const onEndpointDeleted = () => {
   return {
-    type: endpointsActionTypes.ON_ENDPOINT_DELETED,
-  };
-};
+    type: endpointsActionTypes.ON_ENDPOINT_DELETED
+  }
+}
 
 export const onEndpointDeletedError = (error, endpoint) => {
   return {
     type: endpointsActionTypes.ON_ENDPOINT_DELETED_ERROR,
     error,
-    endpoint,
-  };
-};
+    endpoint
+  }
+}
 
 export const onEndpointDuplicated = (response) => {
   return {
     type: endpointsActionTypes.ON_ENDPOINT_DUPLICATED,
-    response,
-  };
-};
+    response
+  }
+}
 
 export const updateEndpointOrder = (sourceEndpointIds, groupId) => {
   return (dispatch) => {
     const originalEndpoints = JSON.parse(
       JSON.stringify(store.getState().endpoints)
-    );
+    )
     dispatch(
       updateEndpointOrderRequest(
         { ...store.getState().endpoints },
         sourceEndpointIds
       )
-    );
+    )
     endpointApiService
       .updateEndpointOrder(sourceEndpointIds)
-      .then(() => {})
+      .then(() => { })
       .catch((error) => {
         dispatch(
           onEndpointOrderUpdatedError(
             error.response ? error.response.data : error,
             originalEndpoints
           )
-        );
-      });
-  };
-};
+        )
+      })
+  }
+}
 
 export const updateEndpointOrderRequest = (endpoints, sourceEndpointIds) => {
   for (let i = 0; i < sourceEndpointIds.length; i++) {
-    endpoints[sourceEndpointIds[i]].position = i;
+    endpoints[sourceEndpointIds[i]].position = i
   }
   return {
     type: endpointsActionTypes.ON_ENDPOINTS_ORDER_UPDATED,
-    endpoints,
-  };
-};
+    endpoints
+  }
+}
 
 export const onEndpointOrderUpdatedError = (error, endpoints) => {
   return {
     type: endpointsActionTypes.ON_ENDPOINTS_ORDER_UPDATED_ERROR,
     endpoints,
-    error,
-  };
-};
+    error
+  }
+}
 
 export const reorderEndpoint = (
   sourceEndpointIds,
@@ -311,7 +310,7 @@ export const reorderEndpoint = (
   return (dispatch) => {
     const originalEndpoints = JSON.parse(
       JSON.stringify(store.getState().endpoints)
-    );
+    )
     dispatch(
       reorderEndpointRequest(
         { ...store.getState().endpoints },
@@ -321,7 +320,7 @@ export const reorderEndpoint = (
         destinationGroupId,
         endpointId
       )
-    );
+    )
     endpointApiService
       .updateEndpointOrder(
         sourceEndpointIds,
@@ -330,17 +329,17 @@ export const reorderEndpoint = (
         destinationGroupId,
         endpointId
       )
-      .then(() => {})
+      .then(() => { })
       .catch((error) => {
         dispatch(
           reorderEndpointError(
             error.response ? error.response.data : error,
             originalEndpoints
           )
-        );
-      });
-  };
-};
+        )
+      })
+  }
+}
 
 export const reorderEndpointRequest = (
   endpoints,
@@ -351,22 +350,22 @@ export const reorderEndpointRequest = (
   endpointId
 ) => {
   for (let i = 0; i < sourceEndpointIds.length; i++) {
-    endpoints[sourceEndpointIds[i]].position = i;
+    endpoints[sourceEndpointIds[i]].position = i
   }
   for (let i = 0; i < destinationEndpointIds.length; i++) {
-    endpoints[destinationEndpointIds[i]].position = i;
+    endpoints[destinationEndpointIds[i]].position = i
   }
-  endpoints[endpointId].groupId = destinationGroupId;
+  endpoints[endpointId].groupId = destinationGroupId
   return {
     type: endpointsActionTypes.ON_ENDPOINTS_ORDER_UPDATED,
-    endpoints,
-  };
-};
+    endpoints
+  }
+}
 
 export const reorderEndpointError = (error, endpoints) => {
   return {
     type: endpointsActionTypes.ON_ENDPOINTS_ORDER_UPDATED_ERROR,
     endpoints,
-    error,
-  };
-};
+    error
+  }
+}

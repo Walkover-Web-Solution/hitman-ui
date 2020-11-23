@@ -72,57 +72,71 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 };
 
 class DisplayEndpoint extends Component {
-  uri = React.createRef();
-  paramKey = React.createRef();
 
-  state = {
-    data: {
-      name: "",
-      method: "GET",
-      body: { type: "none", value: "" },
-      uri: "",
-      updatedUri: "",
-    },
-    methodList: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-    environment: {},
-    startTime: "",
-    timeElapsed: "",
-    response: {},
-    endpoint: {},
-    groupId: null,
-    title: "",
-    flagResponse: false,
-    originalHeaders: [
+  constructor(props) {
+    super(props);
+    this.state = {
+      data: {
+        name: "",
+        method: "GET",
+        body: { type: "none", value: "" },
+        uri: "",
+        updatedUri: "",
+      },
+      methodList: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+      environment: {},
+      startTime: "",
+      timeElapsed: "",
+      response: {},
+      endpoint: {},
+      groupId: null,
+      title: "",
+      flagResponse: false,
+      originalHeaders: [
+        {
+          checked: "notApplicable",
+          key: "",
+          value: "",
+          description: "",
+        },
+      ],
+      originalParams: [
+        {
+          checked: "notApplicable",
+          key: "",
+          value: "",
+          description: "",
+        },
+      ],
+      authType: null,
+      oldDescription: "",
+      headers: [],
+      publicBodyFlag: true,
+      params: [],
+      bodyDescription: {},
+      fieldDescription: {},
+      sampleResponseArray: [],
+      sampleResponseFlagArray: [],
+    };
+
+    this.uri = React.createRef();
+    this.paramKey = React.createRef();
+
+
+    this.customState = {
+      BASE_URL: "",
+      customBASE_URL: "",
+    };
+
+    this.structueParamsHeaders = [
       {
         checked: "notApplicable",
         key: "",
         value: "",
         description: "",
       },
-    ],
-    originalParams: [
-      {
-        checked: "notApplicable",
-        key: "",
-        value: "",
-        description: "",
-      },
-    ],
-    authType: null,
-    oldDescription: "",
-    headers: [],
-    publicBodyFlag: true,
-    params: [],
-    bodyDescription: {},
-    fieldDescription: {},
-    sampleResponseArray: [],
-    sampleResponseFlagArray: [],
-  };
-
-  customState = {
-    BASE_URL: "",
-    customBASE_URL: "",
-  };
+    ];
+  }
 
   async componentDidMount() {
     this.endpointId = this.props.endpointId ? this.props.endpointId : isDashboardRoute(this.props) ? this.props.location.pathname.split("/")[3] :
@@ -179,14 +193,7 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  structueParamsHeaders = [
-    {
-      checked: "notApplicable",
-      key: "",
-      value: "",
-      description: "",
-    },
-  ];
+
 
   async fetchPublicCollection(collectionId) {
     let collection = await collectionsApiService.getCollection(collectionId);

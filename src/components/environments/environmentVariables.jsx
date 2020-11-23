@@ -17,17 +17,21 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 class EnvironmentVariables extends Component {
-  state = {
-    environment: {
-      name: "",
-      variables: {
-        BASE_URL: { initialValue: "", currentValue: "" },
-        "1": { initialValue: "", currentValue: "" },
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      environment: {
+        name: "",
+        variables: {
+          BASE_URL: { initialValue: "", currentValue: "" },
+          "1": { initialValue: "", currentValue: "" },
+        },
       },
-    },
-    originalVariableNames: ["BASE_URL", "1"],
-    updatedVariableNames: ["BASE_URL", ""],
-  };
+      originalVariableNames: ["BASE_URL", "1"],
+      updatedVariableNames: ["BASE_URL", ""],
+    };
+  }
 
   async componentDidMount() {
     if (this.props.title === "Add new Environment") return;
@@ -239,16 +243,16 @@ class EnvironmentVariables extends Component {
                           </td>
                           {this.state.updatedVariableNames.length - 1 !==
                             index && (
-                            <td className="custom-td">
-                              <button
-                                type="button"
-                                className="btn btn-light btn-sm btn-block"
-                                onClick={() => this.handleDelete(index)}
-                              >
-                                X
+                              <td className="custom-td">
+                                <button
+                                  type="button"
+                                  className="btn btn-light btn-sm btn-block"
+                                  onClick={() => this.handleDelete(index)}
+                                >
+                                  X
                               </button>
-                            </td>
-                          )}
+                              </td>
+                            )}
                         </tr>
                       ) : null
                     )}

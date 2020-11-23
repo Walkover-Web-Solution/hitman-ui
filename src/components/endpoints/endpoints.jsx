@@ -45,9 +45,13 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 class Endpoints extends Component {
-  state = {
-    endpointState: "Make Public",
-  };
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      endpointState: "Make Public",
+    };
+  }
 
   componentDidMount() { }
 

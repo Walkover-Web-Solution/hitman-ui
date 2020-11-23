@@ -35,8 +35,11 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 class GroupPages extends Component {
-  state = {};
 
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
   handleUpdate(page) {
     this.props.history.push({
       pathname: `/dashboard/${this.props.collection_id}/versions/${this.props.versionId}/pages/${page.id}/edit`,
@@ -116,7 +119,7 @@ class GroupPages extends Component {
       if (
         this.props.pages[Object.keys(this.props.pages)[i]].groupId &&
         this.props.pages[Object.keys(this.props.pages)[i]].groupId ===
-          this.props.group_id
+        this.props.group_id
       ) {
         pages[Object.keys(this.props.pages)[i]] = this.props.pages[
           Object.keys(this.props.pages)[i]

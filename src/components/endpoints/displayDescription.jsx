@@ -13,15 +13,19 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 };
 
 class DisplayDescription extends Component {
-  state = {
-    showDescriptionFormFlag: false,
-    showAddDescriptionFlag: isDashboardRoute(this.props)
-      ? this.props.endpoint.description === "" ||
-        this.props.endpoint.description == null
-        ? true
-        : false
-      : false,
-  };
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      showDescriptionFormFlag: false,
+      showAddDescriptionFlag: isDashboardRoute(this.props)
+        ? this.props.endpoint.description === "" ||
+          this.props.endpoint.description == null
+          ? true
+          : false
+        : false,
+    };
+  }
 
   handleChange = (e) => {
     let data = { ...this.props.data };

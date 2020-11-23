@@ -1,69 +1,70 @@
-import React from "react";
-import { Modal } from "react-bootstrap";
-import Joi from "joi-browser";
-import { CopyToClipboard } from "react-copy-to-clipboard";
-import Form from "../common/form";
+import React from 'react'
+import { Modal } from 'react-bootstrap'
+import Joi from 'joi-browser'
+import { CopyToClipboard } from 'react-copy-to-clipboard'
+import Form from '../common/form'
 
 class ShareVersionForm extends Form {
-  state = {
-    data: {
-      shareVersionLink: "",
-    },
-    errors: {},
-  };
+  constructor (props) {
+    super(props)
+    this.state = {
+      data: {
+        shareVersionLink: ''
+      },
+      errors: {}
+    }
 
-  componentDidMount() {
-    if (this.props.selectedVersion) {
-      let data = {};
-      const shareVersionLink =
-        process.env.REACT_APP_API_URL +
-        "/share/" +
-        this.props.selectedVersion.shareIdentifier;
-      data = { shareVersionLink };
-      data.disabled = true;
-      this.setState({ data });
+    this.schema = {
+      shareVersionLink: Joi.string().required().label('Public Link')
     }
   }
 
-  schema = {
-    shareVersionLink: Joi.string().required().label("Public Link"),
-  };
+  componentDidMount () {
+    if (this.props.selectedVersion) {
+      let data = {}
+      const shareVersionLink =
+        process.env.REACT_APP_API_URL +
+        '/share/' +
+        this.props.selectedVersion.shareIdentifier
+      data = { shareVersionLink }
+      data.disabled = true
+      this.setState({ data })
+    }
+  }
 
-  async doSubmit(props) {}
+  async doSubmit (props) { }
 
-  render() {
+  render () {
     return (
       <Modal
         {...this.props}
-        size="lg"
+        size='lg'
         animation={false}
-        aria-labelledby="contained-modal-title-vcenter"
+        aria-labelledby='contained-modal-title-vcenter'
         centered
       >
-        <Modal.Header className="custom-collection-modal-container" closeButton>
-          <Modal.Title id="contained-modal-title-vcenter">
+        <Modal.Header className='custom-collection-modal-container' closeButton>
+          <Modal.Title id='contained-modal-title-vcenter'>
             {this.props.title}
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <form onSubmit={this.handleSubmit}>
-            {this.renderInput("shareVersionLink", "Public Link")}
-            {<div name="shareVersionLink" label="Public Link"></div>}
-            {
-              <CopyToClipboard
-                text={JSON.stringify(this.state.data.shareVersionLink).replace(
-                  /['"]+/g,
-                  ""
-                )}
-                onCopy={() => this.props.onHide()}
-                className="btn btn-default"
-                style={{ float: "right" }}
-              >
-                <button style={{ borderRadius: "12px" }}>Copy</button>
-              </CopyToClipboard>
-            }
+            {this.renderInput('shareVersionLink', 'Public Link')}
+            <div name='shareVersionLink' label='Public Link' />
+            <CopyToClipboard
+              text={JSON.stringify(this.state.data.shareVersionLink).replace(
+                /['"]+/g,
+                ''
+              )}
+              onCopy={() => this.props.onHide()}
+              className='btn btn-default'
+              style={{ float: 'right' }}
+            >
+              <button style={{ borderRadius: '12px' }}>Copy</button>
+            </CopyToClipboard>
             <button
-              className="btn btn-default custom-button"
+              className='btn btn-default custom-button'
               onClick={this.props.onHide}
             >
               Cancel
@@ -71,8 +72,8 @@ class ShareVersionForm extends Form {
           </form>
         </Modal.Body>
       </Modal>
-    );
+    )
   }
 }
 
-export default ShareVersionForm;
+export default ShareVersionForm

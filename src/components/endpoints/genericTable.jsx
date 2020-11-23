@@ -3,18 +3,22 @@ import { isDashboardRoute } from "../common/utility";
 import "./endpoints.scss";
 
 class GenericTable extends Component {
-  state = {
-    bulkEdit: false,
-    editButtonName: "Bulk Edit",
-    originalParams: [],
-    originalHeaders: [],
-  };
 
-  checkboxFlags = [];
-  textAreaValue = "";
-  textAreaValueFlag = true;
-  helperflag = false;
-  count = "";
+  constructor(props) {
+    super(props);
+    this.state = {
+      bulkEdit: false,
+      editButtonName: "Bulk Edit",
+      originalParams: [],
+      originalHeaders: [],
+    };
+
+    this.checkboxFlags = [];
+    this.textAreaValue = "";
+    this.textAreaValueFlag = true;
+    this.helperflag = false;
+    this.count = "";
+  }
 
   handleChange = (e) => {
     let { dataArray, title } = this.props;
@@ -237,11 +241,11 @@ class GenericTable extends Component {
               </thead>
               :
               <colgroup>
-                <col style={{width: "36px"}}></col>
-                <col style={{width: "150px"}}></col>
-                <col style={{width: "240px"}}></col>
+                <col style={{ width: "36px" }}></col>
+                <col style={{ width: "150px" }}></col>
+                <col style={{ width: "240px" }}></col>
                 <col></col>
-                </colgroup>
+              </colgroup>
             }
             <tbody style={{ border: "none" }}>
               {dataArray.map((e, index) => (
@@ -255,7 +259,7 @@ class GenericTable extends Component {
                       <input
                         disabled={
                           isDashboardRoute(this.props) ||
-                          original_data[index].checked === "false"
+                            original_data[index].checked === "false"
                             ? null
                             : "disabled"
                         }
@@ -287,8 +291,8 @@ class GenericTable extends Component {
                         style={{ border: "none" }}
                       />
                       :
-                        dataArray[index].key
-                      }
+                      dataArray[index].key
+                    }
                   </td>
                   <td className="custom-td">
                     <input
@@ -325,20 +329,20 @@ class GenericTable extends Component {
                           className="form-control"
                         />
                         {dataArray.length - 1 === index ||
-                        !isDashboardRoute(this.props) ||
-                        title === "Path Variables" ? null : (
-                          <button
-                            type="button"
-                            className="btn cross-button"
-                            onClick={() =>
-                              this.handleDelete(dataArray, index, title)
-                            }
-                          >
-                            <i className="uil-trash-alt text-danger"></i>
-                          </button>
-                        )}
+                          !isDashboardRoute(this.props) ||
+                          title === "Path Variables" ? null : (
+                            <button
+                              type="button"
+                              className="btn cross-button"
+                              onClick={() =>
+                                this.handleDelete(dataArray, index, title)
+                              }
+                            >
+                              <i className="uil-trash-alt text-danger"></i>
+                            </button>
+                          )}
                       </React.Fragment>
-                    :
+                      :
                       dataArray[index].description
                     }
                   </td>
@@ -364,14 +368,14 @@ class GenericTable extends Component {
           </div>
         )}
 
-          {title === "Path Variables" ||
+        {title === "Path Variables" ||
           !isDashboardRoute(this.props) ? null : (
             <div className="generic-table-title-container">
               <button
                 id="edit-button"
                 className="btn btn-default custom-button"
                 onClick={() => this.displayEditButton()}
-                >
+              >
                 {this.state.editButtonName}
               </button>
             </div>

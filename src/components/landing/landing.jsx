@@ -1,15 +1,17 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 
 class Landing extends Component {
-    state = {}
+  constructor (props) {
+    super(props)
+    this.state = {}
+  }
 
-    render() {
-        this.props.history.push({
-            pathname: "/dashboard"
-        })
-        return (<div></div>)
-
-    }
+  render () {
+    this.props.history.push({
+      pathname: '/dashboard'
+    })
+    return (<div />)
+  }
 }
 
-export default Landing;
+export default Landing

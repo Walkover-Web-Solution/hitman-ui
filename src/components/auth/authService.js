@@ -1,73 +1,68 @@
-import jwtDecode from "jwt-decode";
-import http from "../../services/httpService";
-const apiEndpoint = process.env.REACT_APP_API_URL + "/profile";
-const tokenKey = "token";
-const profileKey = "profile";
-const orgKey = "organisation";
-http.setJwt(`Bearer ${getJwt()}`);
+import http from '../../services/httpService'
+const apiEndpoint = process.env.REACT_APP_API_URL + '/profile'
+const tokenKey = 'token'
+const profileKey = 'profile'
+const orgKey = 'organisation'
+http.setJwt(`Bearer ${getJwt()}`)
 
-export function isAdmin() {
-  let organisation = localStorage.getItem(orgKey)
+export function isAdmin () {
+  let organisation = window.localStorage.getItem(orgKey)
   organisation = JSON.parse(organisation)
-  let { org_user: orgUser } = organisation
-  if (orgUser.is_admin)
-    return true
-  else if (!orgUser.is_admin) {
-    let { product_roles: productRoles } = orgUser
+  const { org_user: orgUser } = organisation
+  if (orgUser.is_admin) { return true } else if (!orgUser.is_admin) {
+    const { product_roles: productRoles } = orgUser
     if (productRoles?.hitman?.is_product_admin) {
       return true
-    }
-    else {
+    } else {
       return false
     }
   }
-
 }
 
-export async function login(socketJwt) {
+export async function login (socketJwt) {
   const { data: userInfo } = await http.request({
     url: apiEndpoint,
-    method: "GET",
+    method: 'GET',
     headers: {
-      Authorization: `Bearer ${socketJwt}`,
-    },
-  });
-  localStorage.setItem(tokenKey, socketJwt);
-  localStorage.setItem(profileKey, JSON.stringify(userInfo.profile));
-  localStorage.setItem(orgKey, JSON.stringify(userInfo.orgs[0]));
-  http.setJwt(`Bearer ${socketJwt}`);
+      Authorization: `Bearer ${socketJwt}`
+    }
+  })
+  window.localStorage.setItem(tokenKey, socketJwt)
+  window.localStorage.setItem(profileKey, JSON.stringify(userInfo.profile))
+  window.localStorage.setItem(orgKey, JSON.stringify(userInfo.orgs[0]))
+  http.setJwt(`Bearer ${socketJwt}`)
   return userInfo
 }
-export function loginWithJwt(jwt) {
-  localStorage.setItem(tokenKey, jwt);
+export function loginWithJwt (jwt) {
+  window.localStorage.setItem(tokenKey, jwt)
 }
-export function logout() {
-  localStorage.removeItem(tokenKey);
-  localStorage.removeItem(profileKey);
-  localStorage.removeItem(orgKey);
+export function logout () {
+  window.localStorage.removeItem(tokenKey)
+  window.localStorage.removeItem(profileKey)
+  window.localStorage.removeItem(orgKey)
 }
-export function getCurrentUser() {
+export function getCurrentUser () {
   try {
-    const profile = localStorage.getItem(profileKey);
+    const profile = window.localStorage.getItem(profileKey)
     return JSON.parse(profile)
   } catch (ex) {
-    return null;
+    return null
   }
 }
 
-export function getCurrentOrg() {
+export function getCurrentOrg () {
   try {
-    const org = localStorage.getItem(orgKey);
+    const org = window.localStorage.getItem(orgKey)
     return JSON.parse(org)
   } catch (ex) {
-    logout();
-    window.location = "/";
-    return null;
+    logout()
+    window.location = '/'
+    return null
   }
 }
 
-export function getJwt() {
-  return localStorage.getItem(tokenKey);
+export function getJwt () {
+  return window.localStorage.getItem(tokenKey)
 }
 export default {
   login,
@@ -77,4 +72,4 @@ export default {
   getCurrentOrg,
   getJwt,
   isAdmin
-};
+}
