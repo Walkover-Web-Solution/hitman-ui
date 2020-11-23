@@ -1486,7 +1486,7 @@ class DisplayEndpoint extends Component {
       });
     }
     return (
-      <div className="d-flex">
+      <div className={this.props.location.pathname.split("/")[1] !== "admin" ? "d-flex" : ""}>
         <div className="hm-endpoint-container endpoint-container mx-3">
           {this.state.showLoginSignupModal && (
             <LoginSignupModal
@@ -1591,12 +1591,14 @@ class DisplayEndpoint extends Component {
                           >
                             Save
                         </button>
-                          <Dropdown.Toggle split variant="primary" />
-                          <Dropdown.Menu className="">
-                            <Dropdown.Item onClick={() => this.setState({ saveAsFlag: true }, () => {
-                              this.openEndpointFormModal()
-                            })}>Save As</Dropdown.Item>
-                          </Dropdown.Menu>
+                          {getCurrentUser() ? (
+                            <span>
+                              <Dropdown.Toggle split variant="primary" />
+                              <Dropdown.Menu className="">
+                                <Dropdown.Item onClick={() => this.setState({ saveAsFlag: true }, () => {
+                                  this.openEndpointFormModal()
+                                })}>Save As</Dropdown.Item>
+                              </Dropdown.Menu></span>) : null}
                         </Dropdown>
                         :
                         <button
@@ -1893,7 +1895,7 @@ class DisplayEndpoint extends Component {
                       Response
                   </a>
                   </li>
-                  {getCurrentUser() ? (
+                  {getCurrentUser() && (
 
                     <li className="nav-item">
                       <a
@@ -1915,7 +1917,7 @@ class DisplayEndpoint extends Component {
                       >
                         Sample Response
                   </a>
-                    </li>) : null}
+                    </li>)}
                 </ul>
                 <div className="tab-content" id="pills-tabContent">
                   <div
@@ -1980,7 +1982,8 @@ class DisplayEndpoint extends Component {
               </React.Fragment>
             )}
         </div>
-        {!isDashboardRoute(this.props) && this.state.harObject && this.props.location.pathname.split("/")[1] !== "admin" &&
+        {
+          !isDashboardRoute(this.props) && this.state.harObject && this.props.location.pathname.split("/")[1] !== "admin" &&
           < CodeTemplate
             show={true}
             onHide={() => {
@@ -1990,7 +1993,7 @@ class DisplayEndpoint extends Component {
             title="Generate Code Snippets"
           />
         }
-      </div>
+      </ div >
     );
   }
 }

@@ -94,92 +94,92 @@ class DisplayDescription extends Component {
               />
             </React.Fragment>
           )}
-          {!isDashboardRoute(this.props) && (
+          {!isDashboardRoute(this.props) && this.props.location.pathname.split("/")[1] !== "admin" && (
             <h1 className="endpoint-title">{this.props.data.name}</h1>
           )}
         </div>
 
         {isSavedEndpoint(this.props) && !this.state.showDescriptionFormFlag ? (
           this.state.showAddDescriptionFlag &&
-          (this.props.endpoint.description === "" ||
-            this.props.endpoint.description === null) &&
-          isDashboardRoute(this.props) ? (
-            <Link
-              style={{
-                padding: "0px 0px 0px 10px",
-                fontSize: "15px",
-                color: "tomato",
-              }}
-              onClick={() => this.handleDescription()}
-            >
-              Add a Description
-            </Link>
-          ) : (
-            <React.Fragment>
-              <div className="endpoint-description">
-                {isDashboardRoute(this.props) ? (
-                  <div>
-                    <label className="hm-panel-label">
-                      Endpoint Description
+            (this.props.endpoint.description === "" ||
+              this.props.endpoint.description === null) &&
+            isDashboardRoute(this.props) ? (
+              <Link
+                style={{
+                  padding: "0px 0px 0px 10px",
+                  fontSize: "15px",
+                  color: "tomato",
+                }}
+                onClick={() => this.handleDescription()}
+              >
+                Add a Description
+              </Link>
+            ) : (
+              <React.Fragment>
+                <div className="endpoint-description">
+                  {isDashboardRoute(this.props) ? (
+                    <div>
+                      <label className="hm-panel-label">
+                        Endpoint Description
                     </label>
-                    <button
-                      className="btn btn-default"
-                      onClick={() => this.handleDescription()}
-                    >
-                      <i className="fas fa-pen"></i>
-                    </button>
-                    <br />
-                    <div
-                      className="endpoint-description-text"
-                      style={{
-                        color: "#495057",
-                        maxHeight: "240px",
-                        overflow: "auto",
-                        padding: "2px",
-                      }}
-                    >
-                      {this.props.endpoint.description}
+                      <button
+                        className="btn btn-default"
+                        onClick={() => this.handleDescription()}
+                      >
+                        <i className="fas fa-pen"></i>
+                      </button>
+                      <br />
+                      <div
+                        className="endpoint-description-text"
+                        style={{
+                          color: "#495057",
+                          maxHeight: "240px",
+                          overflow: "auto",
+                          padding: "2px",
+                        }}
+                      >
+                        {this.props.endpoint.description}
+                      </div>
                     </div>
-                  </div>
-                ) : (
-                  <div className="endpoint-description-text">
-                    {this.props.endpoint.description}
-                  </div>
-                )}
-              </div>
-            </React.Fragment>
-          )
+                  ) : (
+                      <div className="endpoint-description-text">
+                        {this.props.endpoint.description}
+                      </div>
+                    )}
+                </div>
+              </React.Fragment>
+            )
         ) : null}
 
         {isDashboardRoute(this.props) &&
-        isSavedEndpoint(this.props) &&
-        this.state.showDescriptionFormFlag ? (
-          <form onSubmit={this.handleDescriptionSave.bind(this)}>
-            <label className="hm-panel-label">Endpoint Description</label>
-            <div className="endpoint-description-wrap">
-              <textarea
-                className="form-control"
-                rows="5"
-                name="description"
-                placeholder="Make things easier for your teammates with a complete endpoint description"
-                value={this.props.endpoint.description}
-                onChange={this.handleChangeDescription}
-              ></textarea>
-              <div className="endpoint-cta">
-                <button
-                  className="btn btn-link"
-                  type="cancel"
-                  onClick={() => this.handleDescriptionCancel()}
-                >
-                  Cancel
+          isSavedEndpoint(this.props) &&
+          this.state.showDescriptionFormFlag ? (
+            <form onSubmit={this.handleDescriptionSave.bind(this)}>
+              <label className="hm-panel-label">Endpoint Description</label>
+              <div className="endpoint-description-wrap">
+                <textarea
+                  className="form-control"
+                  rows="5"
+                  name="description"
+                  placeholder="Make things easier for your teammates with a complete endpoint description"
+                  value={this.props.endpoint.description}
+                  onChange={this.handleChangeDescription}
+                ></textarea>
+                <div className="endpoint-cta">
+                  <button
+                    className="btn btn-link"
+                    type="cancel"
+                    onClick={() => this.handleDescriptionCancel()}
+                  >
+                    Cancel
                 </button>
-                <button className="btn btn-primary" type="submit">
-                  Save
+                  <button className="btn btn-primary" type="submit">
+                    Save
                 </button>
+                </div>
               </div>
-            </div>
-          </form>
-        ) : null}
+            </form>
+          ) : null}
       </div>
     );
   }

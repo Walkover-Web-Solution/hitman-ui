@@ -15,7 +15,12 @@ import {
     approveEndpoint,
     rejectEndpoint
 } from "../publicEndpoint/redux/publicEndpointsActions";
+import {
+    approvePage,
+    rejectPage,
+} from "../publicEndpoint/redux/publicEndpointsActions";
 import PublishDocsForm from './publishDocsForm'
+import DisplayPage from '../pages/displayPage';
 var URI = require("urijs");
 
 
@@ -28,6 +33,8 @@ const mapDispatchToProps = (dispatch) => {
         fetch_pages: () => dispatch(fetchPages()),
         approve_endpoint: (endpoint) => dispatch(approveEndpoint(endpoint)),
         reject_endpoint: (endpoint) => dispatch(rejectEndpoint(endpoint)),
+        approve_page: (page) => dispatch(approvePage(page)),
+        reject_page: (page) => dispatch(rejectPage(page)),
     };
 };
 
@@ -99,7 +106,8 @@ class PublishDocs extends Component {
     openEndpoint(groupId, endpointId) {
         this.setState({
             selectedGroupId: groupId,
-            selectedEndpointId: endpointId
+            selectedEndpointId: endpointId,
+            selectedPageId: false,
         })
     }
 
@@ -118,12 +126,28 @@ class PublishDocs extends Component {
 
     }
 
-    async handleApproveRequest(endpointId) {
+    async handleApproveEndpointRequest(endpointId) {
         this.props.approve_endpoint(this.props.endpoints[endpointId]);
     }
 
-    async handleRejectRequest(endpointId) {
+    async handleRejectEndpointRequest(endpointId) {
         this.props.reject_endpoint(this.props.endpoints[endpointId]);
+    }
+
+    openPage(groupId, pageId) {
+        this.setState({
+            selectedGroupId: groupId,
+            selectedEndpointId: false,
+            selectedPageId: pageId,
+        })
+    }
+
+    async handleApprovePageRequest(pageId) {
+        this.props.approve_page(this.props.pages[pageId]);
+    }
+
+    async handleRejectPageRequest(pageId) {
+        this.props.reject_page(this.props.pages[pageId]);
     }
 
     render() {
@@ -182,7 +206,7 @@ class PublishDocs extends Component {
                                 <div className="groups">
                                     {this.pages ? Object.keys(this.pages).map((pageId) =>
                                         this.pages[pageId].versionId?.toString() === this.state.selectedVersionId?.toString() ? this.pages[pageId].groupId === null ? (
-                                            <div >{this.pages[pageId]?.name
+                                            <div onClick={() => this.openPage("", pageId)}>{this.pages[pageId]?.name
                                             }
                                             </div>)
                                             : null
@@ -196,7 +220,7 @@ class PublishDocs extends Component {
                                             }
                                                 {this.pages ? Object.keys(this.pages).map((pageId) =>
                                                     this.pages[pageId].groupId?.toString() === groupId?.toString() ? (
-                                                        <div className="groups">{this.pages[pageId]?.name
+                                                        <div onClick={() => this.openPage(groupId, pageId)} className="groups">{this.pages[pageId]?.name
                                                         }
                                                         </div>)
                                                         : null
@@ -217,38 +241,34 @@ class PublishDocs extends Component {
                                         <div className="contacts">{this.props.groups[this.state.selectedGroupId].name}</div>
                                         <div className="list-contacts">
                                             {this.props.endpoints[this.state.selectedEndpointId].name}
+                                            {this.props.endpoints[this.state.selectedEndpointId].state === "Pending" ? <span>new</span> : null}
                                         </div>
                                         <div className="publish-reject">
-                                            <button class="btn default" onClick={() => this.handleRejectRequest(this.state.selectedEndpointId)}>Reject</button>
-                                            <div className="publish-button">  <Button variant="success" onClick={() => this.handleApproveRequest(this.state.selectedEndpointId)}>PUBLISH</Button>
+                                            <button class="btn default" onClick={() => this.handleRejectEndpointRequest(this.state.selectedEndpointId)}>Reject</button>
+                                            <div className="publish-button">  <Button variant="success" onClick={() => this.handleApproveEndpointRequest(this.state.selectedEndpointId)}>PUBLISH</Button>
                                             </div>
                                         </div>
                                         <DisplayEndpoint endpointId={this.state.selectedEndpointId} groupId={this.state.selectedGroupId} {...this.props} />
                                     </div>
 
                                 ) : null}
+                                {this.state.selectedPageId ? (
+                                    <div>
+                                        <div className="contacts">{this.props.groups[this.state.selectedGroupId]?.name}</div>
+                                        <div className="list-contacts">
+                                            {this.props.pages[this.state.selectedPageId].name}
+                                        </div>
+                                        <div className="publish-reject">
+                                            <button class="btn default" onClick={() => this.handleRejectPageRequest(this.state.selectedPageId)}>Reject</button>
+                                            <div className="publish-button">  <Button variant="success" onClick={() => this.handleApprovePageRequest(this.state.selectedPageId)}>PUBLISH</Button>
+                                            </div>
+                                        </div>
+                                        {/* <DisplayPage pageId={this.state.selectedPageId} groupId={this.state.selectedGroupId} {...this.props} /> */}
+                                    </div>
+
+                                ) : null}
                             </div>
-
-                            {/* <div className="grid-column-five">
-                            <button class="btn default">Reject</button>
-
                         </div>
-
-                        <div className="grid-column-six">
-                            <div className="publish-button">  <Button variant="success">PUBLISH</Button>
-                            </div>
-                        </div> */}
-                        </div>
-                        {/* <div className="grid-three">
-                        <div className="grid-column-seven">
-                            sdads
-                        </div>
-                        <div className="grid-column-eight">
-                            <div ></div>
-                            <div>sdas</div>
-
-
-                    </div> */}
                     </div>
                 </div>
             </div >
