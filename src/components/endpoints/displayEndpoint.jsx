@@ -1895,7 +1895,7 @@ class DisplayEndpoint extends Component {
                       Response
                   </a>
                   </li>
-                  {getCurrentUser() && this.props.location.pathname.split("/")[1] !== "admin" && (
+                  {getCurrentUser() && (
 
                     <li className="nav-item">
                       <a
