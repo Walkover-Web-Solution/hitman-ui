@@ -32,6 +32,18 @@ const mapStateToProps = (state) => {
   };
 };
 
+function compareByCreatedAt(a, b) {
+  const t1 = a?.createdAt;
+  const t2 = b?.createdAt;
+  let comparison = 0;
+  if (t1 < t2) {
+    comparison = 1;
+  } else if (t1 > t2) {
+    comparison = -1;
+  }
+  return comparison;
+}
+
 class SideBar extends Component {
   state = {
     data: {
@@ -118,7 +130,7 @@ class SideBar extends Component {
   renderHistoryList() {
     return (
       this.state.historySnapshot && this.props.historySnapshot &&
-      this.state.historySnapshot.map(history => (
+      this.state.historySnapshot.sort(compareByCreatedAt).map(history => (
         Object.keys(history).length !== 0 &&
         <div className="btn d-flex align-items-center"
           onClick={() => { console.log(history.id) }}>
@@ -131,7 +143,7 @@ class SideBar extends Component {
           </div>
           <div className="ml-3">
             <div>{history.endpoint.name || history.endpoint.BASE_URL + history.endpoint.uri || "Random Trigger"}</div>
-            <small className="text-muted">{moment(history.createdAt).format("ddd, Do MMM h:ss a")}</small>
+            <small className="text-muted">{moment(history.createdAt).format("ddd, Do MMM h:mm a")}</small>
           </div>
         </div>
       ))
