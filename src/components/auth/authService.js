@@ -54,6 +54,18 @@ export function getCurrentUser() {
     return null;
   }
 }
+
+export function getCurrentOrg() {
+  try {
+    const org = localStorage.getItem(orgKey);
+    return JSON.parse(org)
+  } catch (ex) {
+    logout();
+    window.location = "/";
+    return null;
+  }
+}
+
 export function getJwt() {
   return localStorage.getItem(tokenKey);
 }
@@ -62,6 +74,7 @@ export default {
   loginWithJwt,
   logout,
   getCurrentUser,
+  getCurrentOrg,
   getJwt,
   isAdmin
 };
