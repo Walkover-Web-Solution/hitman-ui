@@ -252,7 +252,7 @@ class PublishDocs extends Component {
                                         <div className="contacts">{this.props.groups[this.state.selectedGroupId].name}</div>
                                         <div className="list-contacts">
                                             {this.props.endpoints[this.state.selectedEndpointId].name}
-                                            {/* {this.props.endpoints[this.state.selectedEndpointId].state === "Pending" ? <span>new</span> : null} */}
+                                            
                                         </div>
                                         <div className="publish-reject">
                                             <button class="btn default" onClick={() => this.handleRejectEndpointRequest(this.state.selectedEndpointId)}>Reject</button>
@@ -274,7 +274,7 @@ class PublishDocs extends Component {
                                             <div className="publish-button">  <Button variant="success" onClick={() => this.handleApprovePageRequest(this.state.selectedPageId)}>PUBLISH</Button>
                                             </div>
                                         </div>
-                                        {/* <DisplayPage pageId={this.state.selectedPageId} groupId={this.state.selectedGroupId} {...this.props} /> */}
+                                        
                                     </div>
 
                                 ) : null}
