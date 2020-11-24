@@ -1,17 +1,19 @@
-import React, { Component } from 'react'
-import { Route, Switch } from 'react-router-dom'
-import Login from './components/auth/login'
-import Logout from './components/auth/logout'
-import collectionsApiService from './components/collections/collectionsApiService'
-import NotFound from './components/common/notFound'
-import Main from './components/main/Main.jsx'
-import PublicView from './components/main/publicView'
-import Public from './components/publicEndpoint/publicEndpoint.jsx'
-import Landing from './components/landing/landing'
-import PublishDocs from './components/publishDocs/publishDocs'
+import React, { Component } from "react";
+import { Route, Switch } from "react-router-dom";
+import Login from "./components/auth/login";
+import Logout from "./components/auth/logout";
+import collectionsApiService from "./components/collections/collectionsApiService";
+import NotFound from "./components/common/notFound";
+import ProtectedRoute from "./components/common/protectedRoute";
+import Main from "./components/main/Main.jsx";
+import PublicView from "./components/main/publicView";
+import Public from "./components/publicEndpoint/publicEndpoint.jsx";
+import Landing from './components/landing/landing';
+import PublishDocs from './components/publishDocs/publishDocs';
+import { ToastContainer } from "react-toastify";
 
 class App extends Component {
-  async redirectToClientDomain () {
+  async redirectToClientDomain() {
     console.log(window.location.href)
     const domainsList = process.env.REACT_APP_DOMAINS_LIST ? process.env.REACT_APP_DOMAINS_LIST.split(',') : []
     const currentDomain = window.location.href.split('/')[2]
@@ -27,20 +29,23 @@ class App extends Component {
     }
   }
 
-  render () {
+  render() {
     this.redirectToClientDomain()
     return (
-      <Switch>
-        <Route path='/admin/publish' component={PublishDocs} />
-        <Route path='/dashboard/' component={Main} />
-        <Route path='/p/error' component={NotFound} />
-        <Route path='/p/:collectionIdentifier' component={Public} />
-        <Route path='/logout' component={Logout} />
-        <Route path='/login' component={Login} />
-        <Route path='/marketPlace' component={PublicView} />
-        <Route path='/' component={Landing} />
-      </Switch>
-    )
+      <React.Fragment>
+        <ToastContainer />
+        <Switch>
+          <Route path='/admin/publish' component={PublishDocs} />
+          <Route path='/dashboard/' component={Main} />
+          <Route path='/p/error' component={NotFound} />
+          <Route path='/p/:collectionIdentifier' component={Public} />
+          <Route path='/logout' component={Logout} />
+          <Route path='/login' component={Login} />
+          <Route path='/marketPlace' component={PublicView} />
+          <Route path='/' component={Landing} />
+        </Switch>
+      </React.Fragment>
+    );
   }
 }
 

@@ -1,51 +1,61 @@
-import React from 'react'
-import { CustomPicker, TwitterPicker } from 'react-color'
+import React from 'react';
+import { CustomPicker ,TwitterPicker} from 'react-color';
 
-// const colorPickerEnum = {
-//   COLOR1: "#dd755e",
-//   COLOR2: "#686eff",
-//   COLOR3: "#7dccee",
-//   COLOR4: "#27ae60",
-//   COLOR5: "#f2994a",
-// };
+const colorPickerEnum = {
+  COLOR1 : "#dd755e",
+  COLOR2 : "#686eff",
+  COLOR3 : "#7dccee",
+  COLOR4 : "#27ae60",
+  COLOR5 : "#f2994a",
 
-class MyColorPicker extends React.Component {
-  state = {
-    openColorPicker: false
-  };
+}
 
-  toggleColorOption () {
+class CustomColorPicker extends React.Component {
+
+  state ={
+    data : {
+      theme  : ""
+    }
+  }
+
+  componentDidMount() {
+      if(this.props.theme){
+        let data = {...this.state.data}
+        data.theme = this.props.theme
+        this.setState({ data })
+      }
+  }
+
+  toggleColorOption(){
     this.setState({
       openColorPicker: !this.state.openColorPicker
     })
   }
 
-  handleThemeChange (color) {
-    const element = document.getElementById('1')
-    console.log(element.className)
+
+  handleChangeComplete=(color)=>{
+      let data = {...this.state.data}
+      data.theme = color.hex
+      this.setState({
+        data
+      })
+      this.props.set_theme(color.hex)
+    
   }
 
-  handleChangeComplete = (color) => {
-    console.log('color', color)
-  };
-
-  render () {
+  render() {
     return (
-      <>
-        <div style={{ display: 'flex' }}>
-          {/* <div id = "1" className = "custom-color color1" onClick = {(e)=>this.handleThemeChange(e)}></div>
-      <div  className = "custom-color color2" onClick = {()=>this.handleThemeChange(colorPickerEnum. COLOR2)}></div>
-      <div  className = "custom-color color3" onClick = {()=>this.handleThemeChange(colorPickerEnum. COLOR3)}></div>
-      <div  className = "custom-color color4" onClick = {()=>this.handleThemeChange(colorPickerEnum. COLOR4)}>  </div>
-      <div  className = "custom-color color5" onClick = {()=>this.handleThemeChange(colorPickerEnum. COLOR5)}>  </div>
-      <div  className = "custom-color dashed-border" onClick = {()=>this.toggleColorOption()} ><img src={PlusIcon} alt=""/> </div> */}
-        </div>
-        <div>
-          <TwitterPicker onChangeComplete={this.handleChangeComplete} />
-        </div>
-      </>
+    <React.Fragment>
+    <div>
+      {
+          <TwitterPicker
+          color = {this.state.data.theme}
+           onChangeComplete={this.handleChangeComplete }/>
+     }
+    </div>
+    </React.Fragment>
     )
   }
 }
 
-export default CustomPicker(MyColorPicker)
+export default CustomPicker(CustomColorPicker);
