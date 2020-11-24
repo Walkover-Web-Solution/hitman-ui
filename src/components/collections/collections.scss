@@ -174,14 +174,21 @@ div.fixed {
   .notification .badge {
     position: absolute;
     top: -8px;
-    right: -15px;
+    right: 10px;
     padding: 5px 10px;
     border-radius: 50%;
     font-size: 8px;
     border: 1px solid white;
     background-color: black;
+
+    i.fas.fa-bell {
+      margin-right: 13px;
+    }
   }
 
+  .notification-icon {
+    padding-left: 20px;
+  }
   button#dropdown-basic {
     background: rgb(255, 252, 246);
     border: none;
