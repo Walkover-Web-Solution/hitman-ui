@@ -20,7 +20,7 @@ class CustomColorPicker extends React.Component {
 
   componentDidMount() {
       if(this.props.theme){
-        let data = {...this.state.theme}
+        let data = {...this.state.data}
         data.theme = this.props.theme
         this.setState({ data })
       }
