@@ -297,19 +297,19 @@ class CollectionsComponent extends Component {
     return (
       <React.Fragment key={collectionId}>
         {
-        collectionState === 'singleCollection'
-          ? (
-            <button
-              id='back-to-all-collections-button'
-              className='btn'
-              onClick={() => this.openAllCollections()}
-            >
-              <i className='fas fa-arrow-left' />
-              <label>All Collections</label>
-            </button>
-            )
-          : null
-         }
+          collectionState === 'singleCollection'
+            ? (
+              <button
+                id='back-to-all-collections-button'
+                className='btn'
+                onClick={() => this.openAllCollections()}
+              >
+                <i className='fas fa-arrow-left' />
+                <label>All Collections</label>
+              </button>
+              )
+            : null
+        }
 
         <Accordion
           defaultActiveKey='0'
@@ -321,28 +321,27 @@ class CollectionsComponent extends Component {
           {/* <Card.Header> */}
           <Accordion.Toggle
             variant='default'
-            eventKey={eventkeyValue !== null ? eventkeyValue : '0'}>
+            eventKey={eventkeyValue !== null ? eventkeyValue : '0'}
+          >
             {
               collectionState === 'singleCollection'
-              ? 
-                  (
+                ? (
+                  <div>
                     <div>
-                      <div>
-                        {this.props.collections[collectionId].name}
-                      </div>
+                      {this.props.collections[collectionId].name}
                     </div>
-                  ) 
-              : 
-                  (
-                    <div
-                      className='sidebar-accordion-item'
-                      onClick={() => this.openSelectedCollection(collectionId)}
-                    >
-                        <i className='uil uil-parcel' />
-                        <div>
-                          {this.props.collections[collectionId].name}
-                        </div>
+                  </div>
+                  )
+                : (
+                  <div
+                    className='sidebar-accordion-item'
+                    onClick={() => this.openSelectedCollection(collectionId)}
+                  >
+                    <i className='uil uil-parcel' />
+                    <div>
+                      {this.props.collections[collectionId].name}
                     </div>
+                  </div>
                   )
             }
             <div class='show-endpoint-count'>
@@ -402,15 +401,19 @@ class CollectionsComponent extends Component {
                     Go to Docs
                   </a>
                 )}
-                {isAdmin() ? (
-                  <a
-                    className='dropdown-item'
-                    onClick={() =>
-                      this.openPublishDocs(this.props.collections[collectionId])}
-                  >
-                    Publish Docs
-                  </a>
-                ) : null}
+                {
+                  isAdmin()
+                    ? (
+                      <a
+                        className='dropdown-item'
+                        onClick={() =>
+                          this.openPublishDocs(this.props.collections[collectionId])}
+                      >
+                        Publish Docs
+                      </a>
+                      )
+                    : null
+                }
 
                 <a
                   className='dropdown-item'
@@ -424,17 +427,19 @@ class CollectionsComponent extends Component {
             </div>
           </Accordion.Toggle>
           {/* </Card.Header> */}
-          {collectionState === 'singleCollection' ? (
-            <Accordion.Collapse id='collection-collapse' eventKey='0'>
-              <Card.Body>
-                <CollectionVersions
-                  {...this.props}
-                  collection_id={collectionId}
-                  selectedCollection
-                />
-              </Card.Body>
-            </Accordion.Collapse>
-          ) : null}
+          {collectionState === 'singleCollection'
+            ? (
+              <Accordion.Collapse id='collection-collapse' eventKey='0'>
+                <Card.Body>
+                  <CollectionVersions
+                    {...this.props}
+                    collection_id={collectionId}
+                    selectedCollection
+                  />
+                </Card.Body>
+              </Accordion.Collapse>
+              )
+            : null}
           {/* </Card> */}
         </Accordion>
       </React.Fragment>
@@ -469,9 +474,9 @@ class CollectionsComponent extends Component {
         show
         onHide={onHide}
         collection_id={this.state.selectedCollection}
-        // add_new_endpoint={this.handleAddEndpoint.bind(this)}
-        // open_collection_form={this.openCollectionForm.bind(this)}
-        // open_environment_form={this.openEnvironmentForm.bind(this)}
+      // add_new_endpoint={this.handleAddEndpoint.bind(this)}
+      // open_collection_form={this.openCollectionForm.bind(this)}
+      // open_environment_form={this.openEnvironmentForm.bind(this)}
       />
     )
   }

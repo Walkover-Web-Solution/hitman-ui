@@ -284,7 +284,7 @@ class Groups extends Component {
       if (
         this.props.endpoints[Object.keys(this.props.endpoints)[i]].groupId &&
         this.props.endpoints[Object.keys(this.props.endpoints)[i]].groupId ===
-          groupId
+        groupId
       ) {
         endpoints[Object.keys(this.props.endpoints)[i]] = this.props.endpoints[
           Object.keys(this.props.endpoints)[i]
@@ -414,156 +414,166 @@ class Groups extends Component {
     }
 
     return (
-      <>
-        {isDashboardRoute(this.props, true) ? (
-          <Accordion
-            key={groupId}
-            className='sidebar-accordion'
-            id='child-accordion'
-            // defaultActiveKey={
-            //   this.eventkey[groupId] ? this.eventkey[groupId] : "1"
-            // }
-            draggable
-            onDragStart={(e) => this.onDragStart(e, groupId)}
-            onDragOver={(e) => {
-              e.preventDefault()
-            }}
-            onDrop={(e) => this.onDrop(e, groupId)}
-          >
-            {/* <Card> */}
-            {/* <Card.Header> */}
-            <Accordion.Toggle
-              variant='default'
-              // eventKey="0"
-              eventKey={
-                !isDashboardRoute(this.props)
-                  ? '0'
-                  : this.eventkey[groupId]
-                    ? this.eventkey[groupId]
-                    : '1'
-              }
-            >
-              <div className='sidebar-accordion-item'>
-                <i className='uil uil-folder' />
-                {this.props.groups[groupId].name}
-              </div>
-              {isDashboardRoute(this.props, true) ? (
-                <div className='sidebar-item-action'>
-                  <div
-                    className='sidebar-item-action-btn'
-                    data-toggle='dropdown'
-                    aria-haspopup='true'
-                    aria-expanded='false'
-                  >
-                    <i className='uil uil-ellipsis-v' />
+      <div>
+        {
+          isDashboardRoute(this.props, true)
+            ? (
+              <Accordion
+                key={groupId}
+                className='sidebar-accordion'
+                id='child-accordion'
+                // defaultActiveKey={
+                //   this.eventkey[groupId] ? this.eventkey[groupId] : "1"
+                // }
+                draggable
+                onDragStart={(e) => this.onDragStart(e, groupId)}
+                onDragOver={
+                  (e) => {
+                    e.preventDefault()
+                  }
+                }
+                onDrop={(e) => this.onDrop(e, groupId)}
+              >
+                {/* <Card> */}
+                {/* <Card.Header> */}
+                <Accordion.Toggle
+                  variant='default'
+                  // eventKey="0"
+                  eventKey={
+                    !isDashboardRoute(this.props)
+                      ? '0'
+                      : this.eventkey[groupId]
+                        ? this.eventkey[groupId]
+                        : '1'
+                  }
+                >
+                  <div className='sidebar-accordion-item'>
+                    <i className='uil uil-folder' />
+                    {this.props.groups[groupId].name}
                   </div>
-                  <div className='dropdown-menu dropdown-menu-right'>
-                    <a
-                      className='dropdown-item'
-                      onClick={() =>
-                        this.openEditGroupForm(this.props.groups[groupId])}
-                    >
-                      Edit
-                    </a>
-                    <a
-                      className='dropdown-item'
-                      onClick={() => {
-                        this.openDeleteGroupModal(groupId)
-                      }}
-                    >
-                      Delete
-                    </a>
-                    <a
-                      className='dropdown-item'
-                      onClick={() =>
-                        this.handleAddEndpoint(
-                          groupId,
-                          this.props.versions,
-                          this.props.groups
-                        )}
-                    >
-                      Add Endpoint
-                    </a>
-                    <a
-                      className='dropdown-item'
-                      onClick={() =>
-                        this.handleDuplicate(this.props.groups[groupId])}
-                    >
-                      Duplicate
-                    </a>
-                    <a
-                      className='dropdown-item'
-                      onClick={() =>
-                        this.openGroupPageForm(
-                          this.props.groups[groupId].versionId,
-                          this.props.groups[groupId],
-                          this.props.collection_id
-                        )}
-                    >
-                      Add Page
-                    </a>
-                    <a
-                      className='dropdown-item'
-                      onClick={() =>
-                        this.openShareGroupForm(this.props.groups[groupId])}
-                    >
-                      Share
-                    </a>
-                  </div>
+                  {
+                    isDashboardRoute(this.props, true)
+                      ? (
+                        <div className='sidebar-item-action'>
+                          <div
+                            className='sidebar-item-action-btn'
+                            data-toggle='dropdown'
+                            aria-haspopup='true'
+                            aria-expanded='false'
+                          >
+                            <i className='uil uil-ellipsis-v' />
+                          </div>
+                          <div className='dropdown-menu dropdown-menu-right'>
+                            <a
+                              className='dropdown-item'
+                              onClick={() =>
+                                this.openEditGroupForm(this.props.groups[groupId])}
+                            >
+                              Edit
+                            </a>
+                            <a
+                              className='dropdown-item'
+                              onClick={() => {
+                                this.openDeleteGroupModal(groupId)
+                              }}
+                            >
+                              Delete
+                            </a>
+                            <a
+                              className='dropdown-item'
+                              onClick={() =>
+                                this.handleAddEndpoint(
+                                  groupId,
+                                  this.props.versions,
+                                  this.props.groups
+                                )}
+                            >
+                              Add Endpoint
+                            </a>
+                            <a
+                              className='dropdown-item'
+                              onClick={() =>
+                                this.handleDuplicate(this.props.groups[groupId])}
+                            >
+                              Duplicate
+                            </a>
+                            <a
+                              className='dropdown-item'
+                              onClick={() =>
+                                this.openGroupPageForm(
+                                  this.props.groups[groupId].versionId,
+                                  this.props.groups[groupId],
+                                  this.props.collection_id
+                                )}
+                            >
+                              Add Page
+                            </a>
+                            <a
+                              className='dropdown-item'
+                              onClick={() =>
+                                this.openShareGroupForm(this.props.groups[groupId])}
+                            >
+                              Share
+                            </a>
+                          </div>
+                        </div>
+                        )
+                      : null
+                  }
+                </Accordion.Toggle>
+                {/* </Card.Header> */}
+                <Accordion.Collapse
+                  className='group-collapse'
+                  // eventKey="0"
+                  eventKey={
+                    !isDashboardRoute(this.props)
+                      ? '0'
+                      : this.eventkey[groupId]
+                        ? this.eventkey[groupId]
+                        : '1'
+                  }
+                >
+                  <Card.Body>
+                    <GroupPages
+                      {...this.props}
+                      version_id={this.props.groups[groupId].versionId}
+                      set_page_drag={this.setPagedrag.bind(this)}
+                      group_id={groupId}
+                      show_filter_groups={this.propsFromGroups.bind(this)}
+                    />
+                    <Endpoints
+                      {...this.props}
+                      group_id={groupId}
+                      set_endpoint_drag={this.setEndpointdrag.bind(this)}
+                      endpoints_order={this.props.groups[groupId].endpointsOrder}
+                      show_filter_groups={this.propsFromGroups.bind(this)}
+                    />
+                  </Card.Body>
+                </Accordion.Collapse>
+                {/* </Card> */}
+              </Accordion>
+              )
+            : (
+              <div className='hm-sidebar-block'>
+                <div className='hm-sidebar-label'>
+                  {this.props.groups[groupId].name}
                 </div>
-              ) : null}
-            </Accordion.Toggle>
-            {/* </Card.Header> */}
-            <Accordion.Collapse
-              className='group-collapse'
-              // eventKey="0"
-              eventKey={
-                !isDashboardRoute(this.props)
-                  ? '0'
-                  : this.eventkey[groupId]
-                    ? this.eventkey[groupId]
-                    : '1'
-              }
-            >
-              <Card.Body>
-                <GroupPages
-                  {...this.props}
-                  version_id={this.props.groups[groupId].versionId}
-                  set_page_drag={this.setPagedrag.bind(this)}
-                  group_id={groupId}
-                  show_filter_groups={this.propsFromGroups.bind(this)}
-                />
                 <Endpoints
                   {...this.props}
                   group_id={groupId}
-                  set_endpoint_drag={this.setEndpointdrag.bind(this)}
                   endpoints_order={this.props.groups[groupId].endpointsOrder}
                   show_filter_groups={this.propsFromGroups.bind(this)}
                 />
-              </Card.Body>
-            </Accordion.Collapse>
-            {/* </Card> */}
-          </Accordion>
-        ) : (
-          <div className='hm-sidebar-block'>
-            <div className='hm-sidebar-label'>
-              {this.props.groups[groupId].name}
-            </div>
-            <Endpoints
-              {...this.props}
-              group_id={groupId}
-              endpoints_order={this.props.groups[groupId].endpointsOrder}
-              show_filter_groups={this.propsFromGroups.bind(this)}
-            />
-            <GroupPages
-              {...this.props}
-              version_id={this.props.groups[groupId].versionId}
-              group_id={groupId}
-              show_filter_groups={this.propsFromGroups.bind(this)}
-            />
-          </div>
-        )}
-      </>
+                <GroupPages
+                  {...this.props}
+                  version_id={this.props.groups[groupId].versionId}
+                  group_id={groupId}
+                  show_filter_groups={this.propsFromGroups.bind(this)}
+                />
+              </div>
+              )
+        }
+      </div>
     )
   }
 

@@ -243,23 +243,27 @@ class Environments extends Component {
                     <Dropdown.Item>
                       {env ? env.name : 'No Environment Selected'}
 
-                      {env ? (
-                        <button
-                          className='btn btn-default'
-                          onClick={() =>
-                            this.handleEnvironmentModal('Edit Environment', env)}
-                        >
-                          Edit
-                        </button>
-                      ) : isDashboardRoute(this.props) ? (
-                        <button
-                          className='btn btn-default'
-                          onClick={() =>
-                            this.handleEnvironmentModal('Add new Environment')}
-                        >
-                          Add
-                        </button>
-                      ) : null}
+                      {env
+                        ? (
+                          <button
+                            className='btn btn-default'
+                            onClick={() =>
+                              this.handleEnvironmentModal('Edit Environment', env)}
+                          >
+                            Edit
+                          </button>
+                          )
+                        : isDashboardRoute(this.props)
+                          ? (
+                            <button
+                              className='btn btn-default'
+                              onClick={() =>
+                                this.handleEnvironmentModal('Add new Environment')}
+                            >
+                              Add
+                            </button>
+                            )
+                          : null}
                     </Dropdown.Item>
                     <Dropdown.Divider />
                     <div>
@@ -270,7 +274,7 @@ class Environments extends Component {
                     </div>
                     {env &&
                       Object.keys(env.variables).map((v) => (
-                        <div>
+                        <div key={v}>
                           <p className='custom-left-box'>{v}</p>
                           <p className='custom-middle-box'>
                             {env.variables[v].initialValue || 'None'}
@@ -285,50 +289,55 @@ class Environments extends Component {
               </div>
             )}
 
-            {isDashboardRoute(this.props) && (
-              <div className='select-environment-dropdown'>
-                <Dropdown className='float-right'>
-                  <Dropdown.Toggle variant='default' id='dropdown-basic'>
-                    {this.props.environment.environments[
-                      this.props.environment.currentEnvironmentId
-                    ]
-                      ? this.props.environment.environments[
+            {
+              isDashboardRoute(this.props) && (
+                <div className='select-environment-dropdown'>
+                  <Dropdown className='float-right'>
+                    <Dropdown.Toggle variant='default' id='dropdown-basic'>
+                      {
+                        this.props.environment.environments[
                           this.props.environment.currentEnvironmentId
-                        ].name
-                      : 'No Environment'}
-                  </Dropdown.Toggle>
-
-                  <Dropdown.Menu alignRight>
-                    <Dropdown.Item
-                      onClick={() => this.handleEnv(null)}
-                      key='no-environment'
-                    >
-                      No Environment
-                    </Dropdown.Item>
-                    {Object.keys(this.props.environment.environments).map(
-                      (environmentId) => (
-                        <Dropdown.Item
-                          onClick={() => this.handleEnv(environmentId)}
-                          key={environmentId}
-                        >
-                          {
-                            this.props.environment.environments[environmentId]
-                              .name
-                          }
-                        </Dropdown.Item>
-                      )
-                    )}
-                    <button
-                      className='btn btn-default'
-                      onClick={() =>
-                        this.handleEnvironmentModal('Add new Environment')}
-                    >
-                      + Add Environment
-                    </button>
-                  </Dropdown.Menu>
-                </Dropdown>
-              </div>
-            )}
+                        ]
+                          ? this.props.environment.environments[
+                              this.props.environment.currentEnvironmentId
+                            ].name
+                          : 'No Environment'
+                      }
+                    </Dropdown.Toggle>
+                    <Dropdown.Menu alignRight>
+                      <Dropdown.Item
+                        onClick={() => this.handleEnv(null)}
+                        key='no-environment'
+                      >
+                        No Environment
+                      </Dropdown.Item>
+                      {
+                        Object.keys(this.props.environment.environments).map(
+                          (environmentId) => (
+                            <Dropdown.Item
+                              onClick={() => this.handleEnv(environmentId)}
+                              key={environmentId}
+                            >
+                              {
+                                this.props.environment.environments[environmentId]
+                                  .name
+                              }
+                            </Dropdown.Item>
+                          )
+                        )
+                      }
+                      <button
+                        className='btn btn-default'
+                        onClick={() =>
+                          this.handleEnvironmentModal('Add new Environment')}
+                      >
+                        + Add Environment
+                      </button>
+                    </Dropdown.Menu>
+                  </Dropdown>
+                </div>
+              )
+            }
           </div>
         )
       }
@@ -381,17 +390,19 @@ class Environments extends Component {
                   </Dropdown>
                 </div>
             )}
-            {this.state.originalEnvironmentReplica !== undefined && (
-              <div className='select-environment-dropdown'>
-                <Dropdown className='float-right'>
-                  <Dropdown.Toggle variant='default' id='dropdown-basic'>
-                    {this.state.originalEnvironmentReplica !== undefined
-                      ? this.state.originalEnvironmentReplica.name
-                      : 'No Environment'}
-                  </Dropdown.Toggle>
-                </Dropdown>
-              </div>
-            )}
+            {
+              this.state.originalEnvironmentReplica !== undefined && (
+                <div className='select-environment-dropdown'>
+                  <Dropdown className='float-right'>
+                    <Dropdown.Toggle variant='default' id='dropdown-basic'>
+                      {this.state.originalEnvironmentReplica !== undefined
+                        ? this.state.originalEnvironmentReplica.name
+                        : 'No Environment'}
+                    </Dropdown.Toggle>
+                  </Dropdown>
+                </div>
+              )
+            }
           </div>
         )
       } else {

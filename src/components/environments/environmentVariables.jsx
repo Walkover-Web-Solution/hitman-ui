@@ -195,64 +195,68 @@ class EnvironmentVariables extends Component {
                   </thead>
 
                   <tbody>
-                    {this.state.updatedVariableNames.map((variable, index) =>
-                      variable !== 'deleted' ? (
-                        <tr key={index}>
-                          <td className='custom-td'>
-                            <input
-                              name={index + '.name'}
-                              value={variable}
-                              onChange={this.handleChange}
-                              type='text'
-                              style={{ border: 'none' }}
-                              className='form-control'
-                            />
-                          </td>
-                          <td className='custom-td'>
-                            {' '}
-                            <input
-                              name={index + '.initialValue'}
-                              value={
-                                this.state.environment.variables[
-                                  this.state.originalVariableNames[index]
-                                ].initialValue
-                              }
-                              onChange={this.handleChange}
-                              type='text'
-                              className='form-control'
-                              style={{ border: 'none' }}
-                            />
-                          </td>
-                          <td className='custom-td'>
-                            {' '}
-                            <input
-                              name={index + '.currentValue'}
-                              value={
-                                this.state.environment.variables[
-                                  this.state.originalVariableNames[index]
-                                ].currentValue
-                              }
-                              onChange={this.handleChange}
-                              type='text'
-                              style={{ border: 'none' }}
-                              className='form-control'
-                            />
-                          </td>
-                          {this.state.updatedVariableNames.length - 1 !==
-                            index && (
+                    {
+                      this.state.updatedVariableNames.map((variable, index) =>
+                        variable !== 'deleted'
+                          ? (
+                            <tr key={index}>
                               <td className='custom-td'>
-                                <button
-                                  type='button'
-                                  className='btn btn-light btn-sm btn-block'
-                                  onClick={() => this.handleDelete(index)}
-                                >
-                                  X
-                                </button>
+                                <input
+                                  name={index + '.name'}
+                                  value={variable}
+                                  onChange={this.handleChange}
+                                  type='text'
+                                  style={{ border: 'none' }}
+                                  className='form-control'
+                                />
                               </td>
-                          )}
-                        </tr>
-                      ) : null
-                    )}
+                              <td className='custom-td'>
+                                {' '}
+                                <input
+                                  name={index + '.initialValue'}
+                                  value={
+                                    this.state.environment.variables[
+                                      this.state.originalVariableNames[index]
+                                    ].initialValue
+                                  }
+                                  onChange={this.handleChange}
+                                  type='text'
+                                  className='form-control'
+                                  style={{ border: 'none' }}
+                                />
+                              </td>
+                              <td className='custom-td'>
+                                {' '}
+                                <input
+                                  name={index + '.currentValue'}
+                                  value={
+                                    this.state.environment.variables[
+                                      this.state.originalVariableNames[index]
+                                    ].currentValue
+                                  }
+                                  onChange={this.handleChange}
+                                  type='text'
+                                  style={{ border: 'none' }}
+                                  className='form-control'
+                                />
+                              </td>
+                              {this.state.updatedVariableNames.length - 1 !==
+                                index && (
+                                  <td className='custom-td'>
+                                    <button
+                                      type='button'
+                                      className='btn btn-light btn-sm btn-block'
+                                      onClick={() => this.handleDelete(index)}
+                                    >
+                                      X
+                                    </button>
+                                  </td>
+                              )}
+                            </tr>
+                            )
+                          : null
+                      )
+                    }
                   </tbody>
                 </Table>
               </div>

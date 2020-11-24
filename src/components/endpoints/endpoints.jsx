@@ -52,7 +52,7 @@ class Endpoints extends Component {
     }
   }
 
-  componentDidMount () {}
+  componentDidMount () { }
 
   // onDragStart = (e, eId) => {
   //   this.draggedItem = eId;
@@ -265,7 +265,7 @@ class Endpoints extends Component {
       if (
         this.props.endpoints[Object.keys(this.props.endpoints)[i]].groupId &&
         this.props.endpoints[Object.keys(this.props.endpoints)[i]].groupId ===
-          this.props.group_id
+        this.props.group_id
       ) {
         endpoints[Object.keys(this.props.endpoints)[i]] = this.props.endpoints[
           Object.keys(this.props.endpoints)[i]
@@ -399,38 +399,46 @@ class Endpoints extends Component {
                         >
                           Duplicate
                         </a>
-                        {this.props.endpoints[endpointId].state === 'Draft' ||
-                        this.props.endpoints[endpointId].state === 'Reject' ? (
-                          <a
-                            className='dropdown-item'
-                            onClick={() =>
-                              this.handlePublicEndpointState(
-                                this.props.endpoints[endpointId]
-                              )}
-                          >
-                            Make Public
-                          </a>
-                            ) : null}
+                        {
+                          this.props.endpoints[endpointId].state === 'Draft' ||
+                            this.props.endpoints[endpointId].state === 'Reject'
+                            ? (
+                              <a
+                                className='dropdown-item'
+                                onClick={() =>
+                                  this.handlePublicEndpointState(
+                                    this.props.endpoints[endpointId]
+                                  )}
+                              >
+                                Make Public
+                              </a>
+                              )
+                            : null
+                        }
 
                         {this.props.endpoints[endpointId].state ===
-                        'Approved' ? (
-                          <a className='dropdown-item' disabled>
-                            Approved
-                          </a>
-                            ) : null}
+                          'Approved'
+                          ? (
+                            <a className='dropdown-item' disabled>
+                              Approved
+                            </a>
+                            )
+                          : null}
 
                         {this.props.endpoints[endpointId].state ===
-                        'Pending' ? (
-                          <a
-                            className='dropdown-item'
-                            onClick={() =>
-                              this.handleCancelRequest(
-                                this.props.endpoints[endpointId]
-                              )}
-                          >
-                            Cancel Request
-                          </a>
-                            ) : null}
+                          'Pending'
+                          ? (
+                            <a
+                              className='dropdown-item'
+                              onClick={() =>
+                                this.handleCancelRequest(
+                                  this.props.endpoints[endpointId]
+                                )}
+                            >
+                              Cancel Request
+                            </a>
+                            )
+                          : null}
                       </div>
                     </div>
                   </button>
@@ -449,30 +457,30 @@ class Endpoints extends Component {
             //         this.props.endpoints[eId].groupId === this.props.group_id
             //     )
             endpoints &&
-              Object.keys(endpoints).length !== 0 &&
-              Object.keys(endpoints).map((endpointId) => (
+            Object.keys(endpoints).length !== 0 &&
+            Object.keys(endpoints).map((endpointId) => (
+              <div
+                className='hm-sidebar-item'
+                key={endpointId}
+                onClick={() =>
+                  this.handleDisplay(
+                    this.props.endpoints[endpointId],
+                    this.props.group_id,
+                    this.props.collection_id
+                  )}
+              >
                 <div
-                  className='hm-sidebar-item'
-                  key={endpointId}
-                  onClick={() =>
-                    this.handleDisplay(
-                      this.props.endpoints[endpointId],
-                      this.props.group_id,
-                      this.props.collection_id
-                    )}
+                  className={`api-label ${this.props.endpoints[endpointId].requestType}`}
                 >
-                  <div
-                    className={`api-label ${this.props.endpoints[endpointId].requestType}`}
-                  >
-                    <div className='endpoint-request-div'>
-                      {this.props.endpoints[endpointId].requestType}
-                    </div>
-                  </div>
-                  <div className='endpoint-name-div'>
-                    {this.props.endpoints[endpointId].name}
+                  <div className='endpoint-request-div'>
+                    {this.props.endpoints[endpointId].requestType}
                   </div>
                 </div>
-              ))
+                <div className='endpoint-name-div'>
+                  {this.props.endpoints[endpointId].name}
+                </div>
+              </div>
+            ))
           }
         </>
       )
