@@ -1,94 +1,91 @@
-import React, { Component } from "react";
-import { Nav } from "react-bootstrap";
-import SavePromptModal from "./savePromptModal";
-import "./tabs.scss";
-import tabService from "./tabService";
+import React, { Component } from 'react'
+import { Nav } from 'react-bootstrap'
+import SavePromptModal from './savePromptModal'
+import './tabs.scss'
+import tabService from './tabService'
 
 class CustomTabs extends Component {
-
-  constructor(props) {
-    super(props);
+  constructor (props) {
+    super(props)
     this.state = { showSavePrompt: false }
   }
 
-
-
-  renderTabName(tabId) {
-    const tab = this.props.tabs.tabs[tabId];
-    if (!tab) return;
+  renderTabName (tabId) {
+    const tab = this.props.tabs.tabs[tabId]
+    if (!tab) return
     switch (tab.type) {
-      case "endpoint":
+      case 'endpoint':
         if (this.props.endpoints[tabId]) {
-          if (tab.previewMode)
+          if (tab.previewMode) {
             return (
-              <label style={{ fontStyle: "italic" }}>
+              <label style={{ fontStyle: 'italic' }}>
                 {this.props.endpoints[tabId].name}
               </label>
-            );
-          else return <label>{this.props.endpoints[tabId].name}</label>;
+            )
+          } else return <label>{this.props.endpoints[tabId].name}</label>
         } else {
-          return "Untitled";
+          return 'Untitled'
         }
 
-      case "page":
+      case 'page':
         if (this.props.pages[tabId]) {
-          if (tab.previewMode)
+          if (tab.previewMode) {
             return (
-              <label style={{ fontStyle: "italic" }}>
+              <label style={{ fontStyle: 'italic' }}>
                 {this.props.pages[tabId].name}
               </label>
-            );
-          else return <label>{this.props.pages[tabId].name}</label>;
+            )
+          } else return <label>{this.props.pages[tabId].name}</label>
         }
-        break;
+        break
       default:
     }
   }
 
-  removeTab(tabId) {
+  removeTab (tabId) {
     if (this.props.tabs.tabs[tabId].isModified) {
-      this.setState({ showSavePrompt: true, selectedTabId: tabId });
+      this.setState({ showSavePrompt: true, selectedTabId: tabId })
     } else {
-      tabService.removeTab(tabId, { ...this.props });
+      tabService.removeTab(tabId, { ...this.props })
     }
   }
 
-  closeSavePrompt() {
-    this.setState({ showSavePrompt: false });
+  closeSavePrompt () {
+    this.setState({ showSavePrompt: false })
   }
 
-  onDragStart(tId) {
-    this.draggedItem = tId;
-  };
+  onDragStart (tId) {
+    this.draggedItem = tId
+  }
 
-  onDragOver(e) {
-    e.preventDefault();
-  };
+  handleOnDragOver (e) {
+    e.preventDefault()
+  }
 
   onDrop = (e, droppedOnItem) => {
-    e.preventDefault();
+    e.preventDefault()
     if (this.draggedItem === droppedOnItem) {
-      this.draggedItem = null;
-      return;
+      this.draggedItem = null
+      return
     }
-    let tabsOrder = this.props.tabs.tabsOrder.filter(
+    const tabsOrder = this.props.tabs.tabsOrder.filter(
       (item) => item !== this.draggedItem
-    );
+    )
     const index = this.props.tabs.tabsOrder.findIndex(
       (tId) => tId === droppedOnItem
-    );
-    tabsOrder.splice(index, 0, this.draggedItem);
-    this.props.set_tabs_order(tabsOrder);
+    )
+    tabsOrder.splice(index, 0, this.draggedItem)
+    this.props.set_tabs_order(tabsOrder)
   };
 
-  render() {
+  render () {
     return (
-      <Nav variant="pills" className="flex-row flex-nowrap item-wrp">
+      <Nav variant='pills' className='flex-row flex-nowrap item-wrp'>
         <div>
           {this.state.showSavePrompt && (
             <SavePromptModal
               {...this.props}
-              show={true}
+              show
               onHide={() => this.closeSavePrompt()}
               tab_id={this.state.selectedTabId}
             />
@@ -98,66 +95,65 @@ class CustomTabs extends Component {
           <Nav.Item
             key={tabId}
             draggable
-            onDragOver={this.onDragOver}
+            onDragOver={this.handleOnDragOver}
             onDragStart={() => this.onDragStart(tabId)}
             onDrop={(e) => this.onDrop(e, tabId)}
           >
             <Nav.Link eventKey={tabId}>
               <button
-                className="btn"
+                className='btn'
                 onClick={() => tabService.selectTab({ ...this.props }, tabId)}
                 onDoubleClick={() => {
-                  tabService.disablePreviewMode(tabId);
+                  tabService.disablePreviewMode(tabId)
                 }}
               >
                 {this.renderTabName(tabId)}
               </button>
             </Nav.Link>
-            <button className="btn" onClick={() => this.removeTab(tabId)}>
+            <button className='btn' onClick={() => this.removeTab(tabId)}>
               {this.props.tabs.tabs[tabId].isModified ? (
-                <i className="fas fa-circle" id="modified-dot-icon"></i>
+                <i className='fas fa-circle' id='modified-dot-icon' />
               ) : (
-                  <i className="uil uil-multiply"></i>
-                )}
+                <i className='uil uil-multiply' />
+              )}
             </button>
           </Nav.Item>
         ))}
-        <Nav.Item className="tab-buttons" id="add-new-tab-button">
+        <Nav.Item className='tab-buttons' id='add-new-tab-button'>
           <button
-            className="btn"
+            className='btn'
             onClick={() => tabService.newTab({ ...this.props })}
           >
-            <i className="uil uil-plus"></i>
+            <i className='uil uil-plus' />
           </button>
         </Nav.Item>
-        <Nav.Item className="tab-buttons" id="tabs-menu-button">
-          <div className="dropdown">
+        <Nav.Item className='tab-buttons' id='tabs-menu-button'>
+          <div className='dropdown'>
             <button
-              className="btn "
-              type="button"
-              id="tabs-menu"
-              data-toggle="dropdown"
-              aria-haspopup="true"
-              aria-expanded="false"
+              className='btn '
+              type='button'
+              id='tabs-menu'
+              data-toggle='dropdown'
+              aria-haspopup='true'
+              aria-expanded='false'
             >
-              <i className="uil uil-ellipsis-h"></i>
+              <i className='uil uil-ellipsis-h' />
             </button>
             <div
-              className="dropdown-menu dropdown-menu-right"
-              aria-labelledby="tabs-menu"
+              className='dropdown-menu dropdown-menu-right'
+              aria-labelledby='tabs-menu'
             >
               <button
-                className="btn"
+                className='btn'
                 onClick={() =>
                   tabService.removeTab(this.props.tabs.activeTabId, {
-                    ...this.props,
-                  })
-                }
+                    ...this.props
+                  })}
               >
                 Close Current Tab
               </button>
               <button
-                className="btn"
+                className='btn'
                 onClick={() => tabService.removeAllTabs({ ...this.props })}
               >
                 Close All Tabs
@@ -166,8 +162,8 @@ class CustomTabs extends Component {
           </div>
         </Nav.Item>
       </Nav>
-    );
+    )
   }
 }
 
-export default CustomTabs;
+export default CustomTabs

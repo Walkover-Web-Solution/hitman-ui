@@ -132,11 +132,9 @@ class PublishDocs extends Component {
       this.groups,
       this.props
     )
-    this.setState(
-      {
-        selectedVersionId: Object.keys(this.versions)[0]
-      }
-    )
+    this.setState({
+      selectedVersionId: Object.keys(this.versions)[0]
+    })
   }
 
   setSelectedCollection (e) {
@@ -167,7 +165,9 @@ class PublishDocs extends Component {
       if (
         this.endpoints[endpointId].state === 'Approved' ||
         this.endpoints[endpointId].state === 'Pending'
-      ) { return true } else return false
+      ) {
+        return true
+      } else return false
     } else return false
   }
 
@@ -209,19 +209,15 @@ class PublishDocs extends Component {
                 onChange={this.setSelectedCollection.bind(this)}
                 value={this.state.selectedCollectionId}
               >
-                {
-                  this.props.collections
-                    ? Object.keys(this.props.collections).map((id) =>
-                        this.props.collections[id].isPublic === true
-                          ? (
-                            <option value={id}>
-                              {this.props.collections[id]?.name}
-                            </option>
-                            )
-                          : null
-                      )
-                    : null
-                }
+                {this.props.collections
+                  ? Object.keys(this.props.collections).map((id) =>
+                      this.props.collections[id].isPublic === true ? (
+                        <option value={id}>
+                          {this.props.collections[id]?.name}
+                        </option>
+                      ) : null
+                    )
+                  : null}
               </select>
             </div>
 
@@ -252,181 +248,158 @@ class PublishDocs extends Component {
                   onChange={this.setSelectedVersion.bind(this)}
                 >
                   {this.versions
-                    ? Object.keys(this.versions).map((id) =>
-                        (
-                          <option value={id}>
-                            {this.props.versions[id]?.number}
-                          </option>
-                        )
-                      )
+                    ? Object.keys(this.versions).map((id) => (
+                      <option value={id} key={id}>
+                        {this.props.versions[id]?.number}
+                      </option>
+                      ))
                     : null}
                 </select>
                 <div className='groups'>
-                  {
-                    this.pages
-                      ? Object.keys(this.pages).map((pageId) =>
-                          this.pages[pageId].versionId?.toString() ===
-                          this.state.selectedVersionId?.toString()
-                            ? (
-                                this.pages[pageId].groupId === null
-                                  ? (
-                                    <div onClick={() => this.openPage('', pageId)}>
-                                      {this.pages[pageId]?.name}
-                                    </div>
-                                    )
-                                  : null
-                              )
-                            : null
-                        )
-                      : null
-                  }
+                  {this.pages
+                    ? Object.keys(this.pages).map((pageId) =>
+                        this.pages[pageId].versionId?.toString() ===
+                        this.state.selectedVersionId?.toString() ? (
+                              this.pages[pageId].groupId === null ? (
+                                <div onClick={() => this.openPage('', pageId)}>
+                                  {this.pages[pageId]?.name}
+                                </div>
+                              ) : null
+                            ) : null
+                      )
+                    : null}
                 </div>
                 <div className='version-groups'>
                   {this.groups
                     ? Object.keys(this.groups).map((groupId) =>
                         this.groups[groupId].versionId?.toString() ===
-                        this.state.selectedVersionId?.toString()
-                          ? (
-                            <div className='groups'>
-                              {this.groups[groupId]?.name}
-                              {
-                              this.pages
-                                ? Object.keys(this.pages).map((pageId) =>
-                                    this.pages[pageId].groupId?.toString() ===
-                                    groupId?.toString() ? (
-                                      <div
-                                        onClick={() =>
-                                          this.openPage(groupId, pageId)}
-                                        className='groups'
-                                      >
-                                        {this.pages[pageId]?.name}
-                                      </div>
-                                        )
-                                      : null
-                                  )
-                                : null
-                            }
-                              {
-                              this.endpoints
-                                ? Object.keys(this.endpoints).map((endpointId) =>
-                                    this.checkEndpointStateandGroup(
-                                      endpointId,
-                                      groupId
-                                    )
-                                      ? (
-                                        <div
-                                          onClick={() =>
-                                            this.openEndpoint(groupId, endpointId)}
-                                          className='groups'
+                        this.state.selectedVersionId?.toString() ? (
+                          <div className='groups'>
+                            {this.groups[groupId]?.name}
+                            {this.pages
+                              ? Object.keys(this.pages).map((pageId) =>
+                                  this.pages[pageId].groupId?.toString() ===
+                                  groupId?.toString() ? (
+                                    <div
+                                      onClick={() =>
+                                        this.openPage(groupId, pageId)}
+                                      className='groups'
+                                    >
+                                      {this.pages[pageId]?.name}
+                                    </div>
+                                      ) : null
+                                )
+                              : null}
+                            {this.endpoints
+                              ? Object.keys(this.endpoints).map((endpointId) =>
+                                  this.checkEndpointStateandGroup(
+                                    endpointId,
+                                    groupId
+                                  ) ? (
+                                    <div
+                                      onClick={() =>
+                                        this.openEndpoint(groupId, endpointId)}
+                                      className='groups'
+                                    >
+                                      {this.endpoints[endpointId]?.name}
+                                      {this.endpoints[endpointId]?.state ===
+                                      'Pending' ? (
+                                        <span
+                                          style={{
+                                            float: 'right',
+                                            background: '#95a6b9',
+                                            padding: '5px',
+                                            borderRadius: '2px'
+                                          }}
                                         >
-                                          {this.endpoints[endpointId]?.name}
-                                          {this.endpoints[endpointId]?.state ===
-                                          'Pending'
-                                            ? (
-                                              <span
-                                                style={{
-                                                  float: 'right',
-                                                  background: '#95a6b9',
-                                                  padding: '5px',
-                                                  borderRadius: '2px'
-                                                }}
-                                              >
-                                                {' '}
-                                                New
-                                              </span>
-                                              )
-                                            : null}
-                                        </div>
-                                        )
-                                      : null
-                                  )
-                                : null
-                            }
-                            </div>
-                            )
-                          : null
+                                          {' '}
+                                          New
+                                        </span>
+                                          ) : null}
+                                    </div>
+                                      ) : null
+                                )
+                              : null}
+                          </div>
+                            ) : null
                       )
                     : null}
                 </div>
               </div>
               <div className='version-details'>
-                {this.state.selectedEndpointId
-                  ? (
-                    <div>
-                      <div className='contacts'>
-                        {this.props.groups[this.state.selectedGroupId].name}
-                      </div>
-                      <div className='list-contacts'>
-                        {this.props.endpoints[this.state.selectedEndpointId].name}
-                        {/* {this.props.endpoints[this.state.selectedEndpointId].state === "Pending" ? <span>new</span> : null} */}
-                      </div>
-                      <div className='publish-reject'>
-                        <button
-                          class='btn default'
+                {this.state.selectedEndpointId ? (
+                  <div>
+                    <div className='contacts'>
+                      {this.props.groups[this.state.selectedGroupId].name}
+                    </div>
+                    <div className='list-contacts'>
+                      {this.props.endpoints[this.state.selectedEndpointId].name}
+                      {/* {this.props.endpoints[this.state.selectedEndpointId].state === "Pending" ? <span>new</span> : null} */}
+                    </div>
+                    <div className='publish-reject'>
+                      <button
+                        class='btn default'
+                        onClick={() =>
+                          this.handleRejectEndpointRequest(
+                            this.state.selectedEndpointId
+                          )}
+                      >
+                        Reject
+                      </button>
+                      <div className='publish-button'>
+                        {' '}
+                        <Button
+                          variant='success'
                           onClick={() =>
-                            this.handleRejectEndpointRequest(
+                            this.handleApproveEndpointRequest(
                               this.state.selectedEndpointId
                             )}
                         >
-                          Reject
-                        </button>
-                        <div className='publish-button'>
-                          {' '}
-                          <Button
-                            variant='success'
-                            onClick={() =>
-                              this.handleApproveEndpointRequest(
-                                this.state.selectedEndpointId
-                              )}
-                          >
-                            PUBLISH
-                          </Button>
-                        </div>
+                          PUBLISH
+                        </Button>
                       </div>
-
-                      <DisplayEndpoint
-                        {...this.props}
-                        endpointId={this.state.selectedEndpointId}
-                        groupId={this.state.selectedGroupId}
-                      />
                     </div>
-                    )
-                  : null}
-                {this.state.selectedPageId
-                  ? (
-                    <div>
-                      <div className='contacts'>
-                        {this.props.groups[this.state.selectedGroupId]?.name}
-                      </div>
-                      <div className='list-contacts'>
-                        {this.props.pages[this.state.selectedPageId].name}
-                      </div>
-                      <div className='publish-reject'>
-                        <button
-                          class='btn default'
+
+                    <DisplayEndpoint
+                      {...this.props}
+                      endpointId={this.state.selectedEndpointId}
+                      groupId={this.state.selectedGroupId}
+                    />
+                  </div>
+                ) : null}
+                {this.state.selectedPageId ? (
+                  <div>
+                    <div className='contacts'>
+                      {this.props.groups[this.state.selectedGroupId]?.name}
+                    </div>
+                    <div className='list-contacts'>
+                      {this.props.pages[this.state.selectedPageId].name}
+                    </div>
+                    <div className='publish-reject'>
+                      <button
+                        class='btn default'
+                        onClick={() =>
+                          this.handleRejectPageRequest(
+                            this.state.selectedPageId
+                          )}
+                      >
+                        Reject
+                      </button>
+                      <div className='publish-button'>
+                        <Button
+                          variant='success'
                           onClick={() =>
-                            this.handleRejectPageRequest(
+                            this.handleApprovePageRequest(
                               this.state.selectedPageId
                             )}
                         >
-                          Reject
-                        </button>
-                        <div className='publish-button'>
-                          <Button
-                            variant='success'
-                            onClick={() =>
-                              this.handleApprovePageRequest(
-                                this.state.selectedPageId
-                              )}
-                          >
-                            PUBLISH
-                          </Button>
-                        </div>
+                          PUBLISH
+                        </Button>
                       </div>
-                      {/* <DisplayPage pageId={this.state.selectedPageId} groupId={this.state.selectedGroupId} {...this.props} /> */}
                     </div>
-                    )
-                  : null}
+                    {/* <DisplayPage pageId={this.state.selectedPageId} groupId={this.state.selectedGroupId} {...this.props} /> */}
+                  </div>
+                ) : null}
               </div>
             </div>
           </div>

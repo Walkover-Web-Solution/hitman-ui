@@ -1,44 +1,44 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
-import { toast } from "react-toastify";
-import { Dropdown, ButtonGroup } from "react-bootstrap";
-import store from "../../store/store";
-import { isDashboardRoute } from "../common/utility";
-import { isSavedEndpoint } from "../common/utility";
-import tabService from "../tabs/tabService";
-import { closeTab } from "../tabs/redux/tabsActions";
-import tabStatusTypes from "../tabs/tabStatusTypes";
-import CodeTemplate from "./codeTemplate";
-import SaveAsSidebar from "./saveAsSidebar";
-import BodyContainer from "./displayBody";
-import DisplayDescription from "./displayDescription";
-import DisplayResponse from "./displayResponse";
-import SampleResponse from "./sampleResponse";
-import { getCurrentUser } from "../auth/authService";
-import endpointApiService from "./endpointApiService";
-import "./endpoints.scss";
-import GenericTable from "./genericTable";
-import HostContainer from "./hostContainer";
-import PublicBodyContainer from "./publicBodyContainer";
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
+import { toast } from 'react-toastify'
+import { Dropdown, ButtonGroup } from 'react-bootstrap'
+import store from '../../store/store'
+import { isDashboardRoute, isSavedEndpoint } from '../common/utility'
+
+import tabService from '../tabs/tabService'
+import { closeTab } from '../tabs/redux/tabsActions'
+import tabStatusTypes from '../tabs/tabStatusTypes'
+import CodeTemplate from './codeTemplate'
+import SaveAsSidebar from './saveAsSidebar'
+import BodyContainer from './displayBody'
+import DisplayDescription from './displayDescription'
+import DisplayResponse from './displayResponse'
+import SampleResponse from './sampleResponse'
+import { getCurrentUser } from '../auth/authService'
+import endpointApiService from './endpointApiService'
+import './endpoints.scss'
+import GenericTable from './genericTable'
+import HostContainer from './hostContainer'
+import PublicBodyContainer from './publicBodyContainer'
 import {
   addEndpoint,
   updateEndpoint,
-  setAuthorizationType,
-} from "./redux/endpointsActions";
+  setAuthorizationType
+} from './redux/endpointsActions'
 import {
   setAuthorizationResponses,
-  setAuthorizationData,
-} from "../collectionVersions/redux/collectionVersionsActions";
-import { addHistory } from "../history/redux/historyAction";
-import collectionsApiService from "../collections/collectionsApiService";
-import indexedDbService from "../indexedDb/indexedDbService";
-import Authorization from "./displayAuthorization";
-import LoginSignupModal from "../main/loginSignupModal"
-const shortid = require('shortid');
+  setAuthorizationData
+} from '../collectionVersions/redux/collectionVersionsActions'
+import { addHistory } from '../history/redux/historyAction'
+import collectionsApiService from '../collections/collectionsApiService'
+import indexedDbService from '../indexedDb/indexedDbService'
+import Authorization from './displayAuthorization'
+import LoginSignupModal from '../main/loginSignupModal'
+const shortid = require('shortid')
 
-const status = require("http-status");
-var URI = require("urijs");
+const status = require('http-status')
+const URI = require('urijs')
 
 const mapStateToProps = (state) => {
   return {
@@ -47,11 +47,11 @@ const mapStateToProps = (state) => {
     endpoints: state.endpoints,
     environment: state.environment.environments[
       state.environment.currentEnvironmentId
-    ] || { id: null, name: "No Environment" },
+    ] || { id: null, name: 'No Environment' },
     currentEnvironmentId: state.environment.currentEnvironmentId,
-    environments: state.environment.environments,
-  };
-};
+    environments: state.environment.environments
+  }
+}
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
@@ -68,116 +68,117 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     // generate_temp_tab: (id) => dispatch(generateTempTab(id))
     close_tab: (id) => dispatch(closeTab(id)),
     add_history: (data) => dispatch(addHistory(data))
-  };
-};
+  }
+}
 
 class DisplayEndpoint extends Component {
-
-  constructor(props) {
-    super(props);
+  constructor (props) {
+    super(props)
     this.state = {
       data: {
-        name: "",
-        method: "GET",
-        body: { type: "none", value: "" },
-        uri: "",
-        updatedUri: "",
+        name: '',
+        method: 'GET',
+        body: { type: 'none', value: '' },
+        uri: '',
+        updatedUri: ''
       },
-      methodList: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+      methodList: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
       environment: {},
-      startTime: "",
-      timeElapsed: "",
+      startTime: '',
+      timeElapsed: '',
       response: {},
       endpoint: {},
       groupId: null,
-      title: "",
+      title: '',
       flagResponse: false,
       originalHeaders: [
         {
-          checked: "notApplicable",
-          key: "",
-          value: "",
-          description: "",
-        },
+          checked: 'notApplicable',
+          key: '',
+          value: '',
+          description: ''
+        }
       ],
       originalParams: [
         {
-          checked: "notApplicable",
-          key: "",
-          value: "",
-          description: "",
-        },
+          checked: 'notApplicable',
+          key: '',
+          value: '',
+          description: ''
+        }
       ],
       authType: null,
-      oldDescription: "",
+      oldDescription: '',
       headers: [],
       publicBodyFlag: true,
       params: [],
       bodyDescription: {},
       fieldDescription: {},
       sampleResponseArray: [],
-      sampleResponseFlagArray: [],
-    };
+      sampleResponseFlagArray: []
+    }
 
-    this.uri = React.createRef();
-    this.paramKey = React.createRef();
-
+    this.uri = React.createRef()
+    this.paramKey = React.createRef()
 
     this.customState = {
-      BASE_URL: "",
-      customBASE_URL: "",
-    };
+      BASE_URL: '',
+      customBASE_URL: ''
+    }
 
     this.structueParamsHeaders = [
       {
-        checked: "notApplicable",
-        key: "",
-        value: "",
-        description: "",
-      },
-    ];
+        checked: 'notApplicable',
+        key: '',
+        value: '',
+        description: ''
+      }
+    ]
   }
 
-  async componentDidMount() {
-    this.endpointId = this.props.endpointId ? this.props.endpointId : isDashboardRoute(this.props) ? this.props.location.pathname.split("/")[3] :
-      this.props.location.pathname.split("/")[4];
+  async componentDidMount () {
+    this.endpointId = this.props.endpointId
+      ? this.props.endpointId
+      : isDashboardRoute(this.props)
+        ? this.props.location.pathname.split('/')[3]
+        : this.props.location.pathname.split('/')[4]
 
-    if (this.props.location.pathname.split("/")[3] === "new") {
+    if (this.props.location.pathname.split('/')[3] === 'new') {
       this.setState({
         data: {
-          name: "",
-          method: "GET",
-          body: { type: "none", value: null },
-          uri: "",
-          updatedUri: "",
+          name: '',
+          method: 'GET',
+          body: { type: 'none', value: null },
+          uri: '',
+          updatedUri: ''
         },
-        startTime: "",
-        timeElapsed: "",
+        startTime: '',
+        timeElapsed: '',
         response: {},
         endpoint: {},
         groupId: this.props.location.groupId,
-        title: "Add New Endpoint",
+        title: 'Add New Endpoint',
         flagResponse: false,
         showDescriptionFlag: false,
         authType: null,
         originalHeaders: [
           {
-            checked: "notApplicable",
-            key: "",
-            value: "",
-            description: "",
-          },
+            checked: 'notApplicable',
+            key: '',
+            value: '',
+            description: ''
+          }
         ],
         originalParams: [
           {
-            checked: "notApplicable",
-            key: "",
-            value: "",
-            description: "",
-          },
-        ],
-      });
-      this.setAccessToken();
+            checked: 'notApplicable',
+            key: '',
+            value: '',
+            description: ''
+          }
+        ]
+      })
+      this.setAccessToken()
     }
     // if (!isDashboardRoute(this.props)) {
     //   let collectionIdentifier = this.props.location.pathname.split("/")[2];
@@ -185,64 +186,66 @@ class DisplayEndpoint extends Component {
     // }
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate (prevProps, prevState) {
     if (!isDashboardRoute(this.props)) {
-      if (this.state.data !== prevState.data || this.state.originalParams !== prevState.originalParams || this.state.originalHeaders !== prevState.originalHeaders) {
-        this.prepareHarObject();
+      if (
+        this.state.data !== prevState.data ||
+        this.state.originalParams !== prevState.originalParams ||
+        this.state.originalHeaders !== prevState.originalHeaders
+      ) {
+        this.prepareHarObject()
       }
     }
   }
 
-
-
-  async fetchPublicCollection(collectionId) {
-    let collection = await collectionsApiService.getCollection(collectionId);
+  async fetchPublicCollection (collectionId) {
+    const collection = await collectionsApiService.getCollection(collectionId)
     if (collection.data.environment != null) {
       this.setState({
         publicCollectionEnvironmentId: collection.data.environment.id,
-        originalEnvironmentReplica: collection.data.environment,
-      });
+        originalEnvironmentReplica: collection.data.environment
+      })
     }
     if (collection.data.environment == null) {
       this.setState({
         publicCollectionEnvironmentId: null,
-        originalEnvironmentReplica: null,
-      });
+        originalEnvironmentReplica: null
+      })
     }
   }
 
-  fetchEndpoint(flag, endpointId) {
-    let endpoint = {};
-    let originalParams = [];
-    let originalHeaders = [];
-    let pathVariables = [];
-    const split = this.props.location.pathname.split("/");
+  fetchEndpoint (flag, endpointId) {
+    let endpoint = {}
+    let originalParams = []
+    let originalHeaders = []
+    let pathVariables = []
+    // const split = this.props.location.pathname.split('/')
     endpointId = this.endpointId
-    const { endpoints } = store.getState();
-    const { groups } = store.getState();
-    const { versions } = store.getState();
-    if (this.props.location.pathname.split("/")[3] === "new" && !this.title) {
+    const { endpoints } = store.getState()
+    const { groups } = store.getState()
+    const { versions } = store.getState()
+    if (this.props.location.pathname.split('/')[3] === 'new' && !this.title) {
       originalParams = [
         {
-          checked: "notApplicable",
-          key: "",
-          value: "",
-          description: "",
-        },
-      ];
+          checked: 'notApplicable',
+          key: '',
+          value: '',
+          description: ''
+        }
+      ]
       originalHeaders = [
         {
-          checked: "notApplicable",
-          key: "",
-          value: "",
-          description: "",
-        },
-      ];
+          checked: 'notApplicable',
+          key: '',
+          value: '',
+          description: ''
+        }
+      ]
 
       this.setState({
         originalParams,
-        originalHeaders,
-      });
+        originalHeaders
+      })
     } else if (
       Object.keys(groups).length !== 0 &&
       Object.keys(versions).length !== 0 &&
@@ -250,41 +253,41 @@ class DisplayEndpoint extends Component {
       endpointId &&
       flag === 0
     ) {
-      flag = 1;
-      endpoint = endpoints[endpointId];
-      let authType = {};
+      flag = 1
+      endpoint = endpoints[endpointId]
+      let authType = {}
       if (endpoint.authorizationType !== null) {
         authType = {
           type: endpoint.authorizationType.type,
-          value: endpoint.authorizationType.value,
-        };
+          value: endpoint.authorizationType.value
+        }
       } else {
-        authType = endpoint.authorizationType;
+        authType = endpoint.authorizationType
       }
 
-      const groupId = endpoints[endpointId].groupId;
+      const groupId = endpoints[endpointId].groupId
 
-      //To fetch originalParams from Params
-      originalParams = this.fetchoriginalParams(endpoint.params);
-      let params = this.fetchoriginalParams(endpoint.params);
+      // To fetch originalParams from Params
+      originalParams = this.fetchoriginalParams(endpoint.params)
+      const params = this.fetchoriginalParams(endpoint.params)
 
-      //To fetch originalHeaders from Headers
-      originalHeaders = this.fetchoriginalHeaders(endpoint.headers);
-      let headers = this.fetchoriginalHeaders(endpoint.headers);
-      this.customState.customBASE_URL = endpoint.BASE_URL;
+      // To fetch originalHeaders from Headers
+      originalHeaders = this.fetchoriginalHeaders(endpoint.headers)
+      const headers = this.fetchoriginalHeaders(endpoint.headers)
+      this.customState.customBASE_URL = endpoint.BASE_URL
 
-      //To fetch Path Variables
+      // To fetch Path Variables
       if (endpoint.pathVariables.length !== 0) {
-        pathVariables = this.fetchPathVariables(endpoint.pathVariables);
-        this.setState({ pathVariables });
+        pathVariables = this.fetchPathVariables(endpoint.pathVariables)
+        this.setState({ pathVariables })
       }
       const fieldDescription = this.getFieldDescription(
         endpoint.bodyDescription
-      );
+      )
 
       const sampleResponseFlagArray = this.getSampleResponseFlagArray(
         endpoint.sampleResponse
-      );
+      )
 
       this.setState({
         data: {
@@ -292,7 +295,7 @@ class DisplayEndpoint extends Component {
           uri: endpoint.uri,
           updatedUri: endpoint.uri,
           name: endpoint.name,
-          body: endpoint.body,
+          body: endpoint.body
         },
         params,
         headers,
@@ -303,160 +306,160 @@ class DisplayEndpoint extends Component {
         sampleResponseFlagArray,
         groupId,
         oldDescription: endpoint.description,
-        title: "update endpoint",
+        title: 'update endpoint',
         bodyDescription: endpoint.bodyDescription,
         authType,
         fieldDescription,
         publicBodyFlag: true,
         bodyFlag: true,
-        response: {},
-      });
-      this.setAccessToken();
+        response: {}
+      })
+      this.setAccessToken()
     }
   }
 
-  getFieldDescription(bodyDescription) {
-    let keys = Object.keys(bodyDescription);
-    let fieldDescription = {};
+  getFieldDescription (bodyDescription) {
+    const keys = Object.keys(bodyDescription)
+    const fieldDescription = {}
     for (let i = 0; i < keys.length; i++) {
-      fieldDescription[keys[i]] = bodyDescription[keys[i]].description;
+      fieldDescription[keys[i]] = bodyDescription[keys[i]].description
     }
-    return fieldDescription;
+    return fieldDescription
   }
 
   handleChange = (e) => {
-    let data = { ...this.state.data };
-    data[e.currentTarget.name] = e.currentTarget.value;
-    data.uri = e.currentTarget.value;
-    if (e.currentTarget.name === "updatedUri") {
-      let keys = [];
-      let values = [];
-      let description = [];
-      let originalParams = this.state.originalParams;
-      let updatedUri = e.currentTarget.value.split("?")[1];
-      let path = new URI(e.currentTarget.value);
-      path = path.pathname();
-      let pathVariableKeys = path.split("/");
-      let pathVariableKeysObject = {};
+    const data = { ...this.state.data }
+    data[e.currentTarget.name] = e.currentTarget.value
+    data.uri = e.currentTarget.value
+    if (e.currentTarget.name === 'updatedUri') {
+      const keys = []
+      const values = []
+      const description = []
+      let originalParams = this.state.originalParams
+      const updatedUri = e.currentTarget.value.split('?')[1]
+      let path = new URI(e.currentTarget.value)
+      path = path.pathname()
+      const pathVariableKeys = path.split('/')
+      const pathVariableKeysObject = {}
       for (let i = 0; i < pathVariableKeys.length; i++) {
-        pathVariableKeysObject[pathVariableKeys[i]] = false;
+        pathVariableKeysObject[pathVariableKeys[i]] = false
       }
-      this.setPathVariables(pathVariableKeys, pathVariableKeysObject);
-      let result = URI.parseQuery(updatedUri);
+      this.setPathVariables(pathVariableKeys, pathVariableKeysObject)
+      const result = URI.parseQuery(updatedUri)
       for (let i = 0; i < Object.keys(result).length; i++) {
-        keys.push(Object.keys(result)[i]);
+        keys.push(Object.keys(result)[i])
       }
       for (let i = 0; i < keys.length; i++) {
-        values.push(result[keys[i]]);
+        values.push(result[keys[i]])
         if (originalParams[i]) {
           for (let k = 0; k < originalParams.length; k++) {
             if (
               originalParams[k].key === keys[i] &&
-              originalParams[k].checked === "true"
+              originalParams[k].checked === 'true'
             ) {
-              description[i] = originalParams[k].description;
-              break;
+              description[i] = originalParams[k].description
+              break
             } else if (k === originalParams.length - 1) {
-              description[i] = "";
+              description[i] = ''
             }
           }
         }
       }
-      originalParams = this.makeOriginalParams(keys, values, description);
-      this.setState({ originalParams });
+      originalParams = this.makeOriginalParams(keys, values, description)
+      this.setState({ originalParams })
     }
     if (isDashboardRoute(this.props)) {
-      tabService.markTabAsModified(this.props.tab.id);
+      tabService.markTabAsModified(this.props.tab.id)
     }
-    this.setState({ data });
+    this.setState({ data })
   };
 
-  setPathVariables(pathVariableKeys, pathVariableKeysObject) {
-    let pathVariables = [];
+  setPathVariables (pathVariableKeys, pathVariableKeysObject) {
+    const pathVariables = []
     for (let i = 1; i < pathVariableKeys.length; i++) {
       if (
-        pathVariableKeys[i][0] === ":" &&
+        pathVariableKeys[i][0] === ':' &&
         pathVariableKeysObject[pathVariableKeys[i]] === false
       ) {
-        pathVariableKeysObject[pathVariableKeys[i]] = true;
+        pathVariableKeysObject[pathVariableKeys[i]] = true
         pathVariables.push({
-          checked: "notApplicable",
+          checked: 'notApplicable',
           key: pathVariableKeys[i].slice(1),
           value: this.state.pathVariables[i - 1]
             ? this.state.pathVariables[i - 1].key === pathVariableKeys[i]
-              ? this.state.pathVariables[i - 1].value
-              : ""
-            : "",
+                ? this.state.pathVariables[i - 1].value
+                : ''
+            : '',
           description: this.state.pathVariables[i - 1]
             ? this.state.pathVariables[i - 1].key === pathVariableKeys[i]
-              ? this.state.pathVariables[i - 1].description
-              : ""
-            : "",
-        });
+                ? this.state.pathVariables[i - 1].description
+                : ''
+            : ''
+        })
       }
     }
 
-    this.setState({ pathVariables });
+    this.setState({ pathVariables })
   }
 
-  getSampleResponseFlagArray(sampleResponse) {
-    let sampleResponseFlagArray = [];
+  getSampleResponseFlagArray (sampleResponse) {
+    const sampleResponseFlagArray = []
     if (sampleResponse) {
-      let index = 0;
+      let index = 0
       while (index < sampleResponse.length) {
-        sampleResponseFlagArray.push(!isDashboardRoute(this.props));
-        index++;
+        sampleResponseFlagArray.push(!isDashboardRoute(this.props))
+        index++
       }
     }
-    return sampleResponseFlagArray;
+    return sampleResponseFlagArray
   }
 
-  makeOriginalParams(keys, values, description) {
-    let originalParams = [];
+  makeOriginalParams (keys, values, description) {
+    const originalParams = []
     for (let i = 0; i < this.state.originalParams.length; i++) {
-      if (this.state.originalParams[i].checked === "false") {
+      if (this.state.originalParams[i].checked === 'false') {
         originalParams.push({
           checked: this.state.originalParams[i].checked,
           key: this.state.originalParams[i].key,
           value: this.state.originalParams[i].value,
-          description: this.state.originalParams[i].description,
-        });
+          description: this.state.originalParams[i].description
+        })
       }
     }
     for (let i = 0; i < keys.length; i++) {
       originalParams.push({
-        checked: "true",
+        checked: 'true',
         key: keys[i],
         value: values[i],
-        description: description[i],
-      });
+        description: description[i]
+      })
     }
     originalParams.push({
-      checked: "notApplicable",
-      key: "",
-      value: "",
-      description: "",
-    });
-    return originalParams;
+      checked: 'notApplicable',
+      key: '',
+      value: '',
+      description: ''
+    })
+    return originalParams
   }
 
-  replaceVariables(str) {
-    str = str.toString();
-    const regexp = /{{(\w+)}}/g;
-    let match = regexp.exec(str);
-    let variables = [];
-    if (match === null) return str;
+  replaceVariables (str) {
+    str = str.toString()
+    const regexp = /{{(\w+)}}/g
+    let match = regexp.exec(str)
+    const variables = []
+    if (match === null) return str
 
     if (isDashboardRoute(this.props)) {
       if (!this.props.environment.variables) {
-        return str.replace(regexp, "");
+        return str.replace(regexp, '')
       }
       do {
-        variables.push(match[1]);
-      } while ((match = regexp.exec(str)) !== null);
+        variables.push(match[1])
+      } while ((match = regexp.exec(str)) !== null)
       for (let i = 0; i < variables.length; i++) {
         if (!this.props.environment.variables[variables[i]]) {
-          str = str.replace(`{{${variables[i]}}}`, "");
+          str = str.replace(`{{${variables[i]}}}`, '')
         } else if (
           isDashboardRoute(this.props) &&
           this.props.environment.variables[variables[i]].currentValue
@@ -464,35 +467,35 @@ class DisplayEndpoint extends Component {
           str = str.replace(
             `{{${variables[i]}}}`,
             this.props.environment.variables[variables[i]].currentValue
-          );
+          )
         } else if (
           this.props.environment.variables[variables[i]].initialValue
         ) {
           str = str.replace(
             `{{${variables[i]}}}`,
             this.props.environment.variables[variables[i]].initialValue
-          );
+          )
         } else {
-          str = str.replace(`{{${variables[i]}}}`, "");
+          str = str.replace(`{{${variables[i]}}}`, '')
         }
       }
     } else {
-      let environmentId = this.state.publicCollectionEnvironmentId;
-      let originalEnv = this.state.originalEnvironmentReplica;
+      const environmentId = this.state.publicCollectionEnvironmentId
+      const originalEnv = this.state.originalEnvironmentReplica
       if (
         this.props.environments[environmentId] !== undefined ||
         (this.props.environments[environmentId] === undefined &&
           originalEnv === null)
       ) {
         if (!this.props.environments[environmentId].variables) {
-          return str.replace(regexp, "");
+          return str.replace(regexp, '')
         }
         do {
-          variables.push(match[1]);
-        } while ((match = regexp.exec(str)) !== null);
+          variables.push(match[1])
+        } while ((match = regexp.exec(str)) !== null)
         for (let i = 0; i < variables.length; i++) {
           if (!this.props.environments[environmentId].variables[variables[i]]) {
-            str = str.replace(`{{${variables[i]}}}`, "");
+            str = str.replace(`{{${variables[i]}}}`, '')
           } else if (
             this.props.environments[environmentId].variables[variables[i]]
               .initialValue
@@ -501,146 +504,146 @@ class DisplayEndpoint extends Component {
               `{{${variables[i]}}}`,
               this.props.environments[environmentId].variables[variables[i]]
                 .initialValue
-            );
+            )
           } else {
-            str = str.replace(`{{${variables[i]}}}`, "");
+            str = str.replace(`{{${variables[i]}}}`, '')
           }
         }
       }
-      //If Environment is Deleted
+      // If Environment is Deleted
       if (
         this.props.environments[environmentId] === undefined &&
         environmentId != null &&
         originalEnv != null
       ) {
         if (!originalEnv.variables) {
-          return str.replace(regexp, "");
+          return str.replace(regexp, '')
         }
         do {
-          variables.push(match[1]);
-        } while ((match = regexp.exec(str)) !== null);
+          variables.push(match[1])
+        } while ((match = regexp.exec(str)) !== null)
         for (let i = 0; i < variables.length; i++) {
           if (!originalEnv.variables[variables[i]]) {
-            str = str.replace(`{{${variables[i]}}}`, "");
+            str = str.replace(`{{${variables[i]}}}`, '')
           } else if (originalEnv.variables[variables[i]].initialValue) {
             str = str.replace(
               `{{${variables[i]}}}`,
               originalEnv.variables[variables[i]].initialValue
-            );
+            )
           } else {
-            str = str.replace(`{{${variables[i]}}}`, "");
+            str = str.replace(`{{${variables[i]}}}`, '')
           }
         }
       }
     }
-    return str;
+    return str
   }
 
-  replaceVariablesInJson(json) {
-    const keys = Object.keys(json);
+  replaceVariablesInJson (json) {
+    const keys = Object.keys(json)
     for (let i = 0; i < keys.length; i++) {
-      json[keys[i]] = this.replaceVariables(json[keys[i]]);
-      const updatedKey = this.replaceVariables(keys[i]);
+      json[keys[i]] = this.replaceVariables(json[keys[i]])
+      const updatedKey = this.replaceVariables(keys[i])
       if (updatedKey !== keys[i]) {
-        json[updatedKey] = json[keys[i]];
-        delete json[keys[i]];
+        json[updatedKey] = json[keys[i]]
+        delete json[keys[i]]
       }
     }
-    return json;
+    return json
   }
 
-  parseBody(rawBody) {
-    let body = {};
+  parseBody (rawBody) {
+    let body = {}
     try {
-      body = JSON.parse(rawBody);
-      return body;
+      body = JSON.parse(rawBody)
+      return body
     } catch (error) {
-      toast.error("Invalid Body");
-      return body;
+      toast.error('Invalid Body')
+      return body
     }
   }
 
-  handleErrorResponse(error) {
+  handleErrorResponse (error) {
     if (error.response) {
-      let response = {
+      const response = {
         status: error.response.status,
         statusText: status[error.response.status],
-        data: error.response.data,
-      };
-      this.setState({ response, flagResponse: true });
+        data: error.response.data
+      }
+      this.setState({ response, flagResponse: true })
     } else {
-      this.setState({ flagResponse: false });
+      this.setState({ flagResponse: false })
     }
   }
 
-  async handleApiCall(api, body, headerJson, bodyType) {
-    let responseJson = {};
+  async handleApiCall (api, body, headerJson, bodyType) {
+    let responseJson = {}
     try {
-      let header = this.replaceVariablesInJson(headerJson);
+      const header = this.replaceVariablesInJson(headerJson)
       responseJson = await endpointApiService.apiTest(
         api,
         this.state.data.method,
         body,
         header,
         bodyType
-      );
-      let response;
+      )
+      let response
       if (responseJson?.data?.status) {
         const {
           status,
           statusText,
           response: data,
-          headers,
-        } = responseJson.data;
-        response = { status, statusText, data, headers };
+          headers
+        } = responseJson.data
+        response = { status, statusText, data, headers }
       } else {
-        response = { ...responseJson };
+        response = { ...responseJson }
       }
       if (responseJson.status === 200) {
-        let timeElapsed = new Date().getTime() - this.state.startTime;
-        this.setState({ response, timeElapsed, flagResponse: true });
+        const timeElapsed = new Date().getTime() - this.state.startTime
+        this.setState({ response, timeElapsed, flagResponse: true })
       }
     } catch (error) {
-      this.handleErrorResponse(error);
+      this.handleErrorResponse(error)
     }
   }
 
-  setPathVariableValues() {
-    let uri = new URI(this.uri.current.value);
-    uri = uri.pathname();
-    let pathParameters = uri.split("/");
-    let uniquePathParameters = {};
-    let path = "";
-    let counter = 0;
+  setPathVariableValues () {
+    let uri = new URI(this.uri.current.value)
+    uri = uri.pathname()
+    const pathParameters = uri.split('/')
+    const uniquePathParameters = {}
+    let path = ''
+    let counter = 0
     for (let i = 0; i < pathParameters.length; i++) {
-      if (pathParameters[i][0] === ":") {
+      if (pathParameters[i][0] === ':') {
         if (
           uniquePathParameters[pathParameters[i]] ||
-          uniquePathParameters[pathParameters[i]] === ""
+          uniquePathParameters[pathParameters[i]] === ''
         ) {
-          path = path + "/" + uniquePathParameters[pathParameters[i]];
+          path = path + '/' + uniquePathParameters[pathParameters[i]]
         } else {
           uniquePathParameters[pathParameters[i]] = this.state.pathVariables[
             counter
-          ].value;
-          path = path + "/" + this.state.pathVariables[counter].value;
-          counter++;
+          ].value
+          path = path + '/' + this.state.pathVariables[counter].value
+          counter++
         }
       } else if (pathParameters[i].length !== 0) {
-        path = path + "/" + pathParameters[i];
+        path = path + '/' + pathParameters[i]
       }
     }
-    return path;
+    return path
   }
 
   setData = async () => {
-    let body = this.state.data.body;
-    if (this.state.data.body.type === "raw") {
-      body.value = this.parseBody(body.value);
+    const body = this.state.data.body
+    if (this.state.data.body.type === 'raw') {
+      body.value = this.parseBody(body.value)
     }
-    const headersData = this.doSubmitHeader("save");
-    const updatedParams = this.doSubmitParam();
-    const pathVariables = this.doSubmitPathVariables();
+    const headersData = this.doSubmitHeader('save')
+    const updatedParams = this.doSubmitParam()
+    const pathVariables = this.doSubmitPathVariables()
     const endpoint = {
       uri: this.uri.current.value,
       name: this.state.data.name,
@@ -650,19 +653,17 @@ class DisplayEndpoint extends Component {
       params: updatedParams,
       pathVariables: pathVariables,
       BASE_URL:
-        this.customState.selectedHost === "customHost"
+        this.customState.selectedHost === 'customHost'
           ? this.customState.BASE_URL
           : null,
       bodyDescription:
-        this.state.data.body.type === "JSON"
-          ? this.state.bodyDescription
-          : {},
-      authorizationType: this.state.authType,
-    };
-    const response = { ...this.state.response };
-    const createdAt = new Date();
-    const timeElapsed = this.state.timeElapsed;
-    let obj = {
+        this.state.data.body.type === 'JSON' ? this.state.bodyDescription : {},
+      authorizationType: this.state.authType
+    }
+    const response = { ...this.state.response }
+    const createdAt = new Date()
+    const timeElapsed = this.state.timeElapsed
+    const obj = {
       id: shortid.generate(),
       endpoint: { ...endpoint },
       response,
@@ -670,47 +671,47 @@ class DisplayEndpoint extends Component {
       createdAt
     }
     this.props.add_history(obj)
-  }
-
-  handleSend = async () => {
-    let startTime = new Date().getTime();
-    let response = {};
-    this.setState({ startTime, response });
-    const headersData = this.doSubmitHeader("send");
-    const BASE_URL = this.customState.BASE_URL;
-    let uri = new URI(this.uri.current.value);
-    let queryparams = uri.search();
-    let path = this.setPathVariableValues();
-    let api = BASE_URL + path + queryparams;
-    api = this.replaceVariables(api);
-    let headerJson = {};
-    Object.keys(headersData).forEach((header) => {
-      headerJson[header] = headersData[header].value;
-    });
-    let { body, headers } = this.formatBody(this.state.data.body, headerJson);
-    try {
-      if (this.state.data.body.type === "JSON") JSON.parse(body);
-    } catch (e) {
-      toast.error("Invalid JSON Body");
-    }
-    await this.handleApiCall(api, body, headers, this.state.data.body.type);
-    this.setData();
   };
 
-  extractPosition(groupId) {
-    let count = -1;
+  handleSend = async () => {
+    const startTime = new Date().getTime()
+    const response = {}
+    this.setState({ startTime, response })
+    const headersData = this.doSubmitHeader('send')
+    const BASE_URL = this.customState.BASE_URL
+    const uri = new URI(this.uri.current.value)
+    const queryparams = uri.search()
+    const path = this.setPathVariableValues()
+    let api = BASE_URL + path + queryparams
+    api = this.replaceVariables(api)
+    const headerJson = {}
+    Object.keys(headersData).forEach((header) => {
+      headerJson[header] = headersData[header].value
+    })
+    const { body, headers } = this.formatBody(this.state.data.body, headerJson)
+    try {
+      if (this.state.data.body.type === 'JSON') JSON.parse(body)
+    } catch (e) {
+      toast.error('Invalid JSON Body')
+    }
+    await this.handleApiCall(api, body, headers, this.state.data.body.type)
+    this.setData()
+  };
+
+  extractPosition (groupId) {
+    let count = -1
     for (let i = 0; i < Object.keys(this.props.endpoints).length; i++) {
       if (
         groupId ===
         this.props.endpoints[Object.keys(this.props.endpoints)[i]].groupId
       ) {
-        count = count + 1;
+        count = count + 1
       }
     }
-    return count + 1;
+    return count + 1
   }
 
-  extractCollectionId(groupId) {
+  extractCollectionId (groupId) {
     const group = this.props.groups[groupId]
     const versionId = group.versionId
     const version = this.props.versions[versionId]
@@ -724,15 +725,15 @@ class DisplayEndpoint extends Component {
       })
     }
     if (!(this.state.groupId || groupId)) {
-      this.openEndpointFormModal();
+      this.openEndpointFormModal()
     } else {
-      let body = this.state.data.body;
-      if (this.state.data.body.type === "raw") {
-        body.value = this.parseBody(body.value);
+      const body = this.state.data.body
+      if (this.state.data.body.type === 'raw') {
+        body.value = this.parseBody(body.value)
       }
-      const headersData = this.doSubmitHeader("save");
-      const updatedParams = this.doSubmitParam();
-      const pathVariables = this.doSubmitPathVariables();
+      const headersData = this.doSubmitHeader('save')
+      const updatedParams = this.doSubmitParam()
+      const pathVariables = this.doSubmitPathVariables()
       const endpoint = {
         uri: this.uri.current.value,
         name: EndpointName || this.state.data.name,
@@ -742,409 +743,412 @@ class DisplayEndpoint extends Component {
         params: updatedParams,
         pathVariables: pathVariables,
         BASE_URL:
-          this.customState.selectedHost === "customHost"
+          this.customState.selectedHost === 'customHost'
             ? this.customState.BASE_URL
             : null,
         bodyDescription:
-          this.state.data.body.type === "JSON"
+          this.state.data.body.type === 'JSON'
             ? this.state.bodyDescription
             : {},
-        authorizationType: this.state.authType,
-      };
-      if (endpoint.name === "") toast.error("Please enter Endpoint name");
-      else if (this.props.location.pathname.split("/")[3] === "new") {
-        endpoint.requestId = this.props.tab.id;
-        const collectionId = this.extractCollectionId(groupId || this.state.groupId)
-        endpoint.position = this.extractPosition(groupId || this.state.groupId);
-        this.props.add_endpoint(endpoint, groupId || this.state.groupId);
+        authorizationType: this.state.authType
       }
-      else {
+      if (endpoint.name === '') toast.error('Please enter Endpoint name')
+      else if (this.props.location.pathname.split('/')[3] === 'new') {
+        endpoint.requestId = this.props.tab.id
+        // const collectionId = this.extractCollectionId(
+        //   groupId || this.state.groupId
+        // )
+        endpoint.position = this.extractPosition(groupId || this.state.groupId)
+        this.props.add_endpoint(endpoint, groupId || this.state.groupId)
+      } else {
         if (this.state.saveAsFlag) {
-          console.log("add new by shortid");
-          endpoint.requestId = shortid.generate();
-          endpoint.position = this.extractPosition(groupId || this.state.groupId);
-          this.props.add_endpoint(endpoint, groupId || this.state.groupId);
-          this.setState({ saveAsFlag: false });
-          this.props.close_tab(this.props.tab.id);
-        }
-        else if (this.state.title === "update endpoint") {
+          console.log('add new by shortid')
+          endpoint.requestId = shortid.generate()
+          endpoint.position = this.extractPosition(
+            groupId || this.state.groupId
+          )
+          this.props.add_endpoint(endpoint, groupId || this.state.groupId)
+          this.setState({ saveAsFlag: false })
+          this.props.close_tab(this.props.tab.id)
+        } else if (this.state.title === 'update endpoint') {
           this.props.update_endpoint({
             ...endpoint,
             id: this.state.endpoint.id,
-            groupId: groupId || this.state.groupId,
-          });
-          tabService.markTabAsSaved(this.props.tab.id);
+            groupId: groupId || this.state.groupId
+          })
+          tabService.markTabAsSaved(this.props.tab.id)
         }
       }
     }
   };
 
-  doSubmitPathVariables() {
-    let updatedPathVariables = {};
+  doSubmitPathVariables () {
+    const updatedPathVariables = {}
     if (this.state.pathVariables) {
-      let pathVariables = [...this.state.pathVariables];
+      const pathVariables = [...this.state.pathVariables]
       for (let i = 0; i < pathVariables.length; i++) {
-        if (pathVariables[i].key === "") {
-          continue;
+        if (pathVariables[i].key === '') {
+          continue
         } else {
           updatedPathVariables[pathVariables[i].key] = {
             checked: pathVariables[i].checked,
             value: pathVariables[i].value,
-            description: pathVariables[i].description,
-          };
+            description: pathVariables[i].description
+          }
         }
       }
-      const endpoint = { ...this.state.endpoint };
-      endpoint.pathVariables = { ...updatedPathVariables };
+      const endpoint = { ...this.state.endpoint }
+      endpoint.pathVariables = { ...updatedPathVariables }
       this.setState({
         pathVariables,
-        endpoint,
-      });
+        endpoint
+      })
     }
-    return updatedPathVariables;
+    return updatedPathVariables
   }
 
-  doSubmitHeader(title) {
-    let originalHeaders = [...this.state.originalHeaders];
-    let updatedHeaders = {};
+  doSubmitHeader (title) {
+    const originalHeaders = [...this.state.originalHeaders]
+    const updatedHeaders = {}
     for (let i = 0; i < originalHeaders.length; i++) {
-      if (originalHeaders[i].key === "") {
-        continue;
-      } else if (originalHeaders[i].checked === "true" || title === "save") {
+      if (originalHeaders[i].key === '') {
+        continue
+      } else if (originalHeaders[i].checked === 'true' || title === 'save') {
         updatedHeaders[originalHeaders[i].key] = {
           checked: originalHeaders[i].checked,
           value: originalHeaders[i].value,
-          description: originalHeaders[i].description,
-        };
+          description: originalHeaders[i].description
+        }
       }
     }
-    const endpoint = { ...this.state.endpoint };
-    endpoint.headers = { ...updatedHeaders };
+    const endpoint = { ...this.state.endpoint }
+    endpoint.headers = { ...updatedHeaders }
     this.setState({
       originalHeaders,
-      endpoint,
-    });
-    return updatedHeaders;
+      endpoint
+    })
+    return updatedHeaders
   }
 
-  setMethod(method) {
-    const response = {};
-    let data = { ...this.state.data };
-    data.method = method;
-    this.setState({ response, data });
+  setMethod (method) {
+    const response = {}
+    const data = { ...this.state.data }
+    data.method = method
+    this.setState({ response, data })
     if (isDashboardRoute(this.props)) {
-      tabService.markTabAsModified(this.props.tab.id);
+      tabService.markTabAsModified(this.props.tab.id)
     }
   }
 
-  propsFromChild(name, value) {
-    if (name === "Params") {
-      this.handleUpdateUri(value);
-      this.setState({ originalParams: value });
+  propsFromChild (name, value) {
+    if (name === 'Params') {
+      this.handleUpdateUri(value)
+      this.setState({ originalParams: value })
     }
 
-    if (name === "Headers") {
-      this.setState({ originalHeaders: value });
+    if (name === 'Headers') {
+      this.setState({ originalHeaders: value })
     }
 
-    if (name === "Path Variables") {
-      this.setState({ pathVariables: value });
+    if (name === 'Path Variables') {
+      this.setState({ pathVariables: value })
     }
 
     if (
       isDashboardRoute(this.props) &&
-      (name === "Params" || name === "Headers" || name === "Path Variables")
+      (name === 'Params' || name === 'Headers' || name === 'Path Variables')
     ) {
-      tabService.markTabAsModified(this.props.tab.id);
+      tabService.markTabAsModified(this.props.tab.id)
     }
   }
 
-  setPublicBody(body) {
-    let json = JSON.stringify(body);
-    let data = { ...this.state.data };
-    data.body = { type: "JSON", value: json };
+  setPublicBody (body) {
+    const json = JSON.stringify(body)
+    const data = { ...this.state.data }
+    data.body = { type: 'JSON', value: json }
 
-    this.setState({ data, publicBodyFlag: false });
+    this.setState({ data, publicBodyFlag: false })
   }
 
-  handleUpdateUri(originalParams) {
+  handleUpdateUri (originalParams) {
     if (originalParams.length === 0) {
-      let updatedUri = this.state.data.updatedUri.split("?")[0];
-      let data = { ...this.state.data };
-      data.updatedUri = updatedUri;
-      this.setState({ data });
-      return;
+      const updatedUri = this.state.data.updatedUri.split('?')[0]
+      const data = { ...this.state.data }
+      data.updatedUri = updatedUri
+      this.setState({ data })
+      return
     }
-    let originalUri = this.state.data.uri.split("?")[0] + "?";
-    let parts = {};
+    const originalUri = this.state.data.uri.split('?')[0] + '?'
+    const parts = {}
     for (let i = 0; i < originalParams.length; i++) {
       if (
         originalParams[i].key.length !== 0 &&
-        originalParams[i].checked === "true"
-      )
-        parts[originalParams[i].key] = originalParams[i].value;
+        originalParams[i].checked === 'true'
+      ) {
+        parts[originalParams[i].key] = originalParams[i].value
+      }
     }
-    URI.escapeQuerySpace = false;
-    let updatedUri = URI.buildQuery(parts);
-    updatedUri = originalUri + URI.decode(updatedUri);
-    let data = { ...this.state.data };
+    URI.escapeQuerySpace = false
+    let updatedUri = URI.buildQuery(parts)
+    updatedUri = originalUri + URI.decode(updatedUri)
+    const data = { ...this.state.data }
     if (Object.keys(parts).length === 0) {
-      data.updatedUri = updatedUri.split("?")[0];
+      data.updatedUri = updatedUri.split('?')[0]
     } else {
-      data.updatedUri = updatedUri;
+      data.updatedUri = updatedUri
     }
-    this.setState({ data });
+    this.setState({ data })
   }
 
-  doSubmitParam() {
-    let originalParams = [...this.state.originalParams];
-    let updatedParams = {};
+  doSubmitParam () {
+    const originalParams = [...this.state.originalParams]
+    const updatedParams = {}
     for (let i = 0; i < originalParams.length; i++) {
-      if (originalParams[i].key === "") {
-        continue;
+      if (originalParams[i].key === '') {
+        continue
       } else {
         updatedParams[originalParams[i].key] = {
           checked: originalParams[i].checked,
           value: originalParams[i].value,
-          description: originalParams[i].description,
-        };
+          description: originalParams[i].description
+        }
       }
     }
-    const endpoint = { ...this.state.endpoint };
-    endpoint.params = { ...updatedParams };
+    const endpoint = { ...this.state.endpoint }
+    endpoint.params = { ...updatedParams }
     this.setState({
       originalParams,
-      endpoint,
-    });
-    return updatedParams;
+      endpoint
+    })
+    return updatedParams
   }
 
-  fetchoriginalParams(params) {
-    let originalParams = [];
-    let i = 0;
+  fetchoriginalParams (params) {
+    const originalParams = []
+    let i = 0
     for (i = 0; i < Object.keys(params).length; i++) {
       originalParams[i] = {
         checked: params[Object.keys(params)[i]].checked,
         key: Object.keys(params)[i],
         value: params[Object.keys(params)[i]].value,
-        description: params[Object.keys(params)[i]].description,
-      };
+        description: params[Object.keys(params)[i]].description
+      }
     }
     originalParams[i] = {
-      checked: "notApplicable",
-      key: "",
-      value: "",
-      description: "",
-    };
+      checked: 'notApplicable',
+      key: '',
+      value: '',
+      description: ''
+    }
 
-    return originalParams;
+    return originalParams
   }
 
-  fetchoriginalHeaders(headers) {
-    let originalHeaders = [];
-    let i = 0;
+  fetchoriginalHeaders (headers) {
+    const originalHeaders = []
+    let i = 0
     for (i = 0; i < Object.keys(headers).length; i++) {
       originalHeaders[i] = {
         checked: headers[Object.keys(headers)[i]].checked,
         key: Object.keys(headers)[i],
         value: headers[Object.keys(headers)[i]].value,
-        description: headers[Object.keys(headers)[i]].description,
-      };
+        description: headers[Object.keys(headers)[i]].description
+      }
     }
     originalHeaders[i] = {
-      checked: "notApplicable",
-      key: "",
-      value: "",
-      description: "",
-    };
-    return originalHeaders;
+      checked: 'notApplicable',
+      key: '',
+      value: '',
+      description: ''
+    }
+    return originalHeaders
   }
 
-  fetchPathVariables(pathVariables) {
-    let originalPathVariables = [];
-    let i = 0;
+  fetchPathVariables (pathVariables) {
+    const originalPathVariables = []
+    let i = 0
     for (i = 0; i < Object.keys(pathVariables).length; i++) {
       originalPathVariables[i] = {
         checked: pathVariables[Object.keys(pathVariables)[i]].checked,
         key: Object.keys(pathVariables)[i],
         value: pathVariables[Object.keys(pathVariables)[i]].value,
-        description: pathVariables[Object.keys(pathVariables)[i]].description,
-      };
+        description: pathVariables[Object.keys(pathVariables)[i]].description
+      }
     }
-    return originalPathVariables;
+    return originalPathVariables
   }
 
-  openEndpointFormModal() {
-    this.setState({ showEndpointFormModal: true });
+  openEndpointFormModal () {
+    this.setState({ showEndpointFormModal: true })
   }
 
-  closeEndpointFormModal() {
-    this.setState({ showEndpointFormModal: false, saveAsFlag: false });
+  closeEndpointFormModal () {
+    this.setState({ showEndpointFormModal: false, saveAsFlag: false })
   }
 
-  setGroupId(groupId, endpointName) {
-    const data = { ...this.state.data };
-    data.name = endpointName;
-    this.setState({ groupId, data });
-    this.handleSave(groupId, endpointName);
+  setGroupId (groupId, endpointName) {
+    const data = { ...this.state.data }
+    data.name = endpointName
+    this.setState({ groupId, data })
+    this.handleSave(groupId, endpointName)
   }
 
-  updateArray(updatedArray) {
-    this.setState({ updatedArray });
+  updateArray (updatedArray) {
+    this.setState({ updatedArray })
   }
 
-  makeHeaders(headers) {
-    let processedHeaders = [];
+  makeHeaders (headers) {
+    const processedHeaders = []
     for (let i = 0; i < Object.keys(headers).length; i++) {
-      if (headers[Object.keys(headers)[i]].checked === "true") {
+      if (headers[Object.keys(headers)[i]].checked === 'true') {
         processedHeaders.push({
           name: headers[Object.keys(headers)[i]].key,
           value: headers[Object.keys(headers)[i]].value,
           comment:
             headers[Object.keys(headers)[i]].description === null
-              ? ""
-              : headers[Object.keys(headers)[i]].description,
-        });
+              ? ''
+              : headers[Object.keys(headers)[i]].description
+        })
       }
     }
-    return processedHeaders;
+    return processedHeaders
   }
 
-  makeParams(params) {
-    let processedParams = [];
+  makeParams (params) {
+    const processedParams = []
     for (let i = 0; i < Object.keys(params).length; i++) {
-      if (params[Object.keys(params)[i]].checked === "true") {
+      if (params[Object.keys(params)[i]].checked === 'true') {
         processedParams.push({
           name: params[Object.keys(params)[i]].key,
           value: params[Object.keys(params)[i]].value,
-          comment: params[Object.keys(params)[i]].description,
-        });
+          comment: params[Object.keys(params)[i]].description
+        })
       }
     }
-    return processedParams;
+    return processedParams
   }
 
-  async makePostData(body) {
-    let params = [];
-    let paramsFlag = false;
-    let postData = {};
+  async makePostData (body) {
+    const params = []
+    let paramsFlag = false
+    let postData = {}
     if (
-      (body.type === "application/x-www-form-urlencoded" ||
-        body.type === "multipart/form-data") &&
+      (body.type === 'application/x-www-form-urlencoded' ||
+        body.type === 'multipart/form-data') &&
       body.value
     ) {
-      paramsFlag = true;
+      paramsFlag = true
       for (let i = 0; i < body.value.length; i++) {
-        if (body.value[i].checked === "true" && body.value[i].key !== "") {
+        if (body.value[i].checked === 'true' && body.value[i].key !== '') {
           params.push({
             name: body.value[i].key,
             value: body.value[i].value,
             fileName: null,
-            contentType: null,
-          });
+            contentType: null
+          })
         }
       }
       postData = {
         mimeType: body.type,
         params: params,
-        comment: "",
-      };
+        comment: ''
+      }
     } else {
       postData = {
         mimeType: body.type,
         params: params,
-        text: paramsFlag === false ? body.value : "",
-        comment: "",
-      };
+        text: paramsFlag === false ? body.value : '',
+        comment: ''
+      }
     }
-    return postData;
+    return postData
   }
 
-  async prepareHarObject() {
+  async prepareHarObject () {
     try {
-      const BASE_URL = this.customState.BASE_URL;
-      let uri = new URI(this.uri.current.value);
-      let queryparams = uri.search();
-      let path = this.setPathVariableValues();
-      let url = BASE_URL + path + queryparams;
-      url = this.replaceVariables(url);
-      const { method, body } = this.state.data;
-      const { originalHeaders, originalParams } = this.state;
+      const BASE_URL = this.customState.BASE_URL
+      const uri = new URI(this.uri.current.value)
+      const queryparams = uri.search()
+      const path = this.setPathVariableValues()
+      let url = BASE_URL + path + queryparams
+      url = this.replaceVariables(url)
+      const { method, body } = this.state.data
+      const { originalHeaders, originalParams } = this.state
       const harObject = {
         method,
         url: url,
-        httpVersion: "HTTP/1.1",
+        httpVersion: 'HTTP/1.1',
         cookies: [],
         headers: this.makeHeaders(originalHeaders),
-        postData: body.type === "none" ? null : await this.makePostData(body),
-        queryString: this.makeParams(originalParams),
-      };
-      if (!harObject.url.split(":")[1] || harObject.url.split(":")[0] === "") {
-        harObject.url = "https://" + url;
+        postData: body.type === 'none' ? null : await this.makePostData(body),
+        queryString: this.makeParams(originalParams)
       }
-      this.setState({ harObject }, () => { });
+      if (!harObject.url.split(':')[1] || harObject.url.split(':')[0] === '') {
+        harObject.url = 'https://' + url
+      }
+      this.setState({ harObject }, () => {})
     } catch (error) {
-      toast.error(error);
+      toast.error(error)
     }
   }
 
-  openCodeTemplate(harObject) {
+  openCodeTemplate (harObject) {
     this.setState({
       showCodeTemplate: true,
-      harObject,
-    });
+      harObject
+    })
   }
 
-  showCodeTemplate() {
+  showCodeTemplate () {
     return (
       <CodeTemplate
-        show={true}
+        show
         onHide={() => {
-          this.setState({ showCodeTemplate: false });
+          this.setState({ showCodeTemplate: false })
         }}
         harObject={this.state.harObject}
-        title="Generate Code Snippets"
+        title='Generate Code Snippets'
       />
-    );
+    )
   }
 
-  setBaseUrl(BASE_URL, selectedHost) {
-    this.customState.BASE_URL = BASE_URL;
-    this.customState.selectedHost = selectedHost;
+  setBaseUrl (BASE_URL, selectedHost) {
+    this.customState.BASE_URL = BASE_URL
+    this.customState.selectedHost = selectedHost
   }
 
-  setBody(bodyType, body) {
-    let data = { ...this.state.data };
-    data.body = { type: bodyType, value: body };
-    isDashboardRoute(this.props) && this.setHeaders(bodyType, "content-type");
-    this.setState({ data });
+  setBody (bodyType, body) {
+    const data = { ...this.state.data }
+    data.body = { type: bodyType, value: body }
+    isDashboardRoute(this.props) && this.setHeaders(bodyType, 'content-type')
+    this.setState({ data })
     if (isDashboardRoute(this.props)) {
-      tabService.markTabAsModified(this.props.tab.id);
+      tabService.markTabAsModified(this.props.tab.id)
     }
   }
 
-  setBodyDescription(type, value) {
-    let data = {};
+  setBodyDescription (type, value) {
+    const data = {}
     try {
-      if (value.trim() === "") {
-        data.bodyDescription = {};
-        return data;
+      if (value.trim() === '') {
+        data.bodyDescription = {}
+        return data
       }
-      let body = JSON.parse(value);
-      let keys = Object.keys(body);
-      let bodyDescription = {};
+      const body = JSON.parse(value)
+      const keys = Object.keys(body)
+      const bodyDescription = {}
       for (let i = 0; i < keys.length; i++) {
-        if (typeof body[keys[i]] !== "object") {
+        if (typeof body[keys[i]] !== 'object') {
           bodyDescription[keys[i]] = {
             default: body[keys[i]],
             description: this.state.fieldDescription[keys[i]]
               ? this.state.fieldDescription[keys[i]]
-              : "",
-            dataType: typeof body[keys[i]],
-          };
+              : '',
+            dataType: typeof body[keys[i]]
+          }
         } else {
           if (
-            typeof body[keys[i]] === "object" &&
+            typeof body[keys[i]] === 'object' &&
             Array.isArray(body[keys[i]])
           ) {
             if (body[keys[i]].length !== 0) {
@@ -1152,331 +1156,334 @@ class DisplayEndpoint extends Component {
                 default: body[keys[i]],
                 description: this.state.fieldDescription[keys[i]]
                   ? this.state.fieldDescription[keys[i]]
-                  : "",
-                dataType: "Array of " + typeof body[keys[i]][0],
-              };
+                  : '',
+                dataType: 'Array of ' + typeof body[keys[i]][0]
+              }
             } else {
               bodyDescription[keys[i]] = {
-                default: [""],
+                default: [''],
                 description: this.state.fieldDescription[keys[i]]
                   ? this.state.fieldDescription[keys[i]]
-                  : "",
-                dataType: "Array of string",
-              };
+                  : '',
+                dataType: 'Array of string'
+              }
             }
-          } else if (typeof body[keys[i]] === "object") {
-            let bodyField = body[keys[i]];
-            let key = Object.keys(bodyField);
-            if (key.length > 0 && typeof bodyField[key[0]] === "object")
+          } else if (typeof body[keys[i]] === 'object') {
+            const bodyField = body[keys[i]]
+            const key = Object.keys(bodyField)
+            if (key.length > 0 && typeof bodyField[key[0]] === 'object') {
               bodyDescription[keys[i]] = {
                 default: body[keys[i]],
                 description: this.state.fieldDescription[keys[i]]
                   ? this.state.fieldDescription[keys[i]]
-                  : "",
-                dataType: "Object of objects",
-              };
-            else {
+                  : '',
+                dataType: 'Object of objects'
+              }
+            } else {
               bodyDescription[keys[i]] = {
                 default: body[keys[i]],
                 description: this.state.fieldDescription[keys[i]]
                   ? this.state.fieldDescription[keys[i]]
-                  : "",
-                dataType: typeof body[keys[i]],
-              };
+                  : '',
+                dataType: typeof body[keys[i]]
+              }
             }
           }
         }
       }
-      data.bodyDescription = bodyDescription;
-      return data;
+      data.bodyDescription = bodyDescription
+      return data
     } catch (error) {
-      data.error = error;
-      return data;
+      data.error = error
+      return data
     }
   }
 
-  set_description(bodyDescription) {
-    this.setState({ bodyDescription });
+  setDescription (bodyDescription) {
+    this.setState({ bodyDescription })
   }
 
-  setFieldDescription(fieldDescription, bodyDescription) {
-    this.setState({ fieldDescription, bodyDescription });
+  setFieldDescription (fieldDescription, bodyDescription) {
+    this.setState({ fieldDescription, bodyDescription })
   }
 
-  setParams(value, title, authorizationFlag) {
-    let originalParams = this.state.originalParams;
-    let updatedParams = [];
-    let emptyParam = {
-      checked: "notApplicable",
-      key: "",
-      value: "",
-      description: "",
-    };
+  setParams (value, title, authorizationFlag) {
+    const originalParams = this.state.originalParams
+    const updatedParams = []
+    const emptyParam = {
+      checked: 'notApplicable',
+      key: '',
+      value: '',
+      description: ''
+    }
     for (let i = 0; i < originalParams.length; i++) {
-      if (originalParams[i].key === title || originalParams[i].key === "") {
-        continue;
+      if (originalParams[i].key === title || originalParams[i].key === '') {
+        continue
       } else {
-        updatedParams.push(originalParams[i]);
+        updatedParams.push(originalParams[i])
       }
     }
-    if (title === "access_token" && !authorizationFlag) {
+    if (title === 'access_token' && !authorizationFlag) {
       updatedParams.push({
-        checked: "true",
+        checked: 'true',
         key: title,
         value: value,
-        description: "",
-      });
+        description: ''
+      })
     }
-    updatedParams.push(emptyParam);
-    this.setState({ originalParams: updatedParams });
+    updatedParams.push(emptyParam)
+    this.setState({ originalParams: updatedParams })
   }
 
-  setHeaders(value, title, authorizationFlag = undefined) {
-    let originalHeaders = this.state.originalHeaders;
-    let updatedHeaders = [];
-    let emptyHeader = {
-      checked: "notApplicable",
-      key: "",
-      value: "",
-      description: "",
-    };
+  setHeaders (value, title, authorizationFlag = undefined) {
+    const originalHeaders = this.state.originalHeaders
+    const updatedHeaders = []
+    const emptyHeader = {
+      checked: 'notApplicable',
+      key: '',
+      value: '',
+      description: ''
+    }
     for (let i = 0; i < originalHeaders.length; i++) {
       if (
-        originalHeaders[i].key === title.split(".")[0] ||
-        originalHeaders[i].key === ""
+        originalHeaders[i].key === title.split('.')[0] ||
+        originalHeaders[i].key === ''
       ) {
-        continue;
+        continue
       } else {
-        updatedHeaders.push(originalHeaders[i]);
+        updatedHeaders.push(originalHeaders[i])
       }
     }
-    if (value === "none") {
-      updatedHeaders.push(emptyHeader);
-      this.setState({ originalHeaders: updatedHeaders });
-      return;
+    if (value === 'none') {
+      updatedHeaders.push(emptyHeader)
+      this.setState({ originalHeaders: updatedHeaders })
+      return
     }
-    if (value !== "noAuth" && !authorizationFlag) {
+    if (value !== 'noAuth' && !authorizationFlag) {
       updatedHeaders.push({
-        checked: "true",
-        key: title === "content-type" ? "content-type" : "Authorization",
+        checked: 'true',
+        key: title === 'content-type' ? 'content-type' : 'Authorization',
         value:
-          title.split(".")[0] === "Authorization"
-            ? title.split(".")[1] === "oauth_2"
-              ? "Bearer " + value
-              : "Basic " + value
-            : "",
-        description: "",
-      });
+          title.split('.')[0] === 'Authorization'
+            ? title.split('.')[1] === 'oauth_2'
+                ? 'Bearer ' + value
+                : 'Basic ' + value
+            : '',
+        description: ''
+      })
     }
-    if (title === "content-type") {
+    if (title === 'content-type') {
       updatedHeaders[updatedHeaders.length - 1].value = this.identifyBodyType(
         value
-      );
+      )
     }
 
-    updatedHeaders.push(emptyHeader);
-    this.setState({ originalHeaders: updatedHeaders });
+    updatedHeaders.push(emptyHeader)
+    this.setState({ originalHeaders: updatedHeaders })
   }
 
-  identifyBodyType(bodyType) {
+  identifyBodyType (bodyType) {
     switch (bodyType) {
-      case "application/x-www-form-urlencoded":
-        return "application/x-www-form-urlencoded";
-      case "multipart/form-data":
-        return "multipart/form-data";
-      case "TEXT":
-        return "text/plain";
-      case "JSON":
-        return "application/JSON";
-      case "HTML":
-        return "text/HTML";
-      case "XML":
-        return "application/XML";
-      case "JavaScript":
-        return "application/JavaScript";
+      case 'application/x-www-form-urlencoded':
+        return 'application/x-www-form-urlencoded'
+      case 'multipart/form-data':
+        return 'multipart/form-data'
+      case 'TEXT':
+        return 'text/plain'
+      case 'JSON':
+        return 'application/JSON'
+      case 'HTML':
+        return 'text/HTML'
+      case 'XML':
+        return 'application/XML'
+      case 'JavaScript':
+        return 'application/JavaScript'
       default:
-        break;
+        break
     }
   }
 
-  propsFromDescription(title, data) {
-    if (title === "data") {
-      this.setState({ data: data });
+  propsFromDescription (title, data) {
+    if (title === 'data') {
+      this.setState({ data: data })
       if (isDashboardRoute(this.props)) {
-        tabService.markTabAsModified(this.props.tab.id);
+        tabService.markTabAsModified(this.props.tab.id)
       }
     }
-    if (title === "endpoint") this.setState({ endpoint: data });
-    if (title === "oldDescription") this.setState({ oldDescription: data });
+    if (title === 'endpoint') this.setState({ endpoint: data })
+    if (title === 'oldDescription') this.setState({ oldDescription: data })
   }
 
-  propsFromSampleResponse(sampleResponseArray, sampleResponseFlagArray) {
-    this.setState({ sampleResponseArray, sampleResponseFlagArray });
+  propsFromSampleResponse (sampleResponseArray, sampleResponseFlagArray) {
+    this.setState({ sampleResponseArray, sampleResponseFlagArray })
     this.props.update_endpoint({
       id: this.state.endpoint.id,
-      sampleResponse: sampleResponseArray,
-    });
+      sampleResponse: sampleResponseArray
+    })
   }
 
-  makeFormData(body) {
-    let formData = new FormData();
-    body.value.map((o) => formData.set(o.key, o.value));
-    return formData;
+  makeFormData (body) {
+    const formData = new FormData()
+    body.value.map((o) => formData.set(o.key, o.value))
+    return formData
   }
 
-  formatBody(body, headers) {
-    let finalBodyValue = null;
+  formatBody (body, headers) {
+    let finalBodyValue = null
     switch (body.type) {
-      case "raw":
-        finalBodyValue = this.parseBody(body.value);
-        return { body: finalBodyValue, headers };
-      case "multipart/form-data":
-        let formData = this.makeFormData(body, headers);
-        headers["content-type"] = "multipart/form-data";
-        return { body: formData, headers };
-      case "application/x-www-form-urlencoded":
-        let urlEncodedData = {};
+      case 'raw':
+        finalBodyValue = this.parseBody(body.value)
+        return { body: finalBodyValue, headers }
+      case 'multipart/form-data': {
+        const formData = this.makeFormData(body, headers)
+        headers['content-type'] = 'multipart/form-data'
+        return { body: formData, headers }
+      }
+      case 'application/x-www-form-urlencoded': {
+        const urlEncodedData = {}
         for (let i = 0; i < body.value.length; i++) {
           if (
             body.value[i].key.length !== 0 &&
-            body.value[i].checked === "true"
+            body.value[i].checked === 'true'
           ) {
-            urlEncodedData[body.value[i].key] = body.value[i].value;
+            urlEncodedData[body.value[i].key] = body.value[i].value
           }
         }
-        return { body: urlEncodedData, headers };
+        return { body: urlEncodedData, headers }
+      }
       default:
-        return { body: body.value, headers };
+        return { body: body.value, headers }
     }
   }
 
-
-  async setAccessToken() {
-    let url = window.location.href;
-    let response = URI.parseQuery("?" + url.split("#")[1]);
-    if (url.split("#")[1]) {
-      await indexedDbService.getDataBase();
+  async setAccessToken () {
+    const url = window.location.href
+    const response = URI.parseQuery('?' + url.split('#')[1])
+    if (url.split('#')[1]) {
+      await indexedDbService.getDataBase()
       await indexedDbService.updateData(
-        "responseData",
+        'responseData',
         response,
-        "currentResponse"
-      );
-      let responseData = await indexedDbService.getValue(
-        "responseData",
-        "currentResponse"
-      );
-      let timer = setInterval(async function () {
+        'currentResponse'
+      )
+      const responseData = await indexedDbService.getValue(
+        'responseData',
+        'currentResponse'
+      )
+      const timer = setInterval(async function () {
         if (responseData) {
-          clearInterval(timer);
-          window.close();
+          clearInterval(timer)
+          window.close()
         }
-      }, 1000);
+      }, 1000)
     }
-    if (url.split("?")[1]) {
-      await indexedDbService.getDataBase();
-      let authData = await indexedDbService.getValue(
-        "authData",
-        "currentAuthData"
-      );
-      let resposneAuthCode = URI.parseQuery("?" + url.split("?")[1]);
-      let code = resposneAuthCode.code;
-      let paramsObject = {};
-      paramsObject.code = code;
-      paramsObject.client_id = authData.clientId;
-      paramsObject.client_secret = authData.clientSecret;
-      paramsObject.redirect_uri = authData.callbackUrl;
+    if (url.split('?')[1]) {
+      await indexedDbService.getDataBase()
+      const authData = await indexedDbService.getValue(
+        'authData',
+        'currentAuthData'
+      )
+      const resposneAuthCode = URI.parseQuery('?' + url.split('?')[1])
+      const code = resposneAuthCode.code
+      const paramsObject = {}
+      paramsObject.code = code
+      paramsObject.client_id = authData.clientId
+      paramsObject.client_secret = authData.clientSecret
+      paramsObject.redirect_uri = authData.callbackUrl
       await endpointApiService.authorize(
         authData.accessTokenUrl,
         paramsObject,
-        "auth_code",
+        'auth_code',
         this.props,
         authData
-      );
+      )
     }
-
   }
 
-  setAuthType(type, value) {
-    let authType = {};
-    if (type === "") {
-      authType = null;
+  setAuthType (type, value) {
+    let authType = {}
+    if (type === '') {
+      authType = null
     } else {
       authType = {
         type,
-        value,
-      };
+        value
+      }
     }
-    this.setState({ authType });
+    this.setState({ authType })
   }
 
-  addSampleResponse(response) {
-    let { data, status } = response;
-    let sampleResponseFlagArray = [...this.state.sampleResponseFlagArray];
-    const description = "";
-    let sampleResponse = { data, status, description };
-    let sampleResponseArray = [
+  addSampleResponse (response) {
+    const { data, status } = response
+    const sampleResponseFlagArray = [...this.state.sampleResponseFlagArray]
+    const description = ''
+    const sampleResponse = { data, status, description }
+    const sampleResponseArray = [
       ...this.state.sampleResponseArray,
-      sampleResponse,
-    ];
-    sampleResponseFlagArray.push(false);
-    this.setState({ sampleResponseArray, sampleResponseFlagArray });
+      sampleResponse
+    ]
+    sampleResponseFlagArray.push(false)
+    this.setState({ sampleResponseArray, sampleResponseFlagArray })
     this.props.update_endpoint({
       id: this.state.endpoint.id,
-      sampleResponse: sampleResponseArray,
-    });
+      sampleResponse: sampleResponseArray
+    })
   }
 
-  openBody(index) {
-    let sampleResponseFlagArray = [...this.state.sampleResponseFlagArray];
-    sampleResponseFlagArray[index] = true;
-    this.setState({ sampleResponseFlagArray });
+  openBody (index) {
+    const sampleResponseFlagArray = [...this.state.sampleResponseFlagArray]
+    sampleResponseFlagArray[index] = true
+    this.setState({ sampleResponseFlagArray })
   }
 
-  closeBody(index) {
-    let sampleResponseFlagArray = [...this.state.sampleResponseFlagArray];
-    sampleResponseFlagArray[index] = false;
-    this.setState({ sampleResponseFlagArray });
+  closeBody (index) {
+    const sampleResponseFlagArray = [...this.state.sampleResponseFlagArray]
+    sampleResponseFlagArray[index] = false
+    this.setState({ sampleResponseFlagArray })
   }
 
-  closeLoginSignupModal() {
+  closeLoginSignupModal () {
     this.setState({
       showLoginSignupModal: false
     })
   }
 
-  render() {
-    this.endpointId = this.props.endpointId ? this.props.endpointId : isDashboardRoute(this.props) ? this.props.location.pathname.split("/")[3] :
-      this.props.location.pathname.split("/")[4];
+  render () {
+    this.endpointId = this.props.endpointId
+      ? this.props.endpointId
+      : isDashboardRoute(this.props)
+        ? this.props.location.pathname.split('/')[3]
+        : this.props.location.pathname.split('/')[4]
     if (
       isDashboardRoute(this.props) &&
       this.state.groupId &&
       this.props.tab.status === tabStatusTypes.DELETED
     ) {
-      this.setState({ groupId: null });
+      this.setState({ groupId: null })
     }
 
     if (
       this.props.save_endpoint_flag &&
       this.props.tab.id === this.props.selected_tab_id
     ) {
-      this.props.handle_save_endpoint(false);
-      this.handleSave();
+      this.props.handle_save_endpoint(false)
+      this.handleSave()
     }
     if (
       isDashboardRoute(this.props) &&
-      this.props.location.pathname.split("/")[3] !== "new" &&
+      this.props.location.pathname.split('/')[3] !== 'new' &&
       this.state.endpoint.id !== this.props.tab.id &&
       this.props.endpoints[this.props.tab.id]
     ) {
-      let flag = 0;
+      const flag = 0
 
       if (isDashboardRoute(this.props)) {
-        this.fetchEndpoint(flag, this.props.tab.id);
+        this.fetchEndpoint(flag, this.props.tab.id)
         store.subscribe(() => {
           if (!this.props.location.title && !this.state.title) {
-            this.fetchEndpoint(flag, this.props.tab.id);
+            this.fetchEndpoint(flag, this.props.tab.id)
           }
-        });
+        })
       }
     }
 
@@ -1485,25 +1492,31 @@ class DisplayEndpoint extends Component {
       this.state.endpoint.id !== this.endpointId &&
       this.props.endpoints[this.endpointId]
     ) {
-      this.fetchEndpoint(0, this.endpointId);
+      this.fetchEndpoint(0, this.endpointId)
       store.subscribe(() => {
         if (!this.props.location.title && !this.state.title) {
-          this.fetchEndpoint(0, this.endpointId);
+          this.fetchEndpoint(0, this.endpointId)
         }
-      });
+      })
     }
     return (
-      <div className={this.props.location.pathname.split("/")[1] !== "admin" ? "d-flex" : ""}>
-        <div className="hm-endpoint-container endpoint-container mx-3">
+      <div
+        className={
+          this.props.location.pathname.split('/')[1] !== 'admin' ? 'd-flex' : ''
+        }
+      >
+        <div className='hm-endpoint-container endpoint-container mx-3'>
           {this.state.showLoginSignupModal && (
             <LoginSignupModal
-              show={true}
+              show
               onHide={() => this.closeLoginSignupModal()}
-              title="Save Endpoint"
+              title='Save Endpoint'
             />
           )}
           {getCurrentUser() ? (
-            <div className={isDashboardRoute(this.props) ? "hm-panel mt-4" : null}>
+            <div
+              className={isDashboardRoute(this.props) ? 'hm-panel mt-4' : null}
+            >
               {this.state.showEndpointFormModal && (
                 <SaveAsSidebar
                   {...this.props}
@@ -1523,31 +1536,31 @@ class DisplayEndpoint extends Component {
             </div>
           ) : null}
           <div
-            className={!isDashboardRoute(this.props) ? "hm-panel" : "hm-panel"}
+            className={!isDashboardRoute(this.props) ? 'hm-panel' : 'hm-panel'}
           >
             {isDashboardRoute(this.props) ? (
-              <div className="endpoint-url-container">
-                <div className="input-group-prepend">
+              <div className='endpoint-url-container'>
+                <div className='input-group-prepend'>
                   <div>
-                    <div className="dropdown">
+                    <div className='dropdown'>
                       <button
                         className={`api-label ${this.state.data.method} dropdown-toggle`}
-                        type="button"
-                        id="dropdownMenuButton"
-                        data-toggle="dropdown"
-                        aria-haspopup="true"
-                        aria-expanded="false"
+                        type='button'
+                        id='dropdownMenuButton'
+                        data-toggle='dropdown'
+                        aria-haspopup='true'
+                        aria-expanded='false'
                         disabled={isDashboardRoute(this.props) ? null : true}
                       >
                         {this.state.data.method}
                       </button>
                       <div
-                        className="dropdown-menu"
-                        aria-labelledby="dropdownMenuButton"
+                        className='dropdown-menu'
+                        aria-labelledby='dropdownMenuButton'
                       >
                         {this.state.methodList.map((methodName) => (
                           <button
-                            className="btn custom-request-button"
+                            className='btn custom-request-button'
                             onClick={() => this.setMethod(methodName)}
                             key={methodName}
                           >
@@ -1566,397 +1579,406 @@ class DisplayEndpoint extends Component {
                   />
                   <input
                     ref={this.uri}
-                    type="text"
+                    type='text'
                     value={this.state.data.updatedUri}
-                    name="updatedUri"
-                    className="form-control endpoint-url-input"
-                    aria-describedby="basic-addon3"
-                    placeholder={"Enter request URL"}
+                    name='updatedUri'
+                    className='form-control endpoint-url-input'
+                    aria-describedby='basic-addon3'
+                    placeholder='Enter request URL'
                     onChange={this.handleChange}
                     disabled={isDashboardRoute(this.props) ? null : true}
                   />
                 </div>
-                <div className="d-flex">
+                <div className='d-flex'>
                   <button
-                    className="btn btn-info"
-                    type="submit"
-                    id="send-request-button"
+                    className='btn btn-info'
+                    type='submit'
+                    id='send-request-button'
                     onClick={() => this.handleSend()}
                   >
-                    {isDashboardRoute(this.props) ? "Send" : "Try"}
+                    {isDashboardRoute(this.props) ? 'Send' : 'Try'}
                   </button>
 
                   {isDashboardRoute(this.props) ? (
-                    <div className="d-flex">
-                      {this.props.location.pathname.split("/")[3] !== "new" ?
+                    <div className='d-flex'>
+                      {this.props.location.pathname.split('/')[3] !== 'new' ? (
                         <Dropdown as={ButtonGroup}>
                           <button
-                            className="btn btn-primary"
-                            type="button"
-                            id="save-endpoint-button"
+                            className='btn btn-primary'
+                            type='button'
+                            id='save-endpoint-button'
                             onClick={() => this.handleSave()}
                           >
                             Save
-                        </button>
+                          </button>
                           {getCurrentUser() ? (
                             <span>
-                              <Dropdown.Toggle split variant="primary" />
-                              <Dropdown.Menu className="">
-                                <Dropdown.Item onClick={() => this.setState({ saveAsFlag: true }, () => {
-                                  this.openEndpointFormModal()
-                                })}>Save As</Dropdown.Item>
-                              </Dropdown.Menu></span>) : null}
+                              <Dropdown.Toggle split variant='primary' />
+                              <Dropdown.Menu className=''>
+                                <Dropdown.Item
+                                  onClick={() =>
+                                    this.setState({ saveAsFlag: true }, () => {
+                                      this.openEndpointFormModal()
+                                    })}
+                                >
+                                  Save As
+                                </Dropdown.Item>
+                              </Dropdown.Menu>
+                            </span>
+                          ) : null}
                         </Dropdown>
-                        :
+                      ) : (
                         <button
-                          className="btn btn-primary"
-                          type="button"
-                          id="save-endpoint-button"
+                          className='btn btn-primary'
+                          type='button'
+                          id='save-endpoint-button'
                           onClick={() => this.handleSave()}
                         >
                           Save
-                      </button>
-                      }
+                        </button>
+                      )}
                     </div>
                   ) : null}
                 </div>
               </div>
             ) : (
-                <div className="hm-endpoint-wrap">
-                  <div className="hm-endpoint-header">
-                    <div
-                      className={`api-label api-label-lg ${this.state.data.method}`}
-                    >
-                      {this.state.data.method}
-                    </div>
+              <div className='hm-endpoint-wrap'>
+                <div className='hm-endpoint-header'>
+                  <div
+                    className={`api-label api-label-lg ${this.state.data.method}`}
+                  >
+                    {this.state.data.method}
                   </div>
-                  <div className="endpoint-host">
-                    <HostContainer
-                      {...this.props}
-                      groupId={this.state.groupId}
-                      set_base_url={this.setBaseUrl.bind(this)}
-                      custom_host={this.state.endpoint.BASE_URL}
-                    />
-                  </div>
-                  <input
-                    ref={this.uri}
-                    type="hidden"
-                    value={this.state.data.updatedUri}
-                    name="updatedUri"
-                  />
-                  <div className="endpoint-uri">{this.state.data.updatedUri}</div>
                 </div>
-              )}
+                <div className='endpoint-host'>
+                  <HostContainer
+                    {...this.props}
+                    groupId={this.state.groupId}
+                    set_base_url={this.setBaseUrl.bind(this)}
+                    custom_host={this.state.endpoint.BASE_URL}
+                  />
+                </div>
+                <input
+                  ref={this.uri}
+                  type='hidden'
+                  value={this.state.data.updatedUri}
+                  name='updatedUri'
+                />
+                <div className='endpoint-uri'>{this.state.data.updatedUri}</div>
+              </div>
+            )}
             <div
               className={
                 isDashboardRoute(this.props)
-                  ? "endpoint-headers-container"
-                  : "hm-public-endpoint-headers"
+                  ? 'endpoint-headers-container'
+                  : 'hm-public-endpoint-headers'
               }
             >
               {isDashboardRoute(this.props) ? (
-                <div className="headers-params-wrapper">
-                  <ul className="nav nav-tabs" id="pills-tab" role="tablist">
-                    <li className="nav-item">
+                <div className='headers-params-wrapper'>
+                  <ul className='nav nav-tabs' id='pills-tab' role='tablist'>
+                    <li className='nav-item'>
                       <a
                         className={
                           this.setAuthorizationTab
-                            ? "nav-link "
-                            : "nav-link active"
+                            ? 'nav-link '
+                            : 'nav-link active'
                         }
-                        id="pills-params-tab"
-                        data-toggle="pill"
+                        id='pills-params-tab'
+                        data-toggle='pill'
                         href={`#params-${this.props.tab.id}`}
-                        role="tab"
+                        role='tab'
                         aria-controls={`params-${this.props.tab.id}`}
                         aria-selected={
-                          this.setAuthorizationTab ? "false" : "true"
+                          this.setAuthorizationTab ? 'false' : 'true'
                         }
                       >
                         Params
-                    </a>
+                      </a>
                     </li>
-                    <li className="nav-item">
+                    <li className='nav-item'>
                       <a
                         className={
                           this.setAuthorizationTab
-                            ? "nav-link active"
-                            : "nav-link "
+                            ? 'nav-link active'
+                            : 'nav-link '
                         }
-                        id="pills-authorization-tab"
-                        data-toggle="pill"
+                        id='pills-authorization-tab'
+                        data-toggle='pill'
                         href={`#authorization-${this.props.tab.id}`}
-                        role="tab"
+                        role='tab'
                         aria-controls={`authorization-${this.props.tab.id}`}
                         aria-selected={
-                          this.setAuthorizationTab ? "true" : "false"
+                          this.setAuthorizationTab ? 'true' : 'false'
                         }
                       >
                         Authorization
-                    </a>
+                      </a>
                     </li>
-                    <li className="nav-item">
+                    <li className='nav-item'>
                       <a
-                        className="nav-link"
-                        id="pills-headers-tab"
-                        data-toggle="pill"
+                        className='nav-link'
+                        id='pills-headers-tab'
+                        data-toggle='pill'
                         href={`#headers-${this.props.tab.id}`}
-                        role="tab"
+                        role='tab'
                         aria-controls={`headers-${this.props.tab.id}`}
-                        aria-selected="false"
+                        aria-selected='false'
                       >
                         Headers
-                    </a>
+                      </a>
                     </li>
-                    <li className="nav-item">
+                    <li className='nav-item'>
                       <a
-                        className="nav-link"
-                        id="pills-body-tab"
-                        data-toggle="pill"
+                        className='nav-link'
+                        id='pills-body-tab'
+                        data-toggle='pill'
                         href={`#body-${this.props.tab.id}`}
-                        role="tab"
+                        role='tab'
                         aria-controls={`body-${this.props.tab.id}`}
-                        aria-selected="false"
+                        aria-selected='false'
                       >
                         Body
-                    </a>
+                      </a>
                     </li>
                   </ul>
                 </div>
               ) : null}
               {isDashboardRoute(this.props) ? (
-                <div className="tab-content" id="pills-tabContent">
+                <div className='tab-content' id='pills-tabContent'>
                   <div
                     className={
                       this.setAuthorizationTab
-                        ? "tab-pane fade"
-                        : "tab-pane fade show active"
+                        ? 'tab-pane fade'
+                        : 'tab-pane fade show active'
                     }
                     id={`params-${this.props.tab.id}`}
-                    role="tabpanel"
-                    aria-labelledby="pills-params-tab"
+                    role='tabpanel'
+                    aria-labelledby='pills-params-tab'
                   >
                     <GenericTable
                       {...this.props}
-                      title="Params"
+                      title='Params'
                       dataArray={this.state.originalParams}
                       props_from_parent={this.propsFromChild.bind(this)}
                       original_data={[...this.state.params]}
-                    ></GenericTable>
+                    />
                     {this.state.pathVariables &&
                       this.state.pathVariables.length !== 0 && (
                         <div>
                           <GenericTable
                             {...this.props}
-                            title="Path Variables"
+                            title='Path Variables'
                             dataArray={this.state.pathVariables}
                             props_from_parent={this.propsFromChild.bind(this)}
                             original_data={[...this.state.pathVariables]}
-                          ></GenericTable>
+                          />
                         </div>
-                      )}
+                    )}
                   </div>
                   <div
                     className={
                       this.setAuthorizationTab
-                        ? "tab-pane fade show active"
-                        : "tab-pane fade "
+                        ? 'tab-pane fade show active'
+                        : 'tab-pane fade '
                     }
                     id={`authorization-${this.props.tab.id}`}
-                    role="tabpanel"
-                    aria-labelledby="pills-authorization-tab"
+                    role='tabpanel'
+                    aria-labelledby='pills-authorization-tab'
                   >
                     <div>
                       <Authorization
                         {...this.props}
-                        title="Authorization"
+                        title='Authorization'
                         groupId={this.state.groupId}
                         set_authorization_headers={this.setHeaders.bind(this)}
                         set_authoriztaion_params={this.setParams.bind(this)}
                         set_authoriztaion_type={this.setAuthType.bind(this)}
                         accessToken={this.accessToken}
                         authorizationType={this.state.authType}
-                      ></Authorization>
+                      />
                     </div>
                   </div>
                   <div
-                    className="tab-pane fade"
+                    className='tab-pane fade'
                     id={`headers-${this.props.tab.id}`}
-                    role="tabpanel"
-                    aria-labelledby="pills-headers-tab"
+                    role='tabpanel'
+                    aria-labelledby='pills-headers-tab'
                   >
                     <div>
                       <GenericTable
                         {...this.props}
-                        title="Headers"
+                        title='Headers'
                         dataArray={this.state.originalHeaders}
                         props_from_parent={this.propsFromChild.bind(this)}
                         original_data={[...this.state.headers]}
-                      ></GenericTable>
+                      />
                     </div>
                   </div>
                   <div
-                    className="tab-pane fade"
+                    className='tab-pane fade'
                     id={`body-${this.props.tab.id}`}
-                    role="tabpanel"
-                    aria-labelledby="pills-body-tab"
+                    role='tabpanel'
+                    aria-labelledby='pills-body-tab'
                   >
                     <BodyContainer
                       {...this.props}
                       set_body={this.setBody.bind(this)}
-                      set_body_description={this.set_description.bind(this)}
+                      set_body_description={this.setDescription.bind(this)}
                       body={
-                        this.state.bodyFlag === true ? this.state.data.body : ""
+                        this.state.bodyFlag === true ? this.state.data.body : ''
                       }
                       Body={this.state.data.body}
                       endpoint_id={this.props.tab.id}
                       body_description={this.state.bodyDescription}
                       field_description={this.state.fieldDescription}
-                      set_field_description={this.setFieldDescription.bind(this)}
+                      set_field_description={this.setFieldDescription.bind(
+                        this
+                      )}
                     />
                   </div>
                 </div>
               ) : (
-                  <React.Fragment>
-                    {this.state.params.length > 1 && (
+                <>
+                  {this.state.params.length > 1 && (
+                    <GenericTable
+                      {...this.props}
+                      title='Params'
+                      dataArray={this.state.originalParams}
+                      props_from_parent={this.propsFromChild.bind(this)}
+                      original_data={[...this.state.params]}
+                    />
+                  )}
+
+                  {this.state.pathVariables &&
+                    this.state.pathVariables.length !== 0 && (
                       <GenericTable
                         {...this.props}
-                        title="Params"
-                        dataArray={this.state.originalParams}
+                        title='Path Variables'
+                        dataArray={this.state.pathVariables}
                         props_from_parent={this.propsFromChild.bind(this)}
-                        original_data={[...this.state.params]}
-                      ></GenericTable>
-                    )}
+                        original_data={[...this.state.pathVariables]}
+                      />
+                  )}
 
-                    {this.state.pathVariables &&
-                      this.state.pathVariables.length !== 0 && (
-                        <GenericTable
-                          {...this.props}
-                          title="Path Variables"
-                          dataArray={this.state.pathVariables}
-                          props_from_parent={this.propsFromChild.bind(this)}
-                          original_data={[...this.state.pathVariables]}
-                        ></GenericTable>
-                      )}
+                  {this.state.headers.length > 1 && (
+                    <GenericTable
+                      {...this.props}
+                      title='Headers'
+                      dataArray={this.state.originalHeaders}
+                      props_from_parent={this.propsFromChild.bind(this)}
+                      original_data={[...this.state.headers]}
+                    />
+                  )}
 
-                    {this.state.headers.length > 1 && (
-                      <GenericTable
+                  {this.state.data.body &&
+                    this.state.data.body.value !== null && (
+                      <PublicBodyContainer
                         {...this.props}
-                        title="Headers"
-                        dataArray={this.state.originalHeaders}
-                        props_from_parent={this.propsFromChild.bind(this)}
-                        original_data={[...this.state.headers]}
-                      ></GenericTable>
-                    )}
-
-                    {this.state.data.body &&
-                      this.state.data.body.value !== null && (
-                        <PublicBodyContainer
-                          {...this.props}
-                          set_body={this.setBody.bind(this)}
-                          set_body_description={this.set_description.bind(this)}
-                          body={this.state.data.body}
-                          public_body_flag={this.state.publicBodyFlag}
-                          set_public_body={this.setPublicBody.bind(this)}
-                          body_description={this.state.bodyDescription}
-                        ></PublicBodyContainer>
-                      )}
-                  </React.Fragment>
-                )}
+                        set_body={this.setBody.bind(this)}
+                        set_body_description={this.setDescription.bind(this)}
+                        body={this.state.data.body}
+                        public_body_flag={this.state.publicBodyFlag}
+                        set_public_body={this.setPublicBody.bind(this)}
+                        body_description={this.state.bodyDescription}
+                      />
+                  )}
+                </>
+              )}
               {!isDashboardRoute(this.props) && (
-                <div className="d-flex">
+                <div className='d-flex'>
                   <button
-                    className="btn btn-primary"
-                    type="submit"
-                    id="send-request-button"
+                    className='btn btn-primary'
+                    type='submit'
+                    id='send-request-button'
                     onClick={() => this.handleSend()}
                   >
                     Try
-                </button>
+                  </button>
                 </div>
               )}
             </div>
           </div>
           {isSavedEndpoint(this.props) ? (
-            <React.Fragment>
+            <>
               <div>
-                <ul className="nav nav-tabs" id="myTab" role="tablist">
-                  <li className="nav-item">
+                <ul className='nav nav-tabs' id='myTab' role='tablist'>
+                  <li className='nav-item'>
                     <a
-                      className="nav-link active"
-                      id="pills-response-tab"
-                      data-toggle="pill"
+                      className='nav-link active'
+                      id='pills-response-tab'
+                      data-toggle='pill'
                       href={
                         isDashboardRoute(this.props)
                           ? `#response-${this.props.tab.id}`
-                          : "#response"
+                          : '#response'
                       }
-                      role="tab"
+                      role='tab'
                       aria-controls={
                         isDashboardRoute(this.props)
                           ? `response-${this.props.tab.id}`
-                          : "response"
+                          : 'response'
                       }
-                      aria-selected="true"
+                      aria-selected='true'
                     >
                       Response
-                  </a>
+                    </a>
                   </li>
                   {getCurrentUser() && (
-
-                    <li className="nav-item">
+                    <li className='nav-item'>
                       <a
-                        className="nav-link"
-                        id="pills-sample-tab"
-                        data-toggle="pill"
+                        className='nav-link'
+                        id='pills-sample-tab'
+                        data-toggle='pill'
                         href={
                           isDashboardRoute(this.props)
                             ? `#sample-${this.props.tab.id}`
-                            : "#sample"
+                            : '#sample'
                         }
-                        role="tab"
+                        role='tab'
                         aria-controls={
                           isDashboardRoute(this.props)
                             ? `sample-${this.props.tab.id}`
-                            : "sample"
+                            : 'sample'
                         }
-                        aria-selected="false"
+                        aria-selected='false'
                       >
                         Sample Response
-                  </a>
-                    </li>)}
+                      </a>
+                    </li>
+                  )}
                 </ul>
-                <div className="tab-content" id="pills-tabContent">
+                <div className='tab-content' id='pills-tabContent'>
                   <div
-                    className="tab-pane fade show active"
+                    className='tab-pane fade show active'
                     id={
                       isDashboardRoute(this.props)
                         ? `response-${this.props.tab.id}`
-                        : "response"
+                        : 'response'
                     }
-                    role="tabpanel"
-                    aria-labelledby="pills-response-tab"
+                    role='tabpanel'
+                    aria-labelledby='pills-response-tab'
                   >
-                    <div className="hm-panel endpoint-public-response-container">
+                    <div className='hm-panel endpoint-public-response-container'>
                       <DisplayResponse
                         {...this.props}
                         timeElapsed={this.state.timeElapsed}
                         response={this.state.response}
                         flagResponse={this.state.flagResponse}
                         add_sample_response={this.addSampleResponse.bind(this)}
-                      ></DisplayResponse>
+                      />
                     </div>
                   </div>
                   {getCurrentUser() ? (
                     <div
-                      className="tab-pane fade"
+                      className='tab-pane fade'
                       id={
                         isDashboardRoute(this.props)
                           ? `sample-${this.props.tab.id}`
-                          : "sample"
+                          : 'sample'
                       }
-                      role="tabpanel"
-                      aria-labelledby="pills-sample-tab"
+                      role='tabpanel'
+                      aria-labelledby='pills-sample-tab'
                     >
                       <SampleResponse
                         {...this.props}
@@ -1969,42 +1991,46 @@ class DisplayEndpoint extends Component {
                         }
                         open_body={this.openBody.bind(this)}
                         close_body={this.closeBody.bind(this)}
-                        props_from_parent={this.propsFromSampleResponse.bind(this)}
-                      ></SampleResponse>
-                    </div>) : null}
+                        props_from_parent={this.propsFromSampleResponse.bind(
+                          this
+                        )}
+                      />
+                    </div>
+                  ) : null}
                 </div>
               </div>
-            </React.Fragment>
+            </>
           ) : (
-              <React.Fragment>
-                <div className="public-response-title">Response</div>
-                <div className="hm-panel endpoint-public-response-container">
-                  <DisplayResponse
-                    {...this.props}
-                    timeElapsed={this.state.timeElapsed}
-                    response={this.state.response}
-                    flagResponse={this.state.flagResponse}
-                  ></DisplayResponse>
-                </div>
-              </React.Fragment>
-            )}
+            <>
+              <div className='public-response-title'>Response</div>
+              <div className='hm-panel endpoint-public-response-container'>
+                <DisplayResponse
+                  {...this.props}
+                  timeElapsed={this.state.timeElapsed}
+                  response={this.state.response}
+                  flagResponse={this.state.flagResponse}
+                />
+              </div>
+            </>
+          )}
         </div>
-        {
-          !isDashboardRoute(this.props) && this.state.harObject && this.props.location.pathname.split("/")[1] !== "admin" &&
-          < CodeTemplate
-            show={true}
-            onHide={() => {
-              this.setState({ showCodeTemplate: false });
-            }}
-            harObject={this.state.harObject}
-            title="Generate Code Snippets"
-          />
-        }
-      </ div >
-    );
+        {!isDashboardRoute(this.props) &&
+          this.state.harObject &&
+          this.props.location.pathname.split('/')[1] !== 'admin' && (
+            <CodeTemplate
+              show
+              onHide={() => {
+                this.setState({ showCodeTemplate: false })
+              }}
+              harObject={this.state.harObject}
+              title='Generate Code Snippets'
+            />
+        )}
+      </div>
+    )
   }
 }
 
 export default withRouter(
   connect(mapStateToProps, mapDispatchToProps)(DisplayEndpoint)
-);
+)

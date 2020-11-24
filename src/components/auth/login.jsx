@@ -5,7 +5,7 @@ import './auth.scss'
 import auth from './authService'
 
 class Login extends Component {
-  async componentDidMount() {
+  async componentDidMount () {
     const socketJwt = this.getSocketJwt()
     if (!socketJwt) return
     const profile = await auth.login(socketJwt)
@@ -20,7 +20,7 @@ class Login extends Component {
     return socketJwt
   };
 
-  render() {
+  render () {
     if (auth.getCurrentUser()) return <Redirect to='/dashboard/endpoint/new' />
 
     return <></>

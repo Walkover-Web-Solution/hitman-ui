@@ -9,7 +9,7 @@ import CollectionForm from '../collections/collectionForm'
 import CollectionVersionForm from '../collectionVersions/collectionVersionForm'
 import GroupForm from '../groups/groupForm'
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
     collections: state.collections,
     versions: state.versions,
@@ -34,8 +34,12 @@ class SaveAsSidebar extends Form {
     }
 
     this.schema = {
-      name: Joi.string().required().label('Username'),
-      description: Joi.string().allow(null, '').label('description')
+      name: Joi.string()
+        .required()
+        .label('Username'),
+      description: Joi.string()
+        .allow(null, '')
+        .label('description')
     }
   }
 
@@ -87,39 +91,48 @@ class SaveAsSidebar extends Form {
 
   showCollectionForm () {
     return (
-      this.state.showCollectionForm &&
+      this.state.showCollectionForm && (
         <CollectionForm
           {...this.props}
-          onHide={() => { this.setState({ showCollectionForm: false }) }}
+          onHide={() => {
+            this.setState({ showCollectionForm: false })
+          }}
           show
           title='Add new Collection'
         />
+      )
     )
   }
 
   showCollectionVersionForm () {
     return (
-      this.state.showCollectionVersionForm &&
+      this.state.showCollectionVersionForm && (
         <CollectionVersionForm
           {...this.props}
           collection_id={this.state.list.parentId}
-          onHide={() => { this.setState({ showCollectionVersionForm: false }) }}
+          onHide={() => {
+            this.setState({ showCollectionVersionForm: false })
+          }}
           show
           title='Add new Collection Version'
         />
+      )
     )
   }
 
   showGroupForm () {
     return (
-      this.state.showGroupForm &&
+      this.state.showGroupForm && (
         <GroupForm
           {...this.props}
           selectedVersion={{ id: this.state.list.parentId }}
-          onHide={() => { this.setState({ showGroupForm: false }) }}
+          onHide={() => {
+            this.setState({ showGroupForm: false })
+          }}
           show
           title='Add new Group'
         />
+      )
     )
   }
 
@@ -127,7 +140,7 @@ class SaveAsSidebar extends Form {
     let listItems = []
     switch (this.state.list.type) {
       case 'collections':
-        listItems = Object.keys(this.props.collections).map((collectionId) => ({
+        listItems = Object.keys(this.props.collections).map(collectionId => ({
           name: this.props.collections[collectionId].name,
           id: this.props.collections[collectionId].id
         }))
@@ -135,10 +148,10 @@ class SaveAsSidebar extends Form {
       case 'versions':
         listItems = Object.keys(this.props.versions)
           .filter(
-            (vId) =>
+            vId =>
               this.props.versions[vId].collectionId === this.state.list.parentId
           )
-          .map((versionId) => ({
+          .map(versionId => ({
             name: this.props.versions[versionId].number,
             id: this.props.versions[versionId].id
           }))
@@ -146,10 +159,9 @@ class SaveAsSidebar extends Form {
       case 'groups':
         listItems = Object.keys(this.props.groups)
           .filter(
-            (gId) =>
-              this.props.groups[gId].versionId === this.state.list.parentId
+            gId => this.props.groups[gId].versionId === this.state.list.parentId
           )
-          .map((groupId) => ({
+          .map(groupId => ({
             name: this.props.groups[groupId].name,
             id: this.props.groups[groupId].id
           }))
@@ -157,10 +169,10 @@ class SaveAsSidebar extends Form {
       case 'endpoints':
         listItems = Object.keys(this.props.endpoints)
           .filter(
-            (eId) =>
+            eId =>
               this.props.endpoints[eId].groupId === this.state.list.parentId
           )
-          .map((endpointId) => ({
+          .map(endpointId => ({
             name: this.props.endpoints[endpointId].name,
             id: this.props.endpoints[endpointId].id
           }))
@@ -239,7 +251,6 @@ class SaveAsSidebar extends Form {
       width: '100vw'
     }
     return (
-
       // <Modal
       //   {...props}
       //   size="lg"
@@ -249,58 +260,79 @@ class SaveAsSidebar extends Form {
       //   id="endpoint-modal"
       // >
       <div>
-        <div onClick={() => { this.props.onHide() }} style={darkBackgroundStyle}>wd</div>
+        <div
+          onClick={() => {
+            this.props.onHide()
+          }}
+          style={darkBackgroundStyle}
+        >
+          wd
+        </div>
         <div style={saveAsSidebarStyle}>
           {this.showCollectionForm()}
           {this.showCollectionVersionForm()}
           {this.showGroupForm()}
           <div>
-            <div
-              className='d-flex justify-content-between p-3'
-            >
-              <p className='h4'>
-                Save As
-              </p>
-              <button className='btn' onClick={() => { this.props.onHide() }}>
+            <div className='d-flex justify-content-between p-3'>
+              <p className='h4'>Save As</p>
+              <button
+                className='btn'
+                onClick={() => {
+                  this.props.onHide()
+                }}
+              >
                 <i className='fas fa-times' />
               </button>
             </div>
             <Modal.Body>
               <form onSubmit={this.handleSubmit}>
                 {this.renderInput('name', 'Name', 'Endpoint Name')}
-                {this.renderTextArea('description', 'Description', 'Description')}
+                {this.renderTextArea(
+                  'description',
+                  'Description',
+                  'Description'
+                )}
               </form>
               <div className='card' id='endpoint-form-collection-list'>
                 <div className='card-title'>
                   {this.state.list.type === 'collections' ? (
                     <div className='d-flex justify-content-between'>
                       <div>All Collections</div>
-                      <button className='btn' onClick={() => { this.openAddModal() }}>
+                      <button
+                        className='btn'
+                        onClick={() => {
+                          this.openAddModal()
+                        }}
+                      >
                         <i className='fas fa-plus' />
                       </button>
                     </div>
-
+                  ) : this.state.list.type === 'endpoints' ? (
+                    <button className='btn' onClick={() => this.goBack()}>
+                      <i className='fas fa-chevron-left' />
+                      {this.renderListTitle()}
+                    </button>
                   ) : (
-                    this.state.list.type === 'endpoints'
-                      ? <button className='btn' onClick={() => this.goBack()}>
+                    <div className='d-flex justify-content-between'>
+                      <button className='btn' onClick={() => this.goBack()}>
                         <i className='fas fa-chevron-left' />
                         {this.renderListTitle()}
-                        </button>
-                      : <div className='d-flex justify-content-between'>
-                        <button className='btn' onClick={() => this.goBack()}>
-                          <i className='fas fa-chevron-left' />
-                          {this.renderListTitle()}
-                        </button>
-                        <button className='btn' onClick={() => { this.openAddModal() }}>
-                          <i className='fas fa-plus' />
-                        </button>
-                        </div>
+                      </button>
+                      <button
+                        className='btn'
+                        onClick={() => {
+                          this.openAddModal()
+                        }}
+                      >
+                        <i className='fas fa-plus' />
+                      </button>
+                    </div>
                   )}
                 </div>
                 <ul className='list-group' id='folder-list'>
                   {this.state.list.type === 'endpoints' ? (
-                    this.renderList().map((item) => (
-                      <li id='endpoint-list'>
+                    this.renderList().map(item => (
+                      <li key={item} id='endpoint-list'>
                         <div
                           className={this.props.endpoints[item.id].requestType}
                         >
@@ -310,7 +342,7 @@ class SaveAsSidebar extends Form {
                       </li>
                     ))
                   ) : this.renderList().length ? (
-                    this.renderList().map((item) => (
+                    this.renderList().map(item => (
                       <li className='list-group-item' key={item.id}>
                         <button
                           className='btn'

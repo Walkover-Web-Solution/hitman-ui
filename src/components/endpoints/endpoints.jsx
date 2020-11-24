@@ -1,31 +1,31 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { isDashboardRoute } from "../common/utility";
-import { setEndpointIds } from "../groups/redux/groupsActions";
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { isDashboardRoute } from '../common/utility'
+import { setEndpointIds } from '../groups/redux/groupsActions'
 import {
   approveEndpoint,
   draftEndpoint,
   pendingEndpoint,
-  rejectEndpoint,
-} from "../publicEndpoint/redux/publicEndpointsActions";
-import { closeTab, openInNewTab } from "../tabs/redux/tabsActions";
-import tabService from "../tabs/tabService";
-import tabStatusTypes from "../tabs/tabStatusTypes";
-import "./endpoints.scss";
+  rejectEndpoint
+} from '../publicEndpoint/redux/publicEndpointsActions'
+import { closeTab, openInNewTab } from '../tabs/redux/tabsActions'
+import tabService from '../tabs/tabService'
+import tabStatusTypes from '../tabs/tabStatusTypes'
+import './endpoints.scss'
 import {
   deleteEndpoint,
   duplicateEndpoint,
-  updateEndpointOrder,
-} from "./redux/endpointsActions";
-import filterService from "../../services/filterService";
+  updateEndpointOrder
+} from './redux/endpointsActions'
+import filterService from '../../services/filterService'
 
 const mapStateToProps = (state) => {
   return {
     endpoints: state.endpoints,
     groups: state.groups,
-    tabs: state.tabs,
-  };
-};
+    tabs: state.tabs
+  }
+}
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -40,20 +40,19 @@ const mapDispatchToProps = (dispatch) => {
     draft_endpoint: (endpoint) => dispatch(draftEndpoint(endpoint)),
     reject_endpoint: (endpoint) => dispatch(rejectEndpoint(endpoint)),
     close_tab: (tabId) => dispatch(closeTab(tabId)),
-    open_in_new_tab: (tab) => dispatch(openInNewTab(tab)),
-  };
-};
+    open_in_new_tab: (tab) => dispatch(openInNewTab(tab))
+  }
+}
 
 class Endpoints extends Component {
-
-  constructor(props) {
-    super(props);
+  constructor (props) {
+    super(props)
     this.state = {
-      endpointState: "Make Public",
-    };
+      endpointState: 'Make Public'
+    }
   }
 
-  componentDidMount() { }
+  componentDidMount () {}
 
   // onDragStart = (e, eId) => {
   //   this.draggedItem = eId;
@@ -61,16 +60,16 @@ class Endpoints extends Component {
   //   this.props.set_source_group_id(eId, this.props.group_id);
   // };
 
-  sequencingOnFilter() {
-    let filteredEndpointKeys = this.filteredEndpoints
+  sequencingOnFilter () {
+    const filteredEndpointKeys = this.filteredEndpoints
       ? Object.keys(this.filteredEndpoints)
-      : [];
-    this.filteredEndpointsOrder = [];
+      : []
+    this.filteredEndpointsOrder = []
     for (let i = 0; i < this.props.endpoints_order.length; i++) {
       for (let j = 0; j < filteredEndpointKeys.length; j++) {
         if (this.props.endpoints_order[i] === filteredEndpointKeys[j]) {
-          this.filteredEndpointsOrder.push(this.props.endpoints_order[i]);
-          break;
+          this.filteredEndpointsOrder.push(this.props.endpoints_order[i])
+          break
         }
       }
     }
@@ -95,228 +94,231 @@ class Endpoints extends Component {
   //   }
   // };
 
-  handleDelete(endpoint) {
-    this.props.delete_endpoint(endpoint);
+  handleDelete (endpoint) {
+    this.props.delete_endpoint(endpoint)
     if (this.props.tabs.tabs[endpoint.id]) {
-      tabService.removeTab(endpoint.id, { ...this.props });
+      tabService.removeTab(endpoint.id, { ...this.props })
     }
   }
 
-  handleDuplicate(endpoint) {
-    this.props.duplicate_endpoint(endpoint);
+  handleDuplicate (endpoint) {
+    this.props.duplicate_endpoint(endpoint)
   }
 
-  openDeleteModal(endpointId) {
+  openDeleteModal (endpointId) {
     this.setState({
       showDeleteModal: true,
       selectedEndpoint: {
-        ...this.props.endpoints[endpointId],
-      },
-    });
+        ...this.props.endpoints[endpointId]
+      }
+    })
   }
 
-  closeDeleteEndpointModal() {
-    this.setState({ showDeleteModal: false });
+  closeDeleteEndpointModal () {
+    this.setState({ showDeleteModal: false })
   }
 
-  async handlePublicEndpointState(endpoint) {
-    if (endpoint.state === "Draft" || endpoint.state === "Reject") {
-      this.props.pending_endpoint(endpoint);
+  async handlePublicEndpointState (endpoint) {
+    if (endpoint.state === 'Draft' || endpoint.state === 'Reject') {
+      this.props.pending_endpoint(endpoint)
     }
   }
 
-  async handleCancelRequest(endpoint) {
-    this.props.draft_endpoint(endpoint);
-  }
-  async handleApproveRequest(endpoint) {
-    this.props.approve_endpoint(endpoint);
-  }
-  async handleRejectRequest(endpoint) {
-    this.props.reject_endpoint(endpoint);
+  async handleCancelRequest (endpoint) {
+    this.props.draft_endpoint(endpoint)
   }
 
-  handleDisplay(endpoint, groupId, collectionId, previewMode) {
+  async handleApproveRequest (endpoint) {
+    this.props.approve_endpoint(endpoint)
+  }
+
+  async handleRejectRequest (endpoint) {
+    this.props.reject_endpoint(endpoint)
+  }
+
+  handleDisplay (endpoint, groupId, collectionId, previewMode) {
     if (isDashboardRoute(this.props, true)) {
       if (!this.props.tabs.tabs[endpoint.id]) {
         const previewTabId = Object.keys(this.props.tabs.tabs).filter(
           (tabId) => this.props.tabs.tabs[tabId].previewMode === true
-        )[0];
-        if (previewTabId) this.props.close_tab(previewTabId);
+        )[0]
+        if (previewTabId) this.props.close_tab(previewTabId)
         this.props.open_in_new_tab({
           id: endpoint.id,
-          type: "endpoint",
+          type: 'endpoint',
           status: tabStatusTypes.SAVED,
           previewMode,
-          isModified: false,
-        });
+          isModified: false
+        })
       } else if (
         this.props.tabs.tabs[endpoint.id].previewMode === true &&
         previewMode === false
       ) {
-        tabService.disablePreviewMode(endpoint.id);
+        tabService.disablePreviewMode(endpoint.id)
       }
       this.props.history.push({
         pathname: `/dashboard/endpoint/${endpoint.id}`,
-        title: "update endpoint",
+        title: 'update endpoint',
         endpoint: endpoint,
-        groupId: groupId,
-      });
+        groupId: groupId
+      })
     } else {
       this.props.history.push({
         pathname: `/p/${collectionId}/e/${endpoint.id}/${this.props.collections[collectionId].name}`,
-        title: "update endpoint",
+        title: 'update endpoint',
         endpoint: endpoint,
         groupId: groupId,
-        Environment: "publicCollectionEnvironment",
-      });
+        Environment: 'publicCollectionEnvironment'
+      })
     }
   }
 
-  filterEndpoints() {
+  filterEndpoints () {
     if (
       this.props.selectedCollection === true &&
-      this.props.filter !== "" &&
+      this.props.filter !== '' &&
       this.filterFlag === false
     ) {
-      this.filterFlag = true;
-      let groupIds = [];
-      let groupIdsAndFilteredEndpoints = [];
+      this.filterFlag = true
+      let groupIds = []
+      let groupIdsAndFilteredEndpoints = []
       groupIdsAndFilteredEndpoints = filterService.filter(
         this.props.endpoints,
         this.props.filter,
-        "endpoints"
-      );
-      this.filteredEndpoints = groupIdsAndFilteredEndpoints[0];
-      groupIds = groupIdsAndFilteredEndpoints[1];
-      this.setState({ filter: this.props.filter });
+        'endpoints'
+      )
+      this.filteredEndpoints = groupIdsAndFilteredEndpoints[0]
+      groupIds = groupIdsAndFilteredEndpoints[1]
+      this.setState({ filter: this.props.filter })
       if (groupIds.length !== 0) {
-        this.props.show_filter_groups(groupIds, "endpoints");
+        this.props.show_filter_groups(groupIds, 'endpoints')
       } else {
-        this.props.show_filter_groups(null, "endpoints");
+        this.props.show_filter_groups(null, 'endpoints')
       }
     }
   }
 
-  filterGroupPages() {
+  filterGroupPages () {
     if (
       this.props.selectedCollection === true &&
-      this.props.filter !== "" &&
+      this.props.filter !== '' &&
       this.filterFlag === false
     ) {
-      this.filterFlag = true;
-      let groupIds = [];
-      let groupIdsAndFilteredPages = [];
+      this.filterFlag = true
+      let groupIds = []
+      let groupIdsAndFilteredPages = []
       groupIdsAndFilteredPages = filterService.filter(
         this.props.pages,
         this.props.filter,
-        "groupPages"
-      );
-      this.filteredGroupPages = groupIdsAndFilteredPages[0];
-      groupIds = groupIdsAndFilteredPages[1];
-      this.setState({ filter: this.props.filter });
+        'groupPages'
+      )
+      this.filteredGroupPages = groupIdsAndFilteredPages[0]
+      groupIds = groupIdsAndFilteredPages[1]
+      this.setState({ filter: this.props.filter })
       if (groupIds.length !== 0) {
-        this.props.show_filter_groups(groupIds, "pages");
+        this.props.show_filter_groups(groupIds, 'pages')
       } else {
-        this.props.show_filter_groups(null, "pages");
+        this.props.show_filter_groups(null, 'pages')
       }
     }
   }
 
   onDragStart = (e, eId) => {
-    this.draggedItem = eId;
-    this.props.set_endpoint_drag(eId);
+    this.draggedItem = eId
+    this.props.set_endpoint_drag(eId)
   };
 
   onDragOver = (e, eId) => {
-    e.preventDefault();
+    e.preventDefault()
   };
 
-  onDrop(e, destinationEndpointId) {
-    e.preventDefault();
+  onDrop (e, destinationEndpointId) {
+    e.preventDefault()
 
     if (!this.draggedItem) {
+      console.log('')
     } else {
       if (this.draggedItem === destinationEndpointId) {
-        this.draggedItem = null;
-        return;
+        this.draggedItem = null
+        return
       }
-      const endpoints = this.extractEndpoints();
+      const endpoints = this.extractEndpoints()
       const positionWiseEndpoints = this.makePositionWiseEndpoints({
-        ...endpoints,
-      });
+        ...endpoints
+      })
       const index = positionWiseEndpoints.findIndex(
         (eId) => eId === destinationEndpointId
-      );
-      let endpointIds = positionWiseEndpoints.filter(
+      )
+      const endpointIds = positionWiseEndpoints.filter(
         (item) => item !== this.draggedItem
-      );
-      endpointIds.splice(index, 0, this.draggedItem);
+      )
+      endpointIds.splice(index, 0, this.draggedItem)
 
-      this.props.update_endpoints_order(endpointIds, this.props.group_id);
-      this.draggedItem = null;
+      this.props.update_endpoints_order(endpointIds, this.props.group_id)
+      this.draggedItem = null
     }
   }
 
-  extractEndpoints() {
-    let endpoints = {};
+  extractEndpoints () {
+    const endpoints = {}
     for (let i = 0; i < Object.keys(this.props.endpoints).length; i++) {
       if (
         this.props.endpoints[Object.keys(this.props.endpoints)[i]].groupId &&
         this.props.endpoints[Object.keys(this.props.endpoints)[i]].groupId ===
-        this.props.group_id
+          this.props.group_id
       ) {
         endpoints[Object.keys(this.props.endpoints)[i]] = this.props.endpoints[
           Object.keys(this.props.endpoints)[i]
-        ];
+        ]
       }
     }
 
-    return endpoints;
+    return endpoints
   }
 
-  makePositionWiseEndpoints(endpoints) {
-    let positionWiseEndpoints = [];
+  makePositionWiseEndpoints (endpoints) {
+    const positionWiseEndpoints = []
     for (let i = 0; i < Object.keys(endpoints).length; i++) {
       positionWiseEndpoints[
         endpoints[Object.keys(endpoints)[i]].position
-      ] = Object.keys(endpoints)[i];
+      ] = Object.keys(endpoints)[i]
     }
-    return positionWiseEndpoints;
+    return positionWiseEndpoints
   }
 
-  render() {
+  render () {
     if (this.state.filter !== this.props.filter) {
-      this.filterFlag = false;
+      this.filterFlag = false
     }
-    if (this.props.filter === "") {
-      this.filteredEndpoints = { ...this.props.endpoints };
-      this.filteredEndpointsOrder = [...this.props.endpoints_order];
+    if (this.props.filter === '') {
+      this.filteredEndpoints = { ...this.props.endpoints }
+      this.filteredEndpointsOrder = [...this.props.endpoints_order]
     }
 
-    let endpointIds = Object.keys(this.props.endpoints).filter(
+    const endpointIds = Object.keys(this.props.endpoints).filter(
       (eId) =>
         this.props.endpoints[eId].groupId &&
         this.props.endpoints[eId].groupId === this.props.group_id
-    );
-    let endpointsArray = [];
+    )
+    let endpointsArray = []
     for (let index = 0; index < endpointIds.length; index++) {
-      const id = endpointIds[index];
-      const endpoint = this.props.endpoints[id];
-      endpointsArray = [...endpointsArray, endpoint];
+      const id = endpointIds[index]
+      const endpoint = this.props.endpoints[id]
+      endpointsArray = [...endpointsArray, endpoint]
     }
 
     endpointsArray.sort(function (a, b) {
-      return a.position - b.position;
-    });
-    let endpoints = {};
+      return a.position - b.position
+    })
+    const endpoints = {}
     for (let index = 0; index < endpointsArray.length; index++) {
-      const id = endpointsArray[index].id || endpointsArray[index].requestId;
-      endpoints[id] = this.props.endpoints[id];
+      const id = endpointsArray[index].id || endpointsArray[index].requestId
+      endpoints[id] = this.props.endpoints[id]
     }
 
     if (isDashboardRoute(this.props, true)) {
       return (
-        <React.Fragment>
+        <>
           {this.filterEndpoints()}
           {this.sequencingOnFilter()}
           {/* <div>
@@ -339,8 +341,8 @@ class Endpoints extends Component {
               //       this.props.endpoints[eId].groupId === this.props.group_id
               //   )
               .map((endpointId) => (
-                <div className="sidebar-accordion" key={endpointId}>
-                  <div className={this.props.endpoints[endpointId].state}></div>
+                <div className='sidebar-accordion' key={endpointId}>
+                  <div className={this.props.endpoints[endpointId].state} />
                   <button
                     draggable
                     onDragOver={(e) => this.onDragOver(e, endpointId)}
@@ -352,99 +354,93 @@ class Endpoints extends Component {
                         this.props.group_id,
                         this.props.collection_id,
                         true
-                      )
-                    }
+                      )}
                     onDoubleClick={() =>
                       this.handleDisplay(
                         this.props.endpoints[endpointId],
                         this.props.group_id,
                         this.props.collection_id,
                         false
-                      )
-                    }
+                      )}
                   >
-                    <div className="sidebar-accordion-item">
+                    <div className='sidebar-accordion-item'>
                       <div
                         className={`api-label ${this.props.endpoints[endpointId].requestType}`}
                       >
-                        <div className="endpoint-request-div">
+                        <div className='endpoint-request-div'>
                           {this.props.endpoints[endpointId].requestType}
                         </div>
                       </div>
                       {this.props.endpoints[endpointId].name}
                     </div>
-                    <div className="sidebar-item-action">
+                    <div className='sidebar-item-action'>
                       <div
-                        className="sidebar-item-action-btn"
-                        data-toggle="dropdown"
-                        aria-haspopup="true"
-                        aria-expanded="false"
+                        className='sidebar-item-action-btn'
+                        data-toggle='dropdown'
+                        aria-haspopup='true'
+                        aria-expanded='false'
                       >
-                        <i className="uil uil-ellipsis-v"></i>
+                        <i className='uil uil-ellipsis-v' />
                       </div>
-                      <div className="dropdown-menu dropdown-menu-right">
+                      <div className='dropdown-menu dropdown-menu-right'>
                         <a
-                          className="dropdown-item"
+                          className='dropdown-item'
                           onClick={() =>
-                            this.handleDelete(this.props.endpoints[endpointId])
-                          }
+                            this.handleDelete(this.props.endpoints[endpointId])}
                         >
                           Delete
                         </a>
                         <a
-                          className="dropdown-item"
+                          className='dropdown-item'
                           onClick={() =>
                             this.handleDuplicate(
                               this.props.endpoints[endpointId]
-                            )
-                          }
+                            )}
                         >
                           Duplicate
                         </a>
-                        {this.props.endpoints[endpointId].state === "Draft" ||
-                          this.props.endpoints[endpointId].state === "Reject" ? (
-                            <a
-                              className="dropdown-item"
-                              onClick={() =>
-                                this.handlePublicEndpointState(
-                                  this.props.endpoints[endpointId]
-                                )
-                              }
-                            >
-                              Make Public
-                            </a>
-                          ) : null}
+                        {this.props.endpoints[endpointId].state === 'Draft' ||
+                        this.props.endpoints[endpointId].state === 'Reject' ? (
+                          <a
+                            className='dropdown-item'
+                            onClick={() =>
+                              this.handlePublicEndpointState(
+                                this.props.endpoints[endpointId]
+                              )}
+                          >
+                            Make Public
+                          </a>
+                            ) : null}
 
                         {this.props.endpoints[endpointId].state ===
-                          "Approved" ? (
-                            <a className="dropdown-item" disabled>
-                              Approved
-                            </a>
-                          ) : null}
+                        'Approved' ? (
+                          <a className='dropdown-item' disabled>
+                            Approved
+                          </a>
+                            ) : null}
 
                         {this.props.endpoints[endpointId].state ===
-                          "Pending" ? (
-                            <a
-                              className="dropdown-item"
-                              onClick={() =>
-                                this.handleCancelRequest(
-                                  this.props.endpoints[endpointId]
-                                )
-                              }
-                            >
-                              Cancel Request
-                            </a>
-                          ) : null}
+                        'Pending' ? (
+                          <a
+                            className='dropdown-item'
+                            onClick={() =>
+                              this.handleCancelRequest(
+                                this.props.endpoints[endpointId]
+                              )}
+                          >
+                            Cancel Request
+                          </a>
+                            ) : null}
                       </div>
                     </div>
                   </button>
                 </div>
               ))}
-        </React.Fragment>
-      );
+        </>
+      )
     } else {
       return (
-        <React.Fragment>
+        <>
           {
             // Object.keys(this.props.endpoints).length !== 0 &&
             //   this.props.endpoints_order
@@ -453,36 +449,35 @@ class Endpoints extends Component {
             //         this.props.endpoints[eId].groupId === this.props.group_id
             //     )
             endpoints &&
-            Object.keys(endpoints).length !== 0 &&
-            Object.keys(endpoints).map((endpointId) => (
-              <div
-                className="hm-sidebar-item"
-                key={endpointId}
-                onClick={() =>
-                  this.handleDisplay(
-                    this.props.endpoints[endpointId],
-                    this.props.group_id,
-                    this.props.collection_id
-                  )
-                }
-              >
+              Object.keys(endpoints).length !== 0 &&
+              Object.keys(endpoints).map((endpointId) => (
                 <div
-                  className={`api-label ${this.props.endpoints[endpointId].requestType}`}
+                  className='hm-sidebar-item'
+                  key={endpointId}
+                  onClick={() =>
+                    this.handleDisplay(
+                      this.props.endpoints[endpointId],
+                      this.props.group_id,
+                      this.props.collection_id
+                    )}
                 >
-                  <div className="endpoint-request-div">
-                    {this.props.endpoints[endpointId].requestType}
+                  <div
+                    className={`api-label ${this.props.endpoints[endpointId].requestType}`}
+                  >
+                    <div className='endpoint-request-div'>
+                      {this.props.endpoints[endpointId].requestType}
+                    </div>
+                  </div>
+                  <div className='endpoint-name-div'>
+                    {this.props.endpoints[endpointId].name}
                   </div>
                 </div>
-                <div className="endpoint-name-div">
-                  {this.props.endpoints[endpointId].name}
-                </div>
-              </div>
-            ))
+              ))
           }
-        </React.Fragment>
-      );
+        </>
+      )
     }
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Endpoints);
+export default connect(mapStateToProps, mapDispatchToProps)(Endpoints)

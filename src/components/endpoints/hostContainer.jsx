@@ -7,7 +7,7 @@ import tabStatusTypes from '../tabs/tabStatusTypes'
 import './endpoints.scss'
 
 class HostContainer extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       selectedHost: 'customHost',
@@ -23,7 +23,7 @@ class HostContainer extends Component {
     }
   }
 
-  componentDidMount() {
+  componentDidMount () {
     const selectedHost = this.findTopPriorityHost()
     this.setState({ selectedHost })
     const unsubscribe = store.subscribe(() => {
@@ -39,7 +39,7 @@ class HostContainer extends Component {
     })
   }
 
-  findTopPriorityHost() {
+  findTopPriorityHost () {
     let selectedHost = 'customHost'
     if (this.props.custom_host) {
       selectedHost = 'customHost'
@@ -59,7 +59,7 @@ class HostContainer extends Component {
     return selectedHost
   }
 
-  selectHost(host) {
+  selectHost (host) {
     if (host === 'environmentHost') {
       if (
         this.props.environment &&
@@ -86,7 +86,7 @@ class HostContainer extends Component {
     }
   };
 
-  fetchHost() {
+  fetchHost () {
     let BASE_URL = ''
     switch (this.state.selectedHost) {
       case 'customHost':
@@ -129,7 +129,7 @@ class HostContainer extends Component {
     return BASE_URL
   }
 
-  fetchPublicEndpointHost(props) {
+  fetchPublicEndpointHost (props) {
     let HOST_URL = ''
     let endpoint = {}
     const allEndpoints = this.props.endpoints
@@ -158,7 +158,7 @@ class HostContainer extends Component {
     return HOST_URL
   }
 
-  render() {
+  render () {
     if (
       isDashboardRoute(this.props) &&
       this.state.groupId &&
@@ -223,7 +223,7 @@ class HostContainer extends Component {
                     </div>
                     <div className='host-label'>environment BASE_URL </div>
                   </button>
-                )}
+              )}
               {this.state.groupId &&
                 this.props.groups[this.state.groupId] &&
                 this.props.groups[this.state.groupId].host && (
@@ -238,7 +238,7 @@ class HostContainer extends Component {
                     </div>
                     <div className='host-label'>group BASE_URL</div>
                   </button>
-                )}
+              )}
               {this.state.groupId && (
                 <button
                   className='btn'

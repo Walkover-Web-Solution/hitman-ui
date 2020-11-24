@@ -66,11 +66,15 @@ class CodeTemplate extends Component {
   }
 
   componentDidMount () {
-    if (this.props.harObject) { this.makeCodeTemplate(this.selectedLanguage) }
+    if (this.props.harObject) {
+      this.makeCodeTemplate(this.selectedLanguage)
+    }
   }
 
   componentDidUpdate (prevProps, prevState) {
-    if (this.props.harObject !== prevProps.harObject) { this.makeCodeTemplate(this.selectedLanguage) }
+    if (this.props.harObject !== prevProps.harObject) {
+      this.makeCodeTemplate(this.selectedLanguage)
+    }
   }
 
   render () {
@@ -80,17 +84,21 @@ class CodeTemplate extends Component {
           <Row>
             <Col id='code-window-sidebar' sm={3}>
               <ListGroup>
-                {Object.keys(this.languages).map((key) =>
-                  (
-                    <ListGroup.Item
-                      className={this.languages[key].name === this.selectedLanguageName ? 'active' : ''}
-                      onClick={() => {
-                        this.makeCodeTemplate(key)
-                      }}
-                    >
-                      {this.languages[key].name}
-                    </ListGroup.Item>
-                  ))}
+                {Object.keys(this.languages).map((key) => (
+                  <ListGroup.Item
+                    key={key}
+                    className={
+                      this.languages[key].name === this.selectedLanguageName
+                        ? 'active'
+                        : ''
+                    }
+                    onClick={() => {
+                      this.makeCodeTemplate(key)
+                    }}
+                  >
+                    {this.languages[key].name}
+                  </ListGroup.Item>
+                ))}
               </ListGroup>
               <v1 />
             </Col>
@@ -109,15 +117,11 @@ class CodeTemplate extends Component {
                   className='copy-to-clipboard'
                 >
                   <button>
-                    {
-                      this.state.copied
-                        ? (
-                          <i className='fas fa-check' />
-                          )
-                        : (
-                          <i className='fas fa-clone' />
-                          )
-                    }
+                    {this.state.copied ? (
+                      <i className='fas fa-check' />
+                    ) : (
+                      <i className='fas fa-clone' />
+                    )}
                   </button>
                 </CopyToClipboard>
               </div>{' '}

@@ -87,39 +87,48 @@ class CreateEndpointForm extends Form {
 
   showCollectionForm () {
     return (
-      this.state.showCollectionForm &&
+      this.state.showCollectionForm && (
         <CollectionForm
           {...this.props}
-          onHide={() => { this.setState({ showCollectionForm: false }) }}
+          onHide={() => {
+            this.setState({ showCollectionForm: false })
+          }}
           show
           title='Add new Collection'
         />
+      )
     )
   }
 
   showCollectionVersionForm () {
     return (
-      this.state.showCollectionVersionForm &&
+      this.state.showCollectionVersionForm && (
         <CollectionVersionForm
           {...this.props}
           collection_id={this.state.list.parentId}
-          onHide={() => { this.setState({ showCollectionVersionForm: false }) }}
+          onHide={() => {
+            this.setState({ showCollectionVersionForm: false })
+          }}
           show
           title='Add new Collection Version'
         />
+      )
     )
   }
 
   showGroupForm () {
     return (
-      this.state.showGroupForm &&
+      this.state.showGroupForm && (
         <GroupForm
           {...this.props}
           selectedVersion={{ id: this.state.list.parentId }}
-          onHide={() => { this.setState({ showGroupForm: false }) }}
+          onHide={() => {
+            this.setState({ showGroupForm: false })
+          }}
           show
           title='Add new Group'
         />
+      )
     )
   }
 
@@ -218,7 +227,6 @@ class CreateEndpointForm extends Form {
   render () {
     const { staticContext, ...props } = this.props
     return (
-
       <Modal
         {...props}
         size='lg'
@@ -246,73 +254,72 @@ class CreateEndpointForm extends Form {
             </form>
             <div className='card' id='endpoint-form-collection-list'>
               <div className='card-title'>
-                {
-                  this.state.list.type === 'collections'
-                    ? (
-                      <div className='d-flex justify-content-between'>
-                        <div>All Collections</div>
-                        <button className='btn' onClick={() => { this.openAddModal() }}>
-                          <i className='fas fa-plus' />
-                        </button>
-                      </div>
-
-                      )
-                    : (
-                        this.state.list.type === 'endpoints'
-                          ? <button className='btn' onClick={() => this.goBack()}>
-                            <i className='fas fa-chevron-left' />
-                            {this.renderListTitle()}
-                          </button>
-                          : <div className='d-flex justify-content-between'>
-                            <button className='btn' onClick={() => this.goBack()}>
-                              <i className='fas fa-chevron-left' />
-                              {this.renderListTitle()}
-                            </button>
-                            <button className='btn' onClick={() => { this.openAddModal() }}>
-                              <i className='fas fa-plus' />
-                            </button>
-                          </div>
-                      )
-                }
+                {this.state.list.type === 'collections' ? (
+                  <div className='d-flex justify-content-between'>
+                    <div>All Collections</div>
+                    <button
+                      className='btn'
+                      onClick={() => {
+                        this.openAddModal()
+                      }}
+                    >
+                      <i className='fas fa-plus' />
+                    </button>
+                  </div>
+                ) : this.state.list.type === 'endpoints' ? (
+                  <button className='btn' onClick={() => this.goBack()}>
+                    <i className='fas fa-chevron-left' />
+                    {this.renderListTitle()}
+                  </button>
+                ) : (
+                  <div className='d-flex justify-content-between'>
+                    <button className='btn' onClick={() => this.goBack()}>
+                      <i className='fas fa-chevron-left' />
+                      {this.renderListTitle()}
+                    </button>
+                    <button
+                      className='btn'
+                      onClick={() => {
+                        this.openAddModal()
+                      }}
+                    >
+                      <i className='fas fa-plus' />
+                    </button>
+                  </div>
+                )}
               </div>
               <ul className='list-group' id='folder-list'>
-                {this.state.list.type === 'endpoints'
-                  ? (
-                      this.renderList().map((item) => (
-                        <li id='endpoint-list'>
-                          <div
-                            className={this.props.endpoints[item.id].requestType}
-                          >
-                            {this.props.endpoints[item.id].requestType}
-                          </div>
-                          <div className='list-item-wrapper'>{item.name}</div>
-                        </li>
-                      )
-                      )
-                    )
-                  : this.renderList().length
-                    ? (
-                        this.renderList().map((item) => (
-                          <li className='list-group-item' key={item.id}>
-                            <button
-                              className='btn'
-                              onClick={() => this.setList(item)}
-                            >
-                              <div className='list-item-wrapper'>
-                                <i className='fas fa-folder' />
-                                {item.name}
-                              </div>
-                              <i className='fas fa-chevron-right' />
-                            </button>
-                          </li>
-                        )
-                        )
-                      )
-                    : (
-                      <div className='not-found-label'>
-                        {this.state.list.type + ' not found in this folder'}
+                {this.state.list.type === 'endpoints' ? (
+                  this.renderList().map((item) => (
+                    <li id='endpoint-list' key={item}>
+                      <div
+                        className={this.props.endpoints[item.id].requestType}
+                      >
+                        {this.props.endpoints[item.id].requestType}
                       </div>
-                      )}
+                      <div className='list-item-wrapper'>{item.name}</div>
+                    </li>
+                  ))
+                ) : this.renderList().length ? (
+                  this.renderList().map((item) => (
+                    <li className='list-group-item' key={item.id}>
+                      <button
+                        className='btn'
+                        onClick={() => this.setList(item)}
+                      >
+                        <div className='list-item-wrapper'>
+                          <i className='fas fa-folder' />
+                          {item.name}
+                        </div>
+                        <i className='fas fa-chevron-right' />
+                      </button>
+                    </li>
+                  ))
+                ) : (
+                  <div className='not-found-label'>
+                    {this.state.list.type + ' not found in this folder'}
+                  </div>
+                )}
               </ul>
             </div>
             <button
