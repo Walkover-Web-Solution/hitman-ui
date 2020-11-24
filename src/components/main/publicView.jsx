@@ -61,18 +61,21 @@ class PublicView extends Component {
               />
             </div>
             <div className='public-dashboard-action'>
-              {auth.getCurrentUser() === null
-                ? (
-                  <div
-                    id='sokt-sso'
-                    data-redirect-uri={redirectionUrl}
-                    data-source='sokt-app'
-                    data-token-key='sokt-auth-token'
-                    data-view='button'
-                  />
-                  ) : (
+              {
+                auth.getCurrentUser() === null
+                  ? (
+                    <div
+                      id='sokt-sso'
+                      data-redirect-uri={redirectionUrl}
+                      data-source='sokt-app'
+                      data-token-key='sokt-auth-token'
+                      data-view='button'
+                    />
+                    )
+                  : (
                     <UserInfo />
-                  )}
+                    )
+              }
             </div>
           </div>
         </div>
@@ -81,6 +84,7 @@ class PublicView extends Component {
             Object.keys(filteredPublicCollections).map((collectionId) =>
               (
                 <div
+                  key={collectionId}
                   onClick={() => this.openCollection(collectionId)}
                   className='collection-box'
                 >

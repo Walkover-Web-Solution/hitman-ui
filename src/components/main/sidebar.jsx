@@ -194,9 +194,11 @@ class SideBar extends Component {
           />
         )}
         <div className='primary-sidebar'>
-          {isDashboardRoute(this.props, true) ? (
-            <>
-              {/* <div className="user-info">
+          {
+            isDashboardRoute(this.props, true)
+              ? (
+                <>
+                  {/* <div className="user-info">
                 <div className="user-avatar">
                   <i className="uil uil-user"></i>
                 </div>
@@ -234,94 +236,106 @@ class SideBar extends Component {
                 </div>
               </div> */}
 
-              <div className='app-name'>
-                <img className='icon' src={hitmanIcon} />
-                HITMAN
-              </div>
-              <div className='search-box'>
-                <i className='fas fa-search' id='search-icon' />
-                <input
-                  value={this.state.data.filter}
-                  type='text'
-                  name='filter'
-                  placeholder='Search'
-                  onChange={(e) => this.handleOnChange(e)}
-                />
-              </div>
+                  <div className='app-name'>
+                    <img className='icon' src={hitmanIcon} />
+                    HITMAN
+                  </div>
+                  <div className='search-box'>
+                    <i className='fas fa-search' id='search-icon' />
+                    <input
+                      value={this.state.data.filter}
+                      type='text'
+                      name='filter'
+                      placeholder='Search'
+                      onChange={(e) => this.handleOnChange(e)}
+                    />
+                  </div>
 
-              <Tabs
-                defaultActiveKey={
-                  getCurrentUser() ? 'collection' : 'randomTrigger'
-                }
-                id='uncontrolled-tab-example'
-              >
-                <Tab eventKey='collection' title={<img src={collectionIcon} />}>
-                  {!getCurrentUser() ? (
-                    <div className='empty-collections'>
-                      <div>
-                        {' '}
-                        <img src={emptyCollections} />
-                      </div>
-                      <div className='content'>
-                        Your collection is Empty.
-                        <br />
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                      </div>
-                      <Button
-                        className='button'
-                        variant='warning'
-                        onClick={() =>
-                          this.setState({
-                            showLoginSignupModal: true
-                          })}
-                      >
-                        + Add here
-                      </Button>{' '}
-                    </div>
-                  ) : null}
-                  {getCurrentUser() ? (
-                    <Switch>
-                      <ProtectedRoute
-                        path='/dashboard/'
-                        render={(props) => (
-                          <Collections
-                            {...this.props}
-                            empty_filter={this.emptyFilter.bind(this)}
-                            collection_selected={this.openCollection.bind(this)}
-                            filter={this.setKeyWord()}
-                          />
-                        )}
-                      />
-                      <ProtectedRoute
-                        path='/admin/publish'
-                        render={(props) => (
-                          <Collections
-                            {...this.props}
-                            empty_filter={this.emptyFilter.bind(this)}
-                            collection_selected={this.openCollection.bind(this)}
-                            filter={this.state.data.filter}
-                          />
-                        )}
-                      />
-                    </Switch>
-                  ) : null}
-                  {isDashboardRoute(this.props, true) ? <></> : null}
-                </Tab>
-                <Tab eventKey='history' title={<img src={historyIcon} />}>
-                  {this.renderHistoryList()}
-                </Tab>
-                <Tab
-                  eventKey='randomTrigger'
-                  title={<img src={randomTriggerIcon} />}
+                  <Tabs
+                    defaultActiveKey={
+                      getCurrentUser() ? 'collection' : 'randomTrigger'
+                    }
+                    id='uncontrolled-tab-example'
+                  >
+                    <Tab eventKey='collection' title={<img src={collectionIcon} />}>
+                      {
+                        !getCurrentUser()
+                          ? (
+                            <div className='empty-collections'>
+                              <div>
+                                {' '}
+                                <img src={emptyCollections} />
+                              </div>
+                              <div className='content'>
+                                Your collection is Empty.
+                                <br />
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                              </div>
+                              <Button
+                                className='button'
+                                variant='warning'
+                                onClick={() =>
+                                  this.setState({
+                                    showLoginSignupModal: true
+                                  })}
+                              >
+                                + Add here
+                              </Button>{' '}
+                            </div>
+                            )
+                          : null
+                      }
+                      {
+                        getCurrentUser()
+                          ? (
+                            <Switch>
+                              <ProtectedRoute
+                                path='/dashboard/'
+                                render={(props) => (
+                                  <Collections
+                                    {...this.props}
+                                    empty_filter={this.emptyFilter.bind(this)}
+                                    collection_selected={this.openCollection.bind(this)}
+                                    filter={this.setKeyWord()}
+                                  />
+                                )}
+                              />
+                              <ProtectedRoute
+                                path='/admin/publish'
+                                render={(props) => (
+                                  <Collections
+                                    {...this.props}
+                                    empty_filter={this.emptyFilter.bind(this)}
+                                    collection_selected={this.openCollection.bind(this)}
+                                    filter={this.state.data.filter}
+                                  />
+                                )}
+                              />
+                            </Switch>
+                            )
+                          : null
+                      }
+                      {isDashboardRoute(this.props, true)
+                        ? <></>
+                        : null}
+                    </Tab>
+                    <Tab eventKey='history' title={<img src={historyIcon} />}>
+                      {this.renderHistoryList()}
+                    </Tab>
+                    <Tab
+                      eventKey='randomTrigger'
+                      title={<img src={randomTriggerIcon} />}
+                    />
+                  </Tabs>
+                </>
+                )
+              : (
+                <Route
+                  path='/p/:collectionId'
+                  render={(props) => <Collections {...this.props} />}
                 />
-              </Tabs>
-            </>
-          ) : (
-            <Route
-              path='/p/:collectionId'
-              render={(props) => <Collections {...this.props} />}
-            />
-          )}
+                )
+          }
         </div>
         {this.collectionId && (
           <div className='secondary-sidebar'>

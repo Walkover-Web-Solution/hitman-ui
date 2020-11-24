@@ -43,7 +43,7 @@ class PublicEndpoint extends Component {
     }
 
     const unsubscribe = store.subscribe(() => {
-      const baseUrl = window.location.href.split('/')[2]
+      // const baseUrl = window.location.href.split('/')[2]
       const collectionId = this.props.location.collectionIdentifier
       // const domain = this.props.location.pathname.split("/");
       if (this.props.collections[collectionId]) {
@@ -93,30 +93,36 @@ class PublicEndpoint extends Component {
       return (
         <>
           <nav className='public-endpoint-navbar'>
-            {process.env.REACT_APP_UI_URL === window.location.origin + '/' ? (
-              auth.getCurrentUser() === null ? (
-                <div className='dropdown user-dropdown'>
-                  <div className='user-info'>
-                    <div className='user-avatar'>
-                      <i className='uil uil-signin' />
-                    </div>
-                    <div className='user-details '>
-                      <div className='user-details-heading not-logged-in'>
-                        <div
-                          id='sokt-sso'
-                          data-redirect-uri={redirectionUrl}
-                          data-source='sokt-app'
-                          data-token-key='sokt-auth-token'
-                          data-view='button'
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <UserInfo />
-              )
-            ) : null}
+            {
+              process.env.REACT_APP_UI_URL === window.location.origin + '/'
+                ? (
+                    auth.getCurrentUser() === null
+                      ? (
+                        <div className='dropdown user-dropdown'>
+                          <div className='user-info'>
+                            <div className='user-avatar'>
+                              <i className='uil uil-signin' />
+                            </div>
+                            <div className='user-details '>
+                              <div className='user-details-heading not-logged-in'>
+                                <div
+                                  id='sokt-sso'
+                                  data-redirect-uri={redirectionUrl}
+                                  data-source='sokt-app'
+                                  data-token-key='sokt-auth-token'
+                                  data-view='button'
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        )
+                      : (
+                        <UserInfo />
+                        )
+                  )
+                : null
+            }
           </nav>
           <main role='main' className='mainpublic-endpoint-main hm-wrapper'>
             <ToastContainer />
@@ -126,22 +132,26 @@ class PublicEndpoint extends Component {
             </div>
 
             <div className='hm-right-content'>
-              {this.state.collectionName !== '' ? (
-                <Switch>
-                  <Route
-                    path={`/p/:collectionId/e/:endpointId/${this.state.collectionName}`}
-                    render={(props) => <DisplayEndpoint {...props} />}
-                  />
-                  <Route
-                    path={`/p/:collectionId/pages/:pageid/${this.state.collectionName}`}
-                    render={(props) => <DisplayPage {...props} />}
-                  />
-                  <Route
-                    path={`/p/:collectionId/description/${this.state.collectionName}`}
-                    render={(props) => <DisplayCollection {...props} />}
-                  />
-                </Switch>
-              ) : null}
+              {
+                this.state.collectionName !== ''
+                  ? (
+                    <Switch>
+                      <Route
+                        path={`/p/:collectionId/e/:endpointId/${this.state.collectionName}`}
+                        render={(props) => <DisplayEndpoint {...props} />}
+                      />
+                      <Route
+                        path={`/p/:collectionId/pages/:pageid/${this.state.collectionName}`}
+                        render={(props) => <DisplayPage {...props} />}
+                      />
+                      <Route
+                        path={`/p/:collectionId/description/${this.state.collectionName}`}
+                        render={(props) => <DisplayCollection {...props} />}
+                      />
+                    </Switch>
+                    )
+                  : null
+              }
             </div>
           </main>
         </>

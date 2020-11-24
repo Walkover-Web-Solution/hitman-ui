@@ -1,61 +1,60 @@
-import React from 'react';
-import { CustomPicker ,TwitterPicker} from 'react-color';
+import React from 'react'
+import { CustomPicker, TwitterPicker } from 'react-color'
 
-const colorPickerEnum = {
-  COLOR1 : "#dd755e",
-  COLOR2 : "#686eff",
-  COLOR3 : "#7dccee",
-  COLOR4 : "#27ae60",
-  COLOR5 : "#f2994a",
+// const colorPickerEnum = {
+//   COLOR1: '#dd755e',
+//   COLOR2: '#686eff',
+//   COLOR3: '#7dccee',
+//   COLOR4: '#27ae60',
+//   COLOR5: '#f2994a'
 
-}
+// }
 
 class CustomColorPicker extends React.Component {
-
-  state ={
-    data : {
-      theme  : ""
+  constructor (props) {
+    super(props)
+    this.state = {
+      data: {
+        theme: ''
+      }
     }
   }
 
-  componentDidMount() {
-      if(this.props.theme){
-        let data = {...this.state.data}
-        data.theme = this.props.theme
-        this.setState({ data })
-      }
+  componentDidMount () {
+    if (this.props.theme) {
+      const data = { ...this.state.data }
+      data.theme = this.props.theme
+      this.setState({ data })
+    }
   }
 
-  toggleColorOption(){
+  toggleColorOption () {
     this.setState({
       openColorPicker: !this.state.openColorPicker
     })
   }
 
-
-  handleChangeComplete=(color)=>{
-      let data = {...this.state.data}
-      data.theme = color.hex
-      this.setState({
-        data
-      })
-      this.props.set_theme(color.hex)
-    
+  handleChangeComplete = (color) => {
+    const data = { ...this.state.data }
+    data.theme = color.hex
+    this.setState({
+      data
+    })
+    this.props.set_theme(color.hex)
   }
 
-  render() {
+  render () {
     return (
-    <React.Fragment>
-    <div>
-      {
+      <>
+        <div>
           <TwitterPicker
-          color = {this.state.data.theme}
-           onChangeComplete={this.handleChangeComplete }/>
-     }
-    </div>
-    </React.Fragment>
+            color={this.state.data.theme}
+            onChangeComplete={this.handleChangeComplete}
+          />
+        </div>
+      </>
     )
   }
 }
 
-export default CustomPicker(CustomColorPicker);
+export default CustomPicker(CustomColorPicker)

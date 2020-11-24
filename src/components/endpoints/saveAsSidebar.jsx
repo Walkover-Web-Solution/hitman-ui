@@ -228,7 +228,6 @@ class SaveAsSidebar extends Form {
   }
 
   render () {
-    const { staticContext, ...props } = this.props
     const saveAsSidebarStyle = {
       position: 'fixed',
       background: 'white',
@@ -295,72 +294,84 @@ class SaveAsSidebar extends Form {
               </form>
               <div className='card' id='endpoint-form-collection-list'>
                 <div className='card-title'>
-                  {this.state.list.type === 'collections' ? (
-                    <div className='d-flex justify-content-between'>
-                      <div>All Collections</div>
-                      <button
-                        className='btn'
-                        onClick={() => {
-                          this.openAddModal()
-                        }}
-                      >
-                        <i className='fas fa-plus' />
-                      </button>
-                    </div>
-                  ) : this.state.list.type === 'endpoints' ? (
-                    <button className='btn' onClick={() => this.goBack()}>
-                      <i className='fas fa-chevron-left' />
-                      {this.renderListTitle()}
-                    </button>
-                  ) : (
-                    <div className='d-flex justify-content-between'>
-                      <button className='btn' onClick={() => this.goBack()}>
-                        <i className='fas fa-chevron-left' />
-                        {this.renderListTitle()}
-                      </button>
-                      <button
-                        className='btn'
-                        onClick={() => {
-                          this.openAddModal()
-                        }}
-                      >
-                        <i className='fas fa-plus' />
-                      </button>
-                    </div>
-                  )}
+                  {
+                    this.state.list.type === 'collections'
+                      ? (
+                        <div className='d-flex justify-content-between'>
+                          <div>All Collections</div>
+                          <button
+                            className='btn'
+                            onClick={() => {
+                              this.openAddModal()
+                            }}
+                          >
+                            <i className='fas fa-plus' />
+                          </button>
+                        </div>
+                        )
+                      : this.state.list.type === 'endpoints'
+                        ? (
+                          <button className='btn' onClick={() => this.goBack()}>
+                            <i className='fas fa-chevron-left' />
+                            {this.renderListTitle()}
+                          </button>
+                          )
+                        : (
+                          <div className='d-flex justify-content-between'>
+                            <button className='btn' onClick={() => this.goBack()}>
+                              <i className='fas fa-chevron-left' />
+                              {this.renderListTitle()}
+                            </button>
+                            <button
+                              className='btn'
+                              onClick={() => {
+                                this.openAddModal()
+                              }}
+                            >
+                              <i className='fas fa-plus' />
+                            </button>
+                          </div>
+                          )
+                  }
                 </div>
                 <ul className='list-group' id='folder-list'>
-                  {this.state.list.type === 'endpoints' ? (
-                    this.renderList().map(item => (
-                      <li key={item} id='endpoint-list'>
-                        <div
-                          className={this.props.endpoints[item.id].requestType}
-                        >
-                          {this.props.endpoints[item.id].requestType}
+                  {this.state.list.type === 'endpoints'
+                    ? (
+                        this.renderList().map(item => (
+                          <li key={item} id='endpoint-list'>
+                            <div
+                              className={this.props.endpoints[item.id].requestType}
+                            >
+                              {this.props.endpoints[item.id].requestType}
+                            </div>
+                            <div className='list-item-wrapper'>{item.name}</div>
+                          </li>
+                        )
+                        )
+                      )
+                    : this.renderList().length
+                      ? (
+                          this.renderList().map(item => (
+                            <li className='list-group-item' key={item.id}>
+                              <button
+                                className='btn'
+                                onClick={() => this.setList(item)}
+                              >
+                                <div className='list-item-wrapper'>
+                                  <i className='fas fa-folder' />
+                                  {item.name}
+                                </div>
+                                <i className='fas fa-chevron-right' />
+                              </button>
+                            </li>
+                          )
+                          )
+                        )
+                      : (
+                        <div className='not-found-label'>
+                          {this.state.list.type + ' not found in this folder'}
                         </div>
-                        <div className='list-item-wrapper'>{item.name}</div>
-                      </li>
-                    ))
-                  ) : this.renderList().length ? (
-                    this.renderList().map(item => (
-                      <li className='list-group-item' key={item.id}>
-                        <button
-                          className='btn'
-                          onClick={() => this.setList(item)}
-                        >
-                          <div className='list-item-wrapper'>
-                            <i className='fas fa-folder' />
-                            {item.name}
-                          </div>
-                          <i className='fas fa-chevron-right' />
-                        </button>
-                      </li>
-                    ))
-                  ) : (
-                    <div className='not-found-label'>
-                      {this.state.list.type + ' not found in this folder'}
-                    </div>
-                  )}
+                        )}
                 </ul>
               </div>
               <button

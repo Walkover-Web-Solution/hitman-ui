@@ -50,6 +50,7 @@ class VersionPages extends Component {
     e.preventDefault()
 
     if (!this.draggedItem) {
+      console.log('')
     } else {
       if (this.draggedItem === destinationPageId) {
         this.draggedItem = null
@@ -75,7 +76,7 @@ class VersionPages extends Component {
     for (let i = 0; i < Object.keys(this.props.pages).length; i++) {
       if (
         this.props.pages[Object.keys(this.props.pages)[i]].versionId ===
-          this.props.version_id &&
+        this.props.version_id &&
         this.props.pages[Object.keys(this.props.pages)[i]].groupId === null
       ) {
         pages[Object.keys(this.props.pages)[i]] = this.props.pages[
@@ -174,44 +175,48 @@ class VersionPages extends Component {
                 this.props.pages[pageId].groupId === null
             )
             .map((pageId, index) => (
-              <div>
-                {isDashboardRoute(this.props) ? (
-                  <div
-                    key={index}
-                    className={
-                      isDashboardRoute(this.props)
-                        ? this.props.pages[pageId].state
-                        : null
-                    }
-                  >
-                    <Pages
-                      {...this.props}
-                      page_id={pageId}
-                      index={index}
-                      onDragStart={this.onDragStart.bind(this)}
-                      // onDragOver={(e) => {
-                      //   e.preventDefault();
-                      // }}
-                      onDrop={this.onDrop.bind(this)}
-                      open_delete_page_modal={this.openDeletePageModal.bind(
-                        this
-                      )}
-                      close_delete_page_modal={this.closeDeletePageModal.bind(
-                        this
-                      )}
-                    />
-                  </div>
-                ) : (
-                  <Pages
-                    {...this.props}
-                    page_id={pageId}
-                    index={index}
-                    open_delete_page_modal={this.openDeletePageModal.bind(this)}
-                    close_delete_page_modal={this.closeDeletePageModal.bind(
-                      this
-                    )}
-                  />
-                )}
+              <div key={index}>
+                {
+                  isDashboardRoute(this.props)
+                    ? (
+                      <div
+                        key={index}
+                        className={
+                          isDashboardRoute(this.props)
+                            ? this.props.pages[pageId].state
+                            : null
+                        }
+                      >
+                        <Pages
+                          {...this.props}
+                          page_id={pageId}
+                          index={index}
+                          onDragStart={this.onDragStart.bind(this)}
+                          // onDragOver={(e) => {
+                          //   e.preventDefault();
+                          // }}
+                          onDrop={this.onDrop.bind(this)}
+                          open_delete_page_modal={this.openDeletePageModal.bind(
+                            this
+                          )}
+                          close_delete_page_modal={this.closeDeletePageModal.bind(
+                            this
+                          )}
+                        />
+                      </div>
+                      )
+                    : (
+                      <Pages
+                        {...this.props}
+                        page_id={pageId}
+                        index={index}
+                        open_delete_page_modal={this.openDeletePageModal.bind(this)}
+                        close_delete_page_modal={this.closeDeletePageModal.bind(
+                          this
+                        )}
+                      />
+                      )
+                }
               </div>
             ))}
       </>

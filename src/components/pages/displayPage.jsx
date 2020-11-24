@@ -50,16 +50,18 @@ class DisplayPage extends Component {
 
     return (
       <div className='custom-display-page'>
-        {isDashboardRoute(this.props) ? (
-          <button
-            className='btn btn-primary btn-sm'
-            onClick={() => {
-              this.handleEdit(this.state.data)
-            }}
-          >
-            Edit page
-          </button>
-        ) : null}
+        {isDashboardRoute(this.props)
+          ? (
+            <button
+              className='btn btn-primary btn-sm'
+              onClick={() => {
+                this.handleEdit(this.state.data)
+              }}
+            >
+              Edit page
+            </button>
+            )
+          : null}
 
         <div>{ReactHtmlParser(this.state.data.contents)}</div>
       </div>

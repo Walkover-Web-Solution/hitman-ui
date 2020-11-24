@@ -23,12 +23,10 @@ class UserInfo extends Component {
     const allCollections = this.props.get_public_collections()
 
     let firstCollection = {}
-    for (let i = 0; i < allCollections.length; i++) {
-      const collectionId = allCollections[i]
-      const collection = this.props.collections[collectionId]
-      firstCollection = collection
-      break
-    }
+    const collectionId = allCollections[0]
+    const collection = this.props.collections[collectionId]
+    firstCollection = collection
+
     return firstCollection
   }
 

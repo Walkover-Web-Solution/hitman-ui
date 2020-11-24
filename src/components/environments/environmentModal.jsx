@@ -70,7 +70,7 @@ class EnvironmentModal extends Component {
               Object.keys(this.props.environment.environments).map(
                 (environmentId) =>
                   (
-                    <div>
+                    <div key={environmentId}>
                       <ListGroup.Item
                         style={{ width: '93%', float: 'left' }}
                         key={environmentId}
