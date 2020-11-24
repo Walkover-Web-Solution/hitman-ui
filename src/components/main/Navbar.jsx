@@ -1,130 +1,134 @@
-import React, { Component } from "react";
-import { Link } from "react-router-dom";
-import { getCurrentUser } from "../auth/authService";
-import collectionsService from "../collections/collectionsService";
-import environmentsService from "../environments/environmentsService";
-import "../styles.scss";
-import tabService from "../tabs/tabService";
-import CreateNewModal from "./CreateNewModal";
-import "./main.scss";
-import OpenApiForm from "../openApi/openApiForm";
+import React, { Component } from 'react'
+import { Link } from 'react-router-dom'
+import { getCurrentUser } from '../auth/authService'
+import collectionsService from '../collections/collectionsService'
+import environmentsService from '../environments/environmentsService'
+import '../styles.scss'
+import tabService from '../tabs/tabService'
+import CreateNewModal from './CreateNewModal'
+import './main.scss'
+import OpenApiForm from '../openApi/openApiForm'
 
 class Navbar extends Component {
-  state = {
-    name: "",
-    email: "",
-  };
-  componentDidMount() {
-    const { user } = getCurrentUser();
-    const name = user.first_name + user.last_name;
-    const email = user.email;
-    this.setState({ name, email });
+  constructor (props) {
+    super(props)
+    this.state = {
+      name: '',
+      email: ''
+    }
   }
 
-  openCreateNewModal(onHide) {
+  componentDidMount () {
+    const { user } = getCurrentUser()
+    const name = user.first_name + user.last_name
+    const email = user.email
+    this.setState({ name, email })
+  }
+
+  openCreateNewModal (onHide) {
     return (
       <CreateNewModal
         {...this.props}
-        show={true}
+        show
         onHide={onHide}
         add_new_endpoint={this.handleAddEndpoint.bind(this)}
         open_collection_form={this.openCollectionForm.bind(this)}
         open_environment_form={this.openEnvironmentForm.bind(this)}
       />
-    );
+    )
   }
 
-  openCollectionForm() {
-    this.setState({ showCreateNewModal: false, showCollectionForm: true });
+  openCollectionForm () {
+    this.setState({ showCreateNewModal: false, showCollectionForm: true })
   }
 
-  openEnvironmentForm() {
-    this.setState({ showCreateNewModal: false, showEnvironmentForm: true });
+  openEnvironmentForm () {
+    this.setState({ showCreateNewModal: false, showEnvironmentForm: true })
   }
 
-  handleAddEndpoint() {
-    tabService.newTab({ ...this.props });
+  handleAddEndpoint () {
+    tabService.newTab({ ...this.props })
   }
 
-  openApiForm() {
-    this.setState({ showOpenApiForm: true });
+  openApiForm () {
+    this.setState({ showOpenApiForm: true })
   }
 
-  closeOpenApiFormModal() {
-    this.setState({ showOpenApiForm: false });
+  closeOpenApiFormModal () {
+    this.setState({ showOpenApiForm: false })
   }
 
-  render() {
+  render () {
     return (
-      <nav className="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
+      <nav className='navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow'>
         {this.state.showCreateNewModal &&
           this.openCreateNewModal(() =>
             this.setState({
-              showCreateNewModal: false,
+              showCreateNewModal: false
             })
           )}
         {this.state.showCollectionForm &&
           collectionsService.showCollectionForm(
             this.props,
             () => this.setState({ showCollectionForm: false }),
-            "Add new Collection"
+            'Add new Collection'
           )}
         {this.state.showEnvironmentForm &&
           environmentsService.showEnvironmentForm(
             this.props,
             () => this.setState({ showEnvironmentForm: false }),
-            "Add new Environment"
+            'Add new Environment'
           )}
         {this.state.showOpenApiForm && this.state.showOpenApiForm === true && (
           <OpenApiForm
             {...this.props}
-            show={true}
+            show
             onHide={() => this.closeOpenApiFormModal()}
-            title="IMPORT API"
-          ></OpenApiForm>
+            title='IMPORT API'
+          />
         )}
-        <div className="btn-group">
+        <div className='btn-group'>
           <button
-            id="new-button"
-            className="btn"
+            id='new-button'
+            className='btn'
             onClick={() => this.setState({ showCreateNewModal: true })}
           >
-            <i className="fas fa-plus-square"></i>
+            <i className='fas fa-plus-square' />
             New
           </button>
           <button
-            id="new-button-dropdown"
-            className="btn  dropdown-toggle dropdown-toggle-split"
-            data-toggle="dropdown"
-            aria-haspopup="true"
-            aria-expanded="false"
-          ></button>
-          <div className="dropdown-menu">
+            id='new-button-dropdown'
+            className='btn  dropdown-toggle dropdown-toggle-split'
+            data-toggle='dropdown'
+            aria-haspopup='true'
+            aria-expanded='false'
+          />
+          <div className='dropdown-menu'>
             <li
-              className="dropdown-item"
+              className='dropdown-item'
               onClick={() => this.handleAddEndpoint()}
             >
-              <i className="fas fa-share-square" style={{ margin: "5px" }}></i>{" "}
+              <i className='fas fa-share-square' style={{ margin: '5px' }} />{' '}
               Endpoint
             </li>
             <li
-              className="dropdown-item"
+              className='dropdown-item'
               onClick={() => this.openCollectionForm()}
             >
-              <i className="fas fa-folder-open" style={{ margin: "5px" }}></i>
+              <i className='fas fa-folder-open' style={{ margin: '5px' }} />
               Collection
             </li>
             <li
-              className="dropdown-item"
+              className='dropdown-item'
               onClick={() => this.openEnvironmentForm()}
             >
-              <i className="fas fa-border-none" style={{ margin: "5px" }}></i>
+              <i className='fas fa-border-none' style={{ margin: '5px' }} />
               Environment
             </li>
           </div>
 
           <button
-            className="btn nav-left-button-1"
+            className='btn nav-left-button-1'
             // id="nav-left-buttons"
             onClick={() => this.openApiForm()}
           >
@@ -132,22 +136,22 @@ class Navbar extends Component {
           </button>
 
           {/* <div className="dropdown" id="nav-left-buttons"> */}
-          <div className="dropdown nav-left-button-2">
+          <div className='dropdown nav-left-button-2'>
             <button
-              className="btn btn-secondary dropdown-toggle "
-              type="button"
-              id="dropdownMenuButton"
-              data-toggle="dropdown"
-              aria-haspopup="true"
-              aria-expanded="false"
+              className='btn btn-secondary dropdown-toggle '
+              type='button'
+              id='dropdownMenuButton'
+              data-toggle='dropdown'
+              aria-haspopup='true'
+              aria-expanded='false'
             >
-              <i className="fa fa-file-text" aria-hidden="true"></i>
+              <i className='fa fa-file-text' aria-hidden='true' />
             </button>
-            <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <div className='dropdown-menu' aria-labelledby='dropdownMenuButton'>
               <button
-                className="btn "
+                className='btn '
                 onClick={() => tabService.newTab(this.props)}
-                style={{ color: "black", width: "100%" }}
+                style={{ color: 'black', width: '100%' }}
               >
                 Open new tab
               </button>
@@ -162,32 +166,32 @@ class Navbar extends Component {
           </div>
         </div>
 
-        <div className="btn-grp" id="user-menu">
-          <div className="dropdown">
+        <div className='btn-grp' id='user-menu'>
+          <div className='dropdown'>
             <button
-              className="btn btn-secondary dropdown-toggle"
-              type="button"
-              id="dropdownMenuButton"
-              data-toggle="dropdown"
-              aria-haspopup="true"
-              aria-expanded="false"
-              style={{ borderRadius: "70px" }}
+              className='btn btn-secondary dropdown-toggle'
+              type='button'
+              id='dropdownMenuButton'
+              data-toggle='dropdown'
+              aria-haspopup='true'
+              aria-expanded='false'
+              style={{ borderRadius: '70px' }}
             >
-              <i className="fas fa-user"></i>
+              <i className='fas fa-user' />
             </button>
             <div
-              className="dropdown-menu dropdown-menu-right"
-              aria-labelledby="dropdownMenuButton"
+              className='dropdown-menu dropdown-menu-right'
+              aria-labelledby='dropdownMenuButton'
             >
-              <div id="custom-user-left">
-                <i className="fas fa-user"></i>
+              <div id='custom-user-left'>
+                <i className='fas fa-user' />
               </div>
-              <div id="custom-user-right">
+              <div id='custom-user-right'>
                 <div>{this.state.name}</div>
                 <div>{this.state.email}</div>
                 <div>
-                  <li className=" ">
-                    <Link to="/logout">Sign out</Link>
+                  <li className=' '>
+                    <Link to='/logout'>Sign out</Link>
                   </li>
                 </div>
               </div>
@@ -195,8 +199,8 @@ class Navbar extends Component {
           </div>
         </div>
       </nav>
-    );
+    )
   }
 }
 
-export default Navbar;
+export default Navbar

@@ -1,102 +1,104 @@
-import collectionsActionTypes from "./collectionsActionTypes";
-import publicEndpointsActionTypes from "../../publicEndpoint/redux/publicEndpointsActionTypes";
-import { toast } from "react-toastify";
-import versionActionTypes from "../../collectionVersions/redux/collectionVersionsActionTypes";
+import collectionsActionTypes from './collectionsActionTypes'
+import publicEndpointsActionTypes from '../../publicEndpoint/redux/publicEndpointsActionTypes'
+import { toast } from 'react-toastify'
+import versionActionTypes from '../../collectionVersions/redux/collectionVersionsActionTypes'
 
-const initialState = {};
+const initialState = {}
 
-function collectionsReducer(state = initialState, action) {
-  let collections = {};
+function collectionsReducer (state = initialState, action) {
+  let collections = {}
   switch (action.type) {
     case versionActionTypes.IMPORT_VERSION:
       return {
         ...state,
-        [action.response.collection.id]: action.response.collection,
-      };
+        [action.response.collection.id]: action.response.collection
+      }
     case collectionsActionTypes.ON_COLLECTIONS_FETCHED:
-      return { ...action.collections };
+      return { ...action.collections }
 
     case collectionsActionTypes.ON_COLLECTIONS_FETCHED_ERROR:
-      toast.error(action.error);
-      return state;
+      toast.error(action.error)
+      return state
 
     case collectionsActionTypes.ADD_COLLECTION_REQUEST:
       return {
         ...state,
-        [action.newCollection.requestId]: action.newCollection,
-      };
+        [action.newCollection.requestId]: action.newCollection
+      }
 
-    case collectionsActionTypes.ON_COLLECTION_ADDED:
-      collections = { ...state };
-      delete collections[action.response.requestId];
-      const { version, ...newCollection } = action.response;
-      collections[action.response.id] = newCollection;
-      return collections;
+    case collectionsActionTypes.ON_COLLECTION_ADDED: {
+      collections = { ...state }
+      delete collections[action.response.requestId]
+      const { version, ...newCollection } = action.response
+      collections[action.response.id] = newCollection
+      return collections
+    }
 
     case collectionsActionTypes.ON_COLLECTION_ADDED_ERROR:
-      toast.error(action.error);
-      collections = { ...state };
-      delete collections[action.newCollection.requestId];
-      return collections;
+      toast.error(action.error)
+      collections = { ...state }
+      delete collections[action.newCollection.requestId]
+      return collections
 
     case collectionsActionTypes.UPDATE_COLLECTION_REQUEST:
       return {
         ...state,
-        [action.editedCollection.id]: action.editedCollection,
-      };
+        [action.editedCollection.id]: action.editedCollection
+      }
 
     case collectionsActionTypes.ON_COLLECTION_UPDATED:
       return {
         ...state,
-        [action.response.id]: action.response,
-      };
+        [action.response.id]: action.response
+      }
 
     case collectionsActionTypes.ON_COLLECTION_UPDATED_ERROR:
-      toast.error(action.error);
+      toast.error(action.error)
       return {
         ...state,
-        [action.originalCollection.id]: action.originalCollection,
-      };
+        [action.originalCollection.id]: action.originalCollection
+      }
 
     case collectionsActionTypes.DELETE_COLLECTION_REQUEST:
-      collections = { ...state };
-      delete collections[action.collection.id];
-      return collections;
+      collections = { ...state }
+      delete collections[action.collection.id]
+      return collections
 
     case collectionsActionTypes.ON_COLLECTION_DELETED:
-      return state;
+      return state
 
     case collectionsActionTypes.ON_COLLECTION_DELETED_ERROR:
-      toast.error(action.error.data);
-      if (action.error.status === 404) return state;
+      toast.error(action.error.data)
+      if (action.error.status === 404) return state
       return {
         ...state,
-        [action.collection.id]: action.collection,
-      };
+        [action.collection.id]: action.collection
+      }
 
-    case collectionsActionTypes.ON_COLLECTION_DUPLICATED:
-      collections = { ...state };
-      const collection = action.response.collection;
-      collections = { ...collections, [collection.id]: collection };
-      return collections;
+    case collectionsActionTypes.ON_COLLECTION_DUPLICATED: {
+      collections = { ...state }
+      const collection = action.response.collection
+      collections = { ...collections, [collection.id]: collection }
+      return collections
+    }
 
     case collectionsActionTypes.ON_COLLECTION_DUPLICATED_ERROR:
-      toast.error(action.error);
-      return state;
+      toast.error(action.error)
+      return state
 
     case publicEndpointsActionTypes.ON_PUBLIC_ENDPOINTS_FETCHED:
-      return { ...state, ...action.data.collections };
+      return { ...state, ...action.data.collections }
 
     case collectionsActionTypes.ON_PUBLIC_COLLECTION_FETCHED:
-      return { ...action.data.collections };
+      return { ...action.data.collections }
 
     case collectionsActionTypes.ON_PUBLIC_COLLECTION_FETCHED_ERROR:
-      toast.error(action.error);
-      return state;
+      toast.error(action.error)
+      return state
 
     default:
-      return state;
+      return state
   }
 }
 
-export default collectionsReducer;
+export default collectionsReducer

@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react'
 
 const Input = ({
   name,
@@ -7,11 +7,11 @@ const Input = ({
   onChange,
   error,
   placeholder,
-  disabled,
+  disabled
 }) => {
   return (
-    <div className="form-group">
-      <label htmlFor={name} className="custom-input-label">
+    <div className='form-group'>
+      <label htmlFor={name} className='custom-input-label'>
         {label}
       </label>
       <input
@@ -19,13 +19,13 @@ const Input = ({
         onChange={onChange}
         id={name}
         name={name}
-        className="form-control custom-input"
-        type="text"
+        className='form-control custom-input'
+        type='text'
         placeholder={placeholder}
         disabled={disabled}
       />
-      {error && <div className="alert alert-danger">{error}</div>}
+      {error && <div className='alert alert-danger'>{error}</div>}
     </div>
-  );
-};
-export default Input;
+  )
+}
+export default Input

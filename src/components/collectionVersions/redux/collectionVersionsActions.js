@@ -1,59 +1,59 @@
-import collectionVersionsApiService from "../collectionVersionsApiService";
-import versionActionTypes from "./collectionVersionsActionTypes";
-import store from "../../../store/store";
-import { toast } from "react-toastify";
-import tabService from "../../tabs/tabService";
+import collectionVersionsApiService from '../collectionVersionsApiService'
+import versionActionTypes from './collectionVersionsActionTypes'
+import store from '../../../store/store'
+import { toast } from 'react-toastify'
+import tabService from '../../tabs/tabService'
 
 export const fetchAllVersions = () => {
   return (dispatch) => {
     collectionVersionsApiService
       .getAllCollectionVersions()
       .then((response) => {
-        const versions = response.data;
-        dispatch(onVersionsFetched(versions));
+        const versions = response.data
+        dispatch(onVersionsFetched(versions))
       })
       .catch((error) => {
-        dispatch(onVersionsFetchedError(error.message));
-      });
-  };
-};
+        dispatch(onVersionsFetchedError(error.message))
+      })
+  }
+}
 export const fetchVersions = (collectionId) => {
   return (dispatch) => {
     collectionVersionsApiService
       .getCollectionVersions(collectionId)
       .then((response) => {
-        const versions = response.data;
-        dispatch(onVersionsFetched(versions));
+        const versions = response.data
+        dispatch(onVersionsFetched(versions))
       })
       .catch((error) => {
-        dispatch(onVersionsFetchedError(error.message));
-      });
-  };
-};
+        dispatch(onVersionsFetchedError(error.message))
+      })
+  }
+}
 
 export const onVersionsFetched = (versions) => {
   return {
     type: versionActionTypes.ON_VERSIONS_FETCHED,
-    versions,
-  };
-};
+    versions
+  }
+}
 
 export const onVersionsFetchedError = (error) => {
   return {
     type: versionActionTypes.ON_VERSIONS_FETCHED_ERROR,
-    error,
-  };
-};
+    error
+  }
+}
 
 export const updateVersion = (editedVersion) => {
   return (dispatch) => {
-    const originalVersion = store.getState().versions[editedVersion.id];
-    dispatch(updateVersionRequest(editedVersion));
-    const { number, host, id } = editedVersion;
+    const originalVersion = store.getState().versions[editedVersion.id]
+    dispatch(updateVersionRequest(editedVersion))
+    const { number, host, id } = editedVersion
     collectionVersionsApiService
       .updateCollectionVersion(id, { number, host })
       .then((response) => {
-        dispatch(onVersionUpdated(response.data));
+        dispatch(onVersionUpdated(response.data))
       })
       .catch((error) => {
         dispatch(
@@ -61,40 +61,40 @@ export const updateVersion = (editedVersion) => {
             error.response ? error.response.data : error,
             originalVersion
           )
-        );
-      });
-  };
-};
+        )
+      })
+  }
+}
 
 export const updateVersionRequest = (editedVersion) => {
   return {
     type: versionActionTypes.UPDATE_VERSION_REQUEST,
-    editedVersion,
-  };
-};
+    editedVersion
+  }
+}
 
 export const onVersionUpdated = (response) => {
   return {
     type: versionActionTypes.ON_VERSION_UPDATED,
-    response,
-  };
-};
+    response
+  }
+}
 
 export const onVersionUpdatedError = (error, originalVersion) => {
   return {
     type: versionActionTypes.ON_VERSION_UPDATED_ERROR,
     error,
-    originalVersion,
-  };
-};
+    originalVersion
+  }
+}
 
 export const addVersion = (newVersion, collectionId) => {
   return (dispatch) => {
-    dispatch(addVersionRequest(newVersion));
+    dispatch(addVersionRequest(newVersion))
     collectionVersionsApiService
       .saveCollectionVersion(collectionId, newVersion)
       .then((response) => {
-        dispatch(onVersionAdded(response.data));
+        dispatch(onVersionAdded(response.data))
       })
       .catch((error) => {
         dispatch(
@@ -102,49 +102,49 @@ export const addVersion = (newVersion, collectionId) => {
             error.response ? error.response.data : error,
             newVersion
           )
-        );
-      });
-  };
-};
+        )
+      })
+  }
+}
 
 export const addVersionRequest = (newVersion) => {
   return {
     type: versionActionTypes.ADD_VERSION_REQUEST,
-    newVersion,
-  };
-};
+    newVersion
+  }
+}
 
 export const onVersionAdded = (response) => {
   return {
     type: versionActionTypes.ON_VERSION_ADDED,
-    response,
-  };
-};
+    response
+  }
+}
 
 export const onVersionAddedError = (error, newVersion) => {
   return {
     type: versionActionTypes.ON_VERSION_ADDED_ERROR,
     newVersion,
-    error,
-  };
-};
+    error
+  }
+}
 
 export const deleteVersion = (version, props) => {
   return (dispatch) => {
-    dispatch(deleteVersionRequest(version.id));
+    dispatch(deleteVersionRequest(version.id))
     collectionVersionsApiService
       .deleteCollectionVersion(version.id)
       .then(() => {
-        const storeData = { ...store.getState() };
-        let groupIds = Object.keys(storeData.groups).filter(
+        const storeData = { ...store.getState() }
+        const groupIds = Object.keys(storeData.groups).filter(
           (gId) => storeData.groups[gId].versionId === version.id
-        );
+        )
         const pageIds = [
           ...Object.keys(storeData.pages).filter(
             (pId) => storeData.pages[pId].versionId === version.id
-          ),
-        ];
-        let endpointIds = [];
+          )
+        ]
+        let endpointIds = []
 
         groupIds.map(
           (gId) =>
@@ -152,101 +152,101 @@ export const deleteVersion = (version, props) => {
               ...Object.keys(storeData.endpoints).filter(
                 (eId) => storeData.endpoints[eId].groupId === gId
               ),
-              ...endpointIds,
+              ...endpointIds
             ])
-        );
+        )
 
-        endpointIds.map((eId) => tabService.removeTab(eId, props));
-        pageIds.map((pId) => tabService.removeTab(pId, props));
+        endpointIds.map((eId) => tabService.removeTab(eId, props))
+        pageIds.map((pId) => tabService.removeTab(pId, props))
 
-        dispatch(onVersionDeleted({ groupIds, endpointIds, pageIds }));
+        dispatch(onVersionDeleted({ groupIds, endpointIds, pageIds }))
       })
       .catch((error) => {
-        dispatch(onVersionDeletedError(error.response, version));
-      });
-  };
-};
+        dispatch(onVersionDeletedError(error.response, version))
+      })
+  }
+}
 
 export const deleteVersionRequest = (versionId) => {
   return {
     type: versionActionTypes.DELETE_VERSION_REQUEST,
-    versionId,
-  };
-};
+    versionId
+  }
+}
 
 export const onVersionDeleted = (payload) => {
   return {
     type: versionActionTypes.ON_VERSION_DELETED,
-    payload,
-  };
-};
+    payload
+  }
+}
 
 export const onVersionDeletedError = (error, version) => {
   return {
     type: versionActionTypes.ON_VERSION_DELETED_ERROR,
     error,
-    version,
-  };
-};
+    version
+  }
+}
 
 export const duplicateVersion = (version) => {
   return (dispatch) => {
     collectionVersionsApiService
       .duplicateVersion(version.id)
       .then((response) => {
-        dispatch(onVersionDuplicated(response.data));
+        dispatch(onVersionDuplicated(response.data))
       })
       .catch((error) => {
-        toast.error(error);
-      });
-  };
-};
+        toast.error(error)
+      })
+  }
+}
 
 export const onVersionDuplicated = (response) => {
   return {
     type: versionActionTypes.ON_VERSION_DUPLICATED,
-    response,
-  };
-};
+    response
+  }
+}
 export const importVersion = (importLink, shareIdentifier, collectionId) => {
   return (dispatch) => {
     collectionVersionsApiService
       .exportCollectionVersion(importLink, shareIdentifier)
       .then((response) => {
-        response.data.collectionId = collectionId;
+        response.data.collectionId = collectionId
         collectionVersionsApiService
           .importCollectionVersion(importLink, shareIdentifier, response.data)
           .then((response) => {
-            dispatch(saveImportedVersion(response.data));
+            dispatch(saveImportedVersion(response.data))
           })
           .catch((error) => {
             dispatch(
               onVersionsFetchedError(
                 error.response ? error.response.data : error
               )
-            );
-          });
+            )
+          })
       })
       .catch((error) => {
         dispatch(
           onVersionsFetchedError(error.response ? error.response.data : error)
-        );
-      });
-  };
-};
+        )
+      })
+  }
+}
 
 export const saveImportedVersion = (response) => {
   return {
     type: versionActionTypes.IMPORT_VERSION,
-    response,
-  };
-};
+    response
+  }
+}
 
 export const setAuthorizationResponses = (versionId, authResponses) => {
   return (dispatch) => {
     const originalAuthResponses = store.getState().versions[versionId]
-      .authorizationResponse;
-    dispatch(setAuthorizationResponsesRequest(versionId, authResponses));
+      .authorizationResponse
+    dispatch(setAuthorizationResponsesRequest(versionId, authResponses))
     collectionVersionsApiService
       .setAuthorizationResponse(versionId, authResponses)
       .then(() => {})
@@ -257,18 +257,18 @@ export const setAuthorizationResponses = (versionId, authResponses) => {
             versionId,
             originalAuthResponses
           )
-        );
-      });
-  };
-};
+        )
+      })
+  }
+}
 
 export const setAuthorizationResponsesRequest = (versionId, authResponses) => {
   return {
     type: versionActionTypes.ON_AUTHORIZATION_RESPONSES_REQUEST,
     versionId,
-    authResponses,
-  };
-};
+    authResponses
+  }
+}
 
 export const onAuthorizationResponsesError = (
   error,
@@ -279,15 +279,15 @@ export const onAuthorizationResponsesError = (
     type: versionActionTypes.ON_AUTHORIZATION_RESPONSES_ERROR,
     error,
     versionId,
-    authResponses,
-  };
-};
+    authResponses
+  }
+}
 
 export const setAuthorizationData = (versionId, data) => {
   return (dispatch) => {
     const originalAuthdata = store.getState().versions[versionId]
-      .authorizationData;
-    dispatch(onAuthorizationDataRequest(versionId, data));
+      .authorizationData
+    dispatch(onAuthorizationDataRequest(versionId, data))
     collectionVersionsApiService
       .setAuthorizationData(versionId, data)
       .then(() => {})
@@ -298,18 +298,18 @@ export const setAuthorizationData = (versionId, data) => {
             versionId,
             originalAuthdata
           )
-        );
-      });
-  };
-};
+        )
+      })
+  }
+}
 
 export const onAuthorizationDataRequest = (versionId, data) => {
   return {
     type: versionActionTypes.ON_AUTHORIZATION_DATA_REQUEST,
     versionId,
-    data,
-  };
-};
+    data
+  }
+}
 
 export const onAuthorizationDataError = (
   error,
@@ -320,6 +320,6 @@ export const onAuthorizationDataError = (
     type: versionActionTypes.ON_AUTHORIZATION_DATA_ERROR,
     error,
     versionId,
-    originalAuthdata,
-  };
-};
+    originalAuthdata
+  }
+}

@@ -1,30 +1,30 @@
-import React from "react";
-import CollectionVersionForm from "../collectionVersions/collectionVersionForm";
-import DeleteModal from "../common/deleteModal";
+import React from 'react'
+import CollectionVersionForm from '../collectionVersions/collectionVersionForm'
+import DeleteModal from '../common/deleteModal'
 
-function showVersionForm(props, onHide, collectionId, title) {
+function showVersionForm (props, onHide, collectionId, title) {
   return (
     <CollectionVersionForm
       {...props}
-      show={true}
+      show
       onHide={onHide}
       collection_id={collectionId}
       title={title}
     />
-  );
+  )
 }
 
-function showDeleteVersionModal(props, onHide, title,message, selectedVersion) {
+function showDeleteVersionModal (props, onHide, title, message, selectedVersion) {
   return (
     <DeleteModal
       {...props}
-      show={true}
+      show
       onHide={onHide}
       title={title}
-      message = {message}
+      message={message}
       deleted_version={selectedVersion}
     />
-  );
+  )
 }
 
-export default { showVersionForm, showDeleteVersionModal };
+export default { showVersionForm, showDeleteVersionModal }

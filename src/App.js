@@ -15,39 +15,38 @@ import { ToastContainer } from "react-toastify";
 class App extends Component {
   async redirectToClientDomain() {
     console.log(window.location.href)
-    const domainsList = process.env.REACT_APP_DOMAINS_LIST ? process.env.REACT_APP_DOMAINS_LIST.split(',') : [];
-    const currentDomain = window.location.href.split("/")[2];
+    const domainsList = process.env.REACT_APP_DOMAINS_LIST ? process.env.REACT_APP_DOMAINS_LIST.split(',') : []
+    const currentDomain = window.location.href.split('/')[2]
     console.log(!domainsList.includes(currentDomain))
-    if (!domainsList.includes(currentDomain) && window.location.href.split("/")[3] !== "p") {
-      const {data: clientCollection} = await collectionsApiService.getCollectionsByCustomDomain(currentDomain);
+    if (!domainsList.includes(currentDomain) && window.location.href.split('/')[3] !== 'p') {
+      const { data: clientCollection } = await collectionsApiService.getCollectionsByCustomDomain(currentDomain)
       if (Object.keys(clientCollection) && Object.keys(clientCollection)[0]) {
-        const clientCollectionId = Object.keys(clientCollection)[0];
-        this.props.history.push({ pathname: `/p/${clientCollectionId}` });
-      }
-      else {
-        this.props.history.push({ pathname: `/p/error` });
+        const clientCollectionId = Object.keys(clientCollection)[0]
+        this.props.history.push({ pathname: `/p/${clientCollectionId}` })
+      } else {
+        this.props.history.push({ pathname: '/p/error' })
       }
     }
   }
 
   render() {
-    this.redirectToClientDomain();
+    this.redirectToClientDomain()
     return (
       <React.Fragment>
-      <ToastContainer />
-      <Switch>
-        <Route path="/admin/publish" component={PublishDocs} />
-        <Route path="/dashboard/" component={Main} />
-        <Route path="/p/error" component={NotFound} />
-        <Route path="/p/:collectionIdentifier" component={Public} />
-        <Route path="/logout" component={Logout} />
-        <Route path="/login" component={Login} />
-        <Route path="/marketPlace" component={PublicView} />
-        <Route path="/" component={Landing} />
-      </Switch>
+        <ToastContainer />
+        <Switch>
+          <Route path='/admin/publish' component={PublishDocs} />
+          <Route path='/dashboard/' component={Main} />
+          <Route path='/p/error' component={NotFound} />
+          <Route path='/p/:collectionIdentifier' component={Public} />
+          <Route path='/logout' component={Logout} />
+          <Route path='/login' component={Login} />
+          <Route path='/marketPlace' component={PublicView} />
+          <Route path='/' component={Landing} />
+        </Switch>
       </React.Fragment>
     );
   }
 }
 
-export default App;
+export default App

@@ -1,74 +1,77 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import Pages from "./pages";
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import Pages from './pages'
 import {
   deletePage,
   duplicatePage,
-  updatePageOrder,
-} from "./redux/pagesActions";
-import pageService from "./pageService";
-import { isDashboardRoute } from "../common/utility";
-import filterService from "../../services/filterService";
+  updatePageOrder
+} from './redux/pagesActions'
+import pageService from './pageService'
+import { isDashboardRoute } from '../common/utility'
+import filterService from '../../services/filterService'
 
 const mapStateToProps = (state) => {
   return {
-    pages: state.pages,
-  };
-};
+    pages: state.pages
+  }
+}
 
 const mapDispatchToProps = (dispatch) => {
   return {
     set_page_ids: (pageIds) => dispatch(updatePageOrder(pageIds)),
     delete_page: (page) => dispatch(deletePage(page)),
-    duplicate_page: (page) => dispatch(duplicatePage(page)),
-  };
-};
+    duplicate_page: (page) => dispatch(duplicatePage(page))
+  }
+}
 class VersionPages extends Component {
-  state = {};
+  constructor (props) {
+    super(props)
+    this.state = {}
+  }
 
-  openDeletePageModal(pageId) {
+  openDeletePageModal (pageId) {
     this.setState({
       showDeleteModal: true,
       selectedPage: {
-        ...this.props.pages[pageId],
-      },
-    });
+        ...this.props.pages[pageId]
+      }
+    })
   }
 
-  closeDeletePageModal() {
-    this.setState({ showDeleteModal: false });
+  closeDeletePageModal () {
+    this.setState({ showDeleteModal: false })
   }
 
   onDragStart = (e, gId) => {
-    this.draggedItem = gId;
+    this.draggedItem = gId
   };
 
-  onDrop(e, destinationPageId) {
-    e.preventDefault();
+  onDrop (e, destinationPageId) {
+    e.preventDefault()
 
     if (!this.draggedItem) {
     } else {
       if (this.draggedItem === destinationPageId) {
-        this.draggedItem = null;
-        return;
+        this.draggedItem = null
+        return
       }
-      const pages = this.extractPages();
-      const positionWisePages = this.makePositionWisePages({ ...pages });
+      const pages = this.extractPages()
+      const positionWisePages = this.makePositionWisePages({ ...pages })
       const index = positionWisePages.findIndex(
         (pId) => pId === destinationPageId
-      );
-      let pageIds = positionWisePages.filter(
+      )
+      const pageIds = positionWisePages.filter(
         (item) => item !== this.draggedItem
-      );
-      pageIds.splice(index, 0, this.draggedItem);
+      )
+      pageIds.splice(index, 0, this.draggedItem)
 
-      this.props.set_page_ids(pageIds, this.props.group_id);
-      this.draggedItem = null;
+      this.props.set_page_ids(pageIds, this.props.group_id)
+      this.draggedItem = null
     }
   }
 
-  extractPages() {
-    let pages = {};
+  extractPages () {
+    const pages = {}
     for (let i = 0; i < Object.keys(this.props.pages).length; i++) {
       if (
         this.props.pages[Object.keys(this.props.pages)[i]].versionId ===
@@ -77,88 +80,88 @@ class VersionPages extends Component {
       ) {
         pages[Object.keys(this.props.pages)[i]] = this.props.pages[
           Object.keys(this.props.pages)[i]
-        ];
+        ]
       }
     }
-    return pages;
+    return pages
   }
 
-  makePositionWisePages(pages) {
-    let positionWisePages = [];
+  makePositionWisePages (pages) {
+    const positionWisePages = []
     for (let i = 0; i < Object.keys(pages).length; i++) {
       positionWisePages[pages[Object.keys(pages)[i]].position] = Object.keys(
         pages
-      )[i];
+      )[i]
     }
-    return positionWisePages;
+    return positionWisePages
   }
 
-  filterVersionPages() {
+  filterVersionPages () {
     if (
       this.props.selectedCollection === true &&
-      this.props.filter !== "" &&
+      this.props.filter !== '' &&
       this.filterFlag === false
     ) {
-      this.filterFlag = true;
-      let versionIds = [];
-      let versionIdsAndFilteredPages = [];
+      this.filterFlag = true
+      let versionIds = []
+      let versionIdsAndFilteredPages = []
       versionIdsAndFilteredPages = filterService.filter(
         this.props.pages,
         this.props.filter,
-        "versionPages"
-      );
-      this.filteredVersionPages = versionIdsAndFilteredPages[0];
-      versionIds = versionIdsAndFilteredPages[1];
-      this.setState({ filter: this.props.filter });
+        'versionPages'
+      )
+      this.filteredVersionPages = versionIdsAndFilteredPages[0]
+      versionIds = versionIdsAndFilteredPages[1]
+      this.setState({ filter: this.props.filter })
       if (versionIds.length !== 0) {
-        this.props.show_filter_version(versionIds, "versionPages");
+        this.props.show_filter_version(versionIds, 'versionPages')
       } else {
-        this.props.show_filter_version(null, "versionPages");
+        this.props.show_filter_version(null, 'versionPages')
       }
     }
   }
 
-  render() {
+  render () {
     if (this.state.filter !== this.props.filter) {
-      this.filterFlag = false;
+      this.filterFlag = false
     }
-    if (!this.props.filter || this.props.filter === "") {
-      this.filteredVersionPages = { ...this.props.pages };
+    if (!this.props.filter || this.props.filter === '') {
+      this.filteredVersionPages = { ...this.props.pages }
     }
 
-    let versionPageIds = Object.keys(this.props.pages).filter(
+    const versionPageIds = Object.keys(this.props.pages).filter(
       (pId) =>
         this.props.pages[pId].groupId === null &&
         this.props.pages[pId].versionId === this.props.version_id
-    );
+    )
 
-    let versionPagesArray = [];
+    let versionPagesArray = []
     for (let index = 0; index < versionPageIds.length; index++) {
-      const id = versionPageIds[index];
-      const groupPage = this.props.pages[id];
-      versionPagesArray = [...versionPagesArray, groupPage];
+      const id = versionPageIds[index]
+      const groupPage = this.props.pages[id]
+      versionPagesArray = [...versionPagesArray, groupPage]
     }
 
     versionPagesArray.sort(function (a, b) {
-      return a.position - b.position;
-    });
+      return a.position - b.position
+    })
 
-    let versionPages = {};
+    const versionPages = {}
     for (let index = 0; index < versionPagesArray.length; index++) {
-      const id = versionPagesArray[index].id;
-      versionPages[id] = this.props.pages[id];
+      const id = versionPagesArray[index].id
+      versionPages[id] = this.props.pages[id]
     }
 
     return (
-      <React.Fragment>
+      <>
         {this.filterVersionPages()}
         <div>
           {this.state.showDeleteModal &&
             pageService.showDeletePageModal(
               this.props,
               this.closeDeletePageModal.bind(this),
-              "Delete Page",
-              ` Are you sure you wish to delete this page? `,
+              'Delete Page',
+              ' Are you sure you wish to delete this page? ',
               this.state.selectedPage
             )}
         </div>
@@ -171,7 +174,7 @@ class VersionPages extends Component {
                 this.props.pages[pageId].groupId === null
             )
             .map((pageId, index) => (
-              <React.Fragment>
+              <div>
                 {isDashboardRoute(this.props) ? (
                   <div
                     key={index}
@@ -196,7 +199,7 @@ class VersionPages extends Component {
                       close_delete_page_modal={this.closeDeletePageModal.bind(
                         this
                       )}
-                    ></Pages>
+                    />
                   </div>
                 ) : (
                   <Pages
@@ -207,12 +210,12 @@ class VersionPages extends Component {
                     close_delete_page_modal={this.closeDeletePageModal.bind(
                       this
                     )}
-                  ></Pages>
+                  />
                 )}
-              </React.Fragment>
+              </div>
             ))}
-      </React.Fragment>
-    );
+      </>
+    )
   }
 }
-export default connect(mapStateToProps, mapDispatchToProps)(VersionPages);
+export default connect(mapStateToProps, mapDispatchToProps)(VersionPages)

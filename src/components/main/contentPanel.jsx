@@ -1,8 +1,8 @@
-import React, { Component } from "react";
-import { Tab } from "react-bootstrap";
-import { connect } from "react-redux";
-import "react-tabs/style/react-tabs.css";
-import Environments from "../environments/environments";
+import React, { Component } from 'react'
+import { Tab } from 'react-bootstrap'
+import { connect } from 'react-redux'
+import 'react-tabs/style/react-tabs.css'
+import Environments from '../environments/environments'
 import {
   addNewTab,
   closeTab,
@@ -11,22 +11,22 @@ import {
   replaceTab,
   setActiveTabId,
   setTabsOrder,
-  updateTab,
-} from "../tabs/redux/tabsActions";
-import TabContent from "../tabs/tabContent";
-import CustomTabs from "../tabs/tabs";
-import tabStatusTypes from "../tabs/tabStatusTypes";
-import "./main.scss";
-import { getCurrentUser } from "../auth/authService";
+  updateTab
+} from '../tabs/redux/tabsActions'
+import TabContent from '../tabs/tabContent'
+import CustomTabs from '../tabs/tabs'
+import tabStatusTypes from '../tabs/tabStatusTypes'
+import './main.scss'
+import { getCurrentUser } from '../auth/authService'
 
 const mapStateToProps = (state) => {
   return {
     endpoints: state.endpoints,
     groups: state.groups,
     pages: state.pages,
-    tabs: state.tabs,
-  };
-};
+    tabs: state.tabs
+  }
+}
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -37,33 +37,37 @@ const mapDispatchToProps = (dispatch) => {
     set_active_tab_id: (tabId) => dispatch(setActiveTabId(tabId)),
     set_tabs_order: (tabsOrder) => dispatch(setTabsOrder(tabsOrder)),
     fetch_tabs_from_idb: (tabsOrder) => dispatch(fetchTabsFromIdb(tabsOrder)),
-    replace_tab: (oldTabId, newTab) => dispatch(replaceTab(oldTabId, newTab)),
-  };
-};
+    replace_tab: (oldTabId, newTab) => dispatch(replaceTab(oldTabId, newTab))
+  }
+}
 
 class ContentPanel extends Component {
-  state = { saveEndpointFlag: false };
-  async componentDidMount() {
-    this.props.fetch_tabs_from_idb({ ...this.props });
+  constructor (props) {
+    super(props)
+    this.state = { saveEndpointFlag: false }
+  }
+
+  async componentDidMount () {
+    this.props.fetch_tabs_from_idb({ ...this.props })
     // this.props.history.push({
     //   dashboardEnvironment: true,
     // });
   }
 
-  handleSaveEndpoint(flag, tabId) {
-    this.setState({ saveEndpointFlag: flag, selectedTabId: tabId });
+  handleSaveEndpoint (flag, tabId) {
+    this.setState({ saveEndpointFlag: flag, selectedTabId: tabId })
   }
 
-  render() {
+  render () {
     if (
-      this.props.location.pathname.split("/")[2] === "endpoint" &&
-      this.props.location.pathname.split("/")[3] !== "new"
+      this.props.location.pathname.split('/')[2] === 'endpoint' &&
+      this.props.location.pathname.split('/')[3] !== 'new'
     ) {
-      const endpointId = this.props.location.pathname.split("/")[3];
+      const endpointId = this.props.location.pathname.split('/')[3]
 
       if (this.props.tabs.tabs[endpointId]) {
         if (this.props.tabs.activeTabId !== endpointId) {
-          this.props.set_active_tab_id(endpointId);
+          this.props.set_active_tab_id(endpointId)
         }
       } else {
         if (
@@ -71,75 +75,81 @@ class ContentPanel extends Component {
           this.props.endpoints[endpointId] &&
           this.props.endpoints[endpointId].requestId
         ) {
-          const requestId = this.props.endpoints[endpointId].requestId;
+          const requestId = this.props.endpoints[endpointId].requestId
           this.props.replace_tab(requestId, {
             id: endpointId,
-            type: "endpoint",
+            type: 'endpoint',
             status: tabStatusTypes.SAVED,
             previewMode: false,
-            isModified: false,
-          });
+            isModified: false
+          })
         } else {
           this.props.open_in_new_tab({
             id: endpointId,
-            type: "endpoint",
+            type: 'endpoint',
             status: tabStatusTypes.SAVED,
             previewMode: false,
-            isModified: false,
-          });
+            isModified: false
+          })
         }
       }
     }
 
-    if (this.props.location.pathname.split("/")[2] === "page") {
-      const pageId = this.props.location.pathname.split("/")[3];
+    if (this.props.location.pathname.split('/')[2] === 'page') {
+      const pageId = this.props.location.pathname.split('/')[3]
       if (this.props.tabs.tabs[pageId]) {
-        if (this.props.tabs.activeTabId !== pageId)
-          this.props.set_active_tab_id(pageId);
+        if (this.props.tabs.activeTabId !== pageId) { this.props.set_active_tab_id(pageId) }
       } else {
         this.props.open_in_new_tab({
           id: pageId,
-          type: "page",
+          type: 'page',
           status: tabStatusTypes.SAVED,
           previewMode: false,
-          isModified: false,
-        });
+          isModified: false
+        })
       }
     }
-    const redirectionUrl = process.env.REACT_APP_UI_URL + "/login";
+    const redirectionUrl = process.env.REACT_APP_UI_URL + '/login'
     return (
-      <main role="main" className="main">
-        <div className="login-sso">
-          {!getCurrentUser() ? <div
-            id="sokt-sso"
-            data-redirect-uri={redirectionUrl}
-            data-source="sokt-app"
-            data-token-key="sokt-auth-token"
-            data-view="button"
-          ></div> : null
+      <main role='main' className='main'>
+        <div className='login-sso'>
+          {
+            !getCurrentUser()
+              ? <div
+                  id='sokt-sso'
+                  data-redirect-uri={redirectionUrl}
+                  data-source='sokt-app'
+                  data-token-key='sokt-auth-token'
+                  data-view='button'
+                />
+              : null
           }
         </div>
         {/* <main role="main" className="main ml-sm-auto custom-main"> */}
         <Tab.Container
-          id="left-tabs-example"
+          id='left-tabs-example'
           defaultActiveKey={
             this.props.tabs.length &&
             this.props.tabs[this.props.default_tab_index].id
           }
           activeKey={this.props.tabs.activeTabId}
         >
-          {getCurrentUser() ? (
-            <div className="content-header">
-              <div className="tabs-container">
-                <CustomTabs
-                  {...this.props}
-                  handle_save_endpoint={this.handleSaveEndpoint.bind(this)}
-                />
-              </div>
-              <Environments {...this.props} />
-            </div>
-          ) : null}
-          <div className="main-content">
+          {
+            getCurrentUser()
+              ? (
+                <div className='content-header'>
+                  <div className='tabs-container'>
+                    <CustomTabs
+                      {...this.props}
+                      handle_save_endpoint={this.handleSaveEndpoint.bind(this)}
+                    />
+                  </div>
+                  <Environments {...this.props} />
+                </div>
+                )
+              : null
+          }
+          <div className='main-content'>
             <TabContent
               {...this.props}
               handle_save_endpoint={this.handleSaveEndpoint.bind(this)}
@@ -149,8 +159,8 @@ class ContentPanel extends Component {
           </div>
         </Tab.Container>
       </main>
-    );
+    )
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ContentPanel);
+export default connect(mapStateToProps, mapDispatchToProps)(ContentPanel)

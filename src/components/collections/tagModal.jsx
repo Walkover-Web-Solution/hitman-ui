@@ -1,63 +1,66 @@
-import React from "react";
-import { Modal } from "react-bootstrap";
-import Form from "../common/form";
+import React from 'react'
+import { Modal } from 'react-bootstrap'
+import Form from '../common/form'
 
 class TagManagerModal extends Form {
-  state = {
-    data: { gtmId: "" },
-    errors: {},
-  };
-
-  componentDidMount() {
-    let data = { gtmId: "" };
-    if (this.props.collection_id) {
-      data.gtmId = this.props.collections[this.props.collection_id].gtmId;
+  constructor (props) {
+    super(props)
+    this.state = {
+      data: { gtmId: '' },
+      errors: {}
     }
-    this.setState({ data });
   }
 
-  async doSubmit() {
-    let updatedCollection = this.props.collections[this.props.collection_id];
-    updatedCollection.gtmId = this.state.data.gtmId;
-    this.props.update_collection(updatedCollection);
-    this.props.onHide();
+  componentDidMount () {
+    const data = { gtmId: '' }
+    if (this.props.collection_id) {
+      data.gtmId = this.props.collections[this.props.collection_id].gtmId
+    }
+    this.setState({ data })
   }
 
-  render() {
+  async doSubmit () {
+    const updatedCollection = this.props.collections[this.props.collection_id]
+    updatedCollection.gtmId = this.state.data.gtmId
+    this.props.update_collection(updatedCollection)
+    this.props.onHide()
+  }
+
+  render () {
     return (
       <Modal
         {...this.props}
-        size="lg"
+        size='lg'
         animation={false}
-        aria-labelledby="contained-modal-title-vcenter"
+        aria-labelledby='contained-modal-title-vcenter'
         centered
       >
         <div>
           <Modal.Header
-            className="custom-collection-modal-container"
+            className='custom-collection-modal-container'
             closeButton
           >
-            <Modal.Title id="contained-modal-title-vcenter">
+            <Modal.Title id='contained-modal-title-vcenter'>
               {this.props.title}
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <form onSubmit={this.handleSubmit}>
-              {this.renderInput("gtmId", "GTM-ID", "")}
+              {this.renderInput('gtmId', 'GTM-ID', '')}
               <button
-                className="btn btn-default custom-button"
-                style={{ borderRadius: "12px" }}
-                type="button"
+                className='btn btn-default custom-button'
+                style={{ borderRadius: '12px' }}
+                type='button'
                 onClick={() => this.doSubmit()}
               >
-                {"Submit"}
+                Submit
               </button>
             </form>
           </Modal.Body>
         </div>
       </Modal>
-    );
+    )
   }
 }
 
-export default TagManagerModal;
+export default TagManagerModal

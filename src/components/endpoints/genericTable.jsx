@@ -1,346 +1,333 @@
-import React, { Component } from "react";
-import { isDashboardRoute } from "../common/utility";
-import "./endpoints.scss";
+import React, { Component } from 'react'
+import { isDashboardRoute } from '../common/utility'
+import './endpoints.scss'
 
 class GenericTable extends Component {
-  state = {
-    bulkEdit: false,
-    editButtonName: "Bulk Edit",
-    originalParams: [],
-    originalHeaders: [],
-  };
+  constructor (props) {
+    super(props)
+    this.state = {
+      bulkEdit: false,
+      editButtonName: 'Bulk Edit',
+      originalParams: [],
+      originalHeaders: []
+    }
 
-  checkboxFlags = [];
-  textAreaValue = "";
-  textAreaValueFlag = true;
-  helperflag = false;
-  count = "";
+    this.checkboxFlags = []
+    this.textAreaValue = ''
+    this.textAreaValueFlag = true
+    this.helperflag = false
+    this.count = ''
+  }
 
   handleChange = (e) => {
-    let { dataArray, title } = this.props;
-    dataArray = JSON.parse(JSON.stringify(dataArray));
-    const name = e.currentTarget.name.split(".");
-    if (name[1] === "checkbox") {
-      this.checkboxFlags[name[0]] = true;
-      if (dataArray[name[0]].checked === "true") {
-        dataArray[name[0]].checked = "false";
+    let { dataArray, title } = this.props
+    dataArray = JSON.parse(JSON.stringify(dataArray))
+    const name = e.currentTarget.name.split('.')
+    if (name[1] === 'checkbox') {
+      this.checkboxFlags[name[0]] = true
+      if (dataArray[name[0]].checked === 'true') {
+        dataArray[name[0]].checked = 'false'
       } else {
-        dataArray[name[0]].checked = "true";
+        dataArray[name[0]].checked = 'true'
       }
     }
-    if (name[1] === "key" && title !== "Path Variables") {
-      dataArray[name[0]].key = e.currentTarget.value;
-      if (title === "Params" && dataArray[name[0]].key.length === 0) {
-        this.handleDelete(dataArray, name[0], title);
+    if (name[1] === 'key' && title !== 'Path Variables') {
+      dataArray[name[0]].key = e.currentTarget.value
+      if (title === 'Params' && dataArray[name[0]].key.length === 0) {
+        this.handleDelete(dataArray, name[0], title)
       }
-    } else if (title !== "Path Variables" || name[1] !== "key") {
-      dataArray[name[0]][name[1]] = e.currentTarget.value;
+    } else if (title !== 'Path Variables' || name[1] !== 'key') {
+      dataArray[name[0]][name[1]] = e.currentTarget.value
     }
 
     if (
       dataArray[name[0]][name[1]].length !== 0 &&
       !this.checkboxFlags[name[0]] &&
-      title !== "Path Variables"
+      title !== 'Path Variables'
     ) {
-      dataArray[name[0]].checked = "true";
+      dataArray[name[0]].checked = 'true'
     }
 
-    if (title !== "Path Variables") {
-      this.handleAdd(dataArray, title, dataArray[name[0]][name[1]], name[0]);
+    if (title !== 'Path Variables') {
+      this.handleAdd(dataArray, title, dataArray[name[0]][name[1]], name[0])
     }
 
-    if (title === "Headers" || title === "Params" || title === "Path Variables")
-      this.props.props_from_parent(title, dataArray);
-    if (title === "formData" || title === "x-www-form-urlencoded")
-      this.props.handle_change_body_data(title, dataArray);
+    if (title === 'Headers' || title === 'Params' || title === 'Path Variables') { this.props.props_from_parent(title, dataArray) }
+    if (title === 'formData' || title === 'x-www-form-urlencoded') { this.props.handle_change_body_data(title, dataArray) }
   };
 
   handleBulkChange = (e) => {
-    const { title } = this.props;
-    let dataArray = [];
-    this.textAreaValue = e.currentTarget.value;
-    const array = e.currentTarget.value.split("\n");
-    let j = 0;
+    const { title } = this.props
+    const dataArray = []
+    this.textAreaValue = e.currentTarget.value
+    const array = e.currentTarget.value.split('\n')
+    let j = 0
     for (let i = 0; i < array.length; i++) {
-      let key = array[i].split(":")[0];
-      key = key.trim();
-      let value = "";
-      if (array[i].split(":")[1]) value = array[i].split(":")[1];
-      if (key === "" && value === "") continue;
-      let obj = {};
-      if (key.substring(0, 2) === "//" && key.length > 2) {
-        key = key.substring(2);
-        obj = { checked: "false", key, value, description: "" };
+      let key = array[i].split(':')[0]
+      key = key.trim()
+      let value = ''
+      if (array[i].split(':')[1]) value = array[i].split(':')[1]
+      if (key === '' && value === '') continue
+      let obj = {}
+      if (key.substring(0, 2) === '//' && key.length > 2) {
+        key = key.substring(2)
+        obj = { checked: 'false', key, value, description: '' }
       } else if (
-        key.substring(0, 2) === "//" &&
+        key.substring(0, 2) === '//' &&
         key.length === 2 &&
         value.length === 0
-      )
-        continue;
-      else if (
-        key.substring(0, 2) === "//" &&
+      ) { continue } else if (
+        key.substring(0, 2) === '//' &&
         key.length === 2 &&
         value.length !== 0
       ) {
-        key = key.substring(2);
-        obj = { checked: "false", key, value, description: "" };
+        key = key.substring(2)
+        obj = { checked: 'false', key, value, description: '' }
       } else {
-        obj = { checked: "true", key, value, description: "" };
+        obj = { checked: 'true', key, value, description: '' }
       }
-      dataArray[j.toString()] = obj;
-      j++;
+      dataArray[j.toString()] = obj
+      j++
     }
     dataArray[j.toString()] = {
-      checked: "notApplicable",
-      key: "",
-      value: "",
-      description: "",
-    };
-    if (title === "Params" || title === "Headers")
-      this.props.props_from_parent(title, dataArray);
-    if (title === "formData" || title === "x-www-form-urlencoded")
-      this.props.handle_change_body_data(title, dataArray);
+      checked: 'notApplicable',
+      key: '',
+      value: '',
+      description: ''
+    }
+    if (title === 'Params' || title === 'Headers') { this.props.props_from_parent(title, dataArray) }
+    if (title === 'formData' || title === 'x-www-form-urlencoded') { this.props.handle_change_body_data(title, dataArray) }
   };
 
-  handleAdd(dataArray, title, key, index) {
-    index = parseInt(index) + 1;
+  handleAdd (dataArray, title, key, index) {
+    index = parseInt(index) + 1
     if (key.length >= 1 && !dataArray[index]) {
-      const len = dataArray.length;
+      const len = dataArray.length
       dataArray[len.toString()] = {
-        checked: "notApplicable",
-        key: "",
-        value: "",
-        description: "",
-      };
-      if (title === "Headers") this.props.props_from_parent(title, dataArray);
-      if (title === "Params")
-        this.props.props_from_parent("handleAddParam", dataArray);
+        checked: 'notApplicable',
+        key: '',
+        value: '',
+        description: ''
+      }
+      if (title === 'Headers') this.props.props_from_parent(title, dataArray)
+      if (title === 'Params') { this.props.props_from_parent('handleAddParam', dataArray) }
     }
   }
 
-  handleDelete(dataArray, index, title) {
-    let newDataArray = [];
+  handleDelete (dataArray, index, title) {
+    const newDataArray = []
     for (let i = 0; i < dataArray.length; i++) {
       if (i === index) {
-        continue;
+        continue
       }
-      newDataArray.push(dataArray[i]);
+      newDataArray.push(dataArray[i])
     }
-    dataArray = newDataArray;
-    if (title === "Headers" || title === "Params")
-      this.props.props_from_parent(title, dataArray);
-    if (title === "formData" || title === "x-www-form-urlencoded")
-      this.props.handle_change_body_data(title, dataArray);
+    dataArray = newDataArray
+    if (title === 'Headers' || title === 'Params') { this.props.props_from_parent(title, dataArray) }
+    if (title === 'formData' || title === 'x-www-form-urlencoded') { this.props.handle_change_body_data(title, dataArray) }
   }
 
-  displayEditButton() {
+  displayEditButton () {
     if (this.state.bulkEdit) {
       this.setState({
         bulkEdit: false,
-        editButtonName: "Bulk Edit",
-      });
+        editButtonName: 'Bulk Edit'
+      })
     } else {
       if (!this.helperflag && this.textAreaValueFlag) {
-        this.helperflag = true;
+        this.helperflag = true
       } else {
-        this.textAreaValueFlag = true;
+        this.textAreaValueFlag = true
       }
       this.setState({
         bulkEdit: true,
-        editButtonName: "Key-Value Edit",
-      });
+        editButtonName: 'Key-Value Edit'
+      })
     }
   }
 
-  autoFillBulkEdit() {
-    let textAreaValue = "";
-    const { dataArray, count } = this.props;
+  autoFillBulkEdit () {
+    let textAreaValue = ''
+    const { dataArray, count } = this.props
     if (count) {
       if (
         (this.state.bulkEdit && this.textAreaValueFlag) ||
         this.count !== count
       ) {
-        this.count = count;
-        this.textAreaValueFlag = false;
+        this.count = count
+        this.textAreaValueFlag = false
         for (let index = 0; index < dataArray.length; index++) {
-          const { checked } = dataArray[index];
-          if (checked === "notApplicable") continue;
-          if (checked === "true") {
+          const { checked } = dataArray[index]
+          if (checked === 'notApplicable') continue
+          if (checked === 'true') {
             textAreaValue +=
-              dataArray[index].key + ":" + dataArray[index].value + "\n";
+              dataArray[index].key + ':' + dataArray[index].value + '\n'
           } else {
             textAreaValue +=
-              "//" + dataArray[index].key + ":" + dataArray[index].value + "\n";
+              '//' + dataArray[index].key + ':' + dataArray[index].value + '\n'
           }
         }
-        this.textAreaValue = textAreaValue;
+        this.textAreaValue = textAreaValue
       }
     } else {
       if (this.state.bulkEdit && this.textAreaValueFlag) {
-        this.textAreaValueFlag = false;
+        this.textAreaValueFlag = false
         for (let index = 0; index < dataArray.length; index++) {
-          const { checked } = dataArray[index];
-          if (checked === "notApplicable") continue;
-          if (checked === "true") {
+          const { checked } = dataArray[index]
+          if (checked === 'notApplicable') continue
+          if (checked === 'true') {
             textAreaValue +=
-              dataArray[index].key + ":" + dataArray[index].value + "\n";
+              dataArray[index].key + ':' + dataArray[index].value + '\n'
           } else {
             textAreaValue +=
-              "//" + dataArray[index].key + ":" + dataArray[index].value + "\n";
+              '//' + dataArray[index].key + ':' + dataArray[index].value + '\n'
           }
         }
-        this.textAreaValue = textAreaValue;
+        this.textAreaValue = textAreaValue
       }
     }
   }
 
-  render() {
-    const { dataArray, original_data, title } = this.props;
+  render () {
+    const { dataArray, original_data, title } = this.props
     if (!isDashboardRoute(this.props)) {
       for (let index = 0; index < dataArray.length; index++) {
-        if (dataArray[index].key === "") {
-          dataArray.splice(index, 1);
+        if (dataArray[index].key === '') {
+          dataArray.splice(index, 1)
         }
 
-        if (original_data[index].key === "") {
-          original_data.splice(index, 1);
+        if (original_data[index].key === '') {
+          original_data.splice(index, 1)
         }
       }
     }
 
-    this.autoFillBulkEdit();
+    this.autoFillBulkEdit()
     return (
       // "generic-table-container"
       // table-bordered
-      <div className="hm-public-table">
+      <div className='hm-public-table'>
         <div
           className={
             isDashboardRoute(this.props)
-              ? "generic-table-title-container"
-              : "public-generic-table-title-container"
+              ? 'generic-table-title-container'
+              : 'public-generic-table-title-container'
           }
         >
           {!isDashboardRoute(this.props) && title}
         </div>
         {!this.state.bulkEdit && dataArray.length > 0 ? (
-          <table className="table" id="custom-generic-table">
-            {isDashboardRoute(this.props) ?
-              <thead>
+          <table className='table' id='custom-generic-table'>
+            {isDashboardRoute(this.props)
+              ? <thead>
                 <tr>
-                  <th className="custom-th"> </th>
-                  <th className="custom-th" id="generic-table-key-cell">
+                  <th className='custom-th'> </th>
+                  <th className='custom-th' id='generic-table-key-cell'>
                     KEY
                   </th>
-                  <th className="custom-th">VALUE</th>
-                  <th className="custom-th">DESCRIPTION</th>
+                  <th className='custom-th'>VALUE</th>
+                  <th className='custom-th'>DESCRIPTION</th>
                 </tr>
-              </thead>
-              :
-              <colgroup>
-                <col style={{width: "36px"}}></col>
-                <col style={{width: "150px"}}></col>
-                <col style={{width: "240px"}}></col>
-                <col></col>
-                </colgroup>
-            }
-            <tbody style={{ border: "none" }}>
+                </thead>
+              : <colgroup>
+                <col style={{ width: '36px' }} />
+                <col style={{ width: '150px' }} />
+                <col style={{ width: '240px' }} />
+                <col />
+              </colgroup>}
+            <tbody style={{ border: 'none' }}>
               {dataArray.map((e, index) => (
-                <tr key={index} id="generic-table-row">
+                <tr key={index} id='generic-table-row'>
                   <td
-                    className="custom-td"
-                    id="generic-table-key-cell"
-                    style={{ marginLeft: "5px" }}
+                    className='custom-td'
+                    id='generic-table-key-cell'
+                    style={{ marginLeft: '5px' }}
                   >
-                    {dataArray[index].checked === "notApplicable" ? null : (
+                    {dataArray[index].checked === 'notApplicable' ? null : (
                       <input
                         disabled={
                           isDashboardRoute(this.props) ||
-                          original_data[index].checked === "false"
+                            original_data[index].checked === 'false'
                             ? null
-                            : "disabled"
+                            : 'disabled'
                         }
-                        name={index + ".checkbox"}
+                        name={index + '.checkbox'}
                         value={dataArray[index].checked}
                         checked={
-                          dataArray[index].checked === "true" ? true : false
+                          dataArray[index].checked === 'true'
                         }
-                        type="checkbox"
-                        className="Checkbox"
+                        type='checkbox'
+                        className='Checkbox'
                         onChange={this.handleChange}
-                        style={{ border: "none" }}
+                        style={{ border: 'none' }}
                       />
                     )}
                   </td>
-                  <td className="custom-td">
-                    {isDashboardRoute(this.props) ?
-                      <input
-                        name={index + ".key"}
-                        value={dataArray[index].key}
-                        onChange={this.handleChange}
-                        type={"text"}
-                        placeholder={
-                          dataArray[index].checked === "notApplicable"
-                            ? "Key"
-                            : ""
+                  <td className='custom-td'>
+                    {isDashboardRoute(this.props)
+                      ? <input
+                          name={index + '.key'}
+                          value={dataArray[index].key}
+                          onChange={this.handleChange}
+                          type='text'
+                          placeholder={
+                          dataArray[index].checked === 'notApplicable'
+                            ? 'Key'
+                            : ''
                         }
-                        className="form-control"
-                        style={{ border: "none" }}
-                      />
-                      :
-                        dataArray[index].key
-                      }
+                          className='form-control'
+                          style={{ border: 'none' }}
+                        />
+                      : dataArray[index].key}
                   </td>
-                  <td className="custom-td">
+                  <td className='custom-td'>
                     <input
-                      name={index + ".value"}
+                      name={index + '.value'}
                       value={dataArray[index].value}
                       onChange={this.handleChange}
-                      type={"text"}
+                      type='text'
                       placeholder={
-                        dataArray[index].checked === "notApplicable"
-                          ? "Value"
+                        dataArray[index].checked === 'notApplicable'
+                          ? 'Value'
                           : `Enter ${dataArray[index].key}`
                       }
-                      className="form-control"
-                      style={{ border: "none" }}
+                      className='form-control'
+                      style={{ border: 'none' }}
                     />
                   </td>
-                  <td className="custom-td" id="generic-table-description-cell">
-                    {isDashboardRoute(this.props) ?
-                      <React.Fragment>
+                  <td className='custom-td' id='generic-table-description-cell'>
+                    {isDashboardRoute(this.props)
+                      ? <>
                         <input
                           disabled={
-                            isDashboardRoute(this.props) ? null : "disabled"
+                            isDashboardRoute(this.props) ? null : 'disabled'
                           }
-                          name={index + ".description"}
+                          name={index + '.description'}
                           value={dataArray[index].description}
                           onChange={this.handleChange}
-                          type={"text"}
+                          type='text'
                           placeholder={
-                            dataArray[index].checked === "notApplicable"
-                              ? "Description"
-                              : ""
+                            dataArray[index].checked === 'notApplicable'
+                              ? 'Description'
+                              : ''
                           }
-                          style={{ border: "none" }}
-                          className="form-control"
+                          style={{ border: 'none' }}
+                          className='form-control'
                         />
                         {dataArray.length - 1 === index ||
-                        !isDashboardRoute(this.props) ||
-                        title === "Path Variables" ? null : (
-                          <button
-                            type="button"
-                            className="btn cross-button"
-                            onClick={() =>
-                              this.handleDelete(dataArray, index, title)
-                            }
-                          >
-                            <i className="uil-trash-alt text-danger"></i>
-                          </button>
-                        )}
-                      </React.Fragment>
-                    :
-                      dataArray[index].description
-                    }
+                          !isDashboardRoute(this.props) ||
+                          title === 'Path Variables' ? null : (
+                            <button
+                              type='button'
+                              className='btn cross-button'
+                              onClick={() =>
+                                this.handleDelete(dataArray, index, title)}
+                            >
+                              <i className='uil-trash-alt text-danger' />
+                            </button>
+                            )}
+                      </>
+                      : dataArray[index].description}
                   </td>
                 </tr>
               ))}
@@ -349,36 +336,36 @@ class GenericTable extends Component {
         ) : null}
 
         {this.state.bulkEdit && (
-          <div id="custom-bulk-edit">
+          <div id='custom-bulk-edit'>
             <textarea
-              className="form-control"
-              name="contents"
-              id="contents"
-              rows="9"
+              className='form-control'
+              name='contents'
+              id='contents'
+              rows='9'
               value={this.textAreaValue}
               onChange={this.handleBulkChange}
               placeholder={
-                "Rows are separated by new lines \n Keys and values are separated by : \n Prepend // to any row you want to add but keep disabled"
+                'Rows are separated by new lines \n Keys and values are separated by : \n Prepend // to any row you want to add but keep disabled'
               }
             />
           </div>
         )}
 
-          {title === "Path Variables" ||
+        {title === 'Path Variables' ||
           !isDashboardRoute(this.props) ? null : (
-            <div className="generic-table-title-container">
+            <div className='generic-table-title-container'>
               <button
-                id="edit-button"
-                className="btn btn-default custom-button"
+                id='edit-button'
+                className='btn btn-default custom-button'
                 onClick={() => this.displayEditButton()}
-                >
+              >
                 {this.state.editButtonName}
               </button>
             </div>
-          )}
+            )}
       </div>
-    );
+    )
   }
 }
 
-export default GenericTable;
+export default GenericTable

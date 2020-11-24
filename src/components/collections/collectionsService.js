@@ -1,38 +1,34 @@
-import React from "react";
-import CollectionForm from "./collectionForm";
-import DeleteModal from "../common/deleteModal";
+import React from 'react'
+import CollectionForm from './collectionForm'
+import DeleteModal from '../common/deleteModal'
 
-function showCollectionForm(props, onHide, title, selectedCollection) {
-
+function showCollectionForm (props, onHide, title, selectedCollection) {
   return (
     <CollectionForm
       {...props}
-      show={true}
+      show
       onHide={onHide}
       title={title}
-     
       edited_collection={selectedCollection}
     />
-  );
+  )
 }
 
-function showDeleteCollectionModal(props, onHide, title,message, selectedCollection) {
+function showDeleteCollectionModal (props, onHide, title, message, selectedCollection) {
   return (
     <DeleteModal
       {...props}
-      show={true}
+      show
       onHide={onHide}
       title={title}
-      message = {message}
+      message={message}
       deleted_collection={selectedCollection}
     />
-  );
+  )
 }
-
-
 
 export default {
   showCollectionForm,
-  showDeleteCollectionModal,
-  
-};
+  showDeleteCollectionModal
+
+}

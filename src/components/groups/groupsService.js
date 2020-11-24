@@ -1,19 +1,19 @@
-import React from "react";
-import DeleteModal from "../common/deleteModal";
+import React from 'react'
+import DeleteModal from '../common/deleteModal'
 
-function showDeleteGroupModal(props, onHide, title,message, selectedGroup) {
+function showDeleteGroupModal (props, onHide, title, message, selectedGroup) {
   return (
     <DeleteModal
       {...props}
-      show={true}
+      show
       onHide={onHide}
       title={title}
-      message = {message}
+      message={message}
       deleted_group={selectedGroup}
     />
-  );
+  )
 }
 
 export default {
   showDeleteGroupModal
-};
+}

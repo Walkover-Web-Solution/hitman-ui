@@ -1,62 +1,62 @@
-import http from "../../services/httpService";
+import http from '../../services/httpService'
 
-const apiUrl = process.env.REACT_APP_API_URL;
+const apiUrl = process.env.REACT_APP_API_URL
 
-function versionPagesUrl(versionId) {
-  return `${apiUrl}/versions/${versionId}/pages`;
+function versionPagesUrl (versionId) {
+  return `${apiUrl}/versions/${versionId}/pages`
 }
 
-function groupPagesUrl(groupId) {
-  return `${apiUrl}/groups/${groupId}/pages`;
+function groupPagesUrl (groupId) {
+  return `${apiUrl}/groups/${groupId}/pages`
 }
 
-function pageUrl(pageId) {
-  return `${apiUrl}/pages/${pageId}`;
+function pageUrl (pageId) {
+  return `${apiUrl}/pages/${pageId}`
 }
 
-function getAllPagesUrl() {
-  return `${apiUrl}/pages`;
+function getAllPagesUrl () {
+  return `${apiUrl}/pages`
 }
-export function getAllPages() {
-  return http.get(getAllPagesUrl());
-}
-
-export function getVersionPages(versionId) {
-  return http.get(versionPagesUrl(versionId));
+export function getAllPages () {
+  return http.get(getAllPagesUrl())
 }
 
-export function getGroupPages(groupId) {
-  return http.get(groupPagesUrl(groupId));
+export function getVersionPages (versionId) {
+  return http.get(versionPagesUrl(versionId))
 }
 
-export function getPage(pageId) {
-  return http.get(pageUrl(pageId));
+export function getGroupPages (groupId) {
+  return http.get(groupPagesUrl(groupId))
 }
 
-export function saveVersionPage(versionId, page) {
-  return http.post(versionPagesUrl(versionId), page);
+export function getPage (pageId) {
+  return http.get(pageUrl(pageId))
 }
 
-export function saveGroupPage(groupId, page) {
-  return http.post(groupPagesUrl(groupId), page);
+export function saveVersionPage (versionId, page) {
+  return http.post(versionPagesUrl(versionId), page)
 }
 
-export function updatePage(pageId, page) {
-  return http.put(`${apiUrl}/pages/${pageId}`, page);
+export function saveGroupPage (groupId, page) {
+  return http.post(groupPagesUrl(groupId), page)
 }
 
-export function deletePage(pageId) {
-  return http.delete(`${apiUrl}/pages/${pageId}`);
+export function updatePage (pageId, page) {
+  return http.put(`${apiUrl}/pages/${pageId}`, page)
 }
 
-export function duplicatePage(pageId) {
-  return http.post(`${apiUrl}/duplicatePages/${pageId}`);
+export function deletePage (pageId) {
+  return http.delete(`${apiUrl}/pages/${pageId}`)
 }
 
-export function updatePageOrder(pagesOrder) {
+export function duplicatePage (pageId) {
+  return http.post(`${apiUrl}/duplicatePages/${pageId}`)
+}
+
+export function updatePageOrder (pagesOrder) {
   return http.patch(`${apiUrl}/updatePagesOrder`, {
-    pagesOrder: pagesOrder,
-  });
+    pagesOrder: pagesOrder
+  })
 }
 
 export default {
@@ -69,5 +69,5 @@ export default {
   deletePage,
   duplicatePage,
   getAllPages,
-  updatePageOrder,
-};
+  updatePageOrder
+}

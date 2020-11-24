@@ -28,7 +28,7 @@ class CustomColorPicker extends React.Component {
 
   toggleColorOption(){
     this.setState({
-      openColorPicker : !this.state.openColorPicker
+      openColorPicker: !this.state.openColorPicker
     })
   }
 

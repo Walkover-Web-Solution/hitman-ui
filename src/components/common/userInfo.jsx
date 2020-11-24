@@ -1,74 +1,80 @@
-import React, { Component } from "react";
-import auth from "../auth/authService";
-import { Link } from "react-router-dom";
+import React, { Component } from 'react'
+import auth from '../auth/authService'
+import { Link } from 'react-router-dom'
 
 class UserInfo extends Component {
-  state = { user: { name: "", email: "" } };
+  constructor (props) {
+    super(props)
+    this.state = { user: { name: '', email: '' } }
+  }
 
-  componentDidMount() {
+  componentDidMount () {
     if (auth.getCurrentUser()) {
-      const user = auth.getCurrentUser();
-      user.name = user.first_name + user.last_name;
-      user.email = user.email;
-      this.setState({ user });
+      const user = auth.getCurrentUser()
+      user.name = user.first_name + user.last_name
+      this.setState({ user })
     }
   }
 
-  render() {
+  render () {
     return (
-        <div className="btn-grp" id="user-menu">
-          <div className="dropdown user-dropdown">
-            <button
-              className="user-dropdown-btn"
-              type="button"
-              id="dropdownMenuButton"
-              data-toggle="dropdown"
-              aria-haspopup="true"
-              aria-expanded="false"
-            >
-              <div className="user-info">
-                <div className="user-avatar">
-                  <i className="uil uil-user"></i>
-                </div>
-                <div className="user-details">
-                  <div className="user-details-heading">
-                    <div className="user-name">
-                      {this.state.user.name}
-                    </div>
+      <div className='btn-grp' id='user-menu'>
+        <div className='dropdown user-dropdown'>
+          <button
+            className='user-dropdown-btn'
+            type='button'
+            id='dropdownMenuButton'
+            data-toggle='dropdown'
+            aria-haspopup='true'
+            aria-expanded='false'
+          >
+            <div className='user-info'>
+              <div className='user-avatar'>
+                <i className='uil uil-user' />
+              </div>
+              <div className='user-details'>
+                <div className='user-details-heading'>
+                  <div className='user-name'>
+                    {this.state.user.name}
                   </div>
                 </div>
               </div>
-            </button>
-            <div
-              className="dropdown-menu"
-              aria-labelledby="dropdownMenuButton"
-            >
-              <div className="user-info">
-                <div className="user-avatar">
-                  <i className="uil uil-user"></i>
-                </div>
-                <div className="user-details">
-                  <div className="user-details-heading">
-                    <div className="user-name">
-                      {this.state.user.name}
-                    </div>
-                  </div>
-                  <div className="user-details-text">{this.state.user.email}</div>
-                </div>
-              </div>
-              <li>
-                <Link to="/logout">Sign out</Link>
-              </li>
-              {auth.getCurrentUser() === null ? null : (
-                <li>
-                  <Link to="/dashboard">My Collections</Link>
-                </li>
-              )}
             </div>
+          </button>
+          <div
+            className='dropdown-menu'
+            aria-labelledby='dropdownMenuButton'
+          >
+            <div className='user-info'>
+              <div className='user-avatar'>
+                <i className='uil uil-user' />
+              </div>
+              <div className='user-details'>
+                <div className='user-details-heading'>
+                  <div className='user-name'>
+                    {this.state.user.name}
+                  </div>
+                </div>
+                <div className='user-details-text'>{this.state.user.email}</div>
+              </div>
+            </div>
+            <li>
+              <Link to='/logout'>Sign out</Link>
+            </li>
+            {auth.getCurrentUser() === null
+              ? null
+              : (
+                <li>
+                  <Link to='/dashboard'>
+                    My Collections
+                  </Link>
+                </li>
+                )}
           </div>
         </div>
-    );
+      </div>
+    )
   }
 }
 
-export default UserInfo;
+export default UserInfo

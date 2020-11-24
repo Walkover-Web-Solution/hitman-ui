@@ -1,20 +1,23 @@
-import React, { Component } from "react";
-import { Tab } from "react-bootstrap";
-import { Route, Switch } from "react-router-dom";
-import DisplayEndpoint from "../endpoints/displayEndpoint";
-import DisplayPage from "../pages/displayPage";
-import EditPage from "../pages/editPage";
-import { getCurrentUser } from "../auth/authService";
+import React, { Component } from 'react'
+import { Tab } from 'react-bootstrap'
+import { Route, Switch } from 'react-router-dom'
+import DisplayEndpoint from '../endpoints/displayEndpoint'
+import DisplayPage from '../pages/displayPage'
+import EditPage from '../pages/editPage'
+import { getCurrentUser } from '../auth/authService'
 
 class TabContent extends Component {
-  state = {};
+  constructor (props) {
+    super(props)
+    this.state = {}
+  }
 
-  renderContent(tabId) {
-    const tab = this.props.tabs.tabs[tabId];
+  renderContent (tabId) {
+    const tab = this.props.tabs.tabs[tabId]
     switch (tab.type) {
-      case "endpoint":
-        return <DisplayEndpoint {...this.props} environment={{}} tab={tab} />;
-      case "page":
+      case 'endpoint':
+        return <DisplayEndpoint {...this.props} environment={{}} tab={tab} />
+      case 'page':
         return (
           <Switch>
             <Route
@@ -26,29 +29,33 @@ class TabContent extends Component {
               render={(props) => <DisplayPage {...props} tab={tab} />}
             />
           </Switch>
-        );
+        )
       default:
-        break;
+        break
     }
   }
 
-  renderEndpoint() {
-    return <DisplayEndpoint {...this.props} environment={{}} tab="" />
+  renderEndpoint () {
+    return <DisplayEndpoint {...this.props} environment={{}} tab='' />
   }
 
-  render() {
+  render () {
     return (
       <Tab.Content>
-        {getCurrentUser() ? (
-          Object.keys(this.props.tabs.tabs).map((tabId) => (
-            <Tab.Pane eventKey={tabId} key={tabId}>
-              {this.renderContent(tabId)}
-            </Tab.Pane>
-          ))) : this.renderEndpoint()
-        }
+        {getCurrentUser()
+          ? (
+              Object.keys(this.props.tabs.tabs).map((tabId) =>
+                (
+                  <Tab.Pane eventKey={tabId} key={tabId}>
+                    {this.renderContent(tabId)}
+                  </Tab.Pane>
+                )
+              )
+            )
+          : this.renderEndpoint()}
       </Tab.Content>
-    );
+    )
   }
 }
 
-export default TabContent;
+export default TabContent
