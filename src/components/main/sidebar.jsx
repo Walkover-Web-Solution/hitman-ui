@@ -68,6 +68,9 @@ class SideBar extends Component {
         historySnapshot: Object.values(this.props.historySnapshot)
       })
     }
+    if (this.props.location.collectionId) {
+      this.collectionId = this.props.location.collectionId
+    }
   }
 
   componentDidUpdate (prevProps, prevState) {
@@ -76,6 +79,9 @@ class SideBar extends Component {
         historySnapshot: Object.values(this.props.historySnapshot)
       })
     }
+    // if (this.props.location.pathname.split("/")[1] === "admin") {
+    //   this.collectionId = null;
+    // }
   }
 
   async dndMoveEndpoint (endpointId, sourceGroupId, destinationGroupId) {

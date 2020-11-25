@@ -406,8 +406,10 @@ class CollectionsComponent extends Component {
                     ? (
                       <a
                         className='dropdown-item'
-                        onClick={() =>
-                          this.openPublishDocs(this.props.collections[collectionId])}
+                        onClick={() => {
+                          this.props.collection_selected(null)
+                          this.openPublishDocs(this.props.collections[collectionId])
+                        }}
                       >
                         Publish Docs
                       </a>
