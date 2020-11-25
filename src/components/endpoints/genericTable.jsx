@@ -189,15 +189,16 @@ class GenericTable extends Component {
   }
 
   render () {
-    const { dataArray, original_data, title } = this.props
+    console.log('this.props', this.props)
+    const { dataArray, original_data: originalData, title } = this.props
     if (!isDashboardRoute(this.props)) {
       for (let index = 0; index < dataArray.length; index++) {
         if (dataArray[index].key === '') {
           dataArray.splice(index, 1)
         }
 
-        if (original_data[index].key === '') {
-          original_data.splice(index, 1)
+        if (originalData[index].key === '') {
+          originalData.splice(index, 1)
         }
       }
     }
@@ -258,7 +259,7 @@ class GenericTable extends Component {
                               <input
                                 disabled={
                                   isDashboardRoute(this.props) ||
-                                    original_data[index].checked === 'false'
+                                    originalData[index].checked === 'false'
                                     ? null
                                     : 'disabled'
                                 }

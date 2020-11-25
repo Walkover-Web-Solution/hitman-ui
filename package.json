@@ -59,7 +59,7 @@
     "npm": "6.0.0"
   },
   "scripts": {
-    "start": "serve -s build",
+    "start": "standard && serve -s build",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
@@ -84,6 +84,9 @@
     "standard": "^16.0.3"
   },
   "standard": {
+    "ignore": [
+      "registerServiceWorker.js"
+    ],
     "parser": "babel-eslint"
   }
 }

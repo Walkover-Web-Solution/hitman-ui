@@ -39,7 +39,7 @@ const shortid = require('shortid')
 
 const status = require('http-status')
 const URI = require('urijs')
-
+const FormData = require('form-data')
 const mapStateToProps = (state) => {
   return {
     groups: state.groups,

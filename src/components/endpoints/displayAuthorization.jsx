@@ -124,9 +124,10 @@ class Authorization extends Component {
       password
     }
     this.props.set_authoriztaion_type('basicAuth', value)
-    const encodedValue = new Buffer(username + ':' + password).toString(
-      'base64'
-    )
+    const encodedValue = Buffer.from(username + ':' + password).toString('base64')
+    // const encodedValue = new Buffer(username + ':' + password).toString(
+    //   'base64'
+    // )
     this.props.set_authorization_headers(
       encodedValue,
       'Authorization.basicAuth'
@@ -134,9 +135,9 @@ class Authorization extends Component {
   }
 
   setAuthorizationAddedTo (key) {
-    const oauth_2 = { ...this.state.oauth_2 }
-    oauth_2.authorizationAddedTo = key
-    this.setState({ oauth_2 })
+    const oauth2 = { ...this.state.oauth_2 }
+    oauth2.authorizationAddedTo = key
+    this.setState({ oauth_2: oauth2 })
     if (this.state.oauth_2.accessToken !== '') {
       if (key === 'Request Headers') {
         this.props.set_authorization_headers(
@@ -148,7 +149,7 @@ class Authorization extends Component {
           'access_token',
           'authorizationFlag'
         )
-        this.props.set_authoriztaion_type('oauth_2', oauth_2)
+        this.props.set_authoriztaion_type('oauth_2', oauth2)
       } else {
         this.props.set_authorization_headers(
           '',
@@ -159,7 +160,7 @@ class Authorization extends Component {
           this.state.oauth_2.accessToken,
           'access_token'
         )
-        this.props.set_authoriztaion_type('oauth_2', oauth_2)
+        this.props.set_authoriztaion_type('oauth_2', oauth2)
       }
     }
   }
@@ -193,9 +194,9 @@ class Authorization extends Component {
   }
 
   selectAccessToken (index) {
-    const oauth_2 = this.state.oauth_2
-    oauth_2.accessToken = this.authResponses[index].access_token
-    this.setState({ oauth_2 })
+    const oauth2 = this.state.oauth_2
+    oauth2.accessToken = this.authResponses[index].access_token
+    this.setState({ oauth_2: oauth2 })
     this.setHeadersandParams(
       this.authResponses[index].access_token,
       this.state.oauth_2.authorizationAddedTo
@@ -229,27 +230,27 @@ class Authorization extends Component {
   }
 
   setAccessToken (accessToken) {
-    const oauth_2 = { ...this.state.oauth_2 }
-    oauth_2.accessToken = accessToken
-    this.setState({ oauth_2 })
-    this.setHeadersandParams(accessToken, oauth_2.authorizationAddedTo)
+    const oauth2 = { ...this.state.oauth_2 }
+    oauth2.accessToken = accessToken
+    this.setState({ oauth_2: oauth2 })
+    this.setHeadersandParams(accessToken, oauth2.authorizationAddedTo)
   }
 
   setAuthResponses (authResponses) {
     this.authResponses = authResponses
     if (authResponses.length === 0) {
-      const oauth_2 = this.state.oauth_2
-      oauth_2.accessToken = ''
-      this.setState({ oauth_2 })
+      const oauth2 = this.state.oauth_2
+      oauth2.accessToken = ''
+      this.setState({ oauth_2: oauth2 })
       this.closeManageTokenModel()
     }
   }
 
   updateAccessToken (e) {
     const accessToken = e.currentTarget.value
-    const oauth_2 = this.state.oauth_2
-    oauth_2.accessToken = accessToken
-    this.setState({ oauth_2 })
+    const oauth2 = this.state.oauth_2
+    oauth2.accessToken = accessToken
+    this.setState({ oauth_2: oauth2 })
     this.setHeadersandParams(accessToken)
   }
 
