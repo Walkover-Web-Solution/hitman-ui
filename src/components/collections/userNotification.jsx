@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import { Dropdown } from 'react-bootstrap'
 import authService from '../auth/authService'
+import vectorIcon from '../../assets/icons/Vector.svg'
 
 class UserInfo extends Component {
   constructor (props) {
@@ -36,6 +37,8 @@ class UserInfo extends Component {
   }
 
   render () {
+    const notificationCount = this.props.get_notification_count()
+
     return (
       <>
         <div className='user-notification user-info '>
@@ -44,35 +47,40 @@ class UserInfo extends Component {
           </div>
           <div className='user-details'>
             <div className='user-heading'>
-              <div className='user-name'>
-                {this.state.user.name}
-              </div>
-              {
-                authService.isAdmin() &&
-                  <Dropdown>
-                    <Dropdown.Toggle variant='success' id='dropdown-basic'>
-                      <div class=' user-name notification'>
-                        <span> <i class='fas fa-bell' /></span>
-                        <span class='badge'>{this.props.get_notification_count()}</span>
-                      </div>
-                    </Dropdown.Toggle>
-                    <Dropdown.Menu>
-                      <Dropdown.Item onClick={() => this.navigateToPublishDocs()}>Hosted API</Dropdown.Item>
-                      <Dropdown.Item>
-                        <li>
-                          <Link to='/logout'>
-                            Sign out
-                          </Link>
-                        </li>
-                      </Dropdown.Item>
-                    </Dropdown.Menu>
-                  </Dropdown>
-              }
-              {
-                !authService.isAdmin() &&
-                  <Link to='/logout'>Sign out</Link>
-
-              }
+              <div className='user-name'>{this.state.user.name}</div>
+              {authService.isAdmin() && (
+                <Dropdown>
+                  <Dropdown.Toggle variant='success' id='dropdown-basic'>
+                    <div class=' user-name notification'>
+                      {notificationCount && (
+                        <>
+                          <span>
+                            {' '}
+                            <i class='fas fa-bell' />
+                          </span>
+                          <span class='badge'>{notificationCount}</span>
+                        </>
+                      )}
+                      <img
+                        src={vectorIcon}
+                        className='notification-icon'
+                        alt=''
+                      />
+                    </div>
+                  </Dropdown.Toggle>
+                  <Dropdown.Menu>
+                    <Dropdown.Item onClick={() => this.navigateToPublishDocs()}>
+                      Hosted API
+                    </Dropdown.Item>
+                    <Dropdown.Item>
+                      <li>
+                        <Link to='/logout'>Sign out</Link>
+                      </li>
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
+              )}
+              {!authService.isAdmin() && <Link to='/logout'>Sign out</Link>}
             </div>
           </div>
         </div>
