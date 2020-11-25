@@ -649,6 +649,7 @@ class DisplayEndpoint extends Component {
       name: this.state.data.name,
       requestType: this.state.data.method,
       body: body,
+      status: this.props.tab.status || 'NEW',
       headers: headersData,
       params: updatedParams,
       pathVariables: pathVariables,

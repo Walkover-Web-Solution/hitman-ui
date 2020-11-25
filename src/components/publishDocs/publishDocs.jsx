@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { Button } from 'react-bootstrap'
-import SideBar from '../main/sidebar'
 import './publishDocs.scss'
 import { connect } from 'react-redux'
 import { fetchCollections, updateCollection } from '../collections/redux/collectionsActions'
@@ -281,9 +280,6 @@ class PublishDocs extends Component {
     return (
       <div className='publish-docs-container'>
         <div className='publish-docs-wrapper'>
-          <SideBar
-            {...this.props}
-          />
           <div class='content-panel'>
             <div className='hosted-APIs'>
               <div class='title'>

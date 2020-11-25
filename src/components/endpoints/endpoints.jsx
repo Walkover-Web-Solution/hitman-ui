@@ -160,7 +160,8 @@ class Endpoints extends Component {
         pathname: `/dashboard/endpoint/${endpoint.id}`,
         title: 'update endpoint',
         endpoint: endpoint,
-        groupId: groupId
+        groupId: groupId,
+        collectionId
       })
     } else {
       this.props.history.push({
