@@ -189,7 +189,6 @@ class GenericTable extends Component {
   }
 
   render () {
-    console.log('this.props', this.props)
     const { dataArray, original_data: originalData, title } = this.props
     if (!isDashboardRoute(this.props)) {
       for (let index = 0; index < dataArray.length; index++) {
