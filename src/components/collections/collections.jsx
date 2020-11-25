@@ -583,7 +583,6 @@ class CollectionsComponent extends Component {
       }
       const keywords = Object.keys(this.keywords)
       finalKeywords = keywords.filter((key) => {
-        console.log(this.props.filter)
         return (
           key.toLowerCase().indexOf(this.props.filter.toLowerCase()) !== -1
         )
