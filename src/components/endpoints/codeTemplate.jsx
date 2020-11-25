@@ -117,11 +117,13 @@ class CodeTemplate extends Component {
                   className='copy-to-clipboard'
                 >
                   <button>
-                    {this.state.copied ? (
-                      <i className='fas fa-check' />
-                    ) : (
-                      <i className='fas fa-clone' />
-                    )}
+                    {this.state.copied
+                      ? (
+                        <i className='fas fa-check' />
+                        )
+                      : (
+                        <i className='fas fa-clone' />
+                        )}
                   </button>
                 </CopyToClipboard>
               </div>{' '}

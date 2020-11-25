@@ -111,11 +111,15 @@ class CustomTabs extends Component {
               </button>
             </Nav.Link>
             <button className='btn' onClick={() => this.removeTab(tabId)}>
-              {this.props.tabs.tabs[tabId].isModified ? (
-                <i className='fas fa-circle' id='modified-dot-icon' />
-              ) : (
-                <i className='uil uil-multiply' />
-              )}
+              {
+                this.props.tabs.tabs[tabId].isModified
+                  ? (
+                    <i className='fas fa-circle' id='modified-dot-icon' />
+                    )
+                  : (
+                    <i className='uil uil-multiply' />
+                    )
+              }
             </button>
           </Nav.Item>
         ))}

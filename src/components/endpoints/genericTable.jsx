@@ -189,15 +189,16 @@ class GenericTable extends Component {
   }
 
   render () {
-    const { dataArray, original_data, title } = this.props
+    console.log('this.props', this.props)
+    const { dataArray, original_data: originalData, title } = this.props
     if (!isDashboardRoute(this.props)) {
       for (let index = 0; index < dataArray.length; index++) {
         if (dataArray[index].key === '') {
           dataArray.splice(index, 1)
         }
 
-        if (original_data[index].key === '') {
-          original_data.splice(index, 1)
+        if (originalData[index].key === '') {
+          originalData.splice(index, 1)
         }
       }
     }
@@ -216,143 +217,171 @@ class GenericTable extends Component {
         >
           {!isDashboardRoute(this.props) && title}
         </div>
-        {!this.state.bulkEdit && dataArray.length > 0 ? (
-          <table className='table' id='custom-generic-table'>
-            {isDashboardRoute(this.props)
-              ? <thead>
-                <tr>
-                  <th className='custom-th'> </th>
-                  <th className='custom-th' id='generic-table-key-cell'>
-                    KEY
-                  </th>
-                  <th className='custom-th'>VALUE</th>
-                  <th className='custom-th'>DESCRIPTION</th>
-                </tr>
-                </thead>
-              : <colgroup>
-                <col style={{ width: '36px' }} />
-                <col style={{ width: '150px' }} />
-                <col style={{ width: '240px' }} />
-                <col />
-              </colgroup>}
-            <tbody style={{ border: 'none' }}>
-              {dataArray.map((e, index) => (
-                <tr key={index} id='generic-table-row'>
-                  <td
-                    className='custom-td'
-                    id='generic-table-key-cell'
-                    style={{ marginLeft: '5px' }}
-                  >
-                    {dataArray[index].checked === 'notApplicable' ? null : (
-                      <input
-                        disabled={
-                          isDashboardRoute(this.props) ||
-                            original_data[index].checked === 'false'
-                            ? null
-                            : 'disabled'
-                        }
-                        name={index + '.checkbox'}
-                        value={dataArray[index].checked}
-                        checked={
-                          dataArray[index].checked === 'true'
-                        }
-                        type='checkbox'
-                        className='Checkbox'
-                        onChange={this.handleChange}
-                        style={{ border: 'none' }}
-                      />
-                    )}
-                  </td>
-                  <td className='custom-td'>
-                    {isDashboardRoute(this.props)
-                      ? <input
-                          name={index + '.key'}
-                          value={dataArray[index].key}
-                          onChange={this.handleChange}
-                          type='text'
-                          placeholder={
+        {
+          !this.state.bulkEdit && dataArray.length > 0
+            ? (
+              <table className='table' id='custom-generic-table'>
+                {
+                  isDashboardRoute(this.props)
+                    ? (
+                      <thead>
+                        <tr>
+                          <th className='custom-th'> </th>
+                          <th className='custom-th' id='generic-table-key-cell'>
+                            KEY
+                          </th>
+                          <th className='custom-th'>VALUE</th>
+                          <th className='custom-th'>DESCRIPTION</th>
+                        </tr>
+                      </thead>
+                      )
+                    : (
+                      <colgroup>
+                        <col style={{ width: '36px' }} />
+                        <col style={{ width: '150px' }} />
+                        <col style={{ width: '240px' }} />
+                        <col />
+                      </colgroup>
+                      )
+                }
+                <tbody style={{ border: 'none' }}>
+                  {dataArray.map((e, index) => (
+                    <tr key={index} id='generic-table-row'>
+                      <td
+                        className='custom-td'
+                        id='generic-table-key-cell'
+                        style={{ marginLeft: '5px' }}
+                      >
+                        {
                           dataArray[index].checked === 'notApplicable'
-                            ? 'Key'
-                            : ''
+                            ? null
+                            : (
+                              <input
+                                disabled={
+                                  isDashboardRoute(this.props) ||
+                                    originalData[index].checked === 'false'
+                                    ? null
+                                    : 'disabled'
+                                }
+                                name={index + '.checkbox'}
+                                value={dataArray[index].checked}
+                                checked={
+                                  dataArray[index].checked === 'true'
+                                }
+                                type='checkbox'
+                                className='Checkbox'
+                                onChange={this.handleChange}
+                                style={{ border: 'none' }}
+                              />
+                              )
                         }
-                          className='form-control'
-                          style={{ border: 'none' }}
-                        />
-                      : dataArray[index].key}
-                  </td>
-                  <td className='custom-td'>
-                    <input
-                      name={index + '.value'}
-                      value={dataArray[index].value}
-                      onChange={this.handleChange}
-                      type='text'
-                      placeholder={
-                        dataArray[index].checked === 'notApplicable'
-                          ? 'Value'
-                          : `Enter ${dataArray[index].key}`
-                      }
-                      className='form-control'
-                      style={{ border: 'none' }}
-                    />
-                  </td>
-                  <td className='custom-td' id='generic-table-description-cell'>
-                    {isDashboardRoute(this.props)
-                      ? <>
+                      </td>
+                      <td className='custom-td'>
+                        {isDashboardRoute(this.props)
+                          ? <input
+                              name={index + '.key'}
+                              value={dataArray[index].key}
+                              onChange={this.handleChange}
+                              type='text'
+                              placeholder={
+                              dataArray[index].checked === 'notApplicable'
+                                ? 'Key'
+                                : ''
+                            }
+                              className='form-control'
+                              style={{ border: 'none' }}
+                            />
+                          : dataArray[index].key}
+                      </td>
+                      <td className='custom-td'>
                         <input
-                          disabled={
-                            isDashboardRoute(this.props) ? null : 'disabled'
-                          }
-                          name={index + '.description'}
-                          value={dataArray[index].description}
+                          name={index + '.value'}
+                          value={dataArray[index].value}
                           onChange={this.handleChange}
                           type='text'
                           placeholder={
                             dataArray[index].checked === 'notApplicable'
-                              ? 'Description'
-                              : ''
+                              ? 'Value'
+                              : `Enter ${dataArray[index].key}`
                           }
-                          style={{ border: 'none' }}
                           className='form-control'
+                          style={{ border: 'none' }}
                         />
-                        {dataArray.length - 1 === index ||
-                          !isDashboardRoute(this.props) ||
-                          title === 'Path Variables' ? null : (
-                            <button
-                              type='button'
-                              className='btn cross-button'
-                              onClick={() =>
-                                this.handleDelete(dataArray, index, title)}
-                            >
-                              <i className='uil-trash-alt text-danger' />
-                            </button>
-                            )}
-                      </>
-                      : dataArray[index].description}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        ) : null}
+                      </td>
+                      <td className='custom-td' id='generic-table-description-cell'>
+                        {
+                          isDashboardRoute(this.props)
+                            ? (
+                              <div>
+                                <input
+                                  disabled={
+                                    isDashboardRoute(this.props) ? null : 'disabled'
+                                  }
+                                  name={index + '.description'}
+                                  value={dataArray[index].description}
+                                  onChange={this.handleChange}
+                                  type='text'
+                                  placeholder={
+                                    dataArray[index].checked === 'notApplicable'
+                                      ? 'Description'
+                                      : ''
+                                  }
+                                  style={{ border: 'none' }}
+                                  className='form-control'
+                                />
+                                {
+                                  dataArray.length - 1 === index ||
+                                    !isDashboardRoute(this.props) ||
+                                    title === 'Path Variables'
+                                    ? null
+                                    : (
+                                      <button
+                                        type='button'
+                                        className='btn cross-button'
+                                        onClick={() =>
+                                          this.handleDelete(dataArray, index, title)}
+                                      >
+                                        <i className='uil-trash-alt text-danger' />
+                                      </button>
+                                      )
+                                }
+                              </div>
+                              )
+                            : dataArray[index].description
+                        }
+                      </td>
+                    </tr>
+                  )
+                  )}
+                </tbody>
+              </table>
+              )
+            : null
+        }
 
-        {this.state.bulkEdit && (
-          <div id='custom-bulk-edit'>
-            <textarea
-              className='form-control'
-              name='contents'
-              id='contents'
-              rows='9'
-              value={this.textAreaValue}
-              onChange={this.handleBulkChange}
-              placeholder={
-                'Rows are separated by new lines \n Keys and values are separated by : \n Prepend // to any row you want to add but keep disabled'
-              }
-            />
-          </div>
-        )}
+        {
+          this.state.bulkEdit &&
+          (
+            <div id='custom-bulk-edit'>
+              <textarea
+                className='form-control'
+                name='contents'
+                id='contents'
+                rows='9'
+                value={this.textAreaValue}
+                onChange={this.handleBulkChange}
+                placeholder={
+                  'Rows are separated by new lines \n Keys and values are separated by : \n Prepend // to any row you want to add but keep disabled'
+                }
+              />
+            </div>
+          )
+        }
 
         {title === 'Path Variables' ||
-          !isDashboardRoute(this.props) ? null : (
+          !isDashboardRoute(this.props)
+          ? null
+          : (
             <div className='generic-table-title-container'>
               <button
                 id='edit-button'

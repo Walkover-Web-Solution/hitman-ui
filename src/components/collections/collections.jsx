@@ -1,30 +1,30 @@
-import React, { Component } from "react";
-import { Accordion, Card } from "react-bootstrap";
-import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
-import "react-toastify/dist/ReactToastify.css";
-import shortId from "shortid";
-import CollectionVersions from "../collectionVersions/collectionVersions";
-import collectionVersionsService from "../collectionVersions/collectionVersionsService";
-import ImportVersionForm from "../collectionVersions/importVersionForm";
-import { isDashboardRoute } from "../common/utility";
-import endpointApiService from "../endpoints/endpointApiService";
-import collectionsService from "./collectionsService";
+import React, { Component } from 'react'
+import { Accordion, Card } from 'react-bootstrap'
+import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
+import 'react-toastify/dist/ReactToastify.css'
+import shortId from 'shortid'
+import CollectionVersions from '../collectionVersions/collectionVersions'
+import collectionVersionsService from '../collectionVersions/collectionVersionsService'
+import ImportVersionForm from '../collectionVersions/importVersionForm'
+import { isDashboardRoute } from '../common/utility'
+import endpointApiService from '../endpoints/endpointApiService'
+import collectionsService from './collectionsService'
 import {
   addCollection,
   deleteCollection,
   duplicateCollection,
   updateCollection,
-  addCustomDomain,
-} from "./redux/collectionsActions";
-import "./collections.scss";
-import PublishDocsModal from "../publicEndpoint/publishDocsModal";
-import { isAdmin } from "../auth/authService";
-import TagManager from "react-gtm-module";
-import TagManagerModal from "./tagModal";
-import UserNotification from "./userNotification";
+  addCustomDomain
+} from './redux/collectionsActions'
+import './collections.scss'
+import PublishDocsModal from '../publicEndpoint/publishDocsModal'
+import { isAdmin } from '../auth/authService'
+import TagManager from 'react-gtm-module'
+import TagManagerModal from './tagModal'
+import UserNotification from './userNotification'
 
-const EMPTY_STRING = "";
+const EMPTY_STRING = ''
 
 const mapStateToProps = (state) => {
   return {
@@ -32,9 +32,9 @@ const mapStateToProps = (state) => {
     versions: state.versions,
     pages: state.pages,
     groups: state.groups,
-    endpoints: state.endpoints,
-  };
-};
+    endpoints: state.endpoints
+  }
+}
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -46,125 +46,125 @@ const mapDispatchToProps = (dispatch) => {
     duplicate_collection: (collection) =>
       dispatch(duplicateCollection(collection)),
     add_custom_domain: (collectionId, domain) =>
-      dispatch(addCustomDomain(collectionId, domain)),
-  };
-};
+      dispatch(addCustomDomain(collectionId, domain))
+  }
+}
 
 class CollectionsComponent extends Component {
-  constructor(props) {
-    super(props);
+  constructor (props) {
+    super(props)
     this.state = {
       showCollectionForm: false,
-      collectionFormName: "",
+      collectionFormName: '',
       selectedCollection: {},
-      showPublishDocsModal: false,
-    };
+      showPublishDocsModal: false
+    }
 
-    this.keywords = {};
-    this.names = {};
+    this.keywords = {}
+    this.names = {}
   }
 
-  closeCollectionForm() {
-    this.setState({ showCollectionForm: false, showImportVersionForm: false });
+  closeCollectionForm () {
+    this.setState({ showCollectionForm: false, showImportVersionForm: false })
   }
 
-  async dndMoveEndpoint(endpointId, sourceGroupId, destinationGroupId) {
-    const groups = { ...this.state.groups };
-    const endpoints = { ...this.state.endpoints };
-    const originalEndpoints = { ...this.state.endpoints };
-    const originalGroups = { ...this.state.groups };
-    const endpoint = endpoints[endpointId];
-    endpoint.groupId = destinationGroupId;
-    endpoints[endpointId] = endpoint;
+  async dndMoveEndpoint (endpointId, sourceGroupId, destinationGroupId) {
+    const groups = { ...this.state.groups }
+    const endpoints = { ...this.state.endpoints }
+    const originalEndpoints = { ...this.state.endpoints }
+    const originalGroups = { ...this.state.groups }
+    const endpoint = endpoints[endpointId]
+    endpoint.groupId = destinationGroupId
+    endpoints[endpointId] = endpoint
     groups[sourceGroupId].endpointsOrder = groups[
       sourceGroupId
-    ].endpointsOrder.filter((gId) => gId !== endpointId.toString());
-    groups[destinationGroupId].endpointsOrder.push(endpointId);
-    this.setState({ endpoints, groups });
+    ].endpointsOrder.filter((gId) => gId !== endpointId.toString())
+    groups[destinationGroupId].endpointsOrder.push(endpointId)
+    this.setState({ endpoints, groups })
     try {
-      delete endpoint.id;
-      await endpointApiService.updateEndpoint(endpointId, endpoint);
+      delete endpoint.id
+      await endpointApiService.updateEndpoint(endpointId, endpoint)
     } catch (error) {
-      this.setState({ endpoints: originalEndpoints, groups: originalGroups });
+      this.setState({ endpoints: originalEndpoints, groups: originalGroups })
     }
   }
 
-  async handleAddCollection(newCollection) {
-    newCollection.requestId = shortId.generate();
-    this.props.add_collection(newCollection);
+  async handleAddCollection (newCollection) {
+    newCollection.requestId = shortId.generate()
+    this.props.add_collection(newCollection)
   }
 
-  async handleUpdateCollection(editedCollection) {
-    this.props.update_collection(editedCollection);
+  async handleUpdateCollection (editedCollection) {
+    this.props.update_collection(editedCollection)
   }
 
-  async handleDeleteGroup(deletedGroupId) {
-    this.props.delete_group(deletedGroupId);
+  async handleDeleteGroup (deletedGroupId) {
+    this.props.delete_group(deletedGroupId)
   }
 
-  async handleAddVersionPage(versionId, newPage) {
-    newPage.requestId = shortId.generate();
-    this.props.add_page(versionId, newPage);
+  async handleAddVersionPage (versionId, newPage) {
+    newPage.requestId = shortId.generate()
+    this.props.add_page(versionId, newPage)
   }
 
-  async handleDuplicateCollection(collectionCopy) {
-    this.props.duplicate_collection(collectionCopy);
+  async handleDuplicateCollection (collectionCopy) {
+    this.props.duplicate_collection(collectionCopy)
   }
 
-  async handleGoToDocs(collection) {
-    const publicDocsUrl = `${process.env.REACT_APP_UI_URL}/p/${collection.id}`;
-    window.open(publicDocsUrl, "_blank");
+  async handleGoToDocs (collection) {
+    const publicDocsUrl = `${process.env.REACT_APP_UI_URL}/p/${collection.id}`
+    window.open(publicDocsUrl, '_blank')
   }
 
-  openAddCollectionForm() {
+  openAddCollectionForm () {
     this.setState({
       showCollectionForm: true,
-      collectionFormName: "Add new Collection",
-    });
+      collectionFormName: 'Add new Collection'
+    })
   }
 
-  openEditCollectionForm(collectionId) {
+  openEditCollectionForm (collectionId) {
     this.setState({
       showCollectionForm: true,
-      collectionFormName: "Edit Collection",
+      collectionFormName: 'Edit Collection',
       selectedCollection: {
-        ...this.props.collections[collectionId],
-      },
-    });
+        ...this.props.collections[collectionId]
+      }
+    })
   }
 
-  openAddVersionForm(collectionId) {
+  openAddVersionForm (collectionId) {
     this.setState({
       showVersionForm: true,
       selectedCollection: {
-        ...this.props.collections[collectionId],
-      },
-    });
+        ...this.props.collections[collectionId]
+      }
+    })
   }
 
-  openImportVersionForm(collectionId) {
+  openImportVersionForm (collectionId) {
     this.setState({
       showImportVersionForm: true,
-      collectionFormName: "Import Version",
+      collectionFormName: 'Import Version',
       selectedCollection: {
-        ...this.props.collections[collectionId],
-      },
-    });
+        ...this.props.collections[collectionId]
+      }
+    })
   }
 
-  openDeleteCollectionModal(collectionId) {
+  openDeleteCollectionModal (collectionId) {
     if (this.state.openSelectedCollection === true) {
-      this.setState({ openSelectedCollection: false });
+      this.setState({ openSelectedCollection: false })
     }
     this.setState({
       showDeleteModal: true,
       selectedCollection: {
-        ...this.props.collections[collectionId],
-      },
-    });
+        ...this.props.collections[collectionId]
+      }
+    })
   }
 
-  showImportVersionForm() {
+  showImportVersionForm () {
     return (
       this.state.showImportVersionForm && (
         <ImportVersionForm
@@ -175,231 +175,244 @@ class CollectionsComponent extends Component {
           selected_collection={this.state.selectedCollection}
         />
       )
-    );
+    )
   }
 
-  handlePublicCollectionDescription(collection) {
+  handlePublicCollectionDescription (collection) {
     this.props.history.push({
       pathname: `/p/${collection.id}/description/${collection.name}`,
-      collection,
-    });
+      collection
+    })
   }
 
-  closeVersionForm() {
-    this.setState({ showVersionForm: false });
+  closeVersionForm () {
+    this.setState({ showVersionForm: false })
   }
 
-  handlePublic(collection) {
-    collection.isPublic = !collection.isPublic;
-    this.props.update_collection({ ...collection });
+  handlePublic (collection) {
+    collection.isPublic = !collection.isPublic
+    this.props.update_collection({ ...collection })
   }
 
-  closeDeleteCollectionModal() {
-    this.setState({ showDeleteModal: false });
+  closeDeleteCollectionModal () {
+    this.setState({ showDeleteModal: false })
   }
 
-  openSelectedCollection(collectionId) {
-    this.props.empty_filter();
-    this.props.collection_selected(collectionId);
-    this.collectionId = collectionId;
-    this.setState({ openSelectedCollection: true });
+  openSelectedCollection (collectionId) {
+    this.props.empty_filter()
+    this.props.collection_selected(collectionId)
+    this.collectionId = collectionId
+    this.setState({ openSelectedCollection: true })
   }
 
-  openAllCollections() {
-    this.props.empty_filter();
-    this.collectionId = null;
-    this.setState({ openSelectedCollection: false });
+  openAllCollections () {
+    this.props.empty_filter()
+    this.collectionId = null
+    this.setState({ openSelectedCollection: false })
   }
 
-  TagManagerModal(collectionId) {
-    this.setState({ TagManagerCollectionId: collectionId });
+  TagManagerModal (collectionId) {
+    this.setState({ TagManagerCollectionId: collectionId })
   }
 
-  openTagManagerModal() {
+  openTagManagerModal () {
     return (
       this.state.TagManagerCollectionId && (
         <TagManagerModal
           {...this.props}
           show
           onHide={() => this.setState({ TagManagerCollectionId: false })}
-          title="Google Tag Manager"
+          title='Google Tag Manager'
           collection_id={this.state.TagManagerCollectionId}
         />
       )
-    );
+    )
   }
 
-  dataFetched() {
+  dataFetched () {
     return (
       this.props.collections &&
       this.props.versions &&
       this.props.groups &&
       this.props.endpoints &&
       this.props.pages
-    );
+    )
   }
 
-  findEndpointCount(collectionId) {
+  findEndpointCount (collectionId) {
     if (this.dataFetched()) {
       const versionIds = Object.keys(this.props.versions).filter(
         (vId) => this.props.versions[vId].collectionId === collectionId
-      );
-      const groupIds = Object.keys(this.props.groups);
-      const groupsArray = [];
+      )
+      const groupIds = Object.keys(this.props.groups)
+      const groupsArray = []
       for (let i = 0; i < groupIds.length; i++) {
-        const groupId = groupIds[i];
-        const group = this.props.groups[groupId];
+        const groupId = groupIds[i]
+        const group = this.props.groups[groupId]
 
         if (versionIds.includes(group.versionId)) {
-          groupsArray.push(groupId);
+          groupsArray.push(groupId)
         }
       }
 
-      const endpointIds = Object.keys(this.props.endpoints);
-      const endpointsArray = [];
+      const endpointIds = Object.keys(this.props.endpoints)
+      const endpointsArray = []
 
       for (let i = 0; i < endpointIds.length; i++) {
-        const endpointId = endpointIds[i];
-        const endpoint = this.props.endpoints[endpointId];
+        const endpointId = endpointIds[i]
+        const endpoint = this.props.endpoints[endpointId]
 
         if (groupsArray.includes(endpoint.groupId)) {
-          endpointsArray.push(endpointId);
+          endpointsArray.push(endpointId)
         }
       }
-      return endpointsArray.length;
+      return endpointsArray.length
     }
   }
 
-  renderBody(collectionId, collectionState) {
-    let eventkeyValue = "";
-    if (this.props.filter !== "") {
-      eventkeyValue = "0";
+  renderBody (collectionId, collectionState) {
+    let eventkeyValue = ''
+    if (this.props.filter !== '') {
+      eventkeyValue = '0'
     } else {
-      eventkeyValue = null;
+      eventkeyValue = null
     }
 
-    if (document.getElementById("collection-collapse")) {
+    if (document.getElementById('collection-collapse')) {
       if (
         document
-          .getElementById("collection-collapse")
-          .className.split(" ")[1] !== "show" &&
+          .getElementById('collection-collapse')
+          .className.split(' ')[1] !== 'show' &&
         this.props.filter
       ) {
-        document.getElementById("collection-collapse").className =
-          "collapse show";
+        document.getElementById('collection-collapse').className =
+          'collapse show'
       }
     }
 
     return (
       <React.Fragment key={collectionId}>
-        {collectionState === "singleCollection" ? (
-          <button
-            id="back-to-all-collections-button"
-            className="btn"
-            onClick={() => this.openAllCollections()}
-          >
-            <i className="fas fa-arrow-left" />
-            <label>All Collections</label>
-          </button>
-        ) : null}
+        {
+          collectionState === 'singleCollection'
+            ? (
+              <button
+                id='back-to-all-collections-button'
+                className='btn'
+                onClick={() => this.openAllCollections()}
+              >
+                <i className='fas fa-arrow-left' />
+                <label>All Collections</label>
+              </button>
+              )
+            : null
+        }
 
         <Accordion
-          defaultActiveKey="0"
+          defaultActiveKey='0'
           key={collectionId}
-          id="parent-accordion"
-          className="sidebar-accordion"
+          id='parent-accordion'
+          className='sidebar-accordion'
         >
           <Accordion.Toggle
-            variant="default"
-            eventKey={eventkeyValue !== null ? eventkeyValue : "0"}
+            variant='default'
+            eventKey={eventkeyValue !== null ? eventkeyValue : '0'}
           >
-            {collectionState === "singleCollection" ? (
-              <div>
-                <div>{this.props.collections[collectionId].name}</div>
-              </div>
-            ) : (
-              <div
-                className="sidebar-accordion-item"
-                onClick={() => this.openSelectedCollection(collectionId)}
-              >
-                <i className="uil uil-parcel" />
-                <div>{this.props.collections[collectionId].name}</div>
-              </div>
-            )}
-            <div class="show-endpoint-count">
+            {
+              collectionState === 'singleCollection'
+                ? (
+                  <div>
+                    <div>
+                      {this.props.collections[collectionId].name}
+                    </div>
+                  </div>
+                  )
+                : (
+                  <div
+                    className='sidebar-accordion-item'
+                    onClick={() => this.openSelectedCollection(collectionId)}
+                  >
+                    <i className='uil uil-parcel' />
+                    <div>
+                      {this.props.collections[collectionId].name}
+                    </div>
+                  </div>
+                  )
+            }
+            <div class='show-endpoint-count'>
               {this.findEndpointCount(collectionId)}
             </div>
-            <div className="sidebar-item-action">
+            <div className='sidebar-item-action'>
               <div
-                className="sidebar-item-action-btn "
-                data-toggle="dropdown"
-                aria-haspopup="true"
-                aria-expanded="false"
+                className='sidebar-item-action-btn '
+                data-toggle='dropdown'
+                aria-haspopup='true'
+                aria-expanded='false'
               >
-                <i className="uil uil-ellipsis-v" />
+                <i className='uil uil-ellipsis-v' />
               </div>
-              <div className="dropdown-menu dropdown-menu-right">
+              <div className='dropdown-menu dropdown-menu-right'>
                 <a
-                  className="dropdown-item"
+                  className='dropdown-item'
                   onClick={() => this.openEditCollectionForm(collectionId)}
                 >
                   Edit
                 </a>
                 <a
-                  className="dropdown-item"
+                  className='dropdown-item'
                   onClick={() => {
-                    this.openDeleteCollectionModal(collectionId);
+                    this.openDeleteCollectionModal(collectionId)
                   }}
                 >
                   Delete
                 </a>
                 <a
-                  className="dropdown-item"
+                  className='dropdown-item'
                   onClick={() => this.openAddVersionForm(collectionId)}
                 >
                   Add Version
                 </a>
                 <a
-                  className="dropdown-item"
+                  className='dropdown-item'
                   onClick={() =>
                     this.handleDuplicateCollection(
                       this.props.collections[collectionId]
-                    )
-                  }
+                    )}
                 >
                   Duplicate
                 </a>
                 <a
-                  className="dropdown-item"
+                  className='dropdown-item'
                   onClick={() => this.openImportVersionForm(collectionId)}
                 >
                   Import Version
                 </a>
                 {this.props.collections[collectionId].isPublic && (
                   <a
-                    className="dropdown-item"
+                    className='dropdown-item'
                     onClick={() =>
-                      this.handleGoToDocs(this.props.collections[collectionId])
-                    }
+                      this.handleGoToDocs(this.props.collections[collectionId])}
                   >
                     Go to Docs
                   </a>
                 )}
-                {isAdmin() ? (
-                  <a
-                    className="dropdown-item"
-                    onClick={() =>
-                      this.openPublishDocs(this.props.collections[collectionId])
-                    }
-                  >
-                    Publish Docs
-                  </a>
-                ) : null}
+                {
+                  isAdmin()
+                    ? (
+                      <a
+                        className='dropdown-item'
+                        onClick={() =>
+                          this.openPublishDocs(this.props.collections[collectionId])}
+                      >
+                        Publish Docs
+                      </a>
+                      )
+                    : null
+                }
 
                 <a
-                  className="dropdown-item"
+                  className='dropdown-item'
                   onClick={() => {
-                    this.TagManagerModal(collectionId);
+                    this.TagManagerModal(collectionId)
                   }}
                 >
                   Add Google Tag Manager
@@ -407,40 +420,44 @@ class CollectionsComponent extends Component {
               </div>
             </div>
           </Accordion.Toggle>
-          {collectionState === "singleCollection" ? (
-            <Accordion.Collapse id="collection-collapse" eventKey="0">
-              <Card.Body>
-                <CollectionVersions
-                  {...this.props}
-                  collection_id={collectionId}
-                  selectedCollection
-                />
-              </Card.Body>
-            </Accordion.Collapse>
-          ) : null}
+          {/* </Card.Header> */}
+          {collectionState === 'singleCollection'
+            ? (
+              <Accordion.Collapse id='collection-collapse' eventKey='0'>
+                <Card.Body>
+                  <CollectionVersions
+                    {...this.props}
+                    collection_id={collectionId}
+                    selectedCollection
+                  />
+                </Card.Body>
+              </Accordion.Collapse>
+              )
+            : null}
+          {/* </Card> */}
         </Accordion>
       </React.Fragment>
-    );
+    )
   }
 
-  openPublishDocs(collection) {
+  openPublishDocs (collection) {
     if (collection.id) {
       this.props.history.push({
-        pathname: "/admin/publish",
-        search: `?collectionId=${collection.id}`,
-      });
+        pathname: '/admin/publish',
+        search: `?collectionId=${collection.id}`
+      })
     } else {
       const collection = this.props.collections[
         Object.keys(this.props.collections)[0]
-      ];
+      ]
       this.props.history.push({
-        pathname: "/admin/publish",
-        search: `?collectionId=${collection.id}`,
-      });
+        pathname: '/admin/publish',
+        search: `?collectionId=${collection.id}`
+      })
     }
   }
 
-  showPublishDocsModal(onHide) {
+  showPublishDocsModal (onHide) {
     return (
       <PublishDocsModal
         {...this.props}
@@ -448,178 +465,178 @@ class CollectionsComponent extends Component {
         onHide={onHide}
         collection_id={this.state.selectedCollection}
       />
-    );
+    )
   }
 
-  addGTM(gtmId) {
+  addGTM (gtmId) {
     if (gtmId) {
       const tagManagerArgs = {
-        gtmId: gtmId,
-      };
-      TagManager.initialize(tagManagerArgs);
+        gtmId: gtmId
+      }
+      TagManager.initialize(tagManagerArgs)
     }
   }
 
-  findPendingPagesCollections(pendingPageIds) {
-    const versionsArray = [];
+  findPendingPagesCollections (pendingPageIds) {
+    const versionsArray = []
     for (let i = 0; i < pendingPageIds.length; i++) {
-      const pageId = pendingPageIds[i];
+      const pageId = pendingPageIds[i]
       if (this.props.pages[pageId]) {
-        const versionId = this.props.pages[pageId].versionId;
-        versionsArray.push(versionId);
+        const versionId = this.props.pages[pageId].versionId
+        versionsArray.push(versionId)
       }
     }
-    const collectionsArray = [];
+    const collectionsArray = []
     for (let i = 0; i < versionsArray.length; i++) {
-      const versionId = versionsArray[i];
+      const versionId = versionsArray[i]
       if (this.props.versions[versionId]) {
-        const collectionId = this.props.versions[versionId].collectionId;
-        collectionsArray.push(collectionId);
+        const collectionId = this.props.versions[versionId].collectionId
+        collectionsArray.push(collectionId)
       }
     }
-    return collectionsArray;
+    return collectionsArray
   }
 
-  findPendingEndpointsCollections(pendingEndpointIds) {
-    const groupsArray = [];
+  findPendingEndpointsCollections (pendingEndpointIds) {
+    const groupsArray = []
     for (let i = 0; i < pendingEndpointIds.length; i++) {
-      const endpointId = pendingEndpointIds[i];
+      const endpointId = pendingEndpointIds[i]
       if (this.props.endpoints[endpointId]) {
-        const groupId = this.props.endpoints[endpointId].groupId;
-        groupsArray.push(groupId);
+        const groupId = this.props.endpoints[endpointId].groupId
+        groupsArray.push(groupId)
       }
     }
 
-    const versionsArray = [];
+    const versionsArray = []
     for (let i = 0; i < groupsArray.length; i++) {
-      const groupId = groupsArray[i];
+      const groupId = groupsArray[i]
       if (this.props.groups[groupId]) {
-        const versionId = this.props.groups[groupId].versionId;
-        versionsArray.push(versionId);
+        const versionId = this.props.groups[groupId].versionId
+        versionsArray.push(versionId)
       }
     }
-    const collectionsArray = [];
+    const collectionsArray = []
     for (let i = 0; i < versionsArray.length; i++) {
-      const versionId = versionsArray[i];
+      const versionId = versionsArray[i]
       if (this.props.versions[versionId]) {
-        const collectionId = this.props.versions[versionId].collectionId;
-        collectionsArray.push(collectionId);
+        const collectionId = this.props.versions[versionId].collectionId
+        collectionsArray.push(collectionId)
       }
     }
-    return collectionsArray;
+    return collectionsArray
   }
 
-  getPublicCollections() {
+  getPublicCollections () {
     if (this.dataFetched()) {
       const pendingEndpointIds = Object.keys(this.props.endpoints).filter(
-        (eId) => this.props.endpoints[eId].state === "Pending"
-      );
+        (eId) => this.props.endpoints[eId].state === 'Pending'
+      )
       const pendingPageIds = Object.keys(this.props.pages).filter(
-        (pId) => this.props.pages[pId].state === "Pending"
-      );
+        (pId) => this.props.pages[pId].state === 'Pending'
+      )
 
       const endpointCollections = this.findPendingEndpointsCollections(
         pendingEndpointIds
-      );
-      const pageCollections = this.findPendingPagesCollections(pendingPageIds);
+      )
+      const pageCollections = this.findPendingPagesCollections(pendingPageIds)
 
       const allCollections = [
-        ...new Set([...endpointCollections, ...pageCollections]),
-      ];
-      const finalCollections = [];
+        ...new Set([...endpointCollections, ...pageCollections])
+      ]
+      const finalCollections = []
       for (let i = 0; i < allCollections.length; i++) {
-        const collectionId = allCollections[i];
+        const collectionId = allCollections[i]
         if (this.props.collections[collectionId]?.isPublic) {
-          finalCollections.push(collectionId);
+          finalCollections.push(collectionId)
         }
       }
-      return finalCollections;
+      return finalCollections
     }
   }
 
-  getNotificationCount() {
-    const collections = this.getPublicCollections();
+  getNotificationCount () {
+    const collections = this.getPublicCollections()
 
-    return collections.length || 0;
+    return collections.length || 0
   }
 
-  render() {
+  render () {
     if (isDashboardRoute(this.props, true)) {
-      let finalCollections = [];
-      this.names = {};
-      let finalnames = [];
-      this.keywords = {};
-      let finalKeywords = [];
-      const collections = { ...this.props.collections };
-      const CollectionIds = Object.keys(collections);
+      let finalCollections = []
+      this.names = {}
+      let finalnames = []
+      this.keywords = {}
+      let finalKeywords = []
+      const collections = { ...this.props.collections }
+      const CollectionIds = Object.keys(collections)
 
       for (let i = 0; i < CollectionIds.length; i++) {
-        const { keyword } = this.props.collections[CollectionIds[i]];
-        const splitedKeywords = keyword.split(",");
+        const { keyword } = this.props.collections[CollectionIds[i]]
+        const splitedKeywords = keyword.split(',')
 
         for (let j = 0; j < splitedKeywords.length; j++) {
-          const keyword = splitedKeywords[j];
+          const keyword = splitedKeywords[j]
 
-          if (keyword !== "") {
+          if (keyword !== '') {
             if (this.keywords[keyword]) {
-              const ids = this.keywords[keyword];
+              const ids = this.keywords[keyword]
               if (ids.indexOf(CollectionIds[i]) === -1) {
-                this.keywords[keyword] = [...ids, CollectionIds[i]];
+                this.keywords[keyword] = [...ids, CollectionIds[i]]
               }
             } else {
-              this.keywords[keyword] = [CollectionIds[i]];
+              this.keywords[keyword] = [CollectionIds[i]]
             }
           }
         }
       }
-      const keywords = Object.keys(this.keywords);
+      const keywords = Object.keys(this.keywords)
       finalKeywords = keywords.filter((key) => {
-        console.log(this.props.filter);
+        console.log(this.props.filter)
         return (
           key.toLowerCase().indexOf(this.props.filter.toLowerCase()) !== -1
-        );
-      });
+        )
+      })
 
-      let keywordFinalCollections = [];
+      let keywordFinalCollections = []
       for (let i = 0; i < finalKeywords.length; i++) {
         keywordFinalCollections = [
           ...keywordFinalCollections,
-          ...this.keywords[finalKeywords[i]],
-        ];
+          ...this.keywords[finalKeywords[i]]
+        ]
       }
-      keywordFinalCollections = [...new Set(keywordFinalCollections)];
+      keywordFinalCollections = [...new Set(keywordFinalCollections)]
 
       for (let i = 0; i < CollectionIds.length; i++) {
-        const { name } = this.props.collections[CollectionIds[i]];
-        this.names[name] = CollectionIds[i];
+        const { name } = this.props.collections[CollectionIds[i]]
+        this.names[name] = CollectionIds[i]
       }
-      const names = Object.keys(this.names);
+      const names = Object.keys(this.names)
       finalnames = names.filter((name) => {
         return (
           name.toLowerCase().indexOf(this.props.filter.toLowerCase()) !== -1
-        );
-      });
-      let namesFinalCollections = finalnames.map((name) => this.names[name]);
-      namesFinalCollections = [...new Set(namesFinalCollections)];
-      finalCollections = [...keywordFinalCollections, ...namesFinalCollections];
+        )
+      })
+      let namesFinalCollections = finalnames.map((name) => this.names[name])
+      namesFinalCollections = [...new Set(namesFinalCollections)]
+      finalCollections = [...keywordFinalCollections, ...namesFinalCollections]
 
-      finalCollections = [...new Set(finalCollections)];
+      finalCollections = [...new Set(finalCollections)]
       return (
         <div>
           {this.state.showPublishDocsModal &&
             this.showPublishDocsModal(() =>
               this.setState({
-                showPublishDocsModal: false,
+                showPublishDocsModal: false
               })
             )}
-          <div className="App-Nav">
-            <div className="tabs">
+          <div className='App-Nav'>
+            <div className='tabs'>
               {this.state.showVersionForm &&
                 collectionVersionsService.showVersionForm(
                   this.props,
                   this.closeVersionForm.bind(this),
                   this.state.selectedCollection.id,
-                  "Add new Collection Version"
+                  'Add new Collection Version'
                 )}
               {this.state.showCollectionForm &&
                 collectionsService.showCollectionForm(
@@ -634,7 +651,7 @@ class CollectionsComponent extends Component {
                 collectionsService.showDeleteCollectionModal(
                   { ...this.props },
                   this.closeDeleteCollectionModal.bind(this),
-                  "Delete Collection",
+                  'Delete Collection',
                   `Are you sure you wish to delete this collection? All your versions,
                    groups, pages and endpoints present in this collection will be deleted.`,
                   this.state.selectedCollection
@@ -642,21 +659,21 @@ class CollectionsComponent extends Component {
             </div>
           </div>
 
-          <div className="App-Side">
-            <div className="add-collection-btn-wrap">
+          <div className='App-Side'>
+            <div className='add-collection-btn-wrap'>
               <button
-                className="add-collection-btn"
+                className='add-collection-btn'
                 onClick={() => this.openAddCollectionForm()}
               >
-                <i className="uil uil-plus" />
+                <i className='uil uil-plus' />
                 New Collection
               </button>
             </div>
             {finalCollections.map((collectionId, index) =>
-              this.renderBody(collectionId, "allCollections")
+              this.renderBody(collectionId, 'allCollections')
             )}
 
-            <div className="fixed">
+            <div className='fixed'>
               <UserNotification
                 {...this.props}
                 get_notification_count={this.getNotificationCount.bind(this)}
@@ -666,7 +683,7 @@ class CollectionsComponent extends Component {
             </div>
           </div>
         </div>
-      );
+      )
     } else {
       return (
         <>
@@ -674,29 +691,27 @@ class CollectionsComponent extends Component {
             <div key={collectionId}>
               {this.addGTM(this.props.collections[collectionId].gtmId)}
               <div
-                className="hm-sidebar-header"
+                className='hm-sidebar-header'
                 onClick={() =>
                   this.handlePublicCollectionDescription(
                     this.props.collections[collectionId]
-                  )
-                }
+                  )}
               >
-                <div className="hm-sidebar-logo">
+                <div className='hm-sidebar-logo'>
                   <img
                     src={
                       this.props.collections[collectionId]?.docProperties
                         ?.defaultLogoUrl || EMPTY_STRING
                     }
                     onClick={() =>
-                      window.open(this.props.collections[collectionId].website)
-                    }
+                      window.open(this.props.collections[collectionId].website)}
                   />
                 </div>
-                <h4 className="hm-sidebar-title">
+                <h4 className='hm-sidebar-title'>
                   {this.props.collections[collectionId].name}
                 </h4>
               </div>
-              <div id="parent-accordion" key={index}>
+              <div id='parent-accordion' key={index}>
                 <CollectionVersions
                   {...this.props}
                   collection_id={collectionId}
@@ -705,11 +720,11 @@ class CollectionsComponent extends Component {
             </div>
           ))}
         </>
-      );
+      )
     }
   }
 }
 
 export default withRouter(
   connect(mapStateToProps, mapDispatchToProps)(CollectionsComponent)
-);
+)

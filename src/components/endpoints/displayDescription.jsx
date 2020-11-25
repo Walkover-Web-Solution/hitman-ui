@@ -24,7 +24,7 @@ class DisplayDescription extends Component {
     }
   }
 
-  handleChange = (e) => {
+  handleChange (e) {
     const data = { ...this.props.data }
     data[e.currentTarget.name] = e.currentTarget.value
     this.props.props_from_parent('data', data)
@@ -90,7 +90,7 @@ class DisplayDescription extends Component {
                 name='name'
                 placeholder='Endpoint Name'
                 value={this.props.data.name}
-                onChange={this.handleChange}
+                onChange={this.handleChange.bind(this)}
                 disabled={isDashboardRoute(this.props) ? null : true}
               />
             </>
@@ -100,87 +100,99 @@ class DisplayDescription extends Component {
           )}
         </div>
 
-        {isSavedEndpoint(this.props) && !this.state.showDescriptionFormFlag ? (
-          this.state.showAddDescriptionFlag &&
-            (this.props.endpoint.description === '' ||
-              this.props.endpoint.description === null) &&
-            isDashboardRoute(this.props) ? (
-              <Link
-                style={{
-                  padding: '0px 0px 0px 10px',
-                  fontSize: '15px',
-                  color: 'tomato'
-                }}
-                onClick={() => this.handleDescription()}
-              >
-                Add a Description
-              </Link>
-              ) : (
-                <>
-                  <div className='endpoint-description'>
-                    {isDashboardRoute(this.props) ? (
-                      <div>
-                        <label className='hm-panel-label'>
-                          Endpoint Description
-                        </label>
-                        <button
-                          className='btn btn-default'
-                          onClick={() => this.handleDescription()}
-                        >
-                          <i className='fas fa-pen' />
-                        </button>
-                        <br />
-                        <div
-                          className='endpoint-description-text'
-                          style={{
-                            color: '#495057',
-                            maxHeight: '240px',
-                            overflow: 'auto',
-                            padding: '2px'
-                          }}
-                        >
-                          {this.props.endpoint.description}
-                        </div>
+        {
+          isSavedEndpoint(this.props) && !this.state.showDescriptionFormFlag
+            ? (
+                this.state.showAddDescriptionFlag &&
+                (
+                  this.props.endpoint.description === '' ||
+                  this.props.endpoint.description === null
+                ) &&
+                isDashboardRoute(this.props)
+                  ? (
+                    <Link
+                      style={{
+                        padding: '0px 0px 0px 10px',
+                        fontSize: '15px',
+                        color: 'tomato'
+                      }}
+                      onClick={() => this.handleDescription()}
+                    >
+                      Add a Description
+                    </Link>
+                    )
+                  : (
+                    <>
+                      <div className='endpoint-description'>
+                        {isDashboardRoute(this.props)
+                          ? (
+                            <div>
+                              <label className='hm-panel-label'>
+                                Endpoint Description
+                              </label>
+                              <button
+                                className='btn btn-default'
+                                onClick={() => this.handleDescription()}
+                              >
+                                <i className='fas fa-pen' />
+                              </button>
+                              <br />
+                              <div
+                                className='endpoint-description-text'
+                                style={{
+                                  color: '#495057',
+                                  maxHeight: '240px',
+                                  overflow: 'auto',
+                                  padding: '2px'
+                                }}
+                              >
+                                {this.props.endpoint.description}
+                              </div>
+                            </div>
+                            )
+                          : (
+                            <div className='endpoint-description-text'>
+                              {this.props.endpoint.description}
+                            </div>
+                            )}
                       </div>
-                    ) : (
-                      <div className='endpoint-description-text'>
-                        {this.props.endpoint.description}
-                      </div>
-                    )}
-                  </div>
-                </>
+                    </>
+                    )
               )
-        ) : null}
+            : null
+        }
 
-        {isDashboardRoute(this.props) &&
-          isSavedEndpoint(this.props) &&
-          this.state.showDescriptionFormFlag ? (
-            <form onSubmit={this.handleDescriptionSave.bind(this)}>
-              <label className='hm-panel-label'>Endpoint Description</label>
-              <div className='endpoint-description-wrap'>
-                <textarea
-                  className='form-control'
-                  rows='5'
-                  name='description'
-                  placeholder='Make things easier for your teammates with a complete endpoint description'
-                  value={this.props.endpoint.description}
-                  onChange={this.handleChangeDescription}
-                />
-                <div className='endpoint-cta'>
-                  <button
-                    className='btn btn-link'
-                    type='cancel'
-                    onClick={() => this.handleDescriptionCancel()}
-                  >
-                    Cancel
-                  </button>
-                  <button className='btn btn-primary' type='submit'>
-                    Save
-                  </button>
+        {
+          isDashboardRoute(this.props) && isSavedEndpoint(this.props) && this.state.showDescriptionFormFlag
+            ? (
+              <form onSubmit={this.handleDescriptionSave.bind(this)}>
+                <label className='hm-panel-label'>Endpoint Description</label>
+                <div className='endpoint-description-wrap'>
+                  <textarea
+                    className='form-control'
+                    rows='5'
+                    name='description'
+                    placeholder='Make things easier for your teammates with a complete endpoint description'
+                    value={this.props.endpoint.description}
+                    onChange={this.handleChangeDescription}
+                  />
+                  <div className='endpoint-cta'>
+                    <button
+                      className='btn btn-link'
+                      type='cancel'
+                      onClick={() => this.handleDescriptionCancel()}
+                    >
+                      Cancel
+                    </button>
+                    <button className='btn btn-primary' type='submit'>
+                      Save
+                    </button>
+                  </div>
                 </div>
-              </div>
-            </form>
-            ) : null}
+              </form>
+              )
+            : null
+        }
       </div>
     )
   }

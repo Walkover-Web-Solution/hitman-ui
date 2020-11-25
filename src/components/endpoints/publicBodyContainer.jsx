@@ -176,7 +176,7 @@ class PublicBodyContainer extends Component {
         body: body
       }
       this.setBody(bodyData)
-    } catch (e) {}
+    } catch (e) { }
   };
 
   displayAddButton (name) {
@@ -232,12 +232,12 @@ class PublicBodyContainer extends Component {
         />
         <label
           className='description-input-field'
-          // value={obj.description}
-          // name={name + ".description"}
-          // type="text"
-          // placeholder="Description"
-          // onChange={this.handleDescriptionChange}
-          // disabled
+        // value={obj.description}
+        // name={name + ".description"}
+        // type="text"
+        // placeholder="Description"
+        // onChange={this.handleDescriptionChange}
+        // disabled
         >
           {obj.description}
         </label>
@@ -250,7 +250,7 @@ class PublicBodyContainer extends Component {
       <div
         className={
           defaultValue &&
-          (defaultValue.type === 'object' || defaultValue.type === 'array')
+            (defaultValue.type === 'object' || defaultValue.type === 'array')
             ? 'array-wrapper'
             : 'array-without-key'
         }
@@ -386,30 +386,32 @@ class PublicBodyContainer extends Component {
               </li>
             </ul>
 
-            {this.state.showBodyCodeEditor ? (
-              <AceEditor
-                className='custom-raw-editor'
-                mode='json'
-                theme='github'
-                value={this.makeJson(this.props.body.value)}
-                onChange={this.handleChangeBodyDescription.bind(this)}
-                setOptions={{
-                  showLineNumbers: true
-                }}
-                editorProps={{
-                  $blockScrolling: false
-                }}
-                onLoad={(editor) => {
-                  editor.focus()
-                  editor.getSession().setUseWrapMode(true)
-                  editor.setShowPrintMargin(false)
-                }}
-              />
-            ) : (
-              <div className='body-description-container'>
-                {this.displayObject(this.bodyDescription, 'body_description')}
-              </div>
-            )}
+            {this.state.showBodyCodeEditor
+              ? (
+                <AceEditor
+                  className='custom-raw-editor'
+                  mode='json'
+                  theme='github'
+                  value={this.makeJson(this.props.body.value)}
+                  onChange={this.handleChangeBodyDescription.bind(this)}
+                  setOptions={{
+                    showLineNumbers: true
+                  }}
+                  editorProps={{
+                    $blockScrolling: false
+                  }}
+                  onLoad={(editor) => {
+                    editor.focus()
+                    editor.getSession().setUseWrapMode(true)
+                    editor.setShowPrintMargin(false)
+                  }}
+                />
+                )
+              : (
+                <div className='body-description-container'>
+                  {this.displayObject(this.bodyDescription, 'body_description')}
+                </div>
+                )}
           </div>
         )}
       </>
