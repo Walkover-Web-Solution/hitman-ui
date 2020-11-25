@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Button } from 'react-bootstrap'
 import './publishDocs.scss'
 import { connect } from 'react-redux'
-import { fetchCollections } from '../collections/redux/collectionsActions'
+import { fetchCollections, updateCollection } from '../collections/redux/collectionsActions'
 import { fetchAllVersions } from '../collectionVersions/redux/collectionVersionsActions'
 import { fetchEndpoints } from '../endpoints/redux/endpointsActions'
 import { fetchGroups } from '../groups/redux/groupsActions'
@@ -27,6 +27,8 @@ const mapDispatchToProps = (dispatch) => {
     fetch_groups: () => dispatch(fetchGroups()),
     fetch_endpoints: () => dispatch(fetchEndpoints()),
     fetch_pages: () => dispatch(fetchPages()),
+    update_collection: (editedCollection) =>
+      dispatch(updateCollection(editedCollection)),
     approve_endpoint: (endpoint) => dispatch(approveEndpoint(endpoint)),
     reject_endpoint: (endpoint) => dispatch(rejectEndpoint(endpoint)),
     approve_page: (page) => dispatch(approvePage(page)),
@@ -48,7 +50,7 @@ class PublishDocs extends Component {
   state = {
     selectedCollectionId: null,
     selectedVersionId: null
-  }
+  };
 
   componentDidMount () {
     this.setState({
@@ -64,7 +66,8 @@ class PublishDocs extends Component {
       const selectedGroupId = this.getInitialGroup(Object.keys(this.versions)[0])
       const selectedEndpointId = this.getInitialEndpoint(selectedGroupId)
       this.setState({
-        selectedCollectionId: URI.parseQuery(this.props.location.search).collectionId,
+        selectedCollectionId: URI.parseQuery(this.props.location.search)
+          .collectionId,
         selectedVersionId: Object.keys(this.versions)[0],
         selectedGroupId,
         selectedEndpointId
@@ -163,6 +166,28 @@ class PublishDocs extends Component {
     this.props.reject_page(this.props.pages[pageId])
   }
 
+  getSelectedCollection () {
+    const collectionId = URI.parseQuery(this.props.location.search)
+      .collectionId
+    const selectedCollection = this.props.collections[collectionId]
+    return selectedCollection || {}
+  }
+
+  isCollectionPublished () {
+    const selectedCollection = this.getSelectedCollection()
+    return selectedCollection?.isPublic || false
+  }
+
+  publishCollection () {
+    const selectedCollection = this.getSelectedCollection()
+    if (selectedCollection?.isPublic !== true) {
+      const editedCollection = { ...selectedCollection }
+      editedCollection.isPublic = true
+      console.log(editedCollection)
+      this.props.update_collection(editedCollection)
+    }
+  }
+
   render () {
     return (
       <div className='publish-docs-container'>
@@ -181,12 +206,8 @@ class PublishDocs extends Component {
                 {
                   this.props.collections
                     ? Object.keys(this.props.collections).map(
-                        (id) =>
-                          this.props.collections[id].isPublic === true
-                            ? (
-                              <option value={id}>{this.props.collections[id]?.name}</option>
-                              )
-                            : null
+                        (id, index) =>
+                          <option value={id} key={index}>{this.props.collections[id]?.name}</option>
                       )
                     : null
                 }
@@ -199,7 +220,23 @@ class PublishDocs extends Component {
                 selected_collection_id={this.state.selectedCollectionId}
               />
 
-              <div className='publish-button'>  <Button variant='success'>PUBLISH ALL</Button>
+              <div className='publish-button'> <Button variant='success'>PUBLISH ALL</Button>
+                <div>
+                  {
+                  !this.isCollectionPublished()
+                    ? (
+                      <Button
+                        variant='success publish-collection-button'
+                        onClick={() => this.publishCollection()}
+                      >
+                        Publish Collection
+                      </Button>
+                      )
+                    : (
+                      <div class='publish-collection-div'>Published</div>
+                      )
+                  }
+                </div>
               </div>
             </div>
 
