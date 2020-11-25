@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import { Tab } from 'react-bootstrap'
+import { Tab, Nav } from 'react-bootstrap'
+
 import { connect } from 'react-redux'
 import 'react-tabs/style/react-tabs.css'
 import Environments from '../environments/environments'
@@ -18,6 +19,7 @@ import CustomTabs from '../tabs/tabs'
 import tabStatusTypes from '../tabs/tabStatusTypes'
 import './main.scss'
 import { getCurrentUser } from '../auth/authService'
+import LoginSignupModal from './loginSignupModal'
 
 const mapStateToProps = (state) => {
   return {
@@ -56,6 +58,14 @@ class ContentPanel extends Component {
 
   handleSaveEndpoint (flag, tabId) {
     this.setState({ saveEndpointFlag: flag, selectedTabId: tabId })
+  }
+
+  openLoginSignupModal () {
+    this.setState({ showLoginSignupModal: true })
+  }
+
+  closeLoginSignupModal () {
+    this.setState({ showLoginSignupModal: false })
   }
 
   render () {
@@ -112,6 +122,13 @@ class ContentPanel extends Component {
     const redirectionUrl = process.env.REACT_APP_UI_URL + '/login'
     return (
       <main role='main' className='main'>
+        {this.state.showLoginSignupModal && (
+          <LoginSignupModal
+            show
+            onHide={() => this.closeLoginSignupModal()}
+            title='Save Endpoint'
+          />
+        )}
         <div className='login-sso'>
           {
             !getCurrentUser()
@@ -147,7 +164,28 @@ class ContentPanel extends Component {
                   <Environments {...this.props} />
                 </div>
                 )
-              : null
+              : (
+                // rendered a static single tab mimicking the original, instead of tabs component if user is not signed
+                <div className='content-header'>
+                  <div className='tabs-container'>
+                    <Nav variant='pills' className='flex-row flex-nowrap item-wrp'>
+                      <Nav.Item>
+                        <Nav.Link className='active'>
+                          <button className='btn'>Untitled</button>
+                        </Nav.Link>
+                      </Nav.Item>
+                      <Nav.Item className='tab-buttons' id='add-new-tab-button'>
+                        <button
+                          className='btn'
+                          onClick={() => { this.openLoginSignupModal() }}
+                        >
+                          <i className='uil uil-plus' />
+                        </button>
+                      </Nav.Item>
+                    </Nav>
+                  </div>
+                </div>
+                )
           }
           <div className='main-content'>
             <TabContent

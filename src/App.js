@@ -8,7 +8,6 @@ import Main from './components/main/Main.jsx'
 import PublicView from './components/main/publicView'
 import Public from './components/publicEndpoint/publicEndpoint.jsx'
 import Landing from './components/landing/landing'
-import PublishDocs from './components/publishDocs/publishDocs'
 import { ToastContainer } from 'react-toastify'
 
 class App extends Component {
@@ -34,7 +33,7 @@ class App extends Component {
       <>
         <ToastContainer />
         <Switch>
-          <Route path='/admin/publish' component={PublishDocs} />
+          <Route path='/admin/publish' component={Main} />
           <Route path='/dashboard/' component={Main} />
           <Route path='/p/error' component={NotFound} />
           <Route path='/p/:collectionIdentifier' component={Public} />

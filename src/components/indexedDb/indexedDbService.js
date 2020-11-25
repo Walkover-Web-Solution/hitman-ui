@@ -21,6 +21,7 @@ const createDataBase = async () => {
         keyPath: 'id',
         autoIncrement: true
       })
+      db.createObjectStore('history')
       const tabsMetadataStore = db.createObjectStore('tabs_metadata')
       const authDataStore = db.createObjectStore('authData')
       const responseDataStore = db.createObjectStore('responseData')

@@ -19,7 +19,7 @@ import {
 } from './redux/collectionsActions'
 import './collections.scss'
 import PublishDocsModal from '../publicEndpoint/publishDocsModal'
-import { isAdmin } from '../auth/authService'
+import { isAdmin, getCurrentUser } from '../auth/authService'
 import TagManager from 'react-gtm-module'
 import TagManagerModal from './tagModal'
 import UserNotification from './userNotification'
@@ -292,20 +292,18 @@ class CollectionsComponent extends Component {
 
     return (
       <React.Fragment key={collectionId}>
-        {
-          collectionState === 'singleCollection'
-            ? (
-              <button
-                id='back-to-all-collections-button'
-                className='btn'
-                onClick={() => this.openAllCollections()}
-              >
-                <i className='fas fa-arrow-left' />
-                <label>All Collections</label>
-              </button>
-              )
-            : null
-        }
+        {collectionState === 'singleCollection'
+          ? (
+            <button
+              id='back-to-all-collections-button'
+              className='btn'
+              onClick={() => this.openAllCollections()}
+            >
+              <i className='fas fa-arrow-left' />
+              <label>All Collections</label>
+            </button>
+            )
+          : null}
 
         <Accordion
           defaultActiveKey='0'
@@ -317,27 +315,21 @@ class CollectionsComponent extends Component {
             variant='default'
             eventKey={eventkeyValue !== null ? eventkeyValue : '0'}
           >
-            {
-              collectionState === 'singleCollection'
-                ? (
-                  <div>
-                    <div>
-                      {this.props.collections[collectionId].name}
-                    </div>
-                  </div>
-                  )
-                : (
-                  <div
-                    className='sidebar-accordion-item'
-                    onClick={() => this.openSelectedCollection(collectionId)}
-                  >
-                    <i className='uil uil-parcel' />
-                    <div>
-                      {this.props.collections[collectionId].name}
-                    </div>
-                  </div>
-                  )
-            }
+            {collectionState === 'singleCollection'
+              ? (
+                <div>
+                  <div>{this.props.collections[collectionId].name}</div>
+                </div>
+                )
+              : (
+                <div
+                  className='sidebar-accordion-item'
+                  onClick={() => this.openSelectedCollection(collectionId)}
+                >
+                  <i className='uil uil-parcel' />
+                  <div>{this.props.collections[collectionId].name}</div>
+                </div>
+                )}
             <div class='show-endpoint-count'>
               {this.findEndpointCount(collectionId)}
             </div>
@@ -400,8 +392,10 @@ class CollectionsComponent extends Component {
                     ? (
                       <a
                         className='dropdown-item'
-                        onClick={() =>
-                          this.openPublishDocs(this.props.collections[collectionId])}
+                        onClick={() => {
+                          this.props.collection_selected(null)
+                          this.openPublishDocs(this.props.collections[collectionId])
+                        }}
                       >
                         Publish Docs
                       </a>
@@ -670,15 +664,15 @@ class CollectionsComponent extends Component {
             {finalCollections.map((collectionId, index) =>
               this.renderBody(collectionId, 'allCollections')
             )}
-
-            <div className='fixed'>
-              <UserNotification
-                {...this.props}
-                get_notification_count={this.getNotificationCount.bind(this)}
-                get_public_collections={this.getPublicCollections.bind(this)}
-                open_publish_docs={this.openPublishDocs.bind(this)}
-              />
-            </div>
+            {getCurrentUser() && (
+              <div className='fixed'>
+                <UserNotification
+                  {...this.props}
+                  get_notification_count={this.getNotificationCount.bind(this)}
+                  get_public_collections={this.getPublicCollections.bind(this)}
+                  open_publish_docs={this.openPublishDocs.bind(this)}
+                />
+              </div>)}
           </div>
         </div>
       )
