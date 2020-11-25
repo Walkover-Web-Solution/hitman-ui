@@ -450,7 +450,7 @@ class CollectionVersions extends Component {
             this.state.selectedVersion
           )}
         {
-          !isDashboardRoute(this.props)
+          (!isDashboardRoute(this.props) && this.props.location.pathname.split('/')[1] !== 'admin')
             ? (
               <div className='hm-sidebar-label'>Introduction</div>
               )
