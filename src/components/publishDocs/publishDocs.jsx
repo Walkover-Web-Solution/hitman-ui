@@ -273,8 +273,7 @@ class PublishDocs extends Component {
                                           }
                                           </div>
                                           )
-                                        : null
-                                    )
+                                        : null)
                                   : null
                               }
                               </div>

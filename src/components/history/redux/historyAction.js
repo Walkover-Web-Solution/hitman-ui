@@ -7,7 +7,7 @@ export const fetchHistoryFromIdb = () => {
       dispatch(onHistoryDataFetched(response))
     })
       .catch(error => {
-        console.log(error)
+        console.error(error)
         // dispatch(onHistoryDataFetchError(
         //   error.response ? error.response.data : error
         // ))
@@ -16,14 +16,12 @@ export const fetchHistoryFromIdb = () => {
 }
 
 export const addHistory = (historyData) => {
-  // const id = shortid.generate();
   return (dispatch) => {
     dispatch(onHistoryAdded(historyData))
     indexedDbService.addData('history', historyData, historyData.id).then(response => {
-      // dispatch(onHistoryAdded(response.data));
     })
       .catch(error => {
-        console.log(error)
+        console.error(error)
         // dispatch(onHistoryAddedError(
         //   error.response ? error.response.data : error
         // ))
