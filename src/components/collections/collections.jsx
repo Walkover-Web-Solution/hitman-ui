@@ -433,7 +433,7 @@ class CollectionsComponent extends Component {
   }
 
   openPublishDocs (collection) {
-    if (collection.id) {
+    if (collection?.id) {
       this.props.history.push({
         pathname: '/admin/publish',
         search: `?collectionId=${collection.id}`
@@ -535,20 +535,13 @@ class CollectionsComponent extends Component {
       const allCollections = [
         ...new Set([...endpointCollections, ...pageCollections])
       ]
-      const finalCollections = []
-      for (let i = 0; i < allCollections.length; i++) {
-        const collectionId = allCollections[i]
-        if (this.props.collections[collectionId]?.isPublic) {
-          finalCollections.push(collectionId)
-        }
-      }
-      return finalCollections
+
+      return allCollections
     }
   }
 
   getNotificationCount () {
     const collections = this.getPublicCollections()
-
     return collections.length || 0
   }
 
