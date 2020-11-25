@@ -19,12 +19,14 @@ import {
 } from './redux/collectionsActions'
 import './collections.scss'
 import PublishDocsModal from '../publicEndpoint/publishDocsModal'
-import { isAdmin } from '../auth/authService'
+import { isAdmin, getCurrentUser } from '../auth/authService'
 import TagManager from 'react-gtm-module'
 import TagManagerModal from './tagModal'
 import UserNotification from './userNotification'
 
-const mapStateToProps = state => {
+const EMPTY_STRING = ''
+
+const mapStateToProps = (state) => {
   return {
     collections: state.collections,
     versions: state.versions,
@@ -34,14 +36,14 @@ const mapStateToProps = state => {
   }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    add_collection: newCollection => dispatch(addCollection(newCollection)),
-    update_collection: editedCollection =>
+    add_collection: (newCollection) => dispatch(addCollection(newCollection)),
+    update_collection: (editedCollection) =>
       dispatch(updateCollection(editedCollection)),
     delete_collection: (collection, props) =>
       dispatch(deleteCollection(collection, props)),
-    duplicate_collection: collection =>
+    duplicate_collection: (collection) =>
       dispatch(duplicateCollection(collection)),
     add_custom_domain: (collectionId, domain) =>
       dispatch(addCustomDomain(collectionId, domain))
@@ -76,7 +78,7 @@ class CollectionsComponent extends Component {
     endpoints[endpointId] = endpoint
     groups[sourceGroupId].endpointsOrder = groups[
       sourceGroupId
-    ].endpointsOrder.filter(gId => gId !== endpointId.toString())
+    ].endpointsOrder.filter((gId) => gId !== endpointId.toString())
     groups[destinationGroupId].endpointsOrder.push(endpointId)
     this.setState({ endpoints, groups })
     try {
@@ -240,7 +242,7 @@ class CollectionsComponent extends Component {
   findEndpointCount (collectionId) {
     if (this.dataFetched()) {
       const versionIds = Object.keys(this.props.versions).filter(
-        vId => this.props.versions[vId].collectionId === collectionId
+        (vId) => this.props.versions[vId].collectionId === collectionId
       )
       const groupIds = Object.keys(this.props.groups)
       const groupsArray = []
@@ -268,12 +270,6 @@ class CollectionsComponent extends Component {
     }
   }
 
-  // findEndpointCount(collectionId){
-  //   if(this.dataFetched()){
-  //     return Object.keys(this.props.endpoints).filter(eId => this.props.endpoints[eId].collectionId === collectionId).length
-  //     }
-  //   }
-
   renderBody (collectionId, collectionState) {
     let eventkeyValue = ''
     if (this.props.filter !== '') {
@@ -296,20 +292,18 @@ class CollectionsComponent extends Component {
 
     return (
       <React.Fragment key={collectionId}>
-        {
-          collectionState === 'singleCollection'
-            ? (
-              <button
-                id='back-to-all-collections-button'
-                className='btn'
-                onClick={() => this.openAllCollections()}
-              >
-                <i className='fas fa-arrow-left' />
-                <label>All Collections</label>
-              </button>
-              )
-            : null
-        }
+        {collectionState === 'singleCollection'
+          ? (
+            <button
+              id='back-to-all-collections-button'
+              className='btn'
+              onClick={() => this.openAllCollections()}
+            >
+              <i className='fas fa-arrow-left' />
+              <label>All Collections</label>
+            </button>
+            )
+          : null}
 
         <Accordion
           defaultActiveKey='0'
@@ -317,33 +311,25 @@ class CollectionsComponent extends Component {
           id='parent-accordion'
           className='sidebar-accordion'
         >
-          {/* <Card> */}
-          {/* <Card.Header> */}
           <Accordion.Toggle
             variant='default'
             eventKey={eventkeyValue !== null ? eventkeyValue : '0'}
           >
-            {
-              collectionState === 'singleCollection'
-                ? (
-                  <div>
-                    <div>
-                      {this.props.collections[collectionId].name}
-                    </div>
-                  </div>
-                  )
-                : (
-                  <div
-                    className='sidebar-accordion-item'
-                    onClick={() => this.openSelectedCollection(collectionId)}
-                  >
-                    <i className='uil uil-parcel' />
-                    <div>
-                      {this.props.collections[collectionId].name}
-                    </div>
-                  </div>
-                  )
-            }
+            {collectionState === 'singleCollection'
+              ? (
+                <div>
+                  <div>{this.props.collections[collectionId].name}</div>
+                </div>
+                )
+              : (
+                <div
+                  className='sidebar-accordion-item'
+                  onClick={() => this.openSelectedCollection(collectionId)}
+                >
+                  <i className='uil uil-parcel' />
+                  <div>{this.props.collections[collectionId].name}</div>
+                </div>
+                )}
             <div class='show-endpoint-count'>
               {this.findEndpointCount(collectionId)}
             </div>
@@ -406,8 +392,10 @@ class CollectionsComponent extends Component {
                     ? (
                       <a
                         className='dropdown-item'
-                        onClick={() =>
-                          this.openPublishDocs(this.props.collections[collectionId])}
+                        onClick={() => {
+                          this.props.collection_selected(null)
+                          this.openPublishDocs(this.props.collections[collectionId])
+                        }}
                       >
                         Publish Docs
                       </a>
@@ -426,7 +414,6 @@ class CollectionsComponent extends Component {
               </div>
             </div>
           </Accordion.Toggle>
-          {/* </Card.Header> */}
           {collectionState === 'singleCollection'
             ? (
               <Accordion.Collapse id='collection-collapse' eventKey='0'>
@@ -440,14 +427,13 @@ class CollectionsComponent extends Component {
               </Accordion.Collapse>
               )
             : null}
-          {/* </Card> */}
         </Accordion>
       </React.Fragment>
     )
   }
 
   openPublishDocs (collection) {
-    if (collection.id) {
+    if (collection?.id) {
       this.props.history.push({
         pathname: '/admin/publish',
         search: `?collectionId=${collection.id}`
@@ -461,10 +447,6 @@ class CollectionsComponent extends Component {
         search: `?collectionId=${collection.id}`
       })
     }
-    // this.setState({
-    //   showPublishDocsModal: true,
-    //   selectedCollection: collection.id,
-    // });
   }
 
   showPublishDocsModal (onHide) {
@@ -474,9 +456,6 @@ class CollectionsComponent extends Component {
         show
         onHide={onHide}
         collection_id={this.state.selectedCollection}
-      // add_new_endpoint={this.handleAddEndpoint.bind(this)}
-      // open_collection_form={this.openCollectionForm.bind(this)}
-      // open_environment_form={this.openEnvironmentForm.bind(this)}
       />
     )
   }
@@ -542,10 +521,10 @@ class CollectionsComponent extends Component {
   getPublicCollections () {
     if (this.dataFetched()) {
       const pendingEndpointIds = Object.keys(this.props.endpoints).filter(
-        eId => this.props.endpoints[eId].state === 'Pending'
+        (eId) => this.props.endpoints[eId].state === 'Pending'
       )
       const pendingPageIds = Object.keys(this.props.pages).filter(
-        pId => this.props.pages[pId].state === 'Pending'
+        (pId) => this.props.pages[pId].state === 'Pending'
       )
 
       const endpointCollections = this.findPendingEndpointsCollections(
@@ -556,20 +535,13 @@ class CollectionsComponent extends Component {
       const allCollections = [
         ...new Set([...endpointCollections, ...pageCollections])
       ]
-      const finalCollections = []
-      for (let i = 0; i < allCollections.length; i++) {
-        const collectionId = allCollections[i]
-        if (this.props.collections[collectionId]?.isPublic) {
-          finalCollections.push(collectionId)
-        }
-      }
-      return finalCollections
+
+      return allCollections
     }
   }
 
   getNotificationCount () {
     const collections = this.getPublicCollections()
-
     return collections.length || 0
   }
 
@@ -603,9 +575,10 @@ class CollectionsComponent extends Component {
         }
       }
       const keywords = Object.keys(this.keywords)
-      finalKeywords = keywords.filter(key => {
-        console.log(this.props.filter)
-        return key.toLowerCase().indexOf(this.props.filter.toLowerCase()) !== -1
+      finalKeywords = keywords.filter((key) => {
+        return (
+          key.toLowerCase().indexOf(this.props.filter.toLowerCase()) !== -1
+        )
       })
 
       let keywordFinalCollections = []
@@ -622,12 +595,12 @@ class CollectionsComponent extends Component {
         this.names[name] = CollectionIds[i]
       }
       const names = Object.keys(this.names)
-      finalnames = names.filter(name => {
+      finalnames = names.filter((name) => {
         return (
           name.toLowerCase().indexOf(this.props.filter.toLowerCase()) !== -1
         )
       })
-      let namesFinalCollections = finalnames.map(name => this.names[name])
+      let namesFinalCollections = finalnames.map((name) => this.names[name])
       namesFinalCollections = [...new Set(namesFinalCollections)]
       finalCollections = [...keywordFinalCollections, ...namesFinalCollections]
 
@@ -680,26 +653,18 @@ class CollectionsComponent extends Component {
                 New Collection
               </button>
             </div>
-            {/* {this.state.openSelectedCollection &&
-              this.renderBody(this.collectionId, "singleCollection")} */}
-            {/* {!this.state.openSelectedCollection &&
-              finalCollections.map((collectionId, index) =>
-                this.renderBody(collectionId, "allCollections")
-              )} */}
             {finalCollections.map((collectionId, index) =>
               this.renderBody(collectionId, 'allCollections')
             )}
-
-            <div className='fixed'>
-              <UserNotification
-                {...this.props}
-                get_notification_count={this.getNotificationCount.bind(this)}
-                get_public_collections={this.getPublicCollections.bind(this)}
-                open_publish_docs={this.openPublishDocs.bind(this)}
-              />
-              {/* Notifications
-            <div>count : {this.getNotificationCount()}</div> */}
-            </div>
+            {getCurrentUser() && (
+              <div className='fixed'>
+                <UserNotification
+                  {...this.props}
+                  get_notification_count={this.getNotificationCount.bind(this)}
+                  get_public_collections={this.getPublicCollections.bind(this)}
+                  open_publish_docs={this.openPublishDocs.bind(this)}
+                />
+              </div>)}
           </div>
         </div>
       )
@@ -718,7 +683,10 @@ class CollectionsComponent extends Component {
               >
                 <div className='hm-sidebar-logo'>
                   <img
-                    src={`//logo.clearbit.com/${this.props.collections[collectionId].name}.com`}
+                    src={
+                      this.props.collections[collectionId]?.docProperties
+                        ?.defaultLogoUrl || EMPTY_STRING
+                    }
                     onClick={() =>
                       window.open(this.props.collections[collectionId].website)}
                   />

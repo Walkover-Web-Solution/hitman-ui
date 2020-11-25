@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
 import { Button } from 'react-bootstrap'
-import SideBar from '../main/sidebar'
 import './publishDocs.scss'
 import { connect } from 'react-redux'
-import { fetchCollections } from '../collections/redux/collectionsActions'
+import { fetchCollections, updateCollection } from '../collections/redux/collectionsActions'
 import { fetchAllVersions } from '../collectionVersions/redux/collectionVersionsActions'
 import { fetchEndpoints } from '../endpoints/redux/endpointsActions'
 import { fetchGroups } from '../groups/redux/groupsActions'
@@ -12,12 +11,10 @@ import extractCollectionInfoService from './extractCollectionInfoService'
 import DisplayEndpoint from '../endpoints/displayEndpoint'
 import {
   approveEndpoint,
-  rejectEndpoint
-  ,
+  rejectEndpoint,
   approvePage,
   rejectPage
 } from '../publicEndpoint/redux/publicEndpointsActions'
-
 import PublishDocsForm from './publishDocsForm'
 const URI = require('urijs')
 
@@ -28,6 +25,8 @@ const mapDispatchToProps = (dispatch) => {
     fetch_groups: () => dispatch(fetchGroups()),
     fetch_endpoints: () => dispatch(fetchEndpoints()),
     fetch_pages: () => dispatch(fetchPages()),
+    update_collection: (editedCollection) =>
+      dispatch(updateCollection(editedCollection)),
     approve_endpoint: (endpoint) => dispatch(approveEndpoint(endpoint)),
     reject_endpoint: (endpoint) => dispatch(rejectEndpoint(endpoint)),
     approve_page: (page) => dispatch(approvePage(page)),
@@ -46,9 +45,12 @@ const mapStateToProps = (state) => {
 }
 
 class PublishDocs extends Component {
-  state = {
-    selectedCollectionId: null,
-    selectedVersionId: null
+  constructor (props) {
+    super(props)
+    this.state = {
+      selectedCollectionId: null,
+      selectedVersionId: null
+    }
   }
 
   componentDidMount () {
@@ -65,7 +67,8 @@ class PublishDocs extends Component {
       const selectedGroupId = this.getInitialGroup(Object.keys(this.versions)[0])
       const selectedEndpointId = this.getInitialEndpoint(selectedGroupId)
       this.setState({
-        selectedCollectionId: URI.parseQuery(this.props.location.search).collectionId,
+        selectedCollectionId: URI.parseQuery(this.props.location.search)
+          .collectionId,
         selectedVersionId: Object.keys(this.versions)[0],
         selectedGroupId,
         selectedEndpointId
@@ -164,13 +167,119 @@ class PublishDocs extends Component {
     this.props.reject_page(this.props.pages[pageId])
   }
 
+  displayState (endpoint) {
+    if (endpoint.state === 'Pending') {
+      return <span class='status-new'> New</span>
+    } else if (endpoint.state === 'Draft') {
+      return <span class='status-edit'> Edit</span>
+    }
+  }
+
+  filterEndpoints (groupId) {
+    const endpoints = {}
+    console.log('this.endpoints', this.endpoints)
+    for (let i = 0; i < Object.keys(this.endpoints).length; i++) {
+      if ((this.endpoints[Object.keys(this.endpoints)[i]].isPublished === true ||
+        this.endpoints[Object.keys(this.endpoints)[i]].state === 'Pending') &&
+        this.endpoints[Object.keys(this.endpoints)[i]].groupId === groupId
+      ) {
+        endpoints[Object.keys(this.endpoints)[i]] = this.endpoints[Object.keys(this.endpoints)[i]]
+      }
+    }
+    console.log('endpoints', endpoints)
+    return (
+      <span>
+        {Object.keys(endpoints).map((endpointId) =>
+          <div key={endpointId} onClick={() => this.openEndpoint(groupId, endpointId)} className='groups'>
+            {endpoints[endpointId]?.name}
+            {this.displayState(endpoints[endpointId])}
+          </div>
+        )}
+      </span>
+    )
+  }
+
+  filterPages (groupId) {
+    const pages = {}
+    if (groupId) {
+      if (this.pages) {
+        for (let i = 0; i < Object.keys(this.pages).length; i++) {
+          if (
+            (this.pages[Object.keys(this.pages)[i]].isPublished === true ||
+              this.pages[Object.keys(this.pages)[i]].state === 'Pending'
+            ) &&
+            this.pages[Object.keys(this.pages)[i]].groupId === groupId
+          ) {
+            pages[Object.keys(this.pages)[i]] = this.pages[Object.keys(this.pages)[i]]
+          }
+        }
+        return (
+          <div className='groups'>
+            {Object.keys(pages).map((pageId) =>
+              <div
+                key={pageId} onClick={() => this.openPage(groupId, pageId)} className='groups'
+              >
+                {this.pages[pageId]?.name}
+                {this.displayState(pages[pageId])}
+              </div>
+            )}
+          </div>
+        )
+      }
+    } else {
+      if (this.pages) {
+        for (let i = 0; i < Object.keys(this.pages).length; i++) {
+          if ((this.pages[Object.keys(this.pages)[i]].isPublished === true ||
+            this.pages[Object.keys(this.pages)[i]].state === 'Pending') &&
+            this.pages[Object.keys(this.pages)[i]].groupId === null &&
+            this.pages[Object.keys(this.pages)[i]].versionId === this.state.selectedVersionId
+          ) {
+            pages[Object.keys(this.pages)[i]] = this.pages[Object.keys(this.pages)[i]]
+          }
+        }
+        if (Object.keys(pages).length === 0) return
+        return (
+          <div className='groups'>
+            {Object.keys(pages).map((pageId) =>
+              <div
+                key={pageId} onClick={() => this.openPage('', pageId)} className='groups'
+              >
+                {this.pages[pageId]?.name}
+                {this.displayState(pages[pageId])}
+              </div>
+            )}
+          </div>
+        )
+      }
+    }
+  }
+
+  getSelectedCollection () {
+    const collectionId = URI.parseQuery(this.props.location.search)
+      .collectionId
+    const selectedCollection = this.props.collections[collectionId]
+    return selectedCollection || {}
+  }
+
+  isCollectionPublished () {
+    const selectedCollection = this.getSelectedCollection()
+    return selectedCollection?.isPublic || false
+  }
+
+  publishCollection () {
+    const selectedCollection = this.getSelectedCollection()
+    if (selectedCollection?.isPublic !== true) {
+      const editedCollection = { ...selectedCollection }
+      editedCollection.isPublic = true
+      console.log(editedCollection)
+      this.props.update_collection(editedCollection)
+    }
+  }
+
   render () {
     return (
       <div className='publish-docs-container'>
         <div className='publish-docs-wrapper'>
-          <SideBar
-            {...this.props}
-          />
           <div class='content-panel'>
             <div className='hosted-APIs'>
               <div class='title'>
@@ -185,12 +294,8 @@ class PublishDocs extends Component {
                 {
                   this.props.collections
                     ? Object.keys(this.props.collections).map(
-                        (id) =>
-                          this.props.collections[id].isPublic === true
-                            ? (
-                              <option value={id}>{this.props.collections[id]?.name}</option>
-                              )
-                            : null
+                        (id, index) =>
+                          <option value={id} key={index}>{this.props.collections[id]?.name}</option>
                       )
                     : null
                 }
@@ -203,7 +308,23 @@ class PublishDocs extends Component {
                 selected_collection_id={this.state.selectedCollectionId}
               />
 
-              <div className='publish-button'>  <Button variant='success'>PUBLISH ALL</Button>
+              <div className='publish-button'> <Button variant='success'>PUBLISH ALL</Button>
+                <div>
+                  {
+                    !this.isCollectionPublished()
+                      ? (
+                        <Button
+                          variant='success publish-collection-button'
+                          onClick={() => this.publishCollection()}
+                        >
+                          Publish Collection
+                        </Button>
+                        )
+                      : (
+                        <div class='publish-collection-div'>Published</div>
+                        )
+                  }
+                </div>
               </div>
             </div>
 
@@ -214,31 +335,15 @@ class PublishDocs extends Component {
                 >
                   {
                     this.versions
-                      ? Object.keys(this.versions).map(
-                          (id) =>
-                            <option key={id} value={id}>{this.props.versions[id]?.number}</option>
+                      ? Object.keys(this.versions).map((id) =>
+                        <option key={id} value={id}>{this.props.versions[id]?.number}</option>
                         )
                       : null
                   }
                 </select>
-                <div className='groups'>
-                  {
-                    this.pages
-                      ? Object.keys(this.pages).map(
-                          (pageId) =>
-                            this.pages[pageId].versionId?.toString() === this.state.selectedVersionId?.toString()
-                              ? this.pages[pageId].groupId === null
-                                  ? (
-                                    <div onClick={() => this.openPage('', pageId)}>
-                                      {this.pages[pageId]?.name}
-                                    </div>
-                                    )
-                                  : null
-                              : null
-                        )
-                      : null
-                  }
-                </div>
+                {
+                  this.filterPages(null)
+                }
                 <div className='version-groups'>
                   {
                     this.groups
@@ -247,39 +352,10 @@ class PublishDocs extends Component {
                             ? (
                               <div className='groups'>{this.groups[groupId]?.name}
                                 {
-                                this.pages
-                                  ? Object.keys(this.pages).map((pageId) =>
-                                      this.pages[pageId].groupId?.toString() === groupId?.toString()
-                                        ? (
-                                          <div onClick={() => this.openPage(groupId, pageId)} className='groups'>
-                                            {this.pages[pageId]?.name}
-                                          </div>
-                                          )
-                                        : null
-                                    )
-                                  : null
+                                this.filterPages(groupId)
                               }
                                 {
-                                this.endpoints
-                                  ? Object.keys(this.endpoints).map((endpointId) =>
-                                      this.checkEndpointStateandGroup(endpointId, groupId)
-                                        ? (
-                                          <div onClick={() => this.openEndpoint(groupId, endpointId)} className='groups'>
-                                            {this.endpoints[endpointId]?.name}
-                                            {
-                                            this.endpoints[endpointId]?.state === 'Pending'
-                                              ? (
-                                                <span style={{ float: 'right', background: '#95a6b9', padding: '5px', borderRadius: '2px' }}>
-                                                  New
-                                                </span>
-                                                )
-                                              : null
-                                          }
-                                          </div>
-                                          )
-                                        : null
-                                    )
-                                  : null
+                                this.filterEndpoints(groupId)
                               }
                               </div>
                               )
@@ -298,11 +374,16 @@ class PublishDocs extends Component {
                         {this.props.endpoints[this.state.selectedEndpointId].name}
 
                       </div>
-                      <div className='publish-reject'>
-                        <button class='btn default' onClick={() => this.handleRejectEndpointRequest(this.state.selectedEndpointId)}>Reject</button>
-                        <div className='publish-button'>  <Button variant='success' onClick={() => this.handleApproveEndpointRequest(this.state.selectedEndpointId)}>PUBLISH</Button>
-                        </div>
-                      </div>
+                      {
+                        this.endpoints[this.state.selectedEndpointId].state !== 'Approved'
+                          ? (
+                            <div className='publish-reject'>
+                              <button class='btn default' onClick={() => this.handleRejectEndpointRequest(this.state.selectedEndpointId)}>Reject</button>
+                              <div className='publish-button'>  <Button variant='success' onClick={() => this.handleApproveEndpointRequest(this.state.selectedEndpointId)}>PUBLISH</Button>
+                              </div>
+                            </div>)
+                          : null
+                      }
                       <DisplayEndpoint endpointId={this.state.selectedEndpointId} groupId={this.state.selectedGroupId} {...this.props} />
                     </div>
 
@@ -315,14 +396,19 @@ class PublishDocs extends Component {
                       <div className='list-contacts'>
                         {this.props.pages[this.state.selectedPageId].name}
                       </div>
-                      <div className='publish-reject'>
-                        <button class='btn default' onClick={() => this.handleRejectPageRequest(this.state.selectedPageId)}>Reject</button>
-                        <div className='publish-button'>  <Button variant='success' onClick={() => this.handleApprovePageRequest(this.state.selectedPageId)}>PUBLISH</Button>
-                        </div>
-                      </div>
+                      {
+                        this.pages[this.state.selectedPageId].state !== 'Approved'
+                          ? (
+                            <div className='publish-reject'>
+                              <button class='btn default' onClick={() => this.handleRejectPageRequest(this.state.selectedPageId)}>Reject</button>
+                              <div className='publish-button'>  <Button variant='success' onClick={() => this.handleApprovePageRequest(this.state.selectedPageId)}>PUBLISH</Button>
+                              </div>
+                            </div>
+                            )
+                          : null
+                      }
 
                     </div>
-
                     )
                   : null}
               </div>
