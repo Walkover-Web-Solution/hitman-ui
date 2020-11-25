@@ -306,15 +306,7 @@ class CollectionVersions extends Component {
             key={versionId}
             id="child-accordion"
           >
-            {/* <Card> */}
-            {/* <Card.Header> */}
-            <Accordion.Toggle
-              variant="default"
-              eventKey="1"
-              // eventKey={
-              //   !isDashboardRoute(this.props) ? "0" : this.eventkey[versionId]
-              // }
-            >
+            <Accordion.Toggle variant="default" eventKey="1">
               <div className="sidebar-accordion-item">
                 <i className="uil uil-folder" />
                 {this.props.versions[versionId].number}
@@ -387,14 +379,7 @@ class CollectionVersions extends Component {
                 </div>
               ) : null}
             </Accordion.Toggle>
-            {/* </Card.Header> */}
-            <Accordion.Collapse
-              className="version-collapse"
-              eventKey="1"
-              // eventKey={
-              //   !isDashboardRoute(this.props) ? "0" : this.eventkey[versionId]
-              // }
-            >
+            <Accordion.Collapse className="version-collapse" eventKey="1">
               <Card.Body>
                 <VersionPages
                   {...this.props}
@@ -408,7 +393,6 @@ class CollectionVersions extends Component {
                 />
               </Card.Body>
             </Accordion.Collapse>
-            {/* </Card> */}
           </Accordion>
         ) : (
           <>
@@ -463,7 +447,6 @@ class CollectionVersions extends Component {
             <div className="hm-sidebar-label">Introduction</div>
             <select
               className="selected-version"
-              // onChange={this.setSelectedVersion.bind(this)}
               onChange={(e) => this.setSelectedVersion(e)}
             >
               {this.filteredVersions

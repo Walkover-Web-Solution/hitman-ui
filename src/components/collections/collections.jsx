@@ -270,12 +270,6 @@ class CollectionsComponent extends Component {
     }
   }
 
-  // findEndpointCount(collectionId){
-  //   if(this.dataFetched()){
-  //     return Object.keys(this.props.endpoints).filter(eId => this.props.endpoints[eId].collectionId === collectionId).length
-  //     }
-  //   }
-
   renderBody(collectionId, collectionState) {
     let eventkeyValue = "";
     if (this.props.filter !== "") {
@@ -315,8 +309,6 @@ class CollectionsComponent extends Component {
           id="parent-accordion"
           className="sidebar-accordion"
         >
-          {/* <Card> */}
-          {/* <Card.Header> */}
           <Accordion.Toggle
             variant="default"
             eventKey={eventkeyValue !== null ? eventkeyValue : "0"}
@@ -415,7 +407,6 @@ class CollectionsComponent extends Component {
               </div>
             </div>
           </Accordion.Toggle>
-          {/* </Card.Header> */}
           {collectionState === "singleCollection" ? (
             <Accordion.Collapse id="collection-collapse" eventKey="0">
               <Card.Body>
@@ -427,7 +418,6 @@ class CollectionsComponent extends Component {
               </Card.Body>
             </Accordion.Collapse>
           ) : null}
-          {/* </Card> */}
         </Accordion>
       </React.Fragment>
     );
@@ -448,10 +438,6 @@ class CollectionsComponent extends Component {
         search: `?collectionId=${collection.id}`,
       });
     }
-    // this.setState({
-    //   showPublishDocsModal: true,
-    //   selectedCollection: collection.id,
-    // });
   }
 
   showPublishDocsModal(onHide) {
@@ -461,9 +447,6 @@ class CollectionsComponent extends Component {
         show
         onHide={onHide}
         collection_id={this.state.selectedCollection}
-        // add_new_endpoint={this.handleAddEndpoint.bind(this)}
-        // open_collection_form={this.openCollectionForm.bind(this)}
-        // open_environment_form={this.openEnvironmentForm.bind(this)}
       />
     );
   }
@@ -669,12 +652,6 @@ class CollectionsComponent extends Component {
                 New Collection
               </button>
             </div>
-            {/* {this.state.openSelectedCollection &&
-              this.renderBody(this.collectionId, "singleCollection")} */}
-            {/* {!this.state.openSelectedCollection &&
-              finalCollections.map((collectionId, index) =>
-                this.renderBody(collectionId, "allCollections")
-              )} */}
             {finalCollections.map((collectionId, index) =>
               this.renderBody(collectionId, "allCollections")
             )}
@@ -686,8 +663,6 @@ class CollectionsComponent extends Component {
                 get_public_collections={this.getPublicCollections.bind(this)}
                 open_publish_docs={this.openPublishDocs.bind(this)}
               />
-              {/* Notifications
-            <div>count : {this.getNotificationCount()}</div> */}
             </div>
           </div>
         </div>
@@ -708,7 +683,6 @@ class CollectionsComponent extends Component {
               >
                 <div className="hm-sidebar-logo">
                   <img
-                    // src={`//logo.clearbit.com/${this.props.collections[collectionId].name}.com`}
                     src={
                       this.props.collections[collectionId]?.docProperties
                         ?.defaultLogoUrl || EMPTY_STRING
