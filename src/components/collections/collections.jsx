@@ -420,7 +420,6 @@ class CollectionsComponent extends Component {
               </div>
             </div>
           </Accordion.Toggle>
-          {/* </Card.Header> */}
           {collectionState === 'singleCollection'
             ? (
               <Accordion.Collapse id='collection-collapse' eventKey='0'>
@@ -434,7 +433,6 @@ class CollectionsComponent extends Component {
               </Accordion.Collapse>
               )
             : null}
-          {/* </Card> */}
         </Accordion>
       </React.Fragment>
     )
