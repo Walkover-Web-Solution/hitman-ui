@@ -180,13 +180,13 @@ button.btn.btn-success.publish-collection-button {
   );
 }
 
-.twitter-picker {
-  width: 400px !important;
-
-  box-shadow: none !important;
+.circle-picker {
+  width: 300px !important;
+  padding: 10px;
   div {
-    border: none !important;
+    border-radius: 0px !important;
   }
+
 }
 
 .status-new{
