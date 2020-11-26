@@ -647,7 +647,7 @@ class DisplayEndpoint extends Component {
       name: this.state.data.name,
       requestType: this.state.data.method,
       body: body,
-      status: this.props.tab?.status || tabStatusTypes.SAVED,
+      status: this.props.tab?.status || tabStatusTypes.NEW,
       headers: headersData,
       params: updatedParams,
       pathVariables: pathVariables,
@@ -694,7 +694,7 @@ class DisplayEndpoint extends Component {
       toast.error('Invalid JSON Body')
     }
     await this.handleApiCall(api, body, headers, this.state.data.body.type)
-    this.setData()
+    isDashboardRoute(this.props) && this.setData()
   };
 
   extractPosition (groupId) {

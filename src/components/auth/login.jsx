@@ -8,6 +8,7 @@ class Login extends Component {
   async componentDidMount () {
     const socketJwt = this.getSocketJwt()
     if (!socketJwt) return
+    await auth.login(socketJwt)
     const { state } = this.props.location
     window.location = state ? state.from.pathname : '/dashboard/endpoint/new'
   }
