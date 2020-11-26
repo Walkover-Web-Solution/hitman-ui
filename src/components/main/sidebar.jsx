@@ -297,7 +297,6 @@ class SideBar extends Component {
         (pId) => this.props.pages[pId].state === 'Pending' || (this.props.pages[pId].state === 'Draft' && this.props.pages[pId].isPublished)
       )
 
-      console.log('getPublicCollections', pendingEndpointIds, pendingPageIds)
       const endpointCollections = this.findPendingEndpointsCollections(
         pendingEndpointIds
       )

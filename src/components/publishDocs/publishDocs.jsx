@@ -269,7 +269,15 @@ class PublishDocs extends Component {
     if (selectedCollection?.isPublic !== true) {
       const editedCollection = { ...selectedCollection }
       editedCollection.isPublic = true
-      console.log(editedCollection)
+      this.props.update_collection(editedCollection)
+    }
+  }
+
+  unPublishCollection () {
+    const selectedCollection = this.getSelectedCollection()
+    if (selectedCollection?.isPublic === true) {
+      const editedCollection = { ...selectedCollection }
+      editedCollection.isPublic = false
       this.props.update_collection(editedCollection)
     }
   }
@@ -315,11 +323,16 @@ class PublishDocs extends Component {
                           variant='success publish-collection-button'
                           onClick={() => this.publishCollection()}
                         >
-                          Publish Collection
+                          Publish Doc
                         </Button>
                         )
                       : (
-                        <div class='publish-collection-div'>Published</div>
+                        <Button
+                        variant='success publish-collection-button'
+                        onClick={() => this.unPublishCollection()}
+                      >
+                        Unpublish Doc
+                      </Button>
                         )
                   }
                 </div>
