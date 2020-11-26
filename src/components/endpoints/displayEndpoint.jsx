@@ -647,7 +647,7 @@ class DisplayEndpoint extends Component {
       name: this.state.data.name,
       requestType: this.state.data.method,
       body: body,
-      status: this.props.tab?.status || tabStatusTypes.SAVED,
+      status: this.props.tab?.status || tabStatusTypes.NEW,
       headers: headersData,
       params: updatedParams,
       pathVariables: pathVariables,
@@ -669,6 +669,7 @@ class DisplayEndpoint extends Component {
       timeElapsed,
       createdAt
     }
+    console.log(this.props.tab)
     console.log('saving history')
     this.props.add_history(obj)
   };
