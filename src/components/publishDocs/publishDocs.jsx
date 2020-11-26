@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Button } from 'react-bootstrap'
+import { Button, Dropdown } from 'react-bootstrap'
 import './publishDocs.scss'
 import { connect } from 'react-redux'
 import { fetchCollections, updateCollection } from '../collections/redux/collectionsActions'
@@ -18,6 +18,13 @@ import {
 import PublishDocsForm from './publishDocsForm'
 import DisplayPage from '../pages/displayPage'
 const URI = require('urijs')
+
+const publishDocsEnum = {
+  PENDING_STATE: 'Pending',
+  REJECT_STATE: 'Reject',
+  APPROVED_STATE: 'Approved',
+  DRAFT_STATE: 'Draft'
+}
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -110,10 +117,10 @@ class PublishDocs extends Component {
     return { versions, groups, pages, endpoints }
   }
 
-  setSelectedCollection (e) {
+  setSelectedCollection (collection) {
     this.props.history.push({
       pathname: '/admin/publish',
-      search: `?collectionId=${e.currentTarget.value}`
+      search: `?collectionId=${collection?.id}`
     })
   }
 
@@ -270,7 +277,86 @@ class PublishDocs extends Component {
     }
   }
 
+  dataFetched () {
+    return (
+      this.props.collections &&
+      this.props.versions &&
+      this.props.groups &&
+      this.props.endpoints &&
+      this.props.pages
+    )
+  }
+
+  isPageApprovalPending (page) {
+    return page?.state === publishDocsEnum.PENDING_STATE ||
+     (page?.state === publishDocsEnum.DRAFT_STATE &&
+       page?.isPublished)
+  }
+
+  isEndpointApprovalPending (endpoint) {
+    return endpoint?.state === publishDocsEnum.PENDING_STATE ||
+    (endpoint?.state === publishDocsEnum.DRAFT_STATE &&
+      endpoint?.isPublished)
+  }
+
+  collectionHasPageChanges (versionIds) {
+    const allPageIds = Object.keys(this.props.pages)
+    for (let i = 0; i < allPageIds.length; i++) {
+      const pageId = allPageIds[i]
+      const page = this.props.pages[pageId]
+      if (versionIds.includes(page.versionId)) {
+        if (this.isPageApprovalPending(page)) {
+          return true
+        }
+      }
+    }
+  }
+
+  filterGroups (groupIds, versionIds) {
+    let groupsArray = []
+
+    groupIds.forEach(gId => {
+      const group = this.props.groups[gId]
+      if (versionIds.includes(group.versionId)) {
+        groupsArray = [...groupsArray, gId]
+      }
+    })
+    return groupsArray || []
+  }
+
+  collectionHasEndpointChanges (versionIds) {
+    const allGroupIds = Object.keys(this.props.groups)
+    const allEndpointIds = Object.keys(this.props.endpoints)
+    const groupsArray = this.filterGroups(allGroupIds, versionIds)
+    for (let i = 0; i < allEndpointIds.length; i++) {
+      const endpointId = allEndpointIds[i]
+      const endpoint = this.props.endpoints[endpointId]
+      if (groupsArray.includes(endpoint.groupId)) {
+        if (this.isEndpointApprovalPending(endpoint)) {
+          return true
+        }
+      }
+    }
+  }
+
+  collectionHasChanges (collectionId) {
+    if (this.dataFetched()) {
+      const versionIds = Object.keys(this.props.versions).filter(
+        (vId) => this.props.versions[vId].collectionId === collectionId
+      )
+      if (this.collectionHasPageChanges(versionIds)) {
+        return true
+      } else if (this.collectionHasEndpointChanges(versionIds)) {
+        return true
+      } else {
+        return false
+      }
+    }
+  }
+
   render () {
+    const collectionId = URI.parseQuery(this.props.location.search).collectionId
+
     return (
       <div className='publish-docs-container'>
         <div className='publish-docs-wrapper'>
@@ -280,20 +366,25 @@ class PublishDocs extends Component {
                 Hosted API's
               </div>
 
-              <select
-                name='selectedCollection'
-                onChange={this.setSelectedCollection.bind(this)}
-                value={this.state.selectedCollectionId}
-              >
-                {
+              <Dropdown>
+                <Dropdown.Toggle variant='success' id='dropdown-basic'>
+                  {this.props.collections[collectionId]?.name || ''}
+                </Dropdown.Toggle>
+
+                <Dropdown.Menu>
+                  {
                   this.props.collections
                     ? Object.keys(this.props.collections).map(
-                        (id, index) =>
-                          <option value={id} key={index}>{this.props.collections[id]?.name}</option>
-                      )
+                        (id, index) => (
+                          <Dropdown.Item key={index} onClick={() => this.setSelectedCollection(this.props.collections[id])}>
+                            {this.props.collections[id]?.name}
+                            {this.collectionHasChanges(id) && <i class='fas fa-circle' />}
+                          </Dropdown.Item>
+                        ))
                     : null
                 }
-              </select>
+                </Dropdown.Menu>
+              </Dropdown>
             </div>
 
             <div className='grid'>
@@ -316,11 +407,11 @@ class PublishDocs extends Component {
                         )
                       : (
                         <Button
-                        variant='success publish-collection-button'
-                        onClick={() => this.unPublishCollection()}
-                      >
-                        Unpublish Doc
-                      </Button>
+                          variant='success publish-collection-button'
+                          onClick={() => this.unPublishCollection()}
+                        >
+                          Unpublish Doc
+                        </Button>
                         )
                   }
                 </div>
