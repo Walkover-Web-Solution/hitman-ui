@@ -32,6 +32,15 @@ class DisplayPage extends Component {
         this.fetchPage(pageId)
       })
     }
+    if (this.props.pageId) {
+      this.setState({ data: this.props.pages[this.props.pageId] })
+    }
+  }
+
+  componentDidUpdate (prevProps, prevState) {
+    if (this.props.pageId && prevProps !== this.props) {
+      this.setState({ data: this.props.pages[this.props.pageId] })
+    }
   }
 
   handleEdit (page) {
@@ -50,19 +59,20 @@ class DisplayPage extends Component {
 
     return (
       <div className='custom-display-page'>
-        {isDashboardRoute(this.props)
-          ? (
-            <button
-              className='btn btn-primary btn-sm'
-              onClick={() => {
-                this.handleEdit(this.state.data)
-              }}
-            >
-              Edit page
-            </button>
-            )
-          : null}
-
+        {
+          isDashboardRoute(this.props)
+            ? (
+              <button
+                className='btn btn-primary btn-sm'
+                onClick={() => {
+                  this.handleEdit(this.state.data)
+                }}
+              >
+                Edit page
+              </button>
+              )
+            : null
+        }
         <div>{ReactHtmlParser(this.state.data.contents)}</div>
       </div>
     )

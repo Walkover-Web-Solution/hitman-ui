@@ -237,7 +237,7 @@ class Endpoints extends Component {
     e.preventDefault()
 
     if (!this.draggedItem) {
-      console.log('')
+      //
     } else {
       if (this.draggedItem === destinationEndpointId) {
         this.draggedItem = null
