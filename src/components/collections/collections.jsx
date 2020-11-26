@@ -432,7 +432,7 @@ class CollectionsComponent extends Component {
   }
 
   openPublishDocs (collection) {
-    if (collection.id) {
+    if (collection?.id) {
       this.props.history.push({
         pathname: '/admin/publish',
         search: `?collectionId=${collection.id}`
@@ -499,7 +499,6 @@ class CollectionsComponent extends Component {
       }
       const keywords = Object.keys(this.keywords)
       finalKeywords = keywords.filter((key) => {
-        console.log(this.props.filter)
         return (
           key.toLowerCase().indexOf(this.props.filter.toLowerCase()) !== -1
         )
