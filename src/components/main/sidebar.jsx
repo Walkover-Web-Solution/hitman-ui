@@ -112,8 +112,8 @@ class SideBar extends Component {
       obj = obj.filter(
         (o) =>
           o.endpoint.name?.includes(e.target.value) ||
-            o.endpoint.BASE_URL?.includes(e.target.value) ||
-            o.endpoint.uri?.includes(e.target.value)
+          o.endpoint.BASE_URL?.includes(e.target.value) ||
+          o.endpoint.uri?.includes(e.target.value)
       )
       // }
     }
@@ -314,7 +314,8 @@ class SideBar extends Component {
                       }
                       id='uncontrolled-tab-example'
                     >
-                      <Tab eventKey='collection' title={<img src={collectionIcon} />}>
+
+                      <Tab eventKey='collection' title={<span><img src={collectionIcon} /> Collection </span>}>
                         {
                           !getCurrentUser()
                             ? (
@@ -324,13 +325,14 @@ class SideBar extends Component {
                                   <img src={emptyCollections} />
                                 </div>
                                 <div className='content'>
-                                  Your collection is Empty.
-                                  <br />
-                                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                  <h5>  Your collection is Empty.</h5>
+
+                                  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                  </p>
                                 </div>
                                 <Button
                                   className='button'
-                                  variant='warning'
+                                  variant='primary'
                                   onClick={() =>
                                     this.setState({
                                       showLoginSignupModal: true
@@ -376,12 +378,12 @@ class SideBar extends Component {
                           ? <></>
                           : null}
                       </Tab>
-                      <Tab eventKey='history' title={<img src={historyIcon} />}>
+                      <Tab eventKey='history' title={<span><img src={historyIcon} /> History</span>}>
                         {this.renderHistoryList()}
                       </Tab>
                       <Tab
                         eventKey='randomTrigger'
-                        title={<img src={randomTriggerIcon} />}
+                        title={<span> <img src={randomTriggerIcon} /> Random Trigger</span>}
                       >
                         {this.renderTriggerList()}
                       </Tab>

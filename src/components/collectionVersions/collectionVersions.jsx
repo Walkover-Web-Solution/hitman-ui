@@ -454,7 +454,7 @@ class CollectionVersions extends Component {
             <>
               <div className='hm-sidebar-label'>Introduction</div>
               <select
-                className='selected-version'
+                className='selected-version form-control light-orange-bg'
                 onChange={(e) => this.setSelectedVersion(e)}
               >
                 {this.filteredVersions
@@ -479,7 +479,7 @@ class CollectionVersions extends Component {
                 this.props.collection_id
             )
             .map((versionId, index) => (
-              <div key={index}>{this.renderBody(versionId, index)}</div>
+              <div className='hm-sidebar-outer-block' key={index}>{this.renderBody(versionId, index)}</div>
             ))}
       </>
     )

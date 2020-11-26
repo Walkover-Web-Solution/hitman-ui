@@ -79,10 +79,13 @@ class CodeTemplate extends Component {
 
   render () {
     return (
-      <div>
-        <Container className='d-flex flex-column my-5 mx-1'>
+      <div className='pubCodeWrapper'>
+        <div className='code-heading'>
+          Generated code for {this.selectedLanguageName}
+        </div>
+        <Container className='d-flex'>
           <Row>
-            <Col id='code-window-sidebar' sm={3}>
+            <Col id='code-window-sidebar' xs={12}>
               <ListGroup>
                 {Object.keys(this.languages).map((key) => (
                   <ListGroup.Item
@@ -102,11 +105,8 @@ class CodeTemplate extends Component {
               </ListGroup>
               <v1 />
             </Col>
-            <Col sm={9}>
+            <Col className='editor-body-wrapper' xs={12}>
               <div id='code-window-body'>
-                <div className='code-heading'>
-                  Generated code for {this.selectedLanguageName}
-                </div>
                 <CopyToClipboard
                   text={
                     this.state.codeSnippet
