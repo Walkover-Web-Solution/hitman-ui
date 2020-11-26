@@ -33,7 +33,9 @@ export const fetchTabsFromIdb = (props) => {
             }
 
             tabsList[newTab.id] = newTab
-            tabsMetadata.tabsOrder.push(newTab.id)
+            if (!tabsMetadata.tabsOrder.includes(newTab.id)) {
+              tabsMetadata.tabsOrder.push(newTab.id)
+            }
             tabsMetadata.activeTabId = newTab.id
             indexedDbService.addData('tabs', newTab)
             indexedDbService.updateData(

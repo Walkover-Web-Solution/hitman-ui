@@ -56,12 +56,7 @@ button.btn.btn-success.publish-collection-button {
   display: grid;
   grid-template-columns: 0.5fr 1.5fr;
   .versions-section {
-    margin: 10px;
-    .selected-version {
-      padding: 10px;
-      margin: 4px;
-      width: 80%;
-    }
+    margin: 10px; 
     .version-groups {
       padding: 10px;
     }
@@ -206,4 +201,10 @@ button.btn.btn-success.publish-collection-button {
   float: right;
   background: #9B51E0;
   padding: 5px;
+}
+
+span.tag {
+  background: #cadec8;
+  margin-right: 10px;
+  padding: 3px;
 }

@@ -19,10 +19,9 @@ function tabsReducer (state = initialState, action) {
       return tabs
 
     case tabsActionTypes.OPEN_IN_NEW_TAB:
-      tabs = {
-        tabs: { ...state.tabs, [action.tab.id]: action.tab },
-        tabsOrder: [...state.tabsOrder, action.tab.id]
-      }
+      tabs = {}
+      tabs.tabs = { ...state.tabs, [action.tab.id]: action.tab }
+      tabs.tabsOrder = state.tabsOrder.includes(action.tab.id) ? [...state.tabsOrder] : [...state.tabsOrder, action.tab.id]
       return tabs
 
     case tabsActionTypes.CLOSE_TAB:
@@ -50,15 +49,14 @@ function tabsReducer (state = initialState, action) {
     case tabsActionTypes.FETCH_TABS_FROM_IDB:
       tabs = {
         tabs: { ...state.tabsList, ...action.tabsList },
-        tabsOrder: [...state.tabsOrder, ...action.tabsMetadata.tabsOrder],
+        tabsOrder: [...state.tabsOrder],
         activeTabId: action.tabsMetadata.activeTabId
       }
-      if (state.tabsOrder.length) {
-        if (action.tabsMetadata.tabsOrder.includes(state.tabsOrder[0])) {
-          const index = tabs.tabsOrder.indexOf(state.tabsOrder[0])
-          tabs.tabsOrder.splice(index, 1)
+      action.tabsMetadata.tabsOrder.forEach(t => {
+        if (!tabs.tabsOrder.includes(t)) {
+          tabs.tabsOrder.push(t)
         }
-      }
+      })
       return tabs
 
     case tabsActionTypes.REPLACE_TAB: {

@@ -14,7 +14,7 @@ class DeleteModal extends Component {
     this.state = {}
   }
 
-  handleSubmit (e) {
+  handleSubmit = (e) => {
     e.preventDefault()
     this.doSubmit()
   };

@@ -237,7 +237,7 @@ class Endpoints extends Component {
     e.preventDefault()
 
     if (!this.draggedItem) {
-      console.log('')
+      //
     } else {
       if (this.draggedItem === destinationEndpointId) {
         this.draggedItem = null
@@ -467,7 +467,15 @@ class Endpoints extends Component {
                   this.handleDisplay(
                     this.props.endpoints[endpointId],
                     this.props.group_id,
-                    this.props.collection_id
+                    this.props.collection_id,
+                    true
+                  )}
+                onDoubleClick={() =>
+                  this.handleDisplay(
+                    this.props.endpoints[endpointId],
+                    this.props.group_id,
+                    this.props.collection_id,
+                    false
                   )}
               >
                 <div
