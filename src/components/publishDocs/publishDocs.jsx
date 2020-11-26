@@ -57,7 +57,7 @@ class PublishDocs extends Component {
     this.setState({
       selectedCollectionId: URI.parseQuery(this.props.location.search).collectionId
     })
-    this.fetchAll(this.props)
+    // this.fetchAll(this.props)
     this.extractCollectionInfo()
   }
 
@@ -177,7 +177,6 @@ class PublishDocs extends Component {
 
   filterEndpoints (groupId) {
     const endpoints = {}
-    console.log('this.endpoints', this.endpoints)
     for (let i = 0; i < Object.keys(this.endpoints).length; i++) {
       if ((this.endpoints[Object.keys(this.endpoints)[i]].isPublished === true ||
         this.endpoints[Object.keys(this.endpoints)[i]].state === 'Pending') &&
@@ -186,7 +185,6 @@ class PublishDocs extends Component {
         endpoints[Object.keys(this.endpoints)[i]] = this.endpoints[Object.keys(this.endpoints)[i]]
       }
     }
-    console.log('endpoints', endpoints)
     return (
       <span>
         {Object.keys(endpoints).map((endpointId) =>
