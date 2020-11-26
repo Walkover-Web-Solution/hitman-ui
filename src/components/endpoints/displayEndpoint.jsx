@@ -669,6 +669,7 @@ class DisplayEndpoint extends Component {
       timeElapsed,
       createdAt
     }
+    console.log('saving history')
     this.props.add_history(obj)
   };
 
@@ -694,7 +695,7 @@ class DisplayEndpoint extends Component {
       toast.error('Invalid JSON Body')
     }
     await this.handleApiCall(api, body, headers, this.state.data.body.type)
-    this.setData()
+    isDashboardRoute(this.props) && this.setData()
   };
 
   extractPosition (groupId) {
