@@ -34,6 +34,7 @@ class UserInfo extends Component {
   navigateToPublishDocs () {
     const collection = this.getFirstPublicCollection()
     this.props.open_publish_docs(collection)
+    this.props.open_collection(null) // for closing secondary-sidebar
   }
 
   render () {

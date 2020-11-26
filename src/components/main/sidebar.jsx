@@ -515,6 +515,7 @@ class SideBar extends Component {
               get_notification_count={this.getNotificationCount.bind(this)}
               get_public_collections={this.getPublicCollections.bind(this)}
               open_publish_docs={this.openPublishDocs.bind(this)}
+              open_collection={this.openCollection.bind(this)}
             />
           </div>)}
       </nav>
