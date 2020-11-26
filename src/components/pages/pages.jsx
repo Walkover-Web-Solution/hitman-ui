@@ -102,8 +102,7 @@ class Pages extends Component {
                 id='accordion'
                 key={this.props.index}
               >
-                {/* <div className="card"> */}
-                {/* <div className="card-header" id="custom-card-header"> */}
+
                 <button
                   draggable
                   onDragStart={(e) => this.props.onDragStart(e, pageId)}
@@ -154,36 +153,62 @@ class Pages extends Component {
                       >
                         Duplicate
                       </a>
-                      {this.props.pages[pageId].state === 'Draft' ||
-                        this.props.pages[pageId].state === 'Reject'
-                        ? (
-                          <a
-                            className='dropdown-item'
-                            onClick={() =>
-                              this.handlePublicPageState(this.props.pages[pageId])}
-                          >
-                            Make Public
-                          </a>
-                          )
-                        : null}
+
                       {
-                        this.props.pages[pageId].state === 'Pending'
-                          ? (
-                            <a
-                              className='dropdown-item'
-                              onClick={() =>
-                                this.handleCancelRequest(this.props.pages[pageId])}
-                            >
-                              Cancel Request
-                            </a>
-                            )
-                          : null
-                      }
+                          this.props.pages[pageId]?.isPublished
+                            ? (
+                              <a className='dropdown-item' disabled>
+                                Approved
+                              </a>
+                              )
+                            : (
+                              <>
+                                {
+                          this.props.pages[pageId].state === 'Draft' ||
+                            this.props.pages[pageId].state === 'Reject'
+                            ? (
+                              <a
+                                className='dropdown-item'
+                                onClick={() =>
+                                  this.handlePublicPageState(
+                                    this.props.pages[pageId]
+                                  )}
+                              >
+                                Make Public
+                              </a>
+                              )
+                            : null
+                        }
+
+                                {this.props.pages[pageId].state ===
+                          'Approved'
+                                  ? (
+                                    <a className='dropdown-item' disabled>
+                                      Approved
+                                    </a>
+                                    )
+                                  : null}
+
+                                {this.props.pages[pageId].state ===
+                          'Pending'
+                                  ? (
+                                    <a
+                                      className='dropdown-item'
+                                      onClick={() =>
+                                        this.handleCancelRequest(
+                                          this.props.pages[pageId]
+                                        )}
+                                    >
+                                      Cancel Request
+                                    </a>
+                                    )
+                                  : null}
+                              </>
+                              )
+                        }
                     </div>
                   </div>
                 </button>
-                {/* </div> */}
-                {/* </div> */}
               </div>
               )
             : (

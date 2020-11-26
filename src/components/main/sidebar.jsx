@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { Route, Switch, withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
-
 import Collections from '../collections/collections'
 import ProtectedRoute from '../common/protectedRoute'
 import { isDashboardRoute } from '../common/utility'
@@ -80,9 +79,6 @@ class SideBar extends Component {
         historySnapshot: Object.values(this.props.historySnapshot)
       })
     }
-    // if (this.props.location.pathname.split("/")[1] === "admin") {
-    //   this.collectionId = null;
-    // }
   }
 
   dataFetched () {
@@ -119,7 +115,6 @@ class SideBar extends Component {
   handleOnChange = (e) => {
     this.setState({ data: { ...this.state.data, filter: e.target.value } })
     let obj = Object.values(this.props.historySnapshot)
-    // if (e.target.value.length > 2) {
     if (this.props.historySnapshot) {
       obj = obj.filter(
         (o) =>
@@ -127,7 +122,6 @@ class SideBar extends Component {
             o.endpoint.BASE_URL?.includes(e.target.value) ||
             o.endpoint.uri?.includes(e.target.value)
       )
-      // }
     }
     this.setState({ historySnapshot: obj })
   };
@@ -297,11 +291,13 @@ class SideBar extends Component {
   getPublicCollections () {
     if (this.dataFetched()) {
       const pendingEndpointIds = Object.keys(this.props.endpoints).filter(
-        (eId) => this.props.endpoints[eId].state === 'Pending'
+        (eId) => this.props.endpoints[eId].state === 'Pending' || (this.props.endpoints[eId].state === 'Draft' && this.props.endpoints[eId].isPublished)
       )
       const pendingPageIds = Object.keys(this.props.pages).filter(
-        (pId) => this.props.pages[pId].state === 'Pending'
+        (pId) => this.props.pages[pId].state === 'Pending' || (this.props.pages[pId].state === 'Draft' && this.props.pages[pId].isPublished)
       )
+
+      console.log('getPublicCollections', pendingEndpointIds, pendingPageIds)
       const endpointCollections = this.findPendingEndpointsCollections(
         pendingEndpointIds
       )
@@ -358,44 +354,6 @@ class SideBar extends Component {
             isDashboardRoute(this.props, true)
               ? (
                 <>
-                  {/* <div className="user-info">
-                <div className="user-avatar">
-                  <i className="uil uil-user"></i>
-                </div>
-                <div className="user-details">
-                  <div className="user-details-heading">
-                    <div className="user-name">{this.state.name}</div>
-                    <div className="user-settings-dropdown">
-                      <div className="dropdown-toggle" data-toggle="dropdown">
-                        <i className="uil uil-cog"></i>
-                      </div>
-                      <div className="dropdown-menu">
-                        <a
-                          className="dropdown-item"
-                          onClick={() => this.openApiForm()}
-                        >
-                          Import open API
-                        </a>
-                        <Link className="dropdown-item" to="/logout">
-                          Sign out
-                        </Link>
-
-                        {this.state.showOpenApiForm &&
-                          this.state.showOpenApiForm === true && (
-                            <OpenApiForm
-                              {...this.props}
-                              show={true}
-                              onHide={() => this.closeOpenApiFormModal()}
-                              title="IMPORT API"
-                            ></OpenApiForm>
-                          )}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="user-details-text">{this.state.email}</div>
-                </div>
-              </div> */}
-
                   <div className='app-name'>
                     <img className='icon' src={hitmanIcon} />
                     HITMAN
@@ -523,5 +481,4 @@ class SideBar extends Component {
   }
 }
 
-// export default SideBar;
 export default withRouter(connect(mapStateToProps)(SideBar))

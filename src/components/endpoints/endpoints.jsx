@@ -54,12 +54,6 @@ class Endpoints extends Component {
 
   componentDidMount () { }
 
-  // onDragStart = (e, eId) => {
-  //   this.draggedItem = eId;
-  //   this.props.set_endpoint_drag();
-  //   this.props.set_source_group_id(eId, this.props.group_id);
-  // };
-
   sequencingOnFilter () {
     const filteredEndpointKeys = this.filteredEndpoints
       ? Object.keys(this.filteredEndpoints)
@@ -74,25 +68,6 @@ class Endpoints extends Component {
       }
     }
   }
-  // onDrop = (e, droppedOnItem) => {
-  //   e.preventDefault();
-  //   if (!this.draggedItem) {
-  //   } else {
-  //     if (this.draggedItem === droppedOnItem) {
-  //       this.draggedItem = null;
-  //       return;
-  //     }
-  //     let endpointIds = this.props.endpoints_order.filter(
-  //       (item) => item !== this.draggedItem
-  //     );
-  //     const index = this.props.endpoints_order.findIndex(
-  //       (eId) => eId === droppedOnItem
-  //     );
-  //     endpointIds.splice(index, 0, this.draggedItem);
-  //     this.props.set_endpoint_ids(endpointIds, this.props.group_id);
-  //     this.draggedItem = null;
-  //   }
-  // };
 
   handleDelete (endpoint) {
     this.props.delete_endpoint(endpoint)
@@ -237,7 +212,7 @@ class Endpoints extends Component {
     e.preventDefault()
 
     if (!this.draggedItem) {
-      console.log('')
+      //
     } else {
       if (this.draggedItem === destinationEndpointId) {
         this.draggedItem = null
@@ -322,25 +297,9 @@ class Endpoints extends Component {
         <>
           {this.filterEndpoints()}
           {this.sequencingOnFilter()}
-          {/* <div>
-          {this.state.showDeleteModal &&
-            endpointService.showDeleteEndpointModal(
-              this.props,
-              this.handleDelete.bind(this),
-              this.closeDeleteEndpointModal.bind(this),
-              "Delete Endpoint",
-              "Are you sure you wish to delete this endpoint? ",
-              this.state.selectedEndpoint
-            )}
-        </div> */}
           {endpoints &&
             Object.keys(endpoints).length !== 0 &&
             Object.keys(endpoints)
-              // filteredEndpointsOrder
-              //   .filter(
-              //     (eId) =>
-              //       this.props.endpoints[eId].groupId === this.props.group_id
-              //   )
               .map((endpointId) => (
                 <div className='sidebar-accordion' key={endpointId}>
                   <div className={this.props.endpoints[endpointId].state} />
@@ -400,46 +359,61 @@ class Endpoints extends Component {
                         >
                           Duplicate
                         </a>
+
                         {
-                          this.props.endpoints[endpointId].state === 'Draft' ||
-                            this.props.endpoints[endpointId].state === 'Reject'
+                          this.props.endpoints[endpointId]?.isPublished
                             ? (
-                              <a
-                                className='dropdown-item'
-                                onClick={() =>
-                                  this.handlePublicEndpointState(
-                                    this.props.endpoints[endpointId]
-                                  )}
-                              >
-                                Make Public
+                              <a className='dropdown-item' disabled>
+                                Approved
                               </a>
                               )
-                            : null
+                            : (
+                              <>
+                                {
+                                    this.props.endpoints[endpointId].state === 'Draft' || this.props.endpoints[endpointId].state === 'Reject'
+                                      ? (
+                                        <a
+                                          className='dropdown-item'
+                                          onClick={() =>
+                                            this.handlePublicEndpointState(
+                                              this.props.endpoints[endpointId]
+                                            )}
+                                        >
+                                          Make Public
+                                        </a>
+                                        )
+                                      : null
+                                  }
+
+                                {
+                                    this.props.endpoints[endpointId].state === 'Approved'
+                                      ? (
+                                        <a className='dropdown-item' disabled>
+                                          Approved
+                                        </a>
+                                        )
+                                      : null
+                                  }
+
+                                {
+                                    this.props.endpoints[endpointId].state === 'Pending'
+                                      ? (
+                                        <a
+                                          className='dropdown-item'
+                                          onClick={() =>
+                                            this.handleCancelRequest(
+                                              this.props.endpoints[endpointId]
+                                            )}
+                                        >
+                                          Cancel Request
+                                        </a>
+                                        )
+                                      : null
+                                  }
+                              </>
+                              )
                         }
 
-                        {this.props.endpoints[endpointId].state ===
-                          'Approved'
-                          ? (
-                            <a className='dropdown-item' disabled>
-                              Approved
-                            </a>
-                            )
-                          : null}
-
-                        {this.props.endpoints[endpointId].state ===
-                          'Pending'
-                          ? (
-                            <a
-                              className='dropdown-item'
-                              onClick={() =>
-                                this.handleCancelRequest(
-                                  this.props.endpoints[endpointId]
-                                )}
-                            >
-                              Cancel Request
-                            </a>
-                            )
-                          : null}
                       </div>
                     </div>
                   </button>
@@ -451,12 +425,6 @@ class Endpoints extends Component {
       return (
         <>
           {
-            // Object.keys(this.props.endpoints).length !== 0 &&
-            //   this.props.endpoints_order
-            //     .filter(
-            //       (eId) =>
-            //         this.props.endpoints[eId].groupId === this.props.group_id
-            //     )
             endpoints &&
             Object.keys(endpoints).length !== 0 &&
             Object.keys(endpoints).map((endpointId) => (
