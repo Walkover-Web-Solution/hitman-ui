@@ -669,8 +669,6 @@ class DisplayEndpoint extends Component {
       timeElapsed,
       createdAt
     }
-    console.log(this.props.tab)
-    console.log('saving history')
     this.props.add_history(obj)
   };
 
