@@ -479,7 +479,7 @@ class CollectionVersions extends Component {
                 this.props.collection_id
             )
             .map((versionId, index) => (
-              <div className="hm-sidebar-outer-block" key={index}>{this.renderBody(versionId, index)}</div>
+              <div className='hm-sidebar-outer-block' key={index}>{this.renderBody(versionId, index)}</div>
             ))}
       </>
     )
