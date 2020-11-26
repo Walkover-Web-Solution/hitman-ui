@@ -30,7 +30,7 @@ const mapStateToProps = (state) => {
   }
 }
 
-function compareByCreatedAt (a, b) {
+function compareByCreatedAt(a, b) {
   const t1 = a?.createdAt
   const t2 = b?.createdAt
   let comparison = 0
@@ -43,7 +43,7 @@ function compareByCreatedAt (a, b) {
 }
 
 class SideBar extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       data: {
@@ -55,7 +55,7 @@ class SideBar extends Component {
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     if (getCurrentUser()) {
       const user = getCurrentUser()
       const name = user.first_name + user.last_name
@@ -72,7 +72,7 @@ class SideBar extends Component {
     }
   }
 
-  componentDidUpdate (prevProps, prevState) {
+  componentDidUpdate(prevProps, prevState) {
     if (this.props.historySnapshot !== prevProps.historySnapshot) {
       this.setState({
         historySnapshot: Object.values(this.props.historySnapshot)
@@ -83,7 +83,7 @@ class SideBar extends Component {
     // }
   }
 
-  async dndMoveEndpoint (endpointId, sourceGroupId, destinationGroupId) {
+  async dndMoveEndpoint(endpointId, sourceGroupId, destinationGroupId) {
     const groups = { ...this.state.groups }
     const endpoints = { ...this.state.endpoints }
     const originalEndpoints = { ...this.state.endpoints }
@@ -112,39 +112,39 @@ class SideBar extends Component {
       obj = obj.filter(
         (o) =>
           o.endpoint.name?.includes(e.target.value) ||
-            o.endpoint.BASE_URL?.includes(e.target.value) ||
-            o.endpoint.uri?.includes(e.target.value)
+          o.endpoint.BASE_URL?.includes(e.target.value) ||
+          o.endpoint.uri?.includes(e.target.value)
       )
       // }
     }
     this.setState({ historySnapshot: obj })
   };
 
-  emptyFilter () {
+  emptyFilter() {
     const data = { ...this.state.data }
     data.filter = ''
     this.setState({ data })
   }
 
-  openCollection (collectionId) {
+  openCollection(collectionId) {
     this.collectionId = collectionId
   }
 
-  openApiForm () {
+  openApiForm() {
     this.setState({ showOpenApiForm: true })
   }
 
-  closeOpenApiFormModal () {
+  closeOpenApiFormModal() {
     this.setState({ showOpenApiForm: false })
   }
 
-  closeLoginSignupModal () {
+  closeLoginSignupModal() {
     this.setState({
       showLoginSignupModal: false
     })
   }
 
-  renderHistoryList () {
+  renderHistoryList() {
     return (
       this.state.historySnapshot &&
       this.props.historySnapshot &&
@@ -177,7 +177,7 @@ class SideBar extends Component {
     )
   }
 
-  renderTriggerList () {
+  renderTriggerList() {
     return (
       this.state.historySnapshot &&
       this.props.historySnapshot &&
@@ -210,7 +210,7 @@ class SideBar extends Component {
     )
   }
 
-  renderSearchList () {
+  renderSearchList() {
     if (this.state.data.filter !== '') {
       return (
         <div>
@@ -233,7 +233,7 @@ class SideBar extends Component {
     }
   }
 
-  render () {
+  render() {
     return (
       <nav
         className={
@@ -314,7 +314,8 @@ class SideBar extends Component {
                       }
                       id='uncontrolled-tab-example'
                     >
-                      <Tab eventKey='collection' title={<img src={collectionIcon} />}>
+
+                      <Tab eventKey='collection' title={<span><img src={collectionIcon} /> Collection </span>}>
                         {
                           !getCurrentUser()
                             ? (
@@ -324,13 +325,14 @@ class SideBar extends Component {
                                   <img src={emptyCollections} />
                                 </div>
                                 <div className='content'>
-                                  Your collection is Empty.
-                                  <br />
-                                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                  <h5>  Your collection is Empty.</h5>
+
+                                  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+</p>
                                 </div>
                                 <Button
                                   className='button'
-                                  variant='warning'
+                                  variant='primary'
                                   onClick={() =>
                                     this.setState({
                                       showLoginSignupModal: true
@@ -339,7 +341,7 @@ class SideBar extends Component {
                                   + Add here
                                 </Button>{' '}
                               </div>
-                              )
+                            )
                             : null
                         }
                         {
@@ -369,31 +371,31 @@ class SideBar extends Component {
                                   )}
                                 />
                               </Switch>
-                              )
+                            )
                             : null
                         }
                         {isDashboardRoute(this.props, true)
                           ? <></>
                           : null}
                       </Tab>
-                      <Tab eventKey='history' title={<img src={historyIcon} />}>
+                      <Tab eventKey='history' title={<span><img src={historyIcon} /> History</span>}>
                         {this.renderHistoryList()}
                       </Tab>
                       <Tab
                         eventKey='randomTrigger'
-                        title={<img src={randomTriggerIcon} />}
+                        title={<span> <img src={randomTriggerIcon} /> Random Trigger</span>}
                       >
                         {this.renderTriggerList()}
                       </Tab>
                     </Tabs>}
                 </>
-                )
+              )
               : (
                 <Route
                   path='/p/:collectionId'
                   render={(props) => <Collections {...this.props} />}
                 />
-                )
+              )
           }
         </div>
         {this.collectionId && (

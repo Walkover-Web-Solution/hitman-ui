@@ -1,18 +1,16 @@
 $border-color: rgba(227, 228, 230, 0.7);
 
-#code-window-body {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  z-index: 2;
-  margin-bottom: 20px;
-  font-size: 13px;
+#code-window-body { 
   .code-heading {
     font-size: 18px;
     font-weight: 600;
   }
   .copy-to-clipboard {
     border: none;
+    background: transparent;
+    color: #fff;
+    float: right;
+    outline: none;
     .fa-check {
       color: green;
     }
@@ -82,29 +80,33 @@ $border-color: rgba(227, 228, 230, 0.7);
   // height: 100%;
   // overflow: scroll;
   background: #252d30;
-  color: #fff;
-  padding: 20px 15px;
+  padding: 5px;
+  border-top-right-radius: 4px;
+  border-top-left-radius: 4px;
   .list-group {
-    width: 100%;
+        width: 100%;
+    display: inline-block;
     // margin-right: 15px;
     .list-group-item {
+      display: inline-block;
       background: transparent;
       border: none;
       color: #999;
       cursor: pointer;
-      padding: 7px 15px;
-      font-size: 14px;
-      font-weight: 500;
-      text-transform: capitalize;
-      display: flex;
-      width: 100%;
+      padding: 5px 10px;
+      font-size: 12px;
+      font-weight: 400;
+      text-transform: capitalize;  
+      border: 1px solid transparent;
+      border-radius: 4px;
       margin: 0;
       &:hover {
         background-color: rgba(255, 255, 255, 0.03);
       }
-      &.active {
-        background-color: rgba(255, 255, 255, 0.05);
+      &.active { 
         color: #fff;
+        border: 1px solid #E98A36;
+        background: transparent;
       }
     }
   }

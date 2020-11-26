@@ -331,7 +331,7 @@ class PublishDocs extends Component {
             <div className='grid-two'>
               <div className='versions-section'>
                 <select
-                  className='selected-version' onChange={this.setSelectedVersion.bind(this)}
+                  className='selected-versio form-contorl light-orange-bg' onChange={this.setSelectedVersion.bind(this)}
                 >
                   {
                     this.versions

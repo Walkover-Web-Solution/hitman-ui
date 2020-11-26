@@ -1,8 +1,7 @@
 .primary-sidebar {
-  background-color: #fefcf7;
+  background-color: #fff;
   color: #999;
-  width: 260px;
-  min-width: 220px;
+  width: 350px;
   font-size: 14px;
 }
 
@@ -60,7 +59,7 @@
   border-radius: 4px;
 }
 
-.search-box > i {
+.search-box>i {
   position: absolute;
   left: 32px;
   top: 0;
@@ -68,7 +67,7 @@
   font-size: 14px;
 }
 
-.search-box > input[type="text"] {
+.search-box>input[type="text"] {
   width: 100%;
   border: none;
   height: 34px;
@@ -89,7 +88,7 @@ input[type="text"]:focus {
   padding: 0 10px;
 }
 
-.sidebar-accordion > button {
+.sidebar-accordion>button {
   width: 100%;
   display: flex;
   align-items: center;
@@ -101,12 +100,14 @@ input[type="text"]:focus {
   color: inherit;
   /* font-size: 14px; */
   border-radius: 3px;
+
   &:active,
   &:focus {
     outline: none;
     border: none;
     box-shadow: none;
   }
+
   &:hover {
     .sidebar-item-action-btn {
       visibility: visible;
@@ -114,11 +115,13 @@ input[type="text"]:focus {
     }
   }
 }
+
 .sidebar-accordion-item {
   padding: 7px 10px;
   flex-grow: 1;
   display: flex;
   align-items: center;
+
   .api-label {
     margin-right: 10px;
   }
@@ -129,12 +132,12 @@ input[type="text"]:focus {
   margin-right: 10px;
 }
 
-.sidebar-accordion .sidebar-accordion-item > i {
+.sidebar-accordion .sidebar-accordion-item>i {
   display: inline-block;
   width: 30px;
 }
 
-.sidebar-accordion > button:hover {
+.sidebar-accordion>button:hover {
   background: rgba(255, 255, 255, 0.03);
 }
 
@@ -172,13 +175,13 @@ input[type="text"]:focus {
 
 .app-name {
   margin: 20px;
-  font-family: Alegreya Sans SC;
   font-style: normal;
   font-weight: bold;
   font-size: 22px;
   line-height: 26px;
   letter-spacing: 0.03em;
   color: #212224;
+
   .icon {
     margin: 5px;
   }
@@ -186,6 +189,5 @@ input[type="text"]:focus {
 
 .empty-collections {
   margin: 80px 20px 0px 20px;
-  .button {
-  }
+  text-align: center;
 }
