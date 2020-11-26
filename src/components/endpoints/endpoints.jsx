@@ -19,6 +19,13 @@ import {
 } from './redux/endpointsActions'
 import filterService from '../../services/filterService'
 
+const endpointsEnum = {
+  PENDING_STATE: 'Pending',
+  REJECT_STATE: 'Reject',
+  APPROVED_STATE: 'Approved',
+  DRAFT_STATE: 'Draft'
+}
+
 const mapStateToProps = (state) => {
   return {
     endpoints: state.endpoints,
@@ -94,7 +101,7 @@ class Endpoints extends Component {
   }
 
   async handlePublicEndpointState (endpoint) {
-    if (endpoint.state === 'Draft' || endpoint.state === 'Reject') {
+    if (this.isStateDraft(endpoint.id) || this.isStateReject(endpoint.id)) {
       this.props.pending_endpoint(endpoint)
     }
   }
@@ -262,7 +269,243 @@ class Endpoints extends Component {
     return positionWiseEndpoints
   }
 
-  render () {
+  isStateApproved (endpointId) {
+    return this.props.endpoints[endpointId].state === endpointsEnum.APPROVED_STATE
+  }
+
+  isStatePending (endpointId) {
+    return this.props.endpoints[endpointId].state === endpointsEnum.PENDING_STATE
+  }
+
+  isStateDraft (endpointId) {
+    return this.props.endpoints[endpointId].state === endpointsEnum.DRAFT_STATE
+  }
+
+  isStateReject (endpointId) {
+    return this.props.endpoints[endpointId].state === endpointsEnum.REJECT_STATE
+  }
+
+  displayEndpointName (endpointId) {
+    return (
+      <div className='sidebar-accordion-item'>
+        <div
+          className={`api-label ${this.props.endpoints[endpointId].requestType}`}
+        >
+          <div className='endpoint-request-div'>
+            {this.props.endpoints[endpointId].requestType}
+          </div>
+        </div>
+        {this.props.endpoints[endpointId].name}
+      </div>
+    )
+  }
+
+  displayDeleteOpt (endpointId) {
+    return (
+      <a
+        className='dropdown-item'
+        onClick={() =>
+          this.handleDelete(this.props.endpoints[endpointId])}
+      >
+        Delete
+      </a>
+    )
+  }
+
+  displayDuplicateOpt (endpointId) {
+    return (
+      <a
+        className='dropdown-item'
+        onClick={() =>
+          this.handleDuplicate(
+            this.props.endpoints[endpointId]
+          )}
+      >
+        Duplicate
+      </a>
+    )
+  }
+
+  displayApproveOpt () {
+    return (
+      <a className='dropdown-item' disabled>
+        Approved
+      </a>
+    )
+  }
+
+  displayMakePublicOpt (endpointId) {
+    return (
+      <a
+        className='dropdown-item'
+        onClick={() =>
+          this.handlePublicEndpointState(
+            this.props.endpoints[endpointId]
+          )}
+      >
+        Make Public
+      </a>
+    )
+  }
+
+  displayCancelRequestOpt (endpointId) {
+    return (
+      <a
+        className='dropdown-item'
+        onClick={() =>
+          this.handleCancelRequest(
+            this.props.endpoints[endpointId]
+          )}
+      >
+        Cancel Request
+      </a>
+    )
+  }
+
+  displayOtherOpt (endpointId) {
+    return (
+      <>
+        {
+          this.isStateDraft(endpointId) || this.isStateReject(endpointId)
+            ? this.displayMakePublicOpt(endpointId)
+            : null
+        }
+
+        {
+          this.isStateApproved(endpointId)
+            ? this.displayApproveOpt()
+            : null
+      }
+
+        {
+          this.isStatePending(endpointId)
+            ? this.displayCancelRequestOpt(endpointId)
+            : null
+        }
+      </>
+    )
+  }
+
+  displayEndpointOptions (endpointId) {
+    return (
+      <div className='sidebar-item-action'>
+        <div
+          className='sidebar-item-action-btn'
+          data-toggle='dropdown'
+          aria-haspopup='true'
+          aria-expanded='false'
+        >
+          <i className='uil uil-ellipsis-v' />
+        </div>
+        <div className='dropdown-menu dropdown-menu-right'>
+          {this.displayDeleteOpt(endpointId)}
+          {this.displayDuplicateOpt(endpointId)}
+          {
+              this.props.endpoints[endpointId]?.isPublished
+                ? this.displayApproveOpt()
+                : this.displayOtherOpt(endpointId)
+            }
+
+        </div>
+      </div>
+    )
+  }
+
+  displaySingleEndpoint (endpointId) {
+    return (
+      <div className='sidebar-accordion' key={endpointId}>
+        <div className={this.props.endpoints[endpointId].state} />
+        <button
+          draggable
+          onDragOver={(e) => this.onDragOver(e, endpointId)}
+          onDragStart={(e) => this.onDragStart(e, endpointId)}
+          onDrop={(e) => this.onDrop(e, endpointId)}
+          onClick={() =>
+            this.handleDisplay(
+              this.props.endpoints[endpointId],
+              this.props.group_id,
+              this.props.collection_id,
+              true
+            )}
+          onDoubleClick={() =>
+            this.handleDisplay(
+              this.props.endpoints[endpointId],
+              this.props.group_id,
+              this.props.collection_id,
+              false
+            )}
+        >
+          {this.displayEndpointName(endpointId)}
+          {this.displayEndpointOptions(endpointId)}
+        </button>
+      </div>
+    )
+  }
+
+  displayUserEndpoints (endpoints) {
+    return (
+      <>
+        {this.filterEndpoints()}
+        {this.sequencingOnFilter()}
+        {endpoints &&
+        Object.keys(endpoints).length !== 0 &&
+        Object.keys(endpoints)
+          .map((endpointId) => (
+            this.displaySingleEndpoint(endpointId)
+          ))}
+      </>
+    )
+  }
+
+  displayPublicSingleEndpoint (endpointId) {
+    return (
+      <div
+        className='hm-sidebar-item'
+        key={endpointId}
+        onClick={() =>
+          this.handleDisplay(
+            this.props.endpoints[endpointId],
+            this.props.group_id,
+            this.props.collection_id,
+            true
+          )}
+        onDoubleClick={() =>
+          this.handleDisplay(
+            this.props.endpoints[endpointId],
+            this.props.group_id,
+            this.props.collection_id,
+            false
+          )}
+      >
+        <div
+          className={`api-label ${this.props.endpoints[endpointId].requestType}`}
+        >
+          <div className='endpoint-request-div'>
+            {this.props.endpoints[endpointId].requestType}
+          </div>
+        </div>
+        <div className='endpoint-name-div'>
+          {this.props.endpoints[endpointId].name}
+        </div>
+      </div>
+    )
+  }
+
+  displayPublicEndpoints (endpoints) {
+    return (
+      <>
+        {
+        endpoints &&
+        Object.keys(endpoints).length !== 0 &&
+        Object.keys(endpoints).map((endpointId) => (
+          this.displayPublicSingleEndpoint(endpointId)
+        ))
+      }
+      </>
+    )
+  }
+
+  setFilterFlag () {
     if (this.state.filter !== this.props.filter) {
       this.filterFlag = false
     }
@@ -270,197 +513,51 @@ class Endpoints extends Component {
       this.filteredEndpoints = { ...this.props.endpoints }
       this.filteredEndpointsOrder = [...this.props.endpoints_order]
     }
+  }
 
+  filterEndpointIdsByGroup () {
     const endpointIds = Object.keys(this.props.endpoints).filter(
       (eId) =>
         this.props.endpoints[eId].groupId &&
         this.props.endpoints[eId].groupId === this.props.group_id
     )
+    return endpointIds
+  }
+
+  extractEndpointsFromIds (endpointIds) {
     let endpointsArray = []
     for (let index = 0; index < endpointIds.length; index++) {
       const id = endpointIds[index]
       const endpoint = this.props.endpoints[id]
       endpointsArray = [...endpointsArray, endpoint]
     }
-
     endpointsArray.sort(function (a, b) {
       return a.position - b.position
     })
+    return endpointsArray || []
+  }
+
+  getEndpointsEntity (endpointsArray) {
     const endpoints = {}
     for (let index = 0; index < endpointsArray.length; index++) {
       const id = endpointsArray[index].id || endpointsArray[index].requestId
       endpoints[id] = this.props.endpoints[id]
     }
+    return endpoints || {}
+  }
+
+  render () {
+    this.setFilterFlag()
+    const endpointIds = this.filterEndpointIdsByGroup()
+    let endpointsArray = []
+    endpointsArray = this.extractEndpointsFromIds(endpointIds)
+    let endpoints = {}
+    endpoints = this.getEndpointsEntity(endpointsArray)
 
     if (isDashboardRoute(this.props, true)) {
-      return (
-        <>
-          {this.filterEndpoints()}
-          {this.sequencingOnFilter()}
-          {endpoints &&
-            Object.keys(endpoints).length !== 0 &&
-            Object.keys(endpoints)
-              .map((endpointId) => (
-                <div className='sidebar-accordion' key={endpointId}>
-                  <div className={this.props.endpoints[endpointId].state} />
-                  <button
-                    draggable
-                    onDragOver={(e) => this.onDragOver(e, endpointId)}
-                    onDragStart={(e) => this.onDragStart(e, endpointId)}
-                    onDrop={(e) => this.onDrop(e, endpointId)}
-                    onClick={() =>
-                      this.handleDisplay(
-                        this.props.endpoints[endpointId],
-                        this.props.group_id,
-                        this.props.collection_id,
-                        true
-                      )}
-                    onDoubleClick={() =>
-                      this.handleDisplay(
-                        this.props.endpoints[endpointId],
-                        this.props.group_id,
-                        this.props.collection_id,
-                        false
-                      )}
-                  >
-                    <div className='sidebar-accordion-item'>
-                      <div
-                        className={`api-label ${this.props.endpoints[endpointId].requestType}`}
-                      >
-                        <div className='endpoint-request-div'>
-                          {this.props.endpoints[endpointId].requestType}
-                        </div>
-                      </div>
-                      {this.props.endpoints[endpointId].name}
-                    </div>
-                    <div className='sidebar-item-action'>
-                      <div
-                        className='sidebar-item-action-btn'
-                        data-toggle='dropdown'
-                        aria-haspopup='true'
-                        aria-expanded='false'
-                      >
-                        <i className='uil uil-ellipsis-v' />
-                      </div>
-                      <div className='dropdown-menu dropdown-menu-right'>
-                        <a
-                          className='dropdown-item'
-                          onClick={() =>
-                            this.handleDelete(this.props.endpoints[endpointId])}
-                        >
-                          Delete
-                        </a>
-                        <a
-                          className='dropdown-item'
-                          onClick={() =>
-                            this.handleDuplicate(
-                              this.props.endpoints[endpointId]
-                            )}
-                        >
-                          Duplicate
-                        </a>
-
-                        {
-                          this.props.endpoints[endpointId]?.isPublished
-                            ? (
-                              <a className='dropdown-item' disabled>
-                                Approved
-                              </a>
-                              )
-                            : (
-                              <>
-                                {
-                                    this.props.endpoints[endpointId].state === 'Draft' || this.props.endpoints[endpointId].state === 'Reject'
-                                      ? (
-                                        <a
-                                          className='dropdown-item'
-                                          onClick={() =>
-                                            this.handlePublicEndpointState(
-                                              this.props.endpoints[endpointId]
-                                            )}
-                                        >
-                                          Make Public
-                                        </a>
-                                        )
-                                      : null
-                                  }
-
-                                {
-                                    this.props.endpoints[endpointId].state === 'Approved'
-                                      ? (
-                                        <a className='dropdown-item' disabled>
-                                          Approved
-                                        </a>
-                                        )
-                                      : null
-                                  }
-
-                                {
-                                    this.props.endpoints[endpointId].state === 'Pending'
-                                      ? (
-                                        <a
-                                          className='dropdown-item'
-                                          onClick={() =>
-                                            this.handleCancelRequest(
-                                              this.props.endpoints[endpointId]
-                                            )}
-                                        >
-                                          Cancel Request
-                                        </a>
-                                        )
-                                      : null
-                                  }
-                              </>
-                              )
-                        }
-
-                      </div>
-                    </div>
-                  </button>
-                </div>
-              ))}
-        </>
-      )
+      return this.displayUserEndpoints(endpoints)
     } else {
-      return (
-        <>
-          {
-            endpoints &&
-            Object.keys(endpoints).length !== 0 &&
-            Object.keys(endpoints).map((endpointId) => (
-              <div
-                className='hm-sidebar-item'
-                key={endpointId}
-                onClick={() =>
-                  this.handleDisplay(
-                    this.props.endpoints[endpointId],
-                    this.props.group_id,
-                    this.props.collection_id,
-                    true
-                  )}
-                onDoubleClick={() =>
-                  this.handleDisplay(
-                    this.props.endpoints[endpointId],
-                    this.props.group_id,
-                    this.props.collection_id,
-                    false
-                  )}
-              >
-                <div
-                  className={`api-label ${this.props.endpoints[endpointId].requestType}`}
-                >
-                  <div className='endpoint-request-div'>
-                    {this.props.endpoints[endpointId].requestType}
-                  </div>
-                </div>
-                <div className='endpoint-name-div'>
-                  {this.props.endpoints[endpointId].name}
-                </div>
-              </div>
-            ))
-          }
-        </>
-      )
+      return this.displayPublicEndpoints(endpoints)
     }
   }
 }
