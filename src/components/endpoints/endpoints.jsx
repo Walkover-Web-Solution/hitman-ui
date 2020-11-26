@@ -467,7 +467,15 @@ class Endpoints extends Component {
                   this.handleDisplay(
                     this.props.endpoints[endpointId],
                     this.props.group_id,
-                    this.props.collection_id
+                    this.props.collection_id,
+                    true
+                  )}
+                onDoubleClick={() =>
+                  this.handleDisplay(
+                    this.props.endpoints[endpointId],
+                    this.props.group_id,
+                    this.props.collection_id,
+                    false
                   )}
               >
                 <div
