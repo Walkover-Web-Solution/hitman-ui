@@ -339,7 +339,7 @@ class Groups extends Component {
       }
     } else {
       if (!this.draggedItem) {
-        console.log('message')
+        //
       } else {
         if (this.draggedItem === destinationGroupId) {
           this.draggedItem = null

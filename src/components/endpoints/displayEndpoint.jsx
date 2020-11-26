@@ -763,7 +763,6 @@ class DisplayEndpoint extends Component {
         this.props.add_endpoint(endpoint, groupId || this.state.groupId)
       } else {
         if (this.state.saveAsFlag) {
-          console.log('add new by shortid')
           endpoint.requestId = shortid.generate()
           endpoint.position = this.extractPosition(
             groupId || this.state.groupId
