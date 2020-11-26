@@ -19,10 +19,9 @@ import {
 } from './redux/collectionsActions'
 import './collections.scss'
 import PublishDocsModal from '../publicEndpoint/publishDocsModal'
-import { isAdmin, getCurrentUser } from '../auth/authService'
+import { isAdmin } from '../auth/authService'
 import TagManager from 'react-gtm-module'
 import TagManagerModal from './tagModal'
-import UserNotification from './userNotification'
 
 const EMPTY_STRING = ''
 
@@ -469,89 +468,6 @@ class CollectionsComponent extends Component {
     }
   }
 
-  findPendingPagesCollections (pendingPageIds) {
-    const versionsArray = []
-    for (let i = 0; i < pendingPageIds.length; i++) {
-      const pageId = pendingPageIds[i]
-      if (this.props.pages[pageId]) {
-        const versionId = this.props.pages[pageId].versionId
-        versionsArray.push(versionId)
-      }
-    }
-    const collectionsArray = []
-    for (let i = 0; i < versionsArray.length; i++) {
-      const versionId = versionsArray[i]
-      if (this.props.versions[versionId]) {
-        const collectionId = this.props.versions[versionId].collectionId
-        collectionsArray.push(collectionId)
-      }
-    }
-    return collectionsArray
-  }
-
-  findPendingEndpointsCollections (pendingEndpointIds) {
-    const groupsArray = []
-    for (let i = 0; i < pendingEndpointIds.length; i++) {
-      const endpointId = pendingEndpointIds[i]
-      if (this.props.endpoints[endpointId]) {
-        const groupId = this.props.endpoints[endpointId].groupId
-        groupsArray.push(groupId)
-      }
-    }
-
-    const versionsArray = []
-    for (let i = 0; i < groupsArray.length; i++) {
-      const groupId = groupsArray[i]
-      if (this.props.groups[groupId]) {
-        const versionId = this.props.groups[groupId].versionId
-        versionsArray.push(versionId)
-      }
-    }
-    const collectionsArray = []
-    for (let i = 0; i < versionsArray.length; i++) {
-      const versionId = versionsArray[i]
-      if (this.props.versions[versionId]) {
-        const collectionId = this.props.versions[versionId].collectionId
-        collectionsArray.push(collectionId)
-      }
-    }
-    return collectionsArray
-  }
-
-  getPublicCollections () {
-    if (this.dataFetched()) {
-      const pendingEndpointIds = Object.keys(this.props.endpoints).filter(
-        (eId) => this.props.endpoints[eId].state === 'Pending'
-      )
-      const pendingPageIds = Object.keys(this.props.pages).filter(
-        (pId) => this.props.pages[pId].state === 'Pending'
-      )
-
-      const endpointCollections = this.findPendingEndpointsCollections(
-        pendingEndpointIds
-      )
-      const pageCollections = this.findPendingPagesCollections(pendingPageIds)
-
-      const allCollections = [
-        ...new Set([...endpointCollections, ...pageCollections])
-      ]
-      const finalCollections = []
-      for (let i = 0; i < allCollections.length; i++) {
-        const collectionId = allCollections[i]
-        if (this.props.collections[collectionId]?.isPublic) {
-          finalCollections.push(collectionId)
-        }
-      }
-      return finalCollections
-    }
-  }
-
-  getNotificationCount () {
-    const collections = this.getPublicCollections()
-
-    return collections.length || 0
-  }
-
   render () {
     if (isDashboardRoute(this.props, true)) {
       let finalCollections = []
@@ -664,15 +580,6 @@ class CollectionsComponent extends Component {
             {finalCollections.map((collectionId, index) =>
               this.renderBody(collectionId, 'allCollections')
             )}
-            {getCurrentUser() && (
-              <div className='fixed'>
-                <UserNotification
-                  {...this.props}
-                  get_notification_count={this.getNotificationCount.bind(this)}
-                  get_public_collections={this.getPublicCollections.bind(this)}
-                  open_publish_docs={this.openPublishDocs.bind(this)}
-                />
-              </div>)}
           </div>
         </div>
       )
