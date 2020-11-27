@@ -62,6 +62,7 @@ class Groups extends Component {
         edit: false,
         share: false
       },
+      theme: '',
       filter: ''
     }
 
@@ -78,6 +79,12 @@ class Groups extends Component {
       versionId: versionId,
       groupId: groupId
     })
+  }
+
+  componentDidMount () {
+    if (!this.state.theme) {
+      this.setState({ theme: this.props.collections[this.props.collection_id].theme })
+    }
   }
 
   handleAddEndpoint (groupId, versions, groups) {
@@ -412,7 +419,7 @@ class Groups extends Component {
         }
       }
     }
-
+    const { theme } = this.state
     return (
       <div>
         {
@@ -555,7 +562,7 @@ class Groups extends Component {
               )
             : (
               <div className='hm-sidebar-block'>
-                <div className='hm-sidebar-label'>
+                <div className='hm-sidebar-label' style={{ color: theme }}>
                   {this.props.groups[groupId].name}
                 </div>
                 <Endpoints

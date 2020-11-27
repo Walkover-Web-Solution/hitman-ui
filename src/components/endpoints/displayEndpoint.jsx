@@ -1450,6 +1450,7 @@ class DisplayEndpoint extends Component {
   }
 
   render () {
+    console.log('displac endpoits-->', this.props)
     this.endpointId = this.props.endpointId
       ? this.props.endpointId
       : isDashboardRoute(this.props)
@@ -1664,27 +1665,32 @@ class DisplayEndpoint extends Component {
                 : (
                   <div className='hm-endpoint-wrap'>
                     <div className='hm-endpoint-header'>
-                      <div
-                        className={`api-label api-label-lg ${this.state.data.method}`}
-                      >
-                        {this.state.data.method}
+                      <div class='input-group mb-3'>
+                        <div class='input-group-prepend'>
+                          <span
+                            className={`api-label api-label-lg input-group-text ${this.state.data.method}`}
+                          >
+                            {this.state.data.method}
+                          </span>
+                        </div>
+                        <div class='form-control'>
+                          <HostContainer
+                            {...this.props}
+                            groupId={this.state.groupId}
+                            set_base_url={this.setBaseUrl.bind(this)}
+                            custom_host={this.state.endpoint.BASE_URL}
+                          /> {this.state.data.updatedUri}
+                        </div>
                       </div>
+
                     </div>
-                    <div className='endpoint-host'>
-                      <HostContainer
-                        {...this.props}
-                        groupId={this.state.groupId}
-                        set_base_url={this.setBaseUrl.bind(this)}
-                        custom_host={this.state.endpoint.BASE_URL}
-                      />
-                    </div>
+
                     <input
                       ref={this.uri}
                       type='hidden'
                       value={this.state.data.updatedUri}
                       name='updatedUri'
                     />
-                    <div className='endpoint-uri'>{this.state.data.updatedUri}</div>
                   </div>
                   )
             }

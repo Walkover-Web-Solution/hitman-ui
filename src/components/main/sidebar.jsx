@@ -331,7 +331,7 @@ class SideBar extends Component {
                                   </p>
                                 </div>
                                 <Button
-                                  className='button'
+                                  className='btn-lg'
                                   variant='primary'
                                   onClick={() =>
                                     this.setState({
