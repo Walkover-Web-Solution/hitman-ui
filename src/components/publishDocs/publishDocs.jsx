@@ -312,23 +312,23 @@ class PublishDocs extends Component {
   dataFetched () {
     return (
       this.props.collections &&
-    this.props.versions &&
-    this.props.groups &&
-    this.props.endpoints &&
-    this.props.pages
+      this.props.versions &&
+      this.props.groups &&
+      this.props.endpoints &&
+      this.props.pages
     )
   }
 
   isPageApprovalPending (page) {
     return page?.state === publishDocsEnum.PENDING_STATE ||
-   (page?.state === publishDocsEnum.DRAFT_STATE &&
-     page?.isPublished)
+      (page?.state === publishDocsEnum.DRAFT_STATE &&
+        page?.isPublished)
   }
 
   isEndpointApprovalPending (endpoint) {
     return endpoint?.state === publishDocsEnum.PENDING_STATE ||
-  (endpoint?.state === publishDocsEnum.DRAFT_STATE &&
-    endpoint?.isPublished)
+      (endpoint?.state === publishDocsEnum.DRAFT_STATE &&
+        endpoint?.isPublished)
   }
 
   collectionHasPageChanges (versionIds) {
@@ -513,14 +513,16 @@ class PublishDocs extends Component {
   }
 
   checkPageState () {
-    if (this.state.pages[this.state.selectedPageId].state === publishDocsEnum.REJECT_STATE) {
-      return (
-        <DisplayPage rejected pageId={this.state.selectedPageId} groupId={this.state.selectedGroupId} {...this.props} />
-      )
-    } else {
-      return (
-        <DisplayPage pageId={this.state.selectedPageId} groupId={this.state.selectedGroupId} {...this.props} />
-      )
+    if (this.state.pages) {
+      if (this.state.pages[this.state.selectedPageId]?.state === publishDocsEnum.REJECT_STATE) {
+        return (
+          <DisplayPage rejected pageId={this.state.selectedPageId} groupId={this.state.selectedGroupId} {...this.props} />
+        )
+      } else {
+        return (
+          <DisplayPage pageId={this.state.selectedPageId} groupId={this.state.selectedGroupId} {...this.props} />
+        )
+      }
     }
   }
 
