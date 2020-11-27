@@ -1716,14 +1716,8 @@ class DisplayEndpoint extends Component {
                         set_base_url={this.setBaseUrl.bind(this)}
                         custom_host={this.state.endpoint.BASE_URL}
                       />
+                      <span>{this.state.data.updatedUri}</span>
                     </div>
-                    <input
-                      ref={this.uri}
-                      type='hidden'
-                      value={this.state.data.updatedUri}
-                      name='updatedUri'
-                    />
-                    <div className='endpoint-uri'>{this.state.data.updatedUri}</div>
                   </div>
                   )
             }
