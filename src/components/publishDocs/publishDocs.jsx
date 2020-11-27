@@ -344,9 +344,23 @@ class PublishDocs extends Component {
             {this.props.endpoints[this.state.selectedEndpointId]?.name}
           </div>
           {this.endpointPublishAndReject()}
-          <DisplayEndpoint endpointId={this.state.selectedEndpointId} groupId={this.state.selectedGroupId} {...this.props} />
+          {this.checkEndpointState()}
         </div>
 
+      )
+    }
+  }
+
+  checkEndpointState () {
+    if (this.state.endpoints[this.state.selectedEndpointId].state === 'Reject') {
+      console.log('Reject')
+      return (
+        <DisplayEndpoint rejected endpointId={this.state.selectedEndpointId} groupId={this.state.selectedGroupId} {...this.props} />
+      )
+    } else {
+      console.log('Not reject')
+      return (
+        <DisplayEndpoint endpointId={this.state.selectedEndpointId} groupId={this.state.selectedGroupId} {...this.props} />
       )
     }
   }
@@ -387,11 +401,20 @@ class PublishDocs extends Component {
             {this.props.pages[this.state.selectedPageId]?.name}
           </div>
           {this.pagePublishAndReject()}
-          <DisplayPage
-            pageId={this.state.selectedPageId} groupId={this.state.selectedGroupId}
-            {...this.props}
-          />
+          {this.checkPageState()}
         </div>
+      )
+    }
+  }
+
+  checkPageState () {
+    if (this.state.pages[this.state.selectedPageId].state === 'Reject') {
+      return (
+        <DisplayPage rejected pageId={this.state.selectedPageId} groupId={this.state.selectedGroupId} {...this.props} />
+      )
+    } else {
+      return (
+        <DisplayPage pageId={this.state.selectedPageId} groupId={this.state.selectedGroupId} {...this.props} />
       )
     }
   }
