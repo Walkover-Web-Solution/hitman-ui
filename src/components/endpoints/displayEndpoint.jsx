@@ -1718,6 +1718,12 @@ class DisplayEndpoint extends Component {
                       />
                       <span>{this.state.data.updatedUri}</span>
                     </div>
+                    <input
+                      ref={this.uri}
+                      type='hidden'
+                      value={this.state.data.updatedUri}
+                      name='updatedUri'
+                    />
                   </div>
                   )
             }
