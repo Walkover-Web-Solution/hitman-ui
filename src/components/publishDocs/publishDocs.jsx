@@ -165,6 +165,10 @@ class PublishDocs extends Component {
 
   async handleApprovePageRequest (pageId) {
     this.props.approve_page(this.props.pages[pageId])
+  }
+
+  async handleRejectPageRequest (pageId) {
+    this.props.reject_page(this.props.pages[pageId])
     if (this.state.pages[pageId].isPublished) {
       //
     } else {
@@ -180,10 +184,6 @@ class PublishDocs extends Component {
         })
       }
     }
-  }
-
-  async handleRejectPageRequest (pageId) {
-    this.props.reject_page(this.props.pages[pageId])
   }
 
   displayState (endpoint) {
