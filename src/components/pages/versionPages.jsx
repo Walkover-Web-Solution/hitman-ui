@@ -50,7 +50,7 @@ class VersionPages extends Component {
     e.preventDefault()
 
     if (!this.draggedItem) {
-      console.log('')
+      //
     } else {
       if (this.draggedItem === destinationPageId) {
         this.draggedItem = null

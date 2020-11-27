@@ -219,8 +219,6 @@ class DisplayEndpoint extends Component {
     let originalParams = []
     let originalHeaders = []
     let pathVariables = []
-    // const split = this.props.location.pathname.split('/')
-    endpointId = this.endpointId
     const { endpoints } = store.getState()
     const { groups } = store.getState()
     const { versions } = store.getState()
@@ -649,7 +647,7 @@ class DisplayEndpoint extends Component {
       name: this.state.data.name,
       requestType: this.state.data.method,
       body: body,
-      status: this.props.tab.status || 'NEW',
+      status: this.props.tab?.status || tabStatusTypes.NEW,
       headers: headersData,
       params: updatedParams,
       pathVariables: pathVariables,
@@ -696,7 +694,7 @@ class DisplayEndpoint extends Component {
       toast.error('Invalid JSON Body')
     }
     await this.handleApiCall(api, body, headers, this.state.data.body.type)
-    this.setData()
+    isDashboardRoute(this.props) && this.setData()
   };
 
   extractPosition (groupId) {
@@ -763,7 +761,6 @@ class DisplayEndpoint extends Component {
         this.props.add_endpoint(endpoint, groupId || this.state.groupId)
       } else {
         if (this.state.saveAsFlag) {
-          console.log('add new by shortid')
           endpoint.requestId = shortid.generate()
           endpoint.position = this.extractPosition(
             groupId || this.state.groupId

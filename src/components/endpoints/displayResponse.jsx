@@ -5,6 +5,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard'
 import JSONPretty from 'react-json-pretty'
 import './endpoints.scss'
 import { isDashboardRoute, isSavedEndpoint } from '../common/utility'
+import { getCurrentUser } from '../auth/authService'
 
 import { Toast } from 'react-bootstrap'
 const JSONPrettyMon = require('react-json-pretty/dist/monikai')
@@ -127,7 +128,7 @@ class DisplayResponse extends Component {
                       </li>
                     </ul>
                     {
-                      isSavedEndpoint(this.props) && isDashboardRoute(this.props)
+                      getCurrentUser() && isSavedEndpoint(this.props) && isDashboardRoute(this.props)
                         ? (
                           <div
                             // style={{ float: "right" }}
