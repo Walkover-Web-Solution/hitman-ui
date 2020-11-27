@@ -1661,8 +1661,9 @@ class DisplayEndpoint extends Component {
                   )
                 : (
                   <div className='hm-endpoint-wrap'>
+                    <h3 className='heading-2'>List Contacts</h3>
                     <div className='hm-endpoint-header'>
-                      <div class='input-group mb-3'>
+                      <div class='input-group'>
                         <div class='input-group-prepend'>
                           <span
                             className={`api-label api-label-lg input-group-text ${this.state.data.method}`}
@@ -1919,9 +1920,9 @@ class DisplayEndpoint extends Component {
               }
               {
                 !isDashboardRoute(this.props) && (
-                  <div className='d-flex'>
+                  <div className='text-right'>
                     <button
-                      className='btn btn-primary'
+                      className='btn btn-primary btn-lg'
                       type='submit'
                       id='send-request-button'
                       onClick={() => this.handleSend()}
