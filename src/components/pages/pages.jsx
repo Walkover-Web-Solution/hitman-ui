@@ -12,6 +12,13 @@ import tabStatusTypes from '../tabs/tabStatusTypes'
 import tabService from '../tabs/tabService'
 import { closeTab, openInNewTab } from '../tabs/redux/tabsActions'
 
+const pagesEnum = {
+  PENDING_STATE: 'Pending',
+  REJECT_STATE: 'Reject',
+  APPROVED_STATE: 'Approved',
+  DRAFT_STATE: 'Draft'
+}
+
 const mapStateToProps = (state) => {
   return {
     tabs: state.tabs
@@ -73,7 +80,7 @@ class Pages extends Component {
   }
 
   async handlePublicPageState (page) {
-    if (page.state === 'Draft' || page.state === 'Reject') {
+    if (this.isStateDraft(page.id) || this.isStateReject(page.id)) {
       this.props.pending_page(page)
     }
   }
@@ -90,118 +97,201 @@ class Pages extends Component {
     this.props.reject_page(page)
   }
 
+  displayPageName (pageId) {
+    return (
+      <div className='sidebar-accordion-item'>
+        <i className='uil uil-file-alt' aria-hidden='true' />
+        {this.props.pages[pageId].name}
+      </div>
+    )
+  }
+
+  displayDeleteOpt (pageId) {
+    return (
+      <a
+        className='dropdown-item'
+        onClick={() => {
+          this.props.open_delete_page_modal(pageId)
+        }}
+      >
+        Delete
+      </a>
+    )
+  }
+
+  displayDuplicateOpt (pageId) {
+    return (
+      <a
+        className='dropdown-item'
+        onClick={() =>
+          this.handleDuplicate(this.props.pages[pageId])}
+      >
+        Duplicate
+      </a>
+    )
+  }
+
+  displayMakePublicOpt (pageId) {
+    return (
+      <a
+        className='dropdown-item'
+        onClick={() =>
+          this.handlePublicPageState(
+            this.props.pages[pageId]
+          )}
+      >
+        Make Public
+      </a>
+    )
+  }
+
+  displayCancelRequestOpt (pageId) {
+    return (
+      <a
+        className='dropdown-item'
+        onClick={() =>
+          this.handleCancelRequest(
+            this.props.pages[pageId]
+          )}
+      >
+        Cancel Request
+      </a>
+    )
+  }
+
+  displayApproveOpt () {
+    return (
+      <a className='dropdown-item' disabled>
+        Approved
+      </a>
+    )
+  }
+
+  isStateApproved (pageId) {
+    return this.props.pages[pageId].state === pagesEnum.APPROVED_STATE
+  }
+
+  isStatePending (pageId) {
+    return this.props.pages[pageId].state === pagesEnum.PENDING_STATE
+  }
+
+  isStateDraft (pageId) {
+    return this.props.pages[pageId].state === pagesEnum.DRAFT_STATE
+  }
+
+  isStateReject (pageId) {
+    return this.props.pages[pageId].state === pagesEnum.REJECT_STATE
+  }
+
+  displayOtherOpt (pageId) {
+    return (
+      <>
+        {
+          this.isStateDraft(pageId) || this.isStateReject(pageId)
+            ? this.displayMakePublicOpt(pageId)
+            : null
+        }
+        {
+          this.isStateApproved(pageId)
+            ? this.displayApproveOpt()
+            : null
+        }
+
+        {
+          this.isStatePending(pageId)
+            ? this.displayCancelRequestOpt(pageId)
+            : null
+        }
+      </>
+    )
+  }
+
+  displayPageOptions (pageId) {
+    return (
+      <div className='sidebar-item-action'>
+        <div
+          className='sidebar-item-action-btn'
+          data-toggle='dropdown'
+          aria-haspopup='true'
+          aria-expanded='false'
+          onClick={(event) => event.stopPropagation()}
+        >
+          <i className='uil uil-ellipsis-v' />
+        </div>
+        <div className='dropdown-menu dropdown-menu-right'>
+          {this.displayDeleteOpt(pageId)}
+          {this.displayDuplicateOpt(pageId)}
+          {
+              this.props.pages[pageId]?.isPublished
+                ? this.displayApproveOpt()
+                : this.displayOtherOpt(pageId)
+          }
+        </div>
+      </div>
+    )
+  }
+
+  displayUserPages (pageId) {
+    return (
+      <div
+        className='sidebar-accordion'
+        id='accordion'
+        key={this.props.index}
+      >
+        <button
+          draggable
+          onDragStart={(e) => this.props.onDragStart(e, pageId)}
+          onDragOver={(e) => {
+            e.preventDefault()
+          }}
+          onDrop={(e) => this.props.onDrop(e, pageId)}
+          data-toggle='collapse'
+          data-target={`#${pageId}`}
+          aria-expanded='true'
+          aria-controls={pageId}
+          onClick={() => {
+            const page = this.props.pages[pageId]
+            this.handleDisplay(page, this.props.collection_id, true)
+          }}
+          onDoubleClick={() => {
+            const page = this.props.pages[pageId]
+            this.handleDisplay(page, this.props.collection_id, false)
+          }}
+        >
+          {this.displayPageName(pageId)}
+          {this.displayPageOptions(pageId)}
+        </button>
+      </div>
+    )
+  }
+
+  displayPublicPages (pageId) {
+    return (
+      <div
+        className='hm-sidebar-item'
+        onClick={() => {
+          const page = this.props.pages[pageId]
+          this.handleDisplay(page, this.props.collection_id, true)
+        }}
+        onDoubleClick={() => {
+          const page = this.props.pages[pageId]
+          this.handleDisplay(page, this.props.collection_id, false)
+        }}
+      >
+        <i className='uil uil-file-alt' aria-hidden='true' />
+        {this.props.pages[pageId].name}
+      </div>
+    )
+  }
+
   render () {
     const pageId = this.props.page_id
     return (
       <>
         {
           isDashboardRoute(this.props, true)
-            ? (
-              <div
-                className='sidebar-accordion'
-                id='accordion'
-                key={this.props.index}
-              >
-                {/* <div className="card"> */}
-                {/* <div className="card-header" id="custom-card-header"> */}
-                <button
-                  draggable
-                  onDragStart={(e) => this.props.onDragStart(e, pageId)}
-                  onDragOver={(e) => {
-                    e.preventDefault()
-                  }}
-                  onDrop={(e) => this.props.onDrop(e, pageId)}
-                  data-toggle='collapse'
-                  data-target={`#${pageId}`}
-                  aria-expanded='true'
-                  aria-controls={pageId}
-                  onClick={() => {
-                    const page = this.props.pages[pageId]
-                    this.handleDisplay(page, this.props.collection_id, true)
-                  }}
-                  onDoubleClick={() => {
-                    const page = this.props.pages[pageId]
-                    this.handleDisplay(page, this.props.collection_id, false)
-                  }}
-                >
-                  <div className='sidebar-accordion-item'>
-                    <i className='uil uil-file-alt' aria-hidden='true' />
-                    {this.props.pages[pageId].name}
-                  </div>
-                  <div className='sidebar-item-action'>
-                    <div
-                      className='sidebar-item-action-btn'
-                      data-toggle='dropdown'
-                      aria-haspopup='true'
-                      aria-expanded='false'
-                      onClick={(event) => event.stopPropagation()}
-                    >
-                      <i className='uil uil-ellipsis-v' />
-                    </div>
-                    <div className='dropdown-menu dropdown-menu-right'>
-                      <a
-                        className='dropdown-item'
-                        onClick={() => {
-                          this.props.open_delete_page_modal(pageId)
-                        }}
-                      >
-                        Delete
-                      </a>
-                      <a
-                        className='dropdown-item'
-                        onClick={() =>
-                          this.handleDuplicate(this.props.pages[pageId])}
-                      >
-                        Duplicate
-                      </a>
-                      {this.props.pages[pageId].state === 'Draft' ||
-                        this.props.pages[pageId].state === 'Reject'
-                        ? (
-                          <a
-                            className='dropdown-item'
-                            onClick={() =>
-                              this.handlePublicPageState(this.props.pages[pageId])}
-                          >
-                            Make Public
-                          </a>
-                          )
-                        : null}
-                      {
-                        this.props.pages[pageId].state === 'Pending'
-                          ? (
-                            <a
-                              className='dropdown-item'
-                              onClick={() =>
-                                this.handleCancelRequest(this.props.pages[pageId])}
-                            >
-                              Cancel Request
-                            </a>
-                            )
-                          : null
-                      }
-                    </div>
-                  </div>
-                </button>
-                {/* </div> */}
-                {/* </div> */}
-              </div>
-              )
-            : (
-              <div
-                className='hm-sidebar-item'
-                onClick={() => {
-                  const page = this.props.pages[pageId]
-                  this.handleDisplay(page, this.props.collection_id, true)
-                }}
-                onDoubleClick={() => {
-                  const page = this.props.pages[pageId]
-                  this.handleDisplay(page, this.props.collection_id, false)
-                }}
-              >
-                <i className='uil uil-file-alt' aria-hidden='true' />
-                {this.props.pages[pageId].name}
-              </div>
-              )
+            ? this.displayUserPages(pageId)
+            : this.displayPublicPages(pageId)
         }
       </>
     )

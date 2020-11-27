@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { Route, Switch, withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
-
 import Collections from '../collections/collections'
 import ProtectedRoute from '../common/protectedRoute'
 import { isDashboardRoute } from '../common/utility'
@@ -80,9 +79,6 @@ class SideBar extends Component {
         historySnapshot: Object.values(this.props.historySnapshot)
       })
     }
-    // if (this.props.location.pathname.split("/")[1] === "admin") {
-    //   this.collectionId = null;
-    // }
   }
 
   dataFetched () {
@@ -119,7 +115,6 @@ class SideBar extends Component {
   handleOnChange = (e) => {
     this.setState({ data: { ...this.state.data, filter: e.target.value } })
     let obj = Object.values(this.props.historySnapshot)
-    // if (e.target.value.length > 2) {
     if (this.props.historySnapshot) {
       obj = obj.filter(
         (o) =>
@@ -127,7 +122,6 @@ class SideBar extends Component {
           o.endpoint.BASE_URL?.includes(e.target.value) ||
           o.endpoint.uri?.includes(e.target.value)
       )
-      // }
     }
     this.setState({ historySnapshot: obj })
   };
@@ -297,16 +291,15 @@ class SideBar extends Component {
   getPublicCollections () {
     if (this.dataFetched()) {
       const pendingEndpointIds = Object.keys(this.props.endpoints).filter(
-        (eId) => this.props.endpoints[eId].state === 'Pending'
+        (eId) => this.props.endpoints[eId].state === 'Pending' || (this.props.endpoints[eId].state === 'Draft' && this.props.endpoints[eId].isPublished)
       )
       const pendingPageIds = Object.keys(this.props.pages).filter(
-        (pId) => this.props.pages[pId].state === 'Pending'
+        (pId) => this.props.pages[pId].state === 'Pending' || (this.props.pages[pId].state === 'Draft' && this.props.pages[pId].isPublished)
       )
       const endpointCollections = this.findPendingEndpointsCollections(
         pendingEndpointIds
       )
       const pageCollections = this.findPendingPagesCollections(pendingPageIds)
-
       const allCollections = [
         ...new Set([...endpointCollections, ...pageCollections])
       ]
@@ -316,7 +309,6 @@ class SideBar extends Component {
 
   getNotificationCount () {
     const collections = this.getPublicCollections()
-
     return collections?.length || 0
   }
 
@@ -335,6 +327,113 @@ class SideBar extends Component {
         search: `?collectionId=${collection.id}`
       })
     }
+  }
+
+  renderEmptyCollectionsIfNotLoggedIn () {
+    return (
+      <div className='empty-collections'>
+        <div>
+          <img src={emptyCollections} />
+        </div>
+        <div className='content'>
+          <h5>  Your collection is Empty.</h5>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+        </div>
+        <Button className='button' variant='primary' onClick={() => this.setState({ showLoginSignupModal: true })}>+ Add here</Button>{' '}
+      </div>
+    )
+  }
+
+  renderCollections () {
+    return (
+      <Switch>
+        <ProtectedRoute
+          path='/dashboard/'
+          render={(props) => (
+            <Collections
+              {...this.props}
+              empty_filter={this.emptyFilter.bind(this)}
+              collection_selected={this.openCollection.bind(this)}
+              filter={this.state.data.filter}
+            />
+          )}
+        />
+        <ProtectedRoute
+          path='/admin/publish'
+          render={(props) => (
+            <Collections
+              {...this.props}
+              empty_filter={this.emptyFilter.bind(this)}
+              collection_selected={this.openCollection.bind(this)}
+              filter={this.state.data.filter}
+            />
+          )}
+        />
+      </Switch>
+    )
+  }
+
+  renderSidebarTabs () {
+    return (
+      <Tabs
+        defaultActiveKey={
+          getCurrentUser() ? 'collection' : 'randomTrigger'
+        }
+        id='uncontrolled-tab-example'
+      >
+        <Tab eventKey='collection' title={<span><img src={collectionIcon} /> Collection </span>}>
+          {
+            !getCurrentUser()
+              ? (this.renderEmptyCollectionsIfNotLoggedIn())
+              : (this.renderCollections())
+          }
+        </Tab>
+        <Tab eventKey='history' title={<span><img src={historyIcon} /> History</span>}>
+          {this.renderHistoryList()}
+        </Tab>
+        <Tab eventKey='randomTrigger' title={<span> <img src={randomTriggerIcon} /> Random Trigger</span>}>
+          {this.renderTriggerList()}
+        </Tab>
+      </Tabs>
+    )
+  }
+
+  renderUserNotification () {
+    return (
+      <div className='fixed'>
+        <UserNotification
+          {...this.props}
+          get_notification_count={this.getNotificationCount.bind(this)}
+          get_public_collections={this.getPublicCollections.bind(this)}
+          open_publish_docs={this.openPublishDocs.bind(this)}
+          open_collection={this.openCollection.bind(this)}
+        />
+      </div>
+    )
+  }
+
+  renderDashboardSidebar () {
+    return (
+      <>
+        <div className='app-name'>
+          <img className='icon' src={hitmanIcon} />
+          HITMAN
+        </div>
+        <div className='search-box'>
+          <i className='fas fa-search' id='search-icon' />
+          <input
+            value={this.state.data.filter}
+            type='text'
+            name='filter'
+            placeholder='Search'
+            onChange={(e) => this.handleOnChange(e)}
+          />
+        </div>
+        {this.state.data.filter !== '' && this.renderSearchList()}
+        {this.state.data.filter === '' && this.renderSidebarTabs()}
+        {getCurrentUser() && this.renderUserNotification()}
+      </>
+    )
   }
 
   render () {
@@ -356,144 +455,7 @@ class SideBar extends Component {
         <div className='primary-sidebar'>
           {
             isDashboardRoute(this.props, true)
-              ? (
-                <>
-                  {/* <div className="user-info">
-                <div className="user-avatar">
-                  <i className="uil uil-user"></i>
-                </div>
-                <div className="user-details">
-                  <div className="user-details-heading">
-                    <div className="user-name">{this.state.name}</div>
-                    <div className="user-settings-dropdown">
-                      <div className="dropdown-toggle" data-toggle="dropdown">
-                        <i className="uil uil-cog"></i>
-                      </div>
-                      <div className="dropdown-menu">
-                        <a
-                          className="dropdown-item"
-                          onClick={() => this.openApiForm()}
-                        >
-                          Import open API
-                        </a>
-                        <Link className="dropdown-item" to="/logout">
-                          Sign out
-                        </Link>
-
-                        {this.state.showOpenApiForm &&
-                          this.state.showOpenApiForm === true && (
-                            <OpenApiForm
-                              {...this.props}
-                              show={true}
-                              onHide={() => this.closeOpenApiFormModal()}
-                              title="IMPORT API"
-                            ></OpenApiForm>
-                          )}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="user-details-text">{this.state.email}</div>
-                </div>
-              </div> */}
-
-                  <div className='app-name'>
-                    <img className='icon' src={hitmanIcon} />
-                    HITMAN
-                  </div>
-                  <div className='search-box'>
-                    <i className='fas fa-search' id='search-icon' />
-                    <input
-                      value={this.state.data.filter}
-                      type='text'
-                      name='filter'
-                      placeholder='Search'
-                      onChange={(e) => this.handleOnChange(e)}
-                    />
-                  </div>
-                  {this.state.data.filter !== '' && this.renderSearchList()}
-                  {this.state.data.filter === '' &&
-                    <Tabs
-                      defaultActiveKey={
-                        getCurrentUser() ? 'collection' : 'randomTrigger'
-                      }
-                      id='uncontrolled-tab-example'
-                    >
-
-                      <Tab eventKey='collection' title={<span><img src={collectionIcon} /> Collection </span>}>
-                        {
-                          !getCurrentUser()
-                            ? (
-                              <div className='empty-collections'>
-                                <div>
-                                  {' '}
-                                  <img src={emptyCollections} />
-                                </div>
-                                <div className='content'>
-                                  <h5>  Your collection is Empty.</h5>
-
-                                  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                                  </p>
-                                </div>
-                                <Button
-                                  className='button'
-                                  variant='primary'
-                                  onClick={() =>
-                                    this.setState({
-                                      showLoginSignupModal: true
-                                    })}
-                                >
-                                  + Add here
-                                </Button>{' '}
-                              </div>
-                              )
-                            : null
-                        }
-                        {
-                          getCurrentUser()
-                            ? (
-                              <Switch>
-                                <ProtectedRoute
-                                  path='/dashboard/'
-                                  render={(props) => (
-                                    <Collections
-                                      {...this.props}
-                                      empty_filter={this.emptyFilter.bind(this)}
-                                      collection_selected={this.openCollection.bind(this)}
-                                      filter={this.state.data.filter}
-                                    />
-                                  )}
-                                />
-                                <ProtectedRoute
-                                  path='/admin/publish'
-                                  render={(props) => (
-                                    <Collections
-                                      {...this.props}
-                                      empty_filter={this.emptyFilter.bind(this)}
-                                      collection_selected={this.openCollection.bind(this)}
-                                      filter={this.state.data.filter}
-                                    />
-                                  )}
-                                />
-                              </Switch>
-                              )
-                            : null
-                        }
-                        {isDashboardRoute(this.props, true)
-                          ? <></>
-                          : null}
-                      </Tab>
-                      <Tab eventKey='history' title={<span><img src={historyIcon} /> History</span>}>
-                        {this.renderHistoryList()}
-                      </Tab>
-                      <Tab
-                        eventKey='randomTrigger'
-                        title={<span> <img src={randomTriggerIcon} /> Random Trigger</span>}
-                      >
-                        {this.renderTriggerList()}
-                      </Tab>
-                    </Tabs>}
-                </>
-                )
+              ? (this.renderDashboardSidebar())
               : (
                 <Route
                   path='/p/:collectionId'
@@ -502,7 +464,7 @@ class SideBar extends Component {
                 )
           }
         </div>
-        {this.collectionId && (
+        {this.collectionId && isDashboardRoute(this.props, true) && (
           <div className='secondary-sidebar'>
             <CollectionVersions
               {...this.props}
@@ -510,20 +472,9 @@ class SideBar extends Component {
             />
           </div>
         )}
-        {getCurrentUser() && isDashboardRoute(this.props, true) && (
-          <div className='fixed'>
-            <UserNotification
-              {...this.props}
-              get_notification_count={this.getNotificationCount.bind(this)}
-              get_public_collections={this.getPublicCollections.bind(this)}
-              open_publish_docs={this.openPublishDocs.bind(this)}
-              open_collection={this.openCollection.bind(this)}
-            />
-          </div>)}
       </nav>
     )
   }
 }
 
-// export default SideBar;
 export default withRouter(connect(mapStateToProps)(SideBar))
