@@ -50,6 +50,22 @@ class DisplayPage extends Component {
     })
   }
 
+  checkPageRejected () {
+    if (this.props.rejected) {
+      return (
+        <div>
+          {ReactHtmlParser(this.props.pages[this.props.pageId].publishedPage.contents)}
+        </div>
+      )
+    } else {
+      return (
+        <div>
+          {ReactHtmlParser(this.state.data.contents)}
+        </div>
+      )
+    }
+  }
+
   render () {
     if (this.props.location.page) {
       const data = { ...this.props.location.page }
@@ -73,7 +89,7 @@ class DisplayPage extends Component {
               )
             : null
         }
-        <div>{ReactHtmlParser(this.state.data.contents)}</div>
+        {this.checkPageRejected()}
       </div>
     )
   }

@@ -9,13 +9,12 @@ import PublicView from './components/main/publicView'
 import Public from './components/publicEndpoint/publicEndpoint.jsx'
 import Landing from './components/landing/landing'
 import { ToastContainer } from 'react-toastify'
+import ClientDoc from './components/publishDocs/clientDoc'
 
 class App extends Component {
   async redirectToClientDomain () {
-    console.log(window.location.href)
     const domainsList = process.env.REACT_APP_DOMAINS_LIST ? process.env.REACT_APP_DOMAINS_LIST.split(',') : []
     const currentDomain = window.location.href.split('/')[2]
-    console.log(!domainsList.includes(currentDomain))
     if (!domainsList.includes(currentDomain) && window.location.href.split('/')[3] !== 'p') {
       const { data: clientCollection } = await collectionsApiService.getCollectionsByCustomDomain(currentDomain)
       if (Object.keys(clientCollection) && Object.keys(clientCollection)[0]) {
@@ -28,7 +27,16 @@ class App extends Component {
   }
 
   render () {
-    this.redirectToClientDomain()
+    const domainsList = process.env.REACT_APP_DOMAINS_LIST ? process.env.REACT_APP_DOMAINS_LIST.split(',') : []
+    const currentDomain = window.location.href.split('/')[2]
+    if (!domainsList.includes(currentDomain) && window.location.href.split('/')[3] !== 'p') {
+      return (
+        <Switch>
+          <Route path='/' component={ClientDoc} />
+        </Switch>
+      )
+    }
+
     return (
       <>
         <ToastContainer />
