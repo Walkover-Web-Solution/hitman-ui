@@ -1,14 +1,7 @@
 import React from 'react'
-import { CustomPicker, TwitterPicker } from 'react-color'
+import { CustomPicker, CirclePicker } from 'react-color'
 
-// const colorPickerEnum = {
-//   COLOR1: '#dd755e',
-//   COLOR2: '#686eff',
-//   COLOR3: '#7dccee',
-//   COLOR4: '#27ae60',
-//   COLOR5: '#f2994a'
-
-// }
+const colors = ['#f2994a', '#686EFF', '#7DCCEE', '#27AE60', '#F0BD3B', '#DD755E']
 
 class CustomColorPicker extends React.Component {
   constructor (props) {
@@ -22,6 +15,14 @@ class CustomColorPicker extends React.Component {
 
   componentDidMount () {
     if (this.props.theme) {
+      const data = { ...this.state.data }
+      data.theme = this.props.theme
+      this.setState({ data })
+    }
+  }
+
+  componentDidUpdate (prevProps, prevState) {
+    if (prevProps !== this.props) {
       const data = { ...this.state.data }
       data.theme = this.props.theme
       this.setState({ data })
@@ -47,7 +48,8 @@ class CustomColorPicker extends React.Component {
     return (
       <>
         <div>
-          <TwitterPicker
+          <CirclePicker
+            colors={colors}
             color={this.state.data.theme}
             onChangeComplete={this.handleChangeComplete}
           />
