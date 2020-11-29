@@ -9,11 +9,13 @@ function LoginSignupModal (props) {
     <Modal
       {...props}
       id='modal-open-api'
-      size='lg'
+      size='md'
       animation={false}
       aria-labelledby='contained-modal-title-vcenter'
       centered
     >
+
+      <Modal.Header closeButton />
       <Modal.Body>
         <div>
           {
@@ -25,12 +27,11 @@ function LoginSignupModal (props) {
                 </div>
                 )
               : (
-                <div>
-                  <div>
-                    Seems you are not logged in.
-                  </div>
-                  <div>
-                    Kindly login or signup to save collection in your account
+                <div className='loginModalWrapper'>
+                  <h5> Seems you are not logged in.</h5>
+                  <p>  Kindly login or signup to save collection in your account</p>
+                  <div className='text-center mt-3'>
+                    <button className='btn btn-primary btn-lg'>Login/Signup</button>
                   </div>
                 </div>
                 )

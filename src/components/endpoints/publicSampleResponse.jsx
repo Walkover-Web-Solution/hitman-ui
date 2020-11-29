@@ -9,8 +9,10 @@ class PublicSampleResponse extends Component {
 
   render () {
     return (
-      <div>
-        <div>Sample Response</div>
+      <div className="pubSampleResponse">
+        <div>
+          <h3 className="heading-2">Sample Response</h3>
+        </div>
         <div className='sample-response'>
           <Tabs defaultActiveKey='profile' id='uncontrolled-tab-example'>
             {this.props.sample_response_array.map((sampleResponse) =>

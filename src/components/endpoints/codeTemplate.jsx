@@ -1,6 +1,6 @@
 import './endpoints.scss'
 import React, { Component } from 'react'
-import { ListGroup, Container, Row, Col } from 'react-bootstrap'
+import { ListGroup, Col } from 'react-bootstrap'
 import 'ace-builds'
 import AceEditor from 'react-ace'
 import 'ace-builds/webpack-resolver'
@@ -83,76 +83,72 @@ class CodeTemplate extends Component {
         <div className='code-heading'>
           Generated code for {this.selectedLanguageName}
         </div>
-        <Container className='d-flex'>
-          <Row>
-            <Col id='code-window-sidebar' xs={12}>
-              <ListGroup>
-                {Object.keys(this.languages).map((key) => (
-                  <ListGroup.Item
-                    key={key}
-                    className={
-                      this.languages[key].name === this.selectedLanguageName
-                        ? 'active'
-                        : ''
-                    }
-                    onClick={() => {
-                      this.makeCodeTemplate(key)
-                    }}
-                  >
-                    {this.languages[key].name}
-                  </ListGroup.Item>
-                ))}
-              </ListGroup>
-              <v1 />
-            </Col>
-            <Col className='editor-body-wrapper' xs={12}>
-              <div id='code-window-body'>
-                <CopyToClipboard
-                  text={
-                    this.state.codeSnippet
-                      ? this.state.codeSnippet
-                      : this.codeSnippet
-                  }
-                  onCopy={() => this.setState({ copied: true })}
-                  className='copy-to-clipboard'
-                >
-                  <button>
-                    {this.state.copied
-                      ? (
-                        <i className='fas fa-check' />
-                        )
-                      : (
-                        <i className='fas fa-clone' />
-                        )}
-                  </button>
-                </CopyToClipboard>
-              </div>{' '}
-              <div className='ace-editor-wrapper'>
-                {' '}
-                <AceEditor
-                  mode={this.selectedLanguage.toLowerCase()}
-                  theme='github'
-                  value={
-                    this.state.codeSnippet
-                      ? this.state.codeSnippet
-                      : this.codeSnippet
-                  }
-                  setOptions={{
-                    showLineNumbers: true
-                  }}
-                  editorProps={{
-                    $blockScrolling: false
-                  }}
-                  onLoad={(editor) => {
-                    editor.focus()
-                    editor.getSession().setUseWrapMode(true)
-                    editor.setShowPrintMargin(false)
-                  }}
-                />
-              </div>
-            </Col>
-          </Row>
-        </Container>
+        <Col id='code-window-sidebar' xs={12}>
+          <ListGroup>
+            {Object.keys(this.languages).map((key) => (
+              <ListGroup.Item
+                key={key}
+                className={
+                  this.languages[key].name === this.selectedLanguageName
+                    ? 'active'
+                    : ''
+                }
+                onClick={() => {
+                  this.makeCodeTemplate(key)
+                }}
+              >
+                {this.languages[key].name}
+              </ListGroup.Item>
+            ))}
+          </ListGroup>
+          <v1 />
+        </Col>
+        <Col className='editor-body-wrapper' xs={12}>
+          <div id='code-window-body'>
+            <CopyToClipboard
+              text={
+                this.state.codeSnippet
+                  ? this.state.codeSnippet
+                  : this.codeSnippet
+              }
+              onCopy={() => this.setState({ copied: true })}
+              className='copy-to-clipboard'
+            >
+              <button>
+                {this.state.copied
+                  ? (
+                    <i className='fas fa-check' />
+                    )
+                  : (
+                    <i className='fas fa-clone' />
+                    )}
+              </button>
+            </CopyToClipboard>
+          </div>{' '}
+          <div className='ace-editor-wrapper'>
+            {' '}
+            <AceEditor
+              mode={this.selectedLanguage.toLowerCase()}
+              theme='github'
+              value={
+                this.state.codeSnippet
+                  ? this.state.codeSnippet
+                  : this.codeSnippet
+              }
+              setOptions={{
+                showLineNumbers: true
+              }}
+              editorProps={{
+                $blockScrolling: false
+              }}
+              onLoad={(editor) => {
+                editor.focus()
+                editor.getSession().setUseWrapMode(true)
+                editor.setShowPrintMargin(false)
+              }}
+            />
+          </div>
+        </Col>
       </div>
     )
   }

@@ -152,7 +152,7 @@ class DisplayDescription extends Component {
                             )
                           : (
                             <div className='endpoint-description-text'>
-                              {this.props.endpoint.description}
+                              Description: {this.props.endpoint.description}
                             </div>
                             )}
                       </div>

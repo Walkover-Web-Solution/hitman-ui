@@ -455,7 +455,144 @@ class SideBar extends Component {
         <div className='primary-sidebar'>
           {
             isDashboardRoute(this.props, true)
-              ? (this.renderDashboardSidebar())
+              ? (
+                <>
+                  {/* <div className="user-info">
+                <div className="user-avatar">
+                  <i className="uil uil-user"></i>
+                </div>
+                <div className="user-details">
+                  <div className="user-details-heading">
+                    <div className="user-name">{this.state.name}</div>
+                    <div className="user-settings-dropdown">
+                      <div className="dropdown-toggle" data-toggle="dropdown">
+                        <i className="uil uil-cog"></i>
+                      </div>
+                      <div className="dropdown-menu">
+                        <a
+                          className="dropdown-item"
+                          onClick={() => this.openApiForm()}
+                        >
+                          Import open API
+                        </a>
+                        <Link className="dropdown-item" to="/logout">
+                          Sign out
+                        </Link>
+
+                        {this.state.showOpenApiForm &&
+                          this.state.showOpenApiForm === true && (
+                            <OpenApiForm
+                              {...this.props}
+                              show={true}
+                              onHide={() => this.closeOpenApiFormModal()}
+                              title="IMPORT API"
+                            ></OpenApiForm>
+                          )}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="user-details-text">{this.state.email}</div>
+                </div>
+              </div> */}
+
+                  <div className='app-name'>
+                    <img className='icon' src={hitmanIcon} />
+                    HITMAN
+                  </div>
+                  <div className='search-box'>
+                    <i className='fas fa-search' id='search-icon' />
+                    <input
+                      value={this.state.data.filter}
+                      type='text'
+                      name='filter'
+                      placeholder='Search'
+                      onChange={(e) => this.handleOnChange(e)}
+                    />
+                  </div>
+                  {this.state.data.filter !== '' && this.renderSearchList()}
+                  {this.state.data.filter === '' &&
+                    <Tabs
+                      defaultActiveKey={
+                        getCurrentUser() ? 'collection' : 'randomTrigger'
+                      }
+                      id='uncontrolled-tab-example'
+                    >
+
+                      <Tab eventKey='collection' title={<span><img src={collectionIcon} /> Collection </span>}>
+                        {
+                          !getCurrentUser()
+                            ? (
+                              <div className='empty-collections'>
+                                <div>
+                                  {' '}
+                                  <img src={emptyCollections} />
+                                </div>
+                                <div className='content'>
+                                  <h5>  Your collection is Empty.</h5>
+
+                                  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                  </p>
+                                </div>
+                                <Button
+                                  className='btn-lg'
+                                  variant='primary'
+                                  onClick={() =>
+                                    this.setState({
+                                      showLoginSignupModal: true
+                                    })}
+                                >
+                                  + Add here
+                                </Button>{' '}
+                              </div>
+                              )
+                            : null
+                        }
+                        {
+                          getCurrentUser()
+                            ? (
+                              <Switch>
+                                <ProtectedRoute
+                                  path='/dashboard/'
+                                  render={(props) => (
+                                    <Collections
+                                      {...this.props}
+                                      empty_filter={this.emptyFilter.bind(this)}
+                                      collection_selected={this.openCollection.bind(this)}
+                                      filter={this.state.data.filter}
+                                    />
+                                  )}
+                                />
+                                <ProtectedRoute
+                                  path='/admin/publish'
+                                  render={(props) => (
+                                    <Collections
+                                      {...this.props}
+                                      empty_filter={this.emptyFilter.bind(this)}
+                                      collection_selected={this.openCollection.bind(this)}
+                                      filter={this.state.data.filter}
+                                    />
+                                  )}
+                                />
+                              </Switch>
+                              )
+                            : null
+                        }
+                        {isDashboardRoute(this.props, true)
+                          ? <></>
+                          : null}
+                      </Tab>
+                      <Tab eventKey='history' title={<span><img src={historyIcon} /> History</span>}>
+                        {this.renderHistoryList()}
+                      </Tab>
+                      <Tab
+                        eventKey='randomTrigger'
+                        title={<span> <img src={randomTriggerIcon} /> Random Trigger</span>}
+                      >
+                        {this.renderTriggerList()}
+                      </Tab>
+                    </Tabs>}
+                </>
+                )
               : (
                 <Route
                   path='/p/:collectionId'

@@ -1451,7 +1451,6 @@ class DisplayEndpoint extends Component {
     if (!isDashboardRoute(this.props) && this.state.flagResponse) {
       return (
         <div className='hm-panel endpoint-public-response-container public-doc'>
-          RESPONSE
           <DisplayResponse
             {...this.props}
             timeElapsed={this.state.timeElapsed}
@@ -1606,6 +1605,7 @@ class DisplayEndpoint extends Component {
   }
 
   render () {
+    console.log('displac endpoits-->', this.props)
     this.endpointId = this.props.endpointId
       ? this.props.endpointId
       : isDashboardRoute(this.props)
@@ -1819,21 +1819,26 @@ class DisplayEndpoint extends Component {
                   )
                 : (
                   <div className='hm-endpoint-wrap'>
+                    <h3 className='heading-2'>List Contacts</h3>
                     <div className='hm-endpoint-header'>
-                      <div
-                        className={`api-label api-label-lg ${this.state.data.method}`}
-                      >
-                        {this.state.data.method}
+                      <div class='input-group'>
+                        <div class='input-group-prepend'>
+                          <span
+                            className={`api-label api-label-lg input-group-text ${this.state.data.method}`}
+                          >
+                            {this.state.data.method}
+                          </span>
+                        </div>
+                        <div class='form-control'>
+                          <HostContainer
+                            {...this.props}
+                            groupId={this.state.groupId}
+                            set_base_url={this.setBaseUrl.bind(this)}
+                            custom_host={this.state.endpoint.BASE_URL}
+                          /> {this.state.data.updatedUri}
+                        </div>
                       </div>
-                    </div>
-                    <div className='endpoint-host'>
-                      <HostContainer
-                        {...this.props}
-                        groupId={this.state.groupId}
-                        set_base_url={this.setBaseUrl.bind(this)}
-                        custom_host={this.state.endpoint.BASE_URL}
-                      />
-                      <span>{this.state.data.updatedUri}</span>
+
                     </div>
                     <input
                       ref={this.uri}
@@ -2072,9 +2077,9 @@ class DisplayEndpoint extends Component {
               }
               {
                 !isDashboardRoute(this.props) && (
-                  <div className='d-flex'>
+                  <div className='text-right'>
                     <button
-                      className='btn btn-primary'
+                      className='btn btn-primary btn-lg'
                       type='submit'
                       id='send-request-button'
                       onClick={() => this.handleSend()}

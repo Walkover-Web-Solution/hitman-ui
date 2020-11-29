@@ -45,6 +45,7 @@ class CollectionVersions extends Component {
         share: false,
         edit: false
       },
+      theme: '',
       filter: '',
       selectedVersionIndex: ''
     }
@@ -55,6 +56,12 @@ class CollectionVersions extends Component {
     this.filteredEndpointsAndPages = {}
     this.filteredVersionPages = {}
     this.filteredOnlyVersions = {}
+  }
+
+  componentDidMount () {
+    if (!this.state.theme) {
+      this.setState({ theme: this.props.collections[this.props.collection_id].theme })
+    }
   }
 
   handleUpdate (collectionVersion) {
@@ -300,111 +307,91 @@ class CollectionVersions extends Component {
     return (
       <>
         {
-        isDashboardRoute(this.props, true)
-          ? (
-            <Accordion
-              className='sidebar-accordion'
-              defaultActiveKey={index === 0
-                ? this.eventkey[versionId]
-                : null}
-              key={versionId}
-              id='child-accordion'
-            >
-              <Accordion.Toggle variant='default' eventKey='1'>
-                <div className='sidebar-accordion-item'>
-                  <i className='uil uil-folder' />
-                  {this.props.versions[versionId].number}
-                </div>
-                {
-                isDashboardRoute(this.props, true)
-                  ? (
-                    <div className='sidebar-item-action'>
-                      <div
-                        className='sidebar-item-action-btn'
-                        data-toggle='dropdown'
-                        aria-haspopup='true'
-                        aria-expanded='false'
-                        onClick={(event) => event.stopPropagation()}
-                      >
-                        <i className='uil uil-ellipsis-v' />
-                      </div>
-                      <div className='dropdown-menu dropdown-menu-right'>
-                        <a
-                          className='dropdown-item'
-                          onClick={() =>
-                            this.openEditVersionForm(this.props.versions[versionId])}
-                        >
-                          Edit
-                        </a>
-                        <a
-                          className='dropdown-item'
-                          onClick={() => {
-                            this.openDeleteVersionModal(versionId)
-                          }}
-                        >
-                          Delete
-                        </a>
-                        <a
-                          className='dropdown-item'
-                          onClick={() =>
-                            this.openAddGroupForm(this.props.versions[versionId])}
-                        >
-                          Add Group
-                        </a>
-                        <a
-                          className='dropdown-item'
-                          onClick={() => {
-                            this.handleDuplicate(this.props.versions[versionId])
-                          }}
-                        >
-                          Duplicate
-                        </a>
-                        <a
-                          className='dropdown-item'
-                          onClick={() =>
-                            this.openAddVersionPageForm(
-                              this.props.versions[versionId]
-                            )}
-                        >
-                          Add Page
-                        </a>
-                        <a
-                          className='dropdown-item'
-                          onClick={() =>
-                            this.openShareVersionForm(
-                              this.props.versions[versionId]
-                            )}
-                        >
-                          Share
-                        </a>
-                      </div>
-                    </div>
-                    )
-                  : null
-}
-              </Accordion.Toggle>
-              <Accordion.Collapse className='version-collapse' eventKey='1'>
-                <Card.Body>
-                  <VersionPages
-                    {...this.props}
-                    version_id={versionId}
-                    show_filter_version={this.propsFromVersion.bind(this)}
-                  />
-                  <Groups
-                    {...this.props}
-                    version_id={versionId}
-                    show_filter_version={this.propsFromVersion.bind(this)}
-                  />
-                </Card.Body>
-              </Accordion.Collapse>
-            </Accordion>
-            )
-          : (
-            <>
-              {((this.state.selectedVersionIndex === '' && index === 0) ||
-              (this.state.selectedVersionIndex &&
-                this.state.selectedVersionIndex === index.toString())) && (
-                  <>
+          isDashboardRoute(this.props, true)
+            ? (
+              <Accordion
+                className='sidebar-accordion'
+                defaultActiveKey={index === 0
+                  ? this.eventkey[versionId]
+                  : null}
+                key={versionId}
+                id='child-accordion'
+              >
+                <Accordion.Toggle variant='default' eventKey='1'>
+                  <div className='sidebar-accordion-item'>
+                    <i className='uil uil-folder' />
+                    {this.props.versions[versionId].number}
+                  </div>
+                  {
+                    isDashboardRoute(this.props, true)
+                      ? (
+                        <div className='sidebar-item-action'>
+                          <div
+                            className='sidebar-item-action-btn'
+                            data-toggle='dropdown'
+                            aria-haspopup='true'
+                            aria-expanded='false'
+                            onClick={(event) => event.stopPropagation()}
+                          >
+                            <i className='uil uil-ellipsis-v' />
+                          </div>
+                          <div className='dropdown-menu dropdown-menu-right'>
+                            <a
+                              className='dropdown-item'
+                              onClick={() =>
+                                this.openEditVersionForm(this.props.versions[versionId])}
+                            >
+                              Edit
+                            </a>
+                            <a
+                              className='dropdown-item'
+                              onClick={() => {
+                                this.openDeleteVersionModal(versionId)
+                              }}
+                            >
+                              Delete
+                            </a>
+                            <a
+                              className='dropdown-item'
+                              onClick={() =>
+                                this.openAddGroupForm(this.props.versions[versionId])}
+                            >
+                              Add Group
+                            </a>
+                            <a
+                              className='dropdown-item'
+                              onClick={() => {
+                                this.handleDuplicate(this.props.versions[versionId])
+                              }}
+                            >
+                              Duplicate
+                            </a>
+                            <a
+                              className='dropdown-item'
+                              onClick={() =>
+                                this.openAddVersionPageForm(
+                                  this.props.versions[versionId]
+                                )}
+                            >
+                              Add Page
+                            </a>
+                            <a
+                              className='dropdown-item'
+                              onClick={() =>
+                                this.openShareVersionForm(
+                                  this.props.versions[versionId]
+                                )}
+                            >
+                              Share
+                            </a>
+                          </div>
+                        </div>
+                        )
+                      : null
+                  }
+                </Accordion.Toggle>
+                <Accordion.Collapse className='version-collapse' eventKey='1'>
+                  <Card.Body>
                     <VersionPages
                       {...this.props}
                       version_id={versionId}
@@ -415,10 +402,30 @@ class CollectionVersions extends Component {
                       version_id={versionId}
                       show_filter_version={this.propsFromVersion.bind(this)}
                     />
-                  </>
-              )}
-            </>
-            )
+                  </Card.Body>
+                </Accordion.Collapse>
+              </Accordion>
+              )
+            : (
+              <>
+                {((this.state.selectedVersionIndex === '' && index === 0) ||
+                  (this.state.selectedVersionIndex &&
+                    this.state.selectedVersionIndex === index.toString())) && (
+                      <>
+                        <VersionPages
+                          {...this.props}
+                          version_id={versionId}
+                          show_filter_version={this.propsFromVersion.bind(this)}
+                        />
+                        <Groups
+                          {...this.props}
+                          version_id={versionId}
+                          show_filter_version={this.propsFromVersion.bind(this)}
+                        />
+                      </>
+                )}
+              </>
+              )
         }
       </>
     )
@@ -433,6 +440,7 @@ class CollectionVersions extends Component {
       this.filteredVersions = { ...this.props.versions }
       this.eventkey = {}
     }
+    const { theme } = this.state
     return (
       <>
         {this.showShareVersionForm()}
@@ -449,25 +457,25 @@ class CollectionVersions extends Component {
             this.state.selectedVersion
           )}
         {
-        !isDashboardRoute(this.props, true) && this.props.location.pathname.split('/')[1] !== 'admin'
-          ? (
-            <>
-              <div className='hm-sidebar-label'>Introduction</div>
-              <select
-                className='selected-version form-control light-orange-bg'
-                onChange={(e) => this.setSelectedVersion(e)}
-              >
-                {this.filteredVersions
-                  ? Object.keys(this.filteredVersions).map((id, index) => (
-                    <option key={index} value={index}>
-                      {this.props.versions[id]?.number}
-                    </option>
-                    ))
-                  : null}
-              </select>
-            </>
-            )
-          : null
+          !isDashboardRoute(this.props, true) && this.props.location.pathname.split('/')[1] !== 'admin'
+            ? (
+              <>
+                <div className='hm-sidebar-label' style={{ color: theme }}>Introduction</div>
+                <select
+                  className='selected-version form-control light-orange-bg'
+                  onChange={(e) => this.setSelectedVersion(e)}
+                >
+                  {this.filteredVersions
+                    ? Object.keys(this.filteredVersions).map((id, index) => (
+                      <option key={index} value={index}>
+                        {this.props.versions[id]?.number}
+                      </option>
+                      ))
+                    : null}
+                </select>
+              </>
+              )
+            : null
         }
 
         {this.filteredVersions &&
