@@ -7,6 +7,7 @@ class GenericTable extends Component {
     super(props)
     this.state = {
       bulkEdit: false,
+      optionalParams: false,
       editButtonName: 'Bulk Edit',
       originalParams: [],
       originalHeaders: []
@@ -17,6 +18,20 @@ class GenericTable extends Component {
     this.textAreaValueFlag = true
     this.helperflag = false
     this.count = ''
+  }
+
+  state = {
+    optionalParams: false
+  }
+
+  componentDidMount () {
+    this.setState({ optionalParams: false })
+  }
+
+  componentDidUpdate (prevProps, prevState) {
+    if (this.props.dataArray !== prevProps.dataArray) {
+      this.setState({ optionalParams: false })
+    }
   }
 
   handleChange = (e) => {
@@ -217,7 +232,7 @@ class GenericTable extends Component {
           {!isDashboardRoute(this.props) && title}
         </div>
         {
-          !this.state.bulkEdit && dataArray.length > 0
+          !isDashboardRoute(this.props, true) && this.findUncheckedEntityCount()
             ? (
               <table className='table' id='custom-generic-table'>
                 {
@@ -368,6 +383,46 @@ class GenericTable extends Component {
             )
             : null
         }
+        {!this.state.bulkEdit && dataArray.length > 0
+          ? (
+            <table className='table' id='custom-generic-table'>
+              {
+                isDashboardRoute(this.props)
+                  ? (
+                    <thead>
+                      <tr>
+                        <th className='custom-th'> </th>
+                        <th className='custom-th' id='generic-table-key-cell'>
+                          KEY
+                        </th>
+                        <th className='custom-th'>VALUE</th>
+                        <th className='custom-th'>DESCRIPTION</th>
+                      </tr>
+                    </thead>
+                    )
+                  : (
+                    <colgroup>
+                      <col style={{ width: '36px' }} />
+                      <col style={{ width: '150px' }} />
+                      <col style={{ width: '240px' }} />
+                      <col />
+                    </colgroup>
+                    )
+              }
+
+              <tbody style={{ border: 'none' }}>
+                {dataArray.map((e, index) => (
+                  !isDashboardRoute(this.props, true)
+                    ? (
+                        (dataArray[index]?.checked === 'true' || this.state.optionalParams) && this.renderTableRow(dataArray, index, originalData, title)
+                      )
+                    : this.renderTableRow(dataArray, index, originalData, title)
+                )
+                )}
+              </tbody>
+            </table>
+            )
+          : null}
 
         {
           this.state.bulkEdit &&
