@@ -132,9 +132,11 @@ class HostContainer extends Component {
   fetchPublicEndpointHost (props) {
     let HOST_URL = ''
     let endpoint = {}
-    const allEndpoints = this.props.endpoints
+    const allEndpoints = props.endpoints
     for (endpoint in allEndpoints) {
-      if (allEndpoints[endpoint].id === props.match.params.endpointId) {
+      if (allEndpoints[endpoint].id === props.match.params.endpointId ||
+        (this.props.location.pathname.split('/')[1] === 'admin' &&
+          allEndpoints[endpoint].id === this.props.endpointId)) {
         endpoint = allEndpoints[endpoint]
         break
       }

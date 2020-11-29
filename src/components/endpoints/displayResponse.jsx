@@ -86,47 +86,48 @@ class DisplayResponse extends Component {
                 </div>
                 <div className='response-viewer'>
                   <div className='response-tabs'>
-                    <ul className='nav nav-tabs' id='myTab' role='tablist'>
-                      <li className='nav-item'>
-                        <a
-                          className='nav-link active'
-                          id='home-tab'
-                          data-toggle='tab'
-                          href='#home'
-                          role='tab'
-                          aria-controls='home'
-                          aria-selected='true'
-                        >
-                          Pretty
-                        </a>
-                      </li>
-                      <li className='nav-item'>
-                        <a
-                          className='nav-link'
-                          id='profile-tab'
-                          data-toggle='tab'
-                          href='#profile'
-                          role='tab'
-                          aria-controls='profile'
-                          aria-selected='false'
-                        >
-                          Raw
-                        </a>
-                      </li>
-                      <li className='nav-item'>
-                        <a
-                          className='nav-link'
-                          id='contact-tab'
-                          data-toggle='tab'
-                          href='#contact'
-                          role='tab'
-                          aria-controls='contact'
-                          aria-selected='false'
-                        >
-                          Preview
-                        </a>
-                      </li>
-                    </ul>
+                    {isDashboardRoute(this.props) && (
+                      <ul className='nav nav-tabs' id='myTab' role='tablist'>
+                        <li className='nav-item'>
+                          <a
+                            className='nav-link active'
+                            id='home-tab'
+                            data-toggle='tab'
+                            href='#home'
+                            role='tab'
+                            aria-controls='home'
+                            aria-selected='true'
+                          >
+                            Pretty
+                          </a>
+                        </li>
+                        <li className='nav-item'>
+                          <a
+                            className='nav-link'
+                            id='profile-tab'
+                            data-toggle='tab'
+                            href='#profile'
+                            role='tab'
+                            aria-controls='profile'
+                            aria-selected='false'
+                          >
+                            Raw
+                          </a>
+                        </li>
+                        <li className='nav-item'>
+                          <a
+                            className='nav-link'
+                            id='contact-tab'
+                            data-toggle='tab'
+                            href='#contact'
+                            role='tab'
+                            aria-controls='contact'
+                            aria-selected='false'
+                          >
+                            Preview
+                          </a>
+                        </li>
+                      </ul>)}
                     {
                       getCurrentUser() && isSavedEndpoint(this.props) && isDashboardRoute(this.props)
                         ? (
@@ -169,35 +170,44 @@ class DisplayResponse extends Component {
                       </Toast>
                     </div>
                   )}
-                  <div className='tab-content' id='myTabContent'>
-                    <div
-                      className='tab-pane fade show active'
-                      id='home'
-                      role='tabpanel'
-                      aria-labelledby='home-tab'
-                    >
+                  {isDashboardRoute(this.props) && (
+                    <div className='tab-content' id='myTabContent'>
+                      <div
+                        className='tab-pane fade show active'
+                        id='home'
+                        role='tabpanel'
+                        aria-labelledby='home-tab'
+                      >
+                        <JSONPretty
+                          theme={JSONPrettyMon}
+                          data={this.props.response.data}
+                        />
+                      </div>
+                      <div
+                        className='tab-pane fade'
+                        id='profile'
+                        role='tabpanel'
+                        aria-labelledby='profile-tab'
+                      >
+                        {JSON.stringify(this.props.response.data)}
+                      </div>
+                      <div
+                        className='tab-pane fade'
+                        id='contact'
+                        role='tabpanel'
+                        aria-labelledby='contact-tab'
+                      >
+                        Feature coming soon... Stay tuned
+                      </div>
+                    </div>)}
+                  {!isDashboardRoute(this.props) && (
+                    <div className='tab-content'>
                       <JSONPretty
                         theme={JSONPrettyMon}
                         data={this.props.response.data}
                       />
                     </div>
-                    <div
-                      className='tab-pane fade'
-                      id='profile'
-                      role='tabpanel'
-                      aria-labelledby='profile-tab'
-                    >
-                      {JSON.stringify(this.props.response.data)}
-                    </div>
-                    <div
-                      className='tab-pane fade'
-                      id='contact'
-                      role='tabpanel'
-                      aria-labelledby='contact-tab'
-                    >
-                      Feature coming soon... Stay tuned
-                    </div>
-                  </div>
+                  )}
                 </div>
               </div>
               )
