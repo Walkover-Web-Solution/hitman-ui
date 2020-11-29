@@ -35,6 +35,7 @@ import collectionsApiService from '../collections/collectionsApiService'
 import indexedDbService from '../indexedDb/indexedDbService'
 import Authorization from './displayAuthorization'
 import LoginSignupModal from '../main/loginSignupModal'
+import PublicSampleResponse from './publicSampleResponse'
 const shortid = require('shortid')
 
 const status = require('http-status')
@@ -1450,7 +1451,6 @@ class DisplayEndpoint extends Component {
     if (!isDashboardRoute(this.props) && this.state.flagResponse) {
       return (
         <div className='hm-panel endpoint-public-response-container public-doc'>
-          RESPONSE
           <DisplayResponse
             {...this.props}
             timeElapsed={this.state.timeElapsed}
@@ -1466,26 +1466,13 @@ class DisplayEndpoint extends Component {
   }
 
   displayPublicSampleResponse () {
-    return (
-      <div>
-        Sample Response
-        <SampleResponse
-          {...this.props}
-          timeElapsed={this.state.timeElapsed}
-          response={this.state.response}
-          flagResponse={this.state.flagResponse}
+    if (this.state.sampleResponseArray.length) {
+      return (
+        <PublicSampleResponse
           sample_response_array={this.state.sampleResponseArray}
-          sample_response_flag_array={
-            this.state.sampleResponseFlagArray
-          }
-          open_body={this.openBody.bind(this)}
-          close_body={this.closeBody.bind(this)}
-          props_from_parent={this.propsFromSampleResponse.bind(
-            this
-          )}
         />
-      </div>
-    )
+      )
+    }
   }
 
   displayResponseAndSampleResponse () {
@@ -1499,16 +1486,16 @@ class DisplayEndpoint extends Component {
                 id='pills-response-tab'
                 data-toggle='pill'
                 href={
-                isDashboardRoute(this.props)
-                  ? `#response-${this.props.tab.id}`
-                  : '#response'
-              }
+                  isDashboardRoute(this.props)
+                    ? `#response-${this.props.tab.id}`
+                    : '#response'
+                }
                 role='tab'
                 aria-controls={
-                isDashboardRoute(this.props)
-                  ? `response-${this.props.tab.id}`
-                  : 'response'
-              }
+                  isDashboardRoute(this.props)
+                    ? `response-${this.props.tab.id}`
+                    : 'response'
+                }
                 aria-selected='true'
               >
                 Response
@@ -1521,16 +1508,16 @@ class DisplayEndpoint extends Component {
                   id='pills-sample-tab'
                   data-toggle='pill'
                   href={
-                  isDashboardRoute(this.props)
-                    ? `#sample-${this.props.tab.id}`
-                    : '#sample'
-                }
+                    isDashboardRoute(this.props)
+                      ? `#sample-${this.props.tab.id}`
+                      : '#sample'
+                  }
                   role='tab'
                   aria-controls={
-                  isDashboardRoute(this.props)
-                    ? `sample-${this.props.tab.id}`
-                    : 'sample'
-                }
+                    isDashboardRoute(this.props)
+                      ? `sample-${this.props.tab.id}`
+                      : 'sample'
+                  }
                   aria-selected='false'
                 >
                   Sample Response
@@ -1542,10 +1529,10 @@ class DisplayEndpoint extends Component {
             <div
               className='tab-pane fade show active'
               id={
-              isDashboardRoute(this.props)
-                ? `response-${this.props.tab.id}`
-                : 'response'
-            }
+                isDashboardRoute(this.props)
+                  ? `response-${this.props.tab.id}`
+                  : 'response'
+              }
               role='tabpanel'
               aria-labelledby='pills-response-tab'
             >
@@ -1555,8 +1542,8 @@ class DisplayEndpoint extends Component {
                   timeElapsed={this.state.timeElapsed}
                   response={this.state.response}
                   flagResponse={
-                  this.state.flagResponse
-                }
+                    this.state.flagResponse
+                  }
                   add_sample_response={this.addSampleResponse.bind(this)}
                 />
               </div>

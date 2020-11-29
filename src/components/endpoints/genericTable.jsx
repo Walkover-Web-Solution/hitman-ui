@@ -3,7 +3,7 @@ import { isDashboardRoute } from '../common/utility'
 import './endpoints.scss'
 
 class GenericTable extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       bulkEdit: false,
@@ -99,7 +99,7 @@ class GenericTable extends Component {
     if (title === 'formData' || title === 'x-www-form-urlencoded') { this.props.handle_change_body_data(title, dataArray) }
   };
 
-  handleAdd (dataArray, title, key, index) {
+  handleAdd(dataArray, title, key, index) {
     index = parseInt(index) + 1
     if (key.length >= 1 && !dataArray[index]) {
       const len = dataArray.length
@@ -114,7 +114,7 @@ class GenericTable extends Component {
     }
   }
 
-  handleDelete (dataArray, index, title) {
+  handleDelete(dataArray, index, title) {
     const newDataArray = []
     for (let i = 0; i < dataArray.length; i++) {
       if (i === index) {
@@ -127,7 +127,7 @@ class GenericTable extends Component {
     if (title === 'formData' || title === 'x-www-form-urlencoded') { this.props.handle_change_body_data(title, dataArray) }
   }
 
-  displayEditButton () {
+  displayEditButton() {
     if (this.state.bulkEdit) {
       this.setState({
         bulkEdit: false,
@@ -146,7 +146,7 @@ class GenericTable extends Component {
     }
   }
 
-  autoFillBulkEdit () {
+  autoFillBulkEdit() {
     let textAreaValue = ''
     const { dataArray, count } = this.props
     if (count) {
@@ -188,7 +188,7 @@ class GenericTable extends Component {
     }
   }
 
-  render () {
+  render() {
     const { dataArray, original_data: originalData, title } = this.props
     if (!isDashboardRoute(this.props)) {
       for (let index = 0; index < dataArray.length; index++) {
@@ -233,15 +233,26 @@ class GenericTable extends Component {
                           <th className='custom-th'>DESCRIPTION</th>
                         </tr>
                       </thead>
-                      )
+                    )
                     : (
-                      <colgroup>
-                        <col style={{ width: '36px' }} />
-                        <col style={{ width: '150px' }} />
-                        <col style={{ width: '240px' }} />
-                        <col />
-                      </colgroup>
-                      )
+                      // <colgroup>
+                      //   <col style={{ width: '36px' }} />
+                      //   <col style={{ width: '150px' }} />
+                      //   <col style={{ width: '240px' }} />
+                      //   <col />
+                      // </colgroup>
+
+                      <thead>
+                        <tr>
+                          <th className='custom-th'> </th>
+                          <th className='custom-th' id='generic-table-key-cell'>
+                            KEY
+                        </th>
+                          <th className='custom-th'>VALUE</th>
+                          <th className='custom-th'>DESCRIPTION</th>
+                        </tr>
+                      </thead>
+                    )
                 }
                 <tbody style={{ border: 'none' }}>
                   {dataArray.map((e, index) => (
@@ -272,24 +283,24 @@ class GenericTable extends Component {
                                 onChange={this.handleChange}
                                 style={{ border: 'none' }}
                               />
-                              )
+                            )
                         }
                       </td>
                       <td className='custom-td'>
                         {isDashboardRoute(this.props)
                           ? <input
-                              name={index + '.key'}
-                              value={dataArray[index].key}
-                              onChange={this.handleChange}
-                              type='text'
-                              placeholder={
+                            name={index + '.key'}
+                            value={dataArray[index].key}
+                            onChange={this.handleChange}
+                            type='text'
+                            placeholder={
                               dataArray[index].checked === 'notApplicable'
                                 ? 'Key'
                                 : ''
                             }
-                              className='form-control'
-                              style={{ border: 'none' }}
-                            />
+                            className='form-control'
+                            style={{ border: 'none' }}
+                          />
                           : dataArray[index].key}
                       </td>
                       <td className='custom-td'>
@@ -342,10 +353,10 @@ class GenericTable extends Component {
                                       >
                                         <i className='uil-trash-alt text-danger' />
                                       </button>
-                                      )
+                                    )
                                 }
                               </div>
-                              )
+                            )
                             : dataArray[index].description
                         }
                       </td>
@@ -354,7 +365,7 @@ class GenericTable extends Component {
                   )}
                 </tbody>
               </table>
-              )
+            )
             : null
         }
 
@@ -390,7 +401,7 @@ class GenericTable extends Component {
                 {this.state.editButtonName}
               </button>
             </div>
-            )}
+          )}
       </div>
     )
   }

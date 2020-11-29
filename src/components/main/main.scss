@@ -765,7 +765,31 @@ label.data-type {
 }
 
 .heading-2 {
-  font-size: 16px;
-  font-weight: 700;
+  font-size: 18px;
+  font-weight: 600;
   color: #333;
+}
+.orange-heading {
+  margin: 0;
+  color: #E98A36;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px grey;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #E98A36;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #e97714;
 }

@@ -20,12 +20,12 @@ class DisplayResponse extends Component {
     show: false
   };
 
-  responseTime () {
+  responseTime() {
     const timeElapsed = this.props.timeElapsed
     this.setState({ timeElapsed })
   }
 
-  rawDataResponse () {
+  rawDataResponse() {
     this.setState({
       rawResponse: true,
       previewResponse: false,
@@ -34,7 +34,7 @@ class DisplayResponse extends Component {
     })
   }
 
-  prettyDataResponse () {
+  prettyDataResponse() {
     this.setState({
       rawResponse: false,
       previewResponse: false,
@@ -43,7 +43,7 @@ class DisplayResponse extends Component {
     })
   }
 
-  previewDataResponse () {
+  previewDataResponse() {
     this.setState({
       rawResponse: false,
       previewResponse: true,
@@ -56,12 +56,12 @@ class DisplayResponse extends Component {
     this.setState({ show })
   };
 
-  addSampleResponse (response) {
+  addSampleResponse(response) {
     this.handletoggleShow()
     this.props.add_sample_response(response)
   }
 
-  render () {
+  render() {
     return (
       <div className='endpoint-response-container'>
         {
@@ -69,64 +69,81 @@ class DisplayResponse extends Component {
             ? (
               <div>
                 <div className='response-status'>
-                  <div id='status'>
-                    <div className='response-status-item-name'>Status :</div>
-                    <div className='response-status-value'>
-                      {this.props.response.status +
-                        ' ' +
-                        this.props.response.statusText}
-                    </div>
+                  <div className="respHeading">
+                    <h2 className="orange-heading"> RESPONSE</h2>
                   </div>
-                  <div id='time'>
-                    <div className='response-status-item-name'>Time:</div>
-                    <div className='response-status-value'>
-                      {this.props.timeElapsed}ms
+                  <div className="statusWrapper">
+                    <div id='status'>
+                      <div className='response-status-item-name'>Status :</div>
+                      <div className='response-status-value'>
+                        {this.props.response.status +
+                          ' ' +
+                          this.props.response.statusText}
+                      </div>
+                    </div>
+                    <div id='time'>
+                      <div className='response-status-item-name'>Time:</div>
+                      <div className='response-status-value'>
+                        {this.props.timeElapsed}ms
+                    </div>
+                    </div>
+                    <div className="resPubclipboardWrapper">
+                      <CopyToClipboard
+                        text={JSON.stringify(this.props.response.data)}
+                        onCopy={() => this.setState({ copied: true })}
+                        style={{ float: 'right', borderRadius: '12px' }}
+                      >
+                        <button>
+                          <i className='fas fa-clone' />
+                        </button>
+                      </CopyToClipboard>
                     </div>
                   </div>
                 </div>
                 <div className='response-viewer'>
                   <div className='response-tabs'>
-                    <ul className='nav nav-tabs' id='myTab' role='tablist'>
-                      <li className='nav-item'>
-                        <a
-                          className='nav-link active'
-                          id='home-tab'
-                          data-toggle='tab'
-                          href='#home'
-                          role='tab'
-                          aria-controls='home'
-                          aria-selected='true'
-                        >
-                          Pretty
-                        </a>
-                      </li>
-                      <li className='nav-item'>
-                        <a
-                          className='nav-link'
-                          id='profile-tab'
-                          data-toggle='tab'
-                          href='#profile'
-                          role='tab'
-                          aria-controls='profile'
-                          aria-selected='false'
-                        >
-                          Raw
-                        </a>
-                      </li>
-                      <li className='nav-item'>
-                        <a
-                          className='nav-link'
-                          id='contact-tab'
-                          data-toggle='tab'
-                          href='#contact'
-                          role='tab'
-                          aria-controls='contact'
-                          aria-selected='false'
-                        >
-                          Preview
-                        </a>
-                      </li>
-                    </ul>
+                    {isDashboardRoute(this.props) && (
+                      <ul className='nav nav-tabs' id='myTab' role='tablist'>
+                        <li className='nav-item'>
+                          <a
+                            className='nav-link active'
+                            id='home-tab'
+                            data-toggle='tab'
+                            href='#home'
+                            role='tab'
+                            aria-controls='home'
+                            aria-selected='true'
+                          >
+                            Pretty
+                          </a>
+                        </li>
+                        <li className='nav-item'>
+                          <a
+                            className='nav-link'
+                            id='profile-tab'
+                            data-toggle='tab'
+                            href='#profile'
+                            role='tab'
+                            aria-controls='profile'
+                            aria-selected='false'
+                          >
+                            Raw
+                          </a>
+                        </li>
+                        <li className='nav-item'>
+                          <a
+                            className='nav-link'
+                            id='contact-tab'
+                            data-toggle='tab'
+                            href='#contact'
+                            role='tab'
+                            aria-controls='contact'
+                            aria-selected='false'
+                          >
+                            Preview
+                          </a>
+                        </li>
+                      </ul>)}
                     {
                       getCurrentUser() && isSavedEndpoint(this.props) && isDashboardRoute(this.props)
                         ? (
@@ -142,18 +159,10 @@ class DisplayResponse extends Component {
                               Add to Sample Response
                             </div>
                           </div>
-                          )
+                        )
                         : null
                     }
-                    <CopyToClipboard
-                      text={JSON.stringify(this.props.response.data)}
-                      onCopy={() => this.setState({ copied: true })}
-                      style={{ float: 'right', borderRadius: '12px' }}
-                    >
-                      <button>
-                        <i className='fas fa-clone' />
-                      </button>
-                    </CopyToClipboard>
+
                   </div>
                   {this.state.show && (
                     <div className='custom-toast'>
@@ -169,38 +178,47 @@ class DisplayResponse extends Component {
                       </Toast>
                     </div>
                   )}
-                  <div className='tab-content' id='myTabContent'>
-                    <div
-                      className='tab-pane fade show active'
-                      id='home'
-                      role='tabpanel'
-                      aria-labelledby='home-tab'
-                    >
+                  {isDashboardRoute(this.props) && (
+                    <div className='tab-content' id='myTabContent'>
+                      <div
+                        className='tab-pane fade show active'
+                        id='home'
+                        role='tabpanel'
+                        aria-labelledby='home-tab'
+                      >
+                        <JSONPretty
+                          theme={JSONPrettyMon}
+                          data={this.props.response.data}
+                        />
+                      </div>
+                      <div
+                        className='tab-pane fade'
+                        id='profile'
+                        role='tabpanel'
+                        aria-labelledby='profile-tab'
+                      >
+                        {JSON.stringify(this.props.response.data)}
+                      </div>
+                      <div
+                        className='tab-pane fade'
+                        id='contact'
+                        role='tabpanel'
+                        aria-labelledby='contact-tab'
+                      >
+                        Feature coming soon... Stay tuned
+                      </div>
+                    </div>)}
+                  {!isDashboardRoute(this.props) && (
+                    <div className='tab-content'>
                       <JSONPretty
                         theme={JSONPrettyMon}
                         data={this.props.response.data}
                       />
                     </div>
-                    <div
-                      className='tab-pane fade'
-                      id='profile'
-                      role='tabpanel'
-                      aria-labelledby='profile-tab'
-                    >
-                      {JSON.stringify(this.props.response.data)}
-                    </div>
-                    <div
-                      className='tab-pane fade'
-                      id='contact'
-                      role='tabpanel'
-                      aria-labelledby='contact-tab'
-                    >
-                      Feature coming soon... Stay tuned
-                    </div>
-                  </div>
+                  )}
                 </div>
               </div>
-              )
+            )
             : (
               <div>
                 <div className='empty-response'>Response</div>
@@ -210,7 +228,7 @@ class DisplayResponse extends Component {
                   <p>Hit Try to get a response</p>
                 </div>
               </div>
-              )
+            )
         }
       </div>
     )
