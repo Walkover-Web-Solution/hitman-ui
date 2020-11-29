@@ -203,7 +203,133 @@ class GenericTable extends Component {
     }
   }
 
-  render() {
+  toggleOptionalParams () {
+    const optionalParams = !this.state.optionalParams
+    this.setState({ optionalParams })
+  }
+
+  findUncheckedEntityCount () {
+    const { dataArray } = this.props
+    let count = 0
+    for (let i = 0; i < dataArray.length; i++) {
+      if (dataArray[i].checked === 'false') {
+        count += 1
+      }
+    }
+    return count
+  }
+
+  renderTableRow (dataArray, index, originalData, title) {
+    return (
+      <tr key={index} id='generic-table-row'>
+        <td
+          className='custom-td'
+          id='generic-table-key-cell'
+          style={{ marginLeft: '5px' }}
+        >
+          {
+            dataArray[index].checked === 'notApplicable'
+              ? null
+              : (
+                <input
+                  disabled={
+                    isDashboardRoute(this.props) ||
+                      originalData[index].checked === 'false'
+                      ? null
+                      : 'disabled'
+                  }
+                  name={index + '.checkbox'}
+                  value={dataArray[index].checked}
+                  checked={
+                    dataArray[index].checked === 'true'
+                  }
+                  type='checkbox'
+                  className='Checkbox'
+                  onChange={this.handleChange}
+                  style={{ border: 'none' }}
+                />
+                )
+          }
+        </td>
+        <td className='custom-td'>
+          {isDashboardRoute(this.props)
+            ? <input
+                name={index + '.key'}
+                value={dataArray[index].key}
+                onChange={this.handleChange}
+                type='text'
+                placeholder={
+                dataArray[index].checked === 'notApplicable'
+                  ? 'Key'
+                  : ''
+              }
+                className='form-control'
+                style={{ border: 'none' }}
+              />
+            : dataArray[index].key}
+        </td>
+        <td className='custom-td'>
+          <input
+            name={index + '.value'}
+            value={dataArray[index].value}
+            onChange={this.handleChange}
+            type='text'
+            placeholder={
+              dataArray[index].checked === 'notApplicable'
+                ? 'Value'
+                : `Enter ${dataArray[index].key}`
+            }
+            className='form-control'
+            style={{ border: 'none' }}
+          />
+        </td>
+        <td className='custom-td' id='generic-table-description-cell'>
+          {
+            isDashboardRoute(this.props)
+              ? (
+                <div>
+                  <input
+                    disabled={
+                      isDashboardRoute(this.props) ? null : 'disabled'
+                    }
+                    name={index + '.description'}
+                    value={dataArray[index].description}
+                    onChange={this.handleChange}
+                    type='text'
+                    placeholder={
+                      dataArray[index].checked === 'notApplicable'
+                        ? 'Description'
+                        : ''
+                    }
+                    style={{ border: 'none' }}
+                    className='form-control'
+                  />
+                  {
+                    dataArray.length - 1 === index ||
+                      !isDashboardRoute(this.props) ||
+                      title === 'Path Variables'
+                      ? null
+                      : (
+                        <button
+                          type='button'
+                          className='btn cross-button'
+                          onClick={() =>
+                            this.handleDelete(dataArray, index, title)}
+                        >
+                          <i className='uil-trash-alt text-danger' />
+                        </button>
+                        )
+                  }
+                </div>
+                )
+              : dataArray[index].description
+          }
+        </td>
+      </tr>
+    )
+  }
+
+  render () {
     const { dataArray, original_data: originalData, title } = this.props
     if (!isDashboardRoute(this.props)) {
       for (let index = 0; index < dataArray.length; index++) {
