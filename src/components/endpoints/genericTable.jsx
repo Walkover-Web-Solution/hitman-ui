@@ -24,11 +24,11 @@ class GenericTable extends Component {
     optionalParams: false
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.setState({ optionalParams: false })
   }
 
-  componentDidUpdate (prevProps, prevState) {
+  componentDidUpdate(prevProps, prevState) {
     if (this.props.dataArray !== prevProps.dataArray) {
       this.setState({ optionalParams: false })
     }
@@ -203,12 +203,12 @@ class GenericTable extends Component {
     }
   }
 
-  toggleOptionalParams () {
+  toggleOptionalParams() {
     const optionalParams = !this.state.optionalParams
     this.setState({ optionalParams })
   }
 
-  findUncheckedEntityCount () {
+  findUncheckedEntityCount() {
     const { dataArray } = this.props
     let count = 0
     for (let i = 0; i < dataArray.length; i++) {
@@ -219,7 +219,7 @@ class GenericTable extends Component {
     return count
   }
 
-  renderTableRow (dataArray, index, originalData, title) {
+  renderTableRow(dataArray, index, originalData, title) {
     return (
       <tr key={index} id='generic-table-row'>
         <td
@@ -248,24 +248,24 @@ class GenericTable extends Component {
                   onChange={this.handleChange}
                   style={{ border: 'none' }}
                 />
-                )
+              )
           }
         </td>
         <td className='custom-td'>
           {isDashboardRoute(this.props)
             ? <input
-                name={index + '.key'}
-                value={dataArray[index].key}
-                onChange={this.handleChange}
-                type='text'
-                placeholder={
+              name={index + '.key'}
+              value={dataArray[index].key}
+              onChange={this.handleChange}
+              type='text'
+              placeholder={
                 dataArray[index].checked === 'notApplicable'
                   ? 'Key'
                   : ''
               }
-                className='form-control'
-                style={{ border: 'none' }}
-              />
+              className='form-control'
+              style={{ border: 'none' }}
+            />
             : dataArray[index].key}
         </td>
         <td className='custom-td'>
@@ -318,10 +318,10 @@ class GenericTable extends Component {
                         >
                           <i className='uil-trash-alt text-danger' />
                         </button>
-                        )
+                      )
                   }
                 </div>
-                )
+              )
               : dataArray[index].description
           }
         </td>
@@ -329,7 +329,7 @@ class GenericTable extends Component {
     )
   }
 
-  render () {
+  render() {
     const { dataArray, original_data: originalData, title } = this.props
     if (!isDashboardRoute(this.props)) {
       for (let index = 0; index < dataArray.length; index++) {
@@ -525,29 +525,33 @@ class GenericTable extends Component {
                         <th className='custom-th'>DESCRIPTION</th>
                       </tr>
                     </thead>
-                    )
+                  )
                   : (
-                    <colgroup>
-                      <col style={{ width: '36px' }} />
-                      <col style={{ width: '150px' }} />
-                      <col style={{ width: '240px' }} />
-                      <col />
-                    </colgroup>
-                    )
+                    <thead>
+                      <tr>
+                        <th className='custom-th'> </th>
+                        <th className='custom-th' id='generic-table-key-cell'>
+                          KEY
+                      </th>
+                        <th className='custom-th'>VALUE</th>
+                        <th className='custom-th'>DESCRIPTION</th>
+                      </tr>
+                    </thead>
+                  )
               }
 
               <tbody style={{ border: 'none' }}>
                 {dataArray.map((e, index) => (
                   !isDashboardRoute(this.props, true)
                     ? (
-                        (dataArray[index]?.checked === 'true' || this.state.optionalParams) && this.renderTableRow(dataArray, index, originalData, title)
-                      )
+                      (dataArray[index]?.checked === 'true' || this.state.optionalParams) && this.renderTableRow(dataArray, index, originalData, title)
+                    )
                     : this.renderTableRow(dataArray, index, originalData, title)
                 )
                 )}
               </tbody>
             </table>
-            )
+          )
           : null}
 
         {
