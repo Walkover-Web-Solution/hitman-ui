@@ -769,6 +769,7 @@ label.data-type {
   font-weight: 600;
   color: #333;
 }
+
 .orange-heading {
   margin: 0;
   color: #E98A36;
@@ -777,7 +778,7 @@ label.data-type {
 }
 
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 5px;
 }
 
 ::-webkit-scrollbar-track {
@@ -786,10 +787,33 @@ label.data-type {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #E98A36;
+  background: #828282;
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #e97714;
+  background: #312f2f;
+
+}
+
+
+.__json-pretty__ {
+  &::-webkit-scrollbar {
+    display: none;
+    width: 0px;
+    background: transparent;
+  }
+
+  scrollbar-width: none;
+
+}
+
+.ace-editor-wrapper .ace-github {
+  &::-webkit-scrollbar {
+    display: none;
+    width: 0px;
+    background: transparent;
+  }
+  scrollbar-width: none;
+
 }

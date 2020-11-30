@@ -1145,6 +1145,12 @@ table#custom-generic-table {
   .sample-response {
     background: #ffffff;
     border-radius: 4px;
+
+    .tab-content {
+      overflow: auto;
+      height: 300px;
+      margin: 15px 0 0 0;
+    }
   }
 }
 
@@ -1185,7 +1191,7 @@ table#custom-generic-table {
   }
 
   .tab-content {
-    padding: 20px 30px;
+    padding: 20px;
   }
 }
 
