@@ -20,12 +20,12 @@ class DisplayResponse extends Component {
     show: false
   };
 
-  responseTime() {
+  responseTime () {
     const timeElapsed = this.props.timeElapsed
     this.setState({ timeElapsed })
   }
 
-  rawDataResponse() {
+  rawDataResponse () {
     this.setState({
       rawResponse: true,
       previewResponse: false,
@@ -34,7 +34,7 @@ class DisplayResponse extends Component {
     })
   }
 
-  prettyDataResponse() {
+  prettyDataResponse () {
     this.setState({
       rawResponse: false,
       previewResponse: false,
@@ -43,7 +43,7 @@ class DisplayResponse extends Component {
     })
   }
 
-  previewDataResponse() {
+  previewDataResponse () {
     this.setState({
       rawResponse: false,
       previewResponse: true,
@@ -56,12 +56,12 @@ class DisplayResponse extends Component {
     this.setState({ show })
   };
 
-  addSampleResponse(response) {
+  addSampleResponse (response) {
     this.handletoggleShow()
     this.props.add_sample_response(response)
   }
 
-  render() {
+  render () {
     return (
       <div className='endpoint-response-container'>
         {
@@ -69,10 +69,10 @@ class DisplayResponse extends Component {
             ? (
               <div>
                 <div className='response-status'>
-                  <div className="respHeading">
-                    <h2 className="orange-heading"> RESPONSE</h2>
+                  <div className='respHeading'>
+                    <h2 className='orange-heading'> RESPONSE</h2>
                   </div>
-                  <div className="statusWrapper">
+                  <div className='statusWrapper'>
                     <div id='status'>
                       <div className='response-status-item-name'>Status :</div>
                       <div className='response-status-value'>
@@ -85,9 +85,9 @@ class DisplayResponse extends Component {
                       <div className='response-status-item-name'>Time:</div>
                       <div className='response-status-value'>
                         {this.props.timeElapsed}ms
+                      </div>
                     </div>
-                    </div>
-                    <div className="resPubclipboardWrapper">
+                    <div className='resPubclipboardWrapper'>
                       <CopyToClipboard
                         text={JSON.stringify(this.props.response.data)}
                         onCopy={() => this.setState({ copied: true })}
@@ -159,7 +159,7 @@ class DisplayResponse extends Component {
                               Add to Sample Response
                             </div>
                           </div>
-                        )
+                          )
                         : null
                     }
 
@@ -218,7 +218,7 @@ class DisplayResponse extends Component {
                   )}
                 </div>
               </div>
-            )
+              )
             : (
               <div>
                 <div className='empty-response'>Response</div>
@@ -228,7 +228,7 @@ class DisplayResponse extends Component {
                   <p>Hit Try to get a response</p>
                 </div>
               </div>
-            )
+              )
         }
       </div>
     )
