@@ -22,6 +22,7 @@ import PublishDocsModal from '../publicEndpoint/publishDocsModal'
 import { isAdmin } from '../auth/authService'
 import TagManager from 'react-gtm-module'
 import TagManagerModal from './tagModal'
+import emptyCollections from '../../assets/icons/emptyCollections.svg'
 
 const EMPTY_STRING = ''
 
@@ -50,7 +51,7 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 class CollectionsComponent extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       showCollectionForm: false,
@@ -63,11 +64,11 @@ class CollectionsComponent extends Component {
     this.names = {}
   }
 
-  closeCollectionForm () {
+  closeCollectionForm() {
     this.setState({ showCollectionForm: false, showImportVersionForm: false })
   }
 
-  async dndMoveEndpoint (endpointId, sourceGroupId, destinationGroupId) {
+  async dndMoveEndpoint(endpointId, sourceGroupId, destinationGroupId) {
     const groups = { ...this.state.groups }
     const endpoints = { ...this.state.endpoints }
     const originalEndpoints = { ...this.state.endpoints }
@@ -88,41 +89,41 @@ class CollectionsComponent extends Component {
     }
   }
 
-  async handleAddCollection (newCollection) {
+  async handleAddCollection(newCollection) {
     newCollection.requestId = shortId.generate()
     this.props.add_collection(newCollection)
   }
 
-  async handleUpdateCollection (editedCollection) {
+  async handleUpdateCollection(editedCollection) {
     this.props.update_collection(editedCollection)
   }
 
-  async handleDeleteGroup (deletedGroupId) {
+  async handleDeleteGroup(deletedGroupId) {
     this.props.delete_group(deletedGroupId)
   }
 
-  async handleAddVersionPage (versionId, newPage) {
+  async handleAddVersionPage(versionId, newPage) {
     newPage.requestId = shortId.generate()
     this.props.add_page(versionId, newPage)
   }
 
-  async handleDuplicateCollection (collectionCopy) {
+  async handleDuplicateCollection(collectionCopy) {
     this.props.duplicate_collection(collectionCopy)
   }
 
-  async handleGoToDocs (collection) {
+  async handleGoToDocs(collection) {
     const publicDocsUrl = `${process.env.REACT_APP_UI_URL}/p/${collection.id}`
     window.open(publicDocsUrl, '_blank')
   }
 
-  openAddCollectionForm () {
+  openAddCollectionForm() {
     this.setState({
       showCollectionForm: true,
       collectionFormName: 'Add new Collection'
     })
   }
 
-  openEditCollectionForm (collectionId) {
+  openEditCollectionForm(collectionId) {
     this.setState({
       showCollectionForm: true,
       collectionFormName: 'Edit Collection',
@@ -132,7 +133,7 @@ class CollectionsComponent extends Component {
     })
   }
 
-  openAddVersionForm (collectionId) {
+  openAddVersionForm(collectionId) {
     this.setState({
       showVersionForm: true,
       selectedCollection: {
@@ -141,7 +142,7 @@ class CollectionsComponent extends Component {
     })
   }
 
-  openImportVersionForm (collectionId) {
+  openImportVersionForm(collectionId) {
     this.setState({
       showImportVersionForm: true,
       collectionFormName: 'Import Version',
@@ -151,7 +152,7 @@ class CollectionsComponent extends Component {
     })
   }
 
-  openDeleteCollectionModal (collectionId) {
+  openDeleteCollectionModal(collectionId) {
     if (this.state.openSelectedCollection === true) {
       this.setState({ openSelectedCollection: false })
     }
@@ -163,7 +164,7 @@ class CollectionsComponent extends Component {
     })
   }
 
-  showImportVersionForm () {
+  showImportVersionForm() {
     return (
       this.state.showImportVersionForm && (
         <ImportVersionForm
@@ -177,44 +178,44 @@ class CollectionsComponent extends Component {
     )
   }
 
-  handlePublicCollectionDescription (collection) {
+  handlePublicCollectionDescription(collection) {
     this.props.history.push({
       pathname: `/p/${collection.id}/description/${collection.name}`,
       collection
     })
   }
 
-  closeVersionForm () {
+  closeVersionForm() {
     this.setState({ showVersionForm: false })
   }
 
-  handlePublic (collection) {
+  handlePublic(collection) {
     collection.isPublic = !collection.isPublic
     this.props.update_collection({ ...collection })
   }
 
-  closeDeleteCollectionModal () {
+  closeDeleteCollectionModal() {
     this.setState({ showDeleteModal: false })
   }
 
-  openSelectedCollection (collectionId) {
+  openSelectedCollection(collectionId) {
     this.props.empty_filter()
     this.props.collection_selected(collectionId)
     this.collectionId = collectionId
     this.setState({ openSelectedCollection: true })
   }
 
-  openAllCollections () {
+  openAllCollections() {
     this.props.empty_filter()
     this.collectionId = null
     this.setState({ openSelectedCollection: false })
   }
 
-  TagManagerModal (collectionId) {
+  TagManagerModal(collectionId) {
     this.setState({ TagManagerCollectionId: collectionId })
   }
 
-  openTagManagerModal () {
+  openTagManagerModal() {
     return (
       this.state.TagManagerCollectionId && (
         <TagManagerModal
@@ -228,7 +229,7 @@ class CollectionsComponent extends Component {
     )
   }
 
-  dataFetched () {
+  dataFetched() {
     return (
       this.props.collections &&
       this.props.versions &&
@@ -238,7 +239,7 @@ class CollectionsComponent extends Component {
     )
   }
 
-  findEndpointCount (collectionId) {
+  findEndpointCount(collectionId) {
     if (this.dataFetched()) {
       const versionIds = Object.keys(this.props.versions).filter(
         (vId) => this.props.versions[vId].collectionId === collectionId
@@ -269,7 +270,7 @@ class CollectionsComponent extends Component {
     }
   }
 
-  renderBody (collectionId, collectionState) {
+  renderBody(collectionId, collectionState) {
     let eventkeyValue = ''
     if (this.props.filter !== '') {
       eventkeyValue = '0'
@@ -301,7 +302,7 @@ class CollectionsComponent extends Component {
               <i className='fas fa-arrow-left' />
               <label>All Collections</label>
             </button>
-            )
+          )
           : null}
 
         <Accordion
@@ -319,7 +320,7 @@ class CollectionsComponent extends Component {
                 <div>
                   <div>{this.props.collections[collectionId].name}</div>
                 </div>
-                )
+              )
               : (
                 <div
                   className='sidebar-accordion-item'
@@ -328,7 +329,7 @@ class CollectionsComponent extends Component {
                   <i className='uil uil-parcel' />
                   <div>{this.props.collections[collectionId].name}</div>
                 </div>
-                )}
+              )}
             <div class='show-endpoint-count'>
               {this.findEndpointCount(collectionId)}
             </div>
@@ -398,7 +399,7 @@ class CollectionsComponent extends Component {
                       >
                         Publish Docs
                       </a>
-                      )
+                    )
                     : null
                 }
 
@@ -424,14 +425,14 @@ class CollectionsComponent extends Component {
                   />
                 </Card.Body>
               </Accordion.Collapse>
-              )
+            )
             : null}
         </Accordion>
       </React.Fragment>
     )
   }
 
-  openPublishDocs (collection) {
+  openPublishDocs(collection) {
     if (collection?.id) {
       this.props.history.push({
         pathname: '/admin/publish',
@@ -448,7 +449,7 @@ class CollectionsComponent extends Component {
     }
   }
 
-  showPublishDocsModal (onHide) {
+  showPublishDocsModal(onHide) {
     return (
       <PublishDocsModal
         {...this.props}
@@ -459,7 +460,7 @@ class CollectionsComponent extends Component {
     )
   }
 
-  addGTM (gtmId) {
+  addGTM(gtmId) {
     if (gtmId) {
       const tagManagerArgs = {
         gtmId: gtmId
@@ -468,7 +469,7 @@ class CollectionsComponent extends Component {
     }
   }
 
-  render () {
+  render() {
     if (isDashboardRoute(this.props, true)) {
       let finalCollections = []
       this.names = {}
@@ -572,15 +573,16 @@ class CollectionsComponent extends Component {
                 className='add-collection-btn'
                 onClick={() => this.openAddCollectionForm()}
               >
-                <i className='uil uil-plus' />
-                New Collection
+      
+      <img src={emptyCollections} />
+                Add Collection
               </button>
-            </div>
-            {finalCollections.map((collectionId, index) =>
-              this.renderBody(collectionId, 'allCollections')
-            )}
           </div>
+          {finalCollections.map((collectionId, index) =>
+            this.renderBody(collectionId, 'allCollections')
+          )}
         </div>
+        </div >
       )
     } else {
       return (

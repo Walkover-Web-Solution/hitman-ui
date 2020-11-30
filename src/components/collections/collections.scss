@@ -3,20 +3,30 @@ $border-color: rgba(227, 228, 230, 0.7);
 .add-collection-btn-wrap {
   padding: 0;
   margin-bottom: 10px;
+
   .add-collection-btn {
     background: transparent;
     border: none;
-    color: #999;
     width: 100%;
-    text-align: left;
-    padding: 7px 10px;
+    padding: 15px 35px 10px;
+    color: #E98A36;
+    font-size: 12px;
+    text-align: right;
+
+    img {
+      width: 100%;
+      max-width: 25px;
+      margin-right: 5px;
+    }
+
     &:active,
     &:focus {
       outline: none;
       border: none;
       box-shadow: none;
     }
-    > i {
+
+    >i {
       width: 30px;
       display: inline-block;
     }
@@ -27,16 +37,19 @@ $border-color: rgba(227, 228, 230, 0.7);
   .card {
     border-radius: 0;
     border: none;
+
     .collapse {
       .card-body {
         padding: 0 0 0 15px !important;
       }
     }
+
     .collapsing {
       .card-body {
         padding: 0 0 0 15px !important;
       }
     }
+
     .card-header {
       border-bottom: 1px solid $border-color;
       margin-bottom: 0px !important;
@@ -52,27 +65,32 @@ $border-color: rgba(227, 228, 230, 0.7);
       .btn {
         text-align: left;
       }
+
       i.fas.fa-folder-open {
         opacity: 0.4;
         padding-left: 10px;
         margin: 5px;
       }
+
       i.fa.fa-file-text {
         color: rgb(158, 154, 16);
         opacity: 0.8;
         padding-left: 10px;
         margin: 5px;
       }
+
       button.btn {
         float: left;
         width: 80%;
       }
+
       .btn-group {
         visibility: hidden;
         display: flex;
         margin: 0px;
         height: 100%;
         border-radius: 0px;
+
         button.btn.btn-secondary {
           border-radius: 0px;
           background: rgb(237, 237, 237);
@@ -80,16 +98,19 @@ $border-color: rgba(227, 228, 230, 0.7);
           border-left: 1px solid rgba(0, 0, 0, 0.125);
           color: rgba(0, 0, 0, 0.4);
         }
+
         .dropdown-menu {
           border-radius: 0px;
           transform: translate3d(-119px, 59px, 0px) !important;
           margin: 0px;
         }
       }
+
       .show {
         visibility: visible;
       }
     }
+
     .card-header:hover {
       background: rgb(237, 237, 237);
 
@@ -105,9 +126,11 @@ $border-color: rgba(227, 228, 230, 0.7);
   display: flex;
   align-items: baseline;
   padding-bottom: 0px;
+
   i {
     width: 40px;
   }
+
   label {
     width: 100%;
     text-align: left;
@@ -129,10 +152,9 @@ $border-color: rgba(227, 228, 230, 0.7);
 }
 
 .show-endpoint-count {
-  padding: 4px;
-  background-color: white;
-  color: black;
-  border-radius: 10px;
+  color: #E98A36;
+  font-weight: 400;
+  font-size: 12px;
 }
 
 div.absolute {
@@ -148,6 +170,7 @@ div.fixed {
 .user-notification {
   padding: 0px !important;
   width: 300px;
+
   .user-heading {
     display: flex;
     align-items: center;
@@ -186,6 +209,7 @@ div.fixed {
   .notification-icon {
     padding-left: 20px;
   }
+
   button#dropdown-basic {
     background: rgb(255, 252, 246);
     border: none;

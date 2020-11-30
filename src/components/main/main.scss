@@ -814,6 +814,22 @@ label.data-type {
     width: 0px;
     background: transparent;
   }
+
   scrollbar-width: none;
 
+}
+
+
+.sideBarListWrapper {
+  p {
+    font-size: 14px;
+    margin: 0;
+    color: #333;
+    line-height: 14px;
+  }
+
+  .text-muted {
+    font-size: 10px;
+    color: #828283 !important;
+  }
 }
