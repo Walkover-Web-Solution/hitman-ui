@@ -1327,7 +1327,14 @@ class DisplayEndpoint extends Component {
 
   makeFormData (body) {
     const formData = new FormData()
-    body.value.map((o) => formData.set(o.key, o.value))
+    for (let i = 0; i < body.value.length; i++) {
+      if (
+        body.value[i].key.length !== 0 &&
+        body.value[i].checked === 'true'
+      ) {
+        formData.append(body.value[i].key, body.value[i].value)
+      }
+    }
     return formData
   }
 
@@ -1338,7 +1345,7 @@ class DisplayEndpoint extends Component {
         finalBodyValue = this.parseBody(body.value)
         return { body: finalBodyValue, headers }
       case 'multipart/form-data': {
-        const formData = this.makeFormData(body, headers)
+        const formData = this.makeFormData(body)
         headers['content-type'] = 'multipart/form-data'
         return { body: formData, headers }
       }
