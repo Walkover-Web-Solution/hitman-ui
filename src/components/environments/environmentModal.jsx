@@ -4,14 +4,14 @@ import environmentsApiService from './environmentsApiService'
 import './environments.scss'
 
 class EnvironmentModal extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       environments: {}
     }
   }
 
-  async componentDidMount() {
+  async componentDidMount () {
     let environments = {}
     if (Object.keys(this.props.environment.environments).length) {
       environments = { ...this.props.environment.environments }
@@ -38,19 +38,19 @@ class EnvironmentModal extends Component {
     }
   }
 
-  async handleDelete(environment) {
+  async handleDelete (environment) {
     this.props.delete_environment(environment)
   }
 
-  handleEdit(environment) {
+  handleEdit (environment) {
     this.props.handle_environment_modal('Edit Environment', environment)
   }
 
-  handleCancel(props) {
+  handleCancel (props) {
     this.props.onHide()
   }
 
-  render() {
+  render () {
     return (
       <Modal
         {...this.props}
@@ -71,7 +71,7 @@ class EnvironmentModal extends Component {
                 (environmentId) =>
                   (
                     <div key={environmentId}>
-                      <div className="mb-2">
+                      <div className='mb-2'>
                         <ListGroup.Item
                           style={{ width: '98%', float: 'left' }}
                           key={environmentId}
@@ -102,7 +102,7 @@ class EnvironmentModal extends Component {
                               }}
                             >
                               Delete
-                          </button>
+                            </button>
                           </div>
                         </div>
 
