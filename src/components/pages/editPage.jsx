@@ -140,14 +140,14 @@ class EditPage extends Component {
   render () {
     return (
       <div className='custom-edit-page'>
-        <div>
+        <div className="form-group">
           <input
             name='name'
             id='name'
             value={this.state.data.name}
             onChange={this.handleNameChange}
             type='text'
-            className='form-control custom-page-name-input'
+            className='form-control'
             placeholder='Page Name'
           />
         </div>
@@ -167,7 +167,7 @@ class EditPage extends Component {
             <button
               onSubmit={this.handleSubmit}
               type='submit'
-              className='btn btn-primary'
+              className='btn btn-primary btn-extra-lg mt-4'
             >
               Submit
             </button>

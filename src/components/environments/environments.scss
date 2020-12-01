@@ -1,15 +1,19 @@
 $border-color: rgba(227, 228, 230, 0.7);
 
 .custom-environment-list-container {
-  height: 600px;
-  overflow: scroll;
+  height: 300px;
+  overflow: auto;
+
+  button.btn {
+    padding: 0;
+  }
 
   .list-group-item {
-    border-top: none;
-    border-right: none;
-    border-left: none;
-    border-bottom: 1px solid rgb(230, 223, 223) !important;
-    border-radius: none;
+    font-size: 14px;
+    &:hover{
+      cursor: pointer;
+      color: #E98A36;
+    }
   }
 
   button.btn.btn-secondary {
@@ -19,34 +23,37 @@ $border-color: rgba(227, 228, 230, 0.7);
   }
 }
 
-.custom-button-wrapper {
-  button.btn.btn-default.custom-environment-cancel-button {
-    float: right;
-    font-size: 15px;
-    font-weight: 300;
-    border-radius: 2px;
-    background-color: rgb(235, 236, 220);
-    padding: 10px 20px 10px 20px;
-    margin-right: 10px;
-    margin-bottom: 10px;
-  }
 
-  button.btn.btn-default.custom-environment-add-button {
-    float: right;
-    font-size: 15px;
-    font-weight: 300;
-    color: white;
-    border-radius: 2px;
-    background-color: rgba(231, 108, 86, 0.877);
-    padding: 10px 20px 10px 20px;
-    margin-left: 10px;
-    margin-bottom: 10px;
-  }
-}
 
 .custom-table-container {
-  height: 600px;
-  overflow: scroll;
+  height: 300px;
+  overflow: auto;
+
+  thead th {
+    border: none !important;
+    font-size: 14px;
+    font-weight: 400;
+    padding: 10px !important;
+    color: #333333;
+  }
+
+  tbody td {
+    &.custom-td {
+      padding: 0 10px !important;
+      border: none;
+    }
+
+    input.form-control {
+      height: 40px;
+      border: 1px solid #E0E0E0 !important;
+      font-size: 14px;
+      font-weight: 400;
+      color: #000;
+      border-radius: 0px;
+      margin-bottom: 10px;
+      box-shadow: none !important;
+    }
+  }
 }
 
 .environment-container {
@@ -60,6 +67,7 @@ $border-color: rgba(227, 228, 230, 0.7);
   // height: 43px;
   width: 200px;
   min-width: 200px;
+
   .environment-buttons {
     display: flex;
     flex-direction: row;
@@ -70,6 +78,7 @@ $border-color: rgba(227, 228, 230, 0.7);
     background-color: rgb(221, 221, 223);
     border-radius: 2px;
   }
+
   .select-environment-dropdown {
     display: flex;
     flex-direction: row;
@@ -79,13 +88,25 @@ $border-color: rgba(227, 228, 230, 0.7);
     width: 100%;
     background-color: rgb(221, 221, 223);
     border-radius: 2px;
+
     .dropdown {
       width: 100%;
+
       .btn {
         width: 100%;
         display: flex;
         justify-content: space-between;
         align-items: center;
+      }
+
+      .dropdown-menu .dropdown-item {
+        font-size: 13px;
+        text-align: center;
+
+        &.dropdown-item.addEnv {
+          border-top: 1px solid #E0E0E0;
+          padding: 15px 0 8px;
+        }
       }
     }
   }
@@ -94,21 +115,9 @@ $border-color: rgba(227, 228, 230, 0.7);
 .custom-env-menu.dropdown-menu.show.dropdown-menu-right {
   height: 400px;
   width: 780px;
-  background: rgb(245, 243, 243);
+  background: #ffffff;
   transform: translate3d(-700px, 38px, 0px) !important;
-  overflow-y: scroll;
-
-  .dropdown-divider {
-    border-top: 1px solid rgba(190, 201, 214, 0.7) !important;
-  }
-
-  .btn.btn-default {
-    padding-top: 0px;
-    float: right;
-    color: orange;
-    font-size: 14px;
-    font-weight: 300px;
-  }
+  overflow: auto;
 
   .custom-left-pane {
     float: left;
@@ -118,6 +127,7 @@ $border-color: rgba(227, 228, 230, 0.7);
     font-weight: 400;
     padding-left: 15px;
   }
+
   .custom-middle-pane {
     float: left;
     width: 269px;
@@ -125,6 +135,7 @@ $border-color: rgba(227, 228, 230, 0.7);
     font-size: 13px;
     font-weight: 400;
   }
+
   .custom-right-pane {
     float: left;
     width: 270px;
@@ -140,20 +151,18 @@ $border-color: rgba(227, 228, 230, 0.7);
     font-weight: 300;
     padding-left: 15px;
   }
+
   .custom-middle-box {
     float: left;
     width: 269px;
     font-size: 13px;
     font-weight: 300;
   }
+
   .custom-right-box {
     float: left;
     width: 270px;
     font-size: 13px;
     font-weight: 300;
   }
-}
-
-input#custom-environment-input {
-  margin-bottom: 15px;
 }

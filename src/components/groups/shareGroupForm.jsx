@@ -12,7 +12,7 @@ class ShareGroupForm extends Form {
     errors: {}
   };
 
-  componentDidMount () {
+  componentDidMount() {
     if (this.props.selectedGroup) {
       let data = {}
       const shareGroupLink =
@@ -29,9 +29,9 @@ class ShareGroupForm extends Form {
     shareVersionLink: Joi.string().required().label('Public Link')
   };
 
-  async doSubmit (props) {}
+  async doSubmit(props) { }
 
-  render () {
+  render() {
     return (
       <Modal
         {...this.props}
@@ -56,13 +56,12 @@ class ShareGroupForm extends Form {
                   ''
                 )}
                 onCopy={() => this.props.onHide()}
-                className='btn btn-default'
-                style={{ float: 'right' }}
+                className='btn btn-primary btn-lg  float-right'
               >
-                <button style={{ borderRadius: '12px' }}>Copy</button>
+                <button>Copy</button>
               </CopyToClipboard>
             }
-            <button className='btn btn-default' onClick={this.props.onHide}>
+            <button className='btn btn-secondary btn-lg  float-right mr-2' onClick={this.props.onHide}>
               Cancel
             </button>
           </form>

@@ -322,41 +322,13 @@ $border-color: rgba(227, 228, 230, 0.7);
   }
 }
 
-button#custom-delete-modal-delete {
-  color: white;
-  float: right;
-  background: rgb(255, 0, 0);
-  padding-left: 25px;
-  padding-right: 25px;
-  font-size: 15px;
-  border-color: blue;
-}
 
-button#custom-delete-modal-cancel {
-  float: right;
-  padding-left: 25px;
-  padding-right: 25px;
-  font-size: 15px;
 
-  color: grey;
-  background: rgb(232, 232, 232);
-  margin-right: 20px;
+.modal-header {
+  color: #333333 !important;
+  border: none !important;
+  padding: 15px 15px 0 !important;
 
-  &:hover {
-    background: rgb(197, 197, 200);
-  }
-}
-
-#custom-delete-modal-body {
-  height: 120px;
-  display: block;
-}
-
-.custom-collection-modal-container.modal-header {
-  color: #333333; 
-  border: none;
-  padding: 15px 15px 0;
- 
 }
 
 label.custom-input-label {
@@ -378,10 +350,10 @@ textarea.custom-input::placeholder {
   // font-weight: 300;
 }
 
- .modal-header .modal-title {
-    font-size: 16px;
-    font-weight: 700;
-    color: #E98A36;
+.modal-header .modal-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #E98A36;
 }
 
 main.main.ml-sm-auto.col-lg-10 {
@@ -574,7 +546,56 @@ button.btn.custom-body-type-button {
   justify-content: center;
   align-items: center;
 }
+
 .modal-content {
   box-shadow: -25px 25px 43px rgba(0, 0, 0, 0.07);
   border-radius: 0;
+}
+
+
+.input-field-wrapper {
+  input.token-generator-input-field {
+    height: 40px;
+    border: 1px solid #E0E0E0;
+    font-size: 14px;
+    font-weight: 400;
+    color: #000;
+    border-radius: 0px;
+    padding: 0 10px;
+
+    &:focus {
+      outline: none;
+      border-color: #E98A36;
+    }
+  }
+
+  label {
+    color: #4F4F4F;
+    font-size: 13px !important;
+    margin: 0;
+    font-weight: 400 !important;
+  }
+
+  .dropdown {
+    .custom-request-button {
+      font-size: 14px;
+      padding: 2px 10px;
+      font-weight: 400;
+    }
+
+    button.dropdown-toggle {
+      background: #fff !important;
+      flex: 1.6 1;
+      height: 40px;
+      border: 1px solid #E0E0E0;
+      font-size: 14px;
+      font-weight: 400;
+      color: #000;
+      border-radius: 0;
+    }
+
+    .dropdown-menu {
+      width: 100%;
+    }
+  }
 }

@@ -9,7 +9,7 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 class DeleteModal extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {}
   }
@@ -19,7 +19,7 @@ class DeleteModal extends Component {
     this.doSubmit()
   };
 
-  doSubmit () {
+  doSubmit() {
     this.props.onHide()
     const { title } = this.props
     if (title === 'Delete Collection') {
@@ -61,7 +61,7 @@ class DeleteModal extends Component {
     }
   }
 
-  render () {
+  render() {
     return (
       <Modal
         {...this.props}
@@ -75,25 +75,27 @@ class DeleteModal extends Component {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body id='custom-delete-modal-body'>
-          <div>{this.props.message}</div>
+          <div>
+            <p>{this.props.message}</p>
+          </div>
+          <div className="text-right">
+            <form onSubmit={this.handleSubmit}>
+              <button
+                id='custom-delete-modal-delete'
+                className='btn btn-danger btn-lg mr-2'
+              >
+                Delete
+            </button>
+              <button
+                id='custom-delete-modal-cancel'
+                className='btn btn-secondary btn-lg'
+                onClick={this.props.onHide}
+              >
+                Cancel
+            </button>
+            </form>
+          </div>
         </Modal.Body>
-        <Modal.Footer>
-          <form onSubmit={this.handleSubmit}>
-            <button
-              id='custom-delete-modal-delete'
-              className='btn btn-default custom-button'
-            >
-              Delete
-            </button>
-            <button
-              id='custom-delete-modal-cancel'
-              className='btn btn-default custom-button'
-              onClick={this.props.onHide}
-            >
-              Cancel
-            </button>
-          </form>
-        </Modal.Footer>
       </Modal>
     )
   }
