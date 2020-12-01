@@ -30,7 +30,7 @@ export const onPagesFetchedError = (error) => {
     error
   }
 }
-export const updatePage = (history, editedPage) => {
+export const updatePage = (history, editedPage, publishDocs = false) => {
   const newPage = { ...editedPage }
   delete newPage.id
   delete newPage.versionId
@@ -42,7 +42,9 @@ export const updatePage = (history, editedPage) => {
       .updatePage(editedPage.id, newPage)
       .then((response) => {
         dispatch(onPageUpdated(response.data))
-        history.push(`/dashboard/page/${response.data.id}`)
+        if (!publishDocs) {
+          history.push(`/dashboard/page/${response.data.id}`)
+        }
       })
       .catch((error) => {
         dispatch(
@@ -229,7 +231,7 @@ export const updatePageOrder = (pagesOrder) => {
     dispatch(updatePageOrderRequest({ ...store.getState().pages }, pagesOrder))
     pageApiService
       .updatePageOrder(pagesOrder)
-      .then(() => {})
+      .then(() => { })
       .catch((error) => {
         dispatch(
           onPageOrderUpdatedError(
