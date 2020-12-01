@@ -4,14 +4,14 @@ import environmentsApiService from './environmentsApiService'
 import './environments.scss'
 
 class EnvironmentModal extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       environments: {}
     }
   }
 
-  async componentDidMount () {
+  async componentDidMount() {
     let environments = {}
     if (Object.keys(this.props.environment.environments).length) {
       environments = { ...this.props.environment.environments }
@@ -38,19 +38,19 @@ class EnvironmentModal extends Component {
     }
   }
 
-  async handleDelete (environment) {
+  async handleDelete(environment) {
     this.props.delete_environment(environment)
   }
 
-  handleEdit (environment) {
+  handleEdit(environment) {
     this.props.handle_environment_modal('Edit Environment', environment)
   }
 
-  handleCancel (props) {
+  handleCancel(props) {
     this.props.onHide()
   }
 
-  render () {
+  render() {
     return (
       <Modal
         {...this.props}
@@ -71,50 +71,53 @@ class EnvironmentModal extends Component {
                 (environmentId) =>
                   (
                     <div key={environmentId}>
-                      <ListGroup.Item
-                        style={{ width: '93%', float: 'left' }}
-                        key={environmentId}
-                        onClick={() =>
-                          this.handleEdit(
-                            this.props.environment.environments[environmentId]
-                          )}
-                      >
-                        {this.props.environment.environments[environmentId].name}
-                      </ListGroup.Item>
-                      <div className='btn-group'>
-                        <button
-                          className='btn '
-                          data-toggle='dropdown'
-                          aria-haspopup='true'
-                          aria-expanded='false'
+                      <div className="mb-2">
+                        <ListGroup.Item
+                          style={{ width: '98%', float: 'left' }}
+                          key={environmentId}
+                          onClick={() =>
+                            this.handleEdit(
+                              this.props.environment.environments[environmentId]
+                            )}
                         >
-                          <i className='fas fa-ellipsis-h' />
-                        </button>
-                        <div className='dropdown-menu dropdown-menu-right'>
+                          {this.props.environment.environments[environmentId].name}
+                        </ListGroup.Item>
+                        <div className='btn-group'>
                           <button
-                            className='btn btn-default'
-                            onClick={() => {
-                              this.props.onHide()
-                              this.props.open_delete_environment_modal(
-                                environmentId
-                              )
-                            }}
+                            className='btn '
+                            data-toggle='dropdown'
+                            aria-haspopup='true'
+                            aria-expanded='false'
                           >
-                            delete
+                            <i className='fas fa-ellipsis-v' />
                           </button>
+                          <div className='dropdown-menu dropdown-menu-right'>
+                            <button
+                              className='dropdown-item'
+                              onClick={() => {
+                                this.props.onHide()
+                                this.props.open_delete_environment_modal(
+                                  environmentId
+                                )
+                              }}
+                            >
+                              Delete
+                          </button>
+                          </div>
                         </div>
+
                       </div>
+
                     </div>
                   )
               )
             }
           </ListGroup>
 
-          <hr />
           <div>
-            <div className='custom-button-wrapper'>
+            <div className='custom-button-wrapper text-right mt-3'>
               <button
-                className='btn btn-default custom-environment-cancel-button'
+                className='btn btn-secondary btn-lg'
                 onClick={() => this.handleCancel(this.props)}
               >
                 Cancel

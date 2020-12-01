@@ -654,9 +654,9 @@ label.data-type {
 }
 
 .dropdown-menu.dropdown-menu-right {
-  box-shadow: -12px 6px 38px rgba(0, 0, 0, 0.07);
+  box-shadow: -25px 25px 43px rgba(0, 0, 0, 0.07);
   border: none;
-  border-radius: 4px !important;
+  border-radius: 0; 
 }
 
 .btn.btn-primary {
@@ -833,9 +833,9 @@ label.data-type {
 .form-group {
   label {
     color: #4F4F4F;
-    font-size: 13px!important;
+    font-size: 13px !important;
     margin: 0;
-    font-weight: 400!important;
+    font-weight: 400 !important;
   }
 
   .form-control {
@@ -846,16 +846,21 @@ label.data-type {
     color: #000;
     border-radius: 0px;
 
-    &::-webkit-input-placeholder { 
+    &:focus {
+      outline: none;
+      border-color: #E98A36;
+    }
+
+    &::-webkit-input-placeholder {
       font-size: 12px;
       font-weight: 400;
     }
-    
-    &:-ms-input-placeholder { 
+
+    &:-ms-input-placeholder {
       font-size: 12px;
       font-weight: 400;
     }
-    
+
     &::placeholder {
       font-size: 12px;
       font-weight: 400;
@@ -866,20 +871,24 @@ label.data-type {
 .ql-editor {
   height: 150px;
 }
+
 button.btn.btn-secondary {
   background: #BDBDBD;
   border: none;
   font-size: 14px;
   font-weight: 600;
 }
-.modal-dialog  .modal-content {
+
+.modal-dialog .modal-content {
   border-radius: 0;
   box-shadow: -25px 25px 43px rgba(0, 0, 0, 0.07);
   border: none;
 }
+
 .modal-backdrop.show {
   background-color: #ededed;
 }
+
 .form-group .alert.alert-danger {
   background: #fff;
   border: none;
@@ -888,7 +897,32 @@ button.btn.btn-secondary {
   color: #d61124;
   font-weight: 400;
 }
+
 .form-group textarea.form-control {
   height: 120px;
   resize: none;
+}
+
+.btn.btn-danger {
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.modal-body p {
+  font-size: 14px;
+}
+
+.btn-extra-lg {
+  padding: 10px 0!important;
+  width: 100%!important;
+  max-width: 120px!important;
+}
+button.editBtn {
+  background: transparent;
+  border: none;
+}
+.dropdown-divider{
+  float: left;
+  width: 100%;
 }
