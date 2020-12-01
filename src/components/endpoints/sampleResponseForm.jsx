@@ -4,7 +4,7 @@ import Joi from 'joi-browser'
 import Form from '../common/form'
 
 class SampleResponseForm extends Form {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       data: { status: '', description: '', body: '' },
@@ -18,7 +18,7 @@ class SampleResponseForm extends Form {
     }
   }
 
-  async componentDidMount () {
+  async componentDidMount() {
     let data = {}
     if (this.props.title === 'Add Sample Response') return
     if (
@@ -40,7 +40,7 @@ class SampleResponseForm extends Form {
     this.setState({ data })
   }
 
-  editSampleResponse () {
+  editSampleResponse() {
     let { status, description, body: data } = this.state.data
     try {
       data = JSON.parse(data)
@@ -55,7 +55,7 @@ class SampleResponseForm extends Form {
     this.props.props_from_parent(sampleResponseArray, sampleResponseFlagArray)
   }
 
-  addSampleResponse () {
+  addSampleResponse() {
     let { status, description, body: data } = this.state.data
     try {
       data = JSON.parse(data)
@@ -75,7 +75,7 @@ class SampleResponseForm extends Form {
     this.props.props_from_parent(sampleResponseArray, sampleResponseFlagArray)
   }
 
-  async doSubmit () {
+  async doSubmit() {
     this.props.onHide()
     if (this.props.title === 'Add Sample Response') {
       this.addSampleResponse()
@@ -85,7 +85,7 @@ class SampleResponseForm extends Form {
     }
   }
 
-  render () {
+  render() {
     return (
       <Modal
         {...this.props}
@@ -101,20 +101,22 @@ class SampleResponseForm extends Form {
         </Modal.Header>
         <Modal.Body>
           <form onSubmit={this.handleSubmit}>
-            {this.renderInput('status', 'status: ', 'Enter Status ')}
+            {this.renderInput('status', 'Status: ', 'Enter Status ')}
             {this.renderInput(
               'description',
-              'description: ',
+              'Description: ',
               'Enter Descripton'
             )}
-            {this.renderAceEditor('body', 'body: ')}
-            {this.renderButton('Submit')}
-            <button
-              className='btn btn-default custom-button'
-              onClick={this.props.onHide}
-            >
-              Cancel
+            {this.renderAceEditor('body', 'Body: ')}
+            <div className="text-right mt-2 mb-2">
+              {this.renderButton('Submit')}
+              <button
+                className='btn btn-secondary btn-lg ml-2'
+                onClick={this.props.onHide}
+              >
+                Cancel
             </button>
+            </div>
           </form>
         </Modal.Body>
       </Modal>

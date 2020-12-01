@@ -2,11 +2,10 @@ import React, { Component } from 'react'
 import { Button, Dropdown } from 'react-bootstrap'
 import './publishDocs.scss'
 import { connect } from 'react-redux'
-import { fetchCollections, updateCollection } from '../collections/redux/collectionsActions'
-import { fetchAllVersions } from '../collectionVersions/redux/collectionVersionsActions'
-import { fetchEndpoints } from '../endpoints/redux/endpointsActions'
-import { fetchGroups } from '../groups/redux/groupsActions'
-import { fetchPages } from '../pages/redux/pagesActions'
+import { updateCollection } from '../collections/redux/collectionsActions'
+import {
+  updateEndpoint
+} from '../endpoints/redux/endpointsActions'
 import extractCollectionInfoService from './extractCollectionInfoService'
 import DisplayEndpoint from '../endpoints/displayEndpoint'
 import {
@@ -17,6 +16,8 @@ import {
 } from '../publicEndpoint/redux/publicEndpointsActions'
 import PublishDocsForm from './publishDocsForm'
 import DisplayPage from '../pages/displayPage'
+import { updatePage } from '../pages/redux/pagesActions'
+
 const URI = require('urijs')
 
 const publishDocsEnum = {
@@ -27,13 +28,12 @@ const publishDocsEnum = {
   EMPTY_STRING: ''
 }
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    fetch_collections: () => dispatch(fetchCollections()),
-    fetch_all_versions: () => dispatch(fetchAllVersions()),
-    fetch_groups: () => dispatch(fetchGroups()),
-    fetch_endpoints: () => dispatch(fetchEndpoints()),
-    fetch_pages: () => dispatch(fetchPages()),
+    update_page: (editedPage) =>
+      dispatch(updatePage(ownProps.history, editedPage, 'publishDocs')),
+    update_endpoint: (editedEndpoint) =>
+      dispatch(updateEndpoint(editedEndpoint)),
     update_collection: (editedCollection) =>
       dispatch(updateCollection(editedCollection)),
     approve_endpoint: (endpoint) => dispatch(approveEndpoint(endpoint)),
@@ -143,8 +143,12 @@ class PublishDocs extends Component {
   }
 
   setSelectedVersion (e) {
+    const selectedGroupId = this.getInitialGroup(e.currentTarget.value, this.state.groups)
+    const selectedEndpointId = this.getInitialEndpoint(selectedGroupId, this.state.endpoints)
     this.setState({
-      selectedVersionId: e.currentTarget.value
+      selectedVersionId: e.currentTarget.value,
+      selectedGroupId,
+      selectedEndpointId
     })
   }
 
@@ -158,7 +162,7 @@ class PublishDocs extends Component {
       //
     } else {
       this.setState({
-        selectedEndpointId: this.getInitialEndpoint(this.state.groupId, this.state.endpoints)
+        selectedEndpointId: this.getInitialEndpoint(this.state.selectedGroupId, this.state.endpoints)
       })
     }
   }
@@ -181,14 +185,16 @@ class PublishDocs extends Component {
       //
     } else {
       if (this.props.pages[pageId].groupId === null) {
-        const selectedGroupId = this.getInitialGroup(Object.keys(this.state.versions)[0], this.state.groups)
+        const selectedGroupId = this.getInitialGroup(this.state.selectedVersionId, this.state.groups)
         this.setState({
           selectedGroupId,
-          selectedEndpointId: this.getInitialEndpoint(selectedGroupId, this.state.endpoints)
+          selectedEndpointId: this.getInitialEndpoint(selectedGroupId, this.state.endpoints),
+          selectedPageId: false
         })
       } else {
         this.setState({
-          selectedEndpointId: this.getInitialEndpoint(this.state.groupId, this.state.endpoints)
+          selectedEndpointId: this.getInitialEndpoint(this.state.groupId, this.state.endpoints),
+          selectedPageId: false
         })
       }
     }
@@ -460,6 +466,39 @@ class PublishDocs extends Component {
     }
   }
 
+  handleRemovePublicEndpoint (endpointId) {
+    this.props.update_endpoint({
+      ...this.state.endpoints[endpointId],
+      isPublished: false,
+      publishedEndpoint: {},
+      state: 'Draft'
+    })
+    this.setState({
+      selectedEndpointId: this.getInitialEndpoint(this.state.groupId, this.state.endpoints)
+    })
+  }
+
+  handleRemovePublicPage (pageId) {
+    const page = { ...this.state.pages[pageId] }
+    page.isPublished = false
+    page.publishedEndpoint = {}
+    page.state = 'Draft'
+    this.props.update_page(page)
+    if (this.props.pages[pageId].groupId === null) {
+      const selectedGroupId = this.getInitialGroup(this.state.selectedVersionId, this.state.groups)
+      this.setState({
+        selectedGroupId,
+        selectedEndpointId: this.getInitialEndpoint(selectedGroupId, this.state.endpoints),
+        selectedPageId: false
+      })
+    } else {
+      this.setState({
+        selectedEndpointId: this.getInitialEndpoint(this.state.groupId, this.state.endpoints),
+        selectedPageId: false
+      })
+    }
+  }
+
   endpointPublishAndReject () {
     if (this.state.endpoints[this.state.selectedEndpointId]?.state !== publishDocsEnum.APPROVED_STATE &&
       this.state.endpoints[this.state.selectedEndpointId]?.state !== publishDocsEnum.REJECT_STATE) {
@@ -467,6 +506,13 @@ class PublishDocs extends Component {
         <div className='publish-reject'>
           <button class='btn default' onClick={() => this.handleRejectEndpointRequest(this.state.selectedEndpointId)}>Reject</button>
           <div className='publish-button'>  <Button variant='success' onClick={() => this.handleApproveEndpointRequest(this.state.selectedEndpointId)}>PUBLISH</Button>
+          </div>
+        </div>
+      )
+    } else {
+      return (
+        <div className='publish-reject'>
+          <div className='publish-button'>  <Button variant='success' onClick={() => this.handleRemovePublicEndpoint(this.state.selectedEndpointId)}>Unpublish Endpoint</Button>
           </div>
         </div>
       )
@@ -481,6 +527,13 @@ class PublishDocs extends Component {
         <div className='publish-reject'>
           <button class='btn default' onClick={() => this.handleRejectPageRequest(this.state.selectedPageId)}>Reject</button>
           <div className='publish-button'>  <Button variant='success' onClick={() => this.handleApprovePageRequest(this.state.selectedPageId)}>PUBLISH</Button>
+          </div>
+        </div>
+      )
+    } else {
+      return (
+        <div className='publish-reject'>
+          <div className='publish-button'>  <Button variant='success' onClick={() => this.handleRemovePublicPage(this.state.selectedPageId)}>Unpublish Page</Button>
           </div>
         </div>
       )
@@ -584,7 +637,7 @@ class PublishDocs extends Component {
             <div className='grid-two'>
               <div className='versions-section'>
                 <select
-                  className='selected-versio form-contorl light-orange-bg' onChange={this.setSelectedVersion.bind(this)}
+                  className='selected-versio form-contorl light-orange-bg' onChange={this.setSelectedVersion.bind(this)} value={this.state.selectedVersionId}
                 >
                   {this.showVersions()}
                 </select>

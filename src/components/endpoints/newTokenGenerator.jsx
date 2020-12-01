@@ -370,11 +370,11 @@ class TokenGenerator extends Component {
               </div>
             ))}
             <div className='button-group'>
-              <button className='btn cancel-button' onClick={this.props.onHide}>
+              <button className='btn btn-secondary btn-lg' onClick={this.props.onHide}>
                 Cancel
               </button>
               <button
-                className='btn request-token-button'
+                className='btn btn-primary btn-lg mr-2'
                 type='button'
                 onClick={() => this.makeRequest()}
               >

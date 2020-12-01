@@ -17,7 +17,7 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 class EnvironmentVariables extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       environment: {
@@ -32,7 +32,7 @@ class EnvironmentVariables extends Component {
     }
   }
 
-  async componentDidMount () {
+  async componentDidMount() {
     if (this.props.title === 'Add new Environment') return
     let environment = {}
     environment = jQuery.extend(true, {}, this.props.environment)
@@ -56,7 +56,7 @@ class EnvironmentVariables extends Component {
     this.doSubmit()
   };
 
-  doSubmit () {
+  doSubmit() {
     this.props.onHide()
     const environment = { ...this.state.environment }
     const originalVariableNames = [...this.state.originalVariableNames]
@@ -103,7 +103,7 @@ class EnvironmentVariables extends Component {
     }
   }
 
-  handleAdd () {
+  handleAdd() {
     const environment = { ...this.state.environment }
     const len = this.state.originalVariableNames.length
     const originalVariableNames = [
@@ -146,13 +146,13 @@ class EnvironmentVariables extends Component {
     }
   };
 
-  handleDelete (index) {
+  handleDelete(index) {
     const updatedVariableNames = this.state.updatedVariableNames
     updatedVariableNames[index] = 'deleted'
     this.setState({ updatedVariableNames })
   }
 
-  render () {
+  render() {
     return (
       <Modal
         {...this.props}
@@ -172,20 +172,22 @@ class EnvironmentVariables extends Component {
               </Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              <label htmlFor='custom-environment-input'>
-                {this.props.title}{' '}
-              </label>
-              <input
-                name='name'
-                value={this.state.environment.name}
-                onChange={this.handleChangeEnv}
-                type='text'
-                id='custom-environment-input'
-                className='form-control'
-                placeholder='Environment Name'
-              />
-              <div className='custom-table-container'>
-                <Table bordered size='sm'>
+              <div className="form-group">
+                <label htmlFor='custom-environment-input'>
+                  {this.props.title}{' '}
+                </label>
+                <input
+                  name='name'
+                  value={this.state.environment.name}
+                  onChange={this.handleChangeEnv}
+                  type='text'
+                  id='custom-environment-input'
+                  className='form-control'
+                  placeholder='Environment Name'
+                />
+              </div>
+              <div className='custom-table-container '>
+                <Table size='sm'>
                   <thead>
                     <tr>
                       <th className='custom-td'>Variable</th>
@@ -248,12 +250,23 @@ class EnvironmentVariables extends Component {
                                       className='btn btn-light btn-sm btn-block'
                                       onClick={() => this.handleDelete(index)}
                                     >
-                                      X
+                                      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <g clip-path="url(#clip0)">
+                                          <path d="M2.25 4.5H3.75H15.75" stroke="#828282" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                          <path d="M6 4.5V3C6 2.60218 6.15804 2.22064 6.43934 1.93934C6.72064 1.65804 7.10218 1.5 7.5 1.5H10.5C10.8978 1.5 11.2794 1.65804 11.5607 1.93934C11.842 2.22064 12 2.60218 12 3V4.5M14.25 4.5V15C14.25 15.3978 14.092 15.7794 13.8107 16.0607C13.5294 16.342 13.1478 16.5 12.75 16.5H5.25C4.85218 16.5 4.47064 16.342 4.18934 16.0607C3.90804 15.7794 3.75 15.3978 3.75 15V4.5H14.25Z" stroke="#828282" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                        </g>
+                                        <defs>
+                                          <clipPath id="clip0">
+                                            <rect width="18" height="18" fill="white" />
+                                          </clipPath>
+                                        </defs>
+                                      </svg>
+
                                     </button>
                                   </td>
-                              )}
+                                )}
                             </tr>
-                            )
+                          )
                           : null
                       )
                     }
@@ -262,12 +275,12 @@ class EnvironmentVariables extends Component {
               </div>
               <hr />
               <div>
-                <div className='custom-button-wrapper'>
-                  <button className='btn btn-default custom-environment-add-button'>
+                <div className='text-right'>
+                  <button className='btn btn-primary btn-lg mr-2'>
                     Save
                   </button>
                   <button
-                    className='btn btn-default custom-environment-cancel-button'
+                    className='btn btn-secondary btn-lg'
                     onClick={this.props.onHide}
                   >
                     Cancel
