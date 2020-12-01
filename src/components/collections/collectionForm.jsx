@@ -148,7 +148,7 @@ class CollectionForm extends Form {
               {this.renderQuillEditor('descriptoion', 'Description')}
               {this.renderButton('Submit')}
               <button
-                className='btn btn-default custom-button'
+                className='btn btn-secondary btn-lg ml-2'
                 onClick={() => this.props.onHide()}
               >
                 Cancel

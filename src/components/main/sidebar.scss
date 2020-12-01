@@ -1,7 +1,7 @@
 .primary-sidebar {
   background-color: #fff;
   color: #999;
-  width: 350px;
+  width: 330px;
   font-size: 14px;
 }
 
@@ -161,14 +161,14 @@ input[type="text"]:focus {
 }
 
 .secondary-sidebar {
-  min-width: 300px;
-  width: 300px;
+  max-width: 245px;
+  width: 100%;
   font-size: 14px;
-  background: #252d30;
   color: #999;
-  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  border-left: 2px solid #E0E0E0;
   padding: 20px 10px;
   overflow: auto;
+  background-color: #fff;
 }
 
 .version-collapse .sidebar-accordion#child-accordion {

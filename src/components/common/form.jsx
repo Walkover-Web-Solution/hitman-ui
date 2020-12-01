@@ -133,9 +133,7 @@ class Form extends Component {
   renderButton (label, style) {
     return (
       <button
-        className='btn btn-default custom-button'
-        style={{ float: style, borderRadius: '12px' }}
-      >
+        className='btn btn-primary btn-lg'>
         {label}
       </button>
     )

@@ -353,13 +353,10 @@ button#custom-delete-modal-cancel {
 }
 
 .custom-collection-modal-container.modal-header {
-  color: white;
-  background: black;
-  padding: 10px;
-
-  button.close {
-    color: white;
-  }
+  color: #333333; 
+  border: none;
+  padding: 15px 15px 0;
+ 
 }
 
 label.custom-input-label {
@@ -381,9 +378,10 @@ textarea.custom-input::placeholder {
   // font-weight: 300;
 }
 
-//common
-#contained-modal-title-vcenter {
-  font-size: 15px;
+ .modal-header .modal-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #E98A36;
 }
 
 main.main.ml-sm-auto.col-lg-10 {
@@ -575,4 +573,8 @@ button.btn.custom-body-type-button {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+.modal-content {
+  box-shadow: -25px 25px 43px rgba(0, 0, 0, 0.07);
+  border-radius: 0;
 }
