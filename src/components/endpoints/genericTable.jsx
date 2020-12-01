@@ -56,7 +56,6 @@ class GenericTable extends Component {
     }
 
     if (
-      isDashboardRoute(this.props) &&
       dataArray[name[0]][name[1]].length !== 0 &&
       !this.checkboxFlags[name[0]] &&
       title !== 'Path Variables'
@@ -381,6 +380,18 @@ class GenericTable extends Component {
     )
   }
 
+  renderOptionalParamsButton() {
+    return (
+      !isDashboardRoute(this.props) && this.findUncheckedEntityCount()
+        ? (
+          <div className="" style={{ float: 'right', cursor: "pointer"}} onClick={() => this.toggleOptionalParams()}>
+            {!this.state.optionalParams ? `View Optional ${this.props.title}` : `Hide Optional ${this.props.title}`}
+          </div>
+          )
+        : null
+    )
+  }
+
   render () {
     const { dataArray, original_data: originalData, title } = this.props
     if (!isDashboardRoute(this.props)) {
@@ -404,16 +415,8 @@ class GenericTable extends Component {
           }
         >
           {!isDashboardRoute(this.props) && title}
+          
         </div>
-        {
-          !isDashboardRoute(this.props) && this.findUncheckedEntityCount()
-            ? (
-              <div style={{ float: 'right', cursor: 'pointer' }} onClick={() => this.toggleOptionalParams()}>
-                View Optional {this.props.title}
-              </div>
-              )
-            : null
-        }
         {!this.state.bulkEdit && dataArray.length > 0
           ? (
             <table className='table' id='custom-generic-table'>
@@ -434,9 +437,9 @@ class GenericTable extends Component {
                   : (
                     <thead>
                       <tr>
-                        <th className='custom-th' />
-                        <th className='custom-th' id='generic-table-key-cell' />
-                        <th className='custom-th' />
+                        <th className='custom-th'></th>
+                        <th className='custom-th' id='generic-table-key-cell'>NAME</th>
+                        <th className='custom-th'>VALUE{this.renderOptionalParamsButton()}</th>
                       </tr>
                     </thead>
                     )
