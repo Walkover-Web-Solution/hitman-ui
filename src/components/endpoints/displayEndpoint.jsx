@@ -220,6 +220,7 @@ class DisplayEndpoint extends Component {
     let originalParams = []
     let originalHeaders = []
     let pathVariables = []
+    let originalBody = {}
     const { endpoints } = store.getState()
     const { groups } = store.getState()
     const { versions } = store.getState()
@@ -288,6 +289,8 @@ class DisplayEndpoint extends Component {
         endpoint.sampleResponse
       )
 
+      originalBody = endpoint.body
+
       this.setState({
         data: {
           method: endpoint.requestType,
@@ -300,6 +303,7 @@ class DisplayEndpoint extends Component {
         headers,
         originalParams,
         originalHeaders,
+        originalBody,
         endpoint,
         sampleResponseArray: endpoint.sampleResponse || [],
         sampleResponseFlagArray,
@@ -2062,13 +2066,14 @@ class DisplayEndpoint extends Component {
                         />
                       )}
 
-                      {this.state.data.body &&
+                      {this.state.data.body && this.state.originalBody &&
                         this.state.data.body.value !== null && (
                           <PublicBodyContainer
                             {...this.props}
                             set_body={this.setBody.bind(this)}
                             set_body_description={this.setDescription.bind(this)}
                             body={this.state.data.body}
+                            original_body={this.state.originalBody}
                             public_body_flag={this.state.publicBodyFlag}
                             set_public_body={this.setPublicBody.bind(this)}
                             body_description={this.state.bodyDescription}

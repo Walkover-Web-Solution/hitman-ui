@@ -223,9 +223,33 @@ class GenericTable extends Component {
   renderPublicTableRow (dataArray, index, originalData, title) {
     return (
       <tr key={index} id='generic-table-row'>
+        <td
+          className='custom-td'
+          id='generic-table-key-cell'
+          style={{ marginLeft: '5px' }}
+        >
+          {
+            dataArray[index].checked === 'notApplicable'
+              ? null
+              : (
+                <input
+                  disabled={originalData[index].checked === 'false' ? null : 'disabled'}
+                  name={index + '.checkbox'}
+                  value={dataArray[index].checked}
+                  checked={
+                    dataArray[index].checked === 'true'
+                  }
+                  type='checkbox'
+                  className='Checkbox'
+                  onChange={this.handleChange}
+                  style={{ border: 'none' }}
+                />
+                )
+          }
+        </td>
         <td className='custom-td'>
           {dataArray[index].key}
-          <p className='text-muted small'>{dataArray[index].checked === 'true' || dataArray[index].checked === 'notApplicable' ? '(Required)' : '(Optional)'}</p>
+          <p className='text-muted small'>{originalData[index].checked === 'true' || originalData[index].checked === 'notApplicable' ? '(Required)' : '(Optional)'}</p>
         </td>
         <td className='custom-td'>
           <input
@@ -364,10 +388,6 @@ class GenericTable extends Component {
         if (dataArray[index].key === '') {
           dataArray.splice(index, 1)
         }
-
-        if (originalData[index].key === '') {
-          originalData.splice(index, 1)
-        }
       }
     }
 
@@ -414,6 +434,7 @@ class GenericTable extends Component {
                   : (
                     <thead>
                       <tr>
+                        <th className='custom-th' />
                         <th className='custom-th' id='generic-table-key-cell' />
                         <th className='custom-th' />
                       </tr>

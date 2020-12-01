@@ -349,7 +349,7 @@ class PublicBodyContainer extends Component {
             title='formData'
             dataArray={this.props.body.value}
             handle_change_body_data={this.handleChangeBody.bind(this)}
-            original_data={[...this.props.body.value]}
+            original_data={[...this.props.original_body.value]}
           />
         )}
 
@@ -360,7 +360,7 @@ class PublicBodyContainer extends Component {
               title='x-www-form-urlencoded'
               dataArray={this.props.body.value}
               handle_change_body_data={this.handleChangeBody.bind(this)}
-              original_data={[...this.props.body.value]}
+              original_data={[...this.props.original_body.value]}
             />
         )}
 
