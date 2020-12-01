@@ -152,67 +152,79 @@ class SideBar extends Component {
 
   renderHistoryList () {
     return (
-      this.state.historySnapshot &&
-      this.props.historySnapshot &&
-      this.state.historySnapshot.sort(compareByCreatedAt).map(
-        (history) =>
-          Object.keys(history).length !== 0 && (
-            <div
-              className='btn d-flex align-items-center'
-              onClick={() => {
-              }}
-            >
-              <div className={`api-label ${history.endpoint.requestType}`}>
-                <div className='endpoint-request-div'>
-                  {history.endpoint.requestType}
+      <div className='mt-3'>
+        {this.state.historySnapshot &&
+          this.props.historySnapshot &&
+          this.state.historySnapshot.sort(compareByCreatedAt).map(
+            (history) =>
+              Object.keys(history).length !== 0 && (
+                <div
+                  className='btn d-flex align-items-center mb-2'
+                  onClick={() => {
+                  }}
+                >
+                  <div className={`api-label lg-label ${history.endpoint.requestType}`}>
+                    <div className='endpoint-request-div'>
+                      {history.endpoint.requestType}
+                    </div>
+                  </div>
+                  <div className='ml-3'>
+                    <div className='sideBarListWrapper'>
+                      <div className='text-left'>
+                        <p>   {history.endpoint.name ||
+                          history.endpoint.BASE_URL + history.endpoint.uri ||
+                          'Random Trigger'}
+                        </p>
+                      </div>
+                      <small className='text-muted'>
+                        {moment(history.createdAt).format('ddd, Do MMM h:mm a')}
+                      </small>
+                    </div>
+                  </div>
                 </div>
-              </div>
-              <div className='ml-3'>
-                <div>
-                  {history.endpoint.name ||
-                    history.endpoint.BASE_URL + history.endpoint.uri ||
-                    'Random Trigger'}
-                </div>
-                <small className='text-muted'>
-                  {moment(history.createdAt).format('ddd, Do MMM h:mm a')}
-                </small>
-              </div>
-            </div>
-          )
-      )
+              )
+          )}
+      </div>
     )
   }
 
   renderTriggerList () {
     return (
-      this.state.historySnapshot &&
-      this.props.historySnapshot &&
-      this.state.historySnapshot.sort(compareByCreatedAt).map(
-        (history) =>
-          Object.keys(history).length !== 0 && history.endpoint.status === 'NEW' && (
-            <div
-              className='btn d-flex align-items-center'
-              onClick={() => {
-              }}
-            >
-              <div className={`api-label ${history.endpoint.requestType}`}>
-                <div className='endpoint-request-div'>
-                  {history.endpoint.requestType}
+      <div className='mt-3'>
+        {
+          this.state.historySnapshot &&
+          this.props.historySnapshot &&
+          this.state.historySnapshot.sort(compareByCreatedAt).map(
+            (history) =>
+              Object.keys(history).length !== 0 && history.endpoint.status === 'NEW' && (
+                <div
+                  className='btn d-flex align-items-center mb-2'
+                  onClick={() => {
+                  }}
+                >
+                  <div className={`api-label lg-label ${history.endpoint.requestType}`}>
+                    <div className='endpoint-request-div'>
+                      {history.endpoint.requestType}
+                    </div>
+                  </div>
+                  <div className='ml-3'>
+                    <div className='sideBarListWrapper'>
+                      <div className='text-left'>
+                        <p>{history.endpoint.name ||
+                          history.endpoint.BASE_URL + history.endpoint.uri ||
+                          'Random Trigger'}
+                        </p>
+                      </div>
+                      <small className='text-muted'>
+                        {moment(history.createdAt).format('ddd, Do MMM h:mm a')}
+                      </small>
+                    </div>
+                  </div>
                 </div>
-              </div>
-              <div className='ml-3'>
-                <div>
-                  {history.endpoint.name ||
-                    history.endpoint.BASE_URL + history.endpoint.uri ||
-                    'Random Trigger'}
-                </div>
-                <small className='text-muted'>
-                  {moment(history.createdAt).format('ddd, Do MMM h:mm a')}
-                </small>
-              </div>
-            </div>
+              )
           )
-      )
+        }
+      </div>
     )
   }
 

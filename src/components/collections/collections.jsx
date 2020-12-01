@@ -22,6 +22,7 @@ import PublishDocsModal from '../publicEndpoint/publishDocsModal'
 import { isAdmin } from '../auth/authService'
 import TagManager from 'react-gtm-module'
 import TagManagerModal from './tagModal'
+import emptyCollections from '../../assets/icons/emptyCollections.svg'
 
 const EMPTY_STRING = ''
 
@@ -572,8 +573,9 @@ class CollectionsComponent extends Component {
                 className='add-collection-btn'
                 onClick={() => this.openAddCollectionForm()}
               >
-                <i className='uil uil-plus' />
-                New Collection
+
+                <img src={emptyCollections} />
+                Add Collection
               </button>
             </div>
             {finalCollections.map((collectionId, index) =>

@@ -272,27 +272,32 @@ class SaveAsSidebar extends Form {
           {this.showCollectionVersionForm()}
           {this.showGroupForm()}
           <div>
-            <div className='d-flex justify-content-between p-3'>
-              <p className='h4'>Save As</p>
-              <button
-                className='btn'
-                onClick={() => {
-                  this.props.onHide()
-                }}
-              >
-                <i className='fas fa-times' />
-              </button>
+            <div className=''>
+              <div className='custom-collection-modal-container modal-header'>
+                <div className='modal-title h4'>
+                  Save As
+                </div>
+                <button
+                  className='close'
+                  onClick={() => {
+                    this.props.onHide()
+                  }}
+                >
+                  <span aria-hidden='true'>×</span>
+                </button>
+              </div>
+
             </div>
             <Modal.Body>
               <form onSubmit={this.handleSubmit}>
                 {this.renderInput('name', 'Name', 'Endpoint Name')}
                 {this.renderTextArea(
                   'description',
-                  'Description',
+                  'Description (optional)',
                   'Description'
                 )}
               </form>
-              <div className='card' id='endpoint-form-collection-list'>
+              <div className='card saveAsWrapper' id='endpoint-form-collection-list'>
                 <div className='card-title'>
                   {
                     this.state.list.type === 'collections'
@@ -338,12 +343,12 @@ class SaveAsSidebar extends Form {
                   {this.state.list.type === 'endpoints'
                     ? (
                         this.renderList().map(item => (
-                          <li key={item} id='endpoint-list'>
-                            <div
+                          <li key={item} id='endpoint-list' className='endListWrapper'>
+                            <label
                               className={this.props.endpoints[item.id].requestType}
                             >
                               {this.props.endpoints[item.id].requestType}
-                            </div>
+                            </label>
                             <div className='list-item-wrapper'>{item.name}</div>
                           </li>
                         )
@@ -374,21 +379,23 @@ class SaveAsSidebar extends Form {
                         )}
                 </ul>
               </div>
-              <button
-                className='btn btn-default custom-button'
-                onClick={() => this.props.onHide()}
-              >
-                Cancel
-              </button>
-              <button
-                className='btn'
-                onClick={this.handleSubmit}
-                disabled={this.state.list.type !== 'endpoints'}
-              >
-                Save{' '}
-                {this.state.list.type === 'endpoints' &&
-                  `to ${this.renderListTitle()}`}
-              </button>
+              <div className='text-right mt-5'>
+                <button
+                  className='btn btn-secondary btn-lg mr-2'
+                  onClick={() => this.props.onHide()}
+                >
+                  Cancel
+                </button>
+                <button
+                  className='btn btn-primary btn-lg'
+                  onClick={this.handleSubmit}
+                  disabled={this.state.list.type !== 'endpoints'}
+                >
+                  Save{' '}
+                  {this.state.list.type === 'endpoints' &&
+                    `to ${this.renderListTitle()}`}
+                </button>
+              </div>
             </Modal.Body>
           </div>
         </div>

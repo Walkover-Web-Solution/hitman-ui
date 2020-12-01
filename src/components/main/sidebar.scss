@@ -1,7 +1,7 @@
 .primary-sidebar {
   background-color: #fff;
   color: #999;
-  width: 350px;
+  width: 330px;
   font-size: 14px;
 }
 
@@ -50,10 +50,9 @@
 }
 
 .search-box {
-  margin: 10px;
+  margin: 0px 15px;
   position: relative;
   width: auto;
-  padding: 0 20px;
   margin-bottom: 20px;
   background: #f8f5f0;
   border-radius: 4px;
@@ -61,21 +60,22 @@
 
 .search-box>i {
   position: absolute;
-  left: 32px;
+  left: 10px;
   top: 0;
-  line-height: 34px;
-  font-size: 14px;
+  bottom: 0;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  font-size: 16px;
 }
 
 .search-box>input[type="text"] {
   width: 100%;
-  border: none;
-  height: 34px;
-  padding: 0 0 0 40px;
+  height: 40px;
+  padding: 0 0 0 36px;
   border-radius: 3px;
-  border: 1px solid rgba(255, 255, 255, 0);
-  background: rgba(255, 255, 255, 0.07);
-  color: black;
+  border: none;
+  background: #F8F5F0;
 }
 
 input[type="text"]:focus {
@@ -98,13 +98,15 @@ input[type="text"]:focus {
   border: none;
   background: transparent;
   color: inherit;
-  /* font-size: 14px; */
-  border-radius: 3px;
-
+  border-radius: 8px;
+  border:1px solid transparent;
+  color: #333;
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 10px;
   &:active,
   &:focus {
-    outline: none;
-    border: none;
+    outline: none; 
     box-shadow: none;
   }
 
@@ -117,7 +119,7 @@ input[type="text"]:focus {
 }
 
 .sidebar-accordion-item {
-  padding: 7px 10px;
+  padding:10px;
   flex-grow: 1;
   display: flex;
   align-items: center;
@@ -138,13 +140,13 @@ input[type="text"]:focus {
 }
 
 .sidebar-accordion>button:hover {
-  background: rgba(255, 255, 255, 0.03);
+  background: #FEFCF7;
+  border-color: #F1EEE5;
 }
 
 .sidebar-item-action-btn {
   width: 26px;
-  border-radius: 3px;
-  /* background: #fff; */
+  border-radius: 3px; 
   text-align: center;
   visibility: hidden;
   opacity: 0;
@@ -159,14 +161,14 @@ input[type="text"]:focus {
 }
 
 .secondary-sidebar {
-  min-width: 300px;
-  width: 300px;
+  max-width: 245px;
+  width: 100%;
   font-size: 14px;
-  background: #252d30;
   color: #999;
-  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  border-left: 2px solid #E0E0E0;
   padding: 20px 10px;
   overflow: auto;
+  background-color: #fff;
 }
 
 .version-collapse .sidebar-accordion#child-accordion {
