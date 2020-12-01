@@ -63,7 +63,7 @@ class Form extends Component {
     this.setState({ data })
   };
 
-  handleEditorChange (value) {
+  handleEditorChange = (value) => {
     const data = this.state.data
     const description = value
     data.description = description
