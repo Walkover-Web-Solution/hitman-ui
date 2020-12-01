@@ -31,7 +31,7 @@ const mapStateToProps = (state) => {
   }
 }
 
-function compareByCreatedAt(a, b) {
+function compareByCreatedAt (a, b) {
   const t1 = a?.createdAt
   const t2 = b?.createdAt
   let comparison = 0
@@ -44,7 +44,7 @@ function compareByCreatedAt(a, b) {
 }
 
 class SideBar extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       data: {
@@ -56,7 +56,7 @@ class SideBar extends Component {
     }
   }
 
-  componentDidMount() {
+  componentDidMount () {
     if (getCurrentUser()) {
       const user = getCurrentUser()
       const name = user.first_name + user.last_name
@@ -73,7 +73,7 @@ class SideBar extends Component {
     }
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate (prevProps, prevState) {
     if (this.props.historySnapshot !== prevProps.historySnapshot) {
       this.setState({
         historySnapshot: Object.values(this.props.historySnapshot)
@@ -81,7 +81,7 @@ class SideBar extends Component {
     }
   }
 
-  dataFetched() {
+  dataFetched () {
     return (
       this.props.collections &&
       this.props.versions &&
@@ -91,7 +91,7 @@ class SideBar extends Component {
     )
   }
 
-  async dndMoveEndpoint(endpointId, sourceGroupId, destinationGroupId) {
+  async dndMoveEndpoint (endpointId, sourceGroupId, destinationGroupId) {
     const groups = { ...this.state.groups }
     const endpoints = { ...this.state.endpoints }
     const originalEndpoints = { ...this.state.endpoints }
@@ -126,34 +126,34 @@ class SideBar extends Component {
     this.setState({ historySnapshot: obj })
   };
 
-  emptyFilter() {
+  emptyFilter () {
     const data = { ...this.state.data }
     data.filter = ''
     this.setState({ data })
   }
 
-  openCollection(collectionId) {
+  openCollection (collectionId) {
     this.collectionId = collectionId
   }
 
-  openApiForm() {
+  openApiForm () {
     this.setState({ showOpenApiForm: true })
   }
 
-  closeOpenApiFormModal() {
+  closeOpenApiFormModal () {
     this.setState({ showOpenApiForm: false })
   }
 
-  closeLoginSignupModal() {
+  closeLoginSignupModal () {
     this.setState({
       showLoginSignupModal: false
     })
   }
 
-  renderHistoryList() {
+  renderHistoryList () {
     return (
-      <div className="mt-3">
-        { this.state.historySnapshot &&
+      <div className='mt-3'>
+        {this.state.historySnapshot &&
           this.props.historySnapshot &&
           this.state.historySnapshot.sort(compareByCreatedAt).map(
             (history) =>
@@ -169,11 +169,12 @@ class SideBar extends Component {
                     </div>
                   </div>
                   <div className='ml-3'>
-                    <div className="sideBarListWrapper">
-                      <div className="text-left">
+                    <div className='sideBarListWrapper'>
+                      <div className='text-left'>
                         <p>   {history.endpoint.name ||
                           history.endpoint.BASE_URL + history.endpoint.uri ||
-                          'Random Trigger'}</p>
+                          'Random Trigger'}
+                        </p>
                       </div>
                       <small className='text-muted'>
                         {moment(history.createdAt).format('ddd, Do MMM h:mm a')}
@@ -187,9 +188,9 @@ class SideBar extends Component {
     )
   }
 
-  renderTriggerList() {
+  renderTriggerList () {
     return (
-      <div className="mt-3">
+      <div className='mt-3'>
         {
           this.state.historySnapshot &&
           this.props.historySnapshot &&
@@ -207,11 +208,12 @@ class SideBar extends Component {
                     </div>
                   </div>
                   <div className='ml-3'>
-                    <div className="sideBarListWrapper">
-                      <div className="text-left">
+                    <div className='sideBarListWrapper'>
+                      <div className='text-left'>
                         <p>{history.endpoint.name ||
                           history.endpoint.BASE_URL + history.endpoint.uri ||
-                          'Random Trigger'}</p>
+                          'Random Trigger'}
+                        </p>
                       </div>
                       <small className='text-muted'>
                         {moment(history.createdAt).format('ddd, Do MMM h:mm a')}
@@ -226,7 +228,7 @@ class SideBar extends Component {
     )
   }
 
-  renderSearchList() {
+  renderSearchList () {
     if (this.state.data.filter !== '') {
       return (
         <div>
@@ -249,7 +251,7 @@ class SideBar extends Component {
     }
   }
 
-  findPendingEndpointsCollections(pendingEndpointIds) {
+  findPendingEndpointsCollections (pendingEndpointIds) {
     const groupsArray = []
     for (let i = 0; i < pendingEndpointIds.length; i++) {
       const endpointId = pendingEndpointIds[i]
@@ -278,7 +280,7 @@ class SideBar extends Component {
     return collectionsArray
   }
 
-  findPendingPagesCollections(pendingPageIds) {
+  findPendingPagesCollections (pendingPageIds) {
     const versionsArray = []
     for (let i = 0; i < pendingPageIds.length; i++) {
       const pageId = pendingPageIds[i]
@@ -298,7 +300,7 @@ class SideBar extends Component {
     return collectionsArray
   }
 
-  getPublicCollections() {
+  getPublicCollections () {
     if (this.dataFetched()) {
       const pendingEndpointIds = Object.keys(this.props.endpoints).filter(
         (eId) => this.props.endpoints[eId].state === 'Pending' || (this.props.endpoints[eId].state === 'Draft' && this.props.endpoints[eId].isPublished)
@@ -317,12 +319,12 @@ class SideBar extends Component {
     }
   }
 
-  getNotificationCount() {
+  getNotificationCount () {
     const collections = this.getPublicCollections()
     return collections?.length || 0
   }
 
-  openPublishDocs(collection) {
+  openPublishDocs (collection) {
     if (collection?.id) {
       this.props.history.push({
         pathname: '/admin/publish',
@@ -339,7 +341,7 @@ class SideBar extends Component {
     }
   }
 
-  renderEmptyCollectionsIfNotLoggedIn() {
+  renderEmptyCollectionsIfNotLoggedIn () {
     return (
       <div className='empty-collections'>
         <div>
@@ -349,12 +351,12 @@ class SideBar extends Component {
           <h5>  Your collection is Empty.</h5>
           <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
         </div>
-        <Button className='button' variant='primary' onClick={() => this.setState({ showLoginSignupModal: true })}>+ Add here</Button>{' '}
+        <Button className='btn-lg' variant='primary' onClick={() => this.setState({ showLoginSignupModal: true })}>+ Add here</Button>{' '}
       </div>
     )
   }
 
-  renderCollections() {
+  renderCollections () {
     return (
       <Switch>
         <ProtectedRoute
@@ -383,7 +385,7 @@ class SideBar extends Component {
     )
   }
 
-  renderSidebarTabs() {
+  renderSidebarTabs () {
     return (
       <Tabs
         defaultActiveKey={
@@ -408,7 +410,7 @@ class SideBar extends Component {
     )
   }
 
-  renderUserNotification() {
+  renderUserNotification () {
     return (
       <div className='fixed'>
         <UserNotification
@@ -422,7 +424,7 @@ class SideBar extends Component {
     )
   }
 
-  renderDashboardSidebar() {
+  renderDashboardSidebar () {
     return (
       <>
         <div className='app-name'>
@@ -446,7 +448,7 @@ class SideBar extends Component {
     )
   }
 
-  render() {
+  render () {
     return (
       <nav
         className={
@@ -465,150 +467,13 @@ class SideBar extends Component {
         <div className='primary-sidebar'>
           {
             isDashboardRoute(this.props, true)
-              ? (
-                <>
-                  {/* <div className="user-info">
-                <div className="user-avatar">
-                  <i className="uil uil-user"></i>
-                </div>
-                <div className="user-details">
-                  <div className="user-details-heading">
-                    <div className="user-name">{this.state.name}</div>
-                    <div className="user-settings-dropdown">
-                      <div className="dropdown-toggle" data-toggle="dropdown">
-                        <i className="uil uil-cog"></i>
-                      </div>
-                      <div className="dropdown-menu">
-                        <a
-                          className="dropdown-item"
-                          onClick={() => this.openApiForm()}
-                        >
-                          Import open API
-                        </a>
-                        <Link className="dropdown-item" to="/logout">
-                          Sign out
-                        </Link>
-
-                        {this.state.showOpenApiForm &&
-                          this.state.showOpenApiForm === true && (
-                            <OpenApiForm
-                              {...this.props}
-                              show={true}
-                              onHide={() => this.closeOpenApiFormModal()}
-                              title="IMPORT API"
-                            ></OpenApiForm>
-                          )}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="user-details-text">{this.state.email}</div>
-                </div>
-              </div> */}
-
-                  <div className='app-name'>
-                    <img className='icon' src={hitmanIcon} />
-                    HITMAN
-                  </div>
-                  <div className='search-box'>
-                    <i className='fas fa-search' id='search-icon' />
-                    <input
-                      value={this.state.data.filter}
-                      type='text'
-                      name='filter'
-                      placeholder='Search'
-                      onChange={(e) => this.handleOnChange(e)}
-                    />
-                  </div>
-                  {this.state.data.filter !== '' && this.renderSearchList()}
-                  {this.state.data.filter === '' &&
-                    <Tabs
-                      defaultActiveKey={
-                        getCurrentUser() ? 'collection' : 'randomTrigger'
-                      }
-                      id='uncontrolled-tab-example'
-                    >
-
-                      <Tab eventKey='collection' title={<span><img src={collectionIcon} /> Collection </span>}>
-                        {
-                          !getCurrentUser()
-                            ? (
-                              <div className='empty-collections'>
-                                <div>
-                                  {' '}
-                                  <img src={emptyCollections} />
-                                </div>
-                                <div className='content'>
-                                  <h5>  Your collection is Empty.</h5>
-
-                                  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                                  </p>
-                                </div>
-                                <Button
-                                  className='btn-lg'
-                                  variant='primary'
-                                  onClick={() =>
-                                    this.setState({
-                                      showLoginSignupModal: true
-                                    })}
-                                >
-                                  + Add here
-                                </Button>{' '}
-                              </div>
-                            )
-                            : null
-                        }
-                        {
-                          getCurrentUser()
-                            ? (
-                              <Switch>
-                                <ProtectedRoute
-                                  path='/dashboard/'
-                                  render={(props) => (
-                                    <Collections
-                                      {...this.props}
-                                      empty_filter={this.emptyFilter.bind(this)}
-                                      collection_selected={this.openCollection.bind(this)}
-                                      filter={this.state.data.filter}
-                                    />
-                                  )}
-                                />
-                                <ProtectedRoute
-                                  path='/admin/publish'
-                                  render={(props) => (
-                                    <Collections
-                                      {...this.props}
-                                      empty_filter={this.emptyFilter.bind(this)}
-                                      collection_selected={this.openCollection.bind(this)}
-                                      filter={this.state.data.filter}
-                                    />
-                                  )}
-                                />
-                              </Switch>
-                            )
-                            : null
-                        }
-                        {isDashboardRoute(this.props, true)
-                          ? <></>
-                          : null}
-                      </Tab>
-                      <Tab eventKey='history' title={<span><img src={historyIcon} /> History</span>}>
-                        {this.renderHistoryList()}
-                      </Tab>
-                      <Tab
-                        eventKey='randomTrigger'
-                        title={<span> <img src={randomTriggerIcon} /> Random Trigger</span>}
-                      >
-                        {this.renderTriggerList()}
-                      </Tab>
-                    </Tabs>}
-                </>
-              )
+              ? (this.renderDashboardSidebar())
               : (
                 <Route
                   path='/p/:collectionId'
                   render={(props) => <Collections {...this.props} />}
                 />
-              )
+                )
           }
         </div>
         {this.collectionId && isDashboardRoute(this.props, true) && (

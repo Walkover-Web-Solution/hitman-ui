@@ -18,7 +18,7 @@ const mapStateToProps = state => {
 }
 
 class SaveAsSidebar extends Form {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       data: {
@@ -43,13 +43,13 @@ class SaveAsSidebar extends Form {
     }
   }
 
-  componentDidMount() {
+  componentDidMount () {
     const data = { ...this.state.data }
     data.name = this.props.name
     this.setState({ data })
   }
 
-  setList(item) {
+  setList (item) {
     const list = {}
     switch (this.state.list.type) {
       case 'collections':
@@ -71,7 +71,7 @@ class SaveAsSidebar extends Form {
     }
   }
 
-  openAddModal() {
+  openAddModal () {
     switch (this.state.list.type) {
       case 'collections':
         this.setState({ showCollectionForm: true })
@@ -89,7 +89,7 @@ class SaveAsSidebar extends Form {
     }
   }
 
-  showCollectionForm() {
+  showCollectionForm () {
     return (
       this.state.showCollectionForm && (
         <CollectionForm
@@ -104,7 +104,7 @@ class SaveAsSidebar extends Form {
     )
   }
 
-  showCollectionVersionForm() {
+  showCollectionVersionForm () {
     return (
       this.state.showCollectionVersionForm && (
         <CollectionVersionForm
@@ -120,7 +120,7 @@ class SaveAsSidebar extends Form {
     )
   }
 
-  showGroupForm() {
+  showGroupForm () {
     return (
       this.state.showGroupForm && (
         <GroupForm
@@ -136,7 +136,7 @@ class SaveAsSidebar extends Form {
     )
   }
 
-  renderList() {
+  renderList () {
     let listItems = []
     switch (this.state.list.type) {
       case 'collections':
@@ -183,7 +183,7 @@ class SaveAsSidebar extends Form {
     return listItems
   }
 
-  renderListTitle() {
+  renderListTitle () {
     switch (this.state.list.type) {
       case 'collections':
         return 'All Collections'
@@ -197,7 +197,7 @@ class SaveAsSidebar extends Form {
     }
   }
 
-  goBack() {
+  goBack () {
     const list = { ...this.state.list }
     switch (this.state.list.type) {
       case 'versions':
@@ -222,12 +222,12 @@ class SaveAsSidebar extends Form {
     }
   }
 
-  async doSubmit() {
+  async doSubmit () {
     this.props.onHide()
     this.props.set_group_id(this.state.list.parentId, this.state.data.name)
   }
 
-  render() {
+  render () {
     const saveAsSidebarStyle = {
       position: 'fixed',
       background: 'white',
@@ -273,8 +273,8 @@ class SaveAsSidebar extends Form {
           {this.showGroupForm()}
           <div>
             <div className=''>
-              <div className="custom-collection-modal-container modal-header">
-                <div className="modal-title h4">
+              <div className='custom-collection-modal-container modal-header'>
+                <div className='modal-title h4'>
                   Save As
                 </div>
                 <button
@@ -283,7 +283,7 @@ class SaveAsSidebar extends Form {
                     this.props.onHide()
                   }}
                 >
-                  <span aria-hidden="true">×</span>
+                  <span aria-hidden='true'>×</span>
                 </button>
               </div>
 
@@ -313,14 +313,14 @@ class SaveAsSidebar extends Form {
                             <i className='fas fa-plus' />
                           </button>
                         </div>
-                      )
+                        )
                       : this.state.list.type === 'endpoints'
                         ? (
                           <button className='btn' onClick={() => this.goBack()}>
                             <i className='fas fa-chevron-left' />
                             {this.renderListTitle()}
                           </button>
-                        )
+                          )
                         : (
                           <div className='d-flex justify-content-between'>
                             <button className='btn' onClick={() => this.goBack()}>
@@ -336,56 +336,56 @@ class SaveAsSidebar extends Form {
                               <i className='fas fa-plus' />
                             </button>
                           </div>
-                        )
+                          )
                   }
                 </div>
                 <ul className='list-group' id='folder-list'>
                   {this.state.list.type === 'endpoints'
                     ? (
-                      this.renderList().map(item => (
-                        <li key={item} id='endpoint-list' className="endListWrapper">
-                          <label
-                            className={this.props.endpoints[item.id].requestType}
-                          >
-                            {this.props.endpoints[item.id].requestType}
-                          </label>
-                          <div className='list-item-wrapper'>{item.name}</div>
-                        </li>
-                      )
-                      )
-                    )
-                    : this.renderList().length
-                      ? (
                         this.renderList().map(item => (
-                          <li className='list-group-item' key={item.id}>
-                            <button
-                              className='btn'
-                              onClick={() => this.setList(item)}
+                          <li key={item} id='endpoint-list' className='endListWrapper'>
+                            <label
+                              className={this.props.endpoints[item.id].requestType}
                             >
-                              <div className='list-item-wrapper'>
-                                <i className='fas fa-folder' />
-                                {item.name}
-                              </div>
-                              <i className='fas fa-chevron-right' />
-                            </button>
+                              {this.props.endpoints[item.id].requestType}
+                            </label>
+                            <div className='list-item-wrapper'>{item.name}</div>
                           </li>
                         )
                         )
                       )
+                    : this.renderList().length
+                      ? (
+                          this.renderList().map(item => (
+                            <li className='list-group-item' key={item.id}>
+                              <button
+                                className='btn'
+                                onClick={() => this.setList(item)}
+                              >
+                                <div className='list-item-wrapper'>
+                                  <i className='fas fa-folder' />
+                                  {item.name}
+                                </div>
+                                <i className='fas fa-chevron-right' />
+                              </button>
+                            </li>
+                          )
+                          )
+                        )
                       : (
                         <div className='not-found-label'>
                           {this.state.list.type + ' not found in this folder'}
                         </div>
-                      )}
+                        )}
                 </ul>
               </div>
-              <div className="text-right mt-5">
+              <div className='text-right mt-5'>
                 <button
                   className='btn btn-secondary btn-lg mr-2'
                   onClick={() => this.props.onHide()}
                 >
                   Cancel
-              </button>
+                </button>
                 <button
                   className='btn btn-primary btn-lg'
                   onClick={this.handleSubmit}

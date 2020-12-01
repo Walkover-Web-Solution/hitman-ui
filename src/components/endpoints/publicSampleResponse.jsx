@@ -9,9 +9,9 @@ class PublicSampleResponse extends Component {
 
   render () {
     return (
-      <div className="pubSampleResponse">
+      <div className='pubSampleResponse'>
         <div>
-          <h3 className="heading-2">Sample Response</h3>
+          <h3 className='heading-2'>Sample Response</h3>
         </div>
         <div className='sample-response'>
           <Tabs defaultActiveKey='profile' id='uncontrolled-tab-example'>

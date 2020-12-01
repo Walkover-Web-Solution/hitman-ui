@@ -133,7 +133,8 @@ class Form extends Component {
   renderButton (label, style) {
     return (
       <button
-        className='btn btn-primary btn-lg'>
+        className='btn btn-primary btn-lg'
+      >
         {label}
       </button>
     )

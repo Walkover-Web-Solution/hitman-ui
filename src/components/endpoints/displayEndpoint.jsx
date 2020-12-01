@@ -1819,7 +1819,8 @@ class DisplayEndpoint extends Component {
                   )
                 : (
                   <div className='hm-endpoint-wrap'>
-                    <h3 className='heading-2'>List Contacts</h3>
+                    {/* do not remove this code */}
+                    {/* <h3 className='heading-2'>Endpoint Name</h3> */}
                     <div className='hm-endpoint-header'>
                       <div class='input-group'>
                         <div class='input-group-prepend'>
