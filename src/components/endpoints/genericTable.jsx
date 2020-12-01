@@ -29,7 +29,7 @@ class GenericTable extends Component {
   }
 
   componentDidUpdate (prevProps, prevState) {
-    if (this.props.dataArray !== prevProps.dataArray) {
+    if (this.props.match.params.endpointId !== prevProps.match.params.endpointId) {
       this.setState({ optionalParams: false })
     }
   }
@@ -56,6 +56,7 @@ class GenericTable extends Component {
     }
 
     if (
+      isDashboardRoute(this.props) &&
       dataArray[name[0]][name[1]].length !== 0 &&
       !this.checkboxFlags[name[0]] &&
       title !== 'Path Variables'
@@ -219,6 +220,33 @@ class GenericTable extends Component {
     return count
   }
 
+  renderPublicTableRow (dataArray, index, originalData, title) {
+    return (
+      <tr key={index} id='generic-table-row'>
+        <td className='custom-td'>
+          {dataArray[index].key}
+          <p className='text-muted small'>{dataArray[index].checked === 'true' || dataArray[index].checked === 'notApplicable' ? '(Required)' : '(Optional)'}</p>
+        </td>
+        <td className='custom-td'>
+          <input
+            name={index + '.value'}
+            value={dataArray[index].value}
+            onChange={this.handleChange}
+            type='text'
+            placeholder={`Enter ${dataArray[index].key}`}
+            className='form-control'
+            style={{ border: 'none' }}
+          />
+          {
+            dataArray[index].description.length > 0
+              ? <p className='small text-muted'>{`Description: ${dataArray[index].description}`}</p>
+              : null
+          }
+        </td>
+      </tr>
+    )
+  }
+
   renderTableRow (dataArray, index, originalData, title) {
     return (
       <tr key={index} id='generic-table-row'>
@@ -358,7 +386,7 @@ class GenericTable extends Component {
           {!isDashboardRoute(this.props) && title}
         </div>
         {
-          !isDashboardRoute(this.props, true) && this.findUncheckedEntityCount()
+          !isDashboardRoute(this.props) && this.findUncheckedEntityCount()
             ? (
               <div style={{ float: 'right', cursor: 'pointer' }} onClick={() => this.toggleOptionalParams()}>
                 View Optional {this.props.title}
@@ -386,12 +414,8 @@ class GenericTable extends Component {
                   : (
                     <thead>
                       <tr>
-                        <th className='custom-th'> </th>
-                        <th className='custom-th' id='generic-table-key-cell'>
-                          KEY
-                        </th>
-                        <th className='custom-th'>VALUE</th>
-                        <th className='custom-th'>DESCRIPTION</th>
+                        <th className='custom-th' id='generic-table-key-cell' />
+                        <th className='custom-th' />
                       </tr>
                     </thead>
                     )
@@ -399,9 +423,9 @@ class GenericTable extends Component {
 
               <tbody style={{ border: 'none' }}>
                 {dataArray.map((e, index) => (
-                  !isDashboardRoute(this.props, true)
+                  !isDashboardRoute(this.props)
                     ? (
-                        (dataArray[index]?.checked === 'true' || this.state.optionalParams) && this.renderTableRow(dataArray, index, originalData, title)
+                        (dataArray[index]?.checked === 'true' || dataArray[index]?.checked === 'notApplicable' || this.state.optionalParams) && this.renderPublicTableRow(dataArray, index, originalData, title)
                       )
                     : this.renderTableRow(dataArray, index, originalData, title)
                 )

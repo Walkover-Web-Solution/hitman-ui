@@ -1470,6 +1470,7 @@ class DisplayEndpoint extends Component {
       return (
         <PublicSampleResponse
           sample_response_array={this.state.sampleResponseArray}
+          publicCollectionTheme={this.props.publicCollectionTheme}
         />
       )
     }
@@ -2115,6 +2116,7 @@ class DisplayEndpoint extends Component {
               }}
               harObject={this.state.harObject}
               title='Generate Code Snippets'
+              publicCollectionTheme={this.props.publicCollectionTheme}
             />
           )
         }
