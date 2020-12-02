@@ -220,6 +220,7 @@ class DisplayEndpoint extends Component {
     let originalParams = []
     let originalHeaders = []
     let pathVariables = []
+    let originalBody = {}
     const { endpoints } = store.getState()
     const { groups } = store.getState()
     const { versions } = store.getState()
@@ -288,6 +289,8 @@ class DisplayEndpoint extends Component {
         endpoint.sampleResponse
       )
 
+      originalBody = endpoint.body
+
       this.setState({
         data: {
           method: endpoint.requestType,
@@ -300,6 +303,7 @@ class DisplayEndpoint extends Component {
         headers,
         originalParams,
         originalHeaders,
+        originalBody,
         endpoint,
         sampleResponseArray: endpoint.sampleResponse || [],
         sampleResponseFlagArray,
@@ -1323,7 +1327,14 @@ class DisplayEndpoint extends Component {
 
   makeFormData (body) {
     const formData = new FormData()
-    body.value.map((o) => formData.set(o.key, o.value))
+    for (let i = 0; i < body.value.length; i++) {
+      if (
+        body.value[i].key.length !== 0 &&
+        body.value[i].checked === 'true'
+      ) {
+        formData.append(body.value[i].key, body.value[i].value)
+      }
+    }
     return formData
   }
 
@@ -1334,7 +1345,7 @@ class DisplayEndpoint extends Component {
         finalBodyValue = this.parseBody(body.value)
         return { body: finalBodyValue, headers }
       case 'multipart/form-data': {
-        const formData = this.makeFormData(body, headers)
+        const formData = this.makeFormData(body)
         headers['content-type'] = 'multipart/form-data'
         return { body: formData, headers }
       }
@@ -1470,6 +1481,7 @@ class DisplayEndpoint extends Component {
       return (
         <PublicSampleResponse
           sample_response_array={this.state.sampleResponseArray}
+          publicCollectionTheme={this.props.publicCollectionTheme}
         />
       )
     }
@@ -2061,13 +2073,14 @@ class DisplayEndpoint extends Component {
                         />
                       )}
 
-                      {this.state.data.body &&
+                      {this.state.data.body && this.state.originalBody &&
                         this.state.data.body.value !== null && (
                           <PublicBodyContainer
                             {...this.props}
                             set_body={this.setBody.bind(this)}
                             set_body_description={this.setDescription.bind(this)}
                             body={this.state.data.body}
+                            original_body={this.state.originalBody}
                             public_body_flag={this.state.publicBodyFlag}
                             set_public_body={this.setPublicBody.bind(this)}
                             body_description={this.state.bodyDescription}
@@ -2115,6 +2128,7 @@ class DisplayEndpoint extends Component {
               }}
               harObject={this.state.harObject}
               title='Generate Code Snippets'
+              publicCollectionTheme={this.props.publicCollectionTheme}
             />
           )
         }

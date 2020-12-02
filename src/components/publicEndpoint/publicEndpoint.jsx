@@ -29,7 +29,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 class PublicEndpoint extends Component {
   state = {
     publicCollectionId: '',
-    collectionName: ''
+    collectionName: '',
+    collectionTheme: null
   };
 
   componentDidMount () {
@@ -67,7 +68,10 @@ class PublicEndpoint extends Component {
       const collectionName = this.props.collections[
         this.props.location.pathname.split('/')[2]
       ].name
-      this.setState({ collectionName })
+      const collectionTheme = this.props.collections[
+        this.props.location.pathname.split('/')[2]
+      ].theme
+      this.setState({ collectionName, collectionTheme })
     }
     const redirectionUrl = process.env.REACT_APP_UI_URL + '/login'
     if (
@@ -84,7 +88,7 @@ class PublicEndpoint extends Component {
           <Switch>
             <Route
               path={`/p/:collectionId/description/${this.state.collectionName}`}
-              render={(props) => <DisplayCollection {...props} />}
+              render={(props) => <DisplayCollection {...props} publicCollectionTheme={this.state.collectionTheme} />}
             />
           </Switch>
         </div>
@@ -130,7 +134,7 @@ class PublicEndpoint extends Component {
               <SideBar {...this.props} />
               {/* <Environments {...this.props} /> */}
             </div>
-
+            {/* console.log({this.props}) */}
             <div className='hm-right-content'>
               {
                 this.state.collectionName !== ''
@@ -138,15 +142,15 @@ class PublicEndpoint extends Component {
                     <Switch>
                       <Route
                         path={`/p/:collectionId/e/:endpointId/${this.state.collectionName}`}
-                        render={(props) => <DisplayEndpoint {...props} />}
+                        render={(props) => <DisplayEndpoint {...props} publicCollectionTheme={this.state.collectionTheme} />}
                       />
                       <Route
                         path={`/p/:collectionId/pages/:pageid/${this.state.collectionName}`}
-                        render={(props) => <DisplayPage {...props} />}
+                        render={(props) => <DisplayPage {...props} publicCollectionTheme={this.state.collectionTheme} />}
                       />
                       <Route
                         path={`/p/:collectionId/description/${this.state.collectionName}`}
-                        render={(props) => <DisplayCollection {...props} />}
+                        render={(props) => <DisplayCollection {...props} publicCollectionTheme={this.state.collectionTheme} />}
                       />
                     </Switch>
                     )

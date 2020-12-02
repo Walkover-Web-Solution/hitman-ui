@@ -628,7 +628,7 @@ class PublishDocs extends Component {
                 {...this.props}
                 selected_collection_id={this.state.selectedCollectionId}
               />
-              <div className='publish-button'> <Button variant='success'>PUBLISH ALL</Button>
+              <div className='publish-button'>
                 <div>
                   {this.publishCollections()}
                 </div>
