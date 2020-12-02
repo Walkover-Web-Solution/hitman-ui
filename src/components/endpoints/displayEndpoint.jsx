@@ -73,7 +73,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 }
 
 class DisplayEndpoint extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       data: {
@@ -116,7 +116,8 @@ class DisplayEndpoint extends Component {
       bodyDescription: {},
       fieldDescription: {},
       sampleResponseArray: [],
-      sampleResponseFlagArray: []
+      sampleResponseFlagArray: [],
+      theme: ''
     }
 
     this.uri = React.createRef()
@@ -137,7 +138,9 @@ class DisplayEndpoint extends Component {
     ]
   }
 
-  async componentDidMount () {
+
+
+  async componentDidMount() {
     this.endpointId = this.props.endpointId
       ? this.props.endpointId
       : isDashboardRoute(this.props)
@@ -185,9 +188,13 @@ class DisplayEndpoint extends Component {
     //   let collectionIdentifier = this.props.location.pathname.split("/")[2];
     //   this.fetchPublicCollection(collectionIdentifier);
     // }
+
+    if (!this.state.theme) {
+      this.setState({ theme: this.props.publicCollectionTheme })
+    }
   }
 
-  componentDidUpdate (prevProps, prevState) {
+  componentDidUpdate(prevProps, prevState) {
     if (!isDashboardRoute(this.props)) {
       if (
         this.state.data !== prevState.data ||
@@ -199,7 +206,7 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  async fetchPublicCollection (collectionId) {
+  async fetchPublicCollection(collectionId) {
     const collection = await collectionsApiService.getCollection(collectionId)
     if (collection.data.environment != null) {
       this.setState({
@@ -215,7 +222,7 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  fetchEndpoint (flag, endpointId) {
+  fetchEndpoint(flag, endpointId) {
     let endpoint = {}
     let originalParams = []
     let originalHeaders = []
@@ -321,7 +328,7 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  getFieldDescription (bodyDescription) {
+  getFieldDescription(bodyDescription) {
     const keys = Object.keys(bodyDescription)
     const fieldDescription = {}
     for (let i = 0; i < keys.length; i++) {
@@ -377,7 +384,7 @@ class DisplayEndpoint extends Component {
     this.setState({ data })
   };
 
-  setPathVariables (pathVariableKeys, pathVariableKeysObject) {
+  setPathVariables(pathVariableKeys, pathVariableKeysObject) {
     const pathVariables = []
     for (let i = 1; i < pathVariableKeys.length; i++) {
       if (
@@ -390,13 +397,13 @@ class DisplayEndpoint extends Component {
           key: pathVariableKeys[i].slice(1),
           value: this.state.pathVariables[i - 1]
             ? this.state.pathVariables[i - 1].key === pathVariableKeys[i]
-                ? this.state.pathVariables[i - 1].value
-                : ''
+              ? this.state.pathVariables[i - 1].value
+              : ''
             : '',
           description: this.state.pathVariables[i - 1]
             ? this.state.pathVariables[i - 1].key === pathVariableKeys[i]
-                ? this.state.pathVariables[i - 1].description
-                : ''
+              ? this.state.pathVariables[i - 1].description
+              : ''
             : ''
         })
       }
@@ -405,7 +412,7 @@ class DisplayEndpoint extends Component {
     this.setState({ pathVariables })
   }
 
-  getSampleResponseFlagArray (sampleResponse) {
+  getSampleResponseFlagArray(sampleResponse) {
     const sampleResponseFlagArray = []
     if (sampleResponse) {
       let index = 0
@@ -417,7 +424,7 @@ class DisplayEndpoint extends Component {
     return sampleResponseFlagArray
   }
 
-  makeOriginalParams (keys, values, description) {
+  makeOriginalParams(keys, values, description) {
     const originalParams = []
     for (let i = 0; i < this.state.originalParams.length; i++) {
       if (this.state.originalParams[i].checked === 'false') {
@@ -446,7 +453,7 @@ class DisplayEndpoint extends Component {
     return originalParams
   }
 
-  replaceVariables (str) {
+  replaceVariables(str) {
     str = str.toString()
     const regexp = /{{(\w+)}}/g
     let match = regexp.exec(str)
@@ -542,7 +549,7 @@ class DisplayEndpoint extends Component {
     return str
   }
 
-  replaceVariablesInJson (json) {
+  replaceVariablesInJson(json) {
     const keys = Object.keys(json)
     for (let i = 0; i < keys.length; i++) {
       json[keys[i]] = this.replaceVariables(json[keys[i]])
@@ -555,7 +562,7 @@ class DisplayEndpoint extends Component {
     return json
   }
 
-  parseBody (rawBody) {
+  parseBody(rawBody) {
     let body = {}
     try {
       body = JSON.parse(rawBody)
@@ -566,7 +573,7 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  handleErrorResponse (error) {
+  handleErrorResponse(error) {
     if (error.response) {
       const response = {
         status: error.response.status,
@@ -579,7 +586,7 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  async handleApiCall (api, body, headerJson, bodyType) {
+  async handleApiCall(api, body, headerJson, bodyType) {
     let responseJson = {}
     try {
       const header = this.replaceVariablesInJson(headerJson)
@@ -611,7 +618,7 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  setPathVariableValues () {
+  setPathVariableValues() {
     let uri = new URI(this.uri.current.value)
     uri = uri.pathname()
     const pathParameters = uri.split('/')
@@ -702,7 +709,7 @@ class DisplayEndpoint extends Component {
     isDashboardRoute(this.props) && this.setData()
   };
 
-  extractPosition (groupId) {
+  extractPosition(groupId) {
     let count = -1
     for (let i = 0; i < Object.keys(this.props.endpoints).length; i++) {
       if (
@@ -715,7 +722,7 @@ class DisplayEndpoint extends Component {
     return count + 1
   }
 
-  extractCollectionId (groupId) {
+  extractCollectionId(groupId) {
     const group = this.props.groups[groupId]
     const versionId = group.versionId
     const version = this.props.versions[versionId]
@@ -785,7 +792,7 @@ class DisplayEndpoint extends Component {
     }
   };
 
-  doSubmitPathVariables () {
+  doSubmitPathVariables() {
     const updatedPathVariables = {}
     if (this.state.pathVariables) {
       const pathVariables = [...this.state.pathVariables]
@@ -810,7 +817,7 @@ class DisplayEndpoint extends Component {
     return updatedPathVariables
   }
 
-  doSubmitHeader (title) {
+  doSubmitHeader(title) {
     const originalHeaders = [...this.state.originalHeaders]
     const updatedHeaders = {}
     for (let i = 0; i < originalHeaders.length; i++) {
@@ -833,7 +840,7 @@ class DisplayEndpoint extends Component {
     return updatedHeaders
   }
 
-  setMethod (method) {
+  setMethod(method) {
     const response = {}
     const data = { ...this.state.data }
     data.method = method
@@ -843,7 +850,7 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  propsFromChild (name, value) {
+  propsFromChild(name, value) {
     if (name === 'Params') {
       this.handleUpdateUri(value)
       this.setState({ originalParams: value })
@@ -865,7 +872,7 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  setPublicBody (body) {
+  setPublicBody(body) {
     const json = JSON.stringify(body)
     const data = { ...this.state.data }
     data.body = { type: 'JSON', value: json }
@@ -873,7 +880,7 @@ class DisplayEndpoint extends Component {
     this.setState({ data, publicBodyFlag: false })
   }
 
-  handleUpdateUri (originalParams) {
+  handleUpdateUri(originalParams) {
     if (originalParams.length === 0) {
       const updatedUri = this.state.data.updatedUri.split('?')[0]
       const data = { ...this.state.data }
@@ -903,7 +910,7 @@ class DisplayEndpoint extends Component {
     this.setState({ data })
   }
 
-  doSubmitParam () {
+  doSubmitParam() {
     const originalParams = [...this.state.originalParams]
     const updatedParams = {}
     for (let i = 0; i < originalParams.length; i++) {
@@ -926,7 +933,7 @@ class DisplayEndpoint extends Component {
     return updatedParams
   }
 
-  fetchoriginalParams (params) {
+  fetchoriginalParams(params) {
     const originalParams = []
     let i = 0
     for (i = 0; i < Object.keys(params).length; i++) {
@@ -947,7 +954,7 @@ class DisplayEndpoint extends Component {
     return originalParams
   }
 
-  fetchoriginalHeaders (headers) {
+  fetchoriginalHeaders(headers) {
     const originalHeaders = []
     let i = 0
     for (i = 0; i < Object.keys(headers).length; i++) {
@@ -967,7 +974,7 @@ class DisplayEndpoint extends Component {
     return originalHeaders
   }
 
-  fetchPathVariables (pathVariables) {
+  fetchPathVariables(pathVariables) {
     const originalPathVariables = []
     let i = 0
     for (i = 0; i < Object.keys(pathVariables).length; i++) {
@@ -981,26 +988,26 @@ class DisplayEndpoint extends Component {
     return originalPathVariables
   }
 
-  openEndpointFormModal () {
+  openEndpointFormModal() {
     this.setState({ showEndpointFormModal: true })
   }
 
-  closeEndpointFormModal () {
+  closeEndpointFormModal() {
     this.setState({ showEndpointFormModal: false, saveAsFlag: false })
   }
 
-  setGroupId (groupId, endpointName) {
+  setGroupId(groupId, endpointName) {
     const data = { ...this.state.data }
     data.name = endpointName
     this.setState({ groupId, data })
     this.handleSave(groupId, endpointName)
   }
 
-  updateArray (updatedArray) {
+  updateArray(updatedArray) {
     this.setState({ updatedArray })
   }
 
-  makeHeaders (headers) {
+  makeHeaders(headers) {
     const processedHeaders = []
     for (let i = 0; i < Object.keys(headers).length; i++) {
       if (headers[Object.keys(headers)[i]].checked === 'true') {
@@ -1017,7 +1024,7 @@ class DisplayEndpoint extends Component {
     return processedHeaders
   }
 
-  makeParams (params) {
+  makeParams(params) {
     const processedParams = []
     for (let i = 0; i < Object.keys(params).length; i++) {
       if (params[Object.keys(params)[i]].checked === 'true') {
@@ -1031,7 +1038,7 @@ class DisplayEndpoint extends Component {
     return processedParams
   }
 
-  async makePostData (body) {
+  async makePostData(body) {
     const params = []
     let paramsFlag = false
     let postData = {}
@@ -1067,7 +1074,7 @@ class DisplayEndpoint extends Component {
     return postData
   }
 
-  async prepareHarObject () {
+  async prepareHarObject() {
     try {
       const BASE_URL = this.customState.BASE_URL
       const uri = new URI(this.uri.current.value)
@@ -1095,14 +1102,14 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  openCodeTemplate (harObject) {
+  openCodeTemplate(harObject) {
     this.setState({
       showCodeTemplate: true,
       harObject
     })
   }
 
-  showCodeTemplate () {
+  showCodeTemplate() {
     return (
       <CodeTemplate
         show
@@ -1115,12 +1122,12 @@ class DisplayEndpoint extends Component {
     )
   }
 
-  setBaseUrl (BASE_URL, selectedHost) {
+  setBaseUrl(BASE_URL, selectedHost) {
     this.customState.BASE_URL = BASE_URL
     this.customState.selectedHost = selectedHost
   }
 
-  setBody (bodyType, body) {
+  setBody(bodyType, body) {
     const data = { ...this.state.data }
     data.body = { type: bodyType, value: body }
     isDashboardRoute(this.props) && this.setHeaders(bodyType, 'content-type')
@@ -1130,7 +1137,7 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  setBodyDescription (type, value) {
+  setBodyDescription(type, value) {
     const data = {}
     try {
       if (value.trim() === '') {
@@ -1202,15 +1209,15 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  setDescription (bodyDescription) {
+  setDescription(bodyDescription) {
     this.setState({ bodyDescription })
   }
 
-  setFieldDescription (fieldDescription, bodyDescription) {
+  setFieldDescription(fieldDescription, bodyDescription) {
     this.setState({ fieldDescription, bodyDescription })
   }
 
-  setParams (value, title, authorizationFlag) {
+  setParams(value, title, authorizationFlag) {
     const originalParams = this.state.originalParams
     const updatedParams = []
     const emptyParam = {
@@ -1238,7 +1245,7 @@ class DisplayEndpoint extends Component {
     this.setState({ originalParams: updatedParams })
   }
 
-  setHeaders (value, title, authorizationFlag = undefined) {
+  setHeaders(value, title, authorizationFlag = undefined) {
     const originalHeaders = this.state.originalHeaders
     const updatedHeaders = []
     const emptyHeader = {
@@ -1269,8 +1276,8 @@ class DisplayEndpoint extends Component {
         value:
           title.split('.')[0] === 'Authorization'
             ? title.split('.')[1] === 'oauth_2'
-                ? 'Bearer ' + value
-                : 'Basic ' + value
+              ? 'Bearer ' + value
+              : 'Basic ' + value
             : '',
         description: ''
       })
@@ -1285,7 +1292,7 @@ class DisplayEndpoint extends Component {
     this.setState({ originalHeaders: updatedHeaders })
   }
 
-  identifyBodyType (bodyType) {
+  identifyBodyType(bodyType) {
     switch (bodyType) {
       case 'application/x-www-form-urlencoded':
         return 'application/x-www-form-urlencoded'
@@ -1306,7 +1313,7 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  propsFromDescription (title, data) {
+  propsFromDescription(title, data) {
     if (title === 'data') {
       this.setState({ data: data })
       if (isDashboardRoute(this.props)) {
@@ -1317,7 +1324,7 @@ class DisplayEndpoint extends Component {
     if (title === 'oldDescription') this.setState({ oldDescription: data })
   }
 
-  propsFromSampleResponse (sampleResponseArray, sampleResponseFlagArray) {
+  propsFromSampleResponse(sampleResponseArray, sampleResponseFlagArray) {
     this.setState({ sampleResponseArray, sampleResponseFlagArray })
     this.props.update_endpoint({
       id: this.state.endpoint.id,
@@ -1325,7 +1332,7 @@ class DisplayEndpoint extends Component {
     })
   }
 
-  makeFormData (body) {
+  makeFormData(body) {
     const formData = new FormData()
     for (let i = 0; i < body.value.length; i++) {
       if (
@@ -1338,7 +1345,7 @@ class DisplayEndpoint extends Component {
     return formData
   }
 
-  formatBody (body, headers) {
+  formatBody(body, headers) {
     let finalBodyValue = null
     switch (body.type) {
       case 'raw':
@@ -1366,7 +1373,7 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  async setAccessToken () {
+  async setAccessToken() {
     const url = window.location.href
     const response = URI.parseQuery('?' + url.split('#')[1])
     if (url.split('#')[1]) {
@@ -1410,7 +1417,7 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  setAuthType (type, value) {
+  setAuthType(type, value) {
     let authType = {}
     if (type === '') {
       authType = null
@@ -1423,7 +1430,7 @@ class DisplayEndpoint extends Component {
     this.setState({ authType })
   }
 
-  addSampleResponse (response) {
+  addSampleResponse(response) {
     const { data, status } = response
     const sampleResponseFlagArray = [...this.state.sampleResponseFlagArray]
     const description = ''
@@ -1440,25 +1447,25 @@ class DisplayEndpoint extends Component {
     })
   }
 
-  openBody (index) {
+  openBody(index) {
     const sampleResponseFlagArray = [...this.state.sampleResponseFlagArray]
     sampleResponseFlagArray[index] = true
     this.setState({ sampleResponseFlagArray })
   }
 
-  closeBody (index) {
+  closeBody(index) {
     const sampleResponseFlagArray = [...this.state.sampleResponseFlagArray]
     sampleResponseFlagArray[index] = false
     this.setState({ sampleResponseFlagArray })
   }
 
-  closeLoginSignupModal () {
+  closeLoginSignupModal() {
     this.setState({
       showLoginSignupModal: false
     })
   }
 
-  displayResponse () {
+  displayResponse() {
     if (!isDashboardRoute(this.props) && this.state.flagResponse) {
       return (
         <div className='hm-panel endpoint-public-response-container public-doc'>
@@ -1476,7 +1483,7 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  displayPublicSampleResponse () {
+  displayPublicSampleResponse() {
     if (this.state.sampleResponseArray.length) {
       return (
         <PublicSampleResponse
@@ -1487,7 +1494,7 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  displayResponseAndSampleResponse () {
+  displayResponseAndSampleResponse() {
     return (
       <>
         <div>
@@ -1567,7 +1574,7 @@ class DisplayEndpoint extends Component {
     )
   }
 
-  displaySampleResponse () {
+  displaySampleResponse() {
     if (getCurrentUser()) {
       return (
         <div
@@ -1600,7 +1607,7 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  displayPublicResponse () {
+  displayPublicResponse() {
     return (
       <>
         <div className='public-response-title'>Response</div>
@@ -1616,8 +1623,7 @@ class DisplayEndpoint extends Component {
     )
   }
 
-  render () {
-    console.log('displac endpoits-->', this.props)
+  render() {
     this.endpointId = this.props.endpointId
       ? this.props.endpointId
       : isDashboardRoute(this.props)
@@ -1668,6 +1674,7 @@ class DisplayEndpoint extends Component {
         }
       })
     }
+    const { theme } = this.state;
     return (
       <div
         className={
@@ -1705,7 +1712,7 @@ class DisplayEndpoint extends Component {
                     props_from_parent={this.propsFromDescription.bind(this)}
                   />
                 </div>
-                )
+              )
               : null
           }
           <div
@@ -1806,11 +1813,11 @@ class DisplayEndpoint extends Component {
                                                 </Dropdown.Item>
                                               </Dropdown.Menu>
                                             </span>
-                                            )
+                                          )
                                           : null
                                       }
                                     </Dropdown>
-                                    )
+                                  )
                                   : (
                                     <button
                                       className='btn btn-primary'
@@ -1820,15 +1827,15 @@ class DisplayEndpoint extends Component {
                                     >
                                       Save
                                     </button>
-                                    )
+                                  )
                               }
                             </div>
-                            )
+                          )
                           : null
                       }
                     </div>
                   </div>
-                  )
+                )
                 : (
                   <div className='hm-endpoint-wrap'>
                     {/* do not remove this code */}
@@ -1837,12 +1844,13 @@ class DisplayEndpoint extends Component {
                       <div class='input-group'>
                         <div class='input-group-prepend'>
                           <span
+                            style={{ borderColor: theme }}
                             className={`api-label api-label-lg input-group-text ${this.state.data.method}`}
                           >
                             {this.state.data.method}
                           </span>
                         </div>
-                        <div class='form-control'>
+                        <div class='form-control' style={{ borderColor: theme }}>
                           <HostContainer
                             {...this.props}
                             groupId={this.state.groupId}
@@ -1860,7 +1868,7 @@ class DisplayEndpoint extends Component {
                       name='updatedUri'
                     />
                   </div>
-                  )
+                )
             }
             <div
               className={
@@ -1940,7 +1948,7 @@ class DisplayEndpoint extends Component {
                         </li>
                       </ul>
                     </div>
-                    )
+                  )
                   : null
               }
               {
@@ -1975,7 +1983,7 @@ class DisplayEndpoint extends Component {
                                 original_data={[...this.state.pathVariables]}
                               />
                             </div>
-                        )}
+                          )}
                       </div>
                       <div
                         className={
@@ -2039,7 +2047,7 @@ class DisplayEndpoint extends Component {
                         />
                       </div>
                     </div>
-                    )
+                  )
                   : (
                     <>
                       {this.state.params.length > 1 && (
@@ -2061,7 +2069,7 @@ class DisplayEndpoint extends Component {
                             props_from_parent={this.propsFromChild.bind(this)}
                             original_data={[...this.state.pathVariables]}
                           />
-                      )}
+                        )}
 
                       {this.state.headers.length > 1 && (
                         <GenericTable
@@ -2085,15 +2093,16 @@ class DisplayEndpoint extends Component {
                             set_public_body={this.setPublicBody.bind(this)}
                             body_description={this.state.bodyDescription}
                           />
-                      )}
+                        )}
                     </>
-                    )
+                  )
               }
               {
                 !isDashboardRoute(this.props) && (
                   <div className='text-right'>
                     <button
                       className='btn btn-primary btn-lg'
+                      style={{ background: theme }}
                       type='submit'
                       id='send-request-button'
                       onClick={() => this.handleSend()}
@@ -2112,8 +2121,8 @@ class DisplayEndpoint extends Component {
           {
             isDashboardRoute(this.props)
               ? isSavedEndpoint(this.props)
-                  ? this.displayResponseAndSampleResponse()
-                  : this.displayPublicResponse()
+                ? this.displayResponseAndSampleResponse()
+                : this.displayPublicResponse()
               : this.displayPublicSampleResponse()
           }
         </div>
