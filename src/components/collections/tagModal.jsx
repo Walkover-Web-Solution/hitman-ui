@@ -3,7 +3,7 @@ import { Modal } from 'react-bootstrap'
 import Form from '../common/form'
 
 class TagManagerModal extends Form {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       data: { gtmId: '' },
@@ -11,7 +11,7 @@ class TagManagerModal extends Form {
     }
   }
 
-  componentDidMount() {
+  componentDidMount () {
     const data = { gtmId: '' }
     if (this.props.collection_id) {
       data.gtmId = this.props.collections[this.props.collection_id].gtmId
@@ -19,14 +19,14 @@ class TagManagerModal extends Form {
     this.setState({ data })
   }
 
-  async doSubmit() {
+  async doSubmit () {
     const updatedCollection = this.props.collections[this.props.collection_id]
     updatedCollection.gtmId = this.state.data.gtmId
     this.props.update_collection(updatedCollection)
     this.props.onHide()
   }
 
-  render() {
+  render () {
     return (
       <Modal
         {...this.props}
@@ -47,14 +47,14 @@ class TagManagerModal extends Form {
           <Modal.Body>
             <form onSubmit={this.handleSubmit}>
               {this.renderInput('gtmId', 'GTM-ID', '')}
-              <div className="text-right">
+              <div className='text-right'>
                 <button
-                  className='btn btn-primary btn-lg mt-2 mb-2' 
+                  className='btn btn-primary btn-lg mt-2 mb-2'
                   type='button'
                   onClick={() => this.doSubmit()}
                 >
                   Submit
-              </button>
+                </button>
               </div>
             </form>
           </Modal.Body>

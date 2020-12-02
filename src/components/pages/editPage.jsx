@@ -140,7 +140,7 @@ class EditPage extends Component {
   render () {
     return (
       <div className='custom-edit-page'>
-        <div className="form-group">
+        <div className='form-group'>
           <input
             name='name'
             id='name'
