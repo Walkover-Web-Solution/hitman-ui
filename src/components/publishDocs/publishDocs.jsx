@@ -102,12 +102,12 @@ class PublishDocs extends Component {
     return ''
   }
 
-  getInitialEndpoint (groupId, endpoints) {
+  getInitialEndpoint (groupId, endpoints, endpointId = null) {
     for (let i = 0; i < Object.keys(endpoints).length; i++) {
       if (endpoints[Object.keys(endpoints)[i]].groupId?.toString() === groupId?.toString() &&
         (endpoints[Object.keys(endpoints)[i]].isPublished === true ||
-          endpoints[Object.keys(endpoints)[i]].state === publishDocsEnum.PENDING_STATE
-        )
+          endpoints[Object.keys(endpoints)[i]].state === publishDocsEnum.PENDING_STATE) &&
+        endpointId?.toString() !== Object.keys(endpoints)[i]?.toString()
       ) {
         return Object.keys(endpoints)[i]
       }
@@ -162,7 +162,7 @@ class PublishDocs extends Component {
       //
     } else {
       this.setState({
-        selectedEndpointId: this.getInitialEndpoint(this.state.selectedGroupId, this.state.endpoints)
+        selectedEndpointId: this.getInitialEndpoint(this.state.selectedGroupId, this.state.endpoints, endpointId)
       })
     }
   }
@@ -475,7 +475,7 @@ class PublishDocs extends Component {
       state: 'Draft'
     })
     this.setState({
-      selectedEndpointId: this.getInitialEndpoint(this.state.selectedGroupId, this.state.endpoints)
+      selectedEndpointId: this.getInitialEndpoint(this.state.selectedGroupId, this.state.endpoints, endpointId)
     })
   }
 
