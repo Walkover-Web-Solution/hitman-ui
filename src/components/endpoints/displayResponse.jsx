@@ -6,8 +6,8 @@ import JSONPretty from 'react-json-pretty'
 import './endpoints.scss'
 import { isDashboardRoute, isSavedEndpoint } from '../common/utility'
 import { getCurrentUser } from '../auth/authService'
+import SampleResponseForm from './sampleResponseForm'
 
-import { Toast } from 'react-bootstrap'
 const JSONPrettyMon = require('react-json-pretty/dist/monikai')
 
 class DisplayResponse extends Component {
@@ -17,7 +17,8 @@ class DisplayResponse extends Component {
     previewResponse: false,
     responseString: '',
     timeElapsed: '',
-    show: false
+    show: false,
+    showSampleResponseForm: { add: false, delete: false, edit: false }
   };
 
   responseTime () {
@@ -51,14 +52,41 @@ class DisplayResponse extends Component {
     })
   }
 
-  handletoggleShow = () => {
-    const show = !this.state.show
-    this.setState({ show })
-  };
-
   addSampleResponse (response) {
-    this.handletoggleShow()
-    this.props.add_sample_response(response)
+    this.openAddForm(response, null, 'Add Sample Response')
+  }
+
+  openAddForm (obj, index, name) {
+    const showSampleResponseForm = { ...this.state.showSampleResponseForm }
+    showSampleResponseForm.add = true
+    this.setState({
+      showSampleResponseForm,
+      sampleResponseFormName: name,
+      selectedSampleResponse: {
+        ...obj
+      },
+      index
+    })
+  }
+
+  closeForm () {
+    const showSampleResponseForm = { add: false, delete: false, edit: false }
+    this.setState({ showSampleResponseForm })
+  }
+
+  showAddForm () {
+    return (
+      this.state.showSampleResponseForm.add && (
+        <SampleResponseForm
+          {...this.props}
+          show
+          onHide={this.closeForm.bind(this)}
+          title={this.state.sampleResponseFormName}
+          selectedSampleResponse={this.state.selectedSampleResponse}
+          index={this.state.index}
+        />
+      )
+    )
   }
 
   render () {
@@ -100,6 +128,7 @@ class DisplayResponse extends Component {
                     </div>
                   </div>
                 </div>
+                {this.showAddForm()}
                 <div className='response-viewer'>
                   <div className='response-tabs'>
                     {isDashboardRoute(this.props) && (
@@ -164,20 +193,7 @@ class DisplayResponse extends Component {
                     }
 
                   </div>
-                  {this.state.show && (
-                    <div className='custom-toast'>
-                      <Toast
-                        show={this.state.show}
-                        autohide
-                        handleOnClose={this.handletoggleShow}
-                      >
-                        <Toast.Body>
-                          <i class='fa fa-check' aria-hidden='true' /> Added to
-                          sample response successfully!{' '}
-                        </Toast.Body>
-                      </Toast>
-                    </div>
-                  )}
+
                   {isDashboardRoute(this.props) && (
                     <div className='tab-content' id='myTabContent'>
                       <div

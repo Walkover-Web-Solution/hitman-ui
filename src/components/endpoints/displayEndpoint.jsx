@@ -1427,7 +1427,8 @@ class DisplayEndpoint extends Component {
     const { data, status } = response
     const sampleResponseFlagArray = [...this.state.sampleResponseFlagArray]
     const description = ''
-    const sampleResponse = { data, status, description }
+    const title = ''
+    const sampleResponse = { data, status, description, title }
     const sampleResponseArray = [
       ...this.state.sampleResponseArray,
       sampleResponse
@@ -1556,7 +1557,10 @@ class DisplayEndpoint extends Component {
                   flagResponse={
                     this.state.flagResponse
                   }
+                  sample_response_array={this.state.sampleResponseArray}
+                  sample_response_flag_array={this.state.sampleResponseFlagArray}
                   add_sample_response={this.addSampleResponse.bind(this)}
+                  props_from_parent={this.propsFromSampleResponse.bind(this)}
                 />
               </div>
             </div>
@@ -1617,7 +1621,6 @@ class DisplayEndpoint extends Component {
   }
 
   render () {
-    console.log('displac endpoits-->', this.props)
     this.endpointId = this.props.endpointId
       ? this.props.endpointId
       : isDashboardRoute(this.props)
