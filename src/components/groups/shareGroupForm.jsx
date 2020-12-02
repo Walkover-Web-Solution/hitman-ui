@@ -12,7 +12,7 @@ class ShareGroupForm extends Form {
     errors: {}
   };
 
-  componentDidMount() {
+  componentDidMount () {
     if (this.props.selectedGroup) {
       let data = {}
       const shareGroupLink =
@@ -29,9 +29,9 @@ class ShareGroupForm extends Form {
     shareVersionLink: Joi.string().required().label('Public Link')
   };
 
-  async doSubmit(props) { }
+  async doSubmit (props) { }
 
-  render() {
+  render () {
     return (
       <Modal
         {...this.props}

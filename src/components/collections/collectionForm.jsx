@@ -15,7 +15,7 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 class CollectionForm extends Form {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       data: {
@@ -41,7 +41,7 @@ class CollectionForm extends Form {
     }
   }
 
-  async componentDidMount() {
+  async componentDidMount () {
     if (!this.props.show || this.props.title === 'Add new Collection') return
     let data = {}
     const collectionId = this.props.edited_collection.id
@@ -64,7 +64,7 @@ class CollectionForm extends Form {
     this.setState({ data, collectionId })
   }
 
-  async onEditCollectionSubmit() {
+  async onEditCollectionSubmit () {
     this.props.onHide()
     this.props.update_collection({
       ...this.state.data,
@@ -82,7 +82,7 @@ class CollectionForm extends Form {
     })
   }
 
-  async onAddCollectionSubmit() {
+  async onAddCollectionSubmit () {
     this.props.onHide()
     const requestId = shortid.generate()
     this.props.add_collection({ ...this.state.data, requestId })
@@ -98,7 +98,7 @@ class CollectionForm extends Form {
     })
   }
 
-  async doSubmit() {
+  async doSubmit () {
     const body = this.state.data
     body.keyword = body.keyword + ',' + body.keyword1 + ',' + body.keyword2
     delete body.keyword1
@@ -111,7 +111,7 @@ class CollectionForm extends Form {
     }
   }
 
-  render() {
+  render () {
     return (
       <Modal
         {...this.props}
@@ -146,14 +146,14 @@ class CollectionForm extends Form {
               </div>
               {/* {this.renderTextArea("description", "Description", "description")} */}
               {this.renderQuillEditor('descriptoion', 'Description')}
-              <div className="text-right mt-4 mb-2">
+              <div className='text-right mt-4 mb-2'>
                 {this.renderButton('Submit')}
                 <button
                   className='btn btn-secondary btn-lg ml-2'
                   onClick={() => this.props.onHide()}
                 >
                   Cancel
-              </button>
+                </button>
               </div>
             </form>
           </Modal.Body>

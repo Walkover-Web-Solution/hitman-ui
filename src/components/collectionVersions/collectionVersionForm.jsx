@@ -18,7 +18,7 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 class CollectionVersionForm extends Form {
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.state = {
@@ -34,7 +34,7 @@ class CollectionVersionForm extends Form {
     }
   }
 
-  async componentDidMount() {
+  async componentDidMount () {
     let data = {}
     const collectionId = ''
     let versionId = ''
@@ -50,7 +50,7 @@ class CollectionVersionForm extends Form {
     this.setState({ data, versionId, collectionId })
   }
 
-  async doSubmit() {
+  async doSubmit () {
     this.props.onHide()
     if (this.props.title === 'Edit Collection Version') {
       const { id, collectionId } = this.props.selected_version
@@ -64,7 +64,7 @@ class CollectionVersionForm extends Form {
     }
   }
 
-  render() {
+  render () {
     return (
       <Modal
         {...this.props}
@@ -82,14 +82,14 @@ class CollectionVersionForm extends Form {
           <form onSubmit={this.handleSubmit}>
             {this.renderInput('number', 'Version Number', 'version number')}
             {this.renderInput('host', 'Host', 'host')}
-            <div className="text-right mt-4 mb-2">
+            <div className='text-right mt-4 mb-2'>
               {this.renderButton('Submit')}
               <button
                 className='btn btn-secondary btn-lg ml-2'
                 onClick={this.props.onHide}
               >
                 Cancel
-            </button>
+              </button>
             </div>
           </form>
         </Modal.Body>
