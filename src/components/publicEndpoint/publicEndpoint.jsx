@@ -15,7 +15,11 @@ import UserInfo from '../common/userInfo'
 
 const mapStateToProps = (state) => {
   return {
-    collections: state.collections
+    collections: state.collections,
+    groups: state.groups,
+    endpoint: state.endpoints,
+    versions: state.versions,
+    pages: state.pages
   }
 }
 
@@ -59,6 +63,45 @@ class PublicEndpoint extends Component {
     })
   }
 
+  redirectToDefaultPage () {
+    const collectionId = this.props.match.params.collectionIdentifier
+    const versionIds = Object.keys(this.props.versions)
+    if (versionIds.length > 0) {
+      const defaultVersion = versionIds[0]
+      let defaultGroupId = null
+      let defaultPageId = null
+      Object.values(this.props.pages).forEach(page => {
+        if (page.versionId === defaultVersion && page.groupId === null && page.position === 0) {
+          defaultPageId = page.id
+        }
+      })
+      if (defaultPageId) {
+        this.props.history.push({
+          pathname: `/p/${collectionId}/pages/${defaultPageId}/${this.state.collectionName}`
+        })
+      } else {
+        Object.values(this.props.groups).forEach(group => {
+          if (group.versionId === defaultVersion && group.position === 0) {
+            defaultGroupId = group.id
+          }
+        })
+        if (defaultGroupId) {
+          Object.values(this.props.endpoints).forEach(endpoint => {
+            if (endpoint.groupId === defaultGroupId && endpoint.position === 0) {
+              this.props.history.push({
+                pathname: `/p/${collectionId}/e/${endpoint.id}/${this.state.collectionName}`
+              })
+            } else {
+              this.props.history.push({
+                pathname: `/p/${collectionId}/description/${this.state.collectionName}`
+              })
+            }
+          })
+        }
+      }
+    }
+  }
+
   render () {
     if (
       this.props.collections[this.props.location.pathname.split('/')[2]] &&
@@ -80,24 +123,13 @@ class PublicEndpoint extends Component {
         this.props.location.pathname.split('/')[3] === '') &&
       this.state.collectionName !== ''
     ) {
-      this.props.history.push({
-        pathname: `/p/${this.props.match.params.collectionIdentifier}/description/${this.state.collectionName}`
-      })
-      return (
-        <div>
-          <Switch>
-            <Route
-              path={`/p/:collectionId/description/${this.state.collectionName}`}
-              render={(props) => <DisplayCollection {...props} publicCollectionTheme={this.state.collectionTheme} />}
-            />
-          </Switch>
-        </div>
-      )
-    } else {
-      return (
-        <>
-          <nav className='public-endpoint-navbar'>
-            {
+      this.redirectToDefaultPage()
+    }
+
+    return (
+      <>
+        <nav className='public-endpoint-navbar'>
+          {
               process.env.REACT_APP_UI_URL === window.location.origin + '/'
                 ? (
                     auth.getCurrentUser() === null
@@ -127,16 +159,14 @@ class PublicEndpoint extends Component {
                   )
                 : null
             }
-          </nav>
-          <main role='main' className='mainpublic-endpoint-main hm-wrapper'>
-            <ToastContainer />
-            <div className='hm-sidebar'>
-              <SideBar {...this.props} />
-              {/* <Environments {...this.props} /> */}
-            </div>
-            {/* console.log({this.props}) */}
-            <div className='hm-right-content'>
-              {
+        </nav>
+        <main role='main' className='mainpublic-endpoint-main hm-wrapper'>
+          <ToastContainer />
+          <div className='hm-sidebar'>
+            <SideBar {...this.props} />
+          </div>
+          <div className='hm-right-content'>
+            {
                 this.state.collectionName !== ''
                   ? (
                     <Switch>
@@ -150,17 +180,16 @@ class PublicEndpoint extends Component {
                       />
                       <Route
                         path={`/p/:collectionId/description/${this.state.collectionName}`}
-                        render={(props) => <DisplayCollection {...props} publicCollectionTheme={this.state.collectionTheme} />}
+                        render={(props) => <DisplayCollection {...props} {...this.props} publicCollectionTheme={this.state.collectionTheme} />}
                       />
                     </Switch>
                     )
                   : null
               }
-            </div>
-          </main>
-        </>
-      )
-    }
+          </div>
+        </main>
+      </>
+    )
   }
 }
 
