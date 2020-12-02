@@ -157,7 +157,6 @@ class PublishDocs extends Component {
   }
 
   async handleRejectEndpointRequest (endpointId) {
-    this.props.reject_endpoint(this.props.endpoints[endpointId])
     if (this.state.endpoints[endpointId].isPublished) {
       //
     } else {
@@ -165,6 +164,7 @@ class PublishDocs extends Component {
         selectedEndpointId: this.getInitialEndpoint(this.state.selectedGroupId, this.state.endpoints, endpointId)
       })
     }
+    this.props.reject_endpoint(this.props.endpoints[endpointId])
   }
 
   openPage (groupId, pageId) {
@@ -439,12 +439,20 @@ class PublishDocs extends Component {
   }
 
   showEndpoints () {
+    let endpointName = publishDocsEnum.EMPTY_STRING
+    if (this.state.endpoints) {
+      if (this.state.endpoints[this.state.selectedEndpointId]?.state === publishDocsEnum.REJECT_STATE) {
+        endpointName = this.props.endpoints[this.state.selectedEndpointId]?.publishedEndpoint?.name
+      } else {
+        endpointName = this.props.endpoints[this.state.selectedEndpointId]?.name
+      }
+    }
     if (this.state.selectedEndpointId) {
       return (
         <div>
           <div className='contacts'>{this.props.groups[this.state.selectedGroupId]?.name}</div>
           <div className='list-contacts'>
-            {this.props.endpoints[this.state.selectedEndpointId]?.name}
+            {endpointName}
           </div>
           {this.endpointPublishAndReject()}
           {this.checkEndpointState()}
@@ -457,11 +465,11 @@ class PublishDocs extends Component {
   checkEndpointState () {
     if (this.state.endpoints[this.state.selectedEndpointId]?.state === publishDocsEnum.REJECT_STATE) {
       return (
-        <DisplayEndpoint rejected endpointId={this.state.selectedEndpointId} groupId={this.state.selectedGroupId} {...this.props} />
+        <DisplayEndpoint rejectedEndpointId={this.state.selectedEndpointId} endpointId={this.state.selectedEndpointId} groupId={this.state.selectedGroupId} {...this.props} />
       )
     } else {
       return (
-        <DisplayEndpoint endpointId={this.state.selectedEndpointId} groupId={this.state.selectedGroupId} {...this.props} />
+        <DisplayEndpoint rejected={false} endpointId={this.state.selectedEndpointId} groupId={this.state.selectedGroupId} {...this.props} />
       )
     }
   }

@@ -253,7 +253,11 @@ class DisplayEndpoint extends Component {
       flag === 0
     ) {
       flag = 1
-      endpoint = endpoints[endpointId]
+      endpoint = {}
+      if (this.props.rejectedEndpointId) {
+        this.setState({ publicEndpointId: this.props.rejectedEndpointId })
+        endpoint = endpoints[endpointId].publishedEndpoint
+      } else { endpoint = endpoints[endpointId] }
       let authType = {}
       if (endpoint.authorizationType !== null) {
         authType = {
@@ -1323,7 +1327,7 @@ class DisplayEndpoint extends Component {
 
   makeFormData (body) {
     const formData = new FormData()
-    body.value.map((o) => formData.set(o.key, o.value))
+    body.value.map((o) => formData.append(o.key, o.value))
     return formData
   }
 
@@ -1642,11 +1646,17 @@ class DisplayEndpoint extends Component {
         })
       }
     }
-
     if (
-      !isDashboardRoute(this.props) &&
-      this.state.endpoint.id !== this.endpointId &&
-      this.props.endpoints[this.endpointId]
+      (
+        !isDashboardRoute(this.props) &&
+        this.state.endpoint.id !== this.endpointId &&
+        this.props.endpoints[this.endpointId]
+      ) ||
+      (
+        !isDashboardRoute(this.props) && (
+          (this.props.rejectedEndpointId && this.state.publicEndpointId !== this.props.rejectedEndpointId)
+        )
+      )
     ) {
       this.fetchEndpoint(0, this.endpointId)
       store.subscribe(() => {
