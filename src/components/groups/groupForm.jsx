@@ -14,7 +14,7 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 class GroupForm extends Form {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       data: { name: '', host: '' },
@@ -29,7 +29,7 @@ class GroupForm extends Form {
     }
   }
 
-  async componentDidMount() {
+  async componentDidMount () {
     if (this.props.title === 'Add new Group') return
     let data = {}
     if (this.props.selected_group) {
@@ -39,7 +39,7 @@ class GroupForm extends Form {
     this.setState({ data })
   }
 
-  async doSubmit() {
+  async doSubmit () {
     this.props.onHide()
     if (this.props.title === 'Add new Group') {
       const data = { ...this.state.data }
@@ -65,7 +65,7 @@ class GroupForm extends Form {
     }
   }
 
-  extractPosition() {
+  extractPosition () {
     let count = -1
     for (let i = 0; i < Object.keys(this.props.groups).length; i++) {
       if (
@@ -78,7 +78,7 @@ class GroupForm extends Form {
     return count + 1
   }
 
-  render() {
+  render () {
     return (
       <Modal
         {...this.props}
@@ -96,14 +96,14 @@ class GroupForm extends Form {
           <form onSubmit={this.handleSubmit}>
             {this.renderInput('name', 'Group Name', 'group name')}
             {this.renderInput('host', 'Host', 'host name')}
-            <div className="text-right">
+            <div className='text-right'>
               {this.renderButton('Submit')}
               <button
                 className='btn btn-secondary btn-lg ml-2'
                 onClick={this.props.onHide}
               >
                 Cancel
-            </button>
+              </button>
             </div>
           </form>
         </Modal.Body>

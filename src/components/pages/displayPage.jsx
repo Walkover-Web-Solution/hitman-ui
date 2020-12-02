@@ -53,13 +53,13 @@ class DisplayPage extends Component {
   checkPageRejected () {
     if (this.props.rejected) {
       return (
-        <div className="pageText">
+        <div className='pageText'>
           {ReactHtmlParser(this.props.pages[this.props.pageId].publishedPage.contents)}
         </div>
       )
     } else {
       return (
-        <div className="pageText">
+        <div className='pageText'>
           {ReactHtmlParser(this.state.data.contents)}
         </div>
       )

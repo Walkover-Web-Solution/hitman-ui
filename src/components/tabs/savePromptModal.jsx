@@ -3,22 +3,22 @@ import { Modal } from 'react-bootstrap'
 import tabService from './tabService'
 
 class SavePromptModal extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {}
   }
 
-  handleSave() {
+  handleSave () {
     this.props.onHide()
     this.props.handle_save_endpoint(true, this.props.tab_id)
   }
 
-  handleDontSave() {
+  handleDontSave () {
     this.props.onHide()
     tabService.removeTab(this.props.tab_id, { ...this.props })
   }
 
-  render() {
+  render () {
     return (
       <Modal
         {...this.props}
@@ -34,30 +34,31 @@ class SavePromptModal extends Component {
         <Modal.Body id='custom-delete-modal-body'>
           <div>
             <p> This tab has unsaved changes which will be lost if you choose to
-            close it. Save these changes to avoid losing your work.</p>
+              close it. Save these changes to avoid losing your work.
+            </p>
           </div>
-          <div className="text-right mt-4 mb-2">
+          <div className='text-right mt-4 mb-2'>
             <button
               id='custom-delete-modal-cancel'
               className='btn btn-danger btn-lg'
               onClick={() => this.handleDontSave()}
             >
               Don't Save
-          </button>
+            </button>
             <button
               id='custom-delete-modal-delete'
               className='btn btn-primary btn-lg mr-2 ml-2'
               onClick={() => this.handleSave()}
             >
               Save
-          </button>
-          <button
+            </button>
+            <button
               id='custom-delete-modal-cancel'
               className='btn btn-secondary btn-lg'
               onClick={this.props.onHide}
             >
               Cancel
-          </button>
+            </button>
           </div>
         </Modal.Body>
 

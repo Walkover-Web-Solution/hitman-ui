@@ -17,7 +17,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 }
 
 class PageForm extends Form {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       data: {
@@ -31,7 +31,7 @@ class PageForm extends Form {
     }
   }
 
-  async doSubmit(props) {
+  async doSubmit (props) {
     this.props.onHide()
     if (this.props.title === 'Add new Group Page') {
       const data = { ...this.state.data }
@@ -52,7 +52,7 @@ class PageForm extends Form {
     }
   }
 
-  extractPosition() {
+  extractPosition () {
     let count = -1
     for (let i = 0; i < Object.keys(this.props.pages).length; i++) {
       if (
@@ -74,7 +74,7 @@ class PageForm extends Form {
     return count + 1
   }
 
-  render() {
+  render () {
     return (
       <Modal
         {...this.props}
@@ -91,14 +91,14 @@ class PageForm extends Form {
         <Modal.Body>
           <form onSubmit={this.handleSubmit}>
             {this.renderInput('name', 'Page name', 'page name')}
-            <div className="text-right mt-2 mb-1">
+            <div className='text-right mt-2 mb-1'>
               {this.renderButton('Submit')}
               <button
                 className='btn btn-secondary ml-2'
                 onClick={this.props.onHide}
               >
                 Cancel
-            </button>
+              </button>
             </div>
           </form>
         </Modal.Body>

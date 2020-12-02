@@ -360,7 +360,7 @@ class GenericTable extends Component {
         {
           !isDashboardRoute(this.props, true) && this.findUncheckedEntityCount()
             ? (
-              <div style={{ float: 'right', cursor: 'pointer' }} onClick={() => this.toggleOptionalParams()}>
+              <div className='viewOptionals' onClick={() => this.toggleOptionalParams()}>
                 View Optional {this.props.title}
               </div>
               )
@@ -414,7 +414,7 @@ class GenericTable extends Component {
         {
           this.state.bulkEdit &&
           (
-            <div id='custom-bulk-edit'>
+            <div id='custom-bulk-edit' className='form-group'>
               <textarea
                 className='form-control'
                 name='contents'
