@@ -53,13 +53,13 @@ class DisplayPage extends Component {
   checkPageRejected () {
     if (this.props.rejected) {
       return (
-        <div>
+        <div className="pageText">
           {ReactHtmlParser(this.props.pages[this.props.pageId].publishedPage.contents)}
         </div>
       )
     } else {
       return (
-        <div>
+        <div className="pageText">
           {ReactHtmlParser(this.state.data.contents)}
         </div>
       )
@@ -79,7 +79,7 @@ class DisplayPage extends Component {
           isDashboardRoute(this.props)
             ? (
               <button
-                className='btn btn-primary btn-sm'
+                className='btn btn-primary btn-extra-lg'
                 onClick={() => {
                   this.handleEdit(this.state.data)
                 }}

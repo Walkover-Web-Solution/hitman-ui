@@ -8,9 +8,8 @@
   font-size: 13px;
   font-weight: 400;
 
-  button {
-    margin-top: 15px;
-    margin-right: 15px;
+  button { 
+    margin-bottom: 15px;
     float: right;
   }
 }
@@ -60,4 +59,12 @@
 
 .custom-page-name-input {
   margin-bottom: 10px;
+}
+
+.pageText {
+  float: left;
+  width: 100%;
+  background: #fff;
+  border-radius: 4px;
+  padding: 20px;
 }
