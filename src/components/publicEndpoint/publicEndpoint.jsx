@@ -17,7 +17,7 @@ const mapStateToProps = (state) => {
   return {
     collections: state.collections,
     groups: state.groups,
-    endpoint: state.endpoints,
+    endpoints: state.endpoints,
     versions: state.versions,
     pages: state.pages
   }
@@ -68,35 +68,34 @@ class PublicEndpoint extends Component {
     const versionIds = Object.keys(this.props.versions)
     if (versionIds.length > 0) {
       const defaultVersion = versionIds[0]
-      let defaultGroupId = null
-      let defaultPageId = null
-      Object.values(this.props.pages).forEach(page => {
-        if (page.versionId === defaultVersion && page.groupId === null && page.position === 0) {
-          defaultPageId = page.id
-        }
-      })
-      if (defaultPageId) {
+      let defaultGroup = null
+      let defaultPage = null
+      let defaultEndpoint = null
+      // Search for Version Pages
+      defaultPage = Object.values(this.props.pages).find(page => page.versionId === defaultVersion && page.groupId === null && page.position === 0)
+      if (defaultPage) {
         this.props.history.push({
-          pathname: `/p/${collectionId}/pages/${defaultPageId}/${this.state.collectionName}`
+          pathname: `/p/${collectionId}/pages/${defaultPage.id}/${this.state.collectionName}`
         })
       } else {
-        Object.values(this.props.groups).forEach(group => {
-          if (group.versionId === defaultVersion && group.position === 0) {
-            defaultGroupId = group.id
-          }
-        })
-        if (defaultGroupId) {
-          Object.values(this.props.endpoints).forEach(endpoint => {
-            if (endpoint.groupId === defaultGroupId && endpoint.position === 0) {
+        // Search for Group with position 0
+        defaultGroup = Object.values(this.props.groups).find(group => group.versionId === defaultVersion && group.position === 0)
+        if (defaultGroup) {
+          // Search for Group Pages with position 0
+          defaultPage = Object.values(this.props.pages).find(page => page.versionId === defaultVersion && page.groupId === defaultGroup.id && page.position === 0)
+          if (defaultPage) {
+            this.props.history.push({
+              pathname: `/p/${collectionId}/pages/${defaultPage.id}/${this.state.collectionName}`
+            })
+          } else {
+            // Search for Endpoint with position 0
+            defaultEndpoint = Object.values(this.props.endpoints).find(endpoint => endpoint.groupId === defaultGroup.id && endpoint.position === 0)
+            if (defaultEndpoint) {
               this.props.history.push({
-                pathname: `/p/${collectionId}/e/${endpoint.id}/${this.state.collectionName}`
-              })
-            } else {
-              this.props.history.push({
-                pathname: `/p/${collectionId}/description/${this.state.collectionName}`
+                pathname: `/p/${collectionId}/e/${defaultEndpoint.id}/${this.state.collectionName}`
               })
             }
-          })
+          }
         }
       }
     }
@@ -124,6 +123,10 @@ class PublicEndpoint extends Component {
       this.state.collectionName !== ''
     ) {
       this.redirectToDefaultPage()
+      // const collectionId = this.props.match.params.collectionIdentifier
+      // this.props.history.push({
+      //   pathname: `/p/${collectionId}/description/${this.state.collectionName}`
+      // })
     }
 
     return (
