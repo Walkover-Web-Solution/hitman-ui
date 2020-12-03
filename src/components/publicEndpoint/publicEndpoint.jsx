@@ -15,7 +15,11 @@ import UserInfo from '../common/userInfo'
 
 const mapStateToProps = (state) => {
   return {
-    collections: state.collections
+    collections: state.collections,
+    groups: state.groups,
+    endpoints: state.endpoints,
+    versions: state.versions,
+    pages: state.pages
   }
 }
 
@@ -59,6 +63,44 @@ class PublicEndpoint extends Component {
     })
   }
 
+  redirectToDefaultPage () {
+    const collectionId = this.props.match.params.collectionIdentifier
+    const versionIds = Object.keys(this.props.versions)
+    if (versionIds.length > 0) {
+      const defaultVersion = versionIds[0]
+      let defaultGroup = null
+      let defaultPage = null
+      let defaultEndpoint = null
+      // Search for Version Pages
+      defaultPage = Object.values(this.props.pages).find(page => page.versionId === defaultVersion && page.groupId === null && page.position === 0)
+      if (defaultPage) {
+        this.props.history.push({
+          pathname: `/p/${collectionId}/pages/${defaultPage.id}/${this.state.collectionName}`
+        })
+      } else {
+        // Search for Group with position 0
+        defaultGroup = Object.values(this.props.groups).find(group => group.versionId === defaultVersion && group.position === 0)
+        if (defaultGroup) {
+          // Search for Group Pages with position 0
+          defaultPage = Object.values(this.props.pages).find(page => page.versionId === defaultVersion && page.groupId === defaultGroup.id && page.position === 0)
+          if (defaultPage) {
+            this.props.history.push({
+              pathname: `/p/${collectionId}/pages/${defaultPage.id}/${this.state.collectionName}`
+            })
+          } else {
+            // Search for Endpoint with position 0
+            defaultEndpoint = Object.values(this.props.endpoints).find(endpoint => endpoint.groupId === defaultGroup.id && endpoint.position === 0)
+            if (defaultEndpoint) {
+              this.props.history.push({
+                pathname: `/p/${collectionId}/e/${defaultEndpoint.id}/${this.state.collectionName}`
+              })
+            }
+          }
+        }
+      }
+    }
+  }
+
   render () {
     if (
       this.props.collections[this.props.location.pathname.split('/')[2]] &&
@@ -80,24 +122,13 @@ class PublicEndpoint extends Component {
         this.props.location.pathname.split('/')[3] === '') &&
       this.state.collectionName !== ''
     ) {
-      this.props.history.push({
-        pathname: `/p/${this.props.match.params.collectionIdentifier}/description/${this.state.collectionName}`
-      })
-      return (
-        <div>
-          <Switch>
-            <Route
-              path={`/p/:collectionId/description/${this.state.collectionName}`}
-              render={(props) => <DisplayCollection {...props} publicCollectionTheme={this.state.collectionTheme} />}
-            />
-          </Switch>
-        </div>
-      )
-    } else {
-      return (
-        <>
-          <nav className='public-endpoint-navbar'>
-            {
+      this.redirectToDefaultPage()
+    }
+
+    return (
+      <>
+        <nav className='public-endpoint-navbar'>
+          {
               process.env.REACT_APP_UI_URL === window.location.origin + '/'
                 ? (
                     auth.getCurrentUser() === null
@@ -127,16 +158,14 @@ class PublicEndpoint extends Component {
                   )
                 : null
             }
-          </nav>
-          <main role='main' className='mainpublic-endpoint-main hm-wrapper'>
-            <ToastContainer />
-            <div className='hm-sidebar'>
-              <SideBar {...this.props} />
-              {/* <Environments {...this.props} /> */}
-            </div>
-            {/* console.log({this.props}) */}
-            <div className='hm-right-content'>
-              {
+        </nav>
+        <main role='main' className='mainpublic-endpoint-main hm-wrapper'>
+          <ToastContainer />
+          <div className='hm-sidebar'>
+            <SideBar {...this.props} />
+          </div>
+          <div className='hm-right-content'>
+            {
                 this.state.collectionName !== ''
                   ? (
                     <Switch>
@@ -150,17 +179,16 @@ class PublicEndpoint extends Component {
                       />
                       <Route
                         path={`/p/:collectionId/description/${this.state.collectionName}`}
-                        render={(props) => <DisplayCollection {...props} publicCollectionTheme={this.state.collectionTheme} />}
+                        render={(props) => <DisplayCollection {...props} {...this.props} publicCollectionTheme={this.state.collectionTheme} />}
                       />
                     </Switch>
                     )
                   : null
               }
-            </div>
-          </main>
-        </>
-      )
-    }
+          </div>
+        </main>
+      </>
+    )
   }
 }
 

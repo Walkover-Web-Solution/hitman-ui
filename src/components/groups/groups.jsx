@@ -565,16 +565,16 @@ class Groups extends Component {
                 <div className='hm-sidebar-label' style={{ color: theme }}>
                   {this.props.groups[groupId].name}
                 </div>
-                <Endpoints
-                  {...this.props}
-                  group_id={groupId}
-                  endpoints_order={this.props.groups[groupId].endpointsOrder}
-                  show_filter_groups={this.propsFromGroups.bind(this)}
-                />
                 <GroupPages
                   {...this.props}
                   version_id={this.props.groups[groupId].versionId}
                   group_id={groupId}
+                  show_filter_groups={this.propsFromGroups.bind(this)}
+                />
+                <Endpoints
+                  {...this.props}
+                  group_id={groupId}
+                  endpoints_order={this.props.groups[groupId].endpointsOrder}
                   show_filter_groups={this.propsFromGroups.bind(this)}
                 />
               </div>
