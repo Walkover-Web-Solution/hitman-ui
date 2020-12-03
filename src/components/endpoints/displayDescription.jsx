@@ -77,7 +77,7 @@ class DisplayDescription extends Component {
   };
 
   render () {
-    const { theme } = this.state;
+    const { theme } = this.state
     return (
       <div className='endpoint-header'>
         <div

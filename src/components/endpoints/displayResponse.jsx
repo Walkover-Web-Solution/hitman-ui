@@ -18,7 +18,7 @@ class DisplayResponse extends Component {
     responseString: '',
     timeElapsed: '',
     show: false,
-    theme:''
+    theme: ''
   };
 
   responseTime () {
@@ -67,8 +67,9 @@ class DisplayResponse extends Component {
       this.setState({ theme: this.props.publicCollectionTheme })
     }
   }
+
   render () {
-    const { theme } = this.state;
+    const { theme } = this.state
     return (
       <div className='endpoint-response-container'>
         {
@@ -77,12 +78,12 @@ class DisplayResponse extends Component {
               <div>
                 <div className='response-status'>
                   <div className='respHeading'>
-                    <h2 className='orange-heading' style={{color:theme}}> RESPONSE</h2>
+                    <h2 className='orange-heading' style={{ color: theme }}> RESPONSE</h2>
                   </div>
                   <div className='statusWrapper'>
                     <div id='status'>
                       <div className='response-status-item-name'>Status :</div>
-                      <div className='response-status-value' style={{color:theme}}>
+                      <div className='response-status-value' style={{ color: theme }}>
                         {this.props.response.status +
                           ' ' +
                           this.props.response.statusText}
@@ -90,7 +91,7 @@ class DisplayResponse extends Component {
                     </div>
                     <div id='time'>
                       <div className='response-status-item-name'>Time:</div>
-                      <div className='response-status-value' style={{color:theme}}>
+                      <div className='response-status-value' style={{ color: theme }}>
                         {this.props.timeElapsed} ms
                       </div>
                     </div>
@@ -216,7 +217,7 @@ class DisplayResponse extends Component {
                       </div>
                     </div>)}
                   {!isDashboardRoute(this.props) && (
-                    <div className='tab-content'  style={{borderColor:theme}}>
+                    <div className='tab-content' style={{ borderColor: theme }}>
                       <JSONPretty
                         theme={JSONPrettyMon}
                         data={this.props.response.data}

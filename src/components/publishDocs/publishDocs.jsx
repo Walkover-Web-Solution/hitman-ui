@@ -102,12 +102,12 @@ class PublishDocs extends Component {
     return ''
   }
 
-  getInitialEndpoint (groupId, endpoints) {
+  getInitialEndpoint (groupId, endpoints, endpointId = null) {
     for (let i = 0; i < Object.keys(endpoints).length; i++) {
       if (endpoints[Object.keys(endpoints)[i]].groupId?.toString() === groupId?.toString() &&
         (endpoints[Object.keys(endpoints)[i]].isPublished === true ||
-          endpoints[Object.keys(endpoints)[i]].state === publishDocsEnum.PENDING_STATE
-        )
+          endpoints[Object.keys(endpoints)[i]].state === publishDocsEnum.PENDING_STATE) &&
+        endpointId?.toString() !== Object.keys(endpoints)[i]?.toString()
       ) {
         return Object.keys(endpoints)[i]
       }
@@ -157,14 +157,14 @@ class PublishDocs extends Component {
   }
 
   async handleRejectEndpointRequest (endpointId) {
-    this.props.reject_endpoint(this.props.endpoints[endpointId])
     if (this.state.endpoints[endpointId].isPublished) {
       //
     } else {
       this.setState({
-        selectedEndpointId: this.getInitialEndpoint(this.state.selectedGroupId, this.state.endpoints)
+        selectedEndpointId: this.getInitialEndpoint(this.state.selectedGroupId, this.state.endpoints, endpointId)
       })
     }
+    this.props.reject_endpoint(this.props.endpoints[endpointId])
   }
 
   openPage (groupId, pageId) {
@@ -193,7 +193,7 @@ class PublishDocs extends Component {
         })
       } else {
         this.setState({
-          selectedEndpointId: this.getInitialEndpoint(this.state.groupId, this.state.endpoints),
+          selectedEndpointId: this.getInitialEndpoint(this.state.selectedGroupId, this.state.endpoints),
           selectedPageId: false
         })
       }
@@ -439,12 +439,20 @@ class PublishDocs extends Component {
   }
 
   showEndpoints () {
+    let endpointName = publishDocsEnum.EMPTY_STRING
+    if (this.state.endpoints) {
+      if (this.state.endpoints[this.state.selectedEndpointId]?.state === publishDocsEnum.REJECT_STATE) {
+        endpointName = this.props.endpoints[this.state.selectedEndpointId]?.publishedEndpoint?.name
+      } else {
+        endpointName = this.props.endpoints[this.state.selectedEndpointId]?.name
+      }
+    }
     if (this.state.selectedEndpointId) {
       return (
         <div>
           <div className='contacts'>{this.props.groups[this.state.selectedGroupId]?.name}</div>
           <div className='list-contacts'>
-            {this.props.endpoints[this.state.selectedEndpointId]?.name}
+            {endpointName}
           </div>
           {this.endpointPublishAndReject()}
           {this.checkEndpointState()}
@@ -455,13 +463,13 @@ class PublishDocs extends Component {
   }
 
   checkEndpointState () {
-    if (this.state.endpoints[this.state.selectedEndpointId].state === publishDocsEnum.REJECT_STATE) {
+    if (this.state.endpoints[this.state.selectedEndpointId]?.state === publishDocsEnum.REJECT_STATE) {
       return (
-        <DisplayEndpoint rejected endpointId={this.state.selectedEndpointId} groupId={this.state.selectedGroupId} {...this.props} />
+        <DisplayEndpoint rejectedEndpointId={this.state.selectedEndpointId} endpointId={this.state.selectedEndpointId} groupId={this.state.selectedGroupId} {...this.props} />
       )
     } else {
       return (
-        <DisplayEndpoint endpointId={this.state.selectedEndpointId} groupId={this.state.selectedGroupId} {...this.props} />
+        <DisplayEndpoint rejected={false} endpointId={this.state.selectedEndpointId} groupId={this.state.selectedGroupId} {...this.props} />
       )
     }
   }
@@ -469,12 +477,13 @@ class PublishDocs extends Component {
   handleRemovePublicEndpoint (endpointId) {
     this.props.update_endpoint({
       ...this.state.endpoints[endpointId],
+      groupId: this.state.selectedGroupId,
       isPublished: false,
       publishedEndpoint: {},
       state: 'Draft'
     })
     this.setState({
-      selectedEndpointId: this.getInitialEndpoint(this.state.groupId, this.state.endpoints)
+      selectedEndpointId: this.getInitialEndpoint(this.state.selectedGroupId, this.state.endpoints, endpointId)
     })
   }
 
@@ -493,7 +502,7 @@ class PublishDocs extends Component {
       })
     } else {
       this.setState({
-        selectedEndpointId: this.getInitialEndpoint(this.state.groupId, this.state.endpoints),
+        selectedEndpointId: this.getInitialEndpoint(this.state.selectedGroupId, this.state.endpoints),
         selectedPageId: false
       })
     }
