@@ -116,7 +116,8 @@ class DisplayEndpoint extends Component {
       bodyDescription: {},
       fieldDescription: {},
       sampleResponseArray: [],
-      sampleResponseFlagArray: []
+      sampleResponseFlagArray: [],
+      theme: ''
     }
 
     this.uri = React.createRef()
@@ -185,6 +186,10 @@ class DisplayEndpoint extends Component {
     //   let collectionIdentifier = this.props.location.pathname.split("/")[2];
     //   this.fetchPublicCollection(collectionIdentifier);
     // }
+
+    if (!this.state.theme) {
+      this.setState({ theme: this.props.publicCollectionTheme })
+    }
   }
 
   componentDidUpdate (prevProps, prevState) {
@@ -254,7 +259,11 @@ class DisplayEndpoint extends Component {
       flag === 0
     ) {
       flag = 1
-      endpoint = endpoints[endpointId]
+      endpoint = {}
+      if (this.props.rejectedEndpointId) {
+        this.setState({ publicEndpointId: this.props.rejectedEndpointId })
+        endpoint = endpoints[endpointId].publishedEndpoint
+      } else { endpoint = endpoints[endpointId] }
       let authType = {}
       if (endpoint.authorizationType !== null) {
         authType = {
@@ -1617,7 +1626,6 @@ class DisplayEndpoint extends Component {
   }
 
   render () {
-    console.log('displac endpoits-->', this.props)
     this.endpointId = this.props.endpointId
       ? this.props.endpointId
       : isDashboardRoute(this.props)
@@ -1655,11 +1663,17 @@ class DisplayEndpoint extends Component {
         })
       }
     }
-
     if (
-      !isDashboardRoute(this.props) &&
-      this.state.endpoint.id !== this.endpointId &&
-      this.props.endpoints[this.endpointId]
+      (
+        !isDashboardRoute(this.props) &&
+        this.state.endpoint.id !== this.endpointId &&
+        this.props.endpoints[this.endpointId]
+      ) ||
+      (
+        !isDashboardRoute(this.props) && (
+          (this.props.rejectedEndpointId && this.state.publicEndpointId !== this.props.rejectedEndpointId)
+        )
+      )
     ) {
       this.fetchEndpoint(0, this.endpointId)
       store.subscribe(() => {
@@ -1668,6 +1682,7 @@ class DisplayEndpoint extends Component {
         }
       })
     }
+    const { theme } = this.state
     return (
       <div
         className={
@@ -1837,12 +1852,13 @@ class DisplayEndpoint extends Component {
                       <div class='input-group'>
                         <div class='input-group-prepend'>
                           <span
+                            style={{ borderColor: theme }}
                             className={`api-label api-label-lg input-group-text ${this.state.data.method}`}
                           >
                             {this.state.data.method}
                           </span>
                         </div>
-                        <div class='form-control'>
+                        <div class='form-control' style={{ borderColor: theme }}>
                           <HostContainer
                             {...this.props}
                             groupId={this.state.groupId}
@@ -2094,6 +2110,7 @@ class DisplayEndpoint extends Component {
                   <div className='text-right'>
                     <button
                       className='btn btn-primary btn-lg'
+                      style={{ background: theme }}
                       type='submit'
                       id='send-request-button'
                       onClick={() => this.handleSend()}

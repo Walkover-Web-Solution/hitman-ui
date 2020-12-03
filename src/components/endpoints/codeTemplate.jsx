@@ -10,7 +10,9 @@ const HTTPSnippet = require('httpsnippet')
 class CodeTemplate extends Component {
   constructor (props) {
     super(props)
-    this.state = {}
+    this.state = {
+      theme: ''
+    }
 
     this.languages = {
       node: { name: 'Node' },
@@ -69,6 +71,9 @@ class CodeTemplate extends Component {
     if (this.props.harObject) {
       this.makeCodeTemplate(this.selectedLanguage)
     }
+    if (!this.state.theme) {
+      this.setState({ theme: this.props.publicCollectionTheme })
+    }
   }
 
   componentDidUpdate (prevProps, prevState) {
@@ -78,9 +83,11 @@ class CodeTemplate extends Component {
   }
 
   render () {
+    const { theme } = this.state
+
     return (
       <div className='pubCodeWrapper'>
-        <div className='code-heading'>
+        <div className='code-heading' style={{ color: theme }}>
           Generated code for {this.selectedLanguageName}
         </div>
         <Col id='code-window-sidebar' xs={12}>
