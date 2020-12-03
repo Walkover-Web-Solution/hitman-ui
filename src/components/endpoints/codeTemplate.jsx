@@ -8,9 +8,11 @@ import { CopyToClipboard } from 'react-copy-to-clipboard'
 const HTTPSnippet = require('httpsnippet')
 
 class CodeTemplate extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
-    this.state = {}
+    this.state = {
+      theme: ''
+    }
 
     this.languages = {
       node: { name: 'Node' },
@@ -34,7 +36,7 @@ class CodeTemplate extends Component {
     this.selectedLanguage = 'node'
   }
 
-  makeCodeSnippet () {
+  makeCodeSnippet() {
     const harObject = this.props.harObject
     const {
       method,
@@ -57,7 +59,7 @@ class CodeTemplate extends Component {
     return snippet
   }
 
-  makeCodeTemplate (selectedLanguage) {
+  makeCodeTemplate(selectedLanguage) {
     this.selectedLanguage = selectedLanguage
     this.selectedLanguageName = this.languages[selectedLanguage].name
     const snippet = this.makeCodeSnippet()
@@ -65,22 +67,26 @@ class CodeTemplate extends Component {
     this.setState({ codeSnippet, copied: false })
   }
 
-  componentDidMount () {
+  componentDidMount() {
     if (this.props.harObject) {
       this.makeCodeTemplate(this.selectedLanguage)
     }
+    if (!this.state.theme) {
+      this.setState({ theme: this.props.publicCollectionTheme })
+    }
   }
-
-  componentDidUpdate (prevProps, prevState) {
+  componentDidUpdate(prevProps, prevState) {
     if (this.props.harObject !== prevProps.harObject) {
       this.makeCodeTemplate(this.selectedLanguage)
     }
   }
 
-  render () {
+  render() {
+    const { theme } = this.state;
+
     return (
       <div className='pubCodeWrapper'>
-        <div className='code-heading'>
+        <div className='code-heading' style={{ color: theme }}>
           Generated code for {this.selectedLanguageName}
         </div>
         <Col id='code-window-sidebar' xs={12}>
@@ -118,10 +124,10 @@ class CodeTemplate extends Component {
                 {this.state.copied
                   ? (
                     <i className='fas fa-check' />
-                    )
+                  )
                   : (
                     <i className='fas fa-clone' />
-                    )}
+                  )}
               </button>
             </CopyToClipboard>
           </div>{' '}
