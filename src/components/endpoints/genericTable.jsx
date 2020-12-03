@@ -225,7 +225,6 @@ class GenericTable extends Component {
         <td
           className='custom-td'
           id='generic-table-key-cell'
-          style={{ marginLeft: '5px' }}
         >
           {
             dataArray[index].checked === 'notApplicable'
@@ -246,11 +245,11 @@ class GenericTable extends Component {
                 )
           }
         </td>
-        <td className='custom-td'>
+        <td className='custom-td keyWrapper'>
           {dataArray[index].key}
           <p className='text-muted small'>{originalData[index].checked === 'true' || originalData[index].checked === 'notApplicable' ? '(Required)' : '(Optional)'}</p>
         </td>
-        <td className='custom-td'>
+        <td className='custom-td valueWrapper'>
           <input
             name={index + '.value'}
             value={dataArray[index].value}
@@ -417,10 +416,12 @@ class GenericTable extends Component {
           {!isDashboardRoute(this.props) && title}
 
         </div>
+        {this.renderOptionalParamsButton()}
         {!this.state.bulkEdit && dataArray.length > 0
           ? (
-            <table className='table' id='custom-generic-table'>
-              {
+            <div className='headParaWraper'>
+              <table className='table' id='custom-generic-table'>
+                {
                 isDashboardRoute(this.props)
                   ? (
                     <thead>
@@ -439,23 +440,24 @@ class GenericTable extends Component {
                       <tr>
                         <th className='custom-th' />
                         <th className='custom-th' id='generic-table-key-cell'>NAME</th>
-                        <th className='custom-th'>VALUE{this.renderOptionalParamsButton()}</th>
+                        <th className='custom-th'>VALUE</th>
                       </tr>
                     </thead>
                     )
               }
 
-              <tbody style={{ border: 'none' }}>
-                {dataArray.map((e, index) => (
-                  !isDashboardRoute(this.props)
-                    ? (
-                        (dataArray[index]?.checked === 'true' || dataArray[index]?.checked === 'notApplicable' || this.state.optionalParams) && this.renderPublicTableRow(dataArray, index, originalData, title)
-                      )
-                    : this.renderTableRow(dataArray, index, originalData, title)
-                )
-                )}
-              </tbody>
-            </table>
+                <tbody style={{ border: 'none' }}>
+                  {dataArray.map((e, index) => (
+                    !isDashboardRoute(this.props)
+                      ? (
+                          (dataArray[index]?.checked === 'true' || dataArray[index]?.checked === 'notApplicable' || this.state.optionalParams) && this.renderPublicTableRow(dataArray, index, originalData, title)
+                        )
+                      : this.renderTableRow(dataArray, index, originalData, title)
+                  )
+                  )}
+                </tbody>
+              </table>
+            </div>
             )
           : null}
 

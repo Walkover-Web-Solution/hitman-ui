@@ -933,3 +933,14 @@ button.editBtn {
   text-decoration: underline;
   cursor: pointer;
 }
+.small.text-muted {
+  font-size: 12px;
+  margin: 5px 0 2px 0;
+}
+.headParaWraper {
+  height: 300px;
+  overflow: auto;
+  background: #fff;
+  padding: 11px 20px;
+  border-radius: 4px;
+}
