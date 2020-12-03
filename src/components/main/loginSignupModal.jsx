@@ -1,10 +1,19 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Modal } from 'react-bootstrap'
 
 import loginIcon from '../../assets/icons/loginIcon.svg'
 
 function LoginSignupModal (props) {
   const redirectionUrl = process.env.REACT_APP_UI_URL + '/login'
+
+  useEffect(() => {
+    const ssoDiv = document.getElementById('sokt-sso-modal')
+
+    if (ssoDiv) {
+      ssoDiv.appendChild(window.ssoButton(ssoDiv))
+    }
+  }, [])
+
   return (
     <Modal
       {...props}
@@ -37,7 +46,7 @@ function LoginSignupModal (props) {
                 )
           }
           <div
-            id='sokt-sso'
+            id='sokt-sso-modal'
             data-redirect-uri={redirectionUrl}
             data-source='sokt-app'
             data-token-key='sokt-auth-token'

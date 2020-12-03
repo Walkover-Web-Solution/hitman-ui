@@ -160,6 +160,7 @@ class SampleResponse extends Component {
                   )
                 : null
             }
+            <div className='response-item-status'>Title : {obj.title}</div>
             <div className='response-item-status'>Status : {obj.status}</div>
             <div className='response-item-description'>
               Description : {obj.description || ''}
