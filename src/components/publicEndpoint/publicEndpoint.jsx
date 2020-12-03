@@ -123,10 +123,6 @@ class PublicEndpoint extends Component {
       this.state.collectionName !== ''
     ) {
       this.redirectToDefaultPage()
-      // const collectionId = this.props.match.params.collectionIdentifier
-      // this.props.history.push({
-      //   pathname: `/p/${collectionId}/description/${this.state.collectionName}`
-      // })
     }
 
     return (
