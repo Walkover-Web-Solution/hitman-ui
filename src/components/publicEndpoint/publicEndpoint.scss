@@ -269,7 +269,7 @@ form.add-new-domain-form {
   flex-direction: column !important;
   overflow-x: hidden;
 
-  .hm-endpoint-container { 
+  .hm-endpoint-container {
     padding: 30px 0;
     width: 65%;
 
@@ -303,12 +303,7 @@ form.add-new-domain-form {
   // padding: 20px;
   // margin-bottom: 40px;
   // border-radius: 3px;
-  .hm-public-endpoint-headers {
-    background: #fff;
-    padding: 20px;
-    margin: 20px 0 0;
-    border-radius: 4px;
-  }
+  
 }
 
 // Sidebar Header
@@ -350,7 +345,7 @@ h4.hm-sidebar-title {
 .hm-endpoint-wrap {
 
   .hm-endpoint-header {
-    margin-bottom: 10px;
+    margin-bottom: 25px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -386,8 +381,8 @@ h4.hm-sidebar-title {
   .public-generic-table-title-container {
     font-size: 18px;
     font-weight: 600;
-    margin-bottom: 15px;
-    display: inline-block
+    margin-bottom: 10px;
+    display: inline-block;
   }
 
   table#custom-generic-table {
@@ -404,10 +399,16 @@ h4.hm-sidebar-title {
         td {
           &.custom-td {
             border-color: #e5e5e5 !important;
-            padding: 15px 10px !important;
+            padding: 5px !important;
             vertical-align: middle;
             opacity: 1;
             color: #232427;
+
+            &.keyWrapper {
+              width: 150px !important;
+              word-break: break-all;
+            }
+
           }
 
           &#generic-table-description-cell {
@@ -434,7 +435,12 @@ h4.hm-sidebar-title {
     }
   }
 }
-
+.hm-panel.endpoint-public-response-container.public-doc {
+  background: #fff;
+  padding: 30px;
+  margin: 30px 0 0;
+  border-radius: 4px;
+}
 // Public Response container
 .endpoint-public-response-container {
   .empty-response {
@@ -447,12 +453,11 @@ h4.hm-sidebar-title {
     height: 300px;
   }
 
- 
+
   .response-viewer {
     margin: 0;
 
-    .response-tabs {
-      margin-bottom: 10px;
+    .response-tabs { 
 
       button {
         border: none;
@@ -476,8 +481,8 @@ h4.hm-sidebar-title {
       background: #FEFCF7;
       border: 1px solid #E98A36;
 
-      .__json-pretty__{
-        background-color: #FEFCF7!important;
+      .__json-pretty__ {
+        background-color: #FEFCF7 !important;
       }
     }
   }

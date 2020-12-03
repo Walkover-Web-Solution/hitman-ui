@@ -12,7 +12,6 @@ class Landing extends Component {
     const currentDomain = window.location.href.split('/')[2]
     if (!domainsList.includes(currentDomain)) {
       const { data: clientCollection } = await collectionsApiService.getCollectionsByCustomDomain(currentDomain)
-      console.log(clientCollection)
       if (Object.keys(clientCollection) && Object.keys(clientCollection)[0]) {
         const clientCollectionId = Object.keys(clientCollection)[0]
         this.props.history.push({ pathname: `/p/${clientCollectionId}` })
