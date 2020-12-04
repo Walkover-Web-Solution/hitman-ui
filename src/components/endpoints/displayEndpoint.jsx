@@ -1556,7 +1556,7 @@ class DisplayEndpoint extends Component {
   displayResponseAndSampleResponse () {
     return (
       <>
-        <div className="col-12">
+        <div className='col-12'>
           <ul className='nav nav-tabs' id='myTab' role='tablist'>
             <li className='nav-item'>
               <a
@@ -1862,20 +1862,19 @@ class DisplayEndpoint extends Component {
                       {
                         isDashboardRoute(this.props)
                           ? (
-                            
-                              
-                                this.props.location.pathname.split('/')[3] !== 'new'
-                                  ? (
-                                    <Dropdown as={ButtonGroup}>
-                                      <button
-                                        className='btn btn-outline orange'
-                                        type='button'
-                                        id='save-endpoint-button'
-                                        onClick={() => this.handleSave()}
-                                      >
-                                        Save
-                                      </button>
-                                      {
+
+                              this.props.location.pathname.split('/')[3] !== 'new'
+                                ? (
+                                  <Dropdown as={ButtonGroup}>
+                                    <button
+                                      className='btn btn-outline orange'
+                                      type='button'
+                                      id='save-endpoint-button'
+                                      onClick={() => this.handleSave()}
+                                    >
+                                      Save
+                                    </button>
+                                    {
                                         getCurrentUser()
                                           ? (
                                             <span>
@@ -1894,19 +1893,19 @@ class DisplayEndpoint extends Component {
                                             )
                                           : null
                                       }
-                                    </Dropdown>
-                                    )
-                                  : (
-                                    <button
-                                      className='btn btn-primary'
-                                      type='button'
-                                      id='save-endpoint-button'
-                                      onClick={() => this.handleSave()}
-                                    >
-                                      Save
-                                    </button>
-                                    )
-                             
+                                  </Dropdown>
+                                  )
+                                : (
+                                  <button
+                                    className='btn btn-primary'
+                                    type='button'
+                                    id='save-endpoint-button'
+                                    onClick={() => this.handleSave()}
+                                  >
+                                    Save
+                                  </button>
+                                  )
+
                             )
                           : null
                       }

@@ -34,17 +34,17 @@ class PublishDocForm extends Component {
     }
   }
 
-  componentDidMount() {
+  componentDidMount () {
     this.setSelectedCollection()
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate (prevProps, prevState) {
     if (prevProps !== this.props) {
       this.setSelectedCollection()
     }
   }
 
-  setSelectedCollection() {
+  setSelectedCollection () {
     const collectionId = URI.parseQuery(this.props.location.search).collectionId
     let collection = {}
     let title, logoUrl, domain, theme
@@ -67,7 +67,7 @@ class PublishDocForm extends Component {
     this.setState({ data })
   }
 
-  saveCollectionDetails() {
+  saveCollectionDetails () {
     const collectionId = URI.parseQuery(this.props.location.search).collectionId
     const collection = { ...this.props.collections[collectionId] }
     const data = { ...this.state.data }
@@ -86,31 +86,31 @@ class PublishDocForm extends Component {
     }
   }
 
-  setTheme(theme) {
+  setTheme (theme) {
     const data = { ...this.state.data }
     data.theme = theme
     this.setState({ data })
   }
 
-  render() {
+  render () {
     return (
       <>
         <div className='grid-column-one'>
           <div className='domain'>
             <>
-              <div style={{ display: 'flex', padding: '5px' }} className="form-group">
+              <div style={{ display: 'flex', padding: '5px' }} className='form-group'>
                 <label style={{ minWidth: '70px' }}>
                   Domain:
                 </label>
                 <input type='text' className='form-control' name='domain' value={this.state.data.domain} onChange={(e) => this.handleChange(e)} />
               </div>
-              <div style={{ display: 'flex', padding: '5px' }} className="form-group">
+              <div style={{ display: 'flex', padding: '5px' }} className='form-group'>
                 <label style={{ minWidth: '70px' }}>
                   Title:
                 </label>
                 <input type='text' className='form-control' name='title' value={this.state.data.title} onChange={(e) => this.handleChange(e)} />
               </div>
-              <div style={{ display: 'flex', padding: '5px' }} className="form-group">
+              <div style={{ display: 'flex', padding: '5px' }} className='form-group'>
                 <label style={{ minWidth: '70px' }}>
                   LogoUrl:
                 </label>
@@ -120,12 +120,12 @@ class PublishDocForm extends Component {
           </div>
         </div>
         <div className='grid-column-two rightBorder'>
-          <div className="colorTitle">
-           <p> Pick your favorite color for website</p>  
+          <div className='colorTitle'>
+            <p> Pick your favorite color for website</p>
           </div>
-          <div className="d-flex justify-content-between">
+          <div className='d-flex justify-content-between'>
             <CustomColorPicker set_theme={this.setTheme.bind(this)} theme={this.state.data.theme} />
-            <Button className="btn-extra-lg" onClick={() => this.saveCollectionDetails()}> Save</Button>
+            <Button className='btn-extra-lg' onClick={() => this.saveCollectionDetails()}> Save</Button>
           </div>
 
         </div>
