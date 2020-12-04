@@ -87,6 +87,11 @@ class HostContainer extends Component {
   };
 
   fetchHost () {
+    if (this.props.historySnapshotFlag) {
+      const BASE_URL = this.state.customHost || this.props.custom_host
+      this.props.set_base_url(BASE_URL, 'customHost')
+      return BASE_URL
+    }
     let BASE_URL = ''
     switch (this.state.selectedHost) {
       case 'customHost':
