@@ -48,24 +48,14 @@
 }
 
 .grid-two {
-  margin: 40px;
+  margin: 30px;
   display: grid;
   grid-template-columns: 0.5fr 1.5fr;
   .versions-section {
     margin: 10px; 
-    .version-groups {
-      padding: 10px;
-    }
     .groups {
-      margin: 10px;
       padding: 10px;
       background: white;
-    }
-  }
-  .version-details {
-    .publish-reject {
-      float: right;
-      display: flex;
     }
   }
   .contacts {
@@ -212,12 +202,13 @@ i.fas.fa-circle{
   position: relative;
   padding-left: 50px!important;
   &::after {
-    border: 1px solid #E0E0E0;
     height: 100%;
     top: 0;
     position: absolute;
     content: "";
     left: 20px;
+    width: 2px; 
+    background: #E0E0E0;
   }
 }
  

@@ -241,10 +241,7 @@ $border-color: rgba(227, 228, 230, 0.7);
 }
 
 .endpoint-container {
-  .panel-endpoint-name-container {
-    // padding: 2px;
-    // display: flex;
-    // margin-top: 30px;
+  .panel-endpoint-name-container { 
     margin-bottom: 20px;
 
     .public-endpoint-name-input {
@@ -313,8 +310,7 @@ $border-color: rgba(227, 228, 230, 0.7);
         width: 30px;
       }
 
-      .dropdown-menu.show {
-        left: -100px !important;
+      .dropdown-menu.show { 
         min-width: 130px;
       }
 
@@ -1080,13 +1076,6 @@ table#custom-generic-table {
   flex-direction: row-reverse;
   padding: 5px;
   margin: 5px;
-
-  // color: rgb(3, 123, 254);
-  button {
-    color: rgb(3, 123, 254);
-    border-radius: 0px;
-    border: none;
-  }
 }
 
 .custom-json-pretty {
@@ -1100,14 +1089,7 @@ table#custom-generic-table {
 }
 
 .add-to-sample-response {
-  flex: auto;
-  padding-left: 30pc;
-
-  .sample-response-txt {
-    color: rgb(3, 123, 254);
-    cursor: pointer;
-  }
-
+  width: 100%;
   .toast.show {
     padding: 0;
     height: 60px;

@@ -1557,7 +1557,7 @@ class DisplayEndpoint extends Component {
     return (
       <>
         <div className='col-12'>
-          <ul className='nav nav-tabs' id='myTab' role='tablist'>
+          <ul className='nav nav-tabs respTabsListing' id='myTab' role='tablist'>
             <li className='nav-item'>
               <a
                 className='nav-link active'
@@ -1603,7 +1603,7 @@ class DisplayEndpoint extends Component {
               </li>
             )}
           </ul>
-          <div className='tab-content' id='pills-tabContent'>
+          <div className='tab-content responseTabWrapper' id='pills-tabContent'>
             <div
               className='tab-pane fade show active'
               id={
@@ -1614,7 +1614,7 @@ class DisplayEndpoint extends Component {
               role='tabpanel'
               aria-labelledby='pills-response-tab'
             >
-              <div className='hm-panel endpoint-public-response-container'>
+              <div className='hm-panel endpoint-public-response-container '>
                 <DisplayResponse
                   {...this.props}
                   timeElapsed={this.state.timeElapsed}
@@ -1672,7 +1672,7 @@ class DisplayEndpoint extends Component {
   displayPublicResponse () {
     return (
       <>
-        <div className='hm-panel endpoint-public-response-container'>
+        <div className='hm-panel endpoint-public-response-container col-12 mt-4 endPointRes'>
           <DisplayResponse
             {...this.props}
             timeElapsed={this.state.timeElapsed}
