@@ -68,6 +68,16 @@ class SideBar extends Component {
         historySnapshot: Object.values(this.props.historySnapshot)
       })
     }
+    if (this.props.endpoints) {
+      this.setState({
+        endpoints: Object.values(this.props.endpoints)
+      })
+    }
+    if (this.props.pages) {
+      this.setState({
+        pages: Object.values(this.props.pages)
+      })
+    }
     if (this.props.location.collectionId) {
       this.collectionId = this.props.location.collectionId
     }
@@ -77,6 +87,11 @@ class SideBar extends Component {
     if (this.props.historySnapshot !== prevProps.historySnapshot) {
       this.setState({
         historySnapshot: Object.values(this.props.historySnapshot)
+      })
+    }
+    if (this.props.endpoints !== prevProps.endpoints) {
+      this.setState({
+        endpoints: Object.values(this.props.endpoints)
       })
     }
   }
@@ -118,12 +133,27 @@ class SideBar extends Component {
     if (this.props.historySnapshot) {
       obj = obj.filter(
         (o) =>
-          o.endpoint.name?.includes(e.target.value) ||
-          o.endpoint.BASE_URL?.includes(e.target.value) ||
-          o.endpoint.uri?.includes(e.target.value)
+          o.endpoint.name?.toLowerCase().includes(e.target.value.toLowerCase()) ||
+          o.endpoint.BASE_URL?.toLowerCase().includes(e.target.value.toLowerCase()) ||
+          o.endpoint.uri?.toLowerCase().includes(e.target.value.toLowerCase())
       )
     }
-    this.setState({ historySnapshot: obj })
+    let obj2 = Object.values(this.props.endpoints)
+    if (this.props.endpoints) {
+      obj2 = obj2.filter(
+        (o) =>
+          o.name?.toLowerCase().includes(e.target.value.toLowerCase()) ||
+          o.BASE_URL?.toLowerCase().includes(e.target.value.toLowerCase()) ||
+          o.uri?.toLowerCase().includes(e.target.value.toLowerCase())
+      )
+    }
+    let obj3 = Object.values(this.props.pages)
+    if (this.props.pages) {
+      obj3 = obj3.filter(
+        (o) => o.name?.toLowerCase().includes(e.target.value.toLowerCase())
+      )
+    }
+    this.setState({ historySnapshot: obj, endpoints: obj2, pages: obj3 })
   };
 
   emptyFilter () {
@@ -157,9 +187,53 @@ class SideBar extends Component {
     })
   }
 
+  openEndpoint (id) {
+    this.props.history.push({
+      pathname: `/dashboard/endpoint/${id}`
+    })
+  }
+
+  openPage (id) {
+    this.props.history.push({
+      pathname: `/dashboard/page/${id}`
+    })
+  }
+
+  renderPath (id, type) {
+    let path = ''
+    let groupId = null
+    let versionId = null
+    let collectionId = null
+    let endpointId = null
+    let pageId = null
+    switch (type) {
+      case 'endpoint':
+        endpointId = id
+        groupId = this.props.endpoints[endpointId]?.groupId
+        versionId = this.props.groups[groupId]?.versionId
+        collectionId = this.props.versions[versionId]?.collectionId
+        path = this.props.collections[collectionId]?.name + ' > ' + this.props.versions[versionId]?.number + ' > ' + this.props.groups[groupId]?.name
+        break
+      case 'page':
+        pageId = id
+        groupId = this.props.pages[pageId]?.groupId
+        versionId = this.props.pages[pageId]?.versionId
+        collectionId = this.props.versions[versionId]?.collectionId
+        if (groupId) {
+          path = this.props.collections[collectionId]?.name + ' > ' + this.props.versions[versionId]?.number + ' > ' + this.props.groups[groupId]?.name
+        } else {
+          path = this.props.collections[collectionId]?.name + ' > ' + this.props.versions[versionId]?.number
+        }
+        break
+      default: path = ''
+        break
+    }
+    if (path) { return <div style={{ fontSize: '11px' }} className='text-muted'>{path}</div> } else return <p />
+  }
+
   renderHistoryList () {
     return (
-      <div className='mt-3'>
+      <div className='py-3'>
         {this.state.historySnapshot &&
           this.props.historySnapshot &&
           this.state.historySnapshot.sort(compareByCreatedAt).map(
@@ -190,6 +264,77 @@ class SideBar extends Component {
                 </div>
               )
           )}
+      </div>
+    )
+  }
+
+  renderEndpointsList () {
+    return (
+      <div>
+        <div className='px-3'>Endpoints</div>
+        <div className='py-3'>
+          {this.state.endpoints &&
+            this.props.endpoints &&
+            this.state.endpoints.map(
+              (endpoint) =>
+                Object.keys(endpoint).length !== 0 && (
+                  <div
+                    className='btn d-flex align-items-center mb-2'
+                    onClick={() => { this.openEndpoint(endpoint.id) }}
+                  >
+                    <div className={`api-label lg-label ${endpoint.requestType}`}>
+                      <div className='endpoint-request-div'>
+                        {endpoint.requestType}
+                      </div>
+                    </div>
+                    <div className='ml-3'>
+                      <div className='sideBarListWrapper'>
+                        <div className='text-left'>
+                          <p>   {endpoint.name ||
+                            endpoint.BASE_URL + endpoint.uri}
+                          </p>
+                        </div>
+                        {this.renderPath(endpoint.id, 'endpoint')}
+                      </div>
+                    </div>
+                  </div>
+                )
+            )}
+        </div>
+      </div>
+    )
+  }
+
+  renderPagesList () {
+    return (
+      <div>
+        <div className='px-3'>Pages</div>
+        <div className='py-3'>
+          {this.state.pages &&
+            this.props.pages &&
+            this.state.pages.map(
+              (page) =>
+                Object.keys(page).length !== 0 && (
+                  <div
+                    className='btn d-flex align-items-center mb-2'
+                    onClick={() => { this.openPage(page.id) }}
+                  >
+                    <div>
+                      <i className='uil uil-file-alt' aria-hidden='true' />
+                    </div>
+                    <div className='ml-3'>
+                      <div className='sideBarListWrapper'>
+                        <div className='text-left'>
+                          <p>   {page.name}
+                          </p>
+                        </div>
+                        {this.renderPath(page.id, 'page')}
+                      </div>
+                    </div>
+                  </div>
+                )
+            )}
+        </div>
       </div>
     )
   }
@@ -236,22 +381,15 @@ class SideBar extends Component {
   renderSearchList () {
     if (this.state.data.filter !== '') {
       return (
-        <div>
-          {getCurrentUser() &&
+        (this.state.pages.length > 0 || this.state.endpoints.length > 0 || this.state.historySnapshot.length > 0)
+          ? (
             <div>
-              Collection
-              <Collections
-                {...this.props}
-                empty_filter={this.emptyFilter.bind(this)}
-                collection_selected={this.openCollection.bind(this)}
-                filter={this.state.data.filter}
-              />
-            </div>}
-          <div>
-            History
-            {this.state.historySnapshot.length > 0 ? this.renderHistoryList() : <div style={{ marginLeft: '10px' }}>No history found!</div>}
-          </div>
-        </div>
+              {this.state.pages.length > 0 ? this.renderPagesList() : null}
+              {this.state.endpoints.length > 0 ? this.renderEndpointsList() : null}
+              {this.state.historySnapshot.length > 0 ? <div><div className='px-3'>History</div>{this.renderHistoryList()}</div> : null}
+            </div>
+            )
+          : <div className='text-center'>No Results</div>
       )
     }
   }
