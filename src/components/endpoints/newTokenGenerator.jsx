@@ -215,7 +215,7 @@ class TokenGenerator extends Component {
                   <button
                     key={key}
                     onClick={() => this.setGrantType(key)}
-                    className='btn custom-request-button'
+                    className='dropdown-item'
                   >
                     {this.grantTypes[key]}
                   </button>
@@ -245,14 +245,14 @@ class TokenGenerator extends Component {
                 <button
                   value='Send as Basic Auth header'
                   onClick={this.setClientAuthorization.bind(this)}
-                  className='btn custom-request-button'
+                  className='dropdown-item'
                 >
                   Send as Basic Auth header
                 </button>
                 <button
                   value='Send client credentials in body'
                   onClick={this.setClientAuthorization.bind(this)}
-                  className='btn custom-request-button'
+                  className='dropdown-item'
                 >
                   Send client credentials in body
                 </button>

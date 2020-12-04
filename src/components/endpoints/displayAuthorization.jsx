@@ -4,7 +4,7 @@ import TokenGenerator from './newTokenGenerator'
 import AccessTokenManager from './displayTokenManager'
 
 class Authorization extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       basicAuth: {
@@ -25,15 +25,15 @@ class Authorization extends Component {
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.authResponses = []
   }
 
-  componentDidUpdate () {
+  componentDidUpdate() {
     this.fetchAuthorizationResponse()
   }
 
-  fetchAuthorizationResponse () {
+  fetchAuthorizationResponse() {
     if (
       this.authResponses.length === 0 &&
       Object.keys(this.props.versions).length !== 0 &&
@@ -50,7 +50,7 @@ class Authorization extends Component {
     }
   }
 
-  setAuthorizationType (type) {
+  setAuthorizationType(type) {
     let value = {}
     switch (type) {
       case 'basicAuth':
@@ -100,7 +100,7 @@ class Authorization extends Component {
     }
   }
 
-  handleChange (e) {
+  handleChange(e) {
     const basicAuth = { ...this.state.basicAuth }
     if (e.currentTarget.name === 'username') {
       basicAuth.username = e.currentTarget.value
@@ -118,7 +118,7 @@ class Authorization extends Component {
     this.setState({ basicAuth })
   }
 
-  generateEncodedValue (username, password) {
+  generateEncodedValue(username, password) {
     const value = {
       username,
       password
@@ -134,7 +134,7 @@ class Authorization extends Component {
     )
   }
 
-  setAuthorizationAddedTo (key) {
+  setAuthorizationAddedTo(key) {
     const oauth2 = { ...this.state.oauth_2 }
     oauth2.authorizationAddedTo = key
     this.setState({ oauth_2: oauth2 })
@@ -165,19 +165,19 @@ class Authorization extends Component {
     }
   }
 
-  getNewAccessTokenModal () {
+  getNewAccessTokenModal() {
     this.setState({ getNewAccessToken: true })
   }
 
-  closeGetNewAccessTokenModal () {
+  closeGetNewAccessTokenModal() {
     this.setState({ getNewAccessToken: false })
   }
 
-  openManageTokenModel () {
+  openManageTokenModel() {
     this.setState({ openManageTokenModel: true })
   }
 
-  async closeManageTokenModel () {
+  async closeManageTokenModel() {
     const versionId = this.props.groups[this.props.groupId].versionId
     this.props.set_authorization_responses(versionId, this.authResponses)
     if (this.props.location.pathname.split('/')[3] !== 'new') {
@@ -193,7 +193,7 @@ class Authorization extends Component {
     this.setState({ openManageTokenModel: false })
   }
 
-  selectAccessToken (index) {
+  selectAccessToken(index) {
     const oauth2 = this.state.oauth_2
     oauth2.accessToken = this.authResponses[index].access_token
     this.setState({ oauth_2: oauth2 })
@@ -203,7 +203,7 @@ class Authorization extends Component {
     )
   }
 
-  setHeadersandParams (accessToken, authorizationAddedTo) {
+  setHeadersandParams(accessToken, authorizationAddedTo) {
     if (accessToken === '') {
       this.props.set_authoriztaion_params(
         '',
@@ -229,14 +229,14 @@ class Authorization extends Component {
     }
   }
 
-  setAccessToken (accessToken) {
+  setAccessToken(accessToken) {
     const oauth2 = { ...this.state.oauth_2 }
     oauth2.accessToken = accessToken
     this.setState({ oauth_2: oauth2 })
     this.setHeadersandParams(accessToken, oauth2.authorizationAddedTo)
   }
 
-  setAuthResponses (authResponses) {
+  setAuthResponses(authResponses) {
     this.authResponses = authResponses
     if (authResponses.length === 0) {
       const oauth2 = this.state.oauth_2
@@ -246,7 +246,7 @@ class Authorization extends Component {
     }
   }
 
-  updateAccessToken (e) {
+  updateAccessToken(e) {
     const accessToken = e.currentTarget.value
     const oauth2 = this.state.oauth_2
     oauth2.accessToken = accessToken
@@ -254,7 +254,7 @@ class Authorization extends Component {
     this.setHeadersandParams(accessToken)
   }
 
-  showPassword () {
+  showPassword() {
     if (this.state.showPassword && this.state.showPassword === true) {
       this.setState({ showPassword: false })
     } else {
@@ -262,7 +262,7 @@ class Authorization extends Component {
     }
   }
 
-  render () {
+  render() {
     if (this.props.authorizationType) {
       const authType = this.props.authorizationType.type
       if (authType !== this.state.authorizationType) {
@@ -328,7 +328,7 @@ class Authorization extends Component {
               >
                 {Object.keys(this.authorizationTypes).map((key) => (
                   <button
-                    className='btn custom-request-button'
+                    className='dropdown-item'
                     onClick={() => this.setAuthorizationType(key)}
                     key={key}
                   >
@@ -356,14 +356,14 @@ class Authorization extends Component {
                     aria-labelledby='dropdownMenuButton'
                   >
                     <button
-                      className='btn custom-request-button'
+                      className='dropdown-item'
                       onClick={() =>
                         this.setAuthorizationAddedTo('Request Headers')}
                     >
                       Request Headers
                     </button>
                     <button
-                      className='btn custom-request-button'
+                      className='dropdown-item'
                       onClick={() =>
                         this.setAuthorizationAddedTo('Request URL')}
                     >
@@ -378,14 +378,14 @@ class Authorization extends Component {
 
         {this.state.authorizationType === 'noAuth' && (
           <div className='authorization-editor-wrapper'>
-            This request does not use any authorization.
+            <p>    This request does not use any authorization.</p>
           </div>
         )}
 
         {this.state.authorizationType === 'basicAuth' && (
           <div className='authorization-editor-wrapper'>
             <form>
-              <div className='input-field-wrapper'>
+              <div className='input-field-wrapper form-group'>
                 <label>Username</label>
                 <input
                   className='form-control'
@@ -395,15 +395,15 @@ class Authorization extends Component {
                 />
               </div>
 
-              <div className='input-field-wrapper'>
+              <div className='input-field-wrapper form-group'>
                 <label>Password</label>
                 <input
                   className='form-control'
                   type={
                     this.state.showPassword
                       ? this.state.showPassword === true
-                          ? null
-                          : 'password'
+                        ? null
+                        : 'password'
                       : 'password'
                   }
                   name='password'
@@ -441,13 +441,14 @@ class Authorization extends Component {
         {this.state.authorizationType === 'oauth_2' && (
           <div className='authorization-editor-wrapper'>
             <form>
-              <div className='input-field-wrapper'>
+              <div className='input-field-wrapper form-group'>
                 <label className='basic-auth-label'>Access Token</label>
                 <div className='basic-auth-input'>
                   <input
                     value={this.state.oauth_2.accessToken}
                     onChange={this.updateAccessToken.bind(this)}
                     name='accessToken'
+                    className='form-control'
                   />
                   <div className='dropdown available-token-dropdown'>
                     <button
@@ -467,7 +468,7 @@ class Authorization extends Component {
                         <button
                           key={index}
                           type='button'
-                          className='btn custom-request-button'
+                          className='dropdown-item'
                           onClick={() => this.selectAccessToken(index)}
                         >
                           {response.tokenName}
@@ -475,7 +476,7 @@ class Authorization extends Component {
                       ))}
                       <button
                         type='button'
-                        className='btn custom-request-button'
+                        className='dropdown-item'
                         onClick={() =>
                           this.authResponses.length !== 0
                             ? this.openManageTokenModel()

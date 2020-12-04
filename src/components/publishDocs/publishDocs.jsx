@@ -614,7 +614,7 @@ class PublishDocs extends Component {
               </div>
 
               <Dropdown>
-                <Dropdown.Toggle variant='success' id='dropdown-basic'>
+                <Dropdown.Toggle variant='' id='dropdown-basic'>
                   {this.props.collections[collectionId]?.name || ''}
                 </Dropdown.Toggle>
 
@@ -623,7 +623,7 @@ class PublishDocs extends Component {
                 </Dropdown.Menu>
               </Dropdown>
             </div>
-            <div className='grid'>
+            <div className='grid hostedWrapper'>
               <PublishDocsForm
                 {...this.props}
                 selected_collection_id={this.state.selectedCollectionId}

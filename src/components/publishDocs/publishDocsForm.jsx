@@ -34,17 +34,17 @@ class PublishDocForm extends Component {
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.setSelectedCollection()
   }
 
-  componentDidUpdate (prevProps, prevState) {
+  componentDidUpdate(prevProps, prevState) {
     if (prevProps !== this.props) {
       this.setSelectedCollection()
     }
   }
 
-  setSelectedCollection () {
+  setSelectedCollection() {
     const collectionId = URI.parseQuery(this.props.location.search).collectionId
     let collection = {}
     let title, logoUrl, domain, theme
@@ -67,7 +67,7 @@ class PublishDocForm extends Component {
     this.setState({ data })
   }
 
-  saveCollectionDetails () {
+  saveCollectionDetails() {
     const collectionId = URI.parseQuery(this.props.location.search).collectionId
     const collection = { ...this.props.collections[collectionId] }
     const data = { ...this.state.data }
@@ -86,47 +86,46 @@ class PublishDocForm extends Component {
     }
   }
 
-  setTheme (theme) {
+  setTheme(theme) {
     const data = { ...this.state.data }
     data.theme = theme
     this.setState({ data })
   }
 
-  render () {
+  render() {
     return (
       <>
         <div className='grid-column-one'>
           <div className='domain'>
             <>
-              <div style={{ display: 'flex', padding: '5px' }}>
-                <div style={{ minWidth: '70px' }}>
+              <div style={{ display: 'flex', padding: '5px' }} className="form-group">
+                <label style={{ minWidth: '70px' }}>
                   Domain:
-                </div>
+                </label>
                 <input type='text' className='form-control' name='domain' value={this.state.data.domain} onChange={(e) => this.handleChange(e)} />
               </div>
-              <div style={{ display: 'flex', padding: '5px' }}>
-                <div style={{ minWidth: '70px' }}>
+              <div style={{ display: 'flex', padding: '5px' }} className="form-group">
+                <label style={{ minWidth: '70px' }}>
                   Title:
-                </div>
+                </label>
                 <input type='text' className='form-control' name='title' value={this.state.data.title} onChange={(e) => this.handleChange(e)} />
               </div>
-              <div style={{ display: 'flex', padding: '5px' }}>
-                <div style={{ minWidth: '70px' }}>
+              <div style={{ display: 'flex', padding: '5px' }} className="form-group">
+                <label style={{ minWidth: '70px' }}>
                   LogoUrl:
-                </div>
+                </label>
                 <input type='text' className='form-control' name='logoUrl' value={this.state.data.logoUrl} onChange={(e) => this.handleChange(e)} />
               </div>
             </>
           </div>
-          <div className='product' />
         </div>
-        <div className='grid-column-two'>
-          <div>
-            Pick your favorite color for website
+        <div className='grid-column-two rightBorder'>
+          <div className="colorTitle">
+           <p> Pick your favorite color for website</p>  
           </div>
-          <div style={{ display: 'flex' }}>
+          <div className="d-flex justify-content-between">
             <CustomColorPicker set_theme={this.setTheme.bind(this)} theme={this.state.data.theme} />
-            <Button style={{ margin: '20px 0px' }} onClick={() => this.saveCollectionDetails()}> save</Button>
+            <Button className="btn-extra-lg" onClick={() => this.saveCollectionDetails()}> Save</Button>
           </div>
 
         </div>
