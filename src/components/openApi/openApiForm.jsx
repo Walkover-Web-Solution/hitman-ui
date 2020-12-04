@@ -4,7 +4,6 @@ import { withRouter } from 'react-router-dom'
 import { importApi } from '../collections/redux/collectionsActions'
 import { connect } from 'react-redux'
 import './openApi.scss'
-const FormData = require('form-data')
 
 const mapStateToProps = (state) => {
   return {}

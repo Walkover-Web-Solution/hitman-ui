@@ -637,8 +637,8 @@ class DisplayEndpoint extends Component {
         } else {
           uniquePathParameters[pathParameters[i]] = this.state.pathVariables[
             counter
-          ].value
-          path = path + '/' + this.state.pathVariables[counter].value
+          ]?.value
+          path = path + '/' + this.state.pathVariables[counter]?.value
           counter++
         }
       } else if (pathParameters[i].length !== 0) {
