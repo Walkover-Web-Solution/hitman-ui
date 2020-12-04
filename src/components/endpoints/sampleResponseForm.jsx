@@ -7,31 +7,30 @@ class SampleResponseForm extends Form {
   constructor (props) {
     super(props)
     this.state = {
-      data: { status: '', description: '', body: '' },
+      data: { status: '', description: '', body: '', title: '' },
       errors: {}
     }
 
     this.schema = {
-      status: Joi.number().min(100).max(599).label('status: '),
-      description: Joi.string().allow(null, '').label('description: '),
-      body: Joi.object().allow(null, '', 'null').label('body: ')
+      title: Joi.string().required().max(5).label('Title: '),
+      status: Joi.number().min(100).max(599).label('Status: '),
+      description: Joi.string().allow(null, '').label('Description: '),
+      body: Joi.object().allow(null, '', 'null').label('Body: ')
     }
   }
 
   async componentDidMount () {
     let data = {}
-    if (this.props.title === 'Add Sample Response') return
-    if (
-      this.props.title === 'Edit Sample Response' &&
-      this.props.selectedSampleResponse
-    ) {
+    if (this.props.selectedSampleResponse) {
       let {
+        title,
         status,
         description,
         data: body
       } = this.props.selectedSampleResponse
       body = JSON.stringify(body, null, 2)
       data = {
+        title,
         status,
         description,
         body
@@ -41,14 +40,14 @@ class SampleResponseForm extends Form {
   }
 
   editSampleResponse () {
-    let { status, description, body: data } = this.state.data
+    let { status, description, body: data, title } = this.state.data
     try {
       data = JSON.parse(data)
     } catch (error) {
       data = null
     }
     const index = this.props.index
-    const sampleResponse = { status, description, data }
+    const sampleResponse = { status, description, data, title }
     const sampleResponseArray = [...this.props.sample_response_array]
     const sampleResponseFlagArray = [...this.props.sample_response_flag_array]
     sampleResponseArray[index] = sampleResponse
@@ -56,14 +55,14 @@ class SampleResponseForm extends Form {
   }
 
   addSampleResponse () {
-    let { status, description, body: data } = this.state.data
+    let { title, status, description, body: data } = this.state.data
     try {
       data = JSON.parse(data)
     } catch (error) {
       data = null
     }
 
-    const sampleResponse = { status, description, data }
+    const sampleResponse = { title, status, description, data }
     const sampleResponseArray = [
       ...this.props.sample_response_array,
       sampleResponse
@@ -76,12 +75,29 @@ class SampleResponseForm extends Form {
   }
 
   async doSubmit () {
-    this.props.onHide()
-    if (this.props.title === 'Add Sample Response') {
-      this.addSampleResponse()
+    if (this.checkDuplicateName()) {
+      this.props.onHide()
+      if (this.props.title === 'Add Sample Response') {
+        this.addSampleResponse()
+      }
+      if (this.props.title === 'Edit Sample Response') {
+        this.editSampleResponse()
+      }
     }
-    if (this.props.title === 'Edit Sample Response') {
-      this.editSampleResponse()
+  }
+
+  checkDuplicateName () {
+    if (this.props && this.props.endpoints) {
+      const usedTitles = []
+      const endpointId = this.props.location.pathname.split('/')[3]
+      const endpoint = this.props.endpoints[endpointId] || []
+      const sampleResponse = endpoint.sampleResponse || []
+      sampleResponse.map(key => { return usedTitles.push(key.title) })
+
+      if (usedTitles.includes(this.state.data.title)) {
+        this.setState({ errors: { ...this.state.errors, title: 'Title must be unique' } })
+        return false
+      } else return true
     }
   }
 
@@ -101,6 +117,7 @@ class SampleResponseForm extends Form {
         </Modal.Header>
         <Modal.Body>
           <form onSubmit={this.handleSubmit}>
+            {this.renderInput('title', 'Title: ', 'Enter Title ')}
             {this.renderInput('status', 'Status: ', 'Enter Status ')}
             {this.renderInput(
               'description',

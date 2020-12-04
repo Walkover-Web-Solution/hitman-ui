@@ -20,6 +20,15 @@ class DisplayCollection extends Component {
     }
   }
 
+  componentDidUpdate (prevProps, prevState) {
+    if (this.props.collections !== prevProps.collections) {
+      const collectionId = this.props.match.params.collectionIdentifier
+      if (this.props.collections[collectionId] && (this.props.collections[collectionId] !== prevProps.collections[collectionId])) {
+        this.setState({ description: this.props.collections[collectionId].description })
+      }
+    }
+  }
+
   fetchCollection (collectionId) {
     const { collections } = store.getState()
     const collection = collections[collectionId]
@@ -30,11 +39,6 @@ class DisplayCollection extends Component {
   }
 
   render () {
-    if (this.props.location.collection) {
-      const description = this.props.location.collection.description
-      this.setState({ description })
-      this.props.history.push({ collection: null })
-    }
     return (
       <div className='collection-description'>
         {ReactHtmlParser(this.state.description)}
