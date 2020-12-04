@@ -334,6 +334,7 @@ class DisplayEndpoint extends Component {
   fetchHistorySnapshot () {
     let originalParams = []
     let originalHeaders = []
+    let originalBody = {}
     let pathVariables = []
     const history = this.props.historySnapshot
     const params = this.fetchoriginalParams(history.endpoint.params)
@@ -356,6 +357,7 @@ class DisplayEndpoint extends Component {
     const fieldDescription = this.getFieldDescription(
       history.endpoint.bodyDescription
     )
+    originalBody = history.endpoint.body
     this.setState({
       historySnapshotId: history.id,
       data: {
@@ -369,6 +371,7 @@ class DisplayEndpoint extends Component {
       headers,
       originalParams,
       originalHeaders,
+      originalBody,
       authType,
       endpoint: history.endpoint,
       title: '',
@@ -377,7 +380,9 @@ class DisplayEndpoint extends Component {
       response: history.response,
       pathVariables,
       fieldDescription,
-      timeElapsed: history.timeElapsed
+      timeElapsed: history.timeElapsed,
+      publicBodyFlag: true,
+      bodyFlag: true
     })
   }
 
