@@ -21,8 +21,8 @@
 }
 .grid {
   margin: 40px;
-  display: grid;
-  grid-template-columns: 1.5fr 1.5fr 0.5fr;
+  display: grid; 
+  grid-template-columns: 1fr 1fr;
   .grid-column-two {
     margin: 10px;
     padding: 10px;
@@ -42,11 +42,7 @@
     }
   }
 }
-
-button.btn.btn-success.publish-collection-button {
-  margin: 10px 0px !important;
-}
-
+ 
 .publish-collection-div {
   margin: 10px;
 }
@@ -130,11 +126,7 @@ button.btn.btn-success.publish-collection-button {
 .hosted-APIs {
   margin: 40px;
 }
-.product {
-  border: 0.5px solid #bdbdbd;
-  box-sizing: border-box;
-  border-radius: 4px;
-}
+ 
 .grid-three {
   margin: 40px;
   display: grid;
@@ -216,3 +208,16 @@ i.fas.fa-circle{
   color: red;
   padding: 5px;
 }
+.rightBorder {
+  position: relative;
+  padding-left: 50px!important;
+  &::after {
+    border: 1px solid #E0E0E0;
+    height: 100%;
+    top: 0;
+    position: absolute;
+    content: "";
+    left: 20px;
+  }
+}
+ 

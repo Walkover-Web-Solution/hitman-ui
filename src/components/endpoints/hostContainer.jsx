@@ -219,58 +219,58 @@ class HostContainer extends Component {
               {this.props.environment &&
                 this.props.environment.variables &&
                 this.props.environment.variables.BASE_URL && (
-                  <button
-                    className='btn'
+                  <a
+                    className='dropdown-item'
                     onClick={() => this.selectHost('environmentHost')}
                   >
                     <div>
                       {this.state.selectedHost === 'environmentHost' && (
                         <i className='fas fa-check' />
                       )}
+                      Environment BASE_URL
                     </div>
-                    <div className='host-label'>environment BASE_URL </div>
-                  </button>
+                  </a>
               )}
               {this.state.groupId &&
                 this.props.groups[this.state.groupId] &&
                 this.props.groups[this.state.groupId].host && (
-                  <button
-                    className='btn'
+                  <a
+                    className='dropdown-item'
                     onClick={() => this.selectHost('groupHost')}
                   >
                     <div>
                       {this.state.selectedHost === 'groupHost' && (
                         <i className='fas fa-check' />
-                      )}
+                      )}  Group BASE_URL
                     </div>
-                    <div className='host-label'>group BASE_URL</div>
-                  </button>
+
+                  </a>
               )}
               {this.state.groupId && (
-                <button
-                  className='btn'
+                <a
+                  className='dropdown-item'
                   onClick={() => this.selectHost('versionHost')}
                 >
                   <div>
                     {this.state.selectedHost === 'versionHost' && (
                       <i className='fas fa-check' />
                     )}
+                    Version BASE_URL
                   </div>
-                  <div className='host-label'>version BASE_URL</div>
-                </button>
+                </a>
               )}
-              <button
+              <a
+                className='dropdown-item'
                 id='customHost'
-                className='btn'
                 onClick={() => this.selectHost('customHost')}
               >
                 <div>
                   {this.state.selectedHost === 'customHost' && (
                     <i className='fas fa-check' />
                   )}
+                  Custom BASE_URL
                 </div>
-                <div className='host-label'>custom BASE_URL</div>
-              </button>
+              </a>
             </div>
           </div>
         </div>

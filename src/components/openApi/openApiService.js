@@ -5,7 +5,7 @@ const apiUrl = process.env.REACT_APP_API_URL
 
 export function importApi (openApiObject) {
   const user = authService.getCurrentUser()
-  const userId = user.user.identifier
+  const userId = user.identifier
   return http.post(`${apiUrl}/import/openApi/${userId}`, openApiObject)
 }
 

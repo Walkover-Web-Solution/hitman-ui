@@ -354,6 +354,18 @@ class GenericTable extends Component {
                     style={{ border: 'none' }}
                     className='form-control'
                   />
+                </div>
+                )
+              : dataArray[index].description
+          }
+        </td>
+
+        <td>
+          {
+            isDashboardRoute(this.props)
+              ? (
+                <div>
+
                   {
                     dataArray.length - 1 === index ||
                       !isDashboardRoute(this.props) ||
@@ -464,7 +476,7 @@ class GenericTable extends Component {
         {
           this.state.bulkEdit &&
           (
-            <div id='custom-bulk-edit' className='form-group'>
+            <div id='custom-bulk-edit' className='form-group m-0 bulkEdit'>
               <textarea
                 className='form-control'
                 name='contents'
@@ -473,7 +485,7 @@ class GenericTable extends Component {
                 value={this.textAreaValue}
                 onChange={this.handleBulkChange}
                 placeholder={
-                  'Rows are separated by new lines \n Keys and values are separated by : \n Prepend // to any row you want to add but keep disabled'
+                  'Rows are separated by new lines \nKeys and values are separated by : \nPrepend // to any row you want to add but keep disabled'
                 }
               />
             </div>
@@ -485,13 +497,12 @@ class GenericTable extends Component {
           ? null
           : (
             <div className='generic-table-title-container'>
-              <button
-                id='edit-button'
-                className='btn btn-default custom-button'
+              <a
+                className='adddescLink mt-2'
                 onClick={() => this.displayEditButton()}
               >
                 {this.state.editButtonName}
-              </button>
+              </a>
             </div>
             )}
       </div>
