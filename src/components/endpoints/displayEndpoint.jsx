@@ -50,7 +50,8 @@ const mapStateToProps = (state) => {
       state.environment.currentEnvironmentId
     ] || { id: null, name: 'No Environment' },
     currentEnvironmentId: state.environment.currentEnvironmentId,
-    environments: state.environment.environments
+    environments: state.environment.environments,
+    historySnapshots: state.history
   }
 }
 
@@ -328,6 +329,61 @@ class DisplayEndpoint extends Component {
       })
       this.setAccessToken()
     }
+  }
+
+  fetchHistorySnapshot () {
+    let originalParams = []
+    let originalHeaders = []
+    let originalBody = {}
+    let pathVariables = []
+    const history = this.props.historySnapshot
+    const params = this.fetchoriginalParams(history.endpoint.params)
+    originalParams = this.fetchoriginalParams(history.endpoint.params)
+    const headers = this.fetchoriginalHeaders(history.endpoint.headers)
+    originalHeaders = this.fetchoriginalParams(history.endpoint.params)
+    this.customState.customBASE_URL = history.endpoint.BASE_URL
+    let authType = {}
+    if (history.endpoint.authorizationType !== null) {
+      authType = {
+        type: history.endpoint.authorizationType.type,
+        value: history.endpoint.authorizationType.value
+      }
+    } else {
+      authType = history.endpoint.authorizationType
+    }
+    if (history.endpoint.pathVariables.length !== 0) {
+      pathVariables = this.fetchPathVariables(history.endpoint.pathVariables)
+    }
+    const fieldDescription = this.getFieldDescription(
+      history.endpoint.bodyDescription
+    )
+    originalBody = history.endpoint.body
+    this.setState({
+      historySnapshotId: history.id,
+      data: {
+        method: history.endpoint.requestType,
+        uri: history.endpoint.uri,
+        updatedUri: history.endpoint.uri,
+        name: history.endpoint.name,
+        body: history.endpoint.body
+      },
+      params,
+      headers,
+      originalParams,
+      originalHeaders,
+      originalBody,
+      authType,
+      endpoint: history.endpoint,
+      title: '',
+      saveAsFlag: true,
+      bodyDescription: history.endpoint.bodyDescription,
+      response: history.response,
+      pathVariables,
+      fieldDescription,
+      timeElapsed: history.timeElapsed,
+      publicBodyFlag: true,
+      bodyFlag: true
+    })
   }
 
   getFieldDescription (bodyDescription) {
@@ -1616,7 +1672,6 @@ class DisplayEndpoint extends Component {
   displayPublicResponse () {
     return (
       <>
-        <div className='public-response-title'>Response</div>
         <div className='hm-panel endpoint-public-response-container'>
           <DisplayResponse
             {...this.props}
@@ -1652,6 +1707,7 @@ class DisplayEndpoint extends Component {
     }
     if (
       isDashboardRoute(this.props) &&
+      this.props.location.pathname.split('/')[2] === 'endpoint' &&
       this.props.location.pathname.split('/')[3] !== 'new' &&
       this.state.endpoint.id !== this.props.tab.id &&
       this.props.endpoints[this.props.tab.id]
@@ -1667,6 +1723,16 @@ class DisplayEndpoint extends Component {
         })
       }
     }
+
+    if (
+      isDashboardRoute(this.props) &&
+      this.props.location.pathname.split('/')[2] === 'history' &&
+      this.state.historySnapshotId !== this.props.tab.id &&
+      this.props.historySnapshots[this.props.tab.id]
+    ) {
+      this.fetchHistorySnapshot()
+    }
+
     if (
       (
         !isDashboardRoute(this.props) &&

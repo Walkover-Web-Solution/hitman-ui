@@ -150,6 +150,13 @@ class SideBar extends Component {
     })
   }
 
+  openHistorySnapshot (id) {
+    this.props.history.push({
+      pathname: `/dashboard/history/${id}`,
+      historySnapshotId: id
+    })
+  }
+
   renderHistoryList () {
     return (
       <div className='mt-3'>
@@ -160,8 +167,7 @@ class SideBar extends Component {
               Object.keys(history).length !== 0 && (
                 <div
                   className='btn d-flex align-items-center mb-2'
-                  onClick={() => {
-                  }}
+                  onClick={() => { this.openHistorySnapshot(history.id) }}
                 >
                   <div className={`api-label lg-label ${history.endpoint.requestType}`}>
                     <div className='endpoint-request-div'>
@@ -199,8 +205,7 @@ class SideBar extends Component {
               Object.keys(history).length !== 0 && history.endpoint.status === 'NEW' && (
                 <div
                   className='btn d-flex align-items-center mb-2'
-                  onClick={() => {
-                  }}
+                  onClick={() => { this.openHistorySnapshot(history.id) }}
                 >
                   <div className={`api-label lg-label ${history.endpoint.requestType}`}>
                     <div className='endpoint-request-div'>
