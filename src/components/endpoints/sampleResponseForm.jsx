@@ -94,6 +94,8 @@ class SampleResponseForm extends Form {
       const sampleResponse = endpoint.sampleResponse || []
       sampleResponse.map(key => { return usedTitles.push(key.title) })
 
+      if (this.props.title === 'Edit Sample Response') { usedTitles.splice(usedTitles.indexOf(sampleResponse[this.props.index].title), 1) }
+
       if (usedTitles.includes(this.state.data.title)) {
         this.setState({ errors: { ...this.state.errors, title: 'Title must be unique' } })
         return false
