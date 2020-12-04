@@ -126,7 +126,7 @@ class ContentPanel extends Component {
       if (this.props.tabs.tabs[historyId]) {
         if (this.props.tabs.activeTabId !== historyId) { this.props.set_active_tab_id(historyId) }
       } else {
-        this.props.open_in_new_tab(historyId, {
+        this.props.open_in_new_tab({
           id: historyId,
           type: 'history',
           status: tabStatusTypes.SAVED,
