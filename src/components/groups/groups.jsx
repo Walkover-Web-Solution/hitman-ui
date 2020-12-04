@@ -445,14 +445,14 @@ class Groups extends Component {
                 {/* <Card.Header> */}
                 <Accordion.Toggle
                   variant='default'
-                  // eventKey="0"
-                  eventKey={
-                    !isDashboardRoute(this.props)
-                      ? '0'
-                      : this.eventkey[groupId]
-                        ? this.eventkey[groupId]
-                        : '1'
-                  }
+                  eventKey='0'
+                  // eventKey={
+                  //   !isDashboardRoute(this.props)
+                  //     ? '0'
+                  //     : this.eventkey[groupId]
+                  //       ? this.eventkey[groupId]
+                  //       : '1'
+                  // }
                 >
                   <div className='sidebar-accordion-item'>
                     <i className='uil uil-folder' />
@@ -556,14 +556,14 @@ class Groups extends Component {
                 {/* </Card.Header> */}
                 <Accordion.Collapse
                   className='group-collapse'
-                  // eventKey="0"
-                  eventKey={
-                    !isDashboardRoute(this.props)
-                      ? '0'
-                      : this.eventkey[groupId]
-                        ? this.eventkey[groupId]
-                        : '1'
-                  }
+                  eventKey='0'
+                  // eventKey={
+                  //   !isDashboardRoute(this.props)
+                  //     ? '0'
+                  //     : this.eventkey[groupId]
+                  //       ? this.eventkey[groupId]
+                  //       : '1'
+                  // }
                 >
                   <Card.Body>
                     <GroupPages
