@@ -1556,7 +1556,7 @@ class DisplayEndpoint extends Component {
   displayResponseAndSampleResponse () {
     return (
       <>
-        <div>
+        <div className='col-12'>
           <ul className='nav nav-tabs' id='myTab' role='tablist'>
             <li className='nav-item'>
               <a
@@ -1759,7 +1759,7 @@ class DisplayEndpoint extends Component {
           this.props.location.pathname.split('/')[1] !== 'admin' ? 'd-flex' : ''
         }
       >
-        <div className='hm-endpoint-container endpoint-container mx-3'>
+        <div className='hm-endpoint-container endpoint-container row'>
           {this.state.showLoginSignupModal && (
             <LoginSignupModal
               show
@@ -1771,7 +1771,7 @@ class DisplayEndpoint extends Component {
             getCurrentUser()
               ? (
                 <div
-                  className={isDashboardRoute(this.props) ? 'hm-panel mt-4' : null}
+                  className={isDashboardRoute(this.props) ? 'hm-panel mt-4 col-12' : null}
                 >
                   {this.state.showEndpointFormModal && (
                     <SaveAsSidebar
@@ -1794,7 +1794,7 @@ class DisplayEndpoint extends Component {
               : null
           }
           <div
-            className={!isDashboardRoute(this.props) ? 'hm-panel' : 'hm-panel'}
+            className={!isDashboardRoute(this.props) ? 'hm-panel' : 'hm-panel col-12'}
           >
             {
               isDashboardRoute(this.props)
@@ -1820,7 +1820,7 @@ class DisplayEndpoint extends Component {
                           >
                             {this.state.methodList.map((methodName) => (
                               <button
-                                className='btn custom-request-button'
+                                className='dropdown-item'
                                 onClick={() => this.setMethod(methodName)}
                                 key={methodName}
                               >
@@ -1849,9 +1849,9 @@ class DisplayEndpoint extends Component {
                         disabled={isDashboardRoute(this.props) ? null : true}
                       />
                     </div>
-                    <div className='d-flex'>
+                    <div className='d-flex uriContainerWrapper'>
                       <button
-                        className='btn btn-info'
+                        className='btn btn-primary'
                         type='submit'
                         id='send-request-button'
                         onClick={() => this.handleSend()}
@@ -1862,24 +1862,23 @@ class DisplayEndpoint extends Component {
                       {
                         isDashboardRoute(this.props)
                           ? (
-                            <div className='d-flex'>
-                              {
-                                this.props.location.pathname.split('/')[3] !== 'new'
-                                  ? (
-                                    <Dropdown as={ButtonGroup}>
-                                      <button
-                                        className='btn btn-primary'
-                                        type='button'
-                                        id='save-endpoint-button'
-                                        onClick={() => this.handleSave()}
-                                      >
-                                        Save
-                                      </button>
-                                      {
+
+                              this.props.location.pathname.split('/')[3] !== 'new'
+                                ? (
+                                  <Dropdown as={ButtonGroup}>
+                                    <button
+                                      className='btn btn-outline orange'
+                                      type='button'
+                                      id='save-endpoint-button'
+                                      onClick={() => this.handleSave()}
+                                    >
+                                      Save
+                                    </button>
+                                    {
                                         getCurrentUser()
                                           ? (
                                             <span>
-                                              <Dropdown.Toggle split variant='primary' />
+                                              <Dropdown.Toggle split variant='' />
                                               <Dropdown.Menu className=''>
                                                 <Dropdown.Item
                                                   onClick={() =>
@@ -1894,20 +1893,19 @@ class DisplayEndpoint extends Component {
                                             )
                                           : null
                                       }
-                                    </Dropdown>
-                                    )
-                                  : (
-                                    <button
-                                      className='btn btn-primary'
-                                      type='button'
-                                      id='save-endpoint-button'
-                                      onClick={() => this.handleSave()}
-                                    >
-                                      Save
-                                    </button>
-                                    )
-                              }
-                            </div>
+                                  </Dropdown>
+                                  )
+                                : (
+                                  <button
+                                    className='btn btn-primary'
+                                    type='button'
+                                    id='save-endpoint-button'
+                                    onClick={() => this.handleSave()}
+                                  >
+                                    Save
+                                  </button>
+                                  )
+
                             )
                           : null
                       }

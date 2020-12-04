@@ -651,12 +651,13 @@ label.data-type {
   padding: 5px 10px;
   color: #333;
   font-size: 14px;
+  position: relative;
 }
 
 .dropdown-menu.dropdown-menu-right {
   box-shadow: -25px 25px 43px rgba(0, 0, 0, 0.07);
   border: none;
-  border-radius: 0; 
+  border-radius: 0;
 }
 
 .btn.btn-primary {
@@ -700,12 +701,12 @@ label.data-type {
     a {
       border: none;
       border-bottom: 2px solid #E0E0E0;
-      width: 25%;
+      width: 20%;
       text-align: center;
 
       &.active {
         border-bottom: 2px solid #E98A36;
-        width: 50%;
+        width: 60%;
       }
 
       span img {
@@ -914,18 +915,21 @@ button.btn.btn-secondary {
 }
 
 .btn-extra-lg {
-  padding: 10px 0!important;
-  width: 100%!important;
-  max-width: 120px!important;
+  padding: 10px 0 !important;
+  width: 100% !important;
+  max-width: 120px !important;
 }
+
 button.editBtn {
   background: transparent;
   border: none;
 }
-.dropdown-divider{
+
+.dropdown-divider {
   float: left;
   width: 100%;
 }
+
 .viewOptionals {
   display: inline-block;
   float: right;
@@ -933,14 +937,45 @@ button.editBtn {
   text-decoration: underline;
   cursor: pointer;
 }
+
 .small.text-muted {
   font-size: 12px;
   margin: 5px 0 2px 0;
 }
+
 .headParaWraper {
   height: 300px;
   overflow: auto;
   background: #fff;
   padding: 11px 20px;
   border-radius: 4px;
+}
+
+.adddescLink {
+  float: right;
+  color: #E98A36;
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.dropdown .dropdown-toggle {
+  background: #fff;
+  height: 40px;
+  border: 1px solid #E0E0E0;
+  font-size: 14px;
+  font-weight: 400;
+  color: #000;
+  border-radius: 0px;
+}
+.dropdown-item.active, .dropdown-item:active {
+  background: inherit!important;
+  color: inherit!important;
+  outline: none!important;
+}
+.dropdown-menu .dropdown-item svg {
+  width: 100%;
+  max-width: 16px;
+  height: 15px;
+  margin-right: 5px;
 }

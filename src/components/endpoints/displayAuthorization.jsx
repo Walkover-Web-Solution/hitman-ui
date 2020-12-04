@@ -328,7 +328,7 @@ class Authorization extends Component {
               >
                 {Object.keys(this.authorizationTypes).map((key) => (
                   <button
-                    className='btn custom-request-button'
+                    className='dropdown-item'
                     onClick={() => this.setAuthorizationType(key)}
                     key={key}
                   >
@@ -356,14 +356,14 @@ class Authorization extends Component {
                     aria-labelledby='dropdownMenuButton'
                   >
                     <button
-                      className='btn custom-request-button'
+                      className='dropdown-item'
                       onClick={() =>
                         this.setAuthorizationAddedTo('Request Headers')}
                     >
                       Request Headers
                     </button>
                     <button
-                      className='btn custom-request-button'
+                      className='dropdown-item'
                       onClick={() =>
                         this.setAuthorizationAddedTo('Request URL')}
                     >
@@ -378,14 +378,14 @@ class Authorization extends Component {
 
         {this.state.authorizationType === 'noAuth' && (
           <div className='authorization-editor-wrapper'>
-            This request does not use any authorization.
+            <p>    This request does not use any authorization.</p>
           </div>
         )}
 
         {this.state.authorizationType === 'basicAuth' && (
           <div className='authorization-editor-wrapper'>
             <form>
-              <div className='input-field-wrapper'>
+              <div className='input-field-wrapper form-group'>
                 <label>Username</label>
                 <input
                   className='form-control'
@@ -395,7 +395,7 @@ class Authorization extends Component {
                 />
               </div>
 
-              <div className='input-field-wrapper'>
+              <div className='input-field-wrapper form-group'>
                 <label>Password</label>
                 <input
                   className='form-control'
@@ -441,13 +441,14 @@ class Authorization extends Component {
         {this.state.authorizationType === 'oauth_2' && (
           <div className='authorization-editor-wrapper'>
             <form>
-              <div className='input-field-wrapper'>
+              <div className='input-field-wrapper form-group'>
                 <label className='basic-auth-label'>Access Token</label>
                 <div className='basic-auth-input'>
                   <input
                     value={this.state.oauth_2.accessToken}
                     onChange={this.updateAccessToken.bind(this)}
                     name='accessToken'
+                    className='form-control'
                   />
                   <div className='dropdown available-token-dropdown'>
                     <button
@@ -467,7 +468,7 @@ class Authorization extends Component {
                         <button
                           key={index}
                           type='button'
-                          className='btn custom-request-button'
+                          className='dropdown-item'
                           onClick={() => this.selectAccessToken(index)}
                         >
                           {response.tokenName}
@@ -475,7 +476,7 @@ class Authorization extends Component {
                       ))}
                       <button
                         type='button'
-                        className='btn custom-request-button'
+                        className='dropdown-item'
                         onClick={() =>
                           this.authResponses.length !== 0
                             ? this.openManageTokenModel()
