@@ -15,6 +15,8 @@ class TabContent extends Component {
   renderContent (tabId) {
     const tab = this.props.tabs.tabs[tabId]
     switch (tab.type) {
+      case 'history':
+        return <DisplayEndpoint {...this.props} environment={{}} tab={tab} historySnapshotFlag historySnapshot={this.props.historySnapshots[tab.id]} />
       case 'endpoint':
         return <DisplayEndpoint {...this.props} environment={{}} tab={tab} />
       case 'page':

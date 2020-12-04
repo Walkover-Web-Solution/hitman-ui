@@ -26,7 +26,8 @@ const mapStateToProps = (state) => {
     endpoints: state.endpoints,
     groups: state.groups,
     pages: state.pages,
-    tabs: state.tabs
+    tabs: state.tabs,
+    historySnapshots: state.history
   }
 }
 
@@ -119,6 +120,22 @@ class ContentPanel extends Component {
         })
       }
     }
+
+    if (this.props.location.pathname.split('/')[2] === 'history') {
+      const historyId = this.props.location.pathname.split('/')[3]
+      if (this.props.tabs.tabs[historyId]) {
+        if (this.props.tabs.activeTabId !== historyId) { this.props.set_active_tab_id(historyId) }
+      } else {
+        this.props.open_in_new_tab(historyId, {
+          id: historyId,
+          type: 'history',
+          status: tabStatusTypes.SAVED,
+          previewMode: false,
+          isModified: false
+        })
+      }
+    }
+
     const redirectionUrl = process.env.REACT_APP_UI_URL + '/login'
     return (
       <main role='main' className='main'>
