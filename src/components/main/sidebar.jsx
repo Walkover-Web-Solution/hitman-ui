@@ -205,8 +205,7 @@ class SideBar extends Component {
               Object.keys(history).length !== 0 && history.endpoint.status === 'NEW' && (
                 <div
                   className='btn d-flex align-items-center mb-2'
-                  onClick={() => {
-                  }}
+                  onClick={() => { this.openHistorySnapshot(history.id) }}
                 >
                   <div className={`api-label lg-label ${history.endpoint.requestType}`}>
                     <div className='endpoint-request-div'>
