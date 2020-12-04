@@ -43,13 +43,14 @@ export const fetchEndpoints = () => {
 
 export const updateEndpoint = (editedEndpoint) => {
   return (dispatch) => {
-    const originalEndpoint = store.getState().endpoints[editedEndpoint.id]
+    const originalEndpoint = JSON.parse(JSON.stringify(store.getState().endpoints[editedEndpoint.id]))
     dispatch(updateEndpointRequest(editedEndpoint))
     const id = editedEndpoint.id
-    delete editedEndpoint.id
-    delete editedEndpoint.groupId
+    const updatedEndpoint = JSON.parse(JSON.stringify(editedEndpoint))
+    delete updatedEndpoint.id
+    delete updatedEndpoint.groupId
     endpointApiService
-      .updateEndpoint(id, editedEndpoint)
+      .updateEndpoint(id, updatedEndpoint)
       .then((response) => {
         dispatch(onEndpointUpdated(response.data))
       })

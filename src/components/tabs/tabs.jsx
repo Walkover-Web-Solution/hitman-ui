@@ -14,6 +14,18 @@ class CustomTabs extends Component {
     const tab = this.props.tabs.tabs[tabId]
     if (!tab) return
     switch (tab.type) {
+      case 'history':
+        if (this.props.historySnapshots[tabId]) {
+          if (tab.previewMode) {
+            return (
+              <label style={{ fontStyle: 'italic' }}>
+                {this.props.historySnapshots[tabId].endpoint.name}
+              </label>
+            )
+          } else return <label>{this.props.historySnapshots[tabId].endpoint.name}</label>
+        } else {
+          return 'Untitled'
+        }
       case 'endpoint':
         if (this.props.endpoints[tabId]) {
           if (tab.previewMode) {

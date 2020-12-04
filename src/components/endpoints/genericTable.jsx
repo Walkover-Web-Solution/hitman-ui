@@ -434,30 +434,29 @@ class GenericTable extends Component {
             <div className='headParaWraper'>
               <table className='table' id='custom-generic-table'>
                 {
-                  isDashboardRoute(this.props)
-                    ? (
-                      <thead>
-                        <tr>
-                          <th className='custom-th'> </th>
-                          <th className='custom-th' id='generic-table-key-cell'>
-                            KEY
-                          </th>
-                          <th className='custom-th'>VALUE</th>
-                          <th className='custom-th'>DESCRIPTION</th>
-                          <th className='custom-th' />
-                        </tr>
-                      </thead>
-                      )
-                    : (
-                      <thead>
-                        <tr>
-                          <th className='custom-th' />
-                          <th className='custom-th' id='generic-table-key-cell'>NAME</th>
-                          <th className='custom-th'>VALUE</th>
-                        </tr>
-                      </thead>
-                      )
-                }
+                isDashboardRoute(this.props)
+                  ? (
+                    <thead>
+                      <tr>
+                        <th className='custom-th'> </th>
+                        <th className='custom-th' id='generic-table-key-cell'>
+                          KEY
+                        </th>
+                        <th className='custom-th'>VALUE</th>
+                        <th className='custom-th'>DESCRIPTION</th>
+                      </tr>
+                    </thead>
+                    )
+                  : (
+                    <thead>
+                      <tr>
+                        <th className='custom-th' />
+                        <th className='custom-th' id='generic-table-key-cell'>NAME</th>
+                        <th className='custom-th'>VALUE</th>
+                      </tr>
+                    </thead>
+                    )
+              }
 
                 <tbody style={{ border: 'none' }}>
                   {dataArray.map((e, index) => (

@@ -66,13 +66,21 @@ class DisplayPage extends Component {
     }
   }
 
+  renderPageName () {
+    const pageHeading = {
+      color: this.props.publicCollectionTheme
+    }
+    return (
+      !isDashboardRoute(this.props, true) ? <h3 className='' style={pageHeading}>{this.state.data.name}</h3> : null
+    )
+  }
+
   render () {
     if (this.props.location.page) {
       const data = { ...this.props.location.page }
       this.setState({ data })
       this.props.history.push({ page: null })
     }
-
     return (
       <div className='custom-display-page'>
         {
@@ -89,6 +97,7 @@ class DisplayPage extends Component {
               )
             : null
         }
+        {this.renderPageName()}
         {this.checkPageRejected()}
       </div>
     )
