@@ -86,6 +86,8 @@ input[type="text"]:focus {
 
 .App-Side {
   padding: 0 10px;
+  height: 65vh;
+  overflow: auto;
 }
 
 .sidebar-accordion>button {

@@ -139,7 +139,7 @@ class DisplayResponse extends Component {
                 {this.showAddForm()}
                 <div className='response-viewer'>
                   <div className='response-tabs'>
-                    {isDashboardRoute(this.props) && (
+                    {/* {isDashboardRoute(this.props) && (
                       <ul className='nav nav-tabs' id='myTab' role='tablist'>
                         <li className='nav-item'>
                           <a
@@ -180,7 +180,7 @@ class DisplayResponse extends Component {
                             Preview
                           </a>
                         </li>
-                      </ul>)}
+                      </ul>)} */}
                     {
                       getCurrentUser() && isSavedEndpoint(this.props) && isDashboardRoute(this.props)
                         ? (
@@ -189,7 +189,7 @@ class DisplayResponse extends Component {
                             className='add-to-sample-response'
                           >
                             <div
-                              className='sample-response-txt'
+                              className='adddescLink'
                               onClick={() =>
                                 this.addSampleResponse(this.props.response)}
                             >

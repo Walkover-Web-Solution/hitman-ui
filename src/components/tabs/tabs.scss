@@ -39,7 +39,7 @@ $border-color: #E5E5E5;
         max-width: 220px;
         width: 100%;
         min-width: 0;
-        background-color: #f7f7f7;
+        background-color: #FBF9F5;
         .nav-link {
           height: 100%;
           width: 100%;
@@ -56,6 +56,8 @@ $border-color: #E5E5E5;
             white-space: nowrap;
             text-overflow: ellipsis;
             overflow: hidden;
+            font-size: 13px;
+            color: #333;
             min-width: 0;
             label {
               margin: 0;
@@ -73,7 +75,7 @@ $border-color: #E5E5E5;
         }
         > .btn {
           padding-right: 0;
-          width: 30px;
+          font-size: 12px;
           border: none;
         }
         .nav-link.active {
