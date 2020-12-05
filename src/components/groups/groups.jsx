@@ -577,7 +577,7 @@ class Groups extends Component {
                       {...this.props}
                       group_id={groupId}
                       set_endpoint_drag={this.setEndpointdrag.bind(this)}
-                      endpoints_order={this.props.groups[groupId].endpointsOrder}
+                      endpoints_order={this.props.groups[groupId].endpointsOrder || []}
                       show_filter_groups={this.propsFromGroups.bind(this)}
                     />
                   </Card.Body>
