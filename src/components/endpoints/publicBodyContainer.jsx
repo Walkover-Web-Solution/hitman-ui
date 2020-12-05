@@ -337,10 +337,11 @@ class PublicBodyContainer extends Component {
       this.props.body &&
       this.props.body.type === 'JSON'
     ) {
-      const body = this.generateBodyFromDescription(this.bodyDescription)
+      let body = {}
+      if (Object.keys(this.bodyDescription).length > 0) body = this.generateBodyFromDescription(this.bodyDescription)
+      else body = JSON.parse(this.props.body.value)
       this.props.set_public_body(body)
     }
-
     return (
       <>
         {this.props.body && this.props.body.type === 'multipart/form-data' && (
@@ -364,7 +365,7 @@ class PublicBodyContainer extends Component {
             />
         )}
 
-        {this.props.body && this.props.body.type === 'JSON' && (
+        {this.props.body && (
           <div className='hm-public-table'>
             <div className='public-generic-table-title-container'>Body</div>
             <ul className='public-endpoint-tabs'>
