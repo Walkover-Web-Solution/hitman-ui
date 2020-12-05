@@ -166,6 +166,7 @@ class SideBar extends Component {
             (history) =>
               Object.keys(history).length !== 0 && (
                 <div
+                  key={history.id}
                   className='btn d-flex align-items-center mb-2'
                   onClick={() => { this.openHistorySnapshot(history.id) }}
                 >
@@ -204,6 +205,7 @@ class SideBar extends Component {
             (history) =>
               Object.keys(history).length !== 0 && history.endpoint.status === 'NEW' && (
                 <div
+                  key={history.id}
                   className='btn d-flex align-items-center mb-2'
                   onClick={() => { this.openHistorySnapshot(history.id) }}
                 >
