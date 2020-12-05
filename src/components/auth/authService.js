@@ -1,5 +1,6 @@
 import http from '../../services/httpService'
 const apiEndpoint = process.env.REACT_APP_API_URL + '/profile'
+const apiUrl = process.env.REACT_APP_API_URL
 const tokenKey = 'token'
 const profileKey = 'profile'
 const orgKey = 'organisation'
@@ -37,6 +38,7 @@ export function loginWithJwt (jwt) {
   window.localStorage.setItem(tokenKey, jwt)
 }
 export function logout () {
+  http.get(apiUrl + '/logout')
   window.localStorage.removeItem(tokenKey)
   window.localStorage.removeItem(profileKey)
   window.localStorage.removeItem(orgKey)
