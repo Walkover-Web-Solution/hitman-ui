@@ -260,7 +260,7 @@ class GenericTable extends Component {
             style={{ border: 'none' }}
           />
           {
-            dataArray[index].description.length > 0
+            dataArray[index].description?.length > 0
               ? <p className='small text-muted'>{`Description: ${dataArray[index].description}`}</p>
               : null
           }
