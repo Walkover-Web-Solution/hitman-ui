@@ -154,7 +154,7 @@ class EditPage extends Component {
 
         <div style={{ marginBottom: '50px' }}>
           <ReactQuill
-            style={{ height: '400px' }}
+            style={{ height: '600px' }}
             value={this.state.data.contents}
             modules={this.modules}
             formats={this.formats}

@@ -422,7 +422,7 @@ class PublishDocs extends Component {
   showEndpointsAndPages (groupId) {
     return (
       <div className='groups-inner'>
-       <h3> {this.state.groups[groupId]?.name}</h3>
+        <h3> {this.state.groups[groupId]?.name}</h3>
         {this.filterPages(groupId)}
         {this.filterEndpoints(groupId)}
       </div>
