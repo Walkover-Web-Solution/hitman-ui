@@ -9,10 +9,13 @@ function collectionsReducer (state = initialState, action) {
   let collections = {}
   switch (action.type) {
     case versionActionTypes.IMPORT_VERSION:
-      return {
-        ...state,
-        [action.response.collection.id]: action.response.collection
+      if (action.response.collection) {
+        return {
+          ...state,
+          [action.response.collection.id]: action.response.collection
+        }
       }
+      return { ...state }
     case collectionsActionTypes.ON_COLLECTIONS_FETCHED:
       return { ...action.collections }
 

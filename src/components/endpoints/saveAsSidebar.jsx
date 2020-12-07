@@ -1,6 +1,5 @@
 import Joi from 'joi-browser'
 import React from 'react'
-import { Modal } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import Form from '../common/form'
 import './endpoints.scss'
@@ -250,22 +249,12 @@ class SaveAsSidebar extends Form {
       width: '100vw'
     }
     return (
-      // <Modal
-      //   {...props}
-      //   size="lg"
-      //   animation={false}
-      //   aria-labelledby="contained-modal-title-vcenter"
-      //   centered
-      //   id="endpoint-modal"
-      // >
       <div>
         <div
-          onClick={() => {
-            this.props.onHide()
-          }}
+          onClick={() => { this.props.onHide() }}
           style={darkBackgroundStyle}
         >
-          wd
+          {' '}
         </div>
         <div style={saveAsSidebarStyle}>
           {this.showCollectionForm()}
@@ -279,16 +268,14 @@ class SaveAsSidebar extends Form {
                 </div>
                 <button
                   className='close'
-                  onClick={() => {
-                    this.props.onHide()
-                  }}
+                  onClick={() => { this.props.onHide() }}
                 >
                   <span aria-hidden='true'>×</span>
                 </button>
               </div>
 
             </div>
-            <Modal.Body>
+            <div className='mx-3 py-3'>
               <form onSubmit={this.handleSubmit}>
                 {this.renderInput('name', 'Name', 'Endpoint Name')}
                 {this.renderTextArea(
@@ -343,7 +330,7 @@ class SaveAsSidebar extends Form {
                   {this.state.list.type === 'endpoints'
                     ? (
                         this.renderList().map(item => (
-                          <li key={item} id='endpoint-list' className='endListWrapper'>
+                          <li key={item.id} id='endpoint-list' className='endListWrapper'>
                             <label
                               className={this.props.endpoints[item.id].requestType}
                             >
@@ -396,7 +383,7 @@ class SaveAsSidebar extends Form {
                     `to ${this.renderListTitle()}`}
                 </button>
               </div>
-            </Modal.Body>
+            </div>
           </div>
         </div>
       </div>

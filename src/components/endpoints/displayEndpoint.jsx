@@ -40,7 +40,6 @@ const shortid = require('shortid')
 
 const status = require('http-status')
 const URI = require('urijs')
-const FormData = require('form-data')
 const mapStateToProps = (state) => {
   return {
     groups: state.groups,
@@ -1388,13 +1387,13 @@ class DisplayEndpoint extends Component {
   }
 
   makeFormData (body) {
-    const formData = new FormData()
+    const formData = {}
     for (let i = 0; i < body.value.length; i++) {
       if (
         body.value[i].key.length !== 0 &&
         body.value[i].checked === 'true'
       ) {
-        formData.append(body.value[i].key, body.value[i].value)
+        formData[body.value[i].key] = body.value[i].value
       }
     }
     return formData
