@@ -80,13 +80,13 @@ class OpenApiForm extends Component {
             <div className='button-group'>
               <button
                 type='button'
-                className='btn cancel-button'
+                className='btn btn-secondary btn-lg'
                 onClick={this.props.onHide}
               >
                 Cancel
               </button>
               <button
-                className='btn import-button'
+                className='btn btn-primary btn-lg mr-2'
                 type='button'
                 onClick={() => this.importApi()}
               >
