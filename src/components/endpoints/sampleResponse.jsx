@@ -119,7 +119,8 @@ class SampleResponse extends Component {
           isDashboardRoute(this.props)
             ? (
               <div className='add-sample-response'>
-                <button className="adddescLink"
+                <button
+                  className='adddescLink'
                   onClick={() => this.openAddForm({}, null, 'Add Sample Response')}
                 >
                   + Add Sample Response

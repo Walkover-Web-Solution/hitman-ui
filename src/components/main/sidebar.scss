@@ -3,6 +3,7 @@
   color: #999;
   width: 280px;
   font-size: 14px;
+  position: relative;
 }
 
 .user-info {
@@ -173,6 +174,10 @@ input[type="text"]:focus {
   padding: 20px 5px;
   overflow: auto;
   background-color: #fff;
+
+  .hm-sidebar-outer-block {
+    padding: 0;
+  }
 
   button {
     font-size: 14px;

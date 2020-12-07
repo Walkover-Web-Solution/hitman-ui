@@ -74,7 +74,7 @@ class UserInfo extends Component {
               <div className='user-name'>{this.state.user.name}</div>
               {authService.isAdmin() && (
                 <Dropdown>
-                  <Dropdown.Toggle variant='success' id='dropdown-basic'>
+                  <Dropdown.Toggle variant='' id='dropdown-basic'>
                     <div class=' user-name notification'>
                       {notificationCount && (
                         <>
