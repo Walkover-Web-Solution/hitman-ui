@@ -721,10 +721,7 @@ class DisplayEndpoint extends Component {
       headers: headersData,
       params: updatedParams,
       pathVariables: pathVariables,
-      BASE_URL:
-        this.customState.selectedHost === 'customHost'
-          ? this.customState.BASE_URL
-          : null,
+      BASE_URL: this.customState.BASE_URL,
       bodyDescription:
         this.state.data.body.type === 'JSON' ? this.state.bodyDescription : {},
       authorizationType: this.state.authType

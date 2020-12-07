@@ -337,10 +337,11 @@ class PublicBodyContainer extends Component {
       this.props.body &&
       this.props.body.type === 'JSON'
     ) {
-      const body = this.generateBodyFromDescription(this.bodyDescription)
+      let body = {}
+      if (Object.keys(this.bodyDescription).length > 0) body = this.generateBodyFromDescription(this.bodyDescription)
+      else body = JSON.parse(this.props.body.value)
       this.props.set_public_body(body)
     }
-
     return (
       <>
         {this.props.body && this.props.body.type === 'multipart/form-data' && (
@@ -364,36 +365,67 @@ class PublicBodyContainer extends Component {
             />
         )}
 
-        {this.props.body && this.props.body.type === 'JSON' && (
-          <div className='hm-public-table'>
-            <div className='public-generic-table-title-container'>Body</div>
-            <ul className='public-endpoint-tabs'>
-              <li className={this.state.showBodyCodeEditor && 'active'}>
-                <a
-                  onClick={() => this.setState({ showBodyCodeEditor: true })}
-                  href='javascript:void(0)'
-                >
-                  Raw
-                </a>
-              </li>
-              <li className={!this.state.showBodyCodeEditor && 'active'}>
-                <a
-                  onClick={() => this.setState({ showBodyCodeEditor: false })}
-                  href='javascript:void(0)'
-                >
-                  Body description
-                </a>
-              </li>
-            </ul>
+        {this.props.body && this.props.body.type !== 'multipart/form-data' && this.props.body.type !== 'application/x-www-form-urlencoded' && (
+          (this.props.body.type === 'JSON')
+            ? (
+              <div className='hm-public-table'>
+                <div className='public-generic-table-title-container'>Body <small className='text-muted'>({this.props.body.type})</small></div>
+                <ul className='public-endpoint-tabs'>
+                  <li className={this.state.showBodyCodeEditor && 'active'}>
+                    <a
+                      onClick={() => this.setState({ showBodyCodeEditor: true })}
+                      href='javascript:void(0)'
+                    >
+                      Raw
+                    </a>
+                  </li>
+                  <li className={!this.state.showBodyCodeEditor && 'active'}>
+                    <a
+                      onClick={() => this.setState({ showBodyCodeEditor: false })}
+                      href='javascript:void(0)'
+                    >
+                      Body description
+                    </a>
+                  </li>
+                </ul>
 
-            {this.state.showBodyCodeEditor
-              ? (
+                {this.state.showBodyCodeEditor
+                  ? (
+                    <AceEditor
+                      className='custom-raw-editor'
+                      mode='json'
+                      theme='github'
+                      value={this.makeJson(this.props.body.value)}
+                      onChange={this.handleChangeBodyDescription.bind(this)}
+                      setOptions={{
+                        showLineNumbers: true
+                      }}
+                      editorProps={{
+                        $blockScrolling: false
+                      }}
+                      onLoad={(editor) => {
+                        editor.focus()
+                        editor.getSession().setUseWrapMode(true)
+                        editor.setShowPrintMargin(false)
+                      }}
+                    />
+                    )
+                  : (
+                    <div className='body-description-container'>
+                      {this.displayObject(this.bodyDescription, 'body_description')}
+                    </div>
+                    )}
+              </div>
+              )
+            : (
+              <div className='hm-public-table'>
+                <div className='public-generic-table-title-container'>Body <small className='text-muted'>({this.props.body.type})</small></div>
                 <AceEditor
                   className='custom-raw-editor'
-                  mode='json'
+                  mode={this.props.body.type.toLowerCase()}
                   theme='github'
                   value={this.makeJson(this.props.body.value)}
-                  onChange={this.handleChangeBodyDescription.bind(this)}
+                  onChange={(value) => this.props.set_body(this.props.body.type, value)}
                   setOptions={{
                     showLineNumbers: true
                   }}
@@ -406,13 +438,8 @@ class PublicBodyContainer extends Component {
                     editor.setShowPrintMargin(false)
                   }}
                 />
-                )
-              : (
-                <div className='body-description-container'>
-                  {this.displayObject(this.bodyDescription, 'body_description')}
-                </div>
-                )}
-          </div>
+              </div>
+              )
         )}
       </>
     )

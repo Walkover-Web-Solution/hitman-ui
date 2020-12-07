@@ -445,14 +445,14 @@ class Groups extends Component {
                 {/* <Card.Header> */}
                 <Accordion.Toggle
                   variant='default'
-                  // eventKey="0"
-                  eventKey={
-                    !isDashboardRoute(this.props)
-                      ? '0'
-                      : this.eventkey[groupId]
-                        ? this.eventkey[groupId]
-                        : '1'
-                  }
+                  eventKey='0'
+                  // eventKey={
+                  //   !isDashboardRoute(this.props)
+                  //     ? '0'
+                  //     : this.eventkey[groupId]
+                  //       ? this.eventkey[groupId]
+                  //       : '1'
+                  // }
                 >
                   <div className='sidebar-accordion-item'>
                     <i className='uil uil-folder' />
@@ -556,14 +556,14 @@ class Groups extends Component {
                 {/* </Card.Header> */}
                 <Accordion.Collapse
                   className='group-collapse'
-                  // eventKey="0"
-                  eventKey={
-                    !isDashboardRoute(this.props)
-                      ? '0'
-                      : this.eventkey[groupId]
-                        ? this.eventkey[groupId]
-                        : '1'
-                  }
+                  eventKey='0'
+                  // eventKey={
+                  //   !isDashboardRoute(this.props)
+                  //     ? '0'
+                  //     : this.eventkey[groupId]
+                  //       ? this.eventkey[groupId]
+                  //       : '1'
+                  // }
                 >
                   <Card.Body>
                     <GroupPages
@@ -577,7 +577,7 @@ class Groups extends Component {
                       {...this.props}
                       group_id={groupId}
                       set_endpoint_drag={this.setEndpointdrag.bind(this)}
-                      endpoints_order={this.props.groups[groupId].endpointsOrder}
+                      endpoints_order={this.props.groups[groupId].endpointsOrder || []}
                       show_filter_groups={this.propsFromGroups.bind(this)}
                     />
                   </Card.Body>
