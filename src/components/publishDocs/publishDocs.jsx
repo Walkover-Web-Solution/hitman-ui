@@ -221,8 +221,9 @@ class PublishDocs extends Component {
     return (
       <span>
         {Object.keys(endpoints).map((endpointId) =>
-          <div key={endpointId} onClick={() => this.openEndpoint(groupId, endpointId)} className='groups'>
-            <span className='tag'>E</span>{endpoints[endpointId]?.name}
+          <div key={endpointId} onClick={() => this.openEndpoint(groupId, endpointId)} className='groupListing'>
+            {/* <span className='tag'>E</span> */}
+            {endpoints[endpointId]?.name}
             {this.displayState(endpoints[endpointId])}
           </div>
         )}
@@ -245,12 +246,13 @@ class PublishDocs extends Component {
           }
         }
         return (
-          <div className='groups'>
+          <div className='pages-inner'>
             {Object.keys(pages).map((pageId) =>
               <div
-                key={pageId} onClick={() => this.openPage(groupId, pageId)} className='groups'
+                key={pageId} onClick={() => this.openPage(groupId, pageId)} className='groupListing'
               >
-                <span className='tag'>P</span>{this.state.pages[pageId]?.name}
+                {/* <span className='tag'>P</span> */}
+                {this.state.pages[pageId]?.name}
                 {this.displayState(pages[pageId])}
               </div>
             )}
@@ -270,12 +272,13 @@ class PublishDocs extends Component {
         }
         if (Object.keys(pages).length === 0) return
         return (
-          <div className='groups'>
+          <div className='pages-inner-wrapper'>
             {Object.keys(pages).map((pageId) =>
               <div
-                key={pageId} onClick={() => this.openPage('', pageId)} className='groups'
+                key={pageId} onClick={() => this.openPage('', pageId)} className='groupListing'
               >
-                <span className='tag'>P</span>{this.state.pages[pageId]?.name}
+                {/* <span className='tag'>P</span> */}
+                {this.state.pages[pageId]?.name}
                 {this.displayState(pages[pageId])}
               </div>
             )}
@@ -418,8 +421,8 @@ class PublishDocs extends Component {
 
   showEndpointsAndPages (groupId) {
     return (
-      <div className='groups'>
-        {this.state.groups[groupId]?.name}
+      <div className='groups-inner'>
+       <h3> {this.state.groups[groupId]?.name}</h3>
         {this.filterPages(groupId)}
         {this.filterEndpoints(groupId)}
       </div>
@@ -515,15 +518,15 @@ class PublishDocs extends Component {
     if (this.state.endpoints[this.state.selectedEndpointId]?.state !== publishDocsEnum.APPROVED_STATE &&
       this.state.endpoints[this.state.selectedEndpointId]?.state !== publishDocsEnum.REJECT_STATE) {
       return (
-        <div className='publish-reject'>
-          <button class='btn default' onClick={() => this.handleRejectEndpointRequest(this.state.selectedEndpointId)}>Reject</button>
+        <div className='publish-reject mt-3 d-flex'>
+          <button class='btn btn-outline danger mr-3' onClick={() => this.handleRejectEndpointRequest(this.state.selectedEndpointId)}>Reject</button>
           <div className='publish-button'>  <Button variant='success' onClick={() => this.handleApproveEndpointRequest(this.state.selectedEndpointId)}>PUBLISH</Button>
           </div>
         </div>
       )
     } else {
       return (
-        <div className='publish-reject'>
+        <div className='publish-reject mt-3 d-flex'>
           <div className='publish-button'>  <Button variant='success' onClick={() => this.handleRemovePublicEndpoint(this.state.selectedEndpointId)}>Unpublish Endpoint</Button>
           </div>
         </div>
@@ -536,15 +539,15 @@ class PublishDocs extends Component {
       this.state.pages[this.state.selectedPageId]?.state !== publishDocsEnum.REJECT_STATE
     ) {
       return (
-        <div className='publish-reject'>
-          <button class='btn default' onClick={() => this.handleRejectPageRequest(this.state.selectedPageId)}>Reject</button>
+        <div className='publish-reject mt-3 d-flex'>
+          <button class='btn btn-outline danger mr-3' onClick={() => this.handleRejectPageRequest(this.state.selectedPageId)}>Reject</button>
           <div className='publish-button'>  <Button variant='success' onClick={() => this.handleApprovePageRequest(this.state.selectedPageId)}>PUBLISH</Button>
           </div>
         </div>
       )
     } else {
       return (
-        <div className='publish-reject'>
+        <div className='publish-reject mt-3 d-flex'>
           <div className='publish-button'>  <Button variant='success' onClick={() => this.handleRemovePublicPage(this.state.selectedPageId)}>Unpublish Page</Button>
           </div>
         </div>

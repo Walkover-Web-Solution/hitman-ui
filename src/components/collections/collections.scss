@@ -169,7 +169,7 @@ div.fixed {
 
 .user-notification {
   padding: 0px !important;
-  width: 300px;
+  width: 100%;
 
   .user-heading {
     display: flex;
@@ -194,12 +194,16 @@ div.fixed {
   .notification .badge {
     position: absolute;
     top: -8px;
-    right: 10px;
-    padding: 5px 10px;
+    right: 5px;
+    padding: 5px;
     border-radius: 50%;
     font-size: 8px;
-    border: 1px solid white;
+    border: 1px solid #898585;
     background-color: black;
+    color: #fff;
+    height: 18px;
+    width: 18px;
+    text-align: center;
 
     i.fas.fa-bell {
       margin-right: 13px;
@@ -207,15 +211,43 @@ div.fixed {
   }
 
   .notification-icon {
-    padding-left: 20px;
+    padding-left: 10px;
   }
 
-  button#dropdown-basic {
-    background: rgb(255, 252, 246);
+  .dropdown-toggle {
+    background: #ffffff;
     border: none;
+
+    &::after {
+      display: none;
+    }
   }
 
-  .user-avatar {
-    background-color: rgb(255, 252, 246) !important;
+  .user-name {
+    color: #333;
+    font-size: 14px;
+    font-weight: 600;
   }
+
+  .user-avatar img {
+    width: 40px;
+    height: 40px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 50%;
+    font-size: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+
+  }
+}
+
+.userInfowrapper {
+  position: absolute;
+  bottom: 15px;
+  left: 0;
+  right: 0;
+  width: 100%;
+  border-top: 1px solid #D3CCC5;
+  padding-top: 10px;
+  padding-right: 2px;
+  padding-left: 2px;
 }
