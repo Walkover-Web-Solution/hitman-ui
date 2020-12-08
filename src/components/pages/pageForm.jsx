@@ -35,7 +35,7 @@ class PageForm extends Form {
     this.props.onHide()
     if (this.props.title === 'Add new Group Page') {
       const data = { ...this.state.data }
-      data.position = this.extractPosition()
+      // data.position = this.extractPosition()
       const newPage = { ...data, requestId: shortid.generate() }
       this.props.add_group_page(
         this.props.selectedVersion,
