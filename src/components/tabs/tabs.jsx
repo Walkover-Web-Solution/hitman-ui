@@ -5,12 +5,12 @@ import './tabs.scss'
 import tabService from './tabService'
 
 class CustomTabs extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = { showSavePrompt: false }
   }
 
-  renderTabName (tabId) {
+  renderTabName(tabId) {
     const tab = this.props.tabs.tabs[tabId]
     if (!tab) return
     switch (tab.type) {
@@ -54,7 +54,7 @@ class CustomTabs extends Component {
     }
   }
 
-  removeTab (tabId) {
+  removeTab(tabId) {
     if (this.props.tabs.tabs[tabId].isModified) {
       this.setState({ showSavePrompt: true, selectedTabId: tabId })
     } else {
@@ -62,15 +62,15 @@ class CustomTabs extends Component {
     }
   }
 
-  closeSavePrompt () {
+  closeSavePrompt() {
     this.setState({ showSavePrompt: false })
   }
 
-  onDragStart (tId) {
+  onDragStart(tId) {
     this.draggedItem = tId
   }
 
-  handleOnDragOver (e) {
+  handleOnDragOver(e) {
     e.preventDefault()
   }
 
@@ -90,60 +90,55 @@ class CustomTabs extends Component {
     this.props.set_tabs_order(tabsOrder)
   };
 
-  render () {
+  render() {
     return (
-      <Nav variant='pills' className='flex-row flex-nowrap item-wrp'>
-        <div>
-          {this.state.showSavePrompt && (
-            <SavePromptModal
-              {...this.props}
-              show
-              onHide={() => this.closeSavePrompt()}
-              tab_id={this.state.selectedTabId}
-            />
-          )}
-        </div>
-        {this.props.tabs.tabsOrder.map((tabId, index) => (
-          <Nav.Item
-            key={tabId}
-            draggable
-            onDragOver={this.handleOnDragOver}
-            onDragStart={() => this.onDragStart(tabId)}
-            onDrop={(e) => this.onDrop(e, tabId)}
-          >
-            <Nav.Link eventKey={tabId}>
-              <button
-                className='btn'
-                onClick={() => tabService.selectTab({ ...this.props }, tabId)}
-                onDoubleClick={() => {
-                  tabService.disablePreviewMode(tabId)
-                }}
-              >
-                {this.renderTabName(tabId)}
+
+      <React.Fragment>
+        <Nav variant='pills' className='flex-row flex-nowrap item-wrp'>
+          <div>
+            {this.state.showSavePrompt && (
+              <SavePromptModal
+                {...this.props}
+                show
+                onHide={() => this.closeSavePrompt()}
+                tab_id={this.state.selectedTabId}
+              />
+            )}
+          </div>
+          {this.props.tabs.tabsOrder.map((tabId, index) => (
+            <Nav.Item
+              key={tabId}
+              draggable
+              onDragOver={this.handleOnDragOver}
+              onDragStart={() => this.onDragStart(tabId)}
+              onDrop={(e) => this.onDrop(e, tabId)}
+            >
+              <Nav.Link eventKey={tabId}>
+                <button
+                  className='btn'
+                  onClick={() => tabService.selectTab({ ...this.props }, tabId)}
+                  onDoubleClick={() => {
+                    tabService.disablePreviewMode(tabId)
+                  }}
+                >
+                  {this.renderTabName(tabId)}
+                </button>
+              </Nav.Link>
+              <button className='btn' onClick={() => this.removeTab(tabId)}>
+                {
+                  this.props.tabs.tabs[tabId].isModified
+                    ? (
+                      <i className='fas fa-circle' id='modified-dot-icon' />
+                    )
+                    : (
+                      <i className='uil uil-multiply' />
+                    )
+                }
               </button>
-            </Nav.Link>
-            <button className='btn' onClick={() => this.removeTab(tabId)}>
-              {
-                this.props.tabs.tabs[tabId].isModified
-                  ? (
-                    <i className='fas fa-circle' id='modified-dot-icon' />
-                    )
-                  : (
-                    <i className='uil uil-multiply' />
-                    )
-              }
-            </button>
-          </Nav.Item>
-        ))}
-        <Nav.Item className='tab-buttons' id='add-new-tab-button'>
-          <button
-            className='btn'
-            onClick={() => tabService.newTab({ ...this.props })}
-          >
-            <i className='uil uil-plus' />
-          </button>
-        </Nav.Item>
-        <Nav.Item className='tab-buttons' id='tabs-menu-button'>
+            </Nav.Item>
+          ))}
+
+          {/* <Nav.Item className='tab-buttons' id='tabs-menu-button'>
           <div className='dropdown'>
             <button
               className='btn '
@@ -176,8 +171,18 @@ class CustomTabs extends Component {
               </button>
             </div>
           </div>
+        </Nav.Item> */}
+        </Nav>
+
+        <Nav.Item className='tab-buttons' id='add-new-tab-button'>
+          <button
+            className='btn'
+            onClick={() => tabService.newTab({ ...this.props })}
+          >
+            <i className='uil uil-plus' />
+          </button>
         </Nav.Item>
-      </Nav>
+      </React.Fragment>
     )
   }
 }

@@ -172,7 +172,7 @@ class ContentPanel extends Component {
             getCurrentUser()
               ? (
                 <div className='content-header'>
-                  <div className='tabs-container'>
+                  <div className='tabs-container d-flex'>
                     <CustomTabs
                       {...this.props}
                       handle_save_endpoint={this.handleSaveEndpoint.bind(this)}

@@ -54,14 +54,14 @@ const mapStateToProps = (state) => {
 }
 
 class PublishDocs extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       selectedCollectionId: null
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     const collectionInfo = this.extractCollectionInfo()
     const selectedGroupId = this.getInitialGroup(Object.keys(collectionInfo.versions)[0], collectionInfo.groups)
     const selectedEndpointId = this.getInitialEndpoint(selectedGroupId, collectionInfo.endpoints)
@@ -74,7 +74,7 @@ class PublishDocs extends Component {
     })
   }
 
-  componentDidUpdate (prevProps, prevState) {
+  componentDidUpdate(prevProps, prevState) {
     if (prevProps !== this.props) {
       const collectionInfo = this.extractCollectionInfo()
       if (!(this.state.selectedEndpointId || this.state.selectedPageId) ||
@@ -93,7 +93,7 @@ class PublishDocs extends Component {
     }
   }
 
-  getInitialGroup (versionId, groups) {
+  getInitialGroup(versionId, groups) {
     for (let i = 0; i < Object.keys(groups).length; i++) {
       if (groups[Object.keys(groups)[i]].versionId?.toString() === versionId?.toString()) {
         return Object.keys(groups)[i]
@@ -102,7 +102,7 @@ class PublishDocs extends Component {
     return ''
   }
 
-  getInitialEndpoint (groupId, endpoints, endpointId = null) {
+  getInitialEndpoint(groupId, endpoints, endpointId = null) {
     for (let i = 0; i < Object.keys(endpoints).length; i++) {
       if (endpoints[Object.keys(endpoints)[i]].groupId?.toString() === groupId?.toString() &&
         (endpoints[Object.keys(endpoints)[i]].isPublished === true ||
@@ -115,7 +115,7 @@ class PublishDocs extends Component {
     return ''
   }
 
-  extractCollectionInfo () {
+  extractCollectionInfo() {
     const selectedCollectionId = URI.parseQuery(this.props.location.search).collectionId
     const versions = extractCollectionInfoService.extractVersionsFromCollectionId(selectedCollectionId, this.props)
     const groups = extractCollectionInfoService.extractGroupsFromVersions(versions, this.props)
@@ -127,14 +127,14 @@ class PublishDocs extends Component {
     return { versions, groups, pages, endpoints }
   }
 
-  setSelectedCollection (collection) {
+  setSelectedCollection(collection) {
     this.props.history.push({
       pathname: '/admin/publish',
       search: `?collectionId=${collection?.id}`
     })
   }
 
-  openEndpoint (groupId, endpointId) {
+  openEndpoint(groupId, endpointId) {
     this.setState({
       selectedGroupId: groupId,
       selectedEndpointId: endpointId,
@@ -142,7 +142,7 @@ class PublishDocs extends Component {
     })
   }
 
-  setSelectedVersion (e) {
+  setSelectedVersion(e) {
     const selectedGroupId = this.getInitialGroup(e.currentTarget.value, this.state.groups)
     const selectedEndpointId = this.getInitialEndpoint(selectedGroupId, this.state.endpoints)
     this.setState({
@@ -152,11 +152,11 @@ class PublishDocs extends Component {
     })
   }
 
-  async handleApproveEndpointRequest (endpointId) {
+  async handleApproveEndpointRequest(endpointId) {
     this.props.approve_endpoint(this.props.endpoints[endpointId])
   }
 
-  async handleRejectEndpointRequest (endpointId) {
+  async handleRejectEndpointRequest(endpointId) {
     if (this.state.endpoints[endpointId].isPublished) {
       //
     } else {
@@ -167,7 +167,7 @@ class PublishDocs extends Component {
     this.props.reject_endpoint(this.props.endpoints[endpointId])
   }
 
-  openPage (groupId, pageId) {
+  openPage(groupId, pageId) {
     this.setState({
       selectedGroupId: groupId,
       selectedEndpointId: false,
@@ -175,11 +175,11 @@ class PublishDocs extends Component {
     })
   }
 
-  async handleApprovePageRequest (pageId) {
+  async handleApprovePageRequest(pageId) {
     this.props.approve_page(this.props.pages[pageId])
   }
 
-  async handleRejectPageRequest (pageId) {
+  async handleRejectPageRequest(pageId) {
     this.props.reject_page(this.props.pages[pageId])
     if (this.state.pages[pageId].isPublished) {
       //
@@ -200,7 +200,7 @@ class PublishDocs extends Component {
     }
   }
 
-  displayState (endpoint) {
+  displayState(endpoint) {
     if (endpoint.state === publishDocsEnum.PENDING_STATE) {
       return <span class='status-new'> New</span>
     } else if (endpoint.state === publishDocsEnum.DRAFT_STATE) {
@@ -208,7 +208,7 @@ class PublishDocs extends Component {
     }
   }
 
-  filterEndpoints (groupId) {
+  filterEndpoints(groupId) {
     const endpoints = {}
     for (let i = 0; i < Object.keys(this.state.endpoints).length; i++) {
       if ((this.state.endpoints[Object.keys(this.state.endpoints)[i]].isPublished === true ||
@@ -231,7 +231,7 @@ class PublishDocs extends Component {
     )
   }
 
-  filterPages (groupId) {
+  filterPages(groupId) {
     const pages = {}
     if (groupId) {
       if (this.state.pages) {
@@ -288,19 +288,19 @@ class PublishDocs extends Component {
     }
   }
 
-  getSelectedCollection () {
+  getSelectedCollection() {
     const collectionId = URI.parseQuery(this.props.location.search)
       .collectionId
     const selectedCollection = this.props.collections[collectionId]
     return selectedCollection || {}
   }
 
-  isCollectionPublished () {
+  isCollectionPublished() {
     const selectedCollection = this.getSelectedCollection()
     return selectedCollection?.isPublic || false
   }
 
-  publishCollection () {
+  publishCollection() {
     const selectedCollection = this.getSelectedCollection()
     if (selectedCollection?.isPublic !== true) {
       const editedCollection = { ...selectedCollection }
@@ -309,7 +309,7 @@ class PublishDocs extends Component {
     }
   }
 
-  unPublishCollection () {
+  unPublishCollection() {
     const selectedCollection = this.getSelectedCollection()
     if (selectedCollection?.isPublic === true) {
       const editedCollection = { ...selectedCollection }
@@ -318,7 +318,7 @@ class PublishDocs extends Component {
     }
   }
 
-  dataFetched () {
+  dataFetched() {
     return (
       this.props.collections &&
       this.props.versions &&
@@ -328,19 +328,19 @@ class PublishDocs extends Component {
     )
   }
 
-  isPageApprovalPending (page) {
+  isPageApprovalPending(page) {
     return page?.state === publishDocsEnum.PENDING_STATE ||
       (page?.state === publishDocsEnum.DRAFT_STATE &&
         page?.isPublished)
   }
 
-  isEndpointApprovalPending (endpoint) {
+  isEndpointApprovalPending(endpoint) {
     return endpoint?.state === publishDocsEnum.PENDING_STATE ||
       (endpoint?.state === publishDocsEnum.DRAFT_STATE &&
         endpoint?.isPublished)
   }
 
-  collectionHasPageChanges (versionIds) {
+  collectionHasPageChanges(versionIds) {
     const allPageIds = Object.keys(this.props.pages)
     for (let i = 0; i < allPageIds.length; i++) {
       const pageId = allPageIds[i]
@@ -353,7 +353,7 @@ class PublishDocs extends Component {
     }
   }
 
-  filterGroups (groupIds, versionIds) {
+  filterGroups(groupIds, versionIds) {
     let groupsArray = []
 
     groupIds.forEach(gId => {
@@ -365,7 +365,7 @@ class PublishDocs extends Component {
     return groupsArray || []
   }
 
-  collectionHasEndpointChanges (versionIds) {
+  collectionHasEndpointChanges(versionIds) {
     const allGroupIds = Object.keys(this.props.groups)
     const allEndpointIds = Object.keys(this.props.endpoints)
     const groupsArray = this.filterGroups(allGroupIds, versionIds)
@@ -380,7 +380,7 @@ class PublishDocs extends Component {
     }
   }
 
-  collectionHasChanges (collectionId) {
+  collectionHasChanges(collectionId) {
     if (this.dataFetched()) {
       const versionIds = Object.keys(this.props.versions).filter(
         (vId) => this.props.versions[vId].collectionId === collectionId
@@ -395,7 +395,7 @@ class PublishDocs extends Component {
     }
   }
 
-  showCollections () {
+  showCollections() {
     if (this.props.collections) {
       return (
         Object.keys(this.props.collections).map(
@@ -409,7 +409,7 @@ class PublishDocs extends Component {
     }
   }
 
-  showVersions () {
+  showVersions() {
     if (this.state.versions) {
       return (
         Object.keys(this.state.versions).map((id) =>
@@ -419,7 +419,7 @@ class PublishDocs extends Component {
     }
   }
 
-  showEndpointsAndPages (groupId) {
+  showEndpointsAndPages(groupId) {
     return (
       <div className='groups-inner'>
         <h3> {this.state.groups[groupId]?.name}</h3>
@@ -429,7 +429,7 @@ class PublishDocs extends Component {
     )
   }
 
-  showGroups () {
+  showGroups() {
     if (this.state.groups) {
       return (
         Object.keys(this.state.groups).map((groupId) =>
@@ -441,7 +441,7 @@ class PublishDocs extends Component {
     }
   }
 
-  showEndpoints () {
+  showEndpoints() {
     let endpointName = publishDocsEnum.EMPTY_STRING
     if (this.state.endpoints) {
       if (this.state.endpoints[this.state.selectedEndpointId]?.state === publishDocsEnum.REJECT_STATE) {
@@ -468,7 +468,7 @@ class PublishDocs extends Component {
     }
   }
 
-  checkEndpointState () {
+  checkEndpointState() {
     if (this.state.endpoints[this.state.selectedEndpointId]?.state === publishDocsEnum.REJECT_STATE) {
       return (
         <DisplayEndpoint rejectedEndpointId={this.state.selectedEndpointId} endpointId={this.state.selectedEndpointId} groupId={this.state.selectedGroupId} {...this.props} />
@@ -480,7 +480,7 @@ class PublishDocs extends Component {
     }
   }
 
-  handleRemovePublicEndpoint (endpointId) {
+  handleRemovePublicEndpoint(endpointId) {
     this.props.update_endpoint({
       ...this.state.endpoints[endpointId],
       groupId: this.state.selectedGroupId,
@@ -493,7 +493,7 @@ class PublishDocs extends Component {
     })
   }
 
-  handleRemovePublicPage (pageId) {
+  handleRemovePublicPage(pageId) {
     const page = { ...this.state.pages[pageId] }
     page.isPublished = false
     page.publishedEndpoint = {}
@@ -514,7 +514,7 @@ class PublishDocs extends Component {
     }
   }
 
-  endpointPublishAndReject () {
+  endpointPublishAndReject() {
     if (this.state.endpoints[this.state.selectedEndpointId]?.state !== publishDocsEnum.APPROVED_STATE &&
       this.state.endpoints[this.state.selectedEndpointId]?.state !== publishDocsEnum.REJECT_STATE) {
       return (
@@ -534,7 +534,7 @@ class PublishDocs extends Component {
     }
   }
 
-  pagePublishAndReject () {
+  pagePublishAndReject() {
     if (this.state.pages[this.state.selectedPageId]?.state !== publishDocsEnum.APPROVED_STATE &&
       this.state.pages[this.state.selectedPageId]?.state !== publishDocsEnum.REJECT_STATE
     ) {
@@ -555,7 +555,7 @@ class PublishDocs extends Component {
     }
   }
 
-  showPages () {
+  showPages() {
     let pageName = publishDocsEnum.EMPTY_STRING
     if (this.state.pages) {
       if (this.state.pages[this.state.selectedPageId]?.state === publishDocsEnum.REJECT_STATE) {
@@ -567,24 +567,25 @@ class PublishDocs extends Component {
 
     if (this.state.selectedPageId) {
       return (
-        <div>
-          <div className='d-flex justify-content-between mx-2 mb-3'>
-            <div>
-              <div className='contacts mb-2'>{this.props.groups[this.state.selectedGroupId]?.name}</div>
-              <div className='list-contacts'>
-                {pageName}
+        <div className="row">
+          <div className="col-12">
+            <div className='d-flex justify-content-between mx-2 mb-3 mt-4'>
+              <div>
+                <div className='contacts mb-2'>{this.props.groups[this.state.selectedGroupId]?.name}</div>
+                <div className='list-contacts'>
+                  {pageName}
+                </div>
               </div>
+              {this.pagePublishAndReject()}
             </div>
-            {this.pagePublishAndReject()}
+            {this.checkPageState()}
           </div>
-          {this.checkPageState()}
         </div>
-
       )
     }
   }
 
-  checkPageState () {
+  checkPageState() {
     if (this.state.pages) {
       if (this.state.pages[this.state.selectedPageId]?.state === publishDocsEnum.REJECT_STATE) {
         return (
@@ -598,7 +599,7 @@ class PublishDocs extends Component {
     }
   }
 
-  publishCollections () {
+  publishCollections() {
     if (!this.isCollectionPublished()) {
       return (
         <Button
@@ -620,7 +621,7 @@ class PublishDocs extends Component {
     }
   }
 
-  render () {
+  render() {
     const collectionId = URI.parseQuery(this.props.location.search).collectionId
 
     return (

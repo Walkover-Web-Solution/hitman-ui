@@ -288,13 +288,13 @@ class Endpoints extends Component {
   displayEndpointName (endpointId) {
     return (
       <div className='sidebar-accordion-item'>
-        <div
+        {/* <div
           className={`api-label ${this.props.endpoints[endpointId].requestType}`}
         >
           <div className='endpoint-request-div'>
             {this.props.endpoints[endpointId].requestType}
           </div>
-        </div>
+        </div> */}
         {this.props.endpoints[endpointId].name}
       </div>
     )
@@ -497,13 +497,13 @@ class Endpoints extends Component {
             false
           )}
       >
-        <div
+        {/* <div
           className={`api-label ${this.props.endpoints[endpointId].requestType}`}
         >
           <div className='endpoint-request-div'>
             {this.props.endpoints[endpointId].requestType}
           </div>
-        </div>
+        </div> */}
         <div className='endpoint-name-div'>
           {this.props.endpoints[endpointId].name}
         </div>

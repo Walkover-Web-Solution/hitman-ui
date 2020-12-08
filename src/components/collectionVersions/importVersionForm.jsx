@@ -12,7 +12,7 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 class ShareVersionForm extends Form {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       data: {
@@ -26,12 +26,12 @@ class ShareVersionForm extends Form {
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     // if (this.props.location.shareIdentifier) {
     // }
   }
 
-  async doSubmit (props) {
+  async doSubmit(props) {
     if (this.props.title === 'Import Version') {
       this.props.onHide()
       const collectionId = this.props.selected_collection.id
@@ -41,7 +41,7 @@ class ShareVersionForm extends Form {
     }
   }
 
-  render () {
+  render() {
     return (
       <Modal
         {...this.props}
@@ -64,13 +64,13 @@ class ShareVersionForm extends Form {
             )}
             <div name='shareVersionLink' label='Public Link' />
             <div className='text-right mt-4 mb-2'>
-              {this.renderButton('Submit', 'right')}
               <button
-                className='btn btn-secondary ml-2 btn-lg'
+                className='btn btn-secondary mr-2 btn-lg'
                 onClick={this.props.onHide}
               >
                 Cancel
               </button>
+              {this.renderButton('Submit', 'right')}
             </div>
           </form>
         </Modal.Body>

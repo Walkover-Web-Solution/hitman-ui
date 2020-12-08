@@ -22,8 +22,7 @@ class PublicSampleResponse extends Component {
                 title={sampleResponse.title}
               >
                 <div>{sampleResponse.status}</div>
-                <div>{sampleResponse.description}</div>
-                <br />
+                <div>{sampleResponse.description}</div> 
                 <div>
                   <JSONPretty
                     theme={JSONPrettyMon}

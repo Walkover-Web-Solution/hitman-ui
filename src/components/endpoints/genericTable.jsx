@@ -3,7 +3,7 @@ import { isDashboardRoute } from '../common/utility'
 import './endpoints.scss'
 
 class GenericTable extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       bulkEdit: false,
@@ -24,11 +24,11 @@ class GenericTable extends Component {
     optionalParams: false
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.setState({ optionalParams: false })
   }
 
-  componentDidUpdate (prevProps, prevState) {
+  componentDidUpdate(prevProps, prevState) {
     if (this.props.match.params.endpointId !== prevProps.match.params.endpointId) {
       this.setState({ optionalParams: false })
     }
@@ -114,7 +114,7 @@ class GenericTable extends Component {
     if (title === 'formData' || title === 'x-www-form-urlencoded') { this.props.handle_change_body_data(title, dataArray) }
   };
 
-  handleAdd (dataArray, title, key, index) {
+  handleAdd(dataArray, title, key, index) {
     index = parseInt(index) + 1
     if (key.length >= 1 && !dataArray[index]) {
       const len = dataArray.length
@@ -129,7 +129,7 @@ class GenericTable extends Component {
     }
   }
 
-  handleDelete (dataArray, index, title) {
+  handleDelete(dataArray, index, title) {
     const newDataArray = []
     for (let i = 0; i < dataArray.length; i++) {
       if (i === index) {
@@ -142,7 +142,7 @@ class GenericTable extends Component {
     if (title === 'formData' || title === 'x-www-form-urlencoded') { this.props.handle_change_body_data(title, dataArray) }
   }
 
-  displayEditButton () {
+  displayEditButton() {
     if (this.state.bulkEdit) {
       this.setState({
         bulkEdit: false,
@@ -161,7 +161,7 @@ class GenericTable extends Component {
     }
   }
 
-  autoFillBulkEdit () {
+  autoFillBulkEdit() {
     let textAreaValue = ''
     const { dataArray, count } = this.props
     if (count) {
@@ -203,12 +203,12 @@ class GenericTable extends Component {
     }
   }
 
-  toggleOptionalParams () {
+  toggleOptionalParams() {
     const optionalParams = !this.state.optionalParams
     this.setState({ optionalParams })
   }
 
-  findUncheckedEntityCount () {
+  findUncheckedEntityCount() {
     const { dataArray } = this.props
     let count = 0
     for (let i = 0; i < dataArray.length; i++) {
@@ -219,7 +219,7 @@ class GenericTable extends Component {
     return count
   }
 
-  renderPublicTableRow (dataArray, index, originalData, title) {
+  renderPublicTableRow(dataArray, index, originalData, title) {
     return (
       <tr key={index} id='generic-table-row'>
         <td
@@ -230,19 +230,22 @@ class GenericTable extends Component {
             dataArray[index].checked === 'notApplicable'
               ? null
               : (
-                <input
-                  disabled={originalData[index].checked === 'false' ? null : 'disabled'}
-                  name={index + '.checkbox'}
-                  value={dataArray[index].checked}
-                  checked={
-                    dataArray[index].checked === 'true'
-                  }
-                  type='checkbox'
-                  className='Checkbox'
-                  onChange={this.handleChange}
-                  style={{ border: 'none' }}
-                />
-                )
+                <label className="customCheckbox">
+                  <input
+                    disabled={originalData[index].checked === 'false' ? null : 'disabled'}
+                    name={index + '.checkbox'}
+                    value={dataArray[index].checked}
+                    checked={
+                      dataArray[index].checked === 'true'
+                    }
+                    type='checkbox'
+                    className='Checkbox'
+                    onChange={this.handleChange}
+                    style={{ border: 'none' }}
+                  />
+                  <span class="checkmark"></span>
+                </label>
+              )
           }
         </td>
         <td className='custom-td keyWrapper'>
@@ -269,7 +272,7 @@ class GenericTable extends Component {
     )
   }
 
-  renderTableRow (dataArray, index, originalData, title) {
+  renderTableRow(dataArray, index, originalData, title) {
     return (
       <tr key={index} id='generic-table-row'>
         <td
@@ -281,41 +284,44 @@ class GenericTable extends Component {
             dataArray[index].checked === 'notApplicable'
               ? null
               : (
-                <input
-                  disabled={
-                    isDashboardRoute(this.props, true) ||
-                      originalData[index].checked === 'false'
-                      ? null
-                      : 'disabled'
-                  }
-                  name={index + '.checkbox'}
-                  value={dataArray[index].checked}
-                  checked={
-                    dataArray[index].checked === 'true'
-                  }
-                  type='checkbox'
-                  className='Checkbox'
-                  onChange={this.handleChange}
-                  style={{ border: 'none' }}
-                />
-                )
+                <label className="customCheckbox">
+                  <input
+                    disabled={
+                      isDashboardRoute(this.props, true) ||
+                        originalData[index].checked === 'false'
+                        ? null
+                        : 'disabled'
+                    }
+                    name={index + '.checkbox'}
+                    value={dataArray[index].checked}
+                    checked={
+                      dataArray[index].checked === 'true'
+                    }
+                    type='checkbox'
+                    className='Checkbox'
+                    onChange={this.handleChange}
+                    style={{ border: 'none' }}
+                  />
+                  <span class="checkmark"></span>
+                </label>
+              )
           }
         </td>
         <td className='custom-td'>
           {isDashboardRoute(this.props)
             ? <input
-                name={index + '.key'}
-                value={dataArray[index].key}
-                onChange={this.handleChange}
-                type='text'
-                placeholder={
+              name={index + '.key'}
+              value={dataArray[index].key}
+              onChange={this.handleChange}
+              type='text'
+              placeholder={
                 dataArray[index].checked === 'notApplicable'
                   ? 'Key'
                   : ''
               }
-                className='form-control'
-                style={{ border: 'none' }}
-              />
+              className='form-control'
+              style={{ border: 'none' }}
+            />
             : dataArray[index].key}
         </td>
         <td className='custom-td'>
@@ -355,7 +361,7 @@ class GenericTable extends Component {
                     className='form-control'
                   />
                 </div>
-                )
+              )
               : dataArray[index].description
           }
         </td>
@@ -378,12 +384,18 @@ class GenericTable extends Component {
                           onClick={() =>
                             this.handleDelete(dataArray, index, title)}
                         >
-                          <i className='uil-trash-alt text-danger' />
+                          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M2.25 4.5H3.75H15.75" stroke="#E98A36" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M6 4.5V3C6 2.60218 6.15804 2.22064 6.43934 1.93934C6.72064 1.65804 7.10218 1.5 7.5 1.5H10.5C10.8978 1.5 11.2794 1.65804 11.5607 1.93934C11.842 2.22064 12 2.60218 12 3V4.5M14.25 4.5V15C14.25 15.3978 14.092 15.7794 13.8107 16.0607C13.5294 16.342 13.1478 16.5 12.75 16.5H5.25C4.85218 16.5 4.47064 16.342 4.18934 16.0607C3.90804 15.7794 3.75 15.3978 3.75 15V4.5H14.25Z" stroke="#E98A36" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M7.5 8.25V12.75" stroke="#E98A36" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                            <path d="M10.5 8.25V12.75" stroke="#E98A36" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                          </svg>
+
                         </button>
-                        )
+                      )
                   }
                 </div>
-                )
+              )
               : dataArray[index].description
           }
         </td>
@@ -391,19 +403,19 @@ class GenericTable extends Component {
     )
   }
 
-  renderOptionalParamsButton () {
+  renderOptionalParamsButton() {
     return (
       !isDashboardRoute(this.props) && this.findUncheckedEntityCount()
         ? (
           <div className='viewOptionals' onClick={() => this.toggleOptionalParams()}>
             {!this.state.optionalParams ? `View Optional ${this.props.title}` : `Hide Optional ${this.props.title}`}
           </div>
-          )
+        )
         : null
     )
   }
 
-  render () {
+  render() {
     const { dataArray, original_data: originalData, title } = this.props
     if (!isDashboardRoute(this.props)) {
       for (let index = 0; index < dataArray.length; index++) {
@@ -434,43 +446,43 @@ class GenericTable extends Component {
             <div className='headParaWraper'>
               <table className='table' id='custom-generic-table'>
                 {
-                isDashboardRoute(this.props)
-                  ? (
-                    <thead>
-                      <tr>
-                        <th className='custom-th'> </th>
-                        <th className='custom-th' id='generic-table-key-cell'>
-                          KEY
+                  isDashboardRoute(this.props)
+                    ? (
+                      <thead>
+                        <tr>
+                          <th className='custom-th'> </th>
+                          <th className='custom-th' id='generic-table-key-cell'>
+                            KEY
                         </th>
-                        <th className='custom-th'>VALUE</th>
-                        <th className='custom-th'>DESCRIPTION</th>
-                      </tr>
-                    </thead>
+                          <th className='custom-th'>VALUE</th>
+                          <th className='custom-th'>DESCRIPTION</th>
+                        </tr>
+                      </thead>
                     )
-                  : (
-                    <thead>
-                      <tr>
-                        <th className='custom-th' />
-                        <th className='custom-th' id='generic-table-key-cell'>NAME</th>
-                        <th className='custom-th'>VALUE</th>
-                      </tr>
-                    </thead>
+                    : (
+                      <thead>
+                        <tr>
+                          <th className='custom-th' />
+                          <th className='custom-th' id='generic-table-key-cell'>NAME</th>
+                          <th className='custom-th'>VALUE</th>
+                        </tr>
+                      </thead>
                     )
-              }
+                }
 
                 <tbody style={{ border: 'none' }}>
                   {dataArray.map((e, index) => (
                     !isDashboardRoute(this.props)
                       ? (
-                          (dataArray[index]?.checked === 'true' || dataArray[index]?.checked === 'notApplicable' || this.state.optionalParams) && this.renderPublicTableRow(dataArray, index, originalData, title)
-                        )
+                        (dataArray[index]?.checked === 'true' || dataArray[index]?.checked === 'notApplicable' || this.state.optionalParams) && this.renderPublicTableRow(dataArray, index, originalData, title)
+                      )
                       : this.renderTableRow(dataArray, index, originalData, title)
                   )
                   )}
                 </tbody>
               </table>
             </div>
-            )
+          )
           : null}
 
         {
@@ -504,7 +516,7 @@ class GenericTable extends Component {
                 {this.state.editButtonName}
               </a>
             </div>
-            )}
+          )}
       </div>
     )
   }

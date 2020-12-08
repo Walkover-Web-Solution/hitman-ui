@@ -308,7 +308,7 @@ class BodyContainer extends Component {
                   <div>
                     <div className='dropdown'>
                       <button
-                        className='btn dropdown-toggle flex-column'
+                        className='btn dropdown-toggle'
                         type='button'
                         id='dropdownMenuButton'
                         data-toggle='dropdown'
@@ -323,7 +323,7 @@ class BodyContainer extends Component {
                       >
                         {this.rawBodyTypes.map((rawBodyType) => (
                           <button
-                            className='btn custom-body-type-button'
+                            className='dropdown-item'
                             type='button'
                             onClick={() => this.setRawBodyType(rawBodyType)}
                             key={rawBodyType}
@@ -343,7 +343,7 @@ class BodyContainer extends Component {
             (this.state.selectedBodyType === 'raw' ||
               this.state.selectedBodyType === 'JSON') && (
               <div
-                className='btn-group btn-group-toggle'
+                className='btn-group btn-group-toggle customBtnGroup'
                 data-toggle='buttons'
                 style={{ float: 'right' }}
               >
