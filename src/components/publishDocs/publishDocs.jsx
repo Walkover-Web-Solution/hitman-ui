@@ -4,7 +4,7 @@ import './publishDocs.scss'
 import { connect } from 'react-redux'
 import { updateCollection } from '../collections/redux/collectionsActions'
 import {
-  updateEndpoint
+  updateEndpoint, updateEndpointOrder
 } from '../endpoints/redux/endpointsActions'
 import extractCollectionInfoService from './extractCollectionInfoService'
 import DisplayEndpoint from '../endpoints/displayEndpoint'
@@ -30,6 +30,8 @@ const publishDocsEnum = {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
+    update_endpoints_order: (endpointIds, groupId) =>
+      dispatch(updateEndpointOrder(endpointIds, groupId)),
     set_page_ids: (pageIds) => dispatch(updatePageOrder(pageIds)),
     update_page: (editedPage) =>
       dispatch(updatePage(ownProps.history, editedPage, 'publishDocs')),
@@ -219,13 +221,24 @@ class PublishDocs extends Component {
         endpoints[Object.keys(this.state.endpoints)[i]] = this.state.endpoints[Object.keys(this.state.endpoints)[i]]
       }
     }
+    const sortedEndpoints = Object.values(endpoints).sort(function (a, b) {
+      return a.position - b.position
+    })
     return (
       <span>
-        {Object.keys(endpoints).map((endpointId) =>
-          <div key={endpointId} onClick={() => this.openEndpoint(groupId, endpointId)} className='groupListing'>
+        {sortedEndpoints.map((endpoint) =>
+          <div
+            draggable
+            onDragOver={(e) => {
+              e.preventDefault()
+            }}
+            onDragStart={(e) => this.onDragStart(e, endpoint.id)}
+            onDrop={(e) => this.onDrop(e, endpoint.id, sortedEndpoints, 'endpoints')}
+            key={endpoint.id} onClick={() => this.openEndpoint(groupId, endpoint.id)} className='groupListing'
+          >
             {/* <span className='tag'>E</span> */}
-            {endpoints[endpointId]?.name}
-            {this.displayState(endpoints[endpointId])}
+            {endpoints[endpoint.id]?.name}
+            {this.displayState(endpoints[endpoint.id])}
           </div>
         )}
       </span>
@@ -259,7 +272,7 @@ class PublishDocs extends Component {
                 onDragOver={(e) => {
                   e.preventDefault()
                 }}
-                onDrop={(e) => this.onDrop(e, page.id, sortedPages, groupId)}
+                onDrop={(e) => this.onDrop(e, page.id, sortedPages, 'pages')}
                 key={page.id} onClick={() => this.openPage(groupId, page.id)} className='groupListing'
               >
                 {/* <span className='tag'>P</span> */}
@@ -281,16 +294,25 @@ class PublishDocs extends Component {
             pages[Object.keys(this.state.pages)[i]] = this.state.pages[Object.keys(this.state.pages)[i]]
           }
         }
+        const sortedPages = Object.values(pages).sort(function (a, b) {
+          return a.position - b.position
+        })
         if (Object.keys(pages).length === 0) return
         return (
           <div className='pages-inner-wrapper'>
-            {Object.keys(pages).map((pageId) =>
+            {sortedPages.map((page) =>
               <div
-                key={pageId} onClick={() => this.openPage('', pageId)} className='groupListing'
+                draggable
+                onDragStart={(e) => this.onDragStart(e, page.id)}
+                onDragOver={(e) => {
+                  e.preventDefault()
+                }}
+                onDrop={(e) => this.onDrop(e, page.id, sortedPages, 'pages')}
+                key={page.id} onClick={() => this.openPage('', page.id)} className='groupListing'
               >
                 {/* <span className='tag'>P</span> */}
-                {this.state.pages[pageId]?.name}
-                {this.displayState(pages[pageId])}
+                {this.state.pages[page.id]?.name}
+                {this.displayState(pages[page.id])}
               </div>
             )}
           </div>
@@ -303,25 +325,26 @@ class PublishDocs extends Component {
     this.draggedItem = gId
   };
 
-  onDrop (e, destinationPageId, sortedData, groupId) {
+  onDrop (e, destinationItemId, sortedData, item) {
     e.preventDefault()
     if (!this.draggedItem) {
       //
     } else {
-      if (this.draggedItem === destinationPageId) {
+      if (this.draggedItem === destinationItemId) {
         this.draggedItem = null
         return
       }
       const ids = []
       sortedData.map((data) => ids.push(data.id))
       const index = ids.findIndex(
-        (pId) => pId === destinationPageId
+        (pId) => pId === destinationItemId
       )
-      const pageIds = ids.filter(
+      const itemIds = ids.filter(
         (item) => item !== this.draggedItem
       )
-      pageIds.splice(index, 0, this.draggedItem)
-      this.props.set_page_ids(pageIds, groupId)
+      itemIds.splice(index, 0, this.draggedItem)
+      if (item === 'pages') { this.props.set_page_ids(itemIds) }
+      if (item === 'endpoints') { this.props.update_endpoints_order(itemIds) }
       this.draggedItem = null
     }
   }

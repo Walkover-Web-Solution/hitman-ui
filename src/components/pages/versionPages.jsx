@@ -144,7 +144,9 @@ class VersionPages extends Component {
     }
 
     versionPagesArray.sort(function (a, b) {
-      return a.position - b.position
+      if (a.number < b.number) { return -1 }
+      if (a.number > b.number) { return 1 }
+      return 0
     })
 
     const versionPages = {}

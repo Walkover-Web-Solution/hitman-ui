@@ -436,10 +436,10 @@ class Endpoints extends Component {
       <div className='sidebar-accordion' key={endpointId}>
         <div className={this.props.endpoints[endpointId].state} />
         <button
-          draggable
-          onDragOver={(e) => this.onDragOver(e, endpointId)}
-          onDragStart={(e) => this.onDragStart(e, endpointId)}
-          onDrop={(e) => this.onDrop(e, endpointId)}
+          // draggable
+          // onDragOver={(e) => this.onDragOver(e, endpointId)}
+          // onDragStart={(e) => this.onDragStart(e, endpointId)}
+          // onDrop={(e) => this.onDrop(e, endpointId)}
           onClick={() =>
             this.handleDisplay(
               this.props.endpoints[endpointId],
@@ -552,7 +552,9 @@ class Endpoints extends Component {
       endpointsArray = [...endpointsArray, endpoint]
     }
     endpointsArray.sort(function (a, b) {
-      return a.position - b.position
+      if (a.name < b.name) { return -1 }
+      if (a.name > b.name) { return 1 }
+      return 0
     })
     return endpointsArray || []
   }
