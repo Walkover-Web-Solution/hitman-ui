@@ -16,7 +16,7 @@ import {
 } from '../publicEndpoint/redux/publicEndpointsActions'
 import PublishDocsForm from './publishDocsForm'
 import DisplayPage from '../pages/displayPage'
-import { updatePage } from '../pages/redux/pagesActions'
+import { updatePage, updatePageOrder } from '../pages/redux/pagesActions'
 
 const URI = require('urijs')
 
@@ -30,6 +30,7 @@ const publishDocsEnum = {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
+    set_page_ids: (pageIds) => dispatch(updatePageOrder(pageIds)),
     update_page: (editedPage) =>
       dispatch(updatePage(ownProps.history, editedPage, 'publishDocs')),
     update_endpoint: (editedEndpoint) =>
@@ -245,15 +246,25 @@ class PublishDocs extends Component {
             pages[Object.keys(this.state.pages)[i]] = this.state.pages[Object.keys(this.state.pages)[i]]
           }
         }
+        const sortedPages = Object.values(pages).sort(function (a, b) {
+          return a.position - b.position
+        })
+
         return (
           <div className='pages-inner'>
-            {Object.keys(pages).map((pageId) =>
+            {sortedPages.map((page) =>
               <div
-                key={pageId} onClick={() => this.openPage(groupId, pageId)} className='groupListing'
+                draggable
+                onDragStart={(e) => this.onDragStart(e, page.id)}
+                onDragOver={(e) => {
+                  e.preventDefault()
+                }}
+                onDrop={(e) => this.onDrop(e, page.id, sortedPages, groupId)}
+                key={page.id} onClick={() => this.openPage(groupId, page.id)} className='groupListing'
               >
                 {/* <span className='tag'>P</span> */}
-                {this.state.pages[pageId]?.name}
-                {this.displayState(pages[pageId])}
+                {this.state.pages[page.id]?.name}
+                {this.displayState(pages[page.id])}
               </div>
             )}
           </div>
@@ -285,6 +296,33 @@ class PublishDocs extends Component {
           </div>
         )
       }
+    }
+  }
+
+  onDragStart (e, gId) {
+    this.draggedItem = gId
+  };
+
+  onDrop (e, destinationPageId, sortedData, groupId) {
+    e.preventDefault()
+    if (!this.draggedItem) {
+      //
+    } else {
+      if (this.draggedItem === destinationPageId) {
+        this.draggedItem = null
+        return
+      }
+      const ids = []
+      sortedData.map((data) => ids.push(data.id))
+      const index = ids.findIndex(
+        (pId) => pId === destinationPageId
+      )
+      const pageIds = ids.filter(
+        (item) => item !== this.draggedItem
+      )
+      pageIds.splice(index, 0, this.draggedItem)
+      this.props.set_page_ids(pageIds, groupId)
+      this.draggedItem = null
     }
   }
 
