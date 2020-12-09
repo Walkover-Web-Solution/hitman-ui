@@ -42,34 +42,34 @@ class VersionPages extends Component {
     this.setState({ showDeleteModal: false })
   }
 
-  onDragStart = (e, gId) => {
-    this.draggedItem = gId
-  };
+  // onDragStart = (e, gId) => {
+  //   this.draggedItem = gId
+  // };
 
-  onDrop (e, destinationPageId) {
-    e.preventDefault()
+  // onDrop (e, destinationPageId) {
+  //   e.preventDefault()
 
-    if (!this.draggedItem) {
-      //
-    } else {
-      if (this.draggedItem === destinationPageId) {
-        this.draggedItem = null
-        return
-      }
-      const pages = this.extractPages()
-      const positionWisePages = this.makePositionWisePages({ ...pages })
-      const index = positionWisePages.findIndex(
-        (pId) => pId === destinationPageId
-      )
-      const pageIds = positionWisePages.filter(
-        (item) => item !== this.draggedItem
-      )
-      pageIds.splice(index, 0, this.draggedItem)
+  //   if (!this.draggedItem) {
+  //     //
+  //   } else {
+  //     if (this.draggedItem === destinationPageId) {
+  //       this.draggedItem = null
+  //       return
+  //     }
+  //     const pages = this.extractPages()
+  //     const positionWisePages = this.makePositionWisePages({ ...pages })
+  //     const index = positionWisePages.findIndex(
+  //       (pId) => pId === destinationPageId
+  //     )
+  //     const pageIds = positionWisePages.filter(
+  //       (item) => item !== this.draggedItem
+  //     )
+  //     pageIds.splice(index, 0, this.draggedItem)
 
-      this.props.set_page_ids(pageIds, this.props.group_id)
-      this.draggedItem = null
-    }
-  }
+  //     this.props.set_page_ids(pageIds, this.props.group_id)
+  //     this.draggedItem = null
+  //   }
+  // }
 
   extractPages () {
     const pages = {}
@@ -193,11 +193,11 @@ class VersionPages extends Component {
                           {...this.props}
                           page_id={pageId}
                           index={index}
-                          onDragStart={this.onDragStart.bind(this)}
+                          // onDragStart={this.onDragStart.bind(this)}
                           // onDragOver={(e) => {
                           //   e.preventDefault();
                           // }}
-                          onDrop={this.onDrop.bind(this)}
+                          // onDrop={this.onDrop.bind(this)}
                           open_delete_page_modal={this.openDeletePageModal.bind(
                             this
                           )}

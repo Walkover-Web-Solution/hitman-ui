@@ -43,7 +43,7 @@ class GroupForm extends Form {
     this.props.onHide()
     if (this.props.title === 'Add new Group') {
       const data = { ...this.state.data }
-      data.position = this.extractPosition()
+      // data.position = this.extractPosition()
       const versionId = this.props.selectedVersion.id
       const newGroup = {
         ...data,
@@ -65,18 +65,18 @@ class GroupForm extends Form {
     }
   }
 
-  extractPosition () {
-    let count = -1
-    for (let i = 0; i < Object.keys(this.props.groups).length; i++) {
-      if (
-        this.props.selectedVersion.id ===
-        this.props.groups[Object.keys(this.props.groups)[i]].versionId
-      ) {
-        count = count + 1
-      }
-    }
-    return count + 1
-  }
+  // extractPosition () {
+  //   let count = -1
+  //   for (let i = 0; i < Object.keys(this.props.groups).length; i++) {
+  //     if (
+  //       this.props.selectedVersion.id ===
+  //       this.props.groups[Object.keys(this.props.groups)[i]].versionId
+  //     ) {
+  //       count = count + 1
+  //     }
+  //   }
+  //   return count + 1
+  // }
 
   render () {
     return (

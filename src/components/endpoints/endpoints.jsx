@@ -466,7 +466,7 @@ class Endpoints extends Component {
     return (
       <>
         {this.filterEndpoints()}
-        {this.sequencingOnFilter()}
+        {/* {this.sequencingOnFilter()} */}
         {endpoints &&
           Object.keys(endpoints).length !== 0 &&
           Object.keys(endpoints)

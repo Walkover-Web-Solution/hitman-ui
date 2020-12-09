@@ -69,22 +69,22 @@ class Main extends Component {
     this.setState({ currentEnvironment: environment })
   }
 
-  setSourceGroupId (draggedEndpoint, groupId) {
-    this.draggedEndpoint = draggedEndpoint
-    this.sourceGroupId = groupId
-  }
+  // setSourceGroupId(draggedEndpoint, groupId) {
+  //   this.draggedEndpoint = draggedEndpoint
+  //   this.sourceGroupId = groupId
+  // }
 
-  setDestinationGroupId (destinationGroupId) {
-    this.dndMoveEndpoint(
-      this.draggedEndpoint,
-      this.sourceGroupId,
-      destinationGroupId
-    )
-  }
+  // setDestinationGroupId (destinationGroupId) {
+  //   this.dndMoveEndpoint(
+  //     this.draggedEndpoint,
+  //     this.sourceGroupId,
+  //     destinationGroupId
+  //   )
+  // }
 
-  dndMoveEndpoint (endpointId, sourceGroupId, destinationGroupId) {
-    if (sourceGroupId !== destinationGroupId) { this.props.move_endpoint(endpointId, sourceGroupId, destinationGroupId) }
-  }
+  // dndMoveEndpoint(endpointId, sourceGroupId, destinationGroupId) {
+  //   if (sourceGroupId !== destinationGroupId) { this.props.move_endpoint(endpointId, sourceGroupId, destinationGroupId) }
+  // }
 
   render () {
     return (
@@ -98,8 +98,8 @@ class Main extends Component {
         <div className='main-panel-wrapper'>
           <SideBar
             {...this.props}
-            set_source_group_id={this.setSourceGroupId.bind(this)}
-            set_destination_group_id={this.setDestinationGroupId.bind(this)}
+            // set_source_group_id={this.setSourceGroupId.bind(this)}
+            // set_destination_group_id={this.setDestinationGroupId.bind(this)}
             tabs={[...this.state.tabs]}
             set_tabs={this.setTabs.bind(this)}
             default_tab_index={this.state.defaultTabIndex}

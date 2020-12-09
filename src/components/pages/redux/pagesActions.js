@@ -231,7 +231,9 @@ export const updatePageOrder = (pagesOrder) => {
     dispatch(updatePageOrderRequest({ ...store.getState().pages }, pagesOrder))
     pageApiService
       .updatePageOrder(pagesOrder)
-      .then(() => { })
+      .then((response) => {
+        toast.error(response.data)
+      })
       .catch((error) => {
         dispatch(
           onPageOrderUpdatedError(

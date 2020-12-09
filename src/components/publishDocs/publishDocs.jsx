@@ -336,9 +336,17 @@ class PublishDocs extends Component {
       }
       const ids = []
       sortedData.map((data) => ids.push(data.id))
-      const index = ids.findIndex(
-        (pId) => pId === destinationItemId
-      )
+      let index = ''
+      let dropCheckFlag = false
+      for (let i = 0; i < ids.length; i++) {
+        if (ids[i] === destinationItemId) {
+          index = destinationItemId
+        }
+        if (this.draggedItem === ids[i]) {
+          dropCheckFlag = true
+        }
+      }
+      if (!dropCheckFlag) return
       const itemIds = ids.filter(
         (item) => item !== this.draggedItem
       )
