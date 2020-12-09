@@ -66,14 +66,22 @@ class PublishDocs extends Component {
 
   componentDidMount () {
     const collectionInfo = this.extractCollectionInfo()
-    const selectedGroupId = this.getInitialGroup(Object.keys(collectionInfo.versions)[0], collectionInfo.groups)
-    const selectedEndpointId = this.getInitialEndpoint(selectedGroupId, collectionInfo.endpoints)
+    const items = this.getInitialItems(Object.keys(
+      collectionInfo.versions)[0],
+    collectionInfo.groups,
+    collectionInfo.endpoints,
+    collectionInfo.pages
+    )
+    // console.log('selectedGroupId, selectedEndpointId, selectedPageId ', items)
+    // const selectedGroupId = this.getInitialGroup(Object.keys(collectionInfo.versions)[0], collectionInfo.groups)
+    // const selectedEndpointId = this.getInitialEndpoint(selectedGroupId, collectionInfo.endpoints)
     this.setState({
       selectedCollectionId: URI.parseQuery(this.props.location.search)
         .collectionId,
       selectedVersionId: Object.keys(collectionInfo.versions)[0],
-      selectedGroupId,
-      selectedEndpointId
+      selectedGroupId: items?.selectedGroupId || null,
+      selectedEndpointId: items?.selectedEndpointId || null,
+      selectedPageId: items?.selectedPageId || null
     })
   }
 
@@ -83,40 +91,109 @@ class PublishDocs extends Component {
       if (!(this.state.selectedEndpointId || this.state.selectedPageId) ||
         this.state.selectedCollectionId !== URI.parseQuery(this.props.location.search).collectionId
       ) {
-        const selectedGroupId = this.getInitialGroup(Object.keys(collectionInfo.versions)[0], collectionInfo.groups)
-        const selectedEndpointId = this.getInitialEndpoint(selectedGroupId, collectionInfo.endpoints)
+        const items = this.getInitialItems(Object.keys(
+          collectionInfo.versions)[0],
+        collectionInfo.groups,
+        collectionInfo.endpoints,
+        collectionInfo.pages
+        )
+        // const selectedGroupId = this.getInitialGroup(Object.keys(collectionInfo.versions)[0], collectionInfo.groups)
+        // const selectedEndpointId = this.getInitialEndpoint(selectedGroupId, collectionInfo.endpoints)
         this.setState({
           selectedCollectionId: URI.parseQuery(this.props.location.search)
             .collectionId,
           selectedVersionId: Object.keys(collectionInfo.versions)[0],
-          selectedGroupId,
-          selectedEndpointId
+          selectedGroupId: items?.selectedGroupId || null,
+          selectedEndpointId: items?.selectedEndpointId || null,
+          selectedPageId: items?.selectedPageId || null
         })
       }
     }
   }
 
-  getInitialGroup (versionId, groups) {
+  getInitialItems (versionId, groups, endpoints, pages, endpointId = null, pageId = null) {
+    // console.log('innn', versionId, groups, endpoints, pages, endpointId = null, pageId = null)
     for (let i = 0; i < Object.keys(groups).length; i++) {
       if (groups[Object.keys(groups)[i]].versionId?.toString() === versionId?.toString()) {
-        return Object.keys(groups)[i]
+        const groupId = groups[Object.keys(groups)[i]].id
+        for (let i = 0; i < Object.keys(endpoints).length; i++) {
+          if (
+            endpoints[Object.keys(endpoints)[i]].groupId?.toString() === groupId?.toString() &&
+            (
+              endpoints[Object.keys(endpoints)[i]].isPublished === true ||
+              endpoints[Object.keys(endpoints)[i]].state === publishDocsEnum.PENDING_STATE
+            ) &&
+            endpointId?.toString() !== Object.keys(endpoints)[i]?.toString()
+          ) {
+            const items = {
+              selectedGroupId: groupId,
+              selectedEndpointId: Object.keys(endpoints)[i],
+              selectedPageId: null
+            }
+            return items
+          }
+        }
+        for (let i = 0; i < Object.keys(pages).length; i++) {
+          if (
+            pages[Object.keys(pages)[i]].versionId?.toString() === versionId?.toString() &&
+            (pages[Object.keys(pages)[i]].isPublished === true ||
+              pages[Object.keys(pages)[i]].state === publishDocsEnum.PENDING_STATE) &&
+            pageId?.toString() !== Object.keys(pages)[i]?.toString()
+          ) {
+            const items = {
+              selectedGroupId: null,
+              selectedEndpointId: null,
+              selectedPageId: Object.keys(pages)[i]
+            }
+            return items
+          }
+        }
+        for (let i = 0; i < Object.keys(pages).length; i++) {
+          if (
+            pages[Object.keys(pages)[i]].groupId?.toString() === groupId?.toString() &&
+            (pages[Object.keys(pages)[i]].isPublished === true ||
+              pages[Object.keys(pages)[i]].state === publishDocsEnum.PENDING_STATE) &&
+            pageId?.toString() !== Object.keys(pages)[i]?.toString()
+          ) {
+            const items = {
+              selectedGroupId: groupId,
+              selectedEndpointId: null,
+              selectedPageId: Object.keys(pages)[i]
+            }
+            return items
+          }
+        }
+        const items = {
+          selectedGroupId: null,
+          selectedEndpointId: null,
+          selectedPageId: null
+        }
+        return items
       }
     }
-    return ''
   }
 
-  getInitialEndpoint (groupId, endpoints, endpointId = null) {
-    for (let i = 0; i < Object.keys(endpoints).length; i++) {
-      if (endpoints[Object.keys(endpoints)[i]].groupId?.toString() === groupId?.toString() &&
-        (endpoints[Object.keys(endpoints)[i]].isPublished === true ||
-          endpoints[Object.keys(endpoints)[i]].state === publishDocsEnum.PENDING_STATE) &&
-        endpointId?.toString() !== Object.keys(endpoints)[i]?.toString()
-      ) {
-        return Object.keys(endpoints)[i]
-      }
-    }
-    return ''
-  }
+  // getInitialGroup (versionId, groups) {
+  //   for (let i = 0; i < Object.keys(groups).length; i++) {
+  //     if (groups[Object.keys(groups)[i]].versionId?.toString() === versionId?.toString()) {
+  //       return Object.keys(groups)[i]
+  //     }
+  //   }
+  //   return ''
+  // }
+
+  // getInitialEndpoint (groupId, endpoints, endpointId = null) {
+  //   for (let i = 0; i < Object.keys(endpoints).length; i++) {
+  //     if (endpoints[Object.keys(endpoints)[i]].groupId?.toString() === groupId?.toString() &&
+  //       (endpoints[Object.keys(endpoints)[i]].isPublished === true ||
+  //         endpoints[Object.keys(endpoints)[i]].state === publishDocsEnum.PENDING_STATE) &&
+  //       endpointId?.toString() !== Object.keys(endpoints)[i]?.toString()
+  //     ) {
+  //       return Object.keys(endpoints)[i]
+  //     }
+  //   }
+  //   return ''
+  // }
 
   extractCollectionInfo () {
     const selectedCollectionId = URI.parseQuery(this.props.location.search).collectionId
@@ -146,12 +223,19 @@ class PublishDocs extends Component {
   }
 
   setSelectedVersion (e) {
-    const selectedGroupId = this.getInitialGroup(e.currentTarget.value, this.state.groups)
-    const selectedEndpointId = this.getInitialEndpoint(selectedGroupId, this.state.endpoints)
+    const items = this.getInitialItems(
+      e.currentTarget.value,
+      this.state.groups,
+      this.state.endpoints,
+      this.state.pages
+    )
+    // const selectedGroupId = this.getInitialGroup(e.currentTarget.value, this.state.groups)
+    // const selectedEndpointId = this.getInitialEndpoint(selectedGroupId, this.state.endpoints)
     this.setState({
       selectedVersionId: e.currentTarget.value,
-      selectedGroupId,
-      selectedEndpointId
+      selectedGroupId: items?.selectedGroupId || null,
+      selectedEndpointId: items?.selectedEndpointId || null,
+      selectedPageId: items?.selectedPageId || null
     })
   }
 
@@ -163,9 +247,20 @@ class PublishDocs extends Component {
     if (this.state.endpoints[endpointId].isPublished) {
       //
     } else {
+      const items = this.getInitialItems(this.state.selectedVersionId,
+        this.state.groups,
+        this.state.endpoints,
+        this.state.pages,
+        endpointId
+      )
       this.setState({
-        selectedEndpointId: this.getInitialEndpoint(this.state.selectedGroupId, this.state.endpoints, endpointId)
+        selectedGroupId: items?.selectedGroupId || null,
+        selectedEndpointId: items?.selectedEndpointId || null,
+        selectedPageId: items?.selectedPageId || null
       })
+      // this.setState({
+      //   selectedEndpointId: this.getInitialEndpoint(this.state.selectedGroupId, this.state.endpoints, endpointId)
+      // })
     }
     this.props.reject_endpoint(this.props.endpoints[endpointId])
   }
@@ -187,19 +282,33 @@ class PublishDocs extends Component {
     if (this.state.pages[pageId].isPublished) {
       //
     } else {
-      if (this.props.pages[pageId].groupId === null) {
-        const selectedGroupId = this.getInitialGroup(this.state.selectedVersionId, this.state.groups)
-        this.setState({
-          selectedGroupId,
-          selectedEndpointId: this.getInitialEndpoint(selectedGroupId, this.state.endpoints),
-          selectedPageId: false
-        })
-      } else {
-        this.setState({
-          selectedEndpointId: this.getInitialEndpoint(this.state.selectedGroupId, this.state.endpoints),
-          selectedPageId: false
-        })
-      }
+      const items = this.getInitialItems(this.state.selectedVersionId,
+        this.state.groups,
+        this.state.endpoints,
+        this.state.pages
+      )
+      this.setState({
+        selectedGroupId: items?.selectedGroupId || null,
+        selectedEndpointId: items?.selectedEndpointId || null,
+        selectedPageId: items?.selectedPageId || null
+      })
+      //     selectedGroupId,
+      //     selectedEndpointId: this.getInitialEndpoint(selectedGroupId, this.state.endpoints),
+      //     selectedPageId: false
+      //   })
+      // if (this.props.pages[pageId].groupId === null) {
+      //   const selectedGroupId = this.getInitialGroup(this.state.selectedVersionId, this.state.groups)
+      //   this.setState({
+      //     selectedGroupId,
+      //     selectedEndpointId: this.getInitialEndpoint(selectedGroupId, this.state.endpoints),
+      //     selectedPageId: false
+      //   })
+      // } else {
+      //   this.setState({
+      //     selectedEndpointId: this.getInitialEndpoint(this.state.selectedGroupId, this.state.endpoints),
+      //     selectedPageId: false
+      //   })
+      // }
     }
   }
 
@@ -340,7 +449,7 @@ class PublishDocs extends Component {
       let dropCheckFlag = false
       for (let i = 0; i < ids.length; i++) {
         if (ids[i] === destinationItemId) {
-          index = destinationItemId
+          index = i
         }
         if (this.draggedItem === ids[i]) {
           dropCheckFlag = true
@@ -557,9 +666,20 @@ class PublishDocs extends Component {
       publishedEndpoint: {},
       state: 'Draft'
     })
+    const items = this.getInitialItems(this.state.selectedVersionId,
+      this.state.groups,
+      this.state.endpoints,
+      this.state.pages,
+      endpointId
+    )
     this.setState({
-      selectedEndpointId: this.getInitialEndpoint(this.state.selectedGroupId, this.state.endpoints, endpointId)
+      selectedGroupId: items?.selectedGroupId || null,
+      selectedEndpointId: items?.selectedEndpointId || null,
+      selectedPageId: items?.selectedPageId || null
     })
+    // this.setState({
+    //   selectedEndpointId: this.getInitialEndpoint(this.state.selectedGroupId, this.state.endpoints, endpointId)
+    // })
   }
 
   handleRemovePublicPage (pageId) {
@@ -568,19 +688,29 @@ class PublishDocs extends Component {
     page.publishedEndpoint = {}
     page.state = 'Draft'
     this.props.update_page(page)
-    if (this.props.pages[pageId].groupId === null) {
-      const selectedGroupId = this.getInitialGroup(this.state.selectedVersionId, this.state.groups)
-      this.setState({
-        selectedGroupId,
-        selectedEndpointId: this.getInitialEndpoint(selectedGroupId, this.state.endpoints),
-        selectedPageId: false
-      })
-    } else {
-      this.setState({
-        selectedEndpointId: this.getInitialEndpoint(this.state.selectedGroupId, this.state.endpoints),
-        selectedPageId: false
-      })
-    }
+    const items = this.getInitialItems(this.state.selectedVersionId,
+      this.state.groups,
+      this.state.endpoints,
+      this.state.pages
+    )
+    this.setState({
+      selectedGroupId: items?.selectedGroupId || null,
+      selectedEndpointId: items?.selectedEndpointId || null,
+      selectedPageId: items?.selectedPageId || null
+    })
+    // if (this.props.pages[pageId].groupId === null) {
+    //   const selectedGroupId = this.getInitialGroup(this.state.selectedVersionId, this.state.groups)
+    //   this.setState({
+    //     selectedGroupId,
+    //     selectedEndpointId: this.getInitialEndpoint(selectedGroupId, this.state.endpoints),
+    //     selectedPageId: false
+    //   })
+    // } else {
+    //   this.setState({
+    //     selectedEndpointId: this.getInitialEndpoint(this.state.selectedGroupId, this.state.endpoints),
+    //     selectedPageId: false
+    //   })
+    // }
   }
 
   endpointPublishAndReject () {
