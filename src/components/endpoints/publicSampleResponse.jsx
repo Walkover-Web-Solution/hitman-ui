@@ -11,7 +11,7 @@ class PublicSampleResponse extends Component {
     return (
       <div className='pubSampleResponse'>
         <div>
-          <h3 className='heading-2'>Sample Response</h3>
+          <h3 className='heading-2'><span>Sample Response {this.props.highlights?.sampleResponse.isChanged ? <i className='fas fa-circle' /> : null}</span></h3>
         </div>
         <div className='sample-response'>
           <Tabs id='uncontrolled-tab-example'>

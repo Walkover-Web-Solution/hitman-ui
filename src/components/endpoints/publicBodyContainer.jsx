@@ -331,7 +331,6 @@ class PublicBodyContainer extends Component {
 
   render () {
     this.bodyDescription = this.props.body_description
-
     if (
       this.props.public_body_flag &&
       this.props.body &&
@@ -369,7 +368,9 @@ class PublicBodyContainer extends Component {
           (this.props.body.type === 'JSON')
             ? (
               <div className='hm-public-table'>
-                <div className='public-generic-table-title-container'>Body <small className='text-muted'>({this.props.body.type})</small></div>
+                <div className='public-generic-table-title-container'>
+                  Body <small className='text-muted'>({this.props.body.type})</small> {this.props.highlights?.body.value ? <i className='fas fa-circle' /> : null}
+                </div>
                 <ul className='public-endpoint-tabs'>
                   <li className={this.state.showBodyCodeEditor && 'active'}>
                     <a
@@ -388,7 +389,6 @@ class PublicBodyContainer extends Component {
                     </a>
                   </li>
                 </ul>
-
                 {this.state.showBodyCodeEditor
                   ? (
                     <AceEditor
@@ -419,7 +419,9 @@ class PublicBodyContainer extends Component {
               )
             : (
               <div className='hm-public-table'>
-                <div className='public-generic-table-title-container'>Body <small className='text-muted'>({this.props.body.type})</small></div>
+                <div className='public-generic-table-title-container'>
+                  Body <small className='text-muted'>({this.props.body.type})</small> {this.props.highlights?.body.value ? <i className='fas fa-circle' /> : null}
+                </div>
                 <AceEditor
                   className='custom-raw-editor'
                   mode={this.props.body.type.toLowerCase()}

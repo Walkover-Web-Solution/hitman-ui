@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Button, Dropdown } from 'react-bootstrap'
-import './publishDocs.scss'
+
 import { connect } from 'react-redux'
 import { updateCollection } from '../collections/redux/collectionsActions'
 import {
@@ -17,6 +17,8 @@ import {
 import PublishDocsForm from './publishDocsForm'
 import DisplayPage from '../pages/displayPage'
 import { updatePage } from '../pages/redux/pagesActions'
+import './publishDocs.scss'
+const isEqual = require('react-fast-compare')
 
 const URI = require('urijs')
 
@@ -27,6 +29,13 @@ const publishDocsEnum = {
   DRAFT_STATE: 'Draft',
   EMPTY_STRING: ''
 }
+
+// const highlights = {
+//   NEW: 'new',
+//   EDITED: 'edited',
+//   DELETED: 'deleted',
+//   NOCHANGE: 'no-change'
+// }
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
@@ -475,7 +484,7 @@ class PublishDocs extends Component {
       )
     } else {
       return (
-        <DisplayEndpoint rejected={false} endpointId={this.state.selectedEndpointId} groupId={this.state.selectedGroupId} {...this.props} />
+        <DisplayEndpoint rejected={false} endpointId={this.state.selectedEndpointId} groupId={this.state.selectedGroupId} {...this.props} highlights={this.setChangeHighlighting() || null} />
       )
     }
   }
@@ -620,9 +629,126 @@ class PublishDocs extends Component {
     }
   }
 
+  setChangeHighlighting () {
+    const { selectedEndpointId } = this.state
+    let result = {
+      BASE_URL: null,
+      authorizationType: null,
+      body: {
+        isChanged: null,
+        type: null,
+        value: null
+      },
+      bodyDescription: null,
+      headers: {
+        isChanged: null,
+        items: {}
+      },
+      name: null,
+      params: {
+        isChanged: null,
+        items: {}
+      },
+      pathVariables: {
+        isChanged: null,
+        items: {}
+      },
+      requestType: null,
+      sampleResponse: {
+        isChanged: null,
+        items: {}
+      },
+      uri: null
+    }
+    if (selectedEndpointId) {
+      const endpoint = this.state.endpoints[selectedEndpointId]
+      if (endpoint.state === publishDocsEnum.DRAFT_STATE && endpoint.isPublished) {
+        const originalEndpoint = JSON.parse(JSON.stringify(endpoint.publishedEndpoint))
+        const currentChanges = JSON.parse(JSON.stringify(endpoint))
+        delete originalEndpoint.publishedEndpoint
+        delete currentChanges.publishedEndpoint
+        result = {
+          BASE_URL: !isEqual(originalEndpoint.BASE_URL, currentChanges.BASE_URL),
+          authorizationType: null,
+          body: {
+            isChanged: !isEqual(originalEndpoint.body, currentChanges.body),
+            type: !isEqual(originalEndpoint.body.type, currentChanges.body.type),
+            value: (currentChanges.body.type === 'multipart/form-data' || currentChanges.body.type === 'application/x-www-form-urlencoded') ? this.getHighlights(originalEndpoint.body.value, currentChanges.body.value, 'body') : !isEqual(originalEndpoint.body.value, currentChanges.body.value)
+          },
+          bodyDescription: null,
+          headers: this.getHighlights(originalEndpoint.headers, currentChanges.headers, 'headers'),
+          name: !isEqual(originalEndpoint.name, currentChanges.name),
+          params: this.getHighlights(originalEndpoint.params, currentChanges.params, 'params'),
+          pathVariables: this.getHighlights(originalEndpoint.pathVariables, currentChanges.pathVariables, 'pathVariables'),
+          requestType: !isEqual(originalEndpoint.requestType, currentChanges.requestType),
+          sampleResponse: this.getHighlights(originalEndpoint.sampleResponse, currentChanges.sampleResponse, 'sampleResponse'),
+          uri: !isEqual(originalEndpoint.uri, currentChanges.uri)
+        }
+        console.log({ currentChanges, originalEndpoint, result })
+        return result
+      }
+    }
+    return result
+  }
+
+  getHighlights (oldData, newData, type) {
+    const temp = { isChanged: null, items: {} }
+    temp.isChanged = !isEqual(oldData, newData)
+    if (newData && temp.isChanged) {
+      switch (type) {
+        case 'headers':
+          temp.isChanged = !isEqual(oldData, newData)
+          Object.keys({ ...oldData, ...newData }).forEach(entry => {
+            temp.items[entry] = null
+          })
+          Object.entries(temp.items).forEach(entry => {
+            temp.items[entry[0]] = oldData ? !isEqual(oldData[entry[0]], newData[entry[0]]) : true
+          })
+          break
+        case 'params':
+          temp.isChanged = !isEqual(oldData, newData)
+          Object.keys({ ...oldData, ...newData }).forEach(entry => {
+            temp.items[entry] = null
+          })
+          Object.entries(temp.items).forEach(entry => {
+            temp.items[entry[0]] = oldData ? !isEqual(oldData[entry[0]], newData[entry[0]]) : true
+          })
+          break
+        case 'pathVariables':
+          temp.isChanged = !isEqual(oldData, newData)
+          Object.keys({ ...oldData, ...newData }).forEach(entry => {
+            temp.items[entry] = null
+          })
+          Object.entries(temp.items).forEach(entry => {
+            temp.items[entry[0]] = oldData ? !isEqual(oldData[entry[0]], newData[entry[0]]) : true
+          })
+          break
+        case 'sampleResponse':
+          temp.isChanged = !isEqual(oldData, newData)
+          newData.forEach(entry => {
+            temp.items[entry.title] = null
+          })
+          Object.entries(temp.items).forEach(entry => {
+            temp.items[entry[0]] = oldData ? !isEqual(oldData[oldData.findIndex(o => o.title === entry[0])], newData[newData.findIndex(o => o.title === entry[0])]) : true
+          })
+          break
+        case 'body':
+          temp.isChanged = !isEqual(oldData, newData)
+          newData.forEach(entry => {
+            temp.items[entry.key] = null
+          })
+          Object.entries(temp.items).forEach(entry => {
+            temp.items[entry[0]] = oldData ? !isEqual(oldData[oldData.findIndex(o => o.key === entry[0])], newData[newData.findIndex(o => o.key === entry[0])]) : true
+          })
+          break
+        default:
+      }
+    }
+    return temp
+  }
+
   render () {
     const collectionId = URI.parseQuery(this.props.location.search).collectionId
-
     return (
       <div className='publish-docs-container'>
         <div className='publish-docs-wrapper'>

@@ -36,7 +36,9 @@ import indexedDbService from '../indexedDb/indexedDbService'
 import Authorization from './displayAuthorization'
 import LoginSignupModal from '../main/loginSignupModal'
 import PublicSampleResponse from './publicSampleResponse'
+// import ReactJsonViewCompare from 'react-json-view-compare'
 const shortid = require('shortid')
+// const isEqual = require('react-fast-compare')
 
 const status = require('http-status')
 const URI = require('urijs')
@@ -1542,6 +1544,7 @@ class DisplayEndpoint extends Component {
     if (this.state.sampleResponseArray.length) {
       return (
         <PublicSampleResponse
+          highlights={this.props.highlights}
           sample_response_array={this.state.sampleResponseArray}
           publicCollectionTheme={this.props.publicCollectionTheme}
         />
@@ -1931,6 +1934,7 @@ class DisplayEndpoint extends Component {
                           /> {this.state.data.updatedUri}
                         </div>
                       </div>
+                      {(this.props.highlights?.uri ? <i className='fas fa-circle' /> : null)}
 
                     </div>
                     <input

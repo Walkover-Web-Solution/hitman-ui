@@ -403,6 +403,21 @@ class GenericTable extends Component {
     )
   }
 
+  willHighlight (title) {
+    switch (title) {
+      case 'Headers':
+        return this.props.highlights?.headers.isChanged
+      case 'Params':
+        return this.props.highlights?.params.isChanged
+      case 'Path Variables':
+        return this.props.highlights?.pathVariables.isChanged
+      case 'formData':
+        return this.props.highlights?.body.isChanged
+      case 'x-www-form-urlencoded':
+        return this.props.highlights?.body.isChanged
+    }
+  }
+
   render () {
     const { dataArray, original_data: originalData, title } = this.props
     if (!isDashboardRoute(this.props)) {
@@ -425,7 +440,7 @@ class GenericTable extends Component {
               : 'public-generic-table-title-container'
           }
         >
-          {!isDashboardRoute(this.props) && title}
+          {!isDashboardRoute(this.props) && <span>{title} {this.willHighlight(title) ? <i className='fas fa-circle' /> : null}</span>}
 
         </div>
         {this.renderOptionalParamsButton()}
