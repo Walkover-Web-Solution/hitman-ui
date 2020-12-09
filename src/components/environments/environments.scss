@@ -50,7 +50,7 @@ $border-color: rgba(227, 228, 230, 0.7);
       font-size: 14px;
       font-weight: 400;
       color: #000;
-      border-radius: 0px;
+      border-radius: 4px;
       margin-bottom: 10px;
       box-shadow: none !important;
     }
@@ -71,8 +71,8 @@ $border-color: rgba(227, 228, 230, 0.7);
     flex-direction: row;
     justify-content: center;
     margin: 0 3px 0;
-    height: 34px;
-    width: 34px;
+    height: 40px;
+    width: 40px;
     background-color: #fff;
     border-radius: 4px;
     border: 1px solid #E0E0E0;
@@ -83,13 +83,13 @@ $border-color: rgba(227, 228, 230, 0.7);
 
     .dropdown {
       width: 100%;
- 
+
       .btn {
-        width: 100%;
+        width: 170px;
         display: flex;
         justify-content: space-between;
-        align-items: center; 
-        height: 35px; 
+        align-items: center;
+        height: 40px;
         background-color: #fff;
         border-radius: 4px;
         border: 1px solid #E0E0E0;
@@ -146,6 +146,9 @@ $border-color: rgba(227, 228, 230, 0.7);
     font-size: 13px;
     font-weight: 300;
     padding-left: 15px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .custom-middle-box {
@@ -153,6 +156,9 @@ $border-color: rgba(227, 228, 230, 0.7);
     width: 269px;
     font-size: 13px;
     font-weight: 300;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .custom-right-box {

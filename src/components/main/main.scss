@@ -1107,7 +1107,7 @@ button.editBtn {
     border: 1px solid #E98A36;
     border-radius: 4px;
     padding: 5px 8px 0;
-    height: 35px; 
+    height: 35px;
   }
 }
 
@@ -1139,8 +1139,8 @@ button.editBtn {
     position: absolute;
     top: 0px;
     left: 0;
-    height: 14px;
-    width: 14px;
+    height: 15px;
+    width: 15px;
     background-color: #eee;
     border-radius: 50%;
     border: 2px solid transparent;
@@ -1166,10 +1166,10 @@ button.editBtn {
   }
 
   .checkmark:after {
-    top: 2px;
+    top: 3px;
     left: 2px;
-    width: 7px;
-    height: 7px;
+    width: 6px;
+    height: 6px;
     border-radius: 50%;
     background: #E98A36;
   }
@@ -1282,18 +1282,19 @@ button.editBtn {
 }
 
 .customBtnGroup .btn {
-  box-shadow: none!important;
+  box-shadow: none !important;
   outline: none;
-  border: 1px solid #E98A36!important;
+  border: 1px solid #E98A36 !important;
   font-size: 14px;
   font-weight: 500;
-  background: #fff!important;
+  background: #fff !important;
   color: #333;
+
   &.active {
-    background: linear-gradient(135deg, #F2994A 2.5%, #f2994a 2.51%, #f0bd3b 100%)!important;
+    background: linear-gradient(135deg, #F2994A 2.5%, #f2994a 2.51%, #f0bd3b 100%) !important;
   }
 }
- 
+
 .response-item-status .heading-3 {
   display: inline-block;
   font-weight: 600;
@@ -1303,7 +1304,8 @@ button.editBtn {
 .response-item-status {
   font-size: 14px;
   font-weight: 400;
-  img{
+
+  img {
     cursor: pointer;
   }
 }
@@ -1311,4 +1313,3 @@ button.editBtn {
 .arrowRight {
   transform: rotate(-90deg);
 }
- 

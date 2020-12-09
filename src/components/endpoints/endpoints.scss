@@ -1175,7 +1175,7 @@ table#custom-generic-table {
     margin: 15px auto 0;
     display: inline-block;
   }
- 
+
   nav.nav.nav-tabs a {
     box-shadow: 0px 2px 8px rgba(64, 49, 30, 0.12);
     margin: 5px;
@@ -1183,12 +1183,13 @@ table#custom-generic-table {
     border-radius: 4px;
     display: inline-block;
     padding: 8px 20px;
+
     &.active {
       background: #fcfcfc;
       box-shadow: 0px 7px 12px rgba(64, 49, 30, 0.25);
       font-weight: 600;
     }
-  
+
   }
 
   nav.nav.nav-tabs a:hover {
@@ -1246,6 +1247,12 @@ table#custom-generic-table {
 .hosted-APIs {
   .dropdown .dropdown-menu {
     min-width: 250px;
+
+    .fa-circle {
+      color: #E98A36;
+      margin-left: 5px;
+      font-size: 10px;
+    }
   }
 
   .dropdown .dropdown-toggle {

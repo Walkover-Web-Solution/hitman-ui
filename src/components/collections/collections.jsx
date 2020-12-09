@@ -313,7 +313,7 @@ class CollectionsComponent extends Component {
         >
           <Accordion.Toggle
             variant='default'
-            eventKey={eventkeyValue !== null ? eventkeyValue : '0'}
+            eventKey={eventkeyValue !== null ? eventkeyValue : '0'} 
           >
             {collectionState === 'singleCollection'
               ? (

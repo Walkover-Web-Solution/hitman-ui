@@ -89,7 +89,16 @@ input[type="text"]:focus {
   overflow: auto;
 }
 
+.primary-sidebar .sidebar-accordion>button {
+  &:hover {
+    background: #FEFCF7;
+    border-color: #F1EEE5;
+
+  }
+}
+
 .sidebar-accordion>button {
+  width: 100%;
   width: 100%;
   display: flex;
   align-items: center;
@@ -113,6 +122,7 @@ input[type="text"]:focus {
   }
 
   &:hover {
+
     .sidebar-item-action-btn {
       visibility: visible;
       opacity: 1;
@@ -249,8 +259,9 @@ input[type="text"]:focus {
           border-width: 0 0 0 2px;
         }
 
-        &.pagesWrapper>button{
+        &.pagesWrapper>button {
           position: relative;
+
           &:before {
             background-image: url(../../assets/icons/pagesIcon.svg);
             content: "";
