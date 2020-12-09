@@ -61,14 +61,14 @@ export function moveEndpoint (endpointId, body) {
 }
 
 export function updateEndpointOrder (
-  sourceEndpointIds
+  endpointsOrder
   // sourceGroupId = null,
   // destinationEndpointIds = null,
   // destinationGroupId = null,
   // endpointId = null
 ) {
   return http.patch(`${apiUrl}/updateEndpointsOrder`, {
-    sourceEndpointIds
+    endpointsOrder
     // sourceGroupId,
     // destinationEndpointIds,
     // destinationGroupId,

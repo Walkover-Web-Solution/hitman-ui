@@ -531,7 +531,7 @@ class Endpoints extends Component {
     }
     if (this.props.filter === '') {
       this.filteredEndpoints = { ...this.props.endpoints }
-      this.filteredEndpointsOrder = [...this.props.endpoints_order]
+      // this.filteredEndpointsOrder = [...this.props.endpoints_order]
     }
   }
 
