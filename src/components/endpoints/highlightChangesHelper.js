@@ -1,3 +1,5 @@
+const isEqual = require('react-fast-compare')
+
 function getHighlightsData (props, title, key) {
   let items = {}
   switch (title) {
@@ -48,7 +50,64 @@ function willHighlight (props, title) {
   return result
 }
 
+function makeHighlightsData (oldData, newData, type) {
+  const temp = { isChanged: null, items: {} }
+  temp.isChanged = !isEqual(oldData, newData)
+  if (newData && temp.isChanged) {
+    switch (type) {
+      case 'headers':
+        temp.isChanged = !isEqual(oldData, newData)
+        Object.keys({ ...oldData, ...newData }).forEach(entry => {
+          temp.items[entry] = null
+        })
+        Object.entries(temp.items).forEach(entry => {
+          temp.items[entry[0]] = oldData ? !isEqual(oldData[entry[0]], newData[entry[0]]) : true
+        })
+        break
+      case 'params':
+        temp.isChanged = !isEqual(oldData, newData)
+        Object.keys({ ...oldData, ...newData }).forEach(entry => {
+          temp.items[entry] = null
+        })
+        Object.entries(temp.items).forEach(entry => {
+          temp.items[entry[0]] = oldData ? !isEqual(oldData[entry[0]], newData[entry[0]]) : true
+        })
+        break
+      case 'pathVariables':
+        temp.isChanged = !isEqual(oldData, newData)
+        Object.keys({ ...oldData, ...newData }).forEach(entry => {
+          temp.items[entry] = null
+        })
+        Object.entries(temp.items).forEach(entry => {
+          temp.items[entry[0]] = oldData ? !isEqual(oldData[entry[0]], newData[entry[0]]) : true
+        })
+        break
+      case 'sampleResponse':
+        temp.isChanged = !isEqual(oldData, newData)
+        newData.forEach(entry => {
+          temp.items[entry.title] = null
+        })
+        Object.entries(temp.items).forEach(entry => {
+          temp.items[entry[0]] = oldData ? !isEqual(oldData[oldData.findIndex(o => o.title === entry[0])], newData[newData.findIndex(o => o.title === entry[0])]) : true
+        })
+        break
+      case 'body':
+        temp.isChanged = !isEqual(oldData, newData)
+        newData.forEach(entry => {
+          temp.items[entry.key] = null
+        })
+        Object.entries(temp.items).forEach(entry => {
+          temp.items[entry[0]] = oldData ? !isEqual(oldData[oldData.findIndex(o => o.key === entry[0])], newData[newData.findIndex(o => o.key === entry[0])]) : true
+        })
+        break
+      default:
+    }
+  }
+  return temp
+}
+
 export {
   getHighlightsData,
-  willHighlight
+  willHighlight,
+  makeHighlightsData
 }
