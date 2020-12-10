@@ -46,6 +46,9 @@ function willHighlight (props, title) {
     case 'sampleResponse':
       result = typeof props.highlights?.sampleResponse?.isChanged === 'boolean' ? props.highlights.sampleResponse.isChanged : false
       break
+    case 'body':
+      result = typeof props.highlights?.body?.isChanged === 'boolean' ? props.highlights.body.isChanged : false
+      break
   }
   return result
 }

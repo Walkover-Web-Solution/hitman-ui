@@ -3,6 +3,7 @@ import React, { Component } from 'react'
 import GenericTable from './genericTable'
 import jQuery from 'jquery'
 import AceEditor from 'react-ace'
+import { willHighlight } from './highlightChangesHelper'
 import './publicEndpoint.scss'
 
 class PublicBodyContainer extends Component {
@@ -369,7 +370,7 @@ class PublicBodyContainer extends Component {
             ? (
               <div className='hm-public-table'>
                 <div className='public-generic-table-title-container'>
-                  Body <small className='text-muted'>({this.props.body.type})</small> {this.props.highlights?.body.value ? <i className='fas fa-circle' /> : null}
+                  Body <small className='text-muted'>({this.props.body.type})</small> {willHighlight(this.props, 'body') ? <i className='fas fa-circle' /> : null}
                 </div>
                 <ul className='public-endpoint-tabs'>
                   <li className={this.state.showBodyCodeEditor ? 'active' : ''}>
@@ -418,7 +419,7 @@ class PublicBodyContainer extends Component {
             : (
               <div className='hm-public-table'>
                 <div className='public-generic-table-title-container'>
-                  Body <small className='text-muted'>({this.props.body.type})</small> {this.props.highlights?.body.value ? <i className='fas fa-circle' /> : null}
+                  Body <small className='text-muted'>({this.props.body.type})</small> {willHighlight(this.props, 'body') ? <i className='fas fa-circle' /> : null}
                 </div>
                 <AceEditor
                   className='custom-raw-editor'

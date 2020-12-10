@@ -36,9 +36,7 @@ import indexedDbService from '../indexedDb/indexedDbService'
 import Authorization from './displayAuthorization'
 import LoginSignupModal from '../main/loginSignupModal'
 import PublicSampleResponse from './publicSampleResponse'
-// import ReactJsonViewCompare from 'react-json-view-compare'
 const shortid = require('shortid')
-// const isEqual = require('react-fast-compare')
 
 const status = require('http-status')
 const URI = require('urijs')
