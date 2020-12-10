@@ -269,7 +269,6 @@ class GenericTable extends Component {
               : null
           }
         </td>
-        {getHighlightsData(this.props, title, [dataArray[index].key]) ? <i className='fas fa-circle' /> : null}
       </tr>
     )
   }
