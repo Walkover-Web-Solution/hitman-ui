@@ -167,11 +167,11 @@ class SideBar extends Component {
                   className='btn d-flex align-items-center mb-2'
                   onClick={() => { this.openHistorySnapshot(history.id) }}
                 >
-                  {/* <div className={`api-label lg-label ${history.endpoint.requestType}`}>
+                  <div className={`api-label lg-label ${history.endpoint.requestType}`}>
                     <div className='endpoint-request-div'>
                       {history.endpoint.requestType}
                     </div>
-                  </div> */}
+                  </div>
                   <div className='ml-3'>
                     <div className='sideBarListWrapper'>
                       <div className='text-left'>
@@ -206,11 +206,11 @@ class SideBar extends Component {
                   className='btn d-flex align-items-center mb-2'
                   onClick={() => { this.openHistorySnapshot(history.id) }}
                 >
-                  {/* <div className={`api-label lg-label ${history.endpoint.requestType}`}>
+                  <div className={`api-label lg-label ${history.endpoint.requestType}`}>
                     <div className='endpoint-request-div'>
                       {history.endpoint.requestType}
                     </div>
-                  </div> */}
+                  </div>
                   <div className='ml-3'>
                     <div className='sideBarListWrapper'>
                       <div className='text-left'>
@@ -401,11 +401,11 @@ class SideBar extends Component {
           eventKey='collection'
           title={
             <span>
-              <svg width='16' height='16' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
+              <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
                 <path d='M15.75 11.9999V5.99993C15.7497 5.73688 15.6803 5.47853 15.5487 5.2508C15.417 5.02306 15.2278 4.83395 15 4.70243L9.75 1.70243C9.52197 1.57077 9.2633 1.50146 9 1.50146C8.7367 1.50146 8.47803 1.57077 8.25 1.70243L3 4.70243C2.7722 4.83395 2.58299 5.02306 2.45135 5.2508C2.31971 5.47853 2.25027 5.73688 2.25 5.99993V11.9999C2.25027 12.263 2.31971 12.5213 2.45135 12.7491C2.58299 12.9768 2.7722 13.1659 3 13.2974L8.25 16.2974C8.47803 16.4291 8.7367 16.4984 9 16.4984C9.2633 16.4984 9.52197 16.4291 9.75 16.2974L15 13.2974C15.2278 13.1659 15.417 12.9768 15.5487 12.7491C15.6803 12.5213 15.7497 12.263 15.75 11.9999Z' stroke='#828282' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
                 <path d='M2.45239 5.22021L8.99989 9.00772L15.5474 5.22021' stroke='#828282' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
                 <path d='M9 16.56V9' stroke='#828282' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
-              </svg> Collection
+              </svg> <span className="tabs-Text"> Collection</span>
             </span>
           }
         >
@@ -419,10 +419,10 @@ class SideBar extends Component {
           eventKey='history'
           title={
             <span>
-              <svg width='16' height='16' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
+              <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
                 <path d='M9 16.5C13.1421 16.5 16.5 13.1421 16.5 9C16.5 4.85786 13.1421 1.5 9 1.5C4.85786 1.5 1.5 4.85786 1.5 9C1.5 13.1421 4.85786 16.5 9 16.5Z' stroke='#828282' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
                 <path d='M9 4.5V9L12 10.5' stroke='#828282' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
-              </svg> History
+              </svg> <span className="tabs-Text"> History</span>
             </span>
           }
         >
@@ -432,13 +432,14 @@ class SideBar extends Component {
           eventKey='randomTrigger'
           title={
             <span>
-              <svg width='16' height='16' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
+              <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
                 <path d='M12 2.25H15.75V6' stroke='#828282' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
                 <path d='M3 15L15.75 2.25' stroke='#828282' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
                 <path d='M15.75 12V15.75H12' stroke='#828282' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
                 <path d='M11.25 11.25L15.75 15.75' stroke='#828282' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
                 <path d='M3 3L6.75 6.75' stroke='#828282' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
-              </svg> Random Trigger
+              </svg>
+              <span className="tabs-Text"> Random Trigger</span>
             </span>
           }
         >
