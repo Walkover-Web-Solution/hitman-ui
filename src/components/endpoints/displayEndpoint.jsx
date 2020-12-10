@@ -825,14 +825,10 @@ class DisplayEndpoint extends Component {
         // const collectionId = this.extractCollectionId(
         //   groupId || this.state.groupId
         // )
-        endpoint.position = this.extractPosition(groupId || this.state.groupId)
         this.props.add_endpoint(endpoint, groupId || this.state.groupId)
       } else {
         if (this.state.saveAsFlag) {
           endpoint.requestId = shortid.generate()
-          endpoint.position = this.extractPosition(
-            groupId || this.state.groupId
-          )
           this.props.add_endpoint(endpoint, groupId || this.state.groupId)
           this.setState({ saveAsFlag: false })
           this.props.close_tab(this.props.tab.id)
@@ -1874,29 +1870,29 @@ class DisplayEndpoint extends Component {
                                       Save
                                     </button>
                                     {
-                                        getCurrentUser()
-                                          ? (
-                                            <span>
-                                              <Dropdown.Toggle split variant='' />
-                                              <Dropdown.Menu className=''>
-                                                <Dropdown.Item
-                                                  onClick={() =>
-                                                    this.setState({ saveAsFlag: true }, () => {
-                                                      this.openEndpointFormModal()
-                                                    })}
-                                                >
-                                                  Save As
-                                                </Dropdown.Item>
-                                              </Dropdown.Menu>
-                                            </span>
-                                            )
-                                          : null
-                                      }
+                                    getCurrentUser()
+                                      ? (
+                                        <span>
+                                          <Dropdown.Toggle split variant='' />
+                                          <Dropdown.Menu className=''>
+                                            <Dropdown.Item
+                                              onClick={() =>
+                                                this.setState({ saveAsFlag: true }, () => {
+                                                  this.openEndpointFormModal()
+                                                })}
+                                            >
+                                              Save As
+                                            </Dropdown.Item>
+                                          </Dropdown.Menu>
+                                        </span>
+                                        )
+                                      : null
+                                  }
                                   </Dropdown>
                                   )
                                 : (
                                   <button
-                                    className='btn btn-primary'
+                                    className='btn btn-outline orange'
                                     type='button'
                                     id='save-endpoint-button'
                                     onClick={() => this.handleSave()}

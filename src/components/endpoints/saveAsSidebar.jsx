@@ -297,7 +297,7 @@ class SaveAsSidebar extends Form {
                               this.openAddModal()
                             }}
                           >
-                            <i className='fas fa-plus' />
+                            <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M9 3.75V14.25' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' /><path d='M3.75 9H14.25' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' /></svg>
                           </button>
                         </div>
                         )
@@ -320,7 +320,7 @@ class SaveAsSidebar extends Form {
                                 this.openAddModal()
                               }}
                             >
-                              <i className='fas fa-plus' />
+                              <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M9 3.75V14.25' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' /><path d='M3.75 9H14.25' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' /></svg>
                             </button>
                           </div>
                           )
@@ -350,7 +350,12 @@ class SaveAsSidebar extends Form {
                                 onClick={() => this.setList(item)}
                               >
                                 <div className='list-item-wrapper'>
-                                  <i className='fas fa-folder' />
+                                  <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
+                                    <path d='M15.75 12.0004V6.00041C15.7497 5.73737 15.6803 5.47902 15.5487 5.25129C15.417 5.02355 15.2278 4.83444 15 4.70291L9.75 1.70291C9.52197 1.57126 9.2633 1.50195 9 1.50195C8.7367 1.50195 8.47803 1.57126 8.25 1.70291L3 4.70291C2.7722 4.83444 2.58299 5.02355 2.45135 5.25129C2.31971 5.47902 2.25027 5.73737 2.25 6.00041V12.0004C2.25027 12.2635 2.31971 12.5218 2.45135 12.7495C2.58299 12.9773 2.7722 13.1664 3 13.2979L8.25 16.2979C8.47803 16.4296 8.7367 16.4989 9 16.4989C9.2633 16.4989 9.52197 16.4296 9.75 16.2979L15 13.2979C15.2278 13.1664 15.417 12.9773 15.5487 12.7495C15.6803 12.5218 15.7497 12.2635 15.75 12.0004Z' stroke='#828282' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
+                                    <path d='M2.45239 5.21973L8.99989 9.00723L15.5474 5.21973' stroke='#828282' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
+                                    <path d='M9 16.56V9' stroke='#828282' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
+                                  </svg>
+
                                   {item.name}
                                 </div>
                                 <i className='fas fa-chevron-right' />

@@ -421,7 +421,7 @@ class Groups extends Component {
     }
     const { theme } = this.state
     return (
-      <div>
+      <div className='linkWith'>
         {
           isDashboardRoute(this.props, true)
             ? (
@@ -455,7 +455,6 @@ class Groups extends Component {
                   // }
                 >
                   <div className='sidebar-accordion-item'>
-                    <i className='uil uil-folder' />
                     {this.props.groups[groupId].name}
                   </div>
                   {

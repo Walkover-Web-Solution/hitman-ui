@@ -64,13 +64,13 @@ class ShareVersionForm extends Form {
             )}
             <div name='shareVersionLink' label='Public Link' />
             <div className='text-right mt-4 mb-2'>
-              {this.renderButton('Submit', 'right')}
               <button
-                className='btn btn-secondary ml-2 btn-lg'
+                className='btn btn-secondary mr-2 btn-lg'
                 onClick={this.props.onHide}
               >
                 Cancel
               </button>
+              {this.renderButton('Submit', 'right')}
             </div>
           </form>
         </Modal.Body>

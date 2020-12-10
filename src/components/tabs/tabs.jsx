@@ -92,58 +92,53 @@ class CustomTabs extends Component {
 
   render () {
     return (
-      <Nav variant='pills' className='flex-row flex-nowrap item-wrp'>
-        <div>
-          {this.state.showSavePrompt && (
-            <SavePromptModal
-              {...this.props}
-              show
-              onHide={() => this.closeSavePrompt()}
-              tab_id={this.state.selectedTabId}
-            />
-          )}
-        </div>
-        {this.props.tabs.tabsOrder.map((tabId, index) => (
-          <Nav.Item
-            key={tabId}
-            draggable
-            onDragOver={this.handleOnDragOver}
-            onDragStart={() => this.onDragStart(tabId)}
-            onDrop={(e) => this.onDrop(e, tabId)}
-          >
-            <Nav.Link eventKey={tabId}>
-              <button
-                className='btn'
-                onClick={() => tabService.selectTab({ ...this.props }, tabId)}
-                onDoubleClick={() => {
-                  tabService.disablePreviewMode(tabId)
-                }}
-              >
-                {this.renderTabName(tabId)}
+
+      <>
+        <Nav variant='pills' className='flex-row flex-nowrap item-wrp'>
+          <div>
+            {this.state.showSavePrompt && (
+              <SavePromptModal
+                {...this.props}
+                show
+                onHide={() => this.closeSavePrompt()}
+                tab_id={this.state.selectedTabId}
+              />
+            )}
+          </div>
+          {this.props.tabs.tabsOrder.map((tabId, index) => (
+            <Nav.Item
+              key={tabId}
+              draggable
+              onDragOver={this.handleOnDragOver}
+              onDragStart={() => this.onDragStart(tabId)}
+              onDrop={(e) => this.onDrop(e, tabId)}
+            >
+              <Nav.Link eventKey={tabId}>
+                <button
+                  className='btn'
+                  onClick={() => tabService.selectTab({ ...this.props }, tabId)}
+                  onDoubleClick={() => {
+                    tabService.disablePreviewMode(tabId)
+                  }}
+                >
+                  {this.renderTabName(tabId)}
+                </button>
+              </Nav.Link>
+              <button className='btn' onClick={() => this.removeTab(tabId)}>
+                {
+                  this.props.tabs.tabs[tabId].isModified
+                    ? (
+                      <i className='fas fa-circle' id='modified-dot-icon' />
+                      )
+                    : (
+                      <i className='uil uil-multiply' />
+                      )
+                }
               </button>
-            </Nav.Link>
-            <button className='btn' onClick={() => this.removeTab(tabId)}>
-              {
-                this.props.tabs.tabs[tabId].isModified
-                  ? (
-                    <i className='fas fa-circle' id='modified-dot-icon' />
-                    )
-                  : (
-                    <i className='uil uil-multiply' />
-                    )
-              }
-            </button>
-          </Nav.Item>
-        ))}
-        <Nav.Item className='tab-buttons' id='add-new-tab-button'>
-          <button
-            className='btn'
-            onClick={() => tabService.newTab({ ...this.props })}
-          >
-            <i className='uil uil-plus' />
-          </button>
-        </Nav.Item>
-        <Nav.Item className='tab-buttons' id='tabs-menu-button'>
+            </Nav.Item>
+          ))}
+
+          {/* <Nav.Item className='tab-buttons' id='tabs-menu-button'>
           <div className='dropdown'>
             <button
               className='btn '
@@ -176,8 +171,22 @@ class CustomTabs extends Component {
               </button>
             </div>
           </div>
+        </Nav.Item> */}
+        </Nav>
+
+        <Nav.Item className='tab-buttons newTabs' id='add-new-tab-button'>
+          <button
+            className='btn'
+            onClick={() => tabService.newTab({ ...this.props })}
+          >
+            <svg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'>
+              <path d='M19 3H5C3.89543 3 3 3.89543 3 5V19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V5C21 3.89543 20.1046 3 19 3Z' stroke='#BDBDBD' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
+              <path d='M12 8V16' stroke='#BDBDBD' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
+              <path d='M8 12H16' stroke='#BDBDBD' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
+            </svg>
+          </button>
         </Nav.Item>
-      </Nav>
+      </>
     )
   }
 }

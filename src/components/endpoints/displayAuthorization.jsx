@@ -42,7 +42,7 @@ class Authorization extends Component {
       this.props.groupId !== null
     ) {
       this.authResponses = this.props.versions[
-        this.props.groups[this.props.groupId].versionId
+        this.props.groups[this.props.groupId]?.versionId
       ]?.authorizationResponse
       if (this.authResponses === null) {
         this.authResponses = []
@@ -309,7 +309,7 @@ class Authorization extends Component {
         )}
         <div className='authorization-selector-wrapper'>
           <div className='auth-selector-container'>
-            <label>TYPE</label>
+            <label>Type</label>
             <div className='dropdown'>
               <button
                 className='btn dropdown-toggle'
@@ -494,7 +494,7 @@ class Authorization extends Component {
                 <div className='basic-auth-label' />
                 <div className='basic-auth-input'>
                   <button
-                    className='btn get-new-access-token'
+                    className='btn btn-outline orange'
                     type='button'
                     onClick={() => this.getNewAccessTokenModal()}
                   >

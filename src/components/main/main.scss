@@ -848,13 +848,17 @@ label.data-type {
     font-weight: 400 !important;
   }
 
+  .ql-container.ql-snow {
+    height: 200px;
+  }
+
   .form-control {
-    height: 40px;
+    height: 48px;
     border: 1px solid #E0E0E0;
     font-size: 14px;
     font-weight: 400;
     color: #000;
-    border-radius: 0px;
+    border-radius: 4px;
 
     &:focus {
       outline: none;
@@ -890,9 +894,10 @@ button.btn.btn-secondary {
 }
 
 .modal-dialog .modal-content {
-  border-radius: 0;
+  border-radius: 4px;
   box-shadow: -25px 25px 43px rgba(0, 0, 0, 0.07);
   border: none;
+  padding: 15px;
 }
 
 .modal-backdrop.show {
@@ -910,6 +915,7 @@ button.btn.btn-secondary {
 
 .form-group textarea.form-control {
   height: 120px;
+  box-shadow: none;
   resize: none;
 }
 
@@ -953,7 +959,7 @@ button.editBtn {
 }
 
 .headParaWraper {
-  height: 300px;
+  max-height: 300px;
   overflow: auto;
   background: #fff;
   padding: 11px 20px;
@@ -1030,6 +1036,7 @@ button.editBtn {
 .responseTabWrapper {
   background: #fff;
   padding: 20px 40px;
+  border-radius: 4px;
 }
 
 
@@ -1086,4 +1093,223 @@ button.editBtn {
   font-size: 14px;
   font-weight: 600;
   background: #fff;
+}
+
+.endpoint-headers-container .button-panel-wrapper .body {
+  margin-bottom: 0;
+  display: flex;
+  align-items: center;
+
+  .dropdown .btn {
+    width: 100px;
+    font-size: 14px;
+    background: #fff;
+    border: 1px solid #E98A36;
+    border-radius: 4px;
+    padding: 5px 8px 0;
+    height: 35px;
+  }
+}
+
+
+
+
+
+
+.customRadio {
+  display: block;
+  position: relative;
+  padding-left: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  -webkit-user-select: none;
+  user-select: none;
+  margin-right: 15px;
+  line-height: 15px;
+  margin-bottom: 0;
+
+  input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+
+  .checkmark {
+    position: absolute;
+    top: 0px;
+    left: 0;
+    height: 15px;
+    width: 15px;
+    background-color: #eee;
+    border-radius: 50%;
+    border: 2px solid transparent;
+  }
+
+  &:hover input~.checkmark {
+    background-color: #ccc;
+  }
+
+  input:checked~.checkmark {
+    background-color: #ffffff;
+    border-color: #E98A36;
+  }
+
+  .checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+  }
+
+  input:checked~.checkmark:after {
+    display: block;
+  }
+
+  .checkmark:after {
+    top: 3px;
+    left: 2px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #E98A36;
+  }
+}
+
+
+
+
+.dropdown .dropdown-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &::after {
+    background-image: url(../../assets/icons/downChevron.svg);
+    border: none !important;
+    height: 8px;
+    width: 14px;
+    background-repeat: no-repeat;
+  }
+}
+
+
+
+
+
+
+
+
+.customCheckbox {
+  display: block;
+  position: relative;
+  padding-left: 35px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  font-size: 22px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+
+  input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+  }
+
+  .checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 15px;
+    width: 15px;
+    border: 1px solid #BDBDBD;
+    border-radius: 2px;
+  }
+
+  &:hover input~.checkmark {
+    background-color: #ccc;
+  }
+
+  input:checked~.checkmark {
+    border-color: #E98A36;
+    background-color: #E98A36;
+  }
+
+  .checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+  }
+
+  input:checked~.checkmark:after {
+    display: block;
+  }
+
+  .checkmark:after {
+    left: 4px;
+    top: 0px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+  }
+
+  input:disabled~.checkmark {
+    opacity: .6;
+    cursor: not-allowed;
+  }
+}
+
+
+.form-control:disabled {
+  background: #fcfcfc !important;
+}
+
+.ql-container.ql-snow {
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+}
+
+.ql-toolbar.ql-snow {
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+}
+
+.customBtnGroup .btn {
+  box-shadow: none !important;
+  outline: none;
+  border: 1px solid #E98A36 !important;
+  font-size: 14px;
+  font-weight: 500;
+  background: #fff !important;
+  color: #333;
+
+  &.active {
+    background: linear-gradient(135deg, #F2994A 2.5%, #f2994a 2.51%, #f0bd3b 100%) !important;
+  }
+}
+
+.response-item-status .heading-3 {
+  display: inline-block;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.response-item-status {
+  font-size: 14px;
+  font-weight: 400;
+
+  img {
+    cursor: pointer;
+  }
+}
+
+.arrowRight {
+  transform: rotate(-90deg);
 }

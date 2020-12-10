@@ -223,7 +223,11 @@ class Environments extends Component {
                   onClick={() =>
                     this.handleEnvironmentModal('Environment modal')}
                 >
-                  <i className='fas fa-cog' />
+                  <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
+                    <path d='M9 3.75V14.25' stroke='#828282' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
+                    <path d='M3.75 9H14.25' stroke='#828282' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
+                  </svg>
+
                 </button>
               </div>
             )}
@@ -236,7 +240,11 @@ class Environments extends Component {
                     variant='default'
                     id='dropdown-basic'
                   >
-                    <i className='fas fa-eye' />
+                    <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
+                      <path d='M0.75 9C0.75 9 3.75 3 9 3C14.25 3 17.25 9 17.25 9C17.25 9 14.25 15 9 15C3.75 15 0.75 9 0.75 9Z' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
+                      <path d='M9 11.25C10.2426 11.25 11.25 10.2426 11.25 9C11.25 7.75736 10.2426 6.75 9 6.75C7.75736 6.75 6.75 7.75736 6.75 9C6.75 10.2426 7.75736 11.25 9 11.25Z' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
+                    </svg>
+
                   </Dropdown.Toggle>
 
                   <Dropdown.Menu alignRight className='custom-env-menu'>
@@ -364,7 +372,11 @@ class Environments extends Component {
                       variant='default'
                       id='dropdown-basic'
                     >
-                      <i className='fas fa-eye' />
+                      <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
+                        <path d='M0.75 9C0.75 9 3.75 3 9 3C14.25 3 17.25 9 17.25 9C17.25 9 14.25 15 9 15C3.75 15 0.75 9 0.75 9Z' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
+                        <path d='M9 11.25C10.2426 11.25 11.25 10.2426 11.25 9C11.25 7.75736 10.2426 6.75 9 6.75C7.75736 6.75 6.75 7.75736 6.75 9C6.75 10.2426 7.75736 11.25 9 11.25Z' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
+                      </svg>
+
                     </Dropdown.Toggle>
 
                     <Dropdown.Menu alignRight className='custom-env-menu'>

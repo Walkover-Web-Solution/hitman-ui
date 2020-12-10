@@ -80,18 +80,19 @@ class DeleteModal extends Component {
           </div>
           <div className='text-right'>
             <form onSubmit={this.handleSubmit}>
-              <button
-                id='custom-delete-modal-delete'
-                className='btn btn-danger btn-lg mr-2'
-              >
-                Delete
-              </button>
+
               <button
                 id='custom-delete-modal-cancel'
                 className='btn btn-secondary btn-lg'
                 onClick={this.props.onHide}
               >
                 Cancel
+              </button>
+              <button
+                id='custom-delete-modal-delete'
+                className='btn btn-danger btn-lg ml-2'
+              >
+                Delete
               </button>
             </form>
           </div>

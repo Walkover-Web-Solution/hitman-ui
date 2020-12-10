@@ -247,8 +247,9 @@ class BodyContainer extends Component {
     return (
       <div className='body-wrapper'>
         <div className='button-panel-wrapper'>
-          <form className='body-select d-flex '>
-            <label className='body'>
+          <form className='body-select d-flex align-items-center mb-4'>
+            <label className='customRadio'>
+              none
               <input
                 type='radio'
                 name={`body-select-${this.props.endpoint_id}`}
@@ -257,9 +258,12 @@ class BodyContainer extends Component {
                 onClick={() => this.handleSelectBodyType('none')}
                 className='custom-radio-input'
               />
-              none
+              <span class='checkmark' />
+
             </label>
-            <label className='body'>
+
+            <label className='customRadio'>
+              raw
               <input
                 type='radio'
                 name={`body-select-${this.props.endpoint_id}`}
@@ -267,9 +271,11 @@ class BodyContainer extends Component {
                 onClick={() => this.handleSelectBodyType('raw')}
                 className='custom-radio-input'
               />
-              raw
+              <span class='checkmark' />
             </label>
-            <label className='body'>
+            <label className='customRadio'>
+              form-data
+
               <input
                 type='radio'
                 name={`body-select-${this.props.endpoint_id}`}
@@ -277,9 +283,12 @@ class BodyContainer extends Component {
                 onClick={() => this.handleSelectBodyType('multipart/form-data')}
                 className='custom-radio-input'
               />
-              form-data
+              <span class='checkmark' />
+
             </label>
-            <label className='body'>
+            <label className='customRadio'>
+              x-www-form-urlencoded
+
               <input
                 type='radio'
                 name={`body-select-${this.props.endpoint_id}`}
@@ -288,7 +297,8 @@ class BodyContainer extends Component {
                   this.handleSelectBodyType('application/x-www-form-urlencoded')}
                 className='custom-radio-input'
               />
-              x-www-form-urlencoded
+              <span class='checkmark' />
+
             </label>
             {!(this.showRawBodyType && this.flag) && (
               <div className='body'>
@@ -296,8 +306,7 @@ class BodyContainer extends Component {
                   <div>
                     <div className='dropdown'>
                       <button
-                        style={{ color: 'tomato', paddingTop: '0px' }}
-                        className='btn dropdown-toggle flex-column'
+                        className='btn dropdown-toggle'
                         type='button'
                         id='dropdownMenuButton'
                         data-toggle='dropdown'
@@ -312,7 +321,7 @@ class BodyContainer extends Component {
                       >
                         {this.rawBodyTypes.map((rawBodyType) => (
                           <button
-                            className='btn custom-body-type-button'
+                            className='dropdown-item'
                             type='button'
                             onClick={() => this.setRawBodyType(rawBodyType)}
                             key={rawBodyType}
@@ -332,7 +341,7 @@ class BodyContainer extends Component {
             (this.state.selectedBodyType === 'raw' ||
               this.state.selectedBodyType === 'JSON') && (
                 <div
-                  className='btn-group btn-group-toggle'
+                  className='btn-group btn-group-toggle customBtnGroup'
                   data-toggle='buttons'
                   style={{ float: 'right' }}
                 >
