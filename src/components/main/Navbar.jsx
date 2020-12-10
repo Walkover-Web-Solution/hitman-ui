@@ -10,7 +10,7 @@ import './main.scss'
 import OpenApiForm from '../openApi/openApiForm'
 
 class Navbar extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       name: '',
@@ -18,14 +18,14 @@ class Navbar extends Component {
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     const { user } = getCurrentUser()
     const name = user.first_name + user.last_name
     const email = user.email
     this.setState({ name, email })
   }
 
-  openCreateNewModal (onHide) {
+  openCreateNewModal(onHide) {
     return (
       <CreateNewModal
         {...this.props}
@@ -38,27 +38,27 @@ class Navbar extends Component {
     )
   }
 
-  openCollectionForm () {
+  openCollectionForm() {
     this.setState({ showCreateNewModal: false, showCollectionForm: true })
   }
 
-  openEnvironmentForm () {
+  openEnvironmentForm() {
     this.setState({ showCreateNewModal: false, showEnvironmentForm: true })
   }
 
-  handleAddEndpoint () {
+  handleAddEndpoint() {
     tabService.newTab({ ...this.props })
   }
 
-  openApiForm () {
+  openApiForm() {
     this.setState({ showOpenApiForm: true })
   }
 
-  closeOpenApiFormModal () {
+  closeOpenApiFormModal() {
     this.setState({ showOpenApiForm: false })
   }
 
-  render () {
+  render() {
     return (
       <nav className='navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow'>
         {this.state.showCreateNewModal &&
@@ -93,7 +93,7 @@ class Navbar extends Component {
             className='btn'
             onClick={() => this.setState({ showCreateNewModal: true })}
           >
-            <i className='fas fa-plus-square' />
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 3.75V14.25" stroke="#E98A36" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M3.75 9H14.25" stroke="#E98A36" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
             New
           </button>
           <button

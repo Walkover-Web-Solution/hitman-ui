@@ -313,7 +313,7 @@ class CollectionsComponent extends Component {
         >
           <Accordion.Toggle
             variant='default'
-            eventKey={eventkeyValue !== null ? eventkeyValue : '0'}
+            eventKey={eventkeyValue !== null ? eventkeyValue : '0'} 
           >
             {collectionState === 'singleCollection'
               ? (
@@ -325,8 +325,7 @@ class CollectionsComponent extends Component {
                 <div
                   className='sidebar-accordion-item'
                   onClick={() => this.openSelectedCollection(collectionId)}
-                >
-                  <i className='uil uil-parcel' />
+                > 
                   <div>{this.props.collections[collectionId].name}</div>
                 </div>
                 )}

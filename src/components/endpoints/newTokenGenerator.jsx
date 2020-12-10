@@ -23,11 +23,11 @@ class TokenGenerator extends Component {
     }
   };
 
-  componentDidMount () {
+  componentDidMount() {
     this.fetchAuthorizationData()
   }
 
-  fetchAuthorizationData () {
+  fetchAuthorizationData() {
     if (this.props.groupId) {
       const versionId = this.props.groups[this.props.groupId].versionId
       const data = this.props.versions[versionId].authorizationData
@@ -59,19 +59,19 @@ class TokenGenerator extends Component {
     clientAuthentication: 'Client Authentication'
   };
 
-  setGrantType (key) {
+  setGrantType(key) {
     const data = this.state.data
     data.grantType = key
     this.setState({ data })
   }
 
-  handleChange (e) {
+  handleChange(e) {
     const data = { ...this.state.data }
     data[e.currentTarget.name] = e.currentTarget.value
     this.setState({ data })
   }
 
-  async makeRequest () {
+  async makeRequest() {
     const grantType = this.state.data.grantType
     let requestApi = ''
     const paramsObject = this.makeParams(grantType)
@@ -135,7 +135,7 @@ class TokenGenerator extends Component {
     this.props.onHide()
   }
 
-  makeParams (grantType) {
+  makeParams(grantType) {
     const params = {}
     const data = { ...this.state.data }
     const keys = Object.keys(data)
@@ -184,13 +184,13 @@ class TokenGenerator extends Component {
     return params
   }
 
-  setClientAuthorization (e) {
+  setClientAuthorization(e) {
     const data = this.state.data
     data.clientAuthentication = e.currentTarget.value
     this.setState({ data })
   }
 
-  renderInput (key) {
+  renderInput(key) {
     const grantType = this.state.data.grantType
     switch (key) {
       case 'grantType':
@@ -300,7 +300,7 @@ class TokenGenerator extends Component {
     }
   }
 
-  showPassword () {
+  showPassword() {
     if (this.state.showPassword && this.state.showPassword === true) {
       this.setState({ showPassword: false })
     } else {
@@ -308,7 +308,7 @@ class TokenGenerator extends Component {
     }
   }
 
-  fetchDefaultInputField (key) {
+  fetchDefaultInputField(key) {
     return (
       <>
         <label className='basic-auth-label'>{this.inputFields[key]}</label>
@@ -317,10 +317,10 @@ class TokenGenerator extends Component {
           type={
             key === 'password'
               ? this.state.showPassword
-                  ? this.state.showPassword === true
-                      ? null
-                      : 'password'
+                ? this.state.showPassword === true
+                  ? null
                   : 'password'
+                : 'password'
               : null
           }
           className='token-generator-input-field'
@@ -342,7 +342,7 @@ class TokenGenerator extends Component {
     )
   }
 
-  render () {
+  render() {
     return (
       <div>
         <Modal
@@ -369,12 +369,12 @@ class TokenGenerator extends Component {
                 {this.renderInput(key)}
               </div>
             ))}
-            <div className='button-group'>
+            <div className='text-right'>
               <button className='btn btn-secondary btn-lg' onClick={this.props.onHide}>
                 Cancel
               </button>
               <button
-                className='btn btn-primary btn-lg mr-2'
+                className='btn btn-primary btn-lg ml-2'
                 type='button'
                 onClick={() => this.makeRequest()}
               >

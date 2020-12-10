@@ -28,7 +28,7 @@ const mapStateToProps = (state) => {
   }
 }
 
-function compareByCreatedAt (a, b) {
+function compareByCreatedAt(a, b) {
   const t1 = a?.createdAt
   const t2 = b?.createdAt
   let comparison = 0
@@ -41,7 +41,7 @@ function compareByCreatedAt (a, b) {
 }
 
 class SideBar extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       data: {
@@ -53,7 +53,7 @@ class SideBar extends Component {
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     if (getCurrentUser()) {
       const user = getCurrentUser()
       const name = user.first_name + user.last_name
@@ -70,7 +70,7 @@ class SideBar extends Component {
     }
   }
 
-  componentDidUpdate (prevProps, prevState) {
+  componentDidUpdate(prevProps, prevState) {
     if (this.props.historySnapshot !== prevProps.historySnapshot) {
       this.setState({
         historySnapshot: Object.values(this.props.historySnapshot)
@@ -78,7 +78,7 @@ class SideBar extends Component {
     }
   }
 
-  dataFetched () {
+  dataFetched() {
     return (
       this.props.collections &&
       this.props.versions &&
@@ -123,38 +123,38 @@ class SideBar extends Component {
     this.setState({ historySnapshot: obj })
   };
 
-  emptyFilter () {
+  emptyFilter() {
     const data = { ...this.state.data }
     data.filter = ''
     this.setState({ data })
   }
 
-  openCollection (collectionId) {
+  openCollection(collectionId) {
     this.collectionId = collectionId
   }
 
-  openApiForm () {
+  openApiForm() {
     this.setState({ showOpenApiForm: true })
   }
 
-  closeOpenApiFormModal () {
+  closeOpenApiFormModal() {
     this.setState({ showOpenApiForm: false })
   }
 
-  closeLoginSignupModal () {
+  closeLoginSignupModal() {
     this.setState({
       showLoginSignupModal: false
     })
   }
 
-  openHistorySnapshot (id) {
+  openHistorySnapshot(id) {
     this.props.history.push({
       pathname: `/dashboard/history/${id}`,
       historySnapshotId: id
     })
   }
 
-  renderHistoryList () {
+  renderHistoryList() {
     return (
       <div className='mt-3'>
         {this.state.historySnapshot &&
@@ -167,11 +167,11 @@ class SideBar extends Component {
                   className='btn d-flex align-items-center mb-2'
                   onClick={() => { this.openHistorySnapshot(history.id) }}
                 >
-                  <div className={`api-label lg-label ${history.endpoint.requestType}`}>
+                  {/* <div className={`api-label lg-label ${history.endpoint.requestType}`}>
                     <div className='endpoint-request-div'>
                       {history.endpoint.requestType}
                     </div>
-                  </div>
+                  </div> */}
                   <div className='ml-3'>
                     <div className='sideBarListWrapper'>
                       <div className='text-left'>
@@ -192,7 +192,7 @@ class SideBar extends Component {
     )
   }
 
-  renderTriggerList () {
+  renderTriggerList() {
     return (
       <div className='mt-3'>
         {
@@ -206,11 +206,11 @@ class SideBar extends Component {
                   className='btn d-flex align-items-center mb-2'
                   onClick={() => { this.openHistorySnapshot(history.id) }}
                 >
-                  <div className={`api-label lg-label ${history.endpoint.requestType}`}>
+                  {/* <div className={`api-label lg-label ${history.endpoint.requestType}`}>
                     <div className='endpoint-request-div'>
                       {history.endpoint.requestType}
                     </div>
-                  </div>
+                  </div> */}
                   <div className='ml-3'>
                     <div className='sideBarListWrapper'>
                       <div className='text-left'>
@@ -232,7 +232,7 @@ class SideBar extends Component {
     )
   }
 
-  renderSearchList () {
+  renderSearchList() {
     if (this.state.data.filter !== '') {
       return (
         <div>
@@ -255,7 +255,7 @@ class SideBar extends Component {
     }
   }
 
-  findPendingEndpointsCollections (pendingEndpointIds) {
+  findPendingEndpointsCollections(pendingEndpointIds) {
     const groupsArray = []
     for (let i = 0; i < pendingEndpointIds.length; i++) {
       const endpointId = pendingEndpointIds[i]
@@ -284,7 +284,7 @@ class SideBar extends Component {
     return collectionsArray
   }
 
-  findPendingPagesCollections (pendingPageIds) {
+  findPendingPagesCollections(pendingPageIds) {
     const versionsArray = []
     for (let i = 0; i < pendingPageIds.length; i++) {
       const pageId = pendingPageIds[i]
@@ -304,7 +304,7 @@ class SideBar extends Component {
     return collectionsArray
   }
 
-  getPublicCollections () {
+  getPublicCollections() {
     if (this.dataFetched()) {
       const pendingEndpointIds = Object.keys(this.props.endpoints).filter(
         (eId) => this.props.endpoints[eId].state === 'Pending' || (this.props.endpoints[eId].state === 'Draft' && this.props.endpoints[eId].isPublished)
@@ -323,12 +323,12 @@ class SideBar extends Component {
     }
   }
 
-  getNotificationCount () {
+  getNotificationCount() {
     const collections = this.getPublicCollections()
     return collections?.length || 0
   }
 
-  openPublishDocs (collection) {
+  openPublishDocs(collection) {
     if (collection?.id) {
       this.props.history.push({
         pathname: '/admin/publish',
@@ -345,7 +345,7 @@ class SideBar extends Component {
     }
   }
 
-  renderEmptyCollectionsIfNotLoggedIn () {
+  renderEmptyCollectionsIfNotLoggedIn() {
     return (
       <div className='empty-collections'>
         <div>
@@ -360,7 +360,7 @@ class SideBar extends Component {
     )
   }
 
-  renderCollections () {
+  renderCollections() {
     return (
       <Switch>
         <ProtectedRoute
@@ -389,7 +389,7 @@ class SideBar extends Component {
     )
   }
 
-  renderSidebarTabs () {
+  renderSidebarTabs() {
     return (
       <Tabs
         defaultActiveKey={
@@ -448,7 +448,7 @@ class SideBar extends Component {
     )
   }
 
-  renderUserNotification () {
+  renderUserNotification() {
     return (
       <div className='userInfowrapper'>
         <UserNotification
@@ -462,7 +462,7 @@ class SideBar extends Component {
     )
   }
 
-  renderDashboardSidebar () {
+  renderDashboardSidebar() {
     return (
       <>
         <div className='app-name'>
@@ -470,7 +470,11 @@ class SideBar extends Component {
           HITMAN
         </div>
         <div className='search-box'>
-          <i className='fas fa-search' id='search-icon' />
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M8.25 14.25C11.5637 14.25 14.25 11.5637 14.25 8.25C14.25 4.93629 11.5637 2.25 8.25 2.25C4.93629 2.25 2.25 4.93629 2.25 8.25C2.25 11.5637 4.93629 14.25 8.25 14.25Z" stroke="#828282" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M15.75 15.7498L12.4875 12.4873" stroke="#828282" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+
           <input
             value={this.state.data.filter}
             type='text'
@@ -486,7 +490,7 @@ class SideBar extends Component {
     )
   }
 
-  render () {
+  render() {
     return (
       <nav
         className={
@@ -511,7 +515,7 @@ class SideBar extends Component {
                   path='/p/:collectionId'
                   render={(props) => <Collections {...this.props} />}
                 />
-                )
+              )
           }
         </div>
         {this.collectionId && isDashboardRoute(this.props, true) && (

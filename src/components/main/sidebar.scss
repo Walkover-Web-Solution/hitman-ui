@@ -13,15 +13,13 @@
 }
 
 .user-info .user-avatar {
-  width: 45px;
-  height: 45px;
-  background: rgba(0, 0, 0, 0.3);
-  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  background: #F7F5F4;
+  border-radius: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 .user-details {
@@ -59,7 +57,7 @@
   border-radius: 4px;
 }
 
-.search-box>i {
+.search-box>svg {
   position: absolute;
   left: 10px;
   top: 0;
@@ -91,7 +89,16 @@ input[type="text"]:focus {
   overflow: auto;
 }
 
+.primary-sidebar .sidebar-accordion>button {
+  &:hover {
+    background: #FEFCF7;
+    border-color: #F1EEE5;
+
+  }
+}
+
 .sidebar-accordion>button {
+  width: 100%;
   width: 100%;
   display: flex;
   align-items: center;
@@ -115,6 +122,7 @@ input[type="text"]:focus {
   }
 
   &:hover {
+
     .sidebar-item-action-btn {
       visibility: visible;
       opacity: 1;
@@ -135,7 +143,7 @@ input[type="text"]:focus {
 
 .sidebar-item-action {
   // margin-left: auto;
-  margin-right: 10px;
+  margin-right: 5px;
 }
 
 .sidebar-accordion .sidebar-accordion-item>i {
@@ -143,10 +151,6 @@ input[type="text"]:focus {
   width: 30px;
 }
 
-.sidebar-accordion>button:hover {
-  background: #FEFCF7;
-  border-color: #F1EEE5;
-}
 
 .sidebar-item-action-btn {
   width: 26px;
@@ -177,16 +181,21 @@ input[type="text"]:focus {
 
   .hm-sidebar-outer-block {
     padding: 0;
+    margin-bottom: 10px;
   }
 
   button {
     font-size: 14px;
     font-weight: 400;
+    background: #FEFCF7;
+    margin-bottom: 0;
+    border-top-right-radius: 4px;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
   }
-}
 
-.version-collapse .sidebar-accordion#child-accordion {
-  margin-top: 10px;
+
 }
 
 .app-name {
@@ -206,4 +215,120 @@ input[type="text"]:focus {
 .empty-collections {
   margin: 80px 20px 0px 20px;
   text-align: center;
+}
+
+
+
+
+.linkWrapper {
+  .linkWith {
+    .card-body {
+      .sidebar-accordion {
+        position: relative;
+
+        &:before {
+          top: -18px;
+          border-width: 0 0 2px 2px;
+        }
+
+        &:first-child::before {
+          top: -18px;
+          height: calc(50% + 20px);
+        }
+
+        &::after,
+        &::before {
+          content: '';
+          position: absolute;
+          left: -16px;
+          width: 20px;
+          height: calc(50% + 18px);
+          border-color: #E98A36;
+          border-style: solid;
+          -webkit-box-sizing: border-box;
+          -moz-box-sizing: border-box;
+          box-sizing: border-box;
+        }
+
+        &:last-child:after {
+          border: 0;
+        }
+
+        &::after {
+          top: 50%;
+          border-width: 0 0 0 2px;
+        }
+
+        &.pagesWrapper>button {
+          position: relative;
+
+          &:before {
+            background-image: url(../../assets/icons/pagesIcon.svg);
+            content: "";
+            position: absolute;
+            height: 9px;
+            width: 9px;
+            background-repeat: no-repeat;
+            top: 2px;
+            bottom: 0;
+            margin: auto;
+            left: -20px;
+            background-color: #FEFCF7;
+            z-index: 99999;
+          }
+        }
+      }
+    }
+  }
+}
+
+.versionBoldHeading>button .sidebar-accordion-item {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.versionChovron {
+  margin: 0 0px 0px 10px;
+}
+
+.version-collapse {
+  border-top: 1px solid #EBE7DA;
+}
+
+
+
+.versionPages .sidebar-accordion {
+  position: relative;
+
+  &::before {
+    background-image: url(../../assets/icons/pagesIcon.svg);
+    content: "";
+    position: absolute;
+    height: 11px;
+    width: 10px;
+    background-repeat: no-repeat;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    left: -5px;
+  }
+
+}
+
+.versionsgroups .linkWith>.sidebar-accordion>button {
+  position: relative;
+
+  &::before {
+    background-image: url(../../assets/icons/folderIcons.svg);
+    content: "";
+    position: absolute;
+    height: 11px;
+    width: 10px;
+    background-repeat: no-repeat;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    left: -5px;
+  }
+
 }

@@ -77,7 +77,7 @@ class OpenApiForm extends Component {
               <input type='file' onChange={this.onFileChange.bind(this)} />
             </div>
 
-            <div className='button-group'>
+            <div className='text-right'>
               <button
                 type='button'
                 className='btn btn-secondary btn-lg'
@@ -86,7 +86,7 @@ class OpenApiForm extends Component {
                 Cancel
               </button>
               <button
-                className='btn btn-primary btn-lg mr-2'
+                className='btn btn-primary btn-lg ml-2'
                 type='button'
                 onClick={() => this.importApi()}
               >
