@@ -80,9 +80,7 @@ main.main.ml-sm-auto.col-lg-10 {
   align-items: center;
 
   .button-group {
-    padding: 2px;
-    display: flex;
-    flex-direction: row-reverse;
+    padding: 2px; 
 
     .doc-properties-cancel-button {
       padding: 5px;
@@ -476,7 +474,7 @@ h4.hm-sidebar-title {
     .tab-content {
       margin: 0;
       padding: 15px;
-      border-radius: 3px;
+      border-radius: 4px;
       overflow: auto;
       height: 300px;
       background: #FEFCF7;

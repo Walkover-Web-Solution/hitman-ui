@@ -43,11 +43,9 @@ class GroupForm extends Form {
     this.props.onHide()
     if (this.props.title === 'Add new Group') {
       const data = { ...this.state.data }
-      data.position = this.extractPosition()
       const versionId = this.props.selectedVersion.id
       const newGroup = {
         ...data,
-        endpointsOrder: [],
         requestId: shortid.generate()
       }
       this.props.add_group(versionId, newGroup)
@@ -57,25 +55,10 @@ class GroupForm extends Form {
       const editedGroup = {
         ...this.state.data,
         id: this.props.selected_group.id,
-        endpointsOrder: this.props.selected_group.endpointsOrder,
-        versionId: this.props.selected_group.versionId,
-        position: this.props.selected_group.position
+        versionId: this.props.selected_group.versionId
       }
       this.props.update_group(editedGroup)
     }
-  }
-
-  extractPosition () {
-    let count = -1
-    for (let i = 0; i < Object.keys(this.props.groups).length; i++) {
-      if (
-        this.props.selectedVersion.id ===
-        this.props.groups[Object.keys(this.props.groups)[i]].versionId
-      ) {
-        count = count + 1
-      }
-    }
-    return count + 1
   }
 
   render () {
@@ -97,13 +80,13 @@ class GroupForm extends Form {
             {this.renderInput('name', 'Group Name', 'group name')}
             {this.renderInput('host', 'Host', 'host name')}
             <div className='text-right'>
-              {this.renderButton('Submit')}
               <button
-                className='btn btn-secondary btn-lg ml-2'
+                className='btn btn-secondary btn-lg mr-2'
                 onClick={this.props.onHide}
               >
                 Cancel
               </button>
+              {this.renderButton('Submit')}
             </div>
           </form>
         </Modal.Body>

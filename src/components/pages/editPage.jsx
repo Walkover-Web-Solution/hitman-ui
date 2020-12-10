@@ -141,6 +141,7 @@ class EditPage extends Component {
     return (
       <div className='custom-edit-page'>
         <div className='form-group'>
+          <label htmlFor='name'>Page Name</label>
           <input
             name='name'
             id='name'

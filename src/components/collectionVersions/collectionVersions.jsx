@@ -310,7 +310,7 @@ class CollectionVersions extends Component {
           isDashboardRoute(this.props, true)
             ? (
               <Accordion
-                className='sidebar-accordion'
+                className='sidebar-accordion versionBoldHeading'
                 defaultActiveKey={index === 0
                   ? this.eventkey[versionId]
                   : null}
@@ -318,8 +318,13 @@ class CollectionVersions extends Component {
                 id='child-accordion'
               >
                 <Accordion.Toggle variant='default' eventKey='1'>
+                  <span className='versionChovron'>
+                    <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
+                      <path d='M4.5 6.75L9 11.25L13.5 6.75' stroke='#333333' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
+                    </svg>
+                  </span>
                   <div className='sidebar-accordion-item'>
-                    <i className='uil uil-folder' />
+
                     {this.props.versions[versionId].number}
                   </div>
                   {
@@ -420,16 +425,20 @@ class CollectionVersions extends Component {
                 </Accordion.Toggle>
                 <Accordion.Collapse className='version-collapse' eventKey='1'>
                   <Card.Body>
-                    <VersionPages
-                      {...this.props}
-                      version_id={versionId}
-                      show_filter_version={this.propsFromVersion.bind(this)}
-                    />
-                    <Groups
-                      {...this.props}
-                      version_id={versionId}
-                      show_filter_version={this.propsFromVersion.bind(this)}
-                    />
+                    <div className='linkWrapper versionPages'>
+                      <VersionPages
+                        {...this.props}
+                        version_id={versionId}
+                        show_filter_version={this.propsFromVersion.bind(this)}
+                      />
+                    </div>
+                    <div className='linkWrapper versionsgroups'>
+                      <Groups
+                        {...this.props}
+                        version_id={versionId}
+                        show_filter_version={this.propsFromVersion.bind(this)}
+                      />
+                    </div>
                   </Card.Body>
                 </Accordion.Collapse>
               </Accordion>

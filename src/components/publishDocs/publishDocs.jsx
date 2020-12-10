@@ -4,7 +4,7 @@ import './publishDocs.scss'
 import { connect } from 'react-redux'
 import { updateCollection } from '../collections/redux/collectionsActions'
 import {
-  updateEndpoint
+  updateEndpoint, updateEndpointOrder
 } from '../endpoints/redux/endpointsActions'
 import extractCollectionInfoService from './extractCollectionInfoService'
 import DisplayEndpoint from '../endpoints/displayEndpoint'
@@ -16,7 +16,7 @@ import {
 } from '../publicEndpoint/redux/publicEndpointsActions'
 import PublishDocsForm from './publishDocsForm'
 import DisplayPage from '../pages/displayPage'
-import { updatePage } from '../pages/redux/pagesActions'
+import { updatePage, updatePageOrder } from '../pages/redux/pagesActions'
 import WarningModal from '../common/warningModal'
 
 const URI = require('urijs')
@@ -31,6 +31,9 @@ const publishDocsEnum = {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
+    update_endpoints_order: (endpointIds, groupId) =>
+      dispatch(updateEndpointOrder(endpointIds, groupId)),
+    set_page_ids: (pageIds) => dispatch(updatePageOrder(pageIds)),
     update_page: (editedPage) =>
       dispatch(updatePage(ownProps.history, editedPage, 'publishDocs')),
     update_endpoint: (editedEndpoint) =>
@@ -65,14 +68,19 @@ class PublishDocs extends Component {
 
   componentDidMount () {
     const collectionInfo = this.extractCollectionInfo()
-    const selectedGroupId = this.getInitialGroup(Object.keys(collectionInfo.versions)[0], collectionInfo.groups)
-    const selectedEndpointId = this.getInitialEndpoint(selectedGroupId, collectionInfo.endpoints)
+    const items = this.getInitialItems(Object.keys(
+      collectionInfo.versions)[0],
+    collectionInfo.groups,
+    collectionInfo.endpoints,
+    collectionInfo.pages
+    )
     this.setState({
       selectedCollectionId: URI.parseQuery(this.props.location.search)
         .collectionId,
       selectedVersionId: Object.keys(collectionInfo.versions)[0],
-      selectedGroupId,
-      selectedEndpointId
+      selectedGroupId: items?.selectedGroupId || null,
+      selectedEndpointId: items?.selectedEndpointId || null,
+      selectedPageId: items?.selectedPageId || null
     })
   }
 
@@ -82,39 +90,83 @@ class PublishDocs extends Component {
       if (!(this.state.selectedEndpointId || this.state.selectedPageId) ||
         this.state.selectedCollectionId !== URI.parseQuery(this.props.location.search).collectionId
       ) {
-        const selectedGroupId = this.getInitialGroup(Object.keys(collectionInfo.versions)[0], collectionInfo.groups)
-        const selectedEndpointId = this.getInitialEndpoint(selectedGroupId, collectionInfo.endpoints)
+        const items = this.getInitialItems(Object.keys(
+          collectionInfo.versions)[0],
+        collectionInfo.groups,
+        collectionInfo.endpoints,
+        collectionInfo.pages
+        )
         this.setState({
           selectedCollectionId: URI.parseQuery(this.props.location.search)
             .collectionId,
           selectedVersionId: Object.keys(collectionInfo.versions)[0],
-          selectedGroupId,
-          selectedEndpointId
+          selectedGroupId: items?.selectedGroupId || null,
+          selectedEndpointId: items?.selectedEndpointId || null,
+          selectedPageId: items?.selectedPageId || null
         })
       }
     }
   }
 
-  getInitialGroup (versionId, groups) {
+  getInitialItems (versionId, groups, endpoints, pages, endpointId = null, pageId = null) {
     for (let i = 0; i < Object.keys(groups).length; i++) {
       if (groups[Object.keys(groups)[i]].versionId?.toString() === versionId?.toString()) {
-        return Object.keys(groups)[i]
+        const groupId = groups[Object.keys(groups)[i]].id
+        for (let i = 0; i < Object.keys(endpoints).length; i++) {
+          if (
+            endpoints[Object.keys(endpoints)[i]].groupId?.toString() === groupId?.toString() &&
+            (
+              endpoints[Object.keys(endpoints)[i]].isPublished === true ||
+              endpoints[Object.keys(endpoints)[i]].state === publishDocsEnum.PENDING_STATE
+            ) &&
+            endpointId?.toString() !== Object.keys(endpoints)[i]?.toString()
+          ) {
+            const items = {
+              selectedGroupId: groupId,
+              selectedEndpointId: Object.keys(endpoints)[i],
+              selectedPageId: null
+            }
+            return items
+          }
+        }
+        for (let i = 0; i < Object.keys(pages).length; i++) {
+          if (
+            pages[Object.keys(pages)[i]].versionId?.toString() === versionId?.toString() &&
+            (pages[Object.keys(pages)[i]].isPublished === true ||
+              pages[Object.keys(pages)[i]].state === publishDocsEnum.PENDING_STATE) &&
+            pageId?.toString() !== Object.keys(pages)[i]?.toString()
+          ) {
+            const items = {
+              selectedGroupId: null,
+              selectedEndpointId: null,
+              selectedPageId: Object.keys(pages)[i]
+            }
+            return items
+          }
+        }
+        for (let i = 0; i < Object.keys(pages).length; i++) {
+          if (
+            pages[Object.keys(pages)[i]].groupId?.toString() === groupId?.toString() &&
+            (pages[Object.keys(pages)[i]].isPublished === true ||
+              pages[Object.keys(pages)[i]].state === publishDocsEnum.PENDING_STATE) &&
+            pageId?.toString() !== Object.keys(pages)[i]?.toString()
+          ) {
+            const items = {
+              selectedGroupId: groupId,
+              selectedEndpointId: null,
+              selectedPageId: Object.keys(pages)[i]
+            }
+            return items
+          }
+        }
+        const items = {
+          selectedGroupId: null,
+          selectedEndpointId: null,
+          selectedPageId: null
+        }
+        return items
       }
     }
-    return ''
-  }
-
-  getInitialEndpoint (groupId, endpoints, endpointId = null) {
-    for (let i = 0; i < Object.keys(endpoints).length; i++) {
-      if (endpoints[Object.keys(endpoints)[i]].groupId?.toString() === groupId?.toString() &&
-        (endpoints[Object.keys(endpoints)[i]].isPublished === true ||
-          endpoints[Object.keys(endpoints)[i]].state === publishDocsEnum.PENDING_STATE) &&
-        endpointId?.toString() !== Object.keys(endpoints)[i]?.toString()
-      ) {
-        return Object.keys(endpoints)[i]
-      }
-    }
-    return ''
   }
 
   extractCollectionInfo () {
@@ -145,12 +197,17 @@ class PublishDocs extends Component {
   }
 
   setSelectedVersion (e) {
-    const selectedGroupId = this.getInitialGroup(e.currentTarget.value, this.state.groups)
-    const selectedEndpointId = this.getInitialEndpoint(selectedGroupId, this.state.endpoints)
+    const items = this.getInitialItems(
+      e.currentTarget.value,
+      this.state.groups,
+      this.state.endpoints,
+      this.state.pages
+    )
     this.setState({
       selectedVersionId: e.currentTarget.value,
-      selectedGroupId,
-      selectedEndpointId
+      selectedGroupId: items?.selectedGroupId || null,
+      selectedEndpointId: items?.selectedEndpointId || null,
+      selectedPageId: items?.selectedPageId || null
     })
   }
 
@@ -170,8 +227,16 @@ class PublishDocs extends Component {
     if (this.state.endpoints[endpointId].isPublished) {
       //
     } else {
+      const items = this.getInitialItems(this.state.selectedVersionId,
+        this.state.groups,
+        this.state.endpoints,
+        this.state.pages,
+        endpointId
+      )
       this.setState({
-        selectedEndpointId: this.getInitialEndpoint(this.state.selectedGroupId, this.state.endpoints, endpointId)
+        selectedGroupId: items?.selectedGroupId || null,
+        selectedEndpointId: items?.selectedEndpointId || null,
+        selectedPageId: items?.selectedPageId || null
       })
     }
     this.props.reject_endpoint(this.props.endpoints[endpointId])
@@ -194,19 +259,16 @@ class PublishDocs extends Component {
     if (this.state.pages[pageId].isPublished) {
       //
     } else {
-      if (this.props.pages[pageId].groupId === null) {
-        const selectedGroupId = this.getInitialGroup(this.state.selectedVersionId, this.state.groups)
-        this.setState({
-          selectedGroupId,
-          selectedEndpointId: this.getInitialEndpoint(selectedGroupId, this.state.endpoints),
-          selectedPageId: false
-        })
-      } else {
-        this.setState({
-          selectedEndpointId: this.getInitialEndpoint(this.state.selectedGroupId, this.state.endpoints),
-          selectedPageId: false
-        })
-      }
+      const items = this.getInitialItems(this.state.selectedVersionId,
+        this.state.groups,
+        this.state.endpoints,
+        this.state.pages
+      )
+      this.setState({
+        selectedGroupId: items?.selectedGroupId || null,
+        selectedEndpointId: items?.selectedEndpointId || null,
+        selectedPageId: items?.selectedPageId || null
+      })
     }
   }
 
@@ -228,13 +290,24 @@ class PublishDocs extends Component {
         endpoints[Object.keys(this.state.endpoints)[i]] = this.state.endpoints[Object.keys(this.state.endpoints)[i]]
       }
     }
+    const sortedEndpoints = Object.values(endpoints).sort(function (a, b) {
+      return a.position - b.position
+    })
     return (
       <span>
-        {Object.keys(endpoints).map((endpointId) =>
-          <div key={endpointId} onClick={() => this.openEndpoint(groupId, endpointId)} className='groupListing'>
+        {sortedEndpoints.map((endpoint) =>
+          <div
+            draggable
+            onDragOver={(e) => {
+              e.preventDefault()
+            }}
+            onDragStart={(e) => this.onDragStart(e, endpoint.id)}
+            onDrop={(e) => this.onDrop(e, endpoint.id, sortedEndpoints, 'endpoints')}
+            key={endpoint.id} onClick={() => this.openEndpoint(groupId, endpoint.id)} className='groupListing'
+          >
             {/* <span className='tag'>E</span> */}
-            {endpoints[endpointId]?.name}
-            {this.displayState(endpoints[endpointId])}
+            {endpoints[endpoint.id]?.name}
+            {this.displayState(endpoints[endpoint.id])}
           </div>
         )}
       </span>
@@ -255,15 +328,25 @@ class PublishDocs extends Component {
             pages[Object.keys(this.state.pages)[i]] = this.state.pages[Object.keys(this.state.pages)[i]]
           }
         }
+        const sortedPages = Object.values(pages).sort(function (a, b) {
+          return a.position - b.position
+        })
+
         return (
           <div className='pages-inner'>
-            {Object.keys(pages).map((pageId) =>
+            {sortedPages.map((page) =>
               <div
-                key={pageId} onClick={() => this.openPage(groupId, pageId)} className='groupListing'
+                draggable
+                onDragStart={(e) => this.onDragStart(e, page.id)}
+                onDragOver={(e) => {
+                  e.preventDefault()
+                }}
+                onDrop={(e) => this.onDrop(e, page.id, sortedPages, 'pages')}
+                key={page.id} onClick={() => this.openPage(groupId, page.id)} className='groupListing'
               >
                 {/* <span className='tag'>P</span> */}
-                {this.state.pages[pageId]?.name}
-                {this.displayState(pages[pageId])}
+                {this.state.pages[page.id]?.name}
+                {this.displayState(pages[page.id])}
               </div>
             )}
           </div>
@@ -280,21 +363,66 @@ class PublishDocs extends Component {
             pages[Object.keys(this.state.pages)[i]] = this.state.pages[Object.keys(this.state.pages)[i]]
           }
         }
+        const sortedPages = Object.values(pages).sort(function (a, b) {
+          return a.position - b.position
+        })
         if (Object.keys(pages).length === 0) return
         return (
           <div className='pages-inner-wrapper'>
-            {Object.keys(pages).map((pageId) =>
+            {sortedPages.map((page) =>
               <div
-                key={pageId} onClick={() => this.openPage('', pageId)} className='groupListing'
+                draggable
+                onDragStart={(e) => this.onDragStart(e, page.id)}
+                onDragOver={(e) => {
+                  e.preventDefault()
+                }}
+                onDrop={(e) => this.onDrop(e, page.id, sortedPages, 'pages')}
+                key={page.id} onClick={() => this.openPage('', page.id)} className='groupListing'
               >
                 {/* <span className='tag'>P</span> */}
-                {this.state.pages[pageId]?.name}
-                {this.displayState(pages[pageId])}
+                {this.state.pages[page.id]?.name}
+                {this.displayState(pages[page.id])}
               </div>
             )}
           </div>
         )
       }
+    }
+  }
+
+  onDragStart (e, gId) {
+    this.draggedItem = gId
+  };
+
+  onDrop (e, destinationItemId, sortedData, item) {
+    e.preventDefault()
+    if (!this.draggedItem) {
+      //
+    } else {
+      if (this.draggedItem === destinationItemId) {
+        this.draggedItem = null
+        return
+      }
+      const ids = []
+      sortedData.map((data) => ids.push(data.id))
+      let index = ''
+      let dropCheckFlag = false
+      for (let i = 0; i < ids.length; i++) {
+        if (ids[i] === destinationItemId) {
+          index = i
+        }
+        if (this.draggedItem === ids[i]) {
+          dropCheckFlag = true
+        }
+      }
+      if (!dropCheckFlag) return
+      const itemIds = ids.filter(
+        (item) => item !== this.draggedItem
+      )
+      itemIds.splice(index, 0, this.draggedItem)
+      if (item === 'pages') { this.props.set_page_ids(itemIds) }
+      if (item === 'endpoints') { this.props.update_endpoints_order(itemIds) }
+      this.draggedItem = null
     }
   }
 
@@ -496,10 +624,19 @@ class PublishDocs extends Component {
       groupId: this.state.selectedGroupId,
       isPublished: false,
       publishedEndpoint: {},
-      state: 'Draft'
+      state: 'Draft',
+      position: null
     })
+    const items = this.getInitialItems(this.state.selectedVersionId,
+      this.state.groups,
+      this.state.endpoints,
+      this.state.pages,
+      endpointId
+    )
     this.setState({
-      selectedEndpointId: this.getInitialEndpoint(this.state.selectedGroupId, this.state.endpoints, endpointId)
+      selectedGroupId: items?.selectedGroupId || null,
+      selectedEndpointId: items?.selectedEndpointId || null,
+      selectedPageId: items?.selectedPageId || null
     })
   }
 
@@ -508,20 +645,18 @@ class PublishDocs extends Component {
     page.isPublished = false
     page.publishedEndpoint = {}
     page.state = 'Draft'
+    page.position = null
     this.props.update_page(page)
-    if (this.props.pages[pageId].groupId === null) {
-      const selectedGroupId = this.getInitialGroup(this.state.selectedVersionId, this.state.groups)
-      this.setState({
-        selectedGroupId,
-        selectedEndpointId: this.getInitialEndpoint(selectedGroupId, this.state.endpoints),
-        selectedPageId: false
-      })
-    } else {
-      this.setState({
-        selectedEndpointId: this.getInitialEndpoint(this.state.selectedGroupId, this.state.endpoints),
-        selectedPageId: false
-      })
-    }
+    const items = this.getInitialItems(this.state.selectedVersionId,
+      this.state.groups,
+      this.state.endpoints,
+      this.state.pages
+    )
+    this.setState({
+      selectedGroupId: items?.selectedGroupId || null,
+      selectedEndpointId: items?.selectedEndpointId || null,
+      selectedPageId: items?.selectedPageId || null
+    })
   }
 
   endpointPublishAndReject () {
@@ -577,19 +712,20 @@ class PublishDocs extends Component {
 
     if (this.state.selectedPageId) {
       return (
-        <div>
-          <div className='d-flex justify-content-between mx-2 mb-3'>
-            <div>
-              <div className='contacts mb-2'>{this.props.groups[this.state.selectedGroupId]?.name}</div>
-              <div className='list-contacts'>
-                {pageName}
+        <div className='row'>
+          <div className='col-12'>
+            <div className='d-flex justify-content-between mx-2 mb-3 mt-4'>
+              <div>
+                <div className='contacts mb-2'>{this.props.groups[this.state.selectedGroupId]?.name}</div>
+                <div className='list-contacts'>
+                  {pageName}
+                </div>
               </div>
+              {this.pagePublishAndReject()}
             </div>
-            {this.pagePublishAndReject()}
+            {this.checkPageState()}
           </div>
-          {this.checkPageState()}
         </div>
-
       )
     }
   }

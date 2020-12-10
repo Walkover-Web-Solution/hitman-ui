@@ -4,8 +4,8 @@ $border-color: #E5E5E5;
   width: 100%;
   display: flex;
   flex-direction: row;
-  border-bottom: 1px solid $border-color;
   margin-top: 20px;
+
   .tabs-container {
     // width: 100%;
     // margin-left: 10px;
@@ -16,30 +16,32 @@ $border-color: #E5E5E5;
     height: 40px;
     align-self: flex-end;
     width: calc(100% - 200px);
+
     .item-wrp {
       // width: calc(100vw - 560px);
       width: 100%;
     }
+
     .nav {
       height: 100%;
+
       .nav-item {
         padding: 0px;
         display: flex;
         flex-direction: row;
         justify-content: space-around;
         align-items: center;
-        border: 1px solid $border-color;
+        border: 1px solid #BDBDBD;
         border-bottom: none;
         margin: 0px 2px;
         height: 100%;
-        // width: 220px;
-        border-top-left-radius: 3px;
-        border-top-right-radius: 3px;
-        // min-width: 64px;
+        border-top-left-radius: 4px;
+        border-top-right-radius: 4px;
         max-width: 220px;
         width: 100%;
         min-width: 0;
         background-color: #FBF9F5;
+
         .nav-link {
           height: 100%;
           width: 100%;
@@ -48,6 +50,7 @@ $border-color: #E5E5E5;
           // width: 220px;
           border-radius: 0px;
           min-width: 0;
+
           .btn {
             width: 100%;
             text-align: left;
@@ -59,40 +62,49 @@ $border-color: #E5E5E5;
             font-size: 13px;
             color: #333;
             min-width: 0;
+
             label {
               margin: 0;
             }
           }
         }
+
         .btn {
           height: 100%;
           border-radius: 0px;
           padding: 0px;
           padding-right: 10px;
+
           .fas {
-            opacity: 0.7;
+            opacity: 0.8;
+            color: #E98A36;
+            font-size: 10px;
           }
         }
-        > .btn {
-          padding-right: 0;
-          font-size: 12px;
+
+        >.btn {
+          padding-right: 5px;
+          font-size: 14px;
           border: none;
         }
+
         .nav-link.active {
           background-color: #ffffff;
           border-bottom: #ffffff !important;
-          border-top: 2px solid tomato;
+          border-top: 2px solid #ffffff;
           border-top-left-radius: 3px;
           box-shadow: 0 1px 0 0 #ffffff !important;
         }
-        .nav-link.active ~ .btn {
+
+        .nav-link.active~.btn {
           background-color: #ffffff;
           border-bottom: #ffffff;
-          border-top: 2px solid tomato;
+          border-top: 2px solid #ffffff;
           border-top-right-radius: 3px;
           box-shadow: 0 1px 0 0 #ffffff !important;
         }
       }
+
       .tab-buttons {
         width: 35px !important;
         min-width: 35px;
@@ -100,42 +112,52 @@ $border-color: #E5E5E5;
         justify-content: center;
         margin: 0px;
         border-radius: 0px;
+
         .btn {
           display: flex;
           align-items: center;
           padding: 0px;
           font-size: 16px;
+
           .fa-plus {
             font-size: 15px;
           }
+
           .fa-ellipsis-h {
             font-size: 18px;
           }
         }
+
         .btn:hover {
           .fa-plus {
             color: tomato;
           }
+
           .fa-ellipsis-h {
             color: tomato;
           }
         }
       }
+
       #add-new-tab-button {
         border-top-left-radius: 5px;
-        > .btn {
+
+        >.btn {
           width: 100%;
           justify-content: center;
         }
       }
+
       #tabs-menu-button {
         border-left: 0px;
         border-top-right-radius: 5px;
+
         .dropdown {
           .dropdown-menu {
             transform: translate3d(-132px, 20px, 0px);
             border-radius: 0px;
             padding: 10px;
+
             .btn {
               font-size: 15px;
             }
@@ -146,7 +168,13 @@ $border-color: #E5E5E5;
   }
 }
 
-#modified-dot-icon {
-  font-size: 10px;
-  color: tomato;
+.newTabs .btn {
+  border: 1px solid #BDBDBD;
+  border-bottom: none;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+  margin-right: 5px;
+  padding: 0.35rem 0.5rem;
 }
