@@ -289,7 +289,6 @@ class CollectionsComponent extends Component {
           'collapse show'
       }
     }
-
     return (
       <React.Fragment key={collectionId}>
         {collectionState === 'singleCollection'
@@ -309,7 +308,7 @@ class CollectionsComponent extends Component {
           defaultActiveKey='0'
           key={collectionId}
           id='parent-accordion'
-          className='sidebar-accordion'
+          className={this.props.selectedCollectionId === collectionId ? 'sidebar-accordion active' : 'sidebar-accordion'}
         >
           <Accordion.Toggle
             variant='default'

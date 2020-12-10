@@ -253,9 +253,10 @@ class Pages extends Component {
   }
 
   displayUserPages (pageId) {
+    const idToCheck = this.props.location.pathname.split('/')[2] === 'page' ? this.props.location.pathname.split('/')[3] : null
     return (
       <div
-        className='sidebar-accordion pagesWrapper'
+        className={idToCheck === pageId ? 'sidebar-accordion pagesWrapper active' : 'sidebar-accordion pagesWrapper'}
         id='accordion'
         key={this.props.index}
       >
@@ -287,9 +288,10 @@ class Pages extends Component {
   }
 
   displayPublicPages (pageId) {
+    const idToCheck = this.props.location.pathname.split('/')[3] === 'pages' ? this.props.location.pathname.split('/')[4] : null
     return (
       <div
-        className='hm-sidebar-item'
+        className={idToCheck === pageId ? 'hm-sidebar-item active' : 'hm-sidebar-item'}
         onClick={() => {
           const page = this.props.pages[pageId]
           this.handleDisplay(page, this.props.collection_id, true)

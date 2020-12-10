@@ -302,7 +302,8 @@ class PublishDocs extends Component {
             }}
             onDragStart={(e) => this.onDragStart(e, endpoint.id)}
             onDrop={(e) => this.onDrop(e, endpoint.id, sortedEndpoints, 'endpoints')}
-            key={endpoint.id} onClick={() => this.openEndpoint(groupId, endpoint.id)} className='groupListing'
+            key={endpoint.id} onClick={() => this.openEndpoint(groupId, endpoint.id)}
+            className={this.state.selectedEndpointId === endpoint.id ? 'groupListing active' : 'groupListing'}
           >
             {/* <span className='tag'>E</span> */}
             {endpoints[endpoint.id]?.name}
@@ -341,7 +342,8 @@ class PublishDocs extends Component {
                   e.preventDefault()
                 }}
                 onDrop={(e) => this.onDrop(e, page.id, sortedPages, 'pages')}
-                key={page.id} onClick={() => this.openPage(groupId, page.id)} className='groupListing'
+                key={page.id} onClick={() => this.openPage(groupId, page.id)}
+                className={this.state.selectedPageId === page.id ? 'groupListing active' : 'groupListing'}
               >
                 {/* <span className='tag'>P</span> */}
                 {this.state.pages[page.id]?.name}
@@ -376,7 +378,8 @@ class PublishDocs extends Component {
                   e.preventDefault()
                 }}
                 onDrop={(e) => this.onDrop(e, page.id, sortedPages, 'pages')}
-                key={page.id} onClick={() => this.openPage('', page.id)} className='groupListing'
+                key={page.id} onClick={() => this.openPage('', page.id)}
+                className={this.state.selectedPageId === page.id ? 'groupListing active' : 'groupListing'}
               >
                 {/* <span className='tag'>P</span> */}
                 {this.state.pages[page.id]?.name}
