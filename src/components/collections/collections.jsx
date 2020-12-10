@@ -326,7 +326,6 @@ class CollectionsComponent extends Component {
                   className='sidebar-accordion-item'
                   onClick={() => this.openSelectedCollection(collectionId)}
                 >
-                  <i className='uil uil-parcel' />
                   <div>{this.props.collections[collectionId].name}</div>
                 </div>
                 )}

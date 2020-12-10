@@ -100,7 +100,6 @@ class Pages extends Component {
   displayPageName (pageId) {
     return (
       <div className='sidebar-accordion-item'>
-        <i className='uil uil-file-alt' aria-hidden='true' />
         {this.props.pages[pageId].name}
       </div>
     )
@@ -256,7 +255,7 @@ class Pages extends Component {
   displayUserPages (pageId) {
     return (
       <div
-        className='sidebar-accordion'
+        className='sidebar-accordion pagesWrapper'
         id='accordion'
         key={this.props.index}
       >
@@ -300,7 +299,6 @@ class Pages extends Component {
           this.handleDisplay(page, this.props.collection_id, false)
         }}
       >
-        <i className='uil uil-file-alt' aria-hidden='true' />
         {this.props.pages[pageId].name}
       </div>
     )

@@ -198,7 +198,7 @@ $border-color: rgba(227, 228, 230, 0.7);
       padding: 3px 10px;
 
       .list-item-wrapper {
-        .fa-folder {
+        svg {
           margin-right: 10px;
         }
       }
@@ -241,7 +241,7 @@ $border-color: rgba(227, 228, 230, 0.7);
 }
 
 .endpoint-container {
-  .panel-endpoint-name-container { 
+  .panel-endpoint-name-container {
     margin-bottom: 20px;
 
     .public-endpoint-name-input {
@@ -304,7 +304,7 @@ $border-color: rgba(227, 228, 230, 0.7);
         width: 30px;
       }
 
-      .dropdown-menu.show { 
+      .dropdown-menu.show {
         min-width: 130px;
       }
 
@@ -339,6 +339,7 @@ $border-color: rgba(227, 228, 230, 0.7);
           font-size: 14px;
           font-weight: 600;
           border-radius: 4px;
+          outline: inherit;
         }
       }
 
@@ -389,6 +390,7 @@ $border-color: rgba(227, 228, 230, 0.7);
           height: 48px;
           border: 1px solid #E98A36;
           border-radius: 4px;
+          font-size: 14px;
         }
       }
     }
@@ -768,6 +770,7 @@ table#custom-generic-table {
   flex: 1;
   background-color: #fff;
   min-height: 220px;
+  border-radius: 4px;
 }
 
 .authorization-selector-wrapper {
@@ -783,7 +786,6 @@ table#custom-generic-table {
 
   .auth-selector-container {
     .dropdown {
-      background-color: #f1f1f1;
 
       button#dropdownMenuButton {
         width: 100%;
@@ -792,6 +794,8 @@ table#custom-generic-table {
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
+        border-radius: 3px;
+        height: 48px;
       }
 
       .dropdown-menu.show {
@@ -977,7 +981,6 @@ table#custom-generic-table {
   width: 100%;
   text-align: left;
   flex-grow: 1;
-  padding-left: 10px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1051,12 +1054,10 @@ table#custom-generic-table {
     padding: 10px;
     margin: 10px;
     margin-bottom: 25px;
-    background: rgb(247, 247, 247) !important;
-    /* background: blue; */
+    background: #FEFCF7;
     font-weight: 340;
-    font-family: serif;
-    border-radius: 10px;
-    border: 1.5px solid;
+    border-radius: 4px;
+    border: 1px solid #E98A36;
   }
 
   .sample-response-edit {
@@ -1075,15 +1076,16 @@ table#custom-generic-table {
 .custom-json-pretty {
   max-height: 250px;
   overflow: auto;
-  border: 1px solid black;
+  border: 1px solid #E98A36;
   padding: 10px;
   margin: 10px;
-  background: white;
-  border-radius: 10px;
+  background: #FEFCF7;
+  border-radius: 4px;
 }
 
 .add-to-sample-response {
   width: 100%;
+
   .toast.show {
     padding: 0;
     height: 60px;
@@ -1139,10 +1141,12 @@ table#custom-generic-table {
   .sample-response {
     background: #ffffff;
     border-radius: 4px;
+    text-align: center;
 
     .tab-content {
       overflow: auto;
       height: 300px;
+      text-align: left;
       margin: 15px 0 0 0;
     }
   }
@@ -1167,9 +1171,9 @@ table#custom-generic-table {
   nav.nav.nav-tabs {
     border: 1px solid #E0E0E0;
     border-radius: 4px;
-    width: 100%;
-    max-width: 400px;
+    width: auto;
     margin: 15px auto 0;
+    display: inline-block;
   }
 
   nav.nav.nav-tabs a {
@@ -1177,10 +1181,18 @@ table#custom-generic-table {
     margin: 5px;
     border: none;
     border-radius: 4px;
+    display: inline-block;
     padding: 8px 20px;
+
+    &.active {
+      background: #fcfcfc;
+      box-shadow: 0px 7px 12px rgba(64, 49, 30, 0.25);
+      font-weight: 600;
+    }
+
   }
 
-  nav.nav.nav-tabs a.active {
+  nav.nav.nav-tabs a:hover {
     box-shadow: 0px 7px 12px rgba(64, 49, 30, 0.25);
   }
 
@@ -1203,6 +1215,7 @@ table#custom-generic-table {
       height: 48px !important;
       font-weight: 600 !important;
       font-size: 12px !important;
+      border-radius: 4px !important;
     }
   }
 }
@@ -1234,6 +1247,12 @@ table#custom-generic-table {
 .hosted-APIs {
   .dropdown .dropdown-menu {
     min-width: 250px;
+
+    .fa-circle {
+      color: #E98A36;
+      margin-left: 5px;
+      font-size: 10px;
+    }
   }
 
   .dropdown .dropdown-toggle {
@@ -1245,17 +1264,7 @@ table#custom-generic-table {
     font-size: 14px;
     font-weight: 600;
     outline: none;
-
-
-
-    &::after {
-      right: 15px;
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      margin: auto;
-      height: 3px;
-    }
+    justify-content: space-between;
   }
 }
 
@@ -1276,8 +1285,17 @@ table#custom-generic-table {
     }
   }
 }
+
 .colorTitle p {
   color: #333333;
   font-size: 14px;
   font-weight: 600;
+}
+
+
+
+.hm-public-endpoint-headers {
+  background: #fff;
+  padding: 20px;
+  border-radius: 4px;
 }

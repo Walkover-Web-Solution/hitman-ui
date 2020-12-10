@@ -1889,7 +1889,7 @@ class DisplayEndpoint extends Component {
                                   )
                                 : (
                                   <button
-                                    className='btn btn-primary'
+                                    className='btn btn-outline orange'
                                     type='button'
                                     id='save-endpoint-button'
                                     onClick={() => this.handleSave()}

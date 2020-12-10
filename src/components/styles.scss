@@ -493,7 +493,8 @@ button.btn {
 
 .custom-raw-editor {
   width: 100% !important;
-  height: 300px !important;
+  height: 250px !important;
+  border-radius: 4px;
 }
 
 .custom-radio-input {
@@ -555,12 +556,12 @@ button.btn.custom-body-type-button {
 
 .input-field-wrapper {
   input.token-generator-input-field {
-    height: 40px;
+    height: 48px;
     border: 1px solid #E0E0E0;
     font-size: 14px;
     font-weight: 400;
     color: #000;
-    border-radius: 0px;
+    border-radius: 4px;
     padding: 0 10px;
 
     &:focus {
@@ -586,12 +587,13 @@ button.btn.custom-body-type-button {
     button.dropdown-toggle {
       background: #fff !important;
       flex: 1.6 1;
-      height: 40px;
+      height: 48px;
       border: 1px solid #E0E0E0;
       font-size: 14px;
       font-weight: 400;
       color: #000;
-      border-radius: 0;
+      border-radius:4px;
+      justify-content: space-between;
     }
 
     .dropdown-menu {

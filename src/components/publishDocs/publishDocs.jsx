@@ -702,19 +702,20 @@ class PublishDocs extends Component {
 
     if (this.state.selectedPageId) {
       return (
-        <div>
-          <div className='d-flex justify-content-between mx-2 mb-3'>
-            <div>
-              <div className='contacts mb-2'>{this.props.groups[this.state.selectedGroupId]?.name}</div>
-              <div className='list-contacts'>
-                {pageName}
+        <div className='row'>
+          <div className='col-12'>
+            <div className='d-flex justify-content-between mx-2 mb-3 mt-4'>
+              <div>
+                <div className='contacts mb-2'>{this.props.groups[this.state.selectedGroupId]?.name}</div>
+                <div className='list-contacts'>
+                  {pageName}
+                </div>
               </div>
+              {this.pagePublishAndReject()}
             </div>
-            {this.pagePublishAndReject()}
+            {this.checkPageState()}
           </div>
-          {this.checkPageState()}
         </div>
-
       )
     }
   }

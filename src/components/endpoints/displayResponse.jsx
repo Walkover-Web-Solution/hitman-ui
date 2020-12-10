@@ -193,7 +193,7 @@ class DisplayResponse extends Component {
                               onClick={() =>
                                 this.addSampleResponse(this.props.response)}
                             >
-                              Add to Sample Response
+                              <svg width='16' height='16' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M9 3.75V14.25' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' /><path d='M3.75 9H14.25' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' /></svg> Add to Sample Response
                             </div>
                           </div>
                           )
