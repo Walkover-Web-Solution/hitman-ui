@@ -436,10 +436,6 @@ class Endpoints extends Component {
       <div className='sidebar-accordion' key={endpointId}>
         <div className={this.props.endpoints[endpointId].state} />
         <button
-          draggable
-          onDragOver={(e) => this.onDragOver(e, endpointId)}
-          onDragStart={(e) => this.onDragStart(e, endpointId)}
-          onDrop={(e) => this.onDrop(e, endpointId)}
           onClick={() =>
             this.handleDisplay(
               this.props.endpoints[endpointId],
@@ -466,7 +462,7 @@ class Endpoints extends Component {
     return (
       <>
         {this.filterEndpoints()}
-        {this.sequencingOnFilter()}
+        {/* {this.sequencingOnFilter()} */}
         {endpoints &&
           Object.keys(endpoints).length !== 0 &&
           Object.keys(endpoints)
@@ -531,7 +527,7 @@ class Endpoints extends Component {
     }
     if (this.props.filter === '') {
       this.filteredEndpoints = { ...this.props.endpoints }
-      this.filteredEndpointsOrder = [...this.props.endpoints_order]
+      // this.filteredEndpointsOrder = [...this.props.endpoints_order]
     }
   }
 
@@ -552,7 +548,9 @@ class Endpoints extends Component {
       endpointsArray = [...endpointsArray, endpoint]
     }
     endpointsArray.sort(function (a, b) {
-      return a.position - b.position
+      if (a.name < b.name) { return -1 }
+      if (a.name > b.name) { return 1 }
+      return 0
     })
     return endpointsArray || []
   }

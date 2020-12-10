@@ -261,12 +261,12 @@ class Pages extends Component {
         key={this.props.index}
       >
         <button
-          draggable
-          onDragStart={(e) => this.props.onDragStart(e, pageId)}
-          onDragOver={(e) => {
-            e.preventDefault()
-          }}
-          onDrop={(e) => this.props.onDrop(e, pageId)}
+          // draggable
+          // onDragStart={(e) => this.props.onDragStart(e, pageId)}
+          // onDragOver={(e) => {
+          //   e.preventDefault()
+          // }}
+          // onDrop={(e) => this.props.onDrop(e, pageId)}
           data-toggle='collapse'
           data-target={`#${pageId}`}
           aria-expanded='true'
