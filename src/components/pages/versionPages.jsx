@@ -42,35 +42,6 @@ class VersionPages extends Component {
     this.setState({ showDeleteModal: false })
   }
 
-  onDragStart = (e, gId) => {
-    this.draggedItem = gId
-  };
-
-  onDrop (e, destinationPageId) {
-    e.preventDefault()
-
-    if (!this.draggedItem) {
-      //
-    } else {
-      if (this.draggedItem === destinationPageId) {
-        this.draggedItem = null
-        return
-      }
-      const pages = this.extractPages()
-      const positionWisePages = this.makePositionWisePages({ ...pages })
-      const index = positionWisePages.findIndex(
-        (pId) => pId === destinationPageId
-      )
-      const pageIds = positionWisePages.filter(
-        (item) => item !== this.draggedItem
-      )
-      pageIds.splice(index, 0, this.draggedItem)
-
-      this.props.set_page_ids(pageIds, this.props.group_id)
-      this.draggedItem = null
-    }
-  }
-
   extractPages () {
     const pages = {}
     for (let i = 0; i < Object.keys(this.props.pages).length; i++) {
@@ -144,7 +115,9 @@ class VersionPages extends Component {
     }
 
     versionPagesArray.sort(function (a, b) {
-      return a.position - b.position
+      if (a.number < b.number) { return -1 }
+      if (a.number > b.number) { return 1 }
+      return 0
     })
 
     const versionPages = {}
@@ -191,11 +164,6 @@ class VersionPages extends Component {
                           {...this.props}
                           page_id={pageId}
                           index={index}
-                          onDragStart={this.onDragStart.bind(this)}
-                          // onDragOver={(e) => {
-                          //   e.preventDefault();
-                          // }}
-                          onDrop={this.onDrop.bind(this)}
                           open_delete_page_modal={this.openDeletePageModal.bind(
                             this
                           )}

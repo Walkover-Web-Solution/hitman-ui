@@ -42,7 +42,7 @@ class Authorization extends Component {
       this.props.groupId !== null
     ) {
       this.authResponses = this.props.versions[
-        this.props.groups[this.props.groupId].versionId
+        this.props.groups[this.props.groupId]?.versionId
       ]?.authorizationResponse
       if (this.authResponses === null) {
         this.authResponses = []
