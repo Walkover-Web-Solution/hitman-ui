@@ -12,7 +12,7 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 class ShareVersionForm extends Form {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       data: {
@@ -26,12 +26,12 @@ class ShareVersionForm extends Form {
     }
   }
 
-  componentDidMount() {
+  componentDidMount () {
     // if (this.props.location.shareIdentifier) {
     // }
   }
 
-  async doSubmit(props) {
+  async doSubmit (props) {
     if (this.props.title === 'Import Version') {
       this.props.onHide()
       const collectionId = this.props.selected_collection.id
@@ -41,7 +41,7 @@ class ShareVersionForm extends Form {
     }
   }
 
-  render() {
+  render () {
     return (
       <Modal
         {...this.props}

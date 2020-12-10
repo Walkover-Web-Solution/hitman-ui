@@ -9,6 +9,13 @@ export function importApi (openApiObject) {
   return http.post(`${apiUrl}/import/openApi/${userId}`, openApiObject)
 }
 
+export function importPostmanCollection (collection) {
+  const user = authService.getCurrentUser()
+  const userId = user.identifier
+  return http.post(`${apiUrl}/import/postman/${userId}`, collection)
+}
+
 export default {
-  importApi
+  importApi,
+  importPostmanCollection
 }

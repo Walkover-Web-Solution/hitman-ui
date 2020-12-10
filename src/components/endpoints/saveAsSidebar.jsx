@@ -17,7 +17,7 @@ const mapStateToProps = state => {
 }
 
 class SaveAsSidebar extends Form {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       data: {
@@ -42,13 +42,13 @@ class SaveAsSidebar extends Form {
     }
   }
 
-  componentDidMount() {
+  componentDidMount () {
     const data = { ...this.state.data }
     data.name = this.props.name
     this.setState({ data })
   }
 
-  setList(item) {
+  setList (item) {
     const list = {}
     switch (this.state.list.type) {
       case 'collections':
@@ -70,7 +70,7 @@ class SaveAsSidebar extends Form {
     }
   }
 
-  openAddModal() {
+  openAddModal () {
     switch (this.state.list.type) {
       case 'collections':
         this.setState({ showCollectionForm: true })
@@ -88,7 +88,7 @@ class SaveAsSidebar extends Form {
     }
   }
 
-  showCollectionForm() {
+  showCollectionForm () {
     return (
       this.state.showCollectionForm && (
         <CollectionForm
@@ -103,7 +103,7 @@ class SaveAsSidebar extends Form {
     )
   }
 
-  showCollectionVersionForm() {
+  showCollectionVersionForm () {
     return (
       this.state.showCollectionVersionForm && (
         <CollectionVersionForm
@@ -119,7 +119,7 @@ class SaveAsSidebar extends Form {
     )
   }
 
-  showGroupForm() {
+  showGroupForm () {
     return (
       this.state.showGroupForm && (
         <GroupForm
@@ -135,7 +135,7 @@ class SaveAsSidebar extends Form {
     )
   }
 
-  renderList() {
+  renderList () {
     let listItems = []
     switch (this.state.list.type) {
       case 'collections':
@@ -182,7 +182,7 @@ class SaveAsSidebar extends Form {
     return listItems
   }
 
-  renderListTitle() {
+  renderListTitle () {
     switch (this.state.list.type) {
       case 'collections':
         return 'All Collections'
@@ -196,7 +196,7 @@ class SaveAsSidebar extends Form {
     }
   }
 
-  goBack() {
+  goBack () {
     const list = { ...this.state.list }
     switch (this.state.list.type) {
       case 'versions':
@@ -221,12 +221,12 @@ class SaveAsSidebar extends Form {
     }
   }
 
-  async doSubmit() {
+  async doSubmit () {
     this.props.onHide()
     this.props.set_group_id(this.state.list.parentId, this.state.data.name)
   }
 
-  render() {
+  render () {
     const saveAsSidebarStyle = {
       position: 'fixed',
       background: 'white',
@@ -297,17 +297,17 @@ class SaveAsSidebar extends Form {
                               this.openAddModal()
                             }}
                           >
-                            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 3.75V14.25" stroke="#E98A36" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M3.75 9H14.25" stroke="#E98A36" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                            <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M9 3.75V14.25' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' /><path d='M3.75 9H14.25' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' /></svg>
                           </button>
                         </div>
-                      )
+                        )
                       : this.state.list.type === 'endpoints'
                         ? (
                           <button className='btn' onClick={() => this.goBack()}>
                             <i className='fas fa-chevron-left' />
                             {this.renderListTitle()}
                           </button>
-                        )
+                          )
                         : (
                           <div className='d-flex justify-content-between'>
                             <button className='btn' onClick={() => this.goBack()}>
@@ -320,55 +320,55 @@ class SaveAsSidebar extends Form {
                                 this.openAddModal()
                               }}
                             >
-                              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 3.75V14.25" stroke="#E98A36" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M3.75 9H14.25" stroke="#E98A36" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                              <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M9 3.75V14.25' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' /><path d='M3.75 9H14.25' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' /></svg>
                             </button>
                           </div>
-                        )
+                          )
                   }
                 </div>
                 <ul className='list-group' id='folder-list'>
                   {this.state.list.type === 'endpoints'
                     ? (
-                      this.renderList().map(item => (
-                        <li key={item.id} id='endpoint-list' className='endListWrapper'>
-                          <label
-                            className={this.props.endpoints[item.id].requestType}
-                          >
-                            {this.props.endpoints[item.id].requestType}
-                          </label>
-                          <div className='list-item-wrapper'>{item.name}</div>
-                        </li>
-                      )
-                      )
-                    )
-                    : this.renderList().length
-                      ? (
                         this.renderList().map(item => (
-                          <li className='list-group-item' key={item.id}>
-                            <button
-                              className='btn'
-                              onClick={() => this.setList(item)}
+                          <li key={item.id} id='endpoint-list' className='endListWrapper'>
+                            <label
+                              className={this.props.endpoints[item.id].requestType}
                             >
-                              <div className='list-item-wrapper'>
-                                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                  <path d="M15.75 12.0004V6.00041C15.7497 5.73737 15.6803 5.47902 15.5487 5.25129C15.417 5.02355 15.2278 4.83444 15 4.70291L9.75 1.70291C9.52197 1.57126 9.2633 1.50195 9 1.50195C8.7367 1.50195 8.47803 1.57126 8.25 1.70291L3 4.70291C2.7722 4.83444 2.58299 5.02355 2.45135 5.25129C2.31971 5.47902 2.25027 5.73737 2.25 6.00041V12.0004C2.25027 12.2635 2.31971 12.5218 2.45135 12.7495C2.58299 12.9773 2.7722 13.1664 3 13.2979L8.25 16.2979C8.47803 16.4296 8.7367 16.4989 9 16.4989C9.2633 16.4989 9.52197 16.4296 9.75 16.2979L15 13.2979C15.2278 13.1664 15.417 12.9773 15.5487 12.7495C15.6803 12.5218 15.7497 12.2635 15.75 12.0004Z" stroke="#828282" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                                  <path d="M2.45239 5.21973L8.99989 9.00723L15.5474 5.21973" stroke="#828282" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                                  <path d="M9 16.56V9" stroke="#828282" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                                </svg>
-
-                                {item.name}
-                              </div>
-                              <i className='fas fa-chevron-right' />
-                            </button>
+                              {this.props.endpoints[item.id].requestType}
+                            </label>
+                            <div className='list-item-wrapper'>{item.name}</div>
                           </li>
                         )
                         )
                       )
+                    : this.renderList().length
+                      ? (
+                          this.renderList().map(item => (
+                            <li className='list-group-item' key={item.id}>
+                              <button
+                                className='btn'
+                                onClick={() => this.setList(item)}
+                              >
+                                <div className='list-item-wrapper'>
+                                  <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
+                                    <path d='M15.75 12.0004V6.00041C15.7497 5.73737 15.6803 5.47902 15.5487 5.25129C15.417 5.02355 15.2278 4.83444 15 4.70291L9.75 1.70291C9.52197 1.57126 9.2633 1.50195 9 1.50195C8.7367 1.50195 8.47803 1.57126 8.25 1.70291L3 4.70291C2.7722 4.83444 2.58299 5.02355 2.45135 5.25129C2.31971 5.47902 2.25027 5.73737 2.25 6.00041V12.0004C2.25027 12.2635 2.31971 12.5218 2.45135 12.7495C2.58299 12.9773 2.7722 13.1664 3 13.2979L8.25 16.2979C8.47803 16.4296 8.7367 16.4989 9 16.4989C9.2633 16.4989 9.52197 16.4296 9.75 16.2979L15 13.2979C15.2278 13.1664 15.417 12.9773 15.5487 12.7495C15.6803 12.5218 15.7497 12.2635 15.75 12.0004Z' stroke='#828282' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
+                                    <path d='M2.45239 5.21973L8.99989 9.00723L15.5474 5.21973' stroke='#828282' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
+                                    <path d='M9 16.56V9' stroke='#828282' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
+                                  </svg>
+
+                                  {item.name}
+                                </div>
+                                <i className='fas fa-chevron-right' />
+                              </button>
+                            </li>
+                          )
+                          )
+                        )
                       : (
                         <div className='not-found-label'>
                           {this.state.list.type + ' not found in this folder'}
                         </div>
-                      )}
+                        )}
                 </ul>
               </div>
               <div className='text-right mt-5'>

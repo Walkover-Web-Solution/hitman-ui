@@ -9,7 +9,7 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 class DeleteModal extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {}
   }
@@ -19,7 +19,7 @@ class DeleteModal extends Component {
     this.doSubmit()
   };
 
-  doSubmit() {
+  doSubmit () {
     this.props.onHide()
     const { title } = this.props
     if (title === 'Delete Collection') {
@@ -61,7 +61,7 @@ class DeleteModal extends Component {
     }
   }
 
-  render() {
+  render () {
     return (
       <Modal
         {...this.props}

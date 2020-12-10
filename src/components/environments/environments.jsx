@@ -46,7 +46,7 @@ class Environments extends Component {
     publicEnvironmentName: 'Select Environment'
   };
 
-  async componentDidMount() {
+  async componentDidMount () {
     this.props.fetch_environments()
     await indexedDbService.getDataBase()
     const currentEnvironmentId = await indexedDbService.getValue(
@@ -60,14 +60,14 @@ class Environments extends Component {
     }
   }
 
-  handleEnvironmentModal(environmentFormName, environmentToBeEdited) {
+  handleEnvironmentModal (environmentFormName, environmentToBeEdited) {
     this.setState({
       environmentFormName,
       environmentToBeEdited
     })
   }
 
-  async handleEnv(environmentId) {
+  async handleEnv (environmentId) {
     this.props.set_environment_id(environmentId)
     this.setState({ currentEnvironmentId: environmentId })
     await indexedDbService.updateData(
@@ -77,7 +77,7 @@ class Environments extends Component {
     )
   }
 
-  async handlePublicEnv(environmentId) {
+  async handlePublicEnv (environmentId) {
     if (environmentId != null) {
       this.setState({
         publicEnvironmentName: this.props.environment.environments[
@@ -101,12 +101,12 @@ class Environments extends Component {
     }
   }
 
-  async handleAdd(newEnvironment) {
+  async handleAdd (newEnvironment) {
     newEnvironment.requestId = shortId.generate()
     this.props.add_environment(newEnvironment)
   }
 
-  openDeleteEnvironmentModal(environmentId) {
+  openDeleteEnvironmentModal (environmentId) {
     this.setState({
       showDeleteModal: true,
       selectedEnvironment: {
@@ -115,11 +115,11 @@ class Environments extends Component {
     })
   }
 
-  closeDeleteEnvironmentModal() {
+  closeDeleteEnvironmentModal () {
     this.setState({ showDeleteModal: false })
   }
 
-  async fetchCollection(collectionId) {
+  async fetchCollection (collectionId) {
     const collection = await collectionsApiService.getCollection(collectionId)
     if (collection.data.environment != null) {
       this.setState({
@@ -129,15 +129,15 @@ class Environments extends Component {
     }
   }
 
-  render() {
+  render () {
     let env = isDashboardRoute(this.props)
       ? this.props.environment.environments[
-      this.props.environment.currentEnvironmentId
-      ]
+          this.props.environment.currentEnvironmentId
+        ]
       : this.state.publicCollectionEnvironmentId != null
         ? this.props.environment.environments[
-        this.state.publicCollectionEnvironmentId
-        ]
+            this.state.publicCollectionEnvironmentId
+          ]
         : null
     if (
       isDashboardRoute(this.props) &&
@@ -223,9 +223,9 @@ class Environments extends Component {
                   onClick={() =>
                     this.handleEnvironmentModal('Environment modal')}
                 >
-                  <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M9 3.75V14.25" stroke="#828282" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                    <path d="M3.75 9H14.25" stroke="#828282" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                  <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
+                    <path d='M9 3.75V14.25' stroke='#828282' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
+                    <path d='M3.75 9H14.25' stroke='#828282' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
                   </svg>
 
                 </button>
@@ -240,9 +240,9 @@ class Environments extends Component {
                     variant='default'
                     id='dropdown-basic'
                   >
-                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M0.75 9C0.75 9 3.75 3 9 3C14.25 3 17.25 9 17.25 9C17.25 9 14.25 15 9 15C3.75 15 0.75 9 0.75 9Z" stroke="#E98A36" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                      <path d="M9 11.25C10.2426 11.25 11.25 10.2426 11.25 9C11.25 7.75736 10.2426 6.75 9 6.75C7.75736 6.75 6.75 7.75736 6.75 9C6.75 10.2426 7.75736 11.25 9 11.25Z" stroke="#E98A36" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                    <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
+                      <path d='M0.75 9C0.75 9 3.75 3 9 3C14.25 3 17.25 9 17.25 9C17.25 9 14.25 15 9 15C3.75 15 0.75 9 0.75 9Z' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
+                      <path d='M9 11.25C10.2426 11.25 11.25 10.2426 11.25 9C11.25 7.75736 10.2426 6.75 9 6.75C7.75736 6.75 6.75 7.75736 6.75 9C6.75 10.2426 7.75736 11.25 9 11.25Z' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
                     </svg>
 
                   </Dropdown.Toggle>
@@ -264,7 +264,7 @@ class Environments extends Component {
                             </svg>
 
                           </button>
-                        )
+                          )
                         : isDashboardRoute(this.props)
                           ? (
                             <button
@@ -274,7 +274,7 @@ class Environments extends Component {
                             >
                               Add
                             </button>
-                          )
+                            )
                           : null}
                     </Dropdown.Item>
                     <Dropdown.Divider />
@@ -311,8 +311,8 @@ class Environments extends Component {
                           this.props.environment.currentEnvironmentId
                         ]
                           ? this.props.environment.environments[
-                            this.props.environment.currentEnvironmentId
-                          ].name
+                              this.props.environment.currentEnvironmentId
+                            ].name
                           : 'No Environment'
                       }
                     </Dropdown.Toggle>
@@ -372,9 +372,9 @@ class Environments extends Component {
                       variant='default'
                       id='dropdown-basic'
                     >
-                      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M0.75 9C0.75 9 3.75 3 9 3C14.25 3 17.25 9 17.25 9C17.25 9 14.25 15 9 15C3.75 15 0.75 9 0.75 9Z" stroke="#E98A36" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                        <path d="M9 11.25C10.2426 11.25 11.25 10.2426 11.25 9C11.25 7.75736 10.2426 6.75 9 6.75C7.75736 6.75 6.75 7.75736 6.75 9C6.75 10.2426 7.75736 11.25 9 11.25Z" stroke="#E98A36" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                      <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
+                        <path d='M0.75 9C0.75 9 3.75 3 9 3C14.25 3 17.25 9 17.25 9C17.25 9 14.25 15 9 15C3.75 15 0.75 9 0.75 9Z' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
+                        <path d='M9 11.25C10.2426 11.25 11.25 10.2426 11.25 9C11.25 7.75736 10.2426 6.75 9 6.75C7.75736 6.75 6.75 7.75736 6.75 9C6.75 10.2426 7.75736 11.25 9 11.25Z' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
                       </svg>
 
                     </Dropdown.Toggle>
@@ -405,7 +405,7 @@ class Environments extends Component {
                     </Dropdown.Menu>
                   </Dropdown>
                 </div>
-              )}
+            )}
             {
               this.state.originalEnvironmentReplica !== undefined && (
                 <div className='select-environment-dropdown'>

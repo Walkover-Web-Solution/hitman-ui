@@ -99,7 +99,7 @@ class Pages extends Component {
 
   displayPageName (pageId) {
     return (
-      <div className='sidebar-accordion-item'> 
+      <div className='sidebar-accordion-item'>
         {this.props.pages[pageId].name}
       </div>
     )
@@ -298,7 +298,7 @@ class Pages extends Component {
           const page = this.props.pages[pageId]
           this.handleDisplay(page, this.props.collection_id, false)
         }}
-      > 
+      >
         {this.props.pages[pageId].name}
       </div>
     )

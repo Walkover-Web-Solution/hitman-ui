@@ -5,12 +5,12 @@ import './tabs.scss'
 import tabService from './tabService'
 
 class CustomTabs extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = { showSavePrompt: false }
   }
 
-  renderTabName(tabId) {
+  renderTabName (tabId) {
     const tab = this.props.tabs.tabs[tabId]
     if (!tab) return
     switch (tab.type) {
@@ -54,7 +54,7 @@ class CustomTabs extends Component {
     }
   }
 
-  removeTab(tabId) {
+  removeTab (tabId) {
     if (this.props.tabs.tabs[tabId].isModified) {
       this.setState({ showSavePrompt: true, selectedTabId: tabId })
     } else {
@@ -62,15 +62,15 @@ class CustomTabs extends Component {
     }
   }
 
-  closeSavePrompt() {
+  closeSavePrompt () {
     this.setState({ showSavePrompt: false })
   }
 
-  onDragStart(tId) {
+  onDragStart (tId) {
     this.draggedItem = tId
   }
 
-  handleOnDragOver(e) {
+  handleOnDragOver (e) {
     e.preventDefault()
   }
 
@@ -90,10 +90,10 @@ class CustomTabs extends Component {
     this.props.set_tabs_order(tabsOrder)
   };
 
-  render() {
+  render () {
     return (
 
-      <React.Fragment>
+      <>
         <Nav variant='pills' className='flex-row flex-nowrap item-wrp'>
           <div>
             {this.state.showSavePrompt && (
@@ -129,10 +129,10 @@ class CustomTabs extends Component {
                   this.props.tabs.tabs[tabId].isModified
                     ? (
                       <i className='fas fa-circle' id='modified-dot-icon' />
-                    )
+                      )
                     : (
                       <i className='uil uil-multiply' />
-                    )
+                      )
                 }
               </button>
             </Nav.Item>
@@ -179,14 +179,14 @@ class CustomTabs extends Component {
             className='btn'
             onClick={() => tabService.newTab({ ...this.props })}
           >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M19 3H5C3.89543 3 3 3.89543 3 5V19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V5C21 3.89543 20.1046 3 19 3Z" stroke="#BDBDBD" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-              <path d="M12 8V16" stroke="#BDBDBD" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-              <path d="M8 12H16" stroke="#BDBDBD" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+            <svg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'>
+              <path d='M19 3H5C3.89543 3 3 3.89543 3 5V19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V5C21 3.89543 20.1046 3 19 3Z' stroke='#BDBDBD' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
+              <path d='M12 8V16' stroke='#BDBDBD' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
+              <path d='M8 12H16' stroke='#BDBDBD' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
             </svg>
           </button>
         </Nav.Item>
-      </React.Fragment>
+      </>
     )
   }
 }
