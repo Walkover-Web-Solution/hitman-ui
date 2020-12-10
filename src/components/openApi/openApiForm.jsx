@@ -11,7 +11,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    import_api: (openApiObject) => dispatch(importApi(openApiObject))
+    import_api: (openApiObject, importType) => dispatch(importApi(openApiObject, importType))
   }
 }
 
@@ -36,7 +36,7 @@ class OpenApiForm extends Component {
 
   importApi () {
     const uploadedFile = this.state.uploadedFile
-    this.props.import_api(uploadedFile)
+    this.props.import_api(uploadedFile, this.props.importType)
     this.props.onHide()
   }
 
@@ -59,7 +59,7 @@ class OpenApiForm extends Component {
       >
         <Modal.Header className='custom-collection-modal-container' closeButton>
           <Modal.Title id='contained-modal-title-vcenter'>
-            {this.props.title}
+            IMPORT COLLECTION
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -67,11 +67,6 @@ class OpenApiForm extends Component {
             <div id='select-json-wrapper'>
               <label>
                 Select JSON File
-                {/* <textarea
-            onChange={this.handleChange.bind(this)}
-            rows="20"
-            cols="50"
-            ></textarea> */}
               </label>
               <br />
               <input type='file' onChange={this.onFileChange.bind(this)} />
