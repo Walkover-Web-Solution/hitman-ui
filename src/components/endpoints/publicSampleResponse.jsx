@@ -12,7 +12,7 @@ class PublicSampleResponse extends Component {
     return (
       <div className='pubSampleResponse'>
         <div>
-          <h3 className='heading-2'><span>Sample Response {willHighlight(this.props, 'sampleResponse') ? <i className='fas fa-circle::before ' /> : null}</span></h3>
+          <h3 className='heading-2'><span>Sample Response {willHighlight(this.props, 'sampleResponse') ? <i className='fas fa-circle' /> : null}</span></h3>
         </div>
         <div className='sample-response'>
           <Tabs id='uncontrolled-tab-example'>
@@ -20,7 +20,7 @@ class PublicSampleResponse extends Component {
               <Tab
                 key={sampleResponse}
                 eventKey={sampleResponse.title}
-                title={getHighlightsData(this.props, 'sampleResponse', sampleResponse.title) ? <span>{sampleResponse.title}<i className='fas fa-circle::before ' /></span> : sampleResponse.title}
+                title={getHighlightsData(this.props, 'sampleResponse', sampleResponse.title) ? <span>{sampleResponse.title}<i className='fas fa-circle' /></span> : sampleResponse.title}
               >
                 <div>{sampleResponse.status}</div>
                 <div>{sampleResponse.description}</div>
