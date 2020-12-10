@@ -372,18 +372,16 @@ class PublicBodyContainer extends Component {
                   Body <small className='text-muted'>({this.props.body.type})</small> {this.props.highlights?.body.value ? <i className='fas fa-circle' /> : null}
                 </div>
                 <ul className='public-endpoint-tabs'>
-                  <li className={this.state.showBodyCodeEditor && 'active'}>
+                  <li className={this.state.showBodyCodeEditor ? 'active' : ''}>
                     <a
                       onClick={() => this.setState({ showBodyCodeEditor: true })}
-                      href='javascript:void(0)'
                     >
                       Raw
                     </a>
                   </li>
-                  <li className={!this.state.showBodyCodeEditor && 'active'}>
+                  <li className={!this.state.showBodyCodeEditor ? 'active' : ''}>
                     <a
                       onClick={() => this.setState({ showBodyCodeEditor: false })}
-                      href='javascript:void(0)'
                     >
                       Body description
                     </a>
