@@ -18,6 +18,7 @@ import PublishDocsForm from './publishDocsForm'
 import DisplayPage from '../pages/displayPage'
 import { updatePage, updatePageOrder } from '../pages/redux/pagesActions'
 import './publishDocs.scss'
+import WarningModal from '../common/warningModal'
 const isEqual = require('react-fast-compare')
 
 const URI = require('urijs')
@@ -69,7 +70,8 @@ class PublishDocs extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      selectedCollectionId: null
+      selectedCollectionId: null,
+      warningModal: false
     }
   }
 
@@ -218,8 +220,17 @@ class PublishDocs extends Component {
     })
   }
 
+  sensitiveInfoFound () {
+    // check for sensitive info in request here
+    return false
+  }
+
   async handleApproveEndpointRequest (endpointId) {
-    this.props.approve_endpoint(this.props.endpoints[endpointId])
+    if (this.sensitiveInfoFound()) {
+      this.setState({ warningModal: true })
+    } else {
+      this.props.approve_endpoint(this.props.endpoints[endpointId])
+    }
   }
 
   async handleRejectEndpointRequest (endpointId) {
@@ -829,10 +840,17 @@ class PublishDocs extends Component {
     return result
   }
 
+  renderWarningModal () {
+    return (
+      <WarningModal show={this.state.warningModal} onHide={() => { this.setState({ warningModal: false }) }} title='Sensitive Information Warning' message='This Entity contains some sensitive information. Please remove them before making it public.' />
+    )
+  }
+
   render () {
     const collectionId = URI.parseQuery(this.props.location.search).collectionId
     return (
       <div className='publish-docs-container'>
+        {this.renderWarningModal()}
         <div className='publish-docs-wrapper'>
           <div class='content-panel'>
             <div className='hosted-APIs'>
