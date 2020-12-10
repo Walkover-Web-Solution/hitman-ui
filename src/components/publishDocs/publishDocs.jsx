@@ -72,9 +72,6 @@ class PublishDocs extends Component {
     collectionInfo.endpoints,
     collectionInfo.pages
     )
-    // console.log('selectedGroupId, selectedEndpointId, selectedPageId ', items)
-    // const selectedGroupId = this.getInitialGroup(Object.keys(collectionInfo.versions)[0], collectionInfo.groups)
-    // const selectedEndpointId = this.getInitialEndpoint(selectedGroupId, collectionInfo.endpoints)
     this.setState({
       selectedCollectionId: URI.parseQuery(this.props.location.search)
         .collectionId,
@@ -97,8 +94,6 @@ class PublishDocs extends Component {
         collectionInfo.endpoints,
         collectionInfo.pages
         )
-        // const selectedGroupId = this.getInitialGroup(Object.keys(collectionInfo.versions)[0], collectionInfo.groups)
-        // const selectedEndpointId = this.getInitialEndpoint(selectedGroupId, collectionInfo.endpoints)
         this.setState({
           selectedCollectionId: URI.parseQuery(this.props.location.search)
             .collectionId,
@@ -112,7 +107,6 @@ class PublishDocs extends Component {
   }
 
   getInitialItems (versionId, groups, endpoints, pages, endpointId = null, pageId = null) {
-    // console.log('innn', versionId, groups, endpoints, pages, endpointId = null, pageId = null)
     for (let i = 0; i < Object.keys(groups).length; i++) {
       if (groups[Object.keys(groups)[i]].versionId?.toString() === versionId?.toString()) {
         const groupId = groups[Object.keys(groups)[i]].id
@@ -173,28 +167,6 @@ class PublishDocs extends Component {
     }
   }
 
-  // getInitialGroup (versionId, groups) {
-  //   for (let i = 0; i < Object.keys(groups).length; i++) {
-  //     if (groups[Object.keys(groups)[i]].versionId?.toString() === versionId?.toString()) {
-  //       return Object.keys(groups)[i]
-  //     }
-  //   }
-  //   return ''
-  // }
-
-  // getInitialEndpoint (groupId, endpoints, endpointId = null) {
-  //   for (let i = 0; i < Object.keys(endpoints).length; i++) {
-  //     if (endpoints[Object.keys(endpoints)[i]].groupId?.toString() === groupId?.toString() &&
-  //       (endpoints[Object.keys(endpoints)[i]].isPublished === true ||
-  //         endpoints[Object.keys(endpoints)[i]].state === publishDocsEnum.PENDING_STATE) &&
-  //       endpointId?.toString() !== Object.keys(endpoints)[i]?.toString()
-  //     ) {
-  //       return Object.keys(endpoints)[i]
-  //     }
-  //   }
-  //   return ''
-  // }
-
   extractCollectionInfo () {
     const selectedCollectionId = URI.parseQuery(this.props.location.search).collectionId
     const versions = extractCollectionInfoService.extractVersionsFromCollectionId(selectedCollectionId, this.props)
@@ -229,8 +201,6 @@ class PublishDocs extends Component {
       this.state.endpoints,
       this.state.pages
     )
-    // const selectedGroupId = this.getInitialGroup(e.currentTarget.value, this.state.groups)
-    // const selectedEndpointId = this.getInitialEndpoint(selectedGroupId, this.state.endpoints)
     this.setState({
       selectedVersionId: e.currentTarget.value,
       selectedGroupId: items?.selectedGroupId || null,
@@ -258,9 +228,6 @@ class PublishDocs extends Component {
         selectedEndpointId: items?.selectedEndpointId || null,
         selectedPageId: items?.selectedPageId || null
       })
-      // this.setState({
-      //   selectedEndpointId: this.getInitialEndpoint(this.state.selectedGroupId, this.state.endpoints, endpointId)
-      // })
     }
     this.props.reject_endpoint(this.props.endpoints[endpointId])
   }
@@ -292,23 +259,6 @@ class PublishDocs extends Component {
         selectedEndpointId: items?.selectedEndpointId || null,
         selectedPageId: items?.selectedPageId || null
       })
-      //     selectedGroupId,
-      //     selectedEndpointId: this.getInitialEndpoint(selectedGroupId, this.state.endpoints),
-      //     selectedPageId: false
-      //   })
-      // if (this.props.pages[pageId].groupId === null) {
-      //   const selectedGroupId = this.getInitialGroup(this.state.selectedVersionId, this.state.groups)
-      //   this.setState({
-      //     selectedGroupId,
-      //     selectedEndpointId: this.getInitialEndpoint(selectedGroupId, this.state.endpoints),
-      //     selectedPageId: false
-      //   })
-      // } else {
-      //   this.setState({
-      //     selectedEndpointId: this.getInitialEndpoint(this.state.selectedGroupId, this.state.endpoints),
-      //     selectedPageId: false
-      //   })
-      // }
     }
   }
 
@@ -664,7 +614,8 @@ class PublishDocs extends Component {
       groupId: this.state.selectedGroupId,
       isPublished: false,
       publishedEndpoint: {},
-      state: 'Draft'
+      state: 'Draft',
+      position: null
     })
     const items = this.getInitialItems(this.state.selectedVersionId,
       this.state.groups,
@@ -677,9 +628,6 @@ class PublishDocs extends Component {
       selectedEndpointId: items?.selectedEndpointId || null,
       selectedPageId: items?.selectedPageId || null
     })
-    // this.setState({
-    //   selectedEndpointId: this.getInitialEndpoint(this.state.selectedGroupId, this.state.endpoints, endpointId)
-    // })
   }
 
   handleRemovePublicPage (pageId) {
@@ -687,6 +635,7 @@ class PublishDocs extends Component {
     page.isPublished = false
     page.publishedEndpoint = {}
     page.state = 'Draft'
+    page.position = null
     this.props.update_page(page)
     const items = this.getInitialItems(this.state.selectedVersionId,
       this.state.groups,
@@ -698,19 +647,6 @@ class PublishDocs extends Component {
       selectedEndpointId: items?.selectedEndpointId || null,
       selectedPageId: items?.selectedPageId || null
     })
-    // if (this.props.pages[pageId].groupId === null) {
-    //   const selectedGroupId = this.getInitialGroup(this.state.selectedVersionId, this.state.groups)
-    //   this.setState({
-    //     selectedGroupId,
-    //     selectedEndpointId: this.getInitialEndpoint(selectedGroupId, this.state.endpoints),
-    //     selectedPageId: false
-    //   })
-    // } else {
-    //   this.setState({
-    //     selectedEndpointId: this.getInitialEndpoint(this.state.selectedGroupId, this.state.endpoints),
-    //     selectedPageId: false
-    //   })
-    // }
   }
 
   endpointPublishAndReject () {

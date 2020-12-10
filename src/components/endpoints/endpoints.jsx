@@ -436,10 +436,6 @@ class Endpoints extends Component {
       <div className='sidebar-accordion' key={endpointId}>
         <div className={this.props.endpoints[endpointId].state} />
         <button
-          // draggable
-          // onDragOver={(e) => this.onDragOver(e, endpointId)}
-          // onDragStart={(e) => this.onDragStart(e, endpointId)}
-          // onDrop={(e) => this.onDrop(e, endpointId)}
           onClick={() =>
             this.handleDisplay(
               this.props.endpoints[endpointId],
