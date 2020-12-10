@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { isDashboardRoute } from '../common/utility'
+import { willHighlight, getHighlightsData } from './highlightChangesHelper'
 import './endpoints.scss'
 
 class GenericTable extends Component {
@@ -221,7 +222,7 @@ class GenericTable extends Component {
 
   renderPublicTableRow (dataArray, index, originalData, title) {
     return (
-      <tr key={index} id='generic-table-row' className={this.getHighlightsData(title, [dataArray[index].key]) ? 'active' : ''}>
+      <tr key={index} id='generic-table-row' className={getHighlightsData(this.props, title, [dataArray[index].key]) ? 'active' : ''}>
         <td
           className='custom-td'
           id='generic-table-key-cell'
@@ -265,7 +266,7 @@ class GenericTable extends Component {
               : null
           }
         </td>
-        {this.getHighlightsData(title, [dataArray[index].key]) ? <i className='fas fa-circle' /> : null}
+        {getHighlightsData(this.props, title, [dataArray[index].key]) ? <i className='fas fa-circle' /> : null}
       </tr>
     )
   }
@@ -404,50 +405,6 @@ class GenericTable extends Component {
     )
   }
 
-  willHighlight (title) {
-    let result = false
-    switch (title) {
-      case 'Headers':
-        result = typeof this.props.highlights?.headers?.isChanged === 'boolean' ? this.props.highlights.headers.isChanged : false
-        break
-      case 'Params':
-        result = typeof this.props.highlights?.params?.isChanged === 'boolean' ? this.props.highlights.params.isChanged : false
-        break
-      case 'Path Variables':
-        result = typeof this.props.highlights?.pathVariables?.isChanged === 'boolean' ? this.props.highlights.pathVariables.isChanged : false
-        break
-      case 'formData':
-        result = typeof this.props.highlights?.body?.isChanged === 'boolean' ? this.props.highlights.body.isChanged : false
-        break
-      case 'x-www-form-urlencoded':
-        result = typeof this.props.highlights?.body?.isChanged === 'boolean' ? this.props.highlights.body.isChanged : false
-        break
-    }
-    return result
-  }
-
-  getHighlightsData (title, key) {
-    let items = {}
-    switch (title) {
-      case 'Headers':
-        typeof this.props.highlights?.headers?.items === 'object' ? items = this.props.highlights.headers.items : items = {}
-        break
-      case 'Params':
-        typeof this.props.highlights?.params?.items === 'object' ? items = this.props.highlights.params.items : items = {}
-        break
-      case 'Path Variables':
-        typeof this.props.highlights?.pathVariables?.items === 'object' ? items = this.props.highlights.pathVariables.items : items = {}
-        break
-      case 'formData':
-        typeof this.props.highlights?.body?.value?.items === 'object' ? items = this.props.highlights.body.value.items : items = {}
-        break
-      case 'x-www-form-urlencoded':
-        typeof this.props.highlights?.body?.value?.items === 'object' ? items = this.props.highlights.body.value.items : items = {}
-        break
-    }
-    return (key in items) ? items[key] : false
-  }
-
   render () {
     const { dataArray, original_data: originalData, title } = this.props
     if (!isDashboardRoute(this.props)) {
@@ -470,7 +427,7 @@ class GenericTable extends Component {
               : 'public-generic-table-title-container'
           }
         >
-          {!isDashboardRoute(this.props) && <span>{title} {this.willHighlight(title) ? <i className='fas fa-circle' /> : null}</span>}
+          {!isDashboardRoute(this.props) && <span>{title} {willHighlight(this.props, title) ? <i className='fas fa-circle' /> : null}</span>}
 
         </div>
         {this.renderOptionalParamsButton()}

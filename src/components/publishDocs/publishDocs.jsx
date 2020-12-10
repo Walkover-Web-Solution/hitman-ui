@@ -684,7 +684,6 @@ class PublishDocs extends Component {
           sampleResponse: this.getHighlights(originalEndpoint.sampleResponse, currentChanges.sampleResponse, 'sampleResponse'),
           uri: !isEqual(originalEndpoint.uri, currentChanges.uri)
         }
-        console.log({ currentChanges, originalEndpoint, result })
         return result
       }
     }
