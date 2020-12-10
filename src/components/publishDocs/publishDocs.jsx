@@ -31,13 +31,6 @@ const publishDocsEnum = {
   EMPTY_STRING: ''
 }
 
-// const highlights = {
-//   NEW: 'new',
-//   EDITED: 'edited',
-//   DELETED: 'deleted',
-//   NOCHANGE: 'no-change'
-// }
-
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     update_endpoints_order: (endpointIds, groupId) =>
