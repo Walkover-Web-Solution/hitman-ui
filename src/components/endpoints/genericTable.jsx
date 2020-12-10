@@ -221,7 +221,7 @@ class GenericTable extends Component {
 
   renderPublicTableRow (dataArray, index, originalData, title) {
     return (
-      <tr key={index} id='generic-table-row'>
+      <tr key={index} id='generic-table-row' className={this.getHighlightsData(title, [dataArray[index].key]) ? 'active' : ''}>
         <td
           className='custom-td'
           id='generic-table-key-cell'
@@ -265,6 +265,7 @@ class GenericTable extends Component {
               : null
           }
         </td>
+        {this.getHighlightsData(title, [dataArray[index].key]) ? <i className='fas fa-circle' /> : null}
       </tr>
     )
   }
@@ -404,18 +405,47 @@ class GenericTable extends Component {
   }
 
   willHighlight (title) {
+    let result = false
     switch (title) {
       case 'Headers':
-        return this.props.highlights?.headers.isChanged
+        result = typeof this.props.highlights?.headers?.isChanged === 'boolean' ? this.props.highlights.headers.isChanged : false
+        break
       case 'Params':
-        return this.props.highlights?.params.isChanged
+        result = typeof this.props.highlights?.params?.isChanged === 'boolean' ? this.props.highlights.params.isChanged : false
+        break
       case 'Path Variables':
-        return this.props.highlights?.pathVariables.isChanged
+        result = typeof this.props.highlights?.pathVariables?.isChanged === 'boolean' ? this.props.highlights.pathVariables.isChanged : false
+        break
       case 'formData':
-        return this.props.highlights?.body.isChanged
+        result = typeof this.props.highlights?.body?.isChanged === 'boolean' ? this.props.highlights.body.isChanged : false
+        break
       case 'x-www-form-urlencoded':
-        return this.props.highlights?.body.isChanged
+        result = typeof this.props.highlights?.body?.isChanged === 'boolean' ? this.props.highlights.body.isChanged : false
+        break
     }
+    return result
+  }
+
+  getHighlightsData (title, key) {
+    let items = {}
+    switch (title) {
+      case 'Headers':
+        typeof this.props.highlights?.headers?.items === 'object' ? items = this.props.highlights.headers.items : items = {}
+        break
+      case 'Params':
+        typeof this.props.highlights?.params?.items === 'object' ? items = this.props.highlights.params.items : items = {}
+        break
+      case 'Path Variables':
+        typeof this.props.highlights?.pathVariables?.items === 'object' ? items = this.props.highlights.pathVariables.items : items = {}
+        break
+      case 'formData':
+        typeof this.props.highlights?.body?.value?.items === 'object' ? items = this.props.highlights.body.value.items : items = {}
+        break
+      case 'x-www-form-urlencoded':
+        typeof this.props.highlights?.body?.value?.items === 'object' ? items = this.props.highlights.body.value.items : items = {}
+        break
+    }
+    return (key in items) ? items[key] : false
   }
 
   render () {
