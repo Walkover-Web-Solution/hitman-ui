@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Button, Dropdown } from 'react-bootstrap'
+import jwtDecode from 'jwt-decode'
 import { makeHighlightsData } from '../endpoints/highlightChangesHelper'
 import { connect } from 'react-redux'
 import { updateCollection } from '../collections/redux/collectionsActions'
@@ -213,13 +214,89 @@ class PublishDocs extends Component {
     })
   }
 
-  sensitiveInfoFound () {
+  sensitiveInfoFound (endpoint) {
     // check for sensitive info in request here
-    return false
+    let result = false
+    // first check access_token in params
+    if (typeof endpoint?.params?.access_token === 'object') {
+      const value = typeof endpoint.params.access_token.value === 'string' ? endpoint.params.access_token.value : ''
+      const authData = value.split(' ')
+      if (authData.length === 1) {
+        try {
+          jwtDecode(authData[0])
+          return true
+        } catch (err) {
+          result = false
+        }
+      }
+    }
+    // first check Authorization in headers
+    if (typeof endpoint?.headers?.Authorization === 'object') {
+      const value = typeof endpoint.headers.Authorization.value === 'string' ? endpoint.headers.Authorization.value : ''
+      const authData = value.split(' ')
+      if (authData.length === 1) {
+        try {
+          jwtDecode(authData[0])
+          return true
+        } catch (err) {
+          result = false
+        }
+      }
+      if (authData.length === 2) {
+        switch (authData[0]) {
+          case 'Basic':
+            try {
+              const string = authData[1]
+              window.atob(string)
+              return true
+            } catch (err) {
+              result = false
+            }
+            break
+          case 'Bearer':
+            try {
+              jwtDecode(authData[1])
+              return true
+            } catch (err) {
+              result = false
+            }
+            break
+        }
+      }
+    }
+    // check for all params if theres any JWT token
+    if (typeof endpoint.params === 'object') {
+      Object.entries(endpoint.params).forEach(entry => {
+        const value = typeof entry[1].value === 'string' ? entry[1].value : ''
+        const authData = value.split(' ')
+        authData.forEach(item => {
+          try {
+            jwtDecode(item)
+            result = true
+          } catch (err) {
+          }
+        })
+      })
+    }
+    // check all headers if theres any JWT token
+    if (typeof endpoint.headers === 'object') {
+      Object.entries(endpoint.headers).forEach(entry => {
+        const value = typeof entry[1].value === 'string' ? entry[1].value : ''
+        const authData = value.split(' ')
+        authData.forEach(item => {
+          try {
+            jwtDecode(item)
+            result = true
+          } catch (err) {
+          }
+        })
+      })
+    }
+    return result
   }
 
   async handleApproveEndpointRequest (endpointId) {
-    if (this.sensitiveInfoFound()) {
+    if (this.sensitiveInfoFound(this.props.endpoints[endpointId])) {
       this.setState({ warningModal: true })
     } else {
       this.props.approve_endpoint(this.props.endpoints[endpointId])
