@@ -8,8 +8,6 @@ main.main.ml-sm-auto.col-lg-10 {
 }
 
 .main-panel-wrapper {
-  display: flex;
-  flex-direction: row;
 
   nav.col-md-2.d-none.d-md-block.bg-light.sidebar {
     margin-top: 10px;
@@ -80,7 +78,7 @@ main.main.ml-sm-auto.col-lg-10 {
   align-items: center;
 
   .button-group {
-    padding: 2px; 
+    padding: 2px;
 
     .doc-properties-cancel-button {
       padding: 5px;
@@ -254,10 +252,16 @@ form.add-new-domain-form {
 }
 
 .hm-sidebar {
-  width: 250px;
   background-color: #ffffff;
-  padding: 20px 15px 85px 15px;
-  min-height: 100vh;
+  padding: 20px 10px 85px 10px;
+  height: 100vh;
+  max-height: 100vh;
+  position: sticky;
+  top: 0;
+
+  nav.public-endpoint-sidebar {
+    width: 250px;
+  }
 }
 
 .hm-right-content {
@@ -271,7 +275,8 @@ form.add-new-domain-form {
     padding: 30px 0;
     width: 65%;
     display: block;
-    margin: 0 30px;
+    margin: 0 15px;
+
     .endpoint-header {
       .endpoint-name-container {
         .endpoint-title {
@@ -302,12 +307,12 @@ form.add-new-domain-form {
   // padding: 20px;
   // margin-bottom: 40px;
   // border-radius: 3px;
-  
+
 }
 
 // Sidebar Header
 .hm-sidebar-header {
-  padding: 0 15px;
+  padding: 0 5px;
   display: flex;
   color: #fff;
   align-items: center;
@@ -328,9 +333,6 @@ form.add-new-domain-form {
 //   background: #fff;
 // }
 
-.hm-sidebar-logo img {
-  max-width: 100%;
-}
 
 h4.hm-sidebar-title {
   margin: 0 0 0 15px;
@@ -388,6 +390,7 @@ h4.hm-sidebar-title {
     font-weight: 600;
     margin-bottom: 10px;
     display: inline-block;
+
     .fa-circle {
       color: #E98A36;
       margin-left: 5px;
@@ -445,12 +448,14 @@ h4.hm-sidebar-title {
     }
   }
 }
+
 .hm-panel.endpoint-public-response-container.public-doc {
   background: #fff;
   padding: 30px;
   margin: 30px 0 0;
   border-radius: 4px;
 }
+
 // Public Response container
 .endpoint-public-response-container {
   .empty-response {
@@ -467,7 +472,7 @@ h4.hm-sidebar-title {
   .response-viewer {
     margin: 0;
 
-    .response-tabs { 
+    .response-tabs {
 
       button {
         border: none;
