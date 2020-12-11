@@ -40,7 +40,7 @@ class SavePromptModal extends Component {
           <div className='text-right mt-4 mb-2'>
             <button
               id='custom-delete-modal-cancel'
-              className='btn btn-secondary btn-lg mr-2'
+              className='btn btn-secondary outline btn-lg mr-2'
               onClick={this.props.onHide}
             >
               Cancel

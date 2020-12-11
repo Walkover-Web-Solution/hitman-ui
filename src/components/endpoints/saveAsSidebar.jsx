@@ -230,19 +230,18 @@ class SaveAsSidebar extends Form {
     const saveAsSidebarStyle = {
       position: 'fixed',
       background: 'white',
-      zIndex: '101',
+      zIndex: '1050 ',
       top: '0px',
       right: '0px',
       height: '100vh',
       width: '35vw',
-      // border: "1px solid red",
-      boxShadow: '-10px 0px  25px #888888'
+      boxShadow: '-25px 25px 43px rgba(0, 0, 0, 0.07)'
     }
     const darkBackgroundStyle = {
       position: 'fixed',
-      background: 'black',
-      opacity: 0.1,
-      zIndex: '100',
+      background: 'rgba(0, 0, 0, 0.4)',
+      opacity: 1,
+      zIndex: '1040',
       top: '0px',
       right: '0px',
       height: '100vh',
@@ -373,7 +372,7 @@ class SaveAsSidebar extends Form {
               </div>
               <div className='text-right mt-5'>
                 <button
-                  className='btn btn-secondary btn-lg mr-2'
+                  className='btn btn-secondary outline btn-lg mr-2'
                   onClick={() => this.props.onHide()}
                 >
                   Cancel

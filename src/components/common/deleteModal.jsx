@@ -83,7 +83,7 @@ class DeleteModal extends Component {
 
               <button
                 id='custom-delete-modal-cancel'
-                className='btn btn-secondary btn-lg'
+                className='btn btn-secondary outline btn-lg'
                 onClick={this.props.onHide}
               >
                 Cancel

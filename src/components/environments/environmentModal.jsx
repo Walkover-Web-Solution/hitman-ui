@@ -117,7 +117,7 @@ class EnvironmentModal extends Component {
           <div>
             <div className='custom-button-wrapper text-right mt-3'>
               <button
-                className='btn btn-secondary btn-lg'
+                className='btn btn-secondary outline btn-lg'
                 onClick={() => this.handleCancel(this.props)}
               >
                 Cancel

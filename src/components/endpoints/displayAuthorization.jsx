@@ -292,7 +292,7 @@ class Authorization extends Component {
             show
             onHide={() => this.closeGetNewAccessTokenModal()}
             set_access_token={this.setAccessToken.bind(this)}
-            title='GET NEW ACCESS TOKEN'
+            title='Get new access token'
           />
         )}
         {this.state.openManageTokenModel === true && (

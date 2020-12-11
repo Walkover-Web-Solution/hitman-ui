@@ -184,7 +184,7 @@ class DisplayDescription extends Component {
                   </div>
                   <div className='endpoint-cta'>
                     <button
-                      className='btn btn-secondary btn-lg'
+                      className='btn btn-secondary outline btn-lg'
                       type='cancel'
                       onClick={() => this.handleDescriptionCancel()}
                     >
