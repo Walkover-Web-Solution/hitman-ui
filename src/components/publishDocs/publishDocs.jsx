@@ -17,7 +17,9 @@ import {
 import PublishDocsForm from './publishDocsForm'
 import DisplayPage from '../pages/displayPage'
 import { updatePage, updatePageOrder } from '../pages/redux/pagesActions'
-
+import {
+  updateGroupOrder
+} from '../groups/redux/groupsActions'
 const URI = require('urijs')
 
 const publishDocsEnum = {
@@ -42,7 +44,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     approve_endpoint: (endpoint) => dispatch(approveEndpoint(endpoint)),
     reject_endpoint: (endpoint) => dispatch(rejectEndpoint(endpoint)),
     approve_page: (page) => dispatch(approvePage(page)),
-    reject_page: (page) => dispatch(rejectPage(page))
+    reject_page: (page) => dispatch(rejectPage(page)),
+    update_groups_order: (groupIds, versionId) =>
+      dispatch(updateGroupOrder(groupIds, versionId))
   }
 }
 
@@ -412,6 +416,9 @@ class PublishDocs extends Component {
       itemIds.splice(index, 0, this.draggedItem)
       if (item === 'pages') { this.props.set_page_ids(itemIds) }
       if (item === 'endpoints') { this.props.update_endpoints_order(itemIds) }
+      if (item === 'groups') {
+        this.props.update_groups_order(itemIds, this.state.selectedVersionId)
+      }
       this.draggedItem = null
     }
   }
@@ -559,13 +566,28 @@ class PublishDocs extends Component {
 
   showGroups () {
     if (this.state.groups) {
-      return (
-        Object.keys(this.state.groups).map((groupId) =>
-          this.state.groups[groupId].versionId?.toString() === this.state.selectedVersionId?.toString()
-            ? this.showEndpointsAndPages(groupId)
-            : null
+      const sortedGroups = Object.values(this.state.groups).sort(function (a, b) {
+        return a.position - b.position
+      })
+      if (sortedGroups.length !== 0) {
+        return (
+          sortedGroups.map((group) =>
+            this.state.groups[group.id].versionId?.toString() === this.state.selectedVersionId?.toString()
+              ? (
+                <div
+                  draggable
+                  onDragOver={(e) => {
+                    e.preventDefault()
+                  }}
+                  onDragStart={(e) => this.onDragStart(e, group.id)}
+                  onDrop={(e) => this.onDrop(e, group.id, sortedGroups, 'groups')}
+                >{this.showEndpointsAndPages(group.id)}
+                </div>
+                )
+              : null
+          )
         )
-      )
+      }
     }
   }
 

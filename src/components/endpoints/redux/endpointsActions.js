@@ -272,7 +272,7 @@ export const updateEndpointOrder = (sourceEndpointIds, groupId) => {
     endpointApiService
       .updateEndpointOrder(sourceEndpointIds)
       .then((response) => {
-        toast.error(response.data)
+        toast(response.data)
       })
       .catch((error) => {
         dispatch(
