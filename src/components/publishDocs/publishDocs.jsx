@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Button, Dropdown } from 'react-bootstrap'
-import './publishDocs.scss'
+import { makeHighlightsData } from '../endpoints/highlightChangesHelper'
 import { connect } from 'react-redux'
 import { updateCollection } from '../collections/redux/collectionsActions'
 import {
@@ -17,6 +17,9 @@ import {
 import PublishDocsForm from './publishDocsForm'
 import DisplayPage from '../pages/displayPage'
 import { updatePage, updatePageOrder } from '../pages/redux/pagesActions'
+import './publishDocs.scss'
+import WarningModal from '../common/warningModal'
+const isEqual = require('react-fast-compare')
 
 const URI = require('urijs')
 
@@ -60,7 +63,8 @@ class PublishDocs extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      selectedCollectionId: null
+      selectedCollectionId: null,
+      warningModal: false
     }
   }
 
@@ -209,8 +213,17 @@ class PublishDocs extends Component {
     })
   }
 
+  sensitiveInfoFound () {
+    // check for sensitive info in request here
+    return false
+  }
+
   async handleApproveEndpointRequest (endpointId) {
-    this.props.approve_endpoint(this.props.endpoints[endpointId])
+    if (this.sensitiveInfoFound()) {
+      this.setState({ warningModal: true })
+    } else {
+      this.props.approve_endpoint(this.props.endpoints[endpointId])
+    }
   }
 
   async handleRejectEndpointRequest (endpointId) {
@@ -293,7 +306,8 @@ class PublishDocs extends Component {
             }}
             onDragStart={(e) => this.onDragStart(e, endpoint.id)}
             onDrop={(e) => this.onDrop(e, endpoint.id, sortedEndpoints, 'endpoints')}
-            key={endpoint.id} onClick={() => this.openEndpoint(groupId, endpoint.id)} className='groupListing'
+            key={endpoint.id} onClick={() => this.openEndpoint(groupId, endpoint.id)}
+            className={this.state.selectedEndpointId === endpoint.id ? 'groupListing active' : 'groupListing'}
           >
             {/* <span className='tag'>E</span> */}
             {endpoints[endpoint.id]?.name}
@@ -332,7 +346,8 @@ class PublishDocs extends Component {
                   e.preventDefault()
                 }}
                 onDrop={(e) => this.onDrop(e, page.id, sortedPages, 'pages')}
-                key={page.id} onClick={() => this.openPage(groupId, page.id)} className='groupListing'
+                key={page.id} onClick={() => this.openPage(groupId, page.id)}
+                className={this.state.selectedPageId === page.id ? 'groupListing active' : 'groupListing'}
               >
                 {/* <span className='tag'>P</span> */}
                 {this.state.pages[page.id]?.name}
@@ -367,7 +382,8 @@ class PublishDocs extends Component {
                   e.preventDefault()
                 }}
                 onDrop={(e) => this.onDrop(e, page.id, sortedPages, 'pages')}
-                key={page.id} onClick={() => this.openPage('', page.id)} className='groupListing'
+                key={page.id} onClick={() => this.openPage('', page.id)}
+                className={this.state.selectedPageId === page.id ? 'groupListing active' : 'groupListing'}
               >
                 {/* <span className='tag'>P</span> */}
                 {this.state.pages[page.id]?.name}
@@ -549,7 +565,7 @@ class PublishDocs extends Component {
 
   showEndpointsAndPages (groupId) {
     return (
-      <div className='groups-inner'>
+      <div key={groupId} className='groups-inner'>
         <h3> {this.state.groups[groupId]?.name}</h3>
         {this.filterPages(groupId)}
         {this.filterEndpoints(groupId)}
@@ -603,7 +619,7 @@ class PublishDocs extends Component {
       )
     } else {
       return (
-        <DisplayEndpoint rejected={false} endpointId={this.state.selectedEndpointId} groupId={this.state.selectedGroupId} {...this.props} />
+        <DisplayEndpoint rejected={false} endpointId={this.state.selectedEndpointId} groupId={this.state.selectedGroupId} {...this.props} highlights={this.setChangeHighlighting() || null} />
       )
     }
   }
@@ -756,11 +772,78 @@ class PublishDocs extends Component {
     }
   }
 
+  setChangeHighlighting () {
+    const { selectedEndpointId } = this.state
+    let result = {
+      BASE_URL: null,
+      authorizationType: null,
+      body: {
+        isChanged: null,
+        type: null,
+        value: null
+      },
+      bodyDescription: null,
+      headers: {
+        isChanged: null,
+        items: {}
+      },
+      name: null,
+      params: {
+        isChanged: null,
+        items: {}
+      },
+      pathVariables: {
+        isChanged: null,
+        items: {}
+      },
+      requestType: null,
+      sampleResponse: {
+        isChanged: null,
+        items: {}
+      },
+      uri: null
+    }
+    if (selectedEndpointId) {
+      const endpoint = this.state.endpoints[selectedEndpointId]
+      if (endpoint.state === publishDocsEnum.DRAFT_STATE && endpoint.isPublished) {
+        const originalEndpoint = JSON.parse(JSON.stringify(endpoint.publishedEndpoint))
+        const currentChanges = JSON.parse(JSON.stringify(endpoint))
+        delete originalEndpoint.publishedEndpoint
+        delete currentChanges.publishedEndpoint
+        result = {
+          BASE_URL: !isEqual(originalEndpoint.BASE_URL, currentChanges.BASE_URL),
+          authorizationType: null,
+          body: {
+            isChanged: !isEqual(originalEndpoint.body, currentChanges.body),
+            type: !isEqual(originalEndpoint.body.type, currentChanges.body.type),
+            value: (currentChanges.body.type === 'multipart/form-data' || currentChanges.body.type === 'application/x-www-form-urlencoded') ? makeHighlightsData(originalEndpoint.body.value, currentChanges.body.value, 'body') : !isEqual(originalEndpoint.body.value, currentChanges.body.value)
+          },
+          bodyDescription: null,
+          headers: makeHighlightsData(originalEndpoint.headers, currentChanges.headers, 'headers'),
+          name: !isEqual(originalEndpoint.name, currentChanges.name),
+          params: makeHighlightsData(originalEndpoint.params, currentChanges.params, 'params'),
+          pathVariables: makeHighlightsData(originalEndpoint.pathVariables, currentChanges.pathVariables, 'pathVariables'),
+          requestType: !isEqual(originalEndpoint.requestType, currentChanges.requestType),
+          sampleResponse: makeHighlightsData(originalEndpoint.sampleResponse, currentChanges.sampleResponse, 'sampleResponse'),
+          uri: !isEqual(originalEndpoint.uri, currentChanges.uri)
+        }
+        return result
+      }
+    }
+    return result
+  }
+
+  renderWarningModal () {
+    return (
+      <WarningModal show={this.state.warningModal} onHide={() => { this.setState({ warningModal: false }) }} title='Sensitive Information Warning' message='This Entity contains some sensitive information. Please remove them before making it public.' />
+    )
+  }
+
   render () {
     const collectionId = URI.parseQuery(this.props.location.search).collectionId
-
     return (
       <div className='publish-docs-container'>
+        {this.renderWarningModal()}
         <div className='publish-docs-wrapper'>
           <div class='content-panel'>
             <div className='hosted-APIs'>

@@ -432,8 +432,9 @@ class Endpoints extends Component {
   }
 
   displaySingleEndpoint (endpointId) {
+    const idToCheck = this.props.location.pathname.split('/')[2] === 'endpoint' ? this.props.location.pathname.split('/')[3] : null
     return (
-      <div className='sidebar-accordion' key={endpointId}>
+      <div className={idToCheck === endpointId ? 'sidebar-accordion active' : 'sidebar-accordion'} key={endpointId}>
         <div className={this.props.endpoints[endpointId].state} />
         <button
           onClick={() =>
@@ -474,9 +475,10 @@ class Endpoints extends Component {
   }
 
   displayPublicSingleEndpoint (endpointId) {
+    const idToCheck = this.props.location.pathname.split('/')[3] === 'e' ? this.props.location.pathname.split('/')[4] : null
     return (
       <div
-        className='hm-sidebar-item'
+        className={idToCheck === endpointId ? 'hm-sidebar-item active' : 'hm-sidebar-item'}
         key={endpointId}
         onClick={() =>
           this.handleDisplay(

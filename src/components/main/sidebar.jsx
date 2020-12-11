@@ -368,6 +368,7 @@ class SideBar extends Component {
           render={(props) => (
             <Collections
               {...this.props}
+              selectedCollectionId={this.collectionId}
               empty_filter={this.emptyFilter.bind(this)}
               collection_selected={this.openCollection.bind(this)}
               filter={this.state.data.filter}
@@ -379,6 +380,7 @@ class SideBar extends Component {
           render={(props) => (
             <Collections
               {...this.props}
+              selectedCollectionId={this.collectionId}
               empty_filter={this.emptyFilter.bind(this)}
               collection_selected={this.openCollection.bind(this)}
               filter={this.state.data.filter}

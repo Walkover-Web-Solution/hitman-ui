@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { isDashboardRoute } from '../common/utility'
+import { willHighlight, getHighlightsData } from './highlightChangesHelper'
 import './endpoints.scss'
 
 class GenericTable extends Component {
@@ -221,7 +222,7 @@ class GenericTable extends Component {
 
   renderPublicTableRow (dataArray, index, originalData, title) {
     return (
-      <tr key={index} id='generic-table-row'>
+      <tr key={index} id='generic-table-row' className={getHighlightsData(this.props, title, [dataArray[index].key]) ? 'active' : ''}>
         <td
           className='custom-td'
           id='generic-table-key-cell'
@@ -437,7 +438,7 @@ class GenericTable extends Component {
               : 'public-generic-table-title-container'
           }
         >
-          {!isDashboardRoute(this.props) && title}
+          {!isDashboardRoute(this.props) && <span>{title} {willHighlight(this.props, title) ? <i className='fas fa-circle' /> : null}</span>}
 
         </div>
         {this.renderOptionalParamsButton()}
