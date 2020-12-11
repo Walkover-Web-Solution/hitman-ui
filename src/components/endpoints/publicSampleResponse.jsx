@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Tabs, Tab } from 'react-bootstrap'
 import JSONPretty from 'react-json-pretty'
+import { willHighlight, getHighlightsData } from './highlightChangesHelper'
 import './endpoints.scss'
 const JSONPrettyMon = require('react-json-pretty/dist/monikai')
 
@@ -11,7 +12,7 @@ class PublicSampleResponse extends Component {
     return (
       <div className='pubSampleResponse'>
         <div>
-          <h3 className='heading-2'>Sample Response</h3>
+          <h3 className='heading-2'><span>Sample Response {willHighlight(this.props, 'sampleResponse') ? <i className='fas fa-circle' /> : null}</span></h3>
         </div>
         <div className='sample-response'>
           <Tabs id='uncontrolled-tab-example'>
@@ -19,10 +20,10 @@ class PublicSampleResponse extends Component {
               <Tab
                 key={sampleResponse}
                 eventKey={sampleResponse.title}
-                title={sampleResponse.title}
+                title={getHighlightsData(this.props, 'sampleResponse', sampleResponse.title) ? <span>{sampleResponse.title}<i className='fas fa-circle' /></span> : sampleResponse.title}
               >
                 <div>{sampleResponse.status}</div>
-                <div>{sampleResponse.description}</div> 
+                <div>{sampleResponse.description}</div>
                 <div>
                   <JSONPretty
                     theme={JSONPrettyMon}

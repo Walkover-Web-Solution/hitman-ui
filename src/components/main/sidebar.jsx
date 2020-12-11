@@ -28,7 +28,7 @@ const mapStateToProps = (state) => {
   }
 }
 
-function compareByCreatedAt(a, b) {
+function compareByCreatedAt (a, b) {
   const t1 = a?.createdAt
   const t2 = b?.createdAt
   let comparison = 0
@@ -41,7 +41,7 @@ function compareByCreatedAt(a, b) {
 }
 
 class SideBar extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       data: {
@@ -53,7 +53,7 @@ class SideBar extends Component {
     }
   }
 
-  componentDidMount() {
+  componentDidMount () {
     if (getCurrentUser()) {
       const user = getCurrentUser()
       const name = user.first_name + user.last_name
@@ -70,7 +70,7 @@ class SideBar extends Component {
     }
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate (prevProps, prevState) {
     if (this.props.historySnapshot !== prevProps.historySnapshot) {
       this.setState({
         historySnapshot: Object.values(this.props.historySnapshot)
@@ -78,7 +78,7 @@ class SideBar extends Component {
     }
   }
 
-  dataFetched() {
+  dataFetched () {
     return (
       this.props.collections &&
       this.props.versions &&
@@ -123,38 +123,38 @@ class SideBar extends Component {
     this.setState({ historySnapshot: obj })
   };
 
-  emptyFilter() {
+  emptyFilter () {
     const data = { ...this.state.data }
     data.filter = ''
     this.setState({ data })
   }
 
-  openCollection(collectionId) {
+  openCollection (collectionId) {
     this.collectionId = collectionId
   }
 
-  openApiForm() {
+  openApiForm () {
     this.setState({ showOpenApiForm: true })
   }
 
-  closeOpenApiFormModal() {
+  closeOpenApiFormModal () {
     this.setState({ showOpenApiForm: false })
   }
 
-  closeLoginSignupModal() {
+  closeLoginSignupModal () {
     this.setState({
       showLoginSignupModal: false
     })
   }
 
-  openHistorySnapshot(id) {
+  openHistorySnapshot (id) {
     this.props.history.push({
       pathname: `/dashboard/history/${id}`,
       historySnapshotId: id
     })
   }
 
-  renderHistoryList() {
+  renderHistoryList () {
     return (
       <div className='mt-3'>
         {this.state.historySnapshot &&
@@ -192,7 +192,7 @@ class SideBar extends Component {
     )
   }
 
-  renderTriggerList() {
+  renderTriggerList () {
     return (
       <div className='mt-3'>
         {
@@ -232,7 +232,7 @@ class SideBar extends Component {
     )
   }
 
-  renderSearchList() {
+  renderSearchList () {
     if (this.state.data.filter !== '') {
       return (
         <div>
@@ -255,7 +255,7 @@ class SideBar extends Component {
     }
   }
 
-  findPendingEndpointsCollections(pendingEndpointIds) {
+  findPendingEndpointsCollections (pendingEndpointIds) {
     const groupsArray = []
     for (let i = 0; i < pendingEndpointIds.length; i++) {
       const endpointId = pendingEndpointIds[i]
@@ -284,7 +284,7 @@ class SideBar extends Component {
     return collectionsArray
   }
 
-  findPendingPagesCollections(pendingPageIds) {
+  findPendingPagesCollections (pendingPageIds) {
     const versionsArray = []
     for (let i = 0; i < pendingPageIds.length; i++) {
       const pageId = pendingPageIds[i]
@@ -304,7 +304,7 @@ class SideBar extends Component {
     return collectionsArray
   }
 
-  getPublicCollections() {
+  getPublicCollections () {
     if (this.dataFetched()) {
       const pendingEndpointIds = Object.keys(this.props.endpoints).filter(
         (eId) => this.props.endpoints[eId].state === 'Pending' || (this.props.endpoints[eId].state === 'Draft' && this.props.endpoints[eId].isPublished)
@@ -323,12 +323,12 @@ class SideBar extends Component {
     }
   }
 
-  getNotificationCount() {
+  getNotificationCount () {
     const collections = this.getPublicCollections()
     return collections?.length || 0
   }
 
-  openPublishDocs(collection) {
+  openPublishDocs (collection) {
     if (collection?.id) {
       this.props.history.push({
         pathname: '/admin/publish',
@@ -345,7 +345,7 @@ class SideBar extends Component {
     }
   }
 
-  renderEmptyCollectionsIfNotLoggedIn() {
+  renderEmptyCollectionsIfNotLoggedIn () {
     return (
       <div className='empty-collections'>
         <div>
@@ -360,7 +360,7 @@ class SideBar extends Component {
     )
   }
 
-  renderCollections() {
+  renderCollections () {
     return (
       <Switch>
         <ProtectedRoute
@@ -368,6 +368,7 @@ class SideBar extends Component {
           render={(props) => (
             <Collections
               {...this.props}
+              selectedCollectionId={this.collectionId}
               empty_filter={this.emptyFilter.bind(this)}
               collection_selected={this.openCollection.bind(this)}
               filter={this.state.data.filter}
@@ -379,6 +380,7 @@ class SideBar extends Component {
           render={(props) => (
             <Collections
               {...this.props}
+              selectedCollectionId={this.collectionId}
               empty_filter={this.emptyFilter.bind(this)}
               collection_selected={this.openCollection.bind(this)}
               filter={this.state.data.filter}
@@ -389,7 +391,7 @@ class SideBar extends Component {
     )
   }
 
-  renderSidebarTabs() {
+  renderSidebarTabs () {
     return (
       <Tabs
         defaultActiveKey={
@@ -405,7 +407,7 @@ class SideBar extends Component {
                 <path d='M15.75 11.9999V5.99993C15.7497 5.73688 15.6803 5.47853 15.5487 5.2508C15.417 5.02306 15.2278 4.83395 15 4.70243L9.75 1.70243C9.52197 1.57077 9.2633 1.50146 9 1.50146C8.7367 1.50146 8.47803 1.57077 8.25 1.70243L3 4.70243C2.7722 4.83395 2.58299 5.02306 2.45135 5.2508C2.31971 5.47853 2.25027 5.73688 2.25 5.99993V11.9999C2.25027 12.263 2.31971 12.5213 2.45135 12.7491C2.58299 12.9768 2.7722 13.1659 3 13.2974L8.25 16.2974C8.47803 16.4291 8.7367 16.4984 9 16.4984C9.2633 16.4984 9.52197 16.4291 9.75 16.2974L15 13.2974C15.2278 13.1659 15.417 12.9768 15.5487 12.7491C15.6803 12.5213 15.7497 12.263 15.75 11.9999Z' stroke='#828282' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
                 <path d='M2.45239 5.22021L8.99989 9.00772L15.5474 5.22021' stroke='#828282' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
                 <path d='M9 16.56V9' stroke='#828282' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
-              </svg> <span className="tabs-Text"> Collection</span>
+              </svg> <span className='tabs-Text'> Collection</span>
             </span>
           }
         >
@@ -422,7 +424,7 @@ class SideBar extends Component {
               <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
                 <path d='M9 16.5C13.1421 16.5 16.5 13.1421 16.5 9C16.5 4.85786 13.1421 1.5 9 1.5C4.85786 1.5 1.5 4.85786 1.5 9C1.5 13.1421 4.85786 16.5 9 16.5Z' stroke='#828282' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
                 <path d='M9 4.5V9L12 10.5' stroke='#828282' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
-              </svg> <span className="tabs-Text"> History</span>
+              </svg> <span className='tabs-Text'> History</span>
             </span>
           }
         >
@@ -439,7 +441,7 @@ class SideBar extends Component {
                 <path d='M11.25 11.25L15.75 15.75' stroke='#828282' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
                 <path d='M3 3L6.75 6.75' stroke='#828282' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
               </svg>
-              <span className="tabs-Text"> Random Trigger</span>
+              <span className='tabs-Text'> Random Trigger</span>
             </span>
           }
         >
@@ -449,7 +451,7 @@ class SideBar extends Component {
     )
   }
 
-  renderUserNotification() {
+  renderUserNotification () {
     return (
       <div className='userInfowrapper'>
         <UserNotification
@@ -463,7 +465,7 @@ class SideBar extends Component {
     )
   }
 
-  renderDashboardSidebar() {
+  renderDashboardSidebar () {
     return (
       <>
         <div className='app-name'>
@@ -471,9 +473,9 @@ class SideBar extends Component {
           HITMAN
         </div>
         <div className='search-box'>
-          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M8.25 14.25C11.5637 14.25 14.25 11.5637 14.25 8.25C14.25 4.93629 11.5637 2.25 8.25 2.25C4.93629 2.25 2.25 4.93629 2.25 8.25C2.25 11.5637 4.93629 14.25 8.25 14.25Z" stroke="#828282" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-            <path d="M15.75 15.7498L12.4875 12.4873" stroke="#828282" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
+            <path d='M8.25 14.25C11.5637 14.25 14.25 11.5637 14.25 8.25C14.25 4.93629 11.5637 2.25 8.25 2.25C4.93629 2.25 2.25 4.93629 2.25 8.25C2.25 11.5637 4.93629 14.25 8.25 14.25Z' stroke='#828282' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' />
+            <path d='M15.75 15.7498L12.4875 12.4873' stroke='#828282' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' />
           </svg>
 
           <input
@@ -491,7 +493,7 @@ class SideBar extends Component {
     )
   }
 
-  render() {
+  render () {
     return (
       <nav
         className={
@@ -516,7 +518,7 @@ class SideBar extends Component {
                   path='/p/:collectionId'
                   render={(props) => <Collections {...this.props} />}
                 />
-              )
+                )
           }
         </div>
         {this.collectionId && isDashboardRoute(this.props, true) && (

@@ -17,7 +17,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 }
 
 class PageForm extends Form {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       data: {
@@ -31,7 +31,7 @@ class PageForm extends Form {
     }
   }
 
-  async doSubmit(props) {
+  async doSubmit (props) {
     this.props.onHide()
     if (this.props.title === 'Add new Group Page') {
       const data = { ...this.state.data }
@@ -50,7 +50,7 @@ class PageForm extends Form {
     }
   }
 
-  render() {
+  render () {
     return (
       <Modal
         {...this.props}

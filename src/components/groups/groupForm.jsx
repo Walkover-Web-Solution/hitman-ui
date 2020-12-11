@@ -81,7 +81,7 @@ class GroupForm extends Form {
             {this.renderInput('host', 'Host', 'host name')}
             <div className='text-right'>
               <button
-                className='btn btn-secondary btn-lg mr-2'
+                className='btn btn-secondary outline btn-lg mr-2'
                 onClick={this.props.onHide}
               >
                 Cancel

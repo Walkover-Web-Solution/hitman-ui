@@ -97,6 +97,16 @@ input[type="text"]:focus {
   }
 }
 
+.primary-sidebar .sidebar-accordion.active>button {
+  background: #FEFCF7;
+  border-color: #F1EEE5;
+
+  .sidebar-item-action-btn {
+    visibility: visible;
+    opacity: 1;
+  }
+}
+
 .sidebar-accordion>button {
   width: 100%;
   width: 100%;
@@ -229,7 +239,7 @@ input[type="text"]:focus {
 
         &:before {
           top: -18px;
-          border-width: 0 0 2px 2px;
+          border-width: 0 0 1px 1px;
         }
 
         &:first-child::before {
@@ -257,7 +267,7 @@ input[type="text"]:focus {
 
         &::after {
           top: 50%;
-          border-width: 0 0 0 2px;
+          border-width: 0 0 0 1px;
         }
 
         &.pagesWrapper>button {
@@ -318,6 +328,7 @@ input[type="text"]:focus {
 
 .versionsgroups .linkWith>.sidebar-accordion>button {
   position: relative;
+  color: #E98A36;
 
   &::before {
     background-image: url(../../assets/icons/folderIcons.svg);

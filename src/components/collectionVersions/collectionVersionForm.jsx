@@ -84,7 +84,7 @@ class CollectionVersionForm extends Form {
             {this.renderInput('host', 'Host', 'host')}
             <div className='text-right mt-4 mb-2'>
               <button
-                className='btn btn-secondary btn-lg mr-2'
+                className='btn btn-secondary outline btn-lg mr-2'
                 onClick={this.props.onHide}
               >
                 Cancel

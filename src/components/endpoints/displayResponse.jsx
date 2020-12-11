@@ -22,12 +22,12 @@ class DisplayResponse extends Component {
     theme: ''
   };
 
-  responseTime() {
+  responseTime () {
     const timeElapsed = this.props.timeElapsed
     this.setState({ timeElapsed })
   }
 
-  rawDataResponse() {
+  rawDataResponse () {
     this.setState({
       rawResponse: true,
       previewResponse: false,
@@ -36,7 +36,7 @@ class DisplayResponse extends Component {
     })
   }
 
-  prettyDataResponse() {
+  prettyDataResponse () {
     this.setState({
       rawResponse: false,
       previewResponse: false,
@@ -45,7 +45,7 @@ class DisplayResponse extends Component {
     })
   }
 
-  previewDataResponse() {
+  previewDataResponse () {
     this.setState({
       rawResponse: false,
       previewResponse: true,
@@ -53,11 +53,11 @@ class DisplayResponse extends Component {
     })
   }
 
-  addSampleResponse(response) {
+  addSampleResponse (response) {
     this.openAddForm(response, null, 'Add Sample Response')
   }
 
-  openAddForm(obj, index, name) {
+  openAddForm (obj, index, name) {
     const showSampleResponseForm = { ...this.state.showSampleResponseForm }
     showSampleResponseForm.add = true
     this.setState({
@@ -70,12 +70,12 @@ class DisplayResponse extends Component {
     })
   }
 
-  closeForm() {
+  closeForm () {
     const showSampleResponseForm = { add: false, delete: false, edit: false }
     this.setState({ showSampleResponseForm })
   }
 
-  showAddForm() {
+  showAddForm () {
     return (
       this.state.showSampleResponseForm.add && (
         <SampleResponseForm
@@ -90,13 +90,13 @@ class DisplayResponse extends Component {
     )
   }
 
-  componentDidMount() {
+  componentDidMount () {
     if (!this.state.theme) {
       this.setState({ theme: this.props.publicCollectionTheme })
     }
   }
 
-  render() {
+  render () {
     const { theme } = this.state
     return (
       <div className='endpoint-response-container'>
@@ -193,10 +193,10 @@ class DisplayResponse extends Component {
                               onClick={() =>
                                 this.addSampleResponse(this.props.response)}
                             >
-                              <svg width="16" height="16" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 3.75V14.25" stroke="#E98A36" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M3.75 9H14.25" stroke="#E98A36" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg> Add to Sample Response
+                              <svg width='16' height='16' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M9 3.75V14.25' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' /><path d='M3.75 9H14.25' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' /></svg> Add to Sample Response
                             </div>
                           </div>
-                        )
+                          )
                         : null
                     }
 
@@ -242,7 +242,7 @@ class DisplayResponse extends Component {
                   )}
                 </div>
               </div>
-            )
+              )
             : (
               <div>
                 <div className='empty-response'>Response</div>
@@ -252,7 +252,7 @@ class DisplayResponse extends Component {
                   <p>Hit Try to get a response</p>
                 </div>
               </div>
-            )
+              )
         }
       </div>
     )
