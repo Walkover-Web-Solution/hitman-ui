@@ -479,7 +479,7 @@ class PublishDocs extends Component {
   }
 
   onDragStart (e, gId) {
-    this.draggedItem = gId
+    if (!this.draggedItem) { this.draggedItem = gId }
   };
 
   onDrop (e, destinationItemId, sortedData, item) {
