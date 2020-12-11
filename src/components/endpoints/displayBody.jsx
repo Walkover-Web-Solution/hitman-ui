@@ -249,7 +249,6 @@ class BodyContainer extends Component {
         <div className='button-panel-wrapper'>
           <form className='body-select d-flex align-items-center mb-4'>
             <label className='customRadio'>
-              none
               <input
                 type='radio'
                 name={`body-select-${this.props.endpoint_id}`}
@@ -258,12 +257,12 @@ class BodyContainer extends Component {
                 onClick={() => this.handleSelectBodyType('none')}
                 className='custom-radio-input'
               />
+              <span>none</span>
               <span class='checkmark' />
 
             </label>
 
             <label className='customRadio'>
-              raw
               <input
                 type='radio'
                 name={`body-select-${this.props.endpoint_id}`}
@@ -271,11 +270,10 @@ class BodyContainer extends Component {
                 onClick={() => this.handleSelectBodyType('raw')}
                 className='custom-radio-input'
               />
+              <span>raw</span>
               <span class='checkmark' />
             </label>
             <label className='customRadio'>
-              form-data
-
               <input
                 type='radio'
                 name={`body-select-${this.props.endpoint_id}`}
@@ -283,12 +281,11 @@ class BodyContainer extends Component {
                 onClick={() => this.handleSelectBodyType('multipart/form-data')}
                 className='custom-radio-input'
               />
+              <span>form-data</span>
               <span class='checkmark' />
 
             </label>
             <label className='customRadio'>
-              x-www-form-urlencoded
-
               <input
                 type='radio'
                 name={`body-select-${this.props.endpoint_id}`}
@@ -297,6 +294,7 @@ class BodyContainer extends Component {
                   this.handleSelectBodyType('application/x-www-form-urlencoded')}
                 className='custom-radio-input'
               />
+              <span>x-www-form-urlencoded</span>
               <span class='checkmark' />
 
             </label>

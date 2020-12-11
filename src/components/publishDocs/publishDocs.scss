@@ -213,7 +213,7 @@ span.tag {
   padding: 3px;
 
 }
- 
+
 .rightBorder {
   position: relative;
   padding-left: 50px !important;
@@ -255,13 +255,18 @@ span.tag {
   font-size: 14px;
   margin-bottom: 5px;
   font-weight: 500;
-  text-transform: capitalize; 
+  text-transform: capitalize;
   width: 100%;
   padding: 8px 4px;
   border-radius: 8px;
-  border: 1px solid transparent; 
+  border: 1px solid transparent;
 
   &:hover {
+    background: #FEFCF7;
+    border-color: #F1EEE5;
+  }
+
+  &.active {
     background: #FEFCF7;
     border-color: #F1EEE5;
   }

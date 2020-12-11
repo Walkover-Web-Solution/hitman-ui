@@ -22,7 +22,7 @@ import PublishDocsModal from '../publicEndpoint/publishDocsModal'
 import { isAdmin } from '../auth/authService'
 import TagManager from 'react-gtm-module'
 import TagManagerModal from './tagModal'
-import emptyCollections from '../../assets/icons/emptyCollections.svg'
+// import emptyCollections from '../../assets/icons/emptyCollections.svg'
 
 const EMPTY_STRING = ''
 
@@ -616,7 +616,11 @@ class CollectionsComponent extends Component {
                 onClick={() => this.openAddCollectionForm()}
               >
 
-                <img src={emptyCollections} />
+                <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
+                  <path d='M9 3.75V14.25' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
+                  <path d='M3.75 9H14.25' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
+                </svg>
+
                 Add Collection
               </button>
             </div>

@@ -65,7 +65,7 @@ class ShareVersionForm extends Form {
             <div name='shareVersionLink' label='Public Link' />
             <div className='text-right mt-4 mb-2'>
               <button
-                className='btn btn-secondary mr-2 btn-lg'
+                className='btn btn-secondary outline mr-2 btn-lg'
                 onClick={this.props.onHide}
               >
                 Cancel

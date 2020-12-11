@@ -68,13 +68,13 @@ class PageForm extends Form {
           <form onSubmit={this.handleSubmit}>
             {this.renderInput('name', 'Page name', 'page name')}
             <div className='text-right mt-2 mb-1'>
-              {this.renderButton('Submit')}
               <button
-                className='btn btn-secondary ml-2'
+                className='btn btn-secondary mr-2'
                 onClick={this.props.onHide}
               >
                 Cancel
               </button>
+              {this.renderButton('Submit')}
             </div>
           </form>
         </Modal.Body>
