@@ -105,16 +105,31 @@ class UserInfo extends Component {
                   </Dropdown.Toggle>
                   <Dropdown.Menu>
                     <Dropdown.Item onClick={() => this.navigateToPublishDocs()}>
-                      <svg width='18' height='20' viewBox='0 0 18 20' fill='none'>
-                        <path d='M9 7L5 11L8 11L8 19L10 19L10 11L13 11L9 7ZM15 0.999999L3 1C2.46957 1 1.96086 1.21071 1.58579 1.58579C1.21071 1.96086 0.999999 2.46957 0.999999 3L1 15C1 15.5304 1.21071 16.0391 1.58579 16.4142C1.96086 16.7893 2.46957 17 3 17L6 17L6 15L3 15L3 3L15 3L15 15L12 15L12 17L15 17C15.5304 17 16.0391 16.7893 16.4142 16.4142C16.7893 16.0391 17 15.5304 17 15L17 3C17 2.46957 16.7893 1.96086 16.4142 1.58579C16.0391 1.21071 15.5304 0.999999 15 0.999999Z' fill='#E98A36' stroke='white' stroke-width='0.5' />
+                      <svg width='20' height='19' viewBox='0 0 20 19' fill='none' xmlns='http://www.w3.org/2000/svg'>
+                        <mask id='path-1-inside-1' fill='white'>
+                          <rect y='10.5' width='20' height='8' rx='1' />
+                        </mask>
+                        <rect y='10.5' width='20' height='8' rx='1' stroke='#E98A36' stroke-width='3' mask='url(#path-1-inside-1)' />
+                        <mask id='path-2-inside-2' fill='white'>
+                          <rect y='0.5' width='20' height='8' rx='1' />
+                        </mask>
+                        <rect y='0.5' width='20' height='8' rx='1' stroke='#E98A36' stroke-width='3' mask='url(#path-2-inside-2)' />
+                        <line x1='3' y1='4.5' x2='4' y2='4.5' stroke='#E98A36' />
+                        <line x1='5' y1='4.5' x2='6' y2='4.5' stroke='#E98A36' />
+                        <line x1='3' y1='14.5' x2='4' y2='14.5' stroke='#E98A36' />
+                        <line x1='5' y1='14.5' x2='6' y2='14.5' stroke='#E98A36' />
                       </svg>
+
                       Hosted API
                     </Dropdown.Item>
-                    <Dropdown.Item onClick={() => this.openImportCollectionForm('openAPI')}>
-                      <svg width='18' height='20' viewBox='0 0 18 20' fill='none'>
-                        <path d='M9 7L5 11L8 11L8 19L10 19L10 11L13 11L9 7ZM15 0.999999L3 1C2.46957 1 1.96086 1.21071 1.58579 1.58579C1.21071 1.96086 0.999999 2.46957 0.999999 3L1 15C1 15.5304 1.21071 16.0391 1.58579 16.4142C1.96086 16.7893 2.46957 17 3 17L6 17L6 15L3 15L3 3L15 3L15 15L12 15L12 17L15 17C15.5304 17 16.0391 16.7893 16.4142 16.4142C16.7893 16.0391 17 15.5304 17 15L17 3C17 2.46957 16.7893 1.96086 16.4142 1.58579C16.0391 1.21071 15.5304 0.999999 15 0.999999Z' fill='#E98A36' stroke='white' stroke-width='0.5' />
+                    <Dropdown.Item onClick={() => this.openApiForm()}>
+                      <svg width='18' height='20' viewBox='0 0 18 20' fill='none' xmlns='http://www.w3.org/2000/svg'>
+                        <path fill-rule='evenodd' clip-rule='evenodd' d='M3 1L15 0.999999C15.5304 0.999999 16.0391 1.21071 16.4142 1.58579C16.7893 1.96086 17 2.46957 17 3L17 15C17 15.5304 16.7893 16.0391 16.4142 16.4142C16.0391 16.7893 15.5304 17 15 17L12 17L12 15L15 15L15 3L3 3L3 15L6 15L6 17L3 17C2.46957 17 1.96086 16.7893 1.58579 16.4142C1.21071 16.0391 1 15.5304 1 15L0.999999 3C0.999999 2.46957 1.21071 1.96086 1.58579 1.58579C1.96086 1.21071 2.46957 1 3 1Z' fill='#E98A36' stroke='white' stroke-width='0.5' />
+                        <path d='M12.5 12L9.25 9L6 12' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
+                        <path d='M9.25 9.75L9.25 18.75' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
                       </svg>
-                      Import open API
+
+                      Import API
                     </Dropdown.Item>
                     <Dropdown.Item onClick={() => this.openImportCollectionForm('postman')}>
                       <svg width='18' height='20' viewBox='0 0 18 20' fill='none'>
@@ -124,10 +139,19 @@ class UserInfo extends Component {
                     </Dropdown.Item>
                     <Dropdown.Item>
                       <Link to='/logout'>
-                        <svg width='16' height='15' viewBox='0 0 16 15' fill='none'>
-                          <path d='M5.75 13.75L2.75 13.75C2.35218 13.75 1.97064 13.592 1.68934 13.3107C1.40804 13.0294 1.25 12.6478 1.25 12.25L1.25 1.75C1.25 1.35217 1.40804 0.970644 1.68934 0.68934C1.97065 0.408035 2.35218 0.25 2.75 0.25L5.75 0.25' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
-                          <path d='M11 10.75L14.75 7L11 3.25' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
+                        <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
+                          <g clip-path='url(#clip0)'>
+                            <path d='M6.75 15.5L3.75 15.5C3.35218 15.5 2.97064 15.342 2.68934 15.0607C2.40804 14.7794 2.25 14.3978 2.25 14L2.25 3.5C2.25 3.10217 2.40804 2.72064 2.68934 2.43934C2.97065 2.15804 3.35218 2 3.75 2L6.75 2' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
+                            <path d='M12 12.5L15.75 8.75L12 5' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
+                            <path d='M15 8.75H6' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
+                          </g>
+                          <defs>
+                            <clipPath id='clip0'>
+                              <rect width='18' height='18' fill='white' transform='translate(18 18) rotate(-180)' />
+                            </clipPath>
+                          </defs>
                         </svg>
+
                         Sign out
                       </Link>
                     </Dropdown.Item>

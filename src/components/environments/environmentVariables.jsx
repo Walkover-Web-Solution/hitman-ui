@@ -272,7 +272,7 @@ class EnvironmentVariables extends Component {
               <div>
                 <div className='text-right'>
                   <button
-                    className='btn btn-secondary btn-lg'
+                    className='btn btn-secondary outline btn-lg'
                     onClick={this.props.onHide}
                   >
                     Cancel
