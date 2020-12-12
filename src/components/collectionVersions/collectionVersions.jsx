@@ -36,6 +36,7 @@ class CollectionVersions extends Component {
   constructor (props) {
     super(props)
     this.state = {
+      selectedVersionIds: {},
       showShareVersionForm: false,
       versionFormName: '',
       selectedVersion: {},
@@ -287,7 +288,17 @@ class CollectionVersions extends Component {
     })
   }
 
+  toggleVersionIds (id) {
+    const currentValue = this.state.selectedVersionIds[id]
+    if (currentValue) {
+      this.setState({ selectedVersionIds: { ...this.state.selectedVersionIds, [id]: !currentValue } })
+    } else {
+      this.setState({ selectedVersionIds: { ...this.state.selectedVersionIds, [id]: true } })
+    }
+  }
+
   renderBody (versionId, index) {
+    console.log(this.props, this.state)
     if (
       isDashboardRoute(this.props) &&
       document.getElementsByClassName('version-collapse')
@@ -317,7 +328,12 @@ class CollectionVersions extends Component {
                 key={versionId}
                 id='child-accordion'
               >
-                <Accordion.Toggle variant='default' eventKey='1'>
+                <Accordion.Toggle
+                  className={this.state.selectedVersionIds[versionId] === true ? 'active' : null}
+                  variant='default'
+                  eventKey='1'
+                  onClick={() => { this.toggleVersionIds(versionId) }}
+                >
                   <span className='versionChovron'>
                     <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
                       <path d='M4.5 6.75L9 11.25L13.5 6.75' stroke='#333333' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />

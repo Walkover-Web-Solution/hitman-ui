@@ -429,30 +429,22 @@ class Groups extends Component {
                 key={groupId}
                 className='sidebar-accordion'
                 id='child-accordion'
-                // defaultActiveKey={
-                //   this.eventkey[groupId] ? this.eventkey[groupId] : "1"
-                // }
-                draggable
-                onDragStart={(e) => this.onDragStart(e, groupId)}
-                onDragOver={
-                  (e) => {
-                    e.preventDefault()
-                  }
-                }
-                onDrop={(e) => this.onDrop(e, groupId)}
+              // defaultActiveKey={
+              //   this.eventkey[groupId] ? this.eventkey[groupId] : "1"
+              // }
               >
                 {/* <Card> */}
                 {/* <Card.Header> */}
                 <Accordion.Toggle
                   variant='default'
                   eventKey='0'
-                  // eventKey={
-                  //   !isDashboardRoute(this.props)
-                  //     ? '0'
-                  //     : this.eventkey[groupId]
-                  //       ? this.eventkey[groupId]
-                  //       : '1'
-                  // }
+                // eventKey={
+                //   !isDashboardRoute(this.props)
+                //     ? '0'
+                //     : this.eventkey[groupId]
+                //       ? this.eventkey[groupId]
+                //       : '1'
+                // }
                 >
                   <div className='sidebar-accordion-item'>
                     {this.props.groups[groupId].name}
@@ -556,13 +548,13 @@ class Groups extends Component {
                 <Accordion.Collapse
                   className='group-collapse'
                   eventKey='0'
-                  // eventKey={
-                  //   !isDashboardRoute(this.props)
-                  //     ? '0'
-                  //     : this.eventkey[groupId]
-                  //       ? this.eventkey[groupId]
-                  //       : '1'
-                  // }
+                // eventKey={
+                //   !isDashboardRoute(this.props)
+                //     ? '0'
+                //     : this.eventkey[groupId]
+                //       ? this.eventkey[groupId]
+                //       : '1'
+                // }
                 >
                   <Card.Body>
                     <GroupPages
