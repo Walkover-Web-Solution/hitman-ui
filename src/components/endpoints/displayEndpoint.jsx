@@ -1748,9 +1748,10 @@ class DisplayEndpoint extends Component {
     const { theme } = this.state
     return (
       <div
-        className={
-          this.props.location.pathname.split('/')[1] !== 'admin' ? 'd-flex' : ''
-        }
+        // className={
+        //   this.props.location.pathname.split('/')[1] !== 'admin' ? '' : 'mainContentWrapperPublic'
+        // }
+        className={isDashboardRoute(this.props) ? '' : 'mainContentWrapperPublic'}
       >
         <div className='mainContentWrapper'>
           <div className='hm-endpoint-container endpoint-container row'>
