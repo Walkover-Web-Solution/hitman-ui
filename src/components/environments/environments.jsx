@@ -15,6 +15,8 @@ import {
   setEnvironmentId,
   updateEnvironment
 } from './redux/environmentsActions'
+import eyeIcon from '../../assets/icons/eye.svg'
+import eyeDisabledIcon from '../../assets/icons/eyeDisabled.svg'
 
 const mapStateToProps = (state) => {
   return {
@@ -129,6 +131,56 @@ class Environments extends Component {
     }
   }
 
+  renderEnvironment (env) {
+    return (
+      <div>
+        <div className='px-3'>
+          {env.name}
+          <button
+            className='editBtn'
+            onClick={() =>
+              this.handleEnvironmentModal('Edit Environment', env)}
+          >
+            <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
+              <path d='M9 15H15.75' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
+              <path d='M12.375 2.62517C12.6734 2.3268 13.078 2.15918 13.5 2.15918C13.7089 2.15918 13.9158 2.20033 14.1088 2.28029C14.3019 2.36024 14.4773 2.47743 14.625 2.62517C14.7727 2.77291 14.8899 2.9483 14.9699 3.14132C15.0498 3.33435 15.091 3.54124 15.091 3.75017C15.091 3.9591 15.0498 4.16599 14.9699 4.35902C14.8899 4.55204 14.7727 4.72743 14.625 4.87517L5.25 14.2502L2.25 15.0002L3 12.0002L12.375 2.62517Z' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
+            </svg>
+          </button>
+        </div>
+        <Dropdown.Divider />
+        <div>
+          {' '}
+          <p className='custom-left-pane'>VARIABLE</p>
+          <p className='custom-middle-pane'>INITIAL VALUE</p>
+          <p className='custom-right-pane'>CURRENT VALUE</p>
+        </div>
+        {Object.keys(env.variables).map((v) => (
+          <div key={v}>
+            <p className='custom-left-box'>{v}</p>
+            <p className='custom-middle-box'>
+              {env.variables[v].initialValue || 'None'}
+            </p>
+            <p className='custom-right-box'>
+              {env.variables[v].currentValue || 'None'}
+            </p>
+          </div>
+        ))}
+      </div>
+    )
+  }
+
+  renderEnvWithoutVariables (env) {
+    return (
+      <div className='px-3 py-2'>
+        <p>{env.name}</p>
+        <img src='' atl='No Variables Image' />
+        <p>Sorry! There are NO variables</p>
+        <p>You can add or edit here</p>
+        <button className='btn btn-primary' onClick={() => { this.handleEnvironmentModal('Edit Environment', env) }}>Go To Environment</button>
+      </div>
+    )
+  }
+
   render () {
     let env = isDashboardRoute(this.props)
       ? this.props.environment.environments[
@@ -233,69 +285,21 @@ class Environments extends Component {
             )}
 
             {isDashboardRoute(this.props) && (
-              <div className='environment-buttons'>
+              <div className='environment-buttons addEniButton'>
                 <Dropdown className='float-right'>
                   <Dropdown.Toggle
                     bsPrefix='dropdown'
                     variant='default'
                     id='dropdown-basic'
+                    disabled={!env}
                   >
-                    <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
-                      <path d='M0.75 9C0.75 9 3.75 3 9 3C14.25 3 17.25 9 17.25 9C17.25 9 14.25 15 9 15C3.75 15 0.75 9 0.75 9Z' stroke='#828282' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' /> <path d='M9 11.25C10.2426 11.25 11.25 10.2426 11.25 9C11.25 7.75736 10.2426 6.75 9 6.75C7.75736 6.75 6.75 7.75736 6.75 9C6.75 10.2426 7.75736 11.25 9 11.25Z' stroke='#828282' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
-                    </svg>
-
+                    {env ? <img src={eyeIcon} /> : <img src={eyeDisabledIcon} />}
                   </Dropdown.Toggle>
-
-                  <Dropdown.Menu alignRight className='custom-env-menu'>
-                    <Dropdown.Item>
-                      {env ? env.name : 'No Environment Selected'}
-
-                      {env
-                        ? (
-                          <button
-                            className='editBtn'
-                            onClick={() =>
-                              this.handleEnvironmentModal('Edit Environment', env)}
-                          >
-                            <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
-                              <path d='M9 15H15.75' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
-                              <path d='M12.375 2.62517C12.6734 2.3268 13.078 2.15918 13.5 2.15918C13.7089 2.15918 13.9158 2.20033 14.1088 2.28029C14.3019 2.36024 14.4773 2.47743 14.625 2.62517C14.7727 2.77291 14.8899 2.9483 14.9699 3.14132C15.0498 3.33435 15.091 3.54124 15.091 3.75017C15.091 3.9591 15.0498 4.16599 14.9699 4.35902C14.8899 4.55204 14.7727 4.72743 14.625 4.87517L5.25 14.2502L2.25 15.0002L3 12.0002L12.375 2.62517Z' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
-                            </svg>
-
-                          </button>
-                          )
-                        : isDashboardRoute(this.props)
-                          ? (
-                            <button
-                              className='btn btn-default float-right p-0'
-                              onClick={() =>
-                                this.handleEnvironmentModal('Add new Environment')}
-                            >
-                              Add
-                            </button>
-                            )
-                          : null}
-                    </Dropdown.Item>
-                    <Dropdown.Divider />
-                    <div>
-                      {' '}
-                      <p className='custom-left-pane'>VARIABLE</p>
-                      <p className='custom-middle-pane'>INITIAL VALUE</p>
-                      <p className='custom-right-pane'>CURRENT VALUE</p>
-                    </div>
-                    {env &&
-                      Object.keys(env.variables).map((v) => (
-                        <div key={v}>
-                          <p className='custom-left-box'>{v}</p>
-                          <p className='custom-middle-box'>
-                            {env.variables[v].initialValue || 'None'}
-                          </p>
-                          <p className='custom-right-box'>
-                            {env.variables[v].currentValue || 'None'}
-                          </p>
-                        </div>
-                      ))}
-                  </Dropdown.Menu>
+                  {env && (
+                    <Dropdown.Menu alignRight className='custom-env-menu'>
+                      {Object.keys(env.variables).length > 0 ? this.renderEnvironment(env) : this.renderEnvWithoutVariables(env)}
+                    </Dropdown.Menu>
+                  )}
                 </Dropdown>
               </div>
             )}
@@ -347,7 +351,6 @@ class Environments extends Component {
                           )
                         )
                       }
-
                     </Dropdown.Menu>
                   </Dropdown>
                 </div>

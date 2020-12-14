@@ -157,38 +157,41 @@ class SideBar extends Component {
   renderHistoryList () {
     return (
       <div className='mt-3'>
-        {this.state.historySnapshot &&
-          this.props.historySnapshot &&
-          this.state.historySnapshot.sort(compareByCreatedAt).map(
-            (history) =>
-              Object.keys(history).length !== 0 && (
-                <div
-                  key={history.id}
-                  className='btn d-flex align-items-center mb-2'
-                  onClick={() => { this.openHistorySnapshot(history.id) }}
-                >
-                  <div className={`api-label lg-label ${history.endpoint.requestType}`}>
-                    <div className='endpoint-request-div'>
-                      {history.endpoint.requestType}
-                    </div>
-                  </div>
-                  <div className='ml-3'>
-                    <div className='sideBarListWrapper'>
-                      <div className='text-left'>
-                        <p>   {history.endpoint.name ||
-                          history.endpoint.BASE_URL + history.endpoint.uri ||
-                          'Random Trigger'}
-                        </p>
-                      </div>
-                      <small className='text-muted'>
-                        {moment(history.createdAt).format('ddd, Do MMM h:mm a')}
-                      </small>
-                    </div>
-                  </div>
-                </div>
-              )
-          )}
+        {this.state.historySnapshot && this.state.historySnapshot.length > 0
+          ? (this.state.historySnapshot.sort(compareByCreatedAt).map((history) => this.renderHistoryItem(history)))
+          : (<div>No History Found!</div>)}
       </div>
+    )
+  }
+
+  renderHistoryItem (history) {
+    return (
+      Object.keys(history).length !== 0 && (
+        <div
+          key={history.id}
+          className='btn d-flex align-items-center mb-2'
+          onClick={() => { this.openHistorySnapshot(history.id) }}
+        >
+          <div className={`api-label lg-label ${history.endpoint.requestType}`}>
+            <div className='endpoint-request-div'>
+              {history.endpoint.requestType}
+            </div>
+          </div>
+          <div className='ml-3'>
+            <div className='sideBarListWrapper'>
+              <div className='text-left'>
+                <p>{history.endpoint.name ||
+                  history.endpoint.BASE_URL + history.endpoint.uri ||
+                  'Random Trigger'}
+                </p>
+              </div>
+              <small className='text-muted'>
+                {moment(history.createdAt).format('ddd, Do MMM h:mm a')}
+              </small>
+            </div>
+          </div>
+        </div>
+      )
     )
   }
 
@@ -196,37 +199,9 @@ class SideBar extends Component {
     return (
       <div className='mt-3'>
         {
-          this.state.historySnapshot &&
-          this.props.historySnapshot &&
-          this.state.historySnapshot.sort(compareByCreatedAt).map(
-            (history) =>
-              Object.keys(history).length !== 0 && history.endpoint.status === 'NEW' && (
-                <div
-                  key={history.id}
-                  className='btn d-flex align-items-center mb-2'
-                  onClick={() => { this.openHistorySnapshot(history.id) }}
-                >
-                  <div className={`api-label lg-label ${history.endpoint.requestType}`}>
-                    <div className='endpoint-request-div'>
-                      {history.endpoint.requestType}
-                    </div>
-                  </div>
-                  <div className='ml-3'>
-                    <div className='sideBarListWrapper'>
-                      <div className='text-left'>
-                        <p>{history.endpoint.name ||
-                          history.endpoint.BASE_URL + history.endpoint.uri ||
-                          'Random Trigger'}
-                        </p>
-                      </div>
-                      <small className='text-muted'>
-                        {moment(history.createdAt).format('ddd, Do MMM h:mm a')}
-                      </small>
-                    </div>
-                  </div>
-                </div>
-              )
-          )
+          this.state.historySnapshot && this.state.historySnapshot.filter(o => o.endpoint.status === 'NEW').length > 0
+            ? (this.state.historySnapshot.filter(o => o.endpoint.status === 'NEW').sort(compareByCreatedAt).map((history) => this.renderHistoryItem(history)))
+            : (<div>No Random Triggers Found!</div>)
         }
       </div>
     )
