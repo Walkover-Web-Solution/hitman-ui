@@ -20,10 +20,11 @@
 }
 
 .main {
-  // padding: 48px 0 0;
-  // flex-grow: 2;
-  // max-width: 1060px;
-  // width: 1060px;
+  width: 100%;
+  padding: 0 30px;
+  margin: 0 auto 200px;
+  flex-direction: column !important;
+  overflow-x: hidden;
   width: 100%;
   padding: 0 30px;
   margin: 0  auto 200px;
