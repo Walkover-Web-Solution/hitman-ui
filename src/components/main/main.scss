@@ -1014,10 +1014,6 @@ button.editBtn {
 
 .publish-button {
   display: flex;
-
-  .publish-collection-button {
-    margin-left: 30px;
-  }
 }
 
 .version-details .hm-endpoint-container {
@@ -1073,8 +1069,10 @@ button.editBtn {
   overflow: auto;
 }
 
-.hm-sidebar-outer-block {
+.hm-sidebar .hm-sidebar-outer-block {
   padding: 15px 5px;
+  height: 80vh;
+  overflow: auto;
 }
 
 .btn.btn-outline.orange {
@@ -1340,7 +1338,7 @@ button.editBtn {
 
 
 
-.headParaWraper table#custom-generic-table  tbody tr.active td {
+.headParaWraper table#custom-generic-table tbody tr.active td {
   color: #E98A36 !important;
 
   p {
@@ -1351,5 +1349,36 @@ button.editBtn {
   input {
     color: #E98A36 !important;
     border-color: #E98A36 !important;
+  }
+}
+
+.environment-buttons.addEniButton {
+  margin-left: 0;
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+  border-left: none;
+}
+
+.select-environment-dropdown .dropdown .btn {
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
+
+.mainContentWrapperPublic .mainContentWrapper {
+  background: transparent;
+  display: flex;
+  padding: 0;
+}
+
+
+@media(max-width:1199px) {
+  .colorChooser.d-flex {
+    justify-content: normal !important;
+    display: block !important;
+  }
+
+  .colorChooser.d-flex button {
+    margin-left: 10px;
+    margin-top: 10px;
   }
 }
