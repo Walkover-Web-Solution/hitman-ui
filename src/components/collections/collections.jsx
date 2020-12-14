@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Accordion, Card } from 'react-bootstrap'
+import { Accordion, Card, Button } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import 'react-toastify/dist/ReactToastify.css'
@@ -22,7 +22,7 @@ import PublishDocsModal from '../publicEndpoint/publishDocsModal'
 import { isAdmin } from '../auth/authService'
 import TagManager from 'react-gtm-module'
 import TagManagerModal from './tagModal'
-// import emptyCollections from '../../assets/icons/emptyCollections.svg'
+import emptyCollections from '../../assets/icons/emptyCollections.svg'
 
 const EMPTY_STRING = ''
 
@@ -511,6 +511,21 @@ class CollectionsComponent extends Component {
     }
   }
 
+  renderEmptyCollections () {
+    return (
+      <div className='empty-collections'>
+        <div>
+          <img src={emptyCollections} />
+        </div>
+        <div className='content'>
+          <h5>  Your collection is Empty.</h5>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+        </div>
+        <Button className='btn-lg' variant='primary' onClick={() => this.openAddCollectionForm()}>+ Add here</Button>{' '}
+      </div>
+    )
+  }
+
   render () {
     if (isDashboardRoute(this.props, true)) {
       let finalCollections = []
@@ -608,26 +623,31 @@ class CollectionsComponent extends Component {
                 )}
             </div>
           </div>
+          {finalCollections.length > 0
+            ? (
+              <div className='App-Side'>
+                <div className='add-collection-btn-wrap'>
+                  <button
+                    className='add-collection-btn'
+                    onClick={() => this.openAddCollectionForm()}
+                  >
 
-          <div className='App-Side'>
-            <div className='add-collection-btn-wrap'>
-              <button
-                className='add-collection-btn'
-                onClick={() => this.openAddCollectionForm()}
-              >
+                    <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
+                      <path d='M9 3.75V14.25' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
+                      <path d='M3.75 9H14.25' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
+                    </svg>
 
-                <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
-                  <path d='M9 3.75V14.25' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
-                  <path d='M3.75 9H14.25' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
-                </svg>
-
-                Add Collection
-              </button>
-            </div>
-            {finalCollections.map((collectionId, index) =>
-              this.renderBody(collectionId, 'allCollections')
-            )}
-          </div>
+                    Add Collection
+                  </button>
+                </div>
+                {finalCollections.map((collectionId, index) =>
+                  this.renderBody(collectionId, 'allCollections')
+                )}
+              </div>)
+            : (this.props.filter === ''
+                ? this.renderEmptyCollections()
+                : <div className='px-2'>No Collections Found!</div>
+              )}
         </div>
       )
     } else {
