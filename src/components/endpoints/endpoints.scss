@@ -487,6 +487,7 @@ $border-color: rgba(227, 228, 230, 0.7);
 
     .statusWrapper {
       display: flex;
+      align-items: center;
     }
 
     #status {
@@ -1137,6 +1138,7 @@ table#custom-generic-table {
 
 .pubSampleResponse {
   margin: 50px 0 0;
+
   .fa-circle {
     color: #E98A36;
     margin-left: 5px;
@@ -1162,7 +1164,8 @@ table#custom-generic-table {
 
 .resPubclipboardWrapper button {
   background: transparent;
-  border: none;
+  border: 1px solid #E0E0E0;
+  border-radius: 4px;
 
   .fas {
     color: #828282;

@@ -690,12 +690,14 @@ label.data-type {
 
 .primary-sidebar {
   .nav-tabs span {
+    transition: 600ms;
     font-size: 0;
   }
 
   .nav-tabs a.active span {
     font-size: 12px;
     color: #000;
+    transition: 600ms;
     font-weight: 600;
   }
 
@@ -708,6 +710,9 @@ label.data-type {
       display: flex;
       justify-content: center;
       align-items: center;
+      transition: 500ms;
+      padding: 0;
+      height: 45px;
 
       &.active {
         border-bottom: 2px solid #E98A36;
@@ -963,7 +968,7 @@ button.editBtn {
   max-height: 300px;
   overflow: auto;
   background: #fff;
-  padding: 11px 20px;
+  padding: 11px 0;
   border-radius: 4px;
 }
 
@@ -1382,4 +1387,37 @@ button.editBtn {
     margin-left: 10px;
     margin-top: 10px;
   }
+}
+
+
+.addEniButton {
+  h4 {
+    color: #E98A36;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  h5 {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+  }
+
+  p.greyWrapper {
+    color: #828282;
+    font-size: 14px;
+  }
+
+  .btn {
+    width: 100%;
+    max-width: 200px;
+    padding: 12px 0;
+  }
+}
+
+.ql-snow .ql-color-picker .ql-picker-label {
+  padding: 0px 3px 0px 3px !important;
+}
+.fade {
+  transition: opacity 1s cubic-bezier(0.65, 0.05, 0.36, 1)!important;
 }

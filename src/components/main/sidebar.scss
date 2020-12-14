@@ -299,7 +299,13 @@ input[type="text"]:focus {
 }
 
 .versionChovron {
+  transition: 300ms;
   margin: 0 0px 0px 10px;
+}
+
+.versionBoldHeading .active .versionChovron {
+  transform: rotate(180deg);
+  transition: 300ms;
 }
 
 .version-collapse {
