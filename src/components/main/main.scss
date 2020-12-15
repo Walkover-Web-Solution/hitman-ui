@@ -690,12 +690,14 @@ label.data-type {
 
 .primary-sidebar {
   .nav-tabs span {
+    transition: 600ms;
     font-size: 0;
   }
 
   .nav-tabs a.active span {
     font-size: 12px;
     color: #000;
+    transition: 600ms;
     font-weight: 600;
   }
 
@@ -708,6 +710,9 @@ label.data-type {
       display: flex;
       justify-content: center;
       align-items: center;
+      transition: 500ms;
+      padding: 0;
+      height: 45px;
 
       &.active {
         border-bottom: 2px solid #E98A36;
@@ -963,7 +968,7 @@ button.editBtn {
   max-height: 300px;
   overflow: auto;
   background: #fff;
-  padding: 11px 20px;
+  padding: 11px 0;
   border-radius: 4px;
 }
 
@@ -1014,15 +1019,12 @@ button.editBtn {
 
 .publish-button {
   display: flex;
-
-  .publish-collection-button {
-    margin-left: 30px;
-  }
 }
 
 .version-details .hm-endpoint-container {
   display: block;
   margin: 0px 10px;
+  width: 100%;
 }
 
 .endPointRes .endpoint-response-container {
@@ -1033,7 +1035,7 @@ button.editBtn {
 
 .responseTabWrapper {
   background: #fff;
-  padding: 20px 40px;
+  padding: 20px;
   border-radius: 4px;
 }
 
@@ -1073,8 +1075,10 @@ button.editBtn {
   overflow: auto;
 }
 
-.hm-sidebar-outer-block {
+.hm-sidebar .hm-sidebar-outer-block {
   padding: 15px 5px;
+  height: 80vh;
+  overflow: auto;
 }
 
 .btn.btn-outline.orange {
@@ -1340,7 +1344,7 @@ button.editBtn {
 
 
 
-.headParaWraper table#custom-generic-table  tbody tr.active td {
+.headParaWraper table#custom-generic-table tbody tr.active td {
   color: #E98A36 !important;
 
   p {
@@ -1352,4 +1356,68 @@ button.editBtn {
     color: #E98A36 !important;
     border-color: #E98A36 !important;
   }
+}
+
+.environment-buttons.addEniButton {
+  margin-left: 0;
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+  border-left: none;
+}
+
+.select-environment-dropdown .dropdown .btn {
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
+
+.mainContentWrapperPublic .mainContentWrapper {
+  background: transparent;
+  display: flex;
+  padding: 0;
+}
+
+
+@media(max-width:1199px) {
+  .colorChooser.d-flex {
+    justify-content: normal !important;
+    display: block !important;
+  }
+
+  .colorChooser.d-flex button {
+    margin-left: 10px;
+    margin-top: 10px;
+  }
+}
+
+
+.addEniButton {
+  h4 {
+    color: #E98A36;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  h5 {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+  }
+
+  p.greyWrapper {
+    color: #828282;
+    font-size: 14px;
+  }
+
+  .btn {
+    width: 100%;
+    max-width: 200px;
+    padding: 12px 0;
+  }
+}
+
+.ql-snow .ql-color-picker .ql-picker-label {
+  padding: 0px 3px 0px 3px !important;
+}
+.fade {
+  transition: opacity 1s cubic-bezier(0.65, 0.05, 0.36, 1)!important;
 }

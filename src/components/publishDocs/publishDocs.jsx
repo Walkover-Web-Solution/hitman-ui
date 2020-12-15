@@ -854,7 +854,7 @@ class PublishDocs extends Component {
     if (!this.isCollectionPublished()) {
       return (
         <Button
-          variant='success publish-collection-button'
+          variant='success publish-collection-button ml-4'
           onClick={() => this.publishCollection()}
         >
           Publish Collection
@@ -863,7 +863,7 @@ class PublishDocs extends Component {
     } else {
       return (
         <Button
-          variant='success publish-collection-button'
+          variant='btn btn-outline danger ml-4'
           onClick={() => this.unPublishCollection()}
         >
           Unpublish Doc

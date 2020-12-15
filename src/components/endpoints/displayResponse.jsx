@@ -127,10 +127,11 @@ class DisplayResponse extends Component {
                       <CopyToClipboard
                         text={JSON.stringify(this.props.response.data)}
                         onCopy={() => this.setState({ copied: true })}
-                        style={{ float: 'right', borderRadius: '12px' }}
                       >
                         <button>
-                          <i className='fas fa-clone' />
+                          <svg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'>
+                            <path d='M14.2933 7.36629L8.16664 13.493C7.41607 14.2435 6.39809 14.6652 5.33664 14.6652C4.27518 14.6652 3.2572 14.2435 2.50664 13.493C1.75607 12.7424 1.33441 11.7244 1.33441 10.663C1.33441 9.6015 1.75607 8.58352 2.50664 7.83295L8.6333 1.70629C9.13368 1.20591 9.81233 0.924805 10.52 0.924805C11.2276 0.924805 11.9063 1.20591 12.4066 1.70629C12.907 2.20666 13.1881 2.88532 13.1881 3.59295C13.1881 4.30059 12.907 4.97925 12.4066 5.47962L6.2733 11.6063C6.02311 11.8565 5.68379 11.997 5.32997 11.997C4.97615 11.997 4.63682 11.8565 4.38664 11.6063C4.13645 11.3561 3.99589 11.0168 3.99589 10.663C3.99589 10.3091 4.13645 9.96981 4.38664 9.71962L10.0466 4.06629' stroke='#828282' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
+                          </svg>
                         </button>
                       </CopyToClipboard>
                     </div>
