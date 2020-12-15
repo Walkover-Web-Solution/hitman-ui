@@ -1418,3 +1418,9 @@ button.editBtn {
 .ql-snow .ql-color-picker .ql-picker-label {
   padding: 0px 3px 0px 3px !important;
 }
+
+.searchResult {
+  padding: 0 10px;
+  height: calc(100vh - 230px);
+  overflow: auto;
+}
