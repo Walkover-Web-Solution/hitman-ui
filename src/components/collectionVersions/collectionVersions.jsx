@@ -65,11 +65,11 @@ class CollectionVersions extends Component {
     }
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if(prevProps.selectedCollectionId !== this.props.selectedCollectionId) {
-      this.setState({ selectedVersionIds: {}})
+  componentDidUpdate (prevProps, prevState) {
+    if (prevProps.selectedCollectionId !== this.props.selectedCollectionId) {
+      this.setState({ selectedVersionIds: {} })
     }
-  } 
+  }
 
   handleUpdate (collectionVersion) {
     this.props.history.push({
