@@ -112,6 +112,7 @@ class CustomTabs extends Component {
               onDragOver={this.handleOnDragOver}
               onDragStart={() => this.onDragStart(tabId)}
               onDrop={(e) => this.onDrop(e, tabId)}
+              className={this.props.tabs?.activeTabId === tabId ? 'active' : ''}
             >
               {
                 this.props.tabs.tabs[tabId].isModified
