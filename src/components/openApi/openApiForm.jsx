@@ -59,7 +59,7 @@ class OpenApiForm extends Component {
       >
         <Modal.Header className='custom-collection-modal-container' closeButton>
           <Modal.Title id='contained-modal-title-vcenter'>
-            IMPORT COLLECTION
+            Import Collection
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>

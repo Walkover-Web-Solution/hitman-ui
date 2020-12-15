@@ -117,7 +117,7 @@ $border-color: rgba(227, 228, 230, 0.7);
   background: #ffffff;
   transform: translate3d(-700px, 38px, 0px) !important;
   overflow: auto;
-
+  padding: 15px 10px;
   .custom-left-pane {
     float: left;
     width: 231px;
@@ -129,7 +129,7 @@ $border-color: rgba(227, 228, 230, 0.7);
 
   .custom-middle-pane {
     float: left;
-    width: 269px;
+    width: 255px;
     color: rgb(128, 128, 128);
     font-size: 13px;
     font-weight: 400;
@@ -156,7 +156,7 @@ $border-color: rgba(227, 228, 230, 0.7);
 
   .custom-middle-box {
     float: left;
-    width: 269px;
+    width: 260px;
     font-size: 13px;
     font-weight: 300;
     overflow: hidden;
@@ -166,7 +166,7 @@ $border-color: rgba(227, 228, 230, 0.7);
 
   .custom-right-box {
     float: left;
-    width: 270px;
+    width: 206px;
     font-size: 13px;
     font-weight: 300;
   }
