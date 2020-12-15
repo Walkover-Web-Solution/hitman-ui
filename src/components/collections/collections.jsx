@@ -515,7 +515,7 @@ class CollectionsComponent extends Component {
     return (
       <div className='empty-collections'>
         <div>
-          <img src={emptyCollections} />
+          <img src={emptyCollections} alt='' />
         </div>
         <div className='content'>
           <h5>  Your collection is Empty.</h5>

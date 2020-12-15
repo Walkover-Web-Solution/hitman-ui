@@ -251,7 +251,7 @@ input[type="text"]:focus {
         &::before {
           content: '';
           position: absolute;
-          left: -16px;
+          left: -15px;
           width: 20px;
           height: calc(50% + 18px);
           border-color: #E98A36;
@@ -299,7 +299,13 @@ input[type="text"]:focus {
 }
 
 .versionChovron {
+  transition: 300ms;
   margin: 0 0px 0px 10px;
+}
+
+.versionBoldHeading .active .versionChovron {
+  transform: rotate(180deg);
+  transition: 300ms;
 }
 
 .version-collapse {
