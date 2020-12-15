@@ -510,13 +510,22 @@ class Endpoints extends Component {
   }
 
   displayPublicEndpoints (endpoints) {
+    const sortedEndpoints = []
+    Object.values(endpoints).forEach(endpoint => {
+      sortedEndpoints.push(endpoint)
+    })
+    sortedEndpoints.sort(function (a, b) {
+      if (a.position < b.position) { return -1 }
+      if (a.position > b.position) { return 1 }
+      return 0
+    })
     return (
       <>
         {
-          endpoints &&
-          Object.keys(endpoints).length !== 0 &&
-          Object.keys(endpoints).map((endpointId) => (
-            this.displayPublicSingleEndpoint(endpointId)
+          sortedEndpoints &&
+          Object.keys(sortedEndpoints).length !== 0 &&
+          sortedEndpoints.map((endpoint) => (
+            this.displayPublicSingleEndpoint(endpoint.id)
           ))
         }
       </>
