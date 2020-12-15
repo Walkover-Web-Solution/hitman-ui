@@ -61,18 +61,18 @@ export function moveEndpoint (endpointId, body) {
 }
 
 export function updateEndpointOrder (
-  sourceEndpointIds,
-  sourceGroupId = null,
-  destinationEndpointIds = null,
-  destinationGroupId = null,
-  endpointId = null
+  endpointsOrder
+  // sourceGroupId = null,
+  // destinationEndpointIds = null,
+  // destinationGroupId = null,
+  // endpointId = null
 ) {
   return http.patch(`${apiUrl}/updateEndpointsOrder`, {
-    sourceEndpointIds,
-    sourceGroupId,
-    destinationEndpointIds,
-    destinationGroupId,
-    endpointId
+    endpointsOrder
+    // sourceGroupId,
+    // destinationEndpointIds,
+    // destinationGroupId,
+    // endpointId
   })
 }
 

@@ -6,30 +6,26 @@ $border-color: rgba(227, 228, 230, 0.7);
 
   .add-collection-btn {
     background: transparent;
-    border: none;
     width: 100%;
-    padding: 15px 35px 10px;
+    padding: 10px 35px 10px;
     color: #E98A36;
     font-size: 12px;
-    text-align: right;
+    text-align: center;
+    border: 1px solid #E98A36!important;
+    border-radius: 4px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    margin-top: 15px;
 
-    img {
-      width: 100%;
-      max-width: 25px;
-      margin-right: 5px;
-    }
+   
 
     &:active,
     &:focus {
       outline: none;
       border: none;
       box-shadow: none;
-    }
-
-    >i {
-      width: 30px;
-      display: inline-block;
-    }
+    } 
   }
 }
 
@@ -169,7 +165,7 @@ div.fixed {
 
 .user-notification {
   padding: 0px !important;
-  width: 300px;
+  width: 100%;
 
   .user-heading {
     display: flex;
@@ -177,12 +173,7 @@ div.fixed {
     justify-content: space-between;
     font-size: 18px;
   }
-
-  .fas.fa-bell {
-    padding-left: 10px;
-    font-size: 20px;
-    color: black;
-  }
+ 
 
   .notification {
     text-decoration: none;
@@ -193,29 +184,57 @@ div.fixed {
 
   .notification .badge {
     position: absolute;
-    top: -8px;
-    right: 10px;
-    padding: 5px 10px;
-    border-radius: 50%;
-    font-size: 8px;
-    border: 1px solid white;
-    background-color: black;
-
-    i.fas.fa-bell {
-      margin-right: 13px;
-    }
+    top: -7px;
+    right: 7px;
+    padding: 3px;
+    border-radius: 29px;
+    font-size: 9px;
+    background-color: #E98A36;
+    color: #fff;
+    height: 14px;
+    width: 18px;
+    text-align: center;
+ 
   }
 
   .notification-icon {
-    padding-left: 20px;
+    padding-left: 10px;
   }
 
-  button#dropdown-basic {
-    background: rgb(255, 252, 246);
+  .dropdown-toggle {
+    background: #ffffff;
     border: none;
+
+    &::after {
+      display: none;
+    }
   }
 
-  .user-avatar {
-    background-color: rgb(255, 252, 246) !important;
+  .user-name {
+    color: #333;
+    font-size: 14px;
+    font-weight: 600;
   }
+
+  .user-avatar img {
+    width: 40px;
+    height: 40px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 50%;
+    font-size: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+
+  }
+}
+
+.userInfowrapper {
+  position: absolute;
+  bottom: 15px;
+  left: 0;
+  right: 0;
+  width: 100%;
+  border-top: 1px solid #D3CCC5;
+  padding-top: 10px;
+  padding-right: 15px;
+  padding-left: 15px;
 }

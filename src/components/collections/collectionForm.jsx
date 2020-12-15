@@ -147,13 +147,13 @@ class CollectionForm extends Form {
               {/* {this.renderTextArea("description", "Description", "description")} */}
               {this.renderQuillEditor('descriptoion', 'Description')}
               <div className='text-right mt-4 mb-2'>
-                {this.renderButton('Submit')}
                 <button
-                  className='btn btn-secondary btn-lg ml-2'
+                  className='btn btn-secondary outline btn-lg outline mr-2'
                   onClick={() => this.props.onHide()}
                 >
                   Cancel
                 </button>
+                {this.renderButton('Submit')}
               </div>
             </form>
           </Modal.Body>

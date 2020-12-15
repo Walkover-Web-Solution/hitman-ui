@@ -100,7 +100,6 @@ class Pages extends Component {
   displayPageName (pageId) {
     return (
       <div className='sidebar-accordion-item'>
-        <i className='uil uil-file-alt' aria-hidden='true' />
         {this.props.pages[pageId].name}
       </div>
     )
@@ -254,19 +253,20 @@ class Pages extends Component {
   }
 
   displayUserPages (pageId) {
+    const idToCheck = this.props.location.pathname.split('/')[2] === 'page' ? this.props.location.pathname.split('/')[3] : null
     return (
       <div
-        className='sidebar-accordion'
+        className={idToCheck === pageId ? 'sidebar-accordion pagesWrapper active' : 'sidebar-accordion pagesWrapper'}
         id='accordion'
         key={this.props.index}
       >
         <button
-          draggable
-          onDragStart={(e) => this.props.onDragStart(e, pageId)}
-          onDragOver={(e) => {
-            e.preventDefault()
-          }}
-          onDrop={(e) => this.props.onDrop(e, pageId)}
+          // draggable
+          // onDragStart={(e) => this.props.onDragStart(e, pageId)}
+          // onDragOver={(e) => {
+          //   e.preventDefault()
+          // }}
+          // onDrop={(e) => this.props.onDrop(e, pageId)}
           data-toggle='collapse'
           data-target={`#${pageId}`}
           aria-expanded='true'
@@ -288,9 +288,10 @@ class Pages extends Component {
   }
 
   displayPublicPages (pageId) {
+    const idToCheck = this.props.location.pathname.split('/')[3] === 'pages' ? this.props.location.pathname.split('/')[4] : null
     return (
       <div
-        className='hm-sidebar-item'
+        className={idToCheck === pageId ? 'hm-sidebar-item active' : 'hm-sidebar-item'}
         onClick={() => {
           const page = this.props.pages[pageId]
           this.handleDisplay(page, this.props.collection_id, true)
@@ -300,7 +301,6 @@ class Pages extends Component {
           this.handleDisplay(page, this.props.collection_id, false)
         }}
       >
-        <i className='uil uil-file-alt' aria-hidden='true' />
         {this.props.pages[pageId].name}
       </div>
     )

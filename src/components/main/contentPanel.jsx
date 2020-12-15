@@ -172,7 +172,7 @@ class ContentPanel extends Component {
             getCurrentUser()
               ? (
                 <div className='content-header'>
-                  <div className='tabs-container'>
+                  <div className='tabs-container d-flex'>
                     <CustomTabs
                       {...this.props}
                       handle_save_endpoint={this.handleSaveEndpoint.bind(this)}
@@ -191,12 +191,16 @@ class ContentPanel extends Component {
                           <button className='btn'>Untitled</button>
                         </Nav.Link>
                       </Nav.Item>
-                      <Nav.Item className='tab-buttons' id='add-new-tab-button'>
+                      <Nav.Item className='tab-buttons newTabs' id='add-new-tab-button'>
                         <button
                           className='btn'
                           onClick={() => { this.openLoginSignupModal() }}
                         >
-                          <i className='uil uil-plus' />
+                          <svg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'>
+                            <path d='M19 3H5C3.89543 3 3 3.89543 3 5V19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V5C21 3.89543 20.1046 3 19 3Z' stroke='#BDBDBD' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
+                            <path d='M12 8V16' stroke='#BDBDBD' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
+                            <path d='M8 12H16' stroke='#BDBDBD' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
+                          </svg>
                         </button>
                       </Nav.Item>
                     </Nav>

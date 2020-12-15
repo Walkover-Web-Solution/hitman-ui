@@ -47,9 +47,15 @@ class TagManagerModal extends Form {
           <Modal.Body>
             <form onSubmit={this.handleSubmit}>
               {this.renderInput('gtmId', 'GTM-ID', '')}
-              <div className='text-right'>
+              <div className='text-right mt-2 mb-2'>
                 <button
-                  className='btn btn-primary btn-lg mt-2 mb-2'
+                  className='btn btn-secondary outline btn-lg mr-2'
+                  onClick={this.props.onHide}
+                >
+                  Cancel
+                </button>
+                <button
+                  className='btn btn-primary btn-lg'
                   type='button'
                   onClick={() => this.doSubmit()}
                 >

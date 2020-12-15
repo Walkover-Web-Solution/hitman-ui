@@ -35,7 +35,6 @@ class PageForm extends Form {
     this.props.onHide()
     if (this.props.title === 'Add new Group Page') {
       const data = { ...this.state.data }
-      data.position = this.extractPosition()
       const newPage = { ...data, requestId: shortid.generate() }
       this.props.add_group_page(
         this.props.selectedVersion,
@@ -46,32 +45,9 @@ class PageForm extends Form {
     if (this.props.title === 'Add New Version Page') {
       const versionId = this.props.selectedVersion.id
       const data = { ...this.state.data }
-      data.position = this.extractPosition()
       const newPage = { ...data, requestId: shortid.generate() }
       this.props.add_page(versionId, newPage)
     }
-  }
-
-  extractPosition () {
-    let count = -1
-    for (let i = 0; i < Object.keys(this.props.pages).length; i++) {
-      if (
-        this.props.selectedGroup &&
-        this.props.selectedVersion &&
-        this.props.selectedGroup.id ===
-        this.props.pages[Object.keys(this.props.pages)[i]].groupId
-      ) {
-        count = count + 1
-      } else if (
-        this.props.selectedVersion &&
-        this.props.pages[Object.keys(this.props.pages)[i]].groupId === null &&
-        this.props.selectedVersion.id ===
-        this.props.pages[Object.keys(this.props.pages)[i]].versionId
-      ) {
-        count = count + 1
-      }
-    }
-    return count + 1
   }
 
   render () {
@@ -92,13 +68,13 @@ class PageForm extends Form {
           <form onSubmit={this.handleSubmit}>
             {this.renderInput('name', 'Page name', 'page name')}
             <div className='text-right mt-2 mb-1'>
-              {this.renderButton('Submit')}
               <button
-                className='btn btn-secondary ml-2'
+                className='btn btn-secondary mr-2'
                 onClick={this.props.onHide}
               >
                 Cancel
               </button>
+              {this.renderButton('Submit')}
             </div>
           </form>
         </Modal.Body>

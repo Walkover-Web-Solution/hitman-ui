@@ -6,15 +6,12 @@ import ProtectedRoute from '../common/protectedRoute'
 import { isDashboardRoute } from '../common/utility'
 import { getCurrentUser } from '../auth/authService'
 import CollectionVersions from '../collectionVersions/collectionVersions'
-import endpointApiService from '../endpoints/endpointApiService'
+// import endpointApiService from '../endpoints/endpointApiService'
 import './main.scss'
 import './sidebar.scss'
 import { Tabs, Tab, Button } from 'react-bootstrap'
 import LoginSignupModal from './loginSignupModal'
 import hitmanIcon from '../../assets/icons/hitman.svg'
-import collectionIcon from '../../assets/icons/collectionIcon.svg'
-import historyIcon from '../../assets/icons/historyIcon.svg'
-import randomTriggerIcon from '../../assets/icons/randomTriggerIcon.svg'
 import emptyCollections from '../../assets/icons/emptyCollections.svg'
 import UserNotification from '../collections/userNotification'
 import moment from 'moment'
@@ -106,26 +103,26 @@ class SideBar extends Component {
     )
   }
 
-  async dndMoveEndpoint (endpointId, sourceGroupId, destinationGroupId) {
-    const groups = { ...this.state.groups }
-    const endpoints = { ...this.state.endpoints }
-    const originalEndpoints = { ...this.state.endpoints }
-    const originalGroups = { ...this.state.groups }
-    const endpoint = endpoints[endpointId]
-    endpoint.groupId = destinationGroupId
-    endpoints[endpointId] = endpoint
-    groups[sourceGroupId].endpointsOrder = groups[
-      sourceGroupId
-    ].endpointsOrder.filter((gId) => gId !== endpointId.toString())
-    groups[destinationGroupId].endpointsOrder.push(endpointId)
-    this.setState({ endpoints, groups })
-    try {
-      delete endpoint.id
-      await endpointApiService.updateEndpoint(endpointId, endpoint)
-    } catch (error) {
-      this.setState({ endpoints: originalEndpoints, groups: originalGroups })
-    }
-  }
+  // async dndMoveEndpoint (endpointId, sourceGroupId, destinationGroupId) {
+  //   const groups = { ...this.state.groups }
+  //   const endpoints = { ...this.state.endpoints }
+  //   const originalEndpoints = { ...this.state.endpoints }
+  //   const originalGroups = { ...this.state.groups }
+  //   const endpoint = endpoints[endpointId]
+  //   endpoint.groupId = destinationGroupId
+  //   endpoints[endpointId] = endpoint
+  //   groups[sourceGroupId].endpointsOrder = groups[
+  //     sourceGroupId
+  //   ].endpointsOrder.filter((gId) => gId !== endpointId.toString())
+  //   groups[destinationGroupId].endpointsOrder.push(endpointId)
+  //   this.setState({ endpoints, groups })
+  //   try {
+  //     delete endpoint.id
+  //     await endpointApiService.updateEndpoint(endpointId, endpoint)
+  //   } catch (error) {
+  //     this.setState({ endpoints: originalEndpoints, groups: originalGroups })
+  //   }
+  // }
 
   handleOnChange = (e) => {
     this.setState({ data: { ...this.state.data, filter: e.target.value } })
@@ -233,37 +230,10 @@ class SideBar extends Component {
 
   renderHistoryList () {
     return (
-      <div className='py-3'>
-        {this.state.historySnapshot &&
-          this.props.historySnapshot &&
-          this.state.historySnapshot.sort(compareByCreatedAt).map(
-            (history) =>
-              Object.keys(history).length !== 0 && (
-                <div
-                  className='btn d-flex align-items-center mb-2'
-                  onClick={() => { this.openHistorySnapshot(history.id) }}
-                >
-                  <div className={`api-label lg-label ${history.endpoint.requestType}`}>
-                    <div className='endpoint-request-div'>
-                      {history.endpoint.requestType}
-                    </div>
-                  </div>
-                  <div className='ml-3'>
-                    <div className='sideBarListWrapper'>
-                      <div className='text-left'>
-                        <p>   {history.endpoint.name ||
-                          history.endpoint.BASE_URL + history.endpoint.uri ||
-                          'Random Trigger'}
-                        </p>
-                      </div>
-                      <small className='text-muted'>
-                        {moment(history.createdAt).format('ddd, Do MMM h:mm a')}
-                      </small>
-                    </div>
-                  </div>
-                </div>
-              )
-          )}
+      <div className='mt-3'>
+        {this.state.historySnapshot && this.state.historySnapshot.length > 0
+          ? (this.state.historySnapshot.sort(compareByCreatedAt).map((history) => this.renderHistoryItem(history)))
+          : (<div>No History Found!</div>)}
       </div>
     )
   }
@@ -339,40 +309,44 @@ class SideBar extends Component {
     )
   }
 
+  renderHistoryItem (history) {
+    return (
+      Object.keys(history).length !== 0 && (
+        <div
+          key={history.id}
+          className='btn d-flex align-items-center mb-2'
+          onClick={() => { this.openHistorySnapshot(history.id) }}
+        >
+          <div className={`api-label lg-label ${history.endpoint.requestType}`}>
+            <div className='endpoint-request-div'>
+              {history.endpoint.requestType}
+            </div>
+          </div>
+          <div className='ml-3'>
+            <div className='sideBarListWrapper'>
+              <div className='text-left'>
+                <p>{history.endpoint.name ||
+                  history.endpoint.BASE_URL + history.endpoint.uri ||
+                  'Random Trigger'}
+                </p>
+              </div>
+              <small className='text-muted'>
+                {moment(history.createdAt).format('ddd, Do MMM h:mm a')}
+              </small>
+            </div>
+          </div>
+        </div>
+      )
+    )
+  }
+
   renderTriggerList () {
     return (
       <div className='mt-3'>
         {
-          this.state.historySnapshot &&
-          this.props.historySnapshot &&
-          this.state.historySnapshot.sort(compareByCreatedAt).map(
-            (history) =>
-              Object.keys(history).length !== 0 && history.endpoint.status === 'NEW' && (
-                <div
-                  className='btn d-flex align-items-center mb-2'
-                  onClick={() => { this.openHistorySnapshot(history.id) }}
-                >
-                  <div className={`api-label lg-label ${history.endpoint.requestType}`}>
-                    <div className='endpoint-request-div'>
-                      {history.endpoint.requestType}
-                    </div>
-                  </div>
-                  <div className='ml-3'>
-                    <div className='sideBarListWrapper'>
-                      <div className='text-left'>
-                        <p>{history.endpoint.name ||
-                          history.endpoint.BASE_URL + history.endpoint.uri ||
-                          'Random Trigger'}
-                        </p>
-                      </div>
-                      <small className='text-muted'>
-                        {moment(history.createdAt).format('ddd, Do MMM h:mm a')}
-                      </small>
-                    </div>
-                  </div>
-                </div>
-              )
-          )
+          this.state.historySnapshot && this.state.historySnapshot.filter(o => o.endpoint.status === 'NEW').length > 0
+            ? (this.state.historySnapshot.filter(o => o.endpoint.status === 'NEW').sort(compareByCreatedAt).map((history) => this.renderHistoryItem(history)))
+            : (<div>No Random Triggers Found!</div>)
         }
       </div>
     )
@@ -507,6 +481,7 @@ class SideBar extends Component {
           render={(props) => (
             <Collections
               {...this.props}
+              selectedCollectionId={this.collectionId}
               empty_filter={this.emptyFilter.bind(this)}
               collection_selected={this.openCollection.bind(this)}
               filter={this.state.data.filter}
@@ -518,6 +493,7 @@ class SideBar extends Component {
           render={(props) => (
             <Collections
               {...this.props}
+              selectedCollectionId={this.collectionId}
               empty_filter={this.emptyFilter.bind(this)}
               collection_selected={this.openCollection.bind(this)}
               filter={this.state.data.filter}
@@ -536,17 +512,52 @@ class SideBar extends Component {
         }
         id='uncontrolled-tab-example'
       >
-        <Tab eventKey='collection' title={<span><img src={collectionIcon} /> Collection </span>}>
+        <Tab
+          eventKey='collection'
+          title={
+            <span>
+              <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
+                <path d='M15.75 11.9999V5.99993C15.7497 5.73688 15.6803 5.47853 15.5487 5.2508C15.417 5.02306 15.2278 4.83395 15 4.70243L9.75 1.70243C9.52197 1.57077 9.2633 1.50146 9 1.50146C8.7367 1.50146 8.47803 1.57077 8.25 1.70243L3 4.70243C2.7722 4.83395 2.58299 5.02306 2.45135 5.2508C2.31971 5.47853 2.25027 5.73688 2.25 5.99993V11.9999C2.25027 12.263 2.31971 12.5213 2.45135 12.7491C2.58299 12.9768 2.7722 13.1659 3 13.2974L8.25 16.2974C8.47803 16.4291 8.7367 16.4984 9 16.4984C9.2633 16.4984 9.52197 16.4291 9.75 16.2974L15 13.2974C15.2278 13.1659 15.417 12.9768 15.5487 12.7491C15.6803 12.5213 15.7497 12.263 15.75 11.9999Z' stroke='#828282' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
+                <path d='M2.45239 5.22021L8.99989 9.00772L15.5474 5.22021' stroke='#828282' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
+                <path d='M9 16.56V9' stroke='#828282' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
+              </svg> <span className='tabs-Text'> Collection</span>
+            </span>
+          }
+        >
           {
             !getCurrentUser()
               ? (this.renderEmptyCollectionsIfNotLoggedIn())
               : (this.renderCollections())
           }
         </Tab>
-        <Tab eventKey='history' title={<span><img src={historyIcon} /> History</span>}>
+        <Tab
+          eventKey='history'
+          title={
+            <span>
+              <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
+                <path d='M9 16.5C13.1421 16.5 16.5 13.1421 16.5 9C16.5 4.85786 13.1421 1.5 9 1.5C4.85786 1.5 1.5 4.85786 1.5 9C1.5 13.1421 4.85786 16.5 9 16.5Z' stroke='#828282' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
+                <path d='M9 4.5V9L12 10.5' stroke='#828282' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
+              </svg> <span className='tabs-Text'> History</span>
+            </span>
+          }
+        >
           {this.renderHistoryList()}
         </Tab>
-        <Tab eventKey='randomTrigger' title={<span> <img src={randomTriggerIcon} /> Random Trigger</span>}>
+        <Tab
+          eventKey='randomTrigger'
+          title={
+            <span>
+              <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
+                <path d='M12 2.25H15.75V6' stroke='#828282' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
+                <path d='M3 15L15.75 2.25' stroke='#828282' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
+                <path d='M15.75 12V15.75H12' stroke='#828282' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
+                <path d='M11.25 11.25L15.75 15.75' stroke='#828282' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
+                <path d='M3 3L6.75 6.75' stroke='#828282' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
+              </svg>
+              <span className='tabs-Text'> Random Trigger</span>
+            </span>
+          }
+        >
           {this.renderTriggerList()}
         </Tab>
       </Tabs>
@@ -555,7 +566,7 @@ class SideBar extends Component {
 
   renderUserNotification () {
     return (
-      <div className='fixed'>
+      <div className='userInfowrapper'>
         <UserNotification
           {...this.props}
           get_notification_count={this.getNotificationCount.bind(this)}
@@ -575,7 +586,11 @@ class SideBar extends Component {
           HITMAN
         </div>
         <div className='search-box'>
-          <i className='fas fa-search' id='search-icon' />
+          <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
+            <path d='M8.25 14.25C11.5637 14.25 14.25 11.5637 14.25 8.25C14.25 4.93629 11.5637 2.25 8.25 2.25C4.93629 2.25 2.25 4.93629 2.25 8.25C2.25 11.5637 4.93629 14.25 8.25 14.25Z' stroke='#828282' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' />
+            <path d='M15.75 15.7498L12.4875 12.4873' stroke='#828282' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' />
+          </svg>
+
           <input
             value={this.state.data.filter}
             type='text'

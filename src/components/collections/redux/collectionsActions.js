@@ -283,24 +283,32 @@ export const addCustomDomain = (
   }
 }
 
-export const importApi = (openApiObject) => {
+export const importApi = (collection, importType) => {
   return (dispatch) => {
-    openApiService
-      .importApi(openApiObject)
-      .then((response) => {
-        // dispatch(saveImportedCollection(response.data));
-        dispatch(saveImportedVersion(response.data))
-      })
-      .catch((error) => {
-        dispatch(
-          onVersionsFetchedError(error.response ? error.response.data : error)
-        )
-      })
-      .catch((error) => {
-        dispatch(
-          onVersionsFetchedError(error.response ? error.response.data : error)
-        )
-      })
+    if (importType === 'postman') {
+      openApiService
+        .importPostmanCollection(collection)
+        .then((response) => {
+          // dispatch(saveImportedCollection(response.data));
+          dispatch(saveImportedVersion(response.data))
+        })
+        .catch((error) => {
+          dispatch(
+            onVersionsFetchedError(error.response ? error.response.data : error)
+          )
+        })
+    } else {
+      openApiService
+        .importApi(collection)
+        .then((response) => {
+          dispatch(saveImportedVersion(response.data))
+        })
+        .catch((error) => {
+          dispatch(
+            onVersionsFetchedError(error.response ? error.response.data : error)
+          )
+        })
+    }
   }
 }
 

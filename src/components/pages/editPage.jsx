@@ -141,6 +141,7 @@ class EditPage extends Component {
     return (
       <div className='custom-edit-page'>
         <div className='form-group'>
+          <label htmlFor='name'>Page Name</label>
           <input
             name='name'
             id='name'
@@ -154,7 +155,7 @@ class EditPage extends Component {
 
         <div style={{ marginBottom: '50px' }}>
           <ReactQuill
-            style={{ height: '400px' }}
+            style={{ height: '600px' }}
             value={this.state.data.contents}
             modules={this.modules}
             formats={this.formats}

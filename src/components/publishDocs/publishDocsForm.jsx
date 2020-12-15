@@ -123,7 +123,7 @@ class PublishDocForm extends Component {
           <div className='colorTitle'>
             <p> Pick your favorite color for website</p>
           </div>
-          <div className='d-flex justify-content-between'>
+          <div className='d-flex justify-content-between colorChooser'>
             <CustomColorPicker set_theme={this.setTheme.bind(this)} theme={this.state.data.theme} />
             <Button className='btn-extra-lg' onClick={() => this.saveCollectionDetails()}> Save</Button>
           </div>

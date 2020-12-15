@@ -18,7 +18,9 @@ export const updateGroupOrder = (groupsOrder, versionId) => {
     )
     groupsApiService
       .updateGroupOrder(groupsOrder)
-      .then(() => {})
+      .then(() => {
+        toast('Postion changed successfully')
+      })
       .catch((error) => {
         dispatch(
           onGroupOrderUpdatedError(

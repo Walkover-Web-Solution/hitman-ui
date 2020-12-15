@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Accordion, Card } from 'react-bootstrap'
+import { Accordion, Card, Button } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import 'react-toastify/dist/ReactToastify.css'
@@ -8,7 +8,7 @@ import CollectionVersions from '../collectionVersions/collectionVersions'
 import collectionVersionsService from '../collectionVersions/collectionVersionsService'
 import ImportVersionForm from '../collectionVersions/importVersionForm'
 import { isDashboardRoute } from '../common/utility'
-import endpointApiService from '../endpoints/endpointApiService'
+// import endpointApiService from '../endpoints/endpointApiService'
 import collectionsService from './collectionsService'
 import {
   addCollection,
@@ -68,26 +68,26 @@ class CollectionsComponent extends Component {
     this.setState({ showCollectionForm: false, showImportVersionForm: false })
   }
 
-  async dndMoveEndpoint (endpointId, sourceGroupId, destinationGroupId) {
-    const groups = { ...this.state.groups }
-    const endpoints = { ...this.state.endpoints }
-    const originalEndpoints = { ...this.state.endpoints }
-    const originalGroups = { ...this.state.groups }
-    const endpoint = endpoints[endpointId]
-    endpoint.groupId = destinationGroupId
-    endpoints[endpointId] = endpoint
-    groups[sourceGroupId].endpointsOrder = groups[
-      sourceGroupId
-    ].endpointsOrder.filter((gId) => gId !== endpointId.toString())
-    groups[destinationGroupId].endpointsOrder.push(endpointId)
-    this.setState({ endpoints, groups })
-    try {
-      delete endpoint.id
-      await endpointApiService.updateEndpoint(endpointId, endpoint)
-    } catch (error) {
-      this.setState({ endpoints: originalEndpoints, groups: originalGroups })
-    }
-  }
+  // async dndMoveEndpoint (endpointId, sourceGroupId, destinationGroupId) {
+  //   const groups = { ...this.state.groups }
+  //   const endpoints = { ...this.state.endpoints }
+  //   const originalEndpoints = { ...this.state.endpoints }
+  //   const originalGroups = { ...this.state.groups }
+  //   const endpoint = endpoints[endpointId]
+  //   endpoint.groupId = destinationGroupId
+  //   endpoints[endpointId] = endpoint
+  //   groups[sourceGroupId].endpointsOrder = groups[
+  //     sourceGroupId
+  //   ].endpointsOrder.filter((gId) => gId !== endpointId.toString())
+  //   groups[destinationGroupId].endpointsOrder.push(endpointId)
+  //   this.setState({ endpoints, groups })
+  //   try {
+  //     delete endpoint.id
+  //     await endpointApiService.updateEndpoint(endpointId, endpoint)
+  //   } catch (error) {
+  //     this.setState({ endpoints: originalEndpoints, groups: originalGroups })
+  //   }
+  // }
 
   async handleAddCollection (newCollection) {
     newCollection.requestId = shortId.generate()
@@ -289,7 +289,6 @@ class CollectionsComponent extends Component {
           'collapse show'
       }
     }
-
     return (
       <React.Fragment key={collectionId}>
         {collectionState === 'singleCollection'
@@ -309,7 +308,7 @@ class CollectionsComponent extends Component {
           defaultActiveKey='0'
           key={collectionId}
           id='parent-accordion'
-          className='sidebar-accordion'
+          className={this.props.selectedCollectionId === collectionId ? 'sidebar-accordion active' : 'sidebar-accordion'}
         >
           <Accordion.Toggle
             variant='default'
@@ -326,7 +325,6 @@ class CollectionsComponent extends Component {
                   className='sidebar-accordion-item'
                   onClick={() => this.openSelectedCollection(collectionId)}
                 >
-                  <i className='uil uil-parcel' />
                   <div>{this.props.collections[collectionId].name}</div>
                 </div>
                 )}
@@ -513,6 +511,21 @@ class CollectionsComponent extends Component {
     }
   }
 
+  renderEmptyCollections () {
+    return (
+      <div className='empty-collections'>
+        <div>
+          <img src={emptyCollections} />
+        </div>
+        <div className='content'>
+          <h5>  Your collection is Empty.</h5>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+        </div>
+        <Button className='btn-lg' variant='primary' onClick={() => this.openAddCollectionForm()}>+ Add here</Button>{' '}
+      </div>
+    )
+  }
+
   render () {
     if (isDashboardRoute(this.props, true)) {
       let finalCollections = []
@@ -610,22 +623,31 @@ class CollectionsComponent extends Component {
                 )}
             </div>
           </div>
+          {finalCollections.length > 0
+            ? (
+              <div className='App-Side'>
+                <div className='add-collection-btn-wrap'>
+                  <button
+                    className='add-collection-btn'
+                    onClick={() => this.openAddCollectionForm()}
+                  >
 
-          <div className='App-Side'>
-            <div className='add-collection-btn-wrap'>
-              <button
-                className='add-collection-btn'
-                onClick={() => this.openAddCollectionForm()}
-              >
+                    <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
+                      <path d='M9 3.75V14.25' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
+                      <path d='M3.75 9H14.25' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
+                    </svg>
 
-                <img src={emptyCollections} />
-                Add Collection
-              </button>
-            </div>
-            {finalCollections.map((collectionId, index) =>
-              this.renderBody(collectionId, 'allCollections')
-            )}
-          </div>
+                    Add Collection
+                  </button>
+                </div>
+                {finalCollections.map((collectionId, index) =>
+                  this.renderBody(collectionId, 'allCollections')
+                )}
+              </div>)
+            : (this.props.filter === ''
+                ? this.renderEmptyCollections()
+                : <div className='px-2'>No Collections Found!</div>
+              )}
         </div>
       )
     } else {

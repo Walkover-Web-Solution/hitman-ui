@@ -128,13 +128,13 @@ class SampleResponseForm extends Form {
             )}
             {this.renderAceEditor('body', 'Body: ')}
             <div className='text-right mt-2 mb-2'>
-              {this.renderButton('Submit')}
               <button
-                className='btn btn-secondary btn-lg ml-2'
+                className='btn btn-secondary outline btn-lg mr-2'
                 onClick={this.props.onHide}
               >
                 Cancel
               </button>
+              {this.renderButton('Submit')}
             </div>
           </form>
         </Modal.Body>

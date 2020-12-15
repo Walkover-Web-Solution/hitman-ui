@@ -124,7 +124,7 @@ class DisplayDescription extends Component {
                       class='adddescLink'
                       onClick={() => this.handleDescription()}
                     >
-                      Add a Description
+                      <svg width='16' height='16' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M9 3.75V14.25' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' /><path d='M3.75 9H14.25' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' /></svg> Add a Description
                     </Link>
                     )
                   : (
@@ -184,7 +184,7 @@ class DisplayDescription extends Component {
                   </div>
                   <div className='endpoint-cta'>
                     <button
-                      className='btn btn-secondary btn-lg'
+                      className='btn btn-secondary outline btn-lg'
                       type='cancel'
                       onClick={() => this.handleDescriptionCancel()}
                     >
