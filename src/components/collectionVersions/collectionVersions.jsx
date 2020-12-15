@@ -65,6 +65,12 @@ class CollectionVersions extends Component {
     }
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if(prevProps.selectedCollectionId !== this.props.selectedCollectionId) {
+      this.setState({ selectedVersionIds: {}})
+    }
+  } 
+
   handleUpdate (collectionVersion) {
     this.props.history.push({
       pathname: `/dashboard/${this.props.collection_id}/versions/${collectionVersion.id}/edit`,
