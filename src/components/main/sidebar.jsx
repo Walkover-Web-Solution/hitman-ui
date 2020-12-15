@@ -49,7 +49,8 @@ class SideBar extends Component {
       },
       name: '',
       email: '',
-      historySnapshot: null
+      historySnapshot: null,
+      selectedCollectionId: null,
     }
   }
 
@@ -161,6 +162,7 @@ class SideBar extends Component {
 
   openCollection (collectionId) {
     this.collectionId = collectionId
+    this.setState({selectedCollectionId: collectionId})
   }
 
   openApiForm () {
@@ -634,11 +636,13 @@ class SideBar extends Component {
                 )
           }
         </div>
-        {this.collectionId && isDashboardRoute(this.props, true) && (
+        {this.collectionId && this.state.selectedCollectionId && isDashboardRoute(this.props, true) && (
           <div className='secondary-sidebar'>
+            <button className='btn' onClick={()=>{this.openCollection(null)}}>Close</button>
             <CollectionVersions
               {...this.props}
               collection_id={this.collectionId}
+              open_collection={this.openCollection.bind(this)}
             />
           </div>
         )}
