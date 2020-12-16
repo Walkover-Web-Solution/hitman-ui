@@ -304,7 +304,6 @@ class CollectionVersions extends Component {
   }
 
   renderBody (versionId, index) {
-    console.log(this.props, this.state)
     if (
       isDashboardRoute(this.props) &&
       document.getElementsByClassName('version-collapse')
