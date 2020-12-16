@@ -845,6 +845,15 @@ label.data-type {
   }
 }
 
+select.form-control {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url(../../assets/icons/downChevron.svg);
+  background-repeat: no-repeat;
+  background-position: right 15px center;
+}
+
 .form-group {
   label {
     color: #4F4F4F;
@@ -856,6 +865,8 @@ label.data-type {
   .ql-container.ql-snow {
     height: 200px;
   }
+
+
 
   .form-control {
     height: 48px;
@@ -962,6 +973,10 @@ button.editBtn {
 .small.text-muted {
   font-size: 12px;
   margin: 5px 0 2px 0;
+}
+
+.mainContentWrapperPublic .hm-public-table .headParaWraper {
+  max-height: none;
 }
 
 .headParaWraper {
@@ -1077,7 +1092,7 @@ button.editBtn {
 
 .hm-sidebar .hm-sidebar-outer-block {
   padding: 15px 5px;
-  height: 80vh;
+  height: calc(100vh - 185px);
   overflow: auto;
 }
 
@@ -1370,12 +1385,18 @@ button.editBtn {
   border-bottom-right-radius: 0 !important;
 }
 
-.mainContentWrapperPublic .mainContentWrapper {
-  background: transparent;
-  display: flex;
-  padding: 0;
-}
+.mainContentWrapperPublic {
+  .mainContentWrapper {
+    background: transparent;
+    display: flex;
+    padding: 0;
+  }
 
+  .hm-public-endpoint-headers {
+    height: calc(100vh - 150px);
+    overflow: auto;
+  }
+}
 
 @media(max-width:1199px) {
   .colorChooser.d-flex {
@@ -1423,4 +1444,57 @@ button.editBtn {
   padding: 0 10px;
   height: calc(100vh - 230px);
   overflow: auto;
+}
+
+.public-endpoint-tabs {
+  a {
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  a:hover {
+    cursor: pointer;
+  }
+}
+
+
+
+.enable-sidebar {
+  .primary-sidebar {
+    width: 70px;
+  }
+
+  .tab-content {
+    display: none;
+  }
+
+  .primary-sidebar .nav-tabs a span.tabs-Text {
+    display: none;
+  }
+
+  .user-details {
+    display: none;
+  }
+
+  .primary-sidebar .nav-tabs a {
+    width: 100% !important;
+  }
+  .app-name {
+    font-size: 0;
+}
+}
+
+.sidebar.secondary-collapse { 
+  width: 100px !important;
+
+  .secondary-sidebar {
+    width: 30px;
+    overflow: visible;
+  }
+  .hm-sidebar-outer-block{
+    display: none;
+  }
+  button.btn.close {
+    right: -12px!important;
+}
 }

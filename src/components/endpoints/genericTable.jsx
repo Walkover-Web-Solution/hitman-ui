@@ -441,7 +441,7 @@ class GenericTable extends Component {
           {!isDashboardRoute(this.props) && <span>{title} {willHighlight(this.props, title) ? <i className='fas fa-circle' /> : null}</span>}
 
         </div>
-        {this.renderOptionalParamsButton()}
+
         {!this.state.bulkEdit && dataArray.length > 0
           ? (
             <div className='headParaWraper'>
@@ -485,6 +485,7 @@ class GenericTable extends Component {
             </div>
             )
           : null}
+        {this.renderOptionalParamsButton()}
 
         {
           this.state.bulkEdit &&

@@ -1,9 +1,10 @@
 .primary-sidebar {
   background-color: #fff;
   color: #999;
-  width: 280px;
+  width: 330px;
   font-size: 14px;
   position: relative;
+  transition: box-shadow .3s .15s, transform .3s, margin-left .3s, margin-right .3s, width .3s, z-index 0s ease .3s;
 }
 
 .user-info {
@@ -181,7 +182,7 @@ input[type="text"]:focus {
 }
 
 .secondary-sidebar {
-  width: 260px;
+  width: 270px;
   font-size: 14px;
   color: #999;
   border-left: 1px solid #E0E0E0;
@@ -189,6 +190,7 @@ input[type="text"]:focus {
   overflow: auto;
   background-color: #fff;
   position: relative;
+  transition: box-shadow .3s .15s, transform .3s, margin-left .3s, margin-right .3s, width .3s, z-index 0s ease .3s;
   button.btn.close {
     position: absolute;
     top: 8px;
@@ -202,6 +204,7 @@ input[type="text"]:focus {
     align-items: center;
     justify-content: center;
     background: #fff;
+    opacity: 1;
 }
 
   .hm-sidebar-outer-block {
