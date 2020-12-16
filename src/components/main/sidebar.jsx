@@ -675,8 +675,10 @@ class SideBar extends Component {
             onChange={(e) => this.handleOnChange(e)}
           />
         </div>
-        {this.state.data.filter !== '' && this.renderSearchList()}
-        {this.state.data.filter === '' && this.renderSidebarTabs()}
+        <div className='searchResult'>
+          {this.state.data.filter !== '' && this.renderSearchList()}
+          {this.state.data.filter === '' && this.renderSidebarTabs()}
+        </div>
         {getCurrentUser() && this.renderUserNotification()}
       </>
     )
@@ -712,11 +714,12 @@ class SideBar extends Component {
         </div>
         {this.collectionId && this.state.selectedCollectionId && isDashboardRoute(this.props, true) && (
           <div className='secondary-sidebar'>
-            <button className='btn' onClick={() => { this.openCollection(null) }}>Close</button>
+            <button className='btn close' onClick={() => { this.openCollection(null) }}><svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M9 3.75V14.25' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' /><path d='M3.75 9H14.25' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' /></svg></button>
             <CollectionVersions
               {...this.props}
               collection_id={this.collectionId}
               open_collection={this.openCollection.bind(this)}
+              selectedCollectionId={this.state.selectedCollectionId}
             />
           </div>
         )}

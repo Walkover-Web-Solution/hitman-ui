@@ -1418,6 +1418,9 @@ button.editBtn {
 .ql-snow .ql-color-picker .ql-picker-label {
   padding: 0px 3px 0px 3px !important;
 }
-.fade {
-  transition: opacity 1s cubic-bezier(0.65, 0.05, 0.36, 1)!important;
+
+.searchResult {
+  padding: 0 10px;
+  height: calc(100vh - 230px);
+  overflow: auto;
 }
