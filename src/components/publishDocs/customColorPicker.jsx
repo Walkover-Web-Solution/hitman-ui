@@ -1,5 +1,5 @@
 import React from 'react'
-import { CustomPicker, CirclePicker } from 'react-color'
+import { CustomPicker, TwitterPicker } from 'react-color'
 
 const colors = ['#f2994a', '#686EFF', '#7DCCEE', '#27AE60', '#F0BD3B', '#DD755E']
 
@@ -45,14 +45,26 @@ class CustomColorPicker extends React.Component {
   }
 
   render () {
+    const customColor = {
+      backgroundColor: this.state.data.theme,
+      height: '40px',
+      width: '40px',
+      borderRadius: '4px',
+      margin: '0px 20px'
+    }
     return (
       <>
-        <div>
-          <CirclePicker
-            colors={colors}
-            color={this.state.data.theme}
-            onChangeComplete={this.handleChangeComplete}
-          />
+        <div className='d-flex align-items-center'>
+          <div>
+            <TwitterPicker
+              triangle='hide'
+              colors={colors}
+              color={this.state.data.theme}
+              onChangeComplete={this.handleChangeComplete}
+              width='400px'
+            />
+          </div>
+          <div style={customColor} />
         </div>
       </>
     )
