@@ -1788,6 +1788,14 @@ class DisplayEndpoint extends Component {
                   )
                 : null
             }
+            <div className='endpoint-header '>
+              {!isDashboardRoute(this.props) && (
+                <div className='endpoint-name-container'>
+                  {!isDashboardRoute(this.props, true) && <h1 className='endpoint-title' style={{ color: theme }}>{this.state.data?.name || ''}</h1>}
+                  <p>{this.state.endpoint?.description || ''}</p>
+                </div>
+              )}
+            </div>
             <div
               className={!isDashboardRoute(this.props) ? 'hm-panel' : 'hm-panel col-12'}
             >
@@ -1927,7 +1935,8 @@ class DisplayEndpoint extends Component {
                               groupId={this.state.groupId}
                               set_base_url={this.setBaseUrl.bind(this)}
                               custom_host={this.state.endpoint.BASE_URL}
-                            /> {this.state.data.updatedUri}
+                            />
+                            <input disabled style={{ width: '100%' }} value={this.customState.BASE_URL + this.state.data.updatedUri} />
                           </div>
                         </div>
                         {(this.props.highlights?.uri ? <i className='fas fa-circle' /> : null)}
