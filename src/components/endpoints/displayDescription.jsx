@@ -77,7 +77,6 @@ class DisplayDescription extends Component {
   };
 
   render () {
-    const { theme } = this.state
     return (
       <div className='endpoint-header'>
         <div
@@ -104,9 +103,6 @@ class DisplayDescription extends Component {
                 />
               </div>
             </>
-          )}
-          {!isDashboardRoute(this.props) && this.props.location.pathname.split('/')[1] !== 'admin' && (
-            <h1 className='endpoint-title' style={{ color: theme }}>{this.props.data.name}</h1>
           )}
         </div>
 

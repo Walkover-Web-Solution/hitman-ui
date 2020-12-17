@@ -162,7 +162,7 @@ class HostContainer extends Component {
       HOST_URL = endpointUrl
     }
     this.props.set_base_url(HOST_URL)
-    return HOST_URL
+    return null
   }
 
   render () {
@@ -277,9 +277,7 @@ class HostContainer extends Component {
       )
     } else {
       return (
-        <>
-          {this.fetchPublicEndpointHost(this.props)}
-        </>
+        this.fetchPublicEndpointHost(this.props)
       )
     }
   }
