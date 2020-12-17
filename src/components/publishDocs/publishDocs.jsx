@@ -304,8 +304,7 @@ class PublishDocs extends Component {
     if (this.sensitiveInfoFound(this.props.endpoints[endpointId])) {
       this.setState({ warningModal: true })
     } else {
-      console.log('APPROVED')
-      // this.props.approve_endpoint(this.props.endpoints[endpointId])
+      this.props.approve_endpoint(this.props.endpoints[endpointId])
     }
   }
 
