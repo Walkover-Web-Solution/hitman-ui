@@ -283,11 +283,11 @@ export const addCustomDomain = (
   }
 }
 
-export const importApi = (collection, importType) => {
+export const importApi = (collection, importType, website) => {
   return (dispatch) => {
     if (importType === 'postman') {
       openApiService
-        .importPostmanCollection(collection)
+        .importPostmanCollection(collection, website)
         .then((response) => {
           // dispatch(saveImportedCollection(response.data));
           dispatch(saveImportedVersion(response.data))
