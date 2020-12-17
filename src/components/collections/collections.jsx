@@ -418,7 +418,8 @@ class CollectionsComponent extends Component {
                       <a
                         className='dropdown-item'
                         onClick={() => {
-                          this.props.collection_selected(null)
+                          this.props.collection_selected(collectionId)
+                          this.props.disable_secondary_sidebar()
                           this.openPublishDocs(this.props.collections[collectionId])
                         }}
                       >
