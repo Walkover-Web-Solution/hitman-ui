@@ -58,7 +58,7 @@
   border-radius: 4px;
 }
 
-.search-box>svg {
+.search-box>label {
   position: absolute;
   left: 10px;
   top: 0;
@@ -67,6 +67,8 @@
   display: flex;
   align-items: center;
   font-size: 16px;
+  cursor: pointer;
+  z-index: 9;
 }
 
 .search-box>input[type="text"] {
@@ -181,22 +183,27 @@ input[type="text"]:focus {
   border-radius: 4px;
 }
 
+.secondary-collapse .secondary-sidebar button.btn.close {
+  transform: rotate(90deg);
+  transition: 200ms;
+}
+
 .secondary-sidebar {
   width: 270px;
   font-size: 14px;
   color: #999;
   border-left: 1px solid #E0E0E0;
-  padding: 40px 5px 20px;
-  overflow: auto;
+  padding: 30px 5px 20px;
   background-color: #fff;
   position: relative;
   transition: box-shadow .3s .15s, transform .3s, margin-left .3s, margin-right .3s, width .3s, z-index 0s ease .3s;
+
   button.btn.close {
     position: absolute;
     top: 8px;
-    right: 12px;
-    transform: rotate(45deg);
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25)!important;
+    right: -12px;
+    transform: rotate(-90deg);
+    box-shadow: 0px 0px 5px #e3e2e2 !important;
     border-radius: 50px;
     height: 25px;
     width: 25px;
@@ -205,7 +212,8 @@ input[type="text"]:focus {
     justify-content: center;
     background: #fff;
     opacity: 1;
-}
+    transition: 200ms;
+  }
 
   .hm-sidebar-outer-block {
     padding: 0;
@@ -367,4 +375,10 @@ input[type="text"]:focus {
     left: -5px;
   }
 
+}
+
+.collectionVersionWrp {
+  height: calc(100vh - 65px);
+  overflow: auto;
+  transition: 200ms;
 }
