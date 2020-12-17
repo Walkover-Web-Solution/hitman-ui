@@ -591,7 +591,7 @@ class SideBar extends Component {
           getCurrentUser() ? 'collection' : 'randomTrigger'
         }
         id='uncontrolled-tab-example'
-        onSelect={() => { !this.state.primarySidebar && this.setState({ selectedCollectionId: null, primarySidebar: true }) }}
+        onSelect={() => { !this.state.primarySidebar && this.setState({ primarySidebar: true }) }}
       >
         <Tab
           eventKey='collection'
@@ -667,7 +667,7 @@ class SideBar extends Component {
           HITMAN
         </div>
         <div className='search-box'>
-          <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
+          <svg onClick={() => { !this.state.primarySidebar && this.setState({ primarySidebar: true }) }} width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
             <path d='M8.25 14.25C11.5637 14.25 14.25 11.5637 14.25 8.25C14.25 4.93629 11.5637 2.25 8.25 2.25C4.93629 2.25 2.25 4.93629 2.25 8.25C2.25 11.5637 4.93629 14.25 8.25 14.25Z' stroke='#828282' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' />
             <path d='M15.75 15.7498L12.4875 12.4873' stroke='#828282' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' />
           </svg>
@@ -727,7 +727,7 @@ class SideBar extends Component {
         {this.collectionId && isDashboardRoute(this.props, true) && (
           <div className='secondary-sidebar'>
             <p className='hm-sidebar-outer-block'>{this.props.collections[this.state.selectedCollectionId]?.name || ''}</p>
-            <button className='btn close' onClick={() => { this.setState({ secondarySidebarToggle: !this.state.secondarySidebarToggle }) }}><svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M9 3.75V14.25' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' /><path d='M3.75 9H14.25' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' /></svg></button>
+            <button className='btn close' onClick={() => { this.setState({ primarySidebar: false, secondarySidebarToggle: this.state.primarySidebar ? false : !this.state.secondarySidebarToggle }) }}><svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M9 3.75V14.25' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' /><path d='M3.75 9H14.25' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' /></svg></button>
             <CollectionVersions
               {...this.props}
               collection_id={this.state.selectedCollectionId}
