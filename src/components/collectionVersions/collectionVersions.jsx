@@ -519,18 +519,20 @@ class CollectionVersions extends Component {
             ? (
               <>
                 <div className='hm-sidebar-label' style={{ color: theme }}>Introduction</div>
-                <select
-                  className='selected-version form-control light-orange-bg'
-                  onChange={(e) => this.setSelectedVersion(e)}
-                >
-                  {this.filteredVersions
-                    ? Object.keys(this.filteredVersions).map((id, index) => (
-                      <option key={index} value={index}>
-                        {this.props.versions[id]?.number}
-                      </option>
-                      ))
-                    : null}
-                </select>
+                <div className='versionWrapper'>
+                  <select
+                    className='selected-version form-control light-orange-bg'
+                    onChange={(e) => this.setSelectedVersion(e)}
+                  >
+                    {this.filteredVersions
+                      ? Object.keys(this.filteredVersions).map((id, index) => (
+                        <option key={index} value={index}>
+                          {this.props.versions[id]?.number}
+                        </option>
+                        ))
+                      : null}
+                  </select>
+                </div>
               </>
               )
             : null

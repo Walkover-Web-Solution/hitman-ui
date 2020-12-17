@@ -370,7 +370,7 @@ class SideBar extends Component {
       return (
         (this.state.pages.length > 0 || this.state.endpoints.length > 0 || this.state.historySnapshot.length > 0)
           ? (
-            <div>
+            <div className='searchResult'>
               {this.state.pages.length > 0 ? this.renderPagesList() : null}
               {this.state.endpoints.length > 0 ? this.renderEndpointsList() : null}
               {this.state.historySnapshot.length > 0 ? <div><div className='px-3'>History</div>{this.renderHistoryList()}</div> : null}
@@ -675,10 +675,10 @@ class SideBar extends Component {
             onChange={(e) => this.handleOnChange(e)}
           />
         </div>
-        <div className='searchResult'>
-          {this.state.data.filter !== '' && this.renderSearchList()}
-          {this.state.data.filter === '' && this.renderSidebarTabs()}
-        </div>
+
+        {this.state.data.filter !== '' && this.renderSearchList()}
+        {this.state.data.filter === '' && this.renderSidebarTabs()}
+
         {getCurrentUser() && this.renderUserNotification()}
       </>
     )
