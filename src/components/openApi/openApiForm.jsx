@@ -3,7 +3,10 @@ import { Modal } from 'react-bootstrap'
 import { withRouter } from 'react-router-dom'
 import { importApi } from '../collections/redux/collectionsActions'
 import { connect } from 'react-redux'
+import Joi from 'joi-browser'
 import './openApi.scss'
+import { Dropdown } from 'bootstrap'
+import DropdownToggle from 'react-bootstrap/esm/DropdownToggle'
 
 const mapStateToProps = (state) => {
   return {}
@@ -20,7 +23,14 @@ class OpenApiForm extends Component {
     super(props)
     this.state = {
       openApiObject: {},
-      uploadedFile: null
+      uploadedFile: null,
+      importType: '',
+      website: '',
+      errors: {
+        type: null,
+        website: null,
+        file: null
+      }
     }
   }
 
@@ -34,17 +44,45 @@ class OpenApiForm extends Component {
     }
   }
 
+  validate (data, schema) {
+    const options = { abortEarly: false }
+    const { error } = Joi.validate(data, schema, options)
+    if (!error) return null
+    const errors = {}
+    for (const item of error.details) errors[item.path[0]] = item.message
+    return errors
+  };
+
   importApi () {
     const uploadedFile = this.state.uploadedFile
-    this.props.import_api(uploadedFile, this.props.importType)
+    this.props.import_api(uploadedFile, this.state.importType, this.state.website)
     this.props.onHide()
+  }
+
+  handleSubmit () {
+    let errors = {};
+    let FileError = null;
+    errors = this.validate({ type: this.state.importType}, {type: Joi.string().required()})
+    if(this.state.importType === 'postman') {
+      const schema = {
+        type: Joi.string().required(),
+        website: Joi.string(),
+      }
+      errors = this.validate({ type: this.state.importType, website: this.state.website}, schema)
+    }
+    if(this.state.uploadedFile === null) {
+      FileError = 'JSON file Should not be set empty';
+    }
+    this.setState({errors: {...errors, file: FileError}})
+    if (errors || FileError) return
+    this.importApi()
   }
 
   onFileChange (e) {
     const selectedFile = e.currentTarget.files[0]
     const uploadedFile = new FormData()
     uploadedFile.append('myFile', selectedFile, selectedFile.name)
-    this.setState({ uploadedFile })
+    this.setState({ uploadedFile, errors: {...this.state.error, file: null} })
   }
 
   render () {
@@ -64,14 +102,29 @@ class OpenApiForm extends Component {
         </Modal.Header>
         <Modal.Body>
           <form>
-            <div id='select-json-wrapper'>
+            <div>
+              <label>Type: </label>
+              <select name='type' value={this.state.importType} onChange={(e)=>{this.setState({ importType: e.target.value, website:'', errors:{type: null, file:null, website: null}})}}>
+                <option value=''>Select</option>
+                <option value='openAPI'>Open API</option>
+                <option value='postman'>Postman</option>
+              </select>
+              {this.state.errors?.type && <div><small>{this.state.errors?.type}</small></div>}
+            </div>
+            {this.state.importType === 'postman' 
+              ? <label> Website: 
+                  <input name='website' value={this.state.website} onChange={(e)=>{this.setState({ website: e.target.value, errors:{...this.state.errors, website: null}})}}/>
+                  {this.state.errors?.website && <div><small>{this.state.errors?.website}</small></div>}
+                </label> 
+              : null}
+            {<div id='select-json-wrapper'>
               <label>
                 Select JSON File
               </label>
               <br />
               <input type='file' onChange={this.onFileChange.bind(this)} />
-            </div>
-
+              {this.state.errors?.file && <div><small>{this.state.errors?.file}</small></div>}
+            </div>}
             <div className='text-right'>
               <button
                 type='button'
@@ -83,7 +136,7 @@ class OpenApiForm extends Component {
               <button
                 className='btn btn-primary btn-lg ml-2'
                 type='button'
-                onClick={() => this.importApi()}
+                onClick={() => this.handleSubmit()}
               >
                 Import{' '}
               </button>
