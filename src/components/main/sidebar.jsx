@@ -29,7 +29,7 @@ const mapStateToProps = (state) => {
   }
 }
 
-function compareByCreatedAt(a, b) {
+function compareByCreatedAt (a, b) {
   const t1 = a?.createdAt
   const t2 = b?.createdAt
   let comparison = 0
@@ -42,7 +42,7 @@ function compareByCreatedAt(a, b) {
 }
 
 class SideBar extends Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       data: {
@@ -57,7 +57,7 @@ class SideBar extends Component {
     }
   }
 
-  componentDidMount() {
+  componentDidMount () {
     if (getCurrentUser()) {
       const user = getCurrentUser()
       const name = user.first_name + user.last_name
@@ -84,7 +84,7 @@ class SideBar extends Component {
     }
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate (prevProps, prevState) {
     if (this.props.historySnapshot !== prevProps.historySnapshot) {
       this.setState({
         historySnapshot: Object.values(this.props.historySnapshot)
@@ -97,7 +97,7 @@ class SideBar extends Component {
     }
   }
 
-  dataFetched() {
+  dataFetched () {
     return (
       this.props.collections &&
       this.props.versions &&
@@ -157,51 +157,51 @@ class SideBar extends Component {
     this.setState({ historySnapshot: obj, endpoints: obj2, pages: obj3 })
   };
 
-  emptyFilter() {
+  emptyFilter () {
     const data = { ...this.state.data }
     data.filter = ''
     this.setState({ data })
   }
 
-  openCollection(collectionId) {
+  openCollection (collectionId) {
     this.collectionId = collectionId
     this.setState({ selectedCollectionId: collectionId, primarySidebar: false, secondarySidebarToggle: false })
   }
 
-  openApiForm() {
+  openApiForm () {
     this.setState({ showOpenApiForm: true })
   }
 
-  closeOpenApiFormModal() {
+  closeOpenApiFormModal () {
     this.setState({ showOpenApiForm: false })
   }
 
-  closeLoginSignupModal() {
+  closeLoginSignupModal () {
     this.setState({
       showLoginSignupModal: false
     })
   }
 
-  openHistorySnapshot(id) {
+  openHistorySnapshot (id) {
     this.props.history.push({
       pathname: `/dashboard/history/${id}`,
       historySnapshotId: id
     })
   }
 
-  openEndpoint(id) {
+  openEndpoint (id) {
     this.props.history.push({
       pathname: `/dashboard/endpoint/${id}`
     })
   }
 
-  openPage(id) {
+  openPage (id) {
     this.props.history.push({
       pathname: `/dashboard/page/${id}`
     })
   }
 
-  renderPath(id, type) {
+  renderPath (id, type) {
     let path = ''
     let groupId = null
     let versionId = null
@@ -233,7 +233,7 @@ class SideBar extends Component {
     if (path) { return <div style={{ fontSize: '11px' }} className='text-muted'>{path}</div> } else return <p />
   }
 
-  renderHistoryList() {
+  renderHistoryList () {
     return (
       <div className='mt-3'>
         {this.state.historySnapshot && this.state.historySnapshot.length > 0
@@ -243,7 +243,7 @@ class SideBar extends Component {
     )
   }
 
-  renderEndpointsList() {
+  renderEndpointsList () {
     return (
       <div>
         <div className='px-3'>Endpoints</div>
@@ -280,7 +280,7 @@ class SideBar extends Component {
     )
   }
 
-  renderPagesList() {
+  renderPagesList () {
     return (
       <div>
         <div className='px-3'>Pages</div>
@@ -314,7 +314,7 @@ class SideBar extends Component {
     )
   }
 
-  renderHistoryItem(history) {
+  renderHistoryItem (history) {
     return (
       Object.keys(history).length !== 0 && (
         <div
@@ -345,7 +345,7 @@ class SideBar extends Component {
     )
   }
 
-  renderTriggerList() {
+  renderTriggerList () {
     return (
       <div className='mt-3'>
         {
@@ -361,13 +361,13 @@ class SideBar extends Component {
                   <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
                 </div>
               </div>
-            )
+              )
         }
       </div>
     )
   }
 
-  renderSearchList() {
+  renderSearchList () {
     if (this.state.data.filter !== '') {
       return (
         (this.state.pages.length > 0 || this.state.endpoints.length > 0 || this.state.historySnapshot.length > 0)
@@ -377,13 +377,13 @@ class SideBar extends Component {
               {this.state.endpoints.length > 0 ? this.renderEndpointsList() : null}
               {this.state.historySnapshot.length > 0 ? <div><div className='px-3'>History</div>{this.renderHistoryList()}</div> : null}
             </div>
-          )
+            )
           : <div className='text-center'>No Results</div>
       )
     }
   }
 
-  findPendingEndpointsCollections(pendingEndpointIds) {
+  findPendingEndpointsCollections (pendingEndpointIds) {
     const groupsArray = []
     for (let i = 0; i < pendingEndpointIds.length; i++) {
       const endpointId = pendingEndpointIds[i]
@@ -412,7 +412,7 @@ class SideBar extends Component {
     return collectionsArray
   }
 
-  findPendingPagesCollections(pendingPageIds) {
+  findPendingPagesCollections (pendingPageIds) {
     const versionsArray = []
     for (let i = 0; i < pendingPageIds.length; i++) {
       const pageId = pendingPageIds[i]
@@ -432,7 +432,7 @@ class SideBar extends Component {
     return collectionsArray
   }
 
-  getPublicCollections() {
+  getPublicCollections () {
     if (this.dataFetched()) {
       const pendingEndpointIds = Object.keys(this.props.endpoints).filter(
         (eId) => this.props.endpoints[eId].state === 'Pending' || (this.props.endpoints[eId].state === 'Draft' && this.props.endpoints[eId].isPublished)
@@ -451,12 +451,12 @@ class SideBar extends Component {
     }
   }
 
-  getNotificationCount() {
+  getNotificationCount () {
     const collections = this.getPublicCollections()
     return collections?.length || 0
   }
 
-  openPublishDocs(collection) {
+  openPublishDocs (collection) {
     if (collection?.id) {
       this.props.history.push({
         pathname: '/admin/publish',
@@ -473,7 +473,7 @@ class SideBar extends Component {
     }
   }
 
-  renderEmptyCollectionsIfNotLoggedIn() {
+  renderEmptyCollectionsIfNotLoggedIn () {
     return (
       <div className='empty-collections'>
         <div>
@@ -551,7 +551,7 @@ class SideBar extends Component {
     )
   }
 
-  renderCollections() {
+  renderCollections () {
     return (
       <Switch>
         <ProtectedRoute
@@ -584,14 +584,14 @@ class SideBar extends Component {
     )
   }
 
-  renderSidebarTabs() {
+  renderSidebarTabs () {
     return (
       <Tabs
         defaultActiveKey={
           getCurrentUser() ? 'collection' : 'randomTrigger'
         }
         id='uncontrolled-tab-example'
-        onSelect={() => { !this.state.primarySidebar && this.setState({ selectedCollectionId: null, primarySidebar: true }) }}
+        onSelect={() => { !this.state.primarySidebar && this.setState({ primarySidebar: true }) }}
       >
         <Tab
           eventKey='collection'
@@ -645,7 +645,7 @@ class SideBar extends Component {
     )
   }
 
-  renderUserNotification() {
+  renderUserNotification () {
     return (
       <div className='userInfowrapper'>
         <UserNotification
@@ -659,7 +659,7 @@ class SideBar extends Component {
     )
   }
 
-  renderDashboardSidebar() {
+  renderDashboardSidebar () {
     return (
       <>
         <div className='app-name'>
@@ -667,7 +667,7 @@ class SideBar extends Component {
           HITMAN
         </div>
         <div className='search-box'>
-          <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
+          <svg onClick={() => { !this.state.primarySidebar && this.setState({ primarySidebar: true }) }} width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
             <path d='M8.25 14.25C11.5637 14.25 14.25 11.5637 14.25 8.25C14.25 4.93629 11.5637 2.25 8.25 2.25C4.93629 2.25 2.25 4.93629 2.25 8.25C2.25 11.5637 4.93629 14.25 8.25 14.25Z' stroke='#828282' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' />
             <path d='M15.75 15.7498L12.4875 12.4873' stroke='#828282' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' />
           </svg>
@@ -689,14 +689,14 @@ class SideBar extends Component {
     )
   }
 
-  getSidebarInteractionClass() {
+  getSidebarInteractionClass () {
     // let classes = this.state.sidebarStateClasses
     return (
       this.collectionId && 'enable-sidebar'
     )
   }
 
-  render() {
+  render () {
     return (
       <nav
         className={
@@ -721,26 +721,19 @@ class SideBar extends Component {
                   path='/p/:collectionId'
                   render={(props) => <Collections {...this.props} />}
                 />
-              )
+                )
           }
         </div>
         {this.collectionId && isDashboardRoute(this.props, true) && (
           <div className='secondary-sidebar'>
-            <p className='hm-sidebar-outer-block heading-2'>{this.props.collections[this.state.selectedCollectionId]?.name || ''}</p>
-            <button className='btn close' onClick={() => { this.setState({ secondarySidebarToggle: !this.state.secondarySidebarToggle }) }}>
-              <svg width="12" height="6" viewBox="0 0 12 6" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M1.5 0.75L6 5.25L10.5 0.75" stroke="#333333" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-
-            </button>
-            <div className="collectionVersionWrapper">
-              <CollectionVersions
-                {...this.props}
-                collection_id={this.state.selectedCollectionId}
-                open_collection={this.openCollection.bind(this)}
-                selectedCollectionId={this.state.selectedCollectionId}
-              />
-            </div>
+            <p className='hm-sidebar-outer-block'>{this.props.collections[this.state.selectedCollectionId]?.name || ''}</p>
+            <button className='btn close' onClick={() => { this.setState({ primarySidebar: false, secondarySidebarToggle: this.state.primarySidebar ? false : !this.state.secondarySidebarToggle }) }}><svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M9 3.75V14.25' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' /><path d='M3.75 9H14.25' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' /></svg></button>
+            <CollectionVersions
+              {...this.props}
+              collection_id={this.state.selectedCollectionId}
+              open_collection={this.openCollection.bind(this)}
+              selectedCollectionId={this.state.selectedCollectionId}
+            />
           </div>
         )}
       </nav>
