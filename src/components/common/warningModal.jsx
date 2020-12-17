@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Modal } from 'react-bootstrap'
 
-function WarningModal ({ show, onHide, title, message }) {
+function WarningModal ({ show, onHide, title, message, ignoreButtonCallback }) {
   return (
     <Modal
       show={show}
@@ -20,6 +20,12 @@ function WarningModal ({ show, onHide, title, message }) {
         <p>{message}</p>
         <div className='text-right'>
           <button
+            className='btn btn-danger btn-lg mr-2'
+            onClick={() => { ignoreButtonCallback(); onHide() }}
+          >
+            Ignore
+          </button>
+          <button
             className='btn btn-primary btn-lg mr-2'
             onClick={onHide}
           >
@@ -35,7 +41,8 @@ WarningModal.propTypes = {
   show: PropTypes.bool,
   onHide: PropTypes.func,
   title: PropTypes.string,
-  message: PropTypes.string
+  message: PropTypes.string,
+  ignoreButtonCallback: PropTypes.func
 }
 
 WarningModal.defaultProps = {
