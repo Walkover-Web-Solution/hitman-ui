@@ -128,7 +128,7 @@ class UserInfo extends Component {
                         <path d='M9.25 9.75L9.25 18.75' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
                       </svg>
 
-                      Import API
+                      Import
                     </Dropdown.Item>
 
                     <Link to='/logout' className='dropdown-item'>

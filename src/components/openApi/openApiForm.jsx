@@ -14,7 +14,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    import_api: (openApiObject, importType) => dispatch(importApi(openApiObject, importType))
+    import_api: (openApiObject, importType, website) => dispatch(importApi(openApiObject, importType, website))
   }
 }
 
