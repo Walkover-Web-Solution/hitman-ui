@@ -1788,6 +1788,14 @@ class DisplayEndpoint extends Component {
                   )
                 : null
             }
+            <div className='endpoint-header '>
+              {!isDashboardRoute(this.props) && (
+                <div className='endpoint-name-container'>
+                  {!isDashboardRoute(this.props, true) && <h1 className='endpoint-title' style={{ color: theme }}>{this.state.data?.name || ''}</h1>}
+                  <p>{this.state.endpoint?.description || ''}</p>
+                </div>
+              )}
+            </div>
             <div
               className={!isDashboardRoute(this.props) ? 'hm-panel' : 'hm-panel col-12'}
             >
@@ -1912,8 +1920,8 @@ class DisplayEndpoint extends Component {
                       {/* do not remove this code */}
                       {/* <h3 className='heading-2'>Endpoint Name</h3> */}
                       <div className='hm-endpoint-header'>
-                        <div class='input-group'>
-                          <div class='input-group-prepend'>
+                        <div className='input-group'>
+                          <div className='input-group-prepend'>
                             <span
                               style={{ borderColor: theme }}
                               className={`api-label api-label-lg input-group-text ${this.state.data.method}`}
@@ -1921,14 +1929,15 @@ class DisplayEndpoint extends Component {
                               {this.state.data.method}
                             </span>
                           </div>
-                          <div class='form-control' style={{ borderColor: theme }}>
-                            <HostContainer
-                              {...this.props}
-                              groupId={this.state.groupId}
-                              set_base_url={this.setBaseUrl.bind(this)}
-                              custom_host={this.state.endpoint.BASE_URL}
-                            /> {this.state.data.updatedUri}
-                          </div>
+
+                          <HostContainer
+                            {...this.props}
+                            groupId={this.state.groupId}
+                            set_base_url={this.setBaseUrl.bind(this)}
+                            custom_host={this.state.endpoint.BASE_URL}
+                          />
+                          <input disabled className='form-control' style={{ borderColor: theme }} value={this.customState.BASE_URL + this.state.data.updatedUri} />
+
                         </div>
                         {(this.props.highlights?.uri ? <i className='fas fa-circle' /> : null)}
 

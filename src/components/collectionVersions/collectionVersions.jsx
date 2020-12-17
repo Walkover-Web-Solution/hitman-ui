@@ -65,6 +65,12 @@ class CollectionVersions extends Component {
     }
   }
 
+  componentDidUpdate (prevProps, prevState) {
+    if (prevProps.selectedCollectionId !== this.props.selectedCollectionId) {
+      this.setState({ selectedVersionIds: {} })
+    }
+  }
+
   handleUpdate (collectionVersion) {
     this.props.history.push({
       pathname: `/dashboard/${this.props.collection_id}/versions/${collectionVersion.id}/edit`,
@@ -298,7 +304,6 @@ class CollectionVersions extends Component {
   }
 
   renderBody (versionId, index) {
-    console.log(this.props, this.state)
     if (
       isDashboardRoute(this.props) &&
       document.getElementsByClassName('version-collapse')

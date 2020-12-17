@@ -1398,14 +1398,13 @@ button.editBtn {
   }
 }
 
-@media(max-width:1199px) {
+@media(max-width:1699px) {
   .colorChooser.d-flex {
     justify-content: normal !important;
     display: block !important;
   }
 
-  .colorChooser.d-flex button {
-    margin-left: 10px;
+  .colorChooser.d-flex button { 
     margin-top: 10px;
   }
 }
@@ -1459,7 +1458,7 @@ button.editBtn {
 
 
 
-.enable-sidebar {
+.enable-secondary-sidebar {
   .primary-sidebar {
     width: 70px;
   }
@@ -1479,22 +1478,41 @@ button.editBtn {
   .primary-sidebar .nav-tabs a {
     width: 100% !important;
   }
+
   .app-name {
     font-size: 0;
-}
+  }
 }
 
-.sidebar.secondary-collapse { 
+.sidebar.secondary-collapse {
   width: 100px !important;
 
   .secondary-sidebar {
     width: 30px;
     overflow: visible;
   }
-  .hm-sidebar-outer-block{
+
+  .hm-sidebar-outer-block {
     display: none;
   }
+
   button.btn.close {
-    right: -12px!important;
+    right: -12px !important;
+  }
 }
+
+.sidebar.enable-primary-sidebar{
+ 
+  .secondary-sidebar {
+    width: 30px;
+    overflow: visible;
+  }
+
+  .hm-sidebar-outer-block {
+    display: none;
+  }
+
+  button.btn.close {
+    right: -12px !important;
+  }
 }

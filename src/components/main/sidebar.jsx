@@ -719,6 +719,7 @@ class SideBar extends Component {
               {...this.props}
               collection_id={this.collectionId}
               open_collection={this.openCollection.bind(this)}
+              selectedCollectionId={this.state.selectedCollectionId}
             />
           </div>
         )}

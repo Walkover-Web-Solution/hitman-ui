@@ -5,6 +5,7 @@ import 'ace-builds'
 import AceEditor from 'react-ace'
 import 'ace-builds/webpack-resolver'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
+import { toast } from 'react-toastify'
 const HTTPSnippet = require('httpsnippet')
 
 class CodeTemplate extends Component {
@@ -62,8 +63,13 @@ class CodeTemplate extends Component {
   makeCodeTemplate (selectedLanguage) {
     this.selectedLanguage = selectedLanguage
     this.selectedLanguageName = this.languages[selectedLanguage].name
-    const snippet = this.makeCodeSnippet()
-    const codeSnippet = snippet.convert(selectedLanguage)
+    let codeSnippet = ''
+    try {
+      const snippet = this.makeCodeSnippet()
+      codeSnippet = snippet.convert(selectedLanguage)
+    } catch (error) {
+      toast.error(error.name + ': ' + error.message)
+    }
     this.setState({ codeSnippet, copied: false })
   }
 
@@ -145,6 +151,7 @@ class CodeTemplate extends Component {
               setOptions={{
                 showLineNumbers: true
               }}
+              readOnly
               editorProps={{
                 $blockScrolling: false
               }}
