@@ -58,7 +58,7 @@
   border-radius: 4px;
 }
 
-.search-box>svg {
+.search-box>label {
   position: absolute;
   left: 10px;
   top: 0;
@@ -67,6 +67,8 @@
   display: flex;
   align-items: center;
   font-size: 16px;
+  cursor: pointer;
+  z-index: 9;
 }
 
 .search-box>input[type="text"] {
@@ -373,4 +375,10 @@ input[type="text"]:focus {
     left: -5px;
   }
 
+}
+
+.collectionVersionWrp {
+  height: calc(100vh - 65px);
+  overflow: auto;
+  transition: 200ms;
 }
