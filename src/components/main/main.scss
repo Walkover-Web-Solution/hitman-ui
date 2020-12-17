@@ -1030,6 +1030,10 @@ button.editBtn {
   font-size: 14px;
   padding: 10px;
   box-shadow: 0px 2px 14px rgba(47, 182, 60, 0.5) !important;
+
+  &:hover {
+    background: #27AE60;
+  }
 }
 
 .publish-button {
@@ -1404,7 +1408,7 @@ button.editBtn {
     display: block !important;
   }
 
-  .colorChooser.d-flex button { 
+  .colorChooser.d-flex button {
     margin-top: 10px;
   }
 }
@@ -1501,8 +1505,8 @@ button.editBtn {
   }
 }
 
-.sidebar.enable-primary-sidebar{
- 
+.sidebar.enable-primary-sidebar {
+
   .secondary-sidebar {
     width: 30px;
     overflow: visible;
