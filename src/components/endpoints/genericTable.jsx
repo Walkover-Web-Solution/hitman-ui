@@ -416,6 +416,10 @@ class GenericTable extends Component {
     )
   }
 
+  renderTitle (title) {
+    if (title === 'Params') { return 'Query Params' } else if (title === 'formData') { return 'form-data' } else { return title }
+  }
+
   render () {
     const { dataArray, original_data: originalData, title } = this.props
     if (!isDashboardRoute(this.props)) {
@@ -438,7 +442,7 @@ class GenericTable extends Component {
               : 'public-generic-table-title-container'
           }
         >
-          {!isDashboardRoute(this.props) && <span>{title} {willHighlight(this.props, title) ? <i className='fas fa-circle' /> : null}</span>}
+          {!isDashboardRoute(this.props) && <span>{this.renderTitle(title)} {willHighlight(this.props, title) ? <i className='fas fa-circle' /> : null}</span>}
 
         </div>
 
