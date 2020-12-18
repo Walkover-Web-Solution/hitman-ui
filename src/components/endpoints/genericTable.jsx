@@ -438,7 +438,7 @@ class GenericTable extends Component {
               : 'public-generic-table-title-container'
           }
         >
-          {!isDashboardRoute(this.props) && <span>{title} {willHighlight(this.props, title) ? <i className='fas fa-circle' /> : null}</span>}
+          {!isDashboardRoute(this.props) && dataArray.length > 0 ? <span>{title} {willHighlight(this.props, title) ? <i className='fas fa-circle' /> : null}</span> : null}
 
         </div>
 
