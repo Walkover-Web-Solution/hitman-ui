@@ -1,12 +1,13 @@
 // import image from "../common/Screenshot 2020-03-21 at 10.53.24 AM.png";
 import { ReactComponent as EmptyResponseImg } from './img/empty-response.svg'
-import React, { Component } from 'react'
+import React, { Component, createRef } from 'react'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import JSONPretty from 'react-json-pretty'
 import './endpoints.scss'
 import { isDashboardRoute, isSavedEndpoint } from '../common/utility'
 import { getCurrentUser } from '../auth/authService'
 import SampleResponseForm from './sampleResponseForm'
+import { Overlay, Tooltip } from 'react-bootstrap'
 
 const JSONPrettyMon = require('react-json-pretty/dist/monikai')
 
@@ -19,8 +20,14 @@ class DisplayResponse extends Component {
     timeElapsed: '',
     show: false,
     showSampleResponseForm: { add: false, delete: false, edit: false },
-    theme: ''
+    theme: '',
+    showCopyMessage: false
   };
+
+  constructor () {
+    super()
+    this.copyDivRef = createRef()
+  }
 
   responseTime () {
     const timeElapsed = this.props.timeElapsed
@@ -96,6 +103,13 @@ class DisplayResponse extends Component {
     }
   }
 
+  showCopyMessage () {
+    this.setState({ showCopyMessage: true })
+    setTimeout(function () {
+      this.setState({ showCopyMessage: false })
+    }.bind(this), 2000)
+  }
+
   render () {
     const { theme } = this.state
     return (
@@ -123,7 +137,12 @@ class DisplayResponse extends Component {
                         {this.props.timeElapsed} ms
                       </div>
                     </div>
-                    <div className='resPubclipboardWrapper'>
+                    <Overlay target={this.copyDivRef.current} show={this.state.showCopyMessage} placement='top'>
+                      <Tooltip id='copy-message'>
+                        Copied
+                      </Tooltip>
+                    </Overlay>
+                    <div className='resPubclipboardWrapper' ref={this.copyDivRef} onClick={() => this.showCopyMessage()}>
                       <CopyToClipboard
                         text={JSON.stringify(this.props.response.data)}
                         onCopy={() => this.setState({ copied: true })}
