@@ -338,9 +338,10 @@ class PublicBodyContainer extends Component {
       this.props.body.type === 'JSON'
     ) {
       let body = {}
-      if (Object.keys(this.bodyDescription).length > 0) body = this.generateBodyFromDescription(this.bodyDescription)
-      else body = JSON.parse(this.props.body.value)
-      this.props.set_public_body(body)
+      if (Object.keys(this.bodyDescription).length > 0) {
+        body = this.generateBodyFromDescription(this.bodyDescription)
+        this.props.set_public_body(body)
+      }
     }
     return (
       <>

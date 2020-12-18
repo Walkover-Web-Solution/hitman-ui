@@ -71,7 +71,7 @@ class DisplayPage extends Component {
       color: this.props.publicCollectionTheme
     }
     return (
-      !isDashboardRoute(this.props, true) ? <h3 className='' style={pageHeading}>{this.state.data.name}</h3> : null
+      !isDashboardRoute(this.props, true) ? <h3 className='' style={pageHeading}>{this.state.data.name}</h3> : <h3 className=''>{this.state.data.name}</h3>
     )
   }
 

@@ -22,7 +22,7 @@ class CustomTabs extends Component {
                 {this.props.historySnapshots[tabId].endpoint.name}
               </label>
             )
-          } else return <label>{this.props.historySnapshots[tabId].endpoint.name}</label>
+          } else return <label>{this.props.historySnapshots[tabId].endpoint.name || this.props.historySnapshots[tabId].endpoint.BASE_URL + this.props.historySnapshots[tabId].endpoint.uri || 'Random Trigger'}</label>
         } else {
           return 'Untitled'
         }

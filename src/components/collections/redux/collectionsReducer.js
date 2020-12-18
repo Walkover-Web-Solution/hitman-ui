@@ -50,6 +50,7 @@ function collectionsReducer (state = initialState, action) {
       }
 
     case collectionsActionTypes.ON_COLLECTION_UPDATED:
+      toast.success('Updated successfully')
       return {
         ...state,
         [action.response.id]: action.response
