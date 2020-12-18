@@ -71,7 +71,8 @@ class PublishDocForm extends Component {
     const collectionId = URI.parseQuery(this.props.location.search).collectionId
     const collection = { ...this.props.collections[collectionId] }
     const data = { ...this.state.data }
-    collection.customDomain = data.domain
+    const customDomain = data.domain.trim()
+    collection.customDomain = customDomain.length !== 0 ? customDomain : null
     collection.theme = data.theme
 
     collection.docProperties = {

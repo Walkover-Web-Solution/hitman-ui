@@ -38,8 +38,8 @@ class UserInfo extends Component {
     this.props.open_collection(null) // for closing secondary-sidebar
   }
 
-  openImportCollectionForm (importType) {
-    this.setState({ importCollectionForm: importType })
+  openImportCollectionForm () {
+    this.setState({ importCollectionForm: true })
   }
 
   closeImportCollectionForm () {
@@ -53,7 +53,6 @@ class UserInfo extends Component {
           {...this.props}
           show
           onHide={() => this.closeImportCollectionForm()}
-          importType={this.state.importCollectionForm}
         />
       )
     )
@@ -122,20 +121,14 @@ class UserInfo extends Component {
 
                       Hosted API
                     </Dropdown.Item>
-                    <Dropdown.Item onClick={() => this.openImportCollectionForm('openAPI')}>
+                    <Dropdown.Item onClick={() => this.openImportCollectionForm()}>
                       <svg width='18' height='20' viewBox='0 0 18 20' fill='none' xmlns='http://www.w3.org/2000/svg'>
                         <path fill-rule='evenodd' clip-rule='evenodd' d='M3 1L15 0.999999C15.5304 0.999999 16.0391 1.21071 16.4142 1.58579C16.7893 1.96086 17 2.46957 17 3L17 15C17 15.5304 16.7893 16.0391 16.4142 16.4142C16.0391 16.7893 15.5304 17 15 17L12 17L12 15L15 15L15 3L3 3L3 15L6 15L6 17L3 17C2.46957 17 1.96086 16.7893 1.58579 16.4142C1.21071 16.0391 1 15.5304 1 15L0.999999 3C0.999999 2.46957 1.21071 1.96086 1.58579 1.58579C1.96086 1.21071 2.46957 1 3 1Z' fill='#E98A36' stroke='white' stroke-width='0.5' />
                         <path d='M12.5 12L9.25 9L6 12' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
                         <path d='M9.25 9.75L9.25 18.75' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
                       </svg>
 
-                      Import API
-                    </Dropdown.Item>
-                    <Dropdown.Item onClick={() => this.openImportCollectionForm('postman')}>
-                      <svg width='18' height='20' viewBox='0 0 18 20' fill='none'>
-                        <path d='M9 7L5 11L8 11L8 19L10 19L10 11L13 11L9 7ZM15 0.999999L3 1C2.46957 1 1.96086 1.21071 1.58579 1.58579C1.21071 1.96086 0.999999 2.46957 0.999999 3L1 15C1 15.5304 1.21071 16.0391 1.58579 16.4142C1.96086 16.7893 2.46957 17 3 17L6 17L6 15L3 15L3 3L15 3L15 15L12 15L12 17L15 17C15.5304 17 16.0391 16.7893 16.4142 16.4142C16.7893 16.0391 17 15.5304 17 15L17 3C17 2.46957 16.7893 1.96086 16.4142 1.58579C16.0391 1.21071 15.5304 0.999999 15 0.999999Z' fill='#E98A36' stroke='white' stroke-width='0.5' />
-                      </svg>
-                      Import Postman API
+                      Import
                     </Dropdown.Item>
 
                     <Link to='/logout' className='dropdown-item'>
