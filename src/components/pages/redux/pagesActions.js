@@ -232,7 +232,7 @@ export const updatePageOrder = (pagesOrder) => {
     pageApiService
       .updatePageOrder(pagesOrder)
       .then((response) => {
-        toast(response.data)
+        toast.success(response.data)
       })
       .catch((error) => {
         dispatch(
