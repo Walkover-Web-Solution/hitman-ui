@@ -420,7 +420,7 @@ class GenericTable extends Component {
     if (title === 'Params') { return 'Query Params' } else if (title === 'formData') { return 'form-data' } else { return title }
   }
 
-  renderPublicTableheadings () {
+  renderPublicTableHeadings () {
     return (
       <thead>
         <tr>
