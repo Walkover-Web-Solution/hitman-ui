@@ -498,7 +498,7 @@ class Endpoints extends Component {
     return (
       <div
         className={idToCheck === endpointId ? 'hm-sidebar-item active' : 'hm-sidebar-item'}
-        style={idToCheck === endpointId ? { backgroundColor: this.convertHexToRGBA(this.state.theme, 50), borderColor: this.convertHexToRGBA(this.state.theme, 30) } : {}}
+        style={idToCheck === endpointId ? { backgroundColor: this.convertHexToRGBA(this.state.theme, 10), borderColor: this.convertHexToRGBA(this.state.theme, 30) } : {}}
         key={endpointId}
         onClick={() =>
           this.handleDisplay(

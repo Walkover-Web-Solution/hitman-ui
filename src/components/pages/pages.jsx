@@ -315,7 +315,7 @@ class Pages extends Component {
     return (
       <div
         className={idToCheck === pageId ? 'hm-sidebar-item active' : 'hm-sidebar-item'}
-        style={idToCheck === pageId ? { backgroundColor: this.convertHexToRGBA(this.state.theme, 50), borderColor: this.convertHexToRGBA(this.state.theme, 30) } : {}}
+        style={idToCheck === pageId ? { backgroundColor: this.convertHexToRGBA(this.state.theme, 10), borderColor: this.convertHexToRGBA(this.state.theme, 30) } : {}}
         onClick={() => {
           const page = this.props.pages[pageId]
           this.handleDisplay(page, this.props.collection_id, true)
