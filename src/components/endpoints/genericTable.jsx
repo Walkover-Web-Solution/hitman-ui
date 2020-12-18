@@ -409,7 +409,7 @@ class GenericTable extends Component {
       !isDashboardRoute(this.props) && this.findUncheckedEntityCount()
         ? (
           <div className='viewOptionals' onClick={() => this.toggleOptionalParams()}>
-            {!this.state.optionalParams ? `View Optional ${this.props.title}` : `Hide Optional ${this.props.title}`}
+            {!this.state.optionalParams ? `View Optional ${this.renderTitle(this.props.title)}` : `Hide Optional ${this.renderTitle(this.props.title)}`}
           </div>
           )
         : null
@@ -418,6 +418,18 @@ class GenericTable extends Component {
 
   renderTitle (title) {
     if (title === 'Params') { return 'Query Params' } else if (title === 'formData') { return 'form-data' } else { return title }
+  }
+
+  renderPublicTableheadings () {
+    return (
+      <thead>
+        <tr>
+          <th className='custom-th' />
+          <th className='custom-th' id='generic-table-key-cell'>NAME</th>
+          <th className='custom-th'>VALUE</th>
+        </tr>
+      </thead>
+    )
   }
 
   render () {
@@ -464,13 +476,11 @@ class GenericTable extends Component {
                       </thead>
                       )
                     : (
-                      <thead>
-                        <tr>
-                          <th className='custom-th' />
-                          <th className='custom-th' id='generic-table-key-cell'>NAME</th>
-                          <th className='custom-th'>VALUE</th>
-                        </tr>
-                      </thead>
+                        dataArray.length === this.findUncheckedEntityCount()
+                          ? this.state.optionalParams
+                              ? this.renderPublicTableHeadings()
+                              : null
+                          : this.renderPublicTableHeadings()
                       )
                 }
 
