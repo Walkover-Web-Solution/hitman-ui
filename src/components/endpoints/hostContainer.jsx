@@ -5,7 +5,7 @@ import { isDashboardRoute } from '../common/utility'
 import tabService from '../tabs/tabService'
 import tabStatusTypes from '../tabs/tabStatusTypes'
 import './endpoints.scss'
-
+import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 class HostContainer extends Component {
   constructor (props) {
     super(props)
@@ -165,6 +165,18 @@ class HostContainer extends Component {
     return null
   }
 
+  chaageHostName (host) {
+    switch (host) {
+      case 'groupHost':
+        return 'Group BASE_URL'
+      case 'versionHost':
+        return 'Version BASE_URL'
+      case 'customHost':
+        return 'Custom BASE_URL'
+      default:
+    }
+  }
+
   render () {
     if (
       isDashboardRoute(this.props) &&
@@ -196,14 +208,23 @@ class HostContainer extends Component {
     if (isDashboardRoute(this.props)) {
       return (
         <div className='host-field-container'>
-          <input
-            type='text'
-            name='customHost'
-            className='form-control'
-            value={this.fetchHost()}
-            onChange={this.handleChange}
-            disabled={this.state.selectedHost !== 'customHost'}
-          />
+          <OverlayTrigger
+            placement='top'
+            overlay={
+              <Tooltip id='host'>
+                {this.fetchHost() ? this.fetchHost() : this.chaageHostName(this.state.selectedHost)}
+              </Tooltip>
+            }
+          >
+            <input
+              type='text'
+              name='customHost'
+              className='form-control'
+              value={this.fetchHost()}
+              onChange={this.handleChange}
+              disabled={this.state.selectedHost !== 'customHost'}
+            />
+          </OverlayTrigger>
           <div className='dropdown' id='host-select'>
             <button
               className='btn dropdown-toggle'
