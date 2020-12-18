@@ -1,10 +1,14 @@
 import React from 'react'
 
-const footerMessage = 'Love developer. ♥ ViaSocket'
-
 function Footer () {
   return (
-    <div>{footerMessage}</div>
+    <footer>
+      <div className='footerWrapper'>
+        <p>
+          <span>Love</span> developer. <span>♥ </span> <a rel='noreferrer' target='_blank' href='http://viasocket.com'>ViaSocket</a>
+        </p>
+      </div>
+    </footer>
   )
 }
 

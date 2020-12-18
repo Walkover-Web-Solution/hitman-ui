@@ -155,12 +155,11 @@ nav.navbar.navbar-dark.fixed-top.bg-dark.flex-md-nowrap.p-0.shadow {
   color: #333333;
   cursor: pointer;
   font-size: 14px;
-  margin-bottom: 5px;
   font-weight: 400;
   text-transform: capitalize;
   display: flex;
   width: 100%;
-  padding: 7px 4px;
+  padding: 5px 2px;
   border-radius: 8px;
   border: 1px solid transparent;
   align-items: center;
@@ -178,7 +177,7 @@ nav.navbar.navbar-dark.fixed-top.bg-dark.flex-md-nowrap.p-0.shadow {
 
 .hm-sidebar-label {
   color: #E98A36;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
   text-transform: capitalize;
   font-weight: 600;
   font-size: 16px;
@@ -1407,6 +1406,10 @@ button.editBtn {
     margin: 30px 10px !important;
     padding: 0 5px !important;
   }
+
+  .hm-panel {
+    margin-top: 25px;
+  }
 }
 
 @media(max-width:1699px) {
@@ -1478,30 +1481,23 @@ button.editBtn {
     padding-right: 0;
     padding-left: 10px;
 
+    .user-details {
+      padding-left: 0;
+    }
+
     .user-notification .notification-icon {
       padding-left: 5px;
       width: 9px;
     }
 
-    .user-notification .notification .badge {
-      position: absolute;
-      top: -5px;
-      right: 4px;
-      border-radius: 28px;
-      font-size: 8px;
-      background-color: #E98A36;
-      color: #fff;
-      height: 11px;
-      width: 16px;
-      text-align: center;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+    .user-notification .notification span {
+      display: none;
     }
 
     .user-heading {
       .dropdown {
-        left: -22px;
+        left: -10px;
+        top: 5px;
 
         .dropdown-menu {
           left: 50px !important;
@@ -1510,8 +1506,6 @@ button.editBtn {
         button {
           background: transparent;
           padding: 0 0 10px 16px;
-
-
         }
       }
     }
@@ -1583,4 +1577,24 @@ button.editBtn {
 
 .hm-public-table table tbody tr td .customCheckbox {
   padding-left: 0;
+}
+
+.footerWrapper p {
+  margin: 0;
+  padding: 21px;
+  font-size: 14px;
+  color: #333333;
+  text-align: right;
+}
+
+.footerWrapper {
+  border-top: 1px solid #D3CCC5;
+}
+
+.footerWrapper p {
+
+  span,
+  a {
+    color: #cc0000;
+  }
 }

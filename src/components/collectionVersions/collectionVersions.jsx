@@ -474,6 +474,7 @@ class CollectionVersions extends Component {
                           {...this.props}
                           version_id={versionId}
                           show_filter_version={this.propsFromVersion.bind(this)}
+                          theme={this.props.collections[this.props.collection_id].theme}
                         />
                         <Groups
                           {...this.props}
