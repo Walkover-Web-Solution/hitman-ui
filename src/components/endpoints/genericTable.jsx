@@ -11,7 +11,8 @@ class GenericTable extends Component {
       optionalParams: false,
       editButtonName: 'Bulk Edit',
       originalParams: [],
-      originalHeaders: []
+      originalHeaders: [],
+      theme: ''
     }
 
     this.checkboxFlags = []
@@ -26,7 +27,7 @@ class GenericTable extends Component {
   }
 
   componentDidMount () {
-    this.setState({ optionalParams: false })
+    this.setState({ optionalParams: false, theme: this.props.publicCollectionTheme })
   }
 
   componentDidUpdate (prevProps, prevState) {
@@ -244,7 +245,7 @@ class GenericTable extends Component {
                     onChange={this.handleChange}
                     style={{ border: 'none' }}
                   />
-                  <span class='checkmark' />
+                  <span class='checkmark' style={{ backgroundColor: this.state.theme, borderColor: this.state.theme }} />
                 </label>
                 )
           }
@@ -308,7 +309,7 @@ class GenericTable extends Component {
                 )
           }
         </td>
-        <td className='custom-td'>
+        <td className='custom-td' style={{ width: '200px' }}>
           {isDashboardRoute(this.props)
             ? <input
                 name={index + '.key'}
@@ -408,11 +409,27 @@ class GenericTable extends Component {
     return (
       !isDashboardRoute(this.props) && this.findUncheckedEntityCount()
         ? (
-          <div className='viewOptionals' onClick={() => this.toggleOptionalParams()}>
-            {!this.state.optionalParams ? `View Optional ${this.props.title}` : `Hide Optional ${this.props.title}`}
+          <div className='viewOptionals' onClick={() => this.toggleOptionalParams()} style={{ color: this.state.theme }}>
+            {!this.state.optionalParams ? `View Optional ${this.renderTitle(this.props.title)}` : `Hide Optional ${this.renderTitle(this.props.title)}`}
           </div>
           )
         : null
+    )
+  }
+
+  renderTitle (title) {
+    if (title === 'Params') { return 'Query Params' } else if (title === 'formData') { return 'form-data' } else { return title }
+  }
+
+  renderPublicTableHeadings () {
+    return (
+      <thead>
+        <tr>
+          <th className='custom-th' />
+          <th className='custom-th' id='generic-table-key-cell'>NAME</th>
+          <th className='custom-th'>VALUE</th>
+        </tr>
+      </thead>
     )
   }
 
@@ -438,8 +455,7 @@ class GenericTable extends Component {
               : 'public-generic-table-title-container'
           }
         >
-          {!isDashboardRoute(this.props) && <span>{title} {willHighlight(this.props, title) ? <i className='fas fa-circle' /> : null}</span>}
-
+          {!isDashboardRoute(this.props) && dataArray.length > 0 ? <span>{this.renderTitle(title)} {willHighlight(this.props, title) ? <i className='fas fa-circle' /> : null}</span> : null}
         </div>
 
         {!this.state.bulkEdit && dataArray.length > 0
@@ -461,13 +477,11 @@ class GenericTable extends Component {
                       </thead>
                       )
                     : (
-                      <thead>
-                        <tr>
-                          <th className='custom-th' />
-                          <th className='custom-th' id='generic-table-key-cell'>NAME</th>
-                          <th className='custom-th'>VALUE</th>
-                        </tr>
-                      </thead>
+                        dataArray.length === this.findUncheckedEntityCount()
+                          ? this.state.optionalParams
+                              ? this.renderPublicTableHeadings()
+                              : null
+                          : this.renderPublicTableHeadings()
                       )
                 }
 

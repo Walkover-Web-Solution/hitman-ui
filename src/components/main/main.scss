@@ -155,12 +155,11 @@ nav.navbar.navbar-dark.fixed-top.bg-dark.flex-md-nowrap.p-0.shadow {
   color: #333333;
   cursor: pointer;
   font-size: 14px;
-  margin-bottom: 5px;
-  font-weight: 500;
+  font-weight: 400;
   text-transform: capitalize;
   display: flex;
   width: 100%;
-  padding: 8px 4px;
+  padding: 5px 2px;
   border-radius: 8px;
   border: 1px solid transparent;
   align-items: center;
@@ -178,7 +177,7 @@ nav.navbar.navbar-dark.fixed-top.bg-dark.flex-md-nowrap.p-0.shadow {
 
 .hm-sidebar-label {
   color: #E98A36;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
   text-transform: capitalize;
   font-weight: 600;
   font-size: 16px;
@@ -602,7 +601,7 @@ label.data-type {
 .pubCodeWrapper {
   padding: 0 15px 0px 0px;
   width: 35%;
-  margin: 25px 0 0 0;
+  margin: 121px 0 0 0;
 }
 
 .code-heading {
@@ -1401,9 +1400,15 @@ button.editBtn {
     padding: 0;
   }
 
-  .hm-public-endpoint-headers {
-    height: calc(100vh - 150px);
+  .hm-endpoint-container {
+    height: calc(100vh - 50px);
     overflow: auto;
+    margin: 30px 10px !important;
+    padding: 0 5px !important;
+  }
+
+  .hm-panel {
+    margin-top: 25px;
   }
 }
 
@@ -1472,7 +1477,41 @@ button.editBtn {
     width: 70px;
   }
 
-  .user-details,
+  .userInfowrapper {
+    padding-right: 0;
+    padding-left: 10px;
+
+    .user-details {
+      padding-left: 0;
+    }
+
+    .user-notification .notification-icon {
+      padding-left: 5px;
+      width: 9px;
+    }
+
+    .user-notification .notification span {
+      display: none;
+    }
+
+    .user-heading {
+      .dropdown {
+        left: -10px;
+        top: 5px;
+
+        .dropdown-menu {
+          left: 50px !important;
+        }
+
+        button {
+          background: transparent;
+          padding: 0 0 10px 16px;
+        }
+      }
+    }
+  }
+
+  .user-name,
   .searchResult,
   .primary-sidebar .nav-tabs a span.tabs-Text,
   .tab-content {
@@ -1512,7 +1551,8 @@ button.editBtn {
     overflow: visible;
   }
 
-  .hm-sidebar-outer-block,.collectionVersionWrp {
+  .hm-sidebar-outer-block,
+  .collectionVersionWrp {
     opacity: 0;
     transition: 200ms;
     transform: scale(0);
@@ -1535,6 +1575,31 @@ button.editBtn {
 }
 
 
-.hm-public-table table tbody tr td .customCheckbox{
+.hm-public-table table tbody tr td .customCheckbox {
   padding-left: 0;
+}
+
+.footerWrapper p {
+  margin: 0;
+  padding: 21px;
+  font-size: 14px;
+  color: #333333;
+  text-align: right;
+}
+
+.footerWrapper {
+  border-top: 1px solid #D3CCC5;
+}
+
+.footerWrapper p {
+
+  span,
+  a {
+    color: #cc0000;
+  }
+}
+footer {
+    float: left;
+    width: 100%;
+    margin-top: 40px;
 }

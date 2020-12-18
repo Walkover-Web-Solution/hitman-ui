@@ -184,7 +184,7 @@ input[type="text"]:focus {
 }
 
 .secondary-collapse .secondary-sidebar button.btn.close {
-  transform: rotate(90deg);
+  transform: rotate(-90deg);
   transition: 200ms;
 }
 
@@ -202,7 +202,7 @@ input[type="text"]:focus {
     position: absolute;
     top: 8px;
     right: -12px;
-    transform: rotate(-90deg);
+    transform: rotate(90deg);
     box-shadow: 0px 0px 5px #e3e2e2 !important;
     border-radius: 50px;
     height: 25px;
