@@ -12,6 +12,7 @@ import './publicEndpoint.scss'
 import store from '../../store/store'
 import auth from '../auth/authService'
 import UserInfo from '../common/userInfo'
+import Footer from '../main/Footer'
 
 const mapStateToProps = (state) => {
   return {
@@ -129,35 +130,35 @@ class PublicEndpoint extends Component {
       <>
         <nav className='public-endpoint-navbar'>
           {
-              process.env.REACT_APP_UI_URL === window.location.origin + '/'
-                ? (
-                    auth.getCurrentUser() === null
-                      ? (
-                        <div className='dropdown user-dropdown'>
-                          <div className='user-info'>
-                            <div className='user-avatar'>
-                              <i className='uil uil-signin' />
-                            </div>
-                            <div className='user-details '>
-                              <div className='user-details-heading not-logged-in'>
-                                <div
-                                  id='sokt-sso'
-                                  data-redirect-uri={redirectionUrl}
-                                  data-source='sokt-app'
-                                  data-token-key='sokt-auth-token'
-                                  data-view='button'
-                                />
-                              </div>
+            process.env.REACT_APP_UI_URL === window.location.origin + '/'
+              ? (
+                  auth.getCurrentUser() === null
+                    ? (
+                      <div className='dropdown user-dropdown'>
+                        <div className='user-info'>
+                          <div className='user-avatar'>
+                            <i className='uil uil-signin' />
+                          </div>
+                          <div className='user-details '>
+                            <div className='user-details-heading not-logged-in'>
+                              <div
+                                id='sokt-sso'
+                                data-redirect-uri={redirectionUrl}
+                                data-source='sokt-app'
+                                data-token-key='sokt-auth-token'
+                                data-view='button'
+                              />
                             </div>
                           </div>
                         </div>
-                        )
-                      : (
-                        <UserInfo />
-                        )
-                  )
-                : null
-            }
+                      </div>
+                      )
+                    : (
+                      <UserInfo />
+                      )
+                )
+              : null
+          }
         </nav>
         <main role='main' className='mainpublic-endpoint-main hm-wrapper'>
           <ToastContainer />
@@ -166,25 +167,27 @@ class PublicEndpoint extends Component {
           </div>
           <div className='hm-right-content'>
             {
-                this.state.collectionName !== ''
-                  ? (
-                    <Switch>
-                      <Route
-                        path={`/p/:collectionId/e/:endpointId/${this.state.collectionName}`}
-                        render={(props) => <DisplayEndpoint {...props} publicCollectionTheme={this.state.collectionTheme} />}
-                      />
-                      <Route
-                        path={`/p/:collectionId/pages/:pageid/${this.state.collectionName}`}
-                        render={(props) => <DisplayPage {...props} publicCollectionTheme={this.state.collectionTheme} />}
-                      />
-                      <Route
-                        path={`/p/:collectionId/description/${this.state.collectionName}`}
-                        render={(props) => <DisplayCollection {...props} {...this.props} publicCollectionTheme={this.state.collectionTheme} />}
-                      />
-                    </Switch>
-                    )
-                  : null
-              }
+              this.state.collectionName !== ''
+                ? (
+                  <Switch>
+                    <Route
+                      path={`/p/:collectionId/e/:endpointId/${this.state.collectionName}`}
+                      render={(props) => <DisplayEndpoint {...props} publicCollectionTheme={this.state.collectionTheme} />}
+                    />
+                    <Route
+                      path={`/p/:collectionId/pages/:pageid/${this.state.collectionName}`}
+                      render={(props) => <DisplayPage {...props} publicCollectionTheme={this.state.collectionTheme} />}
+                    />
+                    <Route
+                      path={`/p/:collectionId/description/${this.state.collectionName}`}
+                      render={(props) => <DisplayCollection {...props} {...this.props} publicCollectionTheme={this.state.collectionTheme} />}
+                    />
+                  </Switch>
+                  )
+                : null
+            }
+            <Footer />
+
           </div>
         </main>
       </>
