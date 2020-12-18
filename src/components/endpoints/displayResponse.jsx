@@ -248,7 +248,7 @@ class DisplayResponse extends Component {
                 <div className='empty-response-container'>
                   {/* <img src={image} height="100px" width="100px" alt="" /> */}
                   <EmptyResponseImg />
-                  <p>Hit Try to get a response</p>
+                  <p>Hit Send to trigger the API call</p>
                 </div>
               </div>
               )
