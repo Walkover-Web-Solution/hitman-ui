@@ -17,7 +17,6 @@ import './main.scss'
 import SideBar from './sidebar'
 import { getCurrentUser } from '../auth/authService'
 import PublishDocs from '../publishDocs/publishDocs'
-import Footer from './Footer'
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -86,17 +85,14 @@ class Main extends Component {
             set_tabs={this.setTabs.bind(this)}
             default_tab_index={this.state.defaultTabIndex}
           />
-          <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', width: '100%' }}>
-            {this.props.location.pathname.split('/')[2] === 'publish'
-              ? <PublishDocs {...this.props} />
-              : <ContentPanel
-                  {...this.props}
-                  set_environment={this.setEnvironment.bind(this)}
-                  set_tabs={this.setTabs.bind(this)}
-                  default_tab_index={this.state.defaultTabIndex}
-                />}
-            <Footer />
-          </div>
+          {this.props.location.pathname.split('/')[2] === 'publish'
+            ? <PublishDocs {...this.props} />
+            : <ContentPanel
+                {...this.props}
+                set_environment={this.setEnvironment.bind(this)}
+                set_tabs={this.setTabs.bind(this)}
+                default_tab_index={this.state.defaultTabIndex}
+              />}
         </div>
       </div>
     )

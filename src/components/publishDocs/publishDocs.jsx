@@ -23,6 +23,7 @@ import {
 } from '../groups/redux/groupsActions'
 import './publishDocs.scss'
 import WarningModal from '../common/warningModal'
+import Footer from '../main/Footer'
 const isEqual = require('react-fast-compare')
 
 const URI = require('urijs')
@@ -989,6 +990,7 @@ class PublishDocs extends Component {
             </div>
           </div>
         </div>
+        <Footer />
       </div>
     )
   }
