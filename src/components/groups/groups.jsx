@@ -586,11 +586,13 @@ class Groups extends Component {
                   version_id={this.props.groups[groupId].versionId}
                   group_id={groupId}
                   show_filter_groups={this.propsFromGroups.bind(this)}
+                  theme={this.props.collections[this.props.collection_id].theme}
                 />
                 <Endpoints
                   {...this.props}
                   group_id={groupId}
                   endpoints_order={this.props.groups[groupId].endpointsOrder}
+                  theme={this.props.collections[this.props.collection_id].theme}
                   show_filter_groups={this.propsFromGroups.bind(this)}
                 />
               </div>
