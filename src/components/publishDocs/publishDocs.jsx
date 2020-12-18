@@ -935,7 +935,7 @@ class PublishDocs extends Component {
 
   renderWarningModal () {
     return (
-      <WarningModal show={this.state.warningModal} onHide={() => { this.setState({ warningModal: false }) }} title='Sensitive Information Warning' message='This Entity contains some sensitive information. Please remove them before making it public.' />
+      <WarningModal show={this.state.warningModal} ignoreButtonCallback={() => this.props.approve_endpoint(this.props.endpoints[this.state.selectedEndpointId])} onHide={() => { this.setState({ warningModal: false }) }} title='Sensitive Information Warning' message='This Entity contains some sensitive information. Please remove them before making it public.' />
     )
   }
 
