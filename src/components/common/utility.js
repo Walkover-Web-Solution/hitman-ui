@@ -13,7 +13,23 @@ export function isSavedEndpoint (props) {
   ) { return true } else return false
 }
 
+export function setTitle (title) {
+  if (typeof title === 'string') {
+    if (title.trim().length > 0) {
+      document.title = title.trim() + ' ' + 'API Documentation'
+    }
+  }
+}
+
+export function setFavicon (link) {
+  if (typeof link === 'string') {
+    if (link.trim().length > 0) { document.getElementById('favicon').href = link.trim() }
+  }
+}
+
 export default {
   isDashboardRoute,
-  isSavedEndpoint
+  isSavedEndpoint,
+  setTitle,
+  setFavicon
 }

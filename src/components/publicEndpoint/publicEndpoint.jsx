@@ -13,6 +13,7 @@ import store from '../../store/store'
 import auth from '../auth/authService'
 import UserInfo from '../common/userInfo'
 import Footer from '../main/Footer'
+import { setTitle, setFavicon } from '../common/utility'
 
 const mapStateToProps = (state) => {
   return {
@@ -103,6 +104,11 @@ class PublicEndpoint extends Component {
   }
 
   render () {
+    const collectionId = this.props.match.params.collectionIdentifier
+    const docFaviconLink = this.props.collections[collectionId]?.docProperties?.defaultLogoUrl
+    const docTitle = this.props.collections[collectionId]?.docProperties?.defaultTitle
+    setTitle(docTitle)
+    setFavicon(docFaviconLink)
     if (
       this.props.collections[this.props.location.pathname.split('/')[2]] &&
       this.props.collections[this.props.location.pathname.split('/')[2]].name &&
@@ -114,6 +120,7 @@ class PublicEndpoint extends Component {
       const collectionTheme = this.props.collections[
         this.props.location.pathname.split('/')[2]
       ].theme
+
       this.setState({ collectionName, collectionTheme })
     }
     const redirectionUrl = process.env.REACT_APP_UI_URL + '/login'
