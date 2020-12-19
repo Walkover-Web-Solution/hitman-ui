@@ -45,7 +45,6 @@ class Pages extends Component {
   }
 
   componentDidMount () {
-    console.log('pages theem', this.props)
     if (this.props.theme) {
       this.setState({ theme: this.props.theme })
     }

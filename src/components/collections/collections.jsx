@@ -23,6 +23,7 @@ import { isAdmin } from '../auth/authService'
 import TagManager from 'react-gtm-module'
 import TagManagerModal from './tagModal'
 import emptyCollections from '../../assets/icons/emptyCollections.svg'
+import hitmanLogo from '../../assets/icons/hitman.svg'
 
 const EMPTY_STRING = ''
 
@@ -57,7 +58,9 @@ class CollectionsComponent extends Component {
       showCollectionForm: false,
       collectionFormName: '',
       selectedCollection: {},
-      showPublishDocsModal: false
+      showPublishDocsModal: false,
+      defaultPublicLogo: hitmanLogo,
+      publicLogoError: false
     }
 
     this.keywords = {}
@@ -664,16 +667,21 @@ class CollectionsComponent extends Component {
                     this.props.collections[collectionId]
                   )}
               >
-                <div className='hm-sidebar-logo'>
-                  <img
-                    src={
-                      this.props.collections[collectionId]?.docProperties
-                        ?.defaultLogoUrl || EMPTY_STRING
-                    }
-                    onClick={() =>
-                      window.open(this.props.collections[collectionId].website)}
-                  />
-                </div>
+                {!this.state.publicLogoError &&
+                  <div className='hm-sidebar-logo'>
+                    <img
+                      id='publicLogo'
+                      src={
+                        this.props.collections[collectionId]?.docProperties
+                          ?.defaultLogoUrl || EMPTY_STRING
+                      }
+                      onClick={() =>
+                        window.open(this.props.collections[collectionId].website)}
+                      onError={() => {
+                        this.setState({ publicLogoError: true })
+                      }}
+                    />
+                  </div>}
                 <h4 className='hm-sidebar-title'>
                   {this.props.collections[collectionId].name}
                 </h4>

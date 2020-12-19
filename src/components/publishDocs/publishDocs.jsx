@@ -714,14 +714,16 @@ class PublishDocs extends Component {
   }
 
   checkEndpointState () {
-    if (this.state.endpoints[this.state.selectedEndpointId]?.state === publishDocsEnum.REJECT_STATE) {
-      return (
-        <DisplayEndpoint rejectedEndpointId={this.state.selectedEndpointId} endpointId={this.state.selectedEndpointId} groupId={this.state.selectedGroupId} {...this.props} />
-      )
-    } else {
-      return (
-        <DisplayEndpoint rejected={false} endpointId={this.state.selectedEndpointId} groupId={this.state.selectedGroupId} {...this.props} highlights={this.setChangeHighlighting() || null} />
-      )
+    if (this.state.selectedEndpointId && this.state.endpoints[this.state.selectedEndpointId]) {
+      if (this.state.endpoints[this.state.selectedEndpointId]?.state === publishDocsEnum.REJECT_STATE) {
+        return (
+          <DisplayEndpoint rejectedEndpointId={this.state.selectedEndpointId} endpointId={this.state.selectedEndpointId} groupId={this.state.selectedGroupId} {...this.props} />
+        )
+      } else {
+        return (
+          <DisplayEndpoint rejected={false} endpointId={this.state.selectedEndpointId} groupId={this.state.selectedGroupId} {...this.props} highlights={this.setChangeHighlighting() || null} />
+        )
+      }
     }
   }
 
@@ -904,7 +906,7 @@ class PublishDocs extends Component {
       },
       uri: null
     }
-    if (selectedEndpointId) {
+    if (selectedEndpointId && this.state.endpoints[selectedEndpointId]) {
       const endpoint = this.state.endpoints[selectedEndpointId]
       if (endpoint.state === publishDocsEnum.DRAFT_STATE && endpoint.isPublished) {
         const originalEndpoint = JSON.parse(JSON.stringify(endpoint.publishedEndpoint))
@@ -961,33 +963,37 @@ class PublishDocs extends Component {
                     {this.showCollections()}
                   </Dropdown.Menu>
                 </Dropdown>
-                {this.publishCollections()}
+                {this.state.selectedCollectionId && this.props.collections[this.state.selectedCollectionId] && this.publishCollections()}
 
               </div>
             </div>
-            <div className='grid hostedWrapper'>
-              <PublishDocsForm
-                {...this.props}
-                selected_collection_id={this.state.selectedCollectionId}
-              />
-            </div>
-            <div className='grid-two'>
-              <div className='versions-section'>
-                <select
-                  className='form-control mb-3' onChange={this.setSelectedVersion.bind(this)} value={this.state.selectedVersionId}
-                >
-                  {this.showVersions()}
-                </select>
-                {this.filterPages(null)}
-                <div className='version-groups'>
-                  {this.showGroups()}
+            {this.state.selectedCollectionId && this.props.collections[this.state.selectedCollectionId] && (
+              <>
+                <div className='grid hostedWrapper'>
+                  <PublishDocsForm
+                    {...this.props}
+                    selected_collection_id={this.state.selectedCollectionId}
+                  />
                 </div>
-              </div>
-              <div className='version-details'>
-                {this.showEndpoints()}
-                {this.showPages()}
-              </div>
-            </div>
+                <div className='grid-two'>
+                  <div className='versions-section'>
+                    <select
+                      className='form-control mb-3' onChange={this.setSelectedVersion.bind(this)} value={this.state.selectedVersionId}
+                    >
+                      {this.showVersions()}
+                    </select>
+                    {this.filterPages(null)}
+                    <div className='version-groups'>
+                      {this.showGroups()}
+                    </div>
+                  </div>
+                  <div className='version-details'>
+                    {this.showEndpoints()}
+                    {this.showPages()}
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         </div>
         <Footer />
