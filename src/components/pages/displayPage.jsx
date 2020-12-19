@@ -39,7 +39,7 @@ class DisplayPage extends Component {
 
   componentDidUpdate (prevProps, prevState) {
     if (this.props.pageId && prevProps !== this.props) {
-      this.setState({ data: this.props.pages[this.props.pageId] })
+      this.setState({ data: this.props.pages[this.props.pageId] || { id: null, versionId: null, groupId: null, name: '', contents: '' } })
     }
   }
 
@@ -71,7 +71,7 @@ class DisplayPage extends Component {
       color: this.props.publicCollectionTheme
     }
     return (
-      !isDashboardRoute(this.props, true) ? <h3 className='' style={pageHeading}>{this.state.data.name}</h3> : <h3 className=''>{this.state.data.name}</h3>
+      !isDashboardRoute(this.props, true) ? <h3 className='' style={pageHeading}>{this.state.data?.name || ''}</h3> : <h3 className=''>{this.state.data?.name || ''}</h3>
     )
   }
 

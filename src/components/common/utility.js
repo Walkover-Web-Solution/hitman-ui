@@ -21,9 +21,20 @@ export function setTitle (title) {
   }
 }
 
+function imageExists (url, exists) {
+  const img = new window.Image()
+  img.onload = function () { exists(true) }
+  img.onerror = function () { exists(false) }
+  img.src = url
+}
+
 export function setFavicon (link) {
   if (typeof link === 'string') {
-    if (link.trim().length > 0) { document.getElementById('favicon').href = link.trim() }
+    if (link.trim().length > 0) {
+      imageExists(link.trim(), function (exists) {
+        if (exists) document.getElementById('favicon').href = link.trim()
+      })
+    }
   }
 }
 

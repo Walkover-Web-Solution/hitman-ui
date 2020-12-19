@@ -74,14 +74,14 @@ class PublicEndpoint extends Component {
       let defaultPage = null
       let defaultEndpoint = null
       // Search for Version Pages
-      defaultPage = Object.values(this.props.pages).find(page => page.versionId === defaultVersion && page.groupId === null && page.position === 0)
+      defaultPage = Object.values(this.props.pages).find(page => page.versionId === defaultVersion && page.groupId === null && parseInt(page.position) === 0)
       if (defaultPage) {
         this.props.history.push({
           pathname: `/p/${collectionId}/pages/${defaultPage.id}/${this.state.collectionName}`
         })
       } else {
         // Search for Group with position 0
-        defaultGroup = Object.values(this.props.groups).find(group => group.versionId === defaultVersion && group.position === 0)
+        defaultGroup = Object.values(this.props.groups).find(group => group.versionId === defaultVersion && parseInt(group.position) === 0)
         if (defaultGroup) {
           // Search for Group Pages with position 0
           defaultPage = Object.values(this.props.pages).find(page => page.versionId === defaultVersion && page.groupId === defaultGroup.id && page.position === 0)
@@ -91,7 +91,7 @@ class PublicEndpoint extends Component {
             })
           } else {
             // Search for Endpoint with position 0
-            defaultEndpoint = Object.values(this.props.endpoints).find(endpoint => endpoint.groupId === defaultGroup.id && endpoint.position === 0)
+            defaultEndpoint = Object.values(this.props.endpoints).find(endpoint => endpoint.groupId === defaultGroup.id && parseInt(endpoint.position) === 0)
             if (defaultEndpoint) {
               this.props.history.push({
                 pathname: `/p/${collectionId}/e/${defaultEndpoint.id}/${this.state.collectionName}`
