@@ -70,6 +70,7 @@ class PublicView extends Component {
                       data-source='sokt-app'
                       data-token-key='sokt-auth-token'
                       data-view='button'
+                      signup_uri={redirectionUrl + '?signup=true'}
                     />
                     )
                   : (

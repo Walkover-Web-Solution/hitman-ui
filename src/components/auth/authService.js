@@ -1,6 +1,7 @@
 import http from '../../services/httpService'
 const apiEndpoint = process.env.REACT_APP_API_URL + '/profile'
 const apiUrl = process.env.REACT_APP_API_URL
+const signUpNotifierUrl = process.env.REACT_APP_SIGN_UP_NOTIFIER_URL
 const tokenKey = 'token'
 const profileKey = 'profile'
 const orgKey = 'organisation'
@@ -66,6 +67,19 @@ export function getCurrentOrg () {
 export function getJwt () {
   return window.localStorage.getItem(tokenKey)
 }
+
+export async function notifySignup (UserInfo) {
+  try {
+    await http.request({
+      url: signUpNotifierUrl,
+      method: 'POST',
+      data: UserInfo
+    })
+  } catch (e) {
+    return false
+  }
+}
+
 export default {
   login,
   loginWithJwt,
@@ -73,5 +87,6 @@ export default {
   getCurrentUser,
   getCurrentOrg,
   getJwt,
-  isAdmin
+  isAdmin,
+  notifySignup
 }
