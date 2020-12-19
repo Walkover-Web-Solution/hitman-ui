@@ -38,9 +38,6 @@ function LoginSignupModal (props) {
                 <div className='loginModalWrapper'>
                   <h5> Seems you are not logged in.</h5>
                   <p>  Kindly login or signup to save collection in your account</p>
-                  <div className='text-center mt-3'>
-                    <button className='btn btn-primary btn-lg'>Login/Signup</button>
-                  </div>
                 </div>
                 )
           }

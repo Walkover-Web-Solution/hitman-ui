@@ -1617,3 +1617,31 @@ footer {
     margin: 0 -15px;
   }
 }
+
+
+
+
+html body div#sokt-sso,html body div#sokt-sso-modal {
+  #__customBtn .__btnWrapper {
+    background: linear-gradient(135deg, #F2994A 2.5%, #f2994a 2.51%, #f0bd3b 100%);
+    border:none;
+    border-radius: 4px;
+  }
+
+  #__customBtn {
+    background: transparent !important;
+    box-shadow: 0px 2px 20px rgba(64, 49, 30, 0.21) !important;
+  }
+
+  #__customBtn span.__buttonText {
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 2!important;
+    font-family: 'Sora', sans-serif !important;
+  }
+
+  #__customBtn span.__icon {
+    display: none;
+  }
+
+}
