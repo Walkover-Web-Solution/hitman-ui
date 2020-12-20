@@ -58,8 +58,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     add_endpoint: (newEndpoint, groupId) =>
       dispatch(addEndpoint(ownProps.history, newEndpoint, groupId)),
-    update_endpoint: (editedEndpoint) =>
-      dispatch(updateEndpoint(editedEndpoint)),
+    update_endpoint: (editedEndpoint, stopSave) =>
+      dispatch(updateEndpoint(editedEndpoint, stopSave)),
     set_authorization_responses: (versionId, authResponses) =>
       dispatch(setAuthorizationResponses(versionId, authResponses)),
     set_authorization_type: (endpointId, authData) =>
@@ -117,7 +117,9 @@ class DisplayEndpoint extends Component {
       fieldDescription: {},
       sampleResponseArray: [],
       sampleResponseFlagArray: [],
-      theme: ''
+      theme: '',
+      loader: false,
+      saveLoader: false
     }
 
     this.uri = React.createRef()
@@ -739,6 +741,7 @@ class DisplayEndpoint extends Component {
   };
 
   handleSend = async () => {
+    this.setState({ loader: true })
     const startTime = new Date().getTime()
     const response = {}
     this.setState({ startTime, response })
@@ -760,6 +763,7 @@ class DisplayEndpoint extends Component {
       toast.error('Invalid JSON Body')
     }
     await this.handleApiCall(api, body, headers, this.state.data.body.type)
+    this.setState({ loader: false })
     isDashboardRoute(this.props) && this.setData()
   };
 
@@ -831,11 +835,13 @@ class DisplayEndpoint extends Component {
           this.setState({ saveAsFlag: false })
           this.props.close_tab(this.props.tab.id)
         } else if (this.state.title === 'update endpoint') {
+          this.setState({ saveLoader: true })
+
           this.props.update_endpoint({
             ...endpoint,
             id: this.state.endpoint.id,
             groupId: groupId || this.state.groupId
-          })
+          }, () => { this.setState({ saveLoader: false }) })
           tabService.markTabAsSaved(this.props.tab.id)
         }
       }
@@ -1854,7 +1860,7 @@ class DisplayEndpoint extends Component {
                       </div>
                       <div className='d-flex uriContainerWrapper'>
                         <button
-                          className='btn btn-primary'
+                          className={this.state.loader ? 'btn btn-primary buttonLoader' : 'btn btn-primary'}
                           type='submit'
                           id='send-request-button'
                           onClick={() => this.handleSend()}
@@ -1870,7 +1876,7 @@ class DisplayEndpoint extends Component {
                                   ? (
                                     <Dropdown as={ButtonGroup}>
                                       <button
-                                        className='btn btn-outline orange'
+                                        className={this.state.saveLoader ? 'btn btn-outline orange buttonLoader' : 'btn btn-outline orange'}
                                         type='button'
                                         id='save-endpoint-button'
                                         onClick={() => this.handleSave()}
@@ -1900,12 +1906,12 @@ class DisplayEndpoint extends Component {
                                     )
                                   : (
                                     <button
-                                      className='btn btn-outline orange'
+                                      className={this.state.saveLoader ? 'btn btn-outline orange buttonLoader' : 'btn btn-outline orange'}
                                       type='button'
                                       id='save-endpoint-button'
                                       onClick={() => this.handleSave()}
                                     >
-                                      Save
+                                      Save 333
                                     </button>
                                     )
 
@@ -2182,7 +2188,7 @@ class DisplayEndpoint extends Component {
                   !isDashboardRoute(this.props) && (
                     <div className='text-right'>
                       <button
-                        className='btn btn-primary btn-lg'
+                        className={this.state.loader ? 'btn btn-primary btn-lg buttonLoader' : 'btn btn-lg btn-primary'}
                         style={{ background: theme }}
                         type='submit'
                         id='send-request-button'

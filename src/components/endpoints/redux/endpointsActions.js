@@ -41,7 +41,7 @@ export const fetchEndpoints = () => {
   }
 }
 
-export const updateEndpoint = (editedEndpoint) => {
+export const updateEndpoint = (editedEndpoint, stopSaveLoader) => {
   return (dispatch) => {
     const originalEndpoint = JSON.parse(JSON.stringify(store.getState().endpoints[editedEndpoint.id]))
     dispatch(updateEndpointRequest(editedEndpoint))
@@ -53,6 +53,9 @@ export const updateEndpoint = (editedEndpoint) => {
       .updateEndpoint(id, updatedEndpoint)
       .then((response) => {
         dispatch(onEndpointUpdated(response.data))
+        if (stopSaveLoader) {
+          stopSaveLoader()
+        }
       })
       .catch((error) => {
         dispatch(
@@ -61,6 +64,9 @@ export const updateEndpoint = (editedEndpoint) => {
             originalEndpoint
           )
         )
+        if (stopSaveLoader) {
+          stopSaveLoader()
+        }
       })
   }
 }
