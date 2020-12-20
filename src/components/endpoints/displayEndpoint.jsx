@@ -1911,7 +1911,7 @@ class DisplayEndpoint extends Component {
                                       id='save-endpoint-button'
                                       onClick={() => this.handleSave()}
                                     >
-                                      Save 333
+                                      Save
                                     </button>
                                     )
 
