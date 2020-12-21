@@ -469,7 +469,7 @@ class CollectionVersions extends Component {
                 {((this.state.selectedVersionIndex === '' && index === 0) ||
                   (this.state.selectedVersionIndex &&
                     this.state.selectedVersionIndex === index.toString())) && (
-                      <>
+                      <div className='hm-sidebar-outer-block' key={index}>
                         <VersionPages
                           {...this.props}
                           version_id={versionId}
@@ -481,7 +481,7 @@ class CollectionVersions extends Component {
                           version_id={versionId}
                           show_filter_version={this.propsFromVersion.bind(this)}
                         />
-                      </>
+                      </div>
                 )}
               </>
               )
@@ -548,7 +548,7 @@ class CollectionVersions extends Component {
                 this.props.collection_id
             )
             .map((versionId, index) => (
-              <div className='hm-sidebar-outer-block' key={index}>{this.renderBody(versionId, index)}</div>
+              this.renderBody(versionId, index)
             ))}
       </>
     )
