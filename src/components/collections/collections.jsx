@@ -682,9 +682,11 @@ class CollectionsComponent extends Component {
                       }}
                     />
                   </div>}
-                <h4 className='hm-sidebar-title'>
-                  {this.props.collections[collectionId].name}
-                </h4>
+                {this.props.collections[collectionId]?.docProperties?.defaultTitle && (
+                  <h4 className='hm-sidebar-title'>
+                    {this.props.collections[collectionId].docProperties.defaultTitle}
+                  </h4>
+                )}
               </div>
               <div id='parent-accordion' key={index}>
                 <CollectionVersions
