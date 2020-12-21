@@ -94,7 +94,7 @@ export const onCollectionAddedError = (error, newCollection) => {
   }
 }
 
-export const updateCollection = (editedCollection) => {
+export const updateCollection = (editedCollection, stopLoader) => {
   return (dispatch) => {
     const originalCollection = store.getState().collections[
       editedCollection.id
@@ -107,6 +107,9 @@ export const updateCollection = (editedCollection) => {
       .updateCollection(id, editedCollection)
       .then((response) => {
         dispatch(onCollectionUpdated(response.data))
+        if (stopLoader) {
+          stopLoader()
+        }
       })
       .catch((error) => {
         dispatch(
@@ -115,6 +118,9 @@ export const updateCollection = (editedCollection) => {
             originalCollection
           )
         )
+        if (stopLoader) {
+          stopLoader()
+        }
       })
   }
 }

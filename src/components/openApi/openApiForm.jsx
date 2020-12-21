@@ -19,7 +19,7 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 class OpenApiForm extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       openApiObject: {},
@@ -34,7 +34,7 @@ class OpenApiForm extends Component {
     }
   }
 
-  handleChange (e) {
+  handleChange(e) {
     let openApiObject = e.currentTarget.value
     try {
       openApiObject = JSON.parse(openApiObject)
@@ -44,7 +44,7 @@ class OpenApiForm extends Component {
     }
   }
 
-  validate (data, schema) {
+  validate(data, schema) {
     const options = { abortEarly: false }
     const { error } = Joi.validate(data, schema, options)
     if (!error) return null
@@ -53,39 +53,39 @@ class OpenApiForm extends Component {
     return errors
   };
 
-  importApi () {
+  importApi() {
     const uploadedFile = this.state.uploadedFile
     this.props.import_api(uploadedFile, this.state.importType, this.state.website)
     this.props.onHide()
   }
 
-  handleSubmit () {
+  handleSubmit() {
     let errors = {};
     let FileError = null;
-    errors = this.validate({ type: this.state.importType}, {type: Joi.string().required()})
-    if(this.state.importType === 'postman') {
+    errors = this.validate({ type: this.state.importType }, { type: Joi.string().required() })
+    if (this.state.importType === 'postman') {
       const schema = {
         type: Joi.string().required(),
         website: Joi.string(),
       }
-      errors = this.validate({ type: this.state.importType, website: this.state.website}, schema)
+      errors = this.validate({ type: this.state.importType, website: this.state.website }, schema)
     }
-    if(this.state.uploadedFile === null) {
+    if (this.state.uploadedFile === null) {
       FileError = 'JSON file Should not be set empty';
     }
-    this.setState({errors: {...errors, file: FileError}})
+    this.setState({ errors: { ...errors, file: FileError } })
     if (errors || FileError) return
     this.importApi()
   }
 
-  onFileChange (e) {
+  onFileChange(e) {
     const selectedFile = e.currentTarget.files[0]
     const uploadedFile = new FormData()
     uploadedFile.append('myFile', selectedFile, selectedFile.name)
-    this.setState({ uploadedFile, errors: {...this.state.error, file: null} })
+    this.setState({ uploadedFile, errors: { ...this.state.error, file: null } })
   }
 
-  render () {
+  render() {
     return (
       <Modal
         {...this.props}
@@ -102,30 +102,40 @@ class OpenApiForm extends Component {
         </Modal.Header>
         <Modal.Body>
           <form>
-            <div>
-              <label>Type: </label>
-              <select name='type' value={this.state.importType} onChange={(e)=>{this.setState({ importType: e.target.value, website:'', errors:{type: null, file:null, website: null}})}}>
-                <option value=''>Select</option>
-                <option value='openAPI'>Open API</option>
-                <option value='postman'>Postman</option>
-              </select>
-              {this.state.errors?.type && <div><small>{this.state.errors?.type}</small></div>}
-            </div>
-            {this.state.importType === 'postman' 
-              ? <label> Website: 
-                  <input name='website' value={this.state.website} onChange={(e)=>{this.setState({ website: e.target.value, errors:{...this.state.errors, website: null}})}}/>
-                  {this.state.errors?.website && <div><small>{this.state.errors?.website}</small></div>}
-                </label> 
-              : null}
-            {<div id='select-json-wrapper'>
-              <label>
-                Select JSON File
+            <div className="row">
+              <div className="col-6">
+                <div className="form-group">
+                  <label>Type: </label>
+                  <select name='type' className='form-control' value={this.state.importType} onChange={(e) => { this.setState({ importType: e.target.value, website: '', errors: { type: null, file: null, website: null } }) }}>
+                    <option value=''>Select</option>
+                    <option value='openAPI'>Open API</option>
+                    <option value='postman'>Postman</option>
+                  </select>
+                  {this.state.errors?.type && <div><small>{this.state.errors?.type}</small></div>}
+                </div>
+              </div>
+              <div className="col-6">
+                <div className="form-group">
+                  {this.state.importType === 'postman'
+                    ? <label> Website:
+                  <input name='website' value={this.state.website} onChange={(e) => { this.setState({ website: e.target.value, errors: { ...this.state.errors, website: null } }) }} />
+                      {this.state.errors?.website && <div><small>{this.state.errors?.website}</small></div>}
+                    </label>
+                    : null}
+                  {<div id='select-json-wrapper'>
+                    <label>
+                      Select JSON File
               </label>
-              <br />
-              <input type='file' onChange={this.onFileChange.bind(this)} />
-              {this.state.errors?.file && <div><small>{this.state.errors?.file}</small></div>}
-            </div>}
-            <div className='text-right'>
+                    <span className='customFileChooser'>
+                      <input type='file' onChange={this.onFileChange.bind(this)} />
+                      Choose JSON file
+                    </span>
+                    {this.state.errors?.file && <div><small>{this.state.errors?.file}</small></div>}
+                  </div>}
+                </div>
+              </div>
+            </div>
+            <div className='text-right mt-4'>
               <button
                 type='button'
                 className='btn btn-secondary outline btn-lg'
