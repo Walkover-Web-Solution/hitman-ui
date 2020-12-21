@@ -1651,6 +1651,7 @@ html body div#sokt-sso-modal {
   #__customBtn {
     background: transparent !important;
     box-shadow: 0px 2px 20px rgba(64, 49, 30, 0.21) !important;
+    width: 150px;
   }
 
   #__customBtn span.__buttonText {
@@ -1658,6 +1659,7 @@ html body div#sokt-sso-modal {
     font-size: 16px;
     line-height: 2 !important;
     font-family: 'Sora', sans-serif !important;
+    letter-spacing: 0px;
   }
 
   #__customBtn span.__icon {
