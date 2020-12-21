@@ -12,8 +12,7 @@ const publishDocFormEnum = {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-
-    update_collection: (collection) => dispatch(updateCollection(collection))
+    update_collection: (collection, stopLoader) => dispatch(updateCollection(collection, stopLoader))
   }
 }
 
@@ -29,7 +28,8 @@ class PublishDocForm extends Component {
       title: '',
       domain: '',
       logoUrl: '',
-      theme: ''
+      theme: '',
+      loader: false
     }
   }
 
@@ -77,7 +77,8 @@ class PublishDocForm extends Component {
       defaultTitle: data.title.trim(),
       defaultLogoUrl: data.logoUrl.trim()
     }
-    this.props.update_collection(collection)
+    this.setState({ loader: true })
+    this.props.update_collection(collection, () => { this.setState({ loader: false }) })
   }
 
   setTheme (theme) {
@@ -119,9 +120,8 @@ class PublishDocForm extends Component {
           </div>
           <div className='d-flex justify-content-between colorChooser'>
             <CustomColorPicker set_theme={this.setTheme.bind(this)} theme={this.state.data.theme} />
-            <Button className='btn-extra-lg' onClick={() => this.saveCollectionDetails()}> Save</Button>
+            <Button className={this.state.loader ? 'btn-extra-lg buttonLoader' : 'btn-extra-lg'} onClick={() => this.saveCollectionDetails()}> Save</Button>
           </div>
-
         </div>
       </>
     )
