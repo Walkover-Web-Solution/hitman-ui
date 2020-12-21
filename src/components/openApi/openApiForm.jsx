@@ -80,9 +80,14 @@ class OpenApiForm extends Component {
 
   onFileChange(e) {
     const selectedFile = e.currentTarget.files[0]
-    const uploadedFile = new FormData()
-    uploadedFile.append('myFile', selectedFile, selectedFile.name)
-    this.setState({ uploadedFile, errors: { ...this.state.error, file: null } })
+    if(selectedFile) {
+      const uploadedFile = new FormData()
+      uploadedFile.append('myFile', selectedFile, selectedFile.name)
+      this.setState({ uploadedFile, errors: { ...this.state.error, file: null }, selectedFileName: selectedFile.name})
+    }
+    else {
+      this.setState({ uploadedFile: null, errors: { ...this.state.error, file: null }, selectedFileName: null})
+    }
   }
 
   render() {
@@ -108,31 +113,33 @@ class OpenApiForm extends Component {
                   <label>Type: </label>
                   <select name='type' className='form-control' value={this.state.importType} onChange={(e) => { this.setState({ importType: e.target.value, website: '', errors: { type: null, file: null, website: null } }) }}>
                     <option value=''>Select</option>
-                    <option value='openAPI'>Open API</option>
+                    <option value='openAPI'>Socket Doc</option>
                     <option value='postman'>Postman</option>
                   </select>
                   {this.state.errors?.type && <div><small>{this.state.errors?.type}</small></div>}
                 </div>
+                <div className='form-group'>
+                {this.state.importType === 'postman'
+                    ? <>
+                        <label> Website: </label>
+                        <input className='form-control' name='website' value={this.state.website} onChange={(e) => { this.setState({ website: e.target.value, errors: { ...this.state.errors, website: null } }) }} />
+                          {this.state.errors?.website && <div><small>{this.state.errors?.website}</small></div>}
+                      </>
+                    : null}
+                </div>
               </div>
               <div className="col-6">
                 <div className="form-group">
-                  {this.state.importType === 'postman'
-                    ? <label> Website:
-                  <input name='website' value={this.state.website} onChange={(e) => { this.setState({ website: e.target.value, errors: { ...this.state.errors, website: null } }) }} />
-                      {this.state.errors?.website && <div><small>{this.state.errors?.website}</small></div>}
-                    </label>
-                    : null}
                   {<div id='select-json-wrapper'>
-                    <label>
-                      Select JSON File
-              </label>
+                    <label>Select JSON File</label>
                     <span className='customFileChooser'>
-                      <input type='file' onChange={this.onFileChange.bind(this)} />
+                      <input type='file' accept='.json' onChange={this.onFileChange.bind(this)} />
                       Choose JSON file
                     </span>
                     {this.state.errors?.file && <div><small>{this.state.errors?.file}</small></div>}
                   </div>}
                 </div>
+                {this.state.uploadedFile && <div>{this.state.selectedFileName}</div>}
               </div>
             </div>
             <div className='text-right mt-4'>

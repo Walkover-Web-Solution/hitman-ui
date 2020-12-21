@@ -46,9 +46,26 @@ export function comparePositions (a, b) {
   else return 0
 }
 
+export function getProfileName (currentUser) {
+  let name = ''
+  if (typeof currentUser.first_name === 'string') {
+    name = currentUser.first_name.trim()
+  }
+  if (typeof currentUser.last_name === 'string') {
+    name = name + ' ' + currentUser.last_name.trim()
+  }
+  name = name.trim()
+  if (name) {
+    return name
+  } else {
+    return null
+  }
+}
+
 export default {
   isDashboardRoute,
   isSavedEndpoint,
   setTitle,
-  setFavicon
+  setFavicon,
+  getProfileName
 }

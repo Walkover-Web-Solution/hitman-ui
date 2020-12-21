@@ -4,6 +4,7 @@ import { Dropdown } from 'react-bootstrap'
 import authService from '../auth/authService'
 import vectorIcon from '../../assets/icons/Vector.svg'
 import OpenApiForm from '../openApi/openApiForm'
+import { getProfileName } from '../common/utility'
 
 class UserInfo extends Component {
   constructor (props) {
@@ -15,7 +16,7 @@ class UserInfo extends Component {
     if (authService.getCurrentUser()) {
       const user = {}
       const currentUser = authService.getCurrentUser()
-      user.name = currentUser.first_name + currentUser.last_name
+      user.name = getProfileName(currentUser)
       user.email = currentUser.email
       this.setState({ user })
     }
@@ -83,7 +84,7 @@ class UserInfo extends Component {
           </div>
           <div className='user-details'>
             <div className='user-heading'>
-              <div className='user-name'>{this.state.user.name}</div>
+              <div className='user-name'>{this.state.user?.name || this.state.user?.email || ''}</div>
               {authService.isAdmin() && (
                 <Dropdown>
                   <Dropdown.Toggle variant='' id='dropdown-basic'>
