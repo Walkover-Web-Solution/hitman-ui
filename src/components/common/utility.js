@@ -38,6 +38,12 @@ export function setFavicon (link) {
   }
 }
 
+export function comparePositions (a, b) {
+  if (parseInt(a.position) < parseInt(b.position)) return -1
+  else if (parseInt(a.position) > parseInt(b.position)) return 1
+  else return 0
+}
+
 export default {
   isDashboardRoute,
   isSavedEndpoint,
