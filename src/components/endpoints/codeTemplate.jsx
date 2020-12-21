@@ -147,6 +147,8 @@ class CodeTemplate extends Component {
             <AceEditor
               mode={this.selectedLanguage.toLowerCase()}
               theme='github'
+              highlightActiveLine={false}
+              focus={false}
               value={
                 this.state.codeSnippet
                   ? this.state.codeSnippet
