@@ -3,7 +3,6 @@ import CustomColorPicker from './customColorPicker'
 import { connect } from 'react-redux'
 import { Button } from 'react-bootstrap'
 import { updateCollection } from '../collections/redux/collectionsActions'
-import { toast } from 'react-toastify'
 const URI = require('urijs')
 
 const publishDocFormEnum = {
@@ -74,17 +73,11 @@ class PublishDocForm extends Component {
     const customDomain = data.domain.trim()
     collection.customDomain = customDomain.length !== 0 ? customDomain : null
     collection.theme = data.theme
-
     collection.docProperties = {
-      defaultTitle: data.title,
-      domainList: [],
-      defaultLogoUrl: data.logoUrl
+      defaultTitle: data.title.trim(),
+      defaultLogoUrl: data.logoUrl.trim()
     }
-    if (this.state.data.title.trim()) {
-      this.props.update_collection(collection)
-    } else {
-      toast.error(publishDocFormEnum.ERROR_MESSSAGE)
-    }
+    this.props.update_collection(collection)
   }
 
   setTheme (theme) {
