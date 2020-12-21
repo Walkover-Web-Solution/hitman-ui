@@ -325,30 +325,31 @@ class CollectionVersions extends Component {
         {
           isDashboardRoute(this.props, true)
             ? (
-              <Accordion
-                className='sidebar-accordion versionBoldHeading'
-                defaultActiveKey={index === 0
-                  ? this.eventkey[versionId]
-                  : null}
-                key={versionId}
-                id='child-accordion'
-              >
-                <Accordion.Toggle
-                  className={this.state.selectedVersionIds[versionId] === true ? 'active' : null}
-                  variant='default'
-                  eventKey='1'
-                  onClick={() => { this.toggleVersionIds(versionId) }}
+              <div className='hm-sidebar-outer-block' key={index}>
+                <Accordion
+                  className='sidebar-accordion versionBoldHeading'
+                  defaultActiveKey={index === 0
+                    ? this.eventkey[versionId]
+                    : null}
+                  key={versionId}
+                  id='child-accordion'
                 >
-                  <span className='versionChovron'>
-                    <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
-                      <path d='M4.5 6.75L9 11.25L13.5 6.75' stroke='#333333' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
-                    </svg>
-                  </span>
-                  <div className='sidebar-accordion-item'>
+                  <Accordion.Toggle
+                    className={this.state.selectedVersionIds[versionId] === true ? 'active' : null}
+                    variant='default'
+                    eventKey='1'
+                    onClick={() => { this.toggleVersionIds(versionId) }}
+                  >
+                    <span className='versionChovron'>
+                      <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
+                        <path d='M4.5 6.75L9 11.25L13.5 6.75' stroke='#333333' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
+                      </svg>
+                    </span>
+                    <div className='sidebar-accordion-item'>
 
-                    {this.props.versions[versionId].number}
-                  </div>
-                  {
+                      {this.props.versions[versionId].number}
+                    </div>
+                    {
                     isDashboardRoute(this.props, true)
                       ? (
                         <div className='sidebar-item-action'>
@@ -443,26 +444,27 @@ class CollectionVersions extends Component {
                         )
                       : null
                   }
-                </Accordion.Toggle>
-                <Accordion.Collapse className='version-collapse' eventKey='1'>
-                  <Card.Body>
-                    <div className='linkWrapper versionPages'>
-                      <VersionPages
-                        {...this.props}
-                        version_id={versionId}
-                        show_filter_version={this.propsFromVersion.bind(this)}
-                      />
-                    </div>
-                    <div className='linkWrapper versionsgroups'>
-                      <Groups
-                        {...this.props}
-                        version_id={versionId}
-                        show_filter_version={this.propsFromVersion.bind(this)}
-                      />
-                    </div>
-                  </Card.Body>
-                </Accordion.Collapse>
-              </Accordion>
+                  </Accordion.Toggle>
+                  <Accordion.Collapse className='version-collapse' eventKey='1'>
+                    <Card.Body>
+                      <div className='linkWrapper versionPages'>
+                        <VersionPages
+                          {...this.props}
+                          version_id={versionId}
+                          show_filter_version={this.propsFromVersion.bind(this)}
+                        />
+                      </div>
+                      <div className='linkWrapper versionsgroups'>
+                        <Groups
+                          {...this.props}
+                          version_id={versionId}
+                          show_filter_version={this.propsFromVersion.bind(this)}
+                        />
+                      </div>
+                    </Card.Body>
+                  </Accordion.Collapse>
+                </Accordion>
+              </div>
               )
             : (
               <>
