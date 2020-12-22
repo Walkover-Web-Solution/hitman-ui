@@ -659,9 +659,9 @@ class PublishDocs extends Component {
     )
   }
 
-  groupsToShow (versionId, props) {
-    const versionGroups = extractCollectionInfoService.extractGroupsFromVersionId(versionId, props)
-    const endpointsToCheck = extractCollectionInfoService.extractEndpointsFromGroups(versionGroups, props)
+  groupsToShow (versionId) {
+    const versionGroups = extractCollectionInfoService.extractGroupsFromVersionId(versionId, this.props)
+    const endpointsToCheck = extractCollectionInfoService.extractEndpointsFromGroups(versionGroups, this.props)
     const filteredEndpoints = Object.values(endpointsToCheck).filter(endpoint => endpoint.state === publishDocsEnum.PENDING_STATE || endpoint.isPublished)
     const publicGroupIds = new Set()
     filteredEndpoints.forEach(endpoint => {
@@ -676,7 +676,7 @@ class PublishDocs extends Component {
 
   showGroups () {
     if (this.state.groups) {
-      const sortedGroups = Object.values(this.groupsToShow(this.state.selectedVersionId, this.props)).sort(function (a, b) {
+      const sortedGroups = Object.values(this.groupsToShow(this.state.selectedVersionId)).sort(function (a, b) {
         return a.position - b.position
       })
       if (sortedGroups.length !== 0) {
