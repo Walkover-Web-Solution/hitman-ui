@@ -93,7 +93,8 @@ class OpenApiForm extends Component {
   render() {
     return (
       <Modal
-        {...this.props}
+        show={this.props.show}
+        onHide={this.props.onHide}
         id='modal-open-api'
         size='lg'
         animation={false}
@@ -116,14 +117,14 @@ class OpenApiForm extends Component {
                     <option value='openAPI'>Socket Doc</option>
                     <option value='postman'>Postman</option>
                   </select>
-                  {this.state.errors?.type && <div><small>{this.state.errors?.type}</small></div>}
+                  {this.state.errors?.type && <div className='alert alert-danger'>{this.state.errors?.type}</div>}
                 </div>
                 <div className='form-group'>
                 {this.state.importType === 'postman'
                     ? <>
                         <label> Website: </label>
                         <input className='form-control' name='website' value={this.state.website} onChange={(e) => { this.setState({ website: e.target.value, errors: { ...this.state.errors, website: null } }) }} />
-                          {this.state.errors?.website && <div><small>{this.state.errors?.website}</small></div>}
+                          {this.state.errors?.website && <div className='alert alert-danger'>{this.state.errors?.website}</div>}
                       </>
                     : null}
                 </div>
@@ -136,7 +137,7 @@ class OpenApiForm extends Component {
                       <input type='file' accept='.json' onChange={this.onFileChange.bind(this)} />
                       Choose JSON file
                     </span>
-                    {this.state.errors?.file && <div><small>{this.state.errors?.file}</small></div>}
+                    {this.state.errors?.file && <div className='alert alert-danger'>{this.state.errors?.file}</div>}
                   </div>}
                 </div>
                 {this.state.uploadedFile && <div>{this.state.selectedFileName}</div>}

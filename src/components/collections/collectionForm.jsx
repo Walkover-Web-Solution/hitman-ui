@@ -120,11 +120,12 @@ class CollectionForm extends Form {
   render () {
     return (
       <Modal
-        {...this.props}
         size='lg'
         animation={false}
         aria-labelledby='contained-modal-title-vcenter'
         centered
+        onHide={this.props.onHide}
+        show={this.props.show}
       >
         <div>
           <Modal.Header
