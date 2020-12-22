@@ -124,7 +124,11 @@ class CodeTemplate extends Component {
                   ? this.state.codeSnippet
                   : this.codeSnippet
               }
-              onCopy={() => this.setState({ copied: true })}
+              onCopy={() => this.setState({ copied: true }, () => {
+                setTimeout(() => {
+                  this.setState({ copied: false })
+                }, 2000)
+              })}
               className='copy-to-clipboard'
             >
               <button>
@@ -143,6 +147,8 @@ class CodeTemplate extends Component {
             <AceEditor
               mode={this.selectedLanguage.toLowerCase()}
               theme='github'
+              highlightActiveLine={false}
+              focus={false}
               value={
                 this.state.codeSnippet
                   ? this.state.codeSnippet

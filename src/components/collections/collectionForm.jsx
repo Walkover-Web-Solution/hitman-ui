@@ -32,12 +32,12 @@ class CollectionForm extends Form {
     }
 
     this.schema = {
-      name: Joi.string().required().label('Username'),
-      website: Joi.string().required().label('Website'),
-      keyword: Joi.string().required().label('Keywords'),
-      keyword1: Joi.string().allow(null, '').label('Keywords'),
-      keyword2: Joi.string().allow(null, '').label('Keywords'),
-      description: Joi.string().allow(null, '').label('description')
+      name: Joi.string().trim().required().label('Collection Name'),
+      website: Joi.string().trim().required().label('Website'),
+      keyword: Joi.string().trim().required().label('Keywords'),
+      keyword1: Joi.string().trim().allow(null, '').label('Keywords'),
+      keyword2: Joi.string().trim().allow(null, '').label('Keywords'),
+      description: Joi.string().allow(null, '').label('Description')
     }
   }
 
@@ -85,7 +85,11 @@ class CollectionForm extends Form {
   async onAddCollectionSubmit () {
     this.props.onHide()
     const requestId = shortid.generate()
-    this.props.add_collection({ ...this.state.data, requestId })
+    const defaultDocProperties = {
+      defaultLogoUrl: '',
+      defaultTitle: this.state.data.name || ''
+    }
+    this.props.add_collection({ ...this.state.data, docProperties: defaultDocProperties, requestId })
     this.setState({
       data: {
         name: '',
@@ -100,7 +104,9 @@ class CollectionForm extends Form {
 
   async doSubmit () {
     const body = this.state.data
-    body.keyword = body.keyword + ',' + body.keyword1 + ',' + body.keyword2
+    body.name = body.name.trim()
+    body.website = body.website.trim()
+    body.keyword = body.keyword.trim() + ',' + body.keyword1.trim() + ',' + body.keyword2.trim()
     delete body.keyword1
     delete body.keyword2
     if (this.props.title === 'Edit Collection') {

@@ -13,6 +13,7 @@ import store from '../../store/store'
 import auth from '../auth/authService'
 import UserInfo from '../common/userInfo'
 import Footer from '../main/Footer'
+import { setTitle, setFavicon, comparePositions } from '../common/utility'
 
 const mapStateToProps = (state) => {
   return {
@@ -73,24 +74,32 @@ class PublicEndpoint extends Component {
       let defaultPage = null
       let defaultEndpoint = null
       // Search for Version Pages
-      defaultPage = Object.values(this.props.pages).find(page => page.versionId === defaultVersion && page.groupId === null && page.position === 0)
+      const versionPages = Object.values(this.props.pages).filter(page => page.versionId === defaultVersion && page.groupId === null)
+      versionPages.sort(comparePositions)
+      defaultPage = versionPages[0]
       if (defaultPage) {
         this.props.history.push({
           pathname: `/p/${collectionId}/pages/${defaultPage.id}/${this.state.collectionName}`
         })
       } else {
-        // Search for Group with position 0
-        defaultGroup = Object.values(this.props.groups).find(group => group.versionId === defaultVersion && group.position === 0)
+        // Search for Group with minimum position
+        const versionGroups = Object.values(this.props.groups).filter(group => group.versionId === defaultVersion)
+        versionGroups.sort(comparePositions)
+        defaultGroup = versionGroups[0]
         if (defaultGroup) {
-          // Search for Group Pages with position 0
-          defaultPage = Object.values(this.props.pages).find(page => page.versionId === defaultVersion && page.groupId === defaultGroup.id && page.position === 0)
+          // Search for Group Pages with minimum position
+          const groupPages = Object.values(this.props.pages).filter(page => page.versionId === defaultVersion && page.groupId === defaultGroup.id)
+          groupPages.sort(comparePositions)
+          defaultPage = groupPages[0]
           if (defaultPage) {
             this.props.history.push({
               pathname: `/p/${collectionId}/pages/${defaultPage.id}/${this.state.collectionName}`
             })
           } else {
-            // Search for Endpoint with position 0
-            defaultEndpoint = Object.values(this.props.endpoints).find(endpoint => endpoint.groupId === defaultGroup.id && endpoint.position === 0)
+            // Search for Endpoint with minimum position
+            const groupEndpoints = Object.values(this.props.endpoints).filter(endpoint => endpoint.groupId === defaultGroup.id)
+            groupEndpoints.sort(comparePositions)
+            defaultEndpoint = groupEndpoints[0]
             if (defaultEndpoint) {
               this.props.history.push({
                 pathname: `/p/${collectionId}/e/${defaultEndpoint.id}/${this.state.collectionName}`
@@ -103,6 +112,11 @@ class PublicEndpoint extends Component {
   }
 
   render () {
+    const collectionId = this.props.match.params.collectionIdentifier
+    const docFaviconLink = this.props.collections[collectionId]?.docProperties?.defaultLogoUrl
+    const docTitle = this.props.collections[collectionId]?.docProperties?.defaultTitle
+    setTitle(docTitle)
+    setFavicon(docFaviconLink)
     if (
       this.props.collections[this.props.location.pathname.split('/')[2]] &&
       this.props.collections[this.props.location.pathname.split('/')[2]].name &&
@@ -114,6 +128,7 @@ class PublicEndpoint extends Component {
       const collectionTheme = this.props.collections[
         this.props.location.pathname.split('/')[2]
       ].theme
+
       this.setState({ collectionName, collectionTheme })
     }
     const redirectionUrl = process.env.REACT_APP_UI_URL + '/login'
@@ -148,6 +163,7 @@ class PublicEndpoint extends Component {
                                 data-token-key='sokt-auth-token'
                                 data-view='button'
                                 data-app-logo-url='https://hitman.app/wp-content/uploads/2020/12/123.png'
+                                signup_uri={redirectionUrl + '?signup=true'}
                               />
                             </div>
                           </div>

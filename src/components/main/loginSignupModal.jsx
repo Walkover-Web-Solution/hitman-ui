@@ -48,6 +48,7 @@ function LoginSignupModal (props) {
             data-token-key='sokt-auth-token'
             data-view='button'
             data-app-logo-url='https://hitman.app/wp-content/uploads/2020/12/123.png'
+            signup_uri={redirectionUrl + '?signup=true'}
           />
         </div>
       </Modal.Body>

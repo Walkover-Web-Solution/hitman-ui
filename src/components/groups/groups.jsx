@@ -641,7 +641,7 @@ class Groups extends Component {
           this.sortedGroups
             .filter((group) => group.versionId === this.props.version_id)
             .map((group) =>
-              group.id ? <div>{this.renderBody(group.id)}</div> : null
+              group.id ? <div key={group.id}>{this.renderBody(group.id)}</div> : null
             )}
       </div>
     )

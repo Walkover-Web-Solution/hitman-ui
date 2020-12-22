@@ -4,6 +4,7 @@ import { Dropdown } from 'react-bootstrap'
 import authService from '../auth/authService'
 import vectorIcon from '../../assets/icons/Vector.svg'
 import OpenApiForm from '../openApi/openApiForm'
+import { getProfileName } from '../common/utility'
 
 class UserInfo extends Component {
   constructor (props) {
@@ -15,7 +16,7 @@ class UserInfo extends Component {
     if (authService.getCurrentUser()) {
       const user = {}
       const currentUser = authService.getCurrentUser()
-      user.name = currentUser.first_name + currentUser.last_name
+      user.name = getProfileName(currentUser)
       user.email = currentUser.email
       this.setState({ user })
     }
@@ -58,6 +59,11 @@ class UserInfo extends Component {
     )
   }
 
+  navigateToViaSocket () {
+    const viaSocketUrl = `${process.env.REACT_APP_VIASOCKET_URL}/manage`
+    window.open(viaSocketUrl, '_blank')
+  }
+
   render () {
     const notificationCount = this.props.get_notification_count()
 
@@ -78,7 +84,7 @@ class UserInfo extends Component {
           </div>
           <div className='user-details'>
             <div className='user-heading'>
-              <div className='user-name'>{this.state.user.name}</div>
+              <div className='user-name'>{this.state.user?.name || this.state.user?.email || ''}</div>
               {authService.isAdmin() && (
                 <Dropdown>
                   <Dropdown.Toggle variant='' id='dropdown-basic'>
@@ -103,6 +109,22 @@ class UserInfo extends Component {
                     </div>
                   </Dropdown.Toggle>
                   <Dropdown.Menu>
+                    <a className='dropdown-item' style={{ cursor: 'pointer' }} onClick={() => this.navigateToViaSocket()}>
+                      <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
+                        <g clip-path='url(#clip0)'>
+                          <path d='M6.75 15.5L3.75 15.5C3.35218 15.5 2.97064 15.342 2.68934 15.0607C2.40804 14.7794 2.25 14.3978 2.25 14L2.25 3.5C2.25 3.10217 2.40804 2.72064 2.68934 2.43934C2.97065 2.15804 3.35218 2 3.75 2L6.75 2' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
+                          <path d='M12 12.5L15.75 8.75L12 5' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
+                          <path d='M15 8.75H6' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
+                        </g>
+                        <defs>
+                          <clipPath id='clip0'>
+                            <rect width='18' height='18' fill='white' transform='translate(18 18) rotate(-180)' />
+                          </clipPath>
+                        </defs>
+                      </svg>
+
+                      Team
+                    </a>
                     <Dropdown.Item onClick={() => this.navigateToPublishDocs()}>
                       <svg width='20' height='19' viewBox='0 0 20 19' fill='none' xmlns='http://www.w3.org/2000/svg'>
                         <mask id='path-1-inside-1' fill='white'>
