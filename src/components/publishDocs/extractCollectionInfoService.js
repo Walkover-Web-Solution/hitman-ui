@@ -25,6 +25,19 @@ function extractGroupsFromVersions (versions, props) {
   return groups
 }
 
+function extractGroupsFromVersionId (versionId, props) {
+  const groups = {}
+  if (versionId) {
+    for (let j = 0; j < Object.keys(props.groups).length; j++) {
+      const group = props.groups[Object.keys(props.groups)[j]]
+      if (versionId.toString() === group?.versionId?.toString()) {
+        groups[group.id] = group
+      }
+    }
+  }
+  return groups
+}
+
 function extractPagesFromVersions (versions, props) {
   if (versions === {}) return {}
   const pages = {}
@@ -58,6 +71,7 @@ function extractEndpointsFromGroups (groups, props) {
 export default {
   extractVersionsFromCollectionId,
   extractGroupsFromVersions,
+  extractGroupsFromVersionId,
   extractPagesFromVersions,
   extractEndpointsFromGroups
 }
