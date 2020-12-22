@@ -1,21 +1,26 @@
 import React, { Component } from 'react'
 import { Route, Switch, withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
+import { Tabs, Tab, Button } from 'react-bootstrap'
+import moment from 'moment'
 import Collections from '../collections/collections'
+import CollectionVersions from '../collectionVersions/collectionVersions'
 import ProtectedRoute from '../common/protectedRoute'
 import { isDashboardRoute } from '../common/utility'
 import { getCurrentUser } from '../auth/authService'
-import CollectionVersions from '../collectionVersions/collectionVersions'
-// import endpointApiService from '../endpoints/endpointApiService'
+import LoginSignupModal from './loginSignupModal'
+import UserNotification from '../collections/userNotification'
+import { ReactComponent as HitmanIcon } from '../../assets/icons/hitman.svg'
+import { ReactComponent as EmptyHistory } from '../../assets/icons/emptyHistroy.svg'
+import { ReactComponent as NoInvocationsIcon } from '../../assets/icons/emptyrandom.svg'
+import { ReactComponent as NoCollectionsIcon } from '../../assets/icons/noCollectionsIcon.svg'
+import { ReactComponent as CollectionIcon } from '../../assets/icons/collectionIcon.svg'
+import { ReactComponent as HistoryIcon } from '../../assets/icons/historyIcon.svg'
+import { ReactComponent as RandomTrigerIcon } from '../../assets/icons/randomTriggerIcon.svg'
+import { ReactComponent as SearchIcon } from '../../assets/icons/searchIcon.svg'
+import { ReactComponent as SecondarySidebarToggleIcon } from '../../assets/icons/secondarySidebarToggleIcon.svg'
 import './main.scss'
 import './sidebar.scss'
-import { Tabs, Tab, Button } from 'react-bootstrap'
-import LoginSignupModal from './loginSignupModal'
-import hitmanIcon from '../../assets/icons/hitman.svg'
-import UserNotification from '../collections/userNotification'
-import moment from 'moment'
-import emptyHistory from '../../assets/icons/emptyHistroy.svg'
-import emptyrandom from '../../assets/icons/emptyrandom.svg'
 
 const mapStateToProps = (state) => {
   return {
@@ -238,7 +243,7 @@ class SideBar extends Component {
       <div className='mt-3'>
         {this.state.historySnapshot && this.state.historySnapshot.length > 0
           ? (this.state.historySnapshot.sort(compareByCreatedAt).map((history) => this.renderHistoryItem(history)))
-          : (<div class='empty-collections'><div><img src={emptyHistory} alt='' /></div><div class='content'><h5>  No History available.</h5><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p></div></div>)}
+          : (<div class='empty-collections'><div><EmptyHistory /></div><div class='content'><h5>  No History available.</h5><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p></div></div>)}
       </div>
     )
   }
@@ -354,7 +359,7 @@ class SideBar extends Component {
             : (
               <div class='empty-collections'>
                 <div>
-                  <img src={emptyrandom} />
+                  <NoInvocationsIcon />
                 </div>
                 <div class='content'>
                   <h5>  No invocation made</h5>
@@ -477,70 +482,7 @@ class SideBar extends Component {
     return (
       <div className='empty-collections'>
         <div>
-          <svg width='138' height='134' viewBox='0 0 138 134' fill='none' xmlns='http://www.w3.org/2000/svg'>
-            <path opacity='0.12' fill-rule='evenodd' clip-rule='evenodd' d='M94.8781 34.8829C106.111 43.6454 122.407 48.5835 124.47 62.7188C126.651 77.6721 116.385 91.6133 104.529 101.033C93.5821 109.729 79.4589 111.232 65.6436 109.452C51.0118 107.567 35.8753 103.496 27.8141 91.1478C19.1234 77.8355 18.7414 60.8859 24.1279 45.8586C29.8741 29.8283 40.1101 12.6124 56.8989 10.0079C72.6718 7.56103 82.3242 25.0898 94.8781 34.8829Z' fill='#E98A36' />
-            <path d='M8.09912 58.2139V63.8933' stroke='#E98A36' stroke-linecap='round' stroke-linejoin='round' />
-            <path d='M10.9385 61.0537L5.25905 61.0537' stroke='#E98A36' stroke-linecap='round' stroke-linejoin='round' />
-            <path d='M106.069 19.8779V25.5574' stroke='#E98A36' stroke-linecap='round' stroke-linejoin='round' />
-            <path d='M108.909 22.7178L103.229 22.7178' stroke='#E98A36' stroke-linecap='round' stroke-linejoin='round' />
-            <path d='M108.84 110V115.679' stroke='#E98A36' stroke-linecap='round' stroke-linejoin='round' />
-            <path d='M111.679 112.84L106 112.84' stroke='#E98A36' stroke-linecap='round' stroke-linejoin='round' />
-            <path d='M73.0787 47L94 56.377L66.9913 64L46 53.746L73.0787 47Z' fill='#E0CFB5' />
-            <path d='M73 47V75.7628L93.8595 84L94 56.385L73 47Z' fill='#CFB594' />
-            <path d='M73.0787 47L94 56.377L67.0612 64L46 53.746L73.0787 47Z' fill='url(#paint0_linear)' />
-            <path d='M73 47V75.7628L94 84V56.385L73 47Z' fill='url(#paint1_linear)' />
-            <path d='M94 84.5174L67 94V63.8789L94 56V84.5174Z' fill='url(#paint2_linear)' />
-            <path d='M46 54V81.3973L67 94V64.411L46 54Z' fill='url(#paint3_linear)' />
-            <path d='M46.4818 54L73 47.0769L67.9293 45L41 51.7154L46.4818 54Z' fill='url(#paint4_linear)' />
-            <path d='M93.542 57L73 47.3228L79.2519 46L100 55.6772L93.542 57Z' fill='url(#paint5_linear)' />
-            <path d='M67 64.2131V65L63.7907 73L46 64.2131V61L67 64.2131Z' fill='#C7874E' />
-            <path d='M67 63.9396V64.745L70.5065 73L94 65.7517V63L67 63.9396Z' fill='#C7874E' />
-            <path d='M67 63.913L46.108 54L40 58.5652L60.6838 69L67 63.913Z' fill='url(#paint6_linear)' />
-            <path d='M93.6912 56L67 63.91L72.8235 70L100 61.25L93.6912 56Z' fill='url(#paint7_linear)' />
-            <defs>
-              <linearGradient id='paint0_linear' x1='47.5' y1='49.5' x2='82' y2='71.5' gradientUnits='userSpaceOnUse'>
-                <stop stop-color='#FFCC9E' />
-                <stop offset='0.0001' stop-color='#F7B275' />
-                <stop offset='1' stop-color='#FEDAB7' />
-              </linearGradient>
-              <linearGradient id='paint1_linear' x1='73' y1='47' x2='125.452' y2='66.1773' gradientUnits='userSpaceOnUse'>
-                <stop stop-color='#FFC693' />
-                <stop offset='0.0001' stop-color='#FFB471' />
-                <stop offset='1' stop-color='#FFE296' />
-              </linearGradient>
-              <linearGradient id='paint2_linear' x1='58' y1='64.5' x2='96.4721' y2='71.5948' gradientUnits='userSpaceOnUse'>
-                <stop stop-color='#FFCDA1' />
-                <stop offset='0.0001' stop-color='#F2994A' />
-                <stop offset='1' stop-color='#FFDDBD' />
-              </linearGradient>
-              <linearGradient id='paint3_linear' x1='39.5' y1='82' x2='52.2895' y2='60.6768' gradientUnits='userSpaceOnUse'>
-                <stop stop-color='#F6AD6B' />
-                <stop offset='0.0001' stop-color='#F2994A' />
-                <stop offset='1' stop-color='#FED9B6' />
-              </linearGradient>
-              <linearGradient id='paint4_linear' x1='67' y1='54' x2='65.2723' y2='44.6714' gradientUnits='userSpaceOnUse'>
-                <stop stop-color='#F7B275' />
-                <stop offset='0.0001' stop-color='#FFBD82' />
-                <stop offset='1' stop-color='#FED9B6' />
-              </linearGradient>
-              <linearGradient id='paint5_linear' x1='81.5' y1='45' x2='84.5362' y2='60.1077' gradientUnits='userSpaceOnUse'>
-                <stop stop-color='#F7B275' />
-                <stop offset='0.0001' stop-color='#F2994A' />
-                <stop offset='1' stop-color='#FFDAB9' />
-              </linearGradient>
-              <linearGradient id='paint6_linear' x1='40.675' y1='54.375' x2='53.0925' y2='76.7264' gradientUnits='userSpaceOnUse'>
-                <stop stop-color='#F7B375' />
-                <stop offset='0.0001' stop-color='#F2994A' />
-                <stop offset='1' stop-color='#FFDBB9' />
-              </linearGradient>
-              <linearGradient id='paint7_linear' x1='67.825' y1='56.35' x2='71.5987' y2='68.1471' gradientUnits='userSpaceOnUse'>
-                <stop stop-color='#F4A660' />
-                <stop offset='0.0001' stop-color='#F2994A' />
-                <stop offset='1' stop-color='#FEDAB8' />
-              </linearGradient>
-            </defs>
-          </svg>
-
+          <NoCollectionsIcon />
         </div>
         <div className='content'>
           <h5>  Your collection is Empty.</h5>
@@ -597,11 +539,7 @@ class SideBar extends Component {
           eventKey='collection'
           title={
             <span>
-              <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
-                <path d='M15.75 11.9999V5.99993C15.7497 5.73688 15.6803 5.47853 15.5487 5.2508C15.417 5.02306 15.2278 4.83395 15 4.70243L9.75 1.70243C9.52197 1.57077 9.2633 1.50146 9 1.50146C8.7367 1.50146 8.47803 1.57077 8.25 1.70243L3 4.70243C2.7722 4.83395 2.58299 5.02306 2.45135 5.2508C2.31971 5.47853 2.25027 5.73688 2.25 5.99993V11.9999C2.25027 12.263 2.31971 12.5213 2.45135 12.7491C2.58299 12.9768 2.7722 13.1659 3 13.2974L8.25 16.2974C8.47803 16.4291 8.7367 16.4984 9 16.4984C9.2633 16.4984 9.52197 16.4291 9.75 16.2974L15 13.2974C15.2278 13.1659 15.417 12.9768 15.5487 12.7491C15.6803 12.5213 15.7497 12.263 15.75 11.9999Z' stroke='#828282' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
-                <path d='M2.45239 5.22021L8.99989 9.00772L15.5474 5.22021' stroke='#828282' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
-                <path d='M9 16.56V9' stroke='#828282' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
-              </svg> <span className='tabs-Text'> Collection</span>
+              <CollectionIcon /> <span className='tabs-Text'> Collection</span>
             </span>
           }
         >
@@ -615,10 +553,7 @@ class SideBar extends Component {
           eventKey='history'
           title={
             <span>
-              <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
-                <path d='M9 16.5C13.1421 16.5 16.5 13.1421 16.5 9C16.5 4.85786 13.1421 1.5 9 1.5C4.85786 1.5 1.5 4.85786 1.5 9C1.5 13.1421 4.85786 16.5 9 16.5Z' stroke='#828282' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
-                <path d='M9 4.5V9L12 10.5' stroke='#828282' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
-              </svg> <span className='tabs-Text'> History</span>
+              <HistoryIcon /> <span className='tabs-Text'> History</span>
             </span>
           }
         >
@@ -628,13 +563,7 @@ class SideBar extends Component {
           eventKey='randomTrigger'
           title={
             <span>
-              <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
-                <path d='M12 2.25H15.75V6' stroke='#828282' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
-                <path d='M3 15L15.75 2.25' stroke='#828282' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
-                <path d='M15.75 12V15.75H12' stroke='#828282' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
-                <path d='M11.25 11.25L15.75 15.75' stroke='#828282' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
-                <path d='M3 3L6.75 6.75' stroke='#828282' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
-              </svg>
+              <RandomTrigerIcon />
               <span className='tabs-Text'> Random Trigger</span>
             </span>
           }
@@ -663,15 +592,13 @@ class SideBar extends Component {
     return (
       <>
         <div className='app-name'>
-          <img className='icon' src={hitmanIcon} />
+          {/* <img className='icon' src={hitmanIcon} /> */}
+          <HitmanIcon />
           HITMAN
         </div>
         <div className='search-box'>
           <label htmlFor='search'>
-            <svg onClick={() => { !this.state.primarySidebar && this.setState({ primarySidebar: true }) }} width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
-              <path d='M8.25 14.25C11.5637 14.25 14.25 11.5637 14.25 8.25C14.25 4.93629 11.5637 2.25 8.25 2.25C4.93629 2.25 2.25 4.93629 2.25 8.25C2.25 11.5637 4.93629 14.25 8.25 14.25Z' stroke='#828282' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' />
-              <path d='M15.75 15.7498L12.4875 12.4873' stroke='#828282' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' />
-            </svg>
+            <SearchIcon onClick={() => { !this.state.primarySidebar && this.setState({ primarySidebar: true }) }} />
           </label>
 
           <input
@@ -731,9 +658,7 @@ class SideBar extends Component {
           <div className='secondary-sidebar'>
             <p className='hm-sidebar-outer-block heading-2'>{this.props.collections[this.state.selectedCollectionId]?.name || ''}</p>
             <button className='btn close' onClick={() => { this.setState({ primarySidebar: false, secondarySidebarToggle: this.state.primarySidebar ? false : !this.state.secondarySidebarToggle }) }}>
-              <svg width='12' height='6' viewBox='0 0 12 6' fill='none' xmlns='http://www.w3.org/2000/svg'>
-                <path d='M1.5 0.75L6 5.25L10.5 0.75' stroke='#333333' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
-              </svg>
+              <SecondarySidebarToggleIcon />
             </button>
             <div className='collectionVersionWrp'>
               <CollectionVersions

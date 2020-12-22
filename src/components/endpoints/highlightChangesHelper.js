@@ -21,6 +21,7 @@ function getHighlightsData (props, title, key) {
     case 'sampleResponse':
       typeof props.highlights?.sampleResponse?.items === 'object' ? items = props.highlights.sampleResponse.items : items = {}
       break
+    default: break
   }
   return (key in items) ? items[key] : false
 }

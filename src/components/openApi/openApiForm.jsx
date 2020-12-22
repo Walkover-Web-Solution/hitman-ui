@@ -5,8 +5,6 @@ import { importApi } from '../collections/redux/collectionsActions'
 import { connect } from 'react-redux'
 import Joi from 'joi-browser'
 import './openApi.scss'
-import { Dropdown } from 'bootstrap'
-import DropdownToggle from 'react-bootstrap/esm/DropdownToggle'
 
 const mapStateToProps = (state) => {
   return {}
