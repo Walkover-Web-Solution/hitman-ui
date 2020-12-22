@@ -155,6 +155,7 @@ class ContentPanel extends Component {
                   data-source='sokt-app'
                   data-token-key='sokt-auth-token'
                   data-view='button'
+                  data-app-logo-url='https://hitman.app/wp-content/uploads/2020/12/123.png'
                 />
               : null
           }
