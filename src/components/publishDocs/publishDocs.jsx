@@ -659,27 +659,39 @@ class PublishDocs extends Component {
     )
   }
 
+  groupsToShow (versionId) {
+    const versionGroups = extractCollectionInfoService.extractGroupsFromVersionId(versionId, this.props)
+    const endpointsToCheck = extractCollectionInfoService.extractEndpointsFromGroups(versionGroups, this.props)
+    const filteredEndpoints = Object.values(endpointsToCheck).filter(endpoint => endpoint.state === publishDocsEnum.PENDING_STATE || endpoint.isPublished)
+    const publicGroupIds = new Set()
+    filteredEndpoints.forEach(endpoint => {
+      publicGroupIds.add(endpoint.groupId)
+    })
+    const publicGroups = {}
+    publicGroupIds.forEach(id => {
+      publicGroups[id] = versionGroups[id]
+    })
+    return publicGroups
+  }
+
   showGroups () {
     if (this.state.groups) {
-      const sortedGroups = Object.values(this.state.groups).sort(function (a, b) {
+      const sortedGroups = Object.values(this.groupsToShow(this.state.selectedVersionId)).sort(function (a, b) {
         return a.position - b.position
       })
       if (sortedGroups.length !== 0) {
         return (
           sortedGroups.map((group) =>
-            this.state.groups[group.id].versionId?.toString() === this.state.selectedVersionId?.toString()
-              ? (
-                <div
-                  draggable
-                  onDragOver={(e) => {
-                    e.preventDefault()
-                  }}
-                  onDragStart={(e) => this.onDragStart(e, group.id)}
-                  onDrop={(e) => this.onDrop(e, group.id, sortedGroups, 'groups')}
-                >{this.showEndpointsAndPages(group.id)}
-                </div>
-                )
-              : null
+            <div
+              key={group.id}
+              draggable
+              onDragOver={(e) => {
+                e.preventDefault()
+              }}
+              onDragStart={(e) => this.onDragStart(e, group.id)}
+              onDrop={(e) => this.onDrop(e, group.id, sortedGroups, 'groups')}
+            >{this.showEndpointsAndPages(group.id)}
+            </div>
           )
         )
       }

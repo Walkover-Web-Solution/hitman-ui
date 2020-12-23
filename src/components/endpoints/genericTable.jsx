@@ -140,6 +140,7 @@ class GenericTable extends Component {
       newDataArray.push(dataArray[i])
     }
     dataArray = newDataArray
+    this.checkboxFlags[index] = undefined
     if (title === 'Headers' || title === 'Params') { this.props.props_from_parent(title, dataArray) }
     if (title === 'formData' || title === 'x-www-form-urlencoded') { this.props.handle_change_body_data(title, dataArray) }
   }
@@ -373,7 +374,6 @@ class GenericTable extends Component {
             isDashboardRoute(this.props)
               ? (
                 <div>
-
                   {
                     dataArray.length - 1 === index ||
                       !isDashboardRoute(this.props) ||

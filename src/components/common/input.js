@@ -7,13 +7,15 @@ const Input = ({
   onChange,
   error,
   placeholder,
-  disabled
+  disabled,
+  mandatory
 }) => {
   return (
     <div className='form-group'>
       <label htmlFor={name} className='custom-input-label'>
         {label}
       </label>
+      {mandatory && <span className='alert alert-danger'> *</span>}
       <input
         value={value}
         onChange={onChange}
