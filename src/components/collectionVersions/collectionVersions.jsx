@@ -501,7 +501,6 @@ class CollectionVersions extends Component {
       this.filteredVersions = { ...this.props.versions }
       this.eventkey = {}
     }
-    const { theme } = this.state
     return (
       <>
         {this.showShareVersionForm()}
@@ -521,20 +520,21 @@ class CollectionVersions extends Component {
           !isDashboardRoute(this.props, true) && this.props.location.pathname.split('/')[1] !== 'admin'
             ? (
               <>
-                <div className='hm-sidebar-label' style={{ color: theme }}>Introduction</div>
                 <div className='versionWrapper'>
-                  <select
-                    className='selected-version form-control light-orange-bg'
-                    onChange={(e) => this.setSelectedVersion(e)}
-                  >
-                    {this.filteredVersions
-                      ? Object.keys(this.filteredVersions).map((id, index) => (
-                        <option key={index} value={index}>
-                          {this.props.versions[id]?.number}
-                        </option>
-                        ))
-                      : null}
-                  </select>
+                  {this.filteredVersions && Object.keys(this.filteredVersions).length > 1
+                    ? (
+                      <select
+                        className='selected-version form-control light-orange-bg'
+                        onChange={(e) => this.setSelectedVersion(e)}
+                      >
+                        {Object.keys(this.filteredVersions).map((id, index) => (
+                          <option key={index} value={index}>
+                            {this.props.versions[id]?.number}
+                          </option>
+                        ))}
+                      </select>
+                      )
+                    : null}
                 </div>
               </>
               )
