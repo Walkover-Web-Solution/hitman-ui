@@ -592,7 +592,6 @@ class SideBar extends Component {
     return (
       <>
         <div className='app-name'>
-          {/* <img className='icon' src={hitmanIcon} /> */}
           <HitmanIcon />
           HITMAN
         </div>
