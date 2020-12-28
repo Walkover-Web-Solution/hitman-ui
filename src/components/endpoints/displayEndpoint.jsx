@@ -5,7 +5,7 @@ import { toast } from 'react-toastify'
 import { Dropdown, ButtonGroup } from 'react-bootstrap'
 import store from '../../store/store'
 import { isDashboardRoute, isSavedEndpoint } from '../common/utility'
-
+import ReactHtmlParser from 'react-html-parser'
 import tabService from '../tabs/tabService'
 import { closeTab } from '../tabs/redux/tabsActions'
 import tabStatusTypes from '../tabs/tabStatusTypes'
@@ -1798,7 +1798,8 @@ class DisplayEndpoint extends Component {
               {!isDashboardRoute(this.props) && (
                 <div className='endpoint-name-container'>
                   {!isDashboardRoute(this.props, true) && <h1 className='endpoint-title' style={{ color: theme }}>{this.state.data?.name || ''}</h1>}
-                  <p>{this.state.endpoint?.description || ''}</p>
+                  {/* <p>{this.state.endpoint?.description || ''}</p> */}
+                  {ReactHtmlParser(this.state.endpoint?.description || '')}
                 </div>
               )}
             </div>

@@ -50,9 +50,9 @@ class HostContainer extends Component {
     ) {
       selectedHost = 'environmentHost'
     } else if (this.state.groupId) {
-      if (this.props.groups[this.state.groupId].host) {
+      if (this.props.groups[this.state.groupId]?.host) {
         selectedHost = 'groupHost'
-      } else if (this.props.groups[this.state.versionId].host) {
+      } else if (this.props.versions[this.state.versionId]?.host) {
         selectedHost = 'versionHost'
       }
     }
