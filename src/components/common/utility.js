@@ -16,7 +16,7 @@ export function isSavedEndpoint (props) {
 export function setTitle (title) {
   if (typeof title === 'string') {
     if (title.trim().length > 0) {
-      document.title = title.trim() + ' ' + 'API Documentation'
+      document.title = title.trim() + ' API Documentation'
     } else {
       document.title = 'API Documentation'
     }

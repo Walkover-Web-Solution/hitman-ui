@@ -999,7 +999,7 @@ button.editBtn {
   font-size: 14px;
   background: transparent;
   border: none;
-
+  outline: none !important;
   &:hover {
     color: #f57a0d;
   }
@@ -1471,12 +1471,12 @@ button.editBtn {
 }
 
 .public-endpoint-tabs {
-  a {
+  div {
     font-size: 14px;
     font-weight: 600;
   }
 
-  a:hover {
+  div:hover {
     cursor: pointer;
   }
 }

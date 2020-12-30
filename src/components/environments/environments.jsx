@@ -326,7 +326,7 @@ class Environments extends Component {
                     id='dropdown-basic'
                     disabled={!env}
                   >
-                    {env ? <img src={eyeIcon} /> : <img src={eyeDisabledIcon} />}
+                    {env ? <img src={eyeIcon} alt='eyeIcon' /> : <img src={eyeDisabledIcon} alt='eyeDisabledIcon' />}
                   </Dropdown.Toggle>
                   {env && (
                     <Dropdown.Menu alignRight className='custom-env-menu'>

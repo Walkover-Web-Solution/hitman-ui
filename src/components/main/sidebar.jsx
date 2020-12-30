@@ -354,7 +354,7 @@ class SideBar extends Component {
             : (
               <div class='empty-collections'>
                 <div>
-                  <img src={emptyrandom} />
+                  <img src={emptyrandom} alt='no-invocation' />
                 </div>
                 <div class='content'>
                   <h5>  No invocation made</h5>
@@ -663,7 +663,7 @@ class SideBar extends Component {
     return (
       <>
         <div className='app-name'>
-          <img className='icon' src={hitmanIcon} />
+          <img className='icon' src={hitmanIcon} alt='hitman-default-logo' />
           HITMAN
         </div>
         <div className='search-box'>

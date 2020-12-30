@@ -115,7 +115,7 @@ class Pages extends Component {
 
   displayDeleteOpt (pageId) {
     return (
-      <a
+      <div
         className='dropdown-item'
         onClick={() => {
           this.props.open_delete_page_modal(pageId)
@@ -128,13 +128,13 @@ class Pages extends Component {
           <path d='M10.5 8.25V12.75' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
         </svg>
         Delete
-      </a>
+      </div>
     )
   }
 
   displayDuplicateOpt (pageId) {
     return (
-      <a
+      <div
         className='dropdown-item'
         onClick={() =>
           this.handleDuplicate(this.props.pages[pageId])}
@@ -144,13 +144,13 @@ class Pages extends Component {
           <path d='M3.75 11.25H3C2.60218 11.25 2.22064 11.092 1.93934 10.8107C1.65804 10.5294 1.5 10.1478 1.5 9.75V3C1.5 2.60218 1.65804 2.22064 1.93934 1.93934C2.22064 1.65804 2.60218 1.5 3 1.5H9.75C10.1478 1.5 10.5294 1.65804 10.8107 1.93934C11.092 2.22064 11.25 2.60218 11.25 3V3.75' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
         </svg>
         Duplicate
-      </a>
+      </div>
     )
   }
 
   displayMakePublicOpt (pageId) {
     return (
-      <a
+      <div
         className='dropdown-item'
         onClick={() =>
           this.handlePublicPageState(
@@ -161,13 +161,13 @@ class Pages extends Component {
           <path d='M9 1.5C4.86 1.5 1.5 4.86 1.5 9C1.5 13.14 4.86 16.5 9 16.5C13.14 16.5 16.5 13.14 16.5 9C16.5 4.86 13.14 1.5 9 1.5ZM8.25 14.9475C5.2875 14.58 3 12.06 3 9C3 8.535 3.06 8.0925 3.1575 7.6575L6.75 11.25V12C6.75 12.825 7.425 13.5 8.25 13.5V14.9475ZM13.425 13.0425C13.23 12.435 12.675 12 12 12H11.25V9.75C11.25 9.3375 10.9125 9 10.5 9H6V7.5H7.5C7.9125 7.5 8.25 7.1625 8.25 6.75V5.25H9.75C10.575 5.25 11.25 4.575 11.25 3.75V3.4425C13.4475 4.335 15 6.4875 15 9C15 10.56 14.4 11.9775 13.425 13.0425Z' fill='#E98A36' />
         </svg>
         Make Public
-      </a>
+      </div>
     )
   }
 
   displayCancelRequestOpt (pageId) {
     return (
-      <a
+      <div
         className='dropdown-item'
         onClick={() =>
           this.handleCancelRequest(
@@ -180,19 +180,19 @@ class Pages extends Component {
           <path d='M12 6L6 12' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
         </svg>
         Cancel Request
-      </a>
+      </div>
     )
   }
 
   displayApproveOpt () {
     return (
-      <a className='dropdown-item' disabled>
+      <div className='dropdown-item' disabled>
         <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
           <path d='M15.2222 1H2.77778C1.79594 1 1 1.79594 1 2.77778V15.2222C1 16.2041 1.79594 17 2.77778 17H15.2222C16.2041 17 17 16.2041 17 15.2222V2.77778C17 1.79594 16.2041 1 15.2222 1Z' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
           <path d='M5.44444 9.37305L7.4364 11.2339' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
           <path d='M12.268 6.63057L7.58466 11.3713' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
         </svg> Approved
-      </a>
+      </div>
     )
   }
 
