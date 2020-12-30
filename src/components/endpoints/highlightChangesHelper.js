@@ -50,6 +50,7 @@ function willHighlight (props, title) {
     case 'body':
       result = typeof props.highlights?.body?.isChanged === 'boolean' ? props.highlights.body.isChanged : false
       break
+    default: result = false
   }
   return result
 }

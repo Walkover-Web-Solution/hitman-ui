@@ -120,11 +120,12 @@ class CollectionForm extends Form {
   render () {
     return (
       <Modal
-        {...this.props}
         size='lg'
         animation={false}
         aria-labelledby='contained-modal-title-vcenter'
         centered
+        onHide={this.props.onHide}
+        show={this.props.show}
       >
         <div>
           <Modal.Header
@@ -137,11 +138,11 @@ class CollectionForm extends Form {
           </Modal.Header>
           <Modal.Body>
             <form onSubmit={this.handleSubmit}>
-              {this.renderInput('name', 'Name*', 'Collection Name')}
-              {this.renderInput('website', 'Website*', 'Website')}
+              {this.renderInput('name', 'Name', 'Collection Name', true)}
+              {this.renderInput('website', 'Website', 'Website', true)}
               <div className='row'>
                 <div className='col'>
-                  {this.renderInput('keyword', 'Keyword 1*', 'Keyword 1')}
+                  {this.renderInput('keyword', 'Keyword 1', 'Keyword 1', true)}
                 </div>
                 <div className='col'>
                   {this.renderInput('keyword1', 'Keyword 2', 'Keyword 2')}

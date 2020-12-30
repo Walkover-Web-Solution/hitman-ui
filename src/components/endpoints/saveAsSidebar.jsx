@@ -35,10 +35,10 @@ class SaveAsSidebar extends Form {
     this.schema = {
       name: Joi.string()
         .required()
-        .label('Username'),
+        .label('Endpoint Name'),
       description: Joi.string()
         .allow(null, '')
-        .label('description')
+        .label('Description')
     }
   }
 

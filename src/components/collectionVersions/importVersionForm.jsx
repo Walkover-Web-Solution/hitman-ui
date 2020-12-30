@@ -44,7 +44,8 @@ class ShareVersionForm extends Form {
   render () {
     return (
       <Modal
-        {...this.props}
+        show={this.props.show}
+        onHide={this.props.onHide}
         size='lg'
         animation={false}
         aria-labelledby='contained-modal-title-vcenter'

@@ -363,7 +363,7 @@ class CollectionVersions extends Component {
                             <i className='uil uil-ellipsis-v' />
                           </div>
                           <div className='dropdown-menu dropdown-menu-right'>
-                            <a
+                            <div
                               className='dropdown-item'
                               onClick={() =>
                                 this.openEditVersionForm(this.props.versions[versionId])}
@@ -371,8 +371,8 @@ class CollectionVersions extends Component {
                               <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
                                 <path d='M12.75 2.25023C12.947 2.05324 13.1808 1.89699 13.4382 1.79038C13.6956 1.68378 13.9714 1.62891 14.25 1.62891C14.5286 1.62891 14.8044 1.68378 15.0618 1.79038C15.3192 1.89699 15.553 2.05324 15.75 2.25023C15.947 2.44721 16.1032 2.68106 16.2098 2.93843C16.3165 3.1958 16.3713 3.47165 16.3713 3.75023C16.3713 4.0288 16.3165 4.30465 16.2098 4.56202C16.1032 4.81939 15.947 5.05324 15.75 5.25023L5.625 15.3752L1.5 16.5002L2.625 12.3752L12.75 2.25023Z' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
                               </svg>  Edit
-                            </a>
-                            <a
+                            </div>
+                            <div
                               className='dropdown-item'
                               onClick={() => {
                                 this.openDeleteVersionModal(versionId)
@@ -384,8 +384,8 @@ class CollectionVersions extends Component {
                                 <path d='M7.5 8.25V12.75' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
                                 <path d='M10.5 8.25V12.75' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
                               </svg>   Delete
-                            </a>
-                            <a
+                            </div>
+                            <div
                               className='dropdown-item'
                               onClick={() =>
                                 this.openAddGroupForm(this.props.versions[versionId])}
@@ -397,8 +397,8 @@ class CollectionVersions extends Component {
                                 <path d='M16 11H12V16H16V11Z' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
                               </svg>
                               Add Group
-                            </a>
-                            <a
+                            </div>
+                            <div
                               className='dropdown-item'
                               onClick={() => {
                                 this.handleDuplicate(this.props.versions[versionId])
@@ -408,8 +408,8 @@ class CollectionVersions extends Component {
                                 <path d='M15 6.75H8.25C7.42157 6.75 6.75 7.42157 6.75 8.25V15C6.75 15.8284 7.42157 16.5 8.25 16.5H15C15.8284 16.5 16.5 15.8284 16.5 15V8.25C16.5 7.42157 15.8284 6.75 15 6.75Z' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
                                 <path d='M3.75 11.25H3C2.60218 11.25 2.22064 11.092 1.93934 10.8107C1.65804 10.5294 1.5 10.1478 1.5 9.75V3C1.5 2.60218 1.65804 2.22064 1.93934 1.93934C2.22064 1.65804 2.60218 1.5 3 1.5H9.75C10.1478 1.5 10.5294 1.65804 10.8107 1.93934C11.092 2.22064 11.25 2.60218 11.25 3V3.75' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
                               </svg> Duplicate
-                            </a>
-                            <a
+                            </div>
+                            <div
                               className='dropdown-item'
                               onClick={() =>
                                 this.openAddVersionPageForm(
@@ -422,8 +422,8 @@ class CollectionVersions extends Component {
                                 <path d='M14 9L8 9' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
                                 <path d='M11 12L11 6' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
                               </svg> Add Page
-                            </a>
-                            <a
+                            </div>
+                            <div
                               className='dropdown-item'
                               onClick={() =>
                                 this.openShareVersionForm(
@@ -438,7 +438,7 @@ class CollectionVersions extends Component {
                                 <path d='M11.5575 4.88232L6.4425 7.86732' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
                               </svg>
                               Share
-                            </a>
+                            </div>
                           </div>
                         </div>
                         )
@@ -501,7 +501,6 @@ class CollectionVersions extends Component {
       this.filteredVersions = { ...this.props.versions }
       this.eventkey = {}
     }
-    const { theme } = this.state
     return (
       <>
         {this.showShareVersionForm()}
@@ -521,20 +520,21 @@ class CollectionVersions extends Component {
           !isDashboardRoute(this.props, true) && this.props.location.pathname.split('/')[1] !== 'admin'
             ? (
               <>
-                <div className='hm-sidebar-label' style={{ color: theme }}>Introduction</div>
                 <div className='versionWrapper'>
-                  <select
-                    className='selected-version form-control light-orange-bg'
-                    onChange={(e) => this.setSelectedVersion(e)}
-                  >
-                    {this.filteredVersions
-                      ? Object.keys(this.filteredVersions).map((id, index) => (
-                        <option key={index} value={index}>
-                          {this.props.versions[id]?.number}
-                        </option>
-                        ))
-                      : null}
-                  </select>
+                  {this.filteredVersions && Object.keys(this.filteredVersions).length > 1
+                    ? (
+                      <select
+                        className='selected-version form-control light-orange-bg'
+                        onChange={(e) => this.setSelectedVersion(e)}
+                      >
+                        {Object.keys(this.filteredVersions).map((id, index) => (
+                          <option key={index} value={index}>
+                            {this.props.versions[id]?.number}
+                          </option>
+                        ))}
+                      </select>
+                      )
+                    : null}
                 </div>
               </>
               )

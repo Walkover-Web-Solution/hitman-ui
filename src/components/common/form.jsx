@@ -76,7 +76,7 @@ class Form extends Component {
     this.setState({ data })
   };
 
-  renderInput (name, label, placeholder) {
+  renderInput (name, label, placeholder, mandatory = false) {
     const { data, errors } = this.state
     return (
       <Input
@@ -87,6 +87,7 @@ class Form extends Component {
         error={errors[name]}
         placeholder={placeholder}
         disabled={data.disabled}
+        mandatory={mandatory}
       />
     )
   }

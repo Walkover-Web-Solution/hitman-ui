@@ -344,15 +344,15 @@ class CollectionsComponent extends Component {
                 <i className='uil uil-ellipsis-v' />
               </div>
               <div className='dropdown-menu dropdown-menu-right'>
-                <a
+                <div
                   className='dropdown-item'
                   onClick={() => this.openEditCollectionForm(collectionId)}
                 >
                   <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
                     <path d='M12.75 2.25023C12.947 2.05324 13.1808 1.89699 13.4382 1.79038C13.6956 1.68378 13.9714 1.62891 14.25 1.62891C14.5286 1.62891 14.8044 1.68378 15.0618 1.79038C15.3192 1.89699 15.553 2.05324 15.75 2.25023C15.947 2.44721 16.1032 2.68106 16.2098 2.93843C16.3165 3.1958 16.3713 3.47165 16.3713 3.75023C16.3713 4.0288 16.3165 4.30465 16.2098 4.56202C16.1032 4.81939 15.947 5.05324 15.75 5.25023L5.625 15.3752L1.5 16.5002L2.625 12.3752L12.75 2.25023Z' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
                   </svg> Edit
-                </a>
-                <a
+                </div>
+                <div
                   className='dropdown-item'
                   onClick={() => {
                     this.openDeleteCollectionModal(collectionId)
@@ -364,8 +364,8 @@ class CollectionsComponent extends Component {
                     <path d='M7.5 8.25V12.75' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
                     <path d='M10.5 8.25V12.75' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
                   </svg> Delete
-                </a>
-                <a
+                </div>
+                <div
                   className='dropdown-item'
                   onClick={() => this.openAddVersionForm(collectionId)}
                 >
@@ -376,8 +376,8 @@ class CollectionsComponent extends Component {
                     <path d='M2 15.25C1.58579 15.25 1.25 15.5858 1.25 16C1.25 16.4142 1.58579 16.75 2 16.75V15.25ZM16 16.75C16.4142 16.75 16.75 16.4142 16.75 16C16.75 15.5858 16.4142 15.25 16 15.25V16.75ZM2 16.75H16V15.25H2V16.75Z' fill='#E98A36' />
                     <path d='M2 10.25C1.58579 10.25 1.25 10.5858 1.25 11C1.25 11.4142 1.58579 11.75 2 11.75V10.25ZM16 11.75C16.4142 11.75 16.75 11.4142 16.75 11C16.75 10.5858 16.4142 10.25 16 10.25V11.75ZM2 11.75H16V10.25H2V11.75Z' fill='#E98A36' />
                   </svg> Add Version
-                </a>
-                <a
+                </div>
+                <div
                   className='dropdown-item'
                   onClick={() =>
                     this.handleDuplicateCollection(
@@ -388,8 +388,8 @@ class CollectionsComponent extends Component {
                     <path d='M15 6.75H8.25C7.42157 6.75 6.75 7.42157 6.75 8.25V15C6.75 15.8284 7.42157 16.5 8.25 16.5H15C15.8284 16.5 16.5 15.8284 16.5 15V8.25C16.5 7.42157 15.8284 6.75 15 6.75Z' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
                     <path d='M3.75 11.25H3C2.60218 11.25 2.22064 11.092 1.93934 10.8107C1.65804 10.5294 1.5 10.1478 1.5 9.75V3C1.5 2.60218 1.65804 2.22064 1.93934 1.93934C2.22064 1.65804 2.60218 1.5 3 1.5H9.75C10.1478 1.5 10.5294 1.65804 10.8107 1.93934C11.092 2.22064 11.25 2.60218 11.25 3V3.75' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
                   </svg> Duplicate
-                </a>
-                <a
+                </div>
+                <div
                   className='dropdown-item'
                   onClick={() => this.openImportVersionForm(collectionId)}
                 >
@@ -400,9 +400,9 @@ class CollectionsComponent extends Component {
                     <path d='M6.5 5.5L9.25 8L12 5.5' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
                     <path d='M9.25 7.25L9.25 2' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
                   </svg> Import Version
-                </a>
+                </div>
                 {this.props.collections[collectionId].isPublic && (
-                  <a
+                  <div
                     className='dropdown-item'
                     onClick={() =>
                       this.handleGoToDocs(this.props.collections[collectionId])}
@@ -413,12 +413,12 @@ class CollectionsComponent extends Component {
                       <path d='M12 12.75H6' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
                       <path d='M7.5 6.75H6.75H6' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
                     </svg> Go to Docs
-                  </a>
+                  </div>
                 )}
                 {
                   isAdmin()
                     ? (
-                      <a
+                      <div
                         className='dropdown-item'
                         onClick={() => {
                           this.props.collection_selected(collectionId)
@@ -431,12 +431,12 @@ class CollectionsComponent extends Component {
                           <path d='M9.25 11.75L9.25 17' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
                           <path fill-rule='evenodd' clip-rule='evenodd' d='M4.5 0.75C3.90326 0.75 3.33097 0.987053 2.90901 1.40901C2.48705 1.83097 2.25 2.40326 2.25 3V13.9393C2.25 14.5361 2.48705 15.1084 2.90901 15.5303C3.33097 15.9523 3.90326 16.1893 4.5 16.1893H6V14.6893H4.5C4.30109 14.6893 4.11032 14.6103 3.96967 14.4697C3.82902 14.329 3.75 14.1383 3.75 13.9393V3C3.75 2.80109 3.82902 2.61032 3.96967 2.46967C4.11032 2.32902 4.30109 2.25 4.5 2.25H9.43934L14.25 7.06066V13.9393C14.25 14.1383 14.171 14.329 14.0303 14.4697C13.8897 14.6103 13.6989 14.6893 13.5 14.6893H12V16.1893H13.5C14.0967 16.1893 14.669 15.9523 15.091 15.5303C15.5129 15.1084 15.75 14.5361 15.75 13.9393V6.75C15.75 6.55109 15.671 6.36032 15.5303 6.21967L10.2803 0.96967C10.1397 0.829018 9.94891 0.75 9.75 0.75H4.5Z' fill='#E98A36' />
                         </svg>  Publish Docs
-                      </a>
+                      </div>
                       )
                     : null
                 }
 
-                <a
+                <div
                   className='dropdown-item'
                   onClick={() => {
                     this.TagManagerModal(collectionId)
@@ -456,7 +456,7 @@ class CollectionsComponent extends Component {
                       </clipPath>
                     </defs>
                   </svg> Add Google Tag Manager
-                </a>
+                </div>
               </div>
             </div>
           </Accordion.Toggle>
@@ -671,6 +671,7 @@ class CollectionsComponent extends Component {
                   <div className='hm-sidebar-logo'>
                     <img
                       id='publicLogo'
+                      alt='public-logo'
                       src={
                         this.props.collections[collectionId]?.docProperties
                           ?.defaultLogoUrl || EMPTY_STRING
