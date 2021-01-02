@@ -267,6 +267,7 @@ class PublishDocs extends Component {
               result = false
             }
             break
+          default: result = false
         }
       }
     }

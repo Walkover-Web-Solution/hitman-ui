@@ -5,7 +5,7 @@ function Footer () {
     <footer>
       <div className='footerWrapper'>
         <p>
-          <span>Love</span> developer. <span>♥ </span> <a rel='noreferrer' target='_blank' href='http://viasocket.com'>ViaSocket</a>
+          <span>Love</span> developer. <span>♥ </span> <a rel='noopener noreferrer' target='_blank' href='http://viasocket.com'>ViaSocket</a>
         </p>
       </div>
     </footer>

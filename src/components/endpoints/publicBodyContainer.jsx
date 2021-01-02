@@ -375,18 +375,18 @@ class PublicBodyContainer extends Component {
                 </div>
                 <ul className='public-endpoint-tabs'>
                   <li className={this.state.showBodyCodeEditor ? 'active' : ''}>
-                    <a
+                    <div
                       onClick={() => this.setState({ showBodyCodeEditor: true })}
                     >
                       Raw
-                    </a>
+                    </div>
                   </li>
                   <li className={!this.state.showBodyCodeEditor ? 'active' : ''}>
-                    <a
+                    <div
                       onClick={() => this.setState({ showBodyCodeEditor: false })}
                     >
                       Body description
-                    </a>
+                    </div>
                   </li>
                 </ul>
                 {this.state.showBodyCodeEditor
