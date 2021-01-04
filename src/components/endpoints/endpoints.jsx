@@ -479,26 +479,11 @@ class Endpoints extends Component {
     )
   }
 
-  convertHexToRGBA = (hexCode, opacity) => {
-    let hex = hexCode.replace('#', '')
-
-    if (hex.length === 3) {
-      hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2]
-    }
-
-    const r = parseInt(hex.substring(0, 2), 16)
-    const g = parseInt(hex.substring(2, 4), 16)
-    const b = parseInt(hex.substring(4, 6), 16)
-
-    return 'rgba(' + r + ',' + g + ',' + b + ',' + opacity / 100 + ')'
-  };
-
   displayPublicSingleEndpoint (endpointId) {
     const idToCheck = this.props.location.pathname.split('/')[3] === 'e' ? this.props.location.pathname.split('/')[4] : null
     return (
       <div
         className={idToCheck === endpointId ? 'hm-sidebar-item active' : 'hm-sidebar-item'}
-        style={idToCheck === endpointId ? { backgroundColor: this.convertHexToRGBA(this.state.theme, 10), borderColor: this.convertHexToRGBA(this.state.theme, 30) } : {}}
         key={endpointId}
         onClick={() =>
           this.handleDisplay(
@@ -515,13 +500,13 @@ class Endpoints extends Component {
             false
           )}
       >
-        {/* <div
+        <div
           className={`api-label ${this.props.endpoints[endpointId].requestType}`}
         >
           <div className='endpoint-request-div'>
             {this.props.endpoints[endpointId].requestType}
           </div>
-        </div> */}
+        </div>
         <div className='endpoint-name-div'>
           {this.props.endpoints[endpointId].name}
         </div>

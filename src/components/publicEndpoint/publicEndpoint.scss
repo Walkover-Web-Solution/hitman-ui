@@ -252,15 +252,19 @@ form.add-new-domain-form {
 }
 
 .hm-sidebar {
-  background-color: #ffffff;
-  padding: 20px 10px 85px 10px;
+  background-color: #F8F8F8;
+  padding: 15px 0px 0 0px;
   height: 100vh;
   max-height: 100vh;
   position: sticky;
   top: 0;
-
+  border-right: 1px solid #E0E0E0;
   nav.public-endpoint-sidebar {
     width: 250px;
+  }
+  .public-endpoint-sidebar .primary-sidebar{
+  background-color: #F8F8F8;
+
   }
 }
 
@@ -270,6 +274,7 @@ form.add-new-domain-form {
   width: 100%;
   flex-direction: column !important;
   overflow-x: hidden;
+  background:#fff;
 
   .hm-endpoint-container {
     padding: 30px 0;
@@ -280,10 +285,10 @@ form.add-new-domain-form {
     .endpoint-header {
       .endpoint-name-container {
         .endpoint-title { 
-          color: #E98A36;
+          color: #000000;
           text-transform: capitalize;
           font-weight: 600;
-          font-size: 20px;
+          font-size: 22px;
           margin-bottom: 5px;
         }
       }
@@ -312,11 +317,12 @@ form.add-new-domain-form {
 
 // Sidebar Header
 .hm-sidebar-header {
-  padding: 0 5px;
+  padding: 0 15px 15px;
   display: flex;
   color: #fff;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 5px;
+  border-bottom: 1px solid #E0E0E0;
 }
 
 // .hm-sidebar-logo {
@@ -386,7 +392,14 @@ h4.hm-sidebar-title {
 // Endpoint table
 
 .hm-public-table {
-  margin-bottom: 40px;
+  margin-bottom: 25px;
+  background: #F8F8F8;
+  border: 1px solid #E3E9F3;
+  border-radius: 4px;
+  padding: 20px;
+  float: left;
+  width: 100%;
+
 
   .public-generic-table-title-container {
     font-size: 18px;
@@ -400,7 +413,9 @@ h4.hm-sidebar-title {
       font-size: 12px;
     }
   }
-
+.headParaWraper{
+  background: #F8F8F8;
+}
   table#custom-generic-table {
     background: transparent !important;
 
@@ -512,5 +527,14 @@ h4.hm-sidebar-title {
   margin-bottom: 10px;
 }
 .versionWrapper {
-  padding: 0 5px;
+  padding: 0 15px;
+  margin-top: 20px;
+}
+
+.page-heading-pub {
+  color: #000000;
+  text-transform: capitalize;
+  font-weight: 600;
+  font-size: 22px;
+  margin-bottom: 5px;
 }

@@ -295,26 +295,11 @@ class Pages extends Component {
     )
   }
 
-  convertHexToRGBA = (hexCode, opacity) => {
-    let hex = hexCode.replace('#', '')
-
-    if (hex.length === 3) {
-      hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2]
-    }
-
-    const r = parseInt(hex.substring(0, 2), 16)
-    const g = parseInt(hex.substring(2, 4), 16)
-    const b = parseInt(hex.substring(4, 6), 16)
-
-    return 'rgba(' + r + ',' + g + ',' + b + ',' + opacity / 100 + ')'
-  };
-
   displayPublicPages (pageId) {
     const idToCheck = this.props.location.pathname.split('/')[3] === 'pages' ? this.props.location.pathname.split('/')[4] : null
     return (
       <div
         className={idToCheck === pageId ? 'hm-sidebar-item active' : 'hm-sidebar-item'}
-        style={idToCheck === pageId ? { backgroundColor: this.convertHexToRGBA(this.state.theme, 10), borderColor: this.convertHexToRGBA(this.state.theme, 30) } : {}}
         onClick={() => {
           const page = this.props.pages[pageId]
           this.handleDisplay(page, this.props.collection_id, true)
