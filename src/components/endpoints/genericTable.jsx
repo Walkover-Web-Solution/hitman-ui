@@ -525,12 +525,12 @@ class GenericTable extends Component {
           ? null
           : (
             <div className='generic-table-title-container'>
-              <a
+              <button
                 className='adddescLink mt-2'
                 onClick={() => this.displayEditButton()}
               >
                 {this.state.editButtonName}
-              </a>
+              </button>
             </div>
             )}
       </div>

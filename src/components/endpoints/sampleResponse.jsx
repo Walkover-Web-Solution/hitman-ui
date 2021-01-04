@@ -177,11 +177,11 @@ class SampleResponse extends Component {
               <h2 className='heading-3'>Body</h2> :{' '}
               {!sampleResponseFlagArray[index] && (
 
-                <img src={DownArrow} className='arrowRight' onClick={() => this.props.open_body(index)} />
+                <img src={DownArrow} alt='down-arrow' className='arrowRight' onClick={() => this.props.open_body(index)} />
               )}
               {sampleResponseFlagArray[index] && (
                 <>
-                  <img src={DownArrow} onClick={() => this.props.close_body(index)} />
+                  <img src={DownArrow} alt='down-arrow' onClick={() => this.props.close_body(index)} />
                   <JSONPretty
                     // theme={JSONPrettyMon}
                     themeClassName='custom-json-pretty'

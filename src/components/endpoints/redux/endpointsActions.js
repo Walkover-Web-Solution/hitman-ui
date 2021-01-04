@@ -3,17 +3,21 @@ import store from '../../../store/store'
 import endpointApiService from '../endpointApiService'
 import endpointsActionTypes from './endpointsActionTypes'
 
-export const addEndpoint = (history, newEndpoint, groupId) => {
+export const addEndpoint = (history, newEndpoint, groupId, customCallback) => {
   return (dispatch) => {
     dispatch(addEndpointRequest({ ...newEndpoint, groupId }))
     endpointApiService
       .saveEndpoint(groupId, newEndpoint)
       .then((response) => {
         dispatch(onEndpointAdded(response.data, newEndpoint))
+
         // let endpointsOrder = store.getState().groups[groupId].endpointsOrder;
         // endpointsOrder.push(response.data.id);
         // dispatch(setEndpointIds(endpointsOrder, groupId));
         history.push(`/dashboard/endpoint/${response.data.id}`)
+        if (customCallback) {
+          customCallback({ closeForm: true, stopLoader: true })
+        }
       })
       .catch((error) => {
         dispatch(
@@ -22,6 +26,9 @@ export const addEndpoint = (history, newEndpoint, groupId) => {
             newEndpoint
           )
         )
+        if (customCallback) {
+          customCallback({ closeForm: false, stopLoader: true })
+        }
       })
   }
 }

@@ -50,9 +50,9 @@ class HostContainer extends Component {
     ) {
       selectedHost = 'environmentHost'
     } else if (this.state.groupId) {
-      if (this.props.groups[this.state.groupId].host) {
+      if (this.props.groups[this.state.groupId]?.host) {
         selectedHost = 'groupHost'
-      } else if (this.props.groups[this.state.versionId].host) {
+      } else if (this.props.versions[this.state.versionId]?.host) {
         selectedHost = 'versionHost'
       }
     }
@@ -240,7 +240,7 @@ class HostContainer extends Component {
               {this.props.environment &&
                 this.props.environment.variables &&
                 this.props.environment.variables.BASE_URL && (
-                  <a
+                  <div
                     className='dropdown-item'
                     onClick={() => this.selectHost('environmentHost')}
                   >
@@ -250,12 +250,12 @@ class HostContainer extends Component {
                       )}
                       Environment BASE_URL
                     </div>
-                  </a>
+                  </div>
               )}
               {this.state.groupId &&
                 this.props.groups[this.state.groupId] &&
                 this.props.groups[this.state.groupId].host && (
-                  <a
+                  <div
                     className='dropdown-item'
                     onClick={() => this.selectHost('groupHost')}
                   >
@@ -265,10 +265,10 @@ class HostContainer extends Component {
                       )}  Group BASE_URL
                     </div>
 
-                  </a>
+                  </div>
               )}
               {this.state.groupId && (
-                <a
+                <div
                   className='dropdown-item'
                   onClick={() => this.selectHost('versionHost')}
                 >
@@ -278,9 +278,9 @@ class HostContainer extends Component {
                     )}
                     Version BASE_URL
                   </div>
-                </a>
+                </div>
               )}
-              <a
+              <div
                 className='dropdown-item'
                 id='customHost'
                 onClick={() => this.selectHost('customHost')}
@@ -291,7 +291,7 @@ class HostContainer extends Component {
                   )}
                   Custom BASE_URL
                 </div>
-              </a>
+              </div>
             </div>
           </div>
         </div>

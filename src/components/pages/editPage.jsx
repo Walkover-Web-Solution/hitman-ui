@@ -4,6 +4,8 @@ import 'react-quill/dist/quill.snow.css'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import store from '../../store/store'
+// import { markTabAsModified } from '../tabs/tabService'
+import WarningModal from '../common/warningModal'
 import { updatePage } from '../pages/redux/pagesActions'
 import './page.scss'
 import { toast } from 'react-toastify'
@@ -71,7 +73,7 @@ class EditPage extends Component {
         contents
       }
 
-      this.setState({ data })
+      this.setState({ data, originalData: data })
     }
   }
 
@@ -88,7 +90,7 @@ class EditPage extends Component {
 
       data = { id, versionId, groupId, name, contents }
 
-      this.setState({ data })
+      this.setState({ data, originalData: data })
     } else {
       const pageId = this.props.location.pathname.split('/')[3]
       this.fetchPage(pageId)
@@ -113,7 +115,6 @@ class EditPage extends Component {
   handleSubmit = (e) => {
     e.preventDefault()
     const groupId = this.state.data.groupId
-
     if (groupId === null) {
       const editedPage = { ...this.state.data }
       if (editedPage.name.trim() === '') {
@@ -137,9 +138,35 @@ class EditPage extends Component {
     }
   };
 
+  handleCancel () {
+    const pageId = this.props.match.params.pageId
+    if (pageId) {
+      // Redirect to displayPage Route Component
+      this.props.history.push({
+        pathname: `/dashboard/page/${pageId}`
+      })
+    }
+  }
+
+  isModified () {
+    const contents = this.state.data?.contents
+    const originalContents = this.state.originalData?.contents
+    if (typeof contents !== 'undefined' && typeof originalContents !== 'undefined' && this.state.data.contents !== this.state.originalData.contents) {
+      return true
+    } else {
+      return false
+    }
+  }
+
   render () {
     return (
       <div className='custom-edit-page'>
+        <WarningModal
+          show={this.state.warningModalFlag}
+          onHide={() => { this.setState({ warningModalFlag: false }) }}
+          ignoreButtonCallback={() => { this.handleCancel() }}
+          message='Your unsaved changes will be lost.'
+        />
         <div className='form-group'>
           <label htmlFor='name'>Page Name</label>
           <input
@@ -166,9 +193,16 @@ class EditPage extends Component {
         <div>
           <form onSubmit={this.handleSubmit}>
             <button
+              onClick={() => { this.isModified() ? this.setState({ warningModalFlag: true }) : this.handleCancel() }}
+              type='button'
+              className='btn btn-secondary outline btn-extra-lg mt-4'
+            >
+              Cancel
+            </button>
+            <button
               onSubmit={this.handleSubmit}
               type='submit'
-              className='btn btn-primary btn-extra-lg mt-4'
+              className='btn btn-primary btn-extra-lg mt-4 ml-3'
             >
               Submit
             </button>
