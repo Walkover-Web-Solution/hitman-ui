@@ -21,6 +21,7 @@ function getHighlightsData (props, title, key) {
     case 'sampleResponse':
       typeof props.highlights?.sampleResponse?.items === 'object' ? items = props.highlights.sampleResponse.items : items = {}
       break
+    default: break
   }
   return (key in items) ? items[key] : false
 }
@@ -49,6 +50,7 @@ function willHighlight (props, title) {
     case 'body':
       result = typeof props.highlights?.body?.isChanged === 'boolean' ? props.highlights.body.isChanged : false
       break
+    default: result = false
   }
   return result
 }

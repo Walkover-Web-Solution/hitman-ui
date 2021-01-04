@@ -222,8 +222,7 @@ class SaveAsSidebar extends Form {
   }
 
   async doSubmit () {
-    this.props.onHide()
-    this.props.set_group_id(this.state.list.parentId, this.state.data.name)
+    this.props.set_group_id(this.state.list.parentId, { endpointName: this.state.data.name, endpointDescription: this.state.data.description })
   }
 
   render () {
@@ -277,11 +276,7 @@ class SaveAsSidebar extends Form {
             <div className='mx-3 py-3'>
               <form onSubmit={this.handleSubmit}>
                 {this.renderInput('name', 'Name', 'Endpoint Name')}
-                {this.renderTextArea(
-                  'description',
-                  'Description (optional)',
-                  'Description'
-                )}
+                {this.renderQuillEditor('description', 'Description (Optional)')}
               </form>
               <div className='card saveAsWrapper' id='endpoint-form-collection-list'>
                 <div className='card-title'>
@@ -331,9 +326,9 @@ class SaveAsSidebar extends Form {
                         this.renderList().map(item => (
                           <li key={item.id} id='endpoint-list' className='endListWrapper'>
                             <label
-                              className={this.props.endpoints[item.id].requestType}
+                              className={this.props.endpoints[item.id]?.requestType}
                             >
-                              {this.props.endpoints[item.id].requestType}
+                              {this.props.endpoints[item.id]?.requestType}
                             </label>
                             <div className='list-item-wrapper'>{item.name}</div>
                           </li>
@@ -378,7 +373,7 @@ class SaveAsSidebar extends Form {
                   Cancel
                 </button>
                 <button
-                  className='btn btn-primary btn-lg'
+                  className={this.props.saveAsLoader ? 'btn btn-primary btn-lg buttonLoader' : 'btn btn-primary btn-lg'}
                   onClick={this.handleSubmit}
                   disabled={this.state.list.type !== 'endpoints'}
                 >

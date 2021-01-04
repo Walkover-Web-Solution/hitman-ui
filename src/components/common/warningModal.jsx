@@ -20,16 +20,16 @@ function WarningModal ({ show, onHide, title, message, ignoreButtonCallback }) {
         <p>{message}</p>
         <div className='text-right'>
           <button
-            className='btn btn-danger btn-lg mr-2'
-            onClick={() => { ignoreButtonCallback(); onHide() }}
-          >
-            Ignore
-          </button>
-          <button
             className='btn btn-primary btn-lg mr-2'
             onClick={onHide}
           >
-            OK
+            Go Back
+          </button>
+          <button
+            className='btn btn-danger btn-lg mr-2'
+            onClick={() => { ignoreButtonCallback(); onHide() }}
+          >
+            Proceed
           </button>
         </div>
       </Modal.Body>

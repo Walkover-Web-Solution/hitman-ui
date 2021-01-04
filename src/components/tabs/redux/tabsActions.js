@@ -94,7 +94,7 @@ export const addNewTab = (history) => {
   const tabsOrder = [...store.getState().tabs.tabsOrder]
   tabsOrder.push(id)
 
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch(setActiveTabId(id))
     dispatch({
       type: tabsActionTypes.ADD_NEW_TAB,
@@ -107,14 +107,14 @@ export const addNewTab = (history) => {
       }
     })
     history.push({ pathname: '/dashboard/endpoint/new' })
-    indexedDbService.addData('tabs', {
+    await indexedDbService.addData('tabs', {
       id,
       type: 'endpoint',
       status: tabStatusTypes.NEW,
       previewMode: false,
       isModified: false
     })
-    indexedDbService.updateData('tabs_metadata', tabsOrder, 'tabsOrder')
+    await indexedDbService.updateData('tabs_metadata', tabsOrder, 'tabsOrder')
   }
 }
 
@@ -122,17 +122,17 @@ export const closeTab = (tabId, history) => {
   const tabsOrder = store
     .getState()
     .tabs.tabsOrder.filter((tId) => tId !== tabId)
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch({ type: tabsActionTypes.CLOSE_TAB, tabId })
-    indexedDbService.deleteData('tabs', tabId)
-    indexedDbService.updateData('tabs_metadata', tabsOrder, 'tabsOrder')
+    await indexedDbService.deleteData('tabs', tabId)
+    await indexedDbService.updateData('tabs_metadata', tabsOrder, 'tabsOrder')
   }
 }
 
 export const openInNewTab = (tab) => {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch({ type: tabsActionTypes.OPEN_IN_NEW_TAB, tab })
-    indexedDbService.addData('tabs', tab)
+    await indexedDbService.addData('tabs', tab)
     indexedDbService
       .getValue('tabs_metadata', 'tabsOrder')
       .then((tabsOrder) => {
@@ -176,7 +176,7 @@ export const replaceTab = (oldTabId, newTab) => {
     .getState()
     .tabs.tabsOrder.filter((tId) => tId !== oldTabId)
   tabsOrder.push(newTab.id)
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch({
       type: tabsActionTypes.REPLACE_TAB,
       oldTabId,
@@ -186,17 +186,17 @@ export const replaceTab = (oldTabId, newTab) => {
       type: tabsActionTypes.SET_TABS_ORDER,
       tabsOrder
     })
-    indexedDbService.deleteData('tabs', oldTabId)
-    indexedDbService.addData('tabs', newTab)
-    indexedDbService.updateData('tabs_metadata', tabsOrder, 'tabsOrder')
+    await indexedDbService.deleteData('tabs', oldTabId)
+    await indexedDbService.addData('tabs', newTab)
+    await indexedDbService.updateData('tabs_metadata', tabsOrder, 'tabsOrder')
   }
 }
 
 export const closeAllTabs = () => {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch({ type: tabsActionTypes.CLOSE_ALL_TABS })
-    indexedDbService.updateData('tabs_metadata', [], 'tabsOrder')
-    indexedDbService.updateData('tabs_metadata', null, 'activeTabId')
-    indexedDbService.clearStore('tabs')
+    await indexedDbService.updateData('tabs_metadata', [], 'tabsOrder')
+    await indexedDbService.updateData('tabs_metadata', null, 'activeTabId')
+    await indexedDbService.clearStore('tabs')
   }
 }

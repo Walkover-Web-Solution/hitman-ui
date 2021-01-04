@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { isDashboardRoute, isSavedEndpoint } from '../common/utility'
-
+import ReactQuill from 'react-quill'
+import ReactHtmlParser from 'react-html-parser'
 import { Link } from 'react-router-dom'
 import { updateEndpoint } from './redux/endpointsActions'
 import { connect } from 'react-redux'
@@ -23,6 +24,30 @@ class DisplayDescription extends Component {
         : false,
       theme: ''
     }
+
+    this.modules = {
+      toolbar: [
+        [{ header: [1, 2, 3, 4, 5, 6, false] }],
+        ['bold', 'italic', 'underline', 'strike'],
+        [{ color: [] }, { background: [] }],
+
+        [({ list: 'ordered' }, { list: 'bullet' })],
+        ['link']
+      ]
+    }
+
+    this.formats = [
+      'header',
+      'bold',
+      'italic',
+      'underline',
+      'strike',
+      'color',
+      'background',
+      'list',
+      'bullet',
+      'link'
+    ]
   }
 
   handleChange (e) {
@@ -56,11 +81,9 @@ class DisplayDescription extends Component {
 
   handleDescriptionSave (e) {
     e.preventDefault()
-    const value = e.target.description.value
+    const value = this.props.endpoint.description
     const endpoint = { ...this.props.endpoint }
-
     this.props.update_endpoint({ id: endpoint.id, description: value })
-
     endpoint.description = value
     this.setState({
       showDescriptionFormFlag: false,
@@ -70,9 +93,9 @@ class DisplayDescription extends Component {
     this.props.props_from_parent('oldDescription', value)
   }
 
-  handleChangeDescription = (e) => {
+  handleChangeDescription = (value) => {
     const endpoint = { ...this.props.endpoint }
-    endpoint[e.currentTarget.name] = e.currentTarget.value
+    endpoint.description = value
     this.props.props_from_parent('endpoint', endpoint)
   };
 
@@ -146,13 +169,13 @@ class DisplayDescription extends Component {
                               <div
                                 className='endpoint-description-text'
                               >
-                                <p>{this.props.endpoint.description}</p>
+                                {ReactHtmlParser(this.props.endpoint.description)}
                               </div>
                             </div>
                             )
                           : (
                             <div className='endpoint-description-text'>
-                              Description: {this.props.endpoint.description}
+                              Description: {ReactHtmlParser(this.props.endpoint.description)}
                             </div>
                             )}
                       </div>
@@ -169,12 +192,10 @@ class DisplayDescription extends Component {
                 <div className='endpoint-description-wrap'>
                   <div className='form-group'>
                     <label className='hm-panel-label'>Endpoint Description</label>
-                    <textarea
-                      className='form-control'
-                      rows='5'
-                      name='description'
-                      placeholder='Make things easier for your teammates with a complete endpoint description'
+                    <ReactQuill
                       value={this.props.endpoint.description}
+                      modules={this.modules}
+                      formats={this.formats}
                       onChange={this.handleChangeDescription}
                     />
                   </div>

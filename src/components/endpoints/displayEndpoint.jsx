@@ -5,7 +5,6 @@ import { toast } from 'react-toastify'
 import { Dropdown, ButtonGroup } from 'react-bootstrap'
 import store from '../../store/store'
 import { isDashboardRoute, isSavedEndpoint } from '../common/utility'
-
 import tabService from '../tabs/tabService'
 import { closeTab } from '../tabs/redux/tabsActions'
 import tabStatusTypes from '../tabs/tabStatusTypes'
@@ -56,8 +55,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    add_endpoint: (newEndpoint, groupId) =>
-      dispatch(addEndpoint(ownProps.history, newEndpoint, groupId)),
+    add_endpoint: (newEndpoint, groupId, callback) =>
+      dispatch(addEndpoint(ownProps.history, newEndpoint, groupId, callback)),
     update_endpoint: (editedEndpoint, stopSave) =>
       dispatch(updateEndpoint(editedEndpoint, stopSave)),
     set_authorization_responses: (versionId, authResponses) =>
@@ -787,7 +786,7 @@ class DisplayEndpoint extends Component {
     return version.collectionId
   }
 
-  handleSave = async (groupId, EndpointName) => {
+  handleSave = async (groupId, { endpointName, endpointDescription }) => {
     if (!getCurrentUser()) {
       this.setState({
         showLoginSignupModal: true
@@ -805,7 +804,7 @@ class DisplayEndpoint extends Component {
       const pathVariables = this.doSubmitPathVariables()
       const endpoint = {
         uri: this.uri.current.value,
-        name: EndpointName || this.state.data.name,
+        name: endpointName || this.state.data.name,
         requestType: this.state.data.method,
         body: body,
         headers: headersData,
@@ -824,19 +823,23 @@ class DisplayEndpoint extends Component {
       if (endpoint.name === '') toast.error('Please enter Endpoint name')
       else if (this.props.location.pathname.split('/')[3] === 'new') {
         endpoint.requestId = this.props.tab.id
-        // const collectionId = this.extractCollectionId(
-        //   groupId || this.state.groupId
-        // )
-        this.props.add_endpoint(endpoint, groupId || this.state.groupId)
+        endpoint.description = endpointDescription || ''
+        this.setState({ saveAsLoader: true })
+        this.props.add_endpoint(endpoint, groupId || this.state.groupId, ({ closeForm, stopLoader }) => {
+          if (closeForm) this.closeEndpointFormModal()
+          if (stopLoader) this.setState({ saveAsLoader: false })
+        })
       } else {
         if (this.state.saveAsFlag) {
           endpoint.requestId = shortid.generate()
-          this.props.add_endpoint(endpoint, groupId || this.state.groupId)
-          this.setState({ saveAsFlag: false })
-          this.props.close_tab(this.props.tab.id)
+          endpoint.description = endpointDescription || ''
+          this.setState({ saveAsLoader: true })
+          this.props.add_endpoint(endpoint, groupId || this.state.groupId, ({ closeForm, stopLoader }) => {
+            if (closeForm) this.closeEndpointFormModal()
+            if (stopLoader) this.setState({ saveAsLoader: false })
+          })
         } else if (this.state.title === 'update endpoint') {
           this.setState({ saveLoader: true })
-
           this.props.update_endpoint({
             ...endpoint,
             id: this.state.endpoint.id,
@@ -1052,11 +1055,8 @@ class DisplayEndpoint extends Component {
     this.setState({ showEndpointFormModal: false, saveAsFlag: false })
   }
 
-  setGroupId (groupId, endpointName) {
-    const data = { ...this.state.data }
-    data.name = endpointName
-    this.setState({ groupId, data })
-    this.handleSave(groupId, endpointName)
+  setGroupId (groupId, { endpointName, endpointDescription }) {
+    this.setState({ groupId }, () => { this.handleSave(groupId, { endpointName, endpointDescription }) })
   }
 
   updateArray (updatedArray) {
@@ -1780,7 +1780,9 @@ class DisplayEndpoint extends Component {
                         onHide={() => this.closeEndpointFormModal()}
                         set_group_id={this.setGroupId.bind(this)}
                         name={this.state.data.name}
+                        description={this.state.data.description}
                         save_endpoint={this.handleSave.bind(this)}
+                        saveAsLoader={this.state.saveAsLoader}
                       />
                     )}
                     <DisplayDescription
