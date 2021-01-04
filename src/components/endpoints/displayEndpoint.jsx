@@ -1797,7 +1797,7 @@ class DisplayEndpoint extends Component {
             <div className='endpoint-header '>
               {!isDashboardRoute(this.props) && (
                 <div className='endpoint-name-container'>
-                  {!isDashboardRoute(this.props, true) && <h1 className='endpoint-title' style={{ color: theme }}>{this.state.data?.name || ''}</h1>}
+                  {!isDashboardRoute(this.props, true) && <h1 className='endpoint-title'>{this.state.data?.name || ''}</h1>}
                   <p>{this.state.endpoint?.description || ''}</p>
                 </div>
               )}
@@ -2186,9 +2186,9 @@ class DisplayEndpoint extends Component {
                 }
                 {
                   !isDashboardRoute(this.props) && (
-                    <div className='text-right'>
+                    <div className='text-left'>
                       <button
-                        className={this.state.loader ? 'btn btn-primary btn-lg buttonLoader' : 'btn btn-lg btn-primary'}
+                        className={this.state.loader ? 'btn btn-primary btn-lg ml-4 buttonLoader' : 'ml-4 btn btn-lg btn-primary'}
                         style={{ background: theme }}
                         type='submit'
                         id='send-request-button'

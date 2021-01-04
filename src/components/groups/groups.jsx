@@ -419,7 +419,6 @@ class Groups extends Component {
         }
       }
     }
-    const { theme } = this.state
     return (
       <div className='linkWith'>
         {
@@ -578,7 +577,7 @@ class Groups extends Component {
               )
             : (
               <div className='hm-sidebar-block'>
-                <div className='hm-sidebar-label' style={{ color: theme }}>
+                <div className='hm-sidebar-label'>
                   {this.props.groups[groupId].name}
                 </div>
                 <GroupPages

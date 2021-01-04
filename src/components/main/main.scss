@@ -152,35 +152,34 @@ nav.navbar.navbar-dark.fixed-top.bg-dark.flex-md-nowrap.p-0.shadow {
 //   margin-top: 40px;
 // }
 .hm-sidebar-item {
-  color: #333333;
+  color: #000000;
   cursor: pointer;
   font-size: 14px;
   font-weight: 400;
   text-transform: capitalize;
   display: flex;
   width: 100%;
-  padding: 5px 2px;
-  border-radius: 8px;
-  border: 1px solid transparent;
+  padding: 5px 5px  5px 15px;
+  border-radius: 0;
+  border: none;
   align-items: center;
 
   &:hover {
-    background: #FEFCF7;
-    border-color: #F1EEE5;
+    background: #EFEFEF; 
   }
 
   &.active {
-    background: #FEFCF7;
-    border-color: #F1EEE5;
+    background: #EFEFEF; 
   }
 }
 
 .hm-sidebar-label {
-  color: #E98A36;
+  color: #000000;
   margin-bottom: 5px;
   text-transform: capitalize;
   font-weight: 600;
-  font-size: 16px;
+  font-size: 14px;
+  padding: 5px 5px  0px 15px;
 }
 
 .hm-sidebar-item>i {
@@ -968,7 +967,7 @@ button.editBtn {
 
 .viewOptionals {
   display: inline-block;
-  float: right;
+  margin-left: 185px;
   color: #E98A36;
   text-decoration: underline;
   cursor: pointer;
@@ -1099,8 +1098,8 @@ button.editBtn {
 }
 
 .hm-sidebar .hm-sidebar-outer-block {
-  padding: 15px 5px;
-  height: calc(100vh - 185px);
+  padding: 15px 0px 0px 0;
+  height: calc(100vh - 40px);
   overflow: auto;
 }
 
@@ -1395,7 +1394,7 @@ button.editBtn {
 
 .mainContentWrapperPublic {
   .mainContentWrapper {
-    background: transparent;
+    background: #ffffff;
     display: flex;
     margin-bottom: 50px;
     padding: 0;

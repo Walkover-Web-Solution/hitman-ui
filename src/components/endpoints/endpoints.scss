@@ -985,6 +985,7 @@ table#custom-generic-table {
 .endpoint-name-div {
   width: 100%;
   text-align: left;
+  margin: 0 0 0px 5px;
   flex-grow: 1;
   white-space: nowrap;
   overflow: hidden;
@@ -1229,6 +1230,7 @@ table#custom-generic-table {
       font-size: 13px !important;
       border-radius: 4px !important;
       color: #000 !important;
+      width: 260px;
     }
   }
 }
@@ -1308,7 +1310,6 @@ table#custom-generic-table {
 
 
 .hm-public-endpoint-headers {
-  background: #fff;
-  padding: 20px;
+  background: #fff; 
   border-radius: 4px;
 }

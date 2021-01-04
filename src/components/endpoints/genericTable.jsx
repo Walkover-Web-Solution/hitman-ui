@@ -263,7 +263,6 @@ class GenericTable extends Component {
             type='text'
             placeholder={`Enter ${dataArray[index].key}`}
             className='form-control'
-            style={{ border: 'none' }}
           />
           {
             dataArray[index].description?.length > 0
