@@ -101,48 +101,45 @@ class CodeTemplate extends Component {
 
     return (
       <div className='pubCodeWrapper'>
-        <div className='code-heading' style={{ color: theme }}>
-          Sample code
-        </div>
-        <Col id='code-window-sidebar' xs={12} className='d-flex justify-content-end'>
-          {Object.keys(this.priorityLanguages).map(key => (
-            <button
-              key={key}
-              className={
-                this.languages[key].name === this.selectedLanguageName
-                  ? 'active'
-                  : ''
-}
-              onClick={() => {
-                this.makeCodeTemplate(key)
-              }}
-            >
-              {this.languages[key].name}
-            </button>
-          ))}
-          <Dropdown>
-            <Dropdown.Toggle>
-              {Object.keys(this.priorityLanguages).includes(this.selectedLanguage) ? <span>More</span> : <span>{this.selectedLanguageName}</span>}
-            </Dropdown.Toggle>
-            <Dropdown.Menu>
-              {Object.keys(this.languages).filter(o => !Object.keys(this.priorityLanguages).includes(o)).map((key) => (
-                <Dropdown.Item
-                  key={key}
-                  className={
+        <Col id='code-window-sidebar' xs={12} className='d-flex justify-content-between'>
+          <div className='code-heading' style={{ color: theme }}>
+            Sample code
+          </div>
+          <div className='d-flex justify-content-end'>
+            {Object.keys(this.priorityLanguages).map(key => (
+              <button
+                key={key}
+                className={this.languages[key].name === this.selectedLanguageName ? 'active' : ''}
+                onClick={() => {
+                  this.makeCodeTemplate(key)
+                }}
+              >
+                {this.languages[key].name}
+              </button>
+            ))}
+            <Dropdown>
+              <Dropdown.Toggle>
+                {Object.keys(this.priorityLanguages).includes(this.selectedLanguage) ? <span>More</span> : <span>{this.selectedLanguageName}</span>}
+              </Dropdown.Toggle>
+              <Dropdown.Menu>
+                {Object.keys(this.languages).filter(o => !Object.keys(this.priorityLanguages).includes(o)).map((key) => (
+                  <Dropdown.Item
+                    key={key}
+                    className={
                   this.languages[key].name === this.selectedLanguageName
                     ? 'active'
                     : ''
                 }
-                  onClick={() => {
-                    this.makeCodeTemplate(key)
-                  }}
-                >
-                  {this.languages[key].name}
-                </Dropdown.Item>
-              ))}
-            </Dropdown.Menu>
-          </Dropdown>
-          <v1 />
+                    onClick={() => {
+                      this.makeCodeTemplate(key)
+                    }}
+                  >
+                    {this.languages[key].name}
+                  </Dropdown.Item>
+                ))}
+              </Dropdown.Menu>
+            </Dropdown>
+          </div>
         </Col>
         <Col className='editor-body-wrapper' xs={12}>
           <div id='code-window-body'>
