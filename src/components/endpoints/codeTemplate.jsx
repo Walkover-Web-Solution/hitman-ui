@@ -1,6 +1,6 @@
 import './endpoints.scss'
 import React, { Component } from 'react'
-import { ListGroup, Col } from 'react-bootstrap'
+import { Dropdown, Col } from 'react-bootstrap'
 import 'ace-builds'
 import AceEditor from 'react-ace'
 import 'ace-builds/webpack-resolver'
@@ -15,6 +15,12 @@ class CodeTemplate extends Component {
     super(props)
     this.state = {
       theme: ''
+    }
+
+    this.priorityLanguages = {
+      java: { name: 'JAVA' },
+      node: { name: 'Node' },
+      php: { name: 'PHP' }
     }
 
     this.languages = {
@@ -96,26 +102,45 @@ class CodeTemplate extends Component {
     return (
       <div className='pubCodeWrapper'>
         <div className='code-heading' style={{ color: theme }}>
-          Sample code for  {this.selectedLanguageName}
+          Sample code
         </div>
-        <Col id='code-window-sidebar' xs={12}>
-          <ListGroup>
-            {Object.keys(this.languages).map((key) => (
-              <ListGroup.Item
-                key={key}
-                className={
+        <Col id='code-window-sidebar' xs={12} className='d-flex justify-content-end'>
+          {Object.keys(this.priorityLanguages).map(key => (
+            <button
+              key={key}
+              className={
+                this.languages[key].name === this.selectedLanguageName
+                  ? 'active'
+                  : ''}
+              onClick={() => {
+                this.makeCodeTemplate(key)
+              }}
+            >
+              {this.languages[key].name}
+            </button>
+          ))}
+          <Dropdown>
+            <Dropdown.Toggle>
+              {Object.keys(this.priorityLanguages).includes(this.selectedLanguage) ? <span>More</span> : <span>{this.selectedLanguageName}</span>}
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              {Object.keys(this.languages).filter(o=>!Object.keys(this.priorityLanguages).includes(o)).map((key) => (
+                <Dropdown.Item
+                  key={key}
+                  className={
                   this.languages[key].name === this.selectedLanguageName
                     ? 'active'
                     : ''
                 }
-                onClick={() => {
-                  this.makeCodeTemplate(key)
-                }}
-              >
-                {this.languages[key].name}
-              </ListGroup.Item>
-            ))}
-          </ListGroup>
+                  onClick={() => {
+                    this.makeCodeTemplate(key)
+                  }}
+                >
+                  {this.languages[key].name}
+                </Dropdown.Item>
+              ))}
+            </Dropdown.Menu>
+          </Dropdown>
           <v1 />
         </Col>
         <Col className='editor-body-wrapper' xs={12}>
