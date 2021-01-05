@@ -111,7 +111,8 @@ class CodeTemplate extends Component {
               className={
                 this.languages[key].name === this.selectedLanguageName
                   ? 'active'
-                  : ''}
+                  : ''
+}
               onClick={() => {
                 this.makeCodeTemplate(key)
               }}
@@ -124,7 +125,7 @@ class CodeTemplate extends Component {
               {Object.keys(this.priorityLanguages).includes(this.selectedLanguage) ? <span>More</span> : <span>{this.selectedLanguageName}</span>}
             </Dropdown.Toggle>
             <Dropdown.Menu>
-              {Object.keys(this.languages).filter(o=>!Object.keys(this.priorityLanguages).includes(o)).map((key) => (
+              {Object.keys(this.languages).filter(o => !Object.keys(this.priorityLanguages).includes(o)).map((key) => (
                 <Dropdown.Item
                   key={key}
                   className={
