@@ -70,6 +70,7 @@
       rel="stylesheet"
       href="https://unicons.iconscout.com/release/v2.1.9/css/unicons.css"
     />
+    <script src="https://wgt.feedio.ai/"></script>
   </head>
   <body>
     <!-- Google Tag Manager (noscript) -->
@@ -101,6 +102,32 @@
       a.appendChild(r);
       })(window, document, "https://www.usetiful.com/dist/usetiful.js");
     </script>
+    
+
+    <!-- Code for feedio widget -->
+    <script>
+      window.onload = function(){
+        var feedioElement = document.createElement('div');
+        feedioElement.setAttribute('id', "feedioaiApplicationWidget");
+        feedioElement.setAttribute('board-name', '%REACT_APP_FEEDIO_BOARD_NAME%');
+        feedioElement.setAttribute('host-name', '%REACT_APP_FEEDIO_HOST_NAME%');
+        feedioElement.setAttribute('board-token', '%REACT_APP_FEEDIO_BOARD_TOKEN%');
+        feedioElement.style.visibility='hidden';
+        document.getElementsByTagName('body')[0].appendChild(feedioElement);
+
+        var setIntervalEmail = setInterval(()=>{
+            var emailUser = JSON.parse(localStorage.getItem('profile'))?.email;
+            if(emailUser){
+              var feedioElementDiv = document.getElementById('feedioaiApplicationWidget');
+              feedioElementDiv.style.visibility='visible';
+              feedioElementDiv.setAttribute('email', emailUser);
+                clearInterval(setIntervalEmail);
+            }
+        }, 3000);
+      }
+    </script>
+    
+ <!-- End of code for feedio widget -->
       
   <!-- Usetiful end -->
   </body>

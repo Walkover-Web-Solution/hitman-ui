@@ -25,6 +25,7 @@ jobs:
             REACT_APP_FEEDIO_BOARD_NAME=$REACT_APP_FEEDIO_BOARD_NAME
             REACT_APP_FEEDIO_HOST_NAME=$REACT_APP_FEEDIO_HOST_NAME
             REACT_APP_FEEDIO_BOARD_TOKEN=$REACT_APP_FEEDIO_BOARD_TOKEN
+
             " > .env
       - gcr/gcr-auth
       - run:
