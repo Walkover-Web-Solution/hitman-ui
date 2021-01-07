@@ -159,17 +159,17 @@ nav.navbar.navbar-dark.fixed-top.bg-dark.flex-md-nowrap.p-0.shadow {
   text-transform: capitalize;
   display: flex;
   width: 100%;
-  padding: 5px 5px  5px 15px;
+  padding: 5px 5px 5px 15px;
   border-radius: 0;
   border: none;
   align-items: center;
 
   &:hover {
-    background: #EFEFEF; 
+    background: #EFEFEF;
   }
 
   &.active {
-    background: #EFEFEF; 
+    background: #EFEFEF;
   }
 }
 
@@ -179,7 +179,7 @@ nav.navbar.navbar-dark.fixed-top.bg-dark.flex-md-nowrap.p-0.shadow {
   text-transform: capitalize;
   font-weight: 600;
   font-size: 14px;
-  padding: 5px 5px  0px 15px;
+  padding: 5px 5px 0px 15px;
 }
 
 .hm-sidebar-item>i {
@@ -597,18 +597,26 @@ label.data-type {
   background-color: #FBF9F5 !important;
 }
 
+.editor-body-wrapper {
+  border: 1px solid #4F4F4F;
+  border-radius: 4px;
+  margin-top: 10px;
+}
+
 .pubCodeWrapper {
-  padding: 0 15px 0px 0px;
+  padding: 30px 15px 0px;
   width: 35%;
-  margin: 121px 0 0 0;
+  background: #2A2B35;
+  position: relative;
+  transition: 300ms;
 }
 
 .code-heading {
   margin: 0;
-  color: #E98A36;
-  text-transform: capitalize;
+  color: #fff;
+  text-transform: uppercase;
   font-weight: 600;
-  font-size: 16px;
+  font-size: 12px;
 }
 
 .ace-editor-wrapper {
@@ -999,6 +1007,7 @@ button.editBtn {
   background: transparent;
   border: none;
   outline: none !important;
+
   &:hover {
     color: #f57a0d;
   }
@@ -1410,7 +1419,7 @@ button.editBtn {
     &::-webkit-scrollbar {
       width: 0px;
     }
- 
+
 
   }
 
@@ -1671,7 +1680,7 @@ html body div#sokt-sso-modal {
 .buttonLoader {
   position: relative;
 }
- 
+
 @keyframes buttonLoader {
   0% {
     transform: rotate(0deg);
@@ -1681,7 +1690,7 @@ html body div#sokt-sso-modal {
     transform: rotate(360deg);
   }
 }
- 
+
 .buttonLoader::before {
   content: "";
   content: "";
@@ -1716,4 +1725,66 @@ html body div#sokt-sso-modal {
   position: absolute;
   z-index: 1;
   cursor: not-allowed;
+}
+
+.select-code-wrapper>button,
+.select-code-wrapper .dropdown button {
+  border: 1px solid #4F4F4F;
+  filter: drop-shadow(0px 2px 20px rgba(64, 49, 30, 0.21));
+  border-radius: 4px;
+  background: transparent;
+  color: #BDBDBD;
+  width: 60px;
+  font-size: 12px;
+  font-weight: 600;
+  height: 32px;
+  margin-left: 5px;
+}
+
+.select-code-wrapper>button.active {
+  border-color: #fff;
+  color: #fff;
+}
+
+.select-code-wrapper .dropdown button {
+  width: auto;
+
+  &:after {
+    filter: brightness(3.5);
+  }
+}
+
+button.toggleButton {
+  position: absolute;
+  left: -30px;
+  font-size: 0;
+  border: 1px solid #000000;
+  background: #fff;
+  border-radius: 4px;
+  border-right: none;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  padding: 5px;
+  outline: none;
+  transition: 450ms;
+
+}
+
+.hideCodeEditor {
+  .hm-endpoint-container.endpoint-container {
+    width: 100%;
+  }
+
+  .pubCodeWrapper.closeEditor {
+    width: 0;
+    padding: 0;
+  }
+
+  button.toggleButton {
+    font-size: 14px;
+    width: 150px;
+    left: -150px;
+    transition: 450ms;
+    top: 30px;
+  }
 }
