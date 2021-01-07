@@ -118,7 +118,8 @@ class DisplayEndpoint extends Component {
       sampleResponseFlagArray: [],
       theme: '',
       loader: false,
-      saveLoader: false
+      saveLoader: false,
+      codeEditorVisibility: true
     }
 
     this.uri = React.createRef()
@@ -1751,13 +1752,13 @@ class DisplayEndpoint extends Component {
         }
       })
     }
-    const { theme } = this.state
+    const { theme, codeEditorVisibility } = this.state
     return (
       <div
         // className={
         //   this.props.location.pathname.split('/')[1] !== 'admin' ? '' : 'mainContentWrapperPublic'
         // }
-        className={isDashboardRoute(this.props) ? '' : 'mainContentWrapperPublic'}
+        className={isDashboardRoute(this.props) ? '' : codeEditorVisibility ? 'mainContentWrapperPublic' : 'mainContentWrapperPublic hideCodeEditor'}
       >
         <div className='mainContentWrapper'>
           <div className='hm-endpoint-container endpoint-container row'>
@@ -2224,6 +2225,7 @@ class DisplayEndpoint extends Component {
                 onHide={() => {
                   this.setState({ showCodeTemplate: false })
                 }}
+                editorToggle={() => { this.setState({ codeEditorVisibility: !this.state.codeEditorVisibility }) }}
                 harObject={this.state.harObject}
                 title='Generate Code Snippets'
                 publicCollectionTheme={this.props.publicCollectionTheme}
