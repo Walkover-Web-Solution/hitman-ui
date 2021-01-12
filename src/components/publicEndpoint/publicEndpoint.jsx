@@ -180,9 +180,12 @@ class PublicEndpoint extends Component {
         <main role='main' className='mainpublic-endpoint-main hm-wrapper'>
           <ToastContainer />
           <div className='hm-sidebar'>
-            <SideBar {...this.props} />
+            <SideBar {...this.props} collectionName={this.state.collectionName} />
           </div>
           <div className='hm-right-content'>
+            {/* <div className='hm-right-header'>
+              <PublicSearch {...this.props} collectionName={this.state.collectionName} />
+            </div> */}
             {
               this.state.collectionName !== ''
                 ? (
