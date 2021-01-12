@@ -223,6 +223,9 @@ class GenericTable extends Component {
   }
 
   renderPublicTableRow (dataArray, index, originalData, title) {
+
+    dataArray= this.sortData(dataArray)
+    originalData = this.sortData(originalData)
     return (
       <tr key={index} id='generic-table-row' className={getHighlightsData(this.props, title, [dataArray[index].key]) ? 'active' : ''}>
         <td
@@ -275,6 +278,9 @@ class GenericTable extends Component {
   }
 
   renderTableRow (dataArray, index, originalData, title) {
+    dataArray= this.sortData(dataArray)
+    originalData = this.sortData(originalData)
+
     return (
       <tr key={index} id='generic-table-row'>
         <td
@@ -432,6 +438,14 @@ class GenericTable extends Component {
     )
   }
 
+  sortData(data){
+    return data.sort(
+      (itemA,itemB)=>{
+         return (itemA.checked === itemB.checked) ? 0 : itemA.checked==="true" ? -1 : 1; 
+      }
+    )
+  }
+
   render () {
     const { dataArray, original_data: originalData, title } = this.props
     if (!isDashboardRoute(this.props)) {
@@ -441,6 +455,7 @@ class GenericTable extends Component {
         }
       }
     }
+
 
     this.autoFillBulkEdit()
     return (
