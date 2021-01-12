@@ -1795,3 +1795,29 @@ button.toggleButton {
     }
   }
 }
+
+
+.versionsAvailable {
+  width: 100%;
+}
+
+.versionsAvailable .search-box {
+  display: inline-block;
+  width: 35px;
+}
+
+.versionsAvailable  .selected-version {
+  display: inline-block;
+  width: 180px;
+  margin-right: 5px;
+}
+
+.versionWrapper  .search-box {
+  margin: 0;
+  border-radius: 4px;
+}
+
+.versionWrapper .search-box input {
+  background: #EFEFEF!important; 
+  border: 1px solid #E0E0E0!important;
+}
