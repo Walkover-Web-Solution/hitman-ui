@@ -593,7 +593,7 @@ class CollectionVersions extends Component {
 
   renderPublicSearchBar () {
     return (
-      <div className='search-box' onClick={() => { this.myInputRef.focus() }}>
+      <div className='search-box' onClick={() => { this.myInputRef.focus(); this.setState({ enableSearch: true }) }}>
         <label htmlFor='search'>
           <SearchIcon onClick={() => {}} />
         </label>
@@ -606,6 +606,11 @@ class CollectionVersions extends Component {
           placeholder='Search'
           onChange={(e) => this.handleChange(e)}
           autoComplete='off'
+          onBlur={() => {
+            if (!this.state.value) {
+              this.setState({ enableSearch: false })
+            }
+          }}
         />
       </div>
     )
@@ -639,7 +644,7 @@ class CollectionVersions extends Component {
           !isDashboardRoute(this.props, true)
             ? (
               <>
-                <div className={this.filteredVersions && Object.keys(this.filteredVersions).length > 1 ? 'versionWrapper versionsAvailable' : 'versionWrapper'}>
+                <div className={this.filteredVersions && Object.keys(this.filteredVersions).length > 1 ? this.state.enableSearch ? 'versionWrapper versionsAvailable enableSearch' : 'versionWrapper versionsAvailable' : 'versionWrapper'}>
                   {this.filteredVersions && Object.keys(this.filteredVersions).length > 1
                     ? (
                       <select
