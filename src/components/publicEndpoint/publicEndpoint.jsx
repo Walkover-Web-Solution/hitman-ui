@@ -183,9 +183,6 @@ class PublicEndpoint extends Component {
             <SideBar {...this.props} collectionName={this.state.collectionName} />
           </div>
           <div className='hm-right-content'>
-            {/* <div className='hm-right-header'>
-              <PublicSearch {...this.props} collectionName={this.state.collectionName} />
-            </div> */}
             {
               this.state.collectionName !== ''
                 ? (
@@ -195,7 +192,7 @@ class PublicEndpoint extends Component {
                       render={(props) => <DisplayEndpoint {...props} publicCollectionTheme={this.state.collectionTheme} />}
                     />
                     <Route
-                      path={`/p/:collectionId/pages/:pageid/${this.state.collectionName}`}
+                      path={`/p/:collectionId/pages/:pageId/${this.state.collectionName}`}
                       render={(props) => <DisplayPage {...props} publicCollectionTheme={this.state.collectionTheme} />}
                     />
                     <Route
