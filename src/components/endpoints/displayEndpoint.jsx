@@ -787,7 +787,8 @@ class DisplayEndpoint extends Component {
     return version.collectionId
   }
 
-  handleSave = async (groupId, { endpointName, endpointDescription }) => {
+  handleSave = async (groupId, endpointObject) => {
+    const { endpointName, endpointDescription } = endpointObject || {}
     if (!getCurrentUser()) {
       this.setState({
         showLoginSignupModal: true
