@@ -1812,12 +1812,29 @@ button.toggleButton {
   margin-right: 5px;
 }
 
-.versionWrapper  .search-box {
+.versionWrapper  .search-box { 
   margin: 0;
+  font-size: 14px;
   border-radius: 4px;
 }
 
 .versionWrapper .search-box input {
-  background: #EFEFEF!important; 
+  background: #EFEFEF!important;  
+  height: 36px!important;
   border: 1px solid #E0E0E0!important;
+}
+
+.versionsAvailable.enableSearch .selected-version {
+  width: 60px;
+  transition: 250ms;
+  padding-right: 25px;
+}
+.versionWrapper .selected-version.form-control.light-orange-bg {
+  height: 36px;
+  font-size: 14px;
+}
+.versionsAvailable.enableSearch .search-box {
+  transition: 250ms;
+  width: 155px;
+  font-size: 14px;
 }
