@@ -223,8 +223,7 @@ class GenericTable extends Component {
   }
 
   renderPublicTableRow (dataArray, index, originalData, title) {
-
-    dataArray= this.sortData(dataArray)
+    dataArray = this.sortData(dataArray)
     originalData = this.sortData(originalData)
     return (
       <tr key={index} id='generic-table-row' className={getHighlightsData(this.props, title, [dataArray[index].key]) ? 'active' : ''}>
@@ -278,7 +277,7 @@ class GenericTable extends Component {
   }
 
   renderTableRow (dataArray, index, originalData, title) {
-    dataArray= this.sortData(dataArray)
+    dataArray = this.sortData(dataArray)
     originalData = this.sortData(originalData)
 
     return (
@@ -438,10 +437,10 @@ class GenericTable extends Component {
     )
   }
 
-  sortData(data){
+  sortData (data) {
     return data.sort(
-      (itemA,itemB)=>{
-         return (itemA.checked === itemB.checked) ? 0 : itemA.checked==="true" ? -1 : 1; 
+      (itemA, itemB) => {
+        return (itemA.checked === itemB.checked) ? 0 : itemA.checked === 'true' ? -1 : 1
       }
     )
   }
@@ -455,7 +454,6 @@ class GenericTable extends Component {
         }
       }
     }
-
 
     this.autoFillBulkEdit()
     return (
