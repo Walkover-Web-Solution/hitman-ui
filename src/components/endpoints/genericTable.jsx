@@ -277,9 +277,6 @@ class GenericTable extends Component {
   }
 
   renderTableRow (dataArray, index, originalData, title) {
-    dataArray = this.sortData(dataArray)
-    originalData = this.sortData(originalData)
-
     return (
       <tr key={index} id='generic-table-row'>
         <td
@@ -438,9 +435,14 @@ class GenericTable extends Component {
   }
 
   sortData (data) {
+    const priority = {
+      true: 1,
+      false: 2,
+      notApplicable: 3
+    }
     return data.sort(
       (itemA, itemB) => {
-        return (itemA.checked === itemB.checked) ? 0 : itemA.checked === 'true' ? -1 : 1
+        return (priority[itemA.checked] - priority[itemB.checked])
       }
     )
   }
