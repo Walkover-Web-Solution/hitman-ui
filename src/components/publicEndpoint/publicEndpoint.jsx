@@ -180,7 +180,7 @@ class PublicEndpoint extends Component {
         <main role='main' className='mainpublic-endpoint-main hm-wrapper'>
           <ToastContainer />
           <div className='hm-sidebar'>
-            <SideBar {...this.props} />
+            <SideBar {...this.props} collectionName={this.state.collectionName} />
           </div>
           <div className='hm-right-content'>
             {
@@ -192,7 +192,7 @@ class PublicEndpoint extends Component {
                       render={(props) => <DisplayEndpoint {...props} publicCollectionTheme={this.state.collectionTheme} />}
                     />
                     <Route
-                      path={`/p/:collectionId/pages/:pageid/${this.state.collectionName}`}
+                      path={`/p/:collectionId/pages/:pageId/${this.state.collectionName}`}
                       render={(props) => <DisplayPage {...props} publicCollectionTheme={this.state.collectionTheme} />}
                     />
                     <Route
