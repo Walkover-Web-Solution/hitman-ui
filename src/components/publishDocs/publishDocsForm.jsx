@@ -1,13 +1,13 @@
 import React, { Component } from 'react'
 import CustomColorPicker from './customColorPicker'
 import { connect } from 'react-redux'
+import Joi from 'joi-browser'
 import { Button } from 'react-bootstrap'
 import { updateCollection } from '../collections/redux/collectionsActions'
 const URI = require('urijs')
 
 const publishDocFormEnum = {
   NULL_STRING: '',
-  ERROR_MESSSAGE: 'Title cannot be empty',
   INITIAL_CTA: [
     {
       name: '',
@@ -31,7 +31,15 @@ const publishDocFormEnum = {
       name: '',
       link: ''
     }
-  ]
+  ],
+  LABELS: {
+    title: 'Title',
+    domain: 'Domain',
+    logoUrl: 'Fav Icon',
+    theme: 'Theme',
+    cta: 'CTA',
+    links: 'Links'
+  }
 
 }
 
@@ -53,12 +61,10 @@ class PublishDocForm extends Component {
       title: '',
       domain: '',
       logoUrl: '',
-      theme: '',
-      loader: false
+      theme: ''
     },
     cta: publishDocFormEnum.INITIAL_CTA,
     links: publishDocFormEnum.INITIAL_LINKS
-
   }
 
   componentDidMount () {
@@ -104,12 +110,26 @@ class PublishDocForm extends Component {
     this.setState({ [type]: data })
   }
 
+  schema = {
+    title: Joi.string().required().trim().label(publishDocFormEnum.LABELS.title),
+    domain: Joi.string().trim().allow('').label(publishDocFormEnum.LABELS.domain),
+    logoUrl: Joi.string().trim().allow('').label(publishDocFormEnum.LABELS.logoUrl),
+    theme: Joi.string().trim().allow('').label(publishDocFormEnum.LABELS.theme)
+  }
+
+  validate (data) {
+    const options = { abortEarly: false }
+    const { error } = Joi.validate(data, this.schema, options)
+    if (!error) return null
+    const errors = {}
+    for (const item of error.details) errors[item.path[0]] = item.message
+    return errors
+  };
+
   saveCollectionDetails () {
     const collectionId = URI.parseQuery(this.props.location.search).collectionId
     const collection = { ...this.props.collections[collectionId] }
     const data = { ...this.state.data }
-    // const cta = this.state.cta.filter((o)=>o.name.trim()&&o.value.trim());
-    // const links = this.state.links.filter((o)=>o.name.trim()&&o.link.trim());
     const cta = this.state.cta
     const links = this.state.links
     const customDomain = data.domain.trim()
@@ -121,6 +141,9 @@ class PublishDocForm extends Component {
       cta,
       links
     }
+    const errors = this.validate({ ...this.state.data })
+    this.setState({ errors: errors || {} })
+    if (errors) return
     this.setState({ loader: true })
     this.props.update_collection(collection, () => { this.setState({ loader: false }) })
   }
@@ -135,7 +158,7 @@ class PublishDocForm extends Component {
     return (
       <div className='form-group'>
         <label>
-          CTA
+          {publishDocFormEnum.LABELS.cta}
         </label>
         {this.state.cta.map((cta, index) => (
           <div key={`cta-${index}`} className={(cta.name.trim() && cta.value.trim()) ? 'd-flex highlight' : 'd-flex'}>
@@ -151,7 +174,7 @@ class PublishDocForm extends Component {
     return (
       <div className='form-group'>
         <label>
-          Text Buttons
+          {publishDocFormEnum.LABELS.links}
         </label>
         {this.state.links.map((link, index) => (
           <div key={`cta-${index}`} className={(link.name.trim() && link.link.trim()) ? 'd-flex highlight' : 'd-flex'}>
@@ -166,7 +189,7 @@ class PublishDocForm extends Component {
   renderFooter () {
     return (
       <>
-        {this.props.isSidebar && <Button className='btn btn-secondary outline btn-lg mr-2' onClick={() => {}}> Cancel</Button>}
+        {this.props.isSidebar && <Button className='btn btn-secondary outline btn-extra-lg mr-2' onClick={() => { this.props.onHide() }}> Cancel</Button>}
         <Button className={this.state.loader ? 'btn-extra-lg buttonLoader' : 'btn-extra-lg'} onClick={() => this.saveCollectionDetails()}>{this.props.isSidebar ? 'Update' : 'Save'}</Button>
       </>
     )
@@ -176,7 +199,7 @@ class PublishDocForm extends Component {
     return (
       <div className='form-group'>
         <label>
-          Pick your favorite color for website
+          {publishDocFormEnum.LABELS.theme}
         </label>
         <div className='d-flex justify-content-between colorChooser'>
           <CustomColorPicker set_theme={this.setTheme.bind(this)} theme={this.state.data.theme} />
@@ -185,13 +208,14 @@ class PublishDocForm extends Component {
     )
   }
 
-  renderInput (name) {
+  renderInput (name, mandatory = false) {
     return (
       <div className='form-group'>
         <label>
-          {name.charAt(0).toUpperCase() + name.slice(1)}
+          {publishDocFormEnum.LABELS[name]} {mandatory ? <span className='alert alert-danger'>*</span> : ''}
         </label>
         <input type='text' className='form-control' name={name} value={this.state.data[name]} onChange={(e) => this.handleChange(e)} />
+        {this.state.errors && this.state.errors[name] && <small className='alert alert-danger'>{this.state.errors[name]}</small>}
       </div>
     )
   }
@@ -199,8 +223,8 @@ class PublishDocForm extends Component {
   render () {
     return (
       <>
+        {this.renderInput('title', true)}
         {this.renderInput('domain')}
-        {this.renderInput('title')}
         {this.renderInput('logoUrl')}
         {this.renderColorPicker()}
         {this.renderCTAButtons()}

@@ -1686,34 +1686,6 @@ class DisplayEndpoint extends Component {
     )
   }
 
-  openLink (link) {
-    window.open(`${link}`, '_blank')
-  }
-
-  displayCTAandLink () {
-    const collectionId = this.props.match.params.collectionId
-    let { cta, links } = this.props.collections[collectionId].docProperties
-    cta = cta ? cta.filter((o) => o.name.trim() && o.value.trim()) : []
-    links = links ? links.filter((o) => o.name.trim() && o.link.trim()) : []
-    return (
-      <div className='d-flex float-right'>
-        {links.map((link, index) => (
-          <div key={`link-${index}`}>
-            <label htmlFor={`link-${index}`} onClick={() => { this.openLink(link.link) }}>{link.name}</label>
-            {/* <a class="btn btn-success" rel="noreferrer nofollow" href={`${link.link}`} target="_blank">{link.name}</a> */}
-          </div>
-        ))}
-
-        {cta.map((cta, index) => (
-          <div key={`cta-${index}`}>
-            <button name={`cta-${index}`} onClick={() => { this.openLink(cta.value) }}>{cta.name}</button>
-            {/* <a class="btn btn-success" rel="noreferrer nofollow" href={`${cta.value}`} target="_blank">{cta.name}</a> */}
-          </div>
-        ))}
-      </div>
-    )
-  }
-
   render () {
     this.endpointId = this.props.endpointId
       ? this.props.endpointId
@@ -1790,7 +1762,6 @@ class DisplayEndpoint extends Component {
         // }
         className={isDashboardRoute(this.props) ? '' : codeEditorVisibility ? 'mainContentWrapperPublic' : 'mainContentWrapperPublic hideCodeEditor'}
       >
-        {!isDashboardRoute(this.props, true) && this.displayCTAandLink()}
         <div className='mainContentWrapper'>
           <div className='hm-endpoint-container endpoint-container row'>
             {this.state.showLoginSignupModal && (

@@ -974,12 +974,13 @@ class PublishDocs extends Component {
 
   renderDocsFormSidebar () {
     return (
-      <div ref={this.wrapperRef} className='right-sidebar hostedWrapper'>
-        <div className='modal-title h4'>Page Settings</div>
+      <div ref={this.wrapperRef} className='right-sidebar hostedWrapper p-3'>
+        <div className='modal-title'>Page Settings</div>
         <PublishDocsForm
           {...this.props}
           selected_collection_id={this.state.selectedCollectionId}
           isSidebar
+          onHide={() => { this.setState({ openPageSettingsSidebar: false }) }}
         />
       </div>
     )
@@ -1006,7 +1007,7 @@ class PublishDocs extends Component {
     return (
       <>
         <div className='hosted-doc-heading'>Hosted API Doc</div>
-        <div className='publish-button'>
+        <div className='d-flex align-items-center my-3'>
           {this.rednerHostedAPIDropdown()}
           {this.publishCollections()}
           {this.renderPageSettingButton()}
