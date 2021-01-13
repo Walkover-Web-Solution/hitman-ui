@@ -5,6 +5,41 @@
   width: 100%
 }
 
+.pageSettingsButton {
+  width: 34px;
+  height: 34px;
+  background: #FFFFFF;
+  border: 1px solid #E0E0E0;
+  box-sizing: border-box;
+  border-radius: 4px;
+}
+
+.right-sidebar {
+  position: absolute;
+  position: fixed;
+  background: white;
+  z-index: 1050;
+  top: 0px;
+  right: 0px;
+  height: 100vh;
+  width: 35vw;
+  box-shadow: -25px 25px 43px rgba(0, 0, 0, 0.07)
+}
+
+.hosted-doc-heading {
+  font-family: Sora;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 25px;
+  color: #000000;
+}
+
+.publish-api-doc-container {
+  background: #FFFFFF;
+  padding: 30px;
+}
+
 .publish-docs-wrapper {
   display: flex;
   flex-direction: row;
