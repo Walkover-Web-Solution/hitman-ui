@@ -35,6 +35,8 @@ import indexedDbService from '../indexedDb/indexedDbService'
 import Authorization from './displayAuthorization'
 import LoginSignupModal from '../main/loginSignupModal'
 import PublicSampleResponse from './publicSampleResponse'
+import Notes from './notes'
+import ReactHtmlParser from 'react-html-parser'
 const shortid = require('shortid')
 
 const status = require('http-status')
@@ -1802,7 +1804,7 @@ class DisplayEndpoint extends Component {
               {!isDashboardRoute(this.props) && (
                 <div className='endpoint-name-container'>
                   {!isDashboardRoute(this.props, true) && <h1 className='endpoint-title'>{this.state.data?.name || ''}</h1>}
-                  <p>{this.state.endpoint?.description || ''}</p>
+                  <p>{ReactHtmlParser(this.state.endpoint?.description) || ''}</p>
                 </div>
               )}
             </div>
@@ -2202,6 +2204,13 @@ class DisplayEndpoint extends Component {
                       </button>
                     </div>
                   )
+                }
+                {
+                   !isDashboardRoute(this.props) &&
+                     <Notes
+                       {...this.props}
+                       note={this.props.endpoints[this.props.endpointId]?.notes || ''}
+                     />
                 }
                 {
                   this.displayResponse()
