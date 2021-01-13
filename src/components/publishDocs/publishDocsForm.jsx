@@ -133,82 +133,79 @@ class PublishDocForm extends Component {
 
   renderCTAButtons () {
     return (
-      <>
-        <div>
+      <div className='form-group'>
+        <label>
           CTA
-        </div>
-        <div>
-          {
-          this.state.cta.map((cta, index) => (
-            <div key={`cta-${index}`} className={(cta.name.trim() && cta.value.trim()) ? 'd-flex highlight' : 'd-flex'}>
-              <input type='text' className='form-control mr-2' placeholder={`CTA Name ${index + 1}`} name={`cta-${index}-name`} value={cta.name} onChange={(e) => this.handleChangeLink(e)} />
-              <input type='text' className='form-control mr-2' placeholder={`CTA Link ${index + 1}`} name={`cta-${index}-value`} value={cta.value} onChange={(e) => this.handleChangeLink(e)} />
-            </div>
-          ))
-        }
-        </div>
-      </>
+        </label>
+        {this.state.cta.map((cta, index) => (
+          <div key={`cta-${index}`} className={(cta.name.trim() && cta.value.trim()) ? 'd-flex highlight' : 'd-flex'}>
+            <input type='text' className='form-control my-2 mr-2' placeholder={`CTA Name ${index + 1}`} name={`cta-${index}-name`} value={cta.name} onChange={(e) => this.handleChangeLink(e)} />
+            <input type='text' className='form-control my-2 mr-2' placeholder={`CTA Link ${index + 1}`} name={`cta-${index}-value`} value={cta.value} onChange={(e) => this.handleChangeLink(e)} />
+          </div>
+        ))}
+      </div>
     )
   }
 
   renderLinkButtons () {
     return (
-      <>
-        <div>
+      <div className='form-group'>
+        <label>
           Text Buttons
-        </div>
-        <div>
-          {
-          this.state.links.map((link, index) => (
-            <div key={`cta-${index}`} className={(link.name.trim() && link.link.trim()) ? 'd-flex highlight' : 'd-flex'}>
-              <input type='text' className='form-control mr-2' placeholder={`Link Name ${index + 1}`} name={`links-${index}-name`} value={link.name} onChange={(e) => this.handleChangeLink(e)} />
-              <input type='text' className='form-control mr-2' placeholder={`Referral Link ${index + 1}`} name={`links-${index}-link`} value={link.link} onChange={(e) => this.handleChangeLink(e)} />
-            </div>
-          ))
-        }
-        </div>
+        </label>
+        {this.state.links.map((link, index) => (
+          <div key={`cta-${index}`} className={(link.name.trim() && link.link.trim()) ? 'd-flex highlight' : 'd-flex'}>
+            <input type='text' className='form-control my-2 mr-2' placeholder={`Link Name ${index + 1}`} name={`links-${index}-name`} value={link.name} onChange={(e) => this.handleChangeLink(e)} />
+            <input type='text' className='form-control my-2 mr-2' placeholder={`Referral Link ${index + 1}`} name={`links-${index}-link`} value={link.link} onChange={(e) => this.handleChangeLink(e)} />
+          </div>
+        ))}
+      </div>
+    )
+  }
+
+  renderFooter () {
+    return (
+      <>
+        {this.props.isSidebar && <Button className='btn btn-secondary outline btn-lg mr-2' onClick={() => {}}> Cancel</Button>}
+        <Button className={this.state.loader ? 'btn-extra-lg buttonLoader' : 'btn-extra-lg'} onClick={() => this.saveCollectionDetails()}>{this.props.isSidebar ? 'Update' : 'Save'}</Button>
       </>
+    )
+  }
+
+  renderColorPicker () {
+    return (
+      <div className='form-group'>
+        <label>
+          Pick your favorite color for website
+        </label>
+        <div className='d-flex justify-content-between colorChooser'>
+          <CustomColorPicker set_theme={this.setTheme.bind(this)} theme={this.state.data.theme} />
+        </div>
+      </div>
+    )
+  }
+
+  renderInput (name) {
+    return (
+      <div className='form-group'>
+        <label>
+          {name.charAt(0).toUpperCase() + name.slice(1)}
+        </label>
+        <input type='text' className='form-control' name={name} value={this.state.data[name]} onChange={(e) => this.handleChange(e)} />
+      </div>
     )
   }
 
   render () {
     return (
       <>
-        <div className='grid-column-one'>
-          <div className='domain'>
-            <>
-              <div style={{ display: 'flex', padding: '5px' }} className='form-group'>
-                <label style={{ minWidth: '70px' }}>
-                  Domain:
-                </label>
-                <input type='text' className='form-control' name='domain' value={this.state.data.domain} onChange={(e) => this.handleChange(e)} />
-              </div>
-              <div style={{ display: 'flex', padding: '5px' }} className='form-group'>
-                <label style={{ minWidth: '70px' }}>
-                  Title:
-                </label>
-                <input type='text' className='form-control' name='title' value={this.state.data.title} onChange={(e) => this.handleChange(e)} />
-              </div>
-              <div style={{ display: 'flex', padding: '5px' }} className='form-group'>
-                <label style={{ minWidth: '70px' }}>
-                  LogoUrl:
-                </label>
-                <input type='text' className='form-control' name='logoUrl' value={this.state.data.logoUrl} onChange={(e) => this.handleChange(e)} />
-              </div>
-            </>
-          </div>
-        </div>
-        <div className='grid-column-two rightBorder'>
-          <div className='colorTitle'>
-            <p> Pick your favorite color for website</p>
-          </div>
-          <div className='d-flex justify-content-between colorChooser'>
-            <CustomColorPicker set_theme={this.setTheme.bind(this)} theme={this.state.data.theme} />
-            <Button className={this.state.loader ? 'btn-extra-lg buttonLoader' : 'btn-extra-lg'} onClick={() => this.saveCollectionDetails()}> Save</Button>
-          </div>
-        </div>
+        {this.renderInput('domain')}
+        {this.renderInput('title')}
+        {this.renderInput('logoUrl')}
+        {this.renderColorPicker()}
         {this.renderCTAButtons()}
         {this.renderLinkButtons()}
+        {this.renderFooter()}
       </>
     )
   }

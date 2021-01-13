@@ -979,6 +979,7 @@ class PublishDocs extends Component {
         <PublishDocsForm
           {...this.props}
           selected_collection_id={this.state.selectedCollectionId}
+          isSidebar
         />
       </div>
     )
@@ -1038,7 +1039,7 @@ class PublishDocs extends Component {
         <div className='publish-api-doc d-block'>
           <div className='hosted-doc-heading'>Publish API Doc</div>
           <div className='publish-api-doc-container my-3'>
-            <div className='from-control'>
+            <div className='form-group'>
               <label>Hosted API's</label>
               {this.rednerHostedAPIDropdown()}
             </div>
