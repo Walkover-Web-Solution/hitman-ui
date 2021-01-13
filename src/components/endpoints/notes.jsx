@@ -46,25 +46,27 @@ export class Notes extends Form {
   }
 
   renderForm () {
-    <>
-      <form onSubmit={this.handleSubmit}>
-        {this.renderQuillEditor('description', 'Add additional information')}
+    return (
+      <>
+        <form onSubmit={this.handleSubmit}>
+          {this.renderQuillEditor('description', 'Add additional information')}
 
-        <div>
-          <button
-            type='reset' onClick={(e) => {
-              this.setState({ data: { ...this.state.data, description: '' } })
-            }}
-          >
-            Clear
-          </button>
-          <button type='submit'>
-            Submit
-          </button>
+          <div>
+            <button
+              type='reset' onClick={(e) => {
+                this.setState({ data: { ...this.state.data, description: '' } })
+              }}
+            >
+              Clear
+            </button>
+            <button type='submit'>
+              Submit
+            </button>
 
-        </div>
-      </form>
-    </>
+          </div>
+        </form>
+      </>
+    )
   }
 
   render () {
