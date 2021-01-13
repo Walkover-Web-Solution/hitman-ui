@@ -622,7 +622,7 @@ label.data-type {
 .ace-editor-wrapper {
   .ace-github {
     background: #252d30;
-    color: #6FCF97;
+    color: #ffe05a;
     font-family: 'Sora';
     width: 100% !important;
   }
@@ -636,7 +636,11 @@ label.data-type {
   border-bottom-left-radius: 4px;
 
   .ace-github .ace_gutter {
-    background: #252d30;
+    display: none;
+  }
+
+  .ace_scroller {
+    left: 2px !important;
   }
 }
 
@@ -1404,8 +1408,7 @@ button.editBtn {
 .mainContentWrapperPublic {
   .mainContentWrapper {
     background: #ffffff;
-    display: flex;
-    margin-bottom: 50px;
+    display: flex; 
     padding: 0;
   }
 
@@ -1765,7 +1768,7 @@ button.toggleButton {
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
   padding: 5px;
-  outline: none;
+  outline: none !important;
   transition: 450ms;
 
 }
@@ -1786,5 +1789,52 @@ button.toggleButton {
     left: -150px;
     transition: 450ms;
     top: 30px;
+
+    svg {
+      transform: rotate(180deg);
+    }
   }
+}
+
+
+.versionsAvailable {
+  width: 100%;
+}
+
+.versionsAvailable .search-box {
+  display: inline-block;
+  width: 35px;
+}
+
+.versionsAvailable  .selected-version {
+  display: inline-block;
+  width: 180px;
+  margin-right: 5px;
+}
+
+.versionWrapper  .search-box { 
+  margin: 0;
+  font-size: 14px;
+  border-radius: 4px;
+}
+
+.versionWrapper .search-box input {
+  background: #EFEFEF!important;  
+  height: 36px!important;
+  border: 1px solid #E0E0E0!important;
+}
+
+.versionsAvailable.enableSearch .selected-version {
+  width: 60px;
+  transition: 250ms;
+  padding-right: 25px;
+}
+.versionWrapper .selected-version.form-control.light-orange-bg {
+  height: 36px;
+  font-size: 14px;
+}
+.versionsAvailable.enableSearch .search-box {
+  transition: 250ms;
+  width: 155px;
+  font-size: 14px;
 }
