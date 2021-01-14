@@ -16,7 +16,6 @@ const mapDispatchToProps = (dispatch) => {
 export class Notes extends Form {
   constructor (props) {
     super(props)
-
     this.schema = {
       description: Joi.string().allow(null, '').label('Description')
     }
@@ -24,7 +23,8 @@ export class Notes extends Form {
     this.state = {
       data: {
         description: props.note
-      }
+      },
+      theme: props.publicCollectionTheme
     }
   }
 
@@ -38,8 +38,9 @@ export class Notes extends Form {
 
   renderNote () {
     const endpointId = this.props.match.params.endpointId
+
     return (
-      <div>
+      <div className='pub-notes' style={{ borderLeftColor: this.state.theme }}>
         {ReactHtmlParser(this.props.endpoints[endpointId]?.notes) || ''}
       </div>
     )
@@ -48,35 +49,38 @@ export class Notes extends Form {
   renderForm () {
     return (
       <>
-        <form onSubmit={this.handleSubmit}>
-          {this.renderQuillEditor('description', 'Add additional information')}
+        <div className='des-wrapper'>
+          <form onSubmit={this.handleSubmit}>
+            {this.renderQuillEditor('description', 'Add additional information')}
 
-          <div>
-            <button
-              type='reset' onClick={(e) => {
-                this.setState({ data: { ...this.state.data, description: '' } })
-              }}
-            >
-              Clear
-            </button>
-            <button type='submit'>
-              Submit
-            </button>
+            <div className='quicn-actions'>
+              <button
+                className='btn btn-secondary outline'
+                type='reset' onClick={(e) => {
+                  this.setState({ data: { ...this.state.data, description: '' } })
+                }}
+              >
+                Clear
+              </button>
+              <button type='submit' className='btn btn-primary'>
+                Save
+              </button>
 
-          </div>
-        </form>
+            </div>
+          </form>
+        </div>
       </>
     )
   }
 
   render () {
     return (
-      <blockquote>
+      <div>
         {!isDashboardRoute(this.props, true)
           ? this.renderNote()
           : this.renderForm()}
 
-      </blockquote>
+      </div>
     )
   }
 }
