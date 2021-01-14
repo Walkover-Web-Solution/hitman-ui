@@ -510,45 +510,6 @@ class PublishDocs extends Component {
     if (type === 'groups') { this.props.update_groups_order(newData, this.state.selectedVersionId) }
   };
 
-  onDragStart (e, gId) {
-    if (!this.draggedItem) { this.draggedItem = gId }
-  };
-
-  onDrop (e, destinationItemId, sortedData, item) {
-    e.preventDefault()
-    if (!this.draggedItem) {
-      //
-    } else {
-      if (this.draggedItem === destinationItemId) {
-        this.draggedItem = null
-        return
-      }
-      const ids = []
-      sortedData.map((data) => ids.push(data.id))
-      let index = ''
-      let dropCheckFlag = false
-      for (let i = 0; i < ids.length; i++) {
-        if (ids[i] === destinationItemId) {
-          index = i
-        }
-        if (this.draggedItem === ids[i]) {
-          dropCheckFlag = true
-        }
-      }
-      if (!dropCheckFlag) return
-      const itemIds = ids.filter(
-        (item) => item !== this.draggedItem
-      )
-      itemIds.splice(index, 0, this.draggedItem)
-      if (item === 'pages') { this.props.set_page_ids(itemIds) }
-      if (item === 'endpoints') { this.props.update_endpoints_order(itemIds) }
-      if (item === 'groups') {
-        this.props.update_groups_order(itemIds, this.state.selectedVersionId)
-      }
-      this.draggedItem = null
-    }
-  }
-
   getSelectedCollection () {
     const collectionId = URI.parseQuery(this.props.location.search)
       .collectionId
