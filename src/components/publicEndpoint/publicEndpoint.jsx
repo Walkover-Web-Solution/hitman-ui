@@ -111,6 +111,31 @@ class PublicEndpoint extends Component {
     }
   }
 
+  openLink (link) {
+    window.open(`${link}`, '_blank')
+  }
+
+  displayCTAandLink () {
+    const collectionId = this.props.match.params.collectionIdentifier
+    let { cta, links } = this.props.collections[collectionId]?.docProperties || { cta: [], links: [] }
+    cta = cta ? cta.filter((o) => o.name.trim() && o.value.trim()) : []
+    links = links ? links.filter((o) => o.name.trim() && o.link.trim()) : []
+    return (
+      <div className='d-flex float-right'>
+        {links.map((link, index) => (
+          <div key={`link-${index}`}>
+            <label htmlFor={`link-${index}`} onClick={() => { this.openLink(link.link) }}>{link.name}</label>
+          </div>
+        ))}
+        {cta.map((cta, index) => (
+          <div key={`cta-${index}`}>
+            <button name={`cta-${index}`} onClick={() => { this.openLink(cta.value) }}>{cta.name}</button>
+          </div>
+        ))}
+      </div>
+    )
+  }
+
   render () {
     const collectionId = this.props.match.params.collectionIdentifier
     const docFaviconLink = this.props.collections[collectionId]?.docProperties?.defaultLogoUrl
@@ -183,6 +208,7 @@ class PublicEndpoint extends Component {
             <SideBar {...this.props} collectionName={this.state.collectionName} />
           </div>
           <div className='hm-right-content'>
+            {this.displayCTAandLink()}
             {
               this.state.collectionName !== ''
                 ? (
