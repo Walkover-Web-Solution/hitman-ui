@@ -1,6 +1,6 @@
 import './endpoints.scss'
 import React, { Component } from 'react'
-import { ListGroup, Col } from 'react-bootstrap'
+import { Dropdown, Col } from 'react-bootstrap'
 import 'ace-builds'
 import AceEditor from 'react-ace'
 import 'ace-builds/webpack-resolver'
@@ -15,6 +15,12 @@ class CodeTemplate extends Component {
     super(props)
     this.state = {
       theme: ''
+    }
+
+    this.priorityLanguages = {
+      java: { name: 'JAVA' },
+      node: { name: 'Node' },
+      php: { name: 'PHP' }
     }
 
     this.languages = {
@@ -79,9 +85,6 @@ class CodeTemplate extends Component {
     if (this.props.harObject) {
       this.makeCodeTemplate(this.selectedLanguage)
     }
-    if (!this.state.theme) {
-      this.setState({ theme: this.props.publicCollectionTheme })
-    }
   }
 
   componentDidUpdate (prevProps, prevState) {
@@ -90,33 +93,60 @@ class CodeTemplate extends Component {
     }
   }
 
+  toggleCodeEditor () {
+    this.props.editorToggle()
+  }
+
   render () {
-    const { theme } = this.state
+    const { codeEditorVisibility } = this.state
 
     return (
-      <div className='pubCodeWrapper'>
-        <div className='code-heading' style={{ color: theme }}>
-          Sample code for  {this.selectedLanguageName}
-        </div>
-        <Col id='code-window-sidebar' xs={12}>
-          <ListGroup>
-            {Object.keys(this.languages).map((key) => (
-              <ListGroup.Item
+      <div className={codeEditorVisibility ? 'pubCodeWrapper' : 'pubCodeWrapper closeEditor'}>
+        <button className='toggleButton' onClick={() => { this.toggleCodeEditor() }}>
+          <svg width='18' height='19' viewBox='0 0 18 19' fill='none' xmlns='http://www.w3.org/2000/svg'>
+            <path d='M6.75 13.75L11.25 9.25L6.75 4.75' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
+          </svg>
+          Sample Code
+        </button>
+        <Col id='code-window-sidebar' xs={12} className='d-flex justify-content-between'>
+          <div className='code-heading'>
+            Sample code
+          </div>
+          <div className='select-code-wrapper d-flex justify-content-end'>
+            {Object.keys(this.priorityLanguages).map(key => (
+              <button
                 key={key}
-                className={
-                  this.languages[key].name === this.selectedLanguageName
-                    ? 'active'
-                    : ''
-                }
+                className={this.languages[key].name === this.selectedLanguageName ? 'active' : ''}
                 onClick={() => {
                   this.makeCodeTemplate(key)
                 }}
               >
                 {this.languages[key].name}
-              </ListGroup.Item>
+              </button>
             ))}
-          </ListGroup>
-          <v1 />
+            <Dropdown>
+              <Dropdown.Toggle>
+                {Object.keys(this.priorityLanguages).includes(this.selectedLanguage) ? <span>More</span> : <span>{this.selectedLanguageName}</span>}
+              </Dropdown.Toggle>
+              <Dropdown.Menu>
+                {Object.keys(this.languages).filter(o => !Object.keys(this.priorityLanguages).includes(o)).map((key) => (
+                  <Dropdown.Item
+                    key={key}
+                    className={
+                      this.languages[key].name === this.selectedLanguageName
+                        ? 'active'
+                        : ''
+                    }
+                    onClick={() => {
+                      this.makeCodeTemplate(key)
+                    }}
+                  >
+                    {this.languages[key].name}
+                  </Dropdown.Item>
+                ))}
+              </Dropdown.Menu>
+            </Dropdown>
+          </div>
         </Col>
         <Col className='editor-body-wrapper' xs={12}>
           <div id='code-window-body'>

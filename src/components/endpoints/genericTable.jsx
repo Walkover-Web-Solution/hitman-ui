@@ -223,6 +223,8 @@ class GenericTable extends Component {
   }
 
   renderPublicTableRow (dataArray, index, originalData, title) {
+    dataArray = this.sortData(dataArray)
+    originalData = this.sortData(originalData)
     return (
       <tr key={index} id='generic-table-row' className={getHighlightsData(this.props, title, [dataArray[index].key]) ? 'active' : ''}>
         <td
@@ -429,6 +431,19 @@ class GenericTable extends Component {
           <th className='custom-th'>VALUE</th>
         </tr>
       </thead>
+    )
+  }
+
+  sortData (data) {
+    const priority = {
+      true: 1,
+      false: 2,
+      notApplicable: 3
+    }
+    return data.sort(
+      (itemA, itemB) => {
+        return (priority[itemA.checked] - priority[itemB.checked])
+      }
     )
   }
 

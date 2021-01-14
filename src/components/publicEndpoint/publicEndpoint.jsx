@@ -111,6 +111,31 @@ class PublicEndpoint extends Component {
     }
   }
 
+  openLink (link) {
+    window.open(`${link}`, '_blank')
+  }
+
+  displayCTAandLink () {
+    const collectionId = this.props.match.params.collectionIdentifier
+    let { cta, links } = this.props.collections[collectionId]?.docProperties || { cta: [], links: [] }
+    cta = cta ? cta.filter((o) => o.name.trim() && o.value.trim()) : []
+    links = links ? links.filter((o) => o.name.trim() && o.link.trim()) : []
+    return (
+      <div className='d-flex float-right'>
+        {links.map((link, index) => (
+          <div key={`link-${index}`}>
+            <label htmlFor={`link-${index}`} onClick={() => { this.openLink(link.link) }}>{link.name}</label>
+          </div>
+        ))}
+        {cta.map((cta, index) => (
+          <div key={`cta-${index}`}>
+            <button name={`cta-${index}`} onClick={() => { this.openLink(cta.value) }}>{cta.name}</button>
+          </div>
+        ))}
+      </div>
+    )
+  }
+
   render () {
     const collectionId = this.props.match.params.collectionIdentifier
     const docFaviconLink = this.props.collections[collectionId]?.docProperties?.defaultLogoUrl
@@ -180,9 +205,10 @@ class PublicEndpoint extends Component {
         <main role='main' className='mainpublic-endpoint-main hm-wrapper'>
           <ToastContainer />
           <div className='hm-sidebar'>
-            <SideBar {...this.props} />
+            <SideBar {...this.props} collectionName={this.state.collectionName} />
           </div>
           <div className='hm-right-content'>
+            {this.displayCTAandLink()}
             {
               this.state.collectionName !== ''
                 ? (
@@ -192,7 +218,7 @@ class PublicEndpoint extends Component {
                       render={(props) => <DisplayEndpoint {...props} publicCollectionTheme={this.state.collectionTheme} />}
                     />
                     <Route
-                      path={`/p/:collectionId/pages/:pageid/${this.state.collectionName}`}
+                      path={`/p/:collectionId/pages/:pageId/${this.state.collectionName}`}
                       render={(props) => <DisplayPage {...props} publicCollectionTheme={this.state.collectionTheme} />}
                     />
                     <Route

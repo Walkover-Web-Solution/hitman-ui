@@ -355,7 +355,7 @@ $border-color: rgba(227, 228, 230, 0.7);
             top: 0;
             right: 0;
             bottom: 0;
-
+            z-index:0;
             .dropdown-toggle {
               min-width: 30px !important;
               margin: 0 !important;

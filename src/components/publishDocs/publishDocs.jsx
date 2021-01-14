@@ -24,6 +24,7 @@ import {
 import './publishDocs.scss'
 import WarningModal from '../common/warningModal'
 import Footer from '../main/Footer'
+import { ReactComponent as SettingsIcon } from '../../assets/icons/settings.svg'
 const isEqual = require('react-fast-compare')
 
 const URI = require('urijs')
@@ -71,8 +72,12 @@ class PublishDocs extends Component {
     super(props)
     this.state = {
       selectedCollectionId: null,
-      warningModal: false
+      warningModal: false,
+      sDocPropertiesComplete: false,
+      openPageSettingsSidebar: false
     }
+    this.wrapperRef = React.createRef()
+    this.handleClickOutside = this.handleClickOutside.bind(this)
   }
 
   componentDidMount () {
@@ -91,6 +96,13 @@ class PublishDocs extends Component {
       selectedEndpointId: items?.selectedEndpointId || null,
       selectedPageId: items?.selectedPageId || null
     })
+  }
+
+  handleClickOutside (event) {
+    if (this.state.openPageSettingsSidebar && this.wrapperRef && !this.wrapperRef.current.contains(event.target)) {
+      document.removeEventListener('mousedown', this.handleClickOutside)
+      this.setState({ openPageSettingsSidebar: false })
+    }
   }
 
   componentDidUpdate (prevProps, prevState) {
@@ -955,6 +967,109 @@ class PublishDocs extends Component {
     )
   }
 
+  checkDocProperties (collectionId) {
+    const collection = this.props.collections[collectionId]
+    return !!(collection?.docProperties?.defaultTitle)
+  }
+
+  renderDocsFormSidebar () {
+    return (
+      <div ref={this.wrapperRef} className='right-sidebar hostedWrapper p-3'>
+        <div className='modal-title'>Page Settings</div>
+        <PublishDocsForm
+          {...this.props}
+          selected_collection_id={this.state.selectedCollectionId}
+          isSidebar
+          onHide={() => { this.setState({ openPageSettingsSidebar: false }) }}
+        />
+      </div>
+    )
+  }
+
+  renderPageSettingButton () {
+    return (
+      <div className='d-flex align-items-center mx-3'>
+        <button
+          className='pageSettingsButton'
+          onClick={() => {
+            this.setState({ openPageSettingsSidebar: !this.state.openPageSettingsSidebar }, () => {
+              document.addEventListener('mousedown', this.handleClickOutside)
+            })
+          }}
+        >
+          <SettingsIcon />
+        </button>
+      </div>
+    )
+  }
+
+  renderHostedAPIDetials () {
+    return (
+      <>
+        <div className='hosted-doc-heading'>Hosted API Doc</div>
+        <div className='d-flex align-items-center my-3'>
+          {this.rednerHostedAPIDropdown()}
+          {this.publishCollections()}
+          {this.renderPageSettingButton()}
+        </div>
+        <div className='grid-two'>
+          {this.state.openPageSettingsSidebar && this.renderDocsFormSidebar()}
+          <div className='versions-section'>
+            <select
+              className='form-control mb-3' onChange={this.setSelectedVersion.bind(this)} value={this.state.selectedVersionId}
+            >
+              {this.showVersions()}
+            </select>
+            {this.filterPages(null)}
+            <div className='version-groups'>
+              {this.showGroups()}
+            </div>
+          </div>
+          <div className='version-details'>
+            {this.showEndpoints()}
+            {this.showPages()}
+          </div>
+        </div>
+      </>
+    )
+  }
+
+  renderFullPageDocForm () {
+    return (
+      <>
+        <div className='publish-api-doc d-block'>
+          <div className='hosted-doc-heading'>Publish API Doc</div>
+          <div className='publish-api-doc-container my-3'>
+            <div className='form-group'>
+              <label>Hosted API's</label>
+              {this.rednerHostedAPIDropdown()}
+            </div>
+            <PublishDocsForm
+              {...this.props}
+              selected_collection_id={this.state.selectedCollectionId}
+            />
+          </div>
+        </div>
+      </>
+    )
+  }
+
+  rednerHostedAPIDropdown () {
+    const collectionId = URI.parseQuery(this.props.location.search).collectionId
+    return (
+      <>
+        <Dropdown>
+          <Dropdown.Toggle variant='' id='dropdown-basic'>
+            {this.props.collections[collectionId]?.name || ''}
+          </Dropdown.Toggle>
+          <Dropdown.Menu>
+            {this.showCollections()}
+          </Dropdown.Menu>
+        </Dropdown>
+      </>
+    )
+  }
+
   render () {
     const collectionId = URI.parseQuery(this.props.location.search).collectionId
     return (
@@ -963,50 +1078,12 @@ class PublishDocs extends Component {
         <div className='publish-docs-wrapper'>
           <div class='content-panel'>
             <div className='hosted-APIs'>
-              <div class='title mb-1'>
-                Hosted API's
-              </div>
-              <div className='publish-button'>
-                <Dropdown>
-                  <Dropdown.Toggle variant='' id='dropdown-basic'>
-                    {this.props.collections[collectionId]?.name || ''}
-                  </Dropdown.Toggle>
-
-                  <Dropdown.Menu>
-                    {this.showCollections()}
-                  </Dropdown.Menu>
-                </Dropdown>
-                {this.state.selectedCollectionId && this.props.collections[this.state.selectedCollectionId] && this.publishCollections()}
-
-              </div>
+              {this.state.selectedCollectionId && this.props.collections[this.state.selectedCollectionId] && (
+                !this.checkDocProperties(collectionId)
+                  ? this.renderFullPageDocForm()
+                  : this.renderHostedAPIDetials()
+              )}
             </div>
-            {this.state.selectedCollectionId && this.props.collections[this.state.selectedCollectionId] && (
-              <>
-                <div className='grid hostedWrapper'>
-                  <PublishDocsForm
-                    {...this.props}
-                    selected_collection_id={this.state.selectedCollectionId}
-                  />
-                </div>
-                <div className='grid-two'>
-                  <div className='versions-section'>
-                    <select
-                      className='form-control mb-3' onChange={this.setSelectedVersion.bind(this)} value={this.state.selectedVersionId}
-                    >
-                      {this.showVersions()}
-                    </select>
-                    {this.filterPages(null)}
-                    <div className='version-groups'>
-                      {this.showGroups()}
-                    </div>
-                  </div>
-                  <div className='version-details'>
-                    {this.showEndpoints()}
-                    {this.showPages()}
-                  </div>
-                </div>
-              </>
-            )}
           </div>
         </div>
         <Footer />
