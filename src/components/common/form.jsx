@@ -63,11 +63,12 @@ class Form extends Component {
     this.setState({ data })
   };
 
-  handleEditorChange = (value) => {
+  handleEditorChange = (value, editor) => {
     const data = this.state.data
     const description = value
+    const length = editor.getText().trim().length
     data.description = description
-    this.setState({ data })
+    this.setState({ data, length })
   };
 
   handleAceEditorChange = (value) => {
@@ -125,7 +126,7 @@ class Form extends Component {
           value={data.description}
           modules={this.modules}
           formats={this.formats}
-          onChange={this.handleEditorChange}
+          onChange={(content, delta, source, editor) => { this.handleEditorChange(content, editor) }}
         />
       </div>
     )
