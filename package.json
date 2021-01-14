@@ -88,7 +88,8 @@
   "standard": {
     "ignore": [
       "registerServiceWorker.js",
-      "openApiForm.jsx"
+      "openApiForm.jsx",
+      "uploadLogo.jsx"
     ],
     "parser": "babel-eslint"
   }
