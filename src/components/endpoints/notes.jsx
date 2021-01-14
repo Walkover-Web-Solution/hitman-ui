@@ -39,7 +39,6 @@ export class Notes extends Form {
       id: this.props.endpointId,
       notes: this.state.length === 0 ? '' : this.state.data.description
     }
-    console.log(data)
     this.props.update_endpoint(data)
   }
 
