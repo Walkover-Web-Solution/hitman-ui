@@ -24,6 +24,8 @@ import {
 import './publishDocs.scss'
 import WarningModal from '../common/warningModal'
 import Footer from '../main/Footer'
+import { SortableHandle, SortableContainer, SortableElement } from 'react-sortable-hoc'
+import { ReactComponent as DragHandleIcon } from '../../assets/icons/drag-handle.svg'
 const isEqual = require('react-fast-compare')
 
 const URI = require('urijs')
@@ -35,6 +37,18 @@ const publishDocsEnum = {
   DRAFT_STATE: 'Draft',
   EMPTY_STRING: ''
 }
+const DragHandle = SortableHandle(() => <span className='dragIcon mr-2'><DragHandleIcon /></span>)
+const SortableItem = SortableElement(({ children }) => {
+  return (
+    <>{children}</>
+  )
+})
+
+const SortableList = SortableContainer(({ children }) => {
+  return (
+    <>{children}</>
+  )
+})
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
@@ -381,24 +395,22 @@ class PublishDocs extends Component {
       return a.position - b.position
     })
     return (
-      <span>
-        {sortedEndpoints.map((endpoint) =>
-          <div
-            draggable
-            onDragOver={(e) => {
-              e.preventDefault()
-            }}
-            onDragStart={(e) => this.onDragStart(e, endpoint.id)}
-            onDrop={(e) => this.onDrop(e, endpoint.id, sortedEndpoints, 'endpoints')}
-            key={endpoint.id} onClick={() => this.openEndpoint(groupId, endpoint.id)}
-            className={this.state.selectedEndpointId === endpoint.id ? 'groupListing active' : 'groupListing'}
-          >
-            {/* <span className='tag'>E</span> */}
-            {endpoints[endpoint.id]?.name}
-            {this.displayState(endpoints[endpoint.id])}
-          </div>
-        )}
-      </span>
+      <SortableList useDragHandle onSortEnd={({ oldIndex, newIndex }) => { this.onSortEnd(oldIndex, newIndex, sortedEndpoints, 'endpoints') }}>
+        <div className='pages-inner'>
+          {sortedEndpoints.map((endpoint, index) =>
+            <SortableItem key={endpoint.id} index={index}>
+              <div
+                onClick={() => this.openEndpoint(groupId, endpoint.id)}
+                className={this.state.selectedEndpointId === endpoint.id ? 'groupListing active' : 'groupListing'}
+              >
+                <DragHandle />
+                {endpoints[endpoint.id]?.name}
+                {this.displayState(endpoints[endpoint.id])}
+              </div>
+            </SortableItem>
+          )}
+        </div>
+      </SortableList>
     )
   }
 
@@ -419,26 +431,23 @@ class PublishDocs extends Component {
         const sortedPages = Object.values(pages).sort(function (a, b) {
           return a.position - b.position
         })
-
         return (
-          <div className='pages-inner'>
-            {sortedPages.map((page) =>
-              <div
-                draggable
-                onDragStart={(e) => this.onDragStart(e, page.id)}
-                onDragOver={(e) => {
-                  e.preventDefault()
-                }}
-                onDrop={(e) => this.onDrop(e, page.id, sortedPages, 'pages')}
-                key={page.id} onClick={() => this.openPage(groupId, page.id)}
-                className={this.state.selectedPageId === page.id ? 'groupListing active' : 'groupListing'}
-              >
-                {/* <span className='tag'>P</span> */}
-                {this.state.pages[page.id]?.name}
-                {this.displayState(pages[page.id])}
-              </div>
-            )}
-          </div>
+          <SortableList useDragHandle onSortEnd={({ oldIndex, newIndex }) => { this.onSortEnd(oldIndex, newIndex, sortedPages, 'pages') }}>
+            <div className='pages-inner'>
+              {sortedPages.map((page, index) => (
+                <SortableItem key={page.id} index={index}>
+                  <div
+                    onClick={() => this.openPage('', page.id)}
+                    className={this.state.selectedPageId === page.id ? 'groupListing active' : 'groupListing'}
+                  >
+                    <DragHandle />
+                    {this.state.pages[page.id]?.name}
+                    {this.displayState(pages[page.id])}
+                  </div>
+                </SortableItem>
+              ))}
+            </div>
+          </SortableList>
         )
       }
     } else {
@@ -457,28 +466,37 @@ class PublishDocs extends Component {
         })
         if (Object.keys(pages).length === 0) return
         return (
-          <div className='pages-inner-wrapper'>
-            {sortedPages.map((page) =>
-              <div
-                draggable
-                onDragStart={(e) => this.onDragStart(e, page.id)}
-                onDragOver={(e) => {
-                  e.preventDefault()
-                }}
-                onDrop={(e) => this.onDrop(e, page.id, sortedPages, 'pages')}
-                key={page.id} onClick={() => this.openPage('', page.id)}
-                className={this.state.selectedPageId === page.id ? 'groupListing active' : 'groupListing'}
-              >
-                {/* <span className='tag'>P</span> */}
-                {this.state.pages[page.id]?.name}
-                {this.displayState(pages[page.id])}
-              </div>
-            )}
-          </div>
+          <SortableList useDragHandle onSortEnd={({ oldIndex, newIndex }) => { this.onSortEnd(oldIndex, newIndex, sortedPages, 'pages') }}>
+            <div className='pages-inner-wrapper'>
+              {sortedPages.map((page, index) => (
+                <SortableItem key={page.id} index={index}>
+                  <div
+                    onClick={() => this.openPage('', page.id)}
+                    className={this.state.selectedPageId === page.id ? 'groupListing active' : 'groupListing'}
+                  >
+                    <DragHandle />
+                    {this.state.pages[page.id]?.name}
+                    {this.displayState(pages[page.id])}
+                  </div>
+                </SortableItem>
+              ))}
+            </div>
+          </SortableList>
         )
       }
     }
   }
+
+  onSortEnd = (oldIndex, newIndex, sortedData, type) => {
+    const newData = []
+    sortedData.forEach(item => {
+      item.id !== sortedData[oldIndex].id && newData.push(item.id)
+    })
+    newData.splice(newIndex, 0, sortedData[oldIndex].id)
+    if (type === 'pages') { this.props.set_page_ids(newData) }
+    if (type === 'endpoints') { this.props.update_endpoints_order(newData) }
+    if (type === 'groups') { this.props.update_groups_order(newData, this.state.selectedVersionId) }
+  };
 
   onDragStart (e, gId) {
     if (!this.draggedItem) { this.draggedItem = gId }
@@ -652,11 +670,11 @@ class PublishDocs extends Component {
 
   showEndpointsAndPages (groupId) {
     return (
-      <div key={groupId} className='groups-inner'>
-        <h3> {this.state.groups[groupId]?.name}</h3>
+      <>
+        <div className='group-title'>{this.state.groups[groupId]?.name}</div>
         {this.filterPages(groupId)}
         {this.filterEndpoints(groupId)}
-      </div>
+      </>
     )
   }
 
@@ -682,18 +700,17 @@ class PublishDocs extends Component {
       })
       if (sortedGroups.length !== 0) {
         return (
-          sortedGroups.map((group) =>
-            <div
-              key={group.id}
-              draggable
-              onDragOver={(e) => {
-                e.preventDefault()
-              }}
-              onDragStart={(e) => this.onDragStart(e, group.id)}
-              onDrop={(e) => this.onDrop(e, group.id, sortedGroups, 'groups')}
-            >{this.showEndpointsAndPages(group.id)}
+          <SortableList onSortEnd={({ oldIndex, newIndex }) => { this.onSortEnd(oldIndex, newIndex, sortedGroups, 'groups') }}>
+            <div>
+              {sortedGroups.map((group, index) => (
+                <SortableItem key={group.id} index={index}>
+                  <div className='groups-inner'>
+                    {this.showEndpointsAndPages(group.id)}
+                  </div>
+                </SortableItem>
+              ))}
             </div>
-          )
+          </SortableList>
         )
       }
     }

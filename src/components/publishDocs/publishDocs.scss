@@ -237,16 +237,13 @@ span.tag {
   border-radius: 4px;
 }
 
-.version-groups {
-  .groups-inner {
-    >h3 {
-      text-transform: capitalize;
-      font-weight: 600;
-      font-size: 16px;
-      color: #E98A36;
-      margin: 0 0 5px 0;
-    }
-  }
+.group-title {
+  cursor: pointer;
+  text-transform: capitalize;
+  font-weight: 600;
+  font-size: 16px;
+  color: #E98A36;
+  margin: 0 0 5px 0;
 }
 
 .groupListing {
