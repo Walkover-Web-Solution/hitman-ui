@@ -36,7 +36,7 @@ class UserInfo extends Component {
   navigateToPublishDocs () {
     const collection = this.getFirstPublicCollection()
     this.props.open_publish_docs(collection)
-    this.props.open_collection(null) // for closing secondary-sidebar
+    // this.props.open_collection(null) // for closing secondary-sidebar
   }
 
   openImportCollectionForm () {
@@ -125,7 +125,12 @@ class UserInfo extends Component {
 
                       Team
                     </div>
-                    <Dropdown.Item onClick={() => this.navigateToPublishDocs()}>
+                    <Dropdown.Item onClick={() => {
+                      this.props.open_collection(this.getFirstPublicCollection()?.id || null)
+                      this.props.disable_secondary_sidebar()
+                      this.navigateToPublishDocs()
+                    }}
+                    >
                       <svg width='20' height='19' viewBox='0 0 20 19' fill='none' xmlns='http://www.w3.org/2000/svg'>
                         <mask id='path-1-inside-1' fill='white'>
                           <rect y='10.5' width='20' height='8' rx='1' />

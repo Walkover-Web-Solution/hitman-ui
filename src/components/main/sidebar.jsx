@@ -579,10 +579,11 @@ class SideBar extends Component {
       <div className='userInfowrapper'>
         <UserNotification
           {...this.props}
+          open_collection={this.openCollection.bind(this)}
+          disable_secondary_sidebar={() => { this.setState({ secondarySidebarToggle: true }) }}
           get_notification_count={this.getNotificationCount.bind(this)}
           get_public_collections={this.getPublicCollections.bind(this)}
           open_publish_docs={this.openPublishDocs.bind(this)}
-          open_collection={this.openCollection.bind(this)}
         />
       </div>
     )
