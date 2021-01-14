@@ -3,7 +3,7 @@ import Form from '../common/form'
 import Joi from 'joi-browser'
 import { connect } from 'react-redux'
 import { updateEndpoint } from './redux/endpointsActions'
-import { isDashboardRoute } from '../common/utility'
+import { isDashboardRoute, isSavedEndpoint } from '../common/utility'
 import ReactHtmlParser from 'react-html-parser'
 
 const mapDispatchToProps = (dispatch) => {
@@ -82,7 +82,7 @@ export class Notes extends Form {
       <div>
         {!isDashboardRoute(this.props)
           ? this.renderNote()
-          : this.renderForm()}
+          : isSavedEndpoint(this.props) && this.renderForm()}
 
       </div>
     )
