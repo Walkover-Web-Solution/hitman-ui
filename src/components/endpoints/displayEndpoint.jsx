@@ -51,7 +51,8 @@ const mapStateToProps = (state) => {
     ] || { id: null, name: 'No Environment' },
     currentEnvironmentId: state.environment.currentEnvironmentId,
     environments: state.environment.environments,
-    historySnapshots: state.history
+    historySnapshots: state.history,
+    collections: state.collections
   }
 }
 
