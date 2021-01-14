@@ -3,7 +3,10 @@ import CustomColorPicker from './customColorPicker'
 import { connect } from 'react-redux'
 import Joi from 'joi-browser'
 import { Button } from 'react-bootstrap'
+import { ReactComponent as UploadIcon } from '../../assets/icons/uploadIcon.svg'
+import UploadLogo from '../uploadLogo/uploadLogo'
 import { updateCollection } from '../collections/redux/collectionsActions'
+import './publishDocsForm.scss'
 const URI = require('urijs')
 
 const publishDocFormEnum = {
@@ -80,7 +83,7 @@ class PublishDocForm extends Component {
   setSelectedCollection () {
     const collectionId = URI.parseQuery(this.props.location.search).collectionId
     let collection = {}
-    let title, logoUrl, domain, theme, cta, links
+    let title, logoUrl, domain, theme, cta, links, favicon
     if (this.props.collections) {
       collection = this.props.collections[collectionId]
       if (collection && Object.keys(collection).length > 0) {
@@ -90,8 +93,9 @@ class PublishDocForm extends Component {
         theme = collection?.theme || publishDocFormEnum.NULL_STRING
         cta = collection?.docProperties?.cta || publishDocFormEnum.INITIAL_CTA
         links = collection?.docProperties?.links || publishDocFormEnum.INITIAL_LINKS
+        favicon = collection?.favicon || publishDocFormEnum.NULL_STRING
         const data = { title, logoUrl, domain, theme }
-        this.setState({ data, cta, links })
+        this.setState({ data, cta, links, binaryFile: favicon })
       }
     }
   }
@@ -135,6 +139,7 @@ class PublishDocForm extends Component {
     const customDomain = data.domain.trim()
     collection.customDomain = customDomain.length !== 0 ? customDomain : null
     collection.theme = data.theme
+    collection.favicon = this.state.binaryFile
     collection.docProperties = {
       defaultTitle: data.title.trim(),
       defaultLogoUrl: data.logoUrl.trim(),
@@ -145,6 +150,7 @@ class PublishDocForm extends Component {
     this.setState({ errors: errors || {} })
     if (errors) return
     this.setState({ loader: true })
+    // uploadLogoApi({favIcon:this.state.binaryFile},collectionId);
     this.props.update_collection(collection, () => { this.setState({ loader: false }) })
   }
 
@@ -208,6 +214,37 @@ class PublishDocForm extends Component {
     )
   }
 
+  openUploadModal () {
+    this.setState({ uploadModal: true })
+  }
+
+  closeUploadModal () {
+    this.setState({ uploadModal: false })
+  }
+
+  renderUploadModal () {
+    return (
+      this.state.uploadModal && (<UploadLogo
+        {...this.props}
+        show
+        onHide={() => this.closeUploadModal()}
+        setBinaryFile={(file, uploadedFile) => {
+          this.setState({ binaryFile: file, uploadedFile })
+        }}
+                                 />
+      )
+    )
+  }
+
+  renderUploadBox () {
+    return (
+      <div className='uploadBox'>
+        {!this.state.binaryFile && <UploadIcon style={{ cursor: 'pointer' }} onClick={() => this.openUploadModal()} />}
+        {this.state.binaryFile && <img src={`data:image/png;base64,${this.state.binaryFile}`} height='60' width='60' />}
+      </div>
+    )
+  }
+
   renderInput (name, mandatory = false) {
     return (
       <div className='form-group'>
@@ -225,7 +262,15 @@ class PublishDocForm extends Component {
       <>
         {this.renderInput('title', true)}
         {this.renderInput('domain')}
-        {this.renderInput('logoUrl')}
+        {this.renderUploadModal()}
+        <div classname='d-flex'>
+          <div>{this.renderUploadBox()}
+            {this.state.binaryFile && (
+              <span style={{ cursor: 'pointer' }} onClick={() => { this.setState({ binaryFile: null, uploadedFile: null }) }}>Remove</span>
+            )}
+          </div>
+          <div>{this.renderInput('logoUrl')}</div>
+        </div>
         {this.renderColorPicker()}
         {this.renderCTAButtons()}
         {this.renderLinkButtons()}

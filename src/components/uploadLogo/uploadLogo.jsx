@@ -1,21 +1,6 @@
 import React, { Component } from 'react'
 import { Modal } from 'react-bootstrap'
-// import { withRouter } from 'react-router-dom'
-// import { uploadLogoApi } from './uploadLogoApiService'
-// import { importApi } from '../collections/redux/collectionsActions'
-// import { connect } from 'react-redux'
-// import Joi from 'joi-browser'
 import '../openApi/openApi.scss'
-
-// const mapStateToProps = (state) => {
-//   return {}
-// }
-
-// const mapDispatchToProps = (dispatch) => {
-//   return {
-//     upload_logo_api: (openApiObject, importType, website) => dispatch(uploadLogoApi(openApiObject, importType, website))
-//   }
-// }
 
 class UploadLogo extends Component {
   constructor (props) {
@@ -33,10 +18,12 @@ class UploadLogo extends Component {
     let FileError = null
     if (this.state.uploadedFile === null) {
       FileError = 'File should not be set empty'
-    } else if (this.state.uploadedFile.size > 1000) { FileError = 'File size should not more than 1MB' }
+    }
+    // } else if (this.state.uploadedFile.size > 1000) { FileError = 'File size should not more than 1MB' }
     this.setState({ errors: { ...errors, file: FileError } })
-    // if (errors || FileError) return
-    // this.importApi()
+    if (FileError) return
+    this.props.setBinaryFile(this.state.base64String, this.state.uploadedFile)
+    this.props.onHide()
   }
 
   handleReaderLoaded =(readerEvt) => {
@@ -54,8 +41,6 @@ class UploadLogo extends Component {
       reader.readAsBinaryString(selectedFile)
     }
     if (selectedFile) {
-      // const uploadedFile = new FormData()
-      // uploadedFile.append('myFile', selectedFile, selectedFile.name)
       this.setState({ uploadedFile: selectedFile, errors: { ...this.state.error, file: null } })
     } else {
       this.setState({ uploadedFile: null, errors: { ...this.state.error, file: null } })
@@ -86,7 +71,7 @@ class UploadLogo extends Component {
                   <div id='select-json-wrapper'>
                     <label>Select File</label>
                     <span className='customFileChooser'>
-                      <input type='file' accept='.svg, .png, .ico' onChange={this.onFileChange.bind(this)} />
+                      <input type='file' accept='.png' onChange={this.onFileChange.bind(this)} />
                       Choose file
                     </span>
                     {this.state.errors?.file && <div className='alert alert-danger'>{this.state.errors?.file}</div>}
@@ -97,8 +82,7 @@ class UploadLogo extends Component {
             </div>
             {this.state.base64String && <div>
               <img src={`data:${this.state.uploadedFile.type};base64,${this.state.base64String}`} height='60' width='60' />
-              {/* {console.log(`data:${this.state.uploadedFile.type};base64,${this.state.base64String}`)} */}
-                                        </div>}
+            </div>}
             <div className='text-right mt-4'>
               <button
                 type='button'
