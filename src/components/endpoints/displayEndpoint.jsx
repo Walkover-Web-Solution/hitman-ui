@@ -35,6 +35,8 @@ import indexedDbService from '../indexedDb/indexedDbService'
 import Authorization from './displayAuthorization'
 import LoginSignupModal from '../main/loginSignupModal'
 import PublicSampleResponse from './publicSampleResponse'
+import Notes from './notes'
+import ReactHtmlParser from 'react-html-parser'
 const shortid = require('shortid')
 
 const status = require('http-status')
@@ -49,7 +51,8 @@ const mapStateToProps = (state) => {
     ] || { id: null, name: 'No Environment' },
     currentEnvironmentId: state.environment.currentEnvironmentId,
     environments: state.environment.environments,
-    historySnapshots: state.history
+    historySnapshots: state.history,
+    collections: state.collections
   }
 }
 
@@ -118,7 +121,8 @@ class DisplayEndpoint extends Component {
       sampleResponseFlagArray: [],
       theme: '',
       loader: false,
-      saveLoader: false
+      saveLoader: false,
+      codeEditorVisibility: true
     }
 
     this.uri = React.createRef()
@@ -786,7 +790,8 @@ class DisplayEndpoint extends Component {
     return version.collectionId
   }
 
-  handleSave = async (groupId, { endpointName, endpointDescription }) => {
+  handleSave = async (groupId, endpointObject) => {
+    const { endpointName, endpointDescription } = endpointObject || {}
     if (!getCurrentUser()) {
       this.setState({
         showLoginSignupModal: true
@@ -1751,13 +1756,13 @@ class DisplayEndpoint extends Component {
         }
       })
     }
-    const { theme } = this.state
+    const { theme, codeEditorVisibility } = this.state
     return (
       <div
         // className={
         //   this.props.location.pathname.split('/')[1] !== 'admin' ? '' : 'mainContentWrapperPublic'
         // }
-        className={isDashboardRoute(this.props) ? '' : 'mainContentWrapperPublic'}
+        className={isDashboardRoute(this.props) ? '' : codeEditorVisibility ? 'mainContentWrapperPublic' : 'mainContentWrapperPublic hideCodeEditor'}
       >
         <div className='mainContentWrapper'>
           <div className='hm-endpoint-container endpoint-container row'>
@@ -1800,7 +1805,7 @@ class DisplayEndpoint extends Component {
               {!isDashboardRoute(this.props) && (
                 <div className='endpoint-name-container'>
                   {!isDashboardRoute(this.props, true) && <h1 className='endpoint-title'>{this.state.data?.name || ''}</h1>}
-                  <p>{this.state.endpoint?.description || ''}</p>
+                  <p>{ReactHtmlParser(this.state.endpoint?.description) || ''}</p>
                 </div>
               )}
             </div>
@@ -2202,6 +2207,13 @@ class DisplayEndpoint extends Component {
                   )
                 }
                 {
+                   !isDashboardRoute(this.props) &&
+                     <Notes
+                       {...this.props}
+                       note={this.props.endpoints[this.props.endpointId]?.notes || ''}
+                     />
+                }
+                {
                   this.displayResponse()
                 }
               </div>
@@ -2224,6 +2236,7 @@ class DisplayEndpoint extends Component {
                 onHide={() => {
                   this.setState({ showCodeTemplate: false })
                 }}
+                editorToggle={() => { this.setState({ codeEditorVisibility: !this.state.codeEditorVisibility }) }}
                 harObject={this.state.harObject}
                 title='Generate Code Snippets'
                 publicCollectionTheme={this.props.publicCollectionTheme}

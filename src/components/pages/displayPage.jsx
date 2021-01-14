@@ -41,6 +41,9 @@ class DisplayPage extends Component {
     if (this.props.pageId && prevProps !== this.props) {
       this.setState({ data: this.props.pages[this.props.pageId] || { id: null, versionId: null, groupId: null, name: '', contents: '' } })
     }
+    if (this.props.match.params.pageId !== prevProps.match.params.pageId) {
+      this.fetchPage(this.props.match.params.pageId)
+    }
   }
 
   handleEdit (page) {

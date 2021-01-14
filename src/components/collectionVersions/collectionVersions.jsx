@@ -16,7 +16,7 @@ import VersionPages from '../pages/versionPages'
 import './collectionVersions.scss'
 import collectionVersionsService from './collectionVersionsService'
 import filterService from '../../services/filterService'
-
+import { ReactComponent as SearchIcon } from '../../assets/icons/searchIcon.svg'
 const mapStateToProps = (state) => {
   return {
     versions: state.versions,
@@ -48,7 +48,13 @@ class CollectionVersions extends Component {
       },
       theme: '',
       filter: '',
-      selectedVersionIndex: ''
+      selectedVersionIndex: '',
+      results: {
+        pages: [],
+        endpoints: []
+      },
+      value: '',
+      searchLoader: false
     }
 
     this.filterFlag = false
@@ -492,6 +498,124 @@ class CollectionVersions extends Component {
     )
   }
 
+  searchFunction () {
+    const value = this.state.value || ''
+    const pages = Object.values(this.props.pages)
+    const endpoints = Object.values(this.props.endpoints)
+    const filteredEndpoints = endpoints.filter(o => o.name.match(new RegExp(value, 'i')))
+    const filteredPages = pages.filter(o => o.name.match(new RegExp(value, 'i')))
+    const results = {
+      pages: [],
+      endpoints: []
+    }
+    filteredPages.forEach(page => {
+      results.pages.push({ name: page.name, type: 'page', id: page.id })
+    })
+    filteredEndpoints.forEach(endpoint => {
+      results.endpoints.push({ name: endpoint.name, type: 'endpoint', id: endpoint.id, requestType: endpoint.requestType })
+    })
+    this.setState({ results, searchLoader: false })
+  }
+
+  renderResponses () {
+    return (
+      <div className='hm-sidebar-outer-block'>
+        {!this.state.searchLoader
+          ? this.state.results.pages.length !== 0 || this.state.results.endpoints.length !== 0
+              ? (
+                <>
+                  {this.state.results.pages.length !== 0 && (
+                    <div className='my-3'>
+                      <div className='hm-sidebar-label my-3'>Pages</div>
+                      {this.state.results.pages.map(result => this.renderListItem(result))}
+                    </div>
+                  )}
+                  {this.state.results.endpoints.length !== 0 && (
+                    <div className='my-3'>
+                      <div className='hm-sidebar-label my-3'>Endpoints</div>
+                      {this.state.results.endpoints.map(result => this.renderListItem(result))}
+                    </div>
+                  )}
+                </>
+                )
+              : <div className='text-center'> No Results </div>
+          : <div className='text-center'>Searching...</div>}
+      </div>
+    )
+  }
+
+  renderListItem (item) {
+    switch (item.type) {
+      case 'endpoint':
+        return (
+          <div className='hm-sidebar-item' onClick={() => { this.openLink(item) }}>
+            <div className={`api-label ${item.requestType}`}>
+              <div className='endpoint-request-div'>
+                {item.requestType}
+              </div>
+            </div>
+            <span className='ml-2'>{item.name}</span>
+          </div>
+        )
+      case 'page':
+        return (
+          <div className='hm-sidebar-item' onClick={() => { this.openLink(item) }}><i className='uil uil-file-alt' /><span className='mx-1'>{item.name}</span></div>
+        )
+      default: break
+    }
+  }
+
+  openLink (item) {
+    const collectionId = this.props.match.params.collectionId
+    const collectionName = this.props.collectionName
+    let link = ''
+    switch (item.type) {
+      case 'endpoint':
+        link = `/p/${collectionId}/e/${item.id}/${collectionName}`
+        break
+      case 'page' :
+        link = `/p/${collectionId}/pages/${item.id}/${collectionName}`
+        break
+      default: break
+    }
+    if (link.length) {
+      this.props.history.push({
+        pathname: link
+      })
+    }
+  }
+
+  handleChange (e) {
+    clearTimeout(this.typingTimeout)
+    this.typingTimeout = setTimeout(this.searchFunction.bind(this), 1000)
+    this.setState({ value: e.target.value, results: { pages: [], endpoints: [] }, searchLoader: true })
+  }
+
+  renderPublicSearchBar () {
+    return (
+      <div className='search-box' onClick={() => { this.myInputRef.focus(); this.setState({ enableSearch: true }) }}>
+        <label htmlFor='search'>
+          <SearchIcon onClick={() => {}} />
+        </label>
+        <input
+          ref={c => (this.myInputRef = c)}
+          value={this.state.value || ''}
+          type='text'
+          name='filter'
+          id='search'
+          placeholder='Search'
+          onChange={(e) => this.handleChange(e)}
+          autoComplete='off'
+          onBlur={() => {
+            if (!this.state.value) {
+              this.setState({ enableSearch: false })
+            }
+          }}
+        />
+      </div>
+    )
+  }
+
   render () {
     if (
       this.filterFlag === false ||
@@ -517,10 +641,10 @@ class CollectionVersions extends Component {
             this.state.selectedVersion
           )}
         {
-          !isDashboardRoute(this.props, true) && this.props.location.pathname.split('/')[1] !== 'admin'
+          !isDashboardRoute(this.props, true)
             ? (
               <>
-                <div className='versionWrapper'>
+                <div className={this.filteredVersions && Object.keys(this.filteredVersions).length > 1 ? this.state.enableSearch ? 'versionWrapper versionsAvailable enableSearch' : 'versionWrapper versionsAvailable' : 'versionWrapper'}>
                   {this.filteredVersions && Object.keys(this.filteredVersions).length > 1
                     ? (
                       <select
@@ -535,23 +659,25 @@ class CollectionVersions extends Component {
                       </select>
                       )
                     : null}
+                  {this.renderPublicSearchBar()}
                 </div>
               </>
               )
             : null
         }
-
-        {this.filteredVersions &&
-          Object.keys(this.filteredVersions) &&
-          Object.keys(this.filteredVersions)
-            .filter(
-              (versionId) =>
-                this.filteredVersions[versionId].collectionId ===
-                this.props.collection_id
-            )
-            .map((versionId, index) => (
-              this.renderBody(versionId, index)
-            ))}
+        {this.state.value
+          ? this.renderResponses()
+          : this.filteredVersions &&
+            Object.keys(this.filteredVersions) &&
+            Object.keys(this.filteredVersions)
+              .filter(
+                (versionId) =>
+                  this.filteredVersions[versionId].collectionId ===
+                  this.props.collection_id
+              )
+              .map((versionId, index) => (
+                this.renderBody(versionId, index)
+              ))}
       </>
     )
   }
