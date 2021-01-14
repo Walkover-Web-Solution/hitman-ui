@@ -28,6 +28,12 @@ export class Notes extends Form {
     }
   }
 
+  componentDidUpdate (prevProps, prevState) {
+    if (this.props.note !== prevProps.note) {
+      this.setState({ data: { ...this.state.data, description: this.props.note } })
+    }
+  }
+
   doSubmit () {
     const data = {
       id: this.props.endpointId,
@@ -37,10 +43,9 @@ export class Notes extends Form {
   }
 
   renderNote () {
-    const endpointId = this.props.match.params.endpointId
     return (
       <div>
-        {ReactHtmlParser(this.props.endpoints[endpointId]?.notes) || ''}
+        {ReactHtmlParser(this.state.data.description) || ''}
       </div>
     )
   }
@@ -72,7 +77,7 @@ export class Notes extends Form {
   render () {
     return (
       <blockquote>
-        {!isDashboardRoute(this.props, true)
+        {!isDashboardRoute(this.props)
           ? this.renderNote()
           : this.renderForm()}
 

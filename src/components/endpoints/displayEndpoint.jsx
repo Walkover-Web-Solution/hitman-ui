@@ -2207,11 +2207,11 @@ class DisplayEndpoint extends Component {
                   )
                 }
                 {
-                   !isDashboardRoute(this.props) &&
-                     <Notes
-                       {...this.props}
-                       note={this.props.endpoints[this.props.endpointId]?.notes || ''}
-                     />
+                  <Notes
+                    {...this.props}
+                    note={this.state.endpoint?.notes || ''}
+                    endpointId={this.state.endpoint?.id}
+                  />
                 }
                 {
                   this.displayResponse()
