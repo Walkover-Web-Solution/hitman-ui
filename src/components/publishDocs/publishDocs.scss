@@ -22,7 +22,7 @@
   top: 0px;
   right: 0px;
   height: 100vh;
-  width: 35vw;
+  width: 40vw;
   box-shadow: -25px 25px 43px rgba(0, 0, 0, 0.07)
 }
 
@@ -92,7 +92,7 @@
   grid-template-columns: 0.5fr 1.5fr;
 
   .versions-section {
-    margin: 10px;
+    margin: 0 15px 0px 0;
 
     .groups {
       padding: 10px;
@@ -272,16 +272,13 @@ span.tag {
   border-radius: 4px;
 }
 
-.version-groups {
-  .groups-inner {
-    >h3 {
-      text-transform: capitalize;
-      font-weight: 600;
-      font-size: 16px;
-      color: #E98A36;
-      margin: 0 0 5px 0;
-    }
-  }
+.group-title {
+  cursor: pointer;
+  text-transform: capitalize;
+  font-weight: 600;
+  font-size: 16px;
+  color: #E98A36;
+  margin: 0 0 5px 0;
 }
 
 .groupListing {
@@ -311,4 +308,14 @@ span.tag {
   input{
     border: 1px solid orange;
   }
+}
+.page-setting  .modal-title {
+  color: #e98a36;
+  margin-bottom: 15px;
+}
+
+.right-sidebar.page-setting { 
+  padding: 20px 30px !important;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
