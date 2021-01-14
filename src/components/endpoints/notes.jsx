@@ -16,7 +16,6 @@ const mapDispatchToProps = (dispatch) => {
 export class Notes extends Form {
   constructor (props) {
     super(props)
-
     this.schema = {
       description: Joi.string().allow(null, '').label('Description')
     }
@@ -24,7 +23,8 @@ export class Notes extends Form {
     this.state = {
       data: {
         description: props.note
-      }
+      },
+      theme: props.publicCollectionTheme
     }
   }
 
@@ -37,14 +37,15 @@ export class Notes extends Form {
   doSubmit () {
     const data = {
       id: this.props.endpointId,
-      notes: this.state.data.description
+      notes: this.state.length === 0 ? '' : this.state.data.description
     }
+    console.log(data)
     this.props.update_endpoint(data)
   }
 
   renderNote () {
     return (
-      <div>
+      <div className='pub-notes' style={{ borderLeftColor: this.state.theme }}>
         {ReactHtmlParser(this.state.data.description) || ''}
       </div>
     )
@@ -53,35 +54,38 @@ export class Notes extends Form {
   renderForm () {
     return (
       <>
-        <form onSubmit={this.handleSubmit}>
-          {this.renderQuillEditor('description', 'Add additional information')}
+        <div className='des-wrapper'>
+          <form onSubmit={this.handleSubmit}>
+            {this.renderQuillEditor('description', 'Add additional information')}
 
-          <div>
-            <button
-              type='reset' onClick={(e) => {
-                this.setState({ data: { ...this.state.data, description: '' } })
-              }}
-            >
-              Clear
-            </button>
-            <button type='submit'>
-              Submit
-            </button>
+            <div className='quicn-actions'>
+              <button
+                className='btn btn-secondary outline'
+                type='reset' onClick={(e) => {
+                  this.setState({ data: { ...this.state.data, description: '' } })
+                }}
+              >
+                Clear
+              </button>
+              <button type='submit' className='btn btn-primary'>
+                Save
+              </button>
 
-          </div>
-        </form>
+            </div>
+          </form>
+        </div>
       </>
     )
   }
 
   render () {
     return (
-      <blockquote>
+      <div>
         {!isDashboardRoute(this.props)
           ? this.renderNote()
           : this.renderForm()}
 
-      </blockquote>
+      </div>
     )
   }
 }

@@ -223,13 +223,21 @@ class PublishDocForm extends Component {
   render () {
     return (
       <>
-        {this.renderInput('title', true)}
-        {this.renderInput('domain')}
-        {this.renderInput('logoUrl')}
-        {this.renderColorPicker()}
-        {this.renderCTAButtons()}
-        {this.renderLinkButtons()}
-        {this.renderFooter()}
+        <div className='small-input'>
+          {this.renderInput('title', true)}
+          {this.renderInput('domain')}
+          {this.renderInput('logoUrl')}
+        </div>
+        <div className='color-picker'>
+          {this.renderColorPicker()}
+        </div>
+        <div className='cta-buton'>
+          {this.renderCTAButtons()}
+          {this.renderLinkButtons()}
+        </div>
+        <div className='foot-warpper'>
+          {this.renderFooter()}
+        </div>
       </>
     )
   }
