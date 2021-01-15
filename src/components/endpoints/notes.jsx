@@ -3,7 +3,7 @@ import Form from '../common/form'
 import Joi from 'joi-browser'
 import { connect } from 'react-redux'
 import { updateEndpoint } from './redux/endpointsActions'
-import { isDashboardRoute } from '../common/utility'
+import { isDashboardRoute, isSavedEndpoint } from '../common/utility'
 import ReactHtmlParser from 'react-html-parser'
 
 const mapDispatchToProps = (dispatch) => {
@@ -28,20 +28,24 @@ export class Notes extends Form {
     }
   }
 
+  componentDidUpdate (prevProps, prevState) {
+    if (this.props.note !== prevProps.note) {
+      this.setState({ data: { ...this.state.data, description: this.props.note } })
+    }
+  }
+
   doSubmit () {
     const data = {
       id: this.props.endpointId,
-      notes: this.state.data.description
+      notes: this.state.length === 0 ? '' : this.state.data.description
     }
     this.props.update_endpoint(data)
   }
 
   renderNote () {
-    const endpointId = this.props.match.params.endpointId
-
     return (
       <div className='pub-notes' style={{ borderLeftColor: this.state.theme }}>
-        {ReactHtmlParser(this.props.endpoints[endpointId]?.notes) || ''}
+        {ReactHtmlParser(this.state.data.description) || ''}
       </div>
     )
   }
@@ -76,9 +80,9 @@ export class Notes extends Form {
   render () {
     return (
       <div>
-        {!isDashboardRoute(this.props, true)
+        {!isDashboardRoute(this.props)
           ? this.renderNote()
-          : this.renderForm()}
+          : isSavedEndpoint(this.props) && this.renderForm()}
 
       </div>
     )
