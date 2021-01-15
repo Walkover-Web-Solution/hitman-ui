@@ -4,10 +4,12 @@ import { Dropdown, Col } from 'react-bootstrap'
 import 'ace-builds'
 import AceEditor from 'react-ace'
 import 'ace-builds/webpack-resolver'
+import 'ace-builds/src-noconflict/theme-tomorrow_night'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 // import copyIcon from '../../assets/icons/copyIcon.svg'
 import { ReactComponent as CopyIcon } from '../../assets/icons/copyIcon.svg'
 import { toast } from 'react-toastify'
+import { languages, primaryLanguages, secondaryLanguages } from './languages'
 const HTTPSnippet = require('httpsnippet')
 
 class CodeTemplate extends Component {
@@ -16,32 +18,6 @@ class CodeTemplate extends Component {
     this.state = {
       theme: ''
     }
-
-    this.priorityLanguages = {
-      java: { name: 'JAVA' },
-      node: { name: 'Node' },
-      php: { name: 'PHP' }
-    }
-
-    this.languages = {
-      node: { name: 'Node' },
-      shell: { name: 'Shell' },
-      c: { name: 'C' },
-      csharp: { name: 'Csharp' },
-      javascript: { name: 'JavaScript' },
-      php: { name: 'PHP' },
-      r: { name: 'R' },
-      ruby: { name: 'Ruby' },
-      swift: { name: 'Swift' },
-      java: { name: 'JAVA' },
-      clojure: { name: 'Clojure' },
-      go: { name: 'go' },
-      htpp: { name: 'http' },
-      objc: { name: 'objc' },
-      ocaml: { name: 'ocaml' },
-      python: { name: 'Python' }
-    }
-
     this.selectedLanguage = 'node'
   }
 
@@ -70,7 +46,7 @@ class CodeTemplate extends Component {
 
   makeCodeTemplate (selectedLanguage) {
     this.selectedLanguage = selectedLanguage
-    this.selectedLanguageName = this.languages[selectedLanguage].name
+    this.selectedLanguageName = languages[selectedLanguage].name
     let codeSnippet = ''
     try {
       const snippet = this.makeCodeSnippet()
@@ -113,35 +89,31 @@ class CodeTemplate extends Component {
             Sample code
           </div>
           <div className='select-code-wrapper d-flex justify-content-end'>
-            {Object.keys(this.priorityLanguages).map(key => (
+            {primaryLanguages.map(key => (
               <button
                 key={key}
-                className={this.languages[key].name === this.selectedLanguageName ? 'active' : ''}
+                className={key === this.selectedLanguage ? 'active' : ''}
                 onClick={() => {
                   this.makeCodeTemplate(key)
                 }}
               >
-                {this.languages[key].name}
+                {languages[key].name}
               </button>
             ))}
             <Dropdown>
-              <Dropdown.Toggle>
-                {Object.keys(this.priorityLanguages).includes(this.selectedLanguage) ? <span>More</span> : <span>{this.selectedLanguageName}</span>}
+              <Dropdown.Toggle variant='default' className={secondaryLanguages.includes(this.selectedLanguage) ? 'active' : ''}>
+                {primaryLanguages.includes(this.selectedLanguage) ? <span>More</span> : <span>{languages[this.selectedLanguage].name}</span>}
               </Dropdown.Toggle>
               <Dropdown.Menu>
-                {Object.keys(this.languages).filter(o => !Object.keys(this.priorityLanguages).includes(o)).map((key) => (
+                {secondaryLanguages.map((key) => (
                   <Dropdown.Item
                     key={key}
-                    className={
-                      this.languages[key].name === this.selectedLanguageName
-                        ? 'active'
-                        : ''
-                    }
+                    className={key === this.selectedLanguage ? 'active' : ''}
                     onClick={() => {
                       this.makeCodeTemplate(key)
                     }}
                   >
-                    {this.languages[key].name}
+                    {languages[key].name}
                   </Dropdown.Item>
                 ))}
               </Dropdown.Menu>
@@ -175,8 +147,8 @@ class CodeTemplate extends Component {
           <div className='ace-editor-wrapper'>
             {' '}
             <AceEditor
-              mode={this.selectedLanguage.toLowerCase()}
-              theme='github'
+              mode={languages[this.selectedLanguage].mode}
+              theme='tomorrow_night'
               highlightActiveLine={false}
               focus={false}
               value={
@@ -184,9 +156,6 @@ class CodeTemplate extends Component {
                   ? this.state.codeSnippet
                   : this.codeSnippet
               }
-              setOptions={{
-                showLineNumbers: true
-              }}
               readOnly
               editorProps={{
                 $blockScrolling: false
