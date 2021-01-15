@@ -120,19 +120,23 @@ class PublicEndpoint extends Component {
     let { cta, links } = this.props.collections[collectionId]?.docProperties || { cta: [], links: [] }
     cta = cta ? cta.filter((o) => o.name.trim() && o.value.trim()) : []
     links = links ? links.filter((o) => o.name.trim() && o.link.trim()) : []
+    const isCTAandLinksPresent = (cta.length !== 0 || links.length !== 0)
     return (
-      <div className='d-flex public-navbar'>
-        {links.map((link, index) => (
-          <div key={`link-${index}`}>
-            <label className='link' htmlFor={`link-${index}`} onClick={() => { this.openLink(link.link) }}>{link.name}</label>
-          </div>
-        ))}
-        {cta.map((cta, index) => (
-          <div className='cta-button-wrapper' key={`cta-${index}`}>
-            <button style={{ backgroundColor: this.state.collectionTheme, borderColor: this.state.collectionTheme, color: this.state.collectionTheme }} name={`cta-${index}`} onClick={() => { this.openLink(cta.value) }}>{cta.name}</button>
-          </div>
-        ))}
-      </div>
+      <>
+        {isCTAandLinksPresent &&
+          <div className='d-flex public-navbar'>
+            {links.map((link, index) => (
+              <div key={`link-${index}`}>
+                <label className='link' htmlFor={`link-${index}`} onClick={() => { this.openLink(link.link) }}>{link.name}</label>
+              </div>
+            ))}
+            {cta.map((cta, index) => (
+              <div className='cta-button-wrapper' key={`cta-${index}`}>
+                <button style={{ backgroundColor: this.state.collectionTheme, borderColor: this.state.collectionTheme, color: this.state.collectionTheme }} name={`cta-${index}`} onClick={() => { this.openLink(cta.value) }}>{cta.name}</button>
+              </div>
+            ))}
+          </div>}
+      </>
     )
   }
 
