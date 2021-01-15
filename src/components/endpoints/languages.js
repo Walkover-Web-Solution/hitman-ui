@@ -1,5 +1,5 @@
 const primaryLanguages = ['java', 'node', 'php']
-const secondaryLanguages = ['c', 'csharp', 'javascript', 'python', 'r', 'ruby', 'shell', 'swift', 'clojure', 'go', 'objc', 'ocaml']
+const secondaryLanguages = ['c', 'csharp', 'javascript', 'http', 'python', 'r', 'ruby', 'shell', 'swift', 'clojure', 'go', 'objc', 'ocaml']
 const languages = {
   node: {
     name: 'Node',
@@ -44,6 +44,10 @@ const languages = {
   swift: {
     name: 'Swift',
     mode: 'swift'
+  },
+  http: {
+    name: 'HTTP',
+    mode: 'sh'
   },
   clojure: {
     name: 'Clojure',
