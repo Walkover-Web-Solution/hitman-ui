@@ -674,7 +674,7 @@ class CollectionsComponent extends Component {
                       alt='public-logo'
                       src={
                         (this.props.collections[collectionId]?.favicon)
-                          ? this.props.collections[collectionId]?.favicon
+                          ? `data:image/png;base64,${this.props.collections[collectionId]?.favicon}`
                           : this.props.collections[collectionId]?.docProperties
                             ?.defaultLogoUrl || EMPTY_STRING
                       }
@@ -683,6 +683,7 @@ class CollectionsComponent extends Component {
                       onError={() => {
                         this.setState({ publicLogoError: true })
                       }}
+                      width='60' height='60'
                     />
                   </div>}
                 {this.props.collections[collectionId]?.docProperties?.defaultTitle && (

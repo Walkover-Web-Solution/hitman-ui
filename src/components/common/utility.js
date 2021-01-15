@@ -34,7 +34,8 @@ export function setFavicon (link) {
   if (typeof link === 'string') {
     if (link.trim().length > 0) {
       imageExists(link.trim(), function (exists) {
-        if (exists) document.getElementById('favicon').href = link.trim()
+        if (exists) {document.getElementById('favicon').href = link.trim()
+      }
       })
     }
   }

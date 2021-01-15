@@ -121,15 +121,15 @@ class PublicEndpoint extends Component {
     cta = cta ? cta.filter((o) => o.name.trim() && o.value.trim()) : []
     links = links ? links.filter((o) => o.name.trim() && o.link.trim()) : []
     return (
-      <div className='d-flex float-right'>
+      <div className='d-flex public-navbar'>
         {links.map((link, index) => (
           <div key={`link-${index}`}>
-            <label htmlFor={`link-${index}`} onClick={() => { this.openLink(link.link) }}>{link.name}</label>
+            <label className='link' htmlFor={`link-${index}`} onClick={() => { this.openLink(link.link) }}>{link.name}</label>
           </div>
         ))}
         {cta.map((cta, index) => (
-          <div key={`cta-${index}`}>
-            <button name={`cta-${index}`} onClick={() => { this.openLink(cta.value) }}>{cta.name}</button>
+          <div className='cta-button-wrapper' key={`cta-${index}`}>
+            <button style={{ backgroundColor: this.state.collectionTheme, borderColor: this.state.collectionTheme, color: this.state.collectionTheme }} name={`cta-${index}`} onClick={() => { this.openLink(cta.value) }}>{cta.name}</button>
           </div>
         ))}
       </div>
@@ -138,7 +138,9 @@ class PublicEndpoint extends Component {
 
   render () {
     const collectionId = this.props.match.params.collectionIdentifier
-    const docFaviconLink = this.props.collections[collectionId]?.docProperties?.defaultLogoUrl
+    const docFaviconLink = (this.props.collections[collectionId]?.favicon)
+    ? `data:image/png;base64,${this.props.collections[collectionId]?.favicon}`
+    :this.props.collections[collectionId]?.docProperties?.defaultLogoUrl
     const docTitle = this.props.collections[collectionId]?.docProperties?.defaultTitle
     setTitle(docTitle)
     setFavicon(docFaviconLink)
