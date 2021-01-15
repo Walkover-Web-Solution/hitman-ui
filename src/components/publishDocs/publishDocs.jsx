@@ -407,7 +407,7 @@ class PublishDocs extends Component {
       return a.position - b.position
     })
     return (
-      <SortableList useDragHandle onSortEnd={({ oldIndex, newIndex }) => { this.onSortEnd(oldIndex, newIndex, sortedEndpoints, 'endpoints') }}>
+      <SortableList lockAxis='y' useDragHandle onSortEnd={({ oldIndex, newIndex }) => { this.onSortEnd(oldIndex, newIndex, sortedEndpoints, 'endpoints') }}>
         <div className='pages-inner'>
           {sortedEndpoints.map((endpoint, index) =>
             <SortableItem key={endpoint.id} index={index}>
@@ -444,7 +444,7 @@ class PublishDocs extends Component {
           return a.position - b.position
         })
         return (
-          <SortableList useDragHandle onSortEnd={({ oldIndex, newIndex }) => { this.onSortEnd(oldIndex, newIndex, sortedPages, 'pages') }}>
+          <SortableList lockAxis='y' useDragHandle onSortEnd={({ oldIndex, newIndex }) => { this.onSortEnd(oldIndex, newIndex, sortedPages, 'pages') }}>
             <div className='pages-inner'>
               {sortedPages.map((page, index) => (
                 <SortableItem key={page.id} index={index}>
@@ -478,7 +478,7 @@ class PublishDocs extends Component {
         })
         if (Object.keys(pages).length === 0) return
         return (
-          <SortableList useDragHandle onSortEnd={({ oldIndex, newIndex }) => { this.onSortEnd(oldIndex, newIndex, sortedPages, 'pages') }}>
+          <SortableList lockAxis='y' useDragHandle onSortEnd={({ oldIndex, newIndex }) => { this.onSortEnd(oldIndex, newIndex, sortedPages, 'pages') }}>
             <div className='pages-inner-wrapper'>
               {sortedPages.map((page, index) => (
                 <SortableItem key={page.id} index={index}>
@@ -500,14 +500,16 @@ class PublishDocs extends Component {
   }
 
   onSortEnd = (oldIndex, newIndex, sortedData, type) => {
-    const newData = []
-    sortedData.forEach(item => {
-      item.id !== sortedData[oldIndex].id && newData.push(item.id)
-    })
-    newData.splice(newIndex, 0, sortedData[oldIndex].id)
-    if (type === 'pages') { this.props.set_page_ids(newData) }
-    if (type === 'endpoints') { this.props.update_endpoints_order(newData) }
-    if (type === 'groups') { this.props.update_groups_order(newData, this.state.selectedVersionId) }
+    if (newIndex !== oldIndex) {
+      const newData = []
+      sortedData.forEach(item => {
+        item.id !== sortedData[oldIndex].id && newData.push(item.id)
+      })
+      newData.splice(newIndex, 0, sortedData[oldIndex].id)
+      if (type === 'pages') { this.props.set_page_ids(newData) }
+      if (type === 'endpoints') { this.props.update_endpoints_order(newData) }
+      if (type === 'groups') { this.props.update_groups_order(newData, this.state.selectedVersionId) }
+    }
   };
 
   getSelectedCollection () {
@@ -673,7 +675,7 @@ class PublishDocs extends Component {
       })
       if (sortedGroups.length !== 0) {
         return (
-          <SortableList onSortEnd={({ oldIndex, newIndex }) => { this.onSortEnd(oldIndex, newIndex, sortedGroups, 'groups') }}>
+          <SortableList lockAxis='y' onSortEnd={({ oldIndex, newIndex }) => { this.onSortEnd(oldIndex, newIndex, sortedGroups, 'groups') }}>
             <div>
               {sortedGroups.map((group, index) => (
                 <SortableItem key={group.id} index={index}>
