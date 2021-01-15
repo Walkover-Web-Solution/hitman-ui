@@ -40,6 +40,7 @@ export class Notes extends Form {
       notes: this.state.length === 0 ? '' : this.state.data.description
     }
     this.props.update_endpoint(data)
+    this.setState({ isSaveDisabled: true })
   }
 
   renderNote () {
@@ -66,7 +67,7 @@ export class Notes extends Form {
               >
                 Clear
               </button>
-              <button type='submit' className='btn btn-primary'>
+              <button disabled={this.getSaveDisableStatus(undefined, true)} type='submit' className='btn btn-primary'>
                 Save
               </button>
 
