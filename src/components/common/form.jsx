@@ -12,7 +12,8 @@ class Form extends Component {
     super(props)
     this.state = {
       data: {},
-      errors: {}
+      errors: {},
+      isSaveDisabled: true
     }
 
     this.modules = {
@@ -63,12 +64,23 @@ class Form extends Component {
     this.setState({ data })
   };
 
+  getSaveDisableStatus (notdefined, active) {
+    let isSaveDisabled = this.state.isSaveDisabled
+    if (isSaveDisabled === notdefined || isSaveDisabled === active) {
+      isSaveDisabled = true
+    } else {
+      isSaveDisabled = false
+    }
+    return isSaveDisabled
+  }
+
   handleEditorChange = (value, editor) => {
     const data = this.state.data
     const description = value
+    const isSaveDisabled = this.getSaveDisableStatus(undefined, null)
     const length = editor.getText().trim().length
     data.description = description
-    this.setState({ data, length })
+    this.setState({ data, length, isSaveDisabled })
   };
 
   handleAceEditorChange = (value) => {
