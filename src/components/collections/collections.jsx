@@ -673,14 +673,17 @@ class CollectionsComponent extends Component {
                       id='publicLogo'
                       alt='public-logo'
                       src={
-                        this.props.collections[collectionId]?.docProperties
-                          ?.defaultLogoUrl || EMPTY_STRING
+                        (this.props.collections[collectionId]?.favicon)
+                          ? `data:image/png;base64,${this.props.collections[collectionId]?.favicon}`
+                          : this.props.collections[collectionId]?.docProperties
+                            ?.defaultLogoUrl || EMPTY_STRING
                       }
                       onClick={() =>
                         window.open(this.props.collections[collectionId].website)}
                       onError={() => {
                         this.setState({ publicLogoError: true })
                       }}
+                      width='60' height='60'
                     />
                   </div>}
                 {this.props.collections[collectionId]?.docProperties?.defaultTitle && (

@@ -3,7 +3,9 @@ import CustomColorPicker from './customColorPicker'
 import { connect } from 'react-redux'
 import Joi from 'joi-browser'
 import { Button } from 'react-bootstrap'
+import { ReactComponent as UploadIcon } from '../../assets/icons/uploadIcon.svg'
 import { updateCollection } from '../collections/redux/collectionsActions'
+import './publishDocsForm.scss'
 const URI = require('urijs')
 
 const publishDocFormEnum = {
@@ -80,7 +82,7 @@ class PublishDocForm extends Component {
   setSelectedCollection () {
     const collectionId = URI.parseQuery(this.props.location.search).collectionId
     let collection = {}
-    let title, logoUrl, domain, theme, cta, links
+    let title, logoUrl, domain, theme, cta, links, favicon
     if (this.props.collections) {
       collection = this.props.collections[collectionId]
       if (collection && Object.keys(collection).length > 0) {
@@ -90,8 +92,9 @@ class PublishDocForm extends Component {
         theme = collection?.theme || publishDocFormEnum.NULL_STRING
         cta = collection?.docProperties?.cta || publishDocFormEnum.INITIAL_CTA
         links = collection?.docProperties?.links || publishDocFormEnum.INITIAL_LINKS
+        favicon = collection?.favicon || publishDocFormEnum.NULL_STRING
         const data = { title, logoUrl, domain, theme }
-        this.setState({ data, cta, links })
+        this.setState({ data, cta, links, binaryFile: favicon })
       }
     }
   }
@@ -135,6 +138,7 @@ class PublishDocForm extends Component {
     const customDomain = data.domain.trim()
     collection.customDomain = customDomain.length !== 0 ? customDomain : null
     collection.theme = data.theme
+    collection.favicon = this.state.binaryFile
     collection.docProperties = {
       defaultTitle: data.title.trim(),
       defaultLogoUrl: data.logoUrl.trim(),
@@ -208,13 +212,57 @@ class PublishDocForm extends Component {
     )
   }
 
-  renderInput (name, mandatory = false) {
+  handleReaderLoaded =(readerEvt) => {
+    const binaryString = readerEvt.target.result
+    this.setState({
+      binaryFile: btoa(binaryString)
+    })
+  }
+
+  onFileChange (e) {
+    const selectedFile = e.target.files[0]
+    if (selectedFile) {
+      const reader = new FileReader()
+      reader.onload = this.handleReaderLoaded.bind(this)
+      reader.readAsBinaryString(selectedFile)
+    }
+    if (selectedFile) {
+      this.setState({ uploadedFile: selectedFile})
+    } else {
+      this.setState({ uploadedFile: null})
+    }
+  }
+
+  renderUploadModule (disabled) {
+    return (
+      <div>
+        <label style={{cursor:disabled?'not-allowed':'pointer'}} htmlFor="upload-button">
+          <UploadIcon /> 
+       </label>
+       <input type='file' id="upload-button"  disabled={disabled} style={{ display: "none" }} accept='.png' onChange={(e)=>this.onFileChange(e)}/>
+       </div>
+    )
+  }
+
+  renderUploadBox () {
+    return (
+      <div className='d-flex'>
+      <div className='uploadBox'>
+        {!this.state.binaryFile && this.renderUploadModule(this.state.data.logoUrl) }
+        {this.state.binaryFile && <img src={`data:image/png;base64,${this.state.binaryFile}`} height='60' width='60' />}
+      </div>
+      {this.state.uploadedFile&& <div>{this.state.uploadedFile.name}</div>}
+      </div>
+    )
+  }
+
+  renderInput (name, mandatory = false,disabled) {
     return (
       <div className='form-group'>
         <label>
           {publishDocFormEnum.LABELS[name]} {mandatory ? <span className='alert alert-danger'>*</span> : ''}
         </label>
-        <input type='text' className='form-control' name={name} value={this.state.data[name]} onChange={(e) => this.handleChange(e)} />
+        <input type='text' disabled={disabled} className='form-control' name={name} value={this.state.data[name]} onChange={(e) => this.handleChange(e)} />
         {this.state.errors && this.state.errors[name] && <small className='alert alert-danger'>{this.state.errors[name]}</small>}
       </div>
     )
@@ -226,7 +274,14 @@ class PublishDocForm extends Component {
         <div className='small-input'>
           {this.renderInput('title', true)}
           {this.renderInput('domain')}
-          {this.renderInput('logoUrl')}
+          <div classname='d-flex'>
+            <div>{this.renderUploadBox()}
+              {this.state.binaryFile && (
+                <span style={{ cursor: 'pointer' }} onClick={() => { this.setState({ binaryFile: null, uploadedFile: null }) }}>Remove</span>
+              )}
+            </div>
+            {this.renderInput('logoUrl',false,this.state.binaryFile)}
+          </div>
         </div>
         <div className='color-picker'>
           {this.renderColorPicker()}
