@@ -149,7 +149,6 @@ class PublishDocForm extends Component {
     this.setState({ errors: errors || {} })
     if (errors) return
     this.setState({ loader: true })
-    // uploadLogoApi({favIcon:this.state.binaryFile},collectionId);
     this.props.update_collection(collection, () => { this.setState({ loader: false }) })
   }
 
@@ -234,13 +233,13 @@ class PublishDocForm extends Component {
     }
   }
 
-  renderUploadModule () {
+  renderUploadModule (disabled) {
     return (
       <div>
-        <label htmlFor="upload-button">
+        <label style={{cursor:disabled?'not-allowed':'pointer'}} htmlFor="upload-button">
           <UploadIcon /> 
        </label>
-       <input type='file' id="upload-button" style={{ display: "none" }} accept='.png' onChange={(e)=>this.onFileChange(e)}/>
+       <input type='file' id="upload-button"  disabled={disabled} style={{ display: "none" }} accept='.png' onChange={(e)=>this.onFileChange(e)}/>
        </div>
     )
   }
@@ -249,7 +248,7 @@ class PublishDocForm extends Component {
     return (
       <div className='d-flex'>
       <div className='uploadBox'>
-        {!this.state.binaryFile && this.renderUploadModule() }
+        {!this.state.binaryFile && this.renderUploadModule(this.state.data.logoUrl) }
         {this.state.binaryFile && <img src={`data:image/png;base64,${this.state.binaryFile}`} height='60' width='60' />}
       </div>
       {this.state.uploadedFile&& <div>{this.state.uploadedFile.name}</div>}
@@ -275,7 +274,6 @@ class PublishDocForm extends Component {
         <div className='small-input'>
           {this.renderInput('title', true)}
           {this.renderInput('domain')}
-          {/* {this.renderUploadModal()} */}
           <div classname='d-flex'>
             <div>{this.renderUploadBox()}
               {this.state.binaryFile && (
