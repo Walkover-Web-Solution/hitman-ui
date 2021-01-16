@@ -244,14 +244,28 @@ class PublishDocForm extends Component {
     )
   }
 
-  renderUploadBox () {
+  renderUploadBox (name, mandatory = false, disabled) {
     return (
-      <div className='d-flex'>
-        <div className='uploadBox'>
-          {!this.state.binaryFile && this.renderUploadModule(this.state.data.logoUrl)}
-          {this.state.binaryFile && <img src={`data:image/png;base64,${this.state.binaryFile}`} height='60' width='60' />}
+      <div className='form-group'>
+        <label>
+          {publishDocFormEnum.LABELS[name]} {mandatory ? <span className='alert alert-danger'>*</span> : ''}
+        </label>
+        <div className='d-flex align-items-center'>
+          <div className='uploadBox d-flex justify-content-center align-items-center mr-2'>
+            {!this.state.binaryFile && this.renderUploadModule(this.state.data.logoUrl)}
+            {this.state.binaryFile && <img src={`data:image/png;base64,${this.state.binaryFile}`} height='60' width='60' />}
+          </div>
+          {this.state.binaryFile &&
+            <div className='mr-2'>
+              <div>
+                <small>{this.state.uploadedFile?.name}</small>
+              </div>
+              <span className='alert alert-danger' style={{ cursor: 'pointer' }} onClick={() => { this.setState({ binaryFile: null, uploadedFile: null }) }}>Remove</span>
+            </div>}
+          <div className='mr-2'>OR</div>
+          <input type='text' placeholder='Paste your favicon url here' disabled={disabled} className='form-control' name={name} value={this.state.data[name]} onChange={(e) => this.handleChange(e)} />
+          {this.state.errors && this.state.errors[name] && <small className='alert alert-danger'>{this.state.errors[name]}</small>}
         </div>
-        {this.state.uploadedFile && <div>{this.state.uploadedFile.name}</div>}
       </div>
     )
   }
@@ -275,12 +289,9 @@ class PublishDocForm extends Component {
           {this.renderInput('title', true)}
           {this.renderInput('domain')}
           <div classname='d-flex'>
-            <div>{this.renderUploadBox()}
-              {this.state.binaryFile && (
-                <span style={{ cursor: 'pointer' }} onClick={() => { this.setState({ binaryFile: null, uploadedFile: null }) }}>Remove</span>
-              )}
+            <div>{this.renderUploadBox('logoUrl', false, this.state.binaryFile)}
             </div>
-            {this.renderInput('logoUrl', false, this.state.binaryFile)}
+            {/* {this.renderInput('logoUrl', false, this.state.binaryFile)} */}
           </div>
         </div>
         <div className='color-picker'>
