@@ -289,9 +289,7 @@ class PublishDocForm extends Component {
           {this.renderInput('title', true)}
           {this.renderInput('domain')}
           <div classname='d-flex'>
-            <div>{this.renderUploadBox('logoUrl', false, this.state.binaryFile)}
-            </div>
-            {/* {this.renderInput('logoUrl', false, this.state.binaryFile)} */}
+            <div>{this.renderUploadBox('logoUrl', false, this.state.binaryFile)}</div>
           </div>
         </div>
         <div className='color-picker'>
