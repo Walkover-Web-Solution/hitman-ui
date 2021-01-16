@@ -84,90 +84,93 @@ class CodeTemplate extends Component {
           </svg>
           Sample Code
         </button>
-        <Col id='code-window-sidebar' xs={12} className='d-flex justify-content-between'>
-          <div className='code-heading'>
-            Sample code
-          </div>
-          <div className='select-code-wrapper d-flex justify-content-end'>
-            {primaryLanguages.map(key => (
-              <button
-                key={key}
-                className={key === this.selectedLanguage ? 'active' : ''}
-                onClick={() => {
-                  this.makeCodeTemplate(key)
-                }}
+        <div className='inner-editor'>
+          <Col id='code-window-sidebar' xs={12} className='d-flex justify-content-between'>
+            <div className='code-heading'>
+              Sample code
+            </div>
+            <div className='select-code-wrapper d-flex justify-content-end'>
+              {primaryLanguages.map(key => (
+                <button
+                  key={key}
+                  className={key === this.selectedLanguage ? 'active' : ''}
+                  onClick={() => {
+                    this.makeCodeTemplate(key)
+                  }}
+                >
+                  {languages[key].name}
+                </button>
+              ))}
+              <Dropdown>
+                <Dropdown.Toggle variant='default' className={secondaryLanguages.includes(this.selectedLanguage) ? 'active' : ''}>
+                  {primaryLanguages.includes(this.selectedLanguage) ? <span>More</span> : <span>{languages[this.selectedLanguage].name}</span>}
+                </Dropdown.Toggle>
+                <Dropdown.Menu>
+                  {secondaryLanguages.map((key) => (
+                    <Dropdown.Item
+                      key={key}
+                      className={key === this.selectedLanguage ? 'active' : ''}
+                      onClick={() => {
+                        this.makeCodeTemplate(key)
+                      }}
+                    >
+                      {languages[key].name}
+                    </Dropdown.Item>
+                  ))}
+                </Dropdown.Menu>
+              </Dropdown>
+            </div>
+          </Col>
+          <Col className='editor-body-wrapper' xs={12}>
+            <div id='code-window-body'>
+              <CopyToClipboard
+                text={
+                  this.state.codeSnippet
+                    ? this.state.codeSnippet
+                    : this.codeSnippet
+                }
+                onCopy={() => this.setState({ copied: true }, () => {
+                  setTimeout(() => {
+                    this.setState({ copied: false })
+                  }, 2000)
+                })}
+                className='copy-to-clipboard'
               >
-                {languages[key].name}
-              </button>
-            ))}
-            <Dropdown>
-              <Dropdown.Toggle variant='default' className={secondaryLanguages.includes(this.selectedLanguage) ? 'active' : ''}>
-                {primaryLanguages.includes(this.selectedLanguage) ? <span>More</span> : <span>{languages[this.selectedLanguage].name}</span>}
-              </Dropdown.Toggle>
-              <Dropdown.Menu>
-                {secondaryLanguages.map((key) => (
-                  <Dropdown.Item
-                    key={key}
-                    className={key === this.selectedLanguage ? 'active' : ''}
-                    onClick={() => {
-                      this.makeCodeTemplate(key)
-                    }}
-                  >
-                    {languages[key].name}
-                  </Dropdown.Item>
-                ))}
-              </Dropdown.Menu>
-            </Dropdown>
-          </div>
-        </Col>
-        <Col className='editor-body-wrapper' xs={12}>
-          <div id='code-window-body'>
-            <CopyToClipboard
-              text={
-                this.state.codeSnippet
-                  ? this.state.codeSnippet
-                  : this.codeSnippet
-              }
-              onCopy={() => this.setState({ copied: true }, () => {
-                setTimeout(() => {
-                  this.setState({ copied: false })
-                }, 2000)
-              })}
-              className='copy-to-clipboard'
-            >
-              <button>
-                {this.state.copied
-                  ? (
-                    <span className='text-success'>Copied! </span>
-                    )
-                  : <CopyIcon />}
-              </button>
-            </CopyToClipboard>
-          </div>{' '}
-          <div className='ace-editor-wrapper'>
-            {' '}
-            <AceEditor
-              mode={languages[this.selectedLanguage].mode}
-              theme='tomorrow_night'
-              highlightActiveLine={false}
-              focus={false}
-              value={
-                this.state.codeSnippet
-                  ? this.state.codeSnippet
-                  : this.codeSnippet
-              }
-              readOnly
-              editorProps={{
-                $blockScrolling: false
-              }}
-              onLoad={(editor) => {
-                editor.focus()
-                editor.getSession().setUseWrapMode(true)
-                editor.setShowPrintMargin(false)
-              }}
-            />
-          </div>
-        </Col>
+                <button>
+                  {this.state.copied
+                    ? (
+                      <span className='text-success'>Copied! </span>
+                      )
+                    : <CopyIcon />}
+                </button>
+              </CopyToClipboard>
+            </div>{' '}
+            <div className='ace-editor-wrapper'>
+              {' '}
+              <AceEditor
+                mode={languages[this.selectedLanguage].mode}
+                theme='tomorrow_night'
+                highlightActiveLine={false}
+                focus={false}
+                value={
+                  this.state.codeSnippet
+                    ? this.state.codeSnippet
+                    : this.codeSnippet
+                }
+                readOnly
+                editorProps={{
+                  $blockScrolling: false
+                }}
+                onLoad={(editor) => {
+                  editor.focus()
+                  editor.getSession().setUseWrapMode(true)
+                  editor.setShowPrintMargin(false)
+                }}
+              />
+            </div>
+          </Col>
+
+        </div>
       </div>
     )
   }

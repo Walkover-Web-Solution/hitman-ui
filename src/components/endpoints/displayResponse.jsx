@@ -251,7 +251,7 @@ class DisplayResponse extends Component {
                       </div>
                     </div>)}
                   {!isDashboardRoute(this.props) && (
-                    <div className='tab-content' style={{ borderColor: theme }}>
+                    <div className='tab-content'>
                       <JSONPretty
                         theme={JSONPrettyMon}
                         data={this.props.response.data}

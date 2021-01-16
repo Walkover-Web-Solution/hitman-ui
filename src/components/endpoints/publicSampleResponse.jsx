@@ -6,7 +6,9 @@ import './endpoints.scss'
 const JSONPrettyMon = require('react-json-pretty/dist/monikai')
 
 class PublicSampleResponse extends Component {
-  state = {};
+  state = {
+    theme: this.props.publicCollectionTheme
+  };
 
   render () {
     return (

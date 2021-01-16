@@ -143,8 +143,8 @@ class PublicEndpoint extends Component {
   render () {
     const collectionId = this.props.match.params.collectionIdentifier
     const docFaviconLink = (this.props.collections[collectionId]?.favicon)
-    ? `data:image/png;base64,${this.props.collections[collectionId]?.favicon}`
-    :this.props.collections[collectionId]?.docProperties?.defaultLogoUrl
+      ? `data:image/png;base64,${this.props.collections[collectionId]?.favicon}`
+      : this.props.collections[collectionId]?.docProperties?.defaultLogoUrl
     const docTitle = this.props.collections[collectionId]?.docProperties?.defaultTitle
     setTitle(docTitle)
     setFavicon(docFaviconLink)
