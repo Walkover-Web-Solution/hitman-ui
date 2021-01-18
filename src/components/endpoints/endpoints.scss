@@ -1225,12 +1225,27 @@ table#custom-generic-table {
     border: none;
 
     input.form-control {
-      height: 36px !important;
+      height: 32px !important;
       font-weight: 400 !important;
       font-size: 13px !important;
       border-radius: 4px !important;
       color: #000 !important;
       width: 260px;
+
+      &::-webkit-input-placeholder {
+        font-size: 12px!important;
+        font-weight: 400;
+      }
+
+      &:-ms-input-placeholder {
+        font-size: 12px!important;
+        font-weight: 400;
+      }
+
+      &::placeholder {
+        font-size: 12px!important;
+        font-weight: 400;
+      }
     }
   }
 }

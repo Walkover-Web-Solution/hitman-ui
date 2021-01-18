@@ -213,18 +213,18 @@ class PublishDocForm extends Component {
   }
 
   handleReaderLoaded = (readerEvt) => {
-    // const binaryString = readerEvt.target.result
+    const binaryString = readerEvt.target.result
     this.setState({
-      // binaryFile: btoa(binaryString)
+      binaryFile: window.btoa(binaryString)
     })
   }
 
   onFileChange (e) {
     const selectedFile = e.target.files[0]
     if (selectedFile) {
-      // const reader = new FileReader()
-      // reader.onload = this.handleReaderLoaded.bind(this)
-      // reader.readAsBinaryString(selectedFile)
+      const reader = new window.FileReader()
+      reader.onload = this.handleReaderLoaded.bind(this)
+      reader.readAsBinaryString(selectedFile)
     }
     if (selectedFile) {
       this.setState({ uploadedFile: selectedFile })
@@ -244,7 +244,7 @@ class PublishDocForm extends Component {
     )
   }
 
-  renderUploadBox () {
+  renderUploadBox (name, mandatory = false, disabled) {
     return (
       <div className='d-flex'>
         <div className='uploadBox'>
