@@ -320,7 +320,7 @@ form.add-new-domain-form {
 
 // Sidebar Header
 .hm-sidebar-header {
-  padding: 0 15px 15px;
+  padding: 0 25px 15px;
   display: flex;
   color: #fff;
   align-items: center;
@@ -343,7 +343,10 @@ form.add-new-domain-form {
 // }
 .hm-sidebar-logo img {
   // width: 100%;
-  min-width: 50px;
+  width: 100%;
+  object-fit: contain;
+  height: 100%;
+  padding: 3px;
 }
 
 h4.hm-sidebar-title {
@@ -395,7 +398,12 @@ h4.hm-sidebar-title span {
 
 .hm-public-endpoint-headers {
   #send-request-button {
-    min-width: 110px;
+    width: 75px;
+    height: 28px;
+    font-size: 14px;
+    padding: 0;
+    font-weight: 700;
+    text-transform: uppercase;
   }
 }
 
@@ -442,7 +450,7 @@ h4.hm-sidebar-title span {
         td {
           &.custom-td {
             border-color: #e5e5e5 !important;
-            padding: 10px  5px!important;
+            padding: 10px 5px !important;
             vertical-align: middle;
             opacity: 1;
             color: #232427;
@@ -513,7 +521,7 @@ h4.hm-sidebar-title span {
   .empty-response {
     display: none;
   }
-
+ 
   .empty-response-container {
     background: transparent;
     border: none;
@@ -538,16 +546,7 @@ h4.hm-sidebar-title span {
         }
       }
     }
-
-    .tab-content {
-      margin: 0;
-      padding: 15px;
-      border-radius: 4px;
-      overflow: auto;
-      height: 200px;
-      border: 1px solid #E0E0E0;
-
-    }
+ 
   }
 }
 
@@ -558,7 +557,7 @@ h4.hm-sidebar-title span {
 }
 
 .versionWrapper {
-  padding: 0 15px;
+  padding: 0 25px 15px;
   margin-top: 20px;
 }
 
@@ -577,4 +576,13 @@ h4.hm-sidebar-title span {
 .respHeading {
   display: flex;
   align-items: center;
+}
+
+.hm-sidebar-logo {
+  width: 32px;
+  height: 32px;
+}
+
+.show.dropdown .dropdown-toggle::after {
+  transform: rotate(180deg);
 }

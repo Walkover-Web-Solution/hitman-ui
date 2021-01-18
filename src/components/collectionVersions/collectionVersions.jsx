@@ -478,9 +478,6 @@ class CollectionVersions extends Component {
                   (this.state.selectedVersionIndex &&
                     this.state.selectedVersionIndex === index.toString())) && (
                       <>
-                        <div className='intro-text'>
-                          <h4>Introduction</h4>
-                        </div>
                         <div className='hm-sidebar-outer-block' key={index}>
                           <VersionPages
                             {...this.props}

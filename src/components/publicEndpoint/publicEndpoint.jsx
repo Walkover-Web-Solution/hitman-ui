@@ -14,6 +14,7 @@ import auth from '../auth/authService'
 import UserInfo from '../common/userInfo'
 import Footer from '../main/Footer'
 import { setTitle, setFavicon, comparePositions } from '../common/utility'
+import { Style } from 'react-style-tag'
 
 const mapStateToProps = (state) => {
   return {
@@ -173,7 +174,18 @@ class PublicEndpoint extends Component {
     }
 
     return (
+
       <>
+
+        <Style>{`
+          .public-navbar .link {
+            &:hover {
+              color: ${this.state.collectionTheme};
+            }
+  
+          }
+        `}
+        </Style>
         <nav className='public-endpoint-navbar'>
           {
             process.env.REACT_APP_UI_URL === window.location.origin + '/'

@@ -159,7 +159,7 @@ nav.navbar.navbar-dark.fixed-top.bg-dark.flex-md-nowrap.p-0.shadow {
   text-transform: capitalize;
   display: flex;
   width: 100%;
-  padding: 7px 5px 7px 15px;
+  padding: 7px 5px 7px 25px;
   border-radius: 0;
   border: none;
   align-items: center;
@@ -179,7 +179,7 @@ nav.navbar.navbar-dark.fixed-top.bg-dark.flex-md-nowrap.p-0.shadow {
   text-transform: capitalize;
   font-weight: 600;
   font-size: 14px;
-  padding: 5px 5px 0px 15px;
+  padding: 5px 5px 0px 25px;
 }
 
 .hm-sidebar-item>i {
@@ -1305,9 +1305,8 @@ button.editBtn {
     position: absolute;
     top: 0;
     left: 0;
-    height: 18px;
-    width: 18px;
-    border: 1px solid #BDBDBD;
+    height: 13px;
+    width: 13px;
     border-radius: 2px;
   }
 
@@ -1331,15 +1330,15 @@ button.editBtn {
   }
 
   .checkmark:after {
-    left: 5px;
-    top: 1px;
+    left: 4px;
+    top: .5px;
     width: 5px;
-    height: 11px;
+    height: 9px;
     border: solid white;
     border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
     -webkit-transform: rotate(45deg);
     -ms-transform: rotate(45deg);
-    transform: rotate(45deg);
   }
 
   input:disabled~.checkmark {
@@ -1447,7 +1446,7 @@ button.editBtn {
   .hm-endpoint-container {
     height: calc(100vh - 50px);
     overflow: auto;
-    margin: 30px 10px !important;
+    margin: 25px 10px 30px !important;
     padding: 0 5px !important;
 
 
@@ -1846,6 +1845,7 @@ button.toggleButton {
     display: flex;
     justify-content: space-around;
     align-items: center;
+    transition: 750ms;
 
     svg {
       transform: rotate(180deg);
@@ -1865,7 +1865,7 @@ button.toggleButton {
 
 .versionsAvailable .selected-version {
   display: inline-block;
-  width: 180px;
+  width: 160px;
   margin-right: 5px;
 }
 
@@ -1894,7 +1894,7 @@ button.toggleButton {
 
 .versionsAvailable.enableSearch .search-box {
   transition: 250ms;
-  width: 155px;
+  width: 135px;
   font-size: 14px;
 }
 
@@ -2014,6 +2014,8 @@ button.toggleButton {
 
 .hm-right-content .pageText {
   padding: 20px 0;
+  color: #000;
+  font-size: 14px;
 }
 
 
@@ -2106,7 +2108,7 @@ button[name="cta-1"] {
   font-size: 14px;
   color: #000;
   font-weight: 600;
-  margin: 25px 15px 15px;
+  margin: 25px 25px 15px;
 }
 
 @media(max-width:1050px) {
@@ -2183,4 +2185,10 @@ button[name="cta-1"] {
 
 .uplod-info {
   margin: 10px;
+}
+.mainpublic-endpoint-main .custom-display-page {
+    padding: 0 200px 10px 30px;
+}
+.cta-button-wrapper button {
+  padding: 7px 36px;
 }
