@@ -484,6 +484,12 @@ $border-color: rgba(227, 228, 230, 0.7);
 .endpoint-response-container {
   display: flex;
   flex-direction: column;
+  margin: 0;
+  padding: 15px;
+  border-radius: 4px;
+  overflow: auto;
+  height: 200px;
+  border: 1px solid #E0E0E0;
 
   .response-status {
     display: flex;
@@ -723,19 +729,19 @@ table#custom-generic-table {
 }
 
 .response-status-item-name {
-  font-size: 14px;
+  font-size: 12px;
   opacity: 0.7;
 }
 
 .response-status-value {
-  font-size: 14px;
+  font-size: 12px;
   opacity: 0.7;
   color: rgb(31, 148, 31);
   padding-left: 10px;
 }
 
 .__json-pretty__ {
-  background-color: white !important;
+  background-color: transparent !important;
   color: black !important;
 
   .__json-key__ {
@@ -997,6 +1003,8 @@ table#custom-generic-table {
 .endpoint-request-div {
   align-content: left;
   width: 60px;
+  font-weight: 400;
+  font-size: 10px;
 }
 
 .display-token-edit-button {
@@ -1126,7 +1134,7 @@ table#custom-generic-table {
     align-items: center;
     justify-content: center;
     font-size: 14px;
-    border-color: #E98A36;
+    border-color: 0.5px solid #BDBDBD;
     font-weight: 600;
     background: #fff;
     color: #828282;
@@ -1135,7 +1143,7 @@ table#custom-generic-table {
 
   .input-group .form-control {
     height: 36px;
-    border-color: #E98A36;
+    border-color: 0.5px solid #BDBDBD;
     font-size: 13px;
     color: #000;
     display: flex;
@@ -1153,7 +1161,7 @@ table#custom-generic-table {
   }
 
   .sample-response {
-    background: #ffffff;
+    background: #F8F8F8;
     border-radius: 4px;
 
     .tab-content {
@@ -1172,6 +1180,9 @@ table#custom-generic-table {
   background: transparent;
   border: 1px solid #E0E0E0;
   border-radius: 4px;
+  height: 24px;
+  width: 24px;
+  padding: 0;
 
   .fas {
     color: #828282;
@@ -1196,19 +1207,17 @@ table#custom-generic-table {
     border: none;
     border-radius: 4px;
     display: inline-block;
-    padding: 8px 20px;
+    padding: 8px 25px;
+    font-weight: 400;
+    background: #fff;
 
     &.active {
-      background: #fcfcfc;
-      box-shadow: 0px 7px 12px rgba(64, 49, 30, 0.25);
-      font-weight: 600;
+      background: #EFEFEF;
+      color: #000;
     }
 
   }
 
-  nav.nav.nav-tabs a:hover {
-    box-shadow: 0px 7px 12px rgba(64, 49, 30, 0.25);
-  }
 
   .tab-content {
     padding: 20px;
@@ -1234,17 +1243,17 @@ table#custom-generic-table {
       width: 260px;
 
       &::-webkit-input-placeholder {
-        font-size: 12px!important;
+        font-size: 12px !important;
         font-weight: 400;
       }
 
       &:-ms-input-placeholder {
-        font-size: 12px!important;
+        font-size: 12px !important;
         font-weight: 400;
       }
 
       &::placeholder {
-        font-size: 12px!important;
+        font-size: 12px !important;
         font-weight: 400;
       }
     }
@@ -1328,4 +1337,9 @@ table#custom-generic-table {
 .hm-public-endpoint-headers {
   background: #fff;
   border-radius: 4px;
+}
+
+.respHeading h2.orange-heading {
+  font-size: 12px;
+  color: #000000;
 }

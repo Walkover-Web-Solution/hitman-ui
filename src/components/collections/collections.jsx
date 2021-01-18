@@ -689,6 +689,7 @@ class CollectionsComponent extends Component {
                 {this.props.collections[collectionId]?.docProperties?.defaultTitle && (
                   <h4 className='hm-sidebar-title'>
                     {this.props.collections[collectionId].docProperties.defaultTitle}
+                    <span>API Documenation</span>
                   </h4>
                 )}
               </div>

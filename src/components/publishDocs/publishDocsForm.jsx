@@ -212,7 +212,7 @@ class PublishDocForm extends Component {
     )
   }
 
-  handleReaderLoaded =(readerEvt) => {
+  handleReaderLoaded = (readerEvt) => {
     const binaryString = readerEvt.target.result
     this.setState({
       binaryFile: window.btoa(binaryString)
@@ -236,7 +236,7 @@ class PublishDocForm extends Component {
   renderUploadModule (disabled) {
     return (
       <div>
-        <label style={{ cursor: disabled ? 'not-allowed' : 'pointer' }} htmlFor='upload-button'>
+        <label style={{ cursor: disabled ? 'not-allowed' : 'pointer', opacity: '.4' }} htmlFor='upload-button'>
           <UploadIcon />
         </label>
         <input type='file' id='upload-button' disabled={disabled} style={{ display: 'none' }} accept='.png' onChange={(e) => this.onFileChange(e)} />
@@ -246,25 +246,21 @@ class PublishDocForm extends Component {
 
   renderUploadBox (name, mandatory = false, disabled) {
     return (
-      <div className='form-group'>
-        <label>
-          {publishDocFormEnum.LABELS[name]} {mandatory ? <span className='alert alert-danger'>*</span> : ''}
-        </label>
-        <div className='d-flex align-items-center'>
-          <div className='uploadBox d-flex justify-content-center align-items-center mr-2'>
-            {!this.state.binaryFile && this.renderUploadModule(this.state.data.logoUrl)}
-            {this.state.binaryFile && <img src={`data:image/png;base64,${this.state.binaryFile}`} height='60' width='60' />}
-          </div>
-          {this.state.binaryFile &&
-            <div className='mr-2'>
-              <div>
-                <small>{this.state.uploadedFile?.name}</small>
-              </div>
-              <span className='alert alert-danger' style={{ cursor: 'pointer' }} onClick={() => { this.setState({ binaryFile: null, uploadedFile: null }) }}>Remove</span>
-            </div>}
-          <div className='mr-2'>OR</div>
-          <input type='text' placeholder='Paste your favicon url here' disabled={disabled} className='form-control' name={name} value={this.state.data[name]} onChange={(e) => this.handleChange(e)} />
-          {this.state.errors && this.state.errors[name] && <small className='alert alert-danger'>{this.state.errors[name]}</small>}
+      <div className='d-flex'>
+        <div className='uploadBox'>
+          {!this.state.binaryFile && this.renderUploadModule(this.state.data.logoUrl)}
+          {this.state.binaryFile && <img src={`data:image/png;base64,${this.state.binaryFile}`} height='60' width='60' />}
+        </div>
+        <div className='uplod-info'>
+          {
+            this.state.uploadedFile &&
+              <p>
+                {this.state.uploadedFile.name}
+              </p>
+          }
+          {this.state.binaryFile && (
+            <span style={{ cursor: 'pointer' }} onClick={() => { this.setState({ binaryFile: null, uploadedFile: null }) }}>Remove</span>
+          )}
         </div>
       </div>
     )
@@ -288,10 +284,17 @@ class PublishDocForm extends Component {
         <div className='small-input'>
           {this.renderInput('title', true)}
           {this.renderInput('domain')}
-          <div classname='d-flex'>
-            <div>{this.renderUploadBox('logoUrl', false, this.state.binaryFile)}</div>
-          </div>
         </div>
+        <div className='d-flex'>
+          <div className='favicon-uploader'>
+            {this.renderUploadBox()}
+          </div>
+          <div className='or-wrap'>
+            <p>OR</p>
+          </div>
+          {this.renderInput('logoUrl', false, this.state.binaryFile)}
+        </div>
+
         <div className='color-picker'>
           {this.renderColorPicker()}
         </div>
