@@ -363,12 +363,22 @@ h4.hm-sidebar-title span {
   font-weight: 400;
   margin: 3px 0 0;
 }
-
+.hm-public-endpoint-headers .hm-public-table:nth-child(1) {
+  border-top-right-radius: 0px;
+  border-top-left-radius: 0;
+  border-top: 0;
+}
 // Endpoint section
 .hm-endpoint-wrap {
+  padding: 15px 25px 10px;
+  background: #F8F8F8;
+  border: 1px solid #E3E9F3;
+  border-radius: 4px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+  border-bottom: 0px;
 
-  .hm-endpoint-header {
-    margin-bottom: 25px;
+  .hm-endpoint-header { 
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -521,7 +531,7 @@ h4.hm-sidebar-title span {
   .empty-response {
     display: none;
   }
- 
+
   .empty-response-container {
     background: transparent;
     border: none;
@@ -546,7 +556,7 @@ h4.hm-sidebar-title span {
         }
       }
     }
- 
+
   }
 }
 
