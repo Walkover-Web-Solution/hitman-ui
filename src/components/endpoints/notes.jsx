@@ -45,9 +45,10 @@ export class Notes extends Form {
 
   renderNote () {
     return (
-      <div className='pub-notes' style={{ borderLeftColor: this.state.theme }}>
-        {ReactHtmlParser(this.state.data.description) || ''}
-      </div>
+      this.state.data.description.length !== 0 &&
+        <div className='pub-notes' style={{ borderLeftColor: this.state.theme }}>
+          {ReactHtmlParser(this.state.data.description) || ''}
+        </div>
     )
   }
 
