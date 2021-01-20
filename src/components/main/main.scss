@@ -855,6 +855,15 @@ label.data-type {
 
 }
 
+.hm-sidebar-outer-block {
+  &::-webkit-scrollbar {
+    display: none;
+    width: 0px;
+    background: transparent;
+  }
+
+  scrollbar-width: none;
+}
 
 .sideBarListWrapper {
   text-align: left;
@@ -1474,6 +1483,23 @@ button.editBtn {
   .colorChooser.d-flex button {
     margin-top: 10px;
   }
+
+}
+
+@media(max-width:1100px) {
+
+  .hm-sidebar nav.public-endpoint-sidebar {
+    width: 300px !important;
+  }
+
+}
+
+@media(max-width:1900px) {
+
+  body .hm-sidebar nav.public-endpoint-sidebar {
+    width: 350px !important;
+  }
+
 }
 
 
@@ -2186,9 +2212,11 @@ button[name="cta-1"] {
 .uplod-info {
   margin: 10px;
 }
+
 .mainpublic-endpoint-main .custom-display-page {
-    padding: 0 200px 10px 30px;
+  padding: 0 200px 10px 30px;
 }
+
 .cta-button-wrapper button {
   padding: 7px 36px;
 }
