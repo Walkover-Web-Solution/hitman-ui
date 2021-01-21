@@ -1837,27 +1837,28 @@ button.toggleButton {
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
   padding: 9px 2px;
+  transition: 450ms; 
   outline: none !important;
 }
 
-.inner-editor {
-  transition: transform 0.46s ease;
+ 
+.pubCodeWrapper.closeEditor {  
+  transition: 450ms; 
 }
-
 .hideCodeEditor {
   .mainContentWrapper {
     justify-content: space-between;
   }
 
-  .inner-editor {
-    transform: scaleY(0);
-    transition: transform 0.46s ease;
-    transform-origin: right;
-  }
+  // .inner-editor {
+  //   transform: scaleY(0);
+  //   transition: transform 0.46s ease;
+  //   transform-origin: right;
+  // }
 
-  .pubCodeWrapper.closeEditor {
-    width: 0;
-    padding: 0;
+  .pubCodeWrapper.closeEditor {  
+    transition: 450ms;
+    transform: translate3d(100%, 0, 0);
   }
 
   button.toggleButton {
@@ -2219,4 +2220,8 @@ button[name="cta-1"] {
 
 .cta-button-wrapper button {
   padding: 7px 36px;
+}
+
+.ace-editor-wrapper {
+  min-width: 300px;
 }
