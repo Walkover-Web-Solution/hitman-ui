@@ -195,6 +195,10 @@ class DisplayEndpoint extends Component {
     if (!this.state.theme) {
       this.setState({ theme: this.props.publicCollectionTheme })
     }
+    console.log('window.innerWidth window.innerWidth window.innerWidth', window.innerWidth)
+    if (window.innerWidth < '1400') {
+      this.setState({ codeEditorVisibility: false })
+    }
   }
 
   componentDidUpdate (prevProps, prevState) {
