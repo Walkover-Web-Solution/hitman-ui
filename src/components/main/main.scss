@@ -1,11 +1,47 @@
 @font-face {
+  font-family: 'proxima-nova';
+  src: url('../../assets/fonts/ProximaNova-Regular.otf');
+  font-weight: 400;
+  font-style: normal;
+}
+
+// @font-face {
+//   font-family: 'proxima-nova';
+//   src: url('../../assets/fonts/Proxima-Nova-Black.otf');
+//   font-weight: 500;
+//   font-style: normal;
+// }
+
+@font-face {
+  font-family: 'proxima-nova';
+  src: url('../../assets/fonts/Proxima-Nova-Alt-Bold.otf');
+  font-weight: 600;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'proxima-nova';
+  src: url('../../assets/fonts/Proxima-Nova-Bold.otf');
+  font-weight: 700;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'proxima-nova';
+  src: url('../../assets/fonts/Proxima-Nova-Extrabold.otf');
+  font-weight: 800;
+  font-style: normal;
+}
+
+
+
+
+@font-face {
   font-family: AlegreyaSansSCBold;
   src: url(../../assets/fonts/AlegreyaSansSC-ExtraBold.ttf);
 }
 
 html body {
   background-color: #FBF9F5;
-  font-family: 'Sora', sans-serif !important;
+  font-family: 'proxima-nova', sans-serif !important;
 }
 
 $border-color: rgba(227, 228, 230, 0.7);
@@ -623,7 +659,7 @@ label.data-type {
   .ace-github {
     background: #252d30;
     color: #ffe05a;
-    font-family: 'Sora';
+    font-family: 'proxima-nova';
     width: 100% !important;
   }
 
@@ -1724,7 +1760,7 @@ html body div#sokt-sso-modal {
     font-weight: 600;
     font-size: 16px;
     line-height: 2 !important;
-    font-family: 'Sora', sans-serif !important;
+    font-family: 'proxima-nova', sans-serif !important;
     letter-spacing: 0px;
   }
 
@@ -1837,14 +1873,15 @@ button.toggleButton {
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
   padding: 9px 2px;
-  transition: 450ms; 
+  transition: 450ms;
   outline: none !important;
 }
 
- 
-.pubCodeWrapper.closeEditor {  
-  transition: 450ms; 
+
+.pubCodeWrapper.closeEditor {
+  transition: 450ms;
 }
+
 .hideCodeEditor {
   .mainContentWrapper {
     justify-content: space-between;
@@ -1856,7 +1893,7 @@ button.toggleButton {
   //   transform-origin: right;
   // }
 
-  .pubCodeWrapper.closeEditor {  
+  .pubCodeWrapper.closeEditor {
     transition: 450ms;
     transform: translate3d(100%, 0, 0);
   }
