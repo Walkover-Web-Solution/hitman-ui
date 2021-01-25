@@ -255,7 +255,7 @@ class GenericTable extends Component {
         </td>
         <td className='custom-td keyWrapper'>
           {dataArray[index].key}
-          <p className='text-muted small'>{originalData[index].checked === 'true' || originalData[index].checked === 'notApplicable' ? '(Required)' : '(Optional)'}</p>
+          <p className='text-muted small'>{originalData[index].checked === 'true' || originalData[index].checked === 'notApplicable' ? '' : '(Optional)'}</p>
         </td>
         <td className='custom-td valueWrapper'>
           <input
@@ -459,15 +459,16 @@ class GenericTable extends Component {
 
     this.autoFillBulkEdit()
     return (
-      // "generic-table-container"
-      // table-bordered
+    // "generic-table-container"
+    // table-bordered
+
       <div className='hm-public-table'>
         <div
           className={
-            isDashboardRoute(this.props)
-              ? 'generic-table-title-container'
-              : 'public-generic-table-title-container'
-          }
+              isDashboardRoute(this.props)
+                ? 'generic-table-title-container'
+                : 'public-generic-table-title-container'
+            }
         >
           {!isDashboardRoute(this.props) && dataArray.length > 0 ? <span>{this.renderTitle(title)} {willHighlight(this.props, title) ? <i className='fas fa-circle' /> : null}</span> : null}
         </div>
@@ -477,27 +478,27 @@ class GenericTable extends Component {
             <div className='headParaWraper'>
               <table className='table' id='custom-generic-table'>
                 {
-                  isDashboardRoute(this.props)
-                    ? (
-                      <thead>
-                        <tr>
-                          <th className='custom-th'> </th>
-                          <th className='custom-th' id='generic-table-key-cell'>
-                            KEY
-                          </th>
-                          <th className='custom-th'>VALUE</th>
-                          <th className='custom-th'>DESCRIPTION</th>
-                        </tr>
-                      </thead>
-                      )
-                    : (
-                        dataArray.length === this.findUncheckedEntityCount()
-                          ? this.state.optionalParams
-                              ? this.renderPublicTableHeadings()
-                              : null
-                          : this.renderPublicTableHeadings()
-                      )
-                }
+                    isDashboardRoute(this.props)
+                      ? (
+                        <thead>
+                          <tr>
+                            <th className='custom-th'> </th>
+                            <th className='custom-th' id='generic-table-key-cell'>
+                              KEY
+                            </th>
+                            <th className='custom-th'>VALUE</th>
+                            <th className='custom-th'>DESCRIPTION</th>
+                          </tr>
+                        </thead>
+                        )
+                      : (
+                          dataArray.length === this.findUncheckedEntityCount()
+                            ? this.state.optionalParams
+                                ? this.renderPublicTableHeadings()
+                                : null
+                            : this.renderPublicTableHeadings()
+                        )
+                  }
 
                 <tbody style={{ border: 'none' }}>
                   {dataArray.map((e, index) => (
@@ -516,26 +517,26 @@ class GenericTable extends Component {
         {this.renderOptionalParamsButton()}
 
         {
-          this.state.bulkEdit &&
-          (
-            <div id='custom-bulk-edit' className='form-group m-0 bulkEdit'>
-              <textarea
-                className='form-control'
-                name='contents'
-                id='contents'
-                rows='9'
-                value={this.textAreaValue}
-                onChange={this.handleBulkChange}
-                placeholder={
-                  'Rows are separated by new lines \nKeys and values are separated by : \nPrepend // to any row you want to add but keep disabled'
-                }
-              />
-            </div>
-          )
-        }
+            this.state.bulkEdit &&
+            (
+              <div id='custom-bulk-edit' className='form-group m-0 bulkEdit'>
+                <textarea
+                  className='form-control'
+                  name='contents'
+                  id='contents'
+                  rows='9'
+                  value={this.textAreaValue}
+                  onChange={this.handleBulkChange}
+                  placeholder={
+                    'Rows are separated by new lines \nKeys and values are separated by : \nPrepend // to any row you want to add but keep disabled'
+                  }
+                />
+              </div>
+            )
+          }
 
         {title === 'Path Variables' ||
-          !isDashboardRoute(this.props)
+            !isDashboardRoute(this.props)
           ? null
           : (
             <div className='generic-table-title-container'>
@@ -548,6 +549,7 @@ class GenericTable extends Component {
             </div>
             )}
       </div>
+
     )
   }
 }
