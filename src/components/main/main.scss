@@ -1522,21 +1522,21 @@ button.editBtn {
 
 }
 
-@media(max-width:1100px) {
+// @media(max-width:1100px) {
 
-  .hm-sidebar nav.public-endpoint-sidebar {
-    width: 300px !important;
-  }
+//   .hm-sidebar nav.public-endpoint-sidebar {
+//     width: 300px !important;
+//   }
 
-}
+// }
 
-@media(max-width:1900px) {
+// @media(max-width:1900px) {
 
-  body .hm-sidebar nav.public-endpoint-sidebar {
-    width: 350px !important;
-  }
+//   body .hm-sidebar nav.public-endpoint-sidebar {
+//     width: 350px !important;
+//   }
 
-}
+// }
 
 
 .addEniButton {
@@ -2261,4 +2261,28 @@ button[name="cta-1"] {
 
 .ace-editor-wrapper {
   min-width: 300px;
+}
+
+.main-table-wrapper {
+  margin-bottom: 25px;
+  background: #F8F8F8;
+  border: 1px solid #E3E9F3;
+  border-radius: 4px;
+  padding: 20px;
+  float: left;
+  width: 100%;
+  border-top-right-radius: 0px;
+  border-top-left-radius: 0;
+  border-top: 0;
+}
+
+.hm-right-content.hasPublicNavbar .public-navbar {
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 99;
+}
+
+.hm-right-content.hasPublicNavbar .pubCodeWrapper {
+  margin-top: 77px;
 }

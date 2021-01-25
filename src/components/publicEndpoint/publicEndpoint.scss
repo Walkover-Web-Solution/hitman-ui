@@ -258,11 +258,12 @@ form.add-new-domain-form {
   max-height: 100vh;
   position: sticky;
   top: 0;
+  flex: 20%;
   border-right: 1px solid #E0E0E0;
 
-  nav.public-endpoint-sidebar {
-    width: 250px;
-  }
+  // nav.public-endpoint-sidebar {
+  //   width: 250px;
+  // }
 
   .public-endpoint-sidebar .primary-sidebar {
     background-color: #F8F8F8;
@@ -273,7 +274,8 @@ form.add-new-domain-form {
 .hm-right-content {
   // max-width: 1000px;
   margin: 0 auto;
-  width: 100%;
+  // width: 100%;
+  flex: 90%;
   flex-direction: column !important;
   overflow-x: hidden;
   background: #fff;
@@ -363,11 +365,7 @@ h4.hm-sidebar-title span {
   font-weight: 400;
   margin: 3px 0 0;
 }
-.hm-public-endpoint-headers .hm-public-table:nth-child(1) {
-  border-top-right-radius: 0px;
-  border-top-left-radius: 0;
-  border-top: 0;
-}
+ 
 // Endpoint section
 .hm-endpoint-wrap {
   padding: 15px 25px 10px;
@@ -420,17 +418,11 @@ h4.hm-sidebar-title span {
 // Endpoint table
 
 .hm-public-table {
-  margin-bottom: 25px;
-  background: #F8F8F8;
-  border: 1px solid #E3E9F3;
-  border-radius: 4px;
-  padding: 20px;
-  float: left;
-  width: 100%;
+ 
 
 
   .public-generic-table-title-container {
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 600;
     margin-bottom: 10px;
     display: inline-block;
@@ -468,7 +460,7 @@ h4.hm-sidebar-title span {
             &.keyWrapper {
               width: 150px !important;
               word-break: break-all;
-              font-weight: 700;
+              font-weight: 500;
               font-size: 12px;
               color: #333;
 

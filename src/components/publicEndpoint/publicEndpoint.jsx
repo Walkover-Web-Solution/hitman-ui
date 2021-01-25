@@ -37,7 +37,8 @@ class PublicEndpoint extends Component {
   state = {
     publicCollectionId: '',
     collectionName: '',
-    collectionTheme: null
+    collectionTheme: null,
+    isNavBar: false
   };
 
   componentDidMount () {
@@ -116,12 +117,17 @@ class PublicEndpoint extends Component {
     window.open(`${link}`, '_blank')
   }
 
-  displayCTAandLink () {
+  getCTALinks () {
     const collectionId = this.props.match.params.collectionIdentifier
     let { cta, links } = this.props.collections[collectionId]?.docProperties || { cta: [], links: [] }
     cta = cta ? cta.filter((o) => o.name.trim() && o.value.trim()) : []
     links = links ? links.filter((o) => o.name.trim() && o.link.trim()) : []
     const isCTAandLinksPresent = (cta.length !== 0 || links.length !== 0)
+    return { cta, links, isCTAandLinksPresent }
+  }
+
+  displayCTAandLink () {
+    const { cta, links, isCTAandLinksPresent } = this.getCTALinks()
     return (
       <>
         {isCTAandLinksPresent &&
@@ -173,6 +179,7 @@ class PublicEndpoint extends Component {
       this.redirectToDefaultPage()
     }
 
+    const { isCTAandLinksPresent } = this.getCTALinks()
     return (
 
       <>
@@ -225,7 +232,7 @@ class PublicEndpoint extends Component {
           <div className='hm-sidebar'>
             <SideBar {...this.props} collectionName={this.state.collectionName} />
           </div>
-          <div className='hm-right-content'>
+          <div className={isCTAandLinksPresent ? 'hm-right-content hasPublicNavbar' : 'hm-right-content'}>
             {this.displayCTAandLink()}
             {
               this.state.collectionName !== ''
