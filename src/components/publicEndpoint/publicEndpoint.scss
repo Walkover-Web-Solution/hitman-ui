@@ -259,6 +259,7 @@ form.add-new-domain-form {
   position: sticky;
   top: 0;
   flex: 20%;
+  z-index: 999;
   border-right: 1px solid #E0E0E0;
 
   // nav.public-endpoint-sidebar {
@@ -380,6 +381,8 @@ h4.hm-sidebar-title span {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    width: 100%;
+    max-width: 800px;
 
     a {
       font-size: 16px;

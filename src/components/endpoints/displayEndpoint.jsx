@@ -77,6 +77,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 class DisplayEndpoint extends Component {
   constructor (props) {
     super(props)
+    this.myRef = React.createRef()
+    this.sideRef = React.createRef()
+    this.scrollDiv = React.createRef()
     this.state = {
       data: {
         name: '',
@@ -195,13 +198,18 @@ class DisplayEndpoint extends Component {
     if (!this.state.theme) {
       this.setState({ theme: this.props.publicCollectionTheme })
     }
-    console.log('window.innerWidth window.innerWidth window.innerWidth', window.innerWidth)
     if (window.innerWidth < '1400') {
       this.setState({ codeEditorVisibility: false })
     }
   }
 
   componentDidUpdate (prevProps, prevState) {
+    if (this.props.location.pathname !== prevProps.location.pathname) {
+      this.scrollDiv.current.scrollIntoView({ block: 'center' })
+    }
+    if (this.props.endpointId !== prevProps.endpointId) {
+      this.scrollDiv.current.scrollIntoView({ block: 'center' })
+    }
     if (!isDashboardRoute(this.props)) {
       if (
         this.state.data !== prevState.data ||
@@ -771,6 +779,7 @@ class DisplayEndpoint extends Component {
     }
     await this.handleApiCall(api, body, headers, this.state.data.body.type)
     this.setState({ loader: false })
+    this.myRef.current.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' })
     isDashboardRoute(this.props) && this.setData()
   };
 
@@ -1534,7 +1543,7 @@ class DisplayEndpoint extends Component {
   displayResponse () {
     if (!isDashboardRoute(this.props) && this.state.flagResponse) {
       return (
-        <div className='hm-panel endpoint-public-response-container public-doc'>
+        <div ref={this.myRef} className='hm-panel endpoint-public-response-container public-doc'>
           <DisplayResponse
             {...this.props}
             timeElapsed={this.state.timeElapsed}
@@ -1564,7 +1573,7 @@ class DisplayEndpoint extends Component {
   displayResponseAndSampleResponse () {
     return (
       <>
-        <div className='col-12'>
+        <div className='col-12' ref={this.myRef}>
           <ul className='nav nav-tabs respTabsListing' id='myTab' role='tablist'>
             <li className='nav-item'>
               <a
@@ -1805,7 +1814,7 @@ class DisplayEndpoint extends Component {
                   )
                 : null
             }
-            <div className='endpoint-header '>
+            <div className='endpoint-header' ref={this.scrollDiv}>
               {!isDashboardRoute(this.props) && (
                 <div className='endpoint-name-container'>
                   {!isDashboardRoute(this.props, true) && <h1 className='endpoint-title'>{this.state.data?.name || ''}</h1>}

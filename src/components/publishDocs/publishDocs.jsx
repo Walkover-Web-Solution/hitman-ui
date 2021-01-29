@@ -92,6 +92,7 @@ class PublishDocs extends Component {
     }
     this.wrapperRef = React.createRef()
     this.handleClickOutside = this.handleClickOutside.bind(this)
+    this.scrollmyRef = React.createRef()
   }
 
   componentDidMount () {
@@ -416,7 +417,7 @@ class PublishDocs extends Component {
                 className={this.state.selectedEndpointId === endpoint.id ? 'groupListing active' : 'groupListing'}
               >
                 <DragHandle />
-                {endpoints[endpoint.id]?.name}
+                <span className='endpointNameWrapper'>{endpoints[endpoint.id]?.name}</span>
                 {this.displayState(endpoints[endpoint.id])}
               </div>
             </SortableItem>
@@ -711,9 +712,10 @@ class PublishDocs extends Component {
             </div>
             {this.endpointPublishAndReject()}
           </div>
-          {this.checkEndpointState()}
+          <div className='scrollTo' ref={this.scrollmyRef}>
+            {this.checkEndpointState()}
+          </div>
         </div>
-
       )
     }
   }
@@ -730,6 +732,7 @@ class PublishDocs extends Component {
         )
       }
     }
+    // this.scrollmyRef.current.scrollIntoView({ block: "center" })
   }
 
   handleRemovePublicEndpoint (endpointId) {

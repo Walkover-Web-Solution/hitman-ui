@@ -89,7 +89,7 @@
 .grid-two {
   margin: 20px 0px;
   display: grid;
-  grid-template-columns: 0.5fr 1.5fr;
+  grid-template-columns: 0.4fr 1.5fr;
 
   .versions-section {
     margin: 0 15px 0px 0;
@@ -267,7 +267,7 @@ span.tag {
 .groups-inner,
 .pages-inner-wrapper {
   background: #fff;
-  padding: 10px;
+  padding: 10px 0;
   margin: 15px 0;
   border-radius: 4px;
 }
@@ -276,8 +276,9 @@ span.tag {
   cursor: pointer;
   text-transform: capitalize;
   font-weight: 600;
-  font-size: 16px;
-  color: #E98A36;
+  font-size: 14px;
+  color: #000000;
+  padding-left: 25px;
   margin: 0 0 5px 0;
 }
 
@@ -289,18 +290,20 @@ span.tag {
   font-weight: 500;
   text-transform: capitalize;
   width: 100%;
-  padding: 8px 4px;
+  padding: 5px 4px;
   border-radius: 8px;
   border: 1px solid transparent;
+  display: flex;
+  align-items: center;
 
-  &:hover {
-    background: #FEFCF7;
-    border-color: #F1EEE5;
-  }
+  // &:hover {
+  //   background: #FEFCF7;
+  //   border-color: #F1EEE5;
+  // }
 
   &.active {
-    background: #FEFCF7;
-    border-color: #F1EEE5;
+    background: #fff;
+    border-color: #fff;
   }
 }
 
