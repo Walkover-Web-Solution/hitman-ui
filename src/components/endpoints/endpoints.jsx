@@ -124,6 +124,7 @@ class Endpoints extends Component {
   }
 
   handleDisplay (endpoint, groupId, collectionId, previewMode) {
+    window.scroll(0, 0)
     if (isDashboardRoute(this.props, true)) {
       if (!this.props.tabs.tabs[endpoint.id]) {
         const previewTabId = Object.keys(this.props.tabs.tabs).filter(

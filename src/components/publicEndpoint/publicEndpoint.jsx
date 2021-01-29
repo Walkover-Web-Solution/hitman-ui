@@ -38,10 +38,20 @@ class PublicEndpoint extends Component {
     publicCollectionId: '',
     collectionName: '',
     collectionTheme: null,
-    isNavBar: false
+    isNavBar: false,
+    isSticky: false
   };
 
   componentDidMount () {
+    window.addEventListener('scroll', () => {
+      let sticky = false
+      if (window.scrollY > 20) {
+        sticky = true
+      } else {
+        sticky = false
+      }
+      this.setState({ isSticky: sticky })
+    })
     if (this.props.location.pathname) {
       const collectionIdentifier = this.props.location.pathname.split('/')[2]
       this.props.fetch_all_public_endpoints(collectionIdentifier)
@@ -131,7 +141,7 @@ class PublicEndpoint extends Component {
     return (
       <>
         {isCTAandLinksPresent &&
-          <div className='d-flex public-navbar'>
+          <div className={this.state.isSticky ? 'd-flex public-navbar stickyNav' : 'd-flex public-navbar'}>
             {links.map((link, index) => (
               <div key={`link-${index}`}>
                 <label className='link' htmlFor={`link-${index}`} onClick={() => { this.openLink(link.link) }}>{link.name}</label>

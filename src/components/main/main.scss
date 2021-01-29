@@ -2085,9 +2085,10 @@ button.toggleButton {
 
 .public-navbar {
   float: right;
-  margin: 15px;
+  padding: 15px;
   justify-content: center;
   align-items: center;
+  background: #fff;
 }
 
 .public-navbar .link {
@@ -2160,7 +2161,7 @@ button[name="cta-1"] {
 .new-pub-doc .pages-inner-wrapper .groupListing:hover .dragIcon,
 .new-pub-doc .version-groups .groupListing:hover .dragIcon {
   position: absolute;
-  left: 4px;
+  left: 2px;
   top: 0;
   bottom: 0;
   margin: auto;
@@ -2280,9 +2281,39 @@ button[name="cta-1"] {
   position: absolute;
   right: 0;
   top: 0;
+  transition:all 500ms ease 0s;
   z-index: 99;
 }
 
 .hm-right-content.hasPublicNavbar .pubCodeWrapper {
   margin-top: 77px;
+}
+
+.public-navbar.stickyNav {
+  position: fixed!important;
+  background: #fff;
+  animation:slide-down 0.4s; 
+  margin: 0;
+  left: 0;
+  justify-content: flex-end;
+}
+@keyframes slide-down {
+  0% {
+      opacity: 0;
+      transform: translateY(-100%);
+  } 
+  100% { 
+    opacity: 1;
+      transform: translateY(0);
+  } 
+}
+.modal-feedio {
+  z-index: 99999!important;
+}
+span.endpointNameWrapper {
+  width: 112px; 
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
 }
