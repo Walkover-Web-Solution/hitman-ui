@@ -18,12 +18,14 @@
   font-weight: 600;
   font-style: normal;
 }
+
 @font-face {
   font-family: 'proxima-nova';
   src: url('../../assets/fonts/Proxima-Nova-Bold.otf');
   font-weight: 700;
   font-style: normal;
 }
+
 @font-face {
   font-family: 'proxima-nova';
   src: url('../../assets/fonts/Proxima-Nova-Extrabold.otf');
@@ -1482,6 +1484,20 @@ button.editBtn {
 }
 
 .mainContentWrapperPublic {
+  .hm-endpoint-container {
+    .hm-panel {
+      height: calc(100vh - 50px);
+      overflow: auto;
+
+      &::-webkit-scrollbar {
+        width: 0px;
+      }
+    }
+
+  }
+}
+
+.mainContentWrapperPublic {
   .mainContentWrapper {
     background: #ffffff;
     display: flex;
@@ -1489,25 +1505,14 @@ button.editBtn {
   }
 
   .hm-endpoint-container {
-    height: calc(100vh - 50px);
-    overflow: auto;
     margin: 25px 10px 30px !important;
     padding: 0 5px !important;
-
-
-    &::-webkit-scrollbar {
-      width: 0px;
-    }
-
 
   }
 
   .hm-panel {
     margin-top: 25px;
   }
-
-
-
 }
 
 @media(max-width:1699px) {
@@ -2281,7 +2286,7 @@ button[name="cta-1"] {
   position: absolute;
   right: 0;
   top: 0;
-  transition:all 500ms ease 0s;
+  transition: all 500ms ease 0s;
   z-index: 99;
 }
 
@@ -2290,28 +2295,32 @@ button[name="cta-1"] {
 }
 
 .public-navbar.stickyNav {
-  position: fixed!important;
+  position: fixed !important;
   background: #fff;
-  animation:slide-down 0.4s; 
+  animation: slide-down 0.4s;
   margin: 0;
   left: 0;
   justify-content: flex-end;
 }
+
 @keyframes slide-down {
   0% {
-      opacity: 0;
-      transform: translateY(-100%);
-  } 
-  100% { 
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+
+  100% {
     opacity: 1;
-      transform: translateY(0);
-  } 
+    transform: translateY(0);
+  }
 }
+
 .modal-feedio {
-  z-index: 99999!important;
+  z-index: 99999 !important;
 }
+
 span.endpointNameWrapper {
-  width: 112px; 
+  width: 112px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
