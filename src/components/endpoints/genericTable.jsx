@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { isDashboardRoute } from '../common/utility'
 import { willHighlight, getHighlightsData } from './highlightChangesHelper'
 import './endpoints.scss'
+import shortid from 'shortid'
 
 class GenericTable extends Component {
   constructor (props) {
@@ -23,7 +24,8 @@ class GenericTable extends Component {
   }
 
   state = {
-    optionalParams: false
+    optionalParams: false,
+    randomId: ''
   }
 
   componentDidMount () {
@@ -32,7 +34,8 @@ class GenericTable extends Component {
 
   componentDidUpdate (prevProps, prevState) {
     if (this.props.match.params.endpointId !== prevProps.match.params.endpointId) {
-      this.setState({ optionalParams: false })
+      const randomId = shortid.generate()
+      this.setState({ optionalParams: false, randomId })
     }
   }
 
@@ -261,6 +264,7 @@ class GenericTable extends Component {
           <input
             name={index + '.value'}
             value={dataArray[index].value}
+            key={index + this.state.randomId}
             onChange={this.handleChange}
             type='text'
             placeholder={`Enter ${dataArray[index].key}`}
