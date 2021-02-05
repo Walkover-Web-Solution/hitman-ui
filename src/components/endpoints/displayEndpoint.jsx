@@ -755,6 +755,20 @@ class DisplayEndpoint extends Component {
     this.props.add_history(obj)
   };
 
+  checkEmptyParams () {
+    const params = this.state.originalParams
+    let isEmpty = false
+    params.forEach((param) => {
+      if (param.value === null || param.value === '') {
+        isEmpty = true
+        param.empty = true
+      } else {
+        param.empty = false
+      }
+    })
+    return isEmpty
+  }
+
   handleSend = async () => {
     this.setState({ loader: true })
     const startTime = new Date().getTime()
@@ -777,6 +791,13 @@ class DisplayEndpoint extends Component {
     } catch (e) {
       toast.error('Invalid JSON Body')
     }
+
+    if (!isDashboardRoute(this.props, true) && this.checkEmptyParams()) {
+      toast.error('Some mandatory values are empty')
+      this.setState({ loader: false })
+      return
+    }
+
     await this.handleApiCall(api, body, headers, this.state.data.body.type)
     this.setState({ loader: false })
     this.myRef.current.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' })

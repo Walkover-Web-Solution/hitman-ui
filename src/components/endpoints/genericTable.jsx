@@ -264,7 +264,7 @@ class GenericTable extends Component {
             onChange={this.handleChange}
             type='text'
             placeholder={`Enter ${dataArray[index].key}`}
-            className='form-control'
+            className={['form-control', dataArray[index].empty ? 'empty-params' : ''].join(' ')}
           />
           {
             dataArray[index].description?.length > 0
