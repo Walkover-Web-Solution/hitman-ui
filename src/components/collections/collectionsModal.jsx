@@ -24,7 +24,7 @@ const choices = {
   [collectionsModalEnum.MARKETPLACE]: {
     key: collectionsModalEnum.MARKETPLACE,
     label: 'Marketplace',
-    sublabel: '(Comming Soon)',
+    sublabel: '(Coming Soon)',
     disabled: true
   }
 }
@@ -43,7 +43,7 @@ class CollectionsModal extends Component {
       <div className='d-flex justify-content-around'>
         {Object.values(choices).map((choice) => (
           <div
-            key={choice}
+            key={choice.key}
             className={['add-collection-item', 'p-5', choice.disabled && 'disabled'].join(' ')}
             onClick={() => choice.disabled ? {} : this.selectChoice(choice.key)}
           >
