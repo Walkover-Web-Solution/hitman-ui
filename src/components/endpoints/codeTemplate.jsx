@@ -23,23 +23,22 @@ class CodeTemplate extends Component {
 
   makeCodeSnippet () {
     const harObject = this.props.harObject
-    const {
+    let {
       method,
       url,
       httpVersion,
       cookies,
       headers,
-      postData,
-      queryString
+      postData
     } = harObject
+    url = encodeURI(url)
     const snippet = new HTTPSnippet({
       method,
       url,
       httpVersion,
       cookies,
       headers,
-      postData,
-      queryString
+      postData
     })
     return snippet
   }
