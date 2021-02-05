@@ -88,14 +88,101 @@ class OpenApiForm extends Component {
     }
   }
 
-  render() {
+  renderJSONFileSelector() {
+    return (
+      <React.Fragment>
+        <div className="form-group">
+          <div id='select-json-wrapper'>
+            <label>Select JSON File</label>
+            <span className='customFileChooser'>
+              <input type='file' accept='.json' onChange={this.onFileChange.bind(this)} />
+              Choose JSON file
+            </span>
+            {this.state.errors?.file && <div className='alert alert-danger'>{this.state.errors?.file}</div>}
+          </div>
+        </div>
+        {this.state.uploadedFile && <div>{this.state.selectedFileName}</div>}
+      </React.Fragment>
+    )
+  }
+
+  renderButtonGroup() {
+    return (
+      <div className='text-right mt-4'>
+        <button
+          className='btn btn-secondary outline btn-lg'
+          onClick={(e)=>this.handleCancel(e)}
+        >
+          Cancel
+        </button>
+        <button
+          className='btn btn-primary btn-lg ml-2'
+          onClick={() => this.handleSubmit()}
+        >
+          Import
+        </button>
+      </div>
+    )
+  }
+
+  renderInputType() {
+    return (
+      <div className="form-group">
+        <label>Type: </label>
+        <select 
+          name='type'
+          className='form-control' 
+          value={this.state.importType} 
+          onChange={(e) => { this.setState({ importType: e.target.value, website: '', errors: { type: null, file: null, website: null } }) }}
+        >
+          <option value=''>Select</option>
+          <option value='openAPI'>Socket Doc</option>
+          <option value='postman'>Postman</option>
+        </select>
+        {this.state.errors?.type && <div className='alert alert-danger'>{this.state.errors?.type}</div>}
+      </div>
+    )
+  }
+
+  renderWebsiteInput() {
+    return (
+      <div className='form-group'>
+        <label> Website: </label>
+        <input 
+          className='form-control' 
+          name='website' 
+          value={this.state.website} 
+          onChange={(e) => { this.setState({ website: e.target.value, errors: { ...this.state.errors, website: null } }) }} 
+        />
+        {this.state.errors?.website && <div className='alert alert-danger'>{this.state.errors?.website}</div>}
+      </div>
+    )
+  }
+
+  renderForm() {
+    return (
+      <form>
+        <div className="row">
+          <div className="col-6">
+            {this.renderInputType()}
+            {this.state.importType === 'postman' && this.renderWebsiteInput()}
+          </div>
+          <div className="col-6">
+            {this.renderJSONFileSelector()}
+          </div>
+        </div>
+         {this.renderButtonGroup()}
+      </form>
+    )
+  }
+
+  renderInModal() {
     return (
       <Modal
         show={this.props.show}
         onHide={this.props.onHide}
         id='modal-open-api'
         size='lg'
-        animation={false}
         aria-labelledby='contained-modal-title-vcenter'
         centered
       >
@@ -105,61 +192,20 @@ class OpenApiForm extends Component {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <form>
-            <div className="row">
-              <div className="col-6">
-                <div className="form-group">
-                  <label>Type: </label>
-                  <select name='type' className='form-control' value={this.state.importType} onChange={(e) => { this.setState({ importType: e.target.value, website: '', errors: { type: null, file: null, website: null } }) }}>
-                    <option value=''>Select</option>
-                    <option value='openAPI'>Socket Doc</option>
-                    <option value='postman'>Postman</option>
-                  </select>
-                  {this.state.errors?.type && <div className='alert alert-danger'>{this.state.errors?.type}</div>}
-                </div>
-                <div className='form-group'>
-                {this.state.importType === 'postman'
-                    ? <>
-                        <label> Website: </label>
-                        <input className='form-control' name='website' value={this.state.website} onChange={(e) => { this.setState({ website: e.target.value, errors: { ...this.state.errors, website: null } }) }} />
-                          {this.state.errors?.website && <div className='alert alert-danger'>{this.state.errors?.website}</div>}
-                      </>
-                    : null}
-                </div>
-              </div>
-              <div className="col-6">
-                <div className="form-group">
-                  {<div id='select-json-wrapper'>
-                    <label>Select JSON File</label>
-                    <span className='customFileChooser'>
-                      <input type='file' accept='.json' onChange={this.onFileChange.bind(this)} />
-                      Choose JSON file
-                    </span>
-                    {this.state.errors?.file && <div className='alert alert-danger'>{this.state.errors?.file}</div>}
-                  </div>}
-                </div>
-                {this.state.uploadedFile && <div>{this.state.selectedFileName}</div>}
-              </div>
-            </div>
-            <div className='text-right mt-4'>
-              <button
-                type='button'
-                className='btn btn-secondary outline btn-lg'
-                onClick={this.props.onHide}
-              >
-                Cancel
-              </button>
-              <button
-                className='btn btn-primary btn-lg ml-2'
-                type='button'
-                onClick={() => this.handleSubmit()}
-              >
-                Import{' '}
-              </button>
-            </div>
-          </form>
+          {this.renderForm()}
         </Modal.Body>
       </Modal>
+    )
+  }
+
+  handleCancel(e) {
+    e.preventDefault()
+    this.props.showOnlyForm ? this.props.onCancel() : this.props.onHide()
+  }
+
+  render() {
+    return (
+      this.props.showOnlyForm ? this.renderForm() : this.renderInModal()
     )
   }
 }

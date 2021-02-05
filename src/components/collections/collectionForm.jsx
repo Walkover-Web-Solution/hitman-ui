@@ -117,7 +117,43 @@ class CollectionForm extends Form {
     }
   }
 
-  render () {
+  renderForm () {
+    return (
+      <form onSubmit={this.handleSubmit}>
+        {this.renderInput('name', 'Name', 'Collection Name', true)}
+        {this.renderInput('website', 'Website', 'Website', true)}
+        <div className='row'>
+          <div className='col'>
+            {this.renderInput('keyword', 'Keyword 1', 'Keyword 1', true)}
+          </div>
+          <div className='col'>
+            {this.renderInput('keyword1', 'Keyword 2', 'Keyword 2')}
+          </div>
+          <div className='col'>
+            {this.renderInput('keyword2', 'Keyword 3', 'Keyword 3')}
+          </div>
+        </div>
+        {/* {this.renderTextArea("description", "Description", "description")} */}
+        {this.renderQuillEditor('descriptoion', 'Description')}
+        <div className='text-right mt-4 mb-2'>
+          <button
+            className='btn btn-secondary outline btn-lg outline mr-2'
+            onClick={(e) => { this.handleCancel(e) }}
+          >
+            Cancel
+          </button>
+          {this.renderButton('Submit')}
+        </div>
+      </form>
+    )
+  }
+
+  handleCancel (e) {
+    e.preventDefault()
+    this.props.showOnlyForm ? this.props.onCancel() : this.props.onHide()
+  }
+
+  renderInModal () {
     return (
       <Modal
         size='lg'
@@ -137,35 +173,16 @@ class CollectionForm extends Form {
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <form onSubmit={this.handleSubmit}>
-              {this.renderInput('name', 'Name', 'Collection Name', true)}
-              {this.renderInput('website', 'Website', 'Website', true)}
-              <div className='row'>
-                <div className='col'>
-                  {this.renderInput('keyword', 'Keyword 1', 'Keyword 1', true)}
-                </div>
-                <div className='col'>
-                  {this.renderInput('keyword1', 'Keyword 2', 'Keyword 2')}
-                </div>
-                <div className='col'>
-                  {this.renderInput('keyword2', 'Keyword 3', 'Keyword 3')}
-                </div>
-              </div>
-              {/* {this.renderTextArea("description", "Description", "description")} */}
-              {this.renderQuillEditor('descriptoion', 'Description')}
-              <div className='text-right mt-4 mb-2'>
-                <button
-                  className='btn btn-secondary outline btn-lg outline mr-2'
-                  onClick={() => this.props.onHide()}
-                >
-                  Cancel
-                </button>
-                {this.renderButton('Submit')}
-              </div>
-            </form>
+            {this.renderForm()}
           </Modal.Body>
         </div>
       </Modal>
+    )
+  }
+
+  render () {
+    return (
+      this.props.showOnlyForm ? this.renderForm() : this.renderInModal()
     )
   }
 }
