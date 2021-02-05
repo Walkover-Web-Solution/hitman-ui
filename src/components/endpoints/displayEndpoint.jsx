@@ -219,6 +219,10 @@ class DisplayEndpoint extends Component {
         this.prepareHarObject()
       }
     }
+
+    if (this.state.endpoint.id !== prevState.endpoint.id) {
+      this.setState({ flagResponse: false })
+    }
   }
 
   async fetchPublicCollection (collectionId) {
