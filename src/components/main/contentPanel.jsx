@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
-import { Tab, Nav } from 'react-bootstrap'
+import { Tab, Nav, Dropdown } from 'react-bootstrap'
 
 import { connect } from 'react-redux'
 import 'react-tabs/style/react-tabs.css'
 import Environments from '../environments/environments'
+import History from '../history/history.jsx'
+import { ReactComponent as HistoryIcon } from '../../assets/icons/historyIcon.svg'
 import {
   addNewTab,
   closeTab,
@@ -186,8 +188,8 @@ class ContentPanel extends Component {
               : (
                 // rendered a static single tab mimicking the original, instead of tabs component if user is not signed
                 <div className='content-header'>
-                  <div className='tabs-container'>
-                    <Nav variant='pills' className='flex-row flex-nowrap item-wrp'>
+                  <div className='tabs-container d-flex'>
+                    <Nav variant='pills' className=''>
                       <Nav.Item>
                         <Nav.Link className='active'>
                           <button className='btn'>Untitled</button>
@@ -207,6 +209,18 @@ class ContentPanel extends Component {
                       </Nav.Item>
                     </Nav>
                   </div>
+                  <Dropdown>
+                    <Dropdown.Toggle
+                      bsPrefix='dropdown'
+                      variant='default'
+                      id='dropdown-basic'
+                    >
+                      <HistoryIcon />
+                    </Dropdown.Toggle>
+                    <Dropdown.Menu className='history-drop-down'>
+                      <History {...this.props} />
+                    </Dropdown.Menu>
+                  </Dropdown>
                 </div>
                 )
           }

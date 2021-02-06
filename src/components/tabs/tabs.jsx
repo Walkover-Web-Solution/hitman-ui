@@ -1,8 +1,11 @@
 import React, { Component } from 'react'
-import { Nav } from 'react-bootstrap'
+import { Nav, Dropdown } from 'react-bootstrap'
 import SavePromptModal from './savePromptModal'
 import './tabs.scss'
+
 import tabService from './tabService'
+import { ReactComponent as HistoryIcon } from '../../assets/icons/historyIcon.svg'
+import History from '../history/history.jsx'
 
 class CustomTabs extends Component {
   constructor (props) {
@@ -227,6 +230,21 @@ class CustomTabs extends Component {
               <path d='M8 12H16' stroke='#BDBDBD' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
             </svg>
           </button>
+        </Nav.Item>
+
+        <Nav.Item className='' id='history-tab-button'>
+          <Dropdown>
+            <Dropdown.Toggle
+              bsPrefix='dropdown'
+              variant='default'
+              id='dropdown-basic'
+            >
+              <HistoryIcon />
+            </Dropdown.Toggle>
+            <Dropdown.Menu className='history-drop-down'>
+              <History {...this.props} />
+            </Dropdown.Menu>
+          </Dropdown>
         </Nav.Item>
       </>
     )
