@@ -12,6 +12,9 @@ import tabStatusTypes from '../tabs/tabStatusTypes'
 import tabService from '../tabs/tabService'
 import { closeTab, openInNewTab } from '../tabs/redux/tabsActions'
 
+import PageIcon from '../../assets/icons/page-icon.svg'
+import GlobeIcon from '../../assets/icons/globe-icon.svg'
+
 const pagesEnum = {
   PENDING_STATE: 'Pending',
   REJECT_STATE: 'Reject',
@@ -107,7 +110,8 @@ class Pages extends Component {
 
   displayPageName (pageId) {
     return (
-      <div className='sidebar-accordion-item'>
+      <div className='sidebar-accordion-item page-name-icon-container'>
+        <img src={PageIcon} alt='page-icon' className='page-icon' />
         {this.props.pages[pageId].name}
       </div>
     )
@@ -289,7 +293,13 @@ class Pages extends Component {
           }}
         >
           {this.displayPageName(pageId)}
-          {this.displayPageOptions(pageId)}
+          <div className='d-flex align-items-center'>
+            <div className='mr-2'>
+              {this.props.pages[pageId].isPublished && <img src={GlobeIcon} alt='globe' />}
+            </div>
+            {this.displayPageOptions(pageId)}
+          </div>
+          {/* {this.displayPageOptions(pageId)} */}
         </button>
       </div>
     )
