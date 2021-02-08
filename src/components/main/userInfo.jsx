@@ -41,22 +41,21 @@ class UserInfo extends Component {
 
   userDropdown () {
     return (
-      authService.isAdmin() && (
-        <Dropdown bsPrefix='dropdown user-info-dropdown'>
-          <Dropdown.Toggle variant=''>
-            <div className='text-truncate'>{this.state.user?.name || this.state.user?.email || ''}</div>
-          </Dropdown.Toggle>
-          <Dropdown.Menu>
-            <div className='dropdown-item' style={{ cursor: 'pointer' }} onClick={() => this.navigateToViaSocket()}>
-              <TeamIcon />Team
-            </div>
+      <Dropdown bsPrefix='dropdown user-info-dropdown'>
+        <Dropdown.Toggle variant=''>
+          <div className='text-truncate'>{this.state.user?.name || this.state.user?.email || ''}</div>
+        </Dropdown.Toggle>
+        <Dropdown.Menu>
+          <div className='dropdown-item' style={{ cursor: 'pointer' }} onClick={() => this.navigateToViaSocket()}>
+            <TeamIcon />Team
+          </div>
+          {authService.isAdmin() &&
             <Dropdown.Item onClick={() => { this.props.open_collection(this.getFirstPublicCollection()?.id || null); this.navigateToPublishDocs() }}>
               <HostedApiIcon />Hosted API
-            </Dropdown.Item>
-            <Link to='/logout' className='dropdown-item'><SignOutIcon />Sign out</Link>
-          </Dropdown.Menu>
-        </Dropdown>
-      )
+            </Dropdown.Item>}
+          <Link to='/logout' className='dropdown-item'><SignOutIcon />Sign out</Link>
+        </Dropdown.Menu>
+      </Dropdown>
     )
   }
 

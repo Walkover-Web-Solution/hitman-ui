@@ -2350,3 +2350,11 @@ span.endpointNameWrapper {
     border-radius: 4px !important;
   }
 }
+
+.text-link {
+  cursor: pointer;
+  color: black;
+  &:hover {
+    text-decoration: underline;
+  }
+}

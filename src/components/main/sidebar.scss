@@ -88,7 +88,7 @@ input[type="text"]:focus {
 
 .App-Side {
   padding: 0 10px;
-  height: 65vh;
+  height: calc(100vh - 150px);
   overflow: auto;
 }
 
@@ -194,7 +194,7 @@ input[type="text"]:focus {
   font-size: 14px;
   color: #999;
   // border-left: 1px solid #E0E0E0;
-  padding: 30px 5px 20px;
+  padding: 0px 5px 10px;
   background-color: #fff;
   // position: relative;
   transition: box-shadow .3s .15s, transform .3s, margin-left .3s, margin-right .3s, width .3s, z-index 0s ease .3s;
@@ -346,18 +346,18 @@ input[type="text"]:focus {
 .versionPages .sidebar-accordion {
   position: relative;
 
-  &::before {
-    background-image: url(../../assets/icons/pagesIcon.svg);
-    content: "";
-    position: absolute;
-    height: 11px;
-    width: 10px;
-    background-repeat: no-repeat;
-    top: 0;
-    bottom: 0;
-    margin: auto;
-    left: -5px;
-  }
+  // &::before {
+  //   background-image: url(../../assets/icons/pagesIcon.svg);
+  //   content: "";
+  //   position: absolute;
+  //   height: 11px;
+  //   width: 10px;
+  //   background-repeat: no-repeat;
+  //   top: 0;
+  //   bottom: 0;
+  //   margin: auto;
+  //   left: -5px;
+  // }
 
 }
 
@@ -365,29 +365,29 @@ input[type="text"]:focus {
   position: relative;
   color: #E98A36;
 
-  &::before {
-    background-image: url(../../assets/icons/folderIcons.svg);
-    content: "";
-    position: absolute;
-    height: 11px;
-    width: 10px;
-    background-repeat: no-repeat;
-    top: 0;
-    bottom: 0;
-    margin: auto;
-    left: -5px;
-  }
+  // &::before {
+  //   background-image: url(../../assets/icons/folderIcons.svg);
+  //   content: "";
+  //   position: absolute;
+  //   height: 11px;
+  //   width: 10px;
+  //   background-repeat: no-repeat;
+  //   top: 0;
+  //   bottom: 0;
+  //   margin: auto;
+  //   left: -5px;
+  // }
 
 }
 
-.collectionVersionWrp {
-  // height: calc(100vh - 180px);
-  // overflow: auto;
-  // transition: 200ms;
-}
+// .collectionVersionWrp {
+//   height: calc(100vh - 180px);
+//   overflow: auto;
+//   transition: 200ms;
+// }
 
 .sidebar-content-scroll {
-  height: calc(100vh - 180px);
+  height: calc(100vh - 265px);
   overflow: auto;
   transition: 200ms;
 }

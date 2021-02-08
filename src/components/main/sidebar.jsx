@@ -7,10 +7,11 @@ import Collections from '../collections/collections'
 import CollectionVersions from '../collectionVersions/collectionVersions'
 import ProtectedRoute from '../common/protectedRoute'
 import { isDashboardRoute } from '../common/utility'
-import { getCurrentUser } from '../auth/authService'
+import { getCurrentUser, isAdmin } from '../auth/authService'
 import LoginSignupModal from './loginSignupModal'
 import UserNotification from '../collections/userNotification'
 import NotificationCount from './NotificationCount'
+import PublishColelctionInfo from './publishCollectionInfo'
 import UserInfo from './userInfo'
 import { ReactComponent as ArrowIcon } from '../../assets/icons/Vector.svg'
 import { ReactComponent as HitmanIcon } from '../../assets/icons/hitman.svg'
@@ -604,6 +605,7 @@ class SideBar extends Component {
                     <div className='ml-1 mr-2' onClick={() => { this.openCollection(null) }} style={{ transform: 'rotate(180deg)', cursor: 'pointer' }}><ArrowIcon /></div>
                     <div className='hm-sidebar-outer-block heading-2'>{selectedCollectionName}</div>
                   </div>
+                  <div><PublishColelctionInfo {...this.props} collectionId={this.collectionId} /></div>
                   <div className='secondary-sidebar sidebar-content-scroll'>
                     <div className='collectionVersionWrp'>
                       <CollectionVersions
@@ -639,7 +641,7 @@ class SideBar extends Component {
             get_public_collections={this.getPublicCollections.bind(this)}
                                />}
         </div>
-        <div>{getCurrentUser() && <NotificationCount count={this.getNotificationCount()} />}</div>
+        <div>{getCurrentUser() && isAdmin() && <NotificationCount count={this.getNotificationCount()} />}</div>
       </div>
     )
   }

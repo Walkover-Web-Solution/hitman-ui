@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { fetchCollections } from '../collections/redux/collectionsActions'
 import { fetchAllVersions } from '../collectionVersions/redux/collectionVersionsActions'
@@ -72,12 +71,6 @@ class Main extends Component {
   render () {
     return (
       <div className='custom-main-container'>
-        <ToastContainer />
-        {/* <Navbar
-          {...this.props}
-          tabs={[...this.state.tabs]}
-          set_tabs={this.setTabs.bind(this)}
-        /> */}
         <div className='main-panel-wrapper'>
           <SideBar
             {...this.props}
