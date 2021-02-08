@@ -178,10 +178,9 @@ input[type="text"]:focus {
 }
 
 .secondary-sidebar .card-body {
-  // padding: 0 0 0 15px;
+  padding: 0 0 0 15px;
   background: #FEFCF7;
   border-radius: 4px;
-  padding: 0px 0px !important;
 }
 
 .secondary-collapse .secondary-sidebar button.btn.close {
@@ -258,67 +257,67 @@ input[type="text"]:focus {
 
 
 
-// .linkWrapper {
-//   .linkWith {
-//     .card-body {
-//       .sidebar-accordion {
-//         position: relative;
+.linkWrapper {
+  .linkWith {
+    .card-body {
+      .sidebar-accordion {
+        position: relative;
 
-//         &:before {
-//           top: -18px;
-//           border-width: 0 0 1px 1px;
-//         }
+        &:before {
+          top: -18px;
+          border-width: 0 0 1px 1px;
+        }
 
-//         &:first-child::before {
-//           top: -18px;
-//           height: calc(50% + 20px);
-//         }
+        &:first-child::before {
+          top: -18px;
+          height: calc(50% + 20px);
+        }
 
-//         &::after,
-//         &::before {
-//           content: '';
-//           position: absolute;
-//           left: -15px;
-//           width: 20px;
-//           height: calc(50% + 18px);
-//           border-color: #E98A36;
-//           border-style: solid;
-//           -webkit-box-sizing: border-box;
-//           -moz-box-sizing: border-box;
-//           box-sizing: border-box;
-//         }
+        &::after,
+        &::before {
+          content: '';
+          position: absolute;
+          left: -15px;
+          width: 20px;
+          height: calc(50% + 18px);
+          border-color: #E98A36;
+          border-style: solid;
+          -webkit-box-sizing: border-box;
+          -moz-box-sizing: border-box;
+          box-sizing: border-box;
+        }
 
-//         &:last-child:after {
-//           border: 0;
-//         }
+        &:last-child:after {
+          border: 0;
+        }
 
-//         &::after {
-//           top: 50%;
-//           border-width: 0 0 0 1px;
-//         }
+        &::after {
+          top: 50%;
+          border-width: 0 0 0 1px;
+        }
 
-//         &.pagesWrapper>button {
-//           position: relative;
+        &.pagesWrapper>button {
+          position: relative;
 
-//           &:before {
-//             background-image: url(../../assets/icons/pagesIcon.svg);
-//             content: "";
-//             position: absolute;
-//             height: 9px;
-//             width: 9px;
-//             background-repeat: no-repeat;
-//             top: 2px;
-//             bottom: 0;
-//             margin: auto;
-//             left: -20px;
-//             background-color: #FEFCF7;
-//             z-index: 99999;
-//           }
-//         }
-//       }
-//     }
-//   }
-// }
+          &:before {
+            background-image: url(../../assets/icons/pagesIcon.svg);
+            content: "";
+            position: absolute;
+            height: 9px;
+            width: 9px;
+            background-repeat: no-repeat;
+            top: 2px;
+            bottom: 0;
+            margin: auto;
+            left: -20px;
+            background-color: #FEFCF7;
+            z-index: 99999;
+          }
+        }
+      }
+    }
+  }
+}
 
 .versionBoldHeading>button .sidebar-accordion-item {
   font-size: 14px;

@@ -428,7 +428,6 @@ class Groups extends Component {
                 key={groupId}
                 className='sidebar-accordion'
                 id='child-accordion'
-                defaultActiveKey={groupId}
               // defaultActiveKey={
               //   this.eventkey[groupId] ? this.eventkey[groupId] : "1"
               // }
@@ -437,7 +436,7 @@ class Groups extends Component {
                 {/* <Card.Header> */}
                 <Accordion.Toggle
                   variant='default'
-                  eventKey={groupId}
+                  eventKey='0'
                 // eventKey={
                 //   !isDashboardRoute(this.props)
                 //     ? '0'
@@ -547,7 +546,7 @@ class Groups extends Component {
                 {/* </Card.Header> */}
                 <Accordion.Collapse
                   className='group-collapse'
-                  eventKey={groupId}
+                  eventKey='0'
                 // eventKey={
                 //   !isDashboardRoute(this.props)
                 //     ? '0'
