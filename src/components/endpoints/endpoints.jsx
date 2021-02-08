@@ -18,6 +18,7 @@ import {
   updateEndpointOrder
 } from './redux/endpointsActions'
 import filterService from '../../services/filterService'
+import GlobeIcon from '../../assets/icons/globe-icon.svg'
 
 const endpointsEnum = {
   PENDING_STATE: 'Pending',
@@ -294,14 +295,10 @@ class Endpoints extends Component {
   displayEndpointName (endpointId) {
     return (
       <div className='sidebar-accordion-item'>
-        {/* <div
-          className={`api-label ${this.props.endpoints[endpointId].requestType}`}
-        >
-          <div className='endpoint-request-div'>
-            {this.props.endpoints[endpointId].requestType}
-          </div>
-        </div> */}
-        {this.props.endpoints[endpointId].name}
+        <div className={`api-label ${this.props.endpoints[endpointId].requestType} request-type-bgcolor`}>
+          {this.props.endpoints[endpointId].requestType}
+        </div>
+        <div className='end-point-name'>{this.props.endpoints[endpointId].name}</div>
       </div>
     )
   }
@@ -423,6 +420,7 @@ class Endpoints extends Component {
         >
           <i className='uil uil-ellipsis-v' />
         </div>
+
         <div className='dropdown-menu dropdown-menu-right'>
           {this.displayDeleteOpt(endpointId)}
           {this.displayDuplicateOpt(endpointId)}
@@ -459,7 +457,12 @@ class Endpoints extends Component {
             )}
         >
           {this.displayEndpointName(endpointId)}
-          {this.displayEndpointOptions(endpointId)}
+          <div className='d-flex align-items-center'>
+            <div className='mr-2'>
+              {this.props.endpoints[endpointId].isPublished && <img src={GlobeIcon} alt='globe' />}
+            </div>
+            {this.displayEndpointOptions(endpointId)}
+          </div>
         </button>
       </div>
     )
