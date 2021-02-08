@@ -446,7 +446,7 @@ class Groups extends Component {
                 //       : '1'
                 // }
                 >
-                  <div className='sidebar-accordion-item'>
+                  <div className='sidebar-accordion-item text-truncate'>
                     {this.props.groups[groupId].name}
                   </div>
                   {

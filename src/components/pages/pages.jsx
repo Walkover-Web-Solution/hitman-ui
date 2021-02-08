@@ -110,7 +110,7 @@ class Pages extends Component {
 
   displayPageName (pageId) {
     return (
-      <div className='sidebar-accordion-item page-name-icon-container'>
+      <div className='sidebar-accordion-item page-name-icon-container text-truncate'>
         <img src={PageIcon} alt='page-icon' className='page-icon' />
         {this.props.pages[pageId].name}
       </div>

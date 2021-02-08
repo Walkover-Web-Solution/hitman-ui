@@ -326,7 +326,7 @@ class CollectionsComponent extends Component {
                   className='sidebar-accordion-item'
                   onClick={() => this.openSelectedCollection(collectionId)}
                 >
-                  <div>{this.props.collections[collectionId].name}</div>
+                  <div className='text-truncate'>{this.props.collections[collectionId].name}</div>
                 </div>
                 )}
             <div class='show-endpoint-count'>

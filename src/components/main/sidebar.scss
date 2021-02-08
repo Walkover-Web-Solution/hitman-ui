@@ -145,9 +145,9 @@ input[type="text"]:focus {
 
 .sidebar-accordion-item {
   padding: 10px;
-  flex-grow: 1;
   display: flex;
   align-items: center;
+  width: 100%;
 
   .api-label {
     margin-right: 10px;
@@ -390,4 +390,11 @@ input[type="text"]:focus {
   height: calc(100vh - 265px);
   overflow: auto;
   transition: 200ms;
+}
+
+.sidebar-content {
+  .collection-name {
+    cursor: pointer;
+    line-height: 1;
+  }
 }

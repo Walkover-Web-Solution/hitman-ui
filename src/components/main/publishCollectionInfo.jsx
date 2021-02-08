@@ -62,7 +62,7 @@ class PublishCollectionInfo extends Component {
   render () {
     const isPublic = this.props.collections[this.props.collectionId]?.isPublic || false
     return (
-      <div className='my-2'>
+      <div className='my-3'>
         {isPublic ? this.renderPublicCollectionInfo() : this.renderPublishCollection()}
       </div>
     )
