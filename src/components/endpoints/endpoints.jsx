@@ -15,10 +15,12 @@ import './endpoints.scss'
 import {
   deleteEndpoint,
   duplicateEndpoint,
-  updateEndpointOrder
+  updateEndpointOrder,
+  addEndpoint
 } from './redux/endpointsActions'
 import filterService from '../../services/filterService'
 import GlobeIcon from '../../assets/icons/globe-icon.svg'
+import AddEntity from '../main/addEntity/addEntity'
 
 const endpointsEnum = {
   PENDING_STATE: 'Pending',
@@ -35,7 +37,7 @@ const mapStateToProps = (state) => {
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     delete_endpoint: (endpoint) => dispatch(deleteEndpoint(endpoint)),
     duplicate_endpoint: (endpoint) => dispatch(duplicateEndpoint(endpoint)),
@@ -48,7 +50,9 @@ const mapDispatchToProps = (dispatch) => {
     draft_endpoint: (endpoint) => dispatch(draftEndpoint(endpoint)),
     reject_endpoint: (endpoint) => dispatch(rejectEndpoint(endpoint)),
     close_tab: (tabId) => dispatch(closeTab(tabId)),
-    open_in_new_tab: (tab) => dispatch(openInNewTab(tab))
+    open_in_new_tab: (tab) => dispatch(openInNewTab(tab)),
+    add_endpoint: (newEndpoint, groupId, callback) =>
+      dispatch(addEndpoint(ownProps.history, newEndpoint, groupId, callback))
   }
 }
 
@@ -468,6 +472,36 @@ class Endpoints extends Component {
     )
   }
 
+  addEndpoint (endpoint) {
+    this.props.add_endpoint(endpoint, this.props.group_id, null)
+  }
+
+  renderForm () {
+    const endpoint = {
+      uri: '',
+      name: '',
+      requestType: 'GET',
+      body: { type: 'none', value: null },
+      headers: {},
+      params: {},
+      pathVariables: {},
+      BASE_URL: null,
+      bodyDescription: {},
+      authorizationType: null
+    }
+    return (
+      <>
+        {isDashboardRoute(this.props, true) &&
+          <AddEntity
+            placeholder='API Endpoint Name'
+            type='endpoint'
+            endpoint={endpoint}
+            addEndpoint={this.addEndpoint.bind(this)}
+          />}
+      </>
+    )
+  }
+
   displayUserEndpoints (endpoints) {
     return (
       <>
@@ -479,6 +513,7 @@ class Endpoints extends Component {
             .map((endpointId) => (
               this.displaySingleEndpoint(endpointId)
             ))}
+        {Object.keys(endpoints).length === 0 && this.renderForm()}
       </>
     )
   }

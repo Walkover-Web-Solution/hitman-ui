@@ -18,6 +18,7 @@ import tabService from '../tabs/tabService'
 import './groups.scss'
 import groupsService from './groupsService'
 import filterService from '../../services/filterService'
+import AddEntity from '../main/addEntity/addEntity'
 
 const mapStateToProps = (state) => {
   return {
@@ -602,6 +603,23 @@ class Groups extends Component {
     )
   }
 
+  renderForm (sortedGroups) {
+    const groupsCount = sortedGroups.filter((group) => group.versionId === this.props.version_id).length
+    return (
+      <>
+        {
+      groupsCount === 0 && isDashboardRoute(this.props, true) &&
+        <AddEntity
+          placeholder='Group Name'
+          type='group'
+          entity={this.props.versions[this.props.version_id]}
+          addNewEntity={this.props.addGroup}
+        />
+        }
+      </>
+    )
+  }
+
   render () {
     if (this.state.filter !== this.props.filter) {
       this.filterFlag = false
@@ -643,6 +661,8 @@ class Groups extends Component {
             .map((group) =>
               group.id ? <div key={group.id}>{this.renderBody(group.id)}</div> : null
             )}
+
+        {this.renderForm(this.sortedGroups)}
       </div>
     )
   }

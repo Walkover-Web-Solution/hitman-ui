@@ -19,6 +19,7 @@ import { ReactComponent as HistoryIcon } from '../../assets/icons/historyIcon.sv
 import { ReactComponent as RandomTrigerIcon } from '../../assets/icons/randomTriggerIcon.svg'
 import { ReactComponent as SearchIcon } from '../../assets/icons/searchIcon.svg'
 import { ReactComponent as SecondarySidebarToggleIcon } from '../../assets/icons/secondarySidebarToggleIcon.svg'
+import collectionVersionsService from '../collectionVersions/collectionVersionsService'
 import './main.scss'
 import './sidebar.scss'
 
@@ -626,6 +627,19 @@ class SideBar extends Component {
     )
   }
 
+  openAddVersionForm (collectionId) {
+    this.setState({
+      showVersionForm: true,
+      selectedCollection: {
+        ...this.props.collections[collectionId]
+      }
+    })
+  }
+
+  closeVersionForm () {
+    this.setState({ showVersionForm: false })
+  }
+
   render () {
     return (
       <nav
@@ -654,6 +668,13 @@ class SideBar extends Component {
                 )
           }
         </div>
+        {this.state.showVersionForm &&
+          collectionVersionsService.showVersionForm(
+            this.props,
+            this.closeVersionForm.bind(this),
+            this.state.selectedCollection.id,
+            'Add new Collection Version'
+          )}
         {this.collectionId && isDashboardRoute(this.props, true) && (
           <div className='secondary-sidebar'>
             <p className='hm-sidebar-outer-block heading-2'>{this.props.collections[this.state.selectedCollectionId]?.name || ''}</p>
@@ -664,6 +685,7 @@ class SideBar extends Component {
               <CollectionVersions
                 {...this.props}
                 collection_id={this.state.selectedCollectionId}
+                addVersion={this.openAddVersionForm.bind(this)}
                 open_collection={this.openCollection.bind(this)}
                 selectedCollectionId={this.state.selectedCollectionId}
               />
