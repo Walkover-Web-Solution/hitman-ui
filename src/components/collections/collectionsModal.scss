@@ -1,0 +1,10 @@
+.add-collection-item {
+  border: 1px solid grey;
+  border-radius: 6px;
+  cursor: pointer;
+  &.disabled {
+    cursor: not-allowed;
+    color: grey;
+    opacity: 0.5;
+  }
+}

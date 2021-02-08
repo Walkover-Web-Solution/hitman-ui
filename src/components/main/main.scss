@@ -2358,3 +2358,7 @@ span.endpointNameWrapper {
     text-decoration: underline;
   }
 }
+
+.hm-public-table table#custom-generic-table input.empty-params.form-control {
+  border-color: #E98A36 !important;
+}
