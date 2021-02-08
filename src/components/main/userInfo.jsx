@@ -50,7 +50,7 @@ class UserInfo extends Component {
             <TeamIcon />Team
           </div>
           {authService.isAdmin() &&
-            <Dropdown.Item onClick={() => { this.props.open_collection(this.getFirstPublicCollection()?.id || null); this.navigateToPublishDocs() }}>
+            <Dropdown.Item onClick={() => { this.navigateToPublishDocs() }}>
               <HostedApiIcon />Hosted API
             </Dropdown.Item>}
           <Link to='/logout' className='dropdown-item'><SignOutIcon />Sign out</Link>

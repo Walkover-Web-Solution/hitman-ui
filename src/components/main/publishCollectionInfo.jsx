@@ -40,12 +40,12 @@ class PublishCollectionInfo extends Component {
 
   renderSettingsLink () {
     return (
-      <div className='text-link' onClick={() => { isAdmin() ? this.openPublishSettings() : this.showAccessDiniedToast() }}>Settings</div>
+      <div className='text-link' onClick={() => { isAdmin() ? this.openPublishSettings() : this.showAccessDeniedToast() }}>Settings</div>
     )
   }
 
-  showAccessDiniedToast () {
-    const message = 'You do not have access to the Public API Doc Settings, please contact workplace admin'
+  showAccessDeniedToast () {
+    const message = 'You do not have access to the Public API Doc Settings, please contact workplace Admin'
     toast.error(message)
   }
 

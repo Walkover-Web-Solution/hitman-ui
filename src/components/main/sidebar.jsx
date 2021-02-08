@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Route, Switch, withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { Tabs, Tab, Button } from 'react-bootstrap'
+import { Button } from 'react-bootstrap'
 import moment from 'moment'
 import Collections from '../collections/collections'
 import CollectionVersions from '../collectionVersions/collectionVersions'
@@ -9,7 +9,6 @@ import ProtectedRoute from '../common/protectedRoute'
 import { isDashboardRoute } from '../common/utility'
 import { getCurrentUser, isAdmin } from '../auth/authService'
 import LoginSignupModal from './loginSignupModal'
-import UserNotification from '../collections/userNotification'
 import NotificationCount from './NotificationCount'
 import PublishColelctionInfo from './publishCollectionInfo'
 import UserInfo from './userInfo'
@@ -18,11 +17,7 @@ import { ReactComponent as HitmanIcon } from '../../assets/icons/hitman.svg'
 import { ReactComponent as EmptyHistory } from '../../assets/icons/emptyHistroy.svg'
 import { ReactComponent as NoInvocationsIcon } from '../../assets/icons/emptyrandom.svg'
 import { ReactComponent as NoCollectionsIcon } from '../../assets/icons/noCollectionsIcon.svg'
-import { ReactComponent as CollectionIcon } from '../../assets/icons/collectionIcon.svg'
-import { ReactComponent as HistoryIcon } from '../../assets/icons/historyIcon.svg'
-import { ReactComponent as RandomTrigerIcon } from '../../assets/icons/randomTriggerIcon.svg'
 import { ReactComponent as SearchIcon } from '../../assets/icons/searchIcon.svg'
-import { ReactComponent as SecondarySidebarToggleIcon } from '../../assets/icons/secondarySidebarToggleIcon.svg'
 import './main.scss'
 import './sidebar.scss'
 
@@ -530,69 +525,6 @@ class SideBar extends Component {
     )
   }
 
-  renderSidebarTabs () {
-    return (
-      <Tabs
-        defaultActiveKey={
-          getCurrentUser() ? 'collection' : 'randomTrigger'
-        }
-        id='uncontrolled-tab-example'
-        onSelect={() => { !this.state.primarySidebar && this.setState({ primarySidebar: true }) }}
-      >
-        <Tab
-          eventKey='collection'
-          title={
-            <span>
-              <CollectionIcon /> <span className='tabs-Text'> Collection</span>
-            </span>
-          }
-        >
-          {
-            !getCurrentUser()
-              ? (this.renderEmptyCollectionsIfNotLoggedIn())
-              : (this.renderCollections())
-          }
-        </Tab>
-        <Tab
-          eventKey='history'
-          title={
-            <span>
-              <HistoryIcon /> <span className='tabs-Text'> History</span>
-            </span>
-          }
-        >
-          {this.renderHistoryList()}
-        </Tab>
-        <Tab
-          eventKey='randomTrigger'
-          title={
-            <span>
-              <RandomTrigerIcon />
-              <span className='tabs-Text'> Random Trigger</span>
-            </span>
-          }
-        >
-          {this.renderTriggerList()}
-        </Tab>
-      </Tabs>
-    )
-  }
-
-  renderUserNotification () {
-    return (
-      <div className='userInfowrapper'>
-        <UserNotification
-          {...this.props}
-          open_collection={this.openCollection.bind(this)}
-          disable_secondary_sidebar={() => { this.setState({ secondarySidebarToggle: true }) }}
-          get_notification_count={this.getNotificationCount.bind(this)}
-          get_public_collections={this.getPublicCollections.bind(this)}
-          open_publish_docs={this.openPublishDocs.bind(this)}
-        />
-      </div>
-    )
-  }
-
   renderSidebarContent () {
     const selectedCollectionName = this.props.collections[this.collectionId]?.name || ' '
     return (
@@ -665,43 +597,12 @@ class SideBar extends Component {
         </div>
         {this.state.data.filter !== '' && this.renderSearchList()}
         {this.state.data.filter === '' && this.renderSidebarContent()}
-        {/* Do Not Remove This Code - Tabs for Primary Sidebar - Can Be Used in Future */}
-        {/* {this.state.data.filter === '' && this.renderSidebarTabs()} */}
       </>
     )
   }
 
   getSidebarInteractionClass () {
-    return (
-      // Do Not Remove This Code - Used In Multi Sidebar Configuration - Can Be Used in Future
-      // isDashboardRoute(this.props, true)
-      //   ? this.state.primarySidebar ? 'sidebar enable-primary-sidebar' : this.state.selectedCollectionId ? this.state.secondarySidebarToggle ? 'sidebar enable-secondary-sidebar secondary-collapse' : 'sidebar enable-secondary-sidebar' : 'sidebar'
-      //   : 'public-endpoint-sidebar'
-      isDashboardRoute(this.props, true) ? 'sidebar' : 'public-endpoint-sidebar'
-    )
-  }
-
-  renderSecondarySidebar () {
-    return (
-      this.collectionId && isDashboardRoute(this.props, true) && (
-        <div className='secondary-sidebar'>
-          <p className='hm-sidebar-outer-block heading-2'>
-            {this.props.collections[this.state.selectedCollectionId]?.name || ''}
-          </p>
-          <button className='btn close' onClick={() => { this.setState({ primarySidebar: false, secondarySidebarToggle: this.state.primarySidebar ? false : !this.state.secondarySidebarToggle }) }}>
-            <SecondarySidebarToggleIcon />
-          </button>
-          <div className='collectionVersionWrp'>
-            <CollectionVersions
-              {...this.props}
-              collection_id={this.state.selectedCollectionId}
-              open_collection={this.openCollection.bind(this)}
-              selectedCollectionId={this.state.selectedCollectionId}
-            />
-          </div>
-        </div>
-      )
-    )
+    return (isDashboardRoute(this.props, true) ? 'sidebar' : 'public-endpoint-sidebar')
   }
 
   render () {
@@ -726,8 +627,6 @@ class SideBar extends Component {
                 )
           }
         </div>
-        {/* Removed Secondary Sidebar - Do Not Remove This Code - Can be Used in Future */}
-        {/* {this.renderSecondarySidebar()} */}
       </nav>
     )
   }
