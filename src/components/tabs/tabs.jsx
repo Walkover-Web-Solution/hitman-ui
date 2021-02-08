@@ -7,7 +7,9 @@ import tabService from './tabService'
 class CustomTabs extends Component {
   constructor (props) {
     super(props)
-    this.state = { showSavePrompt: false }
+    this.state = {
+      showSavePrompt: false
+    }
   }
 
   renderTabName (tabId) {
@@ -18,36 +20,74 @@ class CustomTabs extends Component {
         if (this.props.historySnapshots[tabId]) {
           if (tab.previewMode) {
             return (
-              <label style={{ fontStyle: 'italic' }}>
-                {this.props.historySnapshots[tabId].endpoint.name}
-              </label>
+              <div className='tabs-name'>
+                <label className='endpoint-name-italic'>
+                  {this.props.historySnapshots[tabId].endpoint.name}
+                </label>
+                <br />
+                <label className='endpoint-name-italic'>History</label>
+              </div>
             )
-          } else return <label>{this.props.historySnapshots[tabId].endpoint.name || this.props.historySnapshots[tabId].endpoint.BASE_URL + this.props.historySnapshots[tabId].endpoint.uri || 'Random Trigger'}</label>
+          } else {
+            return (
+              <div className='tabs-name'>
+                <label className='endpoint-name'>{this.props.historySnapshots[tabId].endpoint.name || this.props.historySnapshots[tabId].endpoint.BASE_URL + this.props.historySnapshots[tabId].endpoint.uri || 'Random Trigger'}</label>
+                <br />
+                <label>History</label>
+              </div>
+            )
+          }
         } else {
           return 'Untitled'
         }
       case 'endpoint':
         if (this.props.endpoints[tabId]) {
+          const endpoint = this.props.endpoints[tabId]
           if (tab.previewMode) {
             return (
-              <label style={{ fontStyle: 'italic' }}>
-                {this.props.endpoints[tabId].name}
-              </label>
+              <div className='tabs-name'>
+                <label className='endpoint-name-italic'>
+                  {this.props.endpoints[tabId].name}
+                </label>
+                <br />
+                <lable className='endpoint-name-italic'>{this.props.groups[endpoint.groupId].name}</lable>
+              </div>
+
             )
-          } else return <label>{this.props.endpoints[tabId].name}</label>
+          } else {
+            return (
+              <div className='tabs-name'>
+                <label className='endpoint-name'>{this.props.endpoints[tabId].name}</label>
+                <br />
+                <label>{this.props.groups[endpoint.groupId].name}</label>
+              </div>
+            )
+          }
         } else {
           return 'Untitled'
         }
 
       case 'page':
         if (this.props.pages[tabId]) {
+          const page = this.props.pages[tabId]
           if (tab.previewMode) {
             return (
-              <label style={{ fontStyle: 'italic' }}>
-                {this.props.pages[tabId].name}
-              </label>
+              <div className='endpoint-name-italic'>
+                <label style={{ fontStyle: 'italic' }}>
+                  {this.props.pages[tabId].name}
+                </label>
+                <lable>{this.props.groups[page.groupId]?.name}</lable>
+              </div>
             )
-          } else return <label>{this.props.pages[tabId].name}</label>
+          } else {
+            return (
+              <div className='tabs-name'>
+                <label className='endpoint-name'>{page.name}</label>
+                <br />
+                <lable>{this.props.groups[page.groupId]?.name}</lable>
+              </div>
+            )
+          }
         }
         break
       default:
