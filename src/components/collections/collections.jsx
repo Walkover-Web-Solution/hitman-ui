@@ -8,6 +8,7 @@ import CollectionVersions from '../collectionVersions/collectionVersions'
 import collectionVersionsService from '../collectionVersions/collectionVersionsService'
 import ImportVersionForm from '../collectionVersions/importVersionForm'
 import { isDashboardRoute } from '../common/utility'
+import CollectionModal from './collectionsModal'
 // import endpointApiService from '../endpoints/endpointApiService'
 import collectionsService from './collectionsService'
 import {
@@ -120,10 +121,7 @@ class CollectionsComponent extends Component {
   }
 
   openAddCollectionForm () {
-    this.setState({
-      showCollectionForm: true,
-      collectionFormName: 'Add new Collection'
-    })
+    this.setState({ showAddCollectionModal: true })
   }
 
   openEditCollectionForm (collectionId) {
@@ -530,6 +528,17 @@ class CollectionsComponent extends Component {
     )
   }
 
+  showAddCollectionModal () {
+    return (
+      this.state.showAddCollectionModal &&
+        <CollectionModal
+          title='Add Collection'
+          onHide={() => { this.setState({ showAddCollectionModal: false }) }}
+          show={this.state.showAddCollectionModal}
+        />
+    )
+  }
+
   render () {
     if (isDashboardRoute(this.props, true)) {
       let finalCollections = []
@@ -614,6 +623,7 @@ class CollectionsComponent extends Component {
                   this.state.collectionFormName,
                   this.state.selectedCollection
                 )}
+              {this.showAddCollectionModal()}
               {this.showImportVersionForm()}
               {this.openTagManagerModal()}
               {this.state.showDeleteModal &&
