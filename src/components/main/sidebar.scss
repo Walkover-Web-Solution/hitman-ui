@@ -189,13 +189,13 @@ input[type="text"]:focus {
 }
 
 .secondary-sidebar {
-  width: 270px;
+  // width: 270px;
   font-size: 14px;
   color: #999;
-  border-left: 1px solid #E0E0E0;
+  // border-left: 1px solid #E0E0E0;
   padding: 30px 5px 20px;
   background-color: #fff;
-  position: relative;
+  // position: relative;
   transition: box-shadow .3s .15s, transform .3s, margin-left .3s, margin-right .3s, width .3s, z-index 0s ease .3s;
 
   button.btn.close {
@@ -236,6 +236,12 @@ input[type="text"]:focus {
 
 .app-name {
   margin: 20px;
+  .icon {
+    margin: 5px 10px 5px 0;
+  }
+}
+
+.HITMAN-TITLE {
   font-style: normal;
   font-weight: bold;
   font-size: 22px;
@@ -243,10 +249,6 @@ input[type="text"]:focus {
   letter-spacing: 0.03em;
   color: #212224;
   font-family: 'AlegreyaSansSCBold';
-
-  .icon {
-    margin: 5px 10px 5px 0;
-  }
 }
 
 .empty-collections {
@@ -378,7 +380,13 @@ input[type="text"]:focus {
 }
 
 .collectionVersionWrp {
-  height: calc(100vh - 65px);
+  // height: calc(100vh - 180px);
+  // overflow: auto;
+  // transition: 200ms;
+}
+
+.sidebar-content-scroll {
+  height: calc(100vh - 180px);
   overflow: auto;
   transition: 200ms;
 }

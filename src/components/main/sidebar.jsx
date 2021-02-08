@@ -10,6 +10,9 @@ import { isDashboardRoute } from '../common/utility'
 import { getCurrentUser } from '../auth/authService'
 import LoginSignupModal from './loginSignupModal'
 import UserNotification from '../collections/userNotification'
+import NotificationCount from './NotificationCount'
+import UserInfo from './userInfo'
+import { ReactComponent as ArrowIcon } from '../../assets/icons/Vector.svg'
 import { ReactComponent as HitmanIcon } from '../../assets/icons/hitman.svg'
 import { ReactComponent as EmptyHistory } from '../../assets/icons/emptyHistroy.svg'
 import { ReactComponent as NoInvocationsIcon } from '../../assets/icons/emptyrandom.svg'
@@ -589,18 +592,66 @@ class SideBar extends Component {
     )
   }
 
+  renderSidebarContent () {
+    const selectedCollectionName = this.props.collections[this.collectionId]?.name || ' '
+    return (
+      <div className='sidebar-content'>
+        {this.collectionId
+          ? (
+              isDashboardRoute(this.props, true) && (
+                <div className='mx-3'>
+                  <div className='d-flex'>
+                    <div className='ml-1 mr-2' onClick={() => { this.openCollection(null) }} style={{ transform: 'rotate(180deg)', cursor: 'pointer' }}><ArrowIcon /></div>
+                    <div className='hm-sidebar-outer-block heading-2'>{selectedCollectionName}</div>
+                  </div>
+                  <div className='secondary-sidebar sidebar-content-scroll'>
+                    <div className='collectionVersionWrp'>
+                      <CollectionVersions
+                        {...this.props}
+                        collection_id={this.state.selectedCollectionId}
+                        open_collection={this.openCollection.bind(this)}
+                        selectedCollectionId={this.state.selectedCollectionId}
+                      />
+                    </div>
+                  </div>
+                </div>
+              )
+            )
+          : (
+              !getCurrentUser()
+                ? (this.renderEmptyCollectionsIfNotLoggedIn())
+                : (this.renderCollections())
+            )}
+      </div>
+    )
+  }
+
+  renderSidebarHeader () {
+    return (
+      <div className='m-3 d-flex align-items-center'>
+        <div><HitmanIcon /></div>
+        <div className='w-50 flex-grow-1 mx-3'>
+          <div className='HITMAN-TITLE'>HITMAN</div>
+          {getCurrentUser() && <UserInfo
+            {...this.props}
+            open_publish_docs={this.openPublishDocs.bind(this)}
+            open_collection={this.openCollection.bind(this)}
+            get_public_collections={this.getPublicCollections.bind(this)}
+                               />}
+        </div>
+        <div>{getCurrentUser() && <NotificationCount count={this.getNotificationCount()} />}</div>
+      </div>
+    )
+  }
+
   renderDashboardSidebar () {
     return (
       <>
-        <div className='app-name'>
-          <HitmanIcon />
-          HITMAN
-        </div>
+        {this.renderSidebarHeader()}
         <div className='search-box'>
           <label htmlFor='search'>
             <SearchIcon onClick={() => { !this.state.primarySidebar && this.setState({ primarySidebar: true }) }} />
           </label>
-
           <input
             value={this.state.data.filter}
             type='text'
@@ -610,31 +661,50 @@ class SideBar extends Component {
             onChange={(e) => this.handleOnChange(e)}
           />
         </div>
-
         {this.state.data.filter !== '' && this.renderSearchList()}
-        {this.state.data.filter === '' && this.renderSidebarTabs()}
-
-        {getCurrentUser() && this.renderUserNotification()}
+        {this.state.data.filter === '' && this.renderSidebarContent()}
+        {/* Do Not Remove This Code - Tabs for Primary Sidebar - Can Be Used in Future */}
+        {/* {this.state.data.filter === '' && this.renderSidebarTabs()} */}
       </>
     )
   }
 
   getSidebarInteractionClass () {
-    // let classes = this.state.sidebarStateClasses
     return (
-      this.collectionId && 'enable-sidebar'
+      // Do Not Remove This Code - Used In Multi Sidebar Configuration - Can Be Used in Future
+      // isDashboardRoute(this.props, true)
+      //   ? this.state.primarySidebar ? 'sidebar enable-primary-sidebar' : this.state.selectedCollectionId ? this.state.secondarySidebarToggle ? 'sidebar enable-secondary-sidebar secondary-collapse' : 'sidebar enable-secondary-sidebar' : 'sidebar'
+      //   : 'public-endpoint-sidebar'
+      isDashboardRoute(this.props, true) ? 'sidebar' : 'public-endpoint-sidebar'
+    )
+  }
+
+  renderSecondarySidebar () {
+    return (
+      this.collectionId && isDashboardRoute(this.props, true) && (
+        <div className='secondary-sidebar'>
+          <p className='hm-sidebar-outer-block heading-2'>
+            {this.props.collections[this.state.selectedCollectionId]?.name || ''}
+          </p>
+          <button className='btn close' onClick={() => { this.setState({ primarySidebar: false, secondarySidebarToggle: this.state.primarySidebar ? false : !this.state.secondarySidebarToggle }) }}>
+            <SecondarySidebarToggleIcon />
+          </button>
+          <div className='collectionVersionWrp'>
+            <CollectionVersions
+              {...this.props}
+              collection_id={this.state.selectedCollectionId}
+              open_collection={this.openCollection.bind(this)}
+              selectedCollectionId={this.state.selectedCollectionId}
+            />
+          </div>
+        </div>
+      )
     )
   }
 
   render () {
     return (
-      <nav
-        className={
-          isDashboardRoute(this.props, true)
-            ? this.state.primarySidebar ? 'sidebar enable-primary-sidebar' : this.state.selectedCollectionId ? this.state.secondarySidebarToggle ? 'sidebar enable-secondary-sidebar secondary-collapse' : 'sidebar enable-secondary-sidebar' : 'sidebar'
-            : 'public-endpoint-sidebar'
-        }
-      >
+      <nav className={this.getSidebarInteractionClass()}>
         {this.state.showLoginSignupModal && (
           <LoginSignupModal
             show
@@ -654,22 +724,8 @@ class SideBar extends Component {
                 )
           }
         </div>
-        {this.collectionId && isDashboardRoute(this.props, true) && (
-          <div className='secondary-sidebar'>
-            <p className='hm-sidebar-outer-block heading-2'>{this.props.collections[this.state.selectedCollectionId]?.name || ''}</p>
-            <button className='btn close' onClick={() => { this.setState({ primarySidebar: false, secondarySidebarToggle: this.state.primarySidebar ? false : !this.state.secondarySidebarToggle }) }}>
-              <SecondarySidebarToggleIcon />
-            </button>
-            <div className='collectionVersionWrp'>
-              <CollectionVersions
-                {...this.props}
-                collection_id={this.state.selectedCollectionId}
-                open_collection={this.openCollection.bind(this)}
-                selectedCollectionId={this.state.selectedCollectionId}
-              />
-            </div>
-          </div>
-        )}
+        {/* Removed Secondary Sidebar - Do Not Remove This Code - Can be Used in Future */}
+        {/* {this.renderSecondarySidebar()} */}
       </nav>
     )
   }
