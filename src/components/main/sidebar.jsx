@@ -18,6 +18,7 @@ import { ReactComponent as EmptyHistory } from '../../assets/icons/emptyHistroy.
 import { ReactComponent as NoInvocationsIcon } from '../../assets/icons/emptyrandom.svg'
 import { ReactComponent as NoCollectionsIcon } from '../../assets/icons/noCollectionsIcon.svg'
 import { ReactComponent as SearchIcon } from '../../assets/icons/searchIcon.svg'
+import collectionVersionsService from '../collectionVersions/collectionVersionsService'
 import './main.scss'
 import './sidebar.scss'
 
@@ -545,6 +546,7 @@ class SideBar extends Component {
                         collection_id={this.state.selectedCollectionId}
                         open_collection={this.openCollection.bind(this)}
                         selectedCollectionId={this.state.selectedCollectionId}
+                        addVersion={this.openAddVersionForm.bind(this)}
                       />
                     </div>
                   </div>
@@ -605,6 +607,19 @@ class SideBar extends Component {
     return (isDashboardRoute(this.props, true) ? 'sidebar' : 'public-endpoint-sidebar')
   }
 
+  openAddVersionForm (collectionId) {
+    this.setState({
+      showVersionForm: true,
+      selectedCollection: {
+        ...this.props.collections[collectionId]
+      }
+    })
+  }
+
+  closeVersionForm () {
+    this.setState({ showVersionForm: false })
+  }
+
   render () {
     return (
       <nav className={this.getSidebarInteractionClass()}>
@@ -615,6 +630,13 @@ class SideBar extends Component {
             title='Add Collection'
           />
         )}
+        {this.state.showVersionForm &&
+          collectionVersionsService.showVersionForm(
+            this.props,
+            this.closeVersionForm.bind(this),
+            this.state.selectedCollection.id,
+            'Add new Collection Version'
+          )}
         <div className='primary-sidebar'>
           {
             isDashboardRoute(this.props, true)
