@@ -299,7 +299,6 @@ class Pages extends Component {
             </div>
             {this.displayPageOptions(pageId)}
           </div>
-          {/* {this.displayPageOptions(pageId)} */}
         </button>
       </div>
     )
