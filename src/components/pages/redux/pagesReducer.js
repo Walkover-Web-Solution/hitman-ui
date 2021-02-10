@@ -144,12 +144,6 @@ function pagesReducer (state = initialState, action) {
       pages = { ...action.pages }
       return pages
 
-    case collectionActionTypes.ON_COLLECTION_ADDED:
-      return {
-        ...state,
-        [action.response.page.id]: action.response.page
-      }
-
     default:
       return state
   }
