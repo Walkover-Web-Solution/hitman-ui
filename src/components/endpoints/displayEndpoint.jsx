@@ -764,7 +764,7 @@ class DisplayEndpoint extends Component {
     const params = this.state.originalParams
     let isEmpty = false
     params.forEach((param) => {
-      if (param.value === null || param.value === '') {
+      if (param.checked !== 'notApplicable' && (param.value === null || param.value === '')) {
         isEmpty = true
         param.empty = true
       } else {
