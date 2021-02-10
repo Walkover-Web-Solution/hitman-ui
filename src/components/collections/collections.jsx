@@ -8,6 +8,7 @@ import CollectionVersions from '../collectionVersions/collectionVersions'
 import collectionVersionsService from '../collectionVersions/collectionVersionsService'
 import ImportVersionForm from '../collectionVersions/importVersionForm'
 import { isDashboardRoute } from '../common/utility'
+import CollectionModal from './collectionsModal'
 // import endpointApiService from '../endpoints/endpointApiService'
 import collectionsService from './collectionsService'
 import {
@@ -120,10 +121,7 @@ class CollectionsComponent extends Component {
   }
 
   openAddCollectionForm () {
-    this.setState({
-      showCollectionForm: true,
-      collectionFormName: 'Add new Collection'
-    })
+    this.setState({ showAddCollectionModal: true })
   }
 
   openEditCollectionForm (collectionId) {
@@ -328,7 +326,7 @@ class CollectionsComponent extends Component {
                   className='sidebar-accordion-item'
                   onClick={() => this.openSelectedCollection(collectionId)}
                 >
-                  <div>{this.props.collections[collectionId].name}</div>
+                  <div className='text-truncate'>{this.props.collections[collectionId].name}</div>
                 </div>
                 )}
             <div class='show-endpoint-count'>
@@ -467,6 +465,7 @@ class CollectionsComponent extends Component {
                   <CollectionVersions
                     {...this.props}
                     collection_id={collectionId}
+                    addVersion={this.openAddVersionForm.bind(this)}
                     selectedCollection
                   />
                 </Card.Body>
@@ -527,6 +526,17 @@ class CollectionsComponent extends Component {
         </div>
         <Button className='btn-lg' variant='primary' onClick={() => this.openAddCollectionForm()}>+ Add here</Button>{' '}
       </div>
+    )
+  }
+
+  showAddCollectionModal () {
+    return (
+      this.state.showAddCollectionModal &&
+        <CollectionModal
+          title='Add Collection'
+          onHide={() => { this.setState({ showAddCollectionModal: false }) }}
+          show={this.state.showAddCollectionModal}
+        />
     )
   }
 
@@ -614,6 +624,7 @@ class CollectionsComponent extends Component {
                   this.state.collectionFormName,
                   this.state.selectedCollection
                 )}
+              {this.showAddCollectionModal()}
               {this.showImportVersionForm()}
               {this.openTagManagerModal()}
               {this.state.showDeleteModal &&
@@ -697,6 +708,7 @@ class CollectionsComponent extends Component {
                 <CollectionVersions
                   {...this.props}
                   collection_id={collectionId}
+                  addVersion={this.openAddVersionForm.bind(this)}
                 />
               </div>
             </div>

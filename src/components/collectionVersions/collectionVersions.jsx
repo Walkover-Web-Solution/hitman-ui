@@ -17,6 +17,8 @@ import './collectionVersions.scss'
 import collectionVersionsService from './collectionVersionsService'
 import filterService from '../../services/filterService'
 import { ReactComponent as SearchIcon } from '../../assets/icons/searchIcon.svg'
+import AddEntity from '../main/addEntity/addEntity'
+
 const mapStateToProps = (state) => {
   return {
     versions: state.versions,
@@ -351,7 +353,7 @@ class CollectionVersions extends Component {
                         <path d='M4.5 6.75L9 11.25L13.5 6.75' stroke='#333333' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
                       </svg>
                     </span>
-                    <div className='sidebar-accordion-item'>
+                    <div className='sidebar-accordion-item text-truncate d-inline'>
 
                       {this.props.versions[versionId].number}
                     </div>
@@ -464,6 +466,7 @@ class CollectionVersions extends Component {
                         <Groups
                           {...this.props}
                           version_id={versionId}
+                          addGroup={this.openAddGroupForm.bind(this)}
                           show_filter_version={this.propsFromVersion.bind(this)}
                         />
                       </div>
@@ -488,6 +491,7 @@ class CollectionVersions extends Component {
                           <Groups
                             {...this.props}
                             version_id={versionId}
+                            addGroup={this.openAddGroupForm.bind(this)}
                             show_filter_version={this.propsFromVersion.bind(this)}
                           />
                         </div>
@@ -618,6 +622,26 @@ class CollectionVersions extends Component {
     )
   }
 
+  renderForm (filteredVersions) {
+    const versionsCount = Object.keys(filteredVersions || {}).filter(
+      (versionId) =>
+        filteredVersions[versionId].collectionId ===
+        this.props.collection_id
+    ).length
+
+    return (
+      <>
+        {versionsCount === 0 && isDashboardRoute(this.props, true) &&
+          <AddEntity
+            placeholder='Version 1'
+            type='version'
+            entity={this.props.collection_id}
+            addNewEntity={this.props.addVersion}
+          />}
+      </>
+    )
+  }
+
   render () {
     if (
       this.filterFlag === false ||
@@ -680,6 +704,8 @@ class CollectionVersions extends Component {
             .map((versionId, index) => (
               this.renderBody(versionId, index)
             ))}
+
+        {this.renderForm(this.filteredVersions)}
       </>
     )
   }

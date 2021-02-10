@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Route, Switch } from 'react-router-dom'
-import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import DisplayEndpoint from '../endpoints/displayEndpoint'
 import DisplayPage from '../pages/displayPage'
@@ -238,7 +237,6 @@ class PublicEndpoint extends Component {
           }
         </nav>
         <main role='main' className='mainpublic-endpoint-main hm-wrapper'>
-          <ToastContainer />
           <div className='hm-sidebar'>
             <SideBar {...this.props} collectionName={this.state.collectionName} />
           </div>

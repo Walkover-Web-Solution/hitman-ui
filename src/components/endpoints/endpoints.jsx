@@ -15,9 +15,12 @@ import './endpoints.scss'
 import {
   deleteEndpoint,
   duplicateEndpoint,
-  updateEndpointOrder
+  updateEndpointOrder,
+  addEndpoint
 } from './redux/endpointsActions'
 import filterService from '../../services/filterService'
+import GlobeIcon from '../../assets/icons/globe-icon.svg'
+import AddEntity from '../main/addEntity/addEntity'
 
 const endpointsEnum = {
   PENDING_STATE: 'Pending',
@@ -34,7 +37,7 @@ const mapStateToProps = (state) => {
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     delete_endpoint: (endpoint) => dispatch(deleteEndpoint(endpoint)),
     duplicate_endpoint: (endpoint) => dispatch(duplicateEndpoint(endpoint)),
@@ -47,7 +50,9 @@ const mapDispatchToProps = (dispatch) => {
     draft_endpoint: (endpoint) => dispatch(draftEndpoint(endpoint)),
     reject_endpoint: (endpoint) => dispatch(rejectEndpoint(endpoint)),
     close_tab: (tabId) => dispatch(closeTab(tabId)),
-    open_in_new_tab: (tab) => dispatch(openInNewTab(tab))
+    open_in_new_tab: (tab) => dispatch(openInNewTab(tab)),
+    add_endpoint: (newEndpoint, groupId, callback) =>
+      dispatch(addEndpoint(ownProps.history, newEndpoint, groupId, callback))
   }
 }
 
@@ -294,14 +299,10 @@ class Endpoints extends Component {
   displayEndpointName (endpointId) {
     return (
       <div className='sidebar-accordion-item'>
-        {/* <div
-          className={`api-label ${this.props.endpoints[endpointId].requestType}`}
-        >
-          <div className='endpoint-request-div'>
-            {this.props.endpoints[endpointId].requestType}
-          </div>
-        </div> */}
-        {this.props.endpoints[endpointId].name}
+        <div className={`api-label ${this.props.endpoints[endpointId].requestType} request-type-bgcolor`}>
+          {this.props.endpoints[endpointId].requestType}
+        </div>
+        <div className='end-point-name'>{this.props.endpoints[endpointId].name}</div>
       </div>
     )
   }
@@ -423,6 +424,7 @@ class Endpoints extends Component {
         >
           <i className='uil uil-ellipsis-v' />
         </div>
+
         <div className='dropdown-menu dropdown-menu-right'>
           {this.displayDeleteOpt(endpointId)}
           {this.displayDuplicateOpt(endpointId)}
@@ -459,9 +461,44 @@ class Endpoints extends Component {
             )}
         >
           {this.displayEndpointName(endpointId)}
-          {this.displayEndpointOptions(endpointId)}
+          <div className='d-flex align-items-center'>
+            <div className='mr-2'>
+              {this.props.endpoints[endpointId].isPublished && <img src={GlobeIcon} alt='globe' />}
+            </div>
+            {this.displayEndpointOptions(endpointId)}
+          </div>
         </button>
       </div>
+    )
+  }
+
+  addEndpoint (endpoint) {
+    this.props.add_endpoint(endpoint, this.props.group_id, null)
+  }
+
+  renderForm () {
+    const endpoint = {
+      uri: '',
+      name: '',
+      requestType: 'GET',
+      body: { type: 'none', value: null },
+      headers: {},
+      params: {},
+      pathVariables: {},
+      BASE_URL: null,
+      bodyDescription: {},
+      authorizationType: null
+    }
+    return (
+      <>
+        {isDashboardRoute(this.props, true) &&
+          <AddEntity
+            placeholder='API Endpoint Name'
+            type='endpoint'
+            endpoint={endpoint}
+            addEndpoint={this.addEndpoint.bind(this)}
+          />}
+      </>
     )
   }
 
@@ -476,6 +513,7 @@ class Endpoints extends Component {
             .map((endpointId) => (
               this.displaySingleEndpoint(endpointId)
             ))}
+        {Object.keys(endpoints).length === 0 && this.renderForm()}
       </>
     )
   }
