@@ -2362,3 +2362,64 @@ span.endpointNameWrapper {
 .hm-public-table table#custom-generic-table input.empty-params.form-control {
   border-color: #E98A36 !important;
 }
+
+.dashboard-url {
+  border: 1px solid #E98A36;
+  border-radius: 6px;
+  height: 36px;
+  .host-field-container {
+    margin-right: 0px !important;
+    .dropdown {
+      border: none !important;
+    }
+  }
+
+  .url-container {
+    width: 100%
+  }
+
+  #host-container-input {
+    height: 34px;
+    border: 1px solid #E98A36;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 400;
+    color: #000;
+    border-radius: 4px;
+    min-width:100% !important;
+    padding: 5px 10px;
+    line-height: 1;
+    &:focus {
+      outline: none;
+    }
+  }
+
+  .host-data {
+    position: absolute;
+    margin-top: 10px;
+    border: none;
+    border-radius: 4px;
+    background-color: white;
+    box-shadow: 0 3px 5px 0px rgba(0, 0, 0, 0.03) ;
+    line-height: 1;
+    .host-data-item {
+      padding: 5px 15px;
+      cursor: pointer;
+      small {
+        color: grey;
+      }
+      &:hover {
+        background-color: #f8f9fa;
+      }
+    }
+  }
+
+  input::-webkit-calendar-picker-indicator {
+    display: none;
+  }
+  
+  input {
+    border: none !important;
+    flex-shrink: 1;
+  }
+}
