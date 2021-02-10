@@ -35,12 +35,6 @@ function versionsReducer (state = initialState, action) {
         ...state
       }
 
-    case collectionsActionTypes.ON_COLLECTION_ADDED:
-      return {
-        ...state,
-        [action.response.version.id]: action.response.version
-      }
-
     case versionActionTypes.ON_VERSIONS_FETCHED:
       return { ...state, ...action.versions }
 
