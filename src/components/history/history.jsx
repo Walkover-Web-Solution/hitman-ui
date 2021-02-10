@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import moment from 'moment'
+import { connect } from 'react-redux'
 import { ReactComponent as EmptyHistory } from '../../assets/icons/emptyHistroy.svg'
+import './history.scss'
 
 function compareByCreatedAt (a, b) {
   const t1 = a?.createdAt
@@ -12,6 +14,15 @@ function compareByCreatedAt (a, b) {
     comparison = -1
   }
   return comparison
+}
+
+const mapStateToProps = (state) => {
+  return {
+    groups: state.groups,
+    versions: state.versions,
+    endpoints: state.endpoints,
+    collections: state.collections
+  }
 }
 
 class History extends Component {
@@ -43,6 +54,28 @@ class History extends Component {
       })
     }
 
+    renderName (history) {
+      const baseUrl = history.endpoint.BASE_URL ? history.endpoint.BASE_URL + history.endpoint.uri : history.endpoint.uri
+      const endpointName = history.endpoint.name || baseUrl || 'Random Trigger'
+      return endpointName
+    }
+
+    renderPath (id) {
+      let path = ''
+      let groupId = null
+      let versionId = null
+      let collectionId = null
+      let endpointId = null
+
+      endpointId = id
+      groupId = this.props.endpoints[endpointId]?.groupId
+      versionId = this.props.groups[groupId]?.versionId
+      collectionId = this.props.versions[versionId]?.collectionId
+      path = this.props.collections[collectionId]?.name + ' > ' + this.props.versions[versionId]?.number + ' > ' + this.props.groups[groupId]?.name
+
+      if (id && path) { return <div style={{ fontSize: '11px' }} className='text-muted'>{path}</div> } else return <p />
+    }
+
     renderHistoryItem (history) {
       return (
         Object.keys(history).length !== 0 && (
@@ -59,9 +92,8 @@ class History extends Component {
             <div className='ml-3'>
               <div className='sideBarListWrapper'>
                 <div className='text-left'>
-                  <p>{history.endpoint.name ||
-                      history.endpoint.BASE_URL + history.endpoint.uri ||
-                      'Random Trigger'}
+                  <p>{this.renderName(history)}
+                    {this.renderPath(history.endpoint.id)}
                   </p>
                 </div>
                 <small className='text-muted'>
@@ -92,4 +124,4 @@ class History extends Component {
       )
     }
 }
-export default History
+export default connect(mapStateToProps, null)(History)

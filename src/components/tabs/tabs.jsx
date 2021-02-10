@@ -242,6 +242,7 @@ class CustomTabs extends Component {
               <HistoryIcon />
             </Dropdown.Toggle>
             <Dropdown.Menu className='history-drop-down'>
+              <div className='history-heading'>History</div>
               <History {...this.props} />
             </Dropdown.Menu>
           </Dropdown>
