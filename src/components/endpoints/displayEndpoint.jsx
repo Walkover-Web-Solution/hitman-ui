@@ -697,7 +697,7 @@ class DisplayEndpoint extends Component {
   }
 
   setPathVariableValues () {
-    let uri = new URI(this.uri.current.value)
+    let uri = new URI(this.state.data.updatedUri)
     uri = uri.pathname()
     const pathParameters = uri.split('/')
     const uniquePathParameters = {}
@@ -733,7 +733,7 @@ class DisplayEndpoint extends Component {
     const updatedParams = this.doSubmitParam()
     const pathVariables = this.doSubmitPathVariables()
     const endpoint = {
-      uri: this.uri.current.value,
+      uri: this.state.data.updatedUri,
       name: this.state.data.name,
       requestType: this.state.data.method,
       body: body,
@@ -764,7 +764,7 @@ class DisplayEndpoint extends Component {
     const params = this.state.originalParams
     let isEmpty = false
     params.forEach((param) => {
-      if (param.value === null || param.value === '') {
+      if (param.checked !== 'notApplicable' && (param.value === null || param.value === '')) {
         isEmpty = true
         param.empty = true
       } else {
@@ -781,7 +781,7 @@ class DisplayEndpoint extends Component {
     this.setState({ startTime, response })
     const headersData = this.doSubmitHeader('send')
     const BASE_URL = this.customState.BASE_URL
-    const uri = new URI(this.uri.current.value)
+    const uri = new URI(this.state.data.updatedUri)
     const queryparams = uri.search()
     const path = this.setPathVariableValues()
     let api = BASE_URL + path + queryparams
@@ -805,7 +805,7 @@ class DisplayEndpoint extends Component {
 
     await this.handleApiCall(api, body, headers, this.state.data.body.type)
     this.setState({ loader: false })
-    this.myRef.current.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' })
+    !isDashboardRoute(this.props) && this.myRef.current.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' })
     isDashboardRoute(this.props) && this.setData()
   };
 
@@ -847,7 +847,7 @@ class DisplayEndpoint extends Component {
       const updatedParams = this.doSubmitParam()
       const pathVariables = this.doSubmitPathVariables()
       const endpoint = {
-        uri: this.uri.current.value,
+        uri: this.state.data.updatedUri,
         name: endpointName || this.state.data.name,
         requestType: this.state.data.method,
         body: body,
@@ -1177,7 +1177,7 @@ class DisplayEndpoint extends Component {
   async prepareHarObject () {
     try {
       const BASE_URL = this.customState.BASE_URL
-      const uri = new URI(this.uri.current.value)
+      const uri = new URI(this.state.data.updatedUri)
       const queryparams = uri.search()
       const path = this.setPathVariableValues()
       let url = BASE_URL + path + queryparams
@@ -1727,7 +1727,13 @@ class DisplayEndpoint extends Component {
     )
   }
 
+  setHostUri (host, uri, selectedHost) {
+    if (uri !== this.state.data.updatedUri) this.handleChange({ currentTarget: { name: 'updatedUri', value: uri } })
+    this.setBaseUrl(host, selectedHost)
+  }
+
   render () {
+    console.log('display', this.customState, this.state.data.updatedUri)
     this.endpointId = this.props.endpointId
       ? this.props.endpointId
       : isDashboardRoute(this.props)
@@ -1856,53 +1862,47 @@ class DisplayEndpoint extends Component {
                   ? (
                     <div className='endpoint-url-container'>
                       <div className='input-group-prepend'>
-                        <div>
-                          <div className='dropdown'>
-                            <button
-                              className={`api-label ${this.state.data.method} dropdown-toggle`}
-                              type='button'
-                              id='dropdownMenuButton'
-                              data-toggle='dropdown'
-                              aria-haspopup='true'
-                              aria-expanded='false'
-                              disabled={isDashboardRoute(this.props) ? null : true}
-                            >
-                              {this.state.data.method}
-                            </button>
-                            <div
-                              className='dropdown-menu'
-                              aria-labelledby='dropdownMenuButton'
-                            >
-                              {this.state.methodList.map((methodName) => (
-                                <button
-                                  className='dropdown-item'
-                                  onClick={() => this.setMethod(methodName)}
-                                  key={methodName}
-                                >
-                                  {methodName}
-                                </button>
-                              ))}
-                            </div>
+                        <div className='dropdown'>
+                          <button
+                            className={`api-label ${this.state.data.method} dropdown-toggle`}
+                            type='button'
+                            id='dropdownMenuButton'
+                            data-toggle='dropdown'
+                            aria-haspopup='true'
+                            aria-expanded='false'
+                            disabled={isDashboardRoute(this.props) ? null : true}
+                          >
+                            {this.state.data.method}
+                          </button>
+                          <div
+                            className='dropdown-menu'
+                            aria-labelledby='dropdownMenuButton'
+                          >
+                            {this.state.methodList.map((methodName) => (
+                              <button
+                                className='dropdown-item'
+                                onClick={() => this.setMethod(methodName)}
+                                key={methodName}
+                              >
+                                {methodName}
+                              </button>
+                            ))}
                           </div>
                         </div>
-
-                        <HostContainer
-                          {...this.props}
-                          groupId={this.state.groupId}
-                          set_base_url={this.setBaseUrl.bind(this)}
-                          custom_host={this.state.endpoint.BASE_URL}
-                        />
-                        <input
-                          ref={this.uri}
-                          type='text'
-                          value={this.state.data.updatedUri}
-                          name='updatedUri'
-                          className='form-control endpoint-url-input'
-                          aria-describedby='basic-addon3'
-                          placeholder='Enter request URL'
-                          onChange={this.handleChange}
-                          disabled={isDashboardRoute(this.props) ? null : true}
-                        />
+                        <div className='d-flex w-100 dashboard-url'>
+                          <HostContainer
+                            {...this.props}
+                            groupId={this.state.groupId}
+                            endpointId={this.state.endpoint.id}
+                            customHost={this.state.endpoint.BASE_URL || ''}
+                            environmentHost={this.props.environment?.variables?.BASE_URL?.currentValue || this.props.environment?.variables?.BASE_URL?.initialValue || ''}
+                            groupHost={this.props.groups[this.state.groupId]?.host || ''}
+                            versionHost={this.props.versions[this.props.groups[this.state.groupId]?.versionId]?.host || ''}
+                            updatedUri={this.state.data.updatedUri}
+                            set_host_uri={this.setHostUri.bind(this)}
+                            set_base_url={this.setBaseUrl.bind(this)}
+                          />
+                        </div>
                       </div>
                       <div className='d-flex uriContainerWrapper'>
                         <button
@@ -1984,8 +1984,14 @@ class DisplayEndpoint extends Component {
                           <HostContainer
                             {...this.props}
                             groupId={this.state.groupId}
+                            versionHost={this.props.versions[this.props.groups[this.state.groupId]?.versionId]?.host || ''}
+                            environmentHost={this.props.environment?.variables?.BASE_URL?.currentValue || this.props.environment?.variables?.BASE_URL?.initialValue || ''}
+                            groupHost={this.props.groups[this.state.groupId]?.host || ''}
+                            updatedUri={this.state.data.updatedUri}
                             set_base_url={this.setBaseUrl.bind(this)}
-                            custom_host={this.state.endpoint.BASE_URL}
+                            custom_host={this.state.endpoint.BASE_URL || ''}
+                            endpointId={this.state.endpoint.id}
+                            set_host_uri={this.setHostUri.bind(this)}
                           />
                           <input disabled className='form-control' value={this.customState.BASE_URL + this.state.data.updatedUri} />
 
