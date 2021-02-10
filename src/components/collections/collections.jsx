@@ -465,6 +465,7 @@ class CollectionsComponent extends Component {
                   <CollectionVersions
                     {...this.props}
                     collection_id={collectionId}
+                    addVersion={this.openAddVersionForm.bind(this)}
                     selectedCollection
                   />
                 </Card.Body>
@@ -707,6 +708,7 @@ class CollectionsComponent extends Component {
                 <CollectionVersions
                   {...this.props}
                   collection_id={collectionId}
+                  addVersion={this.openAddVersionForm.bind(this)}
                 />
               </div>
             </div>

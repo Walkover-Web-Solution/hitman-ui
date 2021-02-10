@@ -18,6 +18,7 @@ import tabService from '../tabs/tabService'
 import './groups.scss'
 import groupsService from './groupsService'
 import filterService from '../../services/filterService'
+import AddEntity from '../main/addEntity/addEntity'
 
 const mapStateToProps = (state) => {
   return {
@@ -428,22 +429,11 @@ class Groups extends Component {
                 key={groupId}
                 className='sidebar-accordion'
                 id='child-accordion'
-              // defaultActiveKey={
-              //   this.eventkey[groupId] ? this.eventkey[groupId] : "1"
-              // }
+                defaultActiveKey={groupId}
               >
-                {/* <Card> */}
-                {/* <Card.Header> */}
                 <Accordion.Toggle
                   variant='default'
-                  eventKey='0'
-                // eventKey={
-                //   !isDashboardRoute(this.props)
-                //     ? '0'
-                //     : this.eventkey[groupId]
-                //       ? this.eventkey[groupId]
-                //       : '1'
-                // }
+                  eventKey={groupId}
                 >
                   <div className='sidebar-accordion-item'>
                     {this.props.groups[groupId].name}
@@ -543,17 +533,9 @@ class Groups extends Component {
                       : null
                   }
                 </Accordion.Toggle>
-                {/* </Card.Header> */}
                 <Accordion.Collapse
                   className='group-collapse'
-                  eventKey='0'
-                // eventKey={
-                //   !isDashboardRoute(this.props)
-                //     ? '0'
-                //     : this.eventkey[groupId]
-                //       ? this.eventkey[groupId]
-                //       : '1'
-                // }
+                  eventKey={groupId}
                 >
                   <Card.Body>
                     <GroupPages
@@ -601,6 +583,23 @@ class Groups extends Component {
     )
   }
 
+  renderForm (sortedGroups) {
+    const groupsCount = sortedGroups.filter((group) => group.versionId === this.props.version_id).length
+    return (
+      <>
+        {
+      groupsCount === 0 && isDashboardRoute(this.props, true) &&
+        <AddEntity
+          placeholder='Group Name'
+          type='group'
+          entity={this.props.versions[this.props.version_id]}
+          addNewEntity={this.props.addGroup}
+        />
+        }
+      </>
+    )
+  }
+
   render () {
     if (this.state.filter !== this.props.filter) {
       this.filterFlag = false
@@ -642,6 +641,8 @@ class Groups extends Component {
             .map((group) =>
               group.id ? <div key={group.id}>{this.renderBody(group.id)}</div> : null
             )}
+
+        {this.renderForm(this.sortedGroups)}
       </div>
     )
   }
