@@ -804,7 +804,7 @@ class DisplayEndpoint extends Component {
 
     await this.handleApiCall(api, body, headers, this.state.data.body.type)
     this.setState({ loader: false })
-    // this.myRef.current.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' })
+    isDashboardRoute(this.props) && this.myRef.current.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' })
     isDashboardRoute(this.props) && this.setData()
   };
 
@@ -1901,17 +1901,6 @@ class DisplayEndpoint extends Component {
                             set_host_uri={this.setHostUri.bind(this)}
                             set_base_url={this.setBaseUrl.bind(this)}
                           />
-                          {/* <input
-                            ref={this.uri}
-                            type='text'
-                            value={this.state.data.updatedUri}
-                            name='updatedUri'
-                            className='form-control endpoint-url-input'
-                            aria-describedby='basic-addon3'
-                            placeholder='Enter request URL'
-                            onChange={this.handleChange}
-                            disabled={isDashboardRoute(this.props) ? null : true}
-                          /> */}
                         </div>
                       </div>
                       <div className='d-flex uriContainerWrapper'>
