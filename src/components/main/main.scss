@@ -2327,6 +2327,38 @@ span.endpointNameWrapper {
   display: block;
 }
 
+.dropdown.user-info-dropdown{
+  width: 100%;
+  button {
+    border: none !important;
+    height: auto !important;
+    box-shadow: none !important;
+    padding: 0px 10px 0px 0px !important;
+    align-self: center;
+    background: transparent;
+    max-width: 100%;
+    .text-truncate {
+      max-width: 90%;
+      text-align: left;
+      font-weight: 600;
+      font-size: 16px;
+    }
+  }
+  .dropdown-menu {
+    box-shadow: -12px 6px 38px rgba(0, 0, 0, 0.07);;
+    border: none;
+    border-radius: 4px !important;
+  }
+}
+
+.text-link {
+  cursor: pointer;
+  color: black;
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
 .hm-public-table table#custom-generic-table input.empty-params.form-control {
   border-color: #E98A36 !important;
 }

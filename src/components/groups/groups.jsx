@@ -435,7 +435,7 @@ class Groups extends Component {
                   variant='default'
                   eventKey={groupId}
                 >
-                  <div className='sidebar-accordion-item'>
+                  <div className='sidebar-accordion-item d-inline text-truncate'>
                     {this.props.groups[groupId].name}
                   </div>
                   {
