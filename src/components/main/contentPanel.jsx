@@ -188,7 +188,7 @@ class ContentPanel extends Component {
               : (
                 // rendered a static single tab mimicking the original, instead of tabs component if user is not signed
                 <div className='content-header'>
-                  <div className='tabs-container d-flex'>
+                  <div className='tabs-container tabs-width d-flex'>
                     <Nav variant='pills' className=''>
                       <Nav.Item>
                         <Nav.Link className='active'>
