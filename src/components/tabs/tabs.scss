@@ -24,7 +24,7 @@ $border-color: #E5E5E5;
 
     .nav {
       height: 100%;
-      overflow: auto;
+      overflow: hidden;
 
       .nav-item {
         padding: 0px;
@@ -184,6 +184,9 @@ $border-color: #E5E5E5;
         }
       }
     }
+    .nav:hover {
+      overflow-x: auto;
+    }
     .nav::-webkit-scrollbar { 
       height: 3px; 
       visibility: hidden;
@@ -212,6 +215,10 @@ $border-color: #E5E5E5;
   }
   .endpoint-name-italic{
     font-style: italic;
+  }
+
+  .sub-label{
+    font-size: 10px;
   }
 }
 
