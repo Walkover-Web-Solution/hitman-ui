@@ -57,6 +57,7 @@ class GenericTable extends Component {
         this.handleDelete(dataArray, name[0], title)
       }
     } else if (title !== 'Path Variables' || name[1] !== 'key') {
+      dataArray[name[0]].empty = false
       dataArray[name[0]][name[1]] = e.currentTarget.value
     }
 
@@ -261,15 +262,22 @@ class GenericTable extends Component {
           <p className='text-muted small'>{originalData[index].checked === 'true' || originalData[index].checked === 'notApplicable' ? '' : '(Optional)'}</p>
         </td>
         <td className='custom-td valueWrapper'>
-          <input
-            name={index + '.value'}
-            value={dataArray[index].value}
-            key={index + this.state.randomId}
-            onChange={this.handleChange}
-            type='text'
-            placeholder={`Enter ${dataArray[index].key}`}
-            className={['form-control', dataArray[index].empty ? 'empty-params' : ''].join(' ')}
-          />
+          <div className='d-flex align-items-center'>
+            <input
+              name={index + '.value'}
+              value={dataArray[index].value}
+              key={index + this.state.randomId}
+              onChange={this.handleChange}
+              type='text'
+              placeholder={`Enter ${dataArray[index].key}`}
+              className={['form-control', dataArray[index].empty ? 'empty-params' : ''].join(' ')}
+            />
+            {
+            dataArray[index].empty
+              ? <div className='small mandatory-field-text'>*This field is mandatory</div>
+              : null
+          }
+          </div>
           {
             dataArray[index].description?.length > 0
               ? <p className='small text-muted'>{`Description: ${dataArray[index].description}`}</p>

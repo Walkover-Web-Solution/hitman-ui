@@ -798,7 +798,6 @@ class DisplayEndpoint extends Component {
     }
 
     if (!isDashboardRoute(this.props, true) && this.checkEmptyParams()) {
-      toast.error('Some mandatory values are empty')
       this.setState({ loader: false })
       return
     }
