@@ -37,6 +37,7 @@ function LoginSignupModal (props) {
                 )
               : (
                 <div className='loginModalWrapper'>
+                  <img src={notLoggedIn} alt='' />
                   <h5> Seems you are not logged in.</h5>
                   <p>  Kindly login or signup to save collection in your account</p>
                 </div>
