@@ -575,7 +575,13 @@ class SideBar extends Component {
             get_public_collections={this.getPublicCollections.bind(this)}
                                />}
         </div>
-        <div>{getCurrentUser() && isAdmin() && <NotificationCount count={this.getNotificationCount()} />}</div>
+        <div>{getCurrentUser() && isAdmin() && <NotificationCount
+          {...this.props}
+          open_publish_docs={this.openPublishDocs.bind(this)}
+          open_collection={this.openCollection.bind(this)}
+          get_public_collections={this.getPublicCollections.bind(this)} count={this.getNotificationCount()}
+                                               />}
+        </div>
       </div>
     )
   }
