@@ -1733,7 +1733,6 @@ class DisplayEndpoint extends Component {
   }
 
   render () {
-    console.log('display', this.customState, this.state.data.updatedUri)
     this.endpointId = this.props.endpointId
       ? this.props.endpointId
       : isDashboardRoute(this.props)
