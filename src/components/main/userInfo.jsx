@@ -47,7 +47,7 @@ class UserInfo extends Component {
         </Dropdown.Toggle>
         <Dropdown.Menu>
           <div className='dropdown-item' style={{ cursor: 'pointer' }} onClick={() => this.navigateToViaSocket()}>
-            <TeamIcon />Team
+            <TeamIcon />Organization
           </div>
           {authService.isAdmin() &&
             <Dropdown.Item onClick={() => { this.navigateToPublishDocs() }}>

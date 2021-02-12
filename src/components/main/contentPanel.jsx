@@ -192,7 +192,7 @@ class ContentPanel extends Component {
                     <Nav variant='pills' className=''>
                       <Nav.Item>
                         <Nav.Link className='active'>
-                          <button className='btn'>Untitled</button>
+                          <button className='btn font-weight-bold'>Untitled</button>
                         </Nav.Link>
                       </Nav.Item>
                       <Nav.Item className='tab-buttons newTabs' id='add-new-tab-button'>

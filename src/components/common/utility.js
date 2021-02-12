@@ -1,3 +1,5 @@
+import Joi from 'joi-browser'
+
 export function isDashboardRoute (props, sidebar = false) {
   if (
     props.location.pathname === '/dashboard' ||
@@ -41,6 +43,15 @@ export function setFavicon (link) {
     }
   }
 }
+
+export function validate (data, schema) {
+  const options = { abortEarly: false }
+  const { error } = Joi.validate(data, schema, options)
+  if (!error) return null
+  const errors = {}
+  for (const item of error.details) errors[item.path[0]] = item.message
+  return errors
+};
 
 export function comparePositions (a, b) {
   if (parseInt(a.position) < parseInt(b.position)) return -1

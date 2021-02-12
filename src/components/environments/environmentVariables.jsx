@@ -5,6 +5,8 @@ import { connect } from 'react-redux'
 import shortId from 'shortid'
 import '../../styles/environmentVariables.scss'
 import { addEnvironment, updateEnvironment } from './redux/environmentsActions'
+import Joi from 'joi-browser'
+import { validate } from '../common/utility'
 import './environments.scss'
 
 const mapDispatchToProps = (dispatch) => {
@@ -56,7 +58,16 @@ class EnvironmentVariables extends Component {
     this.doSubmit()
   };
 
+  schema = {
+    name: Joi.string().trim().required().label('Evironment Name')
+  }
+
   doSubmit () {
+    const errors = validate({ name: this.state.environment.name }, this.schema)
+    if (errors) {
+      this.setState({ errors })
+      return null
+    }
     this.props.onHide()
     const environment = { ...this.state.environment }
     const originalVariableNames = [...this.state.originalVariableNames]
@@ -123,7 +134,7 @@ class EnvironmentVariables extends Component {
   handleChangeEnv = (e) => {
     const environment = { ...this.state.environment }
     environment[e.currentTarget.name] = e.currentTarget.value
-    this.setState({ environment })
+    this.setState({ environment, errors: null })
   };
 
   handleChange = (e) => {
@@ -155,7 +166,8 @@ class EnvironmentVariables extends Component {
   render () {
     return (
       <Modal
-        {...this.props}
+        show={this.props.show}
+        onHide={this.props.onHide}
         size='lg'
         animation={false}
         aria-labelledby='contained-modal-title-vcenter'
@@ -174,7 +186,7 @@ class EnvironmentVariables extends Component {
             <Modal.Body>
               <div className='form-group'>
                 <label htmlFor='custom-environment-input'>
-                  {this.props.title}{' '}
+                  Environment Name<span className='mx-1 alert alert-danger'>*</span>
                 </label>
                 <input
                   name='name'
@@ -185,6 +197,7 @@ class EnvironmentVariables extends Component {
                   className='form-control'
                   placeholder='Environment Name'
                 />
+                {this.state.errors?.name && <div className='alert alert-danger'>{this.state.errors?.name}</div>}
               </div>
               <div className='custom-table-container '>
                 <Table size='sm'>

@@ -311,7 +311,7 @@ class CollectionVersions extends Component {
     }
   }
 
-  renderBody (versionId, index) {
+  renderBody (versionId, index, versionsCount) {
     if (
       isDashboardRoute(this.props) &&
       document.getElementsByClassName('version-collapse')
@@ -336,9 +336,7 @@ class CollectionVersions extends Component {
               <div className='hm-sidebar-outer-block' key={index}>
                 <Accordion
                   className='sidebar-accordion versionBoldHeading'
-                  defaultActiveKey={index === 0
-                    ? this.eventkey[versionId]
-                    : null}
+                  defaultActiveKey={versionsCount === 1 ? '1' : null}
                   key={versionId}
                   id='child-accordion'
                 >
@@ -622,13 +620,17 @@ class CollectionVersions extends Component {
     )
   }
 
-  renderForm (filteredVersions) {
+  getVersionsCount (filteredVersions) {
     const versionsCount = Object.keys(filteredVersions || {}).filter(
       (versionId) =>
         filteredVersions[versionId].collectionId ===
         this.props.collection_id
     ).length
 
+    return versionsCount
+  }
+
+  renderForm (versionsCount) {
     return (
       <>
         {versionsCount === 0 && isDashboardRoute(this.props, true) &&
@@ -651,6 +653,8 @@ class CollectionVersions extends Component {
       this.filteredVersions = { ...this.props.versions }
       this.eventkey = {}
     }
+
+    const versionsCount = this.getVersionsCount(this.filteredVersions)
     return (
       <>
         {this.showShareVersionForm()}
@@ -702,10 +706,10 @@ class CollectionVersions extends Component {
                 this.props.collection_id
             )
             .map((versionId, index) => (
-              this.renderBody(versionId, index)
+              this.renderBody(versionId, index, versionsCount)
             ))}
 
-        {this.renderForm(this.filteredVersions)}
+        {this.renderForm(versionsCount)}
       </>
     )
   }

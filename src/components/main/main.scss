@@ -2360,7 +2360,7 @@ span.endpointNameWrapper {
 }
 
 .hm-public-table table#custom-generic-table input.empty-params.form-control {
-  border-color: #E98A36 !important;
+  border-color: #d61124 !important;
 }
 
 .dashboard-url {
@@ -2422,4 +2422,10 @@ span.endpointNameWrapper {
     border: none !important;
     flex-shrink: 1;
   }
+}
+
+.mandatory-field-text{
+  color: #d61124 !important;
+  font-size: 12px;
+  margin-left: 10px;
 }

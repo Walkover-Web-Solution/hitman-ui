@@ -24,11 +24,11 @@ class CustomTabs extends Component {
           if (tab.previewMode) {
             return (
               <div className='tabs-name'>
-                <label className='endpoint-name-italic'>
+                <label className='endpoint-name-italic font-weight-bold'>
                   {this.props.historySnapshots[tabId].endpoint.name}
                 </label>
                 <br />
-                <label className='endpoint-name-italic'>History</label>
+                <label className='endpoint-name-italic sub-label'>History</label>
               </div>
             )
           } else {
@@ -36,12 +36,12 @@ class CustomTabs extends Component {
               <div className='tabs-name'>
                 <label className='endpoint-name'>{this.props.historySnapshots[tabId].endpoint.name || this.props.historySnapshots[tabId].endpoint.BASE_URL + this.props.historySnapshots[tabId].endpoint.uri || 'Random Trigger'}</label>
                 <br />
-                <label>History</label>
+                <label className='sub-label'>History</label>
               </div>
             )
           }
         } else {
-          return 'Untitled'
+          return <div className='font-weight-bold'>Untitled</div>
         }
       case 'endpoint':
         if (this.props.endpoints[tabId]) {
@@ -49,11 +49,11 @@ class CustomTabs extends Component {
           if (tab.previewMode) {
             return (
               <div className='tabs-name'>
-                <label className='endpoint-name-italic'>
+                <label className='endpoint-name-italic font-weight-bold'>
                   {this.props.endpoints[tabId].name}
                 </label>
                 <br />
-                <lable className='endpoint-name-italic'>{this.props.groups[endpoint.groupId].name}</lable>
+                <lable className='endpoint-name-italic sub-label'>{this.props.groups[endpoint.groupId].name}</lable>
               </div>
 
             )
@@ -62,12 +62,12 @@ class CustomTabs extends Component {
               <div className='tabs-name'>
                 <label className='endpoint-name'>{this.props.endpoints[tabId].name}</label>
                 <br />
-                <label>{this.props.groups[endpoint.groupId].name}</label>
+                <label className='sub-label'>{this.props.groups[endpoint.groupId].name}</label>
               </div>
             )
           }
         } else {
-          return 'Untitled'
+          return <div className='font-weight-bold'>Untitled</div>
         }
 
       case 'page':
@@ -75,11 +75,11 @@ class CustomTabs extends Component {
           const page = this.props.pages[tabId]
           if (tab.previewMode) {
             return (
-              <div className='endpoint-name-italic'>
+              <div className='endpoint-name-italic font-weight-bold'>
                 <label style={{ fontStyle: 'italic' }}>
                   {this.props.pages[tabId].name}
                 </label>
-                <lable>{this.props.groups[page.groupId]?.name}</lable>
+                <lable className='sub-label'>{this.props.groups[page.groupId]?.name}</lable>
               </div>
             )
           } else {
@@ -87,7 +87,7 @@ class CustomTabs extends Component {
               <div className='tabs-name'>
                 <label className='endpoint-name'>{page.name}</label>
                 <br />
-                <lable>{this.props.groups[page.groupId]?.name}</lable>
+                <lable className='sub-label'>{this.props.groups[page.groupId]?.name}</lable>
               </div>
             )
           }
