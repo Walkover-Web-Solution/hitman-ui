@@ -54,9 +54,6 @@ class HostContainer extends Component {
     if (prevProps.updatedUri !== this.props.updatedUri) {
       this.setState({ datalistUri: this.props.updatedUri })
     }
-    if (prevState.selectedHost !== this.state.selectedHost) {
-      this.setState({ datalistHost: this.state[this.state.selectedHost] || '' })
-    }
   }
 
   setHostAndUri () {
@@ -102,10 +99,31 @@ class HostContainer extends Component {
     () => this.setParentHostAndUri())
   }
 
+  checkExistingHosts (value) {
+    const regex = /^(https?)*:\/\/[\w.\-@:]*/i
+    const variableRegex = /^{{[\w|-]+}}/i
+    const { environmentHost, versionHost, groupHost } = this.state
+    if (value.match(variableRegex)) {
+      return value.match(variableRegex)[0]
+    }
+    if (value.match(new RegExp('^' + environmentHost))) {
+      return environmentHost
+    }
+    if (value.match(new RegExp('^' + groupHost))) {
+      return groupHost
+    }
+    if (value.match(new RegExp('^' + versionHost))) {
+      return versionHost
+    }
+    if (value.match(regex)) {
+      return value.match(regex)[0]
+    }
+    return null
+  }
+
   splitUrlHelper (e) {
     const value = e.target.value
-    const regex = /^[\w]*:\/\/[\w||.||-||@||:]*/i
-    const hostName = value.match(regex)
+    const hostName = this.checkExistingHosts(value)
     let uri = ''
     const data = {
       datalistHost: '',
@@ -114,11 +132,11 @@ class HostContainer extends Component {
       Flag: true
     }
     if (hostName) {
-      const selectedHost = this.selectCurrentHost(hostName[0])
-      if (selectedHost === 'customHost') data.customHost = hostName[0]
-      data.datalistHost = hostName[0]
+      const selectedHost = this.selectCurrentHost(hostName)
+      if (selectedHost === 'customHost') data.customHost = hostName
+      data.datalistHost = hostName
       data.selectedHost = selectedHost
-      uri = value.split(hostName[0]).join('')
+      uri = value.replace(hostName, '')
     } else {
       data.selectedHost = 'customHost'
       uri = value
