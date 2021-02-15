@@ -6,6 +6,7 @@ import { withRouter } from 'react-router-dom'
 import shortid from 'shortid'
 import Form from '../common/form'
 import { addGroupPage, addPage } from '../pages/redux/pagesActions'
+import { onEnter } from '../common/utility'
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
@@ -52,34 +53,36 @@ class PageForm extends Form {
 
   render () {
     return (
-      <Modal
-        show={this.props.show}
-        onHide={this.props.onHide}
-        size='lg'
-        animation={false}
-        aria-labelledby='contained-modal-title-vcenter'
-        centered
-      >
-        <Modal.Header className='custom-collection-modal-container' closeButton>
-          <Modal.Title id='contained-modal-title-vcenter'>
-            {this.props.title}
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <form onSubmit={this.handleSubmit}>
-            {this.renderInput('name', 'Page name', 'page name')}
-            <div className='text-right mt-2 mb-1'>
-              <button
-                className='btn btn-secondary mr-2'
-                onClick={this.props.onHide}
-              >
-                Cancel
-              </button>
-              {this.renderButton('Submit')}
-            </div>
-          </form>
-        </Modal.Body>
-      </Modal>
+      <div onKeyPress={(e) => onEnter(e, this.handleKeyPress.bind(this))}>
+        <Modal
+          show={this.props.show}
+          onHide={this.props.onHide}
+          size='lg'
+          animation={false}
+          aria-labelledby='contained-modal-title-vcenter'
+          centered
+        >
+          <Modal.Header className='custom-collection-modal-container' closeButton>
+            <Modal.Title id='contained-modal-title-vcenter'>
+              {this.props.title}
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <form onSubmit={this.handleSubmit}>
+              {this.renderInput('name', 'Page name', 'page name')}
+              <div className='text-right mt-2 mb-1'>
+                <button
+                  className='btn btn-secondary mr-2'
+                  onClick={this.props.onHide}
+                >
+                  Cancel
+                </button>
+                {this.renderButton('Submit')}
+              </div>
+            </form>
+          </Modal.Body>
+        </Modal>
+      </div>
     )
   }
 }

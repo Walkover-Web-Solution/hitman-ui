@@ -4,6 +4,7 @@ import { Modal } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import { importVersion } from '../collectionVersions/redux/collectionVersionsActions'
 import Form from '../common/form'
+import { onEnter } from '../common/utility'
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -43,39 +44,41 @@ class ShareVersionForm extends Form {
 
   render () {
     return (
-      <Modal
-        show={this.props.show}
-        onHide={this.props.onHide}
-        size='lg'
-        animation={false}
-        aria-labelledby='contained-modal-title-vcenter'
-        centered
-      >
-        <Modal.Header className='custom-collection-modal-container' closeButton>
-          <Modal.Title id='contained-modal-title-vcenter'>
-            {this.props.title}
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <form onSubmit={this.handleSubmit}>
-            {this.renderInput(
-              'shareVersionLink',
-              'Public Link',
-              'Enter a public link'
-            )}
-            <div name='shareVersionLink' label='Public Link' />
-            <div className='text-right mt-4 mb-2'>
-              <button
-                className='btn btn-secondary outline mr-2 btn-lg'
-                onClick={this.props.onHide}
-              >
-                Cancel
-              </button>
-              {this.renderButton('Submit', 'right')}
-            </div>
-          </form>
-        </Modal.Body>
-      </Modal>
+      <div onKeyPress={(e) => onEnter(e, this.handleKeyPress.bind(this))}>
+        <Modal
+          show={this.props.show}
+          onHide={this.props.onHide}
+          size='lg'
+          animation={false}
+          aria-labelledby='contained-modal-title-vcenter'
+          centered
+        >
+          <Modal.Header className='custom-collection-modal-container' closeButton>
+            <Modal.Title id='contained-modal-title-vcenter'>
+              {this.props.title}
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <form onSubmit={this.handleSubmit}>
+              {this.renderInput(
+                'shareVersionLink',
+                'Public Link',
+                'Enter a public link'
+              )}
+              <div name='shareVersionLink' label='Public Link' />
+              <div className='text-right mt-4 mb-2'>
+                <button
+                  className='btn btn-secondary outline mr-2 btn-lg'
+                  onClick={this.props.onHide}
+                >
+                  Cancel
+                </button>
+                {this.renderButton('Submit', 'right')}
+              </div>
+            </form>
+          </Modal.Body>
+        </Modal>
+      </div>
     )
   }
 }

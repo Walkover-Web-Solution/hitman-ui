@@ -4,6 +4,7 @@ import Joi from 'joi-browser'
 import Form from '../common/form'
 import shortid from 'shortid'
 import { connect } from 'react-redux'
+import { onEnter } from '../common/utility'
 import { addCollection, updateCollection } from './redux/collectionsActions'
 
 const mapDispatchToProps = (dispatch) => {
@@ -155,28 +156,30 @@ class CollectionForm extends Form {
 
   renderInModal () {
     return (
-      <Modal
-        size='lg'
-        animation={false}
-        aria-labelledby='contained-modal-title-vcenter'
-        centered
-        onHide={this.props.onHide}
-        show={this.props.show}
-      >
-        <div>
-          <Modal.Header
-            className='custom-collection-modal-container'
-            closeButton
-          >
-            <Modal.Title id='contained-modal-title-vcenter'>
-              {this.props.title}
-            </Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            {this.renderForm()}
-          </Modal.Body>
-        </div>
-      </Modal>
+      <div onKeyPress={(e) => { onEnter(e, this.handleKeyPress.bind(this)) }}>
+        <Modal
+          size='lg'
+          animation={false}
+          aria-labelledby='contained-modal-title-vcenter'
+          centered
+          onHide={this.props.onHide}
+          show={this.props.show}
+        >
+          <div>
+            <Modal.Header
+              className='custom-collection-modal-container'
+              closeButton
+            >
+              <Modal.Title id='contained-modal-title-vcenter'>
+                {this.props.title}
+              </Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              {this.renderForm()}
+            </Modal.Body>
+          </div>
+        </Modal>
+      </div>
     )
   }
 
