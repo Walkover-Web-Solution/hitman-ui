@@ -804,7 +804,7 @@ class DisplayEndpoint extends Component {
 
     await this.handleApiCall(api, body, headers, this.state.data.body.type)
     this.setState({ loader: false })
-    !isDashboardRoute(this.props) && this.myRef.current.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' })
+    !isDashboardRoute(this.props) && this.myRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' })
     isDashboardRoute(this.props) && this.setData()
   };
 
@@ -1732,7 +1732,6 @@ class DisplayEndpoint extends Component {
   }
 
   render () {
-    console.log('display', this.customState, this.state.data.updatedUri)
     this.endpointId = this.props.endpointId
       ? this.props.endpointId
       : isDashboardRoute(this.props)
