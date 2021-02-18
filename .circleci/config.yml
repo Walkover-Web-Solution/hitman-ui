@@ -56,7 +56,7 @@ jobs:
       - run:
           name: Set Image
           command: |
-            ssh circle_ci@$GOOGLE_SSH_IP -p $GOOGLE_SSH_PORT "sudo su -c 'kubectl set image deployment/hitman-ui hitman-ui=asia.gcr.io/$GOOGLE_PROJECT_ID/hitman-ui:<< pipeline.number >> -n viasocket '"
+            ssh $GOOGLE_SSH_USER@$GOOGLE_SSH_IP -p $GOOGLE_SSH_PORT "sudo su -c 'kubectl set image deployment/hitman-ui hitman-ui=asia.gcr.io/$GOOGLE_PROJECT_ID/hitman-ui:<< pipeline.number >> -n viasocket '"
 
 workflows:
   Build_Deploy_Dev:
