@@ -75,10 +75,17 @@ export function getProfileName (currentUser) {
   }
 }
 
+export function onEnter (event, submitForm) {
+  if (event.charCode === 13) {
+    submitForm()
+  }
+}
+
 export default {
   isDashboardRoute,
   isSavedEndpoint,
   setTitle,
   setFavicon,
-  getProfileName
+  getProfileName,
+  onEnter
 }

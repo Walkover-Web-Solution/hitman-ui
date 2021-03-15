@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Modal } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import { closeTab } from '../tabs/redux/tabsActions'
+import { onEnter } from './utility'
 import tabService from '../tabs/tabService'
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -63,41 +64,43 @@ class DeleteModal extends Component {
 
   render () {
     return (
-      <Modal
-        {...this.props}
-        animation={false}
-        aria-labelledby='contained-modal-title-vcenter'
-        centered
-      >
-        <Modal.Header className='custom-collection-modal-container' closeButton>
-          <Modal.Title id='contained-modal-title-vcenter'>
-            {this.props.title}
-          </Modal.Title>
-        </Modal.Header>
-        <Modal.Body id='custom-delete-modal-body'>
-          <div>
-            <p>{this.props.message}</p>
-          </div>
-          <div className='text-right'>
-            <form onSubmit={this.handleSubmit}>
+      <div onKeyPress={(e) => onEnter(e, this.doSubmit.bind(this))}>
+        <Modal
+          {...this.props}
+          animation={false}
+          aria-labelledby='contained-modal-title-vcenter'
+          centered
+        >
+          <Modal.Header className='custom-collection-modal-container' closeButton>
+            <Modal.Title id='contained-modal-title-vcenter'>
+              {this.props.title}
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body id='custom-delete-modal-body'>
+            <div>
+              <p>{this.props.message}</p>
+            </div>
+            <div className='text-right'>
+              <form onSubmit={this.handleSubmit}>
 
-              <button
-                id='custom-delete-modal-cancel'
-                className='btn btn-secondary outline btn-lg'
-                onClick={this.props.onHide}
-              >
-                Cancel
-              </button>
-              <button
-                id='custom-delete-modal-delete'
-                className='btn btn-danger btn-lg ml-2'
-              >
-                Delete
-              </button>
-            </form>
-          </div>
-        </Modal.Body>
-      </Modal>
+                <button
+                  id='custom-delete-modal-cancel'
+                  className='btn btn-secondary outline btn-lg'
+                  onClick={this.props.onHide}
+                >
+                  Cancel
+                </button>
+                <button
+                  id='custom-delete-modal-delete'
+                  className='btn btn-danger btn-lg ml-2'
+                >
+                  Delete
+                </button>
+              </form>
+            </div>
+          </Modal.Body>
+        </Modal>
+      </div>
     )
   }
 }

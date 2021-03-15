@@ -52,11 +52,15 @@ class Form extends Component {
 
   handleSubmit = (e) => {
     e.preventDefault()
+    this.handleKeyPress()
+  };
+
+  handleKeyPress () {
     const errors = this.validate()
     this.setState({ errors: errors || {} })
     if (errors) return
     this.doSubmit()
-  };
+  }
 
   handleChange = (e) => {
     const data = { ...this.state.data }

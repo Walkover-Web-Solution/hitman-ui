@@ -6,7 +6,7 @@ import shortId from 'shortid'
 import '../../styles/environmentVariables.scss'
 import { addEnvironment, updateEnvironment } from './redux/environmentsActions'
 import Joi from 'joi-browser'
-import { validate } from '../common/utility'
+import { validate, onEnter } from '../common/utility'
 import './environments.scss'
 
 const mapDispatchToProps = (dispatch) => {
@@ -165,52 +165,53 @@ class EnvironmentVariables extends Component {
 
   render () {
     return (
-      <Modal
-        show={this.props.show}
-        onHide={this.props.onHide}
-        size='lg'
-        animation={false}
-        aria-labelledby='contained-modal-title-vcenter'
-        centered
-      >
-        <form onSubmit={this.handleSubmit}>
-          <div className='custom-environment-modal-container'>
-            <Modal.Header
-              className='custom-collection-modal-container'
-              closeButton
-            >
-              <Modal.Title id='contained-modal-title-vcenter'>
-                {this.props.title}
-              </Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <div className='form-group'>
-                <label htmlFor='custom-environment-input'>
-                  Environment Name<span className='mx-1 alert alert-danger'>*</span>
-                </label>
-                <input
-                  name='name'
-                  value={this.state.environment.name}
-                  onChange={this.handleChangeEnv}
-                  type='text'
-                  id='custom-environment-input'
-                  className='form-control'
-                  placeholder='Environment Name'
-                />
-                {this.state.errors?.name && <div className='alert alert-danger'>{this.state.errors?.name}</div>}
-              </div>
-              <div className='custom-table-container '>
-                <Table size='sm'>
-                  <thead>
-                    <tr>
-                      <th className='custom-td'>Variable</th>
-                      <th className='custom-td'>Initial Value</th>
-                      <th className='custom-td'>Current Value</th>
-                    </tr>
-                  </thead>
+      <div onKeyPress={(e) => onEnter(e, this.doSubmit.bind(this))}>
+        <Modal
+          show={this.props.show}
+          onHide={this.props.onHide}
+          size='lg'
+          animation={false}
+          aria-labelledby='contained-modal-title-vcenter'
+          centered
+        >
+          <form onSubmit={this.handleSubmit}>
+            <div className='custom-environment-modal-container'>
+              <Modal.Header
+                className='custom-collection-modal-container'
+                closeButton
+              >
+                <Modal.Title id='contained-modal-title-vcenter'>
+                  {this.props.title}
+                </Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <div className='form-group'>
+                  <label htmlFor='custom-environment-input'>
+                    Environment Name<span className='mx-1 alert alert-danger'>*</span>
+                  </label>
+                  <input
+                    name='name'
+                    value={this.state.environment.name}
+                    onChange={this.handleChangeEnv}
+                    type='text'
+                    id='custom-environment-input'
+                    className='form-control'
+                    placeholder='Environment Name'
+                  />
+                  {this.state.errors?.name && <div className='alert alert-danger'>{this.state.errors?.name}</div>}
+                </div>
+                <div className='custom-table-container '>
+                  <Table size='sm'>
+                    <thead>
+                      <tr>
+                        <th className='custom-td'>Variable</th>
+                        <th className='custom-td'>Initial Value</th>
+                        <th className='custom-td'>Current Value</th>
+                      </tr>
+                    </thead>
 
-                  <tbody>
-                    {
+                    <tbody>
+                      {
                       this.state.updatedVariableNames.map((variable, index) =>
                         variable !== 'deleted'
                           ? (
@@ -278,27 +279,28 @@ class EnvironmentVariables extends Component {
                           : null
                       )
                     }
-                  </tbody>
-                </Table>
-              </div>
-              <hr />
-              <div>
-                <div className='text-right'>
-                  <button
-                    className='btn btn-secondary outline btn-lg'
-                    onClick={this.props.onHide}
-                  >
-                    Cancel
-                  </button>
-                  <button className='btn btn-primary btn-lg ml-2'>
-                    Save
-                  </button>
+                    </tbody>
+                  </Table>
                 </div>
-              </div>
-            </Modal.Body>
-          </div>
-        </form>
-      </Modal>
+                <hr />
+                <div>
+                  <div className='text-right'>
+                    <button
+                      className='btn btn-secondary outline btn-lg'
+                      onClick={this.props.onHide}
+                    >
+                      Cancel
+                    </button>
+                    <button className='btn btn-primary btn-lg ml-2'>
+                      Save
+                    </button>
+                  </div>
+                </div>
+              </Modal.Body>
+            </div>
+          </form>
+        </Modal>
+      </div>
     )
   }
 }

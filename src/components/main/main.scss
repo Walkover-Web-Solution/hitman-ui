@@ -1486,7 +1486,10 @@ button.editBtn {
   border-top-right-radius: 0 !important;
   border-bottom-right-radius: 0 !important;
 }
-
+.hideCodeEditor .pubCodeWrapper.closeEditor {
+  position: fixed;
+  right: 0;
+}
 .mainContentWrapperPublic {
   .hm-endpoint-container {
     .hm-panel {
