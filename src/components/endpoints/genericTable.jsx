@@ -40,7 +40,7 @@ class GenericTable extends Component {
   }
 
   handleChange = (e) => {
-    let { dataArray, title } = this.props
+    let { dataArray, title, original_data: originalData } = this.props
     dataArray = JSON.parse(JSON.stringify(dataArray))
     const name = e.currentTarget.name.split('.')
     if (name[1] === 'checkbox') {
@@ -57,7 +57,7 @@ class GenericTable extends Component {
         this.handleDelete(dataArray, name[0], title)
       }
     } else if (title !== 'Path Variables' || name[1] !== 'key') {
-      dataArray[name[0]].empty = false
+      originalData[name[0]].empty = false
       dataArray[name[0]][name[1]] = e.currentTarget.value
     }
 
@@ -270,10 +270,10 @@ class GenericTable extends Component {
               onChange={this.handleChange}
               type='text'
               placeholder={`Enter ${dataArray[index].key}`}
-              className={['form-control', dataArray[index].empty ? 'empty-params' : ''].join(' ')}
+              className={['form-control', originalData[index].empty ? 'empty-params' : ''].join(' ')}
             />
             {
-            dataArray[index].empty
+            originalData[index].empty
               ? <div className='small mandatory-field-text'>*This field is mandatory</div>
               : null
           }

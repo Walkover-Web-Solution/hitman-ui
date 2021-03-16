@@ -1071,6 +1071,10 @@ button.editBtn {
   max-height: none;
 }
 
+.mainContentWrapper{
+  min-height: calc(100vh - 50px);
+}
+
 .headParaWraper {
   max-height: 300px;
   overflow: auto;
@@ -1489,7 +1493,7 @@ button.editBtn {
 .mainContentWrapperPublic {
   .hm-endpoint-container {
     .hm-panel {
-      min-height:400px;
+      max-height: calc(100vh - 50px);
       overflow: auto;
 
       &::-webkit-scrollbar {

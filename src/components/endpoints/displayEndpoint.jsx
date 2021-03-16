@@ -760,17 +760,28 @@ class DisplayEndpoint extends Component {
     this.props.add_history(obj)
   };
 
+  checkValue (param, originalParams) {
+    let valueFlag = false
+    const originalParam = originalParams.find((o) => o.key === param.key)
+    if ((originalParam.value === null || originalParam.value === '')) {
+      valueFlag = true
+    }
+    return valueFlag
+  }
+
   checkEmptyParams () {
-    const params = this.state.originalParams
+    const params = this.state.params
+    const originalParams = this.state.originalParams
     let isEmpty = false
     params.forEach((param) => {
-      if (param.checked !== 'notApplicable' && (param.value === null || param.value === '')) {
+      if (param.checked !== 'notApplicable' && param.checked === 'true' && this.checkValue(param, originalParams)) {
         isEmpty = true
         param.empty = true
       } else {
         param.empty = false
       }
     })
+    this.setState({ params })
     return isEmpty
   }
 
