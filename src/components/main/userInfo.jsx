@@ -35,7 +35,7 @@ class UserInfo extends Component {
   }
 
   navigateToViaSocket () {
-    const viaSocketUrl = `${process.env.REACT_APP_VIASOCKET_URL}/manage`
+    const viaSocketUrl = `${process.env.REACT_APP_VIASOCKET_URL}/manage/users?product=hitman`
     window.open(viaSocketUrl, '_blank')
   }
 
