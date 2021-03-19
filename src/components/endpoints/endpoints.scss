@@ -1148,7 +1148,7 @@ table#custom-generic-table {
     color: #000;
     display: flex;
     align-items: center;
-    background: #fff!important;
+    background: #fff !important;
   }
 }
 
@@ -1277,6 +1277,7 @@ table#custom-generic-table {
 .endpoint-description-text p {
   font-size: 14px;
   color: #4F4F4F;
+  margin: 0;
 }
 
 .bulkEdit {
@@ -1297,7 +1298,8 @@ table#custom-generic-table {
   }
 
   .dropdown .dropdown-toggle {
-    width: 300px;
+    width: 205px;
+    ;
     text-align: left;
     border-radius: 4px;
     color: #333333;
@@ -1335,8 +1337,7 @@ table#custom-generic-table {
 
 
 
-.hm-public-endpoint-headers {
-  background: #fff;
+.hm-public-endpoint-headers { 
   border-radius: 4px;
 }
 
@@ -1345,10 +1346,10 @@ table#custom-generic-table {
   color: #000000;
 }
 
-.request-type-bgcolor{
-  background-color: inherit !important;
-}
+// .request-type-bgcolor{
+//   background-color: inherit !important;
+// }
 
-.end-point-name{
+.end-point-name {
   overflow-wrap: anywhere;
 }

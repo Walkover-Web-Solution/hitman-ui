@@ -5,12 +5,25 @@
   border-radius: 6px;
 }
 
+.endpoints-list {
+  margin-top: 7px;
+}
+
+.endpoints-list p {
+  font-size: 12px;
+  line-height: 15px;
+  color: #333333;
+  margin: 0 0px 7px 0;
+}
+
 .sidebar-public-url {
   color: #00C58A;
+
   i {
     visibility: hidden;
   }
-  &:hover{
+
+  &:hover {
     i {
       visibility: visible;
     }

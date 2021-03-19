@@ -326,8 +326,7 @@ $border-color: rgba(227, 228, 230, 0.7);
 
 .modal-header {
   color: #333333 !important;
-  border: none !important;
-  padding: 15px 15px 0 !important;
+  border: none !important; 
 
 }
 
@@ -351,9 +350,11 @@ textarea.custom-input::placeholder {
 }
 
 .modal-header .modal-title {
-  font-size: 16px;
   font-weight: 600;
-  color: #E98A36;
+  font-size: 18px;
+  line-height: 18px;
+  text-align: center;
+  color: #333333;
 }
 
 main.main.ml-sm-auto.col-lg-10 {

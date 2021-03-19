@@ -108,18 +108,19 @@ class OpenApiForm extends Component {
 
   renderButtonGroup() {
     return (
-      <div className='text-right mt-4'>
+      <div className='text-left mt-4'>
+        
+        <button
+          className='btn btn-primary btn-lg mr-2'
+          onClick={() => this.handleSubmit()}
+        >
+          Import
+        </button>
         <button
           className='btn btn-secondary outline btn-lg'
           onClick={(e)=>this.handleCancel(e)}
         >
           Cancel
-        </button>
-        <button
-          className='btn btn-primary btn-lg ml-2'
-          onClick={() => this.handleSubmit()}
-        >
-          Import
         </button>
       </div>
     )

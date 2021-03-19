@@ -148,7 +148,7 @@ class VersionPages extends Component {
                 this.props.pages[pageId].groupId === null
             )
             .map((pageId, index) => (
-              <div key={index}>
+              <div key={index} className='linkWith'>
                 {
                   isDashboardRoute(this.props)
                     ? (

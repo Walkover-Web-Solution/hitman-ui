@@ -1,16 +1,42 @@
 .primary-sidebar {
-  background-color: #fff;
+  background-color: #F8F8F8;
   color: #999;
   width: 330px;
+  border-right: 0.5px solid #E6DBD4;
   font-size: 14px;
   position: relative;
   transition: box-shadow .3s .15s, transform .3s, margin-left .3s, margin-right .3s, width .3s, z-index 0s ease .3s;
+}
+
+.heading-collection {
+  color: #F2994A;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 14px;
 }
 
 .user-info {
   padding: 20px 20px;
   display: flex;
   align-items: center;
+}
+
+.public-colection-info .publicurl {
+  width: 90%;
+}
+
+.publishCollection {
+  background: transparent !important;
+  font-weight: 400 !important;
+  height: 35px;
+}
+
+.public-colection-info .setting {
+  margin-left: 10px;
+}
+
+.sidebar-public-url .text-truncate {
+  padding-right: 98px;
 }
 
 .user-info .user-avatar {
@@ -77,7 +103,7 @@
   padding: 0 0 0 36px;
   border-radius: 3px;
   border: none;
-  background: #F8F5F0;
+  background: #F3F3F3;
 }
 
 input[type="text"]:focus {
@@ -94,14 +120,13 @@ input[type="text"]:focus {
 
 .primary-sidebar .sidebar-accordion>button {
   &:hover {
-    background: #FEFCF7;
+    background: #ebebeb;
     border-color: #F1EEE5;
-
   }
 }
 
 .primary-sidebar .sidebar-accordion.active>button {
-  background: #FEFCF7;
+  background: #ebebeb;
   border-color: #F1EEE5;
 
   .sidebar-item-action-btn {
@@ -178,7 +203,7 @@ input[type="text"]:focus {
 }
 
 .secondary-sidebar .card-body {
-  background: #FEFCF7;
+  background: #F3F3F3;
   border-radius: 4px;
   padding: 0px 0px !important;
 }
@@ -191,8 +216,8 @@ input[type="text"]:focus {
 .secondary-sidebar {
   font-size: 14px;
   color: #999;
-  padding: 0px 5px 10px;
-  background-color: #fff;
+  padding: 0px 0 10px;
+  background-color: transparent;
   transition: box-shadow .3s .15s, transform .3s, margin-left .3s, margin-right .3s, width .3s, z-index 0s ease .3s;
 
   button.btn.close {
@@ -214,13 +239,15 @@ input[type="text"]:focus {
 
   .hm-sidebar-outer-block {
     padding: 0;
+    border: 0.5px solid #E6DBD4;
+    border-radius: 4px;
     margin-bottom: 10px;
   }
 
   button {
     font-size: 14px;
     font-weight: 400;
-    background: #FEFCF7;
+    background: #F3F3F3;
     margin-bottom: 0;
     border-top-right-radius: 4px;
     border-top-left-radius: 4px;
@@ -231,6 +258,7 @@ input[type="text"]:focus {
 
 .app-name {
   margin: 20px;
+
   .icon {
     margin: 5px 10px 5px 0;
   }
@@ -287,11 +315,28 @@ input[type="text"]:focus {
 
 .sidebar-content {
   .collection-name {
-    cursor: pointer;
     line-height: 1;
+    justify-content: space-between;
+    align-items: center;
   }
+}
+
+.sidebar-content .collection-name .btn-primary {
+  font-weight: 600;
+  font-size: 10px;
+  box-shadow: none !important;
+  width: 56px;
+  height: 26px;
+  padding: 0;
+}
+
+.cursor-pointer {
+  cursor: pointer;
 }
 
 .notification-count {
   cursor: pointer;
+}
+.linkWrapper button {
+  padding-left: 30px;
 }
