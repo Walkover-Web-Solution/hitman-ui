@@ -58,8 +58,8 @@ export class AddEntity extends Component {
 
     renderForm () {
       return (
-        <form onSubmit={(e) => { this.handleSubmit(e) }}>
-          <div>{entityENUM[this.props.type].message}</div>
+        <form onSubmit={(e) => { this.handleSubmit(e) }} className='quick-add-endpoint'>
+          <p>{entityENUM[this.props.type].message}</p>
           {this.props.type && this.props.type === 'endpoint' &&
             <div>
               <input

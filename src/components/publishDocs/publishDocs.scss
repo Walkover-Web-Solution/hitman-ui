@@ -30,6 +30,7 @@
   font-family: 'proxima-nova', sans-serif;
   font-style: normal;
   font-weight: 600;
+  margin-bottom: 15px;
   font-size: 20px;
   line-height: 25px;
   color: #000000;
@@ -154,7 +155,7 @@
 
 .content-panel {
   width: 100%;
-  background: #f8f5f0;
+  background: #fff;
 }
 
 .hosted-APIs {
@@ -292,33 +293,55 @@ span.tag {
   width: 100%;
   padding: 5px 4px;
   border-radius: 8px;
-  border: 1px solid transparent;
+  border: .5px solid transparent;
   display: flex;
   align-items: center;
 
-  // &:hover {
-  //   background: #FEFCF7;
-  //   border-color: #F1EEE5;
-  // }
+  &:hover {
+    border-color: #E6DBD4 !important;
+  }
 
   &.active {
     background: #fff;
-    border-color: #fff;
+    border-color: #E6DBD4 !important;
   }
 }
 
-.highlight{
-  input{
+.highlight {
+  input {
     border: 1px solid orange;
   }
 }
-.page-setting  .modal-title {
+
+.page-setting .modal-title {
   color: #e98a36;
   margin-bottom: 15px;
 }
 
-.right-sidebar.page-setting { 
+.right-sidebar.page-setting {
   padding: 20px 30px !important;
   overflow-x: hidden;
   overflow-y: auto;
+}
+
+.hosted-doc-wrapper {
+  background: #F8F8F8;
+  border: 0.5px solid #E6DBD4;
+  border-radius: 4px;
+  padding: 5px 10px;
+}
+
+label.hostes-label {
+  font-size: 14px;
+  line-height: 17px;
+  color: #4F4F4F;
+}
+
+.publish-reject button {
+  font-weight: 500 !important;
+  padding: 5px 25px !important;
+}
+
+.publish-reject button.btn.btn-success {
+  font-weight: 600 !important;
 }

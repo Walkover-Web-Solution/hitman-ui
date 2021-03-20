@@ -874,7 +874,7 @@ class PublishDocs extends Component {
     } else {
       return (
         <Button
-          variant='btn btn-outline danger ml-4'
+          variant='btn btn-outline danger ml-4 mt-4'
           onClick={() => this.unPublishCollection()}
         >
           Unpublish Doc
@@ -971,7 +971,7 @@ class PublishDocs extends Component {
 
   renderPageSettingButton () {
     return (
-      <div className='d-flex align-items-center mx-3'>
+      <div className='d-flex align-items-center mx-3 mt-4'>
         <button
           className='pageSettingsButton'
           onClick={() => {
@@ -990,27 +990,29 @@ class PublishDocs extends Component {
     return (
       <>
         <div className='hosted-doc-heading'>Hosted API Doc</div>
-        <div className='d-flex align-items-center my-3'>
-          {this.rednerHostedAPIDropdown()}
-          {this.publishCollections()}
-          {this.renderPageSettingButton()}
-        </div>
-        <div className='grid-two new-pub-doc'>
-          {this.state.openPageSettingsSidebar && this.renderDocsFormSidebar()}
-          <div className='versions-section'>
-            <select
-              className='form-control mb-3' onChange={this.setSelectedVersion.bind(this)} value={this.state.selectedVersionId}
-            >
-              {this.showVersions()}
-            </select>
-            {this.filterPages(null)}
-            <div className='version-groups'>
-              {this.showGroups()}
-            </div>
+        <div className='hosted-doc-wrapper'>
+          <div className='d-flex align-items-center my-3 ml-2'>
+            {this.rednerHostedAPIDropdown()}
+            {this.publishCollections()}
+            {this.renderPageSettingButton()}
           </div>
-          <div className='version-details'>
-            {this.showEndpoints()}
-            {this.showPages()}
+          <div className='grid-two new-pub-doc'>
+            {this.state.openPageSettingsSidebar && this.renderDocsFormSidebar()}
+            <div className='versions-section'>
+              <select
+                className='form-control mb-3' onChange={this.setSelectedVersion.bind(this)} value={this.state.selectedVersionId}
+              >
+                {this.showVersions()}
+              </select>
+              {this.filterPages(null)}
+              <div className='version-groups'>
+                {this.showGroups()}
+              </div>
+            </div>
+            <div className='version-details'>
+              {this.showEndpoints()}
+              {this.showPages()}
+            </div>
           </div>
         </div>
       </>
@@ -1166,14 +1168,17 @@ class PublishDocs extends Component {
     const collectionId = URI.parseQuery(this.props.location.search).collectionId
     return (
       <>
-        <Dropdown>
-          <Dropdown.Toggle variant='' id='dropdown-basic'>
-            {this.props.collections[collectionId]?.name || ''}
-          </Dropdown.Toggle>
-          <Dropdown.Menu>
-            {this.showCollections()}
-          </Dropdown.Menu>
-        </Dropdown>
+        <div>
+          <label className='hostes-label'>Hosted API’s</label>
+          <Dropdown>
+            <Dropdown.Toggle variant='' id='dropdown-basic'>
+              {this.props.collections[collectionId]?.name || ''}
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              {this.showCollections()}
+            </Dropdown.Menu>
+          </Dropdown>
+        </div>
       </>
     )
   }

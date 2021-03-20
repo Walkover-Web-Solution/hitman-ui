@@ -9,8 +9,9 @@
   font-weight: 400;
   float: left;
   width: 100%;
-  margin-top: 25px;
+  padding-top: 25px;
   min-height: 100vh;
+  background: #F8F8F8;
   button { 
     margin-bottom: 15px;
     float: right;
@@ -70,8 +71,7 @@
 
 .page-icon{
   margin-right: 10px;
-  height: 18px;
-  width: 42px;
+  height: 18px; 
 }
 
 .page-name-icon-container{

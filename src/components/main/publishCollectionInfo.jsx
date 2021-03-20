@@ -3,6 +3,8 @@ import { connect } from 'react-redux'
 import { toast } from 'react-toastify'
 import { isAdmin } from '../auth/authService'
 import './publicCollectionInfo.scss'
+import { ReactComponent as SettingIcon } from '../../assets/icons/SettingIcon.svg'
+import { ReactComponent as ExternalLinks } from '../../assets/icons/externalLinks.svg'
 
 const mapStateToProps = (state) => {
   return {
@@ -18,7 +20,7 @@ class PublishCollectionInfo extends Component {
     const url = customDomain + '/p/' + this.props.collectionId
     return (
       <div className='sidebar-public-url text-link text-center d-flex' onClick={() => { window.open(url, '_blank') }}>
-        <div className='text-truncate'>{url}</div>
+        <div className='text-truncate'>{url}</div> <span className='icon'> <ExternalLinks /></span>
       </div>
     )
   }
@@ -26,21 +28,29 @@ class PublishCollectionInfo extends Component {
   renderPublicCollectionInfo () {
     return (
       <div className='public-colection-info'>
-        <div>{this.renderPublicUrl()}</div>
-        <div>{this.renderSettingsLink()}</div>
+        <div className='d-flex'>
+          <div className='publicurl'>{this.renderPublicUrl()}</div>
+          <div className='setting'>{this.renderSettingsLink()}</div>
+        </div>
+        <div className='endpoints-list'>
+          <p>Public Endpoints: 12 /20</p>
+          <p>Public Pages: 1 /13</p>
+        </div>
       </div>
     )
   }
 
   renderPublishCollection () {
     return (
-      isAdmin() && <button className='btn btn-primary' onClick={() => { this.openPublishSettings() }}>Publish Collection</button>
+      isAdmin() && <button className='btn btn-outline orange w-100 publishCollection' onClick={() => { this.openPublishSettings() }}>Publish API Documentation</button>
     )
   }
 
   renderSettingsLink () {
     return (
-      <div className='text-link' onClick={() => { isAdmin() ? this.openPublishSettings() : this.showAccessDeniedToast() }}>Settings</div>
+      <div className='text-link' onClick={() => { isAdmin() ? this.openPublishSettings() : this.showAccessDeniedToast() }}>
+        <SettingIcon />
+      </div>
     )
   }
 

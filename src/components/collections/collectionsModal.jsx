@@ -44,11 +44,13 @@ class CollectionsModal extends Component {
         {Object.values(choices).map((choice) => (
           <div
             key={choice.key}
-            className={['add-collection-item', 'p-5', choice.disabled && 'disabled'].join(' ')}
+            className={['add-collection-item', choice.disabled && 'disabled'].join(' ')}
             onClick={() => choice.disabled ? {} : this.selectChoice(choice.key)}
           >
-            <span>{choice.label}</span><br />
-            <small>{choice.sublabel}</small>
+            <div>
+              <span>{choice.label}</span><br />
+              <small>{choice.sublabel}</small>
+            </div>
           </div>
         ))}
       </div>

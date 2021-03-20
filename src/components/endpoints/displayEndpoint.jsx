@@ -1818,7 +1818,7 @@ class DisplayEndpoint extends Component {
         // }
         className={isDashboardRoute(this.props) ? '' : codeEditorVisibility ? 'mainContentWrapperPublic' : 'mainContentWrapperPublic hideCodeEditor'}
       >
-        <div className='mainContentWrapper'>
+        <div className={isDashboardRoute(this.props) ? 'mainContentWrapper dashboardPage' : 'mainContentWrapper'}>
           <div className='hm-endpoint-container endpoint-container row'>
             {this.state.showLoginSignupModal && (
               <LoginSignupModal

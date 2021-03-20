@@ -421,7 +421,7 @@ class Groups extends Component {
       }
     }
     return (
-      <div className='linkWith'>
+      <div>
         {
           isDashboardRoute(this.props, true)
             ? (
@@ -620,7 +620,7 @@ class Groups extends Component {
     }
 
     return (
-      <div>
+      <>
         <div>
           {this.showShareGroupForm()}
           {this.showEditGroupForm()}
@@ -639,11 +639,11 @@ class Groups extends Component {
           this.sortedGroups
             .filter((group) => group.versionId === this.props.version_id)
             .map((group) =>
-              group.id ? <div key={group.id}>{this.renderBody(group.id)}</div> : null
+              group.id ? <div key={group.id} className='linkWith'>{this.renderBody(group.id)}</div> : null
             )}
 
         {this.renderForm(this.sortedGroups)}
-      </div>
+      </>
     )
   }
 }

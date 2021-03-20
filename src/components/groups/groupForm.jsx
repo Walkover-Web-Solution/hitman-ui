@@ -82,14 +82,15 @@ class GroupForm extends Form {
             <form onSubmit={this.handleSubmit}>
               {this.renderInput('name', 'Group Name', 'group name')}
               {this.renderInput('host', 'Host', 'host name')}
-              <div className='text-right'>
+              <div className='text-left'>
+
+                {this.renderButton('Submit')}
                 <button
-                  className='btn btn-secondary outline btn-lg mr-2'
+                  className='btn btn-secondary outline btn-lg ml-2'
                   onClick={this.props.onHide}
                 >
                   Cancel
                 </button>
-                {this.renderButton('Submit')}
               </div>
             </form>
           </Modal.Body>

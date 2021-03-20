@@ -151,10 +151,14 @@ class DisplayDescription extends Component {
                       <div className='endpoint-description'>
                         {isDashboardRoute(this.props)
                           ? (
-                            <div>
-                              <label className='hm-panel-label'>
-                                Endpoint Description
-                              </label>
+                            <div className='d-flex align-items-center'>
+
+                              <div
+                                className='endpoint-description-text'
+                              >
+                                {ReactHtmlParser(this.props.endpoint.description)}
+                              </div>
+
                               <button
                                 className='btn btn-default'
                                 onClick={() => this.handleDescription()}
@@ -165,12 +169,6 @@ class DisplayDescription extends Component {
                                 </svg>
 
                               </button>
-                              <br />
-                              <div
-                                className='endpoint-description-text'
-                              >
-                                {ReactHtmlParser(this.props.endpoint.description)}
-                              </div>
                             </div>
                             )
                           : (

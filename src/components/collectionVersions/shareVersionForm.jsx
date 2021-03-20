@@ -59,12 +59,12 @@ class ShareVersionForm extends Form {
                 ''
               )}
               onCopy={() => this.props.onHide()}
-              className='btn btn-primary btn-lg float-right'
+              className='btn btn-primary btn-lg'
             >
               <button>Copy</button>
             </CopyToClipboard>
             <button
-              className='btn btn-secondary outline btn-lg float-right mr-2'
+              className='btn btn-secondary outline btn-lg ml-2'
               onClick={this.props.onHide}
             >
               Cancel

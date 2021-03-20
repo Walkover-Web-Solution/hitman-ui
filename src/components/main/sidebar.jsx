@@ -535,8 +535,11 @@ class SideBar extends Component {
               isDashboardRoute(this.props, true) && (
                 <div className='mx-3'>
                   <div className='d-flex collection-name my-2' onClick={() => { this.openCollection(null) }}>
-                    <div className='ml-1 mr-2' style={{ transform: 'rotate(180deg)' }}><ArrowIcon /></div>
-                    <div className='hm-sidebar-outer-block heading-2'>{selectedCollectionName}</div>
+                    <div className='d-flex cursor-pointer align-items-center'>
+                      <div className='ml-1 mr-2'><ArrowIcon /></div>
+                      <div className='hm-sidebar-outer-block heading-collection'>{selectedCollectionName}</div>
+                    </div>
+                    <button className='btn btn-primary'>ADD </button>
                   </div>
                   <div><PublishColelctionInfo {...this.props} collectionId={this.collectionId} /></div>
                   <div className='secondary-sidebar sidebar-content-scroll'>

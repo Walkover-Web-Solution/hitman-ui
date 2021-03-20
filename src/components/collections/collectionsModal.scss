@@ -1,6 +1,12 @@
 .add-collection-item {
-  border: 1px solid grey;
-  border-radius: 6px;
+border-radius: 4px;
+    cursor: pointer;
+    height: 120px;
+    width: 120px;
+    background: #F3F3F3;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   cursor: pointer;
   &.disabled {
     cursor: not-allowed;
