@@ -141,6 +141,7 @@ class PublicEndpoint extends Component {
       <>
         {isCTAandLinksPresent &&
           <div className={this.state.isSticky ? 'd-flex public-navbar stickyNav' : 'd-flex public-navbar'}>
+            {this.state.currentEntityName}
             {links.map((link, index) => (
               <div key={`link-${index}`}>
                 <label className='link' htmlFor={`link-${index}`} onClick={() => { this.openLink(link.link) }}>{link.name}</label>
@@ -154,6 +155,10 @@ class PublicEndpoint extends Component {
           </div>}
       </>
     )
+  }
+
+  fetchEntityName (entityName) {
+    if (entityName) { this.setState({ currentEntityName: entityName }) } else { this.setState({ currentEntityName: '' }) }
   }
 
   render () {
@@ -248,11 +253,19 @@ class PublicEndpoint extends Component {
                   <Switch>
                     <Route
                       path={`/p/:collectionId/e/:endpointId/${this.state.collectionName}`}
-                      render={(props) => <DisplayEndpoint {...props} publicCollectionTheme={this.state.collectionTheme} />}
+                      render={(props) => <DisplayEndpoint
+                        {...props}
+                        fetch_entity_name={this.fetchEntityName.bind(this)}
+                        publicCollectionTheme={this.state.collectionTheme}
+                                         />}
                     />
                     <Route
                       path={`/p/:collectionId/pages/:pageId/${this.state.collectionName}`}
-                      render={(props) => <DisplayPage {...props} publicCollectionTheme={this.state.collectionTheme} />}
+                      render={(props) => <DisplayPage
+                        {...props}
+                        fetch_entity_name={this.fetchEntityName.bind(this)}
+                        publicCollectionTheme={this.state.collectionTheme}
+                                         />}
                     />
                     <Route
                       path={`/p/:collectionId/description/${this.state.collectionName}`}
