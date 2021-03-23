@@ -14,10 +14,6 @@ const mapStateToProps = (state) => {
 }
 
 export class PublishSidebar extends Component {
-  // state ={
-  //   selectedCollectionId: ""
-  // }
-
   constructor (props) {
     super(props)
     this.state = {
@@ -111,41 +107,62 @@ export class PublishSidebar extends Component {
     // this.setState({ checkedData: { ...this.state.checkedData, ...elementsArray,...newArray } })
   }
 
-  findCheckedItems (itemId, checkedData) {
+  findCheckedItems (data1, data2, type) {
     let status = true
-    const { pages, endpoints } = this.state.groupData[itemId]
-    pages.forEach((page) => {
-      if (!checkedData[`check.groupPage.${page.id}`]) {
-        status = false
-      }
-    })
+    const newCheckedData = { ...this.state.checkedData }
+    // data1.forEach((dataId) => {
+    //   if (!newCheckedData[`check.groupPage.${dataId}`]) {
+    //     status = false
+    //   }
+    // })
 
-    endpoints.forEach((endpoint) => {
-      if (!checkedData[`check.endpoint.${endpoint.id}`]) {
+    data2.forEach((dataId) => {
+      if (!newCheckedData[`check.${type}.${dataId}`]) {
         status = false
       }
     })
-    console.log('hello', status, pages, endpoints)
     return status
   }
 
-  handleBulkCheck (e, itemtype, itemId, checkedData) {
+  handleBulkCheck (e, itemtype, itemId) {
     const newData = {}
-    if (itemtype === 'endpoint' && this.findCheckedItems(this.props.endpoints[itemId]?.groupId, checkedData)) {
-      newData[`check.group.${this.props.endpoints[itemId]?.groupId}`] = e.target.checked
-      //  checkedData[`check.version.${this.props.groups[this.props.endpoints[itemId]?.groupId]?.versionId}`] = e.target.checked;
-      // }
+    if (itemtype === 'endpoint') {
+      const { pages, endpoints } = this.state.groupData[this.props.endpoints[itemId]?.groupId]
+      if (this.findCheckedItems(pages, endpoints, 'endpoint')) {
+        newData[`check.group.${this.props.endpoints[itemId]?.groupId}`] = true
+      }
     }
 
-    // if(itemtype === "groupPage" && this.state.checkedData[`check.group.${this.props.pages[itemId]?.groupId}`]){
-    //   checkedData[`check.group.${this.props.pages[itemId]?.groupId}`] = e.target.checked;
-    // }
+    if (itemtype === 'groupPage') {
+      const { pages, endpoints } = this.state.groupData[this.props.pages[itemId]?.groupId]
+      if (this.findCheckedItems(endpoints, pages, 'groupPage')) {
+        newData[`check.group.${this.props.pages[itemId]?.groupId}`] = true
+      }
+    }
+
+    if (itemtype === 'versionPage') {
+      const { pages, groups } = this.state.versionData[this.props.pages[itemId]?.versionId]
+      if (this.findCheckedItems(groups, pages, 'versionPage') && this.findCheckedItems(groups, groups, 'group')) {
+        newData[`check.version.${this.props.pages[itemId]?.versionId}`] = true
+      }
+    }
+
+    if (itemtype === 'group') {
+      const { pages, groups } = this.state.versionData[this.props.groups[itemId]?.versionId]
+      if (this.findCheckedItems(pages, groups, 'group') && this.findCheckedItems(groups, pages, 'versionPage')) {
+        newData[`check.version.${this.props.groups[itemId]?.versionId}`] = true
+      }
+    }
 
     // if(itemtype === "versionPage" && this.state.checkedData[`check.version.${this.props.pages[itemId]?.versionId}`]){
     //   checkedData[`check.version.${this.props.pages[itemId]?.versionId}`] = e.target.checked;
     // }
     // return newData;
-    // this.setState({checkedData:{...this.state.checkedData,...checkedData,...newData}})
+    this.setState({ checkedData: { ...this.state.checkedData, ...newData } }, () => {
+      if (itemtype === 'endpoint') {
+        this.handleBulkCheck(e, 'group', this.props.endpoints[itemId]?.groupId)
+      }
+    })
   }
 
   handleSidebarCheckbox (e, itemtype, itemId) {
@@ -176,8 +193,9 @@ export class PublishSidebar extends Component {
 
       checkedData[`check.${e.target.name}`] = prevChoice
       // checkedData = {...this.handleBulkCheck(e, itemtype, itemId),...checkedData}
-      this.setState({ checkedData: { ...this.state.checkedData, /* [`check.${e.target.name}`]: prevChoice */ ...checkedData } })
-      // this.handleBulkCheck(e, itemtype, itemId,checkedData)
+      this.setState({ checkedData: { ...this.state.checkedData, /* [`check.${e.target.name}`]: prevChoice */ ...checkedData } },
+        () => this.handleBulkCheck(e, itemtype, itemId)
+      )
     }
 
     if (itemtype === 'group') {
@@ -198,7 +216,9 @@ export class PublishSidebar extends Component {
       }
 
       checkedGroupData = { ...checkedGroupData, ...this.handleGroupCheckbox(itemId, e) }
-      this.setState({ checkedData: { ...this.state.checkedData, ...checkedGroupData } })
+      this.setState({ checkedData: { ...this.state.checkedData, ...checkedGroupData } },
+        () => this.handleBulkCheck(e, itemtype, itemId)
+      )
     }
 
     if (itemtype === 'version') {
@@ -212,7 +232,10 @@ export class PublishSidebar extends Component {
       pages.forEach((pageId) => {
         checkedGroupData[`check.versionPage.${pageId}`] = e.target.checked
       })
-      this.setState({ checkedData: { ...this.state.checkedData, ...checkedGroupData } })
+      this.setState({ checkedData: { ...this.state.checkedData, ...checkedGroupData } }
+        ,
+        () => this.handleBulkCheck(e, itemtype, itemId)
+      )
     }
   }
 
@@ -351,6 +374,15 @@ export class PublishSidebar extends Component {
     )
   }
 
+  renderFooter () {
+    return (
+      <div className='d-flex'>
+        <button onClick={() => {}}>Next</button>
+        <button onClick={() => { this.props.closePublishSidebar() }}>Cancel</button>
+      </div>
+    )
+  }
+
   render () {
     const saveAsSidebarStyle = {
       position: 'fixed',
@@ -384,6 +416,7 @@ export class PublishSidebar extends Component {
           <div>Publish API Documentation</div>
           {this.renderCollectionDropDown()}
           {this.renderVersionList()}
+          {this.renderFooter()}
         </div>
       </div>
     )

@@ -16,6 +16,13 @@ const mapStateToProps = (state) => {
 const defaultDomain = process.env.REACT_APP_UI_URL
 
 class PublishCollectionInfo extends Component {
+  constructor (props) {
+    super(props)
+    this.state = {
+      openPublishSidebar: false
+    }
+  }
+
   renderPublicUrl () {
     const customDomain = this.props.collections[this.props.collectionId]?.customDomain || defaultDomain
     const url = customDomain + '/p/' + this.props.collectionId
@@ -68,12 +75,21 @@ class PublishCollectionInfo extends Component {
         search: `?collectionId=${collectionId}`
       })
     }
+    this.setState({ openPublishSidebar: true })
+  }
+
+  closePublishSidebar () {
+    this.setState({ openPublishSidebar: false })
   }
 
   openPublishSidebar () {
     return (
       <>
-        <PublishSidebar {...this.props} />
+        {this.state.openPublishSidebar &&
+          <PublishSidebar
+            {...this.props}
+            closePublishSidebar={this.closePublishSidebar.bind(this)}
+          />}
       </>
     )
   }
