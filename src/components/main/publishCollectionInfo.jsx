@@ -5,10 +5,14 @@ import { isAdmin } from '../auth/authService'
 import './publicCollectionInfo.scss'
 import { ReactComponent as SettingIcon } from '../../assets/icons/SettingIcon.svg'
 import { ReactComponent as ExternalLinks } from '../../assets/icons/externalLinks.svg'
+import extractCollectionInfoService from '../publishDocs/extractCollectionInfoService'
 
 const mapStateToProps = (state) => {
   return {
-    collections: state.collections
+    collections: state.collections,
+    versions: state.versions,
+    pages: state.pages,
+    endpoints: state.endpoints
   }
 }
 
@@ -25,7 +29,36 @@ class PublishCollectionInfo extends Component {
     )
   }
 
+  getPublicEntityCount () {
+    const collectionId = this.props.collectionId
+    const versions = extractCollectionInfoService.extractVersionsFromCollectionId(collectionId, this.props)
+    const groups = extractCollectionInfoService.extractGroupsFromVersions(versions, this.props)
+    const pages = extractCollectionInfoService.extractPagesFromVersions(versions, this.props)
+    const endpoints = extractCollectionInfoService.extractEndpointsFromGroups(groups, this.props)
+    const totalPageCount = Object.keys(pages).length
+    const totalEndpointCount = Object.keys(endpoints).length
+    let livePageCount = 0
+    let liveEndpointCount = 0
+    Object.values(pages).forEach(page => {
+      if (page.isPublished) livePageCount++
+    })
+    Object.values(endpoints).forEach(endpoint => {
+      if (endpoint.isPublished) liveEndpointCount++
+    })
+    return {
+      pages: {
+        live: livePageCount,
+        total: totalPageCount
+      },
+      endpoints: {
+        live: liveEndpointCount,
+        total: totalEndpointCount
+      }
+    }
+  }
+
   renderPublicCollectionInfo () {
+    const count = this.getPublicEntityCount()
     return (
       <div className='public-colection-info'>
         <div className='d-flex'>
@@ -33,8 +66,8 @@ class PublishCollectionInfo extends Component {
           <div className='setting'>{this.renderSettingsLink()}</div>
         </div>
         <div className='endpoints-list'>
-          <p>Public Endpoints: 12 /20</p>
-          <p>Public Pages: 1 /13</p>
+          <p>{`Public Endpoints: ${count.endpoints.live} / ${count.endpoints.total}`}</p>
+          <p>{`Public Pages: ${count.pages.live} / ${count.pages.total}`}</p>
         </div>
       </div>
     )
