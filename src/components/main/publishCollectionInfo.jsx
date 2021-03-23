@@ -5,6 +5,7 @@ import { isAdmin } from '../auth/authService'
 import './publicCollectionInfo.scss'
 import { ReactComponent as SettingIcon } from '../../assets/icons/SettingIcon.svg'
 import { ReactComponent as ExternalLinks } from '../../assets/icons/externalLinks.svg'
+import PublishSidebar from '../publishSidebar/publishSidebar'
 
 const mapStateToProps = (state) => {
   return {
@@ -69,11 +70,20 @@ class PublishCollectionInfo extends Component {
     }
   }
 
+  openPublishSidebar () {
+    return (
+      <>
+        <PublishSidebar {...this.props} />
+      </>
+    )
+  }
+
   render () {
     const isPublic = this.props.collections[this.props.collectionId]?.isPublic || false
     return (
       <div className='my-3'>
         {isPublic ? this.renderPublicCollectionInfo() : this.renderPublishCollection()}
+        {this.openPublishSidebar()}
       </div>
     )
   }
