@@ -27,6 +27,7 @@ import Footer from '../main/Footer'
 import { SortableHandle, SortableContainer, SortableElement } from 'react-sortable-hoc'
 import { ReactComponent as DragHandleIcon } from '../../assets/icons/drag-handle.svg'
 import { ReactComponent as SettingsIcon } from '../../assets/icons/settings.svg'
+import UserInfo from '../main/userInfo'
 const isEqual = require('react-fast-compare')
 
 const URI = require('urijs')
@@ -989,7 +990,7 @@ class PublishDocs extends Component {
   renderHostedAPIDetials () {
     return (
       <>
-        <div className='hosted-doc-heading'>Hosted API Doc</div>
+        {this.renderHostedApiHeading('Hosted API Doc')}
         <div className='hosted-doc-wrapper'>
           <div className='d-flex align-items-center my-3 ml-2'>
             {this.rednerHostedAPIDropdown()}
@@ -1023,7 +1024,7 @@ class PublishDocs extends Component {
     return (
       <>
         <div className='publish-api-doc d-block'>
-          <div className='hosted-doc-heading'>Publish API Doc</div>
+          {this.renderHostedApiHeading('Publish API Doc')}
           <div className='publish-api-doc-container my-3'>
             <div className='form-group'>
               <label>Hosted API's</label>
@@ -1180,6 +1181,15 @@ class PublishDocs extends Component {
           </Dropdown>
         </div>
       </>
+    )
+  }
+
+  renderHostedApiHeading (heading) {
+    return (
+      <div className='hosted-doc-heading'>
+        <div>{heading}</div>
+        <div className='user-info-container'><UserInfo {...this.props} /></div>
+      </div>
     )
   }
 
