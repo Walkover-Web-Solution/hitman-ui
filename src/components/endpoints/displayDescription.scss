@@ -1,0 +1,25 @@
+
+.endpoint-name-container {
+    .fa.fa-pencil-square-o{
+        visibility: hidden;
+        margin-left: 7px;
+        cursor: pointer;
+    }
+
+    &:hover {
+        .fa.fa-pencil-square-o{
+            visibility: visible;
+            margin-left: 7px;
+        }
+    }
+}
+
+.description{
+    font-size:15px!important;
+    color: black !important;
+}
+.description-endpoint{
+    font-size:14px!important;
+    color: black !important;
+    font-weight:bold;
+}
