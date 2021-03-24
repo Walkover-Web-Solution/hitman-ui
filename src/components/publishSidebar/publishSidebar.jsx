@@ -42,6 +42,27 @@ export class PublishSidebar extends Component {
     }
   }
 
+  sendPublishRequest () {
+    const checkedData = this.state.checkedData
+    const requestData = {
+      pages: [],
+      endpoints: []
+    }
+
+    Object.entries(checkedData).forEach((data) => {
+      const item = data[0].split('.')
+      if (item[1] === 'endpoint' && data[1]) {
+        requestData.endpoints.push(item[2])
+      }
+
+      if ((item[1] === 'groupPage' || item[1] === 'versionPage') && data[1]) {
+        requestData.pages.push(item[2])
+      }
+    })
+
+    console.log('hello', requestData)
+  }
+
   makeVersionData () {
     const versions = {}
     Object.values(this.props.versions).forEach((version) => {
@@ -332,7 +353,10 @@ export class PublishSidebar extends Component {
           </Dropdown.Toggle>
 
           <Dropdown.Menu>
-            {Object.values(this.props.collections || {}).map((collection, index) => (
+            {Object.values(this.props.collections || {}).filter(
+              (collection) =>
+                !collection.isPublic
+            ).map((collection, index) => (
               <Dropdown.Item key={collection?.id} onClick={() => this.setState({ selectedCollectionId: collection?.id, checkedData: {} })}>{collection?.name}</Dropdown.Item>
             ))}
           </Dropdown.Menu>
@@ -377,7 +401,7 @@ export class PublishSidebar extends Component {
   renderFooter () {
     return (
       <div className='d-flex'>
-        <button onClick={() => {}}>Next</button>
+        <button onClick={() => this.sendPublishRequest()}>Next</button>
         <button onClick={() => { this.props.closePublishSidebar() }}>Cancel</button>
       </div>
     )
