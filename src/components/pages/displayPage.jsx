@@ -59,7 +59,7 @@ class DisplayPage extends Component {
 
   extractPageName () {
     if (!isDashboardRoute(this.props, true) && this.props.pages) {
-      const pageName = this.props.pages[this.props.location.pathname.split('/')[4]]?.name
+      const pageName = this.props.pages[this.props.match.params.pageId]?.name
       if (pageName) this.props.fetch_entity_name(pageName)
       else this.props.fetch_entity_name()
     }
