@@ -245,3 +245,19 @@ $border-color: #E5E5E5;
 .tabs-width {
   width: 240px !important;
 }
+
+.scroll-button{
+  align-items: center;
+  max-width: 50px;
+  min-width: 50px;
+  border: 0.5px solid #E6DBD4;
+  border-bottom: none;
+  justify-content: center;
+  background-color: #F8F8F8 ;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+  &.disabled{
+     color: grey;
+     cursor:default;
+  }
+}

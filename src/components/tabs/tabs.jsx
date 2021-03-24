@@ -10,8 +10,12 @@ import History from '../history/history.jsx'
 class CustomTabs extends Component {
   constructor (props) {
     super(props)
+    this.navRef = React.createRef()
     this.state = {
-      showSavePrompt: false
+      showSavePrompt: false,
+      leftScroll: 0,
+      clientScroll: this.navRef.current?.clientWidth,
+      windowScroll: this.navRef.current?.scrollWidth
     }
   }
 
@@ -133,11 +137,55 @@ class CustomTabs extends Component {
     this.props.set_tabs_order(tabsOrder)
   };
 
+  handleMouseEnter (dir) {
+    this.interval = setInterval(this.handleNav.bind(this, dir), 1000)
+  }
+
+  handleMouseLeave () {
+    clearInterval(this.interval)
+  }
+
+  handleNav (dir) {
+    if (dir === 'left') {
+      if (this.navRef) this.navRef.current.scrollLeft -= 200
+    } else {
+      if (this.navRef) this.navRef.current.scrollLeft += 200
+    }
+  }
+
+  scrollLength () {
+    this.setState({ leftScroll: this.navRef.current.scrollLeft, windowScroll: this.navRef.current?.scrollWidth, clientScroll: this.navRef.current?.clientWidth })
+  }
+
+  leftHideTabs () {
+    return Number.parseInt(this.state.leftScroll / 200)
+  }
+
+  rightHideTabs () {
+    return Number.parseInt((this.navRef.current?.scrollWidth - this.navRef.current?.clientWidth - this.state.leftScroll) / 200)
+  }
+
+  handleAddTab () {
+    this.scrollLength()
+    tabService.newTab({ ...this.props })
+  }
+
   render () {
     return (
 
       <>
-        <Nav variant='pills' className='flex-row flex-nowrap item-wrp'>
+        {this.navRef.current?.scrollWidth > this.navRef.current?.clientWidth
+          ? (
+            <button
+              className={`scroll-button d-flex mr-2 ${this.leftHideTabs() ? '' : 'disabled'}`}
+              onMouseEnter={() => this.handleMouseEnter('left')}
+              onMouseLeave={() => this.handleMouseLeave()}
+            >
+              <span className='mr-1'><i class='fa fa-angle-left' aria-hidden='true' /></span>
+              <span>{this.leftHideTabs() ? `${this.leftHideTabs()}+` : null}</span>
+            </button>)
+          : null}
+        <Nav variant='pills' className='flex-row flex-nowrap item-wrp' onScroll={() => this.scrollLength()} ref={this.navRef} style={{ scrollBehavior: 'smooth' }}>
           <div>
             {this.state.showSavePrompt && (
               <SavePromptModal
@@ -182,7 +230,6 @@ class CustomTabs extends Component {
               </button>
             </Nav.Item>
           ))}
-
           {/* <Nav.Item className='tab-buttons' id='tabs-menu-button'>
           <div className='dropdown'>
             <button
@@ -218,11 +265,21 @@ class CustomTabs extends Component {
           </div>
         </Nav.Item> */}
         </Nav>
-
+        {this.navRef.current?.scrollWidth > this.navRef.current?.clientWidth
+          ? (
+            <button
+              className={`scroll-button d-flex ml-2 mr-2 ${this.rightHideTabs() ? '' : 'disabled'}`}
+              onMouseEnter={() => this.handleMouseEnter('right')}
+              onMouseLeave={() => this.handleMouseLeave()}
+            >
+              <span className='mr-1'>{this.rightHideTabs() ? `+${this.rightHideTabs()}` : null}</span>
+              <span><i class='fa fa-angle-right' aria-hidden='true' /></span>
+            </button>)
+          : null}
         <Nav.Item className='tab-buttons newTabs' id='add-new-tab-button'>
           <button
             className='btn'
-            onClick={() => tabService.newTab({ ...this.props })}
+            onClick={() => this.handleAddTab()}
           >
             <svg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'>
               <path d='M19 3H5C3.89543 3 3 3.89543 3 5V19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V5C21 3.89543 20.1046 3 19 3Z' stroke='#BDBDBD' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
