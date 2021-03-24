@@ -23,7 +23,7 @@ class EndpointBreadCrumb extends Component {
       groupName: null,
       versionName: null,
       collectionName: null,
-      isPublished: false
+      isPagePublished: false
     }
   }
 
@@ -32,7 +32,7 @@ class EndpointBreadCrumb extends Component {
     if (pageId && this.props.pages[pageId]) {
       this.setState({
         endpointTitle: this.props.pages[pageId].name,
-        isPublished: this.props.pages[pageId].isPublished
+        isPagePublished: this.props.pages[pageId].isPublished
       })
     } else if (this.props?.data?.name) {
       this.setState({ endpointTitle: this.props.data.name })
@@ -47,7 +47,10 @@ class EndpointBreadCrumb extends Component {
     if (pageId && this.props.pages[pageId]) {
       if (this.props.pages[pageId].name !== prevProps.pages[pageId]?.name) {
         console.log('page', 'update')
-        this.setState({ endpointTitle: this.props.pages[pageId].name, isPublished: this.props.pages[pageId].isPublished })
+        this.setState({
+          endpointTitle: this.props.pages[pageId].name,
+          isPagePublished: this.props.pages[pageId].isPublished
+        })
       }
     }
   }
@@ -84,7 +87,6 @@ class EndpointBreadCrumb extends Component {
     const { pages, groups, versions, collections } = this.props
     const pageId = this.props?.match?.params.pageId
     const page = pages[pageId]
-    console.log(this.props?.pageId)
     if (page) {
       const { versionId, groupId } = page
       this.groupName = groupId ? groups[groupId].name : null
@@ -113,8 +115,6 @@ class EndpointBreadCrumb extends Component {
               onChange={this.handleInputChange.bind(this)}
               value={this.state.endpointTitle}
               onBlur={() => { this.handleInputBlur() }}
-              maxlength={30}
-              minlength={2}
             />
             <div
               onClick={() => {
@@ -130,7 +130,7 @@ class EndpointBreadCrumb extends Component {
             </div>
 
             {this.props?.endpoint?.publishedEndpoint?.isPublished && <div className='api-label POST request-type-bgcolor ml-2'> Live </div>}
-            {this.state.isPublished && <div className='api-label POST request-type-bgcolor ml-2'> Live </div>}
+            {this.state.isPagePublished && <div className='api-label POST request-type-bgcolor ml-2'> Live </div>}
           </div>
 
         </div>

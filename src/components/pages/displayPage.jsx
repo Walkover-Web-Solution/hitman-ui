@@ -81,7 +81,7 @@ class DisplayPage extends Component {
   }
 
   renderPageName () {
-    const pageId = this.props?.location?.pathname.split('/')[3]
+    const pageId = this.props?.match?.params.pageId
     if (!this.state.page && pageId) {
       this.fetchPage(pageId)
     }
