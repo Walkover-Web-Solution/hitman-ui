@@ -1905,7 +1905,6 @@ class DisplayEndpoint extends Component {
                             endpointId={this.state.endpoint.id}
                             customHost={this.state.endpoint.BASE_URL || ''}
                             environmentHost={this.props.environment?.variables?.BASE_URL?.currentValue || this.props.environment?.variables?.BASE_URL?.initialValue || ''}
-                            groupHost={this.props.groups[this.state.groupId]?.host || ''}
                             versionHost={this.props.versions[this.props.groups[this.state.groupId]?.versionId]?.host || ''}
                             updatedUri={this.state.data.updatedUri}
                             set_host_uri={this.setHostUri.bind(this)}
@@ -1995,7 +1994,6 @@ class DisplayEndpoint extends Component {
                             groupId={this.state.groupId}
                             versionHost={this.props.versions[this.props.groups[this.state.groupId]?.versionId]?.host || ''}
                             environmentHost={this.props.environment?.variables?.BASE_URL?.currentValue || this.props.environment?.variables?.BASE_URL?.initialValue || ''}
-                            groupHost={this.props.groups[this.state.groupId]?.host || ''}
                             updatedUri={this.state.data.updatedUri}
                             set_base_url={this.setBaseUrl.bind(this)}
                             custom_host={this.state.endpoint.BASE_URL || ''}
