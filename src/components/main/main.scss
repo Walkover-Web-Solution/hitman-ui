@@ -2106,8 +2106,7 @@ button.toggleButton {
 
 
 .public-navbar {
-  float: right;
-  padding: 15px;
+  float: right; 
   justify-content: center;
   align-items: center;
   background: #F8F8F8;
@@ -2320,6 +2319,8 @@ button[name="cta-1"] {
   padding-left: 20%;
   left: 0;
   justify-content: space-between;
+  width: 100%;
+  z-index: 9;
 }
 
 .mainContentWrapperPublic .main-table-wrapper {
@@ -2649,9 +2650,11 @@ span.endpointNameWrapper {
   background: transparent;
   border: none;
 }
-.entityTitle{
+
+.entityTitle {
   display: none;
 }
+
 .stickyNav .entityTitle {
   display: block;
   color: #000000;
