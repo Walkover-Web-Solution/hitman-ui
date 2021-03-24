@@ -19,9 +19,49 @@ const mapStateToProps = (state) => {
 const defaultDomain = process.env.REACT_APP_UI_URL
 
 class PublishCollectionInfo extends Component {
+  state = {
+    totalPageCount: 0,
+    totalEndpointCount: 0,
+    livePageCount: 0,
+    liveEndpointCount: 0
+  }
+
+  componentDidMount () {
+    this.getPublicEntityCount()
+  }
+
+  componentDidUpdate (prevProps, prevState) {
+    if (
+      this.props.endpoints !== prevProps.endpoints ||
+      this.props.pages !== prevProps.pages ||
+      this.props.versions !== prevProps.versions ||
+      this.props.groups !== prevProps.groups
+    ) {
+      this.getPublicEntityCount()
+    }
+  }
+
   renderPublicUrl () {
-    const customDomain = this.props.collections[this.props.collectionId]?.customDomain || defaultDomain
-    const url = customDomain + '/p/' + this.props.collectionId
+    const customDomains = this.props.collections[this.props.collectionId]?.customDomain
+    // build default url
+    let url = defaultDomain + '/p/' + this.props.collectionId
+    // handle multiple domains
+    if (customDomains) {
+      const domains = customDomains.split(',')
+      // get first domain to show and redirect to
+      for (let i = 0; i < domains.length; i++) {
+        let domain = domains[i].trim()
+        if (domain) {
+          // check for protocol
+          if (!domain.match(/^https?:\/\//)) domain = 'http://' + domain
+          // check for a trailing slash
+          if (domain.charAt(domain.length - 1) === '/') domain = domain.substr(0, domain.length - 2)
+          // build custom url
+          url = domain + '/p/' + this.props.collectionId
+          break
+        }
+      }
+    }
     return (
       <div className='sidebar-public-url text-link text-center d-flex' onClick={() => { window.open(url, '_blank') }}>
         <div className='text-truncate'>{url}</div> <span className='icon'> <ExternalLinks /></span>
@@ -45,20 +85,11 @@ class PublishCollectionInfo extends Component {
     Object.values(endpoints).forEach(endpoint => {
       if (endpoint.isPublished) liveEndpointCount++
     })
-    return {
-      pages: {
-        live: livePageCount,
-        total: totalPageCount
-      },
-      endpoints: {
-        live: liveEndpointCount,
-        total: totalEndpointCount
-      }
-    }
+    this.setState({ totalPageCount, totalEndpointCount, livePageCount, liveEndpointCount })
   }
 
   renderPublicCollectionInfo () {
-    const count = this.getPublicEntityCount()
+    const { totalPageCount, totalEndpointCount, livePageCount, liveEndpointCount } = this.state
     return (
       <div className='public-colection-info'>
         <div className='d-flex'>
@@ -66,8 +97,8 @@ class PublishCollectionInfo extends Component {
           <div className='setting'>{this.renderSettingsLink()}</div>
         </div>
         <div className='endpoints-list'>
-          <p>{`Public Endpoints: ${count.endpoints.live} / ${count.endpoints.total}`}</p>
-          <p>{`Public Pages: ${count.pages.live} / ${count.pages.total}`}</p>
+          <p>{`Public Endpoints: ${liveEndpointCount} / ${totalEndpointCount}`}</p>
+          <p>{`Public Pages: ${livePageCount} / ${totalPageCount}`}</p>
         </div>
       </div>
     )
