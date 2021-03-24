@@ -139,24 +139,26 @@ class PublicEndpoint extends Component {
     const { cta, links, isCTAandLinksPresent } = this.getCTALinks()
     return (
       <>
-        {isCTAandLinksPresent &&
-          <div className={this.state.isSticky ? 'd-flex public-navbar stickyNav' : 'd-flex public-navbar'}>
-            <div className='entityTitle'>
-              {this.state.currentEntityName}
-            </div>
-            <div className='d-flex'>
-              {links.map((link, index) => (
-                <div key={`link-${index}`}>
-                  <label className='link' htmlFor={`link-${index}`} onClick={() => { this.openLink(link.link) }}>{link.name}</label>
-                </div>
-              ))}
-              {cta.map((cta, index) => (
-                <div className='cta-button-wrapper' key={`cta-${index}`}>
-                  <button style={{ backgroundColor: this.state.collectionTheme, borderColor: this.state.collectionTheme, color: this.state.collectionTheme }} name={`cta-${index}`} onClick={() => { this.openLink(cta.value) }}>{cta.name}</button>
-                </div>
-              ))}
-            </div>
-          </div>}
+        <div className={this.state.isSticky ? 'd-flex public-navbar stickyNav' : 'd-flex public-navbar'}>
+          <div className='entityTitle'>
+            {this.state.currentEntityName}
+          </div>
+          {
+            isCTAandLinksPresent &&
+              <div className='d-flex'>
+                {links.map((link, index) => (
+                  <div key={`link-${index}`}>
+                    <label className='link' htmlFor={`link-${index}`} onClick={() => { this.openLink(link.link) }}>{link.name}</label>
+                  </div>
+                ))}
+                {cta.map((cta, index) => (
+                  <div className='cta-button-wrapper' key={`cta-${index}`}>
+                    <button style={{ backgroundColor: this.state.collectionTheme, borderColor: this.state.collectionTheme, color: this.state.collectionTheme }} name={`cta-${index}`} onClick={() => { this.openLink(cta.value) }}>{cta.name}</button>
+                  </div>
+                ))}
+              </div>
+          }
+        </div>
       </>
     )
   }

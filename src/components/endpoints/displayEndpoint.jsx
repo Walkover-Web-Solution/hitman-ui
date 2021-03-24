@@ -229,7 +229,7 @@ class DisplayEndpoint extends Component {
 
   extractEndpointName () {
     if (!isDashboardRoute(this.props, true) && this.props.endpoints) {
-      const endpointName = this.props.endpoints[this.props.location.pathname.split('/')[4]]?.name
+      const endpointName = this.props.endpoints[this.props.match.params.endpointId]?.name
       if (endpointName) this.props.fetch_entity_name(endpointName)
       else this.props.fetch_entity_name()
     }
