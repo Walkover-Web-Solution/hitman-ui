@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Dropdown, Accordion } from 'react-bootstrap'
+import { bulkPublish } from './redux/bulkPublishAction'
 
 import './publishSidebar.scss'
 
@@ -10,6 +11,12 @@ const mapStateToProps = (state) => {
     groups: state.groups,
     pages: state.pages,
     endpoints: state.endpoints
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    bulk_publish: (collectionId, data) => dispatch(bulkPublish(collectionId, data))
   }
 }
 
@@ -60,7 +67,8 @@ export class PublishSidebar extends Component {
       }
     })
 
-    console.log('hello', requestData)
+    this.props.bulk_publish(this.state.selectedCollectionId, requestData)
+    // console.log('hello', requestData)
   }
 
   makeVersionData () {
@@ -447,4 +455,4 @@ export class PublishSidebar extends Component {
   }
 }
 
-export default connect(mapStateToProps)(PublishSidebar)
+export default connect(mapStateToProps, mapDispatchToProps)(PublishSidebar)
