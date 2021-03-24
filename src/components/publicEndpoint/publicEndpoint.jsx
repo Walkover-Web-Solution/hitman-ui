@@ -41,7 +41,7 @@ class PublicEndpoint extends Component {
     isSticky: false
   };
 
-  componentDidMount() {
+  componentDidMount () {
     window.addEventListener('scroll', () => {
       let sticky = false
       if (window.scrollY > 20) {
@@ -76,7 +76,7 @@ class PublicEndpoint extends Component {
     })
   }
 
-  redirectToDefaultPage() {
+  redirectToDefaultPage () {
     const collectionId = this.props.match.params.collectionIdentifier
     const versionIds = Object.keys(this.props.versions)
     if (versionIds.length > 0) {
@@ -122,11 +122,11 @@ class PublicEndpoint extends Component {
     }
   }
 
-  openLink(link) {
+  openLink (link) {
     window.open(`${link}`, '_blank')
   }
 
-  getCTALinks() {
+  getCTALinks () {
     const collectionId = this.props.match.params.collectionIdentifier
     let { cta, links } = this.props.collections[collectionId]?.docProperties || { cta: [], links: [] }
     cta = cta ? cta.filter((o) => o.name.trim() && o.value.trim()) : []
@@ -135,37 +135,37 @@ class PublicEndpoint extends Component {
     return { cta, links, isCTAandLinksPresent }
   }
 
-  displayCTAandLink() {
+  displayCTAandLink () {
     const { cta, links, isCTAandLinksPresent } = this.getCTALinks()
     return (
       <>
         {isCTAandLinksPresent &&
           <div className={this.state.isSticky ? 'd-flex public-navbar stickyNav' : 'd-flex public-navbar'}>
-            <div className="entityTitle">
+            <div className='entityTitle'>
               {this.state.currentEntityName}
             </div>
-            <div className="d-flex">
-            {links.map((link, index) => (
-              <div key={`link-${index}`}>
-                <label className='link' htmlFor={`link-${index}`} onClick={() => { this.openLink(link.link) }}>{link.name}</label>
-              </div>
-            ))}
-            {cta.map((cta, index) => (
-              <div className='cta-button-wrapper' key={`cta-${index}`}>
-                <button style={{ backgroundColor: this.state.collectionTheme, borderColor: this.state.collectionTheme, color: this.state.collectionTheme }} name={`cta-${index}`} onClick={() => { this.openLink(cta.value) }}>{cta.name}</button>
-              </div>
-            ))}
+            <div className='d-flex'>
+              {links.map((link, index) => (
+                <div key={`link-${index}`}>
+                  <label className='link' htmlFor={`link-${index}`} onClick={() => { this.openLink(link.link) }}>{link.name}</label>
+                </div>
+              ))}
+              {cta.map((cta, index) => (
+                <div className='cta-button-wrapper' key={`cta-${index}`}>
+                  <button style={{ backgroundColor: this.state.collectionTheme, borderColor: this.state.collectionTheme, color: this.state.collectionTheme }} name={`cta-${index}`} onClick={() => { this.openLink(cta.value) }}>{cta.name}</button>
+                </div>
+              ))}
             </div>
           </div>}
       </>
     )
   }
 
-  fetchEntityName(entityName) {
+  fetchEntityName (entityName) {
     if (entityName) { this.setState({ currentEntityName: entityName }) } else { this.setState({ currentEntityName: '' }) }
   }
 
-  render() {
+  render () {
     const collectionId = this.props.match.params.collectionIdentifier
     const docFaviconLink = (this.props.collections[collectionId]?.favicon)
       ? `data:image/png;base64,${this.props.collections[collectionId]?.favicon}`
@@ -215,33 +215,33 @@ class PublicEndpoint extends Component {
           {
             process.env.REACT_APP_UI_URL === window.location.origin + '/'
               ? (
-                auth.getCurrentUser() === null
-                  ? (
-                    <div className='dropdown user-dropdown'>
-                      <div className='user-info'>
-                        <div className='user-avatar'>
-                          <i className='uil uil-signin' />
-                        </div>
-                        <div className='user-details '>
-                          <div className='user-details-heading not-logged-in'>
-                            <div
-                              id='sokt-sso'
-                              data-redirect-uri={redirectionUrl}
-                              data-source='sokt-app'
-                              data-token-key='sokt-auth-token'
-                              data-view='button'
-                              data-app-logo-url='https://hitman.app/wp-content/uploads/2020/12/123.png'
-                              signup_uri={redirectionUrl + '?signup=true'}
-                            />
+                  auth.getCurrentUser() === null
+                    ? (
+                      <div className='dropdown user-dropdown'>
+                        <div className='user-info'>
+                          <div className='user-avatar'>
+                            <i className='uil uil-signin' />
+                          </div>
+                          <div className='user-details '>
+                            <div className='user-details-heading not-logged-in'>
+                              <div
+                                id='sokt-sso'
+                                data-redirect-uri={redirectionUrl}
+                                data-source='sokt-app'
+                                data-token-key='sokt-auth-token'
+                                data-view='button'
+                                data-app-logo-url='https://hitman.app/wp-content/uploads/2020/12/123.png'
+                                signup_uri={redirectionUrl + '?signup=true'}
+                              />
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  )
-                  : (
-                    <UserInfo />
-                  )
-              )
+                      )
+                    : (
+                      <UserInfo />
+                      )
+                )
               : null
           }
         </nav>
@@ -261,7 +261,7 @@ class PublicEndpoint extends Component {
                         {...props}
                         fetch_entity_name={this.fetchEntityName.bind(this)}
                         publicCollectionTheme={this.state.collectionTheme}
-                      />}
+                                         />}
                     />
                     <Route
                       path={`/p/:collectionId/pages/:pageId/${this.state.collectionName}`}
@@ -269,14 +269,14 @@ class PublicEndpoint extends Component {
                         {...props}
                         fetch_entity_name={this.fetchEntityName.bind(this)}
                         publicCollectionTheme={this.state.collectionTheme}
-                      />}
+                                         />}
                     />
                     <Route
                       path={`/p/:collectionId/description/${this.state.collectionName}`}
                       render={(props) => <DisplayCollection {...props} {...this.props} publicCollectionTheme={this.state.collectionTheme} />}
                     />
                   </Switch>
-                )
+                  )
                 : null
             }
             <Footer />
