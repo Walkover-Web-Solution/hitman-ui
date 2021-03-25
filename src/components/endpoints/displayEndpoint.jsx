@@ -147,6 +147,7 @@ class DisplayEndpoint extends Component {
   }
 
   async componentDidMount () {
+    this.extractEndpointName()
     this.endpointId = this.props.endpointId
       ? this.props.endpointId
       : isDashboardRoute(this.props)
@@ -206,6 +207,7 @@ class DisplayEndpoint extends Component {
   componentDidUpdate (prevProps, prevState) {
     if (this.props.location.pathname !== prevProps.location.pathname) {
       this.scrollDiv.current.scrollIntoView({ block: 'center' })
+      this.extractEndpointName()
     }
     if (this.props.endpointId !== prevProps.endpointId) {
       this.scrollDiv.current.scrollIntoView({ block: 'center' })
@@ -222,6 +224,14 @@ class DisplayEndpoint extends Component {
 
     if (this.state.endpoint.id !== prevState.endpoint.id) {
       this.setState({ flagResponse: false })
+    }
+  }
+
+  extractEndpointName () {
+    if (!isDashboardRoute(this.props, true) && this.props.endpoints) {
+      const endpointName = this.props.endpoints[this.props.match.params.endpointId]?.name
+      if (endpointName) this.props.fetch_entity_name(endpointName)
+      else this.props.fetch_entity_name()
     }
   }
 
