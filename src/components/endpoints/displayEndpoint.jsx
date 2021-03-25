@@ -705,10 +705,16 @@ class DisplayEndpoint extends Component {
     const pathParameters = uri.split('/')
     let path = ''
     let counter = 0
+    const uniquePathparameters = {}
     for (let i = 0; i < pathParameters.length; i++) {
       if (pathParameters[i][0] === ':' && pathParameters[i].slice(1).trim()) {
-        pathParameters[i] = this.state.pathVariables[counter]?.value
-        counter++
+        if (uniquePathparameters[pathParameters[i].slice(1)] || uniquePathparameters[pathParameters[i].slice(1)] === '') {
+          pathParameters[i] = uniquePathparameters[pathParameters[i].slice(1)]
+        } else {
+          pathParameters[i] = this.state.pathVariables[counter]?.value
+          uniquePathparameters[this.state.pathVariables[counter]?.key] = this.state.pathVariables[counter]?.value
+          counter++
+        }
       }
     }
     path = pathParameters.join('/')
