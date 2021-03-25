@@ -1,5 +1,6 @@
 
-.endpoint-name-container {
+.endpoint-name-edit {
+    font-weight:bold;
     .fa.fa-pencil-square-o{
         visibility: hidden;
         margin-left: 7px;
@@ -14,12 +15,19 @@
     }
 }
 
-.description{
-    font-size:15px!important;
-    color: black !important;
-}
-.description-endpoint{
+.bread-crumb-wrapper{
     font-size:14px!important;
     color: black !important;
-    font-weight:bold;
+    height:27px;
 }
+
+.endpoint-name-input {
+    font-size: 14px;
+    font-weight: 600;
+    border: 1px solid #E98A36;
+    padding: 2px 8px;
+    border-radius: 4px;
+    &:focus {
+      outline: none;
+    }
+  }

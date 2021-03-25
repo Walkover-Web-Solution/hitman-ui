@@ -5,7 +5,7 @@ import ReactHtmlParser from 'react-html-parser'
 import { Link } from 'react-router-dom'
 import { updateEndpoint } from './redux/endpointsActions'
 import { connect } from 'react-redux'
-import './displayDescription.scss'
+import './endpointBreadCrumb.scss'
 import { ReactComponent as EditIcon } from '../../assets/icons/editIcon.svg'
 import EndpointBreadCrumb from './endpointBreadCrumb'
 

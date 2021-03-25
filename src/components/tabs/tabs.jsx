@@ -176,14 +176,14 @@ class CustomTabs extends Component {
       <>
         {this.navRef.current?.scrollWidth > this.navRef.current?.clientWidth
           ? (
-            <button
+            <div
               className={`scroll-button d-flex mr-2 ${this.leftHideTabs() ? '' : 'disabled'}`}
               onMouseEnter={() => this.handleMouseEnter('left')}
               onMouseLeave={() => this.handleMouseLeave()}
             >
               <span className='mr-1'><i class='fa fa-angle-left' aria-hidden='true' /></span>
               <span>{this.leftHideTabs() ? `${this.leftHideTabs()}+` : null}</span>
-            </button>)
+            </div>)
           : null}
         <Nav variant='pills' className='flex-row flex-nowrap item-wrp' onScroll={() => this.scrollLength()} ref={this.navRef} style={{ scrollBehavior: 'smooth' }}>
           <div>
@@ -267,14 +267,14 @@ class CustomTabs extends Component {
         </Nav>
         {this.navRef.current?.scrollWidth > this.navRef.current?.clientWidth
           ? (
-            <button
+            <div
               className={`scroll-button d-flex ml-2 mr-2 ${this.rightHideTabs() ? '' : 'disabled'}`}
               onMouseEnter={() => this.handleMouseEnter('right')}
               onMouseLeave={() => this.handleMouseLeave()}
             >
               <span className='mr-1'>{this.rightHideTabs() ? `+${this.rightHideTabs()}` : null}</span>
               <span><i class='fa fa-angle-right' aria-hidden='true' /></span>
-            </button>)
+            </div>)
           : null}
         <Nav.Item className='tab-buttons newTabs' id='add-new-tab-button'>
           <button

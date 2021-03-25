@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import './displayDescription.scss'
+import './endpointBreadCrumb.scss'
 import { ReactComponent as EditIcon } from '../../assets/icons/editIcon.svg'
 
 const mapStateToProps = (state) => {
@@ -20,6 +20,7 @@ class EndpointBreadCrumb extends Component {
     this.state = {
       nameEditable: false,
       endpointTitle: '',
+      previousTitle: '',
       groupName: null,
       versionName: null,
       collectionName: null,
@@ -32,24 +33,31 @@ class EndpointBreadCrumb extends Component {
     if (pageId && this.props.pages[pageId]) {
       this.setState({
         endpointTitle: this.props.pages[pageId].name,
-        isPagePublished: this.props.pages[pageId].isPublished
+        isPagePublished: this.props.pages[pageId].isPublished,
+        previousTitle: this.props.pages[pageId].name
       })
     } else if (this.props?.data?.name) {
-      this.setState({ endpointTitle: this.props.data.name })
+      this.setState({
+        endpointTitle: this.props.data.name,
+        previousTitle: this.props.data.name
+      })
     }
   }
 
   componentDidUpdate (prevProps, prevState) {
     const pageId = this.props?.match?.params.pageId
     if (this.props.isEndpoint && this.props?.data?.name !== prevProps?.data?.name) {
-      this.setState({ endpointTitle: this.props.data.name })
+      this.setState({
+        endpointTitle: this.props.data.name,
+        previousTitle: this.props.data.name
+      })
     }
     if (pageId && this.props.pages[pageId]) {
-      if (this.props.pages[pageId].name !== prevProps.pages[pageId]?.name) {
-        console.log('page', 'update')
+      if (this.props.pages[pageId].name !== prevState.previousTitle) {
         this.setState({
           endpointTitle: this.props.pages[pageId].name,
-          isPagePublished: this.props.pages[pageId].isPublished
+          isPagePublished: this.props.pages[pageId].isPublished,
+          previousTitle: this.props.pages[pageId].name
         })
       }
     }
@@ -71,6 +79,9 @@ class EndpointBreadCrumb extends Component {
         page.name = this.state.endpointTitle
         this.props.update_page(page)
       }
+    } else {
+      const title = this.state.previousTitle
+      this.setState({ endpointTitle: title })
     }
   }
 
@@ -96,6 +107,10 @@ class EndpointBreadCrumb extends Component {
     }
   }
 
+  renderLeftAngle (title) {
+    return (title && <span className='ml-2'>&gt;</span>)
+  }
+
   render () {
     this.props.isEndpoint ? this.setEndpointData() : this.setPageData()
     return (
@@ -103,32 +118,33 @@ class EndpointBreadCrumb extends Component {
         <div
           className='panel-endpoint-name-container'
         >
-          <div className='d-flex align-items-center form-group'>
-            {this.collectionName && <span className='description'>{`${this.collectionName}  > `}</span>}
-            {this.versionName && <span className='description ml-2'>{`${this.versionName}  > `}</span>}
-            {this.groupName && <span className='description ml-2'>{`${this.groupName}  > `}</span>}
+          <div className='d-flex bread-crumb-wrapper align-items-center form-group text-nowrap'>
+            {this.collectionName && <span className=''>{`${this.collectionName}`}</span>}
+            {this.renderLeftAngle(this.collectionName)}
+            {this.versionName && <span className='ml-2'>{`${this.versionName}`}</span>}
+            {this.renderLeftAngle(this.versionName)}
+            {this.groupName && <span className='ml-2'>{`${this.groupName}`}</span>}
+            {this.renderLeftAngle(this.groupName)}
             <input
               ref={this.nameInputRef}
-              className={['form-control', this.state.nameEditable ? 'd-block' : 'd-none'].join(' ')}
+              className={['ml-2 endpoint-name-input', this.state.nameEditable ? 'd-block' : 'd-none'].join(' ')}
               name='enpoint-title'
               style={{ width: 'auto' }}
               onChange={this.handleInputChange.bind(this)}
               value={this.state.endpointTitle}
               onBlur={() => { this.handleInputBlur() }}
             />
-            <div
+            <span
               onClick={() => {
                 this.setState({ nameEditable: true }, () => {
                   this.nameInputRef.current.focus()
                 })
               }}
-              className={['endpoint-name-container ml-2', !this.state.nameEditable ? 'd-block' : 'd-none'].join(' ')}
+              className={['endpoint-name-edit ml-2 mr-2', !this.state.nameEditable ? 'd-block' : 'd-none'].join(' ')}
             >
-              <span className='description-endpoint'>{this.state.endpointTitle ? this.state.endpointTitle : 'Untitled'}</span>
+              {this.state.endpointTitle ? this.state.endpointTitle : 'Untitled'}
               <EditIcon className='fa fa-pencil-square-o' />
-
-            </div>
-
+            </span>
             {this.props?.endpoint?.publishedEndpoint?.isPublished && <div className='api-label POST request-type-bgcolor ml-2'> Live </div>}
             {this.state.isPagePublished && <div className='api-label POST request-type-bgcolor ml-2'> Live </div>}
           </div>

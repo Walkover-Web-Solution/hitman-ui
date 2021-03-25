@@ -20,7 +20,7 @@ $border-color: #E5E5E5;
     border-top: none;
     height: 40px;
     align-self: flex-end;
-    width: calc(100% - 200px);
+    width: calc(100%);
 
     .item-wrp {
       // width: calc(100vw - 560px);
@@ -196,7 +196,7 @@ $border-color: #E5E5E5;
 
     .nav::-webkit-scrollbar {
       height: 3px;
-      visibility: hidden;
+      display: none;
     }
   }
 }
@@ -247,6 +247,7 @@ $border-color: #E5E5E5;
 }
 
 .scroll-button{
+  cursor:default !important;
   align-items: center;
   max-width: 50px;
   min-width: 50px;
@@ -258,6 +259,5 @@ $border-color: #E5E5E5;
   border-top-right-radius: 4px;
   &.disabled{
      color: grey;
-     cursor:default;
   }
 }
