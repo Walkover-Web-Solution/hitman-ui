@@ -1,11 +1,13 @@
 import Joi from 'joi-browser'
 import React from 'react'
-import { Modal } from 'react-bootstrap'
+import { Modal, Dropdown } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import shortid from 'shortid'
 import Form from '../common/form'
 import { addGroup, updateGroup } from '../groups/redux/groupsActions'
 import { onEnter } from '../common/utility'
+import extractCollectionInfoService from '../publishDocs/extractCollectionInfoService'
+import { toast } from 'react-toastify'
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -30,6 +32,8 @@ class GroupForm extends Form {
   }
 
   async componentDidMount () {
+    const versions = extractCollectionInfoService.extractVersionsFromCollectionId(this.props.collectionId, this.props)
+    this.setState({ versions })
     if (this.props.title === 'Add new Group') return
     let data = {}
     if (this.props.selected_group) {
@@ -40,10 +44,15 @@ class GroupForm extends Form {
   }
 
   async doSubmit () {
+    console.log('doSubmit')
+    if (!this.state.selectedVersionId && this.props.addEntity) {
+      toast.error('Please select version')
+      return
+    }
     this.props.onHide()
     if (this.props.title === 'Add new Group') {
       const data = { ...this.state.data }
-      const versionId = this.props.selectedVersion.id
+      const versionId = this.props.addEntity ? this.state.selectedVersionId : this.props.selectedVersion.id
       const newGroup = {
         ...data,
         requestId: shortid.generate()
@@ -58,6 +67,19 @@ class GroupForm extends Form {
         versionId: this.props.selected_group.versionId
       }
       this.props.update_group(editedGroup)
+    }
+  }
+
+  renderVersionList () {
+    if (this.state.versions) {
+      return (
+        Object.keys(this.state.versions).map(
+          (id, index) => (
+            <Dropdown.Item key={index} onClick={() => this.setState({ selectedVersionId: id })}>
+              {this.state.versions[id]?.number}
+            </Dropdown.Item>
+          ))
+      )
     }
   }
 
@@ -80,6 +102,18 @@ class GroupForm extends Form {
           <Modal.Body>
             <form onSubmit={this.handleSubmit}>
               {this.renderInput('name', 'Group Name', 'group name')}
+              {this.props.addEntity &&
+                <div>
+                  Select Version
+                  <Dropdown>
+                    <Dropdown.Toggle variant='' id='dropdown-basic'>
+                      {this.state.versions?.[this.state.selectedVersionId]?.number || ''}
+                    </Dropdown.Toggle>
+                    <Dropdown.Menu>
+                      {this.renderVersionList()}
+                    </Dropdown.Menu>
+                  </Dropdown>
+                </div>}
               <div className='text-left'>
 
                 {this.renderButton('Submit')}
