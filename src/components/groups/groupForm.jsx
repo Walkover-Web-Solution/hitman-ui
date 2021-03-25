@@ -18,15 +18,14 @@ class GroupForm extends Form {
   constructor (props) {
     super(props)
     this.state = {
-      data: { name: '', host: '' },
+      data: { name: '' },
       groupId: '',
       versionId: '',
       errors: {}
     }
 
     this.schema = {
-      name: Joi.string().required().label('Group Name'),
-      host: Joi.string().uri().allow(null, '').label('Host')
+      name: Joi.string().required().label('Group Name')
     }
   }
 
@@ -34,8 +33,8 @@ class GroupForm extends Form {
     if (this.props.title === 'Add new Group') return
     let data = {}
     if (this.props.selected_group) {
-      const { name, host } = this.props.selected_group
-      data = { name, host }
+      const { name } = this.props.selected_group
+      data = { name }
     }
     this.setState({ data })
   }
@@ -81,7 +80,6 @@ class GroupForm extends Form {
           <Modal.Body>
             <form onSubmit={this.handleSubmit}>
               {this.renderInput('name', 'Group Name', 'group name')}
-              {this.renderInput('host', 'Host', 'host name')}
               <div className='text-left'>
 
                 {this.renderButton('Submit')}
