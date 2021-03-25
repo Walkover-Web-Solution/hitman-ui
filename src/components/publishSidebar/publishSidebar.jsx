@@ -14,6 +14,7 @@ import
 extractCollectionInfoService
 // }
   from '../publishDocs/extractCollectionInfoService'
+import { isAdmin } from '../auth/authService'
 
 const mapStateToProps = (state) => {
   return {
@@ -143,8 +144,19 @@ export class PublishSidebar extends Component {
       }
     })
 
-    this.props.bulk_publish(this.state.selectedCollectionId, requestData)
-    // console.log('hello', requestData)
+    if (requestData.pages.length || requestData.endpoints.length) {
+      this.props.bulk_publish(this.state.selectedCollectionId, requestData)
+    }
+    if (isAdmin()) {
+      const collectionId = this.state.selectedCollectionId
+      if (collectionId) {
+        this.props.history.push({
+          pathname: '/admin/publish',
+          search: `?collectionId=${collectionId}`
+        })
+      }
+    }
+    this.props.closePublishSidebar()
   }
 
   makeVersionData () {

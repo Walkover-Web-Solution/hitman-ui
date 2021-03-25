@@ -111,7 +111,7 @@ class PublishCollectionInfo extends Component {
 
   renderPublishCollection () {
     return (
-      isAdmin() && <button className='btn btn-outline orange w-100 publishCollection' onClick={() => { this.openPublishSettings() }}>Publish API Documentation</button>
+      (this.state.totalEndpointCount !== 0 || this.state.totalPageCount !== 0) && <button className='btn btn-outline orange w-100 publishCollection' onClick={() => { this.openPublishSettings() }}>Publish API Documentation</button>
     )
   }
 
@@ -129,13 +129,13 @@ class PublishCollectionInfo extends Component {
   }
 
   openPublishSettings () {
-    const collectionId = this.props.collectionId
-    if (collectionId) {
-      this.props.history.push({
-        pathname: '/admin/publish',
-        search: `?collectionId=${collectionId}`
-      })
-    }
+    // const collectionId = this.props.collectionId
+    // if (collectionId) {
+    //   this.props.history.push({
+    //     pathname: '/admin/publish',
+    //     search: `?collectionId=${collectionId}`
+    //   })
+    // }
     this.setState({ openPublishSidebar: true })
   }
 
