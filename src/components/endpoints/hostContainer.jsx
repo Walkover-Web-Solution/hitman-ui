@@ -100,19 +100,19 @@ class HostContainer extends Component {
   }
 
   checkExistingHosts (value) {
-    const regex = /^(https?)*:\/\/[\w.\-@:]*/i
+    const regex = /^((http[s]?|ftp):\/\/[\w.\-@:]*)/i
     const variableRegex = /^{{[\w|-]+}}/i
     const { environmentHost, versionHost, groupHost } = this.state
     if (value.match(variableRegex)) {
       return value.match(variableRegex)[0]
     }
-    if (value.match(new RegExp('^' + environmentHost))) {
+    if (environmentHost && value.match(new RegExp('^' + environmentHost) + '/')) {
       return environmentHost
     }
-    if (value.match(new RegExp('^' + groupHost))) {
+    if (groupHost && value.match(new RegExp('^' + groupHost + '/'))) {
       return groupHost
     }
-    if (value.match(new RegExp('^' + versionHost))) {
+    if (versionHost && value.match(new RegExp('^' + versionHost + '/'))) {
       return versionHost
     }
     if (value.match(regex)) {
