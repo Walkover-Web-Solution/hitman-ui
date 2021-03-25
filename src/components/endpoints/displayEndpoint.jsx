@@ -88,6 +88,7 @@ class DisplayEndpoint extends Component {
         uri: '',
         updatedUri: ''
       },
+      pathVariables: [],
       methodList: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
       environment: {},
       startTime: '',
@@ -470,20 +471,22 @@ class DisplayEndpoint extends Component {
         pathVariableKeysObject[pathVariableKeys[i]] === false
       ) {
         pathVariableKeysObject[pathVariableKeys[i]] = true
-        pathVariables.push({
-          checked: 'notApplicable',
-          key: pathVariableKeys[i].slice(1),
-          value: this.state.pathVariables[i - 1]
-            ? this.state.pathVariables[i - 1].key === pathVariableKeys[i]
-                ? this.state.pathVariables[i - 1].value
-                : ''
-            : '',
-          description: this.state.pathVariables[i - 1]
-            ? this.state.pathVariables[i - 1].key === pathVariableKeys[i]
-                ? this.state.pathVariables[i - 1].description
-                : ''
-            : ''
-        })
+        if (pathVariableKeys[i].slice(1).trim() !== '') {
+          pathVariables.push({
+            checked: 'notApplicable',
+            key: pathVariableKeys[i].slice(1),
+            value: this.state.pathVariables[i - 1]
+              ? this.state.pathVariables[i - 1].key === pathVariableKeys[i]
+                  ? this.state.pathVariables[i - 1].value
+                  : ''
+              : '',
+            description: this.state.pathVariables[i - 1]
+              ? this.state.pathVariables[i - 1].key === pathVariableKeys[i]
+                  ? this.state.pathVariables[i - 1].description
+                  : ''
+              : ''
+          })
+        }
       }
     }
 
@@ -700,27 +703,15 @@ class DisplayEndpoint extends Component {
     let uri = new URI(this.state.data.updatedUri)
     uri = uri.pathname()
     const pathParameters = uri.split('/')
-    const uniquePathParameters = {}
     let path = ''
     let counter = 0
     for (let i = 0; i < pathParameters.length; i++) {
-      if (pathParameters[i][0] === ':') {
-        if (
-          uniquePathParameters[pathParameters[i]] ||
-          uniquePathParameters[pathParameters[i]] === ''
-        ) {
-          path = path + '/' + uniquePathParameters[pathParameters[i]]
-        } else {
-          uniquePathParameters[pathParameters[i]] = this.state.pathVariables[
-            counter
-          ]?.value
-          path = path + '/' + this.state.pathVariables[counter]?.value
-          counter++
-        }
-      } else if (pathParameters[i].length !== 0) {
-        path = path + '/' + pathParameters[i]
+      if (pathParameters[i][0] === ':' && pathParameters[i].slice(1).trim()) {
+        pathParameters[i] = this.state.pathVariables[counter]?.value
+        counter++
       }
     }
+    path = pathParameters.join('/')
     return path
   }
 
