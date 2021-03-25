@@ -79,6 +79,9 @@ class EndpointBreadCrumb extends Component {
         page.name = this.state.endpointTitle
         this.props.update_page(page)
       }
+      const title = this.state.endpointTitle
+      this.setState({ previousTitle: title })
+      this.setState({})
     } else {
       const title = this.state.previousTitle
       this.setState({ endpointTitle: title })
