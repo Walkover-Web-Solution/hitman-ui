@@ -2,8 +2,15 @@ import React, { Component } from 'react'
 import store from '../../store/store'
 import { isDashboardRoute } from '../common/utility'
 import ReactHtmlParser from 'react-html-parser'
+import { withRouter } from 'react-router-dom'
+import { connect } from 'react-redux'
 import './page.scss'
 
+const mapStateToProps = (state) => {
+  return {
+    pages: state.pages
+  }
+}
 class DisplayPage extends Component {
   constructor (props) {
     super(props)
@@ -24,6 +31,7 @@ class DisplayPage extends Component {
   }
 
   async componentDidMount () {
+    this.extractPageName()
     if (!this.props.location.page) {
       let pageId = ''
       if (isDashboardRoute(this.props)) { pageId = this.props.location.pathname.split('/')[3] } else pageId = this.props.location.pathname.split('/')[4]
@@ -38,11 +46,22 @@ class DisplayPage extends Component {
   }
 
   componentDidUpdate (prevProps, prevState) {
+    if (this.props.location.pathname !== prevProps.location.pathname) {
+      this.extractPageName()
+    }
     if (this.props.pageId && prevProps !== this.props) {
       this.setState({ data: this.props.pages[this.props.pageId] || { id: null, versionId: null, groupId: null, name: '', contents: '' } })
     }
     if (this.props.match.params.pageId !== prevProps.match.params.pageId) {
       this.fetchPage(this.props.match.params.pageId)
+    }
+  }
+
+  extractPageName () {
+    if (!isDashboardRoute(this.props, true) && this.props.pages) {
+      const pageName = this.props.pages[this.props.match.params.pageId]?.name
+      if (pageName) this.props.fetch_entity_name(pageName)
+      else this.props.fetch_entity_name()
     }
   }
 
@@ -104,4 +123,6 @@ class DisplayPage extends Component {
   }
 }
 
-export default DisplayPage
+export default withRouter(
+  connect(mapStateToProps)(DisplayPage)
+)
