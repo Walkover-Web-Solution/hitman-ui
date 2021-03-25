@@ -150,7 +150,6 @@ function pagesReducer (state = initialState, action) {
       return pages
 
     case bulkPublishActionTypes.ON_BULK_PUBLISH_UPDATION_ERROR:
-      toast.error(action.error)
       pages = { ...action.originalData.originalPages }
       return pages
 

@@ -143,7 +143,6 @@ function endpointsReducer (state = initialState, action) {
       return endpoints
 
     case bulkPublishActionTypes.ON_BULK_PUBLISH_UPDATION_ERROR:
-      toast.error(action.error)
       endpoints = { ...action.originalData.originalEndpoints }
       return endpoints
 

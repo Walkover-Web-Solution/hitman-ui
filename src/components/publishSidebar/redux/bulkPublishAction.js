@@ -1,3 +1,4 @@
+import { toast } from 'react-toastify'
 import store from '../../../store/store'
 import bulkPublishApiService from '../bulkPublishApiService'
 import bulkPublishActionTypes from './bulkPublishActionTypes'
@@ -14,12 +15,9 @@ export const bulkPublish = (collectionId, data) => {
         dispatch(onBulkPublishUpdation(modifiedData))
       })
       .catch((error) => {
-        dispatch(
-          onBulkPublishUpdationError(
-            error.response ? error.response.data : error,
-            originalData
-          )
-        )
+        const e = error.response ? error.response.data : error
+        toast.error(e)
+        dispatch(onBulkPublishUpdationError(e, originalData))
       })
   }
 }
