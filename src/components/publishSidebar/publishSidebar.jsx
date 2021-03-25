@@ -227,15 +227,15 @@ export class PublishSidebar extends Component {
     const newData = { ...this.state.checkedData }
     console.log('hello', itemtype, itemId)
     if (itemtype === 'endpoint') {
-      const { endpoints } = this.state.groupData[this.props.endpoints[itemId]?.groupId]
-      if (this.findCheckedItems(endpoints, 'endpoint')) {
+      const { pages, endpoints } = this.state.groupData[this.props.endpoints[itemId]?.groupId]
+      if (this.findCheckedItems(endpoints, 'endpoint') && this.findCheckedItems(pages, 'groupPage')) {
         newData[`check.group.${this.props.endpoints[itemId]?.groupId}`] = true
       }
     }
 
     if (itemtype === 'groupPage') {
-      const { pages } = this.state.groupData[this.props.pages[itemId]?.groupId]
-      if (this.findCheckedItems(pages, 'groupPage')) {
+      const { pages, endpoints } = this.state.groupData[this.props.pages[itemId]?.groupId]
+      if (this.findCheckedItems(pages, 'groupPage') && this.findCheckedItems(endpoints, 'endpoint')) {
         newData[`check.group.${this.props.pages[itemId]?.groupId}`] = true
       }
     }
@@ -332,8 +332,8 @@ export class PublishSidebar extends Component {
             page.versionId === version.id && page.groupId === null
         ).map((page, index) => (
           <div className='d-flex' key={page?.id}>
-            <span className='mr-2'>{this.renderCheckBox('versionPage', page?.id)}</span>
-            <div> {page?.name} </div>
+            <span className='mr-2 '>{this.renderCheckBox('versionPage', page?.id)}</span>
+            <div className='sidebar-entity-name'> {page?.name} </div>
           </div>
         ))}
       </div>
@@ -349,7 +349,7 @@ export class PublishSidebar extends Component {
         ).map((page, index) => (
           <div className='d-flex' key={page?.id}>
             <span className='mr-2'>{this.renderCheckBox('groupPage', page?.id)}</span>
-            <div> {page?.name} </div>
+            <div className='sidebar-entity-name'> {page?.name} </div>
           </div>
         ))}
       </div>
@@ -365,12 +365,12 @@ export class PublishSidebar extends Component {
                 group.id
         ).map((endpoint, index) => (
           <div key={endpoint?.id}>
-            <div className='d-flex'>
+            <div className='d-flex align-items-center'>
               <span className='mr-2'>{this.renderCheckBox('endpoint', endpoint?.id)}</span>
               <div className={`api-label ${endpoint?.requestType} request-type-bgcolor`}>
                 {endpoint?.requestType}
               </div>
-              <span>{endpoint?.name} </span>
+              <span className='ml-2 sidebar-entity-name'>{endpoint?.name} </span>
             </div>
           </div>
         ))}
@@ -387,12 +387,14 @@ export class PublishSidebar extends Component {
                 version.id
         ).map((group, index) => (
           <div key={group?.id}>
-            <div className='d-flex'>
-              <span className='mr-2'>{this.renderCheckBox('group', group?.id)}</span>
-              <span>{group?.name}</span>
+            <div className='d-flex my-3'>
+              <span className='mr-2 '>{this.renderCheckBox('group', group?.id)}</span>
+              <span className='sidebar-entity-name'>{group?.name}</span>
             </div>
-            <div> {this.renderGroupPages(group)} </div>
-            <div> {this.renderEndpoints(group)} </div>
+            <div className='px-3 '>
+              <div> {this.renderGroupPages(group)} </div>
+              <div> {this.renderEndpoints(group)} </div>
+            </div>
           </div>
         ))}
       </div>
@@ -401,14 +403,14 @@ export class PublishSidebar extends Component {
 
   renderCollectionDropDown () {
     return (
-      <div>
-        <div className=''>Collection</div>
-        <Dropdown>
-          <Dropdown.Toggle variant='success' id='dropdown-basic'>
-            {this.props.collections[this.state.selectedCollectionId]?.name}
+      <div className='collection-api-doc-dropdown'>
+        <div className='collection-api-doc-heading'>Collection</div>
+        <Dropdown className=' w-100 d-flex '>
+          <Dropdown.Toggle variant='' className=' w-100 d-flex sidebar-dropdown'>
+            <span className='collection-name'>{this.props.collections[this.state.selectedCollectionId]?.name}</span>
           </Dropdown.Toggle>
 
-          <Dropdown.Menu>
+          <Dropdown.Menu className='collection-dropdown-menu'>
             {Object.values(this.props.collections || {}).filter(
               (collection) =>
                 !collection.isPublic
@@ -424,28 +426,32 @@ export class PublishSidebar extends Component {
   renderVersionList () {
     return (
       <div>
-        <div>Select API Enpoints and Pages to publish</div>
+        <div className='mt-3 collection-api-doc-heading'>Select API Enpoints and Pages to publish</div>
         <div className='publish-versions-list'>
-          <div>{this.props.collections[this.state.selectedCollectionId]?.name}</div>
+          <div className='p-3 collection-name'>{this.props.collections[this.state.selectedCollectionId]?.name}</div>
           <div className='items'>
             {Object.values(this.props.versions).filter(
               (version) =>
                 version.collectionId ===
                   this.state.selectedCollectionId
             ).map((version, index) => (
-              <div className='d-flex' key={version?.id}>
-                <span className='mr-2'>{this.renderCheckBox('version', version?.id)}</span>
-                <Accordion>
-                  <Accordion.Toggle eventKey={version?.id}>
-                    <div>{version?.number}</div>
-                  </Accordion.Toggle>
-                  <Accordion.Collapse eventKey={version?.id}>
-                    <div>
-                      {this.renderVersionPages(version)}
-                      {this.renderGroups(version)}
-                    </div>
-                  </Accordion.Collapse>
-                </Accordion>
+              <div className='d-flex ml-3 mt-3' key={version?.id}>
+                <div className=' d-flex align-items-start'>
+                  <span className='mr-2 sidebar-version-checkbox'>{this.renderCheckBox('version', version?.id)}</span>
+                  <Accordion className='version-accordian'>
+                    <Accordion.Toggle eventKey={version?.id} className='version-accordian-toggle'>
+                      <div className='d-flex align-items-center'>
+                        <span className=''>{version?.number}</span>
+                      </div>
+                    </Accordion.Toggle>
+                    <Accordion.Collapse eventKey={version?.id} className='px-3 publish-sidebar-accordian-collapse'>
+                      <div className='my-2'>
+                        {this.renderVersionPages(version)}
+                        {this.renderGroups(version)}
+                      </div>
+                    </Accordion.Collapse>
+                  </Accordion>
+                </div>
               </div>
             ))}
           </div>
@@ -456,9 +462,9 @@ export class PublishSidebar extends Component {
 
   renderFooter () {
     return (
-      <div className='d-flex'>
-        <button onClick={() => this.sendPublishRequest()}>Next</button>
-        <button onClick={() => { this.props.closePublishSidebar() }}>Cancel</button>
+      <div className='d-flex mt-5'>
+        <button className='btn btn-primary' onClick={() => this.sendPublishRequest()}>Next</button>
+        <button className='ml-2 btn btn-secondary outline' onClick={() => { this.props.closePublishSidebar() }}>Cancel</button>
       </div>
     )
   }
@@ -492,7 +498,7 @@ export class PublishSidebar extends Component {
         >
           {' '}
         </div>
-        <div style={saveAsSidebarStyle}>
+        <div style={saveAsSidebarStyle} className='publish-sidebar-container'>
           <div className='publish-api-doc-heading'>Publish API Documentation</div>
           {this.renderCollectionDropDown()}
           {this.renderVersionList()}
