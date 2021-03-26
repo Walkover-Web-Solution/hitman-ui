@@ -415,7 +415,7 @@ export class PublishSidebar extends Component {
 
   renderFooter () {
     return (
-      <div className='d-flex mt-5'>
+      <div className='d-flex mt-3'>
         <button className='btn btn-primary' onClick={() => this.sendPublishRequest()}>Next</button>
         <button className='ml-2 btn btn-secondary outline' onClick={() => { this.props.closePublishSidebar() }}>Cancel</button>
       </div>
@@ -446,7 +446,7 @@ export class PublishSidebar extends Component {
     return (
       <div>
         <div
-          onClick={() => { }}
+          onClick={() => { this.props.closePublishSidebar() }}
           style={darkBackgroundStyle}
         >
           {' '}
