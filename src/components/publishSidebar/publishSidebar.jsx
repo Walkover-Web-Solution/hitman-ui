@@ -275,7 +275,7 @@ export class PublishSidebar extends Component {
           (page) =>
             page.versionId === version.id && page.groupId === null
         ).map((page, index) => (
-          <div className='d-flex' key={page?.id}>
+          <div className='d-flex my-2' key={page?.id}>
             <span className='mr-2 '>{this.renderCheckBox('versionPage', page?.id)}</span>
             <div className='sidebar-entity-name d-flex justify-content-between w-100'>
               <div className='text-break'>{page?.name}</div>
@@ -340,7 +340,7 @@ export class PublishSidebar extends Component {
                 version.id
         ).map((group, index) => (
           <div key={group?.id}>
-            <div className='d-flex my-3'>
+            <div className='d-flex mt-2 mb-1'>
               <span className='mr-2 '>{this.renderCheckBox('group', group?.id)}</span>
               <span className='sidebar-entity-name'>{group?.name}</span>
             </div>
@@ -394,11 +394,11 @@ export class PublishSidebar extends Component {
                 version.collectionId ===
                   this.state.selectedCollectionId
             ).map((version, index) => (
-              <div className='d-flex ml-3 mt-3' key={version?.id}>
-                <div className=' d-flex align-items-start'>
+              <div className='d-flex mx-3 mt-3' key={version?.id}>
+                <div className=' d-flex align-items-start w-100'>
                   <span className='mr-2 sidebar-version-checkbox'>{this.renderCheckBox('version', version?.id)}</span>
-                  <Accordion className='version-accordian'>
-                    <Accordion.Toggle eventKey={version?.id} className='version-accordian-toggle' onClick={() => this.toggleVersion(version?.id)}>
+                  <Accordion className='version-accordian w-100'>
+                    <Accordion.Toggle eventKey={version?.id} className='version-accordian-toggle w-100' onClick={() => this.toggleVersion(version?.id)}>
                       <div className='d-flex align-items-center justify-content-between'>
                         <div className=''>{version?.number}</div>
                         <div className={['down-arrow', this.state.versionsToggle[version.id] ? 'rotate-toggle' : ' '].join(' ')}> <DownChevron /> </div>
@@ -437,7 +437,7 @@ export class PublishSidebar extends Component {
       top: '0px',
       right: '0px',
       height: '100vh',
-      width: '26vw',
+      width: '500px',
       boxShadow: '-25px 25px 43px rgba(0, 0, 0, 0.07)'
     }
     const darkBackgroundStyle = {
