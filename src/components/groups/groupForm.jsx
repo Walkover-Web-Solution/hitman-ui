@@ -103,11 +103,11 @@ class GroupForm extends Form {
             <form onSubmit={this.handleSubmit}>
               {this.renderInput('name', 'Group Name', 'group name')}
               {this.props.addEntity &&
-                <div>
+                <div className='dropdown-label'>
                   Select Version
                   <Dropdown>
                     <Dropdown.Toggle variant='' id='dropdown-basic'>
-                      {this.state.versions?.[this.state.selectedVersionId]?.number || ''}
+                      {this.state.versions?.[this.state.selectedVersionId]?.number || 'Select'}
                     </Dropdown.Toggle>
                     <Dropdown.Menu>
                       {this.renderVersionList()}

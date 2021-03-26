@@ -650,6 +650,7 @@ class SideBar extends Component {
           show
           onHide={() => this.closeAddEntitySelectionModal()}
           openAddEntityModal={this.openAddEntityModal.bind(this)}
+          collectionId={this.collectionId}
         />
     )
   }

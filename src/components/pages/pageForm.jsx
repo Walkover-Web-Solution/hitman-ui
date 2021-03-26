@@ -113,25 +113,28 @@ class PageForm extends Form {
               {this.renderInput('name', 'Page name', 'page name')}
               {
                 this.props.addEntity &&
-                  <div>
+                  <div className='dropdown-label'>
                     Select Version
                     <Dropdown>
                       <Dropdown.Toggle variant='' id='dropdown-basic'>
-                        {this.state.versions?.[this.state.selectedVersionId]?.number || ''}
+                        {this.state.versions?.[this.state.selectedVersionId]?.number || 'Select'}
                       </Dropdown.Toggle>
                       <Dropdown.Menu>
                         {this.renderVersionList()}
                       </Dropdown.Menu>
                     </Dropdown>
-                    Select Group
-                    <Dropdown>
-                      <Dropdown.Toggle style={{ width: '50px' }} variant='' id='dropdown-basic'>
-                        {this.state.groups?.[this.state.selectedGroupId]?.name || ''}
-                      </Dropdown.Toggle>
-                      <Dropdown.Menu>
-                        {this.renderGroupList()}
-                      </Dropdown.Menu>
-                    </Dropdown>
+                    {this.state.selectedVersionId &&
+                      <div style={{ marginTop: '10px' }}>
+                        Select Group
+                        <Dropdown>
+                          <Dropdown.Toggle variant='' id='dropdown-basic'>
+                            {this.state.groups?.[this.state.selectedGroupId]?.name || 'Select'}
+                          </Dropdown.Toggle>
+                          <Dropdown.Menu>
+                            {this.renderGroupList()}
+                          </Dropdown.Menu>
+                        </Dropdown>
+                      </div>}
                   </div>
               }
               <div className='text-left mt-2 mb-1'>

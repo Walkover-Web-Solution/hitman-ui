@@ -105,25 +105,28 @@ class EndpointForm extends Form {
           <Modal.Body>
             <form onSubmit={this.handleSubmit}>
               {this.renderInput('name', 'Endpoint Name', 'endpoint name')}
-              <div>
+              <div className='dropdown-label'>
                 Select Version
                 <Dropdown>
                   <Dropdown.Toggle variant='' id='dropdown-basic'>
-                    {this.state.versions?.[this.state.selectedVersionId]?.number || ''}
+                    {this.state.versions?.[this.state.selectedVersionId]?.number || 'Select'}
                   </Dropdown.Toggle>
                   <Dropdown.Menu>
                     {this.renderVersionList()}
                   </Dropdown.Menu>
                 </Dropdown>
-                Select Group
-                <Dropdown>
-                  <Dropdown.Toggle style={{ width: '50px' }} variant='' id='dropdown-basic'>
-                    {this.state.groups?.[this.state.selectedGroupId]?.name || ''}
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu>
-                    {this.renderGroupList()}
-                  </Dropdown.Menu>
-                </Dropdown>
+                {this.state.selectedVersionId &&
+                  <div style={{ marginTop: '10px' }}>
+                    Select Group
+                    <Dropdown>
+                      <Dropdown.Toggle variant='' id='dropdown-basic'>
+                        {this.state.groups?.[this.state.selectedGroupId]?.name || 'Select'}
+                      </Dropdown.Toggle>
+                      <Dropdown.Menu>
+                        {this.renderGroupList()}
+                      </Dropdown.Menu>
+                    </Dropdown>
+                  </div>}
               </div>
               <div className='text-left mt-4 mb-2'>
                 {this.renderButton('Submit')}
