@@ -104,6 +104,7 @@ class PublishDocs extends Component {
     collectionInfo.endpoints,
     collectionInfo.pages
     )
+
     this.setState({
       selectedCollectionId: URI.parseQuery(this.props.location.search)
         .collectionId,
@@ -953,6 +954,10 @@ class PublishDocs extends Component {
 
   checkDocProperties (collectionId) {
     const collection = this.props.collections[collectionId]
+
+    if (this.props.location.fromSidebar && !collection?.isPublic) {
+      return false
+    }
     return !!(collection?.docProperties?.defaultTitle)
   }
 
