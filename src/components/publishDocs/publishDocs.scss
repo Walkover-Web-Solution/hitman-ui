@@ -27,12 +27,13 @@
 }
 
 .hosted-doc-heading {
+  display: flex;
+  justify-content: space-between;
   font-family: 'proxima-nova', sans-serif;
   font-style: normal;
   font-weight: 600;
   margin-bottom: 15px;
   font-size: 20px;
-  line-height: 25px;
   color: #000000;
 }
 
