@@ -7,7 +7,6 @@ import Form from '../common/form'
 import { addGroup, updateGroup } from '../groups/redux/groupsActions'
 import { onEnter } from '../common/utility'
 import extractCollectionInfoService from '../publishDocs/extractCollectionInfoService'
-import { toast } from 'react-toastify'
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -44,9 +43,8 @@ class GroupForm extends Form {
   }
 
   async doSubmit () {
-    console.log('doSubmit')
     if (!this.state.selectedVersionId && this.props.addEntity) {
-      toast.error('Please select version')
+      this.setState({ versionRequired: true })
       return
     }
     this.props.onHide()
@@ -75,7 +73,7 @@ class GroupForm extends Form {
       return (
         Object.keys(this.state.versions).map(
           (id, index) => (
-            <Dropdown.Item key={index} onClick={() => this.setState({ selectedVersionId: id })}>
+            <Dropdown.Item key={index} onClick={() => this.setState({ selectedVersionId: id, versionRequired: false })}>
               {this.state.versions[id]?.number}
             </Dropdown.Item>
           ))
@@ -113,6 +111,7 @@ class GroupForm extends Form {
                       {this.renderVersionList()}
                     </Dropdown.Menu>
                   </Dropdown>
+                  {this.state.versionRequired && <div className='dropdown-validation'>Please select version</div>}
                 </div>}
               <div className='text-left'>
 

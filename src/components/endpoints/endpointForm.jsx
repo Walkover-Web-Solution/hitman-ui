@@ -8,7 +8,6 @@ import {
   addEndpoint
 } from './redux/endpointsActions'
 import extractCollectionInfoService from '../publishDocs/extractCollectionInfoService'
-import { toast } from 'react-toastify'
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
@@ -36,11 +35,11 @@ class EndpointForm extends Form {
 
   async doSubmit () {
     if (!this.state.selectedVersionId) {
-      toast.error('Please select version')
+      this.setState({ versionRequired: true })
       return
     }
     if (!this.state.selectedGroupId) {
-      toast.error('Please select group')
+      this.setState({ groupRequired: true })
       return
     }
     this.props.onHide()
@@ -65,7 +64,7 @@ class EndpointForm extends Form {
         Object.keys(this.state.groups).map(
           (id, index) => (
             this.state.groups[id].versionId?.toString() === this.state.selectedVersionId?.toString() &&
-              <Dropdown.Item key={index} onClick={() => this.setState({ selectedGroupId: id })}>
+              <Dropdown.Item key={index} onClick={() => this.setState({ selectedGroupId: id, groupRequired: false })}>
                 {this.state.groups[id]?.name}
               </Dropdown.Item>
           ))
@@ -78,7 +77,7 @@ class EndpointForm extends Form {
       return (
         Object.keys(this.state.versions).map(
           (id, index) => (
-            <Dropdown.Item key={index} onClick={() => this.setState({ selectedVersionId: id })}>
+            <Dropdown.Item key={index} onClick={() => this.setState({ selectedVersionId: id, versionRequired: false })}>
               {this.state.versions[id]?.number}
             </Dropdown.Item>
           ))
@@ -115,6 +114,7 @@ class EndpointForm extends Form {
                     {this.renderVersionList()}
                   </Dropdown.Menu>
                 </Dropdown>
+                {this.state.versionRequired && <div className='dropdown-validation'>Please select version</div>}
                 {this.state.selectedVersionId &&
                   <div style={{ marginTop: '10px' }}>
                     Select Group
@@ -126,6 +126,7 @@ class EndpointForm extends Form {
                         {this.renderGroupList()}
                       </Dropdown.Menu>
                     </Dropdown>
+                    {this.state.groupRequired && <div className='dropdown-validation'>Please select group</div>}
                   </div>}
               </div>
               <div className='text-left mt-4 mb-2'>

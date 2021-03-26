@@ -8,7 +8,6 @@ import Form from '../common/form'
 import { addGroupPage, addPage } from '../pages/redux/pagesActions'
 import { onEnter } from '../common/utility'
 import extractCollectionInfoService from '../publishDocs/extractCollectionInfoService'
-import { toast } from 'react-toastify'
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
@@ -42,13 +41,13 @@ class PageForm extends Form {
 
   async doSubmit (props) {
     if (!this.state.selectedVersionId && this.props.addEntity) {
-      toast.error('Please select version')
+      this.setState({ versionRequired: true })
       return
     }
-    const groupId = this.props.addEntity ? this.state.selectedGroupId : this.props.selectedGroup.id
     const version = this.props.addEntity ? this.state.selectedVersionId : this.props.selectedVersion
     this.props.onHide()
     if (this.props.title === 'Add new Group Page' || (this.props.addEntity && this.state.selectedGroupId)) {
+      const groupId = this.props.addEntity ? this.state.selectedGroupId : this.props.selectedGroup.id
       const data = { ...this.state.data }
       const newPage = { ...data, requestId: shortid.generate() }
       this.props.add_group_page(
@@ -84,7 +83,7 @@ class PageForm extends Form {
       return (
         Object.keys(this.state.versions).map(
           (id, index) => (
-            <Dropdown.Item key={index} onClick={() => this.setState({ selectedVersionId: id })}>
+            <Dropdown.Item key={index} onClick={() => this.setState({ selectedVersionId: id, versionRequired: false })}>
               {this.state.versions[id]?.number}
             </Dropdown.Item>
           ))
@@ -123,6 +122,7 @@ class PageForm extends Form {
                         {this.renderVersionList()}
                       </Dropdown.Menu>
                     </Dropdown>
+                    {this.state.versionRequired && <div className='dropdown-validation'>Please select version</div>}
                     {this.state.selectedVersionId &&
                       <div style={{ marginTop: '10px' }}>
                         Select Group
