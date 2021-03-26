@@ -4,6 +4,7 @@ import groupsActionTypes from '../../groups/redux/groupsActionTypes'
 import versionActionTypes from '../../collectionVersions/redux/collectionVersionsActionTypes'
 import collectionActionTypes from '../../collections/redux/collectionsActionTypes'
 import publicEndpointsActionTypes from '../../publicEndpoint/redux/publicEndpointsActionTypes'
+import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishActionTypes'
 
 const initialState = {}
 
@@ -135,6 +136,14 @@ function endpointsReducer (state = initialState, action) {
     case endpointsActionTypes.ON_ENDPOINTS_ORDER_UPDATED_ERROR:
       toast.error(action.error)
       endpoints = { ...action.endpoints }
+      return endpoints
+
+    case bulkPublishActionTypes.ON_BULK_PUBLISH_UPDATION:
+      endpoints = { ...action.data.updatedEndpoints }
+      return endpoints
+
+    case bulkPublishActionTypes.ON_BULK_PUBLISH_UPDATION_ERROR:
+      endpoints = { ...action.originalData.originalEndpoints }
       return endpoints
 
     default:

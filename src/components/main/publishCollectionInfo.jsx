@@ -5,6 +5,7 @@ import { isAdmin } from '../auth/authService'
 import './publicCollectionInfo.scss'
 import { ReactComponent as SettingIcon } from '../../assets/icons/SettingIcon.svg'
 import { ReactComponent as ExternalLinks } from '../../assets/icons/externalLinks.svg'
+import PublishSidebar from '../publishSidebar/publishSidebar'
 import extractCollectionInfoService from '../publishDocs/extractCollectionInfoService'
 
 const mapStateToProps = (state) => {
@@ -19,11 +20,15 @@ const mapStateToProps = (state) => {
 const defaultDomain = process.env.REACT_APP_UI_URL
 
 class PublishCollectionInfo extends Component {
-  state = {
-    totalPageCount: 0,
-    totalEndpointCount: 0,
-    livePageCount: 0,
-    liveEndpointCount: 0
+  constructor (props) {
+    super(props)
+    this.state = {
+      openPublishSidebar: false,
+      totalPageCount: 0,
+      totalEndpointCount: 0,
+      livePageCount: 0,
+      liveEndpointCount: 0
+    }
   }
 
   componentDidMount () {
@@ -106,7 +111,13 @@ class PublishCollectionInfo extends Component {
 
   renderPublishCollection () {
     return (
-      isAdmin() && <button className='btn btn-outline orange w-100 publishCollection' onClick={() => { this.openPublishSettings() }}>Publish API Documentation</button>
+      (this.state.totalEndpointCount !== 0 || this.state.totalPageCount !== 0) &&
+        <button
+          className='btn btn-outline orange w-100 publishCollection'
+          onClick={() => { this.redirectUser() }}
+        >
+          Publish API Documentation
+        </button>
     )
   }
 
@@ -123,6 +134,10 @@ class PublishCollectionInfo extends Component {
     toast.error(message)
   }
 
+  redirectUser () {
+    this.setState({ openPublishSidebar: true })
+  }
+
   openPublishSettings () {
     const collectionId = this.props.collectionId
     if (collectionId) {
@@ -133,11 +148,28 @@ class PublishCollectionInfo extends Component {
     }
   }
 
+  closePublishSidebar () {
+    this.setState({ openPublishSidebar: false })
+  }
+
+  openPublishSidebar () {
+    return (
+      <>
+        {this.state.openPublishSidebar &&
+          <PublishSidebar
+            {...this.props}
+            closePublishSidebar={this.closePublishSidebar.bind(this)}
+          />}
+      </>
+    )
+  }
+
   render () {
     const isPublic = this.props.collections[this.props.collectionId]?.isPublic || false
     return (
       <div className='my-3'>
         {isPublic ? this.renderPublicCollectionInfo() : this.renderPublishCollection()}
+        {this.openPublishSidebar()}
       </div>
     )
   }
