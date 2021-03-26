@@ -21,6 +21,10 @@ import { ReactComponent as SearchIcon } from '../../assets/icons/searchIcon.svg'
 import collectionVersionsService from '../collectionVersions/collectionVersionsService'
 import './main.scss'
 import './sidebar.scss'
+import AddEntitySelectionModal from './addEntityModal'
+import GroupForm from '../groups/groupForm'
+import PageForm from '../pages/pageForm'
+import EndpointForm from '../endpoints/endpointForm'
 
 const mapStateToProps = (state) => {
   return {
@@ -534,12 +538,12 @@ class SideBar extends Component {
           ? (
               isDashboardRoute(this.props, true) && (
                 <div className='mx-3'>
-                  <div className='d-flex collection-name my-2' onClick={() => { this.openCollection(null) }}>
-                    <div className='d-flex cursor-pointer align-items-center'>
+                  <div className='d-flex collection-name my-2'>
+                    <div className='d-flex cursor-pointer align-items-center' onClick={() => { this.openCollection(null) }}>
                       <div className='ml-1 mr-2'><ArrowIcon /></div>
                       <div className='hm-sidebar-outer-block heading-collection'>{selectedCollectionName}</div>
                     </div>
-                    <button className='btn btn-primary'>ADD </button>
+                    <button className='btn btn-primary' onClick={() => this.openAddEntitySelectionModal()}> ADD </button>
                   </div>
                   <div><PublishColelctionInfo {...this.props} collectionId={this.collectionId} /></div>
                   <div className='secondary-sidebar sidebar-content-scroll'>
@@ -629,9 +633,88 @@ class SideBar extends Component {
     this.setState({ showVersionForm: false })
   }
 
+  openAddEntitySelectionModal () {
+    this.setState({ openAddEntitySelectionModal: true })
+  }
+
+  closeAddEntitySelectionModal () {
+    this.setState({ openAddEntitySelectionModal: false })
+  }
+
+  showAddEntitySelectionModal () {
+    return (
+      this.state.openAddEntitySelectionModal &&
+        <AddEntitySelectionModal
+          {...this.props}
+          title='ADD'
+          show
+          onHide={() => this.closeAddEntitySelectionModal()}
+          openAddEntityModal={this.openAddEntityModal.bind(this)}
+          collectionId={this.collectionId}
+        />
+    )
+  }
+
+  openAddEntityModal (entity) {
+    this.setState({ openAddEntitySelectionModal: false, entity })
+  }
+
+  closeAddEntityModal (entity) {
+    this.setState({ entity: false })
+  }
+
+  showAddEntityModal () {
+    if (this.state.entity === 'version') {
+      return collectionVersionsService.showVersionForm(
+        this.props,
+        this.closeAddEntityModal.bind(this),
+        this.collectionId,
+        'Add new Collection Version'
+      )
+    }
+    if (this.state.entity === 'group') {
+      return (
+        <GroupForm
+          {...this.props}
+          show
+          onHide={() => this.closeAddEntityModal()}
+          title='Add new Group'
+          addEntity
+          collectionId={this.collectionId}
+        />
+      )
+    }
+    if (this.state.entity === 'endpoint') {
+      return (
+        <EndpointForm
+          {...this.props}
+          show
+          onHide={() => this.closeAddEntityModal()}
+          title='Add new Endpoint'
+          addEntity
+          collectionId={this.collectionId}
+        />
+      )
+    }
+    if (this.state.entity === 'page') {
+      return (
+        <PageForm
+          {...this.props}
+          show
+          onHide={() => this.closeAddEntityModal()}
+          title='Add New Page'
+          selectedCollection={this.collectionId}
+          addEntity
+        />
+      )
+    }
+  }
+
   render () {
     return (
       <nav className={this.getSidebarInteractionClass()}>
+        {this.showAddEntitySelectionModal()}
+        {this.showAddEntityModal()}
         {this.state.showLoginSignupModal && (
           <LoginSignupModal
             show

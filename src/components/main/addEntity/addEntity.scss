@@ -32,3 +32,17 @@
     font-size: 12px;
     margin-bottom: 5px;
 }
+
+.body {
+        display: inline-flex;
+        text-align: center;
+    .col {  
+        display: inline-table;
+    }
+    .entity-name {  
+        text-transform: capitalize;
+        padding: 50px 80px;
+        background: #F3F3F3;
+        margin:30px;
+    }
+}
