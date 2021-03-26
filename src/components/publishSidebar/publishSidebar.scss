@@ -23,6 +23,11 @@
       padding: 7px 15px;
       border-radius: 3px;
 
+      .rotate-toggle{
+        transform: rotate(180deg);
+        transition: 200ms;
+      }
+
       &:focus{
         outline: none;
       }

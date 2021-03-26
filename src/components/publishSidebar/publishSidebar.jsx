@@ -37,7 +37,8 @@ export class PublishSidebar extends Component {
       selectedEndpoints: [],
       groupData: {},
       versionData: {},
-      checkedData: {}
+      checkedData: {},
+      versionsToggle: {}
     }
   }
 
@@ -375,6 +376,12 @@ export class PublishSidebar extends Component {
     )
   }
 
+  toggleVersion (versionId) {
+    const versionsToggle = {}
+    versionsToggle[versionId] = !this.state.versionsToggle[versionId]
+    this.setState({ versionsToggle })
+  }
+
   renderVersionList () {
     return (
       <div>
@@ -391,10 +398,10 @@ export class PublishSidebar extends Component {
                 <div className=' d-flex align-items-start'>
                   <span className='mr-2 sidebar-version-checkbox'>{this.renderCheckBox('version', version?.id)}</span>
                   <Accordion className='version-accordian'>
-                    <Accordion.Toggle eventKey={version?.id} className='version-accordian-toggle'>
+                    <Accordion.Toggle eventKey={version?.id} className='version-accordian-toggle' onClick={() => this.toggleVersion(version?.id)}>
                       <div className='d-flex align-items-center justify-content-between'>
                         <div className=''>{version?.number}</div>
-                        <div className='down-arrow'> <DownChevron /> </div>
+                        <div className={['down-arrow', this.state.versionsToggle[version.id] ? 'rotate-toggle' : ' '].join(' ')}> <DownChevron /> </div>
                       </div>
                     </Accordion.Toggle>
                     <Accordion.Collapse eventKey={version?.id} className='px-3 publish-sidebar-accordian-collapse'>
