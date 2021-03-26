@@ -24,7 +24,7 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 const stateIcon = {
-  Pending: 'pending',
+  Pending: 'Pending',
   Approved: <GlobeIcon />
 }
 
@@ -279,7 +279,7 @@ export class PublishSidebar extends Component {
             <span className='mr-2 '>{this.renderCheckBox('versionPage', page?.id)}</span>
             <div className='sidebar-entity-name d-flex justify-content-between w-100'>
               <div className='text-break'>{page?.name}</div>
-              <div className='mr-3'>{stateIcon[page.state]}</div>
+              <div className='mr-3 text-info'>{stateIcon[page.state]}</div>
             </div>
           </div>
         ))}
@@ -298,7 +298,7 @@ export class PublishSidebar extends Component {
             <span className='mr-2'>{this.renderCheckBox('groupPage', page?.id)}</span>
             <div className='sidebar-entity-name d-flex justify-content-between w-100'>
               <div className='text-break'>{page?.name}</div>
-              <div className='mr-3'>{stateIcon[page.state]}</div>
+              <div className='mr-3 text-info text-capitalize'>{stateIcon[page.state]}</div>
             </div>
           </div>
         ))}
@@ -322,7 +322,7 @@ export class PublishSidebar extends Component {
               </div>
               <div className='ml-2 sidebar-entity-name d-flex justify-content-between w-100'>
                 <div className='text-break'>{endpoint?.name}</div>
-                <div className='mr-3'>{stateIcon[endpoint.state]}</div>
+                <div className='mr-3 text-info text-capitalize'>{stateIcon[endpoint.state]}</div>
               </div>
             </div>
           </div>
