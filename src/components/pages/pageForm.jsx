@@ -109,7 +109,6 @@ class PageForm extends Form {
           </Modal.Header>
           <Modal.Body>
             <form onSubmit={this.handleSubmit}>
-              {this.renderInput('name', 'Page name', 'page name')}
               {
                 this.props.addEntity &&
                   <div className='dropdown-label'>
@@ -137,6 +136,7 @@ class PageForm extends Form {
                       </div>}
                   </div>
               }
+              {this.renderInput('name', 'Page name', 'page name')}
               <div className='text-left mt-2 mb-1'>
                 {this.renderButton('Submit')}
                 <button

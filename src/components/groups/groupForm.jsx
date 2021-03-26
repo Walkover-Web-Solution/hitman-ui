@@ -99,7 +99,6 @@ class GroupForm extends Form {
           </Modal.Header>
           <Modal.Body>
             <form onSubmit={this.handleSubmit}>
-              {this.renderInput('name', 'Group Name', 'group name')}
               {this.props.addEntity &&
                 <div className='dropdown-label'>
                   Select Version
@@ -113,6 +112,8 @@ class GroupForm extends Form {
                   </Dropdown>
                   {this.state.versionRequired && <div className='dropdown-validation'>Please select version</div>}
                 </div>}
+              {this.renderInput('name', 'Group Name', 'group name')}
+
               <div className='text-left'>
 
                 {this.renderButton('Submit')}
