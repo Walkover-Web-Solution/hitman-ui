@@ -1,0 +1,33 @@
+
+.endpoint-name-edit {
+    font-weight:bold;
+    .fa.fa-pencil-square-o{
+        visibility: hidden;
+        margin-left: 7px;
+        cursor: pointer;
+    }
+
+    &:hover {
+        .fa.fa-pencil-square-o{
+            visibility: visible;
+            margin-left: 7px;
+        }
+    }
+}
+
+.bread-crumb-wrapper{
+    font-size:14px!important;
+    color: black !important;
+    height:27px;
+}
+
+.endpoint-name-input {
+    font-size: 14px;
+    font-weight: 600;
+    border: 1px solid #E98A36;
+    padding: 2px 8px;
+    border-radius: 4px;
+    &:focus {
+      outline: none;
+    }
+  }

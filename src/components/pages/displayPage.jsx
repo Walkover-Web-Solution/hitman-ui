@@ -1,10 +1,18 @@
 import React, { Component } from 'react'
 import store from '../../store/store'
+import { connect } from 'react-redux'
 import { isDashboardRoute } from '../common/utility'
 import ReactHtmlParser from 'react-html-parser'
-import { withRouter } from 'react-router-dom'
-import { connect } from 'react-redux'
 import './page.scss'
+import { updatePage } from './redux/pagesActions'
+import EndpointBreadCrumb from '../endpoints/endpointBreadCrumb'
+
+const mapDispatchToProps = (dispatch, ownProps) => {
+  return {
+    update_page: (editedPage, pageId) =>
+      dispatch(updatePage(ownProps.history, editedPage, pageId))
+  }
+}
 
 const mapStateToProps = (state) => {
   return {
@@ -15,7 +23,8 @@ class DisplayPage extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      data: { id: null, versionId: null, groupId: null, name: '', contents: '' }
+      data: { id: null, versionId: null, groupId: null, name: '', contents: '' },
+      page: null
     }
   }
 
@@ -26,7 +35,7 @@ class DisplayPage extends Component {
     if (page) {
       const { id, versionId, groupId, name, contents } = page
       data = { id, versionId, groupId, name, contents }
-      this.setState({ data })
+      this.setState({ data, page })
     }
   }
 
@@ -89,8 +98,20 @@ class DisplayPage extends Component {
   }
 
   renderPageName () {
+    const pageId = this.props?.match?.params.pageId
+    if (!this.state.page && pageId) {
+      this.fetchPage(pageId)
+    }
     return (
-      !isDashboardRoute(this.props, true) ? <h3 className='page-heading-pub'>{this.state.data?.name || ''}</h3> : <h3 className=''>{this.state.data?.name || ''}</h3>
+      !isDashboardRoute(this.props, true)
+        ? <h3 className='page-heading-pub'>{this.state.data?.name || ''}</h3>
+        : <EndpointBreadCrumb
+            {...this.props}
+            page={this.state.page}
+            pageId={this.state.data.id}
+            isEndpoint={false}
+          />
+
     )
   }
 
@@ -123,6 +144,4 @@ class DisplayPage extends Component {
   }
 }
 
-export default withRouter(
-  connect(mapStateToProps)(DisplayPage)
-)
+export default connect(mapStateToProps, mapDispatchToProps)(DisplayPage)
