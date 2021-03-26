@@ -93,24 +93,6 @@ class PublishCollectionInfo extends Component {
     this.setState({ totalPageCount, totalEndpointCount, livePageCount, liveEndpointCount })
   }
 
-  checkPendingItems (selectedCollectionId) {
-    let status = true
-    const collectionId = selectedCollectionId
-    const versions = extractCollectionInfoService.extractVersionsFromCollectionId(collectionId, this.props)
-    const groups = extractCollectionInfoService.extractGroupsFromVersions(versions, this.props)
-    const pages = extractCollectionInfoService.extractPagesFromVersions(versions, this.props)
-    const endpoints = extractCollectionInfoService.extractEndpointsFromGroups(groups, this.props)
-
-    Object.values(pages).forEach(page => {
-      if (page.state === 'Pending' || page.state === 'Approved') status = false
-    })
-    Object.values(endpoints).forEach(endpoint => {
-      if (endpoint.state === 'Pending' || endpoint.state === 'Approved') status = false
-    })
-
-    return status
-  }
-
   renderPublicCollectionInfo () {
     const { totalPageCount, totalEndpointCount, livePageCount, liveEndpointCount } = this.state
     return (
@@ -129,7 +111,7 @@ class PublishCollectionInfo extends Component {
 
   renderPublishCollection () {
     return (
-      (this.state.totalEndpointCount !== 0 || this.state.totalPageCount !== 0) /* && this.checkUserRole() */ &&
+      (this.state.totalEndpointCount !== 0 || this.state.totalPageCount !== 0) &&
         <button
           className='btn btn-outline orange w-100 publishCollection'
           onClick={() => { this.redirectUser() }}
@@ -153,16 +135,7 @@ class PublishCollectionInfo extends Component {
   }
 
   redirectUser () {
-    // if(isAdmin() && !this.checkPendingItems(this.props.collectionId)){
-    //   this.openPublishSettings()
-    // }else{
     this.setState({ openPublishSidebar: true })
-    // }
-    //  if(!this.checkPendingItems(this.props.collectionId)){
-    //   this.setState({openPublishSidebar: false})
-    // }else{
-
-    // }
   }
 
   openPublishSettings () {
@@ -179,16 +152,6 @@ class PublishCollectionInfo extends Component {
     this.setState({ openPublishSidebar: false })
   }
 
-  checkUserRole () {
-    let status = false
-    if (isAdmin()) {
-      status = true
-    } else {
-      status = this.checkPendingItems(this.props.collectionId)
-    }
-    return status
-  }
-
   openPublishSidebar () {
     return (
       <>
@@ -196,7 +159,6 @@ class PublishCollectionInfo extends Component {
           <PublishSidebar
             {...this.props}
             closePublishSidebar={this.closePublishSidebar.bind(this)}
-            checkPendingItems={this.checkPendingItems.bind(this)}
           />}
       </>
     )

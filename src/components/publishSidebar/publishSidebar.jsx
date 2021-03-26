@@ -4,16 +4,6 @@ import { Dropdown, Accordion } from 'react-bootstrap'
 import { bulkPublish } from './redux/bulkPublishAction'
 
 import './publishSidebar.scss'
-// import
-//  {
-//   extractVersionsFromCollectionId,
-//   extractGroupsFromVersions,
-//   extractGroupsFromVersionId,
-//   extractPagesFromVersions,
-//   extractEndpointsFromGroups,
-// extractCollectionInfoService
-// }
-// from '../publishDocs/extractCollectionInfoService'
 import { isAdmin } from '../auth/authService'
 import { ReactComponent as DownChevron } from '../../assets/icons/downChevron.svg'
 import { ReactComponent as GlobeIcon } from '../../assets/icons/globe-icon.svg'
@@ -58,7 +48,6 @@ export class PublishSidebar extends Component {
     }
     this.makeVersionData()
     this.makeGroupData()
-    // this.handlePendingRequestData()
   }
 
   componentDidUpdate (prevProps, prevState) {
@@ -68,59 +57,9 @@ export class PublishSidebar extends Component {
     }
 
     if (this.state.selectedCollectionId !== prevState.selectedCollectionId) {
-      this.setState({ checkedData: {} }, () => {
-        // this.handlePendingRequestData()
-      })
+      this.setState({ checkedData: {} })
     }
   }
-
-  // handlePendingRequestData () {
-  //   const versions = extractCollectionInfoService.extractVersionsFromCollectionId(this.state.selectedCollectionId, this.props)
-  //   const groups = extractCollectionInfoService.extractGroupsFromVersions(versions, this.props)
-  //   const pages = extractCollectionInfoService.extractPagesFromVersions(versions, this.props)
-  //   const endpoints = extractCollectionInfoService.extractEndpointsFromGroups(groups, this.props)
-  //   const checkedData = { ...this.state.checkedData }
-
-  //   Object.values(pages).forEach((page) => {
-  //     const e = {
-  //       target: {
-  //         name: '',
-  //         checked: true
-  //       }
-  //     }
-  //     if (page.versionId && !page.groupId && page.state === 'Pending') {
-  //       e.target.name = `versionPage.${page.id}`
-  //       checkedData[`check.versionPage.${page.id}`] = true
-  //     }
-  //     if (page.groupId && page.state === 'Pending') {
-  //       e.target.name = `groupPage.${page.id}`
-  //       checkedData[`check.groupPage.${page.id}`] = true
-  //     }
-  //   })
-
-  //   Object.values(endpoints).forEach((endpoint) => {
-  //     const e = {
-  //       target: {
-  //         name: '',
-  //         checked: true
-  //       }
-  //     }
-
-  //     if (endpoint.state === 'Pending') {
-  //       e.target.name = `endpoint.${endpoint.id}`
-  //       checkedData[`check.endpoint.${endpoint.id}`] = true
-  //     }
-  //   })
-
-  //   this.setState({ checkedData: { ...this.state.checkedData, ...checkedData } }, () => {
-  //     Object.entries(this.state.checkedData).forEach(([key, value]) => {
-  //       if (value) {
-  //         const currentItem = key.split('.')
-  //         this.handleBulkCheck('e', currentItem[1], currentItem[2])
-  //       }
-  //     })
-  //   })
-  // }
 
   sendPublishRequest () {
     const checkedData = this.state.checkedData
@@ -158,12 +97,10 @@ export class PublishSidebar extends Component {
   makeVersionData () {
     const versions = {}
     Object.values(this.props.versions).forEach((version) => {
-      // if(version?.collectionId === this.props.collectionId){
       versions[version.id] = {
         pages: [],
         groups: []
       }
-      // }
     })
 
     Object.values(this.props.pages).forEach((page) => {
@@ -382,7 +319,6 @@ export class PublishSidebar extends Component {
               <div className={`api-label ${endpoint?.requestType} request-type-bgcolor`}>
                 {endpoint?.requestType}
               </div>
-              {/* <span className='ml-2 sidebar-entity-name'>{endpoint?.name} - {endpoint.state ==="Pending"?"pending":""}</span> */}
               <div className='ml-2 sidebar-entity-name d-flex justify-content-between w-100'>
                 <div className='text-break'>{endpoint?.name}</div>
                 <div className='mr-3'>{stateIcon[endpoint.state]}</div>
@@ -431,7 +367,7 @@ export class PublishSidebar extends Component {
               (collection) =>
                 !collection.isPublic
             ).map((collection, index) => (
-              /* this.props.checkPendingItems(collection?.id) && */ <Dropdown.Item key={collection?.id} onClick={() => this.setState({ selectedCollectionId: collection?.id })}>{collection?.name}</Dropdown.Item>
+              <Dropdown.Item key={collection?.id} onClick={() => this.setState({ selectedCollectionId: collection?.id })}>{collection?.name}</Dropdown.Item>
             ))}
           </Dropdown.Menu>
         </Dropdown>
