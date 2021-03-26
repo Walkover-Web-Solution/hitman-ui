@@ -147,6 +147,7 @@ class DisplayEndpoint extends Component {
   }
 
   async componentDidMount () {
+    this.extractEndpointName()
     this.endpointId = this.props.endpointId
       ? this.props.endpointId
       : isDashboardRoute(this.props)
@@ -206,6 +207,7 @@ class DisplayEndpoint extends Component {
   componentDidUpdate (prevProps, prevState) {
     if (this.props.location.pathname !== prevProps.location.pathname) {
       this.scrollDiv.current.scrollIntoView({ block: 'center' })
+      this.extractEndpointName()
     }
     if (this.props.endpointId !== prevProps.endpointId) {
       this.scrollDiv.current.scrollIntoView({ block: 'center' })
@@ -222,6 +224,14 @@ class DisplayEndpoint extends Component {
 
     if (this.state.endpoint.id !== prevState.endpoint.id) {
       this.setState({ flagResponse: false })
+    }
+  }
+
+  extractEndpointName () {
+    if (!isDashboardRoute(this.props, true) && this.props.endpoints) {
+      const endpointName = this.props.endpoints[this.props.match.params.endpointId]?.name
+      if (endpointName) this.props.fetch_entity_name(endpointName)
+      else this.props.fetch_entity_name()
     }
   }
 
@@ -1905,7 +1915,6 @@ class DisplayEndpoint extends Component {
                             endpointId={this.state.endpoint.id}
                             customHost={this.state.endpoint.BASE_URL || ''}
                             environmentHost={this.props.environment?.variables?.BASE_URL?.currentValue || this.props.environment?.variables?.BASE_URL?.initialValue || ''}
-                            groupHost={this.props.groups[this.state.groupId]?.host || ''}
                             versionHost={this.props.versions[this.props.groups[this.state.groupId]?.versionId]?.host || ''}
                             updatedUri={this.state.data.updatedUri}
                             set_host_uri={this.setHostUri.bind(this)}
@@ -1995,7 +2004,6 @@ class DisplayEndpoint extends Component {
                             groupId={this.state.groupId}
                             versionHost={this.props.versions[this.props.groups[this.state.groupId]?.versionId]?.host || ''}
                             environmentHost={this.props.environment?.variables?.BASE_URL?.currentValue || this.props.environment?.variables?.BASE_URL?.initialValue || ''}
-                            groupHost={this.props.groups[this.state.groupId]?.host || ''}
                             updatedUri={this.state.data.updatedUri}
                             set_base_url={this.setBaseUrl.bind(this)}
                             custom_host={this.state.endpoint.BASE_URL || ''}

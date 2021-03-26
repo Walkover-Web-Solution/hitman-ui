@@ -127,9 +127,9 @@ export const updateGroup = (editedGroup) => {
     dispatch(updateGroupRequest(editedGroup))
     const id = group.id
     delete group.id
-    const { name, host, endpointsOrder, position } = editedGroup
+    const { name, endpointsOrder, position } = editedGroup
     groupsApiService
-      .updateGroup(id, { name, host, endpointsOrder, position })
+      .updateGroup(id, { name, endpointsOrder, position })
       .then((response) => {
         dispatch(onGroupUpdated(response.data))
       })
