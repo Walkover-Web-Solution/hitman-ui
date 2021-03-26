@@ -15,6 +15,8 @@ import './publishSidebar.scss'
 // }
 // from '../publishDocs/extractCollectionInfoService'
 import { isAdmin } from '../auth/authService'
+import { ReactComponent as DownChevron } from '../../assets/icons/downChevron.svg'
+import { ReactComponent as GlobeIcon } from '../../assets/icons/globe-icon.svg'
 
 const mapStateToProps = (state) => {
   return {
@@ -29,6 +31,11 @@ const mapDispatchToProps = (dispatch) => {
   return {
     bulk_publish: (collectionId, data) => dispatch(bulkPublish(collectionId, data))
   }
+}
+
+const stateIcon = {
+  Pending: 'pending',
+  Approved: <GlobeIcon />
 }
 
 export class PublishSidebar extends Component {
@@ -225,7 +232,6 @@ export class PublishSidebar extends Component {
 
   handleBulkCheck (e, itemtype, itemId) {
     const newData = { ...this.state.checkedData }
-    console.log('hello', itemtype, itemId)
     if (itemtype === 'endpoint') {
       const { pages, endpoints } = this.state.groupData[this.props.endpoints[itemId]?.groupId]
       if (this.findCheckedItems(endpoints, 'endpoint') && this.findCheckedItems(pages, 'groupPage')) {
@@ -333,7 +339,10 @@ export class PublishSidebar extends Component {
         ).map((page, index) => (
           <div className='d-flex' key={page?.id}>
             <span className='mr-2 '>{this.renderCheckBox('versionPage', page?.id)}</span>
-            <div className='sidebar-entity-name'> {page?.name} </div>
+            <div className='sidebar-entity-name d-flex justify-content-between w-100'>
+              <div className='text-break'>{page?.name}</div>
+              <div className='mr-3'>{stateIcon[page.state]}</div>
+            </div>
           </div>
         ))}
       </div>
@@ -349,7 +358,10 @@ export class PublishSidebar extends Component {
         ).map((page, index) => (
           <div className='d-flex' key={page?.id}>
             <span className='mr-2'>{this.renderCheckBox('groupPage', page?.id)}</span>
-            <div className='sidebar-entity-name'> {page?.name} </div>
+            <div className='sidebar-entity-name d-flex justify-content-between w-100'>
+              <div className='text-break'>{page?.name}</div>
+              <div className='mr-3'>{stateIcon[page.state]}</div>
+            </div>
           </div>
         ))}
       </div>
@@ -370,7 +382,11 @@ export class PublishSidebar extends Component {
               <div className={`api-label ${endpoint?.requestType} request-type-bgcolor`}>
                 {endpoint?.requestType}
               </div>
-              <span className='ml-2 sidebar-entity-name'>{endpoint?.name} </span>
+              {/* <span className='ml-2 sidebar-entity-name'>{endpoint?.name} - {endpoint.state ==="Pending"?"pending":""}</span> */}
+              <div className='ml-2 sidebar-entity-name d-flex justify-content-between w-100'>
+                <div className='text-break'>{endpoint?.name}</div>
+                <div className='mr-3'>{stateIcon[endpoint.state]}</div>
+              </div>
             </div>
           </div>
         ))}
@@ -391,7 +407,7 @@ export class PublishSidebar extends Component {
               <span className='mr-2 '>{this.renderCheckBox('group', group?.id)}</span>
               <span className='sidebar-entity-name'>{group?.name}</span>
             </div>
-            <div className='px-3 '>
+            <div className='pl-3 '>
               <div> {this.renderGroupPages(group)} </div>
               <div> {this.renderEndpoints(group)} </div>
             </div>
@@ -415,7 +431,7 @@ export class PublishSidebar extends Component {
               (collection) =>
                 !collection.isPublic
             ).map((collection, index) => (
-              this.props.checkPendingItems(collection?.id) && <Dropdown.Item key={collection?.id} onClick={() => this.setState({ selectedCollectionId: collection?.id })}>{collection?.name}</Dropdown.Item>
+              /* this.props.checkPendingItems(collection?.id) && */ <Dropdown.Item key={collection?.id} onClick={() => this.setState({ selectedCollectionId: collection?.id })}>{collection?.name}</Dropdown.Item>
             ))}
           </Dropdown.Menu>
         </Dropdown>
@@ -440,8 +456,9 @@ export class PublishSidebar extends Component {
                   <span className='mr-2 sidebar-version-checkbox'>{this.renderCheckBox('version', version?.id)}</span>
                   <Accordion className='version-accordian'>
                     <Accordion.Toggle eventKey={version?.id} className='version-accordian-toggle'>
-                      <div className='d-flex align-items-center'>
-                        <span className=''>{version?.number}</span>
+                      <div className='d-flex align-items-center justify-content-between'>
+                        <div className=''>{version?.number}</div>
+                        <div className='down-arrow'> <DownChevron /> </div>
                       </div>
                     </Accordion.Toggle>
                     <Accordion.Collapse eventKey={version?.id} className='px-3 publish-sidebar-accordian-collapse'>
@@ -477,7 +494,7 @@ export class PublishSidebar extends Component {
       top: '0px',
       right: '0px',
       height: '100vh',
-      width: '35vw',
+      width: '26vw',
       boxShadow: '-25px 25px 43px rgba(0, 0, 0, 0.07)'
     }
     const darkBackgroundStyle = {

@@ -129,10 +129,10 @@ class PublishCollectionInfo extends Component {
 
   renderPublishCollection () {
     return (
-      (this.state.totalEndpointCount !== 0 || this.state.totalPageCount !== 0) && this.checkPendingItems(this.props.collectionId) &&
+      (this.state.totalEndpointCount !== 0 || this.state.totalPageCount !== 0) /* && this.checkUserRole() */ &&
         <button
           className='btn btn-outline orange w-100 publishCollection'
-          onClick={() => { this.setState({ openPublishSidebar: true }) }}
+          onClick={() => { this.redirectUser() }}
         >
           Publish API Documentation
         </button>
@@ -152,6 +152,19 @@ class PublishCollectionInfo extends Component {
     toast.error(message)
   }
 
+  redirectUser () {
+    // if(isAdmin() && !this.checkPendingItems(this.props.collectionId)){
+    //   this.openPublishSettings()
+    // }else{
+    this.setState({ openPublishSidebar: true })
+    // }
+    //  if(!this.checkPendingItems(this.props.collectionId)){
+    //   this.setState({openPublishSidebar: false})
+    // }else{
+
+    // }
+  }
+
   openPublishSettings () {
     const collectionId = this.props.collectionId
     if (collectionId) {
@@ -164,6 +177,16 @@ class PublishCollectionInfo extends Component {
 
   closePublishSidebar () {
     this.setState({ openPublishSidebar: false })
+  }
+
+  checkUserRole () {
+    let status = false
+    if (isAdmin()) {
+      status = true
+    } else {
+      status = this.checkPendingItems(this.props.collectionId)
+    }
+    return status
   }
 
   openPublishSidebar () {
