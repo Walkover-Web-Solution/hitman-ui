@@ -866,7 +866,7 @@ class PublishDocs extends Component {
     if (!this.isCollectionPublished()) {
       return (
         <Button
-          variant='success publish-collection-button ml-4'
+          variant='success publish-collection-button ml-4 mt-4'
           onClick={() => this.publishCollection()}
         >
           Publish Collection

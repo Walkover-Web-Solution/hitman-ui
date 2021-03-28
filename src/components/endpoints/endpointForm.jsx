@@ -16,7 +16,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   }
 }
 class EndpointForm extends Form {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       data: { name: '' },
@@ -27,13 +27,13 @@ class EndpointForm extends Form {
     }
   }
 
-  async componentDidMount () {
+  async componentDidMount() {
     const versions = extractCollectionInfoService.extractVersionsFromCollectionId(this.props.collectionId, this.props)
     const groups = extractCollectionInfoService.extractGroupsFromVersions(versions, this.props)
     this.setState({ versions, groups })
   }
 
-  async doSubmit () {
+  async doSubmit() {
     if (!this.state.selectedVersionId) {
       this.setState({ versionRequired: true })
       return
@@ -58,21 +58,21 @@ class EndpointForm extends Form {
     this.props.add_endpoint(endpoint, this.state.selectedGroupId, null)
   }
 
-  renderGroupList () {
+  renderGroupList() {
     if (this.state.groups) {
       return (
         Object.keys(this.state.groups).map(
           (id, index) => (
             this.state.groups[id].versionId?.toString() === this.state.selectedVersionId?.toString() &&
-              <Dropdown.Item key={index} onClick={() => this.setState({ selectedGroupId: id, groupRequired: false })}>
-                {this.state.groups[id]?.name}
-              </Dropdown.Item>
+            <Dropdown.Item key={index} onClick={() => this.setState({ selectedGroupId: id, groupRequired: false })}>
+              {this.state.groups[id]?.name}
+            </Dropdown.Item>
           ))
       )
     }
   }
 
-  renderVersionList () {
+  renderVersionList() {
     if (this.state.versions) {
       return (
         Object.keys(this.state.versions).map(
@@ -85,7 +85,7 @@ class EndpointForm extends Form {
     }
   }
 
-  render () {
+  render() {
     return (
       <div onKeyPress={(e) => { onEnter(e, this.handleKeyPress.bind(this)) }}>
         <Modal
@@ -103,32 +103,43 @@ class EndpointForm extends Form {
           </Modal.Header>
           <Modal.Body>
             <form onSubmit={this.handleSubmit}>
-              {this.renderInput('name', 'Endpoint Name', 'endpoint name')}
-              <div className='dropdown-label'>
-                Select Version
-                <Dropdown>
-                  <Dropdown.Toggle variant='' id='dropdown-basic'>
-                    {this.state.versions?.[this.state.selectedVersionId]?.number || 'Select'}
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu>
-                    {this.renderVersionList()}
-                  </Dropdown.Menu>
-                </Dropdown>
-                {this.state.versionRequired && <div className='dropdown-validation'>Please select version</div>}
-                {this.state.selectedVersionId &&
-                  <div style={{ marginTop: '10px' }}>
-                    Select Group
+              <div className="row">
+                <div className="col-6">
+                  {this.renderInput('name', 'Endpoint Name', 'endpoint name')}
+                </div>
+                <div className="col-6">
+                  <div className='dropdown-label dropDownversion'>
+                    <label>Select Version</label>
                     <Dropdown>
                       <Dropdown.Toggle variant='' id='dropdown-basic'>
-                        {this.state.groups?.[this.state.selectedGroupId]?.name || 'Select'}
+                        {this.state.versions?.[this.state.selectedVersionId]?.number || 'Select'}
                       </Dropdown.Toggle>
                       <Dropdown.Menu>
-                        {this.renderGroupList()}
+                        {this.renderVersionList()}
                       </Dropdown.Menu>
                     </Dropdown>
-                    {this.state.groupRequired && <div className='dropdown-validation'>Please select group</div>}
-                  </div>}
+                    {this.state.versionRequired && <div className='dropdown-validation'>Please select version</div>}
+                  </div>
+                </div>
+                <div className="col-6">
+                  {this.state.selectedVersionId &&
+                    <div className='dropdown-label dropDownversion'>
+                      <label>Select Group</label>
+                      <Dropdown>
+                        <Dropdown.Toggle variant='' id='dropdown-basic'>
+                          {this.state.groups?.[this.state.selectedGroupId]?.name || 'Select'}
+                        </Dropdown.Toggle>
+                        <Dropdown.Menu>
+                          {this.renderGroupList()}
+                        </Dropdown.Menu>
+                      </Dropdown>
+                      {this.state.groupRequired && <div className='dropdown-validation'>Please select group</div>}
+                    </div>}
+                </div>
               </div>
+
+
+
               <div className='text-left mt-4 mb-2'>
                 {this.renderButton('Submit')}
                 <button

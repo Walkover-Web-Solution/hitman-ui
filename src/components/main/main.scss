@@ -2725,3 +2725,24 @@ span.endpointNameWrapper {
   font-weight: 700;
   font-size: 20px;
 }
+
+.dropDownversion .dropdown-toggle {
+  height: 36px;
+  border: 1px solid #E0E0E0;
+  font-size: 13px;
+  font-weight: 400;
+  color: #000;
+  border-radius: 4px;
+  width: 100%;
+  justify-content: left;
+}
+.dropDownversion label {
+  color: #4F4F4F;
+  font-size: 13px !important;
+  margin: 0 0 5px 0;
+  font-weight: 400 !important;
+}
+.collection-dropdown-menu.dropdown-menu {
+  max-height: 300px;
+  overflow: auto;
+}
