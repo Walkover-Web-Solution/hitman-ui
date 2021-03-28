@@ -19,7 +19,7 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 class CollectionVersionForm extends Form {
-  constructor(props) {
+  constructor (props) {
     super(props)
 
     this.state = {
@@ -35,7 +35,7 @@ class CollectionVersionForm extends Form {
     }
   }
 
-  async componentDidMount() {
+  async componentDidMount () {
     let data = {}
     const collectionId = ''
     let versionId = ''
@@ -51,7 +51,7 @@ class CollectionVersionForm extends Form {
     this.setState({ data, versionId, collectionId })
   }
 
-  async doSubmit() {
+  async doSubmit () {
     this.props.onHide()
     if (this.props.title === 'Edit Collection Version') {
       const { id, collectionId } = this.props.selected_version
@@ -65,7 +65,7 @@ class CollectionVersionForm extends Form {
     }
   }
 
-  render() {
+  render () {
     return (
       <div onKeyPress={(e) => { onEnter(e, this.handleKeyPress.bind(this)) }}>
         <Modal
@@ -83,11 +83,11 @@ class CollectionVersionForm extends Form {
           </Modal.Header>
           <Modal.Body>
             <form onSubmit={this.handleSubmit}>
-              <div className="row">
-                <div className="col-6">
+              <div className='row'>
+                <div className='col-6'>
                   {this.renderInput('number', 'Version Number', 'version number')}
                 </div>
-                <div className="col-6">
+                <div className='col-6'>
                   {this.renderInput('host', 'Host', 'host')}
                 </div>
               </div>
