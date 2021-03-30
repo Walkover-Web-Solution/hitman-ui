@@ -34,9 +34,9 @@ class AddEntitySelectionModal extends Component {
   renderEntity (entity) {
     if (!this.checkAvailability(entity) || entity === 'version') {
       return (
-        <div className='entity-name' onClick={() => this.props.openAddEntityModal(entity)}>
+        <button className='entity-name' onClick={() => this.props.openAddEntityModal(entity)}>
           {entity}
-        </div>
+        </button>
       )
     } else {
       return (
@@ -48,9 +48,9 @@ class AddEntitySelectionModal extends Component {
             </Tooltip>
           }
         >
-          <div className='entity-name'>
+          <button className='entity-name'>
             {entity}
-          </div>
+          </button>
         </OverlayTrigger>
       )
     }
