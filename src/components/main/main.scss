@@ -2436,12 +2436,17 @@ span.endpointNameWrapper {
     display: flex;
     align-items: center;
     font-size: 14px;
+    background-color: inherit;
     &:hover {
       color: #E98A36;
-      background-color: inherit;
     }
     span {
       padding-left: 0.5rem;
+    }
+    .socket-icon {
+      fill: #E98A36;
+      height: 20px;
+      width: 20px;
     }
   }
 }

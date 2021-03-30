@@ -137,7 +137,6 @@ class EndpointForm extends Form {
                     </div>}
                 </div>
               </div>
-
               <div className='text-left mt-4 mb-2'>
                 {this.renderButton('Submit')}
                 <button
