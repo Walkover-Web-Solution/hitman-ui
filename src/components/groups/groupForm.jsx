@@ -100,8 +100,8 @@ class GroupForm extends Form {
           <Modal.Body>
             <form onSubmit={this.handleSubmit}>
               <div className='row'>
-                <div className='col-6'>
-                  {this.props.addEntity &&
+                {this.props.addEntity &&
+                  <div className='col-6'>
                     <div className='dropdown-label dropDownversion'>
                       <label>   Select Version</label>
                       <Dropdown>
@@ -113,8 +113,8 @@ class GroupForm extends Form {
                         </Dropdown.Menu>
                       </Dropdown>
                       {this.state.versionRequired && <div className='dropdown-validation'>Please select version</div>}
-                    </div>}
-                </div>
+                    </div>
+                  </div>}
                 <div className='col-6'>
                   {this.renderInput('name', 'Group Name', 'group name')}
                 </div>
