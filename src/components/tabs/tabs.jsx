@@ -170,6 +170,41 @@ class CustomTabs extends Component {
     tabService.newTab({ ...this.props })
   }
 
+  renderEndpointName (tabId) {
+    const tab = this.props.tabs.tabs[tabId]
+    if (!tab) return
+    if (tab.type === 'page') {
+      if (this.props.pages[tabId]) {
+        const page = this.props.pages[tabId]
+        return (
+          <div className='hover-div'>
+            <div className=''>{this.props.groups[page.groupId]?.name}</div>
+            <div className=''>{page.name}</div>
+          </div>
+        )
+      }
+    } else if (tab.type === 'endpoint') {
+      if (this.props.endpoints[tabId]) {
+        const endpoint = this.props.endpoints[tabId]
+        return (
+          <div className='hover-div'>
+            <div className='group-name'>{this.props.groups[endpoint.groupId].name}</div>
+            <div className='d-flex'>
+              <div className={`api-label ${endpoint.requestType} request-type-bgcolor ml-4 mt-1`}> {endpoint.requestType} </div>
+              <div className='endpoint-name ml-1'>{this.props.endpoints[tabId].name}</div>
+            </div>
+          </div>
+        )
+      } else {
+        return (
+          <div className='hover-div'>
+            <div className='endpoint-name '>Untitled</div>
+          </div>
+        )
+      }
+    }
+  }
+
   render () {
     return (
 
@@ -221,9 +256,15 @@ class CustomTabs extends Component {
                   onDoubleClick={() => {
                     tabService.disablePreviewMode(tabId)
                   }}
+                  onMouseEnter={() => this.setState({ showPreview: true, previewId: tabId })}
+                  onMouseLeave={() => this.setState({ showPreview: false, previewId: null })}
                 >
                   {this.renderTabName(tabId)}
                 </button>
+                {/* {this.state.showPreview && tabId === this.state.previewId && */}
+                <div className='hover-div'>
+                  {this.renderEndpointName(tabId)}
+                </div>
               </Nav.Link>
               <button className='btn' onClick={() => this.removeTab(tabId)}>
                 <i className='uil uil-multiply' />
