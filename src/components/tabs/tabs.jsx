@@ -188,7 +188,7 @@ class CustomTabs extends Component {
         return (
           <div className='hover-div'>
             <div className=''>{this.props.groups[page.groupId]?.name}</div>
-            <div className=''>{page.name}</div>
+            <div className='page-name'>{page.name}</div>
           </div>
         )
       }
@@ -198,8 +198,8 @@ class CustomTabs extends Component {
         return (
           <div className='hover-div'>
             <div className='group-name'>{this.props.groups[endpoint.groupId].name}</div>
-            <div className='d-flex'>
-              <div className={`api-label ${endpoint.requestType} request-type-bgcolor ml-4 mt-1`}> {endpoint.requestType} </div>
+            <div className='d-flex align-items-center'>
+              <div className={`api-label ${endpoint.requestType} request-type-bgcolor ml-4 mt-1 arrow-top`}> {endpoint.requestType} </div>
               <div className='endpoint-name ml-1'>{this.props.endpoints[tabId].name}</div>
             </div>
           </div>
@@ -207,7 +207,7 @@ class CustomTabs extends Component {
       } else {
         return (
           <div className='hover-div'>
-            <div className='endpoint-name '>Untitled</div>
+            <div className='endpoint-name'>Untitled</div>
           </div>
         )
       }
