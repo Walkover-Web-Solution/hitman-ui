@@ -171,6 +171,15 @@ class CustomTabs extends Component {
   }
 
   renderEndpointName (tabId) {
+    // return (
+    //   <div className=''>
+    //     <div className='group-name'>Script Runner</div>
+    //     <div className='d-flex'>
+    //       <div className='api-label POST request-type-bgcolor ml-4 mt-1'> POST </div>
+    //       <div className='endpoint-name ml-2'>Dry Run qwertyui</div>
+    //     </div>
+    //   </div>
+    // )
     const tab = this.props.tabs.tabs[tabId]
     if (!tab) return
     if (tab.type === 'page') {
@@ -232,15 +241,16 @@ class CustomTabs extends Component {
             )}
           </div>
           {this.props.tabs.tabsOrder.map((tabId, index) => (
-            <Nav.Item
-              key={tabId}
-              draggable
-              onDragOver={this.handleOnDragOver}
-              onDragStart={() => this.onDragStart(tabId)}
-              onDrop={(e) => this.onDrop(e, tabId)}
-              className={this.props.tabs?.activeTabId === tabId ? 'active' : ''}
-            >
-              {
+            <div key={tabId}>
+              <Nav.Item
+                key={tabId}
+                draggable
+                onDragOver={this.handleOnDragOver}
+                onDragStart={() => this.onDragStart(tabId)}
+                onDrop={(e) => this.onDrop(e, tabId)}
+                className={this.props.tabs?.activeTabId === tabId ? 'active' : ''}
+              >
+                {
                 this.props.tabs.tabs[tabId].isModified
                   ? (
                     <i className='fas fa-circle modified-dot-icon' />
@@ -249,27 +259,26 @@ class CustomTabs extends Component {
                       ''
                     )
               }
-              <Nav.Link eventKey={tabId}>
-                <button
-                  className='btn'
-                  onClick={() => tabService.selectTab({ ...this.props }, tabId)}
-                  onDoubleClick={() => {
-                    tabService.disablePreviewMode(tabId)
-                  }}
-                  onMouseEnter={() => this.setState({ showPreview: true, previewId: tabId })}
-                  onMouseLeave={() => this.setState({ showPreview: false, previewId: null })}
-                >
-                  {this.renderTabName(tabId)}
+                <Nav.Link eventKey={tabId}>
+                  <button
+                    className='btn'
+                    onClick={() => tabService.selectTab({ ...this.props }, tabId)}
+                    onDoubleClick={() => {
+                      tabService.disablePreviewMode(tabId)
+                    }}
+                    onMouseEnter={() => this.setState({ showPreview: true, previewId: tabId })}
+                    onMouseLeave={() => this.setState({ showPreview: false, previewId: null })}
+                  >
+                    {this.renderTabName(tabId)}
+                  </button>
+                </Nav.Link>
+                <button className='btn' onClick={() => this.removeTab(tabId)}>
+                  <i className='uil uil-multiply' />
                 </button>
-                {/* {this.state.showPreview && tabId === this.state.previewId && */}
-                <div className='hover-div'>
-                  {this.renderEndpointName(tabId)}
-                </div>
-              </Nav.Link>
-              <button className='btn' onClick={() => this.removeTab(tabId)}>
-                <i className='uil uil-multiply' />
-              </button>
-            </Nav.Item>
+              </Nav.Item>
+              {this.state.showPreview && tabId === this.state.previewId &&
+                  (this.renderEndpointName(tabId))}
+            </div>
           ))}
           {/* <Nav.Item className='tab-buttons' id='tabs-menu-button'>
           <div className='dropdown'>
