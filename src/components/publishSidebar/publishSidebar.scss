@@ -21,8 +21,13 @@
       padding: 7px 15px;
       border-radius: 3px;
 
-      .rotate-toggle{
+      .down-arrow{
         transform: rotate(180deg);
+        transition: 200ms;
+      }
+
+      .rotate-toggle{
+        transform: rotate(360deg);
         transition: 200ms;
       }
 
