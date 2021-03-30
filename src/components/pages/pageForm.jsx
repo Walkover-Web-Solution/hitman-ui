@@ -111,9 +111,6 @@ class PageForm extends Form {
             <form onSubmit={this.handleSubmit}>
               <div className='row'>
                 <div className='col-6'>
-                  {this.renderInput('name', 'Page name', 'page name')}
-                </div>
-                <div className='col-6'>
                   {
                     this.props.addEntity &&
                       <div className='dropdown-label dropDownversion'>
@@ -144,6 +141,9 @@ class PageForm extends Form {
                         </Dropdown.Menu>
                       </Dropdown>
                     </div>}
+                </div>
+                <div className='col-6'>
+                  {this.renderInput('name', 'Page name', 'page name')}
                 </div>
               </div>
               <div className='text-left mt-2 mb-1'>

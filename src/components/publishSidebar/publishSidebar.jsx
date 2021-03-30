@@ -88,7 +88,8 @@ export class PublishSidebar extends Component {
       if (collectionId) {
         this.props.history.push({
           pathname: '/admin/publish',
-          search: `?collectionId=${collectionId}`
+          search: `?collectionId=${collectionId}`,
+          fromSidebar: true
         })
       }
     }
@@ -397,7 +398,7 @@ export class PublishSidebar extends Component {
               <div className='d-flex mx-3 mt-3' key={version?.id}>
                 <div className=' d-flex align-items-start w-100'>
                   <span className='mr-2 sidebar-version-checkbox'>{this.renderCheckBox('version', version?.id)}</span>
-                  <Accordion className='version-accordian w-100'>
+                  <Accordion className='version-accordian w-100' defaultActiveKey={version?.id}>
                     <Accordion.Toggle eventKey={version?.id} className='version-accordian-toggle w-100' onClick={() => this.toggleVersion(version?.id)}>
                       <div className='d-flex align-items-center justify-content-between'>
                         <div className=''>{version?.number}</div>
@@ -432,7 +433,7 @@ export class PublishSidebar extends Component {
   render () {
     const saveAsSidebarStyle = {
       position: 'fixed',
-      background: 'white',
+      background: '#F8F8F8',
       zIndex: '1050 ',
       top: '0px',
       right: '0px',

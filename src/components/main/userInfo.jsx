@@ -6,6 +6,7 @@ import { getProfileName } from '../common/utility'
 import { ReactComponent as HostedApiIcon } from '../../assets/icons/hostedApiIcon.svg'
 import { ReactComponent as SettingsIcon } from '../../assets/icons/settings-orange.svg'
 import { ReactComponent as SignOutIcon } from '../../assets/icons/signOutIcon.svg'
+import { ReactComponent as SocketIcon } from '../../assets/icons/socketIcon.svg'
 
 const mapStateToProps = (state) => {
   return {
@@ -149,8 +150,8 @@ class UserInfo extends Component {
     this.openPublishDocs(collection)
   }
 
-  navigateToViaSocket () {
-    const viaSocketUrl = `${process.env.REACT_APP_VIASOCKET_URL}/manage/users?product=hitman`
+  navigateToViaSocket (path) {
+    const viaSocketUrl = `${process.env.REACT_APP_VIASOCKET_URL}${path}?product=hitman`
     window.open(viaSocketUrl, '_blank')
   }
 
@@ -184,7 +185,7 @@ class UserInfo extends Component {
           <Dropdown.Divider />
           {this.renderProfileDetails()}
           <Dropdown.Divider />
-          <Dropdown.Item onClick={() => this.navigateToViaSocket()}>
+          <Dropdown.Item onClick={() => this.navigateToViaSocket('/manage/users')}>
             <SettingsIcon /><span>Account & Settings</span>
           </Dropdown.Item>
           {authService.isAdmin() &&
@@ -192,6 +193,10 @@ class UserInfo extends Component {
               <div><HostedApiIcon /><span>Hosted API</span></div>
               <div className='user-notification-badge'>{this.getNotificationCount()}</div>
             </Dropdown.Item>}
+          <Dropdown.Divider />
+          <Dropdown.Item onClick={() => this.navigateToViaSocket('/products')}>
+            <SocketIcon className='socket-icon' /><span>Other Products</span>
+          </Dropdown.Item>
           <Dropdown.Divider />
           <Dropdown.Item href='/logout'>
             <SignOutIcon /><span>Logout</span>
