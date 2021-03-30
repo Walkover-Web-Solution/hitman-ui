@@ -105,9 +105,6 @@ class EndpointForm extends Form {
             <form onSubmit={this.handleSubmit}>
               <div className='row'>
                 <div className='col-6'>
-                  {this.renderInput('name', 'Endpoint Name', 'endpoint name')}
-                </div>
-                <div className='col-6'>
                   <div className='dropdown-label dropDownversion'>
                     <label>Select Version</label>
                     <Dropdown>
@@ -135,6 +132,9 @@ class EndpointForm extends Form {
                       </Dropdown>
                       {this.state.groupRequired && <div className='dropdown-validation'>Please select group</div>}
                     </div>}
+                </div>
+                <div className='col-6'>
+                  {this.renderInput('name', 'Endpoint Name', 'endpoint name')}
                 </div>
               </div>
               <div className='text-left mt-4 mb-2'>
