@@ -247,7 +247,7 @@ class PublicEndpoint extends Component {
               : null
           }
         </nav>
-        <main role='main' className='mainpublic-endpoint-main hm-wrapper'>
+        <main role='main' className={this.state.isSticky ? 'mainpublic-endpoint-main hm-wrapper stickyCode' : 'mainpublic-endpoint-main hm-wrapper'}>
           <div className='hm-sidebar'>
             <SideBar {...this.props} collectionName={this.state.collectionName} />
           </div>
