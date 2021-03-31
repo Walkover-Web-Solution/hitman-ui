@@ -99,20 +99,26 @@ class GroupForm extends Form {
           </Modal.Header>
           <Modal.Body>
             <form onSubmit={this.handleSubmit}>
-              {this.props.addEntity &&
-                <div className='dropdown-label'>
-                  Select Version
-                  <Dropdown>
-                    <Dropdown.Toggle variant='' id='dropdown-basic'>
-                      {this.state.versions?.[this.state.selectedVersionId]?.number || 'Select'}
-                    </Dropdown.Toggle>
-                    <Dropdown.Menu>
-                      {this.renderVersionList()}
-                    </Dropdown.Menu>
-                  </Dropdown>
-                  {this.state.versionRequired && <div className='dropdown-validation'>Please select version</div>}
-                </div>}
-              {this.renderInput('name', 'Group Name', 'group name')}
+              <div className='row'>
+                {this.props.addEntity &&
+                  <div className='col-6'>
+                    <div className='dropdown-label dropDownversion'>
+                      <label>   Select Version</label>
+                      <Dropdown>
+                        <Dropdown.Toggle variant='' id='dropdown-basic'>
+                          {this.state.versions?.[this.state.selectedVersionId]?.number || 'Select'}
+                        </Dropdown.Toggle>
+                        <Dropdown.Menu>
+                          {this.renderVersionList()}
+                        </Dropdown.Menu>
+                      </Dropdown>
+                      {this.state.versionRequired && <div className='dropdown-validation'>Please select version</div>}
+                    </div>
+                  </div>}
+                <div className='col-6'>
+                  {this.renderInput('name', 'Group Name', 'group name')}
+                </div>
+              </div>
 
               <div className='text-left'>
 

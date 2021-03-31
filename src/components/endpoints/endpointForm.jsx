@@ -103,32 +103,40 @@ class EndpointForm extends Form {
           </Modal.Header>
           <Modal.Body>
             <form onSubmit={this.handleSubmit}>
-              <div className='dropdown-label'>
-                Select Version
-                <Dropdown>
-                  <Dropdown.Toggle variant='' id='dropdown-basic'>
-                    {this.state.versions?.[this.state.selectedVersionId]?.number || 'Select'}
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu>
-                    {this.renderVersionList()}
-                  </Dropdown.Menu>
-                </Dropdown>
-                {this.state.versionRequired && <div className='dropdown-validation'>Please select version</div>}
-                {this.state.selectedVersionId &&
-                  <div style={{ marginTop: '10px' }}>
-                    Select Group
+              <div className='row'>
+                <div className='col-6'>
+                  <div className='dropdown-label dropDownversion'>
+                    <label>Select Version</label>
                     <Dropdown>
                       <Dropdown.Toggle variant='' id='dropdown-basic'>
-                        {this.state.groups?.[this.state.selectedGroupId]?.name || 'Select'}
+                        {this.state.versions?.[this.state.selectedVersionId]?.number || 'Select'}
                       </Dropdown.Toggle>
                       <Dropdown.Menu>
-                        {this.renderGroupList()}
+                        {this.renderVersionList()}
                       </Dropdown.Menu>
                     </Dropdown>
-                    {this.state.groupRequired && <div className='dropdown-validation'>Please select group</div>}
-                  </div>}
+                    {this.state.versionRequired && <div className='dropdown-validation'>Please select version</div>}
+                  </div>
+                </div>
+                <div className='col-6'>
+                  {this.state.selectedVersionId &&
+                    <div className='dropdown-label dropDownversion'>
+                      <label>Select Group</label>
+                      <Dropdown>
+                        <Dropdown.Toggle variant='' id='dropdown-basic'>
+                          {this.state.groups?.[this.state.selectedGroupId]?.name || 'Select'}
+                        </Dropdown.Toggle>
+                        <Dropdown.Menu>
+                          {this.renderGroupList()}
+                        </Dropdown.Menu>
+                      </Dropdown>
+                      {this.state.groupRequired && <div className='dropdown-validation'>Please select group</div>}
+                    </div>}
+                </div>
+                <div className='col-6'>
+                  {this.renderInput('name', 'Endpoint Name', 'endpoint name')}
+                </div>
               </div>
-              {this.renderInput('name', 'Endpoint Name', 'endpoint name')}
               <div className='text-left mt-4 mb-2'>
                 {this.renderButton('Submit')}
                 <button
