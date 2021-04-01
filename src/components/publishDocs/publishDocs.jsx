@@ -27,6 +27,7 @@ import Footer from '../main/Footer'
 import { SortableHandle, SortableContainer, SortableElement } from 'react-sortable-hoc'
 import { ReactComponent as DragHandleIcon } from '../../assets/icons/drag-handle.svg'
 import { ReactComponent as SettingsIcon } from '../../assets/icons/settings.svg'
+import UserInfo from '../main/userInfo'
 const isEqual = require('react-fast-compare')
 
 const URI = require('urijs')
@@ -103,6 +104,7 @@ class PublishDocs extends Component {
     collectionInfo.endpoints,
     collectionInfo.pages
     )
+
     this.setState({
       selectedCollectionId: URI.parseQuery(this.props.location.search)
         .collectionId,
@@ -865,7 +867,7 @@ class PublishDocs extends Component {
     if (!this.isCollectionPublished()) {
       return (
         <Button
-          variant='success publish-collection-button ml-4'
+          variant='success publish-collection-button ml-4 mt-4'
           onClick={() => this.publishCollection()}
         >
           Publish Collection
@@ -874,7 +876,7 @@ class PublishDocs extends Component {
     } else {
       return (
         <Button
-          variant='btn btn-outline danger ml-4'
+          variant='btn btn-outline danger ml-4 mt-4'
           onClick={() => this.unPublishCollection()}
         >
           Unpublish Doc
@@ -952,6 +954,10 @@ class PublishDocs extends Component {
 
   checkDocProperties (collectionId) {
     const collection = this.props.collections[collectionId]
+
+    if (this.props.location.fromSidebar && !collection?.isPublic) {
+      return false
+    }
     return !!(collection?.docProperties?.defaultTitle)
   }
 
@@ -971,7 +977,7 @@ class PublishDocs extends Component {
 
   renderPageSettingButton () {
     return (
-      <div className='d-flex align-items-center mx-3'>
+      <div className='d-flex align-items-center mx-3 mt-4'>
         <button
           className='pageSettingsButton'
           onClick={() => {
@@ -989,28 +995,30 @@ class PublishDocs extends Component {
   renderHostedAPIDetials () {
     return (
       <>
-        <div className='hosted-doc-heading'>Hosted API Doc</div>
-        <div className='d-flex align-items-center my-3'>
-          {this.rednerHostedAPIDropdown()}
-          {this.publishCollections()}
-          {this.renderPageSettingButton()}
-        </div>
-        <div className='grid-two new-pub-doc'>
-          {this.state.openPageSettingsSidebar && this.renderDocsFormSidebar()}
-          <div className='versions-section'>
-            <select
-              className='form-control mb-3' onChange={this.setSelectedVersion.bind(this)} value={this.state.selectedVersionId}
-            >
-              {this.showVersions()}
-            </select>
-            {this.filterPages(null)}
-            <div className='version-groups'>
-              {this.showGroups()}
-            </div>
+        {this.renderHostedApiHeading('Hosted API Doc')}
+        <div className='hosted-doc-wrapper'>
+          <div className='d-flex align-items-center my-3 ml-2'>
+            {this.rednerHostedAPIDropdown()}
+            {this.publishCollections()}
+            {this.renderPageSettingButton()}
           </div>
-          <div className='version-details'>
-            {this.showEndpoints()}
-            {this.showPages()}
+          <div className='grid-two new-pub-doc'>
+            {this.state.openPageSettingsSidebar && this.renderDocsFormSidebar()}
+            <div className='versions-section'>
+              <select
+                className='form-control mb-3' onChange={this.setSelectedVersion.bind(this)} value={this.state.selectedVersionId}
+              >
+                {this.showVersions()}
+              </select>
+              {this.filterPages(null)}
+              <div className='version-groups'>
+                {this.showGroups()}
+              </div>
+            </div>
+            <div className='version-details'>
+              {this.showEndpoints()}
+              {this.showPages()}
+            </div>
           </div>
         </div>
       </>
@@ -1021,10 +1029,9 @@ class PublishDocs extends Component {
     return (
       <>
         <div className='publish-api-doc d-block'>
-          <div className='hosted-doc-heading'>Publish API Doc</div>
+          {this.renderHostedApiHeading('Publish API Doc')}
           <div className='publish-api-doc-container my-3'>
             <div className='form-group'>
-              <label>Hosted API's</label>
               {this.rednerHostedAPIDropdown()}
             </div>
             <div className='pub-inner'>
@@ -1166,15 +1173,27 @@ class PublishDocs extends Component {
     const collectionId = URI.parseQuery(this.props.location.search).collectionId
     return (
       <>
-        <Dropdown>
-          <Dropdown.Toggle variant='' id='dropdown-basic'>
-            {this.props.collections[collectionId]?.name || ''}
-          </Dropdown.Toggle>
-          <Dropdown.Menu>
-            {this.showCollections()}
-          </Dropdown.Menu>
-        </Dropdown>
+        <div>
+          <label className='hostes-label'>Hosted API’s</label>
+          <Dropdown>
+            <Dropdown.Toggle variant='' id='dropdown-basic'>
+              {this.props.collections[collectionId]?.name || ''}
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              {this.showCollections()}
+            </Dropdown.Menu>
+          </Dropdown>
+        </div>
       </>
+    )
+  }
+
+  renderHostedApiHeading (heading) {
+    return (
+      <div className='hosted-doc-heading'>
+        <div>{heading}</div>
+        <div className='user-info-container'><UserInfo {...this.props} /></div>
+      </div>
     )
   }
 

@@ -4,6 +4,7 @@ import groupsActionTypes from '../../groups/redux/groupsActionTypes'
 import versionActionTypes from '../../collectionVersions/redux/collectionVersionsActionTypes'
 import collectionActionTypes from '../../collections/redux/collectionsActionTypes'
 import publicEndpointsActionTypes from '../../publicEndpoint/redux/publicEndpointsActionTypes'
+import bulkPublishActionTypes from '../../publishSidebar/redux/bulkPublishActionTypes'
 
 const initialState = {}
 
@@ -142,6 +143,14 @@ function pagesReducer (state = initialState, action) {
     case pagesActionTypes.ON_PAGES_ORDER_UPDATED_ERROR:
       toast.error(action.error)
       pages = { ...action.pages }
+      return pages
+
+    case bulkPublishActionTypes.ON_BULK_PUBLISH_UPDATION:
+      pages = { ...action.data.updatedPages }
+      return pages
+
+    case bulkPublishActionTypes.ON_BULK_PUBLISH_UPDATION_ERROR:
+      pages = { ...action.originalData.originalPages }
       return pages
 
     default:

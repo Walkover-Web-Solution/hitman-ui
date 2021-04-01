@@ -149,14 +149,13 @@ class Environments extends Component {
           </button>
         </div>
         <Dropdown.Divider />
-        <div>
-          {' '}
+        <div className='env-header'>
           <p className='custom-left-pane'>VARIABLE</p>
           <p className='custom-middle-pane'>INITIAL VALUE</p>
           <p className='custom-right-pane'>CURRENT VALUE</p>
         </div>
         {Object.keys(env.variables).map((v) => (
-          <div key={v}>
+          <div key={v} className='env-body'>
             <p className='custom-left-box'>{v}</p>
             <p className='custom-middle-box'>
               {env.variables[v].initialValue || 'None'}

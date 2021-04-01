@@ -7,11 +7,9 @@ import Collections from '../collections/collections'
 import CollectionVersions from '../collectionVersions/collectionVersions'
 import ProtectedRoute from '../common/protectedRoute'
 import { isDashboardRoute } from '../common/utility'
-import { getCurrentUser, isAdmin } from '../auth/authService'
+import { getCurrentUser } from '../auth/authService'
 import LoginSignupModal from './loginSignupModal'
-import NotificationCount from './NotificationCount'
 import PublishColelctionInfo from './publishCollectionInfo'
-import UserInfo from './userInfo'
 import { ReactComponent as ArrowIcon } from '../../assets/icons/Vector.svg'
 import { ReactComponent as HitmanIcon } from '../../assets/icons/hitman.svg'
 import { ReactComponent as EmptyHistory } from '../../assets/icons/emptyHistroy.svg'
@@ -21,6 +19,10 @@ import { ReactComponent as SearchIcon } from '../../assets/icons/searchIcon.svg'
 import collectionVersionsService from '../collectionVersions/collectionVersionsService'
 import './main.scss'
 import './sidebar.scss'
+import AddEntitySelectionModal from './addEntityModal'
+import GroupForm from '../groups/groupForm'
+import PageForm from '../pages/pageForm'
+import EndpointForm from '../endpoints/endpointForm'
 
 const mapStateToProps = (state) => {
   return {
@@ -100,16 +102,6 @@ class SideBar extends Component {
         endpoints: Object.values(this.props.endpoints)
       })
     }
-  }
-
-  dataFetched () {
-    return (
-      this.props.collections &&
-      this.props.versions &&
-      this.props.groups &&
-      this.props.endpoints &&
-      this.props.pages
-    )
   }
 
   // async dndMoveEndpoint (endpointId, sourceGroupId, destinationGroupId) {
@@ -388,96 +380,6 @@ class SideBar extends Component {
     }
   }
 
-  findPendingEndpointsCollections (pendingEndpointIds) {
-    const groupsArray = []
-    for (let i = 0; i < pendingEndpointIds.length; i++) {
-      const endpointId = pendingEndpointIds[i]
-      if (this.props.endpoints[endpointId]) {
-        const groupId = this.props.endpoints[endpointId].groupId
-        groupsArray.push(groupId)
-      }
-    }
-
-    const versionsArray = []
-    for (let i = 0; i < groupsArray.length; i++) {
-      const groupId = groupsArray[i]
-      if (this.props.groups[groupId]) {
-        const versionId = this.props.groups[groupId].versionId
-        versionsArray.push(versionId)
-      }
-    }
-    const collectionsArray = []
-    for (let i = 0; i < versionsArray.length; i++) {
-      const versionId = versionsArray[i]
-      if (this.props.versions[versionId]) {
-        const collectionId = this.props.versions[versionId].collectionId
-        collectionsArray.push(collectionId)
-      }
-    }
-    return collectionsArray
-  }
-
-  findPendingPagesCollections (pendingPageIds) {
-    const versionsArray = []
-    for (let i = 0; i < pendingPageIds.length; i++) {
-      const pageId = pendingPageIds[i]
-      if (this.props.pages[pageId]) {
-        const versionId = this.props.pages[pageId].versionId
-        versionsArray.push(versionId)
-      }
-    }
-    const collectionsArray = []
-    for (let i = 0; i < versionsArray.length; i++) {
-      const versionId = versionsArray[i]
-      if (this.props.versions[versionId]) {
-        const collectionId = this.props.versions[versionId].collectionId
-        collectionsArray.push(collectionId)
-      }
-    }
-    return collectionsArray
-  }
-
-  getPublicCollections () {
-    if (this.dataFetched()) {
-      const pendingEndpointIds = Object.keys(this.props.endpoints).filter(
-        (eId) => this.props.endpoints[eId].state === 'Pending' || (this.props.endpoints[eId].state === 'Draft' && this.props.endpoints[eId].isPublished)
-      )
-      const pendingPageIds = Object.keys(this.props.pages).filter(
-        (pId) => this.props.pages[pId].state === 'Pending' || (this.props.pages[pId].state === 'Draft' && this.props.pages[pId].isPublished)
-      )
-      const endpointCollections = this.findPendingEndpointsCollections(
-        pendingEndpointIds
-      )
-      const pageCollections = this.findPendingPagesCollections(pendingPageIds)
-      const allCollections = [
-        ...new Set([...endpointCollections, ...pageCollections])
-      ]
-      return allCollections
-    }
-  }
-
-  getNotificationCount () {
-    const collections = this.getPublicCollections()
-    return collections?.length || 0
-  }
-
-  openPublishDocs (collection) {
-    if (collection?.id) {
-      this.props.history.push({
-        pathname: '/admin/publish',
-        search: `?collectionId=${collection.id}`
-      })
-    } else {
-      const collection = this.props.collections[
-        Object.keys(this.props.collections)[0]
-      ]
-      this.props.history.push({
-        pathname: '/admin/publish',
-        search: `?collectionId=${collection.id}`
-      })
-    }
-  }
-
   renderEmptyCollectionsIfNotLoggedIn () {
     return (
       <div className='empty-collections'>
@@ -534,9 +436,12 @@ class SideBar extends Component {
           ? (
               isDashboardRoute(this.props, true) && (
                 <div className='mx-3'>
-                  <div className='d-flex collection-name my-2' onClick={() => { this.openCollection(null) }}>
-                    <div className='ml-1 mr-2' style={{ transform: 'rotate(180deg)' }}><ArrowIcon /></div>
-                    <div className='hm-sidebar-outer-block heading-2'>{selectedCollectionName}</div>
+                  <div className='d-flex collection-name my-2'>
+                    <div className='d-flex cursor-pointer align-items-center' onClick={() => { this.openCollection(null) }}>
+                      <div className='ml-1 mr-2'><ArrowIcon /></div>
+                      <div className='hm-sidebar-outer-block heading-collection'>{selectedCollectionName}</div>
+                    </div>
+                    <button className='btn btn-primary' onClick={() => this.openAddEntitySelectionModal()}> ADD </button>
                   </div>
                   <div><PublishColelctionInfo {...this.props} collectionId={this.collectionId} /></div>
                   <div className='secondary-sidebar sidebar-content-scroll'>
@@ -568,19 +473,6 @@ class SideBar extends Component {
         <div><HitmanIcon /></div>
         <div className='w-50 flex-grow-1 mx-3'>
           <div className='HITMAN-TITLE'>HITMAN</div>
-          {getCurrentUser() && <UserInfo
-            {...this.props}
-            open_publish_docs={this.openPublishDocs.bind(this)}
-            open_collection={this.openCollection.bind(this)}
-            get_public_collections={this.getPublicCollections.bind(this)}
-                               />}
-        </div>
-        <div>{getCurrentUser() && isAdmin() && <NotificationCount
-          {...this.props}
-          open_publish_docs={this.openPublishDocs.bind(this)}
-          open_collection={this.openCollection.bind(this)}
-          get_public_collections={this.getPublicCollections.bind(this)} count={this.getNotificationCount()}
-                                               />}
         </div>
       </div>
     )
@@ -626,9 +518,88 @@ class SideBar extends Component {
     this.setState({ showVersionForm: false })
   }
 
+  openAddEntitySelectionModal () {
+    this.setState({ openAddEntitySelectionModal: true })
+  }
+
+  closeAddEntitySelectionModal () {
+    this.setState({ openAddEntitySelectionModal: false })
+  }
+
+  showAddEntitySelectionModal () {
+    return (
+      this.state.openAddEntitySelectionModal &&
+        <AddEntitySelectionModal
+          {...this.props}
+          title='ADD'
+          show
+          onHide={() => this.closeAddEntitySelectionModal()}
+          openAddEntityModal={this.openAddEntityModal.bind(this)}
+          collectionId={this.collectionId}
+        />
+    )
+  }
+
+  openAddEntityModal (entity) {
+    this.setState({ openAddEntitySelectionModal: false, entity })
+  }
+
+  closeAddEntityModal (entity) {
+    this.setState({ entity: false })
+  }
+
+  showAddEntityModal () {
+    if (this.state.entity === 'version') {
+      return collectionVersionsService.showVersionForm(
+        this.props,
+        this.closeAddEntityModal.bind(this),
+        this.collectionId,
+        'Add new Collection Version'
+      )
+    }
+    if (this.state.entity === 'group') {
+      return (
+        <GroupForm
+          {...this.props}
+          show
+          onHide={() => this.closeAddEntityModal()}
+          title='Add new Group'
+          addEntity
+          collectionId={this.collectionId}
+        />
+      )
+    }
+    if (this.state.entity === 'endpoint') {
+      return (
+        <EndpointForm
+          {...this.props}
+          show
+          onHide={() => this.closeAddEntityModal()}
+          title='Add new Endpoint'
+          addEntity
+          collectionId={this.collectionId}
+        />
+      )
+    }
+    if (this.state.entity === 'page') {
+      return (
+        <PageForm
+          {...this.props}
+          show
+          onHide={() => this.closeAddEntityModal()}
+          title='Add New Page'
+          selectedCollection={this.collectionId}
+          addEntity
+        />
+      )
+    }
+  }
+
   render () {
     return (
       <nav className={this.getSidebarInteractionClass()}>
+        {this.showAddEntitySelectionModal()}
+        {this.showAddEntityModal()}
         {this.state.showLoginSignupModal && (
           <LoginSignupModal
             show

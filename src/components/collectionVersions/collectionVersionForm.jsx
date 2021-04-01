@@ -83,16 +83,23 @@ class CollectionVersionForm extends Form {
           </Modal.Header>
           <Modal.Body>
             <form onSubmit={this.handleSubmit}>
-              {this.renderInput('number', 'Version Number', 'version number')}
-              {this.renderInput('host', 'Host', 'host')}
-              <div className='text-right mt-4 mb-2'>
+              <div className='row'>
+                <div className='col-6'>
+                  {this.renderInput('number', 'Version Number', 'version number')}
+                </div>
+                <div className='col-6'>
+                  {this.renderInput('host', 'Host', 'host')}
+                </div>
+              </div>
+              <div className='text-left mt-4 mb-2'>
+
+                {this.renderButton('Submit')}
                 <button
-                  className='btn btn-secondary outline btn-lg mr-2'
+                  className='btn btn-secondary outline btn-lg ml-2'
                   onClick={this.props.onHide}
                 >
                   Cancel
                 </button>
-                {this.renderButton('Submit')}
               </div>
             </form>
           </Modal.Body>

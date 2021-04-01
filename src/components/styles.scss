@@ -327,7 +327,6 @@ $border-color: rgba(227, 228, 230, 0.7);
 .modal-header {
   color: #333333 !important;
   border: none !important;
-  padding: 15px 15px 0 !important;
 
 }
 
@@ -351,9 +350,11 @@ textarea.custom-input::placeholder {
 }
 
 .modal-header .modal-title {
-  font-size: 16px;
   font-weight: 600;
-  color: #E98A36;
+  font-size: 18px;
+  line-height: 18px;
+  text-align: center;
+  color: #333333;
 }
 
 main.main.ml-sm-auto.col-lg-10 {
@@ -520,9 +521,10 @@ button.btn.custom-body-type-button {
     width: 100%;
     background-color: #fff;
   }
-  .linkWith {
+
+  .linkWith .hm-sidebar-block {
     margin-top: 30px;
-}
+  }
 }
 
 .hitman-logo {
@@ -595,7 +597,7 @@ button.btn.custom-body-type-button {
       font-size: 13px;
       font-weight: 400;
       color: #000;
-      border-radius:4px;
+      border-radius: 4px;
       justify-content: space-between;
     }
 

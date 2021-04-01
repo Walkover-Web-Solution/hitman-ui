@@ -23,6 +23,8 @@ import './main.scss'
 import { getCurrentUser } from '../auth/authService'
 import LoginSignupModal from './loginSignupModal'
 import Footer from '../main/Footer'
+import UserInfo from './userInfo'
+
 const mapStateToProps = (state) => {
   return {
     endpoints: state.endpoints,
@@ -175,15 +177,24 @@ class ContentPanel extends Component {
           {
             getCurrentUser()
               ? (
-                <div className='content-header'>
-                  <div className='tabs-container d-flex'>
-                    <CustomTabs
-                      {...this.props}
-                      handle_save_endpoint={this.handleSaveEndpoint.bind(this)}
-                    />
+                <>
+                  <div className='env-wrapper'>
+                    <div className='float-right d-flex'>
+                      <Environments {...this.props} />
+                      <div className='ml-3'>
+                        <UserInfo {...this.props} />
+                      </div>
+                    </div>
                   </div>
-                  <Environments {...this.props} />
-                </div>
+                  <div className='content-header'>
+                    <div className='tabs-container d-flex'>
+                      <CustomTabs
+                        {...this.props}
+                        handle_save_endpoint={this.handleSaveEndpoint.bind(this)}
+                      />
+                    </div>
+                  </div>
+                </>
                 )
               : (
                 // rendered a static single tab mimicking the original, instead of tabs component if user is not signed

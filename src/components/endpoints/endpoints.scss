@@ -486,9 +486,7 @@ $border-color: rgba(227, 228, 230, 0.7);
   flex-direction: column;
   margin: 0;
   padding: 15px;
-  border-radius: 4px;
-  overflow: auto;
-  height: 200px;
+  border-radius: 4px; 
   border: 1px solid #E0E0E0;
 
   .response-status {
@@ -1148,7 +1146,7 @@ table#custom-generic-table {
     color: #000;
     display: flex;
     align-items: center;
-    background: #fff!important;
+    background: #fff !important;
   }
 }
 
@@ -1166,8 +1164,6 @@ table#custom-generic-table {
     border-radius: 4px;
 
     .tab-content {
-      overflow: auto;
-      height: 300px;
       text-align: left;
       margin: 15px 0 0 0;
     }
@@ -1277,6 +1273,7 @@ table#custom-generic-table {
 .endpoint-description-text p {
   font-size: 14px;
   color: #4F4F4F;
+  margin: 0;
 }
 
 .bulkEdit {
@@ -1285,7 +1282,8 @@ table#custom-generic-table {
   }
 }
 
-.hosted-APIs {
+.hosted-doc-wrapper,
+.publish-api-doc-container {
   .dropdown .dropdown-menu {
     min-width: 250px;
 
@@ -1297,7 +1295,8 @@ table#custom-generic-table {
   }
 
   .dropdown .dropdown-toggle {
-    width: 300px;
+    width: 205px;
+    ;
     text-align: left;
     border-radius: 4px;
     color: #333333;
@@ -1336,8 +1335,8 @@ table#custom-generic-table {
 
 
 .hm-public-endpoint-headers {
-  background: #fff;
   border-radius: 4px;
+  padding-bottom: 25px;
 }
 
 .respHeading h2.orange-heading {
@@ -1345,10 +1344,27 @@ table#custom-generic-table {
   color: #000000;
 }
 
-.request-type-bgcolor{
-  background-color: inherit !important;
+// .request-type-bgcolor{
+//   background-color: inherit !important;
+// }
+
+.end-point-name {
+  overflow-wrap: anywhere;
 }
 
-.end-point-name{
-  overflow-wrap: anywhere;
+.dropdown-label {
+  color: #4F4F4F;
+  font-size: 13px !important;
+  margin: 0;
+  font-weight: 400 !important;
+  margin-bottom: 10px;
+}
+
+.dropdown-validation {
+  background: #fff;
+  border: none;
+  padding: 0;
+  font-size: 12px;
+  color: #d61124;
+  font-weight: 400
 }

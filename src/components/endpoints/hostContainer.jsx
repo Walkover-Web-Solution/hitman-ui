@@ -7,7 +7,6 @@ const hostContainerEnum = {
   hosts: {
     customHost: { key: 'customHost', label: 'Custom Host' },
     environmentHost: { key: 'environmentHost', label: 'Environment Host' },
-    groupHost: { key: 'groupHost', label: 'Group Host' },
     versionHost: { key: 'versionHost', label: 'Version Host' }
   }
 }
@@ -19,7 +18,6 @@ class HostContainer extends Component {
       datalistUri: '',
       customHost: '',
       environmentHost: '',
-      groupHost: '',
       versionHost: '',
       selectedHost: '',
       groupId: null,
@@ -45,7 +43,6 @@ class HostContainer extends Component {
   componentDidUpdate (prevProps, prevState) {
     if (
       prevProps.environmentHost !== this.props.environmentHost ||
-      prevProps.groupHost !== this.props.groupHost ||
       prevProps.versionHost !== this.props.versionHost ||
       prevProps.customHost !== this.props.customHost
     ) {
@@ -70,7 +67,6 @@ class HostContainer extends Component {
     const selectedHost = ''
     if (this.state.customHost) return 'customHost'
     if (this.state.environmentHost) return 'environmentHost'
-    if (this.state.groupHost) return 'groupHost'
     if (this.state.versionHost) return 'versionHost'
     return selectedHost
   }
@@ -102,16 +98,14 @@ class HostContainer extends Component {
   checkExistingHosts (value) {
     const regex = /^((http[s]?|ftp):\/\/[\w.\-@:]*)/i
     const variableRegex = /^{{[\w|-]+}}/i
-    const { environmentHost, versionHost, groupHost } = this.state
+    const { environmentHost, versionHost } = this.state
     if (value.match(variableRegex)) {
       return value.match(variableRegex)[0]
     }
     if (environmentHost && value.match(new RegExp('^' + environmentHost) + '/')) {
       return environmentHost
     }
-    if (groupHost && value.match(new RegExp('^' + groupHost + '/'))) {
-      return groupHost
-    }
+
     if (versionHost && value.match(new RegExp('^' + versionHost + '/'))) {
       return versionHost
     }
@@ -148,16 +142,15 @@ class HostContainer extends Component {
   selectCurrentHost (hostname) {
     if (hostname === this.state.customHost) return 'customHost'
     if (hostname === this.state.environmentHost) return 'environmentHost'
-    if (hostname === this.state.groupHost) return 'groupHost'
     if (hostname === this.state.versionHost) return 'versionHost'
     return 'customHost'
   }
 
   setHosts () {
-    const { groupHost, versionHost, environmentHost } = this.props
+    const { versionHost, environmentHost } = this.props
     let customHost = this.state.customHost
     if (this.state.customHost === '') customHost = this.props.customHost
-    this.setState({ groupHost, versionHost, environmentHost, customHost }, () => { this.setHostAndUri() })
+    this.setState({ versionHost, environmentHost, customHost }, () => { this.setHostAndUri() })
   }
 
   renderHostDatalist () {

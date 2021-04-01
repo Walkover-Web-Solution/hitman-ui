@@ -139,21 +139,32 @@ class PublicEndpoint extends Component {
     const { cta, links, isCTAandLinksPresent } = this.getCTALinks()
     return (
       <>
-        {isCTAandLinksPresent &&
-          <div className={this.state.isSticky ? 'd-flex public-navbar stickyNav' : 'd-flex public-navbar'}>
-            {links.map((link, index) => (
-              <div key={`link-${index}`}>
-                <label className='link' htmlFor={`link-${index}`} onClick={() => { this.openLink(link.link) }}>{link.name}</label>
+        <div className={this.state.isSticky ? 'd-flex public-navbar stickyNav' : 'd-flex public-navbar'}>
+          <div className='entityTitle  p-3'>
+            {this.state.currentEntityName}
+          </div>
+          {
+            isCTAandLinksPresent &&
+              <div className='d-flex  p-3 pr-3'>
+                {links.map((link, index) => (
+                  <div key={`link-${index}`}>
+                    <label className='link' htmlFor={`link-${index}`} onClick={() => { this.openLink(link.link) }}>{link.name}</label>
+                  </div>
+                ))}
+                {cta.map((cta, index) => (
+                  <div className='cta-button-wrapper' key={`cta-${index}`}>
+                    <button style={{ backgroundColor: this.state.collectionTheme, borderColor: this.state.collectionTheme, color: this.state.collectionTheme }} name={`cta-${index}`} onClick={() => { this.openLink(cta.value) }}>{cta.name}</button>
+                  </div>
+                ))}
               </div>
-            ))}
-            {cta.map((cta, index) => (
-              <div className='cta-button-wrapper' key={`cta-${index}`}>
-                <button style={{ backgroundColor: this.state.collectionTheme, borderColor: this.state.collectionTheme, color: this.state.collectionTheme }} name={`cta-${index}`} onClick={() => { this.openLink(cta.value) }}>{cta.name}</button>
-              </div>
-            ))}
-          </div>}
+          }
+        </div>
       </>
     )
+  }
+
+  fetchEntityName (entityName) {
+    if (entityName) { this.setState({ currentEntityName: entityName }) } else { this.setState({ currentEntityName: '' }) }
   }
 
   render () {
@@ -236,7 +247,7 @@ class PublicEndpoint extends Component {
               : null
           }
         </nav>
-        <main role='main' className='mainpublic-endpoint-main hm-wrapper'>
+        <main role='main' className={this.state.isSticky ? 'mainpublic-endpoint-main hm-wrapper stickyCode' : 'mainpublic-endpoint-main hm-wrapper'}>
           <div className='hm-sidebar'>
             <SideBar {...this.props} collectionName={this.state.collectionName} />
           </div>
@@ -248,11 +259,19 @@ class PublicEndpoint extends Component {
                   <Switch>
                     <Route
                       path={`/p/:collectionId/e/:endpointId/${this.state.collectionName}`}
-                      render={(props) => <DisplayEndpoint {...props} publicCollectionTheme={this.state.collectionTheme} />}
+                      render={(props) => <DisplayEndpoint
+                        {...props}
+                        fetch_entity_name={this.fetchEntityName.bind(this)}
+                        publicCollectionTheme={this.state.collectionTheme}
+                                         />}
                     />
                     <Route
                       path={`/p/:collectionId/pages/:pageId/${this.state.collectionName}`}
-                      render={(props) => <DisplayPage {...props} publicCollectionTheme={this.state.collectionTheme} />}
+                      render={(props) => <DisplayPage
+                        {...props}
+                        fetch_entity_name={this.fetchEntityName.bind(this)}
+                        publicCollectionTheme={this.state.collectionTheme}
+                                         />}
                     />
                     <Route
                       path={`/p/:collectionId/description/${this.state.collectionName}`}

@@ -1,67 +1,61 @@
-import Joi from 'joi-browser'
 import React from 'react'
 import { Modal, Dropdown } from 'react-bootstrap'
-import { connect } from 'react-redux'
-import { withRouter } from 'react-router-dom'
-import shortid from 'shortid'
+import Joi from 'joi-browser'
 import Form from '../common/form'
-import { addGroupPage, addPage } from '../pages/redux/pagesActions'
+import { connect } from 'react-redux'
 import { onEnter } from '../common/utility'
+import {
+  addEndpoint
+} from './redux/endpointsActions'
 import extractCollectionInfoService from '../publishDocs/extractCollectionInfoService'
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    add_page: (versionId, newPage) =>
-      dispatch(addPage(ownProps.history, versionId, newPage)),
-    add_group_page: (versionId, groupId, newPage) =>
-      dispatch(addGroupPage(ownProps.history, versionId, groupId, newPage))
+    add_endpoint: (newEndpoint, groupId, callback) =>
+      dispatch(addEndpoint(ownProps.history, newEndpoint, groupId, callback))
   }
 }
-
-class PageForm extends Form {
+class EndpointForm extends Form {
   constructor (props) {
     super(props)
     this.state = {
-      data: {
-        name: ''
-      },
+      data: { name: '' },
       errors: {}
     }
-
     this.schema = {
-      name: Joi.string().required().label('Page name')
+      name: Joi.string().required().min(2).max(30).trim().label('Endpoint Name')
     }
   }
 
-  componentDidMount () {
-    const versions = extractCollectionInfoService.extractVersionsFromCollectionId(this.props.selectedCollection, this.props)
+  async componentDidMount () {
+    const versions = extractCollectionInfoService.extractVersionsFromCollectionId(this.props.collectionId, this.props)
     const groups = extractCollectionInfoService.extractGroupsFromVersions(versions, this.props)
     this.setState({ versions, groups })
   }
 
-  async doSubmit (props) {
-    if (!this.state.selectedVersionId && this.props.addEntity) {
+  async doSubmit () {
+    if (!this.state.selectedVersionId) {
       this.setState({ versionRequired: true })
       return
     }
-    const version = this.props.addEntity ? this.state.selectedVersionId : this.props.selectedVersion
+    if (!this.state.selectedGroupId) {
+      this.setState({ groupRequired: true })
+      return
+    }
     this.props.onHide()
-    if (this.props.title === 'Add new Group Page' || (this.props.addEntity && this.state.selectedGroupId)) {
-      const groupId = this.props.addEntity ? this.state.selectedGroupId : this.props.selectedGroup.id
-      const data = { ...this.state.data }
-      const newPage = { ...data, requestId: shortid.generate() }
-      this.props.add_group_page(
-        version,
-        groupId,
-        newPage
-      )
+    const endpoint = {
+      uri: '',
+      name: this.state.data.name,
+      requestType: 'GET',
+      body: { type: 'none', value: null },
+      headers: {},
+      params: {},
+      pathVariables: {},
+      BASE_URL: null,
+      bodyDescription: {},
+      authorizationType: null
     }
-    if (this.props.title === 'Add New Version Page' || (this.props.addEntity && !this.state.selectedGroupId)) {
-      const versionId = this.props.addEntity ? version : version.id
-      const data = { ...this.state.data }
-      const newPage = { ...data, requestId: shortid.generate() }
-      this.props.add_page(versionId, newPage)
-    }
+    this.props.add_endpoint(endpoint, this.state.selectedGroupId, null)
   }
 
   renderGroupList () {
@@ -70,7 +64,7 @@ class PageForm extends Form {
         Object.keys(this.state.groups).map(
           (id, index) => (
             this.state.groups[id].versionId?.toString() === this.state.selectedVersionId?.toString() &&
-              <Dropdown.Item key={index} onClick={() => this.setState({ selectedGroupId: id })}>
+              <Dropdown.Item key={index} onClick={() => this.setState({ selectedGroupId: id, groupRequired: false })}>
                 {this.state.groups[id]?.name}
               </Dropdown.Item>
           ))
@@ -93,7 +87,7 @@ class PageForm extends Form {
 
   render () {
     return (
-      <div onKeyPress={(e) => onEnter(e, this.handleKeyPress.bind(this))}>
+      <div onKeyPress={(e) => { onEnter(e, this.handleKeyPress.bind(this)) }}>
         <Modal
           show={this.props.show}
           onHide={this.props.onHide}
@@ -111,22 +105,18 @@ class PageForm extends Form {
             <form onSubmit={this.handleSubmit}>
               <div className='row'>
                 <div className='col-6'>
-                  {
-                    this.props.addEntity &&
-                      <div className='dropdown-label dropDownversion'>
-                        <label>  Select Version</label>
-                        <Dropdown>
-                          <Dropdown.Toggle variant='' id='dropdown-basic'>
-                            {this.state.versions?.[this.state.selectedVersionId]?.number || 'Select'}
-                          </Dropdown.Toggle>
-                          <Dropdown.Menu>
-                            {this.renderVersionList()}
-                          </Dropdown.Menu>
-                        </Dropdown>
-                        {this.state.versionRequired && <div className='dropdown-validation'>Please select version</div>}
-
-                      </div>
-                  }
+                  <div className='dropdown-label dropDownversion'>
+                    <label>Select Version</label>
+                    <Dropdown>
+                      <Dropdown.Toggle variant='' id='dropdown-basic'>
+                        {this.state.versions?.[this.state.selectedVersionId]?.number || 'Select'}
+                      </Dropdown.Toggle>
+                      <Dropdown.Menu>
+                        {this.renderVersionList()}
+                      </Dropdown.Menu>
+                    </Dropdown>
+                    {this.state.versionRequired && <div className='dropdown-validation'>Please select version</div>}
+                  </div>
                 </div>
                 <div className='col-6'>
                   {this.state.selectedVersionId &&
@@ -140,16 +130,17 @@ class PageForm extends Form {
                           {this.renderGroupList()}
                         </Dropdown.Menu>
                       </Dropdown>
+                      {this.state.groupRequired && <div className='dropdown-validation'>Please select group</div>}
                     </div>}
                 </div>
                 <div className='col-6'>
-                  {this.renderInput('name', 'Page name', 'page name')}
+                  {this.renderInput('name', 'Endpoint Name', 'endpoint name')}
                 </div>
               </div>
-              <div className='text-left mt-2 mb-1'>
+              <div className='text-left mt-4 mb-2'>
                 {this.renderButton('Submit')}
                 <button
-                  className='btn btn-secondary ml-2'
+                  className='btn btn-secondary outline btn-lg ml-2'
                   onClick={this.props.onHide}
                 >
                   Cancel
@@ -163,4 +154,4 @@ class PageForm extends Form {
   }
 }
 
-export default withRouter(connect(null, mapDispatchToProps)(PageForm))
+export default connect(null, mapDispatchToProps)(EndpointForm)
