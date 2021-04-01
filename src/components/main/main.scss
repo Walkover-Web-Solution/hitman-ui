@@ -229,7 +229,7 @@ nav.navbar.navbar-dark.fixed-top.bg-dark.flex-md-nowrap.p-0.shadow {
 
 .value-description-input-wrapper {
   display: table-cell;
-  padding: 5px 15px;
+  padding: 5px 0px;
 }
 
 .key-title {
@@ -268,8 +268,9 @@ label.data-type {
   background: #fff;
   border-radius: 3px;
   border: 1px solid #e0e0e0 !important;
-  height: 35px;
-  min-width: 220px;
+  height: 30px !important;
+  font-size: 12px !important;
+  min-width: 260px;
 }
 
 .array-container {
@@ -1221,19 +1222,35 @@ button.editBtn {
   background: #fff;
 }
 
+.panel-endpoint-name-container span.endpoint-name-edit {
+  color: #686868;
+}
+
+.panel-endpoint-name-container span {
+  color: #828282;
+}
+
 .endpoint-headers-container .button-panel-wrapper .body {
   margin-bottom: 0;
   display: flex;
   align-items: center;
 
   .dropdown .btn {
-    width: 100px;
+    width: 90px;
     font-size: 14px;
     background: #fff;
     border: 1px solid #E98A36;
     border-radius: 4px;
-    padding: 5px 8px 0;
     height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    color: #828282;
+
+    &:after {
+      filter: opacity(0.6);
+    }
   }
 }
 
@@ -1279,10 +1296,7 @@ button.editBtn {
     width: 15px;
     background-color: #eee;
     border-radius: 50%;
-  }
-
-  &:hover input~.checkmark {
-    background-color: #ccc;
+    box-shadow: inset 0 0 0px 2px #828282;
   }
 
   input:checked~.checkmark {
@@ -1365,11 +1379,9 @@ button.editBtn {
     height: 13px;
     width: 13px;
     border-radius: 2px;
-  }
-
-  &:hover input~.checkmark {
     background-color: #ccc;
   }
+ 
 
   input:checked~.checkmark {
     border-color: #E98A36;
@@ -1751,11 +1763,6 @@ footer {
   width: 100%;
 }
 
-.publish-docs-container footer {
-  background: #f8f5f0;
-}
-
-
 .adminfooter footer {
   margin-top: 50px;
 
@@ -2106,7 +2113,7 @@ button.toggleButton {
 
 
 .public-navbar {
-  float: right; 
+  float: right;
   justify-content: center;
   align-items: center;
   background: #F8F8F8;
@@ -2289,7 +2296,6 @@ button[name="cta-1"] {
 
 .main-table-wrapper {
   margin-bottom: 25px;
-  background: #F3F3F3;
   border-radius: 4px;
   padding: 20px 0;
   float: left;
@@ -2321,12 +2327,14 @@ button[name="cta-1"] {
   justify-content: space-between;
   width: 100%;
   z-index: 9;
+  min-height: 72px
 }
 
 .mainContentWrapperPublic .main-table-wrapper {
   padding: 20px 25px;
   border: 0.5px solid #E6DBD4;
   border-top-right-radius: 0px;
+  background: #F3F3F3;
   border-top-left-radius: 0;
   border-top: 0;
 }
@@ -2357,6 +2365,7 @@ span.endpointNameWrapper {
 
 .user-info-dropdown {
   width: 100%;
+
   .user-profile-circle {
     /* cirlce profile css */
     height: 40px !important;
@@ -2366,13 +2375,15 @@ span.endpointNameWrapper {
     display: flex;
     align-items: center;
     justify-content: center;
+
     i {
       color: gray;
     }
   }
+
   .user-notification-badge {
     padding: 3px;
-    border-radius: 50%; 
+    border-radius: 50%;
     font-size: 9px;
     background-color: #E98A36;
     color: #fff;
@@ -2380,6 +2391,7 @@ span.endpointNameWrapper {
     width: 18px;
     text-align: center;
   }
+
   button {
     border: none !important;
     height: auto !important;
@@ -2397,9 +2409,10 @@ span.endpointNameWrapper {
     }
 
     &:after {
-      display:none;
+      display: none;
     }
-    .user-notification-badge  {
+
+    .user-notification-badge {
       position: absolute;
       top: -7px;
       right: 7px;
@@ -2416,15 +2429,18 @@ span.endpointNameWrapper {
   .dropdown-menu .profile {
     width: 250px;
     padding: 0.5rem 1rem !important;
-    display:flex;
+    display: flex;
+
     .user-profile-data {
       padding-left: 1rem;
+
       .username {
         font-weight: 400;
         font-size: 14px;
       }
+
       .email {
-        color:gray;
+        color: gray;
         font-weight: 400;
         font-size: 12px;
       }
@@ -2437,12 +2453,15 @@ span.endpointNameWrapper {
     align-items: center;
     font-size: 14px;
     background-color: inherit;
+
     &:hover {
       color: #E98A36;
     }
+
     span {
       padding-left: 0.5rem;
     }
+
     .socket-icon {
       fill: #E98A36;
       height: 20px;
@@ -2741,13 +2760,32 @@ span.endpointNameWrapper {
   width: 100%;
   justify-content: left;
 }
+
 .dropDownversion label {
   color: #4F4F4F;
   font-size: 13px !important;
   margin: 0 0 5px 0;
   font-weight: 400 !important;
 }
+
 .collection-dropdown-menu.dropdown-menu {
   max-height: 300px;
   overflow: auto;
+}
+
+.stickyCode .hideCodeEditor .toggleButton {
+  top: 85px !important;
+}
+
+div#history-tab-button {
+  background: #F8F8F8;
+  border-top: 0.5px solid #E6DBD4;
+  border-right: 0.5px solid #E6DBD4;
+  border-left: 0.5px solid #E6DBD4;
+  border-top-right-radius: 4px;
+  width: 40px;
+}
+
+div#history-tab-button button#dropdown-basic {
+  padding: 7px 10px;
 }
