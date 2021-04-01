@@ -1032,7 +1032,6 @@ class PublishDocs extends Component {
           {this.renderHostedApiHeading('Publish API Doc')}
           <div className='publish-api-doc-container my-3'>
             <div className='form-group'>
-              <label>Hosted API's</label>
               {this.rednerHostedAPIDropdown()}
             </div>
             <div className='pub-inner'>
