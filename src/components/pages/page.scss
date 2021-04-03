@@ -10,7 +10,7 @@
   float: left;
   width: 100%;
   padding-top: 25px;
-  min-height: 100vh;
+  min-height: calc(100vh - 70px);
   background: #F8F8F8;
   button { 
     margin-bottom: 15px;
@@ -32,15 +32,14 @@
   }
 
   .ql-toolbar.ql-snow {
-    background: rgb(255, 240, 240);
-    border: 1px solid black;
-
+    background: #EFEFEF;
+    border: 1px solid #E0E0E0;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
   }
 
   .ql-container.ql-snow {
-    border: 1px solid;
+    border: 1px solid #E0E0E0;
     background: rgba(243, 243, 243, 0.38);
     border-top: none;
     border-bottom-left-radius: 5px;
@@ -67,6 +66,7 @@
   background: #fff;
   border-radius: 4px;
   padding: 20px;
+  min-height: 55vh;
 }
 
 .page-icon{

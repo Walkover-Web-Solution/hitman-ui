@@ -988,9 +988,9 @@ class PublishDocs extends Component {
   renderHostedAPIDetials () {
     return (
       <>
-        {this.renderHostedApiHeading('Hosted API Doc')}
+        {this.renderHostedApiHeading('Public API Documentation')}
         <div className='hosted-doc-wrapper'>
-          <div className='d-flex align-items-center my-3 ml-2'>
+          <div className='d-flex align-items-center my-3'>
             {this.rednerHostedAPIDropdown()}
             {this.publishCollections()}
             {this.renderPageSettingButton()}
@@ -1025,7 +1025,6 @@ class PublishDocs extends Component {
           {this.renderHostedApiHeading('Publish API Doc')}
           <div className='publish-api-doc-container my-3'>
             <div className='form-group'>
-              <label>Hosted API's</label>
               {this.rednerHostedAPIDropdown()}
             </div>
             <div className='pub-inner'>
@@ -1168,7 +1167,7 @@ class PublishDocs extends Component {
     return (
       <>
         <div>
-          <label className='hostes-label'>Hosted API’s</label>
+          <label className='hostes-label'>Collection</label>
           <Dropdown>
             <Dropdown.Toggle variant='' id='dropdown-basic'>
               {this.props.collections[collectionId]?.name || ''}
