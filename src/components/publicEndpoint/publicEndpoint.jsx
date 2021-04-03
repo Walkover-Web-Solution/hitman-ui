@@ -139,7 +139,9 @@ class PublicEndpoint extends Component {
     const { cta, links, isCTAandLinksPresent } = this.getCTALinks()
     return (
       <>
-        <div className={this.state.isSticky ? 'd-flex public-navbar stickyNav' : 'd-flex public-navbar'}>
+        <div
+          className={this.state.isSticky ? 'd-flex public-navbar stickyNav' : 'd-flex public-navbar'}
+        >
           <div className='entityTitle  p-3'>
             {this.state.currentEntityName}
           </div>
@@ -256,28 +258,33 @@ class PublicEndpoint extends Component {
             {
               this.state.collectionName !== ''
                 ? (
-                  <Switch>
-                    <Route
-                      path={`/p/:collectionId/e/:endpointId/${this.state.collectionName}`}
-                      render={(props) => <DisplayEndpoint
-                        {...props}
-                        fetch_entity_name={this.fetchEntityName.bind(this)}
-                        publicCollectionTheme={this.state.collectionTheme}
-                                         />}
-                    />
-                    <Route
-                      path={`/p/:collectionId/pages/:pageId/${this.state.collectionName}`}
-                      render={(props) => <DisplayPage
-                        {...props}
-                        fetch_entity_name={this.fetchEntityName.bind(this)}
-                        publicCollectionTheme={this.state.collectionTheme}
-                                         />}
-                    />
-                    <Route
-                      path={`/p/:collectionId/description/${this.state.collectionName}`}
-                      render={(props) => <DisplayCollection {...props} {...this.props} publicCollectionTheme={this.state.collectionTheme} />}
-                    />
-                  </Switch>
+                  <div
+                    onScroll={() => this.setState({ isSticky: true })}
+                    style={{ overflow: 'hidden' }}
+                  >
+                    <Switch>
+                      <Route
+                        path={`/p/:collectionId/e/:endpointId/${this.state.collectionName}`}
+                        render={(props) => <DisplayEndpoint
+                          {...props}
+                          fetch_entity_name={this.fetchEntityName.bind(this)}
+                          publicCollectionTheme={this.state.collectionTheme}
+                                           />}
+                      />
+                      <Route
+                        path={`/p/:collectionId/pages/:pageId/${this.state.collectionName}`}
+                        render={(props) => <DisplayPage
+                          {...props}
+                          fetch_entity_name={this.fetchEntityName.bind(this)}
+                          publicCollectionTheme={this.state.collectionTheme}
+                                           />}
+                      />
+                      <Route
+                        path={`/p/:collectionId/description/${this.state.collectionName}`}
+                        render={(props) => <DisplayCollection {...props} {...this.props} publicCollectionTheme={this.state.collectionTheme} />}
+                      />
+                    </Switch>
+                  </div>
                   )
                 : null
             }
