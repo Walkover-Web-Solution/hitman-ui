@@ -286,7 +286,8 @@ class PublishDocForm extends Component {
   render () {
     return (
       <>
-        <div className='small-input'>
+
+        <div className='publish-mo-btn'>
           {
             this.props.isSidebar && this.props.isCollectionPublished() &&
               <Button
@@ -296,6 +297,8 @@ class PublishDocForm extends Component {
                 Unpublish Doc
               </Button>
           }
+        </div>
+        <div className='small-input'>
           {this.renderInput('title', true)}
           {this.renderInput('domain')}
         </div>
