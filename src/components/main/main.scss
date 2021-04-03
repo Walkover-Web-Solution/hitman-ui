@@ -648,6 +648,7 @@ label.data-type {
   background: #2A2B35;
   position: relative;
   transition: 300ms;
+  height: calc(100vh - 150px);
 }
 
 .code-heading {
