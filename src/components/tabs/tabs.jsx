@@ -182,13 +182,12 @@ class CustomTabs extends Component {
     //   </div>
     // )
     // console.log(ref.current.getBoundingClientRect())
-    if(!ref.current)
-     return ;
-    const x=ref.current.getBoundingClientRect().x;
-    const y=ref.current.getBoundingClientRect().y;
-    const styles = { 
-      transform: `translate(${x}px, ${y}px)` 
-  };
+    if (!ref.current) { return }
+    const x = ref.current.getBoundingClientRect().x
+    const y = ref.current.getBoundingClientRect().y
+    const styles = {
+      transform: `translate(${x}px, ${y}px)`
+    }
     const tab = this.props.tabs.tabs[tabId]
     if (!tab) return
     if (tab.type === 'page') {
@@ -205,7 +204,7 @@ class CustomTabs extends Component {
       if (this.props.endpoints[tabId]) {
         const endpoint = this.props.endpoints[tabId]
         return (
-          <div className='hover-div'style={styles}>
+          <div className='hover-div' style={styles}>
             <div className='group-name'>{this.props.groups[endpoint.groupId].name}</div>
             <div className='d-flex align-items-center'>
               <div className={`api-label ${endpoint.requestType} request-type-bgcolor ml-4 mt-1 arrow-top`}> {endpoint.requestType} </div>
