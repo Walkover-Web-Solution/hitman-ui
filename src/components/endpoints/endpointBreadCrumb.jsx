@@ -122,10 +122,9 @@ class EndpointBreadCrumb extends Component {
 
   render () {
     this.props.isEndpoint ? this.setEndpointData() : this.setPageData()
-    let endpoint=this.props.endpoint;
-    if(endpoint && (!endpoint.id) && this.state.endpointTitle==='' && this.props.groupId)
-    {
-      this.props.alterEndpointName('Untitled');
+    const endpoint = this.props.endpoint
+    if (endpoint && (!endpoint.id) && this.state.endpointTitle === '' && this.props.groupId) {
+      this.props.alterEndpointName('Untitled')
     }
     return (
       <div className='endpoint-header'>
