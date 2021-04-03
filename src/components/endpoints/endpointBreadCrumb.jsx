@@ -88,9 +88,9 @@ class EndpointBreadCrumb extends Component {
     } else {
       const title = this.state.previousTitle
       this.setState({ endpointTitle: title })
-      if (this.props.endpoint && !(this.props.endpoint.id) && this.props.groupId) {
-        this.props.alterEndpointName('Untitled')
-      }
+      // if (this.props.endpoint && !(this.props.endpoint.id) && this.props.groupId) {
+      //   this.props.alterEndpointName('Untitled')
+      // }
     }
   }
 
@@ -122,6 +122,11 @@ class EndpointBreadCrumb extends Component {
 
   render () {
     this.props.isEndpoint ? this.setEndpointData() : this.setPageData()
+    let endpoint=this.props.endpoint;
+    if(endpoint && (!endpoint.id) && this.state.endpointTitle==='' && this.props.groupId)
+    {
+      this.props.alterEndpointName('Untitled');
+    }
     return (
       <div className='endpoint-header'>
         <div
