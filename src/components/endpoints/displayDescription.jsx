@@ -114,7 +114,7 @@ class DisplayDescription extends Component {
         >
           {isDashboardRoute(this.props) && (
             <>
-              {this.props.endpoint.name &&
+              {this.props.endpoint &&
                 <EndpointBreadCrumb
                   {...this.props}
                   isEndpoint

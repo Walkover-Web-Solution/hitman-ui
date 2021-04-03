@@ -36,7 +36,7 @@ class EndpointBreadCrumb extends Component {
         isPagePublished: this.props.pages[pageId].isPublished,
         previousTitle: this.props.pages[pageId].name
       })
-    } else if (this.props?.data?.name) {
+    } else if (this.props?.data) {
       this.setState({
         endpointTitle: this.props.data.name,
         previousTitle: this.props.data.name
@@ -73,7 +73,10 @@ class EndpointBreadCrumb extends Component {
       if (this.props.isEndpoint) {
         const data = this.props.endpoint
         data.name = this.state.endpointTitle
-        this.props.update_endpoint(data)
+        if (data.id) {
+          this.props.update_endpoint(data)
+        }
+        this.props.alterEndpointName(data.name)
       } else {
         const page = this.props.page
         page.name = this.state.endpointTitle
@@ -85,11 +88,14 @@ class EndpointBreadCrumb extends Component {
     } else {
       const title = this.state.previousTitle
       this.setState({ endpointTitle: title })
+      if (this.props.endpoint && !(this.props.endpoint.id) && this.props.groupId) {
+        this.props.alterEndpointName('Untitled')
+      }
     }
   }
 
   setEndpointData () {
-    this.groupId = this.props.endpoint?.groupId
+    this.groupId = this.props.groupId
     this.groupName = this.groupId ? this.props.groups[this.groupId].name : null
     this.versionId = this.groupId ? this.props.groups[this.groupId].versionId : null
     this.versionName = this.versionId ? this.props.versions[this.versionId].number : null
@@ -145,7 +151,8 @@ class EndpointBreadCrumb extends Component {
               }}
               className={['endpoint-name-edit ml-2 mr-2', !this.state.nameEditable ? 'd-block' : 'd-none'].join(' ')}
             >
-              {this.state.endpointTitle ? this.state.endpointTitle : 'Untitled'}
+              {(this.state.endpointTitle && this.state.endpointTitle !== '') ? this.state.endpointTitle : null}
+              {(this.state.endpointTitle === '' && this.props.groupId) ? 'Untitled' : null}
               <EditIcon className='fa fa-pencil-square-o' />
             </span>
             {this.props?.endpoint?.publishedEndpoint?.isPublished && <div className='api-label POST request-type-bgcolor ml-2'> Live </div>}
