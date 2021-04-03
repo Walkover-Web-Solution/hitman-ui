@@ -11,6 +11,7 @@ class CustomTabs extends Component {
   constructor (props) {
     super(props)
     this.navRef = React.createRef()
+    this.tabRef = React.createRef()
     this.state = {
       showSavePrompt: false,
       leftScroll: 0,
@@ -170,7 +171,7 @@ class CustomTabs extends Component {
     tabService.newTab({ ...this.props })
   }
 
-  renderEndpointName (tabId) {
+  renderEndpointName (tabId, ref) {
     // return (
     //   <div className=''>
     //     <div className='group-name'>Script Runner</div>
@@ -180,13 +181,21 @@ class CustomTabs extends Component {
     //     </div>
     //   </div>
     // )
+    // console.log(ref.current.getBoundingClientRect())
+    if(!ref.current)
+     return ;
+    const x=ref.current.getBoundingClientRect().x;
+    const y=ref.current.getBoundingClientRect().y;
+    const styles = { 
+      transform: `translate(${x}px, ${y}px)` 
+  };
     const tab = this.props.tabs.tabs[tabId]
     if (!tab) return
     if (tab.type === 'page') {
       if (this.props.pages[tabId]) {
         const page = this.props.pages[tabId]
         return (
-          <div className='hover-div'>
+          <div className='hover-div' style={styles}>
             <div className=''>{this.props.groups[page.groupId]?.name}</div>
             <div className='page-name'>{page.name}</div>
           </div>
@@ -196,7 +205,7 @@ class CustomTabs extends Component {
       if (this.props.endpoints[tabId]) {
         const endpoint = this.props.endpoints[tabId]
         return (
-          <div className='hover-div'>
+          <div className='hover-div'style={styles}>
             <div className='group-name'>{this.props.groups[endpoint.groupId].name}</div>
             <div className='d-flex align-items-center'>
               <div className={`api-label ${endpoint.requestType} request-type-bgcolor ml-4 mt-1 arrow-top`}> {endpoint.requestType} </div>
@@ -206,7 +215,7 @@ class CustomTabs extends Component {
         )
       } else {
         return (
-          <div className='hover-div'>
+          <div className='hover-div' style={styles}>
             <div className='endpoint-name'>Untitled</div>
           </div>
         )
@@ -241,7 +250,7 @@ class CustomTabs extends Component {
             )}
           </div>
           {this.props.tabs.tabsOrder.map((tabId, index) => (
-            <div key={tabId}>
+            <div key={tabId} ref={this.tabRef}>
               <Nav.Item
                 key={tabId}
                 draggable
@@ -276,8 +285,8 @@ class CustomTabs extends Component {
                   <i className='uil uil-multiply' />
                 </button>
               </Nav.Item>
-              {this.state.showPreview && tabId === this.state.previewId &&
-                  (this.renderEndpointName(tabId))}
+              {/* {this.state.showPreview && tabId === this.state.previewId && */}
+              {this.renderEndpointName(tabId, this.tabRef)}
             </div>
           ))}
           {/* <Nav.Item className='tab-buttons' id='tabs-menu-button'>
