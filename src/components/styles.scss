@@ -326,7 +326,7 @@ $border-color: rgba(227, 228, 230, 0.7);
 
 .modal-header {
   color: #333333 !important;
-  border: none !important; 
+  border: none !important;
 
 }
 
@@ -521,9 +521,10 @@ button.btn.custom-body-type-button {
     width: 100%;
     background-color: #fff;
   }
-  .linkWith {
+
+  .linkWith .hm-sidebar-block {
     margin-top: 30px;
-}
+  }
 }
 
 .hitman-logo {
@@ -596,7 +597,7 @@ button.btn.custom-body-type-button {
       font-size: 13px;
       font-weight: 400;
       color: #000;
-      border-radius:4px;
+      border-radius: 4px;
       justify-content: space-between;
     }
 

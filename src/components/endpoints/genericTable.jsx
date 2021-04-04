@@ -57,7 +57,7 @@ class GenericTable extends Component {
         this.handleDelete(dataArray, name[0], title)
       }
     } else if (title !== 'Path Variables' || name[1] !== 'key') {
-      originalData[name[0]].empty = false
+      if (!isDashboardRoute(this.props)) { originalData[name[0]].empty = false }
       dataArray[name[0]][name[1]] = e.currentTarget.value
     }
 

@@ -486,9 +486,7 @@ $border-color: rgba(227, 228, 230, 0.7);
   flex-direction: column;
   margin: 0;
   padding: 15px;
-  border-radius: 4px;
-  overflow: auto;
-  height: 200px;
+  border-radius: 4px; 
   border: 1px solid #E0E0E0;
 
   .response-status {
@@ -1166,8 +1164,6 @@ table#custom-generic-table {
     border-radius: 4px;
 
     .tab-content {
-      overflow: auto;
-      height: 300px;
       text-align: left;
       margin: 15px 0 0 0;
     }
@@ -1286,7 +1282,8 @@ table#custom-generic-table {
   }
 }
 
-.hosted-doc-wrapper {
+.hosted-doc-wrapper,
+.publish-api-doc-container {
   .dropdown .dropdown-menu {
     min-width: 250px;
 
@@ -1337,8 +1334,9 @@ table#custom-generic-table {
 
 
 
-.hm-public-endpoint-headers { 
+.hm-public-endpoint-headers {
   border-radius: 4px;
+  padding-bottom: 25px;
 }
 
 .respHeading h2.orange-heading {
@@ -1354,7 +1352,7 @@ table#custom-generic-table {
   overflow-wrap: anywhere;
 }
 
-.dropdown-label{
+.dropdown-label {
   color: #4F4F4F;
   font-size: 13px !important;
   margin: 0;
@@ -1362,11 +1360,11 @@ table#custom-generic-table {
   margin-bottom: 10px;
 }
 
-.dropdown-validation{
+.dropdown-validation {
   background: #fff;
   border: none;
   padding: 0;
   font-size: 12px;
   color: #d61124;
   font-weight: 400
-  }
+}

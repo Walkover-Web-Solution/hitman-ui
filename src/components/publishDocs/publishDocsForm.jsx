@@ -151,6 +151,10 @@ class PublishDocForm extends Component {
     if (errors) return
     this.setState({ loader: true })
     this.props.update_collection(collection, () => { this.setState({ loader: false }) })
+    this.props.history.push({
+      pathname: '/admin/publish',
+      search: `?collectionId=${collectionId}`
+    })
   }
 
   setTheme (theme) {

@@ -5,7 +5,7 @@ $border-color: #E5E5E5;
   display: flex;
   flex-direction: row;
   margin-top: 20px;
-  background: #F8F8F8;
+  background: #ffffff;
   border-right: 0.5px solid #E6DBD4;
   // border-left: 0.5px solid #E6DBD4;
   border-top-left-radius: 4px;
@@ -21,6 +21,7 @@ $border-color: #E5E5E5;
     height: 40px;
     align-self: flex-end;
     width: calc(100%);
+    background: #fff;
 
     .item-wrp {
       // width: calc(100vw - 560px);
@@ -30,14 +31,14 @@ $border-color: #E5E5E5;
     .nav {
       height: 100%;
       overflow: hidden;
+      border-top: .5px solid #E6DBD4;
+      border-bottom: .5px solid #E6DBD4;
 
       .nav-item {
-        padding: 0px;
         display: flex;
         flex-direction: row;
         justify-content: space-around;
         align-items: center;
-        border: 0.5px solid #E6DBD4;
         border-bottom: none;
         margin: 0 5px 0px 0;
         height: 100%;
@@ -46,10 +47,12 @@ $border-color: #E5E5E5;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        max-width: 200px;
-        min-width: 200px;
-        background-color: #F8F8F8;
+        max-width: 220px;
+        min-width: 220px;
+        background-color: #ffffff;
         position: relative;
+        padding: 0 5px;
+        cursor: pointer;
 
         .modified-dot-icon {
           position: absolute;
@@ -110,23 +113,27 @@ $border-color: #E5E5E5;
         }
 
         .nav-link.active {
-          background-color: #ffffff;
-          border-bottom: #ffffff !important;
-          border-top: 2px solid #ffffff;
+          background-color: #F8F8F8 !important;
+          border-bottom: #F8F8F8 !important;
+          border-top: 2px solid #F8F8F8 !important;
           border-top-left-radius: 3px;
-          box-shadow: 0 1px 0 0 #ffffff !important;
+          box-shadow: 0 1px 0 0 #F8F8F8 !important;
         }
 
         .nav-link.active~.btn {
-          background-color: #ffffff;
-          border-bottom: #ffffff;
-          border-top: 2px solid #ffffff;
+          background-color: #F8F8F8 !important;
+          border-bottom: #F8F8F8 !important;
+          border-top: 2px solid #F8F8F8 !important;
           border-top-right-radius: 3px;
-          box-shadow: 0 1px 0 0 #ffffff !important;
+          box-shadow: 0 1px 0 0 #F8F8F8 !important;
         }
 
         &.active {
           border-color: #fff !important;
+          border-right: 0.5px solid #E6DBD4 !important;
+          border-left: 0.5px solid #E6DBD4 !important;
+          background: #F8F8F8 !important;
+          border-radius: 0;
         }
       }
 
@@ -202,14 +209,14 @@ $border-color: #E5E5E5;
 }
 
 .newTabs .btn {
-  border: 1px solid #BDBDBD;
-  border-bottom: none;
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
+  background: #F8F8F8;
+  border-top: 0.5px solid #E6DBD4;
+  border-left: 0.5px solid #E6DBD4;
   border-top-left-radius: 4px;
-  border-top-right-radius: 4px;
-  margin-right: 5px;
-  padding: 0.35rem 0.5rem;
+  width: 40px;
+  text-align: center;
+  padding: 8px 0;
+  border-top-right-radius: 0px;
 }
 
 .tabs-name {
@@ -227,7 +234,8 @@ $border-color: #E5E5E5;
   }
 
   .sub-label {
-    font-size: 10px;
+    font-size: 12px;
+    margin-top: 2px !important;
   }
 }
 
@@ -247,10 +255,15 @@ $border-color: #E5E5E5;
 }
 
 .scroll-button {
-  cursor: default !important;
+  color: #828282;
+  font-weight: 600;
+  font-size: 12px;
+  cursor: pointer;
+  line-height: 12px;
+
   align-items: center;
-  max-width: 50px;
-  min-width: 50px;
+  max-width: 40px;
+  min-width: 40px;
   border: 0.5px solid #E6DBD4;
   border-bottom: none;
   justify-content: center;
@@ -259,8 +272,29 @@ $border-color: #E5E5E5;
   border-top-right-radius: 4px;
 
   &.disabled {
+    cursor: not-allowed !important;
     color: grey;
   }
+}
+
+.tabs-name label.endpoint-name {
+  color: #E98A36;
+  font-size: 13px;
+}
+
+.content-header .tabs-container .nav .nav-item:after {
+  content: "";
+  position: absolute;
+  width: 1px;
+  height: 24px;
+  right: 0px;
+  background: #E6DBD4;
+}
+
+
+
+.content-header .tabs-container .nav .nav-item.active:after {
+  display: none;
 }
 
 .hover-div {
@@ -313,5 +347,4 @@ $border-color: #E5E5E5;
     z-index: 99;
     border-width: 0 0 1px 1px;
     top: -3px;
-}
 }

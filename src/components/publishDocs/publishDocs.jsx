@@ -104,6 +104,7 @@ class PublishDocs extends Component {
     collectionInfo.endpoints,
     collectionInfo.pages
     )
+
     this.setState({
       selectedCollectionId: URI.parseQuery(this.props.location.search)
         .collectionId,
@@ -866,7 +867,7 @@ class PublishDocs extends Component {
     if (!this.isCollectionPublished()) {
       return (
         <Button
-          variant='success publish-collection-button ml-4'
+          variant='success publish-collection-button ml-4 mt-4'
           onClick={() => this.publishCollection()}
         >
           Publish Collection
@@ -953,6 +954,10 @@ class PublishDocs extends Component {
 
   checkDocProperties (collectionId) {
     const collection = this.props.collections[collectionId]
+
+    if (this.props.location.fromSidebar && !collection?.isPublic) {
+      return false
+    }
     return !!(collection?.docProperties?.defaultTitle)
   }
 
@@ -1027,7 +1032,6 @@ class PublishDocs extends Component {
           {this.renderHostedApiHeading('Publish API Doc')}
           <div className='publish-api-doc-container my-3'>
             <div className='form-group'>
-              <label>Hosted API's</label>
               {this.rednerHostedAPIDropdown()}
             </div>
             <div className='pub-inner'>
