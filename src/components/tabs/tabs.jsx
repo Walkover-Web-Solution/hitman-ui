@@ -11,7 +11,6 @@ class CustomTabs extends Component {
   constructor (props) {
     super(props)
     this.navRef = React.createRef()
-    this.tabRef = React.createRef()
     this.state = {
       showSavePrompt: false,
       leftScroll: 0,
@@ -171,20 +170,10 @@ class CustomTabs extends Component {
     tabService.newTab({ ...this.props })
   }
 
-  renderEndpointName (tabId, ref) {
-    // return (
-    //   <div className=''>
-    //     <div className='group-name'>Script Runner</div>
-    //     <div className='d-flex'>
-    //       <div className='api-label POST request-type-bgcolor ml-4 mt-1'> POST </div>
-    //       <div className='endpoint-name ml-2'>Dry Run qwertyui</div>
-    //     </div>
-    //   </div>
-    // )
-    // console.log(ref.current.getBoundingClientRect())
-    if (!ref.current) { return }
-    const x = ref.current.getBoundingClientRect().x
-    const y = ref.current.getBoundingClientRect().y
+  renderHoverTab (tabId) {
+    let x=1;
+    let y=1;
+    x-=this.navRef.current.scrollLeft
     const styles = {
       transform: `translate(${x}px, ${y}px)`
     }
@@ -195,8 +184,8 @@ class CustomTabs extends Component {
         const page = this.props.pages[tabId]
         return (
           <div className='hover-div' style={styles}>
-            <div className=''>{this.props.groups[page.groupId]?.name}</div>
-            <div className='page-name'>{page.name}</div>
+            <div className='group-name'>{this.props.groups[page.groupId]?.name}</div>
+            <div className={`${ page.groupId ? 'endpoint-name ml-4 arrow-top' : 'page-name'}`}>{page.name}</div>
           </div>
         )
       }
@@ -215,7 +204,7 @@ class CustomTabs extends Component {
       } else {
         return (
           <div className='hover-div' style={styles}>
-            <div className='endpoint-name'>Untitled</div>
+            <div className='page-name'>Untitled</div>
           </div>
         )
       }
@@ -249,7 +238,7 @@ class CustomTabs extends Component {
             )}
           </div>
           {this.props.tabs.tabsOrder.map((tabId, index) => (
-            <div key={tabId} ref={this.tabRef}>
+            <div key={tabId}>
               <Nav.Item
                 key={tabId}
                 draggable
@@ -257,6 +246,8 @@ class CustomTabs extends Component {
                 onDragStart={() => this.onDragStart(tabId)}
                 onDrop={(e) => this.onDrop(e, tabId)}
                 className={this.props.tabs?.activeTabId === tabId ? 'active' : ''}
+                onMouseEnter={() => this.setState({ showPreview: true, previewId: tabId })}
+                onMouseLeave={() => this.setState({ showPreview: false, previewId: null })}
               >
                 {
                 this.props.tabs.tabs[tabId].isModified
@@ -274,8 +265,6 @@ class CustomTabs extends Component {
                     onDoubleClick={() => {
                       tabService.disablePreviewMode(tabId)
                     }}
-                    onMouseEnter={() => this.setState({ showPreview: true, previewId: tabId })}
-                    onMouseLeave={() => this.setState({ showPreview: false, previewId: null })}
                   >
                     {this.renderTabName(tabId)}
                   </button>
@@ -284,8 +273,8 @@ class CustomTabs extends Component {
                   <i className='uil uil-multiply' />
                 </button>
               </Nav.Item>
-              {/* {this.state.showPreview && tabId === this.state.previewId && */}
-              {this.renderEndpointName(tabId, this.tabRef)}
+              {this.state.showPreview && tabId === this.state.previewId &&
+              (this.renderHoverTab(tabId, this.tabRef))}
             </div>
           ))}
           {/* <Nav.Item className='tab-buttons' id='tabs-menu-button'>
