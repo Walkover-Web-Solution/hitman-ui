@@ -259,7 +259,9 @@ class PublicEndpoint extends Component {
               this.state.collectionName !== ''
                 ? (
                   <div
-                    onScroll={() => this.setState({ isSticky: true })}
+                    onScroll={(e) => {
+                      if (e.target.scrollTop > 20) { this.setState({ isSticky: true }) } else { this.setState({ isSticky: false }) }
+                    }}
                     style={{ overflow: 'hidden' }}
                   >
                     <Switch>
