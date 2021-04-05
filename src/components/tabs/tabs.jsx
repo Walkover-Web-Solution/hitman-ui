@@ -171,9 +171,9 @@ class CustomTabs extends Component {
   }
 
   renderHoverTab (tabId) {
-    let x=1;
-    let y=1;
-    x-=this.navRef.current.scrollLeft
+    let x = 1
+    const y = 1
+    x -= this.navRef.current.scrollLeft
     const styles = {
       transform: `translate(${x}px, ${y}px)`
     }
@@ -185,7 +185,7 @@ class CustomTabs extends Component {
         return (
           <div className='hover-div' style={styles}>
             <div className='group-name'>{this.props.groups[page.groupId]?.name}</div>
-            <div className={`${ page.groupId ? 'endpoint-name ml-4 arrow-top' : 'page-name'}`}>{page.name}</div>
+            <div className={`${page.groupId ? 'endpoint-name ml-4 arrow-top' : 'page-name'}`}>{page.name}</div>
           </div>
         )
       }
