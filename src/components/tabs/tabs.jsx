@@ -54,19 +54,19 @@ class CustomTabs extends Component {
             return (
               <div className='tabs-name'>
                 <label className='endpoint-name-italic font-weight-bold'>
-                  {this.props.endpoints[tabId].name}
+                  {this.props.endpoints[tabId]?.name}
                 </label>
                 <br />
-                <lable className='endpoint-name-italic sub-label'>{this.props.groups[endpoint.groupId].name}</lable>
+                <lable className='endpoint-name-italic sub-label'>{this.props.groups[endpoint.groupId]?.name}</lable>
               </div>
 
             )
           } else {
             return (
               <div className='tabs-name'>
-                <label className='endpoint-name'>{this.props.endpoints[tabId].name}</label>
+                <label className='endpoint-name'>{this.props.endpoints[tabId]?.name}</label>
                 <br />
-                <label className='sub-label'>{this.props.groups[endpoint.groupId].name}</label>
+                <label className='sub-label'>{this.props.groups[endpoint.groupId]?.name}</label>
               </div>
             )
           }
