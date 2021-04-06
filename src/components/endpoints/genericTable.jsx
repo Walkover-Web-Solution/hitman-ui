@@ -473,8 +473,8 @@ class GenericTable extends Component {
     return (
     // "generic-table-container"
     // table-bordered
-
       <div className='hm-public-table'>
+        {(title === 'Path Variables') ? <div>{title}</div> : null}
         <div
           className={
               isDashboardRoute(this.props)
