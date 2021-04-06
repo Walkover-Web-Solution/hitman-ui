@@ -308,8 +308,9 @@ class BodyDescription extends Component {
     let bodyDescription = this.generateBodyDescription(body, isFirstTime)
     if (!isFirstTime) { bodyDescription = this.preserveDefaultValue(bodyDescription) }
     this.setState({ bodyDescription })
-    if (this.props.tab.status !== 'NEW') { this.props.update_endpoint({ id: this.props.tab.id, bodyDescription }) }
-
+    const endpoint = { ...this.props.endpoints[this.props.tab.id] }
+    endpoint.bodyDescription = bodyDescription
+    if (this.props.tab.status !== 'NEW') { this.props.update_endpoint(endpoint) }
     return bodyDescription
   }
 
