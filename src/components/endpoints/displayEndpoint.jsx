@@ -1372,11 +1372,12 @@ class DisplayEndpoint extends Component {
       description: ''
     }
     for (let i = 0; i < originalHeaders.length; i++) {
-      if (
-        originalHeaders[i].key === title.split('.')[0] ||
-        originalHeaders[i].key === ''
-      ) {
+      if (originalHeaders[i].key === '' || originalHeaders[i].key === title.split('.')[0]) {
         continue
+      } else if (originalHeaders[i].key.toLowerCase() === title.split('.')[0]) {
+        originalHeaders[i].value = this.identifyBodyType(value)
+        this.setState({ originalHeaders })
+        return
       } else {
         updatedHeaders.push(originalHeaders[i])
       }
