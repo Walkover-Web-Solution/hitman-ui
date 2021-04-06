@@ -170,6 +170,47 @@ class CustomTabs extends Component {
     tabService.newTab({ ...this.props })
   }
 
+  renderHoverTab (tabId) {
+    let x = 1
+    const y = 1
+    x -= this.navRef.current.scrollLeft
+    const styles = {
+      transform: `translate(${x}px, ${y}px)`
+    }
+    const tab = this.props.tabs.tabs[tabId]
+    if (!tab) return
+    if (tab.type === 'page') {
+      if (this.props.pages[tabId]) {
+        const page = this.props.pages[tabId]
+        return (
+          <div className='hover-div' style={styles}>
+            <div className='group-name'>{this.props.groups[page.groupId]?.name}</div>
+            <div className={`${page.groupId ? 'endpoint-name ml-4 arrow-top' : 'page-name'}`}>{page.name}</div>
+          </div>
+        )
+      }
+    } else if (tab.type === 'endpoint') {
+      if (this.props.endpoints[tabId]) {
+        const endpoint = this.props.endpoints[tabId]
+        return (
+          <div className='hover-div' style={styles}>
+            <div className='group-name'>{this.props.groups[endpoint.groupId].name}</div>
+            <div className='d-flex align-items-center'>
+              <div className={`api-label ${endpoint.requestType} request-type-bgcolor ml-4 mt-1 arrow-top`}> {endpoint.requestType} </div>
+              <div className='endpoint-name ml-1'>{this.props.endpoints[tabId].name}</div>
+            </div>
+          </div>
+        )
+      } else {
+        return (
+          <div className='hover-div' style={styles}>
+            <div className='page-name'>Untitled</div>
+          </div>
+        )
+      }
+    }
+  }
+
   render () {
     return (
 
@@ -197,15 +238,18 @@ class CustomTabs extends Component {
             )}
           </div>
           {this.props.tabs.tabsOrder.map((tabId, index) => (
-            <Nav.Item
-              key={tabId}
-              draggable
-              onDragOver={this.handleOnDragOver}
-              onDragStart={() => this.onDragStart(tabId)}
-              onDrop={(e) => this.onDrop(e, tabId)}
-              className={this.props.tabs?.activeTabId === tabId ? 'active' : ''}
-            >
-              {
+            <div key={tabId}>
+              <Nav.Item
+                key={tabId}
+                draggable
+                onDragOver={this.handleOnDragOver}
+                onDragStart={() => this.onDragStart(tabId)}
+                onDrop={(e) => this.onDrop(e, tabId)}
+                className={this.props.tabs?.activeTabId === tabId ? 'active' : ''}
+                onMouseEnter={() => this.setState({ showPreview: true, previewId: tabId })}
+                onMouseLeave={() => this.setState({ showPreview: false, previewId: null })}
+              >
+                {
                 this.props.tabs.tabs[tabId].isModified
                   ? (
                     <i className='fas fa-circle modified-dot-icon' />
@@ -214,21 +258,24 @@ class CustomTabs extends Component {
                       ''
                     )
               }
-              <Nav.Link eventKey={tabId}>
-                <button
-                  className='btn'
-                  onClick={() => tabService.selectTab({ ...this.props }, tabId)}
-                  onDoubleClick={() => {
-                    tabService.disablePreviewMode(tabId)
-                  }}
-                >
-                  {this.renderTabName(tabId)}
+                <Nav.Link eventKey={tabId}>
+                  <button
+                    className='btn'
+                    onClick={() => tabService.selectTab({ ...this.props }, tabId)}
+                    onDoubleClick={() => {
+                      tabService.disablePreviewMode(tabId)
+                    }}
+                  >
+                    {this.renderTabName(tabId)}
+                  </button>
+                </Nav.Link>
+                <button className='btn' onClick={() => this.removeTab(tabId)}>
+                  <i className='uil uil-multiply' />
                 </button>
-              </Nav.Link>
-              <button className='btn' onClick={() => this.removeTab(tabId)}>
-                <i className='uil uil-multiply' />
-              </button>
-            </Nav.Item>
+              </Nav.Item>
+              {this.state.showPreview && tabId === this.state.previewId &&
+              (this.renderHoverTab(tabId, this.tabRef))}
+            </div>
           ))}
           {/* <Nav.Item className='tab-buttons' id='tabs-menu-button'>
           <div className='dropdown'>
