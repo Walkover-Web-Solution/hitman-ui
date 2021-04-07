@@ -114,7 +114,7 @@ class EnvironmentVariables extends Component {
     }
   }
 
-  handleAdd () {
+  handleAdd (val) {
     const environment = { ...this.state.environment }
     const len = this.state.originalVariableNames.length
     const originalVariableNames = [
@@ -143,18 +143,22 @@ class EnvironmentVariables extends Component {
 
     const originalVariableNames = [...this.state.originalVariableNames]
     const updatedVariableNames = [...this.state.updatedVariableNames]
+    let data = {}
     if (name[1] === 'name') {
       updatedVariableNames[name[0]] = e.currentTarget.value
-      this.setState({ updatedVariableNames })
+      data = { updatedVariableNames }
     } else {
       const environment = { ...this.state.environment }
       environment.variables[originalVariableNames[name[0]]][name[1]] =
         e.currentTarget.value
-      this.setState({ environment })
+      data = { environment }
     }
-    if (name[0] === lastIndex.toString()) {
-      this.handleAdd()
-    }
+
+    this.setState(data, () => {
+      if (name[0] === lastIndex.toString()) {
+        this.handleAdd(e.currentTarget.value)
+      }
+    })
   };
 
   handleDelete (index) {
