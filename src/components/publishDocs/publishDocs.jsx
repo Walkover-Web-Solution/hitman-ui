@@ -873,15 +873,6 @@ class PublishDocs extends Component {
           Publish Collection
         </Button>
       )
-    } else {
-      return (
-        <Button
-          variant='btn btn-outline danger ml-4 mt-4'
-          onClick={() => this.unPublishCollection()}
-        >
-          Unpublish Doc
-        </Button>
-      )
     }
   }
 
@@ -967,6 +958,8 @@ class PublishDocs extends Component {
         <div className='modal-title'>Page Settings</div>
         <PublishDocsForm
           {...this.props}
+          isCollectionPublished={this.isCollectionPublished.bind(this)}
+          unPublishCollection={this.unPublishCollection.bind(this)}
           selected_collection_id={this.state.selectedCollectionId}
           isSidebar
           onHide={() => { this.setState({ openPageSettingsSidebar: false }) }}
@@ -995,9 +988,9 @@ class PublishDocs extends Component {
   renderHostedAPIDetials () {
     return (
       <>
-        {this.renderHostedApiHeading('Hosted API Doc')}
+        {this.renderHostedApiHeading('Public API Documentation')}
         <div className='hosted-doc-wrapper'>
-          <div className='d-flex align-items-center my-3 ml-2'>
+          <div className='d-flex align-items-center my-3'>
             {this.rednerHostedAPIDropdown()}
             {this.publishCollections()}
             {this.renderPageSettingButton()}
@@ -1174,7 +1167,7 @@ class PublishDocs extends Component {
     return (
       <>
         <div>
-          <label className='hostes-label'>Hosted API’s</label>
+          <label className='hostes-label'>Collection</label>
           <Dropdown>
             <Dropdown.Toggle variant='' id='dropdown-basic'>
               {this.props.collections[collectionId]?.name || ''}

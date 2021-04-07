@@ -286,6 +286,18 @@ class PublishDocForm extends Component {
   render () {
     return (
       <>
+
+        <div className='publish-mo-btn'>
+          {
+            this.props.isSidebar && this.props.isCollectionPublished() &&
+              <Button
+                variant='btn btn-outline danger ml-4 mt-4'
+                onClick={() => this.props.unPublishCollection()}
+              >
+                Unpublish Doc
+              </Button>
+          }
+        </div>
         <div className='small-input'>
           {this.renderInput('title', true)}
           {this.renderInput('domain')}
