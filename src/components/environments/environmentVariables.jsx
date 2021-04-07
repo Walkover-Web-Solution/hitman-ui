@@ -114,7 +114,7 @@ class EnvironmentVariables extends Component {
     }
   }
 
-  handleAdd (val) {
+  handleAdd () {
     const environment = { ...this.state.environment }
     const len = this.state.originalVariableNames.length
     const originalVariableNames = [
