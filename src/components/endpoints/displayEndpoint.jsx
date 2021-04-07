@@ -37,6 +37,7 @@ import LoginSignupModal from '../main/loginSignupModal'
 import PublicSampleResponse from './publicSampleResponse'
 import Notes from './notes'
 import ReactHtmlParser from 'react-html-parser'
+import bodyDescriptionService from './bodyDescriptionService'
 const shortid = require('shortid')
 
 const status = require('http-status')
@@ -857,6 +858,10 @@ class DisplayEndpoint extends Component {
       this.openEndpointFormModal()
     } else {
       const body = this.state.data.body
+      const bodyDescription = bodyDescriptionService.handleUpdate(false, {
+        body_description: this.state.bodyDescription,
+        body: body.value
+      })
       if (this.state.data.body.type === 'raw') {
         body.value = this.parseBody(body.value)
       }
@@ -877,7 +882,7 @@ class DisplayEndpoint extends Component {
             : null,
         bodyDescription:
           this.state.data.body.type === 'JSON'
-            ? this.state.bodyDescription
+            ? bodyDescription
             : {},
         authorizationType: this.state.authType
       }
