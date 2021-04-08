@@ -57,7 +57,8 @@ class OpenApiForm extends Component {
     this.props.onHide()
   }
 
-  handleSubmit() {
+  handleSubmit(e) {
+    e.preventDefault();
     let errors = {};
     let FileError = null;
     errors = this.validate({ type: this.state.importType }, { type: Joi.string().required() })
@@ -112,7 +113,7 @@ class OpenApiForm extends Component {
         
         <button
           className='btn btn-primary btn-lg mr-2'
-          onClick={() => this.handleSubmit()}
+          onClick={(e) => this.handleSubmit(e)}
         >
           Import
         </button>
