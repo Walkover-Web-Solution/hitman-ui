@@ -1372,11 +1372,12 @@ class DisplayEndpoint extends Component {
       description: ''
     }
     for (let i = 0; i < originalHeaders.length; i++) {
-      if (
-        originalHeaders[i].key === title.split('.')[0] ||
-        originalHeaders[i].key === ''
-      ) {
+      if (originalHeaders[i].key === '' || originalHeaders[i].key === title.split('.')[0]) {
         continue
+      } else if (originalHeaders[i].key.toLowerCase() === title.split('.')[0]) {
+        originalHeaders[i].value = this.identifyBodyType(value)
+        this.setState({ originalHeaders })
+        return
       } else {
         updatedHeaders.push(originalHeaders[i])
       }
@@ -1749,6 +1750,14 @@ class DisplayEndpoint extends Component {
     this.setBaseUrl(host, selectedHost)
   }
 
+  alterEndpointName (name) {
+    if (name) {
+      const obj = this.state.data
+      obj.name = name
+      this.setState({ data: obj })
+    }
+  }
+
   render () {
     this.endpointId = this.props.endpointId
       ? this.props.endpointId
@@ -1856,7 +1865,9 @@ class DisplayEndpoint extends Component {
                       endpoint={this.state.endpoint}
                       data={this.state.data}
                       old_description={this.state.oldDescription}
+                      groupId={this.state.groupId ? this.state.groupId : null}
                       props_from_parent={this.propsFromDescription.bind(this)}
+                      alterEndpointName={(name) => this.alterEndpointName(name)}
                     />
                   </div>
                   )
