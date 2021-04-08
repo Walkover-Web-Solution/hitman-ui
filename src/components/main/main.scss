@@ -648,6 +648,7 @@ label.data-type {
   background: #2A2B35;
   position: relative;
   transition: 300ms;
+  height: calc(100vh - 150px);
 }
 
 .code-heading {
@@ -1199,8 +1200,8 @@ button.editBtn {
 }
 
 .hm-sidebar .hm-sidebar-outer-block {
-  padding: 15px 0px 250px 0;
-  height: 78vh;
+  padding: 15px 0 50px;
+  height: 80vh;
   overflow: auto;
   float: left;
   width: 100%;
@@ -1381,7 +1382,7 @@ button.editBtn {
     border-radius: 2px;
     background-color: #ccc;
   }
- 
+
 
   input:checked~.checkmark {
     border-color: #E98A36;
@@ -2414,9 +2415,12 @@ span.endpointNameWrapper {
 
     .user-notification-badge {
       position: absolute;
-      top: -7px;
+      top: -5px;
       right: 7px;
       height: 14px;
+      width: 14px;
+      border-radius: 30px;
+      padding: 1px;
     }
   }
 
@@ -2788,4 +2792,7 @@ div#history-tab-button {
 
 div#history-tab-button button#dropdown-basic {
   padding: 7px 10px;
+}
+.publish-mo-btn {
+  float: right;
 }
