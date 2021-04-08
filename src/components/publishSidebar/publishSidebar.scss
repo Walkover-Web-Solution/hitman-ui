@@ -2,7 +2,7 @@
   border: 0.5px solid #F3F3F3;
 
   .items{
-    height: 65vh;
+    height: calc(100vh - 287px);
     overflow-y: auto;
   }
   .collection-name{
