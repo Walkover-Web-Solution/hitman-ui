@@ -46,7 +46,9 @@ class Form extends Component {
     const { error } = Joi.validate(this.state.data, this.schema, options)
     if (!error) return null
     const errors = {}
-    for (const item of error.details) errors[item.path[0]] = item.message
+    for (const item of error.details) {
+      if (!errors[item.path[0]]) { errors[item.path[0]] = item.message }
+    }
     return errors
   };
 
@@ -65,7 +67,7 @@ class Form extends Component {
   handleChange = (e) => {
     const data = { ...this.state.data }
     data[e.currentTarget.name] = e.currentTarget.value
-    this.setState({ data })
+    this.setState({ errors: {}, data })
   };
 
   getSaveDisableStatus (notdefined, active) {

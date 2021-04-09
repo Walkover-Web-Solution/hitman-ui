@@ -6,6 +6,8 @@ import { importVersion } from '../collectionVersions/redux/collectionVersionsAct
 import Form from '../common/form'
 import { onEnter } from '../common/utility'
 
+const apiUrl = process.env.REACT_APP_API_URL
+
 const mapDispatchToProps = (dispatch) => {
   return {
     import_version: (importLink, shareIdentifier, collectionId) =>
@@ -21,9 +23,20 @@ class ShareVersionForm extends Form {
       },
       errors: {}
     }
-
+    this.pattern = new RegExp(`^${apiUrl}/share/[\\w]+$`, 'g')
     this.schema = {
-      shareVersionLink: Joi.string().required().label('Public Link')
+      shareVersionLink: Joi.string().regex(this.pattern).required().error(errors => {
+        errors.forEach(err => {
+          switch (err.type) {
+            case 'string.regex.base':
+              err.message = `Link should be valid version shareable link for example ${apiUrl}/share/id`
+              break
+            default:
+              break
+          }
+        })
+        return errors
+      }).label('Public Link')
     }
   }
 

@@ -219,6 +219,23 @@ $border-color: #E5E5E5;
   border-top-right-radius: 0px;
 }
 
+#add-new-tab-button :hover
+{
+  background-color: #e0e0e0;
+  svg{
+    path{
+      stroke: #585858fa;
+    }
+  }
+}
+#history-tab-button .dropdown :hover{
+  background-color: #e0e0e0;
+  svg{
+    path{
+      stroke: #585858fa;
+    }
+  }
+}
 .tabs-name {
   white-space: nowrap;
   overflow: hidden;
