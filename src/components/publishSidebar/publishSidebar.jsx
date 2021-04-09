@@ -223,6 +223,9 @@ export class PublishSidebar extends Component {
       if (itemtype === 'endpoint') {
         this.handleBulkCheck(e, 'group', this.state.endpoints[itemId]?.groupId)
       }
+      if (itemtype === 'groupPage') {
+        this.handleBulkCheck(e, 'group', this.state.pages[itemId]?.groupId)
+      }
     })
   }
 
@@ -239,6 +242,9 @@ export class PublishSidebar extends Component {
 
       if (itemtype === 'groupPage' && this.state.checkedData[`check.group.${this.state.pages[itemId]?.groupId}`]) {
         checkedData[`check.group.${this.state.pages[itemId]?.groupId}`] = e.target.checked
+        if (this.state.checkedData[`check.version.${this.state.groups[this.state.pages[itemId]?.groupId]?.versionId}`]) {
+          checkedData[`check.version.${this.state.groups[this.state.pages[itemId]?.groupId]?.versionId}`] = e.target.checked
+        }
       }
 
       if (itemtype === 'versionPage' && this.state.checkedData[`check.version.${this.state.pages[itemId]?.versionId}`]) {
