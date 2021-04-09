@@ -1368,3 +1368,9 @@ table#custom-generic-table {
   color: #d61124;
   font-weight: 400
 }
+
+.save-as-sidebar-container::-webkit-scrollbar {
+  display: none;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

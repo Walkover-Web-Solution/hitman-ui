@@ -234,7 +234,8 @@ class SaveAsSidebar extends Form {
       right: '0px',
       height: '100vh',
       width: '35vw',
-      boxShadow: '-25px 25px 43px rgba(0, 0, 0, 0.07)'
+      boxShadow: '-25px 25px 43px rgba(0, 0, 0, 0.07)',
+      overflow: 'auto'
     }
     const darkBackgroundStyle = {
       position: 'fixed',
@@ -254,7 +255,7 @@ class SaveAsSidebar extends Form {
         >
           {' '}
         </div>
-        <div style={saveAsSidebarStyle}>
+        <div style={saveAsSidebarStyle} className='save-as-sidebar-container'>
           {this.showCollectionForm()}
           {this.showCollectionVersionForm()}
           {this.showGroupForm()}

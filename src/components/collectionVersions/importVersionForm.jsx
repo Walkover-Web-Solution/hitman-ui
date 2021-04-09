@@ -23,7 +23,7 @@ class ShareVersionForm extends Form {
       },
       errors: {}
     }
-    this.pattern = new RegExp(`^${apiUrl}/share/[\\w]+$`, 'g')
+    this.pattern = new RegExp(`^${apiUrl}/share/[\\w|-]+$`, 'g')
     this.schema = {
       shareVersionLink: Joi.string().regex(this.pattern).required().error(errors => {
         errors.forEach(err => {
