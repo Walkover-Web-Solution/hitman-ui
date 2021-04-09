@@ -29,6 +29,17 @@ const stateIcon = {
   Approved: <GlobeIcon />
 }
 
+const defaultData = {
+  versionData: {
+    pages: [],
+    groups: []
+  },
+  groupData: {
+    pages: [],
+    endpoints: []
+  }
+}
+
 export class PublishSidebar extends Component {
   constructor (props) {
     super(props)
@@ -58,8 +69,9 @@ export class PublishSidebar extends Component {
 
   componentDidUpdate (prevProps, prevState) {
     if (this.state.selectedCollectionId !== prevState.selectedCollectionId) {
-      this.getAllData()
-      this.setState({ checkedData: {} })
+      this.setState({ checkedData: {} }, () => {
+        this.getAllData()
+      })
     }
   }
 
@@ -182,7 +194,7 @@ export class PublishSidebar extends Component {
   }
 
   handleVersionBulkCheck (data, newData, itemId) {
-    const { pages, groups } = this.state.versionData[data[itemId]?.versionId]
+    const { pages, groups } = this.state.versionData[data[itemId]?.versionId] || defaultData.versionData
     if (this.findCheckedItems(pages, 'versionPage') && this.findCheckedItems(groups, 'group')) {
       newData[`check.version.${data[itemId]?.versionId}`] = true
     }
@@ -190,7 +202,7 @@ export class PublishSidebar extends Component {
   }
 
   handleGroupBulkCheck (data, newData, itemId) {
-    const { pages, endpoints } = this.state.groupData[data[itemId]?.groupId]
+    const { pages, endpoints } = this.state.groupData[data[itemId]?.groupId] || defaultData.groupData
     if (this.findCheckedItems(endpoints, 'endpoint') && this.findCheckedItems(pages, 'groupPage')) {
       newData[`check.group.${data[itemId]?.groupId}`] = true
     }
