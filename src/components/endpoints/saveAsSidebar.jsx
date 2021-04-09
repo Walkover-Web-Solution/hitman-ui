@@ -366,7 +366,7 @@ class SaveAsSidebar extends Form {
                         )}
                 </ul>
               </div>
-              <div className='text-right mt-5'>
+              <div className='mt-5'>
                 <button
                   className='btn btn-secondary outline btn-lg mr-2'
                   onClick={() => this.props.onHide()}
