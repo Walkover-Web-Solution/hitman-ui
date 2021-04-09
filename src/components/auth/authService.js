@@ -5,6 +5,8 @@ const signUpNotifierUrl = process.env.REACT_APP_SIGN_UP_NOTIFIER_URL
 const tokenKey = 'token'
 const profileKey = 'profile'
 const orgKey = 'organisation'
+const ssoURL = process.env.REACT_APP_SOCKET_SSO_URL
+const uiURL = process.env.REACT_APP_UI_URL
 http.setJwt(`Bearer ${getJwt()}`)
 
 export function isAdmin () {
@@ -39,10 +41,12 @@ export function loginWithJwt (jwt) {
   window.localStorage.setItem(tokenKey, jwt)
 }
 export function logout () {
-  http.get(apiUrl + '/logout')
-  window.localStorage.removeItem(tokenKey)
-  window.localStorage.removeItem(profileKey)
-  window.localStorage.removeItem(orgKey)
+  http.get(apiUrl + '/logout').then(() => {
+    window.localStorage.removeItem(tokenKey)
+    window.localStorage.removeItem(profileKey)
+    window.localStorage.removeItem(orgKey)
+    window.location = `${ssoURL}/logout?redirect_uri=${uiURL}/login`
+  })
 }
 export function getCurrentUser () {
   try {

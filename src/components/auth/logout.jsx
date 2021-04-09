@@ -4,7 +4,7 @@ import auth from './authService'
 class Logout extends Component {
   componentDidMount () {
     auth.logout()
-    window.location = '/'
+    // window.location = '/'
   }
 
   render () {
