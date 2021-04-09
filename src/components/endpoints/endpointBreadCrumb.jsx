@@ -42,6 +42,7 @@ class EndpointBreadCrumb extends Component {
         previousTitle: this.props.data.name
       })
     }
+    this.changeEndpointName()
   }
 
   componentDidUpdate (prevProps, prevState) {
@@ -60,6 +61,15 @@ class EndpointBreadCrumb extends Component {
           previousTitle: this.props.pages[pageId].name
         })
       }
+    }
+    this.changeEndpointName()
+  }
+
+  changeEndpointName () {
+    const endpoint = this.props.endpoint
+    if (endpoint && (!endpoint.id) && this.props.data.name === '' && this.props.groupId) {
+      this.props.alterEndpointName('Untitled')
+      this.setState({ endpointTitle: 'Untitled', previousTitle: 'Untitled' })
     }
   }
 
@@ -119,10 +129,6 @@ class EndpointBreadCrumb extends Component {
 
   render () {
     this.props.isEndpoint ? this.setEndpointData() : this.setPageData()
-    const endpoint = this.props.endpoint
-    if (endpoint && (!endpoint.id) && this.state.endpointTitle === '' && this.props.groupId) {
-      this.props.alterEndpointName('Untitled')
-    }
     return (
       <div className='endpoint-header'>
         <div
