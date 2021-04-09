@@ -217,26 +217,34 @@ export class PublishSidebar extends Component {
     })
   }
 
+  handleCheckboxUnderGroup (e, data, itemId, checkedData) {
+    if (this.state.checkedData[`check.group.${data[itemId]?.groupId}`]) {
+      checkedData[`check.group.${data[itemId]?.groupId}`] = e.target.checked
+      if (this.state.checkedData[`check.version.${this.state.groups[data[itemId]?.groupId]?.versionId}`]) {
+        checkedData[`check.version.${this.state.groups[data[itemId]?.groupId]?.versionId}`] = e.target.checked
+      }
+    }
+    return checkedData
+  }
+
+  handleCheckboxUnderVersion (e, data, itemId, checkedData) {
+    if (this.state.checkedData[`check.version.${data[itemId]?.versionId}`]) {
+      checkedData[`check.version.${data[itemId]?.versionId}`] = e.target.checked
+    }
+    return checkedData
+  }
+
   handleSidebarCheckbox (e, itemtype, itemId) {
     if (itemtype === 'groupPage' || itemtype === 'versionPage' || itemtype === 'endpoint') {
-      const checkedData = { ...this.state.checkedData }
+      let checkedData = { ...this.state.checkedData }
       const prevChoice = !this.state.checkedData[`check.${e.target.name}`]
-      if (itemtype === 'endpoint' && this.state.checkedData[`check.group.${this.state.endpoints[itemId]?.groupId}`]) {
-        checkedData[`check.group.${this.state.endpoints[itemId]?.groupId}`] = e.target.checked
-        if (this.state.checkedData[`check.version.${this.state.groups[this.state.endpoints[itemId]?.groupId]?.versionId}`]) {
-          checkedData[`check.version.${this.state.groups[this.state.endpoints[itemId]?.groupId]?.versionId}`] = e.target.checked
-        }
+
+      if (itemtype === 'endpoint' || itemtype === 'groupPage') {
+        checkedData = { ...checkedData, ...this.handleCheckboxUnderGroup(e, itemtype === 'endpoint' ? this.state.endpoints : this.state.pages, itemId, checkedData) }
       }
 
-      if (itemtype === 'groupPage' && this.state.checkedData[`check.group.${this.state.pages[itemId]?.groupId}`]) {
-        checkedData[`check.group.${this.state.pages[itemId]?.groupId}`] = e.target.checked
-        if (this.state.checkedData[`check.version.${this.state.groups[this.state.pages[itemId]?.groupId]?.versionId}`]) {
-          checkedData[`check.version.${this.state.groups[this.state.pages[itemId]?.groupId]?.versionId}`] = e.target.checked
-        }
-      }
-
-      if (itemtype === 'versionPage' && this.state.checkedData[`check.version.${this.state.pages[itemId]?.versionId}`]) {
-        checkedData[`check.version.${this.state.pages[itemId]?.versionId}`] = e.target.checked
+      if (itemtype === 'versionPage') {
+        checkedData = { ...checkedData, ...this.handleCheckboxUnderVersion(e, this.state.pages, itemId, checkedData) }
       }
 
       checkedData[`check.${e.target.name}`] = prevChoice
@@ -247,10 +255,7 @@ export class PublishSidebar extends Component {
 
     if (itemtype === 'group') {
       let checkedGroupData = { ...this.state.checkedData }
-
-      if (this.state.checkedData[`check.version.${this.state.groups[itemId]?.versionId}`]) {
-        checkedGroupData[`check.version.${this.state.groups[itemId]?.versionId}`] = false
-      }
+      checkedGroupData = { ...checkedGroupData, ...this.handleCheckboxUnderVersion(e, this.state.groups, itemId, checkedGroupData) }
 
       checkedGroupData = { ...checkedGroupData, ...this.handleGroupCheckbox(itemId, e) }
       this.setState({ checkedData: { ...this.state.checkedData, ...checkedGroupData } },
