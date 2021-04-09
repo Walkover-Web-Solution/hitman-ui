@@ -54,18 +54,11 @@ export class PublishSidebar extends Component {
         this.getAllData()
       })
     }
-    // this.makeVersionData()
-    // this.makeGroupData()
   }
 
   componentDidUpdate (prevProps, prevState) {
-    if (prevProps.endpoints !== this.props.endpoints || prevProps.groups !== this.props.groups || prevProps.pages !== this.props.pages || prevProps.versions !== this.props.versions) {
-      // this.makeVersionData()
-      // this.makeGroupData()
-      this.getAllData()
-    }
-
     if (this.state.selectedCollectionId !== prevState.selectedCollectionId) {
+      this.getAllData()
       this.setState({ checkedData: {} })
     }
   }
@@ -139,7 +132,7 @@ export class PublishSidebar extends Component {
   }
 
   makeGroupData () {
-    const groups = {}
+    let groups = {}
     if (Object.keys(this.state.groups).length) {
       Object.keys(this.state.groups).forEach((groupId) => {
         groups[groupId] = {
@@ -147,20 +140,19 @@ export class PublishSidebar extends Component {
           endpoints: []
         }
       })
-
-      Object.values(this.state.pages).forEach((page) => {
-        if (page?.groupId) {
-          groups[page?.groupId].pages = [...groups[page?.groupId].pages, page?.id]
-        }
-      })
-
-      Object.values(this.state.endpoints).forEach((endpoint) => {
-        if (endpoint?.groupId) {
-          groups[endpoint?.groupId].endpoints = [...groups[endpoint?.groupId].endpoints, endpoint?.id]
-        }
-      })
+      groups = this.selectRequiredData(groups, this.state.pages, 'pages')
+      groups = this.selectRequiredData(groups, this.state.endpoints, 'endpoints')
     }
     this.setState({ groupData: groups })
+  }
+
+  selectRequiredData (groups, data, type) {
+    Object.values(data).forEach((item) => {
+      if (item?.groupId) {
+        groups[item?.groupId][type] = [...groups[item?.groupId][type], item?.id]
+      }
+    })
+    return groups
   }
 
   handleGroupCheckbox (groupId, e) {
@@ -189,34 +181,30 @@ export class PublishSidebar extends Component {
     return status
   }
 
+  handleVersionBulkCheck (data, newData, itemId) {
+    const { pages, groups } = this.state.versionData[data[itemId]?.versionId]
+    if (this.findCheckedItems(pages, 'versionPage') && this.findCheckedItems(groups, 'group')) {
+      newData[`check.version.${data[itemId]?.versionId}`] = true
+    }
+    return newData
+  }
+
+  handleGroupBulkCheck (data, newData, itemId) {
+    const { pages, endpoints } = this.state.groupData[data[itemId]?.groupId]
+    if (this.findCheckedItems(endpoints, 'endpoint') && this.findCheckedItems(pages, 'groupPage')) {
+      newData[`check.group.${data[itemId]?.groupId}`] = true
+    }
+    return newData
+  }
+
   handleBulkCheck (e, itemtype, itemId) {
-    const newData = { ...this.state.checkedData }
-    if (itemtype === 'endpoint') {
-      const { pages, endpoints } = this.state.groupData[this.state.endpoints[itemId]?.groupId]
-      if (this.findCheckedItems(endpoints, 'endpoint') && this.findCheckedItems(pages, 'groupPage')) {
-        newData[`check.group.${this.state.endpoints[itemId]?.groupId}`] = true
-      }
+    let newData = { ...this.state.checkedData }
+    if (itemtype === 'groupPage' || itemtype === 'endpoint') {
+      newData = this.handleGroupBulkCheck(itemtype === 'groupPage' ? this.state.pages : this.state.endpoints, newData, itemId)
     }
 
-    if (itemtype === 'groupPage') {
-      const { pages, endpoints } = this.state.groupData[this.state.pages[itemId]?.groupId]
-      if (this.findCheckedItems(pages, 'groupPage') && this.findCheckedItems(endpoints, 'endpoint')) {
-        newData[`check.group.${this.state.pages[itemId]?.groupId}`] = true
-      }
-    }
-
-    if (itemtype === 'versionPage') {
-      const { pages, groups } = this.state.versionData[this.state.pages[itemId]?.versionId]
-      if (this.findCheckedItems(pages, 'versionPage') && this.findCheckedItems(groups, 'group')) {
-        newData[`check.version.${this.state.pages[itemId]?.versionId}`] = true
-      }
-    }
-
-    if (itemtype === 'group') {
-      const { pages, groups } = this.state.versionData[this.state.groups[itemId]?.versionId]
-      if (this.findCheckedItems(groups, 'group') && this.findCheckedItems(pages, 'versionPage')) {
-        newData[`check.version.${this.state.groups[itemId]?.versionId}`] = true
-      }
+    if (itemtype === 'group' || itemtype === 'versionPage') {
+      newData = this.handleVersionBulkCheck(itemtype === 'versionPage' ? this.state.pages : this.state.groups, newData, itemId)
     }
 
     this.setState({ checkedData: { ...this.state.checkedData, ...newData } }, () => {
