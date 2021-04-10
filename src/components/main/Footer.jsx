@@ -2,13 +2,20 @@ import React from 'react'
 
 function Footer () {
   return (
-    <footer>
-      <div className='footerWrapper'>
-        <p>
-          <span>Love</span> developer. <span>♥ </span> <a rel='noopener noreferrer' target='_blank' href='http://viasocket.com'>ViaSocket</a>
-        </p>
+
+    <div className='inner-wrapper'>
+      <div className='community-wrapper'>
+        <p>Engage and network with the entire viasocket community. Be a part of the discussion right now</p>
+        <a href='https://community.viasocket.com/' rel='noreferrer' target='_blank'>Community </a>
       </div>
-    </footer>
+      <footer>
+        <div className='footerWrapper'>
+          <p>
+            <span>Love</span> developer. <span>♥ </span> <a rel='noopener noreferrer' target='_blank' href='http://viasocket.com'>ViaSocket</a>
+          </p>
+        </div>
+      </footer>
+    </div>
   )
 }
 

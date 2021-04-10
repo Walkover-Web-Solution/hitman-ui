@@ -23,16 +23,14 @@ $border-color: #E5E5E5;
     width: calc(100%);
     background: #fff;
 
-    .item-wrp {
-      // width: calc(100vw - 560px);
-      // width: 100%;
-    }
+
 
     .nav {
       height: 100%;
       overflow: hidden;
       border-top: .5px solid #E6DBD4;
       border-bottom: .5px solid #E6DBD4;
+      border-top-left-radius: 5px;
 
       .nav-item {
         display: flex;
@@ -47,8 +45,8 @@ $border-color: #E5E5E5;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        max-width: 220px;
-        min-width: 220px;
+        max-width: 180px;
+        min-width: 180px;
         background-color: #ffffff;
         position: relative;
         padding: 0 5px;
@@ -79,10 +77,6 @@ $border-color: #E5E5E5;
             width: 100%;
             text-align: left;
             padding: 0px;
-            // opacity: 0.8;
-            // white-space: nowrap;
-            // text-overflow: ellipsis;
-            // overflow: hidden;
             font-size: 13px;
             color: #333;
             min-width: 0;
@@ -107,6 +101,7 @@ $border-color: #E5E5E5;
         }
 
         >.btn {
+          display: none;
           padding-right: 5px;
           font-size: 14px;
           border: none;
@@ -280,6 +275,10 @@ $border-color: #E5E5E5;
 .tabs-name label.endpoint-name {
   color: #E98A36;
   font-size: 13px;
+  width: 115px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .content-header .tabs-container .nav .nav-item:after {
@@ -332,9 +331,11 @@ $border-color: #E5E5E5;
     text-align: left;
     margin-top: 14px;
   }
-  .arrow-top{
+
+  .arrow-top {
     position: relative;
   }
+
   .arrow-top:before {
     content: '';
     position: absolute;
@@ -347,5 +348,13 @@ $border-color: #E5E5E5;
     z-index: 99;
     border-width: 0 0 1px 1px;
     top: -3px;
+  }
 }
+
+.content-header .tabs-container .nav .nav-item:hover>.btn {
+  display: inline-block;
+}
+
+.content-header .tabs-container .nav>div:nth-child(2) .nav-item {
+  border-left: 0.5px solid #E6DBD4;
 }
