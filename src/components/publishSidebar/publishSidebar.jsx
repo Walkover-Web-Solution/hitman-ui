@@ -61,9 +61,7 @@ export class PublishSidebar extends Component {
   componentDidMount () {
     const selectedCollectionId = this.props.collectionId
     if (selectedCollectionId) {
-      this.setState({ selectedCollectionId }, () => {
-        this.getAllData()
-      })
+      this.setState({ selectedCollectionId })
     }
   }
 
@@ -76,11 +74,14 @@ export class PublishSidebar extends Component {
   }
 
   getAllData () {
+    // console.log('hello calculations')
+    const s = +new Date()
     const collectionId = this.state.selectedCollectionId || this.props.collectionId
     const versions = extractCollectionInfoService.extractVersionsFromCollectionId(collectionId, this.props)
     const groups = extractCollectionInfoService.extractGroupsFromVersions(versions, this.props)
     const pages = extractCollectionInfoService.extractPagesFromVersions(versions, this.props)
     const endpoints = extractCollectionInfoService.extractEndpointsFromGroups(groups, this.props)
+    console.log('hello', +new Date() - s)
     this.setState({ versions, groups, pages, endpoints, selectedCollectionId: collectionId }, () => {
       this.makeVersionData()
       this.makeGroupData()
@@ -303,7 +304,7 @@ export class PublishSidebar extends Component {
   renderVersionPages (version) {
     return (
       <div>
-        {Object.values(this.props.pages).filter(
+        {Object.values(this.state.pages).filter(
           (page) =>
             page.versionId === version.id && page.groupId === null
         ).map((page, index) => (
@@ -322,7 +323,7 @@ export class PublishSidebar extends Component {
   renderGroupPages (group) {
     return (
       <div>
-        {Object.values(this.props.pages).filter(
+        {Object.values(this.state.pages).filter(
           (page) =>
             page.groupId === group.id
         ).map((page, index) => (
@@ -341,7 +342,7 @@ export class PublishSidebar extends Component {
   renderEndpoints (group) {
     return (
       <div>
-        {Object.values(this.props.endpoints).filter(
+        {Object.values(this.state.endpoints).filter(
           (endpoint) =>
             endpoint.groupId ===
                 group.id
@@ -421,31 +422,28 @@ export class PublishSidebar extends Component {
         <div className='publish-versions-list'>
           <div className='p-3 collection-name'>{this.props.collections[this.state.selectedCollectionId]?.name}</div>
           <div className='items'>
-            {Object.values(this.props.versions).filter(
-              (version) =>
-                version.collectionId ===
-                  this.state.selectedCollectionId
-            ).map((version, index) => (
-              <div className='d-flex mx-3 mt-3' key={version?.id}>
-                <div className=' d-flex align-items-start w-100'>
-                  <span className='mr-2 sidebar-version-checkbox'>{this.renderCheckBox('version', version?.id)}</span>
-                  <Accordion className='version-accordian w-100' defaultActiveKey={version?.id}>
-                    <Accordion.Toggle eventKey={version?.id} className='version-accordian-toggle w-100' onClick={() => this.toggleVersion(version?.id)}>
-                      <div className='d-flex align-items-center justify-content-between'>
-                        <div className=''>{version?.number}</div>
-                        <div className={['down-arrow', this.state.versionsToggle[version.id] ? 'rotate-toggle' : ' '].join(' ')}> <DownChevron /> </div>
-                      </div>
-                    </Accordion.Toggle>
-                    <Accordion.Collapse eventKey={version?.id} className='px-3 publish-sidebar-accordian-collapse'>
-                      <div className='my-2'>
-                        {this.renderVersionPages(version)}
-                        {this.renderGroups(version)}
-                      </div>
-                    </Accordion.Collapse>
-                  </Accordion>
+            {Object.values(this.state.versions)
+              .map((version, index) => (
+                <div className='d-flex mx-3 mt-3' key={version?.id}>
+                  <div className=' d-flex align-items-start w-100'>
+                    <span className='mr-2 sidebar-version-checkbox'>{this.renderCheckBox('version', version?.id)}</span>
+                    <Accordion className='version-accordian w-100' defaultActiveKey={version?.id}>
+                      <Accordion.Toggle eventKey={version?.id} className='version-accordian-toggle w-100' onClick={() => this.toggleVersion(version?.id)}>
+                        <div className='d-flex align-items-center justify-content-between'>
+                          <div className=''>{version?.number}</div>
+                          <div className={['down-arrow', this.state.versionsToggle[version.id] ? 'rotate-toggle' : ' '].join(' ')}> <DownChevron /> </div>
+                        </div>
+                      </Accordion.Toggle>
+                      <Accordion.Collapse eventKey={version?.id} className='px-3 publish-sidebar-accordian-collapse'>
+                        <div className='my-2'>
+                          {this.renderVersionPages(version)}
+                          {this.renderGroups(version)}
+                        </div>
+                      </Accordion.Collapse>
+                    </Accordion>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
           </div>
         </div>
       </div>
