@@ -67,7 +67,7 @@ workflows:
               only:
                 - master
           context:
-            - dev
+            - gke-dev
             - hitman-ui-dev
 
       - Deploy-to-GKE:
@@ -78,7 +78,7 @@ workflows:
               only:
                 - master
           context:
-            - dev
+            - gke-dev
             - hitman-ui-dev
 
   Build_Deploy_Prod:
