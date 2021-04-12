@@ -66,7 +66,9 @@ export class PublishSidebar extends Component {
   }
 
   componentDidUpdate (prevProps, prevState) {
-    if (this.state.selectedCollectionId !== prevState.selectedCollectionId) {
+    if (this.state.selectedCollectionId !== prevState.selectedCollectionId ||
+        (this.props.endpoints !== prevProps.endpoints || this.props.groups !== prevProps.groups ||
+           this.props.pages !== prevProps.pages || this.props.versions !== prevProps.versions)) {
       this.setState({ checkedData: {} }, () => {
         this.getAllData()
       })
@@ -74,14 +76,11 @@ export class PublishSidebar extends Component {
   }
 
   getAllData () {
-    // console.log('hello calculations')
-    const s = +new Date()
     const collectionId = this.state.selectedCollectionId || this.props.collectionId
     const versions = extractCollectionInfoService.extractVersionsFromCollectionId(collectionId, this.props)
     const groups = extractCollectionInfoService.extractGroupsFromVersions(versions, this.props)
     const pages = extractCollectionInfoService.extractPagesFromVersions(versions, this.props)
     const endpoints = extractCollectionInfoService.extractEndpointsFromGroups(groups, this.props)
-    console.log('hello', +new Date() - s)
     this.setState({ versions, groups, pages, endpoints, selectedCollectionId: collectionId }, () => {
       this.makeVersionData()
       this.makeGroupData()
