@@ -49,3 +49,23 @@ a {
 .Tabs {
   padding: 10;
 }
+
+
+.communti-btn-wrapper a {
+  font-size: 12px;
+  line-height: 20px;
+  text-align: center;
+  text-transform: uppercase;
+  color: #8A8A8A;
+  border: 1px solid #F29F48;
+  padding: 11px 18px;
+  background: #fff;
+  border-top-right-radius: 5px;
+  border-top-left-radius: 5px;
+}
+
+.communti-btn-wrapper {
+  position: fixed;
+  right: -33px;
+  transform: rotate(-90deg);
+}
