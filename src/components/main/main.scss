@@ -432,28 +432,57 @@ label.data-type {
 
 .public-dashboard-searchbox {
   display: block;
-  min-width: 500px;
   position: relative;
+  max-width: 700px;
+  margin: auto;
 
   >i {
     position: absolute;
     left: 10px;
     top: 0;
     bottom: 0;
-    line-height: 40px;
+    color: #898585;
+    margin: auto;
+    height: 22px;
   }
 
   >input {
     width: 100%;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    height: 40px;
-    border-radius: 3px;
-    padding: 0 20px 0 40px;
-    color: #ffffff;
+    border-radius: 8px;
+    padding: 0 20px 0 40px; 
+    height: 55px;
   }
 }
+.mar-top-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px 0;
+}
 
+.mar-top-left-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.mar-top-left-wrapper .public-dashboard-action {
+  margin-left: 20px;
+}
+
+.mar-top-left-wrapper a {
+  text-decoration: none!important;
+  color: #fff!important;
+}
+
+.searchWrapper h1 {
+  text-align: center;
+}
+
+.searchWrapper h3 {
+  color: #fff!important;
+  text-align: center;
+  font-weight: 400!important;
+  margin-top: 0!important;
+}
 .public-dashboard-header {
   background: #252d30;
   color: #fff;
@@ -462,10 +491,7 @@ label.data-type {
   .public-dashboard-container {
     max-width: 1040px;
     margin: 0 auto;
-    padding: 0 25px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    padding: 10px 25px 45px ;  
   }
 
   .public-dashboard-user-login {
@@ -2809,7 +2835,11 @@ div#history-tab-button button#dropdown-basic {
   margin: 35px 5% 0;
   float: left;
 }
-
+.mar-righ-wrapper .hitman-logo {
+  font-weight: 700;
+  font-size: 22px;
+  height: auto;
+}
 .community-wrapper p {
   margin: 0;
   font-style: normal;
@@ -2819,7 +2849,9 @@ div#history-tab-button button#dropdown-basic {
   margin-right: 35px;
   color: #898989;
 }
-
+.searchWrapper {
+  margin-top: 40px;
+}
 .community-wrapper a {
   font-weight: 600;
   font-size: 12px;
@@ -2832,3 +2864,17 @@ div#history-tab-button button#dropdown-basic {
   padding: 7px 18px;
   background: #fff;
 } 
+.mar-righ-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.marketplace {
+  margin-left: 18px;
+}
+
+.marketplace * {
+  text-decoration: none!important;
+  color: #fff!important;
+  font-size: 22px;
+}
