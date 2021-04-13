@@ -2,10 +2,10 @@ import publicEndpointsService from '../publicEndpointsService.js'
 import publicEndpointsActionTypes from './publicEndpointsActionTypes'
 import publicPageService from '../publicPageService'
 
-export const fetchAllPublicEndpoints = (history, collectionIdentifier) => {
+export const fetchAllPublicEndpoints = (history, collectionIdentifier, domain) => {
   return (dispatch) => {
     publicEndpointsService
-      .fetchAll(collectionIdentifier)
+      .fetchAll(collectionIdentifier, domain)
       .then((response) => {
         dispatch(onPublicEndpointsFetched(response.data))
       })
