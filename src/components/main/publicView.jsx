@@ -2,9 +2,10 @@ import React, { Component } from 'react'
 import collectionsApiService from '../collections/collectionsApiService'
 import '../styles.scss'
 import './main.scss'
-import auth from '../auth/authService'
+// import auth from '../auth/authService'
 import filterService from '../../services/filterService'
-import UserInfo from '../common/userInfo'
+// import UserInfo from '../common/userInfo'
+import { ReactComponent as HitmanIcon } from '../../assets/icons/hitman.svg'
 
 class PublicView extends Component {
   constructor (props) {
@@ -46,41 +47,52 @@ class PublicView extends Component {
   }
 
   render () {
-    const redirectionUrl = process.env.REACT_APP_UI_URL + '/login'
+    // const redirectionUrl = process.env.REACT_APP_UI_URL + '/login'
     const filteredPublicCollections = this.state.filteredPublicCollections
     return (
       <>
         <div className='public-dashboard-header'>
           <div className='public-dashboard-container'>
-            <div className='public-dashboard-searchbox'>
-              <i className='uil uil-search' />
-              <input
-                type='text'
-                placeholder='Search Collections'
-                onChange={this.filterPublicCollections.bind(this)}
-              />
+            <div className='mar-top-header'>
+              <div className='mar-righ-wrapper'>
+                <div className='hitman-logo'>
+                  <HitmanIcon /> HITMAN
+                </div>
+                <div className='marketplace'>
+                  <a rel='noreferrer'>| &nbsp;&nbsp; Marketplace</a>
+                </div>
+              </div>
+              <div className='mar-top-left-wrapper'>
+                <a href='https://hitman.app/' rel='noreferrer' target='_blank'>Host You APIs</a>
+
+                <div className='public-dashboard-action'>
+                  {/* {
+                    auth.getCurrentUser() === null
+                      ? (
+                       ""
+                      )
+                      : (
+                        <UserInfo />
+                      )
+                  } */}
+                </div>
+              </div>
             </div>
-            <div className='public-dashboard-action'>
-              {
-                auth.getCurrentUser() === null
-                  ? (
-                    <div
-                      id='sokt-sso'
-                      data-redirect-uri={redirectionUrl}
-                      data-source='sokt-app'
-                      data-token-key='sokt-auth-token'
-                      data-view='button'
-                      data-app-logo-url='https://hitman.app/wp-content/uploads/2020/12/123.png'
-                      signup_uri={redirectionUrl + '?signup=true'}
-                    />
-                    )
-                  : (
-                    <UserInfo />
-                    )
-              }
+            <div className='searchWrapper'>
+              <h1>API integration was never so easy</h1>
+              <h3>Expand the possibilities, connect all your apps via "Hitman"</h3>
+              <div className='public-dashboard-searchbox'>
+                <i className='uil uil-search' />
+                <input
+                  type='text'
+                  placeholder='Search Collections'
+                  onChange={this.filterPublicCollections.bind(this)}
+                />
+              </div>
             </div>
           </div>
         </div>
+
         <div className='collection-wrap'>
           {
             Object.keys(filteredPublicCollections).map((collectionId) =>
