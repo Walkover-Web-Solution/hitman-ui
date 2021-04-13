@@ -237,7 +237,7 @@ class ContentPanel extends Component {
           }
           <div className='main-content'>
             <div className='communti-btn-wrapper'>
-              <a href='https://community.viasocket.com/' rel='noreferrer' target='_blank'>Community </a>
+              <a href='http://forum.viasocket.com/' rel='noreferrer' target='_blank'>Community </a>
             </div>
             <TabContent
               {...this.props}
