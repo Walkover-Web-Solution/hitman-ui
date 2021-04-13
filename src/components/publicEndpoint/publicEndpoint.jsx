@@ -53,7 +53,7 @@ class PublicEndpoint extends Component {
     })
     if (this.props.location.pathname) {
       const collectionIdentifier = this.props.location.pathname.split('/')[2]
-      this.props.fetch_all_public_endpoints(collectionIdentifier, window.location.host)
+      this.props.fetch_all_public_endpoints(collectionIdentifier, window.location.hostname)
       this.props.history.push({
         collectionIdentifier: collectionIdentifier,
         Environment: 'publicCollectionEnvironment'
