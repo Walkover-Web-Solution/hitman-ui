@@ -25,7 +25,6 @@ const choices = {
   [collectionsModalEnum.MARKETPLACE]: {
     key: collectionsModalEnum.MARKETPLACE,
     label: 'Marketplace',
-    sublabel: '(Coming Soon)',
     disabled: true
   }
 }

@@ -17,7 +17,8 @@ export class MarketplaceModal extends Component {
     this.state = {
       searchText: '',
       responseResults: {},
-      searchResults: {}
+      searchResults: {},
+      selectedCollection: null
     }
   }
 
@@ -50,10 +51,18 @@ export class MarketplaceModal extends Component {
       <input placeholder='Search' value={this.state.searchText} onChange={(e) => this.handleSearchChange(e)} className='collection-search-input' />
     )
   }
-  // <img src={`data:image/png;base64,${this.state.binaryFile}`} height='60' width='60' />
 
-  import = (collection) => {
-    this.props.import_collection(collection)
+  import () {
+    this.props.import_collection(this.state.selectedCollection)
+    this.props.onHide()
+  }
+
+  selectOption (selectedCollection) {
+    let currentCollection = selectedCollection
+    if (this.state.selectedCollection?.id === selectedCollection?.id) {
+      currentCollection = null
+    }
+    this.setState({ selectedCollection: currentCollection })
   }
 
   renderSearchResults () {
@@ -61,7 +70,11 @@ export class MarketplaceModal extends Component {
     return (
       <div className='d-flex align-items-center collection-search-results'>
         {Object.values(searchResults).map((result) => (
-          <div onClick={() => this.import(result)} className='search-item' key={result.id}>
+          <div
+            key={result.id}
+            onClick={() => this.selectOption(result)}
+            className={['search-item', this.state.selectedCollection?.id === result.id ? 'selected-item' : ''].join(' ')}
+          >
             <img src={`data:image/png;base64,${result.favicon}`} height='60' width='60' />
             <div className=''>
               {result.name}
@@ -69,6 +82,20 @@ export class MarketplaceModal extends Component {
           </div>
         ))}
       </div>
+    )
+  }
+
+  renderFooterButtons () {
+    return (
+      this.state.selectedCollection &&
+        <div className='marketplace-footer-btns'>
+          <button className='btn btn-primary' onClick={() => this.import()}>
+            Import
+          </button>
+          <button className='btn btn-secondary outline ml-2' onClick={() => this.props.onCancel()}>
+            Cancel
+          </button>
+        </div>
     )
   }
 
@@ -94,6 +121,7 @@ export class MarketplaceModal extends Component {
               {this.renderSearchBar()}
               {this.renderSearchResults()}
             </Modal.Body>
+            {this.renderFooterButtons()}
           </div>
         </Modal>
       </div>
