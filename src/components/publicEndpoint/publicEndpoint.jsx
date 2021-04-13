@@ -27,8 +27,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    fetch_all_public_endpoints: (collectionIdentifier) =>
-      dispatch(fetchAllPublicEndpoints(ownProps.history, collectionIdentifier))
+    fetch_all_public_endpoints: (collectionIdentifier, domain) =>
+      dispatch(fetchAllPublicEndpoints(ownProps.history, collectionIdentifier, domain))
   }
 }
 
@@ -53,7 +53,7 @@ class PublicEndpoint extends Component {
     })
     if (this.props.location.pathname) {
       const collectionIdentifier = this.props.location.pathname.split('/')[2]
-      this.props.fetch_all_public_endpoints(collectionIdentifier)
+      this.props.fetch_all_public_endpoints(collectionIdentifier, window.location.hostname)
       this.props.history.push({
         collectionIdentifier: collectionIdentifier,
         Environment: 'publicCollectionEnvironment'
