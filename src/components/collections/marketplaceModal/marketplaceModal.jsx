@@ -1,7 +1,15 @@
 import React, { Component } from 'react'
 import { Modal } from 'react-bootstrap'
 import { getAllPublicCollections } from '../collectionsApiService'
+import { connect } from 'react-redux'
+import { importCollection } from '../redux/collectionsActions'
 import './marketplaceModal.scss'
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    import_collection: (collection) => dispatch(importCollection(collection))
+  }
+}
 
 export class MarketplaceModal extends Component {
   constructor (props) {
@@ -44,12 +52,16 @@ export class MarketplaceModal extends Component {
   }
   // <img src={`data:image/png;base64,${this.state.binaryFile}`} height='60' width='60' />
 
+  import = (collection) => {
+    this.props.import_collection(collection)
+  }
+
   renderSearchResults () {
     const searchResults = this.searchResponse()
     return (
       <div className='d-flex align-items-center collection-search-results'>
         {Object.values(searchResults).map((result) => (
-          <div className='search-item' key={result.id}>
+          <div onClick={() => this.import(result)} className='search-item' key={result.id}>
             <img src={`data:image/png;base64,${result.favicon}`} height='60' width='60' />
             <div className=''>
               {result.name}
@@ -89,4 +101,4 @@ export class MarketplaceModal extends Component {
   }
 }
 
-export default MarketplaceModal
+export default connect(null, mapDispatchToProps)(MarketplaceModal)

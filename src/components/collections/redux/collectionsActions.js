@@ -331,3 +331,44 @@ export const onVersionsFetchedError = (error) => {
     error
   }
 }
+
+export const importCollection = (collection) => {
+  return (dispatch) => {
+    dispatch(importCollectionRequest(collection))
+    collectionsApiService
+      .importCollection(collection.id)
+      .then((response) => {
+        dispatch(onCollectionImported(response.data))
+      })
+      .catch((error) => {
+        dispatch(
+          onCollectionImportedError(
+            error.response ? error.response.data : error,
+            collection
+          )
+        )
+      })
+  }
+}
+
+export const importCollectionRequest = (collection) => {
+  return {
+    type: collectionsActionTypes.IMPORT_COLLECTION_REQUEST,
+    collection
+  }
+}
+
+export const onCollectionImported = (response) => {
+  return {
+    type: collectionsActionTypes.ON_COLLECTION_IMPORTED,
+    response
+  }
+}
+
+export const onCollectionImportedError = (error, collection) => {
+  return {
+    type: collectionsActionTypes.ON_COLLECTION_IMPORTED_ERROR,
+    collection,
+    error
+  }
+}

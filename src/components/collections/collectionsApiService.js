@@ -41,6 +41,10 @@ export function duplicateCollection (collectionId) {
   return http.post(`${apiUrl}/duplicateCollections/${collectionId}`)
 }
 
+export function importCollection (collectionId) {
+  return http.post(`${apiUrl}/marketplace/collections/${collectionId}`)
+}
+
 export default {
   getCollections,
   getCollection,
@@ -49,5 +53,6 @@ export default {
   deleteCollection,
   duplicateCollection,
   getAllPublicCollections,
-  getCollectionsByCustomDomain
+  getCollectionsByCustomDomain,
+  importCollection
 }
