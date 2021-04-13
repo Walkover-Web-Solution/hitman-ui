@@ -106,18 +106,16 @@ function collectionsReducer (state = initialState, action) {
         [action.collection.id]: action.collection
       }
 
-    case collectionsActionTypes.ON_COLLECTION_IMPORTED: {
+    case collectionsActionTypes.ON_COLLECTION_IMPORTED:
       collections = { ...state }
-      delete collections[action.response.id]
-      const { version, page, ...newCollection } = action.response
-      collections[action.response.id] = newCollection
+      delete collections[action.response.collection.id]
+      collections[action.response.collection.id] = action.response.collection
       return collections
-    }
 
     case collectionsActionTypes.ON_COLLECTION_IMPORTED_ERROR:
       toast.error(action.error)
       collections = { ...state }
-      delete collections[action.newCollection.id]
+      delete collections[action.collection.id]
       return collections
 
     default:
