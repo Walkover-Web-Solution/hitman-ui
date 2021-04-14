@@ -2878,3 +2878,9 @@ div#history-tab-button button#dropdown-basic {
   color: #fff!important;
   font-size: 22px;
 }
+
+@media(max-width:1500px){
+  .public-navbar.stickyNav{
+    padding-left: 24%!important;
+  }
+}
