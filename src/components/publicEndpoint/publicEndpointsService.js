@@ -2,8 +2,8 @@ import http from '../../services/httpService'
 
 const apiUrl = process.env.REACT_APP_API_URL
 
-export function fetchAll (collectionIdentifier) {
-  return http.get(`${apiUrl}/public/${collectionIdentifier}`)
+export function fetchAll (collectionIdentifier, domain) {
+  return http.get(`${apiUrl}/public/${collectionIdentifier}?domain=${domain}`)
 }
 
 export function approveEndpoint (endpoint) {

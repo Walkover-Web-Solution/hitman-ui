@@ -11,11 +11,19 @@ class CustomTabs extends Component {
   constructor (props) {
     super(props)
     this.navRef = React.createRef()
+    this.scrollRef = {}
     this.state = {
       showSavePrompt: false,
       leftScroll: 0,
       clientScroll: this.navRef.current?.clientWidth,
       windowScroll: this.navRef.current?.scrollWidth
+    }
+  }
+
+  componentDidUpdate (prevProps, prevState) {
+    if (this.props.tabs.activeTabId !== prevProps.tabs.activeTabId) {
+      const newRef = this.scrollRef[this.props.tabs.activeTabId] || null
+      newRef && newRef.scrollIntoView({ block: 'center', inline: 'center', behavior: 'smooth' })
     }
   }
 
@@ -238,7 +246,7 @@ class CustomTabs extends Component {
             )}
           </div>
           {this.props.tabs.tabsOrder.map((tabId, index) => (
-            <div key={tabId}>
+            <div key={tabId} ref={(newRef) => { this.scrollRef[tabId] = newRef }}>
               <Nav.Item
                 key={tabId}
                 draggable
