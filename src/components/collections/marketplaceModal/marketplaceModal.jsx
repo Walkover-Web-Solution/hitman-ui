@@ -5,6 +5,12 @@ import { connect } from 'react-redux'
 import { importCollection } from '../redux/collectionsActions'
 import './marketplaceModal.scss'
 
+const mapStateToProps = (state) => {
+  return {
+    collections: state.collections
+  }
+}
+
 const mapDispatchToProps = (dispatch) => {
   return {
     import_collection: (collection) => dispatch(importCollection(collection))
@@ -35,7 +41,7 @@ export class MarketplaceModal extends Component {
   searchResponse () {
     const searchResults = {}
     Object.values(this.state.responseResults).forEach((result) => {
-      if (result.name.includes(this.state.searchText)) {
+      if (result.name.toLowerCase().includes(this.state.searchText.toLowerCase())) {
         searchResults[result.id] = result
       }
     })
@@ -65,6 +71,15 @@ export class MarketplaceModal extends Component {
     this.setState({ selectedCollection: currentCollection })
   }
 
+  checkImportStatus () {
+    const currentCollection = this.state.selectedCollection
+    let status = false
+    if (currentCollection) {
+      status = Object.keys(this.props.collections).find((collectionId) => collectionId === currentCollection?.id)
+    }
+    return status
+  }
+
   renderSearchResults () {
     const searchResults = this.searchResponse()
     return (
@@ -81,16 +96,18 @@ export class MarketplaceModal extends Component {
             </div>
           </div>
         ))}
+        {Object.keys(searchResults).length === 0 && <div> No Results Found </div>}
       </div>
     )
   }
 
   renderFooterButtons () {
+    const status = this.checkImportStatus()
     return (
       this.state.selectedCollection &&
         <div className='marketplace-footer-btns'>
-          <button className='btn btn-primary' onClick={() => this.import()}>
-            Import
+          <button className={['btn btn-primary', status ? 'disabled' : ''].join(' ')} disabled={!!status} onClick={() => this.import()}>
+            {status ? 'Already Imported' : 'Import'}
           </button>
           <button className='btn btn-secondary outline ml-2' onClick={() => this.props.onCancel()}>
             Cancel
@@ -129,4 +146,4 @@ export class MarketplaceModal extends Component {
   }
 }
 
-export default connect(null, mapDispatchToProps)(MarketplaceModal)
+export default connect(mapStateToProps, mapDispatchToProps)(MarketplaceModal)
