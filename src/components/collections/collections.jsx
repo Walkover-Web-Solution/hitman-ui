@@ -25,6 +25,7 @@ import { isAdmin } from '../auth/authService'
 import TagManager from 'react-gtm-module'
 import TagManagerModal from './tagModal'
 import emptyCollections from '../../assets/icons/emptyCollections.svg'
+import GlobeIcon from '../../assets/icons/globe-icon.svg'
 import hitmanLogo from '../../assets/icons/hitman.svg'
 
 const EMPTY_STRING = ''
@@ -331,22 +332,30 @@ class CollectionsComponent extends Component {
             variant='default'
             eventKey={eventkeyValue !== null ? eventkeyValue : '0'}
           >
-            {collectionState === 'singleCollection'
-              ? (
-                <div>
-                  <div>{this.props.collections[collectionId].name}</div>
+            <div className='row w-100 align-items-center'>
+              <div className='col-9'>
+                {collectionState === 'singleCollection'
+                  ? (
+                    <div>
+                      <div>{this.props.collections[collectionId].name}</div>
+                    </div>
+                    )
+                  : (
+                    <div
+                      className='sidebar-accordion-item'
+                      onClick={() => this.openSelectedCollection(collectionId)}
+                    >
+                      <div className='text-truncate'>{this.props.collections[collectionId].name}</div>
+                    </div>
+                    )}
+              </div>
+              <div class='show-endpoint-count col-3 align-items-center d-flex justify-content-between'>
+                <div>{this.props.collections[collectionId]?.importedFromMarketPlace
+                  ? <img src={GlobeIcon} />
+                  : <span>&nbsp;</span>}
                 </div>
-                )
-              : (
-                <div
-                  className='sidebar-accordion-item'
-                  onClick={() => this.openSelectedCollection(collectionId)}
-                >
-                  <div className='text-truncate'>{this.props.collections[collectionId].name}</div>
-                </div>
-                )}
-            <div class='show-endpoint-count'>
-              {this.findEndpointCount(collectionId)}
+                {this.findEndpointCount(collectionId)}
+              </div>
             </div>
             <div className='sidebar-item-action'>
               <div
@@ -479,6 +488,7 @@ class CollectionsComponent extends Component {
                       this.removeImporedPublicCollection(collectionId)
                     }}
                   >
+                    <img src={GlobeIcon} className='mr-2' />
                     Remove Public Collection
                   </div>}
               </div>
