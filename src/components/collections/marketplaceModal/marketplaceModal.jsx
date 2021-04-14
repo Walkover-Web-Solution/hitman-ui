@@ -104,15 +104,15 @@ export class MarketplaceModal extends Component {
   renderFooterButtons () {
     const status = this.checkImportStatus()
     return (
-      this.state.selectedCollection &&
-        <div className='marketplace-footer-btns'>
-          <button className={['btn btn-primary', status ? 'disabled' : ''].join(' ')} disabled={!!status} onClick={() => this.import()}>
+      <div className='marketplace-footer-btns'>
+        <button className='btn btn-secondary outline' onClick={() => this.props.onCancel()}>
+          Cancel
+        </button>
+        {this.state.selectedCollection &&
+          <button className={['btn btn-primary', 'ml-2', status ? 'disabled' : ''].join(' ')} disabled={!!status} onClick={() => this.import()}>
             {status ? 'Already Imported' : 'Import'}
-          </button>
-          <button className='btn btn-secondary outline ml-2' onClick={() => this.props.onCancel()}>
-            Cancel
-          </button>
-        </div>
+          </button>}
+      </div>
     )
   }
 
