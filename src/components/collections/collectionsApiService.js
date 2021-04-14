@@ -45,6 +45,10 @@ export function importCollection (collectionId) {
   return http.post(`${apiUrl}/marketplace/collections/${collectionId}`)
 }
 
+export function removePublicCollection (collectionId) {
+  return http.delete(`${apiUrl}/marketplace/collections/${collectionId}`)
+}
+
 export default {
   getCollections,
   getCollection,

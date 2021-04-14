@@ -61,7 +61,8 @@ class CollectionsComponent extends Component {
       selectedCollection: {},
       showPublishDocsModal: false,
       defaultPublicLogo: hitmanLogo,
-      publicLogoError: false
+      publicLogoError: false,
+      showRemoveModal: false
     }
 
     this.keywords = {}
@@ -196,7 +197,7 @@ class CollectionsComponent extends Component {
   }
 
   closeDeleteCollectionModal () {
-    this.setState({ showDeleteModal: false })
+    this.setState({ showRemoveModal: false, showDeleteModal: false })
   }
 
   openSelectedCollection (collectionId) {
@@ -269,6 +270,18 @@ class CollectionsComponent extends Component {
       }
       return endpointsArray.length
     }
+  }
+
+  removeImporedPublicCollection (collectionId) {
+    if (this.state.openSelectedCollection === true) {
+      this.setState({ openSelectedCollection: false })
+    }
+    this.setState({
+      showRemoveModal: true,
+      selectedCollection: {
+        ...this.props.collections[collectionId]
+      }
+    })
   }
 
   renderBody (collectionId, collectionState) {
@@ -455,6 +468,16 @@ class CollectionsComponent extends Component {
                     </defs>
                   </svg> Add Google Tag Manager
                 </div>
+
+                {this.props.collections[collectionId]?.importedFromMarketPlace &&
+                  <div
+                    className='dropdown-item'
+                    onClick={() => {
+                      this.removeImporedPublicCollection(collectionId)
+                    }}
+                  >
+                    Remove Public Collection
+                  </div>}
               </div>
             </div>
           </Accordion.Toggle>
@@ -537,6 +560,23 @@ class CollectionsComponent extends Component {
           onHide={() => { this.setState({ showAddCollectionModal: false }) }}
           show={this.state.showAddCollectionModal}
         />
+    )
+  }
+
+  showDeleteCollectionModal () {
+    const title = this.state.showRemoveModal ? 'Remove Collection' : 'Delete Collection'
+    const message = this.state.showRemoveModal
+      ? 'Are you sure you wish to remove this public collection?'
+      : `Are you sure you wish to delete this collection? All your versions,
+    groups, pages and endpoints present in this collection will be deleted.`
+    return (
+      (this.state.showDeleteModal || this.state.showRemoveModal) && collectionsService.showDeleteCollectionModal(
+        { ...this.props },
+        this.closeDeleteCollectionModal.bind(this),
+        title,
+        message,
+        this.state.selectedCollection
+      )
     )
   }
 
@@ -627,15 +667,7 @@ class CollectionsComponent extends Component {
               {this.showAddCollectionModal()}
               {this.showImportVersionForm()}
               {this.openTagManagerModal()}
-              {this.state.showDeleteModal &&
-                collectionsService.showDeleteCollectionModal(
-                  { ...this.props },
-                  this.closeDeleteCollectionModal.bind(this),
-                  'Delete Collection',
-                  `Are you sure you wish to delete this collection? All your versions,
-                   groups, pages and endpoints present in this collection will be deleted.`,
-                  this.state.selectedCollection
-                )}
+              {this.showDeleteCollectionModal()}
             </div>
           </div>
           {finalCollections.length > 0
