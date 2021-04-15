@@ -82,8 +82,13 @@ export class MarketplaceModal extends Component {
 
   renderCollectionIcon (collection) {
     return (
-      collection.favicon
-        ? <img src={`data:image/png;base64,${collection.favicon}`} height='60' width='60' />
+      collection.favicon || collection.docProperties.defaultLogoUrl
+        ? <img
+            src={collection.docProperties.defaultLogoUrl
+              ? collection.docProperties.defaultLogoUrl
+              : `data:image/png;base64,${collection.favicon}`}
+            height='60' width='60'
+          />
         : <div className='collection-avatar'><div className='name'>{collection?.name.charAt(0)}</div></div>
     )
   }
