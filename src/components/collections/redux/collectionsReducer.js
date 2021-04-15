@@ -100,6 +100,24 @@ function collectionsReducer (state = initialState, action) {
       toast.error(action.error)
       return state
 
+    case collectionsActionTypes.IMPORT_COLLECTION_REQUEST:
+      return {
+        ...state,
+        [action.collection.id]: action.collection
+      }
+
+    case collectionsActionTypes.ON_COLLECTION_IMPORTED:
+      collections = { ...state }
+      delete collections[action.response.collection.id]
+      collections[action.response.collection.id] = action.response.collection
+      return collections
+
+    case collectionsActionTypes.ON_COLLECTION_IMPORTED_ERROR:
+      toast.error(action.error)
+      collections = { ...state }
+      delete collections[action.collection.id]
+      return collections
+
     default:
       return state
   }

@@ -153,40 +153,7 @@ export const deleteCollection = (collection, props) => {
     collectionsApiService
       .deleteCollection(collection.id)
       .then((response) => {
-        const storeData = { ...store.getState() }
-        const versionIds = Object.keys(storeData.versions).filter(
-          (vId) => storeData.versions[vId].collectionId === collection.id
-        )
-        let groupIds = []
-        let endpointIds = []
-        let pageIds = []
-        versionIds.forEach((vId) => {
-          groupIds = [
-            ...Object.keys(storeData.groups).filter(
-              (gId) => storeData.groups[gId].versionId === vId
-            ),
-            ...groupIds
-          ]
-          pageIds = [
-            ...Object.keys(storeData.pages).filter(
-              (pId) => storeData.pages[pId].versionId === vId
-            ),
-            ...pageIds
-          ]
-        })
-
-        groupIds.forEach(
-          (gId) =>
-            (endpointIds = [
-              ...Object.keys(storeData.endpoints).filter(
-                (eId) => storeData.endpoints[eId].groupId === gId
-              ),
-              ...endpointIds
-            ])
-        )
-
-        endpointIds.map((eId) => tabService.removeTab(eId, props))
-        pageIds.map((pId) => tabService.removeTab(pId, props))
+        const { versionIds, groupIds, endpointIds, pageIds } = prepareCollectionData(collection, props)
 
         dispatch(
           onCollectionDeleted({
@@ -330,4 +297,108 @@ export const onVersionsFetchedError = (error) => {
     type: versionActionTypes.ON_VERSIONS_FETCHED_ERROR,
     error
   }
+}
+
+export const importCollection = (collection) => {
+  return (dispatch) => {
+    dispatch(importCollectionRequest(collection))
+    collectionsApiService
+      .importCollection(collection.id)
+      .then((response) => {
+        dispatch(onCollectionImported(response.data))
+      })
+      .catch((error) => {
+        dispatch(
+          onCollectionImportedError(
+            error.response ? error.response.data : error,
+            collection
+          )
+        )
+      })
+  }
+}
+
+export const importCollectionRequest = (collection) => {
+  return {
+    type: collectionsActionTypes.IMPORT_COLLECTION_REQUEST,
+    collection
+  }
+}
+
+export const onCollectionImported = (response) => {
+  return {
+    type: collectionsActionTypes.ON_COLLECTION_IMPORTED,
+    response
+  }
+}
+
+export const onCollectionImportedError = (error, collection) => {
+  return {
+    type: collectionsActionTypes.ON_COLLECTION_IMPORTED_ERROR,
+    collection,
+    error
+  }
+}
+
+export const removePublicCollection = (collection, props) => {
+  return (dispatch) => {
+    dispatch(deleteCollectionRequest(collection))
+    collectionsApiService
+      .removePublicCollection(collection.id)
+      .then((response) => {
+        const { versionIds, groupIds, endpointIds, pageIds } = prepareCollectionData(collection, props)
+
+        dispatch(
+          onCollectionDeleted({
+            collection: response.data,
+            versionIds,
+            groupIds,
+            endpointIds,
+            pageIds
+          })
+        )
+      })
+      .catch((error) => {
+        dispatch(onCollectionDeletedError(error.response, collection))
+      })
+  }
+}
+
+function prepareCollectionData (collection, props) {
+  const storeData = { ...store.getState() }
+  const versionIds = Object.keys(storeData.versions).filter(
+    (vId) => storeData.versions[vId].collectionId === collection.id
+  )
+  let groupIds = []
+  let endpointIds = []
+  let pageIds = []
+  versionIds.forEach((vId) => {
+    groupIds = [
+      ...Object.keys(storeData.groups).filter(
+        (gId) => storeData.groups[gId].versionId === vId
+      ),
+      ...groupIds
+    ]
+    pageIds = [
+      ...Object.keys(storeData.pages).filter(
+        (pId) => storeData.pages[pId].versionId === vId
+      ),
+      ...pageIds
+    ]
+  })
+
+  groupIds.forEach(
+    (gId) =>
+      (endpointIds = [
+        ...Object.keys(storeData.endpoints).filter(
+          (eId) => storeData.endpoints[eId].groupId === gId
+        ),
+        ...endpointIds
+      ])
+  )
+
+  endpointIds.map((eId) => tabService.removeTab(eId, props))
+  pageIds.map((pId) => tabService.removeTab(pId, props))
+
+  return { versionIds, groupIds, endpointIds, pageIds }
 }

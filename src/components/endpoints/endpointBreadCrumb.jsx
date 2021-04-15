@@ -107,7 +107,7 @@ class EndpointBreadCrumb extends Component {
     this.versionId = this.groupId ? this.props.groups[this.groupId].versionId : null
     this.versionName = this.versionId ? this.props.versions[this.versionId].number : null
     this.collectionId = this.versionId ? this.props.versions[this.versionId].collectionId : null
-    this.collectionName = this.collectionId ? this.props.collections[this.collectionId].name : null
+    this.collectionName = this.collectionId ? this.props.collections[this.collectionId]?.name : null
   }
 
   setPageData () {
@@ -119,7 +119,7 @@ class EndpointBreadCrumb extends Component {
       this.groupName = groupId ? groups[groupId].name : null
       this.versionName = versionId ? versions[versionId].number : null
       this.collectionId = versionId ? versions[versionId].collectionId : null
-      this.collectionName = this.collectionId ? collections[this.collectionId].name : null
+      this.collectionName = this.collectionId ? collections[this.collectionId]?.name : null
     }
   }
 

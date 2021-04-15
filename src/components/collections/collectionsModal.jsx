@@ -3,6 +3,7 @@ import CollectionForm from './collectionForm'
 import OpenApiForm from '../openApi/openApiForm'
 import { Modal } from 'react-bootstrap'
 import './collectionsModal.scss'
+import MarketplaceModal from './marketplaceModal/marketplaceModal'
 
 const collectionsModalEnum = {
   IMPORT: 'import',
@@ -24,7 +25,6 @@ const choices = {
   [collectionsModalEnum.MARKETPLACE]: {
     key: collectionsModalEnum.MARKETPLACE,
     label: 'Marketplace',
-    sublabel: '(Coming Soon)',
     disabled: true
   }
 }
@@ -44,8 +44,8 @@ class CollectionsModal extends Component {
         {Object.values(choices).map((choice) => (
           <div
             key={choice.key}
-            className={['add-collection-item', choice.disabled && 'disabled'].join(' ')}
-            onClick={() => choice.disabled ? {} : this.selectChoice(choice.key)}
+            className='add-collection-item'
+            onClick={() => this.selectChoice(choice.key)}
           >
             <div>
               <span>{choice.label}</span><br />
@@ -90,7 +90,13 @@ class CollectionsModal extends Component {
   }
 
   renderMarketplace () {
-    return null
+    return (
+      <MarketplaceModal
+        show
+        onCancel={() => { this.removeSelection() }}
+        onHide={() => { this.props.onHide() }}
+      />
+    )
   }
 
   render () {

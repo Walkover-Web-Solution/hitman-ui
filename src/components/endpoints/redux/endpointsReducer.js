@@ -146,6 +146,10 @@ function endpointsReducer (state = initialState, action) {
       endpoints = { ...action.originalData.originalEndpoints }
       return endpoints
 
+    case collectionActionTypes.ON_COLLECTION_IMPORTED:
+      endpoints = { ...state, ...action.response.endpoints }
+      return endpoints
+
     default:
       return state
   }

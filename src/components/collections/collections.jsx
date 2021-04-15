@@ -16,7 +16,8 @@ import {
   deleteCollection,
   duplicateCollection,
   updateCollection,
-  addCustomDomain
+  addCustomDomain,
+  removePublicCollection
 } from './redux/collectionsActions'
 import './collections.scss'
 import PublishDocsModal from '../publicEndpoint/publishDocsModal'
@@ -48,7 +49,9 @@ const mapDispatchToProps = (dispatch) => {
     duplicate_collection: (collection) =>
       dispatch(duplicateCollection(collection)),
     add_custom_domain: (collectionId, domain) =>
-      dispatch(addCustomDomain(collectionId, domain))
+      dispatch(addCustomDomain(collectionId, domain)),
+    remove_public_collection: (collection, props) =>
+      dispatch(removePublicCollection(collection, props))
   }
 }
 
@@ -61,7 +64,8 @@ class CollectionsComponent extends Component {
       selectedCollection: {},
       showPublishDocsModal: false,
       defaultPublicLogo: hitmanLogo,
-      publicLogoError: false
+      publicLogoError: false,
+      showRemoveModal: false
     }
 
     this.keywords = {}
@@ -196,7 +200,7 @@ class CollectionsComponent extends Component {
   }
 
   closeDeleteCollectionModal () {
-    this.setState({ showDeleteModal: false })
+    this.setState({ showRemoveModal: false, showDeleteModal: false })
   }
 
   openSelectedCollection (collectionId) {
@@ -271,6 +275,18 @@ class CollectionsComponent extends Component {
     }
   }
 
+  removeImporedPublicCollection (collectionId) {
+    if (this.state.openSelectedCollection === true) {
+      this.setState({ openSelectedCollection: false })
+    }
+    this.setState({
+      showRemoveModal: true,
+      selectedCollection: {
+        ...this.props.collections[collectionId]
+      }
+    })
+  }
+
   renderBody (collectionId, collectionState) {
     let eventkeyValue = ''
     if (this.props.filter !== '') {
@@ -315,26 +331,34 @@ class CollectionsComponent extends Component {
             variant='default'
             eventKey={eventkeyValue !== null ? eventkeyValue : '0'}
           >
-            {collectionState === 'singleCollection'
-              ? (
-                <div>
-                  <div>{this.props.collections[collectionId].name}</div>
+            <div className='row w-100 align-items-center'>
+              <div className='col-9'>
+                {collectionState === 'singleCollection'
+                  ? (
+                    <div>
+                      <div>{this.props.collections[collectionId].name}</div>
+                    </div>
+                    )
+                  : (
+                    <div
+                      className='sidebar-accordion-item'
+                      onClick={() => this.openSelectedCollection(collectionId)}
+                    >
+                      <div className='text-truncate'>{this.props.collections[collectionId].name}</div>
+                    </div>
+                    )}
+              </div>
+              <div class='show-endpoint-count col-3 pr-0 align-items-center d-flex justify-content-between'>
+                <div>{this.props.collections[collectionId]?.importedFromMarketPlace
+                  ? <div className='marketplace-icon ml-3'> M </div>
+                  : <span>&nbsp;</span>}
                 </div>
-                )
-              : (
-                <div
-                  className='sidebar-accordion-item'
-                  onClick={() => this.openSelectedCollection(collectionId)}
-                >
-                  <div className='text-truncate'>{this.props.collections[collectionId].name}</div>
-                </div>
-                )}
-            <div class='show-endpoint-count'>
-              {this.findEndpointCount(collectionId)}
+                {this.findEndpointCount(collectionId)}
+              </div>
             </div>
             <div className='sidebar-item-action'>
               <div
-                className='sidebar-item-action-btn '
+                className='sidebar-item-action-btn ml-3'
                 data-toggle='dropdown'
                 aria-haspopup='true'
                 aria-expanded='false'
@@ -455,6 +479,17 @@ class CollectionsComponent extends Component {
                     </defs>
                   </svg> Add Google Tag Manager
                 </div>
+
+                {this.props.collections[collectionId]?.importedFromMarketPlace &&
+                  <div
+                    className='dropdown-item d-flex align-items-center justify-content-between'
+                    onClick={() => {
+                      this.removeImporedPublicCollection(collectionId)
+                    }}
+                  >
+                    <div className='marketplace-icon'> M </div>
+                    <div> Remove Public Collection </div>
+                  </div>}
               </div>
             </div>
           </Accordion.Toggle>
@@ -537,6 +572,23 @@ class CollectionsComponent extends Component {
           onHide={() => { this.setState({ showAddCollectionModal: false }) }}
           show={this.state.showAddCollectionModal}
         />
+    )
+  }
+
+  showDeleteCollectionModal () {
+    const title = this.state.showRemoveModal ? 'Remove Collection' : 'Delete Collection'
+    const message = this.state.showRemoveModal
+      ? 'Are you sure you wish to remove this public collection?'
+      : `Are you sure you wish to delete this collection? All your versions,
+    groups, pages and endpoints present in this collection will be deleted.`
+    return (
+      (this.state.showDeleteModal || this.state.showRemoveModal) && collectionsService.showDeleteCollectionModal(
+        { ...this.props },
+        this.closeDeleteCollectionModal.bind(this),
+        title,
+        message,
+        this.state.selectedCollection
+      )
     )
   }
 
@@ -627,15 +679,7 @@ class CollectionsComponent extends Component {
               {this.showAddCollectionModal()}
               {this.showImportVersionForm()}
               {this.openTagManagerModal()}
-              {this.state.showDeleteModal &&
-                collectionsService.showDeleteCollectionModal(
-                  { ...this.props },
-                  this.closeDeleteCollectionModal.bind(this),
-                  'Delete Collection',
-                  `Are you sure you wish to delete this collection? All your versions,
-                   groups, pages and endpoints present in this collection will be deleted.`,
-                  this.state.selectedCollection
-                )}
+              {this.showDeleteCollectionModal()}
             </div>
           </div>
           {finalCollections.length > 0

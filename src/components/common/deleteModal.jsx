@@ -27,6 +27,10 @@ class DeleteModal extends Component {
       const { deleted_collection: collection } = this.props
       this.props.delete_collection(collection, this.props)
     }
+    if (title === 'Remove Collection') {
+      const { deleted_collection: collection } = this.props
+      this.props.remove_public_collection(collection, this.props)
+    }
     if (title === 'Delete Version') {
       const { deleted_version: version } = this.props
       this.props.delete_version(version, this.props)
@@ -86,7 +90,7 @@ class DeleteModal extends Component {
                   id='custom-delete-modal-delete'
                   className='btn btn-danger btn-lg mr-2'
                 >
-                  Delete
+                  {this.props.title === 'Remove Collection' ? 'Remove' : 'Delete'}
                 </button>
                 <button
                   id='custom-delete-modal-cancel'
