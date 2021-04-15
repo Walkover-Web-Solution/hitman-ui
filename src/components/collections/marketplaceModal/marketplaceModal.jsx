@@ -80,6 +80,14 @@ export class MarketplaceModal extends Component {
     return status
   }
 
+  renderCollectionIcon (collection) {
+    return (
+      collection.favicon
+        ? <img src={`data:image/png;base64,${collection.favicon}`} height='60' width='60' />
+        : <div className='collection-avatar'><div className='name'>{collection?.name.charAt(0)}</div></div>
+    )
+  }
+
   renderSearchResults () {
     const searchResults = this.searchResponse()
     return (
@@ -90,7 +98,7 @@ export class MarketplaceModal extends Component {
             onClick={() => this.selectOption(result)}
             className={['search-item', this.state.selectedCollection?.id === result.id ? 'selected-item' : ''].join(' ')}
           >
-            <img src={`data:image/png;base64,${result.favicon}`} height='60' width='60' />
+            {this.renderCollectionIcon(result)}
             <div className=''>
               {result.name}
             </div>

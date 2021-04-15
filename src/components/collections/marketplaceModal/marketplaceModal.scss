@@ -3,9 +3,7 @@
   flex-wrap: wrap;
   max-width: 1040px;
   margin: 0 auto;
-  // padding: 0 20px;
   justify-content: center;
-  // align-content: space-between;
   max-height: 500px;
   overflow-y: auto;
   
@@ -18,6 +16,24 @@
     border-radius: 3px;
     border: 1px solid #e8e8e8;
     cursor: pointer;
+
+  .collection-avatar{
+    height: 60px;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    font-size: 30px;
+    color: white;
+    text-transform: capitalize;
+
+    .name{
+      border: 1px solid #F2994A;
+      border-radius: 50px;
+      width: 50px;
+      height: 50px;
+      background: #F2994A;
+    }
+  }
   }
 
   .selected-item{
@@ -29,11 +45,11 @@
 
 .collection-search-input{
   margin: 20px 68px;
-  width: 30%;
+  width: 28.5%;
   height: 30px;
   padding: 0 0 0 36px;
   border-radius: 3px;
-  border: none;
+  border: 0.5px solid #e8e8e8;
   background: #f8f8f8;
   outline: none;
 }

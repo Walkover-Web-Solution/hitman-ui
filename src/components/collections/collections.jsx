@@ -25,7 +25,6 @@ import { isAdmin } from '../auth/authService'
 import TagManager from 'react-gtm-module'
 import TagManagerModal from './tagModal'
 import emptyCollections from '../../assets/icons/emptyCollections.svg'
-import GlobeIcon from '../../assets/icons/globe-icon.svg'
 import hitmanLogo from '../../assets/icons/hitman.svg'
 
 const EMPTY_STRING = ''
@@ -349,9 +348,9 @@ class CollectionsComponent extends Component {
                     </div>
                     )}
               </div>
-              <div class='show-endpoint-count col-3 align-items-center d-flex justify-content-between'>
+              <div class='show-endpoint-count col-3 pr-0 align-items-center d-flex justify-content-between'>
                 <div>{this.props.collections[collectionId]?.importedFromMarketPlace
-                  ? <img src={GlobeIcon} />
+                  ? <div className='marketplace-icon ml-3'> M </div>
                   : <span>&nbsp;</span>}
                 </div>
                 {this.findEndpointCount(collectionId)}
@@ -359,7 +358,7 @@ class CollectionsComponent extends Component {
             </div>
             <div className='sidebar-item-action'>
               <div
-                className='sidebar-item-action-btn '
+                className='sidebar-item-action-btn ml-3'
                 data-toggle='dropdown'
                 aria-haspopup='true'
                 aria-expanded='false'
@@ -483,13 +482,13 @@ class CollectionsComponent extends Component {
 
                 {this.props.collections[collectionId]?.importedFromMarketPlace &&
                   <div
-                    className='dropdown-item'
+                    className='dropdown-item d-flex align-items-center justify-content-between'
                     onClick={() => {
                       this.removeImporedPublicCollection(collectionId)
                     }}
                   >
-                    <img src={GlobeIcon} className='mr-2' />
-                    Remove Public Collection
+                    <div className='marketplace-icon'> M </div>
+                    <div> Remove Public Collection </div>
                   </div>}
               </div>
             </div>
