@@ -22,8 +22,7 @@ export class MarketplaceModal extends Component {
     super(props)
     this.state = {
       searchText: '',
-      responseResults: {},
-      searchResults: {},
+      responseResults: null,
       selectedCollection: null
     }
   }
@@ -34,13 +33,14 @@ export class MarketplaceModal extends Component {
 
   getPublicCollections () {
     getAllPublicCollections().then((response) => {
-      this.setState({ responseResults: response.data, searchResults: response.data })
+      this.setState({ responseResults: response.data })
     })
   }
 
   searchResponse () {
     const searchResults = {}
-    Object.values(this.state.responseResults).forEach((result) => {
+    const responseResults = this.state.responseResults
+    responseResults && Object.values(responseResults).forEach((result) => {
       if (result.name.toLowerCase().includes(this.state.searchText.toLowerCase())) {
         searchResults[result.id] = result
       }
@@ -82,8 +82,13 @@ export class MarketplaceModal extends Component {
 
   renderCollectionIcon (collection) {
     return (
-      collection.favicon
-        ? <img src={`data:image/png;base64,${collection.favicon}`} height='60' width='60' />
+      collection.favicon || collection.docProperties.defaultLogoUrl
+        ? <img
+            src={collection.docProperties.defaultLogoUrl
+              ? collection.docProperties.defaultLogoUrl
+              : `data:image/png;base64,${collection.favicon}`}
+            height='60' width='60'
+          />
         : <div className='collection-avatar'><div className='name'>{collection?.name.charAt(0)}</div></div>
     )
   }
@@ -104,7 +109,12 @@ export class MarketplaceModal extends Component {
             </div>
           </div>
         ))}
-        {Object.keys(searchResults).length === 0 && <div> No Results Found </div>}
+        {this.state.responseResults && Object.keys(searchResults).length === 0 && <div> No Results Found </div>}
+        {this.state.responseResults === null &&
+          <div>
+            <i className='fas fa-spinner fa-spin mr-2' />
+            Getting Results
+          </div>}
       </div>
     )
   }
