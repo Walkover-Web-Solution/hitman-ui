@@ -153,6 +153,10 @@ function pagesReducer (state = initialState, action) {
       pages = { ...action.originalData.originalPages }
       return pages
 
+    case collectionActionTypes.ON_COLLECTION_IMPORTED:
+      pages = { ...state, ...action.response.pages }
+      return pages
+
     default:
       return state
   }

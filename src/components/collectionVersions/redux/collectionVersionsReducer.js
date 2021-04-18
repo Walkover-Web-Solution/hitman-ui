@@ -120,6 +120,10 @@ function versionsReducer (state = initialState, action) {
       })
       return versions
 
+    case collectionsActionTypes.ON_COLLECTION_IMPORTED:
+      versions = { ...state, ...action.response.versions }
+      return versions
+
     default:
       return state
   }
