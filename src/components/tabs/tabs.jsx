@@ -226,7 +226,7 @@ class CustomTabs extends Component {
         {this.navRef.current?.scrollWidth > this.navRef.current?.clientWidth
           ? (
             <div
-              className={`scroll-button d-flex mr-2 ${this.leftHideTabs() ? '' : 'disabled'}`}
+              className={`scroll-button scroll-button--left d-flex mr-2 ${this.leftHideTabs() ? '' : 'disabled'}`}
               onMouseEnter={() => this.handleMouseEnter('left')}
               onMouseLeave={() => this.handleMouseLeave()}
             >
@@ -323,7 +323,7 @@ class CustomTabs extends Component {
         {this.navRef.current?.scrollWidth > this.navRef.current?.clientWidth
           ? (
             <div
-              className={`scroll-button d-flex ml-2 mr-2 ${this.rightHideTabs() ? '' : 'disabled'}`}
+              className={`scroll-button scroll-button--right d-flex ml-2 mr-2 ${this.rightHideTabs() ? '' : 'disabled'}`}
               onMouseEnter={() => this.handleMouseEnter('right')}
               onMouseLeave={() => this.handleMouseLeave()}
             >
