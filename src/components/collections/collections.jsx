@@ -592,6 +592,10 @@ class CollectionsComponent extends Component {
     )
   }
 
+  comparison (a, b) {
+    if (this.props.collections[a].name.toLowerCase() < this.props.collections[b].name.toLowerCase()) { return -1 } else if (this.props.collections[a].name.toLowerCase() > this.props.collections[b].name.toLowerCase()) { return 1 } else { return 0 }
+  }
+
   render () {
     if (isDashboardRoute(this.props, true)) {
       let finalCollections = []
@@ -652,6 +656,7 @@ class CollectionsComponent extends Component {
       finalCollections = [...keywordFinalCollections, ...namesFinalCollections]
 
       finalCollections = [...new Set(finalCollections)]
+      finalCollections = finalCollections.sort((a, b) => this.comparison(a, b))
       return (
         <div>
           {this.state.showPublishDocsModal &&
