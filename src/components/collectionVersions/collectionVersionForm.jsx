@@ -3,7 +3,7 @@ import { Modal } from 'react-bootstrap'
 import Joi from 'joi-browser'
 import Form from '../common/form'
 import { connect } from 'react-redux'
-import { onEnter } from '../common/utility'
+import { onEnter, toTitleCase } from '../common/utility'
 import {
   addVersion,
   updateVersion
@@ -53,14 +53,16 @@ class CollectionVersionForm extends Form {
 
   async doSubmit () {
     this.props.onHide()
+    let { number } = { ...this.state.data }
+    number = toTitleCase(number)
     if (this.props.title === 'Edit Collection Version') {
       const { id, collectionId } = this.props.selected_version
-      const editedCollectionVersion = { ...this.state.data, collectionId, id }
+      const editedCollectionVersion = { ...this.state.data, collectionId, id, number }
       this.props.update_version(editedCollectionVersion)
     }
     if (this.props.title === 'Add new Collection Version') {
       const collectionId = this.props.collection_id
-      const newVersion = { ...this.state.data, requestId: shortid.generate() }
+      const newVersion = { ...this.state.data, requestId: shortid.generate(), number }
       this.props.add_version(newVersion, collectionId)
     }
   }
@@ -85,7 +87,7 @@ class CollectionVersionForm extends Form {
             <form onSubmit={this.handleSubmit}>
               <div className='row'>
                 <div className='col-6'>
-                  {this.renderInput('number', 'Version Number', 'version number')}
+                  {this.renderInput('number', 'Version Number', 'version number', true, true)}
                 </div>
                 <div className='col-6'>
                   {this.renderInput('host', 'Host', 'host')}

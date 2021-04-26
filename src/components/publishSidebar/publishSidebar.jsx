@@ -419,7 +419,6 @@ export class PublishSidebar extends Component {
       <div>
         <div className='mt-3 collection-api-doc-heading'>Select API Enpoints and Pages to publish</div>
         <div className='publish-versions-list'>
-          <div className='p-3 collection-name'>{this.props.collections[this.state.selectedCollectionId]?.name}</div>
           <div className='items'>
             {Object.values(this.state.versions)
               .map((version, index) => (
