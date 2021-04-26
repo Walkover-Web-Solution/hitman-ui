@@ -2,6 +2,7 @@ import React from 'react'
 import Form from '../common/form'
 import Joi from 'joi-browser'
 import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
 import { updateEndpoint } from './redux/endpointsActions'
 import { isDashboardRoute, isSavedEndpoint } from '../common/utility'
 import ReactHtmlParser from 'react-html-parser'
@@ -24,7 +25,8 @@ export class Notes extends Form {
       data: {
         description: props.note
       },
-      theme: props.publicCollectionTheme
+      theme: props.publicCollectionTheme,
+      showAdditionalInfo: false
     }
   }
 
@@ -52,29 +54,41 @@ export class Notes extends Form {
     )
   }
 
+  toggelAdditionalInfo () {
+    const showAdditionalInfo = !this.state.showAdditionalInfo
+    this.setState({ showAdditionalInfo })
+  }
+
   renderForm () {
     return (
       <>
-        <div className='des-wrapper'>
-          <form onSubmit={this.handleSubmit}>
-            {this.renderQuillEditor('description', 'Add additional information')}
+        <Link
+          class='adddescLink'
+          onClick={() => this.toggelAdditionalInfo()}
+        >
+          {this.state.showAdditionalInfo ? 'HIDE ADDITIONAL INFORMATION' : 'ADD ADDITIONAL INFORMATION'}
+        </Link>
+        {this.state.showAdditionalInfo &&
+          <div className='des-wrapper'>
+            <form onSubmit={this.handleSubmit}>
+              {this.renderQuillEditor('description', 'Add additional information')}
 
-            <div className='quicn-actions'>
-              <button
-                className='btn btn-secondary outline'
-                type='reset' onClick={(e) => {
-                  this.setState({ data: { ...this.state.data, description: '' } })
-                }}
-              >
-                Clear
-              </button>
-              <button disabled={this.getSaveDisableStatus(undefined, true)} type='submit' className='btn btn-primary'>
-                Save
-              </button>
+              <div className='quicn-actions'>
+                <button
+                  className='btn btn-secondary outline'
+                  type='reset' onClick={(e) => {
+                    this.setState({ data: { ...this.state.data, description: '' } })
+                  }}
+                >
+                  Clear
+                </button>
+                <button disabled={this.getSaveDisableStatus(undefined, true)} type='submit' className='btn btn-primary'>
+                  Save
+                </button>
 
-            </div>
-          </form>
-        </div>
+              </div>
+            </form>
+          </div>}
       </>
     )
   }
