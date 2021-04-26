@@ -360,8 +360,8 @@ class SaveAsSidebar extends Form {
                           )
                         )
                       : (
-                        <div className='not-found-label'>
-                          {this.state.list.type + ' not found in this folder'}
+                        <div className='not-found-label p-3'>
+                          {`No ${this.state.list.type} found`}
                         </div>
                         )}
                 </ul>
