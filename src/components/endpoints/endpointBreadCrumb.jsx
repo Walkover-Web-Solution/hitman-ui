@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import './endpointBreadCrumb.scss'
 import { ReactComponent as EditIcon } from '../../assets/icons/editIcon.svg'
+import { toTitleCase } from '../common/utility'
 
 const mapStateToProps = (state) => {
   return {
@@ -82,17 +83,17 @@ class EndpointBreadCrumb extends Component {
     if (this.state.endpointTitle !== '') {
       if (this.props.isEndpoint) {
         const data = this.props.endpoint
-        data.name = this.state.endpointTitle
+        data.name = toTitleCase(this.state.endpointTitle)
         if (data.id) {
           this.props.update_endpoint(data)
         }
         this.props.alterEndpointName(data.name)
       } else {
         const page = this.props.page
-        page.name = this.state.endpointTitle
+        page.name = toTitleCase(this.state.endpointTitle)
         this.props.update_page(page)
       }
-      const title = this.state.endpointTitle
+      const title = toTitleCase(this.state.endpointTitle)
       this.setState({ previousTitle: title })
       this.setState({})
     } else {
@@ -145,7 +146,7 @@ class EndpointBreadCrumb extends Component {
               ref={this.nameInputRef}
               className={['ml-2 endpoint-name-input', this.state.nameEditable ? 'd-block' : 'd-none'].join(' ')}
               name='enpoint-title'
-              style={{ width: 'auto' }}
+              style={{ width: 'auto', textTransform: 'capitalize' }}
               onChange={this.handleInputChange.bind(this)}
               value={this.state.endpointTitle}
               onBlur={() => { this.handleInputBlur() }}

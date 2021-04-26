@@ -6,7 +6,7 @@ import { withRouter } from 'react-router-dom'
 import shortid from 'shortid'
 import Form from '../common/form'
 import { addGroupPage, addPage } from '../pages/redux/pagesActions'
-import { onEnter } from '../common/utility'
+import { onEnter, toTitleCase } from '../common/utility'
 import extractCollectionInfoService from '../publishDocs/extractCollectionInfoService'
 
 const mapDispatchToProps = (dispatch, ownProps) => {
@@ -46,9 +46,11 @@ class PageForm extends Form {
     }
     const version = this.props.addEntity ? this.state.selectedVersionId : this.props.selectedVersion
     this.props.onHide()
+    let { name } = { ...this.state.data }
+    name = toTitleCase(name)
     if (this.props.title === 'Add new Group Page' || (this.props.addEntity && this.state.selectedGroupId)) {
       const groupId = this.props.addEntity ? this.state.selectedGroupId : this.props.selectedGroup.id
-      const data = { ...this.state.data }
+      const data = { ...this.state.data, name }
       const newPage = { ...data, requestId: shortid.generate() }
       this.props.add_group_page(
         version,
@@ -58,7 +60,7 @@ class PageForm extends Form {
     }
     if (this.props.title === 'Add New Version Page' || (this.props.addEntity && !this.state.selectedGroupId)) {
       const versionId = this.props.addEntity ? version : version.id
-      const data = { ...this.state.data }
+      const data = { ...this.state.data, name }
       const newPage = { ...data, requestId: shortid.generate() }
       this.props.add_page(versionId, newPage)
     }
@@ -143,7 +145,7 @@ class PageForm extends Form {
                     </div>}
                 </div>
                 <div className='col-6'>
-                  {this.renderInput('name', 'Page name', 'page name')}
+                  {this.renderInput('name', 'Page name', 'page name', true, true)}
                 </div>
               </div>
               <div className='text-left mt-2 mb-1'>

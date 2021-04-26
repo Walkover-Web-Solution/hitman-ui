@@ -2,9 +2,9 @@ import React from 'react'
 import { Modal } from 'react-bootstrap'
 import Joi from 'joi-browser'
 import Form from '../common/form'
+import { toTitleCase, onEnter } from '../common/utility'
 import shortid from 'shortid'
 import { connect } from 'react-redux'
-import { onEnter } from '../common/utility'
 import { addCollection, updateCollection } from './redux/collectionsActions'
 
 const mapDispatchToProps = (dispatch) => {
@@ -106,7 +106,7 @@ class CollectionForm extends Form {
 
   async doSubmit () {
     const body = this.state.data
-    body.name = body.name.trim()
+    body.name = toTitleCase(body.name.trim())
     body.website = body.website.trim()
     body.keyword = body.keyword.trim() + ',' + body.keyword1.trim() + ',' + body.keyword2.trim()
     delete body.keyword1
@@ -122,8 +122,8 @@ class CollectionForm extends Form {
   renderForm () {
     return (
       <form onSubmit={this.handleSubmit}>
-        {this.renderInput('name', 'Name', 'Collection Name', true)}
-        {this.renderInput('website', 'Website', 'Website', true)}
+        {this.renderInput('name', 'Name', 'Collection Name', true, true)}
+        {this.renderInput('website', 'Website', 'https://yourwebsite.com', true)}
         <div className='row'>
           <div className='col'>
             {this.renderInput('keyword', 'Keyword 1', 'Keyword 1', true)}

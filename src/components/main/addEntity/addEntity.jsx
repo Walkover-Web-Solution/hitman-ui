@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import Joi from 'joi-browser'
 import './addEntity.scss'
+import { toTitleCase } from '../../common/utility'
 
 const entityENUM = {
   endpoint: {
@@ -49,7 +50,7 @@ export class AddEntity extends Component {
           this.setState({ errors })
           return
         }
-        endpoint.name = this.state.entityName
+        endpoint.name = toTitleCase(this.state.entityName)
         this.props.addEndpoint(endpoint)
       } else {
         this.props.addNewEntity(this.props.entity)
