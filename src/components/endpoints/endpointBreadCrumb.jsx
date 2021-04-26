@@ -103,10 +103,10 @@ class EndpointBreadCrumb extends Component {
 
   setEndpointData () {
     this.groupId = this.props.groupId
-    this.groupName = this.groupId ? this.props.groups[this.groupId].name : null
-    this.versionId = this.groupId ? this.props.groups[this.groupId].versionId : null
-    this.versionName = this.versionId ? this.props.versions[this.versionId].number : null
-    this.collectionId = this.versionId ? this.props.versions[this.versionId].collectionId : null
+    this.groupName = this.groupId ? this.props.groups[this.groupId]?.name : null
+    this.versionId = this.groupId ? this.props.groups[this.groupId]?.versionId : null
+    this.versionName = this.versionId ? this.props.versions[this.versionId]?.number : null
+    this.collectionId = this.versionId ? this.props.versions[this.versionId]?.collectionId : null
     this.collectionName = this.collectionId ? this.props.collections[this.collectionId]?.name : null
   }
 
@@ -116,9 +116,9 @@ class EndpointBreadCrumb extends Component {
     const page = pages[pageId]
     if (page) {
       const { versionId, groupId } = page
-      this.groupName = groupId ? groups[groupId].name : null
-      this.versionName = versionId ? versions[versionId].number : null
-      this.collectionId = versionId ? versions[versionId].collectionId : null
+      this.groupName = groupId ? groups[groupId]?.name : null
+      this.versionName = versionId ? versions[versionId]?.number : null
+      this.collectionId = versionId ? versions[versionId]?.collectionId : null
       this.collectionName = this.collectionId ? collections[this.collectionId]?.name : null
     }
   }
