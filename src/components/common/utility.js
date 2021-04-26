@@ -1,5 +1,7 @@
 import Joi from 'joi-browser'
 
+export const ADD_GROUP_MODAL_NAME = 'Add Group'
+
 export function isDashboardRoute (props, sidebar = false) {
   if (
     props.location.pathname === '/dashboard' ||
@@ -95,5 +97,6 @@ export default {
   setFavicon,
   getProfileName,
   onEnter,
-  toTitleCase
+  toTitleCase,
+  ADD_GROUP_MODAL_NAME
 }
