@@ -430,6 +430,7 @@ class SideBar extends Component {
 
   renderSidebarContent () {
     const selectedCollectionName = this.props.collections[this.collectionId]?.name || ' '
+    const isMarketplaceImported = this.props.collections[this.collectionId]?.importedFromMarketPlace
     return (
       <div className='sidebar-content'>
         {this.collectionId
@@ -441,7 +442,7 @@ class SideBar extends Component {
                       <div className='ml-1 mr-2'><ArrowIcon /></div>
                       <div className='hm-sidebar-outer-block heading-collection'>{selectedCollectionName}</div>
                     </div>
-                    <button className='btn btn-primary' onClick={() => this.openAddEntitySelectionModal()}> ADD </button>
+                    {!isMarketplaceImported && <button className='btn btn-primary' onClick={() => this.openAddEntitySelectionModal()}> ADD </button>}
                   </div>
                   <div><PublishColelctionInfo {...this.props} collectionId={this.collectionId} /></div>
                   <div className='secondary-sidebar sidebar-content-scroll'>
