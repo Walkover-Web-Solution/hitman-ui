@@ -627,10 +627,11 @@ class PublishDocs extends Component {
       return (
         Object.keys(this.props.collections).map(
           (id, index) => (
-            <Dropdown.Item key={index} onClick={() => this.setSelectedCollection(this.props.collections[id])}>
-              {this.props.collections[id]?.name}
-              {this.collectionHasChanges(id) && <i class='fas fa-circle' />}
-            </Dropdown.Item>
+            !this.props.collections[id]?.importedFromMarketPlace &&
+              <Dropdown.Item key={index} onClick={() => this.setSelectedCollection(this.props.collections[id])}>
+                {this.props.collections[id]?.name}
+                {this.collectionHasChanges(id) && <i class='fas fa-circle' />}
+              </Dropdown.Item>
           ))
       )
     }

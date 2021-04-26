@@ -77,7 +77,7 @@ class EndpointForm extends Form {
       return (
         Object.keys(this.state.versions).map(
           (id, index) => (
-            <Dropdown.Item key={index} onClick={() => this.setState({ selectedVersionId: id, versionRequired: false })}>
+            <Dropdown.Item key={index} onClick={() => this.setState({ selectedVersionId: id, selectedGroupId: null, versionRequired: false })}>
               {this.state.versions[id]?.number}
             </Dropdown.Item>
           ))
