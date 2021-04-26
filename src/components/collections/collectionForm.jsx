@@ -35,7 +35,7 @@ class CollectionForm extends Form {
     this.schema = {
       name: Joi.string().trim().required().label('Collection Name'),
       website: Joi.string().trim().required().label('Website'),
-      keyword: Joi.string().trim().required().label('Keywords'),
+      keyword: Joi.string().trim().allow(null, '').label('Keywords'),
       keyword1: Joi.string().trim().allow(null, '').label('Keywords'),
       keyword2: Joi.string().trim().allow(null, '').label('Keywords'),
       description: Joi.string().allow(null, '').label('Description')
@@ -108,7 +108,7 @@ class CollectionForm extends Form {
     const body = this.state.data
     body.name = toTitleCase(body.name.trim())
     body.website = body.website.trim()
-    body.keyword = body.keyword.trim() + ',' + body.keyword1.trim() + ',' + body.keyword2.trim()
+    body.keyword = body.name + ',' + body.keyword1.trim() + ',' + body.keyword2.trim()
     delete body.keyword1
     delete body.keyword2
     if (this.props.title === 'Edit Collection') {
@@ -124,7 +124,7 @@ class CollectionForm extends Form {
       <form onSubmit={this.handleSubmit}>
         {this.renderInput('name', 'Name', 'Collection Name', true, true)}
         {this.renderInput('website', 'Website', 'https://yourwebsite.com', true)}
-        <div className='row'>
+        {/* <div className='row'>
           <div className='col'>
             {this.renderInput('keyword', 'Keyword 1', 'Keyword 1', true)}
           </div>
@@ -134,8 +134,7 @@ class CollectionForm extends Form {
           <div className='col'>
             {this.renderInput('keyword2', 'Keyword 3', 'Keyword 3')}
           </div>
-        </div>
-        {/* {this.renderTextArea("description", "Description", "description")} */}
+        </div> */}
         {this.renderQuillEditor('descriptoion', 'Description')}
         <div className='text-left mt-4 mb-2'>
           {this.renderButton('Submit')}
