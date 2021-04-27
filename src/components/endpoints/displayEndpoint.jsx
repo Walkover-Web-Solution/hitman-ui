@@ -832,7 +832,7 @@ class DisplayEndpoint extends Component {
 
     await this.handleApiCall(api, body, headers, this.state.data.body.type)
     this.setState({ loader: false })
-    !isDashboardRoute(this.props) && this.myRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' })
+    this.myRef.current && this.myRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' })
     isDashboardRoute(this.props) && this.setData()
   };
 
@@ -1843,6 +1843,7 @@ class DisplayEndpoint extends Component {
     const { theme, codeEditorVisibility } = this.state
     return (
       <div
+        ref={this.myRef}
         // className={
         //   this.props.location.pathname.split('/')[1] !== 'admin' ? '' : 'mainContentWrapperPublic'
         // }

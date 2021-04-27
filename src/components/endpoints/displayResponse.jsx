@@ -120,7 +120,7 @@ class DisplayResponse extends Component {
               <div>
                 <div className='response-status'>
                   <div className='respHeading'>
-                    <h2 className='orange-heading'> RESPONSE</h2>
+                    {!isSavedEndpoint(this.props) ? <h2 className='orange-heading'> RESPONSE</h2> : null}
                   </div>
                   <div className='statusWrapper'>
                     <div id='status'>
