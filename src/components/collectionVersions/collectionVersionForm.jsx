@@ -3,7 +3,7 @@ import { Modal } from 'react-bootstrap'
 import Joi from 'joi-browser'
 import Form from '../common/form'
 import { connect } from 'react-redux'
-import { onEnter, toTitleCase } from '../common/utility'
+import { onEnter, toTitleCase, ADD_VERSION_MODAL_NAME } from '../common/utility'
 import {
   addVersion,
   updateVersion
@@ -39,7 +39,7 @@ class CollectionVersionForm extends Form {
     let data = {}
     const collectionId = ''
     let versionId = ''
-    if (this.props.title === 'Add new Collection Version') return
+    if (this.props.title === ADD_VERSION_MODAL_NAME) return
     if (this.props.selected_version) {
       const { number, host, id } = this.props.selected_version
       data = {
@@ -60,7 +60,7 @@ class CollectionVersionForm extends Form {
       const editedCollectionVersion = { ...this.state.data, collectionId, id, number }
       this.props.update_version(editedCollectionVersion)
     }
-    if (this.props.title === 'Add new Collection Version') {
+    if (this.props.title === ADD_VERSION_MODAL_NAME) {
       const collectionId = this.props.collection_id
       const newVersion = { ...this.state.data, requestId: shortid.generate(), number }
       this.props.add_version(newVersion, collectionId)

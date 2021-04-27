@@ -6,7 +6,7 @@ import moment from 'moment'
 import Collections from '../collections/collections'
 import CollectionVersions from '../collectionVersions/collectionVersions'
 import ProtectedRoute from '../common/protectedRoute'
-import { isDashboardRoute, ADD_GROUP_MODAL_NAME } from '../common/utility'
+import { isDashboardRoute, ADD_GROUP_MODAL_NAME, ADD_VERSION_MODAL_NAME } from '../common/utility'
 import { getCurrentUser } from '../auth/authService'
 import LoginSignupModal from './loginSignupModal'
 import PublishColelctionInfo from './publishCollectionInfo'
@@ -555,7 +555,7 @@ class SideBar extends Component {
         this.props,
         this.closeAddEntityModal.bind(this),
         this.collectionId,
-        'Add new Collection Version'
+        ADD_VERSION_MODAL_NAME
       )
     }
     if (this.state.entity === 'group') {
@@ -613,7 +613,7 @@ class SideBar extends Component {
             this.props,
             this.closeVersionForm.bind(this),
             this.state.selectedCollection.id,
-            'Add new Collection Version'
+            ADD_VERSION_MODAL_NAME
           )}
         <div className='primary-sidebar'>
           {
