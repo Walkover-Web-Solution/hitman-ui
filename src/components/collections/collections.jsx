@@ -570,6 +570,7 @@ class CollectionsComponent extends Component {
           title='Add Collection'
           onHide={() => { this.setState({ showAddCollectionModal: false }) }}
           show={this.state.showAddCollectionModal}
+          open_selected_collection={this.openSelectedCollection.bind(this)}
         />
     )
   }
