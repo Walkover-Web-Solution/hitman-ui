@@ -793,6 +793,16 @@ class DisplayEndpoint extends Component {
     return isEmpty
   }
 
+  addhttps(url) {
+    if(this.state.data.updatedUri.includes('localhost')&& !(url.includes('localhost')))
+     url='localhost:'+url;
+    if (!/^(?:f|ht)tps?\:\/\//.test(url)) {
+        url = "https://" + url;
+    }
+    return url;
+  }
+
+
   handleSend = async () => {
     this.setState({ loader: true })
     const startTime = new Date().getTime()
@@ -804,6 +814,7 @@ class DisplayEndpoint extends Component {
     const queryparams = uri.search()
     const path = this.setPathVariableValues()
     let api = BASE_URL + path + queryparams
+    api=this.addhttps(api);
     api = this.replaceVariables(api)
     const headerJson = {}
     Object.keys(headersData).forEach((header) => {
