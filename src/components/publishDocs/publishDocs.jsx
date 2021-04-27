@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Button, Dropdown } from 'react-bootstrap'
+import { Button, Dropdown, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import jwtDecode from 'jwt-decode'
 import { makeHighlightsData } from '../endpoints/highlightChangesHelper'
 import { connect } from 'react-redux'
@@ -992,14 +992,20 @@ class PublishDocs extends Component {
 
     if (this.isCollectionPublished()) {
       return (
-        <div className='d-flex align-items-center mx-3 mt-4'>
-          <button
-            className='externalLinkButton'
-            onClick={() => { window.open(url, '_blank') }}
-          >
-            <ExternalLinks />
-          </button>
-        </div>
+        <OverlayTrigger
+          placement='right'
+          overlay={<Tooltip> Go To Docs </Tooltip>}
+        >
+          <div className='d-flex align-items-center mx-3 mt-4'>
+            <button
+              className='externalLinkButton'
+              onClick={() => { window.open(url, '_blank') }}
+            >
+              <ExternalLinks />
+            </button>
+          </div>
+        </OverlayTrigger>
+
       )
     }
   }
