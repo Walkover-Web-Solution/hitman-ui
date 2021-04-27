@@ -10,7 +10,7 @@ function endpointUrl (groupId) {
 }
 
 export function apiTest (api, method, body, headers, bodyType) {
-  if (api.indexOf('localhost') > 0) {
+  if (api.indexOf('localhost') > 0 || api.indexOf('127.0.0.1') > 0) {
     return httpService.request({
       url: api,
       method: method,
