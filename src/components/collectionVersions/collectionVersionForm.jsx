@@ -30,8 +30,8 @@ class CollectionVersionForm extends Form {
     }
 
     this.schema = {
-      number: Joi.string().required().label('Version number'),
-      host: Joi.string().uri().required().label('Host')
+      number: Joi.string().required().label('Version Name'),
+      host: Joi.string().uri().required().label('Version Endpoint')
     }
   }
 
@@ -87,10 +87,10 @@ class CollectionVersionForm extends Form {
             <form onSubmit={this.handleSubmit}>
               <div className='row'>
                 <div className='col-6'>
-                  {this.renderInput('number', 'Version Number', 'version number', true, true)}
+                  {this.renderInput('number', 'Version Name', 'Version Name', true, true)}
                 </div>
                 <div className='col-6'>
-                  {this.renderInput('host', 'Host', 'host')}
+                  {this.renderInput('host', 'Version Endpoint', 'https://v1.example.com', true)}
                 </div>
               </div>
               <div className='text-left mt-4 mb-2'>
