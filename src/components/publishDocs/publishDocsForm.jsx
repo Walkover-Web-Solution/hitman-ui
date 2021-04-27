@@ -6,7 +6,10 @@ import { Button } from 'react-bootstrap'
 import { ReactComponent as UploadIcon } from '../../assets/icons/uploadIcon.svg'
 import { updateCollection } from '../collections/redux/collectionsActions'
 import './publishDocsForm.scss'
+import PublishDocsConfirmModal from './publishDocsConfirmModal'
 const URI = require('urijs')
+
+const API_IP = process.env.REACT_APP_API_IP
 
 const publishDocFormEnum = {
   NULL_STRING: '',
@@ -66,7 +69,9 @@ class PublishDocForm extends Component {
       theme: ''
     },
     cta: publishDocFormEnum.INITIAL_CTA,
-    links: publishDocFormEnum.INITIAL_LINKS
+    links: publishDocFormEnum.INITIAL_LINKS,
+    showPublishDocConfirmModal: false
+
   }
 
   componentDidMount () {
@@ -150,11 +155,21 @@ class PublishDocForm extends Component {
     this.setState({ errors: errors || {} })
     if (errors) return
     this.setState({ loader: true })
+    if (!this.props.isSidebar) {
+      this.setState({ showPublishDocConfirmModal: true })
+    }
     this.props.update_collection(collection, () => { this.setState({ loader: false }) })
-    this.props.history.push({
-      pathname: '/admin/publish',
-      search: `?collectionId=${collectionId}`
-    })
+  }
+
+  showPublishDocConfirmationModal () {
+    return (
+      <PublishDocsConfirmModal
+        {...this.props}
+        show={this.state.showPublishDocConfirmModal}
+        onHide={() => { this.setState({ showPublishDocConfirmModal: false }) }}
+        collection_id={URI.parseQuery(this.props.location.search).collectionId}
+      />
+    )
   }
 
   setTheme (theme) {
@@ -271,14 +286,15 @@ class PublishDocForm extends Component {
     )
   }
 
-  renderInput (name, mandatory = false, disabled) {
+  renderInput (name, mandatory = false, disabled, placeholder) {
     return (
       <div className='form-group'>
         <label>
           {publishDocFormEnum.LABELS[name]} {mandatory ? <span className='alert alert-danger'>*</span> : ''}
         </label>
-        <input type='text' disabled={disabled} className='form-control' name={name} value={this.state.data[name]} onChange={(e) => this.handleChange(e)} />
+        <input type='text' placeholder={placeholder} disabled={disabled} className='form-control' name={name} value={this.state.data[name]} onChange={(e) => this.handleChange(e)} />
         {this.state.errors && this.state.errors[name] && <small className='alert alert-danger'>{this.state.errors[name]}</small>}
+        {name === 'domain' && <label className='domain-info'>{`Point the A record of the above domain to ${API_IP}`}</label>}
       </div>
     )
   }
@@ -287,6 +303,7 @@ class PublishDocForm extends Component {
     return (
       <>
 
+        {this.showPublishDocConfirmationModal()}
         <div className='publish-mo-btn'>
           {
             this.props.isSidebar && this.props.isCollectionPublished() &&
@@ -299,8 +316,8 @@ class PublishDocForm extends Component {
           }
         </div>
         <div className='small-input'>
-          {this.renderInput('title', true)}
-          {this.renderInput('domain')}
+          {this.renderInput('title', true, false, 'Title')}
+          {this.renderInput('domain', false, false, 'https://docs.example.com')}
         </div>
         <div className='d-flex'>
           <div className='favicon-uploader'>
