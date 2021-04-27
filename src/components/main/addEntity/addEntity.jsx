@@ -1,19 +1,25 @@
 import React, { Component } from 'react'
 import Joi from 'joi-browser'
 import './addEntity.scss'
+import { toTitleCase } from '../../common/utility'
+import { OverlayTrigger, Tooltip } from 'react-bootstrap'
+import { ReactComponent as HelpIcon } from '../../../assets/icons/helpcircle.svg'
 
 const entityENUM = {
   endpoint: {
     key: 'endpoint',
-    message: 'This group is empty, Add endpoint to start working'
+    message: 'Add an endpoint name to begin.',
+    tooltip: ''
   },
   version: {
     key: 'version',
-    message: 'This collection is empty, Add version to start working'
+    message: 'Add your API version.',
+    tooltip: 'Versioning helps in maintaining API changes without breaking existing implementations. This gives consumers more choices without having to upgrade to the latest version'
   },
   group: {
     key: 'group',
-    message: 'This version is empty, Add group to start working'
+    message: 'No group added.',
+    tooltip: 'Groups help categorize APIs'
   }
 }
 
@@ -49,7 +55,7 @@ export class AddEntity extends Component {
           this.setState({ errors })
           return
         }
-        endpoint.name = this.state.entityName
+        endpoint.name = toTitleCase(this.state.entityName)
         this.props.addEndpoint(endpoint)
       } else {
         this.props.addNewEntity(this.props.entity)
@@ -70,8 +76,22 @@ export class AddEntity extends Component {
             </div>}
           <div>
             <button type='submit' className='entity-submit-btn'>{`Add ${this.props.type}`}</button>
+            {this.props.type && this.props.type !== 'endpoint' && this.renderToolTip(this.props.type)}
           </div>
         </form>
+      )
+    }
+
+    renderToolTip (type) {
+      return (
+        <>
+          <OverlayTrigger
+            placement='right'
+            overlay={<Tooltip> {entityENUM[this.props.type].tooltip} </Tooltip>}
+          >
+            <HelpIcon />
+          </OverlayTrigger>
+        </>
       )
     }
 

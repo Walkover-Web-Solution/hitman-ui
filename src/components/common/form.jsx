@@ -95,7 +95,7 @@ class Form extends Component {
     this.setState({ data })
   };
 
-  renderInput (name, label, placeholder, mandatory = false) {
+  renderInput (name, label, placeholder, mandatory = false, firstLetterCapitalize = false) {
     const { data, errors } = this.state
     return (
       <Input
@@ -107,6 +107,7 @@ class Form extends Component {
         placeholder={placeholder}
         disabled={data.disabled}
         mandatory={mandatory}
+        firstLetterCapitalize={firstLetterCapitalize}
       />
     )
   }

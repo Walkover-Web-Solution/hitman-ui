@@ -178,11 +178,10 @@ class UserInfo extends Component {
       <Dropdown bsPrefix='dropdown user-info-dropdown'>
         <Dropdown.Toggle variant=''>
           <div className='user-profile-circle'><i class='fas fa-user' /></div>
-          <span className='user-notification-badge'>{this.getNotificationCount()}</span>
+          {this.getNotificationCount() > 0 &&
+            <span className='user-notification-badge'>{this.getNotificationCount()}</span>}
         </Dropdown.Toggle>
         <Dropdown.Menu>
-          {this.renderMenuHeading()}
-          <Dropdown.Divider />
           {this.renderProfileDetails()}
           <Dropdown.Divider />
           <Dropdown.Item onClick={() => this.navigateToViaSocket('/manage/users')}>
@@ -191,7 +190,8 @@ class UserInfo extends Component {
           {authService.isAdmin() &&
             <Dropdown.Item className='d-flex justify-content-between align-items-center' onClick={() => { this.navigateToPublishDocs() }}>
               <div><HostedApiIcon /><span>Hosted API</span></div>
-              <div className='user-notification-badge'>{this.getNotificationCount()}</div>
+              {this.getNotificationCount() > 0 &&
+                <div className='user-notification-badge'>{this.getNotificationCount()}</div>}
             </Dropdown.Item>}
           <Dropdown.Divider />
           <Dropdown.Item onClick={() => this.navigateToViaSocket('/products')}>
