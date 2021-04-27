@@ -674,7 +674,11 @@ class DisplayEndpoint extends Component {
       }
       this.setState({ response, flagResponse: true })
     } else {
-      this.setState({ flagResponse: false })
+      const timeElapsed = new Date().getTime() - this.state.startTime
+      const response = {
+        data: 'ERROR:Server Connection Refused'
+      }
+      this.setState({ response, timeElapsed, flagResponse: true })
     }
   }
 
@@ -706,7 +710,8 @@ class DisplayEndpoint extends Component {
         this.setState({ response, timeElapsed, flagResponse: true })
       }
     } catch (error) {
-      this.handleErrorResponse(error)
+      console.log(error.message)
+      this.handleErrorResponse(error, this.state.startTime)
     }
   }
 

@@ -1,6 +1,5 @@
 import axios from 'axios'
 import logger from './logService'
-import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
 // axios.defaults.baseURL = process.env.REACT_APP_API_URL;
@@ -14,7 +13,7 @@ endpointInstance.interceptors.response.use(null, (error) => {
 
   if (!expectedError) {
     logger.log(!error)
-    toast.error('An unexpected error occur')
+    // toast.error('An unexpected error occur')
   }
   return Promise.reject(error)
 })

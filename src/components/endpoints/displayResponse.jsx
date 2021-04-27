@@ -115,7 +115,7 @@ class DisplayResponse extends Component {
     return (
       <div className='endpoint-response-container'>
         {
-          this.props.response.status
+          this.props.flagResponse
             ? (
               <div>
                 <div className='response-status'>
@@ -123,14 +123,15 @@ class DisplayResponse extends Component {
                     {!isSavedEndpoint(this.props) ? <h2 className='orange-heading'> RESPONSE</h2> : null}
                   </div>
                   <div className='statusWrapper'>
-                    <div id='status'>
-                      <div className='response-status-item-name'>Status :</div>
-                      <div className='response-status-value' style={{ color: theme }}>
-                        {this.props.response.status +
+                    {this.props.response.status &&
+                      <div id='status'>
+                        <div className='response-status-item-name'>Status :</div>
+                        <div className='response-status-value' style={{ color: theme }}>
+                          {this.props.response.status +
                           ' ' +
                           this.props.response.statusText}
-                      </div>
-                    </div>
+                        </div>
+                      </div>}
                     <div id='time'>
                       <div className='response-status-item-name'>Time:</div>
                       <div className='response-status-value' style={{ color: theme }}>
