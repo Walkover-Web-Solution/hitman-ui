@@ -34,7 +34,7 @@ class CollectionForm extends Form {
 
     this.schema = {
       name: Joi.string().trim().required().label('Collection Name'),
-      website: Joi.string().trim().required().label('Website'),
+      website: Joi.string().uri().trim().required().label('Website'),
       keyword: Joi.string().trim().required().label('Keywords'),
       keyword1: Joi.string().trim().allow(null, '').label('Keywords'),
       keyword2: Joi.string().trim().allow(null, '').label('Keywords'),
