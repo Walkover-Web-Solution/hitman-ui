@@ -178,6 +178,10 @@ class CustomTabs extends Component {
     tabService.newTab({ ...this.props })
   }
 
+  showScrollButton () {
+    return this.navRef.current?.scrollWidth > this.navRef.current?.clientWidth + 10
+  }
+
   renderHoverTab (tabId) {
     let x = 1
     const y = 1
@@ -223,7 +227,7 @@ class CustomTabs extends Component {
     return (
 
       <>
-        {this.navRef.current?.scrollWidth > this.navRef.current?.clientWidth
+        {this.showScrollButton()
           ? (
             <div
               className={`scroll-button scroll-button--left d-flex mr-2 ${this.leftHideTabs() ? '' : 'disabled'}`}
@@ -320,7 +324,7 @@ class CustomTabs extends Component {
           </div>
         </Nav.Item> */}
         </Nav>
-        {this.navRef.current?.scrollWidth > this.navRef.current?.clientWidth
+        {this.showScrollButton()
           ? (
             <div
               className={`scroll-button scroll-button--right d-flex ml-2 mr-2 ${this.rightHideTabs() ? '' : 'disabled'}`}

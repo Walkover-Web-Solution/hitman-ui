@@ -6,7 +6,7 @@ import moment from 'moment'
 import Collections from '../collections/collections'
 import CollectionVersions from '../collectionVersions/collectionVersions'
 import ProtectedRoute from '../common/protectedRoute'
-import { isDashboardRoute } from '../common/utility'
+import { isDashboardRoute, ADD_GROUP_MODAL_NAME } from '../common/utility'
 import { getCurrentUser } from '../auth/authService'
 import LoginSignupModal from './loginSignupModal'
 import PublishColelctionInfo from './publishCollectionInfo'
@@ -575,7 +575,7 @@ class SideBar extends Component {
           {...this.props}
           show
           onHide={() => this.closeAddEntityModal()}
-          title='Add new Group'
+          title={ADD_GROUP_MODAL_NAME}
           addEntity
           collectionId={this.collectionId}
         />

@@ -8,8 +8,11 @@ const Input = ({
   error,
   placeholder,
   disabled,
-  mandatory
+  mandatory,
+  firstLetterCapitalize
 }) => {
+  const inputStyle = firstLetterCapitalize ? { textTransform: 'capitalize' } : {}
+
   return (
     <div className='form-group'>
       <label htmlFor={name} className='custom-input-label'>
@@ -25,6 +28,7 @@ const Input = ({
         type='text'
         placeholder={placeholder}
         disabled={disabled}
+        style={inputStyle}
       />
       {error && <div className='alert alert-danger'>{error}</div>}
     </div>

@@ -370,9 +370,9 @@ class DisplayEndpoint extends Component {
     let pathVariables = []
     const history = this.props.historySnapshot
     const params = this.fetchoriginalParams(history.endpoint.params)
-    originalParams = this.fetchoriginalParams(history.endpoint.params)
+    originalParams = [...params]
     const headers = this.fetchoriginalHeaders(history.endpoint.headers)
-    originalHeaders = this.fetchoriginalParams(history.endpoint.params)
+    originalHeaders = [...headers]
     this.customState.customBASE_URL = history.endpoint.BASE_URL
     let authType = {}
     if (history.endpoint.authorizationType !== null) {

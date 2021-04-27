@@ -3,7 +3,7 @@ import { Modal, Dropdown } from 'react-bootstrap'
 import Joi from 'joi-browser'
 import Form from '../common/form'
 import { connect } from 'react-redux'
-import { onEnter } from '../common/utility'
+import { onEnter, toTitleCase } from '../common/utility'
 import {
   addEndpoint
 } from './redux/endpointsActions'
@@ -45,7 +45,7 @@ class EndpointForm extends Form {
     this.props.onHide()
     const endpoint = {
       uri: '',
-      name: this.state.data.name,
+      name: toTitleCase(this.state.data.name),
       requestType: 'GET',
       body: { type: 'none', value: null },
       headers: {},
@@ -134,7 +134,7 @@ class EndpointForm extends Form {
                     </div>}
                 </div>
                 <div className='col-6'>
-                  {this.renderInput('name', 'Endpoint Name', 'endpoint name')}
+                  {this.renderInput('name', 'Endpoint Name', 'endpoint name', true, true)}
                 </div>
               </div>
               <div className='text-left mt-4 mb-2'>
