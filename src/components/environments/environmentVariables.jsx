@@ -138,7 +138,7 @@ class EnvironmentVariables extends Component {
   };
 
   handleChange = (e) => {
-    console.log('currentTarget 1',e.currentTarget)
+    console.log('currentTarget 1', e.currentTarget)
     const name = e.currentTarget.name.split('.')
     const lastIndex = this.state.originalVariableNames.length - 1
 
@@ -154,10 +154,10 @@ class EnvironmentVariables extends Component {
         e.currentTarget.value
       data = { environment }
     }
-    console.log('currentTarget 2 ',e.currentTarget)
+    console.log('currentTarget 2 ', e.currentTarget)
     this.setState(data, () => {
-      if (name[0] === lastIndex.toString() && e?.currentTarget) {
-        this.handleAdd(e.currentTarget.value)
+      if (name[0] === lastIndex.toString()) {
+        this.handleAdd()
       }
     })
   };
