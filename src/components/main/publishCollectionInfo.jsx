@@ -47,26 +47,9 @@ class PublishCollectionInfo extends Component {
   }
 
   renderPublicUrl () {
-    const customDomains = this.props.collections[this.props.collectionId]?.customDomain
     // build default url
-    let url = defaultDomain + '/p/' + this.props.collectionId
-    // handle multiple domains
-    if (customDomains) {
-      const domains = customDomains.split(',')
-      // get first domain to show and redirect to
-      for (let i = 0; i < domains.length; i++) {
-        let domain = domains[i].trim()
-        if (domain) {
-          // check for protocol
-          if (!domain.match(/^https?:\/\//)) domain = 'http://' + domain
-          // check for a trailing slash
-          if (domain.charAt(domain.length - 1) === '/') domain = domain.substr(0, domain.length - 2)
-          // build custom url
-          url = domain + '/p/' + this.props.collectionId
-          break
-        }
-      }
-    }
+    const url = defaultDomain + '/p/' + this.props.collectionId
+  
     return (
       <div className='sidebar-public-url text-link text-center d-flex' onClick={() => { window.open(url, '_blank') }}>
         <div className='text-truncate'>{url}</div> <span className='icon'> <ExternalLinks /></span>
@@ -91,6 +74,9 @@ class PublishCollectionInfo extends Component {
       if (endpoint.isPublished) liveEndpointCount++
     })
     this.setState({ totalPageCount, totalEndpointCount, livePageCount, liveEndpointCount })
+    if (this.props.getTotalEndpointsCount) {
+      this.props.getTotalEndpointsCount(totalEndpointCount)
+    }
   }
 
   renderPublicCollectionInfo () {

@@ -9,7 +9,7 @@ import { addCollection, updateCollection } from './redux/collectionsActions'
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    add_collection: (newCollection) => dispatch(addCollection(newCollection)),
+    add_collection: (newCollection, openSelectedCollection) => dispatch(addCollection(newCollection, openSelectedCollection)),
     update_collection: (editedCollection) =>
       dispatch(updateCollection(editedCollection))
   }
@@ -34,7 +34,7 @@ class CollectionForm extends Form {
 
     this.schema = {
       name: Joi.string().trim().required().label('Collection Name'),
-      website: Joi.string().trim().required().label('Website'),
+      website: Joi.string().uri().trim().required().label('Website'),
       keyword: Joi.string().trim().allow(null, '').label('Keywords'),
       keyword1: Joi.string().trim().allow(null, '').label('Keywords'),
       keyword2: Joi.string().trim().allow(null, '').label('Keywords'),
@@ -91,7 +91,7 @@ class CollectionForm extends Form {
       defaultTitle: '',
       versionHosts: {}
     }
-    this.props.add_collection({ ...this.state.data, docProperties: defaultDocProperties, requestId })
+    this.props.add_collection({ ...this.state.data, docProperties: defaultDocProperties, requestId }, this.props.open_selected_collection)
     this.setState({
       data: {
         name: '',

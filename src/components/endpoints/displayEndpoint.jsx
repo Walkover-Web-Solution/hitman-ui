@@ -674,7 +674,11 @@ class DisplayEndpoint extends Component {
       }
       this.setState({ response, flagResponse: true })
     } else {
-      this.setState({ flagResponse: false })
+      const timeElapsed = new Date().getTime() - this.state.startTime
+      const response = {
+        data: 'ERROR:Server Connection Refused'
+      }
+      this.setState({ response, timeElapsed, flagResponse: true })
     }
   }
 
@@ -706,7 +710,7 @@ class DisplayEndpoint extends Component {
         this.setState({ response, timeElapsed, flagResponse: true })
       }
     } catch (error) {
-      this.handleErrorResponse(error)
+      this.handleErrorResponse(error, this.state.startTime)
     }
   }
 
@@ -793,8 +797,15 @@ class DisplayEndpoint extends Component {
     return isEmpty
   }
 
+  addhttps (url) {
+    if (this.state.data.updatedUri.includes('localhost') && !(url.includes('localhost'))) { url = 'localhost:' + url }
+    if (!/^(?:f|ht)tps?:\/\//.test(url)) {
+      url = 'https://' + url
+    }
+    return url
+  }
+
   handleSend = async () => {
-    this.setState({ loader: true })
     const startTime = new Date().getTime()
     const response = {}
     this.setState({ startTime, response })
@@ -804,6 +815,7 @@ class DisplayEndpoint extends Component {
     const queryparams = uri.search()
     const path = this.setPathVariableValues()
     let api = BASE_URL + path + queryparams
+    api = this.addhttps(api)
     api = this.replaceVariables(api)
     const headerJson = {}
     Object.keys(headersData).forEach((header) => {
@@ -820,11 +832,15 @@ class DisplayEndpoint extends Component {
       this.setState({ loader: false })
       return
     }
-
-    await this.handleApiCall(api, body, headers, this.state.data.body.type)
-    this.setState({ loader: false })
-    !isDashboardRoute(this.props) && this.myRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' })
-    isDashboardRoute(this.props) && this.setData()
+    if (api) {
+      this.setState({ loader: true })
+      await this.handleApiCall(api, body, headers, this.state.data.body.type)
+      this.setState({ loader: false })
+      this.myRef.current && this.myRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' })
+      isDashboardRoute(this.props) && this.setData()
+    } else {
+      toast.error('Request URL is empty')
+    }
   };
 
   extractPosition (groupId) {
@@ -1834,6 +1850,7 @@ class DisplayEndpoint extends Component {
     const { theme, codeEditorVisibility } = this.state
     return (
       <div
+        ref={this.myRef}
         // className={
         //   this.props.location.pathname.split('/')[1] !== 'admin' ? '' : 'mainContentWrapperPublic'
         // }

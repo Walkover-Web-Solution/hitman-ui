@@ -6,7 +6,7 @@ import moment from 'moment'
 import Collections from '../collections/collections'
 import CollectionVersions from '../collectionVersions/collectionVersions'
 import ProtectedRoute from '../common/protectedRoute'
-import { isDashboardRoute, ADD_GROUP_MODAL_NAME } from '../common/utility'
+import { isDashboardRoute, ADD_GROUP_MODAL_NAME, ADD_VERSION_MODAL_NAME } from '../common/utility'
 import { getCurrentUser } from '../auth/authService'
 import LoginSignupModal from './loginSignupModal'
 import PublishColelctionInfo from './publishCollectionInfo'
@@ -60,7 +60,8 @@ class SideBar extends Component {
       historySnapshot: null,
       selectedCollectionId: null,
       secondarySidebarToggle: false,
-      primarySidebar: null
+      primarySidebar: null,
+      totalEndpointsCount: 0
     }
   }
 
@@ -428,6 +429,10 @@ class SideBar extends Component {
     )
   }
 
+  getTotalEndpointsCount (count) {
+    this.setState({ totalEndpointsCount: count })
+  }
+
   renderSidebarContent () {
     const selectedCollectionName = this.props.collections[this.collectionId]?.name || ' '
     const isMarketplaceImported = this.props.collections[this.collectionId]?.importedFromMarketPlace
@@ -442,9 +447,15 @@ class SideBar extends Component {
                       <div className='ml-1 mr-2'><ArrowIcon /></div>
                       <div className='hm-sidebar-outer-block heading-collection'>{selectedCollectionName}</div>
                     </div>
-                    {!isMarketplaceImported && <button className='btn btn-primary' onClick={() => this.openAddEntitySelectionModal()}> ADD </button>}
+                    {(!isMarketplaceImported && this.state.totalEndpointsCount !== 0) && <button className='btn btn-primary' onClick={() => this.openAddEntitySelectionModal()}> ADD </button>}
                   </div>
-                  <div><PublishColelctionInfo {...this.props} collectionId={this.collectionId} /></div>
+                  <div>
+                    <PublishColelctionInfo
+                      {...this.props}
+                      collectionId={this.collectionId}
+                      getTotalEndpointsCount={this.getTotalEndpointsCount.bind(this)}
+                    />
+                  </div>
                   <div className='secondary-sidebar sidebar-content-scroll'>
                     <div className='collectionVersionWrp'>
                       <CollectionVersions
@@ -555,7 +566,7 @@ class SideBar extends Component {
         this.props,
         this.closeAddEntityModal.bind(this),
         this.collectionId,
-        'Add new Collection Version'
+        ADD_VERSION_MODAL_NAME
       )
     }
     if (this.state.entity === 'group') {
@@ -613,7 +624,7 @@ class SideBar extends Component {
             this.props,
             this.closeVersionForm.bind(this),
             this.state.selectedCollection.id,
-            'Add new Collection Version'
+            ADD_VERSION_MODAL_NAME
           )}
         <div className='primary-sidebar'>
           {
