@@ -806,7 +806,6 @@ class DisplayEndpoint extends Component {
   }
 
   handleSend = async () => {
-    this.setState({ loader: true })
     const startTime = new Date().getTime()
     const response = {}
     this.setState({ startTime, response })
@@ -833,11 +832,15 @@ class DisplayEndpoint extends Component {
       this.setState({ loader: false })
       return
     }
-
-    await this.handleApiCall(api, body, headers, this.state.data.body.type)
-    this.setState({ loader: false })
-    this.myRef.current && this.myRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' })
-    isDashboardRoute(this.props) && this.setData()
+    if (api) {
+      this.setState({ loader: true })
+      await this.handleApiCall(api, body, headers, this.state.data.body.type)
+      this.setState({ loader: false })
+      this.myRef.current && this.myRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' })
+      isDashboardRoute(this.props) && this.setData()
+    } else {
+      toast.error('Request URL is empty')
+    }
   };
 
   extractPosition (groupId) {
