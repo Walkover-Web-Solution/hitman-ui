@@ -9,7 +9,7 @@ import './publishDocsForm.scss'
 import PublishDocsConfirmModal from './publishDocsConfirmModal'
 const URI = require('urijs')
 
-const API_IP = process.env.REACT_APP_API_IP
+const UI_IP = process.env.REACT_APP_UI_IP
 
 const publishDocFormEnum = {
   NULL_STRING: '',
@@ -294,7 +294,7 @@ class PublishDocForm extends Component {
         </label>
         <input type='text' placeholder={placeholder} disabled={disabled} className='form-control' name={name} value={this.state.data[name]} onChange={(e) => this.handleChange(e)} />
         {this.state.errors && this.state.errors[name] && <small className='alert alert-danger'>{this.state.errors[name]}</small>}
-        {name === 'domain' && <label className='domain-info'>{`Point the A record of the above domain to ${API_IP}`}</label>}
+        {name === 'domain' && <label className='domain-info'>{`Point the A record of the above domain to ${UI_IP}`}</label>}
       </div>
     )
   }
