@@ -798,30 +798,13 @@ class PublishDocs extends Component {
     })
   }
 
-  endpointPublishAndReject () {
+  renderRejectButtonEndpoint(){
     if (this.state.endpoints[this.state.selectedEndpointId]?.state !== publishDocsEnum.APPROVED_STATE &&
-      this.state.endpoints[this.state.selectedEndpointId]?.state !== publishDocsEnum.REJECT_STATE && !this.state.publishLoader) {
+      this.state.endpoints[this.state.selectedEndpointId]?.state !== publishDocsEnum.REJECT_STATE) {
       return (
-        <div className='publish-reject mt-3 d-flex'>
           <button class='btn btn-outline danger mr-3' onClick={() => this.handleRejectEndpointRequest(this.state.selectedEndpointId)}>Reject</button>
-          <div className='publish-button'>  <Button variant='success' onClick={() => this.handleApproveEndpointRequest(this.state.selectedEndpointId)}>PUBLISH</Button>
-          </div>
-        </div>
       )
-    } else if (this.state.endpoints[this.state.selectedEndpointId]?.state !== publishDocsEnum.APPROVED_STATE &&
-      this.state.endpoints[this.state.selectedEndpointId]?.state !== publishDocsEnum.REJECT_STATE && this.state.publishLoader === true) {
-      return (
-        <div className='publish-reject mt-3 d-flex'>
-          <button
-            class='btn btn-outline danger mr-3'
-            onClick={() => this.handleRejectEndpointRequest(this.state.selectedEndpointId)}
-          >Reject
-          </button>
-          <div className='publish-button buttonLoader'>  <Button variant='success' />
-          </div>
-        </div>
-      )
-    } else {
+     } else {
       return (
         <div className='publish-reject mt-3 d-flex'>
           <div className='publish-button'>  <Button variant='success' onClick={() => this.handleRemovePublicEndpoint(this.state.selectedEndpointId)}>Unpublish Endpoint</Button>
@@ -831,32 +814,57 @@ class PublishDocs extends Component {
     }
   }
 
-  pagePublishAndReject () {
-    if (this.state.pages[this.state.selectedPageId]?.state !== publishDocsEnum.APPROVED_STATE &&
-      this.state.pages[this.state.selectedPageId]?.state !== publishDocsEnum.REJECT_STATE && !this.state.publishPageLoader
-    ) {
+  endpointPublishAndReject () {
+    if (!this.state.publishLoader) {
       return (
         <div className='publish-reject mt-3 d-flex'>
+          {this.renderRejectButtonEndpoint()}
+          <div className='publish-button'>  <Button variant='success' onClick={() => this.handleApproveEndpointRequest(this.state.selectedEndpointId)}>PUBLISH</Button>
+          </div>
+        </div>
+      )
+     }else if (this.state.publishLoader === true) {
+      return (
+        <div className='publish-reject mt-3 d-flex'>
+          {this.renderRejectButtonEndpoint()}
+          <div className='publish-button buttonLoader'>  <Button variant='success' />
+          </div>
+        </div>
+      )
+      }
+  }
+  renderRejectButtonPage(){
+    if (this.state.pages[this.state.selectedPageId]?.state !== publishDocsEnum.APPROVED_STATE &&
+      this.state.pages[this.state.selectedPageId]?.state !== publishDocsEnum.REJECT_STATE
+    ) {
+      return (
           <button class='btn btn-outline danger mr-3' onClick={() => this.handleRejectPageRequest(this.state.selectedPageId)}>Reject</button>
+      )
+    }else {
+      return (
+        <div className='publish-reject mt-3 d-flex'>
+          <div className='publish-button'>  <Button variant='success' onClick={() => this.handleRemovePublicPage(this.state.selectedPageId)}>Unpublish Page</Button>
+          </div>
+        </div>
+      )
+    }
+  }
+  pagePublishAndReject () {
+    if ( !this.state.publishPageLoader) {
+      return (
+        <div className='publish-reject mt-3 d-flex'>
+          {this.renderRejectButtonPage()}
           <div className='publish-button'>
             <Button variant='success' onClick={() => this.handleApprovePageRequest(this.state.selectedPageId)}>PUBLISH</Button>
           </div>
         </div>
       )
-    } else if (this.state.pages[this.state.selectedPageId]?.state !== publishDocsEnum.APPROVED_STATE &&
-      this.state.pages[this.state.selectedPageId]?.state !== publishDocsEnum.REJECT_STATE && this.state.publishPageLoader === true) {
+    } else if (this.state.publishPageLoader === true) {
       return (
         <div className='publish-reject mt-3 d-flex'>
-          <button className='btn btn-outline danger mr-3' onClick={() => this.handleRejectPageRequest(this.state.selectedPageId)}>Reject</button>
+          {this.renderRejectButtonPage()}
           <div className='publish-button'>
             <Button variant='success' className='publish-button buttonLoader' />
-          </div>
-        </div>
-      )
-    } else {
-      return (
-        <div className='publish-reject mt-3 d-flex'>
-          <div className='publish-button'>  <Button variant='success' onClick={() => this.handleRemovePublicPage(this.state.selectedPageId)}>Unpublish Page</Button>
           </div>
         </div>
       )
