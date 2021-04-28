@@ -64,9 +64,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(updateEndpoint(editedEndpoint)),
     update_collection: (editedCollection) =>
       dispatch(updateCollection(editedCollection)),
-    approve_endpoint: (endpoint) => dispatch(approveEndpoint(endpoint)),
+    approve_endpoint: (endpoint, publishLoaderHandler) => dispatch(approveEndpoint(endpoint, publishLoaderHandler)),
     reject_endpoint: (endpoint) => dispatch(rejectEndpoint(endpoint)),
-    approve_page: (page) => dispatch(approvePage(page)),
+    approve_page: (page, publishPageLoaderHandler) => dispatch(approvePage(page, publishPageLoaderHandler)),
     reject_page: (page) => dispatch(rejectPage(page)),
     update_groups_order: (groupIds, versionId) =>
       dispatch(updateGroupOrder(groupIds, versionId))
@@ -91,7 +91,8 @@ class PublishDocs extends Component {
       warningModal: false,
       sDocPropertiesComplete: false,
       openPageSettingsSidebar: false,
-      publishLoader: false
+      publishLoader: false,
+      publishPageLoader: false
     }
     this.wrapperRef = React.createRef()
     this.handleClickOutside = this.handleClickOutside.bind(this)
@@ -125,9 +126,14 @@ class PublishDocs extends Component {
   }
 
   componentDidUpdate (prevProps, prevState) {
+    if (this.state.selectedEndpointId !== prevState.selectedEndpointId) {
+      this.publishLoaderHandler()
+    }
+    if (this.state.selectedPageId !== prevState.selectedPageId) {
+      this.publishPageLoaderHandler()
+    }
     if (prevProps !== this.props) {
       const collectionInfo = this.extractCollectionInfo()
-      this.setState({ publishLoader: false })
       if (!(this.state.selectedEndpointId || this.state.selectedPageId) ||
         this.state.selectedCollectionId !== URI.parseQuery(this.props.location.search).collectionId
       ) {
@@ -339,7 +345,7 @@ class PublishDocs extends Component {
     if (this.sensitiveInfoFound(this.props.endpoints[endpointId])) {
       this.setState({ warningModal: true })
     } else {
-      this.props.approve_endpoint(this.props.endpoints[endpointId])
+      this.props.approve_endpoint(this.props.endpoints[endpointId], this.publishLoaderHandler.bind(this))
     }
   }
 
@@ -371,7 +377,8 @@ class PublishDocs extends Component {
   }
 
   async handleApprovePageRequest (pageId) {
-    this.props.approve_page(this.props.pages[pageId])
+    this.setState({ publishPageLoader: true })
+    this.props.approve_page(this.props.pages[pageId], this.publishPageLoaderHandler.bind(this))
   }
 
   async handleRejectPageRequest (pageId) {
@@ -431,6 +438,14 @@ class PublishDocs extends Component {
         </div>
       </SortableList>
     )
+  }
+
+  publishLoaderHandler () {
+    this.setState({ publishLoader: false })
+  }
+
+  publishPageLoaderHandler () {
+    this.setState({ publishPageLoader: false })
   }
 
   filterPages (groupId) {
@@ -818,13 +833,23 @@ class PublishDocs extends Component {
 
   pagePublishAndReject () {
     if (this.state.pages[this.state.selectedPageId]?.state !== publishDocsEnum.APPROVED_STATE &&
-      this.state.pages[this.state.selectedPageId]?.state !== publishDocsEnum.REJECT_STATE
+      this.state.pages[this.state.selectedPageId]?.state !== publishDocsEnum.REJECT_STATE && !this.state.publishPageLoader
     ) {
       return (
         <div className='publish-reject mt-3 d-flex'>
           <button class='btn btn-outline danger mr-3' onClick={() => this.handleRejectPageRequest(this.state.selectedPageId)}>Reject</button>
           <div className='publish-button'>
             <Button variant='success' onClick={() => this.handleApprovePageRequest(this.state.selectedPageId)}>PUBLISH</Button>
+          </div>
+        </div>
+      )
+    } else if (this.state.pages[this.state.selectedPageId]?.state !== publishDocsEnum.APPROVED_STATE &&
+      this.state.pages[this.state.selectedPageId]?.state !== publishDocsEnum.REJECT_STATE && this.state.publishPageLoader === true) {
+      return (
+        <div className='publish-reject mt-3 d-flex'>
+          <button className='btn btn-outline danger mr-3' onClick={() => this.handleRejectPageRequest(this.state.selectedPageId)}>Reject</button>
+          <div className='publish-button'>
+            <Button variant='success' className='publish-button buttonLoader' />
           </div>
         </div>
       )
