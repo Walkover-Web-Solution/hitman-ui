@@ -153,7 +153,11 @@ class ContentPanel extends Component {
         <div className='login-sso'>
           {
             !getCurrentUser()
-              ? <div
+              ? <div className="row">
+              <div className='float-right d-flex communti-btn-wrapper'>
+                <a href='http://forum.viasocket.com/' rel='noreferrer' target='_blank'>Community </a>
+              </div>
+              <div
                   id='sokt-sso'
                   data-redirect-uri={redirectionUrl}
                   data-source='sokt-app'
@@ -161,7 +165,9 @@ class ContentPanel extends Component {
                   data-view='button'
                   data-app-logo-url='https://hitman.app/wp-content/uploads/2020/12/123.png'
                   signup_uri={redirectionUrl + '?signup=true'}
-                />
+              />
+              </div>
+
               : null
           }
         </div>
