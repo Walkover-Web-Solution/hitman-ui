@@ -90,7 +90,8 @@ class PublishDocs extends Component {
       selectedCollectionId: null,
       warningModal: false,
       sDocPropertiesComplete: false,
-      openPageSettingsSidebar: false
+      openPageSettingsSidebar: false,
+      publishLoader: false
     }
     this.wrapperRef = React.createRef()
     this.handleClickOutside = this.handleClickOutside.bind(this)
@@ -126,6 +127,7 @@ class PublishDocs extends Component {
   componentDidUpdate (prevProps, prevState) {
     if (prevProps !== this.props) {
       const collectionInfo = this.extractCollectionInfo()
+      this.setState({ publishLoader: false })
       if (!(this.state.selectedEndpointId || this.state.selectedPageId) ||
         this.state.selectedCollectionId !== URI.parseQuery(this.props.location.search).collectionId
       ) {
@@ -333,6 +335,7 @@ class PublishDocs extends Component {
   }
 
   async handleApproveEndpointRequest (endpointId) {
+    this.setState({ publishLoader: true })
     if (this.sensitiveInfoFound(this.props.endpoints[endpointId])) {
       this.setState({ warningModal: true })
     } else {
@@ -782,11 +785,24 @@ class PublishDocs extends Component {
 
   endpointPublishAndReject () {
     if (this.state.endpoints[this.state.selectedEndpointId]?.state !== publishDocsEnum.APPROVED_STATE &&
-      this.state.endpoints[this.state.selectedEndpointId]?.state !== publishDocsEnum.REJECT_STATE) {
+      this.state.endpoints[this.state.selectedEndpointId]?.state !== publishDocsEnum.REJECT_STATE && !this.state.publishLoader) {
       return (
         <div className='publish-reject mt-3 d-flex'>
           <button class='btn btn-outline danger mr-3' onClick={() => this.handleRejectEndpointRequest(this.state.selectedEndpointId)}>Reject</button>
           <div className='publish-button'>  <Button variant='success' onClick={() => this.handleApproveEndpointRequest(this.state.selectedEndpointId)}>PUBLISH</Button>
+          </div>
+        </div>
+      )
+    } else if (this.state.endpoints[this.state.selectedEndpointId]?.state !== publishDocsEnum.APPROVED_STATE &&
+      this.state.endpoints[this.state.selectedEndpointId]?.state !== publishDocsEnum.REJECT_STATE && this.state.publishLoader === true) {
+      return (
+        <div className='publish-reject mt-3 d-flex'>
+          <button
+            class='btn btn-outline danger mr-3'
+            onClick={() => this.handleRejectEndpointRequest(this.state.selectedEndpointId)}
+          >Reject
+          </button>
+          <div className='publish-button buttonLoader'>  <Button variant='success' />
           </div>
         </div>
       )
@@ -807,7 +823,8 @@ class PublishDocs extends Component {
       return (
         <div className='publish-reject mt-3 d-flex'>
           <button class='btn btn-outline danger mr-3' onClick={() => this.handleRejectPageRequest(this.state.selectedPageId)}>Reject</button>
-          <div className='publish-button'>  <Button variant='success' onClick={() => this.handleApprovePageRequest(this.state.selectedPageId)}>PUBLISH</Button>
+          <div className='publish-button'>
+            <Button variant='success' onClick={() => this.handleApprovePageRequest(this.state.selectedPageId)}>PUBLISH</Button>
           </div>
         </div>
       )

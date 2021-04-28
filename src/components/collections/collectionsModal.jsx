@@ -107,6 +107,7 @@ class CollectionsModal extends Component {
         centered
         onHide={this.props.onHide}
         show={this.props.show}
+        dialogClassName={this.state.choiceSelected ? ' ' : 'collection-choice-modal'}
       >
         <div>
           <Modal.Header
