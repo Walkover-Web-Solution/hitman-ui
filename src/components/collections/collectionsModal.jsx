@@ -71,6 +71,7 @@ class CollectionsModal extends Component {
   renderAddCollectionForm () {
     return (
       <CollectionForm
+        {...this.props}
         title='Add new Collection'
         showOnlyForm
         onCancel={() => { this.removeSelection() }}

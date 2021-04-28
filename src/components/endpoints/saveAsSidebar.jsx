@@ -7,7 +7,7 @@ import './endpoints.scss'
 import CollectionForm from '../collections/collectionForm'
 import CollectionVersionForm from '../collectionVersions/collectionVersionForm'
 import GroupForm from '../groups/groupForm'
-import { ADD_GROUP_MODAL_NAME } from '../common/utility'
+import { ADD_GROUP_MODAL_NAME, ADD_VERSION_MODAL_NAME } from '../common/utility'
 
 const mapStateToProps = state => {
   return {
@@ -114,7 +114,7 @@ class SaveAsSidebar extends Form {
             this.setState({ showCollectionVersionForm: false })
           }}
           show
-          title='Add new Collection Version'
+          title={ADD_VERSION_MODAL_NAME}
         />
       )
     )

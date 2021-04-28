@@ -7,9 +7,8 @@ import shortId from 'shortid'
 import CollectionVersions from '../collectionVersions/collectionVersions'
 import collectionVersionsService from '../collectionVersions/collectionVersionsService'
 import ImportVersionForm from '../collectionVersions/importVersionForm'
-import { isDashboardRoute } from '../common/utility'
+import { isDashboardRoute, ADD_VERSION_MODAL_NAME } from '../common/utility'
 import CollectionModal from './collectionsModal'
-// import endpointApiService from '../endpoints/endpointApiService'
 import collectionsService from './collectionsService'
 import {
   addCollection,
@@ -571,6 +570,7 @@ class CollectionsComponent extends Component {
           title='Add Collection'
           onHide={() => { this.setState({ showAddCollectionModal: false }) }}
           show={this.state.showAddCollectionModal}
+          open_selected_collection={this.openSelectedCollection.bind(this)}
         />
     )
   }
@@ -672,7 +672,7 @@ class CollectionsComponent extends Component {
                   this.props,
                   this.closeVersionForm.bind(this),
                   this.state.selectedCollection.id,
-                  'Add new Collection Version'
+                  ADD_VERSION_MODAL_NAME
                 )}
               {this.state.showCollectionForm &&
                 collectionsService.showCollectionForm(

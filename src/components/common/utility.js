@@ -1,6 +1,7 @@
 import Joi from 'joi-browser'
 
 export const ADD_GROUP_MODAL_NAME = 'Add Group'
+export const ADD_VERSION_MODAL_NAME = 'Add Version'
 
 export function isDashboardRoute (props, sidebar = false) {
   if (
@@ -98,5 +99,6 @@ export default {
   getProfileName,
   onEnter,
   toTitleCase,
-  ADD_GROUP_MODAL_NAME
+  ADD_GROUP_MODAL_NAME,
+  ADD_VERSION_MODAL_NAME
 }
