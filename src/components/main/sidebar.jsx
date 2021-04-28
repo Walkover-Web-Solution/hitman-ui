@@ -60,7 +60,8 @@ class SideBar extends Component {
       historySnapshot: null,
       selectedCollectionId: null,
       secondarySidebarToggle: false,
-      primarySidebar: null
+      primarySidebar: null,
+      totalEndpointsCount: 0
     }
   }
 
@@ -428,6 +429,10 @@ class SideBar extends Component {
     )
   }
 
+  getTotalEndpointsCount (count) {
+    this.setState({ totalEndpointsCount: count })
+  }
+
   renderSidebarContent () {
     const selectedCollectionName = this.props.collections[this.collectionId]?.name || ' '
     const isMarketplaceImported = this.props.collections[this.collectionId]?.importedFromMarketPlace
@@ -442,9 +447,15 @@ class SideBar extends Component {
                       <div className='ml-1 mr-2'><ArrowIcon /></div>
                       <div className='hm-sidebar-outer-block heading-collection'>{selectedCollectionName}</div>
                     </div>
-                    {!isMarketplaceImported && <button className='btn btn-primary' onClick={() => this.openAddEntitySelectionModal()}> ADD </button>}
+                    {(!isMarketplaceImported && this.state.totalEndpointsCount !== 0) && <button className='btn btn-primary' onClick={() => this.openAddEntitySelectionModal()}> ADD </button>}
                   </div>
-                  <div><PublishColelctionInfo {...this.props} collectionId={this.collectionId} /></div>
+                  <div>
+                    <PublishColelctionInfo
+                      {...this.props}
+                      collectionId={this.collectionId}
+                      getTotalEndpointsCount={this.getTotalEndpointsCount.bind(this)}
+                    />
+                  </div>
                   <div className='secondary-sidebar sidebar-content-scroll'>
                     <div className='collectionVersionWrp'>
                       <CollectionVersions

@@ -36,16 +36,27 @@
 }
 
 .body {
-        display: inline-flex;
         text-align: center;
     .col {  
         display: inline-table;
     }
     .entity-name {  
         border: none;
-        text-transform: capitalize;
-        padding: 50px 80px;
+        text-transform: capitalize;;
         background: #F3F3F3;
         margin:30px;
+        border-radius: 4px;
+        cursor: pointer;
+        height: 120px;
+        width: 180px;
+        background: #F3F3F3;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        outline: none;
     }
+}
+
+.add-entity-modal-container{
+    width: 600px !important;
 }
