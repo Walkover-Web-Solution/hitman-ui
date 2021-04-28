@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Button, Dropdown } from 'react-bootstrap'
+import { Button, Dropdown, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import jwtDecode from 'jwt-decode'
 import { makeHighlightsData } from '../endpoints/highlightChangesHelper'
 import { connect } from 'react-redux'
@@ -27,6 +27,7 @@ import Footer from '../main/Footer'
 import { SortableHandle, SortableContainer, SortableElement } from 'react-sortable-hoc'
 import { ReactComponent as DragHandleIcon } from '../../assets/icons/drag-handle.svg'
 import { ReactComponent as SettingsIcon } from '../../assets/icons/settings.svg'
+import { ReactComponent as ExternalLinks } from '../../assets/icons/externalLinks.svg'
 import UserInfo from '../main/userInfo'
 const isEqual = require('react-fast-compare')
 
@@ -988,7 +989,7 @@ class PublishDocs extends Component {
 
   renderPageSettingButton () {
     return (
-      <div className='d-flex align-items-center mx-3 mt-4'>
+      <div className='d-flex align-items-center ml-3 mt-4'>
         <button
           className='pageSettingsButton'
           onClick={() => {
@@ -1003,6 +1004,29 @@ class PublishDocs extends Component {
     )
   }
 
+  renderExternalLinkButton () {
+    const url = process.env.REACT_APP_UI_URL + '/p/' + this.state.selectedCollectionId
+
+    if (this.isCollectionPublished()) {
+      return (
+        <OverlayTrigger
+          placement='right'
+          overlay={<Tooltip> Go To Docs </Tooltip>}
+        >
+          <div className='d-flex align-items-center mx-3 mt-4'>
+            <button
+              className='externalLinkButton'
+              onClick={() => { window.open(url, '_blank') }}
+            >
+              <ExternalLinks />
+            </button>
+          </div>
+        </OverlayTrigger>
+
+      )
+    }
+  }
+
   renderHostedAPIDetials () {
     return (
       <>
@@ -1012,6 +1036,7 @@ class PublishDocs extends Component {
             {this.rednerHostedAPIDropdown()}
             {this.publishCollections()}
             {this.renderPageSettingButton()}
+            {this.renderExternalLinkButton()}
           </div>
           <div className='grid-two new-pub-doc'>
             {this.state.openPageSettingsSidebar && this.renderDocsFormSidebar()}
