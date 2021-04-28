@@ -710,7 +710,6 @@ class DisplayEndpoint extends Component {
         this.setState({ response, timeElapsed, flagResponse: true })
       }
     } catch (error) {
-      console.log(error.message)
       this.handleErrorResponse(error, this.state.startTime)
     }
   }
