@@ -439,7 +439,7 @@ class Groups extends Component {
                     {this.props.groups[groupId].name}
                   </div>
                   {
-                    isDashboardRoute(this.props, true)
+                    isDashboardRoute(this.props, true) && !this.props.collections[this.props.collection_id]?.importedFromMarketPlace
                       ? (
                         <div className='sidebar-item-action'>
                           <div
