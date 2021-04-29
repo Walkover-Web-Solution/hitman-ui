@@ -49,7 +49,7 @@ class PublishCollectionInfo extends Component {
   renderPublicUrl () {
     // build default url
     const url = defaultDomain + '/p/' + this.props.collectionId
-  
+
     return (
       <div className='sidebar-public-url text-link text-center d-flex' onClick={() => { window.open(url, '_blank') }}>
         <div className='text-truncate'>{url}</div> <span className='icon'> <ExternalLinks /></span>
