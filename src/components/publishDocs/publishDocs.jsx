@@ -382,7 +382,9 @@ class PublishDocs extends Component {
       const items = this.getInitialItems(this.state.selectedVersionId,
         this.state.groups,
         this.state.endpoints,
-        this.state.pages
+        this.state.pages,
+        null,
+        pageId
       )
       this.setState({
         selectedGroupId: items?.selectedGroupId || null,
@@ -664,10 +666,16 @@ class PublishDocs extends Component {
   groupsToShow (versionId) {
     const versionGroups = extractCollectionInfoService.extractGroupsFromVersionId(versionId, this.props)
     const endpointsToCheck = extractCollectionInfoService.extractEndpointsFromGroups(versionGroups, this.props)
+    const pagesToCheck = extractCollectionInfoService.extractPagesFromVersions({ [versionId]: versionId }, this.props)
     const filteredEndpoints = Object.values(endpointsToCheck).filter(endpoint => endpoint.state === publishDocsEnum.PENDING_STATE || endpoint.isPublished)
+    const filteredPages = Object.values(pagesToCheck).filter(page => (page.state === publishDocsEnum.PENDING_STATE || page.isPublished) && page.groupId)
     const publicGroupIds = new Set()
     filteredEndpoints.forEach(endpoint => {
       publicGroupIds.add(endpoint.groupId)
+    })
+
+    filteredPages.forEach(page => {
+      publicGroupIds.add(page.groupId)
     })
     const publicGroups = {}
     publicGroupIds.forEach(id => {

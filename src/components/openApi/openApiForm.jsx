@@ -80,7 +80,6 @@ class OpenApiForm extends Component {
   onFileChange(e) {
     const selectedFile = e.currentTarget.files[0]
     if(selectedFile) {
-      console.log("hello",selectedFile)
       const uploadedFile = new FormData()
       uploadedFile.append('myFile', selectedFile, selectedFile.name)
       this.setState({ uploadedFile, errors: { ...this.state.error, file: null }, selectedFileName: selectedFile.name})
