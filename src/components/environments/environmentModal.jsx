@@ -123,7 +123,6 @@ class EnvironmentModal extends Component {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {console.log('hello', Object.keys(this.props.environment.environments).length === 0)}
           <ListGroup className='custom-environment-list-container'>
             {Object.keys(this.props.environment.environments).length === 0 ? this.renderNoEnvironmentModule() : this.renderManageEnvironmentModal()}
           </ListGroup>
