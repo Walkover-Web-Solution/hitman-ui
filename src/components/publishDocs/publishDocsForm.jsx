@@ -316,7 +316,7 @@ class PublishDocForm extends Component {
           }
         </div>
         <div className='small-input'>
-          {this.renderInput('title', true, false, 'Title')}
+          {this.renderInput('title', true, false, 'brand name')}
           {this.renderInput('domain', false, false, 'https://docs.example.com')}
         </div>
         <div className='d-flex'>
