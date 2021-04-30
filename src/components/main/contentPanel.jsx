@@ -154,8 +154,8 @@ class ContentPanel extends Component {
           {
             !getCurrentUser()
               ? (
-                <div className='row'>
-                  <div className='float-right d-flex communti-btn-wrapper'>
+                <div className='row align-items-center'>
+                  <div className='float-right d-flex communti-btn-wrapper community-btn-1'>
                     <a href='http://forum.viasocket.com/' rel='noreferrer' target='_blank'>Community </a>
                   </div>
                   <div
