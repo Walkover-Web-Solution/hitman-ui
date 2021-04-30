@@ -179,19 +179,22 @@ class DisplayResponse extends Component {
   }
 
   displayHeader () {
-    return (
-      <div className='overflow-auto '>
-        <table className='table table-sm fs-6'>
-          <thead>
-            <tr>
-              <th scope='col'>Key</th>
-              <th scope='col'>Value</th>
-            </tr>
-          </thead>
-          <tbody>{this.renderTableData()}</tbody>
-        </table>
-      </div>
-    )
+    if(this.props.response.headers){
+      return (
+        <div className='overflow-auto '>
+          <table className='table table-sm fs-6'>
+            <thead>
+              <tr>
+                <th scope='col'>Key</th>
+                <th scope='col'>Value</th>
+              </tr>
+            </thead>
+            <tbody>{this.renderTableData()}</tbody>
+          </table>
+        </div>
+      )
+    }
+    
   }
 
   render () {
@@ -205,7 +208,7 @@ class DisplayResponse extends Component {
                 <div className='response-status'>
                   <div className='respHeading'>
                     {!isSavedEndpoint(this.props) ? <h2 className='orange-heading'> RESPONSE</h2> : null}
-                    {this.displayBodyAndHeaderResponse()}
+                    {this.props.response.status && this.displayBodyAndHeaderResponse()}
                   </div>
                   <div className='statusWrapper'>
                     {this.props.response.status &&
@@ -345,7 +348,7 @@ class DisplayResponse extends Component {
                         </div>
                       )}
                     </>}
-                  {this.state.selectedResponseTab === 'header' && this.displayHeader()}
+                  {this.state.selectedResponseTab === 'header' && (this.props.response.headers && this.displayHeader())}
                 </div>
               </div>
               )
