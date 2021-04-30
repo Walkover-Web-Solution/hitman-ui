@@ -60,7 +60,9 @@ export const addCollection = (newCollection, openSelectedCollection) => {
       .saveCollection(newCollection)
       .then((response) => {
         dispatch(onCollectionAdded(response.data))
-        openSelectedCollection(response.data.id)
+        if (openSelectedCollection) {
+          openSelectedCollection(response.data.id)
+        }
       })
       .catch((error) => {
         dispatch(
