@@ -121,11 +121,6 @@ class DisplayResponse extends Component {
                 className='nav-link active'
                 id='pills-response-tab'
                 data-toggle='pill'
-                href={
-                  isDashboardRoute(this.props)
-                    ? `#response-${this.props.tab.id}`
-                    : '#response'
-                }
                 role='tab'
                 aria-controls={
                   isDashboardRoute(this.props)
