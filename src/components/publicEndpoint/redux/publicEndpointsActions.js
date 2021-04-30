@@ -49,12 +49,13 @@ export const pendingPage = (page) => {
   }
 }
 
-export const approvePage = (page) => {
+export const approvePage = (page, publishPageLoaderHandler) => {
   return (dispatch) => {
     publicPageService
       .approvePage(page)
       .then((response) => {
         dispatch(onPageStateSuccess(response.data))
+        publishPageLoaderHandler()
       })
       .catch((error) => {
         dispatch(
@@ -123,12 +124,13 @@ export const pendingEndpoint = (endpoint) => {
   }
 }
 
-export const approveEndpoint = (endpoint) => {
+export const approveEndpoint = (endpoint, publishLoaderHandler) => {
   return (dispatch) => {
     publicEndpointsService
       .approveEndpoint(endpoint)
       .then((response) => {
         dispatch(onEndpointStateSuccess(response.data))
+        publishLoaderHandler()
       })
       .catch((error) => {
         dispatch(
