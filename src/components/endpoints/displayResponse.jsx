@@ -116,7 +116,7 @@ class DisplayResponse extends Component {
       <>
         <div className='col-12' ref={this.myRef}>
           <ul className='nav nav-tabs respTabsListing' id='myTab' role='tablist'>
-            <li className='nav-item' onClick={()=>{this.setState({selectedResponseTab: 'body'})}}>
+            <li className='nav-item' onClick={() => { this.setState({ selectedResponseTab: 'body' }) }}>
               <a
                 className='nav-link active'
                 id='pills-response-tab'
@@ -138,7 +138,7 @@ class DisplayResponse extends Component {
               </a>
             </li>
             {getCurrentUser() && (
-              <li className='nav-item' onClick={()=>{this.setState({selectedResponseTab: 'header'})}}>
+              <li className='nav-item' onClick={() => { this.setState({ selectedResponseTab: 'header' }) }}>
                 <a
                   className='nav-link'
                   id='pills-header-tab'
@@ -162,38 +162,38 @@ class DisplayResponse extends Component {
               }
               role='tabpanel'
               aria-labelledby='pills-response-tab'
-              >
-            </div>
+            />
           </div>
         </div>
       </>
     )
   }
 
-  renderTableData() {
-    let headerContent = this.props.response.headers
-    let headerContentKeys = Object.keys(headerContent)
+  renderTableData () {
+    const headerContent = this.props.response.headers
+    const headerContentKeys = Object.keys(headerContent)
     return headerContentKeys.map((key, index) => {
-       const value = headerContent[key]
-       return (
-          <tr>
-            <th scope="row">{key}</th>
-            <td>{value}</td>
-          </tr>
-       )
+      const value = headerContent[key]
+      return (
+        <tr key={key}>
+          <th scope='row'>{key}</th>
+          <td>{value}</td>
+        </tr>
+      )
     })
- }
-  displayHeader(){
-    return(
-      <div className="overflow-auto ">
-        <table className="table table-sm fs-6">
-        <thead>
-          <tr>
-            <th scope="col">Key</th>
-            <th scope="col">Value</th>
-          </tr>
-        </thead>
-        <tbody>{this.renderTableData()}</tbody>
+  }
+
+  displayHeader () {
+    return (
+      <div className='overflow-auto '>
+        <table className='table table-sm fs-6'>
+          <thead>
+            <tr>
+              <th scope='col'>Key</th>
+              <th scope='col'>Value</th>
+            </tr>
+          </thead>
+          <tbody>{this.renderTableData()}</tbody>
         </table>
       </div>
     )
@@ -209,10 +209,10 @@ class DisplayResponse extends Component {
               <div>
                 <div className='response-status'>
                   <div className='respHeading'>
-                  {!isSavedEndpoint(this.props) ? <h2 className='orange-heading'> RESPONSE</h2> : null}
-                  {this.displayBodyAndHeaderResponse()}
+                    {!isSavedEndpoint(this.props) ? <h2 className='orange-heading'> RESPONSE</h2> : null}
+                    {this.displayBodyAndHeaderResponse()}
                   </div>
-                  <div className='statusWrapper'> 
+                  <div className='statusWrapper'>
                     {this.props.response.status &&
                       <div id='status'>
                         <div className='response-status-item-name'>Status :</div>
@@ -291,8 +291,9 @@ class DisplayResponse extends Component {
                         </li>
                       </ul>)} */}
                   </div>
-                  {this.state.selectedResponseTab === 'body' && <> 
-                  {
+                  {this.state.selectedResponseTab === 'body' &&
+                    <>
+                      {
                     getCurrentUser() && isSavedEndpoint(this.props) && isDashboardRoute(this.props)
                       ? (
                         <div
@@ -309,47 +310,47 @@ class DisplayResponse extends Component {
                         </div>
                         )
                       : null
-                  } 
-                  {isDashboardRoute(this.props) && (
-                    <div className='tab-content' id='myTabContent'>
-                      <div
-                        className='tab-pane fade show active'
-                        id='home'
-                        role='tabpanel'
-                        aria-labelledby='home-tab'
-                      >
-                        <JSONPretty
-                          theme={JSONPrettyMon}
-                          data={this.props.response.data}
-                        />
-                      </div>
-                      <div
-                        className='tab-pane fade'
-                        id='profile'
-                        role='tabpanel'
-                        aria-labelledby='profile-tab'
-                      >
-                        {JSON.stringify(this.props.response.data)}
-                      </div>
-                      <div
-                        className='tab-pane fade'
-                        id='contact'
-                        role='tabpanel'
-                        aria-labelledby='contact-tab'
-                      >
-                        Feature coming soon... Stay tuned
-                      </div>
-                    </div>)}
-                  {!isDashboardRoute(this.props) && (
-                    <div className='tab-content'>
-                      <JSONPretty
-                        theme={JSONPrettyMon}
-                        data={this.props.response.data}
-                      />
-                    </div>
-                  )}
-                  </>}
-                  {this.state.selectedResponseTab==='header' && this.displayHeader()}
+                  }
+                      {isDashboardRoute(this.props) && (
+                        <div className='tab-content' id='myTabContent'>
+                          <div
+                            className='tab-pane fade show active'
+                            id='home'
+                            role='tabpanel'
+                            aria-labelledby='home-tab'
+                          >
+                            <JSONPretty
+                              theme={JSONPrettyMon}
+                              data={this.props.response.data}
+                            />
+                          </div>
+                          <div
+                            className='tab-pane fade'
+                            id='profile'
+                            role='tabpanel'
+                            aria-labelledby='profile-tab'
+                          >
+                            {JSON.stringify(this.props.response.data)}
+                          </div>
+                          <div
+                            className='tab-pane fade'
+                            id='contact'
+                            role='tabpanel'
+                            aria-labelledby='contact-tab'
+                          >
+                            Feature coming soon... Stay tuned
+                          </div>
+                        </div>)}
+                      {!isDashboardRoute(this.props) && (
+                        <div className='tab-content'>
+                          <JSONPretty
+                            theme={JSONPrettyMon}
+                            data={this.props.response.data}
+                          />
+                        </div>
+                      )}
+                    </>}
+                  {this.state.selectedResponseTab === 'header' && this.displayHeader()}
                 </div>
               </div>
               )
