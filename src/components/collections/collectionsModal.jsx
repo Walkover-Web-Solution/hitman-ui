@@ -71,6 +71,7 @@ class CollectionsModal extends Component {
   renderAddCollectionForm () {
     return (
       <CollectionForm
+        {...this.props}
         title='Add new Collection'
         showOnlyForm
         onCancel={() => { this.removeSelection() }}
@@ -106,6 +107,7 @@ class CollectionsModal extends Component {
         centered
         onHide={this.props.onHide}
         show={this.props.show}
+        dialogClassName={this.state.choiceSelected ? ' ' : 'collection-choice-modal'}
       >
         <div>
           <Modal.Header

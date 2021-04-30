@@ -156,7 +156,7 @@ class EnvironmentVariables extends Component {
 
     this.setState(data, () => {
       if (name[0] === lastIndex.toString()) {
-        this.handleAdd(e.currentTarget.value)
+        this.handleAdd()
       }
     })
   };

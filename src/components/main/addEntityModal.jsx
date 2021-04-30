@@ -65,6 +65,7 @@ class AddEntitySelectionModal extends Component {
         animation={false}
         aria-labelledby='contained-modal-title-vcenter'
         centered
+        dialogClassName='add-entity-modal-container'
       >
         <Modal.Header className='custom-collection-modal-container' closeButton>
           <Modal.Title id='contained-modal-title-vcenter'>
@@ -74,11 +75,11 @@ class AddEntitySelectionModal extends Component {
         <Modal.Body>
           <div className='body'>
             <div className='col'>
-              <div className='row'>
+              <div className='row justify-content-around'>
                 {this.renderEntity('version')}
                 {this.renderEntity('group')}
               </div>
-              <div className='row'>
+              <div className='row justify-content-around'>
                 {this.renderEntity('endpoint')}
                 {this.renderEntity('page')}
               </div>

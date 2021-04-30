@@ -1821,6 +1821,7 @@ html body div#sokt-sso-modal {
     line-height: 2 !important;
     font-family: 'proxima-nova', sans-serif !important;
     letter-spacing: 0px;
+    vertical-align: inherit !important;
   }
 
   #__customBtn span.__icon {
@@ -2883,4 +2884,9 @@ div#history-tab-button button#dropdown-basic {
   .public-navbar.stickyNav{
     padding-left: 24%!important;
   }
+}
+
+.community-btn-1{
+  height: 37px;
+  padding: 0px;
 }

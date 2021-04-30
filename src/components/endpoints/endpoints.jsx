@@ -465,7 +465,7 @@ class Endpoints extends Component {
             <div className='mr-2'>
               {this.props.endpoints[endpointId].isPublished && <img src={GlobeIcon} alt='globe' />}
             </div>
-            {this.displayEndpointOptions(endpointId)}
+            {!this.props.collections[this.props.collection_id]?.importedFromMarketPlace && this.displayEndpointOptions(endpointId)}
           </div>
         </button>
       </div>

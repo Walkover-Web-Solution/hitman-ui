@@ -3,7 +3,7 @@ import { Modal } from 'react-bootstrap'
 import Joi from 'joi-browser'
 import Form from '../common/form'
 import { connect } from 'react-redux'
-import { onEnter } from '../common/utility'
+import { onEnter, toTitleCase, ADD_VERSION_MODAL_NAME } from '../common/utility'
 import {
   addVersion,
   updateVersion
@@ -30,8 +30,8 @@ class CollectionVersionForm extends Form {
     }
 
     this.schema = {
-      number: Joi.string().required().label('Version number'),
-      host: Joi.string().uri().required().label('Host')
+      number: Joi.string().required().label('Version Name'),
+      host: Joi.string().uri().required().label('Version Endpoint')
     }
   }
 
@@ -39,7 +39,7 @@ class CollectionVersionForm extends Form {
     let data = {}
     const collectionId = ''
     let versionId = ''
-    if (this.props.title === 'Add new Collection Version') return
+    if (this.props.title === ADD_VERSION_MODAL_NAME) return
     if (this.props.selected_version) {
       const { number, host, id } = this.props.selected_version
       data = {
@@ -53,14 +53,16 @@ class CollectionVersionForm extends Form {
 
   async doSubmit () {
     this.props.onHide()
+    let { number } = { ...this.state.data }
+    number = toTitleCase(number)
     if (this.props.title === 'Edit Collection Version') {
       const { id, collectionId } = this.props.selected_version
-      const editedCollectionVersion = { ...this.state.data, collectionId, id }
+      const editedCollectionVersion = { ...this.state.data, collectionId, id, number }
       this.props.update_version(editedCollectionVersion)
     }
-    if (this.props.title === 'Add new Collection Version') {
+    if (this.props.title === ADD_VERSION_MODAL_NAME) {
       const collectionId = this.props.collection_id
-      const newVersion = { ...this.state.data, requestId: shortid.generate() }
+      const newVersion = { ...this.state.data, requestId: shortid.generate(), number }
       this.props.add_version(newVersion, collectionId)
     }
   }
@@ -85,10 +87,10 @@ class CollectionVersionForm extends Form {
             <form onSubmit={this.handleSubmit}>
               <div className='row'>
                 <div className='col-6'>
-                  {this.renderInput('number', 'Version Number', 'version number')}
+                  {this.renderInput('number', 'Version Name', 'Version Name', true, true)}
                 </div>
                 <div className='col-6'>
-                  {this.renderInput('host', 'Host', 'host')}
+                  {this.renderInput('host', 'Version Endpoint', 'https://v1.example.com', true)}
                 </div>
               </div>
               <div className='text-left mt-4 mb-2'>

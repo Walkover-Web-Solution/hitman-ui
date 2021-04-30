@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import shortid from 'shortid'
 import Form from '../common/form'
 import { addGroup, updateGroup } from '../groups/redux/groupsActions'
-import { onEnter } from '../common/utility'
+import { onEnter, toTitleCase, ADD_GROUP_MODAL_NAME } from '../common/utility'
 import extractCollectionInfoService from '../publishDocs/extractCollectionInfoService'
 
 const mapDispatchToProps = (dispatch) => {
@@ -33,7 +33,7 @@ class GroupForm extends Form {
   async componentDidMount () {
     const versions = extractCollectionInfoService.extractVersionsFromCollectionId(this.props.collectionId, this.props)
     this.setState({ versions })
-    if (this.props.title === 'Add new Group') return
+    if (this.props.title === ADD_GROUP_MODAL_NAME) return
     let data = {}
     if (this.props.selected_group) {
       const { name } = this.props.selected_group
@@ -48,8 +48,10 @@ class GroupForm extends Form {
       return
     }
     this.props.onHide()
-    if (this.props.title === 'Add new Group') {
-      const data = { ...this.state.data }
+    let { name } = { ...this.state.data }
+    name = toTitleCase(name)
+    if (this.props.title === ADD_GROUP_MODAL_NAME) {
+      const data = { ...this.state.data, name }
       const versionId = this.props.addEntity ? this.state.selectedVersionId : this.props.selectedVersion.id
       const newGroup = {
         ...data,
@@ -61,6 +63,7 @@ class GroupForm extends Form {
     if (this.props.title === 'Edit Group') {
       const editedGroup = {
         ...this.state.data,
+        name,
         id: this.props.selected_group.id,
         versionId: this.props.selected_group.versionId
       }
@@ -116,7 +119,7 @@ class GroupForm extends Form {
                     </div>
                   </div>}
                 <div className='col-6'>
-                  {this.renderInput('name', 'Group Name', 'group name')}
+                  {this.renderInput('name', 'Group Name', 'group name', true, true)}
                 </div>
               </div>
 

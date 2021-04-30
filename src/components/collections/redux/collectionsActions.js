@@ -53,13 +53,16 @@ export const fetchCollection = (collectionId) => {
   }
 }
 
-export const addCollection = (newCollection) => {
+export const addCollection = (newCollection, openSelectedCollection) => {
   return (dispatch) => {
     dispatch(addCollectionRequest(newCollection))
     collectionsApiService
       .saveCollection(newCollection)
       .then((response) => {
         dispatch(onCollectionAdded(response.data))
+        if (openSelectedCollection) {
+          openSelectedCollection(response.data.id)
+        }
       })
       .catch((error) => {
         dispatch(

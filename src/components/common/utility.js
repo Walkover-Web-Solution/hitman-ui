@@ -1,5 +1,8 @@
 import Joi from 'joi-browser'
 
+export const ADD_GROUP_MODAL_NAME = 'Add Group'
+export const ADD_VERSION_MODAL_NAME = 'Add Version'
+
 export function isDashboardRoute (props, sidebar = false) {
   if (
     props.location.pathname === '/dashboard' ||
@@ -81,11 +84,21 @@ export function onEnter (event, submitForm) {
   }
 }
 
+export function toTitleCase (str) {
+  if (!str) return str
+  return str.replace(/\w\S*/g, function (txt) {
+    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
+  })
+}
+
 export default {
   isDashboardRoute,
   isSavedEndpoint,
   setTitle,
   setFavicon,
   getProfileName,
-  onEnter
+  onEnter,
+  toTitleCase,
+  ADD_GROUP_MODAL_NAME,
+  ADD_VERSION_MODAL_NAME
 }

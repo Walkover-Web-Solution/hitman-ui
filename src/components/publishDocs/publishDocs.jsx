@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Button, Dropdown } from 'react-bootstrap'
+import { Button, Dropdown, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import jwtDecode from 'jwt-decode'
 import { makeHighlightsData } from '../endpoints/highlightChangesHelper'
 import { connect } from 'react-redux'
@@ -27,7 +27,9 @@ import Footer from '../main/Footer'
 import { SortableHandle, SortableContainer, SortableElement } from 'react-sortable-hoc'
 import { ReactComponent as DragHandleIcon } from '../../assets/icons/drag-handle.svg'
 import { ReactComponent as SettingsIcon } from '../../assets/icons/settings.svg'
+import { ReactComponent as ExternalLinks } from '../../assets/icons/externalLinks.svg'
 import UserInfo from '../main/userInfo'
+import PublishDocsConfirmModal from './publishDocsConfirmModal'
 const isEqual = require('react-fast-compare')
 
 const URI = require('urijs')
@@ -63,9 +65,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(updateEndpoint(editedEndpoint)),
     update_collection: (editedCollection) =>
       dispatch(updateCollection(editedCollection)),
-    approve_endpoint: (endpoint) => dispatch(approveEndpoint(endpoint)),
+    approve_endpoint: (endpoint, publishLoaderHandler) => dispatch(approveEndpoint(endpoint, publishLoaderHandler)),
     reject_endpoint: (endpoint) => dispatch(rejectEndpoint(endpoint)),
-    approve_page: (page) => dispatch(approvePage(page)),
+    approve_page: (page, publishPageLoaderHandler) => dispatch(approvePage(page, publishPageLoaderHandler)),
     reject_page: (page) => dispatch(rejectPage(page)),
     update_groups_order: (groupIds, versionId) =>
       dispatch(updateGroupOrder(groupIds, versionId))
@@ -89,7 +91,10 @@ class PublishDocs extends Component {
       selectedCollectionId: null,
       warningModal: false,
       sDocPropertiesComplete: false,
-      openPageSettingsSidebar: false
+      openPageSettingsSidebar: false,
+      publishLoader: false,
+      publishPageLoader: false,
+      showPublishDocConfirmModal: false
     }
     this.wrapperRef = React.createRef()
     this.handleClickOutside = this.handleClickOutside.bind(this)
@@ -123,6 +128,12 @@ class PublishDocs extends Component {
   }
 
   componentDidUpdate (prevProps, prevState) {
+    if (this.state.selectedEndpointId !== prevState.selectedEndpointId) {
+      this.publishLoaderHandler()
+    }
+    if (this.state.selectedPageId !== prevState.selectedPageId) {
+      this.publishPageLoaderHandler()
+    }
     if (prevProps !== this.props) {
       const collectionInfo = this.extractCollectionInfo()
       if (!(this.state.selectedEndpointId || this.state.selectedPageId) ||
@@ -143,6 +154,9 @@ class PublishDocs extends Component {
           selectedPageId: items?.selectedPageId || null
         })
       }
+    }
+    if (this.props.location !== prevProps.location && this.props.location?.showConfirmModal) {
+      this.setState({ showPublishDocConfirmModal: true })
     }
   }
 
@@ -332,10 +346,11 @@ class PublishDocs extends Component {
   }
 
   async handleApproveEndpointRequest (endpointId) {
+    this.setState({ publishLoader: true })
     if (this.sensitiveInfoFound(this.props.endpoints[endpointId])) {
       this.setState({ warningModal: true })
     } else {
-      this.props.approve_endpoint(this.props.endpoints[endpointId])
+      this.props.approve_endpoint(this.props.endpoints[endpointId], this.publishLoaderHandler.bind(this))
     }
   }
 
@@ -367,7 +382,8 @@ class PublishDocs extends Component {
   }
 
   async handleApprovePageRequest (pageId) {
-    this.props.approve_page(this.props.pages[pageId])
+    this.setState({ publishPageLoader: true })
+    this.props.approve_page(this.props.pages[pageId], this.publishPageLoaderHandler.bind(this))
   }
 
   async handleRejectPageRequest (pageId) {
@@ -378,7 +394,9 @@ class PublishDocs extends Component {
       const items = this.getInitialItems(this.state.selectedVersionId,
         this.state.groups,
         this.state.endpoints,
-        this.state.pages
+        this.state.pages,
+        null,
+        pageId
       )
       this.setState({
         selectedGroupId: items?.selectedGroupId || null,
@@ -427,6 +445,14 @@ class PublishDocs extends Component {
         </div>
       </SortableList>
     )
+  }
+
+  publishLoaderHandler () {
+    this.setState({ publishLoader: false })
+  }
+
+  publishPageLoaderHandler () {
+    this.setState({ publishPageLoader: false })
   }
 
   filterPages (groupId) {
@@ -627,10 +653,11 @@ class PublishDocs extends Component {
       return (
         Object.keys(this.props.collections).map(
           (id, index) => (
-            <Dropdown.Item key={index} onClick={() => this.setSelectedCollection(this.props.collections[id])}>
-              {this.props.collections[id]?.name}
-              {this.collectionHasChanges(id) && <i class='fas fa-circle' />}
-            </Dropdown.Item>
+            !this.props.collections[id]?.importedFromMarketPlace &&
+              <Dropdown.Item key={index} onClick={() => this.setSelectedCollection(this.props.collections[id])}>
+                {this.props.collections[id]?.name}
+                {this.collectionHasChanges(id) && <i class='fas fa-circle' />}
+              </Dropdown.Item>
           ))
       )
     }
@@ -659,10 +686,16 @@ class PublishDocs extends Component {
   groupsToShow (versionId) {
     const versionGroups = extractCollectionInfoService.extractGroupsFromVersionId(versionId, this.props)
     const endpointsToCheck = extractCollectionInfoService.extractEndpointsFromGroups(versionGroups, this.props)
+    const pagesToCheck = extractCollectionInfoService.extractPagesFromVersions({ [versionId]: versionId }, this.props)
     const filteredEndpoints = Object.values(endpointsToCheck).filter(endpoint => endpoint.state === publishDocsEnum.PENDING_STATE || endpoint.isPublished)
+    const filteredPages = Object.values(pagesToCheck).filter(page => (page.state === publishDocsEnum.PENDING_STATE || page.isPublished) && page.groupId)
     const publicGroupIds = new Set()
     filteredEndpoints.forEach(endpoint => {
       publicGroupIds.add(endpoint.groupId)
+    })
+
+    filteredPages.forEach(page => {
+      publicGroupIds.add(page.groupId)
     })
     const publicGroups = {}
     publicGroupIds.forEach(id => {
@@ -712,7 +745,7 @@ class PublishDocs extends Component {
                 {endpointName}
               </div>
             </div>
-            {this.endpointPublishAndReject()}
+            <div className='publish-reject mt-3 d-flex'>{this.endpointPublishAndReject()}</div>
           </div>
           <div className='scrollTo' ref={this.scrollmyRef}>
             {this.checkEndpointState()}
@@ -778,24 +811,37 @@ class PublishDocs extends Component {
     })
   }
 
+  publishButtonEndpoint () {
+    return (
+      <div className={!this.state.publishLoader ? 'publish-button' : 'publish-button buttonLoader'}>  <Button variant='success' onClick={() => this.handleApproveEndpointRequest(this.state.selectedEndpointId)}>PUBLISH</Button>
+      </div>
+    )
+  }
+
   endpointPublishAndReject () {
     if (this.state.endpoints[this.state.selectedEndpointId]?.state !== publishDocsEnum.APPROVED_STATE &&
       this.state.endpoints[this.state.selectedEndpointId]?.state !== publishDocsEnum.REJECT_STATE) {
       return (
-        <div className='publish-reject mt-3 d-flex'>
-          <button class='btn btn-outline danger mr-3' onClick={() => this.handleRejectEndpointRequest(this.state.selectedEndpointId)}>Reject</button>
-          <div className='publish-button'>  <Button variant='success' onClick={() => this.handleApproveEndpointRequest(this.state.selectedEndpointId)}>PUBLISH</Button>
-          </div>
-        </div>
+        <>
+          {!this.state.publishLoader && <button class='btn btn-outline danger mr-3' onClick={() => this.handleRejectEndpointRequest(this.state.selectedEndpointId)}>Reject</button>}
+          {this.publishButtonEndpoint()}
+        </>
       )
     } else {
       return (
-        <div className='publish-reject mt-3 d-flex'>
+        <>
           <div className='publish-button'>  <Button variant='success' onClick={() => this.handleRemovePublicEndpoint(this.state.selectedEndpointId)}>Unpublish Endpoint</Button>
           </div>
-        </div>
+        </>
       )
     }
+  }
+
+  pagePublishButton () {
+    return (
+      <div className={!this.state.publishPageLoader ? 'publish-button' : 'publish-button buttonLoader'}> <Button variant='success' onClick={() => this.handleApprovePageRequest(this.state.selectedPageId)}>PUBLISH</Button>
+      </div>
+    )
   }
 
   pagePublishAndReject () {
@@ -803,18 +849,17 @@ class PublishDocs extends Component {
       this.state.pages[this.state.selectedPageId]?.state !== publishDocsEnum.REJECT_STATE
     ) {
       return (
-        <div className='publish-reject mt-3 d-flex'>
-          <button class='btn btn-outline danger mr-3' onClick={() => this.handleRejectPageRequest(this.state.selectedPageId)}>Reject</button>
-          <div className='publish-button'>  <Button variant='success' onClick={() => this.handleApprovePageRequest(this.state.selectedPageId)}>PUBLISH</Button>
-          </div>
-        </div>
+        <>
+          {!this.state.publishPageLoader && <button class='btn btn-outline danger mr-3' onClick={() => this.handleRejectPageRequest(this.state.selectedPageId)}>Reject</button>}
+          {this.pagePublishButton()}
+        </>
       )
     } else {
       return (
-        <div className='publish-reject mt-3 d-flex'>
+        <>
           <div className='publish-button'>  <Button variant='success' onClick={() => this.handleRemovePublicPage(this.state.selectedPageId)}>Unpublish Page</Button>
           </div>
-        </div>
+        </>
       )
     }
   }
@@ -840,7 +885,7 @@ class PublishDocs extends Component {
                   {pageName}
                 </div>
               </div>
-              {this.pagePublishAndReject()}
+              <div className='publish-reject mt-3 d-flex'>{this.pagePublishAndReject()}</div>
             </div>
             {this.checkPageState()}
           </div>
@@ -970,7 +1015,7 @@ class PublishDocs extends Component {
 
   renderPageSettingButton () {
     return (
-      <div className='d-flex align-items-center mx-3 mt-4'>
+      <div className='d-flex align-items-center ml-3 mt-4'>
         <button
           className='pageSettingsButton'
           onClick={() => {
@@ -985,6 +1030,29 @@ class PublishDocs extends Component {
     )
   }
 
+  renderExternalLinkButton () {
+    const url = process.env.REACT_APP_UI_URL + '/p/' + this.state.selectedCollectionId
+
+    if (this.isCollectionPublished()) {
+      return (
+        <OverlayTrigger
+          placement='right'
+          overlay={<Tooltip> Go To Docs </Tooltip>}
+        >
+          <div className='d-flex align-items-center mx-3 mt-4'>
+            <button
+              className='externalLinkButton'
+              onClick={() => { window.open(url, '_blank') }}
+            >
+              <ExternalLinks />
+            </button>
+          </div>
+        </OverlayTrigger>
+
+      )
+    }
+  }
+
   renderHostedAPIDetials () {
     return (
       <>
@@ -994,6 +1062,7 @@ class PublishDocs extends Component {
             {this.rednerHostedAPIDropdown()}
             {this.publishCollections()}
             {this.renderPageSettingButton()}
+            {this.renderExternalLinkButton()}
           </div>
           <div className='grid-two new-pub-doc'>
             {this.state.openPageSettingsSidebar && this.renderDocsFormSidebar()}
@@ -1185,8 +1254,24 @@ class PublishDocs extends Component {
     return (
       <div className='hosted-doc-heading'>
         <div>{heading}</div>
-        <div className='user-info-container'><UserInfo {...this.props} /></div>
+        <div className='row d-flex align-items-center'>
+          <div className='communti-btn-wrapper mr-2'>
+            <a href='http://forum.viasocket.com/' rel='noreferrer' target='_blank'>Community </a>
+          </div>
+          <div className='user-info-container'><UserInfo {...this.props} /></div>
+        </div>
       </div>
+    )
+  }
+
+  showPublishDocConfirmationModal () {
+    return (
+      <PublishDocsConfirmModal
+        {...this.props}
+        show={this.state.showPublishDocConfirmModal}
+        onHide={() => { this.setState({ showPublishDocConfirmModal: false }) }}
+        collection_id={URI.parseQuery(this.props.location.search).collectionId}
+      />
     )
   }
 
@@ -1195,6 +1280,7 @@ class PublishDocs extends Component {
     return (
       <div className='publish-docs-container'>
         {this.renderWarningModal()}
+        {this.showPublishDocConfirmationModal()}
         <div className='publish-docs-wrapper'>
           <div class='content-panel'>
             <div className='hosted-APIs'>

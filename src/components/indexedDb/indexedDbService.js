@@ -1,4 +1,4 @@
-import { openDB } from 'idb'
+import { openDB, deleteDB } from 'idb'
 
 let db = null
 
@@ -118,6 +118,10 @@ const clearStore = async (storeName) => {
   await tx.done
 }
 
+const deleteDataBase = async (name) => {
+  await deleteDB(name)
+}
+
 export default {
   createDataBase,
   getDataBase,
@@ -129,5 +133,6 @@ export default {
   updateData,
   deleteData,
   deleteDataByIndex,
-  clearStore
+  clearStore,
+  deleteDataBase
 }

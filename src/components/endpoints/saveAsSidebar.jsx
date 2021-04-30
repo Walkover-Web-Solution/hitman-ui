@@ -7,6 +7,7 @@ import './endpoints.scss'
 import CollectionForm from '../collections/collectionForm'
 import CollectionVersionForm from '../collectionVersions/collectionVersionForm'
 import GroupForm from '../groups/groupForm'
+import { ADD_GROUP_MODAL_NAME, ADD_VERSION_MODAL_NAME } from '../common/utility'
 
 const mapStateToProps = state => {
   return {
@@ -113,7 +114,7 @@ class SaveAsSidebar extends Form {
             this.setState({ showCollectionVersionForm: false })
           }}
           show
-          title='Add new Collection Version'
+          title={ADD_VERSION_MODAL_NAME}
         />
       )
     )
@@ -129,7 +130,7 @@ class SaveAsSidebar extends Form {
             this.setState({ showGroupForm: false })
           }}
           show
-          title='Add new Group'
+          title={ADD_GROUP_MODAL_NAME}
         />
       )
     )
@@ -139,9 +140,9 @@ class SaveAsSidebar extends Form {
     let listItems = []
     switch (this.state.list.type) {
       case 'collections':
-        listItems = Object.keys(this.props.collections).map(collectionId => ({
-          name: this.props.collections[collectionId].name,
-          id: this.props.collections[collectionId].id
+        listItems = Object.values(this.props.collections).filter(collection => !collection?.importedFromMarketPlace).map(collection => ({
+          name: collection.name,
+          id: collection.id
         }))
         break
       case 'versions':
@@ -292,7 +293,7 @@ class SaveAsSidebar extends Form {
                               this.openAddModal()
                             }}
                           >
-                            <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M9 3.75V14.25' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' /><path d='M3.75 9H14.25' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' /></svg>
+                            + Add
                           </button>
                         </div>
                         )
@@ -315,7 +316,7 @@ class SaveAsSidebar extends Form {
                                 this.openAddModal()
                               }}
                             >
-                              <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M9 3.75V14.25' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' /><path d='M3.75 9H14.25' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' /></svg>
+                              + Add
                             </button>
                           </div>
                           )
@@ -360,8 +361,8 @@ class SaveAsSidebar extends Form {
                           )
                         )
                       : (
-                        <div className='not-found-label'>
-                          {this.state.list.type + ' not found in this folder'}
+                        <div className='not-found-label p-3'>
+                          {`No ${this.state.list.type} found`}
                         </div>
                         )}
                 </ul>

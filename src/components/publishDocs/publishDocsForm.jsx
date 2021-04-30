@@ -8,6 +8,8 @@ import { updateCollection } from '../collections/redux/collectionsActions'
 import './publishDocsForm.scss'
 const URI = require('urijs')
 
+const UI_IP = process.env.REACT_APP_UI_IP
+
 const publishDocFormEnum = {
   NULL_STRING: '',
   INITIAL_CTA: [
@@ -37,7 +39,7 @@ const publishDocFormEnum = {
   LABELS: {
     title: 'Title',
     domain: 'Domain',
-    logoUrl: 'Fav Icon',
+    logoUrl: 'Logo URL',
     theme: 'Theme',
     cta: 'CTA',
     links: 'Links'
@@ -151,10 +153,13 @@ class PublishDocForm extends Component {
     if (errors) return
     this.setState({ loader: true })
     this.props.update_collection(collection, () => { this.setState({ loader: false }) })
-    this.props.history.push({
-      pathname: '/admin/publish',
-      search: `?collectionId=${collectionId}`
-    })
+    if (collectionId) {
+      this.props.history.push({
+        pathname: '/admin/publish',
+        search: `?collectionId=${collectionId}`,
+        showConfirmModal: true
+      })
+    }
   }
 
   setTheme (theme) {
@@ -253,7 +258,11 @@ class PublishDocForm extends Component {
     return (
       <div className='d-flex'>
         <div className='uploadBox'>
-          {!this.state.binaryFile && this.renderUploadModule(this.state.data.logoUrl)}
+          {!this.state.binaryFile &&
+            <div className='d-block'>
+              {this.renderUploadModule(this.state.data.logoUrl)}
+              <div className='upload-box-text'>Upload</div>
+            </div>}
           {this.state.binaryFile && <img src={`data:image/png;base64,${this.state.binaryFile}`} height='60' width='60' />}
         </div>
         <div className='uplod-info'>
@@ -271,14 +280,15 @@ class PublishDocForm extends Component {
     )
   }
 
-  renderInput (name, mandatory = false, disabled) {
+  renderInput (name, mandatory = false, disabled, placeholder) {
     return (
       <div className='form-group'>
         <label>
           {publishDocFormEnum.LABELS[name]} {mandatory ? <span className='alert alert-danger'>*</span> : ''}
         </label>
-        <input type='text' disabled={disabled} className='form-control' name={name} value={this.state.data[name]} onChange={(e) => this.handleChange(e)} />
+        <input type='text' placeholder={placeholder} disabled={disabled} className='form-control' name={name} value={this.state.data[name]} onChange={(e) => this.handleChange(e)} />
         {this.state.errors && this.state.errors[name] && <small className='alert alert-danger'>{this.state.errors[name]}</small>}
+        {name === 'domain' && <label className='domain-info'>{`Point the A record of the above domain to ${UI_IP}`}</label>}
       </div>
     )
   }
@@ -286,7 +296,6 @@ class PublishDocForm extends Component {
   render () {
     return (
       <>
-
         <div className='publish-mo-btn'>
           {
             this.props.isSidebar && this.props.isCollectionPublished() &&
@@ -299,9 +308,10 @@ class PublishDocForm extends Component {
           }
         </div>
         <div className='small-input'>
-          {this.renderInput('title', true)}
-          {this.renderInput('domain')}
+          {this.renderInput('title', true, false, 'brand name')}
+          {this.renderInput('domain', false, false, 'https://docs.example.com')}
         </div>
+        <label className='fav-icon-text'> Fav Icon </label>
         <div className='d-flex'>
           <div className='favicon-uploader'>
             {this.renderUploadBox()}

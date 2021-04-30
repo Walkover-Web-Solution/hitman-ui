@@ -65,7 +65,7 @@ class OpenApiForm extends Component {
     if (this.state.importType === 'postman') {
       const schema = {
         type: Joi.string().required(),
-        website: Joi.string(),
+        website: Joi.string().uri(),
       }
       errors = this.validate({ type: this.state.importType, website: this.state.website }, schema)
     }
@@ -83,9 +83,6 @@ class OpenApiForm extends Component {
       const uploadedFile = new FormData()
       uploadedFile.append('myFile', selectedFile, selectedFile.name)
       this.setState({ uploadedFile, errors: { ...this.state.error, file: null }, selectedFileName: selectedFile.name})
-    }
-    else {
-      this.setState({ uploadedFile: null, errors: { ...this.state.error, file: null }, selectedFileName: null})
     }
   }
 

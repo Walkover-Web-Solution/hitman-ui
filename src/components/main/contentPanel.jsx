@@ -153,15 +153,22 @@ class ContentPanel extends Component {
         <div className='login-sso'>
           {
             !getCurrentUser()
-              ? <div
-                  id='sokt-sso'
-                  data-redirect-uri={redirectionUrl}
-                  data-source='sokt-app'
-                  data-token-key='sokt-auth-token'
-                  data-view='button'
-                  data-app-logo-url='https://hitman.app/wp-content/uploads/2020/12/123.png'
-                  signup_uri={redirectionUrl + '?signup=true'}
-                />
+              ? (
+                <div className='row align-items-center'>
+                  <div className='float-right d-flex communti-btn-wrapper community-btn-1'>
+                    <a href='http://forum.viasocket.com/' rel='noreferrer' target='_blank'>Community </a>
+                  </div>
+                  <div
+                    id='sokt-sso'
+                    data-redirect-uri={redirectionUrl}
+                    data-source='sokt-app'
+                    data-token-key='sokt-auth-token'
+                    data-view='button'
+                    data-app-logo-url='https://hitman.app/wp-content/uploads/2020/12/123.png'
+                    signup_uri={redirectionUrl + '?signup=true'}
+                  />
+                </div>
+                )
               : null
           }
         </div>
@@ -180,6 +187,9 @@ class ContentPanel extends Component {
                 <>
                   <div className='env-wrapper'>
                     <div className='float-right d-flex'>
+                      <div className='float-right d-flex communti-btn-wrapper'>
+                        <a href='http://forum.viasocket.com/' rel='noreferrer' target='_blank'>Community </a>
+                      </div>
                       <Environments {...this.props} />
                       <div className='ml-3'>
                         <UserInfo {...this.props} />
@@ -236,9 +246,6 @@ class ContentPanel extends Component {
                 )
           }
           <div className='main-content'>
-            <div className='communti-btn-wrapper'>
-              <a href='http://forum.viasocket.com/' rel='noreferrer' target='_blank'>Community </a>
-            </div>
             <TabContent
               {...this.props}
               handle_save_endpoint={this.handleSaveEndpoint.bind(this)}

@@ -8,7 +8,7 @@ import {
   duplicateVersion
 } from '../collectionVersions/redux/collectionVersionsActions'
 import ShareVersionForm from '../collectionVersions/shareVersionForm'
-import { isDashboardRoute } from '../common/utility'
+import { isDashboardRoute, ADD_GROUP_MODAL_NAME } from '../common/utility'
 import GroupForm from '../groups/groupForm'
 import Groups from '../groups/groups'
 import PageForm from '../pages/pageForm'
@@ -133,7 +133,7 @@ class CollectionVersions extends Component {
     const showVersionForm = { addGroup: true }
     this.setState({
       showVersionForm,
-      versionFormName: 'Add new Group',
+      versionFormName: ADD_GROUP_MODAL_NAME,
       selectedVersion: version
     })
   }
@@ -356,7 +356,7 @@ class CollectionVersions extends Component {
                       {this.props.versions[versionId].number}
                     </div>
                     {
-                      isDashboardRoute(this.props, true)
+                      isDashboardRoute(this.props, true) && !this.props.collections[this.props.collection_id]?.importedFromMarketPlace
                         ? (
                           <div className='sidebar-item-action'>
                             <div
