@@ -179,7 +179,7 @@ class DisplayResponse extends Component {
   }
 
   displayHeader () {
-    if(this.props.response.headers){
+    if (this.props.response.headers) {
       return (
         <div className='overflow-auto '>
           <table className='table table-sm fs-6'>
@@ -194,7 +194,6 @@ class DisplayResponse extends Component {
         </div>
       )
     }
-    
   }
 
   render () {
