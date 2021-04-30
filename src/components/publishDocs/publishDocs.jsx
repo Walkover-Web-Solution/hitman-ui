@@ -1246,7 +1246,12 @@ class PublishDocs extends Component {
     return (
       <div className='hosted-doc-heading'>
         <div>{heading}</div>
-        <div className='user-info-container'><UserInfo {...this.props} /></div>
+        <div className='row d-flex align-items-center'>
+          <div className='communti-btn-wrapper mr-2'>
+            <a href='http://forum.viasocket.com/' rel='noreferrer' target='_blank'>Community </a>
+          </div>
+          <div className='user-info-container'><UserInfo {...this.props} /></div>
+        </div>
       </div>
     )
   }
