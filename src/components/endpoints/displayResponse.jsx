@@ -21,7 +21,8 @@ class DisplayResponse extends Component {
     show: false,
     showSampleResponseForm: { add: false, delete: false, edit: false },
     theme: '',
-    showCopyMessage: false
+    showCopyMessage: false,
+    selectedResponseTab: 'body'
   };
 
   constructor () {
@@ -110,6 +111,94 @@ class DisplayResponse extends Component {
     }.bind(this), 2000)
   }
 
+  displayBodyAndHeaderResponse () {
+    return (
+      <>
+        <div className='col-12' ref={this.myRef}>
+          <ul className='nav nav-tabs respTabsListing' id='myTab' role='tablist'>
+            <li className='nav-item' onClick={()=>{this.setState({selectedResponseTab: 'body'})}}>
+              <a
+                className='nav-link active'
+                id='pills-response-tab'
+                data-toggle='pill'
+                href={
+                  isDashboardRoute(this.props)
+                    ? `#response-${this.props.tab.id}`
+                    : '#response'
+                }
+                role='tab'
+                aria-controls={
+                  isDashboardRoute(this.props)
+                    ? `response-${this.props.tab.id}`
+                    : 'response'
+                }
+                aria-selected='true'
+              >
+                Body
+              </a>
+            </li>
+            {getCurrentUser() && (
+              <li className='nav-item' onClick={()=>{this.setState({selectedResponseTab: 'header'})}}>
+                <a
+                  className='nav-link'
+                  id='pills-header-tab'
+                  data-toggle='pill'
+                  aria-selected='false'
+                  href='#pills-header-tab'
+                  role='tab1'
+                >
+                  Headers
+                </a>
+              </li>
+            )}
+          </ul>
+          <div className='tab-content responseTabWrapper' id='pills-tabContent'>
+            <div
+              className='tab-pane fade show active'
+              id={
+                isDashboardRoute(this.props)
+                  ? `response-${this.props.tab.id}`
+                  : 'response'
+              }
+              role='tabpanel'
+              aria-labelledby='pills-response-tab'
+              >
+            </div>
+          </div>
+        </div>
+      </>
+    )
+  }
+
+  renderTableData() {
+    let headerContent = this.props.response.headers
+    let headerContentKeys = Object.keys(headerContent)
+    return headerContentKeys.map((key, index) => {
+       const value = headerContent[key]
+       return (
+          <tr>
+            <th scope="row">{key}</th>
+            <td>{value}</td>
+          </tr>
+       )
+    })
+ }
+  displayHeader(){
+    return(
+      <div className="overflow-auto ">
+        <table className="table table-sm fs-6">
+        <thead>
+          <tr>
+            <th scope="col">Key</th>
+            <th scope="col">Value</th>
+          </tr>
+        </thead>
+        <tbody>{this.renderTableData()}</tbody>
+        </table>
+      </div>
+    )
+  }
+
   render () {
     const { theme } = this.state
     return (
@@ -120,9 +209,10 @@ class DisplayResponse extends Component {
               <div>
                 <div className='response-status'>
                   <div className='respHeading'>
-                    {!isSavedEndpoint(this.props) ? <h2 className='orange-heading'> RESPONSE</h2> : null}
+                  {!isSavedEndpoint(this.props) ? <h2 className='orange-heading'> RESPONSE</h2> : null}
+                  {this.displayBodyAndHeaderResponse()}
                   </div>
-                  <div className='statusWrapper'>
+                  <div className='statusWrapper'> 
                     {this.props.response.status &&
                       <div id='status'>
                         <div className='response-status-item-name'>Status :</div>
@@ -200,27 +290,26 @@ class DisplayResponse extends Component {
                           </a>
                         </li>
                       </ul>)} */}
-                    {
-                      getCurrentUser() && isSavedEndpoint(this.props) && isDashboardRoute(this.props)
-                        ? (
-                          <div
-                            // style={{ float: "right" }}
-                            className='add-to-sample-response'
-                          >
-                            <div
-                              className='adddescLink'
-                              onClick={() =>
-                                this.addSampleResponse(this.props.response)}
-                            >
-                              <svg width='16' height='16' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M9 3.75V14.25' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' /><path d='M3.75 9H14.25' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' /></svg> Add to Sample Response
-                            </div>
-                          </div>
-                          )
-                        : null
-                    }
-
                   </div>
-
+                  {this.state.selectedResponseTab === 'body' && <> 
+                  {
+                    getCurrentUser() && isSavedEndpoint(this.props) && isDashboardRoute(this.props)
+                      ? (
+                        <div
+                          // style={{ float: "right" }}
+                          className='add-to-sample-response'
+                        >
+                          <div
+                            className='adddescLink'
+                            onClick={() =>
+                              this.addSampleResponse(this.props.response)}
+                          >
+                            <svg width='16' height='16' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M9 3.75V14.25' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' /><path d='M3.75 9H14.25' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' /></svg> Add to Sample Response
+                          </div>
+                        </div>
+                        )
+                      : null
+                  } 
                   {isDashboardRoute(this.props) && (
                     <div className='tab-content' id='myTabContent'>
                       <div
@@ -259,6 +348,8 @@ class DisplayResponse extends Component {
                       />
                     </div>
                   )}
+                  </>}
+                  {this.state.selectedResponseTab==='header' && this.displayHeader()}
                 </div>
               </div>
               )
