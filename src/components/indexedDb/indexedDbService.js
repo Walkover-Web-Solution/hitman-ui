@@ -119,8 +119,7 @@ const clearStore = async (storeName) => {
 }
 
 const deleteDataBase = async (name) => {
-  const result = await deleteDB(name)
-  console.log(result)
+  await deleteDB(name)
 }
 
 export default {
