@@ -40,7 +40,7 @@ const publishDocFormEnum = {
   LABELS: {
     title: 'Title',
     domain: 'Domain',
-    logoUrl: 'Fav Icon',
+    logoUrl: 'Logo URL',
     theme: 'Theme',
     cta: 'CTA',
     links: 'Links'
@@ -268,7 +268,11 @@ class PublishDocForm extends Component {
     return (
       <div className='d-flex'>
         <div className='uploadBox'>
-          {!this.state.binaryFile && this.renderUploadModule(this.state.data.logoUrl)}
+          {!this.state.binaryFile &&
+            <div className='d-block'>
+              {this.renderUploadModule(this.state.data.logoUrl)}
+              <div className='upload-box-text'>Upload</div>
+            </div>}
           {this.state.binaryFile && <img src={`data:image/png;base64,${this.state.binaryFile}`} height='60' width='60' />}
         </div>
         <div className='uplod-info'>
@@ -319,6 +323,7 @@ class PublishDocForm extends Component {
           {this.renderInput('title', true, false, 'brand name')}
           {this.renderInput('domain', false, false, 'https://docs.example.com')}
         </div>
+        <label className='fav-icon-text'> Fav Icon </label>
         <div className='d-flex'>
           <div className='favicon-uploader'>
             {this.renderUploadBox()}
