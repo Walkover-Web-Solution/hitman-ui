@@ -6,7 +6,6 @@ import { Button } from 'react-bootstrap'
 import { ReactComponent as UploadIcon } from '../../assets/icons/uploadIcon.svg'
 import { updateCollection } from '../collections/redux/collectionsActions'
 import './publishDocsForm.scss'
-import PublishDocsConfirmModal from './publishDocsConfirmModal'
 const URI = require('urijs')
 
 const UI_IP = process.env.REACT_APP_UI_IP
@@ -69,9 +68,7 @@ class PublishDocForm extends Component {
       theme: ''
     },
     cta: publishDocFormEnum.INITIAL_CTA,
-    links: publishDocFormEnum.INITIAL_LINKS,
-    showPublishDocConfirmModal: false
-
+    links: publishDocFormEnum.INITIAL_LINKS
   }
 
   componentDidMount () {
@@ -155,21 +152,14 @@ class PublishDocForm extends Component {
     this.setState({ errors: errors || {} })
     if (errors) return
     this.setState({ loader: true })
-    if (!this.props.isSidebar) {
-      this.setState({ showPublishDocConfirmModal: true })
-    }
     this.props.update_collection(collection, () => { this.setState({ loader: false }) })
-  }
-
-  showPublishDocConfirmationModal () {
-    return (
-      <PublishDocsConfirmModal
-        {...this.props}
-        show={this.state.showPublishDocConfirmModal}
-        onHide={() => { this.setState({ showPublishDocConfirmModal: false }) }}
-        collection_id={URI.parseQuery(this.props.location.search).collectionId}
-      />
-    )
+    if (collectionId) {
+      this.props.history.push({
+        pathname: '/admin/publish',
+        search: `?collectionId=${collectionId}`,
+        showConfirmModal: true
+      })
+    }
   }
 
   setTheme (theme) {
@@ -306,8 +296,6 @@ class PublishDocForm extends Component {
   render () {
     return (
       <>
-
-        {this.showPublishDocConfirmationModal()}
         <div className='publish-mo-btn'>
           {
             this.props.isSidebar && this.props.isCollectionPublished() &&

@@ -12,6 +12,7 @@ class PublishDocsConfirmModal extends Component {
         search: `?collectionId=${collectionId}`
       })
     }
+    this.props.onHide()
   }
 
   render () {

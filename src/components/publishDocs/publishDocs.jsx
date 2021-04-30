@@ -29,6 +29,7 @@ import { ReactComponent as DragHandleIcon } from '../../assets/icons/drag-handle
 import { ReactComponent as SettingsIcon } from '../../assets/icons/settings.svg'
 import { ReactComponent as ExternalLinks } from '../../assets/icons/externalLinks.svg'
 import UserInfo from '../main/userInfo'
+import PublishDocsConfirmModal from './publishDocsConfirmModal'
 const isEqual = require('react-fast-compare')
 
 const URI = require('urijs')
@@ -92,7 +93,8 @@ class PublishDocs extends Component {
       sDocPropertiesComplete: false,
       openPageSettingsSidebar: false,
       publishLoader: false,
-      publishPageLoader: false
+      publishPageLoader: false,
+      showPublishDocConfirmModal: false
     }
     this.wrapperRef = React.createRef()
     this.handleClickOutside = this.handleClickOutside.bind(this)
@@ -152,6 +154,9 @@ class PublishDocs extends Component {
           selectedPageId: items?.selectedPageId || null
         })
       }
+    }
+    if (this.props.location !== prevProps.location && this.props.location?.showConfirmModal) {
+      this.setState({ showPublishDocConfirmModal: true })
     }
   }
 
@@ -1246,11 +1251,23 @@ class PublishDocs extends Component {
     )
   }
 
+  showPublishDocConfirmationModal () {
+    return (
+      <PublishDocsConfirmModal
+        {...this.props}
+        show={this.state.showPublishDocConfirmModal}
+        onHide={() => { this.setState({ showPublishDocConfirmModal: false }) }}
+        collection_id={URI.parseQuery(this.props.location.search).collectionId}
+      />
+    )
+  }
+
   render () {
     const collectionId = URI.parseQuery(this.props.location.search).collectionId
     return (
       <div className='publish-docs-container'>
         {this.renderWarningModal()}
+        {this.showPublishDocConfirmationModal()}
         <div className='publish-docs-wrapper'>
           <div class='content-panel'>
             <div className='hosted-APIs'>
