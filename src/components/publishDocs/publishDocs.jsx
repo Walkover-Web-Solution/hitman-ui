@@ -1257,7 +1257,7 @@ class PublishDocs extends Component {
         <div>{heading}</div>
         <div className='row d-flex align-items-center'>
           <div className='communti-btn-wrapper mr-2'>
-            <a href='http://forum.viasocket.com/' rel='noreferrer' target='_blank'>Community </a>
+            <a href={process.env.REACT_APP_COMMUNITY_URL} rel='noreferrer' target='_blank'>Community </a>
           </div>
           <div className='user-info-container'><UserInfo {...this.props} /></div>
         </div>

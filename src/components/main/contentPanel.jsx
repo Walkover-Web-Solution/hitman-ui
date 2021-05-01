@@ -156,7 +156,7 @@ class ContentPanel extends Component {
               ? (
                 <div className='row align-items-center'>
                   <div className='float-right d-flex communti-btn-wrapper community-btn-1'>
-                    <a href='http://forum.viasocket.com/' rel='noreferrer' target='_blank'>Community </a>
+                    <a href={process.env.REACT_APP_COMMUNITY_URL} rel='noreferrer' target='_blank'>Community </a>
                   </div>
                   <div
                     id='sokt-sso'
