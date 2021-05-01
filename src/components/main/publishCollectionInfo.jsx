@@ -102,6 +102,7 @@ class PublishCollectionInfo extends Component {
       (this.state.totalEndpointCount !== 0 || this.state.totalPageCount !== 0) &&
         <button
           className='btn btn-outline orange w-100 publishCollection'
+          id = 'publish_api_doc_navbar_btn'
           onClick={() => { this.redirectUser() }}
         >
           Publish API Documentation

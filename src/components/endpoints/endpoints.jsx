@@ -358,6 +358,7 @@ class Endpoints extends Component {
   displayMakePublicOpt (endpointId) {
     return (
       <div
+        id = 'make_public_btn'
         className='dropdown-item'
         onClick={() =>
           this.handlePublicEndpointState(

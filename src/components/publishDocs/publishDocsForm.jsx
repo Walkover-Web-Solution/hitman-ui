@@ -204,7 +204,7 @@ class PublishDocForm extends Component {
     return (
       <>
         {this.props.isSidebar && <Button className='btn btn-secondary outline btn-extra-lg mr-2' onClick={() => { this.props.onHide() }}> Cancel</Button>}
-        <Button className={this.state.loader ? 'btn-extra-lg buttonLoader' : 'btn-extra-lg'} onClick={() => this.saveCollectionDetails()}>{this.props.isSidebar ? 'Update' : 'Save'}</Button>
+        <Button className={this.state.loader ? 'btn-extra-lg buttonLoader' : 'btn-extra-lg'} id='publish_doc_settings_save_btn' onClick={() => this.saveCollectionDetails()}>{this.props.isSidebar ? 'Update' : 'Save'}</Button>
       </>
     )
   }
@@ -300,6 +300,7 @@ class PublishDocForm extends Component {
           {
             this.props.isSidebar && this.props.isCollectionPublished() &&
               <Button
+                id ='unpublish_doc_btn'
                 variant='btn btn-outline danger ml-4 mt-4'
                 onClick={() => this.props.unPublishCollection()}
               >

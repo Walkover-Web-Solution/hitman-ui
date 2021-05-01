@@ -156,6 +156,7 @@ class Pages extends Component {
     return (
       <div
         className='dropdown-item'
+        id = 'make_public_btn'
         onClick={() =>
           this.handlePublicPageState(
             this.props.pages[pageId]
