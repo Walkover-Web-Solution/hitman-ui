@@ -108,3 +108,30 @@ workflows:
           context:
             - prod
             - hitman-ui-prod
+
+  # Build_Deploy_Prod_Auto:
+  #   jobs:
+  #     - Build-Push-Image-Docker:
+  #         filters:
+  #           branches:
+  #             only:
+  #               - prod
+  #         context:
+  #           - gke-prod
+  #           - hitman-ui-prod-auto
+
+  #     - hold:
+  #         type: approval
+  #         requires:
+  #           - Build-Push-Image-Docker
+
+  #     - Deploy-to-GKE:
+  #         requires:
+  #           - hold
+  #         filters:
+  #           branches:
+  #             only:
+  #               - prod
+  #         context:
+  #           - gke-prod
+  #           - hitman-ui-prod-auto
