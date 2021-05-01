@@ -140,9 +140,9 @@ class SaveAsSidebar extends Form {
     let listItems = []
     switch (this.state.list.type) {
       case 'collections':
-        listItems = Object.keys(this.props.collections).map(collectionId => ({
-          name: this.props.collections[collectionId].name,
-          id: this.props.collections[collectionId].id
+        listItems = Object.values(this.props.collections).filter(collection => !collection?.importedFromMarketPlace).map(collection => ({
+          name: collection.name,
+          id: collection.id
         }))
         break
       case 'versions':

@@ -29,6 +29,7 @@ import { ReactComponent as DragHandleIcon } from '../../assets/icons/drag-handle
 import { ReactComponent as SettingsIcon } from '../../assets/icons/settings.svg'
 import { ReactComponent as ExternalLinks } from '../../assets/icons/externalLinks.svg'
 import UserInfo from '../main/userInfo'
+import PublishDocsConfirmModal from './publishDocsConfirmModal'
 const isEqual = require('react-fast-compare')
 
 const URI = require('urijs')
@@ -92,7 +93,8 @@ class PublishDocs extends Component {
       sDocPropertiesComplete: false,
       openPageSettingsSidebar: false,
       publishLoader: false,
-      publishPageLoader: false
+      publishPageLoader: false,
+      showPublishDocConfirmModal: false
     }
     this.wrapperRef = React.createRef()
     this.handleClickOutside = this.handleClickOutside.bind(this)
@@ -152,6 +154,9 @@ class PublishDocs extends Component {
           selectedPageId: items?.selectedPageId || null
         })
       }
+    }
+    if (this.props.location !== prevProps.location && this.props.location?.showConfirmModal) {
+      this.setState({ showPublishDocConfirmModal: true })
     }
   }
 
@@ -389,7 +394,9 @@ class PublishDocs extends Component {
       const items = this.getInitialItems(this.state.selectedVersionId,
         this.state.groups,
         this.state.endpoints,
-        this.state.pages
+        this.state.pages,
+        null,
+        pageId
       )
       this.setState({
         selectedGroupId: items?.selectedGroupId || null,
@@ -679,10 +686,16 @@ class PublishDocs extends Component {
   groupsToShow (versionId) {
     const versionGroups = extractCollectionInfoService.extractGroupsFromVersionId(versionId, this.props)
     const endpointsToCheck = extractCollectionInfoService.extractEndpointsFromGroups(versionGroups, this.props)
+    const pagesToCheck = extractCollectionInfoService.extractPagesFromVersions({ [versionId]: versionId }, this.props)
     const filteredEndpoints = Object.values(endpointsToCheck).filter(endpoint => endpoint.state === publishDocsEnum.PENDING_STATE || endpoint.isPublished)
+    const filteredPages = Object.values(pagesToCheck).filter(page => (page.state === publishDocsEnum.PENDING_STATE || page.isPublished) && page.groupId)
     const publicGroupIds = new Set()
     filteredEndpoints.forEach(endpoint => {
       publicGroupIds.add(endpoint.groupId)
+    })
+
+    filteredPages.forEach(page => {
+      publicGroupIds.add(page.groupId)
     })
     const publicGroups = {}
     publicGroupIds.forEach(id => {
@@ -1241,8 +1254,24 @@ class PublishDocs extends Component {
     return (
       <div className='hosted-doc-heading'>
         <div>{heading}</div>
-        <div className='user-info-container'><UserInfo {...this.props} /></div>
+        <div className='row d-flex align-items-center'>
+          <div className='communti-btn-wrapper mr-2'>
+            <a href='http://forum.viasocket.com/' rel='noreferrer' target='_blank'>Community </a>
+          </div>
+          <div className='user-info-container'><UserInfo {...this.props} /></div>
+        </div>
       </div>
+    )
+  }
+
+  showPublishDocConfirmationModal () {
+    return (
+      <PublishDocsConfirmModal
+        {...this.props}
+        show={this.state.showPublishDocConfirmModal}
+        onHide={() => { this.setState({ showPublishDocConfirmModal: false }) }}
+        collection_id={URI.parseQuery(this.props.location.search).collectionId}
+      />
     )
   }
 
@@ -1251,6 +1280,7 @@ class PublishDocs extends Component {
     return (
       <div className='publish-docs-container'>
         {this.renderWarningModal()}
+        {this.showPublishDocConfirmationModal()}
         <div className='publish-docs-wrapper'>
           <div class='content-panel'>
             <div className='hosted-APIs'>

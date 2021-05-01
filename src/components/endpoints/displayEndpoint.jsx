@@ -798,9 +798,11 @@ class DisplayEndpoint extends Component {
   }
 
   addhttps (url) {
-    if (this.state.data.updatedUri.includes('localhost') && !(url.includes('localhost'))) { url = 'localhost:' + url }
-    if (!/^(?:f|ht)tps?:\/\//.test(url)) {
-      url = 'https://' + url
+    if (url) {
+      if (this.state.data.updatedUri.includes('localhost') && !(url.includes('localhost'))) { url = 'localhost:' + url }
+      if (!/^(?:f|ht)tps?:\/\//.test(url)) {
+        url = 'https://' + url
+      }
     }
     return url
   }
