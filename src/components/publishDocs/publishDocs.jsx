@@ -813,7 +813,7 @@ class PublishDocs extends Component {
 
   publishButtonEndpoint () {
     return (
-      <div className={!this.state.publishLoader ? 'publish-button' : 'publish-button buttonLoader'}>  <Button variant='success' onClick={() => this.handleApproveEndpointRequest(this.state.selectedEndpointId)}>PUBLISH</Button>
+      <div className={!this.state.publishLoader ? 'publish-button' : 'publish-button buttonLoader'}>  <Button variant='success' id='publish_endpoint_btn' onClick={() => this.handleApproveEndpointRequest(this.state.selectedEndpointId)}>PUBLISH</Button>
       </div>
     )
   }
@@ -830,7 +830,7 @@ class PublishDocs extends Component {
     } else {
       return (
         <>
-          <div className='publish-button'>  <Button variant='success' onClick={() => this.handleRemovePublicEndpoint(this.state.selectedEndpointId)}>Unpublish Endpoint</Button>
+          <div className='publish-button'>  <Button variant='success' id='unpublish_endpoint_btn' onClick={() => this.handleRemovePublicEndpoint(this.state.selectedEndpointId)}>Unpublish Endpoint</Button>
           </div>
         </>
       )
@@ -912,6 +912,7 @@ class PublishDocs extends Component {
     if (!this.isCollectionPublished()) {
       return (
         <Button
+          id='publish_collection_btn'
           variant='success publish-collection-button ml-4 mt-4'
           onClick={() => this.publishCollection()}
         >

@@ -20,7 +20,8 @@ const choices = {
   [collectionsModalEnum.NEW]: {
     key: collectionsModalEnum.NEW,
     label: 'Create New',
-    disabled: false
+    disabled: false,
+    id: 'add_collection_create_new_btn'
   },
   [collectionsModalEnum.MARKETPLACE]: {
     key: collectionsModalEnum.MARKETPLACE,

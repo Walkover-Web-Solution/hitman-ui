@@ -28,5 +28,9 @@ Follow the following steps to set the front end -
   ~npm start
 
 7. Now, open the browser and go to localhost:3000 .
+
+Note: Unique IDs are used in CTAs for tracking purposes with GTM. Do not use the same IDs elsewhere.
+
+
                             
 
