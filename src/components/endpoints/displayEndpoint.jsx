@@ -1972,7 +1972,7 @@ class DisplayEndpoint extends Component {
                                   ? (
                                     <Dropdown as={ButtonGroup}>
                                       <button
-                                        id = 'api_save_btn'
+                                        id='api_save_btn'
                                         className={this.state.saveLoader ? 'btn btn-outline orange buttonLoader' : 'btn btn-outline orange'}
                                         type='button'
                                         onClick={() => this.handleSave()}

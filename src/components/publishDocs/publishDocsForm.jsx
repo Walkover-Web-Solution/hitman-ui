@@ -300,7 +300,7 @@ class PublishDocForm extends Component {
           {
             this.props.isSidebar && this.props.isCollectionPublished() &&
               <Button
-                id ='unpublish_doc_btn'
+                id='unpublish_doc_btn'
                 variant='btn btn-outline danger ml-4 mt-4'
                 onClick={() => this.props.unPublishCollection()}
               >
