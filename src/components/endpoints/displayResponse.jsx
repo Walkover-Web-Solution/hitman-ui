@@ -147,18 +147,6 @@ class DisplayResponse extends Component {
               </li>
             )}
           </ul>
-          <div className='tab-content responseTabWrapper' id='pills-tabContent'>
-            <div
-              className='tab-pane fade show active'
-              id={
-                isDashboardRoute(this.props)
-                  ? `response-${this.props.tab.id}`
-                  : 'response'
-              }
-              role='tabpanel'
-              aria-labelledby='pills-response-tab'
-            />
-          </div>
         </div>
       </>
     )
@@ -181,7 +169,7 @@ class DisplayResponse extends Component {
   displayHeader () {
     if (this.props.response.headers) {
       return (
-        <div className='overflow-auto '>
+        <div className='endpoint-response-container overflow-auto '>
           <table className='table table-sm fs-6'>
             <thead>
               <tr>
@@ -199,7 +187,7 @@ class DisplayResponse extends Component {
   render () {
     const { theme } = this.state
     return (
-      <div className='endpoint-response-container'>
+      <div className='endpoint-response-container overflow-auto'>
         {
           this.props.flagResponse
             ? (
@@ -207,7 +195,6 @@ class DisplayResponse extends Component {
                 <div className='response-status'>
                   <div className='respHeading'>
                     {!isSavedEndpoint(this.props) ? <h2 className='orange-heading'> RESPONSE</h2> : null}
-                    {this.props.response.status && this.displayBodyAndHeaderResponse()}
                   </div>
                   <div className='statusWrapper'>
                     {this.props.response.status &&
@@ -288,6 +275,7 @@ class DisplayResponse extends Component {
                         </li>
                       </ul>)} */}
                   </div>
+                  {this.props.response.status && this.displayBodyAndHeaderResponse()}
                   {this.state.selectedResponseTab === 'body' &&
                     <>
                       {
