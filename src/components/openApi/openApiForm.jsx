@@ -109,6 +109,7 @@ class OpenApiForm extends Component {
       <div className='text-left mt-4'>
         
         <button
+          id = 'add_collection_import_btn'
           className='btn btn-primary btn-lg mr-2'
           onClick={(e) => this.handleSubmit(e)}
         >

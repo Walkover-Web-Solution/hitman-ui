@@ -156,7 +156,7 @@ class ContentPanel extends Component {
               ? (
                 <div className='row align-items-center'>
                   <div className='float-right d-flex communti-btn-wrapper community-btn-1'>
-                    <a href='http://forum.viasocket.com/' rel='noreferrer' target='_blank'>Community </a>
+                    <a href={process.env.REACT_APP_COMMUNITY_URL} rel='noreferrer' target='_blank'>Community </a>
                   </div>
                   <div
                     id='sokt-sso'
@@ -219,6 +219,7 @@ class ContentPanel extends Component {
                       <Nav.Item className='tab-buttons newTabs' id='add-new-tab-button'>
                         <button
                           className='btn'
+                          id='add_environment_btn'
                           onClick={() => { this.openLoginSignupModal() }}
                         >
                           <svg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'>

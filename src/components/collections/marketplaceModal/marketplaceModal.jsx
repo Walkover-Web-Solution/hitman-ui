@@ -127,7 +127,7 @@ export class MarketplaceModal extends Component {
           Cancel
         </button>
         {this.state.selectedCollection &&
-          <button className={['btn btn-primary', 'ml-2', status ? 'disabled' : ''].join(' ')} disabled={!!status} onClick={() => this.import()}>
+          <button className={['btn btn-primary', 'ml-2', status ? 'disabled' : ''].join(' ')} id='add_collection_marketplace_import_btn' disabled={!!status} onClick={() => this.import()}>
             {status ? 'Already Imported' : 'Import'}
           </button>}
       </div>

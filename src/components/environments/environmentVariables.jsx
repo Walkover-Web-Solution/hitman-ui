@@ -289,7 +289,7 @@ class EnvironmentVariables extends Component {
                 <hr />
                 <div>
                   <div className='text-left'>
-                    <button className='btn btn-primary btn-lg mr-2'>
+                    <button className='btn btn-primary btn-lg mr-2' id='add_env_save_btn'>
                       Save
                     </button>
 

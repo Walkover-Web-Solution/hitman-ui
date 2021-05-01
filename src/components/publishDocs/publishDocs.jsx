@@ -813,7 +813,7 @@ class PublishDocs extends Component {
 
   publishButtonEndpoint () {
     return (
-      <div className={!this.state.publishLoader ? 'publish-button' : 'publish-button buttonLoader'}>  <Button variant='success' onClick={() => this.handleApproveEndpointRequest(this.state.selectedEndpointId)}>PUBLISH</Button>
+      <div className={!this.state.publishLoader ? 'publish-button' : 'publish-button buttonLoader'}>  <Button variant='success' id='publish_endpoint_btn' onClick={() => this.handleApproveEndpointRequest(this.state.selectedEndpointId)}>PUBLISH</Button>
       </div>
     )
   }
@@ -830,7 +830,7 @@ class PublishDocs extends Component {
     } else {
       return (
         <>
-          <div className='publish-button'>  <Button variant='success' onClick={() => this.handleRemovePublicEndpoint(this.state.selectedEndpointId)}>Unpublish Endpoint</Button>
+          <div className='publish-button'>  <Button variant='success' id='unpublish_endpoint_btn' onClick={() => this.handleRemovePublicEndpoint(this.state.selectedEndpointId)}>Unpublish Endpoint</Button>
           </div>
         </>
       )
@@ -912,6 +912,7 @@ class PublishDocs extends Component {
     if (!this.isCollectionPublished()) {
       return (
         <Button
+          id='publish_collection_btn'
           variant='success publish-collection-button ml-4 mt-4'
           onClick={() => this.publishCollection()}
         >
@@ -1256,7 +1257,7 @@ class PublishDocs extends Component {
         <div>{heading}</div>
         <div className='row d-flex align-items-center'>
           <div className='communti-btn-wrapper mr-2'>
-            <a href='http://forum.viasocket.com/' rel='noreferrer' target='_blank'>Community </a>
+            <a href={process.env.REACT_APP_COMMUNITY_URL} rel='noreferrer' target='_blank'>Community </a>
           </div>
           <div className='user-info-container'><UserInfo {...this.props} /></div>
         </div>
