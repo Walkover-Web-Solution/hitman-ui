@@ -695,6 +695,7 @@ class CollectionsComponent extends Component {
                 <div className='add-collection-btn-wrap'>
                   <button
                     className='add-collection-btn'
+                    id='add_collection_btn'
                     onClick={() => this.openAddCollectionForm()}
                   >
 

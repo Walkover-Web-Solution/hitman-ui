@@ -1,3 +1,5 @@
+//Note: Unique IDs are used in CTAs for tracking purposes with GTM. Do not use the same IDs elsewhere.
+
 $border-color: rgba(227, 228, 230, 0.7);
 
 #code-window-body {
@@ -418,6 +420,14 @@ $border-color: rgba(227, 228, 230, 0.7);
       // color: black;
       margin: 0 0 0 10px;
       // opacity: 0.7;
+    }
+
+    #api_save_btn{
+      margin: 0 0 0 10px;
+    }
+
+    #api-send-button{
+      margin: 0 0 0 10px;
     }
 
     #show-code-snippets-button {
