@@ -218,7 +218,6 @@ $border-color: #E5E5E5;
 
 #add-new-tab-button :hover {
   background-color: #e0e0e0;
-
   svg {
     path {
       stroke: #585858fa;
@@ -514,7 +513,9 @@ $border-color: #E5E5E5;
   border-left: 1px solid #e6dad4;
   /* z-index: -1; */
 }
-
+#add-new-tab-button{
+  margin-left: 8px;
+}
 #add-new-tab-button,
 #history-tab-button {
   margin-bottom: -3px;
@@ -604,7 +605,7 @@ div#history-tab-button button#dropdown-basic {
   border: 0.5px solid #E6DBD4;
   border-bottom: 0px;
   border-radius: 4px 4px 0px 0px;
-  margin-left: 6px;
+  margin-left: 8px;
   background-color: #f8f8f8;
   position: relative;
     top: 2px;
@@ -613,5 +614,11 @@ div#history-tab-button button#dropdown-basic {
     width: 0.5px;
     background-color: #E6DBD4;
     height: 100%;
+  }
+}
+
+.content-header{
+  .tabs-width{
+    width: auto !important;
   }
 }
