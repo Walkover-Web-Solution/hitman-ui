@@ -558,9 +558,9 @@ class CollectionsComponent extends Component {
         </div>
         <div className='content'>
           <h5>  Your collection is Empty.</h5>
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+          {/* <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p> */}
         </div>
-        <Button className='btn-lg' variant='primary' onClick={() => this.openAddCollectionForm()}>+ Add here</Button>{' '}
+        <Button className='btn-lg mt-2' variant='primary' onClick={() => this.openAddCollectionForm()}>+ Add here</Button>{' '}
       </div>
     )
   }
