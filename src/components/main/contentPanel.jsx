@@ -188,7 +188,7 @@ class ContentPanel extends Component {
                   <div className='env-wrapper'>
                     <div className='float-right d-flex'>
                       <div className='float-right d-flex communti-btn-wrapper'>
-                        <a href='http://forum.viasocket.com/' rel='noreferrer' target='_blank'>Community </a>
+                        <a href={process.env.REACT_APP_COMMUNITY_URL} rel='noreferrer' target='_blank'>Community </a>
                       </div>
                       <Environments {...this.props} />
                       <div className='ml-3'>
