@@ -146,7 +146,7 @@ class CustomTabs extends Component {
   };
 
   handleMouseEnter (dir) {
-    this.interval = setInterval(this.handleNav.bind(this, dir), 1000)
+    this.interval = setInterval(this.handleNav.bind(this, dir), 500)
   }
 
   handleMouseLeave () {
