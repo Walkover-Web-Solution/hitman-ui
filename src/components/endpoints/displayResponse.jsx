@@ -21,7 +21,8 @@ class DisplayResponse extends Component {
     show: false,
     showSampleResponseForm: { add: false, delete: false, edit: false },
     theme: '',
-    showCopyMessage: false
+    showCopyMessage: false,
+    selectedResponseTab: 'body'
   };
 
   constructor () {
@@ -110,10 +111,83 @@ class DisplayResponse extends Component {
     }.bind(this), 2000)
   }
 
+  displayBodyAndHeaderResponse () {
+    return (
+      <>
+        <div className='col-12' ref={this.myRef}>
+          <ul className='nav nav-tabs respTabsListing' id='myTab' role='tablist'>
+            <li className='nav-item' onClick={() => { this.setState({ selectedResponseTab: 'body' }) }}>
+              <a
+                className='nav-link active'
+                id='pills-response-tab'
+                data-toggle='pill'
+                role='tab'
+                aria-controls={
+                  isDashboardRoute(this.props)
+                    ? `response-${this.props.tab.id}`
+                    : 'response'
+                }
+                aria-selected='true'
+              >
+                Body
+              </a>
+            </li>
+            {getCurrentUser() && (
+              <li className='nav-item' onClick={() => { this.setState({ selectedResponseTab: 'header' }) }}>
+                <a
+                  className='nav-link'
+                  id='pills-header-tab'
+                  data-toggle='pill'
+                  aria-selected='false'
+                  href='#pills-header-tab'
+                  role='tab1'
+                >
+                  Headers
+                </a>
+              </li>
+            )}
+          </ul>
+        </div>
+      </>
+    )
+  }
+
+  renderTableData () {
+    const headerContent = this.props.response.headers
+    const headerContentKeys = Object.keys(headerContent)
+    return headerContentKeys.map((key, index) => {
+      const value = headerContent[key]
+      return (
+        <tr key={key}>
+          <th scope='row'>{key}</th>
+          <td>{value}</td>
+        </tr>
+      )
+    })
+  }
+
+  displayHeader () {
+    if (this.props.response.headers) {
+      return (
+        <div className='endpoint-response-container overflow-auto '>
+          <table className='table table-sm fs-6'>
+            <thead>
+              <tr>
+                <th scope='col'>Key</th>
+                <th scope='col'>Value</th>
+              </tr>
+            </thead>
+            <tbody>{this.renderTableData()}</tbody>
+          </table>
+        </div>
+      )
+    }
+  }
+
   render () {
     const { theme } = this.state
     return (
-      <div className='endpoint-response-container'>
+      <div className='endpoint-response-container overflow-auto'>
         {
           this.props.flagResponse
             ? (
@@ -200,65 +274,68 @@ class DisplayResponse extends Component {
                           </a>
                         </li>
                       </ul>)} */}
-                    {
-                      getCurrentUser() && isSavedEndpoint(this.props) && isDashboardRoute(this.props)
-                        ? (
-                          <div
-                            // style={{ float: "right" }}
-                            className='add-to-sample-response'
-                          >
-                            <div
-                              className='adddescLink'
-                              onClick={() =>
-                                this.addSampleResponse(this.props.response)}
-                            >
-                              <svg width='16' height='16' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M9 3.75V14.25' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' /><path d='M3.75 9H14.25' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' /></svg> Add to Sample Response
-                            </div>
-                          </div>
-                          )
-                        : null
-                    }
-
                   </div>
-
-                  {isDashboardRoute(this.props) && (
-                    <div className='tab-content' id='myTabContent'>
-                      <div
-                        className='tab-pane fade show active'
-                        id='home'
-                        role='tabpanel'
-                        aria-labelledby='home-tab'
-                      >
-                        <JSONPretty
-                          theme={JSONPrettyMon}
-                          data={this.props.response.data}
-                        />
-                      </div>
-                      <div
-                        className='tab-pane fade'
-                        id='profile'
-                        role='tabpanel'
-                        aria-labelledby='profile-tab'
-                      >
-                        {JSON.stringify(this.props.response.data)}
-                      </div>
-                      <div
-                        className='tab-pane fade'
-                        id='contact'
-                        role='tabpanel'
-                        aria-labelledby='contact-tab'
-                      >
-                        Feature coming soon... Stay tuned
-                      </div>
-                    </div>)}
-                  {!isDashboardRoute(this.props) && (
-                    <div className='tab-content'>
-                      <JSONPretty
-                        theme={JSONPrettyMon}
-                        data={this.props.response.data}
-                      />
-                    </div>
-                  )}
+                  {this.props.response.status && this.displayBodyAndHeaderResponse()}
+                  {this.state.selectedResponseTab === 'body' &&
+                    <>
+                      {
+                    getCurrentUser() && isSavedEndpoint(this.props) && isDashboardRoute(this.props)
+                      ? (
+                        <div
+                          // style={{ float: "right" }}
+                          className='add-to-sample-response'
+                        >
+                          <div
+                            className='adddescLink'
+                            onClick={() =>
+                              this.addSampleResponse(this.props.response)}
+                          >
+                            <svg width='16' height='16' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M9 3.75V14.25' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' /><path d='M3.75 9H14.25' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' /></svg> Add to Sample Response
+                          </div>
+                        </div>
+                        )
+                      : null
+                  }
+                      {isDashboardRoute(this.props) && (
+                        <div className='tab-content' id='myTabContent'>
+                          <div
+                            className='tab-pane fade show active'
+                            id='home'
+                            role='tabpanel'
+                            aria-labelledby='home-tab'
+                          >
+                            <JSONPretty
+                              theme={JSONPrettyMon}
+                              data={this.props.response.data}
+                            />
+                          </div>
+                          <div
+                            className='tab-pane fade'
+                            id='profile'
+                            role='tabpanel'
+                            aria-labelledby='profile-tab'
+                          >
+                            {JSON.stringify(this.props.response.data)}
+                          </div>
+                          <div
+                            className='tab-pane fade'
+                            id='contact'
+                            role='tabpanel'
+                            aria-labelledby='contact-tab'
+                          >
+                            Feature coming soon... Stay tuned
+                          </div>
+                        </div>)}
+                      {!isDashboardRoute(this.props) && (
+                        <div className='tab-content'>
+                          <JSONPretty
+                            theme={JSONPrettyMon}
+                            data={this.props.response.data}
+                          />
+                        </div>
+                      )}
+                    </>}
+                  {this.state.selectedResponseTab === 'header' && (this.props.response.headers && this.displayHeader())}
                 </div>
               </div>
               )
