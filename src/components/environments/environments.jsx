@@ -276,6 +276,7 @@ class Environments extends Component {
               <div className='environment-buttons'>
                 <button
                   className='btn btn-default'
+                  id='add_environment_btn'
                   onClick={() =>
                     this.handleEnvironmentModal('Add new Environment')}
                 >
