@@ -155,6 +155,7 @@ class Form extends Component {
     return (
       <button
         className='btn btn-primary btn-lg'
+        id='add_collection_create_new_btn'
       >
         {label}
       </button>
