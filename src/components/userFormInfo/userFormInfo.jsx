@@ -344,7 +344,7 @@ class UserFormInfo extends Form {
     const org = this.state.org
     return (
       <div>
-        {org && org.org_user?.is_admin && org.feedback_form_filled &&
+        {org && org.org_user?.is_admin && !org.feedback_form_filled &&
           <Modal
             show={this.props.show}
             onHide={() => {}}
