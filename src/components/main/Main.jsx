@@ -16,7 +16,7 @@ import './main.scss'
 import SideBar from './sidebar'
 import { getCurrentUser } from '../auth/authService'
 import PublishDocs from '../publishDocs/publishDocs'
-import UseCase from '../collections/useCase'
+import UserFormInfo from '../userFormInfo/userFormInfo'
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -78,7 +78,7 @@ class Main extends Component {
     return (
       <div className='custom-main-container'>
         <div className='main-panel-wrapper'>
-          <UseCase show={this.state.showUseCase} onHide={() => this.handleUseCaseHide()} />
+          <UserFormInfo show={this.state.showUseCase} onHide={() => this.handleUseCaseHide()} />
           <SideBar
             {...this.props}
             tabs={[...this.state.tabs]}

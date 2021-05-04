@@ -5,8 +5,6 @@ const apiEndpoint = process.env.REACT_APP_API_URL + '/collections'
 
 const apiUrl = process.env.REACT_APP_API_URL
 
-const eblApiUrl = process.env.REACT_APP_EBL_API_BASE_URL
-
 function collectionUrl (id) {
   return `${apiEndpoint}/${id}`
 }
@@ -51,10 +49,6 @@ export function removePublicCollection (collectionId) {
   return http.delete(`${apiUrl}/marketplace/collections/${collectionId}`)
 }
 
-export function updateOrganization (orgId, orgObject) {
-  return http.put(`${eblApiUrl}/orgs/${orgId}.json`, orgObject)
-}
-
 export default {
   getCollections,
   getCollection,
@@ -65,6 +59,5 @@ export default {
   getAllPublicCollections,
   getCollectionsByCustomDomain,
   importCollection,
-  removePublicCollection,
-  updateOrganization
+  removePublicCollection
 }
