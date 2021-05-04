@@ -37,7 +37,7 @@ class Main extends Component {
     this.state = {
       tabs: [],
       defaultTabIndex: 0,
-      showUseCase: true
+      showUserFormInfo: true
     }
   }
 
@@ -71,14 +71,14 @@ class Main extends Component {
   }
 
   handleUseCaseHide () {
-    this.setState({ showUseCase: false })
+    this.setState({ showUserFormInfo: false })
   }
 
   render () {
     return (
       <div className='custom-main-container'>
         <div className='main-panel-wrapper'>
-          <UserFormInfo show={this.state.showUseCase} onHide={() => this.handleUseCaseHide()} />
+          <UserFormInfo show={this.state.showUserFormInfo} onHide={() => this.handleUseCaseHide()} />
           <SideBar
             {...this.props}
             tabs={[...this.state.tabs]}
