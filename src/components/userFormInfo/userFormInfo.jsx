@@ -6,11 +6,12 @@ import Joi from 'joi-browser'
 import userFormInfoApiService from './userFormInfoApiService'
 
 const options = {
-  designation: ['', 'Executive', 'Administrator', 'Manager', 'CEO/Founder'],
-  employee: ['', '1-10', '11-50', '51-100', '101-500', '500+'],
-  industry: ['', 'IT Company', 'Telecommunication', 'Ecommerce', 'Education', 'Finance', 'Retail & FMCG', 'Other'],
+  designation: ['Select', 'Executive', 'Administrator', 'Manager', 'CEO/Founder'],
+  employee: ['Select', '1-10', '11-50', '51-100', '101-500', '500+'],
+  industry: ['Select', 'IT Company', 'Telecommunication', 'Ecommerce', 'Education', 'Finance', 'Retail & FMCG', 'Others'],
+  department: ['Select', 'Engineering', 'Product', 'Marketing', 'Sales', 'Operations', 'Support', 'QA', 'Others'],
   country: [
-    '',
+    'Select',
     'Afghanistan',
     'Albania',
     'Algeria',
@@ -268,16 +269,13 @@ class UserFormInfo extends Form {
     this.state = {
       user: null,
       org: null,
-      email: null,
-      name: null,
-      organisation: null,
-      usertype: null,
       data: {
         useCase: '',
         country: '',
         employee: '',
         designation: '',
-        industry: ''
+        industry: '',
+        department: ''
       },
       errors: {}
     }
@@ -288,7 +286,8 @@ class UserFormInfo extends Form {
     country: Joi.string().required().label('Country'),
     employee: Joi.string().required().label('Number of employee'),
     designation: Joi.string().required().label('Designation'),
-    industry: Joi.string().required().label('Industry')
+    industry: Joi.string().required().label('Industry'),
+    department: Joi.string().required().label('Department')
   };
 
   componentDidMount () {
@@ -299,6 +298,7 @@ class UserFormInfo extends Form {
 
   handleValueChange (value, key) {
     const obj = { ...this.state.data }
+    if (key !== 'useCase' && value === 'Select') { value = '' }
     obj[key] = value
     this.setState({ data: obj, errors: {} })
   }
@@ -325,10 +325,11 @@ class UserFormInfo extends Form {
     let obj = this.state.data
     const hiddenVars = this.state
     obj = {
-      name: hiddenVars.user.fisrt_name ? hiddenVars.user.fisrt_name + '' + hiddenVars.user.last_name : null,
+      name: hiddenVars.user.first_name ? hiddenVars.user.first_name + ' ' + hiddenVars.user.last_name : null,
       organization: hiddenVars.org.name,
       email: hiddenVars.user.email,
-      usertype: 'Organization Admin',
+      userType: 'Organization Admin',
+      source: 'Hitman',
       ...obj
     }
     const response = await userFormInfoApiService.updateOrganization(this.state.org.identifier, { feedback_form_filled: true })
@@ -346,6 +347,7 @@ class UserFormInfo extends Form {
         {org && org.org_user?.is_admin && !org.feedback_form_filled &&
           <Modal
             show={this.props.show}
+            onHide={() => {}}
             size='md'
             animation={false}
             aria-labelledby='contained-modal-title-vcenter'
@@ -360,7 +362,8 @@ class UserFormInfo extends Form {
               <form onSubmit={this.handleSubmit}>
                 {this.renderInput('useCase', 'Use Case', 'Enter your use case')}
                 {this.renderoptions('employee', 'Number of employees')}
-                {this.renderoptions('designation', 'Your Designation')}
+                {this.renderoptions('designation', 'Designation')}
+                {this.renderoptions('department', 'Department')}
                 {this.renderoptions('industry', 'Industry')}
                 {this.renderoptions('country', 'Country')}
                 {this.renderButton('Submit')}
