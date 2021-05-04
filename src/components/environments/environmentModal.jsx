@@ -50,6 +50,64 @@ class EnvironmentModal extends Component {
     this.props.onHide()
   }
 
+  renderManageEnvironmentModal () {
+    return (
+      Object.keys(this.props.environment.environments).map(
+        (environmentId) =>
+          (
+            <div key={environmentId}>
+              <div className='mb-2'>
+                <ListGroup.Item
+                  style={{ width: '98%', float: 'left' }}
+                  key={environmentId}
+                  onClick={() =>
+                    this.handleEdit(
+                      this.props.environment.environments[environmentId]
+                    )}
+                >
+                  {this.props.environment.environments[environmentId].name}
+                </ListGroup.Item>
+                <div className='btn-group'>
+                  <button
+                    className='btn '
+                    data-toggle='dropdown'
+                    aria-haspopup='true'
+                    aria-expanded='false'
+                  >
+                    <i className='fas fa-ellipsis-v' />
+                  </button>
+                  <div className='dropdown-menu dropdown-menu-right'>
+                    <button
+                      className='dropdown-item'
+                      onClick={() => {
+                        this.props.onHide()
+                        this.props.open_delete_environment_modal(
+                          environmentId
+                        )
+                      }}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )
+      )
+    )
+  }
+
+  renderNoEnvironmentModule () {
+    return (
+      <div className='align-items-center'>
+        <div className='text-center m-2 align-items-center'>No Environment Available</div>
+        <div className='justify-content-center d-flex text-center'>
+          <button className='btn btn-outline orange p-2' onClick={() => this.props.handle_environment_modal('Add new Environment')}>Add Environment</button>
+        </div>
+      </div>
+    )
+  }
+
   render () {
     return (
       <Modal
@@ -66,54 +124,8 @@ class EnvironmentModal extends Component {
         </Modal.Header>
         <Modal.Body>
           <ListGroup className='custom-environment-list-container'>
-            {
-              Object.keys(this.props.environment.environments).map(
-                (environmentId) =>
-                  (
-                    <div key={environmentId}>
-                      <div className='mb-2'>
-                        <ListGroup.Item
-                          style={{ width: '98%', float: 'left' }}
-                          key={environmentId}
-                          onClick={() =>
-                            this.handleEdit(
-                              this.props.environment.environments[environmentId]
-                            )}
-                        >
-                          {this.props.environment.environments[environmentId].name}
-                        </ListGroup.Item>
-                        <div className='btn-group'>
-                          <button
-                            className='btn '
-                            data-toggle='dropdown'
-                            aria-haspopup='true'
-                            aria-expanded='false'
-                          >
-                            <i className='fas fa-ellipsis-v' />
-                          </button>
-                          <div className='dropdown-menu dropdown-menu-right'>
-                            <button
-                              className='dropdown-item'
-                              onClick={() => {
-                                this.props.onHide()
-                                this.props.open_delete_environment_modal(
-                                  environmentId
-                                )
-                              }}
-                            >
-                              Delete
-                            </button>
-                          </div>
-                        </div>
-
-                      </div>
-
-                    </div>
-                  )
-              )
-            }
+            {Object.keys(this.props.environment.environments).length === 0 ? this.renderNoEnvironmentModule() : this.renderManageEnvironmentModal()}
           </ListGroup>
-
           <div>
             <div className='custom-button-wrapper text-right mt-3'>
               <button

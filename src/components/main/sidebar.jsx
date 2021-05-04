@@ -236,7 +236,7 @@ class SideBar extends Component {
       <div className='mt-3'>
         {this.state.historySnapshot && this.state.historySnapshot.length > 0
           ? (this.state.historySnapshot.sort(compareByCreatedAt).map((history) => this.renderHistoryItem(history)))
-          : (<div class='empty-collections'><div><EmptyHistory /></div><div class='content'><h5>  No History available.</h5><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p></div></div>)}
+          : (<div class='empty-collections'><div><EmptyHistory /></div><div class='content'><h5>  No History available.</h5><p /></div></div>)}
       </div>
     )
   }
@@ -356,7 +356,7 @@ class SideBar extends Component {
                 </div>
                 <div class='content'>
                   <h5>  No invocation made</h5>
-                  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                  {/* <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. 1</p> */}
                 </div>
               </div>
               )
@@ -389,9 +389,9 @@ class SideBar extends Component {
         </div>
         <div className='content'>
           <h5>  Your collection is Empty.</h5>
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+          {/* <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. 1</p> */}
         </div>
-        <Button className='btn-lg' variant='primary' onClick={() => this.setState({ showLoginSignupModal: true })}>+ Add here</Button>{' '}
+        <Button className='btn-lg mt-2' variant='primary' onClick={() => this.setState({ showLoginSignupModal: true })}>+ Add here</Button>{' '}
       </div>
     )
   }

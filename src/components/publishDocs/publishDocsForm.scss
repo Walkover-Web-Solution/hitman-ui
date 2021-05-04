@@ -1,3 +1,5 @@
+//Note: Unique IDs are used in CTAs for tracking purposes with GTM. Do not use the same IDs elsewhere.
+
 .uploadBox{
     width: 60px !important;
     height: 60px !important;
@@ -12,4 +14,18 @@
 
 .domain-info{
     width: max-content;
+}
+
+.upload-box-text{
+    font-size: 12px;
+    text-align: center;
+}
+
+.fav-icon-text{
+    color: #4F4F4F;
+    font-size: 13px !important;
+    margin: 0;
+    font-weight: 400 !important;
+    position: relative;
+    top: 5px;
 }

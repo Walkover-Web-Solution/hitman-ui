@@ -798,9 +798,11 @@ class DisplayEndpoint extends Component {
   }
 
   addhttps (url) {
-    if (this.state.data.updatedUri.includes('localhost') && !(url.includes('localhost'))) { url = 'localhost:' + url }
-    if (!/^(?:f|ht)tps?:\/\//.test(url)) {
-      url = 'https://' + url
+    if (url) {
+      if (this.state.data.updatedUri.includes('localhost') && !(url.includes('localhost'))) { url = 'localhost:' + url }
+      if (!/^(?:f|ht)tps?:\/\//.test(url)) {
+        url = 'https://' + url
+      }
     }
     return url
   }
@@ -1956,7 +1958,7 @@ class DisplayEndpoint extends Component {
                         <button
                           className={this.state.loader ? 'btn btn-primary buttonLoader' : 'btn btn-primary'}
                           type='submit'
-                          id='send-request-button'
+                          id='api-send-button'
                           onClick={() => this.handleSend()}
                         >
                           {isDashboardRoute(this.props) ? 'Send' : 'Try'}
@@ -1970,9 +1972,9 @@ class DisplayEndpoint extends Component {
                                   ? (
                                     <Dropdown as={ButtonGroup}>
                                       <button
+                                        id='api_save_btn'
                                         className={this.state.saveLoader ? 'btn btn-outline orange buttonLoader' : 'btn btn-outline orange'}
                                         type='button'
-                                        id='save-endpoint-button'
                                         onClick={() => this.handleSave()}
                                       >
                                         Save

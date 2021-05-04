@@ -146,7 +146,7 @@ class CustomTabs extends Component {
   };
 
   handleMouseEnter (dir) {
-    this.interval = setInterval(this.handleNav.bind(this, dir), 1000)
+    this.interval = setInterval(this.handleNav.bind(this, dir), 500)
   }
 
   handleMouseLeave () {
@@ -250,7 +250,7 @@ class CustomTabs extends Component {
             )}
           </div>
           {this.props.tabs.tabsOrder.map((tabId, index) => (
-            <div key={tabId} ref={(newRef) => { this.scrollRef[tabId] = newRef }}>
+            <div class='custom-tabs' key={tabId} ref={(newRef) => { this.scrollRef[tabId] = newRef }}>
               <Nav.Item
                 key={tabId}
                 draggable

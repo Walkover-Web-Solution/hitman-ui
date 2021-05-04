@@ -156,6 +156,7 @@ class Pages extends Component {
     return (
       <div
         className='dropdown-item'
+        id='make_public_btn'
         onClick={() =>
           this.handlePublicPageState(
             this.props.pages[pageId]
@@ -297,7 +298,7 @@ class Pages extends Component {
             <div className='mr-2'>
               {this.props.pages[pageId].isPublished && <img src={GlobeIcon} alt='globe' />}
             </div>
-            {this.displayPageOptions(pageId)}
+            {!this.props.collections[this.props.collection_id]?.importedFromMarketPlace && this.displayPageOptions(pageId)}
           </div>
         </button>
       </div>

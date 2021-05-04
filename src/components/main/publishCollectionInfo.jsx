@@ -49,7 +49,6 @@ class PublishCollectionInfo extends Component {
   renderPublicUrl () {
     // build default url
     const url = defaultDomain + '/p/' + this.props.collectionId
-
     return (
       <div className='sidebar-public-url text-link text-center d-flex' onClick={() => { window.open(url, '_blank') }}>
         <div className='text-truncate'>{url}</div> <span className='icon'> <ExternalLinks /></span>
@@ -102,6 +101,7 @@ class PublishCollectionInfo extends Component {
       (this.state.totalEndpointCount !== 0 || this.state.totalPageCount !== 0) &&
         <button
           className='btn btn-outline orange w-100 publishCollection'
+          id='publish_api_doc_navbar_btn'
           onClick={() => { this.redirectUser() }}
         >
           Publish API Documentation

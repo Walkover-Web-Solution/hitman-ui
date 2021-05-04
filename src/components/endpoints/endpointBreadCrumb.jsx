@@ -43,7 +43,11 @@ class EndpointBreadCrumb extends Component {
         previousTitle: this.props.data.name
       })
     }
-    this.changeEndpointName()
+
+    const endpoint = this.props.endpoint
+    if (endpoint && (!endpoint.id) && this.props.data.name === '') {
+      this.setState({ endpointTitle: 'Untitled', previousTitle: 'Untitled' })
+    }
   }
 
   componentDidUpdate (prevProps, prevState) {
