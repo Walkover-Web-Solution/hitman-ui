@@ -817,8 +817,8 @@ class DisplayEndpoint extends Component {
     const queryparams = uri.search()
     const path = this.setPathVariableValues()
     let api = BASE_URL + path + queryparams
-    api = this.addhttps(api)
     api = this.replaceVariables(api)
+    api = this.addhttps(api)
     const headerJson = {}
     Object.keys(headersData).forEach((header) => {
       headerJson[header] = headersData[header].value
