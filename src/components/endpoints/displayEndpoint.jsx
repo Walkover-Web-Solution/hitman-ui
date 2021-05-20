@@ -547,7 +547,7 @@ class DisplayEndpoint extends Component {
 
   replaceVariables (str) {
     str = str.toString()
-    const regexp = /{{(\w+)}}/g
+    const regexp = /{{((\w|-)+)}}/g
     let match = regexp.exec(str)
     const variables = []
     if (match === null) return str
