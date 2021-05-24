@@ -305,7 +305,7 @@ $border-color: #E5E5E5;
 .content-header .tabs-container .nav .nav-item:after {
   content: "";
   position: absolute;
-  width: 1px;
+  width: 0.05rem;
   height: 24px;
   right: 0px;
   background: #E6DBD4;
@@ -314,6 +314,14 @@ $border-color: #E5E5E5;
 // .content-header .tabs-container .nav .nav-item.active:after {
 //   display: none;
 // }
+
+.content-header .tabs-container .nav > div:empty {
+  display: none;
+  width: 0;
+}
+.content-header .tabs-container .nav > div:nth-child(2) .nav-item {
+  border-left: 0 !important;
+}
 
 .hover-div {
   margin-top: 5px;
@@ -328,6 +336,7 @@ $border-color: #E5E5E5;
   background: #fff;
   z-index: 1200;
   padding: 5px 15px;
+  transform: translate(0,0) !important;
 
   .group-name {
     color: #828282;
@@ -404,25 +413,23 @@ $border-color: #E5E5E5;
   border-radius: 4px 4px 0 0;
   border-top: 1px solid #e6dbd4 !important;
   margin-top: -1px;
-  height: calc(100% + 2px);
+  height: calc(100% + 7px);
   /* margin: -1px 9px 0 9px; */
   margin: -1px 0 0 -1px;
   position: relative;
   overflow: visible;
   z-index: 998;
-  padding-top: 6px;
 }
 
-.content-header .tabs-container .nav .nav-item.active:before,
-.content-header .tabs-container .nav .nav-item.active:after, .custom-tabs:first-child .nav-item:before {
+.content-header .tabs-container .nav .nav-item.active:before, .custom-tabs:first-child .nav-item:before {
   content: "";
   /* position: absolute; */
   content: '';
-  width: 10px;
+  width: 3px;
   height: 20px;
   border: 1px solid #e6dad4;
   position: absolute;
-  bottom: -6px;
+  bottom: -1px;
   /* height: auto; */
   top: auto;
   border-top: 0;
@@ -444,7 +451,7 @@ $border-color: #E5E5E5;
   -webkit-border-radius: 0 0 5px 0px;
   right: 100%;
   /* content: ""; */
-  display: block;
+  display: none;
 }
 
 .content-header .tabs-container .nav .nav-item.active>a:before {
@@ -536,11 +543,6 @@ $border-color: #E5E5E5;
 //   display: none;
 // }
 
-.content-header .tabs-container .nav .nav-item:last-child {
-  // border-right: none !important;
-  margin-right: 0 !important;
-  margin-left: 0 !important;
-}
 
 
 .content-header{
