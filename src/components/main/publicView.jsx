@@ -7,6 +7,8 @@ import filterService from '../../services/filterService'
 // import UserInfo from '../common/userInfo'
 import { ReactComponent as HitmanIcon } from '../../assets/icons/hitman.svg'
 
+const logoUrl = 'https://www.google.com/s2/favicons?sz=64&domain_url='
+
 class PublicView extends Component {
   constructor (props) {
     super(props)
@@ -44,6 +46,11 @@ class PublicView extends Component {
   openCollection (collectionId) {
     const publicDocsUrl = `${process.env.REACT_APP_UI_URL}/p/${collectionId}`
     window.open(publicDocsUrl, '_blank')
+  }
+
+  getImgSrc (collection) {
+    if (collection.docProperties?.defaultLogoUrl) return collection.docProperties.defaultLogoUrl
+    else return `${logoUrl}${collection.website}`
   }
 
   render () {
@@ -104,7 +111,7 @@ class PublicView extends Component {
                 >
                   <div className='collection-image'>
                     <img
-                      src={`//logo.clearbit.com/${filteredPublicCollections[collectionId].name}.com`}
+                      src={this.getImgSrc(filteredPublicCollections[collectionId])}
                       alt=''
                     />
                   </div>
