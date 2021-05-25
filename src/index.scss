@@ -67,3 +67,8 @@ a {
   margin-right: 10px;
   border-radius: 5px;
 }
+
+body .content-header .tabs-container .nav .nav-item .nav-link.active ~ .btn {
+  border: none !important;
+  box-shadow: none !important;
+}

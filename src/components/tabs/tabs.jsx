@@ -327,7 +327,7 @@ class CustomTabs extends Component {
         {this.showScrollButton()
           ? (
             <div
-              className={`scroll-button scroll-button--right d-flex ml-2 mr-2 ${this.rightHideTabs() ? '' : 'disabled'}`}
+              className={`scroll-button scroll-button--right d-flex ml-2 mr-0 ${this.rightHideTabs() ? '' : 'disabled'}`}
               onMouseEnter={() => this.handleMouseEnter('right')}
               onMouseLeave={() => this.handleMouseLeave()}
             >
