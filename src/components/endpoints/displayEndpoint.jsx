@@ -317,7 +317,6 @@ class DisplayEndpoint extends Component {
       originalHeaders = this.fetchoriginalHeaders(endpoint.headers)
       const headers = this.fetchoriginalHeaders(endpoint.headers)
       this.customState.customBASE_URL = endpoint.BASE_URL
-
       // To fetch Path Variables
       if (endpoint.pathVariables.length !== 0) {
         pathVariables = this.fetchPathVariables(endpoint.pathVariables)
@@ -1781,6 +1780,14 @@ class DisplayEndpoint extends Component {
     }
   }
 
+  renderBaseUrl () {
+    return this.customState.BASE_URL
+      ? this.customState.BASE_URL
+      : this.state.endpoint?.BASE_URL
+        ? this.state.endpoint?.BASE_URL
+        : ''
+  }
+
   render () {
     this.endpointId = this.props.endpointId
       ? this.props.endpointId
@@ -1856,7 +1863,7 @@ class DisplayEndpoint extends Component {
         // className={
         //   this.props.location.pathname.split('/')[1] !== 'admin' ? '' : 'mainContentWrapperPublic'
         // }
-        className={isDashboardRoute(this.props) ? '' : codeEditorVisibility ? 'mainContentWrapperPublic' : 'mainContentWrapperPublic hideCodeEditor'}
+        className={isDashboardRoute(this.props) ? '' : codeEditorVisibility ? 'mainContentWrapperPublic hideCodeEditor' : 'mainContentWrapperPublic '}
       >
         <div className={isDashboardRoute(this.props) ? 'mainContentWrapper dashboardPage' : 'mainContentWrapper'}>
           <div className='hm-endpoint-container endpoint-container row'>
@@ -2038,11 +2045,15 @@ class DisplayEndpoint extends Component {
                             environmentHost={this.props.environment?.variables?.BASE_URL?.currentValue || this.props.environment?.variables?.BASE_URL?.initialValue || ''}
                             updatedUri={this.state.data.updatedUri}
                             set_base_url={this.setBaseUrl.bind(this)}
-                            custom_host={this.state.endpoint.BASE_URL || ''}
+                            customHost={this.state.endpoint.BASE_URL || ''}
                             endpointId={this.state.endpoint.id}
                             set_host_uri={this.setHostUri.bind(this)}
                           />
-                          <input disabled className='form-control' value={this.customState.BASE_URL + this.state.data.updatedUri} />
+
+                          <input
+                            disabled className='form-control'
+                            value={this.renderBaseUrl() + this.state.data.updatedUri}
+                          />
 
                         </div>
                         {(this.props.highlights?.uri ? <i className='fas fa-circle' /> : null)}
@@ -2285,12 +2296,11 @@ class DisplayEndpoint extends Component {
                         </>
                         )
                   }
-                </div>
-                {
+                  {
                   !isDashboardRoute(this.props) && (
                     <div className='text-left'>
                       <button
-                        className={this.state.loader ? 'btn btn-primary btn-lg ml-4 buttonLoader' : 'ml-4 btn btn-lg btn-primary'}
+                        className={this.state.loader ? 'btn btn-primary btn-lg mt-4 buttonLoader' : 'mt-4 btn btn-lg btn-primary'}
                         style={{ background: theme }}
                         type='submit'
                         id='send-request-button'
@@ -2301,6 +2311,7 @@ class DisplayEndpoint extends Component {
                     </div>
                   )
                 }
+                </div>
                 {
                   <Notes
                     {...this.props}
