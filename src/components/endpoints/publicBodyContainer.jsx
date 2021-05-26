@@ -5,6 +5,7 @@ import jQuery from 'jquery'
 import AceEditor from 'react-ace'
 import { willHighlight } from './highlightChangesHelper'
 import './publicEndpoint.scss'
+import { Badge } from 'react-bootstrap'
 
 class PublicBodyContainer extends Component {
   state = {
@@ -171,7 +172,7 @@ class PublicBodyContainer extends Component {
 
   handleChangeBodyDescription = (data) => {
     try {
-      const body = JSON.parse(data)
+      const body = data
       const bodyData = {
         bodyDescription: this.bodyDescription,
         body: body
@@ -330,19 +331,76 @@ class PublicBodyContainer extends Component {
     }
   }
 
-  render () {
-    this.bodyDescription = this.props.body_description
-    if (
-      this.props.public_body_flag &&
-      this.props.body &&
-      this.props.body.type === 'JSON'
-    ) {
-      let body = {}
-      if (Object.keys(this.bodyDescription).length > 0) {
-        body = this.generateBodyFromDescription(this.bodyDescription)
-        this.props.set_public_body(body)
+  displayBodyDecription (parentPath = '', object) {
+    if (!object) {
+      return null
+    }
+    const displayLegend = () => {
+      const types = ['string', 'number', 'boolean', 'array', 'object']
+      return (
+        <div className='d-flex flex-row-reverse'>
+          {
+          types.map((type, index) => (
+            <small key={index} className='ml-3 text-small'><Badge className={`body-desc-type ${type}`}>{type.charAt(0)}</Badge> <span className='text-capitalize'>{type}</span></small>
+          ))
+        }
+        </div>
+      )
+    }
+
+    const renderType = (type) => {
+      return <Badge className={`body-desc-type ${type}`}>{type.charAt(0)}</Badge>
+    }
+
+    const renderObject = (parentPath, object) => {
+      if (!object) return null
+      if (parentPath) parentPath = parentPath + '.'
+      return Object.entries(object).map((res, index) => (
+        <div key={index}>{renderItem(parentPath, res)}</div>
+      ))
+    }
+
+    const renderArray = (parentPath, Array) => {
+      return Array.type === 'object' ? <div>{renderObject(parentPath + '[]', Array.value)}</div> : renderItem(parentPath, ['[]', Array])
+    }
+
+    const renderItem = (parentPath, [key, value]) => {
+      const defaultItem = (parentPath, [key, value]) => {
+        return <div> {renderType(value.type)} <strong>{parentPath + key}</strong><span>{value.description ? ` : ${value.description}` : ''}</span></div>
+      }
+      switch (value.type) {
+        case 'string' : return defaultItem(parentPath, [key, value])
+        case 'number' : return defaultItem(parentPath, [key, value])
+        case 'boolean' : return defaultItem(parentPath, [key, value])
+        case 'array' :
+          return (
+            <>
+              {defaultItem(parentPath, [key, value])}
+              {renderArray(parentPath + key, value.default)}
+            </>
+          )
+        case 'object' :
+          return (
+            <>
+              {defaultItem(parentPath, [key, value])}
+              {renderObject(parentPath + key, value.value)}
+            </>
+          )
+        default: return null
       }
     }
+
+    return (
+      <div className='public'>
+        {renderObject(parentPath, object)}
+        <hr />
+        {displayLegend()}
+      </div>
+    )
+  }
+
+  render () {
+    this.bodyDescription = this.props.body_description
     return (
       <>
         {this.props.body && this.props.body.type === 'multipart/form-data' && (
@@ -395,7 +453,7 @@ class PublicBodyContainer extends Component {
                       className='custom-raw-editor'
                       mode='json'
                       theme='github'
-                      value={this.makeJson(this.props.body.value)}
+                      value={this.props.body.value}
                       onChange={this.handleChangeBodyDescription.bind(this)}
                       setOptions={{
                         showLineNumbers: true
@@ -412,7 +470,9 @@ class PublicBodyContainer extends Component {
                     )
                   : (
                     <div className='body-description-container'>
-                      {this.displayObject(this.bodyDescription, 'body_description')}
+                      {/* Previous Body Description Layout */}
+                      {/* {this.displayObject(this.bodyDescription, 'body_description')} */}
+                      {this.displayBodyDecription(undefined, this.bodyDescription)}
                     </div>
                     )}
               </div>

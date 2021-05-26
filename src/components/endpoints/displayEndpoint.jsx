@@ -1016,7 +1016,7 @@ class DisplayEndpoint extends Component {
   }
 
   setPublicBody (body) {
-    const json = JSON.stringify(body)
+    const json = body
     const data = { ...this.state.data }
     data.body = { type: 'JSON', value: json }
 

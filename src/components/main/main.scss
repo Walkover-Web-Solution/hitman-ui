@@ -370,6 +370,30 @@ label.data-type {
     font-size: 10px;
     background: #e8e8e8;
   }
+  .public {
+    overflow-wrap: anywhere;
+    strong {
+      font-family: monospace;
+    }
+  }
+  .body-desc-type {
+    text-transform: uppercase;
+    &.string {
+      background-color: #d8e3e7;
+    }
+    &.boolean {
+      background-color: #ffc996;
+    }
+    &.number {
+      background-color: #c6ffc1;
+    }
+    &.array {
+      background-color: #f0ebcc;
+    }
+    &.object {
+      background-color: #ffefcf;
+    }
+  }
 }
 
 // Dropdown
