@@ -2,6 +2,7 @@ version: 2.1
 orbs:
   gcp-gke: circleci/gcp-gke@1.1.0
   gcr: circleci/gcp-gcr@0.0.2
+  slack: circleci/slack@4.1
 jobs:
   Build-Push-Image-Docker:
     description: Build and push image to Google Container Registry
@@ -60,6 +61,76 @@ jobs:
           command: |
             ssh $GOOGLE_SSH_USER@$GOOGLE_SSH_IP -p $GOOGLE_SSH_PORT "sudo su -c 'kubectl set image deployment/hitman-ui hitman-ui=asia.gcr.io/$GOOGLE_PROJECT_ID/hitman-ui:<< pipeline.number >> -n viasocket '"
 
+      - slack/notify:
+          channel: $SLACK_DEFAULT_CHANNEL
+          event: fail
+          template: basic_fail_1
+
+      - slack/notify:
+          channel: $SLACK_DEFAULT_CHANNEL
+          event: pass
+          custom: |
+            {
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": {
+                    "type": "plain_text",
+                    "text": "Job Succeeded. :white_check_mark:",
+                    "emoji": true
+                  }
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Job*: ${CIRCLE_JOB}"
+                    }
+                  ]
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Project*:\n $CIRCLE_PROJECT_REPONAME"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Branch*:\n $CIRCLE_BRANCH"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Commit*:\n $CIRCLE_SHA1"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Author*:\n $CIRCLE_USERNAME"
+                    }
+                  ],
+                  "accessory": {
+                    "type": "image",
+                    "image_url": "https://assets.brandfolder.com/otz5mn-bw4j2w-6jzqo8/original/circle-logo-badge-black.png",
+                    "alt_text": "CircleCI logo"
+                  }
+                },
+                {
+                  "type": "actions",
+                  "elements": [
+                    {
+                      "type": "button",
+                      "text": {
+                        "type": "plain_text",
+                        "text": "View Job"
+                      },
+                      "url": "${CIRCLE_BUILD_URL}"
+                    }
+                  ]
+                }
+              ]
+            }
+
 workflows:
   Build_Deploy_Dev:
     jobs:
@@ -94,10 +165,17 @@ workflows:
             - prod
             - hitman-ui-prod
 
+      - slack/on-hold:
+          context:
+            - prod
+            - hitman-ui-prod
+          requires:
+            - Build-Push-Image-Docker
       - hold:
           type: approval
           requires:
             - Build-Push-Image-Docker
+            - slack/on-hold
 
       - Deploy-to-GKE:
           requires:
