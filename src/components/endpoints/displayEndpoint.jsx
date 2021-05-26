@@ -1863,7 +1863,7 @@ class DisplayEndpoint extends Component {
         // className={
         //   this.props.location.pathname.split('/')[1] !== 'admin' ? '' : 'mainContentWrapperPublic'
         // }
-        className={isDashboardRoute(this.props) ? '' : codeEditorVisibility ? 'mainContentWrapperPublic' : 'mainContentWrapperPublic hideCodeEditor'}
+        className={isDashboardRoute(this.props) ? '' : codeEditorVisibility ? 'mainContentWrapperPublic hideCodeEditor' : 'mainContentWrapperPublic '}
       >
         <div className={isDashboardRoute(this.props) ? 'mainContentWrapper dashboardPage' : 'mainContentWrapper'}>
           <div className='hm-endpoint-container endpoint-container row'>
@@ -2296,12 +2296,11 @@ class DisplayEndpoint extends Component {
                         </>
                         )
                   }
-                </div>
-                {
+                  {
                   !isDashboardRoute(this.props) && (
                     <div className='text-left'>
                       <button
-                        className={this.state.loader ? 'btn btn-primary btn-lg ml-4 buttonLoader' : 'ml-4 btn btn-lg btn-primary'}
+                        className={this.state.loader ? 'btn btn-primary btn-lg mt-4 buttonLoader' : 'mt-4 btn btn-lg btn-primary'}
                         style={{ background: theme }}
                         type='submit'
                         id='send-request-button'
@@ -2312,6 +2311,7 @@ class DisplayEndpoint extends Component {
                     </div>
                   )
                 }
+                </div>
                 {
                   <Notes
                     {...this.props}

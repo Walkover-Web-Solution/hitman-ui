@@ -279,7 +279,7 @@ form.add-new-domain-form {
   flex: 90%;
   flex-direction: column !important;
   overflow-x: hidden;
-  background: #fff;
+  background: #f8f8f8;
 
   .hm-endpoint-container {
     padding: 30px 0;
@@ -287,7 +287,7 @@ form.add-new-domain-form {
     display: block;
     margin: 0 15px;
     transition: 450ms;
-    height: calc(100vh - 125px);
+    height: 100%;
     overflow: auto;
     &::-webkit-scrollbar {
       display: none;
@@ -606,4 +606,24 @@ h4.hm-sidebar-title span {
 
 .select-code-wrapper .show.dropdown .dropdown-toggle::after {
   transform: rotate(180deg);
+}
+
+.hm-endpoint-header .POST {
+  color: #54ad7e !important;
+}
+
+.hm-endpoint-header .GET {
+  color: #1d9ee2 !important;
+}
+
+.hm-endpoint-header .PUT {
+  color: #cca027 !important;
+}
+
+.hm-endpoint-header .PATCH {
+  color: #ce6529 !important;
+}
+
+.hm-endpoint-header .DELETE {
+  color: #d13755 !important;
 }

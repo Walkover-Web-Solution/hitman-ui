@@ -206,11 +206,11 @@ nav.navbar.navbar-dark.fixed-top.bg-dark.flex-md-nowrap.p-0.shadow {
   align-items: center;
 
   &:hover {
-    background: #EFEFEF;
+    background: #c9c9c9;
   }
 
   &.active {
-    background: #EFEFEF;
+    background: #c9c9c9;
   }
 }
 
@@ -1441,7 +1441,7 @@ button.editBtn {
   }
 
   input:disabled~.checkmark {
-    opacity: .6;
+    opacity: 1;
     cursor: not-allowed;
   }
 }
@@ -1504,7 +1504,7 @@ button.editBtn {
   float: left;
   border-bottom-left-radius: 4px;
   border-bottom-right-radius: 4px;
-  margin-top: 2px;
+  margin-top: 0px;
 }
 
 .btn.btn-secondary.outline {
@@ -1778,12 +1778,11 @@ button.editBtn {
 }
 
 .footerWrapper {
-  border-top: 1px solid #D3CCC5;
+  border-top: 0;
 }
 
 .footerWrapper p {
 
-  span,
   a {
     color: #cc0000;
   }
@@ -1936,9 +1935,10 @@ button.toggleButton {
   border-right: none;
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
-  padding: 9px 2px;
+  padding: 8px 2px;
   transition: 450ms;
   outline: none !important;
+  top: 18px;
 }
 
 
@@ -1967,7 +1967,7 @@ button.toggleButton {
     width: 150px;
     left: -150px;
     transition: transform 0.46s ease;
-    top: 30px;
+    top: 15px;
     font-weight: 600;
     color: #333;
     display: flex;
@@ -2137,10 +2137,10 @@ button.toggleButton {
 
 
 .hm-right-content .pageText {
-  padding: 20px;
+  padding: 0px;
   color: #000;
   font-size: 14px;
-  margin-top: 30px;
+  margin-top: 25px;
 }
 
 
@@ -2148,7 +2148,6 @@ button.toggleButton {
   float: right;
   justify-content: center;
   align-items: center;
-  background: #F8F8F8;
 }
 
 .public-navbar .link {
@@ -2315,7 +2314,7 @@ button[name="cta-1"] {
 }
 
 .mainpublic-endpoint-main .custom-display-page {
-  padding: 0 200px 10px 30px;
+  padding: 25px 200px 10px 30px;
 }
 
 .cta-button-wrapper button {
@@ -2359,7 +2358,8 @@ button[name="cta-1"] {
   justify-content: space-between;
   width: 100%;
   z-index: 9;
-  min-height: 72px
+  min-height: 72px;
+  max-height:72px;
 }
 
 .mainContentWrapperPublic .main-table-wrapper {
@@ -2808,9 +2808,9 @@ span.endpointNameWrapper {
   overflow: auto;
 }
 
-.stickyCode .hideCodeEditor .toggleButton {
-  top: 85px !important;
-}
+// .stickyCode .hideCodeEditor .toggleButton {
+//   top: 85px !important;
+// }
 
 div#history-tab-button {
   background: #F8F8F8;
