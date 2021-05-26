@@ -2285,7 +2285,7 @@ class DisplayEndpoint extends Component {
                         </>
                         )
                   }
-                    {
+                  {
                   !isDashboardRoute(this.props) && (
                     <div className='text-left'>
                       <button
