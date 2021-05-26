@@ -252,7 +252,7 @@ class GenericTable extends Component {
                     onChange={this.handleChange}
                     style={{ border: 'none' }}
                   />
-                  <span class='checkmark' style={{ backgroundColor: this.state.theme, borderColor: this.state.theme }} />
+                  <span class='checkmark' />
                 </label>
                 )
           }
