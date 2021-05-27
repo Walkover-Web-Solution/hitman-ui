@@ -26,7 +26,7 @@ function handleUpdate (isFirstTime, props) {
 }
 
 function updateBodyDescription (body, isFirstTime) {
-  body = parseBody(body)
+  body = { payload: parseBody(body) }
   let bodyDescription = generateBodyDescription(body, isFirstTime)
   if (!isFirstTime) { bodyDescription = preserveDefaultValue(bodyDescription) }
   return bodyDescription
