@@ -97,6 +97,7 @@ function preserveDefaultValue (bodyDescription) {
 }
 
 function compareDefaultValue (updatedBodyDescription, originalBodyDescription) {
+  if (!updatedBodyDescription) return
   const updatedKeys = Object.keys(updatedBodyDescription)
   for (let i = 0; i < updatedKeys.length; i++) {
     if (

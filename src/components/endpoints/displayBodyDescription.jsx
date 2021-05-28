@@ -179,6 +179,9 @@ class DisplayBodyDescription extends Component {
   }
 
   displayObject (obj, name) {
+    if (!obj) {
+      return null
+    }
     return (
       <div className='object-container'>
         {Object.keys(obj).map((key, index) => (
