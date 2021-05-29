@@ -6,6 +6,13 @@ import { toTitleCase, onEnter } from '../common/utility'
 import shortid from 'shortid'
 import { connect } from 'react-redux'
 import { addCollection, updateCollection } from './redux/collectionsActions'
+import { moveToNextStep } from '../../services/widgetService'
+
+const mapStateToProps = (state) => {
+  return {
+    collections: state.collections
+  }
+}
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -102,6 +109,7 @@ class CollectionForm extends Form {
         keyword2: ''
       }
     })
+    if (Object.keys(this.props.collections).length === 0) moveToNextStep()
   }
 
   async doSubmit () {
@@ -191,4 +199,4 @@ class CollectionForm extends Form {
   }
 }
 
-export default connect(null, mapDispatchToProps)(CollectionForm)
+export default connect(mapStateToProps, mapDispatchToProps)(CollectionForm)

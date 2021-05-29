@@ -16,6 +16,7 @@ import './main.scss'
 import SideBar from './sidebar'
 import { getCurrentUser } from '../auth/authService'
 import PublishDocs from '../publishDocs/publishDocs'
+import { loadWidget } from '../../services/widgetService'
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -41,6 +42,7 @@ class Main extends Component {
 
   async componentDidMount () {
     if (getCurrentUser()) {
+      loadWidget()
       this.fetchAll()
     }
     await indexedDbService.createDataBase()

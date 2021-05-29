@@ -5,9 +5,12 @@ import { importApi } from '../collections/redux/collectionsActions'
 import { connect } from 'react-redux'
 import Joi from 'joi-browser'
 import './openApi.scss'
+import { moveToNextStep } from '../../services/widgetService';
 
 const mapStateToProps = (state) => {
-  return {}
+  return {
+    collections: state.collections
+  }
 }
 
 const mapDispatchToProps = (dispatch) => {
@@ -75,6 +78,7 @@ class OpenApiForm extends Component {
     this.setState({ errors: { ...errors, file: FileError } })
     if (errors || FileError) return
     this.importApi()
+    if(Object.keys(this.props.collections).length===0) moveToNextStep()
   }
 
   onFileChange(e) {

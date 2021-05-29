@@ -30,6 +30,7 @@ import { ReactComponent as SettingsIcon } from '../../assets/icons/settings.svg'
 import { ReactComponent as ExternalLinks } from '../../assets/icons/externalLinks.svg'
 import UserInfo from '../main/userInfo'
 import PublishDocsConfirmModal from './publishDocsConfirmModal'
+import { moveToNextStep } from '../../services/widgetService'
 const isEqual = require('react-fast-compare')
 
 const URI = require('urijs')
@@ -559,6 +560,7 @@ class PublishDocs extends Component {
       const editedCollection = { ...selectedCollection }
       editedCollection.isPublic = true
       this.props.update_collection(editedCollection)
+      moveToNextStep()
     }
   }
 

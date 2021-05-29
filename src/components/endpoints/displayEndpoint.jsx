@@ -38,6 +38,7 @@ import PublicSampleResponse from './publicSampleResponse'
 import Notes from './notes'
 import ReactHtmlParser from 'react-html-parser'
 import bodyDescriptionService from './bodyDescriptionService'
+import { moveToNextStep } from '../../services/widgetService'
 const shortid = require('shortid')
 
 const status = require('http-status')
@@ -839,6 +840,7 @@ class DisplayEndpoint extends Component {
       this.setState({ loader: false })
       this.myRef.current && this.myRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' })
       isDashboardRoute(this.props) && this.setData()
+      moveToNextStep()
     } else {
       toast.error('Request URL is empty')
     }
