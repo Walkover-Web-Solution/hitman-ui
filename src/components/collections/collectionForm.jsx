@@ -16,7 +16,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    add_collection: (newCollection, openSelectedCollection) => dispatch(addCollection(newCollection, openSelectedCollection)),
+    add_collection: (newCollection, openSelectedCollection, callback) => dispatch(addCollection(newCollection, openSelectedCollection, callback)),
     update_collection: (editedCollection) =>
       dispatch(updateCollection(editedCollection))
   }
@@ -98,7 +98,9 @@ class CollectionForm extends Form {
       defaultTitle: '',
       versionHosts: {}
     }
-    this.props.add_collection({ ...this.state.data, docProperties: defaultDocProperties, requestId }, this.props.open_selected_collection)
+    this.props.add_collection({ ...this.state.data, docProperties: defaultDocProperties, requestId }, this.props.open_selected_collection, ({ success }) => {
+      if (success) moveToNextStep(1)
+    })
     this.setState({
       data: {
         name: '',
@@ -109,7 +111,6 @@ class CollectionForm extends Form {
         keyword2: ''
       }
     })
-    if (Object.keys(this.props.collections).length === 0) moveToNextStep()
   }
 
   async doSubmit () {

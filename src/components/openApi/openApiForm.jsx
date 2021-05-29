@@ -15,7 +15,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    import_api: (openApiObject, importType, website) => dispatch(importApi(openApiObject, importType, website))
+    import_api: (openApiObject, importType, website, callback) => dispatch(importApi(openApiObject, importType, website, callback))
   }
 }
 
@@ -56,7 +56,7 @@ class OpenApiForm extends Component {
 
   importApi() {
     const uploadedFile = this.state.uploadedFile
-    this.props.import_api(uploadedFile, this.state.importType, this.state.website)
+    this.props.import_api(uploadedFile, this.state.importType, this.state.website, ({success})=> {if(success) moveToNextStep(1)})
     this.props.onHide()
   }
 
@@ -78,7 +78,6 @@ class OpenApiForm extends Component {
     this.setState({ errors: { ...errors, file: FileError } })
     if (errors || FileError) return
     this.importApi()
-    if(Object.keys(this.props.collections).length===0) moveToNextStep()
   }
 
   onFileChange(e) {

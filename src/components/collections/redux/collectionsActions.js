@@ -53,7 +53,7 @@ export const fetchCollection = (collectionId) => {
   }
 }
 
-export const addCollection = (newCollection, openSelectedCollection) => {
+export const addCollection = (newCollection, openSelectedCollection, customCallback) => {
   return (dispatch) => {
     dispatch(addCollectionRequest(newCollection))
     collectionsApiService
@@ -63,6 +63,9 @@ export const addCollection = (newCollection, openSelectedCollection) => {
         if (openSelectedCollection) {
           openSelectedCollection(response.data.id)
         }
+        if (customCallback) {
+          customCallback({ success: true })
+        }
       })
       .catch((error) => {
         dispatch(
@@ -71,6 +74,9 @@ export const addCollection = (newCollection, openSelectedCollection) => {
             newCollection
           )
         )
+        if (customCallback) {
+          customCallback({ success: false })
+        }
       })
   }
 }
@@ -97,7 +103,7 @@ export const onCollectionAddedError = (error, newCollection) => {
   }
 }
 
-export const updateCollection = (editedCollection, stopLoader) => {
+export const updateCollection = (editedCollection, stopLoader, customCallback) => {
   return (dispatch) => {
     const originalCollection = store.getState().collections[
       editedCollection.id
@@ -113,6 +119,7 @@ export const updateCollection = (editedCollection, stopLoader) => {
         if (stopLoader) {
           stopLoader()
         }
+        if (customCallback) customCallback({ success: true })
       })
       .catch((error) => {
         dispatch(
@@ -124,6 +131,7 @@ export const updateCollection = (editedCollection, stopLoader) => {
         if (stopLoader) {
           stopLoader()
         }
+        if (customCallback) customCallback({ success: true })
       })
   }
 }
@@ -259,7 +267,7 @@ export const addCustomDomain = (
   }
 }
 
-export const importApi = (collection, importType, website) => {
+export const importApi = (collection, importType, website, customCallback) => {
   return (dispatch) => {
     if (importType === 'postman') {
       openApiService
@@ -267,22 +275,26 @@ export const importApi = (collection, importType, website) => {
         .then((response) => {
           // dispatch(saveImportedCollection(response.data));
           dispatch(saveImportedVersion(response.data))
+          if (customCallback) customCallback({ success: true })
         })
         .catch((error) => {
           dispatch(
             onVersionsFetchedError(error.response ? error.response.data : error)
           )
+          if (customCallback) customCallback({ success: false })
         })
     } else {
       openApiService
         .importApi(collection)
         .then((response) => {
           dispatch(saveImportedVersion(response.data))
+          if (customCallback) customCallback({ success: true })
         })
         .catch((error) => {
           dispatch(
             onVersionsFetchedError(error.response ? error.response.data : error)
           )
+          if (customCallback) customCallback({ success: false })
         })
     }
   }
@@ -302,13 +314,14 @@ export const onVersionsFetchedError = (error) => {
   }
 }
 
-export const importCollection = (collection) => {
+export const importCollection = (collection, customCallback) => {
   return (dispatch) => {
     dispatch(importCollectionRequest(collection))
     collectionsApiService
       .importCollection(collection.id)
       .then((response) => {
         dispatch(onCollectionImported(response.data))
+        if (customCallback) customCallback({ success: true })
       })
       .catch((error) => {
         dispatch(
@@ -317,6 +330,7 @@ export const importCollection = (collection) => {
             collection
           )
         )
+        if (customCallback) customCallback({ success: false })
       })
   }
 }

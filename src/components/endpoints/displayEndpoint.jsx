@@ -840,7 +840,7 @@ class DisplayEndpoint extends Component {
       this.setState({ loader: false })
       this.myRef.current && this.myRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' })
       isDashboardRoute(this.props) && this.setData()
-      moveToNextStep()
+      moveToNextStep(2)
     } else {
       toast.error('Request URL is empty')
     }
