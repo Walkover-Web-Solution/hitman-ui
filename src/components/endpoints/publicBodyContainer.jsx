@@ -361,7 +361,12 @@ class PublicBodyContainer extends Component {
     }
 
     const renderArray = (parentPath, Array) => {
-      return Array.type === 'object' ? <div>{renderObject(parentPath + '[]', Array.value)}</div> : renderItem(parentPath, ['[]', Array])
+      return (
+        <>
+          {Array.type === 'object' ? <div>{renderObject(parentPath + '[]', Array.value)}</div> : null}
+          {Array.type === 'array' ? <div>{renderItem(parentPath + '[]', ['', Array])}</div> : null}
+        </>
+      )
     }
 
     const renderItem = (parentPath, [key, value]) => {

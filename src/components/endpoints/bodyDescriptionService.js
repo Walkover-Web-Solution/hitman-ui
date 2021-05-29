@@ -71,12 +71,14 @@ function generateBodyDescription (body, isFirstTime) {
         bodyDescription[keys[i]] = {
           value: generateBodyDescription(value, isFirstTime),
           type: 'array',
+          description: '',
           default: generateBodyDescription(value, isFirstTime)[0]
         }
       } else {
         bodyDescription[keys[i]] = {
           value: generateBodyDescription(value, isFirstTime),
-          type: 'object'
+          type: 'object',
+          description: ''
         }
       }
     }
@@ -127,7 +129,8 @@ function compareDefaultValue (updatedBodyDescription, originalBodyDescription) {
             updatedBodyDescription[updatedKeys[i]].value,
             originalBodyDescription[updatedKeys[i]].value
           )[0]
-
+          updatedBodyDescription[updatedKeys[i]].description =
+            originalBodyDescription[updatedKeys[i]].description
           break
         case 'object':
           updatedBodyDescription[
@@ -136,7 +139,8 @@ function compareDefaultValue (updatedBodyDescription, originalBodyDescription) {
             updatedBodyDescription[updatedKeys[i]].value,
             originalBodyDescription[updatedKeys[i]].value
           )
-
+          updatedBodyDescription[updatedKeys[i]].description =
+            originalBodyDescription[updatedKeys[i]].description
           break
         default:
           break

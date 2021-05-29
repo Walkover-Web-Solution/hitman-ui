@@ -96,16 +96,6 @@ class DisplayBodyDescription extends Component {
   displayBoolean (obj, name, className) {
     return (
       <div className='value-description-input-wrapper'>
-        <select
-          className={className || 'custom-boolean'}
-          value={obj.value}
-          onChange={this.handleChange}
-          name={name}
-        >
-          <option value={null} />
-          <option value>true</option>
-          <option value={false}>false</option>
-        </select>
         <input
           className='description-input-field'
           value={obj.description}
@@ -122,14 +112,6 @@ class DisplayBodyDescription extends Component {
     return (
       <div className='value-description-input-wrapper'>
         <input
-          className='value-input-field'
-          type={obj.type}
-          name={name}
-          value={obj.value}
-          placeholder='Value'
-          onChange={this.handleChange}
-        />
-        <input
           className='description-input-field'
           value={obj.description}
           name={name + '.description'}
@@ -142,6 +124,17 @@ class DisplayBodyDescription extends Component {
   }
 
   displayArray (array, name, defaultValue) {
+    const renderTitle = (value, index) => {
+      if (value.type === 'array' || value.type === 'object') {
+        return (
+          <div className='key-title d-flex align-items-center'>
+            <label className='mr-2'>{`[${index}]`}</label>
+            <label className='data-type'>{value.type}</label>
+            {value.type === 'array' && this.displayInput(value, name + '.' + index)}
+          </div>
+        )
+      }
+    }
     return (
       <div
         className={
@@ -153,6 +146,7 @@ class DisplayBodyDescription extends Component {
       >
         {array.map((value, index) => (
           <div key={index} className='array-row'>
+            {renderTitle(value, index)}
             {value.type === 'boolean'
               ? this.displayBoolean(value, name + '.' + index)
               : value.type === 'object'
@@ -163,7 +157,7 @@ class DisplayBodyDescription extends Component {
                       name + '.' + index,
                       value.default
                     )
-                  : this.displayInput(value, name + '.' + index)}
+                  : null}
             {/* <button
               type="button"
               className="btn cross-button"
@@ -202,6 +196,7 @@ class DisplayBodyDescription extends Component {
               <label>{key}</label>
               <label className='data-type'>{obj[key].type}</label>
             </div>
+            {this.displayInput(obj[key], name + '.' + key)}
             {obj[key].type === 'object'
               ? this.displayObject(obj[key].value, name + '.' + key)
               : obj[key].type === 'array'
@@ -210,9 +205,7 @@ class DisplayBodyDescription extends Component {
                     name + '.' + key,
                     obj[key].default
                   )
-                : obj[key].type === 'boolean'
-                  ? this.displayBoolean(obj[key], name + '.' + key)
-                  : this.displayInput(obj[key], name + '.' + key)}
+                : null}
           </div>
         ))}
       </div>
