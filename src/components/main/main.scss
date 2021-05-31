@@ -1404,7 +1404,9 @@ button.editBtn {
 
 
 
-
+table#custom-generic-table tbody input[value="false"] + span.checkmark {
+  background: #ccc !important;
+}
 
 .customCheckbox {
   display: block;
@@ -1437,10 +1439,10 @@ button.editBtn {
   }
 
 
-  input:checked~.checkmark {
-    border-color: #E98A36;
-    background-color: #E98A36;
-  }
+  // input:checked~.checkmark {
+  //   border-color: #E98A36;
+  //   background-color: #E98A36;
+  // }
 
   .checkmark:after {
     content: "";
