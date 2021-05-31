@@ -6,10 +6,17 @@ import { toTitleCase, onEnter } from '../common/utility'
 import shortid from 'shortid'
 import { connect } from 'react-redux'
 import { addCollection, updateCollection } from './redux/collectionsActions'
+import { moveToNextStep } from '../../services/widgetService'
+
+const mapStateToProps = (state) => {
+  return {
+    collections: state.collections
+  }
+}
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    add_collection: (newCollection, openSelectedCollection) => dispatch(addCollection(newCollection, openSelectedCollection)),
+    add_collection: (newCollection, openSelectedCollection, callback) => dispatch(addCollection(newCollection, openSelectedCollection, callback)),
     update_collection: (editedCollection) =>
       dispatch(updateCollection(editedCollection))
   }
@@ -91,7 +98,9 @@ class CollectionForm extends Form {
       defaultTitle: '',
       versionHosts: {}
     }
-    this.props.add_collection({ ...this.state.data, docProperties: defaultDocProperties, requestId }, this.props.open_selected_collection)
+    this.props.add_collection({ ...this.state.data, docProperties: defaultDocProperties, requestId }, this.props.open_selected_collection, ({ success }) => {
+      if (success) moveToNextStep(1)
+    })
     this.setState({
       data: {
         name: '',
@@ -191,4 +200,4 @@ class CollectionForm extends Form {
   }
 }
 
-export default connect(null, mapDispatchToProps)(CollectionForm)
+export default connect(mapStateToProps, mapDispatchToProps)(CollectionForm)

@@ -30,6 +30,7 @@ import { ReactComponent as SettingsIcon } from '../../assets/icons/settings.svg'
 import { ReactComponent as ExternalLinks } from '../../assets/icons/externalLinks.svg'
 import UserInfo from '../main/userInfo'
 import PublishDocsConfirmModal from './publishDocsConfirmModal'
+import { moveToNextStep } from '../../services/widgetService'
 const isEqual = require('react-fast-compare')
 
 const URI = require('urijs')
@@ -63,8 +64,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(updatePage(ownProps.history, editedPage, 'publishDocs')),
     update_endpoint: (editedEndpoint) =>
       dispatch(updateEndpoint(editedEndpoint)),
-    update_collection: (editedCollection) =>
-      dispatch(updateCollection(editedCollection)),
+    update_collection: (editedCollection, callback) =>
+      dispatch(updateCollection(editedCollection, null, callback)),
     approve_endpoint: (endpoint, publishLoaderHandler) => dispatch(approveEndpoint(endpoint, publishLoaderHandler)),
     reject_endpoint: (endpoint) => dispatch(rejectEndpoint(endpoint)),
     approve_page: (page, publishPageLoaderHandler) => dispatch(approvePage(page, publishPageLoaderHandler)),
@@ -558,7 +559,9 @@ class PublishDocs extends Component {
     if (selectedCollection?.isPublic !== true) {
       const editedCollection = { ...selectedCollection }
       editedCollection.isPublic = true
-      this.props.update_collection(editedCollection)
+      this.props.update_collection(editedCollection, ({ success }) => {
+        if (success) moveToNextStep(3)
+      })
     }
   }
 

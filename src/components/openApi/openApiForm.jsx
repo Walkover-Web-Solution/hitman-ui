@@ -5,14 +5,17 @@ import { importApi } from '../collections/redux/collectionsActions'
 import { connect } from 'react-redux'
 import Joi from 'joi-browser'
 import './openApi.scss'
+import { moveToNextStep } from '../../services/widgetService';
 
 const mapStateToProps = (state) => {
-  return {}
+  return {
+    collections: state.collections
+  }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    import_api: (openApiObject, importType, website) => dispatch(importApi(openApiObject, importType, website))
+    import_api: (openApiObject, importType, website, callback) => dispatch(importApi(openApiObject, importType, website, callback))
   }
 }
 
@@ -53,7 +56,7 @@ class OpenApiForm extends Component {
 
   importApi() {
     const uploadedFile = this.state.uploadedFile
-    this.props.import_api(uploadedFile, this.state.importType, this.state.website)
+    this.props.import_api(uploadedFile, this.state.importType, this.state.website, ({success})=> {if(success) moveToNextStep(1)})
     this.props.onHide()
   }
 
