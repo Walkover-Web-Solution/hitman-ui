@@ -64,8 +64,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(updatePage(ownProps.history, editedPage, 'publishDocs')),
     update_endpoint: (editedEndpoint) =>
       dispatch(updateEndpoint(editedEndpoint)),
-    update_collection: (editedCollection, callback) =>
-      dispatch(updateCollection(editedCollection, null, callback)),
+    update_collection: (editedCollection) =>
+      dispatch(updateCollection(editedCollection)),
     approve_endpoint: (endpoint, publishLoaderHandler) => dispatch(approveEndpoint(endpoint, publishLoaderHandler)),
     reject_endpoint: (endpoint) => dispatch(rejectEndpoint(endpoint)),
     approve_page: (page, publishPageLoaderHandler) => dispatch(approvePage(page, publishPageLoaderHandler)),
@@ -559,9 +559,8 @@ class PublishDocs extends Component {
     if (selectedCollection?.isPublic !== true) {
       const editedCollection = { ...selectedCollection }
       editedCollection.isPublic = true
-      this.props.update_collection(editedCollection, ({ success }) => {
-        if (success) moveToNextStep(3)
-      })
+      this.props.update_collection(editedCollection)
+      moveToNextStep(3)
     }
   }
 
