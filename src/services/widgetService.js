@@ -18,16 +18,19 @@ export function onOnboardingCompleted () {
 export function loadWidget () {
   const user = window.localStorage.getItem('profile')
   const identifier = JSON.parse(user).identifier
-  const script = document.createElement('script')
-  script.src = widgetURL
-  script.id = 'onboarding-wgt-script'
-  script.type = 'text/javascript'
-  script.setAttribute('project-id', projectId)
-  script.setAttribute('user-id', identifier)
-  script.setAttribute('authkey', authkey)
-  script.setAttribute('widget-id', widgetId)
-  document.body.appendChild(script)
-  script.onload = () => {
+  const onboardingWgt = document.getElementById('onboarding-wgt-script')
+  if (!onboardingWgt && identifier) {
+    const script = document.createElement('script')
+    script.src = widgetURL
+    script.id = 'onboarding-wgt-script'
+    script.type = 'text/javascript'
+    script.setAttribute('project-id', projectId)
+    script.setAttribute('user-id', identifier)
+    script.setAttribute('authkey', authkey)
+    script.setAttribute('widget-id', widgetId)
+    document.body.appendChild(script)
+    script.onload = () => {
+    }
   }
 }
 
