@@ -52,6 +52,9 @@ class BodyContainer extends Component {
       case 'application/x-www-form-urlencoded':
         this.props.set_body(bodyType, this.state.data.urlencoded)
         break
+      case 'none':
+        this.props.set_body(bodyType, null)
+        break
       default:
         break
     }

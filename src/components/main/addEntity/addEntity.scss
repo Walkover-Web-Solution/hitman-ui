@@ -34,7 +34,11 @@
 
 .quick-add-endpoint p {
     font-size: 12px;
-    margin-bottom: 5px;
+    margin-bottom: 10px;
+    padding-top: 10px;
+}
+.endpoint-container .endpoint-url-container .dropdown .dropdown-toggle:after {
+    margin-top: 2px;
 }
 
 .body {

@@ -24,7 +24,7 @@ function LoginSignupModal (props) {
       centered
     >
 
-      <Modal.Header closeButton />
+      <Modal.Header className='not-loggedin' closeButton />
       <Modal.Body>
         <div className='text-center'>
           {
