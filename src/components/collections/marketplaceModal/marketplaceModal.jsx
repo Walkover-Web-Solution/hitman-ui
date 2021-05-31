@@ -14,7 +14,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    import_collection: (collection, callback) => dispatch(importCollection(collection, callback))
+    import_collection: (collection) => dispatch(importCollection(collection))
   }
 }
 
@@ -60,9 +60,8 @@ export class MarketplaceModal extends Component {
   }
 
   import () {
-    this.props.import_collection(this.state.selectedCollection, ({ success }) => {
-      if (success) moveToNextStep(1)
-    })
+    this.props.import_collection(this.state.selectedCollection)
+    moveToNextStep(1)
     this.props.onHide()
   }
 

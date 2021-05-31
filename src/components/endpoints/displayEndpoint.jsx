@@ -836,11 +836,11 @@ class DisplayEndpoint extends Component {
     }
     if (api) {
       this.setState({ loader: true })
+      moveToNextStep(2)
       await this.handleApiCall(api, body, headers, this.state.data.body.type)
       this.setState({ loader: false })
       this.myRef.current && this.myRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' })
       isDashboardRoute(this.props) && this.setData()
-      moveToNextStep(2)
     } else {
       toast.error('Request URL is empty')
     }
