@@ -46,7 +46,7 @@ export function logout () {
     window.localStorage.removeItem(profileKey)
     window.localStorage.removeItem(orgKey)
     const redirectUri = encodeURIComponent(`${uiURL}/login`)
-    window.location = `${ssoURL}/logout?redirect_uri=${redirectUri}`
+    window.location = `${ssoURL}/logout?redirect_uri=${redirectUri}&src=hitman`
   })
 }
 export function getCurrentUser () {
