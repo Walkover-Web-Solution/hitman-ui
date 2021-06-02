@@ -11,7 +11,7 @@ function Footer () {
       <footer>
         <div className='footerWrapper'>
           <p>
-            <span>Powered By</span> <a rel='noopener noreferrer' target='_blank' href='https://hitman.app/'>Hitman</a>
+            <span>Built On</span> <a rel='noopener noreferrer' target='_blank' href='https://hitman.app/'>Hitman</a>
           </p>
         </div>
       </footer>
