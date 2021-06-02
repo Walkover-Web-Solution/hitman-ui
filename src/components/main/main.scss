@@ -233,6 +233,7 @@ nav.navbar.navbar-dark.fixed-top.bg-dark.flex-md-nowrap.p-0.shadow {
 .value-description-input-wrapper {
   display: table-cell;
   padding: 5px 0px;
+  width: 100%;
 }
 
 .key-title {
@@ -274,6 +275,8 @@ label.data-type {
   height: 30px !important;
   font-size: 12px !important;
   min-width: 260px;
+  width: 100%;
+  max-width: 450px;
 }
 
 .array-container {
@@ -2919,4 +2922,11 @@ div#history-tab-button button#dropdown-basic {
 .community-btn-1{
   height: 37px;
   padding: 0px;
+}
+
+.mainContentWrapperPublic.hideCodeEditor .hm-endpoint-container.endpoint-container {
+  width: 100%;
+}
+.tooltip-inner{
+  max-width: 450px !important;
 }
