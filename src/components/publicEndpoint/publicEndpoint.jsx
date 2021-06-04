@@ -290,7 +290,7 @@ class PublicEndpoint extends Component {
                   )
                 : null
             }
-            <Footer />
+            <Footer theme={this.state.collectionTheme} />
 
           </div>
         </main>
