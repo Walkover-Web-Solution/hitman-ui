@@ -1,6 +1,6 @@
 import React from 'react'
 
-function Footer () {
+function Footer ({ theme }) {
   return (
 
     <div className='inner-wrapper'>
@@ -10,8 +10,11 @@ function Footer () {
       </div> */}
       <footer>
         <div className='footerWrapper'>
-          <p>
-            <span>Built On</span> <a rel='noopener noreferrer' target='_blank' href='https://hitman.app/'>Hitman</a>
+          <p class='public-hide'>
+            <span>Powered By</span> <a rel='noopener noreferrer' target='_blank' href='https://hitman.app/'>Hitman</a>
+          </p>
+          <p class='d-none for-public-view'>
+            <a rel='noopener noreferrer' class='cta-type' target='_blank' href='https://hitman.app/' style={{ backgroundColor: theme }}>Built On Hitman</a>
           </p>
         </div>
       </footer>

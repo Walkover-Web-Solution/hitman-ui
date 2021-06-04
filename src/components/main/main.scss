@@ -2930,3 +2930,23 @@ div#history-tab-button button#dropdown-basic {
 .tooltip-inner{
   max-width: 450px !important;
 }
+
+main.mainpublic-endpoint-main p.public-hide {
+  display: none;
+}
+main.mainpublic-endpoint-main .for-public-view {
+  display: block !important;
+}
+.mainpublic-endpoint-main .footerWrapper {
+  text-align: right;
+}
+a.cta-type {
+  display: inline-block;
+  padding: 5px 17px;
+  border-radius: 5px;
+  color: #fff !important;
+  font-weight: 600;
+  text-decoration: none !important;
+  font-size: 13px;
+  border: none;
+}
