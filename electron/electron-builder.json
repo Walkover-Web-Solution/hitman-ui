@@ -1,0 +1,40 @@
+{
+    "appId": "com.hitman.app",
+    "electronVersion": "11.2.3",
+    "directories": {
+        "output": "hitman-bundles",
+        "buildResources": "assets"
+    },
+    "files": [
+        "../build/**/*",
+        "../node_modules/**/*",
+        "../.env"
+    ],
+    "mac": {
+        "target": [
+            "dmg"
+        ],
+        "icon": "hitman-icon.png",
+        "hardenedRuntime": true,
+        "gatekeeperAssess": false
+    },
+    "dmg": {
+        "sign": false
+    },
+    "win": {
+        "target": [
+            "nsis",
+            "nsis-web",
+            "zip"
+        ],
+        "icon": "hitman-icon.ico"
+    },
+    "nsis": {
+        "oneClick": true,
+        "createDesktopShortcut": true,
+        "createStartMenuShortcut": true,
+        "shortcutName": "Hitman",
+        "perMachine": false
+    },
+    "asar": true
+}
