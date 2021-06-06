@@ -8,9 +8,10 @@ class Landing extends Component {
   }
 
   async redirectToRelevantPage () {
+    const isDesktop = process.env.IS_DESKTOP
     const domainsList = process.env.REACT_APP_DOMAINS_LIST ? process.env.REACT_APP_DOMAINS_LIST.split(',') : []
     const currentDomain = window.location.href.split('/')[2]
-    if (!domainsList.includes(currentDomain)) {
+    if (!domainsList.includes(currentDomain) && !isDesktop) {
       const { data: clientCollection } = await collectionsApiService.getCollectionsByCustomDomain(currentDomain)
       if (Object.keys(clientCollection) && Object.keys(clientCollection)[0]) {
         const clientCollectionId = Object.keys(clientCollection)[0]

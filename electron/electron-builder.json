@@ -2,17 +2,16 @@
     "appId": "com.hitman.app",
     "electronVersion": "11.2.3",
     "directories": {
-        "output": "hitman-bundles",
+        "output": "dist/hitman-bundles/",
         "buildResources": "assets"
     },
     "files": [
-        "../build/**/*",
-        "../node_modules/**/*",
-        "../.env"
+        "../build/**/*"
     ],
     "mac": {
         "target": [
-            "dmg"
+            "dmg",
+            "zip"
         ],
         "icon": "hitman-icon.png",
         "hardenedRuntime": true,

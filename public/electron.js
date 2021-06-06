@@ -8,11 +8,13 @@ function createWindow () {
   mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
+    show: false,
     webPreferences: {
-      nodeIntegration: true
+      nodeIntegration: true,
+      contextIsolation: false
     }
   })
-  const startURL = isDev ? 'http://localhost:3000' : `file://${path.join(__dirname, '../build/index.html')}`
+  const startURL = isDev ? 'http://localhost:3000' : `file://${path.join(__dirname, '/index.html')}`
 
   mainWindow.loadURL(startURL)
 

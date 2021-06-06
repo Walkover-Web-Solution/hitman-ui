@@ -13,9 +13,10 @@ import ClientDoc from './components/publishDocs/clientDoc'
 
 class App extends Component {
   async redirectToClientDomain () {
+    const isDesktop = process.env.IS_DESKTOP
     const domainsList = process.env.REACT_APP_DOMAINS_LIST ? process.env.REACT_APP_DOMAINS_LIST.split(',') : []
     const currentDomain = window.location.href.split('/')[2]
-    if (!domainsList.includes(currentDomain) && window.location.href.split('/')[3] !== 'p') {
+    if ((!domainsList.includes(currentDomain) && window.location.href.split('/')[3] !== 'p') && !isDesktop) {
       const { data: clientCollection } = await collectionsApiService.getCollectionsByCustomDomain(currentDomain)
       if (Object.keys(clientCollection) && Object.keys(clientCollection)[0]) {
         const clientCollectionId = Object.keys(clientCollection)[0]
@@ -26,33 +27,38 @@ class App extends Component {
     }
   }
 
-  render () {
-    const domainsList = process.env.REACT_APP_DOMAINS_LIST ? process.env.REACT_APP_DOMAINS_LIST.split(',') : []
-    const currentDomain = window.location.href.split('/')[2]
-    if (!domainsList.includes(currentDomain) && window.location.href.split('/')[3] !== 'p') {
-      return (
-        <Switch>
-          <Route path='/' component={ClientDoc} />
-        </Switch>
-      )
+    render = () => {
+      return this.renderApp()
     }
 
-    return (
-      <>
-        <ToastContainer />
-        <Switch>
-          <Route path='/admin/publish' component={Main} />
-          <Route path='/dashboard/' component={Main} />
-          <Route path='/p/error' component={NotFound} />
-          <Route path='/p/:collectionIdentifier' component={Public} />
-          <Route path='/logout' component={Logout} />
-          <Route path='/login' component={Login} />
-          <Route path='/marketPlace' component={PublicView} />
-          <Route path='/' component={Landing} />
-        </Switch>
-      </>
-    )
-  }
+    renderApp = () => {
+      const isDesktop = process.env.IS_DESKTOP
+      const domainsList = process.env.REACT_APP_DOMAINS_LIST ? process.env.REACT_APP_DOMAINS_LIST.split(',') : []
+      const currentDomain = window.location.href.split('/')[2]
+      if (!domainsList.includes(currentDomain) && window.location.href.split('/')[3] !== 'p' && !isDesktop) {
+        return (
+          <Switch>
+            <Route path='/' component={ClientDoc} />
+          </Switch>
+        )
+      }
+
+      return (
+        <>
+          <ToastContainer />
+          <Switch>
+            <Route path='/admin/publish' component={Main} />
+            <Route path='/dashboard/' component={Main} />
+            <Route path='/p/error' component={NotFound} />
+            <Route path='/p/:collectionIdentifier' component={Public} />
+            <Route path='/logout' component={Logout} />
+            <Route path='/login' component={Login} />
+            <Route path='/marketPlace' component={PublicView} />
+            <Route path='/' component={Landing} />
+          </Switch>
+        </>
+      )
+    }
 }
 
 export default App
