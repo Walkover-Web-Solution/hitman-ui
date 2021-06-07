@@ -7,6 +7,7 @@ import Form from '../common/form'
 import { addGroup, updateGroup } from '../groups/redux/groupsActions'
 import { onEnter, toTitleCase, ADD_GROUP_MODAL_NAME } from '../common/utility'
 import extractCollectionInfoService from '../publishDocs/extractCollectionInfoService'
+import { moveToNextStep } from '../../services/widgetService'
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -58,6 +59,7 @@ class GroupForm extends Form {
         requestId: shortid.generate()
       }
       this.props.add_group(versionId, newGroup)
+      moveToNextStep(3)
     }
 
     if (this.props.title === 'Edit Group') {

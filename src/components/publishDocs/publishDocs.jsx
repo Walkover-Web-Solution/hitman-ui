@@ -560,7 +560,7 @@ class PublishDocs extends Component {
       const editedCollection = { ...selectedCollection }
       editedCollection.isPublic = true
       this.props.update_collection(editedCollection)
-      moveToNextStep(3)
+      moveToNextStep(6)
     }
   }
 
