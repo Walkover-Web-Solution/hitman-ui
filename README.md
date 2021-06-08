@@ -21,13 +21,15 @@ Follow the following steps to set the front end -
 
 4. Open the project in VS code.
 
-5. Now open a new terminal in the VS code  and run the given command to install all the dependencies.
+5. Create a .env file inside project and copy the content inside .env.example file into .env file.
+
+6. Now open a new terminal in the VS code  and run the given command to install all the dependencies.
     ~npm i     
 
-6. After installing all the dependencies, start the server.
+7. After installing all the dependencies, start the server.
   ~npm start
 
-7. Now, open the browser and go to localhost:3000 .
+8. Now, open the browser and go to localhost:3000 .
 
 Note: Unique IDs are used in CTAs for tracking purposes with GTM. Do not use the same IDs elsewhere.
 

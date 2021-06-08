@@ -4,6 +4,7 @@ import './addEntity.scss'
 import { toTitleCase } from '../../common/utility'
 import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { ReactComponent as HelpIcon } from '../../../assets/icons/helpcircle.svg'
+import { moveToNextStep } from '../../../services/widgetService'
 
 const entityENUM = {
   endpoint: {
@@ -57,6 +58,7 @@ export class AddEntity extends Component {
         }
         endpoint.name = toTitleCase(this.state.entityName)
         this.props.addEndpoint(endpoint)
+        moveToNextStep(4)
       } else {
         this.props.addNewEntity(this.props.entity)
       }
