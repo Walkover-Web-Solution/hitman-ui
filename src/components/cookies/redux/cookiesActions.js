@@ -1,9 +1,8 @@
 import cookiesApiService from '../cookiesApiService'
 import cookiesActionTypes from './cookiesActionTypes'
 
-export const fetchAllCookies = (data) => {
+export const fetchAllCookies = () => {
   return (dispatch) => {
-    dispatch(addDomainRequest(data))
     cookiesApiService
       .getAllCookies()
       .then((response) => {
@@ -34,7 +33,7 @@ export const addCookieDomain = (data) => {
     cookiesApiService
       .addDomain(data)
       .then((response) => {
-        dispatch(onDomainAdded(response.data, data))
+        dispatch(onDomainAdded(response.data))
       }).catch((error) => {
         dispatch(onDomainAddedError(error.response ? error.response.data : error, data))
       })
@@ -59,6 +58,41 @@ export const onDomainAddedError = (error, domain) => {
   return {
     type: cookiesActionTypes.ON_DOMAIN_ADDED_ERROR,
     domain,
+    error
+  }
+}
+
+export const updateCookies = (data) => {
+  return (dispatch) => {
+    dispatch(updateCookieRequest(data))
+    cookiesApiService
+      .updateDomain(data.id, data)
+      .then((response) => {
+        dispatch(onCookiesUpdated(response.data))
+      }).catch((error) => {
+        dispatch(onCookiesUpdateError(error.response ? error.response.data : error, data))
+      })
+  }
+}
+
+export const updateCookieRequest = (cookiesData) => {
+  return {
+    type: cookiesActionTypes.ON_COOKIES_UPDATE_REQUEST,
+    cookiesData
+  }
+}
+
+export const onCookiesUpdated = (updatedData) => {
+  return {
+    type: cookiesActionTypes.ON_COOKIES_UPDATED,
+    updatedData
+  }
+}
+
+export const onCookiesUpdateError = (error, originalData) => {
+  return {
+    type: cookiesActionTypes.ON_COOKIES_UPDATE_ERROR,
+    originalData,
     error
   }
 }
