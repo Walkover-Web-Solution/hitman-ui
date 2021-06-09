@@ -231,7 +231,7 @@ class PublicEndpoint extends Component {
                               <div
                                 id='sokt-sso'
                                 data-redirect-uri={redirectionUrl}
-                                data-source='sokt-app'
+                                data-source='hitman'
                                 data-token-key='sokt-auth-token'
                                 data-view='button'
                                 data-app-logo-url='https://hitman.app/wp-content/uploads/2020/12/123.png'
@@ -290,7 +290,7 @@ class PublicEndpoint extends Component {
                   )
                 : null
             }
-            <Footer />
+            <Footer theme={this.state.collectionTheme} />
 
           </div>
         </main>

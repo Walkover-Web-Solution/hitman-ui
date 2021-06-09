@@ -5,7 +5,7 @@ import jQuery from 'jquery'
 import AceEditor from 'react-ace'
 import { willHighlight } from './highlightChangesHelper'
 import './publicEndpoint.scss'
-import { Badge } from 'react-bootstrap'
+import { Badge, OverlayTrigger, Tooltip } from 'react-bootstrap'
 
 class PublicBodyContainer extends Component {
   state = {
@@ -349,14 +349,16 @@ class PublicBodyContainer extends Component {
     }
 
     const renderType = (type) => {
-      return <Badge className={`body-desc-type ${type}`}>{type.charAt(0)}</Badge>
+      return <Badge className={`body-desc-type ${type}`} style={{ cursor: 'default' }}>{type.charAt(0)}</Badge>
     }
 
     const renderObject = (parentPath, object) => {
       if (!object) return null
       if (parentPath) parentPath = parentPath + '.'
       return Object.entries(object).map((res, index) => (
-        <div key={index}>{renderItem(parentPath, res)}</div>
+        (parentPath === '')
+          ? <div key={index}>{renderItem(parentPath, res)}</div>
+          : <div key={index} className='ml-2 pl-2' style={{ borderLeft: '1px solid rgb(0,0,0,0.1)' }}>{renderItem(parentPath, res)}</div>
       ))
     }
 
@@ -370,8 +372,29 @@ class PublicBodyContainer extends Component {
     }
 
     const renderItem = (parentPath, [key, value]) => {
+      const CustomTooltip = ({ children, message }) => {
+        return (
+          <OverlayTrigger
+            placement='top'
+            delay={{ show: 250, hide: 250 }}
+            overlay={<Tooltip style={{ fontFamily: 'monospace' }}>{`${message}`}</Tooltip>}
+          >
+            {children}
+          </OverlayTrigger>
+        )
+      }
       const defaultItem = (parentPath, [key, value]) => {
-        return <div> {renderType(value.type)} <strong>{parentPath + key}</strong><span>{value.description ? ` : ${value.description}` : ''}</span></div>
+        const path = parentPath + key
+        const keyTitle = path.split('.')[path.split('.').length - 1]
+        return (
+          <div className='py-1'>
+            {renderType(value.type)}
+            <CustomTooltip message={path}>
+              <strong className='pl-1' style={{ cursor: 'default' }}>{keyTitle}</strong>
+            </CustomTooltip>
+            <span>{value.description ? ` : ${value.description}` : ''}</span>
+          </div>
+        )
       }
       switch (value.type) {
         case 'string' : return defaultItem(parentPath, [key, value])

@@ -46,7 +46,7 @@ function LoginSignupModal (props) {
           <div
             id='sokt-sso-modal'
             data-redirect-uri={redirectionUrl}
-            data-source='sokt-app'
+            data-source='hitman'
             data-token-key='sokt-auth-token'
             data-view='button'
             data-app-logo-url='https://hitman.app/wp-content/uploads/2020/12/123.png'

@@ -233,6 +233,7 @@ nav.navbar.navbar-dark.fixed-top.bg-dark.flex-md-nowrap.p-0.shadow {
 .value-description-input-wrapper {
   display: table-cell;
   padding: 5px 0px;
+  width: 100%;
 }
 
 .key-title {
@@ -274,6 +275,8 @@ label.data-type {
   height: 30px !important;
   font-size: 12px !important;
   min-width: 260px;
+  width: 100%;
+  max-width: 450px;
 }
 
 .array-container {
@@ -1404,7 +1407,9 @@ button.editBtn {
 
 
 
-
+table#custom-generic-table tbody input[value="false"] + span.checkmark {
+  background: #ccc !important;
+}
 
 .customCheckbox {
   display: block;
@@ -1437,10 +1442,10 @@ button.editBtn {
   }
 
 
-  input:checked~.checkmark {
-    border-color: #E98A36;
-    background-color: #E98A36;
-  }
+  // input:checked~.checkmark {
+  //   border-color: #E98A36;
+  //   background-color: #E98A36;
+  // }
 
   .checkmark:after {
     content: "";
@@ -2917,4 +2922,31 @@ div#history-tab-button button#dropdown-basic {
 .community-btn-1{
   height: 37px;
   padding: 0px;
+}
+
+.mainContentWrapperPublic.hideCodeEditor .hm-endpoint-container.endpoint-container {
+  width: 100%;
+}
+.tooltip-inner{
+  max-width: 450px !important;
+}
+
+main.mainpublic-endpoint-main p.public-hide {
+  display: none;
+}
+main.mainpublic-endpoint-main .for-public-view {
+  display: block !important;
+}
+.mainpublic-endpoint-main .footerWrapper {
+  text-align: right;
+}
+a.cta-type {
+  display: inline-block;
+  padding: 5px 17px;
+  border-radius: 5px;
+  color: #fff !important;
+  font-weight: 600;
+  text-decoration: none !important;
+  font-size: 13px;
+  border: none;
 }

@@ -38,6 +38,7 @@ import PublicSampleResponse from './publicSampleResponse'
 import Notes from './notes'
 import ReactHtmlParser from 'react-html-parser'
 import bodyDescriptionService from './bodyDescriptionService'
+import { moveToNextStep } from '../../services/widgetService'
 const shortid = require('shortid')
 
 const status = require('http-status')
@@ -835,6 +836,7 @@ class DisplayEndpoint extends Component {
     }
     if (api) {
       this.setState({ loader: true })
+      moveToNextStep(5)
       await this.handleApiCall(api, body, headers, this.state.data.body.type)
       this.setState({ loader: false })
       this.myRef.current && this.myRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' })
@@ -912,6 +914,7 @@ class DisplayEndpoint extends Component {
           if (closeForm) this.closeEndpointFormModal()
           if (stopLoader) this.setState({ saveAsLoader: false })
         })
+        moveToNextStep(4)
       } else {
         if (this.state.saveAsFlag) {
           endpoint.requestId = shortid.generate()
@@ -921,6 +924,7 @@ class DisplayEndpoint extends Component {
             if (closeForm) this.closeEndpointFormModal()
             if (stopLoader) this.setState({ saveAsLoader: false })
           })
+          moveToNextStep(4)
         } else if (this.state.title === 'update endpoint') {
           this.setState({ saveLoader: true })
           this.props.update_endpoint({

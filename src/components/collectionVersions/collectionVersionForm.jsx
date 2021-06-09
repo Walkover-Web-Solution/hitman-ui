@@ -8,7 +8,7 @@ import {
   addVersion,
   updateVersion
 } from '../collectionVersions/redux/collectionVersionsActions'
-
+import { moveToNextStep } from '../../services/widgetService'
 import shortid from 'shortid'
 
 const mapDispatchToProps = (dispatch) => {
@@ -64,6 +64,7 @@ class CollectionVersionForm extends Form {
       const collectionId = this.props.collection_id
       const newVersion = { ...this.state.data, requestId: shortid.generate(), number }
       this.props.add_version(newVersion, collectionId)
+      moveToNextStep(2)
     }
   }
 

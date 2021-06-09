@@ -3,6 +3,7 @@ import { Modal } from 'react-bootstrap'
 import { getAllPublicCollections } from '../collectionsApiService'
 import { connect } from 'react-redux'
 import { importCollection } from '../redux/collectionsActions'
+import { moveToNextStep } from '../../../services/widgetService'
 import './marketplaceModal.scss'
 
 const mapStateToProps = (state) => {
@@ -60,6 +61,7 @@ export class MarketplaceModal extends Component {
 
   import () {
     this.props.import_collection(this.state.selectedCollection)
+    moveToNextStep(1)
     this.props.onHide()
   }
 
