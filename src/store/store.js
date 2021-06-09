@@ -7,6 +7,7 @@ import environmentsReducer from '../components/environments/redux/environmentsRe
 import groupsReducer from '../components/groups/redux/groupsReducer'
 import pagesReducer from '../components/pages/redux/pagesReducer'
 import tabsReducer from '../components/tabs/redux/tabsReducer'
+import cookiesReducer from '../components/cookies/redux/cookiesReducer'
 
 import historyReducer from '../components/history/redux/historyReducer'
 
@@ -20,7 +21,8 @@ const rootReducer = combineReducers({
   endpoints: endpointsReducer,
   environment: environmentsReducer,
   tabs: tabsReducer,
-  history: historyReducer
+  history: historyReducer,
+  cookies: cookiesReducer
 })
 const store = createStore(rootReducer, storeEnhancers(applyMiddleware(thunk)))
 
