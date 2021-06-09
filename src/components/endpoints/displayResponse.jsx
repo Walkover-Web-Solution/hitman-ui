@@ -132,20 +132,18 @@ class DisplayResponse extends Component {
                 Body
               </a>
             </li>
-            {getCurrentUser() && (
-              <li className='nav-item' onClick={() => { this.setState({ selectedResponseTab: 'header' }) }}>
-                <a
-                  className='nav-link'
-                  id='pills-header-tab'
-                  data-toggle='pill'
-                  aria-selected='false'
-                  href='#pills-header-tab'
-                  role='tab1'
-                >
-                  Headers
-                </a>
-              </li>
-            )}
+            <li className='nav-item' onClick={() => { this.setState({ selectedResponseTab: 'header' }) }}>
+              <a
+                className='nav-link'
+                id='pills-header-tab'
+                data-toggle='pill'
+                aria-selected='false'
+                href='#pills-header-tab'
+                role='tab1'
+              >
+                Headers
+              </a>
+            </li>
           </ul>
         </div>
       </>
