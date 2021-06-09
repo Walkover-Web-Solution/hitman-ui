@@ -1,14 +1,14 @@
 import cookiesApiService from '../cookiesApiService'
 import cookiesActionTypes from './cookiesActionTypes'
 
-export const fetchAllCookies = (data) =>{
-  return(dispatch) =>{
+export const fetchAllCookies = (data) => {
+  return (dispatch) => {
     dispatch(addDomainRequest(data))
     cookiesApiService
       .getAllCookies()
-      .then((response)=>{
+      .then((response) => {
         dispatch(onCookiesFetched(response.data))
-      }).catch((error)=>{
+      }).catch((error) => {
         dispatch(onCookiesFetchedError(error.response ? error.response.data : error))
       })
   }
@@ -28,14 +28,14 @@ export const onCookiesFetchedError = (error) => {
   }
 }
 
-export const addCookieDomain = (data) =>{
-  return(dispatch) =>{
+export const addCookieDomain = (data) => {
+  return (dispatch) => {
     dispatch(addDomainRequest(data))
     cookiesApiService
       .addDomain(data)
-      .then((response)=>{
-        dispatch(onDomainAdded(response.data,data))
-      }).catch((error)=>{
+      .then((response) => {
+        dispatch(onDomainAdded(response.data, data))
+      }).catch((error) => {
         dispatch(onDomainAddedError(error.response ? error.response.data : error, data))
       })
   }
