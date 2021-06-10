@@ -46,6 +46,20 @@ function cookiesReducer (state = initialState, action) {
       cookies[action.originalData.id] = { ...action.originalData }
       return cookies
 
+    case cookiesActionTypes.ON_DOMAIN_DELETE_REQUEST:
+      cookies = { ...state }
+      delete cookies[action.domain.id]
+      return cookies
+
+    case cookiesActionTypes.ON_DOMAIN_DELETED:
+      return state
+
+    case cookiesActionTypes.ON_DOMAIN_DELETE_ERROR:
+      toast.error(action.error)
+      cookies = { ...state }
+      cookies[action.domain.id] = { ...action.domain }
+      return cookies
+
     default:
       return state
   }

@@ -96,3 +96,38 @@ export const onCookiesUpdateError = (error, originalData) => {
     error
   }
 }
+
+export const deleteDomain = (data) => {
+  return (dispatch) => {
+    dispatch(deleteDomainRequest(data))
+    cookiesApiService
+      .deleteDomain(data.id)
+      .then((response) => {
+        dispatch(onDomainDeleted(response.data))
+      }).catch((error) => {
+        dispatch(onDomainDeleteError(error.response ? error.response.data : error, data))
+      })
+  }
+}
+
+export const deleteDomainRequest = (domain) => {
+  return {
+    type: cookiesActionTypes.ON_DOMAIN_DELETE_REQUEST,
+    domain
+  }
+}
+
+export const onDomainDeleted = (domain) => {
+  return {
+    type: cookiesActionTypes.ON_DOMAIN_DELETED,
+    domain
+  }
+}
+
+export const onDomainDeleteError = (error, domain) => {
+  return {
+    type: cookiesActionTypes.ON_DOMAIN_DELETE_ERROR,
+    domain,
+    error
+  }
+}
