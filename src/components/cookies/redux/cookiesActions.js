@@ -1,5 +1,6 @@
 import cookiesApiService from '../cookiesApiService'
 import cookiesActionTypes from './cookiesActionTypes'
+import store from '../../../store/store'
 
 export const fetchAllCookies = () => {
   return (dispatch) => {
@@ -64,13 +65,16 @@ export const onDomainAddedError = (error, domain) => {
 
 export const updateCookies = (data) => {
   return (dispatch) => {
+    const id = data.id
+    const originalData = JSON.parse(JSON.stringify(store.getState().cookies[id]))
     dispatch(updateCookieRequest(data))
+    delete data.id
     cookiesApiService
-      .updateDomain(data.id, data)
+      .updateDomain(id, data)
       .then((response) => {
         dispatch(onCookiesUpdated(response.data))
       }).catch((error) => {
-        dispatch(onCookiesUpdateError(error.response ? error.response.data : error, data))
+        dispatch(onCookiesUpdateError(error.response ? error.response.data : error, originalData))
       })
   }
 }
