@@ -36,10 +36,10 @@ class CookiesList extends Component {
 
   renderDomainList () {
     return (
-      this.props.domains.map((domain, index) => (
+      Object.values(this.props.domains).map((domain, index) => (
         <div key={index} className='d-flex justify-content-between' onClick={() => this.renderCookiesListItem(domain)}>
           <div className='mr-5'>{domain.domain}</div>
-          <span>{`${Object.entries(this.props.domains[index].cookies).length} cookies`}</span>
+          <span>{`${Object.keys(domain.cookies || {}).length} cookies`}</span>
         </div>
       ))
     )

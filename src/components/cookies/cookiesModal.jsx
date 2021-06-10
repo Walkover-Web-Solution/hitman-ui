@@ -4,6 +4,7 @@ import CookiesList from './cookiesList/cookiesList'
 import CookiesListItem from './cookiesListItem/cookiesListItem'
 import { connect } from 'react-redux'
 import { fetchAllCookies, addCookieDomain } from './redux/cookiesActions'
+import shortid from 'shortid'
 
 const mapStateToProps = (state) => {
   return {
@@ -28,13 +29,24 @@ export class CookiesModal extends Component {
 
   componentDidMount () {
     this.props.fetch_all_cookies()
+    if (this.props.cookies) {
+      this.setState({ domains: this.props.cookies })
+    }
+  }
+
+  componentDidUpdate (prevProps, prevState) {
+    if (this.props.cookies !== prevProps.cookies) {
+      this.setState({ domains: this.props.cookies })
+    }
   }
 
   addDomain (domain) {
-    const domains = this.state.domains
-    domain.cookies = {}
-    domains.push(domain)
-    this.setState({ domains })
+    domain.requestId = shortid.generate()
+    // const domains = this.state.domains
+    // domain.cookies = {}
+    // domains.push(domain)
+    // this.setState({ domains })
+    this.props.add_cookies_domain(domain)
   }
 
   addCookies (domain) {
@@ -83,8 +95,8 @@ export class CookiesModal extends Component {
   render () {
     return (
       <div>
-        {/* {this.renderCookiesModal()} */}
-        {'hello'}
+        {this.renderCookiesModal()}
+        {/* {'hello'} */}
       </div>
     )
   }
