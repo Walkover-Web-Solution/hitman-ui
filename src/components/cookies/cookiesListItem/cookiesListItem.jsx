@@ -1,33 +1,44 @@
 import React, { Component } from 'react'
 class CookiesListItem extends Component {
-  state = {
-    addCookie: false,
-    updateCookie: null
+  constructor (props) {
+    super(props)
+
+    this.state = {
+      addCookie: false,
+      updateCookie: null,
+      currentDomain: {}
+    }
+  }
+
+  componentDidMount () {
+    this.setState({ currentDomain: JSON.parse(JSON.stringify(this.props.domain)) })
+  }
+
+  componentDidUpdate (prevProps, prevState) {
+    if (this.props.domain !== prevProps.domain) {
+      this.setState({ currentDomain: JSON.parse(JSON.stringify(this.props.domain)) })
+    }
+  }
+
+  handleAddCookie () {
+    const domain = { ...this.state.currentDomain }
+    domain.cookies.random = 'random'
+    this.props.update_cookies(domain)
+    this.setState({ updateCookie: 'random' })
   }
 
   renderCookiesList () {
     return (
-      Object.keys(this.props.domain.cookies).map((name, index) => (
-        <div key={index} onClick={() => this.setState({ updateCookie: index })}>
+      Object.keys(this.state.currentDomain.cookies || {}).map((name, index) => (
+        <div key={index} onClick={() => this.setState({ updateCookie: name })}>
           {name}
-          {index === this.state.updateCookie && this.renderCookieArea(this.props.domain.cookies[name])}
+          {name === this.state.updateCookie && this.renderCookieArea(this.state.currentDomain.cookies[name])}
           <div className='d-flex'>
-            <span>cancle</span>
+            <span>cancel</span>
             <button className='btn btn-primary'>save</button>
           </div>
         </div>
       ))
-    )
-  }
-
-  renderAddCookieArea () {
-    return (
-      <textarea
-        className='form-control custom-input'
-        rows='2'
-        //  onChange={this.handleChange}
-        id='add-cookie'
-      />
     )
   }
 
@@ -52,16 +63,12 @@ class CookiesListItem extends Component {
       <div>
         <div onClick={() => this.props.changeModalTab(1)}>{'< back'}</div>
         <div className='d-flex justify-content-between'>
-          <div>{this.props.domain.domain}</div>
+          <div>{this.state.currentDomain.domain}</div>
           <div>
-            <span>{`${Object.entries(this.props.domain.cookies).length} cookies`}</span>
-            <button className='btn btn-primary' onClick={() => this.setState({ addCookie: true })}>Add Cookie</button>
+            <span>{`${Object.entries(this.state.currentDomain.cookies || {}).length} cookies`}</span>
+            <button className='btn btn-primary' onClick={() => this.handleAddCookie()}>Add Cookie</button>
           </div>
         </div>
-        {this.state.addCookie &&
-          <div>
-            {this.renderAddCookieArea()}
-          </div>}
         {this.renderCookiesList()}
       </div>
     )

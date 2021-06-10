@@ -3,7 +3,7 @@ import { Modal } from 'react-bootstrap'
 import CookiesList from './cookiesList/cookiesList'
 import CookiesListItem from './cookiesListItem/cookiesListItem'
 import { connect } from 'react-redux'
-import { fetchAllCookies, addCookieDomain } from './redux/cookiesActions'
+import { fetchAllCookies, addCookieDomain, updateCookies } from './redux/cookiesActions'
 import shortid from 'shortid'
 
 const mapStateToProps = (state) => {
@@ -15,8 +15,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     fetch_all_cookies: () => dispatch(fetchAllCookies()),
-    add_cookies_domain: (domain) =>
-      dispatch(addCookieDomain(domain))
+    add_cookies_domain: (domain) => dispatch(addCookieDomain(domain)),
+    update_cookies: (domain) => dispatch(updateCookies(domain))
   }
 }
 
@@ -42,10 +42,6 @@ export class CookiesModal extends Component {
 
   addDomain (domain) {
     domain.requestId = shortid.generate()
-    // const domains = this.state.domains
-    // domain.cookies = {}
-    // domains.push(domain)
-    // this.setState({ domains })
     this.props.add_cookies_domain(domain)
   }
 
@@ -71,24 +67,23 @@ export class CookiesModal extends Component {
         <Modal.Body>
           {this.state.tab === 1 ? this.renderCookiesList() : this.renderCookiesListItem()}
         </Modal.Body>
-        <Modal.Footer />
       </Modal>
     )
   }
 
   changeModalTab (id, domain = null) {
-    this.setState({ tab: id, selectedDomain: domain })
+    this.setState({ tab: id, selectedDomain: this.state.domains[domain.id] })
   }
 
   renderCookiesList () {
     return (
-      <CookiesList addDomain={this.addDomain.bind(this)} domains={this.state.domains} changeModalTab={this.changeModalTab.bind(this)} />
+      <CookiesList {...this.props} addDomain={this.addDomain.bind(this)} domains={this.state.domains} changeModalTab={this.changeModalTab.bind(this)} />
     )
   }
 
   renderCookiesListItem () {
     return (
-      <CookiesListItem changeModalTab={this.changeModalTab.bind(this)} domain={this.state.selectedDomain} />
+      <CookiesListItem {...this.props} changeModalTab={this.changeModalTab.bind(this)} domain={this.state.selectedDomain} />
     )
   }
 
@@ -96,7 +91,6 @@ export class CookiesModal extends Component {
     return (
       <div>
         {this.renderCookiesModal()}
-        {/* {'hello'} */}
       </div>
     )
   }
