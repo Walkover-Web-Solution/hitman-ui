@@ -118,7 +118,7 @@ class DisplayResponse extends Component {
           <ul className='nav nav-tabs respTabsListing' id='myTab' role='tablist'>
             <li className='nav-item' onClick={() => { this.setState({ selectedResponseTab: 'body' }) }}>
               <a
-                className='nav-link active'
+                className={this.state.selectedResponseTab === 'body' ? 'nav-link active' : 'nav-link'}
                 id='pills-response-tab'
                 data-toggle='pill'
                 role='tab'
@@ -134,7 +134,7 @@ class DisplayResponse extends Component {
             </li>
             <li className='nav-item' onClick={() => { this.setState({ selectedResponseTab: 'header' }) }}>
               <a
-                className='nav-link'
+                className={this.state.selectedResponseTab === 'header' ? 'nav-link active' : 'nav-link'}
                 id='pills-header-tab'
                 data-toggle='pill'
                 aria-selected='false'
