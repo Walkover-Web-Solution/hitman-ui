@@ -801,7 +801,11 @@ class DisplayEndpoint extends Component {
     if (url) {
       if (this.state.data.updatedUri.includes('localhost') && !(url.includes('localhost'))) { url = 'localhost:' + url }
       if (!/^(?:f|ht)tps?:\/\//.test(url)) {
-        url = 'https://' + url
+        if (url.includes('localhost') || url.includes('127.0.0.1')) {
+          url = 'http://' + url
+        } else {
+          url = 'https://' + url
+        }
       }
     }
     return url
