@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import moment from 'moment'
 class CookiesListItem extends Component {
   constructor (props) {
     super(props)
@@ -22,9 +23,11 @@ class CookiesListItem extends Component {
 
   handleAddCookie () {
     const domain = { ...this.state.currentDomain }
-    domain.cookies.random = 'random'
+    const newCookie = this.getNewCookie()
+    domain.cookies[newCookie.key] = newCookie.value
     this.props.update_cookies(domain)
-    this.setState({ updateCookie: 'random' })
+    // console.log(newCookie.key)
+    this.setState({ updateCookie: newCookie.key })
   }
 
   renderCookiesList () {
@@ -36,6 +39,19 @@ class CookiesListItem extends Component {
         </div>
       ))
     )
+  }
+
+  getNewCookie () {
+    let cookies = this.state.currentDomain.cookies
+    cookies = Object.keys(cookies || {})
+    for (let i = 1; cookies.length + 1; i++) {
+      const cookieName = `Cookie${i}`
+      if (!cookies.includes(cookieName)) {
+        const time = moment().format('ddd, Do MMM h:mm')
+        const cookieValue = `${cookieName}=value; Path=/; Expires=${time}`
+        return { key: cookieName, value: cookieValue }
+      }
+    }
   }
 
   renderCookieArea (cookie) {

@@ -83,7 +83,7 @@ export class CookiesModal extends Component {
 
   renderCookiesListItem () {
     return (
-      <CookiesListItem {...this.props} changeModalTab={this.changeModalTab.bind(this)} domain={this.state.selectedDomain} />
+      <CookiesListItem update_cookies={this.props.update_cookies.bind(this)} changeModalTab={this.changeModalTab.bind(this)} domain={this.state.selectedDomain} />
     )
   }
 
