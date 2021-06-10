@@ -72,7 +72,7 @@ export class CookiesModal extends Component {
   }
 
   changeModalTab (id, domain = null) {
-    this.setState({ tab: id, selectedDomain: this.state.domains[domain.id] })
+    this.setState({ tab: id, selectedDomain: domain ? this.state.domains[domain.id] : null })
   }
 
   renderCookiesList () {

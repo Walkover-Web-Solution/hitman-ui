@@ -33,10 +33,6 @@ class CookiesListItem extends Component {
         <div key={index} onClick={() => this.setState({ updateCookie: name })}>
           {name}
           {name === this.state.updateCookie && this.renderCookieArea(this.state.currentDomain.cookies[name])}
-          <div className='d-flex'>
-            <span>cancel</span>
-            <button className='btn btn-primary'>save</button>
-          </div>
         </div>
       ))
     )
@@ -45,16 +41,22 @@ class CookiesListItem extends Component {
   renderCookieArea (cookie) {
     console.log('cookie', cookie)
     return (
-      <textarea
-        className='form-control custom-input'
-        rows='2'
-      //  onChange={this.handleChange}
-        id='update-cookie'
-      //  error={errors[name]}
-      //  name={name}
-        value={cookie}
-      //  placeholder={placeholder}
-      />
+      <>
+        <textarea
+          className='form-control custom-input'
+          rows='2'
+        //  onChange={this.handleChange}
+          id='update-cookie'
+        //  error={errors[name]}
+        //  name={name}
+          value={cookie}
+        //  placeholder={placeholder}
+        />
+        <div className='d-flex'>
+          <span>cancel</span>
+          <button className='btn btn-primary'>save</button>
+        </div>
+      </>
     )
   }
 
