@@ -52,24 +52,44 @@ class CookiesListItem extends Component {
       cookieArray = currentCookie.value.split(';')
       cookieName = cookieArray[0].split('=')[0]
 
-      delete currentDomain.cookies[currentCookie.key]
-
-      // if(cookieArray[0]){
-      //   if(!cookieArray[0].split('=')[1]){
-      //     cookieArray[0] = cookieArray[0].split('=')[0] + '='
-      //   }
-      //   if(cookieArray[1]){
-      //     if(cookieArray[1].split('=')[0] !=='Path' && cookieArray[2].split('=')[0] !=="Expires"){
-      //       cookieArray[1] = 'Path=/'
-      //       currentDomain.cookies[cookieName] = cookieArray.join("; ")
-      //     }else{
-      currentDomain.cookies[cookieName] = currentCookie.value
-      //   }
-      // }
+      if (cookieArray[0] && cookieArray[1] && cookieArray[1].split('=')[0].trim() === 'Path') {
+        const modifiedData = this.randomCheck(currentCookie.value.trim())
+        if (modifiedData.data) {
+          if (!modifiedData.checkFlag) {
+            delete currentDomain.cookies[currentCookie.key]
+          }
+          currentDomain.cookies[cookieName] = modifiedData.data
+        } else if (cookieArray[1].split('=')[0].trim() === 'Path') {
+          delete currentDomain.cookies[currentCookie.key]
+          currentDomain.cookies[cookieName] = currentCookie.value
+        }
+      }
       this.props.update_cookies(currentDomain)
-      // }
     }
     this.setState({ updateCookie })
+  }
+
+  randomCheck (value) {
+    let checkFlag = false
+    let data = null
+    const valueArray = value.split(';')
+    if (valueArray[0] && valueArray[1].split('=')[0].trim() === 'Path') {
+      if (valueArray[0].split('=')[0] && !valueArray[0].split('=')[1]) {
+        if (valueArray[0].split('=')[1] !== '' && valueArray[0].split('=')?.length > 1) {
+          checkFlag = true
+          console.log('hello true', valueArray[0].split('='))
+        }
+        valueArray[0] = valueArray[0].replace(/=/gi, '') + '='
+      }
+      if (valueArray[1].split('=')[0] && !valueArray[1].split('=')[1]) {
+        valueArray[1] = 'Path=/ ;'
+      }
+      data = valueArray.join('; ')
+    } else {
+      checkFlag = false
+      data = null
+    }
+    return { checkFlag, data }
   }
 
   renderCookiesList () {
