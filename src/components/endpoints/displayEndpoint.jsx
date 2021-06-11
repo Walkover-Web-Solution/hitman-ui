@@ -224,8 +224,9 @@ class DisplayEndpoint extends Component {
         this.prepareHarObject()
       }
     }
-
-    if (this.state.endpoint.id !== prevState.endpoint.id) {
+    if (this.state.endpoint.id !== prevState.endpoint.id &&
+      !this.props.location.pathname.includes('history')
+    ) {
       this.setState({ flagResponse: false })
     }
   }
@@ -414,7 +415,8 @@ class DisplayEndpoint extends Component {
       fieldDescription,
       timeElapsed: history.timeElapsed,
       publicBodyFlag: true,
-      bodyFlag: true
+      bodyFlag: true,
+      flagResponse: true
     })
   }
 
@@ -762,6 +764,8 @@ class DisplayEndpoint extends Component {
     const response = { ...this.state.response }
     const createdAt = new Date()
     const timeElapsed = this.state.timeElapsed
+    delete response.request
+    delete response.config
     const obj = {
       id: shortid.generate(),
       endpoint: { ...endpoint },
@@ -836,7 +840,7 @@ class DisplayEndpoint extends Component {
     }
     if (api) {
       this.setState({ loader: true })
-      moveToNextStep(2)
+      moveToNextStep(5)
       await this.handleApiCall(api, body, headers, this.state.data.body.type)
       this.setState({ loader: false })
       this.myRef.current && this.myRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' })
@@ -914,6 +918,7 @@ class DisplayEndpoint extends Component {
           if (closeForm) this.closeEndpointFormModal()
           if (stopLoader) this.setState({ saveAsLoader: false })
         })
+        moveToNextStep(4)
       } else {
         if (this.state.saveAsFlag) {
           endpoint.requestId = shortid.generate()
@@ -923,6 +928,7 @@ class DisplayEndpoint extends Component {
             if (closeForm) this.closeEndpointFormModal()
             if (stopLoader) this.setState({ saveAsLoader: false })
           })
+          moveToNextStep(4)
         } else if (this.state.title === 'update endpoint') {
           this.setState({ saveLoader: true })
           this.props.update_endpoint({

@@ -8,6 +8,20 @@
   font-style: normal;
 }
 
+.mobile-warning{
+  position: sticky;
+  z-index: 1200;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: #fde073;
+  text-align: center;
+  line-height: 2.5;
+  overflow: hidden; 
+  -webkit-box-shadow: 0 0 5px black;
+  -moz-box-shadow:    0 0 5px black;
+  sbox-shadow:         0 0 5px black;
+}
 // @font-face {
 //   font-family: 'proxima-nova';
 //   src: url('../../assets/fonts/Proxima-Nova-Black.otf');
