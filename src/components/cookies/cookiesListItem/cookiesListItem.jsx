@@ -30,7 +30,6 @@ class CookiesListItem extends Component {
     const newCookie = this.getNewCookie()
     domain.cookies[newCookie.key] = newCookie.value
     this.props.update_cookies(domain)
-    // console.log(newCookie.key)
     this.setState({ updateCookie: newCookie })
   }
 
@@ -43,53 +42,64 @@ class CookiesListItem extends Component {
     const currentDomain = { ...this.state.currentDomain }
     const currentCookie = this.state.updateCookie
     let updateCookie = {}
-    let cookieArray = []
     let cookieName = ''
 
     if (currentDomain.cookies[currentCookie.key] === currentCookie.value) {
       updateCookie = {}
     } else if (currentCookie.value.trim()) {
-      cookieArray = currentCookie.value.split(';')
-      cookieName = cookieArray[0].split('=')[0]
-
-      if (cookieArray[0] && cookieArray[1] && cookieArray[1].split('=')[0].trim() === 'Path') {
-        const modifiedData = this.randomCheck(currentCookie.value.trim())
-        if (modifiedData.data) {
-          if (!modifiedData.checkFlag) {
-            delete currentDomain.cookies[currentCookie.key]
-          }
-          currentDomain.cookies[cookieName] = modifiedData.data
-        } else if (cookieArray[1].split('=')[0].trim() === 'Path') {
-          delete currentDomain.cookies[currentCookie.key]
-          currentDomain.cookies[cookieName] = currentCookie.value
-        }
+      cookieName = currentCookie.key
+      const { cookieString, name, expiresValue } = this.prepareCookieString(currentCookie.value.trim())
+      const time = moment(expiresValue)
+      if (expiresValue && moment(time).isBefore(moment().format())) {
+        const domain = currentDomain
+        delete domain.cookies[cookieName]
+        this.props.update_cookies(domain)
+        return
       }
-      this.props.update_cookies(currentDomain)
+      if (cookieString !== currentCookie.value) {
+        if (name && name !== cookieName) {
+          delete currentDomain.cookies[cookieName]
+          currentDomain.cookies[name] = cookieString
+        } else {
+          currentDomain.cookies[cookieName] = cookieString
+        }
+        this.props.update_cookies(currentDomain)
+      }
     }
     this.setState({ updateCookie })
   }
 
-  randomCheck (value) {
-    let checkFlag = false
-    let data = null
-    const valueArray = value.split(';')
-    if (valueArray[0] && valueArray[1].split('=')[0].trim() === 'Path') {
-      if (valueArray[0].split('=')[0] && !valueArray[0].split('=')[1]) {
-        if (valueArray[0].split('=')[1] !== '' && valueArray[0].split('=')?.length > 1) {
-          checkFlag = true
-          console.log('hello true', valueArray[0].split('='))
+  prepareCookieString (cookieValue) {
+    let cookie = ''
+    let name; let path = 'Path=/ ;'; let expires = ''; let secure = ''; let httponly = ''; let cookieString = ''
+    const cookieArray = cookieValue.split(';')
+    let expiresValue = null
+    cookieArray.forEach((item, index) => {
+      if (index === 0) {
+        let [key, value] = item.split('=')?.filter((v) => v !== '')
+        name = key?.trim()
+        value = value?.trim()
+        cookie = `${name}=${value || ''} ;`
+      } else {
+        let [key, value] = item.split('=')?.filter((v) => v !== '')
+        value = value?.trim()
+        if (key?.trim() === 'Path') {
+          path = `Path=${value} ;`
         }
-        valueArray[0] = valueArray[0].replace(/=/gi, '') + '='
+        if (key?.trim() === 'Expires') {
+          expires = `Expires=${value} ;`
+          expiresValue = value
+        }
+        if (key?.trim() === 'HttpOnly') {
+          httponly = 'HttpOnly ;'
+        }
+        if (key?.trim() === 'Secure') {
+          secure = 'Secure ;'
+        }
       }
-      if (valueArray[1].split('=')[0] && !valueArray[1].split('=')[1]) {
-        valueArray[1] = 'Path=/ ;'
-      }
-      data = valueArray.join('; ')
-    } else {
-      checkFlag = false
-      data = null
-    }
-    return { checkFlag, data }
+    })
+    cookieString = cookie + path + expires + httponly + secure
+    return { cookieString, name, expiresValue }
   }
 
   renderCookiesList () {
@@ -109,7 +119,7 @@ class CookiesListItem extends Component {
     for (let i = 1; cookies.length + 1; i++) {
       const cookieName = `Cookie${i}`
       if (!cookies.includes(cookieName)) {
-        const time = moment().format('ddd, Do MMM h:mm')
+        const time = moment().add(1, 'Y').format()
         const cookieValue = `${cookieName}=value; Path=/; Expires=${time}`
         return { key: cookieName, value: cookieValue }
       }
@@ -124,8 +134,6 @@ class CookiesListItem extends Component {
           rows='2'
           onChange={(e) => this.handleCookieEdit(e)}
           id='update-cookie'
-          //  error={errors[name]}
-          //  name={name}
           value={this.state.updateCookie.value}
         />
         <div className='text-right mt-2'>

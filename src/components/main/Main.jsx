@@ -17,6 +17,7 @@ import SideBar from './sidebar'
 import { getCurrentUser } from '../auth/authService'
 import PublishDocs from '../publishDocs/publishDocs'
 import { loadWidget } from '../../services/widgetService'
+import { fetchAllCookies } from '../cookies/redux/cookiesActions'
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -27,7 +28,8 @@ const mapDispatchToProps = (dispatch) => {
     fetch_pages: () => dispatch(fetchPages()),
     fetch_history: () => dispatch(fetchHistoryFromIdb()),
     move_endpoint: (endpointId, sourceGroupId, destinationGroupId) =>
-      dispatch(moveEndpoint(endpointId, sourceGroupId, destinationGroupId))
+      dispatch(moveEndpoint(endpointId, sourceGroupId, destinationGroupId)),
+    fetch_all_cookies: () => dispatch(fetchAllCookies())
   }
 }
 
@@ -55,6 +57,7 @@ class Main extends Component {
     this.props.fetch_endpoints()
     this.props.fetch_pages()
     this.props.fetch_history()
+    this.props.fetch_all_cookies()
   }
 
   setTabs (tabs, defaultTabIndex) {

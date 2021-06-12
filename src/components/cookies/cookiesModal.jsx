@@ -28,7 +28,7 @@ export class CookiesModal extends Component {
   }
 
   componentDidMount () {
-    this.props.fetch_all_cookies()
+    // this.props.fetch_all_cookies()
     if (this.props.cookies) {
       this.setState({ domains: this.props.cookies })
     }

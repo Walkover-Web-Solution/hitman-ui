@@ -69,6 +69,7 @@ export const updateCookies = (data) => {
     const originalData = JSON.parse(JSON.stringify(store.getState().cookies[id]))
     dispatch(updateCookieRequest(data))
     delete data.id
+    if (data?.requestId) delete data.requestId
     cookiesApiService
       .updateDomain(id, data)
       .then((response) => {
