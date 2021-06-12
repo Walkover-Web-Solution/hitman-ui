@@ -18,6 +18,7 @@ import { getCurrentUser } from '../auth/authService'
 import PublishDocs from '../publishDocs/publishDocs'
 import { loadWidget } from '../../services/widgetService'
 import { fetchAllCookies } from '../cookies/redux/cookiesActions'
+import { isDesktop } from 'react-device-detect'
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -75,22 +76,27 @@ class Main extends Component {
 
   render () {
     return (
-      <div className='custom-main-container'>
-        <div className='main-panel-wrapper'>
-          <SideBar
-            {...this.props}
-            tabs={[...this.state.tabs]}
-            set_tabs={this.setTabs.bind(this)}
-            default_tab_index={this.state.defaultTabIndex}
-          />
-          {this.props.location.pathname.split('/')[2] === 'publish'
-            ? <PublishDocs {...this.props} />
-            : <ContentPanel
-                {...this.props}
-                set_environment={this.setEnvironment.bind(this)}
-                set_tabs={this.setTabs.bind(this)}
-                default_tab_index={this.state.defaultTabIndex}
-              />}
+      <div>{!isDesktop &&
+        <div className='mobile-warning'>
+          Looks like you have opened it on a mobile device. It looks better on a desktop device.
+        </div>}
+        <div className='custom-main-container'>
+          <div className='main-panel-wrapper'>
+            <SideBar
+              {...this.props}
+              tabs={[...this.state.tabs]}
+              set_tabs={this.setTabs.bind(this)}
+              default_tab_index={this.state.defaultTabIndex}
+            />
+            {this.props.location.pathname.split('/')[2] === 'publish'
+              ? <PublishDocs {...this.props} />
+              : <ContentPanel
+                  {...this.props}
+                  set_environment={this.setEnvironment.bind(this)}
+                  set_tabs={this.setTabs.bind(this)}
+                  default_tab_index={this.state.defaultTabIndex}
+                />}
+          </div>
         </div>
       </div>
     )

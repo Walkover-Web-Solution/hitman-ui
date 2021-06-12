@@ -4,7 +4,7 @@ const authkey = process.env.REACT_APP_STEVE_AUTHKEY
 const widgetId = process.env.REACT_APP_STEVE_WIDGET_ID
 
 export function moveToNextStep (currentStepNo) {
-  if (window.isUserOnboardingComplete() === false) {
+  if (window.isUserOnboardingComplete && window.isUserOnboardingComplete() === false) {
     const steveEvent = new window.CustomEvent('steveOnboarding', { detail: { doneStep: currentStepNo } })
     window.dispatchEvent(steveEvent)
   }

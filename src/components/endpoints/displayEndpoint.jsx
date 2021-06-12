@@ -228,8 +228,9 @@ class DisplayEndpoint extends Component {
         this.prepareHarObject()
       }
     }
-
-    if (this.state.endpoint.id !== prevState.endpoint.id) {
+    if (this.state.endpoint.id !== prevState.endpoint.id &&
+      !this.props.location.pathname.includes('history')
+    ) {
       this.setState({ flagResponse: false })
     }
   }
@@ -418,7 +419,8 @@ class DisplayEndpoint extends Component {
       fieldDescription,
       timeElapsed: history.timeElapsed,
       publicBodyFlag: true,
-      bodyFlag: true
+      bodyFlag: true,
+      flagResponse: true
     })
   }
 
@@ -766,6 +768,8 @@ class DisplayEndpoint extends Component {
     const response = { ...this.state.response }
     const createdAt = new Date()
     const timeElapsed = this.state.timeElapsed
+    delete response.request
+    delete response.config
     const obj = {
       id: shortid.generate(),
       endpoint: { ...endpoint },
