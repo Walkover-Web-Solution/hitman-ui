@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 // import CookiesListItem from '../cookiesListItem/cookiesListItem';
 import './cookiesList.scss'
+import { ReactComponent as DeleteIcon } from '../../../assets/icons/delete-icon.svg'
 class CookiesList extends Component {
   state = {
     domains: [],
@@ -21,6 +22,10 @@ class CookiesList extends Component {
     this.setState({ currentDomain: '' })
   }
 
+  deleteDomain (domain) {
+    this.props.delete_domain(domain)
+  }
+
   renderAddDomain () {
     return (
       <form className='form-group d-flex p-2' onSubmit={(e) => this.handleSubmit(e)}>
@@ -37,12 +42,14 @@ class CookiesList extends Component {
   renderDomainList () {
     return (
       Object.values(this.props.domains).map((domain, index) => (
-        <div key={index} className='cookie-list-parent-item d-flex justify-content-between' onClick={() => this.renderCookiesListItem(domain)}>
-          <div className='mr-5'>{domain.domain}</div>
-          <div className='d-flex justify-content-between align-items-center'>
-            <div>{`${Object.keys(domain.cookies || {}).length} cookies`}</div>
-            <div className='ml-2'>x</div>
+        <div key={index} className='d-flex justify-content-between align-items-center '>
+          <div className='cookie-list-parent-item d-flex justify-content-between w-100' onClick={() => this.renderCookiesListItem(domain)}>
+            <div className='mr-5'>{domain.domain}</div>
+            <div className='d-flex justify-content-between align-items-center'>
+              <div>{`${Object.keys(domain.cookies || {}).length} cookies`}</div>
+            </div>
           </div>
+          <div className='ml-2' onClick={() => this.deleteDomain(domain)}> <DeleteIcon /> </div>
         </div>
       ))
     )

@@ -3,7 +3,7 @@ import { Modal } from 'react-bootstrap'
 import CookiesList from './cookiesList/cookiesList'
 import CookiesListItem from './cookiesListItem/cookiesListItem'
 import { connect } from 'react-redux'
-import { fetchAllCookies, addCookieDomain, updateCookies } from './redux/cookiesActions'
+import { fetchAllCookies, addCookieDomain, updateCookies, deleteDomain } from './redux/cookiesActions'
 import shortid from 'shortid'
 
 const mapStateToProps = (state) => {
@@ -16,7 +16,8 @@ const mapDispatchToProps = (dispatch) => {
   return {
     fetch_all_cookies: () => dispatch(fetchAllCookies()),
     add_cookies_domain: (domain) => dispatch(addCookieDomain(domain)),
-    update_cookies: (domain) => dispatch(updateCookies(domain))
+    update_cookies: (domain) => dispatch(updateCookies(domain)),
+    delete_domain: (domain) => dispatch(deleteDomain(domain))
   }
 }
 
