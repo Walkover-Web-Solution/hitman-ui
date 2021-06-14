@@ -84,10 +84,10 @@ class CookiesListItem extends Component {
         let [key, value] = item.split('=')?.filter((v) => v !== '')
         value = value?.trim()
         if (key?.trim() === 'Path') {
-          path = `Path=${value} ;`
+          path = `Path=${value || '/'} ;`
         }
         if (key?.trim() === 'Expires') {
-          expires = `Expires=${value} ;`
+          expires = `Expires=${value || ''} ;`
           expiresValue = value
         }
         if (key?.trim() === 'HttpOnly') {

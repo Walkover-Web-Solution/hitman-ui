@@ -5,6 +5,7 @@ import CookiesListItem from './cookiesListItem/cookiesListItem'
 import { connect } from 'react-redux'
 import { fetchAllCookies, addCookieDomain, updateCookies, deleteDomain } from './redux/cookiesActions'
 import shortid from 'shortid'
+import DeleteModal from '../common/deleteModal'
 
 const mapStateToProps = (state) => {
   return {
@@ -25,7 +26,13 @@ export class CookiesModal extends Component {
   state={
     tab: 1,
     selectedDomain: null,
-    domains: {}
+    domains: {},
+    deleteModal: false,
+    deleteModalData: {
+      title: '',
+      message: '',
+      domain: {}
+    }
   }
 
   componentDidMount () {
@@ -78,13 +85,49 @@ export class CookiesModal extends Component {
 
   renderCookiesList () {
     return (
-      <CookiesList {...this.props} addDomain={this.addDomain.bind(this)} domains={this.state.domains} changeModalTab={this.changeModalTab.bind(this)} />
+      <CookiesList
+        {...this.props}
+        addDomain={this.addDomain.bind(this)}
+        domains={this.state.domains}
+        changeModalTab={this.changeModalTab.bind(this)}
+        toggleDelete={this.toggleDelete.bind(this)}
+      />
     )
+  }
+
+  toggleDelete (deleteModal, deleteModalData) {
+    this.setState({ deleteModal, deleteModalData })
+  }
+
+  handleEntityDelete () {
+    const { title, domain } = this.state.deleteModalData
+    if (title === 'Delete Cookie') {
+      console.log('write delete code here')
+    }
+    if (title === 'Delete Domain') {
+      this.props.delete_domain(domain)
+    }
   }
 
   renderCookiesListItem () {
     return (
-      <CookiesListItem update_cookies={this.props.update_cookies.bind(this)} changeModalTab={this.changeModalTab.bind(this)} domain={this.state.selectedDomain} />
+      <CookiesListItem
+        update_cookies={this.props.update_cookies.bind(this)}
+        changeModalTab={this.changeModalTab.bind(this)}
+        domain={this.state.selectedDomain}
+      />
+    )
+  }
+
+  renderDeleteModal () {
+    return (
+      <DeleteModal
+        show={this.state.deleteModal}
+        onHide={() => this.setState({ deleteModal: false })}
+        title={this.state.deleteModalData.title}
+        message={this.state.deleteModalData.message}
+        handleEntityDelete={this.handleEntityDelete.bind(this)}
+      />
     )
   }
 
@@ -92,6 +135,8 @@ export class CookiesModal extends Component {
     return (
       <div>
         {this.renderCookiesModal()}
+        {this.renderDeleteModal()}
+        {this.renderDeleteModal()}
       </div>
     )
   }

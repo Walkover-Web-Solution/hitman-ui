@@ -23,7 +23,13 @@ class CookiesList extends Component {
   }
 
   deleteDomain (domain) {
-    this.props.delete_domain(domain)
+    const deleteModalData = {
+      title: 'Delete Domain',
+      message: 'Are you sure, Do you want to delete this domain?',
+      domain
+    }
+
+    this.props.toggleDelete(true, deleteModalData)
   }
 
   renderAddDomain () {

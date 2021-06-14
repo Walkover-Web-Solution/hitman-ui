@@ -64,6 +64,10 @@ class DeleteModal extends Component {
         sampleResponseFlagArray
       )
     }
+
+    if (title === 'Delete Domain') {
+      this.props.handleEntityDelete()
+    }
   }
 
   render () {
