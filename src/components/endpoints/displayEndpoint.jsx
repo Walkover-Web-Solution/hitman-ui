@@ -39,6 +39,8 @@ import Notes from './notes'
 import ReactHtmlParser from 'react-html-parser'
 import bodyDescriptionService from './bodyDescriptionService'
 import { moveToNextStep } from '../../services/widgetService'
+import CookiesModal from '../cookies/cookiesModal'
+import moment from 'moment'
 const shortid = require('shortid')
 
 const status = require('http-status')
@@ -54,7 +56,8 @@ const mapStateToProps = (state) => {
     currentEnvironmentId: state.environment.currentEnvironmentId,
     environments: state.environment.environments,
     historySnapshots: state.history,
-    collections: state.collections
+    collections: state.collections,
+    cookies: state.cookies
   }
 }
 
@@ -128,7 +131,8 @@ class DisplayEndpoint extends Component {
       theme: '',
       loader: false,
       saveLoader: false,
-      codeEditorVisibility: true
+      codeEditorVisibility: true,
+      showCookiesModal: false
     }
 
     this.uri = React.createRef()
@@ -811,6 +815,32 @@ class DisplayEndpoint extends Component {
     return url
   }
 
+  prepareHeaderCookies (url) {
+    const domainUrl = url.split('/')[2]
+    let cookies
+    Object.values(this.props.cookies || {}).forEach((domain) => {
+      if (domain.domain === domainUrl) {
+        cookies = domain?.cookies
+      }
+    })
+    if (cookies) {
+      let cookieString = ''
+      Object.values(cookies || {}).forEach((cookie) => {
+        let time
+        const expires = cookie.split(';')[2]
+        if (expires.split('=')[1]) {
+          time = expires.split('=')[1]
+        }
+        time = moment(time)
+        if (!(time && moment(time).isBefore(moment().format()))) {
+          cookieString += cookie.split(';')[0] + '; '
+        }
+      })
+      return cookieString
+    }
+    return null
+  }
+
   handleSend = async () => {
     const startTime = new Date().getTime()
     const response = {}
@@ -838,6 +868,12 @@ class DisplayEndpoint extends Component {
       this.setState({ loader: false })
       return
     }
+
+    const cookiesString = this.prepareHeaderCookies(BASE_URL)
+    if (cookiesString) {
+      headers.cookie = cookiesString.trim()
+    }
+
     if (api) {
       this.setState({ loader: true })
       moveToNextStep(5)
@@ -1796,6 +1832,16 @@ class DisplayEndpoint extends Component {
         : ''
   }
 
+  renderCookiesModal () {
+    return (
+      this.state.showCookiesModal &&
+        <CookiesModal
+          show={this.state.showCookiesModal}
+          onHide={() => this.setState({ showCookiesModal: false })}
+        />
+    )
+  }
+
   render () {
     this.endpointId = this.props.endpointId
       ? this.props.endpointId
@@ -1875,6 +1921,7 @@ class DisplayEndpoint extends Component {
       >
         <div className={isDashboardRoute(this.props) ? 'mainContentWrapper dashboardPage' : 'mainContentWrapper'}>
           <div className='hm-endpoint-container endpoint-container row'>
+            {this.renderCookiesModal()}
             {this.state.showLoginSignupModal && (
               <LoginSignupModal
                 show
@@ -2087,73 +2134,79 @@ class DisplayEndpoint extends Component {
                   {
                     isDashboardRoute(this.props)
                       ? (
-                        <div className='headers-params-wrapper'>
-                          <ul className='nav nav-tabs' id='pills-tab' role='tablist'>
-                            <li className='nav-item'>
-                              <a
-                                className={
-                                  this.setAuthorizationTab
-                                    ? 'nav-link '
-                                    : 'nav-link active'
-                                }
-                                id='pills-params-tab'
-                                data-toggle='pill'
-                                href={`#params-${this.props.tab.id}`}
-                                role='tab'
-                                aria-controls={`params-${this.props.tab.id}`}
-                                aria-selected={
-                                  this.setAuthorizationTab ? 'false' : 'true'
-                                }
-                              >
-                                Params
-                              </a>
-                            </li>
-                            <li className='nav-item'>
-                              <a
-                                className={
-                                  this.setAuthorizationTab
-                                    ? 'nav-link active'
-                                    : 'nav-link '
-                                }
-                                id='pills-authorization-tab'
-                                data-toggle='pill'
-                                href={`#authorization-${this.props.tab.id}`}
-                                role='tab'
-                                aria-controls={`authorization-${this.props.tab.id}`}
-                                aria-selected={
-                                  this.setAuthorizationTab ? 'true' : 'false'
-                                }
-                              >
-                                Authorization
-                              </a>
-                            </li>
-                            <li className='nav-item'>
-                              <a
-                                className='nav-link'
-                                id='pills-headers-tab'
-                                data-toggle='pill'
-                                href={`#headers-${this.props.tab.id}`}
-                                role='tab'
-                                aria-controls={`headers-${this.props.tab.id}`}
-                                aria-selected='false'
-                              >
-                                Headers
-                              </a>
-                            </li>
-                            <li className='nav-item'>
-                              <a
-                                className='nav-link'
-                                id='pills-body-tab'
-                                data-toggle='pill'
-                                href={`#body-${this.props.tab.id}`}
-                                role='tab'
-                                aria-controls={`body-${this.props.tab.id}`}
-                                aria-selected='false'
-                              >
-                                Body
-                              </a>
-                            </li>
-                          </ul>
+                        <div className='d-flex justify-content-between align-items-center'>
+                          <div className='headers-params-wrapper'>
+                            <ul className='nav nav-tabs' id='pills-tab' role='tablist'>
+                              <li className='nav-item'>
+                                <a
+                                  className={
+                                    this.setAuthorizationTab
+                                      ? 'nav-link '
+                                      : 'nav-link active'
+                                  }
+                                  id='pills-params-tab'
+                                  data-toggle='pill'
+                                  href={`#params-${this.props.tab.id}`}
+                                  role='tab'
+                                  aria-controls={`params-${this.props.tab.id}`}
+                                  aria-selected={
+                                    this.setAuthorizationTab ? 'false' : 'true'
+                                  }
+                                >
+                                  Params
+                                </a>
+                              </li>
+                              <li className='nav-item'>
+                                <a
+                                  className={
+                                    this.setAuthorizationTab
+                                      ? 'nav-link active'
+                                      : 'nav-link '
+                                  }
+                                  id='pills-authorization-tab'
+                                  data-toggle='pill'
+                                  href={`#authorization-${this.props.tab.id}`}
+                                  role='tab'
+                                  aria-controls={`authorization-${this.props.tab.id}`}
+                                  aria-selected={
+                                    this.setAuthorizationTab ? 'true' : 'false'
+                                  }
+                                >
+                                  Authorization
+                                </a>
+                              </li>
+                              <li className='nav-item'>
+                                <a
+                                  className='nav-link'
+                                  id='pills-headers-tab'
+                                  data-toggle='pill'
+                                  href={`#headers-${this.props.tab.id}`}
+                                  role='tab'
+                                  aria-controls={`headers-${this.props.tab.id}`}
+                                  aria-selected='false'
+                                >
+                                  Headers
+                                </a>
+                              </li>
+                              <li className='nav-item'>
+                                <a
+                                  className='nav-link'
+                                  id='pills-body-tab'
+                                  data-toggle='pill'
+                                  href={`#body-${this.props.tab.id}`}
+                                  role='tab'
+                                  aria-controls={`body-${this.props.tab.id}`}
+                                  aria-selected='false'
+                                >
+                                  Body
+                                </a>
+                              </li>
+                            </ul>
+                          </div>
+                          {getCurrentUser() &&
+                            <div onClick={() => this.setState({ showCookiesModal: true })}>
+                              Cookies
+                            </div>}
                         </div>
                         )
                       : null
