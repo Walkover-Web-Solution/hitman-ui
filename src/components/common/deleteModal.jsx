@@ -65,7 +65,7 @@ class DeleteModal extends Component {
       )
     }
 
-    if (title === 'Delete Domain') {
+    if (title === 'Delete Domain' || title === 'Delete Cookie') {
       this.props.handleEntityDelete()
     }
   }

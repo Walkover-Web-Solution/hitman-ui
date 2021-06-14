@@ -102,19 +102,27 @@ export class CookiesModal extends Component {
   handleEntityDelete () {
     const { title, domain } = this.state.deleteModalData
     if (title === 'Delete Cookie') {
-      console.log('write delete code here')
+      this.props.update_cookies(domain)
     }
     if (title === 'Delete Domain') {
       this.props.delete_domain(domain)
     }
+    const newData = {
+      title: '',
+      message: '',
+      domain: {}
+    }
+    this.setState({ deleteModalData: newData })
   }
 
   renderCookiesListItem () {
+    const selectedDomainId = this.state.selectedDomain.id
     return (
       <CookiesListItem
         update_cookies={this.props.update_cookies.bind(this)}
         changeModalTab={this.changeModalTab.bind(this)}
-        domain={this.state.selectedDomain}
+        domain={this.state.domains[selectedDomainId]}
+        toggleDelete={this.toggleDelete.bind(this)}
       />
     )
   }
