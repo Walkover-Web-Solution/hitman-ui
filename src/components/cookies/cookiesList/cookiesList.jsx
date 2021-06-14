@@ -36,7 +36,7 @@ class CookiesList extends Component {
     return (
       <form className='form-group d-flex p-2' onSubmit={(e) => this.handleSubmit(e)}>
         <input className='form-control' placeholder='Add Domain' value={this.state.currentDomain.domain} onChange={(e) => this.handleChange(e)} />
-        <button className='btn btn-primary' type='submit' disabled={this.state.currentDomain.domain === ''}>Add</button>
+        <button className='btn btn-primary ml-3' type='submit' disabled={this.state.currentDomain.domain === ''}>Add</button>
       </form>
     )
   }
@@ -50,14 +50,14 @@ class CookiesList extends Component {
 
       (Object.keys(this.props.domains).length > 0
         ? Object.values(this.props.domains).map((domain, index) => (
-          <div key={index} className='d-flex justify-content-between align-items-center '>
-            <div className='cookie-list-parent-item d-flex justify-content-between w-100' onClick={() => this.renderCookiesListItem(domain)}>
+          <div key={index} className='d-flex justify-content-between align-items-center'>
+            <div className='cookie-list-parent-item d-flex justify-content-between cursor-pointer w-100' onClick={() => this.renderCookiesListItem(domain)}>
               <div className='mr-5'>{domain.domain}</div>
               <div className='d-flex justify-content-between align-items-center'>
                 <div>{`${Object.keys(domain.cookies || {}).length} cookies`}</div>
               </div>
             </div>
-            <div className='ml-2' onClick={() => this.deleteDomain(domain)}> <DeleteIcon /> </div>
+            <div className='cursor-pointer ml-2' onClick={() => this.deleteDomain(domain)}> <DeleteIcon /> </div>
           </div>
           ))
         : <h4 className='text-center'>No Domain available!</h4>)

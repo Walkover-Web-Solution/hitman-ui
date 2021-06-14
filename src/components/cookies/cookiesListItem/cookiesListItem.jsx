@@ -125,7 +125,7 @@ class CookiesListItem extends Component {
               <div onClick={() => this.setState({ updateCookie: { key: name, value: this.state.currentDomain.cookies[name] } })}>{name}</div>
               {name === this.state.updateCookie.key && this.renderCookieArea()}
             </div>
-            <div onClick={() => this.deleteCookie(name)}>
+            <div className='cursor-pointer' onClick={() => this.deleteCookie(name)}>
               <DeleteIcon />
             </div>
           </div>
@@ -168,9 +168,9 @@ class CookiesListItem extends Component {
   render () {
     return (
       <div>
-        <div onClick={() => this.props.changeModalTab(1)}>{'< back'}</div>
+        <div className='back-link' onClick={() => this.props.changeModalTab(1)}>{'< back'}</div>
         <div className='d-flex justify-content-between align-items-center'>
-          <div>{this.state.currentDomain.domain}</div>
+          <div className='domain-title'>{this.state.currentDomain.domain}</div>
           <div className='d-flex justify-content-between align-items-center'>
             <div className='mr-3'>{`${Object.entries(this.state.currentDomain.cookies || {}).length} cookies`}</div>
             <button className='btn btn-primary' onClick={() => this.handleAddCookie()}>Add Cookie</button>
