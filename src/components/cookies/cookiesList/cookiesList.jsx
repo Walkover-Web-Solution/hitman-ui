@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-// import CookiesListItem from '../cookiesListItem/cookiesListItem';
 import './cookiesList.scss'
 import { ReactComponent as DeleteIcon } from '../../../assets/icons/delete-icon.svg'
 class CookiesList extends Component {
