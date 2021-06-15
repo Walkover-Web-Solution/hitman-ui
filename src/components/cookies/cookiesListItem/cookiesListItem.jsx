@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import moment from 'moment'
 import './cookiesListItem.scss'
+import { ReactComponent as DeleteIcon } from '../../../assets/icons/delete-icon.svg'
 class CookiesListItem extends Component {
   constructor (props) {
     super(props)
@@ -84,10 +85,10 @@ class CookiesListItem extends Component {
         let [key, value] = item.split('=')?.filter((v) => v !== '')
         value = value?.trim()
         if (key?.trim() === 'Path') {
-          path = `Path=${value} ;`
+          path = `Path=${value || '/'} ;`
         }
         if (key?.trim() === 'Expires') {
-          expires = `Expires=${value} ;`
+          expires = `Expires=${value || ''} ;`
           expiresValue = value
         }
         if (key?.trim() === 'HttpOnly') {
@@ -102,14 +103,34 @@ class CookiesListItem extends Component {
     return { cookieString, name, expiresValue }
   }
 
+  deleteCookie (name) {
+    const domain = JSON.parse(JSON.stringify(this.state.currentDomain))
+    delete domain.cookies[name]
+    const deleteModalData = {
+      title: 'Delete Cookie',
+      message: 'Are you sure, Do you want to delete this cookie?',
+      domain
+    }
+
+    this.props.toggleDelete(true, deleteModalData)
+  }
+
   renderCookiesList () {
+    const cookies = this.state.currentDomain.cookies
     return (
-      Object.keys(this.state.currentDomain.cookies || {}).map((name, index) => (
-        <div className='cookie-item' key={index}>
-          <div onClick={() => this.setState({ updateCookie: { key: name, value: this.state.currentDomain.cookies[name] } })}>{name}</div>
-          {name === this.state.updateCookie.key && this.renderCookieArea()}
-        </div>
-      ))
+      (Object.keys(cookies || {}).length > 0
+        ? Object.keys(cookies || {}).map((name, index) => (
+          <div key={index} className='cookie-item'>
+            <div className='w-100' key={index}>
+              <div onClick={() => this.setState({ updateCookie: { key: name, value: this.state.currentDomain.cookies[name] } })}>{name}</div>
+              {name === this.state.updateCookie.key && this.renderCookieArea()}
+            </div>
+            <div className='cursor-pointer' onClick={() => this.deleteCookie(name)}>
+              <DeleteIcon />
+            </div>
+          </div>
+          ))
+        : <h4 className='text-center'>No Cookies available!</h4>)
     )
   }
 
@@ -147,9 +168,9 @@ class CookiesListItem extends Component {
   render () {
     return (
       <div>
-        <div onClick={() => this.props.changeModalTab(1)}>{'< back'}</div>
+        <div className='back-link' onClick={() => this.props.changeModalTab(1)}>{'< back'}</div>
         <div className='d-flex justify-content-between align-items-center'>
-          <div>{this.state.currentDomain.domain}</div>
+          <div className='domain-title'>{this.state.currentDomain.domain}</div>
           <div className='d-flex justify-content-between align-items-center'>
             <div className='mr-3'>{`${Object.entries(this.state.currentDomain.cookies || {}).length} cookies`}</div>
             <button className='btn btn-primary' onClick={() => this.handleAddCookie()}>Add Cookie</button>
