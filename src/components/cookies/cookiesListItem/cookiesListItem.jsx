@@ -122,11 +122,11 @@ class CookiesListItem extends Component {
         ? Object.keys(cookies || {}).map((name, index) => (
           <div key={index} className='cookie-item'>
             <div className='w-100' key={index}>
-              <div onClick={() => this.setState({ updateCookie: { key: name, value: this.state.currentDomain.cookies[name] } })}>{name}</div>
+              <div className='cursor-pointer' onClick={() => this.setState({ updateCookie: { key: name, value: this.state.currentDomain.cookies[name] } })}>{name}</div>
               {name === this.state.updateCookie.key && this.renderCookieArea()}
             </div>
-            <div className='cursor-pointer' onClick={() => this.deleteCookie(name)}>
-              <DeleteIcon />
+            <div onClick={() => this.deleteCookie(name)}>
+              <DeleteIcon className='cursor-pointer' />
             </div>
           </div>
           ))
@@ -158,7 +158,7 @@ class CookiesListItem extends Component {
           value={this.state.updateCookie.value}
         />
         <div className='text-right mt-2'>
-          <span className='mr-3' onClick={() => this.setState({ updateCookie: {} })}>cancel</span>
+          <span className='cursor-pointer mr-3' onClick={() => this.setState({ updateCookie: {} })}>cancel</span>
           <button className='btn btn-primary' onClick={() => this.saveCookie()}>save</button>
         </div>
       </>
