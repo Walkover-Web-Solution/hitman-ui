@@ -8,17 +8,11 @@
     "files": [
         "../build/**/*"
     ],
-    "afterSign": "./notarize.js",
     "mac": {
         "target": [
             "dmg",
             "zip"
         ],
-        "identity": "Walkover Web Solutions Private Limited (F3U6Z5L2EJ)",
-        "type": "distribution",
-        "entitlements": "./default.entitlements.mas.plist",
-        "entitlementsInherit": "./default.entitlements.mas.inherit.plist",
-        "provisioningProfile": "./embedded.provisionprofile",
         "icon": "hitman-icon.png",
         "hardenedRuntime": true,
         "gatekeeperAssess": false
@@ -43,5 +37,11 @@
         "shortcutName": "Hitman",
         "perMachine": false
     },
+    "protocols": [{
+        "name": "hitman-app",
+        "schemes": [
+          "hitman-app"
+        ]
+    }],
     "asar": true
 }

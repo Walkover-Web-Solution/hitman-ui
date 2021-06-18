@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require('electron')
+const { app, BrowserWindow, protocol } = require('electron')
 const isDev = require('electron-is-dev')
 const path = require('path')
 
@@ -14,6 +14,12 @@ function createWindow () {
       contextIsolation: false
     }
   })
+  protocol.registerFileProtocol('hitman-app', (request, callback) => {
+    // parse authorization code from request
+    console.log(request)
+  }, (error) => {
+    if (error) console.error('Failed to register protocol')
+  })
   const startURL = isDev ? 'http://localhost:3000' : `file://${path.join(__dirname, '/index.html')}`
 
   mainWindow.loadURL(startURL)
@@ -23,6 +29,7 @@ function createWindow () {
     mainWindow = null
   })
 }
+app.setAsDefaultProtocolClient('hitman-app')
 app.on('ready', createWindow)
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
