@@ -3022,4 +3022,22 @@ a.cta-type {
   form{
     padding: 0 !important;
   }
+  .icon-center{
+    min-width: 90px;
+    text-align: center;
+  }
+}
+
+.cookie-modal > div > div.d-flex {
+  margin-bottom: 10px;
+}
+li.nav-item.cookie-tab a {
+  padding: 0.55rem 1rem;
+  font-size: 14px;
+  color: #828282;
+  display: flex;
+  cursor: pointer;
+}
+.endpoint-headers-container .nav-item a:hover {
+  color: #e98a36 !important;
 }
