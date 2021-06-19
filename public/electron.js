@@ -4,7 +4,7 @@ const path = require('path')
 
 let mainWindow
 let deeplinkUrl
-// const log = require('electron-log').info
+const log = require('electron-log').info
 const gotTheLock = app.requestSingleInstanceLock()
 
 // Force Single Instance Application
@@ -17,7 +17,18 @@ if (!gotTheLock) {
   // argv: An array of the second instance’s (command line / deep linked) arguments
     if (process.platform === 'win32') {
     // Keep only command line / deep linked arguments
-      deeplinkUrl = event
+      if (commandLine) {
+        const hitmanProtocolData = commandLine.find(item => item.includes('hitman-app://'))
+        if (hitmanProtocolData) {
+          deeplinkUrl = hitmanProtocolData
+          const token = hitmanProtocolData.split('sokt-auth-token=').pop()
+          if (token) {
+            log('emitting: ' + token)
+            mainWindow.webContents.send('token-transfer-channel', token)
+          }
+        }
+      }
+      log(commandLine)
     }
 
     if (mainWindow) {
@@ -44,13 +55,6 @@ function createWindow () {
   if (process.platform === 'win32') {
     // Keep only command line / deep linked arguments
     deeplinkUrl = process.argv.slice(1)
-    if (deeplinkUrl) {
-      const token = deeplinkUrl.split('sokt-auth-token=').pop()
-      if (token) {
-        // log('emitting: ' + token)
-        mainWindow.webContents.send('token-transfer-channel', token)
-      }
-    }
   }
   mainWindow.once('ready-to-show', () => mainWindow.show())
   mainWindow.on('closed', () => {
@@ -73,11 +77,11 @@ app.on('activate', () => {
 app.on('open-url', function (event, url) {
   event.preventDefault()
   deeplinkUrl = url
-  //   log('open-url# ' + deeplinkUrl)
+  log('open-url# ' + deeplinkUrl)
   if (deeplinkUrl) {
     const token = deeplinkUrl.split('sokt-auth-token=').pop()
     if (token) {
-    //   log('emitting: ' + token)
+      log('emitting: ' + token)
       mainWindow.webContents.send('token-transfer-channel', token)
     }
   }
