@@ -214,7 +214,7 @@ nav.navbar.navbar-dark.fixed-top.bg-dark.flex-md-nowrap.p-0.shadow {
   text-transform: capitalize;
   display: flex;
   width: 100%;
-  padding: 7px 5px 7px 25px;
+  padding: 7px 25px 7px 25px;
   border-radius: 0;
   border: none;
   align-items: center;
@@ -426,6 +426,9 @@ label.data-type {
 
 .dropdown-menu .dropdown-item {
   border-radius: 3px;
+  display: flex;
+  -webkit-display:flex;
+  align-items: center;
   padding: 5px 10px;
 }
 
@@ -1164,7 +1167,7 @@ button.editBtn {
 .adddescLink {
   float: right;
   color: #E98A36;
-  text-decoration: underline;
+  text-decoration: none;
   cursor: pointer;
   font-size: 14px;
   background: transparent;
@@ -2182,8 +2185,39 @@ button.toggleButton {
 .hm-right-content .pageText {
   padding: 0px;
   color: #000;
-  font-size: 14px;
+  font-size: 16px;
+  line-height: 32px;
   margin-top: 25px;
+
+  h4, h3 {
+    font-size: inherit;
+  }
+  ul {
+    padding-left: 18px;
+  }
+  ul li {
+    list-style-type: decimal;
+  }
+  table {
+    background: #F8F8F8;
+    border: 1px solid #e0e0e0;
+  }
+  table tr td {
+      padding: 8px 30px;
+      color: #828282;
+      min-width: 300px;
+  }
+  table tr:first-child td {
+      padding: 10px 30px;
+      background: #fff;
+      border-bottom: 1px solid #e0e0e0;
+  }
+  table tr td p {
+      margin: 0;
+  }
+  table tr:nth-child(2) td {
+      padding-top: 15px;
+  }
 }
 
 
@@ -2650,7 +2684,7 @@ span.endpointNameWrapper {
   &.linkWrapper .linkWith:after {
     content: '';
     position: absolute;
-    left: 21px;
+    left: 19px;
     width: 12px;
     height: calc(41% + 8px);
     border-color: #E98A36;
@@ -2694,7 +2728,7 @@ span.endpointNameWrapper {
   &.linkWrapper .linkWith:after {
     content: '';
     position: absolute;
-    left: 21px;
+    left: 19px;
     height: 100%;
     border-color: #E98A36;
     border-style: solid;
@@ -2711,16 +2745,16 @@ span.endpointNameWrapper {
   &.linkWrapper .linkWith .accordion>button:before {
     content: '';
     position: absolute;
-    left: 20px;
-    width: 12px;
-    height: calc(75% + 10px);
+    left: 18px;
+    width: 17px;
+    height: calc(75% + 8px);
     border-color: #E98A36;
     border-style: solid;
     z-index: 99;
   }
 
   &.linkWrapper .linkWith .accordion>button:before {
-    top: -20px;
+    top: -18px;
     border-width: 0 0 1px 1px;
   }
 
@@ -2911,7 +2945,13 @@ div#history-tab-button button#dropdown-basic {
   border: 1px solid #F29F48;
   padding: 7px 18px;
   background: #fff;
+  transition: all 300ms ease-in-out;
 } 
+.communti-btn-wrapper a:hover {
+  background: linear-gradient(135deg, #F2994A 2.5%, #f2994a 2.51%, #f0bd3b 100%);
+  text-decoration: none;
+  color: #fff;
+}
 .mar-righ-wrapper {
   display: flex;
   align-items: center;
@@ -2964,11 +3004,21 @@ a.cta-type {
   font-size: 13px;
   border: none;
 }
+// Cookie
 
-.desktop-login-button {
-  background: linear-gradient(
-135deg
-, #F2994A 2.5%, #f2994a 2.51%, #f0bd3b 100%);
-    border: none;
-    border-radius: 4px;
+.cookie-modal {
+  padding: 20px 45px;
+
+  input.form-control {
+    max-width: 85%;
+  }
+  .cookie-modal form {
+    padding: 0 !important;
+  }
+  button.btn.btn-primary {
+    padding: 7px 33px;
+  }
+  form{
+    padding: 0 !important;
+  }
 }
