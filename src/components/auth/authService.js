@@ -1,4 +1,5 @@
 import http from '../../services/httpService'
+import history from '../../history'
 const apiEndpoint = process.env.REACT_APP_API_URL + '/profile'
 const apiUrl = process.env.REACT_APP_API_URL
 const signUpNotifierUrl = process.env.REACT_APP_SIGN_UP_NOTIFIER_URL
@@ -41,12 +42,17 @@ export function loginWithJwt (jwt) {
   window.localStorage.setItem(tokenKey, jwt)
 }
 export function logout () {
+  const isDesktop = process.env.REACT_APP_IS_DESKTOP
   http.get(apiUrl + '/logout').then(() => {
     window.localStorage.removeItem(tokenKey)
     window.localStorage.removeItem(profileKey)
     window.localStorage.removeItem(orgKey)
-    const redirectUri = encodeURIComponent(`${uiURL}/login`)
-    window.location = `${ssoURL}/logout?redirect_uri=${redirectUri}&src=hitman`
+    if (isDesktop) {
+      history.push({ pathname: '/' })
+    } else {
+      const redirectUri = encodeURIComponent(`${uiURL}/login`)
+      window.location = `${ssoURL}/logout?redirect_uri=${redirectUri}&src=hitman`
+    }
   })
 }
 export function getCurrentUser () {
@@ -63,8 +69,6 @@ export function getCurrentOrg () {
     const org = window.localStorage.getItem(orgKey)
     return JSON.parse(org)
   } catch (ex) {
-    logout()
-    window.location = '/'
     return null
   }
 }

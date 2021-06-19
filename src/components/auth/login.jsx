@@ -13,7 +13,10 @@ class Login extends Component {
       await auth.notifySignup(userInfo)
     }
     const { state } = this.props.location
-    window.location = state ? state.from.pathname : '/dashboard/endpoint/new'
+    const reloadRoute = state ? state.from.pathname : '/dashboard/endpoint/new'
+    this.props.history.push({
+      pathname: reloadRoute
+    })
   }
 
   isNewUser () {

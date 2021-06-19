@@ -48,6 +48,8 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
+const isDesktopApp = process.env.REACT_APP_IS_DESKTOP
+
 class ContentPanel extends Component {
   constructor (props) {
     super(props)
@@ -163,16 +165,17 @@ class ContentPanel extends Component {
                   <div className='float-right d-flex communti-btn-wrapper community-btn-1'>
                     <a href={process.env.REACT_APP_COMMUNITY_URL} rel='noreferrer' target='_blank'>Community </a>
                   </div>
-                  <div className='float-right d-flex communti-btn-wrapper community-btn-1' onClick={() => { this.openLink() }}>Desktop</div>
-                  <div
-                    id='sokt-sso'
-                    data-redirect-uri={redirectionUrl}
-                    data-source='hitman'
-                    data-token-key='sokt-auth-token'
-                    data-view='button'
-                    data-app-logo-url='https://hitman.app/wp-content/uploads/2020/12/123.png'
-                    signup_uri={redirectionUrl + '?signup=true'}
-                  />
+                  {isDesktopApp
+                    ? <div className='float-right d-flex btn btn-primary' onClick={() => { this.openLink() }}>Login/SignUp</div>
+                    : <div
+                        id='sokt-sso'
+                        data-redirect-uri={redirectionUrl}
+                        data-source='hitman'
+                        data-token-key='sokt-auth-token'
+                        data-view='button'
+                        data-app-logo-url='https://hitman.app/wp-content/uploads/2020/12/123.png'
+                        signup_uri={redirectionUrl + '?signup=true'}
+                      />}
                 </div>
                 )
               : null

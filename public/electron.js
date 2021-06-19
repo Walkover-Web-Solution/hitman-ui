@@ -4,7 +4,6 @@ const path = require('path')
 
 let mainWindow
 let deeplinkUrl
-const log = require('electron-log').info
 const gotTheLock = app.requestSingleInstanceLock()
 
 // Force Single Instance Application
@@ -23,12 +22,10 @@ if (!gotTheLock) {
           deeplinkUrl = hitmanProtocolData
           const token = hitmanProtocolData.split('sokt-auth-token=').pop()
           if (token) {
-            log('emitting: ' + token)
             mainWindow.webContents.send('token-transfer-channel', token)
           }
         }
       }
-      log(commandLine)
     }
 
     if (mainWindow) {
@@ -61,7 +58,16 @@ function createWindow () {
     mainWindow = null
   })
 }
-app.setAsDefaultProtocolClient('hitman-app')
+
+// If we are running a non-packaged version of the app && on windows
+if (isDev && process.platform === 'win32') {
+  // Set the path of electron.exe and your app.
+  // These two additional parameters are only available on windows.
+  app.setAsDefaultProtocolClient('hitman-app', process.execPath, [path.resolve(process.argv[1])])
+} else {
+  app.setAsDefaultProtocolClient('hitman-app')
+}
+
 app.on('ready', createWindow)
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
@@ -77,11 +83,9 @@ app.on('activate', () => {
 app.on('open-url', function (event, url) {
   event.preventDefault()
   deeplinkUrl = url
-  log('open-url# ' + deeplinkUrl)
   if (deeplinkUrl) {
     const token = deeplinkUrl.split('sokt-auth-token=').pop()
     if (token) {
-      log('emitting: ' + token)
       mainWindow.webContents.send('token-transfer-channel', token)
     }
   }
