@@ -30,7 +30,7 @@ class App extends Component {
 
   componentDidMount () {
     if (process.env.REACT_APP_IS_DESKTOP) {
-    //   const log = window.require('electron-log').info
+      // const log = window.require('electron-log').info
       const { ipcRenderer } = window.require('electron')
       ipcRenderer.on('token-transfer-channel', (event, data) => {
         // log('Token received: ', data)
