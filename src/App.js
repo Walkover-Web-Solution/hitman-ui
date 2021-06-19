@@ -10,10 +10,11 @@ import Public from './components/publicEndpoint/publicEndpoint.jsx'
 import Landing from './components/landing/landing'
 import { ToastContainer } from 'react-toastify'
 import ClientDoc from './components/publishDocs/clientDoc'
+import BrowserLogin from './components/broswerLogin/browserLogin'
 
 class App extends Component {
   async redirectToClientDomain () {
-    const isDesktop = process.env.IS_DESKTOP
+    const isDesktop = process.env.REACT_APP_IS_DESKTOP
     const domainsList = process.env.REACT_APP_DOMAINS_LIST ? process.env.REACT_APP_DOMAINS_LIST.split(',') : []
     const currentDomain = window.location.href.split('/')[2]
     if ((!domainsList.includes(currentDomain) && window.location.href.split('/')[3] !== 'p') && !isDesktop) {
@@ -27,12 +28,22 @@ class App extends Component {
     }
   }
 
+  componentDidMount () {
+    if (process.env.REACT_APP_IS_DESKTOP) {
+      // const log = window.require('electron-log').info
+      const { ipcRenderer } = window.require('electron')
+      ipcRenderer.on('token-transfer-channel', (event, data) => {
+        // log('Token received: ', data)
+      })
+    }
+  }
+
     render = () => {
       return this.renderApp()
     }
 
     renderApp = () => {
-      const isDesktop = process.env.IS_DESKTOP
+      const isDesktop = process.env.REACT_APP_IS_DESKTOP
       const domainsList = process.env.REACT_APP_DOMAINS_LIST ? process.env.REACT_APP_DOMAINS_LIST.split(',') : []
       const currentDomain = window.location.href.split('/')[2]
       if (!domainsList.includes(currentDomain) && window.location.href.split('/')[3] !== 'p' && !isDesktop) {
@@ -52,6 +63,7 @@ class App extends Component {
             <Route path='/p/error' component={NotFound} />
             <Route path='/p/:collectionIdentifier' component={Public} />
             <Route path='/logout' component={Logout} />
+            <Route path='/browser-login' component={BrowserLogin} />
             <Route path='/login' component={Login} />
             <Route path='/marketPlace' component={PublicView} />
             <Route path='/' component={Landing} />

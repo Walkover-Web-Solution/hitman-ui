@@ -43,5 +43,11 @@
         "shortcutName": "Hitman",
         "perMachine": false
     },
+    "protocols": [{
+        "name": "hitman-app",
+        "schemes": [
+          "hitman-app"
+        ]
+    }],
     "asar": true
 }

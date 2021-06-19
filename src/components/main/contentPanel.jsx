@@ -61,6 +61,11 @@ class ContentPanel extends Component {
     // });
   }
 
+  openLink () {
+    const url = `${process.env.REACT_APP_UI_URL}/browser-login`
+    window.require('electron').shell.openExternal(url)
+  }
+
   handleSaveEndpoint (flag, tabId) {
     this.setState({ saveEndpointFlag: flag, selectedTabId: tabId })
   }
@@ -158,6 +163,7 @@ class ContentPanel extends Component {
                   <div className='float-right d-flex communti-btn-wrapper community-btn-1'>
                     <a href={process.env.REACT_APP_COMMUNITY_URL} rel='noreferrer' target='_blank'>Community </a>
                   </div>
+                  <div className='float-right d-flex communti-btn-wrapper community-btn-1' onClick={() => { this.openLink() }}>Desktop</div>
                   <div
                     id='sokt-sso'
                     data-redirect-uri={redirectionUrl}
@@ -219,7 +225,7 @@ class ContentPanel extends Component {
                     </Nav>
                   </div>
 
-                  <div class='custom-btn-group d-flex'>
+                  <div className='custom-btn-group d-flex'>
                     <button
                       className='btn'
                       onClick={() => { this.openLoginSignupModal() }}
