@@ -47,19 +47,25 @@
         display: inline-table;
     }
     .entity-name {  
-        border: none;
-        text-transform: capitalize;;
-        background: #F3F3F3;
-        margin:30px;
-        border-radius: 4px;
+        margin: 20px 30px;
+        border-radius: 10px;
         cursor: pointer;
-        height: 120px;
+        height: 80px;
         width: 180px;
-        background: #F3F3F3;
+        background: #fff;
         display: flex;
         justify-content: center;
         align-items: center;
         outline: none;
+        border: 1px solid #dedede;
+        font-size: 15px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        box-shadow: 0px 0px 30px 0px #e8e8e8;
+        transition: all 200ms ease-in;
+    }
+    .entity-name:hover {
+        border-color: #F2994A;
     }
 }
 
