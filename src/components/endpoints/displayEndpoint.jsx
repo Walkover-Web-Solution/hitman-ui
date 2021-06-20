@@ -2205,16 +2205,8 @@ class DisplayEndpoint extends Component {
                                   Body
                                 </a>
                               </li>
-                              <li className='nav-item'>
-                                <a
-                                  className='nav-link'
-                                  id='pills-body-tab'
-                                  data-toggle='pill'
-                                  href={`#body-${this.props.tab.id}`}
-                                  role='tab'
-                                  aria-controls={`body-${this.props.tab.id}`}
-                                  aria-selected='false'
-                                >
+                              <li className='nav-item cookie-tab'>
+                                <a>
                                   {getCurrentUser() &&
                                     <div onClick={() => this.setState({ showCookiesModal: true })}>
                                       Cookies
