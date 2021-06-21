@@ -10,11 +10,11 @@ class BrowserLogin extends Component {
       <div className='main-browser-login'>
         <Switch>
           <Route
-            exact path='/browser-login/navigate-to-app' render={(props) => {
+            exact path='/browser-login-success' render={(props) => {
               this.handleLoginSuccess(props)
+              return this.renderSuccessPage()
             }}
           />
-          <Route exact path='/browser-login/success' render={() => this.renderSuccessPage()} />
           <Route
             exact path='/browser-login' render={(props) => {
               this.handleRedirectToSso()
@@ -34,11 +34,11 @@ class BrowserLogin extends Component {
 
   handleRedirectToSso () {
     const url = new URL(process.env.REACT_APP_SOCKET_SSO_URL)
-    url.searchParams.set('redirect_uri', `${process.env.REACT_APP_UI_URL}/browser-login/navigate-to-app`)
+    url.searchParams.set('redirect_uri', `${process.env.REACT_APP_UI_URL}/browser-login-success`)
     url.searchParams.set('src', 'hitman')
     url.searchParams.set('token_key', 'sokt-auth-token')
     url.searchParams.set('data-app-logo-url', 'https://hitman.app/wp-content/uploads/2020/12/123.png')
-    url.searchParams.set('signup_uri', `${process.env.REACT_APP_UI_URL}/browser-login/navigate-to-app?signup=true`)
+    url.searchParams.set('signup_uri', `${process.env.REACT_APP_UI_URL}/browser-login-success?signup=true`)
     if (window.popupWindow) window.popupWindow(url, 'ViaSocket SSO', window.options)
   }
 
@@ -46,9 +46,6 @@ class BrowserLogin extends Component {
     const searchParams = new URLSearchParams(props.location.search)
     if (searchParams.get('sokt-auth-token')) token = searchParams.get('sokt-auth-token')
     this.redirectToHitmanApp()
-    this.props.history.push({
-      pathname: '/browser-login/success'
-    })
   }
 
   redirectToHitmanApp () {
