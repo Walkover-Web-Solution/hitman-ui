@@ -10,4 +10,6 @@ RUN npm run build
 FROM nginx:1.15
 COPY --from=build-stage /app/build/ /usr/share/nginx/html
 # Copy the default nginx.conf provided by tiangolo/node-frontend
-COPY --from=build-stage /app/default.conf /etc/nginx/conf.d/default.conf
+COPY --from=build-stage /app/default.conf /etc/nginx/conf.d/hitman.template
+ARG PRERENDER_TOKEN
+RUN VARS='$PRERENDER_TOKEN' && envsubst "$VARS" < /etc/nginx/conf.d/hitman.template > /etc/nginx/conf.d/default.conf
