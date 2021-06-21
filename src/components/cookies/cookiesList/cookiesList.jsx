@@ -56,7 +56,7 @@ class CookiesList extends Component {
                 <div>{`${Object.keys(domain.cookies || {}).length} cookies`}</div>
               </div>
             </div>
-            <div className='cursor-pointer ml-2' onClick={() => this.deleteDomain(domain)}> <DeleteIcon /> </div>
+            <div className='cursor-pointer ml-2 icon-center' onClick={() => this.deleteDomain(domain)}> <DeleteIcon /> </div>
           </div>
           ))
         : <h4 className='text-center'>No Domain available!</h4>)

@@ -2205,12 +2205,17 @@ class DisplayEndpoint extends Component {
                                   Body
                                 </a>
                               </li>
+                              <li className='nav-item cookie-tab'>
+                                <a>
+                                  {getCurrentUser() &&
+                                    <div onClick={() => this.setState({ showCookiesModal: true })}>
+                                      Cookies
+                                    </div>}
+                                </a>
+                              </li>
                             </ul>
                           </div>
-                          {getCurrentUser() &&
-                            <div onClick={() => this.setState({ showCookiesModal: true })}>
-                              Cookies
-                            </div>}
+
                         </div>
                         )
                       : null

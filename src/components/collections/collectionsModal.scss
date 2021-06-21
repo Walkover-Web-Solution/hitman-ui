@@ -1,15 +1,27 @@
 //Note: Unique IDs are used in CTAs for tracking purposes with GTM. Do not use the same IDs elsewhere.
 
 .add-collection-item {
-border-radius: 4px;
+    border-radius: 10px;
     cursor: pointer;
-    height: 120px;
-    width: 120px;
-    background: #F3F3F3;
+    height: 80px;
+    width: 180px;
+    background: #fff;
     display: flex;
     justify-content: center;
     align-items: center;
-  cursor: pointer;
+    outline: none;
+    border: 1px solid #dedede;
+    font-size: 15px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0px 0px 30px 0px #e8e8e8;
+    transition: all 200ms ease-in;
+    padding: 20px;
+    margin: 20px 0;
+    cursor: pointer;
+    &.hover{
+      border-color: #F2994A;
+    }
   &.disabled {
     cursor: not-allowed;
     color: grey;

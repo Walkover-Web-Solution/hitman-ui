@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { Modal } from 'react-bootstrap'
 import notLoggedIn from '../../assets/icons/notLoggedIn.svg'
 import './loginSignupModal.scss'
+const isDesktopApp = process.env.REACT_APP_IS_DESKTOP
 
 function LoginSignupModal (props) {
   const redirectionUrl = process.env.REACT_APP_UI_URL + '/login'
@@ -13,6 +14,11 @@ function LoginSignupModal (props) {
       ssoDiv.appendChild(window.ssoButton(ssoDiv))
     }
   }, [])
+
+  function openLink () {
+    const url = `${process.env.REACT_APP_UI_URL}/browser-login`
+    window.require('electron').shell.openExternal(url)
+  }
 
   return (
     <Modal
@@ -43,15 +49,17 @@ function LoginSignupModal (props) {
                 </div>
                 )
           }
-          <div
-            id='sokt-sso-modal'
-            data-redirect-uri={redirectionUrl}
-            data-source='hitman'
-            data-token-key='sokt-auth-token'
-            data-view='button'
-            data-app-logo-url='https://hitman.app/wp-content/uploads/2020/12/123.png'
-            signup_uri={redirectionUrl + '?signup=true'}
-          />
+          {isDesktopApp
+            ? <div className='btn btn-primary' onClick={() => { openLink() }}>Login/SignUp</div>
+            : <div
+                id='sokt-sso-modal'
+                data-redirect-uri={redirectionUrl}
+                data-source='hitman'
+                data-token-key='sokt-auth-token'
+                data-view='button'
+                data-app-logo-url='https://hitman.app/wp-content/uploads/2020/12/123.png'
+                signup_uri={redirectionUrl + '?signup=true'}
+              />}
         </div>
         <div className='list'>
           <div className='heading'>Logged in user can:</div>

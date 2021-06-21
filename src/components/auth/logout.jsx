@@ -5,7 +5,6 @@ class Logout extends Component {
   componentDidMount () {
     indexedDbService.deleteDataBase('hitman')
     auth.logout()
-    // window.location = '/'
   }
 
   render () {

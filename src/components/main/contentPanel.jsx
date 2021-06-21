@@ -48,6 +48,8 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
+const isDesktopApp = process.env.REACT_APP_IS_DESKTOP
+
 class ContentPanel extends Component {
   constructor (props) {
     super(props)
@@ -59,6 +61,11 @@ class ContentPanel extends Component {
     // this.props.history.push({
     //   dashboardEnvironment: true,
     // });
+  }
+
+  openLink () {
+    const url = `${process.env.REACT_APP_UI_URL}/browser-login`
+    window.require('electron').shell.openExternal(url)
   }
 
   handleSaveEndpoint (flag, tabId) {
@@ -158,15 +165,17 @@ class ContentPanel extends Component {
                   <div className='float-right d-flex communti-btn-wrapper community-btn-1'>
                     <a href={process.env.REACT_APP_COMMUNITY_URL} rel='noreferrer' target='_blank'>Community </a>
                   </div>
-                  <div
-                    id='sokt-sso'
-                    data-redirect-uri={redirectionUrl}
-                    data-source='hitman'
-                    data-token-key='sokt-auth-token'
-                    data-view='button'
-                    data-app-logo-url='https://hitman.app/wp-content/uploads/2020/12/123.png'
-                    signup_uri={redirectionUrl + '?signup=true'}
-                  />
+                  {isDesktopApp
+                    ? <div className='float-right d-flex btn btn-primary' onClick={() => { this.openLink() }}>Login/SignUp</div>
+                    : <div
+                        id='sokt-sso'
+                        data-redirect-uri={redirectionUrl}
+                        data-source='hitman'
+                        data-token-key='sokt-auth-token'
+                        data-view='button'
+                        data-app-logo-url='https://hitman.app/wp-content/uploads/2020/12/123.png'
+                        signup_uri={redirectionUrl + '?signup=true'}
+                      />}
                 </div>
                 )
               : null
@@ -219,7 +228,7 @@ class ContentPanel extends Component {
                     </Nav>
                   </div>
 
-                  <div class='custom-btn-group d-flex'>
+                  <div className='custom-btn-group d-flex'>
                     <button
                       className='btn'
                       onClick={() => { this.openLoginSignupModal() }}
