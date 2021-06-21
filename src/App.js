@@ -65,6 +65,7 @@ class App extends Component {
             <Route path='/p/error' component={NotFound} />
             <Route path='/p/:collectionIdentifier' component={Public} />
             <Route path='/logout' component={Logout} />
+            <Route path='/browser-login-success' component={BrowserLogin} />
             <Route path='/browser-login' component={BrowserLogin} />
             <Route path='/login' component={Login} />
             <Route path='/marketPlace' component={PublicView} />
