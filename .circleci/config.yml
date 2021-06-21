@@ -36,7 +36,7 @@ jobs:
       - run:
           name: Build Docker Image
           command: |
-            docker build -t asia.gcr.io/$GOOGLE_PROJECT_ID/hitman-ui:<< pipeline.number >> .
+            docker build -t asia.gcr.io/$GOOGLE_PROJECT_ID/hitman-ui:<< pipeline.number >> --build-arg PRERENDER_TOKEN=$PRERENDER_TOKEN .
       - run:
           name: Push image to GCR
           command: |
