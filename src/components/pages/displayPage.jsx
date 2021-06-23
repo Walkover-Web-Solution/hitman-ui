@@ -116,11 +116,6 @@ class DisplayPage extends Component {
   }
 
   render () {
-    if (this.props.location.page) {
-      const data = { ...this.props.location.page }
-      this.setState({ data })
-      this.props.history.push({ page: null })
-    }
     return (
       <div className='custom-display-page'>
         {

@@ -10,6 +10,11 @@ export function isDashboardRoute (props, sidebar = false) {
   ) { return true } else return false
 }
 
+export function isElectron () {
+  const userAgent = navigator.userAgent.toLowerCase()
+  return userAgent.indexOf(' electron/') !== -1
+}
+
 export function isSavedEndpoint (props) {
   const pathname = props.location.pathname
   if (
@@ -93,6 +98,7 @@ export function toTitleCase (str) {
 
 export default {
   isDashboardRoute,
+  isElectron,
   isSavedEndpoint,
   setTitle,
   setFavicon,
