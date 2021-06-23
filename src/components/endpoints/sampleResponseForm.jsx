@@ -89,7 +89,7 @@ class SampleResponseForm extends Form {
   checkDuplicateName () {
     if (this.props && this.props.endpoints) {
       const usedTitles = []
-      const endpointId = this.props.location.pathname.split('/')[3]
+      const endpointId = this.props.location.pathname.split('/')[5]
       const endpoint = this.props.endpoints[endpointId] || []
       const sampleResponse = endpoint.sampleResponse || []
       sampleResponse.map(key => { return usedTitles.push(key.title) })
