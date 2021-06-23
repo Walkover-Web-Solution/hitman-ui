@@ -130,7 +130,7 @@ class PublishCollectionInfo extends Component {
     const collectionId = this.props.collectionId
     if (collectionId) {
       this.props.history.push({
-        pathname: '/admin/publish',
+        pathname: `/orgs/${this.props.match.params.orgId}/admin/publish`,
         search: `?collectionId=${collectionId}`
       })
     }

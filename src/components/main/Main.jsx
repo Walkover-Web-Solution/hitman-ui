@@ -88,7 +88,7 @@ class Main extends Component {
               set_tabs={this.setTabs.bind(this)}
               default_tab_index={this.state.defaultTabIndex}
             />
-            {this.props.location.pathname.split('/')[2] === 'publish'
+            {this.props.location.pathname.split('/')[4] === 'publish'
               ? <PublishDocs {...this.props} />
               : <ContentPanel
                   {...this.props}

@@ -8,6 +8,9 @@ class Landing extends Component {
   }
 
   async redirectToRelevantPage () {
+    let organisation = window.localStorage.getItem('organisation')
+    organisation = JSON.parse(organisation)
+    const orgId = organisation.identifier
     const isDesktop = process.env.REACT_APP_IS_DESKTOP
     const domainsList = process.env.REACT_APP_DOMAINS_LIST ? process.env.REACT_APP_DOMAINS_LIST.split(',') : []
     const currentDomain = window.location.href.split('/')[2]
@@ -21,7 +24,7 @@ class Landing extends Component {
       }
     } else {
       this.props.history.push({
-        pathname: '/dashboard'
+        pathname: `/orgs/${orgId}/dashboard`
       })
     }
   }
