@@ -2,8 +2,10 @@ import { toast } from 'react-toastify'
 import store from '../../../store/store'
 import endpointApiService from '../endpointApiService'
 import endpointsActionTypes from './endpointsActionTypes'
+import { getOrgId } from '../../common/utility'
 
 export const addEndpoint = (history, newEndpoint, groupId, customCallback) => {
+  const orgId = getOrgId()
   return (dispatch) => {
     dispatch(addEndpointRequest({ ...newEndpoint, groupId }))
     endpointApiService
@@ -14,7 +16,7 @@ export const addEndpoint = (history, newEndpoint, groupId, customCallback) => {
         // let endpointsOrder = store.getState().groups[groupId].endpointsOrder;
         // endpointsOrder.push(response.data.id);
         // dispatch(setEndpointIds(endpointsOrder, groupId));
-        history.push(`/dashboard/endpoint/${response.data.id}`)
+        history.push(`/orgs/${orgId}/dashboard/endpoint/${response.data.id}`)
         if (customCallback) {
           customCallback({ closeForm: true, stopLoader: true })
         }
