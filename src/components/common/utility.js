@@ -5,8 +5,8 @@ export const ADD_VERSION_MODAL_NAME = 'Add Version'
 
 export function isDashboardRoute (props, sidebar = false) {
   if (
-    props.location.pathname === '/dashboard' ||
-    props.location.pathname.split('/')[1] === 'dashboard' || (sidebar === true && props.location.pathname.split('/')[1] === 'admin' && props.location.pathname.split('/')[2] === 'publish')
+    props.match.path.includes('/orgs/:orgId/dashboard') ||
+    (sidebar === true && props.match.path.includes('/orgs/:orgId/admin/publish'))
   ) { return true } else return false
 }
 
@@ -91,6 +91,13 @@ export function toTitleCase (str) {
   })
 }
 
+export function getOrgId () {
+  let organisation = window.localStorage.getItem('organisation')
+  organisation = JSON.parse(organisation)
+  const orgId = organisation.identifier
+  return orgId
+}
+
 export default {
   isDashboardRoute,
   isSavedEndpoint,
@@ -99,6 +106,7 @@ export default {
   getProfileName,
   onEnter,
   toTitleCase,
+  getOrgId,
   ADD_GROUP_MODAL_NAME,
   ADD_VERSION_MODAL_NAME
 }

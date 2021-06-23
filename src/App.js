@@ -60,8 +60,8 @@ class App extends Component {
         <>
           <ToastContainer />
           <Switch>
-            <Route path='/admin/publish' component={Main} />
-            <Route path='/dashboard/' component={Main} />
+            <Route path='/orgs/:orgId/admin/publish' component={Main} />
+            <Route path='/orgs/:orgId/dashboard/' component={Main} />
             <Route path='/p/error' component={NotFound} />
             <Route path='/p/:collectionIdentifier' component={Public} />
             <Route path='/logout' component={Logout} />

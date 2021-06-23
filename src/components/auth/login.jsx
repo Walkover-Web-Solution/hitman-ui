@@ -3,6 +3,7 @@ import React, { Component } from 'react'
 import { Redirect } from 'react-router-dom'
 import './auth.scss'
 import auth from './authService'
+import { getOrgId } from '../common/utility'
 
 class Login extends Component {
   async componentDidMount () {
@@ -12,8 +13,9 @@ class Login extends Component {
     if (this.isNewUser()) {
       await auth.notifySignup(userInfo)
     }
+    const orgId = getOrgId()
     const { state } = this.props.location
-    const reloadRoute = state ? state.from.pathname : '/dashboard/endpoint/new'
+    const reloadRoute = state ? state.from.pathname : `/orgs/${orgId}/dashboard/endpoint/new`
     this.props.history.push({
       pathname: reloadRoute
     })
@@ -33,7 +35,8 @@ class Login extends Component {
   };
 
   render () {
-    if (auth.getCurrentUser()) return <Redirect to='/dashboard/endpoint/new' />
+    const orgId = getOrgId()
+    if (auth.getCurrentUser()) return <Redirect to={`/orgs/${orgId}/dashboard/endpoint/new`} />
 
     return <></>
   }
