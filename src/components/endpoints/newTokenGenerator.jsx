@@ -112,7 +112,7 @@ class TokenGenerator extends Component {
         value: this.props.oauth_2
       }
       await this.props.set_authorization_type(
-        this.props.location.pathname.split('/')[3],
+        this.props.location.pathname.split('/')[5],
         data
       )
     }

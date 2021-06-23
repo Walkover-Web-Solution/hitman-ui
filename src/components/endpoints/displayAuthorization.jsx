@@ -180,13 +180,13 @@ class Authorization extends Component {
   async closeManageTokenModel () {
     const versionId = this.props.groups[this.props.groupId].versionId
     this.props.set_authorization_responses(versionId, this.authResponses)
-    if (this.props.location.pathname.split('/')[3] !== 'new') {
+    if (this.props.location.pathname.split('/')[5] !== 'new') {
       const data = {
         type: 'oauth_2',
         value: this.state.oauth_2
       }
       this.props.set_authorization_type(
-        this.props.location.pathname.split('/')[3],
+        this.props.location.pathname.split('/')[5],
         data
       )
     }

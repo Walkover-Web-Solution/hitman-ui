@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import authService from '../auth/authService'
 import { Dropdown } from 'react-bootstrap'
-import { getProfileName } from '../common/utility'
+import { getProfileName, getOrgId } from '../common/utility'
 import { ReactComponent as HostedApiIcon } from '../../assets/icons/hostedApiIcon.svg'
 import { ReactComponent as SettingsIcon } from '../../assets/icons/settings-orange.svg'
 import { ReactComponent as SignOutIcon } from '../../assets/icons/signOutIcon.svg'
@@ -34,7 +34,7 @@ class UserInfo extends Component {
   openPublishDocs (collection) {
     if (collection?.id) {
       this.props.history.push({
-        pathname: '/admin/publish',
+        pathname: `/orgs/${this.props.match.params.orgId}/admin/publish`,
         search: `?collectionId=${collection.id}`
       })
     } else {
@@ -42,7 +42,7 @@ class UserInfo extends Component {
         Object.keys(this.props.collections)[0]
       ]
       this.props.history.push({
-        pathname: '/admin/publish',
+        pathname: `/orgs/${this.props.match.params.orgId}/admin/publish`,
         search: `?collectionId=${collection.id}`
       })
     }
@@ -180,6 +180,7 @@ class UserInfo extends Component {
   }
 
   userDropdown () {
+    const orgId = getOrgId()
     return (
       <Dropdown bsPrefix='dropdown user-info-dropdown'>
         <Dropdown.Toggle variant=''>
@@ -190,7 +191,7 @@ class UserInfo extends Component {
         <Dropdown.Menu>
           {this.renderProfileDetails()}
           <Dropdown.Divider />
-          <Dropdown.Item onClick={() => this.navigateToViaSocket('/manage/users')}>
+          <Dropdown.Item onClick={() => this.navigateToViaSocket(`/orgs/${orgId}/manage/users`)}>
             <SettingsIcon /><span>Account & Settings</span>
           </Dropdown.Item>
           {authService.isAdmin() &&

@@ -182,20 +182,20 @@ class SideBar extends Component {
 
   openHistorySnapshot (id) {
     this.props.history.push({
-      pathname: `/dashboard/history/${id}`,
+      pathname: `/orgs/${this.props.match.params.orgId}/dashboard/history/${id}`,
       historySnapshotId: id
     })
   }
 
   openEndpoint (id) {
     this.props.history.push({
-      pathname: `/dashboard/endpoint/${id}`
+      pathname: `/orgs/${this.props.match.params.orgId}/dashboard/endpoint/${id}`
     })
   }
 
   openPage (id) {
     this.props.history.push({
-      pathname: `/dashboard/page/${id}`
+      pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${id}`
     })
   }
 
@@ -400,7 +400,7 @@ class SideBar extends Component {
     return (
       <Switch>
         <ProtectedRoute
-          path='/dashboard/'
+          path='/orgs/:orgId/dashboard/'
           render={(props) => (
             <Collections
               {...this.props}
@@ -413,7 +413,7 @@ class SideBar extends Component {
           )}
         />
         <ProtectedRoute
-          path='/admin/publish'
+          path='/orgs/:orgId/admin/publish'
           render={(props) => (
             <Collections
               {...this.props}
