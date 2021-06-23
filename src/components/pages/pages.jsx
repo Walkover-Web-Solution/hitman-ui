@@ -75,7 +75,7 @@ class Pages extends Component {
       }
 
       this.props.history.push({
-        pathname: `/dashboard/page/${page.id}`,
+        pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${page.id}`,
         page: page
       })
     } else {
@@ -266,7 +266,7 @@ class Pages extends Component {
   }
 
   displayUserPages (pageId) {
-    const idToCheck = this.props.location.pathname.split('/')[2] === 'page' ? this.props.location.pathname.split('/')[3] : null
+    const idToCheck = this.props.location.pathname.split('/')[4] === 'page' ? this.props.location.pathname.split('/')[5] : null
     return (
       <div
         className={idToCheck === pageId ? 'sidebar-accordion pagesWrapper active' : 'sidebar-accordion pagesWrapper'}
