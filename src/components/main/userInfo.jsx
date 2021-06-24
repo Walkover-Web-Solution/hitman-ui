@@ -176,6 +176,12 @@ class UserInfo extends Component {
     )
   }
 
+  handleLogout () {
+    this.props.history.push({
+      pathname: '/logout'
+    })
+  }
+
   userDropdown () {
     return (
       <Dropdown bsPrefix='dropdown user-info-dropdown'>
@@ -201,7 +207,7 @@ class UserInfo extends Component {
             <SocketIcon className='socket-icon' /><span>Other Products</span>
           </Dropdown.Item>
           <Dropdown.Divider />
-          <Dropdown.Item href='/logout'>
+          <Dropdown.Item onClick={() => this.handleLogout()}>
             <SignOutIcon /><span>Logout</span>
           </Dropdown.Item>
         </Dropdown.Menu>

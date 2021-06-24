@@ -1,0 +1,53 @@
+{
+    "appId": "com.hitman.app",
+    "electronVersion": "11.2.3",
+    "directories": {
+        "output": "dist/hitman-bundles/",
+        "buildResources": "assets"
+    },
+    "files": [
+        "../build/**/*"
+    ],
+    "afterSign": "./notarize.js",
+    "mac": {
+        "target": [
+            "dmg",
+            "zip"
+        ],
+        "identity": "Walkover Web Solutions Private Limited (F3U6Z5L2EJ)",
+        "type": "distribution",
+        "entitlements": "./default.entitlements.mas.plist",
+        "entitlementsInherit": "./default.entitlements.mas.inherit.plist",
+        "provisioningProfile": "./embedded.provisionprofile",
+        "icon": "hitman-icon.png",
+        "hardenedRuntime": true,
+        "gatekeeperAssess": false
+    },
+    "dmg": {
+        "sign": false
+    },
+    "win": {
+        "target": [
+            "nsis",
+            "zip"
+        ],
+        "icon": "hitman-icon.ico",
+        "publisherName": "Walkover Technologies Pvt Ltd",
+        "certificateSubjectName": "Walkover Technologies Pvt Ltd",
+        "legalTrademarks": "Walkover Technologies Pvt Ltd"
+    },
+    "nsis": {
+        "oneClick": true,
+        "createDesktopShortcut": true,
+        "createStartMenuShortcut": true,
+        "shortcutName": "Hitman",
+        "perMachine": false
+    },
+    "protocols": [{
+        "name": "hitman-app",
+        "schemes": [
+          "hitman-app"
+        ]
+    }],
+    "asar": true
+}

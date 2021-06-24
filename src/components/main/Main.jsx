@@ -17,6 +17,8 @@ import SideBar from './sidebar'
 import { getCurrentUser } from '../auth/authService'
 import PublishDocs from '../publishDocs/publishDocs'
 import { loadWidget } from '../../services/widgetService'
+import { fetchAllCookies } from '../cookies/redux/cookiesActions'
+import { isDesktop } from 'react-device-detect'
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -27,7 +29,8 @@ const mapDispatchToProps = (dispatch) => {
     fetch_pages: () => dispatch(fetchPages()),
     fetch_history: () => dispatch(fetchHistoryFromIdb()),
     move_endpoint: (endpointId, sourceGroupId, destinationGroupId) =>
-      dispatch(moveEndpoint(endpointId, sourceGroupId, destinationGroupId))
+      dispatch(moveEndpoint(endpointId, sourceGroupId, destinationGroupId)),
+    fetch_all_cookies: () => dispatch(fetchAllCookies())
   }
 }
 
@@ -55,6 +58,7 @@ class Main extends Component {
     this.props.fetch_endpoints()
     this.props.fetch_pages()
     this.props.fetch_history()
+    this.props.fetch_all_cookies()
   }
 
   setTabs (tabs, defaultTabIndex) {
@@ -72,22 +76,27 @@ class Main extends Component {
 
   render () {
     return (
-      <div className='custom-main-container'>
-        <div className='main-panel-wrapper'>
-          <SideBar
-            {...this.props}
-            tabs={[...this.state.tabs]}
-            set_tabs={this.setTabs.bind(this)}
-            default_tab_index={this.state.defaultTabIndex}
-          />
-          {this.props.location.pathname.split('/')[2] === 'publish'
-            ? <PublishDocs {...this.props} />
-            : <ContentPanel
-                {...this.props}
-                set_environment={this.setEnvironment.bind(this)}
-                set_tabs={this.setTabs.bind(this)}
-                default_tab_index={this.state.defaultTabIndex}
-              />}
+      <div>{!isDesktop &&
+        <div className='mobile-warning'>
+          Looks like you have opened it on a mobile device. It looks better on a desktop device.
+        </div>}
+        <div className='custom-main-container'>
+          <div className='main-panel-wrapper'>
+            <SideBar
+              {...this.props}
+              tabs={[...this.state.tabs]}
+              set_tabs={this.setTabs.bind(this)}
+              default_tab_index={this.state.defaultTabIndex}
+            />
+            {this.props.location.pathname.split('/')[2] === 'publish'
+              ? <PublishDocs {...this.props} />
+              : <ContentPanel
+                  {...this.props}
+                  set_environment={this.setEnvironment.bind(this)}
+                  set_tabs={this.setTabs.bind(this)}
+                  default_tab_index={this.state.defaultTabIndex}
+                />}
+          </div>
         </div>
       </div>
     )
