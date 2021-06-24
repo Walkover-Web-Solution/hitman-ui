@@ -4,7 +4,6 @@
   "description": "Hitman App",
   "version": "0.1.0",
   "private": true,
-  "homepage": "./",
   "main": "public/electron.js",
   "dependencies": {
     "ace-builds": "^1.4.9",
