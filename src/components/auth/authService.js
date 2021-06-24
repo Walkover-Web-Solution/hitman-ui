@@ -12,8 +12,11 @@ http.setJwt(`Bearer ${getJwt()}`)
 
 export function isAdmin () {
   let organisation = window.localStorage.getItem(orgKey)
+  let profile = window.localStorage.getItem(profileKey)
   organisation = JSON.parse(organisation)
+  profile = JSON.parse(profile)
   const { org_user: orgUser } = organisation
+  if (profile.admin) { return true }
   if (orgUser.is_admin) { return true } else if (!orgUser.is_admin) {
     const { product_roles: productRoles } = orgUser
     if (productRoles?.hitman?.is_product_admin) {
@@ -35,6 +38,8 @@ export async function login (socketJwt) {
   window.localStorage.setItem(tokenKey, socketJwt)
   window.localStorage.setItem(profileKey, JSON.stringify(userInfo.profile))
   window.localStorage.setItem(orgKey, JSON.stringify(userInfo.orgs[0]))
+  window.localStorage.setItem('organisationList', JSON.stringify(userInfo.orgs))
+  window.localStorage.setItem('selectedOrgId', JSON.stringify(userInfo.orgs[0].identifier))
   http.setJwt(`Bearer ${socketJwt}`)
   return userInfo
 }

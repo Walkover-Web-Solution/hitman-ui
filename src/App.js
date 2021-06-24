@@ -11,6 +11,7 @@ import Landing from './components/landing/landing'
 import { ToastContainer } from 'react-toastify'
 import ClientDoc from './components/publishDocs/clientDoc'
 import BrowserLogin from './components/broswerLogin/browserLogin'
+import { getOrgId } from './components/common/utility'
 
 class App extends Component {
   async redirectToClientDomain () {
@@ -37,6 +38,40 @@ class App extends Component {
           search: `?sokt-auth-token=${data}`
         })
       })
+    }
+    if (this.props.location.pathname.split('/')?.[1] === 'orgs') {
+      const orgId = this.props.location.pathname.split('/')?.[2]
+      if (orgId) {
+        this.changeSelectedOrg(orgId)
+      }
+    }
+  }
+
+  componentDidUpdate (prevProps, prevState) {
+    const prevOrgId = getOrgId()
+    const currentOrgId = this.props.location.pathname.split('/')?.[2]
+    if (currentOrgId && prevOrgId !== currentOrgId) {
+      this.changeSelectedOrg(currentOrgId)
+    }
+  }
+
+  changeSelectedOrg (orgId) {
+    let orgList = window.localStorage.getItem('organisationList')
+    orgList = JSON.parse(orgList)
+    let flag = 0
+    let organisation
+    if (!orgList) { this.props.history.push({ pathname: '/logout' }) } else {
+      orgList.forEach((org, index) => {
+        if (orgId === org.identifier) {
+          flag = 1
+          organisation = org
+        }
+      })
+      if (flag === 1) {
+        window.localStorage.setItem('organisation', JSON.stringify(organisation))
+      }
+      if (!orgId) { orgId = orgList[0].identifier }
+      window.localStorage.setItem('selectedOrgId', JSON.stringify(orgId))
     }
   }
 

@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import collectionsApiService from '../collections/collectionsApiService'
 import LoadingScreen from 'react-loading-screen'
+
 class Landing extends Component {
   constructor (props) {
     super(props)
@@ -8,9 +9,6 @@ class Landing extends Component {
   }
 
   async redirectToRelevantPage () {
-    let organisation = window.localStorage.getItem('organisation')
-    organisation = JSON.parse(organisation)
-    const orgId = organisation.identifier
     const isDesktop = process.env.REACT_APP_IS_DESKTOP
     const domainsList = process.env.REACT_APP_DOMAINS_LIST ? process.env.REACT_APP_DOMAINS_LIST.split(',') : []
     const currentDomain = window.location.href.split('/')[2]
@@ -23,6 +21,8 @@ class Landing extends Component {
         this.props.history.push({ pathname: '/p/error' })
       }
     } else {
+      const orgList = JSON.parse(window.localStorage.getItem('organisationList'))
+      const orgId = orgList[0].identifier
       this.props.history.push({
         pathname: `/orgs/${orgId}/dashboard`
       })
