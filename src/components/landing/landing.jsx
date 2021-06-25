@@ -22,10 +22,16 @@ class Landing extends Component {
       }
     } else {
       const orgList = JSON.parse(window.localStorage.getItem('organisationList'))
-      const orgId = orgList[0].identifier
-      this.props.history.push({
-        pathname: `/orgs/${orgId}/dashboard`
-      })
+      if (orgList) {
+        const orgId = orgList[0].identifier
+        this.props.history.push({
+          pathname: `/orgs/${orgId}/dashboard`
+        })
+      } else {
+        this.props.history.push({
+          pathname: '/logout'
+        })
+      }
     }
   }
 
