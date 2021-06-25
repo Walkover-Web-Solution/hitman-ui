@@ -1,5 +1,9 @@
 import http from '../../services/httpService'
-const apiUrl = process.env.REACT_APP_API_URL
+import { getOrgId } from '../common/utility'
+const orgId = getOrgId()
+
+const apiUrl = process.env.REACT_APP_API_URL + `/orgs/${orgId}`
+const apiBaseUrl = process.env.REACT_APP_API_URL
 
 function collectionVersionsUrl (collectionId) {
   return `${apiUrl}/collections/${collectionId}/versions`
@@ -9,8 +13,8 @@ export function getCollectionVersions (collectionId) {
   return http.get(collectionVersionsUrl(collectionId))
 }
 
-export function getAllCollectionVersions () {
-  return http.get(`${apiUrl}/versions`)
+export function getAllCollectionVersions (id) {
+  return http.get(`${apiBaseUrl}/orgs/${id}/versions`)
 }
 
 export function getCollectionVersion (versionId) {

@@ -1,6 +1,9 @@
 import http from '../../services/httpService'
+import { getOrgId } from '../common/utility'
+const orgId = getOrgId()
 
-const apiUrl = process.env.REACT_APP_API_URL
+const apiUrl = process.env.REACT_APP_API_URL + `/orgs/${orgId}`
+const apiBaseUrl = process.env.REACT_APP_API_URL
 
 function GroupsUrl (versionId) {
   return `${apiUrl}/versions/${versionId}/groups`
@@ -30,8 +33,8 @@ export function deleteGroup (GroupId) {
   return http.delete(`${GroupUrl(GroupId)}`)
 }
 
-export function getAllGroups () {
-  return http.get(`${apiUrl}/groups`)
+export function getAllGroups (id) {
+  return http.get(`${apiBaseUrl}/orgs/${id}/groups`)
 }
 
 export function duplicateGroup (groupId) {

@@ -1,6 +1,9 @@
 import http from '../../services/httpService'
+import { getOrgId } from '../common/utility'
+const orgId = getOrgId()
 
-const apiUrl = process.env.REACT_APP_API_URL
+const apiUrl = process.env.REACT_APP_API_URL + `/orgs/${orgId}`
+const apiBaseUrl = process.env.REACT_APP_API_URL
 
 function versionPagesUrl (versionId) {
   return `${apiUrl}/versions/${versionId}/pages`
@@ -14,11 +17,11 @@ function pageUrl (pageId) {
   return `${apiUrl}/pages/${pageId}`
 }
 
-function getAllPagesUrl () {
-  return `${apiUrl}/pages`
+function getAllPagesUrl (id) {
+  return `${apiBaseUrl}/orgs/${orgId}/pages`
 }
-export function getAllPages () {
-  return http.get(getAllPagesUrl())
+export function getAllPages (id) {
+  return http.get(getAllPagesUrl(id))
 }
 
 export function getVersionPages (versionId) {

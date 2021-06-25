@@ -4,10 +4,10 @@ import pageApiService from '../pageApiService'
 import pagesActionTypes from './pagesActionTypes'
 import { getOrgId } from '../../common/utility'
 
-export const fetchPages = () => {
+export const fetchPages = (orgId) => {
   return (dispatch) => {
     pageApiService
-      .getAllPages()
+      .getAllPages(orgId)
       .then((response) => {
         const pages = response.data
         dispatch(onPagesFetched(pages))

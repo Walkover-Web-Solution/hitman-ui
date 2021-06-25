@@ -201,7 +201,7 @@ class UserInfo extends Component {
                 <div className='user-notification-badge'>{this.getNotificationCount()}</div>}
             </Dropdown.Item>}
           <Dropdown.Divider />
-          <Dropdown.Item onClick={() => this.navigateToViaSocket('/products')}>
+          <Dropdown.Item onClick={() => this.navigateToViaSocket(`/orgs/${orgId}/products`)}>
             <SocketIcon className='socket-icon' /><span>Other Products</span>
           </Dropdown.Item>
           <Dropdown.Divider />

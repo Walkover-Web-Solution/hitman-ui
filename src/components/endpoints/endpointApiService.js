@@ -2,8 +2,12 @@ import http from '../../services/httpService'
 import httpService from '../../services/endpointHttpService'
 import indexedDbService from '../indexedDb/indexedDbService'
 import qs from 'qs'
+import { getOrgId } from '../common/utility'
 
-const apiUrl = process.env.REACT_APP_API_URL
+const orgId = getOrgId()
+
+const apiUrl = process.env.REACT_APP_API_URL + `/orgs/${orgId}`
+const apiUrlEndpoint = process.env.REACT_APP_API_URL
 
 function endpointUrl (groupId) {
   return `${apiUrl}/groups/${groupId}/endpoints`
@@ -24,12 +28,12 @@ export function apiTest (api, method, body, headers, bodyType) {
       data: bodyType === 'urlEncoded' ? qs.stringify({ body }) : body,
       headers
     }
-    return httpService.post(`${apiUrl}/test-apis/run`, data)
+    return httpService.post(`${apiUrlEndpoint}/test-apis/run`, data)
   }
 }
 
-export function getAllEndpoints () {
-  return http.get(`${apiUrl}/endpoints`)
+export function getAllEndpoints (id) {
+  return http.get(`${apiUrlEndpoint}/orgs/${id}/endpoints`)
 }
 
 export function getEndpoints (groupId) {

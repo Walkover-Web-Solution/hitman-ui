@@ -1,6 +1,8 @@
 import http from '../../services/httpService'
+import { getOrgId } from '../common/utility'
 
-const apiUrl = process.env.REACT_APP_API_URL
+const orgId = getOrgId()
+const apiUrl = process.env.REACT_APP_API_URL + `/orgs/${orgId}`
 
 export function approvePage (page) {
   return http.patch(`${apiUrl}/pages/${page.id}/approved`)

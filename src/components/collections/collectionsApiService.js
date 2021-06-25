@@ -1,7 +1,9 @@
 import http from '../../services/httpService'
 import httpService from '../../services/endpointHttpService'
+import { getOrgId } from '../common/utility'
 
-const apiEndpoint = process.env.REACT_APP_API_URL + '/collections'
+const orgId = getOrgId()
+const apiEndpoint = process.env.REACT_APP_API_URL + `/orgs/${orgId}/collections`
 
 const apiUrl = process.env.REACT_APP_API_URL
 
@@ -9,8 +11,8 @@ function collectionUrl (id) {
   return `${apiEndpoint}/${id}`
 }
 
-export function getCollections () {
-  return http.get(apiEndpoint)
+export function getCollections (id) {
+  return http.get(apiUrl + `/orgs/${id}/collections`)
 }
 
 export function getAllPublicCollections () {
@@ -38,15 +40,15 @@ export function deleteCollection (collectionId) {
 }
 
 export function duplicateCollection (collectionId) {
-  return http.post(`${apiUrl}/duplicateCollections/${collectionId}`)
+  return http.post(`${apiUrl}/orgs/${orgId}/duplicateCollections/${collectionId}`)
 }
 
 export function importCollection (collectionId) {
-  return http.post(`${apiUrl}/marketplace/collections/${collectionId}`)
+  return http.post(`${apiUrl}/orgs/${orgId}/marketplace/collections/${collectionId}`)
 }
 
 export function removePublicCollection (collectionId) {
-  return http.delete(`${apiUrl}/marketplace/collections/${collectionId}`)
+  return http.delete(`${apiUrl}/orgs/${orgId}/marketplace/collections/${collectionId}`)
 }
 
 export default {

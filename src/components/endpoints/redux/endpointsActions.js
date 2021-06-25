@@ -35,10 +35,10 @@ export const addEndpoint = (history, newEndpoint, groupId, customCallback) => {
   }
 }
 
-export const fetchEndpoints = () => {
+export const fetchEndpoints = (orgId) => {
   return (dispatch) => {
     endpointApiService
-      .getAllEndpoints()
+      .getAllEndpoints(orgId)
       .then((response) => {
         dispatch(onEndpointsFetched(response.data))
       })
