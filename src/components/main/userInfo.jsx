@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import authService from '../auth/authService'
 import { Dropdown } from 'react-bootstrap'
-import { getProfileName, getOrgId } from '../common/utility'
+import { getProfileName } from '../common/utility'
 import { ReactComponent as HostedApiIcon } from '../../assets/icons/hostedApiIcon.svg'
 import { ReactComponent as SettingsIcon } from '../../assets/icons/settings-orange.svg'
 import { ReactComponent as SignOutIcon } from '../../assets/icons/signOutIcon.svg'
@@ -183,7 +183,6 @@ class UserInfo extends Component {
   }
 
   userDropdown () {
-    const orgId = getOrgId()
     return (
       <Dropdown bsPrefix='dropdown user-info-dropdown'>
         <Dropdown.Toggle variant=''>
@@ -194,7 +193,7 @@ class UserInfo extends Component {
         <Dropdown.Menu>
           {this.renderProfileDetails()}
           <Dropdown.Divider />
-          <Dropdown.Item onClick={() => this.navigateToViaSocket(`/orgs/${orgId}/manage/users`)}>
+          <Dropdown.Item onClick={() => this.navigateToViaSocket('/manage/users')}>
             <SettingsIcon /><span>Account & Settings</span>
           </Dropdown.Item>
           {authService.isAdmin() &&
@@ -204,7 +203,7 @@ class UserInfo extends Component {
                 <div className='user-notification-badge'>{this.getNotificationCount()}</div>}
             </Dropdown.Item>}
           <Dropdown.Divider />
-          <Dropdown.Item onClick={() => this.navigateToViaSocket(`/orgs/${orgId}/products`)}>
+          <Dropdown.Item onClick={() => this.navigateToViaSocket('/products')}>
             <SocketIcon className='socket-icon' /><span>Other Products</span>
           </Dropdown.Item>
           <Dropdown.Divider />
