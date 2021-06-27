@@ -18,7 +18,7 @@ function pageUrl (pageId) {
 }
 
 function getAllPagesUrl (id) {
-  return `${apiBaseUrl}/orgs/${orgId}/pages`
+  return `${apiBaseUrl}/orgs/${id}/pages`
 }
 export function getAllPages (id) {
   return http.get(getAllPagesUrl(id))
