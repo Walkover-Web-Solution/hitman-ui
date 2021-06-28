@@ -151,8 +151,11 @@ class UserInfo extends Component {
   }
 
   navigateToViaSocket (path) {
-    const viaSocketUrl = `${process.env.REACT_APP_VIASOCKET_URL}${path}?product=hitman`
-    openExternalLink(viaSocketUrl)
+    const orgId = authService.getCurrentOrg()?.identifier
+    if (orgId) {
+      const viaSocketUrl = `${process.env.REACT_APP_VIASOCKET_URL}/orgs/${orgId}${path}?product=hitman`
+      openExternalLink(viaSocketUrl)
+    }
   }
 
   renderMenuHeading () {

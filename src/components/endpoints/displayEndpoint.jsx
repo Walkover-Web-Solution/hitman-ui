@@ -2382,17 +2382,15 @@ class DisplayEndpoint extends Component {
                     </div>
                   )
                 }
+                  {
+                    this.displayResponse()
+                  }
                 </div>
-                {
-                  <Notes
-                    {...this.props}
-                    note={this.state.endpoint?.notes || ''}
-                    endpointId={this.state.endpoint?.id}
-                  />
-                }
-                {
-                  this.displayResponse()
-                }
+                <Notes
+                  {...this.props}
+                  note={this.state.endpoint?.notes || ''}
+                  endpointId={this.state.endpoint?.id}
+                />
               </div>
             </div>
 
