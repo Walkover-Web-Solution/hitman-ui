@@ -15,6 +15,10 @@ export function isElectron () {
   return userAgent.indexOf(' electron/') !== -1
 }
 
+export function openExternalLink (link) {
+  if (isElectron()) { window.require('electron').shell.openExternal(link) } else { window.open(link, '_blank') }
+}
+
 export function isSavedEndpoint (props) {
   const pathname = props.location.pathname
   if (

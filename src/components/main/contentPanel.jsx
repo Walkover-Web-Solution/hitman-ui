@@ -24,7 +24,7 @@ import { getCurrentUser } from '../auth/authService'
 import LoginSignupModal from './loginSignupModal'
 import Footer from '../main/Footer'
 import UserInfo from './userInfo'
-import { isElectron } from '../common/utility'
+import { isElectron, openExternalLink } from '../common/utility'
 
 const mapStateToProps = (state) => {
   return {
@@ -160,8 +160,8 @@ class ContentPanel extends Component {
             !getCurrentUser()
               ? (
                 <div className='row align-items-center'>
-                  <div className='float-right d-flex communti-btn-wrapper community-btn-1'>
-                    <a href={process.env.REACT_APP_COMMUNITY_URL} rel='noreferrer' target='_blank'>Community </a>
+                  <div className='float-right d-flex communti-btn-wrapper community-btn-1' onClick={() => openExternalLink(process.env.REACT_APP_COMMUNITY_URL)}>
+                    <a>Community</a>
                   </div>
                   {isElectron()
                     ? <div className='float-right d-flex btn btn-primary' onClick={() => { this.openLink() }}>Login/SignUp</div>
@@ -194,8 +194,8 @@ class ContentPanel extends Component {
                 <>
                   <div className='env-wrapper'>
                     <div className='float-right d-flex'>
-                      <div className='float-right d-flex communti-btn-wrapper'>
-                        <a href={process.env.REACT_APP_COMMUNITY_URL} rel='noreferrer' target='_blank'>Community </a>
+                      <div className='float-right d-flex communti-btn-wrapper' onClick={() => openExternalLink(process.env.REACT_APP_COMMUNITY_URL)}>
+                        <a>Community</a>
                       </div>
                       <Environments {...this.props} />
                       <div className='ml-3'>
