@@ -1046,7 +1046,7 @@ class PublishDocs extends Component {
           <div className='d-flex align-items-center mx-3 mt-4'>
             <button
               className='externalLinkButton'
-              onClick={() => { window.open(url, '_blank') }}
+              onClick={() => { openExternalLink(url) }}
             >
               <ExternalLinks />
             </button>

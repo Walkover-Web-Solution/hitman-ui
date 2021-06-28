@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import authService from '../auth/authService'
 import { Dropdown } from 'react-bootstrap'
-import { getProfileName } from '../common/utility'
+import { getProfileName, openExternalLink } from '../common/utility'
 import { ReactComponent as HostedApiIcon } from '../../assets/icons/hostedApiIcon.svg'
 import { ReactComponent as SettingsIcon } from '../../assets/icons/settings-orange.svg'
 import { ReactComponent as SignOutIcon } from '../../assets/icons/signOutIcon.svg'
@@ -152,7 +152,7 @@ class UserInfo extends Component {
 
   navigateToViaSocket (path) {
     const viaSocketUrl = `${process.env.REACT_APP_VIASOCKET_URL}${path}?product=hitman`
-    window.open(viaSocketUrl, '_blank')
+    openExternalLink(viaSocketUrl)
   }
 
   renderMenuHeading () {
