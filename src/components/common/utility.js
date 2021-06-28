@@ -92,10 +92,11 @@ export function toTitleCase (str) {
 }
 
 export function getOrgId () {
-  let orgId = window.localStorage.getItem('selectedOrgId')
-  orgId = JSON.parse(orgId)
-  if (orgId) {
-    return orgId
+  const path = window.location.href.split('/')?.[4]
+  if (path) { return path } else {
+    let orgList = window.localStorage.getItem('organisationList')
+    orgList = JSON.parse(orgList)
+    return orgList?.[0]?.identifier
   }
 }
 
