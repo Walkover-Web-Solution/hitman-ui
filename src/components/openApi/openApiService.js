@@ -1,14 +1,18 @@
 import http from '../../services/httpService'
 import { getOrgId } from '../common/utility'
-const orgId = getOrgId()
 
-const apiUrl = process.env.REACT_APP_API_URL + `/orgs/${orgId}`
+function getApiUrl () {
+  const orgId = getOrgId()
+  return process.env.REACT_APP_API_URL + `/orgs/${orgId}`
+}
 
 export function importApi (openApiObject) {
+  const apiUrl = getApiUrl()
   return http.post(`${apiUrl}/import/openApi`, openApiObject)
 }
 
 export function importPostmanCollection (collection, website) {
+  const apiUrl = getApiUrl()
   return http.post(`${apiUrl}/import/postman?website=${website}`, collection)
 }
 

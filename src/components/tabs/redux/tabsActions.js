@@ -94,7 +94,7 @@ export const addNewTab = (history) => {
   const id = shortid.generate()
   const tabsOrder = [...store.getState().tabs.tabsOrder]
   tabsOrder.push(id)
-  const orgId = getOrgId
+  const orgId = getOrgId()
 
   return async (dispatch) => {
     dispatch(setActiveTabId(id))

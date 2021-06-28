@@ -1,19 +1,25 @@
 import http from '../../services/httpService'
 import { getOrgId } from '../common/utility'
-const orgId = getOrgId()
 
-const apiUrl = process.env.REACT_APP_API_URL + `/orgs/${orgId}`
 const apiBaseUrl = process.env.REACT_APP_API_URL
 
+function getApiUrl () {
+  const orgId = getOrgId()
+  return process.env.REACT_APP_API_URL + `/orgs/${orgId}`
+}
+
 function versionPagesUrl (versionId) {
+  const apiUrl = getApiUrl()
   return `${apiUrl}/versions/${versionId}/pages`
 }
 
 function groupPagesUrl (groupId) {
+  const apiUrl = getApiUrl()
   return `${apiUrl}/groups/${groupId}/pages`
 }
 
 function pageUrl (pageId) {
+  const apiUrl = getApiUrl()
   return `${apiUrl}/pages/${pageId}`
 }
 
@@ -45,18 +51,22 @@ export function saveGroupPage (groupId, page) {
 }
 
 export function updatePage (pageId, page) {
+  const apiUrl = getApiUrl()
   return http.put(`${apiUrl}/pages/${pageId}`, page)
 }
 
 export function deletePage (pageId) {
+  const apiUrl = getApiUrl()
   return http.delete(`${apiUrl}/pages/${pageId}`)
 }
 
 export function duplicatePage (pageId) {
+  const apiUrl = getApiUrl()
   return http.post(`${apiUrl}/duplicatePages/${pageId}`)
 }
 
 export function updatePageOrder (pagesOrder) {
+  const apiUrl = getApiUrl()
   return http.patch(`${apiUrl}/updatePagesOrder`, {
     pagesOrder: pagesOrder
   })

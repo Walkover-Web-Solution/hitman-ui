@@ -1,15 +1,20 @@
 import http from '../../services/httpService'
 import { getOrgId } from '../common/utility'
-const orgId = getOrgId()
 
-const apiUrl = process.env.REACT_APP_API_URL + `/orgs/${orgId}`
 const apiBaseUrl = process.env.REACT_APP_API_URL
 
+function getApiUrl () {
+  const orgId = getOrgId()
+  return process.env.REACT_APP_API_URL + `/orgs/${orgId}`
+}
+
 function GroupsUrl (versionId) {
+  const apiUrl = getApiUrl()
   return `${apiUrl}/versions/${versionId}/groups`
 }
 
 function GroupUrl (GroupId) {
+  const apiUrl = getApiUrl()
   return `${apiUrl}/groups/${GroupId}`
 }
 
@@ -38,10 +43,12 @@ export function getAllGroups (id) {
 }
 
 export function duplicateGroup (groupId) {
+  const apiUrl = getApiUrl()
   return http.post(`${apiUrl}/duplicateGroups/${groupId}`)
 }
 
 export function updateGroupOrder (groupsOrder) {
+  const apiUrl = getApiUrl()
   return http.patch(`${apiUrl}/updateGroupsOrder`, {
     groupsOrder: groupsOrder
   })

@@ -1,11 +1,15 @@
 import http from '../../services/httpService'
 import { getOrgId } from '../common/utility'
-const orgId = getOrgId()
 
-const apiUrl = process.env.REACT_APP_API_URL + `/orgs/${orgId}`
 const apiBaseUrl = process.env.REACT_APP_API_URL
 
+function getApiUrl () {
+  const orgId = getOrgId()
+  return process.env.REACT_APP_API_URL + `/orgs/${orgId}`
+}
+
 function collectionVersionsUrl (collectionId) {
+  const apiUrl = getApiUrl()
   return `${apiUrl}/collections/${collectionId}/versions`
 }
 
@@ -18,6 +22,7 @@ export function getAllCollectionVersions (id) {
 }
 
 export function getCollectionVersion (versionId) {
+  const apiUrl = getApiUrl()
   return http.get(`${apiUrl}/versions/${versionId}`)
 }
 
@@ -26,14 +31,17 @@ export function saveCollectionVersion (collectionId, collectionVersion) {
 }
 
 export function updateCollectionVersion (versionId, collectionVersion) {
+  const apiUrl = getApiUrl()
   return http.put(`${apiUrl}/versions/${versionId}`, collectionVersion)
 }
 
 export function deleteCollectionVersion (versionId) {
+  const apiUrl = getApiUrl()
   return http.delete(`${apiUrl}/versions/${versionId}`)
 }
 
 export function duplicateVersion (versionId) {
+  const apiUrl = getApiUrl()
   return http.post(`${apiUrl}/duplicateVersions/${versionId}`)
 }
 export function exportCollectionVersion (importLink, shareIdentifier) {
@@ -41,14 +49,17 @@ export function exportCollectionVersion (importLink, shareIdentifier) {
 }
 
 export function importCollectionVersion (importLink, shareIdentifier, data) {
+  const apiUrl = getApiUrl()
   return http.post(`${apiUrl}/share/${shareIdentifier}/import`, data)
 }
 
 export function setAuthorizationData (versionId, data) {
+  const apiUrl = getApiUrl()
   return http.patch(`${apiUrl}/versions/${versionId}/authorizationData`, data)
 }
 
 export function setAuthorizationResponse (versionId, authorizationResponse) {
+  const apiUrl = getApiUrl()
   return http.patch(
     `${apiUrl}/versions/${versionId}/authorizationResponse`,
     authorizationResponse

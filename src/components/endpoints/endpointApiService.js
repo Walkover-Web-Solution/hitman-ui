@@ -4,12 +4,15 @@ import indexedDbService from '../indexedDb/indexedDbService'
 import qs from 'qs'
 import { getOrgId } from '../common/utility'
 
-const orgId = getOrgId()
-
-const apiUrl = process.env.REACT_APP_API_URL + `/orgs/${orgId}`
 const apiUrlEndpoint = process.env.REACT_APP_API_URL
 
+function getApiUrl () {
+  const orgId = getOrgId()
+  return process.env.REACT_APP_API_URL + `/orgs/${orgId}`
+}
+
 function endpointUrl (groupId) {
+  const apiUrl = getApiUrl()
   return `${apiUrl}/groups/${groupId}/endpoints`
 }
 
@@ -41,6 +44,7 @@ export function getEndpoints (groupId) {
 }
 
 export function getEndpoint (endpointId) {
+  const apiUrl = getApiUrl()
   return http.get(`${apiUrl}/endpoints/${endpointId}`)
 }
 
@@ -49,18 +53,22 @@ export function saveEndpoint (groupId, endpoint) {
 }
 
 export function updateEndpoint (endpointId, endpoint) {
+  const apiUrl = getApiUrl()
   return http.put(`${apiUrl}/endpoints/${endpointId}`, endpoint)
 }
 
 export function deleteEndpoint (endpointId) {
+  const apiUrl = getApiUrl()
   return http.delete(`${apiUrl}/endpoints/${endpointId}`)
 }
 
 export function duplicateEndpoint (endpointId) {
+  const apiUrl = getApiUrl()
   return http.post(`${apiUrl}/duplicateEndpoints/${endpointId}`)
 }
 
 export function moveEndpoint (endpointId, body) {
+  const apiUrl = getApiUrl()
   return http.patch(`${apiUrl}/endpoints/${endpointId}/move`, body)
 }
 
@@ -71,6 +79,7 @@ export function updateEndpointOrder (
   // destinationGroupId = null,
   // endpointId = null
 ) {
+  const apiUrl = getApiUrl()
   return http.patch(`${apiUrl}/updateEndpointsOrder`, {
     endpointsOrder
     // sourceGroupId,
@@ -206,6 +215,7 @@ export async function setResponse (props, responseData) {
 }
 
 export function setAuthorizationType (endpointId, data) {
+  const apiUrl = getApiUrl()
   return http.patch(
     `${apiUrl}/endpoints/${endpointId}/authorizationType`,
     data
