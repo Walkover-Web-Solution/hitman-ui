@@ -24,6 +24,7 @@ import { getCurrentUser } from '../auth/authService'
 import LoginSignupModal from './loginSignupModal'
 import Footer from '../main/Footer'
 import UserInfo from './userInfo'
+import { isElectron, openExternalLink } from '../common/utility'
 
 const mapStateToProps = (state) => {
   return {
@@ -47,8 +48,6 @@ const mapDispatchToProps = (dispatch) => {
     replace_tab: (oldTabId, newTab) => dispatch(replaceTab(oldTabId, newTab))
   }
 }
-
-const isDesktopApp = process.env.REACT_APP_IS_DESKTOP
 
 class ContentPanel extends Component {
   constructor (props) {
@@ -86,7 +85,6 @@ class ContentPanel extends Component {
       this.props.location.pathname.split('/')[3] !== 'new'
     ) {
       const endpointId = this.props.location.pathname.split('/')[3]
-
       if (this.props.tabs.tabs[endpointId]) {
         if (this.props.tabs.activeTabId !== endpointId) {
           this.props.set_active_tab_id(endpointId)
@@ -162,10 +160,10 @@ class ContentPanel extends Component {
             !getCurrentUser()
               ? (
                 <div className='row align-items-center'>
-                  <div className='float-right d-flex communti-btn-wrapper community-btn-1'>
-                    <a href={process.env.REACT_APP_COMMUNITY_URL} rel='noreferrer' target='_blank'>Community </a>
+                  <div className='float-right d-flex communti-btn-wrapper community-btn-1' onClick={() => openExternalLink(process.env.REACT_APP_COMMUNITY_URL)}>
+                    <a>Community</a>
                   </div>
-                  {isDesktopApp
+                  {isElectron()
                     ? <div className='float-right d-flex btn btn-primary' onClick={() => { this.openLink() }}>Login/SignUp</div>
                     : <div
                         id='sokt-sso'
@@ -196,8 +194,8 @@ class ContentPanel extends Component {
                 <>
                   <div className='env-wrapper'>
                     <div className='float-right d-flex'>
-                      <div className='float-right d-flex communti-btn-wrapper'>
-                        <a href={process.env.REACT_APP_COMMUNITY_URL} rel='noreferrer' target='_blank'>Community </a>
+                      <div className='float-right d-flex communti-btn-wrapper' onClick={() => openExternalLink(process.env.REACT_APP_COMMUNITY_URL)}>
+                        <a>Community</a>
                       </div>
                       <Environments {...this.props} />
                       <div className='ml-3'>
