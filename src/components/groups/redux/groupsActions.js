@@ -50,10 +50,10 @@ export const onGroupOrderUpdatedError = (error, groups) => {
   }
 }
 
-export const fetchGroups = () => {
+export const fetchGroups = (orgId) => {
   return (dispatch) => {
     groupsApiService
-      .getAllGroups()
+      .getAllGroups(orgId)
       .then((response) => {
         dispatch(onGroupsFetched(response.data))
       })

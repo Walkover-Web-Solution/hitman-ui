@@ -3,6 +3,7 @@ import store from '../../../store/store'
 import indexedDbService from '../../indexedDb/indexedDbService'
 import tabStatusTypes from '../tabStatusTypes'
 import tabsActionTypes from './tabsActionTypes'
+import { getOrgId } from '../../common/utility'
 
 export const fetchTabsFromIdb = (props) => {
   return async (dispatch) => {
@@ -93,6 +94,7 @@ export const addNewTab = (history) => {
   const id = shortid.generate()
   const tabsOrder = [...store.getState().tabs.tabsOrder]
   tabsOrder.push(id)
+  const orgId = getOrgId()
 
   return async (dispatch) => {
     dispatch(setActiveTabId(id))
@@ -106,7 +108,7 @@ export const addNewTab = (history) => {
         isModified: false
       }
     })
-    history.push({ pathname: '/dashboard/endpoint/new' })
+    history.push({ pathname: `/orgs/${orgId}/dashboard/endpoint/new` })
     await indexedDbService.addData('tabs', {
       id,
       type: 'endpoint',

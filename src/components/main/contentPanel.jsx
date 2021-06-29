@@ -81,10 +81,11 @@ class ContentPanel extends Component {
 
   render () {
     if (
-      this.props.location.pathname.split('/')[2] === 'endpoint' &&
-      this.props.location.pathname.split('/')[3] !== 'new'
+      this.props.location.pathname.split('/')[4] === 'endpoint' &&
+      this.props.location.pathname.split('/')[5] !== 'new'
     ) {
-      const endpointId = this.props.location.pathname.split('/')[3]
+      const endpointId = this.props.location.pathname.split('/')[5]
+
       if (this.props.tabs.tabs[endpointId]) {
         if (this.props.tabs.activeTabId !== endpointId) {
           this.props.set_active_tab_id(endpointId)
@@ -115,8 +116,8 @@ class ContentPanel extends Component {
       }
     }
 
-    if (this.props.location.pathname.split('/')[2] === 'page') {
-      const pageId = this.props.location.pathname.split('/')[3]
+    if (this.props.location.pathname.split('/')[4] === 'page') {
+      const pageId = this.props.location.pathname.split('/')[5]
       if (this.props.tabs.tabs[pageId]) {
         if (this.props.tabs.activeTabId !== pageId) { this.props.set_active_tab_id(pageId) }
       } else {
@@ -130,8 +131,8 @@ class ContentPanel extends Component {
       }
     }
 
-    if (this.props.location.pathname.split('/')[2] === 'history') {
-      const historyId = this.props.location.pathname.split('/')[3]
+    if (this.props.location.pathname.split('/')[4] === 'history') {
+      const historyId = this.props.location.pathname.split('/')[5]
       if (this.props.tabs.tabs[historyId]) {
         if (this.props.tabs.activeTabId !== historyId) { this.props.set_active_tab_id(historyId) }
       } else {

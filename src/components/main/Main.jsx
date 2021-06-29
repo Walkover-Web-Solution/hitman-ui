@@ -22,11 +22,11 @@ import { isDesktop } from 'react-device-detect'
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetch_collections: () => dispatch(fetchCollections()),
-    fetch_all_versions: () => dispatch(fetchAllVersions()),
-    fetch_groups: () => dispatch(fetchGroups()),
-    fetch_endpoints: () => dispatch(fetchEndpoints()),
-    fetch_pages: () => dispatch(fetchPages()),
+    fetch_collections: (orgId) => dispatch(fetchCollections(orgId)),
+    fetch_all_versions: (orgId) => dispatch(fetchAllVersions(orgId)),
+    fetch_groups: (orgId) => dispatch(fetchGroups(orgId)),
+    fetch_endpoints: (orgId) => dispatch(fetchEndpoints(orgId)),
+    fetch_pages: (orgId) => dispatch(fetchPages(orgId)),
     fetch_history: () => dispatch(fetchHistoryFromIdb()),
     move_endpoint: (endpointId, sourceGroupId, destinationGroupId) =>
       dispatch(moveEndpoint(endpointId, sourceGroupId, destinationGroupId)),
@@ -52,11 +52,12 @@ class Main extends Component {
   }
 
   fetchAll () {
-    this.props.fetch_collections()
-    this.props.fetch_all_versions()
-    this.props.fetch_groups()
-    this.props.fetch_endpoints()
-    this.props.fetch_pages()
+    const orgId = this.props.match.params.orgId
+    this.props.fetch_collections(orgId)
+    this.props.fetch_all_versions(orgId)
+    this.props.fetch_groups(orgId)
+    this.props.fetch_endpoints(orgId)
+    this.props.fetch_pages(orgId)
     this.props.fetch_history()
     this.props.fetch_all_cookies()
   }
@@ -88,7 +89,7 @@ class Main extends Component {
               set_tabs={this.setTabs.bind(this)}
               default_tab_index={this.state.defaultTabIndex}
             />
-            {this.props.location.pathname.split('/')[2] === 'publish'
+            {this.props.location.pathname.split('/')[4] === 'publish'
               ? <PublishDocs {...this.props} />
               : <ContentPanel
                   {...this.props}

@@ -158,10 +158,10 @@ class DisplayEndpoint extends Component {
     this.endpointId = this.props.endpointId
       ? this.props.endpointId
       : isDashboardRoute(this.props)
-        ? this.props.location.pathname.split('/')[3]
+        ? this.props.location.pathname.split('/')[5]
         : this.props.location.pathname.split('/')[4]
 
-    if (this.props.location.pathname.split('/')[3] === 'new') {
+    if (this.props.location.pathname.split('/')[5] === 'new') {
       this.setState({
         data: {
           name: '',
@@ -268,7 +268,7 @@ class DisplayEndpoint extends Component {
     const { endpoints } = store.getState()
     const { groups } = store.getState()
     const { versions } = store.getState()
-    if (this.props.location.pathname.split('/')[3] === 'new' && !this.title) {
+    if (this.props.location.pathname.split('/')[5] === 'new' && !this.title) {
       originalParams = [
         {
           checked: 'notApplicable',
@@ -950,7 +950,7 @@ class DisplayEndpoint extends Component {
         authorizationType: this.state.authType
       }
       if (endpoint.name === '') toast.error('Please enter Endpoint name')
-      else if (this.props.location.pathname.split('/')[3] === 'new') {
+      else if (this.props.location.pathname.split('/')[5] === 'new') {
         endpoint.requestId = this.props.tab.id
         endpoint.description = endpointDescription || ''
         this.setState({ saveAsLoader: true })
@@ -1851,7 +1851,7 @@ class DisplayEndpoint extends Component {
     this.endpointId = this.props.endpointId
       ? this.props.endpointId
       : isDashboardRoute(this.props)
-        ? this.props.location.pathname.split('/')[3]
+        ? this.props.location.pathname.split('/')[5]
         : this.props.location.pathname.split('/')[4]
     if (
       isDashboardRoute(this.props) &&
@@ -1870,8 +1870,8 @@ class DisplayEndpoint extends Component {
     }
     if (
       isDashboardRoute(this.props) &&
-      this.props.location.pathname.split('/')[2] === 'endpoint' &&
-      this.props.location.pathname.split('/')[3] !== 'new' &&
+      this.props.location.pathname.split('/')[4] === 'endpoint' &&
+      this.props.location.pathname.split('/')[5] !== 'new' &&
       this.state.endpoint.id !== this.props.tab.id &&
       this.props.endpoints[this.props.tab.id]
     ) {
@@ -1889,7 +1889,7 @@ class DisplayEndpoint extends Component {
 
     if (
       isDashboardRoute(this.props) &&
-      this.props.location.pathname.split('/')[2] === 'history' &&
+      this.props.location.pathname.split('/')[4] === 'history' &&
       this.state.historySnapshotId !== this.props.tab.id &&
       this.props.historySnapshots[this.props.tab.id]
     ) {
@@ -2035,7 +2035,7 @@ class DisplayEndpoint extends Component {
                           isDashboardRoute(this.props)
                             ? (
 
-                                this.props.location.pathname.split('/')[3] !== 'new'
+                                this.props.location.pathname.split('/')[5] !== 'new'
                                   ? (
                                     <Dropdown as={ButtonGroup}>
                                       <button
@@ -2405,7 +2405,7 @@ class DisplayEndpoint extends Component {
           {
             !isDashboardRoute(this.props) &&
             this.state.harObject &&
-            this.props.location.pathname.split('/')[1] !== 'admin' && (
+            this.props.location.pathname.split('/')[3] !== 'admin' && (
               <CodeTemplate
                 show
                 onHide={() => {

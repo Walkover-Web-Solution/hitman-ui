@@ -5,10 +5,10 @@ import tabService from '../../tabs/tabService'
 import openApiService from '../../openApi/openApiService'
 import versionActionTypes from '../../collectionVersions/redux/collectionVersionsActionTypes'
 
-export const fetchCollections = () => {
+export const fetchCollections = (orgId) => {
   return (dispatch) => {
     collectionsApiService
-      .getCollections()
+      .getCollections(orgId)
       .then((response) => {
         dispatch(onCollectionsFetched(response.data))
       })

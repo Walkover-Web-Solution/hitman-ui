@@ -34,7 +34,7 @@ class UserInfo extends Component {
   openPublishDocs (collection) {
     if (collection?.id) {
       this.props.history.push({
-        pathname: '/admin/publish',
+        pathname: `/orgs/${this.props.match.params.orgId}/admin/publish`,
         search: `?collectionId=${collection.id}`
       })
     } else {
@@ -42,7 +42,7 @@ class UserInfo extends Component {
         Object.keys(this.props.collections)[0]
       ]
       this.props.history.push({
-        pathname: '/admin/publish',
+        pathname: `/orgs/${this.props.match.params.orgId}/admin/publish`,
         search: `?collectionId=${collection.id}`
       })
     }

@@ -49,7 +49,7 @@ class History extends Component {
 
     openHistorySnapshot (id) {
       this.props.history.push({
-        pathname: `/dashboard/history/${id}`,
+        pathname: `/orgs/${this.props.match.params.orgId}/dashboard/history/${id}`,
         historySnapshotId: id
       })
     }

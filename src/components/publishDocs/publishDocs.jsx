@@ -237,7 +237,7 @@ class PublishDocs extends Component {
 
   setSelectedCollection (collection) {
     this.props.history.push({
-      pathname: '/admin/publish',
+      pathname: `/orgs/${this.props.match.params.orgId}/admin/publish`,
       search: `?collectionId=${collection?.id}`
     })
   }

@@ -4,10 +4,10 @@ import store from '../../../store/store'
 import { toast } from 'react-toastify'
 import tabService from '../../tabs/tabService'
 
-export const fetchAllVersions = () => {
+export const fetchAllVersions = (orgId) => {
   return (dispatch) => {
     collectionVersionsApiService
-      .getAllCollectionVersions()
+      .getAllCollectionVersions(orgId)
       .then((response) => {
         const versions = response.data
         dispatch(onVersionsFetched(versions))
