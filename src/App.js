@@ -11,7 +11,7 @@ import Landing from './components/landing/landing'
 import { ToastContainer } from 'react-toastify'
 import ClientDoc from './components/publishDocs/clientDoc'
 import BrowserLogin from './components/broswerLogin/browserLogin'
-import { getOrgId } from './components/common/utility'
+import { getOrgId, isElectron } from './components/common/utility'
 
 class App extends Component {
   async redirectToClientDomain () {
@@ -30,7 +30,7 @@ class App extends Component {
   }
 
   componentDidMount () {
-    if (process.env.REACT_APP_IS_DESKTOP) {
+    if (isElectron()) {
       const { ipcRenderer } = window.require('electron')
       ipcRenderer.on('token-transfer-channel', (event, data) => {
         this.props.history.push({
