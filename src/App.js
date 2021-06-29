@@ -70,8 +70,6 @@ class App extends Component {
       if (flag === 1) {
         window.localStorage.setItem('organisation', JSON.stringify(organisation))
       }
-      if (!orgId) { orgId = orgList[0].identifier }
-      window.localStorage.setItem('selectedOrgId', JSON.stringify(orgId))
     }
   }
 

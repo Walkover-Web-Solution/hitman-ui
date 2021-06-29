@@ -40,7 +40,6 @@ export async function login (socketJwt) {
   window.localStorage.setItem(profileKey, JSON.stringify(userInfo.profile))
   window.localStorage.setItem(orgKey, JSON.stringify(userInfo.orgs[0]))
   window.localStorage.setItem('organisationList', JSON.stringify(userInfo.orgs))
-  window.localStorage.setItem('selectedOrgId', JSON.stringify(userInfo.orgs[0].identifier))
   http.setJwt(`Bearer ${socketJwt}`)
   return userInfo
 }
