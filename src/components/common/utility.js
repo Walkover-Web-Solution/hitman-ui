@@ -1,4 +1,5 @@
 import Joi from 'joi-browser'
+import history from '../../history'
 
 export const ADD_GROUP_MODAL_NAME = 'Add Group'
 export const ADD_VERSION_MODAL_NAME = 'Add Version'
@@ -101,7 +102,7 @@ export function toTitleCase (str) {
 }
 
 export function getOrgId () {
-  const path = window.location.href.split('/')?.[4]
+  const path = history.location.pathname.split('/')?.[2]
   if (path) { return path } else {
     let orgList = window.localStorage.getItem('organisationList')
     orgList = JSON.parse(orgList)
