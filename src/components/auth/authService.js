@@ -1,5 +1,6 @@
 import http from '../../services/httpService'
 import history from '../../history'
+import Cookies from 'universal-cookie'
 import { isElectron } from '../common/utility'
 const apiEndpoint = process.env.REACT_APP_API_URL + '/profile'
 const apiUrl = process.env.REACT_APP_API_URL
@@ -9,6 +10,7 @@ const profileKey = 'profile'
 const orgKey = 'organisation'
 const ssoURL = process.env.REACT_APP_SOCKET_SSO_URL
 const uiURL = process.env.REACT_APP_UI_URL
+
 http.setJwt(`Bearer ${getJwt()}`)
 
 export function isAdmin () {
@@ -79,7 +81,9 @@ export function getCurrentOrg () {
 }
 
 export function getJwt () {
-  return window.localStorage.getItem(tokenKey)
+  const cookies = new Cookies()
+  const token = cookies.get('token')
+  return token || window.localStorage.getItem(tokenKey)
 }
 
 export async function notifySignup (UserInfo) {
