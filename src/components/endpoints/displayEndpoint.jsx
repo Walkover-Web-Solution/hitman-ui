@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { Dropdown, ButtonGroup } from 'react-bootstrap'
 import store from '../../store/store'
-import { isDashboardRoute, isSavedEndpoint } from '../common/utility'
+import { isDashboardRoute, isElectron, isSavedEndpoint } from '../common/utility'
 import tabService from '../tabs/tabService'
 import { closeTab } from '../tabs/redux/tabsActions'
 import tabStatusTypes from '../tabs/tabStatusTypes'
@@ -1563,8 +1563,9 @@ class DisplayEndpoint extends Component {
 
   async setAccessToken () {
     const url = window.location.href
-    const response = URI.parseQuery('?' + url.split('#')[1])
-    if (url.split('#')[1]) {
+    const hashVariables = isElectron() ? url.split('#')[2] : url.split('#')[1]
+    const response = URI.parseQuery('?' + hashVariables)
+    if (hashVariables) {
       await indexedDbService.getDataBase()
       await indexedDbService.updateData(
         'responseData',

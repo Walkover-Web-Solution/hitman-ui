@@ -1,6 +1,7 @@
 import http from '../../services/httpService'
 import history from '../../history'
 import Cookies from 'universal-cookie'
+import { isElectron } from '../common/utility'
 const apiEndpoint = process.env.REACT_APP_API_URL + '/profile'
 const apiUrl = process.env.REACT_APP_API_URL
 const signUpNotifierUrl = process.env.REACT_APP_SIGN_UP_NOTIFIER_URL
@@ -41,7 +42,6 @@ export async function login (socketJwt) {
   window.localStorage.setItem(profileKey, JSON.stringify(userInfo.profile))
   window.localStorage.setItem(orgKey, JSON.stringify(userInfo.orgs[0]))
   window.localStorage.setItem('organisationList', JSON.stringify(userInfo.orgs))
-  window.localStorage.setItem('selectedOrgId', JSON.stringify(userInfo.orgs[0].identifier))
   http.setJwt(`Bearer ${socketJwt}`)
   return userInfo
 }
@@ -49,12 +49,12 @@ export function loginWithJwt (jwt) {
   window.localStorage.setItem(tokenKey, jwt)
 }
 export function logout () {
-  const isDesktop = process.env.REACT_APP_IS_DESKTOP
+  // const isDesktop = process.env.REACT_APP_IS_DESKTOP
   http.get(apiUrl + '/logout').then(() => {
     window.localStorage.removeItem(tokenKey)
     window.localStorage.removeItem(profileKey)
     window.localStorage.removeItem(orgKey)
-    if (isDesktop) {
+    if (isElectron()) {
       history.push({ pathname: '/' })
     } else {
       const redirectUri = encodeURIComponent(`${uiURL}/login`)

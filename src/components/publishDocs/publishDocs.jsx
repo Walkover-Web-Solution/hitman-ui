@@ -31,6 +31,7 @@ import { ReactComponent as ExternalLinks } from '../../assets/icons/externalLink
 import UserInfo from '../main/userInfo'
 import PublishDocsConfirmModal from './publishDocsConfirmModal'
 import { moveToNextStep } from '../../services/widgetService'
+import { openExternalLink } from '../common/utility'
 const isEqual = require('react-fast-compare')
 
 const URI = require('urijs')
@@ -1045,7 +1046,7 @@ class PublishDocs extends Component {
           <div className='d-flex align-items-center mx-3 mt-4'>
             <button
               className='externalLinkButton'
-              onClick={() => { window.open(url, '_blank') }}
+              onClick={() => { openExternalLink(url) }}
             >
               <ExternalLinks />
             </button>
@@ -1258,8 +1259,8 @@ class PublishDocs extends Component {
       <div className='hosted-doc-heading'>
         <div>{heading}</div>
         <div className='row d-flex align-items-center'>
-          <div className='communti-btn-wrapper mr-2'>
-            <a href={process.env.REACT_APP_COMMUNITY_URL} rel='noreferrer' target='_blank'>Community </a>
+          <div className='communti-btn-wrapper mr-2' onClick={() => openExternalLink(process.env.REACT_APP_COMMUNITY_URL)}>
+            <a>Community</a>
           </div>
           <div className='user-info-container'><UserInfo {...this.props} /></div>
         </div>

@@ -1,4 +1,5 @@
 import Joi from 'joi-browser'
+import history from '../../history'
 
 export const ADD_GROUP_MODAL_NAME = 'Add Group'
 export const ADD_VERSION_MODAL_NAME = 'Add Version'
@@ -8,6 +9,15 @@ export function isDashboardRoute (props, sidebar = false) {
     props.match.path.includes('/orgs/:orgId/dashboard') ||
     (sidebar === true && props.match.path.includes('/orgs/:orgId/admin/publish'))
   ) { return true } else return false
+}
+
+export function isElectron () {
+  const userAgent = navigator.userAgent.toLowerCase()
+  return userAgent.indexOf(' electron/') !== -1
+}
+
+export function openExternalLink (link) {
+  if (isElectron()) { window.require('electron').shell.openExternal(link) } else { window.open(link, '_blank') }
 }
 
 export function isSavedEndpoint (props) {
@@ -92,7 +102,7 @@ export function toTitleCase (str) {
 }
 
 export function getOrgId () {
-  const path = window.location.href.split('/')?.[4]
+  const path = history.location.pathname.split('/')?.[2]
   if (path) { return path } else {
     let orgList = window.localStorage.getItem('organisationList')
     orgList = JSON.parse(orgList)
@@ -102,6 +112,7 @@ export function getOrgId () {
 
 export default {
   isDashboardRoute,
+  isElectron,
   isSavedEndpoint,
   setTitle,
   setFavicon,
