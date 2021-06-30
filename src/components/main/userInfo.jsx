@@ -153,7 +153,12 @@ class UserInfo extends Component {
   navigateToViaSocket (path) {
     const orgId = authService.getCurrentOrg()?.identifier
     if (orgId) {
-      const viaSocketUrl = `${process.env.REACT_APP_VIASOCKET_URL}/orgs/${orgId}${path}?product=hitman`
+      let viaSocketUrl = `${process.env.REACT_APP_VIASOCKET_URL}/orgs/${orgId}${path}?product=hitman`
+      if (path === '/products') {
+        viaSocketUrl += ''
+      } else {
+        viaSocketUrl += `&redirect_uri=${process.env.REACT_APP_UI_URL}`
+      }
       openExternalLink(viaSocketUrl)
     }
   }
@@ -182,19 +187,61 @@ class UserInfo extends Component {
     })
   }
 
+  renderBilling () {
+    return (
+      <div>Billing</div>
+    )
+  }
+
+  renderCurrentOrgName () {
+    const orgName = authService.getCurrentOrg()?.name
+    return (
+      <div className='text-center'>{orgName}</div>
+    )
+  }
+
+  renderProfileHeader () {
+    return (
+      <div className='d-flex align-items-center'>
+        <i class='fas fa-user' />
+        {this.renderCurrentOrgName()}
+        <i className='uil uil-ellipsis-v' />
+      </div>
+    )
+  }
+
+  renderOrgsList () {
+    const orgsList = JSON.parse(window.localStorage.getItem('organisationList')) || []
+    return (
+      <div>
+        <div className='text-uppercase'>Switch Accounts</div>
+        <div>
+          {orgsList.map((org, index) => (
+            <div onClick={() => this.switchOrg(org?.identifier)} key={index}>{org?.name}</div>
+          ))}
+        </div>
+      </div>
+    )
+  }
+
+  switchOrg (orgId) {
+    window.location.href = `/orgs/${orgId}/dashboard`
+  }
+
   userDropdown () {
     return (
       <Dropdown bsPrefix='dropdown user-info-dropdown'>
         <Dropdown.Toggle variant=''>
-          <div className='user-profile-circle'><i class='fas fa-user' /></div>
+          {this.renderProfileHeader()}
           {this.getNotificationCount() > 0 &&
             <span className='user-notification-badge'>{this.getNotificationCount()}</span>}
         </Dropdown.Toggle>
         <Dropdown.Menu>
-          {this.renderProfileDetails()}
+          {this.renderCurrentOrgName()}
           <Dropdown.Divider />
+          {this.renderProfileDetails()}
           <Dropdown.Item onClick={() => this.navigateToViaSocket('/manage/users')}>
-            <SettingsIcon /><span>Account & Settings</span>
+            <SettingsIcon /><span>Invite Team</span>
           </Dropdown.Item>
           {authService.isAdmin() &&
             <Dropdown.Item className='d-flex justify-content-between align-items-center' onClick={() => { this.navigateToPublishDocs() }}>
@@ -202,14 +249,16 @@ class UserInfo extends Component {
               {this.getNotificationCount() > 0 &&
                 <div className='user-notification-badge'>{this.getNotificationCount()}</div>}
             </Dropdown.Item>}
-          <Dropdown.Divider />
+          <Dropdown.Item onClick={() => this.navigateToViaSocket('/billing/subscription/hitman')}>
+            {this.renderBilling()}
+          </Dropdown.Item>
           <Dropdown.Item onClick={() => this.navigateToViaSocket('/products')}>
             <SocketIcon className='socket-icon' /><span>Other Products</span>
           </Dropdown.Item>
-          <Dropdown.Divider />
           <Dropdown.Item onClick={() => this.handleLogout()}>
             <SignOutIcon /><span>Logout</span>
           </Dropdown.Item>
+          {this.renderOrgsList()}
         </Dropdown.Menu>
       </Dropdown>
     )
