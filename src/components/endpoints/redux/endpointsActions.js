@@ -3,6 +3,7 @@ import store from '../../../store/store'
 import endpointApiService from '../endpointApiService'
 import endpointsActionTypes from './endpointsActionTypes'
 import { getOrgId } from '../../common/utility'
+import indexedDbService from '../../indexedDb/indexedDbService'
 
 export const addEndpoint = (history, newEndpoint, groupId, customCallback) => {
   const orgId = getOrgId()
@@ -41,6 +42,7 @@ export const fetchEndpoints = (orgId) => {
       .getAllEndpoints(orgId)
       .then((response) => {
         dispatch(onEndpointsFetched(response.data))
+        indexedDbService.addMultipleData('endpoints', Object.values(response.data))
       })
       .catch((error) => {
         dispatch(
