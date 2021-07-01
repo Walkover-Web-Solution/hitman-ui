@@ -60,7 +60,7 @@ class App extends Component {
     orgList = JSON.parse(orgList)
     let flag = 0
     let organisation
-    if (!orgList) { this.props.history.push({ pathname: '/logout' }) } else {
+    if (orgList) {
       orgList.forEach((org, index) => {
         if (orgId === org.identifier) {
           flag = 1
