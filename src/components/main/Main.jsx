@@ -1,15 +1,16 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import 'react-toastify/dist/ReactToastify.css'
-import { fetchCollections } from '../collections/redux/collectionsActions'
-import { fetchAllVersions } from '../collectionVersions/redux/collectionVersionsActions'
+import { fetchCollections, fetchCollectionsFromIdb } from '../collections/redux/collectionsActions'
+import { fetchAllVersions, fetchAllVersionsFromIdb } from '../collectionVersions/redux/collectionVersionsActions'
 import {
   fetchEndpoints,
-  moveEndpoint
+  moveEndpoint,
+  fetchEndpointsFromIdb
 } from '../endpoints/redux/endpointsActions'
-import { fetchGroups } from '../groups/redux/groupsActions'
+import { fetchGroups, fetchGroupsFromIdb } from '../groups/redux/groupsActions'
 import indexedDbService from '../indexedDb/indexedDbService'
-import { fetchPages } from '../pages/redux/pagesActions'
+import { fetchPages, fetchPagesFromIdb } from '../pages/redux/pagesActions'
 import { fetchHistoryFromIdb } from '../history/redux/historyAction'
 import ContentPanel from './contentPanel'
 import './main.scss'
@@ -24,6 +25,11 @@ import OnlineSatus from '../onlineStatus/onlineStatus'
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    fetch_collections_from_idb: (orgId) => dispatch(fetchCollectionsFromIdb(orgId)),
+    fetch_all_versions_from_idb: (orgId) => dispatch(fetchAllVersionsFromIdb(orgId)),
+    fetch_groups_from_idb: (orgId) => dispatch(fetchGroupsFromIdb(orgId)),
+    fetch_endpoints_from_idb: (orgId) => dispatch(fetchEndpointsFromIdb(orgId)),
+    fetch_pages_from_idb: (orgId) => dispatch(fetchPagesFromIdb(orgId)),
     fetch_collections: (orgId) => dispatch(fetchCollections(orgId)),
     fetch_all_versions: (orgId) => dispatch(fetchAllVersions(orgId)),
     fetch_groups: (orgId) => dispatch(fetchGroups(orgId)),
@@ -57,11 +63,16 @@ class Main extends Component {
     const orgId = this.props.match.params.orgId
     indexedDbService.getDataBase()
     console.log('WILL_FETCH', willFetch('2021-07-01'))
-    this.props.fetch_collections(orgId)
-    this.props.fetch_all_versions(orgId)
-    this.props.fetch_groups(orgId)
-    this.props.fetch_endpoints(orgId)
-    this.props.fetch_pages(orgId)
+    this.props.fetch_collections_from_idb(orgId)
+    this.props.fetch_all_versions_from_idb(orgId)
+    this.props.fetch_groups_from_idb(orgId)
+    this.props.fetch_endpoints_from_idb(orgId)
+    this.props.fetch_pages_from_idb(orgId)
+    // this.props.fetch_collections(orgId)
+    // this.props.fetch_all_versions(orgId)
+    // this.props.fetch_groups(orgId)
+    // this.props.fetch_endpoints(orgId)
+    // this.props.fetch_pages(orgId)
     this.props.fetch_history()
     this.props.fetch_all_cookies()
   }

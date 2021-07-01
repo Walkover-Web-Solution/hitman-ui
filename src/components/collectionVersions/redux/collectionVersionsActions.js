@@ -18,6 +18,24 @@ export const fetchAllVersions = (orgId) => {
       })
   }
 }
+
+export const fetchAllVersionsFromIdb = (orgId) => {
+  return (dispatch) => {
+    indexedDbService
+      .getAllData('versions')
+      .then((response) => {
+        dispatch(onVersionsFetched(response))
+      })
+      .catch((error) => {
+        dispatch(
+          onVersionsFetchedError(
+            error.response ? error.response.data : error
+          )
+        )
+      })
+  }
+}
+
 export const fetchVersions = (collectionId) => {
   return (dispatch) => {
     collectionVersionsApiService

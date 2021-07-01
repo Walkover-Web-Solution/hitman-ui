@@ -67,6 +67,23 @@ export const fetchGroups = (orgId) => {
   }
 }
 
+export const fetchGroupsFromIdb = (orgId) => {
+  return (dispatch) => {
+    indexedDbService
+      .getAllData('groups')
+      .then((response) => {
+        dispatch(onGroupsFetched(response))
+      })
+      .catch((error) => {
+        dispatch(
+          onGroupsFetchedError(
+            error.response ? error.response.data : error
+          )
+        )
+      })
+  }
+}
+
 export const onGroupsFetched = (groups) => {
   return {
     type: groupsActionTypes.ON_GROUPS_FETCHED,

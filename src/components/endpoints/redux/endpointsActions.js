@@ -52,6 +52,23 @@ export const fetchEndpoints = (orgId) => {
   }
 }
 
+export const fetchEndpointsFromIdb = (orgId) => {
+  return (dispatch) => {
+    indexedDbService
+      .getAllData('endpoints')
+      .then((response) => {
+        dispatch(onEndpointsFetched(response))
+      })
+      .catch((error) => {
+        dispatch(
+          onEndpointsFetchedError(
+            error.response ? error.response.data : error
+          )
+        )
+      })
+  }
+}
+
 export const updateEndpoint = (editedEndpoint, stopSaveLoader) => {
   return (dispatch) => {
     const originalEndpoint = JSON.parse(JSON.stringify(store.getState().endpoints[editedEndpoint.id]))

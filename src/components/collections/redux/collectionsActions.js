@@ -24,6 +24,23 @@ export const fetchCollections = (orgId) => {
   }
 }
 
+export const fetchCollectionsFromIdb = (orgId) => {
+  return (dispatch) => {
+    indexedDbService
+      .getAllData('collections')
+      .then((response) => {
+        dispatch(onCollectionsFetched(response))
+      })
+      .catch((error) => {
+        dispatch(
+          onCollectionsFetchedError(
+            error.response ? error.response.data : error
+          )
+        )
+      })
+  }
+}
+
 export const onCollectionsFetched = (collections) => {
   return {
     type: collectionsActionTypes.ON_COLLECTIONS_FETCHED,

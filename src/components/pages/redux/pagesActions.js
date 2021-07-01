@@ -20,6 +20,23 @@ export const fetchPages = (orgId) => {
   }
 }
 
+export const fetchPagesFromIdb = (orgId) => {
+  return (dispatch) => {
+    indexedDbService
+      .getAllData('pages')
+      .then((response) => {
+        dispatch(onPagesFetched(response))
+      })
+      .catch((error) => {
+        dispatch(
+          onPagesFetchedError(
+            error.response ? error.response.data : error
+          )
+        )
+      })
+  }
+}
+
 export const onPagesFetched = (pages) => {
   return {
     type: pagesActionTypes.ON_PAGES_FETCHED,
