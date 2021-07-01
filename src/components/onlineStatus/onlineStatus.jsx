@@ -1,17 +1,14 @@
 import React, { useEffect, useState } from 'react'
+import './onlineStatus.scss'
 
 export default function OnlineSatus () {
   const [online, isOnline] = useState(navigator.onLine)
 
   const setOnline = () => {
     console.log('We are online!')
-    // check for data update require
-    // try {
-
-    // }
-    // catch (err) {
-
-    // }
+    /**
+     * fetch backend timestamp
+     */
     isOnline(true)
   }
   const setOffline = () => {
@@ -32,6 +29,6 @@ export default function OnlineSatus () {
   }, [])
 
   return (
-    <div>{online}</div>
+    <div className={`online-status-${online}`}>{online ? 'You are online' : 'You are offline'}</div>
   )
 }
