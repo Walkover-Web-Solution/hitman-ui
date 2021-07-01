@@ -19,6 +19,8 @@ import PublishDocs from '../publishDocs/publishDocs'
 import { loadWidget } from '../../services/widgetService'
 import { fetchAllCookies } from '../cookies/redux/cookiesActions'
 import { isDesktop } from 'react-device-detect'
+import { willFetch } from '../indexedDb/helpers'
+import OnlineSatus from '../onlineStatus/onlineStatus'
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -48,11 +50,13 @@ class Main extends Component {
       loadWidget()
       this.fetchAll()
     }
-    await indexedDbService.createDataBase()
+    // await indexedDbService.createDataBase()
   }
 
   fetchAll () {
     const orgId = this.props.match.params.orgId
+    indexedDbService.getDataBase()
+    console.log('WILL_FETCH', willFetch('2021-07-01'))
     this.props.fetch_collections(orgId)
     this.props.fetch_all_versions(orgId)
     this.props.fetch_groups(orgId)
@@ -82,6 +86,7 @@ class Main extends Component {
           Looks like you have opened it on a mobile device. It looks better on a desktop device.
         </div>}
         <div className='custom-main-container'>
+          <OnlineSatus />
           <div className='main-panel-wrapper'>
             <SideBar
               {...this.props}

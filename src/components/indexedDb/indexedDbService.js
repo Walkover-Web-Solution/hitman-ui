@@ -1,17 +1,20 @@
 import { openDB, deleteDB } from 'idb'
+import { getOrgId } from '../common/utility'
 
 let db = null
 
 const getDataBase = async () => {
+  const orgId = getOrgId()
+  const dbName = `hitman_${orgId}`
   if (db) return db
   else {
-    db = await createDataBase()
+    db = await createDataBase(dbName)
     return db
   }
 }
 
-const createDataBase = async () => {
-  const dbName = 'hitman'
+const createDataBase = async (dbName) => {
+  // const dbName = 'hitman'
   const version = 1
 
   db = await openDB(dbName, version, {
@@ -22,6 +25,7 @@ const createDataBase = async () => {
         autoIncrement: true
       })
       db.createObjectStore('history')
+      db.createObjectStore('collections')
       const tabsMetadataStore = db.createObjectStore('tabs_metadata')
       const authDataStore = db.createObjectStore('authData')
       const responseDataStore = db.createObjectStore('responseData')
@@ -30,6 +34,10 @@ const createDataBase = async () => {
       tabsMetadataStore.put([], 'tabsOrder')
       authDataStore.put({}, 'currentAuthData')
       responseDataStore.put({}, 'currentResponse')
+      const metaData = db.createObjectStore('meta_data')
+      metaData.put(dbName.split('_')[1], 'org_id')
+      metaData.put(dbName, 'db_name')
+      metaData.put(null, 'updated_at')
     }
   })
   return db
@@ -42,6 +50,19 @@ const addData = async (storeName, val, key) => {
   const tx = db.transaction(storeName, 'readwrite')
   const store = await tx.objectStore(storeName)
   await store.put(val, key)
+  await tx.done
+}
+
+const addMultipleData = async (storeName, valueArray) => {
+  console.log('TEST', { storeName, valueArray })
+  if (!db) {
+    await getDataBase()
+  }
+  const tx = db.transaction(storeName, 'readwrite')
+  for (const value of valueArray) {
+    const store = await tx.objectStore(storeName)
+    await store.put(value, value.id)
+  }
   await tx.done
 }
 
@@ -134,5 +155,6 @@ export default {
   deleteData,
   deleteDataByIndex,
   clearStore,
-  deleteDataBase
+  deleteDataBase,
+  addMultipleData
 }

@@ -4,6 +4,7 @@ import collectionsActionTypes from './collectionsActionTypes'
 import tabService from '../../tabs/tabService'
 import openApiService from '../../openApi/openApiService'
 import versionActionTypes from '../../collectionVersions/redux/collectionVersionsActionTypes'
+import indexedDbService from '../../indexedDb/indexedDbService'
 
 export const fetchCollections = (orgId) => {
   return (dispatch) => {
@@ -11,6 +12,7 @@ export const fetchCollections = (orgId) => {
       .getCollections(orgId)
       .then((response) => {
         dispatch(onCollectionsFetched(response.data))
+        indexedDbService.addMultipleData('collections', Object.values(response.data))
       })
       .catch((error) => {
         dispatch(
