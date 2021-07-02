@@ -14,7 +14,6 @@ const getDataBase = async () => {
 }
 
 const createDataBase = async (dbName) => {
-  // const dbName = 'hitman'
   const version = 1
 
   db = await openDB(dbName, version, {

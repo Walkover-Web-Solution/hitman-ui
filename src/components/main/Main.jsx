@@ -62,7 +62,6 @@ class Main extends Component {
     } else if (token) {
       login(token).then(() => this.fetchAll())
     }
-    // await indexedDbService.createDataBase()
   }
 
   async fetchAll () {
