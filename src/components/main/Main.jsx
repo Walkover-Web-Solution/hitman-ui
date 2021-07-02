@@ -64,7 +64,6 @@ class Main extends Component {
   async fetchAll () {
     indexedDbService.getDataBase()
     const { fetchFromIdb, timestampBackend } = await this.isIdbUpdated()
-    console.log(fetchFromIdb)
     if (fetchFromIdb) {
       this.fetchFromIdb()
     } else {
@@ -76,17 +75,11 @@ class Main extends Component {
 
   async isIdbUpdated () {
     const orgId = this.props.match.params.orgId
-    console.log('GETTING TIMESTAMP FROM BACKEND')
     let timestampBackend = await getOrgUpdatedAt(orgId)
     timestampBackend = timestampBackend.data?.updatedAt
-    console.log('GETTING TIMESTAMP FROM IDB')
     const timestampIdb = await indexedDbService.getValue('meta_data', 'updated_at')
-    console.log('timestampIdb', timestampIdb)
     let fetchFromIdb
-    console.log(`timestampIdb ${timestampIdb}`)
-    console.log(moment(timestampBackend).isValid(), moment(timestampIdb).isValid())
-    if (!moment(timestampBackend).isValid() || (moment(timestampIdb).isValid() && moment(timestampIdb).diff(moment(timestampBackend)) >= 0)) {
-      console.log('NO NEW DATA IN BACKEND')
+    if ((timestampIdb && moment(timestampIdb).isValid() && moment(timestampIdb).diff(moment(timestampBackend)) >= 0)) {
       fetchFromIdb = true
     } else {
       fetchFromIdb = false
@@ -95,7 +88,6 @@ class Main extends Component {
   }
 
   fetchFromIdb () {
-    console.log('FETCHING FROM IDB')
     const orgId = this.props.match.params.orgId
     this.props.fetch_collections_from_idb(orgId)
     this.props.fetch_all_versions_from_idb(orgId)
@@ -105,7 +97,6 @@ class Main extends Component {
   }
 
   fetchFromBackend (timestampBackend) {
-    console.log('FETCHING FROM BACKEND')
     const orgId = this.props.match.params.orgId
     this.props.fetch_collections(orgId)
     this.props.fetch_all_versions(orgId)

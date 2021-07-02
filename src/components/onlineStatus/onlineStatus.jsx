@@ -5,35 +5,35 @@ export default function OnlineSatus (props) {
   const [online, isOnline] = useState(navigator.onLine)
   const [needToUpdate, changeStatus] = useState(false)
   const [timestamp, setTime] = useState(null)
+  const [showStatus, changeShowStatus] = useState(false)
 
   const setOnline = async () => {
-    console.log('We are online!')
-    /**
-     * fetch backend timestamp
-     */
     const { fetchFromIdb, timestampBackend } = await props.isIdbUpdated()
     if (!fetchFromIdb) {
       changeStatus(true)
       setTime(timestampBackend)
+    } else {
+      setTimeout(() => {
+        changeShowStatus(false)
+      }, 1000)
     }
     isOnline(true)
   }
   const setOffline = () => {
-    console.log('We are offline!')
+    changeShowStatus(true)
     isOnline(false)
   }
 
   const fetchDataFromBackend = () => {
     props.fetchFromBackend(timestamp)
+    changeShowStatus(false)
     changeStatus(false)
   }
 
-  // Register the event listeners
   useEffect(() => {
     window.addEventListener('offline', setOffline)
     window.addEventListener('online', setOnline)
 
-    // cleanup if we unmount
     return () => {
       window.removeEventListener('offline', setOffline)
       window.removeEventListener('online', setOnline)
@@ -41,9 +41,12 @@ export default function OnlineSatus (props) {
   }, [])
 
   return (
-    <div>
-      <div className={`online-status-${online}`}>{online ? 'You are online' : 'You are offline'}</div>
-      {needToUpdate && <button onClick={() => fetchDataFromBackend()}>refresh</button>}
+    <div className={['online-status', showStatus ? 'show' : 'hide'].join(' ')}>
+      <div>
+        <span className={`online-status-${online}`}>{online ? 'You are online now.' : 'You are offline.'}</span><br />
+        {needToUpdate && <small className='text-muted'> While you were gone, there was change in the databse. <br />please sync to see changes.</small>}
+      </div>
+      {needToUpdate && <button className='btn btn-primary' onClick={() => fetchDataFromBackend()}>sync now</button>}
     </div>
   )
 }

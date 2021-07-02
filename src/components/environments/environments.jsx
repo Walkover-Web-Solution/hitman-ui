@@ -125,7 +125,6 @@ class Environments extends Component {
   }
 
   async fetchCollection (collectionId) {
-    console.log('fetchCollection')
     const collection = await collectionsApiService.getCollection(collectionId)
     if (collection.data.environment != null) {
       this.setState({

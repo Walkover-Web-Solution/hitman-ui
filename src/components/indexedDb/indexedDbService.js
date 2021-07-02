@@ -58,7 +58,6 @@ const addData = async (storeName, val, key) => {
 }
 
 const addMultipleData = async (storeName, valueArray) => {
-  console.log('TEST', { storeName, valueArray })
   if (!db) {
     await getDataBase()
   }
