@@ -172,7 +172,12 @@ class UserInfo extends Component {
   renderProfileDetails () {
     return (
       <div className='profile'>
-        <div className='d-flex align-items-center'><i class='fas fa-user' /></div>
+        <div className='d-flex align-items-center'>
+          <svg width='24' height='24' viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'>
+            <path d='M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21' stroke='#212224' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' />
+            <path d='M12 11C14.2091 11 16 9.20914 16 7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7C8 9.20914 9.79086 11 12 11Z' stroke='#212224' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' />
+          </svg>
+        </div>
         <div className='user-profile-data text-truncate'>
           <div className='username'>{this.state.user?.name}</div>
           <div className='email'>{this.state.user?.email}</div>
@@ -191,9 +196,9 @@ class UserInfo extends Component {
     return (
       <div>
         <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
-          <path d='M9.75 1.5H4.5C4.10217 1.5 3.72064 1.65804 3.43934 1.93934C3.15804 2.22064 3 2.60218 3 3V15C3 15.3978 3.15804 15.7794 3.43934 16.0607C3.72064 16.342 4.10217 16.5 4.5 16.5H13.5C13.8978 16.5 14.2794 16.342 14.5607 16.0607C14.842 15.7794 15 15.3978 15 15V6.75L9.75 1.5Z' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
-          <path d='M9.75 1.5V6.75H15' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
-          <path d='M8.2983 14.7273H8.96875L8.97443 14.071C10.2045 13.9773 10.9176 13.3239 10.9205 12.3381C10.9176 11.3693 10.1875 10.8551 9.17614 10.6278L9.00852 10.5881L9.01989 9.16761C9.39773 9.25568 9.62784 9.49716 9.66193 9.85511H10.8409C10.8267 8.91477 10.125 8.24148 9.03125 8.12216L9.03693 7.45455H8.36648L8.3608 8.11648C7.25 8.22443 6.46591 8.89489 6.47159 9.86364C6.46875 10.7216 7.07386 11.2131 8.05682 11.4489L8.32955 11.517L8.31534 13.0199C7.85227 12.9318 7.53977 12.6477 7.50852 12.1733H6.31818C6.34659 13.321 7.09943 13.9631 8.30398 14.0682L8.2983 14.7273ZM8.9858 13.0199L8.99716 11.6932C9.4375 11.8324 9.67614 12.0114 9.67898 12.3352C9.67614 12.679 9.41477 12.9347 8.9858 13.0199ZM8.33807 10.4148C7.98295 10.2926 7.72727 10.108 7.73295 9.78125C7.73295 9.47727 7.94886 9.24148 8.34943 9.15909L8.33807 10.4148Z' fill='#E98A36' />
+          <path d='M9.75 1.5H4.5C4.10217 1.5 3.72064 1.65804 3.43934 1.93934C3.15804 2.22064 3 2.60218 3 3V15C3 15.3978 3.15804 15.7794 3.43934 16.0607C3.72064 16.342 4.10217 16.5 4.5 16.5H13.5C13.8978 16.5 14.2794 16.342 14.5607 16.0607C14.842 15.7794 15 15.3978 15 15V6.75L9.75 1.5Z' stroke='#000' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
+          <path d='M9.75 1.5V6.75H15' stroke='#000' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
+          <path d='M8.2983 14.7273H8.96875L8.97443 14.071C10.2045 13.9773 10.9176 13.3239 10.9205 12.3381C10.9176 11.3693 10.1875 10.8551 9.17614 10.6278L9.00852 10.5881L9.01989 9.16761C9.39773 9.25568 9.62784 9.49716 9.66193 9.85511H10.8409C10.8267 8.91477 10.125 8.24148 9.03125 8.12216L9.03693 7.45455H8.36648L8.3608 8.11648C7.25 8.22443 6.46591 8.89489 6.47159 9.86364C6.46875 10.7216 7.07386 11.2131 8.05682 11.4489L8.32955 11.517L8.31534 13.0199C7.85227 12.9318 7.53977 12.6477 7.50852 12.1733H6.31818C6.34659 13.321 7.09943 13.9631 8.30398 14.0682L8.2983 14.7273ZM8.9858 13.0199L8.99716 11.6932C9.4375 11.8324 9.67614 12.0114 9.67898 12.3352C9.67614 12.679 9.41477 12.9347 8.9858 13.0199ZM8.33807 10.4148C7.98295 10.2926 7.72727 10.108 7.73295 9.78125C7.73295 9.47727 7.94886 9.24148 8.34943 9.15909L8.33807 10.4148Z' fill='#000' />
         </svg>
         <span>Billing</span>
       </div>
@@ -223,7 +228,7 @@ class UserInfo extends Component {
     return (
       <div>
         <div className='text-uppercase text-sm-bold'>Switch Orgs</div>
-        <div className='profile-sm-dropdown'>
+        <div className='profile-sm-dropdown orgs-list'>
           {orgsList.map((org, index) => (
             <div className='dropdown-item d-flex justify-space-between' onClick={() => this.switchOrg(org?.identifier)} key={index}><span className='pl-0'>{org?.name}</span>
 
