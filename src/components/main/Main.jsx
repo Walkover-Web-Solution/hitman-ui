@@ -15,7 +15,7 @@ import { fetchHistoryFromIdb } from '../history/redux/historyAction'
 import ContentPanel from './contentPanel'
 import './main.scss'
 import SideBar from './sidebar'
-import { getCurrentUser } from '../auth/authService'
+import { getCurrentUser, login } from '../auth/authService'
 import PublishDocs from '../publishDocs/publishDocs'
 import { loadWidget } from '../../services/widgetService'
 import { fetchAllCookies, fetchAllCookiesFromLocalStorage } from '../cookies/redux/cookiesActions'
@@ -23,6 +23,7 @@ import { isDesktop } from 'react-device-detect'
 import OnlineSatus from '../onlineStatus/onlineStatus'
 import { getOrgUpdatedAt } from '../../services/orgApiService'
 import moment from 'moment'
+import Cookies from 'universal-cookie'
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -54,9 +55,12 @@ class Main extends Component {
   }
 
   async componentDidMount () {
+    const token = this.getTokenFromCookie()
     if (getCurrentUser()) {
       loadWidget()
       await this.fetchAll()
+    } else if (token) {
+      login(token).then(() => this.fetchAll())
     }
     // await indexedDbService.createDataBase()
   }
@@ -125,6 +129,11 @@ class Main extends Component {
 
   setEnvironment (environment) {
     this.setState({ currentEnvironment: environment })
+  }
+
+  getTokenFromCookie () {
+    const cookies = new Cookies()
+    return cookies.get('token')
   }
 
   render () {
