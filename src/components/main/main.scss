@@ -1133,6 +1133,7 @@ button.editBtn {
 .dropdown-divider {
   float: left;
   width: 100%;
+  border: 1px dashed #F4F4F4 !important;
 }
 
 .viewOptionals {
@@ -2537,11 +2538,14 @@ span.endpointNameWrapper {
     font-weight: 600;
     font-size: 16px;
   }
-
+  .profile > div {
+    margin-right: 5px;
+  }
   .dropdown-menu .profile {
     width: 250px;
-    padding: 0rem 0.5rem !important;
+    padding: 0rem 0.94rem !important;
     display: flex;
+    margin-top: 1.4rem;
 
     .user-profile-data {
       padding-left: 0.3rem;
@@ -2575,7 +2579,7 @@ span.endpointNameWrapper {
     }
 
     .socket-icon {
-      fill: #E98A36;
+      fill: #000;
       height: 18px;
       width: 18px;
     }
@@ -3077,8 +3081,8 @@ li.nav-item.cookie-tab a {
   box-shadow: 0px 4px 32px rgba(0, 0, 0, 0.15);
   border-radius: 6px;
   border: none !important;
-  padding: 10px 15px !important;
-  transform: translate(-165.333px, 45.9333px) !important;
+  padding: 10px 12px !important;
+  width: 17.625rem;
 
   .profile-sm-dropdown {
     background-color: #fcfcfc;
@@ -3101,7 +3105,7 @@ li.nav-item.cookie-tab a {
         border:none;
       }
   }
-  svg{
+  .profile-sm-dropdown svg{
     width: 18px !important;
     height: 18px !important;
   }
