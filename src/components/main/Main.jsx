@@ -63,21 +63,29 @@ class Main extends Component {
 
   async fetchAll () {
     indexedDbService.getDataBase()
-    const { fetchFromIdb, timestampBackend } = await this.isIdbUpdated()
-    if (fetchFromIdb) {
+    if (!navigator.onLine) {
       this.fetchFromIdb()
+      this.props.fetch_all_cookies_from_local()
     } else {
-      this.fetchFromBackend(timestampBackend)
+      const { fetchFromIdb, timestampBackend } = await this.isIdbUpdated()
+      if (fetchFromIdb) {
+        this.fetchFromIdb()
+      } else {
+        this.fetchFromBackend(timestampBackend)
+      }
+      this.props.fetch_all_cookies()
     }
     this.props.fetch_history()
-    if (!navigator.onLine) { this.props.fetch_all_cookies_from_local() } else { this.props.fetch_all_cookies() }
   }
 
   async isIdbUpdated () {
     const orgId = this.props.match.params.orgId
-    let timestampBackend = await getOrgUpdatedAt(orgId)
-    timestampBackend = timestampBackend.data?.updatedAt
-    const timestampIdb = await indexedDbService.getValue('meta_data', 'updated_at')
+    let timestampBackend, timestampIdb
+    try {
+      timestampBackend = await getOrgUpdatedAt(orgId)
+      timestampBackend = timestampBackend.data?.updatedAt
+      timestampIdb = await indexedDbService.getValue('meta_data', 'updated_at')
+    } catch (err) {}
     let fetchFromIdb
     if ((timestampIdb && moment(timestampIdb).isValid() && moment(timestampIdb).diff(moment(timestampBackend)) >= 0)) {
       fetchFromIdb = true

@@ -21,6 +21,7 @@ export default function OnlineSatus (props) {
   }
   const setOffline = () => {
     changeShowStatus(true)
+    changeStatus(false)
     isOnline(false)
   }
 

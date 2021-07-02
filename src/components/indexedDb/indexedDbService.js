@@ -5,7 +5,7 @@ let db = null
 
 const getDataBase = async () => {
   const orgId = getOrgId()
-  const dbName = `hitman_${orgId}`
+  const dbName = orgId ? `hitman_${orgId}` : 'hitman_public'
   if (db) return db
   else {
     db = await createDataBase(dbName)

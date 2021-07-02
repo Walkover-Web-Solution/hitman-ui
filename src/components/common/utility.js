@@ -6,6 +6,7 @@ export const ADD_VERSION_MODAL_NAME = 'Add Version'
 
 export function isDashboardRoute (props, sidebar = false) {
   if (
+    props.match.path.includes('/dashboard') ||
     props.match.path.includes('/orgs/:orgId/dashboard') ||
     (sidebar === true && props.match.path.includes('/orgs/:orgId/admin/publish'))
   ) { return true } else return false

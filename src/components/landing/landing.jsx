@@ -29,7 +29,7 @@ class Landing extends Component {
         })
       } else {
         this.props.history.push({
-          pathname: '/logout'
+          pathname: '/dashboard'
         })
       }
     }
