@@ -3,6 +3,7 @@ import store from '../../../store/store'
 import pageApiService from '../pageApiService'
 import pagesActionTypes from './pagesActionTypes'
 import { getOrgId } from '../../common/utility'
+import indexedDbService from '../../indexedDb/indexedDbService'
 
 export const fetchPages = (orgId) => {
   return (dispatch) => {
@@ -11,9 +12,27 @@ export const fetchPages = (orgId) => {
       .then((response) => {
         const pages = response.data
         dispatch(onPagesFetched(pages))
+        indexedDbService.addMultipleData('pages', Object.values(response.data))
       })
       .catch((error) => {
         dispatch(onPagesFetchedError(error.message))
+      })
+  }
+}
+
+export const fetchPagesFromIdb = (orgId) => {
+  return (dispatch) => {
+    indexedDbService
+      .getAllData('pages')
+      .then((response) => {
+        dispatch(onPagesFetched(response))
+      })
+      .catch((error) => {
+        dispatch(
+          onPagesFetchedError(
+            error.response ? error.response.data : error
+          )
+        )
       })
   }
 }

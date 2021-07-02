@@ -8,6 +8,7 @@ export const fetchEnvironments = () => {
       .getEnvironments()
       .then(response => {
         dispatch(OnEnvironmentsFetched(response.data))
+        window.localStorage.setItem('environments', JSON.stringify(response.data))
       })
       .catch(error => {
         dispatch(
@@ -16,6 +17,20 @@ export const fetchEnvironments = () => {
           )
         )
       })
+  }
+}
+
+export const fetchEnvironmentsFromLocalStorage = () => {
+  return (dispatch) => {
+    let environments
+    try {
+      environments = JSON.parse(window.localStorage.getItem('cookies'))
+      dispatch(OnEnvironmentsFetched(environments))
+    } catch (err) {
+      dispatch(
+        OnEnvironmentsFetchedError(err)
+      )
+    }
   }
 }
 
