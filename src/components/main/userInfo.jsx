@@ -228,7 +228,7 @@ class UserInfo extends Component {
     return (
       <div>
         <div className='text-uppercase text-sm-bold'>Switch Orgs</div>
-        <div className='profile-sm-dropdown'>
+        <div className='profile-sm-dropdown orgs-list'>
           {orgsList.map((org, index) => (
             <div className='dropdown-item d-flex justify-space-between' onClick={() => this.switchOrg(org?.identifier)} key={index}><span className='pl-0'>{org?.name}</span>
 

@@ -2564,7 +2564,7 @@ span.endpointNameWrapper {
   }
 
   .dropdown-menu .dropdown-item {
-    padding: 0.5rem 1rem !important;
+    padding: 0.7rem 1rem !important;
     display: flex;
     align-items: center;
     font-size: 14px;
@@ -3114,4 +3114,7 @@ li.nav-item.cookie-tab a {
 
 .justify-space-between {
   justify-content: space-between;
+}
+.profile-sm-dropdown.orgs-list {
+  margin: 10px 0 6px;
 }
