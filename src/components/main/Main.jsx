@@ -20,7 +20,6 @@ import PublishDocs from '../publishDocs/publishDocs'
 import { loadWidget } from '../../services/widgetService'
 import { fetchAllCookies } from '../cookies/redux/cookiesActions'
 import { isDesktop } from 'react-device-detect'
-// import { willFetch } from '../indexedDb/helpers'
 import OnlineSatus from '../onlineStatus/onlineStatus'
 import { getOrgUpdatedAt } from '../../services/orgApiService'
 import moment from 'moment'
@@ -62,43 +61,57 @@ class Main extends Component {
   }
 
   async fetchAll () {
-    const orgId = this.props.match.params.orgId
     indexedDbService.getDataBase()
+    const { fetchFromIdb, timestampBackend } = await this.isIdbUpdated()
+    console.log(fetchFromIdb)
+    if (fetchFromIdb) {
+      this.fetchFromIdb()
+    } else {
+      this.fetchFromBackend(timestampBackend)
+    }
+    this.props.fetch_history()
+    this.props.fetch_all_cookies()
+  }
+
+  async isIdbUpdated () {
+    const orgId = this.props.match.params.orgId
     console.log('GETTING TIMESTAMP FROM BACKEND')
-    const timestampBackend = await getOrgUpdatedAt(orgId)
+    let timestampBackend = await getOrgUpdatedAt(orgId)
+    timestampBackend = timestampBackend.data?.updatedAt
     console.log('GETTING TIMESTAMP FROM IDB')
     const timestampIdb = await indexedDbService.getValue('meta_data', 'updated_at')
+    console.log('timestampIdb', timestampIdb)
     let fetchFromIdb
-    // console.log(`timestampIdb ${timestampIdb}`)
-    // console.log(moment(timestampBackend).isValid(), moment(timestampIdb).isValid())
+    console.log(`timestampIdb ${timestampIdb}`)
+    console.log(moment(timestampBackend).isValid(), moment(timestampIdb).isValid())
     if (!moment(timestampBackend).isValid() || (moment(timestampIdb).isValid() && moment(timestampIdb).diff(moment(timestampBackend)) >= 0)) {
       console.log('NO NEW DATA IN BACKEND')
       fetchFromIdb = true
     } else {
-      console.log('THERE IS NEW DATA IN BACKEND')
-      console.log(`SETTING UPDATED_AT AS ${timestampBackend} IN META_DATA`)
-      indexedDbService.addData('meta_data', timestampBackend, 'updated_at')
       fetchFromIdb = false
     }
+    return { fetchFromIdb, timestampBackend }
+  }
 
-    console.log(fetchFromIdb)
-    if (fetchFromIdb) {
-      console.log('FETCHING FROM IDB')
-      this.props.fetch_collections_from_idb(orgId)
-      this.props.fetch_all_versions_from_idb(orgId)
-      this.props.fetch_groups_from_idb(orgId)
-      this.props.fetch_endpoints_from_idb(orgId)
-      this.props.fetch_pages_from_idb(orgId)
-    } else {
-      console.log('FETCHING FROM BACKEND')
-      this.props.fetch_collections(orgId)
-      this.props.fetch_all_versions(orgId)
-      this.props.fetch_groups(orgId)
-      this.props.fetch_endpoints(orgId)
-      this.props.fetch_pages(orgId)
-    }
-    this.props.fetch_history()
-    this.props.fetch_all_cookies()
+  fetchFromIdb () {
+    console.log('FETCHING FROM IDB')
+    const orgId = this.props.match.params.orgId
+    this.props.fetch_collections_from_idb(orgId)
+    this.props.fetch_all_versions_from_idb(orgId)
+    this.props.fetch_groups_from_idb(orgId)
+    this.props.fetch_endpoints_from_idb(orgId)
+    this.props.fetch_pages_from_idb(orgId)
+  }
+
+  fetchFromBackend (timestampBackend) {
+    console.log('FETCHING FROM BACKEND')
+    const orgId = this.props.match.params.orgId
+    this.props.fetch_collections(orgId)
+    this.props.fetch_all_versions(orgId)
+    this.props.fetch_groups(orgId)
+    this.props.fetch_endpoints(orgId)
+    this.props.fetch_pages(orgId)
+    indexedDbService.addData('meta_data', timestampBackend, 'updated_at')
   }
 
   setTabs (tabs, defaultTabIndex) {
@@ -121,7 +134,7 @@ class Main extends Component {
           Looks like you have opened it on a mobile device. It looks better on a desktop device.
         </div>}
         <div className='custom-main-container'>
-          <OnlineSatus />
+          <OnlineSatus fetchFromBackend={this.fetchFromBackend.bind(this)} isIdbUpdated={this.isIdbUpdated.bind(this)} />
           <div className='main-panel-wrapper'>
             <SideBar
               {...this.props}
