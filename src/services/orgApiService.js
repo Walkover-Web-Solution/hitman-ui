@@ -1,13 +1,10 @@
-// import httpService from './httpService'
+import http from './httpService'
+const apiBaseUrl = process.env.REACT_APP_API_URL
 
 export function getOrgUpdatedAt (orgId) {
-  return resolveAfter2Seconds('2021-07-05')
+  return http.get(`${apiBaseUrl}/orgs/${orgId}/lastSync`)
 }
 
-function resolveAfter2Seconds (x) {
-  return new Promise(resolve => {
-    setTimeout(() => {
-      resolve(x)
-    }, 2000)
-  })
+export default {
+  getOrgUpdatedAt
 }
