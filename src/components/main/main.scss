@@ -2571,7 +2571,7 @@ span.endpointNameWrapper {
     background-color: inherit;
 
     &:hover {
-      color: #E98A36;
+      color: grey;
     }
 
     span {
@@ -3079,10 +3079,11 @@ li.nav-item.cookie-tab a {
 .profile-drop-display {
   background: #FFFFFF;
   box-shadow: 0px 4px 32px rgba(0, 0, 0, 0.15);
-  border-radius: 6px;
+  border-radius: 6px !important;
   border: none !important;
   padding: 10px 12px !important;
-  width: 17.625rem;
+  width: auto;
+  min-width: 17.625rem !important; 
 
   .profile-sm-dropdown {
     background-color: #fcfcfc;
