@@ -3,6 +3,7 @@ const widgetURL = process.env.REACT_APP_STEVE_WIDGET_URL
 const projectId = process.env.REACT_APP_STEVE_PROJECT_ID
 const authkey = process.env.REACT_APP_STEVE_AUTHKEY
 const widgetId = process.env.REACT_APP_STEVE_WIDGET_ID
+const FIRST_JULY_2021 = new Date('2021-07-01').valueOf()
 
 export function moveToNextStep (currentStepNo) {
   if (window.isUserOnboardingComplete && window.isUserOnboardingComplete() === false) {
@@ -26,6 +27,7 @@ function getUserName (profile) {
 export function loadWidget () {
   let user = window.localStorage.getItem('profile')
   user = JSON.parse(user)
+  const userCreatedAt = new Date(user?.created_at)?.valueOf()
   const identifier = user.identifier
   const onboardingWgt = document.getElementById('onboarding-wgt-script')
   let userData = {}
@@ -33,7 +35,9 @@ export function loadWidget () {
     const userName = getUserName(user)
     userData = {
       name: userName,
-      email: user.email
+      email: user.email,
+      userId: identifier,
+      isOnboardingComplete: userCreatedAt < FIRST_JULY_2021
     }
   } catch { }
   if (!onboardingWgt && identifier) {
@@ -42,7 +46,6 @@ export function loadWidget () {
     script.id = 'onboarding-wgt-script'
     script.type = 'text/javascript'
     script.setAttribute('project-id', projectId)
-    script.setAttribute('user-id', identifier)
     script.setAttribute('authkey', authkey)
     script.setAttribute('widget-id', widgetId)
     script.setAttribute('user-data', JSON.stringify(userData))
