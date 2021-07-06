@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import authService from '../auth/authService'
 import { Dropdown } from 'react-bootstrap'
-import { getProfileName, openExternalLink } from '../common/utility'
+import { getProfileName, openExternalLink, getOrgId } from '../common/utility'
 import { ReactComponent as HostedApiIcon } from '../../assets/icons/hostedApiIcon.svg'
 import { ReactComponent as SettingsIcon } from '../../assets/icons/settings-orange.svg'
 import { ReactComponent as SignOutIcon } from '../../assets/icons/signOutIcon.svg'
@@ -225,22 +225,27 @@ class UserInfo extends Component {
 
   renderOrgsList () {
     const orgsList = JSON.parse(window.localStorage.getItem('organisationList')) || []
+    const orgId = getOrgId()
     return (
-      <div>
-        <div className='text-uppercase text-sm-bold'>Switch Orgs</div>
-        <div className='profile-sm-dropdown orgs-list'>
-          {orgsList.map((org, index) => (
-            <div className='dropdown-item d-flex justify-space-between' onClick={() => this.switchOrg(org?.identifier)} key={index}><span className='pl-0'>{org?.name}</span>
+      (
+        Object.keys(orgsList).length > 1 &&
+          <div>
+            <div className='text-uppercase text-sm-bold'>Switch Orgs</div>
+            <div className='profile-sm-dropdown orgs-list'>
+              {orgsList.map((org, index) => (
+                (orgId !== org.identifier &&
+                  <div className='dropdown-item d-flex justify-space-between' onClick={() => this.switchOrg(org?.identifier)} key={index}><span className='pl-0'>{org?.name}</span>
 
-              <div className='orgs-icon'>
-                <svg width='18' height='18' className='mr-0' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
-                  <path d='M6.75 13.5L11.25 9L6.75 4.5' stroke='#4F4F4F' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
-                </svg>
-              </div>
+                    <div className='orgs-icon'>
+                      <svg width='18' height='18' className='mr-0' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
+                        <path d='M6.75 13.5L11.25 9L6.75 4.5' stroke='#4F4F4F' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
+                      </svg>
+                    </div>
+                  </div>
+                )))}
             </div>
-          ))}
-        </div>
-      </div>
+          </div>
+      )
     )
   }
 
