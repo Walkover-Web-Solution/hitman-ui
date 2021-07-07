@@ -150,7 +150,7 @@ class Endpoints extends Component {
         tabService.disablePreviewMode(endpoint.id)
       }
       this.props.history.push({
-        pathname: `/dashboard/endpoint/${endpoint.id}`,
+        pathname: `/orgs/${this.props.match.params.orgId}/dashboard/endpoint/${endpoint.id}`,
         title: 'update endpoint',
         endpoint: endpoint,
         groupId: groupId,
@@ -441,7 +441,7 @@ class Endpoints extends Component {
   }
 
   displaySingleEndpoint (endpointId) {
-    const idToCheck = this.props.location.pathname.split('/')[2] === 'endpoint' ? this.props.location.pathname.split('/')[3] : null
+    const idToCheck = this.props.location.pathname.split('/')[4] === 'endpoint' ? this.props.location.pathname.split('/')[5] : null
     return (
       <div className={idToCheck === endpointId ? 'sidebar-accordion active' : 'sidebar-accordion'} key={endpointId}>
         <div className={this.props.endpoints[endpointId].state} />

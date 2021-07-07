@@ -43,7 +43,7 @@ class DisplayPage extends Component {
     this.extractPageName()
     if (!this.props.location.page) {
       let pageId = ''
-      if (isDashboardRoute(this.props)) { pageId = this.props.location.pathname.split('/')[3] } else pageId = this.props.location.pathname.split('/')[4]
+      if (isDashboardRoute(this.props)) { pageId = this.props.location.pathname.split('/')[5] } else pageId = this.props.location.pathname.split('/')[4]
       this.fetchPage(pageId)
       store.subscribe(() => {
         this.fetchPage(pageId)
@@ -76,7 +76,7 @@ class DisplayPage extends Component {
 
   handleEdit (page) {
     this.props.history.push({
-      pathname: `/dashboard/page/${page.id}/edit`,
+      pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${page.id}/edit`,
       page: page
     })
   }
@@ -116,11 +116,6 @@ class DisplayPage extends Component {
   }
 
   render () {
-    if (this.props.location.page) {
-      const data = { ...this.props.location.page }
-      this.setState({ data })
-      this.props.history.push({ page: null })
-    }
     return (
       <div className='custom-display-page'>
         {

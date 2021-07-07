@@ -155,7 +155,7 @@ class PublishDocForm extends Component {
     this.props.update_collection(collection, () => { this.setState({ loader: false }) })
     if (collectionId) {
       this.props.history.push({
-        pathname: '/admin/publish',
+        pathname: `/orgs/${this.props.match.params.orgId}/admin/publish`,
         search: `?collectionId=${collectionId}`,
         showConfirmModal: true
       })

@@ -76,7 +76,7 @@ class Groups extends Component {
 
   handleAddPage (groupId, versionId, collectionId) {
     this.props.history.push({
-      pathname: `/dashboard/${collectionId}/versions/${versionId}/groups/${groupId}/pages/new`,
+      pathname: `/orgs/${this.props.match.params.orgId}/dashboard/${collectionId}/versions/${versionId}/groups/${groupId}/pages/new`,
       versionId: versionId,
       groupId: groupId
     })
@@ -91,7 +91,7 @@ class Groups extends Component {
   handleAddEndpoint (groupId, versions, groups) {
     tabService.newTab({ ...this.props })
     this.props.history.push({
-      pathname: '/dashboard/endpoint/new',
+      pathname: `/orgs/${this.props.match.params.orgId}/dashboard/endpoint/new`,
       groupId: groupId,
       title: 'Add New Endpoint'
     })

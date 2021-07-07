@@ -1,36 +1,47 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import 'react-toastify/dist/ReactToastify.css'
-import { fetchCollections } from '../collections/redux/collectionsActions'
-import { fetchAllVersions } from '../collectionVersions/redux/collectionVersionsActions'
+import { fetchCollections, fetchCollectionsFromIdb } from '../collections/redux/collectionsActions'
+import { fetchAllVersions, fetchAllVersionsFromIdb } from '../collectionVersions/redux/collectionVersionsActions'
 import {
   fetchEndpoints,
-  moveEndpoint
+  moveEndpoint,
+  fetchEndpointsFromIdb
 } from '../endpoints/redux/endpointsActions'
-import { fetchGroups } from '../groups/redux/groupsActions'
+import { fetchGroups, fetchGroupsFromIdb } from '../groups/redux/groupsActions'
 import indexedDbService from '../indexedDb/indexedDbService'
-import { fetchPages } from '../pages/redux/pagesActions'
+import { fetchPages, fetchPagesFromIdb } from '../pages/redux/pagesActions'
 import { fetchHistoryFromIdb } from '../history/redux/historyAction'
 import ContentPanel from './contentPanel'
 import './main.scss'
 import SideBar from './sidebar'
-import { getCurrentUser } from '../auth/authService'
+import { getCurrentUser, login } from '../auth/authService'
 import PublishDocs from '../publishDocs/publishDocs'
 import { loadWidget } from '../../services/widgetService'
-import { fetchAllCookies } from '../cookies/redux/cookiesActions'
+import { fetchAllCookies, fetchAllCookiesFromLocalStorage } from '../cookies/redux/cookiesActions'
 import { isDesktop } from 'react-device-detect'
+import OnlineSatus from '../onlineStatus/onlineStatus'
+import { getOrgUpdatedAt } from '../../services/orgApiService'
+import moment from 'moment'
+import Cookies from 'universal-cookie'
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetch_collections: () => dispatch(fetchCollections()),
-    fetch_all_versions: () => dispatch(fetchAllVersions()),
-    fetch_groups: () => dispatch(fetchGroups()),
-    fetch_endpoints: () => dispatch(fetchEndpoints()),
-    fetch_pages: () => dispatch(fetchPages()),
+    fetch_collections_from_idb: (orgId) => dispatch(fetchCollectionsFromIdb(orgId)),
+    fetch_all_versions_from_idb: (orgId) => dispatch(fetchAllVersionsFromIdb(orgId)),
+    fetch_groups_from_idb: (orgId) => dispatch(fetchGroupsFromIdb(orgId)),
+    fetch_endpoints_from_idb: (orgId) => dispatch(fetchEndpointsFromIdb(orgId)),
+    fetch_pages_from_idb: (orgId) => dispatch(fetchPagesFromIdb(orgId)),
+    fetch_collections: (orgId) => dispatch(fetchCollections(orgId)),
+    fetch_all_versions: (orgId) => dispatch(fetchAllVersions(orgId)),
+    fetch_groups: (orgId) => dispatch(fetchGroups(orgId)),
+    fetch_endpoints: (orgId) => dispatch(fetchEndpoints(orgId)),
+    fetch_pages: (orgId) => dispatch(fetchPages(orgId)),
     fetch_history: () => dispatch(fetchHistoryFromIdb()),
     move_endpoint: (endpointId, sourceGroupId, destinationGroupId) =>
       dispatch(moveEndpoint(endpointId, sourceGroupId, destinationGroupId)),
-    fetch_all_cookies: () => dispatch(fetchAllCookies())
+    fetch_all_cookies: () => dispatch(fetchAllCookies()),
+    fetch_all_cookies_from_local: () => dispatch(fetchAllCookiesFromLocalStorage())
   }
 }
 
@@ -44,21 +55,66 @@ class Main extends Component {
   }
 
   async componentDidMount () {
+    const token = this.getTokenFromCookie()
     if (getCurrentUser()) {
       loadWidget()
-      this.fetchAll()
+      await this.fetchAll()
+    } else if (token) {
+      login(token).then(() => this.fetchAll())
     }
-    await indexedDbService.createDataBase()
   }
 
-  fetchAll () {
-    this.props.fetch_collections()
-    this.props.fetch_all_versions()
-    this.props.fetch_groups()
-    this.props.fetch_endpoints()
-    this.props.fetch_pages()
+  async fetchAll () {
+    indexedDbService.getDataBase()
+    if (!navigator.onLine) {
+      this.fetchFromIdb()
+      this.props.fetch_all_cookies_from_local()
+    } else {
+      const { fetchFromIdb, timestampBackend } = await this.isIdbUpdated()
+      if (fetchFromIdb) {
+        this.fetchFromIdb()
+      } else {
+        this.fetchFromBackend(timestampBackend)
+      }
+      this.props.fetch_all_cookies()
+    }
     this.props.fetch_history()
-    this.props.fetch_all_cookies()
+  }
+
+  async isIdbUpdated () {
+    const orgId = this.props.match.params.orgId
+    let timestampBackend, timestampIdb
+    try {
+      timestampBackend = await getOrgUpdatedAt(orgId)
+      timestampBackend = timestampBackend.data?.updatedAt
+      timestampIdb = await indexedDbService.getValue('meta_data', 'updated_at')
+    } catch (err) {}
+    let fetchFromIdb
+    if ((timestampIdb && moment(timestampIdb).isValid() && moment(timestampIdb).diff(moment(timestampBackend)) >= 0)) {
+      fetchFromIdb = true
+    } else {
+      fetchFromIdb = false
+    }
+    return { fetchFromIdb, timestampBackend }
+  }
+
+  fetchFromIdb () {
+    const orgId = this.props.match.params.orgId
+    this.props.fetch_collections_from_idb(orgId)
+    this.props.fetch_all_versions_from_idb(orgId)
+    this.props.fetch_groups_from_idb(orgId)
+    this.props.fetch_endpoints_from_idb(orgId)
+    this.props.fetch_pages_from_idb(orgId)
+  }
+
+  fetchFromBackend (timestampBackend) {
+    const orgId = this.props.match.params.orgId
+    this.props.fetch_collections(orgId)
+    this.props.fetch_all_versions(orgId)
+    this.props.fetch_groups(orgId)
+    this.props.fetch_endpoints(orgId)
+    this.props.fetch_pages(orgId)
+    indexedDbService.addData('meta_data', timestampBackend, 'updated_at')
   }
 
   setTabs (tabs, defaultTabIndex) {
@@ -74,6 +130,11 @@ class Main extends Component {
     this.setState({ currentEnvironment: environment })
   }
 
+  getTokenFromCookie () {
+    const cookies = new Cookies()
+    return cookies.get('token')
+  }
+
   render () {
     return (
       <div>{!isDesktop &&
@@ -81,6 +142,7 @@ class Main extends Component {
           Looks like you have opened it on a mobile device. It looks better on a desktop device.
         </div>}
         <div className='custom-main-container'>
+          <OnlineSatus fetchFromBackend={this.fetchFromBackend.bind(this)} isIdbUpdated={this.isIdbUpdated.bind(this)} />
           <div className='main-panel-wrapper'>
             <SideBar
               {...this.props}
@@ -88,7 +150,7 @@ class Main extends Component {
               set_tabs={this.setTabs.bind(this)}
               default_tab_index={this.state.defaultTabIndex}
             />
-            {this.props.location.pathname.split('/')[2] === 'publish'
+            {this.props.location.pathname.split('/')[4] === 'publish'
               ? <PublishDocs {...this.props} />
               : <ContentPanel
                   {...this.props}

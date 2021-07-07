@@ -23,11 +23,11 @@ class TabContent extends Component {
         return (
           <Switch>
             <Route
-              path='/dashboard/page/:pageId/edit'
+              path='/orgs/:orgId/dashboard/page/:pageId/edit'
               render={(props) => <EditPage {...props} tab={tab} />}
             />
             <Route
-              path='/dashboard/page/:pageId'
+              path='/orgs/:orgId/dashboard/page/:pageId'
               render={(props) => <DisplayPage {...props} tab={tab} />}
             />
           </Switch>

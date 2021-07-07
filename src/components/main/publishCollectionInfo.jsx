@@ -7,6 +7,7 @@ import { ReactComponent as SettingIcon } from '../../assets/icons/SettingIcon.sv
 import { ReactComponent as ExternalLinks } from '../../assets/icons/externalLinks.svg'
 import PublishSidebar from '../publishSidebar/publishSidebar'
 import extractCollectionInfoService from '../publishDocs/extractCollectionInfoService'
+import { openExternalLink } from '../common/utility'
 
 const mapStateToProps = (state) => {
   return {
@@ -50,7 +51,7 @@ class PublishCollectionInfo extends Component {
     // build default url
     const url = defaultDomain + '/p/' + this.props.collectionId
     return (
-      <div className='sidebar-public-url text-link text-center d-flex' onClick={() => { window.open(url, '_blank') }}>
+      <div className='sidebar-public-url text-link text-center d-flex' onClick={() => { openExternalLink(url) }}>
         <div className='text-truncate'>{url}</div> <span className='icon'> <ExternalLinks /></span>
       </div>
     )
@@ -130,7 +131,7 @@ class PublishCollectionInfo extends Component {
     const collectionId = this.props.collectionId
     if (collectionId) {
       this.props.history.push({
-        pathname: '/admin/publish',
+        pathname: `/orgs/${this.props.match.params.orgId}/admin/publish`,
         search: `?collectionId=${collectionId}`
       })
     }

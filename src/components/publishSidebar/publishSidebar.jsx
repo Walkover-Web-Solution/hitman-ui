@@ -112,7 +112,7 @@ export class PublishSidebar extends Component {
       const collectionId = this.state.selectedCollectionId
       if (collectionId) {
         this.props.history.push({
-          pathname: '/admin/publish',
+          pathname: `/orgs/${this.props.match.params.orgId}/admin/publish`,
           search: `?collectionId=${collectionId}`,
           fromSidebar: true
         })

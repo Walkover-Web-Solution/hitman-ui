@@ -1,13 +1,24 @@
 import Joi from 'joi-browser'
+import history from '../../history'
 
 export const ADD_GROUP_MODAL_NAME = 'Add Group'
 export const ADD_VERSION_MODAL_NAME = 'Add Version'
 
 export function isDashboardRoute (props, sidebar = false) {
   if (
-    props.location.pathname === '/dashboard' ||
-    props.location.pathname.split('/')[1] === 'dashboard' || (sidebar === true && props.location.pathname.split('/')[1] === 'admin' && props.location.pathname.split('/')[2] === 'publish')
+    props.match.path.includes('/dashboard') ||
+    props.match.path.includes('/orgs/:orgId/dashboard') ||
+    (sidebar === true && props.match.path.includes('/orgs/:orgId/admin/publish'))
   ) { return true } else return false
+}
+
+export function isElectron () {
+  const userAgent = navigator.userAgent.toLowerCase()
+  return userAgent.indexOf(' electron/') !== -1
+}
+
+export function openExternalLink (link) {
+  if (isElectron()) { window.require('electron').shell.openExternal(link) } else { window.open(link, '_blank') }
 }
 
 export function isSavedEndpoint (props) {
@@ -91,14 +102,25 @@ export function toTitleCase (str) {
   })
 }
 
+export function getOrgId () {
+  const path = history.location.pathname.split('/')?.[2]
+  if (path) { return path } else {
+    let orgList = window.localStorage.getItem('organisationList')
+    orgList = JSON.parse(orgList)
+    return orgList?.[0]?.identifier
+  }
+}
+
 export default {
   isDashboardRoute,
+  isElectron,
   isSavedEndpoint,
   setTitle,
   setFavicon,
   getProfileName,
   onEnter,
   toTitleCase,
+  getOrgId,
   ADD_GROUP_MODAL_NAME,
   ADD_VERSION_MODAL_NAME
 }

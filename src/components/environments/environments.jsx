@@ -12,6 +12,7 @@ import {
   addEnvironment,
   deleteEnvironment,
   fetchEnvironments,
+  fetchEnvironmentsFromLocalStorage,
   setEnvironmentId,
   updateEnvironment
 } from './redux/environmentsActions'
@@ -28,6 +29,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     fetch_environments: () => dispatch(fetchEnvironments()),
+    fetch_environments_from_local: () => dispatch(fetchEnvironmentsFromLocalStorage()),
     add_environment: (newEnvironment) =>
       dispatch(addEnvironment(newEnvironment)),
     update_environment: (editedEnvironment) =>
@@ -50,7 +52,7 @@ class Environments extends Component {
   };
 
   async componentDidMount () {
-    this.props.fetch_environments()
+    if (!navigator.onLine) { this.props.fetch_environments_from_local() } else { this.props.fetch_environments() }
     await indexedDbService.getDataBase()
     const currentEnvironmentId = await indexedDbService.getValue(
       'environment',

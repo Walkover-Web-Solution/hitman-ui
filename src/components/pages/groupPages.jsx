@@ -42,7 +42,7 @@ class GroupPages extends Component {
 
   handleUpdate (page) {
     this.props.history.push({
-      pathname: `/dashboard/${this.props.collection_id}/versions/${this.props.versionId}/pages/${page.id}/edit`,
+      pathname: `/orgs/${this.props.match.params.orgId}/dashboard/${this.props.collection_id}/versions/${this.props.versionId}/pages/${page.id}/edit`,
       editPage: page
     })
   }

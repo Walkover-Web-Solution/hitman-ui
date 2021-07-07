@@ -7,7 +7,7 @@ import shortId from 'shortid'
 import CollectionVersions from '../collectionVersions/collectionVersions'
 import collectionVersionsService from '../collectionVersions/collectionVersionsService'
 import ImportVersionForm from '../collectionVersions/importVersionForm'
-import { isDashboardRoute, ADD_VERSION_MODAL_NAME } from '../common/utility'
+import { isDashboardRoute, ADD_VERSION_MODAL_NAME, openExternalLink } from '../common/utility'
 import CollectionModal from './collectionsModal'
 import collectionsService from './collectionsService'
 import {
@@ -120,7 +120,7 @@ class CollectionsComponent extends Component {
 
   async handleGoToDocs (collection) {
     const publicDocsUrl = `${process.env.REACT_APP_UI_URL}/p/${collection.id}`
-    window.open(publicDocsUrl, '_blank')
+    openExternalLink(publicDocsUrl)
   }
 
   openAddCollectionForm () {
@@ -516,7 +516,7 @@ class CollectionsComponent extends Component {
   openPublishDocs (collection) {
     if (collection?.id) {
       this.props.history.push({
-        pathname: '/admin/publish',
+        pathname: `/orgs/${this.props.match.params.orgId}/admin/publish`,
         search: `?collectionId=${collection.id}`
       })
     } else {
@@ -524,7 +524,7 @@ class CollectionsComponent extends Component {
         Object.keys(this.props.collections)[0]
       ]
       this.props.history.push({
-        pathname: '/admin/publish',
+        pathname: `/orgs/${this.props.match.params.orgId}/admin/publish`,
         search: `?collectionId=${collection.id}`
       })
     }

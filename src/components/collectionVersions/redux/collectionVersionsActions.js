@@ -3,20 +3,39 @@ import versionActionTypes from './collectionVersionsActionTypes'
 import store from '../../../store/store'
 import { toast } from 'react-toastify'
 import tabService from '../../tabs/tabService'
-
-export const fetchAllVersions = () => {
+import indexedDbService from '../../indexedDb/indexedDbService'
+export const fetchAllVersions = (orgId) => {
   return (dispatch) => {
     collectionVersionsApiService
-      .getAllCollectionVersions()
+      .getAllCollectionVersions(orgId)
       .then((response) => {
         const versions = response.data
         dispatch(onVersionsFetched(versions))
+        indexedDbService.addMultipleData('versions', Object.values(response.data))
       })
       .catch((error) => {
         dispatch(onVersionsFetchedError(error.message))
       })
   }
 }
+
+export const fetchAllVersionsFromIdb = (orgId) => {
+  return (dispatch) => {
+    indexedDbService
+      .getAllData('versions')
+      .then((response) => {
+        dispatch(onVersionsFetched(response))
+      })
+      .catch((error) => {
+        dispatch(
+          onVersionsFetchedError(
+            error.response ? error.response.data : error
+          )
+        )
+      })
+  }
+}
+
 export const fetchVersions = (collectionId) => {
   return (dispatch) => {
     collectionVersionsApiService

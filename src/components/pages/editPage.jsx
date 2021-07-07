@@ -92,7 +92,7 @@ class EditPage extends Component {
 
       this.setState({ data, originalData: data })
     } else {
-      const pageId = this.props.location.pathname.split('/')[3]
+      const pageId = this.props.location.pathname.split('/')[5]
       this.fetchPage(pageId)
       store.subscribe(() => {
         this.fetchPage(pageId)
@@ -122,7 +122,7 @@ class EditPage extends Component {
       } else {
         this.props.update_page(editedPage, editedPage.id)
         this.props.history.push({
-          pathname: `/dashboard/page/${editedPage.id}`
+          pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${editedPage.id}`
         })
       }
     } else {
@@ -132,7 +132,7 @@ class EditPage extends Component {
       } else {
         this.props.update_page(editedPage, editedPage.id)
         this.props.history.push({
-          pathname: `/dashboard/page/${editedPage.id}`
+          pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${editedPage.id}`
         })
       }
     }
@@ -143,7 +143,7 @@ class EditPage extends Component {
     if (pageId) {
       // Redirect to displayPage Route Component
       this.props.history.push({
-        pathname: `/dashboard/page/${pageId}`
+        pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${pageId}`
       })
     }
   }

@@ -1,13 +1,1 @@
-<svg width='20' height='20' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
-  <g clip-path='url(#clip0)'>
-    <path d='M6.75 15.5L3.75 15.5C3.35218 15.5 2.97064 15.342 2.68934 15.0607C2.40804 14.7794 2.25 14.3978 2.25 14L2.25 3.5C2.25 3.10217 2.40804 2.72064 2.68934 2.43934C2.97065 2.15804 3.35218 2 3.75 2L6.75 2' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
-    <path d='M12 12.5L15.75 8.75L12 5' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
-    <path d='M15 8.75H6' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
-  </g>
-  <defs>
-    <clipPath id='clip0'>
-      <rect width='18' height='18' fill='white' transform='translate(18 18) rotate(-180)' />
-    </clipPath>
-  </defs>
-</svg>
-  
+<svg _ngcontent-ogf-c107="" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path _ngcontent-ogf-c107="" d="M13.7698 4.98047C14.7136 5.92456 15.3563 7.1273 15.6166 8.43661C15.8768 9.74592 15.743 11.103 15.2321 12.3363C14.7211 13.5696 13.8559 14.6236 12.746 15.3652C11.636 16.1068 10.331 16.5027 8.9961 16.5027C7.66117 16.5027 6.35621 16.1068 5.24623 15.3652C4.13624 14.6236 3.27108 13.5696 2.76012 12.3363C2.24916 11.103 2.11536 9.74592 2.37563 8.43661C2.63591 7.1273 3.27856 5.92456 4.22235 4.98047" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path _ngcontent-ogf-c107="" d="M9 1.5V9" stroke="black" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>

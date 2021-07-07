@@ -2,10 +2,17 @@ import http from '../../services/httpService'
 import httpService from '../../services/endpointHttpService'
 import indexedDbService from '../indexedDb/indexedDbService'
 import qs from 'qs'
+import { getOrgId } from '../common/utility'
 
-const apiUrl = process.env.REACT_APP_API_URL
+const apiUrlEndpoint = process.env.REACT_APP_API_URL
+
+function getApiUrl () {
+  const orgId = getOrgId()
+  return process.env.REACT_APP_API_URL + `/orgs/${orgId}`
+}
 
 function endpointUrl (groupId) {
+  const apiUrl = getApiUrl()
   return `${apiUrl}/groups/${groupId}/endpoints`
 }
 
@@ -24,12 +31,12 @@ export function apiTest (api, method, body, headers, bodyType) {
       data: bodyType === 'urlEncoded' ? qs.stringify({ body }) : body,
       headers
     }
-    return httpService.post(`${apiUrl}/test-apis/run`, data)
+    return httpService.post(`${apiUrlEndpoint}/test-apis/run`, data)
   }
 }
 
-export function getAllEndpoints () {
-  return http.get(`${apiUrl}/endpoints`)
+export function getAllEndpoints (id) {
+  return http.get(`${apiUrlEndpoint}/orgs/${id}/endpoints`)
 }
 
 export function getEndpoints (groupId) {
@@ -37,6 +44,7 @@ export function getEndpoints (groupId) {
 }
 
 export function getEndpoint (endpointId) {
+  const apiUrl = getApiUrl()
   return http.get(`${apiUrl}/endpoints/${endpointId}`)
 }
 
@@ -45,18 +53,22 @@ export function saveEndpoint (groupId, endpoint) {
 }
 
 export function updateEndpoint (endpointId, endpoint) {
+  const apiUrl = getApiUrl()
   return http.put(`${apiUrl}/endpoints/${endpointId}`, endpoint)
 }
 
 export function deleteEndpoint (endpointId) {
+  const apiUrl = getApiUrl()
   return http.delete(`${apiUrl}/endpoints/${endpointId}`)
 }
 
 export function duplicateEndpoint (endpointId) {
+  const apiUrl = getApiUrl()
   return http.post(`${apiUrl}/duplicateEndpoints/${endpointId}`)
 }
 
 export function moveEndpoint (endpointId, body) {
+  const apiUrl = getApiUrl()
   return http.patch(`${apiUrl}/endpoints/${endpointId}/move`, body)
 }
 
@@ -67,6 +79,7 @@ export function updateEndpointOrder (
   // destinationGroupId = null,
   // endpointId = null
 ) {
+  const apiUrl = getApiUrl()
   return http.patch(`${apiUrl}/updateEndpointsOrder`, {
     endpointsOrder
     // sourceGroupId,
@@ -202,6 +215,7 @@ export async function setResponse (props, responseData) {
 }
 
 export function setAuthorizationType (endpointId, data) {
+  const apiUrl = getApiUrl()
   return http.patch(
     `${apiUrl}/endpoints/${endpointId}/authorizationType`,
     data

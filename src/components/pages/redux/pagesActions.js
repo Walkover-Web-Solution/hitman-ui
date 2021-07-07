@@ -2,17 +2,37 @@ import { toast } from 'react-toastify'
 import store from '../../../store/store'
 import pageApiService from '../pageApiService'
 import pagesActionTypes from './pagesActionTypes'
+import { getOrgId } from '../../common/utility'
+import indexedDbService from '../../indexedDb/indexedDbService'
 
-export const fetchPages = () => {
+export const fetchPages = (orgId) => {
   return (dispatch) => {
     pageApiService
-      .getAllPages()
+      .getAllPages(orgId)
       .then((response) => {
         const pages = response.data
         dispatch(onPagesFetched(pages))
+        indexedDbService.addMultipleData('pages', Object.values(response.data))
       })
       .catch((error) => {
         dispatch(onPagesFetchedError(error.message))
+      })
+  }
+}
+
+export const fetchPagesFromIdb = (orgId) => {
+  return (dispatch) => {
+    indexedDbService
+      .getAllData('pages')
+      .then((response) => {
+        dispatch(onPagesFetched(response))
+      })
+      .catch((error) => {
+        dispatch(
+          onPagesFetchedError(
+            error.response ? error.response.data : error
+          )
+        )
       })
   }
 }
@@ -32,6 +52,7 @@ export const onPagesFetchedError = (error) => {
 }
 export const updatePage = (history, editedPage, publishDocs = false) => {
   const newPage = { ...editedPage }
+  const orgId = getOrgId()
   delete newPage.id
   delete newPage.versionId
   delete newPage.groupId
@@ -43,7 +64,7 @@ export const updatePage = (history, editedPage, publishDocs = false) => {
       .then((response) => {
         dispatch(onPageUpdated(response.data))
         if (!publishDocs) {
-          history.push(`/dashboard/page/${response.data.id}`)
+          history.push(`/orgs/${orgId}/dashboard/page/${response.data.id}`)
         }
       })
       .catch((error) => {
@@ -80,6 +101,7 @@ export const onPageUpdatedError = (error, originalPage) => {
 }
 
 export const addPage = (history, versionId, newPage) => {
+  const orgId = getOrgId()
   return (dispatch) => {
     dispatch(addPageRequest(versionId, newPage))
     delete newPage.groupId
@@ -88,7 +110,7 @@ export const addPage = (history, versionId, newPage) => {
       .saveVersionPage(versionId, newPage)
       .then((response) => {
         dispatch(onPageAdded(response.data))
-        history.push(`/dashboard/page/${response.data.id}/edit`)
+        history.push(`/orgs/${orgId}/dashboard/page/${response.data.id}/edit`)
       })
       .catch((error) => {
         dispatch(
@@ -125,6 +147,7 @@ export const onPageAddedError = (error, newPage) => {
 }
 
 export const addGroupPage = (history, versionId, groupId, newPage) => {
+  const orgId = getOrgId()
   return (dispatch) => {
     dispatch(addGroupPageRequest(versionId, groupId, newPage))
     delete newPage.groupId
@@ -133,7 +156,7 @@ export const addGroupPage = (history, versionId, groupId, newPage) => {
       .saveGroupPage(groupId, newPage)
       .then((response) => {
         dispatch(onGroupPageAdded(response.data))
-        history.push(`/dashboard/page/${response.data.id}/edit`)
+        history.push(`/orgs/${orgId}/dashboard/page/${response.data.id}/edit`)
       })
       .catch((error) => {
         dispatch(

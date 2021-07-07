@@ -81,14 +81,14 @@ class CollectionVersions extends Component {
 
   handleUpdate (collectionVersion) {
     this.props.history.push({
-      pathname: `/dashboard/${this.props.collection_id}/versions/${collectionVersion.id}/edit`,
+      pathname: `/orgs/${this.props.match.params.orgId}/dashboard/${this.props.collection_id}/versions/${collectionVersion.id}/edit`,
       editCollectionVersion: collectionVersion
     })
   }
 
   handleAddPage (versionId, collectionId) {
     this.props.history.push({
-      pathname: `/dashboard/${collectionId}/versions/${versionId}/pages/new`,
+      pathname: `/orgs/${this.props.match.params.orgId}/dashboard/${collectionId}/versions/${versionId}/pages/new`,
       versionId: versionId
     })
   }

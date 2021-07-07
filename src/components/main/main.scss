@@ -1133,6 +1133,7 @@ button.editBtn {
 .dropdown-divider {
   float: left;
   width: 100%;
+  border: 1px dashed #F4F4F4 !important;
 }
 
 .viewOptionals {
@@ -2523,8 +2524,8 @@ span.endpointNameWrapper {
 
     .user-notification-badge {
       position: absolute;
-      top: -5px;
-      right: 7px;
+      top: -7px;
+      right: -1px;
       height: 14px;
       width: 14px;
       border-radius: 30px;
@@ -2537,14 +2538,17 @@ span.endpointNameWrapper {
     font-weight: 600;
     font-size: 16px;
   }
-
+  .profile > div {
+    margin-right: 5px;
+  }
   .dropdown-menu .profile {
     width: 250px;
-    padding: 0.5rem 1rem !important;
+    padding: 0rem 0.94rem !important;
     display: flex;
+    margin-top: 1.4rem;
 
     .user-profile-data {
-      padding-left: 1rem;
+      padding-left: 0.3rem;
 
       .username {
         font-weight: 400;
@@ -2560,14 +2564,14 @@ span.endpointNameWrapper {
   }
 
   .dropdown-menu .dropdown-item {
-    padding: 0.5rem 1rem !important;
+    padding: 0.7rem 1rem !important;
     display: flex;
     align-items: center;
     font-size: 14px;
     background-color: inherit;
 
     &:hover {
-      color: #E98A36;
+      color: grey;
     }
 
     span {
@@ -2575,9 +2579,9 @@ span.endpointNameWrapper {
     }
 
     .socket-icon {
-      fill: #E98A36;
-      height: 20px;
-      width: 20px;
+      fill: #000;
+      height: 18px;
+      width: 18px;
     }
   }
 }
@@ -3039,4 +3043,79 @@ li.nav-item.cookie-tab a {
 }
 .endpoint-headers-container .nav-item a:hover {
   color: #e98a36 !important;
+}
+
+.profile-dropdown {
+    border: 1px solid #f2994a;
+    border-radius: 4px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .profile-dropdown button {
+      padding: 0 10px !important;
+    }
+    .profile-dropdown i.fas.fa-user {
+        background: #000;
+        width: 1.125rem;
+        height: 1.125rem;
+        border-radius: 50%;
+        color: #fff;
+        font-size: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 0.5rem;
+    }
+    .dropdown-toggle.btn {
+      padding: 0 10px !important;
+    }
+    i.fas.fa-user {
+      margin-right: 0.5rem;
+    }
+}
+
+.profile-drop-display {
+  background: #FFFFFF;
+  box-shadow: 0px 4px 32px rgba(0, 0, 0, 0.15);
+  border-radius: 6px !important;
+  border: none !important;
+  padding: 10px 12px !important;
+  width: auto;
+  min-width: 17.625rem !important; 
+
+  .profile-sm-dropdown {
+    background-color: #fcfcfc;
+    border: 1px solid #F4F4F4;
+    border-radius: 6px;
+    margin: 15px 0;
+    overflow: hidden;
+  }
+
+  .text-sm-bold{
+    color: #828282;
+    font-weight: 700;
+    font-size: 10px;
+  }
+  .dropdown-item {
+      border-bottom: 1px solid #F4F4F4;
+      cursor: pointer;
+
+      &:last-child{
+        border:none;
+      }
+  }
+  .profile-sm-dropdown svg{
+    width: 18px !important;
+    height: 18px !important;
+  }
+
+}
+
+.justify-space-between {
+  justify-content: space-between;
+}
+.profile-sm-dropdown.orgs-list {
+  margin: 10px 0 6px;
 }

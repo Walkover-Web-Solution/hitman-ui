@@ -4,13 +4,32 @@ import collectionsActionTypes from './collectionsActionTypes'
 import tabService from '../../tabs/tabService'
 import openApiService from '../../openApi/openApiService'
 import versionActionTypes from '../../collectionVersions/redux/collectionVersionsActionTypes'
+import indexedDbService from '../../indexedDb/indexedDbService'
 
-export const fetchCollections = () => {
+export const fetchCollections = (orgId) => {
   return (dispatch) => {
     collectionsApiService
-      .getCollections()
+      .getCollections(orgId)
       .then((response) => {
         dispatch(onCollectionsFetched(response.data))
+        indexedDbService.addMultipleData('collections', Object.values(response.data))
+      })
+      .catch((error) => {
+        dispatch(
+          onCollectionsFetchedError(
+            error.response ? error.response.data : error
+          )
+        )
+      })
+  }
+}
+
+export const fetchCollectionsFromIdb = (orgId) => {
+  return (dispatch) => {
+    indexedDbService
+      .getAllData('collections')
+      .then((response) => {
+        dispatch(onCollectionsFetched(response))
       })
       .catch((error) => {
         dispatch(
