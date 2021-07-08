@@ -3,6 +3,7 @@ import httpService from '../../services/endpointHttpService'
 import indexedDbService from '../indexedDb/indexedDbService'
 import qs from 'qs'
 import { getOrgId } from '../common/utility'
+import { makeHttpRequestThroughAxios } from '../../services/coreRequestService'
 
 const apiUrlEndpoint = process.env.REACT_APP_API_URL
 
@@ -18,12 +19,7 @@ function endpointUrl (groupId) {
 
 export function apiTest (api, method, body, headers, bodyType) {
   if (api.indexOf('localhost') > 0 || api.indexOf('127.0.0.1') > 0) {
-    return httpService.request({
-      url: api,
-      method: method,
-      data: bodyType === 'urlEncoded' ? qs.stringify({ body }) : body,
-      headers: headers
-    })
+    return makeHttpRequestThroughAxios({ api, method, body, headers, bodyType })
   } else {
     const data = {
       url: api,

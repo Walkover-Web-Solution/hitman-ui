@@ -682,7 +682,7 @@ class DisplayEndpoint extends Component {
     } else {
       const timeElapsed = new Date().getTime() - this.state.startTime
       const response = {
-        data: 'ERROR:Server Connection Refused'
+        data: error.message || 'ERROR:Server Connection Refused'
       }
       this.setState({ response, timeElapsed, flagResponse: true })
     }
@@ -692,31 +692,44 @@ class DisplayEndpoint extends Component {
     let responseJson = {}
     try {
       const header = this.replaceVariablesInJson(headerJson)
-      responseJson = await endpointApiService.apiTest(
-        api,
-        this.state.data.method,
-        body,
-        header,
-        bodyType
-      )
-      let response
-      if (responseJson?.data?.status) {
-        const {
-          status,
-          statusText,
-          response: data,
-          headers
-        } = responseJson.data
-        response = { status, statusText, data, headers }
+      if (isElectron()) {
+        // Handle API through Electron Channel
+        const { ipcRenderer } = window.require('electron')
+        responseJson = await ipcRenderer.invoke('request-channel', { api, method: this.state.data.method, body, header, bodyType })
       } else {
-        response = { ...responseJson }
+        // Handle API through Backend
+        responseJson = await endpointApiService.apiTest(api, this.state.data.method, body, header, bodyType)
       }
-      if (responseJson.status === 200) {
-        const timeElapsed = new Date().getTime() - this.state.startTime
-        this.setState({ response, timeElapsed, flagResponse: true })
+
+      if (responseJson.data.success) {
+        /** request creation was successfull */
+        this.processResponse(responseJson)
+      } else {
+        /** error occured while creating the request */
+        this.handleErrorResponse(responseJson.data.error, this.state.startTime)
       }
     } catch (error) {
+      /** if our service fails */
       this.handleErrorResponse(error, this.state.startTime)
+    }
+  }
+
+  processResponse (responseJson) {
+    let response
+    if (responseJson?.data?.status) {
+      const {
+        status,
+        statusText,
+        response: data,
+        headers
+      } = responseJson.data
+      response = { status, statusText, data, headers }
+    } else {
+      response = { ...responseJson }
+    }
+    if (responseJson.status === 200) {
+      const timeElapsed = new Date().getTime() - this.state.startTime
+      this.setState({ response, timeElapsed, flagResponse: true })
     }
   }
 

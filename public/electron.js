@@ -1,6 +1,7 @@
-const { app, BrowserWindow } = require('electron')
+const { app, BrowserWindow, ipcMain } = require('electron')
 const isDev = require('electron-is-dev')
 const path = require('path')
+const { makeHttpRequestThroughAxios } = require('./request')
 
 let mainWindow
 let deeplinkUrl
@@ -58,6 +59,10 @@ function createWindow () {
     mainWindow = null
   })
 }
+
+ipcMain.handle('request-channel', (event, arg) => {
+  return makeHttpRequestThroughAxios(arg)
+})
 
 // If we are running a non-packaged version of the app && on windows
 if (isDev && process.platform === 'win32') {
