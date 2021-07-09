@@ -626,7 +626,7 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  async handleApiCall ({ api, body, headers: header, bodyType, method }) {
+  async handleApiCall ({ url: api, body, headers: header, bodyType, method }) {
     let responseJson = {}
     try {
       if (isElectron()) {
@@ -800,80 +800,90 @@ class DisplayEndpoint extends Component {
     const response = {}
     this.setState({ startTime, response })
 
-    const headersData = this.doSubmitHeader('send')
-    const headerJson = {}
-    Object.keys(headersData).forEach((header) => {
-      headerJson[header] = headersData[header].value
-    })
-    const BASE_URL = this.customState.BASE_URL
-    const uri = new URI(this.state.data.updatedUri)
-    const queryparams = uri.search()
-    const path = this.setPathVariableValues()
-    let api = BASE_URL + path + queryparams
-    let { body, headers } = this.formatBody(this.state.data.body, headerJson)
-    try {
-      if (this.state.data.body.type === 'JSON') JSON.parse(body)
-    } catch (e) {
-      toast.error('Invalid JSON Body')
-    }
-
     if (!isDashboardRoute(this.props, true) && this.checkEmptyParams()) {
       this.setState({ loader: false })
       return
     }
 
+    /** Prepare Headers */
+    const headersData = this.doSubmitHeader('send')
+    const headerJson = {}
+    Object.keys(headersData).forEach((header) => {
+      headerJson[header] = headersData[header].value
+    })
+
+    /** Prepare URL */
+    const BASE_URL = this.customState.BASE_URL
+    const uri = new URI(this.state.data.updatedUri)
+    const queryparams = uri.search()
+    const path = this.setPathVariableValues()
+    const url = BASE_URL + path + queryparams
+    if (!url) {
+      toast.error('Request URL is empty')
+      return
+    }
+
+    /** Prepare Body & Modify Headers */
+    const { body, headers } = this.formatBody(this.state.data.body, headerJson)
+
+    /** Add Cookie in Headers */
     const cookiesString = this.prepareHeaderCookies(BASE_URL)
     if (cookiesString) {
       headers.cookie = cookiesString.trim()
     }
 
-    // pre req -> format env run
-    const env = {}
-    const currentEnvId = this.props.environment.id
-    for (const [key, value] of Object.entries(this.props.environment.variables)) {
-      env[key] = value.currentValue
-    }
+    const method = this.state.data.method
 
-    const req = {
-      url: api,
-      method: this.state.data.method,
-      body,
-      headers
-    }
+    /** Set Request Options */
+    let requestOptions = { url, body, headers, method }
 
-    const callback = (obj) => {
-      console.log(obj, currentEnvId)
-    }
+    const currentEnvironment = this.props.environment
 
     const code = `
       hm.environment.set('BASE_URL','NEW BSAE URL')
-      // console.log(hm.request);
       hm.request.headers.add('NewHeader','http://httpdump.io/:dumpId?BASE_URL={{BASE_URL}}')
     `
 
-    run(code, initialize({
-      environment: { value: env, callback },
-      request: { value: req }
-    }), async (err, { environment, request }) => {
-      if (err) { console.error(err.message) } else {
-        // replace api
-        request.url = this.replaceVariables(request.url, environment)
-        api = this.addhttps(request.url)
-        // replace header
-        headers = this.replaceVariablesInJson(request.headers, environment)
+    /** Run Pre Request Script */
+    const result = this.runPreRequestScript(code, currentEnvironment, requestOptions)
 
-        if (api) {
-          this.setState({ loader: true })
-          moveToNextStep(5)
-          await this.handleApiCall({ api, body, method: this.state.data.method, headers, bodyType: this.state.data.body.type })
-          this.setState({ loader: false })
-          this.myRef.current && this.myRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' })
-          isDashboardRoute(this.props) && this.setData()
-        } else {
-          toast.error('Request URL is empty')
-        }
+    if (result.success) {
+      let { environment, request: { url, headers } } = result.data
+      /** Replace Environemnt Variables */
+      url = this.replaceVariables(url, environment)
+      url = this.addhttps(url)
+      headers = this.replaceVariablesInJson(headers, environment)
+      requestOptions = { ...requestOptions, headers, url, bodyType: this.state.data.body.type }
+      this.setState({ loader: true })
+      /** Steve Onboarding Step 5 Completed */
+      moveToNextStep(5)
+      /** Handle Request Call */
+      await this.handleApiCall(requestOptions)
+      this.setState({ loader: false })
+      /** Scroll to Response */
+      this.myRef.current && this.myRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' })
+      /** Add to History */
+      isDashboardRoute(this.props) && this.setData()
+    } else {
+      console.log(result.error)
+    }
+  }
+
+  runPreRequestScript (code, environment, request) {
+    const env = {}
+    if (environment?.variables) {
+      for (const [key, value] of Object.entries(environment.variables)) {
+        env[key] = value.currentValue
       }
-    })
+    }
+    environment = { value: env, callback: this.envCallback }
+    request = { value: request }
+    return run(code, initialize({ environment, request }))
+  }
+
+  envCallback = (obj) => {
+    /** check if current env is selected before updating env at DB */
+    console.log(obj)
   }
 
   extractPosition (groupId) {
@@ -1521,6 +1531,7 @@ class DisplayEndpoint extends Component {
 
   formatBody (body, headers) {
     let finalBodyValue = null
+    console.log(body)
     switch (body.type) {
       case 'raw':
         finalBodyValue = this.parseBody(body.value)

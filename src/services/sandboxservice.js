@@ -106,7 +106,7 @@ class HitmanSandbox {
   }
 }
 
-function run (code, sandbox, done) {
+function run (code, sandbox) {
   const hm = sandbox
   const context = { hm, console: console }
   try {
@@ -115,10 +115,10 @@ function run (code, sandbox, done) {
     sandbox.environment.updateCallback()
     const environment = context.hm.environment.getEnvironment()
     const request = context.hm.request.getRequest()
-    done(undefined, { environment, request })
+    return { success: true, data: { environment, request } }
   } catch (error) {
     console.log(error)
-    done(error)
+    return { success: false, error: error.message }
   }
 }
 
