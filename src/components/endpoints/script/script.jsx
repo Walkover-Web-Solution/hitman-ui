@@ -8,7 +8,9 @@ import 'ace-builds/src-noconflict/mode-xml'
 import 'ace-builds/src-noconflict/theme-github'
 import 'ace-builds/webpack-resolver'
 import AceEditor from 'react-ace'
+import Snippets from './snippets'
 
+const snippets = { ...Snippets }
 export class Script extends Component {
   constructor (props) {
     super(props)
@@ -17,7 +19,7 @@ export class Script extends Component {
       selectedRawBodyType: 'TEXT',
       scriptEditorText: ''
     }
-    this.ace = ''
+    this.scriptEditor = ''
   }
 
   componentDidMount () {
@@ -35,10 +37,9 @@ export class Script extends Component {
     this.setState({ selectedScriptType })
   }
 
-  insertText () {
-    const text = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5)
-    const position = { ...this.ace.editor.getCursorPosition() }
-    this.ace.editor.session.insert(position, '\n' + text)
+  insertSnippet (snippet) {
+    const position = { ...this.scriptEditor.editor.getCursorPosition() }
+    this.scriptEditor.editor.session.insert(position, '\n' + snippet?.value)
   }
 
   renderScriptEditor () {
@@ -64,17 +65,29 @@ export class Script extends Component {
             editor.getSession().setUseWrapMode(true)
             editor.setShowPrintMargin(false)
           }}
-          ref={c => { this.ace = c }}
+          ref={e => { this.scriptEditor = e }}
         />
+      </div>
+    )
+  }
+
+  snippetsList () {
+    return (
+      <div className=''>
+        {Object.values(snippets).map((snippet, index) => (
+          <div key={index} onClick={() => this.insertSnippet(snippet)}>
+            {snippet.key}
+          </div>
+        ))}
       </div>
     )
   }
 
   render () {
     return (
-      <div>
+      <div className=''>
         {this.renderScriptEditor()}
-        <div onClick={() => this.insertText('hello')}>Hello</div>
+        {this.snippetsList()}
       </div>
     )
   }

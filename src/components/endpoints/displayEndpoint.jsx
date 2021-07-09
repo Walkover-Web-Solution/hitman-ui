@@ -963,7 +963,9 @@ class DisplayEndpoint extends Component {
           this.state.data.body.type === 'JSON'
             ? bodyDescription
             : {},
-        authorizationType: this.state.authType
+        authorizationType: this.state.authType,
+        preScript: this.state.preScriptText,
+        postScript: this.state.postScriptText
       }
       if (endpoint.name === '') toast.error('Please enter Endpoint name')
       else if (this.props.location.pathname.split('/')[5] === 'new') {
