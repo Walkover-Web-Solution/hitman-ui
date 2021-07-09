@@ -39,7 +39,11 @@ export class Script extends Component {
 
   insertSnippet (snippet) {
     const position = { ...this.scriptEditor.editor.getCursorPosition() }
-    this.scriptEditor.editor.session.insert(position, '\n' + snippet?.value)
+    const newPosition = {
+      row: position.row + 1,
+      column: 0
+    }
+    this.scriptEditor.editor.session.insert(newPosition, snippet?.value + '\n')
   }
 
   renderScriptEditor () {
