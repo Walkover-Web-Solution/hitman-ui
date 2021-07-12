@@ -41,6 +41,7 @@ import bodyDescriptionService from './bodyDescriptionService'
 import { moveToNextStep } from '../../services/widgetService'
 import CookiesModal from '../cookies/cookiesModal'
 import moment from 'moment'
+import { updateEnvironment } from '../environments/redux/environmentsActions'
 const shortid = require('shortid')
 const { run, initialize } = require('../../services/sandboxservice')
 
@@ -76,7 +77,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(setAuthorizationData(versionId, data)),
     // generate_temp_tab: (id) => dispatch(generateTempTab(id))
     close_tab: (id) => dispatch(closeTab(id)),
-    add_history: (data) => dispatch(addHistory(data))
+    add_history: (data) => dispatch(addHistory(data)),
+    update_environment: (data) => dispatch(updateEnvironment(data))
   }
 }
 
@@ -840,7 +842,10 @@ class DisplayEndpoint extends Component {
     const currentEnvironment = this.props.environment
 
     const code = `
-      hm.environment.set('BASE_URL','NEW BSAE URL')
+      hm.environment.set('BASE_URL','12312312')
+      hm.environment.set('BASE_URL_1231','12312312asdas')
+      hm.environment.unset('BASE_URL')
+      hm.environment.unset('DUMP_ID')
       hm.request.headers.add('NewHeader','http://httpdump.io/:dumpId?BASE_URL={{BASE_URL}}')
     `
 
@@ -882,8 +887,17 @@ class DisplayEndpoint extends Component {
   }
 
   envCallback = (obj) => {
-    /** check if current env is selected before updating env at DB */
-    console.log(obj)
+    const currentEnv = { ...this.props.environment }
+    const variables = {}
+    const getInitalValue = (key) => {
+      return currentEnv.variables?.[key].initialValue || ''
+    }
+    if (currentEnv.id) {
+      for (const [key, value] of Object.entries(obj)) {
+        variables[key] = { initialValue: getInitalValue(key), currentValue: value }
+      }
+      this.props.update_environment({ ...currentEnv, variables })
+    }
   }
 
   extractPosition (groupId) {
