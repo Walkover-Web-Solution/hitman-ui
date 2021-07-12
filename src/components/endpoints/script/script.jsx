@@ -52,7 +52,7 @@ export class Script extends Component {
 
   renderScriptEditor () {
     return (
-      <div>
+      <div className='col-8'>
         {' '}
         <AceEditor
           className='custom-raw-editor'
@@ -81,7 +81,7 @@ export class Script extends Component {
 
   snippetsList () {
     return (
-      <div className=''>
+      <div className='snippets col-4'>
         {Object.values(snippets).map((snippet, index) => (
           <div key={index} onClick={() => this.insertSnippet(snippet)}>
             {snippet.key}
@@ -93,7 +93,7 @@ export class Script extends Component {
 
   render () {
     return (
-      <div className=''>
+      <div className='row'>
         {this.renderScriptEditor()}
         {this.snippetsList()}
       </div>

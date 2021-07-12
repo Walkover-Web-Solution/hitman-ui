@@ -3119,3 +3119,26 @@ li.nav-item.cookie-tab a {
 .profile-sm-dropdown.orgs-list {
   margin: 10px 0 6px;
 }
+
+.snippets {
+    height: 250px;
+    overflow-x: auto;
+    background: #fff;
+    border-radius: 5px;
+    padding: 10px 20px;
+}
+
+.snippets > div {
+    color: #f1b041;
+    font-size: 14px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid whitesmoke;
+    padding-bottom: 10px;
+    cursor: pointer;
+
+    &:last-child{
+      margin-bottom: 0;
+      border: oldlace;
+      padding-bottom: 0;
+    }
+}
