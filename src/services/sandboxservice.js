@@ -69,6 +69,24 @@ class Request {
   }
 }
 
+class Response {
+  constructor (response) {
+    this.status = response.status
+    this.statusText = response.statusText
+    this.headers = new HeaderList(response.headers)
+    this.body = response.body
+  }
+
+  getResponse () {
+    return {
+      status: this.status,
+      headers: this.headers.getHeaders(),
+      statusText: this.statusText,
+      body: this.body
+    }
+  }
+}
+
 class HeaderList {
   constructor (headers) {
     this.headers = _.clone(headers)
@@ -91,6 +109,10 @@ class HeaderList {
 
   has (headerName) {
     return !!(this.headers[headerName])
+  }
+
+  get (headerName) {
+    return (this.headers[headerName])
   }
 
   getHeaders () {
@@ -124,8 +146,7 @@ function run (code, sandbox) {
 function initialize ({ request, environment, response }) {
   if (environment) environment = new Environment(environment.value, environment.callback)
   if (request) request = new Request(request.value)
-  /** todo: for response */
-  // if (response) response = new Response(response.value)
+  if (response) response = new Response(response.value)
   return new HitmanSandbox({ environment, request, response })
 }
 
