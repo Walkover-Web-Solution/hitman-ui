@@ -368,7 +368,9 @@ class DisplayEndpoint extends Component {
         fieldDescription,
         publicBodyFlag: true,
         bodyFlag: true,
-        response: {}
+        response: {},
+        preScriptText: endpoint.preScript || '',
+        postScriptText: endpoint.postScript || ''
       })
       this.setAccessToken()
     }
@@ -844,13 +846,7 @@ class DisplayEndpoint extends Component {
 
     const currentEnvironment = this.props.environment
 
-    const code = `
-      hm.environment.set('BASE_URL','12312312')
-      hm.environment.set('BASE_URL_1231','12312312asdas')
-      hm.environment.unset('BASE_URL')
-      hm.environment.unset('DUMP_ID')
-      hm.request.headers.add('NewHeader','http://httpdump.io/:dumpId?BASE_URL={{BASE_URL}}')
-    `
+    const code = this.state.preScriptText
 
     /** Run Pre Request Script */
     const result = this.runPreRequestScript(code, currentEnvironment, requestOptions)
@@ -889,14 +885,14 @@ class DisplayEndpoint extends Component {
     return run(code, initialize({ environment, request }))
   }
 
-  envCallback = (obj) => {
+  envCallback = (variablesObj) => {
     const currentEnv = { ...this.props.environment }
     const variables = {}
     const getInitalValue = (key) => {
-      return currentEnv.variables?.[key].initialValue || ''
+      return currentEnv?.variables?.[key]?.initialValue || ''
     }
     if (currentEnv.id) {
-      for (const [key, value] of Object.entries(obj)) {
+      for (const [key, value] of Object.entries(variablesObj)) {
         variables[key] = { initialValue: getInitalValue(key), currentValue: value }
       }
       this.props.update_environment({ ...currentEnv, variables })

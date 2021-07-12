@@ -20,11 +20,19 @@ export class Script extends Component {
       scriptEditorText: ''
     }
     this.scriptEditor = ''
+    this.scriptFetched = false
   }
 
   componentDidMount () {
     if (this.props.scriptText) {
-      this.setState({ scriptEditorText: this.props.scriptEditorText })
+      this.setState({ scriptEditorText: this.props.scriptText })
+    }
+  }
+
+  componentDidUpdate (prevProps, prevState) {
+    if (this.props.scriptText && !this.scriptFetched) {
+      this.setState({ scriptEditorText: this.props.scriptText })
+      this.scriptFetched = true
     }
   }
 
