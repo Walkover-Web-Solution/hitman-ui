@@ -117,7 +117,6 @@ function run (code, sandbox) {
     const request = context.hm.request.getRequest()
     return { success: true, data: { environment, request } }
   } catch (error) {
-    console.log(error)
     return { success: false, error: error.message }
   }
 }
@@ -125,6 +124,7 @@ function run (code, sandbox) {
 function initialize ({ request, environment, response }) {
   if (environment) environment = new Environment(environment.value, environment.callback)
   if (request) request = new Request(request.value)
+  /** todo: for response */
   // if (response) response = new Response(response.value)
   return new HitmanSandbox({ environment, request, response })
 }
@@ -133,36 +133,3 @@ module.exports = {
   run,
   initialize
 }
-
-// let env = {
-//   'AUTH_TOKEN':"awdinaowd"
-// }
-
-// let customReq = {
-//   url: 'https://httpdump.io/adwad',
-//   method: 'POST',
-//   body: {
-//     "key": "value"
-//   },
-//   headers: {
-//     "AUTH_TOKEN": "awdawdawdw"
-//   }
-// }
-
-// let callback = (obj) => {
-//   // console.log(obj,currentEnvId)
-// }
-
-// let code = `
-//   // console.log(hm.environment);
-//   hm.request.headers.add('teest', 123);
-//   // console.log(hm.request.headers.has('AUTH_TOKEN'))
-//   hm.request.headers.remove('AUTH_TOKEN');
-//   hm.request.headers.add('teest', 12123123);
-//   // console.log(hm.request.headers)
-// `
-
-// run(code, initialize({
-//   environment: { value: env , callback },
-//   request: { value: customReq }
-// }), (err, data)=>{ err ? console.error('EROOR',err.message) : console.log('success', data) })
