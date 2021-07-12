@@ -1,10 +1,6 @@
 import React, { Component } from 'react'
 import 'ace-builds'
-import 'ace-builds/src-noconflict/mode-html'
-import 'ace-builds/src-noconflict/mode-java'
 import 'ace-builds/src-noconflict/mode-javascript'
-import 'ace-builds/src-noconflict/mode-json'
-import 'ace-builds/src-noconflict/mode-xml'
 import 'ace-builds/src-noconflict/theme-github'
 import 'ace-builds/webpack-resolver'
 import AceEditor from 'react-ace'
@@ -16,7 +12,7 @@ export class Script extends Component {
     super(props)
 
     this.state = {
-      selectedRawBodyType: 'TEXT',
+      selectedRawBodyType: 'javascript',
       scriptEditorText: ''
     }
     this.scriptEditor = ''

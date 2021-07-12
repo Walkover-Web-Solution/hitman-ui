@@ -138,7 +138,9 @@ class DisplayEndpoint extends Component {
       codeEditorVisibility: true,
       showCookiesModal: false,
       preScriptText: '',
-      postScriptText: ''
+      postScriptText: '',
+      preReqScriptError: '',
+      postReqScriptError: ''
     }
 
     this.uri = React.createRef()
@@ -805,7 +807,7 @@ class DisplayEndpoint extends Component {
   handleSend = async () => {
     const startTime = new Date().getTime()
     const response = {}
-    this.setState({ startTime, response })
+    this.setState({ startTime, response, preReqScriptError: '', postReqScriptError: '' })
 
     if (!isDashboardRoute(this.props, true) && this.checkEmptyParams()) {
       this.setState({ loader: false })
@@ -869,11 +871,16 @@ class DisplayEndpoint extends Component {
       /** Add to History */
       isDashboardRoute(this.props) && this.setData()
     } else {
-      console.log(result.error)
+      toast.error('Something went wrong while running your scripts.')
+      this.setState({ preReqScriptError: result.error })
     }
   }
 
   runPreRequestScript (code, environment, request) {
+    if (code.trim().length === 0 || !isDashboardRoute(this.props, true)) {
+      return { success: true, data: { environment: environment.variables, request } }
+    }
+
     const env = {}
     if (environment?.variables) {
       for (const [key, value] of Object.entries(environment.variables)) {
@@ -1546,7 +1553,6 @@ class DisplayEndpoint extends Component {
 
   formatBody (body, headers) {
     let finalBodyValue = null
-    console.log(body)
     switch (body.type) {
       case 'raw':
         finalBodyValue = this.parseBody(body.value)
@@ -1868,6 +1874,15 @@ class DisplayEndpoint extends Component {
       postScriptText = text
     }
     this.setState({ preScriptText, postScriptText })
+  }
+
+  renderScriptError () {
+    return (
+      <>
+        {this.state.postReqScriptError ? <div className='script-error'>{`There was an error in evaluating the Post-request Script: ${this.state.postReqScriptError}`}</div> : null}
+        {this.state.preReqScriptError ? <div className='script-error'>{`There was an error in evaluating the Pre-request Script: ${this.state.preReqScriptError}`}</div> : null}
+      </>
+    )
   }
 
   render () {
@@ -2459,6 +2474,7 @@ class DisplayEndpoint extends Component {
                     </div>
                   )
                 }
+                  {isDashboardRoute(this.props) && this.renderScriptError()}
                   {
                     this.displayResponse()
                   }
