@@ -82,6 +82,7 @@ export class Script extends Component {
   snippetsList () {
     return (
       <div className='snippets col-4'>
+        <h4>Snippets</h4>
         {Object.values(snippets).map((snippet, index) => (
           <div key={index} onClick={() => this.insertSnippet(snippet)}>
             {snippet.key}

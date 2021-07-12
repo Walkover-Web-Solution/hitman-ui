@@ -3126,6 +3126,13 @@ li.nav-item.cookie-tab a {
     background: #fff;
     border-radius: 5px;
     padding: 10px 20px;
+    h4 {
+      font-size: 14px;
+      margin: .5rem 0 1rem;
+      text-transform: capitalize;
+      color: #817f7f;
+      font-weight: 500;
+  }
 }
 
 .snippets > div {
@@ -3141,4 +3148,5 @@ li.nav-item.cookie-tab a {
       border: oldlace;
       padding-bottom: 0;
     }
+
 }
