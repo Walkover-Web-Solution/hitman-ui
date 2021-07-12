@@ -42,6 +42,7 @@ import { moveToNextStep } from '../../services/widgetService'
 import CookiesModal from '../cookies/cookiesModal'
 import moment from 'moment'
 import { updateEnvironment } from '../environments/redux/environmentsActions'
+import Script from './script/script'
 const shortid = require('shortid')
 const { run, initialize } = require('../../services/sandboxservice')
 
@@ -135,7 +136,9 @@ class DisplayEndpoint extends Component {
       loader: false,
       saveLoader: false,
       codeEditorVisibility: true,
-      showCookiesModal: false
+      showCookiesModal: false,
+      preScriptText: '',
+      postScriptText: ''
     }
 
     this.uri = React.createRef()
@@ -957,7 +960,9 @@ class DisplayEndpoint extends Component {
           this.state.data.body.type === 'JSON'
             ? bodyDescription
             : {},
-        authorizationType: this.state.authType
+        authorizationType: this.state.authType,
+        preScript: this.state.preScriptText,
+        postScript: this.state.postScriptText
       }
       if (endpoint.name === '') toast.error('Please enter Endpoint name')
       else if (this.props.location.pathname.split('/')[5] === 'new') {
@@ -1858,6 +1863,17 @@ class DisplayEndpoint extends Component {
     )
   }
 
+  handleScriptChange (text, type) {
+    let preScriptText = this.state.preScriptText || ''
+    let postScriptText = this.state.postScriptText || ''
+    if (type === 'Pre-Script') {
+      preScriptText = text
+    } else {
+      postScriptText = text
+    }
+    this.setState({ preScriptText, postScriptText })
+  }
+
   render () {
     this.endpointId = this.props.endpointId
       ? this.props.endpointId
@@ -2217,6 +2233,32 @@ class DisplayEndpoint extends Component {
                                   Body
                                 </a>
                               </li>
+                              <li className='nav-item'>
+                                <a
+                                  className='nav-link'
+                                  id='pills-pre-script-tab'
+                                  data-toggle='pill'
+                                  href={`#pre-script-${this.props.tab.id}`}
+                                  role='tab'
+                                  aria-controls={`pre-script-${this.props.tab.id}`}
+                                  aria-selected='false'
+                                >
+                                  Pre-Script
+                                </a>
+                              </li>
+                              <li className='nav-item'>
+                                <a
+                                  className='nav-link'
+                                  id='pills-post-script-tab'
+                                  data-toggle='pill'
+                                  href={`#post-script-${this.props.tab.id}`}
+                                  role='tab'
+                                  aria-controls={`post-script-${this.props.tab.id}`}
+                                  aria-selected='false'
+                                >
+                                  Post-Script
+                                </a>
+                              </li>
                               <li className='nav-item cookie-tab'>
                                 <a>
                                   {getCurrentUser() &&
@@ -2326,6 +2368,34 @@ class DisplayEndpoint extends Component {
                                 this
                               )}
                             />
+                          </div>
+                          <div
+                            className='tab-pane fade'
+                            id={`pre-script-${this.props.tab.id}`}
+                            role='tabpanel'
+                            aria-labelledby='pills-pre-script-tab'
+                          >
+                            <div>
+                              <Script
+                                type='Pre-Script'
+                                handleScriptChange={this.handleScriptChange.bind(this)}
+                                scriptText={this.state.preScriptText}
+                              />
+                            </div>
+                          </div>
+                          <div
+                            className='tab-pane fade'
+                            id={`post-script-${this.props.tab.id}`}
+                            role='tabpanel'
+                            aria-labelledby='pills-post-script-tab'
+                          >
+                            <div>
+                              <Script
+                                type='Post-Script'
+                                handleScriptChange={this.handleScriptChange.bind(this)}
+                                scriptText={this.state.postScriptText}
+                              />
+                            </div>
                           </div>
                         </div>
                         )
