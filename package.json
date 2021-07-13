@@ -22,6 +22,7 @@
     "joi-browser": "^13.4.0",
     "jquery": "^3.4.1",
     "jwt-decode": "^2.2.0",
+    "lodash": "^4.17.21",
     "moment": "^2.29.1",
     "node-sass": "^4.13.1",
     "popper.js": "^1.16.1",
@@ -66,6 +67,7 @@
     "universal-cookie": "^4.0.4",
     "urijs": "^1.19.2",
     "validator": "^13.0.0",
+    "vm": "^0.1.0",
     "wait-on": "^5.3.0"
   },
   "engines": {

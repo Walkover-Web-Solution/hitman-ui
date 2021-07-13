@@ -41,7 +41,10 @@ import bodyDescriptionService from './bodyDescriptionService'
 import { moveToNextStep } from '../../services/widgetService'
 import CookiesModal from '../cookies/cookiesModal'
 import moment from 'moment'
+import { updateEnvironment } from '../environments/redux/environmentsActions'
+import Script from './script/script'
 const shortid = require('shortid')
+const { run, initialize } = require('../../services/sandboxservice')
 
 const status = require('http-status')
 const URI = require('urijs')
@@ -75,7 +78,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(setAuthorizationData(versionId, data)),
     // generate_temp_tab: (id) => dispatch(generateTempTab(id))
     close_tab: (id) => dispatch(closeTab(id)),
-    add_history: (data) => dispatch(addHistory(data))
+    add_history: (data) => dispatch(addHistory(data)),
+    update_environment: (data) => dispatch(updateEnvironment(data))
   }
 }
 
@@ -132,7 +136,11 @@ class DisplayEndpoint extends Component {
       loader: false,
       saveLoader: false,
       codeEditorVisibility: true,
-      showCookiesModal: false
+      showCookiesModal: false,
+      preScriptText: '',
+      postScriptText: '',
+      preReqScriptError: '',
+      postReqScriptError: ''
     }
 
     this.uri = React.createRef()
@@ -362,7 +370,9 @@ class DisplayEndpoint extends Component {
         fieldDescription,
         publicBodyFlag: true,
         bodyFlag: true,
-        response: {}
+        response: {},
+        preScriptText: endpoint.preScript || '',
+        postScriptText: endpoint.postScript || ''
       })
       this.setAccessToken()
     }
@@ -551,7 +561,11 @@ class DisplayEndpoint extends Component {
     return originalParams
   }
 
-  replaceVariables (str) {
+  replaceVariables (str, customEnv) {
+    let envVars = this.props.environment.variables
+    if (customEnv) {
+      envVars = customEnv
+    }
     str = str.toString()
     const regexp = /{{((\w|-)+)}}/g
     let match = regexp.exec(str)
@@ -559,99 +573,32 @@ class DisplayEndpoint extends Component {
     if (match === null) return str
 
     if (isDashboardRoute(this.props)) {
-      if (!this.props.environment.variables) {
-        return str.replace(regexp, '')
-      }
+      if (!envVars) return str.replace(regexp, '')
+
       do {
         variables.push(match[1])
       } while ((match = regexp.exec(str)) !== null)
+
       for (let i = 0; i < variables.length; i++) {
-        if (!this.props.environment.variables[variables[i]]) {
-          str = str.replace(`{{${variables[i]}}}`, '')
-        } else if (
-          isDashboardRoute(this.props) &&
-          this.props.environment.variables[variables[i]].currentValue
-        ) {
-          str = str.replace(
-            `{{${variables[i]}}}`,
-            this.props.environment.variables[variables[i]].currentValue
-          )
-        } else if (
-          this.props.environment.variables[variables[i]].initialValue
-        ) {
-          str = str.replace(
-            `{{${variables[i]}}}`,
-            this.props.environment.variables[variables[i]].initialValue
-          )
+        const envVariable = envVars[variables[i]]
+        const strToReplace = `{{${variables[i]}}}`
+        if (envVariable?.currentValue) {
+          str = str.replace(strToReplace, envVariable.currentValue)
+        } else if (envVariable?.initialValue) {
+          str = str.replace(strToReplace, envVariable.initialValue)
         } else {
-          str = str.replace(`{{${variables[i]}}}`, '')
-        }
-      }
-    } else {
-      const environmentId = this.state.publicCollectionEnvironmentId
-      const originalEnv = this.state.originalEnvironmentReplica
-      if (
-        this.props.environments[environmentId] !== undefined ||
-        (this.props.environments[environmentId] === undefined &&
-          originalEnv === null)
-      ) {
-        if (!this.props.environments[environmentId].variables) {
-          return str.replace(regexp, '')
-        }
-        do {
-          variables.push(match[1])
-        } while ((match = regexp.exec(str)) !== null)
-        for (let i = 0; i < variables.length; i++) {
-          if (!this.props.environments[environmentId].variables[variables[i]]) {
-            str = str.replace(`{{${variables[i]}}}`, '')
-          } else if (
-            this.props.environments[environmentId].variables[variables[i]]
-              .initialValue
-          ) {
-            str = str.replace(
-              `{{${variables[i]}}}`,
-              this.props.environments[environmentId].variables[variables[i]]
-                .initialValue
-            )
-          } else {
-            str = str.replace(`{{${variables[i]}}}`, '')
-          }
-        }
-      }
-      // If Environment is Deleted
-      if (
-        this.props.environments[environmentId] === undefined &&
-        environmentId != null &&
-        originalEnv != null
-      ) {
-        if (!originalEnv.variables) {
-          return str.replace(regexp, '')
-        }
-        do {
-          variables.push(match[1])
-        } while ((match = regexp.exec(str)) !== null)
-        for (let i = 0; i < variables.length; i++) {
-          if (!originalEnv.variables[variables[i]]) {
-            str = str.replace(`{{${variables[i]}}}`, '')
-          } else if (originalEnv.variables[variables[i]].initialValue) {
-            str = str.replace(
-              `{{${variables[i]}}}`,
-              originalEnv.variables[variables[i]].initialValue
-            )
-          } else {
-            str = str.replace(`{{${variables[i]}}}`, '')
-          }
+          str = str.replace(strToReplace, '')
         }
       }
     }
     return str
   }
 
-  replaceVariablesInJson (json) {
+  replaceVariablesInJson (json, customEnv) {
     const keys = Object.keys(json)
     for (let i = 0; i < keys.length; i++) {
-      json[keys[i]] = this.replaceVariables(json[keys[i]])
-      const updatedKey = this.replaceVariables(keys[i])
+      json[keys[i]] = this.replaceVariables(json[keys[i]], customEnv)
+      const updatedKey = this.replaceVariables(keys[i], customEnv)
       if (updatedKey !== keys[i]) {
         json[updatedKey] = json[keys[i]]
         delete json[keys[i]]
@@ -688,17 +635,16 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  async handleApiCall (api, body, headerJson, bodyType) {
+  async handleApiCall ({ url: api, body, headers: header, bodyType, method }) {
     let responseJson = {}
     try {
-      const header = this.replaceVariablesInJson(headerJson)
       if (isElectron()) {
         // Handle API through Electron Channel
         const { ipcRenderer } = window.require('electron')
-        responseJson = await ipcRenderer.invoke('request-channel', { api, method: this.state.data.method, body, header, bodyType })
+        responseJson = await ipcRenderer.invoke('request-channel', { api, method, body, header, bodyType })
       } else {
         // Handle API through Backend
-        responseJson = await endpointApiService.apiTest(api, this.state.data.method, body, header, bodyType)
+        responseJson = await endpointApiService.apiTest(api, method, body, header, bodyType)
       }
 
       if (responseJson.data.success) {
@@ -861,47 +807,103 @@ class DisplayEndpoint extends Component {
   handleSend = async () => {
     const startTime = new Date().getTime()
     const response = {}
-    this.setState({ startTime, response })
-    const headersData = this.doSubmitHeader('send')
-    const BASE_URL = this.customState.BASE_URL
-    const uri = new URI(this.state.data.updatedUri)
-    const queryparams = uri.search()
-    const path = this.setPathVariableValues()
-    let api = BASE_URL + path + queryparams
-    api = this.replaceVariables(api)
-    api = this.addhttps(api)
-    const headerJson = {}
-    Object.keys(headersData).forEach((header) => {
-      headerJson[header] = headersData[header].value
-    })
-    const { body, headers } = this.formatBody(this.state.data.body, headerJson)
-    try {
-      if (this.state.data.body.type === 'JSON') JSON.parse(body)
-    } catch (e) {
-      toast.error('Invalid JSON Body')
-    }
+    this.setState({ startTime, response, preReqScriptError: '', postReqScriptError: '' })
 
     if (!isDashboardRoute(this.props, true) && this.checkEmptyParams()) {
       this.setState({ loader: false })
       return
     }
 
+    /** Prepare Headers */
+    const headersData = this.doSubmitHeader('send')
+    const headerJson = {}
+    Object.keys(headersData).forEach((header) => {
+      headerJson[header] = headersData[header].value
+    })
+
+    /** Prepare URL */
+    const BASE_URL = this.customState.BASE_URL
+    const uri = new URI(this.state.data.updatedUri)
+    const queryparams = uri.search()
+    const path = this.setPathVariableValues()
+    const url = BASE_URL + path + queryparams
+    if (!url) {
+      toast.error('Request URL is empty')
+      return
+    }
+
+    /** Prepare Body & Modify Headers */
+    const { body, headers } = this.formatBody(this.state.data.body, headerJson)
+
+    /** Add Cookie in Headers */
     const cookiesString = this.prepareHeaderCookies(BASE_URL)
     if (cookiesString) {
       headers.cookie = cookiesString.trim()
     }
 
-    if (api) {
+    const method = this.state.data.method
+
+    /** Set Request Options */
+    let requestOptions = { url, body, headers, method }
+
+    const currentEnvironment = this.props.environment
+
+    const code = this.state.preScriptText
+
+    /** Run Pre Request Script */
+    const result = this.runPreRequestScript(code, currentEnvironment, requestOptions)
+
+    if (result.success) {
+      let { environment, request: { url, headers } } = result.data
+      /** Replace Environemnt Variables */
+      url = this.replaceVariables(url, environment)
+      url = this.addhttps(url)
+      headers = this.replaceVariablesInJson(headers, environment)
+      requestOptions = { ...requestOptions, headers, url, bodyType: this.state.data.body.type }
       this.setState({ loader: true })
+      /** Steve Onboarding Step 5 Completed */
       moveToNextStep(5)
-      await this.handleApiCall(api, body, headers, this.state.data.body.type)
+      /** Handle Request Call */
+      await this.handleApiCall(requestOptions)
       this.setState({ loader: false })
+      /** Scroll to Response */
       this.myRef.current && this.myRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' })
+      /** Add to History */
       isDashboardRoute(this.props) && this.setData()
     } else {
-      toast.error('Request URL is empty')
+      this.setState({ preReqScriptError: result.error })
     }
-  };
+  }
+
+  runPreRequestScript (code, environment, request) {
+    if (code.trim().length === 0 || !isDashboardRoute(this.props, true)) {
+      return { success: true, data: { environment: environment.variables, request } }
+    }
+
+    const env = {}
+    if (environment?.variables) {
+      for (const [key, value] of Object.entries(environment.variables)) {
+        env[key] = value.currentValue
+      }
+    }
+    environment = { value: env, callback: this.envCallback }
+    request = { value: request }
+    return run(code, initialize({ environment, request }))
+  }
+
+  envCallback = (variablesObj) => {
+    const currentEnv = { ...this.props.environment }
+    const variables = {}
+    const getInitalValue = (key) => {
+      return currentEnv?.variables?.[key]?.initialValue || ''
+    }
+    if (currentEnv.id) {
+      for (const [key, value] of Object.entries(variablesObj)) {
+        variables[key] = { initialValue: getInitalValue(key), currentValue: value }
+      }
+      this.props.update_environment({ ...currentEnv, variables })
+    }
+  }
 
   extractPosition (groupId) {
     let count = -1
@@ -960,7 +962,9 @@ class DisplayEndpoint extends Component {
           this.state.data.body.type === 'JSON'
             ? bodyDescription
             : {},
-        authorizationType: this.state.authType
+        authorizationType: this.state.authType,
+        preScript: this.state.preScriptText,
+        postScript: this.state.postScriptText
       }
       if (endpoint.name === '') toast.error('Please enter Endpoint name')
       else if (this.props.location.pathname.split('/')[5] === 'new') {
@@ -1860,6 +1864,26 @@ class DisplayEndpoint extends Component {
     )
   }
 
+  handleScriptChange (text, type) {
+    let preScriptText = this.state.preScriptText || ''
+    let postScriptText = this.state.postScriptText || ''
+    if (type === 'Pre-Script') {
+      preScriptText = text
+    } else {
+      postScriptText = text
+    }
+    this.setState({ preScriptText, postScriptText })
+  }
+
+  renderScriptError () {
+    return (
+      <>
+        {this.state.postReqScriptError ? <div className='script-error'>{`There was an error in evaluating the Post-request Script: ${this.state.postReqScriptError}`}</div> : null}
+        {this.state.preReqScriptError ? <div className='script-error'>{`There was an error in evaluating the Pre-request Script: ${this.state.preReqScriptError}`}</div> : null}
+      </>
+    )
+  }
+
   render () {
     this.endpointId = this.props.endpointId
       ? this.props.endpointId
@@ -2219,6 +2243,32 @@ class DisplayEndpoint extends Component {
                                   Body
                                 </a>
                               </li>
+                              <li className='nav-item'>
+                                <a
+                                  className='nav-link'
+                                  id='pills-pre-script-tab'
+                                  data-toggle='pill'
+                                  href={`#pre-script-${this.props.tab.id}`}
+                                  role='tab'
+                                  aria-controls={`pre-script-${this.props.tab.id}`}
+                                  aria-selected='false'
+                                >
+                                  Pre-Script
+                                </a>
+                              </li>
+                              <li className='nav-item'>
+                                <a
+                                  className='nav-link'
+                                  id='pills-post-script-tab'
+                                  data-toggle='pill'
+                                  href={`#post-script-${this.props.tab.id}`}
+                                  role='tab'
+                                  aria-controls={`post-script-${this.props.tab.id}`}
+                                  aria-selected='false'
+                                >
+                                  Post-Script
+                                </a>
+                              </li>
                               <li className='nav-item cookie-tab'>
                                 <a>
                                   {getCurrentUser() &&
@@ -2329,6 +2379,34 @@ class DisplayEndpoint extends Component {
                               )}
                             />
                           </div>
+                          <div
+                            className='tab-pane fade'
+                            id={`pre-script-${this.props.tab.id}`}
+                            role='tabpanel'
+                            aria-labelledby='pills-pre-script-tab'
+                          >
+                            <div>
+                              <Script
+                                type='Pre-Script'
+                                handleScriptChange={this.handleScriptChange.bind(this)}
+                                scriptText={this.state.preScriptText}
+                              />
+                            </div>
+                          </div>
+                          <div
+                            className='tab-pane fade'
+                            id={`post-script-${this.props.tab.id}`}
+                            role='tabpanel'
+                            aria-labelledby='pills-post-script-tab'
+                          >
+                            <div>
+                              <Script
+                                type='Post-Script'
+                                handleScriptChange={this.handleScriptChange.bind(this)}
+                                scriptText={this.state.postScriptText}
+                              />
+                            </div>
+                          </div>
                         </div>
                         )
                       : (
@@ -2395,6 +2473,7 @@ class DisplayEndpoint extends Component {
                     </div>
                   )
                 }
+                  {isDashboardRoute(this.props) && this.renderScriptError()}
                   {
                     this.displayResponse()
                   }

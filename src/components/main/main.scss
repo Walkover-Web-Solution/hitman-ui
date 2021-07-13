@@ -3119,3 +3119,47 @@ li.nav-item.cookie-tab a {
 .profile-sm-dropdown.orgs-list {
   margin: 10px 0 6px;
 }
+
+.snippets {
+    height: 250px;
+    overflow-x: auto;
+    background: #fff;
+    border-radius: 5px;
+    padding: 0px 20px 10px;
+    h4 {
+      font-size: 14px;
+      text-transform: capitalize;
+      color: #817f7f;
+      font-weight: 500;
+      position: sticky;
+      background: #fff;
+      width: 100%;
+      left: 0;
+      padding: 0.9rem 0rem 0.9rem;
+      top: 0;
+  }
+}
+
+.snippets > div {
+    color: #f1b041;
+    font-size: 14px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid whitesmoke;
+    padding-bottom: 10px;
+    cursor: pointer;
+
+    &:last-child{
+      margin-bottom: 0;
+      border: oldlace;
+      padding-bottom: 0;
+    }
+
+}
+.script-error {
+  background: #e74c3c;
+  text-align: center;
+  margin: 1.5rem auto -2.5rem;
+  padding: 10px;
+  color: #fff;
+  font-size: 14px;
+}
