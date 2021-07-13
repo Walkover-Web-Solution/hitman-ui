@@ -871,7 +871,6 @@ class DisplayEndpoint extends Component {
       /** Add to History */
       isDashboardRoute(this.props) && this.setData()
     } else {
-      toast.error('Something went wrong while running your scripts.')
       this.setState({ preReqScriptError: result.error })
     }
   }
