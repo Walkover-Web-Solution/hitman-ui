@@ -42,9 +42,9 @@ import { moveToNextStep } from '../../services/widgetService'
 import CookiesModal from '../cookies/cookiesModal'
 import moment from 'moment'
 import { updateEnvironment } from '../environments/redux/environmentsActions'
+import { run, initialize } from '../../services/sandboxservice'
 import Script from './script/script'
 const shortid = require('shortid')
-const { run, initialize } = require('../../services/sandboxservice')
 
 const status = require('http-status')
 const URI = require('urijs')

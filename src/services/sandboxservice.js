@@ -128,7 +128,7 @@ class HitmanSandbox {
   }
 }
 
-function run (code, sandbox) {
+export function run (code, sandbox) {
   const hm = sandbox
   const context = { hm, console: console }
   try {
@@ -143,14 +143,14 @@ function run (code, sandbox) {
   }
 }
 
-function initialize ({ request, environment, response }) {
+export function initialize ({ request, environment, response }) {
   if (environment) environment = new Environment(environment.value, environment.callback)
   if (request) request = new Request(request.value)
   if (response) response = new Response(response.value)
   return new HitmanSandbox({ environment, request, response })
 }
 
-module.exports = {
+export default {
   run,
   initialize
 }
