@@ -159,11 +159,11 @@ class Environments extends Component {
         {Object.keys(env.variables).map((v) => (
           <div key={v} className='env-body'>
             <p className='custom-left-box'>{v}</p>
-            <p className='custom-middle-box'>
-              {(env?.variables[v]?.initialValue?.length < 30) ? (env.variables[v].initialValue || 'None') : env.variables[v].initialValue.substr(0, 30) + '...'}
+            <p className='custom-middle-box text-truncate'>
+              {(env?.variables[v]?.initialValue) || 'None'}
             </p>
-            <p className='custom-right-box'>
-              {(env?.variables[v]?.currentValue?.length < 30) ? (env.variables[v].currentValue || 'None') : env.variables[v].currentValue.substr(0, 30) + '...'}
+            <p className='custom-right-box text-truncate'>
+              {(env?.variables[v]?.currentValue) || 'None'}
             </p>
           </div>
         ))}

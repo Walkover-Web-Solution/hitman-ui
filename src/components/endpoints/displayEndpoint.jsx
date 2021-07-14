@@ -649,7 +649,15 @@ class DisplayEndpoint extends Component {
 
       if (responseJson.data.success) {
         /** request creation was successfull */
+        const currentEnvironment = this.props.environment
+        const request = { url: api, body, headers: header, method }
+        const code = this.state.postScriptText
+
         this.processResponse(responseJson)
+
+        const result = this.runPostRequestScript(code, currentEnvironment, request, responseJson)
+
+        if (!result.success) { this.setState({ postReqScriptError: result.error }) }
       } else {
         /** error occured while creating the request */
         this.handleErrorResponse(responseJson.data.error, this.state.startTime)
@@ -889,6 +897,32 @@ class DisplayEndpoint extends Component {
     environment = { value: env, callback: this.envCallback }
     request = { value: request }
     return run(code, initialize({ environment, request }))
+  }
+
+  runPostRequestScript (code, environment, request, responseJson) {
+    if (code.trim().length === 0 || !isDashboardRoute(this.props, true)) {
+      return { success: true, data: { environment: environment.variables, request } }
+    }
+
+    const env = {}
+    if (environment?.variables) {
+      for (const [key, value] of Object.entries(environment.variables)) {
+        env[key] = value.currentValue
+      }
+    }
+
+    const {
+      status,
+      statusText,
+      response: data,
+      headers
+    } = responseJson.data
+    let response = { status, statusText, data, headers }
+
+    environment = { value: env, callback: this.envCallback }
+    request = { value: request }
+    response = { value: response }
+    return run(code, initialize({ environment, request, response }))
   }
 
   envCallback = (variablesObj) => {
