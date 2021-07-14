@@ -655,7 +655,8 @@ class DisplayEndpoint extends Component {
 
         this.processResponse(responseJson)
 
-        const result = this.runPostRequestScript(code, currentEnvironment, request, responseJson)
+        /** Run Post-Request Script */
+        const result = this.runScript(code, currentEnvironment, request, responseJson)
 
         if (!result.success) { this.setState({ postReqScriptError: result.error }) }
       } else {
@@ -859,7 +860,7 @@ class DisplayEndpoint extends Component {
     const code = this.state.preScriptText
 
     /** Run Pre Request Script */
-    const result = this.runPreRequestScript(code, currentEnvironment, requestOptions)
+    const result = this.runScript(code, currentEnvironment, requestOptions)
 
     if (result.success) {
       let { environment, request: { url, headers } } = result.data
@@ -883,9 +884,21 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  runPreRequestScript (code, environment, request) {
+  runScript (code, environment, request, responseJson) {
+    let response
+    if (responseJson) {
+      const {
+        status,
+        statusText,
+        response: data,
+        headers
+      } = responseJson.data
+      response = { status, statusText, data, headers }
+      response = { value: response }
+    }
+
     if (code.trim().length === 0 || !isDashboardRoute(this.props, true)) {
-      return { success: true, data: { environment: environment.variables, request } }
+      return { success: true, data: { environment: environment.variables, request, response } }
     }
 
     const env = {}
@@ -894,34 +907,10 @@ class DisplayEndpoint extends Component {
         env[key] = value.currentValue
       }
     }
-    environment = { value: env, callback: this.envCallback }
-    request = { value: request }
-    return run(code, initialize({ environment, request }))
-  }
-
-  runPostRequestScript (code, environment, request, responseJson) {
-    if (code.trim().length === 0 || !isDashboardRoute(this.props, true)) {
-      return { success: true, data: { environment: environment.variables, request } }
-    }
-
-    const env = {}
-    if (environment?.variables) {
-      for (const [key, value] of Object.entries(environment.variables)) {
-        env[key] = value.currentValue
-      }
-    }
-
-    const {
-      status,
-      statusText,
-      response: data,
-      headers
-    } = responseJson.data
-    let response = { status, statusText, data, headers }
 
     environment = { value: env, callback: this.envCallback }
     request = { value: request }
-    response = { value: response }
+
     return run(code, initialize({ environment, request, response }))
   }
 
