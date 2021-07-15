@@ -649,7 +649,16 @@ class DisplayEndpoint extends Component {
 
       if (responseJson.data.success) {
         /** request creation was successfull */
+        const currentEnvironment = this.props.environment
+        const request = { url: api, body, headers: header, method }
+        const code = this.state.postScriptText
+
         this.processResponse(responseJson)
+
+        /** Run Post-Request Script */
+        const result = this.runScript(code, currentEnvironment, request, responseJson)
+
+        if (!result.success) { this.setState({ postReqScriptError: result.error }) }
       } else {
         /** error occured while creating the request */
         this.handleErrorResponse(responseJson.data.error, this.state.startTime)
@@ -851,7 +860,7 @@ class DisplayEndpoint extends Component {
     const code = this.state.preScriptText
 
     /** Run Pre Request Script */
-    const result = this.runPreRequestScript(code, currentEnvironment, requestOptions)
+    const result = this.runScript(code, currentEnvironment, requestOptions)
 
     if (result.success) {
       let { environment, request: { url, headers } } = result.data
@@ -875,9 +884,21 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  runPreRequestScript (code, environment, request) {
+  runScript (code, environment, request, responseJson) {
+    let response
+    if (responseJson) {
+      const {
+        status,
+        statusText,
+        response: data,
+        headers
+      } = responseJson.data
+      response = { status, statusText, data, headers }
+      response = { value: response }
+    }
+
     if (code.trim().length === 0 || !isDashboardRoute(this.props, true)) {
-      return { success: true, data: { environment: environment.variables, request } }
+      return { success: true, data: { environment: environment.variables, request, response } }
     }
 
     const env = {}
@@ -886,9 +907,11 @@ class DisplayEndpoint extends Component {
         env[key] = value.currentValue
       }
     }
+
     environment = { value: env, callback: this.envCallback }
     request = { value: request }
-    return run(code, initialize({ environment, request }))
+
+    return run(code, initialize({ environment, request, response }))
   }
 
   envCallback = (variablesObj) => {
