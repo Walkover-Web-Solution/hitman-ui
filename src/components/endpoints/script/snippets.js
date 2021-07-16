@@ -32,8 +32,12 @@ const Snippets = {
     value: 'hm.request.method;'
   },
   reqBody: {
-    key: 'Get list of headers for the current request',
+    key: 'Get Request Body',
     value: 'hm.request.body;'
+  },
+  reqHeaders: {
+    key: 'Get list of headers for the current request',
+    value: 'hm.request.headers.getHeaders();'
   },
   reqHeaderRemove: {
     key: 'Delete the request header with the specified name',
@@ -42,6 +46,18 @@ const Snippets = {
   hasHeader: {
     key: 'Check whether the header has a variable with the specified name',
     value: 'hm.request.headers.has("variable_name");'
+  },
+  resBody: {
+    key: 'Get Response Body',
+    value: 'hm.response.body;'
+  },
+  resHeaders: {
+    key: 'Get Response Headers',
+    value: 'hm.response.headers.getHeaders();'
+  },
+  resStatus: {
+    key: 'Get Response Status',
+    value: 'hm.response.status;'
   }
 }
 
