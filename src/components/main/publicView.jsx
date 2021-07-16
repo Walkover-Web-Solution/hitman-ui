@@ -100,8 +100,28 @@ class PublicView extends Component {
           </div>
         </div>
 
-        <div className='collection-wrap'>
-          {
+        <div className='collection-wrap d-flex'>
+          <div className='collection-sidebbar'>
+            <h3>App Categories</h3>
+            <ul>
+              <li className='active'>All Apps</li>
+              <li>App Families</li>
+              <li>Business Intelligence</li>
+              <li>Communication</li>
+              <li>Content & Files</li>
+              <li>Human Resources</li>
+              <li>Internet of Things</li>
+              <li>IT Operations</li>
+              <li>Lifestyle & Entertainment</li>
+              <li>Marketing</li>
+              <li>Productivity</li>
+              <li>Sales & CRM</li>
+              <li>Support</li>
+              <li>Website & App Building</li>
+            </ul>
+          </div>
+          <div className='collection-box-wrap'>
+            {
             Object.keys(filteredPublicCollections).map((collectionId) =>
               (
                 <div
@@ -120,6 +140,7 @@ class PublicView extends Component {
               )
             )
           }
+          </div>
         </div>
       </>
     )
