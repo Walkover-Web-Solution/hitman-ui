@@ -1895,6 +1895,10 @@ class DisplayEndpoint extends Component {
     } else {
       postScriptText = text
     }
+
+    if (!this.props?.tab?.isModified && isDashboardRoute(this.props)) {
+      tabService.markTabAsModified(this.props.tab.id)
+    }
     this.setState({ preScriptText, postScriptText })
   }
 
