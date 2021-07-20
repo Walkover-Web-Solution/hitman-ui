@@ -80,8 +80,9 @@
 .search-box {
   margin: 0px 15px;
   position: relative;
-  width: auto;
-  margin-bottom: 20px;
+  // width: auto;
+  flex-grow: 1;
+  // margin-bottom: 20px;
   background: #f8f5f0;
   border-radius: 4px;
 }
@@ -341,4 +342,12 @@ input[type="text"]:focus {
 }
 .linkWrapper button {
   padding-left: 30px;
+}
+
+.sidebar-add-btn {
+  border: 1px solid #E98A36 !important;
+  box-sizing: border-box;
+  border-radius: 4px;
+  margin-right: 15px;
+  background-color: transparent;
 }

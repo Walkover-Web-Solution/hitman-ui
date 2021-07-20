@@ -16,6 +16,7 @@ import { ReactComponent as EmptyHistory } from '../../assets/icons/emptyHistroy.
 import { ReactComponent as NoInvocationsIcon } from '../../assets/icons/emptyrandom.svg'
 import { ReactComponent as NoCollectionsIcon } from '../../assets/icons/noCollectionsIcon.svg'
 import { ReactComponent as SearchIcon } from '../../assets/icons/searchIcon.svg'
+import { ReactComponent as PlusIcon } from '../../assets/icons/plus_orange.svg'
 import collectionVersionsService from '../collectionVersions/collectionVersionsService'
 import './main.scss'
 import './sidebar.scss'
@@ -23,6 +24,7 @@ import AddEntitySelectionModal from './addEntityModal'
 import GroupForm from '../groups/groupForm'
 import PageForm from '../pages/pageForm'
 import EndpointForm from '../endpoints/endpointForm'
+import CollectionModal from '../collections/collectionsModal'
 
 const mapStateToProps = (state) => {
   return {
@@ -389,7 +391,6 @@ class SideBar extends Component {
         </div>
         <div className='content'>
           <h5>  Your collection is Empty.</h5>
-          {/* <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. 1</p> */}
         </div>
         <Button className='btn-lg mt-2' variant='primary' onClick={() => this.setState({ showLoginSignupModal: true })}>+ Add here</Button>{' '}
       </div>
@@ -433,21 +434,37 @@ class SideBar extends Component {
     this.setState({ totalEndpointsCount: count })
   }
 
+  showAddCollectionModal () {
+    return (
+      this.state.showAddCollectionModal &&
+        <CollectionModal
+          title='Add Collection'
+          onHide={() => { this.setState({ showAddCollectionModal: false }) }}
+          show={this.state.showAddCollectionModal}
+          open_selected_collection={this.openSelectedCollection.bind(this)}
+        />
+    )
+  }
+
+  openSelectedCollection (collectionId) {
+    this.empty_filter()
+    this.openCollection(collectionId)
+  }
+
   renderSidebarContent () {
     const selectedCollectionName = this.props.collections[this.collectionId]?.name || ' '
-    const isMarketplaceImported = this.props.collections[this.collectionId]?.importedFromMarketPlace
     return (
       <div className='sidebar-content'>
+        {this.showAddCollectionModal()}
         {this.collectionId
           ? (
               isDashboardRoute(this.props, true) && (
                 <div className='mx-3'>
                   <div className='d-flex collection-name my-2'>
-                    <div className='d-flex cursor-pointer align-items-center' onClick={() => { this.openCollection(null) }}>
+                    <div className='d-flex cursor-pointer align-items-center mt-3' onClick={() => { this.openCollection(null) }}>
                       <div className='ml-1 mr-2'><ArrowIcon /></div>
                       <div className='hm-sidebar-outer-block heading-collection'>{selectedCollectionName}</div>
                     </div>
-                    {(!isMarketplaceImported && this.state.totalEndpointsCount !== 0) && <button className='btn btn-primary' onClick={() => this.openAddEntitySelectionModal()}> ADD </button>}
                   </div>
                   <div>
                     <PublishColelctionInfo
@@ -494,23 +511,42 @@ class SideBar extends Component {
     return (
       <>
         {this.renderSidebarHeader()}
-        <div className='search-box'>
-          <label htmlFor='search'>
-            <SearchIcon onClick={() => { !this.state.primarySidebar && this.setState({ primarySidebar: true }) }} />
-          </label>
-          <input
-            value={this.state.data.filter}
-            type='text'
-            name='filter'
-            id='search'
-            placeholder='Search'
-            onChange={(e) => this.handleOnChange(e)}
-          />
+        <div className='d-flex my-3'>
+          <div className='search-box'>
+            <label htmlFor='search'>
+              <SearchIcon onClick={() => { !this.state.primarySidebar && this.setState({ primarySidebar: true }) }} />
+            </label>
+            <input
+              value={this.state.data.filter}
+              type='text'
+              name='filter'
+              id='search'
+              placeholder='Search'
+              onChange={(e) => this.handleOnChange(e)}
+            />
+          </div>
+          {this.renderGlobalAddButton()}
         </div>
         {this.state.data.filter !== '' && this.renderSearchList()}
         {this.state.data.filter === '' && this.renderSidebarContent()}
       </>
     )
+  }
+
+  renderGlobalAddButton () {
+    const isMarketplaceImported = this.props.collections[this.collectionId]?.importedFromMarketPlace
+    const title = this.collectionId ? isMarketplaceImported ? 'Cannot add Entities to a Marketplace Collection.' : 'Add Entities to Collection' : 'Add/Import Collection'
+    return (
+      getCurrentUser() && <button className='btn sidebar-add-btn' title={title} disabled={isMarketplaceImported} onClick={this.handleAdd.bind(this)}><PlusIcon /></button>
+    )
+  }
+
+  handleAdd () {
+    if (this.collectionId) {
+      this.setState({ openAddEntitySelectionModal: true })
+    } else {
+      this.setState({ showAddCollectionModal: true })
+    }
   }
 
   getSidebarInteractionClass () {
