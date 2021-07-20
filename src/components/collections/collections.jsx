@@ -690,10 +690,7 @@ class CollectionsComponent extends Component {
               {this.addGTM(this.props.collections[collectionId].gtmId)}
               <div
                 className='hm-sidebar-header'
-                onClick={() =>
-                  this.handlePublicCollectionDescription(
-                    this.props.collections[collectionId]
-                  )}
+                onClick={() => window.open(this.props.collections[collectionId].website)}
               >
                 {!this.state.publicLogoError &&
                   <div className='hm-sidebar-logo'>
@@ -706,8 +703,6 @@ class CollectionsComponent extends Component {
                           : this.props.collections[collectionId]?.docProperties
                             ?.defaultLogoUrl || EMPTY_STRING
                       }
-                      onClick={() =>
-                        window.open(this.props.collections[collectionId].website)}
                       onError={() => {
                         this.setState({ publicLogoError: true })
                       }}

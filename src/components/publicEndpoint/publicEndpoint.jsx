@@ -281,10 +281,6 @@ class PublicEndpoint extends Component {
                           publicCollectionTheme={this.state.collectionTheme}
                                            />}
                       />
-                      <Route
-                        path={`/p/:collectionId/description/${this.state.collectionName}`}
-                        render={(props) => <DisplayCollection {...props} {...this.props} publicCollectionTheme={this.state.collectionTheme} />}
-                      />
                     </Switch>
                   </div>
                   )
