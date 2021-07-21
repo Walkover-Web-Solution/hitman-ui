@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Accordion, Card, Button } from 'react-bootstrap'
+import { Accordion, Card } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import 'react-toastify/dist/ReactToastify.css'
@@ -8,7 +8,6 @@ import CollectionVersions from '../collectionVersions/collectionVersions'
 import collectionVersionsService from '../collectionVersions/collectionVersionsService'
 import ImportVersionForm from '../collectionVersions/importVersionForm'
 import { isDashboardRoute, ADD_VERSION_MODAL_NAME, openExternalLink } from '../common/utility'
-import CollectionModal from './collectionsModal'
 import collectionsService from './collectionsService'
 import {
   addCollection,
@@ -121,10 +120,6 @@ class CollectionsComponent extends Component {
   async handleGoToDocs (collection) {
     const publicDocsUrl = `${process.env.REACT_APP_UI_URL}/p/${collection.id}`
     openExternalLink(publicDocsUrl)
-  }
-
-  openAddCollectionForm () {
-    this.setState({ showAddCollectionModal: true })
   }
 
   openEditCollectionForm (collectionId) {
@@ -558,22 +553,8 @@ class CollectionsComponent extends Component {
         </div>
         <div className='content'>
           <h5>  Your collection is Empty.</h5>
-          {/* <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p> */}
         </div>
-        <Button className='btn-lg mt-2' variant='primary' onClick={() => this.openAddCollectionForm()}>+ Add here</Button>{' '}
       </div>
-    )
-  }
-
-  showAddCollectionModal () {
-    return (
-      this.state.showAddCollectionModal &&
-        <CollectionModal
-          title='Add Collection'
-          onHide={() => { this.setState({ showAddCollectionModal: false }) }}
-          show={this.state.showAddCollectionModal}
-          open_selected_collection={this.openSelectedCollection.bind(this)}
-        />
     )
   }
 
@@ -683,7 +664,6 @@ class CollectionsComponent extends Component {
                   this.state.collectionFormName,
                   this.state.selectedCollection
                 )}
-              {this.showAddCollectionModal()}
               {this.showImportVersionForm()}
               {this.openTagManagerModal()}
               {this.showDeleteCollectionModal()}
@@ -692,21 +672,6 @@ class CollectionsComponent extends Component {
           {finalCollections.length > 0
             ? (
               <div className='App-Side'>
-                <div className='add-collection-btn-wrap'>
-                  <button
-                    className='add-collection-btn'
-                    id='add_collection_btn'
-                    onClick={() => this.openAddCollectionForm()}
-                  >
-
-                    <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
-                      <path d='M9 3.75V14.25' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
-                      <path d='M3.75 9H14.25' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
-                    </svg>
-
-                    Add Collection
-                  </button>
-                </div>
                 {finalCollections.map((collectionId, index) =>
                   this.renderBody(collectionId, 'allCollections')
                 )}
@@ -725,10 +690,7 @@ class CollectionsComponent extends Component {
               {this.addGTM(this.props.collections[collectionId].gtmId)}
               <div
                 className='hm-sidebar-header'
-                onClick={() =>
-                  this.handlePublicCollectionDescription(
-                    this.props.collections[collectionId]
-                  )}
+                onClick={() => window.open(this.props.collections[collectionId].website)}
               >
                 {!this.state.publicLogoError &&
                   <div className='hm-sidebar-logo'>
@@ -741,8 +703,6 @@ class CollectionsComponent extends Component {
                           : this.props.collections[collectionId]?.docProperties
                             ?.defaultLogoUrl || EMPTY_STRING
                       }
-                      onClick={() =>
-                        window.open(this.props.collections[collectionId].website)}
                       onError={() => {
                         this.setState({ publicLogoError: true })
                       }}
