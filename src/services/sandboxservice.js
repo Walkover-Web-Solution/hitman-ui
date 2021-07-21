@@ -1,5 +1,6 @@
 const vm = require('vm')
 const _ = require('lodash')
+const chai = require('chai')
 
 class Environment {
   constructor (env, setCallback) {
@@ -126,18 +127,31 @@ class HitmanSandbox {
     this.request = request
     this.response = response
   }
+
+  testcases = [];
+
+  test (testName, callback) {
+    testName = String(testName)
+    try {
+      if (callback) callback()
+      this.testcases.push({ testName, success: true, status: 'Pass' })
+    } catch (err) {
+      this.testcases.push({ testName, success: false, msg: err.message, status: 'Fail' })
+    }
+  }
 }
 
 export function run (code, sandbox) {
   const hm = sandbox
-  const context = { hm, console: console }
+  const context = { hm, console: console, expect: chai.expect }
   try {
     const script = new vm.Script(code)
     script.runInNewContext(context)
     sandbox.environment.updateCallback()
     const environment = context.hm.environment.getEnvironment()
     const request = context.hm.request.getRequest()
-    return { success: true, data: { environment, request } }
+    const tests = context.hm.testcases
+    return { success: true, data: { environment, request, tests } }
   } catch (error) {
     return { success: false, error: error.message }
   }
