@@ -14,6 +14,7 @@
     "dotenv": "^8.2.0",
     "electron-is-dev": "^2.0.0",
     "electron-log": "^4.3.5",
+    "form-data": "^4.0.0",
     "highlight.js": "^9.18.1",
     "http-status": "^1.4.2",
     "httpsnippet": "PRIYUSH98/httpsnippet#master",
@@ -21,10 +22,12 @@
     "joi-browser": "^13.4.0",
     "jquery": "^3.4.1",
     "jwt-decode": "^2.2.0",
+    "lodash": "^4.17.21",
     "moment": "^2.29.1",
     "node-sass": "^4.13.1",
     "popper.js": "^1.16.1",
     "query-string": "^6.9.0",
+    "querystring": "^0.2.1",
     "react": "^16.13.0",
     "react-ace": "^8.1.0",
     "react-bootstrap": "^1.0.0-beta.16",
@@ -64,6 +67,7 @@
     "universal-cookie": "^4.0.4",
     "urijs": "^1.19.2",
     "validator": "^13.0.0",
+    "vm": "^0.1.0",
     "wait-on": "^5.3.0"
   },
   "engines": {

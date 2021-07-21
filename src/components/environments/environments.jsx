@@ -158,12 +158,12 @@ class Environments extends Component {
         </div>
         {Object.keys(env.variables).map((v) => (
           <div key={v} className='env-body'>
-            <p className='custom-left-box'>{v}</p>
+            <p className='custom-left-box'> <span className='text-truncate max-90'> {v} </span> </p>
             <p className='custom-middle-box'>
-              {(env?.variables[v]?.initialValue?.length < 30) ? (env.variables[v].initialValue || 'None') : env.variables[v].initialValue.substr(0, 30) + '...'}
+              <span className='text-truncate max-90'>{(env?.variables[v]?.initialValue) || 'None'}</span>
             </p>
             <p className='custom-right-box'>
-              {(env?.variables[v]?.currentValue?.length < 30) ? (env.variables[v].currentValue || 'None') : env.variables[v].currentValue.substr(0, 30) + '...'}
+              <span className='text-truncate max-90'> {(env?.variables[v]?.currentValue) || 'None'} </span>
             </p>
           </div>
         ))}

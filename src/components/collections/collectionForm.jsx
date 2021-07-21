@@ -143,7 +143,6 @@ class CollectionForm extends Form {
             {this.renderInput('keyword2', 'Keyword 3', 'Keyword 3')}
           </div>
         </div> */}
-        {this.renderQuillEditor('descriptoion', 'Description')}
         <div className='text-left mt-4 mb-2'>
           {this.renderButton('Submit')}
 
