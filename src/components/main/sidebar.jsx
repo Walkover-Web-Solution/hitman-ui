@@ -493,7 +493,7 @@ class SideBar extends Component {
   renderDashboardSidebar () {
     return (
       <>
-        {this.renderSidebarHeader()}
+        {/* {this.renderSidebarHeader()} */}
         <div className='search-box'>
           <label htmlFor='search'>
             <SearchIcon onClick={() => { !this.state.primarySidebar && this.setState({ primarySidebar: true }) }} />
