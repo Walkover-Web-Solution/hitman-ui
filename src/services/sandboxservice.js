@@ -1,5 +1,6 @@
 const vm = require('vm')
 const _ = require('lodash')
+const moment = require('moment')
 const chai = require('chai')
 
 class Environment {
@@ -143,7 +144,7 @@ class HitmanSandbox {
 
 export function run (code, sandbox) {
   const hm = sandbox
-  const context = { hm, console: console, expect: chai.expect }
+  const context = { hm, console: console, expect: chai.expect, _, moment }
   try {
     const script = new vm.Script(code)
     script.runInNewContext(context)
