@@ -1,0 +1,36 @@
+.test-result-item {
+  display:flex;
+
+  .name {
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .message {
+    font-size: 14px;
+    font-weight: 400;
+  }
+}
+
+.test-badge {
+  width: 50px;
+  min-width: 50px;
+  height: 24px;
+  line-height: 24px;
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+  text-align: center;
+  margin: 0;
+  border-radius: 3px;
+
+  &.Pass {
+    color: #00C58A;
+  }
+
+  &.Fail {
+    color:#EB5757;
+  }
+}
+
+

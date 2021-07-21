@@ -8,6 +8,7 @@ import { isDashboardRoute, isSavedEndpoint } from '../common/utility'
 import { getCurrentUser } from '../auth/authService'
 import SampleResponseForm from './sampleResponseForm'
 import { Overlay, Tooltip } from 'react-bootstrap'
+import TestResults from './testResults'
 
 const JSONPrettyMon = require('react-json-pretty/dist/monikai')
 
@@ -144,6 +145,19 @@ class DisplayResponse extends Component {
                 Headers
               </a>
             </li>
+            {isDashboardRoute(this.props) &&
+              <li className='nav-item' onClick={() => { this.setState({ selectedResponseTab: 'testResults' }) }}>
+                <a
+                  className={this.state.selectedResponseTab === 'testResults' ? 'nav-link active' : 'nav-link'}
+                  id='pills-testResults-tab'
+                  data-toggle='pill'
+                  aria-selected='false'
+                  href='#pills-testResults-tab'
+                  role='tab2'
+                >
+                  Test Results
+                </a>
+              </li>}
           </ul>
         </div>
       </>
@@ -334,6 +348,7 @@ class DisplayResponse extends Component {
                       )}
                     </>}
                   {this.state.selectedResponseTab === 'header' && (this.props.response.headers && this.displayHeader())}
+                  {this.state.selectedResponseTab === 'testResults' && isDashboardRoute(this.props) && this.props.response.status && <TestResults tests={this.props.tests} />}
                 </div>
               </div>
               )

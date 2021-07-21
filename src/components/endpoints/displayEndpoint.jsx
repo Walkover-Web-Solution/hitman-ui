@@ -657,8 +657,7 @@ class DisplayEndpoint extends Component {
 
         /** Run Post-Request Script */
         const result = this.runScript(code, currentEnvironment, request, responseJson)
-
-        if (!result.success) { this.setState({ postReqScriptError: result.error }) }
+        if (!result.success) { this.setState({ postReqScriptError: result.error }) } else { this.setState({ tests: result.data.tests }) }
       } else {
         /** error occured while creating the request */
         this.handleErrorResponse(responseJson.data.error, this.state.startTime)
@@ -1791,6 +1790,7 @@ class DisplayEndpoint extends Component {
                   {...this.props}
                   timeElapsed={this.state.timeElapsed}
                   response={this.state.response}
+                  tests={this.state.tests}
                   flagResponse={
                     this.state.flagResponse
                   }
