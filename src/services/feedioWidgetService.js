@@ -15,6 +15,7 @@ export function loadfeedioWidget () {
     script.type = 'text/javascript'
     script.setAttribute('board-token', BOARD_TOKEN)
     script.setAttribute('email', user.email)
+    script.setAttribute('custom-button', true)
     script.setAttribute('debug', true)
     document.body.appendChild(script)
     script.onload = () => {
