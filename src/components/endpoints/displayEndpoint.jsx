@@ -889,10 +889,10 @@ class DisplayEndpoint extends Component {
       const {
         status,
         statusText,
-        response: data,
+        response: body,
         headers
       } = responseJson.data
-      response = { status, statusText, data, headers }
+      response = { status, statusText, body, headers }
       response = { value: response }
     }
 
