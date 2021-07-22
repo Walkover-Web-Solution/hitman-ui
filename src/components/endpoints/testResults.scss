@@ -3,6 +3,7 @@
 
   .name {
     font-size: 14px;
+    line-height: 24px;
     font-weight: 500;
   }
 
@@ -25,11 +26,11 @@
   border-radius: 3px;
 
   &.Pass {
-    color: #00C58A;
+    color: #82df44;
   }
 
   &.Fail {
-    color:#EB5757;
+    color:#df5444;
   }
 }
 

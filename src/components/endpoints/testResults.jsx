@@ -5,7 +5,7 @@ class TestResults extends Component {
   state = { }
   render () {
     return (
-      this.props.tests && this.props.tests.length > 0
+      this.props.tests.length > 0
         ? (
           <div className='px-2'>
             {this.props.tests.map(test => (
@@ -20,7 +20,7 @@ class TestResults extends Component {
   renderTestResult (testcase) {
     let details = testcase.testName
     if (!testcase.success) {
-      details += ` | ${testcase.msg}`
+      details += ` (${testcase.msg})`
     }
     return (
       <div className='test-result-item'>
@@ -32,7 +32,7 @@ class TestResults extends Component {
 
   renderEmpty () {
     return (
-      <div className='p-2'>
+      <div className='px-3 py-5 text-center'>
         <div>There are no tests for this request.</div>
         <small>Write a test script to automate debugging</small>
       </div>

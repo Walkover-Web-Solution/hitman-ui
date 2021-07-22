@@ -815,7 +815,7 @@ class DisplayEndpoint extends Component {
   handleSend = async () => {
     const startTime = new Date().getTime()
     const response = {}
-    this.setState({ startTime, response, preReqScriptError: '', postReqScriptError: '' })
+    this.setState({ startTime, response, preReqScriptError: '', postReqScriptError: '', tests: null })
 
     if (!isDashboardRoute(this.props, true) && this.checkEmptyParams()) {
       this.setState({ loader: false })
@@ -897,7 +897,7 @@ class DisplayEndpoint extends Component {
     }
 
     if (code.trim().length === 0 || !isDashboardRoute(this.props, true)) {
-      return { success: true, data: { environment: environment.variables, request, response } }
+      return { success: true, data: { environment: environment.variables, request, response, tests: [] } }
     }
 
     const env = {}
@@ -1847,6 +1847,7 @@ class DisplayEndpoint extends Component {
         <div className='hm-panel endpoint-public-response-container col-12 mt-4 endPointRes'>
           <DisplayResponse
             {...this.props}
+            tests={this.state.tests}
             timeElapsed={this.state.timeElapsed}
             response={this.state.response}
             flagResponse={this.state.flagResponse}

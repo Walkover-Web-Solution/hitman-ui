@@ -348,7 +348,7 @@ class DisplayResponse extends Component {
                       )}
                     </>}
                   {this.state.selectedResponseTab === 'header' && (this.props.response.headers && this.displayHeader())}
-                  {this.state.selectedResponseTab === 'testResults' && isDashboardRoute(this.props) && this.props.response.status && <TestResults tests={this.props.tests} />}
+                  {this.state.selectedResponseTab === 'testResults' && isDashboardRoute(this.props) && this.props.tests && <TestResults tests={this.props.tests} />}
                 </div>
               </div>
               )
