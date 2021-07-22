@@ -7,7 +7,7 @@ import './endpoints.scss'
 import { isDashboardRoute, isSavedEndpoint } from '../common/utility'
 import { getCurrentUser } from '../auth/authService'
 import SampleResponseForm from './sampleResponseForm'
-import { Overlay, Tooltip } from 'react-bootstrap'
+import { Overlay, Spinner, Tooltip } from 'react-bootstrap'
 import TestResults from './testResults'
 
 const JSONPrettyMon = require('react-json-pretty/dist/monikai')
@@ -105,6 +105,12 @@ class DisplayResponse extends Component {
     }
   }
 
+  componentDidUpdate (prevProps, prevState) {
+    if (prevProps.response !== this.props.response) {
+      this.setState({ selectedResponseTab: 'body' })
+    }
+  }
+
   showCopyMessage () {
     this.setState({ showCopyMessage: true })
     setTimeout(function () {
@@ -196,172 +202,191 @@ class DisplayResponse extends Component {
     }
   }
 
+  renderLoader () {
+    return (
+      <div className='text-center my-5'><Spinner variant='dark' animation='border' /><div className='my-2'>Sending Request</div></div>
+    )
+  }
+
+  renderRequestError () {
+    return (
+      <div className='text-center my-5'>
+        <div>Could not send request</div>
+        <small className='text-danger'>{this.props.response.data}</small>
+      </div>
+    )
+  }
+
   render () {
     const { theme } = this.state
     return (
       <div className='endpoint-response-container overflow-auto'>
         {
-          this.props.flagResponse
-            ? (
-              <div>
-                <div className='response-status'>
-                  <div className='respHeading'>
-                    {!isSavedEndpoint(this.props) ? <h2 className='orange-heading'> RESPONSE</h2> : null}
-                  </div>
-                  <div className='statusWrapper'>
-                    {this.props.response.status &&
-                      <div id='status'>
-                        <div className='response-status-item-name'>Status :</div>
-                        <div className='response-status-value' style={{ color: theme }}>
-                          {this.props.response.status +
-                          ' ' +
-                          this.props.response.statusText}
+          this.props.loader
+            ? this.renderLoader()
+            : this.props.flagResponse
+              ? this.props.response.status
+                  ? (
+                    <div>
+                      <div className='response-status'>
+                        <div className='respHeading'>
+                          {!isSavedEndpoint(this.props) ? <h2 className='orange-heading'> RESPONSE</h2> : null}
                         </div>
-                      </div>}
-                    <div id='time'>
-                      <div className='response-status-item-name'>Time:</div>
-                      <div className='response-status-value' style={{ color: theme }}>
-                        {this.props.timeElapsed} ms
+                        <div className='statusWrapper'>
+                          {this.props.response.status &&
+                            <div id='status'>
+                              <div className='response-status-item-name'>Status :</div>
+                              <div className='response-status-value' style={{ color: theme }}>
+                                {this.props.response.status +
+                            ' ' +
+                            this.props.response.statusText}
+                              </div>
+                            </div>}
+                          <div id='time'>
+                            <div className='response-status-item-name'>Time:</div>
+                            <div className='response-status-value' style={{ color: theme }}>
+                              {this.props.timeElapsed} ms
+                            </div>
+                          </div>
+                          <Overlay target={this.copyDivRef.current} show={this.state.showCopyMessage} placement='top'>
+                            <Tooltip id='copy-message'>
+                              Copied
+                            </Tooltip>
+                          </Overlay>
+                          <div className='resPubclipboardWrapper' ref={this.copyDivRef} onClick={() => this.showCopyMessage()}>
+                            <CopyToClipboard
+                              text={JSON.stringify(this.props.response.data)}
+                              onCopy={() => this.setState({ copied: true })}
+                            >
+                              <button>
+                                <svg width='13' height='13' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M15 6.75H8.25C7.42157 6.75 6.75 7.42157 6.75 8.25V15C6.75 15.8284 7.42157 16.5 8.25 16.5H15C15.8284 16.5 16.5 15.8284 16.5 15V8.25C16.5 7.42157 15.8284 6.75 15 6.75Z' stroke='#828282' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' /><path d='M3.75 11.25H3C2.60218 11.25 2.22064 11.092 1.93934 10.8107C1.65804 10.5294 1.5 10.1478 1.5 9.75V3C1.5 2.60218 1.65804 2.22064 1.93934 1.93934C2.22064 1.65804 2.60218 1.5 3 1.5H9.75C10.1478 1.5 10.5294 1.65804 10.8107 1.93934C11.092 2.22064 11.25 2.60218 11.25 3V3.75' stroke='#828282' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' /></svg>
+                              </button>
+                            </CopyToClipboard>
+                          </div>
+                        </div>
+                      </div>
+                      {this.showAddForm()}
+                      <div className='response-viewer'>
+                        <div className='response-tabs'>
+                          {/* {isDashboardRoute(this.props) && (
+                        <ul className='nav nav-tabs' id='myTab' role='tablist'>
+                          <li className='nav-item'>
+                            <a
+                              className='nav-link active'
+                              id='home-tab'
+                              data-toggle='tab'
+                              href='#home'
+                              role='tab'
+                              aria-controls='home'
+                              aria-selected='true'
+                            >
+                              Pretty
+                            </a>
+                          </li>
+                          <li className='nav-item'>
+                            <a
+                              className='nav-link'
+                              id='profile-tab'
+                              data-toggle='tab'
+                              href='#profile'
+                              role='tab'
+                              aria-controls='profile'
+                              aria-selected='false'
+                            >
+                              Raw
+                            </a>
+                          </li>
+                          <li className='nav-item'>
+                            <a
+                              className='nav-link'
+                              id='contact-tab'
+                              data-toggle='tab'
+                              href='#contact'
+                              role='tab'
+                              aria-controls='contact'
+                              aria-selected='false'
+                            >
+                              Preview
+                            </a>
+                          </li>
+                        </ul>)} */}
+                        </div>
+                        {this.props.response.status && this.displayBodyAndHeaderResponse()}
+                        {this.state.selectedResponseTab === 'body' &&
+                          <>
+                            {
+                              getCurrentUser() && isSavedEndpoint(this.props) && isDashboardRoute(this.props)
+                                ? (
+                                  <div
+                                    // style={{ float: "right" }}
+                                    className='add-to-sample-response'
+                                  >
+                                    <div
+                                      className='adddescLink'
+                                      onClick={() =>
+                                        this.addSampleResponse(this.props.response)}
+                                    >
+                                      <svg width='16' height='16' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M9 3.75V14.25' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' /><path d='M3.75 9H14.25' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' /></svg> Add to Sample Response
+                                    </div>
+                                  </div>
+                                  )
+                                : null
+                            }
+                            {isDashboardRoute(this.props) && (
+                              <div className='tab-content' id='myTabContent'>
+                                <div
+                                  className='tab-pane fade show active'
+                                  id='home'
+                                  role='tabpanel'
+                                  aria-labelledby='home-tab'
+                                >
+                                  <JSONPretty
+                                    theme={JSONPrettyMon}
+                                    data={this.props.response.data}
+                                  />
+                                </div>
+                                <div
+                                  className='tab-pane fade'
+                                  id='profile'
+                                  role='tabpanel'
+                                  aria-labelledby='profile-tab'
+                                >
+                                  {JSON.stringify(this.props.response.data)}
+                                </div>
+                                <div
+                                  className='tab-pane fade'
+                                  id='contact'
+                                  role='tabpanel'
+                                  aria-labelledby='contact-tab'
+                                >
+                                  Feature coming soon... Stay tuned
+                                </div>
+                              </div>)}
+                            {!isDashboardRoute(this.props) && (
+                              <div className='tab-content'>
+                                <JSONPretty
+                                  theme={JSONPrettyMon}
+                                  data={this.props.response.data}
+                                />
+                              </div>
+                            )}
+                          </>}
+                        {this.state.selectedResponseTab === 'header' && (this.props.response.headers && this.displayHeader())}
+                        {this.state.selectedResponseTab === 'testResults' && isDashboardRoute(this.props) && this.props.tests && <TestResults tests={this.props.tests} />}
                       </div>
                     </div>
-                    <Overlay target={this.copyDivRef.current} show={this.state.showCopyMessage} placement='top'>
-                      <Tooltip id='copy-message'>
-                        Copied
-                      </Tooltip>
-                    </Overlay>
-                    <div className='resPubclipboardWrapper' ref={this.copyDivRef} onClick={() => this.showCopyMessage()}>
-                      <CopyToClipboard
-                        text={JSON.stringify(this.props.response.data)}
-                        onCopy={() => this.setState({ copied: true })}
-                      >
-                        <button>
-                          <svg width='13' height='13' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M15 6.75H8.25C7.42157 6.75 6.75 7.42157 6.75 8.25V15C6.75 15.8284 7.42157 16.5 8.25 16.5H15C15.8284 16.5 16.5 15.8284 16.5 15V8.25C16.5 7.42157 15.8284 6.75 15 6.75Z' stroke='#828282' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' /><path d='M3.75 11.25H3C2.60218 11.25 2.22064 11.092 1.93934 10.8107C1.65804 10.5294 1.5 10.1478 1.5 9.75V3C1.5 2.60218 1.65804 2.22064 1.93934 1.93934C2.22064 1.65804 2.60218 1.5 3 1.5H9.75C10.1478 1.5 10.5294 1.65804 10.8107 1.93934C11.092 2.22064 11.25 2.60218 11.25 3V3.75' stroke='#828282' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' /></svg>
-                        </button>
-                      </CopyToClipboard>
-                    </div>
+                    )
+                  : this.renderRequestError()
+              : (
+                <div>
+                  <div className='empty-response'>Response</div>
+                  <div className='empty-response-container'>
+                    {/* <img src={image} height="100px" width="100px" alt="" /> */}
+                    <EmptyResponseImg />
+                    <p>Hit Send to trigger the API call</p>
                   </div>
                 </div>
-                {this.showAddForm()}
-                <div className='response-viewer'>
-                  <div className='response-tabs'>
-                    {/* {isDashboardRoute(this.props) && (
-                      <ul className='nav nav-tabs' id='myTab' role='tablist'>
-                        <li className='nav-item'>
-                          <a
-                            className='nav-link active'
-                            id='home-tab'
-                            data-toggle='tab'
-                            href='#home'
-                            role='tab'
-                            aria-controls='home'
-                            aria-selected='true'
-                          >
-                            Pretty
-                          </a>
-                        </li>
-                        <li className='nav-item'>
-                          <a
-                            className='nav-link'
-                            id='profile-tab'
-                            data-toggle='tab'
-                            href='#profile'
-                            role='tab'
-                            aria-controls='profile'
-                            aria-selected='false'
-                          >
-                            Raw
-                          </a>
-                        </li>
-                        <li className='nav-item'>
-                          <a
-                            className='nav-link'
-                            id='contact-tab'
-                            data-toggle='tab'
-                            href='#contact'
-                            role='tab'
-                            aria-controls='contact'
-                            aria-selected='false'
-                          >
-                            Preview
-                          </a>
-                        </li>
-                      </ul>)} */}
-                  </div>
-                  {this.props.response.status && this.displayBodyAndHeaderResponse()}
-                  {this.state.selectedResponseTab === 'body' &&
-                    <>
-                      {
-                    getCurrentUser() && isSavedEndpoint(this.props) && isDashboardRoute(this.props)
-                      ? (
-                        <div
-                          // style={{ float: "right" }}
-                          className='add-to-sample-response'
-                        >
-                          <div
-                            className='adddescLink'
-                            onClick={() =>
-                              this.addSampleResponse(this.props.response)}
-                          >
-                            <svg width='16' height='16' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M9 3.75V14.25' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' /><path d='M3.75 9H14.25' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' /></svg> Add to Sample Response
-                          </div>
-                        </div>
-                        )
-                      : null
-                  }
-                      {isDashboardRoute(this.props) && (
-                        <div className='tab-content' id='myTabContent'>
-                          <div
-                            className='tab-pane fade show active'
-                            id='home'
-                            role='tabpanel'
-                            aria-labelledby='home-tab'
-                          >
-                            <JSONPretty
-                              theme={JSONPrettyMon}
-                              data={this.props.response.data}
-                            />
-                          </div>
-                          <div
-                            className='tab-pane fade'
-                            id='profile'
-                            role='tabpanel'
-                            aria-labelledby='profile-tab'
-                          >
-                            {JSON.stringify(this.props.response.data)}
-                          </div>
-                          <div
-                            className='tab-pane fade'
-                            id='contact'
-                            role='tabpanel'
-                            aria-labelledby='contact-tab'
-                          >
-                            Feature coming soon... Stay tuned
-                          </div>
-                        </div>)}
-                      {!isDashboardRoute(this.props) && (
-                        <div className='tab-content'>
-                          <JSONPretty
-                            theme={JSONPrettyMon}
-                            data={this.props.response.data}
-                          />
-                        </div>
-                      )}
-                    </>}
-                  {this.state.selectedResponseTab === 'header' && (this.props.response.headers && this.displayHeader())}
-                  {this.state.selectedResponseTab === 'testResults' && isDashboardRoute(this.props) && this.props.tests && <TestResults tests={this.props.tests} />}
-                </div>
-              </div>
-              )
-            : (
-              <div>
-                <div className='empty-response'>Response</div>
-                <div className='empty-response-container'>
-                  {/* <img src={image} height="100px" width="100px" alt="" /> */}
-                  <EmptyResponseImg />
-                  <p>Hit Send to trigger the API call</p>
-                </div>
-              </div>
-              )
+                )
         }
       </div>
     )

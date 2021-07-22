@@ -657,7 +657,7 @@ class DisplayEndpoint extends Component {
 
         /** Run Post-Request Script */
         const result = this.runScript(code, currentEnvironment, request, responseJson)
-        if (!result.success) { this.setState({ postReqScriptError: result.error }) } else { this.setState({ tests: result.data.tests }) }
+        if (!result.success) { this.setState({ postReqScriptError: result.error }) } else { this.setState({ tests: [...this.state.tests, ...result.data.tests] }) }
       } else {
         /** error occured while creating the request */
         this.handleErrorResponse(responseJson.data.error, this.state.startTime)
@@ -815,7 +815,7 @@ class DisplayEndpoint extends Component {
   handleSend = async () => {
     const startTime = new Date().getTime()
     const response = {}
-    this.setState({ startTime, response, preReqScriptError: '', postReqScriptError: '', tests: null })
+    this.setState({ startTime, response, preReqScriptError: '', postReqScriptError: '', tests: null, loader: true })
 
     if (!isDashboardRoute(this.props, true) && this.checkEmptyParams()) {
       this.setState({ loader: false })
@@ -862,13 +862,13 @@ class DisplayEndpoint extends Component {
     const result = this.runScript(code, currentEnvironment, requestOptions)
 
     if (result.success) {
-      let { environment, request: { url, headers } } = result.data
+      let { environment, request: { url, headers }, tests } = result.data
+      this.setState({ tests })
       /** Replace Environemnt Variables */
       url = this.replaceVariables(url, environment)
       url = this.addhttps(url)
       headers = this.replaceVariablesInJson(headers, environment)
       requestOptions = { ...requestOptions, headers, url, bodyType: this.state.data.body.type }
-      this.setState({ loader: true })
       /** Steve Onboarding Step 5 Completed */
       moveToNextStep(5)
       /** Handle Request Call */
@@ -879,7 +879,7 @@ class DisplayEndpoint extends Component {
       /** Add to History */
       isDashboardRoute(this.props) && this.setData()
     } else {
-      this.setState({ preReqScriptError: result.error })
+      this.setState({ preReqScriptError: result.error, loader: false })
     }
   }
 
@@ -1700,6 +1700,7 @@ class DisplayEndpoint extends Component {
         <div ref={this.myRef} className='hm-panel endpoint-public-response-container public-doc'>
           <DisplayResponse
             {...this.props}
+            loader={this.state.loader}
             timeElapsed={this.state.timeElapsed}
             response={this.state.response}
             flagResponse={
@@ -1788,6 +1789,7 @@ class DisplayEndpoint extends Component {
               <div className='hm-panel endpoint-public-response-container '>
                 <DisplayResponse
                   {...this.props}
+                  loader={this.state.loader}
                   timeElapsed={this.state.timeElapsed}
                   response={this.state.response}
                   tests={this.state.tests}
@@ -1847,6 +1849,7 @@ class DisplayEndpoint extends Component {
         <div className='hm-panel endpoint-public-response-container col-12 mt-4 endPointRes'>
           <DisplayResponse
             {...this.props}
+            loader={this.state.loader}
             tests={this.state.tests}
             timeElapsed={this.state.timeElapsed}
             response={this.state.response}
