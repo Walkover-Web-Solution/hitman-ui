@@ -99,7 +99,7 @@ class PublishCollectionInfo extends Component {
 
   renderPublishCollection () {
     return (
-      (this.state.totalEndpointCount !== 0 || this.state.totalPageCount !== 0) &&
+      (this.state.totalEndpointCount > 2) &&
         <button
           className='btn btn-outline orange w-100 publishCollection'
           id='publish_api_doc_navbar_btn'

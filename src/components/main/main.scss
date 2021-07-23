@@ -2060,7 +2060,7 @@ button.toggleButton {
 
 .versionsAvailable .selected-version {
   display: inline-block;
-  width: 160px;
+  width: 90%;
   margin-right: 5px;
 }
 
@@ -2085,6 +2085,7 @@ button.toggleButton {
 .versionWrapper .selected-version.form-control.light-orange-bg {
   height: 32px;
   font-size: 14px;
+  padding-right: 30px;
 }
 
 .versionsAvailable.enableSearch .search-box {
@@ -3247,4 +3248,7 @@ li.nav-item.cookie-tab a {
 .border-radius-right-none {
   border-top-right-radius: 0px;
   border-bottom-right-radius: 0px;
+}
+.endpoint-headers-container .main-table-wrapper .hm-public-table input {
+  width: 100%;
 }

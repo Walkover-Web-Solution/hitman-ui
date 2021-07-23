@@ -4,7 +4,6 @@ import { Route, Switch } from 'react-router-dom'
 import 'react-toastify/dist/ReactToastify.css'
 import DisplayEndpoint from '../endpoints/displayEndpoint'
 import DisplayPage from '../pages/displayPage'
-import DisplayCollection from '../collections/displayCollection'
 import SideBar from '../main/sidebar'
 import { fetchAllPublicEndpoints } from './redux/publicEndpointsActions.js'
 import './publicEndpoint.scss'
@@ -280,10 +279,6 @@ class PublicEndpoint extends Component {
                           fetch_entity_name={this.fetchEntityName.bind(this)}
                           publicCollectionTheme={this.state.collectionTheme}
                                            />}
-                      />
-                      <Route
-                        path={`/p/:collectionId/description/${this.state.collectionName}`}
-                        render={(props) => <DisplayCollection {...props} {...this.props} publicCollectionTheme={this.state.collectionTheme} />}
                       />
                     </Switch>
                   </div>

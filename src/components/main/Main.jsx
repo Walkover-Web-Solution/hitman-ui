@@ -25,6 +25,7 @@ import { getOrgUpdatedAt } from '../../services/orgApiService'
 import moment from 'moment'
 import Cookies from 'universal-cookie'
 import Header from './header'
+import { loadfeedioWidget } from '../../services/feedioWidgetService'
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -59,6 +60,7 @@ class Main extends Component {
     const token = this.getTokenFromCookie()
     if (getCurrentUser()) {
       loadWidget()
+      loadfeedioWidget()
       await this.fetchAll()
     } else if (token) {
       login(token).then(() => this.fetchAll())

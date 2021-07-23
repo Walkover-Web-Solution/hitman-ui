@@ -623,3 +623,12 @@ div#history-tab-button button#dropdown-basic {
     width: auto !important;
   }
 }
+
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tab-width{
+  width: 115px;
+}

@@ -65,7 +65,7 @@ class CustomTabs extends Component {
                   {this.props.endpoints[tabId]?.name}
                 </label>
                 <br />
-                <lable className='endpoint-name-italic sub-label'>{this.props.groups[endpoint.groupId]?.name}</lable>
+                <label className='endpoint-name-italic sub-label'>{this.props.groups[endpoint.groupId]?.name}</label>
               </div>
 
             )
@@ -87,11 +87,12 @@ class CustomTabs extends Component {
           const page = this.props.pages[tabId]
           if (tab.previewMode) {
             return (
-              <div className='endpoint-name-italic font-weight-bold'>
-                <label style={{ fontStyle: 'italic' }}>
+              <div className='tabs-name'>
+                <label className='font-weight-bold truncate tab-width'>
                   {this.props.pages[tabId].name}
                 </label>
-                <lable className='sub-label'>{this.props.groups[page.groupId]?.name}</lable>
+                <br />
+                <label className='sub-label'>{this.props.groups[page.groupId]?.name}</label>
               </div>
             )
           } else {
@@ -99,7 +100,7 @@ class CustomTabs extends Component {
               <div className='tabs-name'>
                 <label className='endpoint-name'>{page.name}</label>
                 <br />
-                <lable className='sub-label'>{this.props.groups[page.groupId]?.name}</lable>
+                <label className='sub-label'>{this.props.groups[page.groupId]?.name}</label>
               </div>
             )
           }
