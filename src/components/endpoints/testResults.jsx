@@ -7,7 +7,7 @@ class TestResults extends Component {
     return (
       this.props.tests.length > 0
         ? (
-          <div className='px-2'>
+          <div className='test-results-container px-2'>
             {this.props.tests.map((test, index) => (
               this.renderTestResult(test, index)
             ))}
@@ -23,7 +23,7 @@ class TestResults extends Component {
       details += ` (${testcase.msg})`
     }
     return (
-      <div key={index} className='test-result-item'>
+      <div key={index} className='test-result-item my-2'>
         <div className={`test-badge ${testcase.status}`}>{testcase.status}</div>
         <span className='name'>{details}</span>
       </div>

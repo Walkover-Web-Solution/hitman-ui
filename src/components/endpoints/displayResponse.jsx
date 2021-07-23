@@ -177,8 +177,8 @@ class DisplayResponse extends Component {
       const value = headerContent[key]
       return (
         <tr key={key}>
-          <th scope='row'>{key}</th>
-          <td>{value}</td>
+          <th className='text-nowrap' scope='row'>{key}</th>
+          <td className='text-break'>{value}</td>
         </tr>
       )
     })
@@ -187,7 +187,7 @@ class DisplayResponse extends Component {
   displayHeader () {
     if (this.props.response.headers) {
       return (
-        <div className='endpoint-response-container overflow-auto '>
+        <div className='response-headers-container px-3'>
           <table className='table table-sm fs-6'>
             <thead>
               <tr>
