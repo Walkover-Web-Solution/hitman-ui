@@ -752,6 +752,7 @@ table#custom-generic-table {
   background-color: transparent !important;
   color: black !important;
   max-height:500px;
+  padding-right: 10px;
 
   .__json-key__ {
     color: brown !important;
@@ -759,6 +760,8 @@ table#custom-generic-table {
 
   .__json-string__ {
     color: steelblue !important;
+    white-space: normal;
+    word-break: break-all;
   }
 }
 

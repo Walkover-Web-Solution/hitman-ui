@@ -24,6 +24,7 @@ import OnlineSatus from '../onlineStatus/onlineStatus'
 import { getOrgUpdatedAt } from '../../services/orgApiService'
 import moment from 'moment'
 import Cookies from 'universal-cookie'
+import Header from './header'
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -142,6 +143,7 @@ class Main extends Component {
           Looks like you have opened it on a mobile device. It looks better on a desktop device.
         </div>}
         <div className='custom-main-container'>
+          <Header {...this.props} />
           <OnlineSatus fetchFromBackend={this.fetchFromBackend.bind(this)} isIdbUpdated={this.isIdbUpdated.bind(this)} />
           <div className='main-panel-wrapper'>
             <SideBar

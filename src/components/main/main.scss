@@ -74,7 +74,6 @@ $border-color: rgba(227, 228, 230, 0.7);
 .main-panel-wrapper {
   display: flex;
   flex-direction: row;
-  padding-top: 3rem;
 
   nav.col-md-2.d-none.d-md-block.bg-light.sidebar {
     margin-top: 10px;
@@ -980,18 +979,6 @@ label.data-type {
 
 }
 
-
-.__json-pretty__ {
-  &::-webkit-scrollbar {
-    display: none;
-    width: 0px;
-    background: transparent;
-  }
-
-  scrollbar-width: none;
-
-}
-
 .ace-editor-wrapper .ace-github {
   &::-webkit-scrollbar {
     display: none;
@@ -1610,10 +1597,10 @@ table#custom-generic-table tbody input[value="false"] + span.checkmark {
 }
 
 .environment-buttons.addEniButton {
-  margin-left: 0;
-  border-top-left-radius: 0px;
-  border-bottom-left-radius: 0px;
-  border-left: none;
+  border-top-left-radius: 0px !important;
+  border-bottom-left-radius: 0px !important;
+  border-left: 0px !important;
+  margin-left: -3px !important;
 }
 
 .select-environment-dropdown .dropdown .btn {
@@ -3198,17 +3185,24 @@ li.nav-item.cookie-tab a {
 }
 
 .header {
-  position: absolute;
-  top: 0;
-  left: 0;
   width: 100%;
   background: #272727;
   z-index: 999;
   padding: 0.5rem 1rem;
-  svg:hover{
-    stroke: #fff;
-    *{
+  margin-bottom: 0px;
+  .dropdown-toggle::after {
+    background-image: url('../../assets/icons/downChevron-white.svg')
+  }
+  .logo img {
+    filter: invert(1);
+  }
+  svg {
+    cursor: pointer;
+    &:hover {
       stroke: #fff;
+      *{
+        stroke: #fff;
+      }
     }
   }
 }
@@ -3249,4 +3243,8 @@ li.nav-item.cookie-tab a {
   font-size: 19px;
   margin-left: 0.5rem;
   font-weight: 500;
+}
+.border-radius-right-none {
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
 }
