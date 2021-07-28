@@ -48,7 +48,7 @@ function tabsReducer (state = initialState, action) {
 
     case tabsActionTypes.FETCH_TABS_FROM_IDB:
       tabs = {
-        tabs: { ...state.tabsList, ...action.tabsList },
+        tabs: { ...state.tabs, ...action.tabsList },
         tabsOrder: [...state.tabsOrder],
         activeTabId: action.tabsMetadata.activeTabId
       }
