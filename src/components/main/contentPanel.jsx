@@ -73,7 +73,7 @@ class ContentPanel extends Component {
   }
 
   render () {
-    const { endpointId, pageId } = this.props.match.params
+    const { endpointId, pageId, historyId } = this.props.match.params
     if (endpointId && endpointId !== 'new') {
       if (this.props.tabs.tabs[endpointId]) {
         if (this.props.tabs.activeTabId !== endpointId) {
@@ -113,11 +113,10 @@ class ContentPanel extends Component {
       }
     }
 
-    if (this.props.location.pathname.split('/')[4] === 'history') {
-      const historyId = this.props.location.pathname.split('/')[5]
+    if (historyId) {
       if (this.props.tabs.tabs[historyId]) {
         if (this.props.tabs.activeTabId !== historyId) { this.props.set_active_tab_id(historyId) }
-      } else {
+      } else if (this.props.history && this.props.history[historyId]) {
         this.props.open_in_new_tab({
           id: historyId,
           type: 'history',
@@ -129,18 +128,13 @@ class ContentPanel extends Component {
     }
 
     if (this.props.match.path === '/orgs/:orgId/dashboard/') {
-      if (this.props.tabs.tabsOrder.length) {
-        const tabId = this.props.tabs.tabsOrder[0]
+      if (this.props.tabs?.tabsOrder?.length) {
+        const tabId = this.props.tabs.activeTabId || this.props.tabs.tabsOrder[0]
+        const tab = this.props.tabs.tabs[tabId]
         this.props.set_active_tab_id(tabId)
-        if (this.props.tabs.tabs[tabId].status !== 'NEW') {
-          this.props.history.push({
-            pathname: `dashboard/endpoint/${tabId}`
-          })
-        } else {
-          this.props.history.push({
-            pathname: 'dashboard/endpoint/new'
-          })
-        }
+        this.props.history.push({
+          pathname: `dashboard/${tab.type}/${tab.status === 'NEW' ? 'new' : tabId}`
+        })
       }
     }
 
