@@ -128,6 +128,22 @@ class ContentPanel extends Component {
       }
     }
 
+    if (this.props.match.path === '/orgs/:orgId/dashboard/') {
+      if (this.props.tabs.tabsOrder.length) {
+        const tabId = this.props.tabs.tabsOrder[0]
+        this.props.set_active_tab_id(tabId)
+        if (this.props.tabs.tabs[tabId].status !== 'NEW') {
+          this.props.history.push({
+            pathname: `dashboard/endpoint/${tabId}`
+          })
+        } else {
+          this.props.history.push({
+            pathname: 'dashboard/endpoint/new'
+          })
+        }
+      }
+    }
+
     return (
       <main role='main' className='main'>
         {this.state.showLoginSignupModal && (

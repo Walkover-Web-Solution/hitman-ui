@@ -102,7 +102,7 @@ class App extends Component {
             <Route path='/orgs/:orgId/admin/publish' component={Main} />
             <Route path='/orgs/:orgId/dashboard/endpoint/:endpointId' component={Main} />
             <Route path='/orgs/:orgId/dashboard/page/:pageId' component={Main} />
-            <Route path='/orgs/:orgId/dashboard/' component={Main} />
+            <Route exact path='/orgs/:orgId/dashboard/' component={Main} />
 
             {/* Not Logged in Dashboard Route */}
             <Route path='/dashboard/' component={Main} />
