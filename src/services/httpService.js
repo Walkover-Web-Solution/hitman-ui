@@ -3,6 +3,7 @@ import logger from './logService'
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import auth from '../components/auth/authService'
+import history from '../history'
 
 axios.defaults.baseURL = process.env.REACT_APP_API_URL
 
@@ -12,6 +13,20 @@ instance.interceptors.response.use(null, (error) => {
     error.response &&
     error.response.status >= 400 &&
     error.response.status < 500
+
+  if (error.response.status === 404) {
+    history.push({
+      pathname: '/404_PAGE',
+      error: error
+    })
+  }
+
+  if (error.response.status === 403) {
+    history.push({
+      pathname: '/403_PAGE',
+      error: error
+    })
+  }
 
   if (!expectedError) {
     logger.log(!error)

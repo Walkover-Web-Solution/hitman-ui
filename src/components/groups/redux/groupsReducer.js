@@ -30,7 +30,6 @@ function groupsReducer (state = initialState, action) {
       return { ...action.groups }
 
     case groupsActionTypes.ON_GROUPS_FETCHED_ERROR:
-      toast.error(action.error)
       return state
 
     case groupsActionTypes.ADD_GROUP_REQUEST:
