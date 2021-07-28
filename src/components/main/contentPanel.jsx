@@ -73,12 +73,8 @@ class ContentPanel extends Component {
   }
 
   render () {
-    if (
-      this.props.location.pathname.split('/')[4] === 'endpoint' &&
-      this.props.location.pathname.split('/')[5] !== 'new'
-    ) {
-      const endpointId = this.props.location.pathname.split('/')[5]
-
+    const { endpointId, pageId } = this.props.match.params
+    if (endpointId && endpointId !== 'new') {
       if (this.props.tabs.tabs[endpointId]) {
         if (this.props.tabs.activeTabId !== endpointId) {
           this.props.set_active_tab_id(endpointId)
@@ -97,30 +93,23 @@ class ContentPanel extends Component {
             previewMode: false,
             isModified: false
           })
-        } else {
+        }
+      }
+    }
+
+    if (pageId) {
+      if (this.props.tabs.tabs[pageId]) {
+        if (this.props.tabs.activeTabId !== pageId) { this.props.set_active_tab_id(pageId) }
+      } else {
+        if (this.props.pages && this.props.pages[pageId]) {
           this.props.open_in_new_tab({
-            id: endpointId,
-            type: 'endpoint',
+            id: pageId,
+            type: 'page',
             status: tabStatusTypes.SAVED,
             previewMode: false,
             isModified: false
           })
         }
-      }
-    }
-
-    if (this.props.location.pathname.split('/')[4] === 'page') {
-      const pageId = this.props.location.pathname.split('/')[5]
-      if (this.props.tabs.tabs[pageId]) {
-        if (this.props.tabs.activeTabId !== pageId) { this.props.set_active_tab_id(pageId) }
-      } else {
-        this.props.open_in_new_tab({
-          id: pageId,
-          type: 'page',
-          status: tabStatusTypes.SAVED,
-          previewMode: false,
-          isModified: false
-        })
       }
     }
 

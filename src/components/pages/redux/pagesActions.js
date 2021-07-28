@@ -20,6 +20,35 @@ export const fetchPages = (orgId) => {
   }
 }
 
+export const fetchPage = (pageId) => {
+  return (dispatch) => {
+    pageApiService
+      .getPage(pageId)
+      .then((response) => {
+        const page = response.data
+        dispatch(onPageFetched(page))
+        indexedDbService.addData('pages', page, page.id)
+      })
+      .catch((error) => {
+        dispatch(onPageFetchedError(error.message))
+      })
+  }
+}
+
+export const onPageFetched = (page) => {
+  return {
+    type: pagesActionTypes.ON_PAGE_FETCHED,
+    page
+  }
+}
+
+export const onPageFetchedError = (error) => {
+  return {
+    type: pagesActionTypes.ON_PAGE_FETCHED_ERROR,
+    error
+  }
+}
+
 export const fetchPagesFromIdb = (orgId) => {
   return (dispatch) => {
     indexedDbService
