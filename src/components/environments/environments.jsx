@@ -59,7 +59,7 @@ class Environments extends Component {
       'currentEnvironmentId'
     )
     this.handleEnv(currentEnvironmentId)
-    if (!isDashboardRoute(this.props)) {
+    if (!isDashboardRoute(this.props, true)) {
       const collectionIdentifier = this.props.location.pathname.split('/')[2]
       this.fetchCollection(collectionIdentifier)
     }
