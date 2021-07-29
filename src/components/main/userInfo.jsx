@@ -209,7 +209,7 @@ class UserInfo extends Component {
   renderCurrentOrgName () {
     const orgName = authService.getCurrentOrg()?.name
     return (
-      <div className='text-center'>{orgName}</div>
+      <div className='text-center m-1'>{orgName}</div>
     )
   }
 

@@ -24,8 +24,8 @@ export function openExternalLink (link) {
 export function isSavedEndpoint (props) {
   const pathname = props.location.pathname
   if (
-    pathname.split('/')[2] === 'endpoint' &&
-    pathname.split('/')[3] !== 'new'
+    pathname.split('/')[4] === 'endpoint' &&
+    pathname.split('/')[5] !== 'new'
   ) { return true } else return false
 }
 

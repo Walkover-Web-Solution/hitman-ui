@@ -20,7 +20,6 @@ function collectionsReducer (state = initialState, action) {
       return { ...action.collections }
 
     case collectionsActionTypes.ON_COLLECTIONS_FETCHED_ERROR:
-      toast.error(action.error)
       return state
 
     case collectionsActionTypes.ADD_COLLECTION_REQUEST:

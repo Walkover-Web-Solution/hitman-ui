@@ -52,6 +52,36 @@ export const fetchEndpoints = (orgId) => {
   }
 }
 
+export const fetchEndpoint = (endpointId) => {
+  return (dispatch) => {
+    endpointApiService
+      .getEndpoint(endpointId)
+      .then((response) => {
+        dispatch(onEndpointFetched(response.data))
+        indexedDbService.addData('endpoints', response.data, response.data.id)
+      })
+      .catch((error) => {
+        dispatch(
+          onEndpointFetchedError(error.response ? error.response.data : error)
+        )
+      })
+  }
+}
+
+export const onEndpointFetched = (endpoints) => {
+  return {
+    type: endpointsActionTypes.ON_ENDPOINT_FETCHED,
+    endpoints
+  }
+}
+
+export const onEndpointFetchedError = (error) => {
+  return {
+    type: endpointsActionTypes.ON_ENDPOINT_FETCHED_ERROR,
+    error
+  }
+}
+
 export const fetchEndpointsFromIdb = (orgId) => {
   return (dispatch) => {
     indexedDbService

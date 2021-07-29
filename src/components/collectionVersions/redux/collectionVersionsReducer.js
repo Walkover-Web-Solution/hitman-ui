@@ -17,7 +17,6 @@ function versionsReducer (state = initialState, action) {
 
     case versionActionTypes.ON_AUTHORIZATION_DATA_ERROR:
       state[action.versionId].authorizationData = action.originalAuthdata
-      toast.error(action.error)
       return {
         ...state
       }
@@ -39,7 +38,6 @@ function versionsReducer (state = initialState, action) {
       return { ...action.versions }
 
     case versionActionTypes.ON_VERSIONS_FETCHED_ERROR:
-      toast.error(action.error)
       return state
 
     case versionActionTypes.UPDATE_VERSION_REQUEST:

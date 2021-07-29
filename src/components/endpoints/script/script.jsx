@@ -4,9 +4,8 @@ import 'ace-builds/src-noconflict/mode-javascript'
 import 'ace-builds/src-noconflict/theme-github'
 import 'ace-builds/webpack-resolver'
 import AceEditor from 'react-ace'
-import Snippets from './snippets'
+import { Snippets, preReqSnippets, postReqSnippets } from './snippets'
 
-const snippets = { ...Snippets }
 export class Script extends Component {
   constructor (props) {
     super(props)
@@ -80,12 +79,18 @@ export class Script extends Component {
   }
 
   snippetsList () {
+    let snippets
+    switch (this.props.type) {
+      case 'Pre-Script': snippets = preReqSnippets; break
+      case 'Post-Script': snippets = postReqSnippets; break
+      default: snippets = []; break
+    }
     return (
       <div className='snippets col-4'>
         <h4>Snippets</h4>
-        {Object.values(snippets).map((snippet, index) => (
-          <div key={index} onClick={() => this.insertSnippet(snippet)}>
-            {snippet.key}
+        {snippets.map((snippet, index) => (
+          <div key={index} onClick={() => this.insertSnippet(Snippets[snippet])}>
+            {Snippets[snippet].key}
           </div>
         ))}
       </div>

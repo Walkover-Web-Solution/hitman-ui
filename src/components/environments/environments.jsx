@@ -286,7 +286,7 @@ class Environments extends Component {
 
             {
               isDashboardRoute(this.props) && (
-                <div className='select-environment-dropdown'>
+                <div className='select-environment-dropdown border-radius-right-none'>
                   <Dropdown className='float-right'>
                     <Dropdown.Toggle variant='default' id='dropdown-basic'>
                       {
