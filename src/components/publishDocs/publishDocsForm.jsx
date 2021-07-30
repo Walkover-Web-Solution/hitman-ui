@@ -148,6 +148,7 @@ class PublishDocForm extends Component {
       cta,
       links
     }
+    delete collection.isPublic
     const errors = this.validate({ ...this.state.data })
     this.setState({ errors: errors || {} })
     if (errors) return
