@@ -157,7 +157,7 @@ class PublishDocForm extends Component {
       this.props.history.push({
         pathname: `/orgs/${this.props.match.params.orgId}/admin/publish`,
         search: `?collectionId=${collectionId}`,
-        showConfirmModal: true
+        showConfirmModal: !this.props?.isSidebar
       })
     }
   }
