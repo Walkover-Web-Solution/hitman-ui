@@ -119,6 +119,23 @@ class DisplayResponse extends Component {
   }
 
   displayBodyAndHeaderResponse () {
+    const TestResultsPreview = () => {
+      const tests = this.props.tests
+      const failedTests = tests.filter((test) => test.success === false)
+      const passedTests = tests.filter((test) => test.success === true)
+      let testMessage = ''
+      let testMessageColor = 'inherit'
+      if (failedTests.length) {
+        testMessage = `(${failedTests.length}/${tests.length} Failed)`
+        testMessageColor = 'red'
+      } else if (passedTests.length) {
+        testMessage = `(${passedTests.length}/${tests.length} Passed)`
+        testMessageColor = 'green'
+      }
+      return (
+        <span style={{ color: testMessageColor }}>{testMessage}</span>
+      )
+    }
     return (
       <>
         <div className='col-12' ref={this.myRef}>
@@ -161,7 +178,7 @@ class DisplayResponse extends Component {
                   href='#pills-testResults-tab'
                   role='tab2'
                 >
-                  Test Results
+                  Test Results <TestResultsPreview />
                 </a>
               </li>}
           </ul>
