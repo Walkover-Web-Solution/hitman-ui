@@ -300,14 +300,6 @@ class Environments extends Component {
                       }
                     </Dropdown.Toggle>
                     <Dropdown.Menu alignRight>
-                      <button
-                        className='dropdown-item'
-                        onClick={() =>
-                          this.handleEnvironmentModal('Add new Environment')}
-                      >
-                        Add Environment
-                      </button>
-                      <Dropdown.Divider />
                       <Dropdown.Item
                         onClick={() => this.handleEnv(null)}
                         key='no-environment'
@@ -325,40 +317,25 @@ class Environments extends Component {
                                 this.props.environment.environments[environmentId]
                                   .name
                               }
-                              <div>
-                                <div
-                                  className='env-options'
-                                  data-toggle='dropdown'
-                                  aria-haspopup='true'
-                                  aria-expanded='false'
-                                >
-                                  <i className='fas fa-ellipsis-v' />
-                                </div>
-                                <div className='dropdown-menu dropdown-menu-right'>
-                                  <button
-                                    className='dropdown-item'
-                                    onClick={() => {
-                                      this.handleEnvironmentModal('Edit Environment', this.props.environment.environments[environmentId])
-                                    }}
-                                  >
-                                    Edit
-                                  </button>
-                                  <button
-                                    className='dropdown-item'
-                                    onClick={() => {
-                                      this.openDeleteEnvironmentModal(
-                                        environmentId
-                                      )
-                                    }}
-                                  >
-                                    Delete
-                                  </button>
-                                </div>
-                              </div>
                             </Dropdown.Item>
                           )
                         )
                       }
+                      <Dropdown.Divider />
+                      <button
+                        className='dropdown-item'
+                        onClick={() =>
+                          this.handleEnvironmentModal('Add new Environment')}
+                      >
+                        Add Environment
+                      </button>
+                      <button
+                        className='dropdown-item'
+                        onClick={() =>
+                          this.handleEnvironmentModal('Environment modal')}
+                      >
+                        Manage Environment
+                      </button>
                     </Dropdown.Menu>
                   </Dropdown>
                 </div>
