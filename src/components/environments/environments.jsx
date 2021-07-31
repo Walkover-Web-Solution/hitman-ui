@@ -300,14 +300,6 @@ class Environments extends Component {
                       }
                     </Dropdown.Toggle>
                     <Dropdown.Menu alignRight>
-                      <button
-                        className='dropdown-item'
-                        onClick={() =>
-                          this.handleEnvironmentModal('Add new Environment')}
-                      >
-                        Add Environment
-                      </button>
-                      <Dropdown.Divider />
                       <Dropdown.Item
                         onClick={() => this.handleEnv(null)}
                         key='no-environment'
@@ -325,7 +317,7 @@ class Environments extends Component {
                                 this.props.environment.environments[environmentId]
                                   .name
                               }
-                              <div>
+                              {/* <div>
                                 <div
                                   className='env-options'
                                   data-toggle='dropdown'
@@ -354,11 +346,26 @@ class Environments extends Component {
                                     Delete
                                   </button>
                                 </div>
-                              </div>
+                              </div> */}
                             </Dropdown.Item>
                           )
                         )
                       }
+                      <Dropdown.Divider />
+                      <button
+                        className='dropdown-item'
+                        onClick={() =>
+                          this.handleEnvironmentModal('Add new Environment')}
+                      >
+                        Add Environment
+                      </button>
+                      <button
+                        className='dropdown-item'
+                        onClick={() =>
+                          this.handleEnvironmentModal('Environment modal')}
+                      >
+                        Manage Environment
+                      </button>
                     </Dropdown.Menu>
                   </Dropdown>
                 </div>
