@@ -127,7 +127,7 @@ export const updateCollection = (editedCollection, stopLoader, customCallback) =
     const originalCollection = store.getState().collections[
       editedCollection.id
     ]
-    dispatch(updateCollectionRequest({ ...editedCollection }))
+    dispatch(updateCollectionRequest({ ...originalCollection, ...editedCollection }))
     const id = editedCollection.id
     delete editedCollection.id
     delete editedCollection.requestId
