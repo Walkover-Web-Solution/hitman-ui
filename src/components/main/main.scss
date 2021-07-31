@@ -2867,13 +2867,15 @@ span.endpointNameWrapper {
   margin: 0;
 }
 
-.env-table tbody tr td.custom-td:nth-child(4) {
-  border: none !important;
-}
 
 .env-table tbody tr td.custom-td:nth-child(4) button {
   background: transparent;
   border: none;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 13px 0;
 }
 
 .entityTitle {
@@ -3253,3 +3255,45 @@ li.nav-item.cookie-tab a {
 .endpoint-headers-container .main-table-wrapper .hm-public-table input {
   width: 100%;
 }
+.tab-pane .hm-public-table .table tbody tr td:nth-child(n+2) {
+  width: 200px;
+}
+.tab-pane .hm-public-table .table tbody tr td:first-child label {
+  margin-left: 6px;
+}
+.dashboardPage table#custom-generic-table tbody input[value="true"] + span.checkmark {
+  background: #f1b43f;
+}
+
+.errorPage{
+  background-image: url('../../assets/icons/texture.webp');
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 60px;
+  background-repeat: no-repeat;
+  background-size: cover;
+  img {
+    max-width: 400px;
+  }
+  h4 {
+    font-size: 100px;
+    font-weight: 800;
+  }
+  h3{
+    font-size: 20px;
+    text-transform: capitalize;
+    margin-bottom: 45px;
+  }
+  button {
+    background: none;
+    border: 1px solid #828282;
+    font-size: 14px;
+    display: inline-block;
+    padding: 13px 40px;
+    border-radius: 4px;
+  }
+}
+
