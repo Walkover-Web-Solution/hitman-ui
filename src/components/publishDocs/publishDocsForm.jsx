@@ -148,6 +148,7 @@ class PublishDocForm extends Component {
       cta,
       links
     }
+    delete collection.isPublic
     const errors = this.validate({ ...this.state.data })
     this.setState({ errors: errors || {} })
     if (errors) return
@@ -157,7 +158,7 @@ class PublishDocForm extends Component {
       this.props.history.push({
         pathname: `/orgs/${this.props.match.params.orgId}/admin/publish`,
         search: `?collectionId=${collectionId}`,
-        showConfirmModal: true
+        showConfirmModal: !this.props?.isSidebar
       })
     }
   }
