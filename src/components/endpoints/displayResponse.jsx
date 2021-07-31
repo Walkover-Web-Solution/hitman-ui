@@ -121,6 +121,7 @@ class DisplayResponse extends Component {
   displayBodyAndHeaderResponse () {
     const TestResultsPreview = () => {
       const tests = this.props.tests
+      if (!tests) return null
       const failedTests = tests.filter((test) => test.success === false)
       const passedTests = tests.filter((test) => test.success === true)
       let testMessage = ''
