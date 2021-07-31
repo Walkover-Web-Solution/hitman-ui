@@ -3297,3 +3297,21 @@ li.nav-item.cookie-tab a {
   }
 }
 
+.dashboardPage{
+  .endpoint-response-container{
+    position: relative;
+    .response-status {
+      position: absolute;
+      right: 15px;
+      z-index: 9;
+    }
+    .response-viewer{
+      .respTabsListing.nav-tabs {
+        margin-top: 0;
+        li a{
+          padding-top: 0;
+        }
+      }
+    }
+  }
+}
