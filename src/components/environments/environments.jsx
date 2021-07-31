@@ -317,36 +317,6 @@ class Environments extends Component {
                                 this.props.environment.environments[environmentId]
                                   .name
                               }
-                              {/* <div>
-                                <div
-                                  className='env-options'
-                                  data-toggle='dropdown'
-                                  aria-haspopup='true'
-                                  aria-expanded='false'
-                                >
-                                  <i className='fas fa-ellipsis-v' />
-                                </div>
-                                <div className='dropdown-menu dropdown-menu-right'>
-                                  <button
-                                    className='dropdown-item'
-                                    onClick={() => {
-                                      this.handleEnvironmentModal('Edit Environment', this.props.environment.environments[environmentId])
-                                    }}
-                                  >
-                                    Edit
-                                  </button>
-                                  <button
-                                    className='dropdown-item'
-                                    onClick={() => {
-                                      this.openDeleteEnvironmentModal(
-                                        environmentId
-                                      )
-                                    }}
-                                  >
-                                    Delete
-                                  </button>
-                                </div>
-                              </div> */}
                             </Dropdown.Item>
                           )
                         )
