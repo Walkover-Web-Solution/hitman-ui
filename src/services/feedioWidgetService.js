@@ -1,5 +1,5 @@
-const BOARD_TOKEN = '488357946'
-const FEEDIO_WIDGET_URL = 'https://wgt.feedio.ai'
+const BOARD_TOKEN = process.env.REACT_APP_FEEDIO_WGT_BOARD_TOKEN
+const FEEDIO_WIDGET_URL = process.env.REACT_APP_FEEDIO_WGT_URL
 
 export function loadfeedioWidget () {
   let user = window.localStorage.getItem('profile')
@@ -15,8 +15,6 @@ export function loadfeedioWidget () {
     script.type = 'text/javascript'
     script.setAttribute('board-token', BOARD_TOKEN)
     script.setAttribute('email', user.email)
-    script.setAttribute('custom-button', true)
-    script.setAttribute('debug', true)
     document.body.appendChild(script)
     script.onload = () => {
     }
