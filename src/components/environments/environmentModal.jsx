@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { ListGroup, Modal } from 'react-bootstrap'
+import { ReactComponent as DeleteIcon } from '../../assets/icons/delete-icon.svg'
 import environmentsApiService from './environmentsApiService'
 import './environments.scss'
 
@@ -55,42 +56,27 @@ class EnvironmentModal extends Component {
       Object.keys(this.props.environment.environments).map(
         (environmentId) =>
           (
-            <div key={environmentId}>
-              <div className='mb-2'>
-                <ListGroup.Item
-                  style={{ width: '98%', float: 'left' }}
-                  key={environmentId}
-                  onClick={() =>
-                    this.handleEdit(
-                      this.props.environment.environments[environmentId]
-                    )}
-                >
-                  {this.props.environment.environments[environmentId].name}
-                </ListGroup.Item>
-                <div className='btn-group'>
-                  <button
-                    className='btn '
-                    data-toggle='dropdown'
-                    aria-haspopup='true'
-                    aria-expanded='false'
-                  >
-                    <i className='fas fa-ellipsis-v' />
-                  </button>
-                  <div className='dropdown-menu dropdown-menu-right'>
-                    <button
-                      className='dropdown-item'
-                      onClick={() => {
-                        this.props.onHide()
-                        this.props.open_delete_environment_modal(
-                          environmentId
-                        )
-                      }}
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </div>
-              </div>
+            <div className='mb-2 d-flex justify-content-center' key={environmentId}>
+              <ListGroup.Item
+                style={{ width: '98%', float: 'left' }}
+                key={environmentId}
+                onClick={() =>
+                  this.handleEdit(
+                    this.props.environment.environments[environmentId]
+                  )}
+              >
+                {this.props.environment.environments[environmentId].name}
+              </ListGroup.Item>
+              <button
+                className='btn'
+                onClick={() => {
+                  this.props.open_delete_environment_modal(
+                    environmentId
+                  )
+                }}
+              >
+                <DeleteIcon />
+              </button>
             </div>
           )
       )
