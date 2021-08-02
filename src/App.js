@@ -123,7 +123,6 @@ class App extends Component {
             <Route path='/marketPlace' component={PublicView} />
             <Route path='/' component={Landing} />
           </Switch>
-          <button style={{ position: 'absolute', bottom: '20px', right: '20px' }} id='feedio-custom-trigger'>CUSTOM FEEDIO WIDGET</button>
         </>
       )
     }
