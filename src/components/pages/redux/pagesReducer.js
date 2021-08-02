@@ -13,10 +13,15 @@ function pagesReducer (state = initialState, action) {
 
   switch (action.type) {
     case pagesActionTypes.ON_PAGES_FETCHED:
-      return { ...action.pages }
+      return { ...state, ...action.pages }
 
     case pagesActionTypes.ON_PAGES_FETCHED_ERROR:
-      toast.error(action.error)
+      return state
+
+    case pagesActionTypes.ON_PAGE_FETCHED:
+      return { [action.page.id]: { ...action.page } }
+
+    case pagesActionTypes.ON_PAGE_FETCHED_ERROR:
       return state
 
     case pagesActionTypes.ADD_PAGE_REQUEST:

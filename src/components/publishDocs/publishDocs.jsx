@@ -28,7 +28,6 @@ import { SortableHandle, SortableContainer, SortableElement } from 'react-sortab
 import { ReactComponent as DragHandleIcon } from '../../assets/icons/drag-handle.svg'
 import { ReactComponent as SettingsIcon } from '../../assets/icons/settings.svg'
 import { ReactComponent as ExternalLinks } from '../../assets/icons/externalLinks.svg'
-import UserInfo from '../main/userInfo'
 import PublishDocsConfirmModal from './publishDocsConfirmModal'
 import { moveToNextStep } from '../../services/widgetService'
 import { openExternalLink } from '../common/utility'
@@ -1258,12 +1257,6 @@ class PublishDocs extends Component {
     return (
       <div className='hosted-doc-heading'>
         <div>{heading}</div>
-        <div className='row d-flex align-items-center'>
-          <div className='communti-btn-wrapper mr-2' onClick={() => openExternalLink(process.env.REACT_APP_COMMUNITY_URL)}>
-            <a>Community</a>
-          </div>
-          <div className='user-info-container'><UserInfo {...this.props} /></div>
-        </div>
       </div>
     )
   }

@@ -59,7 +59,7 @@ class Environments extends Component {
       'currentEnvironmentId'
     )
     this.handleEnv(currentEnvironmentId)
-    if (!isDashboardRoute(this.props)) {
+    if (!isDashboardRoute(this.props, true)) {
       const collectionIdentifier = this.props.location.pathname.split('/')[2]
       this.fetchCollection(collectionIdentifier)
     }
@@ -274,46 +274,19 @@ class Environments extends Component {
                   this.state.selectedEnvironment
                 )}
             </div>
-            {isDashboardRoute(this.props) && (
-              <div className='environment-buttons'>
-                <button
-                  className='btn btn-default'
-                  id='add_environment_btn'
-                  onClick={() =>
-                    this.handleEnvironmentModal('Add new Environment')}
-                >
-                  <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
-                    <path d='M9 3.75V14.25' stroke='#828282' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
-                    <path d='M3.75 9H14.25' stroke='#828282' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
-                  </svg>
-
-                </button>
-              </div>
-            )}
 
             {isDashboardRoute(this.props) && (
-              <div className='environment-buttons addEniButton'>
-                <Dropdown className='float-right'>
-                  <Dropdown.Toggle
-                    bsPrefix='dropdown'
-                    variant='default'
-                    id='dropdown-basic'
-                    disabled={!env}
-                  >
-                    {env ? <EyeIcon /> : <EyeDisabledIcon />}
-                  </Dropdown.Toggle>
-                  {env && (
-                    <Dropdown.Menu alignRight className='custom-env-menu'>
-                      {Object.keys(env.variables).length > 0 ? this.renderEnvironment(env) : this.renderEnvWithoutVariables(env)}
-                    </Dropdown.Menu>
-                  )}
-                </Dropdown>
+              <div
+                onClick={() => env ? this.handleEnvironmentModal('Edit Environment', this.props.environment.environments[this.props.environment.currentEnvironmentId]) : null}
+                className='environment-buttons addEniButton'
+              >
+                {env ? <EyeIcon /> : <EyeDisabledIcon />}
               </div>
             )}
 
             {
               isDashboardRoute(this.props) && (
-                <div className='select-environment-dropdown'>
+                <div className='select-environment-dropdown border-radius-right-none'>
                   <Dropdown className='float-right'>
                     <Dropdown.Toggle variant='default' id='dropdown-basic'>
                       {
@@ -327,14 +300,6 @@ class Environments extends Component {
                       }
                     </Dropdown.Toggle>
                     <Dropdown.Menu alignRight>
-                      <button
-                        className='dropdown-item'
-                        onClick={() =>
-                          this.handleEnvironmentModal('Environment modal')}
-                      >
-                        Manage Environment
-                      </button>
-                      <Dropdown.Divider />
                       <Dropdown.Item
                         onClick={() => this.handleEnv(null)}
                         key='no-environment'
@@ -356,6 +321,21 @@ class Environments extends Component {
                           )
                         )
                       }
+                      <Dropdown.Divider />
+                      <button
+                        className='dropdown-item'
+                        onClick={() =>
+                          this.handleEnvironmentModal('Add new Environment')}
+                      >
+                        Add Environment
+                      </button>
+                      <button
+                        className='dropdown-item'
+                        onClick={() =>
+                          this.handleEnvironmentModal('Environment modal')}
+                      >
+                        Manage Environment
+                      </button>
                     </Dropdown.Menu>
                   </Dropdown>
                 </div>

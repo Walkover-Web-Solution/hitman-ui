@@ -674,7 +674,7 @@ class CollectionVersions extends Component {
           !isDashboardRoute(this.props, true)
             ? (
               <>
-                <div className={this.filteredVersions && Object.keys(this.filteredVersions).length > 1 ? this.state.enableSearch ? 'versionWrapper versionsAvailable enableSearch' : 'versionWrapper versionsAvailable' : 'versionWrapper'}>
+                <div className={this.filteredVersions && Object.keys(this.filteredVersions).length > 1 ? this.state.enableSearch ? 'versionWrapper versionsAvailable d-flex enableSearch' : 'versionWrapper versionsAvailable d-flex' : 'versionWrapper'}>
                   {this.filteredVersions && Object.keys(this.filteredVersions).length > 1
                     ? (
                       <select

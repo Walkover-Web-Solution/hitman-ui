@@ -12,6 +12,7 @@ import { ToastContainer } from 'react-toastify'
 import ClientDoc from './components/publishDocs/clientDoc'
 import BrowserLogin from './components/broswerLogin/browserLogin'
 import { getOrgId, isElectron } from './components/common/utility'
+import { ERROR_403_PAGE, ERROR_404_PAGE } from './components/errorPages'
 
 class App extends Component {
   async redirectToClientDomain () {
@@ -93,15 +94,32 @@ class App extends Component {
         <>
           <ToastContainer />
           <Switch>
+            {/* Error Page Routes */}
+            <Route path='/404_PAGE' component={ERROR_404_PAGE} />
+            <Route path='/403_PAGE' component={ERROR_403_PAGE} />
+
+            {/* Logged in Dashboard Routes */}
             <Route path='/orgs/:orgId/admin/publish' component={Main} />
-            <Route path='/orgs/:orgId/dashboard/' component={Main} />
+            <Route path='/orgs/:orgId/dashboard/endpoint/:endpointId' component={Main} />
+            <Route path='/orgs/:orgId/dashboard/page/:pageId' component={Main} />
+            <Route path='/orgs/:orgId/dashboard/history/:historyId' component={Main} />
+            <Route exact path='/orgs/:orgId/dashboard/' component={Main} />
+
+            {/* Not Logged in Dashboard Route */}
             <Route path='/dashboard/' component={Main} />
+
+            {/*  Public Page Routes */}
             <Route path='/p/error' component={NotFound} />
             <Route path='/p/:collectionIdentifier' component={Public} />
+
+            {/* React App Auth Routes */}
+            <Route path='/login' component={Login} />
             <Route path='/logout' component={Logout} />
+
+            {/* Electron App Auth Routes */}
             <Route path='/browser-login-success' component={BrowserLogin} />
             <Route path='/browser-login' component={BrowserLogin} />
-            <Route path='/login' component={Login} />
+
             <Route path='/marketPlace' component={PublicView} />
             <Route path='/' component={Landing} />
           </Switch>

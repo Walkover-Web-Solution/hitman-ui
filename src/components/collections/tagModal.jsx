@@ -21,8 +21,9 @@ class TagManagerModal extends Form {
   }
 
   async doSubmit () {
-    const updatedCollection = this.props.collections[this.props.collection_id]
-    updatedCollection.gtmId = this.state.data.gtmId
+    const collection = this.props.collections[this.props.collection_id]
+    const updatedCollection = { ...collection, gtmId: this.state.data.gtmId }
+    delete updatedCollection?.isPublic
     this.props.update_collection(updatedCollection)
     this.props.onHide()
   }

@@ -3,7 +3,7 @@ import { Tab, Nav, Dropdown } from 'react-bootstrap'
 
 import { connect } from 'react-redux'
 import 'react-tabs/style/react-tabs.css'
-import Environments from '../environments/environments'
+
 import History from '../history/history.jsx'
 import { ReactComponent as HistoryIcon } from '../../assets/icons/historyIcon.svg'
 import {
@@ -23,8 +23,6 @@ import './main.scss'
 import { getCurrentUser } from '../auth/authService'
 import LoginSignupModal from './loginSignupModal'
 import Footer from '../main/Footer'
-import UserInfo from './userInfo'
-import { isElectron, openExternalLink } from '../common/utility'
 
 const mapStateToProps = (state) => {
   return {
@@ -62,11 +60,6 @@ class ContentPanel extends Component {
     // });
   }
 
-  openLink () {
-    const url = `${process.env.REACT_APP_UI_URL}/browser-login`
-    window.require('electron').shell.openExternal(url)
-  }
-
   handleSaveEndpoint (flag, tabId) {
     this.setState({ saveEndpointFlag: flag, selectedTabId: tabId })
   }
@@ -80,12 +73,8 @@ class ContentPanel extends Component {
   }
 
   render () {
-    if (
-      this.props.location.pathname.split('/')[4] === 'endpoint' &&
-      this.props.location.pathname.split('/')[5] !== 'new'
-    ) {
-      const endpointId = this.props.location.pathname.split('/')[5]
-
+    const { endpointId, pageId, historyId } = this.props.match.params
+    if (endpointId && endpointId !== 'new') {
       if (this.props.tabs.tabs[endpointId]) {
         if (this.props.tabs.activeTabId !== endpointId) {
           this.props.set_active_tab_id(endpointId)
@@ -104,10 +93,18 @@ class ContentPanel extends Component {
             previewMode: false,
             isModified: false
           })
-        } else {
+        }
+      }
+    }
+
+    if (pageId) {
+      if (this.props.tabs.tabs[pageId]) {
+        if (this.props.tabs.activeTabId !== pageId) { this.props.set_active_tab_id(pageId) }
+      } else {
+        if (this.props.pages && this.props.pages[pageId]) {
           this.props.open_in_new_tab({
-            id: endpointId,
-            type: 'endpoint',
+            id: pageId,
+            type: 'page',
             status: tabStatusTypes.SAVED,
             previewMode: false,
             isModified: false
@@ -116,26 +113,10 @@ class ContentPanel extends Component {
       }
     }
 
-    if (this.props.location.pathname.split('/')[4] === 'page') {
-      const pageId = this.props.location.pathname.split('/')[5]
-      if (this.props.tabs.tabs[pageId]) {
-        if (this.props.tabs.activeTabId !== pageId) { this.props.set_active_tab_id(pageId) }
-      } else {
-        this.props.open_in_new_tab({
-          id: pageId,
-          type: 'page',
-          status: tabStatusTypes.SAVED,
-          previewMode: false,
-          isModified: false
-        })
-      }
-    }
-
-    if (this.props.location.pathname.split('/')[4] === 'history') {
-      const historyId = this.props.location.pathname.split('/')[5]
+    if (historyId) {
       if (this.props.tabs.tabs[historyId]) {
         if (this.props.tabs.activeTabId !== historyId) { this.props.set_active_tab_id(historyId) }
-      } else {
+      } else if (this.props.history && this.props.history[historyId]) {
         this.props.open_in_new_tab({
           id: historyId,
           type: 'history',
@@ -146,7 +127,17 @@ class ContentPanel extends Component {
       }
     }
 
-    const redirectionUrl = process.env.REACT_APP_UI_URL + '/login'
+    if (this.props.match.path === '/orgs/:orgId/dashboard/') {
+      if (this.props.tabs?.tabsOrder?.length) {
+        const tabId = this.props.tabs.activeTabId || this.props.tabs.tabsOrder[0]
+        const tab = this.props.tabs.tabs[tabId]
+        this.props.set_active_tab_id(tabId)
+        this.props.history.push({
+          pathname: `dashboard/${tab.type}/${tab.status === 'NEW' ? 'new' : tabId}`
+        })
+      }
+    }
+
     return (
       <main role='main' className='main'>
         {this.state.showLoginSignupModal && (
@@ -156,30 +147,6 @@ class ContentPanel extends Component {
             title='Save Endpoint'
           />
         )}
-        <div className='login-sso'>
-          {
-            !getCurrentUser()
-              ? (
-                <div className='row align-items-center'>
-                  <div className='float-right d-flex communti-btn-wrapper community-btn-1' onClick={() => openExternalLink(process.env.REACT_APP_COMMUNITY_URL)}>
-                    <a>Community</a>
-                  </div>
-                  {isElectron()
-                    ? <div className='float-right d-flex btn btn-primary' onClick={() => { this.openLink() }}>Login/SignUp</div>
-                    : <div
-                        id='sokt-sso'
-                        data-redirect-uri={redirectionUrl}
-                        data-source='hitman'
-                        data-token-key='sokt-auth-token'
-                        data-view='button'
-                        data-app-logo-url='https://hitman.app/wp-content/uploads/2020/12/123.png'
-                        signup_uri={redirectionUrl + '?signup=true'}
-                      />}
-                </div>
-                )
-              : null
-          }
-        </div>
         {/* <main role="main" className="main ml-sm-auto custom-main"> */}
         <Tab.Container
           id='left-tabs-example'
@@ -193,17 +160,6 @@ class ContentPanel extends Component {
             getCurrentUser()
               ? (
                 <>
-                  <div className='env-wrapper'>
-                    <div className='float-right d-flex'>
-                      <div className='float-right d-flex communti-btn-wrapper' onClick={() => openExternalLink(process.env.REACT_APP_COMMUNITY_URL)}>
-                        <a>Community</a>
-                      </div>
-                      <Environments {...this.props} />
-                      <div className='ml-3'>
-                        <UserInfo {...this.props} />
-                      </div>
-                    </div>
-                  </div>
                   <div className='content-header'>
                     <div className='tabs-container d-flex'>
                       <CustomTabs

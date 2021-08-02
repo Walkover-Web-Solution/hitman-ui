@@ -470,13 +470,12 @@ label.data-type {
       border-radius: 4px;
       border: 1px solid #dddddd;
       cursor: pointer;
-      flex: 30% 1;
       margin: 0 4% 4% 0;
       display: flex;
       align-items: center;
       justify-content: flex-start;
       min-height: 5.37rem;
-      width: 100%;
+      width: 30%;
       &:nth-child(3n){
         margin-right: 0;
       }
@@ -485,11 +484,13 @@ label.data-type {
         font-weight: 600;
         color: #333333;
         margin: 0;
+        word-break: break-word;
       }
       .collection-image {
         height: 2rem;
         width: 2rem;
         margin-right: 1rem;
+        min-width: 2rem;
         img {
           object-fit: cover;
           display: block;
@@ -543,7 +544,7 @@ label.data-type {
 
 .mar-top-left-wrapper a {
   text-decoration: none!important;
-  color: #fff!important;
+  color: #fdb952 !important;
 }
 
 .searchWrapper h1 {
@@ -979,18 +980,6 @@ label.data-type {
 
 }
 
-
-.__json-pretty__ {
-  &::-webkit-scrollbar {
-    display: none;
-    width: 0px;
-    background: transparent;
-  }
-
-  scrollbar-width: none;
-
-}
-
 .ace-editor-wrapper .ace-github {
   &::-webkit-scrollbar {
     display: none;
@@ -1215,12 +1204,10 @@ button.editBtn {
 }
 
 .dropdown .dropdown-toggle {
-  background: #fff;
-  height: 40px;
-  border: 1px solid #E0E0E0;
+  height: 36px;
   font-size: 14px;
   font-weight: 400;
-  color: #000;
+  color: #d6d6d6;
   border-radius: 0px;
 }
 
@@ -1611,10 +1598,10 @@ table#custom-generic-table tbody input[value="false"] + span.checkmark {
 }
 
 .environment-buttons.addEniButton {
-  margin-left: 0;
-  border-top-left-radius: 0px;
-  border-bottom-left-radius: 0px;
-  border-left: none;
+  border-top-left-radius: 0px !important;
+  border-bottom-left-radius: 0px !important;
+  border-left: 0px !important;
+  margin-left: -3px !important;
 }
 
 .select-environment-dropdown .dropdown .btn {
@@ -2074,7 +2061,7 @@ button.toggleButton {
 
 .versionsAvailable .selected-version {
   display: inline-block;
-  width: 160px;
+  width: 90%;
   margin-right: 5px;
 }
 
@@ -2099,6 +2086,7 @@ button.toggleButton {
 .versionWrapper .selected-version.form-control.light-orange-bg {
   height: 32px;
   font-size: 14px;
+  padding-right: 30px;
 }
 
 .versionsAvailable.enableSearch .search-box {
@@ -2879,13 +2867,15 @@ span.endpointNameWrapper {
   margin: 0;
 }
 
-.env-table tbody tr td.custom-td:nth-child(4) {
-  border: none !important;
-}
 
 .env-table tbody tr td.custom-td:nth-child(4) button {
   background: transparent;
   border: none;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 13px 0;
 }
 
 .entityTitle {
@@ -2973,24 +2963,7 @@ div#history-tab-button button#dropdown-basic {
 .searchWrapper {
   margin-top: 0.5rem;
 }
-.community-wrapper a {
-  font-weight: 600;
-  font-size: 12px;
-  line-height: 20px; 
-  text-align: center;
-  text-transform: uppercase;
-  color: #8A8A8A;
-  border-radius: 4px;
-  border: 1px solid #F29F48;
-  padding: 7px 18px;
-  background: #fff;
-  transition: all 300ms ease-in-out;
-} 
-.communti-btn-wrapper a:hover {
-  background: linear-gradient(135deg, #F2994A 2.5%, #f2994a 2.51%, #f0bd3b 100%);
-  text-decoration: none;
-  color: #fff;
-}
+
 .mar-righ-wrapper {
   display: flex;
   align-items: center;
@@ -3081,15 +3054,14 @@ li.nav-item.cookie-tab a {
 }
 
 .profile-dropdown {
-    border: 1px solid #f2994a;
-    border-radius: 4px;
-    height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
-
+    
     .profile-dropdown button {
       padding: 0 10px !important;
+      border-radius: 4px;
+      
     }
     .profile-dropdown i.fas.fa-user {
         background: #000;
@@ -3101,14 +3073,31 @@ li.nav-item.cookie-tab a {
         display: flex;
         align-items: center;
         justify-content: center;
-        margin-right: 0.5rem;
     }
     .dropdown-toggle.btn {
-      padding: 0 10px !important;
+      padding: 0 6px 0 12px !important;
+      height: 36px !important;
+      border: 1px solid #d6d6d6 !important;
+      border-radius: 4px;
+      &:hover{
+        background-color: #fff;
+        color: #000;
+        i.fas.fa-user{
+          color: #fff;
+        }
+      }
     }
     i.fas.fa-user {
       margin-right: 0.5rem;
-    }
+      border-radius: 50%;
+      width: 1.125rem;
+      height: 1.125rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #000;
+      box-sizing: border-box;
+  }
 }
 
 .profile-drop-display {
@@ -3197,4 +3186,132 @@ li.nav-item.cookie-tab a {
   padding: 10px;
   color: #fff;
   font-size: 14px;
+}
+
+.header {
+  width: 100%;
+  background: #272727;
+  z-index: 999;
+  padding: 0.5rem 1rem;
+  margin-bottom: 0px;
+  .dropdown-toggle::after {
+    background-image: url('../../assets/icons/downChevron-white.svg')
+  }
+  .logo img {
+    filter: invert(1);
+  }
+  svg {
+    cursor: pointer;
+    &:hover {
+      stroke: #fff;
+      *{
+        stroke: #fff;
+      }
+    }
+  }
+}
+
+.switchPrd{
+    .dropdown-menu {
+      box-shadow: -10px 10px 25px rgba(0, 0, 0, 0.15);
+      border-color: #e6e6e6;
+      border-radius: 4px;
+      padding: 0.5rem 1rem;
+      min-width: 12rem;
+    }
+    .dropdown-item{
+      margin-bottom: 0.5rem;
+      img{
+        margin-right: 0.5rem;
+      }
+    }
+    a.dropHeader {
+      border-bottom: 1px solid #e6e6e6;
+      border-radius: 0 !important;
+      margin-bottom: 10px;
+      padding-bottom: 10px !important;
+      font-weight: 600;
+    }
+    button.btn {
+    background: inherit !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    margin-left: 14px;
+    &:after{
+      display: none;
+    }
+    }
+}
+.logo span {
+  color: #d6d6d6;
+  font-size: 19px;
+  margin-left: 0.5rem;
+  font-weight: 500;
+}
+.border-radius-right-none {
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+}
+.endpoint-headers-container .main-table-wrapper .hm-public-table input {
+  width: 100%;
+}
+.tab-pane .hm-public-table .table tbody tr td:nth-child(n+2) {
+  width: 200px;
+}
+.tab-pane .hm-public-table .table tbody tr td:first-child label {
+  margin-left: 6px;
+}
+.dashboardPage table#custom-generic-table tbody input[value="true"] + span.checkmark {
+  background: #f1b43f;
+}
+
+.errorPage{
+  background-image: url('../../assets/icons/texture.webp');
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 60px;
+  background-repeat: no-repeat;
+  background-size: cover;
+  img {
+    max-width: 400px;
+  }
+  h4 {
+    font-size: 100px;
+    font-weight: 800;
+  }
+  h3{
+    font-size: 20px;
+    text-transform: capitalize;
+    margin-bottom: 45px;
+  }
+  button {
+    background: none;
+    border: 1px solid #828282;
+    font-size: 14px;
+    display: inline-block;
+    padding: 13px 40px;
+    border-radius: 4px;
+  }
+}
+
+.dashboardPage{
+  .endpoint-response-container{
+    position: relative;
+    .response-status {
+      position: absolute;
+      right: 15px;
+      z-index: 9;
+    }
+    .response-viewer{
+      .respTabsListing.nav-tabs {
+        margin-top: 0;
+        li a{
+          padding-top: 0;
+        }
+      }
+    }
+  }
 }

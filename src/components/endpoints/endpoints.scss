@@ -752,6 +752,7 @@ table#custom-generic-table {
   background-color: transparent !important;
   color: black !important;
   max-height:500px;
+  padding-right: 10px;
 
   .__json-key__ {
     color: brown !important;
@@ -759,6 +760,8 @@ table#custom-generic-table {
 
   .__json-string__ {
     color: steelblue !important;
+    white-space: normal;
+    word-break: break-all;
   }
 }
 
@@ -1119,6 +1122,7 @@ table#custom-generic-table {
 
 .add-to-sample-response {
   width: 100%;
+  float: right;
 
   .toast.show {
     padding: 0;
@@ -1394,4 +1398,9 @@ table#custom-generic-table {
   display: none;
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+.response-headers-container {
+  max-height: 500px;
+  overflow: auto;
 }

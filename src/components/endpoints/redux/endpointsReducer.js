@@ -19,7 +19,6 @@ function endpointsReducer (state = initialState, action) {
 
     case endpointsActionTypes.SET_AUTHORIZATION_TYPE_ERROR:
       state[action.versionId].authorizationType = action.originalAuthType
-      toast.error(action.error)
       return state
 
     case endpointsActionTypes.MOVE_ENDPOINT_REQUEST:
@@ -28,10 +27,15 @@ function endpointsReducer (state = initialState, action) {
       return endpoints
 
     case endpointsActionTypes.ON_ENDPOINTS_FETCHED:
-      return { ...action.endpoints }
+      return { ...state, ...action.endpoints }
 
     case endpointsActionTypes.ON_ENDPOINTS_FETCHED_ERROR:
-      toast.error(action.error)
+      return state
+
+    case endpointsActionTypes.ON_ENDPOINT_FETCHED:
+      return { [action.endpoints.id]: { ...action.endpoints } }
+
+    case endpointsActionTypes.ON_ENDPOINT_FETCHED_ERROR:
       return state
 
     case endpointsActionTypes.ADD_ENDPOINT_REQUEST:

@@ -211,6 +211,7 @@ class EnvironmentVariables extends Component {
                         <th className='custom-td'>Variable</th>
                         <th className='custom-td'>Initial Value</th>
                         <th className='custom-td'>Current Value</th>
+                        <th className='custom-td'>Action</th>
                       </tr>
                     </thead>
 

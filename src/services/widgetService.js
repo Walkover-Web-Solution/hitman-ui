@@ -49,6 +49,7 @@ export function loadWidget () {
     script.setAttribute('authkey', authkey)
     script.setAttribute('widget-id', widgetId)
     script.setAttribute('user-data', JSON.stringify(userData))
+    script.setAttribute('debug', true)
     document.body.appendChild(script)
     script.onload = () => {
     }

@@ -6,7 +6,7 @@ $border-color: #E5E5E5;
   width: 100%;
   display: flex;
   flex-direction: row;
-  margin-top: 20px;
+  margin-top: -5px;
   background: #ffffff;
   // border-right: 0.5px solid #E6DBD4;
   // border-left: 0.5px solid #E6DBD4;
@@ -622,4 +622,13 @@ div#history-tab-button button#dropdown-basic {
   .tabs-width{
     width: auto !important;
   }
+}
+
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tab-width{
+  width: 115px;
 }

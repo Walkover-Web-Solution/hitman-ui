@@ -4,13 +4,14 @@ import 'react-toastify/dist/ReactToastify.css'
 import { fetchCollections, fetchCollectionsFromIdb } from '../collections/redux/collectionsActions'
 import { fetchAllVersions, fetchAllVersionsFromIdb } from '../collectionVersions/redux/collectionVersionsActions'
 import {
+  fetchEndpoint,
   fetchEndpoints,
   moveEndpoint,
   fetchEndpointsFromIdb
 } from '../endpoints/redux/endpointsActions'
 import { fetchGroups, fetchGroupsFromIdb } from '../groups/redux/groupsActions'
 import indexedDbService from '../indexedDb/indexedDbService'
-import { fetchPages, fetchPagesFromIdb } from '../pages/redux/pagesActions'
+import { fetchPage, fetchPages, fetchPagesFromIdb } from '../pages/redux/pagesActions'
 import { fetchHistoryFromIdb } from '../history/redux/historyAction'
 import ContentPanel from './contentPanel'
 import './main.scss'
@@ -24,6 +25,8 @@ import OnlineSatus from '../onlineStatus/onlineStatus'
 import { getOrgUpdatedAt } from '../../services/orgApiService'
 import moment from 'moment'
 import Cookies from 'universal-cookie'
+import Header from './header'
+import { loadfeedioWidget } from '../../services/feedioWidgetService'
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -41,7 +44,9 @@ const mapDispatchToProps = (dispatch) => {
     move_endpoint: (endpointId, sourceGroupId, destinationGroupId) =>
       dispatch(moveEndpoint(endpointId, sourceGroupId, destinationGroupId)),
     fetch_all_cookies: () => dispatch(fetchAllCookies()),
-    fetch_all_cookies_from_local: () => dispatch(fetchAllCookiesFromLocalStorage())
+    fetch_all_cookies_from_local: () => dispatch(fetchAllCookiesFromLocalStorage()),
+    fetch_endpoint: (endpointId) => dispatch(fetchEndpoint(endpointId)),
+    fetch_page: (pageId) => dispatch(fetchPage(pageId))
   }
 }
 
@@ -52,12 +57,20 @@ class Main extends Component {
       tabs: [],
       defaultTabIndex: 0
     }
+    const { endpointId, pageId } = this.props.match.params
+    if (endpointId && endpointId !== 'new') {
+      this.props.fetch_endpoint(endpointId)
+    }
+    if (pageId) {
+      this.props.fetch_page(pageId)
+    }
   }
 
   async componentDidMount () {
     const token = this.getTokenFromCookie()
     if (getCurrentUser()) {
       loadWidget()
+      loadfeedioWidget()
       await this.fetchAll()
     } else if (token) {
       login(token).then(() => this.fetchAll())
@@ -142,6 +155,7 @@ class Main extends Component {
           Looks like you have opened it on a mobile device. It looks better on a desktop device.
         </div>}
         <div className='custom-main-container'>
+          <Header {...this.props} />
           <OnlineSatus fetchFromBackend={this.fetchFromBackend.bind(this)} isIdbUpdated={this.isIdbUpdated.bind(this)} />
           <div className='main-panel-wrapper'>
             <SideBar

@@ -24,6 +24,7 @@ class Landing extends Component {
       const orgList = JSON.parse(window.localStorage.getItem('organisationList'))
       if (orgList) {
         const orgId = orgList[0].identifier
+        window.localStorage.setItem('organisation', JSON.stringify(orgList[0]))
         this.props.history.push({
           pathname: `/orgs/${orgId}/dashboard`
         })
