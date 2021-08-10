@@ -330,11 +330,7 @@ class GenericTable extends Component {
                 value={dataArray[index].key}
                 onChange={this.handleChange}
                 type='text'
-                placeholder={
-                dataArray[index].checked === 'notApplicable'
-                  ? 'Key'
-                  : ''
-              }
+                placeholder='Key'
                 className='form-control'
                 style={{ border: 'none' }}
               />
@@ -368,11 +364,7 @@ class GenericTable extends Component {
                     value={dataArray[index].description}
                     onChange={this.handleChange}
                     type='text'
-                    placeholder={
-                      dataArray[index].checked === 'notApplicable'
-                        ? 'Description'
-                        : ''
-                    }
+                    placeholder='Description'
                     style={{ border: 'none' }}
                     className='form-control'
                   />
