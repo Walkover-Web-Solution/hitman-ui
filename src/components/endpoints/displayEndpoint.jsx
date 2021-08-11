@@ -986,6 +986,7 @@ class DisplayEndpoint extends Component {
             ? bodyDescription
             : {},
         authorizationType: this.state.authType,
+        notes: this.state.endpoint.notes,
         preScript: this.state.preScriptText,
         postScript: this.state.postScriptText
       }
@@ -2512,6 +2513,11 @@ class DisplayEndpoint extends Component {
                 </div>
                 <Notes
                   {...this.props}
+                  submitNotes={(data) => {
+                    if (this.state.endpoint.id === data.id) {
+                      this.setState({ endpoint: { ...this.state.endpoint, notes: data.notes } })
+                    }
+                  }}
                   note={this.state.endpoint?.notes || ''}
                   endpointId={this.state.endpoint?.id}
                 />
