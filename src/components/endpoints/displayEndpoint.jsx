@@ -837,6 +837,7 @@ class DisplayEndpoint extends Component {
     const url = BASE_URL + path + queryparams
     if (!url) {
       toast.error('Request URL is empty')
+      setTimeout(() => { this.setState({ loader: false }) }, 500)
       return
     }
 

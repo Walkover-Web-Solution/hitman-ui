@@ -2,6 +2,7 @@ import React from 'react'
 import { Modal } from 'react-bootstrap'
 import Form from '../common/form'
 import { onEnter } from '../common/utility'
+import Joi from 'joi-browser'
 
 class TagManagerModal extends Form {
   constructor (props) {
@@ -9,6 +10,10 @@ class TagManagerModal extends Form {
     this.state = {
       data: { gtmId: '' },
       errors: {}
+    }
+
+    this.schema = {
+      gtmId: Joi.string().required().label('GTM-ID')
     }
   }
 
@@ -30,7 +35,7 @@ class TagManagerModal extends Form {
 
   render () {
     return (
-      <div onKeyPress={(e) => { onEnter(e, this.doSubmit.bind(this)) }}>
+      <div onKeyPress={(e) => { onEnter(e, this.handleKeyPress.bind(this)) }}>
         <Modal
           {...this.props}
           size='lg'
@@ -49,16 +54,9 @@ class TagManagerModal extends Form {
             </Modal.Header>
             <Modal.Body>
               <form onSubmit={this.handleSubmit}>
-                {this.renderInput('gtmId', 'GTM-ID', '')}
+                {this.renderInput('gtmId', 'GTM-ID', 'GTM-ID', true)}
                 <div className='text-left mt-2 mb-2'>
-
-                  <button
-                    className='btn btn-primary btn-lg'
-                    type='button'
-                    onClick={() => this.doSubmit()}
-                  >
-                    Submit
-                  </button>
+                  {this.renderButton('Submit')}
                   <button
                     className='btn btn-secondary outline btn-lg ml-2'
                     onClick={this.props.onHide}
