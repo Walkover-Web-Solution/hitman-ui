@@ -6,6 +6,7 @@ import './tabs.scss'
 import tabService from './tabService'
 import { ReactComponent as HistoryIcon } from '../../assets/icons/historyIcon.svg'
 import History from '../history/history.jsx'
+import TabOptions from './tabOptions'
 
 class CustomTabs extends Component {
   constructor (props) {
@@ -13,7 +14,7 @@ class CustomTabs extends Component {
     this.navRef = React.createRef()
     this.scrollRef = {}
     this.state = {
-      showSavePrompt: false,
+      showSavePromptFor: [],
       leftScroll: 0,
       clientScroll: this.navRef.current?.clientWidth,
       windowScroll: this.navRef.current?.scrollWidth
@@ -110,16 +111,8 @@ class CustomTabs extends Component {
     }
   }
 
-  removeTab (tabId) {
-    if (this.props.tabs.tabs[tabId].isModified) {
-      this.setState({ showSavePrompt: true, selectedTabId: tabId })
-    } else {
-      tabService.removeTab(tabId, { ...this.props })
-    }
-  }
-
   closeSavePrompt () {
-    this.setState({ showSavePrompt: false })
+    this.setState({ showSavePromptFor: [] })
   }
 
   onDragStart (tId) {
@@ -224,6 +217,24 @@ class CustomTabs extends Component {
     }
   }
 
+  handleCloseTabs (tabIds) {
+    const showSavePromptFor = []
+    const tabsData = this.props.tabs.tabs
+    for (let i = 0; i < tabIds.length; i++) {
+      const tabData = tabsData[tabIds[i]]
+      if (tabData.isModified) {
+        showSavePromptFor.push(tabIds[i])
+      } else {
+        tabService.removeTab(tabIds[i], { ...this.props })
+      }
+    }
+    this.setState({ showSavePromptFor })
+  }
+
+  handleOnConfirm (tabId) {
+    this.setState({ showSavePromptFor: this.state.showSavePromptFor.filter((tab) => tab !== tabId) })
+  }
+
   render () {
     return (
 
@@ -241,12 +252,13 @@ class CustomTabs extends Component {
           : null}
         <Nav variant='pills' className='flex-row flex-nowrap item-wrp' onScroll={() => this.scrollLength()} ref={this.navRef} style={{ scrollBehavior: 'smooth' }}>
           <div>
-            {this.state.showSavePrompt && (
+            {this.state.showSavePromptFor.length > 0 && (
               <SavePromptModal
                 {...this.props}
                 show
                 onHide={() => this.closeSavePrompt()}
-                tab_id={this.state.selectedTabId}
+                onConfirm={this.handleOnConfirm.bind(this)}
+                tab_id={this.state.showSavePromptFor[0]}
               />
             )}
           </div>
@@ -282,7 +294,7 @@ class CustomTabs extends Component {
                     {this.renderTabName(tabId)}
                   </button>
                 </Nav.Link>
-                <button className='btn' onClick={() => this.removeTab(tabId)}>
+                <button className='btn' onClick={() => this.handleCloseTabs([tabId])}>
                   <i className='uil uil-multiply' />
                 </button>
               </Nav.Item>
@@ -290,40 +302,6 @@ class CustomTabs extends Component {
               (this.renderHoverTab(tabId, this.tabRef))}
             </div>
           ))}
-          {/* <Nav.Item className='tab-buttons' id='tabs-menu-button'>
-          <div className='dropdown'>
-            <button
-              className='btn '
-              type='button'
-              id='tabs-menu'
-              data-toggle='dropdown'
-              aria-haspopup='true'
-              aria-expanded='false'
-            >
-              <i className='uil uil-ellipsis-h' />
-            </button>
-            <div
-              className='dropdown-menu dropdown-menu-right'
-              aria-labelledby='tabs-menu'
-            >
-              <button
-                className='btn'
-                onClick={() =>
-                  tabService.removeTab(this.props.tabs.activeTabId, {
-                    ...this.props
-                  })}
-              >
-                Close Current Tab
-              </button>
-              <button
-                className='btn'
-                onClick={() => tabService.removeAllTabs({ ...this.props })}
-              >
-                Close All Tabs
-              </button>
-            </div>
-          </div>
-        </Nav.Item> */}
         </Nav>
         {this.showScrollButton()
           ? (
@@ -347,6 +325,10 @@ class CustomTabs extends Component {
             </svg>
 
           </button>
+        </Nav.Item>
+
+        <Nav.Item className='' id='options-tab-button'>
+          <TabOptions handleCloseTabs={this.handleCloseTabs.bind(this)} />
         </Nav.Item>
 
         <Nav.Item className='' id='history-tab-button'>

@@ -528,6 +528,18 @@ $border-color: #E5E5E5;
   border-bottom: 1px solid #e6dad4;
 }
 
+#options-tab-button {
+  background: #F8F8F8;
+  border-top: 0.5px solid #E6DBD4;
+  border-right: 0.5px solid #E6DBD4;
+  border-left: 0.5px solid #E6DBD4;
+  border-top-right-radius: 4px;
+  width: 40px;
+  margin-right: 8px;
+  margin-bottom: -3px;
+  border-bottom: 1px solid #e6dad4;
+}
+
 .scroll-button--right>span:first-child:before {
   content: "";
   position: absolute;
