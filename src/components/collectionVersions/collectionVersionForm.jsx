@@ -32,6 +32,7 @@ class CollectionVersionForm extends Form {
     this.schema = {
       number: Joi.string().required().label('Version Name'),
       host: Joi.string().uri().required().label('Version Endpoint')
+        .error(() => { return { message: 'Version Endpoint Must be Valid Url' } })
     }
   }
 

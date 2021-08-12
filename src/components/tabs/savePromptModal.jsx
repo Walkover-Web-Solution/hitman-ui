@@ -9,19 +9,39 @@ class SavePromptModal extends Component {
   }
 
   handleSave () {
-    this.props.onHide()
     this.props.handle_save_endpoint(true, this.props.tab_id)
+    this.props.onConfirm(this.props.tab_id)
   }
 
   handleDontSave () {
-    this.props.onHide()
     tabService.removeTab(this.props.tab_id, { ...this.props })
+    this.props.onConfirm(this.props.tab_id)
+  }
+
+  getTabName (tabId) {
+    const tab = this.props.tabs.tabs[tabId]
+    let name = ''
+    if (!tab) return
+    switch (tab.type) {
+      case 'history': name = this.props.historySnapshots[tabId]?.endpoint?.name || ''
+        break
+      case 'endpoint':
+        if (tab.status === 'SAVED') name = this.props.endpoints[tabId]?.name || ''
+        else name = 'Untitled'
+        break
+      case 'page': name = this.props.pages[tabId]?.name || ''
+        break
+      default: name = ''
+    }
+    return name
   }
 
   render () {
+    const tabId = this.props.tab_id
     return (
       <Modal
-        {...this.props}
+        show
+        onHide={this.props.onHide}
         animation={false}
         aria-labelledby='contained-modal-title-vcenter'
         centered
@@ -33,7 +53,7 @@ class SavePromptModal extends Component {
         </Modal.Header>
         <Modal.Body id='custom-delete-modal-body'>
           <div>
-            <p> This tab has unsaved changes which will be lost if you choose to
+            <p> This tab <strong>{this.getTabName(tabId)}</strong> has unsaved changes which will be lost if you choose to
               close it. Save these changes to avoid losing your work.
             </p>
           </div>

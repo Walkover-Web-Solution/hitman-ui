@@ -42,6 +42,7 @@ export class Notes extends Form {
       notes: this.state.length === 0 ? '' : this.state.data.description
     }
     this.props.update_endpoint(data)
+    this.props.submitNotes(data)
     this.setState({ isSaveDisabled: true })
   }
 

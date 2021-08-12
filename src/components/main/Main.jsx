@@ -27,6 +27,7 @@ import moment from 'moment'
 import Cookies from 'universal-cookie'
 import Header from './header'
 import { loadfeedioWidget } from '../../services/feedioWidgetService'
+import { loadHelloWidget } from '../../services/helloWidgetService'
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -71,6 +72,7 @@ class Main extends Component {
     if (getCurrentUser()) {
       loadWidget()
       loadfeedioWidget()
+      loadHelloWidget()
       await this.fetchAll()
     } else if (token) {
       login(token).then(() => this.fetchAll())

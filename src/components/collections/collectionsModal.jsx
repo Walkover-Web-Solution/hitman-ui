@@ -15,18 +15,24 @@ const choices = {
   [collectionsModalEnum.IMPORT]: {
     key: collectionsModalEnum.IMPORT,
     label: 'Import',
+    modalTitle: 'Import Collection',
+    modalSize: 'lg',
     disabled: false
   },
   [collectionsModalEnum.NEW]: {
     key: collectionsModalEnum.NEW,
     label: 'Create New',
     disabled: false,
+    modalTitle: 'Create New Collection',
+    modalSize: 'lg',
     id: 'add_collection_create_new_btn'
   },
   [collectionsModalEnum.MARKETPLACE]: {
     key: collectionsModalEnum.MARKETPLACE,
     label: 'Marketplace',
-    disabled: true
+    modalTitle: 'Import Collection From Marketplace',
+    modalSize: 'xl',
+    disabled: false
   }
 }
 
@@ -45,8 +51,8 @@ class CollectionsModal extends Component {
         {Object.values(choices).map((choice) => (
           <div
             key={choice.key}
-            className='add-collection-item'
-            onClick={() => this.selectChoice(choice.key)}
+            className={['add-collection-item', choice.disabled ? 'disabled' : ''].join(' ')}
+            onClick={() => choice.disabled ? {} : this.selectChoice(choice.key)}
           >
             <div>
               <span>{choice.label}</span><br />
@@ -94,7 +100,7 @@ class CollectionsModal extends Component {
   renderMarketplace () {
     return (
       <MarketplaceModal
-        show
+        showOnlyContent
         onCancel={() => { this.removeSelection() }}
         onHide={() => { this.props.onHide() }}
       />
@@ -102,25 +108,32 @@ class CollectionsModal extends Component {
   }
 
   render () {
+    /** Get Current Choice Selection */
+    const selectedChoice = choices[this.state.choiceSelected]
+
+    /** Set Default values */
+    let dialogClassName = 'collection-choice-modal'
+    let modalSize = 'lg'
+    let modalTitle = this.props.title
+    let modalBody = this.renderChoices()
+
+    if (selectedChoice) {
+      dialogClassName = ''
+      modalSize = selectedChoice.modalSize
+      modalTitle = selectedChoice.modalTitle
+      modalBody = this.renderSelectedForm()
+    }
+
     return (
-      <Modal
-        size='lg'
-        centered
-        onHide={this.props.onHide}
-        show={this.props.show}
-        dialogClassName={this.state.choiceSelected ? ' ' : 'collection-choice-modal'}
-      >
+      <Modal size={modalSize} centered onHide={this.props.onHide} show={this.props.show} dialogClassName={dialogClassName}>
         <div>
-          <Modal.Header
-            className='custom-collection-modal-container'
-            closeButton
-          >
+          <Modal.Header className='custom-collection-modal-container' closeButton>
             <Modal.Title id='contained-modal-title-vcenter'>
-              {this.props.title}
+              {modalTitle}
             </Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            {this.state.choiceSelected ? this.renderSelectedForm() : this.renderChoices()}
+            {modalBody}
           </Modal.Body>
         </div>
       </Modal>

@@ -74,29 +74,26 @@ class EnvironmentVariables extends Component {
     const updatedVariableNames = [...this.state.updatedVariableNames]
     delete environment.variables[originalVariableNames.pop()]
     updatedVariableNames.pop()
+
+    const updatedVariables = {}
     for (let i = 0; i < updatedVariableNames.length; i++) {
-      if (updatedVariableNames[i] !== originalVariableNames[i]) {
-        if (
-          updatedVariableNames[i] === 'deleted' ||
-          updatedVariableNames[i] === ''
-        ) { delete environment.variables[originalVariableNames[i]] } else {
-          environment.variables[updatedVariableNames[i]] =
-            environment.variables[originalVariableNames[i]]
-          delete environment.variables[originalVariableNames[i]]
-        }
+      const variableName = updatedVariableNames[i].trim()
+      if (variableName && variableName !== 'deleted') {
+        updatedVariables[variableName] = environment.variables[originalVariableNames[i]]
       }
     }
+    const updatedEnvironment = { ...this.state.environment, variables: updatedVariables }
+
     if (this.props.title === 'Add new Environment') {
       this.props.onHide()
       const requestId = shortId.generate()
-      this.props.add_environment({ ...this.state.environment, requestId })
+      this.props.add_environment({ ...updatedEnvironment, requestId })
       this.setState({
         environment: { name: '', variables: {} },
         originalVariableNames: [],
         updatedVariableNames: []
       })
     } else {
-      const updatedEnvironment = { ...this.state.environment }
       const originalEnvironment = jQuery.extend(
         true,
         {},

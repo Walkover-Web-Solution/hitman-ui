@@ -61,7 +61,7 @@ export const Snippets = {
   },
   TEST_STATUS_200: {
     key: 'Status code: Code is 200',
-    value: 'hm.test("Status code is 200", ()=>{\r\n\texpect(hm.response.status).to.equal(200)\r\n})'
+    value: 'hm.test("Status code is 200", ()=>{\r\n\texpect(hm.response.status).to.equal(200);\r\n});'
   },
   TEST_STATUS_CODE_HAS_STRING: {
     key: 'Status Code: Code name has string',
@@ -73,11 +73,11 @@ export const Snippets = {
   },
   TEST_RESPONSE_BODY_JSON_CHECK: {
     key: 'Response body: JSON Value Check',
-    value: 'hm.test("JSON Value Check", ()=>{\r\n\tlet jsonData = hm.response.body;\r\n\texpect(jsonData.key).to.eql("value")\r\n})'
+    value: 'hm.test("JSON Value Check", ()=>{\r\n\tlet jsonData = hm.response.body;\r\n\texpect(jsonData.key).to.eql("value");\r\n});'
   },
   TEST_RESPONSE_BODY_EQUAL_TO_STRING: {
     key: 'Response body: is equal to a string',
-    value: 'hm.test("Body Is Correct", ()=>{\r\n\texpect(hm.response.body).to.eql("STRING_TO_CHECK")\r\n})'
+    value: 'hm.test("Body Is Correct", ()=>{\r\n\texpect(hm.response.body).to.eql("STRING_TO_CHECK");\r\n});'
   },
   TEST_RESPONSE_BODY_CONTAINS_STRING: {
     key: 'Response body: Contains string',
@@ -85,7 +85,7 @@ export const Snippets = {
   },
   TEST_RESPONSE_HEADERS_CONTAINS_HEADER: {
     key: 'Response Headers: Content-Type header check',
-    value: 'hm.test("Content-Type is present", function () {\r\n\texpect(hm.response.headers.getHeaders()).to.have.property(\'Content-Type\')\r\n});'
+    value: 'hm.test("Content-Type is present", function () {\r\n\texpect(hm.response.headers.getHeaders()).to.have.property(\'Content-Type\');\r\n});'
   }
 }
 
