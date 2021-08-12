@@ -6,9 +6,7 @@ import AceEditor from 'react-ace'
 import 'ace-builds/webpack-resolver'
 import 'ace-builds/src-noconflict/theme-tomorrow_night'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
-// import copyIcon from '../../assets/icons/copyIcon.svg'
 import { ReactComponent as CopyIcon } from '../../assets/icons/copyIcon.svg'
-import { toast } from 'react-toastify'
 import { languages, primaryLanguages, secondaryLanguages } from './languages'
 const HTTPSnippet = require('httpsnippet')
 
@@ -51,7 +49,7 @@ class CodeTemplate extends Component {
       const snippet = this.makeCodeSnippet()
       codeSnippet = snippet.convert(selectedLanguage)
     } catch (error) {
-      toast.error(error.name + ': ' + error.message)
+      console.log(error)
     }
     this.setState({ codeSnippet, copied: false })
   }
