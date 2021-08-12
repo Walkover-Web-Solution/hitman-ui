@@ -12,6 +12,7 @@ export const fetchPages = (orgId) => {
       .then((response) => {
         const pages = response.data
         dispatch(onPagesFetched(pages))
+        indexedDbService.clearStore('pages')
         indexedDbService.addMultipleData('pages', Object.values(response.data))
       })
       .catch((error) => {
