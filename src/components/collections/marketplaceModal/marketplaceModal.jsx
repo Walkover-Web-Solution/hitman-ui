@@ -136,33 +136,40 @@ export class MarketplaceModal extends Component {
     )
   }
 
-  render () {
+  renderContent () {
     return (
-      <div>
-        <Modal
-          size='xl'
-          centered
-          onHide={this.props.onHide}
-          show={this.props.show}
-        >
-          <div>
-            <Modal.Header
-              className='custom-collection-modal-container'
-              closeButton
-            >
-              <Modal.Title id='contained-modal-title-vcenter'>
-                Import Collection From Marketplace
-              </Modal.Title>
-            </Modal.Header>
-            <Modal.Body className='marketplace-modal'>
-              {this.renderSearchBar()}
-              {this.renderSearchResults()}
-            </Modal.Body>
-            {this.renderFooterButtons()}
-          </div>
-        </Modal>
-      </div>
+      <>
+        {this.renderSearchBar()}
+        {this.renderSearchResults()}
+        {this.renderFooterButtons()}
+      </>
     )
+  }
+
+  renderInModal () {
+    return (
+      <Modal
+        size='xl'
+        centered
+        onHide={this.props.onHide}
+        show
+      >
+        <div>
+          <Modal.Header className='custom-collection-modal-container' closeButton>
+            <Modal.Title id='contained-modal-title-vcenter'>
+              Import Collection From Marketplace
+            </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            {this.renderContent()}
+          </Modal.Body>
+        </div>
+      </Modal>
+    )
+  }
+
+  render () {
+    return (this.props.showOnlyContent ? this.renderContent() : this.renderInModal())
   }
 }
 
