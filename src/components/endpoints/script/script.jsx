@@ -47,6 +47,7 @@ export class Script extends Component {
       column: 0
     }
     this.scriptEditor.editor.session.insert(newPosition, snippet?.value + '\n')
+    this.scriptEditor.editor.scrollToLine(newPosition.row)
   }
 
   renderScriptEditor () {
