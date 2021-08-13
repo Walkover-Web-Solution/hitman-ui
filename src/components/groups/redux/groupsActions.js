@@ -57,6 +57,7 @@ export const fetchGroups = (orgId) => {
       .getAllGroups(orgId)
       .then((response) => {
         dispatch(onGroupsFetched(response.data))
+        indexedDbService.clearStore('groups')
         indexedDbService.addMultipleData('groups', Object.values(response.data))
       })
       .catch((error) => {

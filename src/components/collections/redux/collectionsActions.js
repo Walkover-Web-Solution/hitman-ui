@@ -12,6 +12,7 @@ export const fetchCollections = (orgId) => {
       .getCollections(orgId)
       .then((response) => {
         dispatch(onCollectionsFetched(response.data))
+        indexedDbService.clearStore('collections')
         indexedDbService.addMultipleData('collections', Object.values(response.data))
       })
       .catch((error) => {
