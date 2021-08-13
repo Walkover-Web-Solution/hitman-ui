@@ -7,7 +7,8 @@ const apiUrl = process.env.REACT_APP_API_URL
 const signUpNotifierUrl = process.env.REACT_APP_SIGN_UP_NOTIFIER_URL
 const tokenKey = 'token'
 const profileKey = 'profile'
-const orgKey = 'organisation'
+export const orgKey = 'organisation'
+export const orgListKey = 'organisationList'
 const ssoURL = process.env.REACT_APP_SOCKET_SSO_URL
 const uiURL = process.env.REACT_APP_UI_URL
 
@@ -41,23 +42,24 @@ export async function login (socketJwt) {
   window.localStorage.setItem(tokenKey, socketJwt)
   window.localStorage.setItem(profileKey, JSON.stringify(userInfo.profile))
   window.localStorage.setItem(orgKey, JSON.stringify(userInfo.orgs[0]))
-  window.localStorage.setItem('organisationList', JSON.stringify(userInfo.orgs))
+  window.localStorage.setItem(orgListKey, JSON.stringify(userInfo.orgs))
   http.setJwt(`Bearer ${socketJwt}`)
   return userInfo
 }
 export function loginWithJwt (jwt) {
   window.localStorage.setItem(tokenKey, jwt)
 }
-export function logout () {
+export function logout (redirectUrl = '/login') {
   // const isDesktop = process.env.REACT_APP_IS_DESKTOP
   http.get(apiUrl + '/logout').then(() => {
     window.localStorage.removeItem(tokenKey)
     window.localStorage.removeItem(profileKey)
     window.localStorage.removeItem(orgKey)
+    window.localStorage.removeItem(orgListKey)
     if (isElectron()) {
       history.push({ pathname: '/' })
     } else {
-      const redirectUri = encodeURIComponent(`${uiURL}/login`)
+      const redirectUri = encodeURIComponent(uiURL + redirectUrl)
       window.location = `${ssoURL}/logout?redirect_uri=${redirectUri}&src=hitman`
     }
   })
@@ -80,10 +82,19 @@ export function getCurrentOrg () {
   }
 }
 
+export function getOrgList () {
+  try {
+    const orgs = window.localStorage.getItem(orgListKey)
+    return JSON.parse(orgs)
+  } catch (ex) {
+    return null
+  }
+}
+
 export function getJwt () {
   const cookies = new Cookies()
   const token = cookies.get('token')
-  return token || window.localStorage.getItem(tokenKey)
+  return token
 }
 
 export async function notifySignup (UserInfo) {
@@ -106,5 +117,8 @@ export default {
   getCurrentOrg,
   getJwt,
   isAdmin,
-  notifySignup
+  notifySignup,
+  orgKey,
+  orgListKey,
+  getOrgList
 }

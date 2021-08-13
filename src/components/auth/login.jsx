@@ -1,21 +1,24 @@
 import queryString from 'query-string'
 import React, { Component } from 'react'
-import { Redirect } from 'react-router-dom'
 import './auth.scss'
 import auth from './authService'
 import { getOrgId } from '../common/utility'
 
 class Login extends Component {
   async componentDidMount () {
-    const socketJwt = this.getSocketJwt()
-    if (!socketJwt) return
+    const socketJwt = auth.getJwt()
+    if (!socketJwt) {
+      this.props.history.push({
+        pathname: '/logout',
+        search: this.props.location.search
+      })
+    }
     const userInfo = await auth.login(socketJwt)
     if (this.isNewUser()) {
       await auth.notifySignup(userInfo)
     }
     const orgId = getOrgId()
-    const { state } = this.props.location
-    const reloadRoute = state ? state.from.pathname : `/orgs/${orgId}/dashboard/endpoint/new`
+    const reloadRoute = new URLSearchParams(this.props.location.search).get('redirect_uri') || `/orgs/${orgId}/dashboard`
     this.props.history.push({
       pathname: reloadRoute
     })
@@ -28,16 +31,7 @@ class Login extends Component {
     } else return false
   }
 
-  getSocketJwt = () => {
-    const { location } = this.props
-    const { 'sokt-auth-token': socketJwt } = queryString.parse(location.search)
-    return socketJwt
-  };
-
   render () {
-    const orgId = getOrgId()
-    if (auth.getCurrentUser()) return <Redirect to={`/orgs/${orgId}/dashboard/endpoint/new`} />
-
     return <></>
   }
 }

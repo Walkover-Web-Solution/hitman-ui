@@ -21,18 +21,9 @@ class Landing extends Component {
         this.props.history.push({ pathname: '/p/error' })
       }
     } else {
-      const orgList = JSON.parse(window.localStorage.getItem('organisationList'))
-      if (orgList) {
-        const orgId = orgList[0].identifier
-        window.localStorage.setItem('organisation', JSON.stringify(orgList[0]))
-        this.props.history.push({
-          pathname: `/orgs/${orgId}/dashboard`
-        })
-      } else {
-        this.props.history.push({
-          pathname: '/dashboard'
-        })
-      }
+      this.props.history.push({
+        pathname: '/dashboard'
+      })
     }
   }
 

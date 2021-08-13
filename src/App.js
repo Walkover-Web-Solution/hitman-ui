@@ -13,6 +13,7 @@ import ClientDoc from './components/publishDocs/clientDoc'
 import BrowserLogin from './components/broswerLogin/browserLogin'
 import { getOrgId, isElectron } from './components/common/utility'
 import { ERROR_403_PAGE, ERROR_404_PAGE } from './components/errorPages'
+import ProtectedRoute from './components/common/protectedRoute'
 
 class App extends Component {
   async redirectToClientDomain () {
@@ -99,11 +100,11 @@ class App extends Component {
             <Route path='/403_PAGE' component={ERROR_403_PAGE} />
 
             {/* Logged in Dashboard Routes */}
-            <Route path='/orgs/:orgId/admin/publish' component={Main} />
-            <Route path='/orgs/:orgId/dashboard/endpoint/:endpointId' component={Main} />
-            <Route path='/orgs/:orgId/dashboard/page/:pageId' component={Main} />
-            <Route path='/orgs/:orgId/dashboard/history/:historyId' component={Main} />
-            <Route exact path='/orgs/:orgId/dashboard/' component={Main} />
+            <ProtectedRoute path='/orgs/:orgId/admin/publish' component={Main} />
+            <ProtectedRoute path='/orgs/:orgId/dashboard/endpoint/:endpointId' component={Main} />
+            <ProtectedRoute path='/orgs/:orgId/dashboard/page/:pageId' component={Main} />
+            <ProtectedRoute path='/orgs/:orgId/dashboard/history/:historyId' component={Main} />
+            <ProtectedRoute exact path='/orgs/:orgId/dashboard/' component={Main} />
 
             {/* Not Logged in Dashboard Route */}
             <Route path='/dashboard/' component={Main} />
