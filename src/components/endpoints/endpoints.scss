@@ -1321,7 +1321,6 @@ table#custom-generic-table {
 
   .dropdown .dropdown-toggle {
     width: 205px;
-    ;
     text-align: left;
     border-radius: 4px;
     color: #333333;
@@ -1330,9 +1329,19 @@ table#custom-generic-table {
     font-weight: 600;
     outline: none;
     justify-content: space-between;
+    padding-right: 1rem;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: block;
+    padding-left: 0;
+    &:after{
+      position: absolute;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+    }
   }
 }
-
 
 .hostedWrapper {
   background: #fff;

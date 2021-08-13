@@ -11,6 +11,7 @@ export const fetchAllVersions = (orgId) => {
       .then((response) => {
         const versions = response.data
         dispatch(onVersionsFetched(versions))
+        indexedDbService.clearStore('versions')
         indexedDbService.addMultipleData('versions', Object.values(response.data))
       })
       .catch((error) => {

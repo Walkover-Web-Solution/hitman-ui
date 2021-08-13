@@ -42,6 +42,7 @@ export const fetchEndpoints = (orgId) => {
       .getAllEndpoints(orgId)
       .then((response) => {
         dispatch(onEndpointsFetched(response.data))
+        indexedDbService.clearStore('endpoints')
         indexedDbService.addMultipleData('endpoints', Object.values(response.data))
       })
       .catch((error) => {

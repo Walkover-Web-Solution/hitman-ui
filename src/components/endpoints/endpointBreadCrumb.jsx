@@ -31,7 +31,7 @@ class EndpointBreadCrumb extends Component {
 
   componentDidMount () {
     const pageId = this.props?.match?.params.pageId
-    if (pageId && this.props.pages[pageId]) {
+    if (!this.props.isEndpoint && pageId && this.props.pages[pageId]) {
       this.setState({
         endpointTitle: this.props.pages[pageId].name,
         isPagePublished: this.props.pages[pageId].isPublished,
@@ -58,7 +58,7 @@ class EndpointBreadCrumb extends Component {
         previousTitle: this.props.data.name
       })
     }
-    if (pageId && this.props.pages[pageId]) {
+    if (!this.props.isEndpoint && pageId && this.props.pages[pageId]) {
       if (this.props.pages[pageId].name !== prevState.previousTitle) {
         this.setState({
           endpointTitle: this.props.pages[pageId].name,
