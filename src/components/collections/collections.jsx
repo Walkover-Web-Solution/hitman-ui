@@ -326,7 +326,7 @@ class CollectionsComponent extends Component {
             eventKey={eventkeyValue !== null ? eventkeyValue : '0'}
           >
             <div className='row w-100 align-items-center'>
-              <div className='col-9'>
+              <div className='col-9 fixwidth'>
                 {collectionState === 'singleCollection'
                   ? (
                     <div>
