@@ -34,8 +34,7 @@ instance.interceptors.response.use(null, (error) => {
   }
   if (error?.response?.status === 401) {
     toast.error('Session Expired')
-    auth.logout()
-    // window.location = '/'
+    auth.logout(window.location.pathname)
   }
   return Promise.reject(error)
 })

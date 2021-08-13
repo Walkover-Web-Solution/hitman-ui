@@ -16,7 +16,6 @@ import { fetchHistoryFromIdb } from '../history/redux/historyAction'
 import ContentPanel from './contentPanel'
 import './main.scss'
 import SideBar from './sidebar'
-import { getCurrentUser, login } from '../auth/authService'
 import PublishDocs from '../publishDocs/publishDocs'
 import { loadWidget } from '../../services/widgetService'
 import { fetchAllCookies, fetchAllCookiesFromLocalStorage } from '../cookies/redux/cookiesActions'
@@ -28,6 +27,7 @@ import Cookies from 'universal-cookie'
 import Header from './header'
 import { loadfeedioWidget } from '../../services/feedioWidgetService'
 import { loadHelloWidget } from '../../services/helloWidgetService'
+import auth from '../auth/authService'
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -69,13 +69,27 @@ class Main extends Component {
 
   async componentDidMount () {
     const token = this.getTokenFromCookie()
-    if (getCurrentUser()) {
-      loadWidget()
-      loadfeedioWidget()
-      loadHelloWidget()
-      await this.fetchAll()
-    } else if (token) {
-      login(token).then(() => this.fetchAll())
+    if (!token) return
+    /** Token Exists */
+    if (auth.getCurrentUser() && auth.getOrgList() && auth.getCurrentOrg()) {
+      /** For Logged in User */
+      let orgId = this.props.match.params.orgId
+      if (!orgId) {
+        orgId = auth.getOrgList()[0]?.identifier
+        this.props.history.push({
+          pathname: `/orgs/${orgId}/dashboard`
+        })
+      } else {
+        loadWidget()
+        loadfeedioWidget()
+        loadHelloWidget()
+        await this.fetchAll()
+      }
+    } else {
+      /** Perform Login Procedure for Token */
+      this.props.history.push({
+        pathname: '/login'
+      })
     }
   }
 
