@@ -3,7 +3,6 @@ import { Route, Redirect } from 'react-router-dom'
 import auth from '../auth/authService'
 
 const ProtectedRoute = ({ path, component: Component, render, ...rest }) => {
-  console.log(window.location.href)
   return (
     <Route
       {...rest}
