@@ -23,6 +23,7 @@ import './main.scss'
 import { getCurrentUser } from '../auth/authService'
 import LoginSignupModal from './loginSignupModal'
 import Footer from '../main/Footer'
+import tabService from '../tabs/tabService.js'
 
 const mapStateToProps = (state) => {
   return {
@@ -135,6 +136,8 @@ class ContentPanel extends Component {
         this.props.history.push({
           pathname: `dashboard/${tab.type}/${tab.status === 'NEW' ? 'new' : tabId}`
         })
+      } else {
+        tabService.newTab({ ...this.props })
       }
     }
 
