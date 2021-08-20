@@ -52,18 +52,30 @@ export function loginWithJwt (jwt) {
 export function logout (redirectUrl = '/login') {
   // const isDesktop = process.env.REACT_APP_IS_DESKTOP
   http.get(apiUrl + '/logout').then(() => {
-    window.localStorage.removeItem(tokenKey)
-    window.localStorage.removeItem(profileKey)
-    window.localStorage.removeItem(orgKey)
-    window.localStorage.removeItem(orgListKey)
-    if (isElectron()) {
-      history.push({ pathname: '/' })
-    } else {
-      const redirectUri = encodeURIComponent(uiURL + redirectUrl)
-      window.location = `${ssoURL}/logout?redirect_uri=${redirectUri}&src=hitman`
-    }
+    localStorageCleanUp()
+    logoutRedirection(redirectUrl)
+  }).catch(() => {
+    localStorageCleanUp()
+    logoutRedirection(redirectUrl)
   })
 }
+
+function localStorageCleanUp () {
+  window.localStorage.removeItem(tokenKey)
+  window.localStorage.removeItem(profileKey)
+  window.localStorage.removeItem(orgKey)
+  window.localStorage.removeItem(orgListKey)
+}
+
+function logoutRedirection (redirectUrl) {
+  if (isElectron()) {
+    history.push({ pathname: '/' })
+  } else {
+    const redirectUri = encodeURIComponent(uiURL + redirectUrl)
+    window.location = `${ssoURL}/logout?redirect_uri=${redirectUri}&src=hitman`
+  }
+}
+
 export function getCurrentUser () {
   try {
     const profile = window.localStorage.getItem(profileKey)
@@ -94,7 +106,7 @@ export function getOrgList () {
 export function getJwt () {
   const cookies = new Cookies()
   const token = cookies.get('token')
-  return token
+  return token || window.localStorage.getItem(tokenKey)
 }
 
 export async function notifySignup (UserInfo) {

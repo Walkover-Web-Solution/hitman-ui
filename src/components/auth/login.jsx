@@ -6,7 +6,7 @@ import { getOrgId } from '../common/utility'
 
 class Login extends Component {
   async componentDidMount () {
-    const socketJwt = auth.getJwt()
+    const socketJwt = this.getSocketJwt()
     if (!socketJwt) {
       this.props.history.push({
         pathname: '/logout',
@@ -30,6 +30,13 @@ class Login extends Component {
       return true
     } else return false
   }
+
+  getSocketJwt = () => {
+    const { location } = this.props
+    const { 'sokt-auth-token': socketJwt } = queryString.parse(location.search)
+    if (socketJwt) return socketJwt
+    return auth.getJwt()
+  };
 
   render () {
     return <></>

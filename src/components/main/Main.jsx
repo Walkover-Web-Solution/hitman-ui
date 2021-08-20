@@ -23,7 +23,6 @@ import { isDesktop } from 'react-device-detect'
 import OnlineSatus from '../onlineStatus/onlineStatus'
 import { getOrgUpdatedAt } from '../../services/orgApiService'
 import moment from 'moment'
-import Cookies from 'universal-cookie'
 import Header from './header'
 import { loadfeedioWidget } from '../../services/feedioWidgetService'
 import { loadHelloWidget } from '../../services/helloWidgetService'
@@ -68,7 +67,7 @@ class Main extends Component {
   }
 
   async componentDidMount () {
-    const token = this.getTokenFromCookie()
+    const token = auth.getJwt()
     if (!token) return
     /** Token Exists */
     if (auth.getCurrentUser() && auth.getOrgList() && auth.getCurrentOrg()) {
@@ -157,11 +156,6 @@ class Main extends Component {
 
   setEnvironment (environment) {
     this.setState({ currentEnvironment: environment })
-  }
-
-  getTokenFromCookie () {
-    const cookies = new Cookies()
-    return cookies.get('token')
   }
 
   render () {
