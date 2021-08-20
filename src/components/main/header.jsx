@@ -59,7 +59,7 @@ const SwitchProducts = () => {
     {
       name: 'SheetAsDB',
       icon: SHEETASDB_LOGO,
-      link: SHEETASDB_UI_URL ? SHEETASDB_UI_URL + (currentOrgId ? `/org/${currentOrgId}/projects` : '') : ''
+      link: SHEETASDB_UI_URL ? SHEETASDB_UI_URL + (currentOrgId ? `/orgs/${currentOrgId}/projects` : '') : ''
     }
   ]
 
