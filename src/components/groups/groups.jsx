@@ -64,7 +64,8 @@ class Groups extends Component {
         share: false
       },
       theme: '',
-      filter: ''
+      filter: '',
+      selectedGroupIds: []
     }
 
     this.eventkey = {}
@@ -404,22 +405,22 @@ class Groups extends Component {
   }
 
   renderBody (groupId) {
-    if (
-      isDashboardRoute(this.props, true) &&
-      document.getElementsByClassName('group-collapse')
-    ) {
-      if (this.props.filter !== '' && this.eventkey[groupId] === '0') {
-        const elements = document.getElementsByClassName('group-collapse')
-        for (let i = 0; i < elements.length; i++) {
-          elements[i].className = 'group-collapse collapse show'
-        }
-      } else if (this.props.filter !== '') {
-        const elements = document.getElementsByClassName('group-collapse')
-        for (let i = 0; i < elements.length; i++) {
-          elements[i].className = 'group-collapse collapse hide'
-        }
-      }
-    }
+    // if (
+    //   isDashboardRoute(this.props, true) &&
+    //   document.getElementsByClassName('group-collapse')
+    // ) {
+    //   if (this.props.filter !== '' && this.eventkey[groupId] === '0') {
+    //     const elements = document.getElementsByClassName('group-collapse')
+    //     for (let i = 0; i < elements.length; i++) {
+    //       elements[i].className = 'group-collapse collapse show'
+    //     }
+    //   } else if (this.props.filter !== '') {
+    //     const elements = document.getElementsByClassName('group-collapse')
+    //     for (let i = 0; i < elements.length; i++) {
+    //       elements[i].className = 'group-collapse collapse hide'
+    //     }
+    //   }
+    // }
     return (
       <div>
         {
@@ -434,6 +435,7 @@ class Groups extends Component {
                 <Accordion.Toggle
                   variant='default'
                   eventKey={groupId}
+                  onClick={() => this.toggleGroupIds(groupId)}
                 >
                   <div className='sidebar-accordion-item d-inline text-truncate'>
                     {this.props.groups[groupId].name}
@@ -533,27 +535,31 @@ class Groups extends Component {
                       : null
                   }
                 </Accordion.Toggle>
-                <Accordion.Collapse
-                  className='group-collapse'
-                  eventKey={groupId}
-                >
-                  <Card.Body>
-                    <GroupPages
-                      {...this.props}
-                      version_id={this.props.groups[groupId].versionId}
-                      set_page_drag={this.setPagedrag.bind(this)}
-                      group_id={groupId}
-                      show_filter_groups={this.propsFromGroups.bind(this)}
-                    />
-                    <Endpoints
-                      {...this.props}
-                      group_id={groupId}
-                      set_endpoint_drag={this.setEndpointdrag.bind(this)}
-                      endpoints_order={this.props.groups[groupId].endpointsOrder || []}
-                      show_filter_groups={this.propsFromGroups.bind(this)}
-                    />
-                  </Card.Body>
-                </Accordion.Collapse>
+                {this.state.selectedGroupIds[groupId]
+                  ? (
+                    <Accordion.Collapse
+                      className='group-collapse collapse show'
+                      eventKey={groupId}
+                    >
+                      <Card.Body>
+                        <GroupPages
+                          {...this.props}
+                          version_id={this.props.groups[groupId].versionId}
+                          set_page_drag={this.setPagedrag.bind(this)}
+                          group_id={groupId}
+                          show_filter_groups={this.propsFromGroups.bind(this)}
+                        />
+                        <Endpoints
+                          {...this.props}
+                          group_id={groupId}
+                          set_endpoint_drag={this.setEndpointdrag.bind(this)}
+                          endpoints_order={this.props.groups[groupId].endpointsOrder || []}
+                          show_filter_groups={this.propsFromGroups.bind(this)}
+                        />
+                      </Card.Body>
+                    </Accordion.Collapse>
+                    )
+                  : null}
                 {/* </Card> */}
               </Accordion>
               )
@@ -598,6 +604,15 @@ class Groups extends Component {
         }
       </>
     )
+  }
+
+  toggleGroupIds (id) {
+    const currentValue = this.state.selectedGroupIds[id]
+    if (currentValue) {
+      this.setState({ selectedGroupIds: { ...this.state.selectedGroupIds, [id]: !currentValue } })
+    } else {
+      this.setState({ selectedGroupIds: { ...this.state.selectedGroupIds, [id]: true } })
+    }
   }
 
   render () {

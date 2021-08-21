@@ -312,22 +312,22 @@ class CollectionVersions extends Component {
   }
 
   renderBody (versionId, index, versionsCount) {
-    if (
-      isDashboardRoute(this.props) &&
-      document.getElementsByClassName('version-collapse')
-    ) {
-      if (this.props.filter !== '' && this.eventkey[versionId] === '0') {
-        const elements = document.getElementsByClassName('version-collapse')
-        for (let i = 0; i < elements.length; i++) {
-          elements[i].className = 'version-collapse collapse show'
-        }
-      } else if (this.props.filter !== '') {
-        const elements = document.getElementsByClassName('version-collapse')
-        for (let i = 0; i < elements.length; i++) {
-          elements[i].className = 'version-collapse collapse hide'
-        }
-      }
-    }
+    // if (
+    //   isDashboardRoute(this.props) &&
+    //   document.getElementsByClassName('version-collapse')
+    // ) {
+    //   if (this.props.filter !== '' && this.eventkey[versionId] === '0') {
+    //     const elements = document.getElementsByClassName('version-collapse')
+    //     for (let i = 0; i < elements.length; i++) {
+    //       elements[i].className = 'version-collapse collapse show'
+    //     }
+    //   } else if (this.props.filter !== '') {
+    //     const elements = document.getElementsByClassName('version-collapse')
+    //     for (let i = 0; i < elements.length; i++) {
+    //       elements[i].className = 'version-collapse collapse hide'
+    //     }
+    //   }
+    // }
     return (
       <>
         {
@@ -451,25 +451,29 @@ class CollectionVersions extends Component {
                         : null
                     }
                   </Accordion.Toggle>
-                  <Accordion.Collapse className='version-collapse' eventKey='1'>
-                    <Card.Body>
-                      <div className='linkWrapper versionPages'>
-                        <VersionPages
-                          {...this.props}
-                          version_id={versionId}
-                          show_filter_version={this.propsFromVersion.bind(this)}
-                        />
-                      </div>
-                      <div className='linkWrapper versionsgroups'>
-                        <Groups
-                          {...this.props}
-                          version_id={versionId}
-                          addGroup={this.openAddGroupForm.bind(this)}
-                          show_filter_version={this.propsFromVersion.bind(this)}
-                        />
-                      </div>
-                    </Card.Body>
-                  </Accordion.Collapse>
+                  {this.state.selectedVersionIds[versionId]
+                    ? (
+                      <Accordion.Collapse className='version-collapse collapse show' eventKey='1'>
+                        <Card.Body>
+                          <div className='linkWrapper versionPages'>
+                            <VersionPages
+                              {...this.props}
+                              version_id={versionId}
+                              show_filter_version={this.propsFromVersion.bind(this)}
+                            />
+                          </div>
+                          <div className='linkWrapper versionsgroups'>
+                            <Groups
+                              {...this.props}
+                              version_id={versionId}
+                              addGroup={this.openAddGroupForm.bind(this)}
+                              show_filter_version={this.propsFromVersion.bind(this)}
+                            />
+                          </div>
+                        </Card.Body>
+                      </Accordion.Collapse>
+                      )
+                    : null}
                 </Accordion>
               </div>
               )
