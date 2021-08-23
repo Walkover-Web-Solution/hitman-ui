@@ -1,11 +1,10 @@
 import React, { Component } from 'react'
-import { Route, Switch, withRouter } from 'react-router-dom'
+import { Route, withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { Button } from 'react-bootstrap'
 import moment from 'moment'
 import Collections from '../collections/collections'
 import CollectionVersions from '../collectionVersions/collectionVersions'
-import ProtectedRoute from '../common/protectedRoute'
 import { isDashboardRoute, ADD_GROUP_MODAL_NAME, ADD_VERSION_MODAL_NAME } from '../common/utility'
 import { getCurrentUser } from '../auth/authService'
 import LoginSignupModal from './loginSignupModal'
@@ -399,34 +398,14 @@ class SideBar extends Component {
 
   renderCollections () {
     return (
-      <Switch>
-        <ProtectedRoute
-          path='/orgs/:orgId/dashboard/'
-          render={(props) => (
-            <Collections
-              {...this.props}
-              selectedCollectionId={this.state.selectedCollectionId}
-              empty_filter={this.emptyFilter.bind(this)}
-              disable_secondary_sidebar={() => { this.setState({ secondarySidebarToggle: true }) }}
-              collection_selected={this.openCollection.bind(this)}
-              filter={this.state.data.filter}
-            />
-          )}
-        />
-        <ProtectedRoute
-          path='/orgs/:orgId/admin/publish'
-          render={(props) => (
-            <Collections
-              {...this.props}
-              selectedCollectionId={this.state.selectedCollectionId}
-              empty_filter={this.emptyFilter.bind(this)}
-              disable_secondary_sidebar={() => { this.setState({ secondarySidebarToggle: true }) }}
-              collection_selected={this.openCollection.bind(this)}
-              filter={this.state.data.filter}
-            />
-          )}
-        />
-      </Switch>
+      <Collections
+        {...this.props}
+        selectedCollectionId={this.state.selectedCollectionId}
+        empty_filter={this.emptyFilter.bind(this)}
+        disable_secondary_sidebar={() => { this.setState({ secondarySidebarToggle: true }) }}
+        collection_selected={this.openCollection.bind(this)}
+        filter={this.state.data.filter}
+      />
     )
   }
 

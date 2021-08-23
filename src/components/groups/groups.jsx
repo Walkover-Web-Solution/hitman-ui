@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Accordion, Card } from 'react-bootstrap'
 import { connect } from 'react-redux'
-import { isDashboardRoute } from '../common/utility'
+import { isDashboardRoute, getParentIds } from '../common/utility'
 // import Endpoints from "../endpoints/endpointsCopy";
 import Endpoints from '../endpoints/endpoints'
 import GroupForm from '../groups/groupForm'
@@ -24,7 +24,8 @@ const mapStateToProps = (state) => {
   return {
     groups: state.groups,
     pages: state.pages,
-    endpoints: state.endpoints
+    endpoints: state.endpoints,
+    versions: state.versions
   }
 }
 
@@ -86,6 +87,40 @@ class Groups extends Component {
   componentDidMount () {
     if (!this.state.theme) {
       this.setState({ theme: this.props.collections[this.props.collection_id].theme })
+    }
+
+    const { pageId, endpointId } = this.props.match.params
+
+    if (pageId) {
+      this.setGroupIdforEntity(pageId, 'page')
+    }
+
+    if (endpointId) {
+      this.setGroupIdforEntity(endpointId, 'endpoint')
+    }
+  }
+
+  componentDidUpdate (prevProps, prevState) {
+    const { pageId, endpointId } = this.props.match.params
+    const { pageId: prevPageId, endpointId: prevEndpointId } = prevProps.match.params
+
+    if (pageId && prevPageId !== pageId) {
+      this.setGroupIdforEntity(pageId, 'page')
+    }
+
+    if (endpointId && prevEndpointId !== endpointId) {
+      this.setGroupIdforEntity(endpointId, 'endpoint')
+    }
+  }
+
+  setGroupIdforEntity (id, type) {
+    const { groupId } = getParentIds(id, type, this.props)
+    this.setSelectedGroupId(groupId, true)
+  }
+
+  setSelectedGroupId (id, value) {
+    if (id && this.state.selectedGroupIds[id] !== value) {
+      this.setState({ selectedGroupIds: { ...this.state.selectedGroupIds, [id]: value } })
     }
   }
 

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Accordion, Card } from 'react-bootstrap'
+import { Card } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import CollectionVersionForm from '../collectionVersions/collectionVersionForm'
@@ -8,7 +8,7 @@ import {
   duplicateVersion
 } from '../collectionVersions/redux/collectionVersionsActions'
 import ShareVersionForm from '../collectionVersions/shareVersionForm'
-import { isDashboardRoute, ADD_GROUP_MODAL_NAME } from '../common/utility'
+import { isDashboardRoute, ADD_GROUP_MODAL_NAME, getParentIds } from '../common/utility'
 import GroupForm from '../groups/groupForm'
 import Groups from '../groups/groups'
 import PageForm from '../pages/pageForm'
@@ -21,6 +21,7 @@ import AddEntity from '../main/addEntity/addEntity'
 
 const mapStateToProps = (state) => {
   return {
+    endpoints: state.endpoints,
     versions: state.versions,
     groups: state.groups,
     pages: state.pages
@@ -71,11 +72,43 @@ class CollectionVersions extends Component {
     if (!this.state.theme) {
       this.setState({ theme: this.props.collections[this.props.collection_id].theme })
     }
+
+    const { pageId, endpointId } = this.props.match.params
+
+    if (pageId) {
+      this.setVersionForEntity(pageId, 'page')
+    }
+
+    if (endpointId) {
+      this.setVersionForEntity(endpointId, 'endpoint')
+    }
   }
 
   componentDidUpdate (prevProps, prevState) {
     if (prevProps.selectedCollectionId !== this.props.selectedCollectionId) {
       this.setState({ selectedVersionIds: {} })
+    }
+
+    const { pageId, endpointId } = this.props.match.params
+    const { pageId: prevPageId, endpointId: prevEndpointId } = prevProps.match.params
+
+    if (pageId && prevPageId !== pageId) {
+      this.setVersionForEntity(pageId, 'page')
+    }
+
+    if (endpointId && prevEndpointId !== endpointId) {
+      this.setVersionForEntity(endpointId, 'endpoint')
+    }
+  }
+
+  setVersionForEntity (id, type) {
+    const { versionId } = getParentIds(id, type, this.props)
+    this.setSelectedVersionId(versionId, true)
+  }
+
+  setSelectedVersionId (id, value) {
+    if (id && this.state.selectedVersionIds[id] !== value) {
+      this.setState({ selectedVersionIds: { ...this.state.selectedVersionIds, [id]: value } })
     }
   }
 
@@ -334,13 +367,11 @@ class CollectionVersions extends Component {
           isDashboardRoute(this.props, true)
             ? (
               <div className='hm-sidebar-outer-block' key={index}>
-                <Accordion
+                <div
                   className='sidebar-accordion versionBoldHeading'
-                  defaultActiveKey={versionsCount === 1 ? '1' : null}
-                  key={versionId}
                   id='child-accordion'
                 >
-                  <Accordion.Toggle
+                  <div
                     className={this.state.selectedVersionIds[versionId] === true ? 'active' : null}
                     variant='default'
                     eventKey='1'
@@ -450,10 +481,10 @@ class CollectionVersions extends Component {
                           )
                         : null
                     }
-                  </Accordion.Toggle>
+                  </div>
                   {this.state.selectedVersionIds[versionId]
                     ? (
-                      <Accordion.Collapse className='version-collapse collapse show' eventKey='1'>
+                      <div className='version-collapse'>
                         <Card.Body>
                           <div className='linkWrapper versionPages'>
                             <VersionPages
@@ -471,10 +502,10 @@ class CollectionVersions extends Component {
                             />
                           </div>
                         </Card.Body>
-                      </Accordion.Collapse>
+                      </div>
                       )
                     : null}
-                </Accordion>
+                </div>
               </div>
               )
             : (
