@@ -436,7 +436,13 @@ class Groups extends Component {
                   variant='default'
                   eventKey={groupId}
                   onClick={() => this.toggleGroupIds(groupId)}
+                  className={this.state.selectedGroupIds[groupId] === true ? 'active' : null}
                 >
+                  <span className='versionChovron'>
+                    <svg width='15' height='15' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
+                      <path d='M4.5 6.75L9 11.25L13.5 6.75' stroke='#333333' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
+                    </svg>
+                  </span>
                   <div className='sidebar-accordion-item d-inline text-truncate'>
                     {this.props.groups[groupId].name}
                   </div>

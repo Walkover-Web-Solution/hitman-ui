@@ -363,7 +363,7 @@ class CollectionsComponent extends Component {
             </div>
             <div className='sidebar-item-action'>
               <div
-                className='sidebar-item-action-btn ml-3'
+                className='sidebar-item-action-btn'
                 data-toggle='dropdown'
                 aria-haspopup='true'
                 aria-expanded='false'

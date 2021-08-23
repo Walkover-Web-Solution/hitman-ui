@@ -110,9 +110,9 @@ class Pages extends Component {
 
   displayPageName (pageId) {
     return (
-      <div className='sidebar-accordion-item page-name-icon-container text-truncate'>
+      <div className='sidebar-accordion-item page-name-icon-container '>
         <img src={PageIcon} alt='page-icon' className='page-icon' />
-        {this.props.pages[pageId].name}
+        <span className='text-truncate'>{this.props.pages[pageId].name}</span>
       </div>
     )
   }
@@ -295,8 +295,8 @@ class Pages extends Component {
         >
           {this.displayPageName(pageId)}
           <div className='d-flex align-items-center'>
-            <div className='mr-2'>
-              {this.props.pages[pageId].isPublished && <img src={GlobeIcon} alt='globe' />}
+            <div className='mr-2 published-icon'>
+              {this.props.pages[pageId].isPublished && <img src={GlobeIcon} alt='globe' width='14' />}
             </div>
             {!this.props.collections[this.props.collection_id]?.importedFromMarketPlace && this.displayPageOptions(pageId)}
           </div>

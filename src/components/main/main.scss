@@ -1,5 +1,7 @@
 //Note: Unique IDs are used in CTAs for tracking purposes with GTM. Do not use the same IDs elsewhere.
 
+$font-small: 12px;
+$text-color: #212121;
 
 @font-face {
   font-family: 'proxima-nova';
@@ -1305,7 +1307,7 @@ button.editBtn {
 .btn.btn-outline.orange {
   border: 1px solid #E98A36;
   color: #E98A36;
-  font-size: 14px;
+  font-size: $font-small;
   font-weight: 600;
   background: #fff;
 }
@@ -2709,10 +2711,10 @@ span.endpointNameWrapper {
   &.linkWrapper .linkWith:after {
     content: '';
     position: absolute;
-    left: 19px;
+    left: -7px;
     width: 12px;
-    height: calc(41% + 8px);
-    border-color: #E98A36;
+    height: calc(42% + 2px);
+    border-color: #c7c7c7;
     border-style: solid;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
@@ -2753,9 +2755,9 @@ span.endpointNameWrapper {
   &.linkWrapper .linkWith:after {
     content: '';
     position: absolute;
-    left: 19px;
+    left: -7px;
     height: 100%;
-    border-color: #E98A36;
+    border-color: #c7c7c7;
     border-style: solid;
     box-sizing: border-box;
     z-index: 99;
@@ -2770,16 +2772,16 @@ span.endpointNameWrapper {
   &.linkWrapper .linkWith .accordion>button:before {
     content: '';
     position: absolute;
-    left: 18px;
+    left: -8px;
     width: 17px;
-    height: calc(75% + 8px);
-    border-color: #E98A36;
+    height: calc(71% + 0px);
+    border-color: #c7c7c7;
     border-style: solid;
     z-index: 99;
   }
 
   &.linkWrapper .linkWith .accordion>button:before {
-    top: -18px;
+    top: -5px;
     border-width: 0 0 1px 1px;
   }
 

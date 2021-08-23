@@ -15,7 +15,6 @@ import { ReactComponent as HitmanIcon } from '../../assets/icons/hitman.svg'
 import { ReactComponent as EmptyHistory } from '../../assets/icons/emptyHistroy.svg'
 import { ReactComponent as NoInvocationsIcon } from '../../assets/icons/emptyrandom.svg'
 import { ReactComponent as NoCollectionsIcon } from '../../assets/icons/noCollectionsIcon.svg'
-import { ReactComponent as SearchIcon } from '../../assets/icons/searchIcon.svg'
 import { ReactComponent as PlusIcon } from '../../assets/icons/plus_orange.svg'
 import collectionVersionsService from '../collectionVersions/collectionVersionsService'
 import './main.scss'
@@ -510,11 +509,9 @@ class SideBar extends Component {
   renderDashboardSidebar () {
     return (
       <>
-        <div className='d-flex mb-3'>
+        <div className='d-flex mb-3 search-box-container'>
+          {this.renderGlobalAddButton()}
           <div className='search-box'>
-            <label htmlFor='search'>
-              <SearchIcon onClick={() => { !this.state.primarySidebar && this.setState({ primarySidebar: true }) }} />
-            </label>
             <input
               value={this.state.data.filter}
               type='text'
@@ -524,7 +521,6 @@ class SideBar extends Component {
               onChange={(e) => this.handleOnChange(e)}
             />
           </div>
-          {this.renderGlobalAddButton()}
         </div>
         {this.state.data.filter !== '' && this.renderSearchList()}
         {this.state.data.filter === '' && this.renderSidebarContent()}
