@@ -63,11 +63,33 @@ class Endpoints extends Component {
       endpointState: 'Make Public',
       theme: ''
     }
+    this.scrollRef = {}
   }
 
   componentDidMount () {
     if (this.props.theme) {
       this.setState({ theme: this.props.theme })
+    }
+    const { endpointId } = this.props.match.params
+    if (endpointId) {
+      this.scrollToEndpoint(endpointId)
+    }
+  }
+
+  componentDidUpdate (prevProps, prevState) {
+    const { endpointId } = this.props.match.params
+    const { endpointId: prevEndpointId } = prevProps.match.params
+    if (endpointId && endpointId !== prevEndpointId) {
+      this.scrollToEndpoint(endpointId)
+    }
+  }
+
+  scrollToEndpoint (endpointId) {
+    const ref = this.scrollRef[endpointId] || null
+    if (ref) {
+      setTimeout(() => {
+        ref.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' })
+      }, 300)
     }
   }
 
@@ -302,7 +324,7 @@ class Endpoints extends Component {
         <div className={`api-label ${this.props.endpoints[endpointId].requestType} request-type-bgcolor`}>
           {this.props.endpoints[endpointId].requestType}
         </div>
-        <div className='end-point-name'>{this.props.endpoints[endpointId].name}</div>
+        <div className='end-point-name truncate'>{this.props.endpoints[endpointId].name}</div>
       </div>
     )
   }
@@ -443,7 +465,7 @@ class Endpoints extends Component {
   displaySingleEndpoint (endpointId) {
     const idToCheck = this.props.location.pathname.split('/')[4] === 'endpoint' ? this.props.location.pathname.split('/')[5] : null
     return (
-      <div className={idToCheck === endpointId ? 'sidebar-accordion active' : 'sidebar-accordion'} key={endpointId}>
+      <div ref={(newRef) => { this.scrollRef[endpointId] = newRef }} className={idToCheck === endpointId ? 'sidebar-accordion active' : 'sidebar-accordion'} key={endpointId}>
         <div className={this.props.endpoints[endpointId].state} />
         <button
           onClick={() =>
@@ -463,8 +485,8 @@ class Endpoints extends Component {
         >
           {this.displayEndpointName(endpointId)}
           <div className='d-flex align-items-center'>
-            <div className='mr-2'>
-              {this.props.endpoints[endpointId].isPublished && <img src={GlobeIcon} alt='globe' />}
+            <div className='mr-2 published-icon'>
+              {this.props.endpoints[endpointId].isPublished && <img src={GlobeIcon} alt='globe' width='14' />}
             </div>
             {!this.props.collections[this.props.collection_id]?.importedFromMarketPlace && this.displayEndpointOptions(endpointId)}
           </div>

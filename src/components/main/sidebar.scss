@@ -1,5 +1,8 @@
 //Note: Unique IDs are used in CTAs for tracking purposes with GTM. Do not use the same IDs elsewhere.
 
+$font-small: 12px;
+$text-color: #212121;
+
 .primary-sidebar {
   background-color: #F8F8F8;
   color: #999;
@@ -79,11 +82,12 @@
 }
 
 .search-box {
-  margin: 0px 15px;
+  margin: 0px 0px 0 15px;
   position: relative;
   flex-grow: 1;
   background: #f8f5f0;
   border-radius: 4px;
+  height: 24px;
 }
 
 .search-box>label {
@@ -101,11 +105,16 @@
 
 .search-box>input[type="text"] {
   width: 100%;
-  height: 40px;
-  padding: 0 0 0 36px;
-  border-radius: 3px;
+  height: 100%;
+  padding: 0 0 0 14px;
   border: none;
   background: #F3F3F3;
+  border: 1px solid #e6dbd4;
+  font-size: $font-small;
+  &::placeholder{
+    font-weight: normal;
+    font-size: $font-small;
+  }
 }
 
 input[type="text"]:focus {
@@ -130,6 +139,9 @@ input[type="text"]:focus {
 .primary-sidebar .sidebar-accordion.active>button {
   background: #ebebeb;
   border-color: #F1EEE5;
+  &:before{
+    transform: rotate(360deg) !important;
+  }
 
   .sidebar-item-action-btn {
     visibility: visible;
@@ -137,41 +149,58 @@ input[type="text"]:focus {
   }
 }
 
-.sidebar-accordion>button {
-  width: 100%;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  text-align: left;
-  padding: 0;
-  margin: 0;
-  border: none;
-  background: transparent;
-  color: inherit;
-  border-radius: 8px;
-  border: 1px solid transparent;
-  color: #333;
-  font-weight: 600;
-  font-size: 14px;
-  margin-bottom: 10px;
-
-  &:active,
-  &:focus {
-    outline: none;
-    box-shadow: none;
+.sidebar-accordion {
+  >button{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    text-align: left;
+    padding: 0;
+    margin: 0;
+    border: none;
+    background: transparent;
+    color: inherit;
+    border: 1px solid transparent;
+    color: $text-color;
+    font-weight: normal;
+    font-size: $font-small;
+    padding: 4px 25px 4px 10px;
+    position: relative;
+    &:active,
+    &:focus {
+      outline: none;
+      box-shadow: none;
+    }
+  
+    &:hover {
+  
+      .sidebar-item-action-btn {
+        visibility: visible;
+        opacity: 1;
+      }
+    }
   }
+}
 
-  &:hover {
-
-    .sidebar-item-action-btn {
-      visibility: visible;
-      opacity: 1;
+.sidebar-content{
+  #parent-accordion{
+    > button{
+      &:before{
+        content: '';
+        background: url('../../assets/icons/downChevron.svg') center center/contain no-repeat;
+        display: inline-block;
+        width: 11px;
+        height: 11px;
+        margin-right: 6px;
+        transform: rotate(270deg);
+        transition: all 0.3s ease-in;
+      }
     }
   }
 }
 
 .sidebar-accordion-item {
-  padding: 10px;
+  padding: 0px 6px;
   display: flex;
   align-items: center;
   width: 100%;
@@ -182,8 +211,9 @@ input[type="text"]:focus {
 }
 
 .sidebar-item-action {
-  // margin-left: auto;
-  margin-right: 5px;
+  position: absolute;
+  right: 5px;
+  width: 15px;
 }
 
 .sidebar-accordion .sidebar-accordion-item>i {
@@ -193,10 +223,9 @@ input[type="text"]:focus {
 
 
 .sidebar-item-action-btn {
-  width: 26px;
+  width: auto;
   border-radius: 3px;
   text-align: center;
-  visibility: hidden;
   opacity: 0;
 }
 
@@ -281,23 +310,14 @@ input[type="text"]:focus {
   text-align: center;
 }
 
-.versionBoldHeading>button .sidebar-accordion-item {
-  font-size: 14px;
-  font-weight: 600;
-}
-
 .versionChovron {
   transition: 300ms;
-  margin: 0 0px 0px 10px;
+  transform: rotate(270deg);
 }
 
 .versionBoldHeading .active .versionChovron {
-  transform: rotate(180deg);
+  transform: rotate(360deg);
   transition: 300ms;
-}
-
-.version-collapse {
-  border-top: 1px solid #EBE7DA;
 }
 
 .versionPages .sidebar-accordion {
@@ -316,6 +336,9 @@ input[type="text"]:focus {
 }
 
 .sidebar-content {
+  .card-body {
+    padding: 0 0  0 25px;
+  }
   .collection-name {
     line-height: 1;
     justify-content: space-between;
@@ -340,13 +363,16 @@ input[type="text"]:focus {
   cursor: pointer;
 }
 .linkWrapper button {
-  padding-left: 30px;
+  padding-left: 7px;
 }
 
 .sidebar-add-btn {
-  border: 1px solid #E98A36 !important;
-  box-sizing: border-box;
-  border-radius: 4px;
-  margin-right: 15px;
-  background-color: transparent;
+  padding: 0 !important;
+}
+.search-box-container {
+  padding: 0 14px;
+}
+.published-icon {
+  position: absolute;
+  right: 12px;
 }

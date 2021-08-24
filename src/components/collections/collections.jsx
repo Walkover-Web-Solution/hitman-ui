@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Accordion, Card } from 'react-bootstrap'
+import { Card } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import 'react-toastify/dist/ReactToastify.css'
@@ -7,7 +7,7 @@ import shortId from 'shortid'
 import CollectionVersions from '../collectionVersions/collectionVersions'
 import collectionVersionsService from '../collectionVersions/collectionVersionsService'
 import ImportVersionForm from '../collectionVersions/importVersionForm'
-import { isDashboardRoute, ADD_VERSION_MODAL_NAME, openExternalLink } from '../common/utility'
+import { isDashboardRoute, ADD_VERSION_MODAL_NAME, openExternalLink, getParentIds } from '../common/utility'
 import collectionsService from './collectionsService'
 import {
   addCollection,
@@ -24,6 +24,7 @@ import TagManager from 'react-gtm-module'
 import TagManagerModal from './tagModal'
 import emptyCollections from '../../assets/icons/emptyCollections.svg'
 import hitmanLogo from '../../assets/icons/hitman.svg'
+import PublishColelctionInfo from '../main/publishCollectionInfo'
 
 const EMPTY_STRING = ''
 
@@ -63,7 +64,8 @@ class CollectionsComponent extends Component {
       showPublishDocsModal: false,
       defaultPublicLogo: hitmanLogo,
       publicLogoError: false,
-      showRemoveModal: false
+      showRemoveModal: false,
+      selectedCollectionIds: []
     }
 
     this.keywords = {}
@@ -72,6 +74,42 @@ class CollectionsComponent extends Component {
 
   closeCollectionForm () {
     this.setState({ showCollectionForm: false, showImportVersionForm: false })
+  }
+
+  componentDidMount () {
+    const { pageId, endpointId } = this.props.match.params
+
+    if (pageId) {
+      this.setColelctionForEntity(pageId, 'page')
+    }
+
+    if (endpointId) {
+      this.setColelctionForEntity(endpointId, 'endpoint')
+    }
+  }
+
+  componentDidUpdate (prevProps, prevState) {
+    const { pageId, endpointId } = this.props.match.params
+    const { pageId: prevPageId, endpointId: prevEndpointId } = prevProps.match.params
+
+    if (pageId && prevPageId !== pageId) {
+      this.setColelctionForEntity(pageId, 'page')
+    }
+
+    if (endpointId && prevEndpointId !== endpointId) {
+      this.setColelctionForEntity(endpointId, 'endpoint')
+    }
+  }
+
+  setColelctionForEntity (id, type) {
+    const { collectionId } = getParentIds(id, type, this.props)
+    this.setSelectedCollectionId(collectionId, true)
+  }
+
+  setSelectedCollectionId (id, value) {
+    if (id && this.state.selectedCollectionIds[id] !== value) {
+      this.setState({ selectedCollectionIds: { ...this.state.selectedCollectionIds, [id]: value } })
+    }
   }
 
   // async dndMoveEndpoint (endpointId, sourceGroupId, destinationGroupId) {
@@ -281,64 +319,42 @@ class CollectionsComponent extends Component {
     })
   }
 
-  renderBody (collectionId, collectionState) {
-    let eventkeyValue = ''
-    if (this.props.filter !== '') {
-      eventkeyValue = '0'
+  toggleSelectedColelctionIds (id) {
+    const currentValue = this.state.selectedCollectionIds[id]
+    if (currentValue) {
+      this.setState({ selectedCollectionIds: { ...this.state.selectedCollectionIds, [id]: !currentValue } })
     } else {
-      eventkeyValue = null
+      this.setState({ selectedCollectionIds: { ...this.state.selectedCollectionIds, [id]: true } })
     }
+  }
 
-    if (document.getElementById('collection-collapse')) {
-      if (
-        document
-          .getElementById('collection-collapse')
-          .className.split(' ')[1] !== 'show' &&
-        this.props.filter
-      ) {
-        document.getElementById('collection-collapse').className =
-          'collapse show'
-      }
-    }
+  renderBody (collectionId, collectionState) {
     return (
       <React.Fragment key={collectionId}>
-        {collectionState === 'singleCollection'
-          ? (
-            <button
-              id='back-to-all-collections-button'
-              className='btn'
-              onClick={() => this.openAllCollections()}
-            >
-              <i className='fas fa-arrow-left' />
-              <label>All Collections</label>
-            </button>
-            )
-          : null}
 
-        <Accordion
-          defaultActiveKey='0'
+        <div
           key={collectionId}
           id='parent-accordion'
-          className={this.props.selectedCollectionId === collectionId ? 'sidebar-accordion active' : 'sidebar-accordion'}
+          className={this.state.selectedCollectionIds[collectionId] ? 'sidebar-accordion active' : 'sidebar-accordion'}
         >
-          <Accordion.Toggle
+          <button
             variant='default'
-            eventKey={eventkeyValue !== null ? eventkeyValue : '0'}
+            onClick={() => this.toggleSelectedColelctionIds(collectionId)}
           >
             <div className='row w-100 align-items-center'>
               <div className='col-9 fixwidth'>
                 {collectionState === 'singleCollection'
                   ? (
-                    <div>
-                      <div>{this.props.collections[collectionId].name}</div>
-                    </div>
-                    )
-                  : (
                     <div
                       className='sidebar-accordion-item'
                       onClick={() => this.openSelectedCollection(collectionId)}
                     >
                       <div className='text-truncate'>{this.props.collections[collectionId].name}</div>
+                    </div>
+                    )
+                  : (
+                    <div>
+                      <div>{this.props.collections[collectionId].name}</div>
                     </div>
                     )}
               </div>
@@ -352,7 +368,7 @@ class CollectionsComponent extends Component {
             </div>
             <div className='sidebar-item-action'>
               <div
-                className='sidebar-item-action-btn ml-3'
+                className='sidebar-item-action-btn'
                 data-toggle='dropdown'
                 aria-haspopup='true'
                 aria-expanded='false'
@@ -488,22 +504,29 @@ class CollectionsComponent extends Component {
                   </div>}
               </div>
             </div>
-          </Accordion.Toggle>
+          </button>
           {collectionState === 'singleCollection'
-            ? (
-              <Accordion.Collapse id='collection-collapse' eventKey='0'>
-                <Card.Body>
-                  <CollectionVersions
-                    {...this.props}
-                    collection_id={collectionId}
-                    addVersion={this.openAddVersionForm.bind(this)}
-                    selectedCollection
-                  />
-                </Card.Body>
-              </Accordion.Collapse>
-              )
-            : null}
-        </Accordion>
+            ? (null)
+            : this.state.selectedCollectionIds[collectionId]
+              ? (
+                <div id='collection-collapse'>
+                  <Card.Body>
+                    <PublishColelctionInfo
+                      {...this.props}
+                      collectionId={collectionId}
+                      // getTotalEndpointsCount={this.props.getTotalEndpointsCount.bind(this)}
+                    />
+                    <CollectionVersions
+                      {...this.props}
+                      collection_id={collectionId}
+                      addVersion={this.openAddVersionForm.bind(this)}
+                      selectedCollection
+                    />
+                  </Card.Body>
+                </div>
+                )
+              : null}
+        </div>
       </React.Fragment>
     )
   }

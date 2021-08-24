@@ -1,11 +1,10 @@
 import React, { Component } from 'react'
-import { Route, Switch, withRouter } from 'react-router-dom'
+import { Route, withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { Button } from 'react-bootstrap'
 import moment from 'moment'
 import Collections from '../collections/collections'
 import CollectionVersions from '../collectionVersions/collectionVersions'
-import ProtectedRoute from '../common/protectedRoute'
 import { isDashboardRoute, ADD_GROUP_MODAL_NAME, ADD_VERSION_MODAL_NAME } from '../common/utility'
 import { getCurrentUser } from '../auth/authService'
 import LoginSignupModal from './loginSignupModal'
@@ -15,7 +14,6 @@ import { ReactComponent as HitmanIcon } from '../../assets/icons/hitman.svg'
 import { ReactComponent as EmptyHistory } from '../../assets/icons/emptyHistroy.svg'
 import { ReactComponent as NoInvocationsIcon } from '../../assets/icons/emptyrandom.svg'
 import { ReactComponent as NoCollectionsIcon } from '../../assets/icons/noCollectionsIcon.svg'
-import { ReactComponent as SearchIcon } from '../../assets/icons/searchIcon.svg'
 import { ReactComponent as PlusIcon } from '../../assets/icons/plus_orange.svg'
 import collectionVersionsService from '../collectionVersions/collectionVersionsService'
 import './main.scss'
@@ -399,34 +397,14 @@ class SideBar extends Component {
 
   renderCollections () {
     return (
-      <Switch>
-        <ProtectedRoute
-          path='/orgs/:orgId/dashboard/'
-          render={(props) => (
-            <Collections
-              {...this.props}
-              selectedCollectionId={this.state.selectedCollectionId}
-              empty_filter={this.emptyFilter.bind(this)}
-              disable_secondary_sidebar={() => { this.setState({ secondarySidebarToggle: true }) }}
-              collection_selected={this.openCollection.bind(this)}
-              filter={this.state.data.filter}
-            />
-          )}
-        />
-        <ProtectedRoute
-          path='/orgs/:orgId/admin/publish'
-          render={(props) => (
-            <Collections
-              {...this.props}
-              selectedCollectionId={this.state.selectedCollectionId}
-              empty_filter={this.emptyFilter.bind(this)}
-              disable_secondary_sidebar={() => { this.setState({ secondarySidebarToggle: true }) }}
-              collection_selected={this.openCollection.bind(this)}
-              filter={this.state.data.filter}
-            />
-          )}
-        />
-      </Switch>
+      <Collections
+        {...this.props}
+        selectedCollectionId={this.state.selectedCollectionId}
+        empty_filter={this.emptyFilter.bind(this)}
+        disable_secondary_sidebar={() => { this.setState({ secondarySidebarToggle: true }) }}
+        collection_selected={this.openCollection.bind(this)}
+        filter={this.state.data.filter}
+      />
     )
   }
 
@@ -441,7 +419,7 @@ class SideBar extends Component {
           title='Add Collection'
           onHide={() => { this.setState({ showAddCollectionModal: false }) }}
           show={this.state.showAddCollectionModal}
-          open_selected_collection={this.openSelectedCollection.bind(this)}
+          // open_selected_collection={this.openSelectedCollection.bind(this)}
         />
     )
   }
@@ -510,11 +488,9 @@ class SideBar extends Component {
   renderDashboardSidebar () {
     return (
       <>
-        <div className='d-flex mb-3'>
+        <div className='d-flex mb-3 search-box-container'>
+          {this.renderGlobalAddButton()}
           <div className='search-box'>
-            <label htmlFor='search'>
-              <SearchIcon onClick={() => { !this.state.primarySidebar && this.setState({ primarySidebar: true }) }} />
-            </label>
             <input
               value={this.state.data.filter}
               type='text'
@@ -524,7 +500,6 @@ class SideBar extends Component {
               onChange={(e) => this.handleOnChange(e)}
             />
           </div>
-          {this.renderGlobalAddButton()}
         </div>
         {this.state.data.filter !== '' && this.renderSearchList()}
         {this.state.data.filter === '' && this.renderSidebarContent()}
