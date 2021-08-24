@@ -111,6 +111,48 @@ export function getOrgId () {
   }
 }
 
+export function getParentIds (id, type, data) {
+  let entities = {}
+  const parentIds = { collectionId: '', versionId: '', groupId: '' }
+  const { pages, endpoints, groups, versions } = data
+
+  switch (type) {
+    case 'page': entities = pages
+      break
+    case 'endpoint': entities = endpoints
+      break
+    default: entities = {}
+  }
+
+  const entity = entities[id]
+  if (!entity) {
+    return parentIds
+  }
+
+  const groupId = entity.groupId
+  let versionId = ''
+
+  if (groupId) {
+    parentIds.groupId = groupId
+    versionId = groups[entity.groupId]?.versionId
+  } else if (entity.versionId) {
+    versionId = entity.versionId
+  }
+
+  let collectionId = ''
+
+  if (versionId) {
+    parentIds.versionId = versionId
+    collectionId = versions[versionId]?.collectionId
+  }
+
+  if (collectionId) {
+    parentIds.collectionId = collectionId
+  }
+
+  return parentIds
+}
+
 export default {
   isDashboardRoute,
   isElectron,
@@ -122,5 +164,6 @@ export default {
   toTitleCase,
   getOrgId,
   ADD_GROUP_MODAL_NAME,
-  ADD_VERSION_MODAL_NAME
+  ADD_VERSION_MODAL_NAME,
+  getParentIds
 }

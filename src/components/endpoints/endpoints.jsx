@@ -63,11 +63,33 @@ class Endpoints extends Component {
       endpointState: 'Make Public',
       theme: ''
     }
+    this.scrollRef = {}
   }
 
   componentDidMount () {
     if (this.props.theme) {
       this.setState({ theme: this.props.theme })
+    }
+    const { endpointId } = this.props.match.params
+    if (endpointId) {
+      this.scrollToEndpoint(endpointId)
+    }
+  }
+
+  componentDidUpdate (prevProps, prevState) {
+    const { endpointId } = this.props.match.params
+    const { endpointId: prevEndpointId } = prevProps.match.params
+    if (endpointId && endpointId !== prevEndpointId) {
+      this.scrollToEndpoint(endpointId)
+    }
+  }
+
+  scrollToEndpoint (endpointId) {
+    const ref = this.scrollRef[endpointId] || null
+    if (ref) {
+      setTimeout(() => {
+        ref.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' })
+      }, 300)
     }
   }
 
@@ -183,7 +205,7 @@ class Endpoints extends Component {
       )
       this.filteredEndpoints = groupIdsAndFilteredEndpoints[0]
       groupIds = groupIdsAndFilteredEndpoints[1]
-      this.setState({ filter: this.props.filter })
+      // this.setState({ filter: this.props.filter })
       if (groupIds.length !== 0) {
         this.props.show_filter_groups(groupIds, 'endpoints')
       } else {
@@ -208,7 +230,7 @@ class Endpoints extends Component {
       )
       this.filteredGroupPages = groupIdsAndFilteredPages[0]
       groupIds = groupIdsAndFilteredPages[1]
-      this.setState({ filter: this.props.filter })
+      // this.setState({ filter: this.props.filter })
       if (groupIds.length !== 0) {
         this.props.show_filter_groups(groupIds, 'pages')
       } else {
@@ -443,7 +465,7 @@ class Endpoints extends Component {
   displaySingleEndpoint (endpointId) {
     const idToCheck = this.props.location.pathname.split('/')[4] === 'endpoint' ? this.props.location.pathname.split('/')[5] : null
     return (
-      <div className={idToCheck === endpointId ? 'sidebar-accordion active' : 'sidebar-accordion'} key={endpointId}>
+      <div ref={(newRef) => { this.scrollRef[endpointId] = newRef }} className={idToCheck === endpointId ? 'sidebar-accordion active' : 'sidebar-accordion'} key={endpointId}>
         <div className={this.props.endpoints[endpointId].state} />
         <button
           onClick={() =>

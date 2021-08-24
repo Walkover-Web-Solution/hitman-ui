@@ -45,11 +45,33 @@ class Pages extends Component {
     this.state = {
       theme: ''
     }
+    this.scrollRef = {}
   }
 
   componentDidMount () {
     if (this.props.theme) {
       this.setState({ theme: this.props.theme })
+    }
+    const { pageId } = this.props.match.params
+    if (pageId) {
+      this.scrollToPage(pageId)
+    }
+  }
+
+  componentDidUpdate (prevProps, prevState) {
+    const { pageId } = this.props.match.params
+    const { pageId: prevPageId } = prevProps.match.params
+    if (pageId && pageId !== prevPageId) {
+      this.scrollToPage(pageId)
+    }
+  }
+
+  scrollToPage (pageId) {
+    const newRef = this.scrollRef[pageId] || null
+    if (newRef) {
+      setTimeout(() => {
+        newRef.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' })
+      }, 300)
     }
   }
 
@@ -269,6 +291,7 @@ class Pages extends Component {
     const idToCheck = this.props.location.pathname.split('/')[4] === 'page' ? this.props.location.pathname.split('/')[5] : null
     return (
       <div
+        ref={(newRef) => { this.scrollRef[pageId] = newRef }}
         className={idToCheck === pageId ? 'sidebar-accordion pagesWrapper active' : 'sidebar-accordion pagesWrapper'}
         id='accordion'
         key={this.props.index}
