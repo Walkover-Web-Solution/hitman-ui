@@ -337,7 +337,7 @@ class CollectionsComponent extends Component {
           id='parent-accordion'
           className={this.state.selectedCollectionIds[collectionId] ? 'sidebar-accordion active' : 'sidebar-accordion'}
         >
-          <div
+          <button
             variant='default'
             onClick={() => this.toggleSelectedColelctionIds(collectionId)}
           >
@@ -504,7 +504,7 @@ class CollectionsComponent extends Component {
                   </div>}
               </div>
             </div>
-          </div>
+          </button>
           {collectionState === 'singleCollection'
             ? (null)
             : this.state.selectedCollectionIds[collectionId]
@@ -603,7 +603,6 @@ class CollectionsComponent extends Component {
   }
 
   render () {
-    console.log('RENDERED')
     if (isDashboardRoute(this.props, true)) {
       let finalCollections = []
       this.names = {}

@@ -205,7 +205,7 @@ class Endpoints extends Component {
       )
       this.filteredEndpoints = groupIdsAndFilteredEndpoints[0]
       groupIds = groupIdsAndFilteredEndpoints[1]
-      // this.setState({ filter: this.props.filter })
+      this.setState({ filter: this.props.filter })
       if (groupIds.length !== 0) {
         this.props.show_filter_groups(groupIds, 'endpoints')
       } else {
@@ -230,7 +230,7 @@ class Endpoints extends Component {
       )
       this.filteredGroupPages = groupIdsAndFilteredPages[0]
       groupIds = groupIdsAndFilteredPages[1]
-      // this.setState({ filter: this.props.filter })
+      this.setState({ filter: this.props.filter })
       if (groupIds.length !== 0) {
         this.props.show_filter_groups(groupIds, 'pages')
       } else {

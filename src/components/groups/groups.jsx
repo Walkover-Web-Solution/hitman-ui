@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Accordion, Card } from 'react-bootstrap'
+import { Card } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import { isDashboardRoute, getParentIds } from '../common/utility'
 // import Endpoints from "../endpoints/endpointsCopy";
@@ -440,48 +440,27 @@ class Groups extends Component {
   }
 
   renderBody (groupId) {
-    // if (
-    //   isDashboardRoute(this.props, true) &&
-    //   document.getElementsByClassName('group-collapse')
-    // ) {
-    //   if (this.props.filter !== '' && this.eventkey[groupId] === '0') {
-    //     const elements = document.getElementsByClassName('group-collapse')
-    //     for (let i = 0; i < elements.length; i++) {
-    //       elements[i].className = 'group-collapse collapse show'
-    //     }
-    //   } else if (this.props.filter !== '') {
-    //     const elements = document.getElementsByClassName('group-collapse')
-    //     for (let i = 0; i < elements.length; i++) {
-    //       elements[i].className = 'group-collapse collapse hide'
-    //     }
-    //   }
-    // }
     return (
-      <div>
-        {
-          isDashboardRoute(this.props, true)
-            ? (
-              <Accordion
-                key={groupId}
-                className='sidebar-accordion'
-                id='child-accordion'
-                defaultActiveKey={groupId}
-              >
-                <Accordion.Toggle
-                  variant='default'
-                  eventKey={groupId}
-                  onClick={() => this.toggleGroupIds(groupId)}
-                  className={this.state.selectedGroupIds[groupId] === true ? 'active' : null}
-                >
-                  <span className='versionChovron'>
-                    <svg width='15' height='15' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
-                      <path d='M4.5 6.75L9 11.25L13.5 6.75' stroke='#333333' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
-                    </svg>
-                  </span>
-                  <div className='sidebar-accordion-item d-inline text-truncate'>
-                    {this.props.groups[groupId].name}
-                  </div>
-                  {
+      isDashboardRoute(this.props, true)
+        ? (
+          <div
+            key={groupId}
+            className='sidebar-accordion accordion'
+            id='child-accordion'
+          >
+            <button
+              onClick={() => this.toggleGroupIds(groupId)}
+              className={this.state.selectedGroupIds[groupId] === true ? 'active' : null}
+            >
+              <span className='versionChovron'>
+                <svg width='15' height='15' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
+                  <path d='M4.5 6.75L9 11.25L13.5 6.75' stroke='#333333' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
+                </svg>
+              </span>
+              <div className='sidebar-accordion-item d-inline text-truncate'>
+                {this.props.groups[groupId].name}
+              </div>
+              {
                     isDashboardRoute(this.props, true) && !this.props.collections[this.props.collection_id]?.importedFromMarketPlace
                       ? (
                         <div className='sidebar-item-action'>
@@ -575,58 +554,55 @@ class Groups extends Component {
                         )
                       : null
                   }
-                </Accordion.Toggle>
-                {this.state.selectedGroupIds[groupId]
-                  ? (
-                    <Accordion.Collapse
-                      className='group-collapse collapse show'
-                      eventKey={groupId}
-                    >
-                      <Card.Body>
-                        <GroupPages
-                          {...this.props}
-                          version_id={this.props.groups[groupId].versionId}
-                          set_page_drag={this.setPagedrag.bind(this)}
-                          group_id={groupId}
-                          show_filter_groups={this.propsFromGroups.bind(this)}
-                        />
-                        <Endpoints
-                          {...this.props}
-                          group_id={groupId}
-                          set_endpoint_drag={this.setEndpointdrag.bind(this)}
-                          endpoints_order={this.props.groups[groupId].endpointsOrder || []}
-                          show_filter_groups={this.propsFromGroups.bind(this)}
-                        />
-                      </Card.Body>
-                    </Accordion.Collapse>
-                    )
-                  : null}
-                {/* </Card> */}
-              </Accordion>
-              )
-            : (
-              <div className='hm-sidebar-block'>
-                <div className='hm-sidebar-label'>
-                  {this.props.groups[groupId].name}
+            </button>
+            {this.state.selectedGroupIds[groupId]
+              ? (
+                <div
+                  className='group-collapse collapse show'
+                >
+                  <Card.Body>
+                    <GroupPages
+                      {...this.props}
+                      version_id={this.props.groups[groupId].versionId}
+                      set_page_drag={this.setPagedrag.bind(this)}
+                      group_id={groupId}
+                      show_filter_groups={this.propsFromGroups.bind(this)}
+                    />
+                    <Endpoints
+                      {...this.props}
+                      group_id={groupId}
+                      set_endpoint_drag={this.setEndpointdrag.bind(this)}
+                      endpoints_order={this.props.groups[groupId].endpointsOrder || []}
+                      show_filter_groups={this.propsFromGroups.bind(this)}
+                    />
+                  </Card.Body>
                 </div>
-                <GroupPages
-                  {...this.props}
-                  version_id={this.props.groups[groupId].versionId}
-                  group_id={groupId}
-                  show_filter_groups={this.propsFromGroups.bind(this)}
-                  theme={this.props.collections[this.props.collection_id].theme}
-                />
-                <Endpoints
-                  {...this.props}
-                  group_id={groupId}
-                  endpoints_order={this.props.groups[groupId].endpointsOrder}
-                  theme={this.props.collections[this.props.collection_id].theme}
-                  show_filter_groups={this.propsFromGroups.bind(this)}
-                />
-              </div>
-              )
-        }
-      </div>
+                )
+              : null}
+            {/* </Card> */}
+          </div>
+          )
+        : (
+          <div className='hm-sidebar-block'>
+            <div className='hm-sidebar-label'>
+              {this.props.groups[groupId].name}
+            </div>
+            <GroupPages
+              {...this.props}
+              version_id={this.props.groups[groupId].versionId}
+              group_id={groupId}
+              show_filter_groups={this.propsFromGroups.bind(this)}
+              theme={this.props.collections[this.props.collection_id].theme}
+            />
+            <Endpoints
+              {...this.props}
+              group_id={groupId}
+              endpoints_order={this.props.groups[groupId].endpointsOrder}
+              theme={this.props.collections[this.props.collection_id].theme}
+              show_filter_groups={this.propsFromGroups.bind(this)}
+            />
+          </div>
+          )
     )
   }
 

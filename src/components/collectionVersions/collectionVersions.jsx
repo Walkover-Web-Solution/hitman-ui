@@ -345,48 +345,28 @@ class CollectionVersions extends Component {
   }
 
   renderBody (versionId, index, versionsCount) {
-    // if (
-    //   isDashboardRoute(this.props) &&
-    //   document.getElementsByClassName('version-collapse')
-    // ) {
-    //   if (this.props.filter !== '' && this.eventkey[versionId] === '0') {
-    //     const elements = document.getElementsByClassName('version-collapse')
-    //     for (let i = 0; i < elements.length; i++) {
-    //       elements[i].className = 'version-collapse collapse show'
-    //     }
-    //   } else if (this.props.filter !== '') {
-    //     const elements = document.getElementsByClassName('version-collapse')
-    //     for (let i = 0; i < elements.length; i++) {
-    //       elements[i].className = 'version-collapse collapse hide'
-    //     }
-    //   }
-    // }
     return (
-      <>
-        {
-          isDashboardRoute(this.props, true)
-            ? (
-              <div className='hm-sidebar-outer-block' key={index}>
-                <div
-                  className='sidebar-accordion versionBoldHeading'
-                  id='child-accordion'
-                >
-                  <div
-                    className={this.state.selectedVersionIds[versionId] === true ? 'active' : null}
-                    variant='default'
-                    eventKey='1'
-                    onClick={() => { this.toggleVersionIds(versionId) }}
-                  >
-                    <span className='versionChovron'>
-                      <svg width='15' height='15' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
-                        <path d='M4.5 6.75L9 11.25L13.5 6.75' stroke='#333333' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
-                      </svg>
-                    </span>
-                    <div className='sidebar-accordion-item text-truncate d-inline'>
+      isDashboardRoute(this.props, true)
+        ? (
+          <div className='hm-sidebar-outer-block' key={versionId}>
+            <div
+              className='sidebar-accordion versionBoldHeading'
+              id='child-accordion'
+            >
+              <button
+                className={this.state.selectedVersionIds[versionId] === true ? 'active' : null}
+                onClick={() => { this.toggleVersionIds(versionId) }}
+              >
+                <span className='versionChovron'>
+                  <svg width='15' height='15' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
+                    <path d='M4.5 6.75L9 11.25L13.5 6.75' stroke='#333333' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
+                  </svg>
+                </span>
+                <div className='sidebar-accordion-item text-truncate d-inline'>
 
-                      {this.props.versions[versionId].number}
-                    </div>
-                    {
+                  {this.props.versions[versionId].number}
+                </div>
+                {
                       isDashboardRoute(this.props, true) && !this.props.collections[this.props.collection_id]?.importedFromMarketPlace
                         ? (
                           <div className='sidebar-item-action'>
@@ -481,40 +461,40 @@ class CollectionVersions extends Component {
                           )
                         : null
                     }
-                  </div>
-                  {this.state.selectedVersionIds[versionId]
-                    ? (
-                      <div className='version-collapse'>
-                        <Card.Body>
-                          <div className='linkWrapper versionPages'>
-                            <VersionPages
-                              {...this.props}
-                              version_id={versionId}
-                              show_filter_version={this.propsFromVersion.bind(this)}
-                            />
-                          </div>
-                          <div className='linkWrapper versionsgroups'>
-                            <Groups
-                              {...this.props}
-                              version_id={versionId}
-                              addGroup={this.openAddGroupForm.bind(this)}
-                              show_filter_version={this.propsFromVersion.bind(this)}
-                            />
-                          </div>
-                        </Card.Body>
+              </button>
+              {this.state.selectedVersionIds[versionId]
+                ? (
+                  <div className='version-collapse'>
+                    <Card.Body>
+                      <div className='linkWrapper versionPages'>
+                        <VersionPages
+                          {...this.props}
+                          version_id={versionId}
+                          show_filter_version={this.propsFromVersion.bind(this)}
+                        />
                       </div>
-                      )
-                    : null}
-                </div>
-              </div>
-              )
-            : (
-              <>
-                {((this.state.selectedVersionIndex === '' && index === 0) ||
+                      <div className='linkWrapper versionsgroups'>
+                        <Groups
+                          {...this.props}
+                          version_id={versionId}
+                          addGroup={this.openAddGroupForm.bind(this)}
+                          show_filter_version={this.propsFromVersion.bind(this)}
+                        />
+                      </div>
+                    </Card.Body>
+                  </div>
+                  )
+                : null}
+            </div>
+          </div>
+          )
+        : (
+          <>
+            {((this.state.selectedVersionIndex === '' && index === 0) ||
                   (this.state.selectedVersionIndex &&
                     this.state.selectedVersionIndex === index.toString())) && (
                       <>
-                        <div className='hm-sidebar-outer-block' key={index}>
+                        <div className='hm-sidebar-outer-block' key={versionId}>
                           <VersionPages
                             {...this.props}
                             version_id={versionId}
@@ -529,11 +509,10 @@ class CollectionVersions extends Component {
                           />
                         </div>
                       </>
-                )}
-              </>
-              )
-        }
-      </>
+            )}
+          </>
+          )
+
     )
   }
 
