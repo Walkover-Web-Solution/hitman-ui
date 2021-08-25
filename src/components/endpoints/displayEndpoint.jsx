@@ -1994,7 +1994,7 @@ class DisplayEndpoint extends Component {
               getCurrentUser()
                 ? (
                   <div
-                    className={isDashboardRoute(this.props) ? 'hm-panel mt-4 col-12' : null}
+                    className={isDashboardRoute(this.props) ? 'hm-panel col-12' : null}
                   >
                     {this.state.showEndpointFormModal && (
                       <SaveAsSidebar

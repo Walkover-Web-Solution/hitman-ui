@@ -161,7 +161,7 @@ class EndpointBreadCrumb extends Component {
                   this.nameInputRef.current.focus()
                 })
               }}
-              className={['endpoint-name-edit ml-2 mr-2', !this.state.nameEditable ? 'd-block' : 'd-none'].join(' ')}
+              className={['endpoint-name-edit mr-2', !this.state.nameEditable ? 'd-block' : 'd-none'].join(' ')}
             >
               {(this.state.endpointTitle && this.state.endpointTitle !== '') ? this.state.endpointTitle : null}
               {(this.state.endpointTitle === '' && this.props.groupId) ? 'Untitled' : null}

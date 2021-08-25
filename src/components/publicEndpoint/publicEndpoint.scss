@@ -456,7 +456,19 @@ h4.hm-sidebar-title span {
 
   table#custom-generic-table {
     background: transparent !important;
-
+    button.btn.cross-button {
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+    thead{
+      tr {
+        th{
+          padding-left: 5px;
+          padding-bottom: 5px;
+          height: 26px;
+        }
+      }
+    }
     tbody {
       tr {
         &:first-child {
@@ -464,11 +476,14 @@ h4.hm-sidebar-title span {
             border-top: none;
           }
         }
+        &:not(:last-child) input.form-control{
+          border-bottom: 0 !important;
+        }
 
         td {
           &.custom-td {
             border-color: #e5e5e5 !important;
-            padding: 10px 5px !important;
+            padding: 0px 5px !important;
             vertical-align: middle;
             opacity: 1;
             color: #232427;
@@ -505,9 +520,10 @@ h4.hm-sidebar-title span {
       background: #fff;
       border-radius: 3px;
       border: 1px solid #e0e0e0 !important;
-      height: 30px !important;
+      height: 32px !important;
       font-size: 12px !important;
       color: #4F4F4F;
+      border-radius: 0 !important;
 
       &::-webkit-input-placeholder {
         font-size: 12px;

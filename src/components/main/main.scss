@@ -843,8 +843,7 @@ label.data-type {
   border: none;
   font-size: 14px;
   font-weight: 600;
-  box-shadow: 0px 2px 20px rgba(64, 49, 30, 0.21) !important;
-
+  border-radius: 0;
 }
 
 .empty-collections .content {
@@ -1186,7 +1185,7 @@ button.editBtn {
   max-height: 300px;
   overflow: auto;
   background: #fff;
-  padding: 11px 0;
+  padding: 4px 0 11px;
   border-radius: 4px;
 }
 
@@ -1310,6 +1309,7 @@ button.editBtn {
   font-size: $font-small;
   font-weight: 600;
   background: #fff;
+  border-radius: 0;
 }
 
 .btn.btn-outline.danger {
@@ -2427,9 +2427,8 @@ button[name="cta-1"] {
 }
 
 .main-table-wrapper {
-  margin-bottom: 25px;
   border-radius: 4px;
-  padding: 20px 0;
+  padding: 0px 0 0;
   float: left;
   width: 100%;
   border-top-right-radius: 0px;
@@ -2623,8 +2622,7 @@ span.endpointNameWrapper {
 }
 
 .dashboard-url {
-  border: 1px solid #E98A36;
-  border-radius: 6px;
+  border: 1px solid #e0e0e0;
   height: 36px;
 
   .host-field-container {
@@ -2641,8 +2639,7 @@ span.endpointNameWrapper {
 
   #host-container-input {
     height: 34px;
-    border: 1px solid #E98A36;
-    border-radius: 6px;
+    border: 1px solid #e0e0e0;
     font-size: 13px;
     font-weight: 400;
     color: #000;
@@ -2923,7 +2920,6 @@ div#history-tab-button {
   border-top: 0.5px solid #E6DBD4;
   border-right: 0.5px solid #E6DBD4;
   border-left: 0.5px solid #E6DBD4;
-  border-top-right-radius: 4px;
   width: 40px;
 }
 
@@ -3045,7 +3041,7 @@ a.cta-type {
 }
 li.nav-item.cookie-tab a {
   padding: 0.55rem 1rem;
-  font-size: 14px;
+  font-size: $font-small;
   color: #828282;
   display: flex;
   cursor: pointer;
@@ -3327,4 +3323,11 @@ li.nav-item.cookie-tab a {
 
 div#steve-parent-accordion{
   right: 120px;
+}
+
+.addBulk {
+  position: absolute;
+  top: 0;
+  font-size: $font-small;
+  right: 14px;
 }
