@@ -23,7 +23,6 @@ import './main.scss'
 import { getCurrentUser } from '../auth/authService'
 import LoginSignupModal from './loginSignupModal'
 import Footer from '../main/Footer'
-import tabService from '../tabs/tabService.js'
 
 const mapStateToProps = (state) => {
   return {
@@ -92,7 +91,8 @@ class ContentPanel extends Component {
             type: 'endpoint',
             status: tabStatusTypes.SAVED,
             previewMode: false,
-            isModified: false
+            isModified: false,
+            state: {}
           })
         }
       }
@@ -108,7 +108,8 @@ class ContentPanel extends Component {
             type: 'page',
             status: tabStatusTypes.SAVED,
             previewMode: false,
-            isModified: false
+            isModified: false,
+            state: {}
           })
         }
       }
@@ -123,7 +124,8 @@ class ContentPanel extends Component {
           type: 'history',
           status: tabStatusTypes.SAVED,
           previewMode: false,
-          isModified: false
+          isModified: false,
+          state: {}
         })
       }
     }
@@ -132,12 +134,11 @@ class ContentPanel extends Component {
       if (this.props.tabs?.tabsOrder?.length) {
         const tabId = this.props.tabs.activeTabId || this.props.tabs.tabsOrder[0]
         const tab = this.props.tabs.tabs[tabId]
+        const { orgId } = this.props.match.params
         this.props.set_active_tab_id(tabId)
         this.props.history.push({
-          pathname: `dashboard/${tab.type}/${tab.status === 'NEW' ? 'new' : tabId}`
+          pathname: `/orgs/${orgId}/dashboard/${tab.type}/${tab.status === 'NEW' ? 'new' : tabId}`
         })
-      } else {
-        tabService.newTab({ ...this.props })
       }
     }
 

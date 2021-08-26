@@ -6,7 +6,7 @@ import { Dropdown, ButtonGroup } from 'react-bootstrap'
 import store from '../../store/store'
 import { isDashboardRoute, isElectron, isSavedEndpoint } from '../common/utility'
 import tabService from '../tabs/tabService'
-import { closeTab } from '../tabs/redux/tabsActions'
+import { closeTab, updateTab } from '../tabs/redux/tabsActions'
 import tabStatusTypes from '../tabs/tabStatusTypes'
 import CodeTemplate from './codeTemplate'
 import SaveAsSidebar from './saveAsSidebar'
@@ -79,7 +79,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     // generate_temp_tab: (id) => dispatch(generateTempTab(id))
     close_tab: (id) => dispatch(closeTab(id)),
     add_history: (data) => dispatch(addHistory(data)),
-    update_environment: (data) => dispatch(updateEnvironment(data))
+    update_environment: (data) => dispatch(updateEnvironment(data)),
+    update_tab: (id, data) => dispatch(updateTab(id, data))
   }
 }
 
@@ -141,7 +142,8 @@ class DisplayEndpoint extends Component {
       postScriptText: '',
       preReqScriptError: '',
       postReqScriptError: '',
-      host: {}
+      host: {},
+      draftDataSet: false
     }
 
     this.uri = React.createRef()
@@ -164,55 +166,13 @@ class DisplayEndpoint extends Component {
       : isDashboardRoute(this.props)
         ? this.props.location.pathname.split('/')[5]
         : this.props.location.pathname.split('/')[4]
-
-    if (this.props.location.pathname.split('/')[5] === 'new') {
-      this.setState({
-        data: {
-          name: '',
-          method: 'GET',
-          body: { type: 'none', value: null },
-          uri: '',
-          updatedUri: ''
-        },
-        startTime: '',
-        timeElapsed: '',
-        response: {},
-        endpoint: {},
-        groupId: this.props.location.groupId,
-        title: 'Add New Endpoint',
-        flagResponse: false,
-        showDescriptionFlag: false,
-        authType: null,
-        originalHeaders: [
-          {
-            checked: 'notApplicable',
-            key: '',
-            value: '',
-            description: ''
-          }
-        ],
-        originalParams: [
-          {
-            checked: 'notApplicable',
-            key: '',
-            value: '',
-            description: ''
-          }
-        ]
-      })
-      this.setAccessToken()
-    }
-    // if (!isDashboardRoute(this.props)) {
-    //   let collectionIdentifier = this.props.location.pathname.split("/")[2];
-    //   this.fetchPublicCollection(collectionIdentifier);
-    // }
-
     if (!this.state.theme) {
       this.setState({ theme: this.props.publicCollectionTheme })
     }
     if (window.innerWidth < '1400') {
       this.setState({ codeEditorVisibility: false })
     }
+    this.setEndpointData()
   }
 
   componentDidUpdate (prevProps, prevState) {
@@ -237,6 +197,28 @@ class DisplayEndpoint extends Component {
       !this.props.location.pathname.includes('history')
     ) {
       this.setState({ flagResponse: false })
+    }
+    this.setEndpointData()
+  }
+
+  setEndpointData () {
+    const { tab, historySnapshots, endpoints, match: { params: { endpointId, historyId } } } = this.props
+    const { historySnapshotId, endpoint, draftDataSet } = this.state
+
+    if (tab && endpointId) {
+      if (tab.isModified && !draftDataSet) {
+        this.setState({ ...tab.state, draftDataSet: true })
+      } else if (endpointId !== 'new' && endpoint.id !== tab.id && endpoints[tab.id]) {
+        this.fetchEndpoint(0, tab.id)
+      }
+    }
+
+    if (tab && historyId) {
+      if (tab.isModified && !draftDataSet) {
+        this.setState({ ...tab.state, draftDataSet: true })
+      } else if (historySnapshotId !== historyId && historySnapshots[tab.id]) {
+        this.fetchHistorySnapshot()
+      }
     }
   }
 
@@ -479,11 +461,17 @@ class DisplayEndpoint extends Component {
       originalParams = this.makeOriginalParams(keys, values, description)
       this.setState({ originalParams })
     }
-    if (isDashboardRoute(this.props)) {
-      tabService.markTabAsModified(this.props.tab.id)
-    }
     this.setState({ data })
   };
+
+  setUnsavedTabDataInIDB () {
+    if (this.props.tab.id === this.props.tabs.activeTabId) {
+      clearTimeout(this.saveTimeOut)
+      this.saveTimeOut = setTimeout(() => {
+        this.props.update_tab(this.props.tab.id, { state: { ...this.state } })
+      }, 1000)
+    }
+  }
 
   setPathVariables (pathVariableKeys, pathVariableKeysObject) {
     const pathVariables = []
@@ -1073,6 +1061,7 @@ class DisplayEndpoint extends Component {
     this.setState({ response, data })
     if (isDashboardRoute(this.props)) {
       tabService.markTabAsModified(this.props.tab.id)
+      this.setUnsavedTabDataInIDB()
     }
   }
 
@@ -1092,9 +1081,10 @@ class DisplayEndpoint extends Component {
 
     if (
       isDashboardRoute(this.props) &&
-      (name === 'Params' || name === 'Headers' || name === 'Path Variables')
+      (name === 'HostAndUri' || name === 'Params' || name === 'Headers' || name === 'Path Variables')
     ) {
       tabService.markTabAsModified(this.props.tab.id)
+      this.setUnsavedTabDataInIDB()
     }
   }
 
@@ -1356,6 +1346,7 @@ class DisplayEndpoint extends Component {
     this.setState({ data })
     if (isDashboardRoute(this.props)) {
       tabService.markTabAsModified(this.props.tab.id)
+      this.setUnsavedTabDataInIDB()
     }
   }
 
@@ -1541,6 +1532,7 @@ class DisplayEndpoint extends Component {
       this.setState({ data: data })
       if (isDashboardRoute(this.props)) {
         tabService.markTabAsModified(this.props.tab.id)
+        this.setUnsavedTabDataInIDB()
       }
     }
     if (title === 'endpoint') this.setState({ endpoint: data })
@@ -1888,8 +1880,9 @@ class DisplayEndpoint extends Component {
       postScriptText = text
     }
 
-    if (!this.props?.tab?.isModified && isDashboardRoute(this.props)) {
+    if (isDashboardRoute(this.props)) {
       tabService.markTabAsModified(this.props.tab.id)
+      this.setUnsavedTabDataInIDB()
     }
     this.setState({ preScriptText, postScriptText })
   }
@@ -1923,33 +1916,6 @@ class DisplayEndpoint extends Component {
     ) {
       this.props.handle_save_endpoint(false)
       this.handleSave()
-    }
-    if (
-      isDashboardRoute(this.props) &&
-      this.props.location.pathname.split('/')[4] === 'endpoint' &&
-      this.props.location.pathname.split('/')[5] !== 'new' &&
-      this.state.endpoint.id !== this.props.tab.id &&
-      this.props.endpoints[this.props.tab.id]
-    ) {
-      const flag = 0
-
-      if (isDashboardRoute(this.props)) {
-        this.fetchEndpoint(flag, this.props.tab.id)
-        store.subscribe(() => {
-          if (!this.props.location.title && !this.state.title) {
-            this.fetchEndpoint(flag, this.props.tab.id)
-          }
-        })
-      }
-    }
-
-    if (
-      isDashboardRoute(this.props) &&
-      this.props.location.pathname.split('/')[4] === 'history' &&
-      this.state.historySnapshotId !== this.props.tab.id &&
-      this.props.historySnapshots[this.props.tab.id]
-    ) {
-      this.fetchHistorySnapshot()
     }
 
     if (
@@ -2068,12 +2034,13 @@ class DisplayEndpoint extends Component {
                             {...this.props}
                             groupId={this.state.groupId}
                             endpointId={this.state.endpoint.id}
-                            customHost={this.state.endpoint.BASE_URL || ''}
+                            customHost={this.state.host.selectedHost === 'customHost' ? this.state.host.BASE_URL : this.state.endpoint.BASE_URL || ''}
                             environmentHost={this.props.environment?.variables?.BASE_URL?.currentValue || this.props.environment?.variables?.BASE_URL?.initialValue || ''}
                             versionHost={this.props.versions[this.props.groups[this.state.groupId]?.versionId]?.host || ''}
                             updatedUri={this.state.data.updatedUri}
                             set_host_uri={this.setHostUri.bind(this)}
                             set_base_url={this.setBaseUrl.bind(this)}
+                            props_from_parent={this.propsFromChild.bind(this)}
                           />
                         </div>
                       </div>
@@ -2164,6 +2131,7 @@ class DisplayEndpoint extends Component {
                             customHost={this.state.endpoint.BASE_URL || ''}
                             endpointId={this.state.endpoint.id}
                             set_host_uri={this.setHostUri.bind(this)}
+                            props_from_parent={this.propsFromChild.bind(this)}
                           />
 
                         </div>
