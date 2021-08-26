@@ -465,7 +465,7 @@ class GenericTable extends Component {
     return (
     // "generic-table-container"
     // table-bordered
-      <div className='hm-public-table'>
+      <div className='hm-public-table position-relative'>
         {(title === 'Path Variables' && isDashboardRoute(this.props)) ? <div>{title}</div> : null}
         <div
           className={
@@ -545,7 +545,7 @@ class GenericTable extends Component {
           : (
             <div className='generic-table-title-container'>
               <button
-                className='adddescLink mt-2'
+                className='adddescLink mt-2 addBulk'
                 onClick={() => this.displayEditButton()}
               >
                 {this.state.editButtonName}
