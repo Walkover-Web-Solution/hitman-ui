@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { toast } from 'react-toastify'
 import { isAdmin } from '../auth/authService'
 import './publicCollectionInfo.scss'
-import { ReactComponent as SettingIcon } from '../../assets/icons/SettingIcon.svg'
+import SettingIcon from '../../assets/icons/SettingIcon.png'
 import { ReactComponent as ExternalLinks } from '../../assets/icons/externalLinks.svg'
 import PublishSidebar from '../publishSidebar/publishSidebar'
 import extractCollectionInfoService from '../publishDocs/extractCollectionInfoService'
@@ -113,7 +113,7 @@ class PublishCollectionInfo extends Component {
   renderSettingsLink () {
     return (
       <div className='text-link' onClick={() => { isAdmin() ? this.openPublishSettings() : this.showAccessDeniedToast() }}>
-        <SettingIcon />
+        <img src={SettingIcon} alt='' />
       </div>
     )
   }
@@ -156,7 +156,7 @@ class PublishCollectionInfo extends Component {
   render () {
     const isPublic = this.props.collections[this.props.collectionId]?.isPublic || false
     return (
-      <div className='my-3'>
+      <div className='my-2'>
         {isPublic ? this.renderPublicCollectionInfo() : this.renderPublishCollection()}
         {this.openPublishSidebar()}
       </div>

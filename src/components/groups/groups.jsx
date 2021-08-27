@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
-import { Accordion, Card } from 'react-bootstrap'
+import { Card } from 'react-bootstrap'
 import { connect } from 'react-redux'
-import { isDashboardRoute } from '../common/utility'
+import { isDashboardRoute, getParentIds } from '../common/utility'
 // import Endpoints from "../endpoints/endpointsCopy";
 import Endpoints from '../endpoints/endpoints'
 import GroupForm from '../groups/groupForm'
@@ -24,7 +24,8 @@ const mapStateToProps = (state) => {
   return {
     groups: state.groups,
     pages: state.pages,
-    endpoints: state.endpoints
+    endpoints: state.endpoints,
+    versions: state.versions
   }
 }
 
@@ -64,7 +65,8 @@ class Groups extends Component {
         share: false
       },
       theme: '',
-      filter: ''
+      filter: '',
+      selectedGroupIds: []
     }
 
     this.eventkey = {}
@@ -85,6 +87,40 @@ class Groups extends Component {
   componentDidMount () {
     if (!this.state.theme) {
       this.setState({ theme: this.props.collections[this.props.collection_id].theme })
+    }
+
+    const { pageId, endpointId } = this.props.match.params
+
+    if (pageId) {
+      this.setGroupIdforEntity(pageId, 'page')
+    }
+
+    if (endpointId) {
+      this.setGroupIdforEntity(endpointId, 'endpoint')
+    }
+  }
+
+  componentDidUpdate (prevProps, prevState) {
+    const { pageId, endpointId } = this.props.match.params
+    const { pageId: prevPageId, endpointId: prevEndpointId } = prevProps.match.params
+
+    if (pageId && prevPageId !== pageId) {
+      this.setGroupIdforEntity(pageId, 'page')
+    }
+
+    if (endpointId && prevEndpointId !== endpointId) {
+      this.setGroupIdforEntity(endpointId, 'endpoint')
+    }
+  }
+
+  setGroupIdforEntity (id, type) {
+    const { groupId } = getParentIds(id, type, this.props)
+    this.setSelectedGroupId(groupId, true)
+  }
+
+  setSelectedGroupId (id, value) {
+    if (id && this.state.selectedGroupIds[id] !== value) {
+      this.setState({ selectedGroupIds: { ...this.state.selectedGroupIds, [id]: value } })
     }
   }
 
@@ -404,41 +440,27 @@ class Groups extends Component {
   }
 
   renderBody (groupId) {
-    if (
-      isDashboardRoute(this.props, true) &&
-      document.getElementsByClassName('group-collapse')
-    ) {
-      if (this.props.filter !== '' && this.eventkey[groupId] === '0') {
-        const elements = document.getElementsByClassName('group-collapse')
-        for (let i = 0; i < elements.length; i++) {
-          elements[i].className = 'group-collapse collapse show'
-        }
-      } else if (this.props.filter !== '') {
-        const elements = document.getElementsByClassName('group-collapse')
-        for (let i = 0; i < elements.length; i++) {
-          elements[i].className = 'group-collapse collapse hide'
-        }
-      }
-    }
     return (
-      <div>
-        {
-          isDashboardRoute(this.props, true)
-            ? (
-              <Accordion
-                key={groupId}
-                className='sidebar-accordion'
-                id='child-accordion'
-                defaultActiveKey={groupId}
-              >
-                <Accordion.Toggle
-                  variant='default'
-                  eventKey={groupId}
-                >
-                  <div className='sidebar-accordion-item d-inline text-truncate'>
-                    {this.props.groups[groupId].name}
-                  </div>
-                  {
+      isDashboardRoute(this.props, true)
+        ? (
+          <div
+            key={groupId}
+            className='sidebar-accordion accordion'
+            id='child-accordion'
+          >
+            <button
+              onClick={() => this.toggleGroupIds(groupId)}
+              className={this.state.selectedGroupIds[groupId] === true ? 'active' : null}
+            >
+              <span className='versionChovron'>
+                <svg width='15' height='15' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
+                  <path d='M4.5 6.75L9 11.25L13.5 6.75' stroke='#333333' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
+                </svg>
+              </span>
+              <div className='sidebar-accordion-item d-inline text-truncate'>
+                {this.props.groups[groupId].name}
+              </div>
+              {
                     isDashboardRoute(this.props, true) && !this.props.collections[this.props.collection_id]?.importedFromMarketPlace
                       ? (
                         <div className='sidebar-item-action'>
@@ -532,10 +554,11 @@ class Groups extends Component {
                         )
                       : null
                   }
-                </Accordion.Toggle>
-                <Accordion.Collapse
-                  className='group-collapse'
-                  eventKey={groupId}
+            </button>
+            {this.state.selectedGroupIds[groupId]
+              ? (
+                <div
+                  className='group-collapse collapse show'
                 >
                   <Card.Body>
                     <GroupPages
@@ -553,33 +576,33 @@ class Groups extends Component {
                       show_filter_groups={this.propsFromGroups.bind(this)}
                     />
                   </Card.Body>
-                </Accordion.Collapse>
-                {/* </Card> */}
-              </Accordion>
-              )
-            : (
-              <div className='hm-sidebar-block'>
-                <div className='hm-sidebar-label'>
-                  {this.props.groups[groupId].name}
                 </div>
-                <GroupPages
-                  {...this.props}
-                  version_id={this.props.groups[groupId].versionId}
-                  group_id={groupId}
-                  show_filter_groups={this.propsFromGroups.bind(this)}
-                  theme={this.props.collections[this.props.collection_id].theme}
-                />
-                <Endpoints
-                  {...this.props}
-                  group_id={groupId}
-                  endpoints_order={this.props.groups[groupId].endpointsOrder}
-                  theme={this.props.collections[this.props.collection_id].theme}
-                  show_filter_groups={this.propsFromGroups.bind(this)}
-                />
-              </div>
-              )
-        }
-      </div>
+                )
+              : null}
+            {/* </Card> */}
+          </div>
+          )
+        : (
+          <div className='hm-sidebar-block'>
+            <div className='hm-sidebar-label'>
+              {this.props.groups[groupId].name}
+            </div>
+            <GroupPages
+              {...this.props}
+              version_id={this.props.groups[groupId].versionId}
+              group_id={groupId}
+              show_filter_groups={this.propsFromGroups.bind(this)}
+              theme={this.props.collections[this.props.collection_id].theme}
+            />
+            <Endpoints
+              {...this.props}
+              group_id={groupId}
+              endpoints_order={this.props.groups[groupId].endpointsOrder}
+              theme={this.props.collections[this.props.collection_id].theme}
+              show_filter_groups={this.propsFromGroups.bind(this)}
+            />
+          </div>
+          )
     )
   }
 
@@ -598,6 +621,15 @@ class Groups extends Component {
         }
       </>
     )
+  }
+
+  toggleGroupIds (id) {
+    const currentValue = this.state.selectedGroupIds[id]
+    if (currentValue) {
+      this.setState({ selectedGroupIds: { ...this.state.selectedGroupIds, [id]: !currentValue } })
+    } else {
+      this.setState({ selectedGroupIds: { ...this.state.selectedGroupIds, [id]: true } })
+    }
   }
 
   render () {

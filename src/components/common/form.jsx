@@ -43,7 +43,7 @@ class Form extends Component {
 
   validate () {
     const options = { abortEarly: false }
-    const { error } = Joi.validate(this.state.data, this.schema, options)
+    const { error } = Joi.validate(this.trimmedData(), this.schema, options)
     if (!error) return null
     const errors = {}
     for (const item of error.details) {
@@ -51,6 +51,13 @@ class Form extends Component {
     }
     return errors
   };
+
+  trimmedData () {
+    const trimmedData = {}
+    Object.keys(this.state.data).forEach(key => { trimmedData[key] = this.state.data[key]?.trim() })
+    this.setState({ data: trimmedData })
+    return trimmedData
+  }
 
   handleSubmit = (e) => {
     e.preventDefault()

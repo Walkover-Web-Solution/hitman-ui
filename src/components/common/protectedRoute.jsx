@@ -7,17 +7,27 @@ const ProtectedRoute = ({ path, component: Component, render, ...rest }) => {
     <Route
       {...rest}
       render={(props) => {
-        if (!auth.getCurrentUser()) {
+        if (!auth.getJwt()) {
           return (
             <Redirect
               to={{
-                pathname: '/',
-                state: { from: props.location }
+                pathname: '/logout',
+                search: `?redirect_uri=${props.location.pathname}`
+              }}
+            />
+          )
+        } else if (auth.getCurrentUser() && auth.getOrgList() && auth.getCurrentOrg()) {
+          return Component ? <Component {...props} /> : render(props)
+        } else {
+          return (
+            <Redirect
+              to={{
+                pathname: '/login',
+                search: `?redirect_uri=${props.location.pathname}`
               }}
             />
           )
         }
-        return Component ? <Component {...props} /> : render(props)
       }}
     />
   )

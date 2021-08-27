@@ -6,7 +6,7 @@
   max-width: 1040px;
   margin: 0 auto;
   justify-content: center;
-  max-height: 500px;
+  height: 500px !important;
   overflow-y: auto;
   
   .search-item{
@@ -16,7 +16,7 @@
     text-align: center;
     padding: 15px;
     border-radius: 3px;
-    border: 1px solid #e8e8e8;
+    border: 2px solid #e8e8e8;
     cursor: pointer;
 
   .collection-avatar{
@@ -40,9 +40,7 @@
   }
 
   .selected-item{
-    -webkit-box-shadow: 5px 5px 15px -5px #777;
-    -moz-box-shadow: 5px 5px 15px -5px #777;
-    box-shadow: 0px 5px 15px -5px #777;
+    border: 2px solid #F2994A
   }
 }
 
@@ -62,6 +60,7 @@
 }
 
 .marketplace-footer-btns{
-  margin-left: 86px;
+  margin-top: 25px;
+  margin-left: 66px;
   margin-bottom: 25px;
 }

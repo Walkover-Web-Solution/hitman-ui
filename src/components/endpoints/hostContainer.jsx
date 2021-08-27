@@ -55,8 +55,10 @@ class HostContainer extends Component {
 
   setHostAndUri () {
     const endpointUri = this.props.updatedUri || ''
-    const host = this.state[this.state.selectedHost] || this.state[this.customFindTopPriorityHost()] || ''
-    this.setState({ datalistUri: endpointUri, datalistHost: host }, () => this.setParentHostAndUri())
+    const topPriorityHost = this.customFindTopPriorityHost()
+    const selectedHost = topPriorityHost
+    const host = this.state[selectedHost] || ''
+    this.setState({ datalistUri: endpointUri, datalistHost: host, selectedHost }, () => this.setParentHostAndUri())
   }
 
   setParentHostAndUri () {
@@ -147,9 +149,7 @@ class HostContainer extends Component {
   }
 
   setHosts () {
-    const { versionHost, environmentHost } = this.props
-    let customHost = this.state.customHost
-    if (this.state.customHost === '') customHost = this.props.customHost
+    const { versionHost, environmentHost, customHost } = this.props
     this.setState({ versionHost, environmentHost, customHost }, () => { this.setHostAndUri() })
   }
 
@@ -181,6 +181,15 @@ class HostContainer extends Component {
     )
   }
 
+  renderPublicHost () {
+    return (
+      <input
+        disabled className='form-control'
+        value={this.state.datalistHost + this.state.datalistUri}
+      />
+    )
+  }
+
   render () {
     if (
       isDashboardRoute(this.props) &&
@@ -195,7 +204,7 @@ class HostContainer extends Component {
       )
     } else {
       return (
-        this.fetchPublicEndpointHost(this.props)
+        this.renderPublicHost()
       )
     }
   }

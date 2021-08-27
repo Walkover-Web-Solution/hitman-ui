@@ -5,9 +5,11 @@
     margin: 0px 0px 5px 0;
     border: 0.5px solid #E6DBD4;
     box-sizing: border-box;
-    border-radius: 4px;
     padding: 5px;
     text-transform: capitalize;
+    font-size: 12px;
+    padding-left: 18px;
+    height: 30px;
 }
 
 .entity-submit-btn {
@@ -29,7 +31,7 @@
 }
 
 .quick-add-endpoint {
-    padding: 0px 15px 10px 40px;
+    padding: 0px 15px 10px 0px;
 }
 
 .quick-add-endpoint p {

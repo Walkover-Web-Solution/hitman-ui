@@ -330,11 +330,7 @@ class GenericTable extends Component {
                 value={dataArray[index].key}
                 onChange={this.handleChange}
                 type='text'
-                placeholder={
-                dataArray[index].checked === 'notApplicable'
-                  ? 'Key'
-                  : ''
-              }
+                placeholder='Key'
                 className='form-control'
                 style={{ border: 'none' }}
               />
@@ -368,11 +364,7 @@ class GenericTable extends Component {
                     value={dataArray[index].description}
                     onChange={this.handleChange}
                     type='text'
-                    placeholder={
-                      dataArray[index].checked === 'notApplicable'
-                        ? 'Description'
-                        : ''
-                    }
+                    placeholder='Description'
                     style={{ border: 'none' }}
                     className='form-control'
                   />
@@ -473,7 +465,7 @@ class GenericTable extends Component {
     return (
     // "generic-table-container"
     // table-bordered
-      <div className='hm-public-table'>
+      <div className='hm-public-table position-relative'>
         {(title === 'Path Variables' && isDashboardRoute(this.props)) ? <div>{title}</div> : null}
         <div
           className={
@@ -553,7 +545,7 @@ class GenericTable extends Component {
           : (
             <div className='generic-table-title-container'>
               <button
-                className='adddescLink mt-2'
+                className='adddescLink mt-2 addBulk'
                 onClick={() => this.displayEditButton()}
               >
                 {this.state.editButtonName}

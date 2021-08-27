@@ -140,16 +140,12 @@ class DisplayEndpoint extends Component {
       preScriptText: '',
       postScriptText: '',
       preReqScriptError: '',
-      postReqScriptError: ''
+      postReqScriptError: '',
+      host: {}
     }
 
     this.uri = React.createRef()
     this.paramKey = React.createRef()
-
-    this.customState = {
-      BASE_URL: '',
-      customBASE_URL: ''
-    }
 
     this.structueParamsHeaders = [
       {
@@ -231,7 +227,8 @@ class DisplayEndpoint extends Component {
       if (
         this.state.data !== prevState.data ||
         this.state.originalParams !== prevState.originalParams ||
-        this.state.originalHeaders !== prevState.originalHeaders
+        this.state.originalHeaders !== prevState.originalHeaders ||
+        this.state.host !== prevState.host
       ) {
         this.prepareHarObject()
       }
@@ -330,7 +327,6 @@ class DisplayEndpoint extends Component {
       // To fetch originalHeaders from Headers
       originalHeaders = this.fetchoriginalHeaders(endpoint.headers)
       const headers = this.fetchoriginalHeaders(endpoint.headers)
-      this.customState.customBASE_URL = endpoint.BASE_URL
       // To fetch Path Variables
       if (endpoint.pathVariables.length !== 0) {
         pathVariables = this.fetchPathVariables(endpoint.pathVariables)
@@ -388,7 +384,6 @@ class DisplayEndpoint extends Component {
     originalParams = [...params]
     const headers = this.fetchoriginalHeaders(history.endpoint.headers)
     originalHeaders = [...headers]
-    this.customState.customBASE_URL = history.endpoint.BASE_URL
     let authType = {}
     if (history.endpoint.authorizationType !== null) {
       authType = {
@@ -727,7 +722,7 @@ class DisplayEndpoint extends Component {
       headers: headersData,
       params: updatedParams,
       pathVariables: pathVariables,
-      BASE_URL: this.customState.BASE_URL,
+      BASE_URL: this.state.host.BASE_URL,
       bodyDescription:
         this.state.data.body.type === 'JSON' ? this.state.bodyDescription : {},
       authorizationType: this.state.authType
@@ -830,13 +825,14 @@ class DisplayEndpoint extends Component {
     })
 
     /** Prepare URL */
-    const BASE_URL = this.customState.BASE_URL
+    const BASE_URL = this.state.host.BASE_URL
     const uri = new URI(this.state.data.updatedUri)
     const queryparams = uri.search()
     const path = this.setPathVariableValues()
     const url = BASE_URL + path + queryparams
     if (!url) {
       toast.error('Request URL is empty')
+      setTimeout(() => { this.setState({ loader: false }) }, 500)
       return
     }
 
@@ -977,14 +973,15 @@ class DisplayEndpoint extends Component {
         params: updatedParams,
         pathVariables: pathVariables,
         BASE_URL:
-          this.customState.selectedHost === 'customHost'
-            ? this.customState.BASE_URL
+          this.state.host.selectedHost === 'customHost'
+            ? this.state.host.BASE_URL
             : null,
         bodyDescription:
           this.state.data.body.type === 'JSON'
             ? bodyDescription
             : {},
         authorizationType: this.state.authType,
+        notes: this.state.endpoint.notes,
         preScript: this.state.preScriptText,
         postScript: this.state.postScriptText
       }
@@ -1302,7 +1299,7 @@ class DisplayEndpoint extends Component {
 
   async prepareHarObject () {
     try {
-      const BASE_URL = this.customState.BASE_URL
+      const BASE_URL = this.state.host.BASE_URL
       const uri = new URI(this.state.data.updatedUri)
       const queryparams = uri.search()
       const path = this.setPathVariableValues()
@@ -1349,8 +1346,7 @@ class DisplayEndpoint extends Component {
   }
 
   setBaseUrl (BASE_URL, selectedHost) {
-    this.customState.BASE_URL = BASE_URL
-    this.customState.selectedHost = selectedHost
+    this.setState({ host: { BASE_URL, selectedHost } })
   }
 
   setBody (bodyType, body) {
@@ -1873,14 +1869,6 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  renderBaseUrl () {
-    return this.customState.BASE_URL
-      ? this.customState.BASE_URL
-      : this.state.endpoint?.BASE_URL
-        ? this.state.endpoint?.BASE_URL
-        : ''
-  }
-
   renderCookiesModal () {
     return (
       this.state.showCookiesModal &&
@@ -2006,7 +1994,7 @@ class DisplayEndpoint extends Component {
               getCurrentUser()
                 ? (
                   <div
-                    className={isDashboardRoute(this.props) ? 'hm-panel mt-4 col-12' : null}
+                    className={isDashboardRoute(this.props) ? 'hm-panel col-12' : null}
                   >
                     {this.state.showEndpointFormModal && (
                       <SaveAsSidebar
@@ -2176,11 +2164,6 @@ class DisplayEndpoint extends Component {
                             customHost={this.state.endpoint.BASE_URL || ''}
                             endpointId={this.state.endpoint.id}
                             set_host_uri={this.setHostUri.bind(this)}
-                          />
-
-                          <input
-                            disabled className='form-control'
-                            value={this.renderBaseUrl() + this.state.data.updatedUri}
                           />
 
                         </div>
@@ -2511,6 +2494,11 @@ class DisplayEndpoint extends Component {
                 </div>
                 <Notes
                   {...this.props}
+                  submitNotes={(data) => {
+                    if (this.state.endpoint.id === data.id) {
+                      this.setState({ endpoint: { ...this.state.endpoint, notes: data.notes } })
+                    }
+                  }}
                   note={this.state.endpoint?.notes || ''}
                   endpointId={this.state.endpoint?.id}
                 />

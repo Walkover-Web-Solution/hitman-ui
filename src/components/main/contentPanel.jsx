@@ -23,6 +23,7 @@ import './main.scss'
 import { getCurrentUser } from '../auth/authService'
 import LoginSignupModal from './loginSignupModal'
 import Footer from '../main/Footer'
+import tabService from '../tabs/tabService.js'
 
 const mapStateToProps = (state) => {
   return {
@@ -116,7 +117,7 @@ class ContentPanel extends Component {
     if (historyId) {
       if (this.props.tabs.tabs[historyId]) {
         if (this.props.tabs.activeTabId !== historyId) { this.props.set_active_tab_id(historyId) }
-      } else if (this.props.history && this.props.history[historyId]) {
+      } else if (this.props.historySnapshots && this.props.historySnapshots[historyId]) {
         this.props.open_in_new_tab({
           id: historyId,
           type: 'history',
@@ -135,6 +136,8 @@ class ContentPanel extends Component {
         this.props.history.push({
           pathname: `dashboard/${tab.type}/${tab.status === 'NEW' ? 'new' : tabId}`
         })
+      } else {
+        tabService.newTab({ ...this.props })
       }
     }
 

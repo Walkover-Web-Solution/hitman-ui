@@ -7,7 +7,8 @@ const apiUrl = process.env.REACT_APP_API_URL
 const signUpNotifierUrl = process.env.REACT_APP_SIGN_UP_NOTIFIER_URL
 const tokenKey = 'token'
 const profileKey = 'profile'
-const orgKey = 'organisation'
+export const orgKey = 'organisation'
+export const orgListKey = 'organisationList'
 const ssoURL = process.env.REACT_APP_SOCKET_SSO_URL
 const uiURL = process.env.REACT_APP_UI_URL
 
@@ -41,27 +42,40 @@ export async function login (socketJwt) {
   window.localStorage.setItem(tokenKey, socketJwt)
   window.localStorage.setItem(profileKey, JSON.stringify(userInfo.profile))
   window.localStorage.setItem(orgKey, JSON.stringify(userInfo.orgs[0]))
-  window.localStorage.setItem('organisationList', JSON.stringify(userInfo.orgs))
+  window.localStorage.setItem(orgListKey, JSON.stringify(userInfo.orgs))
   http.setJwt(`Bearer ${socketJwt}`)
   return userInfo
 }
 export function loginWithJwt (jwt) {
   window.localStorage.setItem(tokenKey, jwt)
 }
-export function logout () {
+export function logout (redirectUrl = '/login') {
   // const isDesktop = process.env.REACT_APP_IS_DESKTOP
   http.get(apiUrl + '/logout').then(() => {
-    window.localStorage.removeItem(tokenKey)
-    window.localStorage.removeItem(profileKey)
-    window.localStorage.removeItem(orgKey)
-    if (isElectron()) {
-      history.push({ pathname: '/' })
-    } else {
-      const redirectUri = encodeURIComponent(`${uiURL}/login`)
-      window.location = `${ssoURL}/logout?redirect_uri=${redirectUri}&src=hitman`
-    }
+    localStorageCleanUp()
+    logoutRedirection(redirectUrl)
+  }).catch(() => {
+    localStorageCleanUp()
+    logoutRedirection(redirectUrl)
   })
 }
+
+function localStorageCleanUp () {
+  window.localStorage.removeItem(tokenKey)
+  window.localStorage.removeItem(profileKey)
+  window.localStorage.removeItem(orgKey)
+  window.localStorage.removeItem(orgListKey)
+}
+
+function logoutRedirection (redirectUrl) {
+  if (isElectron()) {
+    history.push({ pathname: '/' })
+  } else {
+    const redirectUri = encodeURIComponent(uiURL + redirectUrl)
+    window.location = `${ssoURL}/logout?redirect_uri=${redirectUri}&src=hitman`
+  }
+}
+
 export function getCurrentUser () {
   try {
     const profile = window.localStorage.getItem(profileKey)
@@ -75,6 +89,15 @@ export function getCurrentOrg () {
   try {
     const org = window.localStorage.getItem(orgKey)
     return JSON.parse(org)
+  } catch (ex) {
+    return null
+  }
+}
+
+export function getOrgList () {
+  try {
+    const orgs = window.localStorage.getItem(orgListKey)
+    return JSON.parse(orgs)
   } catch (ex) {
     return null
   }
@@ -106,5 +129,8 @@ export default {
   getCurrentOrg,
   getJwt,
   isAdmin,
-  notifySignup
+  notifySignup,
+  orgKey,
+  orgListKey,
+  getOrgList
 }

@@ -4,7 +4,8 @@ import indexedDbService from '../indexedDb/indexedDbService'
 class Logout extends Component {
   componentDidMount () {
     indexedDbService.deleteDataBase('hitman')
-    auth.logout()
+    const resiredtURI = new URLSearchParams(this.props.location.search).get('redirect_uri') || '/login'
+    auth.logout(resiredtURI)
   }
 
   render () {

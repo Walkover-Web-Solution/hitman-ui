@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Accordion, Card } from 'react-bootstrap'
+import { Card } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import CollectionVersionForm from '../collectionVersions/collectionVersionForm'
@@ -8,7 +8,7 @@ import {
   duplicateVersion
 } from '../collectionVersions/redux/collectionVersionsActions'
 import ShareVersionForm from '../collectionVersions/shareVersionForm'
-import { isDashboardRoute, ADD_GROUP_MODAL_NAME } from '../common/utility'
+import { isDashboardRoute, ADD_GROUP_MODAL_NAME, getParentIds } from '../common/utility'
 import GroupForm from '../groups/groupForm'
 import Groups from '../groups/groups'
 import PageForm from '../pages/pageForm'
@@ -21,6 +21,7 @@ import AddEntity from '../main/addEntity/addEntity'
 
 const mapStateToProps = (state) => {
   return {
+    endpoints: state.endpoints,
     versions: state.versions,
     groups: state.groups,
     pages: state.pages
@@ -71,11 +72,43 @@ class CollectionVersions extends Component {
     if (!this.state.theme) {
       this.setState({ theme: this.props.collections[this.props.collection_id].theme })
     }
+
+    const { pageId, endpointId } = this.props.match.params
+
+    if (pageId) {
+      this.setVersionForEntity(pageId, 'page')
+    }
+
+    if (endpointId) {
+      this.setVersionForEntity(endpointId, 'endpoint')
+    }
   }
 
   componentDidUpdate (prevProps, prevState) {
     if (prevProps.selectedCollectionId !== this.props.selectedCollectionId) {
       this.setState({ selectedVersionIds: {} })
+    }
+
+    const { pageId, endpointId } = this.props.match.params
+    const { pageId: prevPageId, endpointId: prevEndpointId } = prevProps.match.params
+
+    if (pageId && prevPageId !== pageId) {
+      this.setVersionForEntity(pageId, 'page')
+    }
+
+    if (endpointId && prevEndpointId !== endpointId) {
+      this.setVersionForEntity(endpointId, 'endpoint')
+    }
+  }
+
+  setVersionForEntity (id, type) {
+    const { versionId } = getParentIds(id, type, this.props)
+    this.setSelectedVersionId(versionId, true)
+  }
+
+  setSelectedVersionId (id, value) {
+    if (id && this.state.selectedVersionIds[id] !== value) {
+      this.setState({ selectedVersionIds: { ...this.state.selectedVersionIds, [id]: value } })
     }
   }
 
@@ -312,50 +345,28 @@ class CollectionVersions extends Component {
   }
 
   renderBody (versionId, index, versionsCount) {
-    if (
-      isDashboardRoute(this.props) &&
-      document.getElementsByClassName('version-collapse')
-    ) {
-      if (this.props.filter !== '' && this.eventkey[versionId] === '0') {
-        const elements = document.getElementsByClassName('version-collapse')
-        for (let i = 0; i < elements.length; i++) {
-          elements[i].className = 'version-collapse collapse show'
-        }
-      } else if (this.props.filter !== '') {
-        const elements = document.getElementsByClassName('version-collapse')
-        for (let i = 0; i < elements.length; i++) {
-          elements[i].className = 'version-collapse collapse hide'
-        }
-      }
-    }
     return (
-      <>
-        {
-          isDashboardRoute(this.props, true)
-            ? (
-              <div className='hm-sidebar-outer-block' key={index}>
-                <Accordion
-                  className='sidebar-accordion versionBoldHeading'
-                  defaultActiveKey={versionsCount === 1 ? '1' : null}
-                  key={versionId}
-                  id='child-accordion'
-                >
-                  <Accordion.Toggle
-                    className={this.state.selectedVersionIds[versionId] === true ? 'active' : null}
-                    variant='default'
-                    eventKey='1'
-                    onClick={() => { this.toggleVersionIds(versionId) }}
-                  >
-                    <span className='versionChovron'>
-                      <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
-                        <path d='M4.5 6.75L9 11.25L13.5 6.75' stroke='#333333' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
-                      </svg>
-                    </span>
-                    <div className='sidebar-accordion-item text-truncate d-inline'>
+      isDashboardRoute(this.props, true)
+        ? (
+          <div className='hm-sidebar-outer-block' key={versionId}>
+            <div
+              className='sidebar-accordion versionBoldHeading'
+              id='child-accordion'
+            >
+              <button
+                className={this.state.selectedVersionIds[versionId] === true ? 'active' : null}
+                onClick={() => { this.toggleVersionIds(versionId) }}
+              >
+                <span className='versionChovron'>
+                  <svg width='15' height='15' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
+                    <path d='M4.5 6.75L9 11.25L13.5 6.75' stroke='#333333' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
+                  </svg>
+                </span>
+                <div className='sidebar-accordion-item text-truncate d-inline'>
 
-                      {this.props.versions[versionId].number}
-                    </div>
-                    {
+                  {this.props.versions[versionId].number}
+                </div>
+                {
                       isDashboardRoute(this.props, true) && !this.props.collections[this.props.collection_id]?.importedFromMarketPlace
                         ? (
                           <div className='sidebar-item-action'>
@@ -450,8 +461,10 @@ class CollectionVersions extends Component {
                           )
                         : null
                     }
-                  </Accordion.Toggle>
-                  <Accordion.Collapse className='version-collapse' eventKey='1'>
+              </button>
+              {this.state.selectedVersionIds[versionId]
+                ? (
+                  <div className='version-collapse'>
                     <Card.Body>
                       <div className='linkWrapper versionPages'>
                         <VersionPages
@@ -469,17 +482,19 @@ class CollectionVersions extends Component {
                         />
                       </div>
                     </Card.Body>
-                  </Accordion.Collapse>
-                </Accordion>
-              </div>
-              )
-            : (
-              <>
-                {((this.state.selectedVersionIndex === '' && index === 0) ||
+                  </div>
+                  )
+                : null}
+            </div>
+          </div>
+          )
+        : (
+          <>
+            {((this.state.selectedVersionIndex === '' && index === 0) ||
                   (this.state.selectedVersionIndex &&
                     this.state.selectedVersionIndex === index.toString())) && (
                       <>
-                        <div className='hm-sidebar-outer-block' key={index}>
+                        <div className='hm-sidebar-outer-block' key={versionId}>
                           <VersionPages
                             {...this.props}
                             version_id={versionId}
@@ -494,11 +509,10 @@ class CollectionVersions extends Component {
                           />
                         </div>
                       </>
-                )}
-              </>
-              )
-        }
-      </>
+            )}
+          </>
+          )
+
     )
   }
 
