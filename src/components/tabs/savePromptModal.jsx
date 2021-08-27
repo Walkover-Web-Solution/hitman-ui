@@ -23,11 +23,11 @@ class SavePromptModal extends Component {
     let name = ''
     if (!tab) return
     switch (tab.type) {
-      case 'history': name = this.props.historySnapshots[tabId]?.endpoint?.name || ''
+      case 'history': name = this.props.historySnapshots[tabId]?.endpoint?.name || tab.state.data?.name || 'Random Trigger'
         break
       case 'endpoint':
         if (tab.status === 'SAVED') name = this.props.endpoints[tabId]?.name || ''
-        else name = 'Untitled'
+        else name = tab.state.data?.name || 'Untitled'
         break
       case 'page': name = this.props.pages[tabId]?.name || ''
         break

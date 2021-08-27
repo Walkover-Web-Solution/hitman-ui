@@ -28,6 +28,7 @@ const mapStateToProps = (state) => {
   return {
     endpoints: state.endpoints,
     groups: state.groups,
+    versions: state.versions,
     pages: state.pages,
     tabs: state.tabs,
     historySnapshots: state.history

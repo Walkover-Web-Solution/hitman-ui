@@ -44,6 +44,7 @@ import moment from 'moment'
 import { updateEnvironment } from '../environments/redux/environmentsActions'
 import { run, initialize } from '../../services/sandboxservice'
 import Script from './script/script'
+import * as _ from 'lodash'
 const shortid = require('shortid')
 
 const status = require('http-status')
@@ -216,7 +217,7 @@ class DisplayEndpoint extends Component {
     if (tab && historyId) {
       if (tab.isModified && !draftDataSet) {
         this.setState({ ...tab.state, draftDataSet: true })
-      } else if (historySnapshotId !== historyId && historySnapshots[tab.id]) {
+      } else if (historyId !== 'new' && historySnapshotId !== historyId && historySnapshots[tab.id]) {
         this.fetchHistorySnapshot()
       }
     }
@@ -351,7 +352,7 @@ class DisplayEndpoint extends Component {
         response: {},
         preScriptText: endpoint.preScript || '',
         postScriptText: endpoint.postScript || ''
-      })
+      }, () => this.setUnsavedTabDataInIDB())
       this.setAccessToken()
     }
   }
@@ -361,7 +362,8 @@ class DisplayEndpoint extends Component {
     let originalHeaders = []
     let originalBody = {}
     let pathVariables = []
-    const history = this.props.historySnapshot
+    const { historyId } = this.props.match.params
+    const history = this.props.historySnapshots[historyId]
     const params = this.fetchoriginalParams(history.endpoint.params)
     originalParams = [...params]
     const headers = this.fetchoriginalHeaders(history.endpoint.headers)
@@ -408,7 +410,7 @@ class DisplayEndpoint extends Component {
       publicBodyFlag: true,
       bodyFlag: true,
       flagResponse: true
-    })
+    }, () => this.setUnsavedTabDataInIDB())
   }
 
   getFieldDescription (bodyDescription) {
@@ -468,7 +470,7 @@ class DisplayEndpoint extends Component {
     if (this.props.tab.id === this.props.tabs.activeTabId) {
       clearTimeout(this.saveTimeOut)
       this.saveTimeOut = setTimeout(() => {
-        this.props.update_tab(this.props.tab.id, { state: { ...this.state } })
+        this.props.update_tab(this.props.tab.id, { state: _.cloneDeep(this.state) })
       }, 1000)
     }
   }
