@@ -25,7 +25,7 @@ import { getOrgUpdatedAt } from '../../services/orgApiService'
 import moment from 'moment'
 import Header from './header'
 import { loadfeedioWidget } from '../../services/feedioWidgetService'
-import { loadHelloWidget } from '../../services/helloWidgetService'
+// import { loadHelloWidget } from '../../services/helloWidgetService'
 import auth from '../auth/authService'
 
 const mapDispatchToProps = (dispatch) => {
@@ -81,7 +81,7 @@ class Main extends Component {
       } else {
         loadWidget()
         loadfeedioWidget()
-        loadHelloWidget()
+        // loadHelloWidget()
         await this.fetchAll()
       }
     } else {
