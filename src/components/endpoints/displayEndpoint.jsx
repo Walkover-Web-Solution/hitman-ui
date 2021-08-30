@@ -352,7 +352,9 @@ class DisplayEndpoint extends Component {
         response: {},
         preScriptText: endpoint.preScript || '',
         postScriptText: endpoint.postScript || ''
-      }, () => this.setUnsavedTabDataInIDB())
+      }, () => {
+        if (isDashboardRoute(this.props)) this.setUnsavedTabDataInIDB()
+      })
       this.setAccessToken()
     }
   }
@@ -410,7 +412,9 @@ class DisplayEndpoint extends Component {
       publicBodyFlag: true,
       bodyFlag: true,
       flagResponse: true
-    }, () => this.setUnsavedTabDataInIDB())
+    }, () => {
+      if (isDashboardRoute(this.props)) this.setUnsavedTabDataInIDB()
+    })
   }
 
   getFieldDescription (bodyDescription) {

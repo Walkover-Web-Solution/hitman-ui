@@ -65,6 +65,10 @@ class ContentPanel extends Component {
     this.setState({ saveEndpointFlag: flag, selectedTabId: tabId })
   }
 
+  handleSavePage (flag, tabId) {
+    this.setState({ savePageFlag: flag, selectedTabId: tabId })
+  }
+
   openLoginSignupModal () {
     this.setState({ showLoginSignupModal: true })
   }
@@ -170,6 +174,7 @@ class ContentPanel extends Component {
                       <CustomTabs
                         {...this.props}
                         handle_save_endpoint={this.handleSaveEndpoint.bind(this)}
+                        handle_save_page={this.handleSavePage.bind(this)}
                       />
                     </div>
                   </div>
@@ -220,7 +225,9 @@ class ContentPanel extends Component {
             <TabContent
               {...this.props}
               handle_save_endpoint={this.handleSaveEndpoint.bind(this)}
+              handle_save_page={this.handleSavePage.bind(this)}
               save_endpoint_flag={this.state.saveEndpointFlag}
+              save_page_flag={this.state.savePageFlag}
               selected_tab_id={this.state.selectedTabId}
             />
           </div>

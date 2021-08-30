@@ -3,12 +3,14 @@ import ReactQuill, { Quill } from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import store from '../../store/store'
 // import { markTabAsModified } from '../tabs/tabService'
 import WarningModal from '../common/warningModal'
 import { updatePage } from '../pages/redux/pagesActions'
 import './page.scss'
 import { toast } from 'react-toastify'
+import * as _ from 'lodash'
+import { updateTab } from '../tabs/redux/tabsActions'
+import tabService from '../tabs/tabService'
 const Link = Quill.import('formats/link')
 const builtInFunc = Link.sanitize
 Link.sanitize = function customSanitizeLinkInput (linkValueInput) {
@@ -21,7 +23,15 @@ Link.sanitize = function customSanitizeLinkInput (linkValueInput) {
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     update_page: (editedPage, pageId) =>
-      dispatch(updatePage(ownProps.history, editedPage, pageId))
+      dispatch(updatePage(ownProps.history, editedPage, pageId)),
+    update_tab: (id, data) => dispatch(updateTab(id, data))
+  }
+}
+
+const mapStateToProps = (state) => {
+  return {
+    tabs: state.tabs,
+    pages: state.pages
   }
 }
 
@@ -61,7 +71,7 @@ class EditPage extends Component {
 
   fetchPage (pageId) {
     let data = {}
-    const { pages } = store.getState()
+    const { pages } = this.props
     const page = pages[pageId]
     if (page) {
       const { id, versionId, groupId, name, contents } = page
@@ -73,38 +83,60 @@ class EditPage extends Component {
         contents
       }
 
-      this.setState({ data, originalData: data })
+      this.setState({ data, originalData: data, draftDataSet: true })
     }
   }
 
   async componentDidMount () {
-    let data = {}
-    if (this.props.location.page) {
-      const {
-        id,
-        versionId,
-        groupId,
-        name,
-        contents
-      } = this.props.location.page
+    this.setPageData()
+  }
 
-      data = { id, versionId, groupId, name, contents }
+  componentDidUpdate (prevProps, prevState) {
+    this.setPageData()
+    const { save_page_flag: prevSavePageFlag } = prevProps
+    const { save_page_flag: savePageFlag, tab, handle_save_page: handleSavePage } = this.props
+    if (savePageFlag !== prevSavePageFlag) {
+      if (savePageFlag) {
+        this.handleSubmit()
+        handleSavePage(false, tab.id)
+      }
+    }
+  }
 
-      this.setState({ data, originalData: data })
-    } else {
-      const pageId = this.props.location.pathname.split('/')[5]
-      this.fetchPage(pageId)
-      store.subscribe(() => {
-        this.fetchPage(pageId)
-      })
+  setPageData () {
+    const { tab, pages, match: { params: { pageId } } } = this.props
+    const { draftDataSet } = this.state
+
+    if (tab && pageId) {
+      if (tab.isModified && !draftDataSet) {
+        this.setState({ ...tab.state, draftDataSet: true })
+      } else if (pageId !== 'new' && pages[tab.id] && !this.state.originalData?.id) {
+        this.fetchPage(tab.id)
+      }
     }
   }
 
   handleChange = (value) => {
     const data = { ...this.state.data }
+
     data.contents = value
-    this.setState({ data })
+
+    this.setState({ data }, () => {
+      if (this.isModified()) {
+        tabService.markTabAsModified(this.props.tab.id)
+        this.setUnsavedTabDataInIDB()
+      }
+    })
   };
+
+  setUnsavedTabDataInIDB () {
+    if (this.props.tab.id === this.props.tabs.activeTabId) {
+      clearTimeout(this.saveTimeOut)
+      this.saveTimeOut = setTimeout(() => {
+        this.props.update_tab(this.props.tab.id, { state: _.cloneDeep(this.state) })
+      }, 1000)
+    }
+  }
 
   handleNameChange = (e) => {
     const data = { ...this.state.data }
@@ -113,35 +145,24 @@ class EditPage extends Component {
   };
 
   handleSubmit = (e) => {
-    e.preventDefault()
-    const groupId = this.state.data.groupId
-    if (groupId === null) {
-      const editedPage = { ...this.state.data }
-      if (editedPage.name.trim() === '') {
-        toast.error('Page name cannot be empty.')
-      } else {
-        this.props.update_page(editedPage, editedPage.id)
-        this.props.history.push({
-          pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${editedPage.id}`
-        })
-      }
-    } else {
-      const editedPage = { ...this.state.data }
-      if (editedPage.name.trim() === '') {
-        toast.error('Page name cannot be empty.')
-      } else {
-        this.props.update_page(editedPage, editedPage.id)
-        this.props.history.push({
-          pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${editedPage.id}`
-        })
-      }
+    if (e) e.preventDefault()
+    const editedPage = { ...this.state.data }
+    if (editedPage.name.trim() === '') {
+      toast.error('Page name cannot be empty.')
+      return
     }
+    this.props.update_page(editedPage, editedPage.id)
+    tabService.markTabAsSaved(this.props.tab.id)
+    this.props.history.push({
+      pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${editedPage.id}`
+    })
   };
 
   handleCancel () {
     const pageId = this.props.match.params.pageId
     if (pageId) {
       // Redirect to displayPage Route Component
+      tabService.unmarkTabAsModified(this.props.tab.id)
       this.props.history.push({
         pathname: `/orgs/${this.props.match.params.orgId}/dashboard/page/${pageId}`
       })
@@ -204,7 +225,7 @@ class EditPage extends Component {
               type='submit'
               className='btn btn-primary btn-extra-lg mt-4 ml-3'
             >
-              Submit
+              Save
             </button>
           </form>
         </div>
@@ -213,4 +234,4 @@ class EditPage extends Component {
   }
 }
 
-export default withRouter(connect(null, mapDispatchToProps)(EditPage))
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(EditPage))
