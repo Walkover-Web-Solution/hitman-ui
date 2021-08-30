@@ -2208,19 +2208,9 @@ button.toggleButton {
 
 .hm-right-content .pageText {
   padding: 0px;
-  color: #000;
-  font-size: 16px;
-  line-height: 32px;
   margin-top: 25px;
-
-  h4, h3 {
-    font-size: inherit;
-  }
   ul {
     padding-left: 18px;
-  }
-  ul li {
-    list-style-type: decimal;
   }
   table {
     background: #F8F8F8;
@@ -3328,4 +3318,8 @@ div#steve-parent-accordion{
   top: 0;
   font-size: $font-small;
   right: 14px;
+}
+
+.ql-editor * {
+  font-family: 'proxima-nova';
 }
