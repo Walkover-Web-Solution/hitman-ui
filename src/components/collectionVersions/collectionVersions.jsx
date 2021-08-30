@@ -16,7 +16,6 @@ import VersionPages from '../pages/versionPages'
 import './collectionVersions.scss'
 import collectionVersionsService from './collectionVersionsService'
 import filterService from '../../services/filterService'
-import { ReactComponent as SearchIcon } from '../../assets/icons/searchIcon.svg'
 import AddEntity from '../main/addEntity/addEntity'
 
 const mapStateToProps = (state) => {
@@ -612,9 +611,6 @@ class CollectionVersions extends Component {
   renderPublicSearchBar () {
     return (
       <div className='search-box' onClick={() => { this.myInputRef.focus(); this.setState({ enableSearch: true }) }}>
-        <label htmlFor='search'>
-          <SearchIcon onClick={() => { }} />
-        </label>
         <input
           ref={c => (this.myInputRef = c)}
           value={this.state.value || ''}
