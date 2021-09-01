@@ -355,16 +355,17 @@ class CollectionVersions extends Component {
             >
               <button
                 className={this.state.selectedVersionIds[versionId] === true ? 'active' : null}
-                onClick={() => { this.toggleVersionIds(versionId) }}
               >
-                <span className='versionChovron'>
-                  <svg width='15' height='15' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
-                    <path d='M4.5 6.75L9 11.25L13.5 6.75' stroke='#333333' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
-                  </svg>
-                </span>
-                <div className='sidebar-accordion-item text-truncate d-inline'>
+                <div className='d-flex align-items-center flex-grow-1' onClick={() => { this.toggleVersionIds(versionId) }}>
+                  <span className='versionChovron'>
+                    <svg width='15' height='15' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
+                      <path d='M4.5 6.75L9 11.25L13.5 6.75' stroke='#333333' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
+                    </svg>
+                  </span>
+                  <div className='sidebar-accordion-item text-truncate d-inline'>
 
-                  {this.props.versions[versionId].number}
+                    {this.props.versions[versionId].number}
+                  </div>
                 </div>
                 {
                       isDashboardRoute(this.props, true) && !this.props.collections[this.props.collection_id]?.importedFromMarketPlace

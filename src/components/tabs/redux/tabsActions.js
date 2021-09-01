@@ -20,7 +20,8 @@ export const fetchTabsFromIdb = (props) => {
                 type: 'endpoint',
                 status: tabStatusTypes.NEW,
                 previewMode: false,
-                isModified: false
+                isModified: false,
+                state: {}
               }
             } else if (props.location.pathname.split('/')[5]) {
               const endpointId = props.location.pathname.split('/')[5]
@@ -29,7 +30,8 @@ export const fetchTabsFromIdb = (props) => {
                 type: 'endpoint',
                 status: tabStatusTypes.SAVED,
                 previewMode: false,
-                isModified: false
+                isModified: false,
+                state: {}
               }
             }
 
@@ -62,7 +64,8 @@ export const fetchTabsFromIdb = (props) => {
             type: 'endpoint',
             status: tabStatusTypes.NEW,
             previewMode: false,
-            isModified: false
+            isModified: false,
+            state: {}
           }
           tabsList[newTab.id] = newTab
           tabsMetadata.tabsOrder.push(newTab.id)
@@ -105,7 +108,8 @@ export const addNewTab = (history) => {
         type: 'endpoint',
         status: tabStatusTypes.NEW,
         previewMode: false,
-        isModified: false
+        isModified: false,
+        state: {}
       }
     })
     history.push({ pathname: `/orgs/${orgId}/dashboard/endpoint/new` })
@@ -114,7 +118,8 @@ export const addNewTab = (history) => {
       type: 'endpoint',
       status: tabStatusTypes.NEW,
       previewMode: false,
-      isModified: false
+      isModified: false,
+      state: {}
     })
     await indexedDbService.updateData('tabs_metadata', tabsOrder, 'tabsOrder')
   }

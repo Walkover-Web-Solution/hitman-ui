@@ -339,9 +339,8 @@ class CollectionsComponent extends Component {
         >
           <button
             variant='default'
-            onClick={() => this.toggleSelectedColelctionIds(collectionId)}
           >
-            <div className='row w-100 align-items-center'>
+            <div className='row w-100 align-items-center' onClick={() => this.toggleSelectedColelctionIds(collectionId)}>
               <div className='col-9 fixwidth'>
                 {collectionState === 'singleCollection'
                   ? (
@@ -455,8 +454,6 @@ class CollectionsComponent extends Component {
                       <div
                         className='dropdown-item'
                         onClick={() => {
-                          this.props.collection_selected(collectionId)
-                          this.props.disable_secondary_sidebar()
                           this.openPublishDocs(this.props.collections[collectionId])
                         }}
                       >
