@@ -776,6 +776,7 @@ class DisplayEndpoint extends Component {
   }
 
   prepareHeaderCookies (url) {
+    if (!url) return null
     const domainUrl = url.split('/')[2]
     let cookies
     Object.values(this.props.cookies || {}).forEach((domain) => {
@@ -819,7 +820,7 @@ class DisplayEndpoint extends Component {
     })
 
     /** Prepare URL */
-    const BASE_URL = this.state.host.BASE_URL
+    const BASE_URL = this.state.host.BASE_URL || ''
     const uri = new URI(this.state.data.updatedUri)
     const queryparams = uri.search()
     const path = this.setPathVariableValues()
