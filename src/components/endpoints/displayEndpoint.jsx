@@ -474,7 +474,13 @@ class DisplayEndpoint extends Component {
     if (this.props.tab.id === this.props.tabs.activeTabId) {
       clearTimeout(this.saveTimeOut)
       this.saveTimeOut = setTimeout(() => {
-        this.props.update_tab(this.props.tab.id, { state: _.cloneDeep(this.state) })
+        const state = _.cloneDeep(this.state)
+
+        /** clean unnecessary items from state before saving */
+        const unnecessaryStateItems = ['loader', 'draftDataSet', 'saveLoader', 'codeEditorVisibility', 'showCookiesModal', 'methodList', 'theme']
+        unnecessaryStateItems.forEach((item) => delete state[item])
+
+        this.props.update_tab(this.props.tab.id, { state })
       }, 1000)
     }
   }
