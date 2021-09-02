@@ -54,7 +54,7 @@ class CustomTabs extends Component {
             )
           }
         } else {
-          return <div className='font-weight-bold'>{tab.state.data?.name || 'Random Trigger'}</div>
+          return <div className='font-weight-bold'>{tab.state?.data?.name || 'Random Trigger'}</div>
         }
       case 'endpoint':
         if (this.props.endpoints[tabId]) {
@@ -80,7 +80,7 @@ class CustomTabs extends Component {
             )
           }
         } else {
-          return <div className='font-weight-bold'>{tab.state.data?.name || 'Untitled'}</div>
+          return <div className='font-weight-bold'>{tab.state?.data?.name || 'Untitled'}</div>
         }
 
       case 'page':
@@ -210,7 +210,7 @@ class CustomTabs extends Component {
       } else {
         return (
           <div className='hover-div' style={styles}>
-            <div className='page-name'>{tab.state.data?.name || 'Untitled'}</div>
+            <div className='page-name'>{tab.state?.data?.name || 'Untitled'}</div>
           </div>
         )
       }

@@ -474,7 +474,13 @@ class DisplayEndpoint extends Component {
     if (this.props.tab.id === this.props.tabs.activeTabId) {
       clearTimeout(this.saveTimeOut)
       this.saveTimeOut = setTimeout(() => {
-        this.props.update_tab(this.props.tab.id, { state: _.cloneDeep(this.state) })
+        const state = _.cloneDeep(this.state)
+
+        /** clean unnecessary items from state before saving */
+        const unnecessaryStateItems = ['loader', 'draftDataSet', 'saveLoader', 'codeEditorVisibility', 'showCookiesModal', 'methodList', 'theme']
+        unnecessaryStateItems.forEach((item) => delete state[item])
+
+        this.props.update_tab(this.props.tab.id, { state })
       }, 1000)
     }
   }
@@ -776,6 +782,7 @@ class DisplayEndpoint extends Component {
   }
 
   prepareHeaderCookies (url) {
+    if (!url) return null
     const domainUrl = url.split('/')[2]
     let cookies
     Object.values(this.props.cookies || {}).forEach((domain) => {
@@ -819,7 +826,7 @@ class DisplayEndpoint extends Component {
     })
 
     /** Prepare URL */
-    const BASE_URL = this.state.host.BASE_URL
+    const BASE_URL = this.state.host.BASE_URL || ''
     const uri = new URI(this.state.data.updatedUri)
     const queryparams = uri.search()
     const path = this.setPathVariableValues()
