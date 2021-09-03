@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import CustomColorPicker from './customColorPicker'
+import { URL_ORIGIN_VALIDATION_REGEX } from '../common/constants'
 import { connect } from 'react-redux'
 import Joi from 'joi-browser'
 import { Button } from 'react-bootstrap'
@@ -117,7 +118,8 @@ class PublishDocForm extends Component {
 
   schema = {
     title: Joi.string().required().trim().label(publishDocFormEnum.LABELS.title),
-    domain: Joi.string().trim().allow('').label(publishDocFormEnum.LABELS.domain),
+    domain: Joi.string().regex(URL_ORIGIN_VALIDATION_REGEX, { name: 'URL' }).trim().allow('').label(publishDocFormEnum.LABELS.domain)
+      .error(() => { return { message: 'Domain should be a valid URL origin. for e.g. https://docs.example.com' } }),
     logoUrl: Joi.string().trim().allow('').label(publishDocFormEnum.LABELS.logoUrl),
     theme: Joi.string().trim().allow('').label(publishDocFormEnum.LABELS.theme)
   }
