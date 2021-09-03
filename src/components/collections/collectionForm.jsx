@@ -42,7 +42,7 @@ class CollectionForm extends Form {
 
     this.schema = {
       name: Joi.string().trim().required().label('Collection Name'),
-      website: Joi.string().regex(URL_VALIDATION_REGEX, { name: 'URL' }).trim().required().label('Website'),
+      website: Joi.string().regex(URL_VALIDATION_REGEX, { name: 'URL' }).trim().required().label('Website').error(() => { return { message: 'Website must be a valid URL' } }),
       keyword: Joi.string().trim().allow(null, '').label('Keywords'),
       keyword1: Joi.string().trim().allow(null, '').label('Keywords'),
       keyword2: Joi.string().trim().allow(null, '').label('Keywords'),
