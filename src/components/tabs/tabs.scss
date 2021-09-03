@@ -256,6 +256,7 @@ $font-small: 12px;
   background-color: #f8f8f8;
   justify-content: center;
   border-right: 0;
+  position: relative;
 
   &.disabled {
     cursor: not-allowed !important;
@@ -356,12 +357,6 @@ $font-small: 12px;
 //   border-left: 0.5px solid #E6DBD4;
 // }
 
-.scroll-button {
-  /*     border-right: none; */
-  /* height: 90%; */
-  position: relative;
-  height: 43px;
-}
 
 .content-header .tabs-container .nav {
   padding-bottom: 6px;
