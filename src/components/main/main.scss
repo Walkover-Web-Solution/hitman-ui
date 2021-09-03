@@ -63,6 +63,7 @@ $text-color: #212121;
 html body {
   background-color: #fff;
   font-family: 'proxima-nova', sans-serif !important;
+  font-size: $font-small;
 }
 
 $border-color: rgba(227, 228, 230, 0.7);
@@ -1270,7 +1271,7 @@ button.editBtn {
 
   .nav-item a {
     color: #828282 !important;
-    font-size: 14px;
+    font-size: $font-small;
     border: none;
     background: transparent;
   }
@@ -1567,8 +1568,6 @@ table#custom-generic-table tbody input[value="false"] + span.checkmark {
 .mainContentWrapper {
   width: 100%;
   background: #F8F8F8;
-  border-right: 0.5px solid #E6DBD4;
-  border-left: 0.5px solid #E6DBD4;
   border-bottom: 0.5px solid #E6DBD4;
   padding: 15px 30px;
   float: left;
@@ -2630,7 +2629,7 @@ span.endpointNameWrapper {
   #host-container-input {
     height: 34px;
     border: 1px solid #e0e0e0;
-    font-size: 13px;
+    font-size: $font-small;
     font-weight: 400;
     color: #000;
     border-radius: 4px;
@@ -2906,10 +2905,6 @@ span.endpointNameWrapper {
 // }
 
 div#history-tab-button {
-  background: #F8F8F8;
-  border-top: 0.5px solid #E6DBD4;
-  border-right: 0.5px solid #E6DBD4;
-  border-left: 0.5px solid #E6DBD4;
   width: 40px;
 }
 
@@ -2968,7 +2963,7 @@ div#history-tab-button button#dropdown-basic {
 
 @media(max-width:1500px){
   .public-navbar.stickyNav{
-    padding-left: 24%!important;
+    padding-left: 19.9%!important;
   }
 }
 

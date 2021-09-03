@@ -37,7 +37,7 @@ class CustomTabs extends Component {
           if (tab.previewMode) {
             return (
               <div className='tabs-name'>
-                <label className='endpoint-name-italic font-weight-bold'>
+                <label className='endpoint-name-italic'>
                   {this.props.historySnapshots[tabId].endpoint.name}
                 </label>
                 <br />
@@ -54,7 +54,7 @@ class CustomTabs extends Component {
             )
           }
         } else {
-          return <div className='font-weight-bold'>{tab.state?.data?.name || 'Random Trigger'}</div>
+          return <div className=''>{tab.state?.data?.name || 'Random Trigger'}</div>
         }
       case 'endpoint':
         if (this.props.endpoints[tabId]) {
@@ -62,7 +62,7 @@ class CustomTabs extends Component {
           if (tab.previewMode) {
             return (
               <div className='tabs-name'>
-                <label className='endpoint-name-italic font-weight-bold'>
+                <label className='endpoint-name-italic'>
                   {this.props.endpoints[tabId]?.name}
                 </label>
                 <br />
@@ -80,7 +80,7 @@ class CustomTabs extends Component {
             )
           }
         } else {
-          return <div className='font-weight-bold'>{tab.state?.data?.name || 'Untitled'}</div>
+          return <div className=''>{tab.state?.data?.name || 'Untitled'}</div>
         }
 
       case 'page':
@@ -89,7 +89,7 @@ class CustomTabs extends Component {
           if (tab.previewMode) {
             return (
               <div className='tabs-name'>
-                <label className='font-weight-bold truncate tab-width'>
+                <label className=' truncate tab-width'>
                   {this.props.pages[tabId].name}
                 </label>
                 <br />
