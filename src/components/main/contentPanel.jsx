@@ -232,7 +232,7 @@ class ContentPanel extends Component {
             />
           </div>
         </Tab.Container>
-        <div className='adminfooter'>
+        <div className='adminfooter d-flex justify-content-center w-100'>
           <Footer />
         </div>
       </main>
