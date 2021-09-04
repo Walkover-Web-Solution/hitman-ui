@@ -9,9 +9,6 @@ $font-small: 12px;
   background: #ffffff;
 
   .tabs-container {
-    // width: 100%;
-    // margin-left: 10px;
-
     border-right: none;
     border-left: none;
     border-top: none;
@@ -217,10 +214,6 @@ $font-small: 12px;
     font-weight: bold;
   }
 
-  // .endpoint-name-italic {
-  //   font-style: italic;
-  // }
-
   .sub-label {
     font-size: 12px;
     margin-top: 2px !important;
@@ -284,10 +277,6 @@ $font-small: 12px;
   right: 0px;
   background: #E6DBD4;
 }
-
-// .content-header .tabs-container .nav .nav-item.active:after {
-//   display: none;
-// }
 
 .content-header .tabs-container .nav > div:empty {
   display: none;
@@ -356,14 +345,8 @@ $font-small: 12px;
   display: inline-block;
 }
 
-// .content-header .tabs-container .nav>div:nth-child(2) .nav-item {
-//   border-left: 0.5px solid #E6DBD4;
-// }
-
-
 .content-header .tabs-container .nav {
   padding-bottom: 6px;
-  /* background: #f8f8f8; */
   height: calc(100% + 0px);
 }
 
@@ -380,22 +363,6 @@ $font-small: 12px;
   z-index: 998;
   background-color: #f8f8f8 !important;
 }
-
-// .content-header .tabs-container .nav .nav-item.active:before, .custom-tabs:first-child .nav-item:before {
-//   content: "";
-//   /* position: absolute; */
-//   content: '';
-//   width: 3px;
-//   height: 20px;
-//   border: 1px solid #e6dad4;
-//   position: absolute;
-//   bottom: -1px;
-//   /* height: auto; */
-//   top: auto;
-//   border-top: 0;
-//   background: #fff !important;
-//   z-index: 9;
-// }
 
 .content-header .tabs-container .nav .nav-item.active:before {
   border-right: 0;
@@ -414,18 +381,6 @@ $font-small: 12px;
   display: none;
 }
 
-// .content-header .tabs-container .nav .nav-item.active>a:before {
-//   content: "";
-//   position: absolute;
-//   background: #fff;
-//   bottom: -6px;
-//   width: 100%;
-//   height: 10px;
-//   left: 0px;
-//   right: 0px;
-//   z-index: -1;
-// }
-
 .newTabs .btn {
   padding: 0;
   height: 100%;
@@ -443,11 +398,6 @@ $font-small: 12px;
 #options-tab-button {
   width: 40px;
 }
-
-// .content-header .tabs-container .nav .nav-item:last-child:before {
-//   display: none;
-// }
-
 
 
 .content-header{
@@ -480,9 +430,6 @@ $font-small: 12px;
     } 
   } 
 } 
-// #history-tab-button{
-//   border-right-width: 0px !important;
-// }
 
 div#history-tab-button button#dropdown-basic {
   padding: 7px 10px;
