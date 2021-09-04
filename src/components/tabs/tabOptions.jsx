@@ -50,7 +50,7 @@ class TabOptions extends Component {
     tab.state.data.name = tab.state.data.name + ' Copy'
 
     this.props.open_in_new_tab(tab)
-    this.props.set_active_tab_id(tab.id)
+
     this.props.history.push({
       pathname: `/orgs/${orgId}/dashboard/${tab.type}/new`
     })
