@@ -224,6 +224,9 @@ $font-small: 12px;
   .sub-label {
     font-size: 12px;
     margin-top: 2px !important;
+    &:empty{
+      display: none;
+    }
   }
 }
 
@@ -266,7 +269,7 @@ $font-small: 12px;
 
 .tabs-name label.endpoint-name {
   color: #E98A36;
-  font-size: 13px;
+  font-size: $font-small;
   width: 115px;
   overflow: hidden;
   white-space: nowrap;
