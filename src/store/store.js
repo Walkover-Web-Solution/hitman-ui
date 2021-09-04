@@ -8,7 +8,7 @@ import groupsReducer from '../components/groups/redux/groupsReducer'
 import pagesReducer from '../components/pages/redux/pagesReducer'
 import tabsReducer from '../components/tabs/redux/tabsReducer'
 import cookiesReducer from '../components/cookies/redux/cookiesReducer'
-
+import modalsReducer from '../components/modals/redux/modalsReducer'
 import historyReducer from '../components/history/redux/historyReducer'
 
 const storeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
@@ -22,7 +22,8 @@ const rootReducer = combineReducers({
   environment: environmentsReducer,
   tabs: tabsReducer,
   history: historyReducer,
-  cookies: cookiesReducer
+  cookies: cookiesReducer,
+  modals: modalsReducer
 })
 const store = createStore(rootReducer, storeEnhancers(applyMiddleware(thunk)))
 
