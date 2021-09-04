@@ -3323,3 +3323,20 @@ div#steve-parent-accordion{
 .ql-editor * {
   font-family: 'proxima-nova';
 }
+
+.download-app-pop {
+  h5{
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 18px;
+  }
+   li {
+    margin-bottom: 5px;
+    max-width: 430px;
+    margin: 0 auto 5px;
+  }
+}
+
+.no-header button.close {
+  top: 1.4rem;
+}

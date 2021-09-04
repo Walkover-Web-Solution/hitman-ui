@@ -39,10 +39,10 @@ function DesktopAppDownloadModal (props) {
   return (
     show &&
       <Modal {...props} backdrop='static' show centered onHide={onHide}>
-        <Modal.Header className='not-loggedin' closeButton />
-        <Modal.Body>
-          <h5>Seems you have already used 5 tabs.</h5>
-          <p>Web app does not allow more than 5 tabs, we suggest you use our desktop app for a better user experience. Also, enjoy other benefits</p>
+        <Modal.Header className='no-header' closeButton />
+        <Modal.Body className='download-app-pop'>
+          <h5 className='text-center'>Seems you have already used 5 tabs.</h5>
+          <p className='text-center'>Web app does not allow more than 5 tabs, we suggest you use our desktop app for a better user experience. Also, enjoy other benefits</p>
           <ol>
             <li>The desktop agent overcomes the Cross Object Resource Sharing (CORS) limitations of browsers</li>
             <li>Better shortcuts</li>
@@ -50,7 +50,7 @@ function DesktopAppDownloadModal (props) {
             <li>Extendend capabilites</li>
           </ol>
         </Modal.Body>
-        <Modal.Footer className='text-center'>
+        <Modal.Footer className='text-center justify-content-center'>
           <button onClick={handleDownloadClick} className='btn btn-primary'>Download Desktop App</button>
         </Modal.Footer>
       </Modal>
