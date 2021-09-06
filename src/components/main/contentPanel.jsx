@@ -87,18 +87,22 @@ class ContentPanel extends Component {
       } else {
         if (
           this.props.endpoints &&
-          this.props.endpoints[endpointId] &&
-          this.props.endpoints[endpointId].requestId
+          this.props.endpoints[endpointId]
         ) {
           const requestId = this.props.endpoints[endpointId].requestId
-          this.props.replace_tab(requestId, {
+          const newTabObj = {
             id: endpointId,
             type: 'endpoint',
             status: tabStatusTypes.SAVED,
             previewMode: false,
             isModified: false,
             state: {}
-          })
+          }
+          if (requestId) {
+            this.props.replace_tab(requestId, newTabObj)
+          } else {
+            this.props.open_in_new_tab(newTabObj)
+          }
         }
       }
     }
@@ -137,10 +141,16 @@ class ContentPanel extends Component {
 
     if (this.props.match.path === '/orgs/:orgId/dashboard/') {
       if (this.props.tabs?.tabsOrder?.length) {
-        const tabId = this.props.tabs.activeTabId || this.props.tabs.tabsOrder[0]
-        const tab = this.props.tabs.tabs[tabId]
+        const { tabs, activeTabId, tabsOrder } = this.props.tabs
+
+        let tabId = activeTabId
+        if (!tabs[tabId]) tabId = tabsOrder[0]
+
+        const tab = tabs[tabId]
         const { orgId } = this.props.match.params
-        this.props.set_active_tab_id(tabId)
+
+        if (tabId !== activeTabId) this.props.set_active_tab_id(tabId)
+
         this.props.history.push({
           pathname: `/orgs/${orgId}/dashboard/${tab.type}/${tab.status === 'NEW' ? 'new' : tabId}`
         })

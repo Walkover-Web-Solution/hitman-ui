@@ -173,6 +173,12 @@ class DisplayEndpoint extends Component {
     if (window.innerWidth < '1400') {
       this.setState({ codeEditorVisibility: false })
     }
+
+    const { endpointId } = this.props.match.params
+    if (endpointId === 'new') {
+      this.setUnsavedTabDataInIDB()
+    }
+
     this.setEndpointData()
   }
 

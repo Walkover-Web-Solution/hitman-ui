@@ -25,6 +25,9 @@ const EBL_LOGO = process.env.REACT_APP_EBL_LOGO
 const FEEDIO_LOGO = process.env.REACT_APP_FEEDIO_LOGO
 const SHEETASDB_LOGO = process.env.REACT_APP_SHEETASDB_LOGO
 
+/** Desktop App Download URL */
+const DESKTOP_APP_DOWNLOAD_LINK = process.env.REACT_APP_DESKTOP_APP_DOWNLOAD_LINK
+
 const HitmanBrand = () => {
   return (
     <div className='logo d-flex align-items-center'>
@@ -105,6 +108,16 @@ const LoginButton = () => {
   )
 }
 
+const DownloadDesktopAppButton = () => {
+  const handleDownloadClick = () => {
+    const link = `${DESKTOP_APP_DOWNLOAD_LINK}?source=header`
+    openExternalLink(link)
+  }
+  return (
+    <button onClick={handleDownloadClick} className='btn btn-primary'>Download Desktop App</button>
+  )
+}
+
 class Header extends Component {
   state = { }
   render () {
@@ -112,6 +125,7 @@ class Header extends Component {
       <div className='env-wrapper header d-flex justify-space-between '>
         <HitmanBrand />
         <div className='float-right d-flex align-items-center'>
+          {!isElectron() && <DownloadDesktopAppButton />}
           {getCurrentUser() ? <Environments {...this.props} /> : null}
           {/* Commenting cloud icon for now, as no requirement was given for it but was mentioned in the design. */}
           {/* <div className='mx-3'><img src={cloudImage} alt='' /></div> */}
