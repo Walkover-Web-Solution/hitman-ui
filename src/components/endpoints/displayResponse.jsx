@@ -247,7 +247,7 @@ class DisplayResponse extends Component {
                   ? (
                     <div>
                       <div className='response-status'>
-                        <div className='respHeading'>
+                        <div className='respHeading mr-2'>
                           {!isSavedEndpoint(this.props) ? <h2 className='orange-heading'> RESPONSE</h2> : null}
                         </div>
                         <div className='statusWrapper'>

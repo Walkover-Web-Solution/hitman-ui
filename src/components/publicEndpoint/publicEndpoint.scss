@@ -1,4 +1,5 @@
 $border-color: rgba(227, 228, 230, 0.7);
+$font-small : 12px;
 
 main.main.ml-sm-auto.col-lg-10 {
   display: flex;
@@ -272,6 +273,7 @@ form.add-new-domain-form {
   .public-endpoint-sidebar .primary-sidebar {
     background-color: #F8F8F8;
     border: none;
+    padding-top: 0;
   }
 }
 
@@ -561,7 +563,9 @@ h4.hm-sidebar-title span {
   .empty-response {
     display: none;
   }
-
+  pre{
+    font-size: $font-small;
+  }
   .empty-response-container {
     background: transparent;
     border: none;

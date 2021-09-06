@@ -193,7 +193,7 @@ class ContentPanel extends Component {
               : (
                 // rendered a static single tab mimicking the original, instead of tabs component if user is not signed
                 <div className='content-header'>
-                  <div className='tabs-container tabs-width d-flex dashboard-wrp w-auto'>
+                  <div className='tabs-container tabs-width d-flex dashboard-wrp'>
                     <Nav variant='pills' className=''>
                       <Nav.Item className='px-0'>
                         <Nav.Link className='active'>
@@ -242,7 +242,7 @@ class ContentPanel extends Component {
             />
           </div>
         </Tab.Container>
-        <div className='adminfooter'>
+        <div className='adminfooter d-flex justify-content-center w-100'>
           <Footer />
         </div>
       </main>
