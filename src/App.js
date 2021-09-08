@@ -14,6 +14,7 @@ import BrowserLogin from './components/broswerLogin/browserLogin'
 import { getOrgId, isElectron } from './components/common/utility'
 import { ERROR_403_PAGE, ERROR_404_PAGE } from './components/errorPages'
 import ProtectedRoute from './components/common/protectedRoute'
+import Cookies from 'universal-cookie'
 
 class App extends Component {
   async redirectToClientDomain () {
@@ -80,15 +81,30 @@ class App extends Component {
     }
 
     renderApp = () => {
-      const isDesktop = process.env.REACT_APP_IS_DESKTOP
+      const PUBLIC_URL = process.env.REACT_APP_PUBLIC_UI_URL || ''
+      const PUBLIC_DOMAIN = PUBLIC_URL.split('/')[2]
       const domainsList = process.env.REACT_APP_DOMAINS_LIST ? process.env.REACT_APP_DOMAINS_LIST.split(',') : []
       const currentDomain = window.location.href.split('/')[2]
-      if (!domainsList.includes(currentDomain) && window.location.href.split('/')[3] !== 'p' && !isDesktop) {
-        return (
-          <Switch>
-            <Route path='/' component={ClientDoc} />
-          </Switch>
-        )
+      const path = window.location.href.split('/')[3]
+
+      if (!isElectron() && !domainsList.includes(currentDomain)) {
+        if (currentDomain === PUBLIC_DOMAIN) {
+          if (path !== 'p' && path !== 'dashboard') {
+            window.localStorage.clear()
+            const cookies = new Cookies()
+            cookies.remove('token')
+            this.props.history.push({ pathname: '/dashboard/' })
+            return null
+          }
+        } else {
+          if (path !== 'p') {
+            return (
+              <Switch>
+                <Route path='/' component={ClientDoc} />
+              </Switch>
+            )
+          }
+        }
       }
 
       return (

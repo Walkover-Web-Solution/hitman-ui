@@ -1034,8 +1034,7 @@ class PublishDocs extends Component {
   }
 
   renderExternalLinkButton () {
-    const url = process.env.REACT_APP_UI_URL + '/p/' + this.state.selectedCollectionId
-
+    const url = process.env.REACT_APP_PUBLIC_UI_URL + '/p/' + this.state.selectedCollectionId
     if (this.isCollectionPublished()) {
       return (
         <OverlayTrigger

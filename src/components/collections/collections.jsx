@@ -156,7 +156,7 @@ class CollectionsComponent extends Component {
   }
 
   async handleGoToDocs (collection) {
-    const publicDocsUrl = `${process.env.REACT_APP_UI_URL}/p/${collection.id}`
+    const publicDocsUrl = `${process.env.REACT_APP_PUBLIC_UI_URL}/p/${collection.id}`
     openExternalLink(publicDocsUrl)
   }
 
