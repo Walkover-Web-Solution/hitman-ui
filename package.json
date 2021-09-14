@@ -15,6 +15,7 @@
     "dotenv": "^8.2.0",
     "electron-is-dev": "^2.0.0",
     "electron-log": "^4.3.5",
+    "electron-notarize": "^1.1.1",
     "form-data": "^4.0.0",
     "highlight.js": "^9.18.1",
     "http-status": "^1.4.2",
