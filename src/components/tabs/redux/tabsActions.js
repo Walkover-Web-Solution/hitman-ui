@@ -3,7 +3,9 @@ import store from '../../../store/store'
 import indexedDbService from '../../indexedDb/indexedDbService'
 import tabStatusTypes from '../tabStatusTypes'
 import tabsActionTypes from './tabsActionTypes'
-import { getOrgId } from '../../common/utility'
+import { getOrgId, isElectron } from '../../common/utility'
+import { openModal } from '../../modals/redux/modalsActions'
+import { DESKTOP_APP_DOWNLOAD } from '../../modals/modalTypes'
 
 export const fetchTabsFromIdb = (props) => {
   return async (dispatch) => {
@@ -20,7 +22,8 @@ export const fetchTabsFromIdb = (props) => {
                 type: 'endpoint',
                 status: tabStatusTypes.NEW,
                 previewMode: false,
-                isModified: false
+                isModified: false,
+                state: {}
               }
             } else if (props.location.pathname.split('/')[5]) {
               const endpointId = props.location.pathname.split('/')[5]
@@ -29,7 +32,8 @@ export const fetchTabsFromIdb = (props) => {
                 type: 'endpoint',
                 status: tabStatusTypes.SAVED,
                 previewMode: false,
-                isModified: false
+                isModified: false,
+                state: {}
               }
             }
 
@@ -62,7 +66,8 @@ export const fetchTabsFromIdb = (props) => {
             type: 'endpoint',
             status: tabStatusTypes.NEW,
             previewMode: false,
-            isModified: false
+            isModified: false,
+            state: {}
           }
           tabsList[newTab.id] = newTab
           tabsMetadata.tabsOrder.push(newTab.id)
@@ -93,6 +98,11 @@ export const fetchTabsFromIdb = (props) => {
 export const addNewTab = (history) => {
   const id = shortid.generate()
   const tabsOrder = [...store.getState().tabs.tabsOrder]
+
+  if (!isElectron() && tabsOrder.length >= 5) {
+    return openModal(DESKTOP_APP_DOWNLOAD)
+  }
+
   tabsOrder.push(id)
   const orgId = getOrgId()
 
@@ -105,7 +115,8 @@ export const addNewTab = (history) => {
         type: 'endpoint',
         status: tabStatusTypes.NEW,
         previewMode: false,
-        isModified: false
+        isModified: false,
+        state: {}
       }
     })
     history.push({ pathname: `/orgs/${orgId}/dashboard/endpoint/new` })
@@ -114,7 +125,8 @@ export const addNewTab = (history) => {
       type: 'endpoint',
       status: tabStatusTypes.NEW,
       previewMode: false,
-      isModified: false
+      isModified: false,
+      state: {}
     })
     await indexedDbService.updateData('tabs_metadata', tabsOrder, 'tabsOrder')
   }
@@ -132,6 +144,10 @@ export const closeTab = (tabId, history) => {
 }
 
 export const openInNewTab = (tab) => {
+  const tabsOrder = store.getState().tabs.tabsOrder
+  if (!isElectron() && tabsOrder.length >= 5) {
+    return openModal(DESKTOP_APP_DOWNLOAD)
+  }
   return async (dispatch) => {
     dispatch({ type: tabsActionTypes.OPEN_IN_NEW_TAB, tab })
     await indexedDbService.addData('tabs', tab)
@@ -142,6 +158,7 @@ export const openInNewTab = (tab) => {
 
         indexedDbService.updateData('tabs_metadata', tabsOrder, 'tabsOrder')
       })
+    dispatch(setActiveTabId(tab.id))
   }
 }
 
@@ -177,6 +194,9 @@ export const replaceTab = (oldTabId, newTab) => {
   const tabsOrder = store
     .getState()
     .tabs.tabsOrder.filter((tId) => tId !== oldTabId)
+  if (!isElectron() && tabsOrder.length >= 5) {
+    return openModal(DESKTOP_APP_DOWNLOAD)
+  }
   tabsOrder.push(newTab.id)
   return async (dispatch) => {
     dispatch({

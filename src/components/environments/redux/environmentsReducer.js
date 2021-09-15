@@ -37,6 +37,7 @@ function environmentsReducer (state = initialState, action) {
     case environmentsActionTypes.ON_ENVIRONMENT_ADDED:
       environments = { ...state.environments }
       delete environments[action.response.requestId]
+      delete action.response.requestId
       environments[action.response.id] = action.response
       return { ...state, environments }
 

@@ -63,6 +63,7 @@ $text-color: #212121;
 html body {
   background-color: #fff;
   font-family: 'proxima-nova', sans-serif !important;
+  font-size: $font-small;
 }
 
 $border-color: rgba(227, 228, 230, 0.7);
@@ -1270,7 +1271,7 @@ button.editBtn {
 
   .nav-item a {
     color: #828282 !important;
-    font-size: 14px;
+    font-size: $font-small;
     border: none;
     background: transparent;
   }
@@ -1567,8 +1568,6 @@ table#custom-generic-table tbody input[value="false"] + span.checkmark {
 .mainContentWrapper {
   width: 100%;
   background: #F8F8F8;
-  border-right: 0.5px solid #E6DBD4;
-  border-left: 0.5px solid #E6DBD4;
   border-bottom: 0.5px solid #E6DBD4;
   padding: 15px 30px;
   float: left;
@@ -2089,6 +2088,7 @@ button.toggleButton {
   height: 32px;
   font-size: 14px;
   padding-right: 30px;
+  border-radius: 0;
 }
 
 .versionsAvailable.enableSearch .search-box {
@@ -2208,19 +2208,9 @@ button.toggleButton {
 
 .hm-right-content .pageText {
   padding: 0px;
-  color: #000;
-  font-size: 16px;
-  line-height: 32px;
   margin-top: 25px;
-
-  h4, h3 {
-    font-size: inherit;
-  }
   ul {
     padding-left: 18px;
-  }
-  ul li {
-    list-style-type: decimal;
   }
   table {
     background: #F8F8F8;
@@ -2640,7 +2630,7 @@ span.endpointNameWrapper {
   #host-container-input {
     height: 34px;
     border: 1px solid #e0e0e0;
-    font-size: 13px;
+    font-size: $font-small;
     font-weight: 400;
     color: #000;
     border-radius: 4px;
@@ -2916,10 +2906,6 @@ span.endpointNameWrapper {
 // }
 
 div#history-tab-button {
-  background: #F8F8F8;
-  border-top: 0.5px solid #E6DBD4;
-  border-right: 0.5px solid #E6DBD4;
-  border-left: 0.5px solid #E6DBD4;
   width: 40px;
 }
 
@@ -2978,7 +2964,7 @@ div#history-tab-button button#dropdown-basic {
 
 @media(max-width:1500px){
   .public-navbar.stickyNav{
-    padding-left: 24%!important;
+    padding-left: 19.9%!important;
   }
 }
 
@@ -3147,6 +3133,19 @@ li.nav-item.cookie-tab a {
     background: #fff;
     border-radius: 5px;
     padding: 0px 20px 10px;
+    > div {
+      color: #f1b041;
+      font-size: $font-small;
+      margin-bottom: 5px;
+      border-bottom: 1px solid whitesmoke;
+      padding-bottom: 5px;
+      cursor: pointer;
+      &:last-child{
+        margin-bottom: 0;
+        border: oldlace;
+        padding-bottom: 0;
+      }
+    }
     h4 {
       font-size: 14px;
       text-transform: capitalize;
@@ -3161,21 +3160,6 @@ li.nav-item.cookie-tab a {
   }
 }
 
-.snippets > div {
-    color: #f1b041;
-    font-size: 14px;
-    margin-bottom: 10px;
-    border-bottom: 1px solid whitesmoke;
-    padding-bottom: 10px;
-    cursor: pointer;
-
-    &:last-child{
-      margin-bottom: 0;
-      border: oldlace;
-      padding-bottom: 0;
-    }
-
-}
 .script-error {
   background: #e74c3c;
   text-align: center;
@@ -3330,4 +3314,25 @@ div#steve-parent-accordion{
   top: 0;
   font-size: $font-small;
   right: 14px;
+}
+
+.ql-editor * {
+  font-family: 'proxima-nova';
+}
+
+.download-app-pop {
+  h5{
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 18px;
+  }
+   li {
+    margin-bottom: 5px;
+    max-width: 430px;
+    margin: 0 auto 5px;
+  }
+}
+
+.no-header button.close {
+  top: 1.4rem;
 }

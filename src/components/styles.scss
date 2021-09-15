@@ -523,6 +523,16 @@ button.btn.custom-body-type-button {
     width: 100%;
     background-color: #fff;
   }
+  .enableSearch .search-box > input[type="text"] {
+    background-position:95% center !important;
+  }
+  .versionWrapper:not(.enableSearch) .search-box > input[type="text"]{
+    background: url('../assets/icons/searchIcon.svg') no-repeat center !important;
+    cursor: pointer;
+    &::placeholder{
+      font-size: 0;
+    }
+  }
 
   .linkWith .hm-sidebar-block {
     margin-top: 30px;

@@ -6,25 +6,24 @@
 
 .custom-display-page {
   padding: 10px;
-  color: #828282;
-  font-size: 13px;
-  font-weight: 400;
   float: left;
   width: 100%;
   padding-top: 25px;
   min-height: calc(100vh - 70px);
   background: #F8F8F8;
-  margin-top: 3px;
   border-right: 0.5px solid #E6DBD4;
     border-left: 0.5px solid #E6DBD4;
   button { 
     margin-bottom: 15px;
     float: right;
   }
+  p{
+    margin-bottom: 0;
+  }
 }
 
 .custom-edit-page {
-  margin-top: 15px; 
+  margin: 15px; 
 
   button {
     align-self: center;
@@ -72,6 +71,10 @@
   border-radius: 4px;
   padding: 20px;
   min-height: 55vh;
+  *{
+    font-size: revert;
+    margin-bottom: 0;
+  }
 }
 
 .page-icon{

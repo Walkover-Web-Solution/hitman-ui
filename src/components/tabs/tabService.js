@@ -79,6 +79,15 @@ function markTabAsModified (tabId) {
   }
 }
 
+function unmarkTabAsModified (tabId) {
+  if (getCurrentUser()) {
+    const tab = store.getState().tabs.tabs[tabId]
+    if (tab.isModified) {
+      store.dispatch(updateTab(tabId, { previewMode: false, isModified: false }))
+    }
+  }
+}
+
 function markTabAsSaved (tabId) {
   store.dispatch(
     updateTab(tabId, { status: tabStatusTypes.SAVED, isModified: false })
@@ -97,6 +106,7 @@ export default {
   selectTab,
   disablePreviewMode,
   markTabAsModified,
+  unmarkTabAsModified,
   markTabAsSaved,
   markTabAsDeleted
 }
