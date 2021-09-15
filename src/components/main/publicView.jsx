@@ -44,7 +44,7 @@ class PublicView extends Component {
   }
 
   openCollection (collectionId) {
-    const publicDocsUrl = `${process.env.REACT_APP_UI_URL}/p/${collectionId}`
+    const publicDocsUrl = `${process.env.REACT_APP_PUBLIC_UI_URL}/p/${collectionId}`
     window.open(publicDocsUrl, '_blank')
   }
 

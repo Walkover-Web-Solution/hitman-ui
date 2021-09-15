@@ -4,6 +4,7 @@ import { withRouter } from 'react-router-dom'
 import { importApi } from '../collections/redux/collectionsActions'
 import { connect } from 'react-redux'
 import Joi from 'joi-browser'
+import { URL_VALIDATION_REGEX } from '../common/constants'
 import './openApi.scss'
 import { moveToNextStep } from '../../services/widgetService';
 
@@ -69,7 +70,7 @@ class OpenApiForm extends Component {
     if (this.state.importType === 'postman') {
       const schema = {
         type: Joi.string().required(),
-        website: Joi.string().uri(),
+        website: Joi.string().regex(URL_VALIDATION_REGEX, { name: 'URL' }).trim().required().label('Website').error(() => { return { message: 'Website must be a valid URL' } }),
       }
       errors = this.validate({ type: this.state.importType, website: this.state.website }, schema)
     }

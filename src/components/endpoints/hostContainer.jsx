@@ -35,7 +35,6 @@ class HostContainer extends Component {
   }
 
   componentDidMount () {
-    this.setHosts()
     this.setState({ datalistUri: this.props.updatedUri })
     this.setState({ datalistHost: this.state[this.state.selectedhost] || '' })
   }
@@ -84,7 +83,10 @@ class HostContainer extends Component {
       ...data,
       showDatalist: e.target.value === ''
     },
-    () => this.setParentHostAndUri())
+    () => {
+      this.props.props_from_parent('HostAndUri')
+      this.setParentHostAndUri()
+    })
   }
 
   handleClickHostOptions (host, type) {
@@ -169,9 +171,9 @@ class HostContainer extends Component {
           })}
         />
         <div className={['host-data', this.state.showDatalist ? 'd-block' : 'd-none'].join(' ')}>
-          {Object.values(hostContainerEnum.hosts).map(host => (
+          {Object.values(hostContainerEnum.hosts).map((host, index) => (
             this.state[host.key] &&
-              <div className='host-data-item' onClick={(e) => this.handleClickHostOptions(this.state[host.key], host.key)}>
+              <div key={index} className='host-data-item' onClick={(e) => this.handleClickHostOptions(this.state[host.key], host.key)}>
                 <div>{this.state[host.key]}</div>
                 <small className='text-muted font-italic'>{host.label}</small>
               </div>

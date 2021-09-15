@@ -37,7 +37,7 @@ class CustomTabs extends Component {
           if (tab.previewMode) {
             return (
               <div className='tabs-name'>
-                <label className='endpoint-name-italic font-weight-bold'>
+                <label className='endpoint-name-italic'>
                   {this.props.historySnapshots[tabId].endpoint.name}
                 </label>
                 <br />
@@ -54,7 +54,7 @@ class CustomTabs extends Component {
             )
           }
         } else {
-          return <div className='font-weight-bold'>Untitled</div>
+          return <div className=''>{tab.state?.data?.name || 'Random Trigger'}</div>
         }
       case 'endpoint':
         if (this.props.endpoints[tabId]) {
@@ -62,7 +62,7 @@ class CustomTabs extends Component {
           if (tab.previewMode) {
             return (
               <div className='tabs-name'>
-                <label className='endpoint-name-italic font-weight-bold'>
+                <label className='endpoint-name-italic'>
                   {this.props.endpoints[tabId]?.name}
                 </label>
                 <br />
@@ -80,7 +80,7 @@ class CustomTabs extends Component {
             )
           }
         } else {
-          return <div className='font-weight-bold'>Untitled</div>
+          return <div className=''>{tab.state?.data?.name || 'Untitled'}</div>
         }
 
       case 'page':
@@ -89,11 +89,11 @@ class CustomTabs extends Component {
           if (tab.previewMode) {
             return (
               <div className='tabs-name'>
-                <label className='font-weight-bold truncate tab-width'>
+                <label className=' truncate tab-width'>
                   {this.props.pages[tabId].name}
                 </label>
                 <br />
-                <label className='sub-label'>{this.props.groups[page.groupId]?.name}</label>
+                <label className='sub-label'>{this.props.groups[page.groupId]?.name || this.props.versions[page.versionId]?.number}</label>
               </div>
             )
           } else {
@@ -101,7 +101,7 @@ class CustomTabs extends Component {
               <div className='tabs-name'>
                 <label className='endpoint-name'>{page.name}</label>
                 <br />
-                <label className='sub-label'>{this.props.groups[page.groupId]?.name}</label>
+                <label className='sub-label'>{this.props.groups[page.groupId]?.name || this.props.versions[page.versionId]?.name}</label>
               </div>
             )
           }
@@ -210,7 +210,7 @@ class CustomTabs extends Component {
       } else {
         return (
           <div className='hover-div' style={styles}>
-            <div className='page-name'>Untitled</div>
+            <div className='page-name'>{tab.state?.data?.name || 'Untitled'}</div>
           </div>
         )
       }
@@ -328,7 +328,7 @@ class CustomTabs extends Component {
         </Nav.Item>
 
         <Nav.Item className='' id='options-tab-button'>
-          <TabOptions handleCloseTabs={this.handleCloseTabs.bind(this)} />
+          <TabOptions history={this.props.history} match={this.props.match} handleCloseTabs={this.handleCloseTabs.bind(this)} />
         </Nav.Item>
 
         <Nav.Item className='' id='history-tab-button'>

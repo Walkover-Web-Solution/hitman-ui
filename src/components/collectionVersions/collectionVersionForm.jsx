@@ -2,6 +2,7 @@ import React from 'react'
 import { Modal } from 'react-bootstrap'
 import Joi from 'joi-browser'
 import Form from '../common/form'
+import { URL_VALIDATION_REGEX } from '../common/constants'
 import { connect } from 'react-redux'
 import { onEnter, toTitleCase, ADD_VERSION_MODAL_NAME } from '../common/utility'
 import {
@@ -31,8 +32,8 @@ class CollectionVersionForm extends Form {
 
     this.schema = {
       number: Joi.string().required().label('Version Name'),
-      host: Joi.string().uri().required().label('Version Endpoint')
-        .error(() => { return { message: 'Version Endpoint Must be Valid Url' } })
+      host: Joi.string().regex(URL_VALIDATION_REGEX, { name: 'URL' }).required().label('Version Endpoint')
+        .error(() => { return { message: 'Version Endpoint Must be Valid URL' } })
     }
   }
 

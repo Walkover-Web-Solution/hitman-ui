@@ -1,0 +1,7 @@
+const ON_OPEN_MODAL = 'ON_OPEN_MODAL'
+const ON_CLOSE_MODAL = 'ON_CLOSE_MODAL'
+
+export default {
+  ON_OPEN_MODAL,
+  ON_CLOSE_MODAL
+}

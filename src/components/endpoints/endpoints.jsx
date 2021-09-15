@@ -163,7 +163,8 @@ class Endpoints extends Component {
           type: 'endpoint',
           status: tabStatusTypes.SAVED,
           previewMode,
-          isModified: false
+          isModified: false,
+          state: {}
         })
       } else if (
         this.props.tabs.tabs[endpoint.id].previewMode === true &&

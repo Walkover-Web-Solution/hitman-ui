@@ -23,12 +23,12 @@ import './main.scss'
 import { getCurrentUser } from '../auth/authService'
 import LoginSignupModal from './loginSignupModal'
 import Footer from '../main/Footer'
-import tabService from '../tabs/tabService.js'
 
 const mapStateToProps = (state) => {
   return {
     endpoints: state.endpoints,
     groups: state.groups,
+    versions: state.versions,
     pages: state.pages,
     tabs: state.tabs,
     historySnapshots: state.history
@@ -65,6 +65,10 @@ class ContentPanel extends Component {
     this.setState({ saveEndpointFlag: flag, selectedTabId: tabId })
   }
 
+  handleSavePage (flag, tabId) {
+    this.setState({ savePageFlag: flag, selectedTabId: tabId })
+  }
+
   openLoginSignupModal () {
     this.setState({ showLoginSignupModal: true })
   }
@@ -83,17 +87,22 @@ class ContentPanel extends Component {
       } else {
         if (
           this.props.endpoints &&
-          this.props.endpoints[endpointId] &&
-          this.props.endpoints[endpointId].requestId
+          this.props.endpoints[endpointId]
         ) {
           const requestId = this.props.endpoints[endpointId].requestId
-          this.props.replace_tab(requestId, {
+          const newTabObj = {
             id: endpointId,
             type: 'endpoint',
             status: tabStatusTypes.SAVED,
             previewMode: false,
-            isModified: false
-          })
+            isModified: false,
+            state: {}
+          }
+          if (requestId) {
+            this.props.replace_tab(requestId, newTabObj)
+          } else {
+            this.props.open_in_new_tab(newTabObj)
+          }
         }
       }
     }
@@ -108,7 +117,8 @@ class ContentPanel extends Component {
             type: 'page',
             status: tabStatusTypes.SAVED,
             previewMode: false,
-            isModified: false
+            isModified: false,
+            state: {}
           })
         }
       }
@@ -123,21 +133,27 @@ class ContentPanel extends Component {
           type: 'history',
           status: tabStatusTypes.SAVED,
           previewMode: false,
-          isModified: false
+          isModified: false,
+          state: {}
         })
       }
     }
 
     if (this.props.match.path === '/orgs/:orgId/dashboard/') {
       if (this.props.tabs?.tabsOrder?.length) {
-        const tabId = this.props.tabs.activeTabId || this.props.tabs.tabsOrder[0]
-        const tab = this.props.tabs.tabs[tabId]
-        this.props.set_active_tab_id(tabId)
+        const { tabs, activeTabId, tabsOrder } = this.props.tabs
+
+        let tabId = activeTabId
+        if (!tabs[tabId]) tabId = tabsOrder[0]
+
+        const tab = tabs[tabId]
+        const { orgId } = this.props.match.params
+
+        if (tabId !== activeTabId) this.props.set_active_tab_id(tabId)
+
         this.props.history.push({
-          pathname: `dashboard/${tab.type}/${tab.status === 'NEW' ? 'new' : tabId}`
+          pathname: `/orgs/${orgId}/dashboard/${tab.type}/${tab.status === 'NEW' ? 'new' : tabId}`
         })
-      } else {
-        tabService.newTab({ ...this.props })
       }
     }
 
@@ -168,6 +184,7 @@ class ContentPanel extends Component {
                       <CustomTabs
                         {...this.props}
                         handle_save_endpoint={this.handleSaveEndpoint.bind(this)}
+                        handle_save_page={this.handleSavePage.bind(this)}
                       />
                     </div>
                   </div>
@@ -176,7 +193,7 @@ class ContentPanel extends Component {
               : (
                 // rendered a static single tab mimicking the original, instead of tabs component if user is not signed
                 <div className='content-header'>
-                  <div className='tabs-container tabs-width d-flex dashboard-wrp w-auto'>
+                  <div className='tabs-container tabs-width d-flex dashboard-wrp'>
                     <Nav variant='pills' className=''>
                       <Nav.Item className='px-0'>
                         <Nav.Link className='active'>
@@ -218,12 +235,14 @@ class ContentPanel extends Component {
             <TabContent
               {...this.props}
               handle_save_endpoint={this.handleSaveEndpoint.bind(this)}
+              handle_save_page={this.handleSavePage.bind(this)}
               save_endpoint_flag={this.state.saveEndpointFlag}
+              save_page_flag={this.state.savePageFlag}
               selected_tab_id={this.state.selectedTabId}
             />
           </div>
         </Tab.Container>
-        <div className='adminfooter'>
+        <div className='adminfooter d-flex justify-content-center w-100'>
           <Footer />
         </div>
       </main>

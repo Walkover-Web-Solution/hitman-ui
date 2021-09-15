@@ -6,7 +6,6 @@ import './publicCollectionInfo.scss'
 import SettingIcon from '../../assets/icons/SettingIcon.png'
 import { ReactComponent as ExternalLinks } from '../../assets/icons/externalLinks.svg'
 import PublishSidebar from '../publishSidebar/publishSidebar'
-import extractCollectionInfoService from '../publishDocs/extractCollectionInfoService'
 import { openExternalLink } from '../common/utility'
 
 const mapStateToProps = (state) => {
@@ -18,7 +17,7 @@ const mapStateToProps = (state) => {
   }
 }
 
-const defaultDomain = process.env.REACT_APP_UI_URL
+const defaultDomain = process.env.REACT_APP_PUBLIC_UI_URL
 
 class PublishCollectionInfo extends Component {
   constructor (props) {
@@ -59,21 +58,37 @@ class PublishCollectionInfo extends Component {
 
   getPublicEntityCount () {
     const collectionId = this.props.collectionId
-    const versions = extractCollectionInfoService.extractVersionsFromCollectionId(collectionId, this.props)
-    const groups = extractCollectionInfoService.extractGroupsFromVersions(versions, this.props)
-    const pages = extractCollectionInfoService.extractPagesFromVersions(versions, this.props)
-    const endpoints = extractCollectionInfoService.extractEndpointsFromGroups(groups, this.props)
-    const totalPageCount = Object.keys(pages).length
-    const totalEndpointCount = Object.keys(endpoints).length
+    const { endpoints, pages, versions, groups } = this.props
+
+    let totalPageCount = 0
+    let totalEndpointCount = 0
     let livePageCount = 0
     let liveEndpointCount = 0
-    Object.values(pages).forEach(page => {
-      if (page.isPublished) livePageCount++
-    })
-    Object.values(endpoints).forEach(endpoint => {
-      if (endpoint.isPublished) liveEndpointCount++
-    })
+
+    for (const endpointId of Object.keys(endpoints)) {
+      const groupId = endpoints[endpointId]?.groupId
+      const versionId = groups[groupId]?.versionId
+      const endpointCollectionId = versions[versionId]?.collectionId
+      if (endpointCollectionId && endpointCollectionId === collectionId) {
+        totalEndpointCount++
+        if (endpoints[endpointId]?.isPublished) liveEndpointCount++
+      }
+    }
+
+    for (const pageId of Object.keys(pages)) {
+      const groupId = pages[pageId]?.groupId
+      let versionId = ''
+      if (groupId) versionId = groups[groupId]?.versionId
+      else versionId = pages[pageId]?.versionId
+      const pageCollectionId = versions[versionId]?.collectionId
+      if (pageCollectionId && pageCollectionId === collectionId) {
+        totalPageCount++
+        if (pages[pageId]?.isPublished) livePageCount++
+      }
+    }
+
     this.setState({ totalPageCount, totalEndpointCount, livePageCount, liveEndpointCount })
+
     if (this.props.getTotalEndpointsCount) {
       this.props.getTotalEndpointsCount(totalEndpointCount)
     }

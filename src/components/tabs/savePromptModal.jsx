@@ -9,7 +9,16 @@ class SavePromptModal extends Component {
   }
 
   handleSave () {
-    this.props.handle_save_endpoint(true, this.props.tab_id)
+    const { tabs, activeTabId } = this.props.tabs
+    const tab = tabs[activeTabId]
+    switch (tab.type) {
+      case 'page': this.props.handle_save_page(true, this.props.tab_id)
+        break
+      case 'endpoint': this.props.handle_save_endpoint(true, this.props.tab_id)
+        break
+      default:
+        break
+    }
     this.props.onConfirm(this.props.tab_id)
   }
 
@@ -23,11 +32,11 @@ class SavePromptModal extends Component {
     let name = ''
     if (!tab) return
     switch (tab.type) {
-      case 'history': name = this.props.historySnapshots[tabId]?.endpoint?.name || ''
+      case 'history': name = this.props.historySnapshots[tabId]?.endpoint?.name || tab.state.data?.name || 'Random Trigger'
         break
       case 'endpoint':
         if (tab.status === 'SAVED') name = this.props.endpoints[tabId]?.name || ''
-        else name = 'Untitled'
+        else name = tab.state.data?.name || 'Untitled'
         break
       case 'page': name = this.props.pages[tabId]?.name || ''
         break

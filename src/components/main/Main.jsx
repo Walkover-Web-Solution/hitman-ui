@@ -25,8 +25,9 @@ import { getOrgUpdatedAt } from '../../services/orgApiService'
 import moment from 'moment'
 import Header from './header'
 import { loadfeedioWidget } from '../../services/feedioWidgetService'
-// import { loadHelloWidget } from '../../services/helloWidgetService'
+import { loadHelloWidget } from '../../services/helloWidgetService'
 import auth from '../auth/authService'
+import DesktopAppDownloadModal from './desktopAppPrompt'
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -81,7 +82,7 @@ class Main extends Component {
       } else {
         loadWidget()
         loadfeedioWidget()
-        // loadHelloWidget()
+        loadHelloWidget()
         await this.fetchAll()
       }
     } else {
@@ -166,6 +167,7 @@ class Main extends Component {
         </div>}
         <div className='custom-main-container'>
           <Header {...this.props} />
+          <DesktopAppDownloadModal history={this.props.history} location={this.props.location} match={this.props.match} />
           <OnlineSatus fetchFromBackend={this.fetchFromBackend.bind(this)} isIdbUpdated={this.isIdbUpdated.bind(this)} />
           <div className='main-panel-wrapper'>
             <SideBar
