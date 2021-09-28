@@ -45,6 +45,8 @@ import { updateEnvironment } from '../environments/redux/environmentsActions'
 import { run, initialize } from '../../services/sandboxservice'
 import Script from './script/script'
 import * as _ from 'lodash'
+import { openModal } from '../modals/redux/modalsActions'
+import { DESKTOP_APP_DOWNLOAD } from '../modals/modalTypes'
 const shortid = require('shortid')
 
 const status = require('http-status')
@@ -81,7 +83,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     close_tab: (id) => dispatch(closeTab(id)),
     add_history: (data) => dispatch(addHistory(data)),
     update_environment: (data) => dispatch(updateEnvironment(data)),
-    update_tab: (id, data) => dispatch(updateTab(id, data))
+    update_tab: (id, data) => dispatch(updateTab(id, data)),
+    open_modal: (modal) => dispatch(openModal(modal))
   }
 }
 
@@ -845,6 +848,10 @@ class DisplayEndpoint extends Component {
 
     /** Prepare Body & Modify Headers */
     const { body, headers } = this.formatBody(this.state.data.body, headerJson)
+    if (!body) {
+      setTimeout(() => { this.setState({ loader: false }) }, 500)
+      return
+    }
 
     /** Add Cookie in Headers */
     const cookiesString = this.prepareHeaderCookies(BASE_URL)
@@ -1014,11 +1021,12 @@ class DisplayEndpoint extends Component {
           moveToNextStep(4)
         } else if (this.state.title === 'update endpoint') {
           this.setState({ saveLoader: true })
-          this.props.update_endpoint({
-            ...endpoint,
-            id: this.state.endpoint.id,
-            groupId: groupId || this.state.groupId
-          }, () => { this.setState({ saveLoader: false }) })
+          console.log(endpoint)
+          // this.props.update_endpoint({
+          //   ...endpoint,
+          //   id: this.state.endpoint.id,
+          //   groupId: groupId || this.state.groupId
+          // }, () => { this.setState({ saveLoader: false }) })
           tabService.markTabAsSaved(this.props.tab.id)
         }
       }
@@ -1573,7 +1581,21 @@ class DisplayEndpoint extends Component {
         body.value[i].key.length !== 0 &&
         body.value[i].checked === 'true'
       ) {
-        formData[body.value[i].key] = body.value[i].value
+        if (body.value[i].type === 'file') {
+          if (isElectron()) {
+            // const fs = window.require('fs')
+            // const id = shortid.generate();
+            // try {
+            //   fs.writeFileSync('myfile.txt', 'the text to write in the file', 'utf-8');
+            // }
+            // catch(e) { alert('Failed to save the file !'); }
+          } else {
+            this.props.open_modal(DESKTOP_APP_DOWNLOAD)
+            return null
+          }
+        } else {
+          formData[body.value[i].key] = body.value[i].value
+        }
       }
     }
     return formData

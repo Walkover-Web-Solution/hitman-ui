@@ -25,7 +25,8 @@ class BodyContainer extends Component {
             checked: 'notApplicable',
             key: '',
             value: '',
-            description: ''
+            description: '',
+            type: 'text'
           }
         ],
         urlencoded: [
@@ -33,7 +34,8 @@ class BodyContainer extends Component {
             checked: 'notApplicable',
             key: '',
             value: '',
-            description: ''
+            description: '',
+            type: 'text'
           }
         ]
       },

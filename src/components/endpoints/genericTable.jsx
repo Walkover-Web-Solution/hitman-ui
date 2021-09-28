@@ -61,6 +61,15 @@ class GenericTable extends Component {
       dataArray[name[0]][name[1]] = e.currentTarget.value
     }
 
+    if (title === 'formData' && name[1] === 'type') {
+      dataArray[name[0]].value = ''
+    }
+
+    if (title === 'formData' && dataArray[name[0]].type === 'file' && name[1] === 'value') {
+      const selectedFile = e.currentTarget.files[0]
+      dataArray[name[0]][name[1]] = selectedFile
+    }
+
     if (
       dataArray[name[0]][name[1]].length !== 0 &&
       !this.checkboxFlags[name[0]] &&
@@ -288,6 +297,44 @@ class GenericTable extends Component {
     )
   }
 
+  renderTextOrFileInput (dataArray, index) {
+    const { title } = this.props
+    return (
+      <>
+        <input
+          name={index + '.key'}
+          value={dataArray[index].key}
+          onChange={this.handleChange}
+          type='text'
+          placeholder='Key'
+          className='form-control'
+          style={{ border: 'none' }}
+        />
+        {title === 'formData' &&
+          (
+            <select name={index + '.type'} defaultValue='text' onChange={(e) => { this.handleChange(e) }}>
+              <option value='text'>Text</option>
+              <option value='file'>File</option>
+            </select>
+          )}
+        <button onClick={() => this.testFunction(dataArray, index)}>Testing</button>
+      </>
+    )
+  }
+
+  testFunction (dataArray, index) {
+    console.log(dataArray[index])
+    const formData = new window.FormData()
+    formData.append('mycustomfile', dataArray[index].value)
+    for (const pair of formData.entries()) {
+      const reader = new window.FileReader()
+      reader.addEventListener('loadend', () => {
+        console.log(pair[0], reader.result)
+      })
+      reader.readAsBinaryString(pair[1])
+    }
+  }
+
   renderTableRow (dataArray, index, originalData, title) {
     return (
       <tr key={index} id='generic-table-row'>
@@ -325,23 +372,15 @@ class GenericTable extends Component {
         </td>
         <td className='custom-td' style={{ width: '200px' }}>
           {isDashboardRoute(this.props)
-            ? <input
-                name={index + '.key'}
-                value={dataArray[index].key}
-                onChange={this.handleChange}
-                type='text'
-                placeholder='Key'
-                className='form-control'
-                style={{ border: 'none' }}
-              />
+            ? this.renderTextOrFileInput(dataArray, index)
             : dataArray[index].key}
         </td>
         <td className='custom-td'>
           <input
             name={index + '.value'}
-            value={dataArray[index].value}
+            // value={dataArray[index].type !== 'file' ? dataArray[index].value : ''}
             onChange={this.handleChange}
-            type='text'
+            type={dataArray[index].type}
             placeholder={
               dataArray[index].checked === 'notApplicable'
                 ? 'Value'
