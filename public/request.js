@@ -6,7 +6,7 @@ const HITMAN_AGENT = 'Hitman/1.0.0'
 async function makeHttpRequestThroughAxios ({ api: url, method, body: data, header: headers }) {
   headers = headers || {}
   headers['user-agent'] = HITMAN_AGENT
-
+  console.log(url, method, data, headers)
   const options = {
     method: method,
     url: encodeURI(url),

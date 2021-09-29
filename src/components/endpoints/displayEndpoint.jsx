@@ -668,6 +668,7 @@ class DisplayEndpoint extends Component {
       }
     } catch (error) {
       /** if our service fails */
+      console.log(error)
       this.handleErrorResponse(error, this.state.startTime)
     }
   }
@@ -1583,12 +1584,25 @@ class DisplayEndpoint extends Component {
       ) {
         if (body.value[i].type === 'file') {
           if (isElectron()) {
+            // const { app } = window.require('@electron/remote')
+            // let path = app.getPath('userData')
             // const fs = window.require('fs')
-            // const id = shortid.generate();
-            // try {
-            //   fs.writeFileSync('myfile.txt', 'the text to write in the file', 'utf-8');
-            // }
-            // catch(e) { alert('Failed to save the file !'); }
+            // !fs.existsSync(path+`/fileUploads/`) && fs.mkdirSync(path+`/fileUploads/`, { recursive: true })
+            // path=path+`/fileUploads/`
+            // const id = shortid.generate()
+            // formData[body.value[i].key] = {id:id,type:"file"}
+            // const reader = new window.FileReader()
+            // reader.addEventListener('loadend', () => {
+            //   console.log(reader.result)
+            //   try {
+            //     fs.writeFileSync(path+"\\"+id, reader.result)
+            //   }
+            //   catch(e) { alert('Failed to save the file !') }
+            // })
+            // console.log(body.value[i].value)
+            // reader.readAsBinaryString(body.value[i].value)
+            const id = shortid.generate()
+            formData[body.value[i].key] = { id: id, ...body.value[i].value }
           } else {
             this.props.open_modal(DESKTOP_APP_DOWNLOAD)
             return null
