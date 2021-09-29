@@ -8,7 +8,7 @@
     "files": [
         "../build/**/*"
     ],
-    "afterSign": "./notarize.js",
+    "afterSign": "./electron/notarize.js",
     "mac": {
         "target": [
             "dmg",
@@ -16,9 +16,9 @@
         ],
         "identity": "Walkover Web Solutions Private Limited (F3U6Z5L2EJ)",
         "type": "distribution",
-        "entitlements": "./default.entitlements.mas.plist",
-        "entitlementsInherit": "./default.entitlements.mas.inherit.plist",
-        "provisioningProfile": "./embedded.provisionprofile",
+        "entitlements": "./electron/default.entitlements.mas.plist",
+        "entitlementsInherit": "./electron/default.entitlements.mas.inherit.plist",
+        "provisioningProfile": "./electron/embedded.provisionprofile",
         "icon": "hitman-icon.png",
         "hardenedRuntime": true,
         "gatekeeperAssess": false
