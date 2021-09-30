@@ -46,7 +46,6 @@ import { run, initialize } from '../../services/sandboxservice'
 import Script from './script/script'
 import * as _ from 'lodash'
 import { openModal } from '../modals/redux/modalsActions'
-import { DESKTOP_APP_DOWNLOAD } from '../modals/modalTypes'
 const shortid = require('shortid')
 
 const status = require('http-status')
@@ -958,6 +957,19 @@ class DisplayEndpoint extends Component {
     return version.collectionId
   }
 
+  prepareBody (body) {
+    const data = _.cloneDeep(body)
+    if (data.type === 'multipart/form-data') {
+      data.value.map((item) => {
+        if (item.type === 'file') {
+          item.value = {}
+        }
+        return ''
+      })
+    }
+    return data
+  }
+
   handleSave = async (groupId, endpointObject) => {
     const { endpointName, endpointDescription } = endpointObject || {}
     if (!getCurrentUser()) {
@@ -968,7 +980,7 @@ class DisplayEndpoint extends Component {
     if (!(this.state.groupId || groupId)) {
       this.openEndpointFormModal()
     } else {
-      const body = this.state.data.body
+      const body = this.prepareBody(this.state.data.body)
       const bodyDescription = bodyDescriptionService.handleUpdate(false, {
         body_description: this.state.bodyDescription,
         body: body.value
@@ -1022,7 +1034,6 @@ class DisplayEndpoint extends Component {
           moveToNextStep(4)
         } else if (this.state.title === 'update endpoint') {
           this.setState({ saveLoader: true })
-          console.log(endpoint)
           // this.props.update_endpoint({
           //   ...endpoint,
           //   id: this.state.endpoint.id,
@@ -1582,34 +1593,10 @@ class DisplayEndpoint extends Component {
         body.value[i].key.length !== 0 &&
         body.value[i].checked === 'true'
       ) {
-        if (body.value[i].type === 'file') {
-          if (isElectron()) {
-            // const { app } = window.require('@electron/remote')
-            // let path = app.getPath('userData')
-            // const fs = window.require('fs')
-            // !fs.existsSync(path+`/fileUploads/`) && fs.mkdirSync(path+`/fileUploads/`, { recursive: true })
-            // path=path+`/fileUploads/`
-            // const id = shortid.generate()
-            // formData[body.value[i].key] = {id:id,type:"file"}
-            // const reader = new window.FileReader()
-            // reader.addEventListener('loadend', () => {
-            //   console.log(reader.result)
-            //   try {
-            //     fs.writeFileSync(path+"\\"+id, reader.result)
-            //   }
-            //   catch(e) { alert('Failed to save the file !') }
-            // })
-            // console.log(body.value[i].value)
-            // reader.readAsBinaryString(body.value[i].value)
-            const id = shortid.generate()
-            formData[body.value[i].key] = { id: id, ...body.value[i].value }
-          } else {
-            this.props.open_modal(DESKTOP_APP_DOWNLOAD)
-            return null
-          }
-        } else {
-          formData[body.value[i].key] = body.value[i].value
+        if (!isElectron() && body.value[i].type === 'file') {
+          continue
         }
+        formData[body.value[i].key] = body.value[i].value
       }
     }
     return formData
@@ -2341,6 +2328,7 @@ class DisplayEndpoint extends Component {
                               dataArray={this.state.originalParams}
                               props_from_parent={this.propsFromChild.bind(this)}
                               original_data={[...this.state.params]}
+                              open_modal={this.props.open_modal}
                             />
                             {this.state.pathVariables &&
                               this.state.pathVariables.length !== 0 && (

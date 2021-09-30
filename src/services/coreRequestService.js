@@ -12,22 +12,9 @@ export async function makeHttpRequestThroughAxios ({ api: url, method, body: dat
     data,
     proxy: false
   }
-  console.log(url, method, data, headers)
   if (headers['content-type'] === 'multipart/form-data') {
     const bodyFormData = new FormData()
-    for (let [key, value] of Object.entries(data)) {
-      if (value.type === 'file') {
-        const { app } = require('electron')
-        let path = app.getPath('userData')
-        path = path + '/fileUploads/' + value.id
-        const fs = window.require('fs')
-        try {
-          value = fs.readFileSync(path)
-        } catch (e) {
-          console.log(e)
-        }
-      }
-      console.log('xyz' + value)
+    for (const [key, value] of Object.entries(data)) {
       bodyFormData.append(key, value)
     }
     options.data = bodyFormData

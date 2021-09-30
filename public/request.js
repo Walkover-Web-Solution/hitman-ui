@@ -3,10 +3,9 @@ const FormData = require('form-data')
 const axios = require('axios')
 const HITMAN_AGENT = 'Hitman/1.0.0'
 
-async function makeHttpRequestThroughAxios ({ api: url, method, body: data, header: headers }) {
+async function makeHttpRequestThroughAxios ({ api: url, method, body: data, header: headers }, FILE_UPLOAD_DIRECTORY) {
   headers = headers || {}
   headers['user-agent'] = HITMAN_AGENT
-  console.log(url, method, data, headers)
   const options = {
     method: method,
     url: encodeURI(url),
@@ -18,7 +17,27 @@ async function makeHttpRequestThroughAxios ({ api: url, method, body: data, head
   if (headers['content-type'] === 'multipart/form-data') {
     const bodyFormData = new FormData()
     for (const [key, value] of Object.entries(data)) {
-      bodyFormData.append(key, value)
+      if (typeof value === 'object') {
+        const fs = require('fs')
+        try {
+          const destPath = FILE_UPLOAD_DIRECTORY + value.id + '_' + value.name
+          const srcExist = fs.existsSync(value.srcPath)
+          const destExist = value.id ? fs.existsSync(destPath) : false
+          if (!srcExist && !destExist) continue
+
+          let filePath = value.srcPath
+          if (srcExist) fs.copyFileSync(filePath, destPath)
+
+          if (!srcExist && destExist) filePath = destPath
+
+          const stream = fs.createReadStream(filePath)
+          bodyFormData.append(key, stream)
+        } catch (e) {
+          console.log('MYERROR', e)
+        }
+      } else {
+        bodyFormData.append(key, value)
+      }
     }
     options.data = bodyFormData
     options.headers = { ...headers, ...bodyFormData.getHeaders() }

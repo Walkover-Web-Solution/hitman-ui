@@ -1,11 +1,15 @@
+// const { default: installExtension, REACT_DEVELOPER_TOOLS } = require('electron-devtools-installer');
 const { app, BrowserWindow, ipcMain } = require('electron')
 const isDev = require('electron-is-dev')
 const path = require('path')
 const { makeHttpRequestThroughAxios } = require('./request')
+const fs = require('fs')
 
 let mainWindow
 let deeplinkUrl
 const gotTheLock = app.requestSingleInstanceLock()
+const FILE_UPLOAD_DIRECTORY = app.getPath('userData') + '/fileUploads/'
+!fs.existsSync(FILE_UPLOAD_DIRECTORY) && fs.mkdirSync(FILE_UPLOAD_DIRECTORY, { recursive: true })
 
 // Force Single Instance Application
 if (!gotTheLock) {
@@ -62,7 +66,7 @@ function createWindow () {
 }
 
 ipcMain.handle('request-channel', (event, arg) => {
-  return makeHttpRequestThroughAxios(arg)
+  return makeHttpRequestThroughAxios(arg, FILE_UPLOAD_DIRECTORY)
 })
 
 // If we are running a non-packaged version of the app && on windows
@@ -73,6 +77,12 @@ if (isDev && process.platform === 'win32') {
 } else {
   app.setAsDefaultProtocolClient('hitman-app')
 }
+// For react developer tools
+// app.whenReady().then(() => {
+//   installExtension(REACT_DEVELOPER_TOOLS)
+//       .then((name) => console.log(`Added Extension:  ${name}`))
+//       .catch((err) => console.log('An error occurred: ', err));
+// });
 
 app.on('ready', createWindow)
 app.on('window-all-closed', () => {
@@ -96,4 +106,4 @@ app.on('open-url', function (event, url) {
     }
   }
 })
-require('@electron/remote/main').initialize()
+// require('@electron/remote/main').initialize()

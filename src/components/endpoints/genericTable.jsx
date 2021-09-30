@@ -41,11 +41,8 @@ class GenericTable extends Component {
 
   handleChange = (e) => {
     let { dataArray, title, original_data: originalData } = this.props
-    console.log(dataArray)
     dataArray = JSON.parse(JSON.stringify(dataArray))
     const name = e.currentTarget.name.split('.')
-    console.log(name)
-    console.log(dataArray[name[0]].value)
     if (name[1] === 'checkbox') {
       this.checkboxFlags[name[0]] = true
       if (dataArray[name[0]].checked === 'true') {
@@ -64,16 +61,10 @@ class GenericTable extends Component {
       dataArray[name[0]][name[1]] = e.currentTarget.value
     }
 
-    // if (title === 'formData' && name[1] === 'type') {
-    //   dataArray[name[0]].value = ''
-    // }
-
-    // if (title === 'formData' && dataArray[name[0]].type === 'file' && name[1] === 'value') {
-    //   console.log("here");
-    //   const selectedFile = e.currentTarget.files[0]
-    //   console.log(selectedFile);
-    //   dataArray[name[0]][name[1]] = e.currentTarget.value
-    // }
+    if (title === 'formData' && name[1] === 'type') {
+      if (e.currentTarget.value === 'file') dataArray[name[0]].value = {}
+      else dataArray[name[0]].value = ''
+    }
 
     if (
       dataArray[name[0]][name[1]].length !== 0 &&
@@ -145,7 +136,7 @@ class GenericTable extends Component {
           description: ''
         }
         if (title === 'Headers') this.props.props_from_parent(title, dataArray)
-        if (title === 'Params') { this.props.props_from_parent('handleAddParam', dataArray) }
+        if (title === 'Params') this.props.props_from_parent('handleAddParam', dataArray)
       }
     }
 
@@ -317,27 +308,13 @@ class GenericTable extends Component {
           />
           {title === 'formData' &&
           (
-            <select name={index + '.type'} defaultValue='text' onChange={(e) => { this.handleChange(e) }}>
+            <select name={index + '.type'} defaultValue='text' value={dataArray[index].type} onChange={(e) => { this.handleChange(e) }}>
               <option value='text'>Text</option>
               <option value='file'>File</option>
             </select>
           )}
-          <button onClick={() => this.testFunction(dataArray, index)}>Testing</button>
         </>
       )
-    }
-
-    testFunction (dataArray, index) {
-      console.log(dataArray[index])
-      const formData = new window.FormData()
-      formData.append('mycustomfile', dataArray[index].value)
-      for (const pair of formData.entries()) {
-        const reader = new window.FileReader()
-        reader.addEventListener('loadend', () => {
-          console.log(pair[0], reader.result)
-        })
-        reader.readAsBinaryString(pair[1])
-      }
     }
 
     getName (name) {
@@ -350,9 +327,22 @@ class GenericTable extends Component {
         const files = dialog.showOpenDialogSync({
           properties: ['openFile']
         })
-        this.handleChange({ currentTarget: { name: index + '.value', value: { name: this.getName(files[0]), path: files[0] } } })
+        if (files) {
+          const id = shortid.generate()
+          this.handleChange({
+            currentTarget:
+            {
+              name: index + '.value',
+              value: {
+                id,
+                name: this.getName(files[0]),
+                srcPath: files[0]
+              }
+            }
+          })
+        }
       } else {
-        console.log('open a model')
+        this.props.open_modal('DESKTOP_APP_DOWNLOAD')
       }
     }
 
@@ -398,7 +388,7 @@ class GenericTable extends Component {
           </td>
           <td className='custom-td'>
             {dataArray[index].type === 'file'
-              ? <button onClick={() => this.handleFileInput(dataArray, index)}>Select file</button>
+              ? this.renderSelectFiles(dataArray, index)
               : <input
                   name={index + '.value'}
                   value={dataArray[index].type !== 'file' ? dataArray[index].value : ''}
@@ -470,6 +460,27 @@ class GenericTable extends Component {
           </td>
         </tr>
       )
+    }
+
+    renderSelectFiles (dataArray, index) {
+      if (isElectron()) {
+        const { app } = window.require('electron').remote
+        const value = dataArray[index].value
+        const FILE_UPLOAD_DIRECTORY = app.getPath('userData') + '/fileUploads/'
+        const destPath = FILE_UPLOAD_DIRECTORY + value.id + '_' + value.name
+        const fs = window.require('fs')
+        const srcExist = fs.existsSync(value.srcPath)
+        const desExist = value.id ? fs.existsSync(destPath) : false
+        let name = ''
+        if (srcExist) name = value.name
+        if (!srcExist && desExist) name = value.id + '_' + value.name
+        if (name) return <span><button onClick={() => { this.handleDeSelectFile(index) }} />{name}</span>
+      }
+      return <button onClick={() => this.handleFileInput(dataArray, index)}>Select file</button>
+    }
+
+    handleDeSelectFile (index) {
+      this.handleChange({ currentTarget: { name: `${index}.value`, value: {} } })
     }
 
     renderOptionalParamsButton () {
