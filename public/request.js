@@ -33,7 +33,7 @@ async function makeHttpRequestThroughAxios ({ api: url, method, body: data, head
           const stream = fs.createReadStream(filePath)
           bodyFormData.append(key, stream)
         } catch (e) {
-          console.log('MYERROR', e)
+
         }
       } else {
         bodyFormData.append(key, value)

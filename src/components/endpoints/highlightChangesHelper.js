@@ -56,7 +56,6 @@ function willHighlight (props, title) {
 }
 
 function makeHighlightsData (oldData, newData, type) {
-  console.log({ oldData, newData, type })
   const temp = { isChanged: null, items: {} }
   temp.isChanged = !isEqual(oldData, newData)
   if (newData && temp.isChanged) {

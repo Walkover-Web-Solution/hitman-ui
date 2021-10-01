@@ -1,4 +1,3 @@
-// const { default: installExtension, REACT_DEVELOPER_TOOLS } = require('electron-devtools-installer');
 const { app, BrowserWindow, ipcMain } = require('electron')
 const isDev = require('electron-is-dev')
 const path = require('path')
@@ -77,12 +76,6 @@ if (isDev && process.platform === 'win32') {
 } else {
   app.setAsDefaultProtocolClient('hitman-app')
 }
-// For react developer tools
-// app.whenReady().then(() => {
-//   installExtension(REACT_DEVELOPER_TOOLS)
-//       .then((name) => console.log(`Added Extension:  ${name}`))
-//       .catch((err) => console.log('An error occurred: ', err));
-// });
 
 app.on('ready', createWindow)
 app.on('window-all-closed', () => {
@@ -106,4 +99,3 @@ app.on('open-url', function (event, url) {
     }
   }
 })
-// require('@electron/remote/main').initialize()
