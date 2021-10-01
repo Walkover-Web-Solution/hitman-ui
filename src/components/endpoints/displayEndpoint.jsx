@@ -83,7 +83,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     add_history: (data) => dispatch(addHistory(data)),
     update_environment: (data) => dispatch(updateEnvironment(data)),
     update_tab: (id, data) => dispatch(updateTab(id, data)),
-    open_modal: (modal) => dispatch(openModal(modal))
+    open_modal: (modal, data) => dispatch(openModal(modal, data))
   }
 }
 
@@ -667,7 +667,6 @@ class DisplayEndpoint extends Component {
       }
     } catch (error) {
       /** if our service fails */
-      console.log(error)
       this.handleErrorResponse(error, this.state.startTime)
     }
   }

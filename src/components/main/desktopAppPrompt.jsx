@@ -35,14 +35,16 @@ function DesktopAppDownloadModal (props) {
     })
     props.close_modal()
   }
-
+  console.log(props)
   return (
     show &&
       <Modal {...props} backdrop='static' show centered onHide={onHide}>
         <Modal.Header className='no-header' closeButton />
         <Modal.Body className='download-app-pop'>
-          <h5 className='text-center'>Seems you have already used 5 tabs.</h5>
-          <p className='text-center'>Web app does not allow more than 5 tabs, we suggest you use our desktop app for a better user experience. Also, enjoy other benefits</p>
+          {props.modals.modalData
+            ? props.modals.modalData
+            : <h5 className='text-center'>Seems you have already used 5 tabs.</h5>}
+          <p className='text-center'>We suggest you use our desktop app for a better user experience. Also, enjoy other benefits</p>
           <ol>
             <li>The desktop agent overcomes the Cross Object Resource Sharing (CORS) limitations of browsers</li>
             <li>Better shortcuts</li>
