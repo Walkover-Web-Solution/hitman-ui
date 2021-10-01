@@ -3,6 +3,7 @@ import { isDashboardRoute, isElectron } from '../common/utility'
 import { willHighlight, getHighlightsData } from './highlightChangesHelper'
 import './endpoints.scss'
 import shortid from 'shortid'
+import _ from 'lodash'
 
 class GenericTable extends Component {
   constructor (props) {
@@ -83,8 +84,9 @@ class GenericTable extends Component {
   };
 
     handleBulkChange = (e) => {
-      const { title } = this.props
+      const { title, dataArray: propsDataArray } = this.props
       const dataArray = []
+      const dataArrayOfFileType = _.filter(propsDataArray, { type: 'file' })
       this.textAreaValue = e.currentTarget.value
       const array = e.currentTarget.value.split('\n')
       let j = 0
@@ -122,7 +124,7 @@ class GenericTable extends Component {
         description: ''
       }
       if (title === 'Params' || title === 'Headers') { this.props.props_from_parent(title, dataArray) }
-      if (title === 'formData' || title === 'x-www-form-urlencoded') { this.props.handle_change_body_data(title, dataArray) }
+      if (title === 'formData' || title === 'x-www-form-urlencoded') { this.props.handle_change_body_data(title, [...dataArrayOfFileType, ...dataArray]) }
     };
 
     handleAdd (dataArray, title, key, index) {
@@ -184,8 +186,9 @@ class GenericTable extends Component {
           this.count = count
           this.textAreaValueFlag = false
           for (let index = 0; index < dataArray.length; index++) {
-            const { checked } = dataArray[index]
+            const { checked, type } = dataArray[index]
             if (checked === 'notApplicable') continue
+            if (type === 'file') continue
             if (checked === 'true') {
               textAreaValue +=
               dataArray[index].key + ':' + dataArray[index].value + '\n'
@@ -200,8 +203,9 @@ class GenericTable extends Component {
         if (this.state.bulkEdit && this.textAreaValueFlag) {
           this.textAreaValueFlag = false
           for (let index = 0; index < dataArray.length; index++) {
-            const { checked } = dataArray[index]
+            const { checked, type } = dataArray[index]
             if (checked === 'notApplicable') continue
+            if (type === 'file') continue
             if (checked === 'true') {
               textAreaValue +=
               dataArray[index].key + ':' + dataArray[index].value + '\n'
@@ -270,7 +274,7 @@ class GenericTable extends Component {
             <div className='d-flex align-items-center'>
               <input
                 name={index + '.value'}
-                value={dataArray[index].value}
+                value={dataArray[index].type === 'file' ? '' : dataArray[index].value}
                 key={index + this.state.randomId}
                 onChange={this.handleChange}
                 type='text'
@@ -296,7 +300,7 @@ class GenericTable extends Component {
     renderTextOrFileInput (dataArray, index) {
       const { title } = this.props
       return (
-        <>
+        <div className='position-relative fileInput'>
           <input
             name={index + '.key'}
             value={dataArray[index].key}
@@ -308,12 +312,12 @@ class GenericTable extends Component {
           />
           {title === 'formData' &&
           (
-            <select name={index + '.type'} defaultValue='text' value={dataArray[index].type} onChange={(e) => { this.handleChange(e) }}>
+            <select className='transition cursor-pointer' name={index + '.type'} defaultValue='text' value={dataArray[index].type} onChange={(e) => { this.handleChange(e) }}>
               <option value='text'>Text</option>
               <option value='file'>File</option>
             </select>
           )}
-        </>
+        </div>
       )
     }
 
@@ -474,9 +478,9 @@ class GenericTable extends Component {
         let name = ''
         if (srcExist) name = value.name
         if (!srcExist && desExist) name = value.id + '_' + value.name
-        if (name) return <span><button onClick={() => { this.handleDeSelectFile(index) }} />{name}</span>
+        if (name) return <div className='fileName selectFile d-flex align-items-center '>{name}<button className='align-items-center d-flex ml-2' onClick={() => { this.handleDeSelectFile(index) }}>&times;</button></div>
       }
-      return <button onClick={() => this.handleFileInput(dataArray, index)}>Select file</button>
+      return <div className='selectFile d-flex align-items-center'><button onClick={() => this.handleFileInput(dataArray, index)}>Select file</button></div>
     }
 
     handleDeSelectFile (index) {

@@ -56,6 +56,7 @@ function willHighlight (props, title) {
 }
 
 function makeHighlightsData (oldData, newData, type) {
+  console.log({ oldData, newData, type })
   const temp = { isChanged: null, items: {} }
   temp.isChanged = !isEqual(oldData, newData)
   if (newData && temp.isChanged) {
@@ -102,7 +103,7 @@ function makeHighlightsData (oldData, newData, type) {
           temp.items[entry.key] = null
         })
         Object.entries(temp.items).forEach(entry => {
-          temp.items[entry[0]] = oldData ? !isEqual(oldData[oldData.findIndex(o => o.key === entry[0])], newData[newData.findIndex(o => o.key === entry[0])]) : true
+          temp.items[entry[0]] = (oldData && typeof oldData !== 'string') ? !isEqual(oldData[oldData.findIndex(o => o.key === entry[0])], newData[newData.findIndex(o => o.key === entry[0])]) : true
         })
         break
       default:

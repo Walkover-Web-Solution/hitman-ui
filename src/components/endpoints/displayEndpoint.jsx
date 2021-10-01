@@ -1034,11 +1034,11 @@ class DisplayEndpoint extends Component {
           moveToNextStep(4)
         } else if (this.state.title === 'update endpoint') {
           this.setState({ saveLoader: true })
-          // this.props.update_endpoint({
-          //   ...endpoint,
-          //   id: this.state.endpoint.id,
-          //   groupId: groupId || this.state.groupId
-          // }, () => { this.setState({ saveLoader: false }) })
+          this.props.update_endpoint({
+            ...endpoint,
+            id: this.state.endpoint.id,
+            groupId: groupId || this.state.groupId
+          }, () => { this.setState({ saveLoader: false }) })
           tabService.markTabAsSaved(this.props.tab.id)
         }
       }
