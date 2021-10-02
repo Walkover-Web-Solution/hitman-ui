@@ -12,7 +12,6 @@ export async function makeHttpRequestThroughAxios ({ api: url, method, body: dat
     data,
     proxy: false
   }
-
   if (headers['content-type'] === 'multipart/form-data') {
     const bodyFormData = new FormData()
     for (const [key, value] of Object.entries(data)) {

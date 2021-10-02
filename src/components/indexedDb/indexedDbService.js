@@ -29,6 +29,7 @@ const createDataBase = async (dbName) => {
       db.createObjectStore('groups')
       db.createObjectStore('pages')
       db.createObjectStore('endpoints')
+      db.createObjectStore('fileUploadMetadata')
       const tabsMetadataStore = db.createObjectStore('tabs_metadata')
       const authDataStore = db.createObjectStore('authData')
       const responseDataStore = db.createObjectStore('responseData')

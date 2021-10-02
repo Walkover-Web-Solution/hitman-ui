@@ -45,6 +45,7 @@ import { updateEnvironment } from '../environments/redux/environmentsActions'
 import { run, initialize } from '../../services/sandboxservice'
 import Script from './script/script'
 import * as _ from 'lodash'
+import { openModal } from '../modals/redux/modalsActions'
 const shortid = require('shortid')
 
 const status = require('http-status')
@@ -81,7 +82,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     close_tab: (id) => dispatch(closeTab(id)),
     add_history: (data) => dispatch(addHistory(data)),
     update_environment: (data) => dispatch(updateEnvironment(data)),
-    update_tab: (id, data) => dispatch(updateTab(id, data))
+    update_tab: (id, data) => dispatch(updateTab(id, data)),
+    open_modal: (modal, data) => dispatch(openModal(modal, data))
   }
 }
 
@@ -845,6 +847,10 @@ class DisplayEndpoint extends Component {
 
     /** Prepare Body & Modify Headers */
     const { body, headers } = this.formatBody(this.state.data.body, headerJson)
+    if (!body) {
+      setTimeout(() => { this.setState({ loader: false }) }, 500)
+      return
+    }
 
     /** Add Cookie in Headers */
     const cookiesString = this.prepareHeaderCookies(BASE_URL)
@@ -950,6 +956,19 @@ class DisplayEndpoint extends Component {
     return version.collectionId
   }
 
+  prepareBody (body) {
+    const data = _.cloneDeep(body)
+    if (data.type === 'multipart/form-data') {
+      data.value.map((item) => {
+        if (item.type === 'file') {
+          item.value = {}
+        }
+        return ''
+      })
+    }
+    return data
+  }
+
   handleSave = async (groupId, endpointObject) => {
     const { endpointName, endpointDescription } = endpointObject || {}
     if (!getCurrentUser()) {
@@ -960,7 +979,7 @@ class DisplayEndpoint extends Component {
     if (!(this.state.groupId || groupId)) {
       this.openEndpointFormModal()
     } else {
-      const body = this.state.data.body
+      const body = this.prepareBody(this.state.data.body)
       const bodyDescription = bodyDescriptionService.handleUpdate(false, {
         body_description: this.state.bodyDescription,
         body: body.value
@@ -1573,6 +1592,9 @@ class DisplayEndpoint extends Component {
         body.value[i].key.length !== 0 &&
         body.value[i].checked === 'true'
       ) {
+        if (!isElectron() && body.value[i].type === 'file') {
+          continue
+        }
         formData[body.value[i].key] = body.value[i].value
       }
     }
@@ -2305,6 +2327,7 @@ class DisplayEndpoint extends Component {
                               dataArray={this.state.originalParams}
                               props_from_parent={this.propsFromChild.bind(this)}
                               original_data={[...this.state.params]}
+                              open_modal={this.props.open_modal}
                             />
                             {this.state.pathVariables &&
                               this.state.pathVariables.length !== 0 && (

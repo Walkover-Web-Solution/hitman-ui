@@ -102,7 +102,7 @@ function makeHighlightsData (oldData, newData, type) {
           temp.items[entry.key] = null
         })
         Object.entries(temp.items).forEach(entry => {
-          temp.items[entry[0]] = oldData ? !isEqual(oldData[oldData.findIndex(o => o.key === entry[0])], newData[newData.findIndex(o => o.key === entry[0])]) : true
+          temp.items[entry[0]] = (oldData && typeof oldData !== 'string') ? !isEqual(oldData[oldData.findIndex(o => o.key === entry[0])], newData[newData.findIndex(o => o.key === entry[0])]) : true
         })
         break
       default:
