@@ -713,10 +713,11 @@ class DisplayEndpoint extends Component {
   }
 
   setData = async () => {
-    const body = this.state.data.body
+    let body = this.state.data.body
     if (this.state.data.body.type === 'raw') {
       body.value = this.parseBody(body.value)
     }
+    body = this.prepareBodyForSending(body)
     const headersData = this.doSubmitHeader('save')
     const updatedParams = this.doSubmitParam()
     const pathVariables = this.doSubmitPathVariables()
@@ -956,12 +957,25 @@ class DisplayEndpoint extends Component {
     return version.collectionId
   }
 
-  prepareBody (body) {
+  prepareBodyForSaving (body) {
     const data = _.cloneDeep(body)
     if (data.type === 'multipart/form-data') {
       data.value.map((item) => {
         if (item.type === 'file') {
           item.value = {}
+        }
+        return ''
+      })
+    }
+    return data
+  }
+
+  prepareBodyForSending (body) {
+    const data = _.cloneDeep(body)
+    if (data.type === 'multipart/form-data') {
+      data.value.map((item) => {
+        if (item.type === 'file') {
+          item.value.srcPath = ''
         }
         return ''
       })
@@ -979,7 +993,7 @@ class DisplayEndpoint extends Component {
     if (!(this.state.groupId || groupId)) {
       this.openEndpointFormModal()
     } else {
-      const body = this.prepareBody(this.state.data.body)
+      const body = this.prepareBodyForSaving(this.state.data.body)
       const bodyDescription = bodyDescriptionService.handleUpdate(false, {
         body_description: this.state.bodyDescription,
         body: body.value

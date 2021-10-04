@@ -348,6 +348,13 @@ class GenericTable extends Component {
       } else {
         const data = <h5 className='text-center'>File upload feature is not supported on Web</h5>
         this.props.open_modal('DESKTOP_APP_DOWNLOAD', data)
+        this.handleChange({
+          currentTarget:
+          {
+            name: index + '.type',
+            value: 'text'
+          }
+        })
       }
     }
 
