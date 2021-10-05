@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import moment from 'moment'
 import { connect } from 'react-redux'
 import { ReactComponent as EmptyHistory } from '../../assets/icons/emptyHistroy.svg'
+import { Dropdown } from 'react-bootstrap'
 import './history.scss'
 
 function compareByCreatedAt (a, b) {
@@ -79,7 +80,7 @@ class History extends Component {
     renderHistoryItem (history) {
       return (
         Object.keys(history).length !== 0 && (
-          <div
+          <Dropdown.Item
             key={history.id}
             className='btn d-flex align-items-center mb-2'
             onClick={() => { this.openHistorySnapshot(history.id) }}
@@ -101,7 +102,7 @@ class History extends Component {
                 </small>
               </div>
             </div>
-          </div>
+          </Dropdown.Item>
         )
       )
     }
