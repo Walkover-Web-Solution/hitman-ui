@@ -640,7 +640,6 @@ class DisplayEndpoint extends Component {
 
   async handleApiCall ({ url: api, body, headers: header, bodyType, method }) {
     let responseJson = {}
-    console.log('DEBUG', 'handleApiCall')
     try {
       if (isElectron()) {
         // Handle API through Electron Channel
@@ -884,9 +883,7 @@ class DisplayEndpoint extends Component {
       /** Scroll to Response */
       this.myRef.current && this.myRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' })
       /** Add to History */
-      try {
-        isDashboardRoute(this.props) && this.setData()
-      } catch (e) { console.log('error', e) }
+      isDashboardRoute(this.props) && this.setData()
     } else {
       this.setState({ preReqScriptError: result.error, loader: false })
     }
