@@ -848,10 +848,6 @@ class DisplayEndpoint extends Component {
 
     /** Prepare Body & Modify Headers */
     const { body, headers } = this.formatBody(this.state.data.body, headerJson)
-    if (!body) {
-      setTimeout(() => { this.setState({ loader: false }) }, 500)
-      return
-    }
 
     /** Add Cookie in Headers */
     const cookiesString = this.prepareHeaderCookies(BASE_URL)
