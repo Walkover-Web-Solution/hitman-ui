@@ -222,7 +222,11 @@ class DisplayResponse extends Component {
 
   renderLoader () {
     return (
-      <div className='text-center my-5'><Spinner variant='dark' animation='border' /><div className='my-2'>Sending Request</div></div>
+      <div className='text-center my-5'>
+        <Spinner variant='dark' animation='border' />
+        <div className='my-2'>Sending Request</div>
+        <button onClick={this.props.handleCancel}>Cancel</button>
+      </div>
     )
   }
 

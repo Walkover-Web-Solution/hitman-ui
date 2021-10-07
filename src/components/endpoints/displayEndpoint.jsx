@@ -46,6 +46,7 @@ import { run, initialize } from '../../services/sandboxservice'
 import Script from './script/script'
 import * as _ from 'lodash'
 import { openModal } from '../modals/redux/modalsActions'
+import Axios from 'axios'
 const shortid = require('shortid')
 
 const status = require('http-status')
@@ -146,7 +147,9 @@ class DisplayEndpoint extends Component {
       preReqScriptError: '',
       postReqScriptError: '',
       host: {},
-      draftDataSet: false
+      draftDataSet: false,
+      runSendRequest: null,
+      requestKey: null
     }
 
     this.uri = React.createRef()
@@ -485,7 +488,7 @@ class DisplayEndpoint extends Component {
         const state = _.cloneDeep(this.state)
 
         /** clean unnecessary items from state before saving */
-        const unnecessaryStateItems = ['loader', 'draftDataSet', 'saveLoader', 'codeEditorVisibility', 'showCookiesModal', 'methodList', 'theme']
+        const unnecessaryStateItems = ['loader', 'draftDataSet', 'saveLoader', 'codeEditorVisibility', 'showCookiesModal', 'methodList', 'theme', 'runSendRequest', 'requestKey']
         unnecessaryStateItems.forEach((item) => delete state[item])
 
         this.props.update_tab(this.props.tab.id, { state })
@@ -638,16 +641,16 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  async handleApiCall ({ url: api, body, headers: header, bodyType, method }) {
+  async handleApiCall ({ url: api, body, headers: header, bodyType, method, cancelToken, keyForRequest }) {
     let responseJson = {}
     try {
       if (isElectron()) {
         // Handle API through Electron Channel
         const { ipcRenderer } = window.require('electron')
-        responseJson = await ipcRenderer.invoke('request-channel', { api, method, body, header, bodyType })
+        responseJson = await ipcRenderer.invoke('request-channel', { api, method, body, header, bodyType, keyForRequest })
       } else {
         // Handle API through Backend
-        responseJson = await endpointApiService.apiTest(api, method, body, header, bodyType)
+        responseJson = await endpointApiService.apiTest(api, method, body, header, bodyType, cancelToken)
       }
 
       if (responseJson.data.success) {
@@ -818,9 +821,11 @@ class DisplayEndpoint extends Component {
   }
 
   handleSend = async () => {
+    const keyForRequest = shortid.generate()
+    const runSendRequest = Axios.CancelToken.source()
     const startTime = new Date().getTime()
     const response = {}
-    this.setState({ startTime, response, preReqScriptError: '', postReqScriptError: '', tests: null, loader: true })
+    this.setState({ startTime, response, preReqScriptError: '', postReqScriptError: '', tests: null, loader: true, requestKey: keyForRequest, runSendRequest })
 
     if (!isDashboardRoute(this.props, true) && this.checkEmptyParams()) {
       this.setState({ loader: false })
@@ -848,10 +853,6 @@ class DisplayEndpoint extends Component {
 
     /** Prepare Body & Modify Headers */
     const { body, headers } = this.formatBody(this.state.data.body, headerJson)
-    if (!body) {
-      setTimeout(() => { this.setState({ loader: false }) }, 500)
-      return
-    }
 
     /** Add Cookie in Headers */
     const cookiesString = this.prepareHeaderCookies(BASE_URL)
@@ -860,9 +861,10 @@ class DisplayEndpoint extends Component {
     }
 
     const method = this.state.data.method
-
     /** Set Request Options */
-    let requestOptions = { url, body, headers, method }
+    let requestOptions = null
+    const cancelToken = runSendRequest.token
+    requestOptions = { url, body, headers, method, cancelToken, keyForRequest }
 
     const currentEnvironment = this.props.environment
 
@@ -883,7 +885,11 @@ class DisplayEndpoint extends Component {
       moveToNextStep(5)
       /** Handle Request Call */
       await this.handleApiCall(requestOptions)
-      this.setState({ loader: false })
+      this.setState({
+        loader: false,
+        runSendRequest: null,
+        requestKey: null
+      })
       /** Scroll to Response */
       this.myRef.current && this.myRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' })
       /** Add to History */
@@ -1731,6 +1737,21 @@ class DisplayEndpoint extends Component {
     })
   }
 
+  handleCancel () {
+    if (isElectron()) {
+      const { ipcRenderer } = window.require('electron')
+      ipcRenderer.invoke('request-cancel', this.state.requestKey)
+    } else {
+      const CUSTOM_REQUEST_CANCELLATION = 'Request was cancelled'
+      this.state.runSendRequest.cancel(CUSTOM_REQUEST_CANCELLATION)
+    }
+    this.setState({
+      loader: false,
+      runSendRequest: null,
+      requestKey: null
+    })
+  }
+
   displayResponse () {
     if (!isDashboardRoute(this.props) && this.state.flagResponse) {
       return (
@@ -1744,6 +1765,7 @@ class DisplayEndpoint extends Component {
               this.state.flagResponse
             }
             add_sample_response={this.addSampleResponse.bind(this)}
+            handleCancel={() => { this.handleCancel() }}
           />
         </div>
       )
@@ -1837,6 +1859,7 @@ class DisplayEndpoint extends Component {
                   sample_response_flag_array={this.state.sampleResponseFlagArray}
                   add_sample_response={this.addSampleResponse.bind(this)}
                   props_from_parent={this.propsFromSampleResponse.bind(this)}
+                  handleCancel={() => { this.handleCancel() }}
                 />
               </div>
             </div>
@@ -1891,6 +1914,7 @@ class DisplayEndpoint extends Component {
             timeElapsed={this.state.timeElapsed}
             response={this.state.response}
             flagResponse={this.state.flagResponse}
+            handleCancel={() => { this.handleCancel() }}
           />
         </div>
       </>
@@ -2099,6 +2123,7 @@ class DisplayEndpoint extends Component {
                           type='submit'
                           id='api-send-button'
                           onClick={() => this.handleSend()}
+                          disabled={this.state.loader}
                         >
                           {isDashboardRoute(this.props) ? 'Send' : 'Try'}
                         </button>
