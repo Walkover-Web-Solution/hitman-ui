@@ -14,7 +14,6 @@ export async function makeHttpRequestThroughAxios ({ api: url, method, body: dat
     cancelToken
   }
   if (headers['content-type'] === 'multipart/form-data') {
-    console.log(new FormData())
     const bodyFormData = new FormData()
     for (const [key, value] of Object.entries(data)) {
       bodyFormData.append(key, value)
