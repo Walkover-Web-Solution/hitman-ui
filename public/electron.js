@@ -1,7 +1,7 @@
 const { app, BrowserWindow, ipcMain } = require('electron')
 const isDev = require('electron-is-dev')
 const path = require('path')
-const { makeHttpRequestThroughAxios } = require('./request')
+const { makeHttpRequestThroughAxios, invokeCancel } = require('./request')
 const fs = require('fs')
 
 let mainWindow
@@ -66,6 +66,10 @@ function createWindow () {
 
 ipcMain.handle('request-channel', (event, arg) => {
   return makeHttpRequestThroughAxios(arg, FILE_UPLOAD_DIRECTORY)
+})
+
+ipcMain.handle('request-cancel', (event, arg) => {
+  return invokeCancel(arg)
 })
 
 // If we are running a non-packaged version of the app && on windows

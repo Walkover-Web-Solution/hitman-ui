@@ -2,7 +2,7 @@ const querystring = require('querystring')
 const FormData = require('form-data')
 const axios = require('axios')
 
-export async function makeHttpRequestThroughAxios ({ api: url, method, body: data, header: headers }) {
+export async function makeHttpRequestThroughAxios ({ api: url, method, body: data, headers, cancelToken }) {
   headers = headers || {}
 
   const options = {
@@ -10,7 +10,8 @@ export async function makeHttpRequestThroughAxios ({ api: url, method, body: dat
     url: encodeURI(url),
     headers,
     data,
-    proxy: false
+    proxy: false,
+    cancelToken
   }
   if (headers['content-type'] === 'multipart/form-data') {
     const bodyFormData = new FormData()
@@ -18,7 +19,6 @@ export async function makeHttpRequestThroughAxios ({ api: url, method, body: dat
       bodyFormData.append(key, value)
     }
     options.data = bodyFormData
-    options.headers = { ...headers, ...bodyFormData.getHeaders() }
   } else if (headers['content-type'] === 'application/x-www-form-urlencoded') {
     options.data = querystring.stringify(data)
   }
@@ -32,7 +32,12 @@ export async function makeHttpRequestThroughAxios ({ api: url, method, body: dat
         })
       })
       .catch(function (error) {
-        if (!error.response) {
+        if (axios.isCancel(error)) {
+          resolve({
+            status: 200,
+            data: { success: false, error }
+          })
+        } else if (!error.response) {
           resolve({
             status: 200,
             data: { success: false, error }

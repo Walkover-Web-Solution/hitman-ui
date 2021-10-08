@@ -2,8 +2,9 @@ const querystring = require('querystring')
 const FormData = require('form-data')
 const axios = require('axios')
 const HITMAN_AGENT = 'Hitman/1.0.0'
+const cancelTokenMap = new Map()
 
-async function makeHttpRequestThroughAxios ({ api: url, method, body: data, header: headers }, FILE_UPLOAD_DIRECTORY) {
+async function makeHttpRequestThroughAxios ({ api: url, method, body: data, header: headers, keyForRequest }, FILE_UPLOAD_DIRECTORY) {
   headers = headers || {}
   headers['user-agent'] = HITMAN_AGENT
   const options = {
@@ -11,9 +12,9 @@ async function makeHttpRequestThroughAxios ({ api: url, method, body: data, head
     url: encodeURI(url),
     headers,
     data,
-    proxy: false
+    proxy: false,
+    cancelToken: createCancelToken(keyForRequest)
   }
-
   if (headers['content-type'] === 'multipart/form-data') {
     const bodyFormData = new FormData()
     for (const [key, value] of Object.entries(data)) {
@@ -44,17 +45,23 @@ async function makeHttpRequestThroughAxios ({ api: url, method, body: data, head
   } else if (headers['content-type'] === 'application/x-www-form-urlencoded') {
     options.data = querystring.stringify(data)
   }
-
   return new Promise((resolve, reject) => {
     axios(options)
       .then(function (response) {
+        cancelTokenMap.delete(keyForRequest)
         resolve({
           status: 200,
           data: prepareResponse(response)
         })
       })
       .catch(function (error) {
-        if (!error.response) {
+        cancelTokenMap.delete(keyForRequest)
+        if (axios.isCancel(error)) {
+          resolve({
+            status: 200,
+            data: { success: false, error }
+          })
+        } else if (!error.response) {
           resolve({
             status: 200,
             data: { success: false, error }
@@ -69,6 +76,11 @@ async function makeHttpRequestThroughAxios ({ api: url, method, body: data, head
   })
 }
 
+function createCancelToken (key) {
+  cancelTokenMap.set(key, axios.CancelToken.source())
+  return cancelTokenMap.get(key).token
+}
+
 function prepareResponse (data) {
   return {
     success: true,
@@ -79,4 +91,8 @@ function prepareResponse (data) {
   }
 }
 
-module.exports = { makeHttpRequestThroughAxios }
+function invokeCancel (key) {
+  cancelTokenMap.get(key).cancel('Request was cancelled')
+}
+
+module.exports = { makeHttpRequestThroughAxios, invokeCancel }

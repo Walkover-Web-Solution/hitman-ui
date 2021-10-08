@@ -35,7 +35,6 @@ function DesktopAppDownloadModal (props) {
     })
     props.close_modal()
   }
-  console.log(props)
   return (
     show &&
       <Modal {...props} backdrop='static' show centered onHide={onHide}>

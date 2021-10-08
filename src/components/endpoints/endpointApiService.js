@@ -17,9 +17,9 @@ function endpointUrl (groupId) {
   return `${apiUrl}/groups/${groupId}/endpoints`
 }
 
-export function apiTest (api, method, body, headers, bodyType) {
+export function apiTest (api, method, body, headers, bodyType, cancelToken) {
   if (api.indexOf('localhost') > 0 || api.indexOf('127.0.0.1') > 0) {
-    return makeHttpRequestThroughAxios({ api, method, body, headers, bodyType })
+    return makeHttpRequestThroughAxios({ api, method, body, headers, bodyType, cancelToken })
   } else {
     const data = {
       url: api,
@@ -27,7 +27,7 @@ export function apiTest (api, method, body, headers, bodyType) {
       data: bodyType === 'urlEncoded' ? qs.stringify({ body }) : body,
       headers
     }
-    return httpService.post(`${apiUrlEndpoint}/test-apis/run`, data)
+    return httpService.post(`${apiUrlEndpoint}/test-apis/run`, data, { cancelToken })
   }
 }
 
