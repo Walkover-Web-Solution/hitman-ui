@@ -6,6 +6,7 @@ import { Button } from 'react-bootstrap'
 import { ReactComponent as UploadIcon } from '../../assets/icons/uploadIcon.svg'
 import { updateCollection } from '../collections/redux/collectionsActions'
 import './publishDocsForm.scss'
+import { HOSTNAME_VALIDATION_REGEX } from '../common/constants'
 const URI = require('urijs')
 
 const UI_IP = process.env.REACT_APP_UI_IP
@@ -117,7 +118,7 @@ class PublishDocForm extends Component {
 
   schema = {
     title: Joi.string().required().trim().label(publishDocFormEnum.LABELS.title),
-    domain: Joi.string().trim().allow('').label(publishDocFormEnum.LABELS.domain),
+    domain: Joi.string().allow('').regex(HOSTNAME_VALIDATION_REGEX, { name: 'URL' }).trim().required().label('domain').error(() => { return { message: 'Domain must be valid' } }),
     logoUrl: Joi.string().trim().allow('').label(publishDocFormEnum.LABELS.logoUrl),
     theme: Joi.string().trim().allow('').label(publishDocFormEnum.LABELS.theme)
   }
