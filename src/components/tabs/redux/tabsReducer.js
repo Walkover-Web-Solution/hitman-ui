@@ -2,6 +2,7 @@ import tabsActionTypes from './tabsActionTypes'
 
 const initialState = {
   tabs: {},
+  loaded: false,
   activeTabId: null,
   tabsOrder: []
 }
@@ -20,6 +21,7 @@ function tabsReducer (state = initialState, action) {
 
     case tabsActionTypes.OPEN_IN_NEW_TAB:
       tabs = {}
+      tabs.loaded = state.loaded
       tabs.tabs = { ...state.tabs, [action.tab.id]: action.tab }
       tabs.tabsOrder = state.tabsOrder.includes(action.tab.id) ? [...state.tabsOrder] : [...state.tabsOrder, action.tab.id]
       return tabs
@@ -49,8 +51,9 @@ function tabsReducer (state = initialState, action) {
     case tabsActionTypes.FETCH_TABS_FROM_IDB:
       tabs = {
         tabs: { ...state.tabs, ...action.tabsList },
+        loaded: true,
         tabsOrder: [...state.tabsOrder],
-        activeTabId: action.tabsMetadata.activeTabId
+        activeTabId: action.tabsMetadata.activeTabId ? action.tabsMetadata.activeTabId : state.activeTabId
       }
       action.tabsMetadata.tabsOrder.forEach(t => {
         if (!tabs.tabsOrder.includes(t)) {

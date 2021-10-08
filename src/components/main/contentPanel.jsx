@@ -61,25 +61,9 @@ class ContentPanel extends Component {
     // });
   }
 
-  handleSaveEndpoint (flag, tabId) {
-    this.setState({ saveEndpointFlag: flag, selectedTabId: tabId })
-  }
-
-  handleSavePage (flag, tabId) {
-    this.setState({ savePageFlag: flag, selectedTabId: tabId })
-  }
-
-  openLoginSignupModal () {
-    this.setState({ showLoginSignupModal: true })
-  }
-
-  closeLoginSignupModal () {
-    this.setState({ showLoginSignupModal: false })
-  }
-
-  render () {
+  componentDidUpdate () {
     const { endpointId, pageId, historyId } = this.props.match.params
-    if (endpointId && endpointId !== 'new') {
+    if (this.props.tabs.loaded && endpointId && endpointId !== 'new') {
       if (this.props.tabs.tabs[endpointId]) {
         if (this.props.tabs.activeTabId !== endpointId) {
           this.props.set_active_tab_id(endpointId)
@@ -107,7 +91,7 @@ class ContentPanel extends Component {
       }
     }
 
-    if (pageId) {
+    if (this.props.tabs.loaded && pageId) {
       if (this.props.tabs.tabs[pageId]) {
         if (this.props.tabs.activeTabId !== pageId) { this.props.set_active_tab_id(pageId) }
       } else {
@@ -124,7 +108,7 @@ class ContentPanel extends Component {
       }
     }
 
-    if (historyId) {
+    if (this.props.tabs.loaded && historyId) {
       if (this.props.tabs.tabs[historyId]) {
         if (this.props.tabs.activeTabId !== historyId) { this.props.set_active_tab_id(historyId) }
       } else if (this.props.historySnapshots && this.props.historySnapshots[historyId]) {
@@ -139,7 +123,8 @@ class ContentPanel extends Component {
       }
     }
 
-    if (this.props.match.path === '/orgs/:orgId/dashboard/') {
+    if (this.props.tabs.loaded && this.props.match.path === '/orgs/:orgId/dashboard/') {
+      const { orgId } = this.props.match.params
       if (this.props.tabs?.tabsOrder?.length) {
         const { tabs, activeTabId, tabsOrder } = this.props.tabs
 
@@ -147,16 +132,35 @@ class ContentPanel extends Component {
         if (!tabs[tabId]) tabId = tabsOrder[0]
 
         const tab = tabs[tabId]
-        const { orgId } = this.props.match.params
-
         if (tabId !== activeTabId) this.props.set_active_tab_id(tabId)
 
         this.props.history.push({
           pathname: `/orgs/${orgId}/dashboard/${tab.type}/${tab.status === 'NEW' ? 'new' : tabId}`
         })
+      } else {
+        this.props.add_new_tab()
       }
     }
+  }
 
+  handleSaveEndpoint (flag, tabId) {
+    this.setState({ saveEndpointFlag: flag, selectedTabId: tabId })
+  }
+
+  handleSavePage (flag, tabId) {
+    this.setState({ savePageFlag: flag, selectedTabId: tabId })
+  }
+
+  openLoginSignupModal () {
+    this.setState({ showLoginSignupModal: true })
+  }
+
+  closeLoginSignupModal () {
+    this.setState({ showLoginSignupModal: false })
+  }
+
+  render () {
+    const { activeTabId } = this.props.tabs
     return (
       <main role='main' className='main'>
         {this.state.showLoginSignupModal && (
@@ -169,11 +173,8 @@ class ContentPanel extends Component {
         {/* <main role="main" className="main ml-sm-auto custom-main"> */}
         <Tab.Container
           id='left-tabs-example'
-          defaultActiveKey={
-            this.props.tabs.length &&
-            this.props.tabs[this.props.default_tab_index].id
-          }
-          activeKey={this.props.tabs.activeTabId}
+          defaultActiveKey={activeTabId}
+          activeKey={activeTabId}
         >
           {
             getCurrentUser()
