@@ -3,6 +3,7 @@ import store from '../../../store/store'
 import indexedDbService from '../../indexedDb/indexedDbService'
 import tabStatusTypes from '../tabStatusTypes'
 import tabsActionTypes from './tabsActionTypes'
+import history from '../../../history'
 import { getOrgId, isElectron } from '../../common/utility'
 import { openModal } from '../../modals/redux/modalsActions'
 import { DESKTOP_APP_DOWNLOAD } from '../../modals/modalTypes'
@@ -95,7 +96,7 @@ export const fetchTabsFromIdb = (props) => {
   }
 }
 
-export const addNewTab = (history) => {
+export const addNewTab = () => {
   const id = shortid.generate()
   const tabsOrder = [...store.getState().tabs.tabsOrder]
 
@@ -107,7 +108,6 @@ export const addNewTab = (history) => {
   const orgId = getOrgId()
 
   return async (dispatch) => {
-    dispatch(setActiveTabId(id))
     dispatch({
       type: tabsActionTypes.ADD_NEW_TAB,
       newTab: {
@@ -119,6 +119,7 @@ export const addNewTab = (history) => {
         state: {}
       }
     })
+    dispatch(setActiveTabId(id))
     history.push({ pathname: `/orgs/${orgId}/dashboard/endpoint/new` })
     await indexedDbService.addData('tabs', {
       id,

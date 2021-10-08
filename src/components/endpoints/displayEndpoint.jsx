@@ -220,7 +220,7 @@ class DisplayEndpoint extends Component {
     if (tab && endpointId) {
       if (tab.isModified && !draftDataSet) {
         this.setState({ ...tab.state, draftDataSet: true })
-      } else if (endpointId !== 'new' && endpoint.id !== tab.id && endpoints[tab.id]) {
+      } else if (endpointId !== 'new' && endpoint.id !== tab.id && endpoints[tab.id] && !draftDataSet) {
         this.fetchEndpoint(0, tab.id)
       }
     }
@@ -228,7 +228,7 @@ class DisplayEndpoint extends Component {
     if (tab && historyId) {
       if (tab.isModified && !draftDataSet) {
         this.setState({ ...tab.state, draftDataSet: true })
-      } else if (historyId !== 'new' && historySnapshotId !== historyId && historySnapshots[tab.id]) {
+      } else if (historyId !== 'new' && historySnapshotId !== historyId && historySnapshots[tab.id] && !draftDataSet) {
         this.fetchHistorySnapshot()
       }
     }
@@ -362,7 +362,8 @@ class DisplayEndpoint extends Component {
         bodyFlag: true,
         response: {},
         preScriptText: endpoint.preScript || '',
-        postScriptText: endpoint.postScript || ''
+        postScriptText: endpoint.postScript || '',
+        draftDataSet: true
       }, () => {
         if (isDashboardRoute(this.props)) this.setUnsavedTabDataInIDB()
       })
@@ -422,7 +423,8 @@ class DisplayEndpoint extends Component {
       timeElapsed: history.timeElapsed,
       publicBodyFlag: true,
       bodyFlag: true,
-      flagResponse: true
+      flagResponse: true,
+      draftDataSet: true
     }, () => {
       if (isDashboardRoute(this.props)) this.setUnsavedTabDataInIDB()
     })
@@ -490,7 +492,6 @@ class DisplayEndpoint extends Component {
         /** clean unnecessary items from state before saving */
         const unnecessaryStateItems = ['loader', 'draftDataSet', 'saveLoader', 'codeEditorVisibility', 'showCookiesModal', 'methodList', 'theme', 'runSendRequest', 'requestKey']
         unnecessaryStateItems.forEach((item) => delete state[item])
-
         this.props.update_tab(this.props.tab.id, { state })
       }, 1000)
     }
@@ -2107,7 +2108,7 @@ class DisplayEndpoint extends Component {
                             {...this.props}
                             groupId={this.state.groupId}
                             endpointId={this.state.endpoint.id}
-                            customHost={this.state.host.selectedHost === 'customHost' ? this.state.host.BASE_URL : this.state.endpoint.BASE_URL || ''}
+                            customHost={this.state.endpoint.BASE_URL || ''}
                             environmentHost={this.props.environment?.variables?.BASE_URL?.currentValue || this.props.environment?.variables?.BASE_URL?.initialValue || ''}
                             versionHost={this.props.versions[this.props.groups[this.state.groupId]?.versionId]?.host || ''}
                             updatedUri={this.state.data.updatedUri}
