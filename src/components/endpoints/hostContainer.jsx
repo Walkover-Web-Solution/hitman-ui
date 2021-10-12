@@ -66,7 +66,7 @@ class HostContainer extends Component {
 
   customFindTopPriorityHost () {
     const selectedHost = ''
-    if (this.state.customHost) return 'customHost'
+    if (this.state.selectedHost === 'customHost' || this.state.customHost) return 'customHost'
     if (this.state.environmentHost) return 'environmentHost'
     if (this.state.versionHost) return 'versionHost'
     return selectedHost

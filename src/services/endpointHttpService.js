@@ -7,10 +7,9 @@ const endpointInstance = axios.create()
 
 endpointInstance.interceptors.response.use(null, (error) => {
   const expectedError =
-    error.response &&
+    (error.response &&
     error.response.status >= 400 &&
-    error.response.status < 500
-
+    error.response.status < 500) || axios.isCancel(error)
   if (!expectedError) {
     logger.log(!error)
   }

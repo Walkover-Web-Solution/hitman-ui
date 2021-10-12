@@ -45,6 +45,8 @@ import { updateEnvironment } from '../environments/redux/environmentsActions'
 import { run, initialize } from '../../services/sandboxservice'
 import Script from './script/script'
 import * as _ from 'lodash'
+import { openModal } from '../modals/redux/modalsActions'
+import Axios from 'axios'
 const shortid = require('shortid')
 
 const status = require('http-status')
@@ -81,7 +83,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     close_tab: (id) => dispatch(closeTab(id)),
     add_history: (data) => dispatch(addHistory(data)),
     update_environment: (data) => dispatch(updateEnvironment(data)),
-    update_tab: (id, data) => dispatch(updateTab(id, data))
+    update_tab: (id, data) => dispatch(updateTab(id, data)),
+    open_modal: (modal, data) => dispatch(openModal(modal, data))
   }
 }
 
@@ -144,7 +147,9 @@ class DisplayEndpoint extends Component {
       preReqScriptError: '',
       postReqScriptError: '',
       host: {},
-      draftDataSet: false
+      draftDataSet: false,
+      runSendRequest: null,
+      requestKey: null
     }
 
     this.uri = React.createRef()
@@ -215,7 +220,7 @@ class DisplayEndpoint extends Component {
     if (tab && endpointId) {
       if (tab.isModified && !draftDataSet) {
         this.setState({ ...tab.state, draftDataSet: true })
-      } else if (endpointId !== 'new' && endpoint.id !== tab.id && endpoints[tab.id]) {
+      } else if (endpointId !== 'new' && endpoint.id !== tab.id && endpoints[tab.id] && !draftDataSet) {
         this.fetchEndpoint(0, tab.id)
       }
     }
@@ -223,7 +228,7 @@ class DisplayEndpoint extends Component {
     if (tab && historyId) {
       if (tab.isModified && !draftDataSet) {
         this.setState({ ...tab.state, draftDataSet: true })
-      } else if (historyId !== 'new' && historySnapshotId !== historyId && historySnapshots[tab.id]) {
+      } else if (historyId !== 'new' && historySnapshotId !== historyId && historySnapshots[tab.id] && !draftDataSet) {
         this.fetchHistorySnapshot()
       }
     }
@@ -357,7 +362,8 @@ class DisplayEndpoint extends Component {
         bodyFlag: true,
         response: {},
         preScriptText: endpoint.preScript || '',
-        postScriptText: endpoint.postScript || ''
+        postScriptText: endpoint.postScript || '',
+        draftDataSet: true
       }, () => {
         if (isDashboardRoute(this.props)) this.setUnsavedTabDataInIDB()
       })
@@ -417,7 +423,8 @@ class DisplayEndpoint extends Component {
       timeElapsed: history.timeElapsed,
       publicBodyFlag: true,
       bodyFlag: true,
-      flagResponse: true
+      flagResponse: true,
+      draftDataSet: true
     }, () => {
       if (isDashboardRoute(this.props)) this.setUnsavedTabDataInIDB()
     })
@@ -483,9 +490,8 @@ class DisplayEndpoint extends Component {
         const state = _.cloneDeep(this.state)
 
         /** clean unnecessary items from state before saving */
-        const unnecessaryStateItems = ['loader', 'draftDataSet', 'saveLoader', 'codeEditorVisibility', 'showCookiesModal', 'methodList', 'theme']
+        const unnecessaryStateItems = ['loader', 'draftDataSet', 'saveLoader', 'codeEditorVisibility', 'showCookiesModal', 'methodList', 'theme', 'runSendRequest', 'requestKey']
         unnecessaryStateItems.forEach((item) => delete state[item])
-
         this.props.update_tab(this.props.tab.id, { state })
       }, 1000)
     }
@@ -636,16 +642,16 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  async handleApiCall ({ url: api, body, headers: header, bodyType, method }) {
+  async handleApiCall ({ url: api, body, headers: header, bodyType, method, cancelToken, keyForRequest }) {
     let responseJson = {}
     try {
       if (isElectron()) {
         // Handle API through Electron Channel
         const { ipcRenderer } = window.require('electron')
-        responseJson = await ipcRenderer.invoke('request-channel', { api, method, body, header, bodyType })
+        responseJson = await ipcRenderer.invoke('request-channel', { api, method, body, header, bodyType, keyForRequest })
       } else {
         // Handle API through Backend
-        responseJson = await endpointApiService.apiTest(api, method, body, header, bodyType)
+        responseJson = await endpointApiService.apiTest(api, method, body, header, bodyType, cancelToken)
       }
 
       if (responseJson.data.success) {
@@ -711,10 +717,11 @@ class DisplayEndpoint extends Component {
   }
 
   setData = async () => {
-    const body = this.state.data.body
+    let body = this.state.data.body
     if (this.state.data.body.type === 'raw') {
       body.value = this.parseBody(body.value)
     }
+    body = this.prepareBodyForSending(body)
     const headersData = this.doSubmitHeader('save')
     const updatedParams = this.doSubmitParam()
     const pathVariables = this.doSubmitPathVariables()
@@ -815,9 +822,11 @@ class DisplayEndpoint extends Component {
   }
 
   handleSend = async () => {
+    const keyForRequest = shortid.generate()
+    const runSendRequest = Axios.CancelToken.source()
     const startTime = new Date().getTime()
     const response = {}
-    this.setState({ startTime, response, preReqScriptError: '', postReqScriptError: '', tests: null, loader: true })
+    this.setState({ startTime, response, preReqScriptError: '', postReqScriptError: '', tests: null, loader: true, requestKey: keyForRequest, runSendRequest })
 
     if (!isDashboardRoute(this.props, true) && this.checkEmptyParams()) {
       this.setState({ loader: false })
@@ -853,9 +862,10 @@ class DisplayEndpoint extends Component {
     }
 
     const method = this.state.data.method
-
     /** Set Request Options */
-    let requestOptions = { url, body, headers, method }
+    let requestOptions = null
+    const cancelToken = runSendRequest.token
+    requestOptions = { url, body, headers, method, cancelToken, keyForRequest }
 
     const currentEnvironment = this.props.environment
 
@@ -876,7 +886,11 @@ class DisplayEndpoint extends Component {
       moveToNextStep(5)
       /** Handle Request Call */
       await this.handleApiCall(requestOptions)
-      this.setState({ loader: false })
+      this.setState({
+        loader: false,
+        runSendRequest: null,
+        requestKey: null
+      })
       /** Scroll to Response */
       this.myRef.current && this.myRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' })
       /** Add to History */
@@ -950,6 +964,26 @@ class DisplayEndpoint extends Component {
     return version.collectionId
   }
 
+  prepareBodyForSaving (body) {
+    const data = _.cloneDeep(body)
+    if (data.type === 'multipart/form-data') {
+      data.value.forEach((item) => {
+        if (item.type === 'file') item.value = {}
+      })
+    }
+    return data
+  }
+
+  prepareBodyForSending (body) {
+    const data = _.cloneDeep(body)
+    if (data.type === 'multipart/form-data') {
+      data.value.forEach((item) => {
+        if (item.type === 'file') item.value.srcPath = ''
+      })
+    }
+    return data
+  }
+
   handleSave = async (groupId, endpointObject) => {
     const { endpointName, endpointDescription } = endpointObject || {}
     if (!getCurrentUser()) {
@@ -960,7 +994,7 @@ class DisplayEndpoint extends Component {
     if (!(this.state.groupId || groupId)) {
       this.openEndpointFormModal()
     } else {
-      const body = this.state.data.body
+      const body = this.prepareBodyForSaving(this.state.data.body)
       const bodyDescription = bodyDescriptionService.handleUpdate(false, {
         body_description: this.state.bodyDescription,
         body: body.value
@@ -1573,6 +1607,9 @@ class DisplayEndpoint extends Component {
         body.value[i].key.length !== 0 &&
         body.value[i].checked === 'true'
       ) {
+        if (!isElectron() && body.value[i].type === 'file') {
+          continue
+        }
         formData[body.value[i].key] = body.value[i].value
       }
     }
@@ -1701,6 +1738,21 @@ class DisplayEndpoint extends Component {
     })
   }
 
+  handleCancel () {
+    if (isElectron()) {
+      const { ipcRenderer } = window.require('electron')
+      ipcRenderer.invoke('request-cancel', this.state.requestKey)
+    } else {
+      const CUSTOM_REQUEST_CANCELLATION = 'Request was cancelled'
+      this.state.runSendRequest.cancel(CUSTOM_REQUEST_CANCELLATION)
+    }
+    this.setState({
+      loader: false,
+      runSendRequest: null,
+      requestKey: null
+    })
+  }
+
   displayResponse () {
     if (!isDashboardRoute(this.props) && this.state.flagResponse) {
       return (
@@ -1714,6 +1766,7 @@ class DisplayEndpoint extends Component {
               this.state.flagResponse
             }
             add_sample_response={this.addSampleResponse.bind(this)}
+            handleCancel={() => { this.handleCancel() }}
           />
         </div>
       )
@@ -1807,6 +1860,7 @@ class DisplayEndpoint extends Component {
                   sample_response_flag_array={this.state.sampleResponseFlagArray}
                   add_sample_response={this.addSampleResponse.bind(this)}
                   props_from_parent={this.propsFromSampleResponse.bind(this)}
+                  handleCancel={() => { this.handleCancel() }}
                 />
               </div>
             </div>
@@ -1861,6 +1915,7 @@ class DisplayEndpoint extends Component {
             timeElapsed={this.state.timeElapsed}
             response={this.state.response}
             flagResponse={this.state.flagResponse}
+            handleCancel={() => { this.handleCancel() }}
           />
         </div>
       </>
@@ -2053,7 +2108,7 @@ class DisplayEndpoint extends Component {
                             {...this.props}
                             groupId={this.state.groupId}
                             endpointId={this.state.endpoint.id}
-                            customHost={this.state.host.selectedHost === 'customHost' ? this.state.host.BASE_URL : this.state.endpoint.BASE_URL || ''}
+                            customHost={this.state.endpoint.BASE_URL || ''}
                             environmentHost={this.props.environment?.variables?.BASE_URL?.currentValue || this.props.environment?.variables?.BASE_URL?.initialValue || ''}
                             versionHost={this.props.versions[this.props.groups[this.state.groupId]?.versionId]?.host || ''}
                             updatedUri={this.state.data.updatedUri}
@@ -2069,6 +2124,7 @@ class DisplayEndpoint extends Component {
                           type='submit'
                           id='api-send-button'
                           onClick={() => this.handleSend()}
+                          disabled={this.state.loader}
                         >
                           {isDashboardRoute(this.props) ? 'Send' : 'Try'}
                         </button>
@@ -2305,6 +2361,7 @@ class DisplayEndpoint extends Component {
                               dataArray={this.state.originalParams}
                               props_from_parent={this.propsFromChild.bind(this)}
                               original_data={[...this.state.params]}
+                              open_modal={this.props.open_modal}
                             />
                             {this.state.pathVariables &&
                               this.state.pathVariables.length !== 0 && (

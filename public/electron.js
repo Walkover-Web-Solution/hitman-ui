@@ -1,11 +1,14 @@
 const { app, BrowserWindow, ipcMain } = require('electron')
 const isDev = require('electron-is-dev')
 const path = require('path')
-const { makeHttpRequestThroughAxios } = require('./request')
+const { makeHttpRequestThroughAxios, invokeCancel } = require('./request')
+const fs = require('fs')
 
 let mainWindow
 let deeplinkUrl
 const gotTheLock = app.requestSingleInstanceLock()
+const FILE_UPLOAD_DIRECTORY = app.getPath('userData') + '/fileUploads/'
+!fs.existsSync(FILE_UPLOAD_DIRECTORY) && fs.mkdirSync(FILE_UPLOAD_DIRECTORY, { recursive: true })
 
 // Force Single Instance Application
 if (!gotTheLock) {
@@ -43,7 +46,8 @@ function createWindow () {
     show: false,
     webPreferences: {
       nodeIntegration: true,
-      contextIsolation: false
+      contextIsolation: false,
+      enableRemoteModule: true
     }
   })
   const startURL = isDev ? 'http://localhost:3000' : `file://${path.join(__dirname, '/index.html')}`
@@ -61,7 +65,11 @@ function createWindow () {
 }
 
 ipcMain.handle('request-channel', (event, arg) => {
-  return makeHttpRequestThroughAxios(arg)
+  return makeHttpRequestThroughAxios(arg, FILE_UPLOAD_DIRECTORY)
+})
+
+ipcMain.handle('request-cancel', (event, arg) => {
+  return invokeCancel(arg)
 })
 
 // If we are running a non-packaged version of the app && on windows

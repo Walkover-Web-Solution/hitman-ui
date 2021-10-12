@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
-import { isDashboardRoute } from '../common/utility'
+import { isDashboardRoute, isElectron } from '../common/utility'
 import { willHighlight, getHighlightsData } from './highlightChangesHelper'
 import './endpoints.scss'
 import shortid from 'shortid'
+import _ from 'lodash'
 
 class GenericTable extends Component {
   constructor (props) {
@@ -61,6 +62,11 @@ class GenericTable extends Component {
       dataArray[name[0]][name[1]] = e.currentTarget.value
     }
 
+    if (title === 'formData' && name[1] === 'type') {
+      if (e.currentTarget.value === 'file') dataArray[name[0]].value = {}
+      else dataArray[name[0]].value = ''
+    }
+
     if (
       dataArray[name[0]][name[1]].length !== 0 &&
       !this.checkboxFlags[name[0]] &&
@@ -77,165 +83,168 @@ class GenericTable extends Component {
     if (title === 'formData' || title === 'x-www-form-urlencoded') { this.props.handle_change_body_data(title, dataArray) }
   };
 
-  handleBulkChange = (e) => {
-    const { title } = this.props
-    const dataArray = []
-    this.textAreaValue = e.currentTarget.value
-    const array = e.currentTarget.value.split('\n')
-    let j = 0
-    for (let i = 0; i < array.length; i++) {
-      let key = array[i].split(':')[0]
-      key = key.trim()
-      let value = ''
-      if (array[i].split(':')[1]) value = array[i].split(':')[1]
-      if (key === '' && value === '') continue
-      let obj = {}
-      if (key.substring(0, 2) === '//' && key.length > 2) {
-        key = key.substring(2)
-        obj = { checked: 'false', key, value, description: '' }
-      } else if (
-        key.substring(0, 2) === '//' &&
-        key.length === 2 &&
-        value.length === 0
-      ) { continue } else if (
-        key.substring(0, 2) === '//' &&
-        key.length === 2 &&
-        value.length !== 0
-      ) {
-        key = key.substring(2)
-        obj = { checked: 'false', key, value, description: '' }
-      } else {
-        obj = { checked: 'true', key, value, description: '' }
+    handleBulkChange = (e) => {
+      const { title, dataArray: propsDataArray } = this.props
+      const dataArray = []
+      const dataArrayOfFileType = _.filter(propsDataArray, { type: 'file' })
+      this.textAreaValue = e.currentTarget.value
+      const array = e.currentTarget.value.split('\n')
+      let j = 0
+      for (let i = 0; i < array.length; i++) {
+        let key = array[i].split(':')[0]
+        key = key.trim()
+        let value = ''
+        if (array[i].split(':')[1]) value = array[i].split(':')[1]
+        if (key === '' && value === '') continue
+        let obj = {}
+        if (key.substring(0, 2) === '//' && key.length > 2) {
+          key = key.substring(2)
+          obj = { checked: 'false', key, value, description: '' }
+        } else if (
+          key.substring(0, 2) === '//' &&
+          key.length === 2 &&
+          value.length === 0
+        ) { continue } else if (
+          key.substring(0, 2) === '//' &&
+            key.length === 2 &&
+            value.length !== 0
+        ) {
+          key = key.substring(2)
+          obj = { checked: 'false', key, value, description: '' }
+        } else {
+          obj = { checked: 'true', key, value, description: '' }
+        }
+        dataArray[j.toString()] = obj
+        j++
       }
-      dataArray[j.toString()] = obj
-      j++
-    }
-    dataArray[j.toString()] = {
-      checked: 'notApplicable',
-      key: '',
-      value: '',
-      description: ''
-    }
-    if (title === 'Params' || title === 'Headers') { this.props.props_from_parent(title, dataArray) }
-    if (title === 'formData' || title === 'x-www-form-urlencoded') { this.props.handle_change_body_data(title, dataArray) }
-  };
-
-  handleAdd (dataArray, title, key, index) {
-    index = parseInt(index) + 1
-    if (key.length >= 1 && !dataArray[index]) {
-      const len = dataArray.length
-      dataArray[len.toString()] = {
+      dataArray[j.toString()] = {
         checked: 'notApplicable',
         key: '',
         value: '',
         description: ''
       }
-      if (title === 'Headers') this.props.props_from_parent(title, dataArray)
-      if (title === 'Params') { this.props.props_from_parent('handleAddParam', dataArray) }
-    }
-  }
+      if (title === 'Params' || title === 'Headers') { this.props.props_from_parent(title, dataArray) }
+      if (title === 'formData' || title === 'x-www-form-urlencoded') { this.props.handle_change_body_data(title, [...dataArrayOfFileType, ...dataArray]) }
+    };
 
-  handleDelete (dataArray, index, title) {
-    const newDataArray = []
-    for (let i = 0; i < dataArray.length; i++) {
-      if (i === index) {
-        continue
+    handleAdd (dataArray, title, key, index) {
+      index = parseInt(index) + 1
+      if (key.length >= 1 && !dataArray[index]) {
+        const len = dataArray.length
+        dataArray[len.toString()] = {
+          checked: 'notApplicable',
+          key: '',
+          value: '',
+          description: ''
+        }
+        if (title === 'Headers') this.props.props_from_parent(title, dataArray)
+        if (title === 'Params') this.props.props_from_parent('handleAddParam', dataArray)
       }
-      newDataArray.push(dataArray[i])
     }
-    dataArray = newDataArray
-    this.checkboxFlags[index] = undefined
-    if (title === 'Headers' || title === 'Params') { this.props.props_from_parent(title, dataArray) }
-    if (title === 'formData' || title === 'x-www-form-urlencoded') { this.props.handle_change_body_data(title, dataArray) }
-  }
 
-  displayEditButton () {
-    if (this.state.bulkEdit) {
-      this.setState({
-        bulkEdit: false,
-        editButtonName: 'Bulk Edit'
-      })
-    } else {
-      if (!this.helperflag && this.textAreaValueFlag) {
-        this.helperflag = true
+    handleDelete (dataArray, index, title) {
+      const newDataArray = []
+      for (let i = 0; i < dataArray.length; i++) {
+        if (i === index) {
+          continue
+        }
+        newDataArray.push(dataArray[i])
+      }
+      dataArray = newDataArray
+      this.checkboxFlags[index] = undefined
+      if (title === 'Headers' || title === 'Params') { this.props.props_from_parent(title, dataArray) }
+      if (title === 'formData' || title === 'x-www-form-urlencoded') { this.props.handle_change_body_data(title, dataArray) }
+    }
+
+    displayEditButton () {
+      if (this.state.bulkEdit) {
+        this.setState({
+          bulkEdit: false,
+          editButtonName: 'Bulk Edit'
+        })
       } else {
-        this.textAreaValueFlag = true
+        if (!this.helperflag && this.textAreaValueFlag) {
+          this.helperflag = true
+        } else {
+          this.textAreaValueFlag = true
+        }
+        this.setState({
+          bulkEdit: true,
+          editButtonName: 'Key-Value Edit'
+        })
       }
-      this.setState({
-        bulkEdit: true,
-        editButtonName: 'Key-Value Edit'
-      })
     }
-  }
 
-  autoFillBulkEdit () {
-    let textAreaValue = ''
-    const { dataArray, count } = this.props
-    if (count) {
-      if (
-        (this.state.bulkEdit && this.textAreaValueFlag) ||
+    autoFillBulkEdit () {
+      let textAreaValue = ''
+      const { dataArray, count } = this.props
+      if (count) {
+        if (
+          (this.state.bulkEdit && this.textAreaValueFlag) ||
         this.count !== count
-      ) {
-        this.count = count
-        this.textAreaValueFlag = false
-        for (let index = 0; index < dataArray.length; index++) {
-          const { checked } = dataArray[index]
-          if (checked === 'notApplicable') continue
-          if (checked === 'true') {
-            textAreaValue +=
+        ) {
+          this.count = count
+          this.textAreaValueFlag = false
+          for (let index = 0; index < dataArray.length; index++) {
+            const { checked, type } = dataArray[index]
+            if (checked === 'notApplicable') continue
+            if (type === 'file') continue
+            if (checked === 'true') {
+              textAreaValue +=
               dataArray[index].key + ':' + dataArray[index].value + '\n'
-          } else {
-            textAreaValue +=
+            } else {
+              textAreaValue +=
               '//' + dataArray[index].key + ':' + dataArray[index].value + '\n'
+            }
           }
+          this.textAreaValue = textAreaValue
         }
-        this.textAreaValue = textAreaValue
-      }
-    } else {
-      if (this.state.bulkEdit && this.textAreaValueFlag) {
-        this.textAreaValueFlag = false
-        for (let index = 0; index < dataArray.length; index++) {
-          const { checked } = dataArray[index]
-          if (checked === 'notApplicable') continue
-          if (checked === 'true') {
-            textAreaValue +=
+      } else {
+        if (this.state.bulkEdit && this.textAreaValueFlag) {
+          this.textAreaValueFlag = false
+          for (let index = 0; index < dataArray.length; index++) {
+            const { checked, type } = dataArray[index]
+            if (checked === 'notApplicable') continue
+            if (type === 'file') continue
+            if (checked === 'true') {
+              textAreaValue +=
               dataArray[index].key + ':' + dataArray[index].value + '\n'
-          } else {
-            textAreaValue +=
+            } else {
+              textAreaValue +=
               '//' + dataArray[index].key + ':' + dataArray[index].value + '\n'
+            }
           }
+          this.textAreaValue = textAreaValue
         }
-        this.textAreaValue = textAreaValue
       }
     }
-  }
 
-  toggleOptionalParams () {
-    const optionalParams = !this.state.optionalParams
-    this.setState({ optionalParams })
-  }
-
-  findUncheckedEntityCount () {
-    const { dataArray } = this.props
-    let count = 0
-    for (let i = 0; i < dataArray.length; i++) {
-      if (dataArray[i].checked === 'false') {
-        count += 1
-      }
+    toggleOptionalParams () {
+      const optionalParams = !this.state.optionalParams
+      this.setState({ optionalParams })
     }
-    return count
-  }
 
-  renderPublicTableRow (dataArray, index, originalData, title) {
-    dataArray = this.sortData(dataArray)
-    originalData = this.sortData(originalData)
-    return (
-      <tr key={index} id='generic-table-row' className={getHighlightsData(this.props, title, [dataArray[index].key]) ? 'active' : ''}>
-        <td
-          className='custom-td'
-          id='generic-table-key-cell'
-        >
-          {
+    findUncheckedEntityCount () {
+      const { dataArray } = this.props
+      let count = 0
+      for (let i = 0; i < dataArray.length; i++) {
+        if (dataArray[i].checked === 'false') {
+          count += 1
+        }
+      }
+      return count
+    }
+
+    renderPublicTableRow (dataArray, index, originalData, title) {
+      dataArray = this.sortData(dataArray)
+      originalData = this.sortData(originalData)
+      return (
+        <tr key={index} id='generic-table-row' className={getHighlightsData(this.props, title, [dataArray[index].key]) ? 'active' : ''}>
+          <td
+            className='custom-td'
+            id='generic-table-key-cell'
+          >
+            {
             dataArray[index].checked === 'notApplicable'
               ? null
               : (
@@ -256,47 +265,108 @@ class GenericTable extends Component {
                 </label>
                 )
           }
-        </td>
-        <td className='custom-td keyWrapper'>
-          {dataArray[index].key}
-          <p className='text-muted small'>{originalData[index].checked === 'true' || originalData[index].checked === 'notApplicable' ? '' : '(Optional)'}</p>
-        </td>
-        <td className='custom-td valueWrapper'>
-          <div className='d-flex align-items-center'>
-            <input
-              name={index + '.value'}
-              value={dataArray[index].value}
-              key={index + this.state.randomId}
-              onChange={this.handleChange}
-              type='text'
-              placeholder={`Enter ${dataArray[index].key}`}
-              className={['form-control', originalData[index].empty ? 'empty-params' : ''].join(' ')}
-            />
-            {
+          </td>
+          <td className='custom-td keyWrapper'>
+            {dataArray[index].key}
+            <p className='text-muted small'>{originalData[index].checked === 'true' || originalData[index].checked === 'notApplicable' ? '' : '(Optional)'}</p>
+          </td>
+          <td className='custom-td valueWrapper'>
+            <div className='d-flex align-items-center'>
+              <input
+                name={index + '.value'}
+                value={dataArray[index].type === 'file' ? '' : dataArray[index].value}
+                key={index + this.state.randomId}
+                onChange={this.handleChange}
+                type='text'
+                placeholder={`Enter ${dataArray[index].key}`}
+                className={['form-control', originalData[index].empty ? 'empty-params' : ''].join(' ')}
+              />
+              {
             originalData[index].empty
               ? <div className='small mandatory-field-text'>*This field is mandatory</div>
               : null
           }
-          </div>
-          {
+            </div>
+            {
             dataArray[index].description?.length > 0
               ? <p className='small text-muted'>{`Description: ${dataArray[index].description}`}</p>
               : null
           }
-        </td>
-      </tr>
-    )
-  }
+          </td>
+        </tr>
+      )
+    }
 
-  renderTableRow (dataArray, index, originalData, title) {
-    return (
-      <tr key={index} id='generic-table-row'>
-        <td
-          className='custom-td'
-          id='generic-table-key-cell'
-          style={{ marginLeft: '5px' }}
-        >
+    renderTextOrFileInput (dataArray, index) {
+      const { title } = this.props
+      return (
+        <div className='position-relative fileInput'>
+          <input
+            name={index + '.key'}
+            value={dataArray[index].key}
+            onChange={this.handleChange}
+            type='text'
+            placeholder='Key'
+            className='form-control'
+            style={{ border: 'none' }}
+          />
+          {title === 'formData' &&
+          (
+            <select className='transition cursor-pointer' name={index + '.type'} defaultValue='text' value={dataArray[index].type} onChange={(e) => { this.handleChange(e) }}>
+              <option value='text'>Text</option>
+              <option value='file'>File</option>
+            </select>
+          )}
+        </div>
+      )
+    }
+
+    getName (name) {
+      return name.split('\\')[name.split('\\').length - 1]
+    }
+
+    handleFileInput (dataArray, index) {
+      if (isElectron()) {
+        const { dialog } = window.require('electron').remote
+        const files = dialog.showOpenDialogSync({
+          properties: ['openFile']
+        })
+        if (files) {
+          const id = shortid.generate()
+          this.handleChange({
+            currentTarget:
+            {
+              name: index + '.value',
+              value: {
+                id,
+                name: this.getName(files[0]),
+                srcPath: files[0]
+              }
+            }
+          })
+        }
+      } else {
+        const data = <h5 className='text-center'>File upload feature is not supported on Web</h5>
+        this.props.open_modal('DESKTOP_APP_DOWNLOAD', data)
+        this.handleChange({
+          currentTarget:
           {
+            name: index + '.type',
+            value: 'text'
+          }
+        })
+      }
+    }
+
+    renderTableRow (dataArray, index, originalData, title) {
+      return (
+        <tr key={index} id='generic-table-row'>
+          <td
+            className='custom-td'
+            id='generic-table-key-cell'
+            style={{ marginLeft: '5px' }}
+          >
+            {
             dataArray[index].checked === 'notApplicable'
               ? null
               : (
@@ -322,37 +392,31 @@ class GenericTable extends Component {
                 </label>
                 )
           }
-        </td>
-        <td className='custom-td' style={{ width: '200px' }}>
-          {isDashboardRoute(this.props)
-            ? <input
-                name={index + '.key'}
-                value={dataArray[index].key}
-                onChange={this.handleChange}
-                type='text'
-                placeholder='Key'
-                className='form-control'
-                style={{ border: 'none' }}
-              />
-            : dataArray[index].key}
-        </td>
-        <td className='custom-td'>
-          <input
-            name={index + '.value'}
-            value={dataArray[index].value}
-            onChange={this.handleChange}
-            type='text'
-            placeholder={
-              dataArray[index].checked === 'notApplicable'
-                ? 'Value'
-                : `Enter ${dataArray[index].key}`
-            }
-            className='form-control'
-            style={{ border: 'none' }}
-          />
-        </td>
-        <td className='custom-td' id='generic-table-description-cell'>
-          {
+          </td>
+          <td className='custom-td' style={{ width: '200px' }}>
+            {isDashboardRoute(this.props)
+              ? this.renderTextOrFileInput(dataArray, index)
+              : dataArray[index].key}
+          </td>
+          <td className='custom-td'>
+            {dataArray[index].type === 'file'
+              ? this.renderSelectFiles(dataArray, index)
+              : <input
+                  name={index + '.value'}
+                  value={dataArray[index].type !== 'file' ? dataArray[index].value : ''}
+                  onChange={this.handleChange}
+                  type={dataArray[index].type}
+                  placeholder={
+                dataArray[index].checked === 'notApplicable'
+                  ? 'Value'
+                  : `Enter ${dataArray[index].key}`
+                }
+                  className='form-control'
+                  style={{ border: 'none' }}
+                />}
+          </td>
+          <td className='custom-td' id='generic-table-description-cell'>
+            {
             isDashboardRoute(this.props)
               ? (
                 <div>
@@ -372,10 +436,10 @@ class GenericTable extends Component {
                 )
               : dataArray[index].description
           }
-        </td>
+          </td>
 
-        <td>
-          {
+          <td>
+            {
             isDashboardRoute(this.props)
               ? (
                 <div>
@@ -405,83 +469,104 @@ class GenericTable extends Component {
                 )
               : dataArray[index].description
           }
-        </td>
-      </tr>
-    )
-  }
-
-  renderOptionalParamsButton () {
-    return (
-      !isDashboardRoute(this.props) && this.findUncheckedEntityCount()
-        ? (
-          <div className='viewOptionals' onClick={() => this.toggleOptionalParams()} style={{ color: this.state.theme }}>
-            {!this.state.optionalParams ? `View Optional ${this.renderTitle(this.props.title)}` : `Hide Optional ${this.renderTitle(this.props.title)}`}
-          </div>
-          )
-        : null
-    )
-  }
-
-  renderTitle (title) {
-    if (title === 'Params') { return 'Query Params' } else if (title === 'formData') { return 'form-data' } else { return title }
-  }
-
-  renderPublicTableHeadings () {
-    return (
-      <thead>
-        <tr>
-          <th className='custom-th' />
-          <th className='custom-th' id='generic-table-key-cell'>NAME</th>
-          <th className='custom-th'>VALUE</th>
+          </td>
         </tr>
-      </thead>
-    )
-  }
-
-  sortData (data) {
-    const priority = {
-      true: 1,
-      false: 2,
-      notApplicable: 3
+      )
     }
-    return data.sort(
-      (itemA, itemB) => {
-        return (priority[itemA.checked] - priority[itemB.checked])
-      }
-    )
-  }
 
-  render () {
-    const { dataArray, original_data: originalData, title } = this.props
-    if (!isDashboardRoute(this.props)) {
-      for (let index = 0; index < dataArray.length; index++) {
-        if (dataArray[index].key === '') {
-          dataArray.splice(index, 1)
+    renderSelectFiles (dataArray, index) {
+      if (isElectron()) {
+        const { app } = window.require('electron').remote
+        const value = dataArray[index].value
+        const FILE_UPLOAD_DIRECTORY = app.getPath('userData') + '/fileUploads/'
+        const destPath = FILE_UPLOAD_DIRECTORY + value.id + '_' + value.name
+        const fs = window.require('fs')
+        const srcExist = fs.existsSync(value.srcPath)
+        const desExist = value.id ? fs.existsSync(destPath) : false
+        let name = ''
+        if (srcExist) name = value.name
+        if (!srcExist && desExist) name = value.id + '_' + value.name
+        if (name) return <div className='fileName selectFile d-flex align-items-center '>{name}<button className='align-items-center d-flex ml-2' onClick={() => { this.handleDeSelectFile(index) }}>&times;</button></div>
+      }
+      return <div className='selectFile d-flex align-items-center'><button onClick={() => this.handleFileInput(dataArray, index)}>Select file</button></div>
+    }
+
+    handleDeSelectFile (index) {
+      this.handleChange({ currentTarget: { name: `${index}.value`, value: {} } })
+    }
+
+    renderOptionalParamsButton () {
+      return (
+        !isDashboardRoute(this.props) && this.findUncheckedEntityCount()
+          ? (
+            <div className='viewOptionals' onClick={() => this.toggleOptionalParams()} style={{ color: this.state.theme }}>
+              {!this.state.optionalParams ? `View Optional ${this.renderTitle(this.props.title)}` : `Hide Optional ${this.renderTitle(this.props.title)}`}
+            </div>
+            )
+          : null
+      )
+    }
+
+    renderTitle (title) {
+      if (title === 'Params') { return 'Query Params' } else if (title === 'formData') { return 'form-data' } else { return title }
+    }
+
+    renderPublicTableHeadings () {
+      return (
+        <thead>
+          <tr>
+            <th className='custom-th' />
+            <th className='custom-th' id='generic-table-key-cell'>NAME</th>
+            <th className='custom-th'>VALUE</th>
+          </tr>
+        </thead>
+      )
+    }
+
+    sortData (data) {
+      const priority = {
+        true: 1,
+        false: 2,
+        notApplicable: 3
+      }
+      return data.sort(
+        (itemA, itemB) => {
+          return (priority[itemA.checked] - priority[itemB.checked])
+        }
+      )
+    }
+
+    render () {
+      const { dataArray, original_data: originalData, title } = this.props
+      if (!isDashboardRoute(this.props)) {
+        for (let index = 0; index < dataArray.length; index++) {
+          if (dataArray[index].key === '') {
+            dataArray.splice(index, 1)
+          }
         }
       }
-    }
 
-    this.autoFillBulkEdit()
-    return (
-    // "generic-table-container"
-    // table-bordered
-      <div className='hm-public-table position-relative'>
-        {(title === 'Path Variables' && isDashboardRoute(this.props)) ? <div>{title}</div> : null}
-        <div
-          className={
+      this.autoFillBulkEdit()
+      return (
+      // "generic-table-container"
+      // table-bordered
+        <div className='hm-public-table position-relative'>
+          {(title === 'Path Variables' && isDashboardRoute(this.props)) ? <div>{title}</div> : null}
+          <div
+            className={
               isDashboardRoute(this.props)
                 ? 'generic-table-title-container'
                 : 'public-generic-table-title-container'
             }
-        >
-          {!isDashboardRoute(this.props) && dataArray.length > 0 ? <span>{this.renderTitle(title)} {willHighlight(this.props, title) ? <i className='fas fa-circle' /> : null}</span> : null}
-        </div>
+          >
+            {!isDashboardRoute(this.props) && dataArray.length > 0 ? <span>{this.renderTitle(title)} {willHighlight(this.props, title) ? <i className='fas fa-circle' /> : null}</span> : null}
+          </div>
 
-        {!this.state.bulkEdit && dataArray.length > 0
-          ? (
-            <div className='headParaWraper'>
-              <table className='table' id='custom-generic-table'>
-                {
+          {!this.state.bulkEdit && dataArray.length > 0
+            ? (
+              <div className='headParaWraper'>
+                <table className='table' id='custom-generic-table'>
+                  {
                     isDashboardRoute(this.props)
                       ? (
                         <thead>
@@ -504,23 +589,23 @@ class GenericTable extends Component {
                         )
                   }
 
-                <tbody style={{ border: 'none' }}>
-                  {dataArray.map((e, index) => (
-                    !isDashboardRoute(this.props)
-                      ? (
-                          (dataArray[index]?.checked === 'true' || dataArray[index]?.checked === 'notApplicable' || this.state.optionalParams) && this.renderPublicTableRow(dataArray, index, originalData, title)
-                        )
-                      : this.renderTableRow(dataArray, index, originalData, title)
-                  )
-                  )}
-                </tbody>
-              </table>
-            </div>
-            )
-          : null}
-        {this.renderOptionalParamsButton()}
+                  <tbody style={{ border: 'none' }}>
+                    {dataArray.map((e, index) => (
+                      !isDashboardRoute(this.props)
+                        ? (
+                            (dataArray[index]?.checked === 'true' || dataArray[index]?.checked === 'notApplicable' || this.state.optionalParams) && this.renderPublicTableRow(dataArray, index, originalData, title)
+                          )
+                        : this.renderTableRow(dataArray, index, originalData, title)
+                    )
+                    )}
+                  </tbody>
+                </table>
+              </div>
+              )
+            : null}
+          {this.renderOptionalParamsButton()}
 
-        {
+          {
             this.state.bulkEdit &&
             (
               <div id='custom-bulk-edit' className='form-group m-0 bulkEdit'>
@@ -539,23 +624,23 @@ class GenericTable extends Component {
             )
           }
 
-        {title === 'Path Variables' ||
+          {title === 'Path Variables' ||
             !isDashboardRoute(this.props)
-          ? null
-          : (
-            <div className='generic-table-title-container'>
-              <button
-                className='adddescLink mt-2 addBulk'
-                onClick={() => this.displayEditButton()}
-              >
-                {this.state.editButtonName}
-              </button>
-            </div>
-            )}
-      </div>
+            ? null
+            : (
+              <div className='generic-table-title-container'>
+                <button
+                  className='adddescLink mt-2 addBulk'
+                  onClick={() => this.displayEditButton()}
+                >
+                  {this.state.editButtonName}
+                </button>
+              </div>
+              )}
+        </div>
 
-    )
-  }
+      )
+    }
 }
 
 export default GenericTable

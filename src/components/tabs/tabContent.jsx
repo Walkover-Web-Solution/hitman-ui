@@ -44,7 +44,7 @@ class TabContent extends Component {
   render () {
     return (
       <Tab.Content>
-        {getCurrentUser()
+        {getCurrentUser() && this.props.tabs.loaded
           ? (
               Object.keys(this.props.tabs.tabs).map((tabId) =>
                 (
