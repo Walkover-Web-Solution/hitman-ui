@@ -7,6 +7,7 @@ import tabService from './tabService'
 import { ReactComponent as HistoryIcon } from '../../assets/icons/historyIcon.svg'
 import History from '../history/history.jsx'
 import TabOptions from './tabOptions'
+import { isElectron } from '../common/utility'
 
 class CustomTabs extends Component {
   constructor (props) {
@@ -19,6 +20,51 @@ class CustomTabs extends Component {
       clientScroll: this.navRef.current?.clientWidth,
       windowScroll: this.navRef.current?.scrollWidth
     }
+  }
+
+  componentDidMount () {
+    if (isElectron()) {
+      const { ipcRenderer } = window.require('electron')
+      ipcRenderer.on('TAB_SHORTCUTS_CHANNEL', this.handleShortcuts)
+    }
+  }
+
+  componentWillUnmount () {
+    if (isElectron()) {
+      const { ipcRenderer } = window.require('electron')
+      ipcRenderer.removeListener('TAB_SHORTCUTS_CHANNEL', this.handleShortcuts)
+    }
+  }
+
+  handleShortcuts = (e, { type, payload }) => {
+    const { activeTabId } = this.props.tabs
+    switch (type) {
+      case 'OPEN_TAB_AT_INDEX':
+        this.openTabAtIndex(payload - 1)
+        break
+      case 'SWITCH_NEXT_TAB':
+        this.handleOpenNextTab()
+        break
+      case 'CLOSE_CURRENT_TAB':
+        this.handleCloseTabs([activeTabId])
+        break
+      case 'OPEN_NEW_TAB':
+        this.handleAddTab()
+        break
+      default:
+    }
+  }
+
+  openTabAtIndex (index) {
+    console.log(index, typeof index)
+    const { tabsOrder } = this.props.tabs
+    if (tabsOrder[index]) tabService.selectTab({ ...this.props }, tabsOrder[index])
+  }
+
+  handleOpenNextTab () {
+    const { activeTabId, tabsOrder } = this.props.tabs
+    const index = (tabsOrder.indexOf(activeTabId) + 1) % tabsOrder.length
+    this.openTabAtIndex(index)
   }
 
   componentDidUpdate (prevProps, prevState) {
@@ -156,7 +202,7 @@ class CustomTabs extends Component {
   }
 
   scrollLength () {
-    this.setState({ leftScroll: this.navRef.current.scrollLeft, windowScroll: this.navRef.current?.scrollWidth, clientScroll: this.navRef.current?.clientWidth })
+    this.setState({ leftScroll: this.navRef.current?.scrollLeft, windowScroll: this.navRef.current?.scrollWidth, clientScroll: this.navRef.current?.clientWidth })
   }
 
   leftHideTabs () {
