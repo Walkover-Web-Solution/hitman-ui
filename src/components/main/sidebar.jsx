@@ -1,11 +1,11 @@
-import React, { Component } from 'react'
+import React, { Component, createRef } from 'react'
 import { Route, withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { Button } from 'react-bootstrap'
 import moment from 'moment'
 import Collections from '../collections/collections'
 import CollectionVersions from '../collectionVersions/collectionVersions'
-import { isDashboardRoute, ADD_GROUP_MODAL_NAME, ADD_VERSION_MODAL_NAME } from '../common/utility'
+import { isDashboardRoute, ADD_GROUP_MODAL_NAME, ADD_VERSION_MODAL_NAME, isElectron } from '../common/utility'
 import { getCurrentUser } from '../auth/authService'
 import LoginSignupModal from './loginSignupModal'
 import PublishColelctionInfo from './publishCollectionInfo'
@@ -63,6 +63,7 @@ class SideBar extends Component {
       primarySidebar: null,
       totalEndpointsCount: 0
     }
+    this.inputRef = createRef()
   }
 
   componentDidMount () {
@@ -90,6 +91,18 @@ class SideBar extends Component {
     if (this.props.location.collectionId) {
       this.collectionId = this.props.location.collectionId
     }
+
+    if (isElectron()) {
+      const { ipcRenderer } = window.require('electron')
+      ipcRenderer.on('SIDEBAR_SHORTCUTS_CHANNEL', this.handleShortcuts)
+    }
+  }
+
+  componentWillUnmount () {
+    if (isElectron()) {
+      const { ipcRenderer } = window.require('electron')
+      ipcRenderer.removeListener('SIDEBAR_SHORTCUTS_CHANNEL', this.handleShortcuts)
+    }
   }
 
   componentDidUpdate (prevProps, prevState) {
@@ -102,6 +115,27 @@ class SideBar extends Component {
       this.setState({
         endpoints: Object.values(this.props.endpoints)
       })
+    }
+  }
+
+  handleShortcuts = (event, data) => {
+    switch (data) {
+      case 'FOCUS_SEARCH': this.inputRef.focus()
+        break
+      /** TO DO: Sidebar Navigations Handling by maintaining Focused element and its List */
+      case 'UP_NAVIGATION':
+        break
+      case 'DOWN_NAVIGATION':
+        break
+      case 'OPEN_ENTITY':
+        break
+      case 'CLOSE_ENTITY':
+        break
+      case 'DUPLICATE_ENTITY':
+        break
+      case 'DELETE_ENTITY':
+        break
+      default:
     }
   }
 
@@ -492,6 +526,7 @@ class SideBar extends Component {
           {this.renderGlobalAddButton()}
           <div className='search-box'>
             <input
+              ref={element => { this.inputRef = element }}
               value={this.state.data.filter}
               type='text'
               name='filter'

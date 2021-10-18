@@ -185,6 +185,35 @@ class DisplayEndpoint extends Component {
     }
 
     this.setEndpointData()
+
+    if (isElectron()) {
+      const { ipcRenderer } = window.require('electron')
+      ipcRenderer.on('ENDPOINT_SHORTCUTS_CHANNEL', this.handleShortcuts)
+    }
+  }
+
+  handleShortcuts = (event, data) => {
+    const { activeTabId } = this.props.tabs
+    const { id: endpointId } = this.props.tab
+
+    if (activeTabId === endpointId) {
+      switch (data) {
+        case 'TRIGGER_ENDPOINT': this.handleSend()
+          break
+        case 'SAVE_AS': this.setState({ saveAsFlag: true }, () => { this.openEndpointFormModal() })
+          break
+        case 'SAVE': this.handleSave()
+          break
+        default:
+      }
+    }
+  }
+
+  componentWillUnmount () {
+    if (isElectron()) {
+      const { ipcRenderer } = window.require('electron')
+      ipcRenderer.removeListener('ENDPOINT_SHORTCUTS_CHANNEL', this.handleShortcuts)
+    }
   }
 
   componentDidUpdate (prevProps, prevState) {
