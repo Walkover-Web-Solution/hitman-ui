@@ -58,57 +58,10 @@ function createWindow () {
     // Keep only command line / deep linked arguments
     deeplinkUrl = process.argv.slice(1)
   }
-  mainWindow.once('ready-to-show', () => mainWindow.show())
-  mainWindow.on('closed', () => {
-    mainWindow = null
-  })
-}
 
-ipcMain.handle('request-channel', (event, arg) => {
-  return makeHttpRequestThroughAxios(arg, FILE_UPLOAD_DIRECTORY)
-})
+  /** For Dev */
+  if (isDev) mainWindow.webContents.openDevTools()
 
-ipcMain.handle('request-cancel', (event, arg) => {
-  return invokeCancel(arg)
-})
-
-// If we are running a non-packaged version of the app && on windows
-if (isDev && process.platform === 'win32') {
-  // Set the path of electron.exe and your app.
-  // These two additional parameters are only available on windows.
-  app.setAsDefaultProtocolClient('hitman-app', process.execPath, [path.resolve(process.argv[1])])
-} else {
-  app.setAsDefaultProtocolClient('hitman-app')
-}
-
-app.on('ready', createWindow)
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit()
-  }
-})
-app.on('activate', () => {
-  if (BrowserWindow.getAllWindows().length === 0) {
-    createWindow()
-  }
-})
-// Protocol handler for osx
-app.on('open-url', function (event, url) {
-  event.preventDefault()
-  deeplinkUrl = url
-  if (deeplinkUrl) {
-    const token = deeplinkUrl.split('sokt-auth-token=').pop()
-    if (token) {
-      mainWindow.webContents.send('token-transfer-channel', token)
-    }
-  }
-})
-
-/** Disable Menu */
-Menu.setApplicationMenu(null)
-
-/** Bind Shortcut Keys */
-app.whenReady().then(() => {
   mainWindow.webContents.on('before-input-event', (event, input) => {
     const CommandOrControl = (process.platform === 'darwin') ? input.meta : input.control
 
@@ -206,4 +159,52 @@ app.whenReady().then(() => {
       }
     }
   })
+
+  mainWindow.once('ready-to-show', () => mainWindow.show())
+  mainWindow.on('closed', () => {
+    mainWindow = null
+  })
+}
+
+ipcMain.handle('request-channel', (event, arg) => {
+  return makeHttpRequestThroughAxios(arg, FILE_UPLOAD_DIRECTORY)
+})
+
+ipcMain.handle('request-cancel', (event, arg) => {
+  return invokeCancel(arg)
+})
+
+// // If we are running a non-packaged version of the app && on windows
+if (isDev && process.platform === 'win32') {
+  // Set the path of electron.exe and your app.
+  // These two additional parameters are only available on windows.
+  app.setAsDefaultProtocolClient('hitman-app', process.execPath, [path.resolve(process.argv[1])])
+} else {
+  app.setAsDefaultProtocolClient('hitman-app')
+}
+
+/** Disable Menu */
+Menu.setApplicationMenu(null)
+
+app.on('ready', createWindow)
+app.on('window-all-closed', () => {
+  if (process.platform !== 'darwin') {
+    app.quit()
+  }
+})
+app.on('activate', () => {
+  if (BrowserWindow.getAllWindows().length === 0) {
+    createWindow()
+  }
+})
+// Protocol handler for osx
+app.on('open-url', function (event, url) {
+  event.preventDefault()
+  deeplinkUrl = url
+  if (deeplinkUrl) {
+    const token = deeplinkUrl.split('sokt-auth-token=').pop()
+    if (token) {
+      mainWindow.webContents.send('token-transfer-channel', token)
+    }
+  }
 })
