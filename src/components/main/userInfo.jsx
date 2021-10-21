@@ -250,7 +250,9 @@ class UserInfo extends Component {
   }
 
   switchOrg (orgId) {
-    window.location.href = `/orgs/${orgId}/dashboard`
+    this.props.history.push({
+      pathname: `/orgs/${orgId}/dashboard`
+    })
   }
 
   userDropdown () {
