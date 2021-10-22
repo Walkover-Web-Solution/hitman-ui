@@ -60,13 +60,7 @@ $border-color: rgba(227, 228, 230, 0.7);
 }
 
 .environment-container {
-  align-self: flex-end;
-  // border-left: 1px solid $border-color;
-  float: right;
-  display: flex;
   flex-direction: row-reverse;
-  justify-content: baseline;
-  width: 220px;
 
   .environment-buttons {
     display: flex;
@@ -76,10 +70,10 @@ $border-color: rgba(227, 228, 230, 0.7);
     height: 36px;
     width: 40px;
     background-color: inherit;
-    border-radius: 4px;
     border: 1px solid #d6d6d6;
     align-items: center;
     color: #d6d6d6;
+    padding: 0  0.75rem;
   }
 
   .select-environment-dropdown {
@@ -88,13 +82,12 @@ $border-color: rgba(227, 228, 230, 0.7);
       width: 100%;
 
       .btn {
-        width: 170px;
+        width: auto;
         display: flex;
         justify-content: space-between;
         align-items: center;
         height: 36px;
         background-color: inherit;
-        border-radius: 4px;
         border: 1px solid #d6d6d6;
         color: #d6d6d6;
       }

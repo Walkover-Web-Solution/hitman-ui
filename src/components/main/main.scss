@@ -1,7 +1,6 @@
 //Note: Unique IDs are used in CTAs for tracking purposes with GTM. Do not use the same IDs elsewhere.
 
-$font-small: 12px;
-$text-color: #212121;
+@import "./variables.scss";
 
 @font-face {
   font-family: 'proxima-nova';
@@ -63,11 +62,20 @@ $text-color: #212121;
 html body {
   background-color: #fff;
   font-family: 'proxima-nova', sans-serif !important;
-  font-size: $font-small;
+  font-size: $font-normal;
 }
 
 $border-color: rgba(227, 228, 230, 0.7);
 
+.transition{
+  transition: all 0.3s ease-in;
+}
+.btn{
+  border-radius: 0 !important;
+}
+.rotate-180{
+  transform:rotate(180deg);
+}
 .custom-main-container {
   display: flex;
   flex-direction: column;
@@ -934,22 +942,6 @@ label.data-type {
   }
 
 }
-
-
-.modal-content .modal-header {
-  background: #F8E5C2;
-  border-radius: 4px 4px 0px 0px;
-
-  button {
-    padding: 0;
-    border: 0;
-    position: absolute;
-    top: 30px;
-    right: 30px;
-    z-index: 5;
-  }
-}
-
 .heading-2 {
   font-size: 18px;
   font-weight: 600;
@@ -1040,36 +1032,25 @@ select.form-control {
   .ql-container.ql-snow {
     height: 200px;
   }
-
-
-
-  .form-control {
-    height: 36px;
-    border: 1px solid #E0E0E0;
-    font-size: 13px;
-    font-weight: 400;
-    color: #000;
-    border-radius: 4px;
-
-    &:focus {
-      outline: none;
-      border-color: #E98A36;
-    }
-
-    &::-webkit-input-placeholder {
-      font-size: 12px;
-      font-weight: 400;
-    }
-
-    &:-ms-input-placeholder {
-      font-size: 12px;
-      font-weight: 400;
-    }
-
-    &::placeholder {
-      font-size: 12px;
-      font-weight: 400;
-    }
+}
+body .form-control {
+  height: 2.25rem;
+  border: 1px solid #E0E0E0;
+  font-size: $font-normal;
+  font-weight: 400;
+  color: #000;
+  box-sizing: border-box;
+  border-radius: 0 !important;
+  background-color: #fff;
+  &:focus {
+    outline: none;
+    border-color: #E98A36;
+    box-shadow: nones;
+  }
+  &::placeholder{
+    color: #BDBDBD !important;
+    font-size: $font-normal !important;
+    font-weight: normal !important;
   }
 }
 
@@ -1104,16 +1085,34 @@ button.btn.btn-secondary {
   font-weight: 600;
 }
 
-.modal-dialog .modal-content {
-  border-radius: 4px;
-  box-shadow: -25px 25px 43px rgba(0, 0, 0, 0.07);
-  border: none;
+.modal{
+  .modal-content{
+    background-color: #FAFAFA;
+    border: none;
+    .modal-header{
+      border: none;
+      padding: 1.5rem;
+      .modal-title {
+        font-weight: 600;
+        font-size: 18px;
+        line-height: 18px;
+        text-align: center;
+        color: #333333;
+      }
+      button {
+        padding: 0;
+        border: 0;
+        position: absolute;
+        top: 2.25rem;
+        right: 2.55rem;
+        z-index: 5;
+      }
+    }
+    .modal-body{
+      padding: 0 1.5rem 1.5rem;
+    }
+  }
 }
-
-.modal-dialog .modal-content .modal-body {
-  padding: 25px;
-}
-
 .modal-backdrop.show {
   background-color: rgba(0, 0, 0, 0.4);
   opacity: 1 !important;
@@ -1187,7 +1186,6 @@ button.editBtn {
   overflow: auto;
   background: #fff;
   padding: 4px 0 11px;
-  border-radius: 4px;
 }
 
 .adddescLink {
@@ -1199,7 +1197,7 @@ button.editBtn {
   background: transparent;
   border: none;
   outline: none !important;
-
+  margin-top: 0.5rem;
   &:hover {
     color: #f57a0d;
   }
@@ -1251,7 +1249,6 @@ button.editBtn {
 .endPointRes .endpoint-response-container {
   padding: 20px;
   background: #fff;
-  border-radius: 4px;
 }
 
 .responseTabWrapper {
@@ -1259,36 +1256,6 @@ button.editBtn {
   padding: 20px;
   border-radius: 4px;
 }
-
-
-
-
-
-.respTabsListing.nav-tabs {
-  border-bottom: 2px solid #dee2e6;
-  display: inline-flex;
-  margin: 20px 0px 10px 0;
-
-  .nav-item a {
-    color: #828282 !important;
-    font-size: $font-small;
-    border: none;
-    background: transparent;
-  }
-
-  .nav-item a.active {
-    border-bottom: 3px solid #E98A36;
-    color: #333 !important;
-    font-weight: 600;
-  }
-
-
-  .nav-item a:hover {
-    color: #E98A36;
-  }
-}
-
-
 #uncontrolled-tab-example-tabpane-history,
 #uncontrolled-tab-example-tabpane-randomTrigger {
   padding: 0 10px;
@@ -1307,7 +1274,7 @@ button.editBtn {
 .btn.btn-outline.orange {
   border: 1px solid #E98A36;
   color: #E98A36;
-  font-size: $font-small;
+  font-size: $font-normal;
   font-weight: 600;
   background: #fff;
   border-radius: 0;
@@ -1599,8 +1566,6 @@ table#custom-generic-table tbody input[value="false"] + span.checkmark {
 }
 
 .environment-buttons.addEniButton {
-  border-top-left-radius: 0px !important;
-  border-bottom-left-radius: 0px !important;
   border-left: 0px !important;
   margin-left: -3px !important;
 }
@@ -2518,7 +2483,7 @@ span.endpointNameWrapper {
     border: none !important;
     height: auto !important;
     box-shadow: none !important;
-    padding: 0px 10px 0px 0px !important;
+    padding: 0px 0px 0px 0px !important;
     align-self: center;
     background: transparent;
     max-width: 100%;
@@ -2536,8 +2501,8 @@ span.endpointNameWrapper {
 
     .user-notification-badge {
       position: absolute;
-      top: -7px;
-      right: -1px;
+      top: 3px;
+      right: 5px;
       height: 14px;
       width: 14px;
       border-radius: 30px;
@@ -2612,37 +2577,15 @@ span.endpointNameWrapper {
 }
 
 .dashboard-url {
-  border: 1px solid #e0e0e0;
-  height: 36px;
-
   .host-field-container {
     margin-right: 0px !important;
-
     .dropdown {
       border: none !important;
     }
   }
-
   .url-container {
     width: 100%
   }
-
-  #host-container-input {
-    height: 34px;
-    border: 1px solid #e0e0e0;
-    font-size: $font-small;
-    font-weight: 400;
-    color: #000;
-    border-radius: 4px;
-    min-width: 100% !important;
-    padding: 5px 10px;
-    line-height: 1;
-
-    &:focus {
-      outline: none;
-    }
-  }
-
   .host-data {
     position: absolute;
     margin-top: 10px;
@@ -2651,15 +2594,12 @@ span.endpointNameWrapper {
     background-color: white;
     box-shadow: 0 3px 5px 0px rgba(0, 0, 0, 0.03);
     line-height: 1;
-
     .host-data-item {
       padding: 5px 15px;
       cursor: pointer;
-
       small {
         color: grey;
       }
-
       &:hover {
         background-color: #f8f9fa;
       }
@@ -2669,9 +2609,7 @@ span.endpointNameWrapper {
   input::-webkit-calendar-picker-indicator {
     display: none;
   }
-
   input {
-    border: none !important;
     flex-shrink: 1;
   }
 }
@@ -3002,8 +2940,6 @@ a.cta-type {
 // Cookie
 
 .cookie-modal {
-  padding: 20px 45px;
-
   input.form-control {
     max-width: 85%;
   }
@@ -3040,47 +2976,29 @@ li.nav-item.cookie-tab a {
     display: flex;
     align-items: center;
     justify-content: center;
-    
-    .profile-dropdown button {
-      padding: 0 10px !important;
-      border-radius: 4px;
-      
-    }
-    .profile-dropdown i.fas.fa-user {
-        background: #000;
-        width: 1.125rem;
-        height: 1.125rem;
-        border-radius: 50%;
-        color: #fff;
-        font-size: 10px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    .dropdown-toggle.btn {
-      padding: 0 6px 0 12px !important;
-      height: 36px !important;
-      border: 1px solid #d6d6d6 !important;
-      border-radius: 4px;
-      &:hover{
-        background-color: #fff;
-        color: #000;
-        i.fas.fa-user{
-          color: #fff;
-        }
-      }
-    }
+    height: 3rem;
+    padding: 0 1rem !important;
+    border-left: 1px solid #1F1F1F;
     i.fas.fa-user {
       margin-right: 0.5rem;
       border-radius: 50%;
-      width: 1.125rem;
-      height: 1.125rem;
+      width: 1.5rem;
+      height: 1.5rem;
       display: flex;
       align-items: center;
       justify-content: center;
       background: #000;
       box-sizing: border-box;
-  }
+      color: #fff;
+    }
+    .dropdown-toggle img{
+      transform: rotate(180deg);
+    }
+    &.show{
+      .dropdown-toggle img{
+        transform: rotate(0);
+      }
+    }
 }
 
 .profile-drop-display {
@@ -3091,6 +3009,7 @@ li.nav-item.cookie-tab a {
   padding: 10px 12px !important;
   width: auto;
   min-width: 17.625rem !important; 
+  margin-top: 1rem !important;
 
   .profile-sm-dropdown {
     background-color: #fcfcfc;
@@ -3131,11 +3050,10 @@ li.nav-item.cookie-tab a {
     height: 250px;
     overflow-x: auto;
     background: #fff;
-    border-radius: 5px;
     padding: 0px 20px 10px;
     > div {
-      color: #f1b041;
-      font-size: $font-small;
+      color: $theme-color;
+      font-size: $font-normal;
       margin-bottom: 5px;
       border-bottom: 1px solid whitesmoke;
       padding-bottom: 5px;
@@ -3172,14 +3090,11 @@ li.nav-item.cookie-tab a {
 .header {
   width: 100%;
   background: #272727;
-  z-index: 999;
-  padding: 0.5rem 1rem;
+  z-index: 9999;
+  height: 3rem;
   margin-bottom: 0px;
   .dropdown-toggle::after {
     background-image: url('../../assets/icons/downChevron-white.svg')
-  }
-  .logo img {
-    filter: invert(1);
   }
   svg {
     cursor: pointer;
@@ -3194,14 +3109,29 @@ li.nav-item.cookie-tab a {
 
 .switchPrd{
     .dropdown-menu {
-      box-shadow: -10px 10px 25px rgba(0, 0, 0, 0.15);
-      border-color: #e6e6e6;
+      box-shadow: 0 4px 32px rgba(0,0,0,.15);
+      border: none;
       border-radius: 4px;
       padding: 0.5rem 1rem;
       min-width: 12rem;
+      margin-top: 0.75rem !important;
+    }
+    .show{
+      .dropdown-toggle{
+        img.rotate-180{
+          transform: rotate(0);
+        }
+      }
     }
     .dropdown-item{
       margin-bottom: 0.5rem;
+      &.disabled{
+        color: #000;
+        font-weight: 500;
+        border-bottom: 1px solid #e6e6e6;
+        border-radius: 0;
+        padding-bottom: 0.65rem;
+      }
       img{
         margin-right: 0.5rem;
       }
@@ -3217,17 +3147,27 @@ li.nav-item.cookie-tab a {
     background: inherit !important;
     padding: 0 !important;
     box-shadow: none !important;
-    margin-left: 14px;
     &:after{
       display: none;
     }
     }
 }
-.logo span {
-  color: #d6d6d6;
-  font-size: 19px;
-  margin-left: 0.5rem;
-  font-weight: 500;
+.logo {
+  padding: 0 1rem;
+  border-left: 1px solid #1f1f1f;
+  span{
+    color: #fff;
+    font-size: $font-large;
+    margin-left: 0.5rem;
+    font-weight: 500;
+  }
+}
+.black-hover{
+  cursor: pointer;
+  padding: 0 0.75rem;
+  &:hover{
+    background-color: #1F1F1F;
+  }
 }
 .border-radius-right-none {
   border-top-right-radius: 0px;
@@ -3383,3 +3323,6 @@ div#steve-parent-accordion{
   }
 }
   
+.download-btn {
+  height: 2.25rem;
+}
