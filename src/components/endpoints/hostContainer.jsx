@@ -161,6 +161,7 @@ class HostContainer extends Component {
       <div className='url-container' key={`${endpointId}_hosts`} ref={this.wrapperRef}>
         <input
           id='host-container-input'
+          className='form-control'
           value={this.state.datalistHost + this.state.datalistUri}
           name={`${endpointId}_hosts`}
           placeholder='Enter Request URL'

@@ -72,7 +72,7 @@ export class CookiesModal extends Component {
             Manage Cookies
           </Modal.Title>
         </Modal.Header>
-        <Modal.Body class='cookie-modal'>
+        <Modal.Body className='cookie-modal'>
           {this.state.tab === 1 ? this.renderCookiesList() : this.renderCookiesListItem()}
         </Modal.Body>
       </Modal>

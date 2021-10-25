@@ -1817,7 +1817,7 @@ class DisplayEndpoint extends Component {
   displayResponseAndSampleResponse () {
     return (
       <>
-        <div className='col-12' ref={this.myRef}>
+        <div className='col-12 custom-tabs' ref={this.myRef}>
           <ul className='nav nav-tabs respTabsListing' id='myTab' role='tablist'>
             <li className='nav-item'>
               <a
@@ -2263,7 +2263,7 @@ class DisplayEndpoint extends Component {
                     isDashboardRoute(this.props)
                       ? (
                         <div className='d-flex justify-content-between align-items-center'>
-                          <div className='headers-params-wrapper'>
+                          <div className='headers-params-wrapper custom-tabs'>
                             <ul className='nav nav-tabs' id='pills-tab' role='tablist'>
                               <li className='nav-item'>
                                 <a
@@ -2356,12 +2356,10 @@ class DisplayEndpoint extends Component {
                                 </a>
                               </li>
                               <li className='nav-item cookie-tab'>
-                                <a>
-                                  {getCurrentUser() &&
-                                    <div onClick={() => this.setState({ showCookiesModal: true })}>
-                                      Cookies
-                                    </div>}
-                                </a>
+                                {getCurrentUser() &&
+                                  <a className='nav-link' onClick={() => this.setState({ showCookiesModal: true })}>
+                                    Cookies
+                                  </a>}
                               </li>
                             </ul>
                           </div>

@@ -259,7 +259,6 @@ class GenericTable extends Component {
                     type='checkbox'
                     className='Checkbox'
                     onChange={this.handleChange}
-                    style={{ border: 'none' }}
                   />
                   <span class='checkmark' style={{ backgroundColor: this.state.theme, borderColor: this.state.theme }} />
                 </label>
@@ -308,7 +307,6 @@ class GenericTable extends Component {
             type='text'
             placeholder='Key'
             className='form-control'
-            style={{ border: 'none' }}
           />
           {title === 'formData' &&
           (
@@ -386,7 +384,6 @@ class GenericTable extends Component {
                     type='checkbox'
                     className='Checkbox'
                     onChange={this.handleChange}
-                    style={{ border: 'none' }}
                   />
                   <span class='checkmark' />
                 </label>
@@ -412,7 +409,6 @@ class GenericTable extends Component {
                   : `Enter ${dataArray[index].key}`
                 }
                   className='form-control'
-                  style={{ border: 'none' }}
                 />}
           </td>
           <td className='custom-td' id='generic-table-description-cell'>
@@ -429,7 +425,6 @@ class GenericTable extends Component {
                     onChange={this.handleChange}
                     type='text'
                     placeholder='Description'
-                    style={{ border: 'none' }}
                     className='form-control'
                   />
                 </div>

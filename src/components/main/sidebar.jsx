@@ -528,6 +528,7 @@ class SideBar extends Component {
             <input
               ref={element => { this.inputRef = element }}
               value={this.state.data.filter}
+              className='form-control'
               type='text'
               name='filter'
               id='search'
