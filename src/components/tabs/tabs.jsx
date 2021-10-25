@@ -56,7 +56,6 @@ class CustomTabs extends Component {
   }
 
   openTabAtIndex (index) {
-    console.log(index, typeof index)
     const { tabsOrder } = this.props.tabs
     if (tabsOrder[index]) tabService.selectTab({ ...this.props }, tabsOrder[index])
   }

@@ -1,6 +1,7 @@
 const { app, BrowserWindow, ipcMain, Menu } = require('electron')
 const isDev = require('electron-is-dev')
 const path = require('path')
+const log = require('electron-log')
 const { makeHttpRequestThroughAxios, invokeCancel } = require('./request')
 const fs = require('fs')
 
@@ -16,9 +17,10 @@ if (!gotTheLock) {
 } else {
   // Someone tried to run a second instance, we should focus our window.
   app.on('second-instance', (event, commandLine, workingDirectory) => {
-  // Protocol handler for win32
-  // argv: An array of the second instance’s (command line / deep linked) arguments
-    if (process.platform === 'win32') {
+    if (isDev) log.info('Event: Second-instance', { commandLine, workingDirectory })
+    // Protocol handler for win32 & linux
+    // argv: An array of the second instance’s (command line / deep linked) arguments
+    if (process.platform === 'win32' || process.platform === 'linux') {
     // Keep only command line / deep linked arguments
       if (commandLine) {
         const hitmanProtocolData = commandLine.find(item => item.includes('hitman-app://'))
@@ -58,61 +60,15 @@ function createWindow () {
     // Keep only command line / deep linked arguments
     deeplinkUrl = process.argv.slice(1)
   }
-  mainWindow.once('ready-to-show', () => mainWindow.show())
-  mainWindow.on('closed', () => {
-    mainWindow = null
-  })
-}
 
-ipcMain.handle('request-channel', (event, arg) => {
-  return makeHttpRequestThroughAxios(arg, FILE_UPLOAD_DIRECTORY)
-})
+  /** For Dev */
+  if (isDev) mainWindow.webContents.openDevTools()
 
-ipcMain.handle('request-cancel', (event, arg) => {
-  return invokeCancel(arg)
-})
-
-// If we are running a non-packaged version of the app && on windows
-if (isDev && process.platform === 'win32') {
-  // Set the path of electron.exe and your app.
-  // These two additional parameters are only available on windows.
-  app.setAsDefaultProtocolClient('hitman-app', process.execPath, [path.resolve(process.argv[1])])
-} else {
-  app.setAsDefaultProtocolClient('hitman-app')
-}
-
-app.on('ready', createWindow)
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit()
-  }
-})
-app.on('activate', () => {
-  if (BrowserWindow.getAllWindows().length === 0) {
-    createWindow()
-  }
-})
-// Protocol handler for osx
-app.on('open-url', function (event, url) {
-  event.preventDefault()
-  deeplinkUrl = url
-  if (deeplinkUrl) {
-    const token = deeplinkUrl.split('sokt-auth-token=').pop()
-    if (token) {
-      mainWindow.webContents.send('token-transfer-channel', token)
-    }
-  }
-})
-
-/** Disable Menu */
-Menu.setApplicationMenu(null)
-
-/** Bind Shortcut Keys */
-app.whenReady().then(() => {
   mainWindow.webContents.on('before-input-event', (event, input) => {
     const CommandOrControl = (process.platform === 'darwin') ? input.meta : input.control
 
-    if (input.type === 'keyUp') {
+    if (input.type === 'keyDown' && input.isAutoRepeat === false) {
+      if (isDev) log.info('Intercept Before Input Event', input)
       /** Trigger Endpoint: CTRL+E or CMD+E */
       if (CommandOrControl && input.key.toLowerCase() === 'enter') {
         mainWindow.webContents.send('ENDPOINT_SHORTCUTS_CHANNEL', 'TRIGGER_ENDPOINT')
@@ -206,4 +162,53 @@ app.whenReady().then(() => {
       }
     }
   })
+
+  mainWindow.once('ready-to-show', () => mainWindow.show())
+  mainWindow.on('closed', () => {
+    mainWindow = null
+  })
+}
+
+ipcMain.handle('request-channel', (event, arg) => {
+  return makeHttpRequestThroughAxios(arg, FILE_UPLOAD_DIRECTORY)
+})
+
+ipcMain.handle('request-cancel', (event, arg) => {
+  return invokeCancel(arg)
+})
+
+// // If we are running a non-packaged version of the app && on windows
+if (isDev && process.platform === 'win32') {
+  // Set the path of electron.exe and your app.
+  // These two additional parameters are only available on windows.
+  app.setAsDefaultProtocolClient('hitman-app', process.execPath, [path.resolve(process.argv[1])])
+} else {
+  app.setAsDefaultProtocolClient('hitman-app')
+}
+
+/** Disable Menu */
+Menu.setApplicationMenu(null)
+
+app.on('ready', createWindow)
+app.on('window-all-closed', () => {
+  if (process.platform !== 'darwin') {
+    app.quit()
+  }
+})
+app.on('activate', () => {
+  if (BrowserWindow.getAllWindows().length === 0) {
+    createWindow()
+  }
+})
+// Protocol handler for osx
+app.on('open-url', function (event, url) {
+  event.preventDefault()
+  deeplinkUrl = url
+  if (isDev) log.info('Event: open-url', url)
+  if (deeplinkUrl) {
+    const token = deeplinkUrl.split('sokt-auth-token=').pop()
+    if (token) {
+      mainWindow.webContents.send('token-transfer-channel', token)
+    }
+  }
 })

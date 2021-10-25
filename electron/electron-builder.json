@@ -19,19 +19,24 @@
         "entitlements": "./electron/default.entitlements.mas.plist",
         "entitlementsInherit": "./electron/default.entitlements.mas.inherit.plist",
         "provisioningProfile": "./electron/embedded.provisionprofile",
-        "icon": "hitman-icon.png",
+        "icon": "./assets/icon.icns",
         "hardenedRuntime": true,
         "gatekeeperAssess": false
     },
     "dmg": {
         "sign": false
     },
+    "linux": {
+        "maintainer": "Walkover Technologies Pvt Ltd",
+        "target": ["deb", "tar.gz"],
+        "artifactName": "${name}_${version}_${os}.${ext}"
+    },   
     "win": {
         "target": [
             "nsis",
             "zip"
         ],
-        "icon": "hitman-icon.ico",
+        "icon": "./assets/icon.ico",
         "publisherName": "Walkover Technologies Pvt Ltd",
         "certificateSubjectName": "Walkover Technologies Pvt Ltd",
         "legalTrademarks": "Walkover Technologies Pvt Ltd"
