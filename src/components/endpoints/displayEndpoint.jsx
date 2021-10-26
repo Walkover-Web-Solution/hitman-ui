@@ -185,6 +185,35 @@ class DisplayEndpoint extends Component {
     }
 
     this.setEndpointData()
+
+    if (isElectron()) {
+      const { ipcRenderer } = window.require('electron')
+      ipcRenderer.on('ENDPOINT_SHORTCUTS_CHANNEL', this.handleShortcuts)
+    }
+  }
+
+  handleShortcuts = (event, data) => {
+    const { activeTabId } = this.props.tabs
+    const { id: endpointId } = this.props.tab
+
+    if (activeTabId === endpointId) {
+      switch (data) {
+        case 'TRIGGER_ENDPOINT': this.handleSend()
+          break
+        case 'SAVE_AS': this.setState({ saveAsFlag: true }, () => { this.openEndpointFormModal() })
+          break
+        case 'SAVE': this.handleSave()
+          break
+        default:
+      }
+    }
+  }
+
+  componentWillUnmount () {
+    if (isElectron()) {
+      const { ipcRenderer } = window.require('electron')
+      ipcRenderer.removeListener('ENDPOINT_SHORTCUTS_CHANNEL', this.handleShortcuts)
+    }
   }
 
   componentDidUpdate (prevProps, prevState) {
@@ -1788,7 +1817,7 @@ class DisplayEndpoint extends Component {
   displayResponseAndSampleResponse () {
     return (
       <>
-        <div className='col-12' ref={this.myRef}>
+        <div className='col-12 custom-tabs' ref={this.myRef}>
           <ul className='nav nav-tabs respTabsListing' id='myTab' role='tablist'>
             <li className='nav-item'>
               <a
@@ -2234,7 +2263,7 @@ class DisplayEndpoint extends Component {
                     isDashboardRoute(this.props)
                       ? (
                         <div className='d-flex justify-content-between align-items-center'>
-                          <div className='headers-params-wrapper'>
+                          <div className='headers-params-wrapper custom-tabs'>
                             <ul className='nav nav-tabs' id='pills-tab' role='tablist'>
                               <li className='nav-item'>
                                 <a
@@ -2327,12 +2356,10 @@ class DisplayEndpoint extends Component {
                                 </a>
                               </li>
                               <li className='nav-item cookie-tab'>
-                                <a>
-                                  {getCurrentUser() &&
-                                    <div onClick={() => this.setState({ showCookiesModal: true })}>
-                                      Cookies
-                                    </div>}
-                                </a>
+                                {getCurrentUser() &&
+                                  <a className='nav-link' onClick={() => this.setState({ showCookiesModal: true })}>
+                                    Cookies
+                                  </a>}
                               </li>
                             </ul>
                           </div>

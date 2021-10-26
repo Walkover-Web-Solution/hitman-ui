@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import './endpointBreadCrumb.scss'
 import { ReactComponent as EditIcon } from '../../assets/icons/editIcon.svg'
-import { toTitleCase } from '../common/utility'
+import { isElectron, toTitleCase } from '../common/utility'
 
 const mapStateToProps = (state) => {
   return {
@@ -47,6 +47,26 @@ class EndpointBreadCrumb extends Component {
     const endpoint = this.props.endpoint
     if (endpoint && (!endpoint.id) && this.props.data.name === '') {
       this.setState({ endpointTitle: 'Untitled', previousTitle: 'Untitled' })
+    }
+
+    if (isElectron()) {
+      const { ipcRenderer } = window.require('electron')
+      ipcRenderer.on('ENDPOINT_SHORTCUTS_CHANNEL', this.handleShortcuts)
+    }
+  }
+
+  componentWillUnmount () {
+    if (isElectron()) {
+      const { ipcRenderer } = window.require('electron')
+      ipcRenderer.removeListener('ENDPOINT_SHORTCUTS_CHANNEL', this.handleShortcuts)
+    }
+  }
+
+  handleShortcuts = (e, actionType) => {
+    if (actionType === 'RENAME_ENDPOINT') {
+      this.setState({ nameEditable: true }, () => {
+        this.nameInputRef.current.focus()
+      })
     }
   }
 

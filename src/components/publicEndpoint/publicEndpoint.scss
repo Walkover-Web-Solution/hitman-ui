@@ -436,26 +436,20 @@ h4.hm-sidebar-title span {
 // Endpoint table
 
 .hm-public-table {
-
-
-
   .public-generic-table-title-container {
     font-size: 14px;
     font-weight: 600;
     margin-bottom: 10px;
     display: inline-block;
-
     .fa-circle {
       color: #E98A36;
       margin-left: 5px;
       font-size: 12px;
     }
   }
-
   .headParaWraper {
     background: #F3F3F3;
   }
-
   table#custom-generic-table {
     background: transparent !important;
     button.btn.cross-button {
@@ -496,17 +490,11 @@ h4.hm-sidebar-title span {
               font-weight: 500;
               font-size: 12px;
               color: #333;
-
             }
-
           }
-
           &#generic-table-description-cell {
-            // display: table-cell;
             color: #999999;
-            // width: 500px;
           }
-
           &#generic-table-key-cell {
             input.Checkbox {
               height: auto;
@@ -515,31 +503,6 @@ h4.hm-sidebar-title span {
             }
           }
         }
-      }
-    }
-
-    input.form-control {
-      background: #fff;
-      border-radius: 3px;
-      border: 1px solid #e0e0e0 !important;
-      height: 32px !important;
-      font-size: 12px !important;
-      color: #4F4F4F;
-      border-radius: 0 !important;
-
-      &::-webkit-input-placeholder {
-        font-size: 12px;
-        font-weight: 400;
-      }
-
-      &:-ms-input-placeholder {
-        font-size: 12px;
-        font-weight: 400;
-      }
-
-      &::placeholder {
-        font-size: 12px;
-        font-weight: 400;
       }
     }
   }

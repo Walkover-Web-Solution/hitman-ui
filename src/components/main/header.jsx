@@ -8,7 +8,7 @@ import socketLogo from '../../assets/icons/socketIcon.svg'
 import { isElectron, openExternalLink } from '../common/utility'
 import { getCurrentOrg, getCurrentUser } from '../auth/authService'
 import { ReactComponent as CommunityIcon } from '../../assets/icons/community-icon.svg'
-import { ReactComponent as ProductsIcon } from '../../assets/icons/products-icon.svg'
+import ArrowIcon from '../../assets/icons/arrow.svg'
 
 /* Internal Login Routes */
 const LOGIN_ROUTE = process.env.REACT_APP_UI_URL + '/login'
@@ -20,26 +20,20 @@ const FEEDIO_UI_URL = process.env.REACT_APP_FEEDIO_UI_URL
 const SHEETASDB_UI_URL = process.env.REACT_APP_SHEETASDB_UI_URL
 const COMMUNITY_URL = process.env.REACT_APP_COMMUNITY_URL
 
-/* Other Product Logos */
-const EBL_LOGO = process.env.REACT_APP_EBL_LOGO
-const FEEDIO_LOGO = process.env.REACT_APP_FEEDIO_LOGO
-const SHEETASDB_LOGO = process.env.REACT_APP_SHEETASDB_LOGO
-
 /** Desktop App Download URL */
 const DESKTOP_APP_DOWNLOAD_LINK = process.env.REACT_APP_DESKTOP_APP_DOWNLOAD_LINK
 
 const HitmanBrand = () => {
   return (
-    <div className='logo d-flex align-items-center'>
-      <img src={socketLogo} alt='' width='30' height='30' />
-      <span>Hitman</span>
+    <div className='logo black-hover transition d-flex align-items-center'>
+      <SwitchProducts />
     </div>
   )
 }
 
 const CommunityButton = () => {
   return (
-    <div className='ml-2' onClick={() => openExternalLink(COMMUNITY_URL)}>
+    <div className='d-flex align-items-center black-hover transition' onClick={() => openExternalLink(COMMUNITY_URL)}>
       <CommunityIcon />
     </div>
   )
@@ -51,17 +45,14 @@ const SwitchProducts = () => {
   const products = [
     {
       name: 'Feedio',
-      icon: FEEDIO_LOGO,
       link: FEEDIO_UI_URL ? FEEDIO_UI_URL + (currentOrgId ? `/orgs/${currentOrgId}/` : '') : ''
     },
     {
       name: 'EBL',
-      icon: EBL_LOGO,
       link: EBL_UI_URL ? EBL_UI_URL + (currentOrgId ? `/orgs/${currentOrgId}/projects` : '') : ''
     },
     {
       name: 'SheetAsDB',
-      icon: SHEETASDB_LOGO,
       link: SHEETASDB_UI_URL ? SHEETASDB_UI_URL + (currentOrgId ? `/orgs/${currentOrgId}/projects` : '') : ''
     }
   ]
@@ -69,7 +60,6 @@ const SwitchProducts = () => {
   const ProductItem = ({ product }) => {
     return (
       <Dropdown.Item onClick={() => openExternalLink(product.link)}>
-        <img src={product.icon} alt='' height='20px' width='20px' />
         {product.name}
       </Dropdown.Item>
     )
@@ -79,11 +69,13 @@ const SwitchProducts = () => {
     <div className='switchPrd'>
       <Dropdown>
         <Dropdown.Toggle variant='success' id='dropdown-basic'>
-          <ProductsIcon />
+          <img src={socketLogo} alt='' width='22' height='22' />
+          <span>Hitman</span>
+          <img src={ArrowIcon} alt='' className='transition rotate-180 ml-1' />
         </Dropdown.Toggle>
         <Dropdown.Menu>
           <Dropdown.Item disabled>
-            Switch Products
+            Switch to
           </Dropdown.Item>
           {products.map((product, index) => (<ProductItem key={index} product={product} />))}
         </Dropdown.Menu>
@@ -114,7 +106,9 @@ const DownloadDesktopAppButton = () => {
     openExternalLink(link)
   }
   return (
-    <button onClick={handleDownloadClick} className='btn btn-primary'>Download Desktop App</button>
+    <div className='d-flex align-items-center'>
+      <button onClick={handleDownloadClick} className='btn btn-primary download-btn'>Download Desktop App</button>
+    </div>
   )
 }
 
@@ -124,14 +118,13 @@ class Header extends Component {
     return (
       <div className='env-wrapper header d-flex justify-space-between '>
         <HitmanBrand />
-        <div className='float-right d-flex align-items-center'>
+        <div className='float-right d-flex'>
           {!isElectron() && <DownloadDesktopAppButton />}
           {getCurrentUser() ? <Environments {...this.props} /> : null}
           {/* Commenting cloud icon for now, as no requirement was given for it but was mentioned in the design. */}
           {/* <div className='mx-3'><img src={cloudImage} alt='' /></div> */}
           <CommunityButton />
-          <SwitchProducts />
-          <div className='ml-3'>
+          <div>
             {getCurrentUser() ? <UserInfo {...this.props} /> : <LoginButton />}
           </div>
         </div>
