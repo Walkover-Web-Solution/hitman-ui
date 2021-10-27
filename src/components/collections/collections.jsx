@@ -25,6 +25,7 @@ import TagManagerModal from './tagModal'
 import emptyCollections from '../../assets/icons/emptyCollections.svg'
 import hitmanLogo from '../../assets/icons/hitman.svg'
 import PublishColelctionInfo from '../main/publishCollectionInfo'
+import sidebarActions from '../main/sidebar/redux/sidebarActions'
 
 const EMPTY_STRING = ''
 
@@ -320,25 +321,22 @@ class CollectionsComponent extends Component {
   }
 
   toggleSelectedColelctionIds (id) {
-    const currentValue = this.state.selectedCollectionIds[id]
-    if (currentValue) {
-      this.setState({ selectedCollectionIds: { ...this.state.selectedCollectionIds, [id]: !currentValue } })
-    } else {
-      this.setState({ selectedCollectionIds: { ...this.state.selectedCollectionIds, [id]: true } })
-    }
+    sidebarActions.toggleItem('collections', id)
   }
 
   renderBody (collectionId, collectionState) {
+    const { expanded, focused } = this.props.sidebar.navList[`collections_${collectionId}`]
     return (
       <React.Fragment key={collectionId}>
 
         <div
           key={collectionId}
           id='parent-accordion'
-          className={this.state.selectedCollectionIds[collectionId] ? 'sidebar-accordion active' : 'sidebar-accordion'}
+          className={expanded ? 'sidebar-accordion active' : 'sidebar-accordion'}
         >
           <button
             variant='default'
+            className={[focused ? 'focused' : ''].join(' ')}
           >
             <div className='row w-100 align-items-center' onClick={() => this.toggleSelectedColelctionIds(collectionId)}>
               <div className='col-9 fixwidth'>
@@ -507,7 +505,7 @@ class CollectionsComponent extends Component {
           </button>
           {collectionState === 'singleCollection'
             ? (null)
-            : this.state.selectedCollectionIds[collectionId]
+            : expanded
               ? (
                 <div id='collection-collapse'>
                   <Card.Body>
@@ -518,6 +516,7 @@ class CollectionsComponent extends Component {
                     />
                     <CollectionVersions
                       {...this.props}
+                      versionsToRender={this.props.sidebar.collections[collectionId].children || []}
                       collection_id={collectionId}
                       addVersion={this.openAddVersionForm.bind(this)}
                       selectedCollection
@@ -612,65 +611,65 @@ class CollectionsComponent extends Component {
 
   render () {
     if (isDashboardRoute(this.props, true)) {
-      let finalCollections = []
-      this.names = {}
-      let finalnames = []
-      this.keywords = {}
-      let finalKeywords = []
-      const collections = { ...this.props.collections }
-      const CollectionIds = Object.keys(collections)
+      // let finalCollections = []
+      // this.names = {}
+      // let finalnames = []
+      // this.keywords = {}
+      // let finalKeywords = []
+      // const collections = { ...this.props.collections }
+      // const CollectionIds = Object.keys(collections)
 
-      for (let i = 0; i < CollectionIds.length; i++) {
-        const { keyword } = this.props.collections[CollectionIds[i]]
-        const splitedKeywords = keyword.split(',')
+      // for (let i = 0; i < CollectionIds.length; i++) {
+      //   const { keyword } = this.props.collections[CollectionIds[i]]
+      //   const splitedKeywords = keyword.split(',')
 
-        for (let j = 0; j < splitedKeywords.length; j++) {
-          const keyword = splitedKeywords[j]
+      //   for (let j = 0; j < splitedKeywords.length; j++) {
+      //     const keyword = splitedKeywords[j]
 
-          if (keyword !== '') {
-            if (this.keywords[keyword]) {
-              const ids = this.keywords[keyword]
-              if (ids.indexOf(CollectionIds[i]) === -1) {
-                this.keywords[keyword] = [...ids, CollectionIds[i]]
-              }
-            } else {
-              this.keywords[keyword] = [CollectionIds[i]]
-            }
-          }
-        }
-      }
-      const keywords = Object.keys(this.keywords)
-      finalKeywords = keywords.filter((key) => {
-        return (
-          key.toLowerCase().indexOf(this.props.filter.toLowerCase()) !== -1
-        )
-      })
+      //     if (keyword !== '') {
+      //       if (this.keywords[keyword]) {
+      //         const ids = this.keywords[keyword]
+      //         if (ids.indexOf(CollectionIds[i]) === -1) {
+      //           this.keywords[keyword] = [...ids, CollectionIds[i]]
+      //         }
+      //       } else {
+      //         this.keywords[keyword] = [CollectionIds[i]]
+      //       }
+      //     }
+      //   }
+      // }
+      // const keywords = Object.keys(this.keywords)
+      // finalKeywords = keywords.filter((key) => {
+      //   return (
+      //     key.toLowerCase().indexOf(this.props.filter.toLowerCase()) !== -1
+      //   )
+      // })
 
-      let keywordFinalCollections = []
-      for (let i = 0; i < finalKeywords.length; i++) {
-        keywordFinalCollections = [
-          ...keywordFinalCollections,
-          ...this.keywords[finalKeywords[i]]
-        ]
-      }
-      keywordFinalCollections = [...new Set(keywordFinalCollections)]
+      // let keywordFinalCollections = []
+      // for (let i = 0; i < finalKeywords.length; i++) {
+      //   keywordFinalCollections = [
+      //     ...keywordFinalCollections,
+      //     ...this.keywords[finalKeywords[i]]
+      //   ]
+      // }
+      // keywordFinalCollections = [...new Set(keywordFinalCollections)]
 
-      for (let i = 0; i < CollectionIds.length; i++) {
-        const { name } = this.props.collections[CollectionIds[i]]
-        this.names[name] = CollectionIds[i]
-      }
-      const names = Object.keys(this.names)
-      finalnames = names.filter((name) => {
-        return (
-          name.toLowerCase().indexOf(this.props.filter.toLowerCase()) !== -1
-        )
-      })
-      let namesFinalCollections = finalnames.map((name) => this.names[name])
-      namesFinalCollections = [...new Set(namesFinalCollections)]
-      finalCollections = [...keywordFinalCollections, ...namesFinalCollections]
+      // for (let i = 0; i < CollectionIds.length; i++) {
+      //   const { name } = this.props.collections[CollectionIds[i]]
+      //   this.names[name] = CollectionIds[i]
+      // }
+      // const names = Object.keys(this.names)
+      // finalnames = names.filter((name) => {
+      //   return (
+      //     name.toLowerCase().indexOf(this.props.filter.toLowerCase()) !== -1
+      //   )
+      // })
+      // let namesFinalCollections = finalnames.map((name) => this.names[name])
+      // namesFinalCollections = [...new Set(namesFinalCollections)]
+      // finalCollections = [...keywordFinalCollections, ...namesFinalCollections]
 
-      finalCollections = [...new Set(finalCollections)]
-      finalCollections = finalCollections.sort((a, b) => this.comparison(a, b))
+      // finalCollections = [...new Set(finalCollections)]
+      // finalCollections = finalCollections.sort((a, b) => this.comparison(a, b))
       return (
         <div>
           {this.state.showPublishDocsModal &&
@@ -700,10 +699,10 @@ class CollectionsComponent extends Component {
               {this.showDeleteCollectionModal()}
             </div>
           </div>
-          {finalCollections.length > 0
+          {Object.keys(this.props.collectionsToRender).length > 0
             ? (
               <div className='App-Side'>
-                {finalCollections.map((collectionId, index) =>
+                {Object.keys(this.props.collectionsToRender).map((collectionId, index) =>
                   this.renderBody(collectionId, 'allCollections')
                 )}
               </div>)

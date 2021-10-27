@@ -94,43 +94,9 @@ class VersionPages extends Component {
   }
 
   render () {
-    if (this.state.filter !== this.props.filter) {
-      this.filterFlag = false
-    }
-    if (!this.props.filter || this.props.filter === '') {
-      this.filteredVersionPages = { ...this.props.pages }
-    }
-
-    const versionPageIds = Object.keys(this.props.pages).filter(
-      (pId) =>
-        this.props.pages[pId].groupId === null &&
-        this.props.pages[pId].versionId === this.props.version_id
-    )
-
-    let versionPagesArray = []
-    for (let index = 0; index < versionPageIds.length; index++) {
-      const id = versionPageIds[index]
-      const groupPage = this.props.pages[id]
-      versionPagesArray = [...versionPagesArray, groupPage]
-    }
-
-    versionPagesArray.sort(function (a, b) {
-      if (a.position < b.position) { return -1 }
-      if (a.position > b.position) { return 1 }
-      return 0
-    })
-
-    const versionPages = {}
-    for (let index = 0; index < versionPagesArray.length; index++) {
-      const id = versionPagesArray[index].id
-      versionPages[id] = this.props.pages[id]
-    }
-
     return (
       <>
-        {this.filterVersionPages()}
-        <div>
-          {this.state.showDeleteModal &&
+        {this.state.showDeleteModal &&
             pageService.showDeletePageModal(
               this.props,
               this.closeDeletePageModal.bind(this),
@@ -138,18 +104,10 @@ class VersionPages extends Component {
               ' Are you sure you wish to delete this page? ',
               this.state.selectedPage
             )}
-        </div>
-
-        {versionPages &&
-          Object.keys(versionPages)
-            .filter(
-              (pageId) =>
-                this.props.pages[pageId].versionId === this.props.version_id &&
-                this.props.pages[pageId].groupId === null
-            )
-            .map((pageId, index) => (
-              <div key={index} className='linkWith'>
-                {
+        {this.props.pagesToRender
+          .map((pageId, index) => (
+            <div key={index} className='linkWith'>
+              {
                   isDashboardRoute(this.props)
                     ? (
                       <div
@@ -185,8 +143,8 @@ class VersionPages extends Component {
                       />
                       )
                 }
-              </div>
-            ))}
+            </div>
+          ))}
       </>
     )
   }

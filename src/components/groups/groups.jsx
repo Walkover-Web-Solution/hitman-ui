@@ -19,6 +19,7 @@ import './groups.scss'
 import groupsService from './groupsService'
 import filterService from '../../services/filterService'
 import AddEntity from '../main/addEntity/addEntity'
+import sidebarActions from '../main/sidebar/redux/sidebarActions'
 
 const mapStateToProps = (state) => {
   return {
@@ -440,6 +441,7 @@ class Groups extends Component {
   }
 
   renderBody (groupId) {
+    const { focused, expanded } = this.props.sidebar.navList[`groups_${groupId}`]
     return (
       isDashboardRoute(this.props, true)
         ? (
@@ -449,7 +451,7 @@ class Groups extends Component {
             id='child-accordion'
           >
             <button
-              className={this.state.selectedGroupIds[groupId] === true ? 'active' : null}
+              className={[focused ? 'focused' : '', expanded ? 'active' : ''].join(' ')}
             >
               <div className='d-flex align-items-center flex-grow-1' onClick={() => this.toggleGroupIds(groupId)}>
                 <span className='versionChovron'>
@@ -556,7 +558,7 @@ class Groups extends Component {
                       : null
                   }
             </button>
-            {this.state.selectedGroupIds[groupId]
+            {expanded
               ? (
                 <div
                   className='group-collapse collapse show'
@@ -564,6 +566,7 @@ class Groups extends Component {
                   <Card.Body>
                     <GroupPages
                       {...this.props}
+                      pagesToRender={this.props.sidebar.groups[groupId].pages}
                       version_id={this.props.groups[groupId].versionId}
                       set_page_drag={this.setPagedrag.bind(this)}
                       group_id={groupId}
@@ -571,6 +574,7 @@ class Groups extends Component {
                     />
                     <Endpoints
                       {...this.props}
+                      endpointsToRender={this.props.sidebar.groups[groupId].endpoints}
                       group_id={groupId}
                       set_endpoint_drag={this.setEndpointdrag.bind(this)}
                       endpoints_order={this.props.groups[groupId].endpointsOrder || []}
@@ -625,12 +629,7 @@ class Groups extends Component {
   }
 
   toggleGroupIds (id) {
-    const currentValue = this.state.selectedGroupIds[id]
-    if (currentValue) {
-      this.setState({ selectedGroupIds: { ...this.state.selectedGroupIds, [id]: !currentValue } })
-    } else {
-      this.setState({ selectedGroupIds: { ...this.state.selectedGroupIds, [id]: true } })
-    }
+    sidebarActions.toggleItem('groups', id)
   }
 
   render () {
@@ -654,11 +653,10 @@ class Groups extends Component {
 
     return (
       <>
-        <div>
-          {this.showShareGroupForm()}
-          {this.showEditGroupForm()}
-          {this.showAddGroupPageForm()}
-          {this.state.showDeleteModal &&
+        {this.showShareGroupForm()}
+        {this.showEditGroupForm()}
+        {this.showAddGroupPageForm()}
+        {this.state.showDeleteModal &&
             groupsService.showDeleteGroupModal(
               this.props,
               this.closeDeleteGroupModal.bind(this),
@@ -667,13 +665,10 @@ class Groups extends Component {
               All your pages and endpoints present in this group will be deleted.`,
               this.state.selectedGroup
             )}
-        </div>
-        {this.sortedGroups &&
-          this.sortedGroups
-            .filter((group) => group.versionId === this.props.version_id)
-            .map((group) =>
-              group.id ? <div key={group.id} className='linkWith'>{this.renderBody(group.id)}</div> : null
-            )}
+        {this.props.groupsToRender
+          .map((groupId) =>
+            groupId ? <div key={groupId} className='linkWith'>{this.renderBody(groupId)}</div> : null
+          )}
 
         {this.renderForm(this.sortedGroups)}
       </>

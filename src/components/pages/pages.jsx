@@ -289,10 +289,14 @@ class Pages extends Component {
 
   displayUserPages (pageId) {
     const idToCheck = this.props.location.pathname.split('/')[4] === 'page' ? this.props.location.pathname.split('/')[5] : null
+
+    const { focused } = this.props.sidebar.navList[`pages_${pageId}`]
+    if (focused && this.scrollRef[pageId]) this.scrollToPage(pageId)
+
     return (
       <div
         ref={(newRef) => { this.scrollRef[pageId] = newRef }}
-        className={idToCheck === pageId ? 'sidebar-accordion pagesWrapper active' : 'sidebar-accordion pagesWrapper'}
+        className={['sidebar-accordion pagesWrapper', idToCheck === pageId ? ' active' : ''].join(' ')}
         id='accordion'
         key={this.props.index}
       >
@@ -303,6 +307,7 @@ class Pages extends Component {
           //   e.preventDefault()
           // }}
           // onDrop={(e) => this.props.onDrop(e, pageId)}
+          className={[focused ? 'focused' : ''].join(' ')}
           data-toggle='collapse'
           data-target={`#${pageId}`}
           aria-expanded='true'

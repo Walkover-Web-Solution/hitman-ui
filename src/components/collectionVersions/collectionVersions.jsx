@@ -17,6 +17,7 @@ import './collectionVersions.scss'
 import collectionVersionsService from './collectionVersionsService'
 import filterService from '../../services/filterService'
 import AddEntity from '../main/addEntity/addEntity'
+import sidebarActions from '../main/sidebar/redux/sidebarActions'
 
 const mapStateToProps = (state) => {
   return {
@@ -335,25 +336,22 @@ class CollectionVersions extends Component {
   }
 
   toggleVersionIds (id) {
-    const currentValue = this.state.selectedVersionIds[id]
-    if (currentValue) {
-      this.setState({ selectedVersionIds: { ...this.state.selectedVersionIds, [id]: !currentValue } })
-    } else {
-      this.setState({ selectedVersionIds: { ...this.state.selectedVersionIds, [id]: true } })
-    }
+    sidebarActions.toggleItem('versions', id)
   }
 
-  renderBody (versionId, index, versionsCount) {
+  renderBody (versionId, index) {
+    const { pages: pagesToRender, groups: groupsToRender } = this.props.sidebar.versions[versionId]
+    const { expanded, focused } = this.props.sidebar.navList[`versions_${versionId}`]
     return (
       isDashboardRoute(this.props, true)
         ? (
-          <div className='hm-sidebar-outer-block' key={versionId}>
+          <div className={['hm-sidebar-outer-block'].join(' ')} key={versionId}>
             <div
               className='sidebar-accordion versionBoldHeading'
               id='child-accordion'
             >
               <button
-                className={this.state.selectedVersionIds[versionId] === true ? 'active' : null}
+                className={[focused ? 'focused' : '', expanded ? 'active' : ''].join(' ')}
               >
                 <div className='d-flex align-items-center flex-grow-1' onClick={() => { this.toggleVersionIds(versionId) }}>
                   <span className='versionChovron'>
@@ -362,7 +360,6 @@ class CollectionVersions extends Component {
                     </svg>
                   </span>
                   <div className='sidebar-accordion-item text-truncate d-inline'>
-
                     {this.props.versions[versionId].number}
                   </div>
                 </div>
@@ -462,13 +459,14 @@ class CollectionVersions extends Component {
                         : null
                     }
               </button>
-              {this.state.selectedVersionIds[versionId]
+              {expanded
                 ? (
                   <div className='version-collapse'>
                     <Card.Body>
                       <div className='linkWrapper versionPages'>
                         <VersionPages
                           {...this.props}
+                          pagesToRender={pagesToRender}
                           version_id={versionId}
                           show_filter_version={this.propsFromVersion.bind(this)}
                         />
@@ -476,6 +474,7 @@ class CollectionVersions extends Component {
                       <div className='linkWrapper versionsgroups'>
                         <Groups
                           {...this.props}
+                          groupsToRender={groupsToRender}
                           version_id={versionId}
                           addGroup={this.openAddGroupForm.bind(this)}
                           show_filter_version={this.propsFromVersion.bind(this)}
@@ -489,7 +488,9 @@ class CollectionVersions extends Component {
           </div>
           )
         : (
+
           <>
+            {console.log('elese')}
             {((this.state.selectedVersionIndex === '' && index === 0) ||
                   (this.state.selectedVersionIndex &&
                     this.state.selectedVersionIndex === index.toString())) && (
@@ -706,7 +707,7 @@ class CollectionVersions extends Component {
               )
             : null
         }
-        {this.state.value
+        {/* {this.state.value
           ? this.renderResponses()
           : this.filteredVersions &&
           Object.keys(this.filteredVersions) &&
@@ -718,7 +719,14 @@ class CollectionVersions extends Component {
             )
             .map((versionId, index) => (
               this.renderBody(versionId, index, versionsCount)
-            ))}
+            ))} */}
+        <div id='myversionlist'>
+          {
+              this.props.versionsToRender.map((versionId, index) => (
+                this.renderBody(versionId, index)
+              ))
+            }
+        </div>
 
         {this.renderForm(versionsCount)}
       </>

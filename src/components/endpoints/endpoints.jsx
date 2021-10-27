@@ -465,10 +465,12 @@ class Endpoints extends Component {
 
   displaySingleEndpoint (endpointId) {
     const idToCheck = this.props.location.pathname.split('/')[4] === 'endpoint' ? this.props.location.pathname.split('/')[5] : null
+    const { focused } = this.props.sidebar.navList[`endpoints_${endpointId}`]
     return (
       <div ref={(newRef) => { this.scrollRef[endpointId] = newRef }} className={idToCheck === endpointId ? 'sidebar-accordion active' : 'sidebar-accordion'} key={endpointId}>
         <div className={this.props.endpoints[endpointId].state} />
         <button
+          className={[focused ? 'focused' : '']}
           onClick={() =>
             this.handleDisplay(
               this.props.endpoints[endpointId],
@@ -529,15 +531,10 @@ class Endpoints extends Component {
   displayUserEndpoints (endpoints) {
     return (
       <>
-        {this.filterEndpoints()}
-        {/* {this.sequencingOnFilter()} */}
-        {endpoints &&
-          Object.keys(endpoints).length !== 0 &&
-          Object.keys(endpoints)
-            .map((endpointId) => (
-              this.displaySingleEndpoint(endpointId)
-            ))}
-        {Object.keys(endpoints).length === 0 && this.renderForm()}
+        {endpoints.map((endpointId) => (
+          this.displaySingleEndpoint(endpointId)
+        ))}
+        {endpoints.length === 0 && this.renderForm()}
       </>
     )
   }
@@ -653,7 +650,7 @@ class Endpoints extends Component {
     endpoints = this.getEndpointsEntity(endpointsArray)
 
     if (isDashboardRoute(this.props, true)) {
-      return this.displayUserEndpoints(endpoints)
+      return this.displayUserEndpoints(this.props.endpointsToRender)
     } else {
       return this.displayPublicEndpoints(endpoints)
     }

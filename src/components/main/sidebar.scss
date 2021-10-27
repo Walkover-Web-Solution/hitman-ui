@@ -376,3 +376,9 @@ input[type="text"]:focus {
   position: absolute;
   right: 12px;
 }
+
+.sidebar-accordion {
+  button.focused {
+    border: 1px dotted red !important;
+  }
+}

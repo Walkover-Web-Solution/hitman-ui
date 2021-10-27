@@ -23,6 +23,8 @@ import GroupForm from '../groups/groupForm'
 import PageForm from '../pages/pageForm'
 import EndpointForm from '../endpoints/endpointForm'
 import CollectionModal from '../collections/collectionsModal'
+import store from '../../store/store'
+import sidebarActionTypes from './sidebar/redux/sidebarActionTypes'
 
 const mapStateToProps = (state) => {
   return {
@@ -32,6 +34,7 @@ const mapStateToProps = (state) => {
     pages: state.pages,
     groups: state.groups,
     historySnapshot: state.history,
+    sidebar: state.sidebar,
     filter: ''
   }
 }
@@ -123,13 +126,13 @@ class SideBar extends Component {
       case 'FOCUS_SEARCH': this.inputRef.focus()
         break
       /** TO DO: Sidebar Navigations Handling by maintaining Focused element and its List */
-      case 'UP_NAVIGATION':
+      case 'UP_NAVIGATION': store.dispatch({ type: sidebarActionTypes.FOCUS_PREVIOUS_ITEM })
         break
-      case 'DOWN_NAVIGATION':
+      case 'DOWN_NAVIGATION': store.dispatch({ type: sidebarActionTypes.FOCUS_NEXT_ITEM })
         break
-      case 'OPEN_ENTITY':
+      case 'OPEN_ENTITY': store.dispatch({ type: sidebarActionTypes.EXPAND_ITEM })
         break
-      case 'CLOSE_ENTITY':
+      case 'CLOSE_ENTITY': store.dispatch({ type: sidebarActionTypes.COLLAPSE_ITEM })
         break
       case 'DUPLICATE_ENTITY':
         break
@@ -433,6 +436,7 @@ class SideBar extends Component {
     return (
       <Collections
         {...this.props}
+        collectionsToRender={this.props.sidebar.collections}
         selectedCollectionId={this.state.selectedCollectionId}
         empty_filter={this.emptyFilter.bind(this)}
         disable_secondary_sidebar={() => { this.setState({ secondarySidebarToggle: true }) }}
