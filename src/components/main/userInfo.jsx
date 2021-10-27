@@ -6,7 +6,8 @@ import { getProfileName, openExternalLink, getOrgId, isElectron } from '../commo
 import { ReactComponent as HostedApiIcon } from '../../assets/icons/hostedApiIcon.svg'
 import { ReactComponent as SettingsIcon } from '../../assets/icons/settings-orange.svg'
 import { ReactComponent as SignOutIcon } from '../../assets/icons/signOutIcon.svg'
-import { ReactComponent as SocketIcon } from '../../assets/icons/socketIcon.svg'
+import { ReactComponent as SocketIcon } from '../../assets/icons/socketIconBlack.svg'
+import Arrow from '../../assets/icons/arrow.svg'
 
 const mapStateToProps = (state) => {
   return {
@@ -209,7 +210,7 @@ class UserInfo extends Component {
   renderCurrentOrgName () {
     const orgName = authService.getCurrentOrg()?.name
     return (
-      <div className='text-center m-1'>{orgName}</div>
+      <div className='text-center m-1 orgName'>{orgName}</div>
     )
   }
 
@@ -217,8 +218,7 @@ class UserInfo extends Component {
     return (
       <div className='d-flex align-items-center'>
         <i class='fas fa-user' />
-        {this.renderCurrentOrgName()}
-        <i className='uil uil-ellipsis-v' />
+        <img src={Arrow} alt='' />
       </div>
     )
   }
@@ -260,7 +260,7 @@ class UserInfo extends Component {
 
   userDropdown () {
     return (
-      <Dropdown bsPrefix='dropdown user-info-dropdown profile-dropdown'>
+      <Dropdown bsPrefix='dropdown user-info-dropdown profile-dropdown black-hover transition'>
         <Dropdown.Toggle variant=''>
           {this.renderProfileHeader()}
           {this.getNotificationCount() > 0 &&

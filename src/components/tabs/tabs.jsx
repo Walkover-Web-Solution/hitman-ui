@@ -308,7 +308,7 @@ class CustomTabs extends Component {
             )}
           </div>
           {this.props.tabs.tabsOrder.map((tabId, index) => (
-            <div class='custom-tabs' key={tabId} ref={(newRef) => { this.scrollRef[tabId] = newRef }}>
+            <div class='' key={tabId} ref={(newRef) => { this.scrollRef[tabId] = newRef }}>
               <Nav.Item
                 key={tabId}
                 draggable

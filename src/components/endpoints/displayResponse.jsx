@@ -139,7 +139,7 @@ class DisplayResponse extends Component {
     }
     return (
       <>
-        <div className='col-12' ref={this.myRef}>
+        <div className='col-12 custom-tabs' ref={this.myRef}>
           <ul className='nav nav-tabs respTabsListing' id='myTab' role='tablist'>
             <li className='nav-item' onClick={() => { this.setState({ selectedResponseTab: 'body' }) }}>
               <a
