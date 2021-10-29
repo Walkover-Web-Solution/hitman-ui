@@ -4,13 +4,15 @@ import endpointApiService from '../endpointApiService'
 import endpointsActionTypes from './endpointsActionTypes'
 import { getOrgId } from '../../common/utility'
 import indexedDbService from '../../indexedDb/indexedDbService'
+import shortid from 'shortid'
 
 export const addEndpoint = (history, newEndpoint, groupId, customCallback) => {
   const orgId = getOrgId()
+  const requestId = shortid.generate()
   return (dispatch) => {
-    dispatch(addEndpointRequest({ ...newEndpoint, groupId }))
+    dispatch(addEndpointRequest({ ...newEndpoint, requestId, groupId }))
     endpointApiService
-      .saveEndpoint(groupId, newEndpoint)
+      .saveEndpoint(groupId, { ...newEndpoint, requestId })
       .then((response) => {
         dispatch(onEndpointAdded(response.data, newEndpoint))
 
@@ -140,7 +142,7 @@ export const deleteEndpoint = (endpoint) => {
     endpointApiService
       .deleteEndpoint(endpoint.id)
       .then(() => {
-        dispatch(onEndpointDeleted())
+        dispatch(onEndpointDeleted(endpoint))
       })
       .catch((error) => {
         dispatch(onEndpointDeletedError(error.response, endpoint))
@@ -302,9 +304,10 @@ export const deleteEndpointRequest = (endpoint) => {
   }
 }
 
-export const onEndpointDeleted = () => {
+export const onEndpointDeleted = (endpoint) => {
   return {
-    type: endpointsActionTypes.ON_ENDPOINT_DELETED
+    type: endpointsActionTypes.ON_ENDPOINT_DELETED,
+    endpoint
   }
 }
 

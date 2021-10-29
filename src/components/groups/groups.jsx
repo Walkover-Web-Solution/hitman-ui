@@ -441,7 +441,16 @@ class Groups extends Component {
   }
 
   renderBody (groupId) {
-    const { focused, expanded } = this.props.sidebar.navList[`groups_${groupId}`]
+    const { focused, expanded, firstChild } = this.props.sidebar.navList[`groups_${groupId}`]
+    const pagesToRender = []; const endpointsToRender = []
+    if (firstChild) {
+      let childEntity = this.props.sidebar.navList[firstChild]
+      while (childEntity) {
+        if (childEntity.type === 'pages') pagesToRender.push(childEntity.id)
+        if (childEntity.type === 'endpoints') endpointsToRender.push(childEntity.id)
+        childEntity = this.props.sidebar.navList[childEntity.nextSibling]
+      }
+    }
     return (
       isDashboardRoute(this.props, true)
         ? (
@@ -566,7 +575,7 @@ class Groups extends Component {
                   <Card.Body>
                     <GroupPages
                       {...this.props}
-                      pagesToRender={this.props.sidebar.groups[groupId].pages}
+                      pagesToRender={pagesToRender}
                       version_id={this.props.groups[groupId].versionId}
                       set_page_drag={this.setPagedrag.bind(this)}
                       group_id={groupId}
@@ -574,7 +583,7 @@ class Groups extends Component {
                     />
                     <Endpoints
                       {...this.props}
-                      endpointsToRender={this.props.sidebar.groups[groupId].endpoints}
+                      endpointsToRender={endpointsToRender}
                       group_id={groupId}
                       set_endpoint_drag={this.setEndpointdrag.bind(this)}
                       endpoints_order={this.props.groups[groupId].endpointsOrder || []}
@@ -665,9 +674,16 @@ class Groups extends Component {
               All your pages and endpoints present in this group will be deleted.`,
               this.state.selectedGroup
             )}
-        {this.props.groupsToRender
+
+        {isDashboardRoute(this.props, true) && this.props.groupsToRender
           .map((groupId) =>
             groupId ? <div key={groupId} className='linkWith'>{this.renderBody(groupId)}</div> : null
+          )}
+
+        {!isDashboardRoute(this.props, true) && this.sortedGroups && this.sortedGroups
+          .filter((group) => group.versionId === this.props.version_id)
+          .map((group) =>
+            group?.id ? <div key={group.id} className='linkWith'>{this.renderBody(group.id)}</div> : null
           )}
 
         {this.renderForm(this.sortedGroups)}

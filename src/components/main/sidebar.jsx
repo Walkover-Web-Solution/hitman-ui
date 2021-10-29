@@ -433,10 +433,19 @@ class SideBar extends Component {
   }
 
   renderCollections () {
+    const collectionsToRender = []
+    const { firstChild } = this.props.sidebar
+    if (firstChild) {
+      let childEntity = this.props.sidebar.navList[firstChild]
+      while (childEntity) {
+        collectionsToRender.push(childEntity.id)
+        childEntity = this.props.sidebar.navList[childEntity.nextSibling]
+      }
+    }
     return (
       <Collections
         {...this.props}
-        collectionsToRender={this.props.sidebar.collections}
+        collectionsToRender={collectionsToRender}
         selectedCollectionId={this.state.selectedCollectionId}
         empty_filter={this.emptyFilter.bind(this)}
         disable_secondary_sidebar={() => { this.setState({ secondarySidebarToggle: true }) }}

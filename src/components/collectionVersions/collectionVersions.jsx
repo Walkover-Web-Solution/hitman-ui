@@ -340,8 +340,17 @@ class CollectionVersions extends Component {
   }
 
   renderBody (versionId, index) {
-    const { pages: pagesToRender, groups: groupsToRender } = this.props.sidebar.versions[versionId]
-    const { expanded, focused } = this.props.sidebar.navList[`versions_${versionId}`]
+    const { expanded, focused, firstChild } = this.props.sidebar.navList[`versions_${versionId}`]
+    const pagesToRender = []; const groupsToRender = []
+    if (firstChild) {
+      let childEntity = this.props.sidebar.navList[firstChild]
+      while (childEntity) {
+        if (childEntity.type === 'pages') pagesToRender.push(childEntity.id)
+        if (childEntity.type === 'groups') groupsToRender.push(childEntity.id)
+        childEntity = this.props.sidebar.navList[childEntity.nextSibling]
+      }
+    }
+
     return (
       isDashboardRoute(this.props, true)
         ? (
@@ -490,7 +499,6 @@ class CollectionVersions extends Component {
         : (
 
           <>
-            {console.log('elese')}
             {((this.state.selectedVersionIndex === '' && index === 0) ||
                   (this.state.selectedVersionIndex &&
                     this.state.selectedVersionIndex === index.toString())) && (
@@ -707,26 +715,23 @@ class CollectionVersions extends Component {
               )
             : null
         }
-        {/* {this.state.value
-          ? this.renderResponses()
-          : this.filteredVersions &&
-          Object.keys(this.filteredVersions) &&
-          Object.keys(this.filteredVersions)
-            .filter(
-              (versionId) =>
-                this.filteredVersions[versionId].collectionId ===
-                this.props.collection_id
-            )
-            .map((versionId, index) => (
-              this.renderBody(versionId, index, versionsCount)
-            ))} */}
-        <div id='myversionlist'>
-          {
-              this.props.versionsToRender.map((versionId, index) => (
-                this.renderBody(versionId, index)
-              ))
-            }
-        </div>
+        {isDashboardRoute(this.props, true)
+          ? this.props.versionsToRender.map((versionId, index) => (
+              this.renderBody(versionId, index)
+            ))
+          : this.state.value
+            ? this.renderResponses()
+            : this.filteredVersions &&
+              Object.keys(this.filteredVersions) &&
+              Object.keys(this.filteredVersions)
+                .filter(
+                  (versionId) =>
+                    this.filteredVersions[versionId].collectionId ===
+                    this.props.collection_id
+                )
+                .map((versionId, index) => (
+                  this.renderBody(versionId, index, versionsCount)
+                ))}
 
         {this.renderForm(versionsCount)}
       </>

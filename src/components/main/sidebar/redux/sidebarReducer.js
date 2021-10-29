@@ -1,4 +1,3 @@
-// import sidebarActions from "./sidebarActions"
 import sidebarActionTypes from './sidebarActionTypes'
 
 import collectionsActionTypes from '../../../collections/redux/collectionsActionTypes'
@@ -8,12 +7,31 @@ import pagesActionTypes from '../../../pages/redux/pagesActionTypes'
 import endpointsActionTypes from '../../../endpoints/redux/endpointsActionTypes'
 
 import * as _ from 'lodash'
-// import store from '../../../../store/store'
+import publicEndpointsActionTypes from '../../../publicEndpoint/redux/publicEndpointsActionTypes'
+
+class TreeNode {
+  constructor ({ id, type, parentNode, prevSibling, nextSibling }) {
+    this.id = id
+    this.type = type
+    this.isLoaded = false
+
+    this.focused = false
+    this.expanded = false
+    this.isEpandable = !!((type === 'collections' || type === 'versions' || type === 'groups'))
+
+    this.nextSibling = nextSibling
+    this.prevSibling = prevSibling
+    this.parentNode = parentNode
+
+    this.firstChild = null
+    this.lastChild = null
+  }
+}
 
 const initialState = {
-  collections: {},
-  versions: {},
-  groups: {},
+  focused: false,
+  firstChild: null,
+  lastChild: null,
   navList: {},
   focusedNode: null
 }
@@ -22,82 +40,222 @@ function sidebarReducer (state = initialState, action) {
   try {
     let newState = _.cloneDeep(state)
     switch (action.type) {
+      /** Handle Public Entities */
+      case publicEndpointsActionTypes.ON_PUBLIC_ENDPOINTS_FETCHED:
+        newState = addChildNodes(newState, action.data)
+        return newState
+
+      /** Handle Collection Actions */
       case collectionsActionTypes.ON_COLLECTIONS_FETCHED:
         Object.values(action.collections).forEach((collection, index) => {
-          if (index === 0) newState.focusedNode = `collections_${collection.id}`
-          const prevSibling = index === 0 ? null : `collections_${Object.values(action.collections)[index - 1].id}`
-          const nextSibling = index === Object.values(action.collections).length - 1 ? null : `collections_${Object.values(action.collections)[index + 1].id}`
-          if (_.isEmpty(newState.collections[collection.id])) {
-            newState.collections[collection.id] = { id: collection.id, children: [] }
-          }
-          newState.navList[`collections_${collection.id}`] = new TreeNode({
-            id: collection.id,
-            type: 'collections',
-            parentNode: null,
-            prevSibling,
-            nextSibling
-          })
+          newState = addNewNodeReq(newState, collection, 'collections')
         })
         return newState
 
+      case collectionsActionTypes.ADD_COLLECTION_REQUEST:
+        newState = addNewNodeReq(newState, { ...action.newCollection, id: action.newCollection.requestId }, 'collections')
+        return newState
+
+      case collectionsActionTypes.ON_COLLECTION_ADDED:
+        newState = addNewNodeSuccess(newState, action.response.requestId, action.response.id, 'collections')
+        return newState
+
+      case collectionsActionTypes.ON_COLLECTION_ADDED_ERROR:
+        newState = addNewNodeError(newState, action.newCollection.requestId, 'collections')
+        return newState
+
+      case collectionsActionTypes.DELETE_COLLECTION_REQUEST:
+        newState = removeNodeReq(newState, action.collection.id, 'collections')
+        return newState
+
+      case collectionsActionTypes.ON_COLLECTION_DELETED:
+        newState = removeNodeSuccess(newState, action.payload.collection.id, 'collections')
+        newState = removeChildNodes(newState, action.payload)
+        return newState
+
+      case collectionsActionTypes.ON_COLLECTION_DELETED_ERROR:
+        if (action.error.status === 404) newState = removeNodeSuccess(newState, action.payload.id, 'collections')
+        else newState = removeNodeError(newState, action.collection.id, 'collections')
+        return newState
+
+      case collectionsActionTypes.ON_COLLECTION_DUPLICATED:
+        newState = addNewNodeReq(newState, action.response.collection, 'collections')
+        newState = addChildNodes(newState, action.response)
+        return newState
+
+      case collectionsActionTypes.ON_COLLECTION_DUPLICATED_ERROR:
+        return state
+
+      case collectionsActionTypes.IMPORT_COLLECTION_REQUEST:
+        newState = addNewNodeReq(newState, action.collection, 'collections')
+        return newState
+
+      case collectionsActionTypes.ON_COLLECTION_IMPORTED:
+        newState = addChildNodes(newState, action.response)
+        return newState
+
+      case collectionsActionTypes.ON_COLLECTION_IMPORTED_ERROR:
+        newState = addNewNodeError(newState, action.collection.id, 'collections')
+        return newState
+
+      /** Handle Version Actions */
       case collectionVersionsActionTypes.ON_VERSIONS_FETCHED:
         Object.values(action.versions).forEach(version => {
-          if (_.isEmpty(newState.collections[version.collectionId])) {
-            newState.collections[version.collectionId] = { id: version.collectionId, children: [] }
-          }
-          if (_.isEmpty(newState.versions[version.id])) {
-            newState.versions[version.id] = { pages: [], groups: [] }
-          }
-          newState.collections[version.collectionId].children = [...newState.collections[version.collectionId].children, version.id]
+          newState = addNewNodeReq(newState, version, 'versions')
         })
         return newState
 
+      case collectionVersionsActionTypes.ADD_VERSION_REQUEST:
+        newState = addNewNodeReq(newState, { ...action.newVersion, id: action.newVersion.requestId }, 'versions')
+        return newState
+
+      case collectionVersionsActionTypes.ON_VERSION_ADDED:
+        newState = addNewNodeSuccess(newState, action.response.requestId, action.response.id, 'versions')
+        return newState
+
+      case collectionVersionsActionTypes.ON_VERSION_ADDED_ERROR:
+        newState = addNewNodeError(newState, action.newVersion.requestId, 'versions')
+        return newState
+
+      case collectionVersionsActionTypes.DELETE_VERSION_REQUEST:
+        newState = removeNodeReq(newState, action.versionId, 'versions')
+        return newState
+
+      case collectionVersionsActionTypes.ON_VERSION_DELETED:
+        newState = removeNodeSuccess(newState, action.payload.version.id, 'versions')
+        newState = removeChildNodes(newState, action.payload)
+        return newState
+
+      case collectionVersionsActionTypes.ON_VERSION_DELETED_ERROR:
+        if (action.error.status === 404) newState = removeNodeSuccess(newState, action.version.id, 'versions')
+        else newState = removeNodeError(newState, action.version.id, 'versions')
+        return newState
+
+      case collectionVersionsActionTypes.ON_VERSION_DUPLICATED:
+      case collectionVersionsActionTypes.IMPORT_VERSION: // this action is called when importing a collection as wel. So adding a check for it here.
+        if (!_.isEmpty(action.response.collection)) newState = addNewNodeReq(newState, action.response.collection, 'collections')
+        newState = addNewNodeReq(newState, action.response.version, 'versions')
+        newState = addChildNodes(newState, action.response)
+        return newState
+
+      /** Handle Group Actions */
       case groupsActionTypes.ON_GROUPS_FETCHED:
         Object.values(action.groups).forEach(group => {
-          if (_.isEmpty(newState.versions[group.versionId])) {
-            newState.versions[group.versionId] = { id: group.versionId, pages: [], groups: [] }
-          }
-          if (_.isEmpty(newState.groups[group.id])) {
-            newState.groups[group.id] = { id: group.id, pages: [], endpoints: [] }
-          }
-
-          newState.versions[group.versionId].groups = [...newState.versions[group.versionId].groups, group.id]
+          newState = addNewNodeReq(newState, group, 'groups')
         })
         return newState
+      case groupsActionTypes.ADD_GROUP_REQUEST:
+        newState = addNewNodeReq(newState, {
+          ...action.newGroup,
+          id: action.newGroup.requestId
+        }, 'groups')
+        return newState
 
+      case groupsActionTypes.ON_GROUP_ADDED:
+        newState = addNewNodeSuccess(newState, action.response.requestId, action.response.id, 'groups')
+        return newState
+
+      case groupsActionTypes.ON_GROUP_ADDED_ERROR:
+        newState = addNewNodeError(newState, action.newGroupId.requestId, 'groups')
+        return newState
+
+      case groupsActionTypes.DELETE_GROUP_REQUEST:
+        newState = removeNodeReq(newState, action.group.id, 'groups')
+        return newState
+
+      case groupsActionTypes.ON_GROUP_DELETED:
+        newState = removeNodeSuccess(newState, action.payload.group.id, 'groups')
+        newState = removeChildNodes(newState, action.payload)
+        return newState
+
+      case groupsActionTypes.ON_GROUP_DELETED_ERROR:
+        if (action.error.status === 404) newState = removeNodeSuccess(newState, action.group.id, 'groups')
+        else newState = removeNodeError(newState, action.group.id, 'groups')
+        return newState
+
+      case groupsActionTypes.ON_GROUP_DUPLICATED:
+        newState = addNewNodeReq(newState, action.response.group, 'groups')
+        newState = addChildNodes(newState, { pages: action.response.pages, endpoints: action.response.endpoints })
+        return newState
+
+      /** Handle Page Actions */
       case pagesActionTypes.ON_PAGES_FETCHED:
         Object.values(action.pages).forEach(page => {
-          if (page.versionId) {
-            if (_.isEmpty(newState.versions[page.versionId])) {
-              newState.versions[page.versionId] = { id: page.versionId, pages: [], groups: [] }
-            }
-            newState.versions[page.versionId].pages = [...newState.versions[page.versionId].pages, page.id]
-          } else {
-            if (_.isEmpty(newState.groups[page.groupId])) {
-              newState.groups[page.groupId] = { id: page.groupId, pages: [], endpoints: [] }
-            }
-            newState.groups[page.groupId].pages = [...newState.groups[page.groupId].pages, page.id]
-          }
+          newState = addNewNodeReq(newState, page, 'pages')
         })
         return newState
 
+      case pagesActionTypes.ADD_PAGE_REQUEST:
+      case pagesActionTypes.ADD_GROUP_PAGE_REQUEST:
+        newState = addNewNodeReq(newState, { ...action.newPage, id: action.newPage.requestId }, 'pages')
+        return newState
+
+      case pagesActionTypes.ON_PAGE_ADDED:
+      case pagesActionTypes.ON_GROUP_PAGE_ADDED:
+        newState = addNewNodeSuccess(newState, action.response.requestId, action.response.id, 'pages')
+        return newState
+
+      case pagesActionTypes.ON_PAGE_ADDED_ERROR:
+      case pagesActionTypes.ON_GROUP_PAGE_ADDED_ERROR:
+        newState = addNewNodeError(newState, action.newPage.requestId, 'pages')
+        return newState
+
+      case pagesActionTypes.DELETE_PAGE_REQUEST:
+        newState = removeNodeReq(newState, action.page.id, 'pages')
+        return newState
+
+      case pagesActionTypes.ON_PAGE_DELETED:
+        newState = removeNodeSuccess(newState, action.page.id, 'pages')
+        return newState
+
+      case pagesActionTypes.ON_PAGE_DELETED_ERROR:
+        if (action.error.status === 404) newState = removeNodeSuccess(newState, action.page.id, 'pages')
+        else newState = removeNodeError(newState, action.page.id, 'pages')
+        return newState
+
+      case pagesActionTypes.ON_PAGE_DUPLICATED:
+        newState = addNewNodeReq(newState, action.response, 'pages')
+        return newState
+
+      /** Handle Endpoint Actions */
       case endpointsActionTypes.ON_ENDPOINTS_FETCHED:
         Object.values(action.endpoints).forEach(endpoint => {
-          if (_.isEmpty(newState.groups[endpoint.groupId])) {
-            newState.groups[endpoint.groupId] = { id: endpoint.groupId, pages: [], endpoints: [] }
-          }
-          newState.groups[endpoint.groupId].endpoints = [...newState.groups[endpoint.groupId].endpoints, endpoint.id]
+          newState = addNewNodeReq(newState, endpoint, 'endpoints')
         })
+        return newState
+
+      case endpointsActionTypes.ADD_ENDPOINT_REQUEST:
+        newState = addNewNodeReq(newState, { ...action.newEndpoint, id: action.newEndpoint.requestId }, 'endpoints')
         return newState
 
       case endpointsActionTypes.ON_ENDPOINT_ADDED:
-        console.log(action)
-        return state
+        newState = addNewNodeSuccess(newState, action.response.requestId, action.response.id, 'endpoints')
+        return newState
 
+      case endpointsActionTypes.ON_ENDPOINT_ADDED_ERROR:
+        newState = addNewNodeError(newState, action.newEndpoint.requestId, 'endpoints')
+        return newState
+
+      case endpointsActionTypes.DELETE_ENDPOINT_REQUEST:
+        newState = removeNodeReq(newState, action.endpoint.id, 'endpoints')
+        return newState
+
+      case endpointsActionTypes.ON_ENDPOINT_DELETED:
+        newState = removeNodeSuccess(newState, action.endpoint.id, 'endpoints')
+        return newState
+
+      case endpointsActionTypes.ON_ENDPOINT_DELETED_ERROR:
+        if (action.error.status === 404) newState = removeNodeSuccess(newState, action.endpoint.id, 'endpoints')
+        else newState = removeNodeError(newState, action.endpoint.id, 'endpoints')
+        return newState
+
+      case endpointsActionTypes.ON_ENDPOINT_DUPLICATED:
+        newState = addNewNodeReq(newState, action.response, 'endpoints')
+        return newState
+
+      /** Handle Navigation Actions */
       case sidebarActionTypes.FOCUS_ITEM:
-        if (newState.focusedNode) newState.navList[newState.focusedNode].focused = false
-        newState.navList[action.payload].focused = true
-        newState.focusedNode = action.payload
+        newState = focusNode(newState, action.payload)
         return newState
 
       case sidebarActionTypes.FOCUS_PREVIOUS_ITEM:
@@ -113,17 +271,345 @@ function sidebarReducer (state = initialState, action) {
         return newState
 
       case sidebarActionTypes.COLLAPSE_ITEM:
-        newState = collapseItem(newState)
+        newState = collapseItem(newState.focusedNode, newState)
         return newState
 
       default: return state
     }
   } catch (err) {
-    console.log('MY_TEST_ERROR', err)
     return state
   }
 }
 
+/**
+ * Focuses a node at given nodeAddress and removes focus from current focused node if it exists.
+ * @param {any} newState Deep copied state of sidebar store.
+ * @param {string} nodeAddress Address of node in the map to focus.
+ * @returns Modified State
+ */
+function focusNode (newState, nodeAddress) {
+  if (!_.isEmpty(newState.navList[newState.focusedNode])) newState.navList[newState.focusedNode].focused = false
+  newState.navList[nodeAddress].focused = true
+  newState.focusedNode = nodeAddress
+  return newState
+}
+
+/**
+ * Adds Child Nodes of Parent Entity
+ * @param {any} newState Deep copied state of sidebar store.
+ * @param {any} payload Object containing map of child Entity objects with any of keys: collections, versions, groups, endpoints, pages,.
+ * @returns Modified State
+ */
+function addChildNodes (newState, payload) {
+  if (!_.isEmpty(payload.collections)) {
+    _.values(payload.collections).forEach(collection => {
+      newState = addNewNodeReq(newState, collection, 'collections')
+    })
+  }
+  if (!_.isEmpty(payload.versions)) {
+    _.values(payload.versions).forEach(version => {
+      newState = addNewNodeReq(newState, version, 'versions')
+    })
+  }
+  if (!_.isEmpty(payload.groups)) {
+    _.values(payload.groups).forEach(group => {
+      newState = addNewNodeReq(newState, group, 'groups')
+    })
+  }
+  if (!_.isEmpty(payload.pages)) {
+    _.values(payload.pages).forEach(page => {
+      newState = addNewNodeReq(newState, page, 'pages')
+    })
+  }
+  if (!_.isEmpty(payload.endpoints)) {
+    _.values(payload.endpoints).forEach(endpoint => {
+      newState = addNewNodeReq(newState, endpoint, 'endpoints')
+    })
+  }
+  return newState
+}
+
+/**
+ * Removes Child Nodes of Parent Entity
+ * @param {any} newState Deep copied state of sidebar store.
+ * @param {any} payload Object containing child Ids with any of keys: collectionIds, versionIds, groupIds, endpointIds, pageIds,.
+ * @returns Modified State
+ */
+function removeChildNodes (newState, payload) {
+  if (!_.isEmpty(payload.collectionIds)) {
+    payload.collectionIds.forEach(collectionId => {
+      newState = removeNodeSuccess(newState, collectionId, 'collections')
+    })
+  }
+  if (!_.isEmpty(payload.versionIds)) {
+    payload.versionIds.forEach(versionId => {
+      newState = removeNodeSuccess(newState, versionId, 'versions')
+    })
+  }
+  if (!_.isEmpty(payload.groupIds)) {
+    payload.groupIds.forEach(groupId => {
+      newState = removeNodeSuccess(newState, groupId, 'groups')
+    })
+  }
+  if (!_.isEmpty(payload.endpointIds)) {
+    payload.endpointIds.forEach(endpointId => {
+      newState = removeNodeSuccess(newState, endpointId, 'endpoints')
+    })
+  }
+  if (!_.isEmpty(payload.pageIds)) {
+    payload.pageIds.forEach(pageId => {
+      newState = removeNodeSuccess(newState, pageId, 'pages')
+    })
+  }
+  return newState
+}
+
+/**
+ * Adds a New Node To NavList Map and creates its Link with parent & sibling nodes.
+ * @param {any} newState Deep copied state of sidebar store.
+ * @param {any} newEntity can be any of page, endpoint, group, version, collection object.
+ * @param {string} type can be any of 'collections','versions','groups','pages','endpoints'.
+ * @returns Modified state
+ */
+function addNewNodeReq (newState, newEntity, type) {
+  const newNodeAddress = `${type}_${newEntity.id}`
+  let parentNode = null; let prevSibling = null; let nextSibling = null
+  if (_.isEmpty(newState.navList[newNodeAddress])) {
+    newState.navList[newNodeAddress] = new TreeNode({ id: newEntity.id, type, parentNode, prevSibling, nextSibling })
+  }
+
+  switch (type) {
+    case 'collections':
+      if (newState.lastChild) {
+        newState.navList[newNodeAddress].prevSibling = newState.lastChild
+        newState.navList[newState.lastChild].nextSibling = newNodeAddress
+      } else {
+        newState.firstChild = newNodeAddress
+      }
+      newState.lastChild = newNodeAddress
+      break
+
+    case 'versions':
+      parentNode = `collections_${newEntity.collectionId}`
+      if (_.isEmpty(newState.navList[parentNode])) newState = addTempNode(newState, newEntity.collectionId, 'collections')
+
+      newState.navList[newNodeAddress].parentNode = parentNode
+
+      if (newState.navList[parentNode].lastChild) {
+        prevSibling = newState.navList[parentNode].lastChild
+        newState.navList[newNodeAddress].prevSibling = prevSibling
+        newState.navList[prevSibling].nextSibling = newNodeAddress
+      } else {
+        newState.navList[parentNode].firstChild = newNodeAddress
+      }
+      newState.navList[parentNode].lastChild = newNodeAddress
+      break
+
+    case 'groups':
+
+      parentNode = `versions_${newEntity.versionId}`
+      if (_.isEmpty(newState.navList[parentNode])) newState = addTempNode(newState, newEntity.versionId, 'versions')
+
+      newState.navList[newNodeAddress].parentNode = parentNode
+
+      if (newState.navList[parentNode].lastChild) {
+        prevSibling = newState.navList[parentNode].lastChild
+        newState.navList[newNodeAddress].prevSibling = prevSibling
+        newState.navList[prevSibling].nextSibling = newNodeAddress
+      } else {
+        newState.navList[parentNode].firstChild = newNodeAddress
+      }
+      newState.navList[parentNode].lastChild = newNodeAddress
+      break
+
+    case 'pages':
+
+      parentNode = newEntity.groupId ? `groups_${newEntity.groupId}` : `versions_${newEntity.versionId}`
+      if (_.isEmpty(newState.navList[parentNode])) { newState = addTempNode(newState, newEntity.groupId ? newEntity.groupId : newEntity.versionId, newEntity.groupId ? 'groups' : 'versions') }
+
+      newState.navList[newNodeAddress].parentNode = parentNode
+
+      if (newState.navList[parentNode].firstChild) {
+        nextSibling = newState.navList[parentNode].firstChild
+        newState.navList[newNodeAddress].nextSibling = nextSibling
+        newState.navList[nextSibling].prevSibling = newNodeAddress
+      } else {
+        newState.navList[parentNode].lastChild = newNodeAddress
+      }
+      newState.navList[parentNode].firstChild = newNodeAddress
+      break
+
+    case 'endpoints':
+      parentNode = `groups_${newEntity.groupId}`
+      if (_.isEmpty(newState.navList[parentNode])) newState = addTempNode(newState, newEntity.groupId, 'groups')
+      newState.navList[newNodeAddress].parentNode = parentNode
+
+      if (newState.navList[parentNode].lastChild) {
+        prevSibling = newState.navList[parentNode].lastChild
+        newState.navList[newNodeAddress].prevSibling = prevSibling
+        newState.navList[prevSibling].nextSibling = newNodeAddress
+      } else {
+        newState.navList[parentNode].firstChild = newNodeAddress
+      }
+      newState.navList[parentNode].lastChild = newNodeAddress
+      break
+
+    default: break
+  }
+
+  return newState
+}
+
+/**
+ * Adds a temporary Node to List: A node with parent and sibling links as null. Useful in creating a temporary parent node before creating child nodes.
+ * @param {any} newState Deep copied state of sidebar store.
+ * @param {string} id Entity Id
+ * @param {string} type Type of Entity, can be any of 'collections','versions','groups','pages','endpoints'.
+ * @returns Modified state
+ */
+function addTempNode (newState, id, type) {
+  const nodeAddress = `${type}_${id}`
+  newState.navList[nodeAddress] = new TreeNode({ id: id, type, parentNode: null, prevSibling: null, nextSibling: null })
+  return newState
+}
+
+/**
+ * Used in optimistic approach to replace the key of previously made node with the new id received from API if everything succeeds.
+ * @param {*} newState Deep copied state of sidebar store.
+ * @param {string} requestId Entity Id used to create the node in first place
+ * @param {string} id New entity Id received from the API
+ * @param {*} type Type of Entity, can be any of 'collections','versions','groups','pages','endpoints'.
+ * @returns Modified state
+ */
+function addNewNodeSuccess (newState, requestId, id, type) {
+  const reqNodeAddress = `${type}_${requestId}`
+  const nodeAddress = `${type}_${id}`
+
+  const { prevSibling: prevSiblingAdress, nextSibling: nextSiblingAddress, parentNode: parentNodeAddress } = newState.navList[reqNodeAddress]
+  const parentNode = parentNodeAddress ? newState.navList[parentNodeAddress] : newState
+  const prevSiblingNode = prevSiblingAdress ? newState.navList[prevSiblingAdress] : null
+  const nextSiblingNode = nextSiblingAddress ? newState.navList[nextSiblingAddress] : null
+
+  if (parentNode.firstChild === reqNodeAddress) {
+    parentNode.firstChild = nodeAddress
+  }
+
+  if (parentNode.lastChild === reqNodeAddress) {
+    parentNode.lastChild = nodeAddress
+  }
+
+  if (prevSiblingNode && prevSiblingNode.nextSibling === reqNodeAddress) {
+    prevSiblingNode.nextSibling = nodeAddress
+  }
+
+  if (nextSiblingNode && nextSiblingNode.prevSibling === reqNodeAddress) {
+    nextSiblingNode.prevSibling = nodeAddress
+  }
+
+  newState.navList[nodeAddress] = newState.navList[reqNodeAddress]
+  newState.navList[nodeAddress].id = id
+
+  delete newState.navList[reqNodeAddress]
+  return newState
+}
+
+/**
+ *
+ * @param {any} newState Deep copied state of sidebar store.
+ * @param {string} requestId Id to be be removed if error occured
+ * @param {string} type Type of Entity, can be any of 'collections','versions','groups','pages','endpoints'.
+ * @returns Modified state
+ */
+function addNewNodeError (newState, requestId, type) {
+  const reqNodeAddress = `${type}_${requestId}`
+  newState = removeNodeReq(newState, requestId, type)
+  delete newState.navList[reqNodeAddress]
+  return newState
+}
+
+/**
+ * Unlink Node (or) Remove Links to Parent and Sibling Nodes.
+ * @param {any} newState
+ * @param {string} requestId uniques id of entity
+ * @param {string} type can be any of ['collections','versions','groups','pages','endpoints']
+ * @returns Modified state
+ */
+function removeNodeReq (newState, requestId, type) {
+  const nodeAddress = `${type}_${requestId}`
+  const nodeToRemove = newState.navList[nodeAddress]
+  const parentNode = nodeToRemove.parentNode ? newState.navList[nodeToRemove.parentNode] : newState
+  if (parentNode) {
+    if (parentNode.firstChild === parentNode.lastChild) {
+      parentNode.firstChild = null
+      parentNode.lastChild = null
+      newState = focusNode(newState, nodeToRemove.parentNode)
+    } else if (nodeAddress === parentNode.firstChild) {
+      parentNode.firstChild = nodeToRemove.nextSibling
+      newState.navList[nodeToRemove.nextSibling].prevSibling = nodeToRemove.prevSibling
+      newState = focusNode(newState, nodeToRemove.nextSibling)
+    } else if (nodeAddress === parentNode.lastChild) {
+      parentNode.lastChild = nodeToRemove.prevSibling
+      newState.navList[nodeToRemove.prevSibling].nextSibling = nodeToRemove.nextSibling
+      newState = focusNode(newState, nodeToRemove.prevSibling)
+    } else {
+      newState.navList[nodeToRemove.prevSibling].nextSibling = nodeToRemove.nextSibling
+      newState.navList[nodeToRemove.nextSibling].prevSibling = nodeToRemove.prevSibling
+      newState = focusNode(newState, nodeToRemove.nextSibling)
+    }
+  }
+  return newState
+}
+
+/**
+ * Deletes Unlinked Node from NavList
+ * @param {any} newState
+ * @param {string} id uniques id of entity
+ * @param {string} type can be any of ['collections','versions','groups','pages','endpoints']
+ * @returns Modified state
+ */
+function removeNodeSuccess (newState, id, type) {
+  const nodeAddress = `${type}_${id}`
+  delete newState.navList[nodeAddress]
+  return newState
+}
+
+/**
+ * Restores Parent and Sibling Links of Unlinked Node from NavList Map.
+ * @param {any} newState
+ * @param {string} id uniques id of entity
+ * @param {string} type can be any of ['collections','versions','groups','pages','endpoints']
+ * @returns Modified state
+ */
+function removeNodeError (newState, id, type) {
+  const nodeAddress = `${type}_${id}`
+  const nodeRemoved = newState.navList[nodeAddress]
+  const parentNode = nodeRemoved.parentNode ? newState.navList[nodeRemoved.parentNode] : newState
+
+  if (nodeRemoved.prevSibling === nodeRemoved.nextSibling) {
+    // it was the only child of its parent
+    parentNode.firstChild = nodeAddress
+    parentNode.lastChild = nodeAddress
+  } else if (nodeRemoved.prevSibling === null) {
+    // it was the first child
+    newState.navList[parentNode.firstChild].prevSibling = nodeAddress
+    parentNode.firstChild = nodeAddress
+  } else if (nodeRemoved.nextSibling === null) {
+    // it was the last child
+    newState.navList[parentNode.lastChild].nextSibling = nodeAddress
+    parentNode.lastChild = nodeAddress
+  } else {
+    // it was middle child
+    newState.navList[nodeRemoved.prevSibling].nextSibling = nodeAddress
+    newState.navList[nodeRemoved.nextSibling].prevSibling = nodeAddress
+  }
+  return newState
+}
+
+/**
+ * Focuses previous Node in the NavList.
+ * @param {any} newState Deep copied state of sidebar.
+ * @returns Modified state
+ */
 function focusPrevItem (newState) {
   const { parentNode, prevSibling } = newState.navList[newState.focusedNode]
   newState.navList[newState.focusedNode].focused = false
@@ -168,12 +654,16 @@ function findPrevSiblingsLastChild (newState) {
   return null
 }
 
+/**
+ * Focuses next Node in the NavList.
+ * @param {any} newState Deep copied state of sidebar.
+ * @returns modified state
+ */
 function focusNextItem (newState) {
   const { firstChild, expanded, isEpandable, nextSibling } = newState.navList[newState.focusedNode]
   newState.navList[newState.focusedNode].focused = false
   if (isEpandable && expanded) {
     if (firstChild) {
-      console.log({ firstChild })
       newState.navList[firstChild].focused = true
       newState.focusedNode = firstChild
     } else {
@@ -216,120 +706,26 @@ function findParentWithNextSibling (newState) {
   return temp.nextSibling
 }
 
-function collapseItem (newState) {
-  newState.navList[newState.focusedNode].expanded = false
+/**
+ * Collapses the given node.
+ * @param {string} nodeAddress Address of node in the NavList map.
+ * @param {any} newState Deep copied state of sidebar
+ * @returns
+ */
+function collapseItem (nodeAddress, newState) {
+  newState.navList[nodeAddress].expanded = false
   return newState
 }
 
+/**
+ * Expands the given node.
+ * @param {string} nodeAddress Address of node in the NavList map.
+ * @param {any} newState Deep copied state of sidebar
+ * @returns
+ */
 function expandItem (nodeAddress, newState) {
-  const { type, id } = newState.navList[nodeAddress]
-  const currentNode = newState[type][id]
   newState.navList[nodeAddress].expanded = true
-  switch (type) {
-    case 'collections':
-      if (currentNode.children.length) {
-        newState.navList[nodeAddress].firstChild = `versions_${currentNode.children[0]}`
-        newState.navList[nodeAddress].lastChild = `versions_${currentNode.children[currentNode.children.length - 1]}`
-        currentNode.children.forEach((version, index) => {
-          const prevSibling = index === 0 ? null : `versions_${currentNode.children[index - 1]}`
-          const nextSibling = index === currentNode.children.length - 1 ? null : `versions_${currentNode.children[index + 1]}`
-          newState.navList[`versions_${version}`] = new TreeNode({
-            id: version,
-            type: 'versions',
-            parentNode: nodeAddress,
-            prevSibling,
-            nextSibling
-          })
-        })
-      }
-      break
-    case 'versions':
-      if (currentNode.pages.length || currentNode.groups.length) {
-        newState.navList[nodeAddress].firstChild = currentNode.pages.length ? `pages_${currentNode.pages[0]}` : currentNode.groups.length ? `groups_${currentNode.groups[0]}` : null
-        currentNode.pages.forEach((page, index) => {
-          const prevSibling = index === 0 ? null : `pages_${currentNode.pages[index - 1]}`
-          const nextSibling = index === currentNode.pages.length - 1 ? currentNode.groups.length ? `groups_${currentNode.groups[0]}` : null : `pages_${currentNode.pages[index + 1]}`
-          newState.navList[`pages_${page}`] = new TreeNode({
-            id: page,
-            type: 'pages',
-            parentNode: nodeAddress,
-            prevSibling,
-            nextSibling
-
-          })
-          newState.navList[nodeAddress].lastChild = `pages_${page}`
-        })
-        currentNode.groups.forEach((group, index) => {
-          const prevSibling = index === 0 ? currentNode.pages.length ? `pages_${currentNode.pages[currentNode.pages.length - 1]}` : null : `groups_${currentNode.groups[index - 1]}`
-          const nextSibling = index === currentNode.groups.length - 1 ? null : `groups_${currentNode.groups[index + 1]}`
-
-          newState.navList[`groups_${group}`] = new TreeNode({
-            id: group,
-            type: 'groups',
-            parentNode: nodeAddress,
-            prevSibling,
-            nextSibling
-          })
-
-          newState.navList[nodeAddress].lastChild = `groups_${group}`
-        })
-      }
-      break
-    case 'groups':
-      if (currentNode.pages.length || currentNode.endpoints.length) {
-        newState.navList[nodeAddress].firstChild = currentNode.pages.length ? `pages_${currentNode.pages[0]}` : currentNode.endpoints.length ? `endpoints_${currentNode.endpoints[0]}` : null
-        currentNode.pages.forEach((page, index) => {
-          const prevSibling = index === 0 ? null : `pages_${currentNode.pages[index - 1]}`
-          const nextSibling = index === currentNode.pages.length - 1 ? currentNode.groups.length ? `groups_${currentNode.groups[0]}` : null : `pages_${currentNode.pages[index + 1]}`
-
-          newState.navList[`pages_${page}`] = new TreeNode({
-            id: page,
-            type: 'pages',
-            parentNode: nodeAddress,
-            prevSibling,
-            nextSibling
-
-          })
-
-          newState.navList[nodeAddress].lastChild = `pages_${page}`
-        })
-        currentNode.endpoints.forEach((endpoint, index) => {
-          const prevSibling = index === 0 ? currentNode.pages.length ? `pages_${currentNode.pages[currentNode.pages.length - 1]}` : null : `endpoints_${currentNode.endpoints[index - 1]}`
-          const nextSibling = index === currentNode.endpoints.length - 1 ? null : `endpoints_${currentNode.endpoints[index + 1]}`
-
-          newState.navList[`endpoints_${endpoint}`] = new TreeNode({
-            id: endpoint,
-            type: 'endpoints',
-            parentNode: nodeAddress,
-            prevSibling,
-            nextSibling
-          })
-
-          newState.navList[nodeAddress].lastChild = `endpoints_${endpoint}`
-        })
-      }
-      break
-    default: break
-  }
   return newState
-}
-
-class TreeNode {
-  constructor ({ id, type, parentNode, prevSibling, nextSibling }) {
-    this.id = id
-    this.type = type
-
-    this.focused = false
-    this.expanded = false
-    this.isEpandable = !!((type === 'collections' || type === 'versions' || type === 'groups'))
-
-    this.nextSibling = nextSibling
-    this.prevSibling = prevSibling
-    this.parentNode = parentNode
-
-    this.firstChild = null
-    this.lastChild = null
-  }
 }
 
 export default sidebarReducer

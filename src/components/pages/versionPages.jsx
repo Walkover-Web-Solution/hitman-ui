@@ -93,6 +93,73 @@ class VersionPages extends Component {
     }
   }
 
+  renderPublicPages () {
+    const versionPageIds = Object.keys(this.props.pages).filter(
+      (pId) =>
+        this.props.pages[pId].groupId === null &&
+        this.props.pages[pId].versionId === this.props.version_id
+    )
+
+    let versionPagesArray = []
+    for (let index = 0; index < versionPageIds.length; index++) {
+      const id = versionPageIds[index]
+      const groupPage = this.props.pages[id]
+      versionPagesArray = [...versionPagesArray, groupPage]
+    }
+
+    versionPagesArray.sort(function (a, b) {
+      if (a.position < b.position) { return -1 }
+      if (a.position > b.position) { return 1 }
+      return 0
+    })
+
+    const versionPages = {}
+    for (let index = 0; index < versionPagesArray.length; index++) {
+      const id = versionPagesArray[index].id
+      versionPages[id] = this.props.pages[id]
+    }
+    return (
+      versionPages &&
+        Object.keys(versionPages)
+          .map((pageId, index) => (
+            <div key={index} className='linkWith'>
+              <Pages
+                {...this.props}
+                page_id={pageId}
+                index={index}
+                open_delete_page_modal={this.openDeletePageModal.bind(this)}
+                close_delete_page_modal={this.closeDeletePageModal.bind(
+                  this
+                )}
+              />
+            </div>
+          )
+          )
+    )
+  }
+
+  renderDashboardPages () {
+    return (
+      this.props.pagesToRender
+        .map((pageId, index) => (
+          <div key={index} className='linkWith'>
+            <div key={index} className={isDashboardRoute(this.props) ? this.props.pages[pageId].state : null}>
+              <Pages
+                {...this.props}
+                page_id={pageId}
+                index={index}
+                open_delete_page_modal={this.openDeletePageModal.bind(
+                  this
+                )}
+                close_delete_page_modal={this.closeDeletePageModal.bind(
+                  this
+                )}
+              />
+            </div>
+          </div>
+        )))
+  }
+
   render () {
     return (
       <>
@@ -104,47 +171,8 @@ class VersionPages extends Component {
               ' Are you sure you wish to delete this page? ',
               this.state.selectedPage
             )}
-        {this.props.pagesToRender
-          .map((pageId, index) => (
-            <div key={index} className='linkWith'>
-              {
-                  isDashboardRoute(this.props)
-                    ? (
-                      <div
-                        key={index}
-                        className={
-                          isDashboardRoute(this.props)
-                            ? this.props.pages[pageId].state
-                            : null
-                        }
-                      >
-                        <Pages
-                          {...this.props}
-                          page_id={pageId}
-                          index={index}
-                          open_delete_page_modal={this.openDeletePageModal.bind(
-                            this
-                          )}
-                          close_delete_page_modal={this.closeDeletePageModal.bind(
-                            this
-                          )}
-                        />
-                      </div>
-                      )
-                    : (
-                      <Pages
-                        {...this.props}
-                        page_id={pageId}
-                        index={index}
-                        open_delete_page_modal={this.openDeletePageModal.bind(this)}
-                        close_delete_page_modal={this.closeDeletePageModal.bind(
-                          this
-                        )}
-                      />
-                      )
-                }
-            </div>
-          ))}
+        {isDashboardRoute(this.props, true) ? this.renderDashboardPages() : this.renderPublicPages()}
+
       </>
     )
   }
