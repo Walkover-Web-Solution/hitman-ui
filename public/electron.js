@@ -127,26 +127,22 @@ function createWindow () {
 
       /** Navigate down an Item in sidebar: DOWN */
       if (input.key.toLowerCase() === 'arrowdown') {
-        event.preventDefault()
         mainWindow.webContents.send('SIDEBAR_SHORTCUTS_CHANNEL', 'DOWN_NAVIGATION')
       }
 
       /** Navigate up an Item in sidebar: UP */
       if (input.key.toLowerCase() === 'arrowup') {
-        event.preventDefault()
         mainWindow.webContents.send('SIDEBAR_SHORTCUTS_CHANNEL', 'UP_NAVIGATION')
       }
 
       /** Open Item from sidebar: RIGHT */
       if (input.key.toLowerCase() === 'arrowright') {
         mainWindow.webContents.send('SIDEBAR_SHORTCUTS_CHANNEL', 'OPEN_ENTITY')
-        event.preventDefault()
       }
 
       /** Close the opened Item from Sidebar: CTRL+LEFT or CMD+LEFT */
       if (CommandOrControl && input.key.toLowerCase() === 'arrowleft') {
         mainWindow.webContents.send('SIDEBAR_SHORTCUTS_CHANNEL', 'CLOSE_ENTITY')
-        event.preventDefault()
       }
 
       /** Duplicate the titem from sidebar: CTRL+D or CMD+D */

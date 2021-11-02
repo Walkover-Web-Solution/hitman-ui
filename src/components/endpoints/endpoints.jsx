@@ -21,6 +21,7 @@ import {
 import filterService from '../../services/filterService'
 import GlobeIcon from '../../assets/icons/globe-icon.svg'
 import AddEntity from '../main/addEntity/addEntity'
+import sidebarActions from '../main/sidebar/redux/sidebarActions'
 
 const endpointsEnum = {
   PENDING_STATE: 'Pending',
@@ -89,7 +90,7 @@ class Endpoints extends Component {
     if (ref) {
       setTimeout(() => {
         ref.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' })
-      }, 300)
+      }, 100)
     }
   }
 
@@ -466,18 +467,23 @@ class Endpoints extends Component {
   displaySingleEndpoint (endpointId) {
     const idToCheck = this.props.location.pathname.split('/')[4] === 'endpoint' ? this.props.location.pathname.split('/')[5] : null
     const { focused } = this.props.sidebar.navList[`endpoints_${endpointId}`]
+    const { focused: sidebarFocused } = this.props.sidebar
+    if (focused && this.scrollRef[endpointId]) this.scrollToEndpoint(endpointId)
     return (
       <div ref={(newRef) => { this.scrollRef[endpointId] = newRef }} className={idToCheck === endpointId ? 'sidebar-accordion active' : 'sidebar-accordion'} key={endpointId}>
         <div className={this.props.endpoints[endpointId].state} />
         <button
-          className={[focused ? 'focused' : '']}
-          onClick={() =>
+          tabIndex={-1}
+          className={[focused && sidebarFocused ? 'focused' : '']}
+          onClick={() => {
+            sidebarActions.toggleItem('endpoints', endpointId)
             this.handleDisplay(
               this.props.endpoints[endpointId],
               this.props.group_id,
               this.props.collection_id,
               true
-            )}
+            )
+          }}
           onDoubleClick={() =>
             this.handleDisplay(
               this.props.endpoints[endpointId],

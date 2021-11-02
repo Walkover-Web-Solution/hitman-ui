@@ -17,7 +17,7 @@ class TreeNode {
 
     this.focused = false
     this.expanded = false
-    this.isEpandable = !!((type === 'collections' || type === 'versions' || type === 'groups'))
+    this.isExpandable = !!((type === 'collections' || type === 'versions' || type === 'groups'))
 
     this.nextSibling = nextSibling
     this.prevSibling = prevSibling
@@ -254,6 +254,14 @@ function sidebarReducer (state = initialState, action) {
         return newState
 
       /** Handle Navigation Actions */
+      case sidebarActionTypes.FOCUS_SIDEBAR:
+        newState.focused = true
+        return newState
+
+      case sidebarActionTypes.DEFOCUS_SIDEBAR:
+        newState.focused = false
+        return newState
+
       case sidebarActionTypes.FOCUS_ITEM:
         newState = focusNode(newState, action.payload)
         return newState
@@ -277,6 +285,7 @@ function sidebarReducer (state = initialState, action) {
       default: return state
     }
   } catch (err) {
+    console.log(err)
     return state
   }
 }
@@ -289,8 +298,14 @@ function sidebarReducer (state = initialState, action) {
  */
 function focusNode (newState, nodeAddress) {
   if (!_.isEmpty(newState.navList[newState.focusedNode])) newState.navList[newState.focusedNode].focused = false
-  newState.navList[nodeAddress].focused = true
-  newState.focusedNode = nodeAddress
+
+  if (!_.isEmpty(newState.navList[nodeAddress])) {
+    newState.navList[nodeAddress].focused = true
+    newState.focusedNode = nodeAddress
+  } else {
+    newState.focusedNode = null
+  }
+
   return newState
 }
 
@@ -542,7 +557,7 @@ function removeNodeReq (newState, requestId, type) {
     if (parentNode.firstChild === parentNode.lastChild) {
       parentNode.firstChild = null
       parentNode.lastChild = null
-      newState = focusNode(newState, nodeToRemove.parentNode)
+      newState = focusNode(newState, nodeToRemove.parentNode ? nodeToRemove.parentNode : null)
     } else if (nodeAddress === parentNode.firstChild) {
       parentNode.firstChild = nodeToRemove.nextSibling
       newState.navList[nodeToRemove.nextSibling].prevSibling = nodeToRemove.prevSibling
@@ -611,29 +626,36 @@ function removeNodeError (newState, id, type) {
  * @returns Modified state
  */
 function focusPrevItem (newState) {
-  const { parentNode, prevSibling } = newState.navList[newState.focusedNode]
-  newState.navList[newState.focusedNode].focused = false
-  const prevSiblingNode = newState.navList[prevSibling]
-  if (prevSiblingNode) {
-    if (prevSiblingNode.isEpandable && prevSiblingNode.expanded) {
-      const siblingsLastChild = findPrevSiblingsLastChild(newState)
-      if (siblingsLastChild) {
-        newState.navList[siblingsLastChild].focused = true
-        newState.focusedNode = siblingsLastChild
+  if (!newState.focusedNode) {
+    if (newState.lastChild) {
+      newState.focusedNode = newState.lastChild
+      newState.navList[newState.lastChild].focused = true
+    }
+  } else {
+    const { parentNode, prevSibling } = newState.navList[newState.focusedNode]
+    newState.navList[newState.focusedNode].focused = false
+    const prevSiblingNode = newState.navList[prevSibling]
+    if (prevSiblingNode) {
+      if (prevSiblingNode.isExpandable && prevSiblingNode.expanded) {
+        const siblingsLastChild = findPrevSiblingsLastChild(newState)
+        if (siblingsLastChild) {
+          newState.navList[siblingsLastChild].focused = true
+          newState.focusedNode = siblingsLastChild
+        } else {
+          newState.navList[prevSibling].focused = true
+          newState.focusedNode = prevSibling
+        }
       } else {
         newState.navList[prevSibling].focused = true
         newState.focusedNode = prevSibling
       }
     } else {
-      newState.navList[prevSibling].focused = true
-      newState.focusedNode = prevSibling
-    }
-  } else {
-    if (parentNode) {
-      newState.navList[parentNode].focused = true
-      newState.focusedNode = parentNode
-    } else {
-      newState.navList[newState.focusedNode].focused = true
+      if (parentNode) {
+        newState.navList[parentNode].focused = true
+        newState.focusedNode = parentNode
+      } else {
+        newState.navList[newState.focusedNode].focused = true
+      }
     }
   }
   return newState
@@ -641,7 +663,7 @@ function focusPrevItem (newState) {
 
 function findPrevSiblingsLastChild (newState) {
   let temp = newState.navList[newState.navList[newState.focusedNode].prevSibling]
-  while (temp.isEpandable && temp.expanded) {
+  while (temp.isExpandable && temp.expanded) {
     if (temp.lastChild) {
       temp = newState.navList[temp.lastChild]
     } else {
@@ -660,12 +682,32 @@ function findPrevSiblingsLastChild (newState) {
  * @returns modified state
  */
 function focusNextItem (newState) {
-  const { firstChild, expanded, isEpandable, nextSibling } = newState.navList[newState.focusedNode]
-  newState.navList[newState.focusedNode].focused = false
-  if (isEpandable && expanded) {
-    if (firstChild) {
-      newState.navList[firstChild].focused = true
-      newState.focusedNode = firstChild
+  if (!newState.focusedNode) {
+    if (newState.firstChild) {
+      newState.focusedNode = newState.firstChild
+      newState.navList[newState.firstChild].focused = true
+    }
+  } else {
+    const { firstChild, expanded, isExpandable, nextSibling } = newState.navList[newState.focusedNode]
+    newState.navList[newState.focusedNode].focused = false
+    if (isExpandable && expanded) {
+      if (firstChild) {
+        newState.navList[firstChild].focused = true
+        newState.focusedNode = firstChild
+      } else {
+        if (nextSibling) {
+          newState.navList[nextSibling].focused = true
+          newState.focusedNode = nextSibling
+        } else {
+          const parentsNextSibling = findParentWithNextSibling(newState)
+          if (parentsNextSibling) {
+            newState.navList[parentsNextSibling].focused = true
+            newState.focusedNode = parentsNextSibling
+          } else {
+            newState.navList[newState.focusedNode].focused = true
+          }
+        }
+      }
     } else {
       if (nextSibling) {
         newState.navList[nextSibling].focused = true
@@ -678,19 +720,6 @@ function focusNextItem (newState) {
         } else {
           newState.navList[newState.focusedNode].focused = true
         }
-      }
-    }
-  } else {
-    if (nextSibling) {
-      newState.navList[nextSibling].focused = true
-      newState.focusedNode = nextSibling
-    } else {
-      const parentsNextSibling = findParentWithNextSibling(newState)
-      if (parentsNextSibling) {
-        newState.navList[parentsNextSibling].focused = true
-        newState.focusedNode = parentsNextSibling
-      } else {
-        newState.navList[newState.focusedNode].focused = true
       }
     }
   }
@@ -724,7 +753,12 @@ function collapseItem (nodeAddress, newState) {
  * @returns
  */
 function expandItem (nodeAddress, newState) {
-  newState.navList[nodeAddress].expanded = true
+  const { isExpandable } = newState.navList[nodeAddress]
+
+  if (isExpandable) {
+    newState.navList[nodeAddress].expanded = true
+  }
+
   return newState
 }
 

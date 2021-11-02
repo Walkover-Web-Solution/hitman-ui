@@ -141,6 +141,16 @@ input[type="text"]:focus {
   }
 }
 
+.primary-sidebar .sidebar-accordion.expanded>button {
+  &:before{
+    transform: rotate(360deg) !important;
+  }
+}
+
+.primary-sidebar button.expanded svg {
+  transform: rotate(90deg) !important;
+}
+
 .sidebar-accordion {
   >button{
     width: 100%;
@@ -188,6 +198,11 @@ input[type="text"]:focus {
       }
     }
   }
+}
+
+.sidebar-content:focus {
+  border: none;
+  outline: none;
 }
 
 .sidebar-accordion-item {

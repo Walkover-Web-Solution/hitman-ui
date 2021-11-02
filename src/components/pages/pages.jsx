@@ -14,6 +14,7 @@ import { closeTab, openInNewTab } from '../tabs/redux/tabsActions'
 
 import PageIcon from '../../assets/icons/page-icon.svg'
 import GlobeIcon from '../../assets/icons/globe-icon.svg'
+import sidebarActions from '../main/sidebar/redux/sidebarActions'
 
 const pagesEnum = {
   PENDING_STATE: 'Pending',
@@ -291,6 +292,8 @@ class Pages extends Component {
     const idToCheck = this.props.location.pathname.split('/')[4] === 'page' ? this.props.location.pathname.split('/')[5] : null
 
     const { focused } = this.props.sidebar.navList[`pages_${pageId}`]
+    const { focused: sidebarFocused } = this.props.sidebar
+
     if (focused && this.scrollRef[pageId]) this.scrollToPage(pageId)
 
     return (
@@ -307,13 +310,15 @@ class Pages extends Component {
           //   e.preventDefault()
           // }}
           // onDrop={(e) => this.props.onDrop(e, pageId)}
-          className={[focused ? 'focused' : ''].join(' ')}
+          tabIndex={-1}
+          className={[focused && sidebarFocused ? 'focused' : ''].join(' ')}
           data-toggle='collapse'
           data-target={`#${pageId}`}
           aria-expanded='true'
           aria-controls={pageId}
           onClick={() => {
             const page = this.props.pages[pageId]
+            sidebarActions.toggleItem('pages', pageId)
             this.handleDisplay(page, this.props.collection_id, true)
           }}
           onDoubleClick={() => {

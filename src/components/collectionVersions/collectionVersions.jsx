@@ -66,6 +66,7 @@ class CollectionVersions extends Component {
     this.filteredEndpointsAndPages = {}
     this.filteredVersionPages = {}
     this.filteredOnlyVersions = {}
+    this.scrollRef = {}
   }
 
   componentDidMount () {
@@ -339,8 +340,19 @@ class CollectionVersions extends Component {
     sidebarActions.toggleItem('versions', id)
   }
 
+  scrollToVersion (versionId) {
+    const ref = this.scrollRef[versionId] || null
+    if (ref) {
+      setTimeout(() => {
+        ref.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' })
+      }, 100)
+    }
+  }
+
   renderBody (versionId, index) {
     const { expanded, focused, firstChild } = this.props.sidebar.navList[`versions_${versionId}`]
+    if (focused && this.scrollRef[versionId]) this.scrollToVersion(versionId)
+    const { focused: sidebarFocused } = this.props.sidebar
     const pagesToRender = []; const groupsToRender = []
     if (firstChild) {
       let childEntity = this.props.sidebar.navList[firstChild]
@@ -360,7 +372,9 @@ class CollectionVersions extends Component {
               id='child-accordion'
             >
               <button
-                className={[focused ? 'focused' : '', expanded ? 'active' : ''].join(' ')}
+                tabIndex={-1}
+                ref={(newRef) => { this.scrollRef[versionId] = newRef }}
+                className={[focused && sidebarFocused ? 'focused' : '', expanded ? 'expanded' : ''].join(' ')}
               >
                 <div className='d-flex align-items-center flex-grow-1' onClick={() => { this.toggleVersionIds(versionId) }}>
                   <span className='versionChovron'>

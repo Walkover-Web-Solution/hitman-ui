@@ -71,6 +71,7 @@ class CollectionsComponent extends Component {
 
     this.keywords = {}
     this.names = {}
+    this.scrollRef = {}
   }
 
   closeCollectionForm () {
@@ -324,8 +325,22 @@ class CollectionsComponent extends Component {
     sidebarActions.toggleItem('collections', id)
   }
 
+  scrollToCollection (collectionId) {
+    const ref = this.scrollRef[collectionId] || null
+    if (ref) {
+      setTimeout(() => {
+        ref.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' })
+      }, 100)
+    }
+  }
+
   renderBody (collectionId, collectionState) {
     const { expanded, focused, firstChild } = this.props.sidebar.navList[`collections_${collectionId}`]
+    const { focused: sidebarFocused } = this.props.sidebar
+
+    if (focused && this.scrollRef[collectionId]) {
+      this.scrollToCollection(collectionId)
+    }
     const versionsToRender = []
     if (firstChild) {
       let childVersion = this.props.sidebar.navList[firstChild]
@@ -341,11 +356,13 @@ class CollectionsComponent extends Component {
         <div
           key={collectionId}
           id='parent-accordion'
-          className={expanded ? 'sidebar-accordion active' : 'sidebar-accordion'}
+          className={expanded ? 'sidebar-accordion expanded' : 'sidebar-accordion'}
         >
           <button
+            tabIndex={-1}
+            ref={(newRef) => { this.scrollRef[collectionId] = newRef }}
             variant='default'
-            className={[focused ? 'focused' : ''].join(' ')}
+            className={[focused && sidebarFocused ? 'focused' : ''].join(' ')}
           >
             <div className='row w-100 align-items-center' onClick={() => this.toggleSelectedColelctionIds(collectionId)}>
               <div className='col-9 fixwidth'>

@@ -75,6 +75,7 @@ class Groups extends Component {
     this.filteredGroupEndpoints = {}
     this.filteredGroupPages = {}
     this.filteredEndpointsAndPages = {}
+    this.scrollRef = {}
   }
 
   handleAddPage (groupId, versionId, collectionId) {
@@ -440,8 +441,19 @@ class Groups extends Component {
     this.pageDrag = true
   }
 
+  scrollToGroup (groupId) {
+    const ref = this.scrollRef[groupId] || null
+    if (ref) {
+      setTimeout(() => {
+        ref.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' })
+      }, 100)
+    }
+  }
+
   renderBody (groupId) {
     const { focused, expanded, firstChild } = this.props.sidebar.navList[`groups_${groupId}`]
+    if (focused && this.scrollRef[groupId]) this.scrollToGroup(groupId)
+    const { focused: sidebarFocused } = this.props.sidebar
     const pagesToRender = []; const endpointsToRender = []
     if (firstChild) {
       let childEntity = this.props.sidebar.navList[firstChild]
@@ -455,12 +467,13 @@ class Groups extends Component {
       isDashboardRoute(this.props, true)
         ? (
           <div
-            key={groupId}
             className='sidebar-accordion accordion'
             id='child-accordion'
           >
             <button
-              className={[focused ? 'focused' : '', expanded ? 'active' : ''].join(' ')}
+              tabIndex={-1}
+              ref={(newRef) => { this.scrollRef[groupId] = newRef }}
+              className={[focused && sidebarFocused ? 'focused' : '', expanded ? 'expanded' : ''].join(' ')}
             >
               <div className='d-flex align-items-center flex-grow-1' onClick={() => this.toggleGroupIds(groupId)}>
                 <span className='versionChovron'>
