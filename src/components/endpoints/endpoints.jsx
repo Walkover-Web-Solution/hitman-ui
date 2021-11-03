@@ -468,7 +468,7 @@ class Endpoints extends Component {
     const idToCheck = this.props.location.pathname.split('/')[4] === 'endpoint' ? this.props.location.pathname.split('/')[5] : null
     const { focused } = this.props.sidebar.navList[`endpoints_${endpointId}`]
     const { focused: sidebarFocused } = this.props.sidebar
-    if (focused && this.scrollRef[endpointId]) this.scrollToEndpoint(endpointId)
+    if (sidebarFocused && focused && this.scrollRef[endpointId]) this.scrollToEndpoint(endpointId)
     return (
       <div ref={(newRef) => { this.scrollRef[endpointId] = newRef }} className={idToCheck === endpointId ? 'sidebar-accordion active' : 'sidebar-accordion'} key={endpointId}>
         <div className={this.props.endpoints[endpointId].state} />

@@ -117,7 +117,7 @@ class Groups extends Component {
 
   setGroupIdforEntity (id, type) {
     const { groupId } = getParentIds(id, type, this.props)
-    this.setSelectedGroupId(groupId, true)
+    sidebarActions.expandItem('groups', groupId)
   }
 
   setSelectedGroupId (id, value) {
@@ -452,8 +452,8 @@ class Groups extends Component {
 
   renderBody (groupId) {
     const { focused, expanded, firstChild } = this.props.sidebar.navList[`groups_${groupId}`]
-    if (focused && this.scrollRef[groupId]) this.scrollToGroup(groupId)
     const { focused: sidebarFocused } = this.props.sidebar
+    if (sidebarFocused && focused && this.scrollRef[groupId]) this.scrollToGroup(groupId)
     const pagesToRender = []; const endpointsToRender = []
     if (firstChild) {
       let childEntity = this.props.sidebar.navList[firstChild]

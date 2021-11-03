@@ -104,7 +104,7 @@ class CollectionVersions extends Component {
 
   setVersionForEntity (id, type) {
     const { versionId } = getParentIds(id, type, this.props)
-    this.setSelectedVersionId(versionId, true)
+    sidebarActions.expandItem('versions', versionId)
   }
 
   setSelectedVersionId (id, value) {
@@ -351,8 +351,8 @@ class CollectionVersions extends Component {
 
   renderBody (versionId, index) {
     const { expanded, focused, firstChild } = this.props.sidebar.navList[`versions_${versionId}`]
-    if (focused && this.scrollRef[versionId]) this.scrollToVersion(versionId)
     const { focused: sidebarFocused } = this.props.sidebar
+    if (sidebarFocused && focused && this.scrollRef[versionId]) this.scrollToVersion(versionId)
     const pagesToRender = []; const groupsToRender = []
     if (firstChild) {
       let childEntity = this.props.sidebar.navList[firstChild]

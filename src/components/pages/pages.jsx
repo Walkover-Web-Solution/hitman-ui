@@ -72,7 +72,7 @@ class Pages extends Component {
     if (newRef) {
       setTimeout(() => {
         newRef.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' })
-      }, 300)
+      }, 100)
     }
   }
 
@@ -294,7 +294,7 @@ class Pages extends Component {
     const { focused } = this.props.sidebar.navList[`pages_${pageId}`]
     const { focused: sidebarFocused } = this.props.sidebar
 
-    if (focused && this.scrollRef[pageId]) this.scrollToPage(pageId)
+    if (sidebarFocused && focused && this.scrollRef[pageId]) this.scrollToPage(pageId)
 
     return (
       <div

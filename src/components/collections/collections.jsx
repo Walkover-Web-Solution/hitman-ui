@@ -105,7 +105,7 @@ class CollectionsComponent extends Component {
 
   setColelctionForEntity (id, type) {
     const { collectionId } = getParentIds(id, type, this.props)
-    this.setSelectedCollectionId(collectionId, true)
+    sidebarActions.expandItem('collections', collectionId)
   }
 
   setSelectedCollectionId (id, value) {
@@ -338,7 +338,7 @@ class CollectionsComponent extends Component {
     const { expanded, focused, firstChild } = this.props.sidebar.navList[`collections_${collectionId}`]
     const { focused: sidebarFocused } = this.props.sidebar
 
-    if (focused && this.scrollRef[collectionId]) {
+    if (sidebarFocused && focused && this.scrollRef[collectionId]) {
       this.scrollToCollection(collectionId)
     }
     const versionsToRender = []
