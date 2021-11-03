@@ -10,6 +10,7 @@ import tabsReducer from '../components/tabs/redux/tabsReducer'
 import cookiesReducer from '../components/cookies/redux/cookiesReducer'
 import modalsReducer from '../components/modals/redux/modalsReducer'
 import historyReducer from '../components/history/redux/historyReducer'
+import sidebarReducer from '../components/main/sidebar/redux/sidebarReducer'
 
 const storeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 
@@ -23,7 +24,8 @@ const rootReducer = combineReducers({
   tabs: tabsReducer,
   history: historyReducer,
   cookies: cookiesReducer,
-  modals: modalsReducer
+  modals: modalsReducer,
+  sidebar: sidebarReducer
 })
 const store = createStore(rootReducer, storeEnhancers(applyMiddleware(thunk)))
 

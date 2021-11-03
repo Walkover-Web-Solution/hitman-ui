@@ -17,6 +17,7 @@ import './collectionVersions.scss'
 import collectionVersionsService from './collectionVersionsService'
 import filterService from '../../services/filterService'
 import AddEntity from '../main/addEntity/addEntity'
+import sidebarActions from '../main/sidebar/redux/sidebarActions'
 
 const mapStateToProps = (state) => {
   return {
@@ -65,6 +66,7 @@ class CollectionVersions extends Component {
     this.filteredEndpointsAndPages = {}
     this.filteredVersionPages = {}
     this.filteredOnlyVersions = {}
+    this.scrollRef = {}
   }
 
   componentDidMount () {
@@ -102,7 +104,7 @@ class CollectionVersions extends Component {
 
   setVersionForEntity (id, type) {
     const { versionId } = getParentIds(id, type, this.props)
-    this.setSelectedVersionId(versionId, true)
+    sidebarActions.expandItem('versions', versionId)
   }
 
   setSelectedVersionId (id, value) {
@@ -335,25 +337,44 @@ class CollectionVersions extends Component {
   }
 
   toggleVersionIds (id) {
-    const currentValue = this.state.selectedVersionIds[id]
-    if (currentValue) {
-      this.setState({ selectedVersionIds: { ...this.state.selectedVersionIds, [id]: !currentValue } })
-    } else {
-      this.setState({ selectedVersionIds: { ...this.state.selectedVersionIds, [id]: true } })
+    sidebarActions.toggleItem('versions', id)
+  }
+
+  scrollToVersion (versionId) {
+    const ref = this.scrollRef[versionId] || null
+    if (ref) {
+      setTimeout(() => {
+        ref.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' })
+      }, 100)
     }
   }
 
-  renderBody (versionId, index, versionsCount) {
+  renderBody (versionId, index) {
+    const { expanded, focused, firstChild } = this.props.sidebar.navList[`versions_${versionId}`]
+    const { focused: sidebarFocused } = this.props.sidebar
+    if (sidebarFocused && focused && this.scrollRef[versionId]) this.scrollToVersion(versionId)
+    const pagesToRender = []; const groupsToRender = []
+    if (firstChild) {
+      let childEntity = this.props.sidebar.navList[firstChild]
+      while (childEntity) {
+        if (childEntity.type === 'pages') pagesToRender.push(childEntity.id)
+        if (childEntity.type === 'groups') groupsToRender.push(childEntity.id)
+        childEntity = this.props.sidebar.navList[childEntity.nextSibling]
+      }
+    }
+
     return (
       isDashboardRoute(this.props, true)
         ? (
-          <div className='hm-sidebar-outer-block' key={versionId}>
+          <div className={['hm-sidebar-outer-block'].join(' ')} key={versionId}>
             <div
               className='sidebar-accordion versionBoldHeading'
               id='child-accordion'
             >
               <button
-                className={this.state.selectedVersionIds[versionId] === true ? 'active' : null}
+                tabIndex={-1}
+                ref={(newRef) => { this.scrollRef[versionId] = newRef }}
+                className={[focused && sidebarFocused ? 'focused' : '', expanded ? 'expanded' : ''].join(' ')}
               >
                 <div className='d-flex align-items-center flex-grow-1' onClick={() => { this.toggleVersionIds(versionId) }}>
                   <span className='versionChovron'>
@@ -362,7 +383,6 @@ class CollectionVersions extends Component {
                     </svg>
                   </span>
                   <div className='sidebar-accordion-item text-truncate d-inline'>
-
                     {this.props.versions[versionId].number}
                   </div>
                 </div>
@@ -462,13 +482,14 @@ class CollectionVersions extends Component {
                         : null
                     }
               </button>
-              {this.state.selectedVersionIds[versionId]
+              {expanded
                 ? (
                   <div className='version-collapse'>
                     <Card.Body>
                       <div className='linkWrapper versionPages'>
                         <VersionPages
                           {...this.props}
+                          pagesToRender={pagesToRender}
                           version_id={versionId}
                           show_filter_version={this.propsFromVersion.bind(this)}
                         />
@@ -476,6 +497,7 @@ class CollectionVersions extends Component {
                       <div className='linkWrapper versionsgroups'>
                         <Groups
                           {...this.props}
+                          groupsToRender={groupsToRender}
                           version_id={versionId}
                           addGroup={this.openAddGroupForm.bind(this)}
                           show_filter_version={this.propsFromVersion.bind(this)}
@@ -489,6 +511,7 @@ class CollectionVersions extends Component {
           </div>
           )
         : (
+
           <>
             {((this.state.selectedVersionIndex === '' && index === 0) ||
                   (this.state.selectedVersionIndex &&
@@ -706,19 +729,23 @@ class CollectionVersions extends Component {
               )
             : null
         }
-        {this.state.value
-          ? this.renderResponses()
-          : this.filteredVersions &&
-          Object.keys(this.filteredVersions) &&
-          Object.keys(this.filteredVersions)
-            .filter(
-              (versionId) =>
-                this.filteredVersions[versionId].collectionId ===
-                this.props.collection_id
-            )
-            .map((versionId, index) => (
-              this.renderBody(versionId, index, versionsCount)
-            ))}
+        {isDashboardRoute(this.props, true)
+          ? this.props.versionsToRender.map((versionId, index) => (
+              this.renderBody(versionId, index)
+            ))
+          : this.state.value
+            ? this.renderResponses()
+            : this.filteredVersions &&
+              Object.keys(this.filteredVersions) &&
+              Object.keys(this.filteredVersions)
+                .filter(
+                  (versionId) =>
+                    this.filteredVersions[versionId].collectionId ===
+                    this.props.collection_id
+                )
+                .map((versionId, index) => (
+                  this.renderBody(versionId, index, versionsCount)
+                ))}
 
         {this.renderForm(versionsCount)}
       </>

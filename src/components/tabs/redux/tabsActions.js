@@ -172,22 +172,22 @@ export const updateTab = (tabId, data) => {
 }
 
 export const setActiveTabId = (tabId) => {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch({
       type: tabsActionTypes.SET_ACTIVE_TAB_ID,
       tabId
     })
-    indexedDbService.updateData('tabs_metadata', tabId, 'activeTabId')
+    await indexedDbService.updateData('tabs_metadata', tabId, 'activeTabId')
   }
 }
 
 export const setTabsOrder = (tabsOrder) => {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch({
       type: tabsActionTypes.SET_TABS_ORDER,
       tabsOrder
     })
-    indexedDbService.updateData('tabs_metadata', tabsOrder, 'tabsOrder')
+    await indexedDbService.updateData('tabs_metadata', tabsOrder, 'tabsOrder')
   }
 }
 

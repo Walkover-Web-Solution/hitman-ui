@@ -147,8 +147,8 @@ class GroupPages extends Component {
     return (
       <div>
         {this.filterGroupPages()}
-        <div>
-          {this.state.showDeleteModal &&
+
+        {this.state.showDeleteModal &&
             pageService.showDeletePageModal(
               this.props,
               this.closeDeletePageModal.bind(this),
@@ -156,23 +156,41 @@ class GroupPages extends Component {
               ' Are you sure you wish to delete this page? ',
               this.state.selectedPage
             )}
-        </div>
 
-        {groupPages &&
-          Object.keys(groupPages)
-            .filter(
-              (pageId) =>
-                this.props.pages[pageId].versionId === this.props.version_id &&
-                this.props.pages[pageId].groupId === this.props.group_id
-            )
-            .map((pageId, index) => (
-              <div
-                key={index}
-                className={
+        {isDashboardRoute(this.props, true) &&
+        this.props.pagesToRender
+          .map((pageId, index) => (
+            <div
+              key={index}
+              className={
                   isDashboardRoute(this.props)
                     ? this.props.pages[pageId].state
                     : null
                 }
+            >
+              <Pages
+                {...this.props}
+                page_id={pageId}
+                index={index}
+                open_delete_page_modal={this.openDeletePageModal.bind(this)}
+                close_delete_page_modal={this.closeDeletePageModal.bind(this)}
+              />
+            </div>
+          ))}
+        {!isDashboardRoute(this.props, true) && groupPages &&
+          Object.keys(groupPages)
+            .filter(
+              (pageId) =>
+                this.props.pages[pageId].versionId === this.props.version_id &&
+                this.props.pages[pageId].groupId === this.props.group_id)
+            .map((pageId, index) => (
+              <div
+                key={index}
+                className={
+                        isDashboardRoute(this.props)
+                          ? this.props.pages[pageId].state
+                          : null
+                      }
               >
                 <Pages
                   {...this.props}

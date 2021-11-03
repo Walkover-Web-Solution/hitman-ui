@@ -9,8 +9,8 @@ import {
 import tabStatusTypes from './tabStatusTypes'
 import { getCurrentUser } from '../auth/authService'
 
-function newTab (props) {
-  store.dispatch(addNewTab({ ...props.history }))
+function newTab () {
+  store.dispatch(addNewTab())
 }
 
 function removeTab (tabId, props) {

@@ -64,13 +64,14 @@ function versionsReducer (state = initialState, action) {
         [action.newVersion.requestId]: action.newVersion
       }
 
-    case versionActionTypes.ON_VERSION_ADDED:
+    case versionActionTypes.ON_VERSION_ADDED: {
       versions = { ...state }
       delete versions[action.response.requestId]
-      delete action.response.requestId
-      versions[action.response.id] = action.response
+      const versionData = { ...action.response }
+      delete versionData.requestId
+      versions[action.response.id] = versionData
       return versions
-
+    }
     case versionActionTypes.ON_VERSION_ADDED_ERROR:
       toast.error(action.error)
       versions = { ...state }

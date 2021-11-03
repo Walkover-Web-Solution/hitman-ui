@@ -44,11 +44,13 @@ function endpointsReducer (state = initialState, action) {
         [action.newEndpoint.requestId]: action.newEndpoint
       }
 
-    case endpointsActionTypes.ON_ENDPOINT_ADDED:
+    case endpointsActionTypes.ON_ENDPOINT_ADDED: {
       endpoints = { ...state }
-      delete endpoints[action.response.requestId]
-      endpoints[action.response.id] = action.response
+      const endpointData = { ...action.response }
+      delete endpointData.requestId
+      endpoints[action.response.id] = endpointData
       return endpoints
+    }
 
     case endpointsActionTypes.ON_ENDPOINT_ADDED_ERROR:
       toast.error(action.error)
