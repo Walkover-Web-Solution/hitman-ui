@@ -93,14 +93,7 @@ class VersionPages extends Component {
     }
   }
 
-  render () {
-    if (this.state.filter !== this.props.filter) {
-      this.filterFlag = false
-    }
-    if (!this.props.filter || this.props.filter === '') {
-      this.filteredVersionPages = { ...this.props.pages }
-    }
-
+  renderPublicPages () {
     const versionPageIds = Object.keys(this.props.pages).filter(
       (pId) =>
         this.props.pages[pId].groupId === null &&
@@ -125,12 +118,52 @@ class VersionPages extends Component {
       const id = versionPagesArray[index].id
       versionPages[id] = this.props.pages[id]
     }
+    return (
+      versionPages &&
+        Object.keys(versionPages)
+          .map((pageId, index) => (
+            <div key={index} className='linkWith'>
+              <Pages
+                {...this.props}
+                page_id={pageId}
+                index={index}
+                open_delete_page_modal={this.openDeletePageModal.bind(this)}
+                close_delete_page_modal={this.closeDeletePageModal.bind(
+                  this
+                )}
+              />
+            </div>
+          )
+          )
+    )
+  }
 
+  renderDashboardPages () {
+    return (
+      this.props.pagesToRender
+        .map((pageId, index) => (
+          <div key={index} className='linkWith'>
+            <div key={index} className={isDashboardRoute(this.props) ? this.props.pages[pageId].state : null}>
+              <Pages
+                {...this.props}
+                page_id={pageId}
+                index={index}
+                open_delete_page_modal={this.openDeletePageModal.bind(
+                  this
+                )}
+                close_delete_page_modal={this.closeDeletePageModal.bind(
+                  this
+                )}
+              />
+            </div>
+          </div>
+        )))
+  }
+
+  render () {
     return (
       <>
-        {this.filterVersionPages()}
-        <div>
-          {this.state.showDeleteModal &&
+        {this.state.showDeleteModal &&
             pageService.showDeletePageModal(
               this.props,
               this.closeDeletePageModal.bind(this),
@@ -138,55 +171,8 @@ class VersionPages extends Component {
               ' Are you sure you wish to delete this page? ',
               this.state.selectedPage
             )}
-        </div>
+        {isDashboardRoute(this.props, true) ? this.renderDashboardPages() : this.renderPublicPages()}
 
-        {versionPages &&
-          Object.keys(versionPages)
-            .filter(
-              (pageId) =>
-                this.props.pages[pageId].versionId === this.props.version_id &&
-                this.props.pages[pageId].groupId === null
-            )
-            .map((pageId, index) => (
-              <div key={index} className='linkWith'>
-                {
-                  isDashboardRoute(this.props)
-                    ? (
-                      <div
-                        key={index}
-                        className={
-                          isDashboardRoute(this.props)
-                            ? this.props.pages[pageId].state
-                            : null
-                        }
-                      >
-                        <Pages
-                          {...this.props}
-                          page_id={pageId}
-                          index={index}
-                          open_delete_page_modal={this.openDeletePageModal.bind(
-                            this
-                          )}
-                          close_delete_page_modal={this.closeDeletePageModal.bind(
-                            this
-                          )}
-                        />
-                      </div>
-                      )
-                    : (
-                      <Pages
-                        {...this.props}
-                        page_id={pageId}
-                        index={index}
-                        open_delete_page_modal={this.openDeletePageModal.bind(this)}
-                        close_delete_page_modal={this.closeDeletePageModal.bind(
-                          this
-                        )}
-                      />
-                      )
-                }
-              </div>
-            ))}
       </>
     )
   }

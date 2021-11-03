@@ -1,5 +1,5 @@
 import Joi from 'joi-browser'
-import React from 'react'
+import React, { createRef } from 'react'
 import { connect } from 'react-redux'
 import Form from '../common/form'
 import './endpoints.scss'
@@ -33,6 +33,8 @@ class SaveAsSidebar extends Form {
       errors: {}
     }
 
+    this.saveAsSidebar = createRef()
+
     this.schema = {
       name: Joi.string()
         .required()
@@ -47,6 +49,7 @@ class SaveAsSidebar extends Form {
     const data = { ...this.state.data }
     data.name = this.props.name
     this.setState({ data })
+    this.saveAsSidebar.focus()
   }
 
   setList (item) {
@@ -256,7 +259,7 @@ class SaveAsSidebar extends Form {
         >
           {' '}
         </div>
-        <div style={saveAsSidebarStyle} className='save-as-sidebar-container'>
+        <div tabIndex={-1} ref={(e) => { this.saveAsSidebar = e }} style={saveAsSidebarStyle} className='save-as-sidebar-container'>
           {this.showCollectionForm()}
           {this.showCollectionVersionForm()}
           {this.showGroupForm()}

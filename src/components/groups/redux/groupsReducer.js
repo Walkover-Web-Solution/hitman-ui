@@ -84,7 +84,7 @@ function groupsReducer (state = initialState, action) {
 
     case groupsActionTypes.ON_GROUP_DUPLICATED: {
       groups = { ...state }
-      const group = action.response.groups
+      const group = action.response.group
       groups = { ...groups, [group.id]: group }
       return groups
     }

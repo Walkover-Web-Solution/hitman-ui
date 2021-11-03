@@ -19,6 +19,7 @@ import './groups.scss'
 import groupsService from './groupsService'
 import filterService from '../../services/filterService'
 import AddEntity from '../main/addEntity/addEntity'
+import sidebarActions from '../main/sidebar/redux/sidebarActions'
 
 const mapStateToProps = (state) => {
   return {
@@ -74,6 +75,7 @@ class Groups extends Component {
     this.filteredGroupEndpoints = {}
     this.filteredGroupPages = {}
     this.filteredEndpointsAndPages = {}
+    this.scrollRef = {}
   }
 
   handleAddPage (groupId, versionId, collectionId) {
@@ -439,17 +441,39 @@ class Groups extends Component {
     this.pageDrag = true
   }
 
+  scrollToGroup (groupId) {
+    const ref = this.scrollRef[groupId] || null
+    if (ref) {
+      setTimeout(() => {
+        ref.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' })
+      }, 100)
+    }
+  }
+
   renderBody (groupId) {
+    const { focused, expanded, firstChild } = this.props.sidebar.navList[`groups_${groupId}`]
+    if (focused && this.scrollRef[groupId]) this.scrollToGroup(groupId)
+    const { focused: sidebarFocused } = this.props.sidebar
+    const pagesToRender = []; const endpointsToRender = []
+    if (firstChild) {
+      let childEntity = this.props.sidebar.navList[firstChild]
+      while (childEntity) {
+        if (childEntity.type === 'pages') pagesToRender.push(childEntity.id)
+        if (childEntity.type === 'endpoints') endpointsToRender.push(childEntity.id)
+        childEntity = this.props.sidebar.navList[childEntity.nextSibling]
+      }
+    }
     return (
       isDashboardRoute(this.props, true)
         ? (
           <div
-            key={groupId}
             className='sidebar-accordion accordion'
             id='child-accordion'
           >
             <button
-              className={this.state.selectedGroupIds[groupId] === true ? 'active' : null}
+              tabIndex={-1}
+              ref={(newRef) => { this.scrollRef[groupId] = newRef }}
+              className={[focused && sidebarFocused ? 'focused' : '', expanded ? 'expanded' : ''].join(' ')}
             >
               <div className='d-flex align-items-center flex-grow-1' onClick={() => this.toggleGroupIds(groupId)}>
                 <span className='versionChovron'>
@@ -556,7 +580,7 @@ class Groups extends Component {
                       : null
                   }
             </button>
-            {this.state.selectedGroupIds[groupId]
+            {expanded
               ? (
                 <div
                   className='group-collapse collapse show'
@@ -564,6 +588,7 @@ class Groups extends Component {
                   <Card.Body>
                     <GroupPages
                       {...this.props}
+                      pagesToRender={pagesToRender}
                       version_id={this.props.groups[groupId].versionId}
                       set_page_drag={this.setPagedrag.bind(this)}
                       group_id={groupId}
@@ -571,6 +596,7 @@ class Groups extends Component {
                     />
                     <Endpoints
                       {...this.props}
+                      endpointsToRender={endpointsToRender}
                       group_id={groupId}
                       set_endpoint_drag={this.setEndpointdrag.bind(this)}
                       endpoints_order={this.props.groups[groupId].endpointsOrder || []}
@@ -625,12 +651,7 @@ class Groups extends Component {
   }
 
   toggleGroupIds (id) {
-    const currentValue = this.state.selectedGroupIds[id]
-    if (currentValue) {
-      this.setState({ selectedGroupIds: { ...this.state.selectedGroupIds, [id]: !currentValue } })
-    } else {
-      this.setState({ selectedGroupIds: { ...this.state.selectedGroupIds, [id]: true } })
-    }
+    sidebarActions.toggleItem('groups', id)
   }
 
   render () {
@@ -654,11 +675,10 @@ class Groups extends Component {
 
     return (
       <>
-        <div>
-          {this.showShareGroupForm()}
-          {this.showEditGroupForm()}
-          {this.showAddGroupPageForm()}
-          {this.state.showDeleteModal &&
+        {this.showShareGroupForm()}
+        {this.showEditGroupForm()}
+        {this.showAddGroupPageForm()}
+        {this.state.showDeleteModal &&
             groupsService.showDeleteGroupModal(
               this.props,
               this.closeDeleteGroupModal.bind(this),
@@ -667,13 +687,17 @@ class Groups extends Component {
               All your pages and endpoints present in this group will be deleted.`,
               this.state.selectedGroup
             )}
-        </div>
-        {this.sortedGroups &&
-          this.sortedGroups
-            .filter((group) => group.versionId === this.props.version_id)
-            .map((group) =>
-              group.id ? <div key={group.id} className='linkWith'>{this.renderBody(group.id)}</div> : null
-            )}
+
+        {isDashboardRoute(this.props, true) && this.props.groupsToRender
+          .map((groupId) =>
+            groupId ? <div key={groupId} className='linkWith'>{this.renderBody(groupId)}</div> : null
+          )}
+
+        {!isDashboardRoute(this.props, true) && this.sortedGroups && this.sortedGroups
+          .filter((group) => group.versionId === this.props.version_id)
+          .map((group) =>
+            group?.id ? <div key={group.id} className='linkWith'>{this.renderBody(group.id)}</div> : null
+          )}
 
         {this.renderForm(this.sortedGroups)}
       </>

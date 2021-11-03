@@ -110,7 +110,7 @@ export const onVersionUpdatedError = (error, originalVersion) => {
 
 export const addVersion = (newVersion, collectionId) => {
   return (dispatch) => {
-    dispatch(addVersionRequest(newVersion))
+    dispatch(addVersionRequest({ ...newVersion, collectionId }))
     collectionVersionsApiService
       .saveCollectionVersion(collectionId, newVersion)
       .then((response) => {
@@ -179,7 +179,7 @@ export const deleteVersion = (version, props) => {
         endpointIds.map((eId) => tabService.removeTab(eId, props))
         pageIds.map((pId) => tabService.removeTab(pId, props))
 
-        dispatch(onVersionDeleted({ groupIds, endpointIds, pageIds }))
+        dispatch(onVersionDeleted({ version, groupIds, endpointIds, pageIds }))
       })
       .catch((error) => {
         dispatch(onVersionDeletedError(error.response, version))

@@ -33,11 +33,14 @@ function pagesReducer (state = initialState, action) {
       }
 
     case pagesActionTypes.ON_PAGE_ADDED:
+    case pagesActionTypes.ON_GROUP_PAGE_ADDED: {
       pages = { ...state }
       delete pages[action.response.requestId]
-      delete action.response.requestId
-      pages[action.response.id] = action.response
+      const pageData = { ...action.response }
+      delete pageData.requestId
+      pages[action.response.id] = pageData
       return pages
+    }
 
     case pagesActionTypes.ON_PAGE_ADDED_ERROR:
       toast.error(action.error)
@@ -53,13 +56,6 @@ function pagesReducer (state = initialState, action) {
         ...state,
         [action.newPage.requestId]: action.newPage
       }
-
-    case pagesActionTypes.ON_GROUP_PAGE_ADDED:
-      pages = { ...state }
-      delete pages[action.response.requestId]
-      delete action.response.requestId
-      pages[action.response.id] = action.response
-      return pages
 
     case pagesActionTypes.ON_GROUP_PAGE_ADDED_ERROR:
       toast.error(action.error)

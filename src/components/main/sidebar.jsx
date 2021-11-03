@@ -6,6 +6,7 @@ import moment from 'moment'
 import Collections from '../collections/collections'
 import CollectionVersions from '../collectionVersions/collectionVersions'
 import { isDashboardRoute, ADD_GROUP_MODAL_NAME, ADD_VERSION_MODAL_NAME, isElectron } from '../common/utility'
+
 import { getCurrentUser } from '../auth/authService'
 import LoginSignupModal from './loginSignupModal'
 import PublishColelctionInfo from './publishCollectionInfo'
@@ -23,6 +24,13 @@ import GroupForm from '../groups/groupForm'
 import PageForm from '../pages/pageForm'
 import EndpointForm from '../endpoints/endpointForm'
 import CollectionModal from '../collections/collectionsModal'
+import store from '../../store/store'
+import sidebarActionTypes from './sidebar/redux/sidebarActionTypes'
+
+import sidebarActions from './sidebar/redux/sidebarActions'
+import DeleteSidebarEntityModal from './sidebar/deleteEntityModal'
+import { DELETE_CONFIRMATION } from '../modals/modalTypes'
+import { openModal } from '../modals/redux/modalsActions'
 
 const mapStateToProps = (state) => {
   return {
@@ -32,7 +40,15 @@ const mapStateToProps = (state) => {
     pages: state.pages,
     groups: state.groups,
     historySnapshot: state.history,
-    filter: ''
+    sidebar: state.sidebar,
+    filter: '',
+    modals: state.modals
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    open_modal: (modal, data) => dispatch(openModal(modal, data))
   }
 }
 
@@ -64,6 +80,16 @@ class SideBar extends Component {
       totalEndpointsCount: 0
     }
     this.inputRef = createRef()
+    this.sidebarRef = createRef()
+    this.handleClickOutside = this.handleClickOutside.bind(this)
+  }
+
+  handleClickOutside (event) {
+    const { focused: sidebarFocused } = this.props.sidebar
+    if (sidebarFocused && this.sidebarRef && !this.sidebarRef.current.contains(event.target)) {
+      store.dispatch({ type: sidebarActionTypes.DEFOCUS_SIDEBAR })
+      document.removeEventListener('click', this.handleClickOutside)
+    }
   }
 
   componentDidMount () {
@@ -95,6 +121,14 @@ class SideBar extends Component {
     if (isElectron()) {
       const { ipcRenderer } = window.require('electron')
       ipcRenderer.on('SIDEBAR_SHORTCUTS_CHANNEL', this.handleShortcuts)
+      document.addEventListener('keydown', this.preventDefaultBehavior.bind(this), false)
+    }
+  }
+
+  preventDefaultBehavior (e) {
+    const { focused: sidebarFocused } = this.props.sidebar
+    if (sidebarFocused && ['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].indexOf(e.code) > -1) {
+      e.preventDefault()
     }
   }
 
@@ -102,6 +136,7 @@ class SideBar extends Component {
     if (isElectron()) {
       const { ipcRenderer } = window.require('electron')
       ipcRenderer.removeListener('SIDEBAR_SHORTCUTS_CHANNEL', this.handleShortcuts)
+      document.removeEventListener('keydown', this.preventDefaultBehavior, false)
     }
   }
 
@@ -118,25 +153,51 @@ class SideBar extends Component {
     }
   }
 
+  openEntity (id, type) {
+    const { orgId } = this.props.match.params
+    let pathname = `/orgs/${orgId}/dashboard`
+    switch (type) {
+      case 'pages': pathname += `/page/${id}`; break
+      case 'endpoints': pathname += `/endpoint/${id}`; break
+      default: pathname = ''; break
+    }
+    if (pathname) this.props.history.push({ pathname })
+  }
+
   handleShortcuts = (event, data) => {
+    const { focused: sidebarFocused, navList, focusedNode } = this.props.sidebar
+    // console.log(this.sidebarRef.current.contains(document.activeElement) )
+    // const sidebarFocused = this.sidebarRef.current.contains(document.activeElement)
     switch (data) {
-      case 'FOCUS_SEARCH': this.inputRef.focus()
+      case 'FOCUS_SEARCH': this.inputRef.focus() /* store.dispatch({ type: sidebarActionTypes.FOCUS_SIDEBAR }) */
         break
       /** TO DO: Sidebar Navigations Handling by maintaining Focused element and its List */
-      case 'UP_NAVIGATION':
+      case 'UP_NAVIGATION': if (sidebarFocused) store.dispatch({ type: sidebarActionTypes.FOCUS_PREVIOUS_ITEM })
         break
-      case 'DOWN_NAVIGATION':
+      case 'DOWN_NAVIGATION': if (sidebarFocused) store.dispatch({ type: sidebarActionTypes.FOCUS_NEXT_ITEM })
         break
       case 'OPEN_ENTITY':
+        if (sidebarFocused && focusedNode) {
+          const { id, type, isExpandable } = navList[focusedNode]
+          if (isExpandable) {
+            store.dispatch({ type: sidebarActionTypes.EXPAND_ITEM })
+          } else {
+            this.openEntity(id, type)
+          }
+        }
         break
-      case 'CLOSE_ENTITY':
+      case 'CLOSE_ENTITY': if (sidebarFocused && focusedNode) store.dispatch({ type: sidebarActionTypes.COLLAPSE_ITEM })
         break
-      case 'DUPLICATE_ENTITY':
+      case 'DUPLICATE_ENTITY': if (sidebarFocused && focusedNode) sidebarActions.duplicateEntity(focusedNode)
         break
-      case 'DELETE_ENTITY':
+      case 'DELETE_ENTITY': if (sidebarFocused && focusedNode) this.handleDeleteEntity(focusedNode)
         break
-      default:
+      default: break
     }
+  }
+
+  handleDeleteEntity (focusedNode) {
+    this.props.open_modal(DELETE_CONFIRMATION, { nodeAddress: focusedNode })
   }
 
   // async dndMoveEndpoint (endpointId, sourceGroupId, destinationGroupId) {
@@ -430,9 +491,19 @@ class SideBar extends Component {
   }
 
   renderCollections () {
+    const collectionsToRender = []
+    const { firstChild } = this.props.sidebar
+    if (firstChild) {
+      let childEntity = this.props.sidebar.navList[firstChild]
+      while (childEntity) {
+        collectionsToRender.push(childEntity.id)
+        childEntity = this.props.sidebar.navList[childEntity.nextSibling]
+      }
+    }
     return (
       <Collections
         {...this.props}
+        collectionsToRender={collectionsToRender}
         selectedCollectionId={this.state.selectedCollectionId}
         empty_filter={this.emptyFilter.bind(this)}
         disable_secondary_sidebar={() => { this.setState({ secondarySidebarToggle: true }) }}
@@ -465,8 +536,22 @@ class SideBar extends Component {
 
   renderSidebarContent () {
     const selectedCollectionName = this.props.collections[this.collectionId]?.name || ' '
+    const { focused: sidebarFocused } = this.props.sidebar
     return (
-      <div className='sidebar-content'>
+      <div
+        ref={this.sidebarRef}
+        onClick={(e) => {
+          if (!sidebarFocused && this.sidebarRef.current.contains(document.activeElement)) {
+            store.dispatch({ type: sidebarActionTypes.FOCUS_SIDEBAR })
+          }
+        }}
+        onBlur={(e) => {
+          if (sidebarFocused && !this.sidebarRef.current.contains(e.relatedTarget)) {
+            store.dispatch({ type: sidebarActionTypes.DEFOCUS_SIDEBAR })
+          }
+        }}
+        className={['sidebar-content'].join(' ')}
+      >
         {this.showAddCollectionModal()}
         {this.collectionId
           ? (
@@ -653,11 +738,22 @@ class SideBar extends Component {
     }
   }
 
+  showDeleteEntityModal () {
+    const { activeModal, modalData } = this.props.modals
+
+    return activeModal === DELETE_CONFIRMATION &&
+      <DeleteSidebarEntityModal
+        show
+        {...modalData}
+      />
+  }
+
   render () {
     return (
       <nav className={this.getSidebarInteractionClass()}>
         {this.showAddEntitySelectionModal()}
         {this.showAddEntityModal()}
+        {this.showDeleteEntityModal()}
         {this.state.showLoginSignupModal && (
           <LoginSignupModal
             show
@@ -689,4 +785,4 @@ class SideBar extends Component {
   }
 }
 
-export default withRouter(connect(mapStateToProps)(SideBar))
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(SideBar))

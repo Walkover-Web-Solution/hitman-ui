@@ -101,7 +101,7 @@ export const onGroupsFetchedError = (error) => {
 
 export const addGroup = (versionId, newGroup) => {
   return (dispatch) => {
-    dispatch(addGroupRequest(newGroup))
+    dispatch(addGroupRequest({ ...newGroup, versionId }))
     groupsApiService
       .saveGroup(versionId, newGroup)
       .then((response) => {
@@ -206,7 +206,7 @@ export const deleteGroup = (group, props) => {
 
         endpointIds.map((eId) => tabService.removeTab(eId, props))
         pageIds.map((pId) => tabService.removeTab(pId, props))
-        dispatch(onGroupDeleted({ endpointIds, pageIds }))
+        dispatch(onGroupDeleted({ group, endpointIds, pageIds }))
         const groups = JSON.parse(JSON.stringify(store.getState().groups))
         delete groups[group.id]
         dispatch(updateGroupOrderRequest(groups, response.data))
@@ -249,7 +249,8 @@ export const duplicateGroup = (group) => {
     groupsApiService
       .duplicateGroup(group.id)
       .then((response) => {
-        dispatch(onGroupDuplicated(response.data))
+        const { groups, endpoints, pages } = response.data // doing this as backend sends data as plural (groups) key instead of singular group key. remove this when it gets fixed.
+        dispatch(onGroupDuplicated({ group: groups, endpoints, pages }))
       })
       .catch((error) => {
         toast.error(error)
