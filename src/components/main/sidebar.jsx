@@ -166,12 +166,9 @@ class SideBar extends Component {
 
   handleShortcuts = (event, data) => {
     const { focused: sidebarFocused, navList, focusedNode } = this.props.sidebar
-    // console.log(this.sidebarRef.current.contains(document.activeElement) )
-    // const sidebarFocused = this.sidebarRef.current.contains(document.activeElement)
     switch (data) {
-      case 'FOCUS_SEARCH': this.inputRef.focus() /* store.dispatch({ type: sidebarActionTypes.FOCUS_SIDEBAR }) */
+      case 'FOCUS_SEARCH': this.inputRef.focus()
         break
-      /** TO DO: Sidebar Navigations Handling by maintaining Focused element and its List */
       case 'UP_NAVIGATION': if (sidebarFocused) store.dispatch({ type: sidebarActionTypes.FOCUS_PREVIOUS_ITEM })
         break
       case 'DOWN_NAVIGATION': if (sidebarFocused) store.dispatch({ type: sidebarActionTypes.FOCUS_NEXT_ITEM })

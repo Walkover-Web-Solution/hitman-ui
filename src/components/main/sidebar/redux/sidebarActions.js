@@ -5,14 +5,34 @@ import { deleteEndpoint, duplicateEndpoint } from '../../../endpoints/redux/endp
 import { deleteGroup, duplicateGroup } from '../../../groups/redux/groupsActions'
 import { deletePage, duplicatePage } from '../../../pages/redux/pagesActions'
 import sidebarActionTypes from './sidebarActionTypes'
+import * as _ from 'lodash'
 
 const toggleItem = (type, id) => {
-  const { expanded, isExpandable, focused } = store.getState().sidebar.navList[`${type}_${id}`]
+  const itemNode = store.getState().sidebar.navList[`${type}_${id}`]
+  if (!_.isEmpty(itemNode)) {
+    const { expanded, isExpandable, focused } = store.getState().sidebar.navList[`${type}_${id}`]
 
-  if (!focused) store.dispatch({ type: sidebarActionTypes.FOCUS_ITEM, payload: `${type}_${id}` })
+    if (!focused) store.dispatch({ type: sidebarActionTypes.FOCUS_ITEM, payload: `${type}_${id}` })
 
-  if (isExpandable) {
-    if (!expanded) { store.dispatch({ type: sidebarActionTypes.EXPAND_ITEM }) } else { store.dispatch({ type: sidebarActionTypes.COLLAPSE_ITEM }) }
+    if (isExpandable) {
+      if (!expanded) { store.dispatch({ type: sidebarActionTypes.EXPAND_ITEM }) } else { store.dispatch({ type: sidebarActionTypes.COLLAPSE_ITEM }) }
+    }
+  }
+}
+
+const expandItem = (type, id) => {
+  const itemNode = store.getState().sidebar.navList[`${type}_${id}`]
+  if (!_.isEmpty(itemNode)) {
+    const { expanded, isExpandable } = itemNode
+    if (isExpandable && !expanded) store.dispatch({ type: sidebarActionTypes.EXPAND_ITEM, payload: `${type}_${id}` })
+  }
+}
+
+const collapseItem = (type, id) => {
+  const itemNode = store.getState().sidebar.navList[`${type}_${id}`]
+  if (!_.isEmpty(itemNode)) {
+    const { expanded, isExpandable } = itemNode
+    if (isExpandable && expanded) store.dispatch({ type: sidebarActionTypes.COLLAPSE_ITEM, payload: `${type}_${id}` })
   }
 }
 
@@ -62,6 +82,8 @@ const defocusSidebar = () => {
 
 const sidebarActions = {
   toggleItem,
+  expandItem,
+  collapseItem,
   duplicateEntity,
   deleteEntity,
   focusSidebar,

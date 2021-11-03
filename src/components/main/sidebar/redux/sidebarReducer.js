@@ -275,11 +275,11 @@ function sidebarReducer (state = initialState, action) {
         return newState
 
       case sidebarActionTypes.EXPAND_ITEM:
-        newState = expandItem(newState.focusedNode, newState)
+        newState = expandItem(action.payload ? action.payload : newState.focusedNode, newState)
         return newState
 
       case sidebarActionTypes.COLLAPSE_ITEM:
-        newState = collapseItem(newState.focusedNode, newState)
+        newState = collapseItem(action.payload ? action.payload : newState.focusedNode, newState)
         return newState
 
       default: return state
