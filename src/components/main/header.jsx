@@ -124,7 +124,7 @@ class Header extends Component {
           {/* Commenting cloud icon for now, as no requirement was given for it but was mentioned in the design. */}
           {/* <div className='mx-3'><img src={cloudImage} alt='' /></div> */}
           <CommunityButton />
-          <div>
+          <div className='d-flex align-items-center pr-3'>
             {getCurrentUser() ? <UserInfo {...this.props} /> : <LoginButton />}
           </div>
         </div>
