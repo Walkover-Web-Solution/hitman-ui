@@ -30,7 +30,7 @@
     "popper.js": "^1.16.1",
     "query-string": "^6.9.0",
     "querystring": "^0.2.1",
-    "react": "^16.13.0",
+    "react": "^17.0.2",
     "react-ace": "^8.1.0",
     "react-bootstrap": "^1.0.0-beta.16",
     "react-color": "^2.19.3",
@@ -69,6 +69,7 @@
     "universal-cookie": "^4.0.4",
     "urijs": "^1.19.2",
     "validator": "^13.0.0",
+    "viasocket-common-header-dev": "^0.1.1",
     "vm": "^0.1.0",
     "wait-on": "^5.3.0"
   },
