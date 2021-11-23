@@ -36,7 +36,7 @@
     "react-color": "^2.19.3",
     "react-copy-to-clipboard": "^5.0.2",
     "react-device-detect": "^1.17.0",
-    "react-dom": "^16.12.0",
+    "react-dom": "^17.0.2",
     "react-fast-compare": "^3.2.0",
     "react-gtm-module": "^2.0.11",
     "react-highlight": "^0.12.0",
@@ -69,7 +69,7 @@
     "universal-cookie": "^4.0.4",
     "urijs": "^1.19.2",
     "validator": "^13.0.0",
-    "viasocket-common-header-dev": "^0.2.4",
+    "viasocket-common-header-dev": "^0.2.8",
     "vm": "^0.1.0",
     "wait-on": "^5.3.0"
   },
