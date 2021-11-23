@@ -6,7 +6,7 @@ import authService, { getCurrentUser } from '../auth/authService'
 import { Header as GenericHeader } from 'viasocket-common-header-dev'
 import { connect } from 'react-redux'
 
-import { ReactComponent as HostedApiIcon } from '../../assets/icons/hostedApiIcon.svg'
+import HostedApiIcon from '../../assets/icons/hostedApiIcon.svg'
 
 const mapStateToProps = (state) => {
   return {
@@ -204,10 +204,15 @@ class Header extends Component {
   renderProfileOption () {
     return (
       <>{authService.isAdmin() &&
-        <Dropdown.Item className='d-flex justify-content-between align-items-center' onClick={() => { this.navigateToPublishDocs() }}>
-          <div><HostedApiIcon /><span>Hosted API</span></div>
-          {this.getNotificationCount() > 0 &&
-            <div className='user-notification-badge'>{this.getNotificationCount()}</div>}
+        <Dropdown.Item>
+          <div className='profile-listing' onClick={() => { this.navigateToPublishDocs() }}>
+            <img src={HostedApiIcon} alt='' />
+            <span className='label'>Hosted API</span>
+            {
+              this.getNotificationCount() > 0 &&
+                <div className='user-notification-badge'>{this.getNotificationCount()}</div>
+            }
+          </div>
         </Dropdown.Item>}
       </>
     )
