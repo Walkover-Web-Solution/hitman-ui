@@ -7,9 +7,8 @@ import Environments from '../environments/environments'
 /* import cloudImage from '../../assets/icons/cloud.svg' */
 import { isElectron, openExternalLink, getProfileName, getOrgId } from '../common/utility'
 import authService, { getCurrentUser } from '../auth/authService'
-import { ReactComponent as CommunityIcon } from '../../assets/icons/community-icon.svg'
 // import ArrowIcon from '../../assets/icons/arrow.svg'
-import { Header as GenericHeader } from 'common-header-test-punit'
+import { Header as GenericHeader } from 'viasocket-common-header-dev'
 import { connect } from 'react-redux'
 
 import { ReactComponent as HostedApiIcon } from '../../assets/icons/hostedApiIcon.svg'
@@ -32,7 +31,6 @@ const BROWSER_LOGIN_ROUTE = process.env.REACT_APP_UI_URL + '/browser-login'
 // const EBL_UI_URL = process.env.REACT_APP_VIASOCKET_URL
 // const FEEDIO_UI_URL = process.env.REACT_APP_FEEDIO_UI_URL
 // const SHEETASDB_UI_URL = process.env.REACT_APP_SHEETASDB_UI_URL
-const COMMUNITY_URL = process.env.REACT_APP_COMMUNITY_URL
 
 /** Desktop App Download URL */
 const DESKTOP_APP_DOWNLOAD_LINK = process.env.REACT_APP_DESKTOP_APP_DOWNLOAD_LINK
@@ -44,14 +42,6 @@ const DESKTOP_APP_DOWNLOAD_LINK = process.env.REACT_APP_DESKTOP_APP_DOWNLOAD_LIN
 //     </div>
 //   )
 // }
-
-const CommunityButton = () => {
-  return (
-    <div className='d-flex align-items-center black-hover transition' onClick={() => openExternalLink(COMMUNITY_URL)}>
-      <CommunityIcon />
-    </div>
-  )
-}
 
 // const SwitchProducts = () => {
 //   const currentOrgId = getCurrentOrg()?.identifier
@@ -266,7 +256,6 @@ class Header extends Component {
       <div className='float-right d-flex'>
         {!isElectron() && <DownloadDesktopAppButton />}
         {getCurrentUser() ? <Environments {...this.props} /> : null}
-        <CommunityButton />
       </div>
     )
   }
@@ -287,11 +276,20 @@ class Header extends Component {
     )
   }
 
+  switchOrg (orgId) {
+    if (isElectron()) {
+      window.location.hash = `/orgs/${orgId}/dashboard`
+      window.location.reload()
+    } else {
+      window.location.href = `/orgs/${orgId}/dashboard`
+    }
+  }
+
   render () {
     console.log(this.props.match.params)
     return (
       <>
-        <GenericHeader {...this.props} {...this.state} getNotificationCount={() => this.getNotificationCount()} project_name='' organizations={JSON.parse(window.localStorage.getItem('organisationList')) || []} organizationId={getOrgId()} productName='hitman' renderNavTitle={() => this.renderNavTitle()} renderProfileOption={() => this.renderProfileOption()} handleOpenLink={(link) => openExternalLink(link)} renderLoginButton={() => this.renderLoginButton()} />
+        <GenericHeader {...this.props} {...this.state} switchOrg={(id) => this.switchOrg(id)} showCommunityButton getNotificationCount={() => this.getNotificationCount()} project_name='' organizations={JSON.parse(window.localStorage.getItem('organisationList')) || []} organizationId={getOrgId()} productName='hitman' renderNavTitle={() => this.renderNavTitle()} renderProfileOption={() => this.renderProfileOption()} handleOpenLink={(link) => openExternalLink(link)} renderLoginButton={() => this.renderLoginButton()} />
       </>
     )
   }
