@@ -1,13 +1,8 @@
 import React, { Component } from 'react'
 import { Dropdown } from 'react-bootstrap'
 import Environments from '../environments/environments'
-// import UserInfo from './userInfo'
-// import socketLogo from '../../assets/icons/socketIcon.svg'
-/* Commenting cloud icon for now, as no requirement was given for it but was mentioned in the design. */
-/* import cloudImage from '../../assets/icons/cloud.svg' */
 import { isElectron, openExternalLink, getProfileName, getOrgId } from '../common/utility'
 import authService, { getCurrentUser } from '../auth/authService'
-// import ArrowIcon from '../../assets/icons/arrow.svg'
 import { Header as GenericHeader } from 'viasocket-common-header-dev'
 import { connect } from 'react-redux'
 
@@ -27,66 +22,8 @@ const mapStateToProps = (state) => {
 const LOGIN_ROUTE = process.env.REACT_APP_UI_URL + '/login'
 const BROWSER_LOGIN_ROUTE = process.env.REACT_APP_UI_URL + '/browser-login'
 
-/* Other Product Urls */
-// const EBL_UI_URL = process.env.REACT_APP_VIASOCKET_URL
-// const FEEDIO_UI_URL = process.env.REACT_APP_FEEDIO_UI_URL
-// const SHEETASDB_UI_URL = process.env.REACT_APP_SHEETASDB_UI_URL
-
 /** Desktop App Download URL */
 const DESKTOP_APP_DOWNLOAD_LINK = process.env.REACT_APP_DESKTOP_APP_DOWNLOAD_LINK
-
-// const HitmanBrand = () => {
-//   return (
-//     <div className='logo black-hover transition d-flex align-items-center'>
-//       <SwitchProducts />
-//     </div>
-//   )
-// }
-
-// const SwitchProducts = () => {
-//   const currentOrgId = getCurrentOrg()?.identifier
-
-//   const products = [
-//     {
-//       name: 'Feedio',
-//       link: FEEDIO_UI_URL ? FEEDIO_UI_URL + (currentOrgId ? `/orgs/${currentOrgId}/` : '') : ''
-//     },
-//     {
-//       name: 'EBL',
-//       link: EBL_UI_URL ? EBL_UI_URL + (currentOrgId ? `/orgs/${currentOrgId}/projects` : '') : ''
-//     },
-//     {
-//       name: 'SheetAsDB',
-//       link: SHEETASDB_UI_URL ? SHEETASDB_UI_URL + (currentOrgId ? `/orgs/${currentOrgId}/projects` : '') : ''
-//     }
-//   ]
-
-//   const ProductItem = ({ product }) => {
-//     return (
-//       <Dropdown.Item onClick={() => openExternalLink(product.link)}>
-//         {product.name}
-//       </Dropdown.Item>
-//     )
-//   }
-
-//   return (
-//     <div className='switchPrd'>
-//       <Dropdown>
-//         <Dropdown.Toggle variant='success' id='dropdown-basic'>
-//           <img src={socketLogo} alt='' width='22' height='22' />
-//           <span>Hitman</span>
-//           <img src={ArrowIcon} alt='' className='transition rotate-180 ml-1' />
-//         </Dropdown.Toggle>
-//         <Dropdown.Menu>
-//           <Dropdown.Item disabled>
-//             Switch to
-//           </Dropdown.Item>
-//           {products.map((product, index) => (<ProductItem key={index} product={product} />))}
-//         </Dropdown.Menu>
-//       </Dropdown>
-//     </div>
-//   )
-// }
 
 const LoginButton = () => {
   return (
