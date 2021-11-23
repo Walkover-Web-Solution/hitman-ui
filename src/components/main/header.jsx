@@ -28,7 +28,7 @@ const DESKTOP_APP_DOWNLOAD_LINK = process.env.REACT_APP_DESKTOP_APP_DOWNLOAD_LIN
 const LoginButton = () => {
   return (
     isElectron()
-      ? <div className='float-right d-flex btn btn-primary' onClick={() => openExternalLink(BROWSER_LOGIN_ROUTE)}>Login/SignUp</div>
+      ? <div className='float-right d-flex btn btn-primary mr-3' onClick={() => openExternalLink(BROWSER_LOGIN_ROUTE)}>Login/SignUp</div>
       : <div
           id='sokt-sso'
           data-redirect-uri={LOGIN_ROUTE}

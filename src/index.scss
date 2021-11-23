@@ -30,7 +30,7 @@ body .logoBox .dropdown .dropdown-toggle {
 .profile-listing-container a.dropdown-item,
 .orgs-listing-container .dropdown-item {
   width: 100%;
-  display: block;
+  display: block !important;
 }
 .profile-listing{
   position: relative;
