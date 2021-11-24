@@ -3,7 +3,7 @@ import { Dropdown } from 'react-bootstrap'
 import Environments from '../environments/environments'
 import { isElectron, openExternalLink, getProfileName, getOrgId } from '../common/utility'
 import authService, { getCurrentUser } from '../auth/authService'
-import { Header as GenericHeader } from 'viasocket-common-header-dev'
+import { Header as GenericHeader } from 'viasocket-shared-plugins'
 import { connect } from 'react-redux'
 
 import HostedApiIcon from '../../assets/icons/hostedApiIcon.svg'
@@ -228,10 +228,10 @@ class Header extends Component {
   }
 
   render () {
-    console.log(this.props.match.params)
+    const productLinks = { FEEDIO: process.env.REACT_APP_FEEDIO_UI_URL, HITMAN: process.env.REACT_APP_UI_URL, CONTENTBASE: process.env.REACT_APP_CONTENTBASE_URL, EBL: process.env.REACT_APP_VIASOCKET_URL, HTTPDUMP: process.env.REACT_APP_HTTPDUMP_URL }
     return (
       <>
-        <GenericHeader {...this.props} {...this.state} switchOrg={(id) => this.switchOrg(id)} showCommunityButton getNotificationCount={() => this.getNotificationCount()} project_name='' organizations={JSON.parse(window.localStorage.getItem('organisationList')) || []} organizationId={getOrgId()} productName='hitman' renderNavTitle={() => this.renderNavTitle()} renderProfileOption={() => this.renderProfileOption()} handleOpenLink={(link) => openExternalLink(link)} renderLoginButton={() => this.renderLoginButton()} />
+        <GenericHeader {...this.props} {...this.state} productLinks={productLinks} switchOrg={(id) => this.switchOrg(id)} showCommunityButton getNotificationCount={() => this.getNotificationCount()} project_name='' organizations={JSON.parse(window.localStorage.getItem('organisationList')) || []} organizationId={getOrgId()} productName='hitman' renderNavTitle={() => this.renderNavTitle()} renderProfileOption={() => this.renderProfileOption()} handleOpenLink={(link) => openExternalLink(link)} renderLoginButton={() => this.renderLoginButton()} />
       </>
     )
   }
