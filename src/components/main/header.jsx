@@ -65,7 +65,6 @@ class Header extends Component {
       profile.last_name = name[1]
       profile.email = currentUser.email
       this.setState({ profile })
-      // console.log(profile)
     }
   }
 
