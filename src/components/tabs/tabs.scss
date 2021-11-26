@@ -16,9 +16,6 @@ $font-small: 12px;
     align-self: flex-end;
     width: calc(100%);
     background: #fff;
-
-
-
     .nav {
       height: 100%;
       overflow: hidden;
@@ -360,7 +357,7 @@ $font-small: 12px;
   height: calc(100% + 6px);
   position: relative;
   overflow: visible;
-  z-index: 998;
+  z-index: 99;
   background-color: #f8f8f8 !important;
 }
 
