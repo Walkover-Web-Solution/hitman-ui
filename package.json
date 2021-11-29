@@ -19,7 +19,7 @@
     "form-data": "^4.0.0",
     "highlight.js": "^9.18.1",
     "http-status": "^1.4.2",
-    "httpsnippet": "PRIYUSH98/httpsnippet#master",
+    "httpsnippet": "^2.0.0",
     "idb": "^5.0.2",
     "joi-browser": "^13.4.0",
     "jquery": "^3.4.1",
