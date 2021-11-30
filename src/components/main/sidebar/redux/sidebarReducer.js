@@ -14,6 +14,7 @@ class TreeNode {
     this.id = id
     this.type = type
     this.isLoaded = false
+    this.isTemp = true
 
     this.focused = false
     this.expanded = false
@@ -390,7 +391,11 @@ function addNewNodeReq (newState, newEntity, type) {
   const newNodeAddress = `${type}_${newEntity.id}`
   let parentNode = null; let prevSibling = null; let nextSibling = null
   if (_.isEmpty(newState.navList[newNodeAddress])) {
-    newState.navList[newNodeAddress] = new TreeNode({ id: newEntity.id, type, parentNode, prevSibling, nextSibling })
+    newState = addTempNode(newState, newEntity.id, type)
+  }
+
+  if (!newState.navList[newNodeAddress].isTemp) {
+    return newState
   }
 
   switch (type) {
@@ -471,7 +476,7 @@ function addNewNodeReq (newState, newEntity, type) {
 
     default: break
   }
-
+  newState.navList[newNodeAddress].isTemp = false
   return newState
 }
 
