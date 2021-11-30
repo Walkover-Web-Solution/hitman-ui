@@ -60,9 +60,9 @@ class Header extends Component {
     if (authService.getCurrentUser()) {
       const profile = {}
       const currentUser = authService.getCurrentUser()
-      const name = getProfileName(currentUser).split(' ')
-      profile.first_name = name[0]
-      profile.last_name = name[1]
+      const name = getProfileName(currentUser)?.split(' ');
+      profile.first_name = name?.[0];
+      profile.last_name = name?.[1];
       profile.email = currentUser.email
       this.setState({ profile })
     }
