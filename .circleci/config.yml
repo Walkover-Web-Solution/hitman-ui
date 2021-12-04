@@ -70,7 +70,7 @@ jobs:
       - run:
           name: Set Image
           command: |
-            ssh $GOOGLE_SSH_USER@$GOOGLE_SSH_IP -p $GOOGLE_SSH_PORT "sudo su -c 'kubectl set image deployment/hitman-ui hitman-ui=asia.gcr.io/$GOOGLE_PROJECT_ID/hitman-ui:<< pipeline.number >> -n viasocket '"
+            kubectl set image deployment/hitman-ui hitman-ui=asia.gcr.io/$GOOGLE_PROJECT_ID/hitman-ui:<< pipeline.number >> -n viasocket
 
       - slack/notify:
           channel: $SLACK_DEFAULT_CHANNEL
