@@ -54,7 +54,12 @@ class Form extends Component {
 
   trimmedData () {
     const trimmedData = {}
-    Object.keys(this.state.data).forEach(key => { trimmedData[key] = this.state.data[key]?.trim() })
+    Object.keys(this.state.data).forEach(key => { 
+      if(key=="status")
+        trimmedData[key] = this.state.data[key];
+      else
+        trimmedData[key] = this.state.data[key]?.trim();
+    })
     this.setState({ data: trimmedData })
     return trimmedData
   }
