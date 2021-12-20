@@ -1086,6 +1086,7 @@ class DisplayEndpoint extends Component {
         }
       }
     }
+    if (this.props.location.pathname.split('/')[5] === 'new') { tabService.removeTab(this.props.tabs.activeTabId, { ...this.props }) }
   };
 
   doSubmitPathVariables () {
