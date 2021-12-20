@@ -322,20 +322,20 @@ class Environments extends Component {
                         )
                       }
                       <Dropdown.Divider />
-                      <button
+                      <Dropdown.Item
                         className='dropdown-item'
                         onClick={() =>
                           this.handleEnvironmentModal('Add new Environment')}
                       >
                         Add Environment
-                      </button>
-                      <button
+                      </Dropdown.Item>
+                      <Dropdown.Item
                         className='dropdown-item'
                         onClick={() =>
                           this.handleEnvironmentModal('Environment modal')}
                       >
                         Manage Environment
-                      </button>
+                      </Dropdown.Item>
                     </Dropdown.Menu>
                   </Dropdown>
                 </div>
