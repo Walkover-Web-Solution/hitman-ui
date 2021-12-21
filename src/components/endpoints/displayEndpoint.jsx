@@ -1057,7 +1057,6 @@ class DisplayEndpoint extends Component {
       }
       if (endpoint.name === '') toast.error('Please enter Endpoint name')
       else if (this.props.location.pathname.split('/')[5] === 'new') {
-        tabService.removeTab(this.props.tabs.activeTabId, { ...this.props })
         endpoint.requestId = this.props.tab.id
         endpoint.description = endpointDescription || ''
         this.setState({ saveAsLoader: true })
@@ -1065,6 +1064,7 @@ class DisplayEndpoint extends Component {
           if (closeForm) this.closeEndpointFormModal()
           if (stopLoader) this.setState({ saveAsLoader: false })
         })
+        tabService.removeTab(this.props.tabs.activeTabId, { ...this.props })
         moveToNextStep(4)
       } else {
         if (this.state.saveAsFlag) {
