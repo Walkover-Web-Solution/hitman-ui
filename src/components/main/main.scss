@@ -773,12 +773,25 @@ label.data-type {
 }
 
 .pubCodeWrapper {
-  padding: 30px 15px 0px;
+  padding: 15px;
   width: 40%;
   background: #2A2B35;
   position: relative;
   transition: 300ms;
   height: calc(100vh - 150px);
+  .inner-editor {
+    height: 100%;
+    overflow: hidden;
+    .editor-body-wrapper {
+      height: calc(100% - 4rem);
+      .ace-editor-wrapper {
+        height: calc(100% - 2rem);
+        div#ace-editor {
+          height: 100% !important;
+        }
+      }
+    }
+  }
 }
 
 .code-heading {
