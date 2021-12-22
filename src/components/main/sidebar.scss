@@ -146,8 +146,10 @@ input[type="text"]:focus {
     transform: rotate(360deg) !important;
   }
 }
-
-.primary-sidebar button.expanded svg {
+.versionChovron svg {
+  transition: all 0.3s ease-in;
+}
+.primary-sidebar button.expanded .versionChovron svg {
   transform: rotate(90deg) !important;
 }
 
