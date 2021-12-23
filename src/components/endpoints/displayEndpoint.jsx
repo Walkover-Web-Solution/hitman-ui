@@ -1064,6 +1064,7 @@ class DisplayEndpoint extends Component {
           if (closeForm) this.closeEndpointFormModal()
           if (stopLoader) this.setState({ saveAsLoader: false })
         })
+        tabService.removeTab(this.props.tabs.activeTabId, { ...this.props })
         moveToNextStep(4)
       } else {
         if (this.state.saveAsFlag) {
