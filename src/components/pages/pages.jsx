@@ -271,7 +271,6 @@ class Pages extends Component {
           data-toggle='dropdown'
           aria-haspopup='true'
           aria-expanded='false'
-          onClick={(event) => event.stopPropagation()}
         >
           <i className='uil uil-ellipsis-v' />
         </div>
