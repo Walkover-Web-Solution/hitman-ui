@@ -773,12 +773,25 @@ label.data-type {
 }
 
 .pubCodeWrapper {
-  padding: 30px 15px 0px;
+  padding: 15px;
   width: 40%;
   background: #2A2B35;
   position: relative;
   transition: 300ms;
   height: calc(100vh - 150px);
+  .inner-editor {
+    height: 100%;
+    overflow: hidden;
+    .editor-body-wrapper {
+      height: calc(100% - 4rem);
+      .ace-editor-wrapper {
+        height: calc(100% - 2rem);
+        div#ace-editor {
+          height: 100% !important;
+        }
+      }
+    }
+  }
 }
 
 .code-heading {
@@ -3339,22 +3352,13 @@ div#steve-parent-accordion{
 .download-btn {
   height: 2.25rem;
 }
-.steve-inner-parent {
-  right: 7rem;
-}
-
 .chat-button{
   width: 1rem !important;
 }
-
-.steve-inner-parent {
-  right: 7.25rem;
-  bottom: 1.15rem;
-}
+// SteveReposition
 .steve-initializer {
-  width: 60px;
-  height: 60px;
+  bottom: 0.65rem !important;
 }
-.steve-initializer img {
-  width: 1rem;
+.steve-inner-parent {
+  right: 7.25rem !important;
 }
