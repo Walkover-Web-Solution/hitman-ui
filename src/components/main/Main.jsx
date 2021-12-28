@@ -28,6 +28,7 @@ import { loadfeedioWidget } from '../../services/feedioWidgetService'
 import { loadHelloWidget } from '../../services/helloWidgetService'
 import auth from '../auth/authService'
 import DesktopAppDownloadModal from './desktopAppPrompt'
+import { sendAmplitudeData } from '../../services/amplitude'
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -78,6 +79,9 @@ class Main extends Component {
         orgId = auth.getOrgList()[0]?.identifier
         this.props.history.push({
           pathname: `/orgs/${orgId}/dashboard`
+        })
+        sendAmplitudeData('Dashboard Landing', {
+          'Org Id': orgId
         })
       } else {
         loadWidget()

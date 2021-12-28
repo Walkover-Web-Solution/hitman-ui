@@ -5,6 +5,7 @@ import { isElectron, openExternalLink, getProfileName, getOrgId } from '../commo
 import authService, { getCurrentUser } from '../auth/authService'
 import { Header as GenericHeader } from 'viasocket-shared-plugins'
 import { connect } from 'react-redux'
+import { setAmplitudeUserId } from '../../services/amplitude'
 
 import HostedApiIcon from '../../assets/icons/hostedApiIcon.svg'
 
@@ -65,6 +66,10 @@ class Header extends Component {
       profile.last_name = name?.[1]
       profile.email = currentUser.email
       this.setState({ profile })
+      setAmplitudeUserId(profile.email)
+      return {
+        profile: profile
+      }
     }
   }
 
