@@ -80,8 +80,10 @@ class Main extends Component {
         this.props.history.push({
           pathname: `/orgs/${orgId}/dashboard`
         })
+        const orgName = auth.getOrgList()[0]?.name
         sendAmplitudeData('Dashboard Landing', {
-          'Org Id': orgId
+          orgId: orgId,
+          orgName: orgName
         })
       } else {
         loadWidget()

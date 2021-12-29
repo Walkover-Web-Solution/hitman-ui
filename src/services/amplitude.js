@@ -16,10 +16,10 @@ export function setAmplitudeUserId (userId) {
   amplitude.getInstance().setUserId(userId)
 };
 
-export function setAmplitudeUserPropertie (properties) {
+export function setAmplitudeUserProperties (properties) {
   amplitude.getInstance().setUserProperties(properties)
 };
 
 export function sendAmplitudeData (event, eventProperties) {
-  eventProperties ? (amplitude.getInstance().logEvent(event, eventProperties)) : amplitude.getInstance().logEvent(event)
+  amplitude.getInstance().logEvent(event, eventProperties)
 };

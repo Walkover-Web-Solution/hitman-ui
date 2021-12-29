@@ -1,5 +1,6 @@
 import Joi from 'joi-browser'
 import history from '../../history'
+import { sendAmplitudeData } from '../../services/amplitude'
 
 export const ADD_GROUP_MODAL_NAME = 'Add Group'
 export const ADD_VERSION_MODAL_NAME = 'Add Version'
@@ -18,6 +19,7 @@ export function isElectron () {
 }
 
 export function openExternalLink (link) {
+  sendAmplitudeData('Download')
   if (isElectron()) { window.require('electron').shell.openExternal(link) } else { window.open(link, '_blank') }
 }
 

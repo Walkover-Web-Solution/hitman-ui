@@ -67,9 +67,6 @@ class Header extends Component {
       profile.email = currentUser.email
       this.setState({ profile })
       setAmplitudeUserId(profile.email)
-      return {
-        profile: profile
-      }
     }
   }
 
