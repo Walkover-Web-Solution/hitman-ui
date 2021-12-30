@@ -117,7 +117,7 @@ export const addVersion = (newVersion, collectionId) => {
       .then((response) => {
         sendAmplitudeData('Version created', {
           versionId: response.data.id,
-          versionName: response.data.name,
+          versionNumber: response.data.number,
           collectionId: response.data.collectionId
         })
         dispatch(onVersionAdded(response.data))

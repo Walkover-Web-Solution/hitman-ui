@@ -141,12 +141,13 @@ export const updateCollection = (editedCollection, stopLoader, customCallback) =
     collectionsApiService
       .updateCollection(id, editedCollection)
       .then((response) => {
-        if (response.data.isPublic === true) {
+        const { id, isPublic, name, orgId } = response.data
+        if (isPublic === true) {
           sendAmplitudeData('Collection Published', {
-            id: response.data.id,
-            isPublic: response.data.isPublic,
-            docName: response.data.name,
-            orgId: response.data.orgId
+            id: id,
+            docName: name,
+            orgId: orgId,
+            customDomain: response.data?.customDomain
           })
         }
         dispatch(onCollectionUpdated(response.data))

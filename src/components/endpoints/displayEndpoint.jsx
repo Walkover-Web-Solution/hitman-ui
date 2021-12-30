@@ -914,7 +914,7 @@ class DisplayEndpoint extends Component {
       /** Steve Onboarding Step 5 Completed */
       moveToNextStep(5)
       sendAmplitudeData('API called', {
-        Url: url,
+        url: url,
         endpointId: this.props.match.params.endpointId
       })
       /** Handle Request Call */
