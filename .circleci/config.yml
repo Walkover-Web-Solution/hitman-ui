@@ -40,6 +40,7 @@ jobs:
             REACT_APP_PUBLIC_UI_URL=$REACT_APP_PUBLIC_UI_URL
             REACT_APP_HTTPDUMP_URL = $REACT_APP_HTTPDUMP_URL
             REACT_APP_CONTENTBASE_URL = $REACT_APP_CONTENTBASE_URL
+            REACT_APP_AMPLITUDE_KEY = $REACT_APP_AMPLITUDE_KEY
             " > .env
       - gcr/gcr-auth
       - run:
