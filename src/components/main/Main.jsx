@@ -80,15 +80,15 @@ class Main extends Component {
         this.props.history.push({
           pathname: `/orgs/${orgId}/dashboard`
         })
+      } else {
         const orgName = auth.getOrgList()[0]?.name
+        loadWidget()
+        loadfeedioWidget()
+        loadHelloWidget()
         sendAmplitudeData('Dashboard Landing', {
           orgId: orgId,
           orgName: orgName
         })
-      } else {
-        loadWidget()
-        loadfeedioWidget()
-        loadHelloWidget()
         await this.fetchAll()
       }
     } else {
