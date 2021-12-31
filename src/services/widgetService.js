@@ -6,9 +6,13 @@ const widgetId = process.env.REACT_APP_STEVE_WIDGET_ID
 const FIRST_JULY_2021 = new Date('2021-07-01').valueOf()
 
 export function moveToNextStep (currentStepNo) {
-  if (window.isUserOnboardingComplete && window.isUserOnboardingComplete() === false) {
-    const steveEvent = new window.CustomEvent('steveOnboarding', { detail: { doneStep: currentStepNo } })
-    window.dispatchEvent(steveEvent)
+  try {
+    if (window.isUserOnboardingComplete && window.isUserOnboardingComplete() === false) {
+      const steveEvent = new window.CustomEvent('steveOnboarding', { detail: { doneStep: currentStepNo } })
+      window.dispatchEvent(steveEvent)
+    }
+  } catch (error) {
+    console.log(error)
   }
 }
 

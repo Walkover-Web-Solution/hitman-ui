@@ -157,7 +157,7 @@ function sidebarReducer (state = initialState, action) {
         return newState
 
       case groupsActionTypes.ON_GROUP_ADDED_ERROR:
-        newState = addNewNodeError(newState, action.newGroupId.requestId, 'groups')
+        newState = addNewNodeError(newState, action.newGroup.requestId, 'groups')
         return newState
 
       case groupsActionTypes.DELETE_GROUP_REQUEST:
