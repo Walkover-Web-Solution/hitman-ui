@@ -4,6 +4,7 @@ import store from '../../../store/store'
 import { toast } from 'react-toastify'
 import tabService from '../../tabs/tabService'
 import indexedDbService from '../../indexedDb/indexedDbService'
+import { sendAmplitudeData } from '../../../services/amplitude'
 export const fetchAllVersions = (orgId) => {
   return (dispatch) => {
     collectionVersionsApiService
@@ -114,6 +115,11 @@ export const addVersion = (newVersion, collectionId) => {
     collectionVersionsApiService
       .saveCollectionVersion(collectionId, newVersion)
       .then((response) => {
+        sendAmplitudeData('Version created', {
+          versionId: response.data.id,
+          versionNumber: response.data.number,
+          collectionId: response.data.collectionId
+        })
         dispatch(onVersionAdded(response.data))
       })
       .catch((error) => {
