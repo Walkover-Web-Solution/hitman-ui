@@ -3325,6 +3325,11 @@ div#steve-parent-accordion{
 }
 
 .selectFile {
+  span{
+    font-size: 12px;
+    line-height: 1;
+    width: 10rem;
+  }
   button {
     border: none;
     font-size: 12px;
@@ -3334,7 +3339,8 @@ div#steve-parent-accordion{
   background-color: #fff;
   height: 2.25rem;
   border: 1px solid #e0e0e0;
-  padding-left: 0.7rem;
+  padding: 0 0.7rem;
+  flex-wrap: wrap;
 }
 
 .fileName {
