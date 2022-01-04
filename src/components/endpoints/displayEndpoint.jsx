@@ -47,6 +47,7 @@ import Script from './script/script'
 import * as _ from 'lodash'
 import { openModal } from '../modals/redux/modalsActions'
 import Axios from 'axios'
+import { sendAmplitudeData } from '../../services/amplitude'
 const shortid = require('shortid')
 
 const status = require('http-status')
@@ -902,7 +903,6 @@ class DisplayEndpoint extends Component {
 
     /** Run Pre Request Script */
     const result = this.runScript(code, currentEnvironment, requestOptions)
-
     if (result.success) {
       let { environment, request: { url, headers }, tests } = result.data
       this.setState({ tests })
@@ -913,6 +913,10 @@ class DisplayEndpoint extends Component {
       requestOptions = { ...requestOptions, headers, url, bodyType: this.state.data.body.type }
       /** Steve Onboarding Step 5 Completed */
       moveToNextStep(5)
+      sendAmplitudeData('API called', {
+        url: url,
+        endpointId: this.props.match.params.endpointId
+      })
       /** Handle Request Call */
       await this.handleApiCall(requestOptions)
       this.setState({

@@ -4,6 +4,7 @@ import groupsActionTypes from './groupsActionTypes'
 import { toast } from 'react-toastify'
 import tabService from '../../tabs/tabService'
 import indexedDbService from '../../indexedDb/indexedDbService'
+import { sendAmplitudeData } from '../../../services/amplitude'
 
 export const setEndpointIds = (endpointsOrder, groupId) => {
   const group = store.getState().groups[groupId]
@@ -105,6 +106,11 @@ export const addGroup = (versionId, newGroup) => {
     groupsApiService
       .saveGroup(versionId, newGroup)
       .then((response) => {
+        sendAmplitudeData('Group created', {
+          groupId: response.data.id,
+          groupName: response.data.name,
+          versionId: response.data.versionId
+        })
         dispatch(onGroupAdded(response.data))
       })
       .catch((error) => {

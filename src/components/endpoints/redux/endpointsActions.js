@@ -5,6 +5,7 @@ import endpointsActionTypes from './endpointsActionTypes'
 import { getOrgId } from '../../common/utility'
 import indexedDbService from '../../indexedDb/indexedDbService'
 import shortid from 'shortid'
+import { sendAmplitudeData } from '../../../services/amplitude'
 
 export const addEndpoint = (history, newEndpoint, groupId, customCallback) => {
   const orgId = getOrgId()
@@ -14,6 +15,11 @@ export const addEndpoint = (history, newEndpoint, groupId, customCallback) => {
     endpointApiService
       .saveEndpoint(groupId, { ...newEndpoint, requestId })
       .then((response) => {
+        sendAmplitudeData('Endpoint created', {
+          endpointId: response.data.id,
+          endpointName: response.data.name,
+          groupId: response.data.groupId
+        })
         dispatch(onEndpointAdded(response.data, newEndpoint))
 
         // let endpointsOrder = store.getState().groups[groupId].endpointsOrder;
