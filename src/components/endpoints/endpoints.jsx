@@ -493,13 +493,13 @@ class Endpoints extends Component {
             )}
         >
           {this.displayEndpointName(endpointId)}
-          <div className='d-flex align-items-center'>
-            <div className='mr-2 published-icon'>
-              {this.props.endpoints[endpointId].isPublished && <img src={GlobeIcon} alt='globe' width='14' />}
-            </div>
-            {!this.props.collections[this.props.collection_id]?.importedFromMarketPlace && this.displayEndpointOptions(endpointId)}
-          </div>
         </button>
+        <div className='d-flex align-items-center'>
+          <div className='mr-2 published-icon'>
+            {this.props.endpoints[endpointId].isPublished && <img src={GlobeIcon} alt='globe' width='14' />}
+          </div>
+          {!this.props.collections[this.props.collection_id]?.importedFromMarketPlace && this.displayEndpointOptions(endpointId)}
+        </div>
       </div>
     )
   }
