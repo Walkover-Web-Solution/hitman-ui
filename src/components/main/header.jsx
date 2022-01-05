@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { Dropdown } from 'react-bootstrap'
 import Environments from '../environments/environments'
 import { isElectron, openExternalLink, getProfileName, getOrgId } from '../common/utility'
 import authService, { getCurrentUser } from '../auth/authService'
@@ -205,18 +204,15 @@ class Header extends Component {
 
   renderProfileOption () {
     return (
-      <>{authService.isAdmin() &&
-        <Dropdown.Item>
-          <div className='profile-listing' onClick={() => { this.navigateToPublishDocs() }}>
-            <img src={HostedApiIcon} alt='' />
-            <span className='label'>Hosted API</span>
-            {
+      authService.isAdmin() &&
+        <div className='profile-listing' onClick={() => { this.navigateToPublishDocs() }}>
+          <img src={HostedApiIcon} alt='' />
+          <span className='label'>Hosted API</span>
+          {
               this.getNotificationCount() > 0 &&
                 <div className='user-notification-badge'>{this.getNotificationCount()}</div>
             }
-          </div>
-        </Dropdown.Item>}
-      </>
+        </div>
     )
   }
 
