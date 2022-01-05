@@ -472,33 +472,35 @@ class Endpoints extends Component {
     return (
       <div ref={(newRef) => { this.scrollRef[endpointId] = newRef }} className={idToCheck === endpointId ? 'sidebar-accordion active' : 'sidebar-accordion'} key={endpointId}>
         <div className={this.props.endpoints[endpointId].state} />
-        <button
-          tabIndex={-1}
-          className={[focused && sidebarFocused ? 'focused' : '']}
-          onClick={() => {
-            sidebarActions.toggleItem('endpoints', endpointId)
-            this.handleDisplay(
-              this.props.endpoints[endpointId],
-              this.props.group_id,
-              this.props.collection_id,
-              true
-            )
-          }}
-          onDoubleClick={() =>
-            this.handleDisplay(
-              this.props.endpoints[endpointId],
-              this.props.group_id,
-              this.props.collection_id,
-              false
-            )}
-        >
-          {this.displayEndpointName(endpointId)}
-        </button>
-        <div className='d-flex align-items-center'>
-          <div className='mr-2 published-icon'>
-            {this.props.endpoints[endpointId].isPublished && <img src={GlobeIcon} alt='globe' width='14' />}
+        <div className='sidebar-toggle d-flex justify-content-between'>
+          <button
+            tabIndex={-1}
+            className={[focused && sidebarFocused ? 'focused' : '']}
+            onClick={() => {
+              sidebarActions.toggleItem('endpoints', endpointId)
+              this.handleDisplay(
+                this.props.endpoints[endpointId],
+                this.props.group_id,
+                this.props.collection_id,
+                true
+              )
+            }}
+            onDoubleClick={() =>
+              this.handleDisplay(
+                this.props.endpoints[endpointId],
+                this.props.group_id,
+                this.props.collection_id,
+                false
+              )}
+          >
+            {this.displayEndpointName(endpointId)}
+          </button>
+          <div className='d-flex align-items-center'>
+            <div className='mr-2 published-icon'>
+              {this.props.endpoints[endpointId].isPublished && <img src={GlobeIcon} alt='globe' width='14' />}
+            </div>
+            {!this.props.collections[this.props.collection_id]?.importedFromMarketPlace && this.displayEndpointOptions(endpointId)}
           </div>
-          {!this.props.collections[this.props.collection_id]?.importedFromMarketPlace && this.displayEndpointOptions(endpointId)}
         </div>
       </div>
     )

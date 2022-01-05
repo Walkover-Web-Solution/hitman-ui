@@ -3,6 +3,13 @@
 $font-small: 12px;
 $text-color: #212121;
 
+.top-right {
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 99;
+}
+
 .primary-sidebar {
   background-color: #F8F8F8;
   color: #999;
@@ -128,13 +135,14 @@ input[type="text"]:focus {
   }
 }
 
-.primary-sidebar .sidebar-accordion.active>button {
-  background: #ebebeb;
-  border-color: #F1EEE5;
-  &:before{
-    transform: rotate(360deg) !important;
+.primary-sidebar .sidebar-accordion.active>{
+  button {
+    background: #ebebeb;
+    border-color: #F1EEE5;
+    &:before{
+      transform: rotate(360deg) !important;
+    }
   }
-
   .sidebar-item-action-btn {
     visibility: visible;
     opacity: 1;
@@ -154,7 +162,7 @@ input[type="text"]:focus {
 }
 
 .sidebar-accordion {
-  >button{
+  button{
     width: 100%;
     display: flex;
     align-items: center;
@@ -169,18 +177,32 @@ input[type="text"]:focus {
     font-weight: normal;
     padding: 4px 25px 4px 10px;
     position: relative;
+    transition: all 0.3s ease-in;
+    height: 2rem;
     &:active,
     &:focus {
       outline: none;
       box-shadow: none;
     }
-  
     &:hover {
-  
       .sidebar-item-action-btn {
         visibility: visible;
         opacity: 1;
       }
+    }
+  }
+  .sidebar-toggle{
+    transition: all 0.3s ease-in;
+    &:hover {
+      background: #ebebeb;
+      border-color: #F1EEE5;
+      .sidebar-item-action-btn {
+        visibility: visible;
+        opacity: 1;
+      }
+    }
+    i{
+      color: #000;
     }
   }
 }
@@ -235,6 +257,12 @@ input[type="text"]:focus {
   border-radius: 3px;
   text-align: center;
   opacity: 0;
+  cursor: pointer;
+  transition: all 0.3s ease-in;
+  i{
+    display: flex;
+    height: 12px;
+  }
 }
 
 .sidebar-item-action:hover {
@@ -383,10 +411,17 @@ input[type="text"]:focus {
 .published-icon {
   position: absolute;
   right: 12px;
+  display: flex;
+  align-items: center;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .sidebar-accordion {
   button.focused {
     border: 1px dotted red !important;
   }
+}
+.sidebar-accordion {
+  position: relative;
 }

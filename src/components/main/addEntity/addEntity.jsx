@@ -76,7 +76,7 @@ export class AddEntity extends Component {
               />
               <small className='entity-name-error'> {this.state.errors.entityName}</small>
             </div>}
-          <div>
+          <div className='d-flex align-items-center'>
             <button type='submit' className='entity-submit-btn'>{`Add ${this.props.type}`}</button>
             {this.props.type && this.props.type !== 'endpoint' && this.renderToolTip(this.props.type)}
           </div>
