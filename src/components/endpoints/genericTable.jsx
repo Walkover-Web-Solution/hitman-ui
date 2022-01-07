@@ -481,7 +481,7 @@ class GenericTable extends Component {
         let name = ''
         if (srcExist) name = value.name
         if (!srcExist && desExist) name = value.id + '_' + value.name
-        if (name) return <div className='fileName selectFile d-flex align-items-center '>{name}<button className='align-items-center d-flex ml-2' onClick={() => { this.handleDeSelectFile(index) }}>&times;</button></div>
+        if (name) return <div className='fileName selectFile d-flex align-items-center justify-content-between'> <span className='truncate'>{name}</span><button className='align-items-center d-flex ml-2' onClick={() => { this.handleDeSelectFile(index) }}>&times;</button></div>
       }
       return <div className='selectFile d-flex align-items-center'><button onClick={() => this.handleFileInput(dataArray, index)}>Select file</button></div>
     }

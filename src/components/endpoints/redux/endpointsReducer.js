@@ -47,6 +47,7 @@ function endpointsReducer (state = initialState, action) {
     case endpointsActionTypes.ON_ENDPOINT_ADDED: {
       endpoints = { ...state }
       const endpointData = { ...action.response }
+      delete endpoints[endpointData.requestId]
       delete endpointData.requestId
       endpoints[action.response.id] = endpointData
       return endpoints

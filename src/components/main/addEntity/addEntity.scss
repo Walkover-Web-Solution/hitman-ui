@@ -12,7 +12,7 @@
     height: 30px;
 }
 
-.entity-submit-btn {
+.sidebar-content .entity-submit-btn {
     padding: 0 !important;
     font-weight: 500 !important;
     font-size: 12px !important;
@@ -24,6 +24,7 @@
     border-radius: 4px !important;
     color: #fff;
     margin-right: 10px;
+    justify-content: center;
 }
 
 .entity-name-error {
