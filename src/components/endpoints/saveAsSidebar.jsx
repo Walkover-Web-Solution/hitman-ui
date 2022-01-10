@@ -33,9 +33,9 @@ class SaveAsSidebar extends Form {
       errors: {}
     }
 
-    if(this.props.history.location.groupId) {
-      this.state.list.type = 'endpoints';
-      this.state.list.parentId = this.props.history.location.groupId;
+    if (this.props.history.location.groupId) {
+      this.state.list.type = 'endpoints'
+      this.state.list.parentId = this.props.history.location.groupId
     }
 
     this.saveAsSidebar = createRef()
