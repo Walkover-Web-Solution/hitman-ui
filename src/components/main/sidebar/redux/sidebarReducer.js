@@ -144,7 +144,6 @@ function sidebarReducer (state = initialState, action) {
         Object.values(action.groups).forEach(group => {
           newState = addNewNodeReq(newState, group, 'groups')
         })
-        // console.log(newState)
         return newState
       case groupsActionTypes.ADD_GROUP_REQUEST:
         newState = addNewNodeReq(newState, {
