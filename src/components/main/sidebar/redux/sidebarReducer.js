@@ -144,6 +144,7 @@ function sidebarReducer (state = initialState, action) {
         Object.values(action.groups).forEach(group => {
           newState = addNewNodeReq(newState, group, 'groups')
         })
+        // console.log(newState)
         return newState
       case groupsActionTypes.ADD_GROUP_REQUEST:
         newState = addNewNodeReq(newState, {
@@ -275,9 +276,20 @@ function sidebarReducer (state = initialState, action) {
         newState = focusNextItem(newState)
         return newState
 
-      case sidebarActionTypes.EXPAND_ITEM:
+      case sidebarActionTypes.EXPAND_ITEM: {
         newState = expandItem(action.payload ? action.payload : newState.focusedNode, newState)
+
+        const FChild = newState.navList[newState.focusedNode].FChild
+        const LChild = newState.navList[newState.focusedNode].LChild
+        if (FChild === LChild && FChild != null) {
+          newState = expandItem(FChild, newState)
+          const nextFChild = newState.navList[FChild].FChild
+          const nextLChild = newState.navList[FChild].LChild
+          if (nextFChild === nextLChild && nextFChild != null) { newState = expandItem(nextFChild, newState) }
+        }
+
         return newState
+      }
 
       case sidebarActionTypes.COLLAPSE_ITEM:
         newState = collapseItem(action.payload ? action.payload : newState.focusedNode, newState)
