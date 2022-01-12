@@ -275,20 +275,9 @@ function sidebarReducer (state = initialState, action) {
         newState = focusNextItem(newState)
         return newState
 
-      case sidebarActionTypes.EXPAND_ITEM: {
+      case sidebarActionTypes.EXPAND_ITEM:
         newState = expandItem(action.payload ? action.payload : newState.focusedNode, newState)
-
-        const FChild = newState.navList[newState.focusedNode].FChild
-        const LChild = newState.navList[newState.focusedNode].LChild
-        if (FChild === LChild && FChild != null) {
-          newState = expandItem(FChild, newState)
-          const nextFChild = newState.navList[FChild].FChild
-          const nextLChild = newState.navList[FChild].LChild
-          if (nextFChild === nextLChild && nextFChild != null) { newState = expandItem(nextFChild, newState) }
-        }
-
         return newState
-      }
 
       case sidebarActionTypes.COLLAPSE_ITEM:
         newState = collapseItem(action.payload ? action.payload : newState.focusedNode, newState)
@@ -773,6 +762,19 @@ function expandItem (nodeAddress, newState) {
 
   if (isExpandable) {
     newState.navList[nodeAddress].expanded = true
+  }
+
+  newState = onlyChildExpand(nodeAddress, newState)
+  return newState
+}
+
+function onlyChildExpand (nodeAddress, newState) {
+  let { firstChild, lastChild } = newState.navList[newState.focusedNode]
+
+  while (firstChild === lastChild && firstChild != null) {
+    newState.navList[firstChild].expanded = true
+    firstChild = newState.navList[firstChild].firstChild
+    lastChild = newState.navList[lastChild].lastChild
   }
 
   return newState
