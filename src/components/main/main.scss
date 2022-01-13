@@ -1069,7 +1069,7 @@ body .form-control {
   &:focus {
     outline: none;
     border-color: #E98A36;
-    box-shadow: nones;
+    box-shadow: none;
   }
   &::placeholder{
     color: #BDBDBD !important;
@@ -2614,15 +2614,19 @@ span.endpointNameWrapper {
   }
   .host-data {
     position: absolute;
-    margin-top: 10px;
-    border: none;
-    border-radius: 4px;
+    margin-top: 5px;
     background-color: white;
     box-shadow: 0 3px 5px 0px rgba(0, 0, 0, 0.03);
     line-height: 1;
+    z-index: 199;
+    border: 1px solid $border-color;
     .host-data-item {
-      padding: 5px 15px;
+      padding: 0.75rem 1rem;
       cursor: pointer;
+      border-bottom: 1px solid $border-color;
+      &:last-child{
+        border-bottom: 0;
+      }
       small {
         color: grey;
       }

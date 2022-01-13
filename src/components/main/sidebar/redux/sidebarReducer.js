@@ -764,6 +764,19 @@ function expandItem (nodeAddress, newState) {
     newState.navList[nodeAddress].expanded = true
   }
 
+  newState = onlyChildExpand(nodeAddress, newState)
+  return newState
+}
+
+function onlyChildExpand (nodeAddress, newState) {
+  let { firstChild, lastChild } = newState.navList[newState.focusedNode]
+
+  while (firstChild === lastChild && firstChild != null) {
+    newState.navList[firstChild].expanded = true
+    firstChild = newState.navList[firstChild].firstChild
+    lastChild = newState.navList[lastChild].lastChild
+  }
+
   return newState
 }
 

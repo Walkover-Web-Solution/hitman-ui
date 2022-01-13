@@ -1024,7 +1024,7 @@ class DisplayEndpoint extends Component {
         showLoginSignupModal: true
       })
     }
-    if (!(this.state.groupId || groupId || this.props.history.location.groupId)) {
+    if (!(this.state.groupId || groupId)) {
       this.openEndpointFormModal()
     } else {
       const body = this.prepareBodyForSaving(this.state.data.body)
@@ -1064,7 +1064,7 @@ class DisplayEndpoint extends Component {
         endpoint.requestId = this.props.tab.id
         endpoint.description = endpointDescription || ''
         this.setState({ saveAsLoader: true })
-        this.props.add_endpoint(endpoint, groupId || this.state.groupId || this.props.history.location.groupId, ({ closeForm, stopLoader }) => {
+        this.props.add_endpoint(endpoint, groupId || this.state.groupId, ({ closeForm, stopLoader }) => {
           if (closeForm) this.closeEndpointFormModal()
           if (stopLoader) this.setState({ saveAsLoader: false })
         })
