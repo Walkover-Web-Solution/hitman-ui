@@ -153,6 +153,33 @@ export function getParentIds (id, type, data) {
   return parentIds
 }
 
+export function handleChangeInUrlField (data) {
+  const inputValue = data
+  const protocolRegex = /^(?:([a-z]+:\/\/))/i
+  const protocol = inputValue.split('/')[0]
+  /** Checks if there is two protocols one after one either by mean of pasting URL
+  * or by appending by mistake, in that case first protocol from left is  removed */
+  if (inputValue.match(protocolRegex)) {
+    const domain = inputValue.substring(protocol.length + 2)
+    if (domain.match(protocolRegex)) {
+      data = domain
+    }
+  }
+  return data
+}
+
+export function handleBlurInUrlField (data) {
+  const inputValue = data
+  const protocolRegex = /^(?:([a-z]+:\/\/))/i
+  let protocol = inputValue.split('/')[0]
+  protocol = inputValue.substring(0, protocol.length + 2)
+  // Checks for inputValue has protocol or not, and if not then prefixes https:// with it
+  if (!(protocol.match(protocolRegex))) {
+    data = `https://${inputValue}`
+  }
+  return data
+}
+
 export default {
   isDashboardRoute,
   isElectron,
@@ -165,5 +192,7 @@ export default {
   getOrgId,
   ADD_GROUP_MODAL_NAME,
   ADD_VERSION_MODAL_NAME,
-  getParentIds
+  getParentIds,
+  handleChangeInUrlField,
+  handleBlurInUrlField
 }
