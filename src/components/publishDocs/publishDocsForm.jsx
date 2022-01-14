@@ -7,6 +7,7 @@ import { ReactComponent as UploadIcon } from '../../assets/icons/uploadIcon.svg'
 import { updateCollection } from '../collections/redux/collectionsActions'
 import './publishDocsForm.scss'
 import { HOSTNAME_VALIDATION_REGEX } from '../common/constants'
+import { handleChangeInUrlField, handleBlurInUrlField } from '../common/utility'
 const URI = require('urijs')
 
 const UI_IP = process.env.REACT_APP_UI_IP
@@ -102,10 +103,21 @@ class PublishDocForm extends Component {
     }
   }
 
-  handleChange = (e) => {
+  handleChange = (e, isURLInput) => {
     const data = { ...this.state.data }
     data[e.currentTarget.name] = e.currentTarget.value
+    if (isURLInput) {
+      data[e.currentTarget.name] = handleChangeInUrlField(data[e.currentTarget.name])
+    }
     this.setState({ data })
+  }
+
+  handleBlur = (e, isURLInput = false) => {
+    const data = { ...this.state.data }
+    if (isURLInput) {
+      data[e.currentTarget.name] = handleBlurInUrlField(data[e.currentTarget.name])
+    }
+    this.setState({ errors: {}, data })
   }
 
   handleChangeLink = (e) => {
@@ -282,14 +294,15 @@ class PublishDocForm extends Component {
     )
   }
 
-  renderInput (name, mandatory = false, disabled, placeholder) {
+  renderInput (name, mandatory = false, disabled, placeholder, isURLInput = false) {
+    const { data, errors } = this.state
     return (
       <div className='form-group'>
         <label>
           {publishDocFormEnum.LABELS[name]} {mandatory ? <span className='alert alert-danger'>*</span> : ''}
         </label>
-        <input type='text' placeholder={placeholder} disabled={disabled} className='form-control' name={name} value={this.state.data[name]} onChange={(e) => this.handleChange(e)} />
-        {this.state.errors && this.state.errors[name] && <small className='alert alert-danger'>{this.state.errors[name]}</small>}
+        <input type='text' placeholder={placeholder} disabled={disabled} className='form-control' name={name} value={(isURLInput && !data[name]) ? 'https://' : data[name]} onChange={(e) => this.handleChange(e, isURLInput)} onBlur={(e) => this.handleBlur(e, isURLInput)} />
+        {errors && errors[name] && <small className='alert alert-danger'>{errors[name]}</small>}
         {name === 'domain' && <label className='domain-info'>{`Point the A record of the above domain to ${UI_IP}`}</label>}
       </div>
     )
@@ -312,7 +325,7 @@ class PublishDocForm extends Component {
         </div>
         <div className='small-input'>
           {this.renderInput('title', true, false, 'brand name')}
-          {this.renderInput('domain', false, false, 'https://docs.example.com')}
+          {this.renderInput('domain', false, false, 'docs.example.com')}
         </div>
         <label className='fav-icon-text'> Fav Icon </label>
         <div className='d-flex'>
@@ -322,7 +335,7 @@ class PublishDocForm extends Component {
           <div className='or-wrap'>
             <p>OR</p>
           </div>
-          {this.renderInput('logoUrl', false, this.state.binaryFile)}
+          {this.renderInput('logoUrl', false, this.state.binaryFile, '', true)}
         </div>
 
         <div className='color-picker'>
