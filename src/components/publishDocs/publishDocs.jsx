@@ -1264,9 +1264,9 @@ class PublishDocs extends Component {
     return (
       <div className='hosted-doc-heading'>
         <div>{heading}</div>
-        <a type='button' style={{ fontSize: 14, fontWeight: 'lighter' }} onClick={() => this.handleGoBack()}>←  Go to dashboard</a>
-        {/* <div>
-        <button type='button' onClick={() => this.handleGoBack()}>x</button>{heading}</div> */}
+        <a onClick={() => this.handleGoBack()}>
+          Go to Dashboard
+        </a>
       </div>
     )
   }
