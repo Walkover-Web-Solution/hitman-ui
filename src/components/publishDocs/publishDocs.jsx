@@ -1252,19 +1252,11 @@ class PublishDocs extends Component {
     )
   }
 
-  handleGoBack () {
-    const { history, location } = this.props
-    const urlParams = new URLSearchParams(location.search)
-    const redirectUri = urlParams.get('redirect_uri')
-    if (redirectUri) this.handleOpenLink(redirectUri, true)
-    else history.goBack()
-  }
-
   renderHostedApiHeading (heading) {
     return (
       <div className='hosted-doc-heading'>
         <div>{heading}</div>
-        <a onClick={() => this.handleGoBack()}>
+        <a onClick={() => window.history.back()}>
           Go to Dashboard
         </a>
       </div>
