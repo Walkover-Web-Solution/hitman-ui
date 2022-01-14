@@ -1605,20 +1605,6 @@ table#custom-generic-table tbody input[value="false"] + span.checkmark {
 }
 
 .mainContentWrapperPublic {
-  .hm-endpoint-container {
-    .hm-panel {
-      max-height: calc(100vh - 50px);
-      overflow: auto;
-
-      &::-webkit-scrollbar {
-        width: 0px;
-      }
-    }
-
-  }
-}
-
-.mainContentWrapperPublic {
   .mainContentWrapper {
     border: none;
     display: flex;
@@ -2275,7 +2261,6 @@ button[name="cta-1"] {
   margin-bottom: 25px;
   background: #F8F8F8;
   border: 1px solid #E3E9F3;
-  border-radius: 4px;
   padding: 20px;
   margin-top: 30px;
   border-left: 3px solid #E98A36;
@@ -2408,7 +2393,6 @@ button[name="cta-1"] {
 }
 
 .main-table-wrapper {
-  border-radius: 4px;
   padding: 0px 0 0;
   float: left;
   width: 100%;
