@@ -5,6 +5,7 @@ const Input = ({
   label,
   value,
   onChange,
+  onBlur,
   error,
   placeholder,
   disabled,
@@ -22,6 +23,7 @@ const Input = ({
       <input
         value={value}
         onChange={onChange}
+        onBlur={onBlur}
         id={name}
         name={name}
         className='form-control custom-input'

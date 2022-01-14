@@ -506,10 +506,16 @@ button.btn.custom-body-type-button {
     background-color: #fff;
   }
   .enableSearch .search-box > input[type="text"] {
-    background-position:95% center !important;
+    padding: 0 1rem;
+    background-image: none !important;
   }
-  .versionWrapper:not(.enableSearch) .search-box > input[type="text"]{
+  .search-box > input[type="text"]{
+    padding-left: 2rem;
+    background: url('../assets/icons/searchIcon.svg') no-repeat 4% center !important;
+  }
+  .versionsAvailable.versionWrapper:not(.enableSearch) .search-box > input[type="text"]{
     background: url('../assets/icons/searchIcon.svg') no-repeat center !important;
+    padding: 0 1rem;
     cursor: pointer;
     &::placeholder{
       font-size: 0;

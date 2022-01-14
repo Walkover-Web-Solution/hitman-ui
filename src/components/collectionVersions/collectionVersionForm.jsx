@@ -93,7 +93,7 @@ class CollectionVersionForm extends Form {
                   {this.renderInput('number', 'Version Name', 'Version Name', true, true)}
                 </div>
                 <div className='col-6'>
-                  {this.renderInput('host', 'Version Endpoint', 'https://v1.example.com', true)}
+                  {this.renderInput('host', 'Version Endpoint', 'https://v1.example.com', true, false, true)}
                 </div>
               </div>
               <div className='text-left mt-4 mb-2'>

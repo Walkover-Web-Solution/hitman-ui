@@ -76,7 +76,8 @@ class ShareVersionForm extends Form {
               {this.renderInput(
                 'shareVersionLink',
                 'Public Link',
-                'Enter a public link'
+                'Enter a public link',
+                false, false, true
               )}
               <div name='shareVersionLink' label='Public Link' />
               <div className='text-left mt-4 mb-2'>

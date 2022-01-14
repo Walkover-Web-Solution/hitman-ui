@@ -6,6 +6,7 @@ import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
 import 'ace-builds'
 import 'ace-builds/src-noconflict/mode-json'
+import { handleChangeInUrlField, handleBlurInUrlField } from '../common/utility'
 
 class Form extends Component {
   constructor (props) {
@@ -73,11 +74,22 @@ class Form extends Component {
     this.doSubmit()
   }
 
-  handleChange = (e) => {
+  handleChange = (e, isURLInput = false) => {
     const data = { ...this.state.data }
     data[e.currentTarget.name] = e.currentTarget.value
+    if (isURLInput) {
+      data[e.currentTarget.name] = handleChangeInUrlField(data[e.currentTarget.name])
+    }
     this.setState({ errors: {}, data })
-  };
+  }
+
+  handleBlur = (e, isURLInput = false) => {
+    const data = { ...this.state.data }
+    if (isURLInput) {
+      data[e.currentTarget.name] = handleBlurInUrlField(data[e.currentTarget.name])
+    }
+    this.setState({ errors: {}, data })
+  }
 
   getSaveDisableStatus (notdefined, active) {
     let isSaveDisabled = this.state.isSaveDisabled
@@ -104,14 +116,15 @@ class Form extends Component {
     this.setState({ data })
   };
 
-  renderInput (name, label, placeholder, mandatory = false, firstLetterCapitalize = false) {
+  renderInput (name, label, placeholder, mandatory = false, firstLetterCapitalize = false, isURLInput = false) {
     const { data, errors } = this.state
     return (
       <Input
         name={name}
         label={label}
-        value={data[name]}
-        onChange={this.handleChange}
+        value={(isURLInput && !data[name]) ? 'https://' : data[name]}
+        onChange={(e) => this.handleChange(e, isURLInput)}
+        onBlur={(e) => this.handleBlur(e, isURLInput)}
         error={errors[name]}
         placeholder={placeholder}
         disabled={data.disabled}
