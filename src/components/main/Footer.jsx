@@ -2,7 +2,7 @@ import React from 'react'
 
 function Footer ({ theme }) {
   const domainName = window.location.hostname
-  const domainSrc = process.env.REACT_APP_HITMAN_URL + domainName
+  const domainSrc = process.env.REACT_APP_HITMAN_URL + '?src=' + domainName
   return (
 
     <div className='inner-wrapper'>
