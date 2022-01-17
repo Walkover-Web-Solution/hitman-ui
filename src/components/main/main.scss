@@ -3355,3 +3355,21 @@ div#steve-parent-accordion{
 .steve-inner-parent {
   right: 7.25rem !important;
 }
+.click-link {
+  cursor: pointer;
+  color: #f29a4a;
+  font-weight: normal;
+}
+.desc-box{
+  .form-group{
+    label{
+      display: none;
+    }
+  }
+}
+.save-as-sidebar-container {
+  top: 3rem !important;
+  .form-group .ql-container.ql-snow{
+    height: 120px;
+  }
+}

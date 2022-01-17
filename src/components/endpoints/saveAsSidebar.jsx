@@ -8,6 +8,7 @@ import CollectionForm from '../collections/collectionForm'
 import CollectionVersionForm from '../collectionVersions/collectionVersionForm'
 import GroupForm from '../groups/groupForm'
 import { ADD_GROUP_MODAL_NAME, ADD_VERSION_MODAL_NAME } from '../common/utility'
+import AddIcon from '../../assets/icons/add.svg'
 
 const mapStateToProps = state => {
   return {
@@ -30,7 +31,8 @@ class SaveAsSidebar extends Form {
         parentId: null
       },
       groupId: null,
-      errors: {}
+      errors: {},
+      showEditor: false
     }
 
     if (this.props.history.location.groupId) {
@@ -284,9 +286,17 @@ class SaveAsSidebar extends Form {
 
             </div>
             <div className='mx-3 py-3'>
-              <form onSubmit={this.handleSubmit}>
+              <form className='desc-box' onSubmit={this.handleSubmit}>
                 {this.renderInput('name', 'Name', 'Endpoint Name')}
-                {this.renderQuillEditor('description', 'Description (Optional)')}
+                {
+                  !this.state.showEditor
+                    ? (
+                      <label className='click-link mb-3 d-flex align-items-center' onClick={() => this.setState({ showEditor: true })}>
+                        <img className='mr-1' src={AddIcon} alt='' />Add Description to Endpoint
+                      </label>
+                      )
+                    : this.renderQuillEditor('description')
+                }
               </form>
               <div className='card saveAsWrapper' id='endpoint-form-collection-list'>
                 <div className='card-title'>
