@@ -3356,9 +3356,9 @@ div#steve-parent-accordion{
   right: 7.25rem !important;
 }
 .click-link {
-    margin-bottom: 0;
-    text-decoration: underline;
-    cursor: pointer;
+  cursor: pointer;
+  color: #f29a4a;
+  font-weight: normal;
 }
 .desc-box{
   .form-group{
@@ -3369,4 +3369,7 @@ div#steve-parent-accordion{
 }
 .save-as-sidebar-container {
   top: 3rem !important;
+  .form-group .ql-container.ql-snow{
+    height: 120px;
+  }
 }
