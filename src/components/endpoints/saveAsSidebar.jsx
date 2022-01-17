@@ -30,7 +30,8 @@ class SaveAsSidebar extends Form {
         parentId: null
       },
       groupId: null,
-      errors: {}
+      errors: {},
+      showEditor: false
     }
 
     if (this.props.history.location.groupId) {
@@ -205,6 +206,11 @@ class SaveAsSidebar extends Form {
     }
   }
 
+  showEditor () {
+    const showEditor = !this.state.showEditor
+    this.setState({ showEditor })
+  }
+
   goBack () {
     const list = { ...this.state.list }
     switch (this.state.list.type) {
@@ -284,9 +290,10 @@ class SaveAsSidebar extends Form {
 
             </div>
             <div className='mx-3 py-3'>
-              <form onSubmit={this.handleSubmit}>
+              <form className='desc-box' onSubmit={this.handleSubmit}>
                 {this.renderInput('name', 'Name', 'Endpoint Name')}
-                {this.renderQuillEditor('description', 'Description (Optional)')}
+                <label htmlFor='' className='click-link mb-3' onClick={() => this.showEditor()}>Add Description to Endpoint</label>
+                {this.state.showEditor && this.renderQuillEditor('description')}
               </form>
               <div className='card saveAsWrapper' id='endpoint-form-collection-list'>
                 <div className='card-title'>

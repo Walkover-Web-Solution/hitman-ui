@@ -3355,3 +3355,18 @@ div#steve-parent-accordion{
 .steve-inner-parent {
   right: 7.25rem !important;
 }
+.click-link {
+    margin-bottom: 0;
+    text-decoration: underline;
+    cursor: pointer;
+}
+.desc-box{
+  .form-group{
+    label{
+      display: none;
+    }
+  }
+}
+.save-as-sidebar-container {
+  top: 3rem !important;
+}
