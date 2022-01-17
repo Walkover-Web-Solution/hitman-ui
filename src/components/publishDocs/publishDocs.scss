@@ -48,6 +48,14 @@
   color: #000000;
 }
 
+.hosted-doc-heading a {
+  font-size: 14px;
+  font-weight: 300;
+  color: #0000ff !important;
+  text-decoration: underline !important;
+  cursor: pointer;
+}
+
 .publish-api-doc-container {
   background: #FFFFFF;
   padding: 30px;

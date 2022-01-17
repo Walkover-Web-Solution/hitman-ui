@@ -132,7 +132,7 @@ class CollectionForm extends Form {
     return (
       <form onSubmit={this.handleSubmit}>
         {this.renderInput('name', 'Name', 'Collection Name', true, true)}
-        {this.renderInput('website', 'Website', 'https://yourwebsite.com', true)}
+        {this.renderInput('website', 'Website', 'https://yourwebsite.com', true, false, true)}
         {/* <div className='row'>
           <div className='col'>
             {this.renderInput('keyword', 'Keyword 1', 'Keyword 1', true)}

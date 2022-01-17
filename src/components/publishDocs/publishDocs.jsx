@@ -1252,10 +1252,19 @@ class PublishDocs extends Component {
     )
   }
 
+  handleGoBack () {
+    this.props.history.push({
+      pathname: `/orgs/${this.props.match.params.orgId}/dashboard`
+    })
+  }
+
   renderHostedApiHeading (heading) {
     return (
       <div className='hosted-doc-heading'>
         <div>{heading}</div>
+        <a onClick={() => this.handleGoBack()}>
+          Go to Dashboard
+        </a>
       </div>
     )
   }

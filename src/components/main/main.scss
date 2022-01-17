@@ -1069,7 +1069,7 @@ body .form-control {
   &:focus {
     outline: none;
     border-color: #E98A36;
-    box-shadow: nones;
+    box-shadow: none;
   }
   &::placeholder{
     color: #BDBDBD !important;
@@ -1602,20 +1602,6 @@ table#custom-generic-table tbody input[value="false"] + span.checkmark {
 .hideCodeEditor .pubCodeWrapper.closeEditor {
   position: fixed;
   right: 0;
-}
-
-.mainContentWrapperPublic {
-  .hm-endpoint-container {
-    .hm-panel {
-      max-height: calc(100vh - 50px);
-      overflow: auto;
-
-      &::-webkit-scrollbar {
-        width: 0px;
-      }
-    }
-
-  }
 }
 
 .mainContentWrapperPublic {
@@ -2275,7 +2261,6 @@ button[name="cta-1"] {
   margin-bottom: 25px;
   background: #F8F8F8;
   border: 1px solid #E3E9F3;
-  border-radius: 4px;
   padding: 20px;
   margin-top: 30px;
   border-left: 3px solid #E98A36;
@@ -2408,7 +2393,6 @@ button[name="cta-1"] {
 }
 
 .main-table-wrapper {
-  border-radius: 4px;
   padding: 0px 0 0;
   float: left;
   width: 100%;
@@ -2614,15 +2598,19 @@ span.endpointNameWrapper {
   }
   .host-data {
     position: absolute;
-    margin-top: 10px;
-    border: none;
-    border-radius: 4px;
+    margin-top: 5px;
     background-color: white;
     box-shadow: 0 3px 5px 0px rgba(0, 0, 0, 0.03);
     line-height: 1;
+    z-index: 199;
+    border: 1px solid $border-color;
     .host-data-item {
-      padding: 5px 15px;
+      padding: 0.75rem 1rem;
       cursor: pointer;
+      border-bottom: 1px solid $border-color;
+      &:last-child{
+        border-bottom: 0;
+      }
       small {
         color: grey;
       }
@@ -3340,7 +3328,6 @@ div#steve-parent-accordion{
   height: 2.25rem;
   border: 1px solid #e0e0e0;
   padding: 0 0.7rem;
-  flex-wrap: wrap;
 }
 
 .fileName {
@@ -3367,4 +3354,22 @@ div#steve-parent-accordion{
 }
 .steve-inner-parent {
   right: 7.25rem !important;
+}
+.click-link {
+  cursor: pointer;
+  color: #f29a4a;
+  font-weight: normal;
+}
+.desc-box{
+  .form-group{
+    label{
+      display: none;
+    }
+  }
+}
+.save-as-sidebar-container {
+  top: 3rem !important;
+  .form-group .ql-container.ql-snow{
+    height: 120px;
+  }
 }
