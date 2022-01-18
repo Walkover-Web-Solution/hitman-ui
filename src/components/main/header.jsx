@@ -189,12 +189,27 @@ class Header extends Component {
     this.openPublishDocs(collection)
   }
 
+  handleGoBack () {
+    this.props.history.push({
+      pathname: `/orgs/${this.props.match.params.orgId}/dashboard`
+    })
+  }
+
   renderNavTitle () {
     return (
-      <div className='float-right d-flex'>
-        {!isElectron() && <DownloadDesktopAppButton />}
-        {getCurrentUser() ? <Environments {...this.props} /> : null}
-      </div>
+      <>
+        {this.props.location.pathname.split('/')?.[4] === 'publish' && 
+          <div>
+            <button onClick={() => this.handleGoBack()}>
+              API Dashboard
+            </button>
+          </div>
+        }
+        <div className='float-right d-flex'>
+          {!isElectron() && <DownloadDesktopAppButton />}
+          {getCurrentUser() ? <Environments {...this.props} /> : null}
+        </div>
+      </>
     )
   }
 
