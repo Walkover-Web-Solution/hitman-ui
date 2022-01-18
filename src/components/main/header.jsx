@@ -198,7 +198,7 @@ class Header extends Component {
   renderNavTitle () {
     return (
       <>
-        {this.props.location.pathname.split('/')?.[4] === 'publish' && 
+        {this.props.location.pathname.split('/')?.[4] === 'publish' &&
           <div>
             <button onClick={() => this.handleGoBack()}>
               API Dashboard
