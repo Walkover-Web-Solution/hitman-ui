@@ -203,8 +203,7 @@ class Header extends Component {
             <button onClick={() => this.handleGoBack()}>
               API Dashboard
             </button>
-          </div>
-        }
+          </div>}
         <div className='float-right d-flex'>
           {!isElectron() && <DownloadDesktopAppButton />}
           {getCurrentUser() ? <Environments {...this.props} /> : null}
