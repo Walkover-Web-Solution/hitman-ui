@@ -2,7 +2,8 @@
   "name": "hitman",
   "author": "Hitman",
   "description": "Hitman App",
-  "version": "0.1.0",
+  "version": "1.0.3",
+  "homepage": "./",
   "private": true,
   "main": "public/electron.js",
   "dependencies": {
@@ -79,7 +80,7 @@
     "npm": "6.0.0"
   },
   "scripts": {
-    "start": "standard && react-scripts start",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",

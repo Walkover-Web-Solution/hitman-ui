@@ -362,6 +362,7 @@ class SaveAsSidebar extends Form {
   }
 
   render () {
+    const title = this.state.data.name;
     const saveAsSidebarStyle = {
       position: 'fixed',
       background: 'white',
@@ -411,8 +412,12 @@ class SaveAsSidebar extends Form {
 
             </div>
             <div className='mx-3 py-3'>
-              <form className='desc-box' onSubmit={this.handleSubmit}>
+              <form className='desc-box form-parent' onSubmit={this.handleSubmit}>
                 {this.renderInput('name', 'Name', 'Endpoint Name')}
+                <div>
+                  {title.trim()===''||title==='Untitled' ? <small className="alert-danger">Please enter the Title</small>: <div></div> }
+                </div>
+
                 {
                   !this.state.showEditor
                     ? (
@@ -602,7 +607,7 @@ class SaveAsSidebar extends Form {
                 <button
                   className={this.props.saveAsLoader ? 'btn btn-primary btn-lg buttonLoader' : 'btn btn-primary btn-lg'}
                   onClick={this.handleSubmit}
-                  disabled={this.state.dropdownList.type !== 'endpoints'}
+                  disabled={this.state.dropdownList.type !== 'endpoints' || title.trim()==='' || title==='Untitled' ? 'disabled': ''}
                 >
                   Save{' '}
                   {this.state.dropdownList.type === 'endpoints' &&
