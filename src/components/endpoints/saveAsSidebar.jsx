@@ -602,11 +602,11 @@ class SaveAsSidebar extends Form {
                 <button
                   className={this.props.saveAsLoader ? 'btn btn-primary btn-lg buttonLoader' : 'btn btn-primary btn-lg'}
                   onClick={this.handleSubmit}
-                  disabled={this.state.list.type !== 'endpoints'}
+                  disabled={this.state.dropdownList.type !== 'endpoints'}
                 >
                   Save{' '}
-                  {this.state.list.type === 'endpoints' &&
-                    `to ${this.renderListTitle()}`}
+                  {this.state.dropdownList.type === 'endpoints' &&
+                    `to ${this.props.groups[this.state.dropdownList.selectedGroupId].name}`}
                 </button>
               </div>
             </div>
