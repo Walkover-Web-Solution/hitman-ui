@@ -513,13 +513,13 @@ class SaveAsSidebar extends Form {
               </div> */}
 
               <div>
-                <div>Collection to which you wish to save this to</div>
-                <Dropdown>
-                  <button onClick={() => { this.goDropdownBack('collections') }}>
+                <div className='mb-2'>Collection to which you wish to save this to</div>
+                <Dropdown className='cst'>
+                  <div onClick={() => { this.goDropdownBack('collections') }}>
                     <Dropdown.Toggle variant='default' id='dropdown-basic'>
                       {this.state.dropdownList.type === 'collections' ? 'Select Collection' : this.props.collections[this.state.dropdownList.selectedCollectionId].name}
                     </Dropdown.Toggle>
-                  </button>
+                  </div>
                   <Dropdown.Menu>
                     <DropdownItem>Select Collection</DropdownItem>
                     <DropdownItem onClick={() => { this.openAddModal() }}>+ Add New</DropdownItem>
@@ -530,20 +530,22 @@ class SaveAsSidebar extends Form {
                         </DropdownItem>
                         )))
                       : (
-                        <div>No Collection Found</div>
+                        <DropdownItem className='disabled'>
+                          No Collection Found
+                        </DropdownItem>
                         )}
                   </Dropdown.Menu>
                 </Dropdown>
 
                 {this.state.dropdownList.parentId != null &&
                   <>
-                    <div>Version</div>
-                    <Dropdown>
-                      <button onClick={() => { this.goDropdownBack('versions') }}>
+                    <div className='mb-2 mt-3'>Version</div>
+                    <Dropdown className='cst'>
+                      <div onClick={() => { this.goDropdownBack('versions') }}>
                         <Dropdown.Toggle variant='default' id='dropdown-basic'>
                           {this.state.dropdownList.type === 'versions' ? 'Select Version' : this.props.versions[this.state.dropdownList.selectedVersionId].number}
                         </Dropdown.Toggle>
-                      </button>
+                      </div>
                       <Dropdown.Menu>
                         <DropdownItem>Select Version</DropdownItem>
                         <DropdownItem onClick={() => { this.openAddModal() }}>+ Add New</DropdownItem>
@@ -554,7 +556,9 @@ class SaveAsSidebar extends Form {
                             </DropdownItem>
                             )))
                           : (
-                            <div>No Version Found</div>
+                            <DropdownItem className='disabled'>
+                              No Version Found
+                            </DropdownItem>
                             )}
                       </Dropdown.Menu>
                     </Dropdown>
@@ -562,13 +566,13 @@ class SaveAsSidebar extends Form {
 
                 {(this.state.dropdownList.type === 'groups' || this.state.dropdownList.type === 'endpoints') &&
                   <>
-                    <div>Groups</div>
-                    <Dropdown>
-                      <button onClick={() => { this.goDropdownBack('groups') }}>
+                    <div className='mb-2 mt-3'>Groups</div>
+                    <Dropdown className='cst'>
+                      <div onClick={() => { this.goDropdownBack('groups') }}>
                         <Dropdown.Toggle variant='default' id='dropdown-basic'>
                           {this.state.dropdownList.type === 'groups' ? 'Select Group' : this.props.groups[this.state.dropdownList.selectedGroupId].name}
                         </Dropdown.Toggle>
-                      </button>
+                      </div>
                       <Dropdown.Menu>
                         <DropdownItem>Select Group</DropdownItem>
                         <DropdownItem onClick={() => { this.openAddModal() }}>+ Add New</DropdownItem>
@@ -579,7 +583,9 @@ class SaveAsSidebar extends Form {
                             </DropdownItem>
                             )))
                           : (
-                            <div>No Group Found</div>
+                            <DropdownItem className='disabled'>
+                              No Group Found
+                            </DropdownItem>
                             )}
                       </Dropdown.Menu>
                     </Dropdown>
