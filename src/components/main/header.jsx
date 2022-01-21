@@ -5,6 +5,7 @@ import authService, { getCurrentUser } from '../auth/authService'
 import { Header as GenericHeader } from 'viasocket-shared-plugins'
 import { connect } from 'react-redux'
 import { setAmplitudeUserId, sendAmplitudeData } from '../../services/amplitude'
+import BackIcon from '../../assets/icons/back-arrow.svg'
 
 import HostedApiIcon from '../../assets/icons/hostedApiIcon.svg'
 
@@ -189,12 +190,26 @@ class Header extends Component {
     this.openPublishDocs(collection)
   }
 
+  handleGoBack () {
+    this.props.history.push({
+      pathname: `/orgs/${this.props.match.params.orgId}/dashboard`
+    })
+  }
+
   renderNavTitle () {
     return (
-      <div className='float-right d-flex'>
-        {!isElectron() && <DownloadDesktopAppButton />}
-        {getCurrentUser() ? <Environments {...this.props} /> : null}
-      </div>
+      <>
+        {this.props.location.pathname.split('/')?.[4] === 'publish' &&
+          <div className='back-btn'>
+            <div className='d-flex align-items-center black-hover h-100 p-3 transition' onClick={() => this.handleGoBack()}>
+              <img className='mr-1' src={BackIcon} alt='' /> <span>API Dashboard</span>
+            </div>
+          </div>}
+        <div className='float-right d-flex'>
+          {!isElectron() && <DownloadDesktopAppButton />}
+          {getCurrentUser() ? <Environments {...this.props} /> : null}
+        </div>
+      </>
     )
   }
 
