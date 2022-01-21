@@ -607,6 +607,32 @@ button.btn.custom-body-type-button {
   }
 }
 
+.dropdown{
+  &.cst{
+    button{
+      border:1px solid $border-color;
+      color: #000;
+      width: 100%;
+      justify-content: space-between;
+      max-width: 12rem;
+      text-overflow: ellipsis;
+      &:after{
+        transition: all 0.3s ease-in;
+      }
+    }
+    .dropdown-menu {
+      max-height: 15rem;
+      overflow: auto;
+    }
+    &.show{
+      .dropdown-toggle{
+        &:after{
+          transform: rotate(180deg);
+        }
+      }
+    }
+  }
+  
 .back-btn {
   margin-left: -1rem;
   margin-right: auto;
