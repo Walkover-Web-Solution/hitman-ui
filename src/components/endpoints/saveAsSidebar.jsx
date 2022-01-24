@@ -413,9 +413,9 @@ class SaveAsSidebar extends Form {
             </div>
             <div className='mx-3 py-3'>
               <form className='desc-box form-parent' onSubmit={this.handleSubmit}>
-                {this.renderInput('name', 'Name', 'Endpoint Name')}
-                <div>
-                  {title.trim() === '' || title === 'Untitled' ? <small className='alert-danger'>Please enter the Title</small> : <div />}
+                <div className='p-form-group mb-3'>
+                  {this.renderInput('name', 'Name', 'Endpoint Name')}
+                  {title.trim() === '' || title === 'Untitled' ? <small className='text-danger'>Please enter the Title</small> : <div />}
                 </div>
 
                 {
