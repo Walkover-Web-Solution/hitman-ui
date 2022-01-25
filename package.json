@@ -2,8 +2,7 @@
   "name": "hitman",
   "author": "Hitman",
   "description": "Hitman App",
-  "version": "1.0.3",
-  "homepage": "./",
+  "version": "0.1.0",
   "private": true,
   "main": "public/electron.js",
   "dependencies": {

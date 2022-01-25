@@ -8,7 +8,7 @@
     "files": [
         "../build/**/*"
     ],
-   // "afterSign": "./electron/notarize.js",
+    "afterSign": "./electron/notarize.js",
     "mac": {
         "target": [
             "dmg",
@@ -36,10 +36,10 @@
             "nsis",
             "zip"
         ],
-        "icon": "./assets/icon.ico"
-       // "publisherName": "Walkover Technologies Pvt Ltd",
-       // "certificateSubjectName": "Walkover Technologies Pvt Ltd",
-        //"legalTrademarks": "Walkover Technologies Pvt Ltd"
+        "icon": "./assets/icon.ico",
+        "publisherName": "Walkover Technologies Pvt Ltd",
+        "certificateSubjectName": "Walkover Technologies Pvt Ltd",
+        "legalTrademarks": "Walkover Technologies Pvt Ltd"
     },
     "nsis": {
         "oneClick": true,
