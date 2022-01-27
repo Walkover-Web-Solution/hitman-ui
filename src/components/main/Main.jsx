@@ -25,7 +25,7 @@ import { getOrgUpdatedAt } from '../../services/orgApiService'
 import moment from 'moment'
 import Header from './header'
 import { loadfeedioWidget } from '../../services/feedioWidgetService'
-import { loadHelloWidget } from '../../services/helloWidgetService'
+// import { loadHelloWidget } from '../../services/helloWidgetService'
 import auth from '../auth/authService'
 import DesktopAppDownloadModal from './desktopAppPrompt'
 import { sendAmplitudeData } from '../../services/amplitude'
@@ -84,7 +84,7 @@ class Main extends Component {
         const orgName = auth.getOrgList()[0]?.name
         loadWidget()
         loadfeedioWidget()
-        loadHelloWidget()
+        // loadHelloWidget() Commenting to hide hello widget
         sendAmplitudeData('Dashboard Landing', {
           orgId: orgId,
           orgName: orgName
