@@ -162,7 +162,11 @@ class PublishDocForm extends Component {
       links
     }
     delete collection.isPublic
-    const errors = this.validate({ ...this.state.data })
+    let errors = this.validate({ ...this.state.data })
+    const fileSize = Math.round(this.state.uploadedFile.size / 1024)
+    if (fileSize > 50) {
+      errors = { ...errors, icon: "Image size shouldn't be greater than 50KB" }
+    }
     this.setState({ errors: errors || {} })
     if (errors) return
     this.setState({ loader: true })
@@ -269,6 +273,7 @@ class PublishDocForm extends Component {
   }
 
   renderUploadBox (name, mandatory = false, disabled) {
+    const { errors } = this.state
     return (
       <div className='d-flex'>
         <div className='uploadBox'>
@@ -290,6 +295,7 @@ class PublishDocForm extends Component {
             <span style={{ cursor: 'pointer' }} onClick={() => { this.setState({ binaryFile: null, uploadedFile: null }) }}>Remove</span>
           )}
         </div>
+        {errors && errors[name] && <small className='alert alert-danger'>{errors[name]}</small>}
       </div>
     )
   }
@@ -330,7 +336,7 @@ class PublishDocForm extends Component {
         <label className='fav-icon-text'> Fav Icon </label>
         <div className='d-flex'>
           <div className='favicon-uploader'>
-            {this.renderUploadBox()}
+            {this.renderUploadBox('icon')}
           </div>
           <div className='or-wrap'>
             <p>OR</p>
