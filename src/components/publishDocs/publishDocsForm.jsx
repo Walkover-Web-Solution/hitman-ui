@@ -7,12 +7,13 @@ import { ReactComponent as UploadIcon } from '../../assets/icons/uploadIcon.svg'
 import { updateCollection } from '../collections/redux/collectionsActions'
 import './publishDocsForm.scss'
 import { HOSTNAME_VALIDATION_REGEX } from '../common/constants'
-import { handleChangeInUrlField, handleBlurInUrlField } from '../common/utility'
+import { handleChangeInUrlField, handleBlurInUrlField, DEFAULT_URL } from '../common/utility'
 const URI = require('urijs')
 
 const UI_IP = process.env.REACT_APP_UI_IP
 
 const publishDocFormEnum = {
+  DEFAULT_LOGO_URL: DEFAULT_URL,
   NULL_STRING: '',
   INITIAL_CTA: [
     {
@@ -91,7 +92,7 @@ class PublishDocForm extends Component {
       collection = this.props.collections[collectionId]
       if (collection && Object.keys(collection).length > 0) {
         title = collection?.docProperties?.defaultTitle || publishDocFormEnum.NULL_STRING
-        logoUrl = collection?.docProperties?.defaultLogoUrl || publishDocFormEnum.NULL_STRING
+        logoUrl = collection?.docProperties?.defaultLogoUrl || publishDocFormEnum.DEFAULT_LOGO_URL
         domain = collection?.customDomain || publishDocFormEnum.NULL_STRING
         theme = collection?.theme || publishDocFormEnum.NULL_STRING
         cta = collection?.docProperties?.cta || publishDocFormEnum.INITIAL_CTA
@@ -301,7 +302,7 @@ class PublishDocForm extends Component {
         <label>
           {publishDocFormEnum.LABELS[name]} {mandatory ? <span className='alert alert-danger'>*</span> : ''}
         </label>
-        <input type='text' placeholder={placeholder} disabled={disabled} className='form-control' name={name} value={(isURLInput && !data[name]) ? 'https://' : data[name]} onChange={(e) => this.handleChange(e, isURLInput)} onBlur={(e) => this.handleBlur(e, isURLInput)} />
+        <input type='text' placeholder={placeholder} disabled={disabled} className='form-control' name={name} value={data[name]} onChange={(e) => this.handleChange(e, isURLInput)} onBlur={(e) => this.handleBlur(e, isURLInput)} />
         {errors && errors[name] && <small className='alert alert-danger'>{errors[name]}</small>}
         {name === 'domain' && <label className='domain-info'>{`Point the A record of the above domain to ${UI_IP}`}</label>}
       </div>

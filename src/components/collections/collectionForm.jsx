@@ -2,7 +2,7 @@ import React from 'react'
 import { Modal } from 'react-bootstrap'
 import Joi from 'joi-browser'
 import Form from '../common/form'
-import { toTitleCase, onEnter } from '../common/utility'
+import { toTitleCase, onEnter, DEFAULT_URL } from '../common/utility'
 import shortid from 'shortid'
 import { connect } from 'react-redux'
 import { addCollection, updateCollection } from './redux/collectionsActions'
@@ -29,7 +29,7 @@ class CollectionForm extends Form {
     this.state = {
       data: {
         name: '',
-        website: '',
+        website: DEFAULT_URL,
         description: '',
         keyword: '',
         keyword1: '',
@@ -42,7 +42,7 @@ class CollectionForm extends Form {
 
     this.schema = {
       name: Joi.string().trim().required().label('Collection Name'),
-      website: Joi.string().regex(URL_VALIDATION_REGEX, { name: 'URL' }).trim().required().label('Website').error(() => { return { message: 'Website must be a valid URL' } }),
+      website: Joi.string().regex(URL_VALIDATION_REGEX, { name: 'URL' }).trim().label('Website').error(() => { return { message: 'Website must be a valid URL' } }),
       keyword: Joi.string().trim().allow(null, '').label('Keywords'),
       keyword1: Joi.string().trim().allow(null, '').label('Keywords'),
       keyword2: Joi.string().trim().allow(null, '').label('Keywords'),
@@ -132,7 +132,7 @@ class CollectionForm extends Form {
     return (
       <form onSubmit={this.handleSubmit}>
         {this.renderInput('name', 'Name', 'Collection Name', true, true)}
-        {this.renderInput('website', 'Website', 'https://yourwebsite.com', true, false, true)}
+        {this.renderInput('website', 'Website', 'https://yourwebsite.com', false, false, true)}
         {/* <div className='row'>
           <div className='col'>
             {this.renderInput('keyword', 'Keyword 1', 'Keyword 1', true)}
