@@ -10,9 +10,9 @@ import 'bootstrap/dist/js/bootstrap.js'
 import { Provider } from 'react-redux'
 import store from './store/store'
 import history from './history.js'
-import { initAmplitude } from './services/amplitude'
+import { addAnalyticsScripts } from './components/common/utility'
 
-initAmplitude()
+addAnalyticsScripts()
 
 ReactDOM.render(
   <Provider store={store}>

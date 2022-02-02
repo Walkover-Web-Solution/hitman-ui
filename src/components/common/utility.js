@@ -1,5 +1,7 @@
 import Joi from 'joi-browser'
 import history from '../../history'
+import { initAmplitude } from '../../services/amplitude'
+import { scripts } from './scripts'
 
 export const ADD_GROUP_MODAL_NAME = 'Add Group'
 export const ADD_VERSION_MODAL_NAME = 'Add Version'
@@ -180,6 +182,24 @@ export function handleBlurInUrlField (data) {
   return data
 }
 
+export function isValidDomain () {
+  const domainsList = process.env.REACT_APP_DOMAINS_LIST ? process.env.REACT_APP_DOMAINS_LIST.split(',') : []
+  const currentDomain = window.location.href.split('/')[2]
+  const path = window.location.href.split('/')[3]
+  return (domainsList.includes(currentDomain) && path !== 'p')
+}
+
+export function addAnalyticsScripts () {
+  if (isValidDomain()) {
+    Object.keys(scripts).forEach(script => {
+      (script !== 'gtmBody')
+        ? document.getElementsByTagName('head')[0].innerHTML += scripts[script]
+        : document.getElementsByTagName('body')[0].innerHTML += scripts[script]
+    })
+    initAmplitude()
+  }
+}
+
 export default {
   isDashboardRoute,
   isElectron,
@@ -194,5 +214,7 @@ export default {
   ADD_VERSION_MODAL_NAME,
   getParentIds,
   handleChangeInUrlField,
-  handleBlurInUrlField
+  handleBlurInUrlField,
+  isValidDomain,
+  addAnalyticsScripts
 }
