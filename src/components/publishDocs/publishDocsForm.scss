@@ -1,15 +1,18 @@
 //Note: Unique IDs are used in CTAs for tracking purposes with GTM. Do not use the same IDs elsewhere.
 
-.uploadBox{
-    width: 60px !important;
-    height: 60px !important;
-    min-width: 60px;
+.uploadBox {
     border: 1px dashed #BDBDBD;
     box-sizing: border-box;
-    border-radius: 4px;
     display: flex;
     justify-content: center;
     align-items: center;
+    padding: 0 1rem;
+    cursor: pointer;
+    height: 2.25rem;
+    label{
+        margin-bottom: 0;
+        margin-right: 0.75rem;
+    }
 }
 
 .domain-info{

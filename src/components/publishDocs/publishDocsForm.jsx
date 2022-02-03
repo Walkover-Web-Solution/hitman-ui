@@ -275,28 +275,30 @@ class PublishDocForm extends Component {
   renderUploadBox (name, mandatory = false, disabled) {
     const { errors } = this.state
     return (
-      <div className='d-flex'>
-        <div className='uploadBox'>
-          {!this.state.binaryFile &&
-            <div className='d-block'>
-              {this.renderUploadModule(this.state.data.logoUrl)}
-              <div className='upload-box-text'>Upload</div>
-            </div>}
-          {this.state.binaryFile && <img src={`data:image/png;base64,${this.state.binaryFile}`} height='60' width='60' />}
-        </div>
-        <div className='uplod-info'>
-          {
+      <>
+        <div className='d-flex'>
+          <div className='uploadBox'>
+            {!this.state.binaryFile &&
+              <div className='d-flex align-items-center'>
+                {this.renderUploadModule(this.state.data.logoUrl)}
+                <div className='upload-box-text'>Upload</div>
+              </div>}
+            {this.state.binaryFile && <img src={`data:image/png;base64,${this.state.binaryFile}`} height='60' width='60' />}
+          </div>
+          <div className='uplod-info'>
+            {
             this.state.uploadedFile &&
               <p>
                 {this.state.uploadedFile.name}
               </p>
           }
-          {this.state.binaryFile && (
-            <span style={{ cursor: 'pointer' }} onClick={() => { this.setState({ binaryFile: null, uploadedFile: null }) }}>Remove</span>
-          )}
+            {this.state.binaryFile && (
+              <span style={{ cursor: 'pointer' }} onClick={() => { this.setState({ binaryFile: null, uploadedFile: null }) }}>Remove</span>
+            )}
+          </div>
         </div>
-        {errors && errors[name] && <small className='alert alert-danger'>{errors[name]}</small>}
-      </div>
+        {errors && errors[name] && <small className='text-danger'>{errors[name]}</small>}
+      </>
     )
   }
 
