@@ -293,7 +293,14 @@ class PublishDocForm extends Component {
               </p>
           }
             {this.state.binaryFile && (
-              <span style={{ cursor: 'pointer' }} onClick={() => { this.setState({ binaryFile: null, uploadedFile: null }) }}>Remove</span>
+              <span
+                style={{ cursor: 'pointer' }} onClick={() => {
+                  const errors = this.state.errors || {}
+                  delete errors.icon
+                  this.setState({ binaryFile: null, uploadedFile: null, errors })
+                }}
+              >Remove
+              </span>
             )}
           </div>
         </div>
