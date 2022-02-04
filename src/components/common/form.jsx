@@ -63,7 +63,6 @@ class Form extends Component {
   }
 
   handleSubmit = (e) => {
-    console.log(this.state.data)
     e.preventDefault()
     this.handleKeyPress()
   };
