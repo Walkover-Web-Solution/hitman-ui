@@ -5,6 +5,7 @@ import { scripts } from './scripts'
 
 export const ADD_GROUP_MODAL_NAME = 'Add Group'
 export const ADD_VERSION_MODAL_NAME = 'Add Version'
+export const DEFAULT_URL = 'https://'
 
 export function isDashboardRoute (props, sidebar = false) {
   if (
@@ -216,5 +217,6 @@ export default {
   handleChangeInUrlField,
   handleBlurInUrlField,
   isValidDomain,
-  addAnalyticsScripts
+  addAnalyticsScripts,
+  DEFAULT_URL
 }
