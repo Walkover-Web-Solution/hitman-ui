@@ -261,14 +261,23 @@ class PublishDocForm extends Component {
     }
   }
 
+  getDisabledStyle (disabled) {
+    return disabled
+      ? { cursor: 'not-allowed', opacity: 0.4 }
+      : { cursor: 'pointer' }
+  }
+
   renderUploadModule (disabled) {
     return (
-      <div>
-        <label style={{ cursor: disabled ? 'not-allowed' : 'pointer', opacity: '.4' }} htmlFor='upload-button'>
-          <UploadIcon />
-        </label>
-        <input type='file' id='upload-button' disabled={disabled} style={{ display: 'none' }} accept='.png' onChange={(e) => this.onFileChange(e)} />
-      </div>
+      <>
+        <div>
+          <label style={this.getDisabledStyle(disabled)} htmlFor='upload-button'>
+            <UploadIcon />
+          </label>
+          <input type='file' id='upload-button' disabled={disabled} style={{ display: 'none' }} accept='.png' onChange={(e) => this.onFileChange(e)} />
+        </div>
+        <div className='upload-box-text'>Upload</div>
+      </>
     )
   }
 
@@ -277,11 +286,10 @@ class PublishDocForm extends Component {
     return (
       <>
         <div className='d-flex'>
-          <div className='uploadBox'>
+          <div className='uploadBox' style={this.getDisabledStyle(this.state.data.logoUrl)}>
             {!this.state.binaryFile &&
               <div className='d-flex align-items-center'>
                 {this.renderUploadModule(this.state.data.logoUrl)}
-                <div className='upload-box-text'>Upload</div>
               </div>}
             {this.state.binaryFile && <img src={`data:image/png;base64,${this.state.binaryFile}`} height='60' width='60' />}
           </div>
