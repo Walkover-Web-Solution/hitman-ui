@@ -7,13 +7,12 @@ import { ReactComponent as UploadIcon } from '../../assets/icons/uploadIcon.svg'
 import { updateCollection } from '../collections/redux/collectionsActions'
 import './publishDocsForm.scss'
 import { HOSTNAME_VALIDATION_REGEX } from '../common/constants'
-import { handleChangeInUrlField, handleBlurInUrlField, DEFAULT_URL } from '../common/utility'
+import { handleChangeInUrlField, handleBlurInUrlField } from '../common/utility'
 const URI = require('urijs')
 
 const UI_IP = process.env.REACT_APP_UI_IP
 
 const publishDocFormEnum = {
-  DEFAULT_LOGO_URL: DEFAULT_URL,
   NULL_STRING: '',
   INITIAL_CTA: [
     {
@@ -92,7 +91,7 @@ class PublishDocForm extends Component {
       collection = this.props.collections[collectionId]
       if (collection && Object.keys(collection).length > 0) {
         title = collection?.docProperties?.defaultTitle || publishDocFormEnum.NULL_STRING
-        logoUrl = collection?.docProperties?.defaultLogoUrl || publishDocFormEnum.DEFAULT_LOGO_URL
+        logoUrl = collection?.docProperties?.defaultLogoUrl || publishDocFormEnum.NULL_STRING
         domain = collection?.customDomain || publishDocFormEnum.NULL_STRING
         theme = collection?.theme || publishDocFormEnum.NULL_STRING
         cta = collection?.docProperties?.cta || publishDocFormEnum.INITIAL_CTA
@@ -104,7 +103,7 @@ class PublishDocForm extends Component {
     }
   }
 
-  handleChange = (e, isURLInput) => {
+  handleChange = (e, isURLInput = false) => {
     const data = { ...this.state.data }
     data[e.currentTarget.name] = e.currentTarget.value
     if (isURLInput) {
@@ -164,7 +163,7 @@ class PublishDocForm extends Component {
     }
     delete collection.isPublic
     let errors = this.validate({ ...this.state.data })
-    const fileSize = Math.round(this.state.uploadedFile.size / 1024)
+    const fileSize = Math.round(this.state.uploadedFile?.size / 1024)
     if (fileSize > 50) {
       errors = { ...errors, icon: "Image size shouldn't be greater than 50KB" }
     }
@@ -262,14 +261,23 @@ class PublishDocForm extends Component {
     }
   }
 
+  getDisabledStyle (disabled) {
+    return disabled
+      ? { cursor: 'not-allowed', opacity: 0.4 }
+      : { cursor: 'pointer' }
+  }
+
   renderUploadModule (disabled) {
     return (
-      <div>
-        <label style={{ cursor: disabled ? 'not-allowed' : 'pointer', opacity: '.4' }} htmlFor='upload-button'>
-          <UploadIcon />
-        </label>
-        <input type='file' id='upload-button' disabled={disabled} style={{ display: 'none' }} accept='.png' onChange={(e) => this.onFileChange(e)} />
-      </div>
+      <>
+        <div>
+          <label style={this.getDisabledStyle(disabled)} htmlFor='upload-button'>
+            <UploadIcon />
+          </label>
+          <input type='file' id='upload-button' disabled={disabled} style={{ display: 'none' }} accept='.png' onChange={(e) => this.onFileChange(e)} />
+        </div>
+        <div className='upload-box-text'>Upload</div>
+      </>
     )
   }
 
@@ -278,11 +286,10 @@ class PublishDocForm extends Component {
     return (
       <>
         <div className='d-flex'>
-          <div className='uploadBox'>
+          <div className='uploadBox' style={this.getDisabledStyle(this.state.data.logoUrl)}>
             {!this.state.binaryFile &&
               <div className='d-flex align-items-center'>
                 {this.renderUploadModule(this.state.data.logoUrl)}
-                <div className='upload-box-text'>Upload</div>
               </div>}
             {this.state.binaryFile && <img src={`data:image/png;base64,${this.state.binaryFile}`} height='60' width='60' />}
           </div>
@@ -351,7 +358,7 @@ class PublishDocForm extends Component {
           <div className='or-wrap'>
             <p>OR</p>
           </div>
-          {this.renderInput('logoUrl', false, this.state.binaryFile, '', true)}
+          {this.renderInput('logoUrl', false, this.state.binaryFile, '')}
         </div>
 
         <div className='color-picker'>
