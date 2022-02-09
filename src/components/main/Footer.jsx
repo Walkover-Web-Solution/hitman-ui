@@ -2,7 +2,7 @@ import React from 'react'
 
 function Footer ({ theme }) {
   const domainName = window.location.hostname
-  const domainSrc = process.env.REACT_APP_HITMAN_URL + '?src=' + domainName
+  const domainSrc = process.env.REACT_APP_HITMAN_WEBSITE_URL + '?src=' + domainName
   return (
 
     <div className='inner-wrapper'>
@@ -14,7 +14,7 @@ function Footer ({ theme }) {
 
         <div className='footerWrapper'>
           <p class='public-hide'>
-            <span>Powered By</span> <a rel='noopener noreferrer' target='_blank' href={process.env.REACT_APP_HITMAN_URL}>Hitman</a>
+            <span>Powered By</span> <a rel='noopener noreferrer' target='_blank' href={process.env.REACT_APP_HITMAN_WEBSITE_URL}>Hitman</a>
           </p>
           <p class='d-none for-public-view'>
             <a rel='noopener noreferrer' class='cta-type' target='_blank' href={domainSrc} style={{ backgroundColor: theme }}>Built On Hitman</a>
