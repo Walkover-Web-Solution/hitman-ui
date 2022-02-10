@@ -14,5 +14,9 @@ export const scripts = {
   height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <!-- End Google Tag Manager (noscript) -->`,
 
-  feedioWidget: '<!-- <script src="https://wgt.feedio.ai/"></script> -->'
+  feedioWidget: '<!-- <script src="https://wgt.feedio.ai/"></script> -->',
+
+  factorsAi: `<script>
+  (function(c){var s=document.createElement("script");s.type="text/javascript";if(s.readyState){s.onreadystatechange=function(){if(s.readyState=="loaded"||s.readyState=="complete"){s.onreadystatechange=null;c()}}}else{s.onload=function(){c()}}s.src="https://app.factors.ai/assets/factors.js";s.async=true;d=!!document.body?document.body:document.head;d.appendChild(s)})(function(){factors.init("x4qf4nb1ov16cdj036oiufxlvid3wnt3")})
+  </script>`
 }
