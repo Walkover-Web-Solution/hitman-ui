@@ -3231,6 +3231,13 @@ li.nav-item.cookie-tab a {
     display: inline-block;
     padding: 13px 40px;
     border-radius: 4px;
+    transition: all 0.3s ease-in;
+    outline: none !important;
+    &:hover{
+      background-color: #212529;
+      color: #fff;
+      border-color: #212529;
+    }
   }
 }
 
@@ -3371,6 +3378,7 @@ div#steve-parent-accordion{
 }
 .save-as-sidebar-container {
   top: 3rem !important;
+  height: calc(100vh - 3rem) !important;
   .form-group .ql-container.ql-snow{
     height: 120px;
   }
