@@ -103,7 +103,7 @@ class PublishDocForm extends Component {
     }
   }
 
-  handleChange = (e, isURLInput) => {
+  handleChange = (e, isURLInput = false) => {
     const data = { ...this.state.data }
     data[e.currentTarget.name] = e.currentTarget.value
     if (isURLInput) {
@@ -162,7 +162,11 @@ class PublishDocForm extends Component {
       links
     }
     delete collection.isPublic
-    const errors = this.validate({ ...this.state.data })
+    let errors = this.validate({ ...this.state.data })
+    const fileSize = Math.round(this.state.uploadedFile?.size / 1024)
+    if (fileSize > 50) {
+      errors = { ...errors, icon: "Image size shouldn't be greater than 50KB" }
+    }
     this.setState({ errors: errors || {} })
     if (errors) return
     this.setState({ loader: true })
@@ -257,40 +261,58 @@ class PublishDocForm extends Component {
     }
   }
 
+  getDisabledStyle (disabled) {
+    return disabled
+      ? { cursor: 'not-allowed', opacity: 0.4 }
+      : { cursor: 'pointer' }
+  }
+
   renderUploadModule (disabled) {
     return (
-      <div>
-        <label style={{ cursor: disabled ? 'not-allowed' : 'pointer', opacity: '.4' }} htmlFor='upload-button'>
-          <UploadIcon />
-        </label>
-        <input type='file' id='upload-button' disabled={disabled} style={{ display: 'none' }} accept='.png' onChange={(e) => this.onFileChange(e)} />
-      </div>
+      <>
+        <div>
+          <label style={this.getDisabledStyle(disabled)} htmlFor='upload-button'>
+            <UploadIcon /> <small className='upload-box-text'>Upload</small>
+          </label>
+          <input type='file' id='upload-button' disabled={disabled} style={{ display: 'none' }} accept='.png' onChange={(e) => this.onFileChange(e)} />
+        </div>
+      </>
     )
   }
 
   renderUploadBox (name, mandatory = false, disabled) {
+    const { errors } = this.state
     return (
-      <div className='d-flex'>
-        <div className='uploadBox'>
-          {!this.state.binaryFile &&
-            <div className='d-block'>
-              {this.renderUploadModule(this.state.data.logoUrl)}
-              <div className='upload-box-text'>Upload</div>
-            </div>}
-          {this.state.binaryFile && <img src={`data:image/png;base64,${this.state.binaryFile}`} height='60' width='60' />}
-        </div>
-        <div className='uplod-info'>
-          {
+      <>
+        <div className='d-flex'>
+          <div className='uploadBox' style={this.getDisabledStyle(this.state.data.logoUrl)}>
+            {!this.state.binaryFile &&
+              <div className='d-flex align-items-center'>
+                {this.renderUploadModule(this.state.data.logoUrl)}
+              </div>}
+            {this.state.binaryFile && <img src={`data:image/png;base64,${this.state.binaryFile}`} height='60' width='60' />}
+          </div>
+          <div className='uplod-info'>
+            {
             this.state.uploadedFile &&
               <p>
                 {this.state.uploadedFile.name}
               </p>
           }
-          {this.state.binaryFile && (
-            <span style={{ cursor: 'pointer' }} onClick={() => { this.setState({ binaryFile: null, uploadedFile: null }) }}>Remove</span>
-          )}
+            {this.state.binaryFile && (
+              <span
+                style={{ cursor: 'pointer' }} onClick={() => {
+                  const errors = this.state.errors || {}
+                  delete errors.icon
+                  this.setState({ binaryFile: null, uploadedFile: null, errors })
+                }}
+              >Remove
+              </span>
+            )}
+          </div>
         </div>
-      </div>
+        {errors && errors[name] && <small className='text-danger'>{errors[name]}</small>}
+      </>
     )
   }
 
@@ -301,7 +323,7 @@ class PublishDocForm extends Component {
         <label>
           {publishDocFormEnum.LABELS[name]} {mandatory ? <span className='alert alert-danger'>*</span> : ''}
         </label>
-        <input type='text' placeholder={placeholder} disabled={disabled} className='form-control' name={name} value={(isURLInput && !data[name]) ? 'https://' : data[name]} onChange={(e) => this.handleChange(e, isURLInput)} onBlur={(e) => this.handleBlur(e, isURLInput)} />
+        <input type='text' placeholder={placeholder} disabled={disabled} className='form-control' name={name} value={data[name]} onChange={(e) => this.handleChange(e, isURLInput)} onBlur={(e) => this.handleBlur(e, isURLInput)} />
         {errors && errors[name] && <small className='alert alert-danger'>{errors[name]}</small>}
         {name === 'domain' && <label className='domain-info'>{`Point the A record of the above domain to ${UI_IP}`}</label>}
       </div>
@@ -330,12 +352,12 @@ class PublishDocForm extends Component {
         <label className='fav-icon-text'> Fav Icon </label>
         <div className='d-flex'>
           <div className='favicon-uploader'>
-            {this.renderUploadBox()}
+            {this.renderUploadBox('icon')}
           </div>
           <div className='or-wrap'>
             <p>OR</p>
           </div>
-          {this.renderInput('logoUrl', false, this.state.binaryFile, '', true)}
+          {this.renderInput('logoUrl', false, this.state.binaryFile, '')}
         </div>
 
         <div className='color-picker'>

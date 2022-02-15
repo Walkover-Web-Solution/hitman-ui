@@ -4,7 +4,7 @@ import Joi from 'joi-browser'
 import Form from '../common/form'
 import { URL_VALIDATION_REGEX } from '../common/constants'
 import { connect } from 'react-redux'
-import { onEnter, toTitleCase, ADD_VERSION_MODAL_NAME } from '../common/utility'
+import { onEnter, toTitleCase, ADD_VERSION_MODAL_NAME, DEFAULT_URL } from '../common/utility'
 import {
   addVersion,
   updateVersion
@@ -24,7 +24,7 @@ class CollectionVersionForm extends Form {
     super(props)
 
     this.state = {
-      data: { number: '', host: '' },
+      data: { number: '', host: DEFAULT_URL },
       errors: {},
       versionId: null,
       collectionId: ''
@@ -32,7 +32,7 @@ class CollectionVersionForm extends Form {
 
     this.schema = {
       number: Joi.string().required().label('Version Name'),
-      host: Joi.string().regex(URL_VALIDATION_REGEX, { name: 'URL' }).required().label('Version Endpoint')
+      host: Joi.string().regex(URL_VALIDATION_REGEX, { name: 'URL' }).label('Version Endpoint')
         .error(() => { return { message: 'Version Endpoint Must be Valid URL' } })
     }
   }
@@ -93,7 +93,7 @@ class CollectionVersionForm extends Form {
                   {this.renderInput('number', 'Version Name', 'Version Name', true, true)}
                 </div>
                 <div className='col-6'>
-                  {this.renderInput('host', 'Version Endpoint', 'https://v1.example.com', true, false, true)}
+                  {this.renderInput('host', 'Version Endpoint', 'https://v1.example.com', false, false, true)}
                 </div>
               </div>
               <div className='text-left mt-4 mb-2'>
