@@ -29,6 +29,7 @@ import { loadfeedioWidget } from '../../services/feedioWidgetService'
 import auth from '../auth/authService'
 import DesktopAppDownloadModal from './desktopAppPrompt'
 import { sendAmplitudeData } from '../../services/amplitude'
+import { isValidDomain } from '../common/utility'
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -82,9 +83,11 @@ class Main extends Component {
         })
       } else {
         const orgName = auth.getOrgList()[0]?.name
-        loadWidget()
-        loadfeedioWidget()
-        // loadHelloWidget() Commenting to hide hello widget
+        if (isValidDomain()) {
+          loadWidget()
+          loadfeedioWidget()
+          // loadHelloWidget() commenting to hide helloWidget
+        }
         sendAmplitudeData('Dashboard Landing', {
           orgId: orgId,
           orgName: orgName

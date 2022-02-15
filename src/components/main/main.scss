@@ -2328,7 +2328,16 @@ button[name="cta-1"] {
 .favicon-uploader {
   display: flex;
   align-items: center;
-
+  flex-wrap: wrap;
+  position: relative;
+  small.text-danger {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
   span {
     font-size: 14px;
     color: #EB5757;
@@ -2338,15 +2347,6 @@ button[name="cta-1"] {
   .or-wrap {
     justify-content: center;
   }
-}
-
-.uploadBox label {
-  width: 60px;
-  height: 100%;
-  text-align: center;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .or-wrap {
@@ -2369,15 +2369,17 @@ button[name="cta-1"] {
   align-items: center;
   justify-content: center;
 }
-
-.uplod-info p {
-  color: #828282;
-  font-size: 14px;
-  margin: 0;
-}
-
 .uplod-info {
-  margin: 10px;
+  margin-left: 10px;
+  p{
+    max-width: 5rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #828282;
+    font-size: 14px;
+    margin: 0;
+  }
 }
 
 .mainpublic-endpoint-main .custom-display-page {
@@ -3229,6 +3231,13 @@ li.nav-item.cookie-tab a {
     display: inline-block;
     padding: 13px 40px;
     border-radius: 4px;
+    transition: all 0.3s ease-in;
+    outline: none !important;
+    &:hover{
+      background-color: #212529;
+      color: #fff;
+      border-color: #212529;
+    }
   }
 }
 
@@ -3369,7 +3378,13 @@ div#steve-parent-accordion{
 }
 .save-as-sidebar-container {
   top: 3rem !important;
+  height: calc(100vh - 3rem) !important;
   .form-group .ql-container.ql-snow{
     height: 120px;
+  }
+}
+.p-form-group{
+  .form-group{
+    margin-bottom: 0;
   }
 }
