@@ -60,11 +60,11 @@ class Header extends Component {
 
   componentDidMount () {
     if (authService.getCurrentUser()) {
-      this.setProfile();
+      this.setProfile()
     }
   }
 
-  setProfile(){
+  setProfile () {
     const profile = {}
     const currentUser = authService.getCurrentUser()
     const name = getProfileName(currentUser)?.split(' ')
@@ -73,7 +73,6 @@ class Header extends Component {
     profile.email = currentUser.email
     profile.id = currentUser.id
     profile.show_demo_form = currentUser.show_demo_form
-    console.log(currentUser);
     this.setState({ profile })
     setAmplitudeUserId(profile.email)
   }
@@ -247,11 +246,11 @@ class Header extends Component {
     }
   }
 
-  updateProfile(){
-    //Setting demo form false for local storage 
-    const {profile} = this.state;
+  updateProfile () {
+    // Setting demo form false for local storage
+    const { profile } = this.state
     const profileKey = 'profile'
-    this.setState({profile:{...profile,show_demo_form:false}});
+    this.setState({ profile: { ...profile, show_demo_form: false } })
     window.localStorage.setItem(profileKey, JSON.stringify(this.state.profile))
   }
 
@@ -259,7 +258,7 @@ class Header extends Component {
     const productLinks = { FEEDIO: process.env.REACT_APP_FEEDIO_UI_URL, HITMAN: process.env.REACT_APP_UI_URL, CONTENTBASE: process.env.REACT_APP_CONTENTBASE_URL, EBL: process.env.REACT_APP_VIASOCKET_URL, HTTPDUMP: process.env.REACT_APP_HTTPDUMP_URL }
     return (
       <>
-        <GenericHeader {...this.props} {...this.state} productLinks={productLinks} switchOrg={(id) => this.switchOrg(id)} showCommunityButton={false} getNotificationCount={() => this.getNotificationCount()} project_name='' organizations={JSON.parse(window.localStorage.getItem('organisationList')) || []} organizationId={getOrgId()} productName='hitman' renderNavTitle={() => this.renderNavTitle()} renderProfileOption={() => this.renderProfileOption()} handleOpenLink={(link) => openExternalLink(link)} renderLoginButton={() => this.renderLoginButton()} updateProfile={()=>this.updateProfile()}/>
+        <GenericHeader {...this.props} {...this.state} productLinks={productLinks} switchOrg={(id) => this.switchOrg(id)} showCommunityButton={false} getNotificationCount={() => this.getNotificationCount()} project_name='' organizations={JSON.parse(window.localStorage.getItem('organisationList')) || []} organizationId={getOrgId()} productName='hitman' renderNavTitle={() => this.renderNavTitle()} renderProfileOption={() => this.renderProfileOption()} handleOpenLink={(link) => openExternalLink(link)} renderLoginButton={() => this.renderLoginButton()} updateProfile={() => this.updateProfile()} />
       </>
     )
   }
