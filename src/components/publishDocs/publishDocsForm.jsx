@@ -272,11 +272,10 @@ class PublishDocForm extends Component {
       <>
         <div>
           <label style={this.getDisabledStyle(disabled)} htmlFor='upload-button'>
-            <UploadIcon />
+            <UploadIcon /> <small className='upload-box-text'>Upload</small>
           </label>
           <input type='file' id='upload-button' disabled={disabled} style={{ display: 'none' }} accept='.png' onChange={(e) => this.onFileChange(e)} />
         </div>
-        <div className='upload-box-text'>Upload</div>
       </>
     )
   }
