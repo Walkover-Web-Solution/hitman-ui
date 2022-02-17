@@ -41,8 +41,8 @@ class CollectionForm extends Form {
     }
 
     this.schema = {
-      name: Joi.string().trim().required().label('Collection Name'),
-      website: Joi.string().regex(URL_VALIDATION_REGEX, { name: 'URL' }).trim().label('Website').error(() => { return { message: 'Website must be a valid URL' } }),
+      name: Joi.string().min(3).max(20).trim().required().label('Collection Name'),
+      website: Joi.string().min(3).regex(URL_VALIDATION_REGEX, { name: 'URL' }).trim().required().label('Website').error(() => { return { message: 'Website must be a valid URL' } }),
       keyword: Joi.string().trim().allow(null, '').label('Keywords'),
       keyword1: Joi.string().trim().allow(null, '').label('Keywords'),
       keyword2: Joi.string().trim().allow(null, '').label('Keywords'),
@@ -131,8 +131,8 @@ class CollectionForm extends Form {
   renderForm () {
     return (
       <form onSubmit={this.handleSubmit}>
-        {this.renderInput('name', 'Name', 'Collection Name', true, true)}
-        {this.renderInput('website', 'Website', 'https://yourwebsite.com', false, false, true)}
+        {this.renderInput('name', 'Name', 'Collection Name', true, true, false, '*minimum 3 and maximum 20 characters allowed')}
+        {this.renderInput('website', 'Website', 'https://yourwebsite.com', true, false, true)}
         {/* <div className='row'>
           <div className='col'>
             {this.renderInput('keyword', 'Keyword 1', 'Keyword 1', true)}

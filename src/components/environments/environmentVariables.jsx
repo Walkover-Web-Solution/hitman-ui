@@ -59,7 +59,7 @@ class EnvironmentVariables extends Component {
   };
 
   schema = {
-    name: Joi.string().trim().required().label('Evironment Name')
+    name: Joi.string().min(3).max(20).trim().required().label('Evironment Name')
   }
 
   doSubmit () {
@@ -199,6 +199,7 @@ class EnvironmentVariables extends Component {
                     className='form-control'
                     placeholder='Environment Name'
                   />
+                  <small style={{ color: 'gray', opacity: 0.5 }}>*minimum 3 and maximum 20 characters allowed</small>
                   {this.state.errors?.name && <div className='alert alert-danger'>{this.state.errors?.name}</div>}
                 </div>
                 <div className='custom-table-container env-table'>

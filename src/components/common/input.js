@@ -10,7 +10,8 @@ const Input = ({
   placeholder,
   disabled,
   mandatory,
-  firstLetterCapitalize
+  firstLetterCapitalize,
+  note
 }) => {
   const inputStyle = firstLetterCapitalize ? { textTransform: 'capitalize' } : {}
 
@@ -32,6 +33,7 @@ const Input = ({
         disabled={disabled}
         style={inputStyle}
       />
+      <small style={{ color: 'gray', opacity: 0.5 }}>{note}</small>
       {error && <div className='alert alert-danger'>{error}</div>}
     </div>
   )

@@ -121,7 +121,7 @@ class GroupForm extends Form {
                     </div>
                   </div>}
                 <div className='col-6'>
-                  {this.renderInput('name', 'Group Name', 'group name', true, true)}
+                  {this.renderInput('name', 'Group Name', 'group name', true, true, false, '*minimum 1 character allowed')}
                 </div>
               </div>
 
