@@ -14,6 +14,12 @@
             "dmg",
             "zip"
         ],
+        "publish": [{
+            "provider": "generic",
+            "url": "https://dev-downloads.viasocket.com/hitman/latest/mac",
+            "publishAutoUpdate": true 
+        }],
+        "artifactName": "${name}_installer.${ext}",
         "identity": "Walkover Web Solutions Private Limited (F3U6Z5L2EJ)",
         "type": "distribution",
         "entitlements": "./electron/default.entitlements.mas.plist",
@@ -29,14 +35,24 @@
     "linux": {
         "maintainer": "Walkover Technologies Pvt Ltd",
         "target": ["deb", "tar.gz"],
-        "artifactName": "${name}_${version}_${os}.${ext}"
+        "artifactName": "${name}_installer.${ext}",
+        "publish": [{
+            "provider": "generic",
+            "url": "https://dev-downloads.viasocket.com/hitman/latest/linux",
+            "publishAutoUpdate": true 
+        }]
     },   
     "win": {
         "target": [
-            "nsis",
-            "zip"
+            "nsis"
         ],
         "icon": "./assets/icon.ico",
+        "publish": [{
+            "provider": "generic",
+            "url": "https://dev-downloads.viasocket.com/hitman/latest/win",
+            "publishAutoUpdate": true 
+        }],
+        "artifactName": "${name}_installer_${arch}.${ext}",
         "publisherName": "Walkover Technologies Pvt Ltd",
         "certificateSubjectName": "Walkover Technologies Pvt Ltd",
         "legalTrademarks": "Walkover Technologies Pvt Ltd"

@@ -140,7 +140,11 @@ function createWindow () {
       }
     }
   })
-  mainWindow.once('ready-to-show', () => mainWindow.show())
+  mainWindow.once('ready-to-show', () => {
+    mainWindow.show()
+    // trigger autoupdate check
+    autoUpdater.checkForUpdates()
+  })
   mainWindow.on('closed', () => {
     mainWindow = null
   })
@@ -184,11 +188,6 @@ app.on('open-url', function (event, url) {
     }
   }
 })
-app.on('ready', () => {
-  log.info('inside ready')
-  // trigger autoupdate check
-  autoUpdater.checkForUpdates()
-})
 
 // -------------------------------------------------------------------
 // Auto updates
@@ -219,18 +218,17 @@ autoUpdater.on('update-not-available', info => {
   })
 })
 autoUpdater.on('error', err => {
+  log.error(err)
   sendUpdateStatusToWindow({
     type: 'ERROR',
     data: err
   })
 })
 autoUpdater.on('download-progress', progressObj => {
-  sendUpdateStatusToWindow(
-    // `Download speed: ${progressObj.bytesPerSecond} - Downloaded ${progressObj.percent}% (${progressObj.transferred} + '/' + ${progressObj.total} + )`
-    {
-      type: 'DOWNLOAD_PROGRESS',
-      data: progressObj
-    }
+  sendUpdateStatusToWindow({
+    type: 'DOWNLOAD_PROGRESS',
+    data: progressObj
+  }
   )
 })
 autoUpdater.on('update-downloaded', info => {
@@ -238,11 +236,4 @@ autoUpdater.on('update-downloaded', info => {
     type: 'UPDATE_DOWNLOADED',
     data: null
   })
-})
-autoUpdater.on('update-downloaded', info => {
-  // Wait 5 seconds, then quit and install
-  // In your application, you don't need to wait 500 ms.
-  // You could call autoUpdater.quitAndInstall(); immediately
-  sendUpdateStatusToWindow('Update Downloaded')
-  // autoUpdater.quitAndInstall();
 })
