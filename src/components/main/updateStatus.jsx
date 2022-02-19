@@ -91,7 +91,7 @@ class UpdateStatus extends Component {
                  </>
                )}
 
-               {closeButton && <button type='button' className='btn-close' onClick={this.handleClose}>Close</button>}
+               {closeButton && <button type='button' className='close' onClick={this.handleClose}><span aria-hidden='true'>×</span></button>}
              </div>}
          </div>
        )
