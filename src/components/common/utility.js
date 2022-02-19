@@ -1,8 +1,11 @@
 import Joi from 'joi-browser'
 import history from '../../history'
+import { initAmplitude } from '../../services/amplitude'
+import { scripts } from './scripts'
 
 export const ADD_GROUP_MODAL_NAME = 'Add Group'
 export const ADD_VERSION_MODAL_NAME = 'Add Version'
+export const DEFAULT_URL = 'https://'
 
 export function isDashboardRoute (props, sidebar = false) {
   if (
@@ -193,6 +196,24 @@ export function formatBytes (bytes, decimals = 2) {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i]
 }
 
+export function isValidDomain () {
+  const domainsList = process.env.REACT_APP_DOMAINS_LIST ? process.env.REACT_APP_DOMAINS_LIST.split(',') : []
+  const currentDomain = window.location.href.split('/')[2]
+  const path = window.location.href.split('/')[3]
+  return (domainsList.includes(currentDomain) && path !== 'p')
+}
+
+export function addAnalyticsScripts () {
+  if (isValidDomain()) {
+    Object.keys(scripts).forEach(script => {
+      (script !== 'gtmBody')
+        ? document.getElementsByTagName('head')[0].innerHTML += scripts[script]
+        : document.getElementsByTagName('body')[0].innerHTML += scripts[script]
+    })
+    initAmplitude()
+  }
+}
+
 export default {
   isDashboardRoute,
   isElectron,
@@ -208,5 +229,8 @@ export default {
   getParentIds,
   handleChangeInUrlField,
   handleBlurInUrlField,
-  formatBytes
+  formatBytes,
+  isValidDomain,
+  addAnalyticsScripts,
+  DEFAULT_URL
 }

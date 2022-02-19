@@ -122,7 +122,7 @@ class Form extends Component {
       <Input
         name={name}
         label={label}
-        value={(isURLInput && !data[name]) ? 'https://' : data[name]}
+        value={data[name]}
         onChange={(e) => this.handleChange(e, isURLInput)}
         onBlur={(e) => this.handleBlur(e, isURLInput)}
         error={errors[name]}
