@@ -212,7 +212,7 @@ class Form extends Component {
             editor.setShowPrintMargin(false)
           }}
         />
-        <small style={{ color: 'gray', opacity: 0.5 }}>*Body should not exceed more than 2000 characters.</small>
+        <small className='muted-text'>*Body should not exceed more than 2000 characters hey.</small>
         {errors[name] && (
           <div className='alert alert-danger'>{errors[name]}</div>
         )}

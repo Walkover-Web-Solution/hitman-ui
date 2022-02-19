@@ -199,7 +199,7 @@ class EnvironmentVariables extends Component {
                     className='form-control'
                     placeholder='Environment Name'
                   />
-                  <div><small style={{ color: 'gray', opacity: 0.5 }}>*environment name accepts min 3 and max 20 characters</small></div>
+                  <div><small className='muted-text'>*environment name accepts min 3 and max 20 characters</small></div>
                   {this.state.errors?.name && <div className='alert alert-danger'>{this.state.errors?.name}</div>}
                 </div>
                 <div className='custom-table-container env-table'>

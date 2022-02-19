@@ -33,7 +33,7 @@ const Input = ({
         disabled={disabled}
         style={inputStyle}
       />
-      <div><small style={{ color: 'gray', opacity: 0.5 }}>{note}</small></div>
+      <div><small className='muted-text'>{note}</small></div>
       {error && <div className='alert alert-danger'>{error}</div>}
     </div>
   )
