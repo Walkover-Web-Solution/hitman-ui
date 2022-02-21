@@ -100,6 +100,25 @@ class SampleResponse extends Component {
     )
   }
 
+  showJSONPretty (data) {
+    return (
+      <JSONPretty
+      // theme={JSONPrettyMon}
+        themeClassName='custom-json-pretty'
+        data={data}
+      />
+    )
+  }
+
+  showSampleResponseBody (data) {
+    if (typeof data === 'object') {
+      return (this.showJSONPretty(data))
+    } else {
+      data = JSON.parse(data)
+      return (typeof data === 'object' ? this.showJSONPretty(data) : <pre className='custom-json-pretty'>{data}</pre>)
+    }
+  }
+
   closeForm () {
     const showSampleResponseForm = { add: false, delete: false, edit: false }
     this.setState({ showSampleResponseForm })
@@ -182,11 +201,7 @@ class SampleResponse extends Component {
               {sampleResponseFlagArray[index] && (
                 <>
                   <img src={DownArrow} alt='down-arrow' onClick={() => this.props.close_body(index)} />
-                  <JSONPretty
-                    // theme={JSONPrettyMon}
-                    themeClassName='custom-json-pretty'
-                    data={obj.data}
-                  />
+                  {this.showSampleResponseBody(obj.data)}
                 </>
               )}
             </div>
