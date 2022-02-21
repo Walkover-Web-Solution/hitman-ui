@@ -183,6 +183,19 @@ export function handleBlurInUrlField (data) {
   return data
 }
 
+/** Utility function to format size in Bytes to respective decimal places */
+export function formatBytes (bytes, decimals = 2) {
+  if (bytes === 0) return '0 Bytes'
+
+  const k = 1024
+  const dm = decimals < 0 ? 0 : decimals
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
+
+  const i = Math.floor(Math.log(bytes) / Math.log(k))
+
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i]
+}
+
 export function isValidDomain () {
   const domainsList = process.env.REACT_APP_DOMAINS_LIST ? process.env.REACT_APP_DOMAINS_LIST.split(',') : []
   const currentDomain = window.location.href.split('/')[2]
@@ -216,6 +229,7 @@ export default {
   getParentIds,
   handleChangeInUrlField,
   handleBlurInUrlField,
+  formatBytes,
   isValidDomain,
   addAnalyticsScripts,
   DEFAULT_URL
