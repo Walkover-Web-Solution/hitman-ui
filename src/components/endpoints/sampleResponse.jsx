@@ -103,7 +103,6 @@ class SampleResponse extends Component {
   showJSONPretty (data) {
     return (
       <JSONPretty
-      // theme={JSONPrettyMon}
         themeClassName='custom-json-pretty'
         data={data}
       />
