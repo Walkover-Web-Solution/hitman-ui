@@ -6,12 +6,14 @@ import 'ace-builds/src-noconflict/mode-json'
 import 'ace-builds/src-noconflict/mode-xml'
 import 'ace-builds/src-noconflict/theme-github'
 import 'ace-builds/webpack-resolver'
+import { addCompleter } from 'ace-builds/src-noconflict/ext-language_tools'
 import React, { Component } from 'react'
 import AceEditor from 'react-ace'
 import BodyDescription from './bodyDescription'
 import './endpoints.scss'
 import GenericTable from './genericTable'
 import { isSavedEndpoint } from '../common/utility'
+import _ from 'lodash'
 
 class BodyContainer extends Component {
   constructor (props) {
@@ -40,10 +42,21 @@ class BodyContainer extends Component {
         ]
       },
       endpointId: null,
-      selectedRawBodyType: 'TEXT'
+      selectedRawBodyType: 'TEXT',
+      suggestions: []
     }
 
     this.rawBodyTypes = ['TEXT', 'HTML', 'JSON', 'XML', 'JavaScript']
+    addCompleter({
+      getCompletions: function (editor, session, pos, prefix, callback) {
+        callback(null, [...this.state.suggestions])
+      }.bind(this)
+    })
+    this.loadEnvVarsSuggestions()
+  }
+
+  componentDidUpdate (prevProps, prevState) {
+    if (prevProps.environment !== this.props.environment) this.loadEnvVarsSuggestions()
   }
 
   handleSelectBodyType (bodyType, bodyDescription) {
@@ -96,6 +109,18 @@ class BodyContainer extends Component {
         })
       }
     }
+  }
+
+  loadEnvVarsSuggestions () {
+    const suggestions = []
+    _.keys(this.props.environment.variables).forEach((variable) => {
+      suggestions.push({
+        caption: `${variable}`,
+        value: `{{${variable}}}`,
+        meta: 'Environment variable'
+      })
+    })
+    this.setState({ suggestions })
   }
 
   handleChange (value) {
@@ -206,6 +231,8 @@ class BodyContainer extends Component {
                   editor.getSession().setUseWrapMode(true)
                   editor.setShowPrintMargin(false)
                 }}
+                enableLiveAutocompletion
+                enableBasicAutocompletion
               />
             </div>
           )
