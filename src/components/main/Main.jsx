@@ -29,6 +29,7 @@ import { loadfeedioWidget } from '../../services/feedioWidgetService'
 import auth from '../auth/authService'
 import DesktopAppDownloadModal from './desktopAppPrompt'
 import { sendAmplitudeData } from '../../services/amplitude'
+import UpdateStatus from './updateStatus'
 import { isValidDomain } from '../common/utility'
 
 const mapDispatchToProps = (dispatch) => {
@@ -194,6 +195,7 @@ class Main extends Component {
                   default_tab_index={this.state.defaultTabIndex}
                 />}
           </div>
+          <UpdateStatus />
         </div>
       </div>
     )

@@ -644,6 +644,24 @@ class DisplayEndpoint extends Component {
     return json
   }
 
+  replaceVariablesInBody (body, bodyType, customEnv) {
+    switch (bodyType) {
+      case 'multipart/form-data':
+      case 'application/x-www-form-urlencoded':
+        body = this.replaceVariablesInJson(body, customEnv)
+        break
+      case 'TEXT':
+      case 'JSON':
+      case 'HTML':
+      case 'XML':
+      case 'JavaScript':
+        body = this.replaceVariables(body, customEnv)
+        break
+      default: break
+    }
+    return body
+  }
+
   parseBody (rawBody) {
     let body = {}
     try {
@@ -883,7 +901,7 @@ class DisplayEndpoint extends Component {
     }
 
     /** Prepare Body & Modify Headers */
-    const { body, headers } = this.formatBody(this.state.data.body, headerJson)
+    let { body, headers } = this.formatBody(this.state.data.body, headerJson)
 
     /** Add Cookie in Headers */
     const cookiesString = this.prepareHeaderCookies(BASE_URL)
@@ -910,7 +928,9 @@ class DisplayEndpoint extends Component {
       url = this.replaceVariables(url, environment)
       url = this.addhttps(url)
       headers = this.replaceVariablesInJson(headers, environment)
-      requestOptions = { ...requestOptions, headers, url, bodyType: this.state.data.body.type }
+      const bodyType = this.state.data.body.type
+      body = this.replaceVariablesInBody(body, bodyType, environment)
+      requestOptions = { ...requestOptions, body, headers, url, bodyType }
       /** Steve Onboarding Step 5 Completed */
       moveToNextStep(5)
       sendAmplitudeData('API called', {

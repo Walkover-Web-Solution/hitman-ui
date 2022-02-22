@@ -90,7 +90,7 @@ class CollectionVersionForm extends Form {
             <form onSubmit={this.handleSubmit}>
               <div className='row'>
                 <div className='col-6'>
-                  {this.renderInput('number', 'Version Name', 'Version Name', true, true)}
+                  {this.renderInput('number', 'Version Name', 'Version Name', true, true, false, '*version name accepts min 1 character')}
                 </div>
                 <div className='col-6'>
                   {this.renderInput('host', 'Version Endpoint', 'https://v1.example.com', false, false, true)}
