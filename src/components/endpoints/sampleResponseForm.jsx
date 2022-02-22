@@ -15,7 +15,7 @@ class SampleResponseForm extends Form {
       title: Joi.string().required().max(5).label('Title: '),
       status: Joi.number().min(100).max(599).label('Status: '),
       description: Joi.string().allow(null, '').label('Description: '),
-      body: Joi.object().allow(null, '', 'null').label('Body: ')
+      body: Joi.string().max(2000).allow(null, '', 'null').label('Body: ')
     }
   }
 
@@ -42,7 +42,7 @@ class SampleResponseForm extends Form {
   editSampleResponse () {
     let { status, description, body: data, title } = this.state.data
     try {
-      data = JSON.parse(data)
+      data = JSON.stringify(data)
     } catch (error) {
       data = null
     }
@@ -57,7 +57,7 @@ class SampleResponseForm extends Form {
   addSampleResponse () {
     let { title, status, description, body: data } = this.state.data
     try {
-      data = JSON.parse(data)
+      data = JSON.stringify(data)
     } catch (error) {
       data = null
     }
@@ -120,8 +120,8 @@ class SampleResponseForm extends Form {
         </Modal.Header>
         <Modal.Body>
           <form onSubmit={this.handleSubmit}>
-            {this.renderInput('title', 'Title: ', 'Enter Title ')}
-            {this.renderInput('status', 'Status: ', 'Enter Status ')}
+            {this.renderInput('title', 'Title: ', 'Enter Title ', false, false, false, '*Title should not exceed more than 5 characters')}
+            {this.renderInput('status', 'Status: ', 'Enter Status ', false, false, false, '*Status number limit is 100-599')}
             {this.renderInput(
               'description',
               'Description: ',

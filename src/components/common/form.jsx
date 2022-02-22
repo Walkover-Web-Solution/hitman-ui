@@ -116,7 +116,7 @@ class Form extends Component {
     this.setState({ data })
   };
 
-  renderInput (name, label, placeholder, mandatory = false, firstLetterCapitalize = false, isURLInput = false) {
+  renderInput (name, label, placeholder, mandatory = false, firstLetterCapitalize = false, isURLInput = false, note = '') {
     const { data, errors } = this.state
     return (
       <Input
@@ -130,6 +130,7 @@ class Form extends Component {
         disabled={data.disabled}
         mandatory={mandatory}
         firstLetterCapitalize={firstLetterCapitalize}
+        note={note}
       />
     )
   }
@@ -211,6 +212,7 @@ class Form extends Component {
             editor.setShowPrintMargin(false)
           }}
         />
+        <small className='muted-text'>*Body should not exceed more than 2000 characters.</small>
         {errors[name] && (
           <div className='alert alert-danger'>{errors[name]}</div>
         )}

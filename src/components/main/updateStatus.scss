@@ -1,0 +1,27 @@
+
+.update-status-component{
+    width: 300px;
+    position:  fixed;
+    margin-right: 1%;
+    bottom: 2rem; right: 0rem;
+    border-radius: 0.7rem;
+    background-color: antiquewhite;
+    z-index: 1200;
+
+    .progress {
+        height: 0.25rem !important;
+    }
+
+    button {
+        outline: none !important;
+    }
+}
+
+.btn-close{
+    margin-left: 4rem;
+    border-radius: 0.3rem;
+    background-color: rgb(145, 226, 24);
+    border: 0;
+    margin-top: 1rem;
+    padding: 0.2rem 0.5rem 0.2rem 0.5rem;
+}
