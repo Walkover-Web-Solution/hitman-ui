@@ -413,21 +413,25 @@ class GenericTable extends Component {
           <td className='custom-td'>
             {dataArray[index].type === 'file'
               ? this.renderSelectFiles(dataArray, index)
-              : <TextField
-                  {...autoCompleterDefaultProps}
-                  name={valueKey}
-                  key={valueKey}
-                  value={dataArray[index].type !== 'file' ? dataArray[index].value : ''}
-                  onChange={(e) => this.handleChange(e, { name: valueKey, value: e })}
-                  className='form-control'
-                  placeholder={
-                    dataArray[index].checked === 'notApplicable'
-                      ? 'Value'
-                      : `Enter ${dataArray[index].key}`
-                  }
-                  options={{ '{{': _.keys(this.props.environment.variables) }}
-                  type={dataArray[index].type}
-                />}
+              : (
+                <div className='position-relative'>
+                  <TextField
+                    {...autoCompleterDefaultProps}
+                    name={valueKey}
+                    key={valueKey}
+                    value={dataArray[index].type !== 'file' ? dataArray[index].value : ''}
+                    onChange={(e) => this.handleChange(e, { name: valueKey, value: e })}
+                    className='form-control'
+                    placeholder={
+                                  dataArray[index].checked === 'notApplicable'
+                                    ? 'Value'
+                                    : `Enter ${dataArray[index].key}`
+                                }
+                    options={{ '{{': _.keys(this.props.environment.variables) }}
+                    type={dataArray[index].type}
+                  />
+                </div>
+                )}
           </td>
           <td className='custom-td' id='generic-table-description-cell'>
             {
