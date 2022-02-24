@@ -5,12 +5,27 @@ import { willHighlight, getHighlightsData } from './highlightChangesHelper'
 import './endpoints.scss'
 import { Style } from 'react-style-tag'
 
-const JSONPrettyMon = require('react-json-pretty/dist/monikai')
-
 class PublicSampleResponse extends Component {
   state = {
     theme: this.props.publicCollectionTheme
   };
+
+  showJSONPretty (data) {
+    return (
+      <JSONPretty
+        data={data}
+      />
+    )
+  }
+
+  showSampleResponseBody (data) {
+    if (typeof data === 'object') {
+      return (this.showJSONPretty(data))
+    } else {
+      data = JSON.parse(data)
+      return (typeof data === 'object' ? this.showJSONPretty(data) : <pre>{data}</pre>)
+    }
+  }
 
   render () {
     return (
@@ -35,10 +50,7 @@ class PublicSampleResponse extends Component {
                   <div>{sampleResponse.status}</div>
                   <div>{sampleResponse.description}</div>
                   <div>
-                    <JSONPretty
-                      theme={JSONPrettyMon}
-                      data={sampleResponse.data}
-                    />
+                    {this.showSampleResponseBody(sampleResponse.data)}
                   </div>
                 </Tab>
               ))}
