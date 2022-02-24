@@ -204,7 +204,7 @@ export function isValidDomain () {
 }
 
 export function addAnalyticsScripts () {
-  if (isValidDomain()) {
+  if (isValidDomain() && process.env.REACT_APP_ENV === 'production') {
     Object.keys(scripts).forEach(script => {
       (script !== 'gtmBody')
         ? document.getElementsByTagName('head')[0].innerHTML += scripts[script]
