@@ -197,10 +197,12 @@ export function formatBytes (bytes, decimals = 2) {
 }
 
 export function isValidDomain () {
-  const domainsList = process.env.REACT_APP_DOMAINS_LIST ? process.env.REACT_APP_DOMAINS_LIST.split(',') : []
-  const currentDomain = window.location.href.split('/')[2]
-  const path = window.location.href.split('/')[3]
-  return (domainsList.includes(currentDomain) && path !== 'p')
+  if (process.env.REACT_APP_ENV === 'prod') {
+    const domainsList = process.env.REACT_APP_DOMAINS_LIST ? process.env.REACT_APP_DOMAINS_LIST.split(',') : []
+    const currentDomain = window.location.href.split('/')[2]
+    const path = window.location.href.split('/')[3]
+    return (domainsList.includes(currentDomain) && path !== 'p')
+  }
 }
 
 export function addAnalyticsScripts () {
