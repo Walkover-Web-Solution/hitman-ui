@@ -239,6 +239,15 @@ class DisplayResponse extends Component {
     )
   }
 
+  renderStatusMessage (status) {
+    const color = ((status >= 400) || (status >= 500)) ? 'red' : ((status === 200) ? 'green' : 'yellow')
+    return (
+      <div className={`response-status-value-${color}`}>
+        {status + ' ' + this.props.response.statusText}
+      </div>
+    )
+  }
+
   render () {
     const { theme } = this.state
     return (
@@ -258,11 +267,7 @@ class DisplayResponse extends Component {
                           {this.props.response.status &&
                             <div id='status'>
                               <div className='response-status-item-name'>Status :</div>
-                              <div className='response-status-value' style={{ color: theme }}>
-                                {this.props.response.status +
-                            ' ' +
-                            this.props.response.statusText}
-                              </div>
+                              {this.renderStatusMessage(this.props.response.status)}
                             </div>}
                           <div id='time'>
                             <div className='response-status-item-name'>Time:</div>

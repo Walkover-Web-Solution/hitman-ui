@@ -726,10 +726,20 @@ table#custom-generic-table {
 .response-status-value {
   font-size: 12px;
   opacity: 0.7;
-  color: rgb(31, 148, 31);
   padding-left: 10px;
 }
-
+.response-status-value-red{
+  @extend .response-status-value;
+  color: red;
+}
+.response-status-value-green{
+  @extend .response-status-value;
+  color: green;
+}
+.response-status-value-yellow{
+  @extend .response-status-value;
+  color: rgb(245, 245, 17);
+}
 .__json-pretty__ {
   background-color: transparent !important;
   color: black !important;
