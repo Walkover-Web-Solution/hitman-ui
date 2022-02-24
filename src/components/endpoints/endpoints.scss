@@ -727,18 +727,19 @@ table#custom-generic-table {
   font-size: 12px;
   opacity: 0.7;
   padding-left: 10px;
+  color: $theme-color;
 }
-.response-status-value-red{
+.response-status-value-error{
   @extend .response-status-value;
-  color: red;
+  color: $alert-color;
 }
-.response-status-value-green{
+.response-status-value-success{
   @extend .response-status-value;
-  color: green;
+  color: $success-color;
 }
-.response-status-value-yellow{
+.response-status-value-regular{
   @extend .response-status-value;
-  color: rgb(245, 245, 17);
+  color: $theme-color;
 }
 .__json-pretty__ {
   background-color: transparent !important;
