@@ -245,7 +245,7 @@ class CustomTabs extends Component {
         const endpoint = this.props.endpoints[tabId]
         return (
           <div className='hover-div' style={styles}>
-            <div className='group-name'>{this.props.groups[endpoint.groupId].name}</div>
+            <div className='group-name'>{this.props.groups[endpoint.groupId]?.name}</div>
             <div className='d-flex align-items-center'>
               <div className={`api-label ${endpoint.requestType} request-type-bgcolor ml-4 mt-1 arrow-top`}> {endpoint.requestType} </div>
               <div className='endpoint-name ml-1'>{this.props.endpoints[tabId].name}</div>
