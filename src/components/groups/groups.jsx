@@ -20,6 +20,7 @@ import groupsService from './groupsService'
 import filterService from '../../services/filterService'
 import AddEntity from '../main/addEntity/addEntity'
 import sidebarActions from '../main/sidebar/redux/sidebarActions'
+import { ReactComponent as Plus } from '../../assets/icons/plus.svg'
 
 const mapStateToProps = (state) => {
   return {
@@ -520,7 +521,7 @@ class Groups extends Component {
                                 <path d='M10.5 8.25V12.75' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
                               </svg> Delete
                             </div>
-                            <div
+                            {/* <div
                               className='dropdown-item'
                               onClick={() =>
                                 this.handleAddEndpoint(
@@ -534,7 +535,7 @@ class Groups extends Component {
                                 <path d='M12 9L6 9' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
                                 <path d='M9 12L9 6' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
                               </svg>  Add Endpoint
-                            </div>
+                            </div> */}
                             <div
                               className='dropdown-item'
                               onClick={() =>
@@ -580,6 +581,16 @@ class Groups extends Component {
                       : null
                   }
             </button>
+            <div
+              onClick={() =>
+                this.handleAddEndpoint(
+                  groupId,
+                  this.props.versions,
+                  this.props.groups
+                )}
+            >
+              <Plus />
+            </div>
             {expanded
               ? (
                 <div

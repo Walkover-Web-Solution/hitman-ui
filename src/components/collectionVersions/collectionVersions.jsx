@@ -18,6 +18,7 @@ import collectionVersionsService from './collectionVersionsService'
 import filterService from '../../services/filterService'
 import AddEntity from '../main/addEntity/addEntity'
 import sidebarActions from '../main/sidebar/redux/sidebarActions'
+import { ReactComponent as Plus } from '../../assets/icons/plus.svg'
 
 const mapStateToProps = (state) => {
   return {
@@ -421,7 +422,7 @@ class CollectionVersions extends Component {
                                   <path d='M10.5 8.25V12.75' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
                                 </svg>   Delete
                               </div>
-                              <div
+                              {/* <div
                                 className='dropdown-item'
                                 onClick={() =>
                                   this.openAddGroupForm(this.props.versions[versionId])}
@@ -433,7 +434,7 @@ class CollectionVersions extends Component {
                                   <path d='M16 11H12V16H16V11Z' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
                                 </svg>
                                 Add Group
-                              </div>
+                              </div> */}
                               <div
                                 className='dropdown-item'
                                 onClick={() => {
@@ -481,6 +482,9 @@ class CollectionVersions extends Component {
                         : null
                     }
               </button>
+              <div onClick={() => this.openAddGroupForm(this.props.versions[versionId])}>
+                <Plus />
+              </div>
               {expanded
                 ? (
                   <div className='version-collapse'>

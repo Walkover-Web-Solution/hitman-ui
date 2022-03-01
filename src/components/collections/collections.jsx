@@ -26,6 +26,7 @@ import emptyCollections from '../../assets/icons/emptyCollections.svg'
 import hitmanLogo from '../../assets/icons/hitman.svg'
 import PublishColelctionInfo from '../main/publishCollectionInfo'
 import sidebarActions from '../main/sidebar/redux/sidebarActions'
+import { ReactComponent as Plus } from '../../assets/icons/plus.svg'
 
 const EMPTY_STRING = ''
 
@@ -381,7 +382,7 @@ class CollectionsComponent extends Component {
                     </div>
                     )}
               </div>
-              <div class='show-endpoint-count col-3 pr-0 align-items-center d-flex justify-content-between'>
+              <div class='show-endpoint-count col-3 pr-0 align-items-center d-flex justify-content-between sidebar-item-action-btn'>
                 <div>{this.props.collections[collectionId]?.importedFromMarketPlace
                   ? <div className='marketplace-icon ml-3'> M </div>
                   : <span>&nbsp;</span>}
@@ -422,7 +423,7 @@ class CollectionsComponent extends Component {
                         <path d='M10.5 8.25V12.75' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
                       </svg> Delete
                     </div>
-                    <div
+                    {/* <div
                       className='dropdown-item'
                       onClick={() => this.openAddVersionForm(collectionId)}
                     >
@@ -433,7 +434,7 @@ class CollectionsComponent extends Component {
                         <path d='M2 15.25C1.58579 15.25 1.25 15.5858 1.25 16C1.25 16.4142 1.58579 16.75 2 16.75V15.25ZM16 16.75C16.4142 16.75 16.75 16.4142 16.75 16C16.75 15.5858 16.4142 15.25 16 15.25V16.75ZM2 16.75H16V15.25H2V16.75Z' fill='#E98A36' />
                         <path d='M2 10.25C1.58579 10.25 1.25 10.5858 1.25 11C1.25 11.4142 1.58579 11.75 2 11.75V10.25ZM16 11.75C16.4142 11.75 16.75 11.4142 16.75 11C16.75 10.5858 16.4142 10.25 16 10.25V11.75ZM2 11.75H16V10.25H2V11.75Z' fill='#E98A36' />
                       </svg> Add Version
-                    </div>
+                    </div> */}
                     <div
                       className='dropdown-item'
                       onClick={() =>
@@ -529,6 +530,9 @@ class CollectionsComponent extends Component {
               </div>
             </div>
           </button>
+          <div onClick={() => this.openAddVersionForm(collectionId)}>
+            <Plus />
+          </div>
           {collectionState === 'singleCollection'
             ? (null)
             : expanded
