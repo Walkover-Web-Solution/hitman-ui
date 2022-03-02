@@ -27,6 +27,7 @@ import hitmanLogo from '../../assets/icons/hitman.svg'
 import PublishColelctionInfo from '../main/publishCollectionInfo'
 import sidebarActions from '../main/sidebar/redux/sidebarActions'
 import { ReactComponent as Plus } from '../../assets/icons/plus.svg'
+import GlobeIcon from '../../assets/icons/globe-icon.svg'
 
 const EMPTY_STRING = ''
 
@@ -379,6 +380,7 @@ class CollectionsComponent extends Component {
                   : (
                       this.props.collections[collectionId].name
                     )}
+                {this.props.collections[collectionId]?.isPublic && <span><img src={GlobeIcon} alt='globe' width='14' /></span>}
               </div>
             </div>
             <div className='sidebar-item-action d-flex align-items-center'>

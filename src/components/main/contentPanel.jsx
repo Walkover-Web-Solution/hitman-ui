@@ -22,6 +22,7 @@ import tabStatusTypes from '../tabs/tabStatusTypes'
 import './main.scss'
 import { getCurrentUser } from '../auth/authService'
 import LoginSignupModal from './loginSignupModal'
+import Environments from '../environments/environments'
 const mapStateToProps = (state) => {
   return {
     endpoints: state.endpoints,
@@ -185,6 +186,7 @@ class ContentPanel extends Component {
                         handle_save_endpoint={this.handleSaveEndpoint.bind(this)}
                         handle_save_page={this.handleSavePage.bind(this)}
                       />
+                      {getCurrentUser() ? <Environments {...this.props} /> : null}
                     </div>
                   </div>
                 </>

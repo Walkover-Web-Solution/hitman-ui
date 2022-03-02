@@ -734,7 +734,7 @@ class SideBar extends Component {
         <div className='plr-3'>
           {this.renderSwitchProducts()}
           {this.renderSearch()}
-          {/* {this.renderInviteTeam()} */}
+          {this.renderInviteTeam()}
           {this.renderDownloadDesktopApp()}
           {this.renderGlobalAddButton()}
         </div>
