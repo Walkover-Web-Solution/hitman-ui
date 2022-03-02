@@ -365,8 +365,8 @@ class CollectionsComponent extends Component {
             variant='default'
             className={[focused && sidebarFocused ? 'focused' : ''].join(' ')}
           >
-            <div className='row w-100 align-items-center' onClick={() => this.toggleSelectedColelctionIds(collectionId)}>
-              <div className='col-9 fixwidth'>
+            <div onClick={() => this.toggleSelectedColelctionIds(collectionId)}>
+              <div className=''>
                 {collectionState === 'singleCollection'
                   ? (
                     <div
@@ -377,20 +377,20 @@ class CollectionsComponent extends Component {
                     </div>
                     )
                   : (
-                    <div>
-                      <div>{this.props.collections[collectionId].name}</div>
-                    </div>
+                      this.props.collections[collectionId].name
                     )}
               </div>
-              <div class='show-endpoint-count col-3 pr-0 align-items-center d-flex justify-content-between sidebar-item-action-btn'>
-                <div>{this.props.collections[collectionId]?.importedFromMarketPlace
+            </div>
+            <div className='sidebar-item-action d-flex align-items-center'>
+              <div class='theme-color'>
+                {this.props.collections[collectionId]?.importedFromMarketPlace
                   ? <div className='marketplace-icon ml-3'> M </div>
-                  : <span>&nbsp;</span>}
-                </div>
+                  : null}
                 {this.findEndpointCount(collectionId)}
               </div>
-            </div>
-            <div className='sidebar-item-action'>
+              <div className='m-2' onClick={() => this.openAddVersionForm(collectionId)}>
+                <Plus />
+              </div>
               <div
                 className='sidebar-item-action-btn'
                 data-toggle='dropdown'
@@ -530,9 +530,6 @@ class CollectionsComponent extends Component {
               </div>
             </div>
           </button>
-          <div onClick={() => this.openAddVersionForm(collectionId)}>
-            <Plus />
-          </div>
           {collectionState === 'singleCollection'
             ? (null)
             : expanded

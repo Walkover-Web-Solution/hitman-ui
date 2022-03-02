@@ -16,10 +16,11 @@ import { ReactComponent as EmptyHistory } from '../../assets/icons/emptyHistroy.
 import { ReactComponent as NoInvocationsIcon } from '../../assets/icons/emptyrandom.svg'
 import { ReactComponent as NoCollectionsIcon } from '../../assets/icons/noCollectionsIcon.svg'
 // import { ReactComponent as PlusIcon } from '../../assets/icons/plus_orange.svg'
-import { ReactComponent as SearchIcon } from '../../assets/icons/searchIcon.svg'
-import { ReactComponent as SocketIconBlack } from '../../assets/icons/socketIconBlack.svg'
+import { ReactComponent as SearchIcon } from '../../assets/icons/search.svg'
+import { ReactComponent as DownloadIcon } from '../../assets/icons/download.svg'
+import HitmanLogo from '../../assets/icons/hitman-logo.svg'
 import { ReactComponent as Users } from '../../assets/icons/users.svg'
-import { ReactComponent as Plus } from '../../assets/icons/plus.svg'
+import { ReactComponent as Plus } from '../../assets/icons/plus-square.svg'
 import collectionVersionsService from '../collectionVersions/collectionVersionsService'
 import './main.scss'
 import './sidebar.scss'
@@ -559,8 +560,10 @@ class SideBar extends Component {
 
   renderSwitchProducts () {
     return (
-      <Dropdown>
-        <Dropdown.Toggle><SocketIconBlack />Hitman</Dropdown.Toggle>
+      <Dropdown className='switch-products'>
+        <Dropdown.Toggle className='bg-none p-0 border-none'>
+          <img src={HitmanLogo} alt='' />
+        </Dropdown.Toggle>
         <Dropdown.Menu>
           <Dropdown.Item href='#' className='dropHeader'>
             Switch to
@@ -582,30 +585,27 @@ class SideBar extends Component {
 
   renderSearch () {
     return (
-      <>
-        <div onClick={() => { this.setState({ search: true }) }} onBlur={() => { this.setState({ search: false }) }}>
-          <SearchIcon />
-          {!this.state.search
-            ? 'Search'
-            : <input
-                ref={element => { this.inputRef = element }}
-                value={this.state.data.filter}
-                className='form-control'
-                type='text'
-                name='filter'
-                id='search'
-                onChange={(e) => this.handleOnChange(e)}
-              />}
-        </div>
-      </>
+      <div className='d-flex align-items-center mb-2'>
+        <SearchIcon className='mr-2' />
+        <input
+          ref={element => { this.inputRef = element }}
+          value={this.state.data.filter}
+          className='search-input'
+          placeholder='Search'
+          type='text'
+          name='filter'
+          id='search'
+          onChange={(e) => this.handleOnChange(e)}
+        />
+      </div>
     )
   }
 
   renderInviteTeam () {
     return (
-      <div class='profile-listing' onClick={() => { this.openAccountAndSettings() }}>
+      <div onClick={() => { this.openAccountAndSettings() }}>
         <Users />
-        <span className='label'>Invite Team</span>
+        <span>Invite Team</span>
       </div>
     )
   }
@@ -645,8 +645,9 @@ class SideBar extends Component {
       openExternalLink(link)
     }
     return (
-      <div className='d-flex align-items-center'>
-        <button onClick={handleDownloadClick} className='btn btn-primary download-btn'>Download Desktop App</button>
+      <div className='d-flex align-items-center mb-3' onClick={handleDownloadClick}>
+        <DownloadIcon className='mr-2' />
+        <span>Download Desktop App</span>
       </div>
     )
   }
@@ -730,11 +731,13 @@ class SideBar extends Component {
   renderDashboardSidebar () {
     return (
       <>
-        {this.renderSwitchProducts()}
-        {this.renderSearch()}
-        {this.renderInviteTeam()}
-        {this.renderDownloadDesktopApp()}
-        {this.renderGlobalAddButton()}
+        <div className='plr-3'>
+          {this.renderSwitchProducts()}
+          {this.renderSearch()}
+          {/* {this.renderInviteTeam()} */}
+          {this.renderDownloadDesktopApp()}
+          {this.renderGlobalAddButton()}
+        </div>
         {this.state.data.filter !== '' && this.renderSearchList()}
         {this.state.data.filter === '' && this.renderSidebarContent()}
         {/* {this.renderProfile()} */}
@@ -746,7 +749,11 @@ class SideBar extends Component {
     const isMarketplaceImported = this.props.collections[this.collectionId]?.importedFromMarketPlace
     const title = this.collectionId ? isMarketplaceImported ? 'Cannot add Entities to a Marketplace Collection.' : 'Add Entities to Collection' : 'Add/Import Collection'
     return (
-      getCurrentUser() && <div> Collection <button className='btn sidebar-add-btn' title={title} disabled={isMarketplaceImported} onClick={this.handleAdd.bind(this)}><Plus /></button></div>
+      getCurrentUser() &&
+        <div className='d-flex align-items-center justify-content-between mb-2'>
+          <span className='f-12 font-weight-700'>COLLECTION</span>
+          <div title={title} disabled={isMarketplaceImported} onClick={this.handleAdd.bind(this)}><Plus /></div>
+        </div>
     )
   }
 

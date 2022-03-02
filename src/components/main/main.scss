@@ -1,13 +1,7 @@
 //Note: Unique IDs are used in CTAs for tracking purposes with GTM. Do not use the same IDs elsewhere.
 
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700&display=swap');
 @import "./variables.scss";
-
-@font-face {
-  font-family: 'proxima-nova';
-  src: url('../../assets/fonts/ProximaNova-Regular.otf');
-  font-weight: 400;
-  font-style: normal;
-}
 
 .mobile-warning{
   position: sticky;
@@ -23,65 +17,63 @@
   -moz-box-shadow:    0 0 5px black;
   sbox-shadow:         0 0 5px black;
 }
-// @font-face {
-//   font-family: 'proxima-nova';
-//   src: url('../../assets/fonts/Proxima-Nova-Black.otf');
-//   font-weight: 500;
-//   font-style: normal;
-// }
 
-@font-face {
-  font-family: 'proxima-nova';
-  src: url('../../assets/fonts/Proxima-Nova-Alt-Bold.otf');
-  font-weight: 600;
-  font-style: normal;
-}
+// Global Styles
 
-@font-face {
-  font-family: 'proxima-nova';
-  src: url('../../assets/fonts/Proxima-Nova-Bold.otf');
-  font-weight: 700;
-  font-style: normal;
-}
+  html body {
+    background-color: #fff;
+    font-family: 'Roboto', sans-serif;
+    font-size: $font-normal;
+    color: $text-color;
+  }
+  .transition{
+    transition: all 0.3s ease-in;
+  }
+  .btn{
+    border-radius: 0 !important;
+  }
+  .rotate-180{
+    transform:rotate(180deg);
+  }
+  .bg-none {
+    background: none !important;
+  }
+  .dropdown{
+    height: 36px;
+    font-size: 14px;
+    font-weight: 400;
+    color: #d6d6d6;
+    border-radius: 0px;
+    .dropdown-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center; 
+      &::after {
+        background-image: url(../../assets/icons/downChevron.svg);
+        border: none !important;
+        height: 8px;
+        width: 14px;
+        background-repeat: no-repeat;
+      }
+    }
+  }
+  .font-weight-700 {
+    font-weight: 700;
+  }
+  .f-12{
+    font-size: $font-medium;
+  }
+  .plr-3{
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+  .theme-color{
+    color: $theme-color;
+  }
 
-@font-face {
-  font-family: 'proxima-nova';
-  src: url('../../assets/fonts/Proxima-Nova-Extrabold.otf');
-  font-weight: 800;
-  font-style: normal;
-}
+// Global Styles
 
 
-
-
-@font-face {
-  font-family: AlegreyaSansSCBold;
-  src: url(../../assets/fonts/AlegreyaSansSC-ExtraBold.ttf);
-}
-
-html body {
-  background-color: #fff;
-  font-family: 'proxima-nova', sans-serif !important;
-  font-size: $font-normal;
-}
-
-$border-color: rgba(227, 228, 230, 0.7);
-
-.transition{
-  transition: all 0.3s ease-in;
-}
-.btn{
-  border-radius: 0 !important;
-}
-.rotate-180{
-  transform:rotate(180deg);
-}
-.custom-main-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  padding: 3rem 0 0 20.6rem;
-}
 .common-header{
   z-index: 19999 !important;
 }
@@ -96,7 +88,8 @@ $border-color: rgba(227, 228, 230, 0.7);
 .main-panel-wrapper {
   display: flex;
   flex-direction: row;
-
+  height: 100vh;
+  overflow: hidden;
   nav.col-md-2.d-none.d-md-block.bg-light.sidebar {
     margin-top: 10px;
     flex: 1;
@@ -225,9 +218,6 @@ nav.navbar.navbar-dark.fixed-top.bg-dark.flex-md-nowrap.p-0.shadow {
   }
 }
 
-// .hm-sidebar-block {
-//   margin-top: 40px;
-// }
 .hm-sidebar-item {
   color: #000000;
   cursor: pointer;
@@ -292,7 +282,6 @@ label.data-type {
   padding: 0 6px;
   border-radius: 3px;
   margin: 5px;
-  /* display: block; */
   vertical-align: middle;
   color: #999;
 }
@@ -1228,14 +1217,6 @@ button.editBtn {
   }
 }
 
-.dropdown .dropdown-toggle {
-  height: 36px;
-  font-size: 14px;
-  font-weight: 400;
-  color: #d6d6d6;
-  border-radius: 0px;
-}
-
 .dropdown-item.active,
 .dropdown-item:active {
   background: inherit !important;
@@ -1418,29 +1399,6 @@ button.editBtn {
     background: #E98A36;
   }
 }
-
-
-
-
-.dropdown .dropdown-toggle {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  &::after {
-    background-image: url(../../assets/icons/downChevron.svg);
-    border: none !important;
-    height: 8px;
-    width: 14px;
-    background-repeat: no-repeat;
-  }
-}
-
-
-
-
-
-
 table#custom-generic-table tbody input[value="false"] + span.checkmark {
   background: #ccc !important;
 }
@@ -2637,114 +2595,6 @@ span.endpointNameWrapper {
   margin-left: 10px;
 }
 
-
-
-
-
-
-
-
-
-
-
-.versionPages {
-
-  &.linkWrapper .linkWith:before,
-  &.linkWrapper .linkWith:after {
-    content: '';
-    position: absolute;
-    left: -7px;
-    width: 12px;
-    height: calc(42% + 2px);
-    border-color: #c7c7c7;
-    border-style: solid;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-    z-index: 99;
-  }
-
-  &.linkWrapper .linkWith:before {
-    top: 0;
-    border-width: 0 0 1px 1px;
-  }
-
-  &.linkWrapper .linkWith:last-child:before {
-    border-radius: 0 0 0 0;
-  }
-
-  &.linkWrapper .linkWith:after {
-    top: 50%;
-    border-width: 0 0 0 1px;
-  }
-
-  &.linkWrapper .linkWith:last-child::after,
-  &.linkWrapper .linkWith:last-child:after {
-    border: 0;
-  }
-}
-
-.linkWrapper .linkWith {
-  position: relative;
-}
-
-
-
-
-
-
-.versionsgroups {
-  &.linkWrapper .linkWith:after {
-    content: '';
-    position: absolute;
-    left: -7px;
-    height: 100%;
-    border-color: #c7c7c7;
-    border-style: solid;
-    box-sizing: border-box;
-    z-index: 99;
-    top: 0;
-    border-width: 0 0 0px 1px;
-  }
-
-  &.linkWrapper .linkWith:last-child:after {
-    border: 0;
-  }
-
-  &.linkWrapper .linkWith .accordion>button:before {
-    content: '';
-    position: absolute;
-    left: -8px;
-    width: 17px;
-    height: calc(71% + 0px);
-    border-color: #c7c7c7;
-    border-style: solid;
-    z-index: 99;
-  }
-
-  &.linkWrapper .linkWith .accordion>button:before {
-    top: -5px;
-    border-width: 0 0 1px 1px;
-  }
-
-  &.linkWrapper .linkWith .accordion>button:last-child:before {
-    border-radius: 0 0 0 0px;
-  }
-
-  &.linkWrapper .linkWith .accordion>button:after {
-    top: 50%;
-    border-width: 0 0 0 1px;
-  }
-
-  &.linkWrapper .linkWith .accordion>button:last-child::after {
-    border: 0;
-  }
-}
-
-.linkWrapper .linkWith {
-  position: relative;
-}
-
 .linkWrapper .linkWith .accordion>button {
   position: relative;
   color: #E98A36;
@@ -3263,10 +3113,6 @@ li.nav-item.cookie-tab a {
 
 .ql-snow .ql-tooltip {
   left: 1rem !important;
-}
-
-.sidebar-accordion .fixwidth {
-    max-width: 213px;
 }
 
 div#steve-parent-accordion{

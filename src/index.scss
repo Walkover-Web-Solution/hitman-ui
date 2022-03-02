@@ -1,21 +1,4 @@
 //Note: Unique IDs are used in CTAs for tracking purposes with GTM. Do not use the same IDs elsewhere.
-
-.sidebar {
-  display: flex;
-  flex-direction: row;
-  height: calc(100vh - 3rem);
-  position: fixed;
-  top: 3rem;
-  z-index: 999;
-  width: 330px;
-  overflow: hidden;
-  left: 0;
-  .fade {
-    transition: opacity 1s cubic-bezier(0.65, 0.05, 0.36, 1)!important;
-  }
-  // resize: horizontal;
-}
-
 .main {
   width: 100%;
   padding: 0 ;

@@ -1,7 +1,4 @@
-//Note: Unique IDs are used in CTAs for tracking purposes with GTM. Do not use the same IDs elsewhere.
-
-$font-small: 12px;
-$text-color: #212121;
+@import './variables.scss';
 
 .top-right {
   right: 0;
@@ -10,15 +7,124 @@ $text-color: #212121;
   z-index: 99;
 }
 
-.primary-sidebar {
-  background-color: #F8F8F8;
-  color: #999;
-  width: 330px;
-  border-right: 0.5px solid #E6DBD4;
-  font-size: 14px;
-  position: relative;
-  transition: box-shadow .3s .15s, transform .3s, margin-left .3s, margin-right .3s, width .3s, z-index 0s ease .3s;
-  padding-top: 1.5rem;
+.sidebar {
+  min-width: 20.625rem;
+  max-width: 20.625rem;
+  height: 100%;
+  background-color: $secondary-color;
+  padding: 1rem 0;
+  .fade {
+    transition: opacity 1s cubic-bezier(0.65, 0.05, 0.36, 1)!important;
+  }
+  .primary-sidebar {
+    width: 100%;
+    position: relative;
+    .search-input {
+      border: none;
+      background: none;
+      padding: 0;
+      &::placeholder{
+        color: $text-color;
+      }
+    }
+    .sidebar-accordion {
+      >button{
+        &:hover {
+          background: $grey;
+        }
+      }
+      &.expanded>button {
+        &:before{
+          transform: rotate(90deg) !important;
+        }
+      }
+      button{
+        .sidebar-item-action-btn {
+          cursor: pointer;
+          transition: all 0.3s ease-in;
+          i{
+            display: flex;
+            height: 12px;
+            width: 0.5rem;
+            justify-content: center;
+          }
+        }
+        .versionChovron{
+          transition: all 0.3s ease-in;
+        }
+        &.expanded > div > .versionChovron{
+          transform: rotate(90deg);
+        }
+        .sidebar-item-action {
+          transition: all 0.3s ease-in;
+          opacity: 0;
+          visibility: hidden;
+        }
+        width: 100%;
+        display: flex;
+        align-items: center;
+        border: none;
+        background: transparent;
+        color: $text-color;
+        padding: 0 1rem;
+        position: relative;
+        transition: all 0.3s ease-in;
+        height: 1.5rem;
+        text-align: left;
+        &:active,
+        &:focus {
+          outline: none;
+          box-shadow: none;
+        }
+        &:hover {
+          .sidebar-item-action {
+            visibility: visible;
+            opacity: 1;
+          }
+        }
+        .sidebar-toggle{
+          transition: all 0.3s ease-in;
+          &:hover {
+            background: #ebebeb;
+            border-color: #F1EEE5;
+            .sidebar-item-action-btn {
+              visibility: visible;
+              opacity: 1;
+            }
+          }
+          i{
+            color: #000;
+          }
+        }
+      }
+    }
+    .sidebar-content{
+      .card-body {
+        padding: 0 0  0 1rem;
+      }
+      .collection-name {
+        line-height: 1;
+        justify-content: space-between;
+        align-items: center;
+      }
+      #parent-accordion{
+        > button{
+          padding: 0 1rem 0 2.10rem;
+          justify-content: space-between;
+          &:before{
+            content: '';
+            background: url('../../assets/icons/expand-arrow.svg') center center/contain no-repeat;
+            display: inline-block;
+            width: 20px;
+            height: 24px;
+            transition: all 0.3s ease-in;
+            position: absolute;
+            left: 0.65rem;
+          }
+        }
+      }
+    }
+  }
 }
 
 .heading-collection {
@@ -123,17 +229,10 @@ input[type="text"]:focus {
 }
 
 .App-Side {
-  padding: 0 10px;
   height: calc(100vh - 120px);
   overflow: auto;
 }
 
-.primary-sidebar .sidebar-accordion>button {
-  &:hover {
-    background: #ebebeb;
-    border-color: #F1EEE5;
-  }
-}
 
 .primary-sidebar .sidebar-accordion.active>{
   button {
@@ -149,80 +248,15 @@ input[type="text"]:focus {
   }
 }
 
-.primary-sidebar .sidebar-accordion.expanded>button {
-  &:before{
-    transform: rotate(360deg) !important;
-  }
-}
 .versionChovron svg {
   transition: all 0.3s ease-in;
 }
 .primary-sidebar button.expanded .versionChovron svg {
   transform: rotate(90deg) !important;
 }
+  
 
-.sidebar-accordion {
-  button{
-    width: 100%;
-    display: flex;
-    align-items: center;
-    text-align: left;
-    padding: 0;
-    margin: 0;
-    border: none;
-    background: transparent;
-    color: inherit;
-    border: 1px solid transparent;
-    color: $text-color;
-    font-weight: normal;
-    padding: 4px 25px 4px 10px;
-    position: relative;
-    transition: all 0.3s ease-in;
-    height: 2rem;
-    &:active,
-    &:focus {
-      outline: none;
-      box-shadow: none;
-    }
-    &:hover {
-      .sidebar-item-action-btn {
-        visibility: visible;
-        opacity: 1;
-      }
-    }
-  }
-  .sidebar-toggle{
-    transition: all 0.3s ease-in;
-    &:hover {
-      background: #ebebeb;
-      border-color: #F1EEE5;
-      .sidebar-item-action-btn {
-        visibility: visible;
-        opacity: 1;
-      }
-    }
-    i{
-      color: #000;
-    }
-  }
-}
 
-.sidebar-content{
-  #parent-accordion{
-    > button{
-      &:before{
-        content: '';
-        background: url('../../assets/icons/downChevron.svg') center center/contain no-repeat;
-        display: inline-block;
-        width: 11px;
-        height: 11px;
-        margin-right: 6px;
-        transform: rotate(270deg);
-        transition: all 0.3s ease-in;
-      }
-    }
-  }
-}
 
 .sidebar-content:focus {
   border: none;
@@ -239,30 +273,9 @@ input[type="text"]:focus {
     margin-right: 10px;
   }
 }
-
-.sidebar-item-action {
-  position: absolute;
-  right: 5px;
-  width: 15px;
-}
-
 .sidebar-accordion .sidebar-accordion-item>i {
   display: inline-block;
   width: 30px;
-}
-
-
-.sidebar-item-action-btn {
-  width: auto;
-  border-radius: 3px;
-  text-align: center;
-  opacity: 0;
-  cursor: pointer;
-  transition: all 0.3s ease-in;
-  i{
-    display: flex;
-    height: 12px;
-  }
 }
 
 .sidebar-item-action:hover {
@@ -346,11 +359,6 @@ input[type="text"]:focus {
   text-align: center;
 }
 
-.versionChovron {
-  transition: 300ms;
-  transform: rotate(270deg);
-}
-
 .versionBoldHeading .active .versionChovron {
   transform: rotate(360deg);
   transition: 300ms;
@@ -371,16 +379,7 @@ input[type="text"]:focus {
   transition: 200ms;
 }
 
-.sidebar-content {
-  .card-body {
-    padding: 0 0  0 25px;
-  }
-  .collection-name {
-    line-height: 1;
-    justify-content: space-between;
-    align-items: center;
-  }
-}
+
 
 .sidebar-content .collection-name .btn-primary {
   font-weight: 600;
@@ -415,12 +414,6 @@ input[type="text"]:focus {
   align-items: center;
   top: 50%;
   transform: translateY(-50%);
-}
-
-.sidebar-accordion {
-  button.focused {
-    border: 1px dotted red !important;
-  }
 }
 .sidebar-accordion {
   position: relative;

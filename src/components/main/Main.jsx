@@ -23,7 +23,7 @@ import { isDesktop } from 'react-device-detect'
 import OnlineSatus from '../onlineStatus/onlineStatus'
 import { getOrgUpdatedAt } from '../../services/orgApiService'
 import moment from 'moment'
-import Header from './header'
+// import Header from './header'
 import { loadfeedioWidget } from '../../services/feedioWidgetService'
 import { loadHelloWidget } from '../../services/helloWidgetService'
 import auth from '../auth/authService'
@@ -176,7 +176,7 @@ class Main extends Component {
           Looks like you have opened it on a mobile device. It looks better on a desktop device.
         </div>}
         <div className='custom-main-container'>
-          <Header {...this.props} />
+          {/* <Header {...this.props} /> */}
           <DesktopAppDownloadModal history={this.props.history} location={this.props.location} match={this.props.match} />
           <OnlineSatus fetchFromBackend={this.fetchFromBackend.bind(this)} isIdbUpdated={this.isIdbUpdated.bind(this)} />
           <div className='main-panel-wrapper'>

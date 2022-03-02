@@ -19,6 +19,7 @@ import filterService from '../../services/filterService'
 import AddEntity from '../main/addEntity/addEntity'
 import sidebarActions from '../main/sidebar/redux/sidebarActions'
 import { ReactComponent as Plus } from '../../assets/icons/plus.svg'
+import ExpandArrow from '../../assets/icons/expand-arrow.svg'
 
 const mapStateToProps = (state) => {
   return {
@@ -379,9 +380,7 @@ class CollectionVersions extends Component {
               >
                 <div className='d-flex align-items-center flex-grow-1' onClick={() => { this.toggleVersionIds(versionId) }}>
                   <span className='versionChovron'>
-                    <svg width='15' height='15' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
-                      <path d='M4.5 6.75L9 11.25L13.5 6.75' stroke='#333333' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
-                    </svg>
+                    <img src={ExpandArrow} alt='' />
                   </span>
                   <div className='sidebar-accordion-item text-truncate d-inline'>
                     {this.props.versions[versionId].number}
@@ -390,7 +389,10 @@ class CollectionVersions extends Component {
                 {
                       isDashboardRoute(this.props, true) && !this.props.collections[this.props.collection_id]?.importedFromMarketPlace
                         ? (
-                          <div className='sidebar-item-action'>
+                          <div className='sidebar-item-action d-flex align-items-center'>
+                            <div className='m-2' onClick={() => this.openAddGroupForm(this.props.versions[versionId])}>
+                              <Plus />
+                            </div>
                             <div
                               className='sidebar-item-action-btn'
                               data-toggle='dropdown'
@@ -482,9 +484,6 @@ class CollectionVersions extends Component {
                         : null
                     }
               </button>
-              <div onClick={() => this.openAddGroupForm(this.props.versions[versionId])}>
-                <Plus />
-              </div>
               {expanded
                 ? (
                   <div className='version-collapse'>
