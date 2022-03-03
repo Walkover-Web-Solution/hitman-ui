@@ -77,11 +77,12 @@ class CollectionForm extends Form {
     this.setState({ data, collectionId })
   }
 
-  async onEditCollectionSubmit () {
+  async onEditCollectionSubmit (defaultView) {
     this.props.onHide()
     this.props.update_collection({
       ...this.state.data,
-      id: this.state.collectionId
+      id: this.state.collectionId,
+      defaultView
     })
     this.setState({
       data: {
@@ -95,7 +96,7 @@ class CollectionForm extends Form {
     })
   }
 
-  async onAddCollectionSubmit () {
+  async onAddCollectionSubmit (defaultView) {
     this.props.onHide()
     const requestId = shortid.generate()
     const defaultDocProperties = {
@@ -103,7 +104,7 @@ class CollectionForm extends Form {
       defaultTitle: '',
       versionHosts: {}
     }
-    this.props.add_collection({ ...this.state.data, docProperties: defaultDocProperties, requestId }, this.props.open_selected_collection)
+    this.props.add_collection({ ...this.state.data, docProperties: defaultDocProperties, requestId, defaultView }, this.props.open_selected_collection)
     this.setState({
       data: {
         name: '',
@@ -111,7 +112,8 @@ class CollectionForm extends Form {
         description: '',
         keyword: '',
         keyword1: '',
-        keyword2: ''
+        keyword2: '',
+        defaultView: 'testing'
       }
     })
     moveToNextStep(1)
@@ -130,6 +132,15 @@ class CollectionForm extends Form {
     // if (this.props.title === 'Add new Collection') {
     //   this.onAddCollectionSubmit()
     // }
+  }
+
+  saveCollection (defaultView) {
+    if (this.props.title === 'Edit Collection') {
+      this.onEditCollectionSubmit(defaultView)
+    }
+    if (this.props.title === 'Add new Collection') {
+      this.onAddCollectionSubmit(defaultView)
+    }
   }
 
   renderCollectionDetailsForm () {
@@ -166,7 +177,7 @@ class CollectionForm extends Form {
 
   renderDefaultViewForm () {
     return (
-      <DefaultViewModal />
+      <DefaultViewModal saveCollection={this.saveCollection.bind(this)} />
     )
   }
 

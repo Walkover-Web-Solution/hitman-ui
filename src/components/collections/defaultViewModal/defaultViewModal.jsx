@@ -1,9 +1,14 @@
 import React, { Component } from 'react'
 
 export class DefaultViewModal extends Component {
+  createCollection (defaultView) {
+    console.log('hello', defaultView)
+    // this.props.saveCollection()
+  }
+
   renderTestingButton () {
     return (
-      <button onClick={() => console.log('hello api')}>
+      <button onClick={() => this.createCollection('testing')}>
         API Testing
       </button>
     )
@@ -11,7 +16,7 @@ export class DefaultViewModal extends Component {
 
   renderDocButton () {
     return (
-      <button onClick={() => console.log('hello doc')}>
+      <button onClick={() => this.createCollection('doc')}>
         Host API Doc
       </button>
     )
