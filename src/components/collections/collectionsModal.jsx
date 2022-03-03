@@ -26,14 +26,15 @@ const choices = {
     modalTitle: 'Create New Collection',
     modalSize: 'lg',
     id: 'add_collection_create_new_btn'
-  },
+  }
+/*   ,
   [collectionsModalEnum.MARKETPLACE]: {
     key: collectionsModalEnum.MARKETPLACE,
     label: 'Marketplace',
     modalTitle: 'Import Collection From Marketplace',
     modalSize: 'xl',
     disabled: false
-  }
+  } */
 }
 
 class CollectionsModal extends Component {
@@ -68,7 +69,7 @@ class CollectionsModal extends Component {
     switch (this.state.choiceSelected) {
       case collectionsModalEnum.IMPORT: return this.renderImportForm()
       case collectionsModalEnum.NEW: return this.renderAddCollectionForm()
-      case collectionsModalEnum.MARKETPLACE: return this.renderMarketplace()
+      // case collectionsModalEnum.MARKETPLACE: return this.renderMarketplace()
       default: return null
     }
   }
