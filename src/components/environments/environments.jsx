@@ -239,7 +239,7 @@ class Environments extends Component {
     } else {
       if (isDashboardRoute(this.props)) {
         return (
-          <div className='environment-container d-flex align-items-center black-hover transition'>
+          <div className='environment-container d-flex align-items-center transition'>
             {(this.state.environmentFormName === 'Add new Environment' ||
               this.state.environmentFormName === 'Edit Environment') &&
               environmentsService.showEnvironmentForm(
@@ -289,15 +289,17 @@ class Environments extends Component {
                 <div className='select-environment-dropdown border-radius-right-none'>
                   <Dropdown className=''>
                     <Dropdown.Toggle variant='default' id='dropdown-basic'>
-                      {
-                        this.props.environment.environments[
-                          this.props.environment.currentEnvironmentId
-                        ]
-                          ? this.props.environment.environments[
-                              this.props.environment.currentEnvironmentId
-                            ].name
-                          : 'No Environment'
-                      }
+                      <span className='truncate mr-1'>
+                        {
+                          this.props.environment.environments[
+                            this.props.environment.currentEnvironmentId
+                          ]
+                            ? this.props.environment.environments[
+                                this.props.environment.currentEnvironmentId
+                              ].name
+                            : 'No Environment'
+                        }
+                      </span>
                     </Dropdown.Toggle>
                     <Dropdown.Menu alignRight>
                       <Dropdown.Item

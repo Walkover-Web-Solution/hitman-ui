@@ -8,6 +8,7 @@ import { ReactComponent as HistoryIcon } from '../../assets/icons/historyIcon.sv
 import History from '../history/history.jsx'
 import TabOptions from './tabOptions'
 import { isElectron } from '../common/utility'
+import Plus from '../../assets/icons/plus.svg'
 
 class CustomTabs extends Component {
   constructor (props) {
@@ -81,21 +82,17 @@ class CustomTabs extends Component {
         if (this.props.historySnapshots[tabId]) {
           if (tab.previewMode) {
             return (
-              <div className='tabs-name'>
-                <label className='endpoint-name-italic'>
-                  {this.props.historySnapshots[tabId].endpoint.name}
-                </label>
-                <br />
-                <label className='endpoint-name-italic sub-label'>History</label>
-              </div>
+              <>
+                {this.props.historySnapshots[tabId].endpoint.name}
+                <span className='sub-label'>History</span>
+              </>
             )
           } else {
             return (
-              <div className='tabs-name'>
-                <label className='endpoint-name'>{this.props.historySnapshots[tabId].endpoint.name || this.props.historySnapshots[tabId].endpoint.BASE_URL + this.props.historySnapshots[tabId].endpoint.uri || 'Random Trigger'}</label>
-                <br />
-                <label className='sub-label'>History</label>
-              </div>
+              <>
+                {this.props.historySnapshots[tabId].endpoint.name || this.props.historySnapshots[tabId].endpoint.BASE_URL + this.props.historySnapshots[tabId].endpoint.uri || 'Random Trigger'}
+                <span className='sub-label'>History</span>
+              </>
             )
           }
         } else {
@@ -106,26 +103,22 @@ class CustomTabs extends Component {
           const endpoint = this.props.endpoints[tabId]
           if (tab.previewMode) {
             return (
-              <div className='tabs-name'>
-                <label className='endpoint-name-italic'>
-                  {this.props.endpoints[tabId]?.name}
-                </label>
-                <br />
-                <label className='endpoint-name-italic sub-label'>{this.props.groups[endpoint.groupId]?.name}</label>
-              </div>
+              <>
+                {this.props.endpoints[tabId]?.name}
+                <span className='sub-label'>{this.props.groups[endpoint.groupId]?.name}</span>
+              </>
 
             )
           } else {
             return (
-              <div className='tabs-name'>
-                <label className='endpoint-name'>{this.props.endpoints[tabId]?.name}</label>
-                <br />
-                <label className='sub-label'>{this.props.groups[endpoint.groupId]?.name}</label>
-              </div>
+              <>
+                {this.props.endpoints[tabId]?.name}
+                <span className='sub-label'>{this.props.groups[endpoint.groupId]?.name}</span>
+              </>
             )
           }
         } else {
-          return <div className=''>{tab.state?.data?.name || 'Untitled'}</div>
+          return <>{tab.state?.data?.name || 'Untitled'}</>
         }
 
       case 'page':
@@ -322,7 +315,7 @@ class CustomTabs extends Component {
                 {
                 this.props.tabs.tabs[tabId].isModified
                   ? (
-                    <i className='fas fa-circle modified-dot-icon' />
+                    <i className='fas fa-circle modified-dot-icon d-none' />
                     )
                   : (
                       ''
@@ -330,7 +323,7 @@ class CustomTabs extends Component {
               }
                 <Nav.Link eventKey={tabId}>
                   <button
-                    className='btn'
+                    className='btn truncate'
                     onClick={() => tabService.selectTab({ ...this.props }, tabId)}
                     onDoubleClick={() => {
                       tabService.disablePreviewMode(tabId)
@@ -339,7 +332,7 @@ class CustomTabs extends Component {
                     {this.renderTabName(tabId)}
                   </button>
                 </Nav.Link>
-                <button className='btn' onClick={() => this.handleCloseTabs([tabId])}>
+                <button className='btn close' onClick={() => this.handleCloseTabs([tabId])}>
                   <i className='uil uil-multiply' />
                 </button>
               </Nav.Item>
@@ -347,50 +340,47 @@ class CustomTabs extends Component {
               (this.renderHoverTab(tabId, this.tabRef))}
             </div>
           ))}
+          {this.showScrollButton()
+            ? (
+              <div
+                className={`scroll-button scroll-button--right d-flex ml-2 mr-0 ${this.rightHideTabs() ? '' : 'disabled'}`}
+                onMouseEnter={() => this.handleMouseEnter('right')}
+                onMouseLeave={() => this.handleMouseLeave()}
+              >
+                <span className='mr-1'>{this.rightHideTabs() ? `+${this.rightHideTabs()}` : null}</span>
+                <span><i class='fa fa-angle-right' aria-hidden='true' /></span>
+              </div>)
+            : null}
+          <Nav.Item className='tab-buttons newTabs' id='add-new-tab-button'>
+            <button
+              className='btn'
+              onClick={() => this.handleAddTab()}
+            >
+              <img src={Plus} alt='' />
+
+            </button>
+          </Nav.Item>
+
+          <Nav.Item className='tab-buttons' id='options-tab-button'>
+            <TabOptions history={this.props.history} match={this.props.match} handleCloseTabs={this.handleCloseTabs.bind(this)} />
+          </Nav.Item>
+          <Nav.Item className='' id='history-tab-button'>
+            <Dropdown>
+              <Dropdown.Toggle
+                bsPrefix='dropdown'
+                variant='default'
+                id='dropdown-basic'
+              >
+                <HistoryIcon />
+              </Dropdown.Toggle>
+              <Dropdown.Menu className='history-drop-down'>
+                <div className='history-heading'>History</div>
+                <History {...this.props} />
+              </Dropdown.Menu>
+            </Dropdown>
+          </Nav.Item>
         </Nav>
-        {this.showScrollButton()
-          ? (
-            <div
-              className={`scroll-button scroll-button--right d-flex ml-2 mr-0 ${this.rightHideTabs() ? '' : 'disabled'}`}
-              onMouseEnter={() => this.handleMouseEnter('right')}
-              onMouseLeave={() => this.handleMouseLeave()}
-            >
-              <span className='mr-1'>{this.rightHideTabs() ? `+${this.rightHideTabs()}` : null}</span>
-              <span><i class='fa fa-angle-right' aria-hidden='true' /></span>
-            </div>)
-          : null}
-        <Nav.Item className='tab-buttons newTabs' id='add-new-tab-button'>
-          <button
-            className='btn'
-            onClick={() => this.handleAddTab()}
-          >
-            <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
-              <path d='M9 3V15' stroke='#808080' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
-              <path d='M3 9H15' stroke='#808080' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
-            </svg>
 
-          </button>
-        </Nav.Item>
-
-        <Nav.Item className='' id='options-tab-button'>
-          <TabOptions history={this.props.history} match={this.props.match} handleCloseTabs={this.handleCloseTabs.bind(this)} />
-        </Nav.Item>
-
-        <Nav.Item className='' id='history-tab-button'>
-          <Dropdown>
-            <Dropdown.Toggle
-              bsPrefix='dropdown'
-              variant='default'
-              id='dropdown-basic'
-            >
-              <HistoryIcon />
-            </Dropdown.Toggle>
-            <Dropdown.Menu className='history-drop-down'>
-              <div className='history-heading'>History</div>
-              <History {...this.props} />
-            </Dropdown.Menu>
-          </Dropdown>
-        </Nav.Item>
       </>
     )
   }

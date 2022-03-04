@@ -20,7 +20,7 @@ import groupsService from './groupsService'
 import filterService from '../../services/filterService'
 import AddEntity from '../main/addEntity/addEntity'
 import sidebarActions from '../main/sidebar/redux/sidebarActions'
-import { ReactComponent as Plus } from '../../assets/icons/plus.svg'
+import { ReactComponent as Plus } from '../../assets/icons/plus-square.svg'
 import ExpandedIcon from '../../assets/icons/expand-arrow.svg'
 
 const mapStateToProps = (state) => {
@@ -469,7 +469,7 @@ class Groups extends Component {
       isDashboardRoute(this.props, true)
         ? (
           <div
-            className='sidebar-accordion accordion'
+            className='sidebar-accordion accordion pl-3'
             id='child-accordion'
           >
             <button
@@ -496,7 +496,7 @@ class Groups extends Component {
                                 this.props.versions,
                                 this.props.groups
                               )}
-                            className='m-2'
+                            className='m-2 d-flex align-items-center'
                           >
                             <Plus />
                           </div>
@@ -710,7 +710,9 @@ class Groups extends Component {
             group?.id ? <div key={group.id} className='linkWith'>{this.renderBody(group.id)}</div> : null
           )}
 
-        {this.renderForm(this.sortedGroups)}
+        <div className='pl-4'>
+          {this.renderForm(this.sortedGroups)}
+        </div>
       </>
     )
   }
