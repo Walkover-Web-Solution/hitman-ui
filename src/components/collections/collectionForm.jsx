@@ -119,28 +119,23 @@ class CollectionForm extends Form {
     moveToNextStep(1)
   }
 
-  async doSubmit () {
+  async doSubmit (defaultView) {
     const body = this.state.data
     body.name = toTitleCase(body.name.trim())
     body.website = body.website.trim()
     body.keyword = body.name + ',' + body.keyword1.trim() + ',' + body.keyword2.trim()
     delete body.keyword1
     delete body.keyword2
-    // if (this.props.title === 'Edit Collection') {
-    //   this.onEditCollectionSubmit()
-    // }
-    // if (this.props.title === 'Add new Collection') {
-    //   this.onAddCollectionSubmit()
-    // }
-  }
-
-  saveCollection (defaultView) {
     if (this.props.title === 'Edit Collection') {
       this.onEditCollectionSubmit(defaultView)
     }
     if (this.props.title === 'Add new Collection') {
       this.onAddCollectionSubmit(defaultView)
     }
+  }
+
+  saveCollection (defaultView) {
+    this.doSubmit(defaultView)
   }
 
   renderCollectionDetailsForm () {
