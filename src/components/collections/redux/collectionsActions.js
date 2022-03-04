@@ -302,11 +302,11 @@ export const addCustomDomain = (
   }
 }
 
-export const importApi = (collection, importType, website, customCallback) => {
+export const importApi = (collection, importType, website, customCallback, defaultView) => {
   return (dispatch) => {
     if (importType === 'postman') {
       openApiService
-        .importPostmanCollection(collection, website)
+        .importPostmanCollection(collection, website, defaultView)
         .then((response) => {
           // dispatch(saveImportedCollection(response.data));
           dispatch(saveImportedVersion(response.data))
@@ -320,7 +320,7 @@ export const importApi = (collection, importType, website, customCallback) => {
         })
     } else {
       openApiService
-        .importApi(collection)
+        .importApi(collection, defaultView)
         .then((response) => {
           dispatch(saveImportedVersion(response.data))
           if (customCallback) customCallback({ success: true })

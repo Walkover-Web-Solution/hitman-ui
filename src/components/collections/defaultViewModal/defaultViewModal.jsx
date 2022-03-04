@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 export class DefaultViewModal extends Component {
   createCollection (defaultView) {
     console.log('hello', defaultView)
-    // this.props.saveCollection()
+    // this.props.saveCollection(defaultView)
   }
 
   renderTestingButton () {
