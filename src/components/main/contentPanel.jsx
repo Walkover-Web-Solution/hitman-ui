@@ -180,7 +180,7 @@ class ContentPanel extends Component {
               ? (
                 <>
                   <div className='content-header'>
-                    <div className='tabs-container d-flex'>
+                    <div className='tabs-container d-flex justify-content-between'>
                       <CustomTabs
                         {...this.props}
                         handle_save_endpoint={this.handleSaveEndpoint.bind(this)}

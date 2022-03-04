@@ -560,7 +560,7 @@ class SideBar extends Component {
 
   renderSwitchProducts () {
     return (
-      <Dropdown className='switch-products'>
+      <Dropdown className='switch-products mb-1'>
         <Dropdown.Toggle className='bg-none p-0 border-none'>
           <img src={HitmanLogo} alt='' />
         </Dropdown.Toggle>
@@ -603,8 +603,8 @@ class SideBar extends Component {
 
   renderInviteTeam () {
     return (
-      <div onClick={() => { this.openAccountAndSettings() }}>
-        <Users />
+      <div className='mb-2' onClick={() => { this.openAccountAndSettings() }}>
+        <Users className='mr-2' />
         <span>Invite Team</span>
       </div>
     )
@@ -645,7 +645,7 @@ class SideBar extends Component {
       openExternalLink(link)
     }
     return (
-      <div className='d-flex align-items-center mb-3' onClick={handleDownloadClick}>
+      <div className='d-flex align-items-center mb-3 cursor-pointer' onClick={handleDownloadClick}>
         <DownloadIcon className='mr-2' />
         <span>Download Desktop App</span>
       </div>
@@ -752,7 +752,7 @@ class SideBar extends Component {
       getCurrentUser() &&
         <div className='d-flex align-items-center justify-content-between mb-2'>
           <span className='f-12 font-weight-700'>COLLECTION</span>
-          <div title={title} disabled={isMarketplaceImported} onClick={this.handleAdd.bind(this)}><Plus /></div>
+          <div className='cursor-pointer add-button' title={title} disabled={isMarketplaceImported} onClick={this.handleAdd.bind(this)}><Plus /></div>
         </div>
     )
   }

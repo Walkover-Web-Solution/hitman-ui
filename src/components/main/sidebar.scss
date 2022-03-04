@@ -12,7 +12,17 @@
   max-width: 20.625rem;
   height: 100%;
   background-color: $secondary-color;
-  padding: 1rem 0;
+  padding: 0.75rem 0;
+  div#parent-accordion {
+    margin-bottom: 0.25rem;
+    .inner-container {
+      max-width: 70%;
+      width: 100%;
+    }
+  }
+  .versionChovron{
+    transition: all 0.3s ease-in;
+  }
   .fade {
     transition: opacity 1s cubic-bezier(0.65, 0.05, 0.36, 1)!important;
   }
@@ -28,14 +38,27 @@
       }
     }
     .sidebar-accordion {
+      &.expanded > button .versionChovron{
+        transform: rotate(90deg);
+        display: inline-block;
+      }
+      .entity-submit-btn {
+        padding: 0 !important;
+        font-weight: 500 !important;
+        font-size: 12px !important;
+        box-shadow: none !important;
+        width: 100px;
+        height: 31px;
+        background: $theme-color !important;
+        border: none;
+        border-radius: 4px !important;
+        color: #fff;
+        margin-right: 10px;
+        justify-content: center;
+      }
       >button{
         &:hover {
           background: $grey;
-        }
-      }
-      &.expanded>button {
-        &:before{
-          transform: rotate(90deg) !important;
         }
       }
       button{
@@ -66,11 +89,12 @@
         border: none;
         background: transparent;
         color: $text-color;
-        padding: 0 1rem;
+        padding: 0 0.8rem 0 0.65rem;
         position: relative;
         transition: all 0.3s ease-in;
         height: 1.5rem;
         text-align: left;
+        justify-content: space-between;
         &:active,
         &:focus {
           outline: none;
@@ -100,28 +124,12 @@
     }
     .sidebar-content{
       .card-body {
-        padding: 0 0  0 1rem;
+        padding: 0;
       }
       .collection-name {
         line-height: 1;
         justify-content: space-between;
         align-items: center;
-      }
-      #parent-accordion{
-        > button{
-          padding: 0 1rem 0 2.10rem;
-          justify-content: space-between;
-          &:before{
-            content: '';
-            background: url('../../assets/icons/expand-arrow.svg') center center/contain no-repeat;
-            display: inline-block;
-            width: 20px;
-            height: 24px;
-            transition: all 0.3s ease-in;
-            position: absolute;
-            left: 0.65rem;
-          }
-        }
       }
     }
   }
@@ -264,7 +272,7 @@ input[type="text"]:focus {
 }
 
 .sidebar-accordion-item {
-  padding: 0px 6px;
+  padding: 0px;
   display: flex;
   align-items: center;
   width: 100%;
@@ -367,12 +375,6 @@ input[type="text"]:focus {
 .versionPages .sidebar-accordion {
   position: relative;
 }
-
-.versionsgroups .linkWith>.sidebar-accordion>button {
-  position: relative;
-  color: #E98A36;
-}
-
 .sidebar-content-scroll {
   height: calc(100vh - 265px);
   overflow: auto;
@@ -407,14 +409,10 @@ input[type="text"]:focus {
 .search-box-container {
   padding: 0 14px;
 }
-.published-icon {
-  position: absolute;
-  right: 12px;
-  display: flex;
-  align-items: center;
-  top: 50%;
-  transform: translateY(-50%);
-}
 .sidebar-accordion {
   position: relative;
+}
+.empty-box {
+  padding: 0.25rem 0.75rem;
+  opacity: 0.8;
 }

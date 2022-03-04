@@ -18,7 +18,7 @@ import collectionVersionsService from './collectionVersionsService'
 import filterService from '../../services/filterService'
 import AddEntity from '../main/addEntity/addEntity'
 import sidebarActions from '../main/sidebar/redux/sidebarActions'
-import { ReactComponent as Plus } from '../../assets/icons/plus.svg'
+import { ReactComponent as Plus } from '../../assets/icons/plus-square.svg'
 import ExpandArrow from '../../assets/icons/expand-arrow.svg'
 
 const mapStateToProps = (state) => {
@@ -376,7 +376,7 @@ class CollectionVersions extends Component {
               <button
                 tabIndex={-1}
                 ref={(newRef) => { this.scrollRef[versionId] = newRef }}
-                className={[focused && sidebarFocused ? 'focused' : '', expanded ? 'expanded' : ''].join(' ')}
+                className={'pl-3 ' + [focused && sidebarFocused ? 'focused' : '', expanded ? 'expanded' : ''].join(' ')}
               >
                 <div className='d-flex align-items-center flex-grow-1' onClick={() => { this.toggleVersionIds(versionId) }}>
                   <span className='versionChovron'>
@@ -390,7 +390,7 @@ class CollectionVersions extends Component {
                       isDashboardRoute(this.props, true) && !this.props.collections[this.props.collection_id]?.importedFromMarketPlace
                         ? (
                           <div className='sidebar-item-action d-flex align-items-center'>
-                            <div className='m-2' onClick={() => this.openAddGroupForm(this.props.versions[versionId])}>
+                            <div className='m-2 d-flex align-items-center' onClick={() => this.openAddGroupForm(this.props.versions[versionId])}>
                               <Plus />
                             </div>
                             <div
@@ -749,7 +749,9 @@ class CollectionVersions extends Component {
                   this.renderBody(versionId, index, versionsCount)
                 ))}
 
-        {this.renderForm(versionsCount)}
+        <div className='pl-4'>
+          {this.renderForm(versionsCount)}
+        </div>
       </>
     )
   }

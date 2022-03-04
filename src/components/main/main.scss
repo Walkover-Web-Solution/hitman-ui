@@ -25,12 +25,13 @@
     font-family: 'Roboto', sans-serif;
     font-size: $font-normal;
     color: $text-color;
+    .btn{
+      border-radius: 0 !important;
+      font-size: $font-normal;
+    }
   }
   .transition{
     transition: all 0.3s ease-in;
-  }
-  .btn{
-    border-radius: 0 !important;
   }
   .rotate-180{
     transform:rotate(180deg);
@@ -98,6 +99,9 @@
     padding-right: 0;
     border-right: 2px solid $border-color;
     background-color: white !important;
+  }
+  .main{
+    background-color: $light-grey;
   }
 }
 
@@ -972,17 +976,15 @@ label.data-type {
 }
 
 ::-webkit-scrollbar {
-  width: 5px;
+  width: 4px;
 }
 
 ::-webkit-scrollbar-track {
-  box-shadow: inset 0 0 5px grey;
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #828282;
-  border-radius: 10px;
+  background: $grey;
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -1517,7 +1519,6 @@ table#custom-generic-table tbody input[value="false"] + span.checkmark {
 
 .mainContentWrapper {
   width: 100%;
-  background: #F8F8F8;
   border-bottom: 0.5px solid #E6DBD4;
   padding: 15px 30px;
   float: left;
@@ -2704,18 +2705,6 @@ span.endpointNameWrapper {
 .collection-dropdown-menu.dropdown-menu {
   max-height: 300px;
   overflow: auto;
-}
-
-// .stickyCode .hideCodeEditor .toggleButton {
-//   top: 85px !important;
-// }
-
-div#history-tab-button {
-  width: 40px;
-}
-
-div#history-tab-button button#dropdown-basic {
-  padding: 7px 10px;
 }
 .publish-mo-btn {
   float: right;
