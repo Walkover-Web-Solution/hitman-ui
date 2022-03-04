@@ -39,6 +39,7 @@ import { openModal } from '../modals/redux/modalsActions'
 
 import { products } from '../common/constants'
 import { sendAmplitudeData } from '../../services/amplitude'
+import { UserProfile } from './userProfile'
 
 const mapStateToProps = (state) => {
   return {
@@ -652,12 +653,6 @@ class SideBar extends Component {
     )
   }
 
-  renderProfile () {
-    return (
-      <div>Kashish</div>
-    )
-  }
-
   renderSidebarContent () {
     const selectedCollectionName = this.props.collections[this.collectionId]?.name || ' '
     const { focused: sidebarFocused } = this.props.sidebar
@@ -740,7 +735,7 @@ class SideBar extends Component {
         </div>
         {this.state.data.filter !== '' && this.renderSearchList()}
         {this.state.data.filter === '' && this.renderSidebarContent()}
-        {/* {this.renderProfile()} */}
+        <UserProfile {...this.props} />
       </>
     )
   }
