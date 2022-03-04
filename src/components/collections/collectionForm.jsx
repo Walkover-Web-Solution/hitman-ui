@@ -140,33 +140,10 @@ class CollectionForm extends Form {
 
   renderCollectionDetailsForm () {
     return (
-    // <form onSubmit={this.handleSubmit}>
       <>
         {this.renderInput('name', 'Name', 'Collection Name', true, true, false, '*collection name accepts min 3 and max 20 characters')}
         {this.renderInput('website', 'Website', 'https://yourwebsite.com', true, false, true)}
-        {/* <div className='row'>
-          <div className='col'>
-            {this.renderInput('keyword', 'Keyword 1', 'Keyword 1', true)}
-          </div>
-          <div className='col'>
-            {this.renderInput('keyword1', 'Keyword 2', 'Keyword 2')}
-          </div>
-          <div className='col'>
-            {this.renderInput('keyword2', 'Keyword 3', 'Keyword 3')}
-          </div>
-        </div> */}
-        <div className='text-left mt-4 mb-2'>
-          {/* {this.renderButton('Submit')}
-
-          <button
-            className='btn btn-secondary outline btn-lg outline ml-2'
-            onClick={(e) => { this.handleCancel(e) }}
-          >
-            Cancel
-          </button> */}
-        </div>
       </>
-    // </form>
     )
   }
 

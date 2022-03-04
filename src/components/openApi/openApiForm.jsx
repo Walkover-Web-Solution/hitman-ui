@@ -59,7 +59,7 @@ class OpenApiForm extends Component {
 
   importApi(defaultView) {
     const uploadedFile = this.state.uploadedFile
-    this.props.import_api(uploadedFile, this.state.importType, this.state.website,defaultView)
+    this.props.import_api(uploadedFile, this.state.importType, this.state.website,null,defaultView)
     moveToNextStep(1)
     this.props.onHide()
   }
@@ -81,7 +81,6 @@ class OpenApiForm extends Component {
     }
     this.setState({ errors: { ...errors, file: FileError } })
     if (errors || FileError) return
-    // this.importApi()
     this.setState({ step: 2 })
   }
 
@@ -183,7 +182,6 @@ class OpenApiForm extends Component {
             {this.renderJSONFileSelector()}
           </div>
         </div>
-         {/* {this.renderButtonGroup()} */}
       </form>
     )
   }
