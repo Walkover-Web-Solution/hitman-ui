@@ -39,6 +39,7 @@ import { openModal } from '../modals/redux/modalsActions'
 
 import { products } from '../common/constants'
 import { sendAmplitudeData } from '../../services/amplitude'
+import { UserProfile } from './userProfile'
 
 const mapStateToProps = (state) => {
   return {
@@ -603,9 +604,9 @@ class SideBar extends Component {
 
   renderInviteTeam () {
     return (
-      <div onClick={() => { this.openAccountAndSettings() }}>
+      <div class='profile-listing' onClick={() => { this.openAccountAndSettings() }}>
         <Users />
-        <span>Invite Team</span>
+        <span className='label'>Invite Team</span>
       </div>
     )
   }
@@ -649,12 +650,6 @@ class SideBar extends Component {
         <DownloadIcon className='mr-2' />
         <span>Download Desktop App</span>
       </div>
-    )
-  }
-
-  renderProfile () {
-    return (
-      <div>Kashish</div>
     )
   }
 
@@ -740,7 +735,7 @@ class SideBar extends Component {
         </div>
         {this.state.data.filter !== '' && this.renderSearchList()}
         {this.state.data.filter === '' && this.renderSidebarContent()}
-        {/* {this.renderProfile()} */}
+        <UserProfile {...this.props} />
       </>
     )
   }
