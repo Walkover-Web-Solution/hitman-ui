@@ -142,7 +142,7 @@ class OpenApiForm extends Component {
         <label>Type: </label>
         <select 
           name='type'
-          className='form-control' 
+          className='form-control custom-input' 
           value={this.state.importType} 
           onChange={(e) => { this.setState({ importType: e.target.value, website: '', errors: { type: null, file: null, website: null } }) }}
         >
@@ -213,7 +213,7 @@ class OpenApiForm extends Component {
 
   renderNextButton () {
     return (
-      <button onClick={(e) => this.onNext(e)}>
+      <button className='btn btn-primary' onClick={(e) => this.onNext(e)}>
         Next
       </button>
     )
@@ -221,7 +221,7 @@ class OpenApiForm extends Component {
 
   renderBackButton () {
     return (
-      <button onClick={() => this.onBack()}>
+      <button className='btn btn-primary' onClick={() => this.onBack()}>
         Back
       </button>
     )

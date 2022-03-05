@@ -177,7 +177,7 @@ class CollectionForm extends Form {
 
   renderNextButton () {
     return (
-      <button onClick={() => this.onNext()}>
+      <button className='btn btn-primary' onClick={() => this.onNext()}>
         Next
       </button>
     )
@@ -185,7 +185,7 @@ class CollectionForm extends Form {
 
   renderBackButton () {
     return (
-      <button onClick={() => this.onBack()}>
+      <button className='btn btn-primary mt-2' onClick={() => this.onBack()}>
         Back
       </button>
     )
@@ -200,7 +200,7 @@ class CollectionForm extends Form {
     return (
       <div onKeyPress={(e) => { onEnter(e, this.handleKeyPress.bind(this)) }}>
         <Modal
-          size='lg'
+          size='sm'
           animation={false}
           aria-labelledby='contained-modal-title-vcenter'
           centered
