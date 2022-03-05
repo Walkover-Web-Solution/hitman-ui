@@ -58,6 +58,8 @@ function selectTab (props, tabId) {
     props.history.push({
       pathname: `/orgs/${props.match.params.orgId}/dashboard/${tab.type}/new`
     })
+  } else if (tab.type === 'collection-setting') {
+    props.history.push(`/orgs/${props.match.params.orgId}/dashboard/collection/${tab.id}/settings`)
   } else {
     props.history.push({
       pathname: `/orgs/${props.match.params.orgId}/dashboard/${tab.type}/${tab.id}`

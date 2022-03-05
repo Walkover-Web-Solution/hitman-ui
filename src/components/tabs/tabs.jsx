@@ -145,6 +145,7 @@ class CustomTabs extends Component {
           }
         }
         break
+      case 'collection-setting': return <>Settings</>
       default:
     }
   }

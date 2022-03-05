@@ -30,7 +30,8 @@ const mapStateToProps = (state) => {
     versions: state.versions,
     pages: state.pages,
     tabs: state.tabs,
-    historySnapshots: state.history
+    historySnapshots: state.history,
+    collections: state.collections
   }
 }
 
@@ -61,7 +62,7 @@ class ContentPanel extends Component {
   }
 
   componentDidUpdate () {
-    const { endpointId, pageId, historyId } = this.props.match.params
+    const { endpointId, pageId, historyId, collectionId } = this.props.match.params
     if (this.props.tabs.loaded && endpointId && endpointId !== 'new') {
       if (this.props.tabs.tabs[endpointId]) {
         if (this.props.tabs.activeTabId !== endpointId) {
@@ -114,6 +115,21 @@ class ContentPanel extends Component {
         this.props.open_in_new_tab({
           id: historyId,
           type: 'history',
+          status: tabStatusTypes.SAVED,
+          previewMode: false,
+          isModified: false,
+          state: {}
+        })
+      }
+    }
+
+    if (this.props.tabs.loaded && collectionId) {
+      if (this.props.tabs.tabs[collectionId]) {
+        if (this.props.tabs.activeTabId !== collectionId) { this.props.set_active_tab_id(collectionId) }
+      } else if (this.props.collections && this.props.collections[collectionId]) {
+        this.props.open_in_new_tab({
+          id: collectionId,
+          type: 'collection-setting',
           status: tabStatusTypes.SAVED,
           previewMode: false,
           isModified: false,

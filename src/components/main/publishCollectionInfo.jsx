@@ -145,10 +145,11 @@ class PublishCollectionInfo extends Component {
   openPublishSettings () {
     const collectionId = this.props.collectionId
     if (collectionId) {
-      this.props.history.push({
-        pathname: `/orgs/${this.props.match.params.orgId}/admin/publish`,
-        search: `?collectionId=${collectionId}`
-      })
+      // this.props.history.push({
+      //   pathname: `/orgs/${this.props.match.params.orgId}/admin/publish`,
+      //   search: `?collectionId=${collectionId}`
+      // })
+      this.props.history.push(`/orgs/${this.props.match.params.orgId}/dashboard/collection/${collectionId}/settings`)
     }
   }
 

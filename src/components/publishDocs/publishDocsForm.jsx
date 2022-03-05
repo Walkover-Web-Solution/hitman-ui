@@ -332,10 +332,10 @@ class PublishDocForm extends Component {
 
   render () {
     return (
-      <>
+      <div className={this.props.onTab && 'publish-on-tab'}>
         <div className='publish-mo-btn'>
           {
-            this.props.isSidebar && this.props.isCollectionPublished() &&
+            (this.props.isSidebar || this.props.onTab) && this.props.isCollectionPublished() &&
               <Button
                 id='unpublish_doc_btn'
                 variant='btn btn-outline danger ml-4 mt-4'
@@ -370,7 +370,7 @@ class PublishDocForm extends Component {
         <div className='foot-warpper'>
           {this.renderFooter()}
         </div>
-      </>
+      </div>
     )
   }
 }
