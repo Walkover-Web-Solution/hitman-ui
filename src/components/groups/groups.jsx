@@ -496,7 +496,7 @@ class Groups extends Component {
                                 this.props.versions,
                                 this.props.groups
                               )}
-                            className='m-2 d-flex align-items-center'
+                            className='mr-1 d-flex align-items-center'
                           >
                             <Plus />
                           </div>

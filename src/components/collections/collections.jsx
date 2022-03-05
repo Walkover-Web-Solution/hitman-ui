@@ -26,7 +26,6 @@ import emptyCollections from '../../assets/icons/emptyCollections.svg'
 import hitmanLogo from '../../assets/icons/hitman.svg'
 import PublishColelctionInfo from '../main/publishCollectionInfo'
 import sidebarActions from '../main/sidebar/redux/sidebarActions'
-import GlobeIcon from '../../assets/icons/globe-icon.svg'
 import { ReactComponent as Plus } from '../../assets/icons/plus-square.svg'
 import ExpandIcon from '../../assets/icons/expand-arrow.svg'
 
@@ -531,13 +530,14 @@ class CollectionsComponent extends Component {
                   </div>
                 </div>
               </div>
-              <div class='theme-color counts ml-1'>
+              <div class='theme-color counts ml-1 f-12'>
                 {this.props.collections[collectionId]?.importedFromMarketPlace
                   ? <div className='marketplace-icon ml-3'> M </div>
                   : null}
-                {this.findEndpointCount(collectionId)}
+                {this.findEndpointCount(collectionId) === '0' ? '' : this.findEndpointCount(collectionId)}
+
               </div>
-              <span className='ml-1 globe-img'>{this.props.collections[collectionId]?.isPublic && <img src={GlobeIcon} alt='globe' width='14' />}</span>
+              <span className='ml-1 globe-img' />
             </div>
           </button>
           {collectionState === 'singleCollection'

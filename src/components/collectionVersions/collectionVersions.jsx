@@ -390,7 +390,7 @@ class CollectionVersions extends Component {
                       isDashboardRoute(this.props, true) && !this.props.collections[this.props.collection_id]?.importedFromMarketPlace
                         ? (
                           <div className='sidebar-item-action d-flex align-items-center'>
-                            <div className='m-2 d-flex align-items-center' onClick={() => this.openAddGroupForm(this.props.versions[versionId])}>
+                            <div className='mr-1 d-flex align-items-center' onClick={() => this.openAddGroupForm(this.props.versions[versionId])}>
                               <Plus />
                             </div>
                             <div
