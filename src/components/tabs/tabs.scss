@@ -7,6 +7,16 @@
   flex-direction: row;
   .tabs-container {
     width: 100%;
+    position: relative;
+    background-color: $secondary-color;
+    &::after{
+      content: '';
+      width: 100%;
+      height: 1px;
+      background: #e6dbd4;
+      position: absolute;
+      bottom: 0px;
+    }
     .nav {
       height: 100%;
       overflow: hidden;
@@ -22,24 +32,46 @@
           border-radius: 0;
           border-bottom: 1px solid #E6DBD4;
           background-color: $secondary-color;
+          color: $text-color;
+          &:hover{
+            color: $text-color;
+            + .close{
+              opacity: 1;
+            }
+          }
           &.active{
             background-color: $light-grey;
             border-bottom: 0;
+            color: $theme-color;
+            position: relative;
+            &::after{
+              content: '';
+              width: 100%;
+              height: 1px;
+              background: $light-grey;
+              display: block;
+              position: absolute;
+              bottom: 0;
+              z-index: 1;
+            }
           }
           .btn {
             padding: 0.5rem;
             font-size: 14px;
             width: 100%;
+            color: inherit;
           }
         }
         > .close {
           position: absolute;
-          right: 0.25rem;
+          right: 0.35rem;
           padding: 0;
           top: 50%;
           transform: translateY(-50%);
           display: flex;
           align-items: center;
+          opacity: 0;
+          transition: all 0.3s ease-in;
           i{
             font-size: $font-small;
           }

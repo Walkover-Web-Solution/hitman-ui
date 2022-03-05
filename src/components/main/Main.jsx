@@ -31,7 +31,7 @@ import DesktopAppDownloadModal from './desktopAppPrompt'
 import { sendAmplitudeData } from '../../services/amplitude'
 import UpdateStatus from './updateStatus'
 import { isValidDomain } from '../common/utility'
-import SplitPane from 'react-split-pane';
+import SplitPane from 'react-split-pane'
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -181,21 +181,21 @@ class Main extends Component {
           <DesktopAppDownloadModal history={this.props.history} location={this.props.location} match={this.props.match} />
           <OnlineSatus fetchFromBackend={this.fetchFromBackend.bind(this)} isIdbUpdated={this.isIdbUpdated.bind(this)} />
           <div className='main-panel-wrapper'>
-            <SplitPane split='vertical' className="split-sidebar">
-                <SideBar
-                  {...this.props}
-                  tabs={[...this.state.tabs]}
-                  set_tabs={this.setTabs.bind(this)}
-                  default_tab_index={this.state.defaultTabIndex}
-                />
-                {this.props.location.pathname.split('/')[4] === 'publish'
-                  ? <PublishDocs {...this.props} />
-                  : <ContentPanel
-                      {...this.props}
-                      set_environment={this.setEnvironment.bind(this)}
-                      set_tabs={this.setTabs.bind(this)}
-                      default_tab_index={this.state.defaultTabIndex}
-                    />}
+            <SplitPane split='vertical' className='split-sidebar'>
+              <SideBar
+                {...this.props}
+                tabs={[...this.state.tabs]}
+                set_tabs={this.setTabs.bind(this)}
+                default_tab_index={this.state.defaultTabIndex}
+              />
+              {this.props.location.pathname.split('/')[4] === 'publish'
+                ? <PublishDocs {...this.props} />
+                : <ContentPanel
+                    {...this.props}
+                    set_environment={this.setEnvironment.bind(this)}
+                    set_tabs={this.setTabs.bind(this)}
+                    default_tab_index={this.state.defaultTabIndex}
+                  />}
             </SplitPane>
           </div>
           <UpdateStatus />

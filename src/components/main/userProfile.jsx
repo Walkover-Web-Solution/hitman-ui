@@ -1,10 +1,10 @@
 import React from 'react'
-import { Nav, Dropdown } from 'react-bootstrap'
+import { Dropdown } from 'react-bootstrap'
 import Avatar from 'react-avatar'
-// import { FixedSizeList as List } from 'react-window'
-import lightArrow from '../../assets/icons/light-arrow.svg'
+import { FixedSizeList as List } from 'react-window'
+import lightArrow from '../../assets/icons/new-arrow.svg'
 import User from '../../assets/icons/user.svg'
-// import RightArrow from '../../assets/icons/right-arrow.svg'
+import RightArrow from '../../assets/icons/right-arrow.svg'
 import Power from '../../assets/icons/power.svg'
 import { ReactComponent as Users } from '../../assets/icons/users.svg'
 import File from '../../assets/icons/file.svg'
@@ -37,24 +37,26 @@ export class UserProfile extends React.Component {
     }
 
     renderAvatarWithOrg (onClick, ref1) {
-      const { getNotificationCount } = this.getNotificationCount()
+      // const { getNotificationCount } = this.getNotificationCount()
       return (
         <div
-          className='menu-trigger-box black-hover-it' onClick={(e) => {
+          className='menu-trigger-box d-flex align-items-center justify-content-between w-100' onClick={(e) => {
             e.preventDefault()
             onClick(e)
           }}
         >
-          <Avatar color='#343a40' name={this.getCurrentOrg()?.name} size={24} round='30px' />
-          {this.renderOrgName()}
+          <div className='d-flex align-items-center position-relative'>
+            <Avatar className='mr-2' color='#343a40' name={this.getCurrentOrg()?.name} size={40} round='4px' />
+            {this.renderOrgName()}
+            {/* {getNotificationCount && getNotificationCount() > 0 &&
+            <span className='user-notification-badge'>{getNotificationCount()}</span>} */}
+          </div>
           <img
             ref={ref1}
             src={lightArrow}
             alt='settings-gear'
-            className='transition'
+            className='transition cursor-pointer'
           />
-          {getNotificationCount && getNotificationCount() > 0 &&
-            <span className='user-notification-badge'>{getNotificationCount()}</span>}
         </div>
       )
     }
@@ -68,16 +70,16 @@ export class UserProfile extends React.Component {
     renderOrgName () {
       const { name } = this.getUserDetails()
       return (
-        <>
-          <div className='text-center org-name'>
+        <div>
+          <div className='org-name'>
             {this.getCurrentOrg()?.name || null}
           </div>
           <span class='profile-details-label-light'>{name}</span>
-          {
+          {/* {
                 this.getNotificationCount() > 0 &&
                   <div className='user-notification-badge'>{this.getNotificationCount()}</div>
-            }
-        </>
+            } */}
+        </div>
       )
     }
 
@@ -333,56 +335,57 @@ export class UserProfile extends React.Component {
       )
     }
 
-    // renderOrgList () {
-    //   const organizations = JSON.parse(window.localStorage.getItem('organisationList')) || []
-    //   const productName = 'hitman'
-    //   const orgsLength = Object.keys(organizations || {})?.length
-    //   let filteredOrgsArray = this.getAllOrgs(organizations)
-    //   filteredOrgsArray = filteredOrgsArray.filter((org) => this.compareOrg(org))
-    //   const orgItem = ({ index, style }) => {
-    //     const item = filteredOrgsArray[index]
-    //     return (
-    //       <Dropdown.Item style={style}>
-    //         <div
-    //           key={item?.id}
-    //           className='org-listing'
-    //           onClick={() => {
-    //             const currentId = productName === products.EBL ? item?.id : item?.identifier
-    //             this.switchOrg(currentId)
-    //           }}
-    //         >
-    //           <span className='org-listing-name'>{item?.name}</span>
-    //           <img src={RightArrow} />
-    //         </div>
-    //       </Dropdown.Item>
-    //     )
-    //   }
+    renderOrgList () {
+      const organizations = JSON.parse(window.localStorage.getItem('organisationList')) || []
+      const productName = 'hitman'
+      const orgsLength = Object.keys(organizations || {})?.length
+      let filteredOrgsArray = this.getAllOrgs(organizations)
+      filteredOrgsArray = filteredOrgsArray.filter((org) => this.compareOrg(org))
+      const orgItem = ({ index, style }) => {
+        const item = filteredOrgsArray[index]
+        return (
+          <Dropdown.Item style={style}>
+            <div
+              key={item?.id}
+              className='org-listing'
+              onClick={() => {
+                const currentId = productName === products.EBL ? item?.id : item?.identifier
+                this.switchOrg(currentId)
+              }}
+            >
+              <span className='org-listing-name'>{item?.name}</span>
+              <img src={RightArrow} />
+            </div>
+          </Dropdown.Item>
+        )
+      }
 
-    //   return (
-    //     (orgsLength > 1 && <div className='OrgsBlock'>
-    //       <div className='text-uppercase text-sm-bold'>SWITCH ORGS</div>
-    //       <div className='orgs-listing-container'>
-    //         {this.state.moreFlag &&
-    //           <div className='p-2 search-profile'>
-    //             <input
-    //               className='form-control'
-    //               onChange={(e) => this.setOrgFilter(e.target.value, filteredOrgsArray?.length || 0)}
-    //               value={this.state.orgFilter}
-    //               placeholder='Search'
-    //             />
-    //           </div>}
-    //         {filteredOrgsArray.length === 0
-    //           ? <div className='pb-2 text-center w-100'><small className='body-6'>No Organizations Found</small></div>
-    //           : <List height={filteredOrgsArray.length < 5 ? 36 * filteredOrgsArray.length : 180} itemCount={this.getItemCount(filteredOrgsArray.length)} itemSize={35}> {orgItem} </List>}
-    //       </div>
-    //       {orgsLength > 5 &&
-    //         <div className='ShowMore text-center' onClick={() => this.setShowFlag()}>
-    //           {!this.state.moreFlag ? 'Show more' : 'Show less'}
-    //         </div>}
-    //     </div>
-    //     )
-    //   )
-    // }
+      return (
+        (orgsLength > 1 &&
+          <div className='OrgsBlock'>
+            <div className='text-uppercase text-sm-bold'>SWITCH ORGS</div>
+            <div className='orgs-listing-container'>
+              {this.state.moreFlag &&
+                <div className='p-2 search-profile'>
+                  <input
+                    className='form-control'
+                    onChange={(e) => this.setOrgFilter(e.target.value, filteredOrgsArray?.length || 0)}
+                    value={this.state.orgFilter}
+                    placeholder='Search'
+                  />
+                </div>}
+              {filteredOrgsArray.length === 0
+                ? <div className='pb-2 text-center w-100'><small className='body-6'>No Organizations Found</small></div>
+                : <List height={filteredOrgsArray.length < 5 ? 36 * filteredOrgsArray.length : 180} itemCount={this.getItemCount(filteredOrgsArray.length)} itemSize={35}> {orgItem} </List>}
+            </div>
+            {orgsLength > 5 &&
+              <div className='ShowMore text-center' onClick={() => this.setShowFlag()}>
+                {!this.state.moreFlag ? 'Show more' : 'Show less'}
+              </div>}
+          </div>
+        )
+      )
+    }
 
     getAllOrgs (organizations) {
       const orgsArray = Object.values({ ...organizations } || {})
@@ -443,29 +446,27 @@ export class UserProfile extends React.Component {
     render () {
       const productName = 'hitman'
       return (
-        <Nav>
-          <>
-            <Dropdown className='menu-dropdown transition d-flex align-items-center'>
-              <Dropdown.Toggle
-                as={React.forwardRef(({ children, onClick }, ref1) => (
-                  this.renderAvatarWithOrg(onClick, ref1)
-                ))}
-                id='dropdown-custom-components'
-              />
-              <Dropdown.Menu>
-                {this.renderUserDetails()}
-                <div className='profile-listing-container'>
-                  <Dropdown.Item>{this.renderMenuButton()}</Dropdown.Item>
-                  <Dropdown.Item>{this.renderInviteTeam()}</Dropdown.Item>
-                  <Dropdown.Item>{this.renderBilling()} </Dropdown.Item>
-                  <Dropdown.Item>{productName !== products.EBL && this.renderOtherProducts()}</Dropdown.Item>
-                  <Dropdown.Item>{this.renderLogout()}</Dropdown.Item>
-                </div>
-                {/* {this.renderOrgList()} */}
-              </Dropdown.Menu>
-            </Dropdown>
-          </>
-        </Nav>
+        <div className='profile-menu'>
+          <Dropdown className='menu-dropdown transition d-flex align-items-center'>
+            <Dropdown.Toggle
+              as={React.forwardRef(({ children, onClick }, ref1) => (
+                this.renderAvatarWithOrg(onClick, ref1)
+              ))}
+              id='dropdown-custom-components'
+            />
+            <Dropdown.Menu>
+              {this.renderUserDetails()}
+              <div className='profile-listing-container'>
+                <Dropdown.Item>{this.renderMenuButton()}</Dropdown.Item>
+                <Dropdown.Item>{this.renderInviteTeam()}</Dropdown.Item>
+                <Dropdown.Item>{this.renderBilling()} </Dropdown.Item>
+                <Dropdown.Item>{productName !== products.EBL && this.renderOtherProducts()}</Dropdown.Item>
+                <Dropdown.Item>{this.renderLogout()}</Dropdown.Item>
+              </div>
+              {/* {this.renderOrgList()} */}
+            </Dropdown.Menu>
+          </Dropdown>
+        </div>
       )
     }
 }

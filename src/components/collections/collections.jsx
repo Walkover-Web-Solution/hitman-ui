@@ -390,13 +390,7 @@ class CollectionsComponent extends Component {
             </div>
             <div className='d-flex align-items-center'>
               <div className='sidebar-item-action d-flex align-items-center'>
-                <div class='theme-color counts'>
-                  {this.props.collections[collectionId]?.importedFromMarketPlace
-                    ? <div className='marketplace-icon ml-3'> M </div>
-                    : null}
-                  {this.findEndpointCount(collectionId)}
-                </div>
-                <div className='m-2 d-flex align-items-center' onClick={() => this.openAddVersionForm(collectionId)}>
+                <div className='mr-1 d-flex align-items-center' onClick={() => this.openAddVersionForm(collectionId)}>
                   <Plus />
                 </div>
                 <div
@@ -537,7 +531,13 @@ class CollectionsComponent extends Component {
                   </div>
                 </div>
               </div>
-              {this.props.collections[collectionId]?.isPublic && <span className='ml-1'><img src={GlobeIcon} alt='globe' width='14' /></span>}
+              <div class='theme-color counts ml-1'>
+                {this.props.collections[collectionId]?.importedFromMarketPlace
+                  ? <div className='marketplace-icon ml-3'> M </div>
+                  : null}
+                {this.findEndpointCount(collectionId)}
+              </div>
+              <span className='ml-1 globe-img'>{this.props.collections[collectionId]?.isPublic && <img src={GlobeIcon} alt='globe' width='14' />}</span>
             </div>
           </button>
           {collectionState === 'singleCollection'

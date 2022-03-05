@@ -984,12 +984,11 @@ label.data-type {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: $grey;
+  background: transparent;
+  transition: all 0.3s ease-in;
 }
-
-::-webkit-scrollbar-thumb:hover {
-  background: #312f2f;
-
+:hover::-webkit-scrollbar-thumb{
+  background: #cfcfd2;
 }
 
 .ace-editor-wrapper .ace-github {
@@ -2440,17 +2439,6 @@ span.endpointNameWrapper {
     }
   }
 
-  .user-notification-badge {
-    padding: 3px;
-    border-radius: 50%;
-    font-size: 9px;
-    background-color: #E98A36;
-    color: #fff;
-    height: 18px;
-    width: 18px;
-    text-align: center;
-  }
-
   button {
     border: none !important;
     height: auto !important;
@@ -2469,16 +2457,6 @@ span.endpointNameWrapper {
 
     &:after {
       display: none;
-    }
-
-    .user-notification-badge {
-      position: absolute;
-      top: 3px;
-      right: 5px;
-      height: 14px;
-      width: 14px;
-      border-radius: 30px;
-      padding: 1px;
     }
   }
 
