@@ -82,8 +82,8 @@ class CodeTemplate extends Component {
           Sample Code
         </button>
         <div className='inner-editor'>
-          <Col id='code-window-sidebar' xs={12} className='d-flex justify-content-between'>
-            <div className='code-heading'>
+          <Col id='code-window-sidebar' xs={12} className='d-flex flex-column align-items-center'>
+            <div className='code-heading mb-3 mt-2'>
               Sample code
             </div>
             <div className='select-code-wrapper d-flex justify-content-end'>
