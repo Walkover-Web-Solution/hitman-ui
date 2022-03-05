@@ -229,10 +229,12 @@ nav.navbar.navbar-dark.fixed-top.bg-dark.flex-md-nowrap.p-0.shadow {
 //   margin-top: 40px;
 // }
 .hm-sidebar-item {
-  color: #000000;
+  color: #42526E;
   cursor: pointer;
-  font-size: 14px;
-  font-weight: 400;
+  font-size: 16px;
+  line-height: 14px;
+  font-style: normal;
+  font-weight: normal;
   text-transform: capitalize;
   display: flex;
   width: 100%;
@@ -242,20 +244,25 @@ nav.navbar.navbar-dark.fixed-top.bg-dark.flex-md-nowrap.p-0.shadow {
   align-items: center;
 
   &:hover {
-    background: #c9c9c9;
+    background: rgba(9, 30, 66, 0.04);
+    color: #0E1E3A;
   }
 
   &.active {
-    background: #c9c9c9;
+    background: rgba(9, 30, 66, 0.04);
+    color: #0E1E3A;
   }
 }
 
 .hm-sidebar-label {
-  color: #000000;
+  color: #59667F;
+  height: 24px;
   margin-bottom: 5px;
   text-transform: capitalize;
+  font-style: normal;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 16px;
+  line-height: 24px;
   padding: 5px 5px 0px 25px;
 }
 
@@ -2047,7 +2054,7 @@ button.toggleButton {
 .versionWrapper .search-box {
   margin: 0;
   font-size: 14px;
-  border-radius: 4px;
+
 }
 
 .versionWrapper .search-box input {

@@ -272,23 +272,21 @@ $border-color: rgba(227, 228, 230, 0.7);
 }
 
 .api-label {
-  width: 42px;
-  min-width: 42px;
-  height: 16px;
-  line-height: 16px;
-  background-color: rgba(0, 0, 0, 0.15);
-  color: #000000;
-  font-size: 9px;
+  width: 37.55px;
+  height: 20px;
+  font-size: 10px;
+  line-height: 19px;
   font-weight: bold;
   text-transform: uppercase;
   text-align: center;
-  margin: 0;
-  border-radius: 3px;
+  margin-right: 0.5rem;
+  border-radius: 4px;
   opacity: 1;
   display: inline-block;
 
   .endpoint-request-div {
-    width: auto;
+    width: 30px;
+    height: 20px;
   }
 
   &.api-label-lg {
@@ -299,13 +297,14 @@ $border-color: rgba(227, 228, 230, 0.7);
   }
 
   &.POST {
-    background-color: rgba($color: #54ad7e, $alpha: 0.15);
-    color: #54ad7e;
+    background: rgba(39, 174, 96, 0.04);
+    color: #27AE60;
+
   }
 
   &.GET {
-    background-color: rgba($color: #1d9ee2, $alpha: 0.15);
-    color: #1d9ee2;
+    background-color: rgba(233, 138, 54, 0.04);
+    color: #E98A36;
   }
 
   &.PUT {
