@@ -3417,3 +3417,30 @@ ul.react-autocomplete-input {
     }    
   }
 }
+.aside{
+  width: 20%;
+  height: 100%;
+  left: 0;
+  position: fixed;
+  border:2px solid black;
+}
+.collection-main{
+  border:2px solid black;
+  width:80%;
+  height: 100%;
+  background-color: rgb(216, 208, 208);
+  text-align: center;
+  right:0;
+  position: fixed;
+  font-family: cursive;
+  font-size: large;
+  padding-top: 15%;
+}
+.add{
+  border: 1px solid black;
+  box-shadow: 2px 5px black;
+  padding: 5px;
+  padding-left: 5%;
+  padding-right: 5%;
+  margin: 10px 10px;
+}
