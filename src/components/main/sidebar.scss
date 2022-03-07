@@ -20,14 +20,23 @@ span.Resizer.vertical {
   height: 100%;
   background-color: $secondary-color;
   padding: 0.75rem 0 0.45rem;
+  .switch-products{
+    .dropdown-menu{
+      .dropdown-item{
+        padding: 0.25rem 1rem;
+        &.dropHeader {
+          font-weight: 500;
+          pointer-events: none !important;
+        }
+      }
+    } 
+  }
   .collect-length {
     line-height: 1.5rem;
   }
   .globe-img {
-    width: 0.25rem;
-    height: 0.25rem;
-    background: #81c784;
-    border-radius: 50%;
+    width: 13px;
+    height: 1.25rem;
   }
   div#parent-accordion {
     margin-bottom: 0.25rem;
@@ -111,6 +120,8 @@ span.Resizer.vertical {
           right: 0rem;
           background: $grey;
           padding: 0 0.7rem;
+          top: 50%;
+          transform: translateY(-50%);
         }
         width: 100%;
         display: flex;
@@ -162,15 +173,31 @@ span.Resizer.vertical {
         align-items: center;
       }
     }
+    .dropdown-menu{
+      border: none;
+    }
     .profile-menu{
       display: block;
       flex: 0 0 auto;
       border-top: 1px solid #dcdcdc;
       padding: 0.45rem 1rem 0;
+      .profile-details {
+        border-bottom: 1px solid #e6dbd4;
+        margin-bottom: 1rem;
+        padding: 0.25rem 0 0.5rem;
+      }
+      .profile-listing-container .dropdown-item {
+        padding: 0.25rem 1rem;
+        img{
+          margin-right: 0.65rem; 
+        }
+      }
       .org-name {
         font-weight: 600;
         color: $text-color;
         margin-bottom: -0.35rem;
+        font-size: $font-normal;
+        display: block;
       }
       .profile-details-label-light{
         font-size: $font-medium;
@@ -331,7 +358,7 @@ input[type="text"]:focus {
   width: 100%;
 
   .api-label {
-    margin-right: 10px;
+    margin-right: 5px;
   }
 }
 .sidebar-accordion .sidebar-accordion-item>i {

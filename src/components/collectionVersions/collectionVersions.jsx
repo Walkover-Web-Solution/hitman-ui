@@ -488,7 +488,7 @@ class CollectionVersions extends Component {
                 ? (
                   <div className='version-collapse'>
                     <Card.Body>
-                      <div className='linkWrapper versionPages'>
+                      <div className='linkWrapper versionPages pl-4'>
                         <VersionPages
                           {...this.props}
                           pagesToRender={pagesToRender}

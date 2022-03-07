@@ -22,7 +22,6 @@
       overflow: hidden;
       .nav-item {
         height: 42px;
-        width: 5.625rem;
         position: relative;
         .nav-link{
           padding: 0 1rem 0 0;
@@ -33,6 +32,8 @@
           border-bottom: 1px solid #E6DBD4;
           background-color: $secondary-color;
           color: $text-color;
+          min-width: 5.625rem;
+          max-width: 9.25rem;
           &:hover{
             color: $text-color;
             + .close{
@@ -190,9 +191,8 @@
   min-width: 40px;
   border: 0.5px solid #eaeaea;
   border-bottom: none;
-  background-color: #f8f8f8;
   justify-content: center;
-  border-right: 0;
+  border-right: 1px solid #e6dbd4;
   position: relative;
 
   &.disabled {

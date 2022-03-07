@@ -28,6 +28,7 @@ import PublishColelctionInfo from '../main/publishCollectionInfo'
 import sidebarActions from '../main/sidebar/redux/sidebarActions'
 import { ReactComponent as Plus } from '../../assets/icons/plus-square.svg'
 import ExpandIcon from '../../assets/icons/expand-arrow.svg'
+import GlobeIcon from '../../assets/icons/globe-icon.svg'
 
 const EMPTY_STRING = ''
 
@@ -537,7 +538,7 @@ class CollectionsComponent extends Component {
                 {this.findEndpointCount(collectionId) === '0' ? '' : this.findEndpointCount(collectionId)}
 
               </div>
-              <span className='ml-1 globe-img' />
+              <span className='ml-1 globe-img'>{this.props.collections[collectionId]?.isPublic && <img src={GlobeIcon} alt='globe' width='14' />}</span>
             </div>
           </button>
           {collectionState === 'singleCollection'

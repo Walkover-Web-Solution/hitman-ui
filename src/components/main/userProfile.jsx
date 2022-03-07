@@ -94,14 +94,14 @@ export class UserProfile extends React.Component {
       const { name, email } = this.getUserDetails()
       return (
         <div
-          className='profile-details d-flex align-items-center'
+          className='profile-details plr-3 d-flex align-items-center'
           onClick={() => { }}
         >
-          <div class='user-icon'>
+          <div class='user-icon mr-2'>
             <img src={User} />
           </div>
           <div className='profile-details-user-name'>
-            <span class='profile-details-label-light'>{name}</span>
+            <span class='org-name'>{name}</span>
             <span class='profile-details-label-light'>{email}</span>
           </div>
         </div>
