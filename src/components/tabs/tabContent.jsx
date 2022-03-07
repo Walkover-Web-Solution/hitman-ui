@@ -5,14 +5,14 @@ import DisplayEndpoint from '../endpoints/displayEndpoint'
 import DisplayPage from '../pages/displayPage'
 import EditPage from '../pages/editPage'
 import { getCurrentUser } from '../auth/authService'
-import PublishDocsForm from './../publishDocs/publishDocsForm';
+import PublishDocsForm from './../publishDocs/publishDocsForm'
 import { updateCollection } from '../collections/redux/collectionsActions'
-import { connect } from 'react-redux';
+import { connect } from 'react-redux'
 
 const mapDispatchToProps = (dispatch) => {
   return {
     update_collection: (editedCollection) =>
-      dispatch(updateCollection(editedCollection)),
+      dispatch(updateCollection(editedCollection))
   }
 }
 class TabContent extends Component {
@@ -51,13 +51,15 @@ class TabContent extends Component {
           </Switch>
         )
       case 'collection-setting':
-        return <PublishDocsForm
-          {...this.props}
-          isCollectionPublished={()=>{return this.props.collections[tabId]?.isPublic || false}}
-          unPublishCollection={()=> this.unPublishCollection(tabId)}
-          selected_collection_id={tabId}
-          onTab={true}
-        />
+        return (
+          <PublishDocsForm
+            {...this.props}
+            isCollectionPublished={() => { return this.props.collections[tabId]?.isPublic || false }}
+            unPublishCollection={() => this.unPublishCollection(tabId)}
+            selected_collection_id={tabId}
+            onTab
+          />
+        )
       default:
         break
     }
