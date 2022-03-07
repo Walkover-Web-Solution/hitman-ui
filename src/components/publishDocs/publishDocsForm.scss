@@ -1,14 +1,16 @@
 //Note: Unique IDs are used in CTAs for tracking purposes with GTM. Do not use the same IDs elsewhere.
+@import '../main/variables.scss';
 
 .uploadBox {
     cursor: pointer;
-    height: 2.25rem;
+    height: 2.5rem;
     overflow: hidden;
     label{
         margin-bottom: 0;
         padding: 0.35rem 1rem;
         border: 1px dashed #BDBDBD;
         height: 2.25rem;
+        background-color: $input-text-color;
         &:hover{
             border-color: #f1a147;
         }
@@ -25,14 +27,26 @@
 }
 
 .fav-icon-text{
-    color: #4F4F4F;
-    font-size: 13px !important;
+    color: $text-color;
+    font-size: 14px !important;
     margin: 0;
-    font-weight: 400 !important;
+    font-weight: 500 !important;
     position: relative;
     top: 5px;
 }
 
 .publish-on-tab {
     padding: 20px;
+}
+
+.doc-title{
+    font-style: normal;
+    font-weight: 600;
+    font-size: 36px;
+    line-height: 36px;
+    color: $text-color-dark;
+}
+
+.col-8{
+    padding-left: 60px !important;
 }

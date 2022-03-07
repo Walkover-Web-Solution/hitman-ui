@@ -1040,10 +1040,11 @@ select.form-control {
 
 .form-group {
   label {
-    color: #4F4F4F;
-    font-size: 13px !important;
+    color: $text-color;
+    font-size: 14px !important;
+    line-height: 30px;
     margin: 0;
-    font-weight: 400 !important;
+    font-weight: 500 !important;
   }
 
   .ql-container.ql-snow {
@@ -1051,18 +1052,20 @@ select.form-control {
   }
 }
 body .form-control {
-  height: 2.25rem;
-  border: 1px solid #E0E0E0;
+  width: 280px;
+  height: 36px;
+  border: 1px solid $input-text-color;
   font-size: $font-normal;
   font-weight: 400;
   color: #000;
   box-sizing: border-box;
-  border-radius: 0 !important;
-  background-color: #fff;
+  border-radius: 4px !important;
+  background-color: $input-text-color;
   &:focus {
     outline: none;
-    border-color: #E98A36;
+    border: 1px solid #091E42;
     box-shadow: none;
+    background-color: $input-text-color;
   }
   &::placeholder{
     color: #BDBDBD !important;
@@ -2311,6 +2314,7 @@ button[name="cta-1"] {
 .or-wrap {
   padding: 30px 0;
   margin: 0 30px;
+  color: $text-color;
 }
 
 .or-wrap p {

@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import Joi from 'joi-browser'
 import { Button } from 'react-bootstrap'
 import { ReactComponent as UploadIcon } from '../../assets/icons/uploadIcon.svg'
+import ManagePublicDocImg from '../../assets/icons/manage.svg'
 import { updateCollection } from '../collections/redux/collectionsActions'
 import './publishDocsForm.scss'
 import { HOSTNAME_VALIDATION_REGEX } from '../common/constants'
@@ -220,10 +221,22 @@ class PublishDocForm extends Component {
 
   renderFooter () {
     return (
-      <>
+      <div className='d-flex align-items-center'>
         {this.props.isSidebar && <Button className='btn btn-secondary outline btn-extra-lg mr-2' onClick={() => { this.props.onHide() }}> Cancel</Button>}
         <Button className={this.state.loader ? 'btn-extra-lg buttonLoader' : 'btn-extra-lg'} id='publish_doc_settings_save_btn' onClick={() => this.saveCollectionDetails()}>{this.props.isSidebar ? 'Update' : 'Save'}</Button>
-      </>
+        <div className='publish-mo-btn'>
+          {
+            (this.props.isSidebar || this.props.onTab) && this.props.isCollectionPublished() &&
+              <Button
+                id='unpublish_doc_btn'
+                variant='btn btn-outline danger ml-4 mt-4'
+                onClick={() => this.props.unPublishCollection()}
+              >
+                Unpublish Doc
+              </Button>
+          }
+        </div>
+      </div>
     )
   }
 
@@ -272,7 +285,7 @@ class PublishDocForm extends Component {
       <>
         <div>
           <label style={this.getDisabledStyle(disabled)} htmlFor='upload-button'>
-            <UploadIcon /> <small className='upload-box-text'>Upload</small>
+            <UploadIcon />
           </label>
           <input type='file' id='upload-button' disabled={disabled} style={{ display: 'none' }} accept='.png' onChange={(e) => this.onFileChange(e)} />
         </div>
@@ -332,43 +345,37 @@ class PublishDocForm extends Component {
 
   render () {
     return (
-      <div className={this.props.onTab && 'publish-on-tab'}>
-        <div className='publish-mo-btn'>
-          {
-            (this.props.isSidebar || this.props.onTab) && this.props.isCollectionPublished() &&
-              <Button
-                id='unpublish_doc_btn'
-                variant='btn btn-outline danger ml-4 mt-4'
-                onClick={() => this.props.unPublishCollection()}
-              >
-                Unpublish Doc
-              </Button>
-          }
-        </div>
-        <div className='small-input'>
-          {this.renderInput('title', true, false, 'brand name')}
-          {this.renderInput('domain', false, false, 'docs.example.com')}
-        </div>
-        <label className='fav-icon-text'> Fav Icon </label>
-        <div className='d-flex'>
-          <div className='favicon-uploader'>
-            {this.renderUploadBox('icon')}
+      <div className='row'>
+        <div className={this.props.onTab && 'publish-on-tab col-8'}>
+          <h3 className='doc-title'>Manage Public Doc</h3>
+          <div className='small-input'>
+            {this.renderInput('title', true, false, 'brand name')}
+            {this.renderInput('domain', false, false, 'docs.example.com')}
           </div>
-          <div className='or-wrap'>
-            <p>OR</p>
+          <label className='fav-icon-text'> Fav Icon </label>
+          <div className='d-flex'>
+            <div className='favicon-uploader'>
+              {this.renderUploadBox('icon')}
+            </div>
+            <div className='or-wrap'>
+              <p>OR</p>
+            </div>
+            {this.renderInput('logoUrl', false, this.state.binaryFile, '')}
           </div>
-          {this.renderInput('logoUrl', false, this.state.binaryFile, '')}
-        </div>
 
-        <div className='color-picker'>
-          {this.renderColorPicker()}
+          <div className='color-picker'>
+            {this.renderColorPicker()}
+          </div>
+          <div className='cta-buton'>
+            {this.renderCTAButtons()}
+            {this.renderLinkButtons()}
+          </div>
+          <div className='foot-warpper'>
+            {this.renderFooter()}
+          </div>
         </div>
-        <div className='cta-buton'>
-          {this.renderCTAButtons()}
-          {this.renderLinkButtons()}
-        </div>
-        <div className='foot-warpper'>
-          {this.renderFooter()}
+        <div className='col-4'>
+          <img src={ManagePublicDocImg} alt='' />
         </div>
       </div>
     )
