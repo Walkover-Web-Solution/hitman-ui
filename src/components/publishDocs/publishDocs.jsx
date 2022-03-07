@@ -1282,15 +1282,6 @@ class PublishDocs extends Component {
           <div class='content-panel'>
             <div className='hosted-APIs'>
               <PublishDocsReview {...this.props} />
-              {/* {this.renderHostedApiHeading('API Doc Feedback')}
-              <Dropdown>
-            <Dropdown.Toggle variant='' id='dropdown-basic'>
-              Select Page
-            </Dropdown.Toggle>
-            <Dropdown.Menu>
-            {this.showPages()}
-            </Dropdown.Menu>
-          </Dropdown> */}
               {this.state.selectedCollectionId && this.props.collections[this.state.selectedCollectionId] && (
                 !this.checkDocProperties(collectionId)
                   ? this.renderFullPageDocForm()
