@@ -134,10 +134,11 @@ class ContentPanel extends Component {
         if (tabId !== activeTabId) this.props.set_active_tab_id(tabId)
         const collectionLength = Object.keys(this.props.collections).length
         const temp = JSON.parse(window.localStorage.getItem('visitedOrgs'))
-        if ((temp && temp[orgId]) || collectionLength > 0){
-        this.props.history.push({
-          pathname: `/orgs/${orgId}/dashboard/${tab.type}/${tab.status === 'NEW' ? 'new' : tabId}`
-        })}
+        if ((temp && temp[orgId]) || collectionLength > 0) {
+          this.props.history.push({
+            pathname: `/orgs/${orgId}/dashboard/${tab.type}/${tab.status === 'NEW' ? 'new' : tabId}`
+          })
+        }
       } else {
         this.props.add_new_tab()
       }
