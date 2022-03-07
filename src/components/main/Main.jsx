@@ -74,7 +74,7 @@ class Main extends Component {
       defaultTabIndex: 0,
       showAddCollectionModal: false,
       loading: true,
-      flag: true
+      showAddCollectionPage: true
     }
     const { endpointId, pageId } = this.props.match.params
     if (endpointId && endpointId !== 'new') {
@@ -172,7 +172,7 @@ class Main extends Component {
     indexedDbService.addData('meta_data', timestampBackend, 'updated_at')
   }
 
-  updateLocal () {
+  setVisitedOrgs () {
     const orgId = this.props.match.params.orgId
     console.log(orgId)
     const org = {}
@@ -180,11 +180,11 @@ class Main extends Component {
     window.localStorage.setItem('visitedOrgs', JSON.stringify(org))
   }
 
-  setFlag () {
+  showCollectionDashboard () {
     const collectionLength = Object.keys(this.props.collections).length
     const orgId = this.props.match.params.orgId
     const temp = JSON.parse(window.localStorage.getItem('visitedOrgs'))
-    if ((temp && temp[orgId]) || collectionLength > 0 || !this.state.flag) { return false } else { return true }
+    if ((temp && temp[orgId]) || collectionLength > 0 || !this.state.showAddCollectionPage) { return false } else { return true }
   }
 
   setTabs (tabs, defaultTabIndex) {
@@ -200,7 +200,7 @@ class Main extends Component {
     this.setState({ currentEnvironment: environment })
   }
 
-  frontAddCollection () {
+  addCollectionDialog () {
     return (
       this.state.showAddCollectionModal &&
         <CollectionModal
@@ -224,17 +224,17 @@ class Main extends Component {
             <div className='mobile-warning'>
               Looks like you have opened it on a mobile device. It looks better on a desktop device.
             </div>}
-          {this.frontAddCollection()}
-          {this.setFlag() &&
+          {this.addCollectionDialog()}
+          {this.showCollectionDashboard() &&
             <div className='aside'>
               <div className='collection-main'>
                 <p>add your first collection for API Testing and Public API Doc</p>
                 <button className='add' onClick={() => this.setState({ showAddCollectionModal: true })}>Add Collections</button>
                 <p>Or</p>
-                <button onClick={() => { this.updateLocal(); this.setState({ flag: false }) }}>Try Out Without a Collection</button>
+                <button onClick={() => { this.setVisitedOrgs(); this.setState({ showAddCollectionPage: false }) }}>Try Out Without a Collection</button>
               </div>
             </div>}
-          {!this.setFlag() &&
+          {!this.showCollectionDashboard() &&
             <div className='custom-main-container'>
               <Header {...this.props} />
               <DesktopAppDownloadModal history={this.props.history} location={this.props.location} match={this.props.match} />
