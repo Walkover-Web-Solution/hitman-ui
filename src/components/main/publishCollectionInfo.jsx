@@ -128,19 +128,12 @@ class PublishCollectionInfo extends Component {
 
   renderPublicCollectionInfo () {
     const currentCollection = this.props.collections[this.props.collectionId]
-    const { totalPageCount, totalEndpointCount, livePageCount, liveEndpointCount } = this.state
     return (
       !currentCollection?.importedFromMarketPlace &&
         <div className='public-colection-info'>
           <div>{this.managePublicDoc()}</div>
           <div>{this.apiDocFeedback()}</div>
-          <div className='d-flex'>
-            <div className='publicurl'>{this.renderPublicUrl()}</div>
-          </div>
-          <div className='endpoints-list'>
-            <p>{`Public Endpoints: ${liveEndpointCount} / ${totalEndpointCount}`}</p>
-            <p>{`Public Pages: ${livePageCount} / ${totalPageCount}`}</p>
-          </div>
+          <div className='publicurl'>{this.renderPublicUrl()}</div>
         </div>
     )
   }
