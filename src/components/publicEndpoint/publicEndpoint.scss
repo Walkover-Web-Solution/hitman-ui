@@ -261,16 +261,14 @@ form.add-new-domain-form {
   flex: 20%;
   z-index: 999;
   border-right: 1px solid rgba(9, 30, 66,0.02);
-  width: 20%;
-  min-width: 20%;
-  max-width: 20%;
+  min-width: 230px;
+  max-width: 330px;
 
   // nav.public-endpoint-sidebar {
   //   width: 250px;
   // }
 
   .public-endpoint-sidebar .primary-sidebar {
-    background-color: #F8F8F8;
     border: none;
     padding-top: 0;
   }
@@ -341,7 +339,6 @@ form.add-new-domain-form {
   display: flex;
   color: #fff;
   align-items: center;
-  background-color: #f3f7fc;
   
 }
 
@@ -561,7 +558,6 @@ h4.hm-sidebar-title span {
 
 .versionWrapper {
   padding: 20px 25px 15px;
-  background-color: #f3f7fc;
 }
 
 .page-heading-pub {

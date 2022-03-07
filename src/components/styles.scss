@@ -285,8 +285,9 @@ $border-color: rgba(227, 228, 230, 0.7);
   display: inline-block;
 
   .endpoint-request-div {
-    width: 30px;
-    height: 20px;
+    width: 45px;
+    height: 30px;
+    padding-right: 5px;
   }
 
   &.api-label-lg {
@@ -503,7 +504,6 @@ button.btn.custom-body-type-button {
 .public-endpoint-sidebar {
   .primary-sidebar {
     width: 100%;
-    background-color: #fff;
   }
   .enableSearch .search-box > input[type="text"] {
     padding: 0 1rem;
@@ -511,7 +511,7 @@ button.btn.custom-body-type-button {
   }
   .search-box > input[type="text"]{
     padding-left: 2rem;
-    background: url('../assets/icons/searchIcon.svg') no-repeat 4% center !important;
+    background: url('../assets/icons/search.svg') no-repeat 4% center !important;
   }
   .versionsAvailable.versionWrapper:not(.enableSearch) .search-box > input[type="text"]{
     background: url('../assets/icons/searchIcon.svg') no-repeat center !important;

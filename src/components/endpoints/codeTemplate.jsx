@@ -75,10 +75,10 @@ class CodeTemplate extends Component {
 
     return (
       <div className={codeEditorVisibility ? 'pubCodeWrapper' : 'pubCodeWrapper closeEditor'}>
-        <button className='toggleButton' onClick={() => { this.toggleCodeEditor() }}>
-          <svg width='18' height='19' viewBox='0 0 18 19' fill='none' xmlns='http://www.w3.org/2000/svg'>
+        <button className='toggleButton justify-content-start' onClick={() => { this.toggleCodeEditor() }}>
+          {/* <svg width='18' height='19' viewBox='0 0 18 19' fill='none' xmlns='http://www.w3.org/2000/svg'>
             <path d='M6.75 13.75L11.25 9.25L6.75 4.75' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
-          </svg>
+          </svg> */}
           Sample Code
         </button>
         <div className='inner-editor'>

@@ -232,12 +232,13 @@ nav.navbar.navbar-dark.fixed-top.bg-dark.flex-md-nowrap.p-0.shadow {
   color: #42526E;
   cursor: pointer;
   font-size: 16px;
-  line-height: 14px;
+  line-height: 32px;
   font-style: normal;
   font-weight: normal;
   text-transform: capitalize;
   display: flex;
   width: 100%;
+  height: 32px;
   padding: 7px 25px 7px 25px;
   border-radius: 0;
   border: none;
@@ -784,16 +785,17 @@ label.data-type {
 
 .pubCodeWrapper {
   padding: 15px;
-  width: 35%;
-  background: #2A2B35;
-  position: relative;
+  width: 25%;
+  background: #222222;;
+  position: fixed;
+  right: 0px;
   transition: 300ms;
   height: 100vh;
   .inner-editor {
     height: 100%;
     overflow: hidden;
     .editor-body-wrapper {
-      height: calc(100% - 4rem);
+      height: calc(100% - 8rem);
       .ace-editor-wrapper {
         height: calc(100% - 2rem);
         div#ace-editor {
@@ -823,7 +825,7 @@ label.data-type {
   .ace_editor.ace-tomorrow-night {
 
     width: 100% !important;
-    background: #2A2B35;
+    background: #222222;
     border: 0px;
     line-height: 1.2;
     font-size: 14px;
@@ -836,7 +838,6 @@ label.data-type {
 
 
 .editor-body-wrapper {
-  background: #2A2B35;
   padding: 5px;
   border-bottom-right-radius: 4px;
   border-bottom-left-radius: 4px;
@@ -1983,13 +1984,13 @@ button.toggleButton {
   position: absolute;
   left: -23px;
   font-size: 0;
-  border: 1px solid #000000;
-  background: #fff;
+  border: 0px solid #000000;
+  background: #004CBE;
   border-radius: 4px;
   border-right: none;
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
-  padding: 8px 2px;
+  padding: 8px 12px;
   transition: 450ms;
   outline: none !important;
   top: 18px;
@@ -2018,12 +2019,13 @@ button.toggleButton {
 
   button.toggleButton {
     font-size: 14px;
-    width: 150px;
-    left: -150px;
+    width: 130px;
+    height: 32px;
+    left: -130px;
     transition: transform 0.46s ease;
     top: 15px;
-    font-weight: 600;
-    color: #333;
+    font-weight:normal;
+    color: #FFFFFF;
     display: flex;
     justify-content: space-around;
     align-items: center;
