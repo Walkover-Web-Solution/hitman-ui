@@ -424,19 +424,6 @@ class CollectionVersions extends Component {
                                   <path d='M10.5 8.25V12.75' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
                                 </svg>   Delete
                               </div>
-                              {/* <div
-                                className='dropdown-item'
-                                onClick={() =>
-                                  this.openAddGroupForm(this.props.versions[versionId])}
-                              >
-                                <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
-                                  <path d='M6 3H2V8H6V3Z' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
-                                  <path d='M9 11H2V16H9V11Z' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
-                                  <path d='M16 3H9V8H16V3Z' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
-                                  <path d='M16 11H12V16H16V11Z' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
-                                </svg>
-                                Add Group
-                              </div> */}
                               <div
                                 className='dropdown-item'
                                 onClick={() => {
