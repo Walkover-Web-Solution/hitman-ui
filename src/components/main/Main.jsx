@@ -32,6 +32,7 @@ import { sendAmplitudeData } from '../../services/amplitude'
 import UpdateStatus from './updateStatus'
 import { isValidDomain } from '../common/utility'
 import SplitPane from 'react-split-pane'
+import PublishDocsReview from '../publishDocs/publishDocsReview'
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -190,12 +191,14 @@ class Main extends Component {
               />
               {this.props.location.pathname.split('/')[4] === 'publish'
                 ? <PublishDocs {...this.props} />
-                : <ContentPanel
-                    {...this.props}
-                    set_environment={this.setEnvironment.bind(this)}
-                    set_tabs={this.setTabs.bind(this)}
-                    default_tab_index={this.state.defaultTabIndex}
-                  />}
+                : this.props.location.pathname.split('/')[4] === 'feedback'
+                  ? <PublishDocsReview {...this.props} />
+                  : <ContentPanel
+                      {...this.props}
+                      set_environment={this.setEnvironment.bind(this)}
+                      set_tabs={this.setTabs.bind(this)}
+                      default_tab_index={this.state.defaultTabIndex}
+                    />}
             </SplitPane>
           </div>
           <UpdateStatus />

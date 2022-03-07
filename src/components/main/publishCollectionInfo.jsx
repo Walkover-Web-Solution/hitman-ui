@@ -58,16 +58,14 @@ class PublishCollectionInfo extends Component {
 
   // Function is yet to complete
   managePublicDoc () {
-    return (
-      <div>Manage Public Doc</div>
-    )
+    console.log('Manage public doc')
   }
 
   // Function is yet to complete
   apiDocFeedback () {
-    return (
-      <div>API Doc Feedback</div>
-    )
+    this.props.history.push({
+      pathname: `/orgs/${this.props.match.params.orgId}/admin/feedback`
+    })
   }
 
   getPublicEntityCount () {
@@ -131,8 +129,8 @@ class PublishCollectionInfo extends Component {
     return (
       !currentCollection?.importedFromMarketPlace &&
         <div className='public-colection-info'>
-          <div>{this.managePublicDoc()}</div>
-          <div>{this.apiDocFeedback()}</div>
+          <div onClick={() => { this.managePublicDoc() }}>Manage Public Doc</div>
+          <div onClick={() => { this.apiDocFeedback() }}>API Doc Feedback</div>
           <div className='publicurl'>{this.renderPublicUrl()}</div>
         </div>
     )

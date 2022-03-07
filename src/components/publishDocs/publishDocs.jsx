@@ -31,7 +31,6 @@ import { ReactComponent as ExternalLinks } from '../../assets/icons/externalLink
 import PublishDocsConfirmModal from './publishDocsConfirmModal'
 import { moveToNextStep } from '../../services/widgetService'
 import { openExternalLink } from '../common/utility'
-import PublishDocsReview from './publishDocsReview'
 const isEqual = require('react-fast-compare')
 
 const URI = require('urijs')
@@ -1281,7 +1280,6 @@ class PublishDocs extends Component {
         <div className='publish-docs-wrapper'>
           <div class='content-panel'>
             <div className='hosted-APIs'>
-              <PublishDocsReview {...this.props} />
               {this.state.selectedCollectionId && this.props.collections[this.state.selectedCollectionId] && (
                 !this.checkDocProperties(collectionId)
                   ? this.renderFullPageDocForm()
