@@ -463,7 +463,7 @@ export class UserProfile extends React.Component {
                 <Dropdown.Item>{productName !== products.EBL && this.renderOtherProducts()}</Dropdown.Item>
                 <Dropdown.Item>{this.renderLogout()}</Dropdown.Item>
               </div>
-              {/* {this.renderOrgList()} */}
+              {this.renderOrgList()}
             </Dropdown.Menu>
           </Dropdown>
         </div>
