@@ -9,6 +9,9 @@
     width: 100%;
     position: relative;
     background-color: $secondary-color;
+    .btn{
+      border-radius: 0;
+    }
     &::after{
       content: '';
       width: 100%;

@@ -10,7 +10,10 @@
         padding: 0.35rem 1rem;
         border: 1px dashed #BDBDBD;
         height: 2.25rem;
+        display: flex;
+        align-items: center;
         background-color: $input-text-color;
+        border-radius: $border-radius;
         &:hover{
             border-color: #f1a147;
         }
@@ -37,6 +40,9 @@
 
 .publish-on-tab {
     padding: 20px;
+    input {
+        max-width: 21rem;
+    }
 }
 
 .doc-title{
@@ -45,8 +51,4 @@
     font-size: 36px;
     line-height: 36px;
     color: $text-color-dark;
-}
-
-.col-8{
-    padding-left: 60px !important;
 }

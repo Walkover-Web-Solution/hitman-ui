@@ -4,7 +4,6 @@ import { connect } from 'react-redux'
 import Joi from 'joi-browser'
 import { Button } from 'react-bootstrap'
 import { ReactComponent as UploadIcon } from '../../assets/icons/uploadIcon.svg'
-import ManagePublicDocImg from '../../assets/icons/manage.svg'
 import { updateCollection } from '../collections/redux/collectionsActions'
 import './publishDocsForm.scss'
 import { HOSTNAME_VALIDATION_REGEX } from '../common/constants'
@@ -222,14 +221,14 @@ class PublishDocForm extends Component {
   renderFooter () {
     return (
       <div className='d-flex align-items-center'>
-        {this.props.isSidebar && <Button className='btn btn-secondary outline btn-extra-lg mr-2' onClick={() => { this.props.onHide() }}> Cancel</Button>}
-        <Button className={this.state.loader ? 'btn-extra-lg buttonLoader' : 'btn-extra-lg'} id='publish_doc_settings_save_btn' onClick={() => this.saveCollectionDetails()}>{this.props.isSidebar ? 'Update' : 'Save'}</Button>
+        {this.props.isSidebar && <Button className='btn btn-secondary outline mr-2' onClick={() => { this.props.onHide() }}> Cancel</Button>}
+        <Button className={this.state.loader ? 'buttonLoader' : ''} id='publish_doc_settings_save_btn' onClick={() => this.saveCollectionDetails()}>{this.props.isSidebar ? 'Update' : 'Save'}</Button>
         <div className='publish-mo-btn'>
           {
             (this.props.isSidebar || this.props.onTab) && this.props.isCollectionPublished() &&
               <Button
                 id='unpublish_doc_btn'
-                variant='btn btn-outline danger ml-4 mt-4'
+                variant='btn btn-outline danger ml-2'
                 onClick={() => this.props.unPublishCollection()}
               >
                 Unpublish Doc
@@ -338,44 +337,41 @@ class PublishDocForm extends Component {
         </label>
         <input type='text' placeholder={placeholder} disabled={disabled} className='form-control' name={name} value={data[name]} onChange={(e) => this.handleChange(e, isURLInput)} onBlur={(e) => this.handleBlur(e, isURLInput)} />
         {errors && errors[name] && <small className='alert alert-danger'>{errors[name]}</small>}
-        {name === 'domain' && <label className='domain-info'>{`Point the A record of the above domain to ${UI_IP}`}</label>}
+        {name === 'domain' && <span className='domain-info f-12 mt-1'>{`Point the A record of the above domain to ${UI_IP}`}</span>}
       </div>
     )
   }
 
   render () {
     return (
-      <div className='row'>
-        <div className={this.props.onTab && 'publish-on-tab col-8'}>
-          <h3 className='doc-title'>Manage Public Doc</h3>
-          <div className='small-input'>
-            {this.renderInput('title', true, false, 'brand name')}
-            {this.renderInput('domain', false, false, 'docs.example.com')}
-          </div>
-          <label className='fav-icon-text'> Fav Icon </label>
-          <div className='d-flex'>
+      <div className={this.props.onTab && 'publish-on-tab'}>
+        <h3 className='page-title mb-3'>Manage Public Doc</h3>
+        <div className='small-input'>
+          {this.renderInput('title', true, false, 'brand name')}
+          {this.renderInput('domain', false, false, 'docs.example.com')}
+        </div>
+        <div className='d-flex favicon'>
+          <div className='form-group'>
+            <label> Fav Icon </label>
             <div className='favicon-uploader'>
               {this.renderUploadBox('icon')}
             </div>
-            <div className='or-wrap'>
-              <p>OR</p>
-            </div>
-            {this.renderInput('logoUrl', false, this.state.binaryFile, '')}
           </div>
-
-          <div className='color-picker'>
-            {this.renderColorPicker()}
+          <div className='or-wrap d-flex align-items-center'>
+            <p className='mb-0'>OR</p>
           </div>
-          <div className='cta-buton'>
-            {this.renderCTAButtons()}
-            {this.renderLinkButtons()}
-          </div>
-          <div className='foot-warpper'>
-            {this.renderFooter()}
-          </div>
+          {this.renderInput('logoUrl', false, this.state.binaryFile, '')}
         </div>
-        <div className='col-4'>
-          <img src={ManagePublicDocImg} alt='' />
+
+        <div className='color-picker'>
+          {this.renderColorPicker()}
+        </div>
+        <div className='cta-buton'>
+          {this.renderCTAButtons()}
+          {this.renderLinkButtons()}
+        </div>
+        <div className='foot-warpper'>
+          {this.renderFooter()}
         </div>
       </div>
     )
