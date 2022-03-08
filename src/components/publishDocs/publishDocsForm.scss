@@ -12,7 +12,6 @@
         height: 2.25rem;
         display: flex;
         align-items: center;
-        background-color: $input-text-color;
         border-radius: $border-radius;
         &:hover{
             border-color: #f1a147;
@@ -38,10 +37,66 @@
     top: 5px;
 }
 
+.favicon {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    position: relative;
+    input{
+      max-width: 26rem;
+    }
+    small.text-danger {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+    span {
+      font-size: 14px;
+      color: #EB5757;
+      font-weight: 400;
+    }
+    .or-wrap {
+      margin: 0 1.45rem 0 1rem;
+    }
+    .form-group:last-child{
+      flex-grow: 1;
+    }
+  }
+  
+  .uploadBox img {
+    width: 100%;
+    padding: 10px;
+    object-fit: contain;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .uplod-info {
+    margin-left: 10px;
+    p{
+      max-width: 5rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: #828282;
+      font-size: 14px;
+      margin: 0;
+    }
+  }
+  
+
 .publish-on-tab {
     padding: 20px;
     input {
-        max-width: 21rem;
+        max-width: 18rem;
+    }
+    .cta-buton {
+        .form-group > div input:first-child {
+            max-width: 12rem;
+        }
     }
 }
 

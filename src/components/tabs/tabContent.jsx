@@ -8,6 +8,7 @@ import { getCurrentUser } from '../auth/authService'
 import PublishDocsForm from './../publishDocs/publishDocsForm'
 import { updateCollection } from '../collections/redux/collectionsActions'
 import { connect } from 'react-redux'
+import PublishDocsReview from './../publishDocs/publishDocsReview'
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -58,6 +59,13 @@ class TabContent extends Component {
             unPublishCollection={() => this.unPublishCollection(tabId)}
             selected_collection_id={tabId}
             onTab
+          />
+        )
+      case 'collection-feedback':
+        return (
+          <PublishDocsReview
+            {...this.props}
+            selected_collection_id={tabId}
           />
         )
       default:

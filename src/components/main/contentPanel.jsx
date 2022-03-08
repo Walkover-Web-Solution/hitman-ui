@@ -127,14 +127,25 @@ class ContentPanel extends Component {
       if (this.props.tabs.tabs[collectionId]) {
         if (this.props.tabs.activeTabId !== collectionId) { this.props.set_active_tab_id(collectionId) }
       } else if (this.props.collections && this.props.collections[collectionId]) {
-        this.props.open_in_new_tab({
-          id: collectionId,
-          type: 'collection-setting',
-          status: tabStatusTypes.SAVED,
-          previewMode: false,
-          isModified: false,
-          state: {}
-        })
+        if (this.props.location.pathname.split('/')[6] === 'settings') {
+          this.props.open_in_new_tab({
+            id: collectionId,
+            type: 'collection-setting',
+            status: tabStatusTypes.SAVED,
+            previewMode: false,
+            isModified: false,
+            state: {}
+          })
+        } else {
+          this.props.open_in_new_tab({
+            id: collectionId,
+            type: 'collection-feedback',
+            status: tabStatusTypes.SAVED,
+            previewMode: false,
+            isModified: false,
+            state: {}
+          })
+        }
       }
     }
 
@@ -150,7 +161,14 @@ class ContentPanel extends Component {
         if (tabId !== activeTabId) this.props.set_active_tab_id(tabId)
 
         this.props.history.push({
-          pathname: `/orgs/${orgId}/dashboard/${tab.type}/${tab.status === 'NEW' ? 'new' : tabId}`
+          pathname:
+            tab.type !== 'collection-setting' && tab.type !== 'collection-feedback'
+              ? `/orgs/${orgId}/dashboard/${tab.type}/${
+                  tab.status === 'NEW' ? 'new' : tabId
+                }`
+              : tab.type === 'collection-setting'
+                ? `/orgs/${orgId}/dashboard/collection/${tabId}/settings`
+                : `/orgs/${orgId}/dashboard/collection/${tabId}/feedback`
         })
       } else {
         this.props.add_new_tab()
