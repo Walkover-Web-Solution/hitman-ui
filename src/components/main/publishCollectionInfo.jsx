@@ -60,7 +60,6 @@ class PublishCollectionInfo extends Component {
     )
   }
 
-  // Function is yet to complete
   managePublicDoc () {
     return (
       <button onClick={() => { isAdmin() ? this.openPublishSettings() : this.showAccessDeniedToast() }}>
@@ -72,13 +71,15 @@ class PublishCollectionInfo extends Component {
     )
   }
 
-  // Function is yet to complete
-  apiDocFeedback () {
+  redirectToApiFeedback () {
     this.props.history.push({
       pathname: `/orgs/${this.props.match.params.orgId}/admin/feedback`
     })
+  }
+
+  apiDocFeedback () {
     return (
-      <button>
+      <button onClick={() => { this.redirectToApiFeedback() }}>
         <div className='d-flex align-items-center'>
           <img className='mr-1' src={DocIcon} alt='' />
           <span>API Doc Feedback</span>
@@ -149,7 +150,7 @@ class PublishCollectionInfo extends Component {
       !currentCollection?.importedFromMarketPlace &&
         <div className='public-colection-info'>
           {this.managePublicDoc()}
-          <div className='d-flex align-items-center'>{this.apiDocFeedback()}</div>
+          {this.apiDocFeedback()}
           <div className='publicurl'>{this.renderPublicUrl()}</div>
         </div>
     )
