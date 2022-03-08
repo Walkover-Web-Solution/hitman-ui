@@ -2,6 +2,15 @@ import React, { Component } from 'react'
 import { Dropdown } from 'react-bootstrap'
 
 class PublishDocsReview extends Component {
+  constructor (props) {
+    super(props)
+    this.state = {
+      isItemSelected: false,
+      selectedItemType: 'endpoint',
+      selectedItemId: null,
+    }
+  }
+
   renderHostedApiHeading (heading) {
     return (
       <div className='hosted-doc-heading'>
@@ -56,13 +65,21 @@ class PublishDocsReview extends Component {
           : endpointsArray.length > 0
             ? endpointsArray.map(
                 (id, index) => (
-                  <Dropdown.Item key={index}>
+                  <Dropdown.Item key={index} onClick={() => {
+                    this.setState({ isItemSelected: true });
+                    this.setState({ selectedItemType: 'endpoint' });
+                    this.setState({ selectedItemId: id });
+                  }}>
                     {this.props.endpoints[id]?.name}
                   </Dropdown.Item>
                 ))
             : pagesArray.map(
               (id, index) => (
-                <Dropdown.Item key={index}>
+                <Dropdown.Item key={index} onClick={() => {
+                  this.setState({ isItemSelected: true });
+                  this.setState({ selectedItemType: 'page' });
+                  this.setState({ selectedItemId: id });
+                }}>
                   {this.props.pages[id]?.name}
                 </Dropdown.Item>
               ))}
@@ -74,7 +91,7 @@ class PublishDocsReview extends Component {
     return (
       <Dropdown>
         <Dropdown.Toggle variant='' id='dropdown-basic'>
-          Select Page
+          {!this.state.isItemSelected ? "Select Page" : (this.state.selectedItemType==='endpoint') ? this.props.endpoints[this.state.selectedItemId]?.name : this.props.pages[this.state.selectedItemId]?.name }
         </Dropdown.Toggle>
         <Dropdown.Menu>
           {this.showEndpointsAndPages()}
