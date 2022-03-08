@@ -220,10 +220,22 @@ class PublishDocForm extends Component {
 
   renderFooter () {
     return (
-      <>
-        {this.props.isSidebar && <Button className='btn btn-secondary outline btn-extra-lg mr-2' onClick={() => { this.props.onHide() }}> Cancel</Button>}
-        <Button className={this.state.loader ? 'btn-extra-lg buttonLoader' : 'btn-extra-lg'} id='publish_doc_settings_save_btn' onClick={() => this.saveCollectionDetails()}>{this.props.isSidebar ? 'Update' : 'Save'}</Button>
-      </>
+      <div className='d-flex align-items-center'>
+        {this.props.isSidebar && <Button className='btn btn-secondary outline mr-2' onClick={() => { this.props.onHide() }}> Cancel</Button>}
+        <Button className={this.state.loader ? 'buttonLoader' : ''} id='publish_doc_settings_save_btn' onClick={() => this.saveCollectionDetails()}>{this.props.isSidebar ? 'Update' : 'Save'}</Button>
+        <div className='publish-mo-btn'>
+          {
+            (this.props.isSidebar || this.props.onTab) && this.props.isCollectionPublished() &&
+              <Button
+                id='unpublish_doc_btn'
+                variant='btn btn-outline danger ml-2'
+                onClick={() => this.props.unPublishCollection()}
+              >
+                Unpublish Doc
+              </Button>
+          }
+        </div>
+      </div>
     )
   }
 
@@ -272,7 +284,7 @@ class PublishDocForm extends Component {
       <>
         <div>
           <label style={this.getDisabledStyle(disabled)} htmlFor='upload-button'>
-            <UploadIcon /> <small className='upload-box-text'>Upload</small>
+            <UploadIcon />
           </label>
           <input type='file' id='upload-button' disabled={disabled} style={{ display: 'none' }} accept='.png' onChange={(e) => this.onFileChange(e)} />
         </div>
@@ -325,7 +337,7 @@ class PublishDocForm extends Component {
         </label>
         <input type='text' placeholder={placeholder} disabled={disabled} className='form-control' name={name} value={data[name]} onChange={(e) => this.handleChange(e, isURLInput)} onBlur={(e) => this.handleBlur(e, isURLInput)} />
         {errors && errors[name] && <small className='alert alert-danger'>{errors[name]}</small>}
-        {name === 'domain' && <label className='domain-info'>{`Point the A record of the above domain to ${UI_IP}`}</label>}
+        {name === 'domain' && <span className='domain-info f-12 mt-1'>{`Point the A record of the above domain to ${UI_IP}`}</span>}
       </div>
     )
   }
@@ -333,29 +345,20 @@ class PublishDocForm extends Component {
   render () {
     return (
       <div className={this.props.onTab && 'publish-on-tab'}>
-        <div className='publish-mo-btn'>
-          {
-            (this.props.isSidebar || this.props.onTab) && this.props.isCollectionPublished() &&
-              <Button
-                id='unpublish_doc_btn'
-                variant='btn btn-outline danger ml-4 mt-4'
-                onClick={() => this.props.unPublishCollection()}
-              >
-                Unpublish Doc
-              </Button>
-          }
-        </div>
+        <h3 className='page-title mb-3'>Manage Public Doc</h3>
         <div className='small-input'>
           {this.renderInput('title', true, false, 'brand name')}
           {this.renderInput('domain', false, false, 'docs.example.com')}
         </div>
-        <label className='fav-icon-text'> Fav Icon </label>
-        <div className='d-flex'>
-          <div className='favicon-uploader'>
-            {this.renderUploadBox('icon')}
+        <div className='d-flex favicon'>
+          <div className='form-group'>
+            <label> Fav Icon </label>
+            <div className='favicon-uploader'>
+              {this.renderUploadBox('icon')}
+            </div>
           </div>
-          <div className='or-wrap'>
-            <p>OR</p>
+          <div className='or-wrap d-flex align-items-center'>
+            <p className='mb-0'>OR</p>
           </div>
           {this.renderInput('logoUrl', false, this.state.binaryFile, '')}
         </div>

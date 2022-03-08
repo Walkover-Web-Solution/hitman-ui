@@ -36,7 +36,7 @@ span.Resizer.vertical {
   }
   .globe-img {
     width: 13px;
-    height: 1.25rem;
+    height: 1.5rem;
   }
   div#parent-accordion {
     margin-bottom: 0.25rem;
@@ -164,6 +164,7 @@ span.Resizer.vertical {
     }
     .sidebar-content{
       overflow: hidden auto;
+      flex: auto;
       .card-body {
         padding: 0;
       }
@@ -194,7 +195,7 @@ span.Resizer.vertical {
       }
       .org-name {
         font-weight: 600;
-        color: $text-color;
+        color: $text-color-dark;
         margin-bottom: -0.35rem;
         font-size: $font-normal;
         display: block;

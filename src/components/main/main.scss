@@ -25,10 +25,6 @@
     font-family: 'Roboto', sans-serif;
     font-size: $font-normal;
     color: $text-color;
-    .btn{
-      border-radius: 0 !important;
-      font-size: $font-normal;
-    }
   }
   .transition{
     transition: all 0.3s ease-in;
@@ -70,6 +66,11 @@
   }
   .theme-color{
     color: $theme-color;
+  }
+  .page-title {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: $text-color-dark
   }
 
 // Global Styles
@@ -867,14 +868,6 @@ label.data-type {
   border-radius: 0;
 }
 
-.btn.btn-primary {
-  background: linear-gradient(135deg, #F2994A 2.5%, #f2994a 2.51%, #f0bd3b 100%);
-  border: none;
-  font-size: 14px;
-  font-weight: 600;
-  border-radius: 0;
-}
-
 .empty-collections .content {
   h5 {
     color: #333;
@@ -1038,30 +1031,28 @@ select.form-control {
   background-position: right 15px center;
 }
 
-.form-group {
+body .form-group {
   label {
-    color: #4F4F4F;
-    font-size: 13px !important;
-    margin: 0;
-    font-weight: 400 !important;
+    color: $text-color-dark;
+    line-height: 1;
+    margin: 0 0 0.25rem;
+    font-weight: 500;
   }
-
   .ql-container.ql-snow {
     height: 200px;
   }
 }
 body .form-control {
-  height: 2.25rem;
-  border: 1px solid #E0E0E0;
+  height: 36px;
+  border: 1px solid $input-text-color;
   font-size: $font-normal;
   font-weight: 400;
   color: #000;
   box-sizing: border-box;
-  border-radius: 0 !important;
   background-color: #fff;
   &:focus {
     outline: none;
-    border-color: #E98A36;
+    border: 1px solid #091E42;
     box-shadow: none;
   }
   &::placeholder{
@@ -1136,7 +1127,7 @@ button.btn.btn-secondary {
 }
 
 .form-group .alert.alert-danger {
-  background: #fff;
+  background: inherit;
   border: none;
   padding: 0;
   font-size: 12px;
@@ -1192,10 +1183,6 @@ button.editBtn {
 
 .mainContentWrapperPublic .hm-public-table .headParaWraper {
   max-height: none;
-}
-
-.mainContentWrapper {
-  min-height: calc(100vh - 70px);
 }
 
 .headParaWraper {
@@ -1278,21 +1265,35 @@ button.editBtn {
   width: 100%;
 }
 
-.btn.btn-outline.orange {
-  border: 1px solid #E98A36;
-  color: #E98A36;
-  font-size: $font-normal;
-  font-weight: 600;
-  background: #fff;
-  border-radius: 0;
-}
-
-.btn.btn-outline.danger {
-  border: 1px solid #EB5757;
-  color: #EB5757;
-  font-size: 14px;
-  font-weight: 600;
-  background: #fff;
+.btn{
+  border-radius: $border-radius;
+  font-size: $font-normal !important;
+  &.btn-primary{
+    background-color: $theme-color;
+    border-color: $theme-color;
+    &:hover{
+      border-color: $theme-color;
+      background-color: transparent;
+      color: $theme-color;
+    }
+  }
+  &.btn-outline {
+    border: 1px solid $theme-color;
+    color: $theme-color;
+    font-weight: 600;
+    background: transparent;
+    &.orange{
+      border-color: $theme-color;
+    }
+    &.danger{
+      border-color: $alert-color;
+      color: $alert-color;
+    }
+    &:hover{
+      background-color: $theme-color;
+      color: #fff;
+    }
+  }
 }
 
 .panel-endpoint-name-container span.endpoint-name-edit {
@@ -1352,15 +1353,11 @@ button.editBtn {
   margin-right: 15px;
   line-height: 15px;
   margin-bottom: 0;
-  color: #828282;
-
   input {
     position: absolute;
     opacity: 0;
     cursor: pointer;
   }
-
-
   .checkmark {
     position: absolute;
     top: 0px;
@@ -1371,16 +1368,13 @@ button.editBtn {
     border-radius: 50%;
     box-shadow: inset 0 0 0px 2px #828282;
   }
-
   input:checked~.checkmark {
     background-color: #ffffff;
-    box-shadow: inset 0 0 0px 2px #E98A36;
+    box-shadow: inset 0 0 0px 2px $theme-color;
   }
-
   input:checked+* {
     color: #333333;
   }
-
   .checkmark:after {
     content: "";
     position: absolute;
@@ -1397,7 +1391,7 @@ button.editBtn {
     width: 7px;
     height: 7px;
     border-radius: 50%;
-    background: #E98A36;
+    background: $theme-color;
   }
 }
 table#custom-generic-table tbody input[value="false"] + span.checkmark {
@@ -1524,6 +1518,8 @@ table#custom-generic-table tbody input[value="false"] + span.checkmark {
   border-bottom-left-radius: 4px;
   border-bottom-right-radius: 4px;
   margin-top: 0px;
+  overflow: auto;
+  min-height: calc(100vh - 70px);
 }
 
 .btn.btn-secondary.outline {
@@ -2095,25 +2091,6 @@ button.toggleButton {
   width: 100%;
   margin-top: 30px;
 }
-
-
-
-
-.page-setting {
-  .small-input {
-    width: 50%;
-  }
-
-  .foot-warpper {
-    margin: 60px 0 0;
-  }
-
-  .color-picker .twitter-picker {
-    box-shadow: none !important;
-  }
-}
-
-
 .pub-inner {
   float: left;
   width: 60%;
@@ -2284,11 +2261,14 @@ button[name="cta-1"] {
 
 
 
-.favicon-uploader {
+.favicon {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
   position: relative;
+  input{
+    max-width: 35rem;
+  }
   small.text-danger {
     position: absolute;
     bottom: 0;
@@ -2302,22 +2282,9 @@ button[name="cta-1"] {
     color: #EB5757;
     font-weight: 400;
   }
-
   .or-wrap {
-    justify-content: center;
+    margin: 0 1.45rem 0 1rem;
   }
-}
-
-.or-wrap {
-  padding: 30px 0;
-  margin: 0 30px;
-}
-
-.or-wrap p {
-  margin: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .uploadBox img {
@@ -2565,6 +2532,8 @@ span.endpointNameWrapper {
   }
   input {
     flex-shrink: 1;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
   }
 }
 
@@ -3228,5 +3197,35 @@ ul.react-autocomplete-input {
     &.active {
       background: $theme-color;
     }    
+  }
+}
+
+.twitter-picker{
+  box-shadow: none !important;
+  background: inherit !important;
+  > div{
+    padding: 0.25rem 0 !important;
+  }
+  input#rc-editable-input-1 {
+    max-width: 3.5rem;
+  }
+}
+
+.outline-border{
+  background-color: #fff !important;
+  border: 1px solid #E6DBD4 !important;
+  &:focus{
+    border: 1px solid #091E42 !important;
+  }
+}
+
+#authorization-form{
+  & input{
+    max-width: 15rem;
+  }
+  & label{
+    color: #212121;
+    font-weight: normal;
+    margin: 1rem 0rem 0rem 0rem;
   }
 }
