@@ -56,6 +56,20 @@ class PublishCollectionInfo extends Component {
     )
   }
 
+  // Function is yet to complete
+  managePublicDoc () {
+    return (
+      <div>Manage Public Doc</div>
+    )
+  }
+
+  // Function is yet to complete
+  apiDocFeedback () {
+    return (
+      <div>API Doc Feedback</div>
+    )
+  }
+
   getPublicEntityCount () {
     const collectionId = this.props.collectionId
     const { endpoints, pages, versions, groups } = this.props
@@ -94,20 +108,32 @@ class PublishCollectionInfo extends Component {
     }
   }
 
+  // renderPublicCollectionInfo () {
+  //   const currentCollection = this.props.collections[this.props.collectionId]
+  //   const { totalPageCount, totalEndpointCount, livePageCount, liveEndpointCount } = this.state
+  //   return (
+  //     !currentCollection?.importedFromMarketPlace &&
+  //       <div className='public-colection-info'>
+  //         <div className='d-flex'>
+  //           <div className='publicurl'>{this.renderPublicUrl()}</div>
+  //           <div className='setting'>{this.renderSettingsLink()}</div>
+  //         </div>
+  //         <div className='endpoints-list'>
+  //           <p>{`Public Endpoints: ${liveEndpointCount} / ${totalEndpointCount}`}</p>
+  //           <p>{`Public Pages: ${livePageCount} / ${totalPageCount}`}</p>
+  //         </div>
+  //       </div>
+  //   )
+  // }
+
   renderPublicCollectionInfo () {
     const currentCollection = this.props.collections[this.props.collectionId]
-    const { totalPageCount, totalEndpointCount, livePageCount, liveEndpointCount } = this.state
     return (
       !currentCollection?.importedFromMarketPlace &&
         <div className='public-colection-info'>
-          <div className='d-flex'>
-            <div className='publicurl'>{this.renderPublicUrl()}</div>
-            <div className='setting'>{this.renderSettingsLink()}</div>
-          </div>
-          <div className='endpoints-list'>
-            <p>{`Public Endpoints: ${liveEndpointCount} / ${totalEndpointCount}`}</p>
-            <p>{`Public Pages: ${livePageCount} / ${totalPageCount}`}</p>
-          </div>
+          <div>{this.managePublicDoc()}</div>
+          <div>{this.apiDocFeedback()}</div>
+          <div className='publicurl'>{this.renderPublicUrl()}</div>
         </div>
     )
   }

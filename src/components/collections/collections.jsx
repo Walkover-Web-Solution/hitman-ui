@@ -535,7 +535,7 @@ class CollectionsComponent extends Component {
                 {this.props.collections[collectionId]?.importedFromMarketPlace
                   ? <div className='marketplace-icon ml-3'> M </div>
                   : null}
-                {this.findEndpointCount(collectionId) === '0' ? '' : this.findEndpointCount(collectionId)}
+                {this.findEndpointCount(collectionId) === 0 ? '' : this.findEndpointCount(collectionId)}
 
               </div>
               <span className='ml-1 globe-img'>{this.props.collections[collectionId]?.isPublic && <img src={GlobeIcon} alt='globe' width='14' />}</span>
