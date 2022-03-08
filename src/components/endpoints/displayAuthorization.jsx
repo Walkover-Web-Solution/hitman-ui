@@ -385,7 +385,7 @@ class Authorization extends Component {
         {this.state.authorizationType === 'basicAuth' && (
           <div className='authorization-editor-wrapper' id='authorization-form'>
             <form className='form-group'>
-              <label>Username</label>
+              <label className='mb-1'>Username</label>
               <input
                 className='form-control'
                 name='username'
