@@ -214,6 +214,14 @@ export function addAnalyticsScripts () {
   }
 }
 
+export function isNotDashboardOrDocView (props, view) {
+  return !isDashboardRoute(props) || view === 'doc'
+}
+
+export function isDashboardAndTestingView (props, view) {
+  return isDashboardRoute(props) && (view === 'testing' || !isSavedEndpoint(props))
+}
+
 export default {
   isDashboardRoute,
   isElectron,
@@ -232,5 +240,7 @@ export default {
   formatBytes,
   isValidDomain,
   addAnalyticsScripts,
-  DEFAULT_URL
+  DEFAULT_URL,
+  isNotDashboardOrDocView,
+  isDashboardAndTestingView
 }

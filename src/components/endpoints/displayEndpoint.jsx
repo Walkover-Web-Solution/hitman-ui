@@ -50,6 +50,7 @@ import Axios from 'axios'
 import { sendAmplitudeData } from '../../services/amplitude'
 import { SortableContainer, SortableElement } from 'react-sortable-hoc'
 import DefaultViewConfirmationModal from './defaultViewConfirmationModal'
+import TinyEditor from './tinyEditor'
 const shortid = require('shortid')
 
 const status = require('http-status')
@@ -233,11 +234,11 @@ class DisplayEndpoint extends Component {
   }
 
   componentDidUpdate (prevProps, prevState) {
-    if (this.props.location.pathname !== prevProps.location.pathname) {
+    if (this.props.location.pathname !== prevProps.location.pathname && this.scrollDiv.current) {
       this.scrollDiv.current.scrollIntoView({ block: 'center' })
       this.extractEndpointName()
     }
-    if (this.props.endpointId !== prevProps.endpointId) {
+    if (this.props.endpointId !== prevProps.endpointId && this.scrollDiv.current) {
       this.scrollDiv.current.scrollIntoView({ block: 'center' })
     }
     if (!isDashboardRoute(this.props)) {
@@ -2038,16 +2039,19 @@ class DisplayEndpoint extends Component {
   }
 
   switchView = (currentView) => {
-    if (this.state.currentView !== currentView) this.setState({ currentView })
-    this.setState({ showViewConfirmationModal: true })
+    if (this.state.currentView !== currentView) {
+      this.setState({ currentView })
+      this.setState({ showViewConfirmationModal: true })
+    }
   }
 
   renderDefaultViewConfirmationModal () {
-    return this.state.showViewConfirmationModal && <DefaultViewConfirmationModal
-      show
-      onHide={() => this.setState({ showViewConfirmationModal: false })}
-      setDefaultView={this.setDefaultView.bind(this)}
-                                                   />
+    return this.state.showViewConfirmationModal &&
+      <DefaultViewConfirmationModal
+        show
+        onHide={() => this.setState({ showViewConfirmationModal: false })}
+        setDefaultView={this.setDefaultView.bind(this)}
+      />
   }
 
   setDefaultView () {
@@ -2056,8 +2060,9 @@ class DisplayEndpoint extends Component {
   }
 
   renderDocView = () => {
-    return (
-      this.state.docViewData &&
+    if (!this.state.docViewData) return
+    if (isDashboardRoute(this.props)) {
+      return (
         <SortableList lockAxis='y' onSortEnd={({ oldIndex, newIndex }) => { this.onSortEnd(oldIndex, newIndex) }}>
           <div>
             {this.state.docViewData?.map((item, index) =>
@@ -2069,7 +2074,14 @@ class DisplayEndpoint extends Component {
             )}
           </div>
         </SortableList>
-    )
+      )
+    } else {
+      return this.state.docViewData?.map((item, index) =>
+        <div key={index}>
+          {this.renderPublicItem(item)}
+        </div>
+      )
+    }
   }
 
   onSortEnd = (oldIndex, newIndex) => {
@@ -2088,7 +2100,9 @@ class DisplayEndpoint extends Component {
     switch (item.type) {
       case 'description': return (
         <div>
-          <textarea name='a' id='' cols='30' rows='10'>{item.content}</textarea>
+          <TinyEditor
+            content={item.content}
+          />
         </div>
       )
       case 'body' : return this.state.data.body && this.state.originalBody &&
@@ -2150,6 +2164,7 @@ class DisplayEndpoint extends Component {
             dataArray={this.state.originalHeaders}
             props_from_parent={this.propsFromChild.bind(this)}
             original_data={[...this.state.headers]}
+            currentView={this.state.currentView}
           />
         </div>
       )
@@ -2161,6 +2176,7 @@ class DisplayEndpoint extends Component {
             dataArray={this.state.originalParams}
             props_from_parent={this.propsFromChild.bind(this)}
             original_data={[...this.state.params]}
+            currentView={this.state.currentView}
           />
         </div>
       )
@@ -2173,6 +2189,7 @@ class DisplayEndpoint extends Component {
               dataArray={this.state.pathVariables}
               props_from_parent={this.propsFromChild.bind(this)}
               original_data={[...this.state.pathVariables]}
+              currentView={this.state.currentView}
             />
           </div>
       )
@@ -2184,7 +2201,7 @@ class DisplayEndpoint extends Component {
   }
 
   isDashboardAndTestingView () {
-    return isDashboardRoute(this.props) && this.state.currentView === 'testing'
+    return isDashboardRoute(this.props) && (this.state.currentView === 'testing' || !isSavedEndpoint(this.props))
   }
 
   getCurrentView () {
@@ -2199,6 +2216,17 @@ class DisplayEndpoint extends Component {
       return 'testing'
     }
     return collectionView
+  }
+
+  renderToggleView () {
+    if (isSavedEndpoint(this.props)) {
+      return (
+        <ButtonGroup aria-label='Basic example'>
+          <Button onClick={() => this.switchView('testing')} variant='secondary'>Testing</Button>
+          <Button onClick={() => this.switchView('doc')} variant='secondary'>Doc</Button>
+        </ButtonGroup>
+      )
+    }
   }
 
   render () {
@@ -2244,7 +2272,7 @@ class DisplayEndpoint extends Component {
     }
     const { theme, codeEditorVisibility } = this.state
 
-    return ((isDashboardRoute(this.props) && this.state.currentView) || !isDashboardRoute(this.props))
+    return ((isDashboardRoute(this.props) && this.state.currentView) || !isDashboardRoute(this.props)) || !isSavedEndpoint(this.props)
       ? (
         <div
           ref={this.myRef}
@@ -2297,10 +2325,7 @@ class DisplayEndpoint extends Component {
                 : null
             }
               <div className='endpoint-header' ref={this.scrollDiv}>
-                <ButtonGroup aria-label='Basic example'>
-                  <Button onClick={() => this.switchView('testing')} variant='secondary'>Testing</Button>
-                  <Button onClick={() => this.switchView('doc')} variant='secondary'>Doc</Button>
-                </ButtonGroup>
+                {this.renderToggleView()}
                 {this.isNotDashboardOrDocView() && (
                   <div className='endpoint-name-container'>
                     {this.isNotDashboardOrDocView() && <h1 className='endpoint-title'>{this.state.data?.name || ''}</h1>}
