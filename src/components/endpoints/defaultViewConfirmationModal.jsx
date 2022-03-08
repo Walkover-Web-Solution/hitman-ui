@@ -3,14 +3,15 @@ import { Modal } from 'react-bootstrap'
 
 class DefaultViewConfirmationModal extends Component {
   handleSave () {
-    this.props.setDefaultView()
+    this.props.set_default_view()
     this.props.onHide()
   }
 
   render () {
     return (
       <Modal
-        {...this.props}
+        onHide={this.props.onHide}
+        show={this.props.show}
         animation={false}
         aria-labelledby='contained-modal-title-vcenter'
         centered

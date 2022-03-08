@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { toast } from 'react-toastify'
-import { Dropdown, ButtonGroup, Button } from 'react-bootstrap'
+import { Dropdown, ButtonGroup, Button, DropdownButton } from 'react-bootstrap'
 import store from '../../store/store'
 import { isDashboardRoute, isElectron, isSavedEndpoint } from '../common/utility'
 import tabService from '../tabs/tabService'
@@ -35,7 +35,6 @@ import indexedDbService from '../indexedDb/indexedDbService'
 import Authorization from './displayAuthorization'
 import LoginSignupModal from '../main/loginSignupModal'
 import PublicSampleResponse from './publicSampleResponse'
-import Notes from './notes'
 import ReactHtmlParser from 'react-html-parser'
 import bodyDescriptionService from './bodyDescriptionService'
 import { moveToNextStep } from '../../services/widgetService'
@@ -67,6 +66,16 @@ const SortableList = SortableContainer(({ children }) => {
     <>{children}</>
   )
 })
+
+const defaultDocViewData = [
+  { type: 'description', data: '' },
+  { type: 'host' },
+  { type: 'body' },
+  { type: 'params' },
+  { type: 'pathVariables' },
+  { type: 'headers' },
+  { type: 'notes', data: '' }
+]
 
 const mapStateToProps = (state) => {
   return {
@@ -386,6 +395,7 @@ class DisplayEndpoint extends Component {
 
       originalBody = endpoint.body
       const currentView = this.getCurrentView()
+      const docViewData = this.getDocViewData(endpoint)
       this.setState({
         data: {
           method: endpoint.requestType,
@@ -415,14 +425,7 @@ class DisplayEndpoint extends Component {
         postScriptText: endpoint.postScript || '',
         draftDataSet: true,
         currentView,
-        docViewData: [
-          { type: 'description', content: 'content' },
-          { type: 'host' },
-          { type: 'body' },
-          { type: 'params' },
-          { type: 'pathVariables' },
-          { type: 'headers' }
-        ]
+        docViewData
       }, () => {
         if (isDashboardRoute(this.props)) this.setUnsavedTabDataInIDB()
       })
@@ -2048,9 +2051,9 @@ class DisplayEndpoint extends Component {
   renderDefaultViewConfirmationModal () {
     return this.state.showViewConfirmationModal &&
       <DefaultViewConfirmationModal
-        show
+        show={this.state.showViewConfirmationModal}
         onHide={() => this.setState({ showViewConfirmationModal: false })}
-        setDefaultView={this.setDefaultView.bind(this)}
+        set_default_view={this.setDefaultView.bind(this)}
       />
   }
 
@@ -2066,7 +2069,7 @@ class DisplayEndpoint extends Component {
         <SortableList lockAxis='y' onSortEnd={({ oldIndex, newIndex }) => { this.onSortEnd(oldIndex, newIndex) }}>
           <div>
             {this.state.docViewData?.map((item, index) =>
-              <SortableItem key={item} index={index}>
+              <SortableItem key={index} index={index}>
                 <div>
                   {this.renderPublicItem(item)}
                 </div>
@@ -2101,98 +2104,51 @@ class DisplayEndpoint extends Component {
       case 'description': return (
         <div>
           <TinyEditor
-            content={item.content}
+            data={item.data}
           />
         </div>
       )
-      case 'body' : return this.state.data.body && this.state.originalBody &&
-          this.state.data.body.value !== null && (
-            <div>
-              <PublicBodyContainer
-                {...this.props}
-                set_body={this.setBody.bind(this)}
-                set_body_description={this.setDescription.bind(this)}
-                body={this.state.data.body}
-                original_body={this.state.originalBody}
-                public_body_flag={this.state.publicBodyFlag}
-                set_public_body={this.setPublicBody.bind(this)}
-                body_description={this.state.bodyDescription}
-              />
-            </div>
-      )
-      case 'host' : return (
+      case 'notes': return (
         <div>
-          {/* do not remove this code */}
-          {/* <h3 className='heading-2'>Endpoint Name</h3> */}
-          <div className='hm-endpoint-header'>
-            <div className='input-group'>
-              <div className='input-group-prepend'>
-                <span
-                  className={`api-label api-label-lg input-group-text ${this.state.data.method}`}
-                >
-                  {this.state.data.method}
-                </span>
-              </div>
-              <HostContainer
-                {...this.props}
-                groupId={this.state.groupId}
-                versionHost={this.props.versions[this.props.groups[this.state.groupId]?.versionId]?.host || ''}
-                environmentHost={this.props.environment?.variables?.BASE_URL?.currentValue || this.props.environment?.variables?.BASE_URL?.initialValue || ''}
-                updatedUri={this.state.data.updatedUri}
-                set_base_url={this.setBaseUrl.bind(this)}
-                customHost={this.state.endpoint.BASE_URL || ''}
-                endpointId={this.state.endpoint.id}
-                set_host_uri={this.setHostUri.bind(this)}
-                props_from_parent={this.propsFromChild.bind(this)}
-              />
-            </div>
-            {(this.props.highlights?.uri ? <i className='fas fa-circle' /> : null)}
-          </div>
-          <input
-            ref={this.uri}
-            type='hidden'
-            value={this.state.data.updatedUri}
-            name='updatedUri'
+          <TinyEditor
+            data={item.data}
           />
         </div>
       )
-      case 'headers' : return this.state.headers.length > 1 && (
+      case 'codeSample': return (
         <div>
-          <GenericTable
-            {...this.props}
-            title='Headers'
-            dataArray={this.state.originalHeaders}
-            props_from_parent={this.propsFromChild.bind(this)}
-            original_data={[...this.state.headers]}
-            currentView={this.state.currentView}
+          <TinyEditor
+            data={item.data}
           />
         </div>
       )
-      case 'params' : return this.state.params.length > 1 && (
+      case 'table': return (
         <div>
-          <GenericTable
-            {...this.props}
-            title='Params'
-            dataArray={this.state.originalParams}
-            props_from_parent={this.propsFromChild.bind(this)}
-            original_data={[...this.state.params]}
-            currentView={this.state.currentView}
+          <TinyEditor
+            data={item.data}
           />
         </div>
       )
-      case 'pathVariables' : return this.state.pathVariables &&
-        this.state.pathVariables.length !== 0 && (
-          <div>
-            <GenericTable
-              {...this.props}
-              title='Path Variables'
-              dataArray={this.state.pathVariables}
-              props_from_parent={this.propsFromChild.bind(this)}
-              original_data={[...this.state.pathVariables]}
-              currentView={this.state.currentView}
-            />
-          </div>
-      )
+      case 'host' : {
+        if (!isDashboardRoute(this.props)) return this.renderPublicHost()
+        else return this.renderHost()
+      }
+      case 'body' : {
+        if (!isDashboardRoute(this.props)) return this.renderPublicBodyContainer()
+        else return this.renderBodyContainer()
+      }
+      case 'headers' : {
+        if (!isDashboardRoute(this.props)) return this.renderPublicHeaders()
+        else return this.renderHeaders()
+      }
+      case 'params' : {
+        if (!isDashboardRoute(this.props)) return this.renderPublicParams()
+        else return this.renderParams()
+      }
+      case 'pathVariables' : {
+        if (!isDashboardRoute(this.props)) return this.renderPublicPathVariables()
+        else return this.renderPathVariables()
+      }
     }
   }
 
@@ -2208,14 +2164,28 @@ class DisplayEndpoint extends Component {
     const { endpoints, collections } = this.props
     const endpoint = endpoints[this.endpointId]
     const collectionId = this.extractCollectionId(endpoint.groupId)
-    const collectionView = collections[collectionId].view
+    const collectionView = collections[collectionId].defaultView
     if (window.localStorage.getItem('endpointView') && getCurrentUser()) {
       const userId = getCurrentUser().identifier
       const currentView = JSON.parse(window.localStorage.getItem('endpointView'))
       if (currentView[userId]) return currentView[userId]
-      return 'testing'
+      return collectionView
     }
     return collectionView
+  }
+
+  getDocViewData (endpoint) {
+    if (endpoint) {
+      if (!endpoint.docViewData || endpoint.docViewData.length === 0) {
+        const docViewData = [...defaultDocViewData]
+        docViewData.forEach((item, i) => {
+          if (item.type === 'description') item.data = endpoint.description
+          if (item.type === 'notes') item.data = endpoint?.notes || ''
+        })
+        return defaultDocViewData
+      }
+      return endpoint.docViewData
+    }
   }
 
   renderToggleView () {
@@ -2225,6 +2195,261 @@ class DisplayEndpoint extends Component {
           <Button onClick={() => this.switchView('testing')} variant='secondary'>Testing</Button>
           <Button onClick={() => this.switchView('doc')} variant='secondary'>Doc</Button>
         </ButtonGroup>
+      )
+    }
+  }
+
+  renderDocViewOptions () {
+    if (this.state.currentView === 'doc') {
+      return (
+        <ButtonGroup>
+          <DropdownButton as={ButtonGroup} title='Text' id='bg-nested-dropdown'>
+            <Dropdown.Item onClick={() => this.addBlock('description')}>Description</Dropdown.Item>
+            <Dropdown.Item onClick={() => this.addBlock('note')}>Note</Dropdown.Item>
+          </DropdownButton>
+          <Button onClick={() => this.addBlock('codeSample')}>Code Sample</Button>
+          <Button onClick={() => this.addBlock('table')}>Table</Button>
+        </ButtonGroup>
+      )
+    }
+  }
+
+  addBlock (blockType) {
+    const docViewData = [...this.state.docViewData]
+    docViewData.push({
+      type: blockType,
+      content: ''
+    })
+    this.setState({ docViewData })
+  }
+
+  renderBodyContainer () {
+    return (
+      <BodyContainer
+        {...this.props}
+        set_body={this.setBody.bind(this)}
+        set_body_description={this.setDescription.bind(this)}
+        body={
+            this.state.bodyFlag === true ? this.state.data.body : ''
+          }
+        Body={this.state.data.body}
+        endpoint_id={this.props.tab.id}
+        body_description={this.state.bodyDescription}
+        field_description={this.state.fieldDescription}
+        set_field_description={this.setFieldDescription.bind(
+          this
+        )}
+      />
+    )
+  }
+
+  renderPublicBodyContainer () {
+    return this.state.data.body && this.state.originalBody &&
+          this.state.data.body.value !== null && (
+            <PublicBodyContainer
+              {...this.props}
+              set_body={this.setBody.bind(this)}
+              set_body_description={this.setDescription.bind(this)}
+              body={this.state.data.body}
+              original_body={this.state.originalBody}
+              public_body_flag={this.state.publicBodyFlag}
+              set_public_body={this.setPublicBody.bind(this)}
+              body_description={this.state.bodyDescription}
+            />
+    )
+  }
+
+  renderHeaders () {
+    return (
+      <GenericTable
+        {...this.props}
+        title='Headers'
+        dataArray={this.state.originalHeaders}
+        props_from_parent={this.propsFromChild.bind(this)}
+        original_data={[...this.state.headers]}
+        currentView={this.state.currentView}
+      />
+    )
+  }
+
+  renderPublicHeaders () {
+    return this.state.headers.length > 1 && (
+      <GenericTable
+        {...this.props}
+        title='Headers'
+        dataArray={this.state.originalHeaders}
+        props_from_parent={this.propsFromChild.bind(this)}
+        original_data={[...this.state.headers]}
+        currentView={this.state.currentView}
+      />
+    )
+  }
+
+  renderParams () {
+    return (
+      <GenericTable
+        {...this.props}
+        title='Params'
+        dataArray={this.state.originalParams}
+        props_from_parent={this.propsFromChild.bind(this)}
+        original_data={[...this.state.params]}
+        open_modal={this.props.open_modal}
+        currentView={this.state.currentView}
+      />
+    )
+  }
+
+  renderPublicParams () {
+    return this.state.params.length > 1 && (
+      <div>
+        <GenericTable
+          {...this.props}
+          title='Params'
+          dataArray={this.state.originalParams}
+          props_from_parent={this.propsFromChild.bind(this)}
+          original_data={[...this.state.params]}
+          currentView={this.state.currentView}
+        />
+      </div>
+    )
+  }
+
+  renderPathVariables () {
+    return this.state.pathVariables &&
+      this.state.pathVariables.length !== 0 && (
+        <GenericTable
+          {...this.props}
+          title='Path Variables'
+          dataArray={this.state.pathVariables}
+          props_from_parent={this.propsFromChild.bind(this)}
+          original_data={[...this.state.pathVariables]}
+          currentView={this.state.currentView}
+        />
+    )
+  }
+
+  renderPublicPathVariables () {
+    return this.state.pathVariables &&
+        this.state.pathVariables.length !== 0 && (
+          <div>
+            <GenericTable
+              {...this.props}
+              title='Path Variables'
+              dataArray={this.state.pathVariables}
+              props_from_parent={this.propsFromChild.bind(this)}
+              original_data={[...this.state.pathVariables]}
+              currentView={this.state.currentView}
+            />
+          </div>
+    )
+  }
+
+  renderPublicHost () {
+    return (
+      <div>
+        {/* do not remove this code */}
+        {/* <h3 className='heading-2'>Endpoint Name</h3> */}
+        <div className='hm-endpoint-header'>
+          <div className='input-group'>
+            <div className='input-group-prepend'>
+              <span
+                className={`api-label api-label-lg input-group-text ${this.state.data.method}`}
+              >
+                {this.state.data.method}
+              </span>
+            </div>
+            <HostContainer
+              {...this.props}
+              groupId={this.state.groupId}
+              versionHost={this.props.versions[this.props.groups[this.state.groupId]?.versionId]?.host || ''}
+              environmentHost={this.props.environment?.variables?.BASE_URL?.currentValue || this.props.environment?.variables?.BASE_URL?.initialValue || ''}
+              updatedUri={this.state.data.updatedUri}
+              set_base_url={this.setBaseUrl.bind(this)}
+              customHost={this.state.endpoint.BASE_URL || ''}
+              endpointId={this.state.endpoint.id}
+              set_host_uri={this.setHostUri.bind(this)}
+              props_from_parent={this.propsFromChild.bind(this)}
+            />
+          </div>
+          {(this.props.highlights?.uri ? <i className='fas fa-circle' /> : null)}
+        </div>
+        <input
+          ref={this.uri}
+          type='hidden'
+          value={this.state.data.updatedUri}
+          name='updatedUri'
+        />
+      </div>
+    )
+  }
+
+  renderHost () {
+    return (
+      <div className='input-group-prepend'>
+        <div className='dropdown'>
+          <button
+            className={`api-label ${this.state.data.method} dropdown-toggle`}
+            type='button'
+            id='dropdownMenuButton'
+            data-toggle='dropdown'
+            aria-haspopup='true'
+            aria-expanded='false'
+            disabled={isDashboardRoute(this.props) ? null : true}
+          >
+            {this.state.data.method}
+          </button>
+          <div
+            className='dropdown-menu'
+            aria-labelledby='dropdownMenuButton'
+          >
+            {this.state.methodList.map((methodName) => (
+              <button
+                className='dropdown-item'
+                onClick={() => this.setMethod(methodName)}
+                key={methodName}
+              >
+                {methodName}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className='d-flex w-100 dashboard-url'>
+          <HostContainer
+            {...this.props}
+            groupId={this.state.groupId}
+            endpointId={this.state.endpoint.id}
+            customHost={this.state.endpoint.BASE_URL || ''}
+            environmentHost={this.props.environment?.variables?.BASE_URL?.currentValue || this.props.environment?.variables?.BASE_URL?.initialValue || ''}
+            versionHost={this.props.versions[this.props.groups[this.state.groupId]?.versionId]?.host || ''}
+            updatedUri={this.state.data.updatedUri}
+            set_host_uri={this.setHostUri.bind(this)}
+            set_base_url={this.setBaseUrl.bind(this)}
+            props_from_parent={this.propsFromChild.bind(this)}
+          />
+        </div>
+      </div>
+    )
+  }
+
+  renderDocViewOperations () {
+    if (this.state.currentView === 'doc') {
+      return (
+        <div>
+          <button
+            id='api_save_btn'
+            className={this.state.saveLoader ? 'btn btn-outline orange buttonLoader' : 'btn btn-outline orange'}
+            type='button'
+            onClick={() => this.handleSave()}
+          >
+            Save Draft
+          </button>
+          <button
+            className='btn btn-outline orange'
+            type='button'
+          >
+            Publish Endpoint
+          </button>
+        </div>
       )
     }
   }
@@ -2326,6 +2551,7 @@ class DisplayEndpoint extends Component {
             }
               <div className='endpoint-header' ref={this.scrollDiv}>
                 {this.renderToggleView()}
+                {this.renderDocViewOperations()}
                 {this.isNotDashboardOrDocView() && (
                   <div className='endpoint-name-container'>
                     {this.isNotDashboardOrDocView() && <h1 className='endpoint-title'>{this.state.data?.name || ''}</h1>}
@@ -2340,49 +2566,7 @@ class DisplayEndpoint extends Component {
                 this.isDashboardAndTestingView() &&
                   (
                     <div className='endpoint-url-container'>
-                      <div className='input-group-prepend'>
-                        <div className='dropdown'>
-                          <button
-                            className={`api-label ${this.state.data.method} dropdown-toggle`}
-                            type='button'
-                            id='dropdownMenuButton'
-                            data-toggle='dropdown'
-                            aria-haspopup='true'
-                            aria-expanded='false'
-                            disabled={this.isDashboardAndTestingView() ? null : true}
-                          >
-                            {this.state.data.method}
-                          </button>
-                          <div
-                            className='dropdown-menu'
-                            aria-labelledby='dropdownMenuButton'
-                          >
-                            {this.state.methodList.map((methodName) => (
-                              <button
-                                className='dropdown-item'
-                                onClick={() => this.setMethod(methodName)}
-                                key={methodName}
-                              >
-                                {methodName}
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-                        <div className='d-flex w-100 dashboard-url'>
-                          <HostContainer
-                            {...this.props}
-                            groupId={this.state.groupId}
-                            endpointId={this.state.endpoint.id}
-                            customHost={this.state.endpoint.BASE_URL || ''}
-                            environmentHost={this.props.environment?.variables?.BASE_URL?.currentValue || this.props.environment?.variables?.BASE_URL?.initialValue || ''}
-                            versionHost={this.props.versions[this.props.groups[this.state.groupId]?.versionId]?.host || ''}
-                            updatedUri={this.state.data.updatedUri}
-                            set_host_uri={this.setHostUri.bind(this)}
-                            set_base_url={this.setBaseUrl.bind(this)}
-                            props_from_parent={this.propsFromChild.bind(this)}
-                          />
-                        </div>
-                      </div>
+                      {this.renderHost()}
                       <div className='d-flex uriContainerWrapper'>
                         <button
                           className={this.state.loader ? 'btn btn-primary buttonLoader' : 'btn btn-primary'}
@@ -2579,26 +2763,10 @@ class DisplayEndpoint extends Component {
                             role='tabpanel'
                             aria-labelledby='pills-params-tab'
                           >
-                            <GenericTable
-                              {...this.props}
-                              title='Params'
-                              dataArray={this.state.originalParams}
-                              props_from_parent={this.propsFromChild.bind(this)}
-                              original_data={[...this.state.params]}
-                              open_modal={this.props.open_modal}
-                            />
-                            {this.state.pathVariables &&
-                              this.state.pathVariables.length !== 0 && (
-                                <div>
-                                  <GenericTable
-                                    {...this.props}
-                                    title='Path Variables'
-                                    dataArray={this.state.pathVariables}
-                                    props_from_parent={this.propsFromChild.bind(this)}
-                                    original_data={[...this.state.pathVariables]}
-                                  />
-                                </div>
-                            )}
+                            {this.renderParams()}
+                            <div>
+                              {this.renderPathVariables()}
+                            </div>
                           </div>
                           <div
                             className={
@@ -2630,13 +2798,7 @@ class DisplayEndpoint extends Component {
                             aria-labelledby='pills-headers-tab'
                           >
                             <div>
-                              <GenericTable
-                                {...this.props}
-                                title='Headers'
-                                dataArray={this.state.originalHeaders}
-                                props_from_parent={this.propsFromChild.bind(this)}
-                                original_data={[...this.state.headers]}
-                              />
+                              {this.renderHeaders()}
                             </div>
                           </div>
                           <div
@@ -2645,21 +2807,7 @@ class DisplayEndpoint extends Component {
                             role='tabpanel'
                             aria-labelledby='pills-body-tab'
                           >
-                            <BodyContainer
-                              {...this.props}
-                              set_body={this.setBody.bind(this)}
-                              set_body_description={this.setDescription.bind(this)}
-                              body={
-                                this.state.bodyFlag === true ? this.state.data.body : ''
-                              }
-                              Body={this.state.data.body}
-                              endpoint_id={this.props.tab.id}
-                              body_description={this.state.bodyDescription}
-                              field_description={this.state.fieldDescription}
-                              set_field_description={this.setFieldDescription.bind(
-                                this
-                              )}
-                            />
+                            {this.renderBodyContainer()}
                           </div>
                           <div
                             className='tab-pane fade'
@@ -2694,7 +2842,7 @@ class DisplayEndpoint extends Component {
                       : this.renderDocView()
                   }
                     {
-                  this.isNotDashboardOrDocView() && (
+                  !isDashboardRoute(this.props) && (
                     <div className='text-left'>
                       <button
                         className={this.state.loader ? 'btn btn-primary btn-lg mt-4 buttonLoader' : 'mt-4 btn btn-lg btn-primary'}
@@ -2713,16 +2861,6 @@ class DisplayEndpoint extends Component {
                     this.displayResponse()
                   }
                   </div>
-                  <Notes
-                    {...this.props}
-                    submitNotes={(data) => {
-                      if (this.state.endpoint.id === data.id) {
-                        this.setState({ endpoint: { ...this.state.endpoint, notes: data.notes } })
-                      }
-                    }}
-                    note={this.state.endpoint?.notes || ''}
-                    endpointId={this.state.endpoint?.id}
-                  />
                 </div>
               </div>
 
@@ -2750,6 +2888,7 @@ class DisplayEndpoint extends Component {
               />
            )
           }
+            {this.renderDocViewOptions()}
           </div>
         </div>
         )
