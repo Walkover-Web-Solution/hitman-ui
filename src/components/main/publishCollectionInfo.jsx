@@ -4,6 +4,8 @@ import { toast } from 'react-toastify'
 import { isAdmin } from '../auth/authService'
 import './publicCollectionInfo.scss'
 import SettingIcon from '../../assets/icons/SettingIcon.png'
+import FileIcon from '../../assets/icons/file.svg'
+import DocIcon from '../../assets/icons/twitch.svg'
 import { ReactComponent as ExternalLinks } from '../../assets/icons/externalLinks.svg'
 import PublishSidebar from '../publishSidebar/publishSidebar'
 import { openExternalLink } from '../common/utility'
@@ -47,18 +49,27 @@ class PublishCollectionInfo extends Component {
   }
 
   renderPublicUrl () {
-    // build default url
     const url = defaultDomain + '/p/' + this.props.collectionId
     return (
-      <div className='sidebar-public-url text-link text-center d-flex' onClick={() => { openExternalLink(url) }}>
-        <div className='text-truncate'>{url}</div> <span className='icon'> <ExternalLinks /></span>
-      </div>
+      <button onClick={() => { openExternalLink(url) }}>
+        <div className='sidebar-public-url text-link text-center d-flex align-items-center'>
+          <span className='icon d-flex mr-1'> <ExternalLinks /></span>
+          <div className='text-truncate'>{url}</div>
+        </div>
+      </button>
     )
   }
 
   // Function is yet to complete
   managePublicDoc () {
-    console.log('Manage public doc')
+    return (
+      <button onClick={() => { isAdmin() ? this.openPublishSettings() : this.showAccessDeniedToast() }}>
+        <div className='d-flex align-items-center cursor-pointer'>
+          <img className='mr-1' src={FileIcon} alt='' />
+          <span>Manage Public Doc</span>
+        </div>
+      </button>
+    )
   }
 
   // Function is yet to complete
@@ -66,6 +77,14 @@ class PublishCollectionInfo extends Component {
     this.props.history.push({
       pathname: `/orgs/${this.props.match.params.orgId}/admin/feedback`
     })
+    return (
+      <button>
+        <div className='d-flex align-items-center'>
+          <img className='mr-1' src={DocIcon} alt='' />
+          <span>API Doc Feedback</span>
+        </div>
+      </button>
+    )
   }
 
   getPublicEntityCount () {
@@ -129,8 +148,8 @@ class PublishCollectionInfo extends Component {
     return (
       !currentCollection?.importedFromMarketPlace &&
         <div className='public-colection-info'>
-          <div onClick={() => { this.managePublicDoc() }}>Manage Public Doc</div>
-          <div onClick={() => { this.apiDocFeedback() }}>API Doc Feedback</div>
+          {this.managePublicDoc()}
+          <div className='d-flex align-items-center'>{this.apiDocFeedback()}</div>
           <div className='publicurl'>{this.renderPublicUrl()}</div>
         </div>
     )

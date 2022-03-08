@@ -325,6 +325,11 @@ $border-color: rgba(227, 228, 230, 0.7);
           border-right: 0;
           border-top-right-radius: 0;
           border-bottom-right-radius: 0;
+          transition: all 0.3s ease-in;
+          &:focus{
+            outline: none;
+            background-color: $secondary-color;
+          }
         }
       }
 
@@ -433,7 +438,7 @@ $border-color: rgba(227, 228, 230, 0.7);
       padding: 0.35rem 0.75rem;
       border: none;
       color: $text-color;
-      font-size: $font-normal;
+      font-size: $font-medium;
       border-radius: 0;
       transition: all 0.3s ease-in;
       &:hover,  &.active {
@@ -458,8 +463,8 @@ $border-color: rgba(227, 228, 230, 0.7);
   flex-direction: column;
   margin: 0;
   padding: 15px;
-  border: 1px solid #E0E0E0;
-
+  border: 1px solid $outline-color;
+  border-radius: $border-radius;
   .response-status {
     display: flex;
     justify-content: space-between;
@@ -1222,10 +1227,9 @@ table#custom-generic-table {
 }
 
 .hm-public-table table {
-  thead tr th {
-    font-weight: 400 !important;
-    color: #828282;
+  thead tr th {;
     border: none;
+    font-weight: normal !important;
   }
   tbody tr td {
     border: none;
