@@ -774,8 +774,9 @@ table#custom-generic-table {
   display: flex;
   flex-direction: row;
   flex: 1;
-  background-color: #fff;
+  background-color: #F3F3F3;
   min-height: 220px;
+  margin-top: 1rem;
 }
 
 .authorization-selector-wrapper {
@@ -843,6 +844,7 @@ table#custom-generic-table {
       label {
         // flex: 0.7;
         min-width: 100px;
+        text-align: left;
       }
 
       input {

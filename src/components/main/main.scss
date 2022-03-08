@@ -1054,7 +1054,6 @@ body .form-control {
     outline: none;
     border: 1px solid #091E42;
     box-shadow: none;
-    background-color: $input-text-color;
   }
   &::placeholder{
     color: #BDBDBD !important;
@@ -3209,5 +3208,24 @@ ul.react-autocomplete-input {
   }
   input#rc-editable-input-1 {
     max-width: 3.5rem;
+  }
+}
+
+.outline-border{
+  background-color: #fff !important;
+  border: 1px solid #E6DBD4 !important;
+  &:focus{
+    border: 1px solid #091E42 !important;
+  }
+}
+
+#authorization-form{
+  & input{
+    max-width: 15rem;
+  }
+  & label{
+    color: #212121;
+    font-weight: normal;
+    margin-top: 1rem;
   }
 }

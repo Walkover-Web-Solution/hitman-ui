@@ -312,7 +312,7 @@ class Authorization extends Component {
             <label>Type</label>
             <div className='dropdown'>
               <button
-                className='btn dropdown-toggle'
+                className='btn dropdown-toggle outline-border'
                 id='dropdownMenuButton'
                 data-toggle='dropdown'
                 aria-haspopup='true'
@@ -343,7 +343,7 @@ class Authorization extends Component {
                 <label>Add authorization data to</label>
                 <div className='dropdown'>
                   <button
-                    className='btn dropdown-toggle'
+                    className='btn dropdown-toggle outline-border'
                     id='dropdownMenuButton'
                     data-toggle='dropdown'
                     aria-haspopup='true'
@@ -383,34 +383,32 @@ class Authorization extends Component {
         )}
 
         {this.state.authorizationType === 'basicAuth' && (
-          <div className='authorization-editor-wrapper'>
-            <form>
-              <div className='input-field-wrapper form-group'>
-                <label>Username</label>
+          <div className='authorization-editor-wrapper' id='authorization-form'>
+            <form className='form-group'>
+              <label>Username</label>
+              <input
+                className='form-control'
+                name='username'
+                value={this.state.basicAuth.username}
+                onChange={this.handleChange.bind(this)}
+              />
+              <label htmlFor='password'>Password</label>
+              <div className='d-flex flex-row align-items-center'>
                 <input
                   className='form-control'
-                  name='username'
-                  value={this.state.basicAuth.username}
-                  onChange={this.handleChange.bind(this)}
-                />
-              </div>
-
-              <div className='input-field-wrapper form-group'>
-                <label>Password</label>
-                <input
-                  className='form-control'
+                  id='password'
                   type={
-                    this.state.showPassword
-                      ? this.state.showPassword === true
-                          ? null
-                          : 'password'
-                      : 'password'
-                  }
+                      this.state.showPassword
+                        ? this.state.showPassword === true
+                            ? null
+                            : 'password'
+                        : 'password'
+                    }
                   name='password'
                   value={this.state.basicAuth.password}
                   onChange={this.handleChange.bind(this)}
                 />
-                <label className='mb-0 ml-3'>
+                <label className='mb-3 ml-3'>
                   <input
                     className='mr-1'
                     type='checkbox'
