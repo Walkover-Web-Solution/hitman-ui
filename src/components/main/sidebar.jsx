@@ -562,7 +562,7 @@ class SideBar extends Component {
   renderSwitchProducts () {
     return (
       <Dropdown className='switch-products mb-1'>
-        <Dropdown.Toggle className='bg-none p-0 border-none'>
+        <Dropdown.Toggle className='bg-none p-0 border-0'>
           <img src={HitmanLogo} alt='' />
         </Dropdown.Toggle>
         <Dropdown.Menu>
