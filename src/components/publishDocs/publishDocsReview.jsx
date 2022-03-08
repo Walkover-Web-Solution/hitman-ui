@@ -11,6 +11,23 @@ class PublishDocsReview extends Component {
     }
   }
 
+  dummyFeedback = [
+    {
+      id: 'f1',
+      page: 'trial',
+      email: 'abc@example.com',
+      quality: +1,
+      comment: 'API doc is clear'
+    },
+    {
+      id: 'f2',
+      page: 'trial',
+      email: 'xyz@example.com',
+      quality: -1,
+      comment: 'API doc is not clear'
+    }
+  ]
+
   renderHostedApiHeading (heading) {
     return (
       <div className='hosted-doc-heading'>
@@ -113,23 +130,24 @@ class PublishDocsReview extends Component {
           <div className='col'>Quality</div>
           <div className='col'>Comment</div>
         </div>
-        {this.renderFeedback()}
+        {this.dummyFeedback.map(feedback =>
+          this.renderFeedback(feedback))}
         <div className='row'>
           <div className='col'>
-            Total Score: -1
+            Total Score: {this.dummyFeedback.reduce((prev, current) => prev + current.quality, 0)}
           </div>
         </div>
       </div>
     )
   }
 
-  renderFeedback () {
+  renderFeedback (feedback) {
     return (
       <div className='row'>
-        <div className='col'>API send</div>
-        <div className='col'>rachit@msg91.com</div>
-        <div className='col'>-1</div>
-        <div className='col'>API doc is not clear</div>
+        <div className='col'>{feedback.page}</div>
+        <div className='col'>{feedback.email}</div>
+        <div className='col'>{feedback.quality}</div>
+        <div className='col'>{feedback.comment}</div>
       </div>
     )
   }
