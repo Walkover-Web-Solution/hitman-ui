@@ -145,7 +145,15 @@ class CustomTabs extends Component {
           }
         }
         break
-      case 'collection-setting': return <>Settings</>
+      case 'collection-setting':
+        const collectionName = this.props.collections[tabId]?.name || 'Collection'
+        return (
+          <div className='tabs-name'>
+            <label className='endpoint-name'>{collectionName}</label>
+            <br />
+            <label className='sub-label'>settings</label>
+          </div>
+        )
       default:
     }
   }
