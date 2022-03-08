@@ -72,9 +72,10 @@ class PublishCollectionInfo extends Component {
   }
 
   redirectToApiFeedback () {
-    this.props.history.push({
-      pathname: `/orgs/${this.props.match.params.orgId}/admin/feedback`
-    })
+    const collectionId = this.props.collectionId
+    if (collectionId) {
+      this.props.history.push(`/orgs/${this.props.match.params.orgId}/dashboard/collection/${collectionId}/feedback`)
+    }
   }
 
   apiDocFeedback () {

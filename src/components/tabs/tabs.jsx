@@ -154,6 +154,15 @@ class CustomTabs extends Component {
           </>
         )
       }
+      case 'collection-feedback': {
+        const collectionName = this.props.collections[tabId]?.name || 'Collection'
+        return (
+          <>
+            {collectionName}
+            <span className='sub-label'>Feedback</span>
+          </>
+        )
+      }
       default:
     }
   }

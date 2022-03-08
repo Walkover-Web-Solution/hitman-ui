@@ -60,6 +60,8 @@ function selectTab (props, tabId) {
     })
   } else if (tab.type === 'collection-setting') {
     props.history.push(`/orgs/${props.match.params.orgId}/dashboard/collection/${tab.id}/settings`)
+  } else if (tab.type === 'collection-feedback') {
+    props.history.push(`/orgs/${props.match.params.orgId}/dashboard/collection/${tab.id}/feedback`)
   } else {
     props.history.push({
       pathname: `/orgs/${props.match.params.orgId}/dashboard/${tab.type}/${tab.id}`
