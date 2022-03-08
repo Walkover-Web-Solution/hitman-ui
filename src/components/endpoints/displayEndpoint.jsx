@@ -2135,29 +2135,27 @@ class DisplayEndpoint extends Component {
                   <div
                     className={isDashboardRoute(this.props) ? 'hm-panel col-12' : null}
                   >
-                    <div className='d-flex justify-content-between'>
-                      <div className='flex-grow-1'>
-                        {this.state.showEndpointFormModal && (
-                          <SaveAsSidebar
-                            {...this.props}
-                            onHide={() => this.closeEndpointFormModal()}
-                            set_group_id={this.setGroupId.bind(this)}
-                            name={this.state.data.name}
-                            description={this.state.data.description}
-                            save_endpoint={this.handleSave.bind(this)}
-                            saveAsLoader={this.state.saveAsLoader}
-                          />
-                        )}
-                        <DisplayDescription
+                    <div className='position-relative top-part'>
+                      {this.state.showEndpointFormModal && (
+                        <SaveAsSidebar
                           {...this.props}
-                          endpoint={this.state.endpoint}
-                          data={this.state.data}
-                          old_description={this.state.oldDescription}
-                          groupId={this.state.groupId ? this.state.groupId : null}
-                          props_from_parent={this.propsFromDescription.bind(this)}
-                          alterEndpointName={(name) => this.alterEndpointName(name)}
+                          onHide={() => this.closeEndpointFormModal()}
+                          set_group_id={this.setGroupId.bind(this)}
+                          name={this.state.data.name}
+                          description={this.state.data.description}
+                          save_endpoint={this.handleSave.bind(this)}
+                          saveAsLoader={this.state.saveAsLoader}
                         />
-                      </div>
+                      )}
+                      <DisplayDescription
+                        {...this.props}
+                        endpoint={this.state.endpoint}
+                        data={this.state.data}
+                        old_description={this.state.oldDescription}
+                        groupId={this.state.groupId ? this.state.groupId : null}
+                        props_from_parent={this.propsFromDescription.bind(this)}
+                        alterEndpointName={(name) => this.alterEndpointName(name)}
+                      />
                       {this.renderSaveButton()}
                     </div>
                   </div>
@@ -2178,7 +2176,7 @@ class DisplayEndpoint extends Component {
               {
                 isDashboardRoute(this.props)
                   ? (
-                    <div className='endpoint-url-container mt-3'>
+                    <div className='endpoint-url-container'>
                       <div className='input-group-prepend'>
                         <div className='dropdown'>
                           <button

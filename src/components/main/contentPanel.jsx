@@ -151,12 +151,12 @@ class ContentPanel extends Component {
 
         this.props.history.push({
           pathname:
-            tab.type !== "collection-setting"
+            tab.type !== 'collection-setting'
               ? `/orgs/${orgId}/dashboard/${tab.type}/${
-                  tab.status === "NEW" ? "new" : tabId
+                  tab.status === 'NEW' ? 'new' : tabId
                 }`
-              : `/orgs/${orgId}/dashboard/collection/${tabId}/settings`,
-        });
+              : `/orgs/${orgId}/dashboard/collection/${tabId}/settings`
+        })
       } else {
         this.props.add_new_tab()
       }
