@@ -10,18 +10,64 @@ class PublishDocsReview extends Component {
     )
   }
 
-  showCollections () {
-    if (this.props.collections) {
-      return (
-        Object.keys(this.props.collections).map(
-          (id, index) => (
-            !this.props.collections[id]?.importedFromMarketPlace &&
-              <Dropdown.Item key={index}>
-                {this.props.collections[id]?.name}
-              </Dropdown.Item>
-          ))
-      )
+  showEndpointsAndPages () {
+    const collectionId = this.props.selected_collection_id
+    const versionIds = Object.keys(this.props.versions).filter(
+      (vId) => this.props.versions[vId].collectionId === collectionId
+    )
+    const groupIds = Object.keys(this.props.groups)
+    const groupsArray = []
+    for (let i = 0; i < groupIds.length; i++) {
+      const groupId = groupIds[i]
+      const group = this.props.groups[groupId]
+
+      if (versionIds.includes(group.versionId)) {
+        groupsArray.push(groupId)
+      }
     }
+
+    const endpointIds = Object.keys(this.props.endpoints)
+    const pageIds = Object.keys(this.props.pages)
+    const endpointsArray = []
+    const pagesArray = []
+
+    for (let i = 0; i < endpointIds.length; i++) {
+      const endpointId = endpointIds[i]
+      const endpoint = this.props.endpoints[endpointId]
+
+      if (groupsArray.includes(endpoint.groupId)) {
+        if (this.props.endpoints[endpointId].isPublished) { endpointsArray.push(endpointId) }
+      }
+    }
+
+    for (let i = 0; i < pageIds.length; i++) {
+      const pageId = pageIds[i]
+      const pages = this.props.pages[pageId]
+
+      if (groupsArray.includes(pages.groupId)) {
+        if (this.props.pages[pageId].isPublished) { pagesArray.push(pageId) }
+      }
+    }
+
+    return (
+      <>
+        {(endpointsArray.length === 0 && pagesArray.length === 0)
+          ? 'No published endpoints or pages'
+          : endpointsArray.length > 0
+            ? endpointsArray.map(
+                (id, index) => (
+                  <Dropdown.Item key={index}>
+                    {this.props.endpoints[id]?.name}
+                  </Dropdown.Item>
+                ))
+            : pagesArray.map(
+              (id, index) => (
+                <Dropdown.Item key={index}>
+                  {this.props.pages[id]?.name}
+                </Dropdown.Item>
+              ))}
+      </>
+    )
   }
 
   renderPageSelectOption () {
@@ -31,7 +77,7 @@ class PublishDocsReview extends Component {
           Select Page
         </Dropdown.Toggle>
         <Dropdown.Menu>
-          {this.showCollections()}
+          {this.showEndpointsAndPages()}
         </Dropdown.Menu>
       </Dropdown>
     )

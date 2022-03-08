@@ -65,6 +65,7 @@ class TabContent extends Component {
         return (
           <PublishDocsReview
             {...this.props}
+            selected_collection_id={tabId}
           />
         )
       default:
