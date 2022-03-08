@@ -16,7 +16,7 @@ const choices = {
     key: collectionsModalEnum.IMPORT,
     label: 'Import',
     modalTitle: 'Import Collection',
-    modalSize: 'lg',
+    modalSize: 'sm',
     disabled: false
   },
   [collectionsModalEnum.NEW]: {
@@ -24,16 +24,17 @@ const choices = {
     label: 'Create New',
     disabled: false,
     modalTitle: 'Create New Collection',
-    modalSize: 'lg',
+    modalSize: 'sm',
     id: 'add_collection_create_new_btn'
-  },
+  }
+/*   ,
   [collectionsModalEnum.MARKETPLACE]: {
     key: collectionsModalEnum.MARKETPLACE,
     label: 'Marketplace',
     modalTitle: 'Import Collection From Marketplace',
     modalSize: 'xl',
     disabled: false
-  }
+  } */
 }
 
 class CollectionsModal extends Component {
@@ -47,7 +48,7 @@ class CollectionsModal extends Component {
 
   renderChoices () {
     return (
-      <div className='d-flex justify-content-around'>
+      <div className='d-flex justify-content-center'>
         {Object.values(choices).map((choice) => (
           <div
             key={choice.key}
@@ -68,7 +69,7 @@ class CollectionsModal extends Component {
     switch (this.state.choiceSelected) {
       case collectionsModalEnum.IMPORT: return this.renderImportForm()
       case collectionsModalEnum.NEW: return this.renderAddCollectionForm()
-      case collectionsModalEnum.MARKETPLACE: return this.renderMarketplace()
+      // case collectionsModalEnum.MARKETPLACE: return this.renderMarketplace()
       default: return null
     }
   }
@@ -113,7 +114,7 @@ class CollectionsModal extends Component {
 
     /** Set Default values */
     let dialogClassName = 'collection-choice-modal'
-    let modalSize = 'lg'
+    let modalSize = 'sm'
     let modalTitle = this.props.title
     let modalBody = this.renderChoices()
 
@@ -125,7 +126,7 @@ class CollectionsModal extends Component {
     }
 
     return (
-      <Modal size={modalSize} centered onHide={this.props.onHide} show={this.props.show} dialogClassName={dialogClassName}>
+      <Modal size={modalSize} onHide={this.props.onHide} show={this.props.show} dialogClassName={dialogClassName}>
         <div>
           <Modal.Header className='custom-collection-modal-container' closeButton>
             <Modal.Title id='contained-modal-title-vcenter'>

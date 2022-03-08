@@ -8,6 +8,7 @@ import { connect } from 'react-redux'
 import { addCollection, updateCollection } from './redux/collectionsActions'
 import { moveToNextStep } from '../../services/widgetService'
 import { URL_VALIDATION_REGEX } from '../common/constants'
+import DefaultViewModal from './defaultViewModal/defaultViewModal'
 
 const mapStateToProps = (state) => {
   return {
@@ -33,11 +34,13 @@ class CollectionForm extends Form {
         description: '',
         keyword: '',
         keyword1: '',
-        keyword2: ''
+        keyword2: '',
+        defaultView: 'testing'
       },
       collectionId: '',
       errors: {},
-      show: true
+      show: true,
+      step: 1
     }
 
     this.schema = {
@@ -46,7 +49,8 @@ class CollectionForm extends Form {
       keyword: Joi.string().trim().allow(null, '').label('Keywords'),
       keyword1: Joi.string().trim().allow(null, '').label('Keywords'),
       keyword2: Joi.string().trim().allow(null, '').label('Keywords'),
-      description: Joi.string().allow(null, '').label('Description')
+      description: Joi.string().allow(null, '').label('Description'),
+      defaultView: Joi.string().allow(null, '').label('Default View')
     }
   }
 
@@ -73,11 +77,12 @@ class CollectionForm extends Form {
     this.setState({ data, collectionId })
   }
 
-  async onEditCollectionSubmit () {
+  async onEditCollectionSubmit (defaultView) {
     this.props.onHide()
     this.props.update_collection({
       ...this.state.data,
-      id: this.state.collectionId
+      id: this.state.collectionId,
+      defaultView
     })
     this.setState({
       data: {
@@ -91,7 +96,7 @@ class CollectionForm extends Form {
     })
   }
 
-  async onAddCollectionSubmit () {
+  async onAddCollectionSubmit (defaultView) {
     this.props.onHide()
     const requestId = shortid.generate()
     const defaultDocProperties = {
@@ -99,7 +104,7 @@ class CollectionForm extends Form {
       defaultTitle: '',
       versionHosts: {}
     }
-    this.props.add_collection({ ...this.state.data, docProperties: defaultDocProperties, requestId }, this.props.open_selected_collection)
+    this.props.add_collection({ ...this.state.data, docProperties: defaultDocProperties, requestId, defaultView }, this.props.open_selected_collection)
     this.setState({
       data: {
         name: '',
@@ -107,13 +112,14 @@ class CollectionForm extends Form {
         description: '',
         keyword: '',
         keyword1: '',
-        keyword2: ''
+        keyword2: '',
+        defaultView: 'testing'
       }
     })
     moveToNextStep(1)
   }
 
-  async doSubmit () {
+  async doSubmit (defaultView) {
     const body = this.state.data
     body.name = toTitleCase(body.name.trim())
     body.website = body.website.trim()
@@ -121,40 +127,67 @@ class CollectionForm extends Form {
     delete body.keyword1
     delete body.keyword2
     if (this.props.title === 'Edit Collection') {
-      this.onEditCollectionSubmit()
+      this.onEditCollectionSubmit(defaultView)
     }
     if (this.props.title === 'Add new Collection') {
-      this.onAddCollectionSubmit()
+      this.onAddCollectionSubmit(defaultView)
     }
   }
 
-  renderForm () {
+  saveCollection (defaultView) {
+    this.doSubmit(defaultView)
+  }
+
+  renderCollectionDetailsForm () {
     return (
-      <form onSubmit={this.handleSubmit}>
+      <>
         {this.renderInput('name', 'Name', 'Collection Name', true, true, false, '*collection name accepts min 3 and max 20 characters')}
         {this.renderInput('website', 'Website', 'https://yourwebsite.com', true, false, true)}
-        {/* <div className='row'>
-          <div className='col'>
-            {this.renderInput('keyword', 'Keyword 1', 'Keyword 1', true)}
-          </div>
-          <div className='col'>
-            {this.renderInput('keyword1', 'Keyword 2', 'Keyword 2')}
-          </div>
-          <div className='col'>
-            {this.renderInput('keyword2', 'Keyword 3', 'Keyword 3')}
-          </div>
-        </div> */}
-        <div className='text-left mt-4 mb-2'>
-          {this.renderButton('Submit')}
+      </>
+    )
+  }
 
-          <button
-            className='btn btn-secondary outline btn-lg outline ml-2'
-            onClick={(e) => { this.handleCancel(e) }}
-          >
-            Cancel
-          </button>
-        </div>
-      </form>
+  renderDefaultViewForm () {
+    return (
+      <DefaultViewModal saveCollection={this.saveCollection.bind(this)} />
+    )
+  }
+
+  renderForm () {
+    const { step } = this.state
+    return (
+      <>
+        {step === 1 && this.renderCollectionDetailsForm()}
+        {step === 2 && this.renderDefaultViewForm()}
+        {step === 1 ? this.renderNextButton() : this.renderBackButton()}
+      </>
+    )
+  }
+
+  onBack () {
+    this.setState({ step: 1 })
+  }
+
+  onNext () {
+    const errors = this.validate()
+    this.setState({ errors: errors || {} })
+    if (errors) return
+    this.setState({ step: 2 })
+  }
+
+  renderNextButton () {
+    return (
+      <button className='btn btn-primary' onClick={() => this.onNext()}>
+        Next
+      </button>
+    )
+  }
+
+  renderBackButton () {
+    return (
+      <button className='btn btn-primary mt-2' onClick={() => this.onBack()}>
+        Back
+      </button>
     )
   }
 
@@ -167,7 +200,7 @@ class CollectionForm extends Form {
     return (
       <div onKeyPress={(e) => { onEnter(e, this.handleKeyPress.bind(this)) }}>
         <Modal
-          size='lg'
+          size='sm'
           animation={false}
           aria-labelledby='contained-modal-title-vcenter'
           centered
