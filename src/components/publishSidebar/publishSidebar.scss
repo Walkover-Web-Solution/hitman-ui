@@ -17,7 +17,6 @@
     .version-accordian-toggle{
       border: none;
       border: 0.5px solid #E6DBD4;
-      border-bottom: none !important;
       padding: 7px 15px;
       border-radius: 3px;
 
@@ -52,7 +51,7 @@
 }
 
 .publish-sidebar-container{
-  padding: 15px;
+  padding: 30px;
 }
 
 .sidebar-api-version-accordian{
@@ -74,6 +73,7 @@
 .publish-sidebar-accordian-collapse{
   background-color: #F3F3F3;
   border: 0.5px solid #E6DBD4;
+  min-height: 4rem;
 }
 
 .sidebar-version-checkbox{
@@ -111,4 +111,38 @@
   font-weight: 400 !important;
   color: #333333 !important;
   font-size: 14px !important;
+}
+
+.publish-api-dropdown{
+  height: 2rem !important;
+}
+.customise-btn{
+  width: 5rem;
+  height: 32px;
+  font-weight: normal;
+  transition: 0.3s;
+}
+#api-next-btn{
+  @extend .customise-btn;
+  background-color: #F2994A;
+  color: #fff;
+  &:hover{
+    background-color: rgb(248, 248, 248);
+    border: 1px solid #F2994A;
+    color: #F2994A;
+  }
+}
+#api-cancel-btn{
+  @extend .customise-btn;
+  border: 1px solid rgb(141, 10, 10);
+  color: rgb(141, 10, 10);
+  &:hover{
+    background-color: rgb(141, 10, 10);
+    color: #fff;
+  }
+}
+
+.version-outline-border{
+  border: 1px solid #E6DBD4 !important;
+  border-radius: 2px !important;
 }

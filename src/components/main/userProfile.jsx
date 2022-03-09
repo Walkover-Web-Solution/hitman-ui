@@ -347,7 +347,7 @@ export class UserProfile extends React.Component {
           <Dropdown.Item style={style}>
             <div
               key={item?.id}
-              className='org-listing'
+              className='org-listing d-flex justify-content-between'
               onClick={() => {
                 const currentId = productName === products.EBL ? item?.id : item?.identifier
                 this.switchOrg(currentId)
@@ -363,7 +363,8 @@ export class UserProfile extends React.Component {
       return (
         (orgsLength > 1 &&
           <div className='OrgsBlock'>
-            <div className='text-uppercase text-sm-bold'>SWITCH ORGS</div>
+            <Dropdown.Divider />
+            <div className='text-uppercase text-sm-bold plr-3'>SWITCH ORGS</div>
             <div className='orgs-listing-container'>
               {this.state.moreFlag &&
                 <div className='p-2 search-profile'>
@@ -376,7 +377,11 @@ export class UserProfile extends React.Component {
                 </div>}
               {filteredOrgsArray.length === 0
                 ? <div className='pb-2 text-center w-100'><small className='body-6'>No Organizations Found</small></div>
-                : <List height={filteredOrgsArray.length < 5 ? 36 * filteredOrgsArray.length : 180} itemCount={this.getItemCount(filteredOrgsArray.length)} itemSize={35}> {orgItem} </List>}
+                : (
+                  <List height={filteredOrgsArray.length < 5 ? 36 * filteredOrgsArray.length : 180} itemCount={this.getItemCount(filteredOrgsArray.length)} itemSize={35}>
+                    {orgItem}
+                  </List>
+                  )}
             </div>
             {orgsLength > 5 &&
               <div className='ShowMore text-center' onClick={() => this.setShowFlag()}>
