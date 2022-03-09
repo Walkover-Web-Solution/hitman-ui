@@ -447,7 +447,6 @@ h4.hm-sidebar-title span {
     background: $secondary-color;
   }
   table#custom-generic-table {
-    background: transparent !important;
     button.btn.cross-button {
       padding-top: 0;
       padding-bottom: 0;
@@ -479,7 +478,6 @@ h4.hm-sidebar-title span {
             vertical-align: middle;
             opacity: 1;
             color: #232427;
-
             &.keyWrapper {
               width: 150px !important;
               word-break: break-all;
@@ -570,10 +568,6 @@ h4.hm-sidebar-title span {
   font-weight: 600;
   font-size: 22px;
   margin-bottom: 5px;
-}
-
-.mainContentWrapperPublic .endpoint-name-container p {
-  margin: 25px 0 28px;
 }
 
 .respHeading {

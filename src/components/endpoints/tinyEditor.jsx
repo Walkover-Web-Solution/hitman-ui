@@ -14,7 +14,7 @@ export default function TinyEditor (props) {
         onInit={(evt, editor) => { editorRef.current = editor }}
         initialValue='<p>{This is the initial content of the editor.}</p>'
         init={{
-          height: 500,
+          height: 250,
           menubar: false,
           plugins: [
             'advlist autolink lists link image charmap print preview anchor',
@@ -25,10 +25,11 @@ export default function TinyEditor (props) {
            'bold italic backcolor | alignleft aligncenter ' +
            'alignright alignjustify | bullist numlist outdent indent | ' +
            'removeformat | help',
-          content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+          content_style: 'body { font-family:Roboto; font-size:12px }',
+          skin: 'oxide-dark'
         }}
       />
-      <button onClick={log}>Log editor content</button>
+      <button className='btn btn-primary mt-3 mb-3' onClick={log}>Log editor content</button>
     </>
   )
 }
