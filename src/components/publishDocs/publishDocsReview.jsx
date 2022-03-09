@@ -1,6 +1,19 @@
 import React, { Component } from 'react'
 import { Dropdown } from 'react-bootstrap'
+import { connect } from 'react-redux'
+import { fetchFeedbacks } from './redux/publishDocsActions'
 
+const mapStateToProps = (state) => {
+  return {
+    feedbacks: state.feedbacks
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    fetch_feedbacks: (orgId) => dispatch(fetchFeedbacks(orgId))
+  }
+}
 class PublishDocsReview extends Component {
   constructor (props) {
     super(props)
@@ -9,6 +22,10 @@ class PublishDocsReview extends Component {
       selectedItemType: 'endpoint',
       selectedItemId: null
     }
+  }
+
+  componentDidMount () {
+    this.props.fetch_feedbacks(this.props.match.params.orgId)
   }
 
   dummyFeedback = [
@@ -167,4 +184,4 @@ class PublishDocsReview extends Component {
   }
 }
 
-export default PublishDocsReview
+export default connect(mapStateToProps, mapDispatchToProps)(PublishDocsReview)

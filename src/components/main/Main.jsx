@@ -32,6 +32,7 @@ import { sendAmplitudeData } from '../../services/amplitude'
 import UpdateStatus from './updateStatus'
 import { isValidDomain } from '../common/utility'
 import SplitPane from 'react-split-pane'
+import { fetchFeedbacks } from '../publishDocs/redux/publishDocsActions'
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -41,6 +42,7 @@ const mapDispatchToProps = (dispatch) => {
     fetch_endpoints_from_idb: (orgId) => dispatch(fetchEndpointsFromIdb(orgId)),
     fetch_pages_from_idb: (orgId) => dispatch(fetchPagesFromIdb(orgId)),
     fetch_collections: (orgId) => dispatch(fetchCollections(orgId)),
+    fetch_feedbacks: (orgId) => dispatch(fetchFeedbacks(orgId)),
     fetch_all_versions: (orgId) => dispatch(fetchAllVersions(orgId)),
     fetch_groups: (orgId) => dispatch(fetchGroups(orgId)),
     fetch_endpoints: (orgId) => dispatch(fetchEndpoints(orgId)),
