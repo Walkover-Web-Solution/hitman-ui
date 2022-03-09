@@ -634,7 +634,6 @@ table#custom-generic-table {
   margin-left: 0 !important;
   margin-bottom: 0;
   background: rgb(255, 255, 255);
-
   .custom-checkbox {
     width: 3% !important;
   }
@@ -654,8 +653,7 @@ table#custom-generic-table {
   tbody {
     input {
       height: 100%;
-
-      font-size: 14px;
+      font-size: $font-medium;
       font-weight: 400;
     }
 
@@ -666,7 +664,7 @@ table#custom-generic-table {
     }
 
     input::placeholder {
-      font-size: 14px;
+      font-size: $font-medium;
       // font-weight: 300;
     }
   }
