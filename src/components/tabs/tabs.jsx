@@ -147,7 +147,7 @@ class CustomTabs extends Component {
         break
       case 'collection': {
         const collectionName = this.props.collections[tabId]?.name || 'Collection'
-        if(this.props.location.pathname.split('/')[6] === 'settings') {
+        if (this.props.location.pathname.split('/')[6] === 'settings') {
           return (
             <>
               {collectionName}

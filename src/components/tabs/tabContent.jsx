@@ -52,7 +52,7 @@ class TabContent extends Component {
           </Switch>
         )
       case 'collection':
-        if(this.props.location.pathname.split('/')[6] === 'settings') {
+        if (this.props.location.pathname.split('/')[6] === 'settings') {
           return (
             <PublishDocsForm
               {...this.props}

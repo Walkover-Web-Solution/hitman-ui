@@ -128,14 +128,14 @@ class ContentPanel extends Component {
         if (this.props.tabs.activeTabId !== collectionId) { this.props.set_active_tab_id(collectionId) }
       } else if (this.props.collections && this.props.collections[collectionId]) {
         // if (this.props.location.pathname.split('/')[6] === 'settings') {
-          this.props.open_in_new_tab({
-            id: collectionId,
-            type: 'collection',
-            status: tabStatusTypes.SAVED,
-            previewMode: false,
-            isModified: false,
-            state: {}
-          })
+        this.props.open_in_new_tab({
+          id: collectionId,
+          type: 'collection',
+          status: tabStatusTypes.SAVED,
+          previewMode: false,
+          isModified: false,
+          state: {}
+        })
         // } else {
         //   this.props.open_in_new_tab({
         //     id: collectionId,
