@@ -34,7 +34,7 @@ export class DefaultViewModal extends Component {
   renderSpinner () {
     return (
       <div className='d-flex justify-content-center align-items-center'>
-        <Spinner as='div' animation='border' size='sm' role='status' />
+        <Spinner as='div' animation='border' size='md' role='status' />
       </div>
     )
   }

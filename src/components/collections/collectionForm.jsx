@@ -101,7 +101,7 @@ class CollectionForm extends Form {
 
   redirectToCollection (collection) {
     const { viewLoader } = this.state
-    if (viewLoader.doc) {
+    if (collection.success && viewLoader.doc) {
       const { orgId } = this.props.match.params
       const { id: collectionId } = collection.data
       this.props.history.push({ pathname: `/orgs/${orgId}/dashboard/collection/${collectionId}/settings` })
