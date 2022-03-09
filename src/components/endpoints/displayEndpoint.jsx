@@ -2068,6 +2068,10 @@ class DisplayEndpoint extends Component {
     )
   }
 
+  classValue () {
+    return window.localStorage.getItem('right')
+  }
+
   render () {
     this.endpointId = this.props.endpointId
       ? this.props.endpointId
@@ -2120,7 +2124,7 @@ class DisplayEndpoint extends Component {
         className={isDashboardRoute(this.props) ? '' : codeEditorVisibility ? 'mainContentWrapperPublic hideCodeEditor' : 'mainContentWrapperPublic '}
       >
         <div className={isDashboardRoute(this.props) ? 'mainContentWrapper dashboardPage' : 'mainContentWrapper'}>
-          <div className='hm-endpoint-container endpoint-container row'>
+          <div className={this.classValue() ? 'a' : 'hm-endpoint-container endpoint-container row'}>
             {this.renderCookiesModal()}
             {this.state.showLoginSignupModal && (
               <LoginSignupModal

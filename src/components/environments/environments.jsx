@@ -48,7 +48,8 @@ class Environments extends Component {
     showEnvironmentForm: false,
     showEnvironmentModal: false,
     environmentToBeEdited: {},
-    publicEnvironmentName: 'Select Environment'
+    publicEnvironmentName: 'Select Environment',
+    responsePosition: false
   };
 
   async componentDidMount () {
@@ -185,6 +186,11 @@ class Environments extends Component {
         </div>
       </div>
     )
+  }
+
+  handletoggle () {
+    this.setState({ position: !this.state.position })
+    this.state.position ? window.localStorage.setItem('right', 'true') : window.localStorage.setItem('right', '')
   }
 
   render () {
@@ -343,6 +349,7 @@ class Environments extends Component {
                 </div>
               )
             }
+            <button onClick={() => this.handletoggle()}>toggle</button>
           </div>
         )
       }
