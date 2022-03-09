@@ -145,23 +145,23 @@ class CustomTabs extends Component {
           }
         }
         break
-      case 'collection-setting': {
+      case 'collection': {
         const collectionName = this.props.collections[tabId]?.name || 'Collection'
-        return (
-          <>
-            {collectionName}
-            <span className='sub-label'>settings</span>
-          </>
-        )
-      }
-      case 'collection-feedback': {
-        const collectionName = this.props.collections[tabId]?.name || 'Collection'
-        return (
-          <>
-            {collectionName}
-            <span className='sub-label'>Feedback</span>
-          </>
-        )
+        if(this.props.location.pathname.split('/')[6] === 'settings') {
+          return (
+            <>
+              {collectionName}
+              <span className='sub-label'>settings</span>
+            </>
+          )
+        } else {
+          return (
+            <>
+              {collectionName}
+              <span className='sub-label'>Feedback</span>
+            </>
+          )
+        }
       }
       default:
     }
