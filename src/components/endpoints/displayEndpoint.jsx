@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { Dropdown, ButtonGroup, Button, DropdownButton } from 'react-bootstrap'
 import store from '../../store/store'
-import { isDashboardRoute, isElectron, isSavedEndpoint } from '../common/utility'
+import { isDashboardRoute, isElectron, isSavedEndpoint, isStateDraft, isStateReject, sensitiveInfoFound } from '../common/utility'
 import tabService from '../tabs/tabService'
 import { closeTab, updateTab } from '../tabs/redux/tabsActions'
 import tabStatusTypes from '../tabs/tabStatusTypes'
@@ -14,7 +14,7 @@ import BodyContainer from './displayBody'
 import DisplayDescription from './displayDescription'
 import DisplayResponse from './displayResponse'
 import SampleResponse from './sampleResponse'
-import { getCurrentUser } from '../auth/authService'
+import { getCurrentUser, isAdmin } from '../auth/authService'
 import endpointApiService from './endpointApiService'
 import './endpoints.scss'
 import GenericTable from './genericTable'
@@ -35,7 +35,6 @@ import indexedDbService from '../indexedDb/indexedDbService'
 import Authorization from './displayAuthorization'
 import LoginSignupModal from '../main/loginSignupModal'
 import PublicSampleResponse from './publicSampleResponse'
-import ReactHtmlParser from 'react-html-parser'
 import bodyDescriptionService from './bodyDescriptionService'
 import { moveToNextStep } from '../../services/widgetService'
 import CookiesModal from '../cookies/cookiesModal'
@@ -50,6 +49,8 @@ import { sendAmplitudeData } from '../../services/amplitude'
 import { SortableContainer, SortableElement } from 'react-sortable-hoc'
 import DefaultViewConfirmationModal from './defaultViewConfirmationModal'
 import TinyEditor from './tinyEditor'
+import { pendingEndpoint, approveEndpoint } from '../publicEndpoint/redux/publicEndpointsActions'
+import WarningModal from '../common/warningModal'
 const shortid = require('shortid')
 
 const status = require('http-status')
@@ -108,7 +109,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     add_history: (data) => dispatch(addHistory(data)),
     update_environment: (data) => dispatch(updateEnvironment(data)),
     update_tab: (id, data) => dispatch(updateTab(id, data)),
-    open_modal: (modal, data) => dispatch(openModal(modal, data))
+    open_modal: (modal, data) => dispatch(openModal(modal, data)),
+    pending_endpoint: (endpoint) => dispatch(pendingEndpoint(endpoint)),
+    approve_endpoint: (endpoint, callback) => dispatch(approveEndpoint(endpoint, callback))
   }
 }
 
@@ -1044,7 +1047,7 @@ class DisplayEndpoint extends Component {
     const group = this.props.groups[groupId]
     const versionId = group.versionId
     const version = this.props.versions[versionId]
-    return version.collectionId
+    return version?.collectionId
   }
 
   prepareBodyForSaving (body) {
@@ -1069,6 +1072,8 @@ class DisplayEndpoint extends Component {
 
   handleSave = async (groupId, endpointObject) => {
     const { endpointName, endpointDescription } = endpointObject || {}
+    const isPublished = this.props.endpoints[this.endpointId]?.isPublished
+    const state = this.props.endpoints[this.endpointId]?.state
     if (!getCurrentUser()) {
       this.setState({
         showLoginSignupModal: true
@@ -1108,7 +1113,9 @@ class DisplayEndpoint extends Component {
         notes: this.state.endpoint.notes,
         preScript: this.state.preScriptText,
         postScript: this.state.postScriptText,
-        docViewData: this.state.docViewData
+        docViewData: this.state.docViewData,
+        isPublished,
+        state
       }
       if (endpoint.name === '') toast.error('Please enter Endpoint name')
       else if (this.props.location.pathname.split('/')[5] === 'new') {
@@ -2163,7 +2170,7 @@ class DisplayEndpoint extends Component {
     const { endpoints, collections } = this.props
     const endpoint = endpoints[this.endpointId]
     const collectionId = this.extractCollectionId(endpoint.groupId)
-    const collectionView = collections[collectionId].defaultView
+    const collectionView = collections[collectionId]?.defaultView
     if (window.localStorage.getItem('endpointView') && getCurrentUser()) {
       const userId = getCurrentUser().identifier
       const currentView = JSON.parse(window.localStorage.getItem('endpointView'))
@@ -2179,7 +2186,7 @@ class DisplayEndpoint extends Component {
         const docViewData = [...defaultDocViewData]
         if (endpoint.description) docViewData.splice(0, 0, { type: 'description', data: endpoint.description })
         if (endpoint.notes) docViewData.splice(docViewData.length - 1, 0, { type: 'notes', data: endpoint.notes })
-        return defaultDocViewData
+        return docViewData
       }
       return endpoint.docViewData
     }
@@ -2429,7 +2436,11 @@ class DisplayEndpoint extends Component {
   }
 
   renderDocViewOperations () {
-    if (this.state.currentView === 'doc') {
+    const endpoints = { ...this.props.endpoints }
+    const endpointId = this.endpointId
+    if (isDashboardRoute(this.props) && this.state.currentView === 'doc' && endpoints[endpointId]) {
+      const isPublicEndpoint = endpoints[endpointId].isPublished
+      const draftOrRejected = isStateDraft(endpointId, endpoints) || isStateReject(endpointId, endpoints)
       return (
         <div>
           <button
@@ -2438,17 +2449,55 @@ class DisplayEndpoint extends Component {
             type='button'
             onClick={() => this.handleSave()}
           >
-            Save Draft
+            {isPublicEndpoint ? 'Save Draft' : 'Save'}
           </button>
-          <button
-            className='btn btn-outline orange'
-            type='button'
-          >
-            Publish Endpoint
-          </button>
+          {isPublicEndpoint &&
+            <button
+              className={this.state.publishLoader ? 'btn btn-outline orange buttonLoader' : 'btn btn-outline orange'}
+              type='button'
+              onClick={() => this.handleApproveEndpointRequest(endpointId)}
+              disabled={!isAdmin()}
+            >
+              Publish Endpoint
+            </button>}
+          {!isPublicEndpoint &&
+            <button
+              className={draftOrRejected ? 'btn btn-outline orange' : ''}
+              type='button'
+              onClick={() => draftOrRejected ? this.handlePublicEndpointState(endpoints[endpointId]) : null}
+            >
+              {draftOrRejected ? 'Make Public' : 'Pending'}
+            </button>}
         </div>
       )
     }
+  }
+
+  async handleApproveEndpointRequest (endpointId) {
+    this.setState({ publishLoader: true })
+    if (sensitiveInfoFound(this.props.endpoints[endpointId])) {
+      this.setState({ warningModal: true })
+    } else {
+      this.props.approve_endpoint(this.props.endpoints[endpointId], () => { this.setState({ publishLoader: false }) })
+    }
+  }
+
+  async handlePublicEndpointState (endpoint) {
+    if (isStateDraft(endpoint.id, this.props.endpoints) || isStateReject(endpoint.id, this.props.endpoints)) {
+      this.props.pending_endpoint(endpoint)
+    }
+  }
+
+  renderWarningModal () {
+    return (
+      <WarningModal
+        show={this.state.warningModal}
+        ignoreButtonCallback={() => this.props.approve_endpoint(this.props.endpoints[this.endpointId])}
+        onHide={() => { this.setState({ warningModal: false, publishLoader: false }) }}
+        title='Sensitive Information Warning'
+        message='This Entity contains some sensitive information. Please remove them before making it public.'
+      />
+    )
   }
 
   renderSaveButton () {
@@ -2563,6 +2612,7 @@ class DisplayEndpoint extends Component {
             <div className='hm-endpoint-container endpoint-container row'>
               {this.renderCookiesModal()}
               {this.renderDefaultViewConfirmationModal()}
+              {this.renderWarningModal()}
               {this.state.showLoginSignupModal && (
                 <LoginSignupModal
                   show
@@ -2611,7 +2661,6 @@ class DisplayEndpoint extends Component {
                 {this.isNotDashboardOrDocView() && (
                   <div className='endpoint-name-container'>
                     {this.isNotDashboardOrDocView() && <h1 className='endpoint-title'>{this.state.data?.name || ''}</h1>}
-                    <p>{ReactHtmlParser(this.state.endpoint?.description) || ''}</p>
                   </div>
                 )}
               </div>
