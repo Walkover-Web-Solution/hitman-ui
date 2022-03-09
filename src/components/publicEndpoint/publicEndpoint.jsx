@@ -211,10 +211,13 @@ class PublicEndpoint extends Component {
 
   setDislike () {
     this.setState({ dislikeActive: !this.state.dislikeActive }, () => {
-      const review = { ...this.state.review.endpoint = this.props.match.params.endpointId }
+      const data = this.props.match.params.endpointId
+      // const endpoint = this.state
+      this.setState({ endpoint: data })
+      const review = { ...this.state.review.endpoint }
       review.endpoint = this.props.match.params
       if (this.state.dislikeActive) { review.feedback = 'disliked' }
-      localStorage.setItem('review', JSON.stringify(review))
+      window.localStorage.setItem('review', JSON.stringify(review))
     })
     this.toggleReviewModal()
   }
@@ -224,7 +227,7 @@ class PublicEndpoint extends Component {
       const review = { ...this.state.review }
       review.endpoint = this.props.match.params
       if (this.state.likeActive) { review.feedback = 'liked' }
-      localStorage.setItem('review', JSON.stringify(review))
+      window.localStorage.setItem('review', JSON.stringify(review))
     })
   }
 
