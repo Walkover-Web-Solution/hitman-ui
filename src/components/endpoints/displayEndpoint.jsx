@@ -1863,7 +1863,7 @@ class DisplayEndpoint extends Component {
   displayResponseAndSampleResponse () {
     return (
       <>
-        <div className='col-12 custom-tabs' ref={this.myRef}>
+        <div className='custom-tabs' ref={this.myRef}>
           <ul className='nav nav-tabs respTabsListing' id='myTab' role='tablist'>
             <li className='nav-item'>
               <a
@@ -1982,7 +1982,7 @@ class DisplayEndpoint extends Component {
   displayPublicResponse () {
     return (
       <>
-        <div className='hm-panel endpoint-public-response-container col-12 mt-4 endPointRes'>
+        <div className='hm-panel endpoint-public-response-container mt-4 endPointRes'>
           <DisplayResponse
             {...this.props}
             loader={this.state.loader}
@@ -2131,7 +2131,7 @@ class DisplayEndpoint extends Component {
       )
       case 'host' : {
         if (!isDashboardRoute(this.props)) return this.renderPublicHost()
-        else return this.renderHost()
+        else return <div className='endpoint-url-container'> {this.renderHost()} </div>
       }
       case 'body' : {
         if (!isDashboardRoute(this.props)) return this.renderPublicBodyContainer()
@@ -2139,11 +2139,11 @@ class DisplayEndpoint extends Component {
       }
       case 'headers' : {
         if (!isDashboardRoute(this.props)) return this.renderPublicHeaders()
-        else return this.renderHeaders()
+        else return <div className='mb-3'>{this.renderHeaders()}</div>
       }
       case 'params' : {
         if (!isDashboardRoute(this.props)) return this.renderPublicParams()
-        else return this.renderParams()
+        else return <div className='mb-3'>{this.renderParams()}</div>
       }
       case 'pathVariables' : {
         if (!isDashboardRoute(this.props)) return this.renderPublicPathVariables()
@@ -2191,9 +2191,9 @@ class DisplayEndpoint extends Component {
   renderToggleView () {
     if (isSavedEndpoint(this.props)) {
       return (
-        <ButtonGroup aria-label='Basic example'>
-          <Button onClick={() => this.switchView('testing')} variant='secondary'>Testing</Button>
-          <Button onClick={() => this.switchView('doc')} variant='secondary'>Doc</Button>
+        <ButtonGroup className='btn-group-custom mb-3' aria-label='Basic example'>
+          <Button className={this.state.currentView === 'testing' ? 'active' : ''} onClick={() => this.switchView('testing')}>Testing</Button>
+          <Button className={this.state.currentView === 'doc' ? 'active' : ''} onClick={() => this.switchView('doc')}>Doc</Button>
         </ButtonGroup>
       )
     }
@@ -2202,7 +2202,7 @@ class DisplayEndpoint extends Component {
   renderDocViewOptions () {
     if (this.state.currentView === 'doc') {
       return (
-        <ButtonGroup>
+        <ButtonGroup className='btn-group-custom bottom-text-editor'>
           <DropdownButton as={ButtonGroup} title='Text' id='bg-nested-dropdown'>
             <Dropdown.Item onClick={() => this.addBlock('description')}>Description</Dropdown.Item>
             <Dropdown.Item onClick={() => this.addBlock('note')}>Note</Dropdown.Item>
@@ -2444,7 +2444,7 @@ class DisplayEndpoint extends Component {
             Save Draft
           </button>
           <button
-            className='btn btn-outline orange'
+            className='btn btn-primary ml-2'
             type='button'
           >
             Publish Endpoint
@@ -2563,7 +2563,7 @@ class DisplayEndpoint extends Component {
           className={this.isNotDashboardOrDocView() ? '' : codeEditorVisibility ? 'mainContentWrapperPublic hideCodeEditor' : 'mainContentWrapperPublic '}
         >
           <div className={this.isNotDashboardOrDocView() ? 'mainContentWrapper dashboardPage' : 'mainContentWrapper'}>
-            <div className='hm-endpoint-container endpoint-container row'>
+            <div className='hm-endpoint-container endpoint-container'>
               {this.renderCookiesModal()}
               {this.renderDefaultViewConfirmationModal()}
               {this.state.showLoginSignupModal && (
@@ -2577,8 +2577,13 @@ class DisplayEndpoint extends Component {
               getCurrentUser()
                 ? (
                   <div
-                    className={this.isDashboardAndTestingView() ? 'hm-panel col-12' : null}
+                    className={this.isDashboardAndTestingView() ? 'hm-panel' : null}
                   >
+
+                    <div className='d-flex justify-content-between'>
+                      {this.renderToggleView()}
+                      {this.renderDocViewOperations()}
+                    </div>
                     <div className='position-relative top-part'>
                       {this.state.showEndpointFormModal && (
                         <SaveAsSidebar
@@ -2608,20 +2613,19 @@ class DisplayEndpoint extends Component {
                   )
                 : null
             }
-              <div className='endpoint-header' ref={this.scrollDiv}>
-                {this.renderToggleView()}
-                {this.renderDocViewOperations()}
-                {this.isNotDashboardOrDocView() && (
-                  <div className='endpoint-name-container'>
-                    {this.isNotDashboardOrDocView() && <h1 className='endpoint-title'>{this.state.data?.name || ''}</h1>}
-                    <p>{ReactHtmlParser(this.state.endpoint?.description) || ''}</p>
-                  </div>
-                )}
-              </div>
-              <div
-                className={this.isNotDashboardOrDocView() ? 'hm-panel' : 'hm-panel col-12'}
-              >
-                {
+              <div className={'clear-both ' + (this.state.currentView === 'doc' ? 'doc-view' : 'testing-view')}>
+                <div className='endpoint-header' ref={this.scrollDiv}>
+                  {this.isNotDashboardOrDocView() && (
+                    <div className='endpoint-name-container'>
+                      {this.isNotDashboardOrDocView() && <h1 className='endpoint-title'>{this.state.data?.name || ''}</h1>}
+                      <p>{ReactHtmlParser(this.state.endpoint?.description) || ''}</p>
+                    </div>
+                  )}
+                </div>
+                <div
+                  className={this.isNotDashboardOrDocView() ? 'hm-panel' : 'hm-panel'}
+                >
+                  {
                 this.isDashboardAndTestingView() &&
                   (
                     <div className='endpoint-url-container'>
@@ -2640,15 +2644,15 @@ class DisplayEndpoint extends Component {
                     </div>
                   )
               }
-                <div
-                  className={
+                  <div
+                    className={
                   this.isDashboardAndTestingView()
                     ? 'endpoint-headers-container'
                     : 'hm-public-endpoint-headers'
                 }
-                >
-                  <div className='main-table-wrapper'>
-                    {
+                  >
+                    <div className='main-table-wrapper'>
+                      {
                     this.isDashboardAndTestingView()
                       ? (
                         <div className='d-flex justify-content-between align-items-center'>
@@ -2757,7 +2761,7 @@ class DisplayEndpoint extends Component {
                         )
                       : null
                   }
-                    {
+                      {
                     this.isDashboardAndTestingView()
                       ? (
                         <div className='tab-content' id='pills-tabContent'>
@@ -2849,7 +2853,7 @@ class DisplayEndpoint extends Component {
                         )
                       : this.renderDocView()
                   }
-                    {
+                      {
                   !isDashboardRoute(this.props) && (
                     <div className='text-left'>
                       <button
@@ -2864,10 +2868,11 @@ class DisplayEndpoint extends Component {
                     </div>
                   )
                 }
-                    {this.isDashboardAndTestingView() && this.renderScriptError()}
-                    {
+                      {this.isDashboardAndTestingView() && this.renderScriptError()}
+                      {
                     this.displayResponse()
                   }
+                    </div>
                   </div>
                 </div>
               </div>
