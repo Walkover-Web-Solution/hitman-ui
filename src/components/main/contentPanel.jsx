@@ -209,7 +209,7 @@ class ContentPanel extends Component {
                         handle_save_endpoint={this.handleSaveEndpoint.bind(this)}
                         handle_save_page={this.handleSavePage.bind(this)}
                       />
-                      {getCurrentUser() ? <Environments {...this.props} /> : null}
+                      <Environments {...this.props} />
                     </div>
                   </div>
                 </>
