@@ -58,10 +58,10 @@ function selectTab (props, tabId) {
     props.history.push({
       pathname: `/orgs/${props.match.params.orgId}/dashboard/${tab.type}/new`
     })
-  } else if (tab.type === 'collection-setting') {
-    props.history.push(`/orgs/${props.match.params.orgId}/dashboard/collection/${tab.id}/settings`)
-  } else if (tab.type === 'collection-feedback') {
-    props.history.push(`/orgs/${props.match.params.orgId}/dashboard/collection/${tab.id}/feedback`)
+  } else if (tab.type === 'collection') {
+    (this.props.location.pathname.split('/')[6] === 'settings')
+      ? props.history.push(`/orgs/${props.match.params.orgId}/dashboard/collection/${tab.id}/settings`)
+      : props.history.push(`/orgs/${props.match.params.orgId}/dashboard/collection/${tab.id}/feedback`)
   } else {
     props.history.push({
       pathname: `/orgs/${props.match.params.orgId}/dashboard/${tab.type}/${tab.id}`

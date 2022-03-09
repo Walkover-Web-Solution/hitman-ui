@@ -51,23 +51,25 @@ class TabContent extends Component {
             />
           </Switch>
         )
-      case 'collection-setting':
-        return (
-          <PublishDocsForm
-            {...this.props}
-            isCollectionPublished={() => { return this.props.collections[tabId]?.isPublic || false }}
-            unPublishCollection={() => this.unPublishCollection(tabId)}
-            selected_collection_id={tabId}
-            onTab
-          />
-        )
-      case 'collection-feedback':
-        return (
-          <PublishDocsReview
-            {...this.props}
-            selected_collection_id={tabId}
-          />
-        )
+      case 'collection':
+        if (this.props.location.pathname.split('/')[6] === 'settings') {
+          return (
+            <PublishDocsForm
+              {...this.props}
+              isCollectionPublished={() => { return this.props.collections[tabId]?.isPublic || false }}
+              unPublishCollection={() => this.unPublishCollection(tabId)}
+              selected_collection_id={tabId}
+              onTab
+            />
+          )
+        } else {
+          return (
+            <PublishDocsReview
+              {...this.props}
+              selected_collection_id={tabId}
+            />
+          )
+        }
       default:
         break
     }

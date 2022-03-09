@@ -77,33 +77,31 @@ class PublishDocsReview extends Component {
 
     return (
       <>
-        {(endpointsArray.length === 0 && pagesArray.length === 0)
-          ? 'No published endpoints or pages'
-          : endpointsArray.length > 0
-            ? endpointsArray.map(
-                (id, index) => (
-                  <Dropdown.Item
-                    key={index} onClick={() => {
-                      this.setState({ isItemSelected: true })
-                      this.setState({ selectedItemType: 'endpoint' })
-                      this.setState({ selectedItemId: id })
-                    }}
-                  >
-                    {this.props.endpoints[id]?.name}
-                  </Dropdown.Item>
-                ))
-            : pagesArray.map(
-              (id, index) => (
-                <Dropdown.Item
-                  key={index} onClick={() => {
-                    this.setState({ isItemSelected: true })
-                    this.setState({ selectedItemType: 'page' })
-                    this.setState({ selectedItemId: id })
-                  }}
-                >
-                  {this.props.pages[id]?.name}
-                </Dropdown.Item>
-              ))}
+        {endpointsArray.length > 0 && endpointsArray.map(
+          (id, index) => (
+            <Dropdown.Item
+              key={index} onClick={() => {
+                this.setState({ isItemSelected: true })
+                this.setState({ selectedItemType: 'endpoint' })
+                this.setState({ selectedItemId: id })
+              }}
+            >
+              {this.props.endpoints[id]?.name}
+            </Dropdown.Item>
+          ))}
+
+        {pagesArray.length > 0 && pagesArray.map(
+          (id, index) => (
+            <Dropdown.Item
+              key={index} onClick={() => {
+                this.setState({ isItemSelected: true })
+                this.setState({ selectedItemType: 'page' })
+                this.setState({ selectedItemId: id })
+              }}
+            >
+              {this.props.pages[id]?.name}
+            </Dropdown.Item>
+          ))}
       </>
     )
   }
@@ -152,12 +150,18 @@ class PublishDocsReview extends Component {
     )
   }
 
+  renderNoFeedback () {
+    return (
+      <div>No feedbacks received</div>
+    )
+  }
+
   render () {
     return (
       <>
         {this.renderHostedApiHeading('API Doc Feedback')}
-        {this.renderPageSelectOption()}
-        {this.renderPageReview()}
+        {this.dummyFeedback.length > 0 && this.renderPageSelectOption()}
+        {this.dummyFeedback.length > 0 ? this.renderPageReview() : this.renderNoFeedback()}
       </>
     )
   }
