@@ -68,13 +68,11 @@ const SortableList = SortableContainer(({ children }) => {
 })
 
 const defaultDocViewData = [
-  { type: 'description', data: '' },
   { type: 'host' },
   { type: 'body' },
   { type: 'params' },
   { type: 'pathVariables' },
-  { type: 'headers' },
-  { type: 'notes', data: '' }
+  { type: 'headers' }
 ]
 
 const mapStateToProps = (state) => {
@@ -1109,7 +1107,8 @@ class DisplayEndpoint extends Component {
         authorizationType: this.state.authType,
         notes: this.state.endpoint.notes,
         preScript: this.state.preScriptText,
-        postScript: this.state.postScriptText
+        postScript: this.state.postScriptText,
+        docViewData: this.state.docViewData
       }
       if (endpoint.name === '') toast.error('Please enter Endpoint name')
       else if (this.props.location.pathname.split('/')[5] === 'new') {
@@ -2178,10 +2177,8 @@ class DisplayEndpoint extends Component {
     if (endpoint) {
       if (!endpoint.docViewData || endpoint.docViewData.length === 0) {
         const docViewData = [...defaultDocViewData]
-        docViewData.forEach((item, i) => {
-          if (item.type === 'description') item.data = endpoint.description
-          if (item.type === 'notes') item.data = endpoint?.notes || ''
-        })
+        if (endpoint.description) docViewData.splice(0, 0, { type: 'description', data: endpoint.description })
+        if (endpoint.notes) docViewData.splice(docViewData.length - 1, 0, { type: 'notes', data: endpoint.notes })
         return defaultDocViewData
       }
       return endpoint.docViewData
