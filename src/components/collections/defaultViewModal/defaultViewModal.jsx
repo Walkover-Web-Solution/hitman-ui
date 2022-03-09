@@ -6,7 +6,7 @@ import './defaultViewModal.scss'
 
 export class DefaultViewModal extends Component {
   createCollection (defaultView) {
-    this.props.saveCollection(defaultView)
+    this.props.saveCollection(defaultView, true)
   }
 
   renderTestingButton () {
@@ -28,11 +28,12 @@ export class DefaultViewModal extends Component {
   }
 
   renderButtons () {
+    const { viewLoader } = this.props
     return (
       <>
         <div className='d-flex justify-content-center'>
-          {this.renderTestingButton()}
-          {this.renderDocButton()}
+          {viewLoader.testing ? this.renderSpinner() : this.renderTestingButton()}
+          {viewLoader.doc ? this.renderSpinner() : this.renderDocButton()}
         </div>
         <div className='info mt-5 d-flex align-items-center'>
           <img src={InfoIcon} className='mr-2' alt='' />

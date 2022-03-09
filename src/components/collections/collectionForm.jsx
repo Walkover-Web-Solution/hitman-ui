@@ -40,7 +40,11 @@ class CollectionForm extends Form {
       collectionId: '',
       errors: {},
       show: true,
-      step: 1
+      step: 1,
+      viewLoader: {
+        testing: false,
+        doc: false
+      }
     }
 
     this.schema = {
@@ -96,15 +100,25 @@ class CollectionForm extends Form {
     })
   }
 
-  async onAddCollectionSubmit (defaultView) {
+  redirectToCollection (collection) {
+    const { viewLoader } = this.state
+    if (viewLoader.doc) {
+      const { orgId } = this.props.match.params
+      const { id: collectionId } = collection.data
+      this.props.history.push({ pathname: `/orgs/${orgId}/dashboard/collection/${collectionId}/settings` })
+    }
     this.props.onHide()
+  }
+
+  async onAddCollectionSubmit (defaultView) {
+    // this.props.onHide()
     const requestId = shortid.generate()
     const defaultDocProperties = {
       defaultLogoUrl: '',
       defaultTitle: '',
       versionHosts: {}
     }
-    this.props.add_collection({ ...this.state.data, docProperties: defaultDocProperties, requestId, defaultView }, this.props.open_selected_collection)
+    this.props.add_collection({ ...this.state.data, docProperties: defaultDocProperties, requestId, defaultView }, null, this.redirectToCollection.bind(this))
     this.setState({
       data: {
         name: '',
@@ -117,6 +131,11 @@ class CollectionForm extends Form {
       }
     })
     moveToNextStep(1)
+  }
+
+  setViewLoader (type, flag) {
+    const { viewLoader } = this.state
+    this.setState({ viewLoader: { ...viewLoader, [type]: flag } })
   }
 
   async doSubmit (defaultView) {
@@ -134,7 +153,8 @@ class CollectionForm extends Form {
     }
   }
 
-  saveCollection (defaultView) {
+  saveCollection (defaultView, flag) {
+    this.setViewLoader(defaultView, flag)
     this.doSubmit(defaultView)
   }
 
@@ -149,7 +169,7 @@ class CollectionForm extends Form {
 
   renderDefaultViewForm () {
     return (
-      <DefaultViewModal saveCollection={this.saveCollection.bind(this)} />
+      <DefaultViewModal viewLoader={this.state.viewLoader} saveCollection={this.saveCollection.bind(this)} onHide={() => this.props.onHide()} />
     )
   }
 
