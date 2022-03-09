@@ -37,7 +37,7 @@
   }
   .dropdown{
     height: 36px;
-    font-size: 14px;
+    font-size: $font-normal !important;
     font-weight: 400;
     color: #d6d6d6;
     border-radius: 0px;
@@ -60,6 +60,8 @@
       box-shadow: 0 3px 5px 0px rgba(0, 0, 0, 0.03),
         0 0 20px 0px rgba(0, 0, 0, 0.08);
       color: #252d30;
+      max-height: 20rem;
+      overflow: auto;
       .dropdown-item{
         cursor: pointer;
         border-radius: 3px;
@@ -68,6 +70,7 @@
         align-items: center;
         padding: 0.35rem 1rem;
         transition: all 0.3s ease-in;
+        font-size: $font-normal;
       }
     }
   }
@@ -95,6 +98,11 @@
   }
   .published{
     color: $success-color;
+  }
+  .text-sm-bold {
+    font-size: 12px;
+    font-weight: 600;
+    cursor: context-menu;
   }
 
 // Global Styles
@@ -856,20 +864,6 @@ label.data-type {
 
 }
 
-.dropdown-menu .dropdown-item {
-  border-radius: 3px;
-  padding: 5px 10px;
-  color: #333;
-  font-size: 14px;
-  position: relative;
-}
-
-.dropdown-menu.dropdown-menu-right {
-  box-shadow: -25px 25px 43px rgba(0, 0, 0, 0.07);
-  border: none;
-  border-radius: 0;
-}
-
 .empty-collections .content {
   h5 {
     color: #333;
@@ -1249,8 +1243,7 @@ button.editBtn {
 
 .responseTabWrapper {
   background: #fff;
-  padding: 20px;
-  border-radius: 4px;
+  border-radius: $border-radius;
 }
 #uncontrolled-tab-example-tabpane-history,
 #uncontrolled-tab-example-tabpane-randomTrigger {
@@ -2932,7 +2925,7 @@ li.nav-item.cookie-tab a {
   margin-left: 6px;
 }
 .dashboardPage table#custom-generic-table tbody input[value="true"] + span.checkmark {
-  background: #f1b43f;
+  background: $theme-color;
 }
 
 .errorPage{
