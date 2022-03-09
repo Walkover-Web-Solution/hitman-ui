@@ -20,6 +20,8 @@ import groupsService from './groupsService'
 import filterService from '../../services/filterService'
 import AddEntity from '../main/addEntity/addEntity'
 import sidebarActions from '../main/sidebar/redux/sidebarActions'
+import { ReactComponent as Plus } from '../../assets/icons/plus-square.svg'
+import ExpandedIcon from '../../assets/icons/expand-arrow.svg'
 
 const mapStateToProps = (state) => {
   return {
@@ -467,7 +469,7 @@ class Groups extends Component {
       isDashboardRoute(this.props, true)
         ? (
           <div
-            className='sidebar-accordion accordion'
+            className='sidebar-accordion accordion pl-3'
             id='child-accordion'
           >
             <button
@@ -477,9 +479,7 @@ class Groups extends Component {
             >
               <div className='d-flex align-items-center flex-grow-1' onClick={() => this.toggleGroupIds(groupId)}>
                 <span className='versionChovron'>
-                  <svg width='15' height='15' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
-                    <path d='M4.5 6.75L9 11.25L13.5 6.75' stroke='#333333' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
-                  </svg>
+                  <img src={ExpandedIcon} alt='' />
                 </span>
                 <div className='sidebar-accordion-item d-inline text-truncate'>
                   {this.props.groups[groupId].name}
@@ -488,7 +488,18 @@ class Groups extends Component {
               {
                     isDashboardRoute(this.props, true) && !this.props.collections[this.props.collection_id]?.importedFromMarketPlace
                       ? (
-                        <div className='sidebar-item-action'>
+                        <div className='sidebar-item-action d-flex align-items-center'>
+                          <div
+                            onClick={() =>
+                              this.handleAddEndpoint(
+                                groupId,
+                                this.props.versions,
+                                this.props.groups
+                              )}
+                            className='mr-1 d-flex align-items-center'
+                          >
+                            <Plus />
+                          </div>
                           <div
                             className='sidebar-item-action-btn'
                             data-toggle='dropdown'
@@ -519,21 +530,6 @@ class Groups extends Component {
                                 <path d='M7.5 8.25V12.75' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
                                 <path d='M10.5 8.25V12.75' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
                               </svg> Delete
-                            </div>
-                            <div
-                              className='dropdown-item'
-                              onClick={() =>
-                                this.handleAddEndpoint(
-                                  groupId,
-                                  this.props.versions,
-                                  this.props.groups
-                                )}
-                            >
-                              <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
-                                <path d='M15.75 3H2.25C1.42157 3 0.75 3.67157 0.75 4.5V13.5C0.75 14.3284 1.42157 15 2.25 15H15.75C16.5784 15 17.25 14.3284 17.25 13.5V4.5C17.25 3.67157 16.5784 3 15.75 3Z' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
-                                <path d='M12 9L6 9' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
-                                <path d='M9 12L9 6' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
-                              </svg>  Add Endpoint
                             </div>
                             <div
                               className='dropdown-item'
@@ -699,7 +695,9 @@ class Groups extends Component {
             group?.id ? <div key={group.id} className='linkWith'>{this.renderBody(group.id)}</div> : null
           )}
 
-        {this.renderForm(this.sortedGroups)}
+        <div className='pl-4'>
+          {this.renderForm(this.sortedGroups)}
+        </div>
       </>
     )
   }

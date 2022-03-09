@@ -22,6 +22,7 @@ import tabStatusTypes from '../tabs/tabStatusTypes'
 import './main.scss'
 import { getCurrentUser } from '../auth/authService'
 import LoginSignupModal from './loginSignupModal'
+import Environments from '../environments/environments'
 const mapStateToProps = (state) => {
   return {
     endpoints: state.endpoints,
@@ -29,7 +30,8 @@ const mapStateToProps = (state) => {
     versions: state.versions,
     pages: state.pages,
     tabs: state.tabs,
-    historySnapshots: state.history
+    historySnapshots: state.history,
+    collections: state.collections
   }
 }
 
@@ -60,7 +62,7 @@ class ContentPanel extends Component {
   }
 
   componentDidUpdate () {
-    const { endpointId, pageId, historyId } = this.props.match.params
+    const { endpointId, pageId, historyId, collectionId } = this.props.match.params
     if (this.props.tabs.loaded && endpointId && endpointId !== 'new') {
       if (this.props.tabs.tabs[endpointId]) {
         if (this.props.tabs.activeTabId !== endpointId) {
@@ -121,6 +123,32 @@ class ContentPanel extends Component {
       }
     }
 
+    if (this.props.tabs.loaded && collectionId) {
+      if (this.props.tabs.tabs[collectionId]) {
+        if (this.props.tabs.activeTabId !== collectionId) { this.props.set_active_tab_id(collectionId) }
+      } else if (this.props.collections && this.props.collections[collectionId]) {
+        if (this.props.location.pathname.split('/')[6] === 'settings') {
+          this.props.open_in_new_tab({
+            id: collectionId,
+            type: 'collection-setting',
+            status: tabStatusTypes.SAVED,
+            previewMode: false,
+            isModified: false,
+            state: {}
+          })
+        } else {
+          this.props.open_in_new_tab({
+            id: collectionId,
+            type: 'collection-feedback',
+            status: tabStatusTypes.SAVED,
+            previewMode: false,
+            isModified: false,
+            state: {}
+          })
+        }
+      }
+    }
+
     if (this.props.tabs.loaded && this.props.match.path === '/orgs/:orgId/dashboard/') {
       const { orgId } = this.props.match.params
       if (this.props.tabs?.tabsOrder?.length) {
@@ -133,7 +161,14 @@ class ContentPanel extends Component {
         if (tabId !== activeTabId) this.props.set_active_tab_id(tabId)
 
         this.props.history.push({
-          pathname: `/orgs/${orgId}/dashboard/${tab.type}/${tab.status === 'NEW' ? 'new' : tabId}`
+          pathname:
+            tab.type !== 'collection-setting' && tab.type !== 'collection-feedback'
+              ? `/orgs/${orgId}/dashboard/${tab.type}/${
+                  tab.status === 'NEW' ? 'new' : tabId
+                }`
+              : tab.type === 'collection-setting'
+                ? `/orgs/${orgId}/dashboard/collection/${tabId}/settings`
+                : `/orgs/${orgId}/dashboard/collection/${tabId}/feedback`
         })
       } else {
         this.props.add_new_tab()
@@ -179,12 +214,13 @@ class ContentPanel extends Component {
               ? (
                 <>
                   <div className='content-header'>
-                    <div className='tabs-container d-flex'>
+                    <div className='tabs-container d-flex justify-content-between'>
                       <CustomTabs
                         {...this.props}
                         handle_save_endpoint={this.handleSaveEndpoint.bind(this)}
                         handle_save_page={this.handleSavePage.bind(this)}
                       />
+                      {getCurrentUser() ? <Environments {...this.props} /> : null}
                     </div>
                   </div>
                 </>

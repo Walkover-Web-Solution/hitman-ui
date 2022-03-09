@@ -23,7 +23,7 @@ import { isDesktop } from 'react-device-detect'
 import OnlineSatus from '../onlineStatus/onlineStatus'
 import { getOrgUpdatedAt } from '../../services/orgApiService'
 import moment from 'moment'
-import Header from './header'
+// import Header from './header'
 import { loadfeedioWidget } from '../../services/feedioWidgetService'
 import { loadHelloWidget } from '../../services/helloWidgetService'
 import auth from '../auth/authService'
@@ -31,6 +31,7 @@ import DesktopAppDownloadModal from './desktopAppPrompt'
 import { sendAmplitudeData } from '../../services/amplitude'
 import UpdateStatus from './updateStatus'
 import { isValidDomain } from '../common/utility'
+import SplitPane from 'react-split-pane'
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -176,24 +177,26 @@ class Main extends Component {
           Looks like you have opened it on a mobile device. It looks better on a desktop device.
         </div>}
         <div className='custom-main-container'>
-          <Header {...this.props} />
+          {/* <Header {...this.props} /> */}
           <DesktopAppDownloadModal history={this.props.history} location={this.props.location} match={this.props.match} />
           <OnlineSatus fetchFromBackend={this.fetchFromBackend.bind(this)} isIdbUpdated={this.isIdbUpdated.bind(this)} />
           <div className='main-panel-wrapper'>
-            <SideBar
-              {...this.props}
-              tabs={[...this.state.tabs]}
-              set_tabs={this.setTabs.bind(this)}
-              default_tab_index={this.state.defaultTabIndex}
-            />
-            {this.props.location.pathname.split('/')[4] === 'publish'
-              ? <PublishDocs {...this.props} />
-              : <ContentPanel
-                  {...this.props}
-                  set_environment={this.setEnvironment.bind(this)}
-                  set_tabs={this.setTabs.bind(this)}
-                  default_tab_index={this.state.defaultTabIndex}
-                />}
+            <SplitPane split='vertical' className='split-sidebar'>
+              <SideBar
+                {...this.props}
+                tabs={[...this.state.tabs]}
+                set_tabs={this.setTabs.bind(this)}
+                default_tab_index={this.state.defaultTabIndex}
+              />
+              {this.props.location.pathname.split('/')[4] === 'publish'
+                ? <PublishDocs {...this.props} />
+                : <ContentPanel
+                    {...this.props}
+                    set_environment={this.setEnvironment.bind(this)}
+                    set_tabs={this.setTabs.bind(this)}
+                    default_tab_index={this.state.defaultTabIndex}
+                  />}
+            </SplitPane>
           </div>
           <UpdateStatus />
         </div>

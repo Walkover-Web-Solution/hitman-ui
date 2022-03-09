@@ -246,7 +246,6 @@ $border-color: rgba(227, 228, 230, 0.7);
 .endpoint-container {
   .panel-endpoint-name-container {
     margin-bottom: 0px;
-
     .public-endpoint-name-input {
       display: flex;
       flex-direction: row;
@@ -260,7 +259,6 @@ $border-color: rgba(227, 228, 230, 0.7);
       font-size: 25px;
       background-color: inherit;
     }
-
     .endpoint-description {
       float: left;
       margin-top: 5px;
@@ -282,20 +280,12 @@ $border-color: rgba(227, 228, 230, 0.7);
       }
     }
   }
-
-
-
-
-
-
   .endpoint-url-container {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    // border-bottom: 1px solid $border-color;
     padding: 10px 0;
     height: 60px;
-
     .uriContainerWrapper {
       span .dropdown-toggle {
         height: 36px;
@@ -304,23 +294,19 @@ $border-color: rgba(227, 228, 230, 0.7);
         border-top: 1px solid $theme-color;
         width: 30px;
       }
-
       .dropdown-menu.show {
         min-width: 130px;
       }
-
       .btn {
         height: 36px;
         width: 100px;
       }
     }
-
     .input-group-prepend {
       display: flex;
       flex-direction: row;
       justify-content: center;
       width: 100%;
-
       .endpoint-url-input {
         height: 36px;
         border: 1px solid #e0e0e0;
@@ -328,17 +314,22 @@ $border-color: rgba(227, 228, 230, 0.7);
         font-weight: 400;
         color: #000;
       }
-
       .dropdown {
         .dropdown-toggle {
-          margin-right: 10px;
-          min-width: 100px;
+          min-width: 78px;
           background: #fff;
-          border: 1px solid #e0e0e0;
-          height: 36px;
-          font-size: 14px;
-          font-weight: 600;
-          outline: inherit;
+          border: 1px solid $outline-color;
+          font-size: $font-normal;
+          height: 2.25rem;
+          font-weight: normal;
+          border-right: 0;
+          border-top-right-radius: 0;
+          border-bottom-right-radius: 0;
+          transition: all 0.3s ease-in;
+          &:focus{
+            outline: none;
+            background-color: $secondary-color;
+          }
         }
       }
 
@@ -436,30 +427,23 @@ $border-color: rgba(227, 228, 230, 0.7);
 }
 
 .custom-tabs {
-  margin-bottom: 20px;
   .nav-tabs {
-    border-bottom: 2px solid #dee2e6;
     display: inline-flex;
+    border: 1px solid $outline-color;
+    border-radius: $border-radius;
+    overflow: hidden;
+    margin-bottom: 0.75rem;
     .nav-item {
-      margin-bottom: -2px;
-      margin-right: 1rem;
-      &:last-child{
-        margin-right: 0;
-      }
      .nav-link{
-      padding: 0.5rem 0;
+      padding: 0.35rem 0.75rem;
       border: none;
-      color: #828282 !important;
-      font-size: $font-normal;
-      border-bottom: 3px solid transparent;
-      &:hover {
-        color: #495057;
-        border-color: transparent;
-      }
-      &.active {
-        background: transparent;
-        border-bottom-color: $theme-color !important;
-        color: #333 !important;
+      color: $text-color;
+      font-size: $font-medium;
+      border-radius: 0;
+      transition: all 0.3s ease-in;
+      &:hover,  &.active {
+        color: #fff !important;
+        background-color: $theme-color;
       }
      }
     }
@@ -479,8 +463,8 @@ $border-color: rgba(227, 228, 230, 0.7);
   flex-direction: column;
   margin: 0;
   padding: 15px;
-  border: 1px solid #E0E0E0;
-
+  border: 1px solid $outline-color;
+  border-radius: $border-radius;
   .response-status {
     display: flex;
     justify-content: space-between;
@@ -795,8 +779,9 @@ table#custom-generic-table {
   display: flex;
   flex-direction: row;
   flex: 1;
-  background-color: #fff;
+  background-color: #F3F3F3;
   min-height: 220px;
+  margin-top: 1rem;
 }
 
 .authorization-selector-wrapper {
@@ -864,6 +849,7 @@ table#custom-generic-table {
       label {
         // flex: 0.7;
         min-width: 100px;
+        text-align: left;
       }
 
       input {
@@ -1241,10 +1227,9 @@ table#custom-generic-table {
 }
 
 .hm-public-table table {
-  thead tr th {
-    font-weight: 400 !important;
-    color: #828282;
+  thead tr th {;
     border: none;
+    font-weight: normal !important;
   }
   tbody tr td {
     border: none;

@@ -149,7 +149,7 @@ class EndpointBreadCrumb extends Component {
   }
 
   renderLeftAngle (title) {
-    return (title && <span className='ml-2'>&gt;</span>)
+    return (title && <span className='ml-1 mr-1'>/</span>)
   }
 
   render () {
@@ -159,33 +159,40 @@ class EndpointBreadCrumb extends Component {
         <div
           className='panel-endpoint-name-container'
         >
-          <div className='d-flex bread-crumb-wrapper align-items-center form-group text-nowrap'>
-            {this.collectionName && <span className=''>{`${this.collectionName}`}</span>}
-            {this.renderLeftAngle(this.collectionName)}
-            {this.versionName && <span className='ml-2'>{`${this.versionName}`}</span>}
-            {this.renderLeftAngle(this.versionName)}
-            {this.groupName && <span className='ml-2'>{`${this.groupName}`}</span>}
-            {this.renderLeftAngle(this.groupName)}
+          <div className='page-title-name'>
             <input
               ref={this.nameInputRef}
-              className={['ml-2 endpoint-name-input', this.state.nameEditable ? 'd-block' : 'd-none'].join(' ')}
+              className={['endpoint-name-input', this.state.nameEditable ? 'd-block' : 'd-none'].join(' ')}
               name='enpoint-title'
               style={{ width: 'auto', textTransform: 'capitalize' }}
               onChange={this.handleInputChange.bind(this)}
               value={this.state.endpointTitle}
               onBlur={() => { this.handleInputBlur() }}
             />
-            <span
-              onClick={() => {
-                this.setState({ nameEditable: true }, () => {
-                  this.nameInputRef.current.focus()
-                })
-              }}
-              className={['endpoint-name-edit mr-2', !this.state.nameEditable ? 'd-block' : 'd-none'].join(' ')}
+            <h3
+              className={['page-title mb-0', !this.state.nameEditable ? 'd-block' : 'd-none'].join(' ')}
             >
               {(this.state.endpointTitle && this.state.endpointTitle !== '') ? this.state.endpointTitle : null}
               {(this.state.endpointTitle === '' && this.props.groupId) ? 'Untitled' : null}
-              <EditIcon className='fa fa-pencil-square-o' />
+              <EditIcon
+                className='fa fa-pencil-square-o ml-2 cursor-pointer '
+                onClick={() => {
+                  this.setState({ nameEditable: true }, () => {
+                    this.nameInputRef.current.focus()
+                  })
+                }}
+              />
+            </h3>
+          </div>
+          <div className='d-flex bread-crumb-wrapper align-items-center text-nowrap'>
+            {this.collectionName && <span className=''>{`${this.collectionName}`}</span>}
+            {this.renderLeftAngle(this.collectionName)}
+            {this.versionName && <span>{`${this.versionName}`}</span>}
+            {this.renderLeftAngle(this.versionName)}
+            {this.groupName && <span>{`${this.groupName}`}</span>}
+            {this.renderLeftAngle(this.groupName)}
+            <span>
+              {this.state.endpointTitle}
             </span>
             {this.props?.endpoint?.publishedEndpoint?.isPublished && <div className='api-label POST request-type-bgcolor ml-2'> Live </div>}
             {this.state.isPagePublished && <div className='api-label POST request-type-bgcolor ml-2'> Live </div>}
