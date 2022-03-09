@@ -21,6 +21,9 @@ span.Resizer.vertical {
   background-color: $secondary-color;
   padding: 0.75rem 0 0.45rem;
   .switch-products{
+    .dropdown-toggle{
+      color: $text-color-dark;
+    }
     .dropdown-menu{
       .dropdown-item{
         padding: 0.25rem 1rem;
@@ -46,6 +49,12 @@ span.Resizer.vertical {
     }
   }
   .versionChovron{
+    transform: rotate(-90deg);
+    width: 1.5rem;
+    height: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     transition: all 0.3s ease-in;
   }
   .fade {
@@ -72,9 +81,10 @@ span.Resizer.vertical {
       }
     }
     .sidebar-accordion {
-      &.expanded > button .versionChovron{
-        transform: rotate(90deg);
-        display: inline-block;
+      &.expanded > button{
+        .versionChovron{
+          transform: rotate(0);
+        }
       }
       .entity-submit-btn {
         padding: 0 !important;
@@ -91,11 +101,14 @@ span.Resizer.vertical {
         justify-content: center;
       }
       button{
+        &.expanded{
+          .versionChovron{
+            transform: rotate(0);
+          }
+        }
         &:hover {
           background: $grey;
         }
-      }
-      button{
         .sidebar-item-action-btn {
           cursor: pointer;
           transition: all 0.3s ease-in;
@@ -105,12 +118,6 @@ span.Resizer.vertical {
             width: 0.5rem;
             justify-content: center;
           }
-        }
-        .versionChovron{
-          transition: all 0.3s ease-in;
-        }
-        &.expanded > div > .versionChovron{
-          transform: rotate(90deg);
         }
         .sidebar-item-action {
           transition: all 0.3s ease-in;
@@ -185,7 +192,7 @@ span.Resizer.vertical {
       .profile-details {
         border-bottom: 1px solid #e6dbd4;
         margin-bottom: 1rem;
-        padding: 0.25rem 0 0.5rem;
+        padding: 0.5rem 0 0.25rem;
       }
       .profile-listing-container .dropdown-item {
         padding: 0.25rem 1rem;
@@ -236,18 +243,10 @@ span.Resizer.vertical {
   align-items: center;
 }
 
-.public-colection-info .publicurl {
-  width: 90%;
-}
-
 .publishCollection {
   background: transparent !important;
   font-weight: 400 !important;
   height: 35px;
-}
-
-.public-colection-info .setting {
-  margin-left: 10px;
 }
 
 .sidebar-public-url .text-truncate {
@@ -340,12 +339,6 @@ input[type="text"]:focus {
 .versionChovron svg {
   transition: all 0.3s ease-in;
 }
-.primary-sidebar button.expanded .versionChovron svg {
-  transform: rotate(90deg) !important;
-}
-  
-
-
 
 .sidebar-content:focus {
   border: none;

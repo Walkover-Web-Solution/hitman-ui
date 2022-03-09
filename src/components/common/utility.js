@@ -11,7 +11,8 @@ export function isDashboardRoute (props, sidebar = false) {
   if (
     props.match.path.includes('/dashboard') ||
     props.match.path.includes('/orgs/:orgId/dashboard') ||
-    (sidebar === true && props.match.path.includes('/orgs/:orgId/admin/publish'))
+    (sidebar === true && props.match.path.includes('/orgs/:orgId/admin/publish')) ||
+    (sidebar === true && props.match.path.includes('/orgs/:orgId/admin/feedback'))
   ) { return true } else return false
 }
 

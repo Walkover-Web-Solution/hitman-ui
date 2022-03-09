@@ -37,7 +37,7 @@
   }
   .dropdown{
     height: 36px;
-    font-size: 14px;
+    font-size: $font-normal !important;
     font-weight: 400;
     color: #d6d6d6;
     border-radius: 0px;
@@ -46,19 +46,43 @@
       align-items: center;
       justify-content: center; 
       &::after {
-        background-image: url(../../assets/icons/downChevron.svg);
         border: none !important;
-        height: 8px;
-        width: 14px;
-        background-repeat: no-repeat;
+        content: '\221F';
+        transform: rotate(-45deg);
+        position: relative;
+        top: -0.15rem;
+      }
+    }
+    .dropdown-menu{
+      border-radius: $border-radius;
+      border: none;
+      padding: 0;
+      box-shadow: 0 3px 5px 0px rgba(0, 0, 0, 0.03),
+        0 0 20px 0px rgba(0, 0, 0, 0.08);
+      color: #252d30;
+      max-height: 20rem;
+      overflow: auto;
+      .dropdown-item{
+        cursor: pointer;
+        border-radius: 3px;
+        display: flex;
+        -webkit-display:flex;
+        align-items: center;
+        padding: 0.35rem 1rem;
+        transition: all 0.3s ease-in;
+        font-size: $font-normal;
       }
     }
   }
+
   .font-weight-700 {
     font-weight: 700;
   }
   .f-12{
     font-size: $font-medium;
+  }
+  .f-10{
+    font-size: $font-small;
   }
   .plr-3{
     padding-left: 1rem !important;
@@ -71,6 +95,14 @@
     font-size: 1.75rem;
     font-weight: 600;
     color: $text-color-dark
+  }
+  .published{
+    color: $success-color;
+  }
+  .text-sm-bold {
+    font-size: 12px;
+    font-weight: 600;
+    cursor: context-menu;
   }
 
 // Global Styles
@@ -427,28 +459,6 @@ label.data-type {
       background-color: #ffefcf;
     }
   }
-}
-
-// Dropdown
-.dropdown-menu {
-  border-radius: 3px !important;
-  box-shadow: none;
-  border: none;
-  padding: 10px 10px;
-  box-shadow: 0 3px 5px 0px rgba(0, 0, 0, 0.03),
-    0 0 20px 0px rgba(0, 0, 0, 0.08);
-  color: #252d30;
-  .dropdown-item{
-    cursor: pointer;
-  }
-}
-
-.dropdown-menu .dropdown-item {
-  border-radius: 3px;
-  display: flex;
-  -webkit-display:flex;
-  align-items: center;
-  padding: 5px 10px;
 }
 
 // Public Dashboard
@@ -854,20 +864,6 @@ label.data-type {
 
 }
 
-.dropdown-menu .dropdown-item {
-  border-radius: 3px;
-  padding: 5px 10px;
-  color: #333;
-  font-size: 14px;
-  position: relative;
-}
-
-.dropdown-menu.dropdown-menu-right {
-  box-shadow: -25px 25px 43px rgba(0, 0, 0, 0.07);
-  border: none;
-  border-radius: 0;
-}
-
 .empty-collections .content {
   h5 {
     color: #333;
@@ -1044,7 +1040,7 @@ body .form-group {
 }
 body .form-control {
   height: 36px;
-  border: 1px solid $input-text-color;
+  border: 1px solid $outline-color;
   font-size: $font-normal;
   font-weight: 400;
   color: #000;
@@ -1052,7 +1048,7 @@ body .form-control {
   background-color: #fff;
   &:focus {
     outline: none;
-    border: 1px solid #091E42;
+    border: 1px solid $theme-color;
     box-shadow: none;
   }
   &::placeholder{
@@ -1186,8 +1182,8 @@ button.editBtn {
 }
 
 .headParaWraper {
-  background: #fff;
   padding: 4px 0 11px;
+  border-radius: $border-radius;
 }
 
 .adddescLink {
@@ -1195,7 +1191,7 @@ button.editBtn {
   color: #E98A36;
   text-decoration: none;
   cursor: pointer;
-  font-size: 14px;
+  font-size: $font-medium;
   background: transparent;
   border: none;
   outline: none !important;
@@ -1247,8 +1243,7 @@ button.editBtn {
 
 .responseTabWrapper {
   background: #fff;
-  padding: 20px;
-  border-radius: 4px;
+  border-radius: $border-radius;
 }
 #uncontrolled-tab-example-tabpane-history,
 #uncontrolled-tab-example-tabpane-randomTrigger {
@@ -1512,14 +1507,8 @@ table#custom-generic-table tbody input[value="false"] + span.checkmark {
 
 .mainContentWrapper {
   width: 100%;
-  border-bottom: 0.5px solid #E6DBD4;
   padding: 15px 30px;
-  float: left;
-  border-bottom-left-radius: 4px;
-  border-bottom-right-radius: 4px;
   margin-top: 0px;
-  overflow: auto;
-  min-height: calc(100vh - 70px);
 }
 
 .btn.btn-secondary.outline {
@@ -2258,56 +2247,6 @@ button[name="cta-1"] {
   text-transform: uppercase;
   font-size: 12px;
 }
-
-
-
-.favicon {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  position: relative;
-  input{
-    max-width: 35rem;
-  }
-  small.text-danger {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
-  }
-  span {
-    font-size: 14px;
-    color: #EB5757;
-    font-weight: 400;
-  }
-  .or-wrap {
-    margin: 0 1.45rem 0 1rem;
-  }
-}
-
-.uploadBox img {
-  width: 100%;
-  padding: 10px;
-  object-fit: contain;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.uplod-info {
-  margin-left: 10px;
-  p{
-    max-width: 5rem;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    color: #828282;
-    font-size: 14px;
-    margin: 0;
-  }
-}
-
 .mainpublic-endpoint-main .custom-display-page {
   padding: 25px 200px 10px 30px;
 }
@@ -2986,7 +2925,7 @@ li.nav-item.cookie-tab a {
   margin-left: 6px;
 }
 .dashboardPage table#custom-generic-table tbody input[value="true"] + span.checkmark {
-  background: #f1b43f;
+  background: $theme-color;
 }
 
 .errorPage{
@@ -3206,7 +3145,7 @@ ul.react-autocomplete-input {
   > div{
     padding: 0.25rem 0 !important;
   }
-  input#rc-editable-input-1 {
+  input {
     max-width: 3.5rem;
   }
 }
@@ -3228,4 +3167,50 @@ ul.react-autocomplete-input {
     font-weight: normal;
     margin: 1rem 0rem 0rem 0rem;
   }
+}
+.top-part{
+  > .btn, .dropdown{
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+  .page-title-name {
+    padding-right: 7rem;
+  }
+}
+.table-alignment{
+  width: auto ;
+  text-align: left;
+  padding: 10px 0;
+}
+.feedback-table{
+  width: 100%;
+  & thead th{
+    @extend .table-alignment
+  }
+  & tr td{
+    @extend .table-alignment
+  }
+  & tr{
+    border-bottom: 1px solid #E6DBD4;
+  }
+  & thead{
+    border-bottom: 1px solid #E6DBD4;
+  }
+  & tfoot tr{
+    border-bottom: none !important;
+  }
+  & tfoot tr td{
+    padding-bottom: 0px !important;
+  }
+}
+.feedback-tab{
+  padding: 20px;
+}
+.custom-dropdown-btn{
+  width: 10rem;
+  padding: 0 10px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }

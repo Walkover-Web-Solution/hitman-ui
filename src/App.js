@@ -119,6 +119,7 @@ class App extends Component {
             <ProtectedRoute path='/orgs/:orgId/admin/publish' component={Main} />
             <ProtectedRoute path='/orgs/:orgId/dashboard/endpoint/:endpointId' component={Main} />
             <ProtectedRoute path='/orgs/:orgId/dashboard/collection/:collectionId/settings' component={Main} />
+            <ProtectedRoute path='/orgs/:orgId/dashboard/collection/:collectionId/feedback' component={Main} />
             <ProtectedRoute path='/orgs/:orgId/dashboard/page/:pageId' component={Main} />
             <ProtectedRoute path='/orgs/:orgId/dashboard/history/:historyId' component={Main} />
             <ProtectedRoute exact path='/orgs/:orgId/dashboard/' component={Main} />

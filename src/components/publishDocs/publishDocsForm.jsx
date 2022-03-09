@@ -194,8 +194,8 @@ class PublishDocForm extends Component {
         </label>
         {this.state.cta.map((cta, index) => (
           <div key={`cta-${index}`} className={(cta.name.trim() && cta.value.trim()) ? 'd-flex highlight' : 'd-flex'}>
-            <input type='text' className='form-control my-2 mr-2' placeholder={`CTA Name ${index + 1}`} name={`cta-${index}-name`} value={cta.name} onChange={(e) => this.handleChangeLink(e)} />
-            <input type='text' className='form-control my-2 mr-2' placeholder={`CTA Link ${index + 1}`} name={`cta-${index}-value`} value={cta.value} onChange={(e) => this.handleChangeLink(e)} />
+            <input type='text' className='form-control mb-2 mr-2' placeholder={`CTA Name ${index + 1}`} name={`cta-${index}-name`} value={cta.name} onChange={(e) => this.handleChangeLink(e)} />
+            <input type='text' className='form-control mb-2 mr-2' placeholder={`CTA Link ${index + 1}`} name={`cta-${index}-value`} value={cta.value} onChange={(e) => this.handleChangeLink(e)} />
           </div>
         ))}
       </div>
@@ -210,8 +210,8 @@ class PublishDocForm extends Component {
         </label>
         {this.state.links.map((link, index) => (
           <div key={`cta-${index}`} className={(link.name.trim() && link.link.trim()) ? 'd-flex highlight' : 'd-flex'}>
-            <input type='text' className='form-control my-2 mr-2' placeholder={`Link Name ${index + 1}`} name={`links-${index}-name`} value={link.name} onChange={(e) => this.handleChangeLink(e)} />
-            <input type='text' className='form-control my-2 mr-2' placeholder={`Referral Link ${index + 1}`} name={`links-${index}-link`} value={link.link} onChange={(e) => this.handleChangeLink(e)} />
+            <input type='text' className='form-control mb-2 mr-2' placeholder={`Link Name ${index + 1}`} name={`links-${index}-name`} value={link.name} onChange={(e) => this.handleChangeLink(e)} />
+            <input type='text' className='form-control mb-2 mr-2' placeholder={`Referral Link ${index + 1}`} name={`links-${index}-link`} value={link.link} onChange={(e) => this.handleChangeLink(e)} />
           </div>
         ))}
       </div>
@@ -223,18 +223,6 @@ class PublishDocForm extends Component {
       <div className='d-flex align-items-center'>
         {this.props.isSidebar && <Button className='btn btn-secondary outline mr-2' onClick={() => { this.props.onHide() }}> Cancel</Button>}
         <Button className={this.state.loader ? 'buttonLoader' : ''} id='publish_doc_settings_save_btn' onClick={() => this.saveCollectionDetails()}>{this.props.isSidebar ? 'Update' : 'Save'}</Button>
-        <div className='publish-mo-btn'>
-          {
-            (this.props.isSidebar || this.props.onTab) && this.props.isCollectionPublished() &&
-              <Button
-                id='unpublish_doc_btn'
-                variant='btn btn-outline danger ml-2'
-                onClick={() => this.props.unPublishCollection()}
-              >
-                Unpublish Doc
-              </Button>
-          }
-        </div>
       </div>
     )
   }
@@ -337,7 +325,7 @@ class PublishDocForm extends Component {
         </label>
         <input type='text' placeholder={placeholder} disabled={disabled} className='form-control' name={name} value={data[name]} onChange={(e) => this.handleChange(e, isURLInput)} onBlur={(e) => this.handleBlur(e, isURLInput)} />
         {errors && errors[name] && <small className='alert alert-danger'>{errors[name]}</small>}
-        {name === 'domain' && <span className='domain-info f-12 mt-1'>{`Point the A record of the above domain to ${UI_IP}`}</span>}
+        {name === 'domain' && <span className='domain-info f-10 mt-1'>{`Point the A record of the above domain to ${UI_IP}`}</span>}
       </div>
     )
   }
@@ -345,7 +333,21 @@ class PublishDocForm extends Component {
   render () {
     return (
       <div className={this.props.onTab && 'publish-on-tab'}>
-        <h3 className='page-title mb-3'>Manage Public Doc</h3>
+        <div className='d-flex mb-3 justify-content-between'>
+          <h3 className='page-title mb-0'>Manage Public Doc</h3>
+          <div className='publish-mo-btn'>
+            {
+              (this.props.isSidebar || this.props.onTab) && this.props.isCollectionPublished() &&
+                <Button
+                  id='unpublish_doc_btn'
+                  variant='btn btn-outline danger ml-2'
+                  onClick={() => this.props.unPublishCollection()}
+                >
+                  Unpublish Doc
+                </Button>
+            }
+          </div>
+        </div>
         <div className='small-input'>
           {this.renderInput('title', true, false, 'brand name')}
           {this.renderInput('domain', false, false, 'docs.example.com')}

@@ -129,7 +129,7 @@ class ContentPanel extends Component {
       } else if (this.props.collections && this.props.collections[collectionId]) {
         this.props.open_in_new_tab({
           id: collectionId,
-          type: 'collection-setting',
+          type: 'collection',
           status: tabStatusTypes.SAVED,
           previewMode: false,
           isModified: false,
@@ -150,7 +150,14 @@ class ContentPanel extends Component {
         if (tabId !== activeTabId) this.props.set_active_tab_id(tabId)
 
         this.props.history.push({
-          pathname: `/orgs/${orgId}/dashboard/${tab.type}/${tab.status === 'NEW' ? 'new' : tabId}`
+          pathname:
+            tab.type !== 'collection'
+              ? `/orgs/${orgId}/dashboard/${tab.type}/${
+                  tab.status === 'NEW' ? 'new' : tabId
+                }`
+              : this.props.location.pathname.split('/')[6] === 'settings'
+                ? `/orgs/${orgId}/dashboard/collection/${tabId}/settings`
+                : `/orgs/${orgId}/dashboard/collection/${tabId}/feedback`
         })
       } else {
         this.props.add_new_tab()
@@ -202,7 +209,7 @@ class ContentPanel extends Component {
                         handle_save_endpoint={this.handleSaveEndpoint.bind(this)}
                         handle_save_page={this.handleSavePage.bind(this)}
                       />
-                      {getCurrentUser() ? <Environments {...this.props} /> : null}
+                      <Environments {...this.props} />
                     </div>
                   </div>
                 </>
