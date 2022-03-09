@@ -162,7 +162,7 @@ class EndpointBreadCrumb extends Component {
           <div className='page-title-name'>
             <input
               ref={this.nameInputRef}
-              className={['endpoint-name-input', this.state.nameEditable ? 'd-block' : 'd-none'].join(' ')}
+              className={['endpoint-name-input form-control', this.state.nameEditable ? 'd-block' : 'd-none'].join(' ')}
               name='enpoint-title'
               style={{ width: 'auto', textTransform: 'capitalize' }}
               onChange={this.handleInputChange.bind(this)}

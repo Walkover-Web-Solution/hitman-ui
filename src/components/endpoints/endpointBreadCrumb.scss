@@ -22,10 +22,7 @@
 }
 
 .endpoint-name-input {
-    border: none;
-    background: #f3f3f3;
-    padding: 0.25rem 1rem;
-    height: 2.1rem;
+    height: 2.1rem!important ;
     &:focus{
         outline: none;
     }
