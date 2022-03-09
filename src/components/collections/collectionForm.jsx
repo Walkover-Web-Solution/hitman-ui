@@ -8,7 +8,7 @@ import { connect } from 'react-redux'
 import { addCollection, updateCollection } from './redux/collectionsActions'
 import { moveToNextStep } from '../../services/widgetService'
 import { URL_VALIDATION_REGEX } from '../common/constants'
-import DefaultViewModal from './defaultViewModal/defaultViewModal'
+import DefaultViewModal, { defaultViewTypes } from './defaultViewModal/defaultViewModal'
 
 const mapStateToProps = (state) => {
   return {
@@ -18,9 +18,9 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    add_collection: (newCollection, openSelectedCollection) => dispatch(addCollection(newCollection, openSelectedCollection)),
-    update_collection: (editedCollection) =>
-      dispatch(updateCollection(editedCollection))
+    add_collection: (newCollection, openSelectedCollection, callback) => dispatch(addCollection(newCollection, openSelectedCollection, callback)),
+    update_collection: (editedCollection, setLoader, callback) =>
+      dispatch(updateCollection(editedCollection, setLoader, callback))
   }
 }
 
@@ -35,7 +35,7 @@ class CollectionForm extends Form {
         keyword: '',
         keyword1: '',
         keyword2: '',
-        defaultView: 'testing'
+        defaultView: defaultViewTypes.TESTING
       },
       collectionId: '',
       errors: {},
@@ -82,12 +82,11 @@ class CollectionForm extends Form {
   }
 
   async onEditCollectionSubmit (defaultView) {
-    this.props.onHide()
     this.props.update_collection({
       ...this.state.data,
       id: this.state.collectionId,
       defaultView
-    })
+    }, null, this.redirectToCollection.bind(this))
     this.setState({
       data: {
         name: '',
@@ -111,7 +110,6 @@ class CollectionForm extends Form {
   }
 
   async onAddCollectionSubmit (defaultView) {
-    // this.props.onHide()
     const requestId = shortid.generate()
     const defaultDocProperties = {
       defaultLogoUrl: '',
@@ -127,7 +125,7 @@ class CollectionForm extends Form {
         keyword: '',
         keyword1: '',
         keyword2: '',
-        defaultView: 'testing'
+        defaultView: defaultViewTypes.TESTING
       }
     })
     moveToNextStep(1)

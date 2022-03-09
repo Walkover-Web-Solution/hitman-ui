@@ -23,7 +23,7 @@ import { isDesktop } from 'react-device-detect'
 import OnlineSatus from '../onlineStatus/onlineStatus'
 import { getOrgUpdatedAt } from '../../services/orgApiService'
 import moment from 'moment'
-import Header from './header'
+// import Header from './header'
 import { loadfeedioWidget } from '../../services/feedioWidgetService'
 import { loadHelloWidget } from '../../services/helloWidgetService'
 import auth from '../auth/authService'
@@ -32,6 +32,7 @@ import { sendAmplitudeData } from '../../services/amplitude'
 import UpdateStatus from './updateStatus'
 import { isValidDomain } from '../common/utility'
 import CollectionModal from '../collections/collectionsModal'
+import SplitPane from 'react-split-pane'
 
 import LoadingScreen from 'react-loading-screen'
 
@@ -211,54 +212,66 @@ class Main extends Component {
     )
   }
 
+  renderLandingDashboard () {
+    return (
+      <>
+        {this.addCollectionDialog()}
+        {this.showCollectionDashboard() &&
+          <div className='aside'>
+            <div className='collection-main'>
+              <p>add your first collection for API Testing and Public API Doc</p>
+              <button className='add' onClick={() => this.setState({ showAddCollectionModal: true })}>Add Collections</button>
+              <p>Or</p>
+              <button onClick={() => { this.setVisitedOrgs(); this.setState({ showAddCollectionPage: false }) }}>Try Out Without a Collection</button>
+            </div>
+          </div>}
+      </>
+    )
+  }
+
   render () {
     return (
-      <LoadingScreen
-        loading={this.state.loading}
-        bgColor='#f1f1f1'
-        spinnerColor='#9ee5f8'
-        textColor='#676767'
-      >
-        <div>
-          {!isDesktop &&
+      <>
+        <LoadingScreen
+          loading={this.state.loading}
+          bgColor='#f1f1f1'
+          spinnerColor='#9ee5f8'
+          textColor='#676767'
+        >
+
+          <div>{!isDesktop &&
             <div className='mobile-warning'>
               Looks like you have opened it on a mobile device. It looks better on a desktop device.
             </div>}
-          {this.addCollectionDialog()}
-          {this.showCollectionDashboard() &&
-            <div className='aside'>
-              <div className='collection-main'>
-                <p>add your first collection for API Testing and Public API Doc</p>
-                <button className='add' onClick={() => this.setState({ showAddCollectionModal: true })}>Add Collections</button>
-                <p>Or</p>
-                <button onClick={() => { this.setVisitedOrgs(); this.setState({ showAddCollectionPage: false }) }}>Try Out Without a Collection</button>
-              </div>
-            </div>}
-          {!this.showCollectionDashboard() &&
-            <div className='custom-main-container'>
-              <Header {...this.props} />
-              <DesktopAppDownloadModal history={this.props.history} location={this.props.location} match={this.props.match} />
-              <OnlineSatus fetchFromBackend={this.fetchFromBackend.bind(this)} isIdbUpdated={this.isIdbUpdated.bind(this)} />
-              <div className='main-panel-wrapper'>
-                <SideBar
-                  {...this.props}
-                  tabs={[...this.state.tabs]}
-                  set_tabs={this.setTabs.bind(this)}
-                  default_tab_index={this.state.defaultTabIndex}
-                />
-                {this.props.location.pathname.split('/')[4] === 'publish'
-                  ? <PublishDocs {...this.props} />
-                  : <ContentPanel
+            {this.renderLandingDashboard()}
+            {!this.showCollectionDashboard() &&
+              <div className='custom-main-container'>
+                {/* <Header {...this.props} /> */}
+                <DesktopAppDownloadModal history={this.props.history} location={this.props.location} match={this.props.match} />
+                <OnlineSatus fetchFromBackend={this.fetchFromBackend.bind(this)} isIdbUpdated={this.isIdbUpdated.bind(this)} />
+                <div className='main-panel-wrapper'>
+                  <SplitPane split='vertical' className='split-sidebar'>
+                    <SideBar
                       {...this.props}
-                      set_environment={this.setEnvironment.bind(this)}
+                      tabs={[...this.state.tabs]}
                       set_tabs={this.setTabs.bind(this)}
                       default_tab_index={this.state.defaultTabIndex}
-                    />}
-              </div>
-              <UpdateStatus />
-            </div>}
-        </div>
-      </LoadingScreen>
+                    />
+                    {this.props.location.pathname.split('/')[4] === 'publish'
+                      ? <PublishDocs {...this.props} />
+                      : <ContentPanel
+                          {...this.props}
+                          set_environment={this.setEnvironment.bind(this)}
+                          set_tabs={this.setTabs.bind(this)}
+                          default_tab_index={this.state.defaultTabIndex}
+                        />}
+                  </SplitPane>
+                </div>
+                <UpdateStatus />
+              </div>}
+          </div>
+        </LoadingScreen>
+      </>
     )
   }
 }

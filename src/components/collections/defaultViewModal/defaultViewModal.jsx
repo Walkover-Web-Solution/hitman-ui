@@ -3,7 +3,11 @@ import DocIcon from '../../../assets/icons/doc.svg'
 import ApiIcon from '../../../assets/icons/api.svg'
 import InfoIcon from '../../../assets/icons/info.svg'
 import './defaultViewModal.scss'
-
+import { Spinner } from 'react-bootstrap'
+export const defaultViewTypes = {
+  TESTING: 'testing',
+  DOC: 'doc'
+}
 export class DefaultViewModal extends Component {
   createCollection (defaultView) {
     this.props.saveCollection(defaultView, true)
@@ -11,7 +15,7 @@ export class DefaultViewModal extends Component {
 
   renderTestingButton () {
     return (
-      <button className='block-view-btn mr-3' onClick={() => this.createCollection('testing')}>
+      <button className='block-view-btn mr-3' onClick={() => this.createCollection(defaultViewTypes.TESTING)}>
         <img src={ApiIcon} alt='' />
         API Testing
       </button>
@@ -20,10 +24,18 @@ export class DefaultViewModal extends Component {
 
   renderDocButton () {
     return (
-      <button className='block-view-btn' onClick={() => this.createCollection('doc')}>
+      <button className='block-view-btn' onClick={() => this.createCollection(defaultViewTypes.DOC)}>
         <img src={DocIcon} alt='' />
         Host API Doc
       </button>
+    )
+  }
+
+  renderSpinner () {
+    return (
+      <div className='d-flex justify-content-center align-items-center'>
+        <Spinner as='div' animation='border' size='sm' role='status' />
+      </div>
     )
   }
 

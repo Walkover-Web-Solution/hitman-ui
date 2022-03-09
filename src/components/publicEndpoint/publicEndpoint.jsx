@@ -30,6 +30,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(fetchAllPublicEndpoints(ownProps.history, collectionIdentifier, domain))
   }
 }
+// const review = {
+//   feedback: 1,
+//   endpoint: 2
+// }
 
 class PublicEndpoint extends Component {
   state = {
@@ -37,7 +41,9 @@ class PublicEndpoint extends Component {
     collectionName: '',
     collectionTheme: null,
     isNavBar: false,
-    isSticky: false
+    isSticky: false,
+    likeActive: false,
+    dislikeActive: false
   };
 
   componentDidMount () {
@@ -168,6 +174,32 @@ class PublicEndpoint extends Component {
     if (entityName) { this.setState({ currentEntityName: entityName }) } else { this.setState({ currentEntityName: '' }) }
   }
 
+  setDislike () {
+    this.setState({ dislikeActive: !this.state.dislikeActive })
+    // localStorage.setItem('feedback', JSON.stringify(this.state.dislikeActive));
+    console.log(this.props.match.params.endpointId)
+  }
+
+  setLike () {
+    this.setState({ likeActive: !this.state.likeActive })
+  }
+
+  handleLike () {
+    if (this.state.dislikeActive) {
+      // this.setLike();
+      // this.setDislike();
+    }
+    this.setLike()
+  }
+
+  handleDislike () {
+    if (this.state.likeActive) {
+      // this.setDislike();
+      // this.setLike();
+    }
+    this.setDislike()
+  }
+
   render () {
     const collectionId = this.props.match.params.collectionIdentifier
     const docFaviconLink = (this.props.collections[collectionId]?.favicon)
@@ -281,6 +313,9 @@ class PublicEndpoint extends Component {
                                            />}
                       />
                     </Switch>
+                    <button onClick={() => { this.handleLike() }}>like</button>
+                    <span>'    '</span>
+                    <button onClick={() => { this.handleDislike() }}> dislike </button>
                   </div>
                   )
                 : null

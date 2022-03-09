@@ -90,7 +90,7 @@ export const addCollection = (newCollection, openSelectedCollection, customCallb
           openSelectedCollection(response.data.id)
         }
         if (customCallback) {
-          customCallback({ success: true })
+          customCallback({ success: true, data: response.data })
         }
       })
       .catch((error) => {
@@ -154,7 +154,7 @@ export const updateCollection = (editedCollection, stopLoader, customCallback) =
         if (stopLoader) {
           stopLoader()
         }
-        if (customCallback) customCallback({ success: true })
+        if (customCallback) customCallback({ success: true, data: response.data })
       })
       .catch((error) => {
         dispatch(

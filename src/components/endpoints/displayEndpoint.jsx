@@ -2013,6 +2013,61 @@ class DisplayEndpoint extends Component {
     )
   }
 
+  renderSaveButton () {
+    return (
+      <>
+        {
+          isDashboardRoute(this.props)
+            ? (
+                this.props.location.pathname.split('/')[5] !== 'new'
+                  ? (
+                    <Dropdown as={ButtonGroup}>
+                      <button
+                        id='api_save_btn'
+                        className={this.state.saveLoader ? 'btn btn-outline orange buttonLoader' : 'btn btn-outline orange'}
+                        type='button'
+                        onClick={() => this.handleSave()}
+                      >
+                        Save
+                      </button>
+                      {
+                  getCurrentUser()
+                    ? (
+                      <>
+                        <Dropdown.Toggle className='btn-outline' split variant='' />
+                        <Dropdown.Menu className=''>
+                          <Dropdown.Item
+                            onClick={() =>
+                              this.setState({ saveAsFlag: true }, () => {
+                                this.openEndpointFormModal()
+                              })}
+                          >
+                            Save As
+                          </Dropdown.Item>
+                        </Dropdown.Menu>
+                      </>
+                      )
+                    : null
+                }
+                    </Dropdown>
+                    )
+                  : (
+                    <button
+                      className={this.state.saveLoader ? 'btn btn-outline orange buttonLoader' : 'btn btn-outline orange'}
+                      type='button'
+                      id='save-endpoint-button'
+                      onClick={() => this.handleSave()}
+                    >
+                      Save
+                    </button>
+                    )
+              )
+            : null
+        }
+      </>
+    )
+  }
+
   render () {
     this.endpointId = this.props.endpointId
       ? this.props.endpointId
@@ -2054,6 +2109,7 @@ class DisplayEndpoint extends Component {
         }
       })
     }
+
     const { theme, codeEditorVisibility } = this.state
     return (
       <div
@@ -2079,31 +2135,34 @@ class DisplayEndpoint extends Component {
                   <div
                     className={isDashboardRoute(this.props) ? 'hm-panel col-12' : null}
                   >
-                    {this.state.showEndpointFormModal && (
-                      <SaveAsSidebar
+                    <div className='position-relative top-part'>
+                      {this.state.showEndpointFormModal && (
+                        <SaveAsSidebar
+                          {...this.props}
+                          onHide={() => this.closeEndpointFormModal()}
+                          set_group_id={this.setGroupId.bind(this)}
+                          name={this.state.data.name}
+                          description={this.state.data.description}
+                          save_endpoint={this.handleSave.bind(this)}
+                          saveAsLoader={this.state.saveAsLoader}
+                        />
+                      )}
+                      <DisplayDescription
                         {...this.props}
-                        onHide={() => this.closeEndpointFormModal()}
-                        set_group_id={this.setGroupId.bind(this)}
-                        name={this.state.data.name}
-                        description={this.state.data.description}
-                        save_endpoint={this.handleSave.bind(this)}
-                        saveAsLoader={this.state.saveAsLoader}
+                        endpoint={this.state.endpoint}
+                        data={this.state.data}
+                        old_description={this.state.oldDescription}
+                        groupId={this.state.groupId ? this.state.groupId : null}
+                        props_from_parent={this.propsFromDescription.bind(this)}
+                        alterEndpointName={(name) => this.alterEndpointName(name)}
                       />
-                    )}
-                    <DisplayDescription
-                      {...this.props}
-                      endpoint={this.state.endpoint}
-                      data={this.state.data}
-                      old_description={this.state.oldDescription}
-                      groupId={this.state.groupId ? this.state.groupId : null}
-                      props_from_parent={this.propsFromDescription.bind(this)}
-                      alterEndpointName={(name) => this.alterEndpointName(name)}
-                    />
+                      {this.renderSaveButton()}
+                    </div>
                   </div>
                   )
                 : null
             }
-            <div className='endpoint-header' ref={this.scrollDiv}>
+            <div className='endpoint-headers' ref={this.scrollDiv}>
               {!isDashboardRoute(this.props) && (
                 <div className='endpoint-name-container'>
                   {!isDashboardRoute(this.props, true) && <h1 className='endpoint-title'>{this.state.data?.name || ''}</h1>}
@@ -2171,57 +2230,6 @@ class DisplayEndpoint extends Component {
                         >
                           {isDashboardRoute(this.props) ? 'Send' : 'Try'}
                         </button>
-
-                        {
-                          isDashboardRoute(this.props)
-                            ? (
-
-                                this.props.location.pathname.split('/')[5] !== 'new'
-                                  ? (
-                                    <Dropdown as={ButtonGroup}>
-                                      <button
-                                        id='api_save_btn'
-                                        className={this.state.saveLoader ? 'btn btn-outline orange buttonLoader' : 'btn btn-outline orange'}
-                                        type='button'
-                                        onClick={() => this.handleSave()}
-                                      >
-                                        Save
-                                      </button>
-                                      {
-                                      getCurrentUser()
-                                        ? (
-                                          <span>
-                                            <Dropdown.Toggle split variant='' />
-                                            <Dropdown.Menu className=''>
-                                              <Dropdown.Item
-                                                onClick={() =>
-                                                  this.setState({ saveAsFlag: true }, () => {
-                                                    this.openEndpointFormModal()
-                                                  })}
-                                              >
-                                                Save As
-                                              </Dropdown.Item>
-                                            </Dropdown.Menu>
-                                          </span>
-                                          )
-                                        : null
-                                    }
-                                    </Dropdown>
-                                    )
-                                  : (
-                                    <button
-                                      className={this.state.saveLoader ? 'btn btn-outline orange buttonLoader' : 'btn btn-outline orange'}
-                                      type='button'
-                                      id='save-endpoint-button'
-                                      onClick={() => this.handleSave()}
-                                    >
-                                      Save
-                                    </button>
-                                    )
-
-                              )
-                            : null
-                        }
                       </div>
                     </div>
                     )
@@ -2251,7 +2259,6 @@ class DisplayEndpoint extends Component {
                             set_host_uri={this.setHostUri.bind(this)}
                             props_from_parent={this.propsFromChild.bind(this)}
                           />
-
                         </div>
                         {(this.props.highlights?.uri ? <i className='fas fa-circle' /> : null)}
 
