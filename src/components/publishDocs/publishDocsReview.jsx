@@ -30,7 +30,7 @@ class PublishDocsReview extends Component {
 
   renderHostedApiHeading (heading) {
     return (
-      <div className='hosted-doc-heading'>
+      <div className='page-title mb-3'>
         <div>{heading}</div>
       </div>
     )
@@ -108,8 +108,8 @@ class PublishDocsReview extends Component {
 
   renderPageSelectOption () {
     return (
-      <Dropdown>
-        <Dropdown.Toggle variant='' id='dropdown-basic'>
+      <Dropdown className='mb-3 ml-3'>
+        <Dropdown.Toggle variant='' id='dropdown-basic' className='outline-border custom-dropdown-btn'>
           {!this.state.isItemSelected ? 'Select Page' : (this.state.selectedItemType === 'endpoint') ? this.props.endpoints[this.state.selectedItemId]?.name : this.props.pages[this.state.selectedItemId]?.name}
         </Dropdown.Toggle>
         <Dropdown.Menu>
@@ -122,31 +122,37 @@ class PublishDocsReview extends Component {
   renderPageReview () {
     return (
       <div className='hosted-doc-wrapper'>
-        <div className='row'>
-          <div className='col'>Page</div>
-          <div className='col'>Email</div>
-          <div className='col'>Quality</div>
-          <div className='col'>Comment</div>
-        </div>
-        {this.dummyFeedback.map(feedback =>
-          this.renderFeedback(feedback))}
-        <div className='row'>
-          <div className='col'>
-            Total Score: {this.dummyFeedback.reduce((prev, current) => prev + current.quality, 0)}
-          </div>
-        </div>
+        <table className='feedback-table'>
+          <thead>
+            <th>Page</th>
+            <th>Email</th>
+            <th>Quality</th>
+            <th>Comment</th>
+          </thead>
+          <tbody>
+            {this.dummyFeedback.map(feedback =>
+              this.renderFeedback(feedback))}
+          </tbody>
+          <tfoot>
+            <tr>
+              <td>
+                Total Score: {this.dummyFeedback.reduce((prev, current) => prev + current.quality, 0)}
+              </td>
+            </tr>
+          </tfoot>
+        </table>
       </div>
     )
   }
 
   renderFeedback (feedback) {
     return (
-      <div className='row'>
-        <div className='col'>{feedback.page}</div>
-        <div className='col'>{feedback.email}</div>
-        <div className='col'>{feedback.quality}</div>
-        <div className='col'>{feedback.comment}</div>
-      </div>
+      <tr>
+        <td>{feedback.page}</td>
+        <td>{feedback.email}</td>
+        <td>{feedback.quality}</td>
+        <td>{feedback.comment}</td>
+      </tr>
     )
   }
 
@@ -158,11 +164,13 @@ class PublishDocsReview extends Component {
 
   render () {
     return (
-      <>
-        {this.renderHostedApiHeading('API Doc Feedback')}
-        {this.dummyFeedback.length > 0 && this.renderPageSelectOption()}
+      <div className='feedback-tab'>
+        <div className='d-flex flex-row'>
+          {this.renderHostedApiHeading('API Doc Feedback')}
+          {this.dummyFeedback.length > 0 && this.renderPageSelectOption()}
+        </div>
         {this.dummyFeedback.length > 0 ? this.renderPageReview() : this.renderNoFeedback()}
-      </>
+      </div>
     )
   }
 }

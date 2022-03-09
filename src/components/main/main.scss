@@ -3178,3 +3178,39 @@ ul.react-autocomplete-input {
     padding-right: 7rem;
   }
 }
+.table-alignment{
+  width: auto ;
+  text-align: left;
+  padding: 10px 0;
+}
+.feedback-table{
+  width: 100%;
+  & thead th{
+    @extend .table-alignment
+  }
+  & tr td{
+    @extend .table-alignment
+  }
+  & tr{
+    border-bottom: 1px solid #E6DBD4;
+  }
+  & thead{
+    border-bottom: 1px solid #E6DBD4;
+  }
+  & tfoot tr{
+    border-bottom: none !important;
+  }
+  & tfoot tr td{
+    padding-bottom: 0px !important;
+  }
+}
+.feedback-tab{
+  padding: 20px;
+}
+.custom-dropdown-btn{
+  width: 10rem;
+  padding: 0 10px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
