@@ -427,12 +427,12 @@ export class PublishSidebar extends Component {
                     <span className='mr-2 sidebar-version-checkbox'>{this.renderCheckBox('version', version?.id)}</span>
                     <Accordion className='version-accordian w-100' defaultActiveKey={version?.id}>
                       <Accordion.Toggle eventKey={version?.id} className='version-accordian-toggle w-100 version-outline-border' onClick={() => this.toggleVersion(version?.id)}>
-                        <div className='d-flex align-items-center justify-content-between'>
+                        <div className='d-flex align-items-center justify-content-between w-100'>
                           <div className=''>{version?.number}</div>
                           <div className={['down-arrow', this.state.versionsToggle[version.id] ? 'rotate-toggle' : ' '].join(' ')}> <DownChevron /> </div>
                         </div>
                       </Accordion.Toggle>
-                      <Accordion.Collapse eventKey={version?.id} className='px-3 publish-sidebar-accordian-collapse version-outline-border'>
+                      <Accordion.Collapse eventKey={version?.id} className='px-3 publish-sidebar-accordian-collapse'>
                         <div className='my-2'>
                           {this.renderVersionPages(version)}
                           {this.renderGroups(version)}
