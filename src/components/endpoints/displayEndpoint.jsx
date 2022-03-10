@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { toast } from 'react-toastify'
-import { Dropdown, ButtonGroup, Button, DropdownButton } from 'react-bootstrap'
+import { Dropdown, ButtonGroup, Button, DropdownButton, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import store from '../../store/store'
 import { isDashboardRoute, isElectron, isSavedEndpoint, isStateDraft, isStateReject, sensitiveInfoFound } from '../common/utility'
 import tabService from '../tabs/tabService'
@@ -2078,7 +2078,7 @@ class DisplayEndpoint extends Component {
   }
 
   removePublicItem (item, index) {
-    const showRemoveButton = !['body', 'host', 'params', 'headers'].includes(item.type)
+    const showRemoveButton = !['body', 'host', 'params', 'headers', 'pathVariables'].includes(item.type)
     const handleOnClick = () => {
       const docData = _.cloneDeep(this.state.docViewData)
       docData.splice(index, 1)
@@ -2097,7 +2097,7 @@ class DisplayEndpoint extends Component {
               <SortableItem key={index} index={index}>
                 <div>
                   <div>
-                    <DragHandle />
+                    {this.renderDragHandle(item)}
                     {this.removePublicItem(item, index)}
                   </div>
                   {this.renderPublicItem(item, index)}
@@ -2114,6 +2114,14 @@ class DisplayEndpoint extends Component {
         </div>
       )
     }
+  }
+
+  renderDragHandle (item) {
+    if (item.type === 'pathVariables') {
+      if (this.state.pathVariables && this.state.pathVariables.length !== 0) return <DragHandle />
+      return
+    }
+    return <DragHandle />
   }
 
   onSortEnd = (oldIndex, newIndex) => {
@@ -2133,22 +2141,22 @@ class DisplayEndpoint extends Component {
       case 'description': return (
         <div>
           <TinyEditor
-            data={item.content}
+            data={item.data}
             onChange={(e) => {
               const docData = _.cloneDeep(this.state.docViewData)
-              docData[index].content = e
+              docData[index].data = e
               this.setState({ docViewData: docData })
             }}
           />
         </div>
       )
-      case 'note': return (
+      case 'notes': return (
         <div>
           <TinyEditor
-            data={item.content}
+            data={item.data}
             onChange={(e) => {
               const docData = _.cloneDeep(this.state.docViewData)
-              docData[index].content = e
+              docData[index].data = e
               this.setState({ docViewData: docData })
             }}
           />
@@ -2469,14 +2477,20 @@ class DisplayEndpoint extends Component {
             {isPublicEndpoint ? 'Save Draft' : 'Save'}
           </button>
           {isPublicEndpoint &&
-            <button
-              className={this.state.publishLoader ? 'btn btn-outline orange buttonLoader' : 'btn btn-outline orange'}
-              type='button'
-              onClick={() => this.setState({ openPublishConfirmationModal: true })}
-              disabled={!isAdmin()}
+            <OverlayTrigger
+              placement='right'
+              delay={{ show: 250, hide: 400 }}
+              overlay={<Tooltip style={{ fontFamily: 'monospace' }}>Only admins can Publish Endpoints</Tooltip>}
             >
-              Publish Endpoint
-            </button>}
+              <button
+                className={this.state.publishLoader ? 'btn btn-outline orange buttonLoader' : 'btn btn-outline orange'}
+                type='button'
+                onClick={() => this.setState({ openPublishConfirmationModal: true })}
+                disabled={!isAdmin()}
+              >
+                Publish Endpoint
+              </button>
+            </OverlayTrigger>}
           {!isPublicEndpoint &&
             <button
               className={draftOrRejected ? 'btn btn-outline orange' : ''}
