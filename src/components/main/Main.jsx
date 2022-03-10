@@ -25,7 +25,7 @@ import { getOrgUpdatedAt } from '../../services/orgApiService'
 import moment from 'moment'
 // import Header from './header'
 import { loadfeedioWidget } from '../../services/feedioWidgetService'
-import { loadHelloWidget } from '../../services/helloWidgetService'
+// import { loadHelloWidget } from '../../services/helloWidgetService'
 import auth from '../auth/authService'
 import DesktopAppDownloadModal from './desktopAppPrompt'
 import { sendAmplitudeData } from '../../services/amplitude'
@@ -104,7 +104,7 @@ class Main extends Component {
         if (isValidDomain()) {
           loadWidget()
           loadfeedioWidget()
-          loadHelloWidget()
+          // loadHelloWidget() commenting to hide helloWidget
         }
         sendAmplitudeData('Dashboard Landing', {
           orgId: orgId,
