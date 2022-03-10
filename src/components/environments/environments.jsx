@@ -193,10 +193,10 @@ class Environments extends Component {
   }
 
   handletoggle () {
-    const previousView = this.props.responseView;
-    const currentView = previousView === 'right' ? 'bottom' : 'right' 
-    window.localStorage.setItem('response-view', currentView);
-    this.props.set_response_view(currentView);
+    const previousView = this.props.responseView
+    const currentView = previousView === 'right' ? 'bottom' : 'right'
+    window.localStorage.setItem('response-view', currentView)
+    this.props.set_response_view(currentView)
   }
 
   render () {
@@ -253,7 +253,7 @@ class Environments extends Component {
         return (
           <div className='environment-container d-flex align-items-center transition'>
             <div className='tab-div d-flex align-items-center justify-content-center' onClick={() => this.handletoggle()}>
-              <img src={toggleIcon} alt="" />
+              <img src={toggleIcon} alt='' />
             </div>
             {(this.state.environmentFormName === 'Add new Environment' ||
               this.state.environmentFormName === 'Edit Environment') &&

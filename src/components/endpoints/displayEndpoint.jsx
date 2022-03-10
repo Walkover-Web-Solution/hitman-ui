@@ -282,9 +282,9 @@ class DisplayEndpoint extends Component {
     this.setEndpointData()
   }
 
-  setCurrentReponseView() {
-    let currentView = window.localStorage.getItem('response-view');
-    this.props.set_response_view(currentView ? currentView : 'bottom');
+  setCurrentReponseView () {
+    const currentView = window.localStorage.getItem('response-view')
+    this.props.set_response_view(currentView || 'bottom')
   }
 
   setEndpointData () {
@@ -1885,7 +1885,7 @@ class DisplayEndpoint extends Component {
   }
 
   displayResponseAndSampleResponse () {
-    const {responseView} = this.props;
+    const { responseView } = this.props
     return (
       <>
         <div className={`custom-tabs clear-both ${responseView === 'right' ? 'response-switch' : ''}`} ref={this.myRef}>
@@ -2095,7 +2095,7 @@ class DisplayEndpoint extends Component {
       docData.splice(index, 1)
       this.setState({ docViewData: docData })
     }
-    return showRemoveButton && <div className='' onClick={handleOnClick.bind(this)}> <img src={DeleteIcon} alt="" /> </div>
+    return showRemoveButton && <div className='' onClick={handleOnClick.bind(this)}> <img src={DeleteIcon} alt='' /> </div>
   }
 
   renderDocView = () => {
@@ -2226,7 +2226,7 @@ class DisplayEndpoint extends Component {
     if (isSavedEndpoint(this.props)) {
       return (
         <ButtonGroup className='btn-group-custom mb-3' aria-label='Basic example'>
-          <Button className={ 'mr-1 ' + (this.state.currentView === 'testing' ? 'active' : '')} onClick={() => this.switchView('testing')}>Testing</Button>
+          <Button className={'mr-1 ' + (this.state.currentView === 'testing' ? 'active' : '')} onClick={() => this.switchView('testing')}>Testing</Button>
           <Button className={this.state.currentView === 'doc' ? 'active' : ''} onClick={() => this.switchView('doc')}>Doc</Button>
         </ButtonGroup>
       )
@@ -2597,7 +2597,7 @@ class DisplayEndpoint extends Component {
   }
 
   responseToggle () {
-    return JSON.parse(window.localStorage.getItem('right'));
+    return JSON.parse(window.localStorage.getItem('right'))
   }
 
   render () {
