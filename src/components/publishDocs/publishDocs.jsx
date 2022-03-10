@@ -1157,7 +1157,7 @@ class PublishDocs extends Component {
         <div>
           <label className='hostes-label'>Collection</label>
           <Dropdown>
-            <Dropdown.Toggle variant='' id='dropdown-basic'>
+            <Dropdown.Toggle variant='' id='dropdown-basic' className='custom-toggle'>
               {this.props.collections[collectionId]?.name || ''}
             </Dropdown.Toggle>
             <Dropdown.Menu>
