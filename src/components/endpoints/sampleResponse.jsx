@@ -113,8 +113,12 @@ class SampleResponse extends Component {
     if (typeof data === 'object') {
       return (this.showJSONPretty(data))
     } else {
-      data = JSON.parse(data)
-      return (typeof data === 'object' ? this.showJSONPretty(data) : <pre className='custom-json-pretty'>{data}</pre>)
+      try {
+        data = JSON.parse(data)
+        return this.showJSONPretty(data)
+      } catch (err) {
+        return <pre>{data}</pre>
+      }
     }
   }
 
