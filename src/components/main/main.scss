@@ -107,6 +107,9 @@
   .flex-d-col{
     flex-direction: column;
   }
+  .clear-both{
+    clear: both;
+  }
 
 // Global Styles
 
@@ -1186,18 +1189,12 @@ button.editBtn {
   font-size: 10px;
   margin: 2px 0;
 }
-
-.mainContentWrapperPublic .hm-public-table .headParaWraper {
-  max-height: none;
-}
-
 .headParaWraper {
   padding: 4px 0 11px;
   border-radius: $border-radius;
 }
 
 .adddescLink {
-  float: right;
   color: #E98A36;
   text-decoration: none;
   cursor: pointer;
@@ -1206,6 +1203,7 @@ button.editBtn {
   border: none;
   outline: none !important;
   margin-top: 0.5rem;
+  float: right;
   &:hover {
     color: #f57a0d;
   }
@@ -1280,6 +1278,9 @@ button.editBtn {
       border-color: $theme-color;
       background-color: transparent;
       color: $theme-color;
+    }
+    &:focus, &:active{
+      background-color: $theme-color !important;
     }
   }
   &.btn-outline {
@@ -1556,24 +1557,6 @@ table#custom-generic-table tbody input[value="false"] + span.checkmark {
 .hideCodeEditor .pubCodeWrapper.closeEditor {
   position: fixed;
   right: 0;
-}
-
-.mainContentWrapperPublic {
-  .mainContentWrapper {
-    border: none;
-    display: flex;
-    padding: 0;
-  }
-
-  .hm-endpoint-container {
-    margin: 25px 10px 30px !important;
-    padding: 0 5px !important;
-
-  }
-
-  .hm-panel {
-    margin-top: 25px;
-  }
 }
 
 @media(max-width:1699px) {
@@ -2304,15 +2287,6 @@ button[name="cta-1"] {
   max-height:72px;
 }
 
-.mainContentWrapperPublic .main-table-wrapper {
-  padding: 20px 25px;
-  border: 0.5px solid #E6DBD4;
-  border-top-right-radius: 0px;
-  background: #F3F3F3;
-  border-top-left-radius: 0;
-  border-top: 0;
-}
-
 @keyframes slide-down {
   0% {
     opacity: 0;
@@ -2663,9 +2637,6 @@ span.endpointNameWrapper {
   padding: 0px;
 }
 
-.mainContentWrapperPublic.hideCodeEditor .hm-endpoint-container.endpoint-container {
-  width: 100%;
-}
 .tooltip-inner{
   max-width: 450px !important;
 }
@@ -3228,8 +3199,93 @@ ul.react-autocomplete-input {
   font-size: $font-large;
 }
 .text-link {
-  border-bottom: 1px solid;
   cursor: pointer;
   color: $theme-color;
-  text-decoration: none !important;
+}
+.btn-group-custom{
+  border: 1px solid $outline-color;
+  border-radius: $border-radius;
+  padding: 4px;
+  .btn{
+    background: none;
+    color: #212121;
+    font-size: $font-medium!important;
+    border: none;
+    padding: 0.25rem 0.5rem;
+    border-radius: 3px !important;
+    min-width: 3.5rem;
+    &.active{
+      background: #fff !important;
+      color: #212121 !important;
+      box-shadow: 0px 0px 4px 0px #00000029 !important;
+    }
+  }
+}
+
+.doc-view {
+  box-shadow: 0px 2px 6px 0px #03225014;
+  background-color: #fff;
+  padding: 2rem 2.75rem;
+  border-radius: 5px;
+  overflow: hidden;
+  .tox{
+    &.tox-tinymce {
+      max-height: 15rem;
+      svg{
+        width: 1rem;
+        height: 1rem;
+      }
+    }
+  }
+}
+
+.bottom-text-editor {
+  box-shadow: 4px 4px 20px 0px #0000001f;
+  padding: 0;
+  margin: 1rem 0;
+  height: 2rem;
+  .show .btn{
+    background: $theme-color !important;
+    border-color: transparent !important;
+  }
+  .btn {
+    padding: 0 1rem;
+    height: 2rem !important;
+    &:active, &:focus{
+      background: $theme-color;
+    }
+  }
+}
+.doc-secs{
+  &:hover{
+    .addons{
+      opacity: 1;
+    }
+  }
+}
+.addons {
+    position: absolute;
+    top: 0.65rem;
+    z-index: 1;
+    background-color: #f7f6f3;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 4px;
+    right: -2.25rem;
+    flex-direction: column;
+    transition: all 0.3s ease-in;
+    opacity: 0;
+    > div {
+      padding: 0.15rem 0.25rem;
+      cursor: pointer;
+      &:not(:last-child){
+        border-bottom: 1px solid $outline-color;
+      }
+    }
+}
+.tab-div {
+  height: 100%;
+  padding: 0 0.75rem;
+  border-left: 1px solid $outline-color;
 }

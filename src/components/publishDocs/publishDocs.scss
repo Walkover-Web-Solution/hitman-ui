@@ -4,7 +4,8 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  width: 100%
+  width: 100%;
+  overflow-y: scroll;
 }
 
 .pageSettingsButton {
@@ -364,4 +365,12 @@ label.hostes-label {
 
 .publish-reject button.btn.btn-success {
   font-weight: 600 !important;
+}
+
+.custom-toggle{
+  border: 1px solid #E6DBD4 !important;
+  padding: 5px 5px 5px 10px !important;
+  &::after{
+    transform: rotate(-45deg) !important;
+  }
 }

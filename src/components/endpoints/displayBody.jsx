@@ -278,6 +278,7 @@ class BodyContainer extends Component {
 
     return (
       <div className='body-wrapper'>
+        <span style={{ fontWeight: 600 }}>Body</span>
         <div className='button-panel-wrapper'>
           <form className='body-select d-flex align-items-center mb-4'>
             <label className='customRadio'>

@@ -19,10 +19,13 @@ import {
 import { ReactComponent as EyeIcon } from '../../assets/icons/eye.svg'
 import { ReactComponent as EyeDisabledIcon } from '../../assets/icons/eyeDisabled.svg'
 import { ReactComponent as NoEnvVariablesImage } from '../../assets/icons/noEnvVariables.svg'
+import toggleIcon from '../../assets/icons/toggle.svg'
+import { onToggle } from '../common/redux/toggleResponse/toggleResponseActions'
 
 const mapStateToProps = (state) => {
   return {
-    environment: state.environment
+    environment: state.environment,
+    responseView: state.responseView
   }
 }
 
@@ -37,7 +40,9 @@ const mapDispatchToProps = (dispatch) => {
     delete_environment: (deletedEnvironment) =>
       dispatch(deleteEnvironment(deletedEnvironment)),
     set_environment_id: (environmentId) =>
-      dispatch(setEnvironmentId(environmentId))
+      dispatch(setEnvironmentId(environmentId)),
+    set_response_view: (view) =>
+      dispatch(onToggle(view))
   }
 }
 
@@ -48,8 +53,7 @@ class Environments extends Component {
     showEnvironmentForm: false,
     showEnvironmentModal: false,
     environmentToBeEdited: {},
-    publicEnvironmentName: 'Select Environment',
-    responsePosition: false
+    publicEnvironmentName: 'Select Environment'
   };
 
   async componentDidMount () {
@@ -189,8 +193,10 @@ class Environments extends Component {
   }
 
   handletoggle () {
-    this.setState({ position: !this.state.position })
-    this.state.position ? window.localStorage.setItem('right', 'true') : window.localStorage.setItem('right', '')
+    const previousView = this.props.responseView;
+    const currentView = previousView === 'right' ? 'bottom' : 'right' 
+    window.localStorage.setItem('response-view', currentView);
+    this.props.set_response_view(currentView);
   }
 
   render () {
@@ -246,6 +252,9 @@ class Environments extends Component {
       if (isDashboardRoute(this.props)) {
         return (
           <div className='environment-container d-flex align-items-center transition'>
+            <div className='tab-div d-flex align-items-center justify-content-center' onClick={() => this.handletoggle()}>
+              <img src={toggleIcon} alt="" />
+            </div>
             {(this.state.environmentFormName === 'Add new Environment' ||
               this.state.environmentFormName === 'Edit Environment') &&
               environmentsService.showEnvironmentForm(
@@ -349,7 +358,6 @@ class Environments extends Component {
                 </div>
               )
             }
-            <button onClick={() => this.handletoggle()}>toggle</button>
           </div>
         )
       }

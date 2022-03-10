@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { isDashboardRoute, isElectron } from '../common/utility'
+import { isDashboardRoute, isElectron, isDashboardAndTestingView } from '../common/utility'
 import { willHighlight, getHighlightsData } from './highlightChangesHelper'
 import './endpoints.scss'
 import shortid from 'shortid'
@@ -562,21 +562,21 @@ class GenericTable extends Component {
           }
         }
       }
-
+      const isDocView = !isDashboardRoute(this.props) || !isDashboardAndTestingView(this.props, this.props.currentView)
       this.autoFillBulkEdit()
       return (
       // "generic-table-container"
       // table-bordered
         <div className='hm-public-table position-relative'>
-          {(title === 'Path Variables' && isDashboardRoute(this.props)) ? <div>{title}</div> : null}
+          {(title === 'Path Variables' && isDashboardAndTestingView(this.props, this.props.currentView)) ? <div>{title}</div> : null}
           <div
             className={
-              isDashboardRoute(this.props)
-                ? 'generic-table-title-container'
-                : 'public-generic-table-title-container'
+              isDocView
+                ? 'public-generic-table-title-container'
+                : 'generic-table-title-container'
             }
           >
-            {!isDashboardRoute(this.props) && dataArray.length > 0 ? <span>{this.renderTitle(title)} {willHighlight(this.props, title) ? <i className='fas fa-circle' /> : null}</span> : null}
+            {(isDocView) && dataArray.length > 0 ? <span>{this.renderTitle(title)} {willHighlight(this.props, title) ? <i className='fas fa-circle' /> : null}</span> : null}
           </div>
 
           {!this.state.bulkEdit && dataArray.length > 0

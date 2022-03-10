@@ -631,38 +631,32 @@ $border-color: rgba(227, 228, 230, 0.7);
 }
 
 table#custom-generic-table {
-  margin-left: 0 !important;
-  margin-bottom: 0;
-  background: rgb(255, 255, 255);
   .custom-checkbox {
     width: 3% !important;
   }
-
   th {
     height: 100%;
     font-size: 12px;
-    font-weight: 800;
+    font-weight: normal;
     border-top: none;
+    border: none;
   }
-
   td {
     height: 100%;
     padding: 3px !important;
+    border: none;
   }
-
   tbody {
     input {
       height: 100%;
       font-size: $font-medium;
       font-weight: 400;
     }
-
     input:focus,
     input.form-control:focus {
       box-shadow: inset 0 -1px 0 rgb(255, 255, 255) !important;
       height: 100%;
     }
-
     input::placeholder {
       font-size: $font-medium;
       // font-weight: 300;
@@ -1221,19 +1215,6 @@ table#custom-generic-table {
 
   .tab-content {
     padding: 20px;
-  }
-}
-
-.hm-public-table table {
-  thead tr th {
-    border: none;
-    font-weight: normal !important;
-  }
-  tbody tr td {
-    border: none;
-    input.form-control {
-      width: 260px;
-    }
   }
 }
 

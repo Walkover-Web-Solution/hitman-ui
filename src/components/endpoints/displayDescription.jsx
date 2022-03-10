@@ -1,12 +1,8 @@
 import React, { Component } from 'react'
-import { isDashboardRoute, isSavedEndpoint } from '../common/utility'
-import ReactQuill from 'react-quill'
-import ReactHtmlParser from 'react-html-parser'
-import { Link } from 'react-router-dom'
+import { isDashboardRoute } from '../common/utility'
 import { updateEndpoint } from './redux/endpointsActions'
 import { connect } from 'react-redux'
 import './endpointBreadCrumb.scss'
-import { ReactComponent as EditIcon } from '../../assets/icons/editIcon.svg'
 import EndpointBreadCrumb from './endpointBreadCrumb'
 
 const mapDispatchToProps = (dispatch, ownProps) => {
@@ -122,88 +118,6 @@ class DisplayDescription extends Component {
             </>
           )}
         </div>
-
-        {
-          isSavedEndpoint(this.props) && !this.state.showDescriptionFormFlag
-            ? (
-                this.state.showAddDescriptionFlag &&
-                (
-                  this.props.endpoint.description === '' ||
-                  this.props.endpoint.description === null
-                ) &&
-                isDashboardRoute(this.props)
-                  ? (
-                    <Link
-                      class='adddescLink'
-                      onClick={() => this.handleDescription()}
-                    >
-                      <svg width='16' height='16' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M9 3.75V14.25' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' /><path d='M3.75 9H14.25' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' /></svg> Add a Description
-                    </Link>
-                    )
-                  : (
-                    <>
-                      <div className='endpoint-description'>
-                        {isDashboardRoute(this.props)
-                          ? (
-                            <div className='d-flex align-items-center'>
-
-                              <div
-                                className='endpoint-description-text'
-                              >
-                                {ReactHtmlParser(this.props.endpoint.description)}
-                              </div>
-
-                              <button
-                                className='btn btn-default'
-                                onClick={() => this.handleDescription()}
-                              >
-                                <EditIcon />
-                              </button>
-                            </div>
-                            )
-                          : (
-                            <div className='endpoint-description-text'>
-                              Description: {ReactHtmlParser(this.props.endpoint.description)}
-                            </div>
-                            )}
-                      </div>
-                    </>
-                    )
-              )
-            : null
-        }
-
-        {
-          isDashboardRoute(this.props) && isSavedEndpoint(this.props) && this.state.showDescriptionFormFlag
-            ? (
-              <form onSubmit={this.handleDescriptionSave.bind(this)}>
-                <div className='endpoint-description-wrap'>
-                  <div className='form-group'>
-                    <label className='hm-panel-label'>Endpoint Description</label>
-                    <ReactQuill
-                      value={this.props.endpoint.description}
-                      modules={this.modules}
-                      formats={this.formats}
-                      onChange={this.handleChangeDescription}
-                    />
-                  </div>
-                  <div className='endpoint-cta'>
-                    <button
-                      className='btn btn-secondary outline btn-lg'
-                      type='cancel'
-                      onClick={() => this.handleDescriptionCancel()}
-                    >
-                      Cancel
-                    </button>
-                    <button className='btn btn-primary btn-lg' type='submit'>
-                      Save
-                    </button>
-                  </div>
-                </div>
-              </form>
-              )
-            : null
-        }
       </div>
     )
   }
