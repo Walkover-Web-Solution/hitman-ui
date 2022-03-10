@@ -11,7 +11,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetch_feedbacks: (orgId, collectionId) => dispatch(fetchFeedbacks(orgId, collectionId))
+    fetch_feedbacks: (collectionId) => dispatch(fetchFeedbacks(collectionId))
   }
 }
 class PublishDocsReview extends Component {
@@ -25,9 +25,9 @@ class PublishDocsReview extends Component {
   }
 
   componentDidUpdate (prevProps, prevState) {
-    const { orgId, collectionId } = this.props.match.params
-    if (prevProps.match.params.orgId !== orgId || prevProps.match.params.collectionId !== collectionId) {
-      orgId && collectionId && this.props.fetch_feedbacks(orgId, collectionId)
+    const { collectionId } = this.props.match.params
+    if (prevProps.match.params.collectionId !== collectionId) {
+      collectionId && this.props.fetch_feedbacks(collectionId)
     }
   }
 
