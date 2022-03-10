@@ -1088,34 +1088,41 @@ button.btn.btn-secondary {
   font-size: 14px;
   font-weight: 600;
 }
-
 .modal{
-  .modal-content{
-    background-color: #FAFAFA;
-    border: none;
-    .modal-header{
-      border: none;
-      padding: 1.5rem;
-      .modal-title {
-        font-weight: 600;
-        font-size: 18px;
-        line-height: 18px;
-        text-align: center;
-        color: #333333;
-      }
-      button {
-        padding: 0;
-        border: 0;
-        position: absolute;
-        top: 2.25rem;
-        right: 2.55rem;
-        z-index: 5;
-      }
+  .modal-dialog{
+    margin: 4rem auto;
+    &.modal-sm {
+      min-width: 35rem;
     }
-    .modal-body{
-      padding: 0 1.5rem 1.5rem;
+    .modal-content{
+      background-color: #fff;
+      border: none;
+      .modal-header{
+        border: none;
+        padding: 1.5rem;
+        border-bottom: 1px solid #e5e5e5;
+        .modal-title {
+          font-weight: 600;
+          font-size: 18px;
+          line-height: 18px;
+          text-align: center;
+          color: #333333;
+        }
+        button {
+          padding: 0;
+          border: 0;
+          position: absolute;
+          top: 2.25rem;
+          right: 2.55rem;
+          z-index: 5;
+        }
+      }
+      .modal-body{
+        padding: 1.5rem;
+      }
     }
   }
+ 
 }
 .modal-backdrop.show {
   background-color: rgba(0, 0, 0, 0.4);
@@ -3137,6 +3144,33 @@ ul.react-autocomplete-input {
       background: $theme-color;
     }    
   }
+}
+.aside{
+  width: 20%;
+  height: 100%;
+  left: 0;
+  position: fixed;
+  border:2px solid black;
+}
+.collection-main{
+  border:2px solid black;
+  width:80%;
+  height: 100%;
+  background-color: rgb(216, 208, 208);
+  text-align: center;
+  right:0;
+  position: fixed;
+  font-family: cursive;
+  font-size: large;
+  padding-top: 15%;
+}
+.add{
+  border: 1px solid black;
+  box-shadow: 2px 5px black;
+  padding: 5px;
+  padding-left: 5%;
+  padding-right: 5%;
+  margin: 10px 10px;
 }
 
 .twitter-picker{

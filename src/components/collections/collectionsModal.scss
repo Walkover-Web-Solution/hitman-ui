@@ -1,9 +1,9 @@
 //Note: Unique IDs are used in CTAs for tracking purposes with GTM. Do not use the same IDs elsewhere.
 
 .add-collection-item {
-    cursor: pointer;
-    height: 80px;
-    width: 180px;
+    height: auto;
+    width: 8rem;
+    min-height: 8rem;
     background: #fff;
     display: flex;
     justify-content: center;
@@ -14,16 +14,18 @@
     transition: all 200ms ease-in;
     padding: 20px;
     cursor: pointer;
+    border-radius: 4px;
+    background-color: rgba(9, 30, 66, 0.04);
+    font-weight: 500;
     &.hover{
       border-color: #F2994A;
+    }
+    &:first-child{
+      margin-right: 2rem;
     }
   &.disabled {
     cursor: not-allowed;
     color: grey;
     opacity: 0.5;
   }
-}
-
-.collection-choice-modal{
-  width: 650px !important;
 }

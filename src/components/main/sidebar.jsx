@@ -530,6 +530,7 @@ class SideBar extends Component {
     return (
       this.state.showAddCollectionModal &&
         <CollectionModal
+          {...this.props}
           title='Add Collection'
           onHide={() => { this.setState({ showAddCollectionModal: false }) }}
           show={this.state.showAddCollectionModal}
