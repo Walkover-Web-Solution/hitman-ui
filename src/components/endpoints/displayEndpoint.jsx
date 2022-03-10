@@ -2144,10 +2144,10 @@ class DisplayEndpoint extends Component {
       case 'description': return (
         <div>
           <TinyEditor
-            data={item.content}
+            data={item.data}
             onChange={(e) => {
               const docData = _.cloneDeep(this.state.docViewData)
-              docData[index].content = e
+              docData[index].data = e
               this.setState({ docViewData: docData })
             }}
           />
@@ -2156,10 +2156,10 @@ class DisplayEndpoint extends Component {
       case 'note': return (
         <div>
           <TinyEditor
-            data={item.content}
+            data={item.data}
             onChange={(e) => {
               const docData = _.cloneDeep(this.state.docViewData)
-              docData[index].content = e
+              docData[index].data = e
               this.setState({ docViewData: docData })
             }}
           />
@@ -2214,8 +2214,8 @@ class DisplayEndpoint extends Component {
     if (endpoint) {
       if (!endpoint.docViewData || endpoint.docViewData.length === 0) {
         const docViewData = [...defaultDocViewData]
-        if (endpoint.description) docViewData.splice(0, 0, { type: 'description', data: endpoint.description })
-        if (endpoint.notes) docViewData.splice(docViewData.length - 1, 0, { type: 'notes', data: endpoint.notes })
+        if (endpoint.description && endpoint.description.length) docViewData.splice(0, 0, { type: 'description', data: endpoint.description })
+        if (endpoint.notes && endpoint.notes.length) docViewData.splice(docViewData.length - 1, 0, { type: 'notes', data: endpoint.notes })
         return docViewData
       }
       return endpoint.docViewData
