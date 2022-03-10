@@ -47,7 +47,7 @@ import { openModal } from '../modals/redux/modalsActions'
 import Axios from 'axios'
 import { sendAmplitudeData } from '../../services/amplitude'
 import { SortableContainer, SortableElement } from 'react-sortable-hoc'
-import DefaultViewConfirmationModal from './defaultViewConfirmationModal'
+import ConfirmationModal from './confirmationModal'
 import TinyEditor from './tinyEditor'
 import { pendingEndpoint, approveEndpoint } from '../publicEndpoint/redux/publicEndpointsActions'
 import WarningModal from '../common/warningModal'
@@ -75,6 +75,11 @@ const defaultDocViewData = [
   { type: 'pathVariables' },
   { type: 'headers' }
 ]
+
+const confirmationMsg = {
+  viewSwitch: 'Do you wish to set it as default view?',
+  publishEndpoint: 'You are about the make these changes live on your Public API doc.'
+}
 
 const mapStateToProps = (state) => {
   return {
@@ -2056,10 +2061,11 @@ class DisplayEndpoint extends Component {
 
   renderDefaultViewConfirmationModal () {
     return this.state.showViewConfirmationModal &&
-      <DefaultViewConfirmationModal
+      <ConfirmationModal
         show={this.state.showViewConfirmationModal}
         onHide={() => this.setState({ showViewConfirmationModal: false })}
-        set_default_view={this.setDefaultView.bind(this)}
+        proceed_button_callback={this.setDefaultView.bind(this)}
+        title={confirmationMsg.viewSwitch}
       />
   }
 
@@ -2455,7 +2461,7 @@ class DisplayEndpoint extends Component {
             <button
               className={this.state.publishLoader ? 'btn btn-outline orange buttonLoader' : 'btn btn-outline orange'}
               type='button'
-              onClick={() => this.handleApproveEndpointRequest(endpointId)}
+              onClick={() => this.setState({ openPublishConfirmationModal: true })}
               disabled={!isAdmin()}
             >
               Publish Endpoint
@@ -2473,7 +2479,20 @@ class DisplayEndpoint extends Component {
     }
   }
 
-  async handleApproveEndpointRequest (endpointId) {
+  renderPublishConfirmationModal () {
+    return this.state.openPublishConfirmationModal &&
+      <ConfirmationModal
+        show={this.state.openPublishConfirmationModal}
+        onHide={() => this.setState({ openPublishConfirmationModal: false })}
+        proceed_button_callback={this.handleApproveEndpointRequest.bind(this)}
+        title={confirmationMsg.publishEndpoint}
+        submitButton='Publish'
+        rejectButton='Discard'
+      />
+  }
+
+  async handleApproveEndpointRequest () {
+    const endpointId = this.endpointId
     this.setState({ publishLoader: true })
     if (sensitiveInfoFound(this.props.endpoints[endpointId])) {
       this.setState({ warningModal: true })
@@ -2612,6 +2631,7 @@ class DisplayEndpoint extends Component {
             <div className='hm-endpoint-container endpoint-container'>
               {this.renderCookiesModal()}
               {this.renderDefaultViewConfirmationModal()}
+              {this.renderPublishConfirmationModal()}
               {this.renderWarningModal()}
               {this.state.showLoginSignupModal && (
                 <LoginSignupModal
