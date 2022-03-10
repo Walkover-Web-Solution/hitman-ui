@@ -248,18 +248,22 @@ class DisplayEndpoint extends Component {
     const { historySnapshotId, endpoint, draftDataSet } = this.state
 
     if (tab && endpointId) {
-      if (tab.isModified && !draftDataSet) {
-        this.setState({ ...tab.state, draftDataSet: true })
-      } else if (endpointId !== 'new' && endpoint.id !== tab.id && endpoints[tab.id] && !draftDataSet) {
-        this.fetchEndpoint(0, tab.id)
+      if (!draftDataSet) {
+        if (tab.isModified) {
+          this.setState({ ...tab.state, draftDataSet: true })
+        } else if (endpointId !== 'new' && endpoint.id !== tab.id && endpoints[tab.id]) {
+          this.fetchEndpoint(0, tab.id)
+        } else if (endpointId === 'new') this.setState({ draftDataSet: true })
       }
     }
 
     if (tab && historyId) {
-      if (tab.isModified && !draftDataSet) {
-        this.setState({ ...tab.state, draftDataSet: true })
-      } else if (historyId !== 'new' && historySnapshotId !== historyId && historySnapshots[tab.id] && !draftDataSet) {
-        this.fetchHistorySnapshot()
+      if (!draftDataSet) {
+        if (tab.isModified) {
+          this.setState({ ...tab.state, draftDataSet: true })
+        } else if (historyId !== 'new' && historySnapshotId !== historyId && historySnapshots[tab.id]) {
+          this.fetchHistorySnapshot()
+        } else if (historyId === 'new') this.setState({ draftDataSet: true })
       }
     }
   }
@@ -1165,7 +1169,10 @@ class DisplayEndpoint extends Component {
     const response = {}
     const data = { ...this.state.data }
     data.method = method
-    this.setState({ response, data })
+    this.setState({ response, data }, () => this.setModifiedTabData())
+  }
+
+  setModifiedTabData () {
     if (isDashboardRoute(this.props)) {
       tabService.markTabAsModified(this.props.tab.id)
       this.setUnsavedTabDataInIDB()
@@ -1175,24 +1182,18 @@ class DisplayEndpoint extends Component {
   propsFromChild (name, value) {
     if (name === 'Params') {
       this.handleUpdateUri(value)
-      this.setState({ originalParams: value })
+      this.setState({ originalParams: value }, () => this.setModifiedTabData())
     }
 
     if (name === 'Headers') {
-      this.setState({ originalHeaders: value })
+      this.setState({ originalHeaders: value }, () => this.setModifiedTabData())
     }
 
     if (name === 'Path Variables') {
-      this.setState({ pathVariables: value })
+      this.setState({ pathVariables: value }, () => this.setModifiedTabData())
     }
 
-    if (
-      isDashboardRoute(this.props) &&
-      (name === 'HostAndUri' || name === 'Params' || name === 'Headers' || name === 'Path Variables')
-    ) {
-      tabService.markTabAsModified(this.props.tab.id)
-      this.setUnsavedTabDataInIDB()
-    }
+    if (name === 'HostAndUri') this.setModifiedTabData()
   }
 
   setPublicBody (body) {
@@ -1450,11 +1451,7 @@ class DisplayEndpoint extends Component {
     const data = { ...this.state.data }
     data.body = { type: bodyType, value: body }
     isDashboardRoute(this.props) && this.setHeaders(bodyType, 'content-type')
-    this.setState({ data })
-    if (isDashboardRoute(this.props)) {
-      tabService.markTabAsModified(this.props.tab.id)
-      this.setUnsavedTabDataInIDB()
-    }
+    this.setState({ data }, () => this.setModifiedTabData())
   }
 
   setBodyDescription (type, value) {
@@ -1636,11 +1633,7 @@ class DisplayEndpoint extends Component {
 
   propsFromDescription (title, data) {
     if (title === 'data') {
-      this.setState({ data: data })
-      if (isDashboardRoute(this.props)) {
-        tabService.markTabAsModified(this.props.tab.id)
-        this.setUnsavedTabDataInIDB()
-      }
+      this.setState({ data: data }, () => this.setModifiedTabData())
     }
     if (title === 'endpoint') this.setState({ endpoint: data })
     if (title === 'oldDescription') this.setState({ oldDescription: data })
@@ -2008,11 +2001,7 @@ class DisplayEndpoint extends Component {
       postScriptText = text
     }
 
-    if (isDashboardRoute(this.props)) {
-      tabService.markTabAsModified(this.props.tab.id)
-      this.setUnsavedTabDataInIDB()
-    }
-    this.setState({ preScriptText, postScriptText })
+    this.setState({ preScriptText, postScriptText }, () => this.setModifiedTabData())
   }
 
   renderScriptError () {

@@ -469,7 +469,7 @@ h4.hm-sidebar-title span {
             border-top: none;
           }
         }
-        &:not(:last-child) input.form-control{
+        &:not(:last-child) input.form-control:not(:focus){
           border-bottom: 0 !important;
         }
 

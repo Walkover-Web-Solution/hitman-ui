@@ -1209,8 +1209,6 @@ button.editBtn {
 }
 
 .headParaWraper {
-  max-height: 300px;
-  overflow: auto;
   background: #fff;
   padding: 4px 0 11px;
 }
@@ -3394,4 +3392,28 @@ div#steve-parent-accordion{
 .muted-text{
   color: 'gray';
    opacity: 0.5;
+}
+ul.react-autocomplete-input {
+  top: 100% !important;
+  z-index: 1999;
+  border: none;
+  padding: 0;
+  max-height: 8.75rem;
+  overflow: auto;
+  max-width: 100%;
+  left: 0 !important;
+  width: 100%;
+  li {
+    font-size: 12px;
+    padding: 0.5rem;
+    border-bottom: 1px solid $border-color;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    &:last-child {
+      border: none;
+    }
+    &.active {
+      background: $theme-color;
+    }    
+  }
 }
