@@ -2,9 +2,9 @@
 import publishDocsApiService from '../publishDocsApiService'
 import publishDocsActionTypes from './publishDocsActionTypes'
 
-export const fetchFeedbacks = (orgId) => {
+export const fetchFeedbacks = (orgId, collectionId) => {
   return (dispatch) => {
-    publishDocsApiService.getFeedbacks(orgId)
+    publishDocsApiService.getFeedbacks(orgId, collectionId)
       .then((response) => {
         dispatch(onFeedbacksFetched(response.data))
       })

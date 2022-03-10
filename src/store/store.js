@@ -27,7 +27,7 @@ const rootReducer = combineReducers({
   cookies: cookiesReducer,
   modals: modalsReducer,
   sidebar: sidebarReducer,
-  feedback: publishDocsReducer
+  feedbacks: publishDocsReducer
 })
 const store = createStore(rootReducer, storeEnhancers(applyMiddleware(thunk)))
 
