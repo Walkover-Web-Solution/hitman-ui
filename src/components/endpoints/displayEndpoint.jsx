@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { toast } from 'react-toastify'
-import { Dropdown, ButtonGroup, Button, DropdownButton } from 'react-bootstrap'
+import { Dropdown, ButtonGroup, Button } from 'react-bootstrap'
 import store from '../../store/store'
 import { isDashboardRoute, isElectron, isSavedEndpoint } from '../common/utility'
 import tabService from '../tabs/tabService'
@@ -47,7 +47,8 @@ import * as _ from 'lodash'
 import { openModal } from '../modals/redux/modalsActions'
 import Axios from 'axios'
 import { sendAmplitudeData } from '../../services/amplitude'
-import { SortableContainer, SortableElement } from 'react-sortable-hoc'
+import { SortableHandle, SortableContainer, SortableElement } from 'react-sortable-hoc'
+import { ReactComponent as DragHandleIcon } from '../../assets/icons/drag-handle.svg'
 import DefaultViewConfirmationModal from './defaultViewConfirmationModal'
 import TinyEditor from './tinyEditor'
 const shortid = require('shortid')
@@ -66,6 +67,8 @@ const SortableList = SortableContainer(({ children }) => {
     <>{children}</>
   )
 })
+
+const DragHandle = SortableHandle(() => <span className='dragIcon mr-2'><DragHandleIcon /></span>)
 
 const defaultDocViewData = [
   { type: 'host' },
@@ -2061,16 +2064,30 @@ class DisplayEndpoint extends Component {
     window.localStorage.setItem('endpointView', JSON.stringify(endpointView))
   }
 
+  removePublicItem (item, index) {
+    const showRemoveButton = !['body', 'host', 'params', 'headers'].includes(item.type)
+    const handleOnClick = () => {
+      const docData = _.cloneDeep(this.state.docViewData)
+      docData.splice(index, 1)
+      this.setState({ docViewData: docData })
+    }
+    return showRemoveButton && <button onClick={handleOnClick.bind(this)}>Remove</button>
+  }
+
   renderDocView = () => {
     if (!this.state.docViewData) return
     if (isDashboardRoute(this.props)) {
       return (
-        <SortableList lockAxis='y' onSortEnd={({ oldIndex, newIndex }) => { this.onSortEnd(oldIndex, newIndex) }}>
+        <SortableList lockAxis='y' useDragHandle onSortEnd={({ oldIndex, newIndex }) => { this.onSortEnd(oldIndex, newIndex) }}>
           <div>
             {this.state.docViewData?.map((item, index) =>
               <SortableItem key={index} index={index}>
                 <div>
-                  {this.renderPublicItem(item)}
+                  <div>
+                    <DragHandle />
+                    {this.removePublicItem(item, index)}
+                  </div>
+                  {this.renderPublicItem(item, index)}
                 </div>
               </SortableItem>
             )}
@@ -2098,33 +2115,29 @@ class DisplayEndpoint extends Component {
     }
   };
 
-  renderPublicItem = (item) => {
+  renderPublicItem = (item, index) => {
     switch (item.type) {
       case 'description': return (
         <div>
           <TinyEditor
-            data={item.data}
+            data={item.content}
+            onChange={(e) => {
+              const docData = _.cloneDeep(this.state.docViewData)
+              docData[index].content = e
+              this.setState({ docViewData: docData })
+            }}
           />
         </div>
       )
-      case 'notes': return (
+      case 'note': return (
         <div>
           <TinyEditor
-            data={item.data}
-          />
-        </div>
-      )
-      case 'codeSample': return (
-        <div>
-          <TinyEditor
-            data={item.data}
-          />
-        </div>
-      )
-      case 'table': return (
-        <div>
-          <TinyEditor
-            data={item.data}
+            data={item.content}
+            onChange={(e) => {
+              const docData = _.cloneDeep(this.state.docViewData)
+              docData[index].content = e
+              this.setState({ docViewData: docData })
+            }}
           />
         </div>
       )
@@ -2200,12 +2213,8 @@ class DisplayEndpoint extends Component {
     if (this.state.currentView === 'doc') {
       return (
         <ButtonGroup>
-          <DropdownButton as={ButtonGroup} title='Text' id='bg-nested-dropdown'>
-            <Dropdown.Item onClick={() => this.addBlock('description')}>Description</Dropdown.Item>
-            <Dropdown.Item onClick={() => this.addBlock('note')}>Note</Dropdown.Item>
-          </DropdownButton>
-          <Button onClick={() => this.addBlock('codeSample')}>Code Sample</Button>
-          <Button onClick={() => this.addBlock('table')}>Table</Button>
+          <Button onClick={() => this.addBlock('description')}>Text Area</Button>
+          <Button onClick={() => this.addBlock('note')}>Text Block</Button>
         </ButtonGroup>
       )
     }
@@ -2215,7 +2224,7 @@ class DisplayEndpoint extends Component {
     const docViewData = [...this.state.docViewData]
     docViewData.push({
       type: blockType,
-      content: ''
+      content: 'Your text goes here'
     })
     this.setState({ docViewData })
   }

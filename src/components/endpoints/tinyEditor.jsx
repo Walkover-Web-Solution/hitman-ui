@@ -3,32 +3,27 @@ import { Editor } from '@tinymce/tinymce-react'
 
 export default function TinyEditor (props) {
   const editorRef = useRef(null)
-  const log = () => {
-    if (editorRef.current) {
-      console.log(editorRef.current.getContent())
-    }
+  const handleOnChange = (value) => {
+    props.onChange(value)
   }
   return (
     <>
       <Editor
+        onEditorChange={handleOnChange.bind(this)}
         onInit={(evt, editor) => { editorRef.current = editor }}
-        initialValue='<p>{This is the initial content of the editor.}</p>'
+        value={props.data}
+        inline
         init={{
-          height: 500,
+          plugins: 'link image codesample table lists',
+          selector: 'textarea',
+          inline_boundaries: false,
+          menu: false,
           menubar: false,
-          plugins: [
-            'advlist autolink lists link image charmap print preview anchor',
-            'searchreplace visualblocks code fullscreen',
-            'insertdatetime media table paste code help wordcount'
-          ],
-          toolbar: 'undo redo | formatselect | ' +
-           'bold italic backcolor | alignleft aligncenter ' +
-           'alignright alignjustify | bullist numlist outdent indent | ' +
-           'removeformat | help',
-          content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+          table_appearence_option: true,
+          table_toolbar: 'tableprops tabledelete | tableinsertrowbefore tableinsertrowafter tabledeleterow | tableinsertcolbefore tableinsertcolafter tabledeletecol',
+          toolbar: 'formatselect | bold italic underline forecolor backcolor | fontsizeselect | blockquote | numlist bullist | indent outdent | codesample | table'
         }}
       />
-      <button onClick={log}>Log editor content</button>
     </>
   )
 }
