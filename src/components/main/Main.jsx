@@ -31,8 +31,20 @@ import DesktopAppDownloadModal from './desktopAppPrompt'
 import { sendAmplitudeData } from '../../services/amplitude'
 import UpdateStatus from './updateStatus'
 import { isValidDomain } from '../common/utility'
+import CollectionModal from '../collections/collectionsModal'
 import SplitPane from 'react-split-pane'
 
+import LoadingScreen from 'react-loading-screen'
+
+const mapStateToProps = (state) => {
+  return {
+    collections: state.collections,
+    versions: state.versions,
+    pages: state.pages,
+    groups: state.groups,
+    endpoints: state.endpoints
+  }
+}
 const mapDispatchToProps = (dispatch) => {
   return {
     fetch_collections_from_idb: (orgId) => dispatch(fetchCollectionsFromIdb(orgId)),
@@ -60,7 +72,10 @@ class Main extends Component {
     super(props)
     this.state = {
       tabs: [],
-      defaultTabIndex: 0
+      defaultTabIndex: 0,
+      showAddCollectionModal: false,
+      loading: true,
+      showAddCollectionPage: true
     }
     const { endpointId, pageId } = this.props.match.params
     if (endpointId && endpointId !== 'new') {
@@ -102,6 +117,7 @@ class Main extends Component {
         pathname: '/login'
       })
     }
+    this.setState({ loading: false })
   }
 
   async fetchAll () {
@@ -157,6 +173,21 @@ class Main extends Component {
     indexedDbService.addData('meta_data', timestampBackend, 'updated_at')
   }
 
+  setVisitedOrgs () {
+    const orgId = this.props.match.params.orgId
+    console.log(orgId)
+    const org = {}
+    org[orgId] = true
+    window.localStorage.setItem('visitedOrgs', JSON.stringify(org))
+  }
+
+  showCollectionDashboard () {
+    const collectionLength = Object.keys(this.props.collections).length
+    const orgId = this.props.match.params.orgId
+    const temp = JSON.parse(window.localStorage.getItem('visitedOrgs'))
+    if ((temp && temp[orgId]) || collectionLength > 0 || !this.state.showAddCollectionPage) { return false } else { return true }
+  }
+
   setTabs (tabs, defaultTabIndex) {
     if (defaultTabIndex >= 0) {
       this.setState({ defaultTabIndex })
@@ -170,39 +201,78 @@ class Main extends Component {
     this.setState({ currentEnvironment: environment })
   }
 
+  addCollectionDialog () {
+    return (
+      this.state.showAddCollectionModal &&
+        <CollectionModal
+          title='Add Collection'
+          onHide={() => { this.setState({ showAddCollectionModal: false }) }}
+          show={this.state.showAddCollectionModal}
+        />
+    )
+  }
+
+  renderLandingDashboard () {
+    return (
+      <>
+        {this.addCollectionDialog()}
+        {this.showCollectionDashboard() &&
+          <div className='aside'>
+            <div className='collection-main'>
+              <p>add your first collection for API Testing and Public API Doc</p>
+              <button className='add' onClick={() => this.setState({ showAddCollectionModal: true })}>Add Collections</button>
+              <p>Or</p>
+              <button onClick={() => { this.setVisitedOrgs(); this.setState({ showAddCollectionPage: false }) }}>Try Out Without a Collection</button>
+            </div>
+          </div>}
+      </>
+    )
+  }
+
   render () {
     return (
-      <div>{!isDesktop &&
-        <div className='mobile-warning'>
-          Looks like you have opened it on a mobile device. It looks better on a desktop device.
-        </div>}
-        <div className='custom-main-container'>
-          {/* <Header {...this.props} /> */}
-          <DesktopAppDownloadModal history={this.props.history} location={this.props.location} match={this.props.match} />
-          <OnlineSatus fetchFromBackend={this.fetchFromBackend.bind(this)} isIdbUpdated={this.isIdbUpdated.bind(this)} />
-          <div className='main-panel-wrapper'>
-            <SplitPane split='vertical' className='split-sidebar'>
-              <SideBar
-                {...this.props}
-                tabs={[...this.state.tabs]}
-                set_tabs={this.setTabs.bind(this)}
-                default_tab_index={this.state.defaultTabIndex}
-              />
-              {this.props.location.pathname.split('/')[4] === 'publish'
-                ? <PublishDocs {...this.props} />
-                : <ContentPanel
-                    {...this.props}
-                    set_environment={this.setEnvironment.bind(this)}
-                    set_tabs={this.setTabs.bind(this)}
-                    default_tab_index={this.state.defaultTabIndex}
-                  />}
-            </SplitPane>
+      <>
+        <LoadingScreen
+          loading={this.state.loading}
+          bgColor='#f1f1f1'
+          spinnerColor='#9ee5f8'
+          textColor='#676767'
+        >
+
+          <div>{!isDesktop &&
+            <div className='mobile-warning'>
+              Looks like you have opened it on a mobile device. It looks better on a desktop device.
+            </div>}
+            {this.renderLandingDashboard()}
+            {!this.showCollectionDashboard() &&
+              <div className='custom-main-container'>
+                {/* <Header {...this.props} /> */}
+                <DesktopAppDownloadModal history={this.props.history} location={this.props.location} match={this.props.match} />
+                <OnlineSatus fetchFromBackend={this.fetchFromBackend.bind(this)} isIdbUpdated={this.isIdbUpdated.bind(this)} />
+                <div className='main-panel-wrapper'>
+                  <SplitPane split='vertical' className='split-sidebar'>
+                    <SideBar
+                      {...this.props}
+                      tabs={[...this.state.tabs]}
+                      set_tabs={this.setTabs.bind(this)}
+                      default_tab_index={this.state.defaultTabIndex}
+                    />
+                    {this.props.location.pathname.split('/')[4] === 'publish'
+                      ? <PublishDocs {...this.props} />
+                      : <ContentPanel
+                          {...this.props}
+                          set_environment={this.setEnvironment.bind(this)}
+                          set_tabs={this.setTabs.bind(this)}
+                          default_tab_index={this.state.defaultTabIndex}
+                        />}
+                  </SplitPane>
+                </div>
+                <UpdateStatus />
+              </div>}
           </div>
-          <UpdateStatus />
-        </div>
-      </div>
+        </LoadingScreen>
+      </>
     )
   }
 }
-
-export default connect(null, mapDispatchToProps)(Main)
+export default connect(mapStateToProps, mapDispatchToProps)(Main)
