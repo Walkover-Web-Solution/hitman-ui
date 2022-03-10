@@ -35,6 +35,7 @@ import CollectionModal from '../collections/collectionsModal'
 import SplitPane from 'react-split-pane'
 
 import LoadingScreen from 'react-loading-screen'
+import NoCollectionIcon from '../../assets/icons/collection.svg'
 
 const mapStateToProps = (state) => {
   return {
@@ -216,15 +217,13 @@ class Main extends Component {
     return (
       <>
         {this.addCollectionDialog()}
-        {this.showCollectionDashboard() &&
-          <div className='aside'>
-            <div className='collection-main'>
-              <p>add your first collection for API Testing and Public API Doc</p>
-              <button className='add' onClick={() => this.setState({ showAddCollectionModal: true })}>Add Collections</button>
-              <p>Or</p>
-              <button onClick={() => { this.setVisitedOrgs(); this.setState({ showAddCollectionPage: false }) }}>Try Out Without a Collection</button>
-            </div>
-          </div>}
+        <div className='no-collection h-100 d-flex flex-d-col justify-content-center align-items-center flex-wrap'>
+          <img src={NoCollectionIcon} alt='' />
+          <p className='mb-4'>Add your first collection for API testing and Public API Doc</p>
+          <button onClick={() => this.setState({ showAddCollectionModal: true })} className='btn btn-primary'>+ Add collection</button>
+          <p className='mt-3'>Or</p>
+          <div className='text-link' onClick={() => { this.setVisitedOrgs(); this.setState({ showAddCollectionPage: false }) }}>Try Out Without a Collection</div>
+        </div>
       </>
     )
   }
@@ -243,8 +242,7 @@ class Main extends Component {
             <div className='mobile-warning'>
               Looks like you have opened it on a mobile device. It looks better on a desktop device.
             </div>}
-            {this.renderLandingDashboard()}
-            {!this.showCollectionDashboard() &&
+            {
               <div className='custom-main-container'>
                 {/* <Header {...this.props} /> */}
                 <DesktopAppDownloadModal history={this.props.history} location={this.props.location} match={this.props.match} />
@@ -259,16 +257,19 @@ class Main extends Component {
                     />
                     {this.props.location.pathname.split('/')[4] === 'publish'
                       ? <PublishDocs {...this.props} />
-                      : <ContentPanel
-                          {...this.props}
-                          set_environment={this.setEnvironment.bind(this)}
-                          set_tabs={this.setTabs.bind(this)}
-                          default_tab_index={this.state.defaultTabIndex}
-                        />}
+                      : this.showCollectionDashboard()
+                        ? this.renderLandingDashboard()
+                        : <ContentPanel
+                            {...this.props}
+                            set_environment={this.setEnvironment.bind(this)}
+                            set_tabs={this.setTabs.bind(this)}
+                            default_tab_index={this.state.defaultTabIndex}
+                          />}
                   </SplitPane>
                 </div>
                 <UpdateStatus />
-              </div>}
+              </div>
+}
           </div>
         </LoadingScreen>
       </>
