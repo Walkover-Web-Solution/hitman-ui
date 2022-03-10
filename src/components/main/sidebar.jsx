@@ -1,11 +1,11 @@
 import React, { Component, createRef } from 'react'
 import { Route, withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { Button } from 'react-bootstrap'
+import { Button, Dropdown } from 'react-bootstrap'
 import moment from 'moment'
 import Collections from '../collections/collections'
 import CollectionVersions from '../collectionVersions/collectionVersions'
-import { isDashboardRoute, ADD_GROUP_MODAL_NAME, ADD_VERSION_MODAL_NAME, isElectron } from '../common/utility'
+import { isDashboardRoute, ADD_GROUP_MODAL_NAME, ADD_VERSION_MODAL_NAME, isElectron, openExternalLink } from '../common/utility'
 
 import { getCurrentUser } from '../auth/authService'
 import LoginSignupModal from './loginSignupModal'
@@ -15,7 +15,12 @@ import { ReactComponent as HitmanIcon } from '../../assets/icons/hitman.svg'
 import { ReactComponent as EmptyHistory } from '../../assets/icons/emptyHistroy.svg'
 import { ReactComponent as NoInvocationsIcon } from '../../assets/icons/emptyrandom.svg'
 import { ReactComponent as NoCollectionsIcon } from '../../assets/icons/noCollectionsIcon.svg'
-import { ReactComponent as PlusIcon } from '../../assets/icons/plus_orange.svg'
+// import { ReactComponent as PlusIcon } from '../../assets/icons/plus_orange.svg'
+import { ReactComponent as SearchIcon } from '../../assets/icons/search.svg'
+import { ReactComponent as DownloadIcon } from '../../assets/icons/download.svg'
+import HitmanLogo from '../../assets/icons/hitman-logo.svg'
+import { ReactComponent as Users } from '../../assets/icons/users.svg'
+import { ReactComponent as Plus } from '../../assets/icons/plus-square.svg'
 import collectionVersionsService from '../collectionVersions/collectionVersionsService'
 import './main.scss'
 import './sidebar.scss'
@@ -32,6 +37,10 @@ import DeleteSidebarEntityModal from './sidebar/deleteEntityModal'
 import { DELETE_CONFIRMATION } from '../modals/modalTypes'
 import { openModal } from '../modals/redux/modalsActions'
 
+import { products } from '../common/constants'
+import { sendAmplitudeData } from '../../services/amplitude'
+import { UserProfile } from './userProfile'
+
 const mapStateToProps = (state) => {
   return {
     collections: state.collections,
@@ -45,6 +54,9 @@ const mapStateToProps = (state) => {
     modals: state.modals
   }
 }
+
+/** Desktop App Download URL */
+const DESKTOP_APP_DOWNLOAD_LINK = process.env.REACT_APP_DESKTOP_APP_DOWNLOAD_LINK
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -63,7 +75,6 @@ function compareByCreatedAt (a, b) {
   }
   return comparison
 }
-
 class SideBar extends Component {
   constructor (props) {
     super(props)
@@ -77,7 +88,8 @@ class SideBar extends Component {
       selectedCollectionId: null,
       secondarySidebarToggle: false,
       primarySidebar: null,
-      totalEndpointsCount: 0
+      totalEndpointsCount: 0,
+      search: false
     }
     this.inputRef = createRef()
     this.sidebarRef = createRef()
@@ -518,6 +530,7 @@ class SideBar extends Component {
     return (
       this.state.showAddCollectionModal &&
         <CollectionModal
+          {...this.props}
           title='Add Collection'
           onHide={() => { this.setState({ showAddCollectionModal: false }) }}
           show={this.state.showAddCollectionModal}
@@ -529,6 +542,116 @@ class SideBar extends Component {
   openSelectedCollection (collectionId) {
     this.empty_filter()
     this.openCollection(collectionId)
+  }
+
+  switchProduct (product) {
+    const productLinks = { FEEDIO: process.env.REACT_APP_FEEDIO_UI_URL, CONTENTBASE: process.env.REACT_APP_CONTENTBASE_URL, EBL: process.env.REACT_APP_VIASOCKET_URL, HTTPDUMP: process.env.REACT_APP_HTTPDUMP_URL }
+    const orgId = this.props.match.params.orgId
+    let link = productLinks[product.toUpperCase()]
+
+    if (product !== products.HTTPDUMP) {
+      link += `/orgs/${orgId}`
+    }
+    this.handleOpenLink(link)
+  }
+
+  handleOpenLink (link, current = false) {
+    const { handleOpenLink } = this.props
+    if (!handleOpenLink) { current ? window.open(link, '_self') : window.open(link, '_blank') } else { handleOpenLink(link) }
+  }
+
+  renderSwitchProducts () {
+    return (
+      <Dropdown className='switch-products mb-1'>
+        <Dropdown.Toggle className='bg-none p-0 border-0'>
+          <img src={HitmanLogo} alt='' />
+        </Dropdown.Toggle>
+        <Dropdown.Menu>
+          <Dropdown.Item href='#' className='dropHeader'>
+            Switch to
+          </Dropdown.Item>
+          {Object.keys(products).map((productName) => {
+            const product = products[productName]
+            return (
+              <div className='text-capitalize' key={product}>
+                <Dropdown.Item href='#' onClick={() => { this.switchProduct(product) }}>
+                  {product}
+                </Dropdown.Item>
+              </div>
+            )
+          })}
+        </Dropdown.Menu>
+      </Dropdown>
+    )
+  }
+
+  renderSearch () {
+    return (
+      <div className='d-flex align-items-center mb-2'>
+        <SearchIcon className='mr-2' />
+        <input
+          ref={element => { this.inputRef = element }}
+          value={this.state.data.filter}
+          className='search-input'
+          placeholder='Search'
+          type='text'
+          name='filter'
+          id='search'
+          onChange={(e) => this.handleOnChange(e)}
+        />
+      </div>
+    )
+  }
+
+  renderInviteTeam () {
+    return (
+      <div className='mb-2' onClick={() => { this.openAccountAndSettings() }}>
+        <Users className='mr-2' />
+        <span>Invite Team</span>
+      </div>
+    )
+  }
+
+  openAccountAndSettings () {
+    const { productName, history, organizationId, location } = this.props
+    if (productName !== products.EBL) { this.openOptions('/manage/users') } else {
+      history.push({
+        pathname: `/orgs/${organizationId}/manage`,
+        search: location.search
+      })
+    }
+  }
+
+  openOptions (path) {
+    const { match, productName, handleOpenLink } = this.props
+    const viasocketUrl = process.env.REACT_APP_VIASOCKET_URL
+    const currProductUrl = process.env.REACT_APP_UI_BASE_URL || process.env.REACT_APP_UI_URL
+    const { orgId } = match.params
+    if (orgId) {
+      let url = `${viasocketUrl}/orgs/${orgId}${path}?product=${productName}`
+      if (path === '/products') {
+        url += ''
+      } else {
+        url += `&redirect_uri=${currProductUrl}`
+      }
+      if (!handleOpenLink) { window.open(url, '_blank') } else { handleOpenLink(url) }
+    } else {
+      console.log('Organization ID not found')
+    }
+  }
+
+  renderDownloadDesktopApp () {
+    const handleDownloadClick = () => {
+      sendAmplitudeData('Download clicked')
+      const link = `${DESKTOP_APP_DOWNLOAD_LINK}?source=header`
+      openExternalLink(link)
+    }
+    return (
+      <div className='d-flex align-items-center mb-3 cursor-pointer' onClick={handleDownloadClick}>
+        <DownloadIcon className='mr-2' />
+        <span>Download Desktop App</span>
+      </div>
+    )
   }
 
   renderSidebarContent () {
@@ -604,23 +727,16 @@ class SideBar extends Component {
   renderDashboardSidebar () {
     return (
       <>
-        <div className='d-flex mb-3 search-box-container'>
+        <div className='plr-3'>
+          {this.renderSwitchProducts()}
+          {this.renderSearch()}
+          {this.renderInviteTeam()}
+          {this.renderDownloadDesktopApp()}
           {this.renderGlobalAddButton()}
-          <div className='search-box'>
-            <input
-              ref={element => { this.inputRef = element }}
-              value={this.state.data.filter}
-              className='form-control'
-              type='text'
-              name='filter'
-              id='search'
-              placeholder='Search'
-              onChange={(e) => this.handleOnChange(e)}
-            />
-          </div>
         </div>
         {this.state.data.filter !== '' && this.renderSearchList()}
         {this.state.data.filter === '' && this.renderSidebarContent()}
+        <UserProfile {...this.props} />
       </>
     )
   }
@@ -629,7 +745,11 @@ class SideBar extends Component {
     const isMarketplaceImported = this.props.collections[this.collectionId]?.importedFromMarketPlace
     const title = this.collectionId ? isMarketplaceImported ? 'Cannot add Entities to a Marketplace Collection.' : 'Add Entities to Collection' : 'Add/Import Collection'
     return (
-      getCurrentUser() && <button className='btn sidebar-add-btn' title={title} disabled={isMarketplaceImported} onClick={this.handleAdd.bind(this)}><PlusIcon /></button>
+      getCurrentUser() &&
+        <div className='d-flex align-items-center justify-content-between mb-2'>
+          <span className='f-12 font-weight-700'>COLLECTION</span>
+          <div className='cursor-pointer add-button' title={title} disabled={isMarketplaceImported} onClick={this.handleAdd.bind(this)}><Plus /></div>
+        </div>
     )
   }
 

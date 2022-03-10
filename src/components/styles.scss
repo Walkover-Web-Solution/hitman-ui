@@ -328,8 +328,15 @@ label.custom-input-label {
   font-weight: 300;
 }
 
-input.custom-input {
-  height: 30px;
+body .custom-input {
+  background-color: #f5f6f7 !important;
+  border-radius: 4px !important;
+  padding: 0 1rem;
+  border: 1px solid transparent;
+  height: 2.5rem;
+  &:focus{
+    border-color: #091E42;;
+  }
 }
 
 input.custom-input::placeholder {
@@ -484,11 +491,6 @@ button.btn {
 
 .custom-radio-input {
   margin-right: 5px;
-}
-
-.body-wrapper {
-  margin-top: 10px;
-  margin-bottom: 7px;
 }
 
 button.btn.custom-body-type-button {
