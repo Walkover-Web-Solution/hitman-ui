@@ -12,7 +12,7 @@ export default function TinyEditor (props) {
       <Editor
         onEditorChange={handleOnChange.bind(this)}
         onInit={(evt, editor) => { editorRef.current = editor }}
-        value={props.data}
+        value={props.data || 'Text goes here'}
         inline
         disabled={!isDashboardRoute(props)}
         init={{

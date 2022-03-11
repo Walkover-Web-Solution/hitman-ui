@@ -137,7 +137,7 @@ class SampleResponse extends Component {
     const sampleResponseArray = [...this.props.sample_response_array]
     const sampleResponseFlagArray = [...this.props.sample_response_flag_array]
     return (
-      <div id='sample-response' className={isNotDashboardOrDocView(this.props, this.props.currentView) ? '' : 'testing-view-sample-response'}>
+      <div id='sample-response' className={!isNotDashboardOrDocView(this.props, this.props.currentView) && 'testing-view-sample-response'}>
         {
           isDashboardRoute(this.props)
             ? (

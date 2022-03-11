@@ -2103,11 +2103,11 @@ class DisplayEndpoint extends Component {
       return (
         <SortableList lockAxis='y' useDragHandle onSortEnd={({ oldIndex, newIndex }) => { this.onSortEnd(oldIndex, newIndex) }}>
           <div>
-            {this.state.docViewData?.map((item, index) =>
+            {this.state.docViewData.map((item, index) =>
               <SortableItem key={index} index={index}>
                 <div className='position-relative doc-secs'>
                   <div className='addons'>
-                    <DragHandle />
+                    {this.renderDragHandle(item)}
                     {this.removePublicItem(item, index)}
                   </div>
                   {this.renderPublicItem(item, index)}
@@ -2124,6 +2124,14 @@ class DisplayEndpoint extends Component {
         </div>
       )
     }
+  }
+
+  renderDragHandle (item) {
+    if (item.type === 'pathVariables') {
+      if (this.state.pathVariables && this.state.pathVariables.length) return <DragHandle />
+      return
+    }
+    return <DragHandle />
   }
 
   onSortEnd = (oldIndex, newIndex) => {
@@ -2153,7 +2161,7 @@ class DisplayEndpoint extends Component {
           />
         </div>
       )
-      case 'note': return (
+      case 'notes': return (
         <div>
           <TinyEditor
             data={item.data}
@@ -2239,12 +2247,12 @@ class DisplayEndpoint extends Component {
   }
 
   renderDocViewOptions () {
-    if (this.state.currentView === 'doc') {
+    if (isDashboardRoute(this.props) && this.state.currentView === 'doc') {
       return (
         <ButtonGroup className='btn-group-custom bottom-text-editor'>
           <DropdownButton as={ButtonGroup} title='Text' id='bg-nested-dropdown'>
             <Dropdown.Item onClick={() => this.addBlock('description')}>Description</Dropdown.Item>
-            <Dropdown.Item onClick={() => this.addBlock('note')}>Note</Dropdown.Item>
+            <Dropdown.Item onClick={() => this.addBlock('notes')}>Note</Dropdown.Item>
           </DropdownButton>
         </ButtonGroup>
       )
