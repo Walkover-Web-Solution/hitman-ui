@@ -1,5 +1,6 @@
 import React, { useRef } from 'react'
 import { Editor } from '@tinymce/tinymce-react'
+import { isDashboardRoute } from '../common/utility'
 
 export default function TinyEditor (props) {
   const editorRef = useRef(null)
@@ -13,6 +14,7 @@ export default function TinyEditor (props) {
         onInit={(evt, editor) => { editorRef.current = editor }}
         value={props.data}
         inline
+        disabled={!isDashboardRoute(props)}
         init={{
           plugins: 'link image codesample table lists',
           selector: 'textarea',

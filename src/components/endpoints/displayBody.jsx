@@ -240,6 +240,11 @@ class BodyContainer extends Component {
     }
   }
 
+  matchCurrentBodyType (bodyType) {
+    if (this.props.body.type + '-' + this.props.endpoint_id === bodyType) return true
+    return false
+  }
+
   render () {
     if (this.props.location.pathname.split('/')[5] !== this.endpointId) {
       this.endpointId = this.props.location.pathname.split('/')[5]
@@ -302,6 +307,7 @@ class BodyContainer extends Component {
                 id={`raw-${this.props.endpoint_id}`}
                 onClick={() => this.handleSelectBodyType('raw')}
                 className='custom-radio-input'
+                checked={this.matchCurrentBodyType(`${this.state.selectedRawBodyType}-${this.props.endpoint_id}`)}
               />
               <span>raw</span>
               <span class='checkmark' />
@@ -313,6 +319,7 @@ class BodyContainer extends Component {
                 id={`multipart/form-data-${this.props.endpoint_id}`}
                 onClick={() => this.handleSelectBodyType('multipart/form-data')}
                 className='custom-radio-input'
+                checked={this.matchCurrentBodyType(`multipart/form-data-${this.props.endpoint_id}`)}
               />
               <span>form-data</span>
               <span class='checkmark' />
@@ -326,6 +333,7 @@ class BodyContainer extends Component {
                 onClick={() =>
                   this.handleSelectBodyType('application/x-www-form-urlencoded')}
                 className='custom-radio-input'
+                checked={this.matchCurrentBodyType(`application/x-www-form-urlencoded-${this.props.endpoint_id}`)}
               />
               <span>x-www-form-urlencoded</span>
               <span class='checkmark' />
