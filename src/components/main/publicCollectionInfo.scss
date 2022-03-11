@@ -1,15 +1,10 @@
 //Note: Unique IDs are used in CTAs for tracking purposes with GTM. Do not use the same IDs elsewhere.
 
 @import url('global-style.scss');
-
-$font-small: 12px;
-$text-color: #212121;
+@import '../main/variables.scss';
 
 .public-colection-info {
-  padding: 6px 10px;
-  border: 1px solid #E0E0E0;
-  box-sizing: border-box;
-  font-size: $font-small;
+  padding: 0 1.35rem;
 }
 
 .endpoints-list {
@@ -25,8 +20,8 @@ $text-color: #212121;
 
 .sidebar-public-url {
   justify-content: space-between;
-  color: #00C58A;
-
+  color: $success-color;
+  overflow: hidden;
   i {
     visibility: hidden;
   }

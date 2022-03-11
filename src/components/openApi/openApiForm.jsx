@@ -7,6 +7,7 @@ import Joi from 'joi-browser'
 import { URL_VALIDATION_REGEX } from '../common/constants'
 import './openApi.scss'
 import { moveToNextStep } from '../../services/widgetService';
+import DefaultViewModal from '../collections/defaultViewModal/defaultViewModal'
 
 const mapStateToProps = (state) => {
   return {
@@ -16,7 +17,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    import_api: (openApiObject, importType, website) => dispatch(importApi(openApiObject, importType, website))
+    import_api: (openApiObject, importType, website,callback, view) => dispatch(importApi(openApiObject, importType, website,callback, view))
   }
 }
 
@@ -32,7 +33,8 @@ class OpenApiForm extends Component {
         type: null,
         website: null,
         file: null
-      }
+      },
+      step: 1,
     }
   }
 
@@ -55,9 +57,9 @@ class OpenApiForm extends Component {
     return errors
   };
 
-  importApi() {
+  importApi(defaultView) {
     const uploadedFile = this.state.uploadedFile
-    this.props.import_api(uploadedFile, this.state.importType, this.state.website)
+    this.props.import_api(uploadedFile, this.state.importType, this.state.website,null,defaultView)
     moveToNextStep(1)
     this.props.onHide()
   }
@@ -79,7 +81,11 @@ class OpenApiForm extends Component {
     }
     this.setState({ errors: { ...errors, file: FileError } })
     if (errors || FileError) return
-    this.importApi()
+    this.setState({ step: 2 })
+  }
+
+  saveCollection(defaultView){
+    this.importApi(defaultView)
   }
 
   onFileChange(e) {
@@ -136,7 +142,7 @@ class OpenApiForm extends Component {
         <label>Type: </label>
         <select 
           name='type'
-          className='form-control' 
+          className='form-control custom-input' 
           value={this.state.importType} 
           onChange={(e) => { this.setState({ importType: e.target.value, website: '', errors: { type: null, file: null, website: null } }) }}
         >
@@ -164,8 +170,8 @@ class OpenApiForm extends Component {
     )
   }
 
-  renderForm() {
-    return (
+  renderImportForm(){
+    return(
       <form>
         <div className="row">
           <div className="col-6">
@@ -176,10 +182,51 @@ class OpenApiForm extends Component {
             {this.renderJSONFileSelector()}
           </div>
         </div>
-         {this.renderButtonGroup()}
       </form>
     )
   }
+
+  renderDefaultViewForm () {
+    return (
+      <DefaultViewModal saveCollection={this.saveCollection.bind(this)}/>
+    )
+  }
+
+  renderForm() {
+    const {step} = this.state
+    return (
+      <>
+        {step === 1 && this.renderImportForm()}
+        {step === 2 && this.renderDefaultViewForm()}
+        {step === 1 ? this.renderNextButton() : this.renderBackButton()}
+      </>
+    )
+  }
+
+  onBack () {
+    this.setState({ step: 1 })
+  }
+
+  onNext (e) {
+    this.handleSubmit(e)
+  }
+
+  renderNextButton () {
+    return (
+      <button className='btn btn-primary' onClick={(e) => this.onNext(e)}>
+        Next
+      </button>
+    )
+  }
+
+  renderBackButton () {
+    return (
+      <button className='btn btn-primary' onClick={() => this.onBack()}>
+        Back
+      </button>
+    )
+  }
+
 
   renderInModal() {
     return (

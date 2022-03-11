@@ -322,7 +322,7 @@ class Endpoints extends Component {
 
   displayEndpointName (endpointId) {
     return (
-      <div className='sidebar-accordion-item'>
+      <div className='sidebar-accordion-item pl-3'>
         <div className={`api-label ${this.props.endpoints[endpointId].requestType} request-type-bgcolor`}>
           {this.props.endpoints[endpointId].requestType}
         </div>
@@ -494,13 +494,15 @@ class Endpoints extends Component {
               )}
           >
             {this.displayEndpointName(endpointId)}
-          </button>
-          <div className='d-flex align-items-center'>
-            <div className='mr-2 published-icon'>
-              {this.props.endpoints[endpointId].isPublished && <img src={GlobeIcon} alt='globe' width='14' />}
+            <div className='d-flex align-items-center'>
+              <div className=' sidebar-item-action'>
+                {!this.props.collections[this.props.collection_id]?.importedFromMarketPlace && this.displayEndpointOptions(endpointId)}
+              </div>
+              <div className='ml-1 published-icon'>
+                {this.props.endpoints[endpointId].isPublished && <img src={GlobeIcon} alt='globe' width='14' />}
+              </div>
             </div>
-            {!this.props.collections[this.props.collection_id]?.importedFromMarketPlace && this.displayEndpointOptions(endpointId)}
-          </div>
+          </button>
         </div>
       </div>
     )

@@ -327,10 +327,10 @@ class Pages extends Component {
         >
           {this.displayPageName(pageId)}
           <div className='d-flex align-items-center'>
-            <div className='mr-2 published-icon'>
-              {this.props.pages[pageId].isPublished && <img src={GlobeIcon} alt='globe' width='14' />}
-            </div>
             {!this.props.collections[this.props.collection_id]?.importedFromMarketPlace && this.displayPageOptions(pageId)}
+            <div className='ml-1 published-icon'>
+              <span className='globe-img'>{this.props.pages[pageId].isPublished && <img src={GlobeIcon} alt='globe' width='14' />}</span>
+            </div>
           </div>
         </button>
       </div>

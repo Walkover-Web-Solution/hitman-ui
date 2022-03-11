@@ -56,7 +56,7 @@ class HostContainer extends Component {
     const endpointUri = this.props.updatedUri || ''
     const topPriorityHost = this.customFindTopPriorityHost()
     const selectedHost = topPriorityHost
-    const host = this.state[selectedHost] || ''
+    const host = this.state[selectedHost] || this.state.datalistHost || ''
     this.setState({ datalistUri: endpointUri, datalistHost: host, selectedHost }, () => this.setParentHostAndUri())
   }
 

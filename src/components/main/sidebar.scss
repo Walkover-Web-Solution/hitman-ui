@@ -1,7 +1,4 @@
-//Note: Unique IDs are used in CTAs for tracking purposes with GTM. Do not use the same IDs elsewhere.
-
-$font-small: 12px;
-$text-color: #212121;
+@import './variables.scss';
 
 .top-right {
   right: 0;
@@ -18,6 +15,227 @@ $text-color: #212121;
   position: relative;
   transition: box-shadow .3s .15s, transform .3s, margin-left .3s, margin-right .3s, width .3s, z-index 0s ease .3s;
   padding-top: 1.5rem;
+.split-sidebar > div:first-child {
+  max-width: 330px !important;
+  min-width: 230px !important;
+}
+span.Resizer.vertical {
+  width: 1px;
+  background: #e6dbd4;
+  cursor: col-resize;
+}
+.sidebar {
+  height: 100%;
+  background-color: $secondary-color;
+  padding: 0.75rem 0 0.45rem;
+  .switch-products{
+    .dropdown-toggle{
+      color: $text-color-dark;
+    }
+    .dropdown-menu{
+      .dropdown-item{
+        padding: 0.25rem 1rem;
+        &.dropHeader {
+          font-weight: 500;
+          pointer-events: none !important;
+        }
+      }
+    } 
+  }
+  .collect-length {
+    line-height: 1.5rem;
+  }
+  .globe-img {
+    width: 13px;
+    height: 1.5rem;
+  }
+  div#parent-accordion {
+    margin-bottom: 0.25rem;
+    .inner-container {
+      max-width: 70%;
+      width: 100%;
+    }
+  }
+  .versionChovron{
+    transform: rotate(-90deg);
+    width: 1.5rem;
+    height: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease-in;
+  }
+  .fade {
+    transition: opacity 1s cubic-bezier(0.65, 0.05, 0.36, 1)!important;
+  }
+  .primary-sidebar {
+    width: 100%;
+    position: relative;
+    height: 100%;
+    display: flex;
+    flex: 0 0 auto;
+    margin-top: auto;
+    flex-direction: column;
+    > .plr-3{
+      flex-shrink: 0;
+      flex-grow: 0;
+    }
+    .search-input {
+      border: none;
+      background: none;
+      padding: 0;
+      &::placeholder{
+        color: $text-color;
+      }
+    }
+    .sidebar-accordion {
+      &.expanded > button{
+        .versionChovron{
+          transform: rotate(0);
+        }
+      }
+      .entity-submit-btn {
+        padding: 0 !important;
+        font-weight: 500 !important;
+        font-size: 12px !important;
+        box-shadow: none !important;
+        width: 100px;
+        height: 31px;
+        background: $theme-color !important;
+        border: none;
+        border-radius: 4px !important;
+        color: #fff;
+        margin-right: 10px;
+        justify-content: center;
+      }
+      button{
+        &.expanded{
+          .versionChovron{
+            transform: rotate(0);
+          }
+        }
+        &:hover {
+          background: $grey;
+        }
+        .sidebar-item-action-btn {
+          cursor: pointer;
+          transition: all 0.3s ease-in;
+          i{
+            display: flex;
+            height: 12px;
+            width: 0.5rem;
+            justify-content: center;
+          }
+        }
+        .sidebar-item-action {
+          transition: all 0.3s ease-in;
+          opacity: 0;
+          visibility: hidden;
+          position: absolute;
+          right: 0rem;
+          background: $grey;
+          padding: 0 0.7rem;
+          top: 50%;
+          transform: translateY(-50%);
+        }
+        width: 100%;
+        display: flex;
+        align-items: center;
+        border: none;
+        background: transparent;
+        color: $text-color;
+        padding: 0 0.8rem 0 0.65rem;
+        position: relative;
+        transition: all 0.3s ease-in;
+        height: 1.5rem;
+        text-align: left;
+        justify-content: space-between;
+        &:active,
+        &:focus {
+          outline: none;
+          box-shadow: none;
+        }
+        &:hover {
+          .sidebar-item-action {
+            visibility: visible;
+            opacity: 1;
+          }
+        }
+        .sidebar-toggle{
+          transition: all 0.3s ease-in;
+          &:hover {
+            background: #ebebeb;
+            border-color: #F1EEE5;
+            .sidebar-item-action-btn {
+              visibility: visible;
+              opacity: 1;
+            }
+          }
+          i{
+            color: #000;
+          }
+        }
+      }
+    }
+    .sidebar-content{
+      overflow: hidden auto;
+      flex: auto;
+      .card-body {
+        padding: 0;
+      }
+      .collection-name {
+        line-height: 1;
+        justify-content: space-between;
+        align-items: center;
+      }
+    }
+    .dropdown-menu{
+      border: none;
+    }
+    .profile-menu{
+      display: block;
+      flex: 0 0 auto;
+      border-top: 1px solid #dcdcdc;
+      padding: 0.45rem 1rem 0;
+      .profile-details {
+        border-bottom: 1px solid #e6dbd4;
+        margin-bottom: 1rem;
+        padding: 0.5rem 0 0.25rem;
+      }
+      .profile-listing-container .dropdown-item {
+        padding: 0.25rem 1rem;
+        img{
+          margin-right: 0.65rem; 
+        }
+      }
+      .org-name {
+        font-weight: 600;
+        color: $text-color-dark;
+        margin-bottom: -0.35rem;
+        font-size: $font-normal;
+        display: block;
+      }
+      .profile-details-label-light{
+        font-size: $font-medium;
+        color: $text-color;
+      }
+      .user-notification-badge {
+        position: absolute;
+        left: 0;
+        top: -7px;
+        font-size: $font-small;
+        background: $theme-color;
+        color: #fff;
+        border-radius: 50%;
+        width: 1rem;
+        height: 1rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        line-height: 1;
+      }
+    }
+  }
 }
 
 .heading-collection {
@@ -33,18 +251,10 @@ $text-color: #212121;
   align-items: center;
 }
 
-.public-colection-info .publicurl {
-  width: 90%;
-}
-
 .publishCollection {
   background: transparent !important;
   font-weight: 400 !important;
   height: 35px;
-}
-
-.public-colection-info .setting {
-  margin-left: 10px;
 }
 
 .sidebar-public-url .text-truncate {
@@ -124,24 +334,10 @@ $text-color: #212121;
 }
 
 input[type="text"]:focus {
-  // border: 1px solid rgba(255, 255, 255, 0.1);
+  // border: solid rgba(255, 255, 255, 0.1);
   outline: none;
   box-shadow: none;
 }
-
-.App-Side {
-  padding: 0 10px;
-  height: calc(100vh - 120px);
-  overflow: auto;
-}
-
-.primary-sidebar .sidebar-accordion>button {
-  &:hover {
-    background: #ebebeb;
-    border-color: #F1EEE5;
-  }
-}
-
 .primary-sidebar .sidebar-accordion.active>{
   button {
     background: #ebebeb;
@@ -156,79 +352,8 @@ input[type="text"]:focus {
   }
 }
 
-.primary-sidebar .sidebar-accordion.expanded>button {
-  &:before{
-    transform: rotate(360deg) !important;
-  }
-}
 .versionChovron svg {
   transition: all 0.3s ease-in;
-}
-.primary-sidebar button.expanded .versionChovron svg {
-  transform: rotate(90deg) !important;
-}
-
-.sidebar-accordion {
-  button{
-    width: 100%;
-    display: flex;
-    align-items: center;
-    text-align: left;
-    padding: 0;
-    margin: 0;
-    border: none;
-    background: transparent;
-    color: inherit;
-    border: 1px solid transparent;
-    color: $text-color;
-    font-weight: normal;
-    padding: 4px 25px 4px 10px;
-    position: relative;
-    transition: all 0.3s ease-in;
-    height: 2rem;
-    &:active,
-    &:focus {
-      outline: none;
-      box-shadow: none;
-    }
-    &:hover {
-      .sidebar-item-action-btn {
-        visibility: visible;
-        opacity: 1;
-      }
-    }
-  }
-  .sidebar-toggle{
-    transition: all 0.3s ease-in;
-    &:hover {
-      background: #ebebeb;
-      border-color: #F1EEE5;
-      .sidebar-item-action-btn {
-        visibility: visible;
-        opacity: 1;
-      }
-    }
-    i{
-      color: #000;
-    }
-  }
-}
-
-.sidebar-content{
-  #parent-accordion{
-    > button{
-      &:before{
-        content: '';
-        background: url('../../assets/icons/downChevron.svg') center center/contain no-repeat;
-        display: inline-block;
-        width: 11px;
-        height: 11px;
-        margin-right: 6px;
-        transform: rotate(270deg);
-        transition: all 0.3s ease-in;
-      }
-    }
-  }
 }
 
 .sidebar-content:focus {
@@ -237,39 +362,18 @@ input[type="text"]:focus {
 }
 
 .sidebar-accordion-item {
-  padding: 0px 6px;
+  padding: 0px;
   display: flex;
   align-items: center;
   width: 100%;
 
   .api-label {
-    margin-right: 10px;
+    margin-right: 5px;
   }
 }
-
-.sidebar-item-action {
-  position: absolute;
-  right: 5px;
-  width: 15px;
-}
-
 .sidebar-accordion .sidebar-accordion-item>i {
   display: inline-block;
   width: 30px;
-}
-
-
-.sidebar-item-action-btn {
-  width: auto;
-  border-radius: 3px;
-  text-align: center;
-  opacity: 0;
-  cursor: pointer;
-  transition: all 0.3s ease-in;
-  i{
-    display: flex;
-    height: 12px;
-  }
 }
 
 .sidebar-item-action:hover {
@@ -353,11 +457,6 @@ input[type="text"]:focus {
   text-align: center;
 }
 
-.versionChovron {
-  transition: 300ms;
-  transform: rotate(270deg);
-}
-
 .versionBoldHeading .active .versionChovron {
   transform: rotate(360deg);
   transition: 300ms;
@@ -366,28 +465,13 @@ input[type="text"]:focus {
 .versionPages .sidebar-accordion {
   position: relative;
 }
-
-.versionsgroups .linkWith>.sidebar-accordion>button {
-  position: relative;
-  color: #E98A36;
-}
-
 .sidebar-content-scroll {
   height: calc(100vh - 265px);
   overflow: auto;
   transition: 200ms;
 }
 
-.sidebar-content {
-  .card-body {
-    padding: 0 0  0 25px;
-  }
-  .collection-name {
-    line-height: 1;
-    justify-content: space-between;
-    align-items: center;
-  }
-}
+
 
 .sidebar-content .collection-name .btn-primary {
   font-weight: 600;
@@ -415,20 +499,10 @@ input[type="text"]:focus {
 .search-box-container {
   padding: 0 14px;
 }
-.published-icon {
-  position: absolute;
-  right: 12px;
-  display: flex;
-  align-items: center;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-.sidebar-accordion {
-  button.focused {
-    border: 1px dotted red !important;
-  }
-}
 .sidebar-accordion {
   position: relative;
+}
+.empty-box {
+  padding: 0.25rem 0.75rem;
+  opacity: 0.8;
 }

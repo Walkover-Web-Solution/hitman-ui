@@ -1,0 +1,31 @@
+import React, { useRef } from 'react'
+import { Editor } from '@tinymce/tinymce-react'
+
+export default function TinyEditor (props) {
+  const editorRef = useRef(null)
+  const handleOnChange = (value) => {
+    props.onChange(value)
+  }
+  return (
+    <>
+      <Editor
+        onEditorChange={handleOnChange.bind(this)}
+        onInit={(evt, editor) => { editorRef.current = editor }}
+        value={props.data}
+        inline
+        init={{
+          plugins: 'link image codesample table lists',
+          selector: 'textarea',
+          inline_boundaries: false,
+          menu: false,
+          height: 250,
+          menubar: false,
+          table_appearence_option: true,
+          table_toolbar: 'tableprops tabledelete | tableinsertrowbefore tableinsertrowafter tabledeleterow | tableinsertcolbefore tableinsertcolafter tabledeletecol',
+          toolbar: 'formatselect | bold italic underline forecolor backcolor | fontsizeselect | blockquote | numlist bullist | indent outdent | codesample | table',
+          content_style: 'body { font-family:Roboto; font-size:12px }'
+        }}
+      />
+    </>
+  )
+}

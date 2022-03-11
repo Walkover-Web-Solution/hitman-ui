@@ -13,6 +13,7 @@ import UserInfo from '../common/userInfo'
 import Footer from '../main/Footer'
 import { setTitle, setFavicon, comparePositions } from '../common/utility'
 import { Style } from 'react-style-tag'
+import { Modal } from 'react-bootstrap'
 
 const mapStateToProps = (state) => {
   return {
@@ -37,7 +38,14 @@ class PublicEndpoint extends Component {
     collectionName: '',
     collectionTheme: null,
     isNavBar: false,
-    isSticky: false
+    isSticky: false,
+    likeActive: false,
+    dislikeActive: false,
+    review: {
+      feedback: {},
+      endpoint: {}
+    },
+    openReviewModal: false
   };
 
   componentDidMount () {
@@ -168,6 +176,77 @@ class PublicEndpoint extends Component {
     if (entityName) { this.setState({ currentEntityName: entityName }) } else { this.setState({ currentEntityName: '' }) }
   }
 
+  toggleReviewModal= () => this.setState({ openReviewModal: !this.state.openReviewModal });
+
+  reviewModal () {
+    return (
+      <div onHide={() => this.props.onHide()} show top>
+        <Modal show top>
+          <div className=''>
+            <Modal.Header closeButton>
+              <Modal.Title>API FeedBack</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <form>
+                <label>
+                  User Name:
+                  <input type='text' name='name' />
+                </label>
+                <label>
+                  Comment
+                  <textarea type='text' name='name' />
+                </label>
+                <input type='submit' value='Submit' />
+              </form>
+            </Modal.Body>
+
+            <Modal.Footer>
+              <button className='btn btn-custom-dark' onClick={() => this.subscribeToExtendedLog()} onHide={() => this.setState({ showExtendedLog: false })}>Subscribe For Extended Log</button>
+            </Modal.Footer>
+          </div>
+        </Modal>
+      </div>
+    )
+  }
+
+  setDislike () {
+    this.setState({ dislikeActive: !this.state.dislikeActive }, () => {
+      const data = this.props.match.params.endpointId
+      // const endpoint = this.state
+      this.setState({ endpoint: data })
+      const review = { ...this.state.review.endpoint }
+      review.endpoint = this.props.match.params
+      if (this.state.dislikeActive) { review.feedback = 'disliked' }
+      window.localStorage.setItem('review', JSON.stringify(review))
+    })
+    this.toggleReviewModal()
+  }
+
+  setLike () {
+    this.setState({ likeActive: !this.state.likeActive }, () => {
+      const review = { ...this.state.review }
+      review.endpoint = this.props.match.params
+      if (this.state.likeActive) { review.feedback = 'liked' }
+      window.localStorage.setItem('review', JSON.stringify(review))
+    })
+  }
+
+  handleLike () {
+    if (this.state.dislikeActive) {
+      // this.setLike();
+      // this.setDislike();
+    }
+    this.setLike()
+  }
+
+  handleDislike () {
+    if (this.state.likeActive) {
+      // this.setDislike();
+      // this.setLike();
+    }
+    this.setDislike()
+  }
+
   render () {
     const collectionId = this.props.match.params.collectionIdentifier
     const docFaviconLink = (this.props.collections[collectionId]?.favicon)
@@ -281,6 +360,10 @@ class PublicEndpoint extends Component {
                                            />}
                       />
                     </Switch>
+                    <button onClick={() => { this.handleLike() }}>like</button>
+                    <span>'    '</span>
+                    <button onClick={() => { this.handleDislike() }}> dislike </button>
+                    {this.state.openReviewModal && this.reviewModal()}
                   </div>
                   )
                 : null
