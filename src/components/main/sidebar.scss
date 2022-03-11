@@ -7,18 +7,6 @@
   z-index: 99;
 }
 
-.primary-sidebar {
-  color: #999;
-  width: 330px;
-  border-right: 0.5px solid #E6DBD4;
-  font-size: 14px;
-  position: relative;
-  transition: box-shadow .3s .15s, transform .3s, margin-left .3s, margin-right .3s, width .3s, z-index 0s ease .3s;
-  padding-top: 1.5rem;
-.split-sidebar > div:first-child {
-  max-width: 330px !important;
-  min-width: 230px !important;
-}
 span.Resizer.vertical {
   width: 1px;
   background: #e6dbd4;
