@@ -334,7 +334,7 @@ class CustomTabs extends Component {
                   {
                 this.props.tabs.tabs[tabId].isModified
                   ? (
-                    <i className='fas fa-circle modified-dot-icon d-none' />
+                    <i className='fas fa-circle modified-dot-icon' />
                     )
                   : (
                       ''

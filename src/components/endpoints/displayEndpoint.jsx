@@ -2662,7 +2662,7 @@ class DisplayEndpoint extends Component {
       ? (
         <div
           ref={this.myRef}
-          className={this.isNotDashboardOrDocView() ? '' : codeEditorVisibility ? 'mainContentWrapperPublic hideCodeEditor' : 'mainContentWrapperPublic '}
+          className={!this.isNotDashboardOrDocView() ? '' : codeEditorVisibility ? 'mainContentWrapperPublic hideCodeEditor' : 'mainContentWrapperPublic '}
         >
           <div className={this.isNotDashboardOrDocView() ? 'mainContentWrapper dashboardPage' : 'mainContentWrapper'}>
             <div className={`innerContainer ${responseView === 'right' ? 'response-right' : 'response-bottom'}`}>

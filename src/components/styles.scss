@@ -615,13 +615,6 @@ button.btn.custom-body-type-button {
       max-height: 15rem;
       overflow: auto;
     }
-    &.show{
-      .dropdown-toggle{
-        &:after{
-          transform: rotate(180deg);
-        }
-      }
-    }
   }
 }
   

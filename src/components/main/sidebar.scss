@@ -6,7 +6,10 @@
   transform: translateY(-50%);
   z-index: 99;
 }
-
+.split-sidebar > div:first-child {
+  max-width: 330px !important;
+  min-width: 230px !important;
+}
 span.Resizer.vertical {
   width: 1px;
   background: #e6dbd4;
