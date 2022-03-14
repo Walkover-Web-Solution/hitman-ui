@@ -306,31 +306,32 @@ class CustomTabs extends Component {
               <span>{this.leftHideTabs() ? `${this.leftHideTabs()}+` : null}</span>
             </div>)
           : null}
-        <Nav variant='pills' className='flex-row flex-nowrap item-wrp' onScroll={() => this.scrollLength()} ref={this.navRef} style={{ scrollBehavior: 'smooth' }}>
-          <div>
-            {this.state.showSavePromptFor.length > 0 && (
-              <SavePromptModal
-                {...this.props}
-                show
-                onHide={() => this.closeSavePrompt()}
-                onConfirm={this.handleOnConfirm.bind(this)}
-                tab_id={this.state.showSavePromptFor[0]}
-              />
-            )}
-          </div>
-          {this.props.tabs.tabsOrder.map((tabId, index) => (
-            <div class='' key={tabId} ref={(newRef) => { this.scrollRef[tabId] = newRef }}>
-              <Nav.Item
-                key={tabId}
-                draggable
-                onDragOver={this.handleOnDragOver}
-                onDragStart={() => this.onDragStart(tabId)}
-                onDrop={(e) => this.onDrop(e, tabId)}
-                className={this.props.tabs?.activeTabId === tabId ? 'active' : ''}
-                onMouseEnter={() => this.setState({ showPreview: true, previewId: tabId })}
-                onMouseLeave={() => this.setState({ showPreview: false, previewId: null })}
-              >
-                {
+        <div className='d-flex'>
+          <Nav variant='pills' className='flex-row flex-nowrap item-wrp' onScroll={() => this.scrollLength()} ref={this.navRef} style={{ scrollBehavior: 'smooth' }}>
+            <div>
+              {this.state.showSavePromptFor.length > 0 && (
+                <SavePromptModal
+                  {...this.props}
+                  show
+                  onHide={() => this.closeSavePrompt()}
+                  onConfirm={this.handleOnConfirm.bind(this)}
+                  tab_id={this.state.showSavePromptFor[0]}
+                />
+              )}
+            </div>
+            {this.props.tabs.tabsOrder.map((tabId, index) => (
+              <div class='' key={tabId} ref={(newRef) => { this.scrollRef[tabId] = newRef }}>
+                <Nav.Item
+                  key={tabId}
+                  draggable
+                  onDragOver={this.handleOnDragOver}
+                  onDragStart={() => this.onDragStart(tabId)}
+                  onDrop={(e) => this.onDrop(e, tabId)}
+                  className={this.props.tabs?.activeTabId === tabId ? 'active' : ''}
+                  onMouseEnter={() => this.setState({ showPreview: true, previewId: tabId })}
+                  onMouseLeave={() => this.setState({ showPreview: false, previewId: null })}
+                >
+                  {
                 this.props.tabs.tabs[tabId].isModified
                   ? (
                     <i className='fas fa-circle modified-dot-icon d-none' />
@@ -339,65 +340,67 @@ class CustomTabs extends Component {
                       ''
                     )
               }
-                <Nav.Link eventKey={tabId}>
-                  <button
-                    className='btn truncate'
-                    onClick={() => tabService.selectTab({ ...this.props }, tabId)}
-                    onDoubleClick={() => {
-                      tabService.disablePreviewMode(tabId)
-                    }}
-                  >
-                    {this.renderTabName(tabId)}
+                  <Nav.Link eventKey={tabId}>
+                    <button
+                      className='btn truncate'
+                      onClick={() => tabService.selectTab({ ...this.props }, tabId)}
+                      onDoubleClick={() => {
+                        tabService.disablePreviewMode(tabId)
+                      }}
+                    >
+                      {this.renderTabName(tabId)}
+                    </button>
+                  </Nav.Link>
+                  <button className='btn close' onClick={() => this.handleCloseTabs([tabId])}>
+                    <i className='uil uil-multiply' />
                   </button>
-                </Nav.Link>
-                <button className='btn close' onClick={() => this.handleCloseTabs([tabId])}>
-                  <i className='uil uil-multiply' />
-                </button>
-              </Nav.Item>
-              {this.state.showPreview && tabId === this.state.previewId &&
+                </Nav.Item>
+                {this.state.showPreview && tabId === this.state.previewId &&
               (this.renderHoverTab(tabId, this.tabRef))}
-            </div>
-          ))}
-          {this.showScrollButton()
-            ? (
-              <div
-                className={`scroll-button scroll-button--right d-flex ${this.rightHideTabs() ? '' : 'disabled'}`}
-                onMouseEnter={() => this.handleMouseEnter('right')}
-                onMouseLeave={() => this.handleMouseLeave()}
+              </div>
+            ))}
+            {this.showScrollButton()
+              ? (
+                <div
+                  className={`scroll-button scroll-button--right d-flex ${this.rightHideTabs() ? '' : 'disabled'}`}
+                  onMouseEnter={() => this.handleMouseEnter('right')}
+                  onMouseLeave={() => this.handleMouseLeave()}
+                >
+                  <span className='mr-1'>{this.rightHideTabs() ? `+${this.rightHideTabs()}` : null}</span>
+                  <span><i class='fa fa-angle-right' aria-hidden='true' /></span>
+                </div>)
+              : null}
+            <Nav.Item className='tab-buttons newTabs' id='add-new-tab-button'>
+              <button
+                className='btn'
+                onClick={() => this.handleAddTab()}
               >
-                <span className='mr-1'>{this.rightHideTabs() ? `+${this.rightHideTabs()}` : null}</span>
-                <span><i class='fa fa-angle-right' aria-hidden='true' /></span>
-              </div>)
-            : null}
-          <Nav.Item className='tab-buttons newTabs' id='add-new-tab-button'>
-            <button
-              className='btn'
-              onClick={() => this.handleAddTab()}
-            >
-              <img src={Plus} alt='' />
+                <img src={Plus} alt='' />
 
-            </button>
-          </Nav.Item>
-
-          <Nav.Item className='tab-buttons' id='options-tab-button'>
-            <TabOptions history={this.props.history} match={this.props.match} handleCloseTabs={this.handleCloseTabs.bind(this)} />
-          </Nav.Item>
-          <Nav.Item className='' id='history-tab-button'>
-            <Dropdown>
-              <Dropdown.Toggle
-                bsPrefix='dropdown'
-                variant='default'
-                id='dropdown-basic'
-              >
-                <HistoryIcon />
-              </Dropdown.Toggle>
-              <Dropdown.Menu className='history-drop-down'>
-                <div className='history-heading'>History</div>
-                <History {...this.props} />
-              </Dropdown.Menu>
-            </Dropdown>
-          </Nav.Item>
-        </Nav>
+              </button>
+            </Nav.Item>
+          </Nav>
+          <div className='d-flex'>
+            <Nav.Item className='tab-buttons' id='options-tab-button'>
+              <TabOptions history={this.props.history} match={this.props.match} handleCloseTabs={this.handleCloseTabs.bind(this)} />
+            </Nav.Item>
+            <Nav.Item className='' id='history-tab-button'>
+              <Dropdown>
+                <Dropdown.Toggle
+                  bsPrefix='dropdown'
+                  variant='default'
+                  id='dropdown-basic'
+                >
+                  <HistoryIcon />
+                </Dropdown.Toggle>
+                <Dropdown.Menu className='history-drop-down'>
+                  <div className='history-heading'>History</div>
+                  <History {...this.props} />
+                </Dropdown.Menu>
+              </Dropdown>
+            </Nav.Item>
+          </div>
+        </div>
 
       </>
     )

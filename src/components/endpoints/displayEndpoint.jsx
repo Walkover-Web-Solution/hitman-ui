@@ -1886,10 +1886,9 @@ class DisplayEndpoint extends Component {
   }
 
   displayResponseAndSampleResponse () {
-    const { responseView } = this.props
     return (
       <>
-        <div className={`custom-tabs clear-both ${responseView === 'right' ? 'response-switch' : ''}`} ref={this.myRef}>
+        <div className='custom-tabs clear-both response-container' ref={this.myRef}>
           <ul className='nav nav-tabs respTabsListing' id='myTab' role='tablist'>
             <li className='nav-item'>
               <a
@@ -2006,7 +2005,7 @@ class DisplayEndpoint extends Component {
   displayPublicResponse () {
     return (
       <>
-        <div className='hm-panel endpoint-public-response-container mt-4 endPointRes'>
+        <div className='response-container endpoint-public-response-container endPointRes'>
           <DisplayResponse
             {...this.props}
             loader={this.state.loader}
@@ -2105,12 +2104,14 @@ class DisplayEndpoint extends Component {
           <div>
             {this.state.docViewData.map((item, index) =>
               <SortableItem key={index} index={index}>
-                <div className='position-relative doc-secs'>
+                <div className='doc-secs-container'>
+                  <div className='doc-secs'>
+                    {this.renderPublicItem(item, index)}
+                  </div>
                   <div className='addons'>
                     {this.renderDragHandle(item)}
                     {this.removePublicItem(item, index)}
                   </div>
-                  {this.renderPublicItem(item, index)}
                 </div>
               </SortableItem>
             )}
@@ -2494,7 +2495,7 @@ class DisplayEndpoint extends Component {
           </button>
           {isPublicEndpoint &&
             <button
-              className={this.state.publishLoader ? 'btn btn-outline orange buttonLoader' : 'btn btn-outline orange'}
+              className={'ml-2 ' + (this.state.publishLoader ? 'btn btn-outline orange buttonLoader' : 'btn btn-outline orange')}
               type='button'
               onClick={() => this.setState({ openPublishConfirmationModal: true })}
               disabled={!isAdmin()}
@@ -2556,7 +2557,7 @@ class DisplayEndpoint extends Component {
 
   renderSaveButton () {
     return (
-      <>
+      <div className='save-endpoint position-absolute top-right'>
         {
           this.isDashboardAndTestingView()
             ? (
@@ -2605,7 +2606,7 @@ class DisplayEndpoint extends Component {
               )
             : null
         }
-      </>
+      </div>
     )
   }
 
@@ -2656,7 +2657,7 @@ class DisplayEndpoint extends Component {
     }
 
     const { theme, codeEditorVisibility } = this.state
-
+    const { responseView } = this.props
     return ((isDashboardRoute(this.props) && this.state.currentView) || !isDashboardRoute(this.props)) || !isSavedEndpoint(this.props)
       ? (
         <div
@@ -2664,326 +2665,330 @@ class DisplayEndpoint extends Component {
           className={this.isNotDashboardOrDocView() ? '' : codeEditorVisibility ? 'mainContentWrapperPublic hideCodeEditor' : 'mainContentWrapperPublic '}
         >
           <div className={this.isNotDashboardOrDocView() ? 'mainContentWrapper dashboardPage' : 'mainContentWrapper'}>
-            <div className='hm-endpoint-container endpoint-container'>
-              {this.renderCookiesModal()}
-              {this.renderDefaultViewConfirmationModal()}
-              {this.renderPublishConfirmationModal()}
-              {this.renderWarningModal()}
-              {this.state.showLoginSignupModal && (
-                <LoginSignupModal
-                  show
-                  onHide={() => this.closeLoginSignupModal()}
-                  title='Save Endpoint'
-                />
-              )}
-              {
-              getCurrentUser()
-                ? (
-                  <div
-                    className={this.isDashboardAndTestingView() ? 'hm-panel' : null}
-                  >
+            <div className={`innerContainer ${responseView === 'right' ? 'response-right' : 'response-bottom'}`}>
+              <div className='hm-endpoint-container mid-part endpoint-container'>
+                {this.renderCookiesModal()}
+                {this.renderDefaultViewConfirmationModal()}
+                {this.renderPublishConfirmationModal()}
+                {this.renderWarningModal()}
+                {this.state.showLoginSignupModal && (
+                  <LoginSignupModal
+                    show
+                    onHide={() => this.closeLoginSignupModal()}
+                    title='Save Endpoint'
+                  />
+                )}
+                {
+                getCurrentUser()
+                  ? (
+                    <div
+                      className={this.isDashboardAndTestingView() ? 'hm-panel' : null}
+                    >
 
-                    <div className='d-flex justify-content-between'>
-                      {this.renderToggleView()}
-                      {this.renderDocViewOperations()}
-                    </div>
-                    <div className='position-relative top-part'>
-                      {this.state.showEndpointFormModal && (
-                        <SaveAsSidebar
-                          {...this.props}
-                          onHide={() => this.closeEndpointFormModal()}
-                          set_group_id={this.setGroupId.bind(this)}
-                          name={this.state.data.name}
-                          description={this.state.data.description}
-                          save_endpoint={this.handleSave.bind(this)}
-                          saveAsLoader={this.state.saveAsLoader}
-                        />
-                      )}
-                      {this.isDashboardAndTestingView() && (
-                        <DisplayDescription
-                          {...this.props}
-                          endpoint={this.state.endpoint}
-                          data={this.state.data}
-                          old_description={this.state.oldDescription}
-                          groupId={this.state.groupId ? this.state.groupId : null}
-                          props_from_parent={this.propsFromDescription.bind(this)}
-                          alterEndpointName={(name) => this.alterEndpointName(name)}
-                        />
-                      )}
-                      {this.renderSaveButton()}
-                    </div>
-                  </div>
-                  )
-                : null
-            }
-              <div className={'clear-both ' + (this.state.currentView === 'doc' ? 'doc-view' : 'testing-view')}>
-                <div className='endpoint-header' ref={this.scrollDiv}>
-                  {this.isNotDashboardOrDocView() && (
-                    <div className='endpoint-name-container'>
-                      {this.isNotDashboardOrDocView() && <h1 className='endpoint-title'>{this.state.data?.name || ''}</h1>}
-                    </div>
-                  )}
-                </div>
-                <div
-                  className={this.isNotDashboardOrDocView() ? 'hm-panel' : 'hm-panel'}
-                >
-                  {
-                this.isDashboardAndTestingView() &&
-                  (
-                    <div className='endpoint-url-container'>
-                      {this.renderHost()}
-                      <div className='d-flex uriContainerWrapper'>
-                        <button
-                          className={this.state.loader ? 'btn btn-primary buttonLoader' : 'btn btn-primary'}
-                          type='submit'
-                          id='api-send-button'
-                          onClick={() => this.handleSend()}
-                          disabled={this.state.loader}
-                        >
-                          {this.isDashboardAndTestingView() ? 'Send' : 'Try'}
-                        </button>
+                      <div className='d-flex justify-content-between'>
+                        {this.renderToggleView()}
+                        {this.renderDocViewOperations()}
+                      </div>
+                      <div className='position-relative top-part'>
+                        {this.state.showEndpointFormModal && (
+                          <SaveAsSidebar
+                            {...this.props}
+                            onHide={() => this.closeEndpointFormModal()}
+                            set_group_id={this.setGroupId.bind(this)}
+                            name={this.state.data.name}
+                            description={this.state.data.description}
+                            save_endpoint={this.handleSave.bind(this)}
+                            saveAsLoader={this.state.saveAsLoader}
+                          />
+                        )}
+                        {this.isDashboardAndTestingView() && (
+                          <DisplayDescription
+                            {...this.props}
+                            endpoint={this.state.endpoint}
+                            data={this.state.data}
+                            old_description={this.state.oldDescription}
+                            groupId={this.state.groupId ? this.state.groupId : null}
+                            props_from_parent={this.propsFromDescription.bind(this)}
+                            alterEndpointName={(name) => this.alterEndpointName(name)}
+                          />
+                        )}
+                        {this.renderSaveButton()}
                       </div>
                     </div>
-                  )
+                    )
+                  : null
               }
+                <div className={'clear-both ' + (this.state.currentView === 'doc' ? 'doc-view' : 'testing-view')}>
+                  <div className='endpoint-header' ref={this.scrollDiv}>
+                    {this.isNotDashboardOrDocView() && (
+                      <div className='endpoint-name-container'>
+                        {this.isNotDashboardOrDocView() && <h1 className='endpoint-title'>{this.state.data?.name || ''}</h1>}
+                      </div>
+                    )}
+                  </div>
                   <div
-                    className={
-                  this.isDashboardAndTestingView()
-                    ? 'endpoint-headers-container'
-                    : 'hm-public-endpoint-headers'
-                }
+                    className={this.isNotDashboardOrDocView() ? 'hm-panel' : 'hm-panel'}
                   >
-                    <div className='main-table-wrapper'>
-                      {
-                    this.isDashboardAndTestingView()
-                      ? (
-                        <div className='d-flex justify-content-between align-items-center'>
-                          <div className='headers-params-wrapper custom-tabs'>
-                            <ul className='nav nav-tabs' id='pills-tab' role='tablist'>
-                              <li className='nav-item'>
-                                <a
-                                  className={
-                                    this.setAuthorizationTab
-                                      ? 'nav-link '
-                                      : 'nav-link active'
-                                  }
-                                  id='pills-params-tab'
-                                  data-toggle='pill'
-                                  href={`#params-${this.props.tab.id}`}
-                                  role='tab'
-                                  aria-controls={`params-${this.props.tab.id}`}
-                                  aria-selected={
-                                    this.setAuthorizationTab ? 'false' : 'true'
-                                  }
-                                >
-                                  Params
-                                </a>
-                              </li>
-                              <li className='nav-item'>
-                                <a
-                                  className={
-                                    this.setAuthorizationTab
-                                      ? 'nav-link active'
-                                      : 'nav-link '
-                                  }
-                                  id='pills-authorization-tab'
-                                  data-toggle='pill'
-                                  href={`#authorization-${this.props.tab.id}`}
-                                  role='tab'
-                                  aria-controls={`authorization-${this.props.tab.id}`}
-                                  aria-selected={
-                                    this.setAuthorizationTab ? 'true' : 'false'
-                                  }
-                                >
-                                  Authorization
-                                </a>
-                              </li>
-                              <li className='nav-item'>
-                                <a
-                                  className='nav-link'
-                                  id='pills-headers-tab'
-                                  data-toggle='pill'
-                                  href={`#headers-${this.props.tab.id}`}
-                                  role='tab'
-                                  aria-controls={`headers-${this.props.tab.id}`}
-                                  aria-selected='false'
-                                >
-                                  Headers
-                                </a>
-                              </li>
-                              <li className='nav-item'>
-                                <a
-                                  className='nav-link'
-                                  id='pills-body-tab'
-                                  data-toggle='pill'
-                                  href={`#body-${this.props.tab.id}`}
-                                  role='tab'
-                                  aria-controls={`body-${this.props.tab.id}`}
-                                  aria-selected='false'
-                                >
-                                  Body
-                                </a>
-                              </li>
-                              <li className='nav-item'>
-                                <a
-                                  className='nav-link'
-                                  id='pills-pre-script-tab'
-                                  data-toggle='pill'
-                                  href={`#pre-script-${this.props.tab.id}`}
-                                  role='tab'
-                                  aria-controls={`pre-script-${this.props.tab.id}`}
-                                  aria-selected='false'
-                                >
-                                  Pre-Script
-                                </a>
-                              </li>
-                              <li className='nav-item'>
-                                <a
-                                  className='nav-link'
-                                  id='pills-post-script-tab'
-                                  data-toggle='pill'
-                                  href={`#post-script-${this.props.tab.id}`}
-                                  role='tab'
-                                  aria-controls={`post-script-${this.props.tab.id}`}
-                                  aria-selected='false'
-                                >
-                                  Post-Script
-                                </a>
-                              </li>
-                              <li className='nav-item cookie-tab'>
-                                {getCurrentUser() &&
-                                  <a className='nav-link' onClick={() => this.setState({ showCookiesModal: true })}>
-                                    Cookies
-                                  </a>}
-                              </li>
-                            </ul>
-                          </div>
-
+                    {
+                  this.isDashboardAndTestingView() &&
+                    (
+                      <div className='endpoint-url-container'>
+                        {this.renderHost()}
+                        <div className='d-flex uriContainerWrapper'>
+                          <button
+                            className={this.state.loader ? 'btn btn-primary buttonLoader' : 'btn btn-primary'}
+                            type='submit'
+                            id='api-send-button'
+                            onClick={() => this.handleSend()}
+                            disabled={this.state.loader}
+                          >
+                            {this.isDashboardAndTestingView() ? 'Send' : 'Try'}
+                          </button>
                         </div>
-                        )
-                      : null
-                  }
-                      {
-                    this.isDashboardAndTestingView()
-                      ? (
-                        <div className='tab-content' id='pills-tabContent'>
-                          <div
-                            className={
-                              this.setAuthorizationTab
-                                ? 'tab-pane fade'
-                                : 'tab-pane fade show active'
-                            }
-                            id={`params-${this.props.tab.id}`}
-                            role='tabpanel'
-                            aria-labelledby='pills-params-tab'
-                          >
-                            {this.renderParams()}
-                            <div>
-                              {this.renderPathVariables()}
-                            </div>
-                          </div>
-                          <div
-                            className={
-                              this.setAuthorizationTab
-                                ? 'tab-pane fade show active'
-                                : 'tab-pane fade '
-                            }
-                            id={`authorization-${this.props.tab.id}`}
-                            role='tabpanel'
-                            aria-labelledby='pills-authorization-tab'
-                          >
-                            <div>
-                              <Authorization
-                                {...this.props}
-                                title='Authorization'
-                                groupId={this.state.groupId}
-                                set_authorization_headers={this.setHeaders.bind(this)}
-                                set_authoriztaion_params={this.setParams.bind(this)}
-                                set_authoriztaion_type={this.setAuthType.bind(this)}
-                                accessToken={this.accessToken}
-                                authorizationType={this.state.authType}
-                              />
-                            </div>
-                          </div>
-                          <div
-                            className='tab-pane fade'
-                            id={`headers-${this.props.tab.id}`}
-                            role='tabpanel'
-                            aria-labelledby='pills-headers-tab'
-                          >
-                            <div>
-                              {this.renderHeaders()}
-                            </div>
-                          </div>
-                          <div
-                            className='tab-pane fade'
-                            id={`body-${this.props.tab.id}`}
-                            role='tabpanel'
-                            aria-labelledby='pills-body-tab'
-                          >
-                            {this.renderBodyContainer()}
-                          </div>
-                          <div
-                            className='tab-pane fade'
-                            id={`pre-script-${this.props.tab.id}`}
-                            role='tabpanel'
-                            aria-labelledby='pills-pre-script-tab'
-                          >
-                            <div>
-                              <Script
-                                type='Pre-Script'
-                                handleScriptChange={this.handleScriptChange.bind(this)}
-                                scriptText={this.state.preScriptText}
-                              />
-                            </div>
-                          </div>
-                          <div
-                            className='tab-pane fade'
-                            id={`post-script-${this.props.tab.id}`}
-                            role='tabpanel'
-                            aria-labelledby='pills-post-script-tab'
-                          >
-                            <div>
-                              <Script
-                                type='Post-Script'
-                                handleScriptChange={this.handleScriptChange.bind(this)}
-                                scriptText={this.state.postScriptText}
-                              />
-                            </div>
-                          </div>
-                        </div>
-                        )
-                      : this.renderDocView()
-                  }
-                      {
-                  !isDashboardRoute(this.props) && (
-                    <div className='text-left'>
-                      <button
-                        className={this.state.loader ? 'btn btn-primary btn-lg mt-4 buttonLoader' : 'mt-4 btn btn-lg btn-primary'}
-                        style={{ background: theme }}
-                        type='submit'
-                        id='send-request-button'
-                        onClick={() => this.handleSend()}
-                      >
-                        Try
-                      </button>
-                    </div>
-                  )
+                      </div>
+                    )
                 }
-                      {this.isDashboardAndTestingView() && this.renderScriptError()}
-                      {this.displayResponse()}
+                    <div
+                      className={
+                    this.isDashboardAndTestingView()
+                      ? 'endpoint-headers-container d-flex'
+                      : 'hm-public-endpoint-headers'
+                  }
+                    >
+                      <div className='main-table-wrapper'>
+                        {
+                      this.isDashboardAndTestingView()
+                        ? (
+                          <div className='d-flex justify-content-between align-items-center'>
+                            <div className='headers-params-wrapper custom-tabs'>
+                              <ul className='nav nav-tabs' id='pills-tab' role='tablist'>
+                                <li className='nav-item'>
+                                  <a
+                                    className={
+                                      this.setAuthorizationTab
+                                        ? 'nav-link '
+                                        : 'nav-link active'
+                                    }
+                                    id='pills-params-tab'
+                                    data-toggle='pill'
+                                    href={`#params-${this.props.tab.id}`}
+                                    role='tab'
+                                    aria-controls={`params-${this.props.tab.id}`}
+                                    aria-selected={
+                                      this.setAuthorizationTab ? 'false' : 'true'
+                                    }
+                                  >
+                                    Params
+                                  </a>
+                                </li>
+                                <li className='nav-item'>
+                                  <a
+                                    className={
+                                      this.setAuthorizationTab
+                                        ? 'nav-link active'
+                                        : 'nav-link '
+                                    }
+                                    id='pills-authorization-tab'
+                                    data-toggle='pill'
+                                    href={`#authorization-${this.props.tab.id}`}
+                                    role='tab'
+                                    aria-controls={`authorization-${this.props.tab.id}`}
+                                    aria-selected={
+                                      this.setAuthorizationTab ? 'true' : 'false'
+                                    }
+                                  >
+                                    Authorization
+                                  </a>
+                                </li>
+                                <li className='nav-item'>
+                                  <a
+                                    className='nav-link'
+                                    id='pills-headers-tab'
+                                    data-toggle='pill'
+                                    href={`#headers-${this.props.tab.id}`}
+                                    role='tab'
+                                    aria-controls={`headers-${this.props.tab.id}`}
+                                    aria-selected='false'
+                                  >
+                                    Headers
+                                  </a>
+                                </li>
+                                <li className='nav-item'>
+                                  <a
+                                    className='nav-link'
+                                    id='pills-body-tab'
+                                    data-toggle='pill'
+                                    href={`#body-${this.props.tab.id}`}
+                                    role='tab'
+                                    aria-controls={`body-${this.props.tab.id}`}
+                                    aria-selected='false'
+                                  >
+                                    Body
+                                  </a>
+                                </li>
+                                <li className='nav-item'>
+                                  <a
+                                    className='nav-link'
+                                    id='pills-pre-script-tab'
+                                    data-toggle='pill'
+                                    href={`#pre-script-${this.props.tab.id}`}
+                                    role='tab'
+                                    aria-controls={`pre-script-${this.props.tab.id}`}
+                                    aria-selected='false'
+                                  >
+                                    Pre-Script
+                                  </a>
+                                </li>
+                                <li className='nav-item'>
+                                  <a
+                                    className='nav-link'
+                                    id='pills-post-script-tab'
+                                    data-toggle='pill'
+                                    href={`#post-script-${this.props.tab.id}`}
+                                    role='tab'
+                                    aria-controls={`post-script-${this.props.tab.id}`}
+                                    aria-selected='false'
+                                  >
+                                    Post-Script
+                                  </a>
+                                </li>
+                                <li className='nav-item cookie-tab'>
+                                  {getCurrentUser() &&
+                                    <a className='nav-link' onClick={() => this.setState({ showCookiesModal: true })}>
+                                      Cookies
+                                    </a>}
+                                </li>
+                              </ul>
+                            </div>
+
+                          </div>
+                          )
+                        : null
+                    }
+                        {
+                      this.isDashboardAndTestingView()
+                        ? (
+                          <div className='tab-content' id='pills-tabContent'>
+                            <div
+                              className={
+                                this.setAuthorizationTab
+                                  ? 'tab-pane fade'
+                                  : 'tab-pane fade show active'
+                              }
+                              id={`params-${this.props.tab.id}`}
+                              role='tabpanel'
+                              aria-labelledby='pills-params-tab'
+                            >
+                              {this.renderParams()}
+                              <div>
+                                {this.renderPathVariables()}
+                              </div>
+                            </div>
+                            <div
+                              className={
+                                this.setAuthorizationTab
+                                  ? 'tab-pane fade show active'
+                                  : 'tab-pane fade '
+                              }
+                              id={`authorization-${this.props.tab.id}`}
+                              role='tabpanel'
+                              aria-labelledby='pills-authorization-tab'
+                            >
+                              <div>
+                                <Authorization
+                                  {...this.props}
+                                  title='Authorization'
+                                  groupId={this.state.groupId}
+                                  set_authorization_headers={this.setHeaders.bind(this)}
+                                  set_authoriztaion_params={this.setParams.bind(this)}
+                                  set_authoriztaion_type={this.setAuthType.bind(this)}
+                                  accessToken={this.accessToken}
+                                  authorizationType={this.state.authType}
+                                />
+                              </div>
+                            </div>
+                            <div
+                              className='tab-pane fade'
+                              id={`headers-${this.props.tab.id}`}
+                              role='tabpanel'
+                              aria-labelledby='pills-headers-tab'
+                            >
+                              <div>
+                                {this.renderHeaders()}
+                              </div>
+                            </div>
+                            <div
+                              className='tab-pane fade'
+                              id={`body-${this.props.tab.id}`}
+                              role='tabpanel'
+                              aria-labelledby='pills-body-tab'
+                            >
+                              {this.renderBodyContainer()}
+                            </div>
+                            <div
+                              className='tab-pane fade'
+                              id={`pre-script-${this.props.tab.id}`}
+                              role='tabpanel'
+                              aria-labelledby='pills-pre-script-tab'
+                            >
+                              <div>
+                                <Script
+                                  type='Pre-Script'
+                                  handleScriptChange={this.handleScriptChange.bind(this)}
+                                  scriptText={this.state.preScriptText}
+                                />
+                              </div>
+                            </div>
+                            <div
+                              className='tab-pane fade'
+                              id={`post-script-${this.props.tab.id}`}
+                              role='tabpanel'
+                              aria-labelledby='pills-post-script-tab'
+                            >
+                              <div>
+                                <Script
+                                  type='Post-Script'
+                                  handleScriptChange={this.handleScriptChange.bind(this)}
+                                  scriptText={this.state.postScriptText}
+                                />
+                              </div>
+                            </div>
+                          </div>
+                          )
+                        : this.renderDocView()
+                    }
+                        {
+                    !isDashboardRoute(this.props) && (
+                      <div className='text-left'>
+                        <button
+                          className={this.state.loader ? 'btn btn-primary btn-lg mt-4 buttonLoader' : 'mt-4 btn btn-lg btn-primary'}
+                          style={{ background: theme }}
+                          type='submit'
+                          id='send-request-button'
+                          onClick={() => this.handleSend()}
+                        >
+                          Try
+                        </button>
+                      </div>
+                    )
+                  }
+                        {this.isDashboardAndTestingView() && this.renderScriptError()}
+                        {
+                      this.displayResponse()
+                    }
+                      </div>
                     </div>
                   </div>
                 </div>
+                {this.renderDocViewOptions()}
               </div>
-
               {
-              this.isDashboardAndTestingView()
-                ? isSavedEndpoint(this.props)
-                    ? this.displayResponseAndSampleResponse()
-                    : this.displayPublicResponse()
-                : null
-            }
+                this.isDashboardAndTestingView()
+                  ? isSavedEndpoint(this.props)
+                      ? this.displayResponseAndSampleResponse()
+                      : this.displayPublicResponse()
+                  : this.displayPublicSampleResponse()
+                }
             </div>
             {
            this.isNotDashboardOrDocView() &&
@@ -3001,7 +3006,7 @@ class DisplayEndpoint extends Component {
               />
            )
           }
-            {this.renderDocViewOptions()}
+
           </div>
         </div>
         )

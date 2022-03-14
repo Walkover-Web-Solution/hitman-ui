@@ -110,6 +110,9 @@
   .clear-both{
     clear: both;
   }
+  .hover{
+    cursor: pointer;
+  }
 
 // Global Styles
 
@@ -1253,11 +1256,6 @@ button.editBtn {
   width: 100%;
 }
 
-.endPointRes .endpoint-response-container {
-  padding: 20px;
-  background: #fff;
-}
-
 .responseTabWrapper {
   background: #fff;
   border-radius: $border-radius;
@@ -1277,7 +1275,7 @@ button.editBtn {
   width: 100%;
 }
 
-.btn{
+body .btn{
   border-radius: $border-radius;
   font-size: $font-normal !important;
   &.btn-primary{
@@ -1527,7 +1525,6 @@ table#custom-generic-table tbody input[value="false"] + span.checkmark {
 
 .mainContentWrapper {
   width: 100%;
-  padding: 15px 30px;
   margin-top: 0px;
 }
 
@@ -3082,16 +3079,8 @@ div#steve-parent-accordion{
   color: #f29a4a;
   font-weight: normal;
 }
-.desc-box{
-  .form-group{
-    label{
-      display: none;
-    }
-  }
-}
+
 .save-as-sidebar-container {
-  top: 3rem !important;
-  height: calc(100vh - 3rem) !important;
   .form-group .ql-container.ql-snow{
     height: 120px;
   }
@@ -3160,11 +3149,6 @@ ul.react-autocomplete-input {
   }
 }
 .top-part{
-  > .btn, .dropdown{
-    position: absolute;
-    top: 0;
-    right: 0;
-  }
   .page-title-name {
     padding-right: 7rem;
   }
@@ -3212,7 +3196,7 @@ ul.react-autocomplete-input {
   cursor: pointer;
   color: $theme-color;
 }
-.btn-group-custom{
+body .btn-group-custom{
   border: 1px solid $outline-color;
   border-radius: $border-radius;
   padding: 4px;
@@ -3249,7 +3233,7 @@ ul.react-autocomplete-input {
   }
 }
 
-.bottom-text-editor {
+body .bottom-text-editor {
   box-shadow: 4px 4px 20px 0px #0000001f;
   padding: 0;
   margin: 1rem 0;
@@ -3257,6 +3241,7 @@ ul.react-autocomplete-input {
   .show .btn{
     background: $theme-color !important;
     border-color: transparent !important;
+    color: #fff !important;
   }
   .btn {
     padding: 0 1rem;
@@ -3266,12 +3251,8 @@ ul.react-autocomplete-input {
     }
   }
 }
-.doc-secs{
-  &:hover{
-    .addons{
-      opacity: 1;
-    }
-  }
+.doc-secs-container{
+  position: relative;
 }
 .addons {
     position: absolute;
@@ -3285,7 +3266,6 @@ ul.react-autocomplete-input {
     right: -2.25rem;
     flex-direction: column;
     transition: all 0.3s ease-in;
-    opacity: 0;
     > div {
       padding: 0.15rem 0.25rem;
       cursor: pointer;
@@ -3298,4 +3278,43 @@ ul.react-autocomplete-input {
   height: 100%;
   padding: 0 0.75rem;
   border-left: 1px solid $outline-color;
+}
+.drawer-body {
+  height: calc(100% - 5rem);
+  overflow: auto;
+  padding: 1rem 1.25rem;
+}
+.response-right{
+  display: flex;
+  justify-content: space-between;
+  .response-container {
+    min-width: 21rem;
+    max-width: 21rem;
+    background-color: #fff;
+    padding: 1.25rem;
+    height: 100vh;
+    overflow: auto;
+    border-left: 1px solid $outline-color;
+    .nav-tabs{
+      margin-top: 0;
+    }
+  }
+}
+.mid-part{
+  max-width: 50rem;
+  min-width: 37.5rem;
+  padding: 1.25rem;
+}
+.response-bottom{
+  .response-container{
+    max-width: 50rem;
+    min-width: 37.5rem;
+    padding: 1.25rem;
+  }
+  .endpoint-response-container{
+    border: 1px solid $outline-color;
+    padding: 1rem;
+    background-color: #fff;
+    border-radius: $border-radius;
+  }
 }
