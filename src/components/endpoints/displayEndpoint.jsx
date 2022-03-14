@@ -78,7 +78,8 @@ const defaultDocViewData = [
   { type: 'body' },
   { type: 'params' },
   { type: 'pathVariables' },
-  { type: 'headers' }
+  { type: 'headers' },
+  { type: 'sampleResponse' }
 ]
 
 const confirmationMsg = {
@@ -1964,44 +1965,42 @@ class DisplayEndpoint extends Component {
                 />
               </div>
             </div>
-            {this.displaySampleResponse()}
+            {
+               getCurrentUser() &&
+                 <div
+                   className='tab-pane fade'
+                   id={
+                      this.isDashboardAndTestingView()
+                        ? `sample-${this.props.tab.id}`
+                        : 'sample'
+                    }
+                   role='tabpanel'
+                   aria-labelledby='pills-sample-tab'
+                 >
+                   {this.renderSampleResponse()}
+                 </div>
+            }
           </div>
         </div>
       </>
     )
   }
 
-  displaySampleResponse () {
-    if (getCurrentUser()) {
-      return (
-        <div
-          className='tab-pane fade'
-          id={
-            this.isDashboardAndTestingView()
-              ? `sample-${this.props.tab.id}`
-              : 'sample'
-          }
-          role='tabpanel'
-          aria-labelledby='pills-sample-tab'
-        >
-          <SampleResponse
-            {...this.props}
-            timeElapsed={this.state.timeElapsed}
-            response={this.state.response}
-            flagResponse={this.state.flagResponse}
-            sample_response_array={this.state.sampleResponseArray}
-            sample_response_flag_array={
-              this.state.sampleResponseFlagArray
-            }
-            open_body={this.openBody.bind(this)}
-            close_body={this.closeBody.bind(this)}
-            props_from_parent={this.propsFromSampleResponse.bind(
-              this
-            )}
-          />
-        </div>
-      )
-    }
+  renderSampleResponse () {
+    return (
+      <SampleResponse
+        {...this.props}
+        timeElapsed={this.state.timeElapsed}
+        response={this.state.response}
+        flagResponse={this.state.flagResponse}
+        sample_response_array={this.state.sampleResponseArray}
+        sample_response_flag_array={this.state.sampleResponseFlagArray}
+        open_body={this.openBody.bind(this)}
+        close_body={this.closeBody.bind(this)}
+        props_from_parent={this.propsFromSampleResponse.bind(this)}
+        currentView={this.state.currentView}
+      />
+    )
   }
 
   displayPublicResponse () {
@@ -2089,7 +2088,7 @@ class DisplayEndpoint extends Component {
   }
 
   removePublicItem (item, index) {
-    const showRemoveButton = !['body', 'host', 'params', 'headers'].includes(item.type)
+    const showRemoveButton = !['body', 'host', 'params', 'pathVariables', 'headers', 'sampleResponse'].includes(item.type)
     const handleOnClick = () => {
       const docData = _.cloneDeep(this.state.docViewData)
       docData.splice(index, 1)
@@ -2104,11 +2103,11 @@ class DisplayEndpoint extends Component {
       return (
         <SortableList lockAxis='y' useDragHandle onSortEnd={({ oldIndex, newIndex }) => { this.onSortEnd(oldIndex, newIndex) }}>
           <div>
-            {this.state.docViewData?.map((item, index) =>
+            {this.state.docViewData.map((item, index) =>
               <SortableItem key={index} index={index}>
                 <div className='position-relative doc-secs'>
                   <div className='addons'>
-                    <DragHandle />
+                    {this.renderDragHandle(item)}
                     {this.removePublicItem(item, index)}
                   </div>
                   {this.renderPublicItem(item, index)}
@@ -2121,10 +2120,18 @@ class DisplayEndpoint extends Component {
     } else {
       return this.state.docViewData?.map((item, index) =>
         <div key={index}>
-          {this.renderPublicItem(item)}
+          {this.renderPublicItem(item, index)}
         </div>
       )
     }
+  }
+
+  renderDragHandle (item) {
+    if (item.type === 'pathVariables') {
+      if (this.state.pathVariables && this.state.pathVariables.length) return <DragHandle />
+      return
+    }
+    return <DragHandle />
   }
 
   onSortEnd = (oldIndex, newIndex) => {
@@ -2150,10 +2157,11 @@ class DisplayEndpoint extends Component {
               docData[index].data = e
               this.setState({ docViewData: docData })
             }}
+            match={this.props.match}
           />
         </div>
       )
-      case 'note': return (
+      case 'notes': return (
         <div>
           <TinyEditor
             data={item.data}
@@ -2162,6 +2170,7 @@ class DisplayEndpoint extends Component {
               docData[index].data = e
               this.setState({ docViewData: docData })
             }}
+            match={this.props.match}
           />
         </div>
       )
@@ -2184,6 +2193,10 @@ class DisplayEndpoint extends Component {
       case 'pathVariables' : {
         if (!isDashboardRoute(this.props)) return this.renderPublicPathVariables()
         else return this.renderPathVariables()
+      }
+      case 'sampleResponse' : {
+        if (!isDashboardRoute(this.props)) return this.displayPublicSampleResponse()
+        else return this.renderSampleResponse()
       }
     }
   }
@@ -2234,12 +2247,12 @@ class DisplayEndpoint extends Component {
   }
 
   renderDocViewOptions () {
-    if (this.state.currentView === 'doc') {
+    if (isDashboardRoute(this.props) && this.state.currentView === 'doc') {
       return (
         <ButtonGroup className='btn-group-custom bottom-text-editor'>
           <DropdownButton as={ButtonGroup} title='Text' id='bg-nested-dropdown'>
             <Dropdown.Item onClick={() => this.addBlock('description')}>Description</Dropdown.Item>
-            <Dropdown.Item onClick={() => this.addBlock('note')}>Note</Dropdown.Item>
+            <Dropdown.Item onClick={() => this.addBlock('notes')}>Note</Dropdown.Item>
           </DropdownButton>
         </ButtonGroup>
       )
@@ -2958,9 +2971,7 @@ class DisplayEndpoint extends Component {
                   )
                 }
                       {this.isDashboardAndTestingView() && this.renderScriptError()}
-                      {
-                    this.displayResponse()
-                  }
+                      {this.displayResponse()}
                     </div>
                   </div>
                 </div>
@@ -2971,7 +2982,7 @@ class DisplayEndpoint extends Component {
                 ? isSavedEndpoint(this.props)
                     ? this.displayResponseAndSampleResponse()
                     : this.displayPublicResponse()
-                : this.displayPublicSampleResponse()
+                : null
             }
             </div>
             {
