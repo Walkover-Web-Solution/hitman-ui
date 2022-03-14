@@ -2148,22 +2148,26 @@ class DisplayEndpoint extends Component {
     }
   };
 
+  renderTinyEditor (item, index) {
+    return (
+      <TinyEditor
+        data={item.data}
+        onChange={(e) => {
+          const docData = _.cloneDeep(this.state.docViewData)
+          docData[index].data = e
+          this.setState({ docViewData: docData })
+        }}
+        match={this.props.match}
+      />
+    )
+  }
+
   renderPublicItem = (item, index) => {
     switch (item.type) {
       case 'textArea': {
         if (isDashboardRoute(this.props) || (!isDashboardRoute(this.props) && item.data)) {
           return (
-            <div>
-              <TinyEditor
-                data={item.data}
-                onChange={(e) => {
-                  const docData = _.cloneDeep(this.state.docViewData)
-                  docData[index].data = e
-                  this.setState({ docViewData: docData })
-                }}
-                match={this.props.match}
-              />
-            </div>
+            <div>{this.renderTinyEditor(item, index)}</div>
           )
         }
         break
@@ -2172,15 +2176,7 @@ class DisplayEndpoint extends Component {
         if (isDashboardRoute(this.props) || (!isDashboardRoute(this.props) && item.data)) {
           return (
             <div className='pub-notes' style={{ borderLeftColor: this.state.theme }}>
-              <TinyEditor
-                data={item.data}
-                onChange={(e) => {
-                  const docData = _.cloneDeep(this.state.docViewData)
-                  docData[index].data = e
-                  this.setState({ docViewData: docData })
-                }}
-                match={this.props.match}
-              />
+              {this.renderTinyEditor(item, index)}
             </div>
           )
         }
