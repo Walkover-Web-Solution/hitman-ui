@@ -577,7 +577,7 @@ class Endpoints extends Component {
             {this.props.endpoints[endpointId].requestType}
           </div>
         </div>
-        <div className='endpoint-name-div'>
+        <div className='endpoint-name-div ml-2'>
           {this.props.endpoints[endpointId].name}
         </div>
       </div>
