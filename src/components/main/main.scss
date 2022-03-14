@@ -799,6 +799,7 @@ label.data-type {
   background: #222222;;
   position: fixed;
   right: 0px;
+  top: 0px;
   transition: 300ms;
   height: 100vh;
   .inner-editor {
@@ -1198,7 +1199,7 @@ button.editBtn {
   margin: 2px 0;
 }
 .headParaWraper {
-  padding: 4px 0 11px;
+  padding: 4px 20px 20px 11px;
   border-radius: $border-radius;
 }
 

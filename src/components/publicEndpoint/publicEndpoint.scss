@@ -470,7 +470,6 @@ h4.hm-sidebar-title span {
         td {
           &.custom-td {
             border-color: #e5e5e5 !important;
-            padding: 0px 5px !important;
             vertical-align: middle;
             opacity: 1;
             color: #232427;
@@ -597,4 +596,8 @@ h4.hm-sidebar-title span {
 
 .hm-endpoint-header .DELETE {
   color: #d13755 !important;
+}
+
+.icon-design{
+  background-color: #f8f8f8;
 }
