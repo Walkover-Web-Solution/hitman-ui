@@ -202,8 +202,8 @@ class PublishDocsReview extends Component {
 
   renderPageSelectOption () {
     return (
-      <Dropdown className='mb-3 ml-3'>
-        <Dropdown.Toggle variant='' id='dropdown-basic' className='outline-border custom-dropdown-btn'>
+      <Dropdown className='mb-3 ml-3 cst'>
+        <Dropdown.Toggle variant='' id='dropdown-basic'>
           {!this.state.filter ? 'Select Page' : (this.state.selectedItemType === 'endpoint') ? this.props.endpoints[this.state.selectedItemId]?.name : this.props.pages[this.state.selectedItemId]?.name}
         </Dropdown.Toggle>
         <Dropdown.Menu>
@@ -262,8 +262,8 @@ class PublishDocsReview extends Component {
 
   render () {
     return (
-      <div className='feedback-tab'>
-        <div className='d-flex flex-row'>
+      <div className='feedback-tab mid-part'>
+        <div className='d-flex justify-content-between'>
           {this.renderHostedApiHeading('API Doc Feedback')}
           {this.dummyFeedback.length > 0 && this.renderPageSelectOption()}
         </div>
