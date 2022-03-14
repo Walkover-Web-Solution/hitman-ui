@@ -10,9 +10,10 @@ export default function TinyEditor (props) {
   return (
     <>
       <Editor
+        apiKey={process.env.REACT_APP_TINYMCE_API_KEY}
         onEditorChange={handleOnChange.bind(this)}
         onInit={(evt, editor) => { editorRef.current = editor }}
-        value={props.data || 'Text goes here'}
+        value={props.data}
         inline
         disabled={!isDashboardRoute(props)}
         init={{
@@ -24,7 +25,7 @@ export default function TinyEditor (props) {
           menubar: false,
           table_appearence_option: true,
           table_toolbar: 'tableprops tabledelete | tableinsertrowbefore tableinsertrowafter tabledeleterow | tableinsertcolbefore tableinsertcolafter tabledeletecol',
-          toolbar: 'formatselect | bold italic underline forecolor backcolor | fontsizeselect | blockquote | numlist bullist | indent outdent | codesample | table',
+          toolbar: 'formatselect | bold italic underline forecolor backcolor | fontsizeselect | blockquote | numlist bullist | indent outdent | codesample | table | image | link',
           content_style: 'body { font-family:Roboto; font-size:12px }'
         }}
       />

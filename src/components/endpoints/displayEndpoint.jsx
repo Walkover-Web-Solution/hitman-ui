@@ -1876,11 +1876,13 @@ class DisplayEndpoint extends Component {
   displayPublicSampleResponse () {
     if (this.state.sampleResponseArray.length) {
       return (
-        <PublicSampleResponse
-          highlights={this.props.highlights}
-          sample_response_array={this.state.sampleResponseArray}
-          publicCollectionTheme={this.props.publicCollectionTheme}
-        />
+        <div className='mt-3'>
+          <PublicSampleResponse
+            highlights={this.props.highlights}
+            sample_response_array={this.state.sampleResponseArray}
+            publicCollectionTheme={this.props.publicCollectionTheme}
+          />
+        </div>
       )
     }
   }
@@ -2146,34 +2148,40 @@ class DisplayEndpoint extends Component {
     }
   };
 
+  renderTinyEditor (item, index) {
+    return (
+      <TinyEditor
+        data={item.data}
+        onChange={(e) => {
+          const docData = _.cloneDeep(this.state.docViewData)
+          docData[index].data = e
+          this.setState({ docViewData: docData })
+        }}
+        match={this.props.match}
+      />
+    )
+  }
+
   renderPublicItem = (item, index) => {
     switch (item.type) {
-      case 'description': return (
-        <div>
-          <TinyEditor
-            data={item.data}
-            onChange={(e) => {
-              const docData = _.cloneDeep(this.state.docViewData)
-              docData[index].data = e
-              this.setState({ docViewData: docData })
-            }}
-            match={this.props.match}
-          />
-        </div>
-      )
-      case 'notes': return (
-        <div>
-          <TinyEditor
-            data={item.data}
-            onChange={(e) => {
-              const docData = _.cloneDeep(this.state.docViewData)
-              docData[index].data = e
-              this.setState({ docViewData: docData })
-            }}
-            match={this.props.match}
-          />
-        </div>
-      )
+      case 'textArea': {
+        if (isDashboardRoute(this.props) || (!isDashboardRoute(this.props) && item.data)) {
+          return (
+            <div>{this.renderTinyEditor(item, index)}</div>
+          )
+        }
+        break
+      }
+      case 'textBlock' : {
+        if (isDashboardRoute(this.props) || (!isDashboardRoute(this.props) && item.data)) {
+          return (
+            <div className='pub-notes' style={{ borderLeftColor: this.state.theme }}>
+              {this.renderTinyEditor(item, index)}
+            </div>
+          )
+        }
+        break
+      }
       case 'host' : {
         if (!isDashboardRoute(this.props)) return this.renderPublicHost()
         else return <div className='endpoint-url-container'> {this.renderHost()} </div>
@@ -2227,8 +2235,8 @@ class DisplayEndpoint extends Component {
     if (endpoint) {
       if (!endpoint.docViewData || endpoint.docViewData.length === 0) {
         const docViewData = [...defaultDocViewData]
-        if (endpoint.description && endpoint.description.length) docViewData.splice(0, 0, { type: 'description', data: endpoint.description })
-        if (endpoint.notes && endpoint.notes.length) docViewData.splice(docViewData.length - 1, 0, { type: 'notes', data: endpoint.notes })
+        if (endpoint.description && endpoint.description.length) docViewData.splice(0, 0, { type: 'textArea', data: endpoint.description })
+        if (endpoint.notes && endpoint.notes.length) docViewData.splice(docViewData.length - 1, 0, { type: 'textBlock', data: endpoint.notes })
         return docViewData
       }
       return endpoint.docViewData
@@ -2251,8 +2259,8 @@ class DisplayEndpoint extends Component {
       return (
         <ButtonGroup className='btn-group-custom bottom-text-editor'>
           <DropdownButton as={ButtonGroup} title='Text' id='bg-nested-dropdown'>
-            <Dropdown.Item onClick={() => this.addBlock('description')}>Description</Dropdown.Item>
-            <Dropdown.Item onClick={() => this.addBlock('notes')}>Note</Dropdown.Item>
+            <Dropdown.Item onClick={() => this.addBlock('textArea')}>Text Area</Dropdown.Item>
+            <Dropdown.Item onClick={() => this.addBlock('textBlock')}>Text Block</Dropdown.Item>
           </DropdownButton>
         </ButtonGroup>
       )
@@ -2263,7 +2271,7 @@ class DisplayEndpoint extends Component {
     const docViewData = [...this.state.docViewData]
     docViewData.push({
       type: blockType,
-      content: 'Your text goes here'
+      data: 'Your text goes here'
     })
     this.setState({ docViewData })
   }
