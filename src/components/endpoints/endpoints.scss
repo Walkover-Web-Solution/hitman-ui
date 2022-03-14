@@ -1050,9 +1050,11 @@ table#custom-generic-table {
   font-weight: 400 !important;
 }
 
-#sample-response {
+.testing-view-sample-response{
   min-height: 200px;
+}
 
+#sample-response {
   .fas.fa-pen {
     color: rgb(120, 120, 120);
   }
