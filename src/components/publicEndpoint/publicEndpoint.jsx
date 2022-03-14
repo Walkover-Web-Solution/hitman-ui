@@ -11,6 +11,8 @@ import store from '../../store/store'
 import auth from '../auth/authService'
 import UserInfo from '../common/userInfo'
 import Footer from '../main/Footer'
+import ThumbUp from '../../assets/icons/thumb_up.svg'
+import ThumbDown from '../../assets/icons/thumb_down.svg'
 import { setTitle, setFavicon, comparePositions } from '../common/utility'
 import { Style } from 'react-style-tag'
 import { Modal } from 'react-bootstrap'
@@ -187,16 +189,16 @@ class PublicEndpoint extends Component {
               <Modal.Title>API FeedBack</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              <form>
+              <form className='form-group d-flex flex-column'>
                 <label>
                   User Name:
-                  <input type='text' name='name' />
+                  <input type='text' name='name' className='form-control w-75 mb-2' />
                 </label>
                 <label>
-                  Comment
-                  <textarea type='text' name='name' />
+                  Comment:
+                  <textarea type='text' name='name' className='form-control w-75 mb-3' />
                 </label>
-                <input type='submit' value='Submit' />
+                <input type='submit' value='Submit' className='btn btn-primary w-25' />
               </form>
             </Modal.Body>
 
@@ -360,9 +362,10 @@ class PublicEndpoint extends Component {
                                            />}
                       />
                     </Switch>
-                    <button onClick={() => { this.handleLike() }}>like</button>
-                    <span>'    '</span>
-                    <button onClick={() => { this.handleDislike() }}> dislike </button>
+                    <div className='d-flex flex-row justify-content-start'>
+                      <button onClick={() => { this.handleLike() }} className='border-0 ml-5 icon-design'> <img src={ThumbUp} alt='' /></button>
+                      <button onClick={() => { this.handleDislike() }} className='border-0 ml-2 icon-design'> <img src={ThumbDown} alt='' /></button>
+                    </div>
                     {this.state.openReviewModal && this.reviewModal()}
                   </div>
                   )

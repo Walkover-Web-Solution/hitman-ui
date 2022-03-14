@@ -530,9 +530,9 @@ class CollectionsComponent extends Component {
                   </div>
                 </div>
               </div>
-              <div class='theme-color counts ml-1 f-12'>
+              <div class='theme-color d-flex counts ml-1 f-12'>
                 {this.props.collections[collectionId]?.importedFromMarketPlace
-                  ? <div className='marketplace-icon ml-3'> M </div>
+                  ? <div className='marketplace-icon mr-1'> M </div>
                   : null}
                 <span className={this.props.collections[collectionId].isPublic ? 'published' : ''}>
                   {this.findEndpointCount(collectionId) === 0 ? '' : this.findEndpointCount(collectionId)}
@@ -607,7 +607,7 @@ class CollectionsComponent extends Component {
 
   renderEmptyCollections () {
     return (
-      <div className='empty-collections'>
+      <div className='empty-collections text-center mt-4'>
         <div>
           <img src={emptyCollections} alt='' />
         </div>

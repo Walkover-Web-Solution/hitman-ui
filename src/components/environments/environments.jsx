@@ -252,7 +252,7 @@ class Environments extends Component {
       if (isDashboardRoute(this.props)) {
         return (
           <div className='environment-container d-flex align-items-center transition'>
-            <div className='tab-div d-flex align-items-center justify-content-center' onClick={() => this.handletoggle()}>
+            <div className='tab-div hover d-flex align-items-center justify-content-center' onClick={() => this.handletoggle()}>
               <img src={toggleIcon} alt='' />
             </div>
             {(this.state.environmentFormName === 'Add new Environment' ||

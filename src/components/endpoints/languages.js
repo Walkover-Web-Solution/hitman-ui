@@ -1,5 +1,5 @@
-const primaryLanguages = ['java', 'node', 'php']
-const secondaryLanguages = ['c', 'csharp', 'javascript', 'http', 'python', 'r', 'ruby', 'shell', 'swift', 'clojure', 'go', 'objc', 'ocaml']
+const primaryLanguages = ['java', 'node', 'php', 'javascript']
+const secondaryLanguages = ['c', 'csharp', 'http', 'python', 'r', 'ruby', 'shell', 'swift', 'clojure', 'go', 'objc', 'ocaml']
 const languages = {
   node: {
     name: 'Node',

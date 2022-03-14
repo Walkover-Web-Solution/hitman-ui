@@ -112,7 +112,7 @@ class History extends Component {
         <div className='mt-3'>
           {this.state.historySnapshot && this.state.historySnapshot.length > 0
             ? (this.state.historySnapshot.sort(compareByCreatedAt).map((history) => this.renderHistoryItem(history)))
-            : (<div class='empty-collections'><div><EmptyHistory /></div><div class='content'><h5>  No History available.</h5><p /></div></div>)}
+            : (<div class='empty-collections text-center'><div><EmptyHistory /></div><div class='content'><h5>  No History available.</h5><p /></div></div>)}
         </div>
       )
     }

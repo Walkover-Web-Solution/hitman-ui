@@ -79,7 +79,6 @@ class CollectionVersionForm extends Form {
           size='lg'
           animation={false}
           aria-labelledby='contained-modal-title-vcenter'
-          centered
         >
           <Modal.Header className='custom-collection-modal-container' closeButton>
             <Modal.Title id='contained-modal-title-vcenter'>

@@ -96,7 +96,6 @@ $border-color: rgba(227, 228, 230, 0.7);
   // justify-content: center;
   // height: 100%;
   // overflow: scroll;
-  background: #2A2B35;
   padding: 5px;
   border-top-right-radius: 4px;
   border-top-left-radius: 4px;
@@ -462,14 +461,10 @@ $border-color: rgba(227, 228, 230, 0.7);
   display: flex;
   flex-direction: column;
   margin: 0;
-  padding: 15px;
-  border: 1px solid $outline-color;
-  border-radius: $border-radius;
   .response-status {
     display: flex;
     justify-content: space-between;
     margin-bottom: 15px;
-
     .statusWrapper {
       display: flex;
       align-items: center;
@@ -478,13 +473,13 @@ $border-color: rgba(227, 228, 230, 0.7);
     #status {
       display: flex;
       flex-direction: row;
-      padding-right: 15px;
+      padding-right: 8px;
     }
 
     #time {
       display: flex;
       flex-direction: row;
-      padding-right: 15px
+      padding-right: 8px
     }
   }
 
@@ -702,7 +697,7 @@ table#custom-generic-table {
 .response-status-value {
   font-size: 12px;
   opacity: 0.7;
-  padding-left: 10px;
+  padding-left: 5px;
   color: $theme-color;
 }
 .response-status-value-error{
@@ -721,7 +716,7 @@ table#custom-generic-table {
   background-color: transparent !important;
   color: black !important;
   max-height:500px;
-  padding-right: 10px;
+  padding-right: 5px;
 
   .__json-key__ {
     color: brown !important;
@@ -989,6 +984,15 @@ table#custom-generic-table {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 32px;
+  height: 32px;
+  color: #42526E;
+  &:hover{
+    color: #0E1E3A;
+  }
 }
 
 //endpoint request styling
@@ -1134,6 +1138,7 @@ table#custom-generic-table {
     background: #fff;
     color: #828282;
     display: flex;
+    margin-bottom: 1.5rem;
   }
 
   .input-group .form-control {

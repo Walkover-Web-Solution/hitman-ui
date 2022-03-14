@@ -6,7 +6,6 @@
   transform: translateY(-50%);
   z-index: 99;
 }
-
 .split-sidebar > div:first-child {
   max-width: 330px !important;
   min-width: 230px !important;
@@ -16,13 +15,14 @@ span.Resizer.vertical {
   background: #e6dbd4;
   cursor: col-resize;
 }
-.sidebar {
+body .sidebar {
   height: 100%;
   background-color: $secondary-color;
   padding: 0.75rem 0 0.45rem;
   .switch-products{
     .dropdown-toggle{
-      color: $text-color-dark;
+      color: $text-color-dark !important;
+      background: none !important;
     }
     .dropdown-menu{
       .dropdown-item{
@@ -42,7 +42,10 @@ span.Resizer.vertical {
     height: 1.5rem;
   }
   div#parent-accordion {
-    margin-bottom: 0.25rem;
+    border-bottom: 1px solid #ebe9e8;
+    > button{
+      height: 2rem;
+    }
     .inner-container {
       max-width: 70%;
       width: 100%;
@@ -129,6 +132,13 @@ span.Resizer.vertical {
           padding: 0 0.7rem;
           top: 50%;
           transform: translateY(-50%);
+          z-index: 19;
+          .dropdown-menu{
+            .dropdown-item{
+              font-size: 14px;
+              padding: 0.25rem 1rem;
+            }
+          }
         }
         width: 100%;
         display: flex;
@@ -293,7 +303,7 @@ span.Resizer.vertical {
   margin: 0px 0px 0 15px;
   position: relative;
   flex-grow: 1;
-  background: #f8f5f0;
+
 }
 
 .search-box>label {
@@ -311,9 +321,17 @@ span.Resizer.vertical {
 
 .search-box>input[type="text"] {
   width: 100%;
+  border-radius: 4px;
+  border-color: rgba(9, 30, 66,0.1) !important;
+  &:focus{
+    border-color: rgb(9, 30, 66) !important;
+  }
   &::placeholder{
     font-weight: normal;
-    font-size: $font-small;
+    font-size: 16px;
+    line-height: 20px;
+    color: #42526E;
+    padding-left: 0.5rem;
   }
 }
 
@@ -434,11 +452,6 @@ input[type="text"]:focus {
   letter-spacing: 0.03em;
   color: #212224;
   font-family: 'AlegreyaSansSCBold';
-}
-
-.empty-collections {
-  margin: 80px 20px 0px 20px;
-  text-align: center;
 }
 
 .versionBoldHeading .active .versionChovron {

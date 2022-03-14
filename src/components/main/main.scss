@@ -110,6 +110,9 @@
   .clear-both{
     clear: both;
   }
+  .hover{
+    cursor: pointer;
+  }
 
 // Global Styles
 
@@ -262,33 +265,41 @@ nav.navbar.navbar-dark.fixed-top.bg-dark.flex-md-nowrap.p-0.shadow {
 }
 
 .hm-sidebar-item {
-  color: #000000;
+  color: #42526E;
   cursor: pointer;
-  font-size: 14px;
-  font-weight: 400;
+  font-size: 16px;
+  line-height: 32px;
+  font-style: normal;
+  font-weight: normal;
   text-transform: capitalize;
   display: flex;
   width: 100%;
+  height: 32px;
   padding: 7px 25px 7px 25px;
   border-radius: 0;
   border: none;
   align-items: center;
 
   &:hover {
-    background: #c9c9c9;
+    background: rgba(9, 30, 66, 0.04);
+    color: #0E1E3A;
   }
 
   &.active {
-    background: #c9c9c9;
+    background: rgba(9, 30, 66, 0.04);
+    color: #0E1E3A;
   }
 }
 
 .hm-sidebar-label {
-  color: #000000;
+  color: #59667F;
+  height: 24px;
   margin-bottom: 5px;
   text-transform: capitalize;
+  font-style: normal;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 16px;
+  line-height: 24px;
   padding: 5px 5px 0px 25px;
 }
 
@@ -787,16 +798,18 @@ label.data-type {
 
 .pubCodeWrapper {
   padding: 15px;
-  width: 40%;
-  background: #2A2B35;
-  position: relative;
+  width: 25%;
+  background: #222222;;
+  position: fixed;
+  right: 0px;
+  top: 0px;
   transition: 300ms;
-  height: calc(100vh - 150px);
+  height: 100vh;
   .inner-editor {
     height: 100%;
     overflow: hidden;
     .editor-body-wrapper {
-      height: calc(100% - 4rem);
+      height: calc(100% - 8rem);
       .ace-editor-wrapper {
         height: calc(100% - 2rem);
         div#ace-editor {
@@ -810,9 +823,9 @@ label.data-type {
 .code-heading {
   margin: 0;
   color: #fff;
-  text-transform: uppercase;
+  text-transform: capitalize;
   font-weight: 500;
-  font-size: 12px;
+  font-size: 16px;
 }
 
 .ace-editor-wrapper {
@@ -826,7 +839,7 @@ label.data-type {
   .ace_editor.ace-tomorrow-night {
 
     width: 100% !important;
-    background: #2A2B35;
+    background: #222222;
     border: 0px;
     line-height: 1.2;
     font-size: 14px;
@@ -839,7 +852,6 @@ label.data-type {
 
 
 .editor-body-wrapper {
-  background: #2A2B35;
   padding: 5px;
   border-bottom-right-radius: 4px;
   border-bottom-left-radius: 4px;
@@ -1190,7 +1202,7 @@ button.editBtn {
   margin: 2px 0;
 }
 .headParaWraper {
-  padding: 4px 0 11px;
+  padding: 4px 20px 20px 11px;
   border-radius: $border-radius;
 }
 
@@ -1244,11 +1256,6 @@ button.editBtn {
   width: 100%;
 }
 
-.endPointRes .endpoint-response-container {
-  padding: 20px;
-  background: #fff;
-}
-
 .responseTabWrapper {
   background: #fff;
   border-radius: $border-radius;
@@ -1268,7 +1275,7 @@ button.editBtn {
   width: 100%;
 }
 
-.btn{
+body .btn{
   border-radius: $border-radius;
   font-size: $font-normal !important;
   &.btn-primary{
@@ -1518,7 +1525,6 @@ table#custom-generic-table tbody input[value="false"] + span.checkmark {
 
 .mainContentWrapper {
   width: 100%;
-  padding: 15px 30px;
   margin-top: 0px;
 }
 
@@ -1880,11 +1886,11 @@ html body div#sokt-sso-modal {
 .select-code-wrapper .dropdown button {
   border: 1px solid #4F4F4F;
   filter: drop-shadow(0px 2px 20px rgba(64, 49, 30, 0.21));
-  border-radius: 4px;
+  border-radius: 4px !important;
   background: transparent;
   color: #BDBDBD;
   width: auto;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 600;
   height: 32px;
   margin-left: 5px;
@@ -1909,19 +1915,10 @@ html body div#sokt-sso-modal {
 }
 
 button.toggleButton {
-  position: absolute;
-  left: -23px;
+  background: none;
   font-size: 0;
-  border: 1px solid #000000;
-  background: #fff;
-  border-radius: 4px;
-  border-right: none;
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
-  padding: 8px 2px;
-  transition: 450ms;
+  border: none;
   outline: none !important;
-  top: 18px;
 }
 
 
@@ -1933,33 +1930,21 @@ button.toggleButton {
   .mainContentWrapper {
     justify-content: space-between;
   }
-
-  // .inner-editor {
-  //   transform: scaleY(0);
-  //   transition: transform 0.46s ease;
-  //   transform-origin: right;
-  // }
-
   .pubCodeWrapper.closeEditor {
     transition: 450ms;
     transform: translate3d(100%, 0, 0);
   }
-
   button.toggleButton {
-    font-size: 14px;
-    width: 150px;
-    left: -150px;
-    transition: transform 0.46s ease;
-    top: 15px;
-    font-weight: 600;
-    color: #333;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    transition: 750ms;
-
-    svg {
-      transform: rotate(180deg);
+    font-size: $font-normal;
+    background-color: #1b80dd;
+    position: absolute;
+    left: -115px;
+    color: #fff;
+    padding: 0.5rem 1rem;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+    img {
+      display: none;
     }
   }
 }
@@ -1983,7 +1968,7 @@ button.toggleButton {
 .versionWrapper .search-box {
   margin: 0;
   font-size: 14px;
-  border-radius: 4px;
+
 }
 
 .versionWrapper .search-box input {
@@ -3072,16 +3057,8 @@ div#steve-parent-accordion{
   color: #f29a4a;
   font-weight: normal;
 }
-.desc-box{
-  .form-group{
-    label{
-      display: none;
-    }
-  }
-}
+
 .save-as-sidebar-container {
-  top: 3rem !important;
-  height: calc(100vh - 3rem) !important;
   .form-group .ql-container.ql-snow{
     height: 120px;
   }
@@ -3150,11 +3127,6 @@ ul.react-autocomplete-input {
   }
 }
 .top-part{
-  > .btn, .dropdown{
-    position: absolute;
-    top: 0;
-    right: 0;
-  }
   .page-title-name {
     padding-right: 7rem;
   }
@@ -3162,7 +3134,9 @@ ul.react-autocomplete-input {
 .table-alignment{
   width: auto ;
   text-align: left;
-  padding: 10px 0;
+  padding: 0.75rem 1rem;
+  background-color: #fff;
+  border-radius: $border-radius;
 }
 .feedback-table{
   width: 100%;
@@ -3182,7 +3156,7 @@ ul.react-autocomplete-input {
     border-bottom: none !important;
   }
   & tfoot tr td{
-    padding-bottom: 0px !important;
+    font-weight: 700;
   }
 }
 .feedback-tab{
@@ -3202,7 +3176,7 @@ ul.react-autocomplete-input {
   cursor: pointer;
   color: $theme-color;
 }
-.btn-group-custom{
+body .btn-group-custom{
   border: 1px solid $outline-color;
   border-radius: $border-radius;
   padding: 4px;
@@ -3239,7 +3213,7 @@ ul.react-autocomplete-input {
   }
 }
 
-.bottom-text-editor {
+body .bottom-text-editor {
   box-shadow: 4px 4px 20px 0px #0000001f;
   padding: 0;
   margin: 1rem 0;
@@ -3247,6 +3221,7 @@ ul.react-autocomplete-input {
   .show .btn{
     background: $theme-color !important;
     border-color: transparent !important;
+    color: #fff !important;
   }
   .btn {
     padding: 0 1rem;
@@ -3256,12 +3231,8 @@ ul.react-autocomplete-input {
     }
   }
 }
-.doc-secs{
-  &:hover{
-    .addons{
-      opacity: 1;
-    }
-  }
+.doc-secs-container{
+  position: relative;
 }
 .addons {
     position: absolute;
@@ -3275,7 +3246,6 @@ ul.react-autocomplete-input {
     right: -2.25rem;
     flex-direction: column;
     transition: all 0.3s ease-in;
-    opacity: 0;
     > div {
       padding: 0.15rem 0.25rem;
       cursor: pointer;
@@ -3288,4 +3258,43 @@ ul.react-autocomplete-input {
   height: 100%;
   padding: 0 0.75rem;
   border-left: 1px solid $outline-color;
+}
+.drawer-body {
+  height: calc(100% - 5rem);
+  overflow: auto;
+  padding: 1rem 1.25rem;
+}
+.response-right{
+  display: flex;
+  justify-content: space-between;
+  .response-container {
+    min-width: 21rem;
+    max-width: 21rem;
+    background-color: #fff;
+    padding: 1.25rem;
+    height: 100vh;
+    overflow: auto;
+    border-left: 1px solid $outline-color;
+    .nav-tabs{
+      margin-top: 0;
+    }
+  }
+}
+.mid-part{
+  max-width: 50rem;
+  min-width: 37.5rem;
+  padding: 1.25rem;
+}
+.response-bottom{
+  .response-container{
+    max-width: 50rem;
+    min-width: 37.5rem;
+    padding: 1.25rem;
+  }
+  .endpoint-response-container{
+    border: 1px solid $outline-color;
+    padding: 1rem;
+    background-color: #fff;
+    border-radius: $border-radius;
+  }
 }
