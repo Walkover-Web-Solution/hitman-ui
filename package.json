@@ -6,6 +6,7 @@
   "private": true,
   "main": "public/electron.js",
   "dependencies": {
+    "@tinymce/tinymce-react": "^3.13.1",
     "ace-builds": "^1.4.9",
     "amplitude-js": "^8.14.1",
     "axios": "^0.19.1",
@@ -85,7 +86,7 @@
     "npm": "6.0.0"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "standard && react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",

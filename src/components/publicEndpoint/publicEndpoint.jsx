@@ -11,8 +11,11 @@ import store from '../../store/store'
 import auth from '../auth/authService'
 import UserInfo from '../common/userInfo'
 import Footer from '../main/Footer'
+import ThumbUp from '../../assets/icons/thumb_up.svg'
+import ThumbDown from '../../assets/icons/thumb_down.svg'
 import { setTitle, setFavicon, comparePositions } from '../common/utility'
 import { Style } from 'react-style-tag'
+import { Modal } from 'react-bootstrap'
 
 const mapStateToProps = (state) => {
   return {
@@ -30,10 +33,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(fetchAllPublicEndpoints(ownProps.history, collectionIdentifier, domain))
   }
 }
-// const review = {
-//   feedback: 1,
-//   endpoint: 2
-// }
 
 class PublicEndpoint extends Component {
   state = {
@@ -43,7 +42,12 @@ class PublicEndpoint extends Component {
     isNavBar: false,
     isSticky: false,
     likeActive: false,
-    dislikeActive: false
+    dislikeActive: false,
+    review: {
+      feedback: {},
+      endpoint: {}
+    },
+    openReviewModal: false
   };
 
   componentDidMount () {
@@ -174,14 +178,59 @@ class PublicEndpoint extends Component {
     if (entityName) { this.setState({ currentEntityName: entityName }) } else { this.setState({ currentEntityName: '' }) }
   }
 
+  toggleReviewModal= () => this.setState({ openReviewModal: !this.state.openReviewModal });
+
+  reviewModal () {
+    return (
+      <div onHide={() => this.props.onHide()} show top>
+        <Modal show top>
+          <div className=''>
+            <Modal.Header closeButton>
+              <Modal.Title>API FeedBack</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <form className='form-group d-flex flex-column'>
+                <label>
+                  User Name:
+                  <input type='text' name='name' className='form-control w-75 mb-2' />
+                </label>
+                <label>
+                  Comment:
+                  <textarea type='text' name='name' className='form-control w-75 mb-3' />
+                </label>
+                <input type='submit' value='Submit' className='btn btn-primary w-25' />
+              </form>
+            </Modal.Body>
+
+            <Modal.Footer>
+              <button className='btn btn-custom-dark' onClick={() => this.subscribeToExtendedLog()} onHide={() => this.setState({ showExtendedLog: false })}>Subscribe For Extended Log</button>
+            </Modal.Footer>
+          </div>
+        </Modal>
+      </div>
+    )
+  }
+
   setDislike () {
-    this.setState({ dislikeActive: !this.state.dislikeActive })
-    // localStorage.setItem('feedback', JSON.stringify(this.state.dislikeActive));
-    console.log(this.props.match.params.endpointId)
+    this.setState({ dislikeActive: !this.state.dislikeActive }, () => {
+      const data = this.props.match.params.endpointId
+      // const endpoint = this.state
+      this.setState({ endpoint: data })
+      const review = { ...this.state.review.endpoint }
+      review.endpoint = this.props.match.params
+      if (this.state.dislikeActive) { review.feedback = 'disliked' }
+      window.localStorage.setItem('review', JSON.stringify(review))
+    })
+    this.toggleReviewModal()
   }
 
   setLike () {
-    this.setState({ likeActive: !this.state.likeActive })
+    this.setState({ likeActive: !this.state.likeActive }, () => {
+      const review = { ...this.state.review }
+      review.endpoint = this.props.match.params
+      if (this.state.likeActive) { review.feedback = 'liked' }
+      window.localStorage.setItem('review', JSON.stringify(review))
+    })
   }
 
   handleLike () {
@@ -313,9 +362,11 @@ class PublicEndpoint extends Component {
                                            />}
                       />
                     </Switch>
-                    <button onClick={() => { this.handleLike() }}>like</button>
-                    <span>'    '</span>
-                    <button onClick={() => { this.handleDislike() }}> dislike </button>
+                    <div className='d-flex flex-row justify-content-start'>
+                      <button onClick={() => { this.handleLike() }} className='border-0 ml-5 icon-design'> <img src={ThumbUp} alt='' /></button>
+                      <button onClick={() => { this.handleDislike() }} className='border-0 ml-2 icon-design'> <img src={ThumbDown} alt='' /></button>
+                    </div>
+                    {this.state.openReviewModal && this.reviewModal()}
                   </div>
                   )
                 : null

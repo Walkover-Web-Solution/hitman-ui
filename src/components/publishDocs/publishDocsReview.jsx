@@ -1,30 +1,124 @@
 import React, { Component } from 'react'
 import { Dropdown } from 'react-bootstrap'
+import { connect } from 'react-redux'
+import { fetchFeedbacks } from './redux/publishDocsActions'
 
+const mapStateToProps = (state) => {
+  return {
+    feedbacks: state.feedbacks
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    fetch_feedbacks: (collectionId) => dispatch(fetchFeedbacks(collectionId))
+  }
+}
 class PublishDocsReview extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      isItemSelected: false,
       selectedItemType: 'endpoint',
-      selectedItemId: null
+      selectedItemId: null,
+      filter: false
+    }
+  }
+
+  componentDidUpdate (prevProps, prevState) {
+    const { collectionId } = this.props.match.params
+    if (prevProps.match.params.collectionId !== collectionId) {
+      collectionId && this.props.fetch_feedbacks(collectionId)
     }
   }
 
   dummyFeedback = [
     {
-      id: 'f1',
-      page: 'trial',
-      email: 'abc@example.com',
-      quality: +1,
-      comment: 'API doc is clear'
+      id: 1,
+      parentId: 'KN7tgPpMG',
+      parentType: 'endpoint',
+      vote: 1,
+      user: null,
+      comment: null,
+      collectionId: 'Rc6tLQ8Cq',
+      createdAt: '2022-03-10T08:40:03.119Z',
+      updatedAt: '2022-03-10T08:40:03.119Z'
     },
     {
-      id: 'f2',
-      page: 'trial',
-      email: 'xyz@example.com',
-      quality: -1,
-      comment: 'API doc is not clear'
+      id: 2,
+      parentId: 'KN7tgPpMG',
+      parentType: 'endpoint',
+      vote: 1,
+      user: null,
+      comment: null,
+      collectionId: 'Rc6tLQ8Cq',
+      createdAt: '2022-03-10T08:40:28.152Z',
+      updatedAt: '2022-03-10T08:40:28.152Z'
+    },
+    {
+      id: 3,
+      parentId: 'AaNy4VYBg',
+      parentType: 'endpoint',
+      vote: 1,
+      user: null,
+      comment: null,
+      collectionId: 'Rc6tLQ8Cq',
+      createdAt: '2022-03-10T08:40:46.128Z',
+      updatedAt: '2022-03-10T08:40:46.128Z'
+    },
+    {
+      id: 4,
+      parentId: 'AaNy4VYBg',
+      parentType: 'endpoint',
+      vote: 1,
+      user: null,
+      comment: null,
+      collectionId: 'Rc6tLQ8Cq',
+      createdAt: '2022-03-10T08:42:22.144Z',
+      updatedAt: '2022-03-10T08:42:22.144Z'
+    },
+    {
+      id: 5,
+      parentId: 'AaNy4VYBg',
+      parentType: 'endpoint',
+      vote: 1,
+      user: null,
+      comment: null,
+      collectionId: 'Rc6tLQ8Cq',
+      createdAt: '2022-03-10T08:42:52.319Z',
+      updatedAt: '2022-03-10T08:42:52.319Z'
+    },
+    {
+      id: 6,
+      parentId: 'AaNy4VYBg',
+      parentType: 'endpoint',
+      vote: 1,
+      user: null,
+      comment: null,
+      collectionId: 'Rc6tLQ8Cq',
+      createdAt: '2022-03-10T08:43:09.375Z',
+      updatedAt: '2022-03-10T08:43:09.375Z'
+    },
+    {
+      id: 7,
+      parentId: 'QdyTtx16k',
+      parentType: 'endpoint',
+      vote: -1,
+      user: null,
+      comment: null,
+      collectionId: 'Rc6tLQ8Cq',
+      createdAt: '2022-03-10T08:46:45.133Z',
+      updatedAt: '2022-03-10T08:46:45.133Z'
+    },
+    {
+      id: 8,
+      parentId: 'QdyTtx16k',
+      parentType: 'page',
+      vote: -1,
+      user: null,
+      comment: null,
+      collectionId: 'Rc6tLQ8Cq',
+      createdAt: '2022-03-10T08:47:23.723Z',
+      updatedAt: '2022-03-10T08:47:23.723Z'
     }
   ]
 
@@ -81,9 +175,9 @@ class PublishDocsReview extends Component {
           (id, index) => (
             <Dropdown.Item
               key={index} onClick={() => {
-                this.setState({ isItemSelected: true })
                 this.setState({ selectedItemType: 'endpoint' })
                 this.setState({ selectedItemId: id })
+                this.setState({ filter: true })
               }}
             >
               {this.props.endpoints[id]?.name}
@@ -94,9 +188,9 @@ class PublishDocsReview extends Component {
           (id, index) => (
             <Dropdown.Item
               key={index} onClick={() => {
-                this.setState({ isItemSelected: true })
                 this.setState({ selectedItemType: 'page' })
                 this.setState({ selectedItemId: id })
+                this.setState({ filter: true })
               }}
             >
               {this.props.pages[id]?.name}
@@ -108,9 +202,9 @@ class PublishDocsReview extends Component {
 
   renderPageSelectOption () {
     return (
-      <Dropdown className='mb-3 ml-3'>
-        <Dropdown.Toggle variant='' id='dropdown-basic' className='outline-border custom-dropdown-btn'>
-          {!this.state.isItemSelected ? 'Select Page' : (this.state.selectedItemType === 'endpoint') ? this.props.endpoints[this.state.selectedItemId]?.name : this.props.pages[this.state.selectedItemId]?.name}
+      <Dropdown className='mb-3 ml-3 cst'>
+        <Dropdown.Toggle variant='' id='dropdown-basic'>
+          {!this.state.filter ? 'Select Page' : (this.state.selectedItemType === 'endpoint') ? this.props.endpoints[this.state.selectedItemId]?.name : this.props.pages[this.state.selectedItemId]?.name}
         </Dropdown.Toggle>
         <Dropdown.Menu>
           {this.showEndpointsAndPages()}
@@ -120,6 +214,10 @@ class PublishDocsReview extends Component {
   }
 
   renderPageReview () {
+    const selectedItemId = this.state.selectedItemId
+    const filteredFeedbacks = (!this.state.filter)
+      ? this.dummyFeedback
+      : this.dummyFeedback.filter((feedback) => feedback.parentId === selectedItemId)
     return (
       <div className='hosted-doc-wrapper'>
         <table className='feedback-table'>
@@ -130,13 +228,13 @@ class PublishDocsReview extends Component {
             <th>Comment</th>
           </thead>
           <tbody>
-            {this.dummyFeedback.map(feedback =>
+            {filteredFeedbacks.map(feedback =>
               this.renderFeedback(feedback))}
           </tbody>
           <tfoot>
             <tr>
               <td>
-                Total Score: {this.dummyFeedback.reduce((prev, current) => prev + current.quality, 0)}
+                Total Score: {filteredFeedbacks.reduce((prev, current) => prev + current.vote, 0)}
               </td>
             </tr>
           </tfoot>
@@ -148,9 +246,9 @@ class PublishDocsReview extends Component {
   renderFeedback (feedback) {
     return (
       <tr>
-        <td>{feedback.page}</td>
-        <td>{feedback.email}</td>
-        <td>{feedback.quality}</td>
+        <td>{feedback.parentType === 'endpoint' ? this.props.endpoints[feedback.parentId]?.name : this.props.pages[feedback.parentId]?.name}</td>
+        <td>{feedback.user}</td>
+        <td>{feedback.vote}</td>
         <td>{feedback.comment}</td>
       </tr>
     )
@@ -164,8 +262,8 @@ class PublishDocsReview extends Component {
 
   render () {
     return (
-      <div className='feedback-tab'>
-        <div className='d-flex flex-row'>
+      <div className='feedback-tab mid-part'>
+        <div className='d-flex justify-content-between'>
           {this.renderHostedApiHeading('API Doc Feedback')}
           {this.dummyFeedback.length > 0 && this.renderPageSelectOption()}
         </div>
@@ -175,4 +273,4 @@ class PublishDocsReview extends Component {
   }
 }
 
-export default PublishDocsReview
+export default connect(mapStateToProps, mapDispatchToProps)(PublishDocsReview)

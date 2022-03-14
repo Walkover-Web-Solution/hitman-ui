@@ -79,7 +79,6 @@ class CollectionVersionForm extends Form {
           size='lg'
           animation={false}
           aria-labelledby='contained-modal-title-vcenter'
-          centered
         >
           <Modal.Header className='custom-collection-modal-container' closeButton>
             <Modal.Title id='contained-modal-title-vcenter'>
@@ -90,7 +89,7 @@ class CollectionVersionForm extends Form {
             <form onSubmit={this.handleSubmit}>
               <div className='row'>
                 <div className='col-6'>
-                  {this.renderInput('number', 'Version Name', 'Version Name', true, true, false, '*version name accepts min 1  & max 20 character')}
+                  {this.renderInput('number', 'Version Name', 'Version Name', true, true, false, '*version name accepts min 1 & max 20 characters')}
                 </div>
                 <div className='col-6'>
                   {this.renderInput('host', 'Version Endpoint', 'https://v1.example.com', false, false, true)}

@@ -5,6 +5,7 @@
   width: 100%;
   display: flex;
   flex-direction: row;
+  position: relative;
   .tabs-container {
     width: 100%;
     position: relative;
@@ -22,10 +23,16 @@
     }
     .nav {
       height: 100%;
-      overflow: hidden;
       .nav-item {
         height: 42px;
         position: relative;
+        color: $text-color;
+        &:hover{
+          color: $theme-color;
+          .close{
+            opacity: 1;
+          }
+        }
         .nav-link{
           padding: 0 1rem 0 0;
           height: 100%;
@@ -34,15 +41,9 @@
           border-radius: 0;
           border-bottom: 1px solid #E6DBD4;
           background-color: $secondary-color;
-          color: $text-color;
+          color: inherit;
           min-width: 5.625rem;
           max-width: 9.25rem;
-          &:hover{
-            color: $text-color;
-            + .close{
-              opacity: 1;
-            }
-          }
           &.active{
             background-color: $light-grey;
             border-bottom: 0;
@@ -90,20 +91,21 @@
           align-items: center;
           opacity: 0;
           transition: all 0.3s ease-in;
+          background-color: $secondary-color;
           i{
             font-size: $font-small;
           }
         }
         .modified-dot-icon {
           position: absolute;
-          left: 12px;
+          right: 0.5rem;
           font-size: 6px;
           color: #E98A36;
-          top: 0;
+          top: 60%;
           margin: auto;
           bottom: 0;
-          display: none;
           align-items: center;
+          transform: translateY(-50%);
         }
       }
       .tab-buttons {
@@ -121,6 +123,11 @@
           }
           .fa-ellipsis-h {
             font-size: 18px;
+          }
+        }
+        .show.dropdown{
+          .dropdown-menu{
+
           }
         }
         .btn:hover {
@@ -152,8 +159,8 @@
     div#history-tab-button{
       button {
         height: 42px;
-        border-bottom: 1px solid #e6dbd4;
-        border-right: 1px solid #e6dbd4;
+        border: 1px solid $outline-color;
+        border-top: 0;
       }
     }
 
@@ -186,11 +193,6 @@
   height: 500px;
   width: 300px;
   overflow-y: auto;
-}
-
-.history-heading {
-  margin-left: 15px;
-  font-weight: 550;
 }
 
 .tabs-width {
@@ -330,4 +332,9 @@
 }
 .tab-width{
   width: 115px;
+}
+.history-heading {
+  padding: 1rem;
+  font-weight: 600;
+  font-size: $font-normal;
 }
