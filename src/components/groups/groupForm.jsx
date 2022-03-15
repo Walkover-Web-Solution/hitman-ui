@@ -119,7 +119,7 @@ class GroupForm extends Form {
                       {this.state.versionRequired && <div className='dropdown-validation'>Please select version</div>}
                     </div>
                   </div>}
-                <div className='col-6'>
+                <div className='col-12'>
                   {this.renderInput('name', 'Group Name', 'group name', true, true, false, '*group name accepts min 1 & max 20 characters')}
                 </div>
               </div>
