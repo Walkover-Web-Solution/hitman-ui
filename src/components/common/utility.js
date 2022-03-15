@@ -247,6 +247,17 @@ export function isStateReject (id, entity) {
   return entity[id].state === statesEnum.REJECT_STATE
 }
 
+export function hexToRgb (hex, opacity) {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
+  if (result) {
+    const r = parseInt(result[1], 16)
+    const g = parseInt(result[2], 16)
+    const b = parseInt(result[3], 16)
+    return 'rgba(' + r + ',' + g + ',' + b + ',' + opacity + ')'// return 23,14,45 -> reformat if needed
+  }
+  return null
+}
+
 export function sensitiveInfoFound (endpoint) {
   // check for sensitive info in request here
   let result = false
@@ -354,5 +365,6 @@ export default {
   isStatePending,
   isStateDraft,
   isStateReject,
-  sensitiveInfoFound
+  sensitiveInfoFound,
+  hexToRgb
 }

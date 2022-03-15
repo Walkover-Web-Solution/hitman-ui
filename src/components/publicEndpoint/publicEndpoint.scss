@@ -252,7 +252,6 @@ form.add-new-domain-form {
 }
 
 .hm-sidebar {
-  background-color: rgba(0, 76, 190,0.03);
   height: 100vh;
   max-height: 100vh;
   position: sticky;
@@ -277,8 +276,8 @@ form.add-new-domain-form {
   margin: 0 auto;
   flex: 90%;
   flex-direction: column !important;
-  overflow-x: hidden;
-  background: #f8f8f8;
+  height: 100%;
+  overflow: auto;
   .doc-view{
     box-shadow: none;
     background-color: inherit;
@@ -609,4 +608,8 @@ h4.hm-sidebar-title span {
 
 .icon-design{
   background-color: #f8f8f8;
+}
+
+.display-component{
+  min-height: 800px;
 }

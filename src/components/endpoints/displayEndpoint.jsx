@@ -2995,7 +2995,7 @@ class DisplayEndpoint extends Component {
                   ? isSavedEndpoint(this.props)
                       ? this.displayResponseAndSampleResponse()
                       : this.displayPublicResponse()
-                  : this.displayPublicSampleResponse()
+                  : null
                 }
             </div>
             {
