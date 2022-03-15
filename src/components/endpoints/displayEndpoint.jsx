@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { Dropdown, ButtonGroup, Button, DropdownButton } from 'react-bootstrap'
 import store from '../../store/store'
-import { isDashboardRoute, isElectron, isSavedEndpoint, isStateDraft, isStateReject, sensitiveInfoFound } from '../common/utility'
+import { isDashboardRoute, isElectron, isSavedEndpoint, isStateDraft, isStateReject, sensitiveInfoFound, isReviewed } from '../common/utility'
 import tabService from '../tabs/tabService'
 import { closeTab, updateTab } from '../tabs/redux/tabsActions'
 import tabStatusTypes from '../tabs/tabStatusTypes'
@@ -54,6 +54,7 @@ import { pendingEndpoint, approveEndpoint } from '../publicEndpoint/redux/public
 import WarningModal from '../common/warningModal'
 import DeleteIcon from '../../assets/icons/delete-icon.svg'
 import { onToggle } from '../common/redux/toggleResponse/toggleResponseActions'
+import ApiPageReviewModal from '../publishDocs/apiPageReviewModal'
 const shortid = require('shortid')
 
 const status = require('http-status')
@@ -189,7 +190,12 @@ class DisplayEndpoint extends Component {
       host: {},
       draftDataSet: false,
       runSendRequest: null,
-      requestKey: null
+      requestKey: null,
+      review: { },
+      openReviewModal: false,
+      hideReviewbutton: false,
+      name: '',
+      comment: ''
     }
 
     this.uri = React.createRef()
@@ -2622,6 +2628,71 @@ class DisplayEndpoint extends Component {
     return JSON.parse(window.localStorage.getItem('right'))
   }
 
+  postApi () {
+    const feedback = {
+      parentId: '',
+      parentType: 'endpoint',
+      vote: 1,
+      user: '',
+      comment: ''
+    }
+    const apiUrl = process.env.REACT_APP_API_URL
+    feedback.parentId = this.props.match.params.endpointId
+    const collectionId = this.props.match.params.collectionId
+    Axios.post(apiUrl + `/collections/${collectionId}/feedbacks`, feedback)
+      .then(response => {
+        console.log(response)
+      })
+      .catch(error => {
+        console.log(error)
+      })
+  }
+
+  showApiPageReviewModal= () => <ApiPageReviewModal
+    onHide={() => this.setState({ openReviewModal: false })}
+    collection={this.props.match.params.collectionId}
+    endpoint={this.props.match.params.endpointId}
+    endpointType='endpoint'
+                                />
+
+  toggleReviewModal = () => this.setState({ openReviewModal: !this.state.openReviewModal });
+
+  savelocalstorage (key, value) {
+    if (window.localStorage.getItem('review') !== null) {
+      const item = window.localStorage.getItem('review')
+      const objList = JSON.parse(item)
+      objList[key] = value
+      window.localStorage.setItem('review', JSON.stringify(objList))
+    } else {
+      const objList = {}
+      objList[key] = value
+      window.localStorage.setItem('review', JSON.stringify(objList))
+    }
+  }
+
+  setDislike () {
+    this.setState({ dislikeActive: !this.state.dislikeActive }, () => {
+      const endpoint = this.props.match.params.endpointId
+      this.savelocalstorage(endpoint, 'dislike')
+    })
+  }
+
+  setLike () {
+    this.setState({ likeActive: !this.state.likeActive })
+    const endpoint = this.props.match.params.endpointId
+    this.savelocalstorage(endpoint, 'like')
+    this.postApi()
+  }
+
+  handleLike () {
+    this.setLike()
+  }
+
+  handleDislike () {
+    this.setDislike()
+    this.toggleReviewModal()
+  }
+
   render () {
     this.endpointId = this.props.endpointId
       ? this.props.endpointId
@@ -3016,6 +3087,17 @@ class DisplayEndpoint extends Component {
           }
 
           </div>
+          {!isDashboardRoute(this.props) && !isReviewed(this.props.match.params.endpointId) &&
+            <div>
+              <button onClick={() => { this.handleLike() }}>like</button>
+              <button onClick={() => { this.handleDislike() }}> dislike </button>
+            </div>}
+          {!isDashboardRoute(this.props) && isReviewed(this.props.match.params.endpointId) &&
+            <div>
+              <span>Thank you for reviewing</span>
+            </div>}
+
+          {this.state.openReviewModal && this.showApiPageReviewModal()}
         </div>
         )
       : null

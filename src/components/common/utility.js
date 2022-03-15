@@ -24,6 +24,16 @@ export function isDashboardRoute (props, sidebar = false) {
   ) { return true } else return false
 }
 
+export function isReviewed (endpoint) {
+  if ((window.localStorage.getItem('review')) !== null) {
+    const obj = window.localStorage.getItem('review')
+    const y = JSON.parse(obj)
+    const objKey = Object.keys(y)
+    const filterKey = objKey.includes(endpoint)
+    return filterKey
+  } else return false
+}
+
 export function isElectron () {
   const userAgent = navigator.userAgent.toLowerCase()
   return userAgent.indexOf(' electron/') !== -1

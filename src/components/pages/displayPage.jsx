@@ -1,11 +1,13 @@
 import React, { Component } from 'react'
 import store from '../../store/store'
 import { connect } from 'react-redux'
-import { isDashboardRoute } from '../common/utility'
+import { isDashboardRoute, isReviewed } from '../common/utility'
 import ReactHtmlParser from 'react-html-parser'
 import './page.scss'
 import { updatePage } from './redux/pagesActions'
 import EndpointBreadCrumb from '../endpoints/endpointBreadCrumb'
+import ApiPageReviewModal from '../publishDocs/apiPageReviewModal'
+import axios from 'axios'
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
@@ -24,7 +26,12 @@ class DisplayPage extends Component {
     super(props)
     this.state = {
       data: { id: null, versionId: null, groupId: null, name: '', contents: '' },
-      page: null
+      page: null,
+      requestKey: null,
+      openReviewModal: false,
+      hideReviewbutton: true,
+      name: '',
+      comment: ''
     }
   }
 
@@ -115,6 +122,71 @@ class DisplayPage extends Component {
     )
   }
 
+  postApi () {
+    const feedback = {
+      parentId: '',
+      parentType: 'page',
+      vote: 1,
+      user: '',
+      comment: ''
+    }
+    const apiUrl = process.env.REACT_APP_API_URL
+    feedback.parentId = this.props.match.params.pageId
+    const collectionId = this.props.match.params.collectionId
+    axios.post(apiUrl + `/collections/${collectionId}/feedbacks`, feedback)
+      .then(response => {
+        console.log(response)
+      })
+      .catch(error => {
+        console.log(error)
+      })
+  }
+
+  showApiPageReviewModal= () => <ApiPageReviewModal
+    onHide={() => this.setState({ openReviewModal: false })}
+    collection={this.props.match.params.collectionId}
+    endpoint={this.props.match.params.pageId}
+    endpointType='page'
+                                />
+
+  toggleReviewModal = () => this.setState({ openReviewModal: !this.state.openReviewModal });
+
+  savelocalstorage (key, value) {
+    if (window.localStorage.getItem('review') !== null) {
+      const item = window.localStorage.getItem('review')
+      const objList = JSON.parse(item)
+      objList[key] = value
+      window.localStorage.setItem('review', JSON.stringify(objList))
+    } else {
+      const objList = {}
+      objList[key] = value
+      window.localStorage.setItem('review', JSON.stringify(objList))
+    }
+  }
+
+  setDislike () {
+    this.setState({ dislikeActive: !this.state.dislikeActive }, () => {
+      const endpoint = this.props.match.params.pageId
+      this.savelocalstorage(endpoint, 'dislike')
+    })
+  }
+
+  setLike () {
+    this.setState({ likeActive: !this.state.likeActive })
+    const endpoint = this.props.match.params.pageId
+    this.savelocalstorage(endpoint, 'like')
+    this.postApi()
+  }
+
+  handleLike () {
+    this.setLike()
+  }
+
+  handleDislike () {
+    this.setDislike()
+    this.toggleReviewModal()
+  }
+
   render () {
     return (
       <div className='custom-display-page'>
@@ -134,6 +206,16 @@ class DisplayPage extends Component {
         }
         {this.renderPageName()}
         {this.checkPageRejected()}
+        {!isReviewed(this.props.match.params.pageId) &&
+          <div>
+            <button onClick={() => { this.handleLike() }}>like</button>
+            <button onClick={() => { this.handleDislike() }}> dislike </button>
+          </div>}
+        {this.state.openReviewModal && this.showApiPageReviewModal()}
+        {!isDashboardRoute(this.props) && isReviewed(this.props.match.params.pageId) &&
+          <div>
+            <span>Thank you for reviewing</span>
+          </div>}
       </div>
     )
   }
