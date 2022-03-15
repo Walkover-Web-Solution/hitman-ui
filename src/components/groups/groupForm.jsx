@@ -27,7 +27,7 @@ class GroupForm extends Form {
     }
 
     this.schema = {
-      name: Joi.string().required().label('Group Name')
+      name: Joi.string().required().label('Group Name').max(20)
     }
   }
 
@@ -120,7 +120,7 @@ class GroupForm extends Form {
                     </div>
                   </div>}
                 <div className='col-12'>
-                  {this.renderInput('name', 'Group Name', 'group name', true, true, false, '*group name accepts min 1 character')}
+                  {this.renderInput('name', 'Group Name', 'group name', true, true, false, '*group name accepts min 1 & max 20 characters')}
                 </div>
               </div>
 
