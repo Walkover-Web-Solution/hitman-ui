@@ -278,7 +278,7 @@ form.add-new-domain-form {
   flex: 90%;
   flex-direction: column !important;
   overflow-x: hidden;
-  background: #f8f8f8;
+  min-height: 800px;
   .doc-view{
     box-shadow: none;
     background-color: inherit;
@@ -609,4 +609,8 @@ h4.hm-sidebar-title span {
 
 .icon-design{
   background-color: #f8f8f8;
+}
+
+.display-component{
+  min-height: 800px;
 }

@@ -19,6 +19,7 @@ import filterService from '../../services/filterService'
 import AddEntity from '../main/addEntity/addEntity'
 import sidebarActions from '../main/sidebar/redux/sidebarActions'
 import { ReactComponent as Plus } from '../../assets/icons/plus-square.svg'
+import NoFound from '../../assets/icons/noCollectionsIcon.svg'
 import ExpandArrow from '../../assets/icons/expand-arrow.svg'
 
 const mapStateToProps = (state) => {
@@ -568,7 +569,12 @@ class CollectionVersions extends Component {
                   )}
                 </>
                 )
-              : <div className='text-center'> No Results </div>
+              : (
+                <div className='d-flex justify-content-center align-items-center h-100 flex-d-col'>
+                  <img src={NoFound} alt='' />
+                  <span className='font-weight-700'>No Results</span>
+                </div>
+                )
           : <div className='text-center'>Searching...</div>}
       </div>
     )

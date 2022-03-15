@@ -11,11 +11,12 @@ import store from '../../store/store'
 import auth from '../auth/authService'
 import UserInfo from '../common/userInfo'
 import Footer from '../main/Footer'
-import ThumbUp from '../../assets/icons/thumb_up.svg'
-import ThumbDown from '../../assets/icons/thumb_down.svg'
+// import ThumbUp from '../../assets/icons/thumb_up.svg'
+// import ThumbDown from '../../assets/icons/thumb_down.svg'
 import { setTitle, setFavicon, comparePositions } from '../common/utility'
 import { Style } from 'react-style-tag'
 import { Modal } from 'react-bootstrap'
+import SplitPane from 'react-split-pane'
 
 const mapStateToProps = (state) => {
   return {
@@ -149,7 +150,7 @@ class PublicEndpoint extends Component {
     return (
       <>
         <div
-          className={this.state.isSticky ? 'd-flex public-navbar stickyNav' : 'd-flex public-navbar'}
+          className={this.state.isSticky ? 'd-flex public-navbar' : 'd-flex public-navbar'}
         >
           <div className='entityTitle  p-3'>
             {this.state.currentEntityName}
@@ -330,18 +331,20 @@ class PublicEndpoint extends Component {
           }
         </nav>
         <main role='main' className={this.state.isSticky ? 'mainpublic-endpoint-main hm-wrapper stickyCode' : 'mainpublic-endpoint-main hm-wrapper'}>
-          <div className='hm-sidebar'>
-            <SideBar {...this.props} collectionName={this.state.collectionName} />
-          </div>
-          <div className={isCTAandLinksPresent ? 'hm-right-content hasPublicNavbar' : 'hm-right-content'}>
-            {this.displayCTAandLink()}
-            {
+          <SplitPane split='vertical' className='split-sidebar'>
+            <div className='hm-sidebar'>
+              <SideBar {...this.props} collectionName={this.state.collectionName} />
+            </div>
+            <div className={isCTAandLinksPresent ? 'hm-right-content hasPublicNavbar' : 'hm-right-content'}>
+              {this.displayCTAandLink()}
+              {
               this.state.collectionName !== ''
                 ? (
                   <div
                     onScroll={(e) => {
                       if (e.target.scrollTop > 20) { this.setState({ isSticky: true }) } else { this.setState({ isSticky: false }) }
                     }}
+                    className='display-component'
                     style={{ overflow: 'hidden' }}
                   >
                     <Switch>
@@ -362,18 +365,20 @@ class PublicEndpoint extends Component {
                                            />}
                       />
                     </Switch>
-                    <div className='d-flex flex-row justify-content-start'>
+                    {/* <div className='d-flex flex-row justify-content-start'>
                       <button onClick={() => { this.handleLike() }} className='border-0 ml-5 icon-design'> <img src={ThumbUp} alt='' /></button>
                       <button onClick={() => { this.handleDislike() }} className='border-0 ml-2 icon-design'> <img src={ThumbDown} alt='' /></button>
-                    </div>
+                    </div> */}
                     {this.state.openReviewModal && this.reviewModal()}
                   </div>
                   )
                 : null
             }
-            <Footer theme={this.state.collectionTheme} />
+              <Footer theme={this.state.collectionTheme} />
 
-          </div>
+            </div>
+          </SplitPane>
+
         </main>
       </>
     )
