@@ -27,7 +27,7 @@ class GroupForm extends Form {
     }
 
     this.schema = {
-      name: Joi.string().required().label('Group Name')
+      name: Joi.string().required().label('Group Name').max(20)
     }
   }
 
@@ -95,7 +95,6 @@ class GroupForm extends Form {
           size='lg'
           animation={false}
           aria-labelledby='contained-modal-title-vcenter'
-          centered
         >
           <Modal.Header className='custom-collection-modal-container' closeButton>
             <Modal.Title id='contained-modal-title-vcenter'>
@@ -106,7 +105,7 @@ class GroupForm extends Form {
             <form onSubmit={this.handleSubmit}>
               <div className='row'>
                 {this.props.addEntity &&
-                  <div className='col-6'>
+                  <div className='col-12'>
                     <div className='dropdown-label dropDownversion'>
                       <label>   Select Version</label>
                       <Dropdown>
@@ -120,8 +119,8 @@ class GroupForm extends Form {
                       {this.state.versionRequired && <div className='dropdown-validation'>Please select version</div>}
                     </div>
                   </div>}
-                <div className='col-6'>
-                  {this.renderInput('name', 'Group Name', 'group name', true, true, false, '*group name accepts min 1 character')}
+                <div className='col-12'>
+                  {this.renderInput('name', 'Group Name', 'group name', true, true, false, '*group name accepts min 1 & max 20 characters')}
                 </div>
               </div>
 

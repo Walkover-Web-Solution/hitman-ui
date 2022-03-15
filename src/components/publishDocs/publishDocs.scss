@@ -1,10 +1,11 @@
 //Note: Unique IDs are used in CTAs for tracking purposes with GTM. Do not use the same IDs elsewhere.
-
+@import '../main/variables.scss';
 .publish-docs-container {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  width: 100%
+  width: 100%;
+  overflow-y: scroll;
 }
 
 .pageSettingsButton {
@@ -45,7 +46,7 @@
   font-weight: 600;
   margin-bottom: 15px;
   font-size: 20px;
-  color: #000000;
+  color: $text-color-dark;
 }
 
 .hosted-doc-heading a {
@@ -343,14 +344,6 @@ span.tag {
   overflow-x: hidden;
   overflow-y: auto;
 }
-
-.hosted-doc-wrapper {
-  background: #F8F8F8;
-  border: 0.5px solid #E6DBD4;
-  border-radius: 4px;
-  padding: 5px 10px;
-}
-
 label.hostes-label {
   font-size: 14px;
   line-height: 17px;
@@ -364,4 +357,12 @@ label.hostes-label {
 
 .publish-reject button.btn.btn-success {
   font-weight: 600 !important;
+}
+
+.custom-toggle{
+  border: 1px solid #E6DBD4 !important;
+  padding: 5px 5px 5px 10px !important;
+  &::after{
+    transform: rotate(-45deg) !important;
+  }
 }

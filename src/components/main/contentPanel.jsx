@@ -26,12 +26,12 @@ import Environments from '../environments/environments'
 const mapStateToProps = (state) => {
   return {
     endpoints: state.endpoints,
+    collections: state.collections,
     groups: state.groups,
     versions: state.versions,
     pages: state.pages,
     tabs: state.tabs,
-    historySnapshots: state.history,
-    collections: state.collections
+    historySnapshots: state.history
   }
 }
 
@@ -149,16 +149,20 @@ class ContentPanel extends Component {
         const tab = tabs[tabId]
         if (tabId !== activeTabId) this.props.set_active_tab_id(tabId)
 
-        this.props.history.push({
-          pathname:
-            tab.type !== 'collection'
-              ? `/orgs/${orgId}/dashboard/${tab.type}/${
-                  tab.status === 'NEW' ? 'new' : tabId
-                }`
-              : this.props.location.pathname.split('/')[6] === 'settings'
-                ? `/orgs/${orgId}/dashboard/collection/${tabId}/settings`
-                : `/orgs/${orgId}/dashboard/collection/${tabId}/feedback`
-        })
+        const collectionLength = Object.keys(this.props.collections).length
+        const temp = JSON.parse(window.localStorage.getItem('visitedOrgs'))
+        if ((temp && temp[orgId]) || collectionLength > 0) {
+          this.props.history.push({
+            pathname:
+              tab.type !== 'collection'
+                ? `/orgs/${orgId}/dashboard/${tab.type}/${
+                    tab.status === 'NEW' ? 'new' : tabId
+                  }`
+                : this.props.location.pathname.split('/')[6] === 'settings'
+                  ? `/orgs/${orgId}/dashboard/collection/${tabId}/settings`
+                  : `/orgs/${orgId}/dashboard/collection/${tabId}/feedback`
+          })
+        }
       } else {
         this.props.add_new_tab()
       }

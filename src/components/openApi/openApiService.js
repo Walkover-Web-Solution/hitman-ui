@@ -6,14 +6,14 @@ function getApiUrl () {
   return process.env.REACT_APP_API_URL + `/orgs/${orgId}`
 }
 
-export function importApi (openApiObject) {
+export function importApi (openApiObject, defaultView) {
   const apiUrl = getApiUrl()
-  return http.post(`${apiUrl}/import/openApi`, openApiObject)
+  return http.post(`${apiUrl}/import/openApi?view=${defaultView}`, openApiObject)
 }
 
-export function importPostmanCollection (collection, website) {
+export function importPostmanCollection (collection, website, defaultView) {
   const apiUrl = getApiUrl()
-  return http.post(`${apiUrl}/import/postman?website=${website}`, collection)
+  return http.post(`${apiUrl}/import/postman?website=${website}&view=${defaultView}`, collection)
 }
 
 export default {

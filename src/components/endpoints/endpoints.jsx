@@ -570,9 +570,6 @@ class Endpoints extends Component {
             false
           )}
       >
-        <div className='endpoint-name-div'>
-          {this.props.endpoints[endpointId].name}
-        </div>
         <div
           className={`api-label ${this.props.endpoints[endpointId].requestType}`}
         >
@@ -580,7 +577,9 @@ class Endpoints extends Component {
             {this.props.endpoints[endpointId].requestType}
           </div>
         </div>
-
+        <div className='endpoint-name-div ml-2'>
+          {this.props.endpoints[endpointId].name}
+        </div>
       </div>
     )
   }

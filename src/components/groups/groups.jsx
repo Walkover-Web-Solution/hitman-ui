@@ -607,7 +607,7 @@ class Groups extends Component {
           )
         : (
           <div className='hm-sidebar-block'>
-            <div className='hm-sidebar-label'>
+            <div className='hm-sidebar-label mb-3'>
               {this.props.groups[groupId].name}
             </div>
             <GroupPages

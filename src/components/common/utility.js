@@ -2,10 +2,18 @@ import Joi from 'joi-browser'
 import history from '../../history'
 import { initAmplitude } from '../../services/amplitude'
 import { scripts } from './scripts'
+import jwtDecode from 'jwt-decode'
 
 export const ADD_GROUP_MODAL_NAME = 'Add Group'
 export const ADD_VERSION_MODAL_NAME = 'Add Version'
 export const DEFAULT_URL = 'https://'
+
+const statesEnum = {
+  PENDING_STATE: 'Pending',
+  REJECT_STATE: 'Reject',
+  APPROVED_STATE: 'Approved',
+  DRAFT_STATE: 'Draft'
+}
 
 export function isDashboardRoute (props, sidebar = false) {
   if (
@@ -215,6 +223,123 @@ export function addAnalyticsScripts () {
   }
 }
 
+export function isNotDashboardOrDocView (props, view) {
+  return !isDashboardRoute(props) || view === 'doc'
+}
+
+export function isDashboardAndTestingView (props, view) {
+  return isDashboardRoute(props) && (view === 'testing' || !isSavedEndpoint(props))
+}
+
+export function isStateApproved (id, entity) {
+  return entity[id].state === statesEnum.APPROVED_STATE
+}
+
+export function isStatePending (id, entity) {
+  return entity[id].state === statesEnum.PENDING_STATE
+}
+
+export function isStateDraft (id, entity) {
+  return entity[id].state === statesEnum.DRAFT_STATE
+}
+
+export function isStateReject (id, entity) {
+  return entity[id].state === statesEnum.REJECT_STATE
+}
+
+export function hexToRgb (hex, opacity) {
+  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
+  if (result) {
+    const r = parseInt(result[1], 16)
+    const g = parseInt(result[2], 16)
+    const b = parseInt(result[3], 16)
+    return 'rgba(' + r + ',' + g + ',' + b + ',' + opacity + ')'// return 23,14,45 -> reformat if needed
+  }
+  return null
+}
+
+export function sensitiveInfoFound (endpoint) {
+  // check for sensitive info in request here
+  let result = false
+  // first check access_token in params
+  if (typeof endpoint?.params?.access_token === 'object') {
+    const value = typeof endpoint.params.access_token.value === 'string' ? endpoint.params.access_token.value : ''
+    const authData = value.split(' ')
+    if (authData.length === 1) {
+      try {
+        jwtDecode(authData[0])
+        return true
+      } catch (err) {
+        result = false
+      }
+    }
+  }
+  // first check Authorization in headers
+  if (typeof endpoint?.headers?.Authorization === 'object') {
+    const value = typeof endpoint.headers.Authorization.value === 'string' ? endpoint.headers.Authorization.value : ''
+    const authData = value.split(' ')
+    if (authData.length === 1) {
+      try {
+        jwtDecode(authData[0])
+        return true
+      } catch (err) {
+        result = false
+      }
+    }
+    if (authData.length === 2) {
+      switch (authData[0]) {
+        case 'Basic':
+          try {
+            const string = authData[1]
+            window.atob(string)
+            return true
+          } catch (err) {
+            result = false
+          }
+          break
+        case 'Bearer':
+          try {
+            jwtDecode(authData[1])
+            return true
+          } catch (err) {
+            result = false
+          }
+          break
+        default: result = false
+      }
+    }
+  }
+  // check for all params if theres any JWT token
+  if (typeof endpoint.params === 'object') {
+    Object.entries(endpoint.params).forEach(entry => {
+      const value = typeof entry[1].value === 'string' ? entry[1].value : ''
+      const authData = value.split(' ')
+      authData.forEach(item => {
+        try {
+          jwtDecode(item)
+          result = true
+        } catch (err) {
+        }
+      })
+    })
+  }
+  // check all headers if theres any JWT token
+  if (typeof endpoint.headers === 'object') {
+    Object.entries(endpoint.headers).forEach(entry => {
+      const value = typeof entry[1].value === 'string' ? entry[1].value : ''
+      const authData = value.split(' ')
+      authData.forEach(item => {
+        try {
+          jwtDecode(item)
+          result = true
+        } catch (err) {
+        }
+      })
+    })
+  }
+  return result
+}
+
 export default {
   isDashboardRoute,
   isElectron,
@@ -233,5 +358,13 @@ export default {
   formatBytes,
   isValidDomain,
   addAnalyticsScripts,
-  DEFAULT_URL
+  DEFAULT_URL,
+  isNotDashboardOrDocView,
+  isDashboardAndTestingView,
+  isStateApproved,
+  isStatePending,
+  isStateDraft,
+  isStateReject,
+  sensitiveInfoFound,
+  hexToRgb
 }

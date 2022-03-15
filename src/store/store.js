@@ -11,6 +11,7 @@ import cookiesReducer from '../components/cookies/redux/cookiesReducer'
 import modalsReducer from '../components/modals/redux/modalsReducer'
 import historyReducer from '../components/history/redux/historyReducer'
 import sidebarReducer from '../components/main/sidebar/redux/sidebarReducer'
+import toggleResponseReducer from '../components/common/redux/toggleResponse/toggleResponseReducer'
 import publishDocsReducer from '../components/publishDocs/redux/publishDocsReducer'
 
 const storeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
@@ -27,7 +28,9 @@ const rootReducer = combineReducers({
   cookies: cookiesReducer,
   modals: modalsReducer,
   sidebar: sidebarReducer,
-  feedbacks: publishDocsReducer
+  responseView: toggleResponseReducer,
+  feedbacks: publishDocsReducer,
+  review: publishDocsReducer
 })
 const store = createStore(rootReducer, storeEnhancers(applyMiddleware(thunk)))
 

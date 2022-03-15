@@ -12,6 +12,13 @@ function publishDocsReducer (state = initialState, action) {
     case publishDocsActionTypes.ON_FEEDBACKS_FETCHED_ERROR:
       return state
 
+    case publishDocsActionTypes.ON_SUBMIT_API_REVIEW:
+      feedbacks = { ...action.feedbacks }
+      return feedbacks
+
+    case publishDocsActionTypes.ON_SUBMIT_API_REVIEW_ERROR:
+      return state
+
     default:
       return state
   }

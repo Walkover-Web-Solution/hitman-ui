@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { isDashboardRoute } from '../common/utility'
+import { isDashboardRoute, isNotDashboardOrDocView } from '../common/utility'
 import JSONPretty from 'react-json-pretty'
 import './endpoints.scss'
 import SampleResponseForm from './sampleResponseForm'
@@ -113,8 +113,12 @@ class SampleResponse extends Component {
     if (typeof data === 'object') {
       return (this.showJSONPretty(data))
     } else {
-      data = JSON.parse(data)
-      return (typeof data === 'object' ? this.showJSONPretty(data) : <pre className='custom-json-pretty'>{data}</pre>)
+      try {
+        data = JSON.parse(data)
+        return this.showJSONPretty(data)
+      } catch (err) {
+        return <pre>{data}</pre>
+      }
     }
   }
 
@@ -133,7 +137,7 @@ class SampleResponse extends Component {
     const sampleResponseArray = [...this.props.sample_response_array]
     const sampleResponseFlagArray = [...this.props.sample_response_flag_array]
     return (
-      <div id='sample-response'>
+      <div id='sample-response' className={!isNotDashboardOrDocView(this.props, this.props.currentView) && 'testing-view-sample-response'}>
         {
           isDashboardRoute(this.props)
             ? (

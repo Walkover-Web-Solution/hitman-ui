@@ -11,9 +11,16 @@ import store from '../../store/store'
 import auth from '../auth/authService'
 import UserInfo from '../common/userInfo'
 import Footer from '../main/Footer'
-import { setTitle, setFavicon, comparePositions } from '../common/utility'
+// import ThumbUp from '../../assets/icons/thumb_up.svg'
+// import ThumbDown from '../../assets/icons/thumb_down.svg'
+import { setTitle, setFavicon, comparePositions, hexToRgb } from '../common/utility'
 import { Style } from 'react-style-tag'
+<<<<<<< Updated upstream
 import { Modal } from 'react-bootstrap'
+import SplitPane from 'react-split-pane'
+=======
+>>>>>>> Stashed changes
+// import { Modal } from 'react-bootstrap'
 
 const mapStateToProps = (state) => {
   return {
@@ -41,11 +48,15 @@ class PublicEndpoint extends Component {
     isSticky: false,
     likeActive: false,
     dislikeActive: false,
-    review: {
-      feedback: {},
-      endpoint: {}
+    review: [{
+      feedback: 'like',
+      endpoint: null
+    }],
+    key: {
+      endpoint: 'like'
     },
-    openReviewModal: false
+    openReviewModal: false,
+    hideReviewbutton: true
   };
 
   componentDidMount () {
@@ -178,60 +189,111 @@ class PublicEndpoint extends Component {
 
   toggleReviewModal= () => this.setState({ openReviewModal: !this.state.openReviewModal });
 
-  reviewModal () {
-    return (
-      <div onHide={() => this.props.onHide()} show top>
-        <Modal show top>
-          <div className=''>
-            <Modal.Header closeButton>
-              <Modal.Title>API FeedBack</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <form>
-                <label>
-                  User Name:
-                  <input type='text' name='name' />
-                </label>
-                <label>
-                  Comment
-                  <textarea type='text' name='name' />
-                </label>
-                <input type='submit' value='Submit' />
-              </form>
-            </Modal.Body>
+<<<<<<< Updated upstream
+  // reviewModal () {
+  //   return (
+  //     <div onHide={() => this.props.onHide()} show top>
+  //       <Modal show top>
+  //         <div className=''>
+  //           <Modal.Header closeButton>
+  //             <Modal.Title>API FeedBack</Modal.Title>
+  //           </Modal.Header>
+  //           <Modal.Body>
+  //             <form className='form-group d-flex flex-column'>
+  //               <label>
+  //                 User Name:
+  //                 <input type='text' name='name' className='form-control w-75 mb-2' />
+  //               </label>
+  //               <label>
+  //                 Comment:
+  //                 <textarea type='text' name='name' className='form-control w-75 mb-3' />
+  //               </label>
+  //               <input type='submit' value='Submit' className='btn btn-primary w-25' />
+  //             </form>
+  //           </Modal.Body>
+=======
+  // handleSubmit = (e) =>{
+  //   e.preventDefault()
+  // }
+  // handleInputs = (e) =>{
+  //   e.preventDefault()
+  //   let name,value;
+  //   name = e.target.name;
+  //   value = e.target.value;
+>>>>>>> Stashed changes
 
-            <Modal.Footer>
-              <button className='btn btn-custom-dark' onClick={() => this.subscribeToExtendedLog()} onHide={() => this.setState({ showExtendedLog: false })}>Subscribe For Extended Log</button>
-            </Modal.Footer>
-          </div>
-        </Modal>
-      </div>
-    )
+  //  // setUser({...user, [name]:value})
+  // }
+  // reviewModal (){
+  //   return (
+  //       <Modal onHide={() => this.setState({ openReviewModal: false })} show={this.state.openReviewModal} top>
+  //         <div className=''>
+  //           <Modal.Header closeButton>
+  //             <Modal.Title>API FeedBack</Modal.Title>
+  //           </Modal.Header>
+  //           <Modal.Body>
+  //             <form onSubmit={this.handleSubmit()}>
+  //               <label>
+  //                 User Name:<br/>
+  //                 <input type='text' name='name' onChange={this.handleInputs()}/><br/>
+  //               </label><br/>
+  //               <label>
+  //                 Comment<br/>
+  //                 <textarea type='text' name='name' onChange={this.handleInputs()}/><br/>
+  //               </label>
+  //               <br  /><input type='submit' value='Submit' />
+  //             </form>
+  //           </Modal.Body>
+
+  //           <Modal.Footer>
+  //           </Modal.Footer>
+  //         </div>
+  //       </Modal>
+  //   )
+  // }
+
+  savelocalstorage (key2, value) {
+    const review = '{}'
+    const key = JSON.parse(review)
+    const key1 = key2
+    key[key1] = value
+    window.localStorage.setItem('review', JSON.stringify(this.state.key))
+    console.log(this.state.key)
+    this.setState(prevState => ({ key: [...prevState.key, key] }))
   }
 
   setDislike () {
     this.setState({ dislikeActive: !this.state.dislikeActive }, () => {
-      const data = this.props.match.params.endpointId
-      // const endpoint = this.state
-      this.setState({ endpoint: data })
-      const review = { ...this.state.review.endpoint }
-      review.endpoint = this.props.match.params
-      if (this.state.dislikeActive) { review.feedback = 'disliked' }
-      window.localStorage.setItem('review', JSON.stringify(review))
+      const endpoint = this.props.location.pathname.split('/')
+      this.savelocalstorage(endpoint[4], 'dislike')
+      // this.setState({ endpoint: endpointId })
+      // const review = { ...this.state.review.endpoint }
+      // review.endpoint = endpointId[4]
+      // if (this.state.dislikeActive) { review.feedback = 'disliked' }
+      // window.localStorage.setItem('review', JSON.stringify(review))
     })
     this.toggleReviewModal()
   }
 
   setLike () {
-    this.setState({ likeActive: !this.state.likeActive }, () => {
-      const review = { ...this.state.review }
-      review.endpoint = this.props.match.params
-      if (this.state.likeActive) { review.feedback = 'liked' }
-      window.localStorage.setItem('review', JSON.stringify(review))
-    })
+    this.setState({ likeActive: !this.state.likeActive })
+    const endpoint = [...this.props.location.pathname.split('/')]
+    this.savelocalstorage(endpoint[4], 'like')
+    // const review = '{}';
+    // //if(this.state.likeActive){ this.setState({feedback'liked'}) }
+    // const key = JSON.parse(review);
+    // const key1 = endpoint[4]
+    // key[key1] = 'like'
+    // // let newReview = {endpoint,feedback}
+    // // this.state.review.endpoint = endpoint[4]
+    // // this.state.review.feedback = this.state.likeActive
+    // window.localStorage.setItem('review', JSON.stringify(this.state.key))
+    // console.log(this.state.key)
+    // this.setState(prevState => ({ key: [...prevState.key, key] }))
   }
 
   handleLike () {
+    // this.setState({ hideReviewbutton:!this.state.hideReviewbutton })
     if (this.state.dislikeActive) {
       // this.setLike();
       // this.setDislike();
@@ -240,6 +302,7 @@ class PublicEndpoint extends Component {
   }
 
   handleDislike () {
+    // this.setState({ hideReviewbutton:!this.state.hideReviewbutton })
     if (this.state.likeActive) {
       // this.setDislike();
       // this.setLike();
@@ -328,19 +391,20 @@ class PublicEndpoint extends Component {
           }
         </nav>
         <main role='main' className={this.state.isSticky ? 'mainpublic-endpoint-main hm-wrapper stickyCode' : 'mainpublic-endpoint-main hm-wrapper'}>
-          <div className='hm-sidebar'>
-            <SideBar {...this.props} collectionName={this.state.collectionName} />
-          </div>
-          <div className={isCTAandLinksPresent ? 'hm-right-content hasPublicNavbar' : 'hm-right-content'}>
-            {this.displayCTAandLink()}
-            {
+          <SplitPane split='vertical' className='split-sidebar'>
+            <div className='hm-sidebar' style={{ backgroundColor: hexToRgb(this.state.collectionTheme, '0.03') }}>
+              <SideBar {...this.props} collectionName={this.state.collectionName} />
+            </div>
+            <div className={isCTAandLinksPresent ? 'hm-right-content hasPublicNavbar' : 'hm-right-content'}>
+              {this.displayCTAandLink()}
+              {
               this.state.collectionName !== ''
                 ? (
                   <div
                     onScroll={(e) => {
                       if (e.target.scrollTop > 20) { this.setState({ isSticky: true }) } else { this.setState({ isSticky: false }) }
                     }}
-                    style={{ overflow: 'hidden' }}
+                    className='display-component'
                   >
                     <Switch>
                       <Route
@@ -360,17 +424,29 @@ class PublicEndpoint extends Component {
                                            />}
                       />
                     </Switch>
+<<<<<<< Updated upstream
+                    {/* <div className='d-flex flex-row justify-content-start'>
+                      <button onClick={() => { this.handleLike() }} className='border-0 ml-5 icon-design'> <img src={ThumbUp} alt='' /></button>
+                      <button onClick={() => { this.handleDislike() }} className='border-0 ml-2 icon-design'> <img src={ThumbDown} alt='' /></button>
+                    </div> */}
+                    {this.state.openReviewModal && this.reviewModal()}
+=======
+>>>>>>> Stashed changes
+                    {/* { this.state.hideReviewbutton && <div>
                     <button onClick={() => { this.handleLike() }}>like</button>
                     <span>'    '</span>
                     <button onClick={() => { this.handleDislike() }}> dislike </button>
-                    {this.state.openReviewModal && this.reviewModal()}
+                    </div>}
+                    {this.state.openReviewModal && this.reviewModal()} */}
                   </div>
                   )
                 : null
             }
-            <Footer theme={this.state.collectionTheme} />
+              <Footer theme={this.state.collectionTheme} />
 
-          </div>
+            </div>
+          </SplitPane>
+
         </main>
       </>
     )

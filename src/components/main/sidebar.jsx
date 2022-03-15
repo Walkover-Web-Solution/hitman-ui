@@ -14,7 +14,7 @@ import { ReactComponent as ArrowIcon } from '../../assets/icons/Vector.svg'
 import { ReactComponent as HitmanIcon } from '../../assets/icons/hitman.svg'
 import { ReactComponent as EmptyHistory } from '../../assets/icons/emptyHistroy.svg'
 import { ReactComponent as NoInvocationsIcon } from '../../assets/icons/emptyrandom.svg'
-import { ReactComponent as NoCollectionsIcon } from '../../assets/icons/noCollectionsIcon.svg'
+import NoFound, { ReactComponent as NoCollectionsIcon } from '../../assets/icons/noCollectionsIcon.svg'
 // import { ReactComponent as PlusIcon } from '../../assets/icons/plus_orange.svg'
 import { ReactComponent as SearchIcon } from '../../assets/icons/search.svg'
 import { ReactComponent as DownloadIcon } from '../../assets/icons/download.svg'
@@ -480,7 +480,12 @@ class SideBar extends Component {
               {this.state.historySnapshot.length > 0 ? <div><div className='px-3'>History</div>{this.renderHistoryList()}</div> : null}
             </div>
             )
-          : <div className='text-center'>No Results</div>
+          : (
+            <div className='d-flex justify-content-center align-items-center h-100 flex-d-col'>
+              <img src={NoFound} alt='' />
+              <span className='font-weight-700'>No Results</span>
+            </div>
+            )
       )
     }
   }
@@ -530,6 +535,7 @@ class SideBar extends Component {
     return (
       this.state.showAddCollectionModal &&
         <CollectionModal
+          {...this.props}
           title='Add Collection'
           onHide={() => { this.setState({ showAddCollectionModal: false }) }}
           show={this.state.showAddCollectionModal}
@@ -669,7 +675,7 @@ class SideBar extends Component {
             store.dispatch({ type: sidebarActionTypes.DEFOCUS_SIDEBAR })
           }
         }}
-        className={['sidebar-content'].join(' ')}
+        className={[''].join(' ')}
       >
         {this.showAddCollectionModal()}
         {this.collectionId
@@ -733,8 +739,10 @@ class SideBar extends Component {
           {this.renderDownloadDesktopApp()}
           {this.renderGlobalAddButton()}
         </div>
-        {this.state.data.filter !== '' && this.renderSearchList()}
-        {this.state.data.filter === '' && this.renderSidebarContent()}
+        <div className='sidebar-content'>
+          {this.state.data.filter !== '' && this.renderSearchList()}
+          {this.state.data.filter === '' && this.renderSidebarContent()}
+        </div>
         <UserProfile {...this.props} />
       </>
     )

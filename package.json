@@ -6,6 +6,7 @@
   "private": true,
   "main": "public/electron.js",
   "dependencies": {
+    "@tinymce/tinymce-react": "^3.13.1",
     "ace-builds": "^1.4.9",
     "amplitude-js": "^8.14.1",
     "axios": "^0.19.1",
@@ -49,6 +50,7 @@
     "react-images-upload": "^1.2.8",
     "react-json-pretty": "^2.2.0",
     "react-jsonschema-form": "^1.8.1",
+    "react-loader-spinner": "^6.0.0-0",
     "react-loading-screen": "0.0.17",
     "react-multi-email": "^0.5.3",
     "react-quill": "^1.3.5",
@@ -84,7 +86,7 @@
     "npm": "6.0.0"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "standard && react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
