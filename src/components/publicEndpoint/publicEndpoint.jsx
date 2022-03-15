@@ -15,11 +15,7 @@ import Footer from '../main/Footer'
 // import ThumbDown from '../../assets/icons/thumb_down.svg'
 import { setTitle, setFavicon, comparePositions, hexToRgb } from '../common/utility'
 import { Style } from 'react-style-tag'
-<<<<<<< Updated upstream
-import { Modal } from 'react-bootstrap'
 import SplitPane from 'react-split-pane'
-=======
->>>>>>> Stashed changes
 // import { Modal } from 'react-bootstrap'
 
 const mapStateToProps = (state) => {
@@ -189,7 +185,6 @@ class PublicEndpoint extends Component {
 
   toggleReviewModal= () => this.setState({ openReviewModal: !this.state.openReviewModal });
 
-<<<<<<< Updated upstream
   // reviewModal () {
   //   return (
   //     <div onHide={() => this.props.onHide()} show top>
@@ -211,7 +206,6 @@ class PublicEndpoint extends Component {
   //               <input type='submit' value='Submit' className='btn btn-primary w-25' />
   //             </form>
   //           </Modal.Body>
-=======
   // handleSubmit = (e) =>{
   //   e.preventDefault()
   // }
@@ -220,7 +214,6 @@ class PublicEndpoint extends Component {
   //   let name,value;
   //   name = e.target.name;
   //   value = e.target.value;
->>>>>>> Stashed changes
 
   //  // setUser({...user, [name]:value})
   // }
@@ -424,14 +417,11 @@ class PublicEndpoint extends Component {
                                            />}
                       />
                     </Switch>
-<<<<<<< Updated upstream
                     {/* <div className='d-flex flex-row justify-content-start'>
                       <button onClick={() => { this.handleLike() }} className='border-0 ml-5 icon-design'> <img src={ThumbUp} alt='' /></button>
                       <button onClick={() => { this.handleDislike() }} className='border-0 ml-2 icon-design'> <img src={ThumbDown} alt='' /></button>
                     </div> */}
                     {this.state.openReviewModal && this.reviewModal()}
-=======
->>>>>>> Stashed changes
                     {/* { this.state.hideReviewbutton && <div>
                     <button onClick={() => { this.handleLike() }}>like</button>
                     <span>'    '</span>
