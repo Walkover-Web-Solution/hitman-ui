@@ -5,7 +5,7 @@ import { isAdmin } from '../auth/authService'
 import './publicCollectionInfo.scss'
 import SettingIcon from '../../assets/icons/SettingIcon.png'
 import FileIcon from '../../assets/icons/file.svg'
-import DocIcon from '../../assets/icons/twitch.svg'
+// import DocIcon from '../../assets/icons/twitch.svg'
 import { ReactComponent as ExternalLinks } from '../../assets/icons/externalLinks.svg'
 import PublishSidebar from '../publishSidebar/publishSidebar'
 import { openExternalLink } from '../common/utility'
@@ -78,16 +78,16 @@ class PublishCollectionInfo extends Component {
     }
   }
 
-  apiDocFeedback () {
-    return (
-      <button onClick={() => { this.redirectToApiFeedback() }}>
-        <div className='d-flex align-items-center'>
-          <img className='mr-1' src={DocIcon} alt='' />
-          <span>API Doc Feedback</span>
-        </div>
-      </button>
-    )
-  }
+  // apiDocFeedback () {
+  //   return (
+  //     <button onClick={() => { this.redirectToApiFeedback() }}>
+  //       <div className='d-flex align-items-center'>
+  //         <img className='mr-1' src={DocIcon} alt='' />
+  //         <span>API Doc Feedback</span>
+  //       </div>
+  //     </button>
+  //   )
+  // }
 
   getPublicEntityCount () {
     const collectionId = this.props.collectionId
@@ -151,7 +151,7 @@ class PublishCollectionInfo extends Component {
       !currentCollection?.importedFromMarketPlace &&
         <div className='public-colection-info'>
           {this.managePublicDoc()}
-          {this.apiDocFeedback()}
+          {/* {this.apiDocFeedback()} */}
           <div className='publicurl'>{this.renderPublicUrl()}</div>
         </div>
     )

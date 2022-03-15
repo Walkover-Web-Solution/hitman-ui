@@ -797,6 +797,7 @@ label.data-type {
 }
 
 .pubCodeWrapper {
+  z-index: 199;
   padding: 15px;
   width: 25%;
   background: #222222;;
@@ -1938,11 +1939,10 @@ button.toggleButton {
     font-size: $font-normal;
     background-color: #1b80dd;
     position: absolute;
-    left: -115px;
+    left: -129px;
     color: #fff;
     padding: 0.5rem 1rem;
-    border-top-left-radius: 4px;
-    border-bottom-left-radius: 4px;
+    border-radius: $border-radius;
     img {
       display: none;
     }
@@ -2631,6 +2631,10 @@ main.mainpublic-endpoint-main p.public-hide {
 }
 main.mainpublic-endpoint-main .for-public-view {
   display: block !important;
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  padding: 0;
 }
 .mainpublic-endpoint-main .footerWrapper {
   text-align: right;
@@ -3267,6 +3271,9 @@ body .bottom-text-editor {
 .response-right{
   display: flex;
   justify-content: space-between;
+  .mid-part{
+    overflow: auto;
+  }
   .response-container {
     min-width: 21rem;
     max-width: 21rem;
