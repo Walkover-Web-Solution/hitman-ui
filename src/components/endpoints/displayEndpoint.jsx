@@ -48,6 +48,7 @@ import * as _ from 'lodash'
 import { openModal } from '../modals/redux/modalsActions'
 import Axios from 'axios'
 import { sendAmplitudeData } from '../../services/amplitude'
+import ApiPageReviewModal from '../publishDocs/apiPageReviewModal'
 const shortid = require('shortid')
 
 const status = require('http-status')
@@ -64,7 +65,8 @@ const mapStateToProps = (state) => {
     environments: state.environment.environments,
     historySnapshots: state.history,
     collections: state.collections,
-    cookies: state.cookies
+    cookies: state.cookies,
+    collection: state.collection
   }
 }
 
@@ -150,7 +152,16 @@ class DisplayEndpoint extends Component {
       host: {},
       draftDataSet: false,
       runSendRequest: null,
-      requestKey: null
+      requestKey: null,
+      keyState: {
+        num: ''
+      },
+      review: { },
+      openReviewModal: false,
+      hideReviewbutton: true,
+      name: '',
+      Comment: '',
+      keystate2: ''
     }
 
     this.uri = React.createRef()
@@ -2068,6 +2079,91 @@ class DisplayEndpoint extends Component {
     )
   }
 
+  showApiPageReviewModal= () => <ApiPageReviewModal
+    onHide={() => this.setState({ openReviewModal: false })}
+    collection={this.props.match.params.collectionId}
+    endpoint={this.props.match.params.endpointId}
+    endpointType='endpoint'
+                                />
+
+  toggleReviewModal = () => this.setState({ openReviewModal: !this.state.openReviewModal });
+
+  savelocalstorage (key2, value) {
+    // let key = {}
+    // key[key2] = value
+    const item = window.localStorage.getItem('review')
+    const x = JSON.parse(item)
+    // console.log(key)
+    // let review = {...item, key}
+    console.log(x)
+    // this.setState({keyState: key},()=>{
+    x[key2] = value
+    window.localStorage.setItem('review', JSON.stringify(x))
+    console.log(item)
+    // })
+  }
+
+  setDislike () {
+    this.setState({ dislikeActive: !this.state.dislikeActive }, () => {
+      const endpoint = this.props.match.params.endpointId
+      this.savelocalstorage(endpoint, 'dislike')
+      // window.localStorage.setItem('review', JSON.stringify(review))
+      //   this.setState({ endpoint: endpoint })
+      //   const review = { ...this.state.review.endpoint }
+      //   review.endpoint = endpoint[4]
+      //   if (this.state.dislikeActive) { review.feedback = 'disliked' }
+      //   //window.localStorage.setItem('review', JSON.stringify(review))
+      // this.savelocalstorage(endpoint,'dislike')
+      // const review = '{}';
+      // const key = JSON.parse(review);
+      // this.setState(prevState => ({ key: [...prevState.key, key] }))
+    })
+  }
+
+  setLike () {
+    this.setState({ likeActive: !this.state.likeActive })
+    const endpoint = this.props.match.params.endpointId
+    this.savelocalstorage(endpoint, 'like')
+    // const review = '{}';
+    // if(this.state.likeActive){ this.setState({feedback'liked'}) }
+    // const key = JSON.parse(review);
+    // const key1 = endpoint[4]
+    // key[key1] = 'like'
+    // let newReview = {endpoint,feedback}
+    // this.state.review.endpoint = endpoint[4]
+    // this.state.review.feedback = this.state.likeActive
+    // window.localStorage.setItem('review', JSON.stringify(this.state.key))
+    // console.log(this.state.key)
+    // this.setState(prevState => ({ key: [...prevState.key, key] }))
+  }
+
+  handleLike () {
+    // this.setState({ hideReviewbutton:!this.state.hideReviewbutton })
+    if (this.state.dislikeActive) {
+      // this.setLike();
+      // this.setDislike();
+    }
+    this.setLike()
+  }
+
+  handleDislike () {
+    // this.setState({ hideReviewbutton:!this.state.hideReviewbutton })
+    if (this.state.likeActive) {
+      // this.setDislike();
+      // this.setLike();
+    }
+    this.setDislike()
+    this.toggleReviewModal()
+  }
+
+  // handletemp () {
+  //   this.state.keyState.num = 'tkd'
+  //   const keyState = {}
+  //   keyState.num = 'tkd'
+  //   this.setState(keyState)
+  //   console.log(this.props.match.params.endpointId)
+  // }
+
   render () {
     this.endpointId = this.props.endpointId
       ? this.props.endpointId
@@ -2622,6 +2718,15 @@ class DisplayEndpoint extends Component {
             )
           }
         </div>
+        {
+          <div>
+            <button onClick={() => { this.handleLike() }}>like</button>
+            <button onClick={() => { this.handleDislike() }}> dislike </button>
+          </div>
+        }
+
+        {this.state.openReviewModal && this.showApiPageReviewModal()}
+        <button onClick={() => { this.handletemp() }}> temp </button>
       </div>
     )
   }

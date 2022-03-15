@@ -6,6 +6,7 @@ import ReactHtmlParser from 'react-html-parser'
 import './page.scss'
 import { updatePage } from './redux/pagesActions'
 import EndpointBreadCrumb from '../endpoints/endpointBreadCrumb'
+import ApiPageReviewModal from '../publishDocs/apiPageReviewModal'
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
@@ -24,7 +25,12 @@ class DisplayPage extends Component {
     super(props)
     this.state = {
       data: { id: null, versionId: null, groupId: null, name: '', contents: '' },
-      page: null
+      page: null,
+      requestKey: null,
+      openReviewModal: false,
+      hideReviewbutton: true,
+      name: '',
+      Comment: ''
     }
   }
 
@@ -115,6 +121,94 @@ class DisplayPage extends Component {
     )
   }
 
+  showApiPageReviewModal= () => <ApiPageReviewModal
+    onHide={() => this.setState({ openReviewModal: false })}
+    collection={this.props.match.params.collectionId}
+    endpoint={this.props.match.params.pageId}
+    endpointType='page'
+                                />
+
+  toggleReviewModal = () => this.setState({ openReviewModal: !this.state.openReviewModal });
+
+  savelocalstorage (key2, value) {
+    const key = {}
+    const key1 = key2
+    key[key1] = value
+    this.setState({ keyState: key }, () => {
+      window.localStorage.setItem('review', JSON.stringify(key))
+      // this.setState(prevState => ({ ...prevState, key }))
+      // this.setState(prevState => ({ keyState: [...prevState.keyState, keystate2] }))
+      console.log(this.state.keyState)
+    })
+
+    // let prevReview = window.localStorage.getItem('review')
+    // let newReview = prevReview
+
+    // const temp = window.localStorage.getItem('review')
+    // this.setState(prevState => ({ key: [...prevState.key, newKey] }))
+  }
+
+  setDislike () {
+    this.setState({ dislikeActive: !this.state.dislikeActive }, () => {
+      const endpoint = this.props.match.params.endpointId
+      this.savelocalstorage(endpoint, 'dislike')
+      // window.localStorage.setItem('review', JSON.stringify(review))
+      //   this.setState({ endpoint: endpoint })
+      //   const review = { ...this.state.review.endpoint }
+      //   review.endpoint = endpoint[4]
+      //   if (this.state.dislikeActive) { review.feedback = 'disliked' }
+      //   //window.localStorage.setItem('review', JSON.stringify(review))
+      // this.savelocalstorage(endpoint,'dislike')
+      // const review = '{}';
+      // const key = JSON.parse(review);
+      // this.setState(prevState => ({ key: [...prevState.key, key] }))
+    })
+  }
+
+  setLike () {
+    this.setState({ likeActive: !this.state.likeActive })
+    const endpoint = this.props.match.params.endpointId
+    this.savelocalstorage(endpoint, 'like')
+    // const review = '{}';
+    // if(this.state.likeActive){ this.setState({feedback'liked'}) }
+    // const key = JSON.parse(review);
+    // const key1 = endpoint[4]
+    // key[key1] = 'like'
+    // let newReview = {endpoint,feedback}
+    // this.state.review.endpoint = endpoint[4]
+    // this.state.review.feedback = this.state.likeActive
+    // window.localStorage.setItem('review', JSON.stringify(this.state.key))
+    // console.log(this.state.key)
+    // this.setState(prevState => ({ key: [...prevState.key, key] }))
+  }
+
+  handleLike () {
+    // this.setState({ hideReviewbutton:!this.state.hideReviewbutton })
+    if (this.state.dislikeActive) {
+      // this.setLike();
+      // this.setDislike();
+    }
+    this.setLike()
+  }
+
+  handleDislike () {
+    // this.setState({ hideReviewbutton:!this.state.hideReviewbutton })
+    if (this.state.likeActive) {
+      // this.setDislike();
+      // this.setLike();
+    }
+    this.setDislike()
+    this.toggleReviewModal()
+  }
+
+  // handletemp () {
+  //   this.state.keyState.num = 'tkd'
+  //   const keyState = {}
+  //   keyState.num = 'tkd'
+  //   this.setState(keyState)
+  //   console.log(this.props.match.params.endpointId)
+  // }
+
   render () {
     return (
       <div className='custom-display-page'>
@@ -134,6 +228,16 @@ class DisplayPage extends Component {
         }
         {this.renderPageName()}
         {this.checkPageRejected()}
+        <button>hii</button>
+        {
+          <div>
+            <button onClick={() => { this.handleLike() }}>like</button>
+            <span>'    '</span>
+            <button onClick={() => { this.handleDislike() }}> dislike </button>
+          </div>
+        }
+        {this.state.openReviewModal && this.showApiPageReviewModal()}
+        <button onClick={() => { this.handletemp() }}> temp </button>
       </div>
     )
   }
