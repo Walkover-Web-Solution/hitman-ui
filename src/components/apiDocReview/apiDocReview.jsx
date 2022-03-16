@@ -3,6 +3,8 @@ import { isDashboardRoute } from '../common/utility'
 import Axios from 'axios'
 import _ from 'lodash'
 import { Modal } from 'react-bootstrap'
+import Like from '../../assets/icons/like.svg'
+import DisLike from '../../assets/icons/dislike.svg'
 
 const LIKE = 'like'
 const DISLIKE = 'dislike'
@@ -127,20 +129,19 @@ class ApiDocReview extends Component {
           </Modal.Header>
           <Modal.Body>
             <form onSubmit={this.handleOnSubmit.bind(this)}>
-              <label>
-                Email:<br />
-                <input onChange={this.handleInput.bind(this)} value={this.state.user} type='text' name='user' /><br />
-              </label><br />
-              <label>
-                Comment<br />
-                <textarea onChange={this.handleInput.bind(this)} value={this.state.comment} type='text' name='comment' /><br />
-              </label>
-              <br />
-              <input type='submit' value='Submit' />
+              <div className='form-group'>
+                <label>Email</label>
+                <input className='form-control' onChange={this.handleInput.bind(this)} value={this.state.user} type='text' name='user' />
+              </div>
+              <div className='form-group'>
+                <label htmlFor=''>Comment</label>
+                <textarea className='form-control' onChange={this.handleInput.bind(this)} value={this.state.comment} type='text' name='comment' /><br />
+              </div>
             </form>
           </Modal.Body>
-
-          <Modal.Footer />
+          <Modal.Footer>
+            <input type='submit' className='btn btn-primary' value='Submit' />
+          </Modal.Footer>
         </div>
       </Modal>
     )
@@ -154,9 +155,13 @@ class ApiDocReview extends Component {
           {this.state.showFeedbackModal && this.renderUserFeedbackModal()}
           {!isAlreadyReviewd &&
             (
-              <div>
-                <button onClick={() => { this.handleOnClick(LIKE, this.postApi.bind(this)) }}>like</button>
-                <button onClick={() => { this.handleOnClick(DISLIKE, this.toggleReviewModal.bind(this)) }}> dislike </button>
+              <div className='d-flex'>
+                <div className='cursor-pointer' onClick={() => { this.handleOnClick(LIKE, this.postApi.bind(this)) }}>
+                  <img src={Like} alt='' />
+                </div>
+                <div className='cursor-pointer' onClick={() => { this.handleOnClick(DISLIKE, this.toggleReviewModal.bind(this)) }}>
+                  <img src={DisLike} alt='' />
+                </div>
               </div>
             )}
           {isAlreadyReviewd &&

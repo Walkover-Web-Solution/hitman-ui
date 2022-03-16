@@ -2990,6 +2990,7 @@ class DisplayEndpoint extends Component {
                   </div>
                 </div>
                 {this.renderDocViewOptions()}
+                <ApiDocReview {...this.props} />
               </div>
               {
                 this.isDashboardAndTestingView()
@@ -2998,6 +2999,7 @@ class DisplayEndpoint extends Component {
                       : this.displayPublicResponse()
                   : null
                 }
+
             </div>
             {
            this.isNotDashboardOrDocView() &&
@@ -3017,7 +3019,7 @@ class DisplayEndpoint extends Component {
           }
 
           </div>
-          <ApiDocReview {...this.props} />
+
         </div>
         )
       : null
