@@ -136,7 +136,9 @@ class DisplayPage extends Component {
         }
         {this.renderPageName()}
         {this.checkPageRejected()}
-        <ApiDocReview {...this.props} />
+        <div className='float-left'>
+          <ApiDocReview {...this.props} />
+        </div>
       </div>
     )
   }
