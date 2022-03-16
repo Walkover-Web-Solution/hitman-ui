@@ -477,7 +477,7 @@ class Groups extends Component {
               ref={(newRef) => { this.scrollRef[groupId] = newRef }}
               className={[focused && sidebarFocused ? 'focused' : '', expanded ? 'expanded' : ''].join(' ')}
             >
-              <div className='d-flex align-items-center flex-grow-1' onClick={() => this.toggleGroupIds(groupId)}>
+              <div className='d-flex align-items-center cl-name' onClick={() => this.toggleGroupIds(groupId)}>
                 <span className='versionChovron'>
                   <img src={ExpandedIcon} alt='' />
                 </span>
