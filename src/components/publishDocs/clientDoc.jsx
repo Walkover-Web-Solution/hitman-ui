@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import collectionsApiService from '../collections/collectionsApiService'
 import LoadingScreen from 'react-loading-screen'
-
+import { getDomainName } from '../common/utility'
 class ClientDoc extends Component {
   state = {}
   async redirectToClientDomain () {
@@ -19,6 +19,11 @@ class ClientDoc extends Component {
     }
   }
 
+  getDocName () {
+    const docName = getDomainName(window.location.hostname)
+    if (docName) { return docName.toUpperCase() + ' ' } else { return '' }
+  }
+
   render () {
     this.redirectToClientDomain()
     return (
@@ -28,7 +33,7 @@ class ClientDoc extends Component {
         spinnerColor='#9ee5f8'
         textColor='#676767'
         logoSrc='/static/media/hitman.8a9ab55b.svg'
-        text="Hold on! You're being redirected to the doc."
+        text={`${this.getDocName()}API doc is loading`}
       />
     )
   }
