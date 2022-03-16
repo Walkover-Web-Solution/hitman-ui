@@ -99,6 +99,7 @@ $border-color: rgba(227, 228, 230, 0.7);
   padding: 5px;
   border-top-right-radius: 4px;
   border-top-left-radius: 4px;
+  margin-top: -1.75rem;
 
   .list-group {
     width: 100%;
@@ -465,6 +466,7 @@ $border-color: rgba(227, 228, 230, 0.7);
     display: flex;
     justify-content: space-between;
     margin-bottom: 15px;
+    flex-wrap: wrap;
     .statusWrapper {
       display: flex;
       align-items: center;
@@ -646,6 +648,7 @@ table#custom-generic-table {
       height: 100%;
       font-size: $font-medium;
       font-weight: 400;
+      border-radius: 3px;
     }
     input:focus,
     input.form-control:focus {
@@ -653,7 +656,7 @@ table#custom-generic-table {
       height: 100%;
     }
     input::placeholder {
-      font-size: $font-medium;
+      font-size: $font-medium !important;
       // font-weight: 300;
     }
   }
@@ -989,10 +992,6 @@ table#custom-generic-table {
   font-size: 16px;
   line-height: 32px;
   height: 32px;
-  color: #42526E;
-  &:hover{
-    color: #0E1E3A;
-  }
 }
 
 //endpoint request styling
@@ -1065,12 +1064,9 @@ table#custom-generic-table {
 
   .sample-response-item {
     padding: 10px;
-    margin: 10px;
-    margin-bottom: 25px;
-    background: #FEFCF7;
-    font-weight: 340;
-    border-radius: 4px;
-    border: 1px solid #E98A36;
+    background-color: $secondary-color;
+    border-radius: $border-radius;
+    padding: 1rem 1.5rem;
   }
 
   .sample-response-edit {
@@ -1127,13 +1123,10 @@ table#custom-generic-table {
 .hm-endpoint-header {
   span.api-label {
     padding: 0;
-    width: 80px;
     height: 36px;
     text-align: center;
     align-items: center;
     justify-content: center;
-    font-size: 14px;
-    border: 0.5px solid #BDBDBD;
     font-weight: 600;
     background: #fff;
     color: #828282;
@@ -1142,28 +1135,20 @@ table#custom-generic-table {
   }
 
   .input-group .form-control {
-    height: 36px;
-    border: 0.5px solid #BDBDBD;
-    font-size: 13px;
-    color: #000;
-    display: flex;
-    align-items: center;
     background: #fff !important;
   }
 }
 
 .pubSampleResponse {
-  padding: 20px 25px;
-  border: 0.5px solid #E6DBD4;
-  background: #F3F3F3;
-  display: flex;
-  flex-wrap: wrap;
   .fa-circle {
     color: #E98A36;
     margin-left: 5px;
     font-size: 12px;
   }
   .sample-response {
+    background-color: $secondary-color;
+    padding: 1rem 1.5rem;
+    border-radius: $border-radius;
     .nav-tabs{
       margin: 10px 0 0 !important;
     }

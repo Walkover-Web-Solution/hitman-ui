@@ -274,10 +274,27 @@ form.add-new-domain-form {
 
 .hm-right-content {
   margin: 0 auto;
-  flex: 90%;
-  flex-direction: column !important;
   height: 100%;
   overflow: auto;
+  .main-table-wrapper{
+    > div{
+      margin-bottom: 1rem;
+      &:empty{
+        display: none;
+      }
+    }
+
+  }
+  .request-button {
+    position: absolute;
+    top: 1.25rem;
+    right: 1.35rem;
+  }
+  .innerContainer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
   .doc-view{
     box-shadow: none;
     background-color: inherit;
@@ -290,14 +307,16 @@ form.add-new-domain-form {
     }
   }
   .hm-endpoint-container {
-    padding: 30px 0;
+    padding: 20px 0;
     display: block;
     margin: 0 0 0 1.5rem;
     transition: 450ms;
     height: 100%;
     overflow: auto;
-    max-width: 50rem;
+    width: 65%;
+    padding-right: 2%;
     transition: all 0.3s ease-in;
+    position: relative;
     &::-webkit-scrollbar {
       display: none;
       width: 0px;
@@ -314,7 +333,8 @@ form.add-new-domain-form {
           text-transform: capitalize;
           font-weight: 700;
           font-size: 22px;
-          margin-bottom: 5px;
+          margin-bottom: 1rem;
+          max-width: 80%;
         }
       }
 
@@ -425,10 +445,7 @@ h4.hm-sidebar-title span {
 .hm-public-endpoint-headers {
   #send-request-button {
     width: 75px;
-    height: 28px;
-    font-size: 14px;
-    padding: 0;
-    font-weight: 700;
+    height: 2.25rem;
     text-transform: uppercase;
   }
 }
@@ -471,10 +488,6 @@ h4.hm-sidebar-title span {
             border-top: none;
           }
         }
-        &:not(:last-child) input.form-control:not(:focus){
-          border-bottom: 0 !important;
-        }
-
         td {
           &.custom-td {
             border-color: #e5e5e5 !important;
@@ -529,7 +542,7 @@ h4.hm-sidebar-title span {
   .empty-response-container {
     background: transparent;
     border: none;
-    height: 140px;
+    height: 82vh;
   }
 
 

@@ -81,9 +81,9 @@ class CodeTemplate extends Component {
           <img src={CloseIcon} alt='' />
         </button>
         <div className='inner-editor'>
-          <Col id='code-window-sidebar' xs={12} className='d-flex flex-column align-items-center'>
-            <div className='code-heading mb-3 mt-2'>
-              Sample code
+          <Col id='code-window-sidebar' xs={12} className=''>
+            <div className='code-heading mb-3 d-flex justify-content-center'>
+              <span>Sample code</span>
             </div>
             <div className='select-code-wrapper d-flex justify-content-end'>
               {primaryLanguages.map(key => (

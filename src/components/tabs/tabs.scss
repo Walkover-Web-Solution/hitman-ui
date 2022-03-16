@@ -12,6 +12,7 @@
     background-color: $secondary-color;
     .btn{
       border-radius: 0;
+      height: 42px;
     }
     &::after{
       content: '';

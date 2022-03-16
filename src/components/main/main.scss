@@ -3,6 +3,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700&display=swap');
 @import "./variables.scss";
 
+@media (min-width: 1401px){
+  body .split-sidebar > div:first-child{
+    min-width: 330px !important;
+  }
+  .response-right .response-container{
+
+  }
+}
+
+
 .mobile-warning{
   position: sticky;
   z-index: 1200;
@@ -265,7 +275,6 @@ nav.navbar.navbar-dark.fixed-top.bg-dark.flex-md-nowrap.p-0.shadow {
 }
 
 .hm-sidebar-item {
-  color: #42526E;
   cursor: pointer;
   font-size: 16px;
   line-height: 32px;
@@ -279,20 +288,12 @@ nav.navbar.navbar-dark.fixed-top.bg-dark.flex-md-nowrap.p-0.shadow {
   border-radius: 0;
   border: none;
   align-items: center;
-
-  &:hover {
-    background: rgba(9, 30, 66, 0.04);
-    color: #0E1E3A;
-  }
-
-  &.active {
-    background: rgba(9, 30, 66, 0.04);
-    color: #0E1E3A;
+  &:hover, &.active {
+    background: $grey;
   }
 }
 
 .hm-sidebar-label {
-  color: #59667F;
   height: 24px;
   margin-bottom: 5px;
   text-transform: capitalize;
@@ -793,7 +794,6 @@ label.data-type {
 .editor-body-wrapper {
   border: 1px solid #4F4F4F;
   border-radius: 4px;
-  margin-top: 10px;
 }
 
 .pubCodeWrapper {
@@ -801,18 +801,18 @@ label.data-type {
   padding: 15px;
   width: 25%;
   background: #222222;;
-  position: fixed;
-  right: 0px;
-  top: 0px;
   transition: 300ms;
   height: 100vh;
+  position: fixed;
+  right: 0;
+  top: 0;
   .inner-editor {
     height: 100%;
-    overflow: hidden;
     .editor-body-wrapper {
       height: calc(100% - 8rem);
       .ace-editor-wrapper {
         height: calc(100% - 2rem);
+        min-width: 0;
         div#ace-editor {
           height: 100% !important;
         }
@@ -1065,6 +1065,7 @@ body .form-control {
   color: #000;
   box-sizing: border-box;
   background-color: #fff;
+  border-radius: $border-radius;
   &:focus {
     outline: none;
     border: 1px solid $theme-color;
@@ -1281,10 +1282,10 @@ body .btn{
   font-size: $font-normal !important;
   &.btn-primary{
     background-color: $theme-color;
-    border-color: $theme-color;
+    border-color: $theme-color !important;
     &:hover{
       border-color: $theme-color;
-      background-color: transparent;
+      background-color: transparent !important;
       color: $theme-color;
     }
     &:focus, &:active{
@@ -1378,9 +1379,8 @@ body .btn{
     left: 0;
     height: 15px;
     width: 15px;
-    background-color: #eee;
     border-radius: 50%;
-    box-shadow: inset 0 0 0px 2px #828282;
+    box-shadow: inset 0 0 0px 1px #828282;
   }
   input:checked~.checkmark {
     background-color: #ffffff;
@@ -1410,6 +1410,9 @@ body .btn{
 }
 table#custom-generic-table tbody input[value="false"] + span.checkmark {
   background: #ccc !important;
+}
+table#custom-generic-table tbody input[value="true"] + span.checkmark {
+  background: $theme-color !important;
 }
 
 .customCheckbox {
@@ -1891,10 +1894,14 @@ html body div#sokt-sso-modal {
   background: transparent;
   color: #BDBDBD;
   width: auto;
-  font-size: 14px;
-  font-weight: 600;
+  font-size: $font-medium !important;
+  font-weight: 400;
   height: 32px;
-  margin-left: 5px;
+  margin-right: 5px;
+  flex: 1;
+  &:last-child{
+    margin-right: 0;
+  }
 }
 
 .select-code-wrapper>button.active {
@@ -1920,6 +1927,8 @@ button.toggleButton {
   font-size: 0;
   border: none;
   outline: none !important;
+  position: relative;
+  z-index: 19;
 }
 
 
@@ -1937,12 +1946,14 @@ button.toggleButton {
   }
   button.toggleButton {
     font-size: $font-normal;
-    background-color: #1b80dd;
+    background-color: $text-color;
     position: absolute;
-    left: -129px;
+    left: -113px;
     color: #fff;
     padding: 0.5rem 1rem;
-    border-radius: $border-radius;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+    top: 20px;
     img {
       display: none;
     }
@@ -2226,7 +2237,10 @@ button[name="cta-1"] {
   font-size: 12px;
 }
 .mainpublic-endpoint-main .custom-display-page {
-  padding: 25px 200px 10px 30px;
+  max-width: 50rem;
+  margin: auto;
+  float: none;
+  background: none;
 }
 
 .cta-button-wrapper button {
@@ -2954,6 +2968,10 @@ li.nav-item.cookie-tab a {
       }
     }
   }
+  .doc-fix-width{
+    margin: auto;
+    max-width: 50rem;
+  }
 }
 
 .ql-snow .ql-tooltip {
@@ -3220,7 +3238,6 @@ body .btn-group-custom{
 body .bottom-text-editor {
   box-shadow: 4px 4px 20px 0px #0000001f;
   padding: 0;
-  margin: 1rem 0;
   height: 2rem;
   .show .btn{
     background: $theme-color !important;
@@ -3237,6 +3254,11 @@ body .bottom-text-editor {
 }
 .doc-secs-container{
   position: relative;
+  &:hover{
+    .addons{
+      opacity: 1;
+    }
+  }
 }
 .addons {
     background-color: #fff;
@@ -3250,6 +3272,10 @@ body .bottom-text-editor {
     left: -2.25rem;
     flex-direction: column;
     transition: all 0.3s ease-in;
+    opacity: 0;
+    &:hover{
+      opacity: 1;
+    }
     > div {
       padding: 0.15rem 0.25rem;
       cursor: pointer;
@@ -3278,8 +3304,7 @@ body .bottom-text-editor {
     overflow: auto;
   }
   .response-container {
-    min-width: 21rem;
-    max-width: 21rem;
+    width: 30%;
     background-color: #fff;
     padding: 1.25rem;
     height: 100vh;
@@ -3291,14 +3316,12 @@ body .bottom-text-editor {
   }
 }
 .mid-part{
-  max-width: 50rem;
-  min-width: 37.5rem;
+  width: 70%;
   padding: 1.25rem;
 }
 .response-bottom{
   .response-container{
-    max-width: 50rem;
-    min-width: 37.5rem;
+    width: 70%;
     padding: 1.25rem;
   }
   .endpoint-response-container{
@@ -3308,7 +3331,26 @@ body .bottom-text-editor {
     border-radius: $border-radius;
   }
 }
+.doc-options {
+  height: 2.25rem;
+}
+.endpoint-public-response-container pre {
+    max-width: 50rem;
+}
 
-// .innerContainer{
-//   min-height: 800px;
-// }
+
+
+@media (max-width: 1400px){
+  .mid-part{
+    max-width: 50rem;
+  }
+  .response-right .response-container{
+    max-width: 21rem;
+  }
+}
+.table{
+  color: $text-color !important;
+  th {
+    font-weight: 500;
+  }
+}
