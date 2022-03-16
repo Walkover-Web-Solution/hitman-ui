@@ -610,7 +610,7 @@ class SideBar extends Component {
 
   renderInviteTeam () {
     return (
-      <div className='mb-2' onClick={() => { this.openAccountAndSettings() }}>
+      <div className='mb-2 cursor-pointer' onClick={() => { this.openAccountAndSettings() }}>
         <Users className='mr-2' />
         <span>Invite Team</span>
       </div>
