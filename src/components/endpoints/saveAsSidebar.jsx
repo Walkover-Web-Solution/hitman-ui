@@ -3,12 +3,10 @@ import React, { createRef } from 'react'
 import { connect } from 'react-redux'
 import Form from '../common/form'
 import './endpoints.scss'
-
 import CollectionForm from '../collections/collectionForm'
 import CollectionVersionForm from '../collectionVersions/collectionVersionForm'
 import GroupForm from '../groups/groupForm'
 import { ADD_GROUP_MODAL_NAME, ADD_VERSION_MODAL_NAME } from '../common/utility'
-import AddIcon from '../../assets/icons/add.svg'
 import { Dropdown } from 'react-bootstrap'
 import DropdownItem from 'react-bootstrap/esm/DropdownItem'
 
@@ -413,16 +411,6 @@ class SaveAsSidebar extends Form {
                 {this.renderInput('name', 'Name', 'Endpoint Name')}
                 {title.trim() === '' || title === 'Untitled' ? <small className='text-danger'>Please enter the Title</small> : <div />}
               </div>
-
-              {
-                  !this.state.showEditor
-                    ? (
-                      <label className='click-link mb-3 d-flex align-items-center' onClick={() => this.setState({ showEditor: true })}>
-                        <img className='mr-1' src={AddIcon} alt='' />Add Description to Endpoint
-                      </label>
-                      )
-                    : this.renderQuillEditor('description')
-                }
             </form>
             <div>
               <div className='mb-2'>Collection to which you wish to save this to</div>

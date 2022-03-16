@@ -49,12 +49,13 @@ import { sendAmplitudeData } from '../../services/amplitude'
 import { SortableHandle, SortableContainer, SortableElement } from 'react-sortable-hoc'
 import ConfirmationModal from './confirmationModal'
 import { ReactComponent as DragHandleIcon } from '../../assets/icons/drag-handle.svg'
-import TinyEditor from './tinyEditor'
+import TinyEditor from '../tinyEditor/tinyEditor'
 import { pendingEndpoint, approveEndpoint } from '../publicEndpoint/redux/publicEndpointsActions'
 import WarningModal from '../common/warningModal'
 import DeleteIcon from '../../assets/icons/delete-icon.svg'
 import { onToggle } from '../common/redux/toggleResponse/toggleResponseActions'
 import PlusIcon from '../../assets/icons/plus.svg'
+import ApiDocReview from '../apiDocReview/apiDocReview'
 const shortid = require('shortid')
 
 const status = require('http-status')
@@ -2161,6 +2162,8 @@ class DisplayEndpoint extends Component {
           this.setState({ docViewData: docData })
         }}
         match={this.props.match}
+        isInlineEditor
+        disabled={!isDashboardRoute(this.props)}
       />
     )
   }
@@ -3000,6 +3003,7 @@ class DisplayEndpoint extends Component {
                       {this.state.docOptions && this.renderDocViewOptions()}
                     </div>}
                 </div>
+                <ApiDocReview {...this.props} />
               </div>
               {
                 this.isDashboardAndTestingView()
@@ -3027,6 +3031,7 @@ class DisplayEndpoint extends Component {
             </div>
 
           </div>
+
         </div>
         )
       : null
