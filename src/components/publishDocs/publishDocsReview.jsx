@@ -36,99 +36,7 @@ class PublishDocsReview extends Component {
     }
   }
 
-  dummyFeedback = [
-    {
-      id: 1,
-      parentId: 'KN7tgPpMG',
-      parentType: 'endpoint',
-      vote: 1,
-      user: null,
-      comment: null,
-      collectionId: 'Rc6tLQ8Cq',
-      createdAt: '2022-03-10T08:40:03.119Z',
-      updatedAt: '2022-03-10T08:40:03.119Z'
-    },
-    {
-      id: 2,
-      parentId: 'KN7tgPpMG',
-      parentType: 'endpoint',
-      vote: 1,
-      user: null,
-      comment: null,
-      collectionId: 'Rc6tLQ8Cq',
-      createdAt: '2022-03-10T08:40:28.152Z',
-      updatedAt: '2022-03-10T08:40:28.152Z'
-    },
-    {
-      id: 3,
-      parentId: 'AaNy4VYBg',
-      parentType: 'endpoint',
-      vote: 1,
-      user: null,
-      comment: null,
-      collectionId: 'Rc6tLQ8Cq',
-      createdAt: '2022-03-10T08:40:46.128Z',
-      updatedAt: '2022-03-10T08:40:46.128Z'
-    },
-    {
-      id: 4,
-      parentId: 'AaNy4VYBg',
-      parentType: 'endpoint',
-      vote: 1,
-      user: null,
-      comment: null,
-      collectionId: 'Rc6tLQ8Cq',
-      createdAt: '2022-03-10T08:42:22.144Z',
-      updatedAt: '2022-03-10T08:42:22.144Z'
-    },
-    {
-      id: 5,
-      parentId: 'AaNy4VYBg',
-      parentType: 'endpoint',
-      vote: 1,
-      user: null,
-      comment: null,
-      collectionId: 'Rc6tLQ8Cq',
-      createdAt: '2022-03-10T08:42:52.319Z',
-      updatedAt: '2022-03-10T08:42:52.319Z'
-    },
-    {
-      id: 6,
-      parentId: 'AaNy4VYBg',
-      parentType: 'endpoint',
-      vote: 1,
-      user: null,
-      comment: null,
-      collectionId: 'Rc6tLQ8Cq',
-      createdAt: '2022-03-10T08:43:09.375Z',
-      updatedAt: '2022-03-10T08:43:09.375Z'
-    },
-    {
-      id: 7,
-      parentId: 'QdyTtx16k',
-      parentType: 'endpoint',
-      vote: -1,
-      user: null,
-      comment: null,
-      collectionId: 'Rc6tLQ8Cq',
-      createdAt: '2022-03-10T08:46:45.133Z',
-      updatedAt: '2022-03-10T08:46:45.133Z'
-    },
-    {
-      id: 8,
-      parentId: 'QdyTtx16k',
-      parentType: 'page',
-      vote: -1,
-      user: null,
-      comment: null,
-      collectionId: 'Rc6tLQ8Cq',
-      createdAt: '2022-03-10T08:47:23.723Z',
-      updatedAt: '2022-03-10T08:47:23.723Z'
-    }
-  ]
-
   renderHostedApiHeading (heading) {
-    console.log(this.props)
     return (
       <div className='page-title mb-3'>
         <div>{heading}</div>
@@ -272,10 +180,6 @@ class PublishDocsReview extends Component {
     )
   }
 
-  output () {
-    console.log(this.props.feedbacks.parent)
-  }
-
   render () {
     const feedbacks = this.props.feedbacks[this.props.match.params.collectionId] || []
     return (
@@ -285,8 +189,6 @@ class PublishDocsReview extends Component {
           {feedbacks.length > 0 && this.renderPageSelectOption()}
         </div>
         {feedbacks.length > 0 ? this.renderPageReview(feedbacks) : this.renderNoFeedback()}
-        {console.log('feedback', this.props.feedbacks)}
-        <button onClick={() => { this.output() }}>Hii</button>
       </div>
     )
   }

@@ -6,7 +6,6 @@ export const fetchFeedbacks = (collectionId) => {
   return (dispatch) => {
     publishDocsApiService.getFeedbacks(collectionId)
       .then((response) => {
-        console.log(response.data)
         dispatch(onFeedbacksFetched(response.data))
       })
       .catch((error) => {
