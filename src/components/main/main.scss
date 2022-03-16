@@ -3239,15 +3239,15 @@ body .bottom-text-editor {
   position: relative;
 }
 .addons {
+    background-color: #fff;
     position: absolute;
-    top: 0.65rem;
+    top: 0.1rem;
     z-index: 1;
-    background-color: #f7f6f3;
     display: flex;
     justify-content: center;
     align-items: center;
     border-radius: 4px;
-    right: -2.25rem;
+    left: -2.25rem;
     flex-direction: column;
     transition: all 0.3s ease-in;
     > div {
@@ -3256,6 +3256,9 @@ body .bottom-text-editor {
       &:not(:last-child){
         border-bottom: 1px solid $outline-color;
       }
+    }
+    &:hover{
+      background-color: #f7f6f3;
     }
 }
 .tab-div {

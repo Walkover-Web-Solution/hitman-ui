@@ -2106,7 +2106,7 @@ class DisplayEndpoint extends Component {
           <div>
             {this.state.docViewData.map((item, index) =>
               <SortableItem key={index} index={index}>
-                <div className='doc-secs-container'>
+                <div className='doc-secs-container mb-5'>
                   <div className='doc-secs'>
                     {this.renderPublicItem(item, index)}
                   </div>
