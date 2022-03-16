@@ -54,6 +54,7 @@ import { pendingEndpoint, approveEndpoint } from '../publicEndpoint/redux/public
 import WarningModal from '../common/warningModal'
 import DeleteIcon from '../../assets/icons/delete-icon.svg'
 import { onToggle } from '../common/redux/toggleResponse/toggleResponseActions'
+import ApiDocReview from '../apiDocReview/apiDocReview'
 const shortid = require('shortid')
 
 const status = require('http-status')
@@ -2991,6 +2992,7 @@ class DisplayEndpoint extends Component {
                   </div>
                 </div>
                 {this.renderDocViewOptions()}
+                <ApiDocReview {...this.props} />
               </div>
               {
                 this.isDashboardAndTestingView()
@@ -2999,6 +3001,7 @@ class DisplayEndpoint extends Component {
                       : this.displayPublicResponse()
                   : null
                 }
+
             </div>
             {
            this.isNotDashboardOrDocView() &&
@@ -3018,6 +3021,7 @@ class DisplayEndpoint extends Component {
           }
 
           </div>
+
         </div>
         )
       : null

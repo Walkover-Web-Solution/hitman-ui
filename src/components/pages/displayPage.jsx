@@ -5,6 +5,7 @@ import { isDashboardRoute } from '../common/utility'
 import './page.scss'
 import { updatePage } from './redux/pagesActions'
 import EndpointBreadCrumb from '../endpoints/endpointBreadCrumb'
+import ApiDocReview from '../apiDocReview/apiDocReview'
 import TinyEditor from '../tinyEditor/tinyEditor'
 
 const mapDispatchToProps = (dispatch, ownProps) => {
@@ -24,7 +25,8 @@ class DisplayPage extends Component {
     super(props)
     this.state = {
       data: { id: null, versionId: null, groupId: null, name: '', contents: '' },
-      page: null
+      page: null,
+      requestKey: null
     }
   }
 
@@ -146,6 +148,9 @@ class DisplayPage extends Component {
         }
         {this.renderPageName()}
         {this.checkPageRejected()}
+        <div className='float-left'>
+          <ApiDocReview {...this.props} />
+        </div>
       </div>
     )
   }
