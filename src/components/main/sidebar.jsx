@@ -7,7 +7,7 @@ import Collections from '../collections/collections'
 import CollectionVersions from '../collectionVersions/collectionVersions'
 import { isDashboardRoute, ADD_GROUP_MODAL_NAME, ADD_VERSION_MODAL_NAME, isElectron, openExternalLink } from '../common/utility'
 
-import { getCurrentUser } from '../auth/authService'
+import { getCurrentUser, getOrgList, getCurrentOrg } from '../auth/authService'
 import LoginSignupModal from './loginSignupModal'
 import PublishColelctionInfo from './publishCollectionInfo'
 import { ReactComponent as ArrowIcon } from '../../assets/icons/Vector.svg'
@@ -743,7 +743,7 @@ class SideBar extends Component {
           {this.state.data.filter !== '' && this.renderSearchList()}
           {this.state.data.filter === '' && this.renderSidebarContent()}
         </div>
-        <UserProfile {...this.props} />
+        {getCurrentUser() && getOrgList() && getCurrentOrg() && <UserProfile {...this.props} />}
       </>
     )
   }
