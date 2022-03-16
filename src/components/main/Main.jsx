@@ -89,7 +89,10 @@ class Main extends Component {
 
   async componentDidMount () {
     const token = auth.getJwt()
-    if (!token) return
+    if (!token) {
+      this.setState({ loading: false })
+      return
+    }
     /** Token Exists */
     if (auth.getCurrentUser() && auth.getOrgList() && auth.getCurrentOrg()) {
       /** For Logged in User */
