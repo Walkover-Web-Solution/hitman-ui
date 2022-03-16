@@ -2,11 +2,11 @@ import React, { Component } from 'react'
 import store from '../../store/store'
 import { connect } from 'react-redux'
 import { isDashboardRoute } from '../common/utility'
-import ReactHtmlParser from 'react-html-parser'
 import './page.scss'
 import { updatePage } from './redux/pagesActions'
 import EndpointBreadCrumb from '../endpoints/endpointBreadCrumb'
 import ApiDocReview from '../apiDocReview/apiDocReview'
+import TinyEditor from '../tinyEditor/tinyEditor'
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
@@ -87,13 +87,13 @@ class DisplayPage extends Component {
     if (this.props.rejected) {
       return (
         <div className='pageText'>
-          {ReactHtmlParser(this.props.pages[this.props.pageId].publishedPage.contents)}
+          {this.renderTinyEditor(this.props.pages[this.props.pageId].publishedPage.contents)}
         </div>
       )
     } else {
       return (
         <div className='pageText'>
-          {ReactHtmlParser(this.state.data.contents)}
+          {this.renderTinyEditor(this.state.data.contents)}
         </div>
       )
     }
@@ -114,6 +114,18 @@ class DisplayPage extends Component {
             isEndpoint={false}
           />
 
+    )
+  }
+
+  renderTinyEditor (contents) {
+    return (
+      <TinyEditor
+        onChange={() => {}}
+        data={contents}
+        match={this.props.match}
+        isInlineEditor
+        disabled
+      />
     )
   }
 

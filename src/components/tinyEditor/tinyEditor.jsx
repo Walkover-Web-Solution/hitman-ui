@@ -1,6 +1,5 @@
 import React, { useRef } from 'react'
 import { Editor } from '@tinymce/tinymce-react'
-import { isDashboardRoute } from '../common/utility'
 
 export default function TinyEditor (props) {
   const editorRef = useRef(null)
@@ -14,14 +13,15 @@ export default function TinyEditor (props) {
         onEditorChange={handleOnChange.bind(this)}
         onInit={(evt, editor) => { editorRef.current = editor }}
         value={props.data}
-        inline
-        disabled={!isDashboardRoute(props)}
+        inline={props.isInlineEditor}
+        disabled={props.disabled}
         init={{
           plugins: 'link image codesample table lists',
           selector: 'textarea',
+          branding: false,
           inline_boundaries: false,
           menu: false,
-          height: 250,
+          height: props.minHeight || 250,
           menubar: false,
           table_appearence_option: true,
           table_toolbar: 'tableprops tabledelete | tableinsertrowbefore tableinsertrowafter tabledeleterow | tableinsertcolbefore tableinsertcolafter tabledeletecol',
