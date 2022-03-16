@@ -1264,9 +1264,9 @@ table#custom-generic-table {
     padding-left: 0;
     &:after{
       position: absolute;
-      right: 0;
+      right: 0.5rem;
       top: 50%;
-      transform: translateY(-50%);
+      transform: translateY(-50%) rotate(-45deg) !important;
     }
   }
 }
