@@ -49,7 +49,7 @@ import { sendAmplitudeData } from '../../services/amplitude'
 import { SortableHandle, SortableContainer, SortableElement } from 'react-sortable-hoc'
 import ConfirmationModal from './confirmationModal'
 import { ReactComponent as DragHandleIcon } from '../../assets/icons/drag-handle.svg'
-import TinyEditor from './tinyEditor'
+import TinyEditor from '../tinyEditor/tinyEditor'
 import { pendingEndpoint, approveEndpoint } from '../publicEndpoint/redux/publicEndpointsActions'
 import WarningModal from '../common/warningModal'
 import DeleteIcon from '../../assets/icons/delete-icon.svg'
@@ -2160,6 +2160,8 @@ class DisplayEndpoint extends Component {
           this.setState({ docViewData: docData })
         }}
         match={this.props.match}
+        isInlineEditor
+        disabled={!isDashboardRoute(this.props)}
       />
     )
   }
