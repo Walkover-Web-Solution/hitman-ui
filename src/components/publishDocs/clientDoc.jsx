@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import collectionsApiService from '../collections/collectionsApiService'
-import LoadingScreen from 'react-loading-screen'
 import { getDomainName } from '../common/utility'
 class ClientDoc extends Component {
   state = {}
@@ -27,14 +26,12 @@ class ClientDoc extends Component {
   render () {
     this.redirectToClientDomain()
     return (
-      <LoadingScreen
-        loading='true'
-        bgColor='#f1f1f1'
-        spinnerColor='#9ee5f8'
-        textColor='#676767'
-        logoSrc='/static/media/hitman.8a9ab55b.svg'
-        text={`${this.getDocName()}API doc is loading`}
-      />
+      <div className='custom-loading-container'>
+        <div className='loading-content'>
+          <h2>{this.getDocName}</h2>
+          <p>API Doc is loading....</p>
+        </div>
+      </div>
     )
   }
 }
