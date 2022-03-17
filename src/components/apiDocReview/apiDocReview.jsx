@@ -155,12 +155,15 @@ class ApiDocReview extends Component {
           {this.state.showFeedbackModal && this.renderUserFeedbackModal()}
           {!isAlreadyReviewd &&
             (
-              <div className='d-flex'>
-                <div className='cursor-pointer' onClick={() => { this.handleOnClick(LIKE, this.postApi.bind(this)) }}>
-                  <img src={Like} alt='' />
-                </div>
-                <div className='cursor-pointer' onClick={() => { this.handleOnClick(DISLIKE, this.toggleReviewModal.bind(this)) }}>
-                  <img src={DisLike} alt='' />
+              <div>
+                <p className='d-flex justify-content-center'>Did this page help you?</p>
+                <div className='d-flex justify-content-center'>
+                  <div className='cursor-pointer' onClick={() => { this.handleOnClick(LIKE, this.postApi.bind(this)) }}>
+                    <img src={Like} alt='' />
+                  </div>
+                  <div className='cursor-pointer' onClick={() => { this.handleOnClick(DISLIKE, this.toggleReviewModal.bind(this)) }}>
+                    <img src={DisLike} alt='' />
+                  </div>
                 </div>
               </div>
             )}
