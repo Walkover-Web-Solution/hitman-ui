@@ -161,7 +161,7 @@ class EditPage extends Component {
 
   render () {
     return (
-      <div className='custom-edit-page'>
+      <div className='custom-edit-page page-display mt-3'>
         <WarningModal
           show={this.state.warningModalFlag}
           onHide={() => { this.setState({ warningModalFlag: false }) }}
@@ -181,7 +181,7 @@ class EditPage extends Component {
           />
         </div>
 
-        <div style={{ marginBottom: '50px' }}>
+        <div>
           {this.renderTinyEditor()}
         </div>
 
@@ -190,14 +190,14 @@ class EditPage extends Component {
             <button
               onClick={() => { this.isModified() ? this.setState({ warningModalFlag: true }) : this.handleCancel() }}
               type='button'
-              className='btn btn-secondary outline btn-extra-lg mt-4'
+              className='btn btn-secondary outline btn-extra-lg mt-3'
             >
               Cancel
             </button>
             <button
               onSubmit={this.handleSubmit}
               type='submit'
-              className='btn btn-primary btn-extra-lg mt-4 ml-3'
+              className='btn btn-primary btn-extra-lg mt-3 ml-3'
             >
               Save
             </button>
