@@ -12,6 +12,7 @@
     background-color: $secondary-color;
     .btn{
       border-radius: 0;
+      height: 42px;
     }
     &::after{
       content: '';
@@ -195,9 +196,6 @@
   overflow-y: auto;
 }
 
-.tabs-width {
-  width: 240px !important;
-}
 
 .scroll-button {
   color: #828282;

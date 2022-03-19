@@ -186,6 +186,9 @@ class Main extends Component {
   }
 
   showCollectionDashboard () {
+    if (!auth.getCurrentUser()) {
+      return false
+    }
     const collectionLength = Object.keys(this.props.collections).length
     const orgId = this.props.match.params.orgId
     const temp = JSON.parse(window.localStorage.getItem('visitedOrgs'))

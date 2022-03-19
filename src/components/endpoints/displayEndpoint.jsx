@@ -54,6 +54,7 @@ import { pendingEndpoint, approveEndpoint } from '../publicEndpoint/redux/public
 import WarningModal from '../common/warningModal'
 import DeleteIcon from '../../assets/icons/delete-icon.svg'
 import { onToggle } from '../common/redux/toggleResponse/toggleResponseActions'
+import PlusIcon from '../../assets/icons/plus.svg'
 import ApiDocReview from '../apiDocReview/apiDocReview'
 const shortid = require('shortid')
 
@@ -190,7 +191,8 @@ class DisplayEndpoint extends Component {
       host: {},
       draftDataSet: false,
       runSendRequest: null,
-      requestKey: null
+      requestKey: null,
+      docOptions: false
     }
 
     this.uri = React.createRef()
@@ -2107,7 +2109,7 @@ class DisplayEndpoint extends Component {
           <div>
             {this.state.docViewData.map((item, index) =>
               <SortableItem key={index} index={index}>
-                <div className='doc-secs-container'>
+                <div className='doc-secs-container mb-3'>
                   <div className='doc-secs'>
                     {this.renderPublicItem(item, index)}
                   </div>
@@ -2566,6 +2568,11 @@ class DisplayEndpoint extends Component {
     )
   }
 
+  showDocOptions () {
+    const { docOptions } = this.state
+    this.setState({ docOptions: !docOptions })
+  }
+
   renderSaveButton () {
     return (
       <div className='save-endpoint position-absolute top-right'>
@@ -2677,7 +2684,7 @@ class DisplayEndpoint extends Component {
         >
           <div className={this.isNotDashboardOrDocView() ? 'mainContentWrapper dashboardPage' : 'mainContentWrapper'}>
             <div className={`innerContainer ${responseView === 'right' ? 'response-right' : 'response-bottom'}`}>
-              <div className='hm-endpoint-container mid-part endpoint-container'>
+              <div className={`hm-endpoint-container mid-part endpoint-container ${this.state.currentView === 'doc' ? 'doc-fix-width' : ''}`}>
                 {this.renderCookiesModal()}
                 {this.renderDefaultViewConfirmationModal()}
                 {this.renderPublishConfirmationModal()}
@@ -2970,9 +2977,9 @@ class DisplayEndpoint extends Component {
                     }
                         {
                     !isDashboardRoute(this.props) && (
-                      <div className='text-left'>
+                      <div className='request-button'>
                         <button
-                          className={this.state.loader ? 'btn btn-primary btn-lg mt-4 buttonLoader' : 'mt-4 btn btn-lg btn-primary'}
+                          className={this.state.loader ? 'btn btn-primary btn-lg buttonLoader' : 'btn btn-lg btn-primary'}
                           style={{ background: theme }}
                           type='submit'
                           id='send-request-button'
@@ -2990,8 +2997,12 @@ class DisplayEndpoint extends Component {
                       </div>
                     </div>
                   </div>
+                  {!this.isDashboardAndTestingView() && isDashboardRoute(this.props) &&
+                    <div className='doc-options d-flex align-items-center'>
+                      <img src={PlusIcon} className='mr-2 cursor-pointer' onClick={() => this.showDocOptions()} alt='' />
+                      {this.state.docOptions && this.renderDocViewOptions()}
+                    </div>}
                 </div>
-                {this.renderDocViewOptions()}
                 <ApiDocReview {...this.props} />
               </div>
               {
@@ -3001,24 +3012,23 @@ class DisplayEndpoint extends Component {
                       : this.displayPublicResponse()
                   : null
                 }
-
+              {
+                this.isNotDashboardOrDocView() &&
+                this.state.harObject &&
+                this.props.location.pathname.split('/')[3] !== 'admin' && (
+                  <CodeTemplate
+                    show
+                    onHide={() => {
+                      this.setState({ showCodeTemplate: false })
+                    }}
+                    editorToggle={() => { this.setState({ codeEditorVisibility: !this.state.codeEditorVisibility }) }}
+                    harObject={this.state.harObject}
+                    title='Generate Code Snippets'
+                    publicCollectionTheme={this.props.publicCollectionTheme}
+                  />
+                )
+              }
             </div>
-            {
-           this.isNotDashboardOrDocView() &&
-            this.state.harObject &&
-            this.props.location.pathname.split('/')[3] !== 'admin' && (
-              <CodeTemplate
-                show
-                onHide={() => {
-                  this.setState({ showCodeTemplate: false })
-                }}
-                editorToggle={() => { this.setState({ codeEditorVisibility: !this.state.codeEditorVisibility }) }}
-                harObject={this.state.harObject}
-                title='Generate Code Snippets'
-                publicCollectionTheme={this.props.publicCollectionTheme}
-              />
-           )
-          }
 
           </div>
 

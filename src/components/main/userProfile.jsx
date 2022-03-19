@@ -117,7 +117,7 @@ export class UserProfile extends React.Component {
     }
 
     renderMenuButton () {
-      return this.renderProfileOption()
+      return '' // this.renderProfileOption()   //Hosted API doc is not needed anymore
     }
 
     renderProfileOption () {

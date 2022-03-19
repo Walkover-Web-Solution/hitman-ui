@@ -57,6 +57,9 @@ const mapStateToProps = (state) => {
 
 /** Desktop App Download URL */
 const DESKTOP_APP_DOWNLOAD_LINK = process.env.REACT_APP_DESKTOP_APP_DOWNLOAD_LINK
+/* Internal Login Routes */
+const LOGIN_ROUTE = process.env.REACT_APP_UI_URL + '/login'
+const BROWSER_LOGIN_ROUTE = process.env.REACT_APP_UI_URL + '/browser-login'
 
 const mapDispatchToProps = (dispatch) => {
   return {
@@ -74,6 +77,22 @@ function compareByCreatedAt (a, b) {
     comparison = -1
   }
   return comparison
+}
+
+const LoginButton = () => {
+  return (
+    isElectron()
+      ? <div className='float-right d-flex btn btn-primary mr-3' onClick={() => openExternalLink(BROWSER_LOGIN_ROUTE)}>Login/SignUp</div>
+      : <div
+          id='sokt-sso'
+          data-redirect-uri={LOGIN_ROUTE}
+          data-source='hitman'
+          data-token-key='sokt-auth-token'
+          data-view='button'
+          data-app-logo-url='https://hitman.app/wp-content/uploads/2020/12/123.png'
+          signup_uri={LOGIN_ROUTE + '?signup=true'}
+        />
+  )
 }
 class SideBar extends Component {
   constructor (props) {
@@ -492,14 +511,19 @@ class SideBar extends Component {
 
   renderEmptyCollectionsIfNotLoggedIn () {
     return (
-      <div className='empty-collections'>
-        <div>
-          <NoCollectionsIcon />
+      <div>
+        <div className='m-3 ml-4'>
+          {this.renderLoginButton()}
         </div>
-        <div className='content'>
-          <h5>  Your collection is Empty.</h5>
+        <div className='empty-collections ml-4 mt-5'>
+          <div>
+            <NoCollectionsIcon />
+          </div>
+          <div className='content'>
+            <h5>  Your collection is Empty.</h5>
+          </div>
+          <Button className='btn-lg mt-2 ml-4' variant='primary' onClick={() => this.setState({ showLoginSignupModal: true })}>+ Add here</Button>{' '}
         </div>
-        <Button className='btn-lg mt-2' variant='primary' onClick={() => this.setState({ showLoginSignupModal: true })}>+ Add here</Button>{' '}
       </div>
     )
   }
@@ -610,7 +634,7 @@ class SideBar extends Component {
 
   renderInviteTeam () {
     return (
-      <div className='mb-2' onClick={() => { this.openAccountAndSettings() }}>
+      <div className='mb-2 cursor-pointer' onClick={() => { this.openAccountAndSettings() }}>
         <Users className='mr-2' />
         <span>Invite Team</span>
       </div>
@@ -729,13 +753,17 @@ class SideBar extends Component {
     )
   }
 
+  renderLoginButton () {
+    return getCurrentUser() ? '' : <LoginButton />
+  }
+
   renderDashboardSidebar () {
     return (
       <>
         <div className='plr-3'>
           {this.renderSwitchProducts()}
           {this.renderSearch()}
-          {this.renderInviteTeam()}
+          {getCurrentUser() && this.renderInviteTeam()}
           {this.renderDownloadDesktopApp()}
           {this.renderGlobalAddButton()}
         </div>

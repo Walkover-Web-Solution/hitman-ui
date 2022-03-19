@@ -42,6 +42,9 @@ body .sidebar {
     height: 1.5rem;
   }
   div#parent-accordion {
+    &.expanded {
+      padding-bottom: 0.5rem;
+    }
     border-bottom: 1px solid #ebe9e8;
     > button{
       height: 2rem;
@@ -104,6 +107,9 @@ body .sidebar {
         justify-content: center;
       }
       button{
+        > div.cl-name{
+          width: 100%;
+        }
         &.expanded{
           .versionChovron{
             transform: rotate(0);
