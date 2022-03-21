@@ -3375,3 +3375,16 @@ body .bottom-text-editor {
   max-width: 50rem;
   float: unset !important;
 }
+
+.doc-plus{
+  padding: 0px !important;
+  &::after{
+    display: none !important;
+  }
+}
+
+.doc-plus-menu{
+  position: relative !important;
+  top: -40px !important;
+  left: 20px !important;
+}
