@@ -137,11 +137,10 @@ class ApiDocReview extends Component {
                 <label htmlFor=''>Comment</label>
                 <textarea className='form-control' onChange={this.handleInput.bind(this)} value={this.state.comment} type='text' name='comment' /><br />
               </div>
+              <input type='submit' className='btn btn-primary' value='Submit' />
             </form>
           </Modal.Body>
-          <Modal.Footer>
-            <input type='submit' className='btn btn-primary' value='Submit' />
-          </Modal.Footer>
+          <Modal.Footer />
         </div>
       </Modal>
     )
