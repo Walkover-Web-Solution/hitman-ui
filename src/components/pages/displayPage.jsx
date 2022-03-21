@@ -160,7 +160,7 @@ class DisplayPage extends Component {
             </button>}
           {!isPublicPage &&
             <button
-              className={'ml-2 ' + (draftOrRejected ? 'btn btn-outline orange' : 'btn text-link')}
+              className={'mr-2 ' + (draftOrRejected ? 'btn btn-outline orange btn-extra-lg' : 'btn text-link')}
               type='button'
               onClick={() => draftOrRejected ? this.handlePublicPageState(pages[pageId]) : null}
             >
