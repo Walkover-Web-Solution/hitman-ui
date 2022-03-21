@@ -15,11 +15,9 @@ function ConfirmationModal (props) {
       centered
     >
       <Modal.Header className='custom-collection-modal-container' closeButton>
-        <Modal.Title id='contained-modal-title-vcenter'>
-          {props.title}
-        </Modal.Title>
       </Modal.Header>
       <Modal.Body id='custom-delete-modal-body'>
+        {props.title}
         <div className='text-left mt-4 mb-2'>
           <button
             id='custom-delete-modal-delete'
