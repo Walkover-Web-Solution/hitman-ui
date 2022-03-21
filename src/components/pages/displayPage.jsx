@@ -1,17 +1,21 @@
 import React, { Component } from 'react'
 import store from '../../store/store'
 import { connect } from 'react-redux'
-import { isDashboardRoute } from '../common/utility'
+import { isDashboardRoute, isStateDraft, isStateReject, msgText } from '../common/utility'
 import './page.scss'
 import { updatePage } from './redux/pagesActions'
 import EndpointBreadCrumb from '../endpoints/endpointBreadCrumb'
 import ApiDocReview from '../apiDocReview/apiDocReview'
 import TinyEditor from '../tinyEditor/tinyEditor'
+import { isAdmin } from '../auth/authService'
+import { approvePage, pendingPage } from '../publicEndpoint/redux/publicEndpointsActions'
+import ConfirmationModal from '../common/confirmationModal'
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    update_page: (editedPage, pageId) =>
-      dispatch(updatePage(ownProps.history, editedPage, pageId))
+    update_page: (editedPage, pageId) => dispatch(updatePage(ownProps.history, editedPage, pageId)),
+    approve_page: (page, publishPageLoaderHandler) => dispatch(approvePage(page, publishPageLoaderHandler)),
+    pending_page: (page) => dispatch(pendingPage(page))
   }
 }
 
@@ -129,23 +133,71 @@ class DisplayPage extends Component {
     )
   }
 
+  renderPublishPageOperations () {
+    if (isDashboardRoute(this.props)) {
+      const pages = { ...this.props.pages }
+      const pageId = this.props.match.params?.pageId
+      const isPublicPage = pages[pageId].isPublished
+      const draftOrRejected = isStateDraft(pageId, pages) || isStateReject(pageId, pages)
+      return (
+        <div>
+          <button
+            className='btn btn-primary btn-extra-lg'
+            onClick={() => {
+              this.handleEdit(this.state.data)
+            }}
+          >
+            Edit
+          </button>
+          {isPublicPage &&
+            <button
+              className={'ml-2 ' + (this.state.publishLoader ? 'btn btn-outline orange buttonLoader' : 'btn btn-outline orange')}
+              type='button'
+              onClick={() => this.setState({ openPublishConfirmationModal: true })}
+              disabled={!isAdmin()}
+            >
+              Publish Page
+            </button>}
+          {!isPublicPage &&
+            <button
+              className={'ml-2 ' + (draftOrRejected ? 'btn btn-outline orange' : 'btn text-link')}
+              type='button'
+              onClick={() => draftOrRejected ? this.handlePublicPageState(pages[pageId]) : null}
+            >
+              {draftOrRejected ? 'Make Public' : 'Pending'}
+            </button>}
+        </div>
+      )
+    }
+  }
+
+  async handlePublicPageState (page) {
+    if (isStateDraft(page.id, this.props.pages) || isStateReject(page.id, this.props.pages)) this.props.pending_page(page)
+  }
+
+  renderPublishConfirmationModal () {
+    return this.state.openPublishConfirmationModal &&
+      <ConfirmationModal
+        show={this.state.openPublishConfirmationModal}
+        onHide={() => this.setState({ openPublishConfirmationModal: false })}
+        proceed_button_callback={this.handleApprovePageRequest.bind(this)}
+        title={msgText.publishPage}
+        submitButton='Publish'
+        rejectButton='Discard'
+      />
+  }
+
+  async handleApprovePageRequest () {
+    const pageId = this.props.match.params?.pageId
+    this.setState({ publishLoader: true })
+    this.props.approve_page(this.props.pages[pageId], () => { this.setState({ publishLoader: false }) })
+  }
+
   render () {
     return (
       <div className='custom-display-page'>
-        {
-          isDashboardRoute(this.props)
-            ? (
-              <button
-                className='btn btn-primary btn-extra-lg'
-                onClick={() => {
-                  this.handleEdit(this.state.data)
-                }}
-              >
-                Edit page
-              </button>
-              )
-            : null
-        }
+        {this.renderPublishConfirmationModal()}
+        {this.renderPublishPageOperations()}
         {this.renderPageName()}
         {this.checkPageRejected()}
         <div className='float-left'>

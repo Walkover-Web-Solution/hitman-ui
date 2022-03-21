@@ -41,13 +41,15 @@ class EditPage extends Component {
     const { pages } = this.props
     const page = pages[pageId]
     if (page) {
-      const { id, versionId, groupId, name, contents } = page
+      const { id, versionId, groupId, name, contents, isPublished, state } = page
       data = {
         id,
         versionId,
         groupId,
         name,
-        contents
+        contents,
+        isPublished,
+        state
       }
 
       this.setState({ data, originalData: data, draftDataSet: true })
@@ -159,6 +161,29 @@ class EditPage extends Component {
     )
   }
 
+  renderEditPageOperations () {
+    return (
+      <div>
+        <form onSubmit={this.handleSubmit}>
+          <button
+            onSubmit={this.handleSubmit}
+            type='submit'
+            className='btn btn-primary btn-extra-lg mt-4 ml-3'
+          >
+            Save
+          </button>
+          <button
+            onClick={() => { this.isModified() ? this.setState({ warningModalFlag: true }) : this.handleCancel() }}
+            type='button'
+            className='btn btn-secondary outline btn-extra-lg mt-4'
+          >
+            Cancel
+          </button>
+        </form>
+      </div>
+    )
+  }
+
   render () {
     return (
       <div className='custom-edit-page'>
@@ -168,6 +193,7 @@ class EditPage extends Component {
           ignoreButtonCallback={() => { this.handleCancel() }}
           message='Your unsaved changes will be lost.'
         />
+        {this.renderEditPageOperations()}
         <div className='form-group'>
           <label htmlFor='name'>Page Name</label>
           <input
@@ -183,25 +209,6 @@ class EditPage extends Component {
 
         <div style={{ marginBottom: '50px' }}>
           {this.renderTinyEditor()}
-        </div>
-
-        <div>
-          <form onSubmit={this.handleSubmit}>
-            <button
-              onClick={() => { this.isModified() ? this.setState({ warningModalFlag: true }) : this.handleCancel() }}
-              type='button'
-              className='btn btn-secondary outline btn-extra-lg mt-4'
-            >
-              Cancel
-            </button>
-            <button
-              onSubmit={this.handleSubmit}
-              type='submit'
-              className='btn btn-primary btn-extra-lg mt-4 ml-3'
-            >
-              Save
-            </button>
-          </form>
         </div>
       </div>
     )
