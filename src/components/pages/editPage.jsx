@@ -165,20 +165,22 @@ class EditPage extends Component {
     return (
       <div>
         <form onSubmit={this.handleSubmit}>
-          <button
-            onSubmit={this.handleSubmit}
-            type='submit'
-            className='btn btn-primary btn-extra-lg mt-4 ml-3'
-          >
-            Save
-          </button>
-          <button
-            onClick={() => { this.isModified() ? this.setState({ warningModalFlag: true }) : this.handleCancel() }}
-            type='button'
-            className='btn btn-secondary outline btn-extra-lg mt-4'
-          >
-            Cancel
-          </button>
+          <div className='d-flex flex-row justify-content-end mb-2'>
+            <button
+              onSubmit={this.handleSubmit}
+              type='submit'
+              className='btn btn-primary btn-extra-lg mr-2 btn-width'
+            >
+              Save
+            </button>
+            <button
+              onClick={() => { this.isModified() ? this.setState({ warningModalFlag: true }) : this.handleCancel() }}
+              type='button'
+              className='btn btn-secondary outline btn-extra-lg btn-width'
+            >
+              Cancel
+            </button>
+          </div>
         </form>
       </div>
     )
@@ -193,9 +195,12 @@ class EditPage extends Component {
           ignoreButtonCallback={() => { this.handleCancel() }}
           message='Your unsaved changes will be lost.'
         />
-        {this.renderEditPageOperations()}
+
         <div className='form-group'>
-          <label htmlFor='name'>Page Name</label>
+          <div className='d-flex justify-content-between align-items-center'>
+            <label htmlFor='name'>Page Name</label>
+            {this.renderEditPageOperations()}
+          </div>
           <input
             name='name'
             id='name'

@@ -151,7 +151,7 @@ class DisplayPage extends Component {
           </button>
           {isPublicPage &&
             <button
-              className={'ml-2 ' + (this.state.publishLoader ? 'btn btn-outline orange buttonLoader' : 'btn btn-outline orange')}
+              className={'mr-2 ' + (this.state.publishLoader ? 'btn btn-outline orange btn-extra-lg buttonLoader' : 'btn btn-outline orange btn-extra-lg')}
               type='button'
               onClick={() => this.setState({ openPublishConfirmationModal: true })}
               disabled={!isAdmin()}
