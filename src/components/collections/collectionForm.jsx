@@ -106,6 +106,7 @@ class CollectionForm extends Form {
       const { id: collectionId } = collection.data
       this.props.history.push({ pathname: `/orgs/${orgId}/dashboard/collection/${collectionId}/settings` })
     }
+    this.props.setDropdownList(collection.data)
     this.props.onHide()
   }
 

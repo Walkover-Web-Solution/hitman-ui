@@ -14,8 +14,8 @@ import shortid from 'shortid'
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    add_version: (newCollectionVersion, collectionId) =>
-      dispatch(addVersion(newCollectionVersion, collectionId)),
+    add_version: (newCollectionVersion, collectionId, callback) =>
+      dispatch(addVersion(newCollectionVersion, collectionId, callback)),
     update_version: (editedVersion) => dispatch(updateVersion(editedVersion))
   }
 }
@@ -53,6 +53,10 @@ class CollectionVersionForm extends Form {
     this.setState({ data, versionId, collectionId })
   }
 
+  redirectToForm (version) {
+    this.props.setDropdownList(version)
+  }
+
   async doSubmit () {
     this.props.onHide()
     let { number } = { ...this.state.data }
@@ -65,7 +69,7 @@ class CollectionVersionForm extends Form {
     if (this.props.title === ADD_VERSION_MODAL_NAME) {
       const collectionId = this.props.collection_id
       const newVersion = { ...this.state.data, requestId: shortid.generate(), number }
-      this.props.add_version(newVersion, collectionId)
+      this.props.add_version(newVersion, collectionId, this.redirectToForm.bind(this))
       moveToNextStep(2)
     }
   }
