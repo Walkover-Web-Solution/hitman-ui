@@ -8,6 +8,7 @@ import 'ace-builds/src-noconflict/theme-tomorrow_night'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { ReactComponent as CopyIcon } from '../../assets/icons/copyIcon.svg'
 import { languages, primaryLanguages, secondaryLanguages } from './languages'
+import CloseIcon from '../../assets/icons/x.svg'
 const HTTPSnippet = require('httpsnippet')
 
 class CodeTemplate extends Component {
@@ -75,16 +76,14 @@ class CodeTemplate extends Component {
 
     return (
       <div className={codeEditorVisibility ? 'pubCodeWrapper' : 'pubCodeWrapper closeEditor'}>
-        <button className='toggleButton' onClick={() => { this.toggleCodeEditor() }}>
-          <svg width='18' height='19' viewBox='0 0 18 19' fill='none' xmlns='http://www.w3.org/2000/svg'>
-            <path d='M6.75 13.75L11.25 9.25L6.75 4.75' stroke='black' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
-          </svg>
+        <button className='toggleButton justify-content-start' onClick={() => { this.toggleCodeEditor() }}>
           Sample Code
+          <img src={CloseIcon} alt='' />
         </button>
         <div className='inner-editor'>
-          <Col id='code-window-sidebar' xs={12} className='d-flex justify-content-between'>
-            <div className='code-heading'>
-              Sample code
+          <Col id='code-window-sidebar' xs={12} className=''>
+            <div className='code-heading mb-3 d-flex justify-content-center'>
+              <span>Sample code</span>
             </div>
             <div className='select-code-wrapper d-flex justify-content-end'>
               {primaryLanguages.map(key => (

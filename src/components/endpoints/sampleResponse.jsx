@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { isDashboardRoute } from '../common/utility'
+import { isDashboardRoute, isNotDashboardOrDocView } from '../common/utility'
 import JSONPretty from 'react-json-pretty'
 import './endpoints.scss'
 import SampleResponseForm from './sampleResponseForm'
@@ -100,6 +100,28 @@ class SampleResponse extends Component {
     )
   }
 
+  showJSONPretty (data) {
+    return (
+      <JSONPretty
+        themeClassName='custom-json-pretty'
+        data={data}
+      />
+    )
+  }
+
+  showSampleResponseBody (data) {
+    if (typeof data === 'object') {
+      return (this.showJSONPretty(data))
+    } else {
+      try {
+        data = JSON.parse(data)
+        return this.showJSONPretty(data)
+      } catch (err) {
+        return <pre>{data}</pre>
+      }
+    }
+  }
+
   closeForm () {
     const showSampleResponseForm = { add: false, delete: false, edit: false }
     this.setState({ showSampleResponseForm })
@@ -115,13 +137,13 @@ class SampleResponse extends Component {
     const sampleResponseArray = [...this.props.sample_response_array]
     const sampleResponseFlagArray = [...this.props.sample_response_flag_array]
     return (
-      <div id='sample-response'>
+      <div id='sample-response' className={!isNotDashboardOrDocView(this.props, this.props.currentView) && 'testing-view-sample-response'}>
         {
           isDashboardRoute(this.props)
             ? (
               <div className='add-sample-response'>
                 <button
-                  className='adddescLink'
+                  className='adddescLink align-left'
                   onClick={() => this.openAddForm({}, null, 'Add Sample Response')}
                 >
                   <svg width='16' height='16' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M9 3.75V14.25' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' /><path d='M3.75 9H14.25' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' /></svg> Add Sample Response
@@ -182,11 +204,7 @@ class SampleResponse extends Component {
               {sampleResponseFlagArray[index] && (
                 <>
                   <img src={DownArrow} alt='down-arrow' onClick={() => this.props.close_body(index)} />
-                  <JSONPretty
-                    // theme={JSONPrettyMon}
-                    themeClassName='custom-json-pretty'
-                    data={obj.data}
-                  />
+                  {this.showSampleResponseBody(obj.data)}
                 </>
               )}
             </div>

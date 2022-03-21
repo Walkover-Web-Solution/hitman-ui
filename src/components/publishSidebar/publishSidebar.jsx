@@ -391,7 +391,7 @@ export class PublishSidebar extends Component {
       <div className='collection-api-doc-dropdown'>
         <div className='collection-api-doc-heading'>Collection</div>
         <Dropdown className=' w-100 d-flex '>
-          <Dropdown.Toggle variant='' className=' w-100 d-flex sidebar-dropdown'>
+          <Dropdown.Toggle variant='' className=' w-100 d-flex sidebar-dropdown outline-border publish-api-dropdown'>
             <span className='collection-name'>{this.props.collections[this.state.selectedCollectionId]?.name}</span>
           </Dropdown.Toggle>
 
@@ -426,8 +426,8 @@ export class PublishSidebar extends Component {
                   <div className=' d-flex align-items-start w-100'>
                     <span className='mr-2 sidebar-version-checkbox'>{this.renderCheckBox('version', version?.id)}</span>
                     <Accordion className='version-accordian w-100' defaultActiveKey={version?.id}>
-                      <Accordion.Toggle eventKey={version?.id} className='version-accordian-toggle w-100' onClick={() => this.toggleVersion(version?.id)}>
-                        <div className='d-flex align-items-center justify-content-between'>
+                      <Accordion.Toggle eventKey={version?.id} className='version-accordian-toggle w-100 version-outline-border' onClick={() => this.toggleVersion(version?.id)}>
+                        <div className='d-flex align-items-center justify-content-between w-100'>
                           <div className=''>{version?.number}</div>
                           <div className={['down-arrow', this.state.versionsToggle[version.id] ? 'rotate-toggle' : ' '].join(' ')}> <DownChevron /> </div>
                         </div>
@@ -451,8 +451,8 @@ export class PublishSidebar extends Component {
   renderFooter () {
     return (
       <div className='d-flex mt-3'>
-        <button className='btn btn-primary' onClick={() => this.sendPublishRequest()}>Next</button>
-        <button className='ml-2 btn btn-secondary outline' onClick={() => { this.props.closePublishSidebar() }}>Cancel</button>
+        <button className='btn btn-primary justify-content-center' id='api-next-btn' onClick={() => this.sendPublishRequest()}>Next</button>
+        <button className='ml-2 btn btn-secondary justify-content-center' id='api-cancel-btn' onClick={() => { this.props.closePublishSidebar() }}>Cancel</button>
       </div>
     )
   }

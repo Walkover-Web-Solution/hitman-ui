@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { Button, Dropdown, OverlayTrigger, Tooltip } from 'react-bootstrap'
-import jwtDecode from 'jwt-decode'
 import { makeHighlightsData } from '../endpoints/highlightChangesHelper'
 import { connect } from 'react-redux'
 import { updateCollection } from '../collections/redux/collectionsActions'
@@ -30,7 +29,7 @@ import { ReactComponent as SettingsIcon } from '../../assets/icons/settings.svg'
 import { ReactComponent as ExternalLinks } from '../../assets/icons/externalLinks.svg'
 import PublishDocsConfirmModal from './publishDocsConfirmModal'
 import { moveToNextStep } from '../../services/widgetService'
-import { openExternalLink } from '../common/utility'
+import { openExternalLink, sensitiveInfoFound } from '../common/utility'
 const isEqual = require('react-fast-compare')
 
 const URI = require('urijs')
@@ -264,91 +263,9 @@ class PublishDocs extends Component {
     })
   }
 
-  sensitiveInfoFound (endpoint) {
-    // check for sensitive info in request here
-    let result = false
-    // first check access_token in params
-    if (typeof endpoint?.params?.access_token === 'object') {
-      const value = typeof endpoint.params.access_token.value === 'string' ? endpoint.params.access_token.value : ''
-      const authData = value.split(' ')
-      if (authData.length === 1) {
-        try {
-          jwtDecode(authData[0])
-          return true
-        } catch (err) {
-          result = false
-        }
-      }
-    }
-    // first check Authorization in headers
-    if (typeof endpoint?.headers?.Authorization === 'object') {
-      const value = typeof endpoint.headers.Authorization.value === 'string' ? endpoint.headers.Authorization.value : ''
-      const authData = value.split(' ')
-      if (authData.length === 1) {
-        try {
-          jwtDecode(authData[0])
-          return true
-        } catch (err) {
-          result = false
-        }
-      }
-      if (authData.length === 2) {
-        switch (authData[0]) {
-          case 'Basic':
-            try {
-              const string = authData[1]
-              window.atob(string)
-              return true
-            } catch (err) {
-              result = false
-            }
-            break
-          case 'Bearer':
-            try {
-              jwtDecode(authData[1])
-              return true
-            } catch (err) {
-              result = false
-            }
-            break
-          default: result = false
-        }
-      }
-    }
-    // check for all params if theres any JWT token
-    if (typeof endpoint.params === 'object') {
-      Object.entries(endpoint.params).forEach(entry => {
-        const value = typeof entry[1].value === 'string' ? entry[1].value : ''
-        const authData = value.split(' ')
-        authData.forEach(item => {
-          try {
-            jwtDecode(item)
-            result = true
-          } catch (err) {
-          }
-        })
-      })
-    }
-    // check all headers if theres any JWT token
-    if (typeof endpoint.headers === 'object') {
-      Object.entries(endpoint.headers).forEach(entry => {
-        const value = typeof entry[1].value === 'string' ? entry[1].value : ''
-        const authData = value.split(' ')
-        authData.forEach(item => {
-          try {
-            jwtDecode(item)
-            result = true
-          } catch (err) {
-          }
-        })
-      })
-    }
-    return result
-  }
-
   async handleApproveEndpointRequest (endpointId) {
     this.setState({ publishLoader: true })
-    if (this.sensitiveInfoFound(this.props.endpoints[endpointId])) {
+    if (sensitiveInfoFound(this.props.endpoints[endpointId])) {
       this.setState({ warningModal: true })
     } else {
       this.props.approve_endpoint(this.props.endpoints[endpointId], this.publishLoaderHandler.bind(this))
@@ -1240,7 +1157,7 @@ class PublishDocs extends Component {
         <div>
           <label className='hostes-label'>Collection</label>
           <Dropdown>
-            <Dropdown.Toggle variant='' id='dropdown-basic'>
+            <Dropdown.Toggle variant='' id='dropdown-basic' className='custom-toggle'>
               {this.props.collections[collectionId]?.name || ''}
             </Dropdown.Toggle>
             <Dropdown.Menu>

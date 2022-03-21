@@ -6,12 +6,14 @@ import 'ace-builds/src-noconflict/mode-json'
 import 'ace-builds/src-noconflict/mode-xml'
 import 'ace-builds/src-noconflict/theme-github'
 import 'ace-builds/webpack-resolver'
+import { addCompleter } from 'ace-builds/src-noconflict/ext-language_tools'
 import React, { Component } from 'react'
 import AceEditor from 'react-ace'
 import BodyDescription from './bodyDescription'
 import './endpoints.scss'
 import GenericTable from './genericTable'
 import { isSavedEndpoint } from '../common/utility'
+import _ from 'lodash'
 
 class BodyContainer extends Component {
   constructor (props) {
@@ -40,10 +42,21 @@ class BodyContainer extends Component {
         ]
       },
       endpointId: null,
-      selectedRawBodyType: 'TEXT'
+      selectedRawBodyType: 'TEXT',
+      suggestions: []
     }
 
     this.rawBodyTypes = ['TEXT', 'HTML', 'JSON', 'XML', 'JavaScript']
+    addCompleter({
+      getCompletions: function (editor, session, pos, prefix, callback) {
+        callback(null, [...this.state.suggestions])
+      }.bind(this)
+    })
+    this.loadEnvVarsSuggestions()
+  }
+
+  componentDidUpdate (prevProps, prevState) {
+    if (prevProps.environment !== this.props.environment) this.loadEnvVarsSuggestions()
   }
 
   handleSelectBodyType (bodyType, bodyDescription) {
@@ -96,6 +109,18 @@ class BodyContainer extends Component {
         })
       }
     }
+  }
+
+  loadEnvVarsSuggestions () {
+    const suggestions = []
+    _.keys(this.props.environment.variables).forEach((variable) => {
+      suggestions.push({
+        caption: `${variable}`,
+        value: `{{${variable}}}`,
+        meta: 'Environment variable'
+      })
+    })
+    this.setState({ suggestions })
   }
 
   handleChange (value) {
@@ -206,11 +231,18 @@ class BodyContainer extends Component {
                   editor.getSession().setUseWrapMode(true)
                   editor.setShowPrintMargin(false)
                 }}
+                enableLiveAutocompletion
+                enableBasicAutocompletion
               />
             </div>
           )
       }
     }
+  }
+
+  matchCurrentBodyType (bodyType) {
+    if (this.props.body && this.props.body.type + '-' + this.props.endpoint_id === bodyType) return true
+    return false
   }
 
   render () {
@@ -251,6 +283,7 @@ class BodyContainer extends Component {
 
     return (
       <div className='body-wrapper'>
+        <span style={{ fontWeight: 600 }}>Body</span>
         <div className='button-panel-wrapper'>
           <form className='body-select d-flex align-items-center mb-4'>
             <label className='customRadio'>
@@ -274,6 +307,7 @@ class BodyContainer extends Component {
                 id={`raw-${this.props.endpoint_id}`}
                 onClick={() => this.handleSelectBodyType('raw')}
                 className='custom-radio-input'
+                checked={this.matchCurrentBodyType(`${this.state.selectedRawBodyType}-${this.props.endpoint_id}`)}
               />
               <span>raw</span>
               <span class='checkmark' />
@@ -285,6 +319,7 @@ class BodyContainer extends Component {
                 id={`multipart/form-data-${this.props.endpoint_id}`}
                 onClick={() => this.handleSelectBodyType('multipart/form-data')}
                 className='custom-radio-input'
+                checked={this.matchCurrentBodyType(`multipart/form-data-${this.props.endpoint_id}`)}
               />
               <span>form-data</span>
               <span class='checkmark' />
@@ -298,6 +333,7 @@ class BodyContainer extends Component {
                 onClick={() =>
                   this.handleSelectBodyType('application/x-www-form-urlencoded')}
                 className='custom-radio-input'
+                checked={this.matchCurrentBodyType(`application/x-www-form-urlencoded-${this.props.endpoint_id}`)}
               />
               <span>x-www-form-urlencoded</span>
               <span class='checkmark' />
@@ -344,7 +380,7 @@ class BodyContainer extends Component {
             (this.state.selectedBodyType === 'raw' ||
               this.state.selectedBodyType === 'JSON') && (
                 <div
-                  className='btn-group btn-group-toggle customBtnGroup'
+                  className='btn-group btn-group-toggle customBtnGroup mb-4'
                   data-toggle='buttons'
                   style={{ float: 'right' }}
                 >
@@ -363,7 +399,7 @@ class BodyContainer extends Component {
                     Raw
                   </label>
                   <label
-                    className='btn btn-secondary'
+                    className='btn btn-secondary body-desc'
                     id={`toggle-body-description-${this.props.endpoint_id}`}
                   >
                     <input

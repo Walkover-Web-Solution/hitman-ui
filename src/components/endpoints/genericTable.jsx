@@ -1,9 +1,17 @@
 import React, { Component } from 'react'
-import { isDashboardRoute, isElectron } from '../common/utility'
+import { isDashboardRoute, isElectron, isDashboardAndTestingView } from '../common/utility'
 import { willHighlight, getHighlightsData } from './highlightChangesHelper'
 import './endpoints.scss'
 import shortid from 'shortid'
 import _ from 'lodash'
+import TextField from 'react-autocomplete-input'
+import 'react-autocomplete-input/dist/bundle.css'
+
+const autoCompleterDefaultProps = {
+  Component: 'input',
+  autocomplete: 'off',
+  trigger: ['{{']
+}
 
 class GenericTable extends Component {
   constructor (props) {
@@ -40,10 +48,12 @@ class GenericTable extends Component {
     }
   }
 
-  handleChange = (e) => {
+  handleChange = (e, inpTarget = null) => {
+    const target = inpTarget || e.currentTarget
     let { dataArray, title, original_data: originalData } = this.props
     dataArray = JSON.parse(JSON.stringify(dataArray))
-    const name = e.currentTarget.name.split('.')
+    const name = target.name.split('.')
+    const value = target.value
     if (name[1] === 'checkbox') {
       this.checkboxFlags[name[0]] = true
       if (dataArray[name[0]].checked === 'true') {
@@ -53,17 +63,17 @@ class GenericTable extends Component {
       }
     }
     if (name[1] === 'key' && title !== 'Path Variables') {
-      dataArray[name[0]].key = e.currentTarget.value
+      dataArray[name[0]].key = value
       if (title === 'Params' && dataArray[name[0]].key.length === 0) {
         this.handleDelete(dataArray, name[0], title)
       }
     } else if (title !== 'Path Variables' || name[1] !== 'key') {
       if (!isDashboardRoute(this.props)) { originalData[name[0]].empty = false }
-      dataArray[name[0]][name[1]] = e.currentTarget.value
+      dataArray[name[0]][name[1]] = value
     }
 
     if (title === 'formData' && name[1] === 'type') {
-      if (e.currentTarget.value === 'file') dataArray[name[0]].value = {}
+      if (target.value === 'file') dataArray[name[0]].value = {}
       else dataArray[name[0]].value = ''
     }
 
@@ -298,15 +308,19 @@ class GenericTable extends Component {
 
     renderTextOrFileInput (dataArray, index) {
       const { title } = this.props
+      const key = `${index}.key`
       return (
         <div className='position-relative fileInput'>
-          <input
-            name={index + '.key'}
+          <TextField
+            {...autoCompleterDefaultProps}
+            name={key}
+            key={key}
             value={dataArray[index].key}
-            onChange={this.handleChange}
+            onChange={(e) => this.handleChange(e, { name: key, value: e })}
             type='text'
             placeholder='Key'
             className='form-control'
+            options={{ '{{': _.keys(this.props.environment.variables) }}
           />
           {title === 'formData' &&
           (
@@ -357,6 +371,7 @@ class GenericTable extends Component {
     }
 
     renderTableRow (dataArray, index, originalData, title) {
+      const valueKey = `${index}.value`
       return (
         <tr key={index} id='generic-table-row'>
           <td
@@ -398,18 +413,25 @@ class GenericTable extends Component {
           <td className='custom-td'>
             {dataArray[index].type === 'file'
               ? this.renderSelectFiles(dataArray, index)
-              : <input
-                  name={index + '.value'}
-                  value={dataArray[index].type !== 'file' ? dataArray[index].value : ''}
-                  onChange={this.handleChange}
-                  type={dataArray[index].type}
-                  placeholder={
-                dataArray[index].checked === 'notApplicable'
-                  ? 'Value'
-                  : `Enter ${dataArray[index].key}`
-                }
-                  className='form-control'
-                />}
+              : (
+                <div className='position-relative'>
+                  <TextField
+                    {...autoCompleterDefaultProps}
+                    name={valueKey}
+                    key={valueKey}
+                    value={dataArray[index].type !== 'file' ? dataArray[index].value : ''}
+                    onChange={(e) => this.handleChange(e, { name: valueKey, value: e })}
+                    className='form-control'
+                    placeholder={
+                                  dataArray[index].checked === 'notApplicable'
+                                    ? 'Value'
+                                    : `Enter ${dataArray[index].key}`
+                                }
+                    options={{ '{{': _.keys(this.props.environment.variables) }}
+                    type={dataArray[index].type}
+                  />
+                </div>
+                )}
           </td>
           <td className='custom-td' id='generic-table-description-cell'>
             {
@@ -540,21 +562,21 @@ class GenericTable extends Component {
           }
         }
       }
-
+      const isDocView = !isDashboardRoute(this.props) || !isDashboardAndTestingView(this.props, this.props.currentView)
       this.autoFillBulkEdit()
       return (
       // "generic-table-container"
       // table-bordered
         <div className='hm-public-table position-relative'>
-          {(title === 'Path Variables' && isDashboardRoute(this.props)) ? <div>{title}</div> : null}
+          {(title === 'Path Variables' && isDashboardAndTestingView(this.props, this.props.currentView)) ? <div>{title}</div> : null}
           <div
             className={
-              isDashboardRoute(this.props)
-                ? 'generic-table-title-container'
-                : 'public-generic-table-title-container'
+              isDocView
+                ? 'public-generic-table-title-container'
+                : 'generic-table-title-container'
             }
           >
-            {!isDashboardRoute(this.props) && dataArray.length > 0 ? <span>{this.renderTitle(title)} {willHighlight(this.props, title) ? <i className='fas fa-circle' /> : null}</span> : null}
+            {(isDocView) && dataArray.length > 0 ? <span>{this.renderTitle(title)} {willHighlight(this.props, title) ? <i className='fas fa-circle' /> : null}</span> : null}
           </div>
 
           {!this.state.bulkEdit && dataArray.length > 0

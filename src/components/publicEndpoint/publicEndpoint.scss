@@ -1,5 +1,4 @@
-$border-color: rgba(227, 228, 230, 0.7);
-$font-small : 12px;
+@import '../main/variables.scss';
 
 main.main.ml-sm-auto.col-lg-10 {
   display: flex;
@@ -253,47 +252,71 @@ form.add-new-domain-form {
 }
 
 .hm-sidebar {
-  background-color: #F8F8F8;
-  padding: 15px 0px 0 0px;
   height: 100vh;
   max-height: 100vh;
   position: sticky;
   top: 0;
   flex: 20%;
   z-index: 999;
-  border-right: 1px solid #E0E0E0;
-  width: 20%;
-  min-width: 20%;
-  max-width: 20%;
+  border-right: 1px solid rgba(9, 30, 66,0.02);
+  min-width: 230px;
+  max-width: 330px;
 
   // nav.public-endpoint-sidebar {
   //   width: 250px;
   // }
 
   .public-endpoint-sidebar .primary-sidebar {
-    background-color: #F8F8F8;
     border: none;
     padding-top: 0;
   }
 }
 
 .hm-right-content {
-  // max-width: 1000px;
   margin: 0 auto;
-  // width: 100%;
-  flex: 90%;
-  flex-direction: column !important;
-  overflow-x: hidden;
-  background: #f8f8f8;
+  height: 100%;
+  overflow: auto;
+  .main-table-wrapper{
+    > div{
+      margin-bottom: 1rem;
+      &:empty{
+        display: none;
+      }
+    }
 
+  }
+  .request-button {
+    position: absolute;
+    top: 1.25rem;
+    right: 1.35rem;
+  }
+  .innerContainer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+  .doc-view{
+    box-shadow: none;
+    background-color: inherit;
+    padding: 0;
+  }
+  .hideCodeEditor{
+    transition: all 0.3s ease-in;
+    .hm-endpoint-container{
+      margin: auto;
+    }
+  }
   .hm-endpoint-container {
-    padding: 30px 0;
-    width: 60%;
+    padding: 20px 0;
     display: block;
-    margin: 0 15px;
+    margin: 0 0 0 1.5rem;
     transition: 450ms;
     height: 100%;
     overflow: auto;
+    width: 65%;
+    padding-right: 2%;
+    transition: all 0.3s ease-in;
+    position: relative;
     &::-webkit-scrollbar {
       display: none;
       width: 0px;
@@ -310,7 +333,8 @@ form.add-new-domain-form {
           text-transform: capitalize;
           font-weight: 700;
           font-size: 22px;
-          margin-bottom: 5px;
+          margin-bottom: 1rem;
+          max-width: 80%;
         }
       }
 
@@ -338,12 +362,11 @@ form.add-new-domain-form {
 
 // Sidebar Header
 .hm-sidebar-header {
-  padding: 0 25px 15px;
+  padding: 20px 25px 0px 15px;
   display: flex;
   color: #fff;
   align-items: center;
-  margin-bottom: 5px;
-  border-bottom: 1px solid #E0E0E0;
+  
 }
 
 // .hm-sidebar-logo {
@@ -372,7 +395,7 @@ h4.hm-sidebar-title {
   flex-grow: 1;
   font-size: 20px !important;
   font-weight: 700 !important;
-  color: #212224 !important;
+  color: #4B4B4D !important;
 }
 
 h4.hm-sidebar-title span {
@@ -422,10 +445,7 @@ h4.hm-sidebar-title span {
 .hm-public-endpoint-headers {
   #send-request-button {
     width: 75px;
-    height: 28px;
-    font-size: 14px;
-    padding: 0;
-    font-weight: 700;
+    height: 2.25rem;
     text-transform: uppercase;
   }
 }
@@ -445,10 +465,9 @@ h4.hm-sidebar-title span {
     }
   }
   .headParaWraper {
-    background: #F3F3F3;
+    background: $secondary-color;
   }
   table#custom-generic-table {
-    background: transparent !important;
     button.btn.cross-button {
       padding-top: 0;
       padding-bottom: 0;
@@ -469,18 +488,12 @@ h4.hm-sidebar-title span {
             border-top: none;
           }
         }
-        &:not(:last-child) input.form-control{
-          border-bottom: 0 !important;
-        }
-
         td {
           &.custom-td {
             border-color: #e5e5e5 !important;
-            padding: 0px 5px !important;
             vertical-align: middle;
             opacity: 1;
             color: #232427;
-
             &.keyWrapper {
               width: 150px !important;
               word-break: break-all;
@@ -529,7 +542,7 @@ h4.hm-sidebar-title span {
   .empty-response-container {
     background: transparent;
     border: none;
-    height: 140px;
+    height: 150px;
   }
 
 
@@ -561,8 +574,7 @@ h4.hm-sidebar-title span {
 }
 
 .versionWrapper {
-  padding: 0 25px 15px;
-  margin-top: 20px;
+  padding: 20px 25px 15px;
 }
 
 .page-heading-pub {
@@ -571,10 +583,6 @@ h4.hm-sidebar-title span {
   font-weight: 600;
   font-size: 22px;
   margin-bottom: 5px;
-}
-
-.mainContentWrapperPublic .endpoint-name-container p {
-  margin: 25px 0 28px;
 }
 
 .respHeading {
@@ -609,4 +617,12 @@ h4.hm-sidebar-title span {
 
 .hm-endpoint-header .DELETE {
   color: #d13755 !important;
+}
+
+.icon-design{
+  background-color: #f8f8f8;
+}
+
+.display-component{
+  min-height: 800px;
 }

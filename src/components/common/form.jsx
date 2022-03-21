@@ -2,8 +2,6 @@ import React, { Component } from 'react'
 import Input from './input'
 import Joi from 'joi-browser'
 import AceEditor from 'react-ace'
-import ReactQuill from 'react-quill'
-import 'react-quill/dist/quill.snow.css'
 import 'ace-builds'
 import 'ace-builds/src-noconflict/mode-json'
 import { handleChangeInUrlField, handleBlurInUrlField } from '../common/utility'
@@ -116,7 +114,7 @@ class Form extends Component {
     this.setState({ data })
   };
 
-  renderInput (name, label, placeholder, mandatory = false, firstLetterCapitalize = false, isURLInput = false) {
+  renderInput (name, label, placeholder, mandatory = false, firstLetterCapitalize = false, isURLInput = false, note = '') {
     const { data, errors } = this.state
     return (
       <Input
@@ -130,6 +128,7 @@ class Form extends Component {
         disabled={data.disabled}
         mandatory={mandatory}
         firstLetterCapitalize={firstLetterCapitalize}
+        note={note}
       />
     )
   }
@@ -150,24 +149,6 @@ class Form extends Component {
           name={name}
           value={data[name]}
           placeholder={placeholder}
-        />
-      </div>
-    )
-  }
-
-  renderQuillEditor (name, label) {
-    const { data } = this.state
-
-    return (
-      <div className='form-group '>
-        <label htmlFor={name} className='custom-input-label'>
-          {label}
-        </label>
-        <ReactQuill
-          value={data.description}
-          modules={this.modules}
-          formats={this.formats}
-          onChange={(content, delta, source, editor) => { this.handleEditorChange(content, editor) }}
         />
       </div>
     )
@@ -211,6 +192,7 @@ class Form extends Component {
             editor.setShowPrintMargin(false)
           }}
         />
+        <small className='muted-text'>*Body should not exceed more than 2000 characters.</small>
         {errors[name] && (
           <div className='alert alert-danger'>{errors[name]}</div>
         )}

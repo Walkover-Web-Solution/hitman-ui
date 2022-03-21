@@ -116,11 +116,13 @@ class App extends Component {
             <Route path='/403_PAGE' component={ERROR_403_PAGE} />
 
             {/* Logged in Dashboard Routes */}
+            <ProtectedRoute exact path='/orgs/:orgId/dashboard/' component={Main} />
             <ProtectedRoute path='/orgs/:orgId/admin/publish' component={Main} />
             <ProtectedRoute path='/orgs/:orgId/dashboard/endpoint/:endpointId' component={Main} />
+            <ProtectedRoute path='/orgs/:orgId/dashboard/collection/:collectionId/settings' component={Main} />
+            <ProtectedRoute path='/orgs/:orgId/dashboard/collection/:collectionId/feedback' component={Main} />
             <ProtectedRoute path='/orgs/:orgId/dashboard/page/:pageId' component={Main} />
             <ProtectedRoute path='/orgs/:orgId/dashboard/history/:historyId' component={Main} />
-            <ProtectedRoute exact path='/orgs/:orgId/dashboard/' component={Main} />
 
             {/* Not Logged in Dashboard Route */}
             <Route path='/dashboard/' component={Main} />
