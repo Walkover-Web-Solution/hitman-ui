@@ -16,9 +16,9 @@ const statesEnum = {
 }
 
 export const msgText = {
-  publishPage: 'You are about the make these changes live on your Public API doc.',
+  publishPage: 'You are about to make these changes live on your Public API doc.',
   viewSwitch: 'Do you wish to set it as default view?',
-  publishEndpoint: 'You are about the make these changes live on your Public API doc.'
+  publishEndpoint: 'You are about to make these changes live on your Public API doc.'
 }
 
 export function isDashboardRoute (props, sidebar = false) {
