@@ -82,6 +82,10 @@ body .sidebar {
       border: none;
       background: none;
       padding: 0;
+      border-bottom: 1px solid transparent;
+      &:focus{
+        border-color: $outline-color;
+      }
       &::placeholder{
         color: $text-color;
       }
@@ -140,6 +144,7 @@ body .sidebar {
           transform: translateY(-50%);
           z-index: 19;
           .dropdown-menu{
+            box-shadow: 0px 6px 10px 0px #c7c7c7;
             .dropdown-item{
               font-size: 14px;
               padding: 0.25rem 1rem;

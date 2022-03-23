@@ -769,9 +769,10 @@ table#custom-generic-table {
   display: flex;
   flex-direction: row;
   flex: 1;
-  background-color: #F3F3F3;
+  background-color: $secondary-color;
   min-height: 220px;
   margin-top: 1rem;
+  border-radius: $border-radius;
 }
 
 .authorization-selector-wrapper {

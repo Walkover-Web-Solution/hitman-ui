@@ -7,9 +7,6 @@
   body .split-sidebar > div:first-child{
     min-width: 330px !important;
   }
-  .response-right .response-container{
-
-  }
 }
 
 
@@ -1283,6 +1280,7 @@ button.editBtn {
 body .btn{
   border-radius: $border-radius;
   font-size: $font-normal !important;
+  font-weight: normal !important;
   &.btn-primary{
     background-color: $theme-color;
     border-color: $theme-color !important;
