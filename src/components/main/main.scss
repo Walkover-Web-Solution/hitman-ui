@@ -1079,20 +1079,10 @@ body .form-control {
 }
 
 .search-box>input[type="text"] {
-  &::-webkit-input-placeholder {
-    font-size: 14px;
-    font-weight: 600;
-    color: #BDBDBD;
-  }
-
-  &:-ms-input-placeholder {
-    font-size: 14px;
-    font-weight: 600;
-    color: #BDBDBD;
-  }
-
-  &::placeholder {
-    font-size: 14px;
+  &::-webkit-input-placeholder,
+  &:-ms-input-placeholder,
+  &::placeholder  {
+    font-size: $font-normal;
     font-weight: 600;
     color: #BDBDBD;
   }
@@ -1304,6 +1294,9 @@ body .btn{
     &.danger{
       border-color: $alert-color;
       color: $alert-color;
+      &:hover{
+        background-color: $alert-color;
+      }
     }
     &:hover{
       background-color: $theme-color;
