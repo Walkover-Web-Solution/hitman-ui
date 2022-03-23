@@ -8,18 +8,19 @@ class SavePromptModal extends Component {
     this.state = {}
   }
 
-  handleSave () {
+  async handleSave () {
     const { tabs, activeTabId } = this.props.tabs
     const tab = tabs[activeTabId]
     switch (tab.type) {
-      case 'page': this.props.handle_save_page(true, this.props.tab_id)
+      case 'page': await this.props.handle_save_page(true, this.props.tab_id)
         break
-      case 'endpoint': this.props.handle_save_endpoint(true, this.props.tab_id)
+      case 'endpoint': await this.props.handle_save_endpoint(true, this.props.tab_id)
         break
       default:
         break
     }
     this.props.onConfirm(this.props.tab_id)
+    tabService.removeTab(this.props.tab_id, { ...this.props })
   }
 
   handleDontSave () {
