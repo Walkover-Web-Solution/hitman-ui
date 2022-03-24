@@ -8,7 +8,8 @@ import FileIcon from '../../assets/icons/file.svg'
 import DocIcon from '../../assets/icons/twitch.svg'
 import { ReactComponent as ExternalLinks } from '../../assets/icons/externalLinks.svg'
 import PublishSidebar from '../publishSidebar/publishSidebar'
-import { openExternalLink } from '../common/utility'
+import { openExternalLink, msgText } from '../common/utility'
+import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 
 const mapStateToProps = (state) => {
   return {
@@ -78,9 +79,19 @@ class PublishCollectionInfo extends Component {
     }
   }
 
+  renderInOverlay (method, msg) {
+    return (
+      <OverlayTrigger overlay={<Tooltip id='tooltip-disabled'>{msg}</Tooltip>}>
+        <span className='d-inline-block'>
+          {method()}
+        </span>
+      </OverlayTrigger>
+    )
+  }
+
   apiDocFeedback () {
     return (
-      <button onClick={() => { this.redirectToApiFeedback() }}>
+      <button disabled={!isAdmin()} onClick={() => { this.redirectToApiFeedback() }}>
         <div className='d-flex align-items-center'>
           <img className='mr-1' src={DocIcon} alt='' />
           <span>API Doc Feedback</span>
@@ -151,7 +162,7 @@ class PublishCollectionInfo extends Component {
       !currentCollection?.importedFromMarketPlace &&
         <div className='public-colection-info'>
           {this.managePublicDoc()}
-          {this.apiDocFeedback()}
+          {isAdmin() ? this.apiDocFeedback() : this.renderInOverlay(this.apiDocFeedback.bind(this), msgText.adminAccees)}
           <div className='publicurl'>{this.renderPublicUrl()}</div>
         </div>
     )
