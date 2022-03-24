@@ -160,16 +160,16 @@ class PublishCollectionInfo extends Component {
   renderPublishCollection () {
     return (
       (this.state.totalEndpointCount > 2) &&
-        <div className='d-flex justify-content-start'>
-          <img className='ml-3' src={FileIcon} alt='' />
-          <button
-            className='btn btn-outline orange publishCollection pl-1'
-            id='publish_api_doc_navbar_btn'
-            onClick={() => { this.redirectUser() }}
-          >
-            Publish API Documentation
-          </button>
-        </div>
+        <button
+          className='btn btn-outline orange w-100 publishCollection'
+          id='publish_api_doc_navbar_btn'
+          onClick={() => { this.redirectUser() }}
+        >
+          <div className='d-flex align-items-center'>
+            <img className='ml-3 mr-1' src={FileIcon} alt='' />
+            <span className='truncate'>Publish API Documentation</span>
+          </div>
+        </button>
     )
   }
 

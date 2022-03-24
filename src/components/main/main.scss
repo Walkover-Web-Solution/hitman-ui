@@ -7,9 +7,6 @@
   body .split-sidebar > div:first-child{
     min-width: 330px !important;
   }
-  .response-right .response-container{
-
-  }
 }
 
 
@@ -1082,20 +1079,10 @@ body .form-control {
 }
 
 .search-box>input[type="text"] {
-  &::-webkit-input-placeholder {
-    font-size: 14px;
-    font-weight: 600;
-    color: #BDBDBD;
-  }
-
-  &:-ms-input-placeholder {
-    font-size: 14px;
-    font-weight: 600;
-    color: #BDBDBD;
-  }
-
-  &::placeholder {
-    font-size: 14px;
+  &::-webkit-input-placeholder,
+  &:-ms-input-placeholder,
+  &::placeholder  {
+    font-size: $font-normal;
     font-weight: 600;
     color: #BDBDBD;
   }
@@ -1283,6 +1270,7 @@ button.editBtn {
 body .btn{
   border-radius: $border-radius;
   font-size: $font-normal !important;
+  font-weight: normal !important;
   &.btn-primary{
     background-color: $theme-color;
     border-color: $theme-color !important;
@@ -1306,6 +1294,9 @@ body .btn{
     &.danger{
       border-color: $alert-color;
       color: $alert-color;
+      &:hover{
+        background-color: $alert-color;
+      }
     }
     &:hover{
       background-color: $theme-color;
