@@ -20,7 +20,7 @@ class SavePromptModal extends Component {
         break
     }
     this.props.onConfirm(this.props.tab_id)
-    tabService.removeTab(this.props.tab_id, { ...this.props })
+    if (this.props.match.params.endpointId !== 'new') { tabService.removeTab(this.props.tab_id, { ...this.props }) }
   }
 
   handleDontSave () {
