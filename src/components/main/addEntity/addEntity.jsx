@@ -96,12 +96,13 @@ export class AddEntity extends Component {
     renderToolTip (type) {
       return (
         <>
-          <OverlayTrigger
-            placement='right'
-            overlay={<Tooltip> {entityENUM[this.props.type].tooltip} </Tooltip>}
-          >
-            <HelpIcon />
-          </OverlayTrigger>
+          {this.props.type !== 'endpoint' &&
+            <OverlayTrigger
+              placement='right'
+              overlay={<Tooltip> {entityENUM[this.props.type].tooltip} </Tooltip>}
+            >
+              <HelpIcon />
+            </OverlayTrigger>}
         </>
       )
     }
