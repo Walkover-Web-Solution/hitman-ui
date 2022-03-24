@@ -31,7 +31,7 @@ class SampleResponseForm extends Form {
       body = JSON.stringify(body, null, 2)
       data = {
         title,
-        status: String(status),
+        status: (status ? String(status) : ''),
         description,
         body
       }
