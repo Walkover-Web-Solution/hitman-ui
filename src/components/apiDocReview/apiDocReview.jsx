@@ -137,11 +137,10 @@ class ApiDocReview extends Component {
                 <label htmlFor=''>Comment</label>
                 <textarea className='form-control' onChange={this.handleInput.bind(this)} value={this.state.comment} type='text' name='comment' /><br />
               </div>
+              <input type='submit' className='btn btn-primary' value='Submit' />
             </form>
           </Modal.Body>
-          <Modal.Footer>
-            <input type='submit' className='btn btn-primary' value='Submit' />
-          </Modal.Footer>
+          <Modal.Footer />
         </div>
       </Modal>
     )
@@ -155,12 +154,15 @@ class ApiDocReview extends Component {
           {this.state.showFeedbackModal && this.renderUserFeedbackModal()}
           {!isAlreadyReviewd &&
             (
-              <div className='d-flex'>
-                <div className='cursor-pointer' onClick={() => { this.handleOnClick(LIKE, this.postApi.bind(this)) }}>
-                  <img src={Like} alt='' />
-                </div>
-                <div className='cursor-pointer' onClick={() => { this.handleOnClick(DISLIKE, this.toggleReviewModal.bind(this)) }}>
-                  <img src={DisLike} alt='' />
+              <div>
+                <p className='d-flex justify-content-center'>Did this page help you?</p>
+                <div className='d-flex justify-content-center'>
+                  <div className='cursor-pointer' onClick={() => { this.handleOnClick(LIKE, this.postApi.bind(this)) }}>
+                    <img src={Like} alt='' />
+                  </div>
+                  <div className='cursor-pointer' onClick={() => { this.handleOnClick(DISLIKE, this.toggleReviewModal.bind(this)) }}>
+                    <img src={DisLike} alt='' />
+                  </div>
                 </div>
               </div>
             )}

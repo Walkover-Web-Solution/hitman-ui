@@ -769,9 +769,10 @@ table#custom-generic-table {
   display: flex;
   flex-direction: row;
   flex: 1;
-  background-color: #F3F3F3;
+  background-color: $secondary-color;
   min-height: 220px;
   margin-top: 1rem;
+  border-radius: $border-radius;
 }
 
 .authorization-selector-wrapper {
@@ -1078,8 +1079,6 @@ table#custom-generic-table {
 .add-sample-response {
   display: flex;
   flex-direction: row-reverse;
-  padding: 5px;
-  margin: 5px;
 }
 
 .custom-json-pretty {

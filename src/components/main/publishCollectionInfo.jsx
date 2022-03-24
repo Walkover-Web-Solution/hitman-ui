@@ -165,8 +165,10 @@ class PublishCollectionInfo extends Component {
           id='publish_api_doc_navbar_btn'
           onClick={() => { this.redirectUser() }}
         >
-          <img className='ml-3' src={FileIcon} alt='' />
-          Publish API Documentation
+          <div className='d-flex align-items-center'>
+            <img className='ml-3 mr-1' src={FileIcon} alt='' />
+            <span className='truncate'>Publish API Documentation</span>
+          </div>
         </button>
     )
   }

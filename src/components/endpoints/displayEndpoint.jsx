@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { Dropdown, ButtonGroup, Button, DropdownButton } from 'react-bootstrap'
 import store from '../../store/store'
-import { isDashboardRoute, isElectron, isSavedEndpoint, isStateDraft, isStateReject, sensitiveInfoFound } from '../common/utility'
+import { isDashboardRoute, isElectron, isSavedEndpoint, isStateDraft, isStateReject, sensitiveInfoFound, msgText } from '../common/utility'
 import tabService from '../tabs/tabService'
 import { closeTab, updateTab } from '../tabs/redux/tabsActions'
 import tabStatusTypes from '../tabs/tabStatusTypes'
@@ -47,7 +47,7 @@ import { openModal } from '../modals/redux/modalsActions'
 import Axios from 'axios'
 import { sendAmplitudeData } from '../../services/amplitude'
 import { SortableHandle, SortableContainer, SortableElement } from 'react-sortable-hoc'
-import ConfirmationModal from './confirmationModal'
+import ConfirmationModal from '../common/confirmationModal'
 import { ReactComponent as DragHandleIcon } from '../../assets/icons/drag-handle.svg'
 import TinyEditor from '../tinyEditor/tinyEditor'
 import { pendingEndpoint, approveEndpoint } from '../publicEndpoint/redux/publicEndpointsActions'
@@ -83,11 +83,6 @@ const defaultDocViewData = [
   { type: 'headers' },
   { type: 'sampleResponse' }
 ]
-
-const confirmationMsg = {
-  viewSwitch: 'Do you wish to set it as default view?',
-  publishEndpoint: 'You are about the make these changes live on your Public API doc.'
-}
 
 const mapStateToProps = (state) => {
   return {
@@ -2080,7 +2075,7 @@ class DisplayEndpoint extends Component {
         show={this.state.showViewConfirmationModal}
         onHide={() => this.setState({ showViewConfirmationModal: false })}
         proceed_button_callback={this.setDefaultView.bind(this)}
-        title={confirmationMsg.viewSwitch}
+        title={msgText.viewSwitch}
       />
   }
 
@@ -2532,7 +2527,7 @@ class DisplayEndpoint extends Component {
         show={this.state.openPublishConfirmationModal}
         onHide={() => this.setState({ openPublishConfirmationModal: false })}
         proceed_button_callback={this.handleApproveEndpointRequest.bind(this)}
-        title={confirmationMsg.publishEndpoint}
+        title={msgText.publishEndpoint}
         submitButton='Publish'
         rejectButton='Discard'
       />

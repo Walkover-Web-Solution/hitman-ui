@@ -288,7 +288,7 @@ form.add-new-domain-form {
   .request-button {
     position: absolute;
     top: 1.25rem;
-    right: 1.35rem;
+    right: 0rem;
   }
   .innerContainer {
     display: flex;
@@ -314,7 +314,6 @@ form.add-new-domain-form {
     height: 100%;
     overflow: auto;
     width: 65%;
-    padding-right: 2%;
     transition: all 0.3s ease-in;
     position: relative;
     &::-webkit-scrollbar {

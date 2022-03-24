@@ -10,7 +10,7 @@ import { HOSTNAME_VALIDATION_REGEX } from '../common/constants'
 import { handleChangeInUrlField, handleBlurInUrlField } from '../common/utility'
 const URI = require('urijs')
 
-const UI_IP = process.env.REACT_APP_UI_IP
+const MAPPING_DOMAIN = process.env.REACT_APP_HITMAN_MAPPING_DOMAIN
 
 const publishDocFormEnum = {
   NULL_STRING: '',
@@ -325,7 +325,7 @@ class PublishDocForm extends Component {
         </label>
         <input type='text' placeholder={placeholder} disabled={disabled} className='form-control' name={name} value={data[name]} onChange={(e) => this.handleChange(e, isURLInput)} onBlur={(e) => this.handleBlur(e, isURLInput)} />
         {errors && errors[name] && <small className='alert alert-danger'>{errors[name]}</small>}
-        {name === 'domain' && <span className='domain-info f-10 mt-1'>{`Point the A record of the above domain to ${UI_IP}`}</span>}
+        {name === 'domain' && <span className='domain-info f-10 mt-1'>{`Point c name of the above domain to ${MAPPING_DOMAIN}`}</span>}
       </div>
     )
   }

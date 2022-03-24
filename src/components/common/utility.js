@@ -15,6 +15,12 @@ const statesEnum = {
   DRAFT_STATE: 'Draft'
 }
 
+export const msgText = {
+  publishPage: 'You are about to make these changes live on your Public API doc.',
+  viewSwitch: 'Do you wish to set it as default view?',
+  publishEndpoint: 'You are about to make these changes live on your Public API doc.'
+}
+
 export function isDashboardRoute (props, sidebar = false) {
   if (
     props.match.path.includes('/dashboard') ||
@@ -366,5 +372,6 @@ export default {
   isStateDraft,
   isStateReject,
   sensitiveInfoFound,
-  hexToRgb
+  hexToRgb,
+  msgText
 }
