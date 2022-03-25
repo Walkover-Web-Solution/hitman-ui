@@ -270,17 +270,10 @@ export class UserProfile extends React.Component {
     }
 
     renderBilling () {
-      const { productName, history, organizationId } = this.props
       return (
         <div
           class='profile-listing' onClick={() => {
-            if (productName === products.EBL) {
-              history.push({
-                pathname: `/orgs/${organizationId}/billing/subscription`
-              })
-            } else {
-              this.openOptions('/billing/subscription')
-            }
+            this.openOptions('/billing/subscription')
           }}
         >
           <img src={File} />
@@ -290,12 +283,12 @@ export class UserProfile extends React.Component {
     }
 
     openOptions (path) {
-      const { match, productName, handleOpenLink } = this.props
+      const { match, handleOpenLink } = this.props
       const viasocketUrl = process.env.REACT_APP_VIASOCKET_URL
       const currProductUrl = process.env.REACT_APP_UI_BASE_URL || process.env.REACT_APP_UI_URL
       const { orgId } = match.params
       if (orgId) {
-        let url = `${viasocketUrl}/orgs/${orgId}${path}?product=${productName}`
+        let url = `${viasocketUrl}/orgs/${orgId}${path}?product=hitman`
         if (path === '/products') {
           url += ''
         } else {
