@@ -1143,8 +1143,9 @@ class DisplayEndpoint extends Component {
         moveToNextStep(4)
       } else {
         if (this.state.saveAsFlag) {
-          endpoint.requestId = shortid.generate()
           endpoint.description = endpointDescription || ''
+          delete endpoint.state
+          delete endpoint.isPublished
           this.setState({ saveAsLoader: true })
           this.props.add_endpoint(endpoint, groupId || this.state.groupId, ({ closeForm, stopLoader }) => {
             if (closeForm) this.closeEndpointFormModal()

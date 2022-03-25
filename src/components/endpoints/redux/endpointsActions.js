@@ -20,7 +20,7 @@ export const addEndpoint = (history, newEndpoint, groupId, customCallback) => {
           endpointName: response.data.name,
           groupId: response.data.groupId
         })
-        dispatch(onEndpointAdded(response.data, newEndpoint))
+        dispatch(onEndpointAdded(response.data))
 
         // let endpointsOrder = store.getState().groups[groupId].endpointsOrder;
         // endpointsOrder.push(response.data.id);
@@ -32,10 +32,7 @@ export const addEndpoint = (history, newEndpoint, groupId, customCallback) => {
       })
       .catch((error) => {
         dispatch(
-          onEndpointAddedError(
-            error.response ? error.response.data : error,
-            newEndpoint
-          )
+          onEndpointAddedError(error.response ? error.response.data : error, newEndpoint, requestId)
         )
         if (customCallback) {
           customCallback({ closeForm: false, stopLoader: true })
@@ -273,11 +270,12 @@ export const onEndpointAdded = (response) => {
   }
 }
 
-export const onEndpointAddedError = (error, newEndpoint) => {
+export const onEndpointAddedError = (error, newEndpoint, requestId) => {
   return {
     type: endpointsActionTypes.ON_ENDPOINT_ADDED_ERROR,
     newEndpoint,
-    error
+    error,
+    requestId
   }
 }
 
