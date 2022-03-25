@@ -35,8 +35,7 @@ class HostContainer extends Component {
   }
 
   componentDidMount () {
-    this.setState({ datalistUri: this.props.updatedUri })
-    this.setState({ datalistHost: this.state[this.state.selectedhost] || '' })
+    this.setHosts()
   }
 
   componentDidUpdate (prevProps, prevState) {

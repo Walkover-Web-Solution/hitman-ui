@@ -1089,8 +1089,6 @@ class DisplayEndpoint extends Component {
 
   handleSave = async (groupId, endpointObject) => {
     const { endpointName, endpointDescription } = endpointObject || {}
-    const isPublished = this.props.endpoints[this.endpointId]?.isPublished
-    const state = this.props.endpoints[this.endpointId]?.state
     if (!getCurrentUser()) {
       this.setState({
         showLoginSignupModal: true
@@ -1130,9 +1128,7 @@ class DisplayEndpoint extends Component {
         notes: this.state.endpoint.notes,
         preScript: this.state.preScriptText,
         postScript: this.state.postScriptText,
-        docViewData: this.state.docViewData,
-        isPublished,
-        state
+        docViewData: this.state.docViewData
       }
       if (endpoint.name === '') toast.error('Please enter Endpoint name')
       else if (this.props.location.pathname.split('/')[5] === 'new') {
@@ -1156,6 +1152,8 @@ class DisplayEndpoint extends Component {
           })
           moveToNextStep(4)
         } else if (this.state.title === 'update endpoint') {
+          endpoint.isPublished = this.props.endpoints[this.endpointId]?.isPublished
+          endpoint.state = this.props.endpoints[this.endpointId]?.state
           this.setState({ saveLoader: true })
           this.props.update_endpoint({
             ...endpoint,

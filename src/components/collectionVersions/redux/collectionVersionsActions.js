@@ -109,7 +109,7 @@ export const onVersionUpdatedError = (error, originalVersion) => {
   }
 }
 
-export const addVersion = (newVersion, collectionId) => {
+export const addVersion = (newVersion, collectionId, customCallback) => {
   return (dispatch) => {
     dispatch(addVersionRequest({ ...newVersion, collectionId }))
     collectionVersionsApiService
@@ -121,6 +121,9 @@ export const addVersion = (newVersion, collectionId) => {
           collectionId: response.data.collectionId
         })
         dispatch(onVersionAdded(response.data))
+        if (customCallback) {
+          customCallback(response.data)
+        }
       })
       .catch((error) => {
         dispatch(

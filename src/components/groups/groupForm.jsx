@@ -11,7 +11,7 @@ import { moveToNextStep } from '../../services/widgetService'
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    add_group: (versionId, group) => dispatch(addGroup(versionId, group)),
+    add_group: (versionId, group, callback) => dispatch(addGroup(versionId, group, callback)),
     update_group: (group) => dispatch(updateGroup(group))
   }
 }
@@ -43,6 +43,10 @@ class GroupForm extends Form {
     this.setState({ data })
   }
 
+  redirectToForm (group) {
+    this.props.setDropdownList(group)
+  }
+
   async doSubmit () {
     if (!this.state.selectedVersionId && this.props.addEntity) {
       this.setState({ versionRequired: true })
@@ -58,7 +62,7 @@ class GroupForm extends Form {
         ...data,
         requestId: shortid.generate()
       }
-      this.props.add_group(versionId, newGroup)
+      this.props.add_group(versionId, newGroup, this.redirectToForm.bind(this))
       moveToNextStep(3)
     }
 
