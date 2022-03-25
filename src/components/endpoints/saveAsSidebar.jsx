@@ -160,6 +160,7 @@ class SaveAsSidebar extends Form {
           onHide={() => {
             this.setState({ showCollectionForm: false })
           }}
+          setDropdownList={(item) => this.setDropdownList(item)}
           show
           title='Add new Collection'
         />
@@ -176,6 +177,7 @@ class SaveAsSidebar extends Form {
           onHide={() => {
             this.setState({ showCollectionVersionForm: false })
           }}
+          setDropdownList={(item) => this.setDropdownList(item)}
           show
           title={ADD_VERSION_MODAL_NAME}
         />
@@ -192,6 +194,7 @@ class SaveAsSidebar extends Form {
           onHide={() => {
             this.setState({ showGroupForm: false })
           }}
+          setDropdownList={(item) => this.setDropdownList(item)}
           show
           title={ADD_GROUP_MODAL_NAME}
         />

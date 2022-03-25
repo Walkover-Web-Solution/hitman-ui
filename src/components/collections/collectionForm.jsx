@@ -101,11 +101,12 @@ class CollectionForm extends Form {
 
   redirectToCollection (collection) {
     const { viewLoader } = this.state
-    if (collection.success && viewLoader.doc) {
+    if (collection.success && viewLoader.doc && !this.props.setDropdownList) {
       const { orgId } = this.props.match.params
       const { id: collectionId } = collection.data
       this.props.history.push({ pathname: `/orgs/${orgId}/dashboard/collection/${collectionId}/settings` })
     }
+    if (this.props.setDropdownList) this.props.setDropdownList(collection.data)
     this.props.onHide()
   }
 
@@ -148,6 +149,7 @@ class CollectionForm extends Form {
     }
     if (this.props.title === 'Add new Collection') {
       this.onAddCollectionSubmit(defaultView)
+      if (this.props.setDropdownList) this.props.onHide()
     }
   }
 
@@ -194,9 +196,16 @@ class CollectionForm extends Form {
   }
 
   renderNextButton () {
+    if (!this.props.setDropdownList) {
+      return (
+        <button className='btn btn-primary' onClick={() => this.onNext()}>
+          Next
+        </button>
+      )
+    }
     return (
-      <button className='btn btn-primary' onClick={() => this.onNext()}>
-        Next
+      <button className='btn btn-primary' onClick={() => this.doSubmit('testing')}>
+        Save
       </button>
     )
   }
