@@ -3271,7 +3271,6 @@ body .bottom-text-editor {
       opacity: 1;
     }
     > div {
-      padding: 0.15rem 0.25rem;
       cursor: pointer;
       &:not(:last-child){
         border-bottom: 1px solid $outline-color;
@@ -3319,7 +3318,6 @@ body .bottom-text-editor {
     padding: 1.25rem;
   }
   .endpoint-response-container{
-    border: 1px solid $outline-color;
     padding: 1rem;
     background-color: #fff;
     border-radius: $border-radius;
