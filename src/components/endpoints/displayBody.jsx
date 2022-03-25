@@ -241,7 +241,7 @@ class BodyContainer extends Component {
   }
 
   matchCurrentBodyType (bodyType) {
-    if (this.props.body && this.props.body.type + '-' + this.props.endpoint_id === bodyType) return true
+    if (this.props.Body && this.props.Body.type + '-' + this.props.endpoint_id === bodyType) return true
     return false
   }
 
