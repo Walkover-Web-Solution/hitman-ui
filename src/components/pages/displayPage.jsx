@@ -90,13 +90,13 @@ class DisplayPage extends Component {
   checkPageRejected () {
     if (this.props.rejected) {
       return (
-        <div className='pageText'>
+        <div className='pageText doc-view'>
           {this.renderTinyEditor(this.props.pages[this.props.pageId].publishedPage.contents)}
         </div>
       )
     } else {
       return (
-        <div className='pageText'>
+        <div className='pageText doc-view'>
           {this.renderTinyEditor(this.state.data.contents)}
         </div>
       )
@@ -200,7 +200,7 @@ class DisplayPage extends Component {
         {this.renderPublishPageOperations()}
         {this.renderPageName()}
         {this.checkPageRejected()}
-        <div className='float-left'>
+        <div>
           <ApiDocReview {...this.props} />
         </div>
       </div>

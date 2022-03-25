@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { toast } from 'react-toastify'
-import { Dropdown, ButtonGroup, Button, DropdownButton } from 'react-bootstrap'
+import { Dropdown, ButtonGroup, Button } from 'react-bootstrap'
 import store from '../../store/store'
 import { isDashboardRoute, isElectron, isSavedEndpoint, isStateDraft, isStateReject, sensitiveInfoFound, msgText } from '../common/utility'
 import tabService from '../tabs/tabService'
@@ -1143,8 +1143,9 @@ class DisplayEndpoint extends Component {
         moveToNextStep(4)
       } else {
         if (this.state.saveAsFlag) {
-          endpoint.requestId = shortid.generate()
           endpoint.description = endpointDescription || ''
+          delete endpoint.state
+          delete endpoint.isPublished
           this.setState({ saveAsLoader: true })
           this.props.add_endpoint(endpoint, groupId || this.state.groupId, ({ closeForm, stopLoader }) => {
             if (closeForm) this.closeEndpointFormModal()
@@ -2256,12 +2257,17 @@ class DisplayEndpoint extends Component {
   renderDocViewOptions () {
     if (isDashboardRoute(this.props) && this.state.currentView === 'doc') {
       return (
-        <ButtonGroup className='btn-group-custom bottom-text-editor'>
-          <DropdownButton as={ButtonGroup} title='Text' id='bg-nested-dropdown'>
-            <Dropdown.Item onClick={() => this.addBlock('textArea')}>Text Area</Dropdown.Item>
-            <Dropdown.Item onClick={() => this.addBlock('textBlock')}>Text Block</Dropdown.Item>
-          </DropdownButton>
-        </ButtonGroup>
+        <div>
+          <Dropdown>
+            <Dropdown.Toggle variant='' id='dropdown-basic' className='doc-plus'>
+              <img src={PlusIcon} className='mr-2 cursor-pointer' onClick={() => this.showDocOptions()} alt='' />
+            </Dropdown.Toggle>
+            <Dropdown.Menu id='bg-nested-dropdown' className='d-flex doc-plus-menu'>
+              <Dropdown.Item onClick={() => this.addBlock('textArea')}>Text Area</Dropdown.Item>
+              <Dropdown.Item onClick={() => this.addBlock('textBlock')}>Text Block</Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+        </div>
       )
     }
   }
@@ -2992,8 +2998,7 @@ class DisplayEndpoint extends Component {
                   </div>
                   {!this.isDashboardAndTestingView() && isDashboardRoute(this.props) &&
                     <div className='doc-options d-flex align-items-center'>
-                      <img src={PlusIcon} className='mr-2 cursor-pointer' onClick={() => this.showDocOptions()} alt='' />
-                      {this.state.docOptions && this.renderDocViewOptions()}
+                      {this.renderDocViewOptions()}
                     </div>}
                 </div>
                 <ApiDocReview {...this.props} />

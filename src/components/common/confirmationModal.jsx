@@ -14,9 +14,10 @@ function ConfirmationModal (props) {
       aria-labelledby='contained-modal-title-vcenter'
       centered
     >
-      <Modal.Header className='custom-collection-modal-container' closeButton />
+      <Modal.Header className='custom-collection-modal-container' closeButton>
+        <Modal.Title>{props.title}</Modal.Title>
+      </Modal.Header>
       <Modal.Body id='custom-delete-modal-body'>
-        {props.title}
         <div className='text-left mt-4 mb-2'>
           <button
             id='custom-delete-modal-delete'

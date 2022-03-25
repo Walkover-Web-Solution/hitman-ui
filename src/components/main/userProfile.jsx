@@ -6,7 +6,6 @@ import lightArrow from '../../assets/icons/new-arrow.svg'
 import User from '../../assets/icons/user.svg'
 import RightArrow from '../../assets/icons/right-arrow.svg'
 import Power from '../../assets/icons/power.svg'
-import { ReactComponent as Users } from '../../assets/icons/users.svg'
 import File from '../../assets/icons/file.svg'
 import { products } from '../common/constants'
 import authService from '../auth/authService'
@@ -250,15 +249,6 @@ export class UserProfile extends React.Component {
       return collections?.length || 0
     }
 
-    renderInviteTeam () {
-      return (
-        <div class='profile-listing' onClick={() => { this.openAccountAndSettings() }}>
-          <Users />
-          <span className='label'>Invite Team</span>
-        </div>
-      )
-    }
-
     openAccountAndSettings () {
       const { productName, history, organizationId, location } = this.props
       if (productName !== products.EBL) { this.openOptions('/manage/users') } else {
@@ -456,7 +446,6 @@ export class UserProfile extends React.Component {
               {this.renderUserDetails()}
               <div className='profile-listing-container'>
                 <Dropdown.Item>{this.renderMenuButton()}</Dropdown.Item>
-                <Dropdown.Item>{this.renderInviteTeam()}</Dropdown.Item>
                 <Dropdown.Item>{this.renderBilling()} </Dropdown.Item>
                 <Dropdown.Item>{productName !== products.EBL && this.renderOtherProducts()}</Dropdown.Item>
                 <Dropdown.Item>{this.renderLogout()}</Dropdown.Item>
