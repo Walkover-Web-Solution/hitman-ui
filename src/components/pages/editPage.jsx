@@ -188,7 +188,7 @@ class EditPage extends Component {
 
   render () {
     return (
-      <div className='custom-edit-page'>
+      <div className='custom-edit-page page-display mt-3'>
         <WarningModal
           show={this.state.warningModalFlag}
           onHide={() => { this.setState({ warningModalFlag: false }) }}
@@ -212,7 +212,7 @@ class EditPage extends Component {
           />
         </div>
 
-        <div style={{ marginBottom: '50px' }}>
+        <div>
           {this.renderTinyEditor()}
         </div>
       </div>

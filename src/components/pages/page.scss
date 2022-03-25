@@ -6,11 +6,10 @@
 
 .custom-display-page {
   padding: 10px 30px;
-  float: left;
-  width: 100%;
+  margin:auto;
+  width: 50rem;
   padding-top: 25px;
   min-height: calc(100vh - 70px);
-  background: #F8F8F8;
   button { 
     margin-bottom: 15px;
     float: right;
@@ -63,7 +62,6 @@
 }
 
 .pageText {
-  float: left;
   width: 100%;
   background: inherit;
   min-height: 55vh;
