@@ -234,7 +234,7 @@ function sidebarReducer (state = initialState, action) {
         return newState
 
       case endpointsActionTypes.ON_ENDPOINT_ADDED_ERROR:
-        newState = addNewNodeError(newState, action.newEndpoint.requestId, 'endpoints')
+        newState = addNewNodeError(newState, action.requestId, 'endpoints')
         return newState
 
       case endpointsActionTypes.DELETE_ENDPOINT_REQUEST:
