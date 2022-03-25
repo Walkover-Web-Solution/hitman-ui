@@ -30,9 +30,9 @@ class PublishDocsReview extends Component {
   }
 
   componentDidUpdate (prevProps, prevState) {
-    const { collectionId } = this.props.match.params
+    const { collectionId, orgId } = this.props.match.params
     if (prevProps.match.params.collectionId !== collectionId) {
-      collectionId && this.props.fetch_feedbacks(collectionId)
+      collectionId && this.props.fetch_feedbacks(collectionId, orgId)
     }
   }
 
