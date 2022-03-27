@@ -164,6 +164,7 @@ export const openInNewTab = (tab) => {
 }
 
 export const updateTab = (tabId, data) => {
+  if (!store.getState().tabs.tabs[tabId]) return
   return (dispatch) => {
     dispatch({ type: tabsActionTypes.UPDATE_TAB, payload: { tabId, data } })
     const tab = { ...store.getState().tabs.tabs[tabId], ...data }
