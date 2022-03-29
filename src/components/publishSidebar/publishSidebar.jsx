@@ -4,7 +4,6 @@ import { Dropdown, Accordion } from 'react-bootstrap'
 import { bulkPublish } from './redux/bulkPublishAction'
 
 import './publishSidebar.scss'
-import { isAdmin } from '../auth/authService'
 import { ReactComponent as DownChevron } from '../../assets/icons/downChevron.svg'
 import { ReactComponent as GlobeIcon } from '../../assets/icons/globe-icon.svg'
 import extractCollectionInfoService from '../publishDocs/extractCollectionInfoService'
@@ -107,16 +106,6 @@ export class PublishSidebar extends Component {
 
     if (requestData.pages.length || requestData.endpoints.length) {
       this.props.bulk_publish(this.state.selectedCollectionId, requestData)
-    }
-    if (isAdmin()) {
-      const collectionId = this.state.selectedCollectionId
-      if (collectionId) {
-        this.props.history.push({
-          pathname: `/orgs/${this.props.match.params.orgId}/admin/publish`,
-          search: `?collectionId=${collectionId}`,
-          fromSidebar: true
-        })
-      }
     }
     this.props.closePublishSidebar()
   }
