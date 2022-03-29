@@ -16,7 +16,6 @@ import { fetchHistoryFromIdb } from '../history/redux/historyAction'
 import ContentPanel from './contentPanel'
 import './main.scss'
 import SideBar from './sidebar'
-import PublishDocs from '../publishDocs/publishDocs'
 import { loadWidget } from '../../services/widgetService'
 import { fetchAllCookies, fetchAllCookiesFromLocalStorage } from '../cookies/redux/cookiesActions'
 import { isDesktop } from 'react-device-detect'
@@ -261,16 +260,14 @@ class Main extends Component {
                       set_tabs={this.setTabs.bind(this)}
                       default_tab_index={this.state.defaultTabIndex}
                     />
-                    {this.props.location.pathname.split('/')[4] === 'publish'
-                      ? <PublishDocs {...this.props} />
-                      : this.showCollectionDashboard()
-                        ? this.renderLandingDashboard()
-                        : <ContentPanel
-                            {...this.props}
-                            set_environment={this.setEnvironment.bind(this)}
-                            set_tabs={this.setTabs.bind(this)}
-                            default_tab_index={this.state.defaultTabIndex}
-                          />}
+                    {this.showCollectionDashboard()
+                      ? this.renderLandingDashboard()
+                      : <ContentPanel
+                          {...this.props}
+                          set_environment={this.setEnvironment.bind(this)}
+                          set_tabs={this.setTabs.bind(this)}
+                          default_tab_index={this.state.defaultTabIndex}
+                        />}
                   </SplitPane>
                 </div>
                 <UpdateStatus />
