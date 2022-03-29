@@ -8,7 +8,7 @@ import { updateCollection } from '../collections/redux/collectionsActions'
 import './publishDocsForm.scss'
 import { HOSTNAME_VALIDATION_REGEX } from '../common/constants'
 import { handleChangeInUrlField, handleBlurInUrlField } from '../common/utility'
-const URI = require('urijs')
+// const URI = require('urijs')
 
 const MAPPING_DOMAIN = process.env.REACT_APP_HITMAN_MAPPING_DOMAIN
 
@@ -84,7 +84,8 @@ class PublishDocForm extends Component {
   }
 
   setSelectedCollection () {
-    const collectionId = URI.parseQuery(this.props.location.search).collectionId
+    // const collectionId = URI.parseQuery(this.props.location.search).collectionId
+    const collectionId = this.props.selected_collection_id
     let collection = {}
     let title, logoUrl, domain, theme, cta, links, favicon
     if (this.props.collections) {
@@ -145,7 +146,8 @@ class PublishDocForm extends Component {
   };
 
   saveCollectionDetails () {
-    const collectionId = URI.parseQuery(this.props.location.search).collectionId
+    // const collectionId = URI.parseQuery(this.props.location.search).collectionId
+    const collectionId = this.props.selected_collection_id
     const collection = { ...this.props.collections[collectionId] }
     const data = { ...this.state.data }
     const cta = this.state.cta
