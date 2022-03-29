@@ -496,8 +496,8 @@ button.btn.custom-body-type-button {
     background-image: none !important;
   }
   .search-box > input[type="text"]{
-    padding-left: 2.4rem;
-    background: url('../assets/icons/search.svg') no-repeat 4% center !important;
+    padding-left: 2.5rem;
+    background: url('../assets/icons/search.svg') no-repeat 0.75rem center !important;
   }
   .versionsAvailable.versionWrapper:not(.enableSearch) .search-box > input[type="text"]{
     background: url('../assets/icons/searchIcon.svg') no-repeat center !important;
@@ -608,6 +608,7 @@ button.btn.custom-body-type-button {
     .dropdown-menu {
       max-height: 15rem;
       overflow: auto;
+      transform: translate(0rem, 2.45rem) !important;
     }
   }
 }
