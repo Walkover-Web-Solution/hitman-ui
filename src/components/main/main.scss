@@ -9,7 +9,6 @@
   }
 }
 
-
 .mobile-warning{
   position: sticky;
   z-index: 1200;
@@ -1207,7 +1206,7 @@ button.editBtn {
   background: transparent;
   border: none;
   outline: none !important;
-  margin-top: 0.5rem;
+  margin: 0.5rem 0;
   float: right;
   &:hover {
     color: #f57a0d;
@@ -1252,6 +1251,7 @@ button.editBtn {
 .responseTabWrapper {
   background: #fff;
   border-radius: $border-radius;
+  padding: 1px;
 }
 #uncontrolled-tab-example-tabpane-history,
 #uncontrolled-tab-example-tabpane-randomTrigger {
@@ -1321,17 +1321,15 @@ body .btn{
 
   .dropdown .btn {
     width: 90px;
-    font-size: 14px;
     background: #fff;
-    border: 1px solid #E98A36;
-    border-radius: 4px;
+    border: 1px solid $theme-color;
+    border-radius: $border-radius;
     height: 35px;
     display: flex;
     align-items: center;
-    justify-content: center;
-    padding: 0;
-    color: #828282;
-
+    justify-content: space-between;
+    padding: 0 8px;
+    font-size: $font-medium !important;
     &:after {
       filter: opacity(0.6);
     }
@@ -1493,13 +1491,16 @@ table#custom-generic-table tbody input[value="true"] + span.checkmark {
   box-shadow: none !important;
   outline: none;
   border: 1px solid #E98A36 !important;
-  font-size: 14px;
+  font-size: $font-medium !important;
   font-weight: 500;
   background: #fff !important;
-  color: #333;
-
+  color: $text-color;
+  height:35px;
+  display:flex;
+  align-items:center;
+  &:hover,
   &.active {
-    background: linear-gradient(135deg, #F2994A 2.5%, #f2994a 2.51%, #f0bd3b 100%) !important;
+    background: $theme-color !important;
   }
 }
 
@@ -3323,6 +3324,9 @@ body .bottom-text-editor {
     background-color: #fff;
     border-radius: $border-radius;
   }
+  .sample-response-item{
+    margin: 1rem;
+  }
 }
 .doc-options {
   height: 2.25rem;
@@ -3381,4 +3385,11 @@ body .bottom-text-editor {
 
 .btn-width{
   width: 10rem !important;
+}
+
+
+@media (max-width: 1350px){
+  .customRadio{
+    margin-right: 10px;
+  }
 }
