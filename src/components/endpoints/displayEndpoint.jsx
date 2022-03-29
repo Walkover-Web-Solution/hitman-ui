@@ -2,9 +2,9 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { toast } from 'react-toastify'
-import { Dropdown, ButtonGroup, Button } from 'react-bootstrap'
+import { Dropdown, ButtonGroup, Button, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import store from '../../store/store'
-import { isDashboardRoute, isElectron, isSavedEndpoint, isStateDraft, isStateReject, sensitiveInfoFound, msgText } from '../common/utility'
+import { isDashboardRoute, isElectron, isSavedEndpoint, isStateDraft, isStateReject, isStatePending, isStateApproved, sensitiveInfoFound, msgText, getEntityState } from '../common/utility'
 import tabService from '../tabs/tabService'
 import { closeTab, updateTab } from '../tabs/redux/tabsActions'
 import tabStatusTypes from '../tabs/tabStatusTypes'
@@ -50,12 +50,13 @@ import { SortableHandle, SortableContainer, SortableElement } from 'react-sortab
 import ConfirmationModal from '../common/confirmationModal'
 import { ReactComponent as DragHandleIcon } from '../../assets/icons/drag-handle.svg'
 import TinyEditor from '../tinyEditor/tinyEditor'
-import { pendingEndpoint, approveEndpoint } from '../publicEndpoint/redux/publicEndpointsActions'
+import { pendingEndpoint, approveEndpoint, rejectEndpoint } from '../publicEndpoint/redux/publicEndpointsActions'
 import WarningModal from '../common/warningModal'
 import DeleteIcon from '../../assets/icons/delete-icon.svg'
 import { onToggle } from '../common/redux/toggleResponse/toggleResponseActions'
 import PlusIcon from '../../assets/icons/plus.svg'
 import ApiDocReview from '../apiDocReview/apiDocReview'
+import { ApproveRejectEntity, PublishEntityButton } from '../common/docViewOperations'
 const shortid = require('shortid')
 
 const status = require('http-status')
@@ -121,7 +122,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     open_modal: (modal, data) => dispatch(openModal(modal, data)),
     pending_endpoint: (endpoint) => dispatch(pendingEndpoint(endpoint)),
     approve_endpoint: (endpoint, callback) => dispatch(approveEndpoint(endpoint, callback)),
-    set_response_view: (view) => dispatch(onToggle(view))
+    set_response_view: (view) => dispatch(onToggle(view)),
+    reject_endpoint: (endpoint) => dispatch(rejectEndpoint(endpoint))
   }
 }
 
@@ -2494,37 +2496,57 @@ class DisplayEndpoint extends Component {
     const endpointId = this.endpointId
     if (isDashboardRoute(this.props) && this.state.currentView === 'doc' && endpoints[endpointId]) {
       const isPublicEndpoint = endpoints[endpointId].isPublished
-      const draftOrRejected = isStateDraft(endpointId, endpoints) || isStateReject(endpointId, endpoints)
       return (
         <div>
+          {isStatePending(endpointId, endpoints) && isAdmin() &&
+            <ApproveRejectEntity
+              {...this.props}
+              entity={endpoints}
+              entityId={endpointId}
+              entityName='endpoint'
+            />}
           <button
             id='api_save_btn'
-            className={this.state.saveLoader ? 'btn btn-outline orange buttonLoader' : 'btn btn-outline orange'}
+            className={this.state.saveLoader ? 'ml-2 btn btn-outline orange buttonLoader' : 'ml-2 btn btn-outline orange'}
             type='button'
             onClick={() => this.handleSave()}
           >
             {isPublicEndpoint ? 'Save Draft' : 'Save'}
           </button>
-          {isPublicEndpoint &&
+          {(isAdmin() && !isStatePending(endpointId, endpoints)) && <span> {isStateApproved(endpointId, endpoints) ? this.renderInOverlay(this.renderPublishEndpoint.bind(this), endpointId) : this.renderPublishEndpoint(endpointId, endpoints)}</span>}
+          {!isAdmin() &&
             <button
-              className={'ml-2 ' + (this.state.publishLoader ? 'btn btn-outline orange buttonLoader' : 'btn btn-outline orange')}
+              className={'ml-2 ' + (isStateDraft(endpointId, endpoints) ? 'btn btn-outline orange' : 'btn text-link')}
               type='button'
-              onClick={() => this.setState({ openPublishConfirmationModal: true })}
-              disabled={!isAdmin()}
+              onClick={() => isStateDraft(endpointId, endpoints) ? this.handlePublicEndpointState(endpoints[endpointId]) : null}
             >
-              Publish Endpoint
-            </button>}
-          {!isPublicEndpoint &&
-            <button
-              className={'ml-2 ' + (draftOrRejected ? 'btn btn-outline orange' : 'btn text-link')}
-              type='button'
-              onClick={() => draftOrRejected ? this.handlePublicEndpointState(endpoints[endpointId]) : null}
-            >
-              {draftOrRejected ? 'Make Public' : 'Pending'}
+              {getEntityState(endpointId, endpoints)}
             </button>}
         </div>
       )
     }
+  }
+
+  renderInOverlay (method, endpointId) {
+    const endpoints = { ...this.props.endpoints }
+    return (
+      <OverlayTrigger overlay={<Tooltip id='tooltip-disabled'>Nothing to publish</Tooltip>}>
+        <span className='d-inline-block float-right'>
+          {method(endpointId, endpoints)}
+        </span>
+      </OverlayTrigger>
+    )
+  }
+
+  renderPublishEndpoint (endpointId, endpoints) {
+    return (
+      <PublishEntityButton
+        entity={endpoints}
+        entityId={endpointId}
+        open_publish_confirmation_modal={() => this.setState({ openPublishConfirmationModal: true })}
+        entityName='Endpoint'
+      />
+    )
   }
 
   renderPublishConfirmationModal () {
