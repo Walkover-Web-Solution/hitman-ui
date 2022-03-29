@@ -399,7 +399,7 @@ class SaveAsSidebar extends Form {
           {this.showGroupForm()}
           <div className='custom-collection-modal-container modal-header'>
             <div className='modal-title h4'>
-              Save As
+              {this.props.location.pathname.split('/')[5] !== 'new' ? 'Save As' : 'Save'}
             </div>
             <button
               className='close'
