@@ -167,9 +167,9 @@ class PublishDocsReview extends Component {
     return (
       <tr>
         <td>{feedback.parentType === 'endpoint' ? this.props.endpoints[feedback.parentId]?.name : this.props.pages[feedback.parentId]?.name}</td>
-        <td>{feedback.user}</td>
+        <td>{feedback.user === '' ? '-' : feedback.user}</td>
         <td>{feedback.vote}</td>
-        <td>{feedback.comment}</td>
+        <td>{feedback.comment === '' ? '-' : feedback.comment}</td>
       </tr>
     )
   }

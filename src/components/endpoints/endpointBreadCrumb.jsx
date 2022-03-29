@@ -191,7 +191,7 @@ class EndpointBreadCrumb extends Component {
             {this.renderLeftAngle(this.versionName)}
             {this.groupName && <span>{`${this.groupName}`}</span>}
             {this.renderLeftAngle(this.groupName)}
-            <span>
+            <span className='end-point-title'>
               {this.state.endpointTitle}
             </span>
             {this.props?.endpoint?.publishedEndpoint?.isPublished && <div className='api-label POST request-type-bgcolor ml-2'> Live </div>}

@@ -177,7 +177,7 @@ class PublishCollectionInfo extends Component {
           onClick={() => { this.redirectUser() }}
         >
           <div className='d-flex align-items-center'>
-            <img className='ml-3 mr-1' src={FileIcon} alt='' />
+            <img className='ml-2 pl-1 mr-1' src={FileIcon} alt='' />
             <span className='truncate'>Publish API Documentation</span>
           </div>
         </button>
