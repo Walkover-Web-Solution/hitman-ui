@@ -3182,6 +3182,12 @@ ul.react-autocomplete-input {
 }
 .feedback-tab{
   padding: 20px;
+  max-width: 50rem;
+  .dropdown-toggle{
+    min-width: 9rem;
+    border-color: $outline-color;
+    background-color: #fff;
+  }
 }
 .custom-dropdown-btn{
   width: 11.8rem;
@@ -3315,7 +3321,7 @@ body .bottom-text-editor {
 }
 .mid-part{
   width: 70%;
-  padding: 1.25rem;
+  padding: 1.25rem 1.25rem 0;
 }
 .response-bottom{
   .response-container{
