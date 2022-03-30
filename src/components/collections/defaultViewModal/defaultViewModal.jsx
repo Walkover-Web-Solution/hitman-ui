@@ -56,7 +56,10 @@ export class DefaultViewModal extends Component {
 
   render () {
     return (
-      <div>{this.renderButtons()}</div>
+      <div>
+        <h6 className='text-center mb-4'>Choose what you'll do with your collection</h6>
+        {this.renderButtons()}
+      </div>
     )
   }
 }

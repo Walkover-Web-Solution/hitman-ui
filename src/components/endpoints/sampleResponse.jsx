@@ -162,7 +162,7 @@ class SampleResponse extends Component {
                 ? (
                   <>
                     <span
-                      className='sample-response-edit'
+                      className='sample-response-edit cursor-pointer'
                       onClick={() =>
                         // this.deleteSampleResponse(
                         //   sampleResponseArray,
@@ -180,7 +180,7 @@ class SampleResponse extends Component {
 
                     </span>
                     <span
-                      className='sample-response-edit'
+                      className='sample-response-edit cursor-pointer'
                       onClick={() =>
                         this.openEditForm(obj, index, 'Edit Sample Response')}
                     >
