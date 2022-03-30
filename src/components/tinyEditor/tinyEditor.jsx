@@ -26,6 +26,7 @@ export default function TinyEditor (props) {
           table_appearence_option: true,
           table_toolbar: 'tableprops tabledelete | tableinsertrowbefore tableinsertrowafter tabledeleterow | tableinsertcolbefore tableinsertcolafter tabledeletecol',
           toolbar: 'formatselect | bold italic underline forecolor backcolor | fontsizeselect | blockquote | numlist bullist | indent outdent | codesample | table | image | link',
+          placeholder: 'Your text goes here',
           content_style: 'body { font-family:Roboto; font-size:12px }'
         }}
       />

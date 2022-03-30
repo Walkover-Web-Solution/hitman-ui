@@ -2276,7 +2276,7 @@ class DisplayEndpoint extends Component {
     const docViewData = [...this.state.docViewData]
     docViewData.push({
       type: blockType,
-      data: 'Your text goes here'
+      data: ''
     })
     this.setState({ docViewData })
   }
