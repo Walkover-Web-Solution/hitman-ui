@@ -140,6 +140,7 @@ class DisplayPage extends Component {
     if (isDashboardRoute(this.props)) {
       const pages = { ...this.props.pages }
       const pageId = this.props.match.params?.pageId
+      const approvedOrRejected = isStateApproved(pageId, pages) || isStateReject(pageId, pages)
       return (
         <div>
           {isStatePending(pageId, pages) && isAdmin() &&
@@ -149,7 +150,7 @@ class DisplayPage extends Component {
               entityId={pageId}
               entityName='page'
             />}
-          {(isAdmin() && !isStatePending(pageId, pages)) && <span> {isStateApproved(pageId, pages) ? this.renderInOverlay(this.renderPublishPage.bind(this), pageId) : this.renderPublishPage(pageId, pages)}</span>}
+          {(isAdmin() && !isStatePending(pageId, pages)) && <span> {approvedOrRejected ? this.renderInOverlay(this.renderPublishPage.bind(this), pageId) : this.renderPublishPage(pageId, pages)}</span>}
           {!isAdmin() &&
             <button
               className={'ml-2 ' + (isStateDraft(pageId, pages) ? 'btn btn-outline orange' : 'btn text-link')}

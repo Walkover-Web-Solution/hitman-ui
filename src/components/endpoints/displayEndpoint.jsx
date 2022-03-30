@@ -2495,6 +2495,7 @@ class DisplayEndpoint extends Component {
     const endpoints = { ...this.props.endpoints }
     const endpointId = this.endpointId
     if (isDashboardRoute(this.props) && this.state.currentView === 'doc' && endpoints[endpointId]) {
+      const approvedOrRejected = isStateApproved(endpointId, endpoints) || isStateReject(endpointId, endpoints)
       const isPublicEndpoint = endpoints[endpointId].isPublished
       return (
         <div>
@@ -2513,7 +2514,7 @@ class DisplayEndpoint extends Component {
           >
             {isPublicEndpoint ? 'Save Draft' : 'Save'}
           </button>
-          {(isAdmin() && !isStatePending(endpointId, endpoints)) && <span> {isStateApproved(endpointId, endpoints) ? this.renderInOverlay(this.renderPublishEndpoint.bind(this), endpointId) : this.renderPublishEndpoint(endpointId, endpoints)}</span>}
+          {(isAdmin() && !isStatePending(endpointId, endpoints)) && <span> {approvedOrRejected ? this.renderInOverlay(this.renderPublishEndpoint.bind(this), endpointId) : this.renderPublishEndpoint(endpointId, endpoints)}</span>}
           {!isAdmin() &&
             <button
               className={'ml-2 ' + (isStateDraft(endpointId, endpoints) ? 'btn btn-outline orange' : 'btn text-link')}

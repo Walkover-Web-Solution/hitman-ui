@@ -1,5 +1,5 @@
 import React from 'react'
-import { isStateApproved } from '../common/utility'
+import { isStateReject, isStateApproved } from '../common/utility'
 
 export function ApproveRejectEntity (props) {
   const { entity, entityId, entityName } = props
@@ -25,12 +25,13 @@ export function ApproveRejectEntity (props) {
 
 export function PublishEntityButton (props) {
   const { entity, entityId, publishLoader, entityName } = props
+  const approvedOrRejected = isStateApproved(entityId, entity) || isStateReject(entityId, entity)
   return (
     <button
       className={'ml-2 ' + (publishLoader ? 'btn btn-outline orange buttonLoader' : 'btn btn-outline orange')}
       type='button'
       onClick={() => props.open_publish_confirmation_modal()}
-      disabled={isStateApproved(entityId, entity)}
+      disabled={approvedOrRejected}
     >
       Publish {entityName}
     </button>
