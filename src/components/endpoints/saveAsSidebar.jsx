@@ -173,7 +173,7 @@ class SaveAsSidebar extends Form {
       this.state.showCollectionVersionForm && (
         <CollectionVersionForm
           {...this.props}
-          collection_id={this.state.list.parentId}
+          collection_id={this.state.dropdownList.selectedCollectionId}
           onHide={() => {
             this.setState({ showCollectionVersionForm: false })
           }}
@@ -190,7 +190,7 @@ class SaveAsSidebar extends Form {
       this.state.showGroupForm && (
         <GroupForm
           {...this.props}
-          selectedVersion={{ id: this.state.list.parentId }}
+          selectedVersion={{ id: this.state.dropdownList.selectedVersionId }}
           onHide={() => {
             this.setState({ showGroupForm: false })
           }}
