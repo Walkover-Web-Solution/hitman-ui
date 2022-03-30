@@ -573,7 +573,7 @@ class Endpoints extends Component {
         <div
           className={`api-label ${this.props.endpoints[endpointId].requestType}`}
         >
-          <div className='endpoint-request-div'>
+          <div className='endpoint-request-div pr-3'>
             {this.props.endpoints[endpointId].requestType}
           </div>
         </div>
