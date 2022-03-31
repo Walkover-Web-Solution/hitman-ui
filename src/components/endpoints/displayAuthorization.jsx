@@ -439,8 +439,10 @@ class Authorization extends Component {
         {this.state.authorizationType === 'oauth_2' && (
           <div className='authorization-editor-wrapper'>
             <form>
-              <div className='input-field-wrapper form-group'>
-                <label className='basic-auth-label'>Access Token</label>
+              <div className='input-field-wrapper form-group d-block mb-1'>
+                <div>
+                  <label className='basic-auth-label'>Access Token</label>
+                </div>
                 <div className='basic-auth-input'>
                   <input
                     value={this.state.oauth_2.accessToken}
@@ -448,7 +450,7 @@ class Authorization extends Component {
                     name='accessToken'
                     className='form-control'
                   />
-                  <div className='dropdown available-token-dropdown'>
+                  <div className='dropdown available-token-dropdown ml-2'>
                     <button
                       className='btn dropdown-toggle'
                       id='dropdownMenuButton'
@@ -488,7 +490,7 @@ class Authorization extends Component {
                   </div>
                 </div>
               </div>
-              <div className='input-field-wrapper'>
+              <div className='input-field-wrapper d-block'>
                 <div className='basic-auth-label' />
                 <div className='basic-auth-input'>
                   <button

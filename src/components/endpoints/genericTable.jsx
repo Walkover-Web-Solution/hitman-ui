@@ -567,7 +567,7 @@ class GenericTable extends Component {
       return (
       // "generic-table-container"
       // table-bordered
-        <div className='hm-public-table position-relative'>
+        <div className='hm-public-table position-relative mb-2'>
           {(title === 'Path Variables' && isDashboardAndTestingView(this.props, this.props.currentView)) ? <div>{title}</div> : null}
           <div
             className={

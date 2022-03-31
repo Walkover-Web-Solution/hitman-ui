@@ -292,13 +292,13 @@ $border-color: rgba(227, 228, 230, 0.7);
   }
 
   &.POST {
-    background: rgba(39, 174, 96, 0.04);
+    background-color: rgba(39, 174, 96, 0.1);
     color: #27AE60;
 
   }
 
   &.GET {
-    background-color: rgba(233, 138, 54, 0.04);
+    background-color: rgba(233, 138, 54, 0.1);
     color: #E98A36;
   }
 
@@ -496,8 +496,8 @@ button.btn.custom-body-type-button {
     background-image: none !important;
   }
   .search-box > input[type="text"]{
-    padding-left: 2rem;
-    background: url('../assets/icons/search.svg') no-repeat 4% center !important;
+    padding-left: 2.5rem;
+    background: url('../assets/icons/search.svg') no-repeat 0.75rem center !important;
   }
   .versionsAvailable.versionWrapper:not(.enableSearch) .search-box > input[type="text"]{
     background: url('../assets/icons/searchIcon.svg') no-repeat center !important;
@@ -608,6 +608,7 @@ button.btn.custom-body-type-button {
     .dropdown-menu {
       max-height: 15rem;
       overflow: auto;
+      transform: translate(0rem, 2.45rem) !important;
     }
   }
 }
