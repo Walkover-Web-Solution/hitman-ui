@@ -3001,7 +3001,7 @@ class DisplayEndpoint extends Component {
                     !isDashboardRoute(this.props) && (
                       <div className='request-button'>
                         <button
-                          className={this.state.loader ? 'btn btn-primary btn-lg buttonLoader' : 'btn btn-lg btn-primary'}
+                          className={this.state.loader ? 'btn custom-theme-btn btn-lg buttonLoader' : 'btn btn-lg custom-theme-btn'}
                           style={{ background: theme }}
                           type='submit'
                           id='send-request-button'

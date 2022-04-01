@@ -150,14 +150,14 @@ class PublicEndpoint extends Component {
     return (
       <>
         <div
-          className={this.state.isSticky ? 'd-flex public-navbar stickyNav' : 'd-flex public-navbar'}
+          className={this.state.isSticky ? 'd-flex public-navbar stickyNav' : 'd-flex justify-content-end'}
         >
           <div className='entityTitle  p-3'>
             {this.state.currentEntityName}
           </div>
           {
             isCTAandLinksPresent &&
-              <div className='d-flex  p-3 pr-3'>
+              <div className='d-flex align-items-center p-3 pr-3'>
                 {links.map((link, index) => (
                   <div key={`link-${index}`}>
                     <label className='link' htmlFor={`link-${index}`} onClick={() => { this.openLink(link.link) }}>{link.name}</label>
@@ -288,7 +288,7 @@ class PublicEndpoint extends Component {
       <>
 
         <Style>{`
-          .public-navbar .link {
+          .link {
             &:hover {
               color: ${this.state.collectionTheme};
             }
@@ -346,6 +346,7 @@ class PublicEndpoint extends Component {
                     }}
                     className='display-component'
                   >
+                    {/* {this.displayCTAandLink()} */}
                     <Switch>
                       <Route
                         path={`/p/:collectionId/e/:endpointId/${this.state.collectionName}`}
