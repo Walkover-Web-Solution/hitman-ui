@@ -11,7 +11,7 @@ const parseBody = (rawBody) => {
   }
 }
 
-function handleUpdate (isFirstTime, props) {
+function handleUpdate (isFirstTime, props, msg) {
   originalBodyDescription = jQuery.extend(
     true,
     {},
@@ -19,13 +19,15 @@ function handleUpdate (isFirstTime, props) {
   )
   const bodyDescription = updateBodyDescription(
     props.body,
-    isFirstTime
+    isFirstTime,
+    msg
   )
   if (props.set_body_description) props.set_body_description(bodyDescription)
   return bodyDescription
 }
 
-function updateBodyDescription (body, isFirstTime) {
+function updateBodyDescription (body, isFirstTime, msg) {
+  if (msg) { return msg }
   body = { payload: parseBody(body) }
   let bodyDescription = generateBodyDescription(body, isFirstTime)
   if (!isFirstTime) { bodyDescription = preserveDefaultValue(bodyDescription) }

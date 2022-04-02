@@ -12,7 +12,9 @@ class BodyDescription extends Component {
   }
 
   componentDidMount () {
-    if (bodyDescriptionService.parseBody(this.props.body)) { bodyDescriptionService.handleUpdate(false, this.props) }
+    if (bodyDescriptionService.parseBody(this.props.body)) { bodyDescriptionService.handleUpdate(false, this.props) } else {
+      if (this.props.body === '') { bodyDescriptionService.handleUpdate(true, this.props, 'Empty json body') } else bodyDescriptionService.handleUpdate(true, this.props, 'Unable to Parse')
+    }
   }
 
   render () {
