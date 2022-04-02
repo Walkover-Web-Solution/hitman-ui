@@ -795,31 +795,6 @@ label.data-type {
   border-radius: 4px;
 }
 
-.pubCodeWrapper {
-  z-index: 199;
-  padding: 15px;
-  width: 25%;
-  background: #222222;;
-  transition: 300ms;
-  height: 100vh;
-  position: fixed;
-  right: 0;
-  top: 0;
-  .inner-editor {
-    height: 100%;
-    .editor-body-wrapper {
-      height: calc(100% - 8rem);
-      .ace-editor-wrapper {
-        height: calc(100% - 2rem);
-        min-width: 0;
-        div#ace-editor {
-          height: 100% !important;
-        }
-      }
-    }
-  }
-}
-
 .code-heading {
   margin: 0;
   color: #fff;
@@ -1950,7 +1925,7 @@ button.toggleButton {
     padding: 0.5rem 1rem;
     border-top-left-radius: 4px;
     border-bottom-left-radius: 4px;
-    top: 20px;
+    top: 5.2rem;
     img {
       display: none;
     }
@@ -2125,13 +2100,6 @@ button.toggleButton {
   }
 }
 
-
-.public-navbar {
-  float: right;
-  justify-content: center;
-  align-items: center;
-}
-
 .link {
   color: #828282;
   text-decoration: underline;
@@ -2262,45 +2230,6 @@ button[name="cta-1"] {
   border-top-left-radius: 0;
   border-top: 0;
 }
-
-.hm-right-content.hasPublicNavbar .public-navbar {
-  position: absolute;
-  right: 0;
-  top: 0;
-  transition: all 500ms ease 0s;
-  z-index: 99;
-}
-
-.hm-right-content.hasPublicNavbar .pubCodeWrapper {
-  margin-top: 77px;
-}
-
-.public-navbar.stickyNav {
-  position: fixed !important;
-  background: #fff;
-  animation: slide-down 0.4s;
-  margin: 0;
-  padding-left: 20%;
-  left: 0;
-  justify-content: space-between;
-  width: 100%;
-  z-index: 9;
-  min-height: 72px;
-  max-height:72px;
-}
-
-@keyframes slide-down {
-  0% {
-    opacity: 0;
-    transform: translateY(-100%);
-  }
-
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 .modal-feedio {
   z-index: 99999 !important;
 }
@@ -2626,12 +2555,6 @@ span.endpointNameWrapper {
   text-decoration: none!important;
   color: #000!important;
   font-size: 22px;
-}
-
-@media(max-width:1500px){
-  .public-navbar.stickyNav{
-    padding-left: 19.9%!important;
-  }
 }
 
 .community-btn-1{
