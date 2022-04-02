@@ -170,19 +170,20 @@ class PublishCollectionInfo extends Component {
   }
 
   renderPublishCollection () {
+    const { totalEndpointCount } = this.state
     return (
-      (this.state.totalEndpointCount > 1) &&
+      (totalEndpointCount > 1) &&
         <button
           className='btn btn-outline orange w-100 publishCollection'
           id='publish_api_doc_navbar_btn'
-          disabled={!((this.state.totalEndpointCount > 2))}
+          disabled={!((totalEndpointCount > 2))}
           onClick={() => { this.redirectUser() }}
         >
           <div className='d-flex align-items-left'>
             <img className='ml-2 pl-1 mr-1' src={FileIcon} alt='' />
             <span className='truncate'>Publish API Documentation</span>
           </div>
-          {(this.state.totalEndpointCount < 3) &&
+          {(totalEndpointCount < 3) &&
             <div>
               <OverlayTrigger
                 placement='right'
