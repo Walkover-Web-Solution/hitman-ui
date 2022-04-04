@@ -275,7 +275,7 @@ form.add-new-domain-form {
 .hm-right-content {
   margin: 0 auto;
   height: 100%;
-  .doc-fix-width{
+  .mid-part{
     max-width: 48rem;
   }
   .main-table-wrapper{
@@ -290,7 +290,7 @@ form.add-new-domain-form {
   .request-button {
     position: absolute;
     top: 0rem;
-    right: 0rem;
+    right: 1.5rem;
     .custom-theme-btn{
       color: white;
       background-color: $theme-color;
@@ -309,17 +309,13 @@ form.add-new-domain-form {
     background-color: inherit;
     padding: 0;
   }
-  .hideCodeEditor{
-    transition: all 0.3s ease-in;
-    width: 100.5%;
-    .hm-endpoint-container{
-      margin: auto;
-      padding: 0;
-      width: 100%;
-    }
-    + .public-navbar {
+  .custom-display-page{
+    padding: 0 1.5rem;
+    max-width: 52rem;
+    + .public-navbar{
       margin: auto !important;
-      width: 76% !important;
+      max-width: 52rem !important;
+      padding: 0.75rem 1.7rem !important;
     }
   }
   .hm-endpoint-container {
@@ -329,9 +325,11 @@ form.add-new-domain-form {
     overflow: auto;
     transition: all 0.3s ease-in;
     position: relative;
-    width: 68%;
-    padding: 0 0 0 1rem;
+    width: 72%;
+    padding: 0 1.5rem;
     margin-left: 0;
+    scrollbar-width: none;
+    max-width: 100%;
     &::-webkit-scrollbar {
       display: none;
       width: 0px;
@@ -644,13 +642,11 @@ h4.hm-sidebar-title span {
       transition: all 500ms ease 0s;
       z-index: 99;
       width: 100%;
-      height: 62px;
-      width: 68%;
-      max-width: 48rem;
+      max-width: 72%;
       margin-left: 0;
       justify-content: flex-end;
       top: 0;
-      padding: 1rem 0;
+      padding: 0.75rem 1.7rem;
       left: 0;
       right: 0;
       align-items: center;
@@ -659,7 +655,22 @@ h4.hm-sidebar-title span {
         left: 0;
         justify-content: space-between !important;
         box-shadow: 0px 10px 20px -13px #e1e1e1;
-        padding: 0 1rem;
+      }
+    }
+    .hideCodeEditor{
+      transition: all 0.3s ease-in;
+      width: 100.5%;
+      .hm-endpoint-container{
+        margin: auto;
+        padding: 0;
+        max-width: 52rem;
+        padding: 0 1.5rem;
+        width: 100%;
+      }
+      + .public-navbar {
+        margin: auto;
+        max-width: 52rem;
+        padding: 0.75rem 1.5rem;
       }
     }
   }
@@ -672,11 +683,11 @@ h4.hm-sidebar-title span {
 .pubCodeWrapper {
   z-index: 199;
   padding: 15px;
-  width: 25%;
+  width: 28%;
   background: #222222;;
   transition: 300ms;
   height: 100vh;
-  position: fixed;
+  position: absolute;
   right: 0;
   top: 0;
   .inner-editor {
@@ -691,5 +702,22 @@ h4.hm-sidebar-title span {
         }
       }
     }
+  }
+}
+
+
+@media (max-width: 1350px){
+  .hm-right-content{
+    &.hasPublicNavbar{
+      .hideCodeEditor{
+        + .public-navbar,
+        .hm-endpoint-container{
+          max-width: 50rem;
+        }
+      }
+    }
+  }
+  .select-code-wrapper > button, .select-code-wrapper .dropdown button{
+    font-size: $font-small !important;
   }
 }
