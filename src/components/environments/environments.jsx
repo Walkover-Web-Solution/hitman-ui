@@ -19,7 +19,6 @@ import {
 import { ReactComponent as EyeIcon } from '../../assets/icons/eye.svg'
 import { ReactComponent as EyeDisabledIcon } from '../../assets/icons/eyeDisabled.svg'
 import { ReactComponent as NoEnvVariablesImage } from '../../assets/icons/noEnvVariables.svg'
-import toggleIcon from '../../assets/icons/toggle.svg'
 import { onToggle } from '../common/redux/toggleResponse/toggleResponseActions'
 
 const mapStateToProps = (state) => {
@@ -192,13 +191,6 @@ class Environments extends Component {
     )
   }
 
-  handletoggle () {
-    const previousView = this.props.responseView
-    const currentView = previousView === 'right' ? 'bottom' : 'right'
-    window.localStorage.setItem('response-view', currentView)
-    this.props.set_response_view(currentView)
-  }
-
   render () {
     let env = isDashboardRoute(this.props)
       ? this.props.environment.environments[
@@ -252,9 +244,6 @@ class Environments extends Component {
       if (isDashboardRoute(this.props)) {
         return (
           <div className='environment-container d-flex align-items-center transition'>
-            <div className='tab-div hover d-flex align-items-center justify-content-center' onClick={() => this.handletoggle()}>
-              <img src={toggleIcon} alt='' />
-            </div>
             {(this.state.environmentFormName === 'Add new Environment' ||
               this.state.environmentFormName === 'Edit Environment') &&
               environmentsService.showEnvironmentForm(

@@ -1886,56 +1886,76 @@ class DisplayEndpoint extends Component {
     }
   }
 
+  handletoggle (type) {
+    const currentView = type
+    window.localStorage.setItem('response-view', currentView)
+    this.props.set_response_view(currentView)
+  }
+
+  renderToggle (type) {
+    return (
+      <div className={`tab-div hover d-flex align-items-center ${this.props.responseView === type ? 'active' : ''}`} onClick={() => this.handletoggle(type)}>
+        {type}
+      </div>
+    )
+  }
+
   displayResponseAndSampleResponse () {
     return (
       <>
         <div className='custom-tabs clear-both response-container' ref={this.myRef}>
-          <ul className='nav nav-tabs respTabsListing' id='myTab' role='tablist'>
-            <li className='nav-item'>
-              <a
-                className='nav-link active'
-                id='pills-response-tab'
-                data-toggle='pill'
-                href={
-                  this.isDashboardAndTestingView()
-                    ? `#response-${this.props.tab.id}`
-                    : '#response'
-                }
-                role='tab'
-                aria-controls={
-                  this.isDashboardAndTestingView()
-                    ? `response-${this.props.tab.id}`
-                    : 'response'
-                }
-                aria-selected='true'
-              >
-                Response
-              </a>
-            </li>
-            {getCurrentUser() && (
+          <div className='d-flex justify-content-between'>
+            <ul className='nav nav-tabs respTabsListing' id='myTab' role='tablist'>
               <li className='nav-item'>
                 <a
-                  className='nav-link'
-                  id='pills-sample-tab'
+                  className='nav-link active'
+                  id='pills-response-tab'
                   data-toggle='pill'
                   href={
                     this.isDashboardAndTestingView()
-                      ? `#sample-${this.props.tab.id}`
-                      : '#sample'
+                      ? `#response-${this.props.tab.id}`
+                      : '#response'
                   }
                   role='tab'
                   aria-controls={
                     this.isDashboardAndTestingView()
-                      ? `sample-${this.props.tab.id}`
-                      : 'sample'
+                      ? `response-${this.props.tab.id}`
+                      : 'response'
                   }
-                  aria-selected='false'
+                  aria-selected='true'
                 >
-                  Sample Response
+                  Response
                 </a>
               </li>
-            )}
-          </ul>
+              {getCurrentUser() && (
+                <li className='nav-item'>
+                  <a
+                    className='nav-link'
+                    id='pills-sample-tab'
+                    data-toggle='pill'
+                    href={
+                      this.isDashboardAndTestingView()
+                        ? `#sample-${this.props.tab.id}`
+                        : '#sample'
+                    }
+                    role='tab'
+                    aria-controls={
+                      this.isDashboardAndTestingView()
+                        ? `sample-${this.props.tab.id}`
+                        : 'sample'
+                    }
+                    aria-selected='false'
+                  >
+                    Sample Response
+                  </a>
+                </li>
+              )}
+            </ul>
+            <div className='d-flex'>
+              {this.renderToggle('bottom')}
+              {this.renderToggle('right')}
+            </div>
+          </div>
           <div className='tab-content responseTabWrapper' id='pills-tabContent'>
             <div
               className='tab-pane fade show active'
