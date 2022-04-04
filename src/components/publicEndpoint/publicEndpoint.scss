@@ -719,5 +719,7 @@ h4.hm-sidebar-title span {
   }
   .select-code-wrapper > button, .select-code-wrapper .dropdown button{
     font-size: $font-small !important;
+    height: 30px;
+    padding: 0 6px;
   }
 }
