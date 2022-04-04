@@ -63,12 +63,14 @@ class PublishCollectionInfo extends Component {
   }
 
   managePublicDoc () {
+    const { totalEndpointCount } = this.state
     return (
-      <button onClick={() => { isAdmin() ? this.openPublishSettings() : this.showAccessDeniedToast() }}>
+      <button class='btn' disabled={!totalEndpointCount} onClick={() => { isAdmin() ? this.openPublishSettings() : this.showAccessDeniedToast() }}>
         <div className='d-flex align-items-center cursor-pointer'>
           <img className='mr-1' src={FileIcon} alt='' />
           <span>Manage Public Doc</span>
         </div>
+        {this.renderInfoText('Add an endpoint first')}
       </button>
     )
   }
@@ -157,14 +159,29 @@ class PublishCollectionInfo extends Component {
   //   )
   // }
 
-  renderPublicCollectionInfo () {
+  renderPublicCollectionInfo (isPublic) {
     const currentCollection = this.props.collections[this.props.collectionId]
     return (
       !currentCollection?.importedFromMarketPlace &&
         <div className='public-colection-info'>
           {this.managePublicDoc()}
-          {isAdmin() ? this.apiDocFeedback() : this.renderInOverlay(this.apiDocFeedback.bind(this), msgText.adminAccees)}
-          <div className='publicurl'>{this.renderPublicUrl()}</div>
+          {isPublic && (isAdmin() ? this.apiDocFeedback() : this.renderInOverlay(this.apiDocFeedback.bind(this), msgText.adminAccees))}
+          {isPublic && <div className='publicurl'>{this.renderPublicUrl()}</div>}
+        </div>
+    )
+  }
+
+  renderInfoText (info) {
+    const { totalEndpointCount } = this.state
+    return (
+      (totalEndpointCount < 1) &&
+        <div>
+          <OverlayTrigger
+            placement='right'
+            overlay={<Tooltip> {info} </Tooltip>}
+          >
+            <HelpIcon />
+          </OverlayTrigger>
         </div>
     )
   }
@@ -172,27 +189,18 @@ class PublishCollectionInfo extends Component {
   renderPublishCollection () {
     const { totalEndpointCount } = this.state
     return (
-      (totalEndpointCount > 1) &&
-        <button
-          className='btn btn-outline orange w-100 publishCollection'
-          id='publish_api_doc_navbar_btn'
-          disabled={!((totalEndpointCount > 2))}
-          onClick={() => { this.redirectUser() }}
-        >
-          <div className='d-flex align-items-left'>
-            <img className='ml-2 pl-1 mr-1' src={FileIcon} alt='' />
-            <span className='truncate'>Publish API Documentation</span>
-          </div>
-          {(totalEndpointCount < 3) &&
-            <div>
-              <OverlayTrigger
-                placement='right'
-                overlay={<Tooltip> Add more than 2 endpoint to publish </Tooltip>}
-              >
-                <HelpIcon />
-              </OverlayTrigger>
-            </div>}
-        </button>
+      <button
+        className='btn btn-outline orange w-100 publishCollection'
+        id='publish_api_doc_navbar_btn'
+        disabled={!totalEndpointCount}
+        onClick={() => { this.redirectUser() }}
+      >
+        <div className='d-flex align-items-left'>
+          <img className='ml-2 pl-1 mr-1' src={FileIcon} alt='' />
+          <span className='truncate'>Publish API Documentation</span>
+        </div>
+        {this.renderInfoText('Add an endpoint to publish')}
+      </button>
     )
   }
 
@@ -240,7 +248,8 @@ class PublishCollectionInfo extends Component {
     const isPublic = this.props.collections[this.props.collectionId]?.isPublic || false
     return (
       <div>
-        {isPublic ? this.renderPublicCollectionInfo() : this.renderPublishCollection()}
+        {!isPublic && this.renderPublishCollection()}
+        {this.renderPublicCollectionInfo(isPublic)}
         {this.openPublishSidebar()}
       </div>
     )
