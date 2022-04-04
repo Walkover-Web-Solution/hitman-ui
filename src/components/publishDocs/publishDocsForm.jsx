@@ -316,8 +316,8 @@ class PublishDocForm extends Component {
           {publishDocFormEnum.LABELS[name]} {mandatory ? <span className='alert alert-danger'>*</span> : ''}
         </label>
         <input type='text' placeholder={placeholder} disabled={disabled} className='form-control' name={name} value={data[name]} onChange={(e) => this.handleChange(e, isURLInput)} onBlur={(e) => this.handleBlur(e, isURLInput)} />
+        {name === 'domain' && <span className='domain-info f-10 mt-1 d-block'>{`Point c name of the above domain to ${MAPPING_DOMAIN}`}</span>}
         {errors && errors[name] && <small className='alert alert-danger'>{errors[name]}</small>}
-        {name === 'domain' && <span className='domain-info f-10 mt-1'>{`Point c name of the above domain to ${MAPPING_DOMAIN}`}</span>}
       </div>
     )
   }
