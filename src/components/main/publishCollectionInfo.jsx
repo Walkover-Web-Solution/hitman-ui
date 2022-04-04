@@ -7,6 +7,7 @@ import SettingIcon from '../../assets/icons/SettingIcon.png'
 import FileIcon from '../../assets/icons/file.svg'
 import DocIcon from '../../assets/icons/twitch.svg'
 import { ReactComponent as ExternalLinks } from '../../assets/icons/externalLinks.svg'
+import { ReactComponent as HelpIcon } from '../../assets/icons/helpcircle.svg'
 import PublishSidebar from '../publishSidebar/publishSidebar'
 import { openExternalLink, msgText } from '../common/utility'
 import { OverlayTrigger, Tooltip } from 'react-bootstrap'
@@ -169,17 +170,28 @@ class PublishCollectionInfo extends Component {
   }
 
   renderPublishCollection () {
+    const { totalEndpointCount } = this.state
     return (
-      (this.state.totalEndpointCount > 2) &&
+      (totalEndpointCount > 1) &&
         <button
           className='btn btn-outline orange w-100 publishCollection'
           id='publish_api_doc_navbar_btn'
+          disabled={!((totalEndpointCount > 2))}
           onClick={() => { this.redirectUser() }}
         >
-          <div className='d-flex align-items-center'>
+          <div className='d-flex align-items-left'>
             <img className='ml-2 pl-1 mr-1' src={FileIcon} alt='' />
             <span className='truncate'>Publish API Documentation</span>
           </div>
+          {(totalEndpointCount < 3) &&
+            <div>
+              <OverlayTrigger
+                placement='right'
+                overlay={<Tooltip> Add more than 2 endpoint to publish </Tooltip>}
+              >
+                <HelpIcon />
+              </OverlayTrigger>
+            </div>}
         </button>
     )
   }
