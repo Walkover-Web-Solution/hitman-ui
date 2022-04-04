@@ -325,11 +325,10 @@ form.add-new-domain-form {
     overflow: auto;
     transition: all 0.3s ease-in;
     position: relative;
-    width: 72%;
+    max-width: 72.25%;
     padding: 0 1.5rem;
     margin-left: 0;
     scrollbar-width: none;
-    max-width: 100%;
     &::-webkit-scrollbar {
       display: none;
       width: 0px;
@@ -646,7 +645,7 @@ h4.hm-sidebar-title span {
       margin-left: 0;
       justify-content: flex-end;
       top: 0;
-      padding: 0.75rem 1.7rem;
+      padding: 0.75rem 1.5rem;
       left: 0;
       right: 0;
       align-items: center;
@@ -665,12 +664,10 @@ h4.hm-sidebar-title span {
         padding: 0;
         max-width: 52rem;
         padding: 0 1.5rem;
-        width: 100%;
       }
       + .public-navbar {
         margin: auto;
         max-width: 52rem;
-        padding: 0.75rem 1.5rem;
       }
     }
   }
