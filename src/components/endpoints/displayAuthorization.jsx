@@ -312,7 +312,7 @@ class Authorization extends Component {
             <label>Type</label>
             <div className='dropdown'>
               <button
-                className='btn dropdown-toggle'
+                className='btn dropdown-toggle outline-border'
                 id='dropdownMenuButton'
                 data-toggle='dropdown'
                 aria-haspopup='true'
@@ -343,7 +343,7 @@ class Authorization extends Component {
                 <label>Add authorization data to</label>
                 <div className='dropdown'>
                   <button
-                    className='btn dropdown-toggle'
+                    className='btn dropdown-toggle outline-border'
                     id='dropdownMenuButton'
                     data-toggle='dropdown'
                     aria-haspopup='true'
@@ -383,34 +383,32 @@ class Authorization extends Component {
         )}
 
         {this.state.authorizationType === 'basicAuth' && (
-          <div className='authorization-editor-wrapper'>
-            <form>
-              <div className='input-field-wrapper form-group'>
-                <label>Username</label>
+          <div className='authorization-editor-wrapper' id='authorization-form'>
+            <form className='form-group'>
+              <label className='mb-1'>Username</label>
+              <input
+                className='form-control'
+                name='username'
+                value={this.state.basicAuth.username}
+                onChange={this.handleChange.bind(this)}
+              />
+              <label htmlFor='password'>Password</label>
+              <div className='d-flex flex-row align-items-center'>
                 <input
                   className='form-control'
-                  name='username'
-                  value={this.state.basicAuth.username}
-                  onChange={this.handleChange.bind(this)}
-                />
-              </div>
-
-              <div className='input-field-wrapper form-group'>
-                <label>Password</label>
-                <input
-                  className='form-control'
+                  id='password'
                   type={
-                    this.state.showPassword
-                      ? this.state.showPassword === true
-                          ? null
-                          : 'password'
-                      : 'password'
-                  }
+                      this.state.showPassword
+                        ? this.state.showPassword === true
+                            ? null
+                            : 'password'
+                        : 'password'
+                    }
                   name='password'
                   value={this.state.basicAuth.password}
                   onChange={this.handleChange.bind(this)}
                 />
-                <label className='mb-0 ml-3'>
+                <label className='mb-3 ml-3'>
                   <input
                     className='mr-1'
                     type='checkbox'
@@ -441,8 +439,10 @@ class Authorization extends Component {
         {this.state.authorizationType === 'oauth_2' && (
           <div className='authorization-editor-wrapper'>
             <form>
-              <div className='input-field-wrapper form-group'>
-                <label className='basic-auth-label'>Access Token</label>
+              <div className='input-field-wrapper form-group d-block mb-1'>
+                <div>
+                  <label className='basic-auth-label'>Access Token</label>
+                </div>
                 <div className='basic-auth-input'>
                   <input
                     value={this.state.oauth_2.accessToken}
@@ -450,7 +450,7 @@ class Authorization extends Component {
                     name='accessToken'
                     className='form-control'
                   />
-                  <div className='dropdown available-token-dropdown'>
+                  <div className='dropdown available-token-dropdown ml-2'>
                     <button
                       className='btn dropdown-toggle'
                       id='dropdownMenuButton'
@@ -490,7 +490,7 @@ class Authorization extends Component {
                   </div>
                 </div>
               </div>
-              <div className='input-field-wrapper'>
+              <div className='input-field-wrapper d-block'>
                 <div className='basic-auth-label' />
                 <div className='basic-auth-input'>
                   <button

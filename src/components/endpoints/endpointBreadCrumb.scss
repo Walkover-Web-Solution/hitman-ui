@@ -1,4 +1,5 @@
 //Note: Unique IDs are used in CTAs for tracking purposes with GTM. Do not use the same IDs elsewhere.
+@import '../main/variables.scss';
 
 .endpoint-name-edit {
     font-weight:bold;
@@ -17,19 +18,15 @@
 }
 
 .bread-crumb-wrapper{
-    font-size:14px!important;
-    color: black !important;
-    height:27px;
-    margin-bottom: 0 !important;
+    font-size: $font-medium;
+    .end-point-title{
+        font-weight: 700;
+    }
 }
 
 .endpoint-name-input {
-    font-size: 14px;
-    font-weight: 600;
-    border: 1px solid #E98A36;
-    padding: 2px 8px;
-    border-radius: 4px;
-    &:focus {
-      outline: none;
+    height: 2.1rem!important ;
+    &:focus{
+        outline: none;
     }
-  }
+}

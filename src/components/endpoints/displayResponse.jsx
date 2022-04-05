@@ -139,7 +139,7 @@ class DisplayResponse extends Component {
     }
     return (
       <>
-        <div className='col-12 custom-tabs' ref={this.myRef}>
+        <div className='custom-tabs' ref={this.myRef}>
           <ul className='nav nav-tabs respTabsListing' id='myTab' role='tablist'>
             <li className='nav-item' onClick={() => { this.setState({ selectedResponseTab: 'body' }) }}>
               <a
@@ -205,7 +205,7 @@ class DisplayResponse extends Component {
   displayHeader () {
     if (this.props.response.headers) {
       return (
-        <div className='response-headers-container px-3'>
+        <div className='response-headers-container'>
           <table className='table table-sm fs-6'>
             <thead>
               <tr>
@@ -411,7 +411,7 @@ class DisplayResponse extends Component {
                   <div className='empty-response-container'>
                     {/* <img src={image} height="100px" width="100px" alt="" /> */}
                     <EmptyResponseImg />
-                    <p>Hit Send to trigger the API call</p>
+                    <p className='mt-0'>Hit Send to trigger the API call</p>
                   </div>
                 </div>
                 )

@@ -1,6 +1,4 @@
 import React, { Component } from 'react'
-import ReactQuill, { Quill } from 'react-quill'
-import 'react-quill/dist/quill.snow.css'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 // import { markTabAsModified } from '../tabs/tabService'
@@ -11,14 +9,7 @@ import { toast } from 'react-toastify'
 import * as _ from 'lodash'
 import { updateTab } from '../tabs/redux/tabsActions'
 import tabService from '../tabs/tabService'
-const Link = Quill.import('formats/link')
-const builtInFunc = Link.sanitize
-Link.sanitize = function customSanitizeLinkInput (linkValueInput) {
-  let val = linkValueInput
-  if (/^\w+:/.test(val));
-  else if (!/^https?:/.test(val)) val = 'https://' + val
-  return builtInFunc.call(this, val)
-}
+import TinyEditor from '../tinyEditor/tinyEditor'
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
@@ -43,30 +34,6 @@ class EditPage extends Component {
     }
     this.name = React.createRef()
     this.contents = React.createRef()
-
-    this.modules = {
-      toolbar: [
-        [{ header: [1, 2, 3, 4, 5, 6, false] }],
-        ['bold', 'italic', 'underline', 'strike'],
-        [{ color: [] }, { background: [] }],
-
-        [({ list: 'ordered' }, { list: 'bullet' })],
-        ['link']
-      ]
-    }
-
-    this.formats = [
-      'header',
-      'bold',
-      'italic',
-      'underline',
-      'strike',
-      'color',
-      'background',
-      'list',
-      'bullet',
-      'link'
-    ]
   }
 
   fetchPage (pageId) {
@@ -74,13 +41,15 @@ class EditPage extends Component {
     const { pages } = this.props
     const page = pages[pageId]
     if (page) {
-      const { id, versionId, groupId, name, contents } = page
+      const { id, versionId, groupId, name, contents, isPublished, state } = page
       data = {
         id,
         versionId,
         groupId,
         name,
-        contents
+        contents,
+        isPublished,
+        state
       }
 
       this.setState({ data, originalData: data, draftDataSet: true })
@@ -179,17 +148,59 @@ class EditPage extends Component {
     }
   }
 
+  renderTinyEditor (item, index) {
+    return (
+      <TinyEditor
+        onChange={this.handleChange}
+        data={this.state.data.contents}
+        match={this.props.match}
+        isInlineEditor={false}
+        disabled={false}
+        minHeight='650'
+      />
+    )
+  }
+
+  renderEditPageOperations () {
+    return (
+      <div>
+        <form onSubmit={this.handleSubmit}>
+          <div className='d-flex flex-row justify-content-end mb-2'>
+            <button
+              onSubmit={this.handleSubmit}
+              type='submit'
+              className='btn btn-primary btn-extra-lg mr-2 btn-width'
+            >
+              Save
+            </button>
+            <button
+              onClick={() => { this.isModified() ? this.setState({ warningModalFlag: true }) : this.handleCancel() }}
+              type='button'
+              className='btn btn-secondary outline btn-extra-lg btn-width'
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    )
+  }
+
   render () {
     return (
-      <div className='custom-edit-page'>
+      <div className='custom-edit-page page-display mt-3'>
         <WarningModal
           show={this.state.warningModalFlag}
           onHide={() => { this.setState({ warningModalFlag: false }) }}
           ignoreButtonCallback={() => { this.handleCancel() }}
           message='Your unsaved changes will be lost.'
         />
+
         <div className='form-group'>
-          <label htmlFor='name'>Page Name</label>
+          <div className='d-flex justify-content-between align-items-center'>
+            <label htmlFor='name'>Page Name</label>
+            {this.renderEditPageOperations()}
+          </div>
           <input
             name='name'
             id='name'
@@ -201,33 +212,8 @@ class EditPage extends Component {
           />
         </div>
 
-        <div style={{ marginBottom: '50px' }}>
-          <ReactQuill
-            style={{ height: '600px' }}
-            value={this.state.data.contents}
-            modules={this.modules}
-            formats={this.formats}
-            onChange={this.handleChange}
-          />
-        </div>
-
         <div>
-          <form onSubmit={this.handleSubmit}>
-            <button
-              onClick={() => { this.isModified() ? this.setState({ warningModalFlag: true }) : this.handleCancel() }}
-              type='button'
-              className='btn btn-secondary outline btn-extra-lg mt-4'
-            >
-              Cancel
-            </button>
-            <button
-              onSubmit={this.handleSubmit}
-              type='submit'
-              className='btn btn-primary btn-extra-lg mt-4 ml-3'
-            >
-              Save
-            </button>
-          </form>
+          {this.renderTinyEditor()}
         </div>
       </div>
     )

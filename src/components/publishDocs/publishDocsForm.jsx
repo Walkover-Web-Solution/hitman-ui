@@ -8,9 +8,9 @@ import { updateCollection } from '../collections/redux/collectionsActions'
 import './publishDocsForm.scss'
 import { HOSTNAME_VALIDATION_REGEX } from '../common/constants'
 import { handleChangeInUrlField, handleBlurInUrlField } from '../common/utility'
-const URI = require('urijs')
+import { moveToNextStep } from '../../services/widgetService'
 
-const UI_IP = process.env.REACT_APP_UI_IP
+const MAPPING_DOMAIN = process.env.REACT_APP_HITMAN_MAPPING_DOMAIN
 
 const publishDocFormEnum = {
   NULL_STRING: '',
@@ -84,7 +84,7 @@ class PublishDocForm extends Component {
   }
 
   setSelectedCollection () {
-    const collectionId = URI.parseQuery(this.props.location.search).collectionId
+    const collectionId = this.props.selected_collection_id
     let collection = {}
     let title, logoUrl, domain, theme, cta, links, favicon
     if (this.props.collections) {
@@ -145,7 +145,7 @@ class PublishDocForm extends Component {
   };
 
   saveCollectionDetails () {
-    const collectionId = URI.parseQuery(this.props.location.search).collectionId
+    const collectionId = this.props.selected_collection_id
     const collection = { ...this.props.collections[collectionId] }
     const data = { ...this.state.data }
     const cta = this.state.cta
@@ -171,13 +171,6 @@ class PublishDocForm extends Component {
     if (errors) return
     this.setState({ loader: true })
     this.props.update_collection(collection, () => { this.setState({ loader: false }) })
-    if (collectionId) {
-      this.props.history.replace({
-        pathname: `/orgs/${this.props.match.params.orgId}/admin/publish`,
-        search: `?collectionId=${collectionId}`,
-        showConfirmModal: !this.props?.isSidebar
-      })
-    }
   }
 
   setTheme (theme) {
@@ -194,8 +187,8 @@ class PublishDocForm extends Component {
         </label>
         {this.state.cta.map((cta, index) => (
           <div key={`cta-${index}`} className={(cta.name.trim() && cta.value.trim()) ? 'd-flex highlight' : 'd-flex'}>
-            <input type='text' className='form-control my-2 mr-2' placeholder={`CTA Name ${index + 1}`} name={`cta-${index}-name`} value={cta.name} onChange={(e) => this.handleChangeLink(e)} />
-            <input type='text' className='form-control my-2 mr-2' placeholder={`CTA Link ${index + 1}`} name={`cta-${index}-value`} value={cta.value} onChange={(e) => this.handleChangeLink(e)} />
+            <input type='text' className='form-control mb-2 mr-2' placeholder={`CTA Name ${index + 1}`} name={`cta-${index}-name`} value={cta.name} onChange={(e) => this.handleChangeLink(e)} />
+            <input type='text' className='form-control mb-2 mr-2' placeholder={`CTA Link ${index + 1}`} name={`cta-${index}-value`} value={cta.value} onChange={(e) => this.handleChangeLink(e)} />
           </div>
         ))}
       </div>
@@ -210,8 +203,8 @@ class PublishDocForm extends Component {
         </label>
         {this.state.links.map((link, index) => (
           <div key={`cta-${index}`} className={(link.name.trim() && link.link.trim()) ? 'd-flex highlight' : 'd-flex'}>
-            <input type='text' className='form-control my-2 mr-2' placeholder={`Link Name ${index + 1}`} name={`links-${index}-name`} value={link.name} onChange={(e) => this.handleChangeLink(e)} />
-            <input type='text' className='form-control my-2 mr-2' placeholder={`Referral Link ${index + 1}`} name={`links-${index}-link`} value={link.link} onChange={(e) => this.handleChangeLink(e)} />
+            <input type='text' className='form-control mb-2 mr-2' placeholder={`Link Name ${index + 1}`} name={`links-${index}-name`} value={link.name} onChange={(e) => this.handleChangeLink(e)} />
+            <input type='text' className='form-control mb-2 mr-2' placeholder={`Referral Link ${index + 1}`} name={`links-${index}-link`} value={link.link} onChange={(e) => this.handleChangeLink(e)} />
           </div>
         ))}
       </div>
@@ -220,10 +213,10 @@ class PublishDocForm extends Component {
 
   renderFooter () {
     return (
-      <>
-        {this.props.isSidebar && <Button className='btn btn-secondary outline btn-extra-lg mr-2' onClick={() => { this.props.onHide() }}> Cancel</Button>}
-        <Button className={this.state.loader ? 'btn-extra-lg buttonLoader' : 'btn-extra-lg'} id='publish_doc_settings_save_btn' onClick={() => this.saveCollectionDetails()}>{this.props.isSidebar ? 'Update' : 'Save'}</Button>
-      </>
+      <div className='d-flex align-items-center'>
+        {this.props.isSidebar && <Button className='btn btn-secondary outline mr-2' onClick={() => { this.props.onHide() }}> Cancel</Button>}
+        <Button className={this.state.loader ? 'buttonLoader' : ''} disabled={!this.state.data.title.trim()} id='publish_doc_settings_save_btn' onClick={() => this.saveCollectionDetails()}>{this.props.isSidebar ? 'Update' : 'Save'}</Button>
+      </div>
     )
   }
 
@@ -272,7 +265,7 @@ class PublishDocForm extends Component {
       <>
         <div>
           <label style={this.getDisabledStyle(disabled)} htmlFor='upload-button'>
-            <UploadIcon /> <small className='upload-box-text'>Upload</small>
+            <UploadIcon />
           </label>
           <input type='file' id='upload-button' disabled={disabled} style={{ display: 'none' }} accept='.png' onChange={(e) => this.onFileChange(e)} />
         </div>
@@ -324,38 +317,79 @@ class PublishDocForm extends Component {
           {publishDocFormEnum.LABELS[name]} {mandatory ? <span className='alert alert-danger'>*</span> : ''}
         </label>
         <input type='text' placeholder={placeholder} disabled={disabled} className='form-control' name={name} value={data[name]} onChange={(e) => this.handleChange(e, isURLInput)} onBlur={(e) => this.handleBlur(e, isURLInput)} />
+        {name === 'domain' && <span className='domain-info f-10 mt-1 d-block'>{`Point c name of the above domain to ${MAPPING_DOMAIN}`}</span>}
         {errors && errors[name] && <small className='alert alert-danger'>{errors[name]}</small>}
-        {name === 'domain' && <label className='domain-info'>{`Point the A record of the above domain to ${UI_IP}`}</label>}
       </div>
     )
   }
 
+  getSelectedCollection () {
+    const collectionId = this.props.selected_collection_id
+    const collection = { ...this.props.collections[collectionId] }
+    return collection
+  }
+
+  isCollectionPublished (selectedCollection) {
+    return selectedCollection?.isPublic || false
+  }
+
+  publishCollection (selectedCollection) {
+    if (selectedCollection?.isPublic !== true) {
+      const editedCollection = { ...selectedCollection }
+      editedCollection.isPublic = true
+      this.props.update_collection(editedCollection)
+      moveToNextStep(6)
+    }
+  }
+
+  renderPublishCollectionButton () {
+    const selectedCollection = this.getSelectedCollection()
+    if (!this.isCollectionPublished(selectedCollection)) {
+      return (
+        <Button
+          id='publish_collection_btn'
+          variant='success publish-collection-button ml-4 mt-4'
+          onClick={() => this.publishCollection(selectedCollection)}
+          disabled={!selectedCollection?.docProperties?.defaultTitle}
+        >
+          Publish Collection
+        </Button>
+      )
+    }
+  }
+
   render () {
     return (
-      <>
-        <div className='publish-mo-btn'>
-          {
-            this.props.isSidebar && this.props.isCollectionPublished() &&
-              <Button
-                id='unpublish_doc_btn'
-                variant='btn btn-outline danger ml-4 mt-4'
-                onClick={() => this.props.unPublishCollection()}
-              >
-                Unpublish Doc
-              </Button>
-          }
+      <div className={this.props.onTab && 'publish-on-tab'}>
+        <div className='d-flex mb-3 justify-content-between'>
+          <h3 className='page-title mb-0'>Manage Public Doc</h3>
+          <div className='publish-mo-btn'>
+            {(this.props.isSidebar || this.props.onTab) && this.props.isCollectionPublished()
+              ? (
+                <Button
+                  id='unpublish_doc_btn'
+                  variant='btn btn-outline danger ml-2'
+                  onClick={() => this.props.unPublishCollection()}
+                >
+                  Unpublish Doc
+                </Button>
+                )
+              : this.renderPublishCollectionButton()}
+          </div>
         </div>
         <div className='small-input'>
           {this.renderInput('title', true, false, 'brand name')}
           {this.renderInput('domain', false, false, 'docs.example.com')}
         </div>
-        <label className='fav-icon-text'> Fav Icon </label>
-        <div className='d-flex'>
-          <div className='favicon-uploader'>
-            {this.renderUploadBox('icon')}
+        <div className='d-flex favicon'>
+          <div className='form-group'>
+            <label> Fav Icon </label>
+            <div className='favicon-uploader'>
+              {this.renderUploadBox('icon')}
+            </div>
           </div>
-          <div className='or-wrap'>
-            <p>OR</p>
+          <div className='or-wrap d-flex align-items-center'>
+            <p className='mb-0'>OR</p>
           </div>
           {this.renderInput('logoUrl', false, this.state.binaryFile, '')}
         </div>
@@ -370,7 +404,7 @@ class PublishDocForm extends Component {
         <div className='foot-warpper'>
           {this.renderFooter()}
         </div>
-      </>
+      </div>
     )
   }
 }

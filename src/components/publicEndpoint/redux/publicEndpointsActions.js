@@ -136,6 +136,7 @@ export const approveEndpoint = (endpoint, publishLoaderHandler) => {
         dispatch(
           onEndpointStateError(error.response ? error.response.data : error)
         )
+        publishLoaderHandler()
       })
   }
 }

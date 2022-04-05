@@ -240,6 +240,11 @@ class BodyContainer extends Component {
     }
   }
 
+  matchCurrentBodyType (bodyType) {
+    if (this.props.Body && this.props.Body.type + '-' + this.props.endpoint_id === bodyType) return true
+    return false
+  }
+
   render () {
     if (this.props.location.pathname.split('/')[5] !== this.endpointId) {
       this.endpointId = this.props.location.pathname.split('/')[5]
@@ -278,6 +283,7 @@ class BodyContainer extends Component {
 
     return (
       <div className='body-wrapper'>
+        <span style={{ fontWeight: 600 }}>Body</span>
         <div className='button-panel-wrapper'>
           <form className='body-select d-flex align-items-center mb-4'>
             <label className='customRadio'>
@@ -301,6 +307,7 @@ class BodyContainer extends Component {
                 id={`raw-${this.props.endpoint_id}`}
                 onClick={() => this.handleSelectBodyType('raw')}
                 className='custom-radio-input'
+                checked={this.matchCurrentBodyType(`${this.state.selectedRawBodyType}-${this.props.endpoint_id}`)}
               />
               <span>raw</span>
               <span class='checkmark' />
@@ -312,6 +319,7 @@ class BodyContainer extends Component {
                 id={`multipart/form-data-${this.props.endpoint_id}`}
                 onClick={() => this.handleSelectBodyType('multipart/form-data')}
                 className='custom-radio-input'
+                checked={this.matchCurrentBodyType(`multipart/form-data-${this.props.endpoint_id}`)}
               />
               <span>form-data</span>
               <span class='checkmark' />
@@ -325,6 +333,7 @@ class BodyContainer extends Component {
                 onClick={() =>
                   this.handleSelectBodyType('application/x-www-form-urlencoded')}
                 className='custom-radio-input'
+                checked={this.matchCurrentBodyType(`application/x-www-form-urlencoded-${this.props.endpoint_id}`)}
               />
               <span>x-www-form-urlencoded</span>
               <span class='checkmark' />
@@ -371,7 +380,7 @@ class BodyContainer extends Component {
             (this.state.selectedBodyType === 'raw' ||
               this.state.selectedBodyType === 'JSON') && (
                 <div
-                  className='btn-group btn-group-toggle customBtnGroup'
+                  className='btn-group btn-group-toggle customBtnGroup mb-4'
                   data-toggle='buttons'
                   style={{ float: 'right' }}
                 >
@@ -390,7 +399,7 @@ class BodyContainer extends Component {
                     Raw
                   </label>
                   <label
-                    className='btn btn-secondary'
+                    className='btn btn-secondary body-desc'
                     id={`toggle-body-description-${this.props.endpoint_id}`}
                   >
                     <input

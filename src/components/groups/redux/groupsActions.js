@@ -100,7 +100,7 @@ export const onGroupsFetchedError = (error) => {
   }
 }
 
-export const addGroup = (versionId, newGroup) => {
+export const addGroup = (versionId, newGroup, customCallback) => {
   return (dispatch) => {
     dispatch(addGroupRequest({ ...newGroup, versionId }))
     groupsApiService
@@ -112,6 +112,9 @@ export const addGroup = (versionId, newGroup) => {
           versionId: response.data.versionId
         })
         dispatch(onGroupAdded(response.data))
+        if (customCallback) {
+          customCallback(response.data)
+        }
       })
       .catch((error) => {
         dispatch(

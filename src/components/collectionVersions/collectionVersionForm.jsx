@@ -14,8 +14,8 @@ import shortid from 'shortid'
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    add_version: (newCollectionVersion, collectionId) =>
-      dispatch(addVersion(newCollectionVersion, collectionId)),
+    add_version: (newCollectionVersion, collectionId, callback) =>
+      dispatch(addVersion(newCollectionVersion, collectionId, callback)),
     update_version: (editedVersion) => dispatch(updateVersion(editedVersion))
   }
 }
@@ -31,7 +31,7 @@ class CollectionVersionForm extends Form {
     }
 
     this.schema = {
-      number: Joi.string().required().label('Version Name'),
+      number: Joi.string().required().label('Version Name').max(20),
       host: Joi.string().regex(URL_VALIDATION_REGEX, { name: 'URL' }).label('Version Endpoint')
         .error(() => { return { message: 'Version Endpoint Must be Valid URL' } })
     }
@@ -53,6 +53,10 @@ class CollectionVersionForm extends Form {
     this.setState({ data, versionId, collectionId })
   }
 
+  redirectToForm (version) {
+    this.props.setDropdownList(version)
+  }
+
   async doSubmit () {
     this.props.onHide()
     let { number } = { ...this.state.data }
@@ -65,7 +69,7 @@ class CollectionVersionForm extends Form {
     if (this.props.title === ADD_VERSION_MODAL_NAME) {
       const collectionId = this.props.collection_id
       const newVersion = { ...this.state.data, requestId: shortid.generate(), number }
-      this.props.add_version(newVersion, collectionId)
+      this.props.add_version(newVersion, collectionId, this.redirectToForm.bind(this))
       moveToNextStep(2)
     }
   }
@@ -79,7 +83,6 @@ class CollectionVersionForm extends Form {
           size='lg'
           animation={false}
           aria-labelledby='contained-modal-title-vcenter'
-          centered
         >
           <Modal.Header className='custom-collection-modal-container' closeButton>
             <Modal.Title id='contained-modal-title-vcenter'>
@@ -90,7 +93,7 @@ class CollectionVersionForm extends Form {
             <form onSubmit={this.handleSubmit}>
               <div className='row'>
                 <div className='col-6'>
-                  {this.renderInput('number', 'Version Name', 'Version Name', true, true, false, '*version name accepts min 1 character')}
+                  {this.renderInput('number', 'Version Name', 'Version Name', true, true, false, '*version name accepts min 1 & max 20 characters')}
                 </div>
                 <div className='col-6'>
                   {this.renderInput('host', 'Version Endpoint', 'https://v1.example.com', false, false, true)}

@@ -18,6 +18,9 @@ import collectionVersionsService from './collectionVersionsService'
 import filterService from '../../services/filterService'
 import AddEntity from '../main/addEntity/addEntity'
 import sidebarActions from '../main/sidebar/redux/sidebarActions'
+import { ReactComponent as Plus } from '../../assets/icons/plus-square.svg'
+import NoFound from '../../assets/icons/noCollectionsIcon.svg'
+import ExpandArrow from '../../assets/icons/expand-arrow.svg'
 
 const mapStateToProps = (state) => {
   return {
@@ -374,13 +377,11 @@ class CollectionVersions extends Component {
               <button
                 tabIndex={-1}
                 ref={(newRef) => { this.scrollRef[versionId] = newRef }}
-                className={[focused && sidebarFocused ? 'focused' : '', expanded ? 'expanded' : ''].join(' ')}
+                className={'pl-3 ' + [focused && sidebarFocused ? 'focused' : '', expanded ? 'expanded' : ''].join(' ')}
               >
-                <div className='d-flex align-items-center flex-grow-1' onClick={() => { this.toggleVersionIds(versionId) }}>
+                <div className='d-flex align-items-center cl-name' onClick={() => { this.toggleVersionIds(versionId) }}>
                   <span className='versionChovron'>
-                    <svg width='15' height='15' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
-                      <path d='M4.5 6.75L9 11.25L13.5 6.75' stroke='#333333' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
-                    </svg>
+                    <img src={ExpandArrow} alt='' />
                   </span>
                   <div className='sidebar-accordion-item text-truncate d-inline'>
                     {this.props.versions[versionId].number}
@@ -389,7 +390,10 @@ class CollectionVersions extends Component {
                 {
                       isDashboardRoute(this.props, true) && !this.props.collections[this.props.collection_id]?.importedFromMarketPlace
                         ? (
-                          <div className='sidebar-item-action'>
+                          <div className='sidebar-item-action d-flex align-items-center'>
+                            <div className='mr-1 d-flex align-items-center' onClick={() => this.openAddGroupForm(this.props.versions[versionId])}>
+                              <Plus />
+                            </div>
                             <div
                               className='sidebar-item-action-btn'
                               data-toggle='dropdown'
@@ -420,19 +424,6 @@ class CollectionVersions extends Component {
                                   <path d='M7.5 8.25V12.75' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
                                   <path d='M10.5 8.25V12.75' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
                                 </svg>   Delete
-                              </div>
-                              <div
-                                className='dropdown-item'
-                                onClick={() =>
-                                  this.openAddGroupForm(this.props.versions[versionId])}
-                              >
-                                <svg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'>
-                                  <path d='M6 3H2V8H6V3Z' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
-                                  <path d='M9 11H2V16H9V11Z' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
-                                  <path d='M16 3H9V8H16V3Z' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
-                                  <path d='M16 11H12V16H16V11Z' stroke='#E98A36' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' />
-                                </svg>
-                                Add Group
                               </div>
                               <div
                                 className='dropdown-item'
@@ -485,7 +476,7 @@ class CollectionVersions extends Component {
                 ? (
                   <div className='version-collapse'>
                     <Card.Body>
-                      <div className='linkWrapper versionPages'>
+                      <div className='linkWrapper versionPages pl-4'>
                         <VersionPages
                           {...this.props}
                           pagesToRender={pagesToRender}
@@ -578,7 +569,12 @@ class CollectionVersions extends Component {
                   )}
                 </>
                 )
-              : <div className='text-center'> No Results </div>
+              : (
+                <div className='d-flex justify-content-center align-items-center h-100 flex-d-col'>
+                  <img src={NoFound} alt='' />
+                  <span className='font-weight-700'>No Results</span>
+                </div>
+                )
           : <div className='text-center'>Searching...</div>}
       </div>
     )
@@ -746,7 +742,9 @@ class CollectionVersions extends Component {
                   this.renderBody(versionId, index, versionsCount)
                 ))}
 
-        {this.renderForm(versionsCount)}
+        <div className='pl-4'>
+          {this.renderForm(versionsCount)}
+        </div>
       </>
     )
   }

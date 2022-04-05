@@ -96,10 +96,10 @@ $border-color: rgba(227, 228, 230, 0.7);
   // justify-content: center;
   // height: 100%;
   // overflow: scroll;
-  background: #2A2B35;
   padding: 5px;
   border-top-right-radius: 4px;
   border-top-left-radius: 4px;
+  margin-top: -1.75rem;
 
   .list-group {
     width: 100%;
@@ -246,7 +246,6 @@ $border-color: rgba(227, 228, 230, 0.7);
 .endpoint-container {
   .panel-endpoint-name-container {
     margin-bottom: 0px;
-
     .public-endpoint-name-input {
       display: flex;
       flex-direction: row;
@@ -260,7 +259,6 @@ $border-color: rgba(227, 228, 230, 0.7);
       font-size: 25px;
       background-color: inherit;
     }
-
     .endpoint-description {
       float: left;
       margin-top: 5px;
@@ -282,20 +280,12 @@ $border-color: rgba(227, 228, 230, 0.7);
       }
     }
   }
-
-
-
-
-
-
   .endpoint-url-container {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    // border-bottom: 1px solid $border-color;
     padding: 10px 0;
     height: 60px;
-
     .uriContainerWrapper {
       span .dropdown-toggle {
         height: 36px;
@@ -304,23 +294,19 @@ $border-color: rgba(227, 228, 230, 0.7);
         border-top: 1px solid $theme-color;
         width: 30px;
       }
-
       .dropdown-menu.show {
         min-width: 130px;
       }
-
       .btn {
         height: 36px;
         width: 100px;
       }
     }
-
     .input-group-prepend {
       display: flex;
       flex-direction: row;
       justify-content: center;
       width: 100%;
-
       .endpoint-url-input {
         height: 36px;
         border: 1px solid #e0e0e0;
@@ -328,17 +314,22 @@ $border-color: rgba(227, 228, 230, 0.7);
         font-weight: 400;
         color: #000;
       }
-
       .dropdown {
         .dropdown-toggle {
-          margin-right: 10px;
-          min-width: 100px;
+          min-width: 78px;
           background: #fff;
-          border: 1px solid #e0e0e0;
-          height: 36px;
-          font-size: 14px;
-          font-weight: 600;
-          outline: inherit;
+          border: 1px solid $outline-color;
+          font-size: $font-normal;
+          height: 2.25rem;
+          font-weight: normal;
+          border-right: 0;
+          border-top-right-radius: 0;
+          border-bottom-right-radius: 0;
+          transition: all 0.3s ease-in;
+          &:focus{
+            outline: none;
+            background-color: $secondary-color;
+          }
         }
       }
 
@@ -436,30 +427,24 @@ $border-color: rgba(227, 228, 230, 0.7);
 }
 
 .custom-tabs {
-  margin-bottom: 20px;
   .nav-tabs {
-    border-bottom: 2px solid #dee2e6;
     display: inline-flex;
+    border: 1px solid $outline-color;
+    border-radius: $border-radius;
+    overflow: hidden;
+    margin-bottom: 0.75rem;
     .nav-item {
-      margin-bottom: -2px;
-      margin-right: 1rem;
-      &:last-child{
-        margin-right: 0;
-      }
      .nav-link{
-      padding: 0.5rem 0;
+      padding: 0.35rem 0.75rem;
       border: none;
-      color: #828282 !important;
-      font-size: $font-normal;
-      border-bottom: 3px solid transparent;
-      &:hover {
-        color: #495057;
-        border-color: transparent;
-      }
-      &.active {
-        background: transparent;
-        border-bottom-color: $theme-color !important;
-        color: #333 !important;
+      color: $text-color;
+      font-size: $font-medium;
+      border-radius: 0;
+      transition: all 0.3s ease-in;
+      cursor: pointer;
+      &:hover,  &.active {
+        color: #fff !important;
+        background-color: $theme-color;
       }
      }
     }
@@ -478,14 +463,11 @@ $border-color: rgba(227, 228, 230, 0.7);
   display: flex;
   flex-direction: column;
   margin: 0;
-  padding: 15px;
-  border: 1px solid #E0E0E0;
-
   .response-status {
     display: flex;
     justify-content: space-between;
     margin-bottom: 15px;
-
+    flex-wrap: wrap;
     .statusWrapper {
       display: flex;
       align-items: center;
@@ -494,13 +476,13 @@ $border-color: rgba(227, 228, 230, 0.7);
     #status {
       display: flex;
       flex-direction: row;
-      padding-right: 15px;
+      padding-right: 8px;
     }
 
     #time {
       display: flex;
       flex-direction: row;
-      padding-right: 15px
+      padding-right: 8px
     }
   }
 
@@ -647,42 +629,35 @@ $border-color: rgba(227, 228, 230, 0.7);
 }
 
 table#custom-generic-table {
-  margin-left: 0 !important;
-  margin-bottom: 0;
-  background: rgb(255, 255, 255);
-
   .custom-checkbox {
     width: 3% !important;
   }
-
   th {
     height: 100%;
     font-size: 12px;
-    font-weight: 800;
+    font-weight: normal;
     border-top: none;
+    border: none;
   }
-
   td {
     height: 100%;
     padding: 3px !important;
+    border: none;
   }
-
   tbody {
     input {
       height: 100%;
-
-      font-size: 14px;
+      font-size: $font-medium;
       font-weight: 400;
+      border-radius: 3px;
     }
-
     input:focus,
     input.form-control:focus {
       box-shadow: inset 0 -1px 0 rgb(255, 255, 255) !important;
       height: 100%;
     }
-
     input::placeholder {
-      font-size: 14px;
+      font-size: $font-medium !important;
       // font-weight: 300;
     }
   }
@@ -726,7 +701,7 @@ table#custom-generic-table {
 .response-status-value {
   font-size: 12px;
   opacity: 0.7;
-  padding-left: 10px;
+  padding-left: 5px;
   color: $theme-color;
 }
 .response-status-value-error{
@@ -745,7 +720,7 @@ table#custom-generic-table {
   background-color: transparent !important;
   color: black !important;
   max-height:500px;
-  padding-right: 10px;
+  padding-right: 5px;
 
   .__json-key__ {
     color: brown !important;
@@ -795,14 +770,16 @@ table#custom-generic-table {
   display: flex;
   flex-direction: row;
   flex: 1;
-  background-color: #fff;
+  background-color: $secondary-color;
   min-height: 220px;
+  margin-top: 1rem;
+  border-radius: $border-radius;
 }
 
 .authorization-selector-wrapper {
   flex: 0.35;
   padding: 20px;
-  border-right: 3px solid $border-color;
+  border-right: 1px solid $border-color;
   flex-direction: column;
 
   label {
@@ -864,6 +841,7 @@ table#custom-generic-table {
       label {
         // flex: 0.7;
         min-width: 100px;
+        text-align: left;
       }
 
       input {
@@ -1011,6 +989,11 @@ table#custom-generic-table {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 32px;
+  height: 32px;
 }
 
 //endpoint request styling
@@ -1072,21 +1055,20 @@ table#custom-generic-table {
   font-weight: 400 !important;
 }
 
-#sample-response {
+.testing-view-sample-response{
   min-height: 200px;
+}
 
+#sample-response {
   .fas.fa-pen {
     color: rgb(120, 120, 120);
   }
 
   .sample-response-item {
     padding: 10px;
-    margin: 10px;
-    margin-bottom: 25px;
-    background: #FEFCF7;
-    font-weight: 340;
-    border-radius: 4px;
-    border: 1px solid #E98A36;
+    background-color: $secondary-color;
+    border-radius: $border-radius;
+    padding: 1rem 1.5rem;
   }
 
   .sample-response-edit {
@@ -1098,8 +1080,6 @@ table#custom-generic-table {
 .add-sample-response {
   display: flex;
   flex-direction: row-reverse;
-  padding: 5px;
-  margin: 5px;
 }
 
 .custom-json-pretty {
@@ -1143,42 +1123,32 @@ table#custom-generic-table {
 .hm-endpoint-header {
   span.api-label {
     padding: 0;
-    width: 80px;
     height: 36px;
     text-align: center;
     align-items: center;
     justify-content: center;
-    font-size: 14px;
-    border: 0.5px solid #BDBDBD;
     font-weight: 600;
     background: #fff;
     color: #828282;
     display: flex;
+    margin-bottom: 1.5rem;
   }
 
   .input-group .form-control {
-    height: 36px;
-    border: 0.5px solid #BDBDBD;
-    font-size: 13px;
-    color: #000;
-    display: flex;
-    align-items: center;
     background: #fff !important;
   }
 }
 
 .pubSampleResponse {
-  padding: 20px 25px;
-  border: 0.5px solid #E6DBD4;
-  background: #F3F3F3;
-  display: flex;
-  flex-wrap: wrap;
   .fa-circle {
     color: #E98A36;
     margin-left: 5px;
     font-size: 12px;
   }
   .sample-response {
+    background-color: $secondary-color;
+    padding: 1rem 1.5rem;
+    border-radius: $border-radius;
     .nav-tabs{
       margin: 10px 0 0 !important;
     }
@@ -1240,20 +1210,6 @@ table#custom-generic-table {
   }
 }
 
-.hm-public-table table {
-  thead tr th {
-    font-weight: 400 !important;
-    color: #828282;
-    border: none;
-  }
-  tbody tr td {
-    border: none;
-    input.form-control {
-      width: 260px;
-    }
-  }
-}
-
 
 .endListWrapper {
   label {
@@ -1308,9 +1264,9 @@ table#custom-generic-table {
     padding-left: 0;
     &:after{
       position: absolute;
-      right: 0;
+      right: 0.5rem;
       top: 50%;
-      transform: translateY(-50%);
+      transform: translateY(-50%) rotate(-45deg) !important;
     }
   }
 }

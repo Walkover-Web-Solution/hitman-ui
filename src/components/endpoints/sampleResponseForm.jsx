@@ -31,7 +31,7 @@ class SampleResponseForm extends Form {
       body = JSON.stringify(body, null, 2)
       data = {
         title,
-        status: String(status),
+        status: (status ? String(status) : ''),
         description,
         body
       }
@@ -120,8 +120,8 @@ class SampleResponseForm extends Form {
         </Modal.Header>
         <Modal.Body>
           <form onSubmit={this.handleSubmit}>
-            {this.renderInput('title', 'Title: ', 'Enter Title ', false, false, false, '*Title should not exceed more than 5 characters')}
-            {this.renderInput('status', 'Status: ', 'Enter Status ', false, false, false, '*Status number limit is 100-599')}
+            {this.renderInput('title', 'Title: ', 'Enter Title ', false, false, false)}
+            {this.renderInput('status', 'Status: ', 'Enter Status ', false, false, false)}
             {this.renderInput(
               'description',
               'Description: ',

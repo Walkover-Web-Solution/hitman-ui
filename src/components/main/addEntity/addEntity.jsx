@@ -9,7 +9,7 @@ import { moveToNextStep } from '../../../services/widgetService'
 const entityENUM = {
   endpoint: {
     key: 'endpoint',
-    message: 'Add an endpoint name to begin.',
+    message: 'Add the API endpoint details from right section.',
     tooltip: ''
   },
   version: {
@@ -84,15 +84,25 @@ export class AddEntity extends Component {
       )
     }
 
+    renderEmptyMessage () {
+      return (
+        <div className='d-flex empty-box justify-content-between'>
+          <p className='mb-0'>{entityENUM[this.props.type].message}  </p>
+          {this.renderToolTip(this.props.type)}
+        </div>
+      )
+    }
+
     renderToolTip (type) {
       return (
         <>
-          <OverlayTrigger
-            placement='right'
-            overlay={<Tooltip> {entityENUM[this.props.type].tooltip} </Tooltip>}
-          >
-            <HelpIcon />
-          </OverlayTrigger>
+          {this.props.type !== 'endpoint' &&
+            <OverlayTrigger
+              placement='right'
+              overlay={<Tooltip> {entityENUM[this.props.type].tooltip} </Tooltip>}
+            >
+              <HelpIcon />
+            </OverlayTrigger>}
         </>
       )
     }
@@ -100,7 +110,7 @@ export class AddEntity extends Component {
     render () {
       return (
         <div>
-          {this.renderForm()}
+          {this.renderEmptyMessage()}
         </div>
       )
     }

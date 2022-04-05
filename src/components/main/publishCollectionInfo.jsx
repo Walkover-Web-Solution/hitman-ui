@@ -4,9 +4,13 @@ import { toast } from 'react-toastify'
 import { isAdmin } from '../auth/authService'
 import './publicCollectionInfo.scss'
 import SettingIcon from '../../assets/icons/SettingIcon.png'
+import FileIcon from '../../assets/icons/file.svg'
+import DocIcon from '../../assets/icons/twitch.svg'
 import { ReactComponent as ExternalLinks } from '../../assets/icons/externalLinks.svg'
+import { ReactComponent as HelpIcon } from '../../assets/icons/helpcircle.svg'
 import PublishSidebar from '../publishSidebar/publishSidebar'
-import { openExternalLink } from '../common/utility'
+import { openExternalLink, msgText } from '../common/utility'
+import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 
 const mapStateToProps = (state) => {
   return {
@@ -47,12 +51,55 @@ class PublishCollectionInfo extends Component {
   }
 
   renderPublicUrl () {
-    // build default url
     const url = defaultDomain + '/p/' + this.props.collectionId
     return (
-      <div className='sidebar-public-url text-link text-center d-flex' onClick={() => { openExternalLink(url) }}>
-        <div className='text-truncate'>{url}</div> <span className='icon'> <ExternalLinks /></span>
-      </div>
+      <button onClick={() => { openExternalLink(url) }}>
+        <div className='sidebar-public-url text-link text-center d-flex align-items-center'>
+          <span className='icon d-flex mr-1'> <ExternalLinks /></span>
+          <div className='text-truncate'>{url}</div>
+        </div>
+      </button>
+    )
+  }
+
+  managePublicDoc () {
+    const { totalEndpointCount } = this.state
+    return (
+      <button class='btn' disabled={!totalEndpointCount} onClick={() => { isAdmin() ? this.openPublishSettings() : this.showAccessDeniedToast() }}>
+        <div className='d-flex align-items-center cursor-pointer'>
+          <img className='mr-1' src={FileIcon} alt='' />
+          <span>Manage Public Doc</span>
+        </div>
+        {this.renderInfoText('Add an endpoint first')}
+      </button>
+    )
+  }
+
+  redirectToApiFeedback () {
+    const collectionId = this.props.collectionId
+    if (collectionId) {
+      this.props.history.push(`/orgs/${this.props.match.params.orgId}/dashboard/collection/${collectionId}/feedback`)
+    }
+  }
+
+  renderInOverlay (method, msg) {
+    return (
+      <OverlayTrigger overlay={<Tooltip id='tooltip-disabled'>{msg}</Tooltip>}>
+        <span className='d-inline-block'>
+          {method()}
+        </span>
+      </OverlayTrigger>
+    )
+  }
+
+  apiDocFeedback () {
+    return (
+      <button disabled={!isAdmin()} onClick={() => { this.redirectToApiFeedback() }}>
+        <div className='d-flex align-items-center'>
+          <img className='mr-1' src={DocIcon} alt='' />
+          <span>API Doc Feedback</span>
+        </div>
+      </button>
     )
   }
 
@@ -94,34 +141,66 @@ class PublishCollectionInfo extends Component {
     }
   }
 
-  renderPublicCollectionInfo () {
+  // renderPublicCollectionInfo () {
+  //   const currentCollection = this.props.collections[this.props.collectionId]
+  //   const { totalPageCount, totalEndpointCount, livePageCount, liveEndpointCount } = this.state
+  //   return (
+  //     !currentCollection?.importedFromMarketPlace &&
+  //       <div className='public-colection-info'>
+  //         <div className='d-flex'>
+  //           <div className='publicurl'>{this.renderPublicUrl()}</div>
+  //           <div className='setting'>{this.renderSettingsLink()}</div>
+  //         </div>
+  //         <div className='endpoints-list'>
+  //           <p>{`Public Endpoints: ${liveEndpointCount} / ${totalEndpointCount}`}</p>
+  //           <p>{`Public Pages: ${livePageCount} / ${totalPageCount}`}</p>
+  //         </div>
+  //       </div>
+  //   )
+  // }
+
+  renderPublicCollectionInfo (isPublic) {
     const currentCollection = this.props.collections[this.props.collectionId]
-    const { totalPageCount, totalEndpointCount, livePageCount, liveEndpointCount } = this.state
     return (
       !currentCollection?.importedFromMarketPlace &&
         <div className='public-colection-info'>
-          <div className='d-flex'>
-            <div className='publicurl'>{this.renderPublicUrl()}</div>
-            <div className='setting'>{this.renderSettingsLink()}</div>
-          </div>
-          <div className='endpoints-list'>
-            <p>{`Public Endpoints: ${liveEndpointCount} / ${totalEndpointCount}`}</p>
-            <p>{`Public Pages: ${livePageCount} / ${totalPageCount}`}</p>
-          </div>
+          {this.managePublicDoc()}
+          {isPublic && (isAdmin() ? this.apiDocFeedback() : this.renderInOverlay(this.apiDocFeedback.bind(this), msgText.adminAccees))}
+          {isPublic && <div className='publicurl'>{this.renderPublicUrl()}</div>}
+        </div>
+    )
+  }
+
+  renderInfoText (info) {
+    const { totalEndpointCount } = this.state
+    return (
+      (totalEndpointCount < 1) &&
+        <div>
+          <OverlayTrigger
+            placement='right'
+            overlay={<Tooltip> {info} </Tooltip>}
+          >
+            <HelpIcon />
+          </OverlayTrigger>
         </div>
     )
   }
 
   renderPublishCollection () {
+    const { totalEndpointCount } = this.state
     return (
-      (this.state.totalEndpointCount > 2) &&
-        <button
-          className='btn btn-outline orange w-100 publishCollection'
-          id='publish_api_doc_navbar_btn'
-          onClick={() => { this.redirectUser() }}
-        >
-          Publish API Documentation
-        </button>
+      <button
+        className='btn btn-outline orange w-100 publishCollection'
+        id='publish_api_doc_navbar_btn'
+        disabled={!totalEndpointCount}
+        onClick={() => { this.redirectUser() }}
+      >
+        <div className='d-flex align-items-left'>
+          <img className='ml-2 pl-1 mr-1' src={FileIcon} alt='' />
+          <span className='truncate'>Publish API Documentation</span>
+        </div>
+        {this.renderInfoText('Add an endpoint to publish')}
+      </button>
     )
   }
 
@@ -145,10 +224,7 @@ class PublishCollectionInfo extends Component {
   openPublishSettings () {
     const collectionId = this.props.collectionId
     if (collectionId) {
-      this.props.history.push({
-        pathname: `/orgs/${this.props.match.params.orgId}/admin/publish`,
-        search: `?collectionId=${collectionId}`
-      })
+      this.props.history.push(`/orgs/${this.props.match.params.orgId}/dashboard/collection/${collectionId}/settings`)
     }
   }
 
@@ -171,8 +247,9 @@ class PublishCollectionInfo extends Component {
   render () {
     const isPublic = this.props.collections[this.props.collectionId]?.isPublic || false
     return (
-      <div className='my-2'>
-        {isPublic ? this.renderPublicCollectionInfo() : this.renderPublishCollection()}
+      <div>
+        {!isPublic && this.renderPublishCollection()}
+        {this.renderPublicCollectionInfo(isPublic)}
         {this.openPublishSidebar()}
       </div>
     )
